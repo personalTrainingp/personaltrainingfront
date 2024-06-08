@@ -1,0 +1,1 @@
+export { VentasAsesor as default } from './VentasAsesor';

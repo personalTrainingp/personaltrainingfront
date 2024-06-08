@@ -1,0 +1,94 @@
+.hover-card:hover{
+    border-color: rgb(205, 133, 0) !important;
+}
+.hover-card-border{
+    border: 5px solid transparent;
+}
+.card-border{
+    border: 5px solid rgb(205, 133, 0) ;
+}
+.hover-card-border:hover{
+    border: 5px solid rgb(205, 133, 0) ;
+}
+.signatureCanvas{
+    border: 1px solid black;
+    width: 100%;
+    min-height: 500px;
+    background-color: rgb(186, 186, 186);
+}
+
+.login-container{
+    margin-top: 15%;
+}
+.login-form-1{
+    border-radius: 5px;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
+    padding: 5%;
+}
+.login-form-1 h3{
+    text-align: center;
+    color: #333;
+}
+.login-form-2{
+    border-radius: 5px;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
+    padding: 5%;
+    background: #0062cc;
+}
+.login-form-2 h3{
+    text-align: center;
+    color: #fff;
+}
+.login-container form{
+    padding: 10%;
+}
+.btnSubmit
+{
+    width: 50%;
+    border-radius: 1rem;
+    padding: 1.5%;
+    border: none;
+    cursor: pointer;
+}
+.login-form-1 .btnSubmit{
+    color: #fff;
+    background-color: #0062cc;
+}
+.login-form-2 .btnSubmit{
+    background-color: #fff;
+    color: #0062cc;
+}
+.login-form-2 .ForgetPwd{
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+}
+.login-form-1 .ForgetPwd{
+    color: #0062cc;
+    font-weight: 600;
+    text-decoration: none;
+}
+.react-form-wizard .wizard-tab-content{
+    text-align: inherit !important;
+}
+.bg-white{
+    background-color: white !important;
+}
+
+.card-header{
+    padding-bottom: 5px;
+}
+.card-body{
+    padding-top: 5px;
+}
+/* Definición de la segunda clase basada en la primera */
+.tooltip-firma {
+    .tooltip-inner, .tooltip-arrow::before{
+        /* Aquí puedes aplicar estilos adicionales */
+        background-color: #ffffff !important;
+        border: #000;
+    }
+}
+.font-50{
+    font-size: 40px;
+}

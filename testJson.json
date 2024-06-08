@@ -1,0 +1,19 @@
+{
+    "children": [
+        {
+            "testID": 1,
+            "Nombre": "ProveedorA",
+            "Direccion": "Calle 123, Ciudad A"
+        },
+        {
+            "testID": 2,
+            "Nombre": "ProveedorB",
+            "Direccion": "Avenida XYZ, Ciudad B"
+        },
+        {
+            "testID": 3,
+            "Nombre": "ProveedorC",
+            "Direccion": "Plaza 456, Ciudad C"
+        }
+    ]
+}
