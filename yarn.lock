@@ -3406,6 +3406,11 @@ react-flatpickr@^3.10.13:
     flatpickr "^4.6.2"
     prop-types "^15.5.10"
 
+react-form-wizard-component@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/react-form-wizard-component/-/react-form-wizard-component-0.1.7.tgz#b0fb3075c53511213158fcd9ba90c1dbedba57b6"
+  integrity sha512-GN4TnYI+2qqRxannwZSzinbhh1u0FEXLxhs1WjC9QhZu+w9Hk+LxrWAldQvnQuC8zp5flcDw7hdSESCfBXO2sQ==
+
 react-helmet@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/react-helmet/-/react-helmet-6.1.0.tgz#a750d5165cb13cf213e44747502652e794468726"
