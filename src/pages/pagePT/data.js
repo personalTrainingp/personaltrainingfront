@@ -2,14 +2,6 @@ import rpm50 from '@/assets/images/PT-images/logos-programas/rpm50-blanco.png';
 import fs from '@/assets/images/PT-images/logos-programas/fs-blanco.png';
 import ms from '@/assets/images/PT-images/logos-programas/ms-blanco.png';
 import cyl from '@/assets/images/PT-images/logos-programas/cyl-blanco.png';
-import imgBbva from '@/assets/images/PT-images/imgs-tarjetas/bbva.png';
-import imgBcp from '@/assets/images/PT-images/imgs-tarjetas/bcpGrande.png';
-import imgcmr from '@/assets/images/PT-images/imgs-tarjetas/cmrFalabella.png';
-import imgdinerclub from '@/assets/images/PT-images/imgs-tarjetas/diners-club.jpg';
-import imgInterbank from '@/assets/images/PT-images/imgs-tarjetas/interbank.png';
-import imgpagoLink from '@/assets/images/PT-images/imgs-tarjetas/pagoLink.png';
-import imgscoti from '@/assets/images/PT-images/imgs-tarjetas/scotiabank.png';
-import imgAE from '@/assets/images/PT-images/imgs-tarjetas/AmericanExpress.png';
 
 const dataSeguimiento = [
 	{
@@ -167,69 +159,9 @@ const FormasPago = [
 		progressValue: `${(0.0 / 1030188) * 100}`,
 	},
 ];
-const tarjetasCredito = [
-	{
-		id: 1,
-		tarjeta: 'dinner club',
-		img: imgBbva,
-		completedTask: '217,13.00',
-		progressValue: `${(217131.0 / 1030188) * 100}`,
-	},
-	{
-		id: 2,
-		tarjeta: 'dinner club',
-		img: imgBcp,
-		completedTask: '217,13.00',
-		progressValue: `${(217131.0 / 1030188) * 100}`,
-	},
-	{
-		id: 3,
-		tarjeta: 'dinner club',
-		img: imgcmr,
-		completedTask: '217,13.00',
-		progressValue: `${(217131.0 / 1030188) * 100}`,
-	},
-	{
-		id: 4,
-		tarjeta: 'dinner club',
-		img: imgdinerclub,
-		completedTask: '217,13.00',
-		progressValue: `${(217131.0 / 1030188) * 100}`,
-	},
-	{
-		id: 5,
-		tarjeta: 'dinner club',
-		img: imgInterbank,
-		completedTask: '217,13.00',
-		progressValue: `${(217131.0 / 1030188) * 100}`,
-	},
-	{
-		id: 6,
-		tarjeta: 'dinner club',
-		img: imgpagoLink,
-		completedTask: '217,13.00',
-		progressValue: `${(217131.0 / 1030188) * 100}`,
-	},
-	{
-		id: 7,
-		tarjeta: 'dinner club',
-		img: imgscoti,
-		completedTask: '217,13.00',
-		progressValue: `${(217131.0 / 1030188) * 100}`,
-	},
-	{
-		id: 8,
-		tarjeta: 'dinner club',
-		img: imgAE,
-		completedTask: '217,13.00',
-		progressValue: `${(217131.0 / 1030188) * 100}`,
-	},
-];
-
+const tarjetasCredito = [];
 
 const tarjetasDebito = [];
-
-
 
 const Proveedores = [
 	{
@@ -1233,4 +1165,11 @@ const Proveedores = [
 		avatar: 'https://robohash.org/expeditaeiuseaque.png?size=60x60&set=set1',
 	},
 ];
-export { dataSeguimiento, statisticsData, FormasPago, tarjetasCredito, tarjetasDebito, Proveedores };
+export {
+	dataSeguimiento,
+	statisticsData,
+	FormasPago,
+	tarjetasCredito,
+	tarjetasDebito,
+	Proveedores,
+};
