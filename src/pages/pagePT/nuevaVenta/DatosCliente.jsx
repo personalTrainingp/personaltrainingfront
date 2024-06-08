@@ -6,6 +6,7 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { ResumenCliente } from './ResumenCliente';
 import { useDispatch } from 'react-redux';
 import { onSetDetalleCli } from '@/store/uiNuevaVenta/uiNuevaVenta';
+import Select from 'react-select'
 
 const DatosCliente = ({dataCliente}) => {
 	const dispatch = useDispatch()
