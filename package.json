@@ -11,6 +11,8 @@
     "format": "prettier --write src/**/*.{ts,tsx} "
   },
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.24.7",
+    "@babel/runtime": "^7.24.7",
     "@fullcalendar/core": "^6.1.8",
     "@fullcalendar/daygrid": "^6.1.8",
     "@fullcalendar/interaction": "^6.1.8",
@@ -69,6 +71,7 @@
     "react-signature-canvas": "^1.0.6",
     "react-simplemde-editor": "^5.2.0",
     "react-table": "7.7.0",
+    "regenerator-runtime": "^0.14.1",
     "sass": "^1.64.2",
     "simplebar-react": "^3.2.4",
     "styled-components": "^6.1.8",

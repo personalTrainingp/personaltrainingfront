@@ -8,7 +8,7 @@ import 'primereact/resources/primereact.css';
 import './assets/scss/Saas.scss';
 import { Provider } from 'react-redux';
 import { store } from './store';
-
+import 'regenerator-runtime/runtime';
 
 // Añadir textos en español
 addLocale('es', {
