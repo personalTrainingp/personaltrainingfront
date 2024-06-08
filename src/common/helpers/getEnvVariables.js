@@ -5,11 +5,9 @@ const getEnvVariables = () => {
 	// 	...import.meta.env,
 	// };
 	const API_URL = import.meta.env.VITE_API_URL;
-  const API_KEY = import.meta.env.VITE_API_KEY;
-
-  return {
-    API_URL,
-    API_KEY,
-  };
+	console.log('', API_URL);
+	return {
+		API_URL,
+	};
 };
 export default getEnvVariables;

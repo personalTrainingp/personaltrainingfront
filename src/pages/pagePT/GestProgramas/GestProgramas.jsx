@@ -19,7 +19,7 @@ const RegisterprogramaaTraining = {
 const registerImgProgram = {
 	base64_pgm: '',
 };
-const { VITE_API_URL } = getEnvVariables()
+const { API_URL } = getEnvVariables()
 export const GestProgramas = () => {
 	const [onModal, setonModal] = useState(false);
 	const [isActive, setisActive] = useState(true);
@@ -192,7 +192,7 @@ export const GestProgramas = () => {
 				{datapgmPT.map((project) => {
 					return (
 						<Col md={6} xxl={3} key={'proj-' + project.id_pgm}>
-							<ProjectCard project={project} columns={columns} data={project.tb_HorarioProgramaPTs} DataTrainerPrueba={arrayDataTrainer} API_URL={VITE_API_URL} />
+							<ProjectCard project={project} columns={columns} data={project.tb_HorarioProgramaPTs} DataTrainerPrueba={arrayDataTrainer} API_URL={API_URL} />
 						</Col>
 					);
 				})}

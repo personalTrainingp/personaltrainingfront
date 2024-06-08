@@ -81,6 +81,7 @@
     "@eslint/create-config": "^0.4.6",
     "@types/sortablejs": "^1.15.4",
     "@vitejs/plugin-react": "^4.0.3",
+    
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-standard": "^17.1.0",
