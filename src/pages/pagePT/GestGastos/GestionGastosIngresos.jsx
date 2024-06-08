@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ModalIngresosGastos } from './ModalIngresosGastos'
 import { Button } from 'react-bootstrap'
 import { Table } from '@/components'
-import { columns, sizePerPageList } from './columnSet'
+import { columns, sizePerPageList } from './ColumnSet'
 import { useSelector } from 'react-redux'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 
