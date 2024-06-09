@@ -95,6 +95,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	};
 	useEffect(() => {
 		obtenerUser(user.uid)
+		console.log("usuario presente");
 	}, [])
 
 	return (

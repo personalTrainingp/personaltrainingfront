@@ -6,6 +6,7 @@ import { clearErrorMessage, onChecking, onLogin, onLogout } from '../store';
 import { RESET_STATE_VENTA } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useEffect, useState } from 'react';
 import { useRoleStore } from './hookApi/useRoleStore';
+import { onSetModulos } from '@/store/sections/RutasSlice';
 
 export const useAuthStore = () => {
 	const { status, user, errorMessage } = useSelector((state) => state.auth);
@@ -13,7 +14,6 @@ export const useAuthStore = () => {
 	const dispatch = useDispatch();
 	const { obtenerModulos, obtenerSeccions } = useRoleStore();
 	const { modulos } = useSelector((e) => e.rutas);
-
 	const startLogin = async ({ usuario_user, password_user }) => {
 		dispatch(onChecking());
 
@@ -24,8 +24,8 @@ export const useAuthStore = () => {
 			});
 			localStorage.setItem('token', data?.token);
 			localStorage.setItem('token-init-date', new Date().getTime());
+			// console.log(data);
 			await obtenerModulos();
-			console.log(modulos);
 			await obtenerSeccions(modulos[0]);
 			dispatch(
 				onLogin({
@@ -105,6 +105,9 @@ export const useAuthStore = () => {
 			const { data } = await PTApi.get('/usuario/renew');
 			localStorage.setItem('token', data.token);
 			localStorage.setItem('token-init-date', new Date().getTime());
+			// await obtenerModulos();
+			// await obtenerSeccions(modulos[0]);
+			dispatch(onSetModulos(data.MODULOS_ITEMS));
 			dispatch(onLogin({ name: data.name, uid: data.uid }));
 		} catch (error) {
 			localStorage.clear();
@@ -114,6 +117,8 @@ export const useAuthStore = () => {
 	const obtenerUser = async (uid) => {
 		try {
 			const { data } = await PTApi.get(`/usuario/get-usuario/${uid}`);
+			// await obtenerModulos();
+			// await obtenerSeccions(modulos[0]);
 			setusuarioObtenido(data.usuario);
 		} catch (error) {
 			localStorage.clear();

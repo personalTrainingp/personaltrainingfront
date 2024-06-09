@@ -48,18 +48,19 @@ export default function ProtectedRoutes() {
 	// const {status} = useSelector(u=>u.auth)
 	
 	const { status, checkAuthToken } = useAuthStore()
-	const {obtenerModulos} = useRoleStore()
+	// const {obtenerModulos} = useRoleStore()
 	const { sections } = useSelector(e=>e.rutas)
-	useEffect(() => {
-		obtenerModulos()
-	}, [])
+	// useEffect(() => {
+	// 	obtenerModulos()
+	// }, [])
 	useEffect(() => {checkAuthToken()}, [])
 	if (status === 'checking') {
 		return(
 			<h3>Cargando...</h3>
 		)
 	}
-	console.log(sections.find(e=>e.key==='config')?'hay':'nop');
+	// console.log(sections);
+	// console.log(sections.find(e=>e.key==='config')?'hay':'nop');
 	return (
 	<ReactRoutes>
 		{
