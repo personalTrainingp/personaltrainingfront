@@ -18,6 +18,7 @@ export default function AdvancedFilterDemo() {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const { obtenerGastos, obtenerProveedoresUnicos } = useGf_GvStore()
     const {dataGastos, dataProvUnicosxGasto} = useSelector(e=>e.finanzas)
+    // console.log(dataGastos);
     useEffect(() => {
         obtenerGastos()
         obtenerProveedoresUnicos()
@@ -103,23 +104,24 @@ export default function AdvancedFilterDemo() {
         );
     };
     const fecRegistroBodyTemplate = (rowData)=>{
+        console.log(new Date(rowData.fec_registro).toISOString());
         return (
             <div className="flex align-items-center gap-2">
-                <span>{formatDate(rowData.fec_registro)}</span>
+                <span>{new Date(rowData.fec_registro).toLocaleDateString()}</span>
             </div>
         );
     }
     const proveedorBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.tb_Proveedor.razon_social_prov}</span>
+                <span>{rowData?.tb_Proveedor?.razon_social_prov?rowData.tb_Proveedor.razon_social_prov:'SIN'}</span>
             </div>
         );
     }
     const tipoGastoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.tb_parametros_gasto.nombre_gasto}</span>
+                <span>{rowData.tb_parametros_gasto?.nombre_gasto?rowData.tb_parametros_gasto?.nombre_gasto:'SIN'}</span>
             </div>
         );
     };
@@ -128,13 +130,13 @@ export default function AdvancedFilterDemo() {
     };
     
     const proveedorFilterTemplate = (options) => {
-        return <MultiSelect value={options.value} options={dataProvUnicosxGasto} itemTemplate={representativesItemTemplate} onChange={(e) => options.filterCallback(e.value)} optionLabel="tb_Proveedor.razon_social_prov" optionValue='tb_Proveedor.razon_social_prov' placeholder="Any" className="p-column-filter" />;
+        return <MultiSelect value={options.value} options={dataProvUnicosxGasto} itemTemplate={representativesItemTemplate} onChange={(e) => options.filterCallback(e.value)} optionLabel="razon_social_prov" optionValue='razon_social_prov' placeholder="Any" className="p-column-filter" />;
     };
     
     const representativesItemTemplate = (option) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{option['tb_Proveedor.razon_social_prov']}</span>
+                <span>{option['razon_social_prov']}</span>
             </div>
         );
     };

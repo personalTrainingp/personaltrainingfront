@@ -3,8 +3,8 @@ export const arrayEstados = [
 	{ label: 'Inactivo', value: false },
 ];
 export const arrayMonedas = [
-	{ label: 'Soles', value: 'S' },
-	{ label: 'Dolares', value: 'D' },
+	{ label: 'Soles', value: 'PEN' },
+	{ label: 'Dolares', value: 'USD' },
 ];
 export const arrayRoles = [
 	{ label: 'Ventas', value: 1 },

@@ -40,6 +40,7 @@ export const useGf_GvStore = () => {
 	const obtenerGastos = async () => {
 		try {
 			const { data } = await PTApi.get('/egreso/get-egresos');
+			console.log(data);
 			dispatch(onSetGastos(data.gastos));
 		} catch (error) {
 			console.log(error);
