@@ -39,7 +39,7 @@ export default function AdvancedFilterDemo() {
             // Realiza las modificaciones en la copia
             newItem.fec_registro = new Date(item.fec_registro);
             return newItem;
-        });
+            });
     };
     const formatDate = (value) => {
         return value.toLocaleDateString('en-ES', {
@@ -104,7 +104,6 @@ export default function AdvancedFilterDemo() {
         );
     };
     const fecRegistroBodyTemplate = (rowData)=>{
-        console.log(new Date(rowData.fec_registro).toISOString());
         return (
             <div className="flex align-items-center gap-2">
                 <span>{new Date(rowData.fec_registro).toLocaleDateString()}</span>

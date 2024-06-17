@@ -1,6 +1,13 @@
 import moment from 'moment';
 import { useSelector } from 'react-redux';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import es from 'dayjs/locale/es';
 
+dayjs.extend(utc);
+dayjs.extend(localizedFormat);
+dayjs.locale(es);
 export const helperFunctions = () => {
 	const randomFunction = (lenghtRandom, code) => {
 		let possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -57,10 +64,45 @@ export const helperFunctions = () => {
 		// Devolver la nueva fecha en formato 'YYYY-MM-DD'
 		return nuevaFecha.format('YYYY-MM-DD');
 	};
+	const diasLaborables = (fechaInicio, fechaFin) => {
+		let diasLaborables = 0;
+		let fechaActual = dayjs(fechaInicio, 'YYYY-MM-DD');
+		const fechaFinParsed = dayjs(fechaFin, 'YYYY-MM-DD');
+
+		// Determina la dirección de la iteración
+		const direccion = fechaFinParsed.isAfter(fechaActual) ? 1 : -1;
+
+		// Ajusta fechaActual según la dirección
+		fechaActual = fechaActual.add(direccion, 'day');
+
+		while (
+			(direccion === 1 &&
+				(fechaActual.isBefore(fechaFinParsed) ||
+					fechaActual.isSame(fechaFinParsed, 'day'))) ||
+			(direccion === -1 &&
+				(fechaActual.isAfter(fechaFinParsed) || fechaActual.isSame(fechaFinParsed, 'day')))
+		) {
+			// Si el día actual es laborable (de lunes a viernes)
+			if (fechaActual.day() !== 0 && fechaActual.day() !== 6) {
+				diasLaborables += direccion;
+			}
+			fechaActual = fechaActual.add(direccion, 'day');
+		}
+
+		return diasLaborables;
+	};
+	const estadoExtension = (fecha_inicio, fecha_fin, actual) => {};
+	const daysUTC = (fecha) => {
+		return dayjs.utc(fecha).locale('es').format('DD/MM/YYYY');
+	};
+
 	return {
 		randomFunction,
 		generarCombinaciones,
 		objetoComparador,
 		sumarSemanas,
+		diasLaborables,
+		estadoExtension,
+		daysUTC,
 	};
 };

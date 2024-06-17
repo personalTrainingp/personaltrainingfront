@@ -1,8 +1,12 @@
 import { PTApi } from '@/common';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 export const useVentasStore = () => {
 	const dispatch = useDispatch();
+	const [dataVentas, setDataVentas] = useState([]);
+	const [dataVentaxID, setdataVentaxID] = useState({});
+	const [isLoading, setisLoading] = useState(false);
 	const startRegisterVenta = async (formState) => {
 		try {
 			const { data } = await PTApi.post('/venta/post-ventas', formState);
@@ -10,10 +14,21 @@ export const useVentasStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerVentaporId = async (id) => {
+		try {
+			setisLoading(true);
+			const { data } = await PTApi.get(`/venta/get-id-ventas/${id}`);
+			setisLoading(false);
+			setdataVentaxID(data.venta);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerTablaVentas = async () => {
 		try {
 			const { data } = await PTApi.get('/venta/get-ventas');
-			console.log(data);
+			// console.log(data);
+			setDataVentas(data.ventas);
 		} catch (error) {
 			console.log(error);
 		}
@@ -45,5 +60,9 @@ export const useVentasStore = () => {
 		startRegisterVenta,
 		obtenerTablaVentas,
 		obtenerPDFCONTRATOgenerado,
+		obtenerVentaporId,
+		isLoading,
+		dataVentas,
+		dataVentaxID,
 	};
 };

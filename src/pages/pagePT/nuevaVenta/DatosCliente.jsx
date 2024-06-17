@@ -129,7 +129,7 @@ const DatosCliente = ({dataCliente}) => {
 											<Select
 												onChange={(e) => onInputChangeReact(e, 'id_tipo_transaccion')}
 												name="id_tipo_transaccion"
-												placeholder={'Tipo de transaccion'}
+												placeholder={'Tipo de comprobante'}
 												className="react-select"
 												classNamePrefix="react-select"
 												options={arrayFacturas}
@@ -147,7 +147,7 @@ const DatosCliente = ({dataCliente}) => {
 												name='numero_transac'
 												id='numero_transac'
 												className='form-control'
-												placeholder='numero de transaccion'
+												placeholder='numero de comprobante'
 												value={numero_transac}
 												onChange={onInputChange}
 											/>

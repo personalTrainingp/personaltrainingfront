@@ -6,7 +6,7 @@ import { clearErrorMessage, onChecking, onLogin, onLogout } from '../store';
 import { RESET_STATE_VENTA } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useEffect, useState } from 'react';
 import { useRoleStore } from './hookApi/useRoleStore';
-import { onSetModulos } from '@/store/sections/RutasSlice';
+import { RESET_INITIAL_RUTAS, onSetModulos } from '@/store/sections/RutasSlice';
 
 export const useAuthStore = () => {
 	const { status, user, errorMessage } = useSelector((state) => state.auth);
@@ -47,6 +47,7 @@ export const useAuthStore = () => {
 	const startLogout = () => {
 		localStorage.clear();
 		dispatch(RESET_STATE_VENTA());
+		dispatch(RESET_INITIAL_RUTAS());
 
 		dispatch(onLogout());
 	};

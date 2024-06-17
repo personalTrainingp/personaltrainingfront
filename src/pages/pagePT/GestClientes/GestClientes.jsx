@@ -5,6 +5,7 @@ import { columns, sizePerPageList } from './ColumnsSet';
 import { ModalCliente } from './ModalCliente';
 import { useSelector } from 'react-redux';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
+import TableClientes from './TableClientes';
 
 
 export const GestClientes = () => {
@@ -35,24 +36,8 @@ export const GestClientes = () => {
 										<i className="mdi mdi-plus-circle me-2"></i> Agregar clientes
 									</span>
 								</Col>
-
-								<Col sm={7}>
-									<div className="text-sm-end">
-										<Button variant="success" className="mb-2 me-1">
-											<i className="mdi mdi-cog-outline"></i>
-										</Button>
-
-										<Button variant="light" className="mb-2 me-1">
-											Import
-										</Button>
-
-										<Button variant="light" className="mb-2">
-											Export
-										</Button>
-									</div>
-								</Col>
 							</Row>
-
+{/* 
 							<Table
 								columns={columns}
 								data={Dataclientes}
@@ -64,7 +49,8 @@ export const GestClientes = () => {
 								isSearchable={true}
 								theadClass="table-light"
 								searchBoxClass="mb-2"
-							/>
+							/> */}
+							<TableClientes/>
 						</Card.Body>
 					</Card>
 				</Col>

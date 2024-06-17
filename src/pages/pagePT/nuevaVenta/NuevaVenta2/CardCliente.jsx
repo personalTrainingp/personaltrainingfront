@@ -10,6 +10,7 @@ export const CardCliente = ({dataCliente}) => {
             <Card.Title>Datos cliente</Card.Title>
         </Card.Header>
         <Card.Body>
+            
             <DatosCliente dataCliente={dataCliente}/>
         </Card.Body>
     </Card>

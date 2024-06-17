@@ -6,7 +6,7 @@ import AppMenu from './Menu';
 // assets
 import profileImg from '@/assets/images/users/avatar-1.jpg';
 import logo from '@/assets/images/logo_pt.png';
-import logoDark from '@/assets/images/logo_pt_dark.png';
+import logoDark from '@/assets/images/change-logo-dark-transparente.png';
 import { getMenuItems } from './utils/menu';
 
 // const UserBox = () => {
@@ -61,7 +61,7 @@ const LeftSidebar = ({ isCondensed, leftbarDark }) => {
 		<div className="leftside-menu" ref={menuNodeRef}>
 			<Link to="/" className={`logo ${leftbarDark ? 'logo-light' : 'logo-dark'}`}>
 				<span className="logo-lg p-2">
-					<img src={leftbarDark ? logo : logoDark} alt="logo" height="16" />
+					<img src={leftbarDark ? logo : logoDark} alt="logo" width={'180'} style={{height: '50px'}} />
 				</span>
 			</Link>
 

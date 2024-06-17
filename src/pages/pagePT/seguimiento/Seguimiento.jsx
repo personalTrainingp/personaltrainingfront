@@ -1,16 +1,26 @@
 import { Row, Col, Card, CardTitle } from 'react-bootstrap';
 import { Table, PageBreadcrumb } from '@/components';
 
-import { useOrders } from '../hooks';
 import { columns, sizePerPageList } from './ColumnsSet';
 import { StatisticSeguimiento } from './StatisticSeguimiento';
 import { statisticsData } from '../data';
+import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
+import { useEffect } from 'react';
+import { helperFunctions } from '@/common/helpers/helperFunctions';
+import {TableSeguimiento} from './TableSeguimiento';
+
+
 
 export const Seguimiento = () => {
-  const { orderList, changeOrderStatusGroup } = useOrders();
+  const { obtenerReporteSeguimiento, reporteSeguimiento } = useReporteStore()
+  const { diasLaborables, daysUTC } = helperFunctions()
+  useEffect(() => {
+    obtenerReporteSeguimiento()
+  }, [])
+  console.log(reporteSeguimiento);
   return (
     <>
-    <PageBreadcrumb title="Seguimiento" subName="Ventas" />
+    <PageBreadcrumb title="Seguimientos" subName="Ventas" />
     <Row>
 				<StatisticSeguimiento statisticsData={statisticsData} />
 		</Row>
@@ -18,17 +28,7 @@ export const Seguimiento = () => {
             <Col>
             <Card>
                 <Card.Body>
-                <Table
-                  columns={columns}
-                  data={orderList}
-                  pageSize={10}
-                  sizePerPageList={sizePerPageList}
-                  isSortable={true}
-                  pagination={true}
-                  isSearchable={true}
-                  theadClass="table-light"
-                  searchBoxClass="mb-2"
-                />
+                <TableSeguimiento/>
                 </Card.Body>
             </Card>
             </Col>

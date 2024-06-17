@@ -9,7 +9,7 @@ export const arrayMonedas = [
 export const arrayRoles = [
 	{ label: 'Ventas', value: 1 },
 	{ label: 'Administracion', value: 2 },
-	{ label: 'Marketing', value: 3 },
+	{ label: 'Jefe de ventas', value: 3 },
 	{ label: 'superUsuario', value: 4 },
 	{ label: 'usuario', value: 5 },
 ];
@@ -46,8 +46,8 @@ export const arrayDataTrainer = [
 	{ value: 22, label: 'Esteban Chavez' },
 ];
 export const arrayFacturas = [
-	{ value: 23, label: 'Boleta' },
-	{ value: 24, label: 'Factura' },
+	{ value: 82, label: 'Boleta' },
+	{ value: 83, label: 'Factura' },
 ];
 export const arrayOrigenDeCliente = [
 	{ value: 25, label: 'TIS' },
@@ -74,6 +74,10 @@ export const arrayrelacionPariente = [
 	{ label: 'hijo(a)', value: 24 },
 	{ label: 'tio(a)', value: 25 },
 	{ label: 'familiar', value: 26 },
+];
+export const arrayCategoriaProducto = [
+	{ label: 'Accesorio', value: 18 },
+	{ label: 'Suplementos', value: 17 },
 ];
 export const arrayCargoEmpl = [
 	{ label: 'Entrenador(a) RPM', value: 'ent_rpm' },

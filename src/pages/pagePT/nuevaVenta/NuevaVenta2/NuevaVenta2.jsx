@@ -6,6 +6,7 @@ import { CardVenta } from './CardVenta'
 import { CardPago } from './CardPago'
 import { useSelector } from 'react-redux'
 import { useImpuestosStore } from '@/hooks/hookApi/useImpuestosStore'
+import { Divider } from 'primereact/divider'
 
 export const NuevaVenta2 = () => {
 
@@ -13,15 +14,26 @@ export const NuevaVenta2 = () => {
   return (
     <>
     <PageBreadcrumb title="Nueva venta" subName="ventas" />
-    <Row>
+    <Card>
+      <Row>
         <Col lg={3}>
             <CardPago venta={venta} dataPagos={datos_pagos}/>
+            
             <CardCliente dataCliente={detalle_cli_modelo}/>
         </Col>
         <Col lg={9}>
             <CardVenta dataVenta={venta} detalle_cli_modelo={detalle_cli_modelo} datos_pagos={datos_pagos}/>
         </Col>
-    </Row>
+      </Row>
+    </Card>
+    {/* <Row>
+        <Col lg={3}>
+            
+        </Col>
+        <Col lg={9}>
+            <CardVenta dataVenta={venta} detalle_cli_modelo={detalle_cli_modelo} datos_pagos={datos_pagos}/>
+        </Col>
+    </Row> */}
     </>
   )
 }

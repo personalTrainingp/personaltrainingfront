@@ -110,7 +110,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading}) => {
             obtenerParametrosBancos()
         }, [])
         
-        const submitGasto = (e)=>{
+        const submitGasto = async(e)=>{
             e.preventDefault()
             startRegistrarGastos(formState)
             onClickCancelModal()

@@ -17,6 +17,7 @@ import { parametroSlice } from './dataParametros/parametroSlice';
 import { CalendarSlice } from './calendar/calendarSlice';
 import { GastosSlice } from './dataGastos/gastosSlice';
 import { rutasSlice } from './sections/RutasSlice';
+import { authProspectoSlice } from './usuario/usuarioProspectoSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -38,6 +39,7 @@ export const store = configureStore({
 		calendar: CalendarSlice.reducer,
 		finanzas: GastosSlice.reducer,
 		rutas: rutasSlice.reducer,
+		authProspec: authProspectoSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
