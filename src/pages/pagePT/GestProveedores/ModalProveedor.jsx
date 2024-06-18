@@ -55,7 +55,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                 setVisible(false);
             };
             
-            const submitProveedor = (e)=>{
+            const submitProveedor = async(e)=>{
                 e.preventDefault()
                 if(dataProv){
                     // console.log("actualizaro");
@@ -64,7 +64,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                     onCancelForm()
                     return;
                 }
-                startRegisterProveedor(formState)
+                await startRegisterProveedor(formState)
                 onCancelForm()
                 setVisible(true);
             }

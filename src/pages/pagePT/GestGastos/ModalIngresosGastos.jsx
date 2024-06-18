@@ -7,6 +7,7 @@ import { Button, Col, Modal, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import Select from 'react-select'
 import { ModalProveedor } from '../GestProveedores/ModalProveedor'
+import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 const registerIvsG={
     id_tipoGasto: 0,
     id_gasto: 0,
@@ -34,11 +35,14 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const [gastoxGrupo, setgastoxGrupo] = useState([])
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
     const { obtenerParametroPorEntidadyGrupo: obtenerParametroTipoComprobante, DataGeneral: DataTipoComprobante } = useTerminoStore()
+    const {obtenerParametrosProveedor} = useProveedorStore()
     // const { obtenerParametroPorEntidadyGrupo: obtenerParametroFormaPago, DataGeneral: DataFormaPago } = useTerminoStore()
     const { obtenerParametrosProductoProveedor, DataProducProveedor } = useTerminoStore()
     const { obtenerParametrosFormaPago, DataFormaPago } = useTerminoStore()
     const { obtenerParametrosBancos, DataBancos } = useTerminoStore()
     const { startRegistrarGastos, startActualizarGastos } = useGf_GvStore()
+    
+	const { dataProveedores } = useSelector(e=>e.prov)
     const { formState, 
             id_tipoGasto, 
             id_gasto,
@@ -106,7 +110,8 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
 
         useEffect(() => {
             obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
-            obtenerParametrosProductoProveedor()
+            // obtenerParametrosProductoProveedor()
+            obtenerParametrosProveedor()
             obtenerParametrosFormaPago()
             obtenerParametrosBancos()
         }, [])
@@ -386,8 +391,8 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                     placeholder={'Seleccionar el proveedor'}
                                     className="react-select"
                                     classNamePrefix="react-select"
-                                    options={DataProducProveedor}
-                                    value={DataProducProveedor.find(
+                                    options={dataProveedores}
+                                    value={dataProveedores.find(
                                         (option)=>option.value === id_prov
                                     )||0}
                                     required

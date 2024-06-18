@@ -29,6 +29,7 @@ export const useProveedorStore = () => {
 			setmessage({ msg: data.msg, ok: data.ok });
 			setIsLoading(false);
 			obtenerProveedores();
+			obtenerParametrosProveedor();
 		} catch (error) {
 			console.log(error);
 		}
@@ -37,6 +38,18 @@ export const useProveedorStore = () => {
 		try {
 			const { data } = await PTApi.get('/proveedor/obtener-proveedores');
 			dispatch(onSetProveedores(data.proveedores));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerParametrosProveedor = async () => {
+		try {
+			// setIsLoading(true);
+			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
+			// setDataProducProveedor(data);
+			console.log(data);
+			dispatch(onSetProveedores(data));
+			// setIsLoading(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -82,6 +95,7 @@ export const useProveedorStore = () => {
 		obtenerProveedor,
 		EliminarProveedor,
 		actualizarProveedor,
+		obtenerParametrosProveedor,
 		isLoading,
 		statusData,
 		proveedor,
