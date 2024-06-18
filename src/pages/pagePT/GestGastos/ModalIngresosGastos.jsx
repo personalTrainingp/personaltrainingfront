@@ -69,10 +69,10 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             }
         })
         const group = arrayGrupo.reduce((acc, item) => {
-            if (!acc.some(obj => obj.value === item.value)) {
+            if (!acc.some(obj => obj.value === item.value && obj.id_tipoGasto === item.id_tipoGasto)) {
                 acc.push(item);
-              }
-              return acc;
+            }
+            return acc;
         }, [])
         const dataGasto = dataParametrosGastos.map(e=>{
             return {
@@ -115,6 +115,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             e.preventDefault()
             if(data!=0){
                 startActualizarGastos(formState, data.id)
+                showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
             }
             await startRegistrarGastos(formState)
             showToast('success', 'Guardar gasto', 'Gasto agregado correctamente', 'success')
