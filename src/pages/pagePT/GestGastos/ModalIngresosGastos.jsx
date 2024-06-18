@@ -114,8 +114,12 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         const submitGasto = async(e)=>{
             e.preventDefault()
             if(data!=0){
-                startActualizarGastos(formState, data.id)
+                console.log("con");
+                await startActualizarGastos(formState, data.id)
+                console.log("sin ");
                 showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
+                onClickCancelModal()
+                return;
             }
             await startRegistrarGastos(formState)
             showToast('success', 'Guardar gasto', 'Gasto agregado correctamente', 'success')

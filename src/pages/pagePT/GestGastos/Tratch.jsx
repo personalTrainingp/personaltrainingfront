@@ -232,7 +232,7 @@ export default function AdvancedFilterDemo({showToast}) {
                 <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen body={actionBodyTemplate}/>
             </DataTable>
             
-        <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} isLoading={isLoading}/>
+        <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
         </div>
     );
 }
