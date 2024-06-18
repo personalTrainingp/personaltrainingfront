@@ -12,7 +12,8 @@ import { MultiSelect } from 'primereact/multiselect';
 import { ExportToExcel } from './BtnExportExcel';
 import { Button } from 'primereact/button';
 import { ModalIngresosGastos } from './ModalIngresosGastos';
-export default function AdvancedFilterDemo() {
+import { confirmDialog } from 'primereact/confirmdialog';
+export default function AdvancedFilterDemo({showToast}) {
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -66,13 +67,30 @@ export default function AdvancedFilterDemo() {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
-    const [idEgresoModal, setidEgresoModal] = useState(0)
-    const { obtenerGastoxID, gastoxID, isLoading } = useGf_GvStore()
+    const [idEgreso, setidEgreso] = useState(0)
+    const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto } = useGf_GvStore()
     const actionBodyTemplate = (rowData)=>{
+        setidEgreso(rowData.id)
         const onClickEditModalEgresos = ()=>{
             onOpenModalIvsG()
-            // setidEgresoModal(rowData.id)
+            setidEgreso(rowData.id)
             obtenerGastoxID(rowData.id)
+        }
+        const confirmDeleteGastoxID = ()=>{
+            confirmDialog({
+                message: 'Seguro que quiero eliminar el gasto?',
+                header: 'Eliminar gasto',
+                icon: 'pi pi-info-circle',
+                defaultFocus: 'reject',
+                acceptClassName: 'p-button-danger',
+                accept:  onAcceptDeleteGasto,
+            });
+        }
+        
+        const onAcceptDeleteGasto = async()=>{
+            console.log(rowData.id);
+            await startDeleteGasto(rowData.id)
+            showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
         return (
             <React.Fragment>
@@ -80,7 +98,7 @@ export default function AdvancedFilterDemo() {
                 onClick={onClickEditModalEgresos} 
                 />
                 <Button icon="pi pi-trash" rounded outlined severity="danger" 
-                // onClick={() => confirmDeleteProduct(rowData)} 
+                onClick={confirmDeleteGastoxID} 
                 />
             </React.Fragment>
         );

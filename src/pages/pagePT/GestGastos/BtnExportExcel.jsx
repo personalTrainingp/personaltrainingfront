@@ -10,14 +10,18 @@ export const ExportToExcel = ({data}) => {
     // Crear un nuevo libro de trabajo Excel
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Gastos filtrados');
-
+    const worksheetDolares = workbook.addWorksheet('Gastos filtrados por dolares');
+    const worksheetSoles = workbook.addWorksheet('Gastos filtrados por soles');
+  // Filtrar datos por moneda
+  const dataDolares = data.filter(e => e.moneda === 'USD');
+  const dataSoles = data.filter(e => e.moneda === 'PEN');
     // Datos de ejemplo
     data = data.map((e) => {
       return {
         fec_registro: e.fec_registro,
         Proveedores: e.tb_Proveedor?.razon_social_prov,
         gasto: e.tb_parametros_gasto?.nombre_gasto,
-        Descripcion: e.descripcion,
+        Descripcion: e.Descripcion,
         moneda: e.moneda,
         monto: e.monto,
       };
@@ -34,16 +38,23 @@ export const ExportToExcel = ({data}) => {
       alignment: { horizontal: 'left' },
       border: { top: { style: 'thin' }, bottom: { style: 'thin' } },
     };
-    worksheet.columns = [
-      {key: 'fec_registro', width: 20, height: 50 },
-      {key: 'Proveedores', width: 50, height: 50 },
-      {key: 'gasto', width: 50, height: 50 },
-      {key: 'Descripcion', width: 50, height: 50 },
-      {key: 'moneda', width: 8, height: 50 },
-      {key: 'monto', width: 20, height: 50 },
-    ];
+  // Definir columnas para las hojas de trabajo
+  const columns = [
+    { key: 'fec_registro', width: 20 },
+    { key: 'Proveedores', width: 50 },
+    { key: 'gasto', width: 50 },
+    { key: 'Descripcion', width: 50 },
+    { key: 'moneda', width: 8 },
+    { key: 'monto', width: 20 },
+  ];
 
-    // Agregar encabezados y filas de datos a la hoja
+  worksheet.columns = columns;
+  worksheetDolares.columns = columns;
+  worksheetSoles.columns = columns;
+
+
+  // Función para agregar datos a una hoja de trabajo
+  const addDataToWorksheet = (worksheet, data) => {
     worksheet.addRow(['Fecha de registro', 'Proveedores', 'Gastos', "Descripcion", "Moneda", "Monto"]).eachCell((cell) => {
       cell.fill = headerStyle.fill;
       cell.font = headerStyle.font;
@@ -57,6 +68,12 @@ export const ExportToExcel = ({data}) => {
         cell.border = cellStyle.border;
       });
     });
+  };
+
+  // Agregar datos a cada hoja de trabajo
+  addDataToWorksheet(worksheet, data);
+  addDataToWorksheet(worksheetDolares, dataDolares);
+  addDataToWorksheet(worksheetSoles, dataSoles);
 
     // Generar el archivo Excel en formato Blob
     const buffer = await workbook.xlsx.writeBuffer();

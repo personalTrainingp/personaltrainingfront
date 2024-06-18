@@ -25,7 +25,7 @@ const registerIvsG={
     descripcion: '',
     id_prov: 0
 }
-export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow}) => {
+export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, showToast}) => {
     const onClickCancelModal = ()=>{
         onHide()
         onResetForm()
@@ -116,7 +116,8 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow}) => 
             if(data){
                 
             }
-            startRegistrarGastos(formState)
+            await startRegistrarGastos(formState)
+            showToast('success', 'Guardar gasto', 'Gasto agregado correctamente', 'success')
             onClickCancelModal()
         }
         const [openModalProv, setopenModalProv] = useState(false)

@@ -38,20 +38,30 @@ export const useGf_GvStore = () => {
 			console.log(error);
 		}
 	};
-	const startActualizarGastos = async(formState)=>{
+	const startActualizarGastos = async (formState) => {
 		try {
 			const { data } = await PTApi.post('/egreso/post-egreso', {
-				...formState
+				...formState,
 			});
 			obtenerGastos();
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
+	const startDeleteGasto = async (id) => {
+		try {
+			setisLoading(true)
+			const { data } = await PTApi.put(`/egreso/delete-egreso/${id}`);
+			setisLoading(false)
+			console.log(data);
+			obtenerGastos();
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerGastos = async () => {
 		try {
 			const { data } = await PTApi.get('/egreso/get-egresos');
-			console.log(data);
 			dispatch(onSetGastos(data.gastos));
 		} catch (error) {
 			console.log(error);
@@ -88,6 +98,7 @@ export const useGf_GvStore = () => {
 		obtenerProveedoresUnicos,
 		obtenerNombreGastoUnicos,
 		startActualizarGastos,
+		startDeleteGasto,
 		gastoxID,
 		isLoading,
 	};
