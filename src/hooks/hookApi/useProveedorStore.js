@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux';
 export const useProveedorStore = () => {
 	const dispatch = useDispatch();
 	const [statusData, setstatus] = useState('');
+	const [message, setmessage] = useState({ msg: '', ok: false });
+	const [isLoading, setIsLoading] = useState(false);
 	const [proveedor, setProveedor] = useState({
 		id: 0,
 		ruc_prov: '',
@@ -22,7 +24,10 @@ export const useProveedorStore = () => {
 	});
 	const startRegisterProveedor = async (formState) => {
 		try {
-			const { data } = await PTApi.post('/proveedor/post-proveedor', formState);
+			setIsLoading(true);
+			const { data } = await PTApi.post('/proveedor/post-proveedor', {});
+			setmessage({ msg: data.msg, ok: data.ok });
+			setIsLoading(false);
 			obtenerProveedores();
 		} catch (error) {
 			console.log(error);
@@ -60,9 +65,12 @@ export const useProveedorStore = () => {
 	};
 	const actualizarProveedor = async (formState, id) => {
 		try {
+			setIsLoading(true);
 			const { data } = await PTApi.put(`/proveedor/update-proveedor/${id}`, formState);
 			// console.log(id);
 			// dispatch(getProveedores(data));
+			setmessage({ msg: data.msg, ok: data.ok });
+			setIsLoading(false);
 			obtenerProveedores();
 		} catch (error) {
 			console.log(error);
@@ -74,7 +82,9 @@ export const useProveedorStore = () => {
 		obtenerProveedor,
 		EliminarProveedor,
 		actualizarProveedor,
+		isLoading,
 		statusData,
 		proveedor,
+		message,
 	};
 };

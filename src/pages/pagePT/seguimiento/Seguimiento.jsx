@@ -17,7 +17,6 @@ export const Seguimiento = () => {
   useEffect(() => {
     obtenerReporteSeguimiento()
   }, [])
-  console.log(reporteSeguimiento);
   return (
     <>
     <PageBreadcrumb title="Seguimientos" subName="Ventas" />

@@ -1,24 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
-import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { useSelector } from 'react-redux';
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
 import { MultiSelect } from 'primereact/multiselect';
-
+import { ExportToExcel } from './BtnExportExcel';
+import { Button } from 'primereact/button';
+import { ModalIngresosGastos } from './ModalIngresosGastos';
 export default function AdvancedFilterDemo() {
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [selectedCustomers, setselectedCustomers] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const { obtenerGastos, obtenerProveedoresUnicos } = useGf_GvStore()
     const {dataGastos, dataProvUnicosxGasto} = useSelector(e=>e.finanzas)
-    // console.log(dataGastos);
+    const [valueFilter, setvalueFilter] = useState([])
     useEffect(() => {
         obtenerGastos()
         obtenerProveedoresUnicos()
@@ -64,6 +66,25 @@ export default function AdvancedFilterDemo() {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+    const [idEgresoModal, setidEgresoModal] = useState(0)
+    const { obtenerGastoxID, gastoxID, isLoading } = useGf_GvStore()
+    const actionBodyTemplate = (rowData)=>{
+        const onClickEditModalEgresos = ()=>{
+            onOpenModalIvsG()
+            // setidEgresoModal(rowData.id)
+            obtenerGastoxID(rowData.id)
+        }
+        return (
+            <React.Fragment>
+                <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
+                onClick={onClickEditModalEgresos} 
+                />
+                <Button icon="pi pi-trash" rounded outlined severity="danger" 
+                // onClick={() => confirmDeleteProduct(rowData)} 
+                />
+            </React.Fragment>
+        );
+    }
 
     const initFilters = () => {
         setFilters({
@@ -71,6 +92,7 @@ export default function AdvancedFilterDemo() {
             ['tb_Proveedor.razon_social_prov']:{ value: null, matchMode: FilterMatchMode.IN },
             fec_registro: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
             'tb_parametros_gasto.nombre_gasto': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'tb_parametros_gasto.grupo': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             descripcion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             monto: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
         });
@@ -124,6 +146,13 @@ export default function AdvancedFilterDemo() {
             </div>
         );
     };
+    const grupoBodyTemplate = (rowData) => {
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{rowData.tb_parametros_gasto?.grupo}</span>
+            </div>
+        );
+    };
     const dateFilterTemplate = (options) => {
         return <Calendar value={options.value} onChange={(e) => options.filterCallback(e.value, options.index)} dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" mask="99/99/9999" />;
     };
@@ -139,37 +168,54 @@ export default function AdvancedFilterDemo() {
             </div>
         );
     };
-
+    const valueFiltered = (e)=>{
+        setvalueFilter(e)
+    }
     const header = renderHeader();
-
+    const [isOpenModalEgresos, setisOpenModalEgresos] = useState(false)
+    const onCloseModalIvsG = ()=>{
+        setisOpenModalEgresos(false)
+    }
+    const onOpenModalIvsG = ()=>{
+        setisOpenModalEgresos(true)
+    }
     return (
         <div className="card">
+            {/* <Button onClick={onExportExcelPersonalized}>Exportar excel personalizado</Button> */}
+            {/* <BtnExportExcel csvData={valueFilter} fileName={'Gastos'}/> */}
+            <ExportToExcel data={valueFilter}/>
             <DataTable size='large' 
                         value={customers} 
                         paginator 
-                        showGridlines 
+                        header={header}
                         rows={10} 
-                        loading={loading} 
-                        dataKey="id" 
-                        stripedRows
-                        sortMode="multiple"
-                        filters={filters} 
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         rowsPerPageOptions={[10, 25, 50]} 
+                        dataKey="id"
+				        selection={selectedCustomers}
+                        onSelectionChange={(e) => setselectedCustomers(e.value)}
+                        filters={filters} 
                         filterDisplay="menu" 
                         globalFilterFields={['fec_pago', 'id_prov', 'tb_parametros_gasto.nombre_gasto', 'descripcion', 'monto', 'moneda', ['tb_Proveedor.razon_social_prov'],"fec_registro"]} 
-                        header={header}
-                        emptyMessage="Egresos no encontrados.">
-                <Column header="Fecha registro" filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
-                <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
-                <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
-                <Column header="descripcion" filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
-
-                <Column header="Proveedor" filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
+                        emptyMessage="Egresos no encontrados."
+                        // showGridlines 
+                        loading={loading} 
+                        stripedRows
+                        // sortMode="multiple"
+                        onValueChange={valueFiltered}
+                        >
+                <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
+                <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
+                <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
+                <Column header="Monto" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
+                <Column header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
+                <Column header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
                 body={proveedorBodyTemplate} filter filterElement={proveedorFilterTemplate} />
 
-                <Column header="Action" filterField="id" style={{ width: '4rem' }}/>
+                <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen body={actionBodyTemplate}/>
             </DataTable>
+            
+        <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} isLoading={isLoading}/>
         </div>
     );
 }

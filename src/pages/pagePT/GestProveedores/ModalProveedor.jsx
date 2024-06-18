@@ -1,7 +1,8 @@
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayEstados } from '@/types/type'
-import React from 'react'
+import { Toast } from 'primereact/toast'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
 import Select from 'react-select'
 const registerProvedor = {
@@ -30,25 +31,53 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
 			email_vend_prov,
             estado_prov,
             formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
-            const { startRegisterProveedor, actualizarProveedor } = useProveedorStore()
+            const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
+            const [visible, setVisible] = useState(false);
+          
+            const toastBC = useRef(null);
+            useEffect(() => {
+              if (visible && !isLoading) {
+                toastBC.current?.show({
+                  severity: `${message.ok?'success':'danger'}`,
+                  summary: message.msg,
+                  life: 1500,  // Duración del toast en milisegundos (3 segundos)
+                //   sticky: true,
+                  position: 'top-right'
+                });
+              }
+            }, [visible, isLoading]);
+            
+
+
+
+            const clear = () => {
+                toastBC.current.clear();
+                setVisible(false);
+            };
             
             const submitProveedor = (e)=>{
                 e.preventDefault()
                 if(dataProv){
                     // console.log("actualizaro");
                     actualizarProveedor(formState, dataProv.id)
+                    setVisible(true);
                     onCancelForm()
                     return;
                 }
                 startRegisterProveedor(formState)
                 onCancelForm()
+                setVisible(true);
             }
+            
             const onCancelForm = ()=>{
                 onHide()
                 onResetForm()
             }
   return (
+    <>
+        <Toast ref={toastBC} onRemove={clear} />
     <Modal onHide={onCancelForm} show={show} size='lg' backdrop={'static'}>
+        
         {status=='loading'?'Cargando....':(
             <>
                 <Modal.Header>
@@ -255,5 +284,6 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
         )
         }
     </Modal>
+    </>
   )
 }

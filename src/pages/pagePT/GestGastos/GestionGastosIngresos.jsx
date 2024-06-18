@@ -23,7 +23,7 @@ export const GestionGastosIngresos = () => {
   return (
     <>
         <Button onClick={onOpenModalIvsG}>Agregar Gasto o Ingreso</Button>
-        <ModalIngresosGastos show={isOpenModalIvsG} onHide={onCloseModalIvsG}/>
+        <ModalIngresosGastos show={isOpenModalIvsG} onHide={onCloseModalIvsG} onShow={onOpenModalIvsG}/>
         <AdvancedFilterDemo/>
     </>
   )

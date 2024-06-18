@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 export const useGf_GvStore = () => {
 	const dispatch = useDispatch();
 	const [gastoxID, setgastoxID] = useState({});
+	const [isLoading, setisLoading] = useState(false);
 	const obtenerProveedoresUnicos = async () => {
 		try {
 			const { data } = await PTApi.get('/egreso/get-proveedores-unicos');
@@ -37,6 +38,16 @@ export const useGf_GvStore = () => {
 			console.log(error);
 		}
 	};
+	const startActualizarGastos = async(formState)=>{
+		try {
+			const { data } = await PTApi.post('/egreso/post-egreso', {
+				...formState
+			});
+			obtenerGastos();
+		} catch (error) {
+			console.log(error);
+		}
+	}
 	const obtenerGastos = async () => {
 		try {
 			const { data } = await PTApi.get('/egreso/get-egresos');
@@ -48,10 +59,12 @@ export const useGf_GvStore = () => {
 	};
 	const obtenerGastoxID = async (id) => {
 		try {
+			setisLoading(true);
 			const { data } = await PTApi.get(`/egreso/get-egreso/${id}`);
 			const { data: dataParam } = await PTApi.get(
 				`/parametros/get_param/param_gasto/${data.gasto.id_gasto}`
 			);
+			setisLoading(false);
 			setgastoxID({ ...data.gasto, ...dataParam.paramGasto });
 		} catch (error) {
 			console.log(error);
@@ -74,7 +87,9 @@ export const useGf_GvStore = () => {
 		obtenerGastoxID,
 		obtenerProveedoresUnicos,
 		obtenerNombreGastoUnicos,
+		startActualizarGastos,
 		gastoxID,
+		isLoading,
 	};
 };
 

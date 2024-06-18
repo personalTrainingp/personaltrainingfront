@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { InformacionGeneralCliente } from './InformacionGeneralCliente';
 import Error404AltPage from '@/pages/otherpages/Error404Alt';
 import config from '@/config';
+import { ComprasxCliente } from './ComprasxCliente';
 
 export const PerfilCliente = () => {
   const { uid } = useParams()
@@ -20,7 +21,7 @@ export const PerfilCliente = () => {
   if(status==="load"){
     return (
       <>
-      Cargando
+      Cargando...
       </>
     )
   }
@@ -49,7 +50,7 @@ export const PerfilCliente = () => {
           
         </Tab>
         <Tab eventKey='pays' title='Compras'>
-          
+          <ComprasxCliente uid={uid}/>
         </Tab>
       </Tabs>
     </Card>

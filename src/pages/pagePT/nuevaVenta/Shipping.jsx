@@ -65,7 +65,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo }) => {
 		)
 	}
 	const onSubmitFormVentaANDnew = ()=>{
-		// startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo})
+		startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo})
 		dispatch(RESET_STATE_VENTA())
 	}
 	const onSubmitFormVenta = async()=>{

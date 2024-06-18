@@ -5,7 +5,8 @@ import { ModalProveedor } from './ModalProveedor';
 import { useState } from 'react';
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore';
 import { cellStatusColumn } from '@/common/helpers/cellsColumnsModific';
-
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Button } from 'react-bootstrap';
 /* name column render */
 const NameColumn = ({ row }) => {
   return (
@@ -46,14 +47,29 @@ const ActionColumn = ({row}) => {
   }
   const onDeleteProveedor = ()=>{
     EliminarProveedor(row.original.id)
+
   }
+  const confirmDeleteProveedor = () => {
+    console.log("clickkk");
+    confirmDialog({
+        message: 'Estas seguro de querer eliminar este proveedor',
+        header: 'Eliminar Proveedor',
+        icon: 'pi pi-info-circle',
+        defaultFocus: 'reject',
+        acceptClassName: 'p-button-danger',
+        accept: onDeleteProveedor,
+        reject: ()=>{
+          console.log("error");
+        }
+    });
+};
   
   return (
     <>
       <Link to="" onClick={onOpenModalProv} className="action-icon">
         <i className="mdi mdi-square-edit-outline"></i>
       </Link>
-      <Link to="" className="action-icon" onClick={onDeleteProveedor}>
+      <Link to="" onClick={confirmDeleteProveedor} className="action-icon">
         <i className="mdi mdi-delete"></i>
       </Link>
       <ModalProveedor dataProv={proveedor} status={statusData} show={isModalOpenProv} onHide={onCloseModalProv}/>

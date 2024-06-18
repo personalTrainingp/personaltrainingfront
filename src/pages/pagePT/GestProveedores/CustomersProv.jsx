@@ -13,6 +13,7 @@ import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useOptionsStore } from '@/hooks/useOptionsStore';
 import Select from 'react-select';
 import { ModalProveedor } from './ModalProveedor';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 
 const CustomersProv = () => {
 	const dispatch = useDispatch()
@@ -33,7 +34,8 @@ const CustomersProv = () => {
 	return (
 		<>
 			<PageBreadcrumb title="Gestion de proveedores" subName="E" />
-
+			
+            <ConfirmDialog />
 			<Row>
 				<Col xs={12}>
 					<Card>
