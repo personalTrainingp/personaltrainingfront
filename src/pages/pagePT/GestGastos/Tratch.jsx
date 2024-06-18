@@ -13,6 +13,7 @@ import { ExportToExcel } from './BtnExportExcel';
 import { Button } from 'primereact/button';
 import { ModalIngresosGastos } from './ModalIngresosGastos';
 import { confirmDialog } from 'primereact/confirmdialog';
+import { helperFunctions } from '@/common/helpers/helperFunctions';
 export default function AdvancedFilterDemo({showToast}) {
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
@@ -143,10 +144,11 @@ export default function AdvancedFilterDemo({showToast}) {
             </div>
         );
     };
+    const {daysUTC} = helperFunctions()
     const fecRegistroBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{new Date(rowData.fec_registro).toLocaleDateString()}</span>
+                <span>{daysUTC(new Date(rowData.fec_registro))}</span>
             </div>
         );
     }
