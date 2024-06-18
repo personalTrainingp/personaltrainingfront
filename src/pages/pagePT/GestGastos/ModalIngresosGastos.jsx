@@ -38,7 +38,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const { obtenerParametrosProductoProveedor, DataProducProveedor } = useTerminoStore()
     const { obtenerParametrosFormaPago, DataFormaPago } = useTerminoStore()
     const { obtenerParametrosBancos, DataBancos } = useTerminoStore()
-    const { startRegistrarGastos } = useGf_GvStore()
+    const { startRegistrarGastos, startActualizarGastos } = useGf_GvStore()
     const { formState, 
             id_tipoGasto, 
             id_gasto,
@@ -113,8 +113,8 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         
         const submitGasto = async(e)=>{
             e.preventDefault()
-            if(data){
-                
+            if(data!=0){
+                startActualizarGastos(formState, data.id)
             }
             await startRegistrarGastos(formState)
             showToast('success', 'Guardar gasto', 'Gasto agregado correctamente', 'success')

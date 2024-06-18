@@ -25,7 +25,7 @@ export const useProveedorStore = () => {
 	const startRegisterProveedor = async (formState) => {
 		try {
 			setIsLoading(true);
-			const { data } = await PTApi.post('/proveedor/post-proveedor', {});
+			const { data } = await PTApi.post('/proveedor/post-proveedor', formState);
 			setmessage({ msg: data.msg, ok: data.ok });
 			setIsLoading(false);
 			obtenerProveedores();

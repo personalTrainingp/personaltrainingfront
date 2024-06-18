@@ -68,13 +68,10 @@ export default function AdvancedFilterDemo({showToast}) {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
-    const [idEgreso, setidEgreso] = useState(0)
     const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto } = useGf_GvStore()
     const actionBodyTemplate = (rowData)=>{
-        setidEgreso(rowData.id)
         const onClickEditModalEgresos = ()=>{
             onOpenModalIvsG()
-            setidEgreso(rowData.id)
             obtenerGastoxID(rowData.id)
         }
         const confirmDeleteGastoxID = ()=>{

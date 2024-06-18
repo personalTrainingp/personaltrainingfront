@@ -38,9 +38,9 @@ export const useGf_GvStore = () => {
 			console.log(error);
 		}
 	};
-	const startActualizarGastos = async (formState) => {
+	const startActualizarGastos = async (formState, id) => {
 		try {
-			const { data } = await PTApi.post('/egreso/post-egreso', {
+			const { data } = await PTApi.put(`/egreso/put-egreso/${id}`, {
 				...formState,
 			});
 			obtenerGastos();
@@ -50,9 +50,9 @@ export const useGf_GvStore = () => {
 	};
 	const startDeleteGasto = async (id) => {
 		try {
-			setisLoading(true)
+			setisLoading(true);
 			const { data } = await PTApi.put(`/egreso/delete-egreso/${id}`);
-			setisLoading(false)
+			setisLoading(false);
 			console.log(data);
 			obtenerGastos();
 		} catch (error) {
