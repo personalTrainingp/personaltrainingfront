@@ -34,6 +34,7 @@ const GestionVenta = lazy(() => import('../pages/pagePT/GestVentas'));
 const GestionProspectos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionCongelamientos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionRegalos = lazy(()=> import('../pages/pagePT/GestProspectos'))
+const GestionAuditoria = lazy(()=> import('../pages/pagePT/Auditoria'))
 // const PerfilPrograma = lazy(()=> import('../pages/pagePT/GestProgramas/PerfilPrograma'))
 /**
  * routes import
@@ -143,6 +144,10 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/extension/regalos') &&
 						<Route path='extension/regalos' element={<GestionRegalos/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/auditoria') &&
+						<Route path='auditoria' element={<GestionAuditoria/>}/>
 					}
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>

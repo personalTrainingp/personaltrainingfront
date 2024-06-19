@@ -1,12 +1,7 @@
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list';
+
 import dayjs from 'dayjs';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Calendar, dateFnsLocalizer, momentLocalizer } from 'react-big-calendar';
+import { useEffect, useMemo, useState } from 'react';
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { startOfWeek, getDay, format, parse } from 'date-fns';
 import 'dayjs/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -120,7 +115,7 @@ const FullCalendarWidget = ({
       <div id="calendar">
         <Calendar
           localizer={localizer}
-          events={eve}
+          events={newData}
           startAccessor="start"
           endAccessor="end"
           style={{ height: 700 }}

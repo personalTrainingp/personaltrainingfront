@@ -85,7 +85,7 @@ export const ExportToExcel = ({data}) => {
 
   return (
     <div>
-      <Button variant="primary" onClick={exportToExcel}>Exportar Excel: {data.length} datos</Button>
+      <Button variant="success" onClick={exportToExcel}>Exportar Excel: {data.length} datos</Button>
     </div>
   );
 };
