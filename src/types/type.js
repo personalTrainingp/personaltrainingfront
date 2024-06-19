@@ -2,6 +2,10 @@ export const arrayEstados = [
 	{ label: 'Activo', value: true },
 	{ label: 'Inactivo', value: false },
 ];
+export const arrayCitasTest = [
+	{ label: 'Cita nutricional de regalo | 4', cantidad: 4, value: 1 },
+	{ label: 'Promocion cita nutricional 2x1 | 2', cantidad: 2, value: 2 },
+];
 export const arrayMonedas = [
 	{ label: 'Soles', value: 'PEN' },
 	{ label: 'Dolares', value: 'USD' },

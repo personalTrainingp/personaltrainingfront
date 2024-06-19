@@ -1,22 +1,25 @@
 import { PTApi } from '@/common';
 import { onGetCitas } from '@/store/calendar/calendarSlice';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 
 export const useCitaStore = () => {
 	const [DataCitaxCLIENTE, setDataCitaxCLIENTE] = useState([]);
+	const { data } = useSelector((e) => e.calendar);
 	const dispatch = useDispatch();
-	
-	const obtenerCitasxSERVICIO = async (UID) => {
+
+	const obtenerCitasxSERVICIO = async () => {
 		try {
-			const { data } = await PTApi.get(`/upload/get-upload/${UID}`);
-			dispatch(onGetCitas(data));
+			const { data } = await PTApi.get(`/cita/get-citas`);
+			dispatch(onGetCitas(data.citas));
 			// setprogramaPT(data)
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const onPostCita = async (formState, Date) => {
+		console.log(Date.start, Date.end);
 		try {
 			const { data } = await PTApi.post(`/cita/post-cita`, {
 				...formState,
@@ -44,5 +47,6 @@ export const useCitaStore = () => {
 		onPostCita,
 		obtenerCitasxCliente,
 		DataCitaxCLIENTE,
+		data,
 	};
 };

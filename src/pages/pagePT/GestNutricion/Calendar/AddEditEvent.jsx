@@ -7,15 +7,17 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
+import { arrayCitasTest, arrayEstados } from '@/types/type';
 
 const registerCita = {
 	id_cli: 0,
-	id_cita: 0,
+	id_detallecita: 0,
 }
 const AddEditEvent = ({show, onHide, selectDATE}) => {
-	const { formState, id_cli, id_cita, onInputChange, onInputChangeReact, onResetForm } = useForm(registerCita)
+	const { formState, id_cli, id_detallecita, onInputChange, onInputChangeReact, onResetForm } = useForm(registerCita)
 	const { obtenerParametrosClientes, DataClientes } = useTerminoStore()
 	const { obtenerCitasxCliente, DataCitaxCLIENTE } =  useCitaStore()
+	
 	const { onPostCita } = useCitaStore()
 	useEffect(() => {
 		obtenerParametrosClientes()
@@ -35,7 +37,9 @@ const AddEditEvent = ({show, onHide, selectDATE}) => {
 		<Modal show={show} onHide={onHide} backdrop="static" keyboard={false}>
 			<Modal.Header className="pb-2 px-4 border-bottom-0" closeButton>
 				<Modal.Title>
-					<h5> Agendar cita: {new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})} </h5>
+					<h5> Agendar cita: {new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
+						 hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
+						</h5>
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body className="px-4 pb-4 pt-0">
@@ -62,14 +66,14 @@ const AddEditEvent = ({show, onHide, selectDATE}) => {
 							<div className='m-2'>
 								<label>Citas que compro el cliente:</label>
 								<Select
-									onChange={(e) => onInputChangeReact(e, 'id_cli')}
-									name="id_cli"
+									onChange={(e) => onInputChangeReact(e, 'id_detallecita')}
+									name="id_detallecita"
 									placeholder={'Selecciona el cliente'}
 									className="react-select"
 									classNamePrefix="react-select"
-									options={DataCitaxCLIENTE}
-									value={DataCitaxCLIENTE.find(
-										(option) => option.value === id_cita
+									options={arrayCitasTest}
+									value={arrayCitasTest.find(
+										(option) => option.value === id_detallecita
 									)}
 									required
 								/>

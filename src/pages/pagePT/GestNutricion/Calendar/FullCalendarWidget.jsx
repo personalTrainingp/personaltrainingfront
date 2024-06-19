@@ -12,6 +12,7 @@ import 'dayjs/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { es } from 'date-fns/locale';
 import AddEditEvent from './AddEditEvent';
+import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
 dayjs.locale('es')
 const locales = {
   'es': es,
@@ -44,6 +45,7 @@ const FullCalendarWidget = ({
   onEventDrop,
   events,
 }) => {
+  const { obtenerCitasxSERVICIO, data } = useCitaStore()
   const localizer = dateFnsLocalizer({
     format: (date, formatStr, locale) => format(date, formatStr, { locale: locales['es'] }),
     parse: (dateString, formatString, locale) => parse(dateString, formatString, new Date(), { locale: locales['es'] }),
@@ -60,6 +62,11 @@ const FullCalendarWidget = ({
     },
     culture: 'es',
   });
+  useEffect(() => {
+    obtenerCitasxSERVICIO()
+  }, [])
+
+  
   const { defaultDate, formats, views } = useMemo(
     () => ({
       defaultDate: new Date(2015, 3, 13),
@@ -70,11 +77,19 @@ const FullCalendarWidget = ({
     }),
     []
   )
-    const [eve, setEvents] = useState([
+  let newData=data.map(e=>{
+    return {
+      title: "Sin nombre",
+      start: new Date(e.fecha_init),
+      end: new Date(e.fecha_final)
+    }
+  })
+    console.log(newData);
+    [
       {
         title: 'Reunión con el equipo',
         start: new Date(2024, 4, 30, 10, 0), // 30 de Mayo de 2024, 10:00 AM
-        end: new Date(2024, 4, 30, 10, 30),   // 30 de Mayo de 2024, 12:00 PM
+        end: new Date(2024, 4, 30, 11, 0),   // 30 de Mayo de 2024, 12:00 PM
       },
       {
         title: 'Cita con el doctor',
@@ -86,14 +101,15 @@ const FullCalendarWidget = ({
         start: new Date(2024, 5, 2, 12, 0),  // 2 de Junio de 2024, 12:00 PM
         end: new Date(2024, 5, 2, 13, 0),    // 2 de Junio de 2024, 1:00 PM
       },
-    ]);
-    const clickRef = useRef(null)
+    ]
+    const [eve, setEvents] = useState(newData);
     const [onModalAddEditEvent, setonModalAddEditEvent] = useState(false)
     const [selectDATE, setselectDATE] = useState({start: '', end: ''})
     const onClickSubmitted = (e)=>{
       setonModalAddEditEvent(true)
+      console.log({start: new Date(e.start), end: new Date(e.end)});
       // console.log(e.start, e.end);
-      setselectDATE({start: new Date(e.start), end: new Date(e.end)})
+      setselectDATE({start: new Date(e.start), end: new Date(e.end).setTime(new Date(e.end).getTime() + (15 * 60 * 1000))})
     }
     const onCloseModalAddEditEvent = ()=>{
       setonModalAddEditEvent(false)

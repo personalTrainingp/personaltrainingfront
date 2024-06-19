@@ -118,7 +118,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         
         const submitGasto = async(e)=>{
             e.preventDefault()
-            if(data!=0){
+            if(data){
                 console.log("con");
                 await startActualizarGastos(formState, data.id)
                 console.log("sin ");
