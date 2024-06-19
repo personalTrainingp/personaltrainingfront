@@ -40,9 +40,11 @@ export const useGf_GvStore = () => {
 	};
 	const startActualizarGastos = async (formState, id) => {
 		try {
+			console.log('con');
 			const { data } = await PTApi.put(`/egreso/put-egreso/${id}`, {
 				...formState,
 			});
+			console.log('sin');
 			obtenerGastos();
 		} catch (error) {
 			console.log(error);
