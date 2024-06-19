@@ -37,12 +37,11 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const { obtenerParametroPorEntidadyGrupo: obtenerParametroTipoComprobante, DataGeneral: DataTipoComprobante } = useTerminoStore()
     const {obtenerParametrosProveedor} = useProveedorStore()
     // const { obtenerParametroPorEntidadyGrupo: obtenerParametroFormaPago, DataGeneral: DataFormaPago } = useTerminoStore()
-    const { obtenerParametrosProductoProveedor, DataProducProveedor } = useTerminoStore()
     const { obtenerParametrosFormaPago, DataFormaPago } = useTerminoStore()
     const { obtenerParametrosBancos, DataBancos } = useTerminoStore()
     const { startRegistrarGastos, startActualizarGastos } = useGf_GvStore()
     
-	const { dataProveedores } = useSelector(e=>e.prov)
+	const { dataProvCOMBO } = useSelector(e=>e.prov)
     const { formState, 
             id_tipoGasto, 
             id_gasto,
@@ -391,8 +390,8 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                     placeholder={'Seleccionar el proveedor'}
                                     className="react-select"
                                     classNamePrefix="react-select"
-                                    options={dataProveedores}
-                                    value={dataProveedores.find(
+                                    options={dataProvCOMBO}
+                                    value={dataProvCOMBO.find(
                                         (option)=>option.value === id_prov
                                     )||0}
                                     required

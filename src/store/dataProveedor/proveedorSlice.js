@@ -17,11 +17,15 @@ export const proveedorSlice = createSlice({
 			estado_prov: true,
 		},
 		dataProveedores: [],
+		dataProvCOMBO: [],
 		modalProvSlice: false,
 	},
 	reducers: {
 		onSetProveedores: (state, { payload }) => {
 			state.dataProveedores = payload;
+		},
+		onSetProveedoresCOMBO: (state, { payload }) => {
+			state.dataProvCOMBO = payload;
 		},
 		onRegisterProveedor: (state, action) => {
 			state.proveedor = action.payload;
@@ -31,4 +35,4 @@ export const proveedorSlice = createSlice({
 		},
 	},
 });
-export const { onModalInfoProv, onSetProveedores, onRegisterProveedor } = proveedorSlice.actions;
+export const { onModalInfoProv, onSetProveedores, onSetProveedoresCOMBO, onRegisterProveedor } = proveedorSlice.actions;

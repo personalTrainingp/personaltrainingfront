@@ -1,5 +1,5 @@
 import { PTApi } from '@/common/api/';
-import { onSetProveedores } from '@/store/dataProveedor/proveedorSlice';
+import { onSetProveedores, onSetProveedoresCOMBO } from '@/store/dataProveedor/proveedorSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -28,8 +28,8 @@ export const useProveedorStore = () => {
 			const { data } = await PTApi.post('/proveedor/post-proveedor', formState);
 			setmessage({ msg: data.msg, ok: data.ok });
 			setIsLoading(false);
-			obtenerProveedores();
 			obtenerParametrosProveedor();
+			obtenerProveedores();
 		} catch (error) {
 			console.log(error);
 		}
@@ -48,7 +48,7 @@ export const useProveedorStore = () => {
 			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
 			// setDataProducProveedor(data);
 			console.log(data);
-			dispatch(onSetProveedores(data));
+			dispatch(onSetProveedoresCOMBO(data));
 			// setIsLoading(false);
 		} catch (error) {
 			console.log(error);
