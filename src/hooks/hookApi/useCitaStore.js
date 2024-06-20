@@ -18,16 +18,15 @@ export const useCitaStore = () => {
 			console.log(error);
 		}
 	};
-	const onPostCita = async (formState, Date) => {
-		console.log(Date.start, Date.end);
+	const onPostCita = async (formState, DateCell) => {
 		try {
 			const { data } = await PTApi.post(`/cita/post-cita`, {
 				...formState,
-				fecha_init: Date.start,
-				fecha_final: Date.end,
+				fecha_init: DateCell.start,
+				fecha_final: DateCell.end,
 				status_cita: 'CONFIRMADA',
 			});
-			console.log(data);
+			obtenerCitasxSERVICIO();
 			// setprogramaPT(data)
 		} catch (error) {
 			console.log(error);

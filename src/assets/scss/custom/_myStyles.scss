@@ -92,3 +92,25 @@
 .font-50{
     font-size: 40px;
 }
+
+.rbc-day-slot .rbc-events-container{
+    margin-right: 0px !important;
+}
+// .rbc-event, .rbc-day-slot .rbc-background-event{
+//     border-radius: 0 !important;
+// }
+.leyenda-reprogramada{
+    color: blue;
+}
+.leyenda-confirmada{
+    color: green;
+}
+.leyenda-cancelada{
+    color: red;
+}
+.leyenda-asistio{
+    color: gray;
+}
+.leyenda-no-asistio{
+    color: purple;
+}

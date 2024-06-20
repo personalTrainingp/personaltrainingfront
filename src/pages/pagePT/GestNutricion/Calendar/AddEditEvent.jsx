@@ -29,17 +29,20 @@ const AddEditEvent = ({show, onHide, selectDATE}) => {
 	}, [id_cli])
 	
 	const onSubmitEv = ()=>{
-		console.log(formState);
-		console.log(selectDATE);
 		onPostCita(formState, selectDATE);
+		cancelModal()
 	}
+	const cancelModal = ()=>{
+        onResetForm()
+        onHide()
+    }
 	return (
 		<Modal show={show} onHide={onHide} backdrop="static" keyboard={false}>
 			<Modal.Header className="pb-2 px-4 border-bottom-0" closeButton>
 				<Modal.Title>
 					<h5> Agendar cita: {new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
-						 hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
-						</h5>
+						hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
+					</h5>
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body className="px-4 pb-4 pt-0">

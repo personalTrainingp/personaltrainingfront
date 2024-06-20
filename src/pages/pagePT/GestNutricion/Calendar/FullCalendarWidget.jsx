@@ -16,11 +16,11 @@ const eventStyleGetter = (event, start, end, isSelected) => {
   const style = {
     backgroundColor: '#3174ad',
     color: 'white',
-    borderRadius: '5px',
+    borderRadius: '0px',
     border: 'none',
-    padding: '4px 8px',
-    height: '10px', // Ajusta la altura según lo deseado
-    width: '200px', // Ajusta el ancho según lo deseado
+    padding: '2px 4px',
+    height: '40px', // Ajusta la altura según lo deseado
+    width: '250px', // Ajusta el ancho según lo deseado
     fontSize: '14px',
   };
   return {
@@ -30,7 +30,9 @@ const eventStyleGetter = (event, start, end, isSelected) => {
 // Componente personalizado para mostrar solo el título de los eventos
 const CustomEvent = ({ event }) => {
   return(
-    <div>{new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} : {event.title}</div>
+    <p className='m-0 p-0 text-overflow-ellipsis white-space-nowrap overflow-hidden fs-5'>{
+      `${new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} : 
+    ${event.title}`}</p>
   )
 };
 const FullCalendarWidget = ({
@@ -40,7 +42,15 @@ const FullCalendarWidget = ({
   onEventDrop,
   events,
 }) => {
+  
   const { obtenerCitasxSERVICIO, data } = useCitaStore()
+  let newData=data.map(e=>{
+    return {
+      title: e.tb_cliente.nombres_apellidos_cli,
+      start: new Date(e.fecha_init),
+      end: new Date(e.fecha_final)
+    }
+  })
   const localizer = dateFnsLocalizer({
     format: (date, formatStr, locale) => format(date, formatStr, { locale: locales['es'] }),
     parse: (dateString, formatString, locale) => parse(dateString, formatString, new Date(), { locale: locales['es'] }),
@@ -72,42 +82,28 @@ const FullCalendarWidget = ({
     }),
     []
   )
-  let newData=data.map(e=>{
-    return {
-      title: "Sin nombre",
-      start: new Date(e.fecha_init),
-      end: new Date(e.fecha_final)
-    }
-  })
-    console.log(newData);
-    [
-      {
-        title: 'Reunión con el equipo',
-        start: new Date(2024, 4, 30, 10, 0), // 30 de Mayo de 2024, 10:00 AM
-        end: new Date(2024, 4, 30, 11, 0),   // 30 de Mayo de 2024, 12:00 PM
-      },
-      {
-        title: 'Cita con el doctor',
-        start: new Date(2024, 5, 1, 14, 0),  // 1 de Junio de 2024, 2:00 PM
-        end: new Date(2024, 5, 1, 15, 0),    // 1 de Junio de 2024, 3:00 PM
-      },
-      {
-        title: 'Almuerzo con amigos',
-        start: new Date(2024, 5, 2, 12, 0),  // 2 de Junio de 2024, 12:00 PM
-        end: new Date(2024, 5, 2, 13, 0),    // 2 de Junio de 2024, 1:00 PM
-      },
-    ]
-    const [eve, setEvents] = useState(newData);
+  console.log(data);
     const [onModalAddEditEvent, setonModalAddEditEvent] = useState(false)
     const [selectDATE, setselectDATE] = useState({start: '', end: ''})
     const onClickSubmitted = (e)=>{
       setonModalAddEditEvent(true)
-      console.log({start: new Date(e.start), end: new Date(e.end)});
       // console.log(e.start, e.end);
-      setselectDATE({start: new Date(e.start), end: new Date(e.end).setTime(new Date(e.end).getTime() + (15 * 60 * 1000))})
+      setselectDATE({start: new Date(e.start), end: new Date(e.end).setTime(new Date(e.end).getTime())})
     }
     const onCloseModalAddEditEvent = ()=>{
       setonModalAddEditEvent(false)
+    }
+
+    const handleSelectSlot = ({ start }) => {
+      const end = new Date(start);
+      end.setMinutes(end.getMinutes() + 30); // Duración fija de 30 minutos
+      const dateSelect = {start: new Date(start), end: new Date(end)}
+      console.log({...dateSelect});
+      setonModalAddEditEvent(true)
+      setselectDATE({...dateSelect})
+    };
+    const onDoubleSelectEvent = ()=>{
+      console.log("Editar evento");
     }
   return (
     <>
@@ -116,12 +112,14 @@ const FullCalendarWidget = ({
         <Calendar
           localizer={localizer}
           events={newData}
+          onDoubleClickEvent={onDoubleSelectEvent}
           startAccessor="start"
           endAccessor="end"
           style={{ height: 700 }}
           views={['week']}
           eventPropGetter={eventStyleGetter}
           defaultView="week"
+          
           components={{
             event: CustomEvent, // Utiliza el componente personalizado para mostrar solo el título del evento
           }}
@@ -135,9 +133,10 @@ const FullCalendarWidget = ({
             agenda: "Agenda",
             showMore: total => `+ Ver más (${total})`
           }}
-          step={15}
+          step={30}
+          timeslots={1}
           formats={formats}
-          onSelectSlot={onClickSubmitted}
+          onSelectSlot={handleSelectSlot}
           selectable
         />
       </div>

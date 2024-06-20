@@ -16,12 +16,14 @@ export const ExportToExcel = ({data}) => {
   const dataDolares = data.filter(e => e.moneda === 'USD');
   const dataSoles = data.filter(e => e.moneda === 'PEN');
     // Datos de ejemplo
+    console.log(data);
     data = data.map((e) => {
       return {
         fec_registro: e.fec_registro,
         Proveedores: e.tb_Proveedor?.razon_social_prov,
         gasto: e.tb_parametros_gasto?.nombre_gasto,
         Descripcion: e.Descripcion,
+        fec_pago: e.fec_pago,
         moneda: e.moneda,
         monto: e.monto,
       };
@@ -42,7 +44,8 @@ export const ExportToExcel = ({data}) => {
   const columns = [
     { key: 'fec_registro', width: 20 },
     { key: 'Proveedores', width: 50 },
-    { key: 'gasto', width: 50 },
+    { key: 'gasto', width: 20 },
+    { key: 'fec_pago', width: 20 },
     { key: 'Descripcion', width: 50 },
     { key: 'moneda', width: 8 },
     { key: 'monto', width: 20 },

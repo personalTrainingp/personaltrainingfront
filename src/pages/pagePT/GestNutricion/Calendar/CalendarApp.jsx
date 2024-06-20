@@ -39,11 +39,27 @@ const CalendarApp = () => {
 											<Card.Header>
                                                 <Card.Title as="h5">
                                                     <i className="mdi mdi-calendar-clock me-2"></i>
-                                                    Citas que siguen
+                                                    Leyenda
                                                 </Card.Title>
                                             </Card.Header>
                                             <Card.Body>
-												
+												<div className="chart-widget-list">
+												<p>
+													<i className="mdi mdi-square leyenda-confirmada"></i> Confirmada
+												</p>
+												<p>
+													<i className="mdi mdi-square leyenda-cancelada"></i> Cancelada
+												</p>
+												<p>
+													<i className="mdi mdi-square leyenda-reprogramada"></i> Reprogramada
+												</p>
+												<p className="mb-0">
+													<i className="mdi mdi-square leyenda-asistio"></i> Asistio
+												</p>
+												<p className="mb-0">
+													<i className="mdi mdi-square leyenda-no-asistio"></i> No asistio
+												</p>
+												</div>
                                             </Card.Body>
 										</Card>
 									</div>
