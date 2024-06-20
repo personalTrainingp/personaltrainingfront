@@ -1,0 +1,1 @@
+export {CrearCitasFitology as default} from './CrearCitasFitology'

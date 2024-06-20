@@ -10,6 +10,13 @@ export const arrayMonedas = [
 	{ label: 'Soles', value: 'PEN' },
 	{ label: 'Dolares', value: 'USD' },
 ];
+export const arrayEstadoTask = [
+	{ label: 'Confirmado', value: 500 },
+	{ label: 'Cancelado', value: 501 },
+	{ label: 'Reprogramado', value: 502 },
+	{ label: 'Asistio', value: 503 },
+	{ label: 'No asistio', value: 504 },
+];
 export const arrayRoles = [
 	{ label: 'Ventas', value: 1 },
 	{ label: 'Administracion', value: 2 },

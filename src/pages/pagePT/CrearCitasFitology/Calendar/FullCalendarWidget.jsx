@@ -14,6 +14,7 @@ const locales = {
 };
 const eventStyleGetter = (event, start, end, isSelected) => {
   const style = {
+    backgroundColor: '#3174ad',
     color: 'white',
     borderRadius: '0px',
     border: 'none',
@@ -22,17 +23,8 @@ const eventStyleGetter = (event, start, end, isSelected) => {
     width: '250px', // Ajusta el ancho según lo deseado
     fontSize: '14px',
   };
-  let className = ''
-  console.log(event.status_cita);
-  if (event.status_cita==="500") {
-    className = 'leyenda-confirmada'
-  }
-  if(event.status_cita==501){
-    className = 'leyenda-cancelada'
-  }
   return {
-    style: style,
-    className
+    style: style
   };
 };
 // Componente personalizado para mostrar solo el título de los eventos
@@ -56,9 +48,7 @@ const FullCalendarWidget = ({
     return {
       title: e.tb_cliente.nombres_apellidos_cli,
       start: new Date(e.fecha_init),
-      end: new Date(e.fecha_final),
-      status_cita: e.status_cita,
-      detalle_cita: ''
+      end: new Date(e.fecha_final)
     }
   })
   const localizer = dateFnsLocalizer({
@@ -92,6 +82,7 @@ const FullCalendarWidget = ({
     }),
     []
   )
+  console.log(data);
     const [onModalAddEditEvent, setonModalAddEditEvent] = useState(false)
     const [selectDATE, setselectDATE] = useState({start: '', end: ''})
     const onClickSubmitted = (e)=>{
@@ -128,6 +119,7 @@ const FullCalendarWidget = ({
           views={['week']}
           eventPropGetter={eventStyleGetter}
           defaultView="week"
+          
           components={{
             event: CustomEvent, // Utiliza el componente personalizado para mostrar solo el título del evento
           }}

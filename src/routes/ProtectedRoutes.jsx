@@ -23,7 +23,6 @@ const GestionProductos = lazy(() => import('../pages/pagePT/GestProductos'));
 const GestionProgramas = lazy(() => import('../pages/pagePT/GestProgramas'));
 const GestionFyG = lazy(() => import('../pages/pagePT/GestGastos'));
 const GestionEmpleados = lazy(() => import('../pages/pagePT/GestEmpleados'));
-const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
 const GestionUsuario = lazy(() => import('../pages/pagePT/GestAuthUser'));
 const PerfilCliente = lazy(() => import('../pages/pagePT/PerfilCliente'));
 const GestionClientes = lazy(()=> import('../pages/pagePT/GestClientes'))
@@ -35,6 +34,8 @@ const GestionProspectos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionCongelamientos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionRegalos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionAuditoria = lazy(()=> import('../pages/pagePT/Auditoria'))
+const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
+const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
 // const PerfilPrograma = lazy(()=> import('../pages/pagePT/GestProgramas/PerfilPrograma'))
 /**
  * routes import
@@ -113,8 +114,12 @@ export default function ProtectedRoutes() {
 						</>
 					}
 					{
-						sections.find(e=>e.url==='/gestion-nutricion')&&
-                        <Route path='gestion-nutricion' element={<CrearCitasNutricionales/>}/>
+						sections.find(e=>e.url==='/crear-citas-nutricion')&&
+                        <Route path='crear-citas-nutricion' element={<CrearCitasNutricionales/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/crear-citas-fitology')&&
+                        <Route path='crear-citas-fitology' element={<CrearCitasFitology/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/gestion-clientes')&&

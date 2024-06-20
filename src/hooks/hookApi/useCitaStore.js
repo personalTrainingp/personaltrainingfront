@@ -24,7 +24,21 @@ export const useCitaStore = () => {
 				...formState,
 				fecha_init: DateCell.start,
 				fecha_final: DateCell.end,
-				status_cita: 'CONFIRMADA',
+				status_cita: 500,
+			});
+			obtenerCitasxSERVICIO();
+			// setprogramaPT(data)
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const onDeleteCita = async (formState, DateCell) => {
+		try {
+			const { data } = await PTApi.post(`/cita/post-cita`, {
+				...formState,
+				fecha_init: DateCell.start,
+				fecha_final: DateCell.end,
+				status_cita: 501,
 			});
 			obtenerCitasxSERVICIO();
 			// setprogramaPT(data)
@@ -44,6 +58,7 @@ export const useCitaStore = () => {
 	return {
 		obtenerCitasxSERVICIO,
 		onPostCita,
+		onDeleteCita,
 		obtenerCitasxCliente,
 		DataCitaxCLIENTE,
 		data,

@@ -25,7 +25,7 @@ const CalendarApp = () => {
 
 	return (
 		<>
-			<PageBreadcrumb title="Crear citas Nutricionales" subName="Apps" />
+			<PageBreadcrumb title="Crear citas Fitology" subName="Apps" />
 
 			<Row>
 				<Col>
