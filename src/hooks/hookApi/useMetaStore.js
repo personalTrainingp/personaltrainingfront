@@ -10,7 +10,7 @@ export const useMetaStore = () => {
 		try {
 			const { data } = await PTApi.post('/meta/post_meta', formState);
 			console.log(data);
-			obtenerMetas();
+			// obtenerMetas();
 		} catch (error) {
 			console.log(error);
 		}

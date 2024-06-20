@@ -3,126 +3,153 @@ import { useMetaStore } from '@/hooks/hookApi/useMetaStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import React, { useEffect } from 'react'
-import { Button, Col, Modal, Row } from 'react-bootstrap'
+import Select from 'react-select'
+
+import { InputTextarea } from 'primereact/inputtextarea';
+
+import { RadioButton } from 'primereact/radiobutton';
+
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { Col, Modal, Row } from 'react-bootstrap'
+import { InputNumber } from 'primereact/inputnumber'
+
+
 const registerMeta = {
-    meta_meta: '',
-    nombre_meta: '',
-    bono: '',
-    fec_inicio: '',
-    fec_fin: ''
+    nombre_meta: '', meta: '', bono: '', fec_init: '', fec_final: '', observacion: ''
 }
 export const ModalMeta = ({show, onHide, data}) => {
-    const { formState, nombre_meta, meta_meta, bono, fec_fin, fec_inicio, onInputChange, onResetForm } = useForm(data?data:registerMeta)
-    const cancelModal=()=>{
+    const { startRegistrarMeta } = useMetaStore()
+    const {formState, nombre_meta, meta, bono, fec_init, fec_final, observacion, onResetForm, onInputChange, onInputChangeReact} = useForm(registerMeta)
+    const cancelarProspecto = ()=>{
         onHide()
         onResetForm()
     }
-    const { startRegistrarMeta, obtenerMetas } = useMetaStore()
-    
-    const submitMeta = (e)=>{
-        e.preventDefault()
-        startRegistrarMeta({
-            ...formState,
-            meta_meta: parseFloat(formState.meta_meta.replace(/,/g, '')).toFixed(2),
-            bono: parseFloat(formState.bono.replace(/,/g, '')).toFixed(2),
-        })
-        obtenerMetas()
-        cancelModal()
+    const saveProspecto = () =>{
+        // startRegisterProspecto(formState)
+        startRegistrarMeta(formState)
+        console.log(formState);
     }
+	const productDialogFooter = (
+		<React.Fragment>
+			<Button label="Cancel" icon="pi pi-times" outlined onClick={cancelarProspecto} />
+			<Button label="Save" icon="pi pi-check" onClick={saveProspecto} />
+		</React.Fragment>
+	);
   return (
-    <Modal show={show} onHide={cancelModal} size='xxl'>
-        <Modal.Header>
-            <Modal.Title>Registrar Meta</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-            <form onSubmit={submitMeta}>
+    
+			<Dialog
+            visible={show}
+            style={{ width: '50rem' }}
+            breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+            header="Nueva META"
+            modal
+            className="p-fluid"
+            footer={productDialogFooter}
+            onHide={cancelarProspecto}
+        >
+            <form>
                 <Row>
-                    <Col lg={6}>
-                    <div className="mb-4">
-                        <label htmlFor="nombre_meta" className="form-label">
-                            Nombre de la meta*
-                        </label>
-                        <input
-                            className="form-control"
-                            name='nombre_meta'
-                            value={nombre_meta}
-                            onChange={onInputChange}
-                            id="nombre_meta"
-                            placeholder="EJ. Meta de febrero"
-                            required
-                        />
-                    </div>
+                    <Col lg={12}>
+                        <div className="field">
+                            <label htmlFor="nombre_meta" className="font-bold">
+                                Nombre de la meta*
+                            </label>
+                            <InputText
+                                value={nombre_meta}
+                                name='nombre_meta'
+                                onChange={onInputChange}
+                                required
+                                placeholder='META DE ...'
+                                autoFocus
+                            />
+                        </div>
                     </Col>
                     <Col lg={6}>
-                    <div className="mb-4">
-                        <label htmlFor="meta_meta" className="form-label">
-                            Meta*
-                        </label>
-                        <input
-                            className="form-control"
-                            name='meta_meta'
-                            value={meta_meta}
-                            onChange={(e)=>onInputChange(CurrencyMask(e))}
-                            id="bono"
-                            placeholder="EJ. 2.000.000"
-                            required
-                        />
-                    </div>
+                        <div className="field">
+                            <label htmlFor="meta" className="font-bold">
+                                Meta*
+                            </label>
+                            <InputNumber
+                                value={meta}
+                                mode="currency" 
+                                currency="PEN" 
+                                locale="es-PE"
+                                name='meta'
+                                onChange={(e)=>onInputChangeReact(e, "meta")}
+                                required
+                                autoFocus
+                            />
+                        </div>
                     </Col>
                     <Col lg={6}>
-                    <div className="mb-4">
-                        <label htmlFor="bono" className="form-label">
-                            Bono*
-                        </label>
-                        <input
-                            className="form-control"
-                            name='bono'
-                            value={bono}
-                            onChange={(e)=>onInputChange(CurrencyMask(e))}
-                            id="bono"
-                            placeholder="EJ. 2.000.000"
-                            required
-                        />
-                    </div>
+                        <div className="field">
+                            <label htmlFor="bono" className="font-bold">
+                                Bono
+                            </label>
+                            <InputNumber
+                                value={bono}
+                                mode="currency" 
+                                currency="PEN" 
+                                locale="es-PE"
+                                name='bono'
+                                onChange={(e)=>onInputChangeReact(e, "bono")}
+                                required
+                                autoFocus
+                            />
+                        </div>
                     </Col>
                     <Col lg={6}>
-                    <div className="mb-4">
-                        <label htmlFor="fec_inicio" className="form-label">
-                            Fecha de inicio*
-                        </label>
-                        <input
-                            className="form-control"
-                            name="fec_inicio"
-                            id="fec_inicio"
-                            value={fec_inicio}
-                            type='date'
-                            onChange={onInputChange}
-                            required
-                        />
-                    </div>
+                        <div className="field">
+                            <label htmlFor="fec_init" className="font-bold">
+                                Fecha inicial
+                            </label>
+                            {/* <Calendar value={fec_init} name='fec_init' aut onChange={onInputChange} /> */}
+                            <InputText
+                                id="fec_init"
+                                type='date'
+                                value={fec_init}
+                                name='fec_init'
+                                onChange={onInputChange}
+                                autoFocus
+                            />
+                        </div>
                     </Col>
                     <Col lg={6}>
-                    <div className="mb-4">
-                        <label htmlFor="fec_fin" className="form-label">
-                            Fecha final*
-                        </label>
-                        <input
-                            className="form-control"
-                            name="fec_fin"
-                            id="fec_fin"
-                            value={fec_fin}
-                            type='date'
-                            onChange={onInputChange}
-                            required
-                        />
-                    </div>
+                        <div className="field">
+                            <label htmlFor="fec_final" className="font-bold">
+                                Fecha final
+                            </label>
+                            <InputText
+                                id="fec_final"
+                                type='date'
+                                value={fec_final}
+                                name='fec_final'
+                                onChange={onInputChange}
+                                autoFocus
+                            />
+                        </div>
                     </Col>
-                    <Col lg={12}> 
-                    <Button type='submit'>Agregar Meta</Button>
+                    <Col lg={12}>
+                        <div className="field">
+                            <label htmlFor="observacion" className="font-bold">
+                                Observacion
+                            </label>
+                            <InputTextarea
+                                id="observacion"
+                                value={observacion}
+                                name='observacion'
+                                placeholder='META FIJADA PARA...'
+                                onChange={onInputChange}
+                                autoFocus
+                                rows={3}
+                                cols={20}
+                            />
+                        </div>
                     </Col>
                 </Row>
             </form>
-        </Modal.Body>
-    </Modal>
+        </Dialog>
   )
 }
