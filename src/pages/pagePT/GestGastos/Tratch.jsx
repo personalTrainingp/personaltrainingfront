@@ -221,6 +221,7 @@ export default function AdvancedFilterDemo({showToast}) {
                         // sortMode="multiple"
                         onValueChange={valueFiltered}
                         >
+                <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter/>
                 <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
                 <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
                 <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>

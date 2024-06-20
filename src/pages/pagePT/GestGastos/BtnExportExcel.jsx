@@ -19,10 +19,11 @@ export const ExportToExcel = ({data}) => {
     console.log(data);
     data = data.map((e) => {
       return {
+        id: e.id,
         fec_registro: e.fec_registro,
         Proveedores: e.tb_Proveedor?.razon_social_prov,
         gasto: e.tb_parametros_gasto?.nombre_gasto,
-        Descripcion: e.Descripcion,
+        descripcion: e.Descripcion,
         fec_pago: e.fec_pago,
         moneda: e.moneda,
         monto: e.monto,
@@ -44,9 +45,9 @@ export const ExportToExcel = ({data}) => {
   const columns = [
     { key: 'fec_registro', width: 20 },
     { key: 'Proveedores', width: 50 },
-    { key: 'gasto', width: 20 },
+    { key: 'gasto', width: 40 },
     { key: 'fec_pago', width: 20 },
-    { key: 'Descripcion', width: 50 },
+    { key: 'descripcion', width: 50 },
     { key: 'moneda', width: 8 },
     { key: 'monto', width: 20 },
   ];
@@ -58,7 +59,7 @@ export const ExportToExcel = ({data}) => {
 
   // Función para agregar datos a una hoja de trabajo
   const addDataToWorksheet = (worksheet, data) => {
-    worksheet.addRow(['Fecha de registro', 'Proveedores', 'Gastos', "Descripcion", "Moneda", "Monto"]).eachCell((cell) => {
+    worksheet.addRow(['Fecha de registro', 'Proveedores', 'Gastos', "fecha de pago", "Descripcion", "Moneda", "Monto"]).eachCell((cell) => {
       cell.fill = headerStyle.fill;
       cell.font = headerStyle.font;
       cell.alignment = headerStyle.alignment;
@@ -66,7 +67,7 @@ export const ExportToExcel = ({data}) => {
     });
 
     data.forEach((row) => {
-      worksheet.addRow([row.fec_registro, row.Proveedores, row.gasto, row.Descripcion, row.moneda, row.monto]).eachCell((cell) => {
+      worksheet.addRow([row.fec_registro, row.Proveedores, row.gasto, row.fec_pago, row.descripcion, row.moneda, row.monto]).eachCell((cell) => {
         cell.alignment = cellStyle.alignment;
         cell.border = cellStyle.border;
       });
