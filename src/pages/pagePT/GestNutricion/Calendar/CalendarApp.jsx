@@ -6,7 +6,7 @@ import { useCalendar } from './hooks';
 import SidePanel from './SidePanel';
 import { PageBreadcrumb } from '@/components';
 
-const CalendarApp = () => {
+const CalendarApp = ({tipo_serv}) => {
 	const {
 		isOpen,
 		onOpenModal,
@@ -25,7 +25,7 @@ const CalendarApp = () => {
 
 	return (
 		<>
-			<PageBreadcrumb title="Crear citas Nutricionales" subName="Apps" />
+			<PageBreadcrumb title={tipo_serv=='NUTRIC'?"Crear citas Nutricionales": "Crear citas fitology"} subName="Apps" />
 
 			<Row>
 				<Col>
@@ -50,9 +50,6 @@ const CalendarApp = () => {
 												<p>
 													<i className="mdi mdi-square leyenda-cancelada"></i> Cancelada
 												</p>
-												<p>
-													<i className="mdi mdi-square leyenda-reprogramada"></i> Reprogramada
-												</p>
 												<p className="mb-0">
 													<i className="mdi mdi-square leyenda-asistio"></i> Asistio
 												</p>
@@ -72,6 +69,7 @@ const CalendarApp = () => {
 										onDrop={onDrop}
 										onEventDrop={onEventDrop}
 										events={events}
+										tipo_serv={tipo_serv}
 									/>
 								</Col>
 							</Row>

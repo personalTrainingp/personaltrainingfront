@@ -9,6 +9,7 @@ import Account from '@/pages/account';
 import { Home } from '@/pages/pagePT/Home';
 import { PerfilPrograma } from '@/pages/pagePT/GestProgramas/PerfilPrograma';
 import { useRoleStore } from '@/hooks/hookApi/useRoleStore';
+import CrearCitasNutricion from '@/pages/pagePT/GestNutricion';
 
 
 
@@ -34,8 +35,8 @@ const GestionProspectos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionCongelamientos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionRegalos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionAuditoria = lazy(()=> import('../pages/pagePT/Auditoria'))
-const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
-const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
+// const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
+// const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
 // const PerfilPrograma = lazy(()=> import('../pages/pagePT/GestProgramas/PerfilPrograma'))
 /**
  * routes import
@@ -115,11 +116,11 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/crear-citas-nutricion')&&
-                        <Route path='crear-citas-nutricion' element={<CrearCitasNutricionales/>}/>
+                        <Route path='crear-citas-nutricion' element={<CrearCitasNutricion tipo_serv={'NUTRIC'}/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/crear-citas-fitology')&&
-                        <Route path='crear-citas-fitology' element={<CrearCitasFitology/>}/>
+                        <Route path='crear-citas-fitology' element={<CrearCitasNutricion tipo_serv={'FITOL'}/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/gestion-clientes')&&

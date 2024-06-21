@@ -23,7 +23,6 @@ const eventStyleGetter = (event, start, end, isSelected) => {
     fontSize: '14px',
   };
   let className = ''
-  console.log(event.status_cita);
   if (event.status_cita==="500") {
     className = 'leyenda-confirmada'
   }
@@ -38,7 +37,7 @@ const eventStyleGetter = (event, start, end, isSelected) => {
 // Componente personalizado para mostrar solo el título de los eventos
 const CustomEvent = ({ event }) => {
   return(
-    <p className='m-0 p-0 text-overflow-ellipsis white-space-nowrap overflow-hidden fs-5'>{
+    <p className='m-0 p-1 text-overflow-ellipsis white-space-nowrap overflow-hidden fs-5'>{
       `${new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} : 
     ${event.title}`}</p>
   )
@@ -49,12 +48,15 @@ const FullCalendarWidget = ({
   onDrop,
   onEventDrop,
   events,
+  tipo_serv
 }) => {
-  
-  const { obtenerCitasxSERVICIO, data } = useCitaStore()
+  const { obtenerCitasxSERVICIO, loading, data, dataCitaxID, obtenerCitaxID } = useCitaStore()
   let newData=data.map(e=>{
     return {
+      id: e.id,
       title: e.tb_cliente.nombres_apellidos_cli,
+      id_cli: e.id_cli,
+      id_detallecita: e.id_detallecita,
       start: new Date(e.fecha_init),
       end: new Date(e.fecha_final),
       status_cita: e.status_cita,
@@ -78,10 +80,9 @@ const FullCalendarWidget = ({
     culture: 'es',
   });
   useEffect(() => {
-    obtenerCitasxSERVICIO()
-  }, [])
+    obtenerCitasxSERVICIO( tipo_serv )
+  }, [tipo_serv])
 
-  
   const { defaultDate, formats, views } = useMemo(
     () => ({
       defaultDate: new Date(2015, 3, 13),
@@ -93,62 +94,73 @@ const FullCalendarWidget = ({
     []
   )
     const [onModalAddEditEvent, setonModalAddEditEvent] = useState(false)
+    const [idCita, setidCita] = useState(0)
     const [selectDATE, setselectDATE] = useState({start: '', end: ''})
-    const onClickSubmitted = (e)=>{
-      setonModalAddEditEvent(true)
-      // console.log(e.start, e.end);
-      setselectDATE({start: new Date(e.start), end: new Date(e.end).setTime(new Date(e.end).getTime())})
-    }
+
     const onCloseModalAddEditEvent = ()=>{
       setonModalAddEditEvent(false)
     }
 
     const handleSelectSlot = ({ start }) => {
       const end = new Date(start);
+      setidCita(0)
       end.setMinutes(end.getMinutes() + 30); // Duración fija de 30 minutos
       const dateSelect = {start: new Date(start), end: new Date(end)}
-      console.log({...dateSelect});
       setonModalAddEditEvent(true)
       setselectDATE({...dateSelect})
     };
-    const onDoubleSelectEvent = ()=>{
-      console.log("Editar evento");
+    const onDoubleSelectEvent = (e)=>{
+      const end = new Date(e.start);
+      end.setMinutes(end.getMinutes() + 30); // Duración fija de 30 minutos
+      const dateSelect = {start: new Date(e.start), end: new Date(end)}
+      setidCita(e.id)
+      setonModalAddEditEvent(true)
+      setselectDATE({...dateSelect})
     }
+    useEffect(() => {
+      if(idCita==0)return;
+      obtenerCitaxID(idCita)
+    }, [idCita])
   return (
     <>
       {/* full calendar control */}
-      <div id="calendar">
-        <Calendar
-          localizer={localizer}
-          events={newData}
-          onDoubleClickEvent={onDoubleSelectEvent}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: 700 }}
-          views={['week']}
-          eventPropGetter={eventStyleGetter}
-          defaultView="week"
-          components={{
-            event: CustomEvent, // Utiliza el componente personalizado para mostrar solo el título del evento
-          }}
-          messages={{
-            next: "Siguiente",
-            previous: "Anterior",
-            today: "Hoy",
-            month: "Mes",
-            week: "Semana",
-            day: "Día",
-            agenda: "Agenda",
-            showMore: total => `+ Ver más (${total})`
-          }}
-          step={30}
-          timeslots={1}
-          formats={formats}
-          onSelectSlot={handleSelectSlot}
-          selectable
-        />
-      </div>
-      <AddEditEvent show={onModalAddEditEvent} onHide={onCloseModalAddEditEvent} selectDATE={selectDATE}/>
+      {!loading&&(
+        <>
+          <div id="calendar">
+            <Calendar
+              localizer={localizer}
+              events={newData}
+              onDoubleClickEvent={onDoubleSelectEvent}
+              startAccessor="start"
+              endAccessor="end"
+              style={{ height: 700 }}
+              views={['week']}
+              eventPropGetter={eventStyleGetter}
+              defaultView="week"
+              components={{
+                event: CustomEvent, // Utiliza el componente personalizado para mostrar solo el título del evento
+              }}
+              messages={{
+                next: "Siguiente",
+                previous: "Anterior",
+                today: "Hoy",
+                month: "Mes",
+                week: "Semana",
+                day: "Día",
+                agenda: "Agenda",
+                showMore: total => `+ Ver más (${total})`
+              }}
+              step={30}
+              timeslots={1}
+              formats={formats}
+              onSelectSlot={handleSelectSlot}
+              selectable
+            />
+          </div>
+          <AddEditEvent show={onModalAddEditEvent} tipo_serv={tipo_serv} onHide={onCloseModalAddEditEvent} dataCita={idCita==0?null:dataCitaxID} selectDATE={selectDATE}/>
+        </>
+      )
+      }
     </>
   );
 };

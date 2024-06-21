@@ -1,10 +1,10 @@
 import React from 'react'
 import CalendarApp from './Calendar'
 
-export const CrearCitasNutricion = () => {
+export const CrearCitasNutricion = ({tipo_serv}) => {
   return (
     <>
-      <CalendarApp/>
+      <CalendarApp tipo_serv={tipo_serv}/>
     </>
   )
 }

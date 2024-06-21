@@ -50,9 +50,6 @@ const CalendarApp = () => {
 												<p>
 													<i className="mdi mdi-square leyenda-cancelada"></i> Cancelada
 												</p>
-												<p>
-													<i className="mdi mdi-square leyenda-reprogramada"></i> Reprogramada
-												</p>
 												<p className="mb-0">
 													<i className="mdi mdi-square leyenda-asistio"></i> Asistio
 												</p>

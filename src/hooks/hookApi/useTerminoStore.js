@@ -27,6 +27,7 @@ export const useTerminoStore = () => {
 	const [DataGeneral, setDataGeneral] = useState([]);
 	const [dataxParametro, setdataxParametro] = useState('');
 	const [programasActivos, setprogramasActivos] = useState([]);
+	const [dataCitasxCli, setdataCitasxCli] = useState([]);
 	const obtenerParametrosxENTIDAD = async (entidad) => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/${entidad}`);
@@ -198,6 +199,14 @@ export const useTerminoStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerCitasDisponiblesXcli = async () => {
+		try {
+			const { data } = await PTApi.get(`/parametros/get_params/programas-activos`);
+			setdataCitasxCli(data.citasDisponibles);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerParametrosProductoMarcas,
 		obtenerParametrosProductoCategorias,
@@ -220,6 +229,8 @@ export const useTerminoStore = () => {
 		obtenerParametrosxENTIDAD,
 		obtenerParametroPorEntidadyGrupo,
 		obtenerProgramasActivos,
+		obtenerCitasDisponiblesXcli,
+		dataCitasxCli,
 		programasActivos,
 		dataxParametro,
 		DataBancos,
