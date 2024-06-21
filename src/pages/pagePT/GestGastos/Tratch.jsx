@@ -213,7 +213,7 @@ export default function AdvancedFilterDemo({showToast}) {
                         onSelectionChange={(e) => setselectedCustomers(e.value)}
                         filters={filters} 
                         filterDisplay="menu" 
-                        globalFilterFields={['fec_pago', 'id_prov', 'tb_parametros_gasto.nombre_gasto', 'descripcion', 'monto', 'moneda', ['tb_Proveedor.razon_social_prov'],"fec_registro"]} 
+                        globalFilterFields={['fec_pago', 'id_prov', 'tb_parametros_gasto.nombre_gasto', 'descripcion', 'monto', 'moneda', "tb_Proveedor.razon_social_prov","fec_registro"]} 
                         emptyMessage="Egresos no encontrados."
                         // showGridlines 
                         loading={loading} 
