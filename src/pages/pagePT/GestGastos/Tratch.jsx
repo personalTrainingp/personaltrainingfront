@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode, FilterOperator, locale } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
@@ -15,6 +15,7 @@ import { ModalIngresosGastos } from './ModalIngresosGastos';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 export default function AdvancedFilterDemo({showToast}) {
+    locale('es')
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -41,9 +42,26 @@ export default function AdvancedFilterDemo({showToast}) {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
             // Realiza las modificaciones en la copia
-            newItem.fec_registro = new Date(item.fec_registro);
+            newItem.fec_registro = daysUTC(new Date(item.fec_registro));
             return newItem;
             });
+    };
+
+    const highlightText = (text, search) => {
+        if (!search) {
+            return text;
+        }
+        if (!text) {
+            return text;
+        }
+        const regex = new RegExp(`(${search})`, 'gi');
+        return text.split(regex).map((part, index) =>
+            part.toLowerCase() === search.toLowerCase() ? (
+                <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
+            ) : (
+                part
+            )
+        );
     };
     const formatDate = (value) => {
         return value.toLocaleDateString('en-ES', {
@@ -129,7 +147,7 @@ export default function AdvancedFilterDemo({showToast}) {
     const montoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{formatCurrency(rowData.monto, rowData.moneda?rowData.moneda:'PEN')}</span>
+                <span>{highlightText(formatCurrency(rowData.monto, rowData.moneda?rowData.moneda:'PEN'), globalFilterValue)}</span>
             </div>
         );
     };
@@ -137,7 +155,7 @@ export default function AdvancedFilterDemo({showToast}) {
     const descripcionBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.descripcion}</span>
+                <span>{highlightText(rowData.descripcion, globalFilterValue)}</span>
             </div>
         );
     };
@@ -145,28 +163,28 @@ export default function AdvancedFilterDemo({showToast}) {
     const fecRegistroBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{daysUTC(new Date(rowData.fec_registro))}</span>
+                <span>{highlightText(rowData.fec_registro, globalFilterValue) }</span>
             </div>
         );
     }
     const proveedorBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData?.tb_Proveedor?.razon_social_prov?rowData.tb_Proveedor.razon_social_prov:'SIN'}</span>
+                <span>{highlightText(rowData?.tb_Proveedor?.razon_social_prov?rowData.tb_Proveedor.razon_social_prov:'SIN', globalFilterValue)}</span>
             </div>
         );
     }
     const tipoGastoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.tb_parametros_gasto?.nombre_gasto?rowData.tb_parametros_gasto?.nombre_gasto:'SIN'}</span>
+                <span>{highlightText( rowData.tb_parametros_gasto?.nombre_gasto?rowData.tb_parametros_gasto?.nombre_gasto:'SIN', globalFilterValue)}</span>
             </div>
         );
     };
     const grupoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.tb_parametros_gasto?.grupo}</span>
+                <span>{highlightText(rowData.tb_parametros_gasto?.grupo, globalFilterValue)}</span>
             </div>
         );
     };

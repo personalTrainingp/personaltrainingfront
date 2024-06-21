@@ -3,7 +3,7 @@ import React from 'react'
 export const Home = () => {
   return (
     <>
-    Hola
+    Hola, este es el sistema de change
     </>
   )
 }
