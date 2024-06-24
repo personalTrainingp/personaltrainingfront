@@ -17,6 +17,7 @@ import { ModalProspectos } from './ModalProspectos';
 import { useProspectoStore } from '@/hooks/hookApi/useProspectoStore';
 import { useSelector } from 'react-redux';
 import { FormatoDateMask } from '@/components/CurrencyMask';
+import { ModalInfoProspecto } from './ModalInfoProspecto';
 
 export const GestionProspectos = () => {
 	let emptyProduct = {
@@ -43,7 +44,7 @@ export const GestionProspectos = () => {
 	const toast = useRef(null);
 	const dt = useRef(null);
 	const {Dataprospectos} = useSelector((e) => e.authProspec);
-    const { obtenerProspectos } = useProspectoStore()
+    const { obtenerProspectos, obtenerProspectoxID, prospectoxID } = useProspectoStore()
 	useEffect(() => {
         obtenerProspectos()
 		// ProductService.getProducts().then((data) => setProducts(data));
@@ -190,24 +191,23 @@ export const GestionProspectos = () => {
 	const statusBodyTemplate = (rowData) => {
 		return <Tag value={rowData.inventoryStatus} severity={getSeverity(rowData)}></Tag>;
 	};
+	const [idProspecto, setidProspecto] = useState(0)
+	const [viewProspecto, setviewProspecto] = useState(false)
 
 	const actionBodyTemplate = (rowData) => {
+		const onModalviewProspecto = (id)=>{
+			setidProspecto(id)
+			obtenerProspectoxID(id)
+			setviewProspecto(true)
+		}
 		return (
 			<React.Fragment>
-				<Button
-					icon="pi pi-pencil"
-					rounded
-					outlined
-					className="mr-2"
-					onClick={() => editProduct(rowData)}
-				/>
-				<Button
-					icon="pi pi-trash"
-					rounded
-					outlined
-					severity="danger"
-					onClick={() => confirmDeleteProduct(rowData)}
-				/>
+				<Button 
+					rounded 
+					className="mr-2 p-0 border-0 text-decoration-underline" 
+					onClick={() => onModalviewProspecto(rowData.id)} 
+					>Ver mas informacion
+				</Button>
 			</React.Fragment>
 		);
 	};
@@ -275,7 +275,7 @@ export const GestionProspectos = () => {
 				<Column field="fecha_registro" header="Fecha de registro" sortable style={{ minWidth: '12rem' }} body={fechaRegistroBodyTemplate}></Column>
 				<Column field="tb_ProgramaTraining.name_pgm" header="Programa de interes" sortable style={{ minWidth: '12rem' }}></Column>
 				<Column field="tb_empleado.nombres_apellidos_empl" header="Asesorado por:" sortable style={{ minWidth: '12rem' }}></Column>
-				<Column field="" header="Action" sortable style={{ minWidth: '12rem' }}></Column>
+				<Column header="Action" sortable style={{ minWidth: '12rem' }} body={actionBodyTemplate}></Column>
 				{/* <Column field="name" header="Asesorado" sortable style={{ minWidth: '16rem' }}></Column>
 				<Column field="image" header="Programa" body={imageBodyTemplate}></Column>
 				<Column
@@ -289,10 +289,11 @@ export const GestionProspectos = () => {
 					field="category"
 					header=""
 					style={{ minWidth: '10rem' }}
-				></Column> */}
+				></Column> 
+				*/}
 			</DataTable>
             <ModalProspectos show={modalProspecto} onHide={cancelModal}/>
-
+			<ModalInfoProspecto show={viewProspecto} onHide={()=>setviewProspecto(false)} data={prospectoxID}/>
 
 			<Dialog
 				visible={deleteProductDialog}

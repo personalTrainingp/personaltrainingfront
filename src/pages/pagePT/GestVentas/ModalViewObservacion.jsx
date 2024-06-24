@@ -1,7 +1,7 @@
 import { DateMask, FormatoDateMask } from '@/components/CurrencyMask';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import { useForm } from '@/hooks/useForm'
-import { arrayCategoriaProducto, arrayFacturas } from '@/types/type';
+import { arrayCategoriaProducto, arrayFacturas, arrayOrigenDeCliente } from '@/types/type';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputNumber } from 'primereact/inputnumber';
@@ -19,6 +19,7 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
         onHide();
     }
     const { obtenerVentaporId, dataVentaxID, isLoading } = useVentasStore()
+    console.log(dataVentaxID);
     useEffect(() => {
         if(id==0)return;
         obtenerVentaporId(id)
@@ -31,7 +32,6 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
             <Button label="Cancel" icon="pi pi-times" outlined onClick={closeModal} />
         </React.Fragment>
     );
-    console.log(dataVentaxID);
   return (
     <Dialog visible={show} style={{ width: '40rem', height: '80rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Venta #${id}`} modal className="p-fluid" footer={productDialogFooter} onHide={closeModal}>
         {
@@ -50,7 +50,7 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                     </li>
                     <li className='mb-4'>
                         <span>Procedencia: </span>
-                        <span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>July 4, 2023</span>
+                        <span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>{arrayOrigenDeCliente.find(e=>e.value===dataVentaxID[0]?.id_origen)?.label}</span>
                     </li>
                     <li className='mb-4'>
                         <span>{arrayFacturas.find(e=>e.value===dataVentaxID[0]?.id_tipoFactura)?.label}</span>
@@ -92,7 +92,7 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                                             </div>
                                             <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                                                 <span className="text-2xl font-semibold">
-                                                    {/* PEN {e.tb_semana_training.tb_tarifa_trainings.tarifa_monto} */}
+                                                    PEN {e.tarifa_monto}
                                                     </span>
                                             </div>
                                         </div>

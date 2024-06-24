@@ -30,28 +30,41 @@ export const useCitaStore = () => {
 			console.log(error);
 		}
 	};
-	const onPostCita = async (formState, DateCell) => {
+	const onPostCita = async (
+		formState,
+		DateCell,
+		tipo_cita,
+		email_cli,
+		nombres_apellidos_cli,
+		fec_servicio,
+		hora_servicio
+	) => {
 		try {
 			const { data } = await PTApi.post(`/cita/post-cita`, {
 				...formState,
+				tipo_serv: tipo_cita !== 'FITOL' ? 'FITOLOGY' : 'NUTRICION',
+				email_cli,
+				nombres_apellidos_cli,
+				fec_servicio,
+				hora_servicio,
 				fecha_init: DateCell.start,
 				fecha_final: DateCell.end,
 				status_cita: 500,
 			});
-			obtenerCitasxSERVICIO();
+			obtenerCitasxSERVICIO(tipo_cita);
 			// setprogramaPT(data)
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const onPutCita = async (formState) => {
+	const onPutCita = async (formState, tipo_cita) => {
 		console.log(formState);
 		const { id } = formState;
 		try {
 			const { data } = await PTApi.put(`/cita/put-cita/${id}`, {
 				...formState,
 			});
-			obtenerCitasxSERVICIO();
+			obtenerCitasxSERVICIO(tipo_cita);
 		} catch (error) {
 			console.log(error);
 		}
@@ -59,7 +72,6 @@ export const useCitaStore = () => {
 	const obtenerCitasxCliente = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/citadisponible/${id}`);
-			console.log(data);
 			setDataCitaxCLIENTE(data);
 		} catch (error) {
 			console.log(error);

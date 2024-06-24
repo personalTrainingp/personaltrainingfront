@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Col, Row, Tab, Tabs } from 'react-bootstrap';
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import FormWizard from "react-form-wizard-component";
@@ -10,10 +10,16 @@ import { InformacionGeneralCliente } from './InformacionGeneralCliente';
 import Error404AltPage from '@/pages/otherpages/Error404Alt';
 import config from '@/config';
 import { ComprasxCliente } from './ComprasxCliente';
+import { ModalExtensionRegalo } from './ModalExtensionRegalo';
+import { ModalExtensionCongelamiento } from './ModalExtensionCongelamiento';
+import { SectionComentarios } from './SectionComentarios';
 
 export const PerfilCliente = () => {
   const { uid } = useParams()
   const { obtenerOneUsuarioCliente } = useUsuarioStore()
+  const [isOpenModalRegalos, setisOpenModalRegalos] = useState(false)
+  const [isOpenModalCongelamiento, setisOpenModalCongelamiento] = useState(false)
+  // const [isOpenModalRegalos, setisOpenModal] = useState(false)
   const { status, userCliente } = useSelector(e=>e.authClient)
   useEffect(() => {
     obtenerOneUsuarioCliente(uid)
@@ -24,6 +30,18 @@ export const PerfilCliente = () => {
       Cargando...
       </>
     )
+  }
+  const modalOpenRegalos = ()=>{
+    setisOpenModalRegalos(true)
+  }
+  const modalCloseRegalos = ()=>{
+    setisOpenModalRegalos(false)
+  }
+  const modalOpenCongelamiento = ()=>{
+    setisOpenModalCongelamiento(true)
+  }
+  const modalCloseCongelamiento = ()=>{
+    setisOpenModalCongelamiento(false)
   }
   if(userCliente==null){
     return <Error404AltPage/>;
@@ -39,6 +57,12 @@ export const PerfilCliente = () => {
           <span className='fs-1 fw-bold'><p className='mb-0 pb-0'>{userCliente.nombre_cli} {userCliente.apPaterno_cli} {userCliente.apMaterno_cli}</p></span>
           <span className=''>ACTIVO</span>
         </div>
+        <div className='btn btn-danger m-1' onClick={modalOpenRegalos}>
+          CREAR REGALOS
+        </div>
+        <div className='btn btn-info m-1' onClick={modalOpenCongelamiento}>
+          CREAR CONGELAMIENTO
+        </div>
       </div>
     </Card>
     <Card className='mt-3 p-3'>
@@ -47,13 +71,15 @@ export const PerfilCliente = () => {
           <InformacionGeneralCliente data={userCliente}/>
         </Tab>
         <Tab eventKey='infoComentarios' title='Comentarios'>
-          
+          <SectionComentarios data={userCliente}/>
         </Tab>
         <Tab eventKey='pays' title='Compras'>
           <ComprasxCliente uid={uid}/>
         </Tab>
       </Tabs>
     </Card>
+    <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos}/>
+    <ModalExtensionCongelamiento onHide={modalCloseCongelamiento} show={isOpenModalCongelamiento}/>
     </>
   );
 }

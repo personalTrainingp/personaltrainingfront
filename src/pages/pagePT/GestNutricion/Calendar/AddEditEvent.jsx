@@ -10,12 +10,16 @@ import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
 import { arrayCitasTest, arrayEstados } from '@/types/type';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
+import { helperFunctions } from '@/common/helpers/helperFunctions';
+import { DateMask, FormatoDateMask } from '@/components/CurrencyMask';
+import dayjs from 'dayjs';
 
 const registerCita = {
 	id_cli: 0,
 	id_detallecita: 0,
 }
 const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
+	const {  daysUTC } = helperFunctions()
 	const { obtenerCitasxCliente, DataCitaxCLIENTE, onPutCita } =  useCitaStore()
 	const { formState, id_cli, id_detallecita, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
 	const { obtenerParametrosClientes, DataClientes } = useTerminoStore()
@@ -29,9 +33,12 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 		if(id_cli==0) return;
 	//   obtenerCitasxCliente(id_cli)
 	}, [id_cli])
-	
+
 	const onSubmitEv = ()=>{
-		onPostCita(formState, selectDATE);
+		const clienteSELECT= DataClientes.find(
+			(option) => option.value === id_cli
+		)
+		onPostCita(formState, selectDATE, tipo_serv, clienteSELECT.email_cli, clienteSELECT.label, dayjs(selectDATE.start).locale('es').format("D [de] MMMM [de] YYYY"), dayjs(selectDATE.start).locale('es').format("h:mm A"));
 		cancelModal()
 	}
 	const cancelModal = ()=>{
@@ -39,11 +46,11 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
         onHide()
     }
 	const editarEvento = ()=>{
-		onPutCita(formState);
+		onPutCita(formState, tipo_serv);
         cancelModal()
 	}
 	const eliminarEvento = ()=>{
-		onPutCita({status_cita: 501});
+		onPutCita({id: formState.id, status_cita: 501}, tipo_serv);
         cancelModal()
 	}
 	const productDialogFooter = (
@@ -64,11 +71,12 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 		<>
 			<Dialog
 				visible={show}
-				style={{ width: '50rem' }}
+				style={{ width: '50rem', height: '35rem' }}
 				breakpoints={{ '960px': '75vw', '641px': '90vw' }}
 				header={dataCita==null?
 					<> Crear cita: {new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
 					hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
+					{/* {FormatoDateMask(new Date(selectDATE.start), "D [de] MMMM [de] YYYY [a las] h:mm A")} */}
 					</>
 					:
 					<> Editar cita: 

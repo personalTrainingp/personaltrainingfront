@@ -35,6 +35,7 @@ const GestionProspectos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionCongelamientos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionRegalos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionAuditoria = lazy(()=> import('../pages/pagePT/Auditoria'))
+const GestionComision = lazy(()=> import('../pages/pagePT/GestComision'))
 // const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
 // const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
 // const PerfilPrograma = lazy(()=> import('../pages/pagePT/GestProgramas/PerfilPrograma'))
@@ -154,6 +155,10 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/auditoria') &&
 						<Route path='auditoria' element={<GestionAuditoria/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/gestion-comisional') &&
+						<Route path='gestion-comisional' element={<GestionComision/>}/>
 					}
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>

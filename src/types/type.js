@@ -6,6 +6,10 @@ export const arrayCitasTest = [
 	{ label: 'Cita nutricional de regalo | 4', cantidad: 4, value: 250 },
 	{ label: 'Promocion cita nutricional 2x1 | 2', cantidad: 2, value: 249 },
 ];
+export const arrayTipoMonto = [
+	{ label: 'Porcentaje', value: 'POR' },
+	{ label: 'Fijo', value: 'FIJ' },
+];
 export const arrayMonedas = [
 	{ label: 'Soles', value: 'PEN' },
 	{ label: 'Dolares', value: 'USD' },

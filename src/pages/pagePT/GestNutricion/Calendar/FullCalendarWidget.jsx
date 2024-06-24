@@ -18,8 +18,6 @@ const eventStyleGetter = (event, start, end, isSelected) => {
     borderRadius: '0px',
     border: 'none',
     padding: '2px 4px',
-    height: '40px', // Ajusta la altura según lo deseado
-    width: '250px', // Ajusta el ancho según lo deseado
     fontSize: '14px',
   };
   let className = ''
@@ -37,7 +35,7 @@ const eventStyleGetter = (event, start, end, isSelected) => {
 // Componente personalizado para mostrar solo el título de los eventos
 const CustomEvent = ({ event }) => {
   return(
-    <p className='m-0 p-1 text-overflow-ellipsis white-space-nowrap overflow-hidden fs-5'>{
+    <p className='m-0 p-1 text-overflow-ellipsis white-space-nowrap overflow-hidden fs-5 font-bold'>{
       `${new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} : 
     ${event.title}`}</p>
   )
@@ -152,6 +150,7 @@ const FullCalendarWidget = ({
               }}
               step={30}
               timeslots={1}
+              
               formats={formats}
               onSelectSlot={handleSelectSlot}
               selectable

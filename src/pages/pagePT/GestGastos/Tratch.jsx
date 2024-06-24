@@ -43,6 +43,7 @@ export default function AdvancedFilterDemo({showToast}) {
             let newItem = { ...item };
             // Realiza las modificaciones en la copia
             newItem.fec_registro = daysUTC(new Date(item.fec_registro));
+            newItem.fec_pago = daysUTC(new Date(item.fec_pago));
             return newItem;
             });
     };
@@ -104,7 +105,6 @@ export default function AdvancedFilterDemo({showToast}) {
         }
         
         const onAcceptDeleteGasto = async()=>{
-            console.log(rowData.id);
             await startDeleteGasto(rowData.id)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
@@ -125,6 +125,7 @@ export default function AdvancedFilterDemo({showToast}) {
             global: { value: null, matchMode: FilterMatchMode.CONTAINS },
             ['tb_Proveedor.razon_social_prov']:{ value: null, matchMode: FilterMatchMode.IN },
             fec_registro: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+            fec_pago: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
             'tb_parametros_gasto.nombre_gasto': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'tb_parametros_gasto.grupo': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             descripcion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
@@ -164,6 +165,13 @@ export default function AdvancedFilterDemo({showToast}) {
         return (
             <div className="flex align-items-center gap-2">
                 <span>{highlightText(rowData.fec_registro, globalFilterValue) }</span>
+            </div>
+        );
+    }
+    const fecPagoBodyTemplate = (rowData)=>{
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{highlightText(rowData.fec_pago, globalFilterValue) }</span>
             </div>
         );
     }
@@ -239,8 +247,9 @@ export default function AdvancedFilterDemo({showToast}) {
                         // sortMode="multiple"
                         onValueChange={valueFiltered}
                         >
-                <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter/>
+                <Column header="Id" field='id' sortable style={{ width: '1rem' }}/>
                 <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
+                {/* <Column header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} /> */}
                 <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
                 <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
                 <Column header="Monto" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>

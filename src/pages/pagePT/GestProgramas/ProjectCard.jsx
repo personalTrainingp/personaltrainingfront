@@ -56,7 +56,7 @@ const ProjectCard = ({ project, DataTrainerPrueba, columns, data, API_URL }) => 
 	const [viewImage, setviewImage] = useState(
 		`${API_URL}/file/logo/${project.tb_image.name_image}`
 	);
-	console.log(project);
+	// console.log(project);
 	return (
 		<>
 			{/* 

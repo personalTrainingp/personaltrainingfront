@@ -1,11 +1,13 @@
 import { PTApi } from '@/common';
 import { onSetProspectos } from '@/store/usuario/usuarioProspectoSlice';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 
 export const useProspectoStore = () => {
 	const dispatch = useDispatch();
+	const [prospectoxID, setprospecto] = useState({});
+	
 	const obtenerProspectos = async () => {
 		try {
 			const { data } = await PTApi.get('/prospecto/get-prospectos');
@@ -23,6 +25,14 @@ export const useProspectoStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerProspectoxID = async (id) => {
+		try {
+			const { data } = await PTApi.get(`/prospecto/get-prospecto/${id}`);
+			setprospecto(data.prospecto);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const startUpdateProspecto = (id) => {};
 	const startDeleteProspecto = (id) => {};
 	return {
@@ -30,5 +40,7 @@ export const useProspectoStore = () => {
 		startRegisterProspecto,
 		startUpdateProspecto,
 		startDeleteProspecto,
+		obtenerProspectoxID,
+		prospectoxID,
 	};
 };

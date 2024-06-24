@@ -1,0 +1,1 @@
+export { GestComision as default } from "./GestComision";

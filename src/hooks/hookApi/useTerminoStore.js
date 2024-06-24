@@ -113,6 +113,7 @@ export const useTerminoStore = () => {
 	const obtenerParametrosClientes = async () => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/clientes`);
+			// console.log(data);
 			setDataClientes(data);
 		} catch (error) {
 			console.log(error);
