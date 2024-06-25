@@ -19,6 +19,7 @@ const registerIvsG={
     impuesto_igv: false,
     impuesto_renta: false,
     fec_pago: '',
+    fec_comprobante: '',
     id_forma_pago: 0,
     id_banco_pago: 0,
     n_operacion: '',
@@ -53,6 +54,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             impuesto_igv,
             impuesto_renta,
             fec_pago, 
+            fec_comprobante,
             id_forma_pago, 
             id_banco_pago,
             n_operacion, 
@@ -138,6 +140,8 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             setopenModalProv(false)
             onShow()
         }
+
+        const date = new Date(fec_comprobante);
   return (
     <>
     <Modal size='xl' onHide={onClickCancelModal} show={show}>
@@ -281,6 +285,22 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                             </div>
                         </Col>
                         <Col lg={4}>
+                            <div className="mb-4">
+                                <label htmlFor="fec_comprobante" className="form-label">
+                                    fecha de comprobante
+                                </label>
+                                <input
+                                        className="form-control"
+                                        type='date'
+                                        name="fec_comprobante"
+                                        id="fec_comprobante"
+                                        value={fec_comprobante}
+                                        onChange={onInputChange}
+                                        placeholder="EJ. 20-02-24"
+                                    />
+                            </div>
+                        </Col>
+                        <Col lg={4}>
                                 <label htmlFor="n_comprabante" className="form-label ">
                                     Impuesto
                                 </label>
@@ -341,7 +361,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                     value={DataFormaPago.find(
                                         (option)=>option.value==id_forma_pago
                                     )||0}
-                                    required
                                 />
                             </div>
                         </Col>
@@ -360,7 +379,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                     value={DataBancos.find(
                                         (option)=>option.value==id_banco_pago
                                     )||0}
-                                    required
                                 />
                             </div>
                         </Col>

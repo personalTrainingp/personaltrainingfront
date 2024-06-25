@@ -14,6 +14,7 @@ import { Button } from 'primereact/button';
 import { ModalIngresosGastos } from './ModalIngresosGastos';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
+import { arrayCargoEmpl, arrayFinanzas } from '@/types/type';
 export default function AdvancedFilterDemo({showToast}) {
     locale('es')
     const [customers, setCustomers] = useState(null);
@@ -44,6 +45,7 @@ export default function AdvancedFilterDemo({showToast}) {
             // Realiza las modificaciones en la copia
             newItem.fec_registro = daysUTC(new Date(item.fec_registro));
             newItem.fec_pago = daysUTC(new Date(item.fec_pago));
+            newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
             return newItem;
             });
     };
@@ -129,9 +131,10 @@ export default function AdvancedFilterDemo({showToast}) {
             'tb_parametros_gasto.nombre_gasto': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'tb_parametros_gasto.grupo': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             descripcion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            tipo_gasto: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             monto: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
         });
-        setGlobalFilterValue('');
+        // setGlobalFilterValue('');
     };
     const renderHeader = () => {
         return (
@@ -221,6 +224,14 @@ export default function AdvancedFilterDemo({showToast}) {
     }
     const onOpenModalIvsG = ()=>{
         setisOpenModalEgresos(true)
+    }   
+    const tipoGastosBodyTemplate = (rowData)=>{
+        return (
+            
+            <div className="flex align-items-center gap-2">
+                <span>{highlightText( rowData.tipo_gasto, globalFilterValue)}</span>
+            </div>
+        )
     }
     return (
         <div className="card">
@@ -249,7 +260,8 @@ export default function AdvancedFilterDemo({showToast}) {
                         >
                 <Column header="Id" field='id' sortable style={{ width: '1rem' }}/>
                 <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
-                {/* <Column header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} /> */}
+                {/* <Column header="Fecha pago" field='tb_parametros_gasto.id_tipoGasto' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} /> */}
+                <Column header="Tipo de gasto" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
                 <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
                 <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
                 <Column header="Monto" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>

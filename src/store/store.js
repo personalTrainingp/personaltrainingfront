@@ -19,6 +19,7 @@ import { GastosSlice } from './dataGastos/gastosSlice';
 import { rutasSlice } from './sections/RutasSlice';
 import { authProspectoSlice } from './usuario/usuarioProspectoSlice';
 import { comentarioSlice } from './dataComentario/comentarioSlice';
+import { serviciosSlice } from './Servicios/serviciosSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -42,6 +43,7 @@ export const store = configureStore({
 		rutas: rutasSlice.reducer,
 		authProspec: authProspectoSlice.reducer,
 		comentario: comentarioSlice.reducer,
+		servicios: serviciosSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

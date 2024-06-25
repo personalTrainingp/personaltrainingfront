@@ -36,6 +36,8 @@ const GestionCongelamientos = lazy(()=> import('../pages/pagePT/GestProspectos')
 const GestionRegalos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionAuditoria = lazy(()=> import('../pages/pagePT/Auditoria'))
 const GestionComision = lazy(()=> import('../pages/pagePT/GestComision'))
+const ServFitology = lazy(()=> import('../pages/pagePT/ServFitology'))
+const ServNutricion = lazy(()=> import('../pages/pagePT/ServNutricion'))
 // const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
 // const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
 // const PerfilPrograma = lazy(()=> import('../pages/pagePT/GestProgramas/PerfilPrograma'))
@@ -159,6 +161,14 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/gestion-comisional') &&
 						<Route path='gestion-comisional' element={<GestionComision/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/serv-fitology') &&
+						<Route path='serv-fitology' element={<ServNutricion tipo_serv={'FITOL'}/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/serv-nutricion') &&
+						<Route path='serv-nutricion' element={<ServNutricion tipo_serv={'NUTRI'}/>}/>
 					}
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>
