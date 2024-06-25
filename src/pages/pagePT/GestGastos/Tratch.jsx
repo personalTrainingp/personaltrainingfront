@@ -233,6 +233,7 @@ export default function AdvancedFilterDemo({showToast}) {
             </div>
         )
     }
+    console.log(customers);
     return (
         <div className="card">
             {/* <Button onClick={onExportExcelPersonalized}>Exportar excel personalizado</Button> */}
@@ -260,7 +261,7 @@ export default function AdvancedFilterDemo({showToast}) {
                         >
                 <Column header="Id" field='id' sortable style={{ width: '1rem' }}/>
                 <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
-                {/* <Column header="Fecha pago" field='tb_parametros_gasto.id_tipoGasto' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} /> */}
+                <Column header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
                 <Column header="Tipo de gasto" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
                 <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
                 <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
