@@ -40,16 +40,14 @@ export default function AdvancedFilterDemo({showToast}) {
         fetchData()
         initFilters();
         }, [dataGastos]);
-        console.log(dataGastos);
     const getCustomers = (data) => {
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
             // Convertir la fecha a la zona horaria de Lima
-            // console.log(formattedDate);
             // Realiza las modificaciones en la copia
             const [year, month, day] = item.fec_pago.split('-').map(Number);
-            
+
             newItem.fec_registro = new Date(item.fec_registro).toISOString();
             newItem.fec_pago = new Date(year, month - 1, day);
             newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
@@ -173,7 +171,6 @@ export default function AdvancedFilterDemo({showToast}) {
     };
     const {daysUTC} = helperFunctions()
     const fecRegistroBodyTemplate = (rowData)=>{
-        // console.log(new Date(rowData.fec_registro).toLocaleDateString());
         return (
             <div className="flex align-items-center gap-2">
                 <span>{FormatoDateMask(rowData.fec_registro, 'D [de] MMMM [de] YYYY') }</span>
@@ -181,7 +178,6 @@ export default function AdvancedFilterDemo({showToast}) {
         );
     }
     const fecPagoBodyTemplate = (rowData)=>{
-        console.log(rowData.fec_pago);
         return (
             <div className="flex align-items-center gap-2">
                 
