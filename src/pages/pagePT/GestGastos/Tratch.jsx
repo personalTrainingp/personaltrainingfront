@@ -48,8 +48,10 @@ export default function AdvancedFilterDemo({showToast}) {
             // Convertir la fecha a la zona horaria de Lima
             // console.log(formattedDate);
             // Realiza las modificaciones en la copia
+            const [year, month, day] = item.fec_pago.split('-').map(Number);
+            
             newItem.fec_registro = new Date(item.fec_registro).toISOString();
-            newItem.fec_pago = item.fec_pago;
+            newItem.fec_pago = new Date(year, month - 1, day);
             newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
             return newItem;
             });
@@ -131,7 +133,7 @@ export default function AdvancedFilterDemo({showToast}) {
     const initFilters = () => {
         setFilters({
             global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['tb_Proveedor.razon_social_prov']:{ value: null, matchMode: FilterMatchMode.IN },
+            ['tb_Proveedor.razon_social_prov']:{ operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             fec_registro: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
             fec_pago: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
             'tb_parametros_gasto.nombre_gasto': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
@@ -277,7 +279,7 @@ export default function AdvancedFilterDemo({showToast}) {
                 <Column header="Monto" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
                 <Column header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                 <Column header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
-                body={proveedorBodyTemplate} filter filterElement={proveedorFilterTemplate} />
+                body={proveedorBodyTemplate} filter />
 
                 <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen body={actionBodyTemplate}/>
             </DataTable>
