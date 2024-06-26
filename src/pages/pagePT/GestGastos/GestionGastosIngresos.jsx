@@ -28,7 +28,7 @@ export const GestionGastosIngresos = () => {
   };
   return (
     <>
-        <Button onClick={onOpenModalIvsG}>Agregar Gasto o Ingreso</Button>
+        <Button onClick={onOpenModalIvsG}>Agregar egresos</Button>
         <Toast ref={toast}/>
         <ModalIngresosGastos show={isOpenModalIvsG} onHide={onCloseModalIvsG} onShow={onOpenModalIvsG} showToast={showToast}/>
         <AdvancedFilterDemo showToast={showToast}/>

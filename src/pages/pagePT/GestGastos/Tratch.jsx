@@ -15,6 +15,9 @@ import { ModalIngresosGastos } from './ModalIngresosGastos';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { arrayCargoEmpl, arrayFinanzas } from '@/types/type';
+import dayjs from 'dayjs';
+import { FormatoDateMask } from '@/components/CurrencyMask';
+
 export default function AdvancedFilterDemo({showToast}) {
     locale('es')
     const [customers, setCustomers] = useState(null);
@@ -37,19 +40,20 @@ export default function AdvancedFilterDemo({showToast}) {
         fetchData()
         initFilters();
         }, [dataGastos]);
-        
+        console.log(dataGastos);
     const getCustomers = (data) => {
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
+            // Convertir la fecha a la zona horaria de Lima
+            // console.log(formattedDate);
             // Realiza las modificaciones en la copia
-            newItem.fec_registro = daysUTC(new Date(item.fec_registro));
-            newItem.fec_pago = daysUTC(new Date(item.fec_pago));
+            newItem.fec_registro = new Date(item.fec_registro).toISOString();
+            newItem.fec_pago = item.fec_pago;
             newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
             return newItem;
             });
     };
-
     const highlightText = (text, search) => {
         if (!search) {
             return text;
@@ -67,10 +71,11 @@ export default function AdvancedFilterDemo({showToast}) {
         );
     };
     const formatDate = (value) => {
-        return value.toLocaleDateString('en-ES', {
+        return value.toLocaleDateString('es-PE', {
             day: '2-digit',
             month: '2-digit',
-            year: 'numeric'
+            year: 'numeric',
+            timeZone: 'America/Lima'
         });
     };
     const formatCurrency = (value, currency) => {
@@ -78,6 +83,7 @@ export default function AdvancedFilterDemo({showToast}) {
     };
     const clearFilter = () => {
         initFilters();
+        setGlobalFilterValue('');
     };
 
     const onGlobalFilterChange = (e) => {
@@ -165,16 +171,20 @@ export default function AdvancedFilterDemo({showToast}) {
     };
     const {daysUTC} = helperFunctions()
     const fecRegistroBodyTemplate = (rowData)=>{
+        // console.log(new Date(rowData.fec_registro).toLocaleDateString());
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.fec_registro, globalFilterValue) }</span>
+                <span>{FormatoDateMask(rowData.fec_registro, 'D [de] MMMM [de] YYYY') }</span>
             </div>
         );
     }
     const fecPagoBodyTemplate = (rowData)=>{
+        console.log(rowData.fec_pago);
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.fec_pago, globalFilterValue) }</span>
+                
+                {/* <span>{formatDate(rowData.fec_pago) }</span> */}
+                <span>{FormatoDateMask(rowData.fec_pago, 'D [de] MMMM [de] YYYY') }</span>
             </div>
         );
     }
@@ -233,7 +243,6 @@ export default function AdvancedFilterDemo({showToast}) {
             </div>
         )
     }
-    console.log(customers);
     return (
         <div className="card">
             {/* <Button onClick={onExportExcelPersonalized}>Exportar excel personalizado</Button> */}
