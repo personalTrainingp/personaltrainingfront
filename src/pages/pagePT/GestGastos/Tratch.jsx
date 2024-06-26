@@ -48,7 +48,7 @@ export default function AdvancedFilterDemo({showToast}) {
             // Realiza las modificaciones en la copia
             const [year, month, day] = item.fec_pago.split('-').map(Number);
 
-            newItem.fec_registro = new Date(item.fec_registro).toISOString();
+            newItem.fec_registro = new Date(item.fec_registro);
             newItem.fec_pago = new Date(year, month - 1, day);
             newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
             return newItem;
@@ -173,7 +173,7 @@ export default function AdvancedFilterDemo({showToast}) {
     const fecRegistroBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{FormatoDateMask(rowData.fec_registro, 'D [de] MMMM [de] YYYY') }</span>
+                <span>{FormatoDateMask(rowData.fec_registro, 'D [de] MMMM [de] YYYY [a las] h:mm A') }</span>
             </div>
         );
     }
