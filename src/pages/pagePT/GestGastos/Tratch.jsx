@@ -241,6 +241,7 @@ export default function AdvancedFilterDemo({showToast}) {
             </div>
         )
     }
+    console.log(customers);
     return (
         <div className="card">
             {/* <Button onClick={onExportExcelPersonalized}>Exportar excel personalizado</Button> */}

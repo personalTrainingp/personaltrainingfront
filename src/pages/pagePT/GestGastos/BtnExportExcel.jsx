@@ -13,22 +13,22 @@ export const ExportToExcel = ({data}) => {
     const worksheetDolares = workbook.addWorksheet('Gastos filtrados por dolares');
     const worksheetSoles = workbook.addWorksheet('Gastos filtrados por soles');
   // Filtrar datos por moneda
+  console.log(data);
+  data = data.map((e) => {
+    return {
+      id: e.id,
+      fec_registro: e.fec_registro,
+      Proveedores: e.tb_Proveedor?.razon_social_prov,
+      gasto: e.tb_parametros_gasto?.nombre_gasto,
+      descripcion: e.descripcion,
+      fec_pago: e.fec_pago,
+      moneda: e.moneda,
+      monto: e.monto,
+    };
+  });
   const dataDolares = data.filter(e => e.moneda === 'USD');
   const dataSoles = data.filter(e => e.moneda === 'PEN');
     // Datos de ejemplo
-    console.log(data);
-    data = data.map((e) => {
-      return {
-        id: e.id,
-        fec_registro: e.fec_registro,
-        Proveedores: e.tb_Proveedor?.razon_social_prov,
-        gasto: e.tb_parametros_gasto?.nombre_gasto,
-        descripcion: e.Descripcion,
-        fec_pago: e.fec_pago,
-        moneda: e.moneda,
-        monto: e.monto,
-      };
-    });
     // Definir estilos para las celdas
     const headerStyle = {
       font: { bold: true },

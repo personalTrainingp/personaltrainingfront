@@ -30,7 +30,7 @@ export const ReporteEgresos = () => {
             <div className='d-flex'>
                 <div className="flex-auto">
                     <label htmlFor="buttondisplay" className="font-bold block mb-2">
-                        Rango
+                        Desde
                     </label>
                     {/* <Calendar id="buttondisplay" value={fec_inicio} name='fec_inicio' onChange={(e)=>onInputChangeReact(e, 'fec_inicio')} showIcon /> */}
                     <Calendar value={rango_fec} onChange={(e)=>onInputChangeReact(e, 'rango_fec')} selectionMode="range" readOnlyInput hideOnRangeSelection />
