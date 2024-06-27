@@ -13,7 +13,6 @@ export const ExportToExcel = ({data}) => {
     const worksheetDolares = workbook.addWorksheet('Gastos filtrados por dolares');
     const worksheetSoles = workbook.addWorksheet('Gastos filtrados por soles');
   // Filtrar datos por moneda
-  console.log(data);
   data = data.map((e) => {
     return {
       id: e.id,
@@ -23,7 +22,9 @@ export const ExportToExcel = ({data}) => {
       descripcion: e.descripcion,
       fec_pago: e.fec_pago,
       moneda: e.moneda,
-      monto: e.monto.toFixed(2),
+      banco: e.parametro_banco?.label_param,
+      forma_pago: e.parametro_forma_pago?.label_param,
+      monto: e.monto?.toFixed(2),
     };
   });
   const dataDolares = data.filter(e => e.moneda === 'USD');
@@ -50,6 +51,8 @@ export const ExportToExcel = ({data}) => {
     { key: 'descripcion', width: 50 },
     { key: 'moneda', width: 8 },
     { key: 'monto', width: 20 },
+    { key: 'banco', width: 20 },
+    { key: 'forma_pago', width: 20 },
   ];
 
   worksheet.columns = columns;
@@ -59,7 +62,7 @@ export const ExportToExcel = ({data}) => {
 
   // Función para agregar datos a una hoja de trabajo
   const addDataToWorksheet = (worksheet, data) => {
-    worksheet.addRow(['Fecha de registro', 'Proveedores', 'Gastos', "fecha de pago", "Descripcion", "Moneda", "Monto"]).eachCell((cell) => {
+    worksheet.addRow(['Fecha de registro', 'Proveedores', 'Gastos', "fecha de pago", "Descripcion", "banco", "forma_pago", "Moneda", "Monto"]).eachCell((cell) => {
       cell.fill = headerStyle.fill;
       cell.font = headerStyle.font;
       cell.alignment = headerStyle.alignment;
@@ -67,7 +70,7 @@ export const ExportToExcel = ({data}) => {
     });
 
     data.forEach((row) => {
-      worksheet.addRow([row.fec_registro, row.Proveedores, row.gasto, row.fec_pago, row.descripcion, row.moneda, row.monto]).eachCell((cell) => {
+      worksheet.addRow([row.fec_registro, row.Proveedores, row.gasto, row.fec_pago, row.descripcion, row.banco, row.forma_pago, row.moneda, row.monto]).eachCell((cell) => {
         cell.alignment = cellStyle.alignment;
         cell.border = cellStyle.border;
       });
