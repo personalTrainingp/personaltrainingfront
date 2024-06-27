@@ -1,5 +1,8 @@
 import { PTApi } from '@/common';
-import { onSetParametro } from '@/store/dataParametros/parametroSlice';
+import {
+	onSetParametro,
+	onSetUltimaMembresiaPorCliente,
+} from '@/store/dataParametros/parametroSlice';
 import { getProgramaSPT } from '@/store/ventaProgramaPT/programaPTSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -28,6 +31,20 @@ export const useTerminoStore = () => {
 	const [dataxParametro, setdataxParametro] = useState('');
 	const [programasActivos, setprogramasActivos] = useState([]);
 	const [dataCitasxCli, setdataCitasxCli] = useState([]);
+	const obtenerUltimaMembresiaPorCliente = async (id_cli) => {
+		try {
+			const { data } = await PTApi.get(
+				`/parametros/get_params/get_estado_membresia_cli/${id_cli}`
+			);
+			dispatch(
+				onSetUltimaMembresiaPorCliente(
+					data.detalle_ventaMembresia ? data.detalle_ventaMembresia[0] : []
+				)
+			);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerParametrosxENTIDAD = async (entidad) => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/${entidad}`);
@@ -113,6 +130,7 @@ export const useTerminoStore = () => {
 	const obtenerParametrosClientes = async () => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/clientes`);
+			// console.log(data);
 			// console.log(data);
 			setDataClientes(data);
 		} catch (error) {
@@ -231,6 +249,7 @@ export const useTerminoStore = () => {
 		obtenerParametroPorEntidadyGrupo,
 		obtenerProgramasActivos,
 		obtenerCitasDisponiblesXcli,
+		obtenerUltimaMembresiaPorCliente,
 		dataCitasxCli,
 		programasActivos,
 		dataxParametro,

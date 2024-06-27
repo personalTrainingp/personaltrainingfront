@@ -23,7 +23,7 @@ export const ExportToExcel = ({data}) => {
       descripcion: e.descripcion,
       fec_pago: e.fec_pago,
       moneda: e.moneda,
-      monto: e.monto,
+      monto: e.monto.toFixed(2),
     };
   });
   const dataDolares = data.filter(e => e.moneda === 'USD');
