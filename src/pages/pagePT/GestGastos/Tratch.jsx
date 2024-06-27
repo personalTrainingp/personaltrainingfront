@@ -41,14 +41,17 @@ export default function AdvancedFilterDemo({showToast}) {
         initFilters();
         }, [dataGastos]);
     const getCustomers = (data) => {
+        console.log(data);
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
             // Convertir la fecha a la zona horaria de Lima
             // Realiza las modificaciones en la copia
             const [year, month, day] = item.fec_pago.split('-').map(Number);
-
-            newItem.fec_registro = new Date(item.fec_registro);
+            const [yearc=year, monthc=month, dayc=day] = item.fec_comprobante.split('-').map(Number)
+            // const [yearr=year, monthr = month, dayr = day] = item.fec_registro.split('-').map(Number)
+            // newItem.fec_registro = new Date(item.fec_registro);
+            newItem.fec_comprobante = new Date(yearc, monthc-1, dayc);
             newItem.fec_pago = new Date(year, month - 1, day);
             newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
             return newItem;
@@ -134,6 +137,7 @@ export default function AdvancedFilterDemo({showToast}) {
             ['tb_Proveedor.razon_social_prov']:{ operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             fec_registro: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
             fec_pago: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+            fec_comprobante: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
             'tb_parametros_gasto.nombre_gasto': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'tb_parametros_gasto.grupo': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             descripcion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
@@ -183,6 +187,15 @@ export default function AdvancedFilterDemo({showToast}) {
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
                 <span>{FormatoDateMask(rowData.fec_pago, 'D [de] MMMM [de] YYYY') }</span>
+            </div>
+        );
+    }
+    const fecComprobanteBodyTemplate = (rowData)=>{
+        return (
+            <div className="flex align-items-center gap-2">
+                
+                {/* <span>{formatDate(rowData.fec_pago) }</span> */}
+                <span>{rowData.fec_comprobante===''? '': FormatoDateMask(rowData.fec_comprobante, 'D [de] MMMM [de] YYYY')}</span>
             </div>
         );
     }
@@ -241,7 +254,6 @@ export default function AdvancedFilterDemo({showToast}) {
             </div>
         )
     }
-    console.log(customers);
     return (
         <div className="card">
             {/* <Button onClick={onExportExcelPersonalized}>Exportar excel personalizado</Button> */}
@@ -268,8 +280,9 @@ export default function AdvancedFilterDemo({showToast}) {
                         onValueChange={valueFiltered}
                         >
                 <Column header="Id" field='id' sortable style={{ width: '1rem' }}/>
-                <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
+                {/* <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} /> */}
                 <Column header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
+                <Column header="Fecha de comprobante" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter filterElement={dateFilterTemplate}/>
                 <Column header="Tipo de gasto" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
                 <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
                 <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>

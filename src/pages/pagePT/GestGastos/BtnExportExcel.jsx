@@ -23,6 +23,7 @@ export const ExportToExcel = ({data}) => {
       fec_pago: e.fec_pago,
       moneda: e.moneda,
       banco: e.parametro_banco?.label_param,
+      comprobante: e.parametro_comprobante?.label_param,
       forma_pago: e.parametro_forma_pago?.label_param,
       monto: e.monto?.toFixed(2),
     };
@@ -62,7 +63,7 @@ export const ExportToExcel = ({data}) => {
 
   // Función para agregar datos a una hoja de trabajo
   const addDataToWorksheet = (worksheet, data) => {
-    worksheet.addRow(['Fecha de registro', 'Proveedores', 'Gastos', "fecha de pago", "Descripcion", "banco", "forma_pago", "Moneda", "Monto"]).eachCell((cell) => {
+    worksheet.addRow(['Fecha de registro', 'Proveedores', 'Gastos', "fecha de pago", "Descripcion", "banco", "forma_pago", "comprobante", "Moneda", "Monto"]).eachCell((cell) => {
       cell.fill = headerStyle.fill;
       cell.font = headerStyle.font;
       cell.alignment = headerStyle.alignment;
@@ -70,7 +71,7 @@ export const ExportToExcel = ({data}) => {
     });
 
     data.forEach((row) => {
-      worksheet.addRow([row.fec_registro, row.Proveedores, row.gasto, row.fec_pago, row.descripcion, row.banco, row.forma_pago, row.moneda, row.monto]).eachCell((cell) => {
+      worksheet.addRow([row.fec_registro, row.Proveedores, row.gasto, row.fec_pago, row.descripcion, row.banco, row.forma_pago, row.comprobante, row.moneda, row.monto]).eachCell((cell) => {
         cell.alignment = cellStyle.alignment;
         cell.border = cellStyle.border;
       });
