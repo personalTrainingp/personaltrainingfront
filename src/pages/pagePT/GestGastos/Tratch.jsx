@@ -51,7 +51,7 @@ export default function AdvancedFilterDemo({showToast}) {
             const [yearc=year, monthc=month, dayc=day] = item.fec_comprobante.split('-').map(Number)
             // const [yearr=year, monthr = month, dayr = day] = item.fec_registro.split('-').map(Number)
             // newItem.fec_registro = new Date(item.fec_registro);
-            newItem.fec_comprobante = new Date(yearc, monthc-1, dayc);
+            newItem.fec_comprobante =new Date(yearc, monthc-1, dayc);
             newItem.fec_pago = new Date(year, month - 1, day);
             newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
             return newItem;
@@ -195,7 +195,7 @@ export default function AdvancedFilterDemo({showToast}) {
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{rowData.fec_comprobante===''? '': FormatoDateMask(rowData.fec_comprobante, 'D [de] MMMM [de] YYYY')}</span>
+                <span>{new Date(rowData.fec_comprobante).getFullYear()===1900? '': FormatoDateMask(rowData.fec_comprobante, 'D [de] MMMM [de] YYYY')}</span>
             </div>
         );
     }
