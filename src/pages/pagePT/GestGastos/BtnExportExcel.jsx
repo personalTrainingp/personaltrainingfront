@@ -13,7 +13,7 @@ export const ExportToExcel = ({data}) => {
     const worksheetDolares = workbook.addWorksheet('Gastos filtrados por dolares');
     const worksheetSoles = workbook.addWorksheet('Gastos filtrados por soles');
   // Filtrar datos por moneda
-  
+  console.log(data);
   data = data.map((e) => {
     return {
       id: e.id,
@@ -25,7 +25,9 @@ export const ExportToExcel = ({data}) => {
       moneda: e.moneda,
       banco: e.parametro_banco?.label_param,
       comprobante: e.parametro_comprobante?.label_param,
+      n_comprobante: e.n_comprabante,
       forma_pago: e.parametro_forma_pago?.label_param,
+      n_operacion: e.n_operacion,
       monto: e.monto?.toFixed(2),
     };
   });
@@ -50,11 +52,13 @@ export const ExportToExcel = ({data}) => {
     { key: 'gasto', width: 40 },
     { key: 'fec_pago', width: 20 },
     { key: 'descripcion', width: 50 },
-    { key: 'moneda', width: 1 },
+    { key: 'moneda', width: 4 },
     { key: 'monto', width: 20 },
     { key: 'banco', width: 20 },
     { key: 'forma_pago', width: 50 },
     { key: 'fec_comprobante', width: 20 },
+    { key: 'n_comprabante', width: 20 },
+    { key: 'n_operacion', width: 20 },
   ];
 
   worksheet.columns = columns;
@@ -64,7 +68,7 @@ export const ExportToExcel = ({data}) => {
 
   // Función para agregar datos a una hoja de trabajo
   const addDataToWorksheet = (worksheet, data) => {
-    worksheet.addRow(['Proveedores', 'Gastos', "fecha de pago", "Descripcion", "banco", "forma_pago", "comprobante", "fecha de comprobante", "Moneda", "Monto"]).eachCell((cell) => {
+    worksheet.addRow(['Proveedores', 'Gastos', "fecha de pago", "Descripcion", "banco", "forma_pago", "n_operacion", "comprobante", "n_comprobante", "fecha de comprobante", "Moneda", "Monto"]).eachCell((cell) => {
       cell.fill = headerStyle.fill;
       cell.font = headerStyle.font;
       cell.alignment = headerStyle.alignment;
@@ -72,7 +76,7 @@ export const ExportToExcel = ({data}) => {
     });
 
     data.forEach((row) => {
-      worksheet.addRow([row.Proveedores, row.gasto, row.fec_pago, row.descripcion, row.banco, row.forma_pago, row.comprobante, row.fec_comprobante, row.moneda, row.monto]).eachCell((cell) => {
+      worksheet.addRow([row.Proveedores, row.gasto, row.fec_pago, row.descripcion, row.banco, row.forma_pago, row.n_operacion, row.comprobante, row.n_comprobante, row.fec_comprobante, row.moneda, row.monto]).eachCell((cell) => {
         cell.alignment = cellStyle.alignment;
         cell.border = cellStyle.border;
       });
