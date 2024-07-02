@@ -13,7 +13,6 @@ export const ExportToExcel = ({data}) => {
     const worksheetDolares = workbook.addWorksheet('Gastos filtrados por dolares');
     const worksheetSoles = workbook.addWorksheet('Gastos filtrados por soles');
   // Filtrar datos por moneda
-  console.log(data);
   data = data.map((e) => {
     return {
       id: e.id,
@@ -68,7 +67,7 @@ export const ExportToExcel = ({data}) => {
 
   // Función para agregar datos a una hoja de trabajo
   const addDataToWorksheet = (worksheet, data) => {
-    worksheet.addRow(['Proveedores', 'Gastos', "fecha de pago", "Descripcion", "banco", "forma_pago", "n_operacion", "comprobante", "n_comprobante", "fecha de comprobante", "Moneda", "Monto"]).eachCell((cell) => {
+    worksheet.addRow(['id', 'Proveedores', 'Gastos', "fecha de pago", "Descripcion", "banco", "forma_pago", "n_operacion", "comprobante", "n_comprobante", "fecha de comprobante", "Moneda", "Monto"]).eachCell((cell) => {
       cell.fill = headerStyle.fill;
       cell.font = headerStyle.font;
       cell.alignment = headerStyle.alignment;
@@ -76,7 +75,7 @@ export const ExportToExcel = ({data}) => {
     });
 
     data.forEach((row) => {
-      worksheet.addRow([row.Proveedores, row.gasto, row.fec_pago, row.descripcion, row.banco, row.forma_pago, row.n_operacion, row.comprobante, row.n_comprobante, row.fec_comprobante, row.moneda, row.monto]).eachCell((cell) => {
+      worksheet.addRow([row.id, row.Proveedores, row.gasto, row.fec_pago, row.descripcion, row.banco, row.forma_pago, row.n_operacion, row.comprobante, row.n_comprobante, row.fec_comprobante, row.moneda, row.monto]).eachCell((cell) => {
         cell.alignment = cellStyle.alignment;
         cell.border = cellStyle.border;
       });

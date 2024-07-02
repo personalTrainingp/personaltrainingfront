@@ -32,7 +32,7 @@ estado_cli(pin):true
 flag(pin):true
 */
 export const InformacionGeneralCliente = ({data}) => {
-    console.log(data);
+    // console.log(data);
     const { formState, 
         nombre_cli, 
         apPaterno_cli, 

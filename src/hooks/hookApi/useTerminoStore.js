@@ -36,6 +36,7 @@ export const useTerminoStore = () => {
 			const { data } = await PTApi.get(
 				`/parametros/get_params/get_estado_membresia_cli/${id_cli}`
 			);
+			console.log(data);
 			dispatch(
 				onSetUltimaMembresiaPorCliente(
 					data.detalle_ventaMembresia ? data.detalle_ventaMembresia[0] : []

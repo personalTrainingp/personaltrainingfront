@@ -73,8 +73,8 @@ export const PerfilCliente = () => {
         <Tab eventKey='infoComentarios' title='Comentarios'>
           <SectionComentarios data={userCliente}/>
         </Tab>
-        <Tab eventKey='pays' title='Compras'>
-          <ComprasxCliente uid={uid}/>
+        <Tab eventKey='pays' title='Comprasss'>
+          <ComprasxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
         </Tab>
       </Tabs>
     </Card>

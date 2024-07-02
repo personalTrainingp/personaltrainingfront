@@ -50,7 +50,7 @@ export default function AdvancedFilterDemo({showToast}) {
             const [year, month, day] = item.fec_pago.split('-').map(Number);
             const [yearc=year, monthc=month, dayc=day] = item.fec_comprobante.split('-').map(Number)
             // const [yearr=year, monthr = month, dayr = day] = item.fec_registro.split('-').map(Number)
-            // newItem.fec_registro = new Date(item.fec_registro);
+            newItem.fec_registro = new Date(item.fec_registro);
             newItem.fec_comprobante =new Date(yearc, monthc-1, dayc);
             newItem.fec_pago = new Date(year, month - 1, day);
             newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
@@ -280,7 +280,7 @@ export default function AdvancedFilterDemo({showToast}) {
                         onValueChange={valueFiltered}
                         >
                 <Column header="Id" field='id' sortable style={{ width: '1rem' }}/>
-                {/* <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} /> */}
+                <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
                 <Column header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
                 <Column header="Fecha de comprobante" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter filterElement={dateFilterTemplate}/>
                 <Column header="Tipo de gasto" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
