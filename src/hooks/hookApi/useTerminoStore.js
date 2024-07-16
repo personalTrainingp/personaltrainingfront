@@ -31,17 +31,15 @@ export const useTerminoStore = () => {
 	const [dataxParametro, setdataxParametro] = useState('');
 	const [programasActivos, setprogramasActivos] = useState([]);
 	const [dataCitasxCli, setdataCitasxCli] = useState([]);
+	const [dataVendedoresVendieron, setdataVendedoresVendieron] = useState([]);
+
 	const obtenerUltimaMembresiaPorCliente = async (id_cli) => {
 		try {
 			const { data } = await PTApi.get(
 				`/parametros/get_params/get_estado_membresia_cli/${id_cli}`
 			);
 			console.log(data);
-			dispatch(
-				onSetUltimaMembresiaPorCliente(
-					data.detalle_ventaMembresia ? data.detalle_ventaMembresia[0] : []
-				)
-			);
+			dispatch(onSetUltimaMembresiaPorCliente(data ? data.detalle_ventaMembresia[0] : []));
 		} catch (error) {
 			console.log(error);
 		}
@@ -227,6 +225,14 @@ export const useTerminoStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerVendedores_vendieron = async () => {
+		try {
+			const { data } = await PTApi.get(`/parametros/get_params/vendedores_vendiendo`);
+			setdataVendedoresVendieron(data.vendedores);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerParametrosProductoMarcas,
 		obtenerParametrosProductoCategorias,
@@ -251,6 +257,8 @@ export const useTerminoStore = () => {
 		obtenerProgramasActivos,
 		obtenerCitasDisponiblesXcli,
 		obtenerUltimaMembresiaPorCliente,
+		obtenerVendedores_vendieron,
+		dataVendedoresVendieron,
 		dataCitasxCli,
 		programasActivos,
 		dataxParametro,

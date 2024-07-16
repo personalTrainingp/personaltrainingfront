@@ -23,6 +23,7 @@ export const useAuthStore = () => {
 				password_user,
 			});
 			localStorage.setItem('token', data?.token);
+			localStorage.setItem('uid-user', data.uid);
 			localStorage.setItem('token-init-date', new Date().getTime());
 			// console.log(data);
 			await obtenerModulos();
@@ -104,7 +105,9 @@ export const useAuthStore = () => {
 		if (!token) return dispatch(onLogout());
 		try {
 			const { data } = await PTApi.get('/usuario/renew');
+			// console.log(data);
 			localStorage.setItem('token', data.token);
+			localStorage.setItem('uid-user', data.uid);
 			localStorage.setItem('token-init-date', new Date().getTime());
 			// await obtenerModulos();
 			// await obtenerSeccions(modulos[0]);
@@ -115,8 +118,10 @@ export const useAuthStore = () => {
 			dispatch(onLogout());
 		}
 	};
-	const obtenerUser = async (uid) => {
+	const obtenerUser = async () => {
 		try {
+			const uid = localStorage.getItem('uid-user');
+			console.log('uid en obtener usuario', uid);
 			const { data } = await PTApi.get(`/usuario/get-usuario/${uid}`);
 			// await obtenerModulos();
 			// await obtenerSeccions(modulos[0]);

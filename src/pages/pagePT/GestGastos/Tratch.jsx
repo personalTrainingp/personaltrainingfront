@@ -17,7 +17,8 @@ import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { arrayCargoEmpl, arrayFinanzas } from '@/types/type';
 import dayjs from 'dayjs';
 import { FormatoDateMask } from '@/components/CurrencyMask';
-
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 export default function AdvancedFilterDemo({showToast}) {
     locale('es')
     const [customers, setCustomers] = useState(null);
@@ -41,7 +42,6 @@ export default function AdvancedFilterDemo({showToast}) {
         initFilters();
         }, [dataGastos]);
     const getCustomers = (data) => {
-        console.log(data);
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
@@ -50,7 +50,10 @@ export default function AdvancedFilterDemo({showToast}) {
             const [year, month, day] = item.fec_pago.split('-').map(Number);
             const [yearc=year, monthc=month, dayc=day] = item.fec_comprobante.split('-').map(Number)
             // const [yearr=year, monthr = month, dayr = day] = item.fec_registro.split('-').map(Number)
-            newItem.fec_registro = new Date(item.fec_registro);
+            // console.log(item.fec_registro);
+            
+            let date = dayjs.utc(item.fec_registro);
+            newItem.fec_registro = new Date(date.format());
             newItem.fec_comprobante =new Date(yearc, monthc-1, dayc);
             newItem.fec_pago = new Date(year, month - 1, day);
             newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label

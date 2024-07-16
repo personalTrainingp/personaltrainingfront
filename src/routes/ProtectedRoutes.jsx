@@ -38,6 +38,10 @@ const GestionAuditoria = lazy(()=> import('../pages/pagePT/Auditoria'))
 const GestionComision = lazy(()=> import('../pages/pagePT/GestComision'))
 const ServFitology = lazy(()=> import('../pages/pagePT/ServFitology'))
 const ServNutricion = lazy(()=> import('../pages/pagePT/ServNutricion'))
+const ReportePorProgramas = lazy(()=>import('../pages/pagePT/reportes/ventasPrograma'))
+const ReporteTotalVentas = lazy(()=>import('../pages/pagePT/reportes/totalVentas'))
+const ReporteVentasAsesor = lazy(()=>import('../pages/pagePT/reportes/ventasAsesor'))
+const ReporteVentasporSemana = lazy(()=>import('../pages/pagePT/reportes/ventaPorSemana'))
 // const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
 // const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
 // const PerfilPrograma = lazy(()=> import('../pages/pagePT/GestProgramas/PerfilPrograma'))
@@ -169,6 +173,26 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/serv-nutricion') &&
 						<Route path='serv-nutricion' element={<ServNutricion tipo_serv={'NUTRI'}/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte') && 
+						<Route path='reporte/reporte-programa' element={<ReportePorProgramas/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte') && 
+						<Route path='reporte/total-ventas' element={<ReporteTotalVentas/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte') && 
+						<Route path='reporte/total-ventas' element={<ReporteTotalVentas/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte') && 
+						<Route path='reporte/ventas-asesor' element={<ReporteVentasAsesor/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte') &&
+						<Route path='reporte/venta-semana' element={<ReporteVentasporSemana/>}/>
 					}
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>

@@ -30,24 +30,19 @@ const DatosCliente = ({dataCliente}) => {
 	useEffect(() => {
 		dispatch(onSetDetalleCli({
 			...formStateCliente, 
-			id_cliente: id_cliente, 
-			email_cli: clienteSelect?.email_cli, 
+			id_cliente: id_cliente,
 			id_empl: id_empl, 
             id_tipo_transaccion: id_tipo_transaccion, 
             numero_transac: numero_transac, 
             id_origen: id_origen, 
             observacion: observacion,
-			label_cli: clienteSelect?.label, 
-			label_empl: EmpleadoSelect?.label, 
-			label_tipo_transac: TipoTransacSelect?.label
+			// email_cli: clienteSelect?.email_cli, 
+			// label_cli: clienteSelect?.label, 
+			// label_empl: EmpleadoSelect?.label, 
+			// label_tipo_transac: TipoTransacSelect?.label
 		}))
-	}, [id_cliente, 
-		id_empl, 
-		id_tipo_transaccion, 
-		numero_transac, 
-		id_origen, 
-		observacion])
-
+	}, [id_cliente, id_empl, id_tipo_transaccion, numero_transac, id_origen, observacion])
+	
 	useEffect(() => {
 		const datacli = DataClientes.find(
 			(option) => option.value === id_cliente

@@ -11,20 +11,28 @@ import { Divider } from 'primereact/divider';
 import { Link } from 'react-router-dom';
 import { CurrencyMask, FormatoDateMask } from '@/components/CurrencyMask';
 import { ScrollPanel } from 'primereact/scrollpanel';
+import { ModalMetaxVendedor } from './ModalMetaxVendedor/ModalMetaxVendedor';
 // import './ScrollPanelDemo.css';
 
 export const GestMetas = () => {
 	const [isModalOpenMetas, setIsModalOpenMetas] = useState(false);
+	const [isModalOpenMetasxVendedor, setisModalOpenMetasxVendedor] = useState(false)
 	const dispatch = useDispatch();
 	const { dataMetas } = useSelector((e) => e.meta);
-	const { obtenerMetas } = useMetaStore();
+	const { obtenerMetas, obtenerMeta, dataMeta, isLoading } = useMetaStore();
 	const hideModal = () => {
 		setIsModalOpenMetas(false);
 	};
 	const showModal = () => {
 		setIsModalOpenMetas(true);
 	};
-	console.log(dataMetas);
+	const showModalMetaxVendedor = (e)=>{
+		setisModalOpenMetasxVendedor(true)
+		obtenerMeta(e.id_meta)
+	}
+	const hideModalMetaxVendedor = () => {
+        setisModalOpenMetasxVendedor(false);
+    };
 	useEffect(() => {
 		obtenerMetas();
 	}, []);
@@ -72,27 +80,17 @@ export const GestMetas = () => {
 		return objetosFiltrados;
 	  }
 	  	const formatCurrency = (value) => {
-		return value.toLocaleString('PEN', { style: 'currency', currency: 'PEN' });
+		return value.toLocaleString('en-ES', { style: 'currency', currency: 'PEN' });
 		};
-		
 	return (
 		<>
 			<PageBreadcrumb title="Metas" subName="E" />
 			<Button onClick={showModal}>Agregar meta</Button>
-			<Row className='m-3'>
-				<Col lg='4'>
-
-					<Card className="d-block" style={{boxShadow: '1px 2px 2px gray'}}>
-									<Card.Body
-										className={
-										''	// project.tb_image.name_image ? 'position-relative p-3' : ''
-										}
-									>
-										<h2>SIN INICIAR</h2>
-										<ScrollPanel style={{ width: '100%', height: '200px' }} className="custombar1">
-											{filtrarPorFechas(dataMetas, 'anterior').map(e=>{
+			
+			<ScrollPanel style={{ width: '100%', height: '660px' }} className="custombar1">
+											{dataMetas.map((e)=>{
 												return (
-													<Card className='border border-3'>
+													<Card className='border border-3' key={e.id_meta}>
 												<Card.Body>
 													
 											<Dropdown className="card-widgets" align="end">
@@ -105,162 +103,11 @@ export const GestMetas = () => {
 												</Dropdown.Toggle>
 
 												<Dropdown.Menu>
-													<Dropdown.Item>
-														<i className="mdi mdi-delete me-1"></i>Delete
+													<Dropdown.Item onClick={(h)=>showModalMetaxVendedor(e)}>
+														Metas por vendedor
 													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-
-											<h4 className="mt-0" style={{ cursor: 'pointer' }}>
-												<Link
-													style={{ color: 'black', fontSize: '30px'}}
-													to={`/programa`}
-												>
-													{e.nombre_meta}
-													{/* {project.name_pgm} - {project.sigla_pgm} */}
-												</Link>
-											</h4>
-											<p className="mb-1">
-												<span className="pe-2 text-nowrap mb-2 d-inline-block">
-													Meta: <b>{e.meta}</b>
-												</span>
-												<span className="pe-2 text-nowrap mb-2 d-inline-block">
-													Bono: <b>{e.bono}</b>
-												</span>
-												<span className="pe-2 text-nowrap mb-2 d-inline-block">
-													Inicio: <b>{e.fec_init}</b>
-												</span>
-												<span className="pe-2 text-nowrap mb-2 d-inline-block">
-													Fin: <b>{e.fec_final}</b>
-												</span>
-											</p>
-											{(
-												<p className="text-muted font-13 my-1">
-													{e.observacion.substring(0, 30)}
-													{e.observacion.length > 30 && (
-														<>
-															...
-															<Link
-																style={{ cursor: 'pointer' }}
-																className="fw-bold text-muted"
-															>Ver mas
-															</Link>
-														</>
-														)}    
-												</p>
-											)}
-											
-												</Card.Body>
-											</Card>
-												)
-											})
-											}
-										</ScrollPanel>
-									</Card.Body>
-					</Card>
-				</Col>
-				<Col lg='4'>
-					<Card className="d-block" style={{boxShadow: '2px 5px 5px black'}}>
-					<Card.Body
-										className={
-										''	// project.tb_image.name_image ? 'position-relative p-3' : ''
-										}
-									>
-										<h2>EN PROGRESO</h2>
-										{filtrarPorFechas(dataMetas, 'durante').map(e=>{
-											return (
-												<Card className='border border-3'>
-											<Card.Body>
-												
-										<Dropdown className="card-widgets" align="end">
-											<Dropdown.Toggle
-												variant="link"
-												as="a"
-												className="card-drop arrow-none cursor-pointer p-0 shadow-none"
-											>
-												<i className="ri-more-fill"></i>
-											</Dropdown.Toggle>
-
-											<Dropdown.Menu>
-												<Dropdown.Item>
-													<i className="mdi mdi-delete me-1"></i>Delete
-												</Dropdown.Item>
-											</Dropdown.Menu>
-										</Dropdown>
-
-										<h4 className="mt-0" style={{ cursor: 'pointer' }}>
-											<Link
-												style={{ color: 'black', fontSize: '30px'}}
-												to={`/programa`}
-											>
-												{e.nombre_meta}
-												{/* {project.name_pgm} - {project.sigla_pgm} */}
-											</Link>
-										</h4>
-										<p className="mb-1">
-											<span className="pe-2 text-nowrap mb-2 d-inline-block">
-												Meta: <b>{e.meta}</b>
-											</span>
-											<span className="pe-2 text-nowrap mb-2 d-inline-block">
-												Bono: <b>{e.bono}</b>
-											</span>
-											<span className="pe-2 text-nowrap mb-2 d-inline-block">
-												Inicio: <b>{e.fec_init}</b>
-											</span>
-											<span className="pe-2 text-nowrap mb-2 d-inline-block">
-												Fin: <b>{e.fec_final}</b>
-											</span>
-										</p>
-										{(
-											<p className="text-muted font-13 my-1">
-												{e.observacion.substring(0, 30)}
-												{e.observacion.length > 30 && (
-													<>
-														...
-														<Link
-															style={{ cursor: 'pointer' }}
-															className="fw-bold text-muted"
-														>Ver mas
-														</Link>
-													</>
-													)}    
-											</p>
-										)}
-										
-											</Card.Body>
-										</Card>
-											)
-										})
-										}
-									</Card.Body>
-					</Card>
-				</Col>
-				<Col lg='4'>
-					<Card className="d-block" style={{boxShadow: '2px 5px 5px black'}}>
-					<Card.Body
-										className={
-										''	// project.tb_image.name_image ? 'position-relative p-3' : ''
-										}
-									>
-										<h2>COMPLETADA</h2>
-										<ScrollPanel style={{ width: '100%', height: '700px' }} className="custombar1">
-											{filtrarPorFechas(dataMetas, 'despues').map(e=>{
-												return (
-													<Card className='border border-3'>
-												<Card.Body>
-													
-											<Dropdown className="card-widgets" align="end">
-												<Dropdown.Toggle
-													variant="link"
-													as="a"
-													className="card-drop arrow-none cursor-pointer p-0 shadow-none"
-												>
-													<i className="ri-more-fill"></i>
-												</Dropdown.Toggle>
-
-												<Dropdown.Menu>
 													<Dropdown.Item>
-														<i className="mdi mdi-delete me-1"></i>Delete
+														<i className="mdi mdi-delete me-1"></i>Eliminar
 													</Dropdown.Item>
 												</Dropdown.Menu>
 											</Dropdown>
@@ -279,7 +126,7 @@ export const GestMetas = () => {
 													Meta: <b>{formatCurrency(e.meta)}</b>
 												</span>
 												<span className="pe-2 text-nowrap mb-2 d-inline-block">
-													Bono: <b>{e.bono}</b>
+													Bono: <b>{ formatCurrency(e.bono)}</b>
 												</span>
 												<span className="pe-2 text-nowrap mb-2 d-inline-block">
 													Inicio: <b>{FormatoDateMask(e.fec_init, 'D [de] MMMM [de] YYYY')}</b>
@@ -303,53 +150,14 @@ export const GestMetas = () => {
 														)}    
 												</p>
 											)}
-											
 												</Card.Body>
-											</Card>
+													</Card>
 												)
 											})
 											}
 										</ScrollPanel>
-									</Card.Body>
-					</Card>
-				</Col>
-			</Row>
-				{/* <div className="flex justify-content-center p-2">
-					<Divider align="left">
-						<div className="inline-flex align-items-center m-3">
-							<b className="fs-3">Sin Iniciar</b>
-						</div>
-					</Divider>
-					<Divider layout="vertical" />
-					<Divider align="left">
-						<div className="inline-flex align-items-center">
-							<b className="fs-3">En progreso</b>
-						</div>
-						<p>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam quis
-							pariatur, veniam non sit quasi dolor iste dicta voluptatem perferendis
-							excepturi rem reiciendis vero facilis doloremque, dignissimos incidunt.
-							Ea consectetur corrupti id illum omnis consequatur adipisci harum sequi,
-							sit magnam dignissimos eaque ipsum quaerat maxime cumque exercitationem
-							esse, voluptates quam.
-						</p>
-					</Divider>
-					<Divider layout="vertical" />
-					<Divider align="left">
-						<div className="inline-flex align-items-center">
-							<b className="fs-3">Completado</b>
-						</div>
-						<p>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam quis
-							pariatur, veniam non sit quasi dolor iste dicta voluptatem perferendis
-							excepturi rem reiciendis vero facilis doloremque, dignissimos incidunt.
-							Ea consectetur corrupti id illum omnis consequatur adipisci harum sequi,
-							sit magnam dignissimos eaque ipsum quaerat maxime cumque exercitationem
-							esse, voluptates quam.
-						</p>
-					</Divider>
-				</div> */}
 			<ModalMeta show={isModalOpenMetas} onHide={hideModal} />
+			<ModalMetaxVendedor show={isModalOpenMetasxVendedor} onHide={hideModalMetaxVendedor} data={dataMeta} isLoading={isLoading}/>
 		</>
 	);
 };

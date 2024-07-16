@@ -27,12 +27,12 @@ export const ModalAccesorio = ({show, hide, data}) => {
 	}
 	const submitAccesorio=(e)=>{
 		e.preventDefault()
-		const { precio_unitario, nombre_producto, stock } = accesorioSelect;
+		const { venta, nombre_producto, stock } = accesorioSelect;
 		dispatch(onAddDetalleProductoAccesorios({...formState, 
 				id: randomFunction(50, 'PROD'), 
-				precio_unitario,
+				precio_unitario: venta,
 				nombre_producto, 
-				tarifa: precio_unitario * cantidad
+				tarifa: venta * cantidad
 			}))
 		onCancelModal()
 	}

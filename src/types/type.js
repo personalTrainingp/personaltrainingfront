@@ -2,6 +2,14 @@ export const arrayEstados = [
 	{ label: 'Activo', value: true },
 	{ label: 'Inactivo', value: false },
 ];
+export const typesCRUD = [
+	{ method: 'CREAR', id: 1 },
+	{ method: 'ACTUALIZAR', id: 2 },
+	{ method: 'OBTENER', id: 3 },
+	{ method: 'ELIMINAR', id: 4 },
+	{ method: 'PATCH?', id: 5 },
+];
+
 export const arrayCitasTest = [
 	{ label: 'Cita nutricional de regalo | 4', cantidad: 4, value: 250 },
 	{ label: 'Promocion cita nutricional 2x1 | 2', cantidad: 2, value: 249 },

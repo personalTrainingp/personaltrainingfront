@@ -30,6 +30,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	/**
 	 * Toggle the leftmenu when having mobile screen
 	 */
+	// const uid_user = localStorage.getItem('uid-user')
 	const handleLeftMenuCallBack = () => {
 		if(width< 768){
 			if(sideBarType === 'full'){
@@ -94,10 +95,10 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 		updateSettings({ rightSidebar: ThemeSettings.rightSidebar.show });
 	};
 	useEffect(() => {
-		obtenerUser(user.uid)
+		obtenerUser()
 		console.log("usuario presente");
 	}, [])
-
+	console.log(usuarioObtenido);
 	return (
 		<div className={'navbar-custom'}>
 			<div className="topbar container-fluid">
@@ -139,7 +140,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 						<ProfileDropdown
 							userImage={userImage}
 							menuItems={profileMenus}
-							username={user.name?user.name:'unnamed'}
+							username={usuarioObtenido.usuario_user?usuarioObtenido.usuario_user:'unnamed'}
 							userTitle={`Rol: ${usuarioObtenido.rol_user?arrayRoles.find(e=>e.value===usuarioObtenido.rol_user).label:'SIN ROLE'}`}
 						/>
 					</li>

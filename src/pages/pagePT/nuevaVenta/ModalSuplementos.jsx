@@ -27,12 +27,12 @@ export const ModalSuplementos = ({show, hide, data}) => {
     }
     const submitSuplementos = (e) => {
         e.preventDefault()
-		const { precio_unitario, nombre_producto, stock } = suplementoSelect;
+		const { venta, nombre_producto, stock } = suplementoSelect;
         dispatch(onAddDetalleProductoSuplementos({...formState, 
             id: randomFunction(50, 'SUPL'), 
-			precio_unitario,
+			precio_unitario: venta,
             nombre_producto,
-            tarifa: precio_unitario * cantidad
+            tarifa: venta * cantidad
         }))
         onCancelModal()
     }
@@ -42,6 +42,7 @@ export const ModalSuplementos = ({show, hide, data}) => {
 		)
 		setSuplementoSelect(onSuplemento)
 	}, [id_producto])
+	
     return (
     <>
     

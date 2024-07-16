@@ -1,6 +1,6 @@
 import { Row, Col, Card, Button, Table} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ModalAccesorio } from './ModalAccesorio';
 import { useSelector } from 'react-redux';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
@@ -18,14 +18,14 @@ import { useDispatch } from 'react-redux';
 import { RESET_STATE_VENTA } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 
-const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo }) => {
+const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const [modalAcc, setModalAcc] = useState(false)
 	const [modalSupl, setModalSupl] = useState(false)
 	const [modalPgm, setModalPgm] = useState(false)
 	const [modalVentaFitology, setmodalVentaFitology] = useState(false)
 	const [modalNutricion, setmodalNutricion] = useState(false)
 	const [modalTransMem, setmodalTransMem] = useState(false)
-	const { startRegisterVenta } = useVentasStore()
+	const { startRegisterVenta, msgBox } = useVentasStore()
 	const dispatch = useDispatch()
 	const ClickOpenModalAcc = ()=>{
 		setModalAcc(true)
@@ -64,18 +64,18 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo }) => {
 			</>
 		)
 	}
-	const onSubmitFormVentaANDnew = ()=>{
-		startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo})
+	const onSubmitFormVentaANDnew = async()=>{
+		await startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo}, funToast)
 		dispatch(RESET_STATE_VENTA())
+		// await funToast(msgBox.severity, msgBox.summary, msgBox.detail, msgBox.label, msgBox.life)
 	}
 	const onSubmitFormVenta = async()=>{
 		startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo})
-		// onSubmitFormVentaANDnew()
+		// onSubmitFormVentaANDnew()   
 	}
 	return (
 		<>
 		<Row>
-
 			<Col>
 				{/* <h4 className="mt-2">Elige la venta que se va a hacer:</h4> */}
 				<Row>
@@ -240,13 +240,11 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo }) => {
 								</>
 							)}
 							<Button className={'m-1'} onClick={onSubmitFormVentaANDnew}>Guardar y Nuevo</Button>
-							<Button className={'m-1'} onClick={onSubmitFormVenta}>Guardar y salir</Button>
 							</>
 							)}
 							</Col>
 						</>
 					)
-
 					}
 				</Row>
 			</Col>

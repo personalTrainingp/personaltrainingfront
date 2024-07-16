@@ -20,6 +20,9 @@ export const MoneyFormatter = ({ amount }) => {
   });
   return formattedAmount
 }
+export const formateo_Moneda = (current)=>{
+  return <MoneyFormatter amount={current}/>
+}
 
 
 export const DateMask = ({date, format}) => {

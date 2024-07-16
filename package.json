@@ -39,6 +39,7 @@
     "easymde": "^2.18.0",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
+    "firebase": "^10.12.3",
     "flatpickr": "^4.6.13",
     "frappe-gantt": "^0.6.1",
     "google-maps-react": "^2.0.6",
@@ -78,6 +79,7 @@
     "simplebar-react": "^3.2.4",
     "styled-components": "^6.1.8",
     "sweetalert2": "^11.10.7",
+    "uuid": "^10.0.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

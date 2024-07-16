@@ -1,0 +1,1 @@
+export { VentaxSemana as default } from './VentaxSemana'

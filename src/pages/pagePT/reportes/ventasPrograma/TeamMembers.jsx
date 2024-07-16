@@ -22,14 +22,8 @@ const TeamMembers = ({ members, title }) => {
 							)}
 							key={index.toString()}
 						>
-							<img
-								className="me-3 rounded-circle"
-								src={member.avatar}
-								width="40"
-								alt=""
-							/>
 							<div className="w-100 overflow-hidden">
-								<h5 className="mt-0 mb-1 fw-semibold">{member.name}</h5>
+								<h5 className="mt-0 mb-1 fw-semibold">{member.name} (20) </h5>
 							</div>
 						</div>
 					);

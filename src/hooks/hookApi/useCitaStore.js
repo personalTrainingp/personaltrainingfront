@@ -71,7 +71,7 @@ export const useCitaStore = () => {
 	};
 	const obtenerCitasxCliente = async (id) => {
 		try {
-			const { data } = await PTApi.get(`/parametros/get_params/citadisponible/${id}`);
+			const { data } = await PTApi.get(`/parametros/get_params/cita-disponible/${id}`);
 			setDataCitaxCLIENTE(data);
 		} catch (error) {
 			console.log(error);

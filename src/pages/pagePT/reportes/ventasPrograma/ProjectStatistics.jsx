@@ -2,8 +2,9 @@ import { Card } from 'react-bootstrap';
 import Chart from 'react-apexcharts';
 
 import { CardTitle } from '@/components';
+import { MoneyFormatter } from '@/components/CurrencyMask';
 
-const ProjectStatistics = () => {
+const ProjectStatistics = ({data}) => {
 	const apexOpts = {
 		chart: {
 			height: 327,
@@ -30,8 +31,9 @@ const ProjectStatistics = () => {
 		},
 		yaxis: {
 			title: {
-				text: '$ (thousands)',
+				text: 'S/ (VENTAS)',
 			},
+			
 		},
 		fill: {
 			opacity: 1,
@@ -49,35 +51,34 @@ const ProjectStatistics = () => {
 		tooltip: {
 			y: {
 				formatter: function (val) {
-					return val;
+					return formatCurrency(val);
 				},
 			},
 		},
 	};
-
-	// chart data
-	const series = [
-		{
-			name: 'Mejor año: 2021',
-			data: [20, 76, 85, 101, 98, 87, 105, 91, 114, 94, 100, 20],
-		},
-		{
-			name: 'Año 2024',
-			data: [10, 44, 55, 57, 56, 61, 58, 63, 60, 66, 21, 30],
-		},
-	];
+	const formatCurrency = (value) => {
+		return value.toLocaleString('es-PE', { style: 'currency', currency: 'PEN' });
+	};
+	// data = data.map(e=>{
+	// 	return {
+	// 		data: e.data.map(m=>{
+	// 			return m;
+	// 		}),
+	// 		name: e.name
+	// 	}
+	// })
 
 	return (
 		<Card>
 			<Card.Body>
 				<CardTitle
 					containerClass="d-flex align-items-center justify-content-between"
-					title="Project Statistics"
+					title="Comparativa con el mejor año"
 				/>
 				<div style={{ height: '327px' }} className="mt-3 chartjs-chart">
 					<Chart
 						options={apexOpts}
-						series={series}
+						series={data}
 						type="bar"
 						height={327}
 						className="apex-charts"

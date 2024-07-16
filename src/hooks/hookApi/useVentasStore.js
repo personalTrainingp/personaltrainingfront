@@ -7,11 +7,20 @@ export const useVentasStore = () => {
 	const [dataVentas, setDataVentas] = useState([]);
 	const [dataVentaxID, setdataVentaxID] = useState({});
 	const [isLoading, setisLoading] = useState(false);
-	const startRegisterVenta = async (formState) => {
+	const [msgBox, setmsgBox] = useState({});
+	const startRegisterVenta = async (formState, funToast) => {
 		try {
+			console.log(formState);
 			const { data } = await PTApi.post('/venta/post-ventas', formState);
+			funToast('success', 'Venta', 'Venta agregada con exitos', 'success', 5000);
 		} catch (error) {
-			console.log(error);
+			funToast(
+				'error',
+				'ERROR(Tomar captura si es necesario)',
+				error.response.data,
+				'Error',
+				60000
+			);
 		}
 	};
 	const obtenerVentaporId = async (id) => {
@@ -61,6 +70,7 @@ export const useVentasStore = () => {
 		obtenerTablaVentas,
 		obtenerPDFCONTRATOgenerado,
 		obtenerVentaporId,
+		msgBox,
 		isLoading,
 		dataVentas,
 		dataVentaxID,

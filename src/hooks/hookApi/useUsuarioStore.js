@@ -18,6 +18,7 @@ import { useDispatch } from 'react-redux';
 export const useUsuarioStore = () => {
 	const dispatch = useDispatch();
 	const { user } = useSelector((e) => e.auth);
+	const [dataClixID, setdataClixID] = useState({});
 	// console.log(user);
 	const startRegisterUsuarioCliente = async (form, formData) => {
 		const { comentario_com } = form.comentarios;
@@ -89,6 +90,15 @@ export const useUsuarioStore = () => {
 					urlImg: dataImg ? dataImg.name_image : null,
 				})
 			);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerClientexID = async (id_cli) => {
+		try {
+			const { data } = await PTApi.get(`/usuario/get-cliente/id/${id_cli}`);
+			console.log(data);
+			setdataClixID(data.cliente);
 		} catch (error) {
 			console.log(error);
 		}
@@ -201,6 +211,8 @@ export const useUsuarioStore = () => {
 		obtenerOneUsuarioCliente,
 		eliminarOneUsuarioCliente,
 		startUpdateUsuarioCliente,
+		obtenerClientexID,
+		dataClixID,
 		//Empleado
 		startRegisterUsuarioEmpleado,
 		obtenerUsuariosEmpleados,

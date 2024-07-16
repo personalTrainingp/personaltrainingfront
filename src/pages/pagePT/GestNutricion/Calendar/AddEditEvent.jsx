@@ -20,20 +20,20 @@ const registerCita = {
 }
 const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	const {  daysUTC } = helperFunctions()
-	const { obtenerCitasxCliente, DataCitaxCLIENTE, onPutCita } =  useCitaStore()
+	const { obtenerCitasxCliente, DataCitaxCLIENTE, onPutCita, onPostCita } =  useCitaStore()
 	const { formState, id_cli, id_detallecita, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
 	const { obtenerParametrosClientes, DataClientes } = useTerminoStore()
 	
-	const { onPostCita } = useCitaStore()
 	
 	useEffect(() => {
 		obtenerParametrosClientes()
 	}, [])
+
 	useEffect(() => {
 		if(id_cli==0) return;
-	//   obtenerCitasxCliente(id_cli)
+	  obtenerCitasxCliente(id_cli)
 	}, [id_cli])
-
+	console.log(DataCitaxCLIENTE);
 	const onSubmitEv = ()=>{
 		const clienteSELECT= DataClientes.find(
 			(option) => option.value === id_cli
@@ -124,95 +124,25 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 									/>
 								</div>
 							</Col>
+							<Col sm={12}>
+								<div className='m-2'>
+									<label>{tipo_serv=='FITOL'?'Personal de fitology':'Nutricionista'} disponibles en ese horario:</label>
+									<Select
+										onChange={(e) => onInputChangeReact(e, 'id_empl')}
+										name="id_empl"
+										placeholder={'Seleccionar...'}
+										className="react-select"
+										classNamePrefix="react-select"
+										options={[]}
+										value={'Hola'}
+										required
+									/>
+								</div>
+							</Col>
+
 						</Row>
 					</Form>
-
 			</Dialog>
-			{/* <Modal show={show} onHide={onHide} backdrop="static" keyboard={false}>
-				<Modal.Header className="pb-2 px-4 border-bottom-0" closeButton>
-					<Modal.Title>
-						{
-							dataCita==null?
-							<h5> Crear cita: {new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
-							hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
-							</h5>
-							:
-							<h5> Editar cita: 
-								{new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
-							hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
-							</h5>
-						}
-						
-					</Modal.Title>
-				</Modal.Header>
-				<Modal.Body className="px-4 pb-4 pt-0">
-					<Form onSubmit={onSubmitEv}>
-						<Row>
-							<Col sm={12}>
-								<div className='m-2'>
-									<label>Cliente:</label>
-									<Select
-										onChange={(e) => onInputChangeReact(e, 'id_cli')}
-										name="id_cli"
-										placeholder={'Selecciona el cliente'}
-										className="react-select"
-										classNamePrefix="react-select"
-										options={DataClientes}
-										value={DataClientes.find(
-											(option) => option.value === id_cli
-										)}
-										required
-									/>
-								</div>
-							</Col>
-							<Col sm={12}>
-								<div className='m-2'>
-									<label>Citas que compro el cliente:</label>
-									<Select
-										onChange={(e) => onInputChangeReact(e, 'id_detallecita')}
-										name="id_detallecita"
-										placeholder={'Selecciona el cliente'}
-										className="react-select"
-										classNamePrefix="react-select"
-										options={arrayCitasTest}
-										value={arrayCitasTest.find(
-											(option) => option.value === id_detallecita
-										)}
-										required
-									/>
-								</div>
-							</Col>
-
-						</Row>
-
-						<Row>
-							<Col xs={8} className="text-end">
-								<Button className="btn btn-light me-1" onClick={onHide}>
-									Cerrar
-								</Button>
-								{dataCita==null && (
-									<Button variant="success" type="submit" className="btn btn-success">
-										Guardar cita
-									</Button>
-								)
-								}
-								{
-									dataCita!=null && (
-										<>
-											<Button variant="success" type="submit" className="btn btn-success">
-												Editar cita
-											</Button>
-											<Button variant="danger" type="submit" className="btn btn-success">
-												Eliminar cita
-											</Button>
-										</>
-									)
-								}
-							</Col>
-						</Row>
-					</Form>
-				</Modal.Body>
-			</Modal> */}
 		</>
 	);
 };

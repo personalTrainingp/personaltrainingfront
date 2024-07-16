@@ -6,11 +6,13 @@ import { useDispatch } from 'react-redux';
 export const useMetaStore = () => {
 	const dispatch = useDispatch();
 	const [DataAsesorxMeta, setDataAsesorxMeta] = useState([]);
+	const [dataMeta, setdataMeta] = useState({});
+	const [isLoading, setisLoading] = useState(false);
 	const startRegistrarMeta = async (formState) => {
 		try {
 			const { data } = await PTApi.post('/meta/post_meta', formState);
 			console.log(data);
-			// obtenerMetas();
+			obtenerMetas();
 		} catch (error) {
 			console.log(error);
 		}
@@ -19,6 +21,16 @@ export const useMetaStore = () => {
 		try {
 			const { data } = await PTApi.get('/meta/getMetas');
 			dispatch(onGetMetas(data.metas));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerMeta = async (id) => {
+		try {
+			setisLoading(true);
+			const { data } = await PTApi.get(`/meta/getOneMeta/${id}`);
+			setdataMeta(data.meta);
+			setisLoading(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -43,10 +55,13 @@ export const useMetaStore = () => {
 	};
 
 	return {
+		obtenerMeta,
 		obtenerMetas,
 		startRegistrarMeta,
 		obtenerMetasAsesorxMetas,
 		startRegisterMetaAsesor,
+		isLoading,
 		DataAsesorxMeta,
+		dataMeta,
 	};
 };

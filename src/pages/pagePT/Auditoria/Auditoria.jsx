@@ -12,7 +12,12 @@ import { Tag } from 'primereact/tag';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { useAuditoriaStore } from '@/hooks/hookApi/useAuditoriaStore';
 // import { CustomerService } from './service/CustomerService';
+import utc from 'dayjs/plugin/utc';
+import dayjs from 'dayjs';
+import { FormatoDateMask } from '@/components/CurrencyMask';
+import { typesCRUD } from '@/types/type';
 
+dayjs.extend(utc);
 export function Auditoria() {
     const [customers, setCustomers] = useState(null);
     const { obtenerAuditoriaTabla, dataAuditoria } = useAuditoriaStore()
@@ -82,19 +87,21 @@ export function Auditoria() {
         );
     };
     const usuarioAuthBodyTemplate = (rowData)=>{
-      return `${rowData.id_user||'Sin definido'}`
+      return `${rowData?.auth_user?.usuario_user||'Sin definido'}`
     }
     const ipAuthBodyTemplate = (rowData)=>{
       return rowData.ip_user
     }
     const actionBodyTemplate = (rowData)=>{
-      return rowData.accion
+        
+      return typesCRUD.find(e=>e.id === rowData.accion).method
     }
     const observacionBodyTemplate = (rowData)=>{
       return rowData.observacion
     }
     const fechaBodyTemplate = (rowData)=>{
-      return rowData.fecha_audit
+        let date = dayjs.utc(rowData.fecha_audit)
+      return FormatoDateMask(new Date(date.format()), 'D [de] MMMM [de] YYYY [a las] h:mm A')
     }
 
     const header = renderHeader();

@@ -3,6 +3,7 @@ import avatar from '@/assets/images/users/avatar-2.jpg'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 
 
 export const ResumenCliente = ({data}) => {
@@ -12,15 +13,15 @@ export const ResumenCliente = ({data}) => {
 	// 	CARGANDO..
 	// 	</>)
 	// }
-
     const hoy = new Date();
 	const { obtenerUltimaMembresiaPorCliente } = useTerminoStore()
+	const { obtenerClientexID, dataClixID } = useUsuarioStore()
 	const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
 	const [estadoCliente, setestadoCliente] = useState('')
-	console.log(data);
 	useEffect(() => {
 		if(data.id_cliente==0) return;
 		obtenerUltimaMembresiaPorCliente(data.id_cliente)
+		obtenerClientexID(data.id_cliente)
 	}, [data.id_cliente])
 	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresiaPorCliente
 	useEffect(() => {
@@ -45,7 +46,7 @@ export const ResumenCliente = ({data}) => {
 					<>
 						<tr className='fs-5'>
 							<td className='fw-bold font-12'>Nombres y apellidos del cliente: </td>
-							<td>{data.label_cli}</td>
+							<td>{dataClixID.nombres_apellidos_cli}</td>
 						</tr>
 						<tr className='fs-5'>
 							<td className='fw-bold font-12'>Estado del cliente: </td>
