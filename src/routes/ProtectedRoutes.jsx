@@ -82,7 +82,7 @@ export default function ProtectedRoutes() {
 			status  === 'authenticated' ? (
 				<>
 				<Route path="/*" element={<Layout />}>
-					{sections.find(e=>e.url==='/nueva-venta')&&
+					{/* {sections.find(e=>e.url==='/nueva-venta')&&
 						<Route path="nueva-venta" element={<NuevaVenta />} />
 					}
 					{sections.find(e=>e.url==='/seguimiento')&&
@@ -201,7 +201,7 @@ export default function ProtectedRoutes() {
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>
 					<Route path="pages/*" element={<OtherPages />} />
 					<Route path='home' element={<Home/>}/>
-					<Route path='*' element={<Navigate to={"/home"}/>}/>
+					<Route path='*' element={<Navigate to={"/home"}/>}/> */}
 				</Route>
 				</>
 		)
