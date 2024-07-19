@@ -17,6 +17,7 @@ import { ResumenVentaNutricion } from './ResumenVentaNutricion';
 import { useDispatch } from 'react-redux';
 import { RESET_STATE_VENTA } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
+import icon_CARRITO from '@/assets/images/carrito.png'
 
 const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const [modalAcc, setModalAcc] = useState(false)
@@ -59,9 +60,11 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	}
 	if(detalle_cli_modelo.id_cliente==0){
 		return(
-			<>
-			ELIJA UN CLIENTE PARA EMPEZAR A VENDER
-			</>
+			<div style={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', opacity: '.5'}}>
+				<img src={icon_CARRITO} style={{width: '80px', height: '80px'}}>
+				</img>
+				ELIJA UN CLIENTE PARA EMPEZAR A VENDER
+			</div>
 		)
 	}
 	const onSubmitFormVentaANDnew = async()=>{

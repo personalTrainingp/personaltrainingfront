@@ -32,7 +32,24 @@ export const useTerminoStore = () => {
 	const [programasActivos, setprogramasActivos] = useState([]);
 	const [dataCitasxCli, setdataCitasxCli] = useState([]);
 	const [dataVendedoresVendieron, setdataVendedoresVendieron] = useState([]);
-
+	const [dataInversionistas, setdataInversionistas] = useState([]);
+	const [dataColaboradores, setdataColaboradores] = useState([]);
+	const obtenerDataColaboradores = async () => {
+		try {
+			const { data } = await PTApi.get('/parametros/get_params/colaboradores');
+			setdataColaboradores(data.colaboradores);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerInversionistaRegistrados = async () => {
+		try {
+			const { data } = await PTApi.get('/parametros/get_params/inversionistas');
+			setdataInversionistas(data.inversionistas);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerUltimaMembresiaPorCliente = async (id_cli) => {
 		try {
 			const { data } = await PTApi.get(
@@ -258,6 +275,10 @@ export const useTerminoStore = () => {
 		obtenerCitasDisponiblesXcli,
 		obtenerUltimaMembresiaPorCliente,
 		obtenerVendedores_vendieron,
+		obtenerInversionistaRegistrados,
+		obtenerDataColaboradores,
+		dataColaboradores,
+		dataInversionistas,
 		dataVendedoresVendieron,
 		dataCitasxCli,
 		programasActivos,

@@ -20,7 +20,7 @@ const ProfileDropdown = ({ userTitle, username, menuItems, userImage }) => {
 				className="nav-link dropdown-toggle arrow-none nav-user px-2"
 			>
 				<span className="account-user-avatar">
-					<img src={userImage} className="rounded-circle" width={32} alt="user" />
+					{/* <img src={userImage} className="rounded-circle" width={32} alt="user" /> */}
 				</span>
 				<span className="d-lg-flex flex-column gap-1 d-none">
 					<h5 className="my-0">{username}</h5>

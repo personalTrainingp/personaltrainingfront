@@ -10,6 +10,7 @@ import { Home } from '@/pages/pagePT/Home';
 import { PerfilPrograma } from '@/pages/pagePT/GestProgramas/PerfilPrograma';
 import { useRoleStore } from '@/hooks/hookApi/useRoleStore';
 import CrearCitasNutricion from '@/pages/pagePT/GestNutricion';
+import GestCongelamiento from '@/pages/pagePT/GestCongelamiento';
 
 
 
@@ -32,8 +33,7 @@ const GestionDescuentos= lazy(()=> import('../pages/pagePT/GestDescuentos'))
 const PerfilEmpleado = lazy(()=> import('../pages/pagePT/GestEmpleados/Perfil'))
 const GestionVenta = lazy(() => import('../pages/pagePT/GestVentas'));
 const GestionProspectos = lazy(()=> import('../pages/pagePT/GestProspectos'))
-const GestionCongelamientos = lazy(()=> import('../pages/pagePT/GestProspectos'))
-const GestionRegalos = lazy(()=> import('../pages/pagePT/GestProspectos'))
+const GestionExtensionMembresia = lazy(()=> import('../pages/pagePT/GestExtensionMembresia'))
 const GestionAuditoria = lazy(()=> import('../pages/pagePT/Auditoria'))
 const GestionComision = lazy(()=> import('../pages/pagePT/GestComision'))
 const ServFitology = lazy(()=> import('../pages/pagePT/ServFitology'))
@@ -42,6 +42,8 @@ const ReportePorProgramas = lazy(()=>import('../pages/pagePT/reportes/ventasProg
 const ReporteTotalVentas = lazy(()=>import('../pages/pagePT/reportes/totalVentas'))
 const ReporteVentasAsesor = lazy(()=>import('../pages/pagePT/reportes/ventasAsesor'))
 const ReporteVentasporSemana = lazy(()=>import('../pages/pagePT/reportes/ventaPorSemana'))
+const AportesIngresos = lazy(()=>import('../pages/pagePT/GestAportesIngresos'))
+
 // const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
 // const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
 // const PerfilPrograma = lazy(()=> import('../pages/pagePT/GestProgramas/PerfilPrograma'))
@@ -152,11 +154,7 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/extension/congelamiento') &&
-						<Route path='extension/congelamiento' element={<GestionCongelamientos/>}/>
-					}
-					{
-						sections.find(e=>e.url==='/extension/regalos') &&
-						<Route path='extension/regalos' element={<GestionRegalos/>}/>
+						<Route path='extension/congelamiento' element={<GestionExtensionMembresia/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/auditoria') &&
@@ -194,6 +192,11 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/reporte') &&
 						<Route path='reporte/venta-semana' element={<ReporteVentasporSemana/>}/>
 					}
+					{
+						sections.find(e=>e.url==='/aporte-ingresos') &&
+						<Route path='aporte-ingresos' element={<AportesIngresos/>}/>
+					}
+
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>
 					<Route path="pages/*" element={<OtherPages />} />

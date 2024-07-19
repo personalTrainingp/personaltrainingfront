@@ -22,6 +22,10 @@ export const arrayMonedas = [
 	{ label: 'Soles', value: 'PEN' },
 	{ label: 'Dolares', value: 'USD' },
 ];
+export const arrayGrupos = [
+	{ label: 'REDUCTO', value: 'REDUCTO' },
+	{ label: 'TARATA', value: 'TARATA' },
+];
 export const arrayEstadoTask = [
 	{ label: 'Confirmado', value: 500 },
 	{ label: 'Cancelado', value: 501 },

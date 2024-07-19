@@ -31,7 +31,6 @@ export const NuevaVenta2 = () => {
     
 		<Toast ref={refToast}/>
     <PageBreadcrumb title="Nueva venta" subName="ventas" />
-    <Card>
       <Row>
         <Col lg={3}>
             <CardPago venta={venta} dataPagos={datos_pagos}/>
@@ -42,7 +41,6 @@ export const NuevaVenta2 = () => {
             <CardVenta dataVenta={venta} detalle_cli_modelo={detalle_cli_modelo} datos_pagos={datos_pagos} funToast={showToastVenta}/>
         </Col>
       </Row>
-    </Card>
     {/* <Row>
         <Col lg={3}>
             
