@@ -21,7 +21,7 @@ import { ModalAportante } from './ModalAportante';
 import { useAportesIngresosStore } from '@/hooks/hookApi/useAportesIngresosStore';
 import { confirmDialog } from 'primereact/confirmdialog';
 
-export const GestAportesIngresos = () => {
+export const GestAportesIngresos = ({showToast}) => {
   let emptyProduct = {
 		id: null,
 		name: '',
@@ -47,7 +47,7 @@ export const GestAportesIngresos = () => {
 	const dt = useRef(null);
 	const {dataView} = useSelector((e) => e.DATA);
     const { obtenerProspectoxID, prospectoxID } = useProspectoStore()
-    const { obtenerAportes, obtenerAportexID, aportexID, startDeleteAportes  } = useAportesIngresosStore()
+    const { obtenerAportes, obtenerAportexID, aportexID, startDeleteAportes, isLoading  } = useAportesIngresosStore()
 	useEffect(() => {
     obtenerAportes()
 		// ProductService.getProducts().then((data) => setProducts(data));
@@ -171,28 +171,6 @@ export const GestAportesIngresos = () => {
 			</div>
 		);
 	};
-	const imageBodyTemplate = (rowData) => {
-		return (
-			<img
-				src={`https://primefaces.org/cdn/primereact/images/product/${rowData.image}`}
-				alt={rowData.image}
-				className="shadow-2 border-round"
-				style={{ width: '64px' }}
-			/>
-		);
-	};
-
-	const priceBodyTemplate = (rowData) => {
-		return formatCurrency(rowData.price);
-	};
-
-	const ratingBodyTemplate = (rowData) => {
-		return <Rating value={rowData.rating} readOnly cancel={false} />;
-	};
-
-	const statusBodyTemplate = (rowData) => {
-		return <Tag value={rowData.inventoryStatus} severity={getSeverity(rowData)}></Tag>;
-	};
 	const [idProspecto, setidProspecto] = useState(0)
 	const [viewProspecto, setviewProspecto] = useState(false)
 
@@ -297,7 +275,7 @@ export const GestAportesIngresos = () => {
 				{/* <Column field="tb_ProgramaTraining.name_pgm" header="Receptor" sortable style={{ minWidth: '12rem' }}></Column> */}
 				<Column header="Action" style={{ minWidth: '12rem' }} body={actionBodyTemplate}></Column>
 			</DataTable>
-            <ModalAportante show={modalProspecto} onHide={cancelModal} data={aportexID}/>
+            <ModalAportante show={modalProspecto} onHide={cancelModal} data={aportexID} showToast={showToast} isLoading={isLoading}/>
 			<Dialog
 				visible={deleteProductDialog}
 				style={{ width: '32rem' }}
