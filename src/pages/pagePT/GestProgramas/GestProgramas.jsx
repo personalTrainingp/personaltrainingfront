@@ -25,6 +25,7 @@ export const GestProgramas = () => {
 	const [isActive, setisActive] = useState(true);
 	const [viewImage, setviewImage] = useState(sinImage);
 	const { datapgmPT } = useSelector((e) => e.programaPT);
+	const [fileAvatar, setfileAvatar] = useState(null)
 	// const [selectedFile, setSelectedFile] = useState(sinImage);
 	const { startRegisterProgramaTraining, startRegisterLogoTest, startObtenerTBProgramaPT } = useProgramaTrainingStore();
 	const {
@@ -93,11 +94,11 @@ export const GestProgramas = () => {
 	const onStartSubmitRegister = (e) => {
 		e.preventDefault();
 		const formData = new FormData();
-		formData.append('logo', formStateImg.base64_pgm);
+		formData.append('file', fileAvatar);
 		startRegisterLogoTest(formData, formState);
-		onResetForm()
-		setonModal(false)
-		setviewImage(sinImage)
+		// onResetForm()
+		// setonModal(false)
+		// setviewImage(sinImage)
 	};
 	const ViewDataImg = (e) => {
 		const file = e.target.files[0];
@@ -106,6 +107,7 @@ export const GestProgramas = () => {
 			setviewImage(reader.result);
 		};
 		reader.readAsDataURL(file);
+		setfileAvatar(file)
 	};
 	return (
 		<>
@@ -182,7 +184,7 @@ export const GestProgramas = () => {
 										required
 									/>
 								</div>
-								<Button type="submit">Registrar informacion</Button>
+								<Button type="submit">Registrar informacionnn</Button>
 							</Col>
 						</Row>
 					</form>

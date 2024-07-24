@@ -8,12 +8,14 @@ import { useSelector } from 'react-redux'
 import Select from 'react-select'
 import { ModalProveedor } from '../GestProveedores/ModalProveedor'
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
+import { useTipoCambioStore } from '@/hooks/hookApi/useTipoCambioStore'
+import { CurrencyMask } from '@/components/CurrencyMask'
 const registerIvsG={
     id_tipoGasto: 0,
     id_gasto: 0,
     grupo: '',
     moneda: '',
-    monto: '',
+    monto: '1.00',
     id_tipo_comprobante: 0,
     n_comprabante: '',
     impuesto_igv: false,
@@ -34,6 +36,10 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     }
     const [grupoGasto, setgrupoGasto] = useState([])
     const [gastoxGrupo, setgastoxGrupo] = useState([])
+    const { obtenerParametrosGastosFinanzas } = useGf_GvStore()
+    useEffect(() => {
+      obtenerParametrosGastosFinanzas()
+    }, [])
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
     const { obtenerParametroPorEntidadyGrupo: obtenerParametroTipoComprobante, DataGeneral: DataTipoComprobante } = useTerminoStore()
     const {obtenerParametrosProveedor} = useProveedorStore()
@@ -41,6 +47,10 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const { obtenerParametrosFormaPago, DataFormaPago } = useTerminoStore()
     const { obtenerParametrosBancos, DataBancos } = useTerminoStore()
     const { startRegistrarGastos, startActualizarGastos } = useGf_GvStore()
+    const { obtenerTipoCambioPorFecha, tipocambio } = useTipoCambioStore()
+    useEffect(() => {
+        obtenerTipoCambioPorFecha(new Date().toLocaleDateString())
+    }, [])
     
 	const { dataProvCOMBO } = useSelector(e=>e.prov)
     const { formState, 
@@ -64,6 +74,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             onInputChange, 
             onInputChangeReact, 
             onResetForm ,
+            onInputChangeMonto,
             onInputChangeFunction
         } = useForm(data?data:registerIvsG)
         const arrayGrupo = dataParametrosGastos.map(e=>{
@@ -141,7 +152,18 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             onShow()
         }
 
-        const date = new Date(fec_comprobante);
+        const [onM, setonM] = useState('')
+        useEffect(() => {
+            if(show==true && !isLoading){
+                setonM(tipocambio?(tipocambio.precio_venta*formState.monto).toFixed(2):'S/N')
+                //${!isLoading?tipocambio?(tipocambio.precio_venta*formState.monto.replace(/,/g, '')).toFixed(2):'S/N':'cargando'}
+            }
+        }, [show===true, formState, isLoading])
+        
+        const TipoMonedas = [
+            { label: 'Soles', value: 'PEN' },
+            { label: `Dolares - ${onM}`, value: 'USD' },
+        ];
   return (
     <>
     <Modal size='xl' onHide={onClickCancelModal} show={show}>
@@ -226,8 +248,8 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                     placeholder={'Seleccionar la moneda'}
                                     className="react-select"
                                     classNamePrefix="react-select"
-                                    options={arrayMonedas}
-                                    value={arrayMonedas.find(
+                                    options={TipoMonedas}
+                                    value={TipoMonedas.find(
                                         (option) => option.value === moneda
                                     )}
                                     required
@@ -244,7 +266,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                         name="monto"
                                         id="monto"
                                         value={monto}
-                                        onChange={onInputChange}
+                                        onChange={(e)=>onInputChangeMonto(e)}
                                         placeholder="EJ. 0.00"
                                         required
                                     />

@@ -15,19 +15,23 @@ import { Slider } from 'primereact/slider';
 import { Tag } from 'primereact/tag';
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
+import dayjs from 'dayjs';
 import { FormatoDateMask } from '@/components/CurrencyMask';
+import utc from 'dayjs/plugin/utc';
+import { TabPanel, TabView } from 'primereact/tabview';
+dayjs.extend(utc);
 
-function obtenerMayorExtensionFin(extensions) {
-	let mayorFecha = '';
-	extensions.forEach((extension) => {
-		if (mayorFecha === '' || new Date(extension.extension_fin) > new Date(mayorFecha)) {
-			mayorFecha = extension.extension_fin;
-		}
-	});
+// function obtenerMayorExtensionFin(extensions) {
+// 	let mayorFecha = '';
+// 	extensions.forEach((extension) => {
+// 		if (mayorFecha === '' || new Date(extension.extension_fin) > new Date(mayorFecha)) {
+// 			mayorFecha = extension.extension_fin;
+// 		}
+// 	});
     
-    console.log(extensions);
-	return new Date(mayorFecha);
-}
+//     console.log(extensions);
+// 	return new Date(mayorFecha);
+// }
 function encontrarObjeto(array, fecha_act) {
     //DESTRUCUTRANDO EL ARRAY
     // const { ... } = array;
@@ -49,7 +53,7 @@ function encontrarObjeto(array, fecha_act) {
     // Retornar null si no se encuentra ningún objeto
     return null;
   }
-export const TableSeguimiento = () => {
+export const TableSeguimiento = ({dae}) => {
 	const [customers, setCustomers] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedCustomers, setSelectedCustomers] = useState([]);
@@ -99,28 +103,30 @@ export const TableSeguimiento = () => {
 	};
 
 	useEffect(() => {
-		obtenerReporteSeguimiento();
-	}, []);
-	useEffect(() => {
 		const fetchData = () => {
-			setCustomers(getCustomers(reporteSeguimiento));
+			setCustomers(getCustomers(dae));
 			setLoading(false);
 		};
 		fetchData();
-		// initFilters();
-	}, [reporteSeguimiento]);
+	}, [dae]);
 
 	const getCustomers = (data) => {
 		return [...(data || [])].map((d) => {
-			d.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} / ${d.tb_semana_training?.semanas_st} Semanas`;
-			d.vencimiento_REGALOS_CONGELAMIENTO = new Date(
-				`${d.tb_extension_membresia.length > 0 ? new Date(obtenerMayorExtensionFin(d.tb_extension_membresia)) : new Date(d.fec_fin_mem)}`
-			);
-            d.dias = diasLaborables(new Date(), d.vencimiento_REGALOS_CONGELAMIENTO)
-			return d;
+			
+            // Crea una copia del objeto antes de modificarlo
+            let newItem = { ...d };
+			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} / ${d.tb_semana_training?.semanas_st} Semanas`;
+			let fechaaaa = dayjs.utc(d.fec_fin_mem_new)
+			newItem.fecha_fin_new = new Date(fechaaaa.format()).toISOString()
+			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
+			newItem.diasFaltan = diasLaborables(new Date(), d.fec_fin_mem_new)
+			// d.vencimiento_REGALOS_CONGELAMIENTO = new Date(
+			// 	`${new Date(d.fec_fin_mem)}`
+			// );
+            // d.dias = ''
+			return newItem;
 		});
 	};
-
 	const formatDate = (value) => {
 		return value.toLocaleDateString('en-US', {
 			day: '2-digit',
@@ -130,14 +136,8 @@ export const TableSeguimiento = () => {
 	};
 	const diasPorTerminarBodyTemplate = (rowData) => {
 		const { diasLaborables, daysUTC } = helperFunctions();
-		if (rowData.tb_extension_membresia?.length > 0) {
-			const fecha_fin_nueva = new Date(
-				obtenerMayorExtensionFin(rowData.tb_extension_membresia)
-			);
-			return diasLaborables(new Date(), fecha_fin_nueva);
-		}
 
-		return diasLaborables(new Date(), rowData.fec_fin_mem);
+		return 'd';
 	};
 
 	const onGlobalFilterChange = (e) => {
@@ -166,36 +166,42 @@ export const TableSeguimiento = () => {
 		);
 	};
 	const dateBodyTemplate = (rowData) => {
-		return FormatoDateMask(rowData.vencimiento_REGALOS_CONGELAMIENTO, 'D [de] MMMM [de] YYYY');
+		// console.log(rowData); JSON.stringify(rowData.fecha_fin_new)
+		//dayjs(rowData.fecha_fin_new).format('D [de] MMMM [de] YYYY')
+		return <div className="flex align-items-center gap-2">
+                
+                <span>{FormatoDateMask(rowData.fec_fin_mem_new, 'D [de] MMMM [de] YYYY') }</span>
+            </div>
 	};
 	const statusBodyTemplate = (rowData) => {
         if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null){
-            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && rowData.dias<=0) {
+            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date(), rowData.fec_fin_mem_new)<=0) {
                 return 'INACTIVO'
             }
-            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && rowData.dias>0){
+            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date(), rowData.fec_fin_mem_new)>0){
                 return 'ACTIVO'
             }
         }
 		return encontrarObjeto(rowData.tb_extension_membresia, new Date()).tipo_extension;
 	};
 
-	const dateFilterTemplate = (options) => {
-		return (
-			<Calendar
-				value={options.value}
-				onChange={(e) => options.filterCallback(e.value, options.index)}
-				dateFormat="mm/dd/yy"
-				placeholder="mm/dd/yyyy"
-				mask="99/99/9999"
-			/>
-		);
-	};
+	// const dateFilterTemplate = (options) => {
+	// 	return (
+	// 		<Calendar
+	// 			value={options.value}
+	// 			onChange={(e) => options.filterCallback(e.value, options.index)}
+	// 			dateFormat="mm/dd/yy"
+	// 			placeholder="mm/dd/yyyy"
+	// 			mask="99/99/9999"
+	// 		/>
+	// 	);
+	// };
 
 	const header = renderHeader();
-
 	return (
-		<div className="card">
+		<TabView>
+			<TabPanel header="Activos">
+
 			<DataTable
 				value={customers}
 				paginator
@@ -230,15 +236,13 @@ export const TableSeguimiento = () => {
 					filterPlaceholder="Search by country"
 				/>
 				<Column
-					field="vencimiento_REGALOS_CONGELAMIENTO"
 					header="Vencimiento"
 					sortable
-					filterField="vencimiento_REGALOS_CONGELAMIENTO"
 					dataType="date"
 					style={{ minWidth: '12rem' }}
 					body={dateBodyTemplate}
-					filter
-					filterElement={dateFilterTemplate}
+					// filter
+					// filterElement={dateFilterTemplate}
 				/>
 				<Column
 					field="dias"
@@ -260,6 +264,10 @@ export const TableSeguimiento = () => {
                     // filterElement={statusFilterTemplate} 
                     />
 			</DataTable>
-		</div>
+			</TabPanel>
+			<TabPanel header="Inactivos">
+
+			</TabPanel>
+		</TabView>
 	);
 };

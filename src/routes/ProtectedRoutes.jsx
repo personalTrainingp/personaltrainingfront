@@ -11,6 +11,7 @@ import { PerfilPrograma } from '@/pages/pagePT/GestProgramas/PerfilPrograma';
 import { useRoleStore } from '@/hooks/hookApi/useRoleStore';
 import CrearCitasNutricion from '@/pages/pagePT/GestNutricion';
 import GestCongelamiento from '@/pages/pagePT/GestCongelamiento';
+import { Skeleton } from 'primereact/skeleton';
 
 
 
@@ -43,7 +44,9 @@ const ReporteTotalVentas = lazy(()=>import('../pages/pagePT/reportes/totalVentas
 const ReporteVentasAsesor = lazy(()=>import('../pages/pagePT/reportes/ventasAsesor'))
 const ReporteVentasporSemana = lazy(()=>import('../pages/pagePT/reportes/ventaPorSemana'))
 const AportesIngresos = lazy(()=>import('../pages/pagePT/GestAportesIngresos'))
-
+const Terminologias = lazy(()=>import('../pages/pagePT/Terminologias'))
+const ReporteEgresos = lazy(()=>import('../pages/pagePT/reportes/reporteEgresos'))
+const ReporteGerenciales = lazy(()=>import('../pages/pagePT/reportes/reporteGerenciales'))
 // const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
 // const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
 // const PerfilPrograma = lazy(()=> import('../pages/pagePT/GestProgramas/PerfilPrograma'))
@@ -71,7 +74,10 @@ export default function ProtectedRoutes() {
 	useEffect(() => {checkAuthToken()}, [])
 	if (status === 'checking') {
 		return(
-			<h3>Cargando...</h3>
+			<div className="border-round border-1 surface-border p-4 d-flex">
+				<Skeleton width="300px" height="85vh" className='m-2'></Skeleton>
+				<Skeleton width="100%" height="85vh" className='m-2'></Skeleton>
+			</div>
 		)
 	}
 	// console.log(sections);
@@ -195,6 +201,18 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/aporte-ingresos') &&
 						<Route path='aporte-ingresos' element={<AportesIngresos/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/configuracion-terminos') &&
+						<Route path='configuracion-terminos' element={<Terminologias/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte-admin/reporte-egresos') &&
+						<Route path='reporte-admin/reporte-egresos' element={<ReporteEgresos/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte-admin/reporte-gerencial') &&
+						<Route path='reporte-admin/reporte-gerencial' element={<ReporteGerenciales/>}/>
 					}
 
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>

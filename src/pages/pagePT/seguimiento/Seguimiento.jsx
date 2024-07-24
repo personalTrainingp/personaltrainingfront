@@ -8,15 +8,18 @@ import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
 import { useEffect } from 'react';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import {TableSeguimiento} from './TableSeguimiento';
+import { useSelector } from 'react-redux';
 
 
 
 export const Seguimiento = () => {
-  const { obtenerReporteSeguimiento, reporteSeguimiento } = useReporteStore()
+  const { obtenerReporteSeguimiento } = useReporteStore()
+  const { dataView } = useSelector(e=>e.DATA)
   const { diasLaborables, daysUTC } = helperFunctions()
   useEffect(() => {
     obtenerReporteSeguimiento()
   }, [])
+  console.log(dataView);
   return (
     <>
     <PageBreadcrumb title="Seguimientos" subName="Ventas" />
@@ -27,7 +30,7 @@ export const Seguimiento = () => {
             <Col>
             <Card>
                 <Card.Body>
-                <TableSeguimiento/>
+                <TableSeguimiento dae={dataView} />
                 </Card.Body>
             </Card>
             </Col>

@@ -20,6 +20,16 @@ export const MoneyFormatter = ({ amount }) => {
   });
   return formattedAmount
 }
+export const FUNMoneyFormatter = (amount) => {
+  const formattedAmount = accounting.formatMoney(amount, {
+    symbol: 'S/ ',  // Símbolo de la moneda
+    precision: 2, // Precisión de decimales
+    thousand: ',', // Separador de miles
+    decimal: '.',  // Separador decimal
+    format: '%s%v' // "%s" es el símbolo de la moneda y "%v" es el valor numérico
+  });
+  return formattedAmount
+}
 export const formateo_Moneda = (current)=>{
   return <MoneyFormatter amount={current}/>
 }

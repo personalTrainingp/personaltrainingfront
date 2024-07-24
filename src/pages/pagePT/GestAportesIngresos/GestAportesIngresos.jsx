@@ -20,8 +20,7 @@ import { ModalInfoProspecto } from './ModalInfoProspecto';
 import { ModalAportante } from './ModalAportante';
 import { useAportesIngresosStore } from '@/hooks/hookApi/useAportesIngresosStore';
 import { confirmDialog } from 'primereact/confirmdialog';
-
-export const GestAportesIngresos = ({showToast}) => {
+export const GestAportesIngresos = () => {
   let emptyProduct = {
 		id: null,
 		name: '',
@@ -33,7 +32,9 @@ export const GestAportesIngresos = ({showToast}) => {
 		rating: 0,
 		inventoryStatus: 'INSTOCK',
 	};
-
+  const showToast = (severity, summary, detail, label) => {
+    toast.current.show({ severity, summary, detail, label });
+};
 	const [products, setProducts] = useState(null);
 	const [productDialog, setProductDialog] = useState(false);
 	const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -252,6 +253,7 @@ export const GestAportesIngresos = ({showToast}) => {
 			<PageBreadcrumb title="Aportes de inversion" subName="E" />
 			<Toolbar left={leftToolbarTemplate}></Toolbar>
 
+      <Toast ref={toast}/>
 			<DataTable
 				ref={dt}
 				value={dataView}
@@ -268,11 +270,8 @@ export const GestAportesIngresos = ({showToast}) => {
 			>
 				<Column field="id" header="Id" sortable></Column>
 				<Column field="tb_inversionista.nombres_completos" header="Inversionista" sortable style={{ minWidth: '12rem' }}></Column>
-				<Column field="grupo" header="Grupo" sortable style={{ minWidth: '12rem' }}></Column>
 				<Column field="fecha_aporte" header="Fecha de aporte" sortable style={{ minWidth: '12rem' }} body={fechaRegistroBodyTemplate}></Column>
-				<Column field="tb_empleado.nombres_apellidos_empl" header="Receptor" sortable style={{ minWidth: '12rem' }}></Column>
 				<Column header="Monto" sortable style={{ minWidth: '12rem' }} body={montoRegistroBodyTemplate}></Column>
-				{/* <Column field="tb_ProgramaTraining.name_pgm" header="Receptor" sortable style={{ minWidth: '12rem' }}></Column> */}
 				<Column header="Action" style={{ minWidth: '12rem' }} body={actionBodyTemplate}></Column>
 			</DataTable>
             <ModalAportante show={modalProspecto} onHide={cancelModal} data={aportexID} showToast={showToast} isLoading={isLoading}/>

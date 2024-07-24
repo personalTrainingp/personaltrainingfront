@@ -13,7 +13,6 @@ export const GestGastosFvsV = () => {
   const {dataParametrosGastos} = useSelector(u=>u.finanzas)
   return (
     <>
-        <PageBreadcrumb title="Parametros" subName="Projects" />
         <Row>
         <Table
             columns={columnsParamsG}

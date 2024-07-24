@@ -96,7 +96,7 @@ export const ModalAportante = ({show, onHide, data}) => {
         >
             <form>
                 <Row>
-                    <Col lg={7}>
+                    <Col lg={12}>
                         <div className="field">
                             <label htmlFor="id_inversionista" className="font-bold">
                                 Inversionista*
@@ -116,7 +116,7 @@ export const ModalAportante = ({show, onHide, data}) => {
 							/>
                         </div>
                     </Col>
-                    <Col lg={5}>
+                    {/* <Col lg={5}>
                         <div className="field">
                             <label htmlFor="grupo" className="font-bold">
                                 Grupo*
@@ -135,7 +135,7 @@ export const ModalAportante = ({show, onHide, data}) => {
                                 required
 							/>
                         </div>
-                    </Col>
+                    </Col> */}
                     <Col lg={4}>
                         <div className="field">
                             <label htmlFor="fecha_aporte" className="font-bold">
@@ -186,7 +186,7 @@ export const ModalAportante = ({show, onHide, data}) => {
                             />
                         </div>
                     </Col>
-                    <Col lg={6}>
+                    {/* <Col lg={6}>
                         <div className="field">
                             <label htmlFor="id_receptor" className="font-bold">
                                 Receptor*
@@ -225,8 +225,8 @@ export const ModalAportante = ({show, onHide, data}) => {
                                 required
 							/>
                         </div>
-                    </Col>
-                    <Col lg={6}>
+                    </Col> */}
+                    <Col lg={4}>
                         <div className="field">
                             <label htmlFor="id_forma_pago" className="font-bold">
                                 Formas de ingreso*
@@ -246,7 +246,7 @@ export const ModalAportante = ({show, onHide, data}) => {
 							/>
                         </div>
                     </Col>
-                    <Col lg={6}>
+                    <Col lg={4}>
                         <div className="field">
                             <label htmlFor="id_banco" className="font-bold">
                                 Banco*
@@ -262,6 +262,22 @@ export const ModalAportante = ({show, onHide, data}) => {
                                     (option) => option.value === id_banco
                                 )||0}
 							/>
+                        </div>
+                    </Col>
+                    <Col lg={4}>
+                        <div className="field">
+                            <label htmlFor="monto_aporte" className="font-bold">
+                                N de operacion*
+                            </label>
+                            <InputText
+                                value={monto_aporte}
+                                name='monto_aporte'
+                                placeholder='00000'
+                                type='text'
+                                onChange={onInputChange}
+                                required
+                                autoFocus
+                            />
                         </div>
                     </Col>
                     <Col lg={4}>

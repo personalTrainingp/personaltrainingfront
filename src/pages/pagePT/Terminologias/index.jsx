@@ -1,0 +1,1 @@
+export { Terminologias as default } from './Terminologias'

@@ -258,7 +258,7 @@ export default function AdvancedFilterDemo({showToast}) {
         )
     }
     return (
-        <div className="card">
+        <>
             {/* <Button onClick={onExportExcelPersonalized}>Exportar excel personalizado</Button> */}
             {/* <BtnExportExcel csvData={valueFilter} fileName={'Gastos'}/> */}
             <ExportToExcel data={valueFilter}/>
@@ -298,6 +298,6 @@ export default function AdvancedFilterDemo({showToast}) {
             </DataTable>
             
         <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
-        </div>
+        </>
     );
 }

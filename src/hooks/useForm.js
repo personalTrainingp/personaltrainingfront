@@ -34,6 +34,19 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 			[name]: value,
 		});
 	};
+	const onInputChangeMonto = ({ target }) => {
+		const { name, value, checked, type } = target;
+		// console.log({ [name]: value });
+		setFormState({
+			...formState,
+			[name]: value,
+		});
+	};
+	const valueMonto = ({ target }) => {
+		const { name, value, checked, type } = target;
+		// console.log({ [name]: value });
+		return value.replace(/,/g, '');
+	};
 	const onInputChangeReact = (value, name) => {
 		console.log(name);
 		setFormState({
@@ -119,6 +132,8 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 		onInputChangeButton,
 		onInputChangeFunction,
 		onInputChangeRange,
+		onInputChangeMonto,
+		valueMonto,
 
 		...formValidation,
 		isFormValid,
