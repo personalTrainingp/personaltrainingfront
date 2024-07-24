@@ -12,6 +12,7 @@ import { useRoleStore } from '@/hooks/hookApi/useRoleStore';
 import CrearCitasNutricion from '@/pages/pagePT/GestNutricion';
 import GestCongelamiento from '@/pages/pagePT/GestCongelamiento';
 import { Skeleton } from 'primereact/skeleton';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 
 
@@ -74,9 +75,12 @@ export default function ProtectedRoutes() {
 	useEffect(() => {checkAuthToken()}, [])
 	if (status === 'checking') {
 		return(
-			<div className="border-round border-1 surface-border p-4 d-flex">
-				<Skeleton width="300px" height="85vh" className='m-2'></Skeleton>
-				<Skeleton width="100%" height="85vh" className='m-2'></Skeleton>
+			// <div className="border-round border-1 surface-border p-4 d-flex">
+			// 	<Skeleton width="300px" height="85vh" className='m-2'></Skeleton>
+			// 	<Skeleton width="100%" height="85vh" className='m-2'></Skeleton>
+			// </div>
+			<div className='d-flex align-items-center justify-content-center' style={{height: '100vh'}}>
+				<ProgressSpinner style={{width: '50px', height: '50px'}} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" />
 			</div>
 		)
 	}
