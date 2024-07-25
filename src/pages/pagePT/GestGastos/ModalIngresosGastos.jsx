@@ -47,10 +47,10 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const { obtenerParametrosFormaPago, DataFormaPago } = useTerminoStore()
     const { obtenerParametrosBancos, DataBancos } = useTerminoStore()
     const { startRegistrarGastos, startActualizarGastos } = useGf_GvStore()
-    const { obtenerTipoCambioPorFecha, tipocambio } = useTipoCambioStore()
-    useEffect(() => {
-        obtenerTipoCambioPorFecha(new Date().toLocaleDateString())
-    }, [])
+    // const { obtenerTipoCambioPorFecha, tipocambio } = useTipoCambioStore()
+    // useEffect(() => {
+    //     obtenerTipoCambioPorFecha(new Date().toLocaleDateString())
+    // }, [])
     
 	const { dataProvCOMBO } = useSelector(e=>e.prov)
     const { formState, 
@@ -151,19 +151,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             setopenModalProv(false)
             onShow()
         }
-
-        const [onM, setonM] = useState('')
-        useEffect(() => {
-            if(show==true && !isLoading){
-                setonM(tipocambio?(tipocambio.precio_venta*formState.monto).toFixed(2):'S/N')
-                //${!isLoading?tipocambio?(tipocambio.precio_venta*formState.monto.replace(/,/g, '')).toFixed(2):'S/N':'cargando'}
-            }
-        }, [show===true, formState, isLoading])
-        
-        const TipoMonedas = [
-            { label: 'Soles', value: 'PEN' },
-            { label: `Dolares - ${onM}`, value: 'USD' },
-        ];
   return (
     <>
     <Modal size='xl' onHide={onClickCancelModal} show={show}>
@@ -248,8 +235,8 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                     placeholder={'Seleccionar la moneda'}
                                     className="react-select"
                                     classNamePrefix="react-select"
-                                    options={TipoMonedas}
-                                    value={TipoMonedas.find(
+                                    options={arrayMonedas}
+                                    value={arrayMonedas.find(
                                         (option) => option.value === moneda
                                     )}
                                     required

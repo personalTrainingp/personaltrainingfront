@@ -1,7 +1,13 @@
 import React from 'react'
+import { ResumenReporteGeneral } from './ResumenReporteGeneral/ResumenReporteGeneral'
+import { PageBreadcrumb } from '@/components'
 
 export const ReporteGerenciales = () => {
+
   return (
-    <div>ReporteGerenciales</div>
+    <>
+    <PageBreadcrumb title="Reporte gerencial" subName="reporte-gerenciales" />
+      <ResumenReporteGeneral/>
+    </>
   )
 }
