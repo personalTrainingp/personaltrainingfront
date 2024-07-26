@@ -106,7 +106,10 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 					<button className="button-toggle-menu" onClick={handleLeftMenuCallBack}>
 						<i className="mdi mdi-menu" />
 					</button>
-					<ModuloDropdown/>
+					<strong>
+						Estas en el modulo de 
+					</strong>
+						<ModuloDropdown/>
 					{/* <button
 						className={`navbar-toggle ${navOpen ? 'open' : ''}`}
 						onClick={toggleMenu}

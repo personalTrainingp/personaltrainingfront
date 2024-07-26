@@ -18,11 +18,12 @@ export const GestionGastosIngresos = () => {
     const onOpenModalIvsG = ()=>{
         setIsOpenModalIvsG(true)
     }
-    const { obtenerGastos } = useGf_GvStore()
+    const { obtenerGastos, isLoadingData } = useGf_GvStore()
     const { dataGastos } = useSelector(e=>e.finanzas)
     useEffect(() => {
       obtenerGastos()
     }, [])
+    console.log(dataGastos);
     const showToast = (severity, summary, detail, label) => {
       toast.current.show({ severity, summary, detail, label });
   };

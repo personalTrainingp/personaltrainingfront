@@ -19,6 +19,7 @@ export const useReporteStore = () => {
 	const [ventasxPrograma_clientesFrecuentes, setventasxPrograma_clientesFrecuentes] = useState(
 		{}
 	);
+	const [reportegerencial_resumenGeneral, setreportegerencial_resumenGeneral] = useState([]);
 	const dispatch = useDispatch();
 	const obtenerReporteDeEgresos = async (arrayDate) => {
 		try {
@@ -198,6 +199,78 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerReporteDeResumenUTILIDAD = async (rangoDate) => {
+		try {
+			const { data } = await PTApi.get('/reporte/reporte-resumen-utilidad', {
+				params: {
+					dateRanges: rangoDate,
+				},
+			});
+			const ingresosVentas = data.utilidades[0].map((venta) => {
+				// Sumar todos los tarifa_monto de los detalles
+				const monto_sumado = [
+					...venta.detalle_ventaProductos,
+					...venta.detalle_ventaMembresia,
+					...venta.detalle_ventaCitas,
+				].reduce((sum, detalle) => sum + (detalle.tarifa_monto || 0), 0);
+
+				return {
+					id: venta.id,
+					fecha_venta: venta.fecha_venta,
+					monto_sumado: monto_sumado,
+				};
+			});
+			// Unificar todos los datos en un solo array
+			const unifiedData = [
+				...data.utilidades[2].map((e) => ({
+					tipo: 'egreso',
+					fecha: e.fec_pago,
+					monto: e.monto,
+				})),
+				...ingresosVentas.map((v) => ({
+					tipo: 'venta',
+					fecha: v.fecha_venta,
+					monto: v.monto_sumado,
+				})),
+				...data.utilidades[1].map((a) => ({
+					tipo: 'aporte',
+					fecha: a.fecha_aporte,
+					monto: a.monto_aporte,
+				})),
+			];
+
+			// Ordenar por fecha
+			unifiedData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+			// Agrupar por fecha y calcular monto útil
+			const resultadoFinal = unifiedData.reduce((acc, current) => {
+				const fecha = current.fecha.split('T')[0]; // Tomar solo la parte de la fecha sin la hora
+				const index = acc.findIndex((item) => item.fecha === fecha);
+
+				const suma_monto_ventas = current.tipo === 'venta' ? current.monto : 0;
+				const suma_monto_aportes = current.tipo === 'aporte' ? current.monto : 0;
+				const suma_monto_egresos = current.tipo === 'egreso' ? current.monto : 0;
+				if (index === -1) {
+					acc.push({
+						fecha: fecha,
+						suma_monto_ventas: suma_monto_ventas,
+						suma_monto_aportes: suma_monto_aportes,
+						suma_monto_egresos: suma_monto_egresos,
+						monto_util: suma_monto_ventas,
+					});
+				} else {
+					acc[index].monto_util +=
+						current.tipo === 'egreso'
+							? -current.monto.toFixed(2)
+							: current.monto.toFixed(2);
+				}
+				return acc;
+			}, []);
+			setreportegerencial_resumenGeneral(resultadoFinal);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerReporteSeguimiento,
 		obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO,
@@ -206,6 +279,8 @@ export const useReporteStore = () => {
 		obtenerReporteVentasPorProgramas_x_ClientesFrecuentes,
 		obtenerReporteVentasDeProgramasPorSemanas,
 		obtenerReporteDeEgresos,
+		obtenerReporteDeResumenUTILIDAD,
+		reportegerencial_resumenGeneral,
 		egresosPorFecha_PROVEEDOR,
 		egresosPorFecha_GRUPO,
 		egresosPorFecha_GASTO,

@@ -17,6 +17,7 @@ export const useGf_GvStore = () => {
 	const dispatch = useDispatch();
 	const [gastoxID, setgastoxID] = useState({});
 	const [isLoading, setisLoading] = useState(false);
+	const [isLoadingData, setisLoadingData] = useState(false);
 	const obtenerProveedoresUnicos = async () => {
 		try {
 			const { data } = await PTApi.get('/egreso/get-proveedores-unicos');
@@ -33,7 +34,7 @@ export const useGf_GvStore = () => {
 				...formState,
 				fec_registro: new Date(),
 			});
-			obtenerGastos();
+			await obtenerGastos();
 		} catch (error) {
 			console.log(error);
 		}
@@ -45,7 +46,7 @@ export const useGf_GvStore = () => {
 				...formState,
 			});
 			console.log('sin');
-			obtenerGastos();
+			await obtenerGastos();
 		} catch (error) {
 			console.log(error);
 		}
@@ -56,15 +57,19 @@ export const useGf_GvStore = () => {
 			const { data } = await PTApi.put(`/egreso/delete-egreso/${id}`);
 			setisLoading(false);
 			console.log(data);
-			obtenerGastos();
+			await obtenerGastos();
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const obtenerGastos = async () => {
 		try {
+			setisLoadingData(true);
+			console.log('empieza');
 			const { data } = await PTApi.get('/egreso/get-egresos');
 			dispatch(onSetGastos(data.gastos));
+			console.log('termina');
+			setisLoadingData(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -101,6 +106,7 @@ export const useGf_GvStore = () => {
 		obtenerNombreGastoUnicos,
 		startActualizarGastos,
 		startDeleteGasto,
+		isLoadingData,
 		gastoxID,
 		isLoading,
 	};

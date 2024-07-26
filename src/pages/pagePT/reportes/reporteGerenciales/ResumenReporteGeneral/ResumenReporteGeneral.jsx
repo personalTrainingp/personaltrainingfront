@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, CardTitle } from 'react-bootstrap';
 import Chart from 'react-apexcharts';
 
-export const ResumenReporteGeneral = () => {
+export const ResumenReporteGeneral = ({data}) => {
     const apexOpts = {
         chart: {
           id: 'area-datetime',
@@ -85,9 +85,9 @@ export const ResumenReporteGeneral = () => {
       };
   
     const series = [{
-      name: "Series 1",
+      name: "Variable",
       data: [
-        [1327359600000,30.95],
+                [1327359600000,30.95],
                 [1327446000000,31.34],
                 [1327532400000,31.18],
                 [1327618800000,31.05],
@@ -366,19 +366,19 @@ export const ResumenReporteGeneral = () => {
     }];
   
     return (
-      <Card>
-        <Card.Body>
-          <h4>Resumen general</h4>
-          <div style={{ height: '327px' }} className="mt-3 chartjs-chart">
-            <Chart
-              options={apexOpts}
-              series={series}
-              type="area" // Asegúrate de que el tipo coincida con el de apexOpts
-              height={327}
-              className="apex-charts"
-            />
-          </div>
-        </Card.Body>
-      </Card>
+        <Card>
+            <Card.Body>
+                <h4>Resumen general</h4>
+                <div style={{ height: '327px' }} className="mt-3 chartjs-chart">
+                    <Chart
+                    options={apexOpts}
+                    series={series}
+                    type="area" // Asegúrate de que el tipo coincida con el de apexOpts
+                    height={327}
+                    className="apex-charts"
+                    />
+                </div>
+            </Card.Body>
+        </Card>
     );
   }
