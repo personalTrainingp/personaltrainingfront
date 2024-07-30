@@ -14,6 +14,7 @@ export const useVentasStore = () => {
 			const { data } = await PTApi.post('/venta/post-ventas', formState);
 			funToast('success', 'Venta', 'Venta agregada con exitos', 'success', 5000);
 		} catch (error) {
+			console.log(error);
 			funToast(
 				'error',
 				'ERROR(Tomar captura si es necesario)',

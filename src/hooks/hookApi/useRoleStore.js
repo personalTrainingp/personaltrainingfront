@@ -7,7 +7,8 @@ export const useRoleStore = () => {
 	const dispatch = useDispatch();
 	const obtenerModulos = async () => {
 		try {
-			const { data } = await PTApi.get('/rol/get-module-x-rol');
+			const uid = localStorage.getItem('uid-user');
+			const { data } = await PTApi.get(`/rol/get-module-x-rol/${uid}`);
 			dispatch(onSetModulos(data.MODULOS_ITEMS));
 		} catch (error) {
 			console.log(error);
@@ -15,8 +16,7 @@ export const useRoleStore = () => {
 	};
 	const obtenerSeccions = async (modulo) => {
 		try {
-			const { data } = await PTApi.get(`/rol/get-section-x-module/${modulo}`);
-			console.log(data.MENU_ITEMS);
+			const { data } = await PTApi.get(`/rol/get-section-x-module/${modulo?.key}`);
 			dispatch(onSetSections(data.MENU_ITEMS));
 		} catch (error) {
 			console.log(error);

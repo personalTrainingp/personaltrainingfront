@@ -23,11 +23,11 @@ export const useProgramaTrainingStore = () => {
 	};
 	const startRegisterLogoTest = async (formData, formstate) => {
 		try {
-			// const { data: dataPrograma } = await PTApi.post('/programaTraining/post_pgm', {
-			// 	...formstate,
-			// });
+			const { data: dataPrograma } = await PTApi.post('/programaTraining/post_pgm', {
+				...formstate,
+			});
 			const { data } = await PTApi.post(
-				`/storage/blob/create/12341234123413241234?container=membresiaavatar`,
+				`/storage/blob/create/${dataPrograma.uid_avatar}?container=membresiaavatar`,
 				formData
 			);
 			// const { data } = await PTApi.post(`/upload/logo/${dataPrograma.uid_avatar}`, formData);

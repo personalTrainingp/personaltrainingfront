@@ -176,9 +176,9 @@ export const arrayFormaPagoTest = [
 export const arrayFinanzas = [
 	{ label: '250 | Fijos [EGRESOS]', value: 250 },
 	{ label: '260 | Variables [EGRESOS]', value: 260 },
-	{ label: '330 | Caja chica[INGRESOS]', value: 330 },
-	{ label: '340 | exepcionales[INGRESOS]', value: 340 },
-	{ label: '370 | inversion activos', value: 370 },
+	// { label: '330 | Caja chica[INGRESOS]', value: 330 },
+	// { label: '340 | exepcionales[INGRESOS]', value: 340 },
+	// { label: '370 | inversion activos', value: 370 },
 ];
 
 export const arrayNacionalidad = [

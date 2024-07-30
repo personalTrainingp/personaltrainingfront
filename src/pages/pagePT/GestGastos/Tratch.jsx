@@ -18,6 +18,7 @@ import { arrayCargoEmpl, arrayFinanzas } from '@/types/type';
 import dayjs from 'dayjs';
 import { FormatoDateMask } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
+import { Skeleton } from 'primereact/skeleton';
 dayjs.extend(utc);
 export default function AdvancedFilterDemo({showToast}) {
     locale('es')
@@ -104,6 +105,7 @@ export default function AdvancedFilterDemo({showToast}) {
     const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto } = useGf_GvStore()
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
+            console.log("aquii");
             onOpenModalIvsG()
             obtenerGastoxID(rowData.id)
         }
@@ -262,6 +264,10 @@ export default function AdvancedFilterDemo({showToast}) {
             {/* <Button onClick={onExportExcelPersonalized}>Exportar excel personalizado</Button> */}
             {/* <BtnExportExcel csvData={valueFilter} fileName={'Gastos'}/> */}
             <ExportToExcel data={valueFilter}/>
+            
+            {
+                dataGastos.length!==0?(
+            <>
             <DataTable size='large' 
                         value={customers} 
                         paginator 
@@ -276,9 +282,10 @@ export default function AdvancedFilterDemo({showToast}) {
                         filterDisplay="menu" 
                         globalFilterFields={['fec_pago', 'id_prov', 'tb_parametros_gasto.nombre_gasto', 'descripcion', 'monto', 'moneda', "tb_Proveedor.razon_social_prov","fec_registro"]} 
                         emptyMessage="Egresos no encontrados."
-                        // showGridlines 
+                        showGridlines 
                         loading={loading} 
                         stripedRows
+                        scrollable
                         // sortMode="multiple"
                         onValueChange={valueFiltered}
                         >
@@ -294,10 +301,28 @@ export default function AdvancedFilterDemo({showToast}) {
                 <Column header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
                 body={proveedorBodyTemplate} filter />
 
-                <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen body={actionBodyTemplate}/>
+                <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             
-        <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+            <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+            </>
+                )
+                :(
+                        <DataTable value={Array.from({ length: 10 }, (v, i) => i)} className="p-datatable-striped">
+                            <Column header="Id" style={{ width: '25%' }} body={<Skeleton />}></Column>
+                            <Column header="Fecha registro" style={{ width: '25%' }} body={<Skeleton />}></Column>
+                            <Column header="Fecha pago" style={{ width: '25%' }} body={<Skeleton />}></Column>
+                            <Column header="Fecha de comprobante" style={{ width: '25%' }} body={<Skeleton />}></Column>
+                            <Column header="Tipo de gasto" style={{ width: '25%' }} body={<Skeleton />}></Column>
+                            <Column header="Gasto" style={{ width: '25%' }} body={<Skeleton />}></Column>
+                            <Column header="Grupo" style={{ width: '25%' }} body={<Skeleton />}></Column>
+                            <Column header="Monto" style={{ width: '25%' }} body={<Skeleton />}></Column>
+                            <Column header="descripcion" style={{ width: '25%' }} body={<Skeleton />}></Column>
+                            <Column header="Proveedor" style={{ minWidth: '10rem' }} body={<Skeleton />}/>
+                        </DataTable>
+                )
+            }
+
         </>
     );
 }

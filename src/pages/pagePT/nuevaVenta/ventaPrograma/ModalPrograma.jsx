@@ -122,12 +122,13 @@ export const ModalPrograma = ({show, hide}) => {
                         return;
                       }
                       return(
-                      <Col className={`content-img  bg-black p-2 hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} xl={3} lg={4} sm={3} xs={6} style={{cursor: 'pointer'}} key={e.id_pgm}>
+                      <Col className={`content-img p-2 hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} xl={3} lg={4} sm={3} xs={6} style={{cursor: 'pointer'}} key={e.id_pgm}>
                         <label>
                         <img width={100} height={50} src={`${config.API_IMG.LOGO}${e.tb_image?.name_image}`}/>
                           <input
                             value={id_pgm}
                             type="radio"
+                            hidden={true}
                             name="id_pgm"
                             onChange={(o)=>onChangeFunction(o, e)}
                           />
@@ -145,6 +146,7 @@ export const ModalPrograma = ({show, hide}) => {
                             name='id'
                             placeholder='id'
                             value={id}
+                            hidden={true}
                             onChange={onInputChange}
                             disabled
                             required

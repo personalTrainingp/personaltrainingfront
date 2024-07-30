@@ -8,11 +8,7 @@ import { useAuthStore } from '@/hooks/useAuthStore';
 import Account from '@/pages/account';
 import { Home } from '@/pages/pagePT/Home';
 import { PerfilPrograma } from '@/pages/pagePT/GestProgramas/PerfilPrograma';
-import { useRoleStore } from '@/hooks/hookApi/useRoleStore';
 import CrearCitasNutricion from '@/pages/pagePT/GestNutricion';
-import GestCongelamiento from '@/pages/pagePT/GestCongelamiento';
-import { Skeleton } from 'primereact/skeleton';
-import { ProgressSpinner } from 'primereact/progressspinner';
 
 
 
@@ -80,8 +76,11 @@ export default function ProtectedRoutes() {
 			// 	<Skeleton width="100%" height="85vh" className='m-2'></Skeleton>
 			// </div>
 			<div className='d-flex align-items-center justify-content-center' style={{height: '100vh'}}>
-				<ProgressSpinner style={{width: '50px', height: '50px'}} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" />
+				<span className="loader"></span>
 			</div>
+			// <div className='d-flex align-items-center justify-content-center' style={{height: '100vh'}}>
+			// 	<ProgressSpinner style={{width: '50px', height: '50px'}} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" />
+			// </div>
 		)
 	}
 	// console.log(sections);

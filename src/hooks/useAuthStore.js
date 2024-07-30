@@ -123,8 +123,8 @@ export const useAuthStore = () => {
 			const uid = localStorage.getItem('uid-user');
 			console.log('uid en obtener usuario', uid);
 			const { data } = await PTApi.get(`/usuario/get-usuario/${uid}`);
-			// await obtenerModulos();
-			// await obtenerSeccions(modulos[0]);
+			await obtenerModulos();
+			// obtenerSeccions(modulos[0]);
 			setusuarioObtenido(data.usuario);
 		} catch (error) {
 			localStorage.clear();

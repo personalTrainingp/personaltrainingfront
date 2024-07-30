@@ -88,7 +88,7 @@ const modulosNEW = [
 
 const ModuloDropdown = () => {
 	const { modulos } = useSelector(e=>e.rutas)
-	const [moduloSelect, setModuloSelect] = useState(modulos.length > 0 ? modulos[0] : null);
+	const [moduloSelect, setModuloSelect] = useState(modulos[0]);
 	const { obtenerSeccions } = useRoleStore()
     const [isOpen, toggleDropdown] = useToggle();
 	const handleModuloChange = (modulo) => {
@@ -97,8 +97,8 @@ const ModuloDropdown = () => {
 		// reloadPageAndRedirect();
 	};
 	useEffect(() => {	
-		obtenerSeccions(moduloSelect?.key)
-	}, [moduloSelect])
+		obtenerSeccions(modulos[0])
+	}, [modulos[0]])
 	
   return (
     <Dropdown show={isOpen} onToggle={toggleDropdown}>
@@ -109,7 +109,7 @@ const ModuloDropdown = () => {
 				className="nav-link dropdown-toggle arrow-none"
 			>
 				<span className="align-middle d-sm-inline-block">
-					{moduloSelect?.name}
+					{modulos[0]?.name}
 				</span>
 				<i className="mdi mdi-chevron-down d-sm-inline-block align-middle"></i>
 			</Dropdown.Toggle>

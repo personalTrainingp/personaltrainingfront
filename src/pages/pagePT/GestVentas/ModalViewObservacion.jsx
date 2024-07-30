@@ -185,23 +185,39 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                     }
                 </TabPanel>
                 <TabPanel header="Pagos">
+                    {
+                        dataVentaxID[0]?.detalleVenta_pagoVenta.length>0 && (
+                            dataVentaxID[0]?.detalleVenta_pagoVenta.map(e=>(
+                                <>
                                 <div className="timeline-item-info border border-4 p-2 border-gray">
-                                    <h4 to="" className="fw-bold mb-1 d-block">
-                                        | FORMA DE PAGO: IZIPAY || TIPO DE TARJETA: CREDITO || BANCO: INTERBANK || TARJETA: INTERBANK |
-                                    </h4>
-                                    <small>
-                                        FECHA DE PAGO: 
-                                        <span className="fw-bold"> 25 DE JUNIO DE 2024</span>
-                                    </small>
-                                    <br/>
-                                    <small>
-                                        N° OPERACION: 
-                                        <span className="fw-bold"> 00000</span>
-                                    </small>
-                                    <p className="mb-0 pb-2">
-                                        <small className="text-muted"></small>
-                                    </p>
-                                </div>
+                                        <h4 to="" className="fw-bold mb-1 d-block">
+                                            | FORMA DE PAGO: {e.parametro_forma_pago.label_param} 
+                                            {e.parametro_tipo_tarjeta?`|| TIPO DE TARJETA: ${e.parametro_tipo_tarjeta.label_param}` :''} 
+                                            {e.parametro_banco?`|| BANCO: ${e.parametro_banco.label_param}`:''} 
+                                            {e.parametro_tarjeta?`|| TARJETA: ${e.parametro_tarjeta.label_param}`:''} |
+                                        </h4>
+                                        <small>
+                                            MONTO PARCIAL: 
+                                            <span className="fw-bold"> {FUNMoneyFormatter(e.parcial_monto, e.parametro_forma_pago.id_param==535?'USD':'PEN')}</span>
+                                        </small>
+                                        <br/>
+                                        <small>
+                                            FECHA DE PAGO: 
+                                            <span className="fw-bold"> {DateMask({date: e.fecha_pago, format: 'D [de] MMMM [de] YYYY [a las] h:mm A'})}</span>
+                                        </small>
+                                        <br/>
+                                        <small>
+                                            N° OPERACION: 
+                                            <span className="fw-bold"> {e.n_operacion}</span>
+                                        </small>
+                                        <p className="mb-0 pb-2">
+                                            <small className="text-muted">{e.observacion}</small>
+                                        </p>
+                                    </div>
+                                </>
+                            ))
+                        )
+                    }
                 </TabPanel>
             </TabView>
         }

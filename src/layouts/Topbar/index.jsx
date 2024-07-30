@@ -98,7 +98,6 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 		obtenerUser()
 		console.log("usuario presente");
 	}, [])
-	console.log(usuarioObtenido);
 	return (
 		<div className={'navbar-custom'}>
 			<div className="topbar container-fluid">

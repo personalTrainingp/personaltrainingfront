@@ -156,8 +156,9 @@ export const useTerminoStore = () => {
 	const obtenerParametrosVendedores = async () => {
 		try {
 			setIsLoading(true);
-			const { data } = await PTApi.get(`/parametros/get_params/empleados/2`);
-			setDataVendedores(data);
+			const { data:asesoresFit } = await PTApi.get(`/parametros/get_params/empleados/2`);
+			const { data:personalFito } = await PTApi.get(`/parametros/get_params/empleados/4`);
+			setDataVendedores([...asesoresFit, ...personalFito]);
 		} catch (error) {
 			console.log(error);
 		}

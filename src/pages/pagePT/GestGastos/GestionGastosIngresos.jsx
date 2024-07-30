@@ -23,10 +23,9 @@ export const GestionGastosIngresos = () => {
     useEffect(() => {
       obtenerGastos()
     }, [])
-    console.log(dataGastos);
-    const showToast = (severity, summary, detail, label) => {
-      toast.current.show({ severity, summary, detail, label });
-  };
+    const showToast = (dataToast) => {
+      toast.current.show(dataToast);
+    };
   return (
     <>
         <Button onClick={onOpenModalIvsG}>Agregar egresos</Button>

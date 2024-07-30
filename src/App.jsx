@@ -10,6 +10,8 @@ import { Provider } from 'react-redux';
 import { store } from './store';
 import 'regenerator-runtime/runtime';
 
+import Offline from "react-offline";
+import { Snake } from 'react-snake-lib';
 // Añadir textos en español
 addLocale('es', {
     startsWith: 'Empieza con',
@@ -64,7 +66,25 @@ const App = () => {
 		<ThemeProvider>
 			<NotificationProvider>
 				<PrimeReactProvider>
-					<AppRoutes />
+                <Offline>
+                    {({ isOffline, isOnline }) => {
+                        return isOffline ? 
+                        <div className='d-flex align-items-center justify-content-center' style={{height: '100vh'}}>
+                            <h1>
+                                No hay conexion a internet
+                            </h1>
+                            <Snake
+                            borderRadius={0}
+                            snakeHeadRadius={10}
+                            snakeSpeed={150}
+                            startGameText="Empezar juego"
+                            />
+                        </div>
+                            : 
+                            <AppRoutes />
+                            ;
+                    }}
+                </Offline>
 				</PrimeReactProvider>
 			</NotificationProvider>
 		</ThemeProvider>

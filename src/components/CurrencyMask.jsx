@@ -20,9 +20,9 @@ export const MoneyFormatter = ({ amount }) => {
   });
   return formattedAmount
 }
-export const FUNMoneyFormatter = (amount) => {
+export const FUNMoneyFormatter = (amount, moneda) => {
   const formattedAmount = accounting.formatMoney(amount, {
-    symbol: 'S/ ',  // Símbolo de la moneda
+    symbol: `${moneda} `,  // Símbolo de la moneda
     precision: 2, // Precisión de decimales
     thousand: ',', // Separador de miles
     decimal: '.',  // Separador decimal

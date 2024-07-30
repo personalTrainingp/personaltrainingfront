@@ -114,3 +114,111 @@
 .leyenda-no-asistio{
     background-color: purple !important;
 }
+
+//LOADINGS
+.loader-sandglass {
+    box-sizing: border-box;
+    display: inline-block;
+    width: 50px;
+    height: 80px;
+    border-top: 5px solid #000;
+    border-bottom: 5px solid #000;
+    position: relative;
+    background: linear-gradient(#FF3D00 30px, transparent 0) no-repeat;
+    background-size: 2px 40px;
+    background-position: 50% 0px;
+    animation: spinx 5s linear infinite;
+  }
+  .loader-sandglass:before, .loader-sandglass:after {
+    content: "";
+    width: 40px;
+    left: 50%;
+    height: 35px;
+    position: absolute;
+    top: 0;
+    transform: translatex(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 0 0 20px 20px;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: 0 0px;
+    animation: lqt 5s linear infinite;
+  }
+  .loader-sandglass:after {
+    top: auto;
+    bottom: 0;
+    border-radius: 20px 20px 0 0;
+    animation: lqb 5s linear infinite;
+  }
+  @keyframes lqt {
+    0%, 100% {
+      background-image: linear-gradient(#FF3D00 40px, transparent 0);
+      background-position: 0% 0px;
+    }
+    50% {
+      background-image: linear-gradient(#FF3D00 40px, transparent 0);
+      background-position: 0% 40px;
+    }
+    50.1% {
+      background-image: linear-gradient(#FF3D00 40px, transparent 0);
+      background-position: 0% -40px;
+    }
+  }
+  @keyframes lqb {
+    0% {
+      background-image: linear-gradient(#FF3D00 40px, transparent 0);
+      background-position: 0 40px;
+    }
+    100% {
+      background-image: linear-gradient(#FF3D00 40px, transparent 0);
+      background-position: 0 -40px;
+    }
+  }
+  @keyframes spinx {
+    0%, 49% {
+      transform: rotate(0deg);
+      background-position: 50% 36px;
+    }
+    51%, 98% {
+      transform: rotate(180deg);
+      background-position: 50% 4px;
+    }
+    100% {
+      transform: rotate(360deg);
+      background-position: 50% 36px;
+    }
+  }
+      
+
+
+.loader {
+    width: 64px;
+    height: 64px;
+    position: relative;
+    background-image:
+      linear-gradient(#000 16px, transparent 0) ,
+      linear-gradient(#FF3D00 16px, transparent 0) ,
+      linear-gradient(#FF3D00 16px, transparent 0) ,
+      linear-gradient(#000 16px, transparent 0);
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    background-position: left top , left bottom , right top , right bottom;
+    animation: rotate 1s linear infinite;
+  }
+  @keyframes rotate {
+    0% {
+      width: 64px;
+      height: 64px;
+      transform: rotate(0deg)
+    }
+    50% {
+      width: 30px;
+      height: 30px;
+      transform: rotate(180deg)
+    }
+    100% {
+      width: 64px;
+      height: 64px;
+      transform: rotate(360deg)
+    }
+  }

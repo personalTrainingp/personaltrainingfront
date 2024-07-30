@@ -53,8 +53,16 @@ const registerSemanasPgm = {
 const ProjectCard = ({ project, DataTrainerPrueba, columns, data, API_URL }) => {
 	// console.log(project.uid_avatar);
 	const dispatch = useDispatch();
+	//https://archivosluroga.blob.core.windows.net/membresiaavatar/WhatsApp Image 2024-07-15 at 8.23.44 AM (1)-1722297219271.jpeg
+	//https://archivosluroga.blob.core.windows.net/membresiaavatar/WhatsApp%20Image%202024-07-15%20at%208.23.44%20AM%20(1)
+	//todo
+	//https://archivosluroga.blob.core.windows.net/membresiaavatar/WhatsApp Image 2024-07-15 at 8.23.44 AM (2)-1722304321063.jpeg
+	//https://archivosluroga.blob.core.windows.net/membresiaavatar/WhatsApp%20Image%202024-07-15%20at%208.23.44%20AM%20(2)-1722304322443.jpeg 
+
+	//https://archivosluroga.blob.core.windows.net/membresiaavatar/diagrama_arquitectura_capas-1722304544298.png 
+	//https://archivosluroga.blob.core.windows.net/membresiaavatar/diagrama_arquitectura_capas-1722304542944.png
 	const [viewImage, setviewImage] = useState(
-		`${API_URL}/file/logo/${project.tb_image.name_image}`
+		`${config.API_IMG.LOGO}/${project.tb_image?.name_image}`
 	);
 	// console.log(project);
 	return (
@@ -334,18 +342,18 @@ const ProjectCard = ({ project, DataTrainerPrueba, columns, data, API_URL }) => 
 			</Modal> */}
 			{/* <ModalPriceWeek show={modalWeek} onHide={() => setmodalWeek(false)} onShow={()=>setmodalWeek(true)} onOpenModalPgm={()=>setOnModal(true)} project={project} /> */}
 			<Card className="d-block">
-				{project.tb_image.name_image && (
+				{project.tb_image?.name_image && (
 					<>
 						<img
-							className="card-img-top bg-black p-4"
+							className="card-img-top p-4"
 							height={'200vh'}
-							src={`${config.API_IMG.LOGO}${project.tb_image.name_image}`}
+							src={`${config.API_IMG.LOGO}${project.tb_image?.name_image}`}
 							alt=""
 						/>
 						<div className="card-img-overlay"></div>
 					</>
 				)}
-				<Card.Body className={project.tb_image.name_image ? 'position-relative p-3' : ''}>
+				<Card.Body className={project.tb_image?.name_image ? 'position-relative p-3' : ''}>
 					<Dropdown className="card-widgets" align="end">
 						<Dropdown.Toggle
 							variant="link"

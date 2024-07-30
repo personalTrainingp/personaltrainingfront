@@ -4521,6 +4521,13 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-offline@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-offline/-/react-offline-0.1.0.tgz#779558c50c9cd9f945b1588f451d58c37b15cd42"
+  integrity sha512-Q41bcKI1TTohT0UaagHC31WbzgARqlucWG6A2S1Ux9nnqvLAWxKo8wsvWITcCuSq38/U640pws/JT+JulO4khg==
+  dependencies:
+    prop-types "^15.5.10"
+
 react-onclickoutside@^6.13.0:
   version "6.13.1"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.13.1.tgz#1f5e0241c08784b6e65745d91aca0d700c548a89"
@@ -4622,6 +4629,11 @@ react-simplemde-editor@^5.2.0:
   integrity sha512-GkTg1MlQHVK2Rks++7sjuQr/GVS/xm6y+HchZ4GPBWrhcgLieh4CjK04GTKbsfYorSRYKa0n37rtNSJmOzEDkQ==
   dependencies:
     "@types/codemirror" "~5.60.5"
+
+react-snake-lib@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/react-snake-lib/-/react-snake-lib-1.0.9.tgz#ebbf7b5f8122276241930fa91cceaacadf7bc5fc"
+  integrity sha512-kdtMIIiKwWQ/ZD7HseYf/lob3hVayVNm59Czx++kZx7sEbM5x+C7hP32ilhl4rB2ThDGVv4uxBkt1wWZ83tNoA==
 
 react-table@7.7.0:
   version "7.7.0"
@@ -4959,6 +4971,11 @@ simplebar-react@^3.2.4:
   integrity sha512-ZstHCBF1Is2Lj+Un8NUYSHVCmn8ufi25ylP9UH2bDnASa+V+M+6/thGhUZOZ7YNpFFHTNgVIID3FHdwRqNuqZA==
   dependencies:
     simplebar-core "^1.2.5"
+
+snake-game-react@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/snake-game-react/-/snake-game-react-1.0.6.tgz#f1411e90c22b9dcebe0177b60e53a0ba8a97dd86"
+  integrity sha512-L5XIDoeHIE3YpGvPuaynRGWXiwbJkyy+l+vq8OQFDIVHkxkgfP6aEgzzkVnzGZ7L8ng0T/A0DYYkSBsP8qRZNg==
 
 "source-map-js@>=0.6.2 <2.0.0", source-map-js@^1.2.0:
   version "1.2.0"
