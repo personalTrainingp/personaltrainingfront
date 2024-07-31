@@ -15,7 +15,7 @@ const registerIvsG={
     id_gasto: 0,
     grupo: '',
     moneda: '',
-    monto: '0.00',
+    monto: '0',
     id_tipo_comprobante: 0,
     n_comprabante: '',
     impuesto_igv: false,
@@ -53,7 +53,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     // useEffect(() => {
     //     obtenerTipoCambioPorFecha(new Date().toLocaleDateString())
     // }, [])
-    
+    console.log(data);
 	const { dataProvCOMBO } = useSelector(e=>e.prov)
     const { formState, 
             id_tipoGasto, 
@@ -70,15 +70,14 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             id_forma_pago, 
             id_banco_pago,
             n_operacion, 
-            id_rubro,
             id_prov, 
             descripcion, 
             onInputChange, 
             onInputChangeReact, 
-            onResetForm ,
+            onResetForm,
             onInputChangeMonto,
             onInputChangeFunction
-        } = useForm(data?data:registerIvsG)
+        } = useForm(data.id!==undefined?data:registerIvsG)
         const arrayGrupo = dataParametrosGastos.map(e=>{
             return {
                 label: e.grupo.replace(/\s/g, ''),
@@ -132,17 +131,21 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         
         const submitGasto = async(e)=>{
             e.preventDefault()
-            if(data){
+            if(data.id!==undefined){
                 // console.log("con");
+                
+                setshowLoading(true)
                 await startActualizarGastos(formState, data.id)
+                setshowLoading(false)
                 // console.log("sin ");
-                showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
+                // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
                 onClickCancelModal()
                 return;
             }
-            await startRegistrarGastos(formState)
             setshowLoading(true)
-            showToast(objetoToast);
+            await startRegistrarGastos(formState)
+            setshowLoading(false)
+            // showToast(objetoToast);
             onClickCancelModal()
         }
         const [openModalProv, setopenModalProv] = useState(false)
@@ -156,12 +159,15 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         }
   return (
     <>
-    {isLoadingData?(
+    {showLoading?(
         <Modal size='sm' show={showLoading}>
         <ModalBody>
         <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
-				<span className="loader-sandglass"></span>
-                Si demora mucho, comprobar su conexion a internet
+				<span className="loader-box2"></span>
+                <br/>
+                <p className='fw-bold font-16'>
+                    Si demora mucho, comprobar su conexion a internet
+                </p>
 		</div>
         </ModalBody>
     </Modal> 
@@ -170,7 +176,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             <Modal size='xl' onHide={onClickCancelModal} show={show}>
                 <Modal.Header>
                     <Modal.Title>
-                        {data?'Actualizar Gasto':'Registro Gasto'}
+                        {data.id!==undefined?'Actualizar Gasto':'Registro Gasto'}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -267,7 +273,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                                 name="monto"
                                                 id="monto"
                                                 value={monto}
-                                                onChange={(e)=>onInputChangeMonto(e)}
+                                                onChange={onInputChange}
                                                 placeholder="EJ. 0.00"
                                                 required
                                             />

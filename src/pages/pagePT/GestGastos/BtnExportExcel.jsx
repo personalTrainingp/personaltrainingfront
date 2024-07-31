@@ -1,7 +1,8 @@
 import React from 'react';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver'; // Para guardar el archivo generado
-import { Button } from 'react-bootstrap'; // Importa un componente de botón de Bootstrap como ejemplo
+import { Button } from 'primereact/button';
+// import { Button } from 'react-bootstrap'; // Importa un componente de botón de Bootstrap como ejemplo
 
 export const ExportToExcel = ({data}) => {
   
@@ -97,92 +98,8 @@ export const ExportToExcel = ({data}) => {
 
   return (
     <div>
-      <Button variant="success" onClick={exportToExcel}>Exportar Excel: {data.length} datos</Button>
+      <Button label="EXPORTAR" icon='pi pi-file-export' text onClick={exportToExcel}/>
+      {/* <Button variant="success" onClick={exportToExcel}>Exportar Excel: {data.length} datos</Button> */}
     </div>
   );
 };
-
-
-
-
-
-
-
-// import { Button } from "react-bootstrap";
-// import FileSaver from "file-saver";
-// import * as XLSX from "xlsx";
-
-// export const BtnExportExcel = ({ csvData, fileName}) => {
-// 	// ******** XLSX with object key as header *************
-//   // const fileType =
-//   //   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-//   // const fileExtension = ".xlsx";
-
-//   // const exportToCSV = (csvData, fileName) => {
-//   //   const ws = XLSX.utils.json_to_sheet(csvData);
-//   //   const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-//   //   const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-//   //   const data = new Blob([excelBuffer], { type: fileType });
-//   //   FileSaver.saveAs(data, fileName + fileExtension);
-//   // };
-
-//   csvData = csvData.map((e) => {
-//     return {
-//       'fecha_reg': e.fec_registro,
-//       Proveedores: e.tb_Proveedor?.razon_social_prov,
-//       'gasto': e.tb_parametros_gasto?.nombre_gasto,
-//       Descripcion: e.descripcion,
-//       Moneda: e.moneda,
-//       Monto: e.monto,
-//     };
-//   });
-//   // ******** XLSX with new header *************
-//   const wscols = [
-//     { wch: Math.max(...csvData.map(customer => customer.fecha_reg?.length)) },
-//     { wch: Math.max(...csvData.map(customer => customer.Proveedores?.length)) },
-//     { wch: Math.max(...csvData.map(customer => customer.gasto?.length)) },
-//     { wch: Math.max(...csvData.map(customer => 100)) },
-//     {
-//       wch: Math.max(...csvData.map(customer => customer.Moneda.length))
-//     },
-//     {
-//       wch: Math.max(...csvData.map(customer => customer.Monto.length))
-//     }
-//   ];
-//   const fileType =
-//     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-//   const fileExtension = ".xlsx";
-
-//   const Heading = [
-//     {
-//       fecha_reg: "Fechaa de registro",
-//       Proveedores: "Proveedores",
-//       gasto: "Gastos",
-//       Descripcion: "Descripcion",
-//       moneda: "Moneda",
-//       Moneda: "Monto"
-//     }
-//   ];
-
-//   const exportToCSV = (csvData, fileName, wscols) => {
-//     const ws = XLSX.utils.json_to_sheet(Heading, {
-//       header: ["Fechaa de registro", "Proveedores", "Gastos", "Descripcion", "Moneda", "Monto"],
-//       skipHeader: true,
-//       origin: 0 //ok
-//     });
-//     ws["!cols"] = wscols;
-//     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-//     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-//     const data = new Blob([excelBuffer], { type: fileType });
-//     FileSaver.saveAs(data, fileName + fileExtension);
-//   };
-
-//   return (
-//     <Button
-//       variant="warning"
-//       onClick={e => exportToCSV(csvData, fileName, wscols)}
-//     >
-//       Export XLSX
-//     </Button>
-//   );
-// };

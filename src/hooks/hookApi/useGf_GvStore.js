@@ -12,6 +12,7 @@ import {
 } from '@/store/gfGv/gfGvSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import Swal from 'sweetalert2';
 
 export const useGf_GvStore = () => {
 	const dispatch = useDispatch();
@@ -37,11 +38,21 @@ export const useGf_GvStore = () => {
 				fec_registro: new Date(),
 			});
 			await obtenerGastos();
-			setobjetoToast(data.toast);
-			// setisLoadingData(false);
-			console.log('segun esto ya esta');
+			Swal.fire({
+				icon: 'success',
+				title: 'GASTO REGISTRADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		} catch (error) {
+			localStorage.setItem('egreso_post_error', `${error.response.data}`);
 			console.log(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'OCURRIO UN PROBLEMA AL INGRESAR EL EGRESO',
+				showConfirmButton: false,
+				timer: 5000,
+			});
 		}
 	};
 	const startActualizarGastos = async (formState, id) => {
@@ -50,21 +61,46 @@ export const useGf_GvStore = () => {
 			const { data } = await PTApi.put(`/egreso/put-egreso/${id}`, {
 				...formState,
 			});
-			obtenerGastos();
+			await obtenerGastos();
 			setisLoadingData(false);
+			Swal.fire({
+				icon: 'success',
+				title: 'GASTO ACTUALIZADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		} catch (error) {
+			localStorage.setItem('egreso_update_error', `${error.response.data}`);
 			console.log(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'OCURRIO UN PROBLEMA AL ACTUALIZAR EL EGRESO',
+				showConfirmButton: false,
+				timer: 5000,
+			});
 		}
 	};
 	const startDeleteGasto = async (id) => {
 		try {
 			setisLoading(true);
 			const { data } = await PTApi.put(`/egreso/delete-egreso/${id}`);
+			await obtenerGastos();
 			setisLoading(false);
-			console.log(data);
-			obtenerGastos();
+			Swal.fire({
+				icon: 'success',
+				title: 'GASTO ELIMINADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 1500,
+			});
 		} catch (error) {
+			localStorage.setItem('egreso_delete_error', `${error.response.data}`);
 			console.log(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'OCURRIO UN PROBLEMA AL ELIMINAR EL EGRESO',
+				showConfirmButton: false,
+				timer: 5000,
+			});
 		}
 	};
 	const obtenerGastos = async () => {

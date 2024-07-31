@@ -2,6 +2,16 @@ export const arrayEstados = [
 	{ label: 'Activo', value: true },
 	{ label: 'Inactivo', value: false },
 ];
+export const arrayTarjetasTemp = [
+	{ label: 'VISA', value: 54 },
+	{ label: 'MASTERCARD', value: 55 },
+	{ label: 'DINERS', value: 144 },
+	{ label: 'AMERICAN EXPRESS', value: 145 },
+	{ label: 'CMR', value: 146 },
+	{ label: 'NO APLICA', value: 260 },
+	{ label: 'NIUBIZ', value: 262 },
+];
+
 export const typesCRUD = [
 	{ method: 'CREAR', id: 1 },
 	{ method: 'ACTUALIZAR', id: 2 },

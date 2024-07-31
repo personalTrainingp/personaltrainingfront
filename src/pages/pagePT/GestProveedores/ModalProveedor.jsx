@@ -1,6 +1,6 @@
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { useForm } from '@/hooks/useForm'
-import { arrayEstados } from '@/types/type'
+import { arrayEstados, arrayTarjetasTemp } from '@/types/type'
 import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
@@ -30,6 +30,9 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
 			cel_vend_prov,
 			email_vend_prov,
             estado_prov,
+            cci,
+            n_cuenta,
+            id_tarjeta,
             formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
             const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
             const [visible, setVisible] = useState(false);
@@ -167,6 +170,55 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                     value={email_prov}
                                     onChange={onInputChange}
                                     placeholder="EJ. EXAMPLE@GMAIL.COM"
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={4}>
+                            <div className="mb-4">
+                                <label htmlFor="direc_prov" className="form-label">
+                                    Tarjeta*
+                                </label>
+                                <Select
+                                        onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
+                                        name="id_tarjeta"
+                                        placeholder={'Seleccione la tarjeta'}
+                                        className="react-select"
+                                        classNamePrefix="react-select"
+                                        options={arrayTarjetasTemp}
+                                        value={arrayTarjetasTemp.find(
+                                            (option) => option.value === id_tarjeta
+                                        )}
+                                        required
+                                    />
+                            </div>
+                            </Col>
+                            <Col lg={4}>
+                            <div className="mb-4">
+                                <label htmlFor="n_cuenta" className="form-label">
+                                    Numero de cuenta*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="n_cuenta"
+                                    id="n_cuenta"
+                                    value={n_cuenta}
+                                    onChange={onInputChange}
+                                    placeholder="EJ. 0000000000"
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={4}>
+                            <div className="mb-4">
+                                <label htmlFor="cci" className="form-label">
+                                    CCI*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="cci"
+                                    id="cci"
+                                    value={cci}
+                                    onChange={onInputChange}
+                                    placeholder="EJ. 00000000000000000000"
                                 />
                             </div>
                             </Col>

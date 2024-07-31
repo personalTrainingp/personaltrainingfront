@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ModalIngresosGastos } from './ModalIngresosGastos'
 import { Button } from 'react-bootstrap'
-import { Table } from '@/components'
+import { PageBreadcrumb, Table } from '@/components'
 import { columns, sizePerPageList } from './ColumnsSet'
 import { useSelector } from 'react-redux'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
@@ -12,12 +12,6 @@ import { Toast } from 'primereact/toast'
 export const GestionGastosIngresos = () => {
     const [isOpenModalIvsG, setIsOpenModalIvsG] = useState(false)
     const toast = useRef(null);
-    const onCloseModalIvsG = ()=>{
-        setIsOpenModalIvsG(false)
-    }
-    const onOpenModalIvsG = ()=>{
-        setIsOpenModalIvsG(true)
-    }
     const { obtenerGastos, isLoadingData } = useGf_GvStore()
     const { dataGastos } = useSelector(e=>e.finanzas)
     useEffect(() => {
@@ -28,9 +22,9 @@ export const GestionGastosIngresos = () => {
     };
   return (
     <>
-        <Button onClick={onOpenModalIvsG}>Agregar egresos</Button>
+        {/* <Button onClick={onOpenModalIvsG}>Agregar egresos</Button> */}
         <Toast ref={toast}/>
-        <ModalIngresosGastos show={isOpenModalIvsG} onHide={onCloseModalIvsG} onShow={onOpenModalIvsG} showToast={showToast}/>
+        {/* <ModalIngresosGastos show={isOpenModalIvsG} onHide={onCloseModalIvsG} onShow={onOpenModalIvsG} showToast={showToast}/> */}
         <AdvancedFilterDemo showToast={showToast}/>
         <ConfirmDialog/>
     </>

@@ -22,6 +22,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 
 	const onInputChange = ({ target }) => {
 		const { name, value, checked, type } = target;
+		console.log(target);
 		// console.log({ [name]: value });
 		if (type === 'checkbox') {
 			return setFormState({

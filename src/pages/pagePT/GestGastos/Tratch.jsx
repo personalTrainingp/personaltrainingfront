@@ -19,6 +19,8 @@ import dayjs from 'dayjs';
 import { FormatoDateMask } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
+import { Col, Modal, Row } from 'react-bootstrap';
+import { ModalImportadorData } from './ModalImportadorData';
 dayjs.extend(utc);
 export default function AdvancedFilterDemo({showToast}) {
     locale('es')
@@ -103,9 +105,9 @@ export default function AdvancedFilterDemo({showToast}) {
         setGlobalFilterValue(value);
     };
     const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto } = useGf_GvStore()
+    const [showLoading, setshowLoading] = useState(false)
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
-            console.log("aquii");
             onOpenModalIvsG()
             obtenerGastoxID(rowData.id)
         }
@@ -121,7 +123,9 @@ export default function AdvancedFilterDemo({showToast}) {
         }
         
         const onAcceptDeleteGasto = async()=>{
+            setshowLoading(true)
             await startDeleteGasto(rowData.id)
+            setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
         return (
@@ -139,6 +143,7 @@ export default function AdvancedFilterDemo({showToast}) {
     const initFilters = () => {
         setFilters({
             global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            id: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             ['tb_Proveedor.razon_social_prov']:{ operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             fec_registro: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
             fec_pago: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
@@ -151,14 +156,21 @@ export default function AdvancedFilterDemo({showToast}) {
         });
         // setGlobalFilterValue('');
     };
+    const [showModalImportadorData, setshowModalImportadorData] = useState(false)
     const renderHeader = () => {
         return (
-            <div className="flex justify-content-between">
-                <IconField iconPosition="left">
-                    <InputIcon className="pi pi-search" />
-                    <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Buscador general" />
-                </IconField>
-                <Button type="button" icon="pi pi-filter-slash" label="Limpiar filtros" outlined onClick={clearFilter} />
+            <div className="d-flex justify-content-between">
+                <div className='d-flex'>
+                    <IconField iconPosition="left">
+                        <InputIcon className="pi pi-search" />
+                        <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Buscador general" />
+                    </IconField>
+                    <Button type="button" icon="pi pi-filter-slash" outlined onClick={clearFilter} />
+                </div>
+                <div className='d-flex'>
+                    <Button label="IMPORTAR" icon='pi pi-file-import' onClick={()=>setshowModalImportadorData(true)} disabled text/>
+                    <ExportToExcel data={valueFilter}/>
+                </div>
             </div>
         );
     };
@@ -182,7 +194,7 @@ export default function AdvancedFilterDemo({showToast}) {
     const fecRegistroBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{FormatoDateMask(rowData.fec_registro, 'D [de] MMMM [de] YYYY [a las] h:mm A') }</span>
+                <span>{ highlightText(FormatoDateMask(rowData.fec_registro, 'D [de] MMMM [de] YYYY [a las] h:mm A'), globalFilterValue) }</span>
             </div>
         );
     }
@@ -221,16 +233,12 @@ export default function AdvancedFilterDemo({showToast}) {
     const grupoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.tb_parametros_gasto?.grupo, globalFilterValue)}</span>
+                <span>{highlightText(`${rowData.tb_parametros_gasto?.grupo}`, globalFilterValue)}</span>
             </div>
         );
     };
     const dateFilterTemplate = (options) => {
         return <Calendar value={options.value} onChange={(e) => options.filterCallback(e.value, options.index)} dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" mask="99/99/9999" />;
-    };
-    
-    const proveedorFilterTemplate = (options) => {
-        return <MultiSelect value={options.value} options={dataProvUnicosxGasto} itemTemplate={representativesItemTemplate} onChange={(e) => options.filterCallback(e.value)} optionLabel="razon_social_prov" optionValue='razon_social_prov' placeholder="Any" className="p-column-filter" />;
     };
     
     const representativesItemTemplate = (option) => {
@@ -251,11 +259,18 @@ export default function AdvancedFilterDemo({showToast}) {
     const onOpenModalIvsG = ()=>{
         setisOpenModalEgresos(true)
     }   
+    const IdBodyTemplate = (rowData)=>{
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{highlightText(`${rowData.id}`, globalFilterValue)}</span>
+            </div>
+        )
+    }
     const tipoGastosBodyTemplate = (rowData)=>{
         return (
             
             <div className="flex align-items-center gap-2">
-                <span>{highlightText( rowData.tipo_gasto, globalFilterValue)}</span>
+                <span>{highlightText( `${rowData.tipo_gasto}`, globalFilterValue)}</span>
             </div>
         )
     }
@@ -263,12 +278,27 @@ export default function AdvancedFilterDemo({showToast}) {
         <>
             {/* <Button onClick={onExportExcelPersonalized}>Exportar excel personalizado</Button> */}
             {/* <BtnExportExcel csvData={valueFilter} fileName={'Gastos'}/> */}
-            <ExportToExcel data={valueFilter}/>
-            
+            {
+                showLoading&&
+                <Modal size='sm' show={showLoading}>
+                    <Modal.Body>
+                    <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
+                            <span className="loader-box2"></span>
+                            <br/>
+                            <p className='fw-bold font-16'>
+                                Si demora mucho, comprobar su conexion a internet
+                            </p>
+                    </div>
+                    </Modal.Body>
+                </Modal> 
+            }
             {
                 dataGastos.length!==0?(
-            <>
-            <DataTable size='large' 
+                    <>
+                    <div>
+                        <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalIvsG} />
+                    </div>
+                    <DataTable size='large' 
                         value={customers} 
                         paginator 
                         header={header}
@@ -280,16 +310,15 @@ export default function AdvancedFilterDemo({showToast}) {
                         onSelectionChange={(e) => setselectedCustomers(e.value)}
                         filters={filters} 
                         filterDisplay="menu" 
-                        globalFilterFields={['fec_pago', 'id_prov', 'tb_parametros_gasto.nombre_gasto', 'descripcion', 'monto', 'moneda', "tb_Proveedor.razon_social_prov","fec_registro"]} 
+                        globalFilterFields={['id', 'fec_pago', 'id_prov', 'tb_parametros_gasto.nombre_gasto', 'descripcion', 'monto', 'moneda', "tb_Proveedor.razon_social_prov","fec_registro"]} 
                         emptyMessage="Egresos no encontrados."
                         showGridlines 
                         loading={loading} 
                         stripedRows
                         scrollable
-                        // sortMode="multiple"
                         onValueChange={valueFiltered}
                         >
-                <Column header="Id" field='id' sortable style={{ width: '1rem' }}/>
+                <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
                 <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
                 <Column header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
                 <Column header="Fecha de comprobante" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter filterElement={dateFilterTemplate}/>
@@ -304,22 +333,28 @@ export default function AdvancedFilterDemo({showToast}) {
                 <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             
-            <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+            <ModalIngresosGastos show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+            <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/>
             </>
                 )
                 :(
-                        <DataTable value={Array.from({ length: 10 }, (v, i) => i)} className="p-datatable-striped">
-                            <Column header="Id" style={{ width: '25%' }} body={<Skeleton />}></Column>
-                            <Column header="Fecha registro" style={{ width: '25%' }} body={<Skeleton />}></Column>
-                            <Column header="Fecha pago" style={{ width: '25%' }} body={<Skeleton />}></Column>
-                            <Column header="Fecha de comprobante" style={{ width: '25%' }} body={<Skeleton />}></Column>
-                            <Column header="Tipo de gasto" style={{ width: '25%' }} body={<Skeleton />}></Column>
-                            <Column header="Gasto" style={{ width: '25%' }} body={<Skeleton />}></Column>
-                            <Column header="Grupo" style={{ width: '25%' }} body={<Skeleton />}></Column>
-                            <Column header="Monto" style={{ width: '25%' }} body={<Skeleton />}></Column>
-                            <Column header="descripcion" style={{ width: '25%' }} body={<Skeleton />}></Column>
-                            <Column header="Proveedor" style={{ minWidth: '10rem' }} body={<Skeleton />}/>
-                        </DataTable>
+                    //Array.from({ length: 10 }, (v, i) => i)
+                    <DataTable size='large' 
+                    value={Array.from({ length: 10 }, (v, i) => i)} 
+                    className="p-datatable-striped"
+                    >
+                        <Column header="Id" style={{ width: '1rem' }}/>
+                        <Column header="Fecha registro" style={{ width: '3rem' }} body={<Skeleton/>} />
+                        <Column header="Fecha pago" style={{ width: '3rem' }} body={<Skeleton/>} />
+                        <Column header="Fecha de comprobante" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="Tipo de gasto" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="Gasto" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="Grupo" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="Monto" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="descripcion" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="Proveedor" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="Action" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                    </DataTable>
                 )
             }
 

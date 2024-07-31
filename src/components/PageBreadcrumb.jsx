@@ -6,7 +6,7 @@ const PageBreadcrumb = ({ subName, title, children, btnBack }) => {
   return (
     <>
       <Helmet>
-        <title>{title} | Personal training</title>
+        <title>{title} | change the slim studio</title>
       </Helmet>
       {subName && (
         <Row>
