@@ -61,7 +61,13 @@ const DatosCliente = ({dataCliente}) => {
 		)
 		setTipoTransacSelect(dataTipoTransac)
 	}, [id_tipo_transaccion])
-	
+	const inputChangeClientes = (e)=>{
+		const dataCli = DataClientes.find(
+            (option) => option.label === e.value
+        )
+		console.log(dataCli, "cliente change");
+		onInputChangeReact(e, 'id_cliente')
+	}
 	return (
 		<>
 		<form>
@@ -90,7 +96,7 @@ const DatosCliente = ({dataCliente}) => {
 										<Col xl={12}>
 											<div className='mb-2'>
 											<Select
-												onChange={(e) => onInputChangeReact(e, 'id_cliente')}
+												onChange={(e) => inputChangeClientes(e)}
 												name="id_cliente"
 												placeholder={'Seleccionar el cliente'}
 												className="react-select"

@@ -33,6 +33,8 @@ export const ModalVentasPay = ({show, onHide}) => {
         obtenerParametrosBancos,
         obtenerParametrosTipoTarjeta,
         obtenerParametrosTarjetas,
+        obtenerFormaDePagosActivos,
+        dataFormaPagoActivo
 	} = useTerminoStore()
     const cancelModal = () =>{
         onHide()
@@ -43,35 +45,36 @@ export const ModalVentasPay = ({show, onHide}) => {
         dispatch(onAddOneDetallePago({...formState, 
             monto_pago: parseFloat(monto_pago.replace(',', '')), 
             // label: `${formaPagoSelect.label}${BancoSelect.label?' / '.concat(BancoSelect.label):''}${TipoTarjetaSelect.label?' / '.concat(TipoTarjetaSelect.label):''}${TarjetaSelect.label?' / '.concat(TarjetaSelect.label):''}`, 
-            value: `${formState.id_forma_pago}${formState.id_tipo_tarjeta}${formState.id_tarjeta}${formState.id_banco}`}))
+            value: `${formState.id_forma_pago}`}))
         cancelModal()
     }
-    
     useEffect(() => {
-        const formaPago = DataFormaPago.find(e=>e.value===id_forma_pago) || 0
-        setFormaPagoSelect(formaPago)
-    }, [id_forma_pago])
-    useEffect(() => {
-        const bancos = DataBancos.find(e=>e.value===id_banco) || 0
-        setBancoSelect(bancos)
-    }, [id_banco])
-    useEffect(() => {
-        const tipoTarjeta = DataTipoTarjetas.find(e=>e.value===id_tipo_tarjeta) || 0
-        setTipoTarjetaSelect(tipoTarjeta)
-    }, [id_tipo_tarjeta])
-    useEffect(() => {
-        const tarjetas = DataTarjetas.find(e=>e.value===id_tarjeta) || 0
-        setTarjetaSelect(tarjetas)
-    }, [id_tarjeta])
-      useEffect(() => {
-		obtenerParametrosFormaPago()
-        obtenerParametrosBancos()
-        obtenerParametrosTipoTarjeta()
-        obtenerParametrosTarjetas()
-      }, [])
-      
+        obtenerFormaDePagosActivos()
+    }, [])
+    // useEffect(() => {
+    //     const formaPago = DataFormaPago.find(e=>e.value===id_forma_pago) || 0
+    //     setFormaPagoSelect(formaPago)
+    // }, [id_forma_pago])
+    // useEffect(() => {
+    //     const bancos = DataBancos.find(e=>e.value===id_banco) || 0
+    //     setBancoSelect(bancos)
+    // }, [id_banco])
+    // useEffect(() => {
+    //     const tipoTarjeta = DataTipoTarjetas.find(e=>e.value===id_tipo_tarjeta) || 0
+    //     setTipoTarjetaSelect(tipoTarjeta)
+    // }, [id_tipo_tarjeta])
+    // useEffect(() => {
+    //     const tarjetas = DataTarjetas.find(e=>e.value===id_tarjeta) || 0
+    //     setTarjetaSelect(tarjetas)
+    // }, [id_tarjeta])
+    //   useEffect(() => {
+	// 	obtenerParametrosFormaPago()
+    //     obtenerParametrosBancos()
+    //     obtenerParametrosTipoTarjeta()
+    //     obtenerParametrosTarjetas()
+    //   }, [])
   return (
-    <Modal show={show} onHide={cancelModal}>
+    <Modal show={show} onHide={cancelModal} size='xl'>
         <Modal.Header>
             <Modal.Title>
                 Registrar Pago
@@ -79,9 +82,9 @@ export const ModalVentasPay = ({show, onHide}) => {
         </Modal.Header>
         <Modal.Body>
             <form onSubmit={submitFormaPago}>
-                
+{/*                 
                     <div className='mb-2'>
-                        <label>Fecha de pago:</label>
+                        <label>Fecha :</label>
                         <input 
                           type='date' 
                           className='form-control'
@@ -91,7 +94,7 @@ export const ModalVentasPay = ({show, onHide}) => {
                           onChange={onInputChange}
                           required
                           />
-                      </div>
+                      </div> */}
                       <div className='mb-2'>
                         <label>N operacion:</label>
                         <input 
@@ -112,12 +115,12 @@ export const ModalVentasPay = ({show, onHide}) => {
                             placeholder={'Seleccionar la forma de pago'}
                             className="react-select"
                             classNamePrefix="react-select"
-                            options={DataFormaPago}
-                            value={DataFormaPago.find(e=>e.value===id_forma_pago) || 0}
+                            options={dataFormaPagoActivo}
+                            value={dataFormaPagoActivo.find(e=>e.value===id_forma_pago) || 0}
                             required
                             />
                       </div>
-                      {(formaPagoSelect.value===52 || formaPagoSelect.value ===53) &&
+                      {/* {(formaPagoSelect.value===52 || formaPagoSelect.value ===53) &&
                         <>
                         <div className='mb-2'>
                             <label>Tipo de tarjetas:</label>
@@ -168,7 +171,7 @@ export const ModalVentasPay = ({show, onHide}) => {
                                 />
                         </div>
                         </>
-                        }
+                        } */}
                       <div className='mb-2'>
                         <label>Monto de pago:</label>
                         <input 

@@ -37,7 +37,7 @@ export const useGf_GvStore = () => {
 				...formState,
 				fec_registro: new Date(),
 			});
-			await obtenerGastos();
+			obtenerGastos();
 			Swal.fire({
 				icon: 'success',
 				title: 'GASTO REGISTRADO CORRECTAMENTE',
@@ -61,7 +61,7 @@ export const useGf_GvStore = () => {
 			const { data } = await PTApi.put(`/egreso/put-egreso/${id}`, {
 				...formState,
 			});
-			await obtenerGastos();
+			obtenerGastos();
 			setisLoadingData(false);
 			Swal.fire({
 				icon: 'success',
@@ -146,6 +146,7 @@ export const useGf_GvStore = () => {
 		startActualizarGastos,
 		startDeleteGasto,
 		isLoadingData,
+		setgastoxID,
 		gastoxID,
 		isLoading,
 		objetoToast,

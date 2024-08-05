@@ -13,6 +13,7 @@ import {
 } from '@/store/gfGv/gfGvSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import Swal from 'sweetalert2';
 
 export const useAportesIngresosStore = () => {
 	const dispatch = useDispatch();
@@ -29,8 +30,10 @@ export const useAportesIngresosStore = () => {
 	};
 	const obtenerAportes = async () => {
 		try {
+			setisLoading(true);
 			const { data } = await PTApi.get('/aporte/get-aportes');
 			dispatch(onSetDataView(data.aportes));
+			setisLoading(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -40,10 +43,22 @@ export const useAportesIngresosStore = () => {
 			const { data } = await PTApi.post('/aporte/post-aporte', {
 				...formState,
 			});
-			console.log(data);
 			obtenerAportes();
+			Swal.fire({
+				icon: 'success',
+				title: 'APORTE REGISTRADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		} catch (error) {
+			localStorage.setItem('APORTE_post_error', `${error.response.data}`);
 			console.log(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'OCURRIO UN PROBLEMA AL INGRESAR EL APORTE',
+				showConfirmButton: false,
+				timer: 5000,
+			});
 		}
 	};
 	const startActualizarAportes = async (formState, id) => {
@@ -51,9 +66,22 @@ export const useAportesIngresosStore = () => {
 			const { data } = await PTApi.put(`/egreso/put-aporte/${id}`, {
 				...formState,
 			});
-			obtenerAportes();
+			await obtenerAportes();
+			Swal.fire({
+				icon: 'success',
+				title: 'APORTE REGISTRADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		} catch (error) {
+			localStorage.setItem('aporte_update_error', `${error.response.data}`);
 			console.log(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'OCURRIO UN PROBLEMA AL ACTUALIZAR EL APORTE',
+				showConfirmButton: false,
+				timer: 5000,
+			});
 		}
 	};
 	const startDeleteAportes = async (id) => {
@@ -61,9 +89,22 @@ export const useAportesIngresosStore = () => {
 			setisLoading(true);
 			const { data } = await PTApi.put(`/egreso/delete-aporte/${id}`);
 			setisLoading(false);
-			obtenerAportes();
+			await obtenerAportes();
+			Swal.fire({
+				icon: 'success',
+				title: 'GASTO ELIMINADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 1500,
+			});
 		} catch (error) {
+			localStorage.setItem('aportes_delete_error', `${error.response.data}`);
 			console.log(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'OCURRIO UN PROBLEMA AL ELIMINAR EL APORTE',
+				showConfirmButton: false,
+				timer: 5000,
+			});
 		}
 	};
 	return {

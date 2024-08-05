@@ -13,7 +13,7 @@ import Select from 'react-select'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { useProspectoStore } from '@/hooks/hookApi/useProspectoStore';
 import { TabPanel, TabView } from 'primereact/tabview';
-import { SectionProspectoComentarios } from './SectionProspectoComentarios';
+import { SectionComentario } from '@/components/Comentario/SectionComentario';
 const registerProspecto = {
     nombres: '',
     apellido_materno: '',
@@ -57,7 +57,7 @@ export const ModalInfoProspecto = ({show, onHide, data}) => {
             header="Informacion del Prospecto"
             modal
             className="p-fluid"
-            footer={productDialogFooter}
+            // footer={productDialogFooter}
             onHide={cancelarProspecto}
         >
             {data.id && (
@@ -190,11 +190,22 @@ export const ModalInfoProspecto = ({show, onHide, data}) => {
                                         />
                                     </div>
                                 </Col>
+                                <Col lg={6}>
+                                <Row>
+                                    <Col lg={6}>
+                                        <Button label="Cancel" icon="pi pi-times" outlined onClick={cancelarProspecto} />
+                                    </Col>
+                                    <Col lg={6}>
+			                            <Button label="Save" icon="pi pi-check" onClick={saveProspecto} />
+                                    </Col>
+                                </Row>
+                                </Col>
                             </Row>
                         </form>
                     </TabPanel>
                     <TabPanel header='Comentarios'>
-                        <SectionProspectoComentarios data={data}/>
+                        <SectionComentario data={data.uid_comentario}/>
+                        {/* <SectionProspectoComentarios data={data}/> */}
                     </TabPanel>
                 </TabView>
             )

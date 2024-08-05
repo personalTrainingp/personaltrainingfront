@@ -74,7 +74,7 @@ export const arrayTipoCliente = [
 	{ label: 'canje - influencer', value: 227 },
 	{ label: 'canje - contacto LA', value: 228 },
 	{ label: 'canje - cliente con buenos resultados', value: 229 },
-	{ label: 'prospecto', value: 265 },
+	// { label: 'prospecto', value: 265 },
 ];
 
 export const arrayDataTrainer = [

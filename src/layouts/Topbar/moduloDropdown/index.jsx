@@ -96,9 +96,10 @@ const ModuloDropdown = () => {
 		// setModuloSelect(modulo);
 		// reloadPageAndRedirect();
 	};
-	useEffect(() => {	
+	useEffect(() => {
+		console.log(modulos[0]);	
 		obtenerSeccions(modulos[0])
-	}, [modulos[0]])
+	}, [modulos])
 	
   return (
     <Dropdown show={isOpen} onToggle={toggleDropdown}>

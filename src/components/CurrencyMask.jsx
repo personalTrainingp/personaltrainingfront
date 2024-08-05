@@ -2,6 +2,10 @@ import React from 'react'
 import accounting from 'accounting'
 import dayjs from 'dayjs';
 import 'dayjs/locale/es'; // Importa el idioma español si no lo has hecho ya
+// const customParseFormat = require('dayjs/plugin/customParseFormat');
+
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+dayjs.extend(customParseFormat);
 export const CurrencyMask = (e) => {
   let value = e.target.value;
   value = value.replace(/\D/g,"")
@@ -42,6 +46,10 @@ export const DateMask = ({date, format}) => {
 
 export const FormatoDateMask = (date, format)=>{
   return <DateMask date={date} format={format}/>
+}
+export const FormatoTimeMask = ({date, format})=>{
+  console.log(date, format);
+  return dayjs(date, "HH:mm").locale("es").format(format)
 }
 export const DatexWeekMask = (date, format)=>{
   

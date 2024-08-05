@@ -1,8 +1,9 @@
 import { Card, ProgressBar } from 'react-bootstrap';
 import classNames from 'classnames';
 import { CardTitle } from '@/components';
+import { MoneyFormatter } from '@/components/CurrencyMask';
 
-const Tarjetas = ({ tasks, title }) => {
+const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
 	return (
 		<Card>
 			<Card.Body>
@@ -15,23 +16,23 @@ const Tarjetas = ({ tasks, title }) => {
 					return (
 						<div
 							className={classNames({ 'mb-4': index < tasks.length - 1 })}
-							key={index.toString()}
+							key={tasks.forma_pago}
 						>
 							<div className="d-flex align-items-center mb-2">
 								<div className="flex-grow-1 ms-2">
-									<h5 className="my-0 fw-semibold">{task.title}</h5>
+									<h5 className="my-0 fw-semibold">{task.forma_pago}</h5>
 								</div>
 								{task.completedTask ? (
 									<h5 className="my-0">
 										{task.completedTask}
 									</h5>
 								) : (
-									<h5 className="my-0">{task.progressValue}%</h5>
+                                    <h5 className="my-0"><MoneyFormatter amount={task.monto}/> - {((task.monto / dataSumaTotal) * 100).toFixed(2)}%</h5>
 								)}
 							</div>
 							<ProgressBar
-								variant={task.variant}
-								now={task.progressValue}
+								variant={'primary'}
+								now={((task.monto / dataSumaTotal) * 100)}
 								style={{ height: 6 }}
 							/>
 						</div>

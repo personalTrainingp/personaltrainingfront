@@ -51,7 +51,6 @@ export const InformacionGeneralCliente = ({data}) => {
         email_cli, 
         tel_cli,
         onInputChange, onInputChangeReact, onFileChange } = useForm(data)
-        console.log(dayjs(fecNac_cli).format('YYYY-MM-DD'));
         const { eliminarOneUsuarioCliente, startUpdateUsuarioCliente }  = useUsuarioStore()
         const onEliminarCliente = ()=>{
             eliminarOneUsuarioCliente(data.uid)

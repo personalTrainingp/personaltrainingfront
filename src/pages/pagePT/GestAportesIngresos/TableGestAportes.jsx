@@ -11,7 +11,6 @@ import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
 import { MultiSelect } from 'primereact/multiselect';
 import { ExportToExcel } from './BtnExportExcel';
 import { Button } from 'primereact/button';
-import { ModalIngresosGastos } from './ModalIngresosGastos';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { arrayCargoEmpl, arrayFinanzas } from '@/types/type';
@@ -21,45 +20,45 @@ import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { ModalImportadorData } from './ModalImportadorData';
+import { ModalAportante } from './ModalAportante';
+import { useAportesIngresosStore } from '@/hooks/hookApi/useAportesIngresosStore';
 dayjs.extend(utc);
-export default function AdvancedFilterDemo({showToast}) {
+export default function TableGestAportes({showToast}) {
     locale('es')
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedCustomers, setselectedCustomers] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const { obtenerGastos, obtenerProveedoresUnicos } = useGf_GvStore()
-    const {dataGastos, dataProvUnicosxGasto} = useSelector(e=>e.finanzas)
+    const {dataView} = useSelector(e=>e.DATA)
+    const { startRegistrarAportes, obtenerAportes, isLoading } = useAportesIngresosStore()
     const [valueFilter, setvalueFilter] = useState([])
     useEffect(() => {
-        obtenerGastos()
-        obtenerProveedoresUnicos()
+        obtenerAportes()
     }, [])
         useEffect(() => {
         const fetchData = () => {
-            setCustomers(getCustomers(dataGastos));
-            setLoading(false);
+            setCustomers(getCustomers(dataView));
         };
         fetchData()
         initFilters();
-        }, [dataGastos]);
+        }, [dataView]);
     const getCustomers = (data) => {
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
+            console.log(item);
             // Convertir la fecha a la zona horaria de Lima
             // Realiza las modificaciones en la copia
-            const [year, month, day] = item.fec_pago.split('-').map(Number);
+            const [year, month, day] = item.fecha_aporte.split('-').map(Number);
             const [yearc=year, monthc=month, dayc=day] = item.fec_comprobante.split('-').map(Number)
             // const [yearr=year, monthr = month, dayr = day] = item.fec_registro.split('-').map(Number)
             // console.log(item.fec_registro);
             
-            let date = dayjs.utc(item.fec_registro);
+            let date = dayjs.utc(item.fecha_aporte);
             newItem.fec_registro = new Date(date.format());
             newItem.fec_comprobante =new Date(yearc, monthc-1, dayc);
-            newItem.fec_pago = new Date(year, month - 1, day);
-            newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
+            newItem.fecha_aporte = new Date(year, month - 1, day);
             return newItem;
             });
     };
@@ -104,12 +103,11 @@ export default function AdvancedFilterDemo({showToast}) {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
-    const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
     const [showLoading, setshowLoading] = useState(false)
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
             onOpenModalIvsG()
-            obtenerGastoxID(rowData.id)
+            // obtenerGastoxID(rowData.id)
         }
         const confirmDeleteGastoxID = ()=>{
             confirmDialog({
@@ -124,7 +122,7 @@ export default function AdvancedFilterDemo({showToast}) {
         
         const onAcceptDeleteGasto = async()=>{
             setshowLoading(true)
-            await startDeleteGasto(rowData.id)
+            // await startDeleteGasto(rowData.id)
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
@@ -145,14 +143,10 @@ export default function AdvancedFilterDemo({showToast}) {
             global: { value: null, matchMode: FilterMatchMode.CONTAINS },
             id: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             ['tb_Proveedor.razon_social_prov']:{ operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            fec_registro: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
-            fec_pago: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+            fecha_aporte: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
             fec_comprobante: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
-            'tb_parametros_gasto.nombre_gasto': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'tb_parametros_gasto.grupo': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            descripcion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            tipo_gasto: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            monto: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+            observacion: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            monto_aporte: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
         });
         // setGlobalFilterValue('');
     };
@@ -174,80 +168,15 @@ export default function AdvancedFilterDemo({showToast}) {
             </div>
         );
     };
-    
-    const montoBodyTemplate = (rowData) => {
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText(formatCurrency(rowData.monto, rowData.moneda?rowData.moneda:'PEN'), globalFilterValue)}</span>
-            </div>
-        );
-    };
-
-    const descripcionBodyTemplate = (rowData) => {
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.descripcion, globalFilterValue)}</span>
-            </div>
-        );
-    };
-    const {daysUTC} = helperFunctions()
-    const fecRegistroBodyTemplate = (rowData)=>{
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{ highlightText(FormatoDateMask(rowData.fec_registro, 'D [de] MMMM [de] YYYY [a las] h:mm A'), globalFilterValue) }</span>
-            </div>
-        );
-    }
     const fecPagoBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{FormatoDateMask(rowData.fec_pago, 'D [de] MMMM [de] YYYY') }</span>
+                <span>{FormatoDateMask(rowData.fecha_aporte, 'D [de] MMMM [de] YYYY') }</span>
             </div>
         );
     }
-    const fecComprobanteBodyTemplate = (rowData)=>{
-        return (
-            <div className="flex align-items-center gap-2">
-                
-                {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{new Date(rowData.fec_comprobante).getFullYear()===1900? '': FormatoDateMask(rowData.fec_comprobante, 'D [de] MMMM [de] YYYY')}</span>
-            </div>
-        );
-    }
-    const proveedorBodyTemplate = (rowData)=>{
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData?.tb_Proveedor?.razon_social_prov?rowData.tb_Proveedor.razon_social_prov:'SIN', globalFilterValue)}</span>
-            </div>
-        );
-    }
-    const tipoGastoBodyTemplate = (rowData) => {
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText( rowData.tb_parametros_gasto?.nombre_gasto?rowData.tb_parametros_gasto?.nombre_gasto:'SIN', globalFilterValue)}</span>
-            </div>
-        );
-    };
-    const grupoBodyTemplate = (rowData) => {
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText(`${rowData.tb_parametros_gasto?.grupo}`, globalFilterValue)}</span>
-            </div>
-        );
-    };
-    const dateFilterTemplate = (options) => {
-        return <Calendar value={options.value} onChange={(e) => options.filterCallback(e.value, options.index)} dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" mask="99/99/9999" />;
-    };
-    
-    const representativesItemTemplate = (option) => {
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{option['razon_social_prov']}</span>
-            </div>
-        );
-    };
     const valueFiltered = (e)=>{
         setvalueFilter(e)
     }
@@ -266,18 +195,21 @@ export default function AdvancedFilterDemo({showToast}) {
             </div>
         )
     }
-    const tipoGastosBodyTemplate = (rowData)=>{
+    const fecComprobanteBodyTemplate = (rowData)=>{
         return (
-            
             <div className="flex align-items-center gap-2">
-                <span>{highlightText( `${rowData.tipo_gasto}`, globalFilterValue)}</span>
+                <span>{new Date(rowData.fec_comprobante).getFullYear()===1900? '': FormatoDateMask(rowData.fec_comprobante, 'D [de] MMMM [de] YYYY')}</span>
             </div>
         )
     }
-    const onOpenModalGastos = (e)=>{
-        setgastoxID(undefined)
-        onOpenModalIvsG(e)
-    }
+    const montoBodyTemplate = (rowData) => {
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{highlightText(formatCurrency(rowData.monto_aporte, rowData.moneda?rowData.moneda:'PEN'), globalFilterValue)}</span>
+            </div>
+        );
+    };
+    console.log(dataView, isLoading);
     return (
         <>
             {
@@ -295,11 +227,8 @@ export default function AdvancedFilterDemo({showToast}) {
                 </Modal> 
             }
             {
-                dataGastos.length!==0?(
+                !loading?(
                     <>
-                    <div>
-                        <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
-                    </div>
                     <DataTable size='large' 
                         value={customers} 
                         paginator 
@@ -312,8 +241,8 @@ export default function AdvancedFilterDemo({showToast}) {
                         onSelectionChange={(e) => setselectedCustomers(e.value)}
                         filters={filters} 
                         filterDisplay="menu" 
-                        globalFilterFields={['id', 'fec_pago', 'id_prov', 'tb_parametros_gasto.nombre_gasto', 'descripcion', 'monto', 'moneda', "tb_Proveedor.razon_social_prov","fec_registro"]} 
-                        emptyMessage="Egresos no encontrados."
+                        globalFilterFields={[]} 
+                        emptyMessage="Aportes no encontrados."
                         showGridlines 
                         loading={loading} 
                         stripedRows
@@ -321,8 +250,11 @@ export default function AdvancedFilterDemo({showToast}) {
                         onValueChange={valueFiltered}
                         >
                 <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
-                <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
-                <Column header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
+                <Column header="Fecha del aporte" field='fecha_aporte' filterField="fecha_aporte" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter />
+                <Column header="Fecha de comprobante" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter/>
+                <Column header="Monto" field='monto_aporte' filterField="monto_aporte" sortable style={{ width: '3rem' }} body={montoBodyTemplate} filter/>
+                {/* <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
+                <Column header="Fecha pago" field='fecha_aporte' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
                 <Column header="Fecha de comprobante" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter filterElement={dateFilterTemplate}/>
                 <Column header="Tipo de gasto" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
                 <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
@@ -330,12 +262,12 @@ export default function AdvancedFilterDemo({showToast}) {
                 <Column header="Monto" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
                 <Column header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                 <Column header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
-                body={proveedorBodyTemplate} filter />
+                body={proveedorBodyTemplate} filter /> */}
 
-                <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
+                {/* <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/> */}
             </DataTable>
             
-            <ModalIngresosGastos show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+            <ModalAportante show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={{}} showToast={showToast} isLoading={isLoading}/>
             <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/>
             </>
                 )
@@ -347,7 +279,7 @@ export default function AdvancedFilterDemo({showToast}) {
                     >
                         <Column header="Id" style={{ width: '1rem' }}/>
                         <Column header="Fecha registro" style={{ width: '3rem' }} body={<Skeleton/>} />
-                        <Column header="Fecha pago" style={{ width: '3rem' }} body={<Skeleton/>} />
+                        {/* <Column header="Fecha pago" style={{ width: '3rem' }} body={<Skeleton/>} />
                         <Column header="Fecha de comprobante" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
                         <Column header="Tipo de gasto" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
                         <Column header="Gasto" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
@@ -355,7 +287,7 @@ export default function AdvancedFilterDemo({showToast}) {
                         <Column header="Monto" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
                         <Column header="descripcion" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
                         <Column header="Proveedor" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="Action" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="Action" style={{ minWidth: '10rem' }} body={<Skeleton/>}/> */}
                     </DataTable>
                 )
             }

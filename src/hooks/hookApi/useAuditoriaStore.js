@@ -7,7 +7,6 @@ export const useAuditoriaStore = () => {
 		const { data } = await PTApi.get('/auditoria/get-auditoria');
 		setdataAuditoria(data.audit);
 	};
-	console.log(dataAuditoria);
 	return {
 		obtenerAuditoriaTabla,
 		dataAuditoria,

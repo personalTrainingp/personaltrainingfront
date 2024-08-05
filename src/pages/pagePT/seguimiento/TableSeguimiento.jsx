@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import { FormatoDateMask } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
 import { TabPanel, TabView } from 'primereact/tabview';
+import { StatisticSeguimiento } from './StatisticSeguimiento';
 dayjs.extend(utc);
 
 // function obtenerMayorExtensionFin(extensions) {
@@ -53,7 +54,7 @@ function encontrarObjeto(array, fecha_act) {
     // Retornar null si no se encuentra ningún objeto
     return null;
   }
-export const TableSeguimiento = ({dae}) => {
+export const TableSeguimiento = ({dae, statisticsData}) => {
 	const [customers, setCustomers] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedCustomers, setSelectedCustomers] = useState([]);
@@ -201,7 +202,10 @@ export const TableSeguimiento = ({dae}) => {
 	return (
 		<TabView>
 			<TabPanel header="Activos">
-
+				
+			<div className='d-flex justify-content-between'>
+						<StatisticSeguimiento  data={dae} statisticsData={statisticsData} />
+					</div>
 			<DataTable
 				value={customers}
 				paginator

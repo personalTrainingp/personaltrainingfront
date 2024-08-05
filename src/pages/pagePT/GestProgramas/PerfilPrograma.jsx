@@ -28,7 +28,7 @@ export const PerfilPrograma = () => {
         <Card className='mt-3 p-3'>
             <div className='d-flex align-items-center'>
                 <img 
-                className='bg-black p-2' width={200} height={150}
+                className='p-2' width={200} height={150}
                 src={`${config.API_IMG.LOGO}${data_PGM.tb_image?.name_image}`}
                 />
                 

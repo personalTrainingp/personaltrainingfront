@@ -48,16 +48,16 @@ export const CardPago = ({venta, dataPagos}) => {
     <Card>
         <Card.Header>
             <Card.Title>Datos de pago</Card.Title>
-			<span style={{fontWeight: 'bold', fontSize: '18px'}} className='d-flex justify-content-between'>
+			<span style={{fontWeight: 'bold', fontSize: '15px'}} className='d-flex justify-content-between'>
 				<span className=''>Subtotal:</span>
 				<MoneyFormatter amount={sumaTarifas-sumaTarifas*obtenerImpuestoHoy}/>
 			</span>
-			<span style={{fontWeight: 'bold', fontSize: '18px'}} className='d-flex justify-content-between'>
+			<span style={{fontWeight: 'bold', fontSize: '15px'}} className='d-flex justify-content-between'>
 				<span className=''>Igv:</span>
 				<span className='text-muted font-15'>{obtenerImpuestoHoy*100}%</span>
 				<MoneyFormatter amount={sumaTarifas*obtenerImpuestoHoy}/>
 			</span>
-			<span style={{fontWeight: 'bold', fontSize: '18px'}} className='d-flex justify-content-between'>
+			<span style={{fontWeight: 'bold', fontSize: '15px'}} className='d-flex justify-content-between'>
 				<span className=''>Total:</span>
 				<MoneyFormatter amount={sumaTarifas}/>
 			</span>

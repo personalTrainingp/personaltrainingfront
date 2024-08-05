@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Col, Row, Tab, Tabs } from 'react-bootstrap';
+import { Card, Col, Row, Tab, TabPane, Tabs } from 'react-bootstrap';
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
-import FormWizard from "react-form-wizard-component";
 import "react-form-wizard-component/dist/style.css";
 import { Link, redirect, useParams } from 'react-router-dom';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
@@ -13,7 +12,9 @@ import { ComprasxCliente } from './ComprasxCliente';
 import { ModalExtensionRegalo } from './ModalExtensionRegalo';
 import { ModalExtensionCongelamiento } from './ModalExtensionCongelamiento';
 import { SectionComentarios } from './SectionComentarios';
-
+import { TabPanel, TabView } from 'primereact/tabview';
+import { ScrollPanel } from 'primereact/scrollpanel';
+// import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
   const { obtenerOneUsuarioCliente } = useUsuarioStore()
@@ -50,36 +51,52 @@ export const PerfilCliente = () => {
   return (
     <>
     <Link  to={'/gestion-clientes'} className='mt-3'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
+    <Row>
+      <Col lg={4}>
+        <Card className='mt-3 p-3'>
+          <div className='' style={{height: '600px', width: '100%'}}>
+            <div className='d-flex align-items-center flex-column'>
+              <img src={`${userCliente.urlImg==null?sinAvatar:`${config.API_IMG.AVATARES}${userCliente.urlImg}`}`} className='rounded-circle' width={150} height={150}/>
+              <div className='m-2 text-center'>
+                <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{userCliente.nombre_cli} {userCliente.apPaterno_cli} {userCliente.apMaterno_cli}</p></span>
+                <span className='text-center'>ACTIVO</span>
+              </div>
+              <div className='btn btn-danger m-1' onClick={modalOpenRegalos}>
+                CREAR REGALOS
+              </div>
+              <div className='btn btn-info m-1' onClick={modalOpenCongelamiento}>
+                CREAR CONGELAMIENTO
+              </div>
+            </div>
+          </div>
+        </Card>
+      </Col>
+      <Col lg={8}>
     <Card className='mt-3 p-3'>
-      <div className='d-flex align-items-center'>
-        <img src={`${userCliente.urlImg==null?sinAvatar:`${config.API_IMG.AVATARES}${userCliente.urlImg}`}`} className='rounded-circle' width={150} height={150}/>
-        <div className='m-2'>
-          <span className='fs-1 fw-bold'><p className='mb-0 pb-0'>{userCliente.nombre_cli} {userCliente.apPaterno_cli} {userCliente.apMaterno_cli}</p></span>
-          <span className=''>ACTIVO</span>
-        </div>
-        <div className='btn btn-danger m-1' onClick={modalOpenRegalos}>
-          CREAR REGALOS
-        </div>
-        <div className='btn btn-info m-1' onClick={modalOpenCongelamiento}>
-          CREAR CONGELAMIENTO
-        </div>
+      <div className='flex-auto'>
+          <TabView>
+            <TabPanel header='Informacion basica'>
+              <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                  <InformacionGeneralCliente data={userCliente}/>
+              </ScrollPanel>
+            </TabPanel>
+            <TabPanel header='Comentarios'>
+            <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+              <SectionComentarios data={userCliente}/>
+            </ScrollPanel>
+            </TabPanel>
+            <TabPanel header='Compras'>
+            <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+              <ComprasxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
+            </ScrollPanel>
+            </TabPanel>
+          </TabView>
       </div>
     </Card>
-    <Card className='mt-3 p-3'>
-      <Tabs>
-        <Tab eventKey='infoBasic' title='Informacion basica'>
-          <InformacionGeneralCliente data={userCliente}/>
-        </Tab>
-        <Tab eventKey='infoComentarios' title='Comentarios'>
-          <SectionComentarios data={userCliente}/>
-        </Tab>
-        <Tab eventKey='pays' title='Comprasss'>
-          <ComprasxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
-        </Tab>
-      </Tabs>
-    </Card>
-    <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos}/>
-    <ModalExtensionCongelamiento onHide={modalCloseCongelamiento} show={isOpenModalCongelamiento}/>
+      </Col>
+    </Row>
+    <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos} id_cli={userCliente.id_cli}/>
+    <ModalExtensionCongelamiento onHide={modalCloseCongelamiento} show={isOpenModalCongelamiento} id_cli={userCliente.id_cli}/>
     </>
   );
 }

@@ -1,31 +1,43 @@
+import { DateMask } from '@/components/CurrencyMask';
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { useForm } from '@/hooks/useForm';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 const registerExRegalos ={
     dias_habiles: 1,
     observacion: '',
 }
-export const ModalExtensionRegalo = ({show, onHide}) => {
+export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
     const {formState, dias_habiles, observacion, onResetForm, onInputChange, onInputChangeReact} = useForm(registerExRegalos)
+	const { obtenerUltimaMembresiaPorCliente, dataUltimaMembresia } = useTerminoStore()
+    const [loadingUltimaMembresia, setloadingUltimaMembresia] = useState(false)
+    useEffect(() => {
+        const fetchUltimaMembresiaPorCliente = async()=>{
+            setloadingUltimaMembresia(true)
+            await obtenerUltimaMembresiaPorCliente(id_cli)
+            setloadingUltimaMembresia(false)
+        }
+        if (id_cli!==undefined) {
+            fetchUltimaMembresiaPorCliente()
+        }
+    }, [id_cli])
     
+	// const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
+	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia
     const cancelarExtensionRegalo = ()=>{
         onHide()
         onResetForm()
     }
-    const submitExtensionRegalo = ()=>{
-
+    const submitExtensionRegalo = (e)=>{
+        e.preventDefault()
+        console.log(formState);
         cancelarExtensionRegalo()
     }
-    const productDialogFooter = (
-		<React.Fragment>
-			<Button label="Cancel" icon="pi pi-times" outlined onClick={cancelarExtensionRegalo} />
-			<Button label="Save" icon="pi pi-check" onClick={submitExtensionRegalo} />
-		</React.Fragment>
-	);
   return (
     <Dialog
         visible={show}
@@ -34,47 +46,97 @@ export const ModalExtensionRegalo = ({show, onHide}) => {
         header="Nuevo Regalo"
         modal
         className="p-fluid"
-        footer={productDialogFooter}
         onHide={cancelarExtensionRegalo}
         >
-            
-            <form>
-                <Row>
-                    <Col>
-                        <div className="field">
-                            <label htmlFor="dias_habiles" className="font-bold">
-                                Dias*
-                            </label>
-                            <InputText
-                                value={dias_habiles}
-                                name='dias_habiles'
-                                onChange={onInputChange}
-                                max={1}
-                                required
-                                autoFocus
-                            />
-                        </div>
-                    </Col>
-                    <Col lg={12}>
-                        <div className="field">
-                            <label htmlFor="observacion" className="font-bold">
-                                Observacion
-                            </label>
-                            <InputTextarea
-                                id="observacion"
-                                value={observacion}
-                                name='observacion'
-                                onChange={onInputChange}
-                                autoFocus
-                                rows={3}
-                                cols={20}
-                            />
-                        </div>
-                    </Col>
-                </Row>
-                <div>Ultima membresia:</div>
-                <div>Fecha en la que termina su membresia:</div>
-            </form>
+            {
+                (loadingUltimaMembresia||id_cli)?(
+                    <>
+                        <form onSubmit={submitExtensionRegalo}>
+                            <Row>
+                                <Col>
+                                    <div className="field">
+                                        <label htmlFor="dias_habiles" className="font-bold">
+                                            Dias*
+                                        </label>
+                                        <InputText
+                                            value={dias_habiles}
+                                            name='dias_habiles'
+                                            onChange={onInputChange}
+                                            max={1}
+                                            required
+                                            autoFocus
+                                        />
+                                    </div>
+                                </Col>
+                                <Col lg={12}>
+                                    <div className="field">
+                                        <label htmlFor="observacion" className="font-bold">
+                                            Observacion
+                                        </label>
+                                        <InputTextarea
+                                            id="observacion"
+                                            value={observacion}
+                                            name='observacion'
+                                            onChange={onInputChange}
+                                            autoFocus
+                                            rows={3}
+                                            cols={20}
+                                        />
+                                    </div>
+                                </Col>
+                                <Col lg={6}>
+                                <Row>
+                                    <Col lg={6}>
+                                        {/* <Button label="Cancelar" icon="pi pi-times" severity="danger" text /> */}
+                                        <Button label="Cancelar" icon="pi pi-times" severity="danger" outlined onClick={cancelarExtensionRegalo} />
+                                    </Col>
+                                    <Col lg={6}>
+                                        <Button label="Guardar" icon="pi pi-check" severity='success' type='submit' />
+                                    </Col>
+                                </Row>
+                                </Col>
+                            </Row>
+                            <br/>
+                            <div><strong>ULTIMA MEMBRESIA: </strong>{tb_ProgramaTraining?.name_pgm} | {tb_semana_training?.semanas_st} SEMANAS</div>
+                            <div><strong>FECHA EN LA QUE SE TERMINA SU MEMBRESIA: </strong><DateMask date={sumarDiasHabiles(fec_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [de] YYYY"}/></div>
+                        </form>
+                    </>
+                ):(
+                    <>
+                    asd
+                    </>
+                )
+            }
     </Dialog>
   )
 }
+
+function sumarDiasHabiles(fecha, n_dia) {
+    if(!fecha){
+        return 'No fue posible cargar la fecha';
+    }
+  // Convertir la cadena de fecha a un objeto Date
+  let date = new Date(fecha);
+  
+  // Crear un arreglo de tamaño n_dia
+  let dias = Array.from({ length: n_dia }, (_, i) => i);
+
+  // Usar forEach para iterar sobre los días
+  dias.forEach(() => {
+    // Incrementar la fecha en un día
+    date.setDate(date.getDate() + 1);
+
+    // Obtener el día de la semana (0=Domingo, 1=Lunes, ..., 6=Sábado)
+    let diaSemana = date.getDay();
+
+    // Si el día es fin de semana (Sábado o Domingo), saltar hasta el lunes
+    if (diaSemana === 5) { // Sábado
+      date.setDate(date.getDate() + 2); // Saltar a lunes
+    } else if (diaSemana === 0) { // Domingo
+      date.setDate(date.getDate() + 1); // Saltar a lunes
+    }
+  });
+
+  // Retornar la nueva fecha en formato ISO 8601
+  return date.toISOString().split('T')[0];
+  }

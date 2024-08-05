@@ -9,6 +9,27 @@ dayjs.extend(utc);
 dayjs.extend(localizedFormat);
 dayjs.locale(es);
 export const helperFunctions = () => {
+	const base64ToFile = (base64String, fileName) => {
+		// Decodificar el string base64
+		const byteString = atob(base64String.split(',')[1]);
+
+		// Crear un array de bytes
+		const byteArray = new Uint8Array(byteString.length);
+		for (let i = 0; i < byteString.length; i++) {
+			byteArray[i] = byteString.charCodeAt(i);
+		}
+
+		// Determinar el tipo MIME
+		const mimeType = base64String.match(/data:(.*?);base64/)[1];
+
+		// Crear un objeto Blob
+		const blob = new Blob([byteArray], { type: mimeType });
+
+		// Crear un objeto File
+		const file = new File([blob], fileName, { type: mimeType });
+
+		return file;
+	};
 	const randomFunction = (lenghtRandom, code) => {
 		let possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 		let randomNumber = '';
@@ -119,6 +140,38 @@ export const helperFunctions = () => {
 		return dayjs.utc(fecha).locale('es').format('DD/MM/YYYY');
 	};
 
+	function sumarDiasHabiles(fecha, n_dia) {
+		if (!fecha) {
+			return 'No fue posible cargar la fecha';
+		}
+		// Convertir la cadena de fecha a un objeto Date
+		let date = new Date(fecha);
+
+		// Crear un arreglo de tamaño n_dia
+		let dias = Array.from({ length: n_dia }, (_, i) => i);
+
+		// Usar forEach para iterar sobre los días
+		dias.forEach(() => {
+			// Incrementar la fecha en un día
+			date.setDate(date.getDate() + 1);
+
+			// Obtener el día de la semana (0=Domingo, 1=Lunes, ..., 6=Sábado)
+			let diaSemana = date.getDay();
+
+			// Si el día es fin de semana (Sábado o Domingo), saltar hasta el lunes
+			if (diaSemana === 5) {
+				// Sábado
+				date.setDate(date.getDate() + 2); // Saltar a lunes
+			} else if (diaSemana === 0) {
+				// Domingo
+				date.setDate(date.getDate() + 1); // Saltar a lunes
+			}
+		});
+
+		// Retornar la nueva fecha en formato ISO 8601
+		return date.toISOString().split('T')[0];
+	}
+
 	return {
 		randomFunction,
 		generarCombinaciones,
@@ -127,5 +180,7 @@ export const helperFunctions = () => {
 		diasLaborables,
 		estadoExtension,
 		daysUTC,
+		base64ToFile,
+		sumarDiasHabiles,
 	};
 };

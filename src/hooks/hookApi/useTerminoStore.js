@@ -34,6 +34,17 @@ export const useTerminoStore = () => {
 	const [dataVendedoresVendieron, setdataVendedoresVendieron] = useState([]);
 	const [dataInversionistas, setdataInversionistas] = useState([]);
 	const [dataColaboradores, setdataColaboradores] = useState([]);
+	const [dataFormaPagoActivo, setdataFormaPagoActivo] = useState([]);
+	const [dataUltimaMembresia, setdataUltimaMembresia] = useState([]);
+	const obtenerFormaDePagosActivos = async () => {
+		try {
+			const { data } = await PTApi.get('/parametros/get_params/forma_pago');
+			console.log(data);
+			setdataFormaPagoActivo(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerDataColaboradores = async () => {
 		try {
 			const { data } = await PTApi.get('/parametros/get_params/colaboradores');
@@ -56,7 +67,8 @@ export const useTerminoStore = () => {
 				`/parametros/get_params/get_estado_membresia_cli/${id_cli}`
 			);
 			console.log(data);
-			dispatch(onSetUltimaMembresiaPorCliente(data ? data.detalle_ventaMembresia[0] : []));
+			// dispatch(onSetUltimaMembresiaPorCliente(data ? data.detalle_ventaMembresia[0] : []));
+			setdataUltimaMembresia(data ? data.detalle_ventaMembresia[0] : []);
 		} catch (error) {
 			console.log(error);
 		}
@@ -156,8 +168,8 @@ export const useTerminoStore = () => {
 	const obtenerParametrosVendedores = async () => {
 		try {
 			setIsLoading(true);
-			const { data:asesoresFit } = await PTApi.get(`/parametros/get_params/empleados/2`);
-			const { data:personalFito } = await PTApi.get(`/parametros/get_params/empleados/4`);
+			const { data: asesoresFit } = await PTApi.get(`/parametros/get_params/empleados/2`);
+			const { data: personalFito } = await PTApi.get(`/parametros/get_params/empleados/4`);
 			setDataVendedores([...asesoresFit, ...personalFito]);
 		} catch (error) {
 			console.log(error);
@@ -278,6 +290,9 @@ export const useTerminoStore = () => {
 		obtenerVendedores_vendieron,
 		obtenerInversionistaRegistrados,
 		obtenerDataColaboradores,
+		obtenerFormaDePagosActivos,
+		dataUltimaMembresia,
+		dataFormaPagoActivo,
 		dataColaboradores,
 		dataInversionistas,
 		dataVendedoresVendieron,

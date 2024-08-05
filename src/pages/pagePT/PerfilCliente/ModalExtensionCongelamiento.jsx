@@ -3,16 +3,60 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap';
+import dayjs from 'dayjs';
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
+import { DateMask } from '@/components/CurrencyMask';
+import { helperFunctions } from '@/common/helpers/helperFunctions';
+
+ // Función para sumar días hábiles a una fecha
+ const addBusinessDays = (date, daysToAdd) => {
+    let currentDate = dayjs(date);
+    let addedDays = 0;
+    while (addedDays < daysToAdd) {
+      currentDate = currentDate.add(1, 'day');
+      if (currentDate.day() !== 0 && currentDate.day() !== 6) {
+        addedDays++;
+      }
+    }
+    return currentDate.format('YYYY-MM-DD');
+  };
+
+  // Función para calcular la diferencia de días hábiles entre dos fechas
+  const differenceInBusinessDays = (start, end) => {
+    let currentDate = dayjs(start);
+    let endDate = dayjs(end);
+    let businessDays = 0;
+    while (currentDate.isBefore(endDate)) {
+      currentDate = currentDate.add(1, 'day');
+      if (currentDate.day() !== 0 && currentDate.day() !== 6) {
+        businessDays++;
+      }
+    }
+    return businessDays;
+  };
 const registerExCongelamiento ={
-    extension_inicio: new Date(),
+    extension_inicio: '',
     extension_fin: '',
-    extension_fin: '',
+    dias_habiles: '',
 }
-export const ModalExtensionCongelamiento = ({show, onHide}) => {
-    const {formState, extension_inicio, extension_fin, dias_habiles, observacion, img_prueba_extension, onResetForm, onInputChange, onInputChangeReact} = useForm(registerExCongelamiento)
-    
+export const ModalExtensionCongelamiento = ({show, onHide, id_cli}) => {
+    const {formState, extension_inicio, extension_fin, dias_habiles, observacion, img_prueba_extension, onResetForm, onInputChange, onInputChangeReact, onInputChangeFunction} = useForm(registerExCongelamiento)
+    const { obtenerUltimaMembresiaPorCliente, dataUltimaMembresia } = useTerminoStore()
+    const [loadingUltimaMembresia, setloadingUltimaMembresia] = useState(false)
+    useEffect(() => {
+        const fetchUltimaMembresiaPorCliente = async()=>{
+            setloadingUltimaMembresia(true)
+            await obtenerUltimaMembresiaPorCliente(id_cli)
+            setloadingUltimaMembresia(false)
+        }
+        if (id_cli!==undefined) {
+            fetchUltimaMembresiaPorCliente()
+        }
+    }, [id_cli])
+	// const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
+	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia
     const cancelarExtensionCongelamiento = ()=>{
         onHide()
         onResetForm()
@@ -23,10 +67,26 @@ export const ModalExtensionCongelamiento = ({show, onHide}) => {
     }
     const productDialogFooter = (
 		<React.Fragment>
-			<Button label="Cancel" icon="pi pi-times" outlined onClick={cancelarExtensionCongelamiento} />
-			<Button label="Save" icon="pi pi-check" onClick={submitExtensionCongelamiento} />
+			<Button label="Cancel" icon="pi pi-times" severity='danger' outlined onClick={cancelarExtensionCongelamiento} />
+			<Button label="Guardar" icon="pi pi-check" severity='success' onClick={submitExtensionCongelamiento} />
 		</React.Fragment>
 	);
+      // Efecto para actualizar días cuando se seleccionan fechas
+  useEffect(() => {
+    if (extension_inicio && extension_fin) {
+      const diffDays = differenceInBusinessDays(extension_inicio, extension_fin);
+      onInputChangeFunction("dias_habiles", diffDays)
+    }
+  }, [extension_inicio, extension_fin]);
+
+  // Efecto para actualizar fecha fin cuando se seleccionan días
+  useEffect(() => {
+    if (extension_inicio && dias_habiles) {
+      const end = addBusinessDays(extension_inicio, parseInt(dias_habiles));
+      onInputChangeFunction("extension_fin", end)
+    }
+  }, [extension_inicio, dias_habiles]);
+  const { sumarDiasHabiles } = helperFunctions()
   return (
     <Dialog
         visible={show}
@@ -35,85 +95,102 @@ export const ModalExtensionCongelamiento = ({show, onHide}) => {
         header="Nuevo Congelamiento"
         modal
         className="p-fluid"
-        footer={productDialogFooter}
+        // footer={productDialogFooter}
         onHide={cancelarExtensionCongelamiento}
         >
-            
-            <form>
-                <Row>
-                    <Col lg={12}>
-                        <div className="field">
-                            <label htmlFor="extension_inicio" className="font-bold">
-                                Fecha en la que se va a congelar
-                            </label>
-                            <input
-                                id="extension_inicio"
-                                className='form-control'
-                                value={extension_inicio}
-                                name='extension_inicio'
-                                type='date'
-                                onChange={onInputChange}
-                                autoFocus
-                                rows={3}
-                                cols={20}
-                            />
-                        </div>
-                    </Col>
-                    <Col lg={8}>
-                        <div className="field">
-                            <label htmlFor="extension_fin" className="font-bold">
-                                Fecha en la que se va a terminar de congelar
-                            </label>
-                            <input
-                                id="extension_fin"
-                                className='form-control'
-                                value={extension_fin}
-                                name='extension_fin'
-                                type='date'
-                                onChange={onInputChange}
-                                autoFocus
-                                rows={3}
-                                cols={20}
-                            />
-                        </div>
-                    </Col>
-                    <Col lg={4}>
-                        <div className="field">
-                            <label htmlFor="dias_habiles" className="font-bold">
-                                Dias
-                            </label>
-                            <input
-                                id="dias_habiles"
-                                className='form-control'
-                                value={dias_habiles}
-                                name='dias_habiles'
-                                onChange={onInputChange}
-                                autoFocus
-                                rows={3}
-                                cols={20}
-                            />
-                        </div>
-                    </Col>
-                    <Col lg={12}>
-                        <div className="field">
-                            <label htmlFor="observacion" className="font-bold">
-                                Observacion
-                            </label>
-                            <InputTextarea
-                                id="observacion"
-                                value={observacion}
-                                name='observacion'
-                                onChange={onInputChange}
-                                autoFocus
-                                rows={3}
-                                cols={20}
-                            />
-                        </div>
-                    </Col>
-                </Row>
-                <div>Ultima membresia:</div>
-                <div>Fecha en la que termina su membresia:</div>
-            </form>
+            {
+                !loadingUltimaMembresia && (
+                    
+            <form onSubmit={submitExtensionCongelamiento}>
+            <Row>
+                <Col lg={12}>
+                    <div className="field">
+                        <label htmlFor="extension_inicio" className="font-bold">
+                            Fecha en la que se va a congelar
+                        </label>
+                        <input
+                            id="extension_inicio"
+                            className='form-control'
+                            value={extension_inicio}
+                            name='extension_inicio'
+                            type='date'
+                            onChange={onInputChange}
+                            autoFocus
+                            rows={3}
+                            cols={20}
+                        />
+                    </div>
+                </Col>
+                <Col lg={8}>
+                    <div className="field">
+                        <label htmlFor="extension_fin" className="font-bold">
+                            Fecha en la que se va a terminar de congelar
+                        </label>
+                        <input
+                            id="extension_fin"
+                            className='form-control'
+                            value={extension_fin}
+                            disabled={!extension_inicio}
+                            name='extension_fin'
+                            type='date'
+                            onChange={onInputChange}
+                            autoFocus
+                            rows={3}
+                            cols={20}
+                        />
+                    </div>
+                </Col>
+                <Col lg={4}>
+                    <div className="field">
+                        <label htmlFor="dias_habiles" className="font-bold">
+                            Dias
+                        </label>
+                        <input
+                            id="dias_habiles"
+                            className='form-control'
+                            value={dias_habiles}
+                            disabled={!extension_inicio}
+                            name='dias_habiles'
+                            onChange={onInputChange}
+                            autoFocus
+                            rows={3}
+                            cols={20}
+                        />
+                    </div>
+                </Col>
+                <Col lg={12}>
+                    <div className="field">
+                        <label htmlFor="observacion" className="font-bold">
+                            Observacion
+                        </label>
+                        <InputTextarea
+                            id="observacion"
+                            value={observacion}
+                            name='observacion'
+                            onChange={onInputChange}
+                            autoFocus
+                            rows={3}
+                            cols={20}
+                        />
+                    </div>
+                </Col>
+                <Col lg={6}>
+                    <Row>
+                        <Col lg={6}>
+                            <Button label="Cancel" icon="pi pi-times" severity='danger' outlined onClick={cancelarExtensionCongelamiento} />
+                        </Col>
+                        <Col lg={6}>
+                            <Button label="Guardar" icon="pi pi-check" severity='success' type='submit' />
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
+            <br/>
+            <div><strong>Ultima membresia: </strong>{tb_ProgramaTraining?.name_pgm} | {tb_semana_training?.semanas_st} SEMANAS</div>
+            <div><strong>Fecha en la que termina su membresia: </strong><DateMask date={sumarDiasHabiles(fec_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [de] YYYY"}/></div>
+        </form>
+                )
+            }
     </Dialog>
   )
 }

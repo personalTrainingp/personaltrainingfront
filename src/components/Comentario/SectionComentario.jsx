@@ -13,17 +13,17 @@ const registerComentario ={
 	comentario_com: ''
 }
 
-export const SectionProspectoComentarios = ({data}) => {
+export const SectionComentario = ({uid_comentario}) => {
     const {user} = useSelector(e=>e.auth)
     const { formState, comentario_com, onInputChange, onResetForm } = useForm(registerComentario)
 	const { obtenerComentarioxLOCATION, postComentario } = useComentarioStore()
     const submitComment = async(e)=>{
 		e.preventDefault()
-		postComentario( {uid_location: data.uid_comentario, comentario_com: formState.comentario_com, uid_usuario: user.uid } )
+		postComentario( {uid_location: uid_comentario, comentario_com: formState.comentario_com, uid_usuario: user.uid } )
 		onResetForm()
     }
 	useEffect(() => {
-        obtenerComentarioxLOCATION(data.uid_comentario)
+        obtenerComentarioxLOCATION(uid_comentario)
     }, [])
 	const {dataComentarios} = useSelector(e=>e.comentario)
 	const prospectoViewComentario = ()=>{
@@ -36,7 +36,7 @@ export const SectionProspectoComentarios = ({data}) => {
 		<ul id="comments-list" className="comments-list">
 			<li>
 				<div className="comment-main-level">
-                    <div className="comment-avatar"></div>
+                    {/* <div className="comment-avatar"></div> */}
                     <div className="comment-box">
 					<div className="comment-head">
                 <h6 className="comment-name"><a>{user.name}</a></h6>
@@ -66,7 +66,7 @@ export const SectionProspectoComentarios = ({data}) => {
                     return(
 						<li key={e.id_comentario}>
 							<div className="comment-main-level">
-								<div className="comment-avatar"></div>
+								{/* <div className="comment-avatar"></div> */}
 								<div className="comment-box">
 									<div className="comment-head">
 										<h6 className="comment-name">{e.auth_user?.nombres_apellidos_user}</h6>
@@ -100,7 +100,6 @@ export const SectionProspectoComentarios = ({data}) => {
     </DivContainer>
   )
 }
-
 
 
 const DivContainer = styled.div`

@@ -22,7 +22,6 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 
 	const onInputChange = ({ target }) => {
 		const { name, value, checked, type } = target;
-		console.log(target);
 		// console.log({ [name]: value });
 		if (type === 'checkbox') {
 			return setFormState({
@@ -107,9 +106,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 			[name]: value,
 		});
 	};
-	const onInputChangeRange = (e) => {
-		console.log(e.target.value);
-	};
+	const onInputChangeRange = (e) => {};
 	const createValidators = () => {
 		const formCheckedValues = {};
 

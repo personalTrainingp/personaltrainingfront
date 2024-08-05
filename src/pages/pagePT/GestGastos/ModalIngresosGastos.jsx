@@ -53,7 +53,8 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     // useEffect(() => {
     //     obtenerTipoCambioPorFecha(new Date().toLocaleDateString())
     // }, [])
-    console.log(data);
+    
+    const [loadingParametros, setloadingParametros] = useState(false)
 	const { dataProvCOMBO } = useSelector(e=>e.prov)
     const { formState, 
             id_tipoGasto, 
@@ -77,7 +78,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             onResetForm,
             onInputChangeMonto,
             onInputChangeFunction
-        } = useForm(data.id!==undefined?data:registerIvsG)
+        } = useForm(data?data:registerIvsG)
         const arrayGrupo = dataParametrosGastos.map(e=>{
             return {
                 label: e.grupo.replace(/\s/g, ''),
@@ -120,18 +121,24 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             const gastos = dataGasto.filter(e=>e.grupo===grupo)||[]
             setgastoxGrupo(gastos)
         }, [grupo])
-
         useEffect(() => {
-            obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
-            // obtenerParametrosProductoProveedor()
-            obtenerParametrosProveedor()
-            obtenerParametrosFormaPago()
-            obtenerParametrosBancos()
+            const inyeccionParametros = async()=>{
+                try {
+                    setloadingParametros(true)
+                    await obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
+                    await obtenerParametrosProveedor()
+                    await obtenerParametrosFormaPago()
+                    await obtenerParametrosBancos()
+                    setloadingParametros(false)
+                } catch (error) {
+                    console.log(error, "en inyeccion");
+                }
+            }
+            inyeccionParametros()
         }, [])
-        
         const submitGasto = async(e)=>{
             e.preventDefault()
-            if(data.id!==undefined){
+            if(data){
                 // console.log("con");
                 
                 setshowLoading(true)
@@ -157,9 +164,10 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             setopenModalProv(false)
             onShow()
         }
+        console.log(DataTipoComprobante);
   return (
     <>
-    {showLoading?(
+    {(showLoading)?(
         <Modal size='sm' show={showLoading}>
         <ModalBody>
         <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
@@ -176,13 +184,15 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             <Modal size='xl' onHide={onClickCancelModal} show={show}>
                 <Modal.Header>
                     <Modal.Title>
-                        {data.id!==undefined?'Actualizar Gasto':'Registro Gasto'}
+                        {data?'Actualizar Gasto':'Registro Gasto'}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {isLoading ? (
+                    {(isLoading||loadingParametros) ? (
                         <>
-                        Cargando...
+
+                        {loadingParametros&& 'Cargando Parametros'}
+                        {isLoading && 'Cargando Datos'}
                         </>
                     ):(
                         <form onSubmit={submitGasto}>
@@ -293,7 +303,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                             options={DataTipoComprobante}
                                             value={DataTipoComprobante.find(
                                                 (option) => option.value === id_tipo_comprobante
-                                            )}
+                                            )||0}
                                             required
                                         />
                                     </div>

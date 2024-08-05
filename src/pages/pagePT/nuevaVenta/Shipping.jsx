@@ -69,7 +69,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	}
 	const onSubmitFormVentaANDnew = async()=>{
 		await startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo}, funToast)
-		dispatch(RESET_STATE_VENTA())
+		// dispatch(RESET_STATE_VENTA())
 		// await funToast(msgBox.severity, msgBox.summary, msgBox.detail, msgBox.label, msgBox.life)
 	}
 	const onSubmitFormVenta = async()=>{

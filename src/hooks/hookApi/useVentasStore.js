@@ -1,4 +1,5 @@
 import { PTApi } from '@/common';
+import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -10,8 +11,20 @@ export const useVentasStore = () => {
 	const [msgBox, setmsgBox] = useState({});
 	const startRegisterVenta = async (formState, funToast) => {
 		try {
-			console.log(formState);
+			const { base64ToFile } = helperFunctions();
+			const file = base64ToFile(
+				formState.dataVenta.detalle_venta_programa[0].firmaCli,
+				`firma_cli${formState.detalle_cli_modelo.id_cliente}.png`
+			);
+			const formData = new FormData();
+			formData.append('file', file);
 			const { data } = await PTApi.post('/venta/post-ventas', formState);
+			const { data: blobFirma } = await PTApi.post(
+				`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
+				formData
+			);
+			// console.log(data, blobFirma);
+			// console.log(blobFirma);
 			funToast('success', 'Venta', 'Venta agregada con exitos', 'success', 5000);
 		} catch (error) {
 			console.log(error);

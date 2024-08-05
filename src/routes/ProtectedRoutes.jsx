@@ -162,8 +162,8 @@ export default function ProtectedRoutes() {
 						<Route path='gestion-prospecto' element={<GestionProspectos/>}/>
 					}
 					{
-						sections.find(e=>e.url==='/extension/congelamiento') &&
-						<Route path='extension/congelamiento' element={<GestionExtensionMembresia/>}/>
+						sections.find(e=>e.url==='/extension-membresia') &&
+						<Route path='extension-membresia' element={<GestionExtensionMembresia/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/auditoria') &&

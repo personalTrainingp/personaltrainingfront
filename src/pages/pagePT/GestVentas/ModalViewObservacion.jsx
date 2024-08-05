@@ -1,4 +1,4 @@
-import { DateMask, FormatoDateMask, FUNMoneyFormatter } from '@/components/CurrencyMask';
+import { DateMask, FormatoDateMask, FUNMoneyFormatter, MoneyFormatter } from '@/components/CurrencyMask';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import { useForm } from '@/hooks/useForm'
 import { arrayCategoriaProducto, arrayFacturas, arrayOrigenDeCliente } from '@/types/type';
@@ -80,26 +80,49 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                         dataVentaxID[0]?.detalle_ventaMembresia.length>0 && (
                             dataVentaxID[0]?.detalle_ventaMembresia.map(e=>(
                                 <>
-                                <div className="col-12">
-                                    <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-0 gap-4')}>
-                                        <div className="flex flex-row sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                                            <div className="flex flex-column sm:align-items-start gap-3">
-                                                <div className="text-2xl font-bold text-800">{e.tb_ProgramaTraining.name_pgm} / {e.tb_semana_training.semanas_st} SEMANAS</div>
-                                                <div className="flex gap-2">
-                                                    <span className="flex align-items-center gap-2">
-                                                        <i className="pi pi-tag"></i>
-                                                        <span className="font-semibold">{}</span>
-                                                    </span>
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-lg-12 bg-white rounded shadow-sm mb-5">
+                                                <div className="table-responsive">
+                                                    <table className="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col" className="border-0 bg-light p-1">
+                                                                    <div className="p-0 px-3 text-uppercase">PROGRAMA</div>
+                                                                </th>
+                                                                <th scope="col" className="border-0 bg-light p-1">
+                                                                    <div className="py-0 text-uppercase">PRECIO</div>
+                                                                </th>
+                                                                <th scope="col" className="border-0 bg-light p-1">
+                                                                    <div className="py-0 text-uppercase">CONTRATO</div>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td className="border-0">
+                                                                <a
+                                                                                    href="#"
+                                                                                    className="text-dark d-inline-block"
+                                                                                >
+                                                                                    {e.tb_ProgramaTraining.name_pgm} | {e.tb_semana_training.semanas_st} SEMANAS
+                                                                                </a>
+                                                                </td>
+                                                                <td className="border-0">
+                                                                        {<MoneyFormatter amount={e.tarifa_monto} />}
+                                                                </td>
+                                                                <td className="border-0">
+                                                                    <a style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontSize: '15px'}}>CONTRATO</a>
+                                                                {/* <i className='mdi mdi-file-document fs-4' style={{cursor: 'pointer'}}></i> */}
+                                                                    {/* <h5 className='fs-3' style={{cursor: 'pointer'}}></h5> */}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                            </div>
-                                            <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                                                <span className="text-2xl font-semibold">
-                                                    PEN {e.tarifa_monto}
-                                                    </span>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 </>
                             ))
                         )
@@ -179,8 +202,50 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                     {
                         dataVentaxID[0]?.detalle_ventaCitas.length>0 && (
                             <>
-                            
-                            </>
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-lg-12 bg-white rounded shadow-sm mb-5">
+                                                <div className="table-responsive">
+                                                    <table className="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col" className="border-0 bg-light p-1">
+                                                                    <div className="p-0 px-3 text-uppercase">CITA</div>
+                                                                </th>
+                                                                <th scope="col" className="border-0 bg-light p-1">
+                                                                    <div className="py-0 text-uppercase">PRECIO</div>
+                                                                </th>
+                                                                <th scope="col" className="border-0 bg-light p-1">
+                                                                    <div className="py-0 text-uppercase">CONTRATO</div>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td className="border-0">
+                                                                <a
+                                                                                    href="#"
+                                                                                    className="text-dark d-inline-block"
+                                                                                >
+                                                                                    {e.tb_ProgramaTraining.name_pgm} | {e.tb_semana_training.semanas_st} SEMANAS
+                                                                                </a>
+                                                                </td>
+                                                                <td className="border-0">
+                                                                        {<MoneyFormatter amount={e.tarifa_monto} />}
+                                                                </td>
+                                                                <td className="border-0">
+                                                                    <a style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontSize: '15px'}}>CONTRATO</a>
+                                                                {/* <i className='mdi mdi-file-document fs-4' style={{cursor: 'pointer'}}></i> */}
+                                                                    {/* <h5 className='fs-3' style={{cursor: 'pointer'}}></h5> */}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
                         )
                     }
                 </TabPanel>
@@ -224,3 +289,6 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
     </Dialog>
   )
 }
+
+
+/* */

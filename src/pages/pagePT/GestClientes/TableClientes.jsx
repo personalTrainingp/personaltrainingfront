@@ -137,7 +137,7 @@ export default function TableClientes() {
                         showGridlines 
                         rows={10} 
                         loading={loading} 
-                        dataKey="id" 
+                        dataKey="id_cli" 
                         stripedRows
                         sortMode="multiple"
                         scrollable
@@ -160,7 +160,7 @@ export default function TableClientes() {
                 {/* <Column header="Proveedor" filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
                 body={proveedorBodyTemplate} filter filterElement={proveedorFilterTemplate} /> */}
 
-                <Column header="Estado" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
+                {/* <Column header="Estado" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/> */}
                 <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
     );

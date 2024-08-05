@@ -4,37 +4,41 @@ import { DataView } from 'primereact/dataview';
 import { Rating } from 'primereact/rating';
 import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
+import { Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Fieldset } from 'primereact/fieldset';
+import { Accordion, AccordionTab } from 'primereact/accordion';
 // import { ProductService } from './service/ProductService';
 
 export const ComprasxCliente = ({uid, dataVenta}) => {
     const [products, setProducts] = useState(dataVenta);
 
-    console.log(products);
+    console.log(dataVenta);
 
     const itemTemplate = (product, index) => {
         return (
-            <div className="col-12" key={product.id}>
-                <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={product.name} />
-                    <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                        <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                            <div className="text-2xl font-bold text-900">{product.name}</div>
-                            <Rating value={product.rating} readOnly cancel={false}></Rating>
-                            <div className="flex align-items-center gap-3">
-                                <span className="flex align-items-center gap-2">
-                                    <i className="pi pi-tag"></i>
-                                    <span className="font-semibold">{product.category}</span>
-                                </span>
-                                <Tag value={product.inventoryStatus} severity={getSeverity(product)}></Tag>
-                            </div>
-                        </div>
-                        <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                            <span className="text-2xl font-semibold">${product.price}</span>
-                            <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Table responsive hover className="table-centered table-nowrap mb-0">
+					<tbody>
+						<tr>
+							<td>
+								<h5 className="font-14 my-1">
+									<Link to="" className="text-body">
+                                        BFR BODY FAT REMOVAL
+									</Link>
+								</h5>
+								<span className="text-muted font-13">TIPO: SUPLEMENTOS</span>
+							</td>
+							<td>
+								<span className="text-muted font-13">CANTIDAD</span> <br />
+								<span className="font-14 mt-1 fw-normal">2</span>
+							</td>
+							<td>
+                                <span className="text-muted font-13">MONTO</span> <br />
+                                <span className="font-14 mt-1 fw-normal">S/ 1600.00</span>
+							</td>
+						</tr>
+					</tbody>
+				</Table>
         );
     };
 
@@ -49,8 +53,55 @@ export const ComprasxCliente = ({uid, dataVenta}) => {
     };
 
     return (
-        <div className="card">
-            {/* <DataView value={products} listTemplate={listTemplate} /> */}
-        </div>
+		<>
+				<Accordion>
+					{
+						dataVenta.map(e=>{
+							console.log(e);
+							return (
+								<AccordionTab header={`Boleta ${e.id}`} key={e.id}>
+									<p className="m-0">
+										Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+										Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+										consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+										Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+									</p>
+								</AccordionTab>
+							)
+						})
+					}
+				</Accordion>
+		</>
+        // <div className="card">
+        //     <div className="text-2xl font-bold text-800 m-3">
+        //         PRODUCTOS:
+        //     </div>
+        //     <Table responsive hover className="table-centered table-nowrap mb-0">
+		// 			<tbody>
+		// 				<tr>
+		// 					<td>
+		// 						<h5 className="font-14 my-1">
+		// 							<Link to="" className="text-body">
+        //                                 BFR BODY FAT REMOVAL
+		// 							</Link>
+		// 						</h5>
+		// 						<span className="text-muted font-13">TIPO: SUPLEMENTOS</span>
+		// 					</td>
+		// 					<td className='text-center'>
+		// 						<span className="text-muted font-13 text-center">CANTIDAD</span> <br />
+		// 						<span className="font-14 mt-1 fw-normal text-center">2</span>
+		// 					</td>
+		// 					<td className='text-center'>
+        //                         <span className="text-muted font-13 text-center">MONTO</span> <br />
+        //                         <span className="font-14 mt-1 fw-normal text-center">S/ 1600.00</span>
+		// 					</td>
+		// 					<td className='text-center'>
+		// 						<span className="text-muted font-13 text-center">Fecha de venta</span> <br />
+		// 						<span className="font-14 mt-1 fw-normal text-center">30 de Julio de 2024</span>
+		// 					</td>
+		// 				</tr>
+		// 			</tbody>
+		// 		</Table>
+        // </div>
     )
 }
