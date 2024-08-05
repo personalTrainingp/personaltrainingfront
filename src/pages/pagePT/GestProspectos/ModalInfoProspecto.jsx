@@ -137,7 +137,7 @@ export const ModalInfoProspecto = ({show, onHide, data}) => {
                                 <Col lg={12}>
                                     <div className="field">
                                         <label htmlFor="name" className="font-bold">
-                                            Asesorado*
+                                            Asesor comercial*
                                         </label>
                                         <Select
                                             onChange={(e) => onInputChangeReact(e, 'id_empl')}

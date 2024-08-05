@@ -194,7 +194,7 @@ export default function AdvancedFilterDemo({showToast}) {
     const fecRegistroBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{ highlightText(FormatoDateMask(rowData.fec_registro, 'D [de] MMMM [de] YYYY [a las] h:mm A'), globalFilterValue) }</span>
+                <span>{ FormatoDateMask(rowData.fec_registro, 'D [de] MMMM [de] YYYY [a las] h:mm A') }</span>
             </div>
         );
     }
@@ -306,7 +306,7 @@ export default function AdvancedFilterDemo({showToast}) {
                         header={header}
                         rows={10} 
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        rowsPerPageOptions={[10, 25, 50]} 
+                        rowsPerPageOptions={[10, 25, 50, 100, 250]} 
                         dataKey="id"
 				        selection={selectedCustomers}
                         onSelectionChange={(e) => setselectedCustomers(e.value)}
