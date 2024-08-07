@@ -140,8 +140,8 @@ const FullCalendarWidget = ({
               }}
               messages={{
                 next: "Siguiente",
-                previous: "Anterior",
                 today: "Hoy",
+                previous: "Anterior",
                 month: "Mes",
                 week: "Semana",
                 day: "Día",

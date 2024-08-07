@@ -4,11 +4,15 @@
 .hover-card-border{
     border: 5px solid transparent;
 }
-.card-border{
-    border: 5px solid rgb(205, 133, 0) ;
-}
-.hover-card-border:hover{
-    border: 5px solid rgb(205, 133, 0) ;
+.card-border,.hover-card-border:hover{
+    // border: 5px solid rgb(205, 133, 0) ;
+    // box-shadow: #000 4;
+    // transition: box-shadow 0.3s ease;
+    width: 140px;
+    height: 60px;
+      box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
+  -webkit-box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
+  -moz-box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
 }
 .signatureCanvas{
     border: 1px solid black;
@@ -113,6 +117,31 @@
 }
 .leyenda-no-asistio{
     background-color: purple !important;
+}
+.cuadrado {
+  width:36px;
+  height:18px;
+  float: left;
+}
+#leyenda {
+  display: table;
+  justify-content: center;
+  width: 100%;
+  font: normal 400 14px/22px "Google Sans",Roboto,Arial,sans-serif;
+  color: black;
+  .container-leyenda{
+    display: flex;
+    justify-content: center;
+  }
+}
+#columna{
+  display: table-cell;
+  padding: 10px;
+}
+#titulo-ayuda-leyenda{
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0 10px 0 5px;
 }
 
 //LOADINGS

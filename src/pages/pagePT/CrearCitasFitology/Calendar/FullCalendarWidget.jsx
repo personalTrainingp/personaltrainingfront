@@ -119,7 +119,6 @@ const FullCalendarWidget = ({
           views={['week']}
           eventPropGetter={eventStyleGetter}
           defaultView="week"
-          
           components={{
             event: CustomEvent, // Utiliza el componente personalizado para mostrar solo el título del evento
           }}

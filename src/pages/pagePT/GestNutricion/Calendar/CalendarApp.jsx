@@ -43,25 +43,47 @@ const CalendarApp = ({tipo_serv}) => {
                                                 </Card.Title>
                                             </Card.Header>
                                             <Card.Body>
-												<div className="chart-widget-list">
+												{/* <div className="chart-widget-list">
 												<p>
-													<i className="mdi mdi-square leyenda-confirmada"></i> Confirmada
+													<i className="mdi mdi-square leyenda-confirmada cuadrado"></i> Confirmada
 												</p>
 												<p>
-													<i className="mdi mdi-square leyenda-cancelada"></i> Cancelada
+													<i className="mdi mdi-square leyenda-cancelada cuadrado"></i> Cancelada
 												</p>
 												<p className="mb-0">
-													<i className="mdi mdi-square leyenda-asistio"></i> Asistio
+													<i className="mdi mdi-square leyenda-asistio cuadrado"></i> Asistio
 												</p>
 												<p className="mb-0">
-													<i className="mdi mdi-square leyenda-no-asistio"></i> No asistio
+													<i className="mdi mdi-square leyenda-no-asistio cuadrado"></i> No asistio
 												</p>
-												</div>
+												</div> */}
                                             </Card.Body>
 										</Card>
 									</div>
 								</Col>
 								<Col xl={9}>
+								
+								<div id="leyenda">
+										<div className='container-leyenda'>
+											<div id="columna">
+												<div className="cuadrado leyenda-confirmada"></div>
+												<span id="titulo-ayuda-leyenda">Confirmada</span>
+											</div>
+											<div id="columna">
+												<div className="cuadrado leyenda-cancelada"></div>
+												<span id="titulo-ayuda-leyenda">Cancelada</span>
+											</div>
+											<div id="columna">
+												<div className="cuadrado leyenda-asistio cuadrado"></div>
+												<span id="titulo-ayuda-leyenda">Asistio</span>
+											</div>
+											<div id="columna">
+												<div className="cuadrado leyenda-no-asistio cuadrado"></div>
+												<span id="titulo-ayuda-leyenda">No asistio</span>
+											</div>
+										</div>
+									</div>
+									<br/>
 									{/* fullcalendar control */}
 									<FullCalendarWidget
 										onDateClick={onDateClick}

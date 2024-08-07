@@ -1,3 +1,9 @@
+export const arrayPersonalTest = [
+	{ label: 'Test Apellido 1', value: 444 },
+	{ label: 'Test Apellido 2', value: 445 },
+	{ label: 'Test Apellido 3', value: 446 },
+];
+
 export const arrayEstados = [
 	{ label: 'Activo', value: true },
 	{ label: 'Inactivo', value: false },

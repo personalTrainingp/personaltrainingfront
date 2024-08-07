@@ -1,5 +1,6 @@
 import { CurrencyMask } from '@/components/CurrencyMask'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
+import { useTipoCambioStore } from '@/hooks/hookApi/useTipoCambioStore'
 import { useForm } from '@/hooks/useForm'
 import { onAddOneDetallePago } from '@/store/uiNuevaVenta/uiNuevaVenta'
 import { arrayFormaPagoTest } from '@/types/type'
@@ -13,7 +14,7 @@ const registerPago = {
     id_tarjeta: 0,
     id_banco:0,
     fecha_pago: new Date().toISOString().slice(0, 10),
-    monto_pago: '',
+    monto_pago: '1',
     observacion_pago: '',
     n_operacion: '',
 }
@@ -36,6 +37,7 @@ export const ModalVentasPay = ({show, onHide}) => {
         obtenerFormaDePagosActivos,
         dataFormaPagoActivo
 	} = useTerminoStore()
+	const { obtenerTipoCambioPorFecha, tipocambio } = useTipoCambioStore();
     const cancelModal = () =>{
         onHide()
         onResetForm()
@@ -50,6 +52,7 @@ export const ModalVentasPay = ({show, onHide}) => {
     }
     useEffect(() => {
         obtenerFormaDePagosActivos()
+        obtenerTipoCambioPorFecha(new Date())
     }, [])
     // useEffect(() => {
     //     const formaPago = DataFormaPago.find(e=>e.value===id_forma_pago) || 0
@@ -73,6 +76,13 @@ export const ModalVentasPay = ({show, onHide}) => {
     //     obtenerParametrosTipoTarjeta()
     //     obtenerParametrosTarjetas()
     //   }, [])
+    
+    const dataFormaPagoActivo_CONDOLARES = dataFormaPagoActivo.map((e) => {
+				return {
+					value: e.value,
+					label: `${e.label} ${e.value === 4 ? `| S/ ${(tipocambio.precio_compra*monto_pago?.replace(/,/g, '')).toFixed(2)}` : ''}`,
+				};
+			});
   return (
     <Modal show={show} onHide={cancelModal} size='xl'>
         <Modal.Header>
@@ -115,8 +125,8 @@ export const ModalVentasPay = ({show, onHide}) => {
                             placeholder={'Seleccionar la forma de pago'}
                             className="react-select"
                             classNamePrefix="react-select"
-                            options={dataFormaPagoActivo}
-                            value={dataFormaPagoActivo.find(e=>e.value===id_forma_pago) || 0}
+                            options={dataFormaPagoActivo_CONDOLARES}
+                            value={dataFormaPagoActivo_CONDOLARES.find(e=>e.value===id_forma_pago) || 0}
                             required
                             />
                       </div>

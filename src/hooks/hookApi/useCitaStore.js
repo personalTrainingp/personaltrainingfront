@@ -69,9 +69,11 @@ export const useCitaStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerCitasxCliente = async (id) => {
+	const obtenerCitasxClientexServicio = async (id, tipo_serv) => {
 		try {
-			const { data } = await PTApi.get(`/parametros/get_params/cita-disponible/${id}`);
+			const { data } = await PTApi.get(
+				`/parametros/get_params/cita-disponible/${id}/${tipo_serv}`
+			);
 			setDataCitaxCLIENTE(data);
 		} catch (error) {
 			console.log(error);
@@ -80,7 +82,7 @@ export const useCitaStore = () => {
 	return {
 		obtenerCitasxSERVICIO,
 		onPostCita,
-		obtenerCitasxCliente,
+		obtenerCitasxClientexServicio,
 		obtenerCitaxID,
 		onPutCita,
 		loading,

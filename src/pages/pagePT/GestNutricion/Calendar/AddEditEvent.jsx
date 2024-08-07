@@ -7,7 +7,7 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
-import { arrayCitasTest, arrayEstados } from '@/types/type';
+import { arrayCitasTest, arrayEstados, arrayPersonalTest } from '@/types/type';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
@@ -17,11 +17,12 @@ import dayjs from 'dayjs';
 const registerCita = {
 	id_cli: 0,
 	id_detallecita: 0,
+	id_empl: 0
 }
 const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	const {  daysUTC } = helperFunctions()
-	const { obtenerCitasxCliente, DataCitaxCLIENTE, onPutCita, onPostCita } =  useCitaStore()
-	const { formState, id_cli, id_detallecita, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
+	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPutCita, onPostCita } =  useCitaStore()
+	const { formState, id_cli, id_detallecita, id_empl, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
 	const { obtenerParametrosClientes, DataClientes } = useTerminoStore()
 	
 	
@@ -31,14 +32,15 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 
 	useEffect(() => {
 		if(id_cli==0) return;
-	  obtenerCitasxCliente(id_cli)
+		// obtenerCitasxClientexServicio(id_cli, tipo_serv)
 	}, [id_cli])
 	console.log(DataCitaxCLIENTE);
 	const onSubmitEv = ()=>{
 		const clienteSELECT= DataClientes.find(
 			(option) => option.value === id_cli
 		)
-		onPostCita(formState, selectDATE, tipo_serv, clienteSELECT.email_cli, clienteSELECT.label, dayjs(selectDATE.start).locale('es').format("D [de] MMMM [de] YYYY"), dayjs(selectDATE.start).locale('es').format("h:mm A"));
+		console.log(clienteSELECT);
+		onPostCita(formState, clienteSELECT.tel_cli, selectDATE, tipo_serv, clienteSELECT.email_cli, clienteSELECT.label, dayjs(selectDATE.start).locale('es').format("D [de] MMMM [de] YYYY"), dayjs(selectDATE.start).locale('es').format("h:mm A"));
 		cancelModal()
 	}
 	const cancelModal = ()=>{
@@ -133,8 +135,8 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 										placeholder={'Seleccionar...'}
 										className="react-select"
 										classNamePrefix="react-select"
-										options={[]}
-										value={'Hola'}
+										options={arrayPersonalTest}
+										value={arrayPersonalTest.find((op)=>op.value===id_empl)}
 										required
 									/>
 								</div>

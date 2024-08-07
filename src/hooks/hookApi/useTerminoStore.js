@@ -6,6 +6,7 @@ import {
 import { getProgramaSPT } from '@/store/ventaProgramaPT/programaPTSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useTipoCambioStore } from './useTipoCambioStore';
 
 export const useTerminoStore = () => {
 	//USUARIOS
@@ -38,8 +39,21 @@ export const useTerminoStore = () => {
 	const [dataUltimaMembresia, setdataUltimaMembresia] = useState([]);
 	const obtenerFormaDePagosActivos = async () => {
 		try {
-			const { data } = await PTApi.get('/parametros/get_params/forma_pago');
+			let { data } = await PTApi.get('/parametros/get_params/forma_pago');
 			console.log(data);
+			// data = data.map((e) => {
+			// 	console.log(e);
+			// });
+			// obtenerTipoCambioPorFecha(new Date());
+			// data = data.map((e) => {
+			// 	return {
+			// 		value: e.value,
+			// 		label: `${e.label} ${e.value === 4 ? `| S/ ${tipocambio.precio_compra}` : ''}`,
+			// 	};
+			// });
+
+			// console.log(data);
+
 			setdataFormaPagoActivo(data);
 		} catch (error) {
 			console.log(error);
