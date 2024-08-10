@@ -14,6 +14,9 @@ import { MultiSelect } from 'primereact/multiselect';
 import { Tag } from 'primereact/tag';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { ModalViewObservacion } from '../ModalViewObservacion';
+import { arrayFacturas } from '@/types/type';
+import { DateMaskString, FormatoDateMask } from '@/components/CurrencyMask';
+import dayjs from 'dayjs';
 
 
 export const TodoVentas=()=> {
@@ -23,12 +26,7 @@ export const TodoVentas=()=> {
   }, [])
   const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        id: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        'country.name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        representative: { value: null, matchMode: FilterMatchMode.IN },
-        status: { value: null, matchMode: FilterMatchMode.EQUALS },
-        verified: { value: null, matchMode: FilterMatchMode.EQUALS }
+        fecha_venta: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
     });
     const [loading, setLoading] = useState(true);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -45,7 +43,9 @@ export const TodoVentas=()=> {
     const getCustomers = (data) => {
         return [...(data || [])].map((d) => {
             // d.date = new Date(d.date);
-
+            let newItem = {...d}
+            let date = dayjs.utc(d.fecha_venta);
+            newItem.fecha_venta = new Date(date.format());
             return d;
         });
     };
@@ -101,6 +101,14 @@ export const TodoVentas=()=> {
   const onModalCancelVENTAS = ()=>{
     setviewVentas(false)
   }
+  const fechaDeComprobanteBodyTemplate = (rowData)=>{
+    
+    return (
+      <div className="flex align-items-center gap-2">
+          <span>{DateMaskString(rowData.fecha_venta, 'dddd D [de] MMMM [de] YYYY [a las] h:mm A')}</span>
+      </div>
+    )
+  }
   const actionBodyTemplate = (rowData) => {
     return (
         <React.Fragment>
@@ -112,6 +120,13 @@ export const TodoVentas=()=> {
         </React.Fragment>
     );
 };
+const comprobanteBodyTemplate = (rowData)=>{
+  return (
+    <>
+    { arrayFacturas.find(e=>e.value===rowData.id_tipoFactura)?.label}
+    </>
+  )
+}
 
     const header = renderHeader();
 
@@ -120,10 +135,10 @@ export const TodoVentas=()=> {
           <DataTable value={customers} paginator rows={10} dataKey="id" filters={filters} filterDisplay="row" loading={loading}
                   globalFilterFields={[]} header={header} emptyMessage="No customers found.">
               <Column field="id" header="Id" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="fecha_venta" header="Fecha" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="fecha_venta" header="Fecha" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} body={fechaDeComprobanteBodyTemplate}/>
               <Column field="tb_cliente.nombres_apellidos_cli" header="Clientes" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="tb_empleado.nombres_apellidos_empl" header="Vendedor" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="id_tipoFactura" header="Comprobante" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="tb_empleado.nombres_apellidos_empl" header="Asesor Comercial" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="id_tipoFactura" header="Comprobante" body={comprobanteBodyTemplate} filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column field="numero_transac" header="Nº de comprobante" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column header="Total" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="Action" frozen style={{ minWidth: '12rem' }} body={actionBodyTemplate} />

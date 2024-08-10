@@ -18,6 +18,7 @@ import { useDispatch } from 'react-redux';
 import { RESET_STATE_VENTA } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import icon_CARRITO from '@/assets/images/carrito.png'
+import { Loading } from '@/components/Loading';
 
 const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const [modalAcc, setModalAcc] = useState(false)
@@ -26,7 +27,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const [modalVentaFitology, setmodalVentaFitology] = useState(false)
 	const [modalNutricion, setmodalNutricion] = useState(false)
 	const [modalTransMem, setmodalTransMem] = useState(false)
-	const { startRegisterVenta, msgBox } = useVentasStore()
+	const { startRegisterVenta, msgBox, loadingVenta } = useVentasStore()
 	const dispatch = useDispatch()
 	const ClickOpenModalAcc = ()=>{
 		setModalAcc(true)
@@ -68,9 +69,10 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 		)
 	}
 	const onSubmitFormVentaANDnew = async()=>{
+		// setloadingVenta(true)
 		await startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo}, funToast)
-		// dispatch(RESET_STATE_VENTA())
-		// await funToast(msgBox.severity, msgBox.summary, msgBox.detail, msgBox.label, msgBox.life)
+		dispatch(RESET_STATE_VENTA())
+		// setloadingVenta(false)
 	}
 	const onSubmitFormVenta = async()=>{
 		startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo})
@@ -252,10 +254,12 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 				</Row>
 			</Col>
 		</Row>
+		<Loading show={loadingVenta}/>
 		{/* <div className='container d-flex justify-content-between'>
 			<Button onClick={handelPrev}>Anterior</Button>
 			<Button onClick={handelNext}>Siguiente</Button>
 		</div> */}
+		
 		</>
 	);
 };

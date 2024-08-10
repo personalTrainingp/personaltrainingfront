@@ -3,7 +3,10 @@ export const arrayPersonalTest = [
 	{ label: 'Test Apellido 2', value: 445 },
 	{ label: 'Test Apellido 3', value: 446 },
 ];
-
+export const arrayTipoAporte = [
+	{ label: 'Aportes de accionistas', value: 1 },
+	{ label: 'Prestamos de terceros', value: 2 },
+];
 export const arrayEstados = [
 	{ label: 'Activo', value: true },
 	{ label: 'Inactivo', value: false },

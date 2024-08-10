@@ -131,7 +131,7 @@ export default function TableClientes() {
     const header = renderHeader();
 
     return (
-            <DataTable size='large' 
+            <DataTable size='normal' 
                         value={customers} 
                         paginator 
                         showGridlines 
@@ -147,7 +147,7 @@ export default function TableClientes() {
                         filterDisplay="row" 
                         globalFilterFields={[]} 
                         header={header}
-                        emptyMessage="Egresos no encontrados.">
+                        emptyMessage="Clientes no encontrados.">
                 {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}
                 {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
                 <Column header="Clientes" filterField="nombres_apellidos_cli" style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>

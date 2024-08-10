@@ -109,31 +109,6 @@ export const helperFunctions = () => {
 		}
 
 		return diasLaborables;
-		// let diasLaborables = 0;
-		// let fechaActual = dayjs(fechaInicio, 'YYYY-MM-DD');
-		// const fechaFinParsed = dayjs(fechaFin, 'YYYY-MM-DD');
-
-		// // Determina la dirección de la iteración
-		// const direccion = fechaFinParsed.isAfter(fechaActual) ? 1 : -1;
-
-		// // Ajusta fechaActual según la dirección
-		// fechaActual = fechaActual.add(direccion, 'day');
-
-		// while (
-		// 	(direccion === 1 &&
-		// 		(fechaActual.isBefore(fechaFinParsed) ||
-		// 			fechaActual.isSame(fechaFinParsed, 'day'))) ||
-		// 	(direccion === -1 &&
-		// 		(fechaActual.isAfter(fechaFinParsed) || fechaActual.isSame(fechaFinParsed, 'day')))
-		// ) {
-		// 	// Si el día actual es laborable (de lunes a viernes)
-		// 	if (fechaActual.day() !== 0 && fechaActual.day() !== 6) {
-		// 		diasLaborables += direccion;
-		// 	}
-		// 	fechaActual = fechaActual.add(direccion, 'day');
-		// }
-
-		// return diasLaborables;
 	};
 	const estadoExtension = (fecha_inicio, fecha_fin, actual) => {};
 	const daysUTC = (fecha) => {

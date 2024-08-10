@@ -20,6 +20,9 @@ import { FormatoDateMask } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { StatisticSeguimiento } from './StatisticSeguimiento';
+import { useSelector } from 'react-redux';
+import { Message } from 'primereact/message';
+import { Skeleton } from 'primereact/skeleton';
 dayjs.extend(utc);
 
 // function obtenerMayorExtensionFin(extensions) {
@@ -54,13 +57,19 @@ function encontrarObjeto(array, fecha_act) {
     // Retornar null si no se encuentra ningún objeto
     return null;
   }
-export const TableSeguimiento = ({dae, statisticsData}) => {
+export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos}) => {
 	const [customers, setCustomers] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedCustomers, setSelectedCustomers] = useState([]);
-	const { reporteSeguimiento, obtenerReporteSeguimiento } = useReporteStore();
+	const { reporteSeguimiento, obtenerReporteSeguimiento, agrupado_programas, loadinData } = useReporteStore();
+	const { dataView } = useSelector(e=>e.DATA)
+	useEffect(() => {
+		obtenerReporteSeguimiento(SeguimientoClienteActivos)
+	  }, [])
 	const { diasLaborables, daysUTC } = helperFunctions();
 	const [filters, setFilters] = useState({
+		
+		global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 		['tb_ventum.tb_cliente.nombres_apellidos_cli']: {
 			value: null,
 			matchMode: FilterMatchMode.STARTS_WITH,
@@ -74,53 +83,26 @@ export const TableSeguimiento = ({dae, statisticsData}) => {
 		estado_seguimiento: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 	});
 	const [globalFilterValue, setGlobalFilterValue] = useState('');
-	const [representatives] = useState([
-		{ name: 'Amy Elsner', image: 'amyelsner.png' },
-		{ name: 'Anna Fali', image: 'annafali.png' },
-		{ name: 'Asiya Javayant', image: 'asiyajavayant.png' },
-		{ name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-		{ name: 'Elwin Sharvill', image: 'elwinsharvill.png' },
-		{ name: 'Ioni Bowcher', image: 'ionibowcher.png' },
-		{ name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png' },
-		{ name: 'Onyama Limba', image: 'onyamalimba.png' },
-		{ name: 'Stephen Shaw', image: 'stephenshaw.png' },
-		{ name: 'XuXue Feng', image: 'xuxuefeng.png' },
-	]);
-	const [statuses] = useState(['unqualified', 'qualified', 'new', 'negotiation', 'renewal']);
-
-	const getSeverity = (status) => {
-		switch (status) {
-			case 'unqualified':
-				return 'danger';
-
-			case 'qualified':
-				return 'success';
-
-			case '':
-				return 'info';
-			case 'renewal':
-				return null;
-		}
-	};
 
 	useEffect(() => {
 		const fetchData = () => {
-			setCustomers(getCustomers(dae));
+			setCustomers(getCustomers(dataView));
 			setLoading(false);
 		};
 		fetchData();
-	}, [dae]);
+	}, [dataView]);
 
 	const getCustomers = (data) => {
 		return [...(data || [])].map((d) => {
 			
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...d };
-			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} / ${d.tb_semana_training?.semanas_st} Semanas`;
+			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st} Semanas`;
 			let fechaaaa = dayjs.utc(d.fec_fin_mem_new)
 			newItem.fecha_fin_new = new Date(fechaaaa.format()).toISOString()
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
-			newItem.diasFaltan = diasLaborables(new Date(), d.fec_fin_mem_new)
+			
+			newItem.diasFaltan = diasLaborables(new Date().toISOString(), d.fec_fin_mem_new)
 			// d.vencimiento_REGALOS_CONGELAMIENTO = new Date(
 			// 	`${new Date(d.fec_fin_mem)}`
 			// );
@@ -128,6 +110,7 @@ export const TableSeguimiento = ({dae, statisticsData}) => {
 			return newItem;
 		});
 	};
+	
 	const formatDate = (value) => {
 		return value.toLocaleDateString('en-US', {
 			day: '2-digit',
@@ -136,31 +119,28 @@ export const TableSeguimiento = ({dae, statisticsData}) => {
 		});
 	};
 	const diasPorTerminarBodyTemplate = (rowData) => {
-		const { diasLaborables, daysUTC } = helperFunctions();
-
-		return 'd';
+		return `${rowData.diasFaltan} dias`;
 	};
 
 	const onGlobalFilterChange = (e) => {
 		const value = e.target.value;
 		let _filters = { ...filters };
-
 		_filters['global'].value = value;
-
+		
 		setFilters(_filters);
 		setGlobalFilterValue(value);
 	};
 
 	const renderHeader = () => {
 		return (
-			<div className="flex flex-wrap gap-2 justify-content-between align-items-center">
+			<div className="">
 				{/* <h4 className="m-0">Customers</h4> */}
 				<IconField iconPosition="left">
 					<InputIcon className="pi pi-search" />
 					<InputText
 						value={globalFilterValue}
 						onChange={onGlobalFilterChange}
-						placeholder="Keyword Search"
+						placeholder="Buscador global"
 					/>
 				</IconField>
 			</div>
@@ -169,21 +149,23 @@ export const TableSeguimiento = ({dae, statisticsData}) => {
 	const dateBodyTemplate = (rowData) => {
 		// console.log(rowData); JSON.stringify(rowData.fecha_fin_new)
 		//dayjs(rowData.fecha_fin_new).format('D [de] MMMM [de] YYYY')
-		return <div className="flex align-items-center gap-2">
-                
-                <span>{FormatoDateMask(rowData.fec_fin_mem_new, 'D [de] MMMM [de] YYYY') }</span>
-            </div>
+		return 	<span>{FormatoDateMask(rowData.fec_fin_mem_new, 'D [de] MMMM [de] YYYY') }</span>
 	};
 	const statusBodyTemplate = (rowData) => {
         if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null){
-            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date(), rowData.fec_fin_mem_new)<=0) {
-                return 'INACTIVO'
+            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date().toISOString(), rowData.fec_fin_mem_new)<=0) {
+                return <Message severity="error" text="INACTIVO" />
             }
-            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date(), rowData.fec_fin_mem_new)>0){
-                return 'ACTIVO'
+            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date().toISOString(), rowData.fec_fin_mem_new)>0){
+                return <Message severity="success" text="ACTIVO" />
             }
         }
-		return encontrarObjeto(rowData.tb_extension_membresia, new Date()).tipo_extension;
+		if(encontrarObjeto(rowData.tb_extension_membresia, new Date()).tipo_extension==='REG'){
+			return <Message icon={'pi pi-gift'} severity="error" text={'REGALO'} />;
+		}
+		if(encontrarObjeto(rowData.tb_extension_membresia, new Date()).tipo_extension==='CON'){
+			return <Message icon={'pi pi-slack'} severity="info" text={'CONGELAMIENTO'} />;
+		}
 	};
 
 	// const dateFilterTemplate = (options) => {
@@ -200,78 +182,130 @@ export const TableSeguimiento = ({dae, statisticsData}) => {
 
 	const header = renderHeader();
 	return (
-		<TabView>
-			<TabPanel header="Activos">
-				
-			<div className='d-flex justify-content-between'>
-						<StatisticSeguimiento  data={dae} statisticsData={statisticsData} />
-					</div>
-			<DataTable
-				value={customers}
-				paginator
-				header={header}
-				rows={10}
-				paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-				rowsPerPageOptions={[10, 25, 50]}
-				dataKey="id"
-				selection={selectedCustomers}
-				onSelectionChange={(e) => setSelectedCustomers(e.value)}
-				filters={filters}
-				filterDisplay="menu"
-				globalFilterFields={[]}
-				emptyMessage="No customers found."
-				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-			>
-				<Column
-					field="tb_ventum.tb_cliente.nombres_apellidos_cli"
-					header="Clientes"
-					sortable
-					filter
-					filterPlaceholder="Search by name"
-					style={{ minWidth: '14rem' }}
-				/>
-				<Column
-					field="ProgramavsSemana"
-					header="Programas / Semana"
-					sortable
-					filterField="ProgramavsSemana"
-					style={{ minWidth: '14rem' }}
-					filter
-					filterPlaceholder="Search by country"
-				/>
-				<Column
-					header="Vencimiento"
-					sortable
-					dataType="date"
-					style={{ minWidth: '12rem' }}
-					body={dateBodyTemplate}
-					// filter
-					// filterElement={dateFilterTemplate}
-				/>
-				<Column
-					field="dias"
-					header="Dias"
-					sortable
-					dataType="numeric"
-					style={{ minWidth: '12rem' }}
-					body={diasPorTerminarBodyTemplate}
-					filter
-				/>
-				<Column 
-                    field="status" 
-                    header="Status" 
-                    sortable 
-                    filterMenuStyle={{ width: '14rem' }} 
-                    style={{ minWidth: '12rem' }} 
-                    body={statusBodyTemplate} 
-                    filter 
-                    // filterElement={statusFilterTemplate} 
-                    />
-			</DataTable>
-			</TabPanel>
-			<TabPanel header="Inactivos">
-
-			</TabPanel>
-		</TabView>
+			<>
+				{
+					loadinData?(
+							<DataTable
+					size='small'
+                    value={Array.from({ length: 10 }, (v, i) => i)} 
+                    className="p-datatable-striped"
+				>
+					<Column
+						field="tb_ventum.tb_cliente.nombres_apellidos_cli"
+						header="Clientes"
+						sortable
+						filter
+						filterPlaceholder="Search by name"
+						style={{ minWidth: '14rem' }}
+						body={<Skeleton/>}
+					/>
+					<Column
+						header="Programas / Semana"
+						sortable
+						body={<Skeleton/>}
+						style={{ minWidth: '14rem' }}
+						filter
+						filterPlaceholder="Search by country"
+					/>
+					<Column
+						header="Vencimiento"
+						sortable
+						dataType="date"
+						style={{ minWidth: '12rem' }}
+						body={<Skeleton/>}
+						// filter
+						// filterElement={dateFilterTemplate}
+					/>
+					<Column
+						header="Dias"
+						sortable
+						dataType="numeric"
+						style={{ minWidth: '12rem' }}
+						body={<Skeleton/>}
+						filter
+					/>
+					<Column 
+								 header="Status" 
+								 sortable 
+								 filterMenuStyle={{ width: '14rem' }} 
+								 style={{ minWidth: '12rem' }} 
+								 body={<Skeleton/>} 
+								 filter 
+								 // filterElement={statusFilterTemplate} 
+								 />
+				</DataTable>
+					):(
+<>
+	
+							<div className='d-flex justify-content-between'>
+							<StatisticSeguimiento  data={dataView} statisticsData={agrupado_programas} />
+						</div>
+				<DataTable
+					value={customers}
+					size='small'
+					paginator
+					header={header}
+					rows={10}
+					paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+					rowsPerPageOptions={[10, 25, 50]}
+					dataKey="id"
+					selection={selectedCustomers}
+					onSelectionChange={(e) => setSelectedCustomers(e.value)}
+					filters={filters}
+					filterDisplay="menu"
+					globalFilterFields={["tb_ventum.tb_cliente.nombres_apellidos_cli", "ProgramavsSemana", "dias"]}
+					emptyMessage="Sin clientes."
+					currentPageReportTemplate="Mostrando {first} to {last} of {totalRecords} entries"
+				>
+					<Column
+						field="tb_ventum.tb_cliente.nombres_apellidos_cli"
+						header="Clientes"
+						sortable
+						filter
+						filterPlaceholder="Search by name"
+						style={{ minWidth: '14rem' }}
+					/>
+					<Column
+						field="ProgramavsSemana"
+						header="Programas / Semana"
+						sortable
+						filterField="ProgramavsSemana"
+						style={{ minWidth: '14rem' }}
+						filter
+						filterPlaceholder="Search by country"
+					/>
+					<Column
+						header="Vencimiento"
+						sortable
+						dataType="date"
+						style={{ minWidth: '12rem' }}
+						body={dateBodyTemplate}
+						// filter
+						// filterElement={dateFilterTemplate}
+					/>
+					<Column
+						field="dias"
+						header="Dias"
+						sortable
+						dataType="numeric"
+						style={{ minWidth: '12rem' }}
+						body={diasPorTerminarBodyTemplate}
+						filter
+					/>
+					<Column 
+								 field="status" 
+								 header="Status" 
+								 sortable 
+								 filterMenuStyle={{ width: '14rem' }} 
+								 style={{ minWidth: '12rem' }} 
+								 body={statusBodyTemplate} 
+								 filter 
+								 // filterElement={statusFilterTemplate} 
+								 />
+				</DataTable>
+</>
+					)
+				}
+			</>
 	);
 };

@@ -1,7 +1,7 @@
 
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
-import { arrayEstados, arrayFinanzas, arrayMonedas } from '@/types/type'
+import { arrayEstados, arrayFinanzas, arrayMonedas, arrayTipoAporte } from '@/types/type'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Modal, ModalBody, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
@@ -24,9 +24,10 @@ const registerAportes = {
     fec_comprobante: '', 
     id_tipo_comprobante: 0, 
     n_comprobante: '',
-    observacion:''
+    observacion:'',
+    tipo_aporte: 0
 }
-export const ModalAportante = ({onHide, show, data, isLoading, onShow, showToast}) => {
+export const ModalAportante = ({onHide, show, data, isLoading}) => {
     const onClickCancelModal = ()=>{
         onHide()
         onResetForm()
@@ -87,21 +88,22 @@ export const ModalAportante = ({onHide, show, data, isLoading, onShow, showToast
             n_operacion,
             fec_comprobante, 
             id_tipo_comprobante, 
+            tipo_aporte,
             n_comprobante, observacion, onResetForm, onInputChange, onInputChangeReact} = useForm(data?data:registerAportes)
   return (
     <>
     {showLoading?(
         <Modal size='sm' show={showLoading}>
-        <ModalBody>
-        <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
-				<span className="loader-box2"></span>
-                <br/>
-                <p className='fw-bold font-16'>
-                    Si demora mucho, comprobar su conexion a internet
-                </p>
-		</div>
-        </ModalBody>
-    </Modal> 
+            <ModalBody>
+            <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
+                    <span className="loader-box2"></span>
+                    <br/>
+                    <p className='fw-bold font-16'>
+                        Si demora mucho, comprobar su conexion a internet
+                    </p>
+            </div>
+            </ModalBody>
+        </Modal> 
     ):(
         <>
         
@@ -116,7 +118,7 @@ export const ModalAportante = ({onHide, show, data, isLoading, onShow, showToast
         >
             <form onSubmit={saveProspecto}>
                 <Row>
-                    <Col lg={12}>
+                    <Col lg={5}>
                         <div className="field">
                             <label htmlFor="id_inversionista" className="font-bold">
                                 Inversionista*
@@ -130,6 +132,26 @@ export const ModalAportante = ({onHide, show, data, isLoading, onShow, showToast
                                 options={dataInversionistas}
                                 value={dataInversionistas.find(
                                     (option) => option.value === id_inversionista
+                                )||0}
+                                
+                                required
+							/>
+                        </div>
+                    </Col>
+                    <Col lg={7}>
+                        <div className="field">
+                            <label htmlFor="tipo_aporte" className="font-bold">
+                                Tipo*
+                            </label>
+                            <Select
+                                onChange={(e) => onInputChangeReact(e, 'tipo_aporte')}
+                                name="tipo_aporte"
+                                placeholder={'Seleccionar el tipo'}
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                options={arrayTipoAporte}
+                                value={arrayTipoAporte.find(
+                                    (option) => option.value === tipo_aporte
                                 )||0}
                                 
                                 required

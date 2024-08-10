@@ -1,6 +1,6 @@
 import { arrayDistrito, arrayEstadoCivil, arrayEstados, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc } from '@/types/type'
 import React, { useEffect, useState } from 'react'
-import {Modal, Row, Col, Tab, Tabs, Button} from 'react-bootstrap'
+import {Modal, Row, Col, Tab, Tabs, Button, ModalBody} from 'react-bootstrap'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import Select from 'react-select'
 import { LayoutInfoContacEmergencia } from '../GestEmpleados/LayoutInfoContacEmergencia';
@@ -36,11 +36,12 @@ const registerImgAvatar={
 }
 export const ModalCliente = ({show, onHide}) => {
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
+    const [selectedAvatar, setselectedAvatar] = useState(null)
     const resetAvatar = ()=>{
         setSelectedFile(sinAvatar)
     }
     const { usuarioCliente, dataContactsEmerg, comentarios } = useSelector(e=>e.usuario)
-    const  { startRegisterUsuarioCliente } = useUsuarioStore()
+    const  { startRegisterUsuarioCliente, loading } = useUsuarioStore()
     const dispatch = useDispatch()
     const { 
             formState,
@@ -71,14 +72,12 @@ export const ModalCliente = ({show, onHide}) => {
     }, [formState])
 
   const onSubmitAgregarCliente = ()=>{
-      const formData = new FormData();
-      formData.append('avatar', formStateAvatar.imgAvatar_BASE64);
-          startRegisterUsuarioCliente({...usuarioCliente, dataContactsEmerg: dataContactsEmerg, comentarios}, formData)
-      onHide()
-      onResetForm()
-      resetAvatar()
-      dispatch(onResetComentario())
-      dispatch(onReset_CE())
+          startRegisterUsuarioCliente({...usuarioCliente, dataContactsEmerg: dataContactsEmerg, comentarios}, selectedAvatar)
+    //   onHide()
+    //   onResetForm()
+    //   resetAvatar()
+    //   dispatch(onResetComentario())
+    //   dispatch(onReset_CE())
   }
   const btnCancelModal = ()=>{
         onHide()
@@ -95,9 +94,21 @@ export const ModalCliente = ({show, onHide}) => {
             setSelectedFile(reader.result);
         };
         reader.readAsDataURL(file);
+        setselectedAvatar(file)
     };
   return (
     <>
+    {loading ? (<Modal size='sm' show={loading}>
+        <ModalBody>
+        <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
+				<span className="loader-box2"></span>
+                <br/>
+                <p className='fw-bold font-16'>
+                    Si demora mucho, comprobar su conexion a internet
+                </p>
+		</div>
+        </ModalBody>
+    </Modal> ) : (
     <Modal show={show} onHide={onHide} size='xl' backdrop={'static'}>
     <Modal.Header>
         <Modal.Title>Agregar cliente</Modal.Title>
@@ -427,6 +438,8 @@ export const ModalCliente = ({show, onHide}) => {
                 <a className='text-danger' onClick={btnCancelModal}>Cancelar</a>
     </Modal.Body>
     </Modal>
+    )
+    }
     </>
   )
 }

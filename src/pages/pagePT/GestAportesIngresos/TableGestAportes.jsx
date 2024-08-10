@@ -104,15 +104,16 @@ export default function TableGestAportes({showToast}) {
         setGlobalFilterValue(value);
     };
     const [showLoading, setshowLoading] = useState(false)
+    const { aportexID, obtenerAportexID } = useAportesIngresosStore()
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
             onOpenModalIvsG()
-            // obtenerGastoxID(rowData.id)
+            obtenerAportexID(rowData.id)
         }
         const confirmDeleteGastoxID = ()=>{
             confirmDialog({
-                message: 'Seguro que quiero eliminar el gasto?',
-                header: 'Eliminar gasto',
+                message: 'Seguro que quiero eliminar el Aporte?',
+                header: 'Eliminar aporte',
                 icon: 'pi pi-info-circle',
                 defaultFocus: 'reject',
                 acceptClassName: 'p-button-danger',
@@ -177,6 +178,13 @@ export default function TableGestAportes({showToast}) {
             </div>
         );
     }
+    const observacionAporteBodyTemplate = (rowData)=>{
+        return(
+            <>
+                {rowData.observacion}
+            </>
+        )
+    }
     const valueFiltered = (e)=>{
         setvalueFilter(e)
     }
@@ -209,7 +217,6 @@ export default function TableGestAportes({showToast}) {
             </div>
         );
     };
-    console.log(dataView, isLoading);
     return (
         <>
             {
@@ -260,14 +267,14 @@ export default function TableGestAportes({showToast}) {
                 <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
                 <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
                 <Column header="Monto" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
-                <Column header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                 <Column header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
                 body={proveedorBodyTemplate} filter /> */}
+                <Column header="Observacion" field='observacion' filterField="observacion" style={{ minWidth: '10rem' }} sortable body={observacionAporteBodyTemplate} filter/>
 
-                {/* <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/> */}
+                <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             
-            <ModalAportante show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={{}} showToast={showToast} isLoading={isLoading}/>
+            <ModalAportante show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={aportexID} showToast={showToast} isLoading={isLoading}/>
             <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/>
             </>
                 )

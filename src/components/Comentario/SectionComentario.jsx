@@ -31,6 +31,8 @@ export const SectionComentario = ({uid_comentario}) => {
 	const prospectoDeleteComentario = ()=>{
 
 	}
+	console.log(dataComentarios);
+	
   return (
     <DivContainer className='comments-container'>
 		<ul id="comments-list" className="comments-list">

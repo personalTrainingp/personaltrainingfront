@@ -37,6 +37,16 @@ export const useTerminoStore = () => {
 	const [dataColaboradores, setdataColaboradores] = useState([]);
 	const [dataFormaPagoActivo, setdataFormaPagoActivo] = useState([]);
 	const [dataUltimaMembresia, setdataUltimaMembresia] = useState([]);
+	const [dataTipoAporte, setdataTipoAporte] = useState([]);
+	const obtenerTiposDeAportes = async() => {
+		try {
+			let {data} = await PTApi.get('/parametros/get_params/tipo_aporte')
+			setdataTipoAporte(data.tipo)
+		} catch (error) {
+			console.log(error);
+			
+		}
+	};
 	const obtenerFormaDePagosActivos = async () => {
 		try {
 			let { data } = await PTApi.get('/parametros/get_params/forma_pago');
@@ -305,6 +315,7 @@ export const useTerminoStore = () => {
 		obtenerInversionistaRegistrados,
 		obtenerDataColaboradores,
 		obtenerFormaDePagosActivos,
+		obtenerTiposDeAportes,
 		dataUltimaMembresia,
 		dataFormaPagoActivo,
 		dataColaboradores,

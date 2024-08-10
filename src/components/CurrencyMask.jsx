@@ -43,6 +43,10 @@ export const DateMask = ({date, format}) => {
   //'D [de] MMMM [de] YYYY'
   return dayjs(date).locale('es').format(format)
 }
+export const DateMaskString = (date, format) => {
+  //'D [de] MMMM [de] YYYY'
+  return dayjs(date).locale('es').format(format)
+}
 
 export const FormatoDateMask = (date, format)=>{
   return <DateMask date={date} format={format}/>

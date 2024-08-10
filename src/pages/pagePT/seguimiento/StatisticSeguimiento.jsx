@@ -5,7 +5,6 @@ import { parsePath } from 'react-router-dom';
 import config from '@/config';
 
 export const StatisticSeguimiento = ({statisticsData, data}) => {
-    console.log(statisticsData);
   return (
     <>
         {(statisticsData).map((statistics, index) => {

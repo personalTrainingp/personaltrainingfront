@@ -27,6 +27,7 @@ export const useReporteStore = () => {
 	const [reporteFormasDePagos, setreporteFormasDePagos] = useState([]);
 	const [reporteProscedencia, setreporteProscedencia] = useState([]);
 	const [reporteDeVentasPorEmpleados, setreporteDeVentasPorEmpleados] = useState([]);
+	const [loadinData, setloadinData] = useState(false);
 	const dispatch = useDispatch();
 	// const obtenerReporteDeProscedencia = async () => {
 	// 	try {
@@ -225,40 +226,16 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerReporteSeguimiento = async () => {
+	const obtenerReporteSeguimiento = async (isClienteActive) => {
 		try {
-			const { data } = await PTApi.get('/reporte/reporte-seguimiento-membresia');
+			setloadinData(true);
+			const { data } = await PTApi.get('/reporte/reporte-seguimiento-membresia', {
+				params: { isClienteActive },
+			});
 			// console.log(data.newMembresias);
 			setreporteSeguimiento(data.newMembresias);
 			dispatch(onSetDataView(data.newMembresias));
-			function agruparPorPrograma(datos) {
-				const resultado = [];
-
-				datos.forEach((item) => {
-					const { id_pgm, name_pgm, tb_image } = item.tb_ProgramaTraining;
-
-					// Buscar si ya existe un grupo para este id_pgm
-					let grupo = resultado.find((g) => g.tb_programa_training.id_pgm === id_pgm);
-
-					if (!grupo) {
-						// Si no existe, crear un nuevo grupo
-						grupo = {
-							tb_programa_training: {
-								id_pgm,
-								name_pgm,
-								tb_image,
-							},
-							todo: [],
-						};
-						resultado.push(grupo);
-					}
-
-					// Añadir el item al grupo correspondiente
-					grupo.todo.push(item);
-				});
-
-				return resultado;
-			}
+			setloadinData(false);
 			setagrupado_programas(agruparPorPrograma(data.newMembresias));
 		} catch (error) {
 			console.log(error);
@@ -417,6 +394,7 @@ export const useReporteStore = () => {
 		obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor,
 		obtenerVentas,
 		obtenerReporteDeFormasDePagos,
+		loadinData,
 		reporteDeVentasPorEmpleados,
 		reporteFormasDePagos,
 		reporteDeDetalleVenta,
@@ -435,6 +413,35 @@ export const useReporteStore = () => {
 		ventasxPrograma_ventasAcumuladasTickets,
 	};
 };
+
+function agruparPorPrograma(datos) {
+	const resultado = [];
+
+	datos.forEach((item) => {
+		const { id_pgm, name_pgm, tb_image } = item.tb_ProgramaTraining;
+
+		// Buscar si ya existe un grupo para este id_pgm
+		let grupo = resultado.find((g) => g.tb_programa_training.id_pgm === id_pgm);
+
+		if (!grupo) {
+			// Si no existe, crear un nuevo grupo
+			grupo = {
+				tb_programa_training: {
+					id_pgm,
+					name_pgm,
+					tb_image,
+				},
+				todo: [],
+			};
+			resultado.push(grupo);
+		}
+
+		// Añadir el item al grupo correspondiente
+		grupo.todo.push(item);
+	});
+
+	return resultado;
+}
 
 function agruparPorEmpleadoConTotales(registros) {
 	// Crear un objeto para almacenar las ventas agrupadas por empleado

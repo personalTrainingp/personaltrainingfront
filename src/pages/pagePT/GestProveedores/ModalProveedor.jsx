@@ -176,7 +176,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                             <Col lg={4}>
                             <div className="mb-4">
                                 <label htmlFor="direc_prov" className="form-label">
-                                    Tarjeta*
+                                    Tarjeta
                                 </label>
                                 <Select
                                         onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
@@ -188,7 +188,6 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                         value={arrayTarjetasTemp.find(
                                             (option) => option.value === id_tarjeta
                                         )}
-                                        required
                                     />
                             </div>
                             </Col>

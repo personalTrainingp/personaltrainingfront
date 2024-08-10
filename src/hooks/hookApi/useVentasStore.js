@@ -8,9 +8,11 @@ export const useVentasStore = () => {
 	const [dataVentas, setDataVentas] = useState([]);
 	const [dataVentaxID, setdataVentaxID] = useState({});
 	const [isLoading, setisLoading] = useState(false);
+	const [loadingVenta, setloadingVenta] = useState(false);
 	const [msgBox, setmsgBox] = useState({});
 	const startRegisterVenta = async (formState, funToast) => {
 		try {
+			setloadingVenta(true);
 			const { base64ToFile } = helperFunctions();
 			const file = base64ToFile(
 				formState.dataVenta.detalle_venta_programa[0].firmaCli,
@@ -23,6 +25,7 @@ export const useVentasStore = () => {
 				`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
 				formData
 			);
+			setloadingVenta(false);
 			// console.log(data, blobFirma);
 			// console.log(blobFirma);
 			funToast('success', 'Venta', 'Venta agregada con exitos', 'success', 5000);
@@ -31,7 +34,7 @@ export const useVentasStore = () => {
 			funToast(
 				'error',
 				'ERROR(Tomar captura si es necesario)',
-				error.response.data,
+				'HUBO UN ERROR',
 				'Error',
 				60000
 			);
@@ -84,6 +87,7 @@ export const useVentasStore = () => {
 		obtenerTablaVentas,
 		obtenerPDFCONTRATOgenerado,
 		obtenerVentaporId,
+		loadingVenta,
 		msgBox,
 		isLoading,
 		dataVentas,

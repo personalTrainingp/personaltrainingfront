@@ -19,27 +19,26 @@ export const useUsuarioStore = () => {
 	const dispatch = useDispatch();
 	const { user } = useSelector((e) => e.auth);
 	const [dataClixID, setdataClixID] = useState({});
+	const [loading, setloading] = useState(false);
 	// console.log(user);
-	const startRegisterUsuarioCliente = async (form, formData) => {
+	const startRegisterUsuarioCliente = async (form, selectedFile) => {
 		const { comentario_com } = form.comentarios;
 		const { dataContactsEmerg } = form;
 		try {
 			// const { data: dataCo } = await PTApi.post('/servicios/observacion/post', {
 			// 	comentario: comentario_com,
 			// });
+			setloading(true);
 			const { data: dataCliente } = await PTApi.post('/usuario/post-cliente', {
 				...form,
 			});
-			let formDataTieneDatos = false;
-
-			for (let pair of formData.entries()) {
-				if (pair[1]) {
-					formDataTieneDatos = true;
-					break;
-				}
-			}
-			if (formDataTieneDatos) {
-				await PTApi.post(`/upload/avatar/${dataCliente.cliente.uid_avatar}`, formData);
+			if (selectedFile !== null) {
+				const formData = new FormData();
+				formData.append('file', selectedFile);
+				await PTApi.post(
+					`/storage/blob/create/${dataCliente.cliente.uid_avatar}?container=avatarclientes`,
+					formData
+				);
 			}
 			if (comentario_com.trim().length > 0) {
 				await PTApi.post('/servicios/comentario/post', {
@@ -54,7 +53,8 @@ export const useUsuarioStore = () => {
 					uidLocation: dataCliente.cliente.uid_contactsEmergencia,
 				});
 			}
-			obtenerUsuariosClientes();
+			setloading(false);
+			await obtenerUsuariosClientes();
 		} catch (error) {
 			console.log(error);
 		}
@@ -220,5 +220,7 @@ export const useUsuarioStore = () => {
 		startUpdateUsuarioEmpleado,
 		obtenerUsuariosAuth,
 		startRegisterUsuarioAuth,
+		//LOADING
+		loading,
 	};
 };
