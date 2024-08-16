@@ -10,7 +10,7 @@ import { Fieldset } from 'primereact/fieldset';
 import { Accordion, AccordionTab } from 'primereact/accordion';
 import { Detalle_membresia } from '@/components/Detalles/Detalle_membresia';
 import { Detalle_productos } from '@/components/Detalles/Detalle_productos';
-import { Detalle_cita } from '@/components/Detalles/detalle_cita';
+import { Detalle_cita } from '@/components/Detalles/Detalle_cita';
 import { ModalViewObservacion } from '../GestVentas/ModalViewObservacion';
 // import { ProductService } from './service/ProductService';
 
