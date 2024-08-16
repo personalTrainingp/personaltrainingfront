@@ -29,11 +29,11 @@ export const Detalle_cita = ({e}) => {
                                                                                     href="#"
                                                                                     className="text-dark d-inline-block"
                                                                                 >
-                                                                                    {e.tb_ProgramaTraining.name_pgm} | {e.tb_semana_training.semanas_st} SEMANAS
+                                                                                    {e?.tb_ProgramaTraining.name_pgm} | {e?.tb_semana_training.semanas_st} SEMANAS
                                                                                 </a>
                                                                 </td>
                                                                 <td className="border-0">
-                                                                        {<MoneyFormatter amount={e.tarifa_monto} />}
+                                                                        {<MoneyFormatter amount={e?.tarifa_monto} />}
                                                                 </td>
                                                                 <td className="border-0">
                                                                     <a style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontSize: '15px'}}>CONTRATO</a>

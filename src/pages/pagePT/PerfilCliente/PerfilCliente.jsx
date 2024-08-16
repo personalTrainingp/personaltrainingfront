@@ -15,18 +15,22 @@ import { SectionComentarios } from './SectionComentarios';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { ReportesxCliente } from './ReportesxCliente';
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
   const { obtenerOneUsuarioCliente, loading } = useUsuarioStore()
+  const { obtenerUltimaMembresiaPorCliente, dataUltimaMembresia, isLoading:loadingUltimaMembresia } = useTerminoStore()
   const [isOpenModalRegalos, setisOpenModalRegalos] = useState(false)
   const [isOpenModalCongelamiento, setisOpenModalCongelamiento] = useState(false)
+  const [dataVentas, setdataVentas] = useState([])
   // const [isOpenModalRegalos, setisOpenModal] = useState(false)
   const { status, userCliente } = useSelector(e=>e.authClient)
   useEffect(() => {
     obtenerOneUsuarioCliente(uid)
+    obtenerUltimaMembresiaPorCliente(uid)
   }, [])
-  if(loading){
+  if(loading && loadingUltimaMembresia){
     return (
       <>
       Cargando...
@@ -35,12 +39,15 @@ export const PerfilCliente = () => {
   }
   const modalOpenRegalos = ()=>{
     setisOpenModalRegalos(true)
+    setdataVentas(dataUltimaMembresia)
+
   }
   const modalCloseRegalos = ()=>{
     setisOpenModalRegalos(false)
   }
   const modalOpenCongelamiento = ()=>{
     setisOpenModalCongelamiento(true)
+    setdataVentas(dataUltimaMembresia)
   }
   const modalCloseCongelamiento = ()=>{
     setisOpenModalCongelamiento(false)
@@ -103,8 +110,8 @@ export const PerfilCliente = () => {
     </Card>
       </Col>
     </Row>
-    <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos} id_cli={userCliente?.id_cli}/>
-    <ModalExtensionCongelamiento onHide={modalCloseCongelamiento} show={isOpenModalCongelamiento} id_cli={userCliente.id_cli}/>
+    <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos} id_cli={userCliente?.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
+    <ModalExtensionCongelamiento onHide={modalCloseCongelamiento} show={isOpenModalCongelamiento} id_cli={userCliente.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
     </>
   );
 }

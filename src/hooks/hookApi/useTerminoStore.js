@@ -92,16 +92,19 @@ export const useTerminoStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerUltimaMembresiaPorCliente = async (id_cli) => {
+	const obtenerUltimaMembresiaPorCliente = async (uid_cli) => {
+		console.log('aquiiii');
 		try {
+			setIsLoading(true);
 			const { data } = await PTApi.get(
-				`/parametros/get_params/get_estado_membresia_cli/${id_cli}`
+				`/parametros/get_params/get_estado_membresia_cli/${uid_cli}`
 			);
-			console.log(data.membresias[data.membresias.length - 1]);
 			// dispatch(onSetUltimaMembresiaPorCliente(data ? data.detalle_ventaMembresia[0] : []));
-			setdataUltimaMembresia(
-				data !== undefined ? data.membresias[data.membresias.length - 1] : []
-			);
+			console.log('aaa');
+			// setdataUltimaMembresia(
+			// 	data !== undefined ? data.membresias[data.membresias.length - 1] : []
+			// );
+			setIsLoading(false);
 		} catch (error) {
 			console.log(error);
 		}
