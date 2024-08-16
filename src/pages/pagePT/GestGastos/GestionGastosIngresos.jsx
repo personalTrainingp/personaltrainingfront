@@ -6,7 +6,6 @@ import { columns, sizePerPageList } from './ColumnsSet'
 import { useSelector } from 'react-redux'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import AdvancedFilterDemo from './Tratch'
-import { ConfirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast'
 
 export const GestionGastosIngresos = () => {
@@ -26,7 +25,6 @@ export const GestionGastosIngresos = () => {
         <Toast ref={toast}/>
         {/* <ModalIngresosGastos show={isOpenModalIvsG} onHide={onCloseModalIvsG} onShow={onOpenModalIvsG} showToast={showToast}/> */}
         <AdvancedFilterDemo showToast={showToast}/>
-        <ConfirmDialog/>
     </>
   )
 }

@@ -1,18 +1,32 @@
+*{
+  text-transform: uppercase !important;
+}
+
 .hover-card:hover{
     border-color: rgb(205, 133, 0) !important;
 }
 .hover-card-border{
     border: 5px solid transparent;
+    width: 150px;
+    // background-color: red;
+    height: 80px;
+  // border-radius: 100%;
+    // padding: 50%;
 }
 .card-border,.hover-card-border:hover{
     // border: 5px solid rgb(205, 133, 0) ;
     // box-shadow: #000 4;
     // transition: box-shadow 0.3s ease;
-    width: 140px;
-    height: 60px;
+    // padding: 50%;
+    width: 150px;
+    height: 80px;
       box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
   -webkit-box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
   -moz-box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
+  // border-radius: 100%;
+}
+.rbc-events-container{
+  position: static !important;
 }
 .signatureCanvas{
     border: 1px solid black;
@@ -100,6 +114,26 @@
 .rbc-day-slot .rbc-events-container{
     margin-right: 0px !important;
 }
+/* Efecto hover en las celdas vacías */
+// .rbc-day-slot .rbc-timeslot-group .rbc-time-slot:hover {
+//   background-color: red !important; /* Cambia el color de fondo al gris */
+//   cursor: pointer;
+// }
+.rbc-time-content .rbc-timeslot-group .rbc-time-slot:hover {
+  background-color: rgb(182, 182, 182) !important; /* Gris claro */
+  cursor: pointer;
+}
+.rbc-events-container{
+  background-color: transparent;
+}
+// .rbc-time-content .rbc-timeslot-group .rbc-time-slot{
+//   background-color: blue !important; /* Gris claro */
+// }
+/* Efecto hover en los eventos */
+.rbc-event:hover {
+  background-color: #d3d3d3; /* Cambia el color de fondo al gris */
+  cursor: pointer;
+}
 // .rbc-event, .rbc-day-slot .rbc-background-event{
 //     border-radius: 0 !important;
 // }
@@ -107,19 +141,27 @@
     background-color: blue !important;
 }
 .leyenda-confirmada{
-    background-color: green !important;
+    background-color: #76e97e !important;
+    border-left: #27CA37 7px solid !important;
+    // color: #000 !important;
+}
+.leyenda-confirmada:hover{
+  background-color: #48e057 !important;
 }
 .leyenda-cancelada{
-    background-color: red !important;
+    background-color: #fca68b !important;
+    border-left: #aa4c2d 7px solid !important;
 }
 .leyenda-asistio{
-    background-color: gray !important;
+    background-color: rgb(153, 204, 248) !important;
+    border-left: rgb(33, 105, 168) 7px solid !important;
 }
 .leyenda-no-asistio{
-    background-color: purple !important;
+    background-color: rgb(240, 156, 240) !important;
+    border-left: rgb(134, 0, 134) 7px solid !important;
 }
 .cuadrado {
-  width:36px;
+  width: 36px;
   height:18px;
   float: left;
 }

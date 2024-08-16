@@ -106,7 +106,7 @@ export const ModalExtensionCongelamiento = ({show, onHide, id_cli}) => {
                 <Col lg={12}>
                     <div className="field">
                         <label htmlFor="extension_inicio" className="font-bold">
-                            Fecha en la que se va a congelar
+                            Fecha inicio
                         </label>
                         <input
                             id="extension_inicio"
@@ -124,7 +124,7 @@ export const ModalExtensionCongelamiento = ({show, onHide, id_cli}) => {
                 <Col lg={8}>
                     <div className="field">
                         <label htmlFor="extension_fin" className="font-bold">
-                            Fecha en la que se va a terminar de congelar
+                            Fecha fin
                         </label>
                         <input
                             id="extension_fin"

@@ -1,8 +1,6 @@
 import { PageBreadcrumb } from '@/components'
 import React, { useEffect } from 'react'
 import { Col, FloatingLabel, Form, Row } from 'react-bootstrap'
-import ProgramaContainer from './ProgramaContainer'
-import logoRPM from '@/assets/images/PT-images/logos-programas/rpm50-blanco.png'
 import Statistics from './Statistics'
 import { members } from './data'
 import ProjectStatistics from './ProjectStatistics'
@@ -98,9 +96,6 @@ export const VentasPrograma = () => {
       </Col>
     </Row>
     <Row className='align-items-center'>
-      {/* <Col xxl={3}>
-      <ProgramaContainer imgUrl={logoRPM}/>
-      </Col> */}
       <Statistics statisticsData={statisticsClientes}/>
     </Row>
     <Row>
@@ -108,7 +103,7 @@ export const VentasPrograma = () => {
         <ProjectStatistics data={programa_comparativa_mejoranio}/>
       </Col>
       <Col xxl={3}>
-        <TeamMembers members={members} title={'Clientes frecuentes'}/>
+        <TeamMembers members={members} title={'Ranking de socios'}/>
       </Col>
       <Statistics2 statisticsData={ventasxPrograma_ventasAcumuladasTickets}/>
       {id_programa!==0 && (

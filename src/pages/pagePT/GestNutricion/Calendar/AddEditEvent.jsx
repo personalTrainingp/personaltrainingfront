@@ -32,15 +32,13 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 
 	useEffect(() => {
 		if(id_cli==0) return;
-		// obtenerCitasxClientexServicio(id_cli, tipo_serv)
-	}, [id_cli])
-	console.log(DataCitaxCLIENTE);
+		obtenerCitasxClientexServicio(id_cli, tipo_serv)
+	}, [id_cli, tipo_serv])
 	const onSubmitEv = ()=>{
 		const clienteSELECT= DataClientes.find(
 			(option) => option.value === id_cli
 		)
-		console.log(clienteSELECT);
-		onPostCita(formState, clienteSELECT.tel_cli, selectDATE, tipo_serv, clienteSELECT.email_cli, clienteSELECT.label, dayjs(selectDATE.start).locale('es').format("D [de] MMMM [de] YYYY"), dayjs(selectDATE.start).locale('es').format("h:mm A"));
+		onPostCita(selectDATE, id_cli, id_detallecita, tipo_serv);
 		cancelModal()
 	}
 	const cancelModal = ()=>{
@@ -52,7 +50,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
         cancelModal()
 	}
 	const eliminarEvento = ()=>{
-		onPutCita({id: formState.id, status_cita: 501}, tipo_serv);
+		onPutCita({id: formState.id, status_cita: 501}, tipo_serv, tipo_serv);
         cancelModal()
 	}
 	const productDialogFooter = (
@@ -94,11 +92,11 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 						<Row>
 							<Col sm={12}>
 								<div className='m-2'>
-									<label>Cliente:</label>
+									<label>Socio:</label>
 									<Select
 										onChange={(e) => onInputChangeReact(e, 'id_cli')}
 										name="id_cli"
-										placeholder={'Selecciona el cliente'}
+										placeholder={'Selecciona el socio'}
 										className="react-select"
 										classNamePrefix="react-select"
 										options={DataClientes}
@@ -111,15 +109,15 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 							</Col>
 							<Col sm={12}>
 								<div className='m-2'>
-									<label>Citas que compro el cliente:</label>
+									<label>Sesiones disponible:</label>
 									<Select
 										onChange={(e) => onInputChangeReact(e, 'id_detallecita')}
 										name="id_detallecita"
-										placeholder={'Selecciona el cliente'}
+										placeholder={'Selecciona la sesion'}
 										className="react-select"
 										classNamePrefix="react-select"
-										options={arrayCitasTest}
-										value={arrayCitasTest.find(
+										options={DataCitaxCLIENTE}
+										value={DataCitaxCLIENTE.find(
 											(option) => option.value === id_detallecita
 										)}
 										required
@@ -128,7 +126,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 							</Col>
 							<Col sm={12}>
 								<div className='m-2'>
-									<label>{tipo_serv=='FITOL'?'Personal de fitology':'Nutricionista'} disponibles en ese horario:</label>
+									<label>{tipo_serv=='FITOL'?'Personal para el tratamiento estetico':'Nutricionista'}:</label>
 									<Select
 										onChange={(e) => onInputChangeReact(e, 'id_empl')}
 										name="id_empl"

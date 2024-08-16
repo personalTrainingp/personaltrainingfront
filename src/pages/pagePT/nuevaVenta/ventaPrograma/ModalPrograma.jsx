@@ -13,6 +13,13 @@ import { onSetDetallePrograma } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useDispatch } from 'react-redux';
 // Establecer el idioma local globalmente
 
+function ordenarPorIdPgm(data) {
+  const orden = [2, 4, 3];
+
+  return data.sort((a, b) => {
+    return orden.indexOf(a.id_pgm) - orden.indexOf(b.id_pgm);
+  });
+}
 const registroVentaPgm = {
   id: 0,
   id_pgm: 0,
@@ -29,6 +36,7 @@ export const ModalPrograma = ({show, hide}) => {
   const [dataTarifa, setdataTarifa] = useState(null)
   const [dataHorario, setdataHorario] = useState(null)
   const [dataPrograma, setDataPrograma] = useState(null)
+  const [ordenLogos, setordenLogos] = useState([])
   const { sumarSemanas } = helperFunctions()
   const { formState: formStateVentaPrograma, 
           id,
@@ -44,6 +52,7 @@ export const ModalPrograma = ({show, hide}) => {
           onResetForm } = useForm(registroVentaPgm)
     useEffect(() => {
       obtenerParametrosLogosProgramas()
+      // setordenLogos(ordenarPorIdPgm(datapgmPT))
     }, [])
     
     useEffect(() => {
@@ -103,6 +112,9 @@ export const ModalPrograma = ({show, hide}) => {
     onInputChangeFunction("id_st", 0)
     onInputChangeFunction(o.target.name, e.id_pgm)
   }
+
+  console.log(dataHorario);
+  
   // console.log(fechaInicio_programa);
   return (
     <>
@@ -114,17 +126,18 @@ export const ModalPrograma = ({show, hide}) => {
           <Row>
             <Col lg={5}>
               <div>
-                <Row className='container-imgs d-flex justify-content-around mx-2'>
+                <Row className='container-imgs d-flex justify-content-around'>
                   <label>Seleccione un programa:</label>
                   {
                     datapgmPT.map(e=>{
                       if(!e.estado_pgm){
                         return;
                       }
+                      
                       return(
                       <Col className={`content-img`} xl={3} lg={4} sm={3} xs={6} style={{cursor: 'pointer'}} key={e.id_pgm}>
                         <label>
-                        <img className={`hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} width={100} height={50} src={`${config.API_IMG.LOGO}${e.tb_image?.name_image}`}/>
+                        <img className={`hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} src={`${config.API_IMG.LOGO}${e.tb_image?.name_image}`}/>
                           <input
                             value={id_pgm}
                             type="radio"
@@ -154,7 +167,7 @@ export const ModalPrograma = ({show, hide}) => {
                     <Row>
                     <Col xl={12}>
                       <div className='mb-2'>
-                        <label>Semanas de entrenamiento:</label>
+                        <label>Semanas:</label>
                         <Select
                           onChange={(e) => {
                             return onInputChangeReact(e, 'id_st')
@@ -171,7 +184,7 @@ export const ModalPrograma = ({show, hide}) => {
                     </Col>
                     <Col xl={12}>
                       <div className='mb-2'>
-                        <label>Horario de entrenamiento:</label>
+                        <label>Horario:</label>
                         <Select
                           onChange={(e) => onInputChangeReact(e, 'id_horarioPgm')}
                           name={'id_horarioPgm'}
@@ -186,7 +199,7 @@ export const ModalPrograma = ({show, hide}) => {
                     </Col>
                     <Col xl={12}>
                       <div className='mb-2'>
-                        <label>Fecha de inicio de entrenamiento:</label>
+                        <label>Fecha inicio:</label>
                         <input 
                           type='date' 
                           className='form-control'
@@ -201,7 +214,7 @@ export const ModalPrograma = ({show, hide}) => {
                     </Col>
                     <Col xl={12}>
                       <div className='mb-2'>
-                        <label>Tarifa de entrenamiento:</label>
+                        <label>Tarifa:</label>
                         <Select
                           onChange={(e) => onInputChangeReact(e, 'id_tt')}
                           name={'id_tt'}
@@ -241,7 +254,7 @@ export const ModalPrograma = ({show, hide}) => {
                     </Col>
                     <Col lg={4}>
                       <span>Entrenador:</span>
-                      {dataHorario.trainer}
+                      {dataHorario.tb_empleado.empl_trainer}
                     </Col>
                   </Row>
                 )
@@ -280,10 +293,10 @@ export const ModalPrograma = ({show, hide}) => {
                 {fechaInicio_programa && dataSemana && (
                   <Row>
                     <Col lg={12}>
-                      <span>Fecha en la que va a iniciar su membresia: {FormatoDateMask(fechaInicio_programa, 'D [de] MMMM [de] YYYY')}</span>
+                      <span>Inicia: {FormatoDateMask(fechaInicio_programa, 'dddd D [de] MMMM [de] YYYY')}</span>
                     </Col>
                     <Col lg={12}>
-                      <span>Fecha en la que va a terminar su membresia: {FormatoDateMask(sumarSemanas(fechaInicio_programa, dataSemana.semanas), 'D [de] MMMM [de] YYYY')}</span>
+                      <span>Finaliza: {FormatoDateMask(sumarSemanas(fechaInicio_programa, dataSemana.semanas), 'dddd D [de] MMMM [de] YYYY')}</span>
                     </Col>
                   </Row>
                 )

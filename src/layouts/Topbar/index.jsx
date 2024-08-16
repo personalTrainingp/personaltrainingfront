@@ -20,6 +20,7 @@ import { useAuthStore } from '@/hooks/useAuthStore';
 import { useEffect } from 'react';
 import { arrayRoles } from '@/types/type';
 
+import logoDark from '@/assets/images/change-logo-dark-transparente.png';
 const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	const { settings, updateSettings, updateSidebar } = useThemeContext();
 	const { user } = useSelector(e=>e.auth)
@@ -120,10 +121,12 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 						</div>
 					</button> */}
 					{/* <TopbarSearch options={searchOptions} /> */}
-				</div>
-
+				</div>	
 				<ul className="topbar-menu d-flex align-items-center gap-3">
-					<li className="d-sm-inline-block">
+					<li>
+						<img src={logoDark} alt="logo" width={'180'} style={{height: '50px'}} />
+					</li>
+					{/* <li className="d-sm-inline-block">
 						<OverlayTrigger
 							placement="left"
 							overlay={<Tooltip id="dark-mode-toggler">Theme Mode</Tooltip>}
@@ -132,12 +135,12 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 								<i className="ri-moon-line font-22" />
 							</div>
 						</OverlayTrigger>
-					</li>
+					</li> */}
 
 					{/* <li className="d-none d-md-inline-block">
 						<MaximizeScreen />
 					</li> */}
-
+					
 					<li className="dropdown">
 						<ProfileDropdown
 							userImage={userImage}

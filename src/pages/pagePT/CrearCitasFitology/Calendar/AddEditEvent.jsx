@@ -50,11 +50,11 @@ const AddEditEvent = ({show, onHide, selectDATE}) => {
 					<Row>
 						<Col sm={12}>
 							<div className='m-2'>
-								<label>Cliente:</label>
+								<label>SOCIO:</label>
 								<Select
 									onChange={(e) => onInputChangeReact(e, 'id_cli')}
 									name="id_cli"
-									placeholder={'Selecciona el cliente'}
+									placeholder={'Selecciona el socio'}
 									className="react-select"
 									classNamePrefix="react-select"
 									options={DataClientes}
@@ -67,11 +67,11 @@ const AddEditEvent = ({show, onHide, selectDATE}) => {
 						</Col>
 						<Col sm={12}>
 							<div className='m-2'>
-								<label>Citas que compro el cliente:</label>
+								<label>SESIONES PENDIENTES:</label>
 								<Select
 									onChange={(e) => onInputChangeReact(e, 'id_detallecita')}
 									name="id_detallecita"
-									placeholder={'Selecciona el cliente'}
+									placeholder={'SELECCIONAR LAS SESIONES'}
 									className="react-select"
 									classNamePrefix="react-select"
 									options={arrayCitasTest}

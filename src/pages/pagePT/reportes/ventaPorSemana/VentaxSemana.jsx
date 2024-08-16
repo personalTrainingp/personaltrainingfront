@@ -8,7 +8,6 @@ export const VentaxSemana = () => {
                                                 <div className="table-responsive mt-4">
                                                     
                                                     <div className="card-body d-flex justify-content-center align-items-center m-0 p-2">
-                                                        {/* <img width="130px" height="80px" className="m-2" src="assets\images\logos-programas\rpm50-blanco.png" alt="rpm 50"/> */}
                                                     </div> 
                                                     <table className="table table-bordered table-centered mb-0">
                                                         <thead className="table-light">

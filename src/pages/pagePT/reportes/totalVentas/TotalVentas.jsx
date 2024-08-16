@@ -78,15 +78,15 @@ export const TotalVentas = () => {
         <CardTotal title={'Total de venta'} body={<MoneyFormatter amount={reporteVentas}/>} span={`${contarVentas(reporteTotalVentasPorTipoCliente)} ventas | ${contarVentasEspeciales(reporteTotalVentasPorTipoCliente)} Canjes`}/>
       </Col>
       <Col xxl={9}>
-        <CardProdServ data={reporteDeDetalleVenta}/>
+        <CardProdServ data={reporteDeDetalleVenta} dataGen={reporteVentas}/>
       </Col>
     </Row>
     <Row>
-      <Col xxl={4} md={6}>
+      <Col xxl={5} md={6}>
       <Tarjetas tasks={reporteFormasDePagos} title={'Metodos de pago'} dataSumaTotal={reporteFormasDePagos.reduce((total, item) => total + item.monto, 0)}/>
       </Col>
-      <Col xxl={8} md={6}>
-        <TarjetasPago tasks={reporteDeVentasPorEmpleados} title={'Ranking de vendedores'} dataSumaTotal={reporteDeVentasPorEmpleados.reduce((total, item) => total + item.cantidad_ventas, 0)}/>
+      <Col xxl={7} md={6}>
+        <TarjetasPago tasks={reporteDeVentasPorEmpleados} title={'Ranking de asesores'} dataSumaTotal={reporteDeVentasPorEmpleados.reduce((total, item) => total + item.total_ventas, 0)}/>
       </Col>
     </Row>
     </>

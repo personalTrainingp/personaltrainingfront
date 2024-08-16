@@ -1,3 +1,4 @@
+import { MoneyFormatter } from '@/components/CurrencyMask';
 import React, { useEffect } from 'react'
 import { Card, ProgressBar } from 'react-bootstrap'
 
@@ -52,11 +53,13 @@ export const SemanasxPrograma = ({data}) => {
 							</td>
 							<td>
 								<div className="progress-w-percent mb-0">
-									<span class="w-100 progress-value">{e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)} ({((e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)/sumaItemsTotal_monto)*100).toFixed(2)}%)</span>
+									<span class="w-100 progress-value"><MoneyFormatter amount={e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)}/> ({((e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)/sumaItemsTotal_monto)*100).toFixed(2)}%)</span>
 									<ProgressBar animated now={((e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)/sumaItemsTotal_monto)*100).toFixed(2)} className="progress-sm" style={{backgroundColor: '#00000042', height: '15px', width: '100%'}} variant="orange" />
 								</div>
 							</td>
-							<td>S/1,89,547</td>
+							<td>
+								<MoneyFormatter amount={(e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)/e.items.length)}/>
+							</td>
 						</tr>
 						))
 					}

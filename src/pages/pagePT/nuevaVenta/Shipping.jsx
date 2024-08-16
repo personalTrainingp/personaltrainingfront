@@ -19,6 +19,7 @@ import { RESET_STATE_VENTA } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import icon_CARRITO from '@/assets/images/carrito.png'
 import { Loading } from '@/components/Loading';
+import Swal from 'sweetalert2';
 
 const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const [modalAcc, setModalAcc] = useState(false)
@@ -64,12 +65,41 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 			<div style={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', opacity: '.5'}}>
 				<img src={icon_CARRITO} style={{width: '80px', height: '80px'}}>
 				</img>
-				ELIJA UN CLIENTE PARA EMPEZAR A VENDER
+				ELIJA UN SOCIO PARA EMPEZAR A VENDER
 			</div>
 		)
 	}
 	const onSubmitFormVentaANDnew = async()=>{
 		// setloadingVenta(true)
+		console.log(dataVenta, datos_pagos, detalle_cli_modelo);
+		if(datos_pagos.length <= 0){
+			return Swal.fire({
+				icon: 'error',
+				title: 'NO HAY PAGO REGISTRADO',
+				showConfirmButton: false,
+				timer: 2000,
+			});
+		}
+		if(detalle_cli_modelo.id_tipo_transaccion==0 || detalle_cli_modelo.id_empl==0){
+			return Swal.fire({
+				icon: 'error',
+				title: 'COMPLETAR LOS CAMPOS DE SOCIO',
+				showConfirmButton: false,
+				timer: 2000,
+			});
+		}
+		if(dataVenta.detalle_venta_programa[0]){
+			if(!dataVenta.detalle_venta_programa[0].firmaCli){
+				return Swal.fire({
+					icon: 'error',
+					title: 'FALTA LA FIRMA DEL SOCIO',
+					showConfirmButton: false,
+					timer: 2000,
+				});
+			}
+		}
+		console.log("esto no debe salir");
+		
 		await startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo}, funToast)
 		dispatch(RESET_STATE_VENTA())
 		// setloadingVenta(false)
@@ -87,56 +117,51 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 					{detalle_cli_modelo.id_cliente!==0 && (
 						<>
 							<Col lg={12}>
+							<div className='container-fluid'>
 								<Row>
-									<Col sm={6} xl={2} className="mb-3" onClick={ClickOpenModalAcc}>
+									<Col className="mb-3" onClick={ClickOpenModalAcc}>
 										<Card className="mb-0 h-100 border-1">
 											<Card.Body>
 												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
 													<Link
 														to=""
-														className="text-center text-muted p-2"
+														className="text-center text-muted"
 														data-bs-toggle="modal"
 														data-bs-target="#exampleModal"
 													>
 														<i className="mdi mdi-plus h3 my-0"></i>
-														<h4 className="font-16 mt-1 mb-0 d-block">Venta de ACCESORIOS</h4>
+														<h4 className="font-15 mt-1 mb-0 d-block">Venta de ACCESORIOS</h4>
 													</Link>
 												</div>
 											</Card.Body>
 										</Card>
 									</Col>
 									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
-									{
-										(
-											<>
-											<Col sm={6} xl={2} className="mb-3" onClick={ClickOpenModalProgramas}>
-												<Card className="mb-0 h-100 border-1">
-													<Card.Body>
-														<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
-															<Link
-																to=""
-																className="text-center text-muted p-2"
-																data-bs-toggle="modal"
-																data-bs-target="#exampleModal"
-															>
-																<i className="mdi mdi-plus h3 my-0"></i>
-																<h4 className="font-16 mt-1 mb-0 d-block">Venta de MEMBRESIAS</h4>
-															</Link>
-														</div>
-													</Card.Body>
-												</Card>
-											</Col>
-											<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
-											</>
-										)
-									}
-									<Col sm={6} xl={2} className="mb-3" onClick={onOpenModalSupl}>
+										<Col className="mb-3" onClick={ClickOpenModalProgramas}>
+											<Card className="mb-0 h-100 border-1">
+												<Card.Body>
+													<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
+														<Link
+															to=""
+															className="text-center text-muted"
+															data-bs-toggle="modal"
+															data-bs-target="#exampleModal"
+														>
+															<i className="mdi mdi-plus h3 my-0"></i>
+															<h4 className="font-16 mt-1 mb-0 d-block">Venta de MEMBRESIAS</h4>
+														</Link>
+													</div>
+												</Card.Body>
+											</Card>
+										</Col>
+										<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
+									<Col className="mb-3" onClick={onOpenModalSupl}>
 										<Card className="mb-0 h-100 border-1">
 											<Card.Body>
 												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
 													<Link
 														to=""
-														className="text-center text-muted p-2"
+														className="text-center text-muted"
 														data-bs-toggle="modal"
 														data-bs-target="#exampleModal"
 													>
@@ -148,43 +173,43 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 										</Card>
 									</Col>
 									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/>
-									<Col sm={6} xl={2} className="mb-3" onClick={ClickOpenModalFitology}>
+									<Col className="mb-3" onClick={ClickOpenModalFitology}>
 										<Card className="mb-0 h-100 border-1">
 											<Card.Body>
 												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
 													<Link
 														to=""
-														className="text-center text-muted p-2"
+														className="text-center text-muted"
 														data-bs-toggle="modal"
 														data-bs-target="#exampleModal"
 													>
 														<i className="mdi mdi-plus h3 my-0"></i>
-														<h4 className="font-16 mt-1 mb-0 d-block">Venta de citas FITOLOGY</h4>
+														<h4 className="font-16 mt-1 mb-0 d-block">Venta de citas TRATAMIENTOS ESTETICOS</h4>
 													</Link>
 												</div>
 											</Card.Body>
 										</Card>
 									</Col>
 									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
-									<Col sm={6} xl={2} className="mb-3" onClick={onOpenModalNut}>
+									<Col className="mb-3" onClick={onOpenModalNut}>
 										<Card className="mb-0 h-100 border-1">
 											<Card.Body>
 												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
 													<Link
 														to=""
-														className="text-center text-muted p-2"
+														className="text-center text-muted"
 														data-bs-toggle="modal"
 														data-bs-target="#exampleModal"
 													>
 														<i className="mdi mdi-plus h3 my-0"></i>
-														<h4 className="font-16 mt-1 mb-0 d-block">Venta de citas NUTRICIONALES</h4>
+														<h4 className="font-16 mt-1 mb-0 d-block">Venta de citas NUTRICIONISTA</h4>
 													</Link>
 												</div>
 											</Card.Body>
 										</Card>
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
-									<Col sm={6} xl={2} className="mb-3" onClick={ClickOpenModalTransfMemb}>
+									{/* <Col sm={6} xl={2} className="mb-3" onClick={ClickOpenModalTransfMemb}>
 										<Card className="mb-0 h-100 border-1">
 											<Card.Body>
 												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
@@ -201,8 +226,9 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 											</Card.Body>
 										</Card>
 									</Col>
-									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/>
+									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/> */}
 								</Row>
+							</div>
 							</Col>
 							<Col lg={12}>
 							{dataVenta.detalle_venta_programa.length <= 0 &&

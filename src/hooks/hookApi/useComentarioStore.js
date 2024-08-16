@@ -6,6 +6,26 @@ import { useDispatch } from 'react-redux';
 export const useComentarioStore = () => {
 	const [comentarioxLOC, setcomentarioxLOC] = useState([]);
 	const dispatch = useDispatch();
+	const deleteComentario = async (id, uid_comentario) => {
+		try {
+			const { data } = await PTApi.put(`/servicios/comentario/delete/${id}`);
+			await obtenerComentarioxLOCATION(uid_comentario);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const updateComentario = async (formState, id, uid_comentario) => {
+		try {
+			console.log(id, formState);
+
+			const { data } = await PTApi.put(`/servicios/comentario/put/${id}`, {
+				comentario_com: formState,
+			});
+			await obtenerComentarioxLOCATION(uid_comentario);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const postComentario = async (formState) => {
 		try {
 			const { data } = await PTApi.post('/servicios/comentario/post', formState);
@@ -26,5 +46,7 @@ export const useComentarioStore = () => {
 	return {
 		obtenerComentarioxLOCATION,
 		postComentario,
+		updateComentario,
+		deleteComentario,
 	};
 };

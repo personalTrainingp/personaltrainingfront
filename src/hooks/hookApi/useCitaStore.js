@@ -31,22 +31,26 @@ export const useCitaStore = () => {
 		}
 	};
 	const onPostCita = async (
-		formState,
+		// formState,
 		DateCell,
-		tipo_cita,
-		email_cli,
-		nombres_apellidos_cli,
-		fec_servicio,
-		hora_servicio
+		id_cli,
+		id_detallecita,
+		tipo_cita
+		// email_cli,
+		// nombres_apellidos_cli,
+		// fec_servicio,
+		// hora_servicio
 	) => {
 		try {
 			const { data } = await PTApi.post(`/cita/post-cita`, {
-				...formState,
-				tipo_serv: tipo_cita !== 'FITOL' ? 'FITOLOGY' : 'NUTRICION',
-				email_cli,
-				nombres_apellidos_cli,
-				fec_servicio,
-				hora_servicio,
+				// ...formState,
+				id_cli,
+				id_detallecita,
+				// tipo_serv: tipo_cita !== 'FITOL' ? 'FITOLOGY' : 'NUTRICION',
+				// email_cli,
+				// nombres_apellidos_cli,
+				// fec_servicio,
+				// hora_servicio,
 				fecha_init: DateCell.start,
 				fecha_final: DateCell.end,
 				status_cita: 500,
@@ -74,7 +78,9 @@ export const useCitaStore = () => {
 			const { data } = await PTApi.get(
 				`/parametros/get_params/cita-disponible/${id}/${tipo_serv}`
 			);
-			setDataCitaxCLIENTE(data);
+			console.log(data.citasDisponibles);
+
+			setDataCitaxCLIENTE(data.citasDisponibles);
 		} catch (error) {
 			console.log(error);
 		}

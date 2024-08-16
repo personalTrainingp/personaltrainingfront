@@ -8,6 +8,13 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTipoCambioStore } from './useTipoCambioStore';
 
+function ordenarPorIdPgm(data) {
+	const orden = [2, 4, 3];
+
+	return data.sort((a, b) => {
+		return orden.indexOf(a.id_pgm) - orden.indexOf(b.id_pgm);
+	});
+}
 export const useTerminoStore = () => {
 	//USUARIOS
 	const [isLoading, setIsLoading] = useState(false);
@@ -38,13 +45,13 @@ export const useTerminoStore = () => {
 	const [dataFormaPagoActivo, setdataFormaPagoActivo] = useState([]);
 	const [dataUltimaMembresia, setdataUltimaMembresia] = useState([]);
 	const [dataTipoAporte, setdataTipoAporte] = useState([]);
-	const obtenerTiposDeAportes = async() => {
+	const [paquetesDeServicios, setpaquetesDeServicios] = useState([]);
+	const obtenerTiposDeAportes = async () => {
 		try {
-			let {data} = await PTApi.get('/parametros/get_params/tipo_aporte')
-			setdataTipoAporte(data.tipo)
+			let { data } = await PTApi.get('/parametros/get_params/tipo_aporte');
+			setdataTipoAporte(data.tipo);
 		} catch (error) {
 			console.log(error);
-			
 		}
 	};
 	const obtenerFormaDePagosActivos = async () => {
@@ -90,9 +97,11 @@ export const useTerminoStore = () => {
 			const { data } = await PTApi.get(
 				`/parametros/get_params/get_estado_membresia_cli/${id_cli}`
 			);
-			console.log(data);
+			console.log(data.membresias[data.membresias.length - 1]);
 			// dispatch(onSetUltimaMembresiaPorCliente(data ? data.detalle_ventaMembresia[0] : []));
-			setdataUltimaMembresia(data ? data.detalle_ventaMembresia[0] : []);
+			setdataUltimaMembresia(
+				data !== undefined ? data.membresias[data.membresias.length - 1] : []
+			);
 		} catch (error) {
 			console.log(error);
 		}
@@ -226,7 +235,8 @@ export const useTerminoStore = () => {
 	const obtenerParametrosLogosProgramas = async () => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/programaslogos`);
-			dispatch(getProgramaSPT(data));
+
+			dispatch(getProgramaSPT(ordenarPorIdPgm(data)));
 		} catch (error) {
 			console.log(error);
 		}
@@ -234,6 +244,8 @@ export const useTerminoStore = () => {
 	const obtenerHorariosPorPrograma = async (id_pgm) => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/horario_PGM/${id_pgm}`);
+			console.log(data);
+
 			setDataHorarioPGM(data);
 		} catch (error) {
 			console.log(error);
@@ -287,6 +299,16 @@ export const useTerminoStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerPaqueteDeServicioParaVender = async (tipo_serv) => {
+		try {
+			const { data } = await PTApi.get(
+				`/parametros/get_params/pack-venta-servicio/${tipo_serv}`
+			);
+			setpaquetesDeServicios(data.fitology);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerParametrosProductoMarcas,
 		obtenerParametrosProductoCategorias,
@@ -316,6 +338,8 @@ export const useTerminoStore = () => {
 		obtenerDataColaboradores,
 		obtenerFormaDePagosActivos,
 		obtenerTiposDeAportes,
+		obtenerPaqueteDeServicioParaVender,
+		paquetesDeServicios,
 		dataUltimaMembresia,
 		dataFormaPagoActivo,
 		dataColaboradores,

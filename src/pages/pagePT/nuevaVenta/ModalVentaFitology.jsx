@@ -1,11 +1,14 @@
 import { useForm } from '@/hooks/useForm'
 import React, { useEffect, useState } from 'react'
-import { Button, Modal, Row } from 'react-bootstrap'
+import { Modal, Row } from 'react-bootstrap'
 import Select from 'react-select'
 import { arrayServiciosFitologyTest } from '../../../types/type'
 import { MoneyFormatter } from '@/components/CurrencyMask'
 import { useDispatch } from 'react-redux'
 import { onAddDetalleFitology } from '@/store/uiNuevaVenta/uiNuevaVenta'
+import { Dialog } from 'primereact/dialog'
+import { Button } from 'primereact/button'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 const registerVentaFitology = {
     id_servicio: 0,
 }
@@ -13,6 +16,7 @@ export const ModalVentaFitology = ({show, onHide, data}) => {
     const dispatch = useDispatch()
     const { formState, id_servicio, onResetForm, onInputChange, onInputChangeReact } = useForm(data?data:registerVentaFitology)
 	const [fitologySelect, setFitologySelect] = useState(undefined)
+    const { obtenerPaqueteDeServicioParaVender, paquetesDeServicios } = useTerminoStore()
     const cancelModal = () =>{
         onHide()
         onResetForm()
@@ -25,56 +29,68 @@ export const ModalVentaFitology = ({show, onHide, data}) => {
         cancelModal()
     }
     useEffect(() => {
-        const selectServFit = arrayServiciosFitologyTest.find(
+        obtenerPaqueteDeServicioParaVender('FITOL')
+    }, [])
+    
+    useEffect(() => {
+        const selectServFit = paquetesDeServicios.find(
             o => o.value === id_servicio
         ) || 0
         setFitologySelect(selectServFit)
     }, [id_servicio])
+    const productoDialogFooter = (
+        <React.Fragment>
+            <Button label="Cancel" icon="pi pi-times" outlined />
+            <Button label="Agregar venta" icon="pi pi-check" onClick={submitVentaFitology}/>
+        </React.Fragment>
+    )
   return (
-    <Modal onHide={cancelModal} show={show}>
-        <Modal.Header>
-            <Modal.Title>
-                Registrar venta de cita fitology
-            </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-            <form onSubmit={submitVentaFitology}>
-                <Row>
-                    <Select
-                     onChange={(e) => onInputChangeReact(e, 'id_servicio')}
-                     name={'id_servicio'}
-                     placeholder={'Seleccionar el servicio fitology'}
-                     className="react-select"
-                     classNamePrefix="react-select"
-                     options={arrayServiciosFitologyTest}
-                     value={arrayServiciosFitologyTest.find(o => o.value === id_servicio) || 0}
-                     required
-                    />
-                </Row>
-                {fitologySelect !== 0 && (
-                    <div className='info-producto mb-2'>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Cantidad: </td>
-                                <td>
-                                    {fitologySelect?.cantidad}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Total: </td>
-                                <td>
-                                    <MoneyFormatter amount={fitologySelect?.tarifa}/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                )
-                }
-                <Button type='submit'>Agregar venta</Button>
-            </form>
-        </Modal.Body>
-    </Modal>
+    <Dialog
+    visible={show}
+            style={{ width: '50rem', height: '500px' }}
+            breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+            header="VENDER CITAS FITOLOGY"
+            modal
+            className="p-fluid"
+            footer={productoDialogFooter}
+            onHide={cancelModal}
+    >
+        <form onSubmit={submitVentaFitology}>
+                 <Row>
+                     <Select
+                      onChange={(e) => onInputChangeReact(e, 'id_servicio')}
+                      name={'id_servicio'}
+                      placeholder={'Seleccionar el servicio fitology'}
+                      className="react-select"
+                      classNamePrefix="react-select"
+                      options={paquetesDeServicios}
+                      value={paquetesDeServicios.find(o => o.value === id_servicio) || 0}
+                      required
+                     />
+                 </Row>
+                 {fitologySelect !== 0 && (
+                     <div className='info-producto mb-2'>
+                     <table>
+                         <tbody>
+                             <tr>
+                                 <td>Cantidad: </td>
+                                 <td>
+                                     {fitologySelect?.cantidad}
+                                 </td>
+                             </tr>
+                             <tr>
+                                 <td>Total: </td>
+                                 <td>
+                                     <MoneyFormatter amount={fitologySelect?.tarifa}/>
+                                 </td>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </div>
+                 )
+                 }
+                 {/* <Button type='submit'>Agregar venta</Button> */}
+             </form>
+    </Dialog>
   )
 }

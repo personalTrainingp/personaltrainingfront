@@ -25,7 +25,7 @@ const CalendarApp = ({tipo_serv}) => {
 
 	return (
 		<>
-			<PageBreadcrumb title={tipo_serv=='NUTRIC'?"Crear citas Nutricionales": "Crear citas fitology"} subName="Apps" />
+			<PageBreadcrumb title={tipo_serv=='NUTRI'?"Crear citas Nutricionista": "tratamientos esteticos"} subName="Apps" />
 
 			<Row>
 				<Col>
@@ -34,7 +34,7 @@ const CalendarApp = ({tipo_serv}) => {
 							<Row>
 								<Col xl={3}>
 									<SidePanel />
-									<div className="d-grid">
+									{/* <div className="d-grid">
 										<Card>
 											<Card.Header>
                                                 <Card.Title as="h5">
@@ -43,7 +43,7 @@ const CalendarApp = ({tipo_serv}) => {
                                                 </Card.Title>
                                             </Card.Header>
                                             <Card.Body>
-												{/* <div className="chart-widget-list">
+												<div className="chart-widget-list">
 												<p>
 													<i className="mdi mdi-square leyenda-confirmada cuadrado"></i> Confirmada
 												</p>
@@ -56,10 +56,10 @@ const CalendarApp = ({tipo_serv}) => {
 												<p className="mb-0">
 													<i className="mdi mdi-square leyenda-no-asistio cuadrado"></i> No asistio
 												</p>
-												</div> */}
+												</div>
                                             </Card.Body>
 										</Card>
-									</div>
+									</div> */}
 								</Col>
 								<Col xl={9}>
 								

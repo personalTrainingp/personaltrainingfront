@@ -58,15 +58,17 @@ function encontrarObjeto(array, fecha_act) {
     // Retornar null si no se encuentra ningún objeto
     return null;
   }
-export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos}) => {
+export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteActivos, esTodo}) => {
 	const [customers, setCustomers] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedCustomers, setSelectedCustomers] = useState([]);
-	const { reporteSeguimiento, obtenerReporteSeguimiento, agrupado_programas, loadinData } = useReporteStore();
+	const { reporteSeguimiento, obtenerReporteSeguimiento, obtenerReporteSeguimientoTODO, viewSeguimiento, agrupado_programas, loadinData } = useReporteStore();
 	const { dataView } = useSelector(e=>e.DATA)
 	useEffect(() => {
-		obtenerReporteSeguimiento(SeguimientoClienteActivos)
+		obtenerReporteSeguimientoTODO()
 	  }, [])
+    //   console.log(dataView);
+      
 	const { diasLaborables, daysUTC } = helperFunctions();
 	const [filters, setFilters] = useState({
 		
@@ -87,11 +89,11 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 
 	useEffect(() => {
 		const fetchData = () => {
-			setCustomers(getCustomers(dataView));
+			setCustomers(getCustomers(viewSeguimiento));
 			setLoading(false);
 		};
 		fetchData();
-	}, [dataView]);
+	}, [viewSeguimiento]);
 
 	const getCustomers = (data) => {
 		return [...(data || [])].map((d) => {
@@ -155,10 +157,10 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 	const statusBodyTemplate = (rowData) => {
         if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null){
             if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date().toISOString(), rowData.fec_fin_mem_new)<=0) {
-                return <Message severity="error" text="INACTIVO" />
+                return ''
             }
             if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date().toISOString(), rowData.fec_fin_mem_new)>0){
-                return <Message severity="success" text="ACTIVO" />
+                return ''
             }
         }
 		if(encontrarObjeto(rowData.tb_extension_membresia, new Date()).tipo_extension==='REG'){
@@ -168,6 +170,16 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 			return <Message icon={'pi pi-slack'} severity="info" text={'CONGELAMIENTO'} />;
 		}
 	};
+    const isActiveBodyTemplate = (rowData)=>{
+        if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null){
+            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date().toISOString(), rowData.fec_fin_mem_new)<=0) {
+                return <Message severity="error" text="INACTIVO" />
+            }
+            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date().toISOString(), rowData.fec_fin_mem_new)>0){
+                return <Message severity="success" text="ACTIVO" />
+            }
+        }
+    }
 
 	// const dateFilterTemplate = (options) => {
 	// 	return (
@@ -226,7 +238,7 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 						filter
 					/>
 					<Column 
-								 header="Status" 
+								 header="SESIONES DE REGALO/CONGELAMIENTO" 
 								 sortable 
 								 filterMenuStyle={{ width: '14rem' }} 
 								 style={{ minWidth: '12rem' }} 
@@ -238,9 +250,9 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 					):(
 <>
 	
-							<Row>
-								<StatisticSeguimiento  data={dataView} statisticsData={agrupado_programas} />
-							</Row>
+                                <Row>
+							        <StatisticSeguimiento  data={viewSeguimiento} statisticsData={agrupado_programas} />
+                                </Row>
 				<DataTable
 					value={customers}
 					size='small'
@@ -295,7 +307,7 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 					/>
 					<Column 
 								 field="status" 
-								 header="Status" 
+								 header="SESIONES DE REGALO/CONGELAMIENTO" 
 								 sortable 
 								 filterMenuStyle={{ width: '14rem' }} 
 								 style={{ minWidth: '12rem' }} 
@@ -303,6 +315,16 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 								 filter 
 								 // filterElement={statusFilterTemplate} 
 								 />
+                                 {/* <Column 
+                                              field="status" 
+                                              header="Estado" 
+                                              sortable 
+                                              filterMenuStyle={{ width: '14rem' }} 
+                                              style={{ minWidth: '12rem' }} 
+                                              body={isActiveBodyTemplate} 
+                                              filter 
+                                              // filterElement={statusFilterTemplate} 
+                                              /> */}
 				</DataTable>
 </>
 					)

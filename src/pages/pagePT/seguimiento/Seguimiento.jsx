@@ -9,6 +9,7 @@ import { helperFunctions } from '@/common/helpers/helperFunctions';
 import {TableSeguimiento} from './TableSeguimiento';
 import { useSelector } from 'react-redux';
 import { TabPanel, TabView } from 'primereact/tabview';
+import { TableSeguimientoTODO } from './TableSeguimientoTODO';
 
 
 
@@ -21,26 +22,37 @@ export const Seguimiento = () => {
 //   }, [])
   
   return (
-    <>
-    <PageBreadcrumb title="Seguimientos" subName="Ventas" />
-    <Row>
-		</Row>
-        <Row>
-            <Col>
-            <Card>
-                <Card.Body>
-					<TabView>
-						<TabPanel header="Activos">
-						<TableSeguimiento SeguimientoClienteActivos={true}/>
-                        </TabPanel>
-                        <TabPanel header="Inactivos">
-						<TableSeguimiento SeguimientoClienteActivos={false}/>
-                        </TabPanel>
-					</TabView>
-                </Card.Body>
-            </Card>
-            </Col>
-        </Row>
-    </>
-  )
+		<>
+			<PageBreadcrumb title="Seguimiento" subName="Ventas" />
+			<Row></Row>
+			<Row>
+				<Col>
+					<Card>
+						<Card.Body>
+							<TabView>
+								<TabPanel header="Todos">
+									<Row>
+										<Col lg={6}>
+										<h3>ACTIVOS</h3>
+										<TableSeguimientoTODO />
+										</Col>
+										<Col lg={6}>
+										<h3>INACTIVOS</h3>
+										<TableSeguimiento SeguimientoClienteActivos={false} />
+										</Col>
+									</Row>
+								</TabPanel>
+								<TabPanel header="Activos">
+									<TableSeguimiento SeguimientoClienteActivos={true} />
+								</TabPanel>
+								<TabPanel header="Inactivos">
+									<TableSeguimiento SeguimientoClienteActivos={false} />
+								</TabPanel>
+							</TabView>
+						</Card.Body>
+					</Card>
+				</Col>
+			</Row>
+		</>
+  );
 }

@@ -111,7 +111,7 @@ export const ModalCliente = ({show, onHide}) => {
     </Modal> ) : (
     <Modal show={show} onHide={onHide} size='xl' backdrop={'static'}>
     <Modal.Header>
-        <Modal.Title>Agregar cliente</Modal.Title>
+        <Modal.Title>Agregar socio</Modal.Title>
     </Modal.Header>
     <Modal.Body>
 				<Row>
@@ -332,12 +332,12 @@ export const ModalCliente = ({show, onHide}) => {
                                 <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="tipoCli_cli" className="form-label">
-                                            Tipo de cliente*
+                                            Tipo de socio*
                                         </label>
 										<Select
 											onChange={(e) => onInputChangeReact(e, 'tipoCli_cli')}
 											name="tipoCli_cli"
-											placeholder={'Seleccione el tipo de cliente'}
+											placeholder={'Seleccione el tipo de socio'}
 											className="react-select"
 											classNamePrefix="react-select"
 											options={arrayTipoCliente}
@@ -423,7 +423,7 @@ export const ModalCliente = ({show, onHide}) => {
                             <LayoutInfoContacEmergencia 
                                 />
                         </Tab>
-                        <Tab eventKey={'infoContac'} title={'Informacion de contacto del cliente'}>
+                        <Tab eventKey={'infoContac'} title={'Informacion de contacto del socio'}>
                             <LayoutInfoContacto/>
                         </Tab>
                         <Tab eventKey={'comentarios'} title={'Comentario'}>
@@ -434,7 +434,7 @@ export const ModalCliente = ({show, onHide}) => {
                         </Tab> */}
                     </Tabs>
                 </Row>
-                <Button className='me-3' onClick={onSubmitAgregarCliente}>Guardar cliente</Button>
+                <Button className='me-3' onClick={onSubmitAgregarCliente}>Guardar socio</Button>
                 <a className='text-danger' onClick={btnCancelModal}>Cancelar</a>
     </Modal.Body>
     </Modal>

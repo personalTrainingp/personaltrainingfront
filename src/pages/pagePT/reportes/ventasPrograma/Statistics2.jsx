@@ -46,8 +46,8 @@ export const Statistics2 = ({statisticsData}) => {
 									containerClass="d-flex align-items-center justify-content-between"
 									title={
 										<>
-											<div className="flex-grow-1">
-												<h4 className="mt-0 mb-1">{statistics.title}</h4>
+											<div className="flex-grow-1" style={{height: '80px'}}>
+												<h4 className="mt-0 mb-1 font-15" style={{height: '50px'}}>{statistics.title}</h4>
 												<p className="mb-0">{statistics.noOfProject}</p>
 											</div>
 										</>

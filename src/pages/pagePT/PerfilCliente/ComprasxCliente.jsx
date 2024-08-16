@@ -8,12 +8,14 @@ import { Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Fieldset } from 'primereact/fieldset';
 import { Accordion, AccordionTab } from 'primereact/accordion';
+import { Detalle_membresia } from '@/components/Detalles/Detalle_membresia';
+import { Detalle_productos } from '@/components/Detalles/Detalle_productos';
+import { Detalle_cita } from '@/components/Detalles/detalle_cita';
+import { ModalViewObservacion } from '../GestVentas/ModalViewObservacion';
 // import { ProductService } from './service/ProductService';
 
 export const ComprasxCliente = ({uid, dataVenta}) => {
     const [products, setProducts] = useState(dataVenta);
-
-    console.log(dataVenta);
 
     const itemTemplate = (product, index) => {
         return (
@@ -51,21 +53,77 @@ export const ComprasxCliente = ({uid, dataVenta}) => {
 
         return <div className="grid grid-nogutter">{list}</div>;
     };
-
+	const [isOpenModalObservation, setisOpenModalObservation] = useState(false)
+	const [IdBoleta, setIdBoleta] = useState(0)
+	const onModalViewObservacion = (id)=>{
+		setisOpenModalObservation(true)
+		setIdBoleta(id)
+	}
+	const onCloseModalViewObservacion = ()=>{
+		setisOpenModalObservation(false)
+		setIdBoleta(0)
+	}
+//Boleta ${e.id}
     return (
 		<>
+				<ModalViewObservacion id={IdBoleta} onHide={onCloseModalViewObservacion} show={isOpenModalObservation}/>
 				<Accordion>
 					{
 						dataVenta.map(e=>{
-							console.log(e);
 							return (
-								<AccordionTab header={`Boleta ${e.id}`} key={e.id}>
-									<p className="m-0">
-										Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-										Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-										consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-										Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-									</p>
+								<AccordionTab header={
+								<div className='d-flex align-items-center'>
+									<span>Boleta {e.id}</span>
+								</div>
+							} key={e.id}>
+								
+								<Button label="Ver detalle de boleta" text onClick={()=>onModalViewObservacion(e.id)} />
+								<br/>
+									{
+										e.detalle_ventaMembresia.length>0 && (
+											
+											<>
+											<b className='text-800'>MEMBRESIA: </b>
+											{
+												e.detalle_ventaMembresia.map(m=>(
+													<>
+													<Detalle_membresia e={m}/>
+													</>
+												))
+											}
+											</>
+										)
+									}
+									{
+										e.detalle_ventaProductos.length>0 && (
+											
+											<>
+											<b className='text-800'>PRODUCTOS: </b>
+											{
+												e.detalle_ventaProductos.map(p=>(
+													<>
+													<Detalle_productos e={p}/>
+													</>
+												))
+											}
+											</>
+										)
+									}
+									{
+										e.detalle_ventaCitas.length>0 && (
+											
+											<>
+											<b className='text-800'>PRODUCTOS: </b>
+											{
+												e.detalle_ventaCitas.map(c=>(
+													<>
+													<Detalle_cita e={c}/>
+													</>
+												))
+											}
+											</>
+										)
+									}
 								</AccordionTab>
 							)
 						})

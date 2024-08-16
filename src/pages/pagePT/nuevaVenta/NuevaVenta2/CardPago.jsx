@@ -69,7 +69,7 @@ export const CardPago = ({venta, dataPagos}) => {
         </Card.Body>
 		<Card.Footer>
 			<span style={{fontWeight: 'bold', fontSize: '18px'}} className='d-flex justify-content-between'>
-				<span className=''>{sumaTarifas-SumaPagos<0?'Vuelto: ':'Deuda: '}</span>
+				<span className=''>{sumaTarifas-SumaPagos<0?'Vuelto: ':'Saldo pendiente: '}</span>
 				<MoneyFormatter amount={sumaTarifas-SumaPagos<0?SumaPagos-sumaTarifas:sumaTarifas-SumaPagos}/>
 			</span>
 		</Card.Footer>

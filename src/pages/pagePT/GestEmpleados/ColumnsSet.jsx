@@ -60,6 +60,11 @@ const ActionColumn = ({row}) => {
 // get all columns
 const columns = [
   {
+    Header: 'Id',
+    accessor: 'id_empl',
+    defaultCanSort: true,
+  },
+  {
     Header: 'Nombres y apellidos',
     accessor: 'nombres_apellidos_empl',
     defaultCanSort: true,

@@ -2,37 +2,23 @@ import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayDistrito, arrayEstadoCivil, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc } from '@/types/type'
 import dayjs from 'dayjs'
-import React from 'react'
-import { Button, Col, Row } from 'react-bootstrap'
+import { locale } from 'primereact/api'
+import { Button } from 'primereact/button'
+import {  confirmDialog } from 'primereact/confirmdialog'
+import { Toast } from 'primereact/toast'
+import React, { useRef } from 'react'
+import { Col, Row } from 'react-bootstrap'
 import { Link, redirect } from 'react-router-dom'
 import Select from 'react-select'
-/*
-id_cli(pin):7
-uid_avatar(pin):"6350cee2-3ac8-4bad-ac9c-31c2db45a3e4"
-uid(pin):"f7e9e9fb-00f4-4078-aa78-6440b19e77a7"
-nombre_cli(pin):"Carlos"
-apPaterno_cli(pin):"Rosales"
-apMaterno_cli(pin):"Morales"
-fecNac_cli(pin):"2002-09-21T00:00:00.000Z"
-sexo_cli(pin):1
-estCivil_cli(pin):4
-tipoDoc_cli(pin):6
-numDoc_cli(pin):"60936591"
-nacionalidad_cli(pin):0
-ubigeo_distrito_cli(pin):0
-direccion_cli(pin):"Urb Serafín Cornelio"
-tipoCli_cli(pin):"11"
-trabajo_cli(pin):"PROGRAMADOR"
-cargo_cli(pin):"DESARROLLADOR"
-email_cli(pin):"carlodl2lzebe@gmail.com"
-tel_cli(pin):"933102718"
-uid_comentario(pin):"614b010f-c025-40e5-9e1b-29a6dbe7c67b"
-uid_contactsEmergencia(pin):"338478cc-9c50-4c6c-b2c1-a28e0d4ddadb"
-estado_cli(pin):true
-flag(pin):true
-*/
+import { useNavigate } from 'react-router-dom';
+
+
+locale('es');
 export const InformacionGeneralCliente = ({data}) => {
     // console.log(data);
+    // console.log(data, "info?");
+    const navigate = useNavigate();
+
     const { formState, 
         nombre_cli, 
         apPaterno_cli, 
@@ -52,18 +38,55 @@ export const InformacionGeneralCliente = ({data}) => {
         tel_cli,
         onInputChange, onInputChangeReact, onFileChange } = useForm(data)
         const { eliminarOneUsuarioCliente, startUpdateUsuarioCliente }  = useUsuarioStore()
+        const toast = useRef(null);
+
+        const accept = () => {
+            toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+        }
+    
+        const reject = () => {
+            toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        }
+        const confirm1 = () => {
+            
+        };
         const onEliminarCliente = ()=>{
-            eliminarOneUsuarioCliente(data.uid)
+            confirmDialog({
+                message: '¿Estas seguro (a) de eliminar el cliente?',
+                header: 'Eliminar cliente',
+                icon: 'pi pi-question-circle',
+                defaultFocus: 'accept',
+                accept:()=>{
+                    eliminarOneUsuarioCliente(data.uid)
+                    // Redirigir o mostrar un enlace después de la eliminación
+                    navigate('/gestion-clientes'); // Redirige a otra ruta después de la eliminación
+                },
+                reject
+            });
+            // eliminarOneUsuarioCliente(data.uid)
             // startUpdateUsuarioCliente(formState, uid)
         }
+        
         const onUpdateCliente = () =>{
+            confirmDialog({
+                message: '¿Estas seguro (a) de editar la informacion del cliente?',
+                header: 'Editar cliente',
+                icon: 'pi pi-question-circle',
+                defaultFocus: 'accept',
+                accept: ()=>{
+                    startUpdateUsuarioCliente(formState, data.uid)
+                },
+                reject
+            });
             // console.log(formState, data.uid);
-            startUpdateUsuarioCliente(formState, data.uid)
+            // startUpdateUsuarioCliente(formState, data.uid)
         }
   return (
     <>
+    
+    <Toast ref={toast} />
     <Row>
-        <Col xl={4}>
+        <Col xl={12}>
             <div className="m-2">
                 <label htmlFor="nombre_cli" className="form-label">
                     Nombres*
@@ -80,7 +103,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
             <div className="m-2">
                 <label htmlFor="apPaterno_cli" className="form-label">
                     Apellido paterno*
@@ -97,7 +120,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
             <div className="m-2">
                 <label htmlFor="apMaterno_cli" className="form-label">
                     Apellido materno*
@@ -114,7 +137,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
             <div className="m-2">
                 <label htmlFor="fecNac_cli" className="form-label">
                     Fecha de nacimiento*
@@ -130,9 +153,9 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
             <div className="m-2">
-                <label htmlFor="fecNac_cli" className="form-label">
+                <label htmlFor="sexo_cli" className="form-label">
                     Sexo*
                 </label>
                 <Select
@@ -149,7 +172,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
             <div className="m-2">
                 <label htmlFor="fecNac_cli" className="form-label">
                     Estado civil*
@@ -168,7 +191,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
             <div className="m-2">
                 <label htmlFor="fecNac_cli" className="form-label">
                     Tipo de documento*
@@ -187,7 +210,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
             <div className="m-2">
                 <label htmlFor="numDoc_cli" className="form-label">
                     Numero del documento*
@@ -204,7 +227,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
             <div className="m-2">
                 <label htmlFor="nacionalidad_cli" className="form-label">
                     Nacionalidad*
@@ -223,7 +246,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
         <div className="m-2">
                 <label htmlFor="direccion_cli" className="form-label">
                     Direccion*
@@ -240,7 +263,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
         <div className="m-2">
                 <label htmlFor="ubigeo_distrito_cli" className="form-label">
                     Distrito*
@@ -259,7 +282,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
             <div className="m-2">
                 <label htmlFor="tipoCli_cli" className="form-label">
                     Tipo de cliente*
@@ -278,7 +301,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
         <div className="m-2">
                 <label htmlFor="trabajo_cli" className="form-label">
                     Trabajo*
@@ -295,7 +318,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
         <div className="m-2">
                 <label htmlFor="cargo_cli" className="form-label">
                     Cargo*
@@ -312,7 +335,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
         <div className="m-2">
                 <label htmlFor="email_cli" className="form-label">
                     Email*
@@ -329,7 +352,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={12}>
         <div className="m-2">
                 <label htmlFor="tel_cli" className="form-label">
                     Telefono*
@@ -346,9 +369,16 @@ export const InformacionGeneralCliente = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={3}>
-            <Button className='m-2' onClick={onUpdateCliente}>Guardar</Button>
-            <Link onClick={onEliminarCliente} to={'/venta/gestion-clientes'} className='bg-danger m-2'>Eliminar cliente</Link>
+        <Col xl={12} className='mt-4'>
+            {/* <Button className='m-2' onClick={onUpdateCliente}>Guardar</Button> */}
+            <Row>
+                <Col xl={3}>
+                    <Button label="Editar Socio" rounded onClick={onUpdateCliente}/>
+                </Col>
+                <Col xl={3}>
+                    <Button label="Eliminar Socio" severity='danger' rounded onClick={onEliminarCliente}/>
+                </Col>
+            </Row>
         </Col>
     </Row>
     </>

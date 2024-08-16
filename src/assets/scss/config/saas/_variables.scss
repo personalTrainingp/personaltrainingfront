@@ -46,6 +46,7 @@ $yellow:     #ffc35a;
 $green:      #0acf97;
 $teal:       #02a8b5;
 $cyan:       #39afd1;
+$redTange:    #D41115;
 // scss-docs-end color-variables
 
 // scss-docs-start colors-map
@@ -135,6 +136,16 @@ $orange-600: shade-color($orange, 20%);
 $orange-700: shade-color($orange, 40%);
 $orange-800: shade-color($orange, 60%);
 $orange-900: shade-color($orange, 80%);
+
+$redTange-100: tint-color($redTange, 80%);
+$redTange-200: tint-color($redTange, 60%);
+$redTange-300: tint-color($redTange, 40%);
+$redTange-400: tint-color($redTange, 20%);
+$redTange-500: $redTange;
+$redTange-600: shade-color($redTange, 20%);
+$redTange-700: shade-color($redTange, 40%);
+$redTange-800: shade-color($redTange, 60%);
+$redTange-900: shade-color($redTange, 80%);
 
 $yellow-100: tint-color($yellow, 80%);
 $yellow-200: tint-color($yellow, 60%);
@@ -298,11 +309,11 @@ $cyans: (
 // fusv-enable
 
 // scss-docs-start theme-color-variables
-$primary:       $orange;
+$primary:       $redTange;
 $secondary:     $gray-700;
 $success:       $green;
 $info:          $cyan;
-$warning:       $orange-300;
+$warning:       $redTange-300;
 $danger:        $red;
 $light:         $gray-200;
 $dark:          $gray-900;

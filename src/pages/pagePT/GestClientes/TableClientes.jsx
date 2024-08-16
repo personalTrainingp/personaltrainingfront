@@ -120,6 +120,15 @@ export default function TableClientes() {
             </div>
         );
     };
+    const IdBodyTemplate = (rowData, { rowIndex })=>{
+        console.log(rowIndex);
+        
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{rowIndex + 1}</span>
+            </div>
+        );
+    }
     const emailBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
@@ -147,21 +156,22 @@ export default function TableClientes() {
                         filterDisplay="row" 
                         globalFilterFields={[]} 
                         header={header}
-                        emptyMessage="Clientes no encontrados.">
+                        emptyMessage="SOCIOS NO ENCONTRADOS.">
                 {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}
                 {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
-                <Column header="Clientes" filterField="nombres_apellidos_cli" style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>
-                <Column header="Tipo de cliente" filterField={`tipo_cliente`} style={{ minWidth: '10rem' }} sortable body={ProgramaSemanasBodyTemplate} filter/>
-                <Column header="Email" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>
-                <Column header="Telefono" filterField={`tel_cli`} style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
-                <Column header="Distrito" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
+                <Column header="Id" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={IdBodyTemplate} filter/>
+                <Column header="SOCIO" filterField="nombres_apellidos_cli" style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>
+                <Column header="TIPO DE SOCIO" filterField={`tipo_cliente`} style={{ minWidth: '10rem' }} sortable body={ProgramaSemanasBodyTemplate} filter/>
+                <Column header="EMAIL" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>
+                <Column header="TELEFONO" filterField={`tel_cli`} style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
+                <Column header="DISTRITO" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
 
                 {/* <Column header="Vencimiento" filterField="vencimiento_REGALOS_CONGELAMIENTO" sortable style={{ minWidth: '10rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate}  dataType="date" /> */}
                 {/* <Column header="Proveedor" filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
                 body={proveedorBodyTemplate} filter filterElement={proveedorFilterTemplate} /> */}
 
                 {/* <Column header="Estado" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/> */}
-                <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
+                <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
     );
 }

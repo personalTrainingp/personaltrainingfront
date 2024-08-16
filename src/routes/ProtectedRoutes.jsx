@@ -134,7 +134,7 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/crear-citas-nutricion')&&
-                        <Route path='crear-citas-nutricion' element={<CrearCitasNutricion tipo_serv={'NUTRIC'}/>}/>
+                        <Route path='crear-citas-nutricion' element={<CrearCitasNutricion tipo_serv={'NUTRI'}/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/crear-citas-fitology')&&

@@ -14,12 +14,15 @@ import {
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import { useComentarioStore } from './useComentarioStore';
 
 export const useUsuarioStore = () => {
 	const dispatch = useDispatch();
 	const { user } = useSelector((e) => e.auth);
 	const [dataClixID, setdataClixID] = useState({});
 	const [loading, setloading] = useState(false);
+
+	const { obtenerComentarioxLOCATION } = useComentarioStore();
 	// console.log(user);
 	const startRegisterUsuarioCliente = async (form, selectedFile) => {
 		const { comentario_com } = form.comentarios;
@@ -62,7 +65,8 @@ export const useUsuarioStore = () => {
 	const startUpdateUsuarioCliente = async (formState, uid) => {
 		try {
 			const { data } = await PTApi.put(`/usuario/put-cliente/${uid}`, formState);
-			obtenerUsuariosClientes();
+			await obtenerUsuariosClientes();
+			await obtenerOneUsuarioCliente(uid);
 			console.log('success', data);
 		} catch (error) {
 			console.log(error);
@@ -78,18 +82,21 @@ export const useUsuarioStore = () => {
 	};
 	const obtenerOneUsuarioCliente = async (uid_cliente) => {
 		try {
+			setloading(true);
 			dispatch(onLoadingClient());
 			const { data } = await PTApi.get(`/usuario/get-cliente/${uid_cliente}`);
 			// dispatch(onSetData(data.clientes));
 			const { data: dataImg } = await PTApi.get(
 				`/upload/get-upload/${data.cliente?.uid_avatar}`
 			);
+			await obtenerComentarioxLOCATION(data.uid_comentario);
 			dispatch(
 				onSetClient({
 					...data.cliente,
 					urlImg: dataImg ? dataImg.name_image : null,
 				})
 			);
+			setloading(false);
 		} catch (error) {
 			console.log(error);
 		}

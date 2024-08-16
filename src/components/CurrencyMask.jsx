@@ -49,7 +49,11 @@ export const DateMaskString = (date, format) => {
 }
 
 export const FormatoDateMask = (date, format)=>{
-  return <DateMask date={date} format={format}/>
+  return (
+    <span className='text-uppercase'>
+        <DateMask date={date} format={format}/>
+    </span>
+  )
 }
 export const FormatoTimeMask = ({date, format})=>{
   console.log(date, format);

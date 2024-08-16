@@ -1,4 +1,5 @@
 import { DateMask } from '@/components/CurrencyMask';
+import { useExtensionStore } from '@/hooks/hookApi/useExtensionStore';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { useForm } from '@/hooks/useForm';
 import { Button } from 'primereact/button';
@@ -15,26 +16,31 @@ const registerExRegalos ={
 export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
     const {formState, dias_habiles, observacion, onResetForm, onInputChange, onInputChangeReact} = useForm(registerExRegalos)
 	const { obtenerUltimaMembresiaPorCliente, dataUltimaMembresia } = useTerminoStore()
+    const { postExtension } = useExtensionStore()
     const [loadingUltimaMembresia, setloadingUltimaMembresia] = useState(false)
+    // console.log(id_cli);
+    
     useEffect(() => {
         const fetchUltimaMembresiaPorCliente = async()=>{
             setloadingUltimaMembresia(true)
-            await obtenerUltimaMembresiaPorCliente(id_cli)
+            obtenerUltimaMembresiaPorCliente(id_cli)
             setloadingUltimaMembresia(false)
         }
         if (id_cli!==undefined) {
             fetchUltimaMembresiaPorCliente()
         }
     }, [id_cli])
+    console.log(dataUltimaMembresia);
     
 	// const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
-	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia
+	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia.length>0?dataUltimaMembresia.detalle_ventaMembresia[0]:[]
     const cancelarExtensionRegalo = ()=>{
         onHide()
         onResetForm()
     }
     const submitExtensionRegalo = (e)=>{
         e.preventDefault()
+        postExtension(formState, 'REG', dataUltimaMembresia.id, fec_inicio_mem, fec_fin_mem)
         console.log(formState);
         cancelarExtensionRegalo()
     }
@@ -103,7 +109,7 @@ export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
                     </>
                 ):(
                     <>
-                    asd
+                    Cargando...
                     </>
                 )
             }

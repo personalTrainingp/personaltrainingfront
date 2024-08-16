@@ -2,12 +2,13 @@ import { useComentarioStore } from '@/hooks/hookApi/useComentarioStore';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { useForm } from '@/hooks/useForm';
 import { Button } from 'primereact/button';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import styled from 'styled-components'
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Link } from 'react-router-dom';
+import { ItemComentario } from './ItemComentario';
 dayjs.extend(relativeTime);
 const registerComentario ={
 	comentario_com: ''
@@ -26,20 +27,15 @@ export const SectionComentario = ({uid_comentario}) => {
         obtenerComentarioxLOCATION(uid_comentario)
     }, [])
 	const {dataComentarios} = useSelector(e=>e.comentario)
-	const prospectoViewComentario = ()=>{
-	}
-	const prospectoDeleteComentario = ()=>{
-
-	}
-	console.log(dataComentarios);
 	
   return (
-    <DivContainer className='comments-container'>
+    <DivContainer className='comments-container' style={{width: '100%'}}>
+		
 		<ul id="comments-list" className="comments-list">
 			<li>
 				<div className="comment-main-level">
                     {/* <div className="comment-avatar"></div> */}
-                    <div className="comment-box">
+                    <div className="comment-box" style={{width: '100%'}}>
 					<div className="comment-head">
                 <h6 className="comment-name"><a>{user.name}</a></h6>
             </div>
@@ -53,10 +49,11 @@ export const SectionComentario = ({uid_comentario}) => {
                             value={comentario_com}
                             name='comentario_com'
                             placeholder='Escribe un comentario'
+							required
                         />
                     </div>
                     <div className='col-2'>
-                        <Button style={{width: 'fit-content', padding: '4px', margin: '10px'}}>Comentar</Button>
+                        <Button style={{width: 'fit-content', padding: '4px', margin: '10px'}} type='submit'>Comentar</Button>
                     </div>
                 </form>
             </div>
@@ -67,33 +64,7 @@ export const SectionComentario = ({uid_comentario}) => {
 				dataComentarios.map(e=>{
                     return(
 						<li key={e.id_comentario}>
-							<div className="comment-main-level">
-								{/* <div className="comment-avatar"></div> */}
-								<div className="comment-box">
-									<div className="comment-head">
-										<h6 className="comment-name">{e.auth_user?.nombres_apellidos_user}</h6>
-										<span>{dayjs(e.fec_registro).locale('es').format('D [de] MMMM [de] YYYY [a las] h:mm A')}</span>
-										<div className='text-right'>
-											{e.auth_user.uid==user.uid && (
-												<>
-													<Link to="" onClick={prospectoViewComentario} className="action-icon">
-														<i className="mdi mdi-square-edit-outline"></i>
-													</Link>
-													<Link to="" onClick={prospectoDeleteComentario} className="action-icon">
-														<i className="mdi mdi-delete"></i>
-													</Link>
-												</>
-											)
-											}
-										</div>
-									</div>
-									<div className="comment-content">
-										<p>
-											{e.comentario_com}
-										</p>
-									</div>
-								</div>
-							</div>
+							<ItemComentario e={e} user={user} id={e.id_comentario} uid_comentario={uid_comentario}/>
 						</li>
                     )
                 })

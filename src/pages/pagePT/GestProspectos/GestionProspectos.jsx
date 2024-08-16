@@ -212,7 +212,7 @@ export const GestionProspectos = () => {
 		);
 	};
     const fechaRegistroBodyTemplate = (rowData)=>{
-        return FormatoDateMask(rowData.fecha_registro, "D [de] MMMM [de] YYYY [a las] h:mm A")
+        return FormatoDateMask(rowData.fecha_registro, "dddd D [de] MMMM [de] YYYY [a las] h:mm A")
     }
 
 	const getSeverity = (product) => {
@@ -269,13 +269,13 @@ export const GestionProspectos = () => {
 				globalFilter={globalFilter}
 				header={header}
 			>
-				<Column field="nombres_apellidos" header="Cliente prospecto" sortable style={{ minWidth: '12rem' }}></Column>
-				<Column field="celular" header="Celular" sortable style={{ minWidth: '12rem' }}></Column>
-				<Column field="correo" header="Correo" sortable style={{ minWidth: '12rem' }}></Column>
-				<Column field="fecha_registro" header="Fecha de registro" sortable style={{ minWidth: '12rem' }} body={fechaRegistroBodyTemplate}></Column>
-				<Column field="tb_ProgramaTraining.name_pgm" header="Programa de interes" sortable style={{ minWidth: '12rem' }}></Column>
-				<Column field="tb_empleado.nombres_apellidos_empl" header="Asesorado por:" sortable style={{ minWidth: '12rem' }}></Column>
-				<Column header="Action" sortable style={{ minWidth: '12rem' }} body={actionBodyTemplate}></Column>
+				<Column field="nombres_apellidos" header="CLIENTE PROSPECTO" sortable style={{ minWidth: '12rem' }}></Column>
+				<Column field="celular" header="CELULAR" sortable style={{ minWidth: '12rem' }}></Column>
+				<Column field="correo" header="CORREO" sortable style={{ minWidth: '12rem' }}></Column>
+				<Column field="fecha_registro" header="FECHA DE REGISTRO" sortable style={{ minWidth: '12rem' }} body={fechaRegistroBodyTemplate}></Column>
+				<Column field="tb_ProgramaTraining.name_pgm" header="PROGRAMA DE INTERES" sortable style={{ minWidth: '12rem' }}></Column>
+				<Column field="tb_empleado.nombres_apellidos_empl" header="Asesor comercial:" sortable style={{ minWidth: '12rem' }}></Column>
+				<Column header="" style={{ minWidth: '12rem' }} body={actionBodyTemplate}></Column>
 				{/* <Column field="name" header="Asesorado" sortable style={{ minWidth: '16rem' }}></Column>
 				<Column field="image" header="Programa" body={imageBodyTemplate}></Column>
 				<Column

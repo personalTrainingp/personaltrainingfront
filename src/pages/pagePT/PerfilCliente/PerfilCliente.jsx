@@ -14,10 +14,11 @@ import { ModalExtensionCongelamiento } from './ModalExtensionCongelamiento';
 import { SectionComentarios } from './SectionComentarios';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ScrollPanel } from 'primereact/scrollpanel';
+import { ReportesxCliente } from './ReportesxCliente';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
-  const { obtenerOneUsuarioCliente } = useUsuarioStore()
+  const { obtenerOneUsuarioCliente, loading } = useUsuarioStore()
   const [isOpenModalRegalos, setisOpenModalRegalos] = useState(false)
   const [isOpenModalCongelamiento, setisOpenModalCongelamiento] = useState(false)
   // const [isOpenModalRegalos, setisOpenModal] = useState(false)
@@ -25,7 +26,7 @@ export const PerfilCliente = () => {
   useEffect(() => {
     obtenerOneUsuarioCliente(uid)
   }, [])
-  if(status==="load"){
+  if(loading){
     return (
       <>
       Cargando...
@@ -44,9 +45,11 @@ export const PerfilCliente = () => {
   const modalCloseCongelamiento = ()=>{
     setisOpenModalCongelamiento(false)
   }
-  if(userCliente==null){
+  if(!userCliente){
     return <Error404AltPage/>;
   }
+  
+  
   // console.log(userCliente.urlImg, config.API_IMG.AVATARES);
   return (
     <>
@@ -90,12 +93,17 @@ export const PerfilCliente = () => {
               <ComprasxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
             </ScrollPanel>
             </TabPanel>
+            <TabPanel header='Reportes'>
+            <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+              <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
+            </ScrollPanel>
+            </TabPanel>
           </TabView>
       </div>
     </Card>
       </Col>
     </Row>
-    <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos} id_cli={userCliente.id_cli}/>
+    <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos} id_cli={userCliente?.id_cli}/>
     <ModalExtensionCongelamiento onHide={modalCloseCongelamiento} show={isOpenModalCongelamiento} id_cli={userCliente.id_cli}/>
     </>
   );

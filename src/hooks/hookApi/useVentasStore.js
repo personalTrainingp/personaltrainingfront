@@ -13,18 +13,20 @@ export const useVentasStore = () => {
 	const startRegisterVenta = async (formState, funToast) => {
 		try {
 			setloadingVenta(true);
-			const { base64ToFile } = helperFunctions();
-			const file = base64ToFile(
-				formState.dataVenta.detalle_venta_programa[0].firmaCli,
-				`firma_cli${formState.detalle_cli_modelo.id_cliente}.png`
-			);
-			const formData = new FormData();
-			formData.append('file', file);
 			const { data } = await PTApi.post('/venta/post-ventas', formState);
-			const { data: blobFirma } = await PTApi.post(
-				`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
-				formData
-			);
+			if (formState.dataVenta.detalle_venta_programa.length > 0) {
+				const { base64ToFile } = helperFunctions();
+				const file = base64ToFile(
+					formState.dataVenta.detalle_venta_programa[0].firmaCli,
+					`firma_cli${formState.detalle_cli_modelo.id_cliente}.png`
+				);
+				const formData = new FormData();
+				formData.append('file', file);
+				const { data: blobFirma } = await PTApi.post(
+					`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
+					formData
+				);
+			}
 			setloadingVenta(false);
 			// console.log(data, blobFirma);
 			// console.log(blobFirma);

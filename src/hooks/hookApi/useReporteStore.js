@@ -27,7 +27,10 @@ export const useReporteStore = () => {
 	const [reporteFormasDePagos, setreporteFormasDePagos] = useState([]);
 	const [reporteProscedencia, setreporteProscedencia] = useState([]);
 	const [reporteDeVentasPorEmpleados, setreporteDeVentasPorEmpleados] = useState([]);
+	const [reporteDeVentas, setreporteDeVentas] = useState([]);
 	const [loadinData, setloadinData] = useState(false);
+	const [utilidadesProgramas, setutilidadesProgramas] = useState([]);
+	const [viewSeguimiento, setviewSeguimiento] = useState([]);
 	const dispatch = useDispatch();
 	// const obtenerReporteDeProscedencia = async () => {
 	// 	try {
@@ -48,6 +51,43 @@ export const useReporteStore = () => {
 	// 	}
 	// };
 
+	const obtenerReporteDeResumenPROGRAMAS = async (rangoDate) => {
+		try {
+			const { data } = await PTApi.get('/reporte/reporte-resumen-programas', {
+				params: {
+					dateRanges: rangoDate,
+				},
+			});
+			setreportegerencial_resumenGeneral(resultadoFinal);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerReporteDeResumenPRODUCTOACC = async (rangoDate) => {
+		try {
+			const { data } = await PTApi.get('/reporte/reporte-resumen-programas', {
+				params: {
+					dateRanges: rangoDate,
+				},
+			});
+			setreportegerencial_resumenGeneral(resultadoFinal);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerReporteDeResumenPRODUCTOSUPL = async (rangoDate) => {
+		try {
+			const { data } = await PTApi.get('/reporte/reporte-resumen-programas', {
+				params: {
+					dateRanges: rangoDate,
+				},
+			});
+			setreportegerencial_resumenGeneral(resultadoFinal);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const obtenerReporteDeFormasDePagos = async (arrayDate) => {
 		try {
 			const { data } = await PTApi.get('/reporte/reporte-ventas-formas-de-pago', {
@@ -67,9 +107,9 @@ export const useReporteStore = () => {
 					item.monto += pago.parcial_monto;
 					return acc;
 				}, []);
-			console.log(data.reporte);
+			console.log(result);
 
-			setreporteFormasDePagos(result);
+			setreporteFormasDePagos(result.sort((a, b) => b.monto - a.monto));
 		} catch (error) {
 			console.log(error);
 		}
@@ -88,9 +128,16 @@ export const useReporteStore = () => {
 					return total + (item.totalDetalle || 0);
 				}, 0);
 			}
+			const ordenarPorTotalVentas = (data) => {
+				return data.sort((a, b) => b.total_ventas - a.total_ventas);
+			};
+
 			setreporteVentas(sumarTotalDetalle(sumarDatos(data.reporte)));
 			setreporteDeDetalle(sumarDatos_y_cantidades(data.reporte));
-			setreporteDeVentasPorEmpleados(agruparPorEmpleadoConTotales(data.reporte));
+			setreporteDeVentasPorEmpleados(
+				ordenarPorTotalVentas(agruparPorEmpleadoConTotales(data.reporte))
+			);
+			setreporteDeVentas(data.reporte)
 		} catch (error) {
 			console.log(error);
 		}
@@ -241,6 +288,32 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerReporteSeguimientoTODO = async () => {
+		try {
+			setloadinData(true);
+			const { data: dataactivo } = await PTApi.get('/reporte/reporte-seguimiento-membresia', {
+				params: { isClienteActive: true },
+			});
+			const { data: dataInactivo } = await PTApi.get(
+				'/reporte/reporte-seguimiento-membresia',
+				{
+					params: { isClienteActive: false },
+				}
+			);
+
+			// const dataCombination = dataactivo.newMembresias.concat(dataInactivo.newMembresias);
+			// console.log(dataCombination);
+
+			// console.log(data.newMembresias);
+			setreporteSeguimiento(dataactivo.newMembresias);
+			setviewSeguimiento(dataactivo.newMembresias);
+			// dispatch(onSetDataView(dataactivo.newMembresias));
+			setloadinData(false);
+			setagrupado_programas(agruparPorPrograma(dataactivo.newMembresias));
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO = async (id_programa, rangoDate) => {
 		try {
 			const { data } = await PTApi.get(
@@ -314,70 +387,112 @@ export const useReporteStore = () => {
 		try {
 			const { data } = await PTApi.get('/reporte/reporte-resumen-utilidad', {
 				params: {
-					dateRanges: rangoDate,
+					arrayDate: rangoDate,
 				},
 			});
-			const ingresosVentas = data.utilidades[0].map((venta) => {
-				// Sumar todos los tarifa_monto de los detalles
-				const monto_sumado = [
-					...venta.detalle_ventaProductos,
-					...venta.detalle_ventaMembresia,
-					...venta.detalle_ventaCitas,
-				].reduce((sum, detalle) => sum + (detalle.tarifa_monto || 0), 0);
 
-				return {
-					id: venta.id,
-					fecha_venta: venta.fecha_venta,
-					monto_sumado: monto_sumado,
-				};
+			console.log(data);
+
+			let totalTarifaMonto = 0;
+
+			// Función para sumar tarifas dentro de un array de detalles
+			function sumarTarifaMonto(detalles) {
+				return detalles.reduce((total, detalle) => total + (detalle.tarifa_monto || 0), 0);
+			}
+
+			// Recorrer cada objeto en el array principal
+			data.ventas.forEach((obj) => {
+				totalTarifaMonto += sumarTarifaMonto(obj.detalle_ventaCitas);
+				totalTarifaMonto += sumarTarifaMonto(obj.detalle_ventaMembresia);
+				totalTarifaMonto += sumarTarifaMonto(obj.detalle_ventaProductos);
 			});
-			// Unificar todos los datos en un solo array
-			const unifiedData = [
-				...data.utilidades[2].map((e) => ({
-					tipo: 'egreso',
-					fecha: e.fec_pago,
-					monto: e.monto,
-				})),
-				...ingresosVentas.map((v) => ({
-					tipo: 'venta',
-					fecha: v.fecha_venta,
-					monto: v.monto_sumado,
-				})),
-				...data.utilidades[1].map((a) => ({
-					tipo: 'aporte',
-					fecha: a.fecha_aporte,
-					monto: a.monto_aporte,
-				})),
-			];
 
-			// Ordenar por fecha
-			unifiedData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+			console.log(totalTarifaMonto);
+			setreportegerencial_resumenGeneral({
+				totalIngresos: totalTarifaMonto,
+				gastosTarata: data.gastosTarata.reduce((total, pago) => total + pago.monto, 0),
+				gastosReducto: data.gastosReducto.reduce((total, pago) => total + pago.monto, 0),
+				aportes: 0,
+				// ingresosVentas,
+			});
+			let totalIngresosProgramas = 0;
+			data.ventas.forEach((obj) => {
+				totalIngresosProgramas += sumarTarifaMonto(obj.detalle_ventaMembresia);
+			});
+			let count = 0;
+			let totalMembresia = 0;
 
-			// Agrupar por fecha y calcular monto útil
-			const resultadoFinal = unifiedData.reduce((acc, current) => {
-				const fecha = current.fecha.split('T')[0]; // Tomar solo la parte de la fecha sin la hora
-				const index = acc.findIndex((item) => item.fecha === fecha);
-
-				const suma_monto_ventas = current.tipo === 'venta' ? current.monto : 0;
-				const suma_monto_aportes = current.tipo === 'aporte' ? current.monto : 0;
-				const suma_monto_egresos = current.tipo === 'egreso' ? current.monto : 0;
-				if (index === -1) {
-					acc.push({
-						fecha: fecha,
-						suma_monto_ventas: suma_monto_ventas,
-						suma_monto_aportes: suma_monto_aportes,
-						suma_monto_egresos: suma_monto_egresos,
-						monto_util: suma_monto_ventas,
-					});
-				} else {
-					acc[index].monto_util +=
-						current.tipo === 'egreso'
-							? -current.monto.toFixed(2)
-							: current.monto.toFixed(2);
+			data.ventas.forEach((obj) => {
+				if (obj.detalle_ventaMembresia.length > 0) {
+					count++; // Contar cuántos objetos tienen al menos un detalle en detalle_ventaMembresia
+					totalMembresia += obj.detalle_ventaMembresia.length; // Sumar los objetos en detalle_ventaMembresia
 				}
-				return acc;
-			}, []);
-			setreportegerencial_resumenGeneral(resultadoFinal);
+			});
+			setutilidadesProgramas({
+				totalIngresosProgramas,
+				totalMembresia,
+			});
+
+			// const ingresosVentas = data.utilidades[0].map((venta) => {
+			// 	// Sumar todos los tarifa_monto de los detalles
+			// 	const monto_sumado = [
+			// 		...venta.detalle_ventaProductos,
+			// 		...venta.detalle_ventaMembresia,
+			// 		...venta.detalle_ventaCitas,
+			// 	].reduce((sum, detalle) => sum + (detalle.tarifa_monto || 0), 0);
+
+			// 	return {
+			// 		id: venta.id,
+			// 		fecha_venta: venta.fecha_venta,
+			// 		monto_sumado: monto_sumado,
+			// 	};
+			// });
+			// // Unificar todos los datos en un solo array
+			// const unifiedData = [
+			// 	...data.utilidades[2].map((e) => ({
+			// 		tipo: 'egreso',
+			// 		fecha: e.fec_pago,
+			// 		monto: e.monto,
+			// 	})),
+			// 	...ingresosVentas.map((v) => ({
+			// 		tipo: 'venta',
+			// 		fecha: v.fecha_venta,
+			// 		monto: v.monto_sumado,
+			// 	})),
+			// 	...data.utilidades[1].map((a) => ({
+			// 		tipo: 'aporte',
+			// 		fecha: a.fecha_aporte,
+			// 		monto: a.monto_aporte,
+			// 	})),
+			// ];
+
+			// // Ordenar por fecha
+			// unifiedData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+			// // Agrupar por fecha y calcular monto útil
+			// const resultadoFinal = unifiedData.reduce((acc, current) => {
+			// 	const fecha = current.fecha.split('T')[0]; // Tomar solo la parte de la fecha sin la hora
+			// 	const index = acc.findIndex((item) => item.fecha === fecha);
+
+			// 	const suma_monto_ventas = current.tipo === 'venta' ? current.monto : 0;
+			// 	const suma_monto_aportes = current.tipo === 'aporte' ? current.monto : 0;
+			// 	const suma_monto_egresos = current.tipo === 'egreso' ? current.monto : 0;
+			// 	if (index === -1) {
+			// 		acc.push({
+			// 			fecha: fecha,
+			// 			suma_monto_ventas: suma_monto_ventas,
+			// 			suma_monto_aportes: suma_monto_aportes,
+			// 			suma_monto_egresos: suma_monto_egresos,
+			// 			monto_util: suma_monto_ventas,
+			// 		});
+			// 	} else {
+			// 		acc[index].monto_util +=
+			// 			current.tipo === 'egreso'
+			// 				? -current.monto.toFixed(2)
+			// 				: current.monto.toFixed(2);
+			// 	}
+			// 	return acc;
+			// }, []);
 		} catch (error) {
 			console.log(error);
 		}
@@ -394,6 +509,9 @@ export const useReporteStore = () => {
 		obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor,
 		obtenerVentas,
 		obtenerReporteDeFormasDePagos,
+		obtenerReporteSeguimientoTODO,
+		viewSeguimiento,
+		utilidadesProgramas,
 		loadinData,
 		reporteDeVentasPorEmpleados,
 		reporteFormasDePagos,
@@ -439,8 +557,18 @@ function agruparPorPrograma(datos) {
 		// Añadir el item al grupo correspondiente
 		grupo.todo.push(item);
 	});
+	function ordenarPorIdPgm(data) {
+		const orden = [2, 4, 3];
 
-	return resultado;
+		return data.sort((a, b) => {
+			return (
+				orden.indexOf(a.tb_programa_training.id_pgm) -
+				orden.indexOf(b.tb_programa_training.id_pgm)
+			);
+		});
+	}
+
+	return ordenarPorIdPgm(resultado);
 }
 
 function agruparPorEmpleadoConTotales(registros) {

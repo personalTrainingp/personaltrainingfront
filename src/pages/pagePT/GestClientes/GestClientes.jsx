@@ -24,7 +24,7 @@ export const GestClientes = () => {
 	
   return (
     <>
-    			<PageBreadcrumb title="Gestion de clientes" subName="E-commerce" />
+    			<PageBreadcrumb title="GESTION DE SOCIOS" subName="E-commerce" />
                 
 			<Row>
 				<Col xs={12}>
@@ -33,7 +33,7 @@ export const GestClientes = () => {
 							<Row className="mb-2">
 								<Col sm={5}>
 									<span className="btn btn-danger mb-2" onClick={onModalRegClienteOpen}>
-										<i className="mdi mdi-plus-circle me-2"></i> Agregar clientes
+										<i className="mdi mdi-plus-circle me-2"></i> Agregar socio
 									</span>
 								</Col>
 							</Row>

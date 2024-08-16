@@ -3,6 +3,10 @@ export const arrayPersonalTest = [
 	{ label: 'Test Apellido 2', value: 445 },
 	{ label: 'Test Apellido 3', value: 446 },
 ];
+export const arrayCitas = [
+	{ label: 'Test Apellido 1', value: 266 },
+	{ label: 'Test Apellido 2', value: 265 },
+];
 export const arrayTipoAporte = [
 	{ label: 'Aportes de accionistas', value: 1 },
 	{ label: 'Prestamos de terceros', value: 2 },
@@ -73,7 +77,7 @@ export const arrayTipoDoc = [
 	{ label: 'Otro', value: 0 },
 ];
 export const arrayTipoCliente = [
-	{ label: 'cliente', value: 84 },
+	{ label: 'Socio', value: 84 },
 	{ label: 'canje - influencer moda', value: 221 },
 	{ label: 'canje - influencer educacion', value: 222 },
 	{ label: 'canje - artista', value: 223 },
@@ -82,7 +86,7 @@ export const arrayTipoCliente = [
 	{ label: 'canje - actor', value: 226 },
 	{ label: 'canje - influencer', value: 227 },
 	{ label: 'canje - contacto LA', value: 228 },
-	{ label: 'canje - cliente con buenos resultados', value: 229 },
+	{ label: 'canje - Socio con buenos resultados', value: 229 },
 	// { label: 'prospecto', value: 265 },
 ];
 
@@ -128,10 +132,10 @@ export const arrayCategoriaProducto = [
 	{ label: 'Suplementos', value: 17 },
 ];
 export const arrayCargoEmpl = [
-	{ label: 'Entrenador(a) RPM', value: 'ent_rpm' },
-	{ label: 'Entrenador(a) CYL', value: 2 },
-	{ label: 'Entrenador(a) FX', value: 3 },
-	{ label: 'Entrenador(a) MX', value: 4 },
+	{ label: 'Entrenador(a) CHANGE 45', value: 'ent_rpm' },
+	// { label: 'Entrenador(a) ', value: 2 },
+	{ label: 'Entrenador(a) FS 45', value: 3 },
+	{ label: 'Entrenador(a) MUSCLE 45', value: 4 },
 	{ label: 'Administrador(a)', value: 5 },
 	{ label: 'Asesor Fitness(a)', value: 6 },
 	{ label: 'Asesor Ventas(a)', value: 7 },

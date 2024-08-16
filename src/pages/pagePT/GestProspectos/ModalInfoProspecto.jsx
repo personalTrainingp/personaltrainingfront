@@ -68,25 +68,11 @@ export const ModalInfoProspecto = ({show, onHide, data}) => {
                                 <Col>
                                     <div className="field">
                                         <label htmlFor="name" className="font-bold">
-                                            Nombres*
+                                            Nombre completo*
                                         </label>
                                         <InputText
                                             value={nombres||''}
                                             name='nombres'
-                                            onChange={onInputChange}
-                                            required
-                                            autoFocus
-                                        />
-                                    </div>
-                                </Col>
-                                <Col>
-                                    <div className="field">
-                                        <label htmlFor="name" className="font-bold">
-                                            Apellido materno*
-                                        </label>
-                                        <InputText
-                                            value={apellido_materno||''}
-                                            name='apellido_materno'
                                             onChange={onInputChange}
                                             required
                                             autoFocus
@@ -101,6 +87,20 @@ export const ModalInfoProspecto = ({show, onHide, data}) => {
                                         <InputText
                                             value={apellido_paterno||''}
                                             name='apellido_paterno'
+                                            onChange={onInputChange}
+                                            required
+                                            autoFocus
+                                        />
+                                    </div>
+                                </Col>
+                                <Col>
+                                    <div className="field">
+                                        <label htmlFor="name" className="font-bold">
+                                            Apellido materno*
+                                        </label>
+                                        <InputText
+                                            value={apellido_materno||''}
+                                            name='apellido_materno'
                                             onChange={onInputChange}
                                             required
                                             autoFocus

@@ -15,7 +15,7 @@ import { Tag } from 'primereact/tag';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { ModalViewObservacion } from '../ModalViewObservacion';
 import { arrayFacturas } from '@/types/type';
-import { DateMaskString, FormatoDateMask } from '@/components/CurrencyMask';
+import { DateMaskString, FormatoDateMask, MoneyFormatter } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
 
 
@@ -85,7 +85,8 @@ export const TodoVentas=()=> {
 
       return(
           <div className="flex align-items-center gap-2">
-              <span>{formatCurrency(sumaTotal, 'PEN')}</span>
+            
+              <span>{<MoneyFormatter  amount={sumaTotal}/> }</span>
           </div>
       )
     }
@@ -105,7 +106,7 @@ export const TodoVentas=()=> {
     
     return (
       <div className="flex align-items-center gap-2">
-          <span>{DateMaskString(rowData.fecha_venta, 'dddd D [de] MMMM [de] YYYY [a las] h:mm A')}</span>
+          <span>{FormatoDateMask(rowData.fecha_venta, 'dddd D [de] MMMM [de] YYYY [a las] h:mm A')}</span>
       </div>
     )
   }
@@ -116,7 +117,7 @@ export const TodoVentas=()=> {
               rounded 
               className="mr-2 p-0 border-0 text-decoration-underline" 
               onClick={() => onModalviewVENTAS(rowData.id)} 
-              >Ver mas informacion</Button>
+              >DETALLE DE LA VENTA</Button>
         </React.Fragment>
     );
 };
@@ -134,14 +135,14 @@ const comprobanteBodyTemplate = (rowData)=>{
         <>
           <DataTable value={customers} paginator rows={10} dataKey="id" filters={filters} filterDisplay="row" loading={loading}
                   globalFilterFields={[]} header={header} emptyMessage="No customers found.">
-              <Column field="id" header="Id" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="fecha_venta" header="Fecha" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} body={fechaDeComprobanteBodyTemplate}/>
-              <Column field="tb_cliente.nombres_apellidos_cli" header="Clientes" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="tb_empleado.nombres_apellidos_empl" header="Asesor Comercial" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="id_tipoFactura" header="Comprobante" body={comprobanteBodyTemplate} filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="numero_transac" header="Nº de comprobante" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column header="Total" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />
-              <Column header="Action" frozen style={{ minWidth: '12rem' }} body={actionBodyTemplate} />
+              <Column field="id" header="NUMERO DE OPERACION" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="fecha_venta" header="FECHA" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} body={fechaDeComprobanteBodyTemplate}/>
+              <Column field="tb_cliente.nombres_apellidos_cli" header="SOCIOS" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="tb_empleado.nombres_apellidos_empl" header="ASESOR COMERCIAL" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="id_tipoFactura" header="COMPROBANTE" body={comprobanteBodyTemplate} filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="numero_transac" header="Nº DE COMPROBANTE" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column header="TOTAL" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />
+              <Column header="" frozen style={{ minWidth: '12rem' }} body={actionBodyTemplate} />
           </DataTable>
           <ModalViewObservacion show={viewVentas} onHide={onModalCancelVENTAS} id={idVentas}/>
         </>

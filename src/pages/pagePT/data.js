@@ -1,7 +1,3 @@
-import rpm50 from '@/assets/images/PT-images/logos-programas/rpm50-blanco.png';
-import fs from '@/assets/images/PT-images/logos-programas/fs-blanco.png';
-import ms from '@/assets/images/PT-images/logos-programas/ms-blanco.png';
-import cyl from '@/assets/images/PT-images/logos-programas/cyl-blanco.png';
 
 const dataSeguimiento = [
 	{
@@ -76,44 +72,6 @@ const dataSeguimiento = [
 	},
 ];
 
-const statisticsData = [
-	{
-		icon: 'mdi mdi-file-document-edit',
-		variant: 'primary',
-		title: '91 clientes',
-		noOfProject: '60.67%',
-		path: rpm50,
-		w: 150,
-		h: 60,
-	},
-	{
-		icon: 'mdi mdi-account-group',
-		variant: 'success',
-		title: '91 clientes',
-		noOfProject: '60.67%',
-		path: fs,
-		w: 150,
-		h: 60,
-	},
-	{
-		icon: 'mdi mdi-account-star',
-		variant: 'info',
-		title: '91 clientes',
-		noOfProject: '60.67%',
-		path: ms,
-		w: 150,
-		h: 60,
-	},
-	{
-		icon: 'mdi mdi-folder-plus',
-		variant: 'warning',
-		title: '91 clientes',
-		noOfProject: '60.67%',
-		path: cyl,
-		w: 150,
-		h: 70,
-	},
-];
 
 const FormasPago = [
 	{
@@ -1167,7 +1125,7 @@ const Proveedores = [
 ];
 export {
 	dataSeguimiento,
-	statisticsData,
+	// statisticsData,
 	FormasPago,
 	tarjetasCredito,
 	tarjetasDebito,

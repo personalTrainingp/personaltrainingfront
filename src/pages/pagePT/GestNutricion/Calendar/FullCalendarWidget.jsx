@@ -12,13 +12,40 @@ dayjs.locale('es')
 const locales = {
   'es': es,
 };
+
+ // Componente personalizado para las celdas de tiempo
+ const TimeSlotWrapper = ({ children, value }) => {
+  const day = value.getDay(); // Obtener el día de la semana (0 = domingo, 6 = sábado)
+  const hour = value.getHours(); // Obtener la hora del día
+  const minutes = value.getMinutes(); // Obtener los minutos
+
+  // Deshabilitar filas en sábado de 1pm a 6:30pm
+  if (
+    day === 6 && // Sábado
+    (
+      (hour === 13) || // 1pm
+      (hour > 13 && hour < 18) || // De 2pm a 5pm
+      (hour === 18 && minutes === 0) // 6pm exacto
+    )
+  ) {
+    return (
+      <div style={{ backgroundColor: '#e0e0e0', pointerEvents: 'none', display: 'none' }}>
+        {children}
+      </div>
+    );
+  }
+
+  return children;
+};
 const eventStyleGetter = (event, start, end, isSelected) => {
   const style = {
-    color: 'white',
+    color: 'black',
+    fontFamily: '"Poppins", sans-serif',
+    fontWeight: '400',
     borderRadius: '0px',
     border: 'none',
     padding: '2px 4px',
-    fontSize: '14px',
+    fontSize: '15px',
   };
   let className = ''
   if (event.status_cita==="500") {
@@ -29,15 +56,25 @@ const eventStyleGetter = (event, start, end, isSelected) => {
   }
   return {
     style: style,
-    className
+    className: className
   };
 };
+// const timeSlotWrapper = (props) => (
+//   <div
+//     {...props}
+//     className={props.className}
+//     onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#000')}
+//     onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '')}
+//   />
+// );
 // Componente personalizado para mostrar solo el título de los eventos
 const CustomEvent = ({ event }) => {
   return(
-    <p className='m-0 p-1 text-overflow-ellipsis white-space-nowrap overflow-hidden fs-5 font-bold'>{
-      `${new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} : 
-    ${event.title}`}</p>
+    <p className='m-0 p-1 text-overflow-ellipsis white-space-nowrap overflow-hidden'>{
+      `${new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`}
+      <br/>
+      {event.title}
+    </p>
   )
 };
 const FullCalendarWidget = ({
@@ -48,7 +85,7 @@ const FullCalendarWidget = ({
   events,
   tipo_serv
 }) => {
-  const { obtenerCitasxSERVICIO, loading, data, dataCitaxID, obtenerCitaxID } = useCitaStore()
+  const { obtenerCitasxSERVICIO, loading, data, dataCitaxID, obtenerCitaxID, obtenerCitasxClientexServicio } = useCitaStore()
   let newData=data.map(e=>{
     return {
       id: e.id,
@@ -136,7 +173,9 @@ const FullCalendarWidget = ({
               eventPropGetter={eventStyleGetter}
               defaultView="week"
               components={{
-                event: CustomEvent, // Utiliza el componente personalizado para mostrar solo el título del evento
+                event: CustomEvent,  // Utiliza el componente personalizado para mostrar solo el título del evento
+                // timeSlotWrapper 
+                timeSlotWrapper: TimeSlotWrapper,
               }}
               messages={{
                 next: "Siguiente",
@@ -148,11 +187,13 @@ const FullCalendarWidget = ({
                 agenda: "Agenda",
                 showMore: total => `+ Ver más (${total})`
               }}
-              step={30}
+              step={20}
               timeslots={1}
-              
+              min={new Date(2024, 0, 1, 6, 0, 0)} // Mostrar desde las 6:00 AM
+              max={new Date(2024, 0, 1, 19, 0, 0)} // Hasta las 11:59 PM
               formats={formats}
               onSelectSlot={handleSelectSlot}
+              
               selectable
             />
           </div>

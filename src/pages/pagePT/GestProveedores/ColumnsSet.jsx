@@ -5,7 +5,7 @@ import { ModalProveedor } from './ModalProveedor';
 import { useState } from 'react';
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore';
 import { cellStatusColumn } from '@/common/helpers/cellsColumnsModific';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog } from 'primereact/confirmdialog';
 import { Button } from 'react-bootstrap';
 /* name column render */
 const NameColumn = ({ row }) => {

@@ -3,127 +3,34 @@ import { ScrollPanel } from 'primereact/scrollpanel'
 import React from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { ItemProdServ } from './ItemProdServ'
 
-export const CardProdServ = ({data}) => {
+//membresia: 1, accesorios:2, tratamientos esteticos: 3, suplementos: 4, nutricionista:5
+export const CardProdServ = ({data, dataGen}) => {
+  const onClickBox = (e)=>{
+
+  }
+  console.log(dataGen);
+  
   return (
     <Card>
           <Row className="mx-n1 ">
               <ScrollPanel style={{ width: '100%' }}>
                 <div className='d-flex'>
-                  <Col xxl={2} lg={6}>
-                    <Card className="m-1 shadow-none border">
-                      <div className="pl-2">
-                        <Row>
-                          <Col>
-                            <Link to="" className="text-muted fw-bold fs-4">
-                              {/* {f.name} */}
-                              ACCESORIOS
-                            </Link>
-                            <p className="mb-0 font-15 fw-bold">
-                              {/* {f.size} */}
-                              CANTIDAD: {data?.cantidad_accesorio}
-                            </p>
-                            <p className="mb-0 font-15 fw-bold">
-                              {/* {f.size} */}
-                              TOTAL: {<MoneyFormatter amount={data?.suma_tarifa_monto_accesorio}/>}
-                            </p>
-                            {/* <a style={{color: 'blue'}}>Ver todo</a> */}
-                          </Col>
-                        </Row>
-                      </div>
-                    </Card>
+                  <Col xxl={3} lg={6}>
+                    <ItemProdServ data={data} Inombre={"MEMBRESIA"} Iabrev={"mem"} Icantidad={data?.cantidad_membresia} Itotal={data?.suma_tarifa_monto_membresia}/>
                   </Col>
                   <Col xxl={3} lg={6}>
-                    <Card className="m-1 shadow-none border">
-                      <div className="pl-2">
-                        <Row>
-                          <Col>
-                            <Link to="" className="text-muted fw-bold fs-4">
-                              {/* {f.name} */}
-                              SUPLEMENTOS
-                            </Link>
-                            <p className="mb-0 font-15 fw-bold">
-                              {/* {f.size} */}
-                              CANTIDAD: {data?.cantidad_suplementos}
-                            </p>
-                            <p className="mb-0 font-15 fw-bold">
-                              {/* {f.size} */}
-                              TOTAL: {<MoneyFormatter amount={data?.suma_tarifa_monto_suplementos}/>}
-                            </p>
-                            {/* <a style={{color: 'blue'}}>Ver todo</a> */}
-                          </Col>
-                        </Row>
-                      </div>
-                    </Card>
+                    <ItemProdServ Inombre={"ACCESORIOS"} Iabrev={"acc"} Icantidad={data?.cantidad_accesorio} Itotal={data?.suma_tarifa_monto_accesorio}/>
                   </Col>
                   <Col xxl={3} lg={6}>
-                    <Card className="m-1 shadow-none border">
-                      <div className="pl-2">
-                        <Row>
-                          <Col>
-                            <Link to="" className="text-muted fw-bold fs-4">
-                              {/* {f.name} */}
-                              MEMBRESIAS
-                            </Link>
-                            <p className="mb-0 font-15 fw-bold">
-                              {/* {f.size} */}
-                              CANTIDAD: {data?.cantidad_membresia}
-                            </p>
-                            <p className="mb-0 font-15 fw-bold">
-                              {/* {f.size} */}
-                              TOTAL: {<MoneyFormatter amount={data?.suma_tarifa_monto_membresia}/>}
-                            </p>
-                            {/* <a style={{color: 'blue'}}>Ver todo</a> */}
-                          </Col>
-                        </Row>
-                      </div>
-                    </Card>
+                    <ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"tra"} Icantidad={data?.cantidad_citas_FITOL} Itotal={data?.suma_tarifa_monto_citas_FITOL}/>
                   </Col>
                   <Col xxl={3} lg={6}>
-                    <Card className="m-1 shadow-none border">
-                      <div className="pl-2">
-                        <Row>
-                          <Col>
-                            <Link to="" className="text-muted fw-bold fs-4">
-                              {/* {f.name} */}
-                              FITOLOGY
-                            </Link>
-                            <p className="mb-0 font-15 fw-bold">
-                              {/* {f.size} */}
-                              CANTIDAD: {data?.cantidad_citas_FITOL}
-                            </p>
-                            <p className="mb-0 font-15 fw-bold">
-                              {/* {f.size} */}
-                              TOTAL: {<MoneyFormatter amount={data?.suma_tarifa_monto_citas_FITOL}/>}
-                            </p>
-                            {/* <a style={{color: 'blue'}}>Ver todo</a> */}
-                          </Col>
-                        </Row>
-                      </div>
-                    </Card>
+                    <ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"sup"} Icantidad={data?.cantidad_suplementos} Itotal={data?.suma_tarifa_monto_suplementos}/>
                   </Col>
                   <Col xxl={3} lg={6}>
-                    <Card className="m-1 shadow-none border">
-                      <div className="pl-2">
-                        <Row>
-                          <Col>
-                            <Link to="" className="text-muted fw-bold fs-4">
-                              {/* {f.name} */}
-                              NUTRICIONISTA
-                            </Link>
-                            <p className="mb-0 font-15 fw-bold">
-                              {/* {f.size} */}
-                              CANTIDAD: {data?.cantidad_citas_NUTRI}
-                            </p>
-                            <p className="mb-0 font-15 fw-bold">
-                              {/* {f.size} */}
-                              TOTAL: {<MoneyFormatter amount={data?.suma_tarifa_monto_citas_NUTRI}/>}
-                            </p>
-                            {/* <a style={{color: 'blue'}}>Ver todo</a> */}
-                          </Col>
-                        </Row>
-                      </div>
-                    </Card>
+                    <ItemProdServ Inombre={"NUTRICION"} Iabrev={"nut"} Icantidad={data?.cantidad_citas_NUTRI} Itotal={data?.suma_tarifa_monto_citas_NUTRI}/>
                   </Col>
                 </div>
               </ScrollPanel>

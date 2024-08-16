@@ -8,7 +8,7 @@ export const CardCliente = ({dataCliente}) => {
   return (
     <Card>
         <Card.Header>
-            <Card.Title>Datos cliente</Card.Title>
+            <Card.Title>Datos socio</Card.Title>
         </Card.Header>
         <Card.Body>
             

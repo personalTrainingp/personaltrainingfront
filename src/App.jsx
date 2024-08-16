@@ -12,6 +12,7 @@ import 'regenerator-runtime/runtime';
 
 import Offline from "react-offline";
 import { Snake } from 'react-snake-lib';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 // Añadir textos en español
 addLocale('es', {
     startsWith: 'Empieza con',
@@ -66,6 +67,8 @@ const App = () => {
 		<ThemeProvider>
 			<NotificationProvider>
 				<PrimeReactProvider>
+                    
+        <ConfirmDialog />
                 <Offline>
                     {({ isOffline, isOnline }) => {
                         return isOffline ? 

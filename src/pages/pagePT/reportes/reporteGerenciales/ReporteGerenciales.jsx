@@ -5,12 +5,14 @@ import { Toast } from 'primereact/toast'
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore'
 import { Calendar } from 'primereact/calendar'
 import { TabPanel, TabView } from 'primereact/tabview'
-import { Card } from 'react-bootstrap'
+import { Card, CardBody, Col, Row } from 'react-bootstrap'
+import { ResumenUtilidadesProgramas } from './ResumenReporteGeneral copy/ResumenUtilidadesProgramas'
+import { CardEstimado } from '@/components/CardTab/CardEstimado'
 
 export const ReporteGerenciales = () => {
   const toast = useRef(null)
   const [rangoFechas, setrangoFechas] = useState([new Date(new Date().getFullYear(), 0, 1), new Date()])
-  const { obtenerReporteDeResumenUTILIDAD, reportegerencial_resumenGeneral } = useReporteStore()
+  const { obtenerReporteDeResumenUTILIDAD, reportegerencial_resumenGeneral, utilidadesProgramas } = useReporteStore()
   useEffect(() => {
     if(rangoFechas[0]===null) return;
     if(rangoFechas[1]===null) return;
@@ -19,6 +21,7 @@ export const ReporteGerenciales = () => {
   const showToast = (severity, summary, detail, label) => {
     toast.current.show({ severity, summary, detail, label });
   };
+  
   return (
     <>
     <PageBreadcrumb title="Reporte gerencial" subName="reporte-gerenciales" />
@@ -28,7 +31,43 @@ export const ReporteGerenciales = () => {
       </label>
       <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/>
     </div>
-      <ResumenReporteGeneral/>
+      <ResumenReporteGeneral data={reportegerencial_resumenGeneral}/>
+      <ResumenUtilidadesProgramas data={utilidadesProgramas}/>
+      <Row>
+        <Col>
+          <Card>
+            <CardBody>
+              <h4>RESUMEN ACCESORIOS</h4>
+              <CardEstimado backgroundColor={'bg-primary'} title={'FONDO'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-success'} title={'INGRESOS'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
+            </CardBody>
+          </Card>
+        </Col>
+        <Col>
+          <Card>
+              <CardBody>
+                <h4>RESUMEN ACCESORIOS</h4>
+                <CardEstimado backgroundColor={'bg-primary'} title={'FONDO'} montoSoles={'S/2,125,943.00'}/>
+                <CardEstimado backgroundColor={'bg-success'} title={'INGRESOS'} montoSoles={'S/2,125,943.00'}/>
+                <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
+                <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
+              </CardBody>
+            </Card>
+        </Col>
+        <Col>
+        <Card>
+            <CardBody>
+              <h4>RESUMEN ACCESORIOS</h4>
+              <CardEstimado backgroundColor={'bg-primary'} title={'FONDO'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-success'} title={'INGRESOS'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
     </>
   )
 }

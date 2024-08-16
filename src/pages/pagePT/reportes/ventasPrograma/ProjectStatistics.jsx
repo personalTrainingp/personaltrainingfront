@@ -67,7 +67,8 @@ const ProjectStatistics = ({data}) => {
 	// 		name: e.name
 	// 	}
 	// })
-
+	console.log();
+	
 	return (
 		<Card>
 			<Card.Body>

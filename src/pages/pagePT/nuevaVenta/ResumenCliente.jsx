@@ -14,7 +14,7 @@ export const ResumenCliente = ({data}) => {
 	// 	</>)
 	// }
     const hoy = new Date();
-	const { obtenerUltimaMembresiaPorCliente } = useTerminoStore()
+	const { obtenerUltimaMembresiaPorCliente, dataUltimaMembresia } = useTerminoStore()
 	const { obtenerClientexID, dataClixID } = useUsuarioStore()
 	const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
 	const [estadoCliente, setestadoCliente] = useState('')
@@ -23,9 +23,11 @@ export const ResumenCliente = ({data}) => {
 		obtenerUltimaMembresiaPorCliente(data.id_cliente)
 		obtenerClientexID(data.id_cliente)
 	}, [data.id_cliente])
-	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresiaPorCliente
+	console.log(dataUltimaMembresia);
+	
+	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia!==undefined?dataUltimaMembresia:[]
 	useEffect(() => {
-		if (dataUltimaMembresiaPorCliente.length === 0) {
+		if (dataUltimaMembresia?.length === 0) {
 			return setestadoCliente('Nuevo');
 		}
 		const ultimaFechaExpiracion = new Date(fec_fin_mem);
@@ -45,11 +47,11 @@ export const ResumenCliente = ({data}) => {
 				{data.id_cliente !==0 && (
 					<>
 						<tr className='fs-5'>
-							<td className='fw-bold font-12'>Nombres y apellidos del cliente: </td>
+							<td className='fw-bold font-12'>Nombres y apellidos del socio: </td>
 							<td>{dataClixID.nombres_apellidos_cli}</td>
 						</tr>
 						<tr className='fs-5'>
-							<td className='fw-bold font-12'>Estado del cliente: </td>
+							<td className='fw-bold font-12'>Estado del socio: </td>
 							<td>{estadoCliente}</td>
 						</tr>
 						<tr className='fs-5'>
@@ -57,7 +59,7 @@ export const ResumenCliente = ({data}) => {
 							<td className=''>
                                 {tb_ProgramaTraining?.name_pgm} {tb_semana_training?.semanas_st} 
 								{
-									dataUltimaMembresiaPorCliente.length==0?'NO TIENE':'SEMANAS'
+									(dataUltimaMembresia?.length==0||dataUltimaMembresia===undefined)?'NO TIENE':'SEMANAS'
 								}
 							</td>
 						</tr>
