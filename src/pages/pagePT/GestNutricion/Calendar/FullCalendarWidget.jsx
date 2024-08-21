@@ -190,7 +190,7 @@ const FullCalendarWidget = ({
               step={20}
               timeslots={1}
               min={new Date(2024, 0, 1, 6, 0, 0)} // Mostrar desde las 6:00 AM
-              max={new Date(2024, 0, 1, 19, 0, 0)} // Hasta las 11:59 PM
+              max={new Date(2024, 0, 1, 21, 50, 0)} // Hasta las 11:59 PM
               formats={formats}
               onSelectSlot={handleSelectSlot}
               

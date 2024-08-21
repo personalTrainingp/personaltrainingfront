@@ -63,11 +63,11 @@ export default function TableClientes() {
 
     const initFilters = () => {
         setFilters({
-            ['nombres_apellidos_cli']: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-            ['distrito']: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-            ['email_cli']: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-            ['tel_cli']: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-            ['tipo_cliente']: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+            ['nombres_apellidos_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            ['distrito']: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            ['email_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            ['tel_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            ['tipo_cliente']: { value: null, matchMode: FilterMatchMode.CONTAINS },
             // 'ProgramavsSemana': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         });
         setGlobalFilterValue('');

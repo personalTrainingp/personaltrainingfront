@@ -16,7 +16,7 @@ const gastoBodyTemplate = (rowData)=>{
 }
 
 const formatCurrency = (value, currency) => {
-  return value.toLocaleString('en-ES', { style: 'currency', currency });
+  return value?.toLocaleString('en-ES', { style: 'currency', currency });
 };
 
 const TotalBodyTemplate = (rowData)=>{

@@ -11,7 +11,7 @@ export const Statistics2 = ({statisticsData}) => {
   const dataTest = [
     {
       title: 'VENTA ACUMULADA ($.)',
-      noOfProject: formateo_Moneda(statisticsData.ventas_acumuladas?statisticsData.ventas_acumuladas:0),
+      noOfProject: 0,
     },
     {
       title: 'VENTA ACUMULADA (S/.)',
@@ -48,7 +48,7 @@ export const Statistics2 = ({statisticsData}) => {
 										<>
 											<div className="flex-grow-1" style={{height: '80px'}}>
 												<h4 className="mt-0 mb-1 font-15" style={{height: '50px'}}>{statistics.title}</h4>
-												<p className="mb-0">{statistics.noOfProject}</p>
+												<p className="mb-0 font-20">{statistics.noOfProject}</p>
 											</div>
 										</>
 									}

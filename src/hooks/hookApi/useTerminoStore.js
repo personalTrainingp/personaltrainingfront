@@ -10,6 +10,7 @@ import { useTipoCambioStore } from './useTipoCambioStore';
 
 function ordenarPorIdPgm(data) {
 	const orden = [2, 4, 3];
+	console.log(data);
 
 	return data.sort((a, b) => {
 		return orden.indexOf(a.id_pgm) - orden.indexOf(b.id_pgm);
@@ -99,11 +100,13 @@ export const useTerminoStore = () => {
 			const { data } = await PTApi.get(
 				`/parametros/get_params/get_estado_membresia_cli/${uid_cli}`
 			);
-			// dispatch(onSetUltimaMembresiaPorCliente(data ? data.detalle_ventaMembresia[0] : []));
+			console.log(data.membresias);
+
+			dispatch(onSetUltimaMembresiaPorCliente(data.membresias));
 			console.log('aaa');
-			// setdataUltimaMembresia(
-			// 	data !== undefined ? data.membresias[data.membresias.length - 1] : []
-			// );
+			setdataUltimaMembresia(
+				data !== undefined ? data.membresias[data.membresias.length - 1] : []
+			);
 			setIsLoading(false);
 		} catch (error) {
 			console.log(error);

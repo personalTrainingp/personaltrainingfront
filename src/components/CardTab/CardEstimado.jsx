@@ -14,12 +14,12 @@ export const CardEstimado = ({ backgroundColor, title, montoSoles, items, icono 
 				aria-expanded={open}
 			>
 				<a
-					className={`d-block border border-light p-2 rounded mb-1 ${backgroundColor}`}
+					className={`d-block border border-light p-1 rounded mb-1 ${backgroundColor}`}
 				>
 					<div className="d-flex justify-content-between align-items-center">
 						<div>
-							<p className="text-white fw-bold font-18 mb-1">{title}</p>
-							<h3 className="text-white my-0">{montoSoles}</h3>
+							<p className="text-white fw-bold font-15 mb-1">{title}</p>
+							<h3 className="text-white my-0 font-17">{montoSoles}</h3>
 						</div>
 						<div className="avatar-sm">
 							<span

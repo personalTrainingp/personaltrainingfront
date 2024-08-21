@@ -134,7 +134,7 @@ export const ResumenUtilidadesProgramas = ({ data }) => {
                                         <div class="col-xl-9 col-lg-4 col-md-6 col-sm-12">
                                             <div class="row">
                                                 <div class="col-lg-6">
-                                                    <div class="card">
+                                                    {/* <div class="card">
                                                             <div class="d-flex card-header justify-content-between align-items-center">
                                                                 <h4 class="header-title d-flex align-items-center">
                                                                     <span class="fs-4"> 
@@ -172,7 +172,7 @@ export const ResumenUtilidadesProgramas = ({ data }) => {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </div>
                                         </div>

@@ -27,6 +27,7 @@ export const ReporteVentasCitas = ({dataVenta}) => {
         chart: {
           type: 'bar',
         },
+        colors: ['#D41115'], // Cambia el color de las barras (puedes añadir más colores si hay múltiples series)
         plotOptions: {
           bar: {
             horizontal: true,

@@ -16,6 +16,8 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { ReportesxCliente } from './ReportesxCliente';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
+import { ConfirmDialog } from 'primereact/confirmdialog';
+import Swal from 'sweetalert2';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
@@ -27,8 +29,8 @@ export const PerfilCliente = () => {
   // const [isOpenModalRegalos, setisOpenModal] = useState(false)
   const { status, userCliente } = useSelector(e=>e.authClient)
   useEffect(() => {
-    obtenerOneUsuarioCliente(uid)
     obtenerUltimaMembresiaPorCliente(uid)
+    obtenerOneUsuarioCliente(uid)
   }, [])
   if(loading && loadingUltimaMembresia){
     return (
@@ -38,6 +40,16 @@ export const PerfilCliente = () => {
     )
   }
   const modalOpenRegalos = ()=>{
+    console.log(dataUltimaMembresia);
+    
+    if(dataUltimaMembresia.length<=0){
+      return Swal.fire({
+				icon: 'error',
+				title: 'NO HAY NINGUNA MEMBRESIA',
+				showConfirmButton: false,
+				timer: 2500,
+			});
+    }
     setisOpenModalRegalos(true)
     setdataVentas(dataUltimaMembresia)
 
@@ -46,6 +58,14 @@ export const PerfilCliente = () => {
     setisOpenModalRegalos(false)
   }
   const modalOpenCongelamiento = ()=>{
+    if(dataUltimaMembresia.length<=0){
+      return Swal.fire({
+				icon: 'error',
+				title: 'NO HAY NINGUNA MEMBRESIA',
+				showConfirmButton: false,
+				timer: 2500,
+			});
+    }
     setisOpenModalCongelamiento(true)
     setdataVentas(dataUltimaMembresia)
   }
@@ -101,6 +121,11 @@ export const PerfilCliente = () => {
             </ScrollPanel>
             </TabPanel>
             <TabPanel header='Reportes'>
+            <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+              <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
+            </ScrollPanel>
+            </TabPanel>
+            <TabPanel header='DIETAS'>
             <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
               <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
             </ScrollPanel>

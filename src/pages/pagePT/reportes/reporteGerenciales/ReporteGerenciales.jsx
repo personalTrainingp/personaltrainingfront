@@ -8,15 +8,19 @@ import { TabPanel, TabView } from 'primereact/tabview'
 import { Card, CardBody, Col, Row } from 'react-bootstrap'
 import { ResumenUtilidadesProgramas } from './ResumenReporteGeneral copy/ResumenUtilidadesProgramas'
 import { CardEstimado } from '@/components/CardTab/CardEstimado'
+import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
+import { FormatRangoFecha } from '@/components/componentesReutilizables/FormatRangoFecha'
 
 export const ReporteGerenciales = () => {
   const toast = useRef(null)
   const [rangoFechas, setrangoFechas] = useState([new Date(new Date().getFullYear(), 0, 1), new Date()])
   const { obtenerReporteDeResumenUTILIDAD, reportegerencial_resumenGeneral, utilidadesProgramas } = useReporteStore()
+  const { dataVentaxFecha, obtenerVentasPorFecha, IngresosSeparados_x_Fecha } = useVentasStore()
   useEffect(() => {
     if(rangoFechas[0]===null) return;
     if(rangoFechas[1]===null) return;
     obtenerReporteDeResumenUTILIDAD(rangoFechas)
+    obtenerVentasPorFecha(rangoFechas)
   }, [rangoFechas])
   const showToast = (severity, summary, detail, label) => {
     toast.current.show({ severity, summary, detail, label });
@@ -30,8 +34,9 @@ export const ReporteGerenciales = () => {
                       RANGO DE FECHAS
       </label>
       <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/>
+      <FormatRangoFecha rangoFechas={rangoFechas}/>
     </div>
-      <ResumenReporteGeneral data={reportegerencial_resumenGeneral}/>
+      <ResumenReporteGeneral data={reportegerencial_resumenGeneral} IngresosSeparados_x_Fecha={IngresosSeparados_x_Fecha}/>
       <ResumenUtilidadesProgramas data={utilidadesProgramas}/>
       <Row>
         <Col>
@@ -48,7 +53,7 @@ export const ReporteGerenciales = () => {
         <Col>
           <Card>
               <CardBody>
-                <h4>RESUMEN ACCESORIOS</h4>
+                <h4>RESUMEN SUPLEMENTOS</h4>
                 <CardEstimado backgroundColor={'bg-primary'} title={'FONDO'} montoSoles={'S/2,125,943.00'}/>
                 <CardEstimado backgroundColor={'bg-success'} title={'INGRESOS'} montoSoles={'S/2,125,943.00'}/>
                 <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
@@ -59,11 +64,12 @@ export const ReporteGerenciales = () => {
         <Col>
         <Card>
             <CardBody>
-              <h4>RESUMEN ACCESORIOS</h4>
-              <CardEstimado backgroundColor={'bg-primary'} title={'FONDO'} montoSoles={'S/2,125,943.00'}/>
-              <CardEstimado backgroundColor={'bg-success'} title={'INGRESOS'} montoSoles={'S/2,125,943.00'}/>
-              <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
-              <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
+              <h4>RESUMEN TRATAMIENTOS ESTETICOS</h4>
+              <CardEstimado backgroundColor={'bg-primary'} title={'INGRESOS DIRECTOS'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-success'} title={'INGRESOS TOTALES'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-danger'} title={'EGRESOS DIRECTOS'} items={[{label: 'IGV', monto: '1234.00'}, {label: 'POS', monto: '1234.00'},{label: 'RENTA', monto: '1234.00'},{label: 'COMISIONES', monto: '1234.00'}]} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-danger'} title={'TOTAL GASTOS'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-info'} title={'UTILIDAD BRUTA'} montoSoles={'S/2,125,943.00'}/>
             </CardBody>
           </Card>
         </Col>

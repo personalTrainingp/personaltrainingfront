@@ -14,6 +14,7 @@ import { Modal, Tab, Table, Tabs } from 'react-bootstrap'
 import { classNames } from 'primereact/utils';
 import { TimelineItem } from '@/components';
 import { Link } from 'react-router-dom';
+import { ItemVentaMembresia } from '@/components/ItemsResumenVenta/ItemVentaMembresia';
 
 export const ModalViewObservacion = ({onHide, show, data, id}) => {
     // console.log(data);
@@ -35,7 +36,7 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
         </React.Fragment>
     );
   return (
-    <Dialog visible={show} style={{ width: '40rem', height: '80rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Venta #${id}`} modal className="p-fluid" footer={productDialogFooter} onHide={closeModal}>
+    <Dialog visible={show} style={{ width: '50rem', height: '80rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Venta #${id}`} modal className="p-fluid" footer={productDialogFooter} onHide={closeModal}>
         {
             isLoading ?'Cargando...': 
 
@@ -78,53 +79,15 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                     }
                     {
                         dataVentaxID[0]?.detalle_ventaMembresia.length>0 && (
-                            dataVentaxID[0]?.detalle_ventaMembresia.map(e=>(
+                            dataVentaxID[0]?.detalle_ventaMembresia.map(e=>{
+                                console.log(e);
+                                return(
+                                    
                                 <>
-                                    <div className="container">
-                                        <div className="row">
-                                            <div className="col-lg-12 bg-white rounded shadow-sm mb-5">
-                                                <div className="table-responsive">
-                                                    <table className="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th scope="col" className="border-0 bg-light p-1">
-                                                                    <div className="p-0 px-3 text-uppercase">PROGRAMA</div>
-                                                                </th>
-                                                                <th scope="col" className="border-0 bg-light p-1">
-                                                                    <div className="py-0 text-uppercase">PRECIO</div>
-                                                                </th>
-                                                                <th scope="col" className="border-0 bg-light p-1">
-                                                                    <div className="py-0 text-uppercase">CONTRATO</div>
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td className="border-0">
-                                                                <a
-                                                                                    href="#"
-                                                                                    className="text-dark d-inline-block"
-                                                                                >
-                                                                                    {e.tb_ProgramaTraining.name_pgm} | {e.tb_semana_training.semanas_st} SEMANAS
-                                                                                </a>
-                                                                </td>
-                                                                <td className="border-0">
-                                                                        {<MoneyFormatter amount={e.tarifa_monto} />}
-                                                                </td>
-                                                                <td className="border-0">
-                                                                    <a style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontSize: '15px'}}>CONTRATO</a>
-                                                                {/* <i className='mdi mdi-file-document fs-4' style={{cursor: 'pointer'}}></i> */}
-                                                                    {/* <h5 className='fs-3' style={{cursor: 'pointer'}}></h5> */}
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </>
-                            ))
+                                <ItemVentaMembresia e={e}/>
+                            </>
+                                )
+})
                         )
                     }
                     {

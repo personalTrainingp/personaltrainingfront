@@ -1,3 +1,20 @@
+export const clasesVentasSeparadas = (tipo) => {
+	switch (tipo) {
+		case 'mem':
+			return 'membresia';
+		case 'acc':
+			return 'accesorio';
+		case 'sup':
+			return 'suplemento';
+		case 'tra':
+			return 'Tratamientos esteticos';
+		case 'nut':
+			return 'Nutricion';
+		case 'total':
+			return '';
+	}
+};
+
 export const arrayPersonalTest = [
 	{ label: 'Test Apellido 1', value: 444 },
 	{ label: 'Test Apellido 2', value: 445 },

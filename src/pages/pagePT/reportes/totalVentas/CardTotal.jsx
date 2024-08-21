@@ -2,10 +2,10 @@ import { Card, ProgressBar } from 'react-bootstrap';
 import classNames from 'classnames';
 import { CardTitle } from '@/components';
 
-export const CardTotal = ({title, body, span}) => {
+export const CardTotal = ({title, body, span, onClick}) => {
   return (
     
-		<Card>
+		<Card onClick={onClick}>
         <Card.Body>
             <CardTitle
                 containerClass="d-flex align-items-center justify-content-between mb-3"

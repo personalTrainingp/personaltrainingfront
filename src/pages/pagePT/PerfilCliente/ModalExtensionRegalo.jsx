@@ -17,20 +17,6 @@ export const ModalExtensionRegalo = ({show, onHide, id_cli, dataUltimaMembresia}
     const {formState, dias_habiles, observacion, onResetForm, onInputChange, onInputChangeReact} = useForm(registerExRegalos)
     const { postExtension } = useExtensionStore()
     const [loadingUltimaMembresia, setloadingUltimaMembresia] = useState(false)
-    // console.log(id_cli);
-    console.log(dataUltimaMembresia);
-    
-    // useEffect(() => {
-    //     obtenerUltimaMembresiaPorCliente(id_cli)
-    // }, [id_cli])
-    // console.log(isLoading);
-    
-	// const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
-    // const tb_ProgramaTraining= dataUltimaMembresia?.detalle_ventaMembresia[0].tb_ProgramaTraining
-    // const tb_semana_training = dataUltimaMembresia?.detalle_ventaMembresia[0].tb_semana_training
-    // const fec_inicio_mem = dataUltimaMembresia?.detalle_ventaMembresia[0].fec_inicio_mem
-    // const fec_fin_mem = dataUltimaMembresia?.detalle_ventaMembresia[0].fec_fin_mem
-	// const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
 	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia
     const cancelarExtensionRegalo = ()=>{
         onHide()

@@ -10,6 +10,76 @@ export const useVentasStore = () => {
 	const [isLoading, setisLoading] = useState(false);
 	const [loadingVenta, setloadingVenta] = useState(false);
 	const [msgBox, setmsgBox] = useState({});
+	const [dataVentaxFecha, setdataVentaxFecha] = useState([]);
+	const [IngresosSeparados_x_Fecha, setIngresosSeparados_x_Fecha] = useState([]);
+
+	const obtenerVentasPorFecha = async (arrayDate) => {
+		try {
+			const { data } = await PTApi.get('/venta/get-ventas-x-fecha', {
+				params: {
+					arrayDate,
+				},
+			});
+			let ingresosSeparados = data.ventas.map((e) => {
+				return {
+					fitology:
+						e.detalle_ventaCitas?.reduce((total, item) => {
+							// Sumar tarifa_monto solo si el producto pertenece a la categoría 18
+							if (item.tb_servicio.tipo_servicio === 'FITOL') {
+								return total + (item.tarifa_monto || 0);
+							}
+							return total;
+						}, 0) || 0, // Valor inicial 0 para evitar errores
+					nutricion:
+						e.detalle_ventaCitas?.reduce((total, item) => {
+							// Sumar tarifa_monto solo si el producto pertenece a la categoría 18
+							if (item.tb_servicio.tipo_servicio === 'NUTRI') {
+								return total + (item.tarifa_monto || 0);
+							}
+							return total;
+						}, 0) || 0, // Valor inicial 0 para evitar errores
+					accesorios:
+						e.detalle_ventaProductos?.reduce((total, item) => {
+							// Sumar tarifa_monto solo si el producto pertenece a la categoría 18
+							if (item.tb_producto.id_categoria === 18) {
+								return total + (item.tarifa_monto || 0);
+							}
+							return total;
+						}, 0) || 0, // Valor inicial 0 para evitar errores
+					suplementos:
+						e.detalle_ventaProductos?.reduce((total, item) => {
+							// Sumar tarifa_monto solo si el producto pertenece a la categoría 18
+							if (item.tb_producto.id_categoria === 17) {
+								return total + (item.tarifa_monto || 0);
+							}
+							return total;
+						}, 0) || 0, // Valor inicial 0 para evitar errores
+					programas: e.detalle_ventaMembresia.reduce((total, item) => {
+						return total + (item.tarifa_monto || 0);
+					}, 0),
+				};
+			});
+
+			const resultado = ingresosSeparados.reduce(
+				(acc, obj) => {
+					// Sumar cada propiedad
+					acc.accesorios += obj.accesorios;
+					acc.fitology += obj.fitology;
+					acc.nutricion += obj.nutricion;
+					acc.programas += obj.programas;
+					acc.suplementos += obj.suplementos;
+
+					return acc;
+				},
+				{ accesorios: 0, fitology: 0, nutricion: 0, programas: 0, suplementos: 0 }
+			);
+
+			setIngresosSeparados_x_Fecha(resultado);
+			setdataVentaxFecha(data.ventas);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const startRegisterVenta = async (formState, funToast) => {
 		try {
 			setloadingVenta(true);
@@ -89,6 +159,9 @@ export const useVentasStore = () => {
 		obtenerTablaVentas,
 		obtenerPDFCONTRATOgenerado,
 		obtenerVentaporId,
+		obtenerVentasPorFecha,
+		dataVentaxFecha,
+		IngresosSeparados_x_Fecha,
 		loadingVenta,
 		msgBox,
 		isLoading,

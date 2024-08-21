@@ -1,9 +1,11 @@
 import { PTApi } from '@/common';
 import { onSetDataView } from '@/store/data/dataSlice';
+import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 export const useReporteStore = () => {
+	const dispatch = useDispatch();
 	const [reporteSeguimiento, setreporteSeguimiento] = useState([]);
 	const [programa_comparativa_mejoranio, setprograma_comparativa_mejoranio] = useState([]);
 	const [programa_estado_cliente, setprograma_estado_cliente] = useState({});
@@ -31,7 +33,14 @@ export const useReporteStore = () => {
 	const [loadinData, setloadinData] = useState(false);
 	const [utilidadesProgramas, setutilidadesProgramas] = useState([]);
 	const [viewSeguimiento, setviewSeguimiento] = useState([]);
-	const dispatch = useDispatch();
+	const [reporteVentaActual, setreporteVentaActual] = useState([]);
+	const [repoVentasPorSeparado, setrepoVentasPorSeparado] = useState({});
+	const [loading, setloading] = useState(true);
+	// const [repoVentasPorMembresia, setrepoVentasPorMembresia] = useState([]);
+	// const [repoVentasPorProdAcc, setrepoVentasPorProdAcc] = useState([])
+	// const [repoVentasPorProdSup, setrepoVentasPorProdSup] = useState([])
+	// const [repoVentasPorServNut, setrepoVentasPorServNut] = useState([])
+	// const [repoVentasPorServTrat, setrepoVentasPorServTrat] = useState([])
 	// const obtenerReporteDeProscedencia = async () => {
 	// 	try {
 	// 		const { data } = await PTApi.get('/reporte/reporte-procedencia');
@@ -107,7 +116,6 @@ export const useReporteStore = () => {
 					item.monto += pago.parcial_monto;
 					return acc;
 				}, []);
-			console.log(result);
 
 			setreporteFormasDePagos(result.sort((a, b) => b.monto - a.monto));
 		} catch (error) {
@@ -116,13 +124,147 @@ export const useReporteStore = () => {
 	};
 	const obtenerVentas = async (arrayDate) => {
 		try {
+			setloading(true);
 			const { data } = await PTApi.get('/reporte/reporte-obtener-ventas', {
 				params: {
 					arrayDate,
 				},
 			});
-			console.log(data.reporte);
+
+			const dataTotal = data.reporte.map((e) => {
+				// Filtrar productos con id_categoria igual a 17
+				const productosFiltradosAcc = e.detalle_ventaProductos.filter(
+					(item) => item.tb_producto.id_categoria === 17
+				);
+				const productosFiltradosSup = e.detalle_ventaProductos.filter(
+					(item) => item.tb_producto.id_categoria === 18
+				);
+				const NutFiltrados = e.detalle_ventaCitas.filter(
+					(item) => item.tb_servicio.tipo_servicio === 'NUTRI'
+				);
+				const TratEsteticoFiltrados = e.detalle_ventaCitas.filter(
+					(item) => item.tb_servicio.tipo_servicio === 'FITOL'
+				);
+				return {
+					detalle_membresia: e.detalle_ventaMembresia,
+					detalle_prodAccesorios: productosFiltradosAcc,
+					detalle_prodSuplementos: productosFiltradosSup,
+					detalle_cita_tratest: TratEsteticoFiltrados,
+					detalle_cita_nut: NutFiltrados,
+					detalle_pago: e.detalleVenta_pagoVenta,
+					tb_empleado: e.tb_empleado,
+				};
+			});
+			// console.log(data.reporte);
+			const dataProgramas = data.reporte
+				.map((e) => {
+					return {
+						id: e.id,
+						fecha_venta: e.fecha_venta,
+						detalle_membresia: e.detalle_ventaMembresia,
+						detalle_pago: e.detalleVenta_pagoVenta,
+						tb_empleado: e.tb_empleado,
+					};
+				})
+				.filter((e) => e.detalle_membresia.length > 0);
+			const dataAccesorio = data.reporte
+				.map((e) => {
+					// Filtrar productos con id_categoria igual a 17
+					const productosFiltrados = e.detalle_ventaProductos.filter(
+						(item) => item.tb_producto.id_categoria === 17
+					);
+
+					return {
+						id: e.id,
+						fecha_venta: e.fecha_venta,
+						detalle_prodAccesorios: productosFiltrados,
+						detalle_pago: e.detalleVenta_pagoVenta,
+						tb_empleado: e.tb_empleado,
+					};
+				})
+				.filter((e) => e.detalle_prodAccesorios.length > 0);
+			const dataSuplemento = data.reporte
+				.map((e) => {
+					const productosFiltrados = e.detalle_ventaProductos.filter(
+						(item) => item.tb_producto.id_categoria === 18
+					);
+					return {
+						id: e.id,
+						fecha_venta: e.fecha_venta,
+						detalle_prodSuplemento: productosFiltrados,
+						detalle_pago: e.detalleVenta_pagoVenta,
+						tb_empleado: e.tb_empleado,
+					};
+				})
+				.filter((e) => e.detalle_prodSuplemento.length > 0);
+			const dataTratamientoEstetico = data.reporte
+				.map((e) => {
+					return {
+						id: e.id,
+						fecha_venta: e.fecha_venta,
+						detalle_cita_tratest: e.detalle_ventaCitas.filter(
+							(item) => item.tb_servicio.tipo_servicio === 'FITOL'
+						),
+						detalle_pago: e.detalleVenta_pagoVenta,
+						tb_empleado: e.tb_empleado,
+					};
+				})
+				.filter((e) => e.detalle_cita_tratest.length > 0);
+			const dataNutricion = data.reporte
+				.map((e) => {
+					const CitasFiltrados = e.detalle_ventaCitas.filter(
+						(item) => item.tb_servicio.tipo_servicio === 'NUTRI'
+					);
+					return {
+						id: e.id,
+						fecha_venta: e.fecha_venta,
+						detalle_cita_nut: CitasFiltrados,
+						detalle_pago: e.detalleVenta_pagoVenta,
+						tb_empleado: e.tb_empleado,
+					};
+				})
+				.filter((h) => h.detalle_cita_nut.length > 0);
+
 			// console.log(data.reporte, sumarDatos(data.reporte));
+			setrepoVentasPorSeparado({
+				dataProgramas: {
+					data: dataProgramas,
+					SumaMonto: sumarMontosDeVentas(dataProgramas),
+					forma_pago_monto: agruparPorFormaPago(dataProgramas),
+					empl_monto: agruparYSumarMontos(dataProgramas),
+				},
+				dataAccesorio: {
+					data: dataAccesorio,
+					SumaMonto: sumarMontosDeVentas(dataAccesorio),
+					forma_pago_monto: agruparPorFormaPago(dataAccesorio),
+					empl_monto: agruparYSumarMontos(dataAccesorio),
+				},
+				dataSuplemento: {
+					data: dataSuplemento,
+					SumaMonto: sumarMontosDeVentas(dataSuplemento),
+					forma_pago_monto: agruparPorFormaPago(dataSuplemento),
+					empl_monto: agruparYSumarMontos(dataSuplemento),
+				},
+				dataTratamientoEstetico: {
+					data: dataTratamientoEstetico,
+					SumaMonto: sumarMontosDeVentas(dataTratamientoEstetico),
+					forma_pago_monto: agruparPorFormaPago(dataTratamientoEstetico),
+					empl_monto: agruparYSumarMontos(dataTratamientoEstetico),
+				},
+				dataNutricion: {
+					data: dataNutricion,
+					SumaMonto: sumarMontosDeVentas(dataNutricion),
+					forma_pago_monto: agruparPorFormaPago(dataNutricion),
+					empl_monto: agruparYSumarMontos(dataNutricion),
+				},
+				total: {
+					data: dataTotal,
+					SumaMonto: sumarMontosDeVentas(dataTotal),
+					forma_pago_monto: agruparPorFormaPago(dataTotal),
+					empl_monto: agruparYSumarMontos(dataTotal),
+				},
+			});
+			console.log(agruparYSumarMontos(dataAccesorio));
 			function sumarTotalDetalle(array) {
 				return array.reduce((total, item) => {
 					return total + (item.totalDetalle || 0);
@@ -131,19 +273,21 @@ export const useReporteStore = () => {
 			const ordenarPorTotalVentas = (data) => {
 				return data.sort((a, b) => b.total_ventas - a.total_ventas);
 			};
-
 			setreporteVentas(sumarTotalDetalle(sumarDatos(data.reporte)));
 			setreporteDeDetalle(sumarDatos_y_cantidades(data.reporte));
 			setreporteDeVentasPorEmpleados(
 				ordenarPorTotalVentas(agruparPorEmpleadoConTotales(data.reporte))
 			);
-			setreporteDeVentas(data.reporte)
+			setreporteDeVentas(data.reporte);
+			setloading(false);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor = async (arrayDate) => {
 		try {
+			console.log(arrayDate);
+
 			const { data } = await PTApi.get('/reporte/reporte-total-de-ventas', {
 				params: {
 					arrayDate,
@@ -170,6 +314,45 @@ export const useReporteStore = () => {
 				return acc;
 			}, []);
 			setreporteTotalVentasPorTipoCliente(agrupadoPorTipoCliente);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerReporteDeTotalDeVentasActuales = async () => {
+		try {
+			const today = dayjs();
+			const tomorrow = today.add(1, 'day');
+
+			const formattedToday = today.toISOString();
+			const formattedTomorrow = tomorrow.toISOString();
+			const { data } = await PTApi.get('/reporte/reporte-total-de-ventas', {
+				params: {
+					arrayDate: [formattedToday, formattedTomorrow],
+				},
+			});
+			const agrupadoPorTipoCliente = data.reporte.reduce((acc, venta) => {
+				const tipoCli = venta.tb_cliente.tipoCli_cli;
+				let grupo = acc.find((g) => g.tipo_cli === tipoCli);
+
+				if (!grupo) {
+					grupo = {
+						tipo_cli: tipoCli,
+						venta: [],
+					};
+					acc.push(grupo);
+				}
+
+				grupo.venta.push({
+					id: venta.id,
+					id_cli: venta.id_cli,
+					id_empl: venta.id_empl,
+					tb_cliente: venta.tb_cliente,
+				});
+				return acc;
+			}, []);
+			console.log(agrupadoPorTipoCliente);
+
+			setreporteVentaActual(agrupadoPorTipoCliente);
 		} catch (error) {
 			console.log(error);
 		}
@@ -498,6 +681,7 @@ export const useReporteStore = () => {
 		}
 	};
 	return {
+		loading,
 		obtenerReporteSeguimiento,
 		obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO,
 		obtenerReporteVentasPrograma_EstadoCliente,
@@ -510,6 +694,9 @@ export const useReporteStore = () => {
 		obtenerVentas,
 		obtenerReporteDeFormasDePagos,
 		obtenerReporteSeguimientoTODO,
+		obtenerReporteDeTotalDeVentasActuales,
+		repoVentasPorSeparado,
+		reporteVentaActual,
 		viewSeguimiento,
 		utilidadesProgramas,
 		loadinData,
@@ -531,6 +718,112 @@ export const useReporteStore = () => {
 		ventasxPrograma_ventasAcumuladasTickets,
 	};
 };
+function sumarMontosDeVentas(ventas) {
+	return ventas.reduce((acumulador, venta) => {
+		// console.log(venta);
+
+		// const { nombres_apellidos_empl } = venta?.tb_empleado;
+		const montoCitaTrat =
+			venta.detalle_cita_tratest?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) ||
+			0;
+		const montoCitasNut =
+			venta.detalle_cita_nut?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+		const montoMembresia =
+			venta.detalle_membresia?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+		const montoProdAccesorio =
+			venta.detalle_prodAccesorios?.reduce(
+				(sum, item) => sum + (item.tarifa_monto || 0),
+				0
+			) || 0;
+		const montoProdSuplementos =
+			venta.detalle_prodSuplemento?.reduce(
+				(sum, item) => sum + (item.tarifa_monto || 0),
+				0
+			) || 0;
+
+		const montoTotal =
+			montoCitaTrat +
+			montoCitasNut +
+			montoMembresia +
+			montoProdAccesorio +
+			montoProdSuplementos;
+
+		return acumulador + montoTotal;
+	}, 0);
+}
+function agruparYSumarMontos(ventas) {
+	return ventas.reduce((acumulador, venta) => {
+		// console.log(venta);
+
+		// const { nombres_apellidos_empl } = venta?.tb_empleado;
+		const nombres_apellidos_empl = venta?.tb_empleado?.nombres_apellidos_empl;
+		const montoCitaTrat =
+			venta.detalle_cita_tratest?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) ||
+			0;
+		const montoCitasNut =
+			venta.detalle_cita_nut?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+		const montoMembresia =
+			venta.detalle_membresia?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+		const montoProdAccesorio =
+			venta.detalle_prodAccesorios?.reduce(
+				(sum, item) => sum + (item.tarifa_monto || 0),
+				0
+			) || 0;
+		const montoProdSuplementos =
+			venta.detalle_prodSuplemento?.reduce(
+				(sum, item) => sum + (item.tarifa_monto || 0),
+				0
+			) || 0;
+
+		const montoTotal =
+			montoCitaTrat +
+			montoCitasNut +
+			montoMembresia +
+			montoProdAccesorio +
+			montoProdSuplementos;
+		const empleadoExistente = acumulador.find((item) => item.empl === nombres_apellidos_empl);
+
+		if (empleadoExistente) {
+			empleadoExistente.monto += montoTotal;
+		} else {
+			acumulador.push({ empl: nombres_apellidos_empl, monto: montoTotal });
+		}
+
+		return acumulador;
+	}, []);
+}
+function agruparPorFormaPago(data) {
+	// Crear un objeto para acumular los montos por forma de pago
+	const agrupado = {};
+
+	// Iterar sobre cada objeto en el array de datos
+	data.forEach((item) => {
+		// Verificar si hay detalles de pago
+		if (item.detalle_pago && item.detalle_pago.length > 0) {
+			// Iterar sobre cada detalle de pago
+			item.detalle_pago.forEach((pago) => {
+				// Obtener el id_param de la forma de pago
+				const idFormaPago = pago.parametro_forma_pago.id_param;
+				// Obtener el monto parcial
+				const monto = pago.parcial_monto;
+
+				// Verificar si ya existe una entrada para esta forma de pago
+				if (!agrupado[idFormaPago]) {
+					agrupado[idFormaPago] = {
+						forma_pago: pago.parametro_forma_pago.label_param,
+						monto: 0,
+					};
+				}
+
+				// Acumular el monto
+				agrupado[idFormaPago].monto += monto;
+			});
+		}
+	});
+
+	// Convertir el objeto agrupado en un array
+	return Object.values(agrupado);
+}
 
 function agruparPorPrograma(datos) {
 	const resultado = [];

@@ -15,7 +15,11 @@ export const useProgramaTrainingStore = () => {
 
 	const startObtenerTBProgramaPT = async () => {
 		try {
-			const { data } = await PTApi.get('/programaTraining/get_tb_pgm');
+			let { data } = await PTApi.get('/programaTraining/get_tb_pgm');
+			data = data.sort((a, b) => {
+				const order = [2, 4, 3, 5];
+				return order.indexOf(a.id_pgm) - order.indexOf(b.id_pgm);
+			});
 			dispatch(getProgramaSPT(data));
 		} catch (error) {
 			console.log(error);

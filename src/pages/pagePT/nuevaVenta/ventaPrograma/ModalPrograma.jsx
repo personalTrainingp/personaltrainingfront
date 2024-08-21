@@ -254,7 +254,7 @@ export const ModalPrograma = ({show, hide}) => {
                     </Col>
                     <Col lg={4}>
                       <span>Entrenador:</span>
-                      {dataHorario.tb_empleado.empl_trainer}
+                      {dataHorario.tb_empleado?.empl_trainer}
                     </Col>
                   </Row>
                 )

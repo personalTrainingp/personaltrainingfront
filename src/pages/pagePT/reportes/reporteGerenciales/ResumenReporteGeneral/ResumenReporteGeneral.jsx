@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardTitle, Col, Row } from 'react-bootstrap';
 import Chart from 'react-apexcharts';
 import { CardEstimado } from '@/components/CardTab/CardEstimado';
 import { MoneyFormatter } from '@/components/CurrencyMask';
+import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 
-export const ResumenReporteGeneral = ({ data }) => {
-  console.log(data);
+export const ResumenReporteGeneral = ({ data, IngresosSeparados_x_Fecha }) => {
+//   console.log(data);
   
 	const apexOpts = {
 		chart: {
@@ -124,27 +125,20 @@ export const ResumenReporteGeneral = ({ data }) => {
 		},
 	];
 
+	
+	
 	return (
 		<Card>
 			<Card.Body>
 				<h4>Resumen general</h4>
 				<div className="mt-3 chartjs-chart">
 					<Row>
-						{/* <Col lg={8}>
-							<Chart
-								options={apexOpts}
-								series={series}
-								type="area" // Asegúrate de que el tipo coincida con el de apexOpts
-								height={400}
-								className="apex-charts"
-							/>
-						</Col> */}
 						<Col lg={12}>
-              <CardEstimado icono={'mdi mdi-arrow-up-bold-outline'} backgroundColor={'bg-primary'} title={'FONDO = INGRESOS TARATA + APORTES - EGRESOS'} montoSoles={<MoneyFormatter amount={(data.totalIngresos+data.aportes)-(data.gastosReducto+data.gastosTarata)}/>}/>
-              <CardEstimado icono={'mdi mdi-arrow-up-bold-outline'} backgroundColor={'bg-success'} title={'INGRESOS TARATA'} montoSoles={<MoneyFormatter amount={data.totalIngresos}/>}/>
-              <CardEstimado icono={'mdi mdi-arrow-down-bold-outline'} items={[{label: 'TARATA', monto: data.gastosTarata}, {label: 'REDUCTO', monto: data.gastosReducto}]} backgroundColor={'bg-danger'} title={'EGRESO TARATA + EGRESOS REDUCTO'} montoSoles={<MoneyFormatter amount={data.gastosReducto+data.gastosTarata}/>}/>
-              <CardEstimado icono={'mdi mdi-arrow-up-bold-outline'} backgroundColor={'bg-secondary'} title={'APORTES'} montoSoles={<MoneyFormatter amount={(data.aportes)}/>}/>
-              <CardEstimado icono={'mdi mdi-chart-line'} backgroundColor={'bg-info'} title={'UTILIDAD = INGRESOS - EGRESOS'} montoSoles={<MoneyFormatter amount={(data.totalIngresos-data.gastos)}/>}/>
+							{/* <CardEstimado icono={'mdi mdi-arrow-up-bold-outline'} backgroundColor={'bg-primary'} title={'FONDO = INGRESOS TARATA + APORTES - EGRESOS'} montoSoles={<MoneyFormatter amount={(data.totalIngresos+data.aportes)-(data.gastosReducto+data.gastosTarata)}/>}/> */}
+							<CardEstimado icono={'mdi mdi-arrow-up-bold-outline'} items={[{label: 'membresias', monto: IngresosSeparados_x_Fecha.programas}, {label: 'accesorios', monto: IngresosSeparados_x_Fecha.accesorios}, {label: 'suplementos', monto: IngresosSeparados_x_Fecha.suplementos}, {label: 'fitology', monto: IngresosSeparados_x_Fecha.fitology},{label: 'nutricion', monto: IngresosSeparados_x_Fecha.nutricion},]} backgroundColor={'bg-success'} title={'INGRESOS'} montoSoles={<MoneyFormatter amount={data.totalIngresos}/>}/>
+							<CardEstimado icono={'mdi mdi-arrow-down-bold-outline'} items={[{label: 'TARATA', monto: data.gastosTarata}, {label: 'REDUCTO', monto: data.gastosReducto}]} backgroundColor={'bg-danger'} title={'EGRESO TARATA + EGRESOS REDUCTO'} montoSoles={<MoneyFormatter amount={data.gastosReducto+data.gastosTarata}/>}/>
+							<CardEstimado icono={'mdi mdi-arrow-up-bold-outline'} backgroundColor={'bg-secondary'} title={'APORTES'} montoSoles={<MoneyFormatter amount={(data.aportes)}/>}/>
+							<CardEstimado icono={'mdi mdi-chart-line'} backgroundColor={'bg-info'} title={'UTILIDAD = INGRESOS - EGRESOS'} montoSoles={<MoneyFormatter amount={(data.totalIngresos-data.gastos)}/>}/>
 						</Col>
 					</Row>
 				</div>

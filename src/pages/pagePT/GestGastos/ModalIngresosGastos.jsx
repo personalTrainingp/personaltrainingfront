@@ -320,6 +320,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                                 value={n_comprabante}
                                                 onChange={onInputChange}
                                                 placeholder="EJ. 6060606"
+                                                required
                                             />
                                     </div>
                                 </Col>
@@ -336,6 +337,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                                 value={fec_comprobante}
                                                 onChange={onInputChange}
                                                 placeholder="EJ. 20-02-24"
+                                                required
                                             />
                                     </div>
                                 </Col>
@@ -382,6 +384,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                                 value={fec_pago}
                                                 onChange={onInputChange}
                                                 placeholder="EJ. 20-02-24"
+                                                required
                                             />
                                     </div>
                                 </Col>
@@ -472,6 +475,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                                 value={descripcion}
                                                 onChange={onInputChange}
                                                 placeholder="EJ. comentario u observacion"
+                                                required
                                             />
                                     </div>
                                 </Col>

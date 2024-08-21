@@ -33,7 +33,7 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
               fontSize: '16px', // Cambia este valor para hacer los números más grandes
             },
 			formatter: function (val, opts) {
-				return formatCurrency(val)
+				return ''
 			},
           },
         xaxis: {
@@ -75,14 +75,9 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
 										{task.completedTask}
 									</h5>
 								) : (
-                                    <h5 className="my-0"><MoneyFormatter amount={task.monto}/> - {((task.monto / dataSumaTotal) * 100).toFixed(2)}%</h5>
+                                    <h5 className="my-0"><MoneyFormatter amount={task.monto} symbol={task.forma_pago=='DOLARES'?'$':'S/'}/> - {((task.monto / dataSumaTotal) * 100).toFixed(2)}%</h5>
 								)}
 							</div>
-							{/* <ProgressBar
-								variant={'primary'}
-								now={((task.monto / dataSumaTotal) * 100)}
-								style={{ height: 6 }}
-							/> */}
 						</div>
 					);
 				})}

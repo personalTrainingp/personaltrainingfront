@@ -7,8 +7,8 @@ import Chart from 'react-apexcharts';
 
 export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
     const pagos = tasks.map(producto => ({
-        nombre_producto: producto.tb_empleado.nombres_apellidos_empl,
-        total_ventas: producto.total_ventas
+        nombre_producto: producto.empl,
+        total_ventas: producto.monto
     })) || []
     
     const series = [
@@ -49,6 +49,7 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
 			},
 		},
       };
+    console.log(dataSumaTotal);
     
 	const formatCurrency = (value) => {
 		return value.toLocaleString('es-PE', { style: 'currency', currency: 'PEN' });
@@ -71,14 +72,14 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
                             >
                                 <div className="d-flex align-items-center">
                                     <div className="flex-grow-1 ms-2">
-                                        <h5 className="my-0 fw-semibold">{task.tb_empleado.nombres_apellidos_empl}</h5>
+                                        <h5 className="my-0 fw-semibold">{task.empl}</h5>
                                     </div>
                                     {task.completedTask ? (
                                         <h5 className="my-0">
                                             {task.completedTask}
                                         </h5>
                                     ) : (
-                                        <h5 className="my-0"><MoneyFormatter amount={task.total_ventas}/> - {((task.total_ventas / dataSumaTotal) * 100).toFixed(2)}%</h5>
+                                        <h5 className="my-0"><MoneyFormatter amount={task.monto}/> - {((task.monto / dataSumaTotal) * 100).toFixed(2)}%</h5>
                                     )}
                                 </div>
                             </div>

@@ -14,6 +14,14 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { useProspectoStore } from '@/hooks/hookApi/useProspectoStore';
 import { useSelector } from 'react-redux';
 import { useProgramaTrainingStore } from '@/hooks/hookApi/useProgramaTrainingStore';
+
+function ordenarPorIdPgm(data) {
+	const orden = [2, 4, 3];
+
+	return data.sort((a, b) => {
+		return orden.indexOf(a.id_pgm) - orden.indexOf(b.id_pgm);
+	});
+}
 const registerProspecto = {
     nombres: '',
     apellido_materno: '',
@@ -56,6 +64,14 @@ export const ModalProspectos = ({show, onHide}) => {
         
         console.log(id_pgm==e.id_pgm);
     }
+    // function ordenarPorIdPgm(data, orden) {
+    //     // const orden = [2, 4, 3, 5];
+    
+    //     return data.sort((a, b) => {
+    //         return orden.indexOf(a.id_pgm) - orden.indexOf(b.id_pgm);
+    //     });
+    // }
+    
   return (
     
 			<Dialog
@@ -180,6 +196,8 @@ export const ModalProspectos = ({show, onHide}) => {
                                 } */}
                                 {
                                     datapgmPT.map(e=>{
+                                        // console.log(e);
+                                        
                                     if(!e.estado_pgm){
                                         return;
                                     }

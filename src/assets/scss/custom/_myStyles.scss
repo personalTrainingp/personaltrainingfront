@@ -1,6 +1,30 @@
 *{
   text-transform: uppercase !important;
+  font-family: Poppins, sans-serif;
 }
+.p-button{
+  // background-color: #D41115 !important;
+  background: #D41115;
+    border: 1px solid #D41115;
+}
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: #ffffff;
+  border-color: #D41115;
+}
+.p-button.p-button-outlined{
+  // color: #D41115 !important;
+  background-color: transparent;
+  color: #D41115;
+  border: 1px solid;
+}
+.p-button.p-button-text{
+  background-color: transparent;
+  color: #D41115;
+  border-color: transparent;
+}
+// .bg-primary--ctss{
+//   background-color: #D41115;
+// }
 
 .hover-card:hover{
     border-color: rgb(205, 133, 0) !important;
@@ -387,5 +411,67 @@
       width: 64px;
       height: 64px;
       transform: rotate(360deg)
+    }
+  }
+
+
+
+  //SCROLLBAR GENERAL
+  body {
+    --sb-track-color: #232e3300;
+    --sb-thumb-color: #888888;
+    --sb-size: 10px;
+  }
+  
+  body::-webkit-scrollbar {
+    width: var(--sb-size);
+  }
+  
+  body::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 10px;
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 10px;
+  }
+  
+  @supports not selector(::-webkit-scrollbar) {
+    body {
+        scrollbar-color: var(--sb-thumb-color)
+                       var(--sb-track-color);
+    }
+  }
+
+  .scroll-bar-generate {
+    --sb-track-color: #232e3300;
+    --sb-thumb-color: #888888;
+    --sb-size: 1px;
+  }
+  .scroll-bar-generate::-webkit-scrollbar {
+    width: var(--sb-size);
+  }
+  
+  .scroll-bar-generate::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 4px;
+  }
+  
+  .scroll-bar-generate::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 10px;
+  }
+  
+  @supports not selector(::-webkit-scrollbar) {
+    .scroll-bar-generate {
+        scrollbar-color: var(--sb-thumb-color)
+                       var(--sb-track-color);
+    }
+  }
+
+  .rbc-button-linK{
+    span{
+      background-color: red !important;
     }
   }

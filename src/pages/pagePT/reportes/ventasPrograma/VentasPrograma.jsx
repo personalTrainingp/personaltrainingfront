@@ -44,19 +44,19 @@ export const VentasPrograma = () => {
       icon: 'mdi mdi-account-star-outline',
       variant: 'primary',
       title: 'CLIENTES NUEVOS',
-      noOfProject: programa_estado_cliente?.nuevos?.length,
+      noOfProject: 2//programa_estado_cliente?.nuevos?.length,
     },
     {
       icon: 'mdi mdi-account-group',
       variant: 'success',
       title: 'CLIENTES REINSCRITOS',
-      noOfProject: programa_estado_cliente?.reinscritos?.length,
+      noOfProject: 5//programa_estado_cliente?.reinscritos?.length,
     },
     {
       icon: 'mdi mdi-autorenew',
       variant: 'info',
       title: 'CLIENTES RENOVADOS',
-      noOfProject: programa_estado_cliente?.renovados?.length,
+      noOfProject: 2//programa_estado_cliente?.renovados?.length,
     },
   ];
   const programasActivosTODO = [

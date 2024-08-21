@@ -27,7 +27,17 @@ export const SemanasxPrograma = ({data}) => {
 			return acc + item.tarifa_monto;
 		}, 0);
 	}, 0);
-	console.log(sumaItemsTotal_monto);
+	data = data.map(i=>{
+		return {
+            ...i,
+			cantidad: i.items.length
+            // monto_promedio: i.items.reduce((acc, item) => {
+            //     return acc + item.tarifa_monto;
+            // }, 0) / i.items.length,
+            // porcentaje: ((i.items.length / sumaItemsLength) * 100).toFixed(2)
+        }
+	}).sort((a, b) => b.cantidad - a.cantidad);	
+	console.log(data);
   return (
     <div>
         <Card>
@@ -47,7 +57,7 @@ export const SemanasxPrograma = ({data}) => {
 							<td>{e.semana} semanas</td>
 							<td>
 								<div className="progress-w-percent mb-0">
-									<span class="w-100 progress-value">{e.items.length} ({(e.items.length/sumaItemsLength)*100}%)</span>
+									<span class="w-100 progress-value">{e.items.length} ({((e.items.length/sumaItemsLength)*100).toFixed(2)}%)</span>
 									<ProgressBar animated now={(e.items.length/sumaItemsLength)*100} className="progress-sm" style={{backgroundColor: '#00000042', height: '15px', width: '100%'}} variant="orange" />
 								</div>
 							</td>
