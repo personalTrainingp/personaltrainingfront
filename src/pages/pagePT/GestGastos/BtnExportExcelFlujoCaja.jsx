@@ -71,7 +71,7 @@ export const BtnExportExcelFlujoCaja = ({dataGastos, dataAporte, dataVentas, fec
   }
   function agruparPorMesYMoneda(data) {
     return data.reduce((acc, item) => {
-      const mes = new Date(item.fec_pago)?.toISOString().slice(5, 7); // Extraer el mes en formato 'MM'
+      const mes = new Date(item.fec_comprobante)?.toISOString().slice(5, 7); // Extraer el mes en formato 'MM'
       const { moneda, monto } = item;
   
       let mesGroup = acc.find(group => group.mes === mes);

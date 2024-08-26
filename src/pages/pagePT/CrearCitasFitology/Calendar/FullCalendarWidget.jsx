@@ -123,8 +123,8 @@ const FullCalendarWidget = ({
             event: CustomEvent, // Utiliza el componente personalizado para mostrar solo el título del evento
           }}
           messages={{
-            next: "Siguiente",
-            previous: "Anterior",
+            next: "SEMANA SIGUIENTE",
+            previous: "SEMANA ANTERIOR",
             today: "Hoy",
             month: "Mes",
             week: "Semana",
