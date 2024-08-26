@@ -122,11 +122,12 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         
         useEffect(() => {
             const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos||[]
-            console.log(dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos);
             setgrupoGasto(grupos)
         }, [id_tipoGasto])
         useEffect(() => {
             const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
+            console.log(conceptos);
+            
             setgastoxGrupo(conceptos)
         }, [grupo])
         
@@ -158,7 +159,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                 // console.log("con");
                 
                 setshowLoading(true)
-                await startActualizarGastos(formState, data.id)
+                await startActualizarGastos(formState, data.id, id_enterprice)
                 setshowLoading(false)
                 // console.log("sin ");
                 // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
@@ -166,7 +167,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                 return;
             }
             setshowLoading(true)
-            await startRegistrarGastos(formState)
+            await startRegistrarGastos(formState, id_enterprice)
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()

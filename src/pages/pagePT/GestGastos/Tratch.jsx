@@ -124,7 +124,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
         
         const onAcceptDeleteGasto = async()=>{
             setshowLoading(true)
-            await startDeleteGasto(rowData.id)
+            await startDeleteGasto(rowData.id, id_enterprice)
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
@@ -194,7 +194,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const fecRegistroBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{ FormatoDateMask(rowData.fec_registro, 'D [de] MMMM [de] YYYY [a las] h:mm A') }</span>
+                <span>{ FormatoDateMask(rowData.fec_registro, 'dddd D [de] MMMM [de] YYYY [a las] h:mm A') }</span>
             </div>
         );
     }
@@ -203,7 +203,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{FormatoDateMask(rowData.fec_pago, 'D [de] MMMM [de] YYYY') }</span>
+                <span>{FormatoDateMask(rowData.fec_comprobante, 'dddd D [de] MMMM [de] YYYY') }</span>
             </div>
         );
     }
@@ -212,7 +212,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{new Date(rowData.fec_comprobante).getFullYear()===1900? '': FormatoDateMask(rowData.fec_comprobante, 'D [de] MMMM [de] YYYY')}</span>
+                <span>{new Date(rowData.fec_pago).getFullYear()===1900? '': FormatoDateMask(rowData.fec_pago, 'dddd D [de] MMMM [de] YYYY')}</span>
             </div>
         );
     }

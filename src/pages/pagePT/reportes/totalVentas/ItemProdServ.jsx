@@ -1,4 +1,4 @@
-import { MoneyFormatter } from '@/components/CurrencyMask'
+import { FUNMoneyFormatter, MoneyFormatter } from '@/components/CurrencyMask'
 import React from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
@@ -21,7 +21,13 @@ export const ItemProdServ = ({Icantidad, Itotal, Inombre, Iabrev, icono, icowid,
                                                         <span>
                                                             <h4 className="font-15 mt-1 mb-0 d-block">{Inombre}</h4>
                                                             <h4 className="font-12 mt-1 mb-0 d-block">{Icantidad?`Cantidad: ${Icantidad}`: ''}</h4>
-                                                            <h4 className="font-12 mt-1 mb-0 d-block">{Itotal?`Total: ${ <MoneyFormatter amount={Itotal}/> }`:''}</h4>
+                                                            <h4 className="font-12 mt-1 mb-0 d-block">
+                                                              {
+                                                              Itotal?
+                                                              `Total: ${ FUNMoneyFormatter(Itotal, 'S/') }`
+                                                              :
+                                                              ''
+                                                              }</h4>
                                                         </span>
 														{/* <h4 className="font-15 mt-1 mb-0 d-block">{Inombre}</h4> */}
 													</Link>

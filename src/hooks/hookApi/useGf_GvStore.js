@@ -31,14 +31,14 @@ export const useGf_GvStore = () => {
 		}
 	};
 	const obtenerNombreGastoUnicos = async () => {};
-	const startRegistrarGastos = async (formState) => {
+	const startRegistrarGastos = async (formState, id_enterprice) => {
 		try {
 			// setisLoadingData(true);
 			const { data } = await PTApi.post('/egreso/post-egreso', {
 				...formState,
 				fec_registro: new Date(),
 			});
-			obtenerGastos();
+			obtenerGastos(id_enterprice);
 			Swal.fire({
 				icon: 'success',
 				title: 'GASTO REGISTRADO CORRECTAMENTE',
@@ -56,13 +56,13 @@ export const useGf_GvStore = () => {
 			});
 		}
 	};
-	const startActualizarGastos = async (formState, id) => {
+	const startActualizarGastos = async (formState, id, id_enterprice) => {
 		try {
 			setisLoadingData(true);
 			const { data } = await PTApi.put(`/egreso/put-egreso/${id}`, {
 				...formState,
 			});
-			obtenerGastos();
+			obtenerGastos(id_enterprice);
 			setisLoadingData(false);
 			Swal.fire({
 				icon: 'success',
@@ -81,11 +81,11 @@ export const useGf_GvStore = () => {
 			});
 		}
 	};
-	const startDeleteGasto = async (id) => {
+	const startDeleteGasto = async (id, id_enterprice) => {
 		try {
 			setisLoading(true);
 			const { data } = await PTApi.put(`/egreso/delete-egreso/${id}`);
-			await obtenerGastos();
+			await obtenerGastos(id_enterprice);
 			setisLoading(false);
 			Swal.fire({
 				icon: 'success',
@@ -175,6 +175,7 @@ export const useGf_GvStore = () => {
 				}
 				grupo.conceptos.push({
 					label: curr.nombre_gasto,
+					value: curr.id,
 				});
 
 				// tipoGasto.grupos.push({

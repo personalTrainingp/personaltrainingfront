@@ -85,19 +85,21 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
 													Inicia:{' '}
 													{FormatoDateMask(
 														dataVenta.fechaInicio_programa,
-														'D [de] MMMM [de] YYYY'
+														'dddd D [de] MMMM [de] YYYY'
 													)}{' '}
-													a las{' '}
+												</span>
+												<span className="text-muted font-weight-normal font-italic d-block">
+													Hora: {' '}
 													<FormatoTimeMask
-														date={dataVenta.time_h.trim()}
-														format={'hh:mm A'}
-													/>
+															date={dataVenta.time_h.trim()}
+															format={'hh:mm A'}
+														/>
 												</span>
 												<span className="text-muted font-weight-normal font-italic d-block">
 													Finaliza:{' '}
 													{FormatoDateMask(
 														dataVenta.fechaFinal,
-														'D [de] MMMM [de] YYYY'
+														'dddd D [de] MMMM [de] YYYY'
 													)}
 												</span>
 											</div>
