@@ -71,7 +71,7 @@ export const BtnExportExcelFlujoCaja = ({dataGastos, dataAporte, dataVentas, fec
   }
   function agruparPorMesYMoneda(data) {
     return data.reduce((acc, item) => {
-      const mes = new Date(item.fec_comprobante)?.toISOString().slice(5, 7); // Extraer el mes en formato 'MM'
+      const mes = new Date(item?.fec_comprobante)?.toISOString().slice(5, 7); // Extraer el mes en formato 'MM'
       const { moneda, monto } = item;
   
       let mesGroup = acc.find(group => group.mes === mes);
@@ -565,36 +565,36 @@ function agruparPorFechaYGrupo(data) {
     return result;
   }, []);
 }
-function agruparDatos(datos) {
-  // Crear un objeto para almacenar los datos agrupados
-  const agrupados = datos.reduce((acc, item) => {
-    // Extraer el mes y año de fec_pago en formato 'YYYY-MM'
-    const mes = new Date(item?.data[0]?.fec_pago).toISOString().slice(0, 7);
-    const nombre_gasto = item.nombre_gasto;
+// function agruparDatos(datos) {
+//   // Crear un objeto para almacenar los datos agrupados
+//   const agrupados = datos.reduce((acc, item) => {
+//     // Extraer el mes y año de fec_pago en formato 'YYYY-MM'
+//     const mes = new Date(item?.data[0]?.fec_comprobante)?.toISOString().slice(0, 7);
+//     const nombre_gasto = item.nombre_gasto;
     
-    // Crear una clave única para cada combinación de nombre_gasto y mes
-    const clave = `${nombre_gasto}-${mes}`;
+//     // Crear una clave única para cada combinación de nombre_gasto y mes
+//     const clave = `${nombre_gasto}-${mes}`;
 
-    // Inicializar el objeto si no existe
-    if (!acc[clave]) {
-      acc[clave] = {
-        nombre_gasto,
-        mes,
-        fec_pago: item.data[0].fec_pago,
-        data: item.data,
-        monto_total: 0
-      };
-    }
+//     // Inicializar el objeto si no existe
+//     if (!acc[clave]) {
+//       acc[clave] = {
+//         nombre_gasto,
+//         mes,
+//         fec_pago: item.data[0].fec_pago,
+//         data: item.data,
+//         monto_total: 0
+//       };
+//     }
 
-    // Acumular el monto total
-    acc[clave].monto_total += item.monto_total;
+//     // Acumular el monto total
+//     acc[clave].monto_total += item.monto_total;
 
-    return acc;
-  }, {});
+//     return acc;
+//   }, {});
 
-  // Convertir el objeto agrupado en un array
-  return Object.values(agrupados);
-}
+//   // Convertir el objeto agrupado en un array
+//   return Object.values(agrupados);
+// }
 
 
 function agruparPorFecPagoAndMonto(data) {
