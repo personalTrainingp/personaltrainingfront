@@ -8,7 +8,7 @@ import Select from 'react-select';
 import 'dayjs/locale/es'; // Importa el idioma español si no lo has hecho ya
 import config from '@/config';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
-import { FormatoDateMask } from '@/components/CurrencyMask';
+import { DateMask, DateMaskString, FormatoDateMask, FormatoTimeMask } from '@/components/CurrencyMask';
 import { onSetDetallePrograma } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useDispatch } from 'react-redux';
 // Establecer el idioma local globalmente

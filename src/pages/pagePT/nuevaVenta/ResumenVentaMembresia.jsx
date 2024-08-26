@@ -1,5 +1,6 @@
 import {
 	DateMask,
+	DateMaskString,
 	FormatoDateMask,
 	FormatoTimeMask,
 	MoneyFormatter,
@@ -14,6 +15,7 @@ import { PdfContrato } from '../pdfs/PdfContrato';
 import { useDispatch } from 'react-redux';
 import { onDeleteAllPrograma } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useVentasStore } from '../../../hooks/hookApi/useVentasStore';
+import dayjs from 'dayjs';
 
 export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
 	console.log(dataVenta);
@@ -69,7 +71,7 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
 								<tr>
 									<th scope="row" className="border-0 p-0">
 										<div className="p-0">
-											{/* <img src="https://bootstrapious.com/i/snippets/sn-cart/product-1.jpg" alt="" width="70" className="img-fluid rounded shadow-sm"/> */}
+											<img src="https://bootstrapious.com/i/snippets/sn-cart/product-1.jpg" alt="" width="70" className="img-fluid rounded shadow-sm"/>
 											<div className="ml-3 d-inline-block align-middle">
 												<h5 className="mb-0">
 													{' '}
@@ -90,10 +92,14 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
 												</span>
 												<span className="text-muted font-weight-normal font-italic d-block">
 													Hora: {' '}
-													<FormatoTimeMask
-															date={dataVenta.time_h.trim()}
-															format={'hh:mm A'}
-														/>
+													{/* <DateMask date={'06:00'} format={'hh:mm A'}/> */}
+													{dataVenta.time_h}
+													{
+														// FormatoDateMask(
+														// 	"06:00",
+														// 	'hh:mm A'
+														// )
+													}
 												</span>
 												<span className="text-muted font-weight-normal font-italic d-block">
 													Finaliza:{' '}

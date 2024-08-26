@@ -11,7 +11,7 @@ export const BtnExportExcelFlujoCaja = ({dataGastos, dataAporte, dataVentas, fec
   // const { obtenerVentasPorFecha } = useVentasStore()
   // const { obtenerAportesPorFechas } = useAportesIngresosStore()
   // const { obtenerGastosPorFecha } = useGf_GvStore()
-  dataGastos = dataGastos.filter(f=>f.tb_parametros_gasto.id_empresa===599)
+  dataGastos = dataGastos.filter(f=>f.tb_parametros_gasto?.id_empresa===599)
   dataVentas = dataVentas.map(v=>{
     return {
       fecha_venta: v.fecha_venta,
