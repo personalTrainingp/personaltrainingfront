@@ -14,6 +14,7 @@ import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
 import { MoneyFormatter } from '@/components/CurrencyMask'
 import { clasesVentasSeparadas } from '@/types/type'
 import { FormatRangoFecha } from '@/components/componentesReutilizables/FormatRangoFecha'
+import { HistorialVentas } from './HistorialVentas'
 
 const filtrarCalendario={
 dates:[]
@@ -145,7 +146,7 @@ export const TotalVentas = () => {
         <CardTotal onClick={()=>setclickServProd('total')} title={`Total de venta ${clasesVentasSeparadas(clickServProd)}`} body={<MoneyFormatter amount={TotalDeVentasxProdServ(clickServProd).sumaTotal}/>} span={`${contarVentas(reporteTotalVentasPorTipoCliente)} ventas | ${contarVentasEspeciales(reporteTotalVentasPorTipoCliente)} Canjes`}/>
       </Col>
       <Col xxl={2}>
-        <CardTotal title={'Venta del dia actual'} body={<MoneyFormatter amount={0}/>} span={`${0} ventas | ${0} Canjes`}/>
+        <CardTotal title={'Venta del dia'} body={<MoneyFormatter amount={0}/>} span={`${0} ventas | ${0} Canjes`}/>
       </Col>
       <Col xxl={7}>
         <CardProdServ setclickServProd={setclickServProd} data={reporteDeDetalleVenta} dataGen={reporteVentas}/>
@@ -159,6 +160,7 @@ export const TotalVentas = () => {
         <TarjetasPago tasks={TotalDeVentasxProdServ(clickServProd).asesores_pago} title={'Ranking de asesores'} dataSumaTotal={TotalDeVentasxProdServ(clickServProd).asesores_pago.reduce((total, item) => total + item.monto, 0)}/>
       </Col>
       <Col xxl={12}>
+        <HistorialVentas/>
       </Col>
     </Row>
         </>

@@ -18,8 +18,9 @@ export const useGf_GvStore = () => {
 	const dispatch = useDispatch();
 	const [gastoxID, setgastoxID] = useState({});
 	const [isLoading, setisLoading] = useState(false);
-	const [isLoadingData, setisLoadingData] = useState(false);
+	const [isLoadingData, setisLoadingData] = useState(true);
 	const [objetoToast, setobjetoToast] = useState({});
+	const [dataGasto, setdataGasto] = useState([]);
 	const obtenerProveedoresUnicos = async () => {
 		try {
 			const { data } = await PTApi.get('/egreso/get-proveedores-unicos');
@@ -103,10 +104,12 @@ export const useGf_GvStore = () => {
 			});
 		}
 	};
-	const obtenerGastos = async () => {
+	const obtenerGastos = async (id_enterprice) => {
 		try {
 			setisLoadingData(true);
-			const { data } = await PTApi.get('/egreso/get-egresos');
+			console.log(id_enterprice);
+
+			const { data } = await PTApi.get(`/egreso/get-egresos/${id_enterprice}`);
 			dispatch(onSetGastos(data.gastos));
 			setisLoadingData(false);
 		} catch (error) {
@@ -129,10 +132,81 @@ export const useGf_GvStore = () => {
 
 	const obtenerParametrosGastosFinanzas = async () => {
 		try {
-			const { data } = await PTApi.get(`/parametros/get_params/params-tb-finanzas`);
+			let { data } = await PTApi.get(`/parametros/get_params/params-tb-finanzas`);
+			data = data.reduce((acc, curr) => {
+				let empresa = acc.find((e) => e.id_empresa === curr.id_empresa);
+				if (!empresa) {
+					empresa = {
+						id_empresa: curr.id_empresa,
+						tipo_gasto: [],
+					};
+					acc.push(empresa);
+				}
+
+				let tipoGasto = empresa.tipo_gasto.find(
+					(tg) => tg.id_tipoGasto === curr.id_tipoGasto
+				);
+				if (!tipoGasto) {
+					tipoGasto = {
+						id_tipoGasto: curr.id_tipoGasto,
+						grupos: [],
+					};
+					empresa.tipo_gasto.push(tipoGasto);
+				}
+
+				// let conceptos = tipoGasto.grupos.find(
+				// 	(tg) => tg.nombre_gasto === curr.nombre_gasto
+				// );
+				// if (!conceptos) {
+				// 	conceptos = {
+				// 		conceptos: curr.conceptos,
+				// 		grupos: [],
+				// 	};
+				// 	empresa.conceptos.push(conceptos);
+				// }
+				let grupo = tipoGasto.grupos.find((g) => g.label === curr.grupo);
+				if (!grupo) {
+					grupo = {
+						label: curr.grupo,
+						value: curr.grupo,
+						conceptos: [],
+					};
+					tipoGasto.grupos.push(grupo);
+				}
+				grupo.conceptos.push({
+					label: curr.nombre_gasto,
+				});
+
+				// tipoGasto.grupos.push({
+				// 	label: curr.grupo,
+				// 	value: curr.grupo,
+				// 	conceptos: curr.conceptos.map((c) => ({
+				// 		label: c,
+				// 		value: c,
+				// 	})),
+				// 	// concepto: curr.nombre_gasto,
+				// });
+
+				return acc;
+			}, []);
+			// console.log(data);
+
 			dispatch(onSetParametrosGastos(data));
 		} catch (error) {
 			console.log('Error en useProductoStore', error);
+		}
+	};
+
+	const obtenerGastosPorFecha = async (arrayDate) => {
+		try {
+			const { data } = await PTApi.get('/reporte/reporte-egresos', {
+				params: {
+					arrayDate,
+				},
+			});
+			setdataGasto(data.reporte);
+		} catch (error) {
+			console.log(error);
 		}
 	};
 
@@ -145,6 +219,8 @@ export const useGf_GvStore = () => {
 		obtenerNombreGastoUnicos,
 		startActualizarGastos,
 		startDeleteGasto,
+		obtenerGastosPorFecha,
+		dataGasto,
 		isLoadingData,
 		setgastoxID,
 		gastoxID,

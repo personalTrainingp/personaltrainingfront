@@ -70,12 +70,12 @@ const CalendarApp = ({tipo_serv}) => {
 												<span id="titulo-ayuda-leyenda">Confirmada</span>
 											</div>
 											<div id="columna">
-												<div className="cuadrado leyenda-cancelada"></div>
-												<span id="titulo-ayuda-leyenda">Cancelada</span>
-											</div>
-											<div id="columna">
 												<div className="cuadrado leyenda-asistio cuadrado"></div>
 												<span id="titulo-ayuda-leyenda">Asistio</span>
+											</div>
+											<div id="columna">
+												<div className="cuadrado leyenda-cancelada"></div>
+												<span id="titulo-ayuda-leyenda">Cancelada</span>
 											</div>
 											<div id="columna">
 												<div className="cuadrado leyenda-no-asistio cuadrado"></div>

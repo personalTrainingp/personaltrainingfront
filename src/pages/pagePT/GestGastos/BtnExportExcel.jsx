@@ -2,7 +2,6 @@ import React from 'react';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver'; // Para guardar el archivo generado
 import { Button } from 'primereact/button';
-// import { Button } from 'react-bootstrap'; // Importa un componente de botón de Bootstrap como ejemplo
 
 export const ExportToExcel = ({data}) => {
   

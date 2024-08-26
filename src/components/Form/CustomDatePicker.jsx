@@ -60,6 +60,7 @@ const CustomDatePicker = (props) => {
     <>
       {/* date picker control */}
       <DatePicker
+        locale="es-ES"
         customInput={input}
         timeIntervals={props.tI}
         className={classNames('form-control', props.inputClass)}

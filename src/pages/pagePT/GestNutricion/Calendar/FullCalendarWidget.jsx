@@ -8,6 +8,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { es } from 'date-fns/locale';
 import AddEditEvent from './AddEditEvent';
 import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
+import { FormatoTimeMask } from '@/components/CurrencyMask';
 dayjs.locale('es')
 const locales = {
   'es': es,
@@ -71,7 +72,10 @@ const eventStyleGetter = (event, start, end, isSelected) => {
 const CustomEvent = ({ event }) => {
   return(
     <p className='m-0 p-1 text-overflow-ellipsis white-space-nowrap overflow-hidden'>{
-      `${new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`}
+      // FormatoTimeMask(new Date(event.start), 'hh:mm A')
+      // `${new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`
+    }
+    <FormatoTimeMask date={new Date(event.start)} format={'hh:mm A'}/>
       <br/>
       {event.title}
     </p>

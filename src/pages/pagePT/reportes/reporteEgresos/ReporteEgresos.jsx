@@ -12,11 +12,12 @@ import { Toast } from 'primereact/toast'
 import { ExportToExcel } from './BtnExportExcel'
 import { FormatoDateMask } from '@/components/CurrencyMask'
 import { FormatRangoFecha } from '@/components/componentesReutilizables/FormatRangoFecha'
+import { BtnExportExcelFlujoCaja } from '../../GestGastos/BtnExportExcelFlujoCaja'
 
 export const ReporteEgresos = () => {
   const toast = useRef(null)
   const [rangoFechas, setrangoFechas] = useState([new Date(new Date().getFullYear(), 0, 1), new Date()])
-  const { obtenerReporteDeEgresos, egresosPorFecha_PROVEEDOR, egresosPorFecha_GASTO, egresosPorFecha_GRUPO } = useReporteStore()
+  const { obtenerReporteDeEgresos, reporte_FlujoCaja, egresosPorFecha_PROVEEDOR, egresosPorFecha_GASTO, egresosPorFecha_GRUPO } = useReporteStore()
   useEffect(() => {
     if(rangoFechas[0]===null) return;
     if(rangoFechas[1]===null) return;
@@ -39,6 +40,7 @@ export const ReporteEgresos = () => {
       </label>
       <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/>
       <FormatRangoFecha rangoFechas={rangoFechas}/>
+      {/* <BtnExportExcelFlujoCaja data={reporte_FlujoCaja}/> */}
     </div>
     <Card>
       <Card.Header className='d-flex align-items-center justify-content-between'>

@@ -36,6 +36,7 @@ export const useReporteStore = () => {
 	const [reporteVentaActual, setreporteVentaActual] = useState([]);
 	const [repoVentasPorSeparado, setrepoVentasPorSeparado] = useState({});
 	const [loading, setloading] = useState(true);
+	const [reporte_FlujoCaja, setreporte_FlujoCaja] = useState([]);
 	// const [repoVentasPorMembresia, setrepoVentasPorMembresia] = useState([]);
 	// const [repoVentasPorProdAcc, setrepoVentasPorProdAcc] = useState([])
 	// const [repoVentasPorProdSup, setrepoVentasPorProdSup] = useState([])
@@ -364,7 +365,6 @@ export const useReporteStore = () => {
 					arrayDate,
 				},
 			});
-			console.log(data);
 			const groupByIdProv = (dae) => {
 				const groupedData = {};
 
@@ -449,6 +449,7 @@ export const useReporteStore = () => {
 				result.sort((a, b) => b.suma_monto_PEN - a.suma_monto_PEN);
 				return result;
 			};
+			setreporte_FlujoCaja(data.reporte);
 			setegresosPorFecha_PROVEEDOR(groupByIdProv(data.reporte));
 			setegresosPorFecha_GRUPO(groupByGrupo(data.reporte));
 			setegresosPorFecha_GASTO(groupByGasto(data.reporte));
@@ -695,6 +696,7 @@ export const useReporteStore = () => {
 		obtenerReporteDeFormasDePagos,
 		obtenerReporteSeguimientoTODO,
 		obtenerReporteDeTotalDeVentasActuales,
+		reporte_FlujoCaja,
 		repoVentasPorSeparado,
 		reporteVentaActual,
 		viewSeguimiento,

@@ -41,12 +41,18 @@ const registerExCongelamiento ={
     extension_fin: '',
     dias_habiles: '',
 }
+const valorDef = {
+    tb_ProgramaTraining:'', 
+    tb_semana_training:'', 
+    fec_inicio_mem:'', 
+    fec_fin_mem: ''
+}
 export const ModalExtensionCongelamiento = ({show, onHide, id_cli, dataUltimaMembresia}) => {
     const {formState, extension_inicio, extension_fin, dias_habiles, observacion, img_prueba_extension, onResetForm, onInputChange, onInputChangeReact, onInputChangeFunction} = useForm(registerExCongelamiento)
     // const { obtenerUltimaMembresiaPorCliente, dataUltimaMembresia } = useTerminoStore()
     const [loadingUltimaMembresia, setloadingUltimaMembresia] = useState(false)
 	// const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
-	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia
+	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia[0]||valorDef
     const cancelarExtensionCongelamiento = ()=>{
         onHide()
         onResetForm()

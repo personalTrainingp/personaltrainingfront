@@ -80,7 +80,7 @@ export const ModalVentasPay = ({show, onHide}) => {
     const dataFormaPagoActivo_CONDOLARES = dataFormaPagoActivo.map((e) => {
 				return {
 					value: e.value,
-					label: `${e.label} ${e.value === 4 ? `| S/ ${(tipocambio.precio_compra*monto_pago?.replace(/,/g, '')).toFixed(2)}` : ''}`,
+					// label: `${e.label} ${e.value === 4 ? `| S/ ${(tipocambio.precio_compra*monto_pago?.replace(/,/g, '')).toFixed(2)}` : ''}`,
 				};
 			});
   return (
@@ -130,7 +130,7 @@ export const ModalVentasPay = ({show, onHide}) => {
                             required
                             />
                       </div>
-                      {/* {(formaPagoSelect.value===52 || formaPagoSelect.value ===53) &&
+                       {(formaPagoSelect.value===52 || formaPagoSelect.value ===53) &&
                         <>
                         <div className='mb-2'>
                             <label>Tipo de tarjetas:</label>
@@ -181,7 +181,7 @@ export const ModalVentasPay = ({show, onHide}) => {
                                 />
                         </div>
                         </>
-                        } */}
+                        }
                       <div className='mb-2'>
                         <label>Monto de pago:</label>
                         <input 
@@ -205,6 +205,7 @@ export const ModalVentasPay = ({show, onHide}) => {
                           />
                       </div>
                 <Button className='mt-4' type='submit'>Agregar pago</Button>
+                <a>Cancelar</a>
             </form>
         </Modal.Body>
     </Modal>

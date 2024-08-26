@@ -21,6 +21,7 @@ export const useUsuarioStore = () => {
 	const { user } = useSelector((e) => e.auth);
 	const [dataClixID, setdataClixID] = useState({});
 	const [loading, setloading] = useState(false);
+	const [loadingData, setLoadingData] = useState(true);
 
 	const { obtenerComentarioxLOCATION } = useComentarioStore();
 	// console.log(user);
@@ -67,7 +68,6 @@ export const useUsuarioStore = () => {
 			const { data } = await PTApi.put(`/usuario/put-cliente/${uid}`, formState);
 			await obtenerUsuariosClientes();
 			await obtenerOneUsuarioCliente(uid);
-			console.log('success', data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -82,7 +82,7 @@ export const useUsuarioStore = () => {
 	};
 	const obtenerOneUsuarioCliente = async (uid_cliente) => {
 		try {
-			setloading(true);
+			setLoadingData(true);
 			dispatch(onLoadingClient());
 			const { data } = await PTApi.get(`/usuario/get-cliente/${uid_cliente}`);
 			// dispatch(onSetData(data.clientes));
@@ -96,7 +96,7 @@ export const useUsuarioStore = () => {
 					urlImg: dataImg ? dataImg.name_image : null,
 				})
 			);
-			setloading(false);
+			setLoadingData(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -219,6 +219,7 @@ export const useUsuarioStore = () => {
 		eliminarOneUsuarioCliente,
 		startUpdateUsuarioCliente,
 		obtenerClientexID,
+		loadingData,
 		dataClixID,
 		//Empleado
 		startRegisterUsuarioEmpleado,

@@ -10,17 +10,24 @@ import { ResumenUtilidadesProgramas } from './ResumenReporteGeneral copy/Resumen
 import { CardEstimado } from '@/components/CardTab/CardEstimado'
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
 import { FormatRangoFecha } from '@/components/componentesReutilizables/FormatRangoFecha'
+import { BtnExportExcelFlujoCaja } from '../../GestGastos/BtnExportExcelFlujoCaja'
+import { useAportesIngresosStore } from '@/hooks/hookApi/useAportesIngresosStore'
+import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 
 export const ReporteGerenciales = () => {
   const toast = useRef(null)
   const [rangoFechas, setrangoFechas] = useState([new Date(new Date().getFullYear(), 0, 1), new Date()])
   const { obtenerReporteDeResumenUTILIDAD, reportegerencial_resumenGeneral, utilidadesProgramas } = useReporteStore()
   const { dataVentaxFecha, obtenerVentasPorFecha, IngresosSeparados_x_Fecha } = useVentasStore()
+  const { obtenerAportesPorFechas, dataAportes } = useAportesIngresosStore()
+  const { obtenerGastosPorFecha, dataGasto } = useGf_GvStore()
   useEffect(() => {
     if(rangoFechas[0]===null) return;
     if(rangoFechas[1]===null) return;
     obtenerReporteDeResumenUTILIDAD(rangoFechas)
     obtenerVentasPorFecha(rangoFechas)
+    obtenerAportesPorFechas(rangoFechas)
+    obtenerGastosPorFecha(rangoFechas)
   }, [rangoFechas])
   const showToast = (severity, summary, detail, label) => {
     toast.current.show({ severity, summary, detail, label });
@@ -35,6 +42,7 @@ export const ReporteGerenciales = () => {
       </label>
       <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/>
       <FormatRangoFecha rangoFechas={rangoFechas}/>
+      <BtnExportExcelFlujoCaja dataGastos={dataGasto} dataAporte={dataAportes} dataVentas={dataVentaxFecha} fechaInit={rangoFechas[0]}/>
     </div>
       <ResumenReporteGeneral data={reportegerencial_resumenGeneral} IngresosSeparados_x_Fecha={IngresosSeparados_x_Fecha}/>
       <ResumenUtilidadesProgramas data={utilidadesProgramas}/>

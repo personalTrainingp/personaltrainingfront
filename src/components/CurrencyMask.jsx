@@ -56,8 +56,7 @@ export const FormatoDateMask = (date, format)=>{
   )
 }
 export const FormatoTimeMask = ({date, format})=>{
-  console.log(date, format);
-  return dayjs(date, "HH:mm").locale("es").format(format)
+  return dayjs(date).locale("es").format(format)
 }
 export const DatexWeekMask = (date, format)=>{
   

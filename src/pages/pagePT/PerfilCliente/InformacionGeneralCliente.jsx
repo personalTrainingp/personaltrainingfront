@@ -52,8 +52,8 @@ export const InformacionGeneralCliente = ({data}) => {
         };
         const onEliminarCliente = ()=>{
             confirmDialog({
-                message: '¿Estas seguro (a) de eliminar el cliente?',
-                header: 'Eliminar cliente',
+                message: '¿Estas seguro (a) de eliminar el socio?',
+                header: 'Eliminar socio',
                 icon: 'pi pi-question-circle',
                 defaultFocus: 'accept',
                 accept:()=>{
@@ -69,8 +69,8 @@ export const InformacionGeneralCliente = ({data}) => {
         
         const onUpdateCliente = () =>{
             confirmDialog({
-                message: '¿Estas seguro (a) de editar la informacion del cliente?',
-                header: 'Editar cliente',
+                message: '¿Estas seguro (a) de editar la informacion del socio?',
+                header: 'Editar socio',
                 icon: 'pi pi-question-circle',
                 defaultFocus: 'accept',
                 accept: ()=>{

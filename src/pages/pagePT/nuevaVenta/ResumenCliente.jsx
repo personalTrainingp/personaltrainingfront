@@ -51,11 +51,11 @@ export const ResumenCliente = ({data}) => {
 							<td>{dataClixID.nombres_apellidos_cli}</td>
 						</tr>
 						<tr className='fs-5'>
-							<td className='fw-bold font-12'>Estado del socio: </td>
-							<td>{estadoCliente}</td>
+							{/* <td className='fw-bold font-12'>Estado del socio: </td>
+							<td>{estadoCliente}</td> */}
 						</tr>
 						<tr className='fs-5'>
-							<td className='fw-bold font-12'>Ultima compra de membresia:</td>
+							{/* <td className='fw-bold font-12'>Ultima compra de membresia:</td> */}
 							{/* <td className=''>
                                 {tb_ProgramaTraining?.name_pgm} {tb_semana_training?.semanas_st} 
 								{

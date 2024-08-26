@@ -51,6 +51,24 @@ export default function TableClientes() {
     const clearFilter = () => {
         initFilters();
     };
+    
+    const highlightText = (text, search) => {
+        if (!search) {
+            return text;
+        }
+        if (!text) {
+            return text;
+        }
+        const regex = new RegExp(`(${search})`, 'gi');
+        return text.split(regex).map((part, index) =>
+            part.toLowerCase() === search.toLowerCase() ? (
+                <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
+            ) : (
+                part
+            )
+        );
+    };
+    
 
     const onGlobalFilterChange = (e) => {
         const value = e.target.value;
@@ -63,6 +81,7 @@ export default function TableClientes() {
 
     const initFilters = () => {
         setFilters({
+            global: { value: null, matchMode: FilterMatchMode.CONTAINS },
             ['nombres_apellidos_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
             ['distrito']: { value: null, matchMode: FilterMatchMode.CONTAINS },
             ['email_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -87,21 +106,21 @@ export default function TableClientes() {
     const ProgramaSemanasBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.tipo_cliente}</span>
+                <span>{highlightText(rowData.tipo_cliente, globalFilterValue)}</span>
             </div>
         );
     };
     const telefonoBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.tel_cli}</span>
+                <span>{highlightText(rowData.tel_cli, globalFilterValue)}</span>
             </div>
         );
     }
     const distritoBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.distrito}</span>
+                <span>{highlightText(rowData.distrito, globalFilterValue)}</span>
             </div>
         );
     }
@@ -116,7 +135,7 @@ export default function TableClientes() {
     const ClientesBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.nombres_apellidos_cli}</span>
+                <span>{highlightText(rowData.nombres_apellidos_cli, globalFilterValue)}</span>
             </div>
         );
     };
@@ -132,7 +151,7 @@ export default function TableClientes() {
     const emailBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.email_cli}</span>
+                <span>{highlightText(rowData.email_cli, globalFilterValue)}</span>
             </div>
         );
     }
@@ -154,7 +173,7 @@ export default function TableClientes() {
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         rowsPerPageOptions={[10, 25, 50]} 
                         filterDisplay="row" 
-                        globalFilterFields={[]} 
+                        globalFilterFields={["id_cli", "nombres_apellidos_cli", "email_cli", "tel_cli", "distrito"]} 
                         header={header}
                         emptyMessage="SOCIOS NO ENCONTRADOS.">
                 {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}

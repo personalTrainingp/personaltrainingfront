@@ -20,6 +20,13 @@ import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import icon_CARRITO from '@/assets/images/carrito.png'
 import { Loading } from '@/components/Loading';
 import Swal from 'sweetalert2';
+import icoMem from '@/assets/images/PT-images/iconos/mem.png'
+import icoAcc from '@/assets/images/PT-images/iconos/acc.png'
+import icoEst from '@/assets/images/PT-images/iconos/estetica.png'
+import icoSupl from '@/assets/images/PT-images/iconos/supl.png'
+import icoNut from '@/assets/images/PT-images/iconos/nutri.png'
+import { ItemProdServ } from '../reportes/totalVentas/ItemProdServ';
+
 
 const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const [modalAcc, setModalAcc] = useState(false)
@@ -120,7 +127,8 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 							<div className='container-fluid'>
 								<Row>
 									<Col className="mb-3" onClick={ClickOpenModalAcc}>
-										<Card className="mb-0 h-100 border-1">
+									<ItemProdServ Inombre={"VENTAS DE ACCESORIO"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
+										{/* <Card className="mb-0 h-100 border-1">
 											<Card.Body>
 												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
 													<Link
@@ -134,11 +142,12 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 													</Link>
 												</div>
 											</Card.Body>
-										</Card>
+										</Card> */}
 									</Col>
 									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
 										<Col className="mb-3" onClick={ClickOpenModalProgramas}>
-											<Card className="mb-0 h-100 border-1">
+											<ItemProdServ Inombre={"VENTAS DE MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
+											{/* <Card className="mb-0 h-100 border-1">
 												<Card.Body>
 													<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
 														<Link
@@ -152,11 +161,12 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 														</Link>
 													</div>
 												</Card.Body>
-											</Card>
+											</Card> */}
 										</Col>
 										<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
 									<Col className="mb-3" onClick={onOpenModalSupl}>
-										<Card className="mb-0 h-100 border-1">
+									<ItemProdServ Inombre={"VENTAS DE SUPLEMENTO"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
+										{/* <Card className="mb-0 h-100 border-1">
 											<Card.Body>
 												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
 													<Link
@@ -170,11 +180,12 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 													</Link>
 												</div>
 											</Card.Body>
-										</Card>
+										</Card> */}
 									</Col>
 									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/>
 									<Col className="mb-3" onClick={ClickOpenModalFitology}>
-										<Card className="mb-0 h-100 border-1">
+									<ItemProdServ Inombre={"VENTA DE CITAS DE TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
+										{/* <Card className="mb-0 h-100 border-1">
 											<Card.Body>
 												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
 													<Link
@@ -188,11 +199,12 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 													</Link>
 												</div>
 											</Card.Body>
-										</Card>
+										</Card> */}
 									</Col>
 									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
 									<Col className="mb-3" onClick={onOpenModalNut}>
-										<Card className="mb-0 h-100 border-1">
+									<ItemProdServ Inombre={"VENTA DE CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
+										{/* <Card className="mb-0 h-100 border-1">
 											<Card.Body>
 												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
 													<Link
@@ -206,7 +218,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 													</Link>
 												</div>
 											</Card.Body>
-										</Card>
+										</Card> */}
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
 									{/* <Col sm={6} xl={2} className="mb-3" onClick={ClickOpenModalTransfMemb}>

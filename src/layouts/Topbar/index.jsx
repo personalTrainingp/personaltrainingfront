@@ -124,7 +124,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 				</div>	
 				<ul className="topbar-menu d-flex align-items-center gap-3">
 					<li>
-						<img src={logoDark} alt="logo" width={'180'} style={{height: '50px'}} />
+						<img src={logoDark} alt="logo" width={'190'} style={{height: '40px'}} />
 					</li>
 					{/* <li className="d-sm-inline-block">
 						<OverlayTrigger

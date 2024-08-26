@@ -20,8 +20,8 @@ export const ItemProdServ = ({Icantidad, Itotal, Inombre, Iabrev, icono, icowid,
                                                         </img>
                                                         <span>
                                                             <h4 className="font-15 mt-1 mb-0 d-block">{Inombre}</h4>
-                                                            <h4 className="font-12 mt-1 mb-0 d-block">Cantidad: {Icantidad}</h4>
-                                                            <h4 className="font-12 mt-1 mb-0 d-block">Total: <MoneyFormatter amount={Itotal}/></h4>
+                                                            <h4 className="font-12 mt-1 mb-0 d-block">{Icantidad?`Cantidad: ${Icantidad}`: ''}</h4>
+                                                            <h4 className="font-12 mt-1 mb-0 d-block">{Itotal?`Total: ${ <MoneyFormatter amount={Itotal}/> }`:''}</h4>
                                                         </span>
 														{/* <h4 className="font-15 mt-1 mb-0 d-block">{Inombre}</h4> */}
 													</Link>

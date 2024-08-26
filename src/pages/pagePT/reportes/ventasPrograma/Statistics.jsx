@@ -35,7 +35,7 @@ const Statistics = ({ statisticsData }) => {
 											</div>
 											<div className="flex-grow-1">
 												<h4 className="mt-0 mb-1">{statistics.title}</h4>
-												<p className="mb-0">{statistics.noOfProject}</p>
+												<p className="mb-0 font-20">{statistics.noOfProject}</p>
 											</div>
 										</>
 									}

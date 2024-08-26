@@ -29,7 +29,7 @@ const registerIvsG={
     descripcion: '',
     id_prov: 0
 }
-export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, showToast}) => {
+export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
     const onClickCancelModal = ()=>{
         onHide()
         onResetForm()
@@ -79,48 +79,64 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             onInputChangeMonto,
             onInputChangeFunction
         } = useForm(data?data:registerIvsG)
-        const arrayGrupo = dataParametrosGastos.map(e=>{
-            return {
-                label: e.grupo.replace(/\s/g, ''),
-                value: e.grupo.replace(/\s/g, ''),
-                id_tipoGasto: e.id_tipoGasto,
-            }
-        })
-        const group = arrayGrupo.reduce((acc, item) => {
-            if (!acc.some(obj => obj.value === item.value && obj.id_tipoGasto === item.id_tipoGasto)) {
-                acc.push(item);
-            }
-            return acc;
-        }, [])
-        const dataGasto = dataParametrosGastos.map(e=>{
-            return {
-                value: e.id,
-                label: e.nombre_gasto,
-                grupo: e.grupo
-            }
-        })
+        // const arrayGrupo = dataParametrosGastos.map(e=>{
+        //     return {
+        //         label: e.grupo.replace(/\s/g, ''),
+        //         value: e.grupo.replace(/\s/g, ''),
+        //         id_tipoGasto: e.id_tipoGasto,
+        //     }
+        // })
+        // const group = arrayGrupo.reduce((acc, item) => {
+        //     if (!acc.some(obj => obj.value === item.value && obj.id_tipoGasto === item.id_tipoGasto)) {
+        //         acc.push(item);
+        //     }
+        //     return acc;
+        // }, [])
+        // const dataGasto = dataParametrosGastos.map(e=>{
+        //     return {
+        //         value: e.id,
+        //         label: e.nombre_gasto,
+        //         grupo: e.grupo
+        //     }
+        // })
+        
         useEffect(() => {
             onInputChangeFunction("grupo", 0)
         }, [id_tipoGasto])
-        
         useEffect(() => {
-            if(data){
-                onInputChangeFunction("id_gasto", id_gasto)
-                return;
-            }
             onInputChangeFunction("id_gasto", 0)
-        }, [grupo, id_tipoGasto])
+        }, [id_tipoGasto, grupo])
+        
+        // useEffect(() => {
+            // let dataGasto = dataGasto
+            // console.log(dataGasto);
+            // const conceptogasto = 
+            // if(data){
+            //     onInputChangeFunction("id_gasto", id_gasto)
+            //     return;
+            // }
+            // onInputChangeFunction("id_gasto", 0)
+        // }, [
+        //     grupo,
+        //     id_tipoGasto])
         
         useEffect(() => {
-            const grupos = group.filter(e=>e.id_tipoGasto===id_tipoGasto)||[]
+            const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos||[]
+            console.log(dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos);
             setgrupoGasto(grupos)
-            setgastoxGrupo([])
         }, [id_tipoGasto])
-
         useEffect(() => {
-            const gastos = dataGasto.filter(e=>e.grupo===grupo)||[]
-            setgastoxGrupo(gastos)
+            const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
+            setgastoxGrupo(conceptos)
         }, [grupo])
+        
+        
+
+        // useEffect(() => {
+        //     const gastos = dataGasto.filter(e=>e.grupo===grupo)||[]
+        //     setgastoxGrupo(gastos)
+        // }, [grupo])
+        
         useEffect(() => {
             const inyeccionParametros = async()=>{
                 try {
@@ -164,7 +180,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             setopenModalProv(false)
             onShow()
         }
-        console.log(DataTipoComprobante);
   return (
     <>
     {(showLoading)?(

@@ -34,8 +34,8 @@ export const ModalMetaxVendedor = ({show, onHide, data, isLoading}) => {
     }
 	const productDialogFooter = (
 		<React.Fragment>
-			<Button label="Cancel" icon="pi pi-times" outlined onClick={cancelarMeta} />
-			<Button label="Save" icon="pi pi-check" onClick={GuardarMeta} />
+			<Button label="Cancelar" icon="pi pi-times" outlined onClick={cancelarMeta} />
+			<Button label="Guardar" icon="pi pi-check" onClick={GuardarMeta} />
 		</React.Fragment>
 	);
 

@@ -44,8 +44,8 @@ export const ModalInfoProspecto = ({show, onHide, data}) => {
     const {formState, nombres, apellido_materno, apellido_paterno, correo, celular, id_empl, id_pgm, observacion, onResetForm, onInputChange, onInputChangeReact} = useForm(data)
 	const productDialogFooter = (
 		<React.Fragment>
-			<Button label="Cancel" icon="pi pi-times" outlined onClick={cancelarProspecto} />
-			<Button label="Save" icon="pi pi-check" onClick={saveProspecto} />
+			<Button label="Cancelar" icon="pi pi-times" outlined onClick={cancelarProspecto} />
+			<Button label="Guardar" icon="pi pi-check" onClick={saveProspecto} />
 		</React.Fragment>
 	);
   return (
@@ -193,10 +193,10 @@ export const ModalInfoProspecto = ({show, onHide, data}) => {
                                 <Col lg={6}>
                                 <Row>
                                     <Col lg={6}>
-                                        <Button label="Cancel" icon="pi pi-times" outlined onClick={cancelarProspecto} />
+                                        <Button label="Cancelar" icon="pi pi-times" outlined onClick={cancelarProspecto} />
                                     </Col>
                                     <Col lg={6}>
-			                            <Button label="Save" icon="pi pi-check" onClick={saveProspecto} />
+			                            <Button label="Guardar" icon="pi pi-check" onClick={saveProspecto} />
                                     </Col>
                                 </Row>
                                 </Col>

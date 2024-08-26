@@ -4,27 +4,29 @@ import { CardTitle } from '@/components';
 import { formateo_Moneda } from '@/components/CurrencyMask';
 
 export const Statistics2 = ({statisticsData}) => {
-
+  console.log(statisticsData);
+  
 	const formatCurrency = (value) => {
 		return value.toLocaleString('es-PE', { style: 'currency', currency: 'PEN' });
 	};
   const dataTest = [
     {
+      title: 'VENTA ACUMULADA (S/.)',
+      noOfProject: formateo_Moneda(statisticsData.ventas_acumuladas?statisticsData.ventas_acumuladas:0),
+    },
+    {
       title: 'VENTA ACUMULADA ($.)',
       noOfProject: 0,
     },
     {
-      title: 'VENTA ACUMULADA (S/.)',
-      noOfProject: formateo_Moneda(statisticsData.ventas_acumuladas?statisticsData.ventas_acumuladas:0),
+      title: 'CANTIDAD DE CONTRATOS',
+      noOfProject: statisticsData.cantidad_contratos,
     },
     {
       title: 'TICKET MEDIO (S/.)',
       noOfProject: formateo_Moneda(statisticsData.ticket_medio?statisticsData.ticket_medio:0),
     },
     {
-      title: 'CANTIDAD DE CONTRATOS',
-      noOfProject: statisticsData.cantidad_contratos,
-    },{
       title: 'SEMANAS VENDIDAS POR PROGRAMA',
       noOfProject: statisticsData.semanas_vendidas_programa,
     },

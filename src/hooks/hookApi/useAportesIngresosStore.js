@@ -19,11 +19,24 @@ export const useAportesIngresosStore = () => {
 	const dispatch = useDispatch();
 	const [aportexID, setaportexID] = useState({});
 	const [isLoading, setisLoading] = useState(false);
+	const [dataAportes, setdataAportes] = useState([]);
 	const obtenerAportexID = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/aporte/get-aporte/${id}`);
 			console.log(data);
 			setaportexID(data.aporte);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerAportesPorFechas = async (arrayDate) => {
+		try {
+			const { data } = await PTApi.get(`/aporte/get-aportes-fecha`, {
+				params: {
+					dateRanges: arrayDate,
+				},
+			});
+			setdataAportes(data.aportes);
 		} catch (error) {
 			console.log(error);
 		}
@@ -108,11 +121,13 @@ export const useAportesIngresosStore = () => {
 		}
 	};
 	return {
+		obtenerAportesPorFechas,
 		startRegistrarAportes,
 		obtenerAportes,
 		startActualizarAportes,
 		startDeleteAportes,
 		obtenerAportexID,
+		dataAportes,
 		aportexID,
 		isLoading,
 	};

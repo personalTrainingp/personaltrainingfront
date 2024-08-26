@@ -21,7 +21,7 @@ import Swal from 'sweetalert2';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
-  const { obtenerOneUsuarioCliente, loading } = useUsuarioStore()
+  const { obtenerOneUsuarioCliente, loading, loadingData } = useUsuarioStore()
   const { obtenerUltimaMembresiaPorCliente, dataUltimaMembresia, isLoading:loadingUltimaMembresia } = useTerminoStore()
   const [isOpenModalRegalos, setisOpenModalRegalos] = useState(false)
   const [isOpenModalCongelamiento, setisOpenModalCongelamiento] = useState(false)
@@ -32,7 +32,7 @@ export const PerfilCliente = () => {
     obtenerUltimaMembresiaPorCliente(uid)
     obtenerOneUsuarioCliente(uid)
   }, [])
-  if(loading && loadingUltimaMembresia){
+  if(loadingData && loadingUltimaMembresia){
     return (
       <>
       Cargando...
@@ -40,9 +40,8 @@ export const PerfilCliente = () => {
     )
   }
   const modalOpenRegalos = ()=>{
-    console.log(dataUltimaMembresia);
     
-    if(dataUltimaMembresia.length<=0){
+    if(!dataUltimaMembresia[0]){
       return Swal.fire({
 				icon: 'error',
 				title: 'NO HAY NINGUNA MEMBRESIA',
@@ -58,7 +57,7 @@ export const PerfilCliente = () => {
     setisOpenModalRegalos(false)
   }
   const modalOpenCongelamiento = ()=>{
-    if(dataUltimaMembresia.length<=0){
+    if(!dataUltimaMembresia[0]){
       return Swal.fire({
 				icon: 'error',
 				title: 'NO HAY NINGUNA MEMBRESIA',
@@ -81,6 +80,9 @@ export const PerfilCliente = () => {
   return (
     <>
     <Link  to={'/gestion-clientes'} className='mt-3'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
+    
+    <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos} id_cli={userCliente?.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
+    <ModalExtensionCongelamiento onHide={modalCloseCongelamiento} show={isOpenModalCongelamiento} id_cli={userCliente.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
     <Row>
       <Col lg={4}>
         <Card className='mt-3 p-3'>
@@ -135,8 +137,6 @@ export const PerfilCliente = () => {
     </Card>
       </Col>
     </Row>
-    <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos} id_cli={userCliente?.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
-    <ModalExtensionCongelamiento onHide={modalCloseCongelamiento} show={isOpenModalCongelamiento} id_cli={userCliente.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
     </>
   );
 }

@@ -1,11 +1,19 @@
 *{
   text-transform: uppercase !important;
   font-family: Poppins, sans-serif;
+  // font-size: 20% !important;
 }
 .p-button{
   // background-color: #D41115 !important;
   background: #D41115;
     border: 1px solid #D41115;
+}
+td{
+  font-size: 20px !important;
+}
+.p-button:focus{
+  // background-color: #D41115 !important;
+  box-shadow: none !important;
 }
 .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
   background: #ffffff;
@@ -173,16 +181,16 @@
   background-color: #48e057 !important;
 }
 .leyenda-cancelada{
-    background-color: #fca68b !important;
-    border-left: #aa4c2d 7px solid !important;
+  background-color: rgb(232, 240, 156) !important;
+  border-left: rgb(125, 134, 0) 7px solid !important;
 }
 .leyenda-asistio{
     background-color: rgb(153, 204, 248) !important;
     border-left: rgb(33, 105, 168) 7px solid !important;
 }
 .leyenda-no-asistio{
-    background-color: rgb(240, 156, 240) !important;
-    border-left: rgb(134, 0, 134) 7px solid !important;
+  background-color: #fca68b !important;
+  border-left: #aa4c2d 7px solid !important;
 }
 .cuadrado {
   width: 36px;

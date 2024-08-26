@@ -13,11 +13,18 @@ const registerExRegalos ={
     dias_habiles: 1,
     observacion: '',
 }
+const valorDef = {
+    tb_ProgramaTraining:'', 
+    tb_semana_training:'', 
+    fec_inicio_mem:'', 
+    fec_fin_mem: ''
+}
 export const ModalExtensionRegalo = ({show, onHide, id_cli, dataUltimaMembresia}) => {
     const {formState, dias_habiles, observacion, onResetForm, onInputChange, onInputChangeReact} = useForm(registerExRegalos)
     const { postExtension } = useExtensionStore()
+    
     const [loadingUltimaMembresia, setloadingUltimaMembresia] = useState(false)
-	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia
+	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia[0]||valorDef
     const cancelarExtensionRegalo = ()=>{
         onHide()
         onResetForm()

@@ -7,6 +7,8 @@ import { getProgramaSPT } from '@/store/ventaProgramaPT/programaPTSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTipoCambioStore } from './useTipoCambioStore';
+import dayjs from 'dayjs';
+import { DateMaskString, FormatoDateMask } from '@/components/CurrencyMask';
 
 function ordenarPorIdPgm(data) {
 	const orden = [2, 4, 3];
@@ -100,13 +102,9 @@ export const useTerminoStore = () => {
 			const { data } = await PTApi.get(
 				`/parametros/get_params/get_estado_membresia_cli/${uid_cli}`
 			);
-			console.log(data.membresias);
 
 			dispatch(onSetUltimaMembresiaPorCliente(data.membresias));
-			console.log('aaa');
-			setdataUltimaMembresia(
-				data !== undefined ? data.membresias[data.membresias.length - 1] : []
-			);
+			setdataUltimaMembresia(data.membresias);
 			setIsLoading(false);
 		} catch (error) {
 			console.log(error);
@@ -249,9 +247,16 @@ export const useTerminoStore = () => {
 	};
 	const obtenerHorariosPorPrograma = async (id_pgm) => {
 		try {
-			const { data } = await PTApi.get(`/parametros/get_params/horario_PGM/${id_pgm}`);
-			console.log(data);
-
+			let { data } = await PTApi.get(`/parametros/get_params/horario_PGM/${id_pgm}`);
+			data = data
+				.map((d) => {
+					return {
+						...d,
+						horario: d.horario.trim(),
+						// label: dayjs(d.horario.trim()).format('LT'),
+					};
+				})
+				.sort((a, b) => a.horario.localeCompare(b.horario));
 			setDataHorarioPGM(data);
 		} catch (error) {
 			console.log(error);

@@ -124,7 +124,7 @@ export const ModalPrograma = ({show, hide}) => {
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <Col lg={5}>
+            <Col xxl={5}>
               <div>
                 <Row className='container-imgs d-flex justify-content-around'>
                   <label>Seleccione un programa:</label>
@@ -192,7 +192,7 @@ export const ModalPrograma = ({show, hide}) => {
                           className="react-select"
                           classNamePrefix="react-select"
                           options={DataHorarioPGM}
-                          value={DataHorarioPGM.find(o => o.value === id_horarioPgm) || 0}
+                          value={DataHorarioPGM.find(o => o.value === id_horarioPgm)|| 0}
                           required
                         ></Select>
                       </div>

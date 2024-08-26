@@ -55,8 +55,8 @@ export const ModalProspectos = ({show, onHide}) => {
     const {formState, nombres, apellido_materno, apellido_paterno, correo, celular, id_empl, id_pgm, observacion, onResetForm, onInputChange, onInputChangeReact} = useForm(registerProspecto)
 	const productDialogFooter = (
 		<React.Fragment>
-			<Button label="Cancel" icon="pi pi-times" outlined onClick={cancelarProspecto} />
-			<Button label="Save" icon="pi pi-check" onClick={saveProspecto} />
+			<Button label="Cancelar" icon="pi pi-times" outlined onClick={cancelarProspecto} />
+			<Button label="Guardar" icon="pi pi-check" onClick={saveProspecto} />
 		</React.Fragment>
 	);
     const onChangeFunction = (o,e)=>{
