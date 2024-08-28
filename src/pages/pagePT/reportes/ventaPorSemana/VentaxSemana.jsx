@@ -14,7 +14,7 @@ export const VentaxSemana = () => {
                                                             <tr>
                                                                 <th>SEMANAS</th>
                                                                 <th>CANTIDAD</th>
-                                                                <th>MONTO VENTAS BRUTA</th>
+                                                                <th>MONTO VENTA BRUTA</th>
                                                                 <th>TICKET MEDIO</th>
                                                             </tr>
                                                         </thead>

@@ -20,7 +20,7 @@ export const StatisticSeguimiento = ({statisticsData, data}) => {
                                     <Row>
                                         <Col>
                                             <div className="avatar-sm">
-                                                <img src={`${config.API_IMG.LOGO}${statistics.tb_programa_training.tb_image?.name_image}`} height={60} width={170} className='px-3'></img>
+                                                <img src={`${config.API_IMG.LOGO}${statistics.tb_programa_training.tb_image?.name_image}`} style={{width: '9vw'}} className='px-3'></img>
                                             </div>
                                         </Col>
                                         <Col>

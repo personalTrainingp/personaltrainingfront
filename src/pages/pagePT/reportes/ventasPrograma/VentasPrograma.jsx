@@ -99,12 +99,6 @@ export const VentasPrograma = () => {
       <Statistics statisticsData={statisticsClientes}/>
     </Row>
     <Row>
-      <Col xxl={9}>
-        <ProjectStatistics data={programa_comparativa_mejoranio}/>
-      </Col>
-      <Col xxl={3}>
-        <TeamMembers members={members} title={'Ranking de socios'}/>
-      </Col>
       <Statistics2 statisticsData={ventasxPrograma_ventasAcumuladasTickets}/>
       {id_programa!==0 && (
         <Col xxl={12}>
@@ -112,6 +106,12 @@ export const VentasPrograma = () => {
         </Col>
       )
       }
+      <Col xxl={9}>
+        <ProjectStatistics data={programa_comparativa_mejoranio}/>
+      </Col>
+      <Col xxl={3}>
+        <TeamMembers members={members} title={'Ranking de socios'}/>
+      </Col>
     </Row>
     </>
     

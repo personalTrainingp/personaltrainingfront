@@ -13,6 +13,7 @@ import { FormatRangoFecha } from '@/components/componentesReutilizables/FormatRa
 import { BtnExportExcelFlujoCaja } from '../../GestGastos/BtnExportExcelFlujoCaja'
 import { useAportesIngresosStore } from '@/hooks/hookApi/useAportesIngresosStore'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
+import { useTipoCambioStore } from '@/hooks/hookApi/useTipoCambioStore'
 
 export const ReporteGerenciales = () => {
   const toast = useRef(null)
@@ -21,6 +22,7 @@ export const ReporteGerenciales = () => {
   const { dataVentaxFecha, obtenerVentasPorFecha, IngresosSeparados_x_Fecha } = useVentasStore()
   const { obtenerAportesPorFechas, dataAportes } = useAportesIngresosStore()
   const { obtenerGastosPorFecha, dataGasto } = useGf_GvStore()
+  const { obtenerTipoCambioPorFecha, tipocambio, obtenerTipoDeCambiosPorRangoDeFechas, dataTipoCambio } = useTipoCambioStore()
   useEffect(() => {
     if(rangoFechas[0]===null) return;
     if(rangoFechas[1]===null) return;
@@ -28,6 +30,8 @@ export const ReporteGerenciales = () => {
     obtenerVentasPorFecha(rangoFechas)
     obtenerAportesPorFechas(rangoFechas)
     obtenerGastosPorFecha(rangoFechas)
+    obtenerTipoDeCambiosPorRangoDeFechas(rangoFechas)
+    // obtenerTipoCambioPorFecha(rangoFechas)
   }, [rangoFechas])
   const showToast = (severity, summary, detail, label) => {
     toast.current.show({ severity, summary, detail, label });
@@ -36,13 +40,16 @@ export const ReporteGerenciales = () => {
   return (
     <>
     <PageBreadcrumb title="Reporte gerencial" subName="reporte-gerenciales" />
-    <div className='flex-auto mb-2'>
+    <TabView>
+      <TabPanel header='CHANGE'>
+
+      <div className='flex-auto mb-2'>
       <label htmlFor="buttondisplay" className="font-bold block mb-2">
                       RANGO DE FECHAS
       </label>
       <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/>
       <FormatRangoFecha rangoFechas={rangoFechas}/>
-      <BtnExportExcelFlujoCaja dataGastos={dataGasto} dataAporte={dataAportes} dataVentas={dataVentaxFecha} fechaInit={rangoFechas[0]}/>
+      <BtnExportExcelFlujoCaja id_empresa={598} dataGastos={dataGasto} dataTipoCambio={dataTipoCambio} dataAporte={dataAportes} dataVentas={dataVentaxFecha} fechaInit={rangoFechas[0]}/>
     </div>
       <ResumenReporteGeneral data={reportegerencial_resumenGeneral} IngresosSeparados_x_Fecha={IngresosSeparados_x_Fecha}/>
       <ResumenUtilidadesProgramas data={utilidadesProgramas}/>
@@ -82,6 +89,14 @@ export const ReporteGerenciales = () => {
           </Card>
         </Col>
       </Row>
+      </TabPanel>
+      <TabPanel header='CIRCUS'>
+        <BtnExportExcelFlujoCaja id_empresa={599} dataGastos={dataGasto} dataTipoCambio={dataTipoCambio} dataAporte={dataAportes} dataVentas={dataVentaxFecha} fechaInit={rangoFechas[0]}/>
+      </TabPanel>
+      <TabPanel header='PERSONAL TRAINING'>
+        <BtnExportExcelFlujoCaja id_empresa={0} dataGastos={dataGasto} dataTipoCambio={dataTipoCambio} dataAporte={dataAportes} dataVentas={dataVentaxFecha} fechaInit={rangoFechas[0]}/>
+      </TabPanel>
+    </TabView>
     </>
   )
 }

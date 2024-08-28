@@ -15,8 +15,8 @@ const SidePanel = () => {
 	
 	return (
 		<>
-		<Card>
-			<Card.Body>
+		<Card style={{margin: '0', padding: '0'}}>
+			<Card.Body style={{margin: '0', padding: '0'}}>
 				<CardTitle
 					title="Your Calendar"
 				/>

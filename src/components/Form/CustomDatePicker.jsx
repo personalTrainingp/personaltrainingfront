@@ -1,9 +1,13 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import classNames from 'classnames';
-
+import 'dayjs/locale/es'; // Importa la localización en español
 import 'react-datepicker/dist/react-datepicker.min.css';
+// import dayjs, { locale } from 'dayjs';
+import { Calendar } from 'primereact/calendar';
+import { locale } from 'primereact/api';
 
+locale('es'); // Establece el idioma español en dayjs
 /* Datepicker with Input */
 const DatepickerInput = forwardRef((props, ref) => {
   const onDateValueChange = () => {
@@ -55,11 +59,14 @@ const CustomDatePicker = (props) => {
         value={props.value.toDateString()}
       />
     );
+    
+    const [date, setDate] = useState(null);
 
   return (
     <>
       {/* date picker control */}
-      <DatePicker
+      <Calendar style={{width: '100%', fontSize: '10px'}} value={date} onChange={(e) => setDate(e.value)} inline />
+      {/* <DatePicker
         locale="es-ES"
         customInput={input}
         timeIntervals={props.tI}
@@ -76,7 +83,7 @@ const CustomDatePicker = (props) => {
         showTimeSelectOnly={props.showTimeSelectOnly}
         inline={props.inline}
         autoComplete="off"
-      />
+      /> */}
     </>
   );
 };

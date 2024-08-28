@@ -51,10 +51,10 @@ const CalendarApp = () => {
 													<i className="mdi mdi-square leyenda-cancelada"></i> Cancelada
 												</p>
 												<p className="mb-0">
-													<i className="mdi mdi-square leyenda-asistio"></i> Asistio
+													<i className="mdi mdi-square leyenda-asistio"></i> Asistió
 												</p>
 												<p className="mb-0">
-													<i className="mdi mdi-square leyenda-no-asistio"></i> No asistio
+													<i className="mdi mdi-square leyenda-no-asistio"></i> No asistió
 												</p>
 												</div>
                                             </Card.Body>

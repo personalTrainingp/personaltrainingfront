@@ -561,7 +561,12 @@ export const useReporteStore = () => {
 	const obtener_ReporteVentasPorAsesor_Profile = async (id_empl, rangoDate) => {};
 	const obtenerReporteVentasDeProgramasPorSemanas = async (id_programa, rangoDate) => {
 		try {
-			const { data } = await PTApi.get('/reporte/reporte-programa-x-semanas');
+			const { data } = await PTApi.get('/reporte/reporte-programa-x-semanas', {
+				params: {
+					dateRanges: rangoDate,
+					id_programa: id_programa,
+				},
+			});
 			setventasxPrograma_ventasDeProgramasPorSemanas(data.data);
 		} catch (error) {
 			console.log(error);

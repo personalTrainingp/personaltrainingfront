@@ -8,7 +8,7 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
 	const pagos = tasks.map(producto => ({
         nombre_producto: producto.forma_pago,
         total_ventas: producto.monto
-    })) || []
+    })).sort((a, b) => b.total_ventas - a.total_ventas) || []
     
     const series = [
         {
@@ -60,22 +60,22 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
 					menuItems={false}
 				/>
                 <Chart options={options} series={series} type="bar" height={350} />
-				{(tasks || []).map((task, index) => {
+				{(pagos || []).map((task, index) => {
 					return (
 						<div
-							className={classNames({ 'mb-3': index < tasks.length - 1 })}
-							key={tasks.forma_pago}
+							className={classNames({ 'mb-3': index < pagos.length - 1 })}
+							key={task.nombre_producto}
 						>
 							<div className="d-flex align-items-center">
 								<div className="flex-grow-1 ms-2">
-									<h5 className="my-0 fw-semibold">{task.forma_pago}</h5>
+									<h5 className="my-0 fw-semibold">{task.nombre_producto}</h5>
 								</div>
 								{task.completedTask ? (
 									<h5 className="my-0">
 										{task.completedTask}
 									</h5>
 								) : (
-                                    <h5 className="my-0"><MoneyFormatter amount={task.monto} symbol={task.forma_pago=='DOLARES'?'$':'S/'}/> - {((task.monto / dataSumaTotal) * 100).toFixed(2)}%</h5>
+                                    <h5 className="my-0"><MoneyFormatter amount={task.total_ventas} symbol={task.total_ventas=='DOLARES'?'$':'S/'}/> - {((task.total_ventas / dataSumaTotal) * 100).toFixed(2)}%</h5>
 								)}
 							</div>
 						</div>
