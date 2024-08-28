@@ -203,7 +203,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{FormatoDateMask(rowData.fec_comprobante, 'dddd D [de] MMMM [de] YYYY') }</span>
+                <span>{FormatoDateMask(rowData.fec_pago, 'dddd D [de] MMMM [de] YYYY') }</span>
             </div>
         );
     }
@@ -212,7 +212,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{new Date(rowData.fec_pago).getFullYear()===1900? '': FormatoDateMask(rowData.fec_pago, 'dddd D [de] MMMM [de] YYYY')}</span>
+                <span>{new Date(rowData.fec_comprobante).getFullYear()===1900? '': FormatoDateMask(rowData.fec_comprobante, 'dddd D [de] MMMM [de] YYYY')}</span>
             </div>
         );
     }
