@@ -45,17 +45,17 @@ export const BtnExportExcelFlujoCaja = ({id_empresa, dataGastos, dataTipoCambio,
       fecha_venta: e.fecha_venta,
     };
   });
-  // dataGastos = dataGastos.map(eg=>{
-  //   const tipoCambio = dataTipoCambio.find(tc=> tc.fecha === eg.fec_pago&&eg.moneda==='USD')
-  //   if (tipoCambio) {
-  //     return {
-  //       ...eg,
-  //       moneda: 'PEN',
-  //       monto: eg.monto * parseFloat(tipoCambio.precio_venta)
-  //     }
-  //   }
-  //   return eg;
-  // })
+  dataGastos = dataGastos.map(eg=>{
+    const tipoCambio = dataTipoCambio.find(tc=> tc.fecha === eg.fec_pago&&eg.moneda==='USD')
+    if (tipoCambio) {
+      return {
+        ...eg,
+        moneda: 'PEN',
+        monto: eg.monto * parseFloat(tipoCambio.precio_venta)
+      }
+    }
+    return eg;
+  })
   dataTipoCambio = dataTipoCambio.map(tc=>{
     return {
       moneda: tc.moneda,
