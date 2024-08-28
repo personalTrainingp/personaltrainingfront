@@ -276,21 +276,6 @@ export const GestionProspectos = () => {
 				<Column field="tb_ProgramaTraining.name_pgm" header="PROGRAMA DE INTERES" sortable style={{ minWidth: '12rem' }}></Column>
 				<Column field="tb_empleado.nombres_apellidos_empl" header="Asesor comercial:" sortable style={{ minWidth: '12rem' }}></Column>
 				<Column header="" style={{ minWidth: '12rem' }} body={actionBodyTemplate}></Column>
-				{/* <Column field="name" header="Asesorado" sortable style={{ minWidth: '16rem' }}></Column>
-				<Column field="image" header="Programa" body={imageBodyTemplate}></Column>
-				<Column
-					field="price"
-					header="Fecha de registro"
-					body={priceBodyTemplate}
-					sortable
-					style={{ minWidth: '8rem' }}
-				></Column>
-				<Column
-					field="category"
-					header=""
-					style={{ minWidth: '10rem' }}
-				></Column> 
-				*/}
 			</DataTable>
             <ModalProspectos show={modalProspecto} onHide={cancelModal}/>
 			<ModalInfoProspecto show={viewProspecto} onHide={()=>setviewProspecto(false)} data={prospectoxID}/>

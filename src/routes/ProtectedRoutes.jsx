@@ -44,6 +44,7 @@ const AportesIngresos = lazy(()=>import('../pages/pagePT/GestAportesIngresos'))
 const Terminologias = lazy(()=>import('../pages/pagePT/Terminologias'))
 const ReporteEgresos = lazy(()=>import('../pages/pagePT/reportes/reporteEgresos'))
 const ReporteGerenciales = lazy(()=>import('../pages/pagePT/reportes/reporteGerenciales'))
+const ReporteFlujoCaja = lazy(()=>import('../pages/pagePT/reportes/reporteFlujoCaja'))
 // const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
 // const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
 // const PerfilPrograma = lazy(()=> import('../pages/pagePT/GestProgramas/PerfilPrograma'))
@@ -212,6 +213,10 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/reporte-admin/reporte-egresos') &&
 						<Route path='reporte-admin/reporte-egresos' element={<ReporteEgresos/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte-admin/flujo-caja') &&
+						<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/reporte-admin/reporte-gerencial') &&

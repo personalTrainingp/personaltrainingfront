@@ -11,11 +11,9 @@ export const BtnExportExcelFlujoCaja = ({id_empresa, dataGastos, dataTipoCambio,
   // const { obtenerVentasPorFecha } = useVentasStore()
   // const { obtenerAportesPorFechas } = useAportesIngresosStore()
   // const { obtenerGastosPorFecha } = useGf_GvStore()
-  console.log(dataTipoCambio);
 
-  
   dataGastos = dataGastos.filter(f=>f.tb_parametros_gasto?.id_empresa===id_empresa)
-  const prueba = dataGastos.filter(f=>f.tb_parametros_gasto?.id===686)
+  // const prueba = dataGastos.filter(f=>f.tb_parametros_gasto?.id===686)
   dataVentas = dataVentas.map(v=>{
     return {
       fecha_venta: v.fecha_venta,
@@ -47,7 +45,25 @@ export const BtnExportExcelFlujoCaja = ({id_empresa, dataGastos, dataTipoCambio,
       fecha_venta: e.fecha_venta,
     };
   });
-  console.log(prueba.map(e=>{return {fec_comprobante: e.fec_comprobante, id: e.id, desc: e.descripcion, monto: e.monto, prov: e.tb_Proveedor.razon_social_prov}}));
+  // dataGastos = dataGastos.map(eg=>{
+  //   const tipoCambio = dataTipoCambio.find(tc=> tc.fecha === eg.fec_pago&&eg.moneda==='USD')
+  //   if (tipoCambio) {
+  //     return {
+  //       ...eg,
+  //       moneda: 'PEN',
+  //       monto: eg.monto * parseFloat(tipoCambio.precio_venta)
+  //     }
+  //   }
+  //   return eg;
+  // })
+  dataTipoCambio = dataTipoCambio.map(tc=>{
+    return {
+      moneda: tc.moneda,
+      precio_venta: tc.precio_venta,
+      fecha: tc.fecha
+    }
+  })
+  // console.log(prueba.map(e=>{return {fec_comprobante: e.fec_comprobante, id: e.id, desc: e.descripcion, monto: e.monto, prov: e.tb_Proveedor.razon_social_prov}}));
   
 
 
@@ -162,8 +178,7 @@ export const BtnExportExcelFlujoCaja = ({id_empresa, dataGastos, dataTipoCambio,
     // Crear un nuevo libro de trabajo Excel
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Gastos filtrados');
-    const worksheetDolares = workbook.addWorksheet('Gastos filtrados por dolares');
-    const worksheetSoles = workbook.addWorksheet('Gastos filtrados por soles');
+    const worksheetTipoCambio = workbook.addWorksheet('Tipo de cambio');
   // Filtrar datos por moneda
   
   const dataGastos2 = agruparPorMesYGrupo(dataGastos).map((e) => {
@@ -208,8 +223,7 @@ export const BtnExportExcelFlujoCaja = ({id_empresa, dataGastos, dataTipoCambio,
   ];
 
   worksheet.columns = columns;
-  worksheetDolares.columns = columns;
-  worksheetSoles.columns = columns;
+  worksheetTipoCambio.columns = columns;
 
   function filtrarXmes(data, mes) {
     return agruparPorMesYMoneda(data).filter(f=>f.mes===mes)[0]?.monto[0].monto_total
@@ -467,15 +481,41 @@ export const BtnExportExcelFlujoCaja = ({id_empresa, dataGastos, dataTipoCambio,
     });
   };
 
+  const addDataToWorkSheetTipoCambio = (worksheet, data)=>{
+    //TODO: INGRESOS
+    worksheet.mergeCells('B4:O4');
+    worksheet.getCell('B4').value = `TIPO DE CAMBIO`;
+    worksheet.getCell('B4').alignment = { vertical: 'middle', horizontal: 'center' };
+    worksheet.getCell('B4').font = { size: 17, bold: true, color: { argb: 'FFFF0000' } };
+    // Agregar un valor a la celda combinada
+    data.forEach(r=>{
+      const rowEncabezado = worksheet.addRow(['MONEDA', 'FECHA', 'PRECIO DE VENTA' ]).eachCell((cell) => {
+        cell.fill = headerStyle.fill;
+        cell.font = headerStyle.font;
+        cell.alignment = headerStyle.alignment;
+        cell.border = headerStyle.border;
+      });
+      const row = worksheet.addRow([r.moneda, r.fecha, r.precio_venta 
+      ])
+      row.getCell(1).fill = yellowFillStyle.fill;
+      row.eachCell((cell) => {
+      cell.alignment = cellStyle.alignment;
+      cell.border = cellStyle.border;
+      });
+      worksheet.addRow();
+    })
+  }
+
   // Agregar datos a cada hoja de trabajo
   addDataToWorksheet(worksheet, dataGastos2);
+  addDataToWorkSheetTipoCambio(worksheetTipoCambio, dataTipoCambio)
 
     // Generar el archivo Excel en formato Blob
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
     // Guardar el archivo generado usando FileSaver.js (o similar)
-    saveAs(blob, 'example.xlsx');
+    saveAs(blob, 'Flujo de caja.xlsx');
   };
 
   return (
