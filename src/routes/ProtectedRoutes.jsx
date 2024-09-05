@@ -45,7 +45,7 @@ const Terminologias = lazy(()=>import('../pages/pagePT/Terminologias'))
 const ReporteEgresos = lazy(()=>import('../pages/pagePT/reportes/reporteEgresos'))
 const ReporteGerenciales = lazy(()=>import('../pages/pagePT/reportes/reporteGerenciales'))
 const ReporteMetas = lazy(()=>import('../pages/pagePT/reportes/reporteMetas'))
-const MarketingAgenda = lazy(()=>import('../pages/pagePT/GestionMkt'))
+const MarketingAgenda = lazy(()=>import('../pages/pagePT/GestMkt'))
 const HistorialCitasNutricionista = lazy(()=>import('../pages/pagePT/HistorialCitasNutricionista'))
 const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
 /**
