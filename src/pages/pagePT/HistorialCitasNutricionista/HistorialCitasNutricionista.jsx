@@ -88,7 +88,8 @@ export const HistorialCitasNutricionista = () => {
                         </div>
                         <div className='m-2'>
                             <label>Rango de fecha:</label>
-                            <Calendar placeholder='mm-dd-yyyy' value={rangeCita} onChange={(e) => setrangeCita(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection />
+                            <br/>
+                            <Calendar placeholder='mm-dd-yyyy' className='w-100' value={rangeCita} onChange={(e) => setrangeCita(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection />
 
                         </div>
     </Card>

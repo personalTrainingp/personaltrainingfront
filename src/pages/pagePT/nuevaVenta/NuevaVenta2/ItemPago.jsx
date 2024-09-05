@@ -6,10 +6,10 @@ import { Col, Row } from 'react-bootstrap'
 export const ItemPago = ({deletePay, id, formaPay, fechaPay, observacionPay, montoPay, id_forma_pago, id_tarjeta, id_tipo_tarjeta, id_banco}) => {
     
   return (
-            <ul className='d-flex justify-content-between align-items-center shadow p-1 border m-0' key={id}>
+            <ul className='d-flex justify-content-between align-items-center shadow p-1 border m-0 rounded rounded-3 my-1' key={id}>
                 
 				<li style={{float: 'left', width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '15px'}}>
-                <i className='mdi mdi-delete-forever-outline text-danger fs-3 ms-2' onClick={()=>deletePay()}></i>
+                    <i className='mdi mdi-delete-forever-outline text-danger fs-3 ms-2' onClick={()=>deletePay()}></i>
                     YAPE:
                 </li>
 				<li style={{float: 'left',  width: '40%', listStyle: 'none'}}>

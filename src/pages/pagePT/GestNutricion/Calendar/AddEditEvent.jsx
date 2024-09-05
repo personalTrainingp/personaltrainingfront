@@ -59,14 +59,14 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 			<div className='d-flex justify-content-between align-items-center'>
 				<Link to={'/historial-cliente/2bd62ed5-baa6-461c-b0b2-9b4dfd436124'} className='text-primary font-bold' style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Perfil del socio</Link>
 				<span>
-					<Button label="Salir" className='bg-success border-none m-1' icon="pi pi-times" onClick={cancelModal} />
+					<Button label="Salir" severity="info" outlined className='border border-2 border-success m-1 text-success' icon="pi pi-times" onClick={cancelModal} />
 					{
 						dataCita==null?
-						<Button label="Guardar"  icon="pi pi-check" className='bg-success border-none m-1' onClick={onSubmitEv} />
+						<Button label="Guardar"  icon="pi pi-check" className='bg-success border border-2 m-1' onClick={onSubmitEv} />
 						:
 						<>
-							<Button label="Eliminar" icon="pi pi-check" className='bg-primary border-none m-1' onClick={eliminarEvento} />
-							<Button label="Editar" icon="pi pi-check" className='bg-secondary border-none m-1' onClick={editarEvento} />
+							<Button label="Eliminar" icon="pi pi-check" className='bg-primary border border-2 m-1' onClick={eliminarEvento} />
+							<Button label="Editar" icon="pi pi-check" className='bg-secondary border border-2 m-1' onClick={editarEvento} />
 						</>
 					}
 				</span>
@@ -85,9 +85,21 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 					{/* {FormatoDateMask(new Date(selectDATE.start), "D [de] MMMM [del] YYYY [a las] h:mm A")} */}
 					</>
 					:
-					<> Editar cita: 
-						{new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
-					hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
+					<>
+						<span className='shadow shadow-3 border border-3 rounded rounded-4 p-2'>
+							Editar cita
+						</span>
+						<br/>
+						<br/>
+						<span className='font-17'>
+							De: miercoles 21 de agosto del 2024 a las 01:00 pm 
+						</span>
+						<br/>
+						<span className='font-17'>
+							Hasta: miercoles 21 de agosto del 2024 a las 01:20 pm
+						</span>
+						{/* {new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})} */}
+					{/* hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})} */}
 					</>}
 				modal
 				className="p-fluid"

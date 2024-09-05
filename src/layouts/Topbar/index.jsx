@@ -107,7 +107,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 						<i className="mdi mdi-menu" />
 					</button>
 					<strong>
-						Estas en el modulo de 
+						modulo 
 					</strong>
 						<ModuloDropdown/>
 					{/* <button

@@ -11,8 +11,7 @@ const dataProv = {
 
 export const ItemDayEvent = ({data, getEstado}) => {
   const { tb_cliente, status_cita, fecha_init, fecha_final } = data?data:dataProv;
-  console.log(data);
-  
+
   return (
           <Card className='rounded-5'>
               <div className="row row-striped">
@@ -28,7 +27,7 @@ export const ItemDayEvent = ({data, getEstado}) => {
                             <br/>
                   <li className="list-inline-item"><i className="fa fa-location-arrow" aria-hidden="true"></i><strong>Nutricionista:</strong> Nutria Nutella Garcia</li>
                   <li>
-                    <Button className='leyenda-asistio text-black shadow-none border-none m-1 rounded-5 font-12'>Asistió</Button>
+                    {/* <Button className='leyenda-asistio text-black shadow-none border-none m-1 rounded-5 font-12'>Asistió</Button> */}
                     <Button className='leyenda-no-asistio text-black shadow-none border-none m-1 rounded-5 font-12'>No asistió</Button>
                   </li>
                 </ul>

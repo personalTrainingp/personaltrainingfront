@@ -79,7 +79,7 @@ export const CardPago = ({venta, dataPagos}) => {
 			<ItemsPagos dataPagos={dataPagos}/>
         </Card.Header>
         <Card.Body>
-			<a onClick={onModalOpenPay} style={{cursor: 'pointer'}}>Agregar Pago</a>
+			<a className='text-primary underline' onClick={onModalOpenPay} style={{cursor: 'pointer'}}>Agregar Pago</a>
 			<ModalVentasPay show={modalPay} onHide={onModalClosePay}/>
         </Card.Body>
 		<Card.Footer>

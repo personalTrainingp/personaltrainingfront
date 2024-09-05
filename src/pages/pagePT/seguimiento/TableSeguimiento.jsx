@@ -176,6 +176,13 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
             </div>
         );
 	}
+	const SociosbodyTemplate = (rowData)=>{
+		return (
+            <div className="flex align-items-center font-bold gap-2">
+                <span>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</span>
+            </div>
+        );
+	}
 
 	// const dateFilterTemplate = (options) => {
 	// 	return (
@@ -209,7 +216,7 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 						body={<Skeleton/>}
 					/>
 					<Column
-						header="Programas / Semana"
+						header="Programa / Semanas"
 						sortable
 						body={<Skeleton/>}
 						style={{ minWidth: '14rem' }}
@@ -280,11 +287,12 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 						sortable
 						filter
 						filterPlaceholder="Search by name"
+						body={SociosbodyTemplate}
 						style={{ minWidth: '14rem' }}
 					/>
 					<Column
 						field="ProgramavsSemana"
-						header="Programas / Semana"
+						header="Programas / Semanas"
 						sortable
 						filterField="ProgramavsSemana"
 						style={{ minWidth: '14rem' }}

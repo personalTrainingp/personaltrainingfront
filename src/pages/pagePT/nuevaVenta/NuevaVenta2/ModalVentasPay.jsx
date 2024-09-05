@@ -84,7 +84,7 @@ export const ModalVentasPay = ({show, onHide}) => {
 				};
 			});
   return (
-    <Modal show={show} onHide={cancelModal} size='xl'>
+    <Modal show={show} onHide={cancelModal} size='xxl'>
         <Modal.Header>
             <Modal.Title>
                 Registrar Pago
@@ -92,21 +92,8 @@ export const ModalVentasPay = ({show, onHide}) => {
         </Modal.Header>
         <Modal.Body>
             <form onSubmit={submitFormaPago}>
-{/*                 
-                    <div className='mb-2'>
-                        <label>Fecha :</label>
-                        <input 
-                          type='date' 
-                          className='form-control'
-                          id='fecha_pago'
-                          name='fecha_pago'
-                          value={fecha_pago}
-                          onChange={onInputChange}
-                          required
-                          />
-                      </div> */}
                       <div className='mb-2'>
-                        <label>N operacion:</label>
+                        <label>N operacion*:</label>
                         <input 
                           type='text' 
                           className='form-control'
@@ -118,7 +105,7 @@ export const ModalVentasPay = ({show, onHide}) => {
                           />
                       </div>
                       <div className='mb-2'>
-                        <label>Forma de pago:</label>
+                        <label>Forma de pago*:</label>
                             <Select
                             onChange={(e) => onInputChangeReact(e, 'id_forma_pago')}
                             name={'id_forma_pago'}
@@ -133,7 +120,7 @@ export const ModalVentasPay = ({show, onHide}) => {
                        {(formaPagoSelect.value===52 || formaPagoSelect.value ===53) &&
                         <>
                         <div className='mb-2'>
-                            <label>Tipo de tarjetas:</label>
+                            <label>*Tipo de tarjetas:</label>
                                 <Select
                                 onChange={(e) => onInputChangeReact(e, 'id_tipo_tarjeta')}
                                 name={'id_tipo_tarjeta'}
@@ -193,7 +180,7 @@ export const ModalVentasPay = ({show, onHide}) => {
                           required
                           />
                       </div>
-                      <div className='mb-2'>
+                      {/* <div className='mb-2'>
                         <label>Observacion del pago:</label>
                         <textarea
                           className='form-control'
@@ -203,9 +190,9 @@ export const ModalVentasPay = ({show, onHide}) => {
                           onChange={onInputChange}
                           required
                           />
-                      </div>
-                <Button className='mt-4' type='submit'>Agregar pago</Button>
-                <a>Cancelar</a>
+                      </div> */}
+                <Button className='mx-2' type='submit'>Agregar pago</Button>
+                <a onClick={cancelModal} className='mx-2' style={{cursor: 'pointer', color: 'red'}}>Cancelar</a>
             </form>
         </Modal.Body>
     </Modal>
