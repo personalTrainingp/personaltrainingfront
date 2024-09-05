@@ -183,7 +183,7 @@ export const ModalExtensionCongelamiento = ({show, onHide, id_cli, dataUltimaMem
             </Row>
             <br/>
             <div><strong>Ultima membresia: </strong>{tb_ProgramaTraining?.name_pgm} | {tb_semana_training?.semanas_st} SEMANAS</div>
-            <div><strong>Fecha en la que termina su membresia: </strong><DateMask date={sumarDiasHabiles(fec_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [de] YYYY"}/></div>
+            <div><strong>Fecha en la que termina su membresia: </strong><DateMask date={sumarDiasHabiles(fec_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
         </form>
                 )
             }

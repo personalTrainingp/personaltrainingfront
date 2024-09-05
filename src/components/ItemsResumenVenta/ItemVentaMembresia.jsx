@@ -36,7 +36,7 @@ export const ItemVentaMembresia = ({e}) => {
 													Inicia:{' '}
 													{FormatoDateMask(
 														e.fec_inicio_mem,
-														'dddd D [de] MMMM [de] YYYY'
+														'dddd D [de] MMMM [del] YYYY'
 													)}{' '}
 													a las{' '}
 													<FormatoTimeMask
@@ -48,7 +48,7 @@ export const ItemVentaMembresia = ({e}) => {
 													Finaliza:{' '}
 													{FormatoDateMask(
 														e.fec_fin_mem,
-														'dddd D [de] MMMM [de] YYYY'
+														'dddd D [de] MMMM [del] YYYY'
 													)}
 												</span>
                             </td>

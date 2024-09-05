@@ -32,36 +32,10 @@ const CalendarApp = ({tipo_serv}) => {
 					<Card>
 						<Card.Body>
 							<Row>
-								<Col xl={3}>
+								<Col xl={4}>
 									<SidePanel />
-									{/* <div className="d-grid">
-										<Card>
-											<Card.Header>
-                                                <Card.Title as="h5">
-                                                    <i className="mdi mdi-calendar-clock me-2"></i>
-                                                    Leyenda
-                                                </Card.Title>
-                                            </Card.Header>
-                                            <Card.Body>
-												<div className="chart-widget-list">
-												<p>
-													<i className="mdi mdi-square leyenda-confirmada cuadrado"></i> Confirmada
-												</p>
-												<p>
-													<i className="mdi mdi-square leyenda-cancelada cuadrado"></i> Cancelada
-												</p>
-												<p className="mb-0">
-													<i className="mdi mdi-square leyenda-asistio cuadrado"></i> Asistio
-												</p>
-												<p className="mb-0">
-													<i className="mdi mdi-square leyenda-no-asistio cuadrado"></i> No asistio
-												</p>
-												</div>
-                                            </Card.Body>
-										</Card>
-									</div> */}
 								</Col>
-								<Col xl={9}>
+								<Col xl={8}>
 								
 								<div id="leyenda">
 										<div className='container-leyenda'>
@@ -71,7 +45,7 @@ const CalendarApp = ({tipo_serv}) => {
 											</div>
 											<div id="columna">
 												<div className="cuadrado leyenda-asistio cuadrado"></div>
-												<span id="titulo-ayuda-leyenda">Asistio</span>
+												<span id="titulo-ayuda-leyenda">Asistió</span>
 											</div>
 											<div id="columna">
 												<div className="cuadrado leyenda-cancelada"></div>
@@ -79,7 +53,7 @@ const CalendarApp = ({tipo_serv}) => {
 											</div>
 											<div id="columna">
 												<div className="cuadrado leyenda-no-asistio cuadrado"></div>
-												<span id="titulo-ayuda-leyenda">No asistio</span>
+												<span id="titulo-ayuda-leyenda">No asistió</span>
 											</div>
 										</div>
 									</div>

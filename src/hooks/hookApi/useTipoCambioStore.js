@@ -1,7 +1,10 @@
 import { PTApi } from '@/common';
+import { onSetDataView } from '@/store/data/dataSlice';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export const useTipoCambioStore = () => {
+	const dispatch = useDispatch();
 	const [tipocambio, settipocambio] = useState({});
 	const [dataTipoCambio, setdataTipoCambio] = useState([]);
 	// const registrarTipoCambio = async(formState)=>{
@@ -28,7 +31,16 @@ export const useTipoCambioStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerTipoCambioTabla = async () => {
+		try {
+			const { data } = await PTApi.get('/tipocambio/obtener-tipo-cambio');
+			dispatch(onSetDataView(data.tipoCambio));
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
+		obtenerTipoCambioTabla,
 		obtenerTipoCambioPorFecha,
 		obtenerTipoDeCambiosPorRangoDeFechas,
 		tipocambio,

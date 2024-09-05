@@ -1,4 +1,4 @@
-import { MoneyFormatter } from '@/components/CurrencyMask';
+import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import React, { useEffect } from 'react'
 import { Card, ProgressBar } from 'react-bootstrap'
 
@@ -15,7 +15,7 @@ export const SemanasxPrograma = ({data}) => {
 	// 	})
 	// })
 	
-	console.log(data);
+	// console.log(data);
 	// data = data.map(e=>{
 	// 	re
 	// })
@@ -44,7 +44,7 @@ export const SemanasxPrograma = ({data}) => {
 			<table className="table table-bordered table-centered mb-0">
 				<thead className="table-light">
 					<tr>
-						<th>SEMANAS</th>
+						<th className='text-primary font-bold font-20'>RANKING DE SEMANAS VENDIDAS</th>
 						<th>CANTIDAD</th>
 						<th>MONTO VENTA BRUTA</th>
 						<th>TICKET MEDIO</th>
@@ -54,21 +54,34 @@ export const SemanasxPrograma = ({data}) => {
 					{
 						data.map(e=>(
 							<tr>
-							<td>{e.semana} semanas</td>
+							<td className='text-primary font-bold font-20'>{e.semana} semanas</td>
 							<td>
 								<div className="progress-w-percent mb-0">
-									<span class="w-100 progress-value">{e.items.length} ({((e.items.length/sumaItemsLength)*100).toFixed(2)}%)</span>
+									<span className='d-flex justify-content-between'>
+										<span class="progress-value" style={{textAlign: 'right'}}>{e.items.length}</span>
+										<span class="w-50 progress-value">({((e.items.length/sumaItemsLength)*100).toFixed(2)}%)</span>
+									</span>
 									<ProgressBar animated now={(e.items.length/sumaItemsLength)*100} className="progress-sm" style={{backgroundColor: '#00000042', height: '15px', width: '100%'}} variant="orange" />
 								</div>
 							</td>
 							<td>
 								<div className="progress-w-percent mb-0">
-									<span class="w-100 progress-value"><MoneyFormatter amount={e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)}/> ({((e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)/sumaItemsTotal_monto)*100).toFixed(2)}%)</span>
+									<span class="w-50 progress-value">({((e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)/sumaItemsTotal_monto)*100).toFixed(2)}%)</span>
+									<div className='d-flex flex-row justify-content-center'>
+										<span>S/.</span>
+										<span class="w-50 progress-value text-right"><NumberFormatMoney amount={e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)}/></span>
+									</div>
 									<ProgressBar animated now={((e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)/sumaItemsTotal_monto)*100).toFixed(2)} className="progress-sm" style={{backgroundColor: '#00000042', height: '15px', width: '100%'}} variant="orange" />
 								</div>
 							</td>
 							<td>
-								<MoneyFormatter amount={(e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)/e.items.length)}/>
+								<div className='w-100 text-right' style={{width: '100% !important'}}>
+									<div className='d-flex flex-row justify-content-center'>
+											<span>S/.</span>
+											{/* <MoneyFormatter amount={(e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)/e.items.length)}/> */}
+											<span class="w-50 progress-value text-right"><NumberFormatMoney amount={(e.items.reduce((suma, item) => suma + item.tarifa_monto, 0)/e.items.length)}/></span>
+									</div>
+								</div>
 							</td>
 						</tr>
 						))

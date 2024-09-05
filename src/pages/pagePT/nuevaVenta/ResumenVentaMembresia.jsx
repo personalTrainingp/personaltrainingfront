@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { onDeleteAllPrograma } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useVentasStore } from '../../../hooks/hookApi/useVentasStore';
 import dayjs from 'dayjs';
+import config from '@/config';
 
 export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
 	console.log(dataVenta);
@@ -42,6 +43,8 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
 	const descargarPDFgenerado = () => {
 		obtenerPDFCONTRATOgenerado({ dataVenta });
 	};
+	console.log(dataVenta);
+	
 	return (
 		<div className="container">
 			<div className="row">
@@ -51,7 +54,9 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
 							<thead>
 								<tr>
 									<th scope="col" className="border-0 bg-light p-1">
-										<div className="p-0 px-3 text-uppercase">PROGRAMA</div>
+										<div className="p-0 px-3 text-uppercase">
+													<img src={`${config.API_IMG.LOGO}${dataVenta.url_image}`}/>
+										</div>
 									</th>
 									<th scope="col" className="border-0 bg-light p-1">
 										<div className="py-0 text-uppercase">PRECIO</div>
@@ -79,33 +84,30 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
 														href="#"
 														className="text-dark d-inline-block align-middle"
 													>
-														{dataVenta.name_pgm} - {dataVenta.semanas}{' '}
+														{dataVenta.semanas}{' '}
 														Semanas
 													</a>
 												</h5>
 												<span className="text-muted font-weight-normal font-italic d-block">
-													Inicia:{' '}
+													Hora de Inicio: {' '}
+													{dataVenta.time_h} {' '}
+												</span>
+												<span className="text-muted font-weight-normal font-italic d-block">
+													Hora de término: {' '}
+													{dayjs(dataVenta.time_h, 'hh:mm A').add(45, 'minute').format('hh:mm A')} 
+												</span>
+												<span className="text-muted font-weight-normal font-italic d-block">
+													Fecha de Inicio:{' '}
 													{FormatoDateMask(
 														dataVenta.fechaInicio_programa,
-														'dddd D [de] MMMM [de] YYYY'
+														'dddd D [de] MMMM [del] YYYY'
 													)}{' '}
 												</span>
 												<span className="text-muted font-weight-normal font-italic d-block">
-													Hora: {' '}
-													{/* <DateMask date={'06:00'} format={'hh:mm A'}/> */}
-													{dataVenta.time_h}
-													{
-														// FormatoDateMask(
-														// 	"06:00",
-														// 	'hh:mm A'
-														// )
-													}
-												</span>
-												<span className="text-muted font-weight-normal font-italic d-block">
-													Finaliza:{' '}
+													Fecha de termino:{' '}
 													{FormatoDateMask(
 														dataVenta.fechaFinal,
-														'dddd D [de] MMMM [de] YYYY'
+														'dddd D [de] MMMM [del] YYYY'
 													)}
 												</span>
 											</div>
@@ -151,9 +153,9 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
 		//                         {dataVenta.name_pgm} - {dataVenta.semanas} Semanas
 		//                     </Link>
 		//                 </h5>
-		//                 <span className="text-muted font-13">Inicia: {FormatoDateMask(dataVenta.fechaInicio_programa, 'D [de] MMMM [de] YYYY')} a las {dataVenta.time_h} </span>
+		//                 <span className="text-muted font-13">Inicia: {FormatoDateMask(dataVenta.fechaInicio_programa, 'D [de] MMMM [del] YYYY')} a las {dataVenta.time_h} </span>
 		//                 <br/>
-		//                 <span className="text-muted font-13">Finaliza: {FormatoDateMask(dataVenta.fechaFinal, 'D [de] MMMM [de] YYYY')} </span>
+		//                 <span className="text-muted font-13">Finaliza: {FormatoDateMask(dataVenta.fechaFinal, 'D [de] MMMM [del] YYYY')} </span>
 		//             </td>
 		//             <td onClick={testClick}>
 		//                 <span className="text-muted font-13">Tarifa: </span> <br />

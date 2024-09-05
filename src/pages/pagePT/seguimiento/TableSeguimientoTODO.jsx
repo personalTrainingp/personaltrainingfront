@@ -151,8 +151,8 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 	};
 	const dateBodyTemplate = (rowData) => {
 		// console.log(rowData); JSON.stringify(rowData.fecha_fin_new)
-		//dayjs(rowData.fecha_fin_new).format('D [de] MMMM [de] YYYY')
-		return 	<span>{FormatoDateMask(rowData.fec_fin_mem_new, 'dddd D [de] MMMM [de] YYYY') }</span>
+		//dayjs(rowData.fecha_fin_new).format('D [de] MMMM [del] YYYY')
+		return 	<span>{FormatoDateMask(rowData.fec_fin_mem_new, 'dddd D [de] MMMM [del] YYYY') }</span>
 	};
 	const statusBodyTemplate = (rowData) => {
         if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null){
@@ -180,6 +180,13 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
             }
         }
     }
+	const IdBodyTemplate = (rowData, { rowIndex })=>{
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{rowIndex + 1}</span>
+            </div>
+        );
+	}
 
 	// const dateFilterTemplate = (options) => {
 	// 	return (
@@ -270,6 +277,13 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 					emptyMessage="Sin clientes."
 					currentPageReportTemplate="Mostrando {first} to {last} of {totalRecords} entries"
 				>
+				<Column
+					// field="tb_ventum.tb_cliente.nombres_apellidos_cli"
+					header="Id"
+					body={IdBodyTemplate}
+					filterPlaceholder="Search by name"
+					style={{ minWidth: '2rem' }}
+				/>
 					<Column
 						field="tb_ventum.tb_cliente.nombres_apellidos_cli"
 						header="Socios"

@@ -129,10 +129,10 @@ export const GestMetas = () => {
 													Bono: <b>{ formatCurrency(e.bono)}</b>
 												</span>
 												<span className="pe-2 text-nowrap mb-2 d-inline-block">
-													Inicio: <b>{FormatoDateMask(e.fec_init, 'D [de] MMMM [de] YYYY')}</b>
+													Inicio: <b>{FormatoDateMask(e.fec_init, 'D [de] MMMM [del] YYYY')}</b>
 												</span>
 												<span className="pe-2 text-nowrap mb-2 d-inline-block">
-													Fin: <b>{FormatoDateMask(e.fec_final, 'D [de] MMMM [de] YYYY')}</b>
+													Fin: <b>{FormatoDateMask(e.fec_final, 'D [de] MMMM [del] YYYY')}</b>
 												</span>
 											</p>
 											{(

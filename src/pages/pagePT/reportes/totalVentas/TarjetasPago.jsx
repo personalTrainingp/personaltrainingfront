@@ -36,11 +36,19 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
               fontSize: '16px', // Cambia este valor para hacer los números más grandes
             },
 			formatter: function (val, opts) {
-				return formatCurrency(val)
+				return ''
 			},
           },
         xaxis: {
           categories: pagos.map(e=>e.nombre_producto),
+        },
+        yaxis:{
+          labels:{
+            style: {
+              fontSize: '15px', // Cambia este valor para hacer los números más grandes
+              fontWeight: 'bold',
+            },
+          }
         },
 		tooltip: {
 			y: {

@@ -58,10 +58,9 @@ export const ReporteGerenciales = () => {
           <Card>
             <CardBody>
               <h4>RESUMEN ACCESORIOS</h4>
-              <CardEstimado backgroundColor={'bg-primary'} title={'FONDO'} montoSoles={'S/2,125,943.00'}/>
               <CardEstimado backgroundColor={'bg-success'} title={'INGRESOS'} montoSoles={'S/2,125,943.00'}/>
               <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
-              <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-info'} title={'UTILIDADES'} montoSoles={'S/2,125,943.00'}/>
             </CardBody>
           </Card>
         </Col>
@@ -69,10 +68,9 @@ export const ReporteGerenciales = () => {
           <Card>
               <CardBody>
                 <h4>RESUMEN SUPLEMENTOS</h4>
-                <CardEstimado backgroundColor={'bg-primary'} title={'FONDO'} montoSoles={'S/2,125,943.00'}/>
                 <CardEstimado backgroundColor={'bg-success'} title={'INGRESOS'} montoSoles={'S/2,125,943.00'}/>
                 <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
-                <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
+                <CardEstimado backgroundColor={'bg-info'} title={'UTILIDADES'} montoSoles={'S/2,125,943.00'}/>
               </CardBody>
             </Card>
         </Col>
@@ -80,11 +78,14 @@ export const ReporteGerenciales = () => {
         <Card>
             <CardBody>
               <h4>RESUMEN TRATAMIENTOS ESTETICOS</h4>
-              <CardEstimado backgroundColor={'bg-primary'} title={'INGRESOS DIRECTOS'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-success'} title={'INGRESOS'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-danger'} title={'EGRESO'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-info'} title={'UTILIDADES'} montoSoles={'S/2,125,943.00'}/>
+              {/* <CardEstimado backgroundColor={'bg-primary'} title={'INGRESOS DIRECTOS'} montoSoles={'S/2,125,943.00'}/>
               <CardEstimado backgroundColor={'bg-success'} title={'INGRESOS TOTALES'} montoSoles={'S/2,125,943.00'}/>
               <CardEstimado backgroundColor={'bg-danger'} title={'EGRESOS DIRECTOS'} items={[{label: 'IGV', monto: '1234.00'}, {label: 'POS', monto: '1234.00'},{label: 'RENTA', monto: '1234.00'},{label: 'COMISIONES', monto: '1234.00'}]} montoSoles={'S/2,125,943.00'}/>
               <CardEstimado backgroundColor={'bg-danger'} title={'TOTAL GASTOS'} montoSoles={'S/2,125,943.00'}/>
-              <CardEstimado backgroundColor={'bg-info'} title={'UTILIDAD BRUTA'} montoSoles={'S/2,125,943.00'}/>
+              <CardEstimado backgroundColor={'bg-info'} title={'UTILIDAD BRUTA'} montoSoles={'S/2,125,943.00'}/> */}
             </CardBody>
           </Card>
         </Col>

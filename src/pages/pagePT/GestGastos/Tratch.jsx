@@ -194,7 +194,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const fecRegistroBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{ FormatoDateMask(rowData.fec_registro, 'dddd D [de] MMMM [de] YYYY [a las] h:mm A') }</span>
+                <span>{ FormatoDateMask(rowData.fec_registro, 'dddd D [de] MMMM [del] YYYY [a las] h:mm A') }</span>
             </div>
         );
     }
@@ -203,7 +203,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{FormatoDateMask(rowData.fec_pago, 'dddd D [de] MMMM [de] YYYY') }</span>
+                <span>{FormatoDateMask(rowData.fec_pago, 'dddd D [de] MMMM [del] YYYY') }</span>
             </div>
         );
     }
@@ -212,7 +212,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{new Date(rowData.fec_comprobante).getFullYear()===1900? '': FormatoDateMask(rowData.fec_comprobante, 'dddd D [de] MMMM [de] YYYY')}</span>
+                <span>{new Date(rowData.fec_comprobante).getFullYear()===1900? '': FormatoDateMask(rowData.fec_comprobante, 'dddd D [de] MMMM [del] YYYY')}</span>
             </div>
         );
     }
@@ -293,7 +293,8 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
                     <div>
                         <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
                     </div>
-                    <DataTable size='large' 
+                    <DataTable 
+                        size='small' 
                         value={customers} 
                         paginator 
                         header={header}

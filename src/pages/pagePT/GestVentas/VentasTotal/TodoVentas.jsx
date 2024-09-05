@@ -106,7 +106,7 @@ export const TodoVentas=()=> {
     
     return (
       <div className="flex align-items-center gap-2">
-          <span>{FormatoDateMask(rowData.fecha_venta, 'dddd D [de] MMMM [de] YYYY [a las] h:mm A')}</span>
+          <span>{FormatoDateMask(rowData.fecha_venta, 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}</span>
       </div>
     )
   }
@@ -133,7 +133,7 @@ const comprobanteBodyTemplate = (rowData)=>{
 
     return (
         <>
-          <DataTable value={customers} paginator rows={10} dataKey="id" filters={filters} filterDisplay="row" loading={loading}
+          <DataTable value={customers} paginator rows={10} dataKey="id" filters={filters} loading={loading}
                   globalFilterFields={[]} header={header} emptyMessage="No customers found.">
               <Column field="id" header="NUMERO DE OPERACION" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column field="fecha_venta" header="FECHA" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} body={fechaDeComprobanteBodyTemplate}/>

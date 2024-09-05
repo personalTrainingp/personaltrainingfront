@@ -12,7 +12,7 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
     
     const series = [
         {
-            name: 'TOTAL:',
+            name: 'TOTAL',
           data: pagos.map(e=>e.total_ventas),
         },
       ];
@@ -30,7 +30,7 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
         dataLabels: {
             enabled: true,
             style: {
-              fontSize: '16px', // Cambia este valor para hacer los números más grandes
+              fontSize: '20px', // Cambia este valor para hacer los números más grandes
             },
 			formatter: function (val, opts) {
 				return ''
@@ -39,6 +39,14 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
         xaxis: {
           categories: pagos.map(e=>e.nombre_producto),
         },
+		yaxis:{
+			labels:{
+				style: {
+				  fontSize: '15px',
+				  fontWeight: 'bold',
+				},
+			}
+		},
 		tooltip: {
 			y: {
 				formatter: function (val) {

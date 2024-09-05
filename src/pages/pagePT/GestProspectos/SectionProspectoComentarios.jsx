@@ -70,7 +70,7 @@ export const SectionProspectoComentarios = ({data}) => {
 								<div className="comment-box">
 									<div className="comment-head">
 										<h6 className="comment-name">{e.auth_user?.nombres_apellidos_user}</h6>
-										<span>{dayjs(e.fec_registro).locale('es').format('D [de] MMMM [de] YYYY [a las] h:mm A')}</span>
+										<span>{dayjs(e.fec_registro).locale('es').format('D [de] MMMM [del] YYYY [a las] h:mm A')}</span>
 										<div className='text-right'>
 											{e.auth_user.uid==user.uid && (
 												<>

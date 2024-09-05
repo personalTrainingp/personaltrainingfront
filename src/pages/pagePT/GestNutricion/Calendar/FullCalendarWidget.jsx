@@ -9,6 +9,7 @@ import { es } from 'date-fns/locale';
 import AddEditEvent from './AddEditEvent';
 import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
 import { FormatoTimeMask } from '@/components/CurrencyMask';
+import { Card } from 'react-bootstrap';
 dayjs.locale('es')
 const locales = {
   'es': es,
@@ -70,12 +71,14 @@ const eventStyleGetter = (event, start, end, isSelected) => {
 // );
 // Componente personalizado para mostrar solo el título de los eventos
 const CustomEvent = ({ event }) => {
+  console.log(dayjs(event.start).format('DD.MM.YYYY'));
+  
   return(
     <p className='m-0 p-1 text-overflow-ellipsis white-space-nowrap overflow-hidden'>{
       // FormatoTimeMask(new Date(event.start), 'hh:mm A')
       // `${new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`
     }
-    <FormatoTimeMask date={new Date(event.start)} format={'hh:mm A'}/>
+    <FormatoTimeMask date={new Date(event.start).toISOString()} format={'hh:mm A'}/>
       <br/>
       {event.title}
     </p>
@@ -165,43 +168,47 @@ const FullCalendarWidget = ({
       {/* full calendar control */}
       {!loading&&(
         <>
-          <div id="calendar">
-            <Calendar
-              localizer={localizer}
-              events={newData}
-              onDoubleClickEvent={onDoubleSelectEvent}
-              startAccessor="start"
-              endAccessor="end"
-              style={{ height: 700 }}
-              views={['week']}
-              eventPropGetter={eventStyleGetter}
-              defaultView="week"
-              components={{
-                event: CustomEvent,  // Utiliza el componente personalizado para mostrar solo el título del evento
-                // timeSlotWrapper 
-                timeSlotWrapper: TimeSlotWrapper,
-              }}
-              messages={{
-                next: "SEMANA Siguiente",
-                today: "Hoy",
-                previous: "SEMANA Anterior",
-                month: "Mes",
-                week: "Semana",
-                day: "Día",
-                agenda: "Agenda",
-                showMore: total => `+ Ver más (${total})`
-              }}
-              step={20}
-              timeslots={1}
-              min={new Date(2024, 0, 1, 6, 0, 0)} // Mostrar desde las 6:00 AM
-              max={new Date(2024, 0, 1, 21, 50, 0)} // Hasta las 11:59 PM
-              formats={formats}
-              onSelectSlot={handleSelectSlot}
-              
-              selectable
-            />
-          </div>
-          <AddEditEvent show={onModalAddEditEvent} tipo_serv={tipo_serv} onHide={onCloseModalAddEditEvent} dataCita={idCita==0?null:dataCitaxID} selectDATE={selectDATE}/>
+        <Card>
+          <Card.Body>
+            <div id="calendar">
+              <Calendar
+                localizer={localizer}
+                events={newData}
+                onDoubleClickEvent={onDoubleSelectEvent}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: 700 }}
+                views={['week']}
+                eventPropGetter={eventStyleGetter}
+                defaultView="week"
+                components={{
+                  event: CustomEvent,  // Utiliza el componente personalizado para mostrar solo el título del evento
+                  // timeSlotWrapper 
+                  timeSlotWrapper: TimeSlotWrapper,
+                }}
+                messages={{
+                  next: "SEMANA Siguiente",
+                  today: "Hoy",
+                  previous: "SEMANA Anterior",
+                  month: "Mes",
+                  week: "Semana",
+                  day: "Día",
+                  agenda: "Agenda",
+                  showMore: total => `+ Ver más (${total})`
+                }}
+                step={20}
+                timeslots={1}
+                min={new Date(2024, 0, 1, 6, 0, 0)} // Mostrar desde las 6:00 AM
+                max={new Date(2024, 0, 1, 21, 50, 0)} // Hasta las 11:59 PM
+                formats={formats}
+                onSelectSlot={handleSelectSlot}
+                
+                selectable
+              />
+            </div>
+            <AddEditEvent show={onModalAddEditEvent} tipo_serv={tipo_serv} onHide={onCloseModalAddEditEvent} dataCita={idCita==0?null:dataCitaxID} selectDATE={selectDATE}/>
+          </Card.Body>
+        </Card>
         </>
       )
       }

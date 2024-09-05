@@ -101,7 +101,7 @@ export function Auditoria() {
     }
     const fechaBodyTemplate = (rowData)=>{
         let date = dayjs.utc(rowData.fecha_audit)
-      return FormatoDateMask(new Date(date.format()), 'D [de] MMMM [de] YYYY [a las] h:mm A')
+      return FormatoDateMask(new Date(date.format()), 'D [de] MMMM [del] YYYY [a las] h:mm A')
     }
 
     const header = renderHeader();

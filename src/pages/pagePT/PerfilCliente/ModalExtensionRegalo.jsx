@@ -95,7 +95,7 @@ export const ModalExtensionRegalo = ({show, onHide, id_cli, dataUltimaMembresia}
                             </Row>
                             <br/>
                             <div><strong>ULTIMA MEMBRESIA: </strong>{tb_ProgramaTraining?.name_pgm} | {tb_semana_training?.semanas_st} SEMANAS</div>
-                            <div><strong>FECHA EN LA QUE SE TERMINA SU MEMBRESIA: </strong><DateMask date={sumarDiasHabiles(fec_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [de] YYYY"}/></div>
+                            <div><strong>FECHA EN LA QUE SE TERMINA SU MEMBRESIA: </strong><DateMask date={sumarDiasHabiles(fec_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
                         </form>
                     </>
                 ):(

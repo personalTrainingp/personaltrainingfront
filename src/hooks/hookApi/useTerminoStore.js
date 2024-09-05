@@ -7,9 +7,9 @@ import { getProgramaSPT } from '@/store/ventaProgramaPT/programaPTSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTipoCambioStore } from './useTipoCambioStore';
-import dayjs from 'dayjs';
+import dayjs, { locale } from 'dayjs';
 import { DateMaskString, FormatoDateMask } from '@/components/CurrencyMask';
-
+locale('es');
 function ordenarPorIdPgm(data) {
 	const orden = [2, 4, 3];
 	console.log(data);
@@ -74,7 +74,7 @@ export const useTerminoStore = () => {
 
 			// console.log(data);
 
-			setdataFormaPagoActivo(data);
+			// setdataFormaPagoActivo(data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -248,15 +248,28 @@ export const useTerminoStore = () => {
 	const obtenerHorariosPorPrograma = async (id_pgm) => {
 		try {
 			let { data } = await PTApi.get(`/parametros/get_params/horario_PGM/${id_pgm}`);
+
 			data = data
 				.map((d) => {
 					return {
 						...d,
-						horario: d.horario.trim(),
+						H: dayjs(d.horario.split('.000Z')[0]).locale('es').format('hh:mm A'),
+						// horario: dayjs(d.horario.split('ZT')[1]).locale('es').format('hh:mm'),
 						// label: dayjs(d.horario.trim()).format('LT'),
 					};
 				})
-				.sort((a, b) => a.horario.localeCompare(b.horario));
+				.sort((a, b) => a.horario.localeCompare(b.horario))
+				.map((r) => {
+					return {
+						...r,
+						horario: r.H,
+						//2024-01-01T08:00:00
+						// R: r.horario.split('.000Z')[0],
+						// H: dayjs(r.horario.split('.000Z')[0]).locale('es').format('hh:mm A'),
+						label: `HORA DE INICIO: ${r.H} | aforo: ${r.aforo}`,
+					};
+				});
+			console.log(data);
 			setDataHorarioPGM(data);
 		} catch (error) {
 			console.log(error);

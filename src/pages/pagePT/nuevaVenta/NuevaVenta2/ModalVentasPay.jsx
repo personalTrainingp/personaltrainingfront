@@ -125,8 +125,8 @@ export const ModalVentasPay = ({show, onHide}) => {
                             placeholder={'Seleccionar la forma de pago'}
                             className="react-select"
                             classNamePrefix="react-select"
-                            options={dataFormaPagoActivo_CONDOLARES}
-                            value={dataFormaPagoActivo_CONDOLARES.find(e=>e.value===id_forma_pago) || 0}
+                            options={arrayFormaPagoTest}
+                            value={arrayFormaPagoTest.find(e=>e.value===id_forma_pago) || 0}
                             required
                             />
                       </div>

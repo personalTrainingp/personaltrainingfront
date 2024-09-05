@@ -212,7 +212,7 @@ export const GestionProspectos = () => {
 		);
 	};
     const fechaRegistroBodyTemplate = (rowData)=>{
-        return FormatoDateMask(rowData.fecha_registro, "dddd D [de] MMMM [de] YYYY [a las] h:mm A")
+        return FormatoDateMask(rowData.fecha_registro, "dddd D [de] MMMM [del] YYYY [a las] h:mm A")
     }
 
 	const getSeverity = (product) => {

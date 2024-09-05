@@ -61,7 +61,7 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                     </li>
                     <li className='mb-4'>
                         <span>Fecha en la que realizo la venta:</span>
-                        <span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>{FormatoDateMask(dataVentaxID[0]?.fecha_venta, 'D [de] MMMM [de] YYYY')}</span>
+                        <span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>{FormatoDateMask(dataVentaxID[0]?.fecha_venta, 'D [de] MMMM [del] YYYY')}</span>
                     </li>
                     <li className='mb-4'>
                         <span>Observacion:</span>
@@ -231,7 +231,7 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                                         <br/>
                                         <small>
                                             FECHA DE PAGO: 
-                                            <span className="fw-bold"> {DateMask({date: e.fecha_pago, format: 'D [de] MMMM [de] YYYY [a las] h:mm A'})}</span>
+                                            <span className="fw-bold"> {DateMask({date: e.fecha_pago, format: 'D [de] MMMM [del] YYYY [a las] h:mm A'})}</span>
                                         </small>
                                         <br/>
                                         <small>

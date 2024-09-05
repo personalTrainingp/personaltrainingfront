@@ -65,7 +65,7 @@ const CustomDatePicker = (props) => {
   return (
     <>
       {/* date picker control */}
-      <Calendar style={{width: '100%', fontSize: '10px'}} value={date} onChange={(e) => setDate(e.value)} inline />
+      <Calendar locale='es' style={{width: '100%', fontSize: '50px'}} value={date} onChange={(e) => setDate(e.value)} inline />
       {/* <DatePicker
         locale="es-ES"
         customInput={input}

@@ -16,13 +16,37 @@ export const CurrencyMask = (e) => {
 }
 export const MoneyFormatter = ({ amount, symbol }) => {
   const formattedAmount = accounting.formatMoney(amount, {
-    symbol: symbol?symbol:'S/',  // Símbolo de la moneda
+    symbol: symbol?symbol:'S/. ',  // Símbolo de la moneda
     precision: 2, // Precisión de decimales
     thousand: ',', // Separador de miles
     decimal: '.',  // Separador decimal
     format: '%s%v' // "%s" es el símbolo de la moneda y "%v" es el valor numérico
   });
+  
   return formattedAmount
+}
+export const NumberFormatMoney = ({ amount }) => {
+  const formattedAmount = accounting.formatMoney(amount, {
+    symbol: '',  // Símbolo de la moneda
+    precision: 2, // Precisión de decimales
+    thousand: ',', // Separador de miles
+    decimal: '.',  // Separador decimal
+    format: '%s%v' // "%s" es el símbolo de la moneda y "%v" es el valor numérico
+  });
+  
+  return formattedAmount
+}
+export const NumberFormatter = ({ amount }) => {
+  const formattedAmount = accounting.formatMoney(amount, {
+    symbol: '',  // Símbolo de la moneda
+    precision: 2, // Precisión de decimales
+    thousand: ',', // Separador de miles
+    decimal: '.',  // Separador decimal
+    format: '%s%v' // "%s" es el símbolo de la moneda y "%v" es el valor numérico
+  });
+  // console.log(formattedAmount.split('.')[0]);
+  
+  return formattedAmount.split('.')[0]
 }
 export const FUNMoneyFormatter = (amount, moneda) => {
   const formattedAmount = accounting.formatMoney(amount, {
@@ -40,11 +64,11 @@ export const formateo_Moneda = (current)=>{
 
 
 export const DateMask = ({date, format}) => {
-  //'D [de] MMMM [de] YYYY'
+  //'D [de] MMMM [del] YYYY'
   return dayjs(date).locale('es').format(format)
 }
 export const DateMaskString = (date, format) => {
-  //'D [de] MMMM [de] YYYY'
+  //'D [de] MMMM [del] YYYY'
   return dayjs(date).locale('es').format(format)
 }
 

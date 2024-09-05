@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { CardTitle } from '@/components';
 import { parsePath } from 'react-router-dom';
 import config from '@/config';
+import { NumberFormatter } from '@/components/CurrencyMask';
 
 export const StatisticSeguimiento = ({statisticsData, data}) => {
     
@@ -14,7 +15,7 @@ export const StatisticSeguimiento = ({statisticsData, data}) => {
             return (
                 <Col lg={4} sm={6} key={n_clientes}>
                     <Card className='rounded-4'>
-                        <Card.Body className='p-0'>
+                        <Card.Body className='p-0 pe-3'>
                             <CardTitle
                                 title={
                                     <Row>
@@ -24,8 +25,8 @@ export const StatisticSeguimiento = ({statisticsData, data}) => {
                                             </div>
                                         </Col>
                                         <Col>
-                                            <h5 className="mt-0 mb-1 fs-4">{n_clientes} SOCIOS</h5> 
-                                            <p className="mb-0 fs-3">{((n_clientes/porcent_clientes)*100).toFixed(2)}%</p>
+                                                <p className="mt-0 mb-1 font-24 font-bold text-end"><NumberFormatter amount={n_clientes}/> </p> 
+                                                <p className="mb-0 font-24 text-end">{((n_clientes/porcent_clientes)*100).toFixed(2)}%</p>
                                         </Col>
                                     </Row>
                                 }

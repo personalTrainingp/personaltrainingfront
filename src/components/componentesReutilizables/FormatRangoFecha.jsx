@@ -5,11 +5,11 @@ export const FormatRangoFecha = ({rangoFechas}) => {
   return (
     <span className='m-2 font-24'>
         <strong>
-          {rangoFechas[0]&&FormatoDateMask(rangoFechas[0], "dddd D [de] MMMM [de] YYYY ")} 
+          {rangoFechas[0]&&FormatoDateMask(rangoFechas[0], "dddd D [de] MMMM [del] YYYY ")} 
         </strong>
           -
         <strong>
-          {rangoFechas[1]&&FormatoDateMask(rangoFechas[1], " dddd D [de] MMMM [de] YYYY ")}
+          {rangoFechas[1]&&FormatoDateMask(rangoFechas[1], " dddd D [de] MMMM [del] YYYY ")}
         </strong>
       </span>
   )

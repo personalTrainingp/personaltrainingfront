@@ -44,6 +44,10 @@ const AportesIngresos = lazy(()=>import('../pages/pagePT/GestAportesIngresos'))
 const Terminologias = lazy(()=>import('../pages/pagePT/Terminologias'))
 const ReporteEgresos = lazy(()=>import('../pages/pagePT/reportes/reporteEgresos'))
 const ReporteGerenciales = lazy(()=>import('../pages/pagePT/reportes/reporteGerenciales'))
+const ReporteMetas = lazy(()=>import('../pages/pagePT/reportes/reporteMetas'))
+const MarketingAgenda = lazy(()=>import('../pages/pagePT/GestionMkt'))
+const HistorialCitasNutricionista = lazy(()=>import('../pages/pagePT/HistorialCitasNutricionista'))
+const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
 // const ReporteFlujoCaja   = lazy(()=>import('../pages/pagePT/reportes/reporteFlujoCaja'))
 // const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
 // const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
@@ -188,6 +192,10 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/reporte') && 
+						<Route path='reporte/reporte-metas' element={<ReporteMetas/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte') && 
 						<Route path='reporte/total-ventas' element={<ReporteTotalVentas/>}/>
 					}
 					{
@@ -214,14 +222,26 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/reporte-admin/reporte-egresos') &&
 						<Route path='reporte-admin/reporte-egresos' element={<ReporteEgresos/>}/>
 					}
-					{/* {
-						sections.find(e=>e.url==='/reporte-admin/flujo-caja') &&
-						<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja/>}/>
-					} */}
+					{
+						sections.find(e=>e.url==='/trabajo-marketing') &&
+						<Route path='trabajo-marketing' element={<MarketingAgenda/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/reporte-admin/reporte-gerencial') &&
 						<Route path='reporte-admin/reporte-gerencial' element={<ReporteGerenciales/>}/>
 					}
+					{
+						sections.find(e=>e.url==='/history-citas-nutricion') &&
+						<Route path='history-citas-nutricion' element={<HistorialCitasNutricionista/>}/>
+					}
+					{
+						
+						sections.find(e=>e.url==='/tipo-cambio') &&
+						<Route path='tipo-cambio' element={<GestionTipoCambio/>}/>
+					}
+
+
+					
 
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>

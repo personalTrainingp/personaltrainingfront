@@ -205,20 +205,16 @@ export const ResumenUtilidadesProgramas = ({ data }) => {
                                                         <div class="card-body pt-0">
                                                             <ul class="list-group">
                                                                 <li class="p-2 d-flex justify-content-between align-items-center">
-                                                                    RPM 50 XTREME
+                                                                    CHANGE 45
                                                                     <span class="rounded-pill fw-bolder">113,234.00</span>
                                                                 </li>
                                                                 <li class="p-2 d-flex justify-content-between align-items-center">
-                                                                    FUSION SAVAGE
+                                                                    FS 45
                                                                     <span class="rounded-pill fw-bolder">37,617.00</span>
                                                                 </li>
                                                                 <li class="p-2 d-flex justify-content-between align-items-center">
-                                                                    MUSCLE SOLID
+                                                                    MS 45
                                                                     <span class="rounded-pill fw-bolder">31,028.00</span>
-                                                                </li>
-                                                                <li class="p-2 d-flex justify-content-between align-items-center">
-                                                                    CHANGE YOUR LIFE
-                                                                    <span class="rounded-pill fw-bolder">18,154.00</span>
                                                                 </li>
                                                             </ul>
                                                         </div>

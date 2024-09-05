@@ -12,7 +12,7 @@ export const VentaxSemana = () => {
                                                     <table className="table table-bordered table-centered mb-0">
                                                         <thead className="table-light">
                                                             <tr>
-                                                                <th>SEMANAS</th>
+                                                                <th>RANKING DE SEMANAS</th>
                                                                 <th>CANTIDAD</th>
                                                                 <th>MONTO VENTA BRUTA</th>
                                                                 <th>TICKET MEDIO</th>

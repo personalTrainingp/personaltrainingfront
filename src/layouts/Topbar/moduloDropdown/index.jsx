@@ -109,7 +109,7 @@ const ModuloDropdown = () => {
 				onClick={toggleDropdown}
 				className="nav-link dropdown-toggle arrow-none"
 			>
-				<span className="align-middle d-sm-inline-block">
+				<span className="align-middle d-sm-inline-block text-primary font-bold font-24">
 					{modulos[0]?.name}
 				</span>
 				<i className="mdi mdi-chevron-down d-sm-inline-block align-middle"></i>

@@ -92,18 +92,21 @@ export const ModalPrograma = ({show, hide}) => {
     const { value: id_st, semanas, nutric, cong, label:label_dataSemana } = dataSemana;
     const { value: id_tt, label:label_tarifa, tarifa } = dataTarifa;
     const { value: id_horarioPgm, label:label_dataHorario, aforo: aforo_h, horario: time_h } = dataHorario;
-    const { id_pgm, name_pgm } = dataPrograma;
+    const { id_pgm, name_pgm, tb_image } = dataPrograma;
+    
     // const { } = dataHorario;
     dispatch(onSetDetallePrograma({
       id_st, semanas, nutric, cong, label_dataSemana,
       id_tt, tarifa, label_tarifa,
       id_horarioPgm, label_dataHorario, time_h,
       id_pgm, name_pgm,
+      url_image: tb_image.name_image,
       fechaInicio_programa, 
       fechaFinal
     }))
     onModalClose()
   }
+  
   const onModalClose=()=>{
     onResetForm()
     hide()
@@ -113,7 +116,6 @@ export const ModalPrograma = ({show, hide}) => {
     onInputChangeFunction(o.target.name, e.id_pgm)
   }
 
-  console.log(dataHorario);
   
   // console.log(fechaInicio_programa);
   return (
@@ -124,10 +126,9 @@ export const ModalPrograma = ({show, hide}) => {
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <Col xxl={5}>
+            <Col xxl={6}>
               <div>
                 <Row className='container-imgs d-flex justify-content-around'>
-                  <label>Seleccione un programa:</label>
                   {
                     datapgmPT.map(e=>{
                       if(!e.estado_pgm){
@@ -135,7 +136,7 @@ export const ModalPrograma = ({show, hide}) => {
                       }
                       
                       return(
-                      <Col className={`content-img`} xl={3} lg={4} sm={3} xs={6} style={{cursor: 'pointer'}} key={e.id_pgm}>
+                      <Col className={`content-img`} style={{cursor: 'pointer'}} key={e.id_pgm}>
                         <label>
                         <img className={`hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} src={`${config.API_IMG.LOGO}${e.tb_image?.name_image}`}/>
                           <input
@@ -232,7 +233,7 @@ export const ModalPrograma = ({show, hide}) => {
                   </form>
               </div>
             </Col>
-            <Col lg={7}>
+            <Col lg={6}>
                 {dataPrograma && (
                   <Row>
                     <Col>
@@ -293,10 +294,10 @@ export const ModalPrograma = ({show, hide}) => {
                 {fechaInicio_programa && dataSemana && (
                   <Row>
                     <Col lg={12}>
-                      <span>Inicia: {FormatoDateMask(fechaInicio_programa, 'dddd D [de] MMMM [de] YYYY')}</span>
+                      <span>Inicia: {FormatoDateMask(fechaInicio_programa, 'dddd D [de] MMMM [del] YYYY')}</span>
                     </Col>
                     <Col lg={12}>
-                      <span>Finaliza: {FormatoDateMask(sumarSemanas(fechaInicio_programa, dataSemana.semanas), 'dddd D [de] MMMM [de] YYYY')}</span>
+                      <span>Finaliza: {FormatoDateMask(sumarSemanas(fechaInicio_programa, dataSemana.semanas), 'dddd D [de] MMMM [del] YYYY')}</span>
                     </Col>
                   </Row>
                 )

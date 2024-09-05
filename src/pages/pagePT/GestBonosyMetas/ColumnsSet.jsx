@@ -94,7 +94,7 @@ const columns = [
     accessor: 'fec_inicio',
     defaultCanSort: true,
     Cell:({row})=>{
-      return FormatoDateMask(row.original.fec_inicio, 'D [de] MMMM [de] YYYY')
+      return FormatoDateMask(row.original.fec_inicio, 'D [de] MMMM [del] YYYY')
     }
   },
   {
@@ -102,7 +102,7 @@ const columns = [
     accessor: 'fec_fin',
     defaultCanSort: true,
     Cell:({row})=>{
-      return FormatoDateMask(row.original.fec_fin, 'D [de] MMMM [de] YYYY')
+      return FormatoDateMask(row.original.fec_fin, 'D [de] MMMM [del] YYYY')
     }
   },
   {

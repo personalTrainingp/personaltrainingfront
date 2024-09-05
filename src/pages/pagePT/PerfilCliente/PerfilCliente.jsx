@@ -18,6 +18,7 @@ import { ReportesxCliente } from './ReportesxCliente';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import Swal from 'sweetalert2';
+import { ScreenNutricionista } from './ScreenNutricionista';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
@@ -127,9 +128,10 @@ export const PerfilCliente = () => {
               <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
             </ScrollPanel>
             </TabPanel>
-            <TabPanel header='DIETAS'>
+            <TabPanel header='NUTRICIONISTA'>
             <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
-              <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
+              {/* <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/> */}
+              <ScreenNutricionista/>
             </ScrollPanel>
             </TabPanel>
           </TabView>

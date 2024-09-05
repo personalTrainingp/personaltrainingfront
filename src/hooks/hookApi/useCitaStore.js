@@ -9,7 +9,7 @@ export const useCitaStore = () => {
 	const { data } = useSelector((e) => e.calendar);
 	const dispatch = useDispatch();
 	const [dataCitaxID, setdataCitaxID] = useState({});
-	const [loading, setloading] = useState(false);
+	const [loading, setloading] = useState(true);
 
 	const obtenerCitasxSERVICIO = async (tipo_serv) => {
 		try {

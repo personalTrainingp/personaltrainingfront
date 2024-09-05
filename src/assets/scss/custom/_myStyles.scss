@@ -3,13 +3,22 @@
   font-family: Poppins, sans-serif;
   // font-size: 20% !important;
 }
+.currency {
+  width: 2.5rem; /* Adjust the width to align as needed */
+  text-align: right;
+}
+
+.amount {
+  text-align: left;
+  padding-left: 0.5rem;
+}
 .p-button{
   // background-color: #D41115 !important;
   background: #D41115;
     border: 1px solid #D41115;
 }
 td{
-  font-size: 20px !important;
+  // font-size: 20px !important;
 }
 .p-button:focus{
   // background-color: #D41115 !important;
@@ -39,9 +48,10 @@ td{
 }
 .hover-card-border{
     border: 5px solid transparent;
-    width: 150px;
+    width: 100%;
+    margin: 10px;
     // background-color: red;
-    height: 80px;
+    // height: 80px;
   // border-radius: 100%;
     // padding: 50%;
 }
@@ -50,8 +60,8 @@ td{
     // box-shadow: #000 4;
     // transition: box-shadow 0.3s ease;
     // padding: 50%;
-    width: 150px;
-    height: 80px;
+    width: 100%;
+    margin: 10px;
       box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
   -webkit-box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
   -moz-box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
@@ -142,7 +152,10 @@ td{
 .font-50{
     font-size: 40px;
 }
-
+.p-datascroller-content{
+  background-color: #00000000;
+  overflow-x: hidden !important;
+}
 .rbc-day-slot .rbc-events-container{
     margin-right: 0px !important;
 }
@@ -169,28 +182,73 @@ td{
 // .rbc-event, .rbc-day-slot .rbc-background-event{
 //     border-radius: 0 !important;
 // }
+/* Personalizar el fondo y color del texto de la cabecera */
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: $primary;
+  color: white;
+}
+
+/* Personalizar íconos de ordenación */
+.p-datatable .p-datatable-thead > tr > th .p-sortable-column-icon {
+  color: white; /* Cambia el color del ícono de ordenación */
+}
+
+/* Personalizar íconos de filtrado */
+.p-datatable .p-datatable-thead > tr > th .p-column-filter, .p-column-filter-menu-button {
+  color: white; /* Cambia el color del ícono de filtrado */
+}
+
+
+.btn{
+  border-radius: 5px !important;
+}
+th:first-child {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+th:last-child {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+
+.text-graphic-container{
+  text-align: left;
+}
 .leyenda-reprogramada{
     background-color: blue !important;
 }
 .leyenda-confirmada{
-    background-color: #76e97e !important;
-    border-left: #27CA37 7px solid !important;
     // color: #000 !important;
-}
-.leyenda-confirmada:hover{
-  background-color: #48e057 !important;
+    background-color: rgb(153, 204, 248) !important;
+    border-left: rgb(33, 105, 168) 7px solid !important;
 }
 .leyenda-cancelada{
   background-color: rgb(232, 240, 156) !important;
   border-left: rgb(125, 134, 0) 7px solid !important;
 }
 .leyenda-asistio{
-    background-color: rgb(153, 204, 248) !important;
-    border-left: rgb(33, 105, 168) 7px solid !important;
+  background-color: #76e97e !important;
+  border-left: #27CA37 7px solid !important;
 }
 .leyenda-no-asistio{
   background-color: #fc8b8b !important;
   border-left: #bb4720 7px solid !important;
+}
+.color-confirmada{
+  color: rgb(33, 105, 168) !important;
+}
+.color-cancelada{
+  color: rgb(164, 175, 22) !important;
+}
+.color-asistio{
+  color: #27CA37 !important;
+}
+.color-no-asistio{
+  color: #bb4720 !important;
+}
+.p-datepicker table td {
+  padding: 0 !important;
 }
 .cuadrado {
   width: 36px;

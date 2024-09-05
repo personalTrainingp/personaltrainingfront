@@ -12,6 +12,8 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore'
 import { Statistics2 } from './Statistics2'
 import { SemanasxPrograma } from './SemanasxPrograma'
+import { ContratosMembresia } from './ContratosMembresia'
+import { useReporteVentaxProgramaStore } from '@/hooks/hookApi/Reportes/useReporteVentaxProgramaStore'
 const rangoFechas = {
   rangoDate:[new Date(new Date().getFullYear(), 0, 1), new Date()],
   id_programa: 0
@@ -23,9 +25,10 @@ export const VentasPrograma = () => {
           obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO, programa_comparativa_mejoranio,
           obtenerReporteVentasPrograma_EstadoCliente, programa_estado_cliente,
           obtenerReporteVentasAcumuladas_y_Tickets, ventasxPrograma_ventasAcumuladasTickets,
-          obtenerReporteVentasDeProgramasPorSemanas, ventasxPrograma_ventasDeProgramasPorSemanas
+          obtenerReporteVentasDeProgramasPorSemanas, ventasxPrograma_ventasDeProgramasPorSemanas, 
           // obtenerReporteVentasPorProgramas_x_ClientesFrecuentes, ventasxPrograma_clientesFrecuentes
          } = useReporteStore()
+  const { obtenerMembresiasxFechaxPrograma, membresiasxFechaxPrograma } = useReporteVentaxProgramaStore()
   useEffect(() => {
     obtenerProgramasActivos()
   }, [])
@@ -37,6 +40,7 @@ export const VentasPrograma = () => {
     obtenerReporteVentasAcumuladas_y_Tickets(id_programa, rangoDate)
     obtenerReporteVentasPrograma_EstadoCliente(id_programa, rangoDate)
     obtenerReporteVentasDeProgramasPorSemanas(id_programa, rangoDate)
+    obtenerMembresiasxFechaxPrograma(id_programa, rangoDate)
     // obtenerReporteVentasPorProgramas_x_ClientesFrecuentes(id_programa, rangoDate)
   }, [id_programa, rangoDate])
   const statisticsClientes = [
@@ -44,19 +48,19 @@ export const VentasPrograma = () => {
       icon: 'mdi mdi-account-star-outline',
       variant: 'primary',
       title: 'CLIENTES NUEVOS',
-      noOfProject: 2//programa_estado_cliente?.nuevos?.length,
+      noOfProject: 20//programa_estado_cliente?.nuevos?.length,
     },
     {
       icon: 'mdi mdi-account-group',
       variant: 'success',
       title: 'CLIENTES REINSCRITOS',
-      noOfProject: 5//programa_estado_cliente?.reinscritos?.length,
+      noOfProject: 15//programa_estado_cliente?.reinscritos?.length,
     },
     {
       icon: 'mdi mdi-autorenew',
       variant: 'info',
       title: 'CLIENTES RENOVADOS',
-      noOfProject: 2//programa_estado_cliente?.renovados?.length,
+      noOfProject: 10//programa_estado_cliente?.renovados?.length,
     },
   ];
   const programasActivosTODO = [
@@ -111,6 +115,9 @@ export const VentasPrograma = () => {
       </Col>
       <Col xxl={3}>
         <TeamMembers members={members} title={'Ranking de socios'}/>
+      </Col>
+      <Col xxl={12}>
+        <ContratosMembresia/>
       </Col>
     </Row>
     </>

@@ -140,8 +140,6 @@ export default function TableClientes() {
         );
     };
     const IdBodyTemplate = (rowData, { rowIndex })=>{
-        console.log(rowIndex);
-        
         return (
             <div className="flex align-items-center gap-2">
                 <span>{rowIndex + 1}</span>
@@ -172,7 +170,6 @@ export default function TableClientes() {
                         filters={filters} 
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         rowsPerPageOptions={[10, 25, 50]} 
-                        filterDisplay="row" 
                         globalFilterFields={["id_cli", "nombres_apellidos_cli", "email_cli", "tel_cli", "distrito"]} 
                         header={header}
                         emptyMessage="SOCIOS NO ENCONTRADOS.">

@@ -64,7 +64,7 @@ export const ServicioNutricion = ({tipo_serv}) => {
 		);
 	};
     const fechaRegistroBodyTemplate = (rowData)=>{
-        return FormatoDateMask(rowData.fecha_registro, "D [de] MMMM [de] YYYY [a las] h:mm A")
+        return FormatoDateMask(rowData.fecha_registro, "D [de] MMMM [del] YYYY [a las] h:mm A")
     }
 	const tarifaBodyTemplate=()=>{
 		return 

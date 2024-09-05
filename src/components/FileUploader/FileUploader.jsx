@@ -1,26 +1,29 @@
 import { Link } from 'react-router-dom';
+import { Row, Col, Card } from 'react-bootstrap';
+import Dropzone from 'react-dropzone';
 import useFileUploader from './useFileUploader';
 
 const FileUploader = ({ showPreview = true, onFileUpload }) => {
   const { selectedFiles, handleAcceptedFiles, removeFile } = useFileUploader(showPreview);
-
+  console.log(selectedFiles);
+  
   return (
     <>
-      {/* <Dropzone onDrop={(acceptedFiles) => handleAcceptedFiles(acceptedFiles, onFileUpload)}>
-        {({ getRootProps, getInputProps }) => (
-          <div className="dropzone">
-            <div className="dz-message needsclick" {...getRootProps()}>
-              <input {...getInputProps()} />
-              <i className="h1 text-muted ri-upload-cloud-2-line"></i>
-              <h3>Drop files here or click to upload.</h3>
-              <span className="text-muted font-13">
-                (This is just a demo dropzone. Selected files are
-                <strong>not</strong> actually uploaded.)
-              </span>
+    {
+      selectedFiles.length<=0 && (
+        <Dropzone onDrop={(acceptedFiles) => handleAcceptedFiles(acceptedFiles, onFileUpload)}>
+          {({ getRootProps, getInputProps }) => (
+            <div className="dropzone">
+              <div className="dz-message needsclick" {...getRootProps()}>
+                <input {...getInputProps()} />
+                <i className="h1 text-muted ri-upload-cloud-2-line"></i>
+                <h3>Adjuntar documento</h3>
+              </div>
             </div>
-          </div>
-        )}
-      </Dropzone>
+          )}
+        </Dropzone>
+      )
+    }
 
       {showPreview && selectedFiles.length > 0 && (
         <div className="dropzone-previews mt-3" id="uploadPreviewTemplate">
@@ -73,7 +76,7 @@ const FileUploader = ({ showPreview = true, onFileUpload }) => {
             );
           })}
         </div>
-      )} */}
+      )}
     </>
   );
 };

@@ -136,14 +136,14 @@ export const GestCongelamientoMembresia = () => {
   const FechaInicioBodyTemplate = (rowData)=>{
     return (
         <div className="flex align-items-center gap-2">
-            <span>{FormatoDateMask(rowData.extension_inicio, 'D [de] MMMM [de] YYYY')}</span>
+            <span>{FormatoDateMask(rowData.extension_inicio, 'D [de] MMMM [del] YYYY')}</span>
         </div>
     )
 }
 const FechaFinBodyTemplate = (rowData)=>{
   return (
       <div className="flex align-items-center gap-2">
-          <span>{FormatoDateMask(rowData.extension_fin, 'D [de] MMMM [de] YYYY')}</span>
+          <span>{FormatoDateMask(rowData.extension_fin, 'D [de] MMMM [del] YYYY')}</span>
       </div>
   )
 }

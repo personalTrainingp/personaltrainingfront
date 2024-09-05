@@ -1,7 +1,7 @@
 import { Card, Col, Row } from 'react-bootstrap';
 import classNames from 'classnames';
 import { CardTitle } from '@/components';
-import { formateo_Moneda } from '@/components/CurrencyMask';
+import { formateo_Moneda, NumberFormatter } from '@/components/CurrencyMask';
 
 export const Statistics2 = ({statisticsData}) => {
   console.log(statisticsData);
@@ -20,7 +20,7 @@ export const Statistics2 = ({statisticsData}) => {
     },
     {
       title: 'CANTIDAD DE CONTRATOS',
-      noOfProject: statisticsData.cantidad_contratos,
+      noOfProject: <NumberFormatter amount={statisticsData.cantidad_contratos}/> ,
     },
     {
       title: 'TICKET MEDIO (S/.)',
@@ -28,11 +28,11 @@ export const Statistics2 = ({statisticsData}) => {
     },
     {
       title: 'SEMANAS VENDIDAS POR PROGRAMA',
-      noOfProject: statisticsData.semanas_vendidas_programa,
+      noOfProject: <NumberFormatter amount={statisticsData.semanas_vendidas_programa}/>,
     },
     {
       title: 'TICKET PROM SEMANAS',
-      noOfProject: statisticsData.ticket_prom_semanas,
+      noOfProject: <NumberFormatter amount={statisticsData.ticket_prom_semanas}/>,
     },
 
   ];

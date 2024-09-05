@@ -15,6 +15,23 @@ export const clasesVentasSeparadas = (tipo) => {
 	}
 };
 
+export const arrayTipoCambio = [
+	{ label: 'Dolares', value: 'USD' },
+	{ label: 'Soles', value: 'PEN' },
+];
+export const arrayEstadosCitas = [
+	{ label: 'Confirmada', value: 500 },
+	{ label: 'Asistio', value: 501 },
+	{ label: 'No Asistio', value: 502 },
+	{ label: 'Cancelada', value: 503 },
+];
+
+export const arrayRedesSociales = [
+	{ label: 'Facebook', value: 'FB' },
+	{ label: 'Youtube', value: 'YT' },
+	{ label: 'Instagram', value: 'IG' },
+	{ label: 'TikTok', value: 'TT' },
+];
 export const arrayPersonalTest = [
 	{ label: 'Test Apellido 1', value: 444 },
 	{ label: 'Test Apellido 2', value: 445 },
@@ -79,6 +96,9 @@ export const arrayRoles = [
 	{ label: 'Jefe de ventas', value: 3 },
 	{ label: 'superUsuario', value: 4 },
 	{ label: 'usuario', value: 5 },
+	{ label: 'Nutricion', value: 6 },
+	{ label: 'Marketing', value: 7 },
+	{ label: 'Trat. esteticos', value: 8 },
 ];
 
 export const arraySexo = [

@@ -67,7 +67,7 @@ const FechaPagoTemplate = (rowData)=>{
   const [year, month, day] = rowData.fec_pago.split('-').map(Number);
   return (
     <div>
-      {FormatoDateMask(new Date(year, month - 1, day), 'D [de] MMMM [de] YYYY')}
+      {FormatoDateMask(new Date(year, month - 1, day), 'D [de] MMMM [del] YYYY')}
     </div>
   )
 }

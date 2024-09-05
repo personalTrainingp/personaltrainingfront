@@ -174,7 +174,7 @@ export default function TableGestAportes({showToast}) {
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{FormatoDateMask(rowData.fecha_aporte, 'D [de] MMMM [de] YYYY') }</span>
+                <span>{FormatoDateMask(rowData.fecha_aporte, 'D [de] MMMM [del] YYYY') }</span>
             </div>
         );
     }
@@ -206,7 +206,7 @@ export default function TableGestAportes({showToast}) {
     const fecComprobanteBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{new Date(rowData.fec_comprobante).getFullYear()===1900? '': FormatoDateMask(rowData.fec_comprobante, 'D [de] MMMM [de] YYYY')}</span>
+                <span>{new Date(rowData.fec_comprobante).getFullYear()===1900? '': FormatoDateMask(rowData.fec_comprobante, 'D [de] MMMM [del] YYYY')}</span>
             </div>
         )
     }

@@ -13,6 +13,7 @@ import { Button } from 'primereact/button';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { DateMask, FormatoDateMask } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
+import { Link } from 'react-router-dom';
 
 const registerCita = {
 	id_cli: 0,
@@ -55,16 +56,21 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	}
 	const productDialogFooter = (
 		<React.Fragment>
-			<Button label="Cancelar" icon="pi pi-times" outlined onClick={cancelModal} />
-			{
-				dataCita==null?
-                <Button label="Guardar" icon="pi pi-check" className='bg-success' onClick={onSubmitEv} />
-                :
-				<>
-					<Button label="Editar" icon="pi pi-check" onClick={editarEvento} />
-					<Button label="Eliminar" icon="pi pi-check" className='bg-danger' onClick={eliminarEvento} />
-				</>
-			}
+			<div className='d-flex justify-content-between align-items-center'>
+				<Link to={'/historial-cliente/2bd62ed5-baa6-461c-b0b2-9b4dfd436124'} className='text-primary font-bold' style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Perfil del socio</Link>
+				<span>
+					<Button label="Salir" className='bg-success border-none m-1' icon="pi pi-times" onClick={cancelModal} />
+					{
+						dataCita==null?
+						<Button label="Guardar"  icon="pi pi-check" className='bg-success border-none m-1' onClick={onSubmitEv} />
+						:
+						<>
+							<Button label="Eliminar" icon="pi pi-check" className='bg-primary border-none m-1' onClick={eliminarEvento} />
+							<Button label="Editar" icon="pi pi-check" className='bg-secondary border-none m-1' onClick={editarEvento} />
+						</>
+					}
+				</span>
+			</div>
 		</React.Fragment>
 	);
 	return (
@@ -76,7 +82,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 				header={dataCita==null?
 					<> Crear cita: {new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
 					hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
-					{/* {FormatoDateMask(new Date(selectDATE.start), "D [de] MMMM [de] YYYY [a las] h:mm A")} */}
+					{/* {FormatoDateMask(new Date(selectDATE.start), "D [de] MMMM [del] YYYY [a las] h:mm A")} */}
 					</>
 					:
 					<> Editar cita: 
@@ -116,7 +122,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 										placeholder={'Selecciona la sesion'}
 										className="react-select"
 										classNamePrefix="react-select"
-										options={DataCitaxCLIENTE}
+										options={tipo_serv=='FITOL'?DataCitaxCLIENTE:[{label: '1 CITA DE NUTRICION', value: 266}]}
 										value={DataCitaxCLIENTE.find(
 											(option) => option.value === id_detallecita
 										)}
@@ -141,7 +147,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 							</Col>
 
 						</Row>
-					</Form>
+				</Form>
 			</Dialog>
 		</>
 	);

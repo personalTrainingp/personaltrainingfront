@@ -11,6 +11,8 @@ import { Col, Row } from 'react-bootstrap'
 import { Link, redirect } from 'react-router-dom'
 import Select from 'react-select'
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux'
+import { useAuthStore } from '@/hooks/useAuthStore'
 
 
 locale('es');
@@ -18,7 +20,13 @@ export const InformacionGeneralCliente = ({data}) => {
     // console.log(data);
     // console.log(data, "info?");
     const navigate = useNavigate();
-
+    // const { obtenerUser } = useAuthStore()
+    // useEffect(() => {
+    //     obtenerUser
+    // }, [])
+    
+    // console.log(user);
+    
     const { formState, 
         nombre_cli, 
         apPaterno_cli, 

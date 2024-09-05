@@ -1,4 +1,4 @@
-import { MoneyFormatter } from '@/components/CurrencyMask'
+import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask'
 import { useForm } from '@/hooks/useForm'
 import { arrayFacturas } from '@/types/type'
 import React, { useEffect, useState } from 'react'
@@ -48,22 +48,37 @@ export const CardPago = ({venta, dataPagos}) => {
     <Card>
         <Card.Header>
             <Card.Title>Datos de pago</Card.Title>
-			<span style={{fontWeight: 'bold', fontSize: '15px'}} className='d-flex justify-content-between'>
-				<span className=''>Subtotal:</span>
-				<MoneyFormatter amount={sumaTarifas-sumaTarifas*obtenerImpuestoHoy}/>
-			</span>
-			<span style={{fontWeight: 'bold', fontSize: '15px'}} className='d-flex justify-content-between'>
-				<span className=''>Igv:</span>
-				<span className='text-muted font-15'>{obtenerImpuestoHoy*100}%</span>
-				<MoneyFormatter amount={sumaTarifas*obtenerImpuestoHoy}/>
-			</span>
-			<span style={{fontWeight: 'bold', fontSize: '15px'}} className='d-flex justify-content-between'>
-				<span className=''>Total:</span>
-				<MoneyFormatter amount={sumaTarifas}/>
-			</span>
+			<ul className='d-flex justify-content-between p-0 m-0'>
+				<li style={{float: 'left',  width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '15px'}}>Subtotal:</li>
+				<li style={{float: 'left',  width: '40%', listStyle: 'none'}}>
+					<span className='d-flex justify-content-between'>
+						<span>S/.</span>
+						<NumberFormatMoney amount={sumaTarifas-sumaTarifas*obtenerImpuestoHoy}/>
+					</span>
+				</li>
+			</ul>
+			<ul className='d-flex justify-content-between p-0 m-0'>
+				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>Igv({obtenerImpuestoHoy*100}%):</li>
+				<li style={{float: 'left',  width: '40%', listStyle: 'none'}}>
+					<span className='d-flex justify-content-between'>
+						<span>S/.</span>
+						<NumberFormatMoney amount={sumaTarifas*obtenerImpuestoHoy}/>
+					</span>
+				</li>
+			</ul>
+			<ul className='d-flex justify-content-between p-0 m-0'>
+				<li style={{float: 'left', width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '15px'}}>Total:</li>
+				<li style={{float: 'left',  width: '40%', listStyle: 'none'}}>
+					<span className='d-flex justify-content-between'>
+						<span>S/.</span>
+						<NumberFormatMoney amount={sumaTarifas}/>
+					</span>
+				</li>
+			</ul>
+			
+			<ItemsPagos dataPagos={dataPagos}/>
         </Card.Header>
         <Card.Body>
-			<ItemsPagos dataPagos={dataPagos}/>
 			<a onClick={onModalOpenPay} style={{cursor: 'pointer'}}>Agregar Pago</a>
 			<ModalVentasPay show={modalPay} onHide={onModalClosePay}/>
         </Card.Body>

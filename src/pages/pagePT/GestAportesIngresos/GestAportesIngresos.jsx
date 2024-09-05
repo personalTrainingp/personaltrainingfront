@@ -240,7 +240,7 @@ export const GestAportesIngresos = () => {
 // 		);
 // 	};
 //     const fechaRegistroBodyTemplate = (rowData)=>{
-//         return FormatoDateMask(rowData.fecha_aporte, "D [de] MMMM [de] YYYY")
+//         return FormatoDateMask(rowData.fecha_aporte, "D [de] MMMM [del] YYYY")
 //     }
 //     const montoRegistroBodyTemplate = (rowData)=>{
 //       return formatCurrency(rowData.monto_aporte, rowData.moneda?rowData.moneda:'PEN')
