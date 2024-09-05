@@ -48,10 +48,6 @@ const ReporteMetas = lazy(()=>import('../pages/pagePT/reportes/reporteMetas'))
 const MarketingAgenda = lazy(()=>import('../pages/pagePT/GestionMkt'))
 const HistorialCitasNutricionista = lazy(()=>import('../pages/pagePT/HistorialCitasNutricionista'))
 const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
-// const ReporteFlujoCaja   = lazy(()=>import('../pages/pagePT/reportes/reporteFlujoCaja'))
-// const CrearCitasNutricionales = lazy(() => import('../pages/pagePT/GestNutricion'));
-// const CrearCitasFitology = lazy(()=>import('../pages/pagePT/CrearCitasFitology'))
-// const PerfilPrograma = lazy(()=> import('../pages/pagePT/GestProgramas/PerfilPrograma'))
 /**
  * routes import
  */
