@@ -8,6 +8,7 @@ import { ModalVentasPay } from './ModalVentasPay'
 import { ItemsPagos } from './ItemsPagos'
 import { useImpuestosStore } from '@/hooks/hookApi/useImpuestosStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
+import { SideBarFormPago } from './SideBarFormPago'
 
 export const sumarTarifas = (venta) =>{
 	const sumaTarifas = Object.values(venta)
@@ -80,7 +81,7 @@ export const CardPago = ({venta, dataPagos}) => {
         </Card.Header>
         <Card.Body>
 			<a className='text-primary underline' onClick={onModalOpenPay} style={{cursor: 'pointer'}}>Agregar Pago</a>
-			<ModalVentasPay show={modalPay} onHide={onModalClosePay}/>
+			{/* <ModalVentasPay show={modalPay} onHide={onModalClosePay}/> */}
         </Card.Body>
 		<Card.Footer>
 			<span style={{fontWeight: 'bold', fontSize: '18px'}} className='d-flex justify-content-between'>
@@ -88,6 +89,7 @@ export const CardPago = ({venta, dataPagos}) => {
 				<MoneyFormatter amount={sumaTarifas-SumaPagos<0?SumaPagos-sumaTarifas:sumaTarifas-SumaPagos}/>
 			</span>
 		</Card.Footer>
+		<SideBarFormPago show={modalPay} onHide={onModalClosePay}/>
     </Card>
   )
 }

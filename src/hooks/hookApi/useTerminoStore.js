@@ -60,7 +60,13 @@ export const useTerminoStore = () => {
 	const obtenerFormaDePagosActivos = async () => {
 		try {
 			let { data } = await PTApi.get('/parametros/get_params/forma_pago');
-			console.log(data);
+			console.log(data.formaPago);
+			data = data.formaPago.map(f=>{
+				return {
+                    value: e.id,
+                    label: `${e.descripcion} ${e.id_fpago === 4? `| S/ ${tipoCambioStore.tipocambio.precio_compra}` : ''}`,
+                };
+			})
 			// data = data.map((e) => {
 			// 	console.log(e);
 			// });
@@ -74,7 +80,7 @@ export const useTerminoStore = () => {
 
 			// console.log(data);
 
-			// setdataFormaPagoActivo(data);
+			setdataFormaPagoActivo(data.formaPago);
 		} catch (error) {
 			console.log(error);
 		}

@@ -29,13 +29,13 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const [loading, setLoading] = useState(false);
     const [selectedCustomers, setselectedCustomers] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const { obtenerGastos, obtenerProveedoresUnicos } = useGf_GvStore()
+    const { obtenerGastos, obtenerProveedoresUnicos, isLoadingData } = useGf_GvStore()
     const {dataGastos, dataProvUnicosxGasto} = useSelector(e=>e.finanzas)
     const [valueFilter, setvalueFilter] = useState([])
     useEffect(() => {
         obtenerGastos(id_enterprice)
-        obtenerProveedoresUnicos()
-    }, [])
+        // obtenerProveedoresUnicos()
+    }, [id_enterprice])
         useEffect(() => {
         const fetchData = () => {
             setCustomers(getCustomers(dataGastos));
@@ -63,6 +63,8 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
             return newItem;
             });
     };
+    console.log(isLoadingData);
+    
     const highlightText = (text, search) => {
         if (!search) {
             return text;
@@ -288,7 +290,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
                 </Modal> 
             }
             {
-                dataGastos.length!==0?(
+                !isLoadingData?(
                     <>
                     <div>
                         <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />

@@ -26,7 +26,7 @@ export const useTipoCambioStore = () => {
 			const { data } = await PTApi.get('/tipocambio/obtener-tipo-cambio', {
 				params: { fecha: fecha_valor },
 			});
-			setdata(data.data);
+			setdataTipoCambio(data.data);
 		} catch (error) {
 			console.log(error);
 		}

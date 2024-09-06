@@ -41,6 +41,7 @@ export const NuevaVenta2 = () => {
             <CardVenta dataVenta={venta} detalle_cli_modelo={detalle_cli_modelo} datos_pagos={datos_pagos} funToast={showToastVenta}/>
         </Col>
       </Row>
+      
     {/* <Row>
         <Col lg={3}>
             
