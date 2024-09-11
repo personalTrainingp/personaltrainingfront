@@ -48,7 +48,7 @@ const ReporteMetas = lazy(()=>import('../pages/pagePT/reportes/reporteMetas'))
 const MarketingAgenda = lazy(()=>import('../pages/pagePT/GestMkt'))
 const HistorialCitasNutricionista = lazy(()=>import('../pages/pagePT/HistorialCitasNutricionista'))
 const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
-const ControlDeContratosClientes = lazy(()=>import('../pages/pagePT/GestContratosDeCliente'))
+const GestContratosDeCliente = lazy(()=>import('../pages/pagePT/GestContratosDeCliente'))
 const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
 
 /**
@@ -101,7 +101,7 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/contrato-clientes')&&
-						<Route path="contrato-clientes" element={<ControlDeContratosClientes />} />
+						<Route path="contrato-clientes" element={<GestContratosDeCliente />} />
 					}
 					{
 						sections.find(e=>e.url==='/reporte/total-ventas')&&
