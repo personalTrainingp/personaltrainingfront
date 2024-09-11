@@ -50,6 +50,7 @@ const HistorialCitasNutricionista = lazy(()=>import('../pages/pagePT/HistorialCi
 const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
 const ControlDeContratosClientes = lazy(()=>import('../pages/pagePT/GestContratosDeCliente'))
 const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
+
 /**
  * routes import
  */

@@ -31,5 +31,5 @@ export const ContratosDeCliente = () => {
         </Row>
         {/* <ModalTipoCambio show={isOpenModalTipoCambio} onHide={onCloseModalTipoCambio}/> */}
     </>
-  )
+    )
 }
