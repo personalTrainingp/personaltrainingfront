@@ -10,6 +10,7 @@ export const ContratosDeCliente = () => {
     const onOpenModalTipoCambio = () =>{
         setisOpenModalTipoCambio(true)
     }
+    
     const onCloseModalTipoCambio = () =>{
         setisOpenModalTipoCambio(false)
     }
