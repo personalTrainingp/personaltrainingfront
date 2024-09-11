@@ -5,7 +5,7 @@ import { DataTableContratoCliente } from './DataTableContratoCliente'
 // import { ModalTipoCambio } from './ModalTipoCambio'
 // import { DataTableTipoCambio } from './DataTableTipoCambio'
 
-export const ContratosDeCliente = () => {
+export const ContratosCliente = () => {
     const [isOpenModalTipoCambio, setisOpenModalTipoCambio] = useState(false)
     const onOpenModalTipoCambio = () =>{
         setisOpenModalTipoCambio(true)
