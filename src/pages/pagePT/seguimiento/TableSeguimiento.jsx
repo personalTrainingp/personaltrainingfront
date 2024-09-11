@@ -99,11 +99,11 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...d };
 			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st} Semanas`;
-			let fechaaaa = dayjs.utc(d.fec_fin_mem_new)
-			newItem.fecha_fin_new = new Date(fechaaaa.format()).toISOString()
+			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
+			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
 			
-			newItem.diasFaltan = diasLaborables(new Date().toISOString(), d.fec_fin_mem_new)
+			newItem.diasFaltan = diasLaborables(new Date().toISOString(), dayjs.utc(fechaaaa))
 			// d.vencimiento_REGALOS_CONGELAMIENTO = new Date(
 			// 	`${new Date(d.fec_fin_mem)}`
 			// );

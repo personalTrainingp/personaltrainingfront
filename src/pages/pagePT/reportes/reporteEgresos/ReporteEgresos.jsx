@@ -38,13 +38,17 @@ export const ReporteEgresos = () => {
       <label htmlFor="buttondisplay" className="font-bold block mb-2">
                       RANGO DE FECHAS
       </label>
-      <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/>
+      <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} locale='es' showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/>
       <FormatRangoFecha rangoFechas={rangoFechas}/>
       {/* <BtnExportExcelFlujoCaja data={reporte_FlujoCaja}/> */}
     </div>
     <Card>
       <Card.Header className='d-flex align-items-center justify-content-between'>
-        <Card.Title>EGRESOS POR PROVEEDOR</Card.Title>
+        <Card.Title>
+          <div>
+            GASTOS POR PROVEEDOR
+          </div>
+        </Card.Title>
       </Card.Header>
       <Card.Body>
         <TabView>
@@ -57,9 +61,10 @@ export const ReporteEgresos = () => {
         </TabView>
       </Card.Body>
     </Card>
+
     <Card>
       <Card.Header>
-        <Card.Title>EGRESOS POR CONCEPTOS</Card.Title>
+        <Card.Title>GASTOS POR CONCEPTOS</Card.Title>
       </Card.Header>
       <Card.Body>
         <TabView>
@@ -73,7 +78,7 @@ export const ReporteEgresos = () => {
     </Card>
     <Card>
       <Card.Header>
-        <Card.Title>EGRESOS POR GRUPO</Card.Title>
+        <Card.Title>GASTOS POR GRUPO</Card.Title>
       </Card.Header>
       <Card.Body>
         <TabView>

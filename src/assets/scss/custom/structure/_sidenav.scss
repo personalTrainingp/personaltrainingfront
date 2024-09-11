@@ -193,9 +193,9 @@ html[data-sidenav-user="true"] {
         cursor: default;
         white-space: nowrap;
         text-transform: uppercase;
-        color: $menu-item-color;
+        color: $primary;
         font-weight: $font-weight-bold;
-        font-size: calc($menu-item-font-size * 0.74);
+        font-size: calc($menu-item-font-size * 1.2);
         padding: $menu-item-padding-y calc($menu-item-padding-x * 2);
     }
 
@@ -611,6 +611,8 @@ html[data-sidenav-size="sm-hover"]:not([data-layout="topnav"]) {
                     span {
                         // display: none;
                         visibility: hidden;
+                        font-size: 10px;
+
                     }
                 }
             }

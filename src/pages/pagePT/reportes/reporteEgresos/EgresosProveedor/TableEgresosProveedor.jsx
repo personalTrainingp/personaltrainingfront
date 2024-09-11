@@ -4,9 +4,13 @@ import { ModalIngresosGastos } from '@/pages/pagePT/GestGastos/ModalIngresosGast
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import React, { useState } from 'react'
+import { ModalViewConceptos } from '../ModalViewConceptos';
 
 export const TableEgresosProveedor = ({data, showToast}) => {
   const [expandedRows, setExpandedRows] = useState(null);
+  const [selectGrupos, setselectGrupos] = useState(null)
+  const [isopenModalViewConceptos, setisopenModalViewConceptos] = useState(false)
+
 const proveedorBodyTemplate = (rowData)=>{
   return (
     <div>
@@ -87,6 +91,12 @@ const rowExpansionTemplate = (data) => {
       </div>
   );
 };
+const OpenModalConceptos = (i)=>{
+  setisopenModalViewConceptos(true)
+  setselectGrupos(i)
+}
+console.log(selectGrupos);
+
   return (
     <div>
         <DataTable 
@@ -100,6 +110,8 @@ const rowExpansionTemplate = (data) => {
           size={'small'} 
           tableStyle={{ minWidth: '30rem' }} 
           scrollable 
+          selectionMode="single"
+          selection={selectGrupos} onSelectionChange={(e)=>OpenModalConceptos(e.value)}
           scrollHeight="400px"
           >
           <Column expander={allowExpansion} style={{ width: '5rem' }} />
@@ -107,6 +119,7 @@ const rowExpansionTemplate = (data) => {
           <Column  header="TOTAL" body={TotalBodyTemplate}></Column>
         </DataTable>
         <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+        <ModalViewConceptos data={selectGrupos} onHide={()=>setisopenModalViewConceptos(false)} show={isopenModalViewConceptos}/>
     </div>
   )
 }

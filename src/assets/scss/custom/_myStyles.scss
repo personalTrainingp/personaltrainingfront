@@ -164,6 +164,47 @@ td{
 //   background-color: red !important; /* Cambia el color de fondo al gris */
 //   cursor: pointer;
 // }
+.p-selectbutton{
+  .p-button:active, .p-button.p-highlight:active, .p-button:focus, .p-button.p-highlight:focus, .p-button{
+    background-color: $white !important;
+    border: 1px solid $black !important;
+    color: $black !important;
+  }
+  // .p-button{
+  //   background-color: $black !important;
+  //   border: 1px solid $black !important;
+  //   color: $white !important;
+  // }
+  .p-button.p-button.p-highlight{
+    background-color: $black !important;
+    border: 1px solid $white !important;
+    color: $white !important;
+    font-size: 25px !important;
+  }
+}
+.card-shadow{
+  background-color: $white !important;
+    // border: 1px solid $black !important;
+    box-shadow: #dcdcdc 6px 6px 6px 6px !important;
+    color: $black !important;
+    font-size: 20px !important;
+}
+.programas-selectsButtons{
+  margin-bottom: 20px !important;
+  .p-button:active, .p-button.p-highlight:active, .p-button:focus, .p-button.p-highlight:focus, .p-button{
+    background-color: $white !important;
+    border: none !important;
+    margin: 0px 10px;
+    border-radius: 10px;
+  }
+  .p-button.p-button.p-highlight{
+    background-color: $white !important;
+    // border: 1px solid $black !important;
+    box-shadow: #dcdcdc 6px 6px 6px 6px !important;
+    color: $black !important;
+    font-size: 20px !important;
+  }
+}
 .rbc-time-content .rbc-timeslot-group .rbc-time-slot:hover {
   background-color: rgb(182, 182, 182) !important; /* Gris claro */
   cursor: pointer;
@@ -205,12 +246,12 @@ button{
   border-radius: 5px !important;
 }
 th:first-child {
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
+  border-top-left-radius: 11px;
+  border-bottom-left-radius: 11px;
 }
 th:last-child {
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-top-right-radius: 11px;
+  border-bottom-right-radius: 11px;
 }
 
 

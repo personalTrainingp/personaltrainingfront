@@ -3,9 +3,11 @@ import { Card, CardTitle, Col, Row } from 'react-bootstrap';
 import Chart from 'react-apexcharts';
 import { CardEstimado } from '@/components/CardTab/CardEstimado';
 import { MoneyFormatter } from '@/components/CurrencyMask';
+import phChange from '@/assets/images/brand-change/change-avatar.png'
+import phFs45 from '@/assets/images/brand-change/fs-avatar.png'
+import phMuscle from '@/assets/images/brand-change/muscle-avatar.png'
 
 export const ResumenUtilidadesProgramas = ({ data }) => {
-  console.log(data);
   
 	// const apexOpts = {
 	// 	chart: {
@@ -131,53 +133,14 @@ export const ResumenUtilidadesProgramas = ({ data }) => {
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-xl-9 col-lg-4 col-md-6 col-sm-12">
+                                        {/* <div class="col-xl-9 col-lg-4 col-md-6 col-sm-12">
                                             <div class="row">
                                                 <div class="col-lg-6">
-                                                    {/* <div class="card">
-                                                            <div class="d-flex card-header justify-content-between align-items-center">
-                                                                <h4 class="header-title d-flex align-items-center">
-                                                                    <span class="fs-4"> 
-                                                                    <div class="bg-black rounded-5">
-                                                                        <img width="80px" height="60px" class="m-2" src="assets\images\logos-programas\cyl-blanco.png" alt="rpm 50"/>
-                                                                    </div>
-                                                                </span></h4>
-                                                            </div>
-                                                            <div class="card-body pt-0">
-                                                                <table class="table table-bordered table-centered mb-0">
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <th>NUEVOS</th>
-                                                                            <td>13,495.00 (50.84 %)</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <th>RENOVACIONES</th>
-                                                                            <td>4,659.00 (32.76 %)</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <th>REINSCRIPCIONES</th>
-                                                                            <td>0.00 (16.40 %)</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                                <div class="row mt-3">
-                                                                    <div class="col-lg-6">
-
-                                                                    </div>
-                                                                    <div class="col-lg-6 fs-4">
-                                                                        Total: 
-                                                                        <span class="fw-bold">
-                                                                            18,154.00 (56.61 %)
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </div> */}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> */}
                                         
-                                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                        <div class="col-sm-12">
                                             <div class="accordion" id="CardaccordionExample">
                                                 <div class="mb-0">
                                                     <div id="CardheadingOne">
@@ -202,19 +165,19 @@ export const ResumenUtilidadesProgramas = ({ data }) => {
                                             
                                                     <div id="collapseOne" class="collapse show"
                                                         aria-labelledby="CardheadingOne" data-bs-parent="#CardaccordionExample">
-                                                        <div class="card-body pt-0">
+                                                        <div class="card-body pt-0 px-1">
                                                             <ul class="list-group">
                                                                 <li class="p-2 d-flex justify-content-between align-items-center">
-                                                                    CHANGE 45
-                                                                    <span class="rounded-pill fw-bolder">113,234.00</span>
+                                                                    <img src={phChange} width={130} height={40} className='m-0'/>
+                                                                    <span class="rounded-pill fw-bolder">S/.55,234.00</span>
                                                                 </li>
                                                                 <li class="p-2 d-flex justify-content-between align-items-center">
-                                                                    FS 45
-                                                                    <span class="rounded-pill fw-bolder">37,617.00</span>
+                                                                    <img src={phMuscle} width={120} height={40} className='m-0'/>
+                                                                    <span class="rounded-pill fw-bolder">S/.10,028.00</span>
                                                                 </li>
                                                                 <li class="p-2 d-flex justify-content-between align-items-center">
-                                                                    MS 45
-                                                                    <span class="rounded-pill fw-bolder">31,028.00</span>
+                                                                    <img src={phFs45} width={70} height={40} className='m-0'/>
+                                                                    <span class="rounded-pill fw-bolder">S/.29,281.00</span>
                                                                 </li>
                                                             </ul>
                                                         </div>
@@ -229,7 +192,7 @@ export const ResumenUtilidadesProgramas = ({ data }) => {
                                                                 <div class="d-flex justify-content-between align-items-center">
                                                                     <div>
                                                                         <p class="font-18 text-white mb-1">EGRESOS DIRECTOS</p>
-                                                                        <h3 class="text-white my-0">S/453,921.24</h3>
+                                                                        <h3 class="text-white my-0">S/42,731.67</h3>
                                                                     </div>  
                                                                     <div class="avatar-sm">
                                                                         <span class="avatar-title bg-danger rounded-circle h3 my-0">
@@ -273,7 +236,7 @@ export const ResumenUtilidadesProgramas = ({ data }) => {
                                                                 <div class="d-flex justify-content-between align-items-center">
                                                                     <div>
                                                                         <p class="font-18 text-white mb-1">UTILIDADES</p>
-                                                                        <h3 class="text-white my-0">S/1,672,021.76</h3>
+                                                                        <h3 class="text-white my-0">S/51,811.33</h3>
                                                                     </div>  
                                                                     <div class="avatar-sm">
                                                                         <span class="avatar-title bg-info rounded-circle h3 my-0">

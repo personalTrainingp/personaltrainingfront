@@ -48,6 +48,8 @@ const ReporteMetas = lazy(()=>import('../pages/pagePT/reportes/reporteMetas'))
 const MarketingAgenda = lazy(()=>import('../pages/pagePT/GestMkt'))
 const HistorialCitasNutricionista = lazy(()=>import('../pages/pagePT/HistorialCitasNutricionista'))
 const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
+const ContratosDeClientes = lazy(()=>import('../pages/pagePT/GestContratosDeCliente'))
+const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
 /**
  * routes import
  */
@@ -72,20 +74,11 @@ export default function ProtectedRoutes() {
 	useEffect(() => {checkAuthToken()}, [])
 	if (status === 'checking') {
 		return(
-			// <div className="border-round border-1 surface-border p-4 d-flex">
-			// 	<Skeleton width="300px" height="85vh" className='m-2'></Skeleton>
-			// 	<Skeleton width="100%" height="85vh" className='m-2'></Skeleton>
-			// </div>
 			<div className='d-flex align-items-center justify-content-center' style={{height: '100vh'}}>
 				<span className="loader"></span>
 			</div>
-			// <div className='d-flex align-items-center justify-content-center' style={{height: '100vh'}}>
-			// 	<ProgressSpinner style={{width: '50px', height: '50px'}} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" />
-			// </div>
 		)
 	}
-	// console.log(sections);
-	// console.log(sections.find(e=>e.key==='config')?'hay':'nop');
 	return (
 	<ReactRoutes>
 		{
@@ -95,8 +88,19 @@ export default function ProtectedRoutes() {
 					{sections.find(e=>e.url==='/nueva-venta')&&
 						<Route path="nueva-venta" element={<NuevaVenta />} />
 					}
+					{
+						sections.find(e=>e.url==='/reporte/venta-por-semana')&&
+                        <Route path='reporte/venta-por-semana' element={<ReporteVentasporSemana/>}/>
+					}
+					{sections.find(e=>e.url==='/mkt-actas-reunion')&&
+						<Route path="mkt-actas-reunion" element={<GestActasDeReunion />} />
+					}
 					{sections.find(e=>e.url==='/seguimiento')&&
 						<Route path="seguimiento" element={<Seguimiento />} />
+					}
+					{
+						sections.find(e=>e.url==='/contrato-clientes')&&
+						<Route path="contrato-clientes" element={<ContratosDeClientes />} />
 					}
 					{
 						sections.find(e=>e.url==='/reporte/total-ventas')&&

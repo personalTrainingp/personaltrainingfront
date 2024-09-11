@@ -33,12 +33,12 @@ export const Seguimiento = () => {
 								<TabPanel header="Todos">
 									<Row>
 										<Col lg={6} className='border-right-2 border-primary'>
-										<h3 className='text-primary'>SOCIOS ACTIVOS</h3>
-										<TableSeguimientoTODO />
+											<h3 className='text-primary'>SOCIOS ACTIVOS</h3>
+											<TableSeguimientoTODO />
 										</Col>
 										<Col lg={6} className='border-left-2 border-primary'>
-										<h3 className='text-primary'>SOCIOS INACTIVOS</h3>
-										<TableSeguimiento SeguimientoClienteActivos={false} />
+											<h3 className='text-primary'>SOCIOS INACTIVOS</h3>
+											<TableSeguimiento SeguimientoClienteActivos={false} />
 										</Col>
 									</Row>
 								</TabPanel>

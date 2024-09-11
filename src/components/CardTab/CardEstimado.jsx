@@ -18,8 +18,8 @@ export const CardEstimado = ({ backgroundColor, title, montoSoles, items, icono 
 				>
 					<div className="d-flex justify-content-between align-items-center">
 						<div>
-							<p className="text-white fw-bold font-15 mb-1">{title}</p>
-							<h3 className="text-white my-0 font-17">{montoSoles}</h3>
+							<p className="text-white fw-bold font-18 mb-1">{title}</p>
+							<h3 className="text-white my-0">{montoSoles}</h3>
 						</div>
 						<div className="avatar-sm">
 							<span

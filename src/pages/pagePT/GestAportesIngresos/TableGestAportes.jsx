@@ -213,7 +213,7 @@ export default function TableGestAportes({showToast}) {
     const montoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(formatCurrency(rowData.monto_aporte, rowData.moneda?rowData.moneda:'PEN'), globalFilterValue)}</span>
+                <span>{highlightText(formatCurrency(rowData.monto_aporte, rowData.moneda?rowData.moneda:'S/.'), globalFilterValue)}</span>
             </div>
         );
     };

@@ -87,8 +87,8 @@ export const helperFunctions = () => {
 	};
 	const diasLaborables = (fechaInicio, fechaFin) => {
 		let diasLaborables = 0;
-		const fechaInicioParsed = dayjs(fechaInicio, 'YYYY-MM-DD');
-		const fechaFinParsed = dayjs(fechaFin, 'YYYY-MM-DD');
+		const fechaInicioParsed = dayjs(fechaInicio);
+		const fechaFinParsed = dayjs(fechaFin);
 
 		// Determina la dirección de la iteración
 		const direccion = fechaFinParsed.isAfter(fechaInicioParsed) ? 1 : -1;

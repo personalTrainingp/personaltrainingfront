@@ -67,8 +67,6 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 	useEffect(() => {
 		obtenerReporteSeguimientoTODO()
 	  }, [])
-    //   console.log(dataView);
-      
 	const { diasLaborables, daysUTC } = helperFunctions();
 	const [filters, setFilters] = useState({
 		
@@ -101,11 +99,10 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...d };
 			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st} Semanas`;
-			let fechaaaa = dayjs.utc(d.fec_fin_mem_new)
-			newItem.fecha_fin_new = new Date(fechaaaa.format()).toISOString()
+			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
+			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
-			
-			newItem.diasFaltan = diasLaborables(new Date().toISOString(), d.fec_fin_mem_new)
+			newItem.diasFaltan = diasLaborables(new Date(), dayjs.utc(fechaaaa))
 			// d.vencimiento_REGALOS_CONGELAMIENTO = new Date(
 			// 	`${new Date(d.fec_fin_mem)}`
 			// );
@@ -152,7 +149,7 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 	const dateBodyTemplate = (rowData) => {
 		// console.log(rowData); JSON.stringify(rowData.fecha_fin_new)
 		//dayjs(rowData.fecha_fin_new).format('D [de] MMMM [del] YYYY')
-		return 	<span>{FormatoDateMask(rowData.fec_fin_mem_new, 'dddd D [de] MMMM [del] YYYY') }</span>
+		return 	<span>{FormatoDateMask(rowData.fecha_fin_new, 'dddd D [de] MMMM [del] YYYY') }</span>
 	};
 	const statusBodyTemplate = (rowData) => {
         if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null){
@@ -227,7 +224,7 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 						body={<Skeleton/>}
 					/>
 					<Column
-						header="Programa / Semanas"
+						header="Programas / Semana"
 						sortable
 						body={<Skeleton/>}
 						style={{ minWidth: '14rem' }}
@@ -302,7 +299,7 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 					/>
 					<Column
 						field="ProgramavsSemana"
-						header="Programa / Semanas"
+						header="Programas / Semana"
 						sortable
 						filterField="ProgramavsSemana"
 						style={{ minWidth: '14rem' }}

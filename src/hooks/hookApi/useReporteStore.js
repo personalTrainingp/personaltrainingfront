@@ -810,14 +810,14 @@ function agruparPorFormaPago(data) {
 			// Iterar sobre cada detalle de pago
 			item.detalle_pago.forEach((pago) => {
 				// Obtener el id_param de la forma de pago
-				const idFormaPago = pago.parametro_forma_pago.id_param;
+				const idFormaPago = pago.parametro_forma_pago?.id_param;
 				// Obtener el monto parcial
 				const monto = pago.parcial_monto;
 
 				// Verificar si ya existe una entrada para esta forma de pago
 				if (!agrupado[idFormaPago]) {
 					agrupado[idFormaPago] = {
-						forma_pago: pago.parametro_forma_pago.label_param,
+						forma_pago: pago.parametro_forma_pago?.label_param,
 						monto: 0,
 					};
 				}

@@ -79,49 +79,20 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             onInputChangeMonto,
             onInputChangeFunction
         } = useForm(data?data:registerIvsG)
-        // const arrayGrupo = dataParametrosGastos.map(e=>{
-        //     return {
-        //         label: e.grupo.replace(/\s/g, ''),
-        //         value: e.grupo.replace(/\s/g, ''),
-        //         id_tipoGasto: e.id_tipoGasto,
-        //     }
-        // })
-        // const group = arrayGrupo.reduce((acc, item) => {
-        //     if (!acc.some(obj => obj.value === item.value && obj.id_tipoGasto === item.id_tipoGasto)) {
-        //         acc.push(item);
-        //     }
-        //     return acc;
-        // }, [])
-        // const dataGasto = dataParametrosGastos.map(e=>{
-        //     return {
-        //         value: e.id,
-        //         label: e.nombre_gasto,
-        //         grupo: e.grupo
-        //     }
-        // })
-        
         useEffect(() => {
-            onInputChangeFunction("grupo", 0)
+            if(!data){
+                onInputChangeFunction("grupo", 0)
+            }
         }, [id_tipoGasto])
         useEffect(() => {
-            onInputChangeFunction("id_gasto", 0)
+            if(!data){
+                onInputChangeFunction("id_gasto", 0)
+            }
         }, [id_tipoGasto, grupo])
-        
-        // useEffect(() => {
-            // let dataGasto = dataGasto
-            // console.log(dataGasto);
-            // const conceptogasto = 
-            // if(data){
-            //     onInputChangeFunction("id_gasto", id_gasto)
-            //     return;
-            // }
-            // onInputChangeFunction("id_gasto", 0)
-        // }, [
-        //     grupo,
-        //     id_tipoGasto])
         
         useEffect(() => {
             const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos||[]
+            
             setgrupoGasto(grupos)
         }, [id_tipoGasto])
         useEffect(() => {
@@ -130,13 +101,11 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             
             setgastoxGrupo(conceptos)
         }, [grupo])
+        console.log(dataParametrosGastos);
+        
         
         
 
-        // useEffect(() => {
-        //     const gastos = dataGasto.filter(e=>e.grupo===grupo)||[]
-        //     setgastoxGrupo(gastos)
-        // }, [grupo])
         
         useEffect(() => {
             const inyeccionParametros = async()=>{

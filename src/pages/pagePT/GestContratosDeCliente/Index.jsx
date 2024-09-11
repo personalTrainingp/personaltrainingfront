@@ -1,0 +1,1 @@
+export {ContratosDeCliente as default} from './ContratosDeCliente'
