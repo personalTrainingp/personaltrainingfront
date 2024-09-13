@@ -261,7 +261,7 @@ const dataUtilidadesNutricion=[
     <PageBreadcrumb title="Reporte gerencial" subName="reporte-gerenciales" />
     <TabView>
       <TabPanel header='CHANGE'>
-        <BtnExportExcelFlujoCaja />
+        <BtnExportExcelFlujoCaja id_empresa={598} dataGastos={dataGasto} dataTipoCambio={dataTipoCambio} dataAporte={dataAportes} dataVentas={dataVentaxFecha} fechaInit={rangoFechas[0]}/>
         <Row>
           <Col xxl={4}>
           </Col>
