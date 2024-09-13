@@ -135,7 +135,7 @@ import { UtilidadesProductos } from './UtilidadesProductos'
 import { UtilidadesCitas } from './UtilidadesCitas'
 import SimpleBar from 'simplebar-react'
 import { SelectButton } from 'primereact/selectbutton'
-import { MoneyFormatter } from '@/components/CurrencyMask'
+import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask'
 
 export const ReporteGerenciales = () => {
   const toast = useRef(null)
@@ -181,7 +181,7 @@ const dataUtilidadesTratEst=[
     total_ingresos: 100,
     total_gasto: 80,
     total_bene: 20,
-    margen: '10%'
+    margen: '10'
 },
   {
       anio: '2024',
@@ -189,7 +189,7 @@ const dataUtilidadesTratEst=[
       total_ingresos: 100,
       total_gasto: 80,
       total_bene: 20,
-      margen: '10%'
+      margen: '10'
   },
   {
       anio: '2024',
@@ -197,7 +197,7 @@ const dataUtilidadesTratEst=[
       total_ingresos: 100,
       total_gasto: 80,
       total_bene: 20,
-      margen: '10%'
+      margen: '10'
   },
 ]
 
@@ -205,18 +205,18 @@ const dataUtilidadesSuplementos=[
   {
     anio: '2024',
     mes: 'Isology',
-    total_ingresos: <MoneyFormatter amount={3502.28}/>,
-    total_gasto: <MoneyFormatter amount={92.28}/>,
-    total_bene: <MoneyFormatter amount={3502.28-92.28}/>,
-    margen: '0.97%'
+    total_ingresos: <NumberFormatMoney amount={3502.28}/>,
+    total_gasto: <NumberFormatMoney amount={92.28}/>,
+    total_bene: <NumberFormatMoney amount={3502.28-92.28}/>,
+    margen: '0.97'
 },
   {
       anio: '2024',
       mes: 'bfr',
-      total_ingresos: <MoneyFormatter amount={352.28}/>,
-      total_gasto: <MoneyFormatter amount={20.28}/>,
-      total_bene: <MoneyFormatter amount={352.28-20.28}/>,
-      margen: '0.94%'
+      total_ingresos: <NumberFormatMoney amount={352.28}/>,
+      total_gasto: <NumberFormatMoney amount={20.28}/>,
+      total_bene: <NumberFormatMoney amount={352.28-20.28}/>,
+      margen: '0.94'
   },
 ]
 
@@ -227,7 +227,7 @@ const dataUtilidadesAccesorio=[
     total_ingresos: 100,
     total_gasto: 80,
     total_bene: 20,
-    margen: '10%'
+    margen: '10'
 },
   {
       anio: '2024',
@@ -235,7 +235,7 @@ const dataUtilidadesAccesorio=[
       total_ingresos: 100,
       total_gasto: 80,
       total_bene: 20,
-      margen: '10%'
+      margen: '10'
   },
   {
       anio: '2024',
@@ -243,7 +243,7 @@ const dataUtilidadesAccesorio=[
       total_ingresos: 100,
       total_gasto: 80,
       total_bene: 20,
-      margen: '10%'
+      margen: '10'
   },
 ]
 const dataUtilidadesNutricion=[
@@ -253,7 +253,7 @@ const dataUtilidadesNutricion=[
     total_ingresos: 100,
     total_gasto: 80,
     total_bene: 20,
-    margen: '10%'
+    margen: '10'
 }
 ]
   return (
@@ -261,10 +261,12 @@ const dataUtilidadesNutricion=[
     <PageBreadcrumb title="Reporte gerencial" subName="reporte-gerenciales" />
     <TabView>
       <TabPanel header='CHANGE'>
+        <BtnExportExcelFlujoCaja />
         <Row>
           <Col xxl={4}>
           </Col>
           <Col xxl={4}>
+          
           <div className="d-flex justify-content-center">
             <SelectButton value={anio} onChange={onSeleccionar} optionLabel="name" options={items} />
         </div>
@@ -282,7 +284,7 @@ const dataUtilidadesNutricion=[
                 <ItemTotales itemLabel={'Egresos'} itemTotal={<MoneyFormatter amount={200000}/>}/>
               </Col>
               <Col>
-                <ItemTotales itemLabel={'Utilidades'} itemTotal={<MoneyFormatter amount={400000}/>}/>
+                <ItemTotales itemLabel={'Utilidad'} itemTotal={<MoneyFormatter amount={400000}/>}/>
               </Col>
               <Col>
                 <ItemTotales itemLabel={'Margen'} itemTotal={`${(400000/600000).toFixed(2)}%`}/>

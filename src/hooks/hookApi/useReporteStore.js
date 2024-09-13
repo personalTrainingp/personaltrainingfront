@@ -372,6 +372,7 @@ export const useReporteStore = () => {
 					const provId = item.id_prov;
 					if (!groupedData[provId]) {
 						groupedData[provId] = {
+							id_prov: item.id_prov,
 							proveedor: item.tb_Proveedor.razon_social_prov,
 							egresos: [],
 							suma_monto_PEN: 0,

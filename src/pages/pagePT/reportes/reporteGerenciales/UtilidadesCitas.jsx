@@ -8,7 +8,7 @@ export const UtilidadesCitas = ({name_cita, dataUtilidades}) => {
   return (
     <Card>
     <Card.Header>
-        <Card.Title className='text-center font-20'>Utilidades por {name_cita}</Card.Title>
+        <Card.Title className='text-center font-20'>Utilidad por {name_cita}</Card.Title>
     </Card.Header>
     <Card.Body>
       
@@ -16,7 +16,7 @@ export const UtilidadesCitas = ({name_cita, dataUtilidades}) => {
                     <Column header={name_cita} field='mes'></Column>
                     <Column header="INGRESOS" field='total_ingresos'></Column>
                     <Column header="EGRESOS" field='total_ingresos'></Column>
-                    <Column header="UTILIDADES" field='total_bene'></Column>
+                    <Column header="UTILIDAD" field='total_bene'></Column>
                     <Column header="Margen %" field='margen'></Column>
                 </DataTable>
     </Card.Body>

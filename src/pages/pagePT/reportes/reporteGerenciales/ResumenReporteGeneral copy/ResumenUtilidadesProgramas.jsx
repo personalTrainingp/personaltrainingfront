@@ -235,7 +235,7 @@ export const ResumenUtilidadesProgramas = ({ data }) => {
                                                                 aria-expanded="false" aria-controls="collapseThree">
                                                                 <div class="d-flex justify-content-between align-items-center">
                                                                     <div>
-                                                                        <p class="font-18 text-white mb-1">UTILIDADES</p>
+                                                                        <p class="font-18 text-white mb-1">UTILIDAD</p>
                                                                         <h3 class="text-white my-0">S/51,811.33</h3>
                                                                     </div>  
                                                                     <div class="avatar-sm">

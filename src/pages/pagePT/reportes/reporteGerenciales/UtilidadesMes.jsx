@@ -11,7 +11,7 @@ import {
 } from 'chart.js';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { MoneyFormatter } from '@/components/CurrencyMask';
+import { MoneyFormatter, NumberFormatMoney, NumberFormatter } from '@/components/CurrencyMask';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -230,35 +230,35 @@ export const UtilidadesMes = () => {
     const TotalIngresosBodyTemplate = (rowData)=>{
         return (
             <>
-            <MoneyFormatter amount={rowData.total_ingresos}/>
+            <NumberFormatMoney amount={rowData.total_ingresos}/>
             </>
         )
     }
     const TotalEgresosBodyTemplate = (rowData)=>{
         return (
             <>
-            <MoneyFormatter amount={rowData.total_gasto}/>
+            <NumberFormatMoney amount={rowData.total_gasto}/>
             </>
         )
     }
     const AportesEgresosBodyTemplate = (rowData)=>{
         return(
             <>
-            <MoneyFormatter amount={rowData.total_bene}/>
+            <NumberFormatMoney amount={rowData.total_bene}/>
             </>
         )
     }
     const UtilidadesBodyTemplate = (rowData)=>{
         return(
             <>
-            <MoneyFormatter amount={rowData.total_ingresos-rowData.total_gasto}/>
+            <NumberFormatMoney amount={rowData.total_ingresos-rowData.total_gasto}/>
             </>
         )
     }
     const MargenBodyTemplate=(rowData)=>{
         return(
             <>
-            {(rowData.total_ingresos-rowData.total_gasto)/rowData.total_ingresos}%
+            {(rowData.total_ingresos-rowData.total_gasto)/rowData.total_ingresos}
             </>
         )
     }
@@ -273,11 +273,11 @@ export const UtilidadesMes = () => {
                 <div className='mt-3'>
                 <DataTable value={dataUtilidades} size={'small'} tableStyle={{ minWidth: '50rem' }}>
                     <Column header="Mes" field='mes'></Column>
-                    <Column header="Ingresos" body={TotalIngresosBodyTemplate}></Column>
-                    <Column header="Egresos" body={TotalEgresosBodyTemplate}></Column>
-                    <Column header="Aportes" body={AportesEgresosBodyTemplate}></Column>
-                    <Column header="Utilidades" body={UtilidadesBodyTemplate}></Column>
-                    <Column header="Margen" body={MargenBodyTemplate}></Column>
+                    <Column header={<div className='d-flex flex-column'><span>INGRESOS</span><span>S/.</span></div>} body={TotalIngresosBodyTemplate}></Column>
+                    <Column header={<div className='d-flex flex-column'><span>EGRESOS</span><span>S/.</span></div>} body={TotalEgresosBodyTemplate}></Column>
+                    <Column header={<div className='d-flex flex-column'><span>APORTES</span><span>S/.</span></div>} body={AportesEgresosBodyTemplate}></Column>
+                    <Column header={<div className='d-flex flex-column'><span>UTILIDAD</span><span>S/.</span></div>} body={UtilidadesBodyTemplate}></Column>
+                    <Column header={<div className='d-flex flex-column'><span>MARGEN</span><span>%</span></div>} body={MargenBodyTemplate}></Column>
                 </DataTable>
                 </div>
     </>

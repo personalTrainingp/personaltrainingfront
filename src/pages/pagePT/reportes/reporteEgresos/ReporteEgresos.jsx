@@ -26,13 +26,9 @@ export const ReporteEgresos = () => {
   const showToast = (severity, summary, detail, label) => {
     toast.current.show({ severity, summary, detail, label });
   };
-  console.log(egresosPorFecha_PROVEEDOR, "proveedor");
-  console.log(egresosPorFecha_GASTO, "concepto");
-  
   return (
     <>
     <PageBreadcrumb title="Reporte de egresos" subName="reporte-egresos" />
-    
     <Toast ref={toast}/>
     <div className='flex-auto mb-2'>
       <label htmlFor="buttondisplay" className="font-bold block mb-2">

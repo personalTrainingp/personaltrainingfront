@@ -145,7 +145,7 @@ export const ResumenReporteGeneral = ({ data, IngresosSeparados_x_Fecha }) => {
 								<CardEstimado icono={'mdi mdi-arrow-up-bold-outline'} backgroundColor={'bg-secondary'} title={'APORTES'} montoSoles={<MoneyFormatter amount={(0)}/>}/>
 							</Col>
 							<Col xxl={3}>
-								<CardEstimado icono={'mdi mdi-chart-line'} backgroundColor={'bg-info'} title={'UTILIDADES'} montoSoles={<MoneyFormatter amount={104029.3-45389.15}/>}/>
+								<CardEstimado icono={'mdi mdi-chart-line'} backgroundColor={'bg-info'} title={'UTILIDAD'} montoSoles={<MoneyFormatter amount={104029.3-45389.15}/>}/>
 							</Col>
 						</Row>
 						</Col>

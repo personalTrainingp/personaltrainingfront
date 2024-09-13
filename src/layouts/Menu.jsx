@@ -103,12 +103,13 @@ const MenuItemLink = ({ item, className }) => {
       to={item.url}
       target={item.target}
       className={`side-nav-link-ref ${className}`}
+      style={{display: 'flex', alignItems: 'center'}}
       data-menu-key={item.key}
     >
       {item.icon ? (
         <>
           <i className={item.icon}></i>
-          <span>&nbsp;{item.label}</span>
+          <div className='' style={{whiteSpace: 'normal'}}>&nbsp;{item.label}</div>
         </>
       ) : (
         item.label

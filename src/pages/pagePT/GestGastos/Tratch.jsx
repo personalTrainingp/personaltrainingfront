@@ -63,7 +63,6 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
             return newItem;
             });
     };
-    console.log(isLoadingData);
     
     const highlightText = (text, search) => {
         if (!search) {
@@ -246,6 +245,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const valueFiltered = (e)=>{
         setvalueFilter(e)
     }
+    
     const header = renderHeader();
     const [isOpenModalEgresos, setisOpenModalEgresos] = useState(false)
     const onCloseModalIvsG = ()=>{

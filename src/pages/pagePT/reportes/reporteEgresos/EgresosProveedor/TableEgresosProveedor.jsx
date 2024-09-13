@@ -1,4 +1,4 @@
-import { CurrencyMask, FormatoDateMask } from '@/components/CurrencyMask';
+import { CurrencyMask, FormatoDateMask, MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
 import { ModalIngresosGastos } from '@/pages/pagePT/GestGastos/ModalIngresosGastos';
 import { Column } from 'primereact/column'
@@ -22,12 +22,21 @@ const proveedorBodyTemplate = (rowData)=>{
 const formatCurrency = (value, currency) => {
   return value.toLocaleString('en-ES', { style: 'currency', currency });
 };
-const TotalBodyTemplate = (rowData)=>{
+const TotalSolesBodyTemplate = (rowData)=>{
   return(
     <div>
-      {formatCurrency(rowData.suma_monto_PEN, 'PEN')} 
-      <br></br>
-      {rowData.suma_monto_USD!=0?formatCurrency(rowData.suma_monto_USD, 'USD'):''}
+      <NumberFormatMoney amount={rowData.suma_monto_PEN} symbol={''}/>
+    </div>
+  )
+}
+const TotalDolaresBodyTemplate = (rowData)=>{
+  return(
+    <div>
+      {rowData.suma_monto_USD!=0?
+      <NumberFormatMoney amount={rowData.suma_monto_USD}/>
+      :
+      ''
+      }
     </div>
   )
 }
@@ -91,11 +100,17 @@ const rowExpansionTemplate = (data) => {
       </div>
   );
 };
+const IdProvBodyTemplate =(rowData)=>{
+  return (
+    <div>
+      {rowData.id_prov}
+    </div>
+  )
+}
 const OpenModalConceptos = (i)=>{
   setisopenModalViewConceptos(true)
   setselectGrupos(i)
 }
-console.log(selectGrupos);
 
   return (
     <div>
@@ -114,9 +129,10 @@ console.log(selectGrupos);
           selection={selectGrupos} onSelectionChange={(e)=>OpenModalConceptos(e.value)}
           scrollHeight="400px"
           >
-          <Column expander={allowExpansion} style={{ width: '5rem' }} />
-          <Column  header="PROVEEDOR" body={proveedorBodyTemplate}></Column>
-          <Column  header="TOTAL" body={TotalBodyTemplate}></Column>
+          <Column header="ID" body={IdProvBodyTemplate}></Column>
+          <Column header="PROVEEDOR" body={proveedorBodyTemplate}></Column>
+          <Column header={<div className='d-flex w-50'>TOTAL S/.</div>} body={TotalSolesBodyTemplate}></Column>
+          <Column header={<div className='d-flex w-50'>TOTAL $</div>} body={TotalDolaresBodyTemplate}></Column>
         </DataTable>
         <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
         <ModalViewConceptos data={selectGrupos} onHide={()=>setisopenModalViewConceptos(false)} show={isopenModalViewConceptos}/>

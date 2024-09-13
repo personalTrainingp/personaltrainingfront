@@ -17,7 +17,7 @@ export const UtilidadesProgramas = () => {
       total_ingresos: <NumberFormatMoney amount={57573}/>,
       total_gasto: <NumberFormatMoney amount={3198.5}/>,
       total_bene: <NumberFormatMoney amount={54374.5}/>,
-      margen: '0.94%'
+      margen: '0.94'
   },
     {
         anio: '2024',
@@ -25,7 +25,7 @@ export const UtilidadesProgramas = () => {
         total_ingresos: <NumberFormatMoney amount={18568}/>,
         total_gasto: <NumberFormatMoney amount={1031}/>,
         total_bene: <NumberFormatMoney amount={17537}/>,
-        margen: '0.94%'
+        margen: '0.94'
     },
     {
         anio: '2024',
@@ -33,7 +33,7 @@ export const UtilidadesProgramas = () => {
         total_ingresos: <NumberFormatMoney amount={37093}/>,
         total_gasto: <NumberFormatMoney amount={2060.72}/>,
         total_bene: <NumberFormatMoney amount={35032.28}/>,
-        margen: '0.94%'
+        margen: '0.94'
     },
 ] 
   const [pgm, setpgm] = useState(1)
@@ -62,19 +62,19 @@ export const UtilidadesProgramas = () => {
   return (
     <Card>
     <Card.Header>
-        <Card.Title className='text-center font-20'>Utilidades por programas</Card.Title>
+        <Card.Title className='text-center font-20'>Utilidad por programas</Card.Title>
     </Card.Header>
     <Card.Body>
       <div className='d-flex justify-content-center'>
           <SelectButton className='programas-selectsButtons' value={pgm} onChange={onSeleccionar} optionLabel="name" options={programas} />
       </div>
       <DataTable value={dataUtilidades} size={'small'}>
-          <Column header="" field='mes'></Column>
-          <Column header="INGRESOS(S/.)" field='total_ingresos'></Column>
-          <Column header="INGRESOS($)" field='total_ingresos'></Column>
-          <Column header="EGRESOS" field='total_gasto'></Column>
-          <Column header="UTILIDADES" field='total_bene'></Column>
-          <Column header="Margen %" field='margen'></Column>
+          <Column header={<div className='d-flex flex-column'><span>Estados de</span><span>Clientes</span></div>} field='mes'></Column>
+          <Column header={<div className='d-flex flex-column'><span>INGRESOS</span><span>S/.</span></div>} field='total_ingresos'></Column>
+          <Column header={<div className='d-flex flex-column'><span>INGRESOS</span><span>$</span></div>} field='total_ingresos'></Column>
+          <Column header={<div className='d-flex flex-column'><span>EGRESOS</span><span>S/.</span></div>}field='total_gasto'></Column>
+          <Column header={<div className='d-flex flex-column'><span>UTILIDAD</span><span>S/.</span></div>} field='total_bene'></Column>
+          <Column header={<div className='d-flex flex-column'><span>MARGEN</span><span>%</span></div>} field='margen'></Column>
       </DataTable>
     </Card.Body>
     </Card>

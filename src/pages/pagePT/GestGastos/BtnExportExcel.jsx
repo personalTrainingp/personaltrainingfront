@@ -19,6 +19,7 @@ export const ExportToExcel = ({data}) => {
       fec_comprobante: new Date(e.fec_comprobante).getFullYear()===1900? '': e.fec_comprobante,
       Proveedores: e.tb_Proveedor?.razon_social_prov,
       gasto: e.tb_parametros_gasto?.nombre_gasto,
+      grupo: e.tb_parametros_gasto?.grupo,
       descripcion: e.descripcion,
       fec_pago: e.fec_pago,
       moneda: e.moneda,
@@ -27,7 +28,7 @@ export const ExportToExcel = ({data}) => {
       n_comprobante: e.n_comprabante,
       forma_pago: e.parametro_forma_pago?.label_param,
       n_operacion: e.n_operacion,
-      monto: e.monto?.toFixed(2),
+      monto: e.monto,
     };
   });
   const dataDolares = data.filter(e => e.moneda === 'USD');
@@ -47,8 +48,10 @@ export const ExportToExcel = ({data}) => {
     };
   // Definir columnas para las hojas de trabajo
   const columns = [
+    { key: 'Id', width: 8 },
     { key: 'Proveedores', width: 50 },
     { key: 'gasto', width: 40 },
+    { key: 'grupo', width: 15 },
     { key: 'fec_pago', width: 20 },
     { key: 'descripcion', width: 50 },
     { key: 'moneda', width: 4 },
@@ -67,7 +70,7 @@ export const ExportToExcel = ({data}) => {
 
   // Función para agregar datos a una hoja de trabajo
   const addDataToWorksheet = (worksheet, data) => {
-    worksheet.addRow(['id', 'Proveedores', 'Gastos', "fecha de pago", "Descripcion", "banco", "forma_pago", "n_operacion", "comprobante", "n_comprobante", "fecha de comprobante", "Moneda", "Monto"]).eachCell((cell) => {
+    worksheet.addRow(['Id', 'Proveedores', 'Gastos', 'Grupo', "fecha de pago", "Descripcion", "banco", "forma_pago", "n_operacion", "comprobante", "n_comprobante", "fecha de comprobante", "Moneda", "Monto"]).eachCell((cell) => {
       cell.fill = headerStyle.fill;
       cell.font = headerStyle.font;
       cell.alignment = headerStyle.alignment;
@@ -75,7 +78,7 @@ export const ExportToExcel = ({data}) => {
     });
 
     data.forEach((row) => {
-      worksheet.addRow([row.id, row.Proveedores, row.gasto, row.fec_pago, row.descripcion, row.banco, row.forma_pago, row.n_operacion, row.comprobante, row.n_comprobante, row.fec_comprobante, row.moneda, row.monto]).eachCell((cell) => {
+      worksheet.addRow([row.id, row.Proveedores, row.gasto, row.grupo, row.fec_pago, row.descripcion, row.banco, row.forma_pago, row.n_operacion, row.comprobante, row.n_comprobante, row.fec_comprobante, row.moneda, row.monto]).eachCell((cell) => {
         cell.alignment = cellStyle.alignment;
         cell.border = cellStyle.border;
       });
@@ -92,7 +95,7 @@ export const ExportToExcel = ({data}) => {
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
     // Guardar el archivo generado usando FileSaver.js (o similar)
-    saveAs(blob, 'example.xlsx');
+    saveAs(blob, 'Gastos.xlsx');
   };
 
   return (
