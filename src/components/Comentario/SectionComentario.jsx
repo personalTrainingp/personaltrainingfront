@@ -15,6 +15,8 @@ const registerComentario ={
 }
 
 export const SectionComentario = ({uid_comentario}) => {
+	console.log(uid_comentario);
+	
     const {user} = useSelector(e=>e.auth)
     const { formState, comentario_com, onInputChange, onResetForm } = useForm(registerComentario)
 	const { obtenerComentarioxLOCATION, postComentario } = useComentarioStore()
