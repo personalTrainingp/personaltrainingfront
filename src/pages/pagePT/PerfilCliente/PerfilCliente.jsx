@@ -32,7 +32,7 @@ export const PerfilCliente = () => {
   useEffect(() => {
     obtenerUltimaMembresiaPorCliente(uid)
     obtenerOneUsuarioCliente(uid)
-  }, [uid])
+  }, [])
   if(loadingData && loadingUltimaMembresia){
     return (
       <>

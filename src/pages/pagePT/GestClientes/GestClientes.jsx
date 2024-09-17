@@ -37,19 +37,6 @@ export const GestClientes = () => {
 									</span>
 								</Col>
 							</Row>
-{/* 
-							<Table
-								columns={columns}
-								data={Dataclientes}
-								pageSize={5}
-								sizePerPageList={sizePerPageList}
-								isSortable={true}
-								pagination={true}
-								isSelectable={false}
-								isSearchable={true}
-								theadClass="table-light"
-								searchBoxClass="mb-2"
-							/> */}
 							<TableClientes/>
 						</Card.Body>
 					</Card>
