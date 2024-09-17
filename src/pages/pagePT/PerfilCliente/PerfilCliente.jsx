@@ -32,7 +32,7 @@ export const PerfilCliente = () => {
   useEffect(() => {
     obtenerUltimaMembresiaPorCliente(uid)
     obtenerOneUsuarioCliente(uid)
-  }, [])
+  }, [uid])
   if(loadingData && loadingUltimaMembresia){
     return (
       <>
@@ -85,58 +85,66 @@ export const PerfilCliente = () => {
     <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos} id_cli={userCliente?.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
     <ModalExtensionCongelamiento onHide={modalCloseCongelamiento} show={isOpenModalCongelamiento} id_cli={userCliente.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
     <Row>
-      <Col lg={4}>
+      <Col xxl={1} lg={0}>
+      </Col>
+      <Col xxl={10} lg={12}>
+        <Row>
+          <Col lg={4}>
+            <Card className='mt-3 p-3'>
+              <div className='' style={{height: '600px', width: '100%'}}>
+                <div className='d-flex align-items-center flex-column'>
+                  <img src={`${userCliente.urlImg==null?sinAvatar:`${config.API_IMG.AVATARES}${userCliente.urlImg}`}`} className='rounded-circle' width={150} height={150}/>
+                  <div className='m-2 text-center'>
+                    <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{userCliente.nombre_cli} {userCliente.apPaterno_cli} {userCliente.apMaterno_cli}</p></span>
+                    <span className='text-center'>ACTIVO</span>
+                  </div>
+                  <div className='btn btn-danger m-1' onClick={modalOpenRegalos}>
+                    CREAR REGALOS
+                  </div>
+                  <div className='btn btn-info m-1' onClick={modalOpenCongelamiento}>
+                    CREAR CONGELAMIENTO
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </Col>
+          <Col lg={8}>
         <Card className='mt-3 p-3'>
-          <div className='' style={{height: '600px', width: '100%'}}>
-            <div className='d-flex align-items-center flex-column'>
-              <img src={`${userCliente.urlImg==null?sinAvatar:`${config.API_IMG.AVATARES}${userCliente.urlImg}`}`} className='rounded-circle' width={150} height={150}/>
-              <div className='m-2 text-center'>
-                <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{userCliente.nombre_cli} {userCliente.apPaterno_cli} {userCliente.apMaterno_cli}</p></span>
-                <span className='text-center'>ACTIVO</span>
-              </div>
-              <div className='btn btn-danger m-1' onClick={modalOpenRegalos}>
-                CREAR REGALOS
-              </div>
-              <div className='btn btn-info m-1' onClick={modalOpenCongelamiento}>
-                CREAR CONGELAMIENTO
-              </div>
-            </div>
+          <div className='flex-auto'>
+              <TabView>
+                <TabPanel header='Informacion basica'>
+                  <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                      <InformacionGeneralCliente data={userCliente}/>
+                  </ScrollPanel>
+                </TabPanel>
+                <TabPanel header='Comentarios'>
+                <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                  <SectionComentarios data={userCliente}/>
+                </ScrollPanel>
+                </TabPanel>
+                <TabPanel header='Compras'>
+                <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                  <ComprasxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
+                </ScrollPanel>
+                </TabPanel>
+                <TabPanel header='Reportes'>
+                <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                  <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
+                </ScrollPanel>
+                </TabPanel>
+                <TabPanel header='NUTRICIONISTA'>
+                <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                  {/* <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/> */}
+                  <ScreenNutricionista/>
+                </ScrollPanel>
+                </TabPanel>
+              </TabView>
           </div>
         </Card>
+          </Col>
+        </Row>
       </Col>
-      <Col lg={8}>
-    <Card className='mt-3 p-3'>
-      <div className='flex-auto'>
-          <TabView>
-            <TabPanel header='Informacion basica'>
-              <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
-                  <InformacionGeneralCliente data={userCliente}/>
-              </ScrollPanel>
-            </TabPanel>
-            <TabPanel header='Comentarios'>
-            <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
-              <SectionComentarios data={userCliente}/>
-            </ScrollPanel>
-            </TabPanel>
-            <TabPanel header='Compras'>
-            <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
-              <ComprasxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
-            </ScrollPanel>
-            </TabPanel>
-            <TabPanel header='Reportes'>
-            <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
-              <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
-            </ScrollPanel>
-            </TabPanel>
-            <TabPanel header='NUTRICIONISTA'>
-            <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
-              {/* <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/> */}
-              <ScreenNutricionista/>
-            </ScrollPanel>
-            </TabPanel>
-          </TabView>
-      </div>
-    </Card>
+      <Col xxl={1} lg={0}>
       </Col>
     </Row>
     </>

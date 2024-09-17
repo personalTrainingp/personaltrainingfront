@@ -52,9 +52,7 @@ export const ComprasxCliente = ({uid, dataVenta}) => {
 											<b className='text-800'>MEMBRESIA: </b>
 											{
 												e.detalle_ventaMembresia.map(m=>(
-													<>
 													<Detalle_membresia e={m}/>
-													</>
 												))
 											}
 											</>

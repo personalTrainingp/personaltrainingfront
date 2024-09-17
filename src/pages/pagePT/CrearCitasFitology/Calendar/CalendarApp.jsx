@@ -1,7 +1,6 @@
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import '@fullcalendar/react';
 import FullCalendarWidget from './FullCalendarWidget';
-import AddEditEvent from './AddEditEvent';
 import { useCalendar } from './hooks';
 import SidePanel from './SidePanel';
 import { PageBreadcrumb } from '@/components';

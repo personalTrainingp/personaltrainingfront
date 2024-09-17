@@ -35,24 +35,22 @@ export const useCitaStore = () => {
 		DateCell,
 		id_cli,
 		id_detallecita,
-		tipo_cita
+		tipo_cita,
+		id_empl
 		// email_cli,
 		// nombres_apellidos_cli,
 		// fec_servicio,
 		// hora_servicio
 	) => {
 		try {
+
 			const { data } = await PTApi.post(`/cita/post-cita`, {
 				// ...formState,
 				id_cli,
 				id_detallecita,
-				// tipo_serv: tipo_cita !== 'FITOL' ? 'FITOLOGY' : 'NUTRICION',
-				// email_cli,
-				// nombres_apellidos_cli,
-				// fec_servicio,
-				// hora_servicio,
 				fecha_init: DateCell.start,
 				fecha_final: DateCell.end,
+				id_empl,
 				status_cita: 500,
 			});
 			obtenerCitasxSERVICIO(tipo_cita);

@@ -12,10 +12,10 @@ export const Detalle_productos = ({e}) => {
 							<td>
 								<h5 className="font-14 my-1">
 									<Link to="" className="text-body">
-                                    {e.tb_producto.nombre_producto}
+                                    {e.tb_producto?.nombre_producto}
 									</Link>
 								</h5>
-								<span className="text-muted font-13">TIPO: {arrayCategoriaProducto.find(i=>i.value===e.tb_producto.id_categoria)?.label}</span>
+								<span className="text-muted font-13">TIPO: {arrayCategoriaProducto.find(i=>i.value===e.tb_producto?.id_categoria)?.label}</span>
 							</td>
 							<td>
 								<span className="text-muted font-13">CANTIDAD</span> <br />

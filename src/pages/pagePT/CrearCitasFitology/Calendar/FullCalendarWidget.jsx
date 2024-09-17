@@ -82,25 +82,27 @@ const FullCalendarWidget = ({
     }),
     []
   )
-  console.log(data);
     const [onModalAddEditEvent, setonModalAddEditEvent] = useState(false)
     const [selectDATE, setselectDATE] = useState({start: '', end: ''})
     const onClickSubmitted = (e)=>{
       setonModalAddEditEvent(true)
+
       // console.log(e.start, e.end);
-      setselectDATE({start: new Date(e.start), end: new Date(e.end).setTime(new Date(e.end).getTime())})
+      setselectDATE({start: new Date(e.start), end: new Date(e.end)})
     }
     const onCloseModalAddEditEvent = ()=>{
       setonModalAddEditEvent(false)
     }
 
-    const handleSelectSlot = ({ start }) => {
-      const end = new Date(start);
-      end.setMinutes(end.getMinutes() + 30); // Duración fija de 30 minutos
-      const dateSelect = {start: new Date(start), end: new Date(end)}
-      console.log({...dateSelect});
-      setonModalAddEditEvent(true)
-      setselectDATE({...dateSelect})
+    const handleSelectSlot = (esto) => {
+      console.log(esto);
+      
+      // const end = new Date(start);
+      // end.setMinutes(end.getMinutes() + 30); // Duración fija de 30 minutos
+      // const dateSelect = {start: new Date(start), end: new Date(end)}
+      // console.log({...dateSelect});
+      // setonModalAddEditEvent(true)
+      // setselectDATE({...dateSelect})
     };
     const onDoubleSelectEvent = ()=>{
       console.log("Editar evento");

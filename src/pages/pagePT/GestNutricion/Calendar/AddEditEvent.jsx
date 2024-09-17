@@ -12,25 +12,26 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { DateMask, FormatoDateMask } from '@/components/CurrencyMask';
-import dayjs from 'dayjs';
+import dayjs, { utc } from 'dayjs';
 import { Link } from 'react-router-dom';
 
+dayjs.extend(utc);
 const registerCita = {
 	id_cli: 0,
 	id_detallecita: 0,
 	id_empl: 0
 }
 const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
-	const {  daysUTC } = helperFunctions()
 	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPutCita, onPostCita } =  useCitaStore()
 	const { formState, id_cli, id_detallecita, id_empl, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
 	const { obtenerParametrosClientes, DataClientes, obtenerEmpleadosPorDepartamentoNutricion, DataEmpleadosDepNutricion } = useTerminoStore()
-	
+	const [clienteSel, setclienteSel] = useState({})
 	
 	useEffect(() => {
 		obtenerParametrosClientes()
 		obtenerEmpleadosPorDepartamentoNutricion()
 	}, [])
+	
 
 	useEffect(() => {
 		if(id_cli==0) return;
@@ -40,7 +41,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 		const clienteSELECT= DataClientes.find(
 			(option) => option.value === id_cli
 		)
-		onPostCita(selectDATE, id_cli, id_detallecita, tipo_serv);
+		onPostCita(selectDATE, id_cli, id_detallecita, tipo_serv, id_empl);
 		cancelModal()
 	}
 	const cancelModal = ()=>{
@@ -58,7 +59,12 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	const productDialogFooter = (
 		<React.Fragment>
 			<div className='d-flex justify-content-between align-items-center'>
-				<Link to={'/historial-cliente/2bd62ed5-baa6-461c-b0b2-9b4dfd436124'} className='text-primary font-bold' style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Perfil del socio</Link>
+				{id_cli!==0 && (
+					<Link to={`/historial-cliente/${DataClientes.find(
+						(option) => option.value === id_cli
+					).uid}`} className='text-primary font-bold' style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Perfil del socio</Link>
+				)
+				}
 				<span>
 					<Button label="Salir" severity="info" outlined className='border border-2 border-success m-1 text-success' icon="pi pi-times" onClick={cancelModal} />
 					{
@@ -81,9 +87,19 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 				style={{ width: '50rem', height: '35rem' }}
 				breakpoints={{ '960px': '75vw', '641px': '90vw' }}
 				header={dataCita==null?
-					<> Crear cita: {new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
-					hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})}
-					{/* {FormatoDateMask(new Date(selectDATE.start), "D [de] MMMM [del] YYYY [a las] h:mm A")} */}
+					<> 
+					<span className='shadow shadow-3 border border-3 rounded rounded-4 p-2'>
+							CREAR CITA
+						</span>
+						<br/>
+						<br/>
+						<span className='font-17'>
+							De: {FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+						</span>
+						<br/>
+						<span className='font-17'>
+							Hasta: {FormatoDateMask(new Date(selectDATE.end), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+						</span>
 					</>
 					:
 					<>
@@ -93,11 +109,11 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 						<br/>
 						<br/>
 						<span className='font-17'>
-							De: miercoles 21 de agosto del 2024 a las 01:00 pm 
+							De: {FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
 						</span>
 						<br/>
 						<span className='font-17'>
-							Hasta: miercoles 21 de agosto del 2024 a las 01:20 pm
+							Hasta: {FormatoDateMask(new Date(selectDATE.end), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
 						</span>
 					</>}
 				modal

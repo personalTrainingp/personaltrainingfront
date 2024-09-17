@@ -1,19 +1,22 @@
 
 import dayjs from 'dayjs';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { startOfWeek, getDay, format, parse } from 'date-fns';
 import 'dayjs/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { es } from 'date-fns/locale';
-import AddEditEvent from './AddEditEvent';
+
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
 import { FormatoTimeMask } from '@/components/CurrencyMask';
 import { Card } from 'react-bootstrap';
+import AddEditEvent from './AddEditEvent';
 dayjs.locale('es')
 const locales = {
   'es': es,
 };
+const DragAndDropCalendar = withDragAndDrop(Calendar)
 
  // Componente personalizado para las celdas de tiempo
  const TimeSlotWrapper = ({ children, value }) => {
@@ -143,26 +146,51 @@ const FullCalendarWidget = ({
       setonModalAddEditEvent(false)
     }
 
-    const handleSelectSlot = ({ start }) => {
-      const end = new Date(start);
+    const handleSelectSlot = ({ start, end }) => {
       setidCita(0)
-      end.setMinutes(end.getMinutes() + 30); // Duración fija de 30 minutos
       const dateSelect = {start: new Date(start), end: new Date(end)}
       setonModalAddEditEvent(true)
       setselectDATE({...dateSelect})
     };
     const onDoubleSelectEvent = (e)=>{
-      const end = new Date(e.start);
-      end.setMinutes(end.getMinutes() + 30); // Duración fija de 30 minutos
-      const dateSelect = {start: new Date(e.start), end: new Date(end)}
+      const dateSelect = {start: new Date(e.start), end: new Date(e.end)}
       setidCita(e.id)
       setonModalAddEditEvent(true)
       setselectDATE({...dateSelect})
     }
+    const moveEvent = useCallback(
+      ({ event, start, end, isAllDay: droppedOnAllDaySlot = false }) => {
+        const { allDay } = event
+        if (!allDay && droppedOnAllDaySlot) {
+          event.allDay = true
+        }
+        if (allDay && !droppedOnAllDaySlot) {
+            event.allDay = false;
+        }
+  
+        // setMyEvents((prev) => {
+        //   const existing = prev.find((ev) => ev.id === event.id) ?? {}
+        //   const filtered = prev.filter((ev) => ev.id !== event.id)
+        //   return [...filtered, { ...existing, start, end, allDay: event.allDay }]
+        // })
+      },
+      [setMyEvents]
+    )
+  const resizeEvent = useCallback(
+    ({ event, start, end }) => {
+      // setMyEvents((prev) => {
+      //   const existing = prev.find((ev) => ev.id === event.id) ?? {}
+      //   const filtered = prev.filter((ev) => ev.id !== event.id)
+      //   return [...filtered, { ...existing, start, end }]
+      // })
+    },
+    [setMyEvents]
+  )
     useEffect(() => {
       if(idCita==0)return;
       obtenerCitaxID(idCita)
     }, [idCita])
+    
   return (
     <>
       {/* full calendar control */}
@@ -171,8 +199,10 @@ const FullCalendarWidget = ({
         <Card>
           <Card.Body>
             <div id="calendar">
-              <Calendar
+              <DragAndDropCalendar
                 localizer={localizer}
+                onEventDrop={moveEvent}
+                onEventResize={resizeEvent}
                 events={newData}
                 onDoubleClickEvent={onDoubleSelectEvent}
                 startAccessor="start"

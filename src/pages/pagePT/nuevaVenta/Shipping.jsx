@@ -125,88 +125,28 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 							<Col lg={12}>
 							<div className='container-fluid'>
 								<Row>
-									<Col className="mb-3" onClick={ClickOpenModalAcc}>
-									<ItemProdServ Inombre={"VENTAS DE ACCESORIO"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
-										{/* <Card className="mb-0 h-100 border-1">
-											<Card.Body>
-												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
-													<Link
-														to=""
-														className="text-center text-muted"
-														data-bs-toggle="modal"
-														data-bs-target="#exampleModal"
-													>
-														<i className="mdi mdi-plus h3 my-0"></i>
-														<h4 className="font-15 mt-1 mb-0 d-block">Venta de ACCESORIOS</h4>
-													</Link>
-												</div>
-											</Card.Body>
-										</Card> */}
-									</Col>
-									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
-									<Col className="mb-3" onClick={ClickOpenModalProgramas}>
-										<ItemProdServ Inombre={"VENTAS DE MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
-										{/* <Card className="mb-0 h-100 border-1">
-											<Card.Body>
-												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
-													<Link
-														to=""
-														className="text-center text-muted"
-														data-bs-toggle="modal"
-														data-bs-target="#exampleModal"
-													>
-														<i className="mdi mdi-plus h3 my-0"></i>
-														<h4 className="font-16 mt-1 mb-0 d-block">Venta de MEMBRESIAS</h4>
-													</Link>
-												</div>
-											</Card.Body>
-										</Card> */}
+									<Col className="mb-3" xxl={2} onClick={ClickOpenModalProgramas}>
+										<ItemProdServ Inombre={"MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
-									<Col className="mb-3" onClick={onOpenModalSupl}>
-									<ItemProdServ Inombre={"VENTAS DE SUPLEMENTO"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
-										{/* <Card className="mb-0 h-100 border-1">
-											<Card.Body>
-												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
-													<Link
-														to=""
-														className="text-center text-muted"
-														data-bs-toggle="modal"
-														data-bs-target="#exampleModal"
-													>
-														<i className="mdi mdi-plus h3 my-0"></i>
-														<h4 className="font-16 mt-1 mb-0 d-block">Venta de SUPLEMENTOS</h4>
-													</Link>
-												</div>
-											</Card.Body>
-										</Card> */}
+									<Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
+									<ItemProdServ Inombre={"ACCESORIOS"} Iabrev={"acc"} icono={icoAcc} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
+									</Col>
+									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
+									<Col className="mb-3" xxl={2} onClick={onOpenModalSupl}>
+									<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/>
-									<Col className="mb-3" onClick={ClickOpenModalFitology}>
-									<ItemProdServ Inombre={"VENTA DE CITAS DE TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
-										{/* <Card className="mb-0 h-100 border-1">
-											<Card.Body>
-												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
-													<Link
-														to=""
-														className="text-center text-muted"
-														data-bs-toggle="modal"
-														data-bs-target="#exampleModal"
-													>
-														<i className="mdi mdi-plus h3 my-0"></i>
-														<h4 className="font-16 mt-1 mb-0 d-block">Venta de citas TRATAMIENTOS ESTETICOS</h4>
-													</Link>
-												</div>
-											</Card.Body>
-										</Card> */}
+									<Col className="mb-3" xxl={2} onClick={ClickOpenModalFitology}>
+									<ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
-									<Col className="mb-3" onClick={onOpenModalNut}>
-									<ItemProdServ Inombre={"VENTA DE CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
+									<Col className="mb-3" xxl={2} onClick={onOpenModalNut}>
+									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
-									<Col className="mb-3" onClick={ClickOpenModalTransfMemb}>
-									<ItemProdServ Inombre={"VENTA DE TRANSFERENCIAS"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
+									<Col className="mb-3" xxl={2} onClick={ClickOpenModalTransfMemb}>
+									<ItemProdServ Inombre={"TRANSFERENCIAS DE MEMBRESIAS"} Iabrev={"acc"} icono={icoNut} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/>
 								</Row>
