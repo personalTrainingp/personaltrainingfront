@@ -12,47 +12,10 @@ import { Detalle_membresia } from '@/components/Detalles/Detalle_membresia';
 import { Detalle_productos } from '@/components/Detalles/Detalle_productos';
 import { Detalle_cita } from '@/components/Detalles/Detalle_cita';
 import { ModalViewObservacion } from '../GestVentas/ModalViewObservacion';
+import { arrayFacturas } from '@/types/type';
 // import { ProductService } from './service/ProductService';
 
 export const ComprasxCliente = ({uid, dataVenta}) => {
-    const [products, setProducts] = useState(dataVenta);
-
-    const itemTemplate = (product, index) => {
-        return (
-            <Table responsive hover className="table-centered table-nowrap mb-0">
-					<tbody>
-						<tr>
-							<td>
-								<h5 className="font-14 my-1">
-									<Link to="" className="text-body">
-                                        BFR BODY FAT REMOVAL
-									</Link>
-								</h5>
-								<span className="text-muted font-13">TIPO: SUPLEMENTOS</span>
-							</td>
-							<td>
-								<span className="text-muted font-13">CANTIDAD</span> <br />
-								<span className="font-14 mt-1 fw-normal">2</span>
-							</td>
-							<td>
-                                <span className="text-muted font-13">MONTO</span> <br />
-                                <span className="font-14 mt-1 fw-normal">S/ 1600.00</span>
-							</td>
-						</tr>
-					</tbody>
-				</Table>
-        );
-    };
-
-    const listTemplate = (items) => {
-        if (!items || items.length === 0) return null;
-
-        let list = items.map((product, index) => {
-            return itemTemplate(product, index);
-        });
-
-        return <div className="grid grid-nogutter">{list}</div>;
-    };
 	const [isOpenModalObservation, setisOpenModalObservation] = useState(false)
 	const [IdBoleta, setIdBoleta] = useState(0)
 	const onModalViewObservacion = (id)=>{
@@ -72,12 +35,15 @@ export const ComprasxCliente = ({uid, dataVenta}) => {
 						dataVenta.map(e=>{
 							return (
 								<AccordionTab header={
-								<div className='d-flex align-items-center'>
-									<span>Boleta {e.id}</span>
+								<div className=''>
+									<span className=''>{arrayFacturas.find(f=>f.value===e.id_tipoFactura).label} {e.numero_transac}</span>
+									<span className='float-end z-5'>
+										<a className='a-focus' onClick={()=>onModalViewObservacion(e.id)}>Ver detalle de boleta</a>
+										{/* <Button label="Ver detalle de boleta" text onClick={()=>onModalViewObservacion(e.id)} /> */}
+									</span>
 								</div>
-							} key={e.id}>
+								} key={e.id}>
 								
-								<Button label="Ver detalle de boleta" text onClick={()=>onModalViewObservacion(e.id)} />
 								<br/>
 									{
 										e.detalle_ventaMembresia.length>0 && (

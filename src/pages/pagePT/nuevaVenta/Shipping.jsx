@@ -28,6 +28,20 @@ import icoNut from '@/assets/images/PT-images/iconos/nutri.png'
 import { ItemProdServ } from '../reportes/totalVentas/ItemProdServ';
 
 
+export const sumarTarifas = (venta) =>{
+	const sumaTarifas = Object.values(venta)
+	.flatMap(array => array) // Aplanamos los arrays en uno solo
+	.map(objeto => objeto.tarifa) // Obtenemos un array con todas las tarifas
+	.filter(tarifa => typeof tarifa === 'number') // Filtramos solo los valores que son números
+	.reduce((total, tarifa) => total + tarifa, 0); // Sumamos todas las tarifas
+	return sumaTarifas
+}
+
+export const sumarPagos = (dataPagos)=>{
+	const sumaPagos = Object.values(dataPagos).flatMap(array=>array).map(obj=>obj.monto_pago)
+	.reduce((total, tarifa) => total + tarifa, 0); // Sumamos todas las tarifas
+	return sumaPagos;
+}
 const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const [modalAcc, setModalAcc] = useState(false)
 	const [modalSupl, setModalSupl] = useState(false)
@@ -77,12 +91,10 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 		)
 	}
 	const onSubmitFormVentaANDnew = async()=>{
-		// setloadingVenta(true)
-		console.log(dataVenta, datos_pagos, detalle_cli_modelo);
-		if(datos_pagos.length <= 0){
+		if(sumarPagos(datos_pagos)!==sumarTarifas(dataVenta)){
 			return Swal.fire({
 				icon: 'error',
-				title: 'NO HAY PAGO REGISTRADO',
+				title: 'EL PAGO DEBE DE SER IGUAL AL SALDO PENDIENTE',
 				showConfirmButton: false,
 				timer: 2000,
 			});
@@ -95,21 +107,8 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 				timer: 2000,
 			});
 		}
-		if(dataVenta.detalle_venta_programa[0]){
-			if(!dataVenta.detalle_venta_programa[0].firmaCli){
-				return Swal.fire({
-					icon: 'error',
-					title: 'FALTA LA FIRMA DEL SOCIO',
-					showConfirmButton: false,
-					timer: 2000,
-				});
-			}
-		}
-		console.log("esto no debe salir");
-		
 		await startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo}, funToast)
-		dispatch(RESET_STATE_VENTA())
-		// setloadingVenta(false)
+		// dispatch(RESET_STATE_VENTA())
 	}
 	const onSubmitFormVenta = async()=>{
 		startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo})
@@ -145,25 +144,25 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 										</Card> */}
 									</Col>
 									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
-										<Col className="mb-3" onClick={ClickOpenModalProgramas}>
-											<ItemProdServ Inombre={"VENTAS DE MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
-											{/* <Card className="mb-0 h-100 border-1">
-												<Card.Body>
-													<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
-														<Link
-															to=""
-															className="text-center text-muted"
-															data-bs-toggle="modal"
-															data-bs-target="#exampleModal"
-														>
-															<i className="mdi mdi-plus h3 my-0"></i>
-															<h4 className="font-16 mt-1 mb-0 d-block">Venta de MEMBRESIAS</h4>
-														</Link>
-													</div>
-												</Card.Body>
-											</Card> */}
-										</Col>
-										<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
+									<Col className="mb-3" onClick={ClickOpenModalProgramas}>
+										<ItemProdServ Inombre={"VENTAS DE MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
+										{/* <Card className="mb-0 h-100 border-1">
+											<Card.Body>
+												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
+													<Link
+														to=""
+														className="text-center text-muted"
+														data-bs-toggle="modal"
+														data-bs-target="#exampleModal"
+													>
+														<i className="mdi mdi-plus h3 my-0"></i>
+														<h4 className="font-16 mt-1 mb-0 d-block">Venta de MEMBRESIAS</h4>
+													</Link>
+												</div>
+											</Card.Body>
+										</Card> */}
+									</Col>
+									<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
 									<Col className="mb-3" onClick={onOpenModalSupl}>
 									<ItemProdServ Inombre={"VENTAS DE SUPLEMENTO"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
 										{/* <Card className="mb-0 h-100 border-1">
@@ -204,41 +203,12 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
 									<Col className="mb-3" onClick={onOpenModalNut}>
 									<ItemProdServ Inombre={"VENTA DE CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
-										{/* <Card className="mb-0 h-100 border-1">
-											<Card.Body>
-												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
-													<Link
-														to=""
-														className="text-center text-muted"
-														data-bs-toggle="modal"
-														data-bs-target="#exampleModal"
-													>
-														<i className="mdi mdi-plus h3 my-0"></i>
-														<h4 className="font-16 mt-1 mb-0 d-block">Venta de citas NUTRICIONISTA</h4>
-													</Link>
-												</div>
-											</Card.Body>
-										</Card> */}
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
-									{/* <Col sm={6} xl={2} className="mb-3" onClick={ClickOpenModalTransfMemb}>
-										<Card className="mb-0 h-100 border-1">
-											<Card.Body>
-												<div className="border-dashed border-2 border h-100 w-100 rounded d-flex align-items-center justify-content-center">
-													<Link
-														to=""
-														className="text-center text-muted p-2"
-														data-bs-toggle="modal"
-														data-bs-target="#exampleModal"
-													>
-														<i className="mdi mdi-plus h3 my-0"></i>
-														<h4 className="font-16 mt-1 mb-0 d-block">Ventas de TRANSFERENCIAS</h4>
-													</Link>
-												</div>
-											</Card.Body>
-										</Card>
+									<Col className="mb-3" onClick={ClickOpenModalTransfMemb}>
+									<ItemProdServ Inombre={"VENTA DE TRANSFERENCIAS"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={100} Icantidad={''} Itotal={''}/>
 									</Col>
-									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/> */}
+									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/>
 								</Row>
 							</div>
 							</Col>
@@ -255,7 +225,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 							{dataVenta.detalle_venta_programa.length > 0 && (
 								<>
 									<h4>Venta de membresía</h4>
-									<ResumenVentaMembresia dataVenta={dataVenta.detalle_venta_programa[0]} detalle_cli_modelo={detalle_cli_modelo} />
+									<ResumenVentaMembresia dataVenta={dataVenta.detalle_venta_programa[0]} detalle_cli_modelo={detalle_cli_modelo} dataPagos={datos_pagos} />
 								</>
 							)}
 							{dataVenta.detalle_venta_accesorio.length > 0 && (

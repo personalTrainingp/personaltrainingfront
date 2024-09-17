@@ -24,11 +24,12 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	const {  daysUTC } = helperFunctions()
 	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPutCita, onPostCita } =  useCitaStore()
 	const { formState, id_cli, id_detallecita, id_empl, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
-	const { obtenerParametrosClientes, DataClientes } = useTerminoStore()
+	const { obtenerParametrosClientes, DataClientes, obtenerEmpleadosPorDepartamentoNutricion, DataEmpleadosDepNutricion } = useTerminoStore()
 	
 	
 	useEffect(() => {
 		obtenerParametrosClientes()
+		obtenerEmpleadosPorDepartamentoNutricion()
 	}, [])
 
 	useEffect(() => {
@@ -98,8 +99,6 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 						<span className='font-17'>
 							Hasta: miercoles 21 de agosto del 2024 a las 01:20 pm
 						</span>
-						{/* {new Date(selectDATE.start).toLocaleDateString()} {new Date(selectDATE.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})} */}
-					{/* hasta {new Date(selectDATE.end).toLocaleDateString()} {new Date(selectDATE.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true})} */}
 					</>}
 				modal
 				className="p-fluid"
@@ -151,8 +150,8 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 										placeholder={'Seleccionar...'}
 										className="react-select"
 										classNamePrefix="react-select"
-										options={arrayPersonalTest}
-										value={arrayPersonalTest.find((op)=>op.value===id_empl)}
+										options={DataEmpleadosDepNutricion}
+										value={DataEmpleadosDepNutricion.find((op)=>op.value===id_empl)}
 										required
 									/>
 								</div>

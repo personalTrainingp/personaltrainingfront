@@ -18,6 +18,84 @@ function ordenarPorIdPgm(data) {
 		return orden.indexOf(a.id_pgm) - orden.indexOf(b.id_pgm);
 	});
 }
+function agruparYOrdenar(datos) {
+	// Agrupamos los datos por id_forma_pago
+	const resultado = datos.reduce((acumulador, item) => {
+		// Buscamos si ya existe el id_forma_pago en el acumulador
+		let formaPagoExistente = acumulador.find((fp) => fp.id_forma_pago === item.id_forma_pago);
+
+		if (!formaPagoExistente) {
+			// Si no existe, lo creamos
+			formaPagoExistente = {
+				id_forma_pago: item.id_forma_pago,
+				label_param: item.FormaPagoLabel?.label_param || '',
+				dataTipoTarjeta: [],
+			};
+			acumulador.push(formaPagoExistente);
+		}
+
+		// Verificamos si id_tipo_tarjeta es diferente de 0
+		if (item.id_tipo_tarjeta !== 0) {
+			let tipoTarjetaExistente = formaPagoExistente.dataTipoTarjeta.find(
+				(tt) => tt.id_tipo_tarjeta === item.id_tipo_tarjeta
+			);
+
+			if (!tipoTarjetaExistente) {
+				tipoTarjetaExistente = {
+					id_tipo_tarjeta: item.id_tipo_tarjeta,
+					label_tipo_tarjeta: item.TipoTarjetaLabel?.label_param || '',
+					dataTarjeta: [],
+				};
+				formaPagoExistente.dataTipoTarjeta.push(tipoTarjetaExistente);
+			}
+
+			// Verificamos si id_tarjeta es diferente de 0
+			if (item.id_tarjeta !== 0) {
+				let tarjetaExistente = tipoTarjetaExistente.dataTarjeta.find(
+					(t) => t.id_tarjeta === item.id_tarjeta
+				);
+
+				if (!tarjetaExistente) {
+					tarjetaExistente = {
+						id_tarjeta: item.id_tarjeta,
+						label_tarjeta: item.TarjetaLabel?.label_param || '',
+						dataBancos: [],
+					};
+					tipoTarjetaExistente.dataTarjeta.push(tarjetaExistente);
+				}
+
+				// Verificamos si id_banco es diferente de 0
+				if (item.id_banco !== 0) {
+					let bancoExistente = tarjetaExistente.dataBancos.find(
+						(b) => b.id_banco === item.id_banco
+					);
+
+					if (!bancoExistente) {
+						bancoExistente = {
+							id_banco: item.id_banco,
+							label_banco: item.BancoLabel?.label_param || '',
+							id: item.id,
+						};
+						tarjetaExistente.dataBancos.push(bancoExistente);
+					}
+				} else {
+					// Si id_banco es 0, asignamos un array vacío
+					tarjetaExistente.dataBancos = [];
+				}
+			} else {
+				// Si id_tarjeta es 0, asignamos un array vacío
+				tipoTarjetaExistente.dataTarjeta = [];
+			}
+		} else {
+			// Si id_tipo_tarjeta es 0, asignamos un array vacío
+			formaPagoExistente.dataTipoTarjeta = [];
+		}
+
+		return acumulador;
+	}, []);
+
+	return resultado;
+}
 export const useTerminoStore = () => {
 	//USUARIOS
 	const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +109,7 @@ export const useTerminoStore = () => {
 	const [DataProductosSuplementos, setDataProductosSuplementos] = useState([]);
 	const [DataProductosAccesorios, setDataProductosAccesorios] = useState([]);
 	const [DataEmpleadosDepVentas, setDataEmpleadosDepVentas] = useState([]);
+	const [DataEmpleadosDepNutricion, setDataEmpleadosDepNutricion] = useState([]);
 	const [DataSemanaPGM, setDataSemanaPGM] = useState([]);
 	const [DataTarifaSM, setDataTarifaSM] = useState([]);
 	const [DataHorarioPGM, setDataHorarioPGM] = useState([]);
@@ -45,7 +124,7 @@ export const useTerminoStore = () => {
 	const [dataVendedoresVendieron, setdataVendedoresVendieron] = useState([]);
 	const [dataInversionistas, setdataInversionistas] = useState([]);
 	const [dataColaboradores, setdataColaboradores] = useState([]);
-	const [dataFormaPagoActivo, setdataFormaPagoActivo] = useState([]);
+	const [dataFormaPagoActivo, setdataFormaPagoActivoVentas] = useState([]);
 	const [dataUltimaMembresia, setdataUltimaMembresia] = useState([]);
 	const [dataTipoAporte, setdataTipoAporte] = useState([]);
 	const [paquetesDeServicios, setpaquetesDeServicios] = useState([]);
@@ -60,13 +139,7 @@ export const useTerminoStore = () => {
 	const obtenerFormaDePagosActivos = async () => {
 		try {
 			let { data } = await PTApi.get('/parametros/get_params/forma_pago');
-			console.log(data.formaPago);
-			data = data.formaPago.map(f=>{
-				return {
-                    value: e.id,
-                    label: `${e.descripcion} ${e.id_fpago === 4? `| S/ ${tipoCambioStore.tipocambio.precio_compra}` : ''}`,
-                };
-			})
+			// console.log(agruparYOrdenar(data.formaPago));
 			// data = data.map((e) => {
 			// 	console.log(e);
 			// });
@@ -77,10 +150,13 @@ export const useTerminoStore = () => {
 			// 		label: `${e.label} ${e.value === 4 ? `| S/ ${tipocambio.precio_compra}` : ''}`,
 			// 	};
 			// });
-
-			// console.log(data);
-
-			setdataFormaPagoActivo(data.formaPago);
+			// const FormaPago = data.formaPago.map(f=>{
+			// 	return{
+			// 		value: f.id,
+			//         label: f.descripcion
+			// 	}
+			// })
+			setdataFormaPagoActivoVentas(agruparYOrdenar(data.formaPago));
 		} catch (error) {
 			console.log(error);
 		}
@@ -214,6 +290,14 @@ export const useTerminoStore = () => {
 			const { data: asesoresFit } = await PTApi.get(`/parametros/get_params/empleados/2`);
 			const { data: personalFito } = await PTApi.get(`/parametros/get_params/empleados/4`);
 			setDataVendedores([...asesoresFit, ...personalFito]);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerEmpleadosPorDepartamentoNutricion = async (id) => {
+		try {
+			const { data } = await PTApi.get(`/parametros/get_params/empleados/3`);
+			setDataEmpleadosDepNutricion(data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -369,6 +453,8 @@ export const useTerminoStore = () => {
 		obtenerFormaDePagosActivos,
 		obtenerTiposDeAportes,
 		obtenerPaqueteDeServicioParaVender,
+		obtenerEmpleadosPorDepartamentoNutricion,
+		DataEmpleadosDepNutricion,
 		paquetesDeServicios,
 		dataUltimaMembresia,
 		dataFormaPagoActivo,

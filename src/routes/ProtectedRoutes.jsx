@@ -50,7 +50,7 @@ const HistorialCitasNutricionista = lazy(()=>import('../pages/pagePT/HistorialCi
 const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
 const GestContratosClientes = lazy(()=>import('../pages/pagePT/GestContratosCliente'))
 const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
-const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/GestActasReunion'))
+const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilidadPrograma'))
 /**
  * routes import
  */
@@ -80,6 +80,8 @@ export default function ProtectedRoutes() {
 			</div>
 		)
 	}
+	console.log(sections.find(e=>e.url==='/reporte-admin/reporte-utilidad-programa'));
+	
 	return (
 	<ReactRoutes>
 		{
@@ -222,6 +224,11 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/reporte-admin/reporte-egresos') &&
 						<Route path='reporte-admin/reporte-egresos' element={<ReporteEgresos/>}/>
+					}
+					
+					{
+						sections.find(e=>e.url==='/reporte-admin/reporte-utilidad-programa')&&
+						<Route path="reporte-admin/reporte-utilidad-programa" element={<ReporteUtilidadProgramas />} />
 					}
 					{
 						sections.find(e=>e.url==='/trabajo-marketing') &&

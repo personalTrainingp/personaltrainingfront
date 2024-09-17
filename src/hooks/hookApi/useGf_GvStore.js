@@ -153,17 +153,6 @@ export const useGf_GvStore = () => {
 					};
 					empresa.tipo_gasto.push(tipoGasto);
 				}
-
-				// let conceptos = tipoGasto.grupos.find(
-				// 	(tg) => tg.nombre_gasto === curr.nombre_gasto
-				// );
-				// if (!conceptos) {
-				// 	conceptos = {
-				// 		conceptos: curr.conceptos,
-				// 		grupos: [],
-				// 	};
-				// 	empresa.conceptos.push(conceptos);
-				// }
 				let grupo = tipoGasto.grupos.find((g) => g.label === curr.grupo);
 				if (!grupo) {
 					grupo = {
@@ -177,21 +166,8 @@ export const useGf_GvStore = () => {
 					label: curr.nombre_gasto,
 					value: curr.id,
 				});
-
-				// tipoGasto.grupos.push({
-				// 	label: curr.grupo,
-				// 	value: curr.grupo,
-				// 	conceptos: curr.conceptos.map((c) => ({
-				// 		label: c,
-				// 		value: c,
-				// 	})),
-				// 	// concepto: curr.nombre_gasto,
-				// });
-
 				return acc;
 			}, []);
-			// console.log(data);
-
 			dispatch(onSetParametrosGastos(data));
 		} catch (error) {
 			console.log('Error en useProductoStore', error);

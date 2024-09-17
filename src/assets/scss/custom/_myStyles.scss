@@ -17,6 +17,9 @@
   background: #D41115;
     border: 1px solid #D41115;
 }
+.a-focus:focus{
+  color: #000;
+}
 td{
   // font-size: 20px !important;
 }
@@ -168,6 +171,7 @@ td{
   .p-button:active, .p-button.p-highlight:active, .p-button:focus, .p-button.p-highlight:focus, .p-button{
     background-color: $white !important;
     border: 1px solid $black !important;
+    border-radius: 12px;
     color: $black !important;
   }
   // .p-button{
@@ -178,6 +182,7 @@ td{
   .p-button.p-button.p-highlight{
     background-color: $black !important;
     border: 1px solid $white !important;
+    border-radius: 12px;
     color: $white !important;
     font-size: 25px !important;
   }

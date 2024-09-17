@@ -10,7 +10,7 @@ export const ItemPago = ({deletePay, id, formaPay, fechaPay, observacionPay, mon
                 
 				<li style={{float: 'left', width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '15px'}}>
                     <i className='mdi mdi-delete-forever-outline text-danger fs-3 ms-2' onClick={()=>deletePay()}></i>
-                    YAPE:
+                    {id_forma_pago}{id_tarjeta?`/${id_tarjeta}`:''}{id_tipo_tarjeta?`/${id_tipo_tarjeta}`:''}{id_banco?`/${id_banco}`:''}
                 </li>
 				<li style={{float: 'left',  width: '40%', listStyle: 'none'}}>
 					<span className='d-flex justify-content-between'>

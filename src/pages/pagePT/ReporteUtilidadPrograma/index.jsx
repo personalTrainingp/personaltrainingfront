@@ -1,0 +1,1 @@
+export { UtilidadPrograma as default } from './UtilidadPrograma'

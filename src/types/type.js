@@ -14,7 +14,6 @@ export const clasesVentasSeparadas = (tipo) => {
 			return '';
 	}
 };
-
 export const arrayTipoCambio = [
 	{ label: 'Dolares', value: 'USD' },
 	{ label: 'Soles', value: 'PEN' },

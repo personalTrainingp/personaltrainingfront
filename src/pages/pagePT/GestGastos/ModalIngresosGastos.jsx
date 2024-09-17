@@ -49,11 +49,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const { obtenerParametrosBancos, DataBancos } = useTerminoStore()
     const { startRegistrarGastos, startActualizarGastos, objetoToast, isLoadingData } = useGf_GvStore()
     const [showLoading, setshowLoading] = useState(false)
-    // const { obtenerTipoCambioPorFecha, tipocambio } = useTipoCambioStore()
-    // useEffect(() => {
-    //     obtenerTipoCambioPorFecha(new Date().toLocaleDateString())
-    // }, [])
-    
     const [loadingParametros, setloadingParametros] = useState(false)
 	const { dataProvCOMBO } = useSelector(e=>e.prov)
     const { formState, 
@@ -101,9 +96,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             
             setgastoxGrupo(conceptos)
         }, [grupo])
-        console.log(dataParametrosGastos);
-        
-        
         
 
         

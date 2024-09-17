@@ -23,9 +23,9 @@ export const SideBarFormPago = ({show, onHide}) => {
     const dispatch = useDispatch()
     const {formState, fecha_pago, monto_pago, observacion_pago, id_forma_pago, n_operacion, id_tipo_tarjeta, id_tarjeta, id_banco, onInputChange, onInputChangeReact, onResetForm} = useForm(registerPago)
     const [formaPagoSelect, setFormaPagoSelect] = useState(0)
-    const [BancoSelect, setBancoSelect] = useState(0)
-    const [TipoTarjetaSelect, setTipoTarjetaSelect] = useState(0)
-    const [TarjetaSelect, setTarjetaSelect] = useState(0)
+    const [dataTipoTarjeta, setdataTipoTarjeta] = useState([])
+    const [dataTarjetas, setdataTarjetas] = useState([])
+    const [dataBancos, setdataBancos] = useState([])
     const {
 		DataFormaPago,
         DataBancos,
@@ -55,7 +55,57 @@ export const SideBarFormPago = ({show, onHide}) => {
         obtenerFormaDePagosActivos()
         obtenerTipoCambioPorFecha(new Date())
     }, [])
-    console.log(dataFormaPagoActivo);
+    // console.log(dataFormaPagoActivo.find(f=>f.id_forma_pago));
+    const formaPago = dataFormaPagoActivo.map(f=>({
+      value: f.id_forma_pago,
+      label: `${f.label_param}`,
+    }))
+    const tipoTarjeta = dataTipoTarjeta.map(tt=>({
+      value: tt.id_tipo_tarjeta,
+      label: `${tt.label_tipo_tarjeta}`,
+    }))
+    const tarjetas = dataTarjetas.map(t=>({
+      value: t.id_tarjeta,
+      label: `${t.label_tarjeta}`,
+    }))
+    const bancos = dataBancos.map(t=>({
+      value: t.id_banco,
+      label: `${t.label_banco}`,
+    }))
+    useEffect(() => {
+      const tipoTarjetas = dataFormaPagoActivo.find(f=>f.id_forma_pago===id_forma_pago)?.dataTipoTarjeta||[]
+      setdataTipoTarjeta(tipoTarjetas)
+    }, [id_forma_pago])
+    
+    useEffect(() => {
+      // if()          n         
+      const tarjetas = dataTipoTarjeta.find(tt=>tt.id_tipo_tarjeta===id_tipo_tarjeta)?.dataTarjeta || [];
+      setdataTarjetas(tarjetas)
+    }, [id_forma_pago, id_tipo_tarjeta])
+    
+
+    useEffect(() => {
+      const dataBancos = dataTarjetas.find(b=>b.id_tarjeta === id_tarjeta)?.dataBancos || [];
+      console.log(dataBancos);
+      
+      setdataBancos(dataBancos)
+    }, [id_forma_pago, id_tipo_tarjeta, id_tarjeta])
+    
+    // useEffect(() => {
+    //   const bancos = dataFormaPagoActivo.find(f=>f.id_forma_pago===id_forma_pago)?.dataBancos||[]
+    //   setdataBancos(bancos)
+    // }, [id_forma_pago])
+  //   useEffect(() => {
+  //     const bancos = dataFormaPagoActivo.find(e=>e.id_empresa==id_enterprice)||[]
+      
+  //     // setgrupoGasto(grupos)
+  // }, [id_tipoGasto])
+  // useEffect(() => {
+  //     const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
+  //     console.log(conceptos);
+      
+  //     setgastoxGrupo(conceptos)
+  // }, [grupo])
     
   return (
     <div className="card flex justify-content-center">
@@ -82,12 +132,13 @@ export const SideBarFormPago = ({show, onHide}) => {
                             placeholder={'Seleccionar la forma de pago'}
                             className="react-select"
                             classNamePrefix="react-select"
-                            options={arrayFormaPagoTest}
-                            value={arrayFormaPagoTest.find(e=>e.value===id_forma_pago) || 0}
+                            options={formaPago}
+
+                            value={formaPago.find(e=>e.value===id_forma_pago) || 0}
                             required
                             />
                       </div>
-                       {(formaPagoSelect.value===52 || formaPagoSelect.value ===53) &&
+                       {(dataTipoTarjeta.length>0) &&
                         <>
                         <div className='mb-4'>
                             <label>*Tipo de tarjetas:</label>
@@ -97,15 +148,15 @@ export const SideBarFormPago = ({show, onHide}) => {
                                 placeholder={'Seleccionar el tipo de tarjeta'}
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                options={DataTipoTarjetas}
-                                value={DataTipoTarjetas.find(e=>e.value===id_tipo_tarjeta) || 0}
+                                options={tipoTarjeta}
+                                value={tipoTarjeta.find(e=>e.value===id_tipo_tarjeta) || 0}
                                 required
                                 />
                         </div>
                         </>
                       }
                       
-                      {(formaPagoSelect.value===52 || formaPagoSelect.value ===53) &&
+                      {(dataTarjetas.length>0) &&
                         <>
                         <div className='mb-4'>
                             <label>Tarjetas:</label>
@@ -115,14 +166,14 @@ export const SideBarFormPago = ({show, onHide}) => {
                                 placeholder={'Seleccionar tarjeta'}
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                options={DataTarjetas}
-                                value={DataTarjetas.find(e=>e.value===id_tarjeta) || 0}
+                                options={tarjetas}
+                                value={tarjetas.find(e=>e.value===id_tarjeta) || 0}
                                 required
                                 />
                         </div>
                         </>
                         }
-                        {(formaPagoSelect.value===52 || formaPagoSelect.value ===53 || formaPagoSelect.value === 55 || formaPagoSelect.value===54) &&
+                        {(dataBancos.length>0) &&
                         <>
                         <div className='mb-4'>
                             <label>Banco:</label>
@@ -132,8 +183,8 @@ export const SideBarFormPago = ({show, onHide}) => {
                                 placeholder={'Seleccionar el banco'}
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                options={DataBancos}
-                                value={DataBancos.find(e=>e.value===id_banco) || 0}
+                                options={bancos}
+                                value={bancos.find(e=>e.value===id_banco) || 0}
                                 required
                                 />
                         </div>

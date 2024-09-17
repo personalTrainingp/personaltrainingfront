@@ -86,16 +86,19 @@ export const useVentasStore = () => {
 			const { data } = await PTApi.post('/venta/post-ventas', formState);
 			if (formState.dataVenta.detalle_venta_programa.length > 0) {
 				const { base64ToFile } = helperFunctions();
-				const file = base64ToFile(
-					formState.dataVenta.detalle_venta_programa[0].firmaCli,
-					`firma_cli${formState.detalle_cli_modelo.id_cliente}.png`
-				);
-				const formData = new FormData();
-				formData.append('file', file);
-				const { data: blobFirma } = await PTApi.post(
-					`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
-					formData
-				);
+				if (formState.dataVenta.detalle_venta_programa[0].firmaCli) {
+					const file = base64ToFile(
+						formState.dataVenta.detalle_venta_programa[0].firmaCli,
+						`firma_cli${formState.detalle_cli_modelo.id_cliente}.png`
+					);
+					const formData = new FormData();
+					formData.append('file', file);
+					const { data: blobFirma } = await PTApi.post(
+						`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
+						formData
+					);
+				}
+				const { data: dataEmail } = await PTApi.post('/venta/send-email', { formState });
 			}
 			setloadingVenta(false);
 			// console.log(data, blobFirma);
@@ -144,7 +147,7 @@ export const useVentasStore = () => {
 			// Crear un enlace <a> temporal y simular un clic para descargar el archivo PDF
 			const link = document.createElement('a');
 			link.href = url;
-			link.setAttribute('download', 'pdfcontrato.pdf');
+			link.setAttribute('download', 'CONTRATO-CLIENTE.pdf');
 			document.body.appendChild(link);
 			link.click();
 

@@ -7,19 +7,14 @@ import {
 } from '@/components/CurrencyMask';
 import React, { useState } from 'react';
 import { OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import { ModalFirma } from './ModalFirma';
-import { useSelector } from 'react-redux';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import { PdfContrato } from '../pdfs/PdfContrato';
 import { useDispatch } from 'react-redux';
 import { onDeleteAllPrograma } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useVentasStore } from '../../../hooks/hookApi/useVentasStore';
 import dayjs from 'dayjs';
 import config from '@/config';
 
-export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
-	console.log(dataVenta);
+export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos }) => {
 	const dispatch = useDispatch();
 	const [modalFirma, setmodalFirma] = useState(false);
 	const { obtenerPDFCONTRATOgenerado } = useVentasStore();
@@ -41,10 +36,8 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo }) => {
 		console.log('hace click');
 	};
 	const descargarPDFgenerado = () => {
-		obtenerPDFCONTRATOgenerado({ dataVenta });
+		obtenerPDFCONTRATOgenerado({ dataVenta, detalle_cli_modelo, dataPagos });
 	};
-	console.log(dataVenta);
-	
 	return (
 		<div className="container">
 			<div className="row">

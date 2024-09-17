@@ -29,7 +29,7 @@ export const Detalle_cita = ({e}) => {
                                                                                     href="#"
                                                                                     className="text-dark d-inline-block"
                                                                                 >
-                                                                                    {e?.tb_ProgramaTraining.name_pgm} | {e?.tb_semana_training.semanas_st} SEMANAS
+                                                                                    {e?.tb_ProgramaTraining?.name_pgm} | {e?.tb_semana_training?.semanas_st} SEMANAS
                                                                                 </a>
                                                                 </td>
                                                                 <td className="border-0">

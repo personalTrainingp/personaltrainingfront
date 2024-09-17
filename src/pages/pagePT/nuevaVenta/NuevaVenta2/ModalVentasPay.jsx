@@ -76,7 +76,7 @@ export const ModalVentasPay = ({show, onHide}) => {
     //     obtenerParametrosTipoTarjeta()
     //     obtenerParametrosTarjetas()
     //   }, [])
-    console.log(DataFormaPago);
+    console.log(dataFormaPagoActivo);
     
     const dataFormaPagoActivo_CONDOLARES = dataFormaPagoActivo.map((e) => {
 				return {

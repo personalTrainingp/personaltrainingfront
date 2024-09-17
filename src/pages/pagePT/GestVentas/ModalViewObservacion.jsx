@@ -219,14 +219,14 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                                 <>
                                 <div className="timeline-item-info border border-4 p-2 border-gray">
                                         <h4 to="" className="fw-bold mb-1 d-block">
-                                            | FORMA DE PAGO: {e.parametro_forma_pago.label_param} 
+                                            | FORMA DE PAGO: {e.parametro_forma_pago?.label_param} 
                                             {e.parametro_tipo_tarjeta?`|| TIPO DE TARJETA: ${e.parametro_tipo_tarjeta.label_param}` :''} 
                                             {e.parametro_banco?`|| BANCO: ${e.parametro_banco.label_param}`:''} 
                                             {e.parametro_tarjeta?`|| TARJETA: ${e.parametro_tarjeta.label_param}`:''} |
                                         </h4>
                                         <small>
                                             MONTO PARCIAL: 
-                                            <span className="fw-bold"> {FUNMoneyFormatter(e.parcial_monto, e.parametro_forma_pago.id_param==535?'USD':'PEN')}</span>
+                                            <span className="fw-bold"> {FUNMoneyFormatter(e.parcial_monto, e.parametro_forma_pago?.id_param==535?'$':'S/.')}</span>
                                         </small>
                                         <br/>
                                         <small>
