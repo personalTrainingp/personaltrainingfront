@@ -7,9 +7,13 @@ export const FormatRangoFecha = ({rangoFechas}) => {
         <strong>
           {rangoFechas[0]&&FormatoDateMask(rangoFechas[0], "dddd D [de] MMMM [del] YYYY ")} 
         </strong>
-          -
+          {
+            rangoFechas[1]&& "-"
+          }
         <strong>
-          {rangoFechas[1]&&FormatoDateMask(rangoFechas[1], " dddd D [de] MMMM [del] YYYY ")}
+          {
+          rangoFechas[1]&&FormatoDateMask(rangoFechas[1], " dddd D [de] MMMM [del] YYYY ")
+          }
         </strong>
       </span>
   )

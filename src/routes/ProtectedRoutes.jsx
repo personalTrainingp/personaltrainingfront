@@ -50,6 +50,7 @@ const HistorialCitasNutricionista = lazy(()=>import('../pages/pagePT/HistorialCi
 const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
 const GestContratosClientes = lazy(()=>import('../pages/pagePT/GestContratosCliente'))
 const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
+const ReporteComparativaDeVentasxDia = lazy(()=>import('../pages/pagePT/ReporteComparativoxDia'))
 const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilidadPrograma'))
 /**
  * routes import
@@ -80,7 +81,7 @@ export default function ProtectedRoutes() {
 			</div>
 		)
 	}
-	console.log(sections.find(e=>e.url==='/reporte-admin/reporte-utilidad-programa'));
+	// console.log(sections.find(e=>e.url==='/reporte-admin/reporte-utilidad-programa'));
 	
 	return (
 	<ReactRoutes>
@@ -88,6 +89,10 @@ export default function ProtectedRoutes() {
 			status  === 'authenticated' ? (
 				<>
 				<Route path="/*" element={<Layout />}>
+					{
+						sections.find(e=>e.url==='/reporte-admin/comparativa-dia') && 
+						<Route path='reporte-admin/comparativa-dia' element={<ReporteComparativaDeVentasxDia/>}/>
+					}
 					{sections.find(e=>e.url==='/nueva-venta')&&
 						<Route path="nueva-venta" element={<NuevaVenta />} />
 					}

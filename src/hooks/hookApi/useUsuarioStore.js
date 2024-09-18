@@ -181,14 +181,14 @@ export const useUsuarioStore = () => {
 		try {
 			dispatch(onLoadingEmpl());
 			const { data } = await PTApi.get(`/usuario/get-empleado/${UID}`);
-			const { data: dataImg } = await PTApi.get(
-				`/upload/get-upload/${data.empleado?.uid_avatar}`
-			);
+			// const { data: dataImg } = await PTApi.get(
+			// 	`/upload/get-upload/${data.empleado?.uid_avatar}`
+			// );
 			// data.empleados
 			dispatch(
 				onSetEmpl({
 					...data.empleado,
-					urlImg: dataImg ? dataImg.name_image : null,
+					urlImg: null,
 				})
 			);
 		} catch (error) {

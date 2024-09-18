@@ -1,22 +1,19 @@
 
 import dayjs from 'dayjs';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { startOfWeek, getDay, format, parse } from 'date-fns';
 import 'dayjs/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { es } from 'date-fns/locale';
-
-import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
+import AddEditEvent from './AddEditEvent';
 import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
 import { FormatoTimeMask } from '@/components/CurrencyMask';
 import { Card } from 'react-bootstrap';
-import AddEditEvent from './AddEditEvent';
 dayjs.locale('es')
 const locales = {
   'es': es,
 };
-const DragAndDropCalendar = withDragAndDrop(Calendar)
 
  // Componente personalizado para las celdas de tiempo
  const TimeSlotWrapper = ({ children, value }) => {
@@ -146,11 +143,17 @@ const FullCalendarWidget = ({
       setonModalAddEditEvent(false)
     }
 
-    const handleSelectSlot = ({ start, end }) => {
+    const handleSelectSlot = (slotInfo) => {
       setidCita(0)
-      const dateSelect = {start: new Date(start), end: new Date(end)}
+      // const dateSelect = {start: new Date(start), end: new Date(end)}
+          // Crear un nuevo evento con un único slot
+        const newEvent = {
+          start: slotInfo.start,
+          end: dayjs(slotInfo.start).add(20, 'minute').toDate(), // Duración fija de 20 minutos usando dayjs
+          title: 'Nuevo evento',
+        };
       setonModalAddEditEvent(true)
-      setselectDATE({...dateSelect})
+      setselectDATE({...newEvent})
     };
     const onDoubleSelectEvent = (e)=>{
       const dateSelect = {start: new Date(e.start), end: new Date(e.end)}
@@ -158,39 +161,13 @@ const FullCalendarWidget = ({
       setonModalAddEditEvent(true)
       setselectDATE({...dateSelect})
     }
-    const moveEvent = useCallback(
-      ({ event, start, end, isAllDay: droppedOnAllDaySlot = false }) => {
-        const { allDay } = event
-        if (!allDay && droppedOnAllDaySlot) {
-          event.allDay = true
-        }
-        if (allDay && !droppedOnAllDaySlot) {
-            event.allDay = false;
-        }
-  
-        // setMyEvents((prev) => {
-        //   const existing = prev.find((ev) => ev.id === event.id) ?? {}
-        //   const filtered = prev.filter((ev) => ev.id !== event.id)
-        //   return [...filtered, { ...existing, start, end, allDay: event.allDay }]
-        // })
-      },
-      [setMyEvents]
-    )
-  const resizeEvent = useCallback(
-    ({ event, start, end }) => {
-      // setMyEvents((prev) => {
-      //   const existing = prev.find((ev) => ev.id === event.id) ?? {}
-      //   const filtered = prev.filter((ev) => ev.id !== event.id)
-      //   return [...filtered, { ...existing, start, end }]
-      // })
-    },
-    [setMyEvents]
-  )
     useEffect(() => {
       if(idCita==0)return;
       obtenerCitaxID(idCita)
     }, [idCita])
-    
+    const ActionEvent = ()=>{
+      console.log("Hola comiendo???");
+    }
   return (
     <>
       {/* full calendar control */}
@@ -199,10 +176,8 @@ const FullCalendarWidget = ({
         <Card>
           <Card.Body>
             <div id="calendar">
-              <DragAndDropCalendar
+              <Calendar
                 localizer={localizer}
-                onEventDrop={moveEvent}
-                onEventResize={resizeEvent}
                 events={newData}
                 onDoubleClickEvent={onDoubleSelectEvent}
                 startAccessor="start"
@@ -232,8 +207,7 @@ const FullCalendarWidget = ({
                 max={new Date(2024, 0, 1, 21, 50, 0)} // Hasta las 11:59 PM
                 formats={formats}
                 onSelectSlot={handleSelectSlot}
-                
-                selectable
+                selectable="ignoreEvents"
               />
             </div>
             <AddEditEvent show={onModalAddEditEvent} tipo_serv={tipo_serv} onHide={onCloseModalAddEditEvent} dataCita={idCita==0?null:dataCitaxID} selectDATE={selectDATE}/>
