@@ -1,7 +1,7 @@
 import { useForm } from '@/hooks/useForm';
 import { Sidebar } from 'primereact/sidebar'
 import React from 'react'
-import { Button, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 const registerConsulta = {
   id_parametro_antec_pat: 1,
   descripcion_antec_pat: '',
@@ -34,7 +34,7 @@ export const SidebarClinico = ({show, onHide}) => {
         <form onSubmit={onStartSubmitClinico}>
 						<Row>
 							<Col lg={6}>
-								<div className="mb-4">
+								{/* <div className="mb-4">
 									<label htmlFor="nombre_pgm" className="form-label">
 										Nombre del programa*
 									</label>
@@ -62,7 +62,7 @@ export const SidebarClinico = ({show, onHide}) => {
 										style={{ maxHeight: '100px' }}
 										required
 									/>
-								</div>
+								</div> */}
 								<Button type="submit">Actualizar informacion</Button>
 							</Col>
 						</Row>
