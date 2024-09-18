@@ -86,14 +86,14 @@ export const useUsuarioStore = () => {
 			dispatch(onLoadingClient());
 			const { data } = await PTApi.get(`/usuario/get-cliente/${uid_cliente}`);
 			// dispatch(onSetData(data.clientes));
-			const { data: dataImg } = await PTApi.get(
-				`/upload/get-upload/${data.cliente?.uid_avatar}`
-			);
+			// const { data: dataImg } = await PTApi.get(
+			// 	`/upload/get-upload/${data.cliente?.uid_avatar}`
+			// );
 			await obtenerComentarioxLOCATION(data.uid_comentario);
 			dispatch(
 				onSetClient({
 					...data.cliente,
-					urlImg: dataImg ? dataImg.name_image : null,
+					urlImg: null,
 				})
 			);
 			setLoadingData(false);
