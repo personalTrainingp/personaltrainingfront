@@ -6,15 +6,23 @@ import { useDropzone } from 'react-dropzone';
 import { ItemClinico } from './HistClinico/ItemClinico';
 import { Button } from 'primereact/button';
 import { SidebarClinico } from './HistClinico/SidebarClinico';
+import { ModalDieta } from './ModalDieta/ModalDieta';
 
 export const ScreenNutricionista = () => {
     const {getRootProps, getInputProps, acceptedFiles} = useDropzone({noDrag: true});
     const [showSideBarClinico, setshowSideBarClinico] = useState(false)
+    const [isOpenModalPlanAlimenticio, setisOpenModalPlanAlimenticio] = useState(false)
     const onCloseSideBarClinico = ()=>{
         setshowSideBarClinico(false)
     }
     const onOpenSideBarClinico = ()=>{
         setshowSideBarClinico(true)
+    }
+    const onOpenModalFilePlanAlimenticio = ()=>{
+        setisOpenModalPlanAlimenticio(true)
+    }
+    const onCloseModalFilePlanAlimenticio = ()=>{
+        setisOpenModalPlanAlimenticio(false)
     }
   return (
     <>
@@ -22,10 +30,11 @@ export const ScreenNutricionista = () => {
             <TabPanel header='Planes de alimentacion'>
                 <Row>
                 <Col xxl={12}>
-                    <form>
-                        
-                                <FileUploader />
-                    </form>
+                <Row>
+                    <Col>
+                        <Button label="Agregar Plan" onClick={onOpenModalFilePlanAlimenticio} icon="pi pi-plus" iconPos="right"/>
+                    </Col>
+                </Row>
                 </Col>
                 <Col xxl={12}>
                 </Col>
@@ -41,6 +50,7 @@ export const ScreenNutricionista = () => {
             </TabPanel>
         </TabView>
         <SidebarClinico onHide={onCloseSideBarClinico} show={showSideBarClinico}/>
+        <ModalDieta onHide={onCloseModalFilePlanAlimenticio} show={isOpenModalPlanAlimenticio}/>
     </>
   )
 }

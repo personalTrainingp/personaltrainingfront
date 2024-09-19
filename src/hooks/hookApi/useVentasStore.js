@@ -98,7 +98,7 @@ export const useVentasStore = () => {
 						formData
 					);
 				}
-				const { data: dataEmail } = await PTApi.post('/venta/send-email', { formState });
+				// const { data: dataEmail } = await PTApi.post('/venta/send-email', { formState });
 			}
 			setloadingVenta(false);
 			// console.log(data, blobFirma);
