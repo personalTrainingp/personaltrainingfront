@@ -23,8 +23,9 @@ const registerCita = {
 	id_empl: 0
 }
 const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
-	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPutCita, onPostCita, obtenerCitasNutricionalesxCliente, dataCitaxCliente, loading } =  useCitaStore()
-	const { onDeleteCitaxId, loadingAction } = useCitaStore()
+	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPostCita, obtenerCitasNutricionalesxCliente, dataCitaxCliente, loading } =  useCitaStore()
+	// const { onPutCita, loadingAction:loadingPutCita } = useCitaStore()
+	const { onDeleteCitaxId, onPutCita, loadingAction } = useCitaStore()
 	const { formState, id_cli, status_cita, id_cita_adquirida, id_empl, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
 	const { obtenerParametrosClientes, DataClientes, obtenerEmpleadosPorDepartamentoNutricion, DataEmpleadosDepNutricion } = useTerminoStore()
 	const [clienteSel, setclienteSel] = useState({})

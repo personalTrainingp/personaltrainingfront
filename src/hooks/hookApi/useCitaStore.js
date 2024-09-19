@@ -87,10 +87,12 @@ export const useCitaStore = () => {
 	const onPutCita = async (formState, tipo_cita) => {
 		const { id } = formState;
 		try {
+			setloadingAction(true);
 			const { data } = await PTApi.put(`/cita/put-cita/${id}`, {
 				...formState,
 			});
 			obtenerCitasxSERVICIO(tipo_cita);
+			setloadingAction(false);
 		} catch (error) {
 			console.log(error);
 		}
