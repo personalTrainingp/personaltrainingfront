@@ -11,6 +11,7 @@ export const useCitaStore = () => {
 	const [dataCitaxID, setdataCitaxID] = useState({});
 	const [dataCitaxCliente, setdataCitaxCliente] = useState([]);
 	const [loading, setloading] = useState(true);
+	const [loadingAction, setloadingAction] = useState(false);
 
 	const obtenerCitasxSERVICIO = async (tipo_serv) => {
 		try {
@@ -18,7 +19,6 @@ export const useCitaStore = () => {
 			const { data } = await PTApi.get(`/cita/get-citas/${tipo_serv}`);
 			dispatch(onGetCitas(data.citas));
 			setloading(false);
-			// setprogramaPT(data)
 		} catch (error) {
 			console.log(error);
 		}
@@ -85,13 +85,22 @@ export const useCitaStore = () => {
 		}
 	};
 	const onPutCita = async (formState, tipo_cita) => {
-		console.log(formState);
 		const { id } = formState;
 		try {
 			const { data } = await PTApi.put(`/cita/put-cita/${id}`, {
 				...formState,
 			});
 			obtenerCitasxSERVICIO(tipo_cita);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const onDeleteCitaxId = async (id) => {
+		try {
+			setloadingAction(true);
+			const { data } = await PTApi.put(`/cita/delete-cita/${id}`);
+			obtenerCitasxSERVICIO('NUTRI');
+			setloadingAction(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -114,7 +123,9 @@ export const useCitaStore = () => {
 		obtenerCitasxClientexServicio,
 		obtenerCitaxID,
 		onPutCita,
+		onDeleteCitaxId,
 		obtenerCitasNutricionalesxCliente,
+		loadingAction,
 		dataCitaxCliente,
 		loading,
 		dataCitaxID,
