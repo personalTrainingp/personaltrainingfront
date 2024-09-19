@@ -29,7 +29,7 @@ export const ItemVentaMembresia = ({e}) => {
                                     {e.tb_ProgramaTraining.name_pgm} | {e.tb_semana_training.semanas_st} SEMANAS | 
                                 </div>
                                 <div>
-                                    {e.tb_semana_training.congelamiento_st} NUTRICION | {e.tb_semana_training.nutricion_st} CONGELAMIENTO
+                                    {e.tb_semana_training.nutricion_st} NUTRICION | {e.tb_semana_training.congelamiento_st} CONGELAMIENTO
                                 </div>
                                 
 												<span className="text-muted font-weight-normal d-block">

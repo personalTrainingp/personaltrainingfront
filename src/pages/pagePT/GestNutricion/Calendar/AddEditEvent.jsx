@@ -18,12 +18,12 @@ import { Link } from 'react-router-dom';
 dayjs.extend(utc);
 const registerCita = {
 	id_cli: 0,
-	id_detallecita: 0,
+	id_cita_adquirida: 0,
 	id_empl: 0
 }
 const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
-	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPutCita, onPostCita } =  useCitaStore()
-	const { formState, id_cli, id_detallecita, id_empl, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
+	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPutCita, onPostCita, obtenerCitasNutricionalesxCliente, dataCitaxCliente, loading } =  useCitaStore()
+	const { formState, id_cli, id_cita_adquirida, id_empl, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
 	const { obtenerParametrosClientes, DataClientes, obtenerEmpleadosPorDepartamentoNutricion, DataEmpleadosDepNutricion } = useTerminoStore()
 	const [clienteSel, setclienteSel] = useState({})
 	
@@ -31,17 +31,22 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 		obtenerParametrosClientes()
 		obtenerEmpleadosPorDepartamentoNutricion()
 	}, [])
-	
-
 	useEffect(() => {
 		if(id_cli==0) return;
-		obtenerCitasxClientexServicio(id_cli, tipo_serv)
-	}, [id_cli, tipo_serv])
+		obtenerCitasNutricionalesxCliente(id_cli, new Date(selectDATE.start))
+	}, [id_cli])
+	
+	
+
+	// useEffect(() => {
+	// 	if(id_cli==0) return;
+	// 	obtenerCitasxClientexServicio(id_cli, tipo_serv)
+	// }, [id_cli, tipo_serv])
 	const onSubmitEv = ()=>{
 		const clienteSELECT= DataClientes.find(
 			(option) => option.value === id_cli
 		)
-		onPostCita(selectDATE, id_cli, id_detallecita, tipo_serv, id_empl);
+		onPostCita(selectDATE, id_cli, id_cita_adquirida, tipo_serv, id_empl);
 		cancelModal()
 	}
 	const cancelModal = ()=>{
@@ -62,7 +67,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 				{id_cli!==0 && (
 					<Link to={`/historial-cliente/${DataClientes.find(
 						(option) => option.value === id_cli
-					).uid}`} className='text-primary font-bold' style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Perfil del socio</Link>
+					)?.uid}`} className='text-primary font-bold' style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Perfil del socio</Link>
 				)
 				}
 				<span>
@@ -144,14 +149,15 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 								<div className='m-2'>
 									<label>Sesiones disponible:</label>
 									<Select
-										onChange={(e) => onInputChangeReact(e, 'id_detallecita')}
-										name="id_detallecita"
+										onChange={(e) => onInputChangeReact(e, 'id_cita_adquirida')}
+										name="id_cita_adquirida"
 										placeholder={'Selecciona la sesion'}
 										className="react-select"
 										classNamePrefix="react-select"
-										options={tipo_serv=='FITOL'?DataCitaxCLIENTE:[{label: '1 CITA DE NUTRICION', value: 266}]}
-										value={DataCitaxCLIENTE.find(
-											(option) => option.value === id_detallecita
+										isLoading={loading}
+										options={dataCitaxCliente}
+										value={dataCitaxCliente.find(
+											(option) => option.value === id_cita_adquirida
 										)}
 										required
 									/>
