@@ -19,10 +19,10 @@ export const arrayTipoCambio = [
 	{ label: 'Soles', value: 'PEN' },
 ];
 export const arrayEstadosCitas = [
-	{ label: 'Confirmada', value: 500 },
-	{ label: 'Asistio', value: 501 },
-	{ label: 'No Asistio', value: 502 },
-	{ label: 'Cancelada', value: 503 },
+	{ label: 'Confirmada', value: '500' },
+	{ label: 'Asistio', value: '501' },
+	{ label: 'No Asistio', value: '502' },
+	{ label: 'Cancelada', value: '503' },
 ];
 
 export const arrayRedesSociales = [

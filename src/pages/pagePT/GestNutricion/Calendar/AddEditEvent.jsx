@@ -7,7 +7,7 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
-import { arrayCitasTest, arrayEstados, arrayPersonalTest } from '@/types/type';
+import { arrayCitasTest, arrayEstados, arrayEstadosCitas, arrayPersonalTest } from '@/types/type';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
@@ -25,7 +25,7 @@ const registerCita = {
 const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPutCita, onPostCita, obtenerCitasNutricionalesxCliente, dataCitaxCliente, loading } =  useCitaStore()
 	const { onDeleteCitaxId, loadingAction } = useCitaStore()
-	const { formState, id_cli, id_cita_adquirida, id_empl, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
+	const { formState, id_cli, status_cita, id_cita_adquirida, id_empl, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
 	const { obtenerParametrosClientes, DataClientes, obtenerEmpleadosPorDepartamentoNutricion, DataEmpleadosDepNutricion } = useTerminoStore()
 	const [clienteSel, setclienteSel] = useState({})
 	
@@ -38,8 +38,6 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 		obtenerCitasNutricionalesxCliente(id_cli, new Date(selectDATE.start))
 	}, [id_cli])
 	
-	
-
 	// useEffect(() => {
 	// 	if(id_cli==0) return;
 	// 	obtenerCitasxClientexServicio(id_cli, tipo_serv)
@@ -90,8 +88,6 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 			</div>
 		</React.Fragment>
 	);
-	console.log(loadingAction);
-	
 	return (
 		<>
 			{
@@ -103,7 +99,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 				(
 					<Dialog
 					visible={show}
-					style={{ width: '50rem', height: '35rem' }}
+					style={{ width: '50rem', height: '45rem' }}
 					breakpoints={{ '960px': '75vw', '641px': '90vw' }}
 					header={dataCita==null?
 						<> 
@@ -188,6 +184,21 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 											classNamePrefix="react-select"
 											options={DataEmpleadosDepNutricion}
 											value={DataEmpleadosDepNutricion.find((op)=>op.value===id_empl)}
+											required
+										/>
+									</div>
+								</Col>
+								<Col sm={12}>
+									<div className='m-2'>
+										<label>{'Estado de cita'}:</label>
+										<Select
+											onChange={(e) => onInputChangeReact(e, 'status_cita')}
+											name="status_cita"
+											placeholder={'Seleccionar...'}
+											className="react-select"
+											classNamePrefix="react-select"
+											options={arrayEstadosCitas}
+											value={arrayEstadosCitas.find((op)=>op.value===status_cita)}
 											required
 										/>
 									</div>

@@ -53,7 +53,13 @@ const eventStyleGetter = (event, start, end, isSelected) => {
   if (event.status_cita==="500") {
     className = 'leyenda-confirmada'
   }
-  if(event.status_cita==501){
+  if(event.status_cita=="501"){
+    className = 'leyenda-asistio'
+  }
+  if(event.status_cita=="502"){
+    className = 'leyenda-no-asistio'
+  }
+  if(event.status_cita=="503"){
     className = 'leyenda-cancelada'
   }
   return {
@@ -71,14 +77,10 @@ const eventStyleGetter = (event, start, end, isSelected) => {
 // );
 // Componente personalizado para mostrar solo el título de los eventos
 const CustomEvent = ({ event }) => {
-  console.log(dayjs(event.start).format('DD.MM.YYYY'));
-  
   return(
-    <p className='m-0 p-1 text-overflow-ellipsis white-space-nowrap overflow-hidden'>{
-      // FormatoTimeMask(new Date(event.start), 'hh:mm A')
-      // `${new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`
-    }
-    <FormatoTimeMask date={new Date(event.start).toISOString()} format={'hh:mm A'}/>
+    <p className='m-0 p-1 text-overflow-ellipsis white-space-nowrap overflow-hidden'>
+    {dayjs(event.start).format('hh:mm A')}- {dayjs(event.end).format('hh:mm A')}
+    {/* <FormatoTimeMask date={new Date(event.start).toISOString()} format={'hh:mm A'}/> */}
       <br/>
       {event.title}
     </p>
@@ -165,9 +167,6 @@ const FullCalendarWidget = ({
       if(idCita==0)return;
       obtenerCitaxID(idCita)
     }, [idCita])
-    const ActionEvent = ()=>{
-      console.log("Hola comiendo???");
-    }
   return (
     <>
       {/* full calendar control */}
