@@ -270,7 +270,7 @@ export const ModalCliente = ({show, onHide}) => {
                                             id="numDoc_cli"
                                             value={numDoc_cli}
                                             onChange={onInputChange}
-                                            placeholder="Stock"
+                                            placeholder="Documento de identidad"
                                             required
                                         />
                                     </div>
@@ -302,7 +302,7 @@ export const ModalCliente = ({show, onHide}) => {
 										<Select
 											onChange={(e) => onInputChangeReact(e, 'ubigeo_distrito_cli')}
 											name="ubigeo_distrito_cli"
-											placeholder={'Seleccione la distrito'}
+											placeholder={'Seleccione el distrito'}
 											className="react-select"
 											classNamePrefix="react-select"
 											options={arrayDistrito}
@@ -325,7 +325,7 @@ export const ModalCliente = ({show, onHide}) => {
                                             id="direccion_cli"
                                             value={direccion_cli}
                                             onChange={onInputChange}
-                                            placeholder="Stock"
+                                            placeholder="direccion"
                                         />
                                     </div>
                                 </Col>

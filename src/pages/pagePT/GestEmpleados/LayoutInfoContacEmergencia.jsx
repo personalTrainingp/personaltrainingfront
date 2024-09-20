@@ -109,7 +109,7 @@ const ActionColumn = (row) => {
 								id="nombresCompletos_emerg"
 								value={nombresCompletos_emerg}
 								onChange={onInputChange_CE}
-								placeholder="Stock"
+								placeholder="Nombres completo"
 								required
 							/>
 						</div>
@@ -126,7 +126,7 @@ const ActionColumn = (row) => {
 								id="tel_emerg"
 								value={tel_emerg}
 								onChange={onInputChange_CE}
-								placeholder="Stock"
+								placeholder="Numero de telefono"
 								required
 							/>
 						</div>
@@ -164,7 +164,7 @@ const ActionColumn = (row) => {
 						{dataErrors[0]?.error}</span>
 				)
 			}
-			<DataTable data={dataContactsEmerg} columns={columns} />
+			<DataTable noDataComponent={'No hay información para mostrar'} data={dataContactsEmerg} columns={columns} />
 		</>
 	);
 };

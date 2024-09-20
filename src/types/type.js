@@ -144,7 +144,7 @@ export const arrayOrigenDeCliente = [
 	{ value: 30, label: 'Wsp organico' },
 	{ value: 31, label: 'Referidos' },
 	{ value: 32, label: 'Cartera de renovacion' },
-	{ value: 33, label: 'Cartera de inscripcion' },
+	{ value: 33, label: 'Cartera de reinscripcion' },
 ];
 
 export const arrayEstadoCivil = [

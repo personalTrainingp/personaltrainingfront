@@ -112,13 +112,6 @@ export const TotalVentas = () => {
           forma_pago: repoVentasPorSeparado.total?.forma_pago_monto,
           asesores_pago: repoVentasPorSeparado.total?.empl_monto
         }
-      // default:
-      //   console.log("aquiii");
-        
-      //   return {
-      //     data: repoVentasPorSeparado?.total?.data,
-      //     forma_pago: repoVentasPorSeparado.total?.forma_pago_monto,
-      //   }
     }
   }
   

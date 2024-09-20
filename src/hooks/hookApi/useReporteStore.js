@@ -140,18 +140,18 @@ export const useReporteStore = () => {
 				const productosFiltradosSup = e.detalle_ventaProductos.filter(
 					(item) => item.tb_producto.id_categoria === 18
 				);
-				const NutFiltrados = e.detalle_ventaCitas.filter(
-					(item) => item.tb_servicio.tipo_servicio === 'NUTRI'
-				);
-				const TratEsteticoFiltrados = e.detalle_ventaCitas.filter(
-					(item) => item.tb_servicio.tipo_servicio === 'FITOL'
-				);
+				// const NutFiltrados = e.detalle_ventaCitas?.filter(
+				// 	(item) => item.tb_servicio.tipo_servicio === 'NUTRI'
+				// );
+				// const TratEsteticoFiltrados = e.detalle_ventaCitas.filter(
+				// 	(item) => item.tb_servicio.tipo_servicio === 'FITOL'
+				// );
 				return {
 					detalle_membresia: e.detalle_ventaMembresia,
 					detalle_prodAccesorios: productosFiltradosAcc,
 					detalle_prodSuplementos: productosFiltradosSup,
-					detalle_cita_tratest: TratEsteticoFiltrados,
-					detalle_cita_nut: NutFiltrados,
+					detalle_cita_tratest: [],
+					detalle_cita_nut: [],
 					detalle_pago: e.detalleVenta_pagoVenta,
 					tb_empleado: e.tb_empleado,
 				};
