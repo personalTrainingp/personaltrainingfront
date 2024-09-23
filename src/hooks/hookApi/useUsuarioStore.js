@@ -22,9 +22,10 @@ export const useUsuarioStore = () => {
 	const [dataClixID, setdataClixID] = useState({});
 	const [loading, setloading] = useState(false);
 	const [loadingData, setLoadingData] = useState(true);
+	const [loadingPlanAlim, setloadingPlanAlim] = useState(false);
 
 	const { obtenerComentarioxLOCATION } = useComentarioStore();
-	// console.log(user);
+
 	const startRegisterUsuarioCliente = async (form, selectedFile) => {
 		const { comentario_com } = form.comentarios;
 		const { dataContactsEmerg } = form;

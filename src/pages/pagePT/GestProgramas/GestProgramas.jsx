@@ -50,47 +50,6 @@ export const GestProgramas = () => {
 		setviewImage(sinImage);
 		onResetForm()
 	};
-	
-    // const DataTrainerPrueba = [
-    //     {value: 1, label: 'Rosa Altamiranda'},
-    //     {value: 2, label: 'Carmen Bacilio'},
-    //     {value: 3, label: 'Esteban Chavez'},
-    // ]
-	// const columns = [
-	// 	{
-			
-	// 		name: 'Horario',
-	// 		selector: (row) => row.time_HorarioPgm,
-	// 	},
-	// 	{
-	// 		name: 'Aforo',
-	// 		selector: (row) => {
-	// 			return `0/${row.aforo_HorarioPgm}`
-				
-	// 		}
-	// 	},
-	// 	{
-	// 		name: 'Entrenador(a)',
-	// 		selector: (row) => {
-	// 			// console.log(DataTrainerPrueba.find(e=>e.value===row.trainer_HorarioPgm));
-	// 			const nameTrainer = DataTrainerPrueba.find(e=>e.value===row.trainer_HorarioPgm)
-	// 			// console.log(nameTrainer.label);
-	// 			return nameTrainer?.label
-	// 		}
-	// 	},
-	// 	{
-	// 		name: 'Estado',
-	// 		selector: (row) => {
-	// 			return (
-	// 				<>
-	// 						<span className={`${row.estado_HorarioPgm?'bg-success':'bg-danger'} p-1 me-1 badge fs-6 fw-bolder`}>
-	// 						{row.estado_HorarioPgm?'Activo':'Inactivo'}
-	// 					</span>
-	// 				</>
-	// 			)
-	// 		},
-	// 	}
-	// ];
 	const onStartSubmitRegister = (e) => {
 		e.preventDefault();
 		const formData = new FormData();

@@ -14,6 +14,7 @@ export const clasesVentasSeparadas = (tipo) => {
 			return '';
 	}
 };
+
 export const arrayTipoCambio = [
 	{ label: 'Dolares', value: 'USD' },
 	{ label: 'Soles', value: 'PEN' },
@@ -222,17 +223,17 @@ export const arrayServiciosNutricionalesTest = [
 	{ label: 'DIETAS', value: 4, cantidad: 10, tarifa: 399.0 },
 ];
 
-export const arrayFormaPagoTest = [
-	{ label: 'Groupon / Interbank / Visa', value: 1 },
-	{ label: 'Groupon / Bcp / Visa', value: 2 },
-	{ label: 'Groupon / Interbank / Visa', value: 3 },
-	{ label: 'Groupon / Dinners / Dinners', value: 4 },
-	{ label: 'American Express / American Express', value: 5 },
-	{ label: 'Groupon ', value: 6 },
-	{ label: 'Groupon / Interbank', value: 7 },
-	{ label: 'Groupon / Interbank', value: 8 },
-	{ label: 'Groupon / Interbank', value: 9 },
-];
+// export const arrayFormaPagoTest = [
+// 	{ label: 'Groupon / Interbank / Visa', value: 1 },
+// 	{ label: 'Groupon / Bcp / Visa', value: 2 },
+// 	{ label: 'Groupon / Interbank / Visa', value: 3 },
+// 	{ label: 'Groupon / Dinners / Dinners', value: 4 },
+// 	{ label: 'American Express / American Express', value: 5 },
+// 	{ label: 'Groupon ', value: 6 },
+// 	{ label: 'Groupon / Interbank', value: 7 },
+// 	{ label: 'Groupon / Interbank', value: 8 },
+// 	{ label: 'Groupon / Interbank', value: 9 },
+// ];
 
 export const arrayFinanzas = [
 	{ label: '250 | Fijos [EGRESOS]', value: 250 },

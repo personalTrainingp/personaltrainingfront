@@ -3,6 +3,7 @@ import { Row, Col, Card } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import useFileUploader from './useFileUploader';
 import styled from 'styled-components';
+import { useEffect } from 'react';
 
 const FileUploader = ({ showPreview = true, onFileUpload }) => {
   const { selectedFiles, handleAcceptedFiles, removeFile } = useFileUploader(showPreview);
@@ -80,16 +81,22 @@ const FileUploader = ({ showPreview = true, onFileUpload }) => {
   );
 };
 
-const FileUploaderSN = ({showPreview = true, onFileUpload})=>{
+const FileUploaderSN = ({showPreview = true, onFileUpload, fileAccepted})=>{
   const { selectedFiles, handleAcceptedFiles, removeFile } = useFileUploader(showPreview);
   // console.log(onFileUpload);
   const onDropZoneChange = (acceptedFiles)=>{
-    if (acceptedFiles.length > 0) {
-      const file = acceptedFiles[0];  // Solo el primer archivo
-      handleAcceptedFiles([file], onFileUpload); // Pasa solo el archivo seleccionado
-    }
-    // handleAcceptedFiles(acceptedFiles, onFileUpload)
+    const file = acceptedFiles[0];  // Solo el primer archivo
+    handleAcceptedFiles([file], onFileUpload); // Pasa solo el archivo seleccionado
+    // if (acceptedFiles.length > 0) {
+    // }
   }
+  useEffect(() => {
+    if(selectedFiles.length>1){
+      removeFile(selectedFiles[0]);
+    }
+  }, [selectedFiles])
+  
+  
   return (
     <>
     {
@@ -109,6 +116,7 @@ const FileUploaderSN = ({showPreview = true, onFileUpload})=>{
                 </div>
                 <p>Haga clic para cargar o arrastre y suelte</p>
                 <input 
+                accept={".pdf,.doc"} 
                 {...getInputProps()}
                 style={{ display: "none" }} type="file" required id="upload-file" name="uploaded-file"/>
                 <p className="message">{selectedFiles.length>0 ? `${selectedFiles[0]?.name}, ${selectedFiles[0]?.size} bytes` : "SIN ARCHIVOS SELECCIONADO"}</p>
@@ -122,7 +130,28 @@ const FileUploaderSN = ({showPreview = true, onFileUpload})=>{
     </>
   );
 }
-export { FileUploader, FileUploaderSN };
+const FileReaderDieta = ({selectedFiles})=>{
+  return (
+    <form className="dropzone-box">
+            <div className="dropzone-area">
+                <div className="file-upload-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2"
+                        stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                    </svg>
+                </div>
+                <p>Haga clic para cargar un documento</p>
+                <input 
+                accept={".pdf,.doc"}
+                style={{ display: "none" }} type="file" required id="upload-file" name="uploaded-file"/>
+                <p className="message">{selectedFiles.length>0 ? `${selectedFiles[0]?.name}, ${selectedFiles[0]?.size} bytes` : "SIN ARCHIVOS SELECCIONADO"}</p>
+            </div>
+            </form>
+  )
+}
+export { FileUploader, FileUploaderSN, FileReaderDieta };
 
 
 const DIVContainer = styled.div`

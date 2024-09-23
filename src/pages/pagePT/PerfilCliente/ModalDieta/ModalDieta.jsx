@@ -1,24 +1,28 @@
-import { FileUploader, FileUploaderSN } from '@/components'
+import { FileReaderDieta, FileUploader, FileUploaderSN } from '@/components'
+import { useNutricionCliente } from '@/hooks/hookApi/useNutricionCliente'
+import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore'
+import { useForm } from '@/hooks/useForm'
 import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 import React, { useEffect, useRef, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components'
-
-export const ModalDieta = ({show, onHide}) => {
-
-    const fotterDialog = (
-        <>
-            <Button label='CANCELAR' text className='mx-2'/>
-            <Button label='GUARDAR' className='mx-2'/>
-        </>
-    )
-
+const registerFile_DIETA = {
+    nombre_dieta: '',
+    descripcion_dieta: '',
+}
+export const ModalDieta = ({show, onHide, id_cli}) => {
+    const [file_DIETA, setfile_DIETA] = useState(null)
+    const { formState, nombre_dieta, descripcion_dieta, onInputChange, onResetForm } = useForm(registerFile_DIETA)
+    const { startRegisterDieta } = useNutricionCliente()
     const [file, setFile] = useState(null);
     const dropzoneRef = useRef();
     const inputRef = useRef(null);
-    const formRef = useRef(null);
-  
+    const cancelModal = ()=>{
+        onHide()
+        onResetForm()
+        setfile_DIETA(null)
+    }
     const handleFileChange = (e) => {
       if (e.target.files.length) {
         setFile(e.target.files[0]);
@@ -49,32 +53,83 @@ export const ModalDieta = ({show, onHide}) => {
   
     const handleSubmit = (e) => {
       e.preventDefault();
-      const selectedFile = inputRef.current.files[0];
-      console.log(selectedFile);
     };
   
-    useEffect(() => {
-      const dropzoneElement = dropzoneRef.current;
-      console.log(dropzoneElement);
-      
-    //   dropzoneElement.addEventListener("dragover", handleDragOver);
-    //   dropzoneElement.addEventListener("dragleave", handleDragLeave);
-    //   dropzoneElement.addEventListener("dragend", handleDragLeave);
-    //   dropzoneElement.addEventListener("drop", handleDrop);
-  
-    //   return () => {
-        // dropzoneElement.removeEventListener("dragover", handleDragOver);
-        // dropzoneElement.removeEventListener("dragleave", handleDragLeave);
-        // dropzoneElement.removeEventListener("dragend", handleDragLeave);
-        // dropzoneElement.removeEventListener("drop", handleDrop);
-    //   };
-    }, []);
+    const onChangeFile = (e)=>{
+        const file = e.target.files[0]
+        setfile_DIETA(file)
+    }
+    
+    
+    const onSubmitFilePlanAlimenticio = (e)=>{
+        e.preventDefault()
+        const formData = new FormData();
+        formData.append('file', file_DIETA);
+        startRegisterDieta(formData, id_cli, formState)
+        cancelModal()
+        // startRegisterDieta()
+    }
+
     
   return (
     
-    <Dialog footer={fotterDialog} header="Subir y adjuntar archivos" visible={show} style={{ width: '30rem', height: '35rem' }} onHide={onHide}>
+    <Dialog header="Agregar un plan alimenticio" visible={show} style={{ width: '30rem', height: '50rem' }} onHide={cancelModal}>
         <DIVContainer>
-            <FileUploaderSN />
+            {/* <FileUploaderSN fileAccepted={".pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx"} onFileUpload={onChangeFileDieta} showPreview={true}/> */}
+            <form className="dropzone-box" onSubmit={onSubmitFilePlanAlimenticio}>
+            {/*  */}
+            <Row>
+                <Col xxl={12}>
+                <div className="dropzone-area my-2">
+                    <div className="file-upload-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2"
+                            stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                        </svg>
+                    </div>
+                    <p>Haga clic para cargar el documento</p>
+                    <input 
+                    accept={".pdf,.doc"}
+                    name='file_DIETA'
+                    onChange={onChangeFile}
+                    type="file" required/>
+                    <p className="message">{file_DIETA ? `${file_DIETA?.name}, ${file_DIETA?.size} bytes` : "SIN ARCHIVOS SELECCIONADO"}</p>
+                </div>
+                </Col>
+                <Col xxl={12}>
+                    <div className="mb-2">
+                        <label htmlFor="nombre_dieta" className="form-label">
+                            Nombre del plan alimenticio:
+                        </label>
+                        <input
+                            name='nombre_dieta'
+                            placeholder='dieta rica en...'
+                            className='form-control'
+                            value={nombre_dieta}
+                            onChange={onInputChange}
+                        />
+                    </div>
+                </Col>
+                <Col xxl={12}>
+                    <div className="mb-2">
+                        <label htmlFor="descripcion_dieta" className="form-label">
+                            Descripcion:
+                        </label>
+                        <textarea
+                            name='descripcion_dieta'
+                            className='form-control'
+                            placeholder='Este plan alimenticio es...'
+                            value={descripcion_dieta}
+                            onChange={onInputChange}
+                        />
+                    </div>
+                </Col>
+                <Button label='CANCELAR' onClick={cancelModal} text className='mx-2'/>
+                <Button label='GUARDAR' type='submit' className='mx-2'/>
+            </Row>
+            </form>
         </DIVContainer>
     </Dialog>
   )
