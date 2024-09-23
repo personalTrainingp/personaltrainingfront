@@ -6,9 +6,7 @@ import { useDispatch } from 'react-redux';
 
 export const useNutricionCliente = () => {
 	const dispatch = useDispatch();
-	const [DataAsesorxMeta, setDataAsesorxMeta] = useState([]);
-	const [dataMeta, setdataMeta] = useState({});
-	const [isLoading, setisLoading] = useState(false);
+	const [isLoading, setisLoading] = useState(true);
 	const startRegisterDieta = async (formData, id_cli, formState) => {
 		try {
 			setisLoading(true);
@@ -19,8 +17,8 @@ export const useNutricionCliente = () => {
 				`/storage/blob/create/${dataDieta.uid_dieta}?container=nutricion-dietas`,
 				formData
 			);
-			obtenerDietasxCliente(id_cli);
 			setisLoading(false);
+			obtenerDietasxCliente(id_cli);
 		} catch (error) {
 			console.log(error);
 			setisLoading(false);
@@ -36,7 +34,9 @@ export const useNutricionCliente = () => {
 	};
 	const EliminarDietaxID = async (id, id_cli) => {
 		try {
+			setisLoading(false);
 			const { data } = await PTApi.put(`/dieta/delete-dieta/${id}`);
+			setisLoading(false);
 			obtenerDietasxCliente(id_cli);
 		} catch (error) {
 			console.log(error);

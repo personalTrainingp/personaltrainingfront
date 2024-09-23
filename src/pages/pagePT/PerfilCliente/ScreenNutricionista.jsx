@@ -17,7 +17,7 @@ export const ScreenNutricionista = ({id_cli}) => {
     const [showSideBarClinico, setshowSideBarClinico] = useState(false)
     const [isOpenModalPlanAlimenticio, setisOpenModalPlanAlimenticio] = useState(false)
     
-  const { obtenerDietasxCliente, EliminarDietaxID  } = useNutricionCliente()
+  const { obtenerDietasxCliente, EliminarDietaxID, isLoading  } = useNutricionCliente()
   
   const { status, userCliente, dataNutricion_DIETA } = useSelector(e=>e.authClient)
   useEffect(() => {
@@ -51,8 +51,13 @@ export const ScreenNutricionista = ({id_cli}) => {
             }
         })
     }
+    console.log(isLoading);
+    
   return (
     <>
+        {
+            
+        }
         <TabView>
             <TabPanel header='Planes de alimentacion'>
                 <Row>

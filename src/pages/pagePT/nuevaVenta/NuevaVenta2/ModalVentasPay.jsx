@@ -3,7 +3,7 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useTipoCambioStore } from '@/hooks/hookApi/useTipoCambioStore'
 import { useForm } from '@/hooks/useForm'
 import { onAddOneDetallePago } from '@/store/uiNuevaVenta/uiNuevaVenta'
-import { arrayFormaPagoTest } from '@/types/type'
+// import { arrayFormaPagoTest } from '@/types/type'
 import React, { useEffect, useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
@@ -76,14 +76,14 @@ export const ModalVentasPay = ({show, onHide}) => {
     //     obtenerParametrosTipoTarjeta()
     //     obtenerParametrosTarjetas()
     //   }, [])
-    console.log(dataFormaPagoActivo);
+    // console.log(dataFormaPagoActivo);
     
-    const dataFormaPagoActivo_CONDOLARES = dataFormaPagoActivo.map((e) => {
-				return {
-					value: e.value,
-					// label: `${e.label} ${e.value === 4 ? `| S/ ${(tipocambio.precio_compra*monto_pago?.replace(/,/g, '')).toFixed(2)}` : ''}`,
-				};
-			});
+    // const dataFormaPagoActivo_CONDOLARES = dataFormaPagoActivo.map((e) => {
+	// 			return {
+	// 				value: e.value,
+	// 				// label: `${e.label} ${e.value === 4 ? `| S/ ${(tipocambio.precio_compra*monto_pago?.replace(/,/g, '')).toFixed(2)}` : ''}`,
+	// 			};
+	// 		});
   return (
     <Modal show={show} onHide={cancelModal} size='xxl'>
         <Modal.Header>
@@ -105,7 +105,7 @@ export const ModalVentasPay = ({show, onHide}) => {
                           required
                           />
                       </div>
-                      <div className='mb-2'>
+                      {/* <div className='mb-2'>
                         <label>Forma de pago*:</label>
                             <Select
                             onChange={(e) => onInputChangeReact(e, 'id_forma_pago')}
@@ -169,7 +169,7 @@ export const ModalVentasPay = ({show, onHide}) => {
                                 />
                         </div>
                         </>
-                        }
+                        } */}
                       <div className='mb-2'>
                         <label>Monto de pago:</label>
                         <input 

@@ -27,6 +27,7 @@ export const PerfilCliente = () => {
   const { obtenerUltimaMembresiaPorCliente, dataUltimaMembresia, isLoading:loadingUltimaMembresia } = useTerminoStore()
   const [isOpenModalRegalos, setisOpenModalRegalos] = useState(false)
   const [isOpenModalCongelamiento, setisOpenModalCongelamiento] = useState(false)
+  
   const [dataVentas, setdataVentas] = useState([])
   // const [isOpenModalRegalos, setisOpenModal] = useState(false)
   const { status, userCliente } = useSelector(e=>e.authClient)
