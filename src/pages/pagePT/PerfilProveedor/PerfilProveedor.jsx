@@ -37,7 +37,7 @@ export const PerfilProv = () => {
                         <div className='d-flex align-items-center flex-column'>
                         <img src={`${sinAvatar}`} className='rounded-circle' width={150} height={150}/>
                         <div className='m-2 text-center'>
-                            <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{proveedor.parametro_oficio.label_param} - {proveedor.razon_social_prov}</p></span>
+                            <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{proveedor.parametro_oficio?.label_param} - {proveedor.razon_social_prov}</p></span>
                             <span className='text-center'>{proveedor.estado_prov?
                                 <Badge value="Activo" size="xlarge" severity="success"></Badge>
                                 : 
@@ -54,10 +54,6 @@ export const PerfilProv = () => {
 						</tr>
 						<tr className='my-2'>
 							<td>Completados</td>
-							<td>2</td>
-						</tr>
-						<tr className='my-2'>
-							<td>Cancelados</td>
 							<td>2</td>
 						</tr>
 					</tbody>
