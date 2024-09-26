@@ -263,7 +263,6 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                         value={comboOficio.find(
                                             (option) => option.value === id_oficio
                                         )}
-                                        required
                                     />
                                 </div>
                             </Col>

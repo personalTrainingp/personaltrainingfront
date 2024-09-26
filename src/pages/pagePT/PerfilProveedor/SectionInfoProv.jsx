@@ -250,7 +250,6 @@ export const SectionInfoProv = ({dataProv}) => {
                                         value={comboOficio.find(
                                             (option) => option.value === id_oficio
                                         )}
-                                        required
                                     />
                                 </div>
                             </Col>
