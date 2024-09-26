@@ -1,4 +1,5 @@
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayEstados, arrayTarjetasTemp } from '@/types/type'
 import { Toast } from 'primereact/toast'
@@ -17,6 +18,7 @@ const registerProvedor = {
 	cel_vend_prov: '',
 	email_vend_prov: '',
 	estado_prov: true,
+    id_oficio: 0
 }
 export const ModalProveedor = ({status, dataProv, onHide, show}) => {
     const { ruc_prov, 
@@ -33,8 +35,10 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
             cci,
             n_cuenta,
             id_tarjeta,
+            id_oficio,
             formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
             const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
+            const { comboOficio, obtenerOficios } = useTerminoStore()
             const [visible, setVisible] = useState(false);
           
             const toastBC = useRef(null);
@@ -49,6 +53,12 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                 });
               }
             }, [visible, isLoading]);
+            
+            useEffect(() => {
+                obtenerOficios()
+            }, [])
+            
+            console.log(comboOficio);
             
 
 
@@ -235,6 +245,27 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                     placeholder="EJ. JR LAS PERLAS"
                                 />
                             </div>
+                            </Col>
+                            <Col lg={4}>
+                                
+                                <div className="mb-4">
+                                    <label htmlFor="id_oficio" className="form-label">
+                                        Oficio del proveedor*
+                                    </label>
+                                    
+                                    <Select
+                                        onChange={(e) => onInputChangeReact(e, 'id_oficio')}
+                                        name="id_oficio"
+                                        placeholder={'Seleccione el oficio del proveedor'}
+                                        className="react-select"
+                                        classNamePrefix="react-select"
+                                        options={comboOficio}
+                                        value={comboOficio.find(
+                                            (option) => option.value === id_oficio
+                                        )}
+                                        required
+                                    />
+                                </div>
                             </Col>
                             <Col lg={4}>
                                 

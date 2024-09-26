@@ -2,6 +2,7 @@ import { PTApi } from '@/common/api/';
 import { onSetProveedores, onSetProveedoresCOMBO } from '@/store/dataProveedor/proveedorSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import Swal from 'sweetalert2';
 
 export const useProveedorStore = () => {
 	const dispatch = useDispatch();
@@ -25,14 +26,15 @@ export const useProveedorStore = () => {
 		uid_contrato_proveedor: '',
 		uid_presupuesto_proveedor: '',
 		uid_documentso_proveedor: '',
+		parametro_oficio: {label_param: ''},
 		id_oficio: 0,
 	});
 	const startRegisterProveedor = async (formState) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.post('/proveedor/post-proveedor', formState);
-			setmessage({ msg: data.msg, ok: data.ok });
 			setIsLoading(false);
+			setmessage({ msg: data.msg, ok: data.ok });
 			obtenerParametrosProveedor();
 			obtenerProveedores();
 		} catch (error) {
@@ -52,7 +54,6 @@ export const useProveedorStore = () => {
 			// setIsLoading(true);
 			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
 			// setDataProducProveedor(data);
-			console.log(data);
 			dispatch(onSetProveedoresCOMBO(data));
 			// setIsLoading(false);
 		} catch (error) {
@@ -65,8 +66,9 @@ export const useProveedorStore = () => {
 			const { data } = await PTApi.get(`/proveedor/obtener-proveedor/${id}`);
 			// console.log(data);
 			setstatus('success');
+			// console.log(data.proveedor);
 
-			setProveedor(data.proveedor);
+			setProveedor({ proveedor: data.proveedor });
 		} catch (error) {
 			console.log(error);
 		}
@@ -75,7 +77,6 @@ export const useProveedorStore = () => {
 		try {
 			setIsLoading(false);
 			const { data } = await PTApi.get(`/proveedor/obtener-proveedor-uid/${uid}`);
-			console.log(data);
 
 			setProveedor(data.proveedor);
 			setIsLoading(true);
@@ -86,6 +87,12 @@ export const useProveedorStore = () => {
 	const EliminarProveedor = async (id_prov) => {
 		try {
 			const { data } = await PTApi.put(`/proveedor/remove-proveedor/${id_prov}`);
+			Swal.fire({
+				icon: 'success',
+				title: 'PROVEEDOR ELIMINADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 1500,
+			});
 			// console.log(id);
 			// dispatch(getProveedores(data));
 			obtenerProveedores();
@@ -102,8 +109,20 @@ export const useProveedorStore = () => {
 			setmessage({ msg: data.msg, ok: data.ok });
 			setIsLoading(false);
 			obtenerProveedores();
+			Swal.fire({
+				icon: 'success',
+				title: 'PROVEEDOR ACTUALIZADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 1500,
+			});
 		} catch (error) {
 			console.log(error);
+			Swal.fire({
+				icon: 'success',
+				title: 'OCURRIO UN PROBLEMA',
+				showConfirmButton: false,
+				timer: 1500,
+			});
 		}
 	};
 	return {

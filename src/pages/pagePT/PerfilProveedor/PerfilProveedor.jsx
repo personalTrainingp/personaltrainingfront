@@ -2,6 +2,7 @@ import { PageBreadcrumb } from '@/components'
 import { Button } from 'primereact/button'
 import React, { useEffect, useState } from 'react'
 import { Card, Col, ProgressBar, Row, Table } from 'react-bootstrap'
+import { Badge } from 'primereact/badge'
 import { Link, useParams } from 'react-router-dom'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { TrabajosProv } from './TrabajosProveedor/TrabajosProv'
@@ -13,7 +14,6 @@ import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { Loading } from '@/components/Loading'
 export const PerfilProv = () => {
     const {uid} = useParams()
-    console.log(uid);
     
     const { obtenerProveedorxUID, isLoading, proveedor } = useProveedorStore()
   useEffect(() => {
@@ -24,6 +24,8 @@ export const PerfilProv = () => {
       <Loading show={isLoading}/>
     )
   }
+  console.log(proveedor);
+  
   return (
     <>
         <Link  to={'/gestion-proveedores'} className='mt-3'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
@@ -35,8 +37,12 @@ export const PerfilProv = () => {
                         <div className='d-flex align-items-center flex-column'>
                         <img src={`${sinAvatar}`} className='rounded-circle' width={150} height={150}/>
                         <div className='m-2 text-center'>
-                            <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>ELECTRICISTA - ISAI SALOMON CUEVA HUARINGA</p></span>
-                            <span className='text-center'>ACTIVO</span>
+                            <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{proveedor.parametro_oficio.label_param} - {proveedor.razon_social_prov}</p></span>
+                            <span className='text-center'>{proveedor.estado_prov?
+                                <Badge value="Activo" size="xlarge" severity="success"></Badge>
+                                : 
+                                <Badge value="INACTIVO" size="xlarge" severity="danger"></Badge>
+                                }</span>
                         </div>
                         </div>
                         

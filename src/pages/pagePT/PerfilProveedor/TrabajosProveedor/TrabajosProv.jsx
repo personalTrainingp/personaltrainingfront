@@ -21,6 +21,11 @@ export const TrabajosProv = () => {
             <Col xxl={12} className='mt-4'>
                 <ul className="list-unstyled">
                     <ItemTrabajoProv/>
+                    <ItemTrabajoProv/>
+                    <ItemTrabajoProv/>
+                    <ItemTrabajoProv/>
+                    <ItemTrabajoProv/>
+                    <ItemTrabajoProv/>
                 </ul>
             </Col>
         </Row>

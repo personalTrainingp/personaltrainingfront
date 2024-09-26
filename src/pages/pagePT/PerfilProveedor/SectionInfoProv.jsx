@@ -1,6 +1,8 @@
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayEstados, arrayTarjetasTemp } from '@/types/type'
+import { confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
@@ -37,6 +39,7 @@ export const SectionInfoProv = ({dataProv}) => {
         id_oficio,
         formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
         const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
+        const { comboOficio, obtenerOficios } = useTerminoStore()
             const [visible, setVisible] = useState(false);
           
             const toastBC = useRef(null);
@@ -51,8 +54,20 @@ export const SectionInfoProv = ({dataProv}) => {
                 });
               }
             }, [visible, isLoading]);
+            useEffect(() => {
+                obtenerOficios()
+            }, [])
             
-
+            const confirmDeleteGastoxID = ()=>{
+                confirmDialog({
+                    message: 'Seguro que quiero eliminar el gasto?',
+                    header: 'Eliminar gasto',
+                    icon: 'pi pi-info-circle',
+                    defaultFocus: 'reject',
+                    acceptClassName: 'p-button-danger',
+                    accept:  onAcceptDeleteGasto,
+                });
+            }
 
 
             const clear = () => {
@@ -66,17 +81,9 @@ export const SectionInfoProv = ({dataProv}) => {
                     // console.log("actualizaro");
                     actualizarProveedor(formState, dataProv.id)
                     setVisible(true);
-                    onCancelForm()
                     return;
                 }
-                await startRegisterProveedor(formState)
-                onCancelForm()
                 setVisible(true);
-            }
-            
-            const onCancelForm = ()=>{
-                onHide()
-                onResetForm()
             }
   return (
     <>
@@ -239,8 +246,8 @@ export const SectionInfoProv = ({dataProv}) => {
                                         placeholder={'Seleccione el oficio'}
                                         className="react-select"
                                         classNamePrefix="react-select"
-                                        options={arrayEstados}
-                                        value={arrayEstados.find(
+                                        options={comboOficio}
+                                        value={comboOficio.find(
                                             (option) => option.value === id_oficio
                                         )}
                                         required
@@ -334,9 +341,8 @@ export const SectionInfoProv = ({dataProv}) => {
                             </Col>
                             <Col lg={12}>
                                 <Button type='submit'>
-                                {dataProv?'Actualizar':'Registrar'}
+                                Actualizar
                                 </Button>
-                                <a className='m-3 text-danger' onClick={onCancelForm} style={{cursor: 'pointer'}}>Cancelar</a>
                             </Col>
                         </Row>
                     </form>

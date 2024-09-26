@@ -128,6 +128,15 @@ export const useTerminoStore = () => {
 	const [dataUltimaMembresia, setdataUltimaMembresia] = useState([]);
 	const [dataTipoAporte, setdataTipoAporte] = useState([]);
 	const [paquetesDeServicios, setpaquetesDeServicios] = useState([]);
+	const [comboOficio, setcomboOficio] = useState([]);
+	const obtenerOficios = async () => {
+		try {
+			let { data } = await PTApi.get('/parametros/get_params/proveedor/tipo_oficio');
+			setcomboOficio(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerTiposDeAportes = async () => {
 		try {
 			let { data } = await PTApi.get('/parametros/get_params/tipo_aporte');
@@ -454,6 +463,8 @@ export const useTerminoStore = () => {
 		obtenerTiposDeAportes,
 		obtenerPaqueteDeServicioParaVender,
 		obtenerEmpleadosPorDepartamentoNutricion,
+		obtenerOficios,
+		comboOficio,
 		DataEmpleadosDepNutricion,
 		paquetesDeServicios,
 		dataUltimaMembresia,

@@ -81,7 +81,7 @@ export function Auditoria() {
             <div className="flex justify-content-end">
                 <IconField iconPosition="left">
                     <InputIcon className="pi pi-search" />
-                    <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+                    <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Buscado general" />
                 </IconField>
             </div>
         );

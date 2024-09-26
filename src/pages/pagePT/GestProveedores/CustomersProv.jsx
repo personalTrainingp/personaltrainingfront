@@ -20,11 +20,14 @@ import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { InputText } from 'primereact/inputtext';
 import { Link } from 'react-router-dom';
+import { FilterMatchMode } from 'primereact/api';
 
 const CustomersProv = () => {
 	const dispatch = useDispatch()
 	// const [modalProv, toggleModalProv] = useToggle();
-    const [filters, setFilters] = useState(null);
+    const [filters, setFilters] = useState({
+		global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+	});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
 	const [isModalOpenProv, setisModalOpenProv] = useState(false)
 	const { obtenerProveedores }= useProveedorStore()
@@ -56,7 +59,7 @@ const CustomersProv = () => {
         setFilters({
             global: { value: null, matchMode: FilterMatchMode.CONTAINS }
         });
-        // setGlobalFilterValue('');
+        setGlobalFilterValue('');
     };
 	const renderHeader = () => {
         return (
@@ -115,7 +118,7 @@ const CustomersProv = () => {
 							dataKey="id"
 							// selection={selectedCustomers}
 							// onSelectionChange={(e) => setselectedCustomers(e.value)}
-							// filters={filters} 
+							filters={filters} 
 							filterDisplay="menu" 
 							globalFilterFields={['id', 'razon_social_prov', 'ruc_prov', 'cel_prov', 'nombre_vend_prov', 'Estado']} 
 							emptyMessage="Egresos no encontrados."
@@ -133,26 +136,12 @@ const CustomersProv = () => {
 							<Column header="Estado" field='Estado' filterField="Estado" sortable style={{ minWidth: '10rem' }} filter />
 							<Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={HistorialProvBodyTemplate}/>
 						</DataTable>
-							<Table
-								columns={columns}
-								data={dataProveedores}
-								pageSize={10}
-								sizePerPageList={sizePerPageList}
-								isSortable={true}
-								pagination={true}
-								isSelectable={false}
-								isSearchable={true}
-								tableClass="table-striped"
-								searchBoxClass="mt-2 mb-3"
-							/>
 						</Card.Body>
 					</Card>
 				</Col>
 				<Col xxl={1}>
 				</Col>
-				
-								{/* Sign up Modal */}
-								<ModalProveedor show={isModalOpenProv} onHide={modalProvClose}/>
+				<ModalProveedor show={isModalOpenProv} onHide={modalProvClose}/>
 			</Row>
 		</>
 	);
