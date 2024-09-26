@@ -146,11 +146,12 @@ export const useReporteStore = () => {
 				// const TratEsteticoFiltrados = e.detalle_ventaCitas.filter(
 				// 	(item) => item.tb_servicio.tipo_servicio === 'FITOL'
 				// );
+				const TratEsteticoFiltrados = [];
 				return {
 					detalle_membresia: e.detalle_ventaMembresia,
 					detalle_prodAccesorios: productosFiltradosAcc,
 					detalle_prodSuplementos: productosFiltradosSup,
-					detalle_cita_tratest: [],
+					detalle_cita_tratest: [TratEsteticoFiltrados],
 					detalle_cita_nut: [],
 					detalle_pago: e.detalleVenta_pagoVenta,
 					tb_empleado: e.tb_empleado,
@@ -203,9 +204,10 @@ export const useReporteStore = () => {
 					return {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
-						detalle_cita_tratest: e.detalle_ventaCitas.filter(
-							(item) => item.tb_servicio.tipo_servicio === 'FITOL'
-						),
+						// detalle_cita_tratest: e.detalle_ventaCitas.filter(
+						// 	(item) => item.tb_servicio.tipo_servicio === 'FITOL'
+						// ),
+						detalle_cita_tratest: [],
 						detalle_pago: e.detalleVenta_pagoVenta,
 						tb_empleado: e.tb_empleado,
 					};
@@ -214,7 +216,7 @@ export const useReporteStore = () => {
 			const dataNutricion = data.reporte
 				.map((e) => {
 					const CitasFiltrados = e.detalle_ventaCitas.filter(
-						(item) => item.tb_servicio.tipo_servicio === 'NUTRI'
+						(item) => item.tb_servicio?.tipo_servicio === 'NUTRI'
 					);
 					return {
 						id: e.id,
@@ -938,10 +940,10 @@ function sumarDatos_y_cantidades(datos) {
 		// Procesar detalle_ventaCitas
 		if (dato.detalle_ventaCitas && dato.detalle_ventaCitas.length > 0) {
 			dato.detalle_ventaCitas.forEach((cita) => {
-				if (cita.tb_servicio.tipo_servicio === 'FITOL') {
+				if (cita.tb_servicio?.tipo_servicio === 'FITOL') {
 					result.suma_tarifa_monto_citas_FITOL += cita.tarifa_monto;
 					result.cantidad_citas_FITOL += 1;
-				} else if (cita.tb_servicio.tipo_servicio === 'NUTRI') {
+				} else if (cita.tb_servicio?.tipo_servicio === 'NUTRI') {
 					result.suma_tarifa_monto_citas_NUTRI += cita.tarifa_monto;
 					result.cantidad_citas_NUTRI += 1;
 				}

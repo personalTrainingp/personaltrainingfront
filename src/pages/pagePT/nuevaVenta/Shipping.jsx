@@ -81,7 +81,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const onCloseModalNut = ()=>{
 		setmodalNutricion(false)
 	}
-	if(detalle_cli_modelo.id_cliente==0){
+	if(detalle_cli_modelo.id_cli==0){
 		return(
 			<div style={{ height: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', opacity: '.5'}}>
 				<img src={icon_CARRITO} style={{width: '80px', height: '80px'}}>
@@ -120,33 +120,33 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 			<Col>
 				{/* <h4 className="mt-2">Elige la venta que se va a hacer:</h4> */}
 				<Row>
-					{detalle_cli_modelo.id_cliente!==0 && (
+					{detalle_cli_modelo.id_cli!==0 && (
 						<>
 							<Col lg={12}>
 							<div className='container-fluid'>
 								<Row>
 									<Col className="mb-3" xxl={2} onClick={ClickOpenModalProgramas}>
-										<ItemProdServ Inombre={"MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
+										<ItemProdServ Inombre={"MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
 									<Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
-									<ItemProdServ Inombre={"ACCESORIOS"} Iabrev={"acc"} icono={icoAcc} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
+									<ItemProdServ Inombre={"ACCESORIOS"} Iabrev={"acc"} icono={icoAcc} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
 									<Col className="mb-3" xxl={2} onClick={onOpenModalSupl}>
-									<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
+									<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/>
 									<Col className="mb-3" xxl={2} onClick={ClickOpenModalFitology}>
-									<ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
+									<ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
 									<Col className="mb-3" xxl={2} onClick={onOpenModalNut}>
-									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
+									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
 									<Col className="mb-3" xxl={2} onClick={ClickOpenModalTransfMemb}>
-									<ItemProdServ Inombre={"TRANSFERENCIAS DE MEMBRESIAS"} Iabrev={"acc"} icono={icoNut} icowid={80} icohe={80} Icantidad={''} Itotal={''}/>
+									<ItemProdServ Inombre={"TRANSFERENCIAS DE MEMBRESIAS"} Iabrev={"acc"} icono={icoNut} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/>
 								</Row>

@@ -91,13 +91,13 @@ export const TotalVentas = () => {
           forma_pago: repoVentasPorSeparado.dataSuplemento.forma_pago_monto,
           asesores_pago: repoVentasPorSeparado.dataSuplemento.empl_monto
         }
-      case 'tra':
-        return {
-          data: repoVentasPorSeparado.dataTratamientoEstetico.data,
-          sumaTotal: repoVentasPorSeparado.dataTratamientoEstetico.SumaMonto,
-          forma_pago: repoVentasPorSeparado.dataTratamientoEstetico.forma_pago_monto,
-          asesores_pago: repoVentasPorSeparado.dataTratamientoEstetico.empl_monto
-        }
+      // case 'tra':
+      //   return {
+      //     data: repoVentasPorSeparado.dataTratamientoEstetico.data,
+      //     sumaTotal: repoVentasPorSeparado.dataTratamientoEstetico.SumaMonto,
+      //     forma_pago: repoVentasPorSeparado.dataTratamientoEstetico.forma_pago_monto,
+      //     asesores_pago: repoVentasPorSeparado.dataTratamientoEstetico.empl_monto
+      //   }
       case 'nut':
         return {
           data: repoVentasPorSeparado.dataNutricion.data,

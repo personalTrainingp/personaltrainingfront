@@ -10,6 +10,7 @@ import { ModalProveedor } from '../GestProveedores/ModalProveedor'
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { useTipoCambioStore } from '@/hooks/hookApi/useTipoCambioStore'
 import { CurrencyMask } from '@/components/CurrencyMask'
+import { InputText } from 'primereact/inputtext'
 const registerIvsG={
     id_tipoGasto: 0,
     id_gasto: 0,
@@ -27,6 +28,7 @@ const registerIvsG={
     n_operacion: '',
     id_rubro: 0,
     descripcion: '',
+    cod_trabajo: '',
     id_prov: 0
 }
 export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
@@ -67,6 +69,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             id_banco_pago,
             n_operacion, 
             id_prov, 
+            cod_trabajo,
             descripcion, 
             onInputChange, 
             onInputChangeReact, 
@@ -421,25 +424,47 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                         <label htmlFor="id_prov" className="form-label">
                                             Proveedor*
                                         </label>
-                                        <Select
-                                            onChange={(e) => onInputChangeReact(e, 'id_prov')}
-                                            name="id_prov"
-                                            placeholder={'Seleccionar el proveedor'}
-                                            className="react-select"
-                                            classNamePrefix="react-select"
-                                            options={dataProvCOMBO}
-                                            value={dataProvCOMBO.find(
-                                                (option)=>option.value === id_prov
-                                            )||0}
-                                            required
-                                        />
+                                        <Row>
+                                            <Col xxl={10}>
+                                                <Select
+                                                    onChange={(e) => onInputChangeReact(e, 'id_prov')}
+                                                    name="id_prov"
+                                                    placeholder={'Seleccionar el proveedor'}
+                                                    className="react-select"
+                                                    classNamePrefix="react-select"
+                                                    options={dataProvCOMBO}
+                                                    value={dataProvCOMBO.find(
+                                                        (option)=>option.value === id_prov
+                                                    )||0}
+                                                    required
+                                                />
+                                            </Col>
+                                            <Col xxl={1}>
+                                                <Button onClick={onOpenModalProveedor}>+</Button>
+                                            </Col>
+                                        </Row>
                                     </div>
                                 </Col>
-                                <Col lg={2}>
-                                <div className="mb-4">
-                                    <Button onClick={onOpenModalProveedor}>+</Button>
-                                </div>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="cod_trabajo" className="form-label">
+                                            Codigo de trabajo
+                                        </label>
+                                        <input
+                                                className="form-control"
+                                                name="cod_trabajo"
+                                                id="cod_trabajo"
+                                                value={cod_trabajo}
+                                                onChange={onInputChange}
+                                                placeholder="EJ. DE1234"
+                                            />
+                                    </div>
                                 </Col>
+                                {/* <Col lg={2}>
+                                    <div className="mb-4">
+                                        <Button onClick={onOpenModalProveedor}>+</Button>
+                                    </div>
+                                </Col> */}
                                 <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="descripcion" className="form-label">

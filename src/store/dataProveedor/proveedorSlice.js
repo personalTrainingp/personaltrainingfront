@@ -16,6 +16,13 @@ export const proveedorSlice = createSlice({
 			email_vend_prov: '',
 			estado_prov: true,
 		},
+		trabajoProv:{
+			codTrabajo: '',
+			id_prov: 0,
+			fecha_inicio: '',
+			fecha_fin: '',
+			hora_fin: '',
+		},
 		dataProveedores: [],
 		dataProvCOMBO: [],
 		modalProvSlice: false,

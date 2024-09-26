@@ -3,7 +3,7 @@ const initialState = {
 	detalle_cli_modelo: {
 		id_venta: '',
 		id_empl: 0,
-		id_cliente: 0,
+		id_cli: 0,
 		id_tipo_transaccion: 0,
 		numero_transac: '',
 		id_origen: 0,

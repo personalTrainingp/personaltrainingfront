@@ -82,14 +82,14 @@ export const useVentasStore = () => {
 	};
 	const startRegisterVenta = async (formState, funToast) => {
 		try {
-			setloadingVenta(true);
+			setloadingVenta(false);
 			const { data } = await PTApi.post('/venta/post-ventas', formState);
 			if (formState.dataVenta.detalle_venta_programa.length > 0) {
 				const { base64ToFile } = helperFunctions();
 				if (formState.dataVenta.detalle_venta_programa[0].firmaCli) {
 					const file = base64ToFile(
 						formState.dataVenta.detalle_venta_programa[0].firmaCli,
-						`firma_cli${formState.detalle_cli_modelo.id_cliente}.png`
+						`firma_cli${formState.detalle_cli_modelo.id_cli}.png`
 					);
 					const formData = new FormData();
 					formData.append('file', file);
@@ -98,8 +98,12 @@ export const useVentasStore = () => {
 						formData
 					);
 				}
-				// const { data: dataEmail } = await PTApi.post('/venta/send-email', { formState });
 			}
+
+			// const { data: dataMail } = await PTApi.post(`/venta/invoice-mail/15488`, {
+			// 	firma_base64: formState.dataVenta.detalle_venta_programa[0].firmaCli,
+			// });
+			// console.log(dataMail);
 			setloadingVenta(false);
 			// console.log(data, blobFirma);
 			// console.log(blobFirma);
@@ -138,6 +142,7 @@ export const useVentasStore = () => {
 		try {
 			// Convertir formState a cadena JSON
 			const formData = JSON.stringify(formState);
+			console.log(formState);
 
 			const response = await PTApi.post('/venta/invoice-PDFcontrato', formState, {
 				responseType: 'blob', // Establecer el tipo de respuesta como blob (archivo binario)

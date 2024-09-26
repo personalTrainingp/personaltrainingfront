@@ -1,0 +1,1 @@
+export {PerfilProv as default} from './PerfilProveedor'

@@ -34,6 +34,7 @@ export const useCitaStore = () => {
 					},
 				}
 			);
+
 			const citasDisponibles = data.citasDisponibles.map((c) => {
 				return {
 					value: c.id,

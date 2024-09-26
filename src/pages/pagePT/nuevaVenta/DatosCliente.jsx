@@ -16,7 +16,7 @@ const DatosCliente = ({dataCliente}) => {
 	const [EmpleadoSelect, setEmpleadoSelect] = useState({})
 	const [TipoTransacSelect, setTipoTransacSelect] = useState({})
 	const { formState: formStateCliente, 
-		id_cliente, 
+		id_cli, 
 		id_empl, 
 		id_tipo_transaccion, 
 		numero_transac, 
@@ -30,7 +30,7 @@ const DatosCliente = ({dataCliente}) => {
 	useEffect(() => {
 		dispatch(onSetDetalleCli({
 			...formStateCliente, 
-			id_cliente: id_cliente,
+			id_cli: id_cli,
 			id_empl: id_empl, 
             id_tipo_transaccion: id_tipo_transaccion, 
             numero_transac: numero_transac, 
@@ -41,14 +41,14 @@ const DatosCliente = ({dataCliente}) => {
 			// label_empl: EmpleadoSelect?.label, 
 			// label_tipo_transac: TipoTransacSelect?.label
 		}))
-	}, [id_cliente, id_empl, id_tipo_transaccion, numero_transac, id_origen, observacion])
+	}, [id_cli, id_empl, id_tipo_transaccion, numero_transac, id_origen, observacion])
 	
 	useEffect(() => {
 		const datacli = DataClientes.find(
-			(option) => option.value === id_cliente
+			(option) => option.value === id_cli
 		)
 		setClienteSelect(datacli)
-	}, [id_cliente])
+	}, [id_cli])
 	useEffect(() => {
 		const dataEmpl = DataVendedores.find(
 			(option) => option.value === id_empl
@@ -66,7 +66,7 @@ const DatosCliente = ({dataCliente}) => {
             (option) => option.label === e.value
         )
 		console.log(dataCli, "cliente change");
-		onInputChangeReact(e, 'id_cliente')
+		onInputChangeReact(e, 'id_cli')
 	}
 	return (
 		<>
@@ -97,13 +97,13 @@ const DatosCliente = ({dataCliente}) => {
 											<div className='mb-2'>
 											<Select
 												onChange={(e) => inputChangeClientes(e)}
-												name="id_cliente"
+												name="id_cli"
 												placeholder={'Seleccionar el socio'}
 												className="react-select"
 												classNamePrefix="react-select"
 												options={DataClientes}
 												value={DataClientes.find(
-													(option) => option.value === id_cliente
+													(option) => option.value === id_cli
 												)|| 0}
 												required
 											/>

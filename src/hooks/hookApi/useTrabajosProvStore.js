@@ -3,7 +3,7 @@ import { onSetProveedores, onSetProveedoresCOMBO } from '@/store/dataProveedor/p
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-export const useProveedorStore = () => {
+export const useTrabajosProvStore = () => {
 	const dispatch = useDispatch();
 	const [statusData, setstatus] = useState('');
 	const [message, setmessage] = useState({ msg: '', ok: false });
@@ -21,11 +21,6 @@ export const useProveedorStore = () => {
 		tel_vend_prov: '',
 		email_vend_prov: '',
 		estado_prov: true,
-		uid_comentario: '',
-		uid_contrato_proveedor: '',
-		uid_presupuesto_proveedor: '',
-		uid_documentso_proveedor: '',
-		id_oficio: 0,
 	});
 	const startRegisterProveedor = async (formState) => {
 		try {
@@ -71,18 +66,6 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerProveedorxUID = async (uid) => {
-		try {
-			setIsLoading(false);
-			const { data } = await PTApi.get(`/proveedor/obtener-proveedor-uid/${uid}`);
-			console.log(data);
-
-			setProveedor(data.proveedor);
-			setIsLoading(true);
-		} catch (error) {
-			console.log(error);
-		}
-	};
 	const EliminarProveedor = async (id_prov) => {
 		try {
 			const { data } = await PTApi.put(`/proveedor/remove-proveedor/${id_prov}`);
@@ -113,7 +96,6 @@ export const useProveedorStore = () => {
 		EliminarProveedor,
 		actualizarProveedor,
 		obtenerParametrosProveedor,
-		obtenerProveedorxUID,
 		isLoading,
 		statusData,
 		proveedor,

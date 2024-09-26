@@ -52,6 +52,7 @@ const GestContratosClientes = lazy(()=>import('../pages/pagePT/GestContratosClie
 const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
 const ReporteComparativaDeVentasxDia = lazy(()=>import('../pages/pagePT/ReporteComparativoxDia'))
 const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilidadPrograma'))
+const PerfilProveedor = lazy(()=>import('../pages/pagePT/PerfilProveedor'))
 /**
  * routes import
  */
@@ -89,6 +90,10 @@ export default function ProtectedRoutes() {
 			status  === 'authenticated' ? (
 				<>
 				<Route path="/*" element={<Layout />}>
+					{/* {
+						sections.find(e=>e.url==='/proveedores/trabajos-proveedores') && 
+						<Route path='proveedores/trabajos-proveedores' element={<PerfilProveedor/>}/>
+					} */}
 					{
 						sections.find(e=>e.url==='/reporte-admin/comparativa-dia') && 
 						<Route path='reporte-admin/comparativa-dia' element={<ReporteComparativaDeVentasxDia/>}/>
@@ -124,7 +129,10 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/gestion-proveedores')&&
-                        <Route path='gestion-proveedores' element={<GestionProveedores/>}/>
+						<>
+							<Route path='gestion-proveedores' element={<GestionProveedores/>}/>
+							<Route path='perfil-proveedor/:uid' element={<PerfilProveedor/>}/>
+						</>
 					}
 					{
 						sections.find(e=>e.url==='/gestion-productos')&&

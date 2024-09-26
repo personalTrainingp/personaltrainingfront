@@ -19,10 +19,10 @@ export const ResumenCliente = ({data}) => {
 	// const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
 	const [estadoCliente, setestadoCliente] = useState('')
 	useEffect(() => {
-		if(data.id_cliente==0) return;
-		obtenerUltimaMembresiaPorCliente(data.id_cliente)
-		obtenerClientexID(data.id_cliente)
-	}, [data.id_cliente])
+		if(data.id_cli==0) return;
+		obtenerUltimaMembresiaPorCliente(data.id_cli)
+		obtenerClientexID(data.id_cli)
+	}, [data.id_cli])
 	// console.log(dataUltimaMembresia);
 	
 	// const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia!==undefined?dataUltimaMembresia:[]
@@ -44,7 +44,7 @@ export const ResumenCliente = ({data}) => {
 			{/* <h4 className="header-title ">Datos del cliente</h4> */}
 			<table className='table-striped'>
 				<tbody>
-				{data.id_cliente !==0 && (
+				{data.id_cli !==0 && (
 					<>
 						<tr className='fs-5'>
 							<td className='fw-bold font-12'>Nombres y apellidos del socio: </td>
