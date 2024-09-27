@@ -15,6 +15,7 @@ export const useProveedorStore = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLoadingContratoProv, setisLoadingContratoProv] = useState(false);
 	const [gastosxContratoProv, setgastosxContratoProv] = useState([]);
+	const [dataContrato, setdataContrato] = useState([]);
 	const [proveedor, setProveedor] = useState({
 		id: 0,
 		ruc_prov: '',
@@ -148,6 +149,7 @@ export const useProveedorStore = () => {
 			setisLoadingContratoProv(false);
 			setmessage({ msg: data.msg, ok: data.ok });
 			// obtenerProveedores();
+			ObtenerContratosProvxID(id_prov);
 		} catch (error) {
 			console.log(error);
 		}
@@ -160,13 +162,21 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
-	const EliminarContratoProvxID = async (id_prov) => {};
-	const obtenerEgresosPorCodigoProv = async (cod_contrato) => {
+	const ObtenerContratoxID = async (id) => {
 		try {
-			console.log(cod_contrato == '');
-
-			const { data } = await PTApi.get(`/proveedor/obtener-gastos/${cod_contrato}`);
-			setgastosxContratoProv(data.gastos);
+			const { data } = await PTApi.get(`/proveedor/obtener-contrato/${id}`);
+			setdataContrato(data.contratosProv);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const EliminarContratoProvxID = async (id_prov) => {};
+	const obtenerEgresosPorCodigoProv = async (cod_contrato, tipo_moneda) => {
+		try {
+			const { data } = await PTApi.get(
+				`/proveedor/obtener-gastos/${cod_contrato}/${tipo_moneda}`
+			);
+			setgastosxContratoProv(data.gastosxCodTrabajo);
 		} catch (error) {
 			console.log(error);
 		}
@@ -179,6 +189,7 @@ export const useProveedorStore = () => {
 		actualizarProveedor,
 		obtenerParametrosProveedor,
 		obtenerProveedorxUID,
+		ObtenerContratoxID,
 		gastosxContratoProv,
 		isLoadingContratoProv,
 		isLoading,

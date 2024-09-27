@@ -28,14 +28,17 @@ export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
 		monto,
 		observacion,
 		onInputChange,
+		onResetForm,
 	} = useForm(registerTrabajo);
 	const { postContratoProv } = useProveedorStore()
 	const onCancelModal = () => {
 		onHide();
+		onResetForm()
 	};
 	const onSubmitTrabajo = (e) => {
 		e.preventDefault();
 		postContratoProv(formState, id_prov)
+		onCancelModal();
 	};
 	return (
 		<Dialog header="Agregar Trabajos" style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>

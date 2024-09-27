@@ -1,10 +1,10 @@
 import React from 'react'
 import Chart from 'react-apexcharts';
 
-export const GraficoPago = () => {
+export const GraficoPago = ({abono, saldo}) => {
     const options = {
-        series: [44, 55],
-        labels: ["Se le pago", "Se le debe"],
+        series: [abono, saldo],
+        labels: ["Abono", "Saldo"],
         chart: {
           type: 'donut',
         },

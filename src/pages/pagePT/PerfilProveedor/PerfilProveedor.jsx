@@ -78,7 +78,7 @@ export const PerfilProv = () => {
                                 </ScrollPanel>
                             </TabPanel>
                             <TabPanel header={'Contrato del proveedor'}>
-                                    <TrabajosProv id_prov={proveedor.id} uid={uid}/>
+                                    <TrabajosProv nombre_prov={proveedor.razon_social_prov} id_prov={proveedor.id} uid={uid}/>
                             </TabPanel>
                             <TabPanel header={'Presupuesto del proveedor'}>
                                 
