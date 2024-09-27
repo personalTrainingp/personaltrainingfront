@@ -1,5 +1,9 @@
 import { PTApi } from '@/common/api/';
-import { onSetProveedores, onSetProveedoresCOMBO } from '@/store/dataProveedor/proveedorSlice';
+import {
+	onSetProveedores,
+	onSetProveedoresCOMBO,
+	onViewContratoxProv,
+} from '@/store/dataProveedor/proveedorSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -9,6 +13,8 @@ export const useProveedorStore = () => {
 	const [statusData, setstatus] = useState('');
 	const [message, setmessage] = useState({ msg: '', ok: false });
 	const [isLoading, setIsLoading] = useState(false);
+	const [isLoadingContratoProv, setisLoadingContratoProv] = useState(false);
+	const [gastosxContratoProv, setgastosxContratoProv] = useState([]);
 	const [proveedor, setProveedor] = useState({
 		id: 0,
 		ruc_prov: '',
@@ -26,7 +32,7 @@ export const useProveedorStore = () => {
 		uid_contrato_proveedor: '',
 		uid_presupuesto_proveedor: '',
 		uid_documentso_proveedor: '',
-		parametro_oficio: {label_param: ''},
+		parametro_oficio: { label_param: '' },
 		id_oficio: 0,
 	});
 	const startRegisterProveedor = async (formState) => {
@@ -41,9 +47,13 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerProveedores = async () => {
+	const obtenerProveedores = async (estado_prov) => {
 		try {
-			const { data } = await PTApi.get('/proveedor/obtener-proveedores');
+			const { data } = await PTApi.get('/proveedor/obtener-proveedores', {
+				params: {
+					estado_prov: estado_prov,
+				},
+			});
 			dispatch(onSetProveedores(data.proveedores));
 		} catch (error) {
 			console.log(error);
@@ -125,6 +135,42 @@ export const useProveedorStore = () => {
 			});
 		}
 	};
+	//CONTRATO
+	const postContratoProv = async (formState, id_prov) => {
+		try {
+			setisLoadingContratoProv(true);
+			const { data } = await PTApi.post('/proveedor/post-contrato-prov', {
+				...formState,
+				id_prov: id_prov,
+			});
+			console.log(data);
+
+			setisLoadingContratoProv(false);
+			setmessage({ msg: data.msg, ok: data.ok });
+			// obtenerProveedores();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const ObtenerContratosProvxID = async (id_prov) => {
+		try {
+			const { data } = await PTApi.get(`/proveedor/obtener-contratos/${id_prov}`);
+			dispatch(onViewContratoxProv(data.contratosxProv));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const EliminarContratoProvxID = async (id_prov) => {};
+	const obtenerEgresosPorCodigoProv = async (cod_contrato) => {
+		try {
+			console.log(cod_contrato == '');
+
+			const { data } = await PTApi.get(`/proveedor/obtener-gastos/${cod_contrato}`);
+			setgastosxContratoProv(data.gastos);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerProveedores,
 		startRegisterProveedor,
@@ -133,9 +179,15 @@ export const useProveedorStore = () => {
 		actualizarProveedor,
 		obtenerParametrosProveedor,
 		obtenerProveedorxUID,
+		gastosxContratoProv,
+		isLoadingContratoProv,
 		isLoading,
 		statusData,
 		proveedor,
 		message,
+		postContratoProv,
+		ObtenerContratosProvxID,
+		EliminarContratoProvxID,
+		obtenerEgresosPorCodigoProv,
 	};
 };

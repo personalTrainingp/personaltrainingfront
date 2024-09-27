@@ -29,9 +29,10 @@ export const PerfilProv = () => {
   return (
     <>
         <Link  to={'/gestion-proveedores'} className='mt-3'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
+        <br/>
         <Row>
             <Col xxl={3}>
-                <Card>
+                <Card style={{height: '85vh', width: '100%'}}>
                     <Card.Body>
                     <div className='' style={{height: '600px', width: '100%'}}>
                         <div className='d-flex align-items-center flex-column'>
@@ -63,7 +64,7 @@ export const PerfilProv = () => {
                 </Card>
             </Col>
             <Col xxl={9}>
-                <Card>
+                <Card  style={{height: '85vh', width: '100%'}}>
                     <Card.Header>
                         <TabView>
                             <TabPanel header={'Informacion del proveedor'}>
@@ -77,12 +78,10 @@ export const PerfilProv = () => {
                                 </ScrollPanel>
                             </TabPanel>
                             <TabPanel header={'Contrato del proveedor'}>
-                                <ScrollPanel style={{ width: '100%', height: '34rem' }} className="custombar2">
-                                    <TrabajosProv uid={uid}/>
-                                </ScrollPanel>
+                                    <TrabajosProv id_prov={proveedor.id} uid={uid}/>
                             </TabPanel>
                             <TabPanel header={'Presupuesto del proveedor'}>
-                                <TrabajosProv uid={uid}/>
+                                
                             </TabPanel>
                             <TabPanel header={'Documentos adjuntos'}>
                                 

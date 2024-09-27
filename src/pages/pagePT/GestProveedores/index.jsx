@@ -1,1 +1,1 @@
-export { CustomersProv as default } from './CustomersProv'
+export { DataProveedores as default } from './DataProveedores'

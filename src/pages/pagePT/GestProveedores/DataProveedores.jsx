@@ -21,9 +21,10 @@ import { InputIcon } from 'primereact/inputicon';
 import { InputText } from 'primereact/inputtext';
 import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
-import { Badge } from 'primereact/badge';
+import { TabPanel, TabView } from 'primereact/tabview';
+import { CustomersProv } from './CustomersProv';
 
-const CustomersProv = ({estado_prov}) => {
+export const DataProveedores = () => {
 	const dispatch = useDispatch()
 	// const [modalProv, toggleModalProv] = useToggle();
     const [filters, setFilters] = useState({
@@ -40,7 +41,7 @@ const CustomersProv = ({estado_prov}) => {
 		setisModalOpenProv(true)
 	}
 	useEffect(() => {
-		obtenerProveedores(estado_prov)
+		obtenerProveedores()
 	}, [])
 	
     const onGlobalFilterChange = (e) => {
@@ -82,57 +83,47 @@ const CustomersProv = ({estado_prov}) => {
 	
 	const header = renderHeader()
 	const HistorialProvBodyTemplate = (rowData)=>{
-		console.log(rowData);
-		
 		return (
             <Link to={`/perfil-proveedor/${rowData.uid}`} className="action-icon" style={{fontSize: '14px', color: 'blue', textDecoration: 'underline'}}>
                 Ver Perfil
             </Link>
 		)
 	}
-	const EstadoProvBodyTemplate = (rowData)=>{
-		return (
-			<Badge value={`${rowData.estado?'Activo':'Inactivo'}`} size="normal" severity={`${rowData.estado?'success':'danger'}`}></Badge>
-		)
-	}
 	return (
 		<>
+			<PageBreadcrumb title="Gestion de proveedores" subName="E" />
 			<Row>
-				<Col xs={12}>
-							
-							<DataTable 
-							size='small' 
-							value={dataProveedores} 
-							paginator 
-							header={header}
-							rows={10} 
-							paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-							rowsPerPageOptions={[10, 25, 50, 100, 250]} 
-							dataKey="id"
-							// selection={selectedCustomers}
-							// onSelectionChange={(e) => setselectedCustomers(e.value)}
-							filters={filters} 
-							filterDisplay="menu" 
-							globalFilterFields={['id', 'razon_social_prov', 'ruc_prov', 'cel_prov', 'nombre_vend_prov', 'Estado']} 
-							emptyMessage="Egresos no encontrados."
-							showGridlines 
-							// loading={loading} 
-							stripedRows
-							scrollable
-							// onValueChange={valueFiltered}
-							>
-							<Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter/>
-							<Column header="Razon social" field='razon_social_prov' filterField="razon_social_prov" sortable/>
-							<Column header="Ruc del proveedor" field='ruc_prov' filterField="ruc_prov" sortable style={{ width: '3rem' }} filter/>
-							<Column header="Celular del proveedor" field='cel_prov' filterField="cel_prov" style={{ minWidth: '10rem' }} sortable/>
-							<Column header="Nombre del vendedor" field='nombre_vend_prov' filterField='nombre_vend_prov' style={{ minWidth: '10rem' }} sortable filter/>
-							<Column header="Estado" field='Estado' filterField="Estado" sortable style={{ minWidth: '10rem' }} filter body={EstadoProvBodyTemplate} />
-							<Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={HistorialProvBodyTemplate}/>
-							</DataTable>
+				<Col xxl={1}>
+				</Col>
+				<Col xs={10}>
+					<Card>
+						<Card.Body>
+							<Row>
+								<Col sm={5}>
+									{/* <Button className="btn btn-danger mb-2" onClick={modalProvOpen}>
+										<i className="mdi mdi-plus-circle me-2"></i> Agregar proveedores
+									</Button> */}
+									<Button label='Agregar proveedor' onClick={modalProvOpen}/>
+								</Col>
+								<Col sm={7}>
+								</Col>
+							</Row>
+							<TabView>
+                <TabPanel header={'Activos'}>
+                  <CustomersProv estado_prov={true}/>
+                </TabPanel>
+                <TabPanel header={'Inactivos'}>
+                  <CustomersProv estado_prov={false}/>
+                </TabPanel>
+              </TabView>
+						</Card.Body>
+					</Card>
+				</Col>
+				<Col xxl={1}>
 				</Col>
 			</Row>
+      
+				<ModalProveedor show={isModalOpenProv} onHide={modalProvClose}/>
 		</>
 	);
 };
-
-export { CustomersProv };

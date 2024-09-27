@@ -16,13 +16,20 @@ export const proveedorSlice = createSlice({
 			email_vend_prov: '',
 			estado_prov: true,
 		},
-		trabajoProv:{
-			codTrabajo: '',
+		trabajoProv: {
 			id_prov: 0,
-			fecha_inicio: '',
-			fecha_fin: '',
+			cod_trabajo: '',
+			penalidad_fijo: '',
+			fecha_inicio: new Date(),
+			fecha_fin: new Date(),
 			hora_fin: '',
+			penalidad_fijo: 0,
+			penalidad_porcentaje: 0,
+			estado_prov: '',
+			monto_contrato: 0,
+			observaciones: '',
 		},
+		dataContratoProv: [],
 		dataProveedores: [],
 		dataProvCOMBO: [],
 		modalProvSlice: false,
@@ -40,6 +47,15 @@ export const proveedorSlice = createSlice({
 		onViewProveedor: (state, action) => {
 			state.proveedor = action.payload;
 		},
+		onViewContratoxProv: (state, action) => {
+			state.dataContratoProv = action.payload;
+		},
 	},
 });
-export const { onModalInfoProv, onSetProveedores, onSetProveedoresCOMBO, onRegisterProveedor } = proveedorSlice.actions;
+export const {
+	onModalInfoProv,
+	onSetProveedores,
+	onSetProveedoresCOMBO,
+	onRegisterProveedor,
+	onViewContratoxProv,
+} = proveedorSlice.actions;

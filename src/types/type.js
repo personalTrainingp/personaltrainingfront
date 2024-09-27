@@ -90,6 +90,11 @@ export const arrayEstadoTask = [
 	{ label: 'Asistio', value: 503 },
 	{ label: 'No asistio', value: 504 },
 ];
+export const arrayEstadoContrato = [
+	{ label: 'Pendiente', value: 505 },
+	{ label: 'Confirmado', value: 500 },
+	{ label: 'Cancelado', value: 501 },
+];
 export const arrayRoles = [
 	{ label: 'Ventas', value: 1 },
 	{ label: 'Administracion', value: 2 },
