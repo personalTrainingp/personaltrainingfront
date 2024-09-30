@@ -41,15 +41,24 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 	return (
 		<div className="container">
 			<div className="row">
+				<h5 className="mb-0">
+					<a
+						href="#"
+						className="d-flex flex-column align-items-start text-primary d-inline-block align-middle p-2 mb-2 font-22 rounded rounded-4 shadow shadow-8"
+					>
+						<img width={220} src={`${config.API_IMG.LOGO}${dataVenta.url_image}`} />
+						{dataVenta.semanas} Semanas = {dataVenta.semanas * 5} sesiones
+					</a>
+				</h5>
 				<div className="col-lg-12 bg-white rounded shadow-sm mb-5">
 					<div className="table-responsive">
 						<table className="table">
 							<thead>
 								<tr>
 									<th scope="col" className="border-0 bg-light p-1">
-										<div className="p-0 px-3 text-uppercase">
-													<img src={`${config.API_IMG.LOGO}${dataVenta.url_image}`}/>
-										</div>
+										{/* <div className="p-0 px-3 text-uppercase"> */}
+										{/* <img width={220} src={`${config.API_IMG.LOGO}${dataVenta.url_image}`}/> */}
+										{/* </div> */}
 									</th>
 									<th scope="col" className="border-0 bg-light p-1">
 										<div className="py-0 text-uppercase">PRECIO</div>
@@ -69,25 +78,21 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 								<tr>
 									<th scope="row" className="border-0 p-0">
 										<div className="p-0">
-											<img src="https://bootstrapious.com/i/snippets/sn-cart/product-1.jpg" alt="" width="70" className="img-fluid rounded shadow-sm"/>
+											<img
+												src="https://bootstrapious.com/i/snippets/sn-cart/product-1.jpg"
+												alt=""
+												width="70"
+												className="img-fluid rounded shadow-sm"
+											/>
 											<div className="ml-3 d-inline-block align-middle">
-												<h5 className="mb-0">
-													{' '}
-													<a
-														href="#"
-														className="text-dark d-inline-block align-middle"
-													>
-														{dataVenta.semanas}{' '}
-														Semanas
-													</a>
-												</h5>
 												<span className="text-muted font-weight-normal font-italic d-block">
-													Hora de Inicio: {' '}
-													{dataVenta.time_h} {' '}
+													Hora de Inicio: {dataVenta.time_h}{' '}
 												</span>
 												<span className="text-muted font-weight-normal font-italic d-block">
-													Hora de término: {' '}
-													{dayjs(dataVenta.time_h, 'hh:mm A').add(45, 'minute').format('hh:mm A')} 
+													Hora de término:{' '}
+													{dayjs(dataVenta.time_h, 'hh:mm A')
+														.add(45, 'minute')
+														.format('hh:mm A')}
 												</span>
 												<span className="text-muted font-weight-normal font-italic d-block">
 													Fecha de Inicio:{' '}
@@ -112,17 +117,33 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 										</strong>
 									</td>
 									<td className="border-0 align-middle">
-										<h5 className='fs-2' onClick={descargarPDFgenerado} style={{cursor: 'pointer'}}><i className='mdi mdi-file-document'></i></h5>
+										<h5
+											className="fs-2"
+											onClick={descargarPDFgenerado}
+											style={{ cursor: 'pointer' }}
+										>
+											<i className="mdi mdi-file-document"></i>
+										</h5>
 									</td>
 									<td className="border-0 align-middle">
-									<OverlayTrigger
-										placement="top"
-										delay={{ show: 250, hide: 250 }}
-										overlay={renderTooltip}
+										<OverlayTrigger
+											placement="top"
+											delay={{ show: 250, hide: 250 }}
+											overlay={renderTooltip}
 										>
-										<a style={{cursor: 'pointer', color: 'blue'}} onClick={modalOpenFirma} className="font-14 mt-1 fw-normal">{dataVenta.firmaCli?'Con firma':'Sin firma'}</a>
+											<a
+												style={{ cursor: 'pointer', color: 'blue' }}
+												onClick={modalOpenFirma}
+												className="font-14 mt-1 fw-normal"
+											>
+												{dataVenta.firmaCli ? 'Con firma' : 'Sin firma'}
+											</a>
 										</OverlayTrigger>
-										<ModalFirma show={modalFirma} onHide={modalCloseFirma} dataFirma={dataVenta.firmaCli}/>
+										<ModalFirma
+											show={modalFirma}
+											onHide={modalCloseFirma}
+											dataFirma={dataVenta.firmaCli}
+										/>
 									</td>
 									{/* <td className="border-0 align-middle"><strong>3</strong></td> */}
 									<td className="border-0 align-middle">

@@ -23,9 +23,6 @@
 .a-focus:focus{
   color: #000;
 }
-td{
-  // font-size: 20px !important;
-}
 .p-button:focus{
   // background-color: #D41115 !important;
   box-shadow: none !important;
@@ -39,6 +36,10 @@ td{
   background-color: transparent;
   color: #D41115;
   border: 1px solid;
+}
+.card{
+  border-radius: 15px !important;
+  border: 1px solid #dee2e6;
 }
 .p-button.p-button-text{
   background-color: transparent;
@@ -56,6 +57,8 @@ td{
     border: 5px solid transparent;
     width: 100%;
     margin: 10px;
+    border-radius: 10px;
+    padding: 3px;
     // background-color: red;
     // height: 80px;
   // border-radius: 100%;

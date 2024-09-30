@@ -16,6 +16,7 @@ const initialState = {
 		detalle_venta_nutricion: [],
 		detalle_venta_accesorio: [],
 		detalle_venta_suplementos: [],
+		detalle_traspaso: [],
 	},
 };
 export const uiNuevaVentaSlice = createSlice({
@@ -40,8 +41,14 @@ export const uiNuevaVentaSlice = createSlice({
 		onSetDetalleCli: (state, action) => {
 			state.detalle_cli_modelo = action.payload;
 		},
+		onSetDetalleTraspaso: (state, action) => {
+			state.venta.detalle_traspaso = [action.payload];
+		},
 		onSetDetallePrograma: (state, action) => {
 			state.venta.detalle_venta_programa = [action.payload];
+		},
+		onAllDeleteTraspaso:(state)=>{
+			state.venta.detalle_traspaso = [];
 		},
 		onDeleteAllPrograma: (state) => {
 			state.venta.detalle_venta_programa = [];
@@ -111,6 +118,8 @@ export const uiNuevaVentaSlice = createSlice({
 export const {
 	onSetDetalleCli,
 	onSetDetallePrograma,
+	onSetDetalleTraspaso,
+	onAllDeleteTraspaso,
 	onSetFirmaPgm,
 	onDeleteAllPrograma,
 	onAddDetalleProductoAccesorios,

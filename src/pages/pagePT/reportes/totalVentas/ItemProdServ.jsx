@@ -23,14 +23,13 @@ export const ItemProdServ = ({Icantidad, Itotal, Inombre, Iabrev, icono, icowid,
                                                 position: 'absolute', // Para que el fondo se posicione de forma absoluta
                                                 zIndex: 1, // Fondo detrás
                                                 top: 0,
-                                                left: 0,
-                                                width: '100%', // Tamaño completo del contenedor
-                                                height: '100%', 
+                                                width: '140px', // Tamaño completo del contenedor
+                                                height: '140px', 
                                                 backgroundSize: 'cover', // Asegura que el fondo cubra el área sin deformarse
                                                 backgroundPosition: 'center'
                               }}></div>
                                                         <span style={{ position: 'relative', zIndex: 2 }}>
-                                                            <h4 style={{fontSize: '20px'}} className="mt-1 mb-0 d-block text-black font-bolder">{Inombre}</h4>
+                                                            <h4 style={{fontSize: '20px'}} className="mt-1 mb-0 d-block text-primary font-bolder">{Inombre}</h4>
                                                             <h4 className="font-12 mt-1 mb-0 d-block">{Icantidad?`Cantidad: ${Icantidad}`: ''}</h4>
                                                             <h4 className="font-12 mt-1 mb-0 d-block">
                                                               {

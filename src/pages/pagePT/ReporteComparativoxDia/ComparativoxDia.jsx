@@ -39,6 +39,7 @@ export const ComparativoxDia = () => {
               <Col xxl={12} lg={12} className='mb-2'>
                   <ComparativaGeneral/>
               </Col>
+              <br/>
         <Col xxl={12} lg={12} className=''>
           <SimpleBar style={{ maxHeight: '100%'}} scrollbarMaxSize={320}>
                   <div className='d-flex'>

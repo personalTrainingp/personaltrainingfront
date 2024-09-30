@@ -2,6 +2,7 @@ import { PTApi } from '@/common';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import Swal from 'sweetalert2';
 
 export const useVentasStore = () => {
 	const dispatch = useDispatch();
@@ -83,20 +84,33 @@ export const useVentasStore = () => {
 	const startRegisterVenta = async (formState, funToast) => {
 		try {
 			setloadingVenta(false);
-			const { data } = await PTApi.post('/venta/post-ventas', formState);
-			if (formState.dataVenta.detalle_venta_programa.length > 0) {
-				const { base64ToFile } = helperFunctions();
-				if (formState.dataVenta.detalle_venta_programa[0].firmaCli) {
-					const file = base64ToFile(
-						formState.dataVenta.detalle_venta_programa[0].firmaCli,
-						`firma_cli${formState.detalle_cli_modelo.id_cli}.png`
-					);
-					const formData = new FormData();
-					formData.append('file', file);
-					const { data: blobFirma } = await PTApi.post(
-						`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
-						formData
-					);
+			if (formState.dataVenta.detalle_traspaso.length > 0) {
+				const { data: dataSesiones } = await PTApi.post(
+					'/programaTraining/sesiones/post-sesion',
+					formState
+				);
+				if (!(dataSesiones.id_tt && dataSesiones.id_st)) {
+					return Swal.fire('Error', 'Error, el socio es nuevo', 'error');
+				}
+				const { data } = await PTApi.post('/venta/traspaso-membresia', {
+					formState,
+					dataSesiones,
+				});
+			} else {
+				if (formState.dataVenta.detalle_venta_programa.length > 0) {
+					const { base64ToFile } = helperFunctions();
+					if (formState.dataVenta.detalle_venta_programa[0].firmaCli) {
+						const file = base64ToFile(
+							formState.dataVenta.detalle_venta_programa[0].firmaCli,
+							`firma_cli${formState.detalle_cli_modelo.id_cli}.png`
+						);
+						const formData = new FormData();
+						formData.append('file', file);
+						const { data: blobFirma } = await PTApi.post(
+							`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
+							formData
+						);
+					}
 				}
 			}
 

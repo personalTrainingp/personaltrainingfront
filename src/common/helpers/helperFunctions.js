@@ -54,6 +54,21 @@ export const helperFunctions = () => {
 
 		return combinacion;
 	};
+	function sumarDiasHabiles(fecha, diasHabiles) {
+		let fechaResultado = new Date(fecha); // Crear una copia de la fecha
+
+		while (diasHabiles > 0) {
+			fechaResultado.setDate(fechaResultado.getDate() + 1); // Sumar un día
+
+			// Si es un día hábil (lunes a viernes), restamos un día hábil del contador
+			const diaSemana = fechaResultado.getDay();
+			if (diaSemana !== 0 && diaSemana !== 6) {
+				diasHabiles--;
+			}
+		}
+
+		return fechaResultado;
+	}
 	const objetoComparador = (objeto1, objeto2) => {
 		// Obtener las claves (propiedades) de ambos objetos
 		const clavesObjeto1 = Object.keys(objeto1);
@@ -115,37 +130,37 @@ export const helperFunctions = () => {
 		return dayjs.utc(fecha).locale('es').format('DD/MM/YYYY');
 	};
 
-	function sumarDiasHabiles(fecha, n_dia) {
-		if (!fecha) {
-			return 'No fue posible cargar la fecha';
-		}
-		// Convertir la cadena de fecha a un objeto Date
-		let date = new Date(fecha);
+	// function sumarDiasHabiles(fecha, n_dia) {
+	// 	if (!fecha) {
+	// 		return 'No fue posible cargar la fecha';
+	// 	}
+	// 	// Convertir la cadena de fecha a un objeto Date
+	// 	let date = new Date(fecha);
 
-		// Crear un arreglo de tamaño n_dia
-		let dias = Array.from({ length: n_dia }, (_, i) => i);
+	// 	// Crear un arreglo de tamaño n_dia
+	// 	let dias = Array.from({ length: n_dia }, (_, i) => i);
 
-		// Usar forEach para iterar sobre los días
-		dias.forEach(() => {
-			// Incrementar la fecha en un día
-			date.setDate(date.getDate() + 1);
+	// 	// Usar forEach para iterar sobre los días
+	// 	dias.forEach(() => {
+	// 		// Incrementar la fecha en un día
+	// 		date.setDate(date.getDate() + 1);
 
-			// Obtener el día de la semana (0=Domingo, 1=Lunes, ..., 6=Sábado)
-			let diaSemana = date.getDay();
+	// 		// Obtener el día de la semana (0=Domingo, 1=Lunes, ..., 6=Sábado)
+	// 		let diaSemana = date.getDay();
 
-			// Si el día es fin de semana (Sábado o Domingo), saltar hasta el lunes
-			if (diaSemana === 5) {
-				// Sábado
-				date.setDate(date.getDate() + 2); // Saltar a lunes
-			} else if (diaSemana === 0) {
-				// Domingo
-				date.setDate(date.getDate() + 1); // Saltar a lunes
-			}
-		});
+	// 		// Si el día es fin de semana (Sábado o Domingo), saltar hasta el lunes
+	// 		if (diaSemana === 5) {
+	// 			// Sábado
+	// 			date.setDate(date.getDate() + 2); // Saltar a lunes
+	// 		} else if (diaSemana === 0) {
+	// 			// Domingo
+	// 			date.setDate(date.getDate() + 1); // Saltar a lunes
+	// 		}
+	// 	});
 
-		// Retornar la nueva fecha en formato ISO 8601
-		return date.toISOString().split('T')[0];
-	}
+	// 	// Retornar la nueva fecha en formato ISO 8601
+	// 	return date.toISOString().split('T')[0];
+	// }
 
 	return {
 		randomFunction,

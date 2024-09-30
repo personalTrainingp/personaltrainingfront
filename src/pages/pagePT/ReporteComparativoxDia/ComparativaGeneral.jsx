@@ -67,7 +67,7 @@ export const ComparativaGeneral = () => {
 	};
   return (
     <div dir="ltr">
-    <div style={{ height: '320px'}} className="mt-3 chartjs-chart">
+    <div className="chartjs-chart">
         <Chart options={options} series={series} type="bar" height={350} />
     </div>
 </div>

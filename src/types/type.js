@@ -140,6 +140,7 @@ export const arrayDataTrainer = [
 export const arrayFacturas = [
 	{ value: 82, label: 'Boleta' },
 	{ value: 83, label: 'Factura' },
+	{ value: 84, label: 'Traspaso' },
 ];
 export const arrayOrigenDeCliente = [
 	{ value: 25, label: 'TIS' },

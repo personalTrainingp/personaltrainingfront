@@ -139,7 +139,7 @@ export const TotalVentas = () => {
         <CardTotal onClick={()=>setclickServProd('total')} title={`Total de venta ${clasesVentasSeparadas(clickServProd)}`} body={<MoneyFormatter amount={TotalDeVentasxProdServ(clickServProd).sumaTotal}/>} span={`${contarVentas(reporteTotalVentasPorTipoCliente)} ventas | ${contarVentasEspeciales(reporteTotalVentasPorTipoCliente)} Canjes`}/>
       </Col>
       <Col xxl={2}>
-        <CardTotal title={'Venta del dia'} body={<MoneyFormatter amount={0}/>} span={`${0} ventas | ${0} Canjes`}/>
+        <CardTotal title={'Venta del dia'} body={<MoneyFormatter amount={0}/>} span={`${0} ventas`}/>
       </Col>
       <Col xxl={7}>
         <CardProdServ setclickServProd={setclickServProd} data={reporteDeDetalleVenta} dataGen={reporteVentas}/>

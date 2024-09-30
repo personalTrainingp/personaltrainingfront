@@ -26,6 +26,8 @@ import icoEst from '@/assets/images/PT-images/iconos/estetica.png'
 import icoSupl from '@/assets/images/PT-images/iconos/supl.png'
 import icoNut from '@/assets/images/PT-images/iconos/nutri.png'
 import { ItemProdServ } from '../reportes/totalVentas/ItemProdServ';
+import { ModalTraspaso } from './ModalTraspaso';
+import { ResumenTraspaso } from './ResumenTraspaso';
 
 
 export const sumarTarifas = (venta) =>{
@@ -49,8 +51,15 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const [modalVentaFitology, setmodalVentaFitology] = useState(false)
 	const [modalNutricion, setmodalNutricion] = useState(false)
 	const [modalTransMem, setmodalTransMem] = useState(false)
+	const [modalTraspaso, setmodalTraspaso] = useState(false)
 	const { startRegisterVenta, msgBox, loadingVenta } = useVentasStore()
 	const dispatch = useDispatch()
+	const onOpenModalTraspaso = ()=>{
+		setmodalTraspaso(true)
+	}
+	const onCloseModalTraspaso = ()=>{
+        setmodalTraspaso(false)
+    }
 	const ClickOpenModalAcc = ()=>{
 		setModalAcc(true)
 	}
@@ -108,7 +117,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 			});
 		}
 		await startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo}, funToast)
-		dispatch(RESET_STATE_VENTA())
+		// dispatch(RESET_STATE_VENTA())
 	}
 	const onSubmitFormVenta = async()=>{
 		startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo})
@@ -125,30 +134,34 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 							<Col lg={12}>
 							<div className='container-fluid'>
 								<Row>
-									<Col className="mb-3" xxl={2} onClick={ClickOpenModalProgramas}>
-										<ItemProdServ Inombre={"MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
+									<Col className="mb-3" xxl={3} onClick={ClickOpenModalProgramas}>
+										<ItemProdServ Inombre={"MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
-									<Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
-									<ItemProdServ Inombre={"ACCESORIOS"} Iabrev={"acc"} icono={icoAcc} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
+									<Col className="mb-3" xxl={3} onClick={ClickOpenModalAcc}>
+									<ItemProdServ Inombre={"ACCESORIOS"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
-									<Col className="mb-3" xxl={2} onClick={onOpenModalSupl}>
-									<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
+									<Col className="mb-3" xxl={3} onClick={onOpenModalSupl}>
+									<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/>
-									<Col className="mb-3" xxl={2} onClick={ClickOpenModalFitology}>
-									<ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
+									<Col className="mb-3" xxl={3} onClick={ClickOpenModalFitology}>
+									<ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
-									<Col className="mb-3" xxl={2} onClick={onOpenModalNut}>
-									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
+									<Col className="mb-3" xxl={3} onClick={onOpenModalNut}>
+									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
-									<Col className="mb-3" xxl={2} onClick={ClickOpenModalTransfMemb}>
-									<ItemProdServ Inombre={"TRANSFERENCIAS DE MEMBRESIAS"} Iabrev={"acc"} icono={icoNut} icowid={130} icohe={150} Icantidad={''} Itotal={''}/>
+									<Col className="mb-3" xxl={3} onClick={ClickOpenModalTransfMemb}>
+									<ItemProdServ Inombre={"TRANSFERENCIAS DE MEMBRESIAS"} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/>
+									<Col className="mb-3" xxl={3} onClick={onOpenModalTraspaso}>
+									<ItemProdServ Inombre={"TRASPASO"} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+									</Col>
+									<ModalTraspaso show={modalTraspaso} onHide={onCloseModalTraspaso}/>
 								</Row>
 							</div>
 							</Col>
@@ -157,11 +170,19 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 							dataVenta.detalle_venta_fitology.length <= 0 && 
 							dataVenta.detalle_venta_accesorio.length <= 0 && 
 							dataVenta.detalle_venta_suplementos.length <= 0 &&
-							dataVenta.detalle_venta_nutricion.length<=0
+							dataVenta.detalle_venta_nutricion.length<=0 &&
+							dataVenta.detalle_traspaso <=0
 							? (
 								<span style={{height: '100px'}}>No hay ningún producto, membresía o servicio registrado</span>
 							) : (
 							<>
+							{dataVenta.detalle_traspaso.length > 0 && (
+								<>
+									<h4>traspaso</h4>
+									<ResumenTraspaso dataVenta={dataVenta.detalle_traspaso[0]} detalle_cli_modelo={detalle_cli_modelo} dataPagos={datos_pagos}/>
+									{/* <ResumenVentaMembresia dataVenta={dataVenta.detalle_venta_programa[0]} detalle_cli_modelo={detalle_cli_modelo} dataPagos={datos_pagos} /> */}
+								</>
+							)}
 							{dataVenta.detalle_venta_programa.length > 0 && (
 								<>
 									<h4>Venta de membresía</h4>

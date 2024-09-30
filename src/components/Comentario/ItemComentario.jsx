@@ -39,17 +39,17 @@ export const ItemComentario = ({e, user, id, uid_comentario}) => {
   return (
       <div className="comment-main-level">
     <div className="comment-box" style={{width: '100%'}}>
-        <div className="comment-head bg-black" style={{width: '100%'}}>
+        <div className="comment-head bg-primary" style={{width: '100%'}}>
             <h6 className="comment-name text-white">{e.auth_user?.nombres_apellidos_user}</h6>
             <span className='text-white'>{dayjs(e.fec_registro).locale('es').format('D [de] MMMM [del] YYYY [a las] h:mm A')}</span>
             <div className='text-right'>
                 {e.auth_user.uid==user.uid && (
                     <>
                         <Link to="" onClick={EditComentario} className="action-icon">
-                            <i className="mdi mdi-square-edit-outline"></i>
+                            <i className="mdi mdi-square-edit-outline text-white"></i>
                         </Link>
                         <Link to="" onClick={DeleteComentario} className="action-icon">
-                            <i className="mdi mdi-delete"></i>
+                            <i className="mdi mdi-delete text-white"></i>
                         </Link>
                     </>
                 )
