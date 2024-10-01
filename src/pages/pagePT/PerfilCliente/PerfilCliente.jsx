@@ -20,6 +20,7 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 import Swal from 'sweetalert2';
 import { ScreenNutricionista } from './ScreenNutricionista';
 import { useNutricionCliente } from '@/hooks/hookApi/useNutricionCliente';
+import { SectionFiles } from './SectionFiles';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
@@ -118,6 +119,11 @@ export const PerfilCliente = () => {
                   <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
                       <InformacionGeneralCliente data={userCliente}/>
                   </ScrollPanel>
+                </TabPanel>
+                <TabPanel header='Documentos adjuntos'>
+                <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                  <SectionFiles data={userCliente}/>
+                </ScrollPanel>
                 </TabPanel>
                 <TabPanel header='Comentarios'>
                 <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">

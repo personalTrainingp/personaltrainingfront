@@ -56,7 +56,7 @@ export const ItemComentario = ({e, user, id, uid_comentario}) => {
                 }
             </div>
         </div>
-        <div className="comment-content">
+        <div className="comment-content" style={{width: '100%'}}>
             {viewTxtEdit?
             (
                 

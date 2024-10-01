@@ -95,6 +95,12 @@ const CustomersProv = ({estado_prov}) => {
 			<Badge value={`${rowData.estado?'Activo':'Inactivo'}`} size="normal" severity={`${rowData.estado?'success':'danger'}`}></Badge>
 		)
 	}
+	const razonSocialBodyTemplate = (rowData)=>{
+		return(
+			<>
+			</>
+		)
+	}
 	return (
 		<>
 			<Row>
@@ -122,7 +128,7 @@ const CustomersProv = ({estado_prov}) => {
 							// onValueChange={valueFiltered}
 							>
 							<Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter/>
-							<Column header="Razon social" field='razon_social_prov' filterField="razon_social_prov" sortable/>
+							<Column header="Razon social" field='razon_social_prov' filterField="razon_social_prov" body={razonSocialBodyTemplate} sortable/>
 							<Column header="Ruc del proveedor" field='ruc_prov' filterField="ruc_prov" sortable style={{ width: '3rem' }} filter/>
 							<Column header="Celular del proveedor" field='cel_prov' filterField="cel_prov" style={{ minWidth: '10rem' }} sortable/>
 							<Column header="Nombre del vendedor" field='nombre_vend_prov' filterField='nombre_vend_prov' style={{ minWidth: '10rem' }} sortable filter/>
