@@ -89,7 +89,9 @@ export const useVentasStore = () => {
 					'/programaTraining/sesiones/post-sesion',
 					formState
 				);
-				if (!(dataSesiones.id_tt && dataSesiones.id_st)) {
+				console.log(dataSesiones);
+
+				if (!dataSesiones.id_tt && !dataSesiones.id_st) {
 					return Swal.fire('Error', 'Error, el socio es nuevo', 'error');
 				}
 				const { data } = await PTApi.post('/venta/traspaso-membresia', {
