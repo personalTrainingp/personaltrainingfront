@@ -7,10 +7,14 @@ export const authClientSlice = createSlice({
 		userAvatar: {},
 		errorMessage: undefined,
 		Dataclientes: [],
+		datafilesAdj: [],
 		dataNutricion_DIETA: [],
 		dataNutricion_HISTORIAL_CLINICO: [],
 	},
 	reducers: {
+		onSetDataFileAdj: (state, { payload }) => {
+			state.datafilesAdj = payload;
+		},
 		onLoadingClient: (state) => {
 			(state.status = 'load'), (state.user = {}), (state.errorMessage = undefined);
 		},
@@ -34,6 +38,7 @@ export const authClientSlice = createSlice({
 	},
 });
 export const {
+	onSetDataFileAdj,
 	onLoadingClient,
 	onSetNutricionDIETA,
 	onSetClient,

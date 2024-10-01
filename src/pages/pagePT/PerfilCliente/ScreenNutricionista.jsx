@@ -20,12 +20,9 @@ export const ScreenNutricionista = ({id_cli}) => {
   const { obtenerDietasxCliente, EliminarDietaxID, isLoading  } = useNutricionCliente()
   
   const { status, userCliente, dataNutricion_DIETA } = useSelector(e=>e.authClient)
-  useEffect(() => {
-    obtenerDietasxCliente(id_cli)
-  }, [])
-  
-  console.log(dataNutricion_DIETA);
-  
+    useEffect(() => {
+        obtenerDietasxCliente(id_cli)
+    }, [])
     const onCloseSideBarClinico = ()=>{
         setshowSideBarClinico(false)
     }
@@ -51,8 +48,6 @@ export const ScreenNutricionista = ({id_cli}) => {
             }
         })
     }
-    console.log(isLoading);
-    
   return (
     <>
         {
