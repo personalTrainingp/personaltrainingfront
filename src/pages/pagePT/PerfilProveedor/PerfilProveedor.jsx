@@ -68,17 +68,19 @@ export const PerfilProv = () => {
                     <Card.Header>
                         <TabView>
                             <TabPanel header={'Informacion del proveedor'}>
-                                <ScrollPanel style={{ width: '100%', height: '34rem' }} className="custombar2">
+                                <ScrollPanel style={{ width: '100%', height: '65vh' }} className="custombar2">
                                     <SectionInfoProv dataProv={proveedor}/>
                                 </ScrollPanel>
                             </TabPanel>
                             <TabPanel header={'Comentarios'}>
-                                <ScrollPanel style={{ width: '100%', height: '34rem' }} className="custombar2">
+                                <ScrollPanel style={{ width: '100%', height: '65vh' }} className="custombar3">
                                     <SectionComentarios data={proveedor}/>
                                 </ScrollPanel>
                             </TabPanel>
                             <TabPanel header={'Contrato del proveedor'}>
+                                <ScrollPanel  style={{ width: '100%', height: '65vh' }} className="custombar4">
                                     <TrabajosProv nombre_prov={proveedor.razon_social_prov} id_prov={proveedor.id} uid={uid}/>
+                                </ScrollPanel>
                             </TabPanel>
                             <TabPanel header={'Presupuesto del proveedor'}>
                                 

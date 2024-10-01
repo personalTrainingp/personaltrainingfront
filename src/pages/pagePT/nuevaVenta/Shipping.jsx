@@ -139,11 +139,11 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 									</Col>
 									<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
 									<Col className="mb-3" xxl={3} onClick={ClickOpenModalAcc}>
-									<ItemProdServ Inombre={"ACCESORIOS"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+										<ItemProdServ Inombre={"ACCESORIOS"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
 									<Col className="mb-3" xxl={3} onClick={onOpenModalSupl}>
-									<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+										<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/>
 									<Col className="mb-3" xxl={3} onClick={ClickOpenModalFitology}>

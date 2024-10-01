@@ -187,7 +187,6 @@ export const useTerminoStore = () => {
 		}
 	};
 	const obtenerUltimaMembresiaPorCliente = async (uid_cli) => {
-		console.log('aquiiii');
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.get(

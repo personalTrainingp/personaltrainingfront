@@ -98,7 +98,7 @@ const CustomersProv = ({estado_prov}) => {
 	const razonSocialBodyTemplate = (rowData)=>{
 		return(
 			<>
-			    <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{rowData.parametro_oficio?.label_param} - {rowData.razon_social_prov}</p></span>
+			    <span className='fw-bold'><p className='mb-0 pb-0'>{rowData.parametro_oficio?.label_param} - {rowData.razon_social_prov}</p></span>
 			</>
 		)
 	}

@@ -83,7 +83,7 @@ html[data-bs-theme="dark"] {
     position: relative;
     margin-left: $leftbar-width;
     min-height: calc(100vh - $topbar-height - 2px);
-    padding: 0 calc($spacer * 0.5) $footer-height;
+    // padding: 0 calc($spacer * 0.5) $footer-height;
     transition: $transition-base;
 }
 

@@ -1,11 +1,12 @@
 import { PageBreadcrumb, Table } from '@/components';
 import React, { useEffect, useState } from 'react'
-import { Button, Card, Col, Row } from 'react-bootstrap';
+import {Card, Col, Row } from 'react-bootstrap';
 import { columns, sizePerPageList } from './ColumnsSet';
 import { ModalCliente } from './ModalCliente';
 import { useSelector } from 'react-redux';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import TableClientes from './TableClientes';
+import { Button } from 'primereact/button';
 
 
 export const GestClientes = () => {
@@ -32,9 +33,7 @@ export const GestClientes = () => {
 						<Card.Body>
 							<Row className="mb-2">
 								<Col sm={5}>
-									<span className="btn btn-danger mb-2" onClick={onModalRegClienteOpen}>
-										<i className="mdi mdi-plus-circle me-2"></i> Agregar socio
-									</span>
+									<Button label='Agregar socio' icon={'mdi mdi-plus-circle'} onClick={onModalRegClienteOpen}/>
 								</Col>
 							</Row>
 							<TableClientes/>

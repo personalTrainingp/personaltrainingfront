@@ -88,11 +88,8 @@ export const PerfilCliente = () => {
     <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos} id_cli={userCliente?.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
     <ModalExtensionCongelamiento onHide={modalCloseCongelamiento} show={isOpenModalCongelamiento} id_cli={userCliente.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
     <Row>
-      <Col xxl={1} lg={0}>
-      </Col>
-      <Col xxl={10} lg={12}>
-        <Row>
-          <Col lg={4}>
+      
+    <Col lg={4}>
             <Card className='mt-3 p-3'>
               <div className='' style={{height: '600px', width: '100%'}}>
                 <div className='d-flex align-items-center flex-column'>
@@ -122,7 +119,7 @@ export const PerfilCliente = () => {
                 </TabPanel>
                 <TabPanel header='Documentos adjuntos'>
                 <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
-                  <SectionFiles data={userCliente}/>
+                  <SectionFiles uid_file={userCliente.uid_file_adj}/>
                 </ScrollPanel>
                 </TabPanel>
                 <TabPanel header='Comentarios'>
@@ -150,10 +147,6 @@ export const PerfilCliente = () => {
           </div>
         </Card>
           </Col>
-        </Row>
-      </Col>
-      <Col xxl={1} lg={0}>
-      </Col>
     </Row>
     </>
   );

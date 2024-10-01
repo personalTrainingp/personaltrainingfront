@@ -1,48 +1,19 @@
-import { FileReaderDieta, FileUploader, FileUploaderSN } from '@/components'
-import { useNutricionCliente } from '@/hooks/hookApi/useNutricionCliente'
-import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
-import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 import React, { useEffect, useRef, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components'
-const registerFile_DIETA = {
-    nombre_dieta: '',
-    descripcion_dieta: '',
+const registerFile = {
+  tipo_file: 0,
+  descripcion_file: '',
 }
-export const ModalDieta = ({show, onHide, id_cli}) => {
-    const [file_DIETA, setfile_DIETA] = useState(null)
-    const { formState, nombre_dieta, descripcion_dieta, onInputChange, onResetForm } = useForm(registerFile_DIETA)
-    const { startRegisterDieta } = useNutricionCliente()
-    const [file, setFile] = useState(null);
-    const dropzoneRef = useRef();
-    const inputRef = useRef(null);
-    const cancelModal = ()=>{
-        onHide()
-        onResetForm()
-        setfile_DIETA(null)
-    }
-  
-    const onChangeFile = (e)=>{
-        const file = e.target.files[0]
-        setfile_DIETA(file)
-    }
-    
-    
-    const onSubmitFilePlanAlimenticio = (e)=>{
-        e.preventDefault()
-        const formData = new FormData();
-        formData.append('file', file_DIETA);
-        startRegisterDieta(formData, id_cli, formState)
-        cancelModal()
-        // startRegisterDieta()
-    }
+export const ModalAddFile = ({show, onHide}) => {
+  const [file, setfile] = useState(null)
+  const { formState, tipo_file, descripcion_file, onInputChange, onResetForm } = useForm(registerFile)
 
-    
   return (
-    
-    <Dialog header="Agregar un plan alimenticio" visible={show} style={{ width: '30rem', height: '50rem' }} onHide={cancelModal}>
+    <Dialog header='Agregar un documento' style={{width: '30rem'}} visible={show} onHide={onHide}>
         <DIVContainer>
             {/* <FileUploaderSN fileAccepted={".pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx"} onFileUpload={onChangeFileDieta} showPreview={true}/> */}
             <form className="dropzone-box" onSubmit={onSubmitFilePlanAlimenticio}>
@@ -70,15 +41,9 @@ export const ModalDieta = ({show, onHide, id_cli}) => {
                 <Col xxl={12}>
                     <div className="mb-2">
                         <label htmlFor="nombre_dieta" className="form-label">
-                            Nombre del plan alimenticio:
+                            Tipo de documento:
                         </label>
-                        <input
-                            name='nombre_dieta'
-                            placeholder='dieta rica en...'
-                            className='form-control'
-                            value={nombre_dieta}
-                            onChange={onInputChange}
-                        />
+
                     </div>
                 </Col>
                 <Col xxl={12}>
