@@ -79,7 +79,7 @@ export const ModalSuplementos = ({show, hide, data}) => {
                                         className="form-control"
                                         placeholder="cantidad"
                                         value={cantidad}
-                                        max={suplementoSelect?.stock?suplementoSelect.stock:1}
+                                        // max={suplementoSelect?.stock?suplementoSelect.stock:1}
                                         type='number'
                                         name="cantidad"
                                         id="cantidad"
