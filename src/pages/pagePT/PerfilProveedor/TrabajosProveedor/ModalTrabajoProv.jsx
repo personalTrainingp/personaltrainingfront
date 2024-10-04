@@ -1,9 +1,9 @@
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore';
 import { useForm } from '@/hooks/useForm';
-import { arrayCargoEmpl } from '@/types/type';
+import { arrayCargoEmpl, arrayEstadoContrato, arrayEstadoTask } from '@/types/type';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import React from 'react';
+import React, { useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import Select from 'react-select';
 const registerTrabajo = {
@@ -16,8 +16,10 @@ const registerTrabajo = {
 	estado_contrato: 505,
 	monto_contrato: 0,
 	observacion: '',
+	id_estado: 505
 };
 export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
+	const [file_presupuesto, setfile_presupuesto] = useState(null);
 	const {
 		formState,
 		cod_trabajo,
@@ -26,23 +28,44 @@ export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
 		fecha_fin,
 		hora_fin,
 		monto,
+		id_estado,
 		observacion,
 		onInputChange,
+		onInputChangeReact,
 		onResetForm,
 	} = useForm(registerTrabajo);
 	const { postContratoProv } = useProveedorStore()
 	const onCancelModal = () => {
 		onHide();
 		onResetForm()
+		setfile_presupuesto(null)
 	};
 	const onSubmitTrabajo = (e) => {
 		e.preventDefault();
-		postContratoProv(formState, id_prov)
+		const formData = new FormData();
+		formData.append('file', file_presupuesto);
+		postContratoProv(formState, id_prov, formData)
+		setfile_presupuesto()
 		onCancelModal();
 	};
 	return (
 		<Dialog header="Agregar Trabajos" style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>
 			<form onSubmit={onSubmitTrabajo}>
+				<div className='mb-3'>
+					<label htmlFor="penalidad_fijo" className="form-label">
+						PRESUPUESTO*
+					</label>
+					<input
+							className="form-control bg-black text-white"
+							placeholder="file_presupuesto"
+							value={file_presupuesto}
+							name="penalidad_fijo"
+							// id="penalidad_fijo"
+							type="file"
+							onChange={onInputChange}
+							required
+						/>
+				</div>
 				<div className="mb-3">
 					<label htmlFor="cod_trabajo" className="form-label">
 						Codigo del contrato*
@@ -73,24 +96,23 @@ export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
 						required
 					/>
 				</div>
-				{/* <div className="field">
-                            <label htmlFor="id_forma_pago" className="font-bold">
+				<div className="mb-3">
+                            <label htmlFor="id_estado" className="font-bold">
                                 Estado*
                             </label>
                             <Select
-                                onChange={(e) => onInputChangeReact(e, 'id_forma_pago')}
-                                name="id_forma_pago"
-                                placeholder={'Seleccionar la forma de aporte'}
+                                onChange={(e) => onInputChangeReact(e, 'id_estado')}
+                                name="id_estado"
+                                placeholder={'Seleccionar el estado'}
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                options={DataFormaPago}
-                                value={DataFormaPago.find(
-                                    (option) => option.value === id_forma_pago
+                                options={arrayEstadoContrato}
+                                value={arrayEstadoContrato.find(
+                                    (option) => option.value === id_estado
                                 )||0}
-                                
                                 required
 							/>
-                        </div> */}
+                        </div>
         <div className="mb-3">
 					<label htmlFor="fecha_inicio" className="form-label">
 						Fecha inicio*

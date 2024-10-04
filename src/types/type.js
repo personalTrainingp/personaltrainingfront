@@ -91,9 +91,10 @@ export const arrayEstadoTask = [
 	{ label: 'No asistio', value: 504 },
 ];
 export const arrayEstadoContrato = [
-	{ label: 'Pendiente', value: 505 },
-	{ label: 'Confirmado', value: 500 },
-	{ label: 'Cancelado', value: 501 },
+	{ label: 'Pendiente', value: 505, severity: 'warning' },
+	{ label: 'Confirmado', value: 500, severity: 'success' },
+	{ label: 'Cancelado', value: 501, severity: 'danger' },
+	{ label: 'Retencion', value: 506, severity: 'secondary' },
 ];
 export const arrayRoles = [
 	{ label: 'Ventas', value: 1 },
@@ -198,6 +199,7 @@ export const arrayCargoEmpl = [
 	{ label: 'Operaciones', value: 21 },
 	{ label: 'Psicologia', value: 22 },
 	{ label: 'Sistemas', value: 23 },
+	{ label: 'Gerente general', value: 25 },
 ];
 
 export const arrayDepartamentoEmpl = [

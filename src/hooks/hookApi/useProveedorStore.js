@@ -137,15 +137,19 @@ export const useProveedorStore = () => {
 		}
 	};
 	//CONTRATO
-	const postContratoProv = async (formState, id_prov) => {
+	const postContratoProv = async (formState, id_prov, formFile) => {
 		try {
 			setisLoadingContratoProv(true);
 			const { data } = await PTApi.post('/proveedor/post-contrato-prov', {
 				...formState,
 				id_prov: id_prov,
 			});
-			console.log(data);
-
+			if (formFile) {
+				await PTApi.post(
+					`/storage/blob/create/${data.uid_presupuesto}?container=presupuestos-proveedores`,
+					formFile
+				);
+			}
 			setisLoadingContratoProv(false);
 			setmessage({ msg: data.msg, ok: data.ok });
 			// obtenerProveedores();
@@ -181,6 +185,26 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
+	const descargarContratoProvxID = async (id_prov) => {
+		try {
+			const response = await PTApi.get('/proveedor/obtener-contrato-prov/1', {
+				responseType: 'blob', // Establecer el tipo de respuesta como blob (archivo binario)
+			});
+			// Crear un objeto URL para el archivo PDF
+			const url = window.URL.createObjectURL(new Blob([response.data]));
+			// Crear un enlace <a> temporal y simular un clic para descargar el archivo PDF
+			const link = document.createElement('a');
+			link.href = url;
+			link.setAttribute('download', 'CONTRATO-PROVEEDOR.pdf');
+			document.body.appendChild(link);
+			link.click();
+
+			// Liberar el objeto URL
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerProveedores,
 		startRegisterProveedor,
@@ -200,5 +224,6 @@ export const useProveedorStore = () => {
 		ObtenerContratosProvxID,
 		EliminarContratoProvxID,
 		obtenerEgresosPorCodigoProv,
+		descargarContratoProvxID,
 	};
 };

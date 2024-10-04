@@ -73,11 +73,7 @@ export const ModalCliente = ({show, onHide}) => {
 
   const onSubmitAgregarCliente = ()=>{
           startRegisterUsuarioCliente({...usuarioCliente, dataContactsEmerg: dataContactsEmerg, comentarios}, selectedAvatar)
-    //   onHide()
-    //   onResetForm()
-    //   resetAvatar()
-    //   dispatch(onResetComentario())
-    //   dispatch(onReset_CE())
+          btnCancelModal()
   }
   const btnCancelModal = ()=>{
         onHide()

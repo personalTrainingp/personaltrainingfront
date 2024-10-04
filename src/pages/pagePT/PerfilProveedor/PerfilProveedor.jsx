@@ -38,7 +38,17 @@ export const PerfilProv = () => {
                         <div className='d-flex align-items-center flex-column'>
                         <img src={`${sinAvatar}`} className='rounded-circle' width={150} height={150}/>
                         <div className='m-2 text-center'>
-                            <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{proveedor.parametro_oficio?.label_param} - {proveedor.razon_social_prov}</p></span>
+                            <span className='fs-3 fw-bold'>
+                                <p className='mb-0 pb-0'>
+                                <span>
+                                    {proveedor.razon_social_prov}
+                                </span>
+                                <br/>
+                                <span className='font-15'>
+                                {proveedor.parametro_oficio?.label_param} 
+                                </span>
+                                </p>
+                                </span>
                             <span className='text-center'>{proveedor.estado_prov?
                                 <Badge value="Activo" size="xlarge" severity="success"></Badge>
                                 : 
@@ -57,6 +67,14 @@ export const PerfilProv = () => {
 							<td>Completados</td>
 							<td>2</td>
 						</tr>
+                        <tr className='my-2'>
+							<td>Cancelados</td>
+							<td>2</td>
+						</tr>
+                        <tr className='my-2'>
+							<td>RETENIDOS</td>
+							<td>2</td>
+						</tr>
 					</tbody>
 				</Table>
                     </div>
@@ -66,6 +84,8 @@ export const PerfilProv = () => {
             <Col xxl={9}>
                 <Card  style={{height: '85vh', width: '100%'}}>
                     <Card.Header>
+                    </Card.Header>
+                    <Card.Body>
                         <TabView>
                             <TabPanel header={'Informacion del proveedor'}>
                                 <ScrollPanel style={{ width: '100%', height: '65vh' }} className="custombar2">
@@ -82,16 +102,10 @@ export const PerfilProv = () => {
                                     <TrabajosProv nombre_prov={proveedor.razon_social_prov} id_prov={proveedor.id} uid={uid}/>
                                 </ScrollPanel>
                             </TabPanel>
-                            <TabPanel header={'Presupuesto del proveedor'}>
-                                
-                            </TabPanel>
                             <TabPanel header={'Documentos adjuntos'}>
                                 
                             </TabPanel>
                         </TabView>
-                    </Card.Header>
-                    <Card.Body>
-                        
                     </Card.Body>
                 </Card>
             </Col>

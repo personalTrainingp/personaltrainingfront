@@ -183,51 +183,53 @@ const AppMenu = ({ menuItems }) => {
   }, [activeMenu]);
 
   return (
-    <ul className="side-nav" ref={menuRef} id="main-side-menu">
-      {(menuItems || []).map((item, index) => {
-        return (
-          <React.Fragment key={index.toString()}>
-            {item.isTitle ? (
-              <li className="side-nav-title">{item.label}</li>
-            ) : (
-              <React.Fragment>
-                {item.children ? (
-                  <MenuItemWithChildren
-                    item={item}
-                    toggleMenu={toggleMenu}
-                    subMenuClassNames="side-nav-second-level"
-                    activeMenuItems={activeMenuItems}
-                    linkClassName="side-nav-link"
-                  />
-                ) : (
-                  <MenuItem
-                    item={item}
-                    linkClassName="side-nav-link"
-                    className={`side-nav-item ${activeMenuItems.includes(item.key) ? 'menuitem-active' : ''}`}
-                  />
-                )}
-              </React.Fragment>
-            )}
-          </React.Fragment>
-        );
-      })}
+    <>
+      <ul className="side-nav" ref={menuRef} id="main-side-menu">
+        {(menuItems || []).map((item, index) => {
+          return (
+            <React.Fragment key={index.toString()}>
+              {item.isTitle ? (
+                <li className="side-nav-title">{item.label}</li>
+              ) : (
+                <React.Fragment>
+                  {item.children ? (
+                    <MenuItemWithChildren
+                      item={item}
+                      toggleMenu={toggleMenu}
+                      subMenuClassNames="side-nav-second-level"
+                      activeMenuItems={activeMenuItems}
+                      linkClassName="side-nav-link"
+                    />
+                  ) : (
+                    <MenuItem
+                      item={item}
+                      linkClassName="side-nav-link"
+                      className={`side-nav-item ${activeMenuItems.includes(item.key) ? 'menuitem-active' : ''}`}
+                    />
+                  )}
+                </React.Fragment>
+              )}
+            </React.Fragment>
+          );
+        })}
 
-      {/* <div className="help-box text-white text-center">
-        <Link to="" className="float-end close-btn text-white">
-          <i className="mdi mdi-close" />
-        </Link>
-        <img src={helpBoxImage} height="90" alt="Helper Icon Image" />
-        <h5 className="mt-3">Unlimited Access</h5>
-        <p className="mb-3">Upgrade to plan to get access to unlimited reports</p>
-        <Link
-          to="https://themes.getbootstrap.com/product/hyper-react-admin-dashboard-template"
-          className="btn btn-secondary btn-sm"
-          target="_blank"
-        >
-          Upgrade
-        </Link>
-      </div> */}
-    </ul>
+        {/* <div className="help-box text-white text-center">
+          <Link to="" className="float-end close-btn text-white">
+            <i className="mdi mdi-close" />
+          </Link>
+          <img src={helpBoxImage} height="90" alt="Helper Icon Image" />
+          <h5 className="mt-3">Unlimited Access</h5>
+          <p className="mb-3">Upgrade to plan to get access to unlimited reports</p>
+          <Link
+            to="https://themes.getbootstrap.com/product/hyper-react-admin-dashboard-template"
+            className="btn btn-secondary btn-sm"
+            target="_blank"
+          >
+            Upgrade
+          </Link>
+        </div> */}
+      </ul>
+    </>
   );
 };
 

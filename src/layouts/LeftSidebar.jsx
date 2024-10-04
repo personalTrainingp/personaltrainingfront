@@ -64,7 +64,6 @@ const LeftSidebar = ({ isCondensed, leftbarDark }) => {
 					<img src={leftbarDark ? logo : logoDark} alt="logo" width={'190'} style={{height: '50px'}} />
 				</span>
 			</Link>
-
 			{!isCondensed && (
 				<SimpleBar style={{ maxHeight: '100%' }} scrollbarMaxSize={320}>
 					<SideBarContent />

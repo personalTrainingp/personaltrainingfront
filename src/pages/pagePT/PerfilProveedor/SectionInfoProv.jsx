@@ -275,7 +275,7 @@ export const SectionInfoProv = ({dataProv}) => {
                             </Col>
                             <Col lg={12}>
                                 <p className='fw-bold fs-5 text-decoration-underline'>
-                                Datos del vendedor
+                                Datos del representante
                                 </p>
                             </Col>
                             <Col lg={4}>

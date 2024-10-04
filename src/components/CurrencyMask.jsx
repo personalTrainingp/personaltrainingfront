@@ -16,7 +16,7 @@ export const CurrencyMask = (e) => {
 }
 export const MoneyFormatter = ({ amount, symbol }) => {
   const formattedAmount = accounting.formatMoney(amount, {
-    symbol: symbol?symbol:'S/. ',  // Símbolo de la moneda
+    symbol: symbol?`${symbol} `:'S/. ',  // Símbolo de la moneda
     precision: 2, // Precisión de decimales
     thousand: ',', // Separador de miles
     decimal: '.',  // Separador decimal

@@ -289,7 +289,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                             </Col>
                             <Col lg={12}>
                                 <p className='fw-bold fs-5 text-decoration-underline'>
-                                Datos del vendedor
+                                Datos del representante
                                 </p>
                             </Col>
                             <Col lg={4}>
