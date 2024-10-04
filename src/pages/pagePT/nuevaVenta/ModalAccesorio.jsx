@@ -84,7 +84,7 @@ export const ModalAccesorio = ({show, hide, data}) => {
                                         value={cantidad}
                                         name="cantidad"
                                         id="cantidad"
-										max={accesorioSelect?.stock?accesorioSelect.stock:1}
+										// max={accesorioSelect?.stock?accesorioSelect.stock:1}
 										min={1}
 										type='number'
                                         onChange={onInputChange}
