@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap';
 import pdfMake from 'pdfmake/build/pdfmake'
 // import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import * as vfsFonts from 'pdfmake/build/vfs_fonts';
+import { vfsFonts } from 'pdfmake/build/vfs_fonts';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
