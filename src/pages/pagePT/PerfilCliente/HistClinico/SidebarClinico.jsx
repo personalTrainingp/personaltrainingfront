@@ -2,8 +2,9 @@ import { useForm } from '@/hooks/useForm';
 import { Sidebar } from 'primereact/sidebar'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap';
-import pdfMake, { log } from 'pdfmake/build/pdfmake'
-import pdfFonts from 'pdfmake/build/vfs_fonts'
+import pdfMake from 'pdfmake/build/pdfmake'
+// import * as pdfFonts from 'pdfmake/build/vfs_fonts'
+import * as vfsFonts from 'pdfmake/build/vfs_fonts';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
@@ -11,7 +12,7 @@ import dayjs from 'dayjs';
 import { arraySexo } from '@/types/type';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useNutricionCliente } from '@/hooks/hookApi/useNutricionCliente';
-pdfMake.vfs = pdfFonts.pdfMake.vfs
+pdfMake.vfs = vfsFonts.pdfMake.vfs
 const registerConsulta = {
   id: 1,
   dato_motivacion: '',
@@ -163,7 +164,8 @@ export const SidebarClinico = ({show, onHide, dataCli}) => {
 		hora_dormir,
 		hora_despertar,
 		onInputChange,
-		formState} = useForm(registerConsulta)
+		formState,
+		onResetForm: onResetConsulta} = useForm(registerConsulta)
 		const {
 			PAT612,
 			PAT613,
@@ -197,7 +199,8 @@ export const SidebarClinico = ({show, onHide, dataCli}) => {
 			PAT641,
 			PAT642,
 			formState:formStateAntPatNutr,
-			onInputChange:onInputChangePatNutr
+			onInputChange:onInputChangePatNutr,
+			onResetForm: onResetFormApatol
 		} = useForm(registerAntecedentePatologico)
 	const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
 	const [url, seturl] = useState(null)
@@ -442,9 +445,14 @@ var dd = {
 		const url = URL.createObjectURL(blob)
 		seturl(url)
 		startRegisterClinico(formState, formStateAntPatNutr, formData, dataCli.id_cli)
-		pdfGenerator.download()
+		// pdfGenerator.download()
 	})
-	
+	cancelarHClinico()
+  }
+  const cancelarHClinico = ()=>{
+	onHide()
+	onResetFormApatol()
+	onResetConsulta()
   }
   return (
     <Sidebar visible={show} onHide={onHide} style={{width: '1450px'}}>
@@ -1239,7 +1247,7 @@ var dd = {
 			</TabView>
 			
 			<Button type="submit">Agregar consulta</Button>
-			<a className='text-primary mx-3 cursor-pointer'>Cancelar</a>
+			<a className='text-primary mx-3 cursor-pointer' onClick={cancelarHClinico}>Cancelar</a>
 		</form>
     </Sidebar>
   )
