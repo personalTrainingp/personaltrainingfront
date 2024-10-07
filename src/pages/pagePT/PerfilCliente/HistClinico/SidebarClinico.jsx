@@ -2,8 +2,6 @@ import { useForm } from '@/hooks/useForm';
 import { Sidebar } from 'primereact/sidebar'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap';
-import pdfMake from 'pdfmake/build/pdfmake'
-import pdfFonts from 'pdfmake/build/vfs_fonts'
 // import { vfsFonts } from 'pdfmake/build/vfs_fonts';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ScrollPanel } from 'primereact/scrollpanel';
@@ -12,7 +10,11 @@ import dayjs from 'dayjs';
 import { arraySexo } from '@/types/type';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useNutricionCliente } from '@/hooks/hookApi/useNutricionCliente';
-pdfMake.vfs = pdfFonts.pdfMake.vfs
+import pdfMake from 'pdfmake/build/pdfmake'
+// import pdfFonts from "pdfmake/build/vfs_fonts";
+import { fontsRoboto } from '@/assets/fonts/fontsRoboto'
+pdfMake.vfs = fontsRoboto
+
 const registerConsulta = {
   id: 1,
   dato_motivacion: '',
