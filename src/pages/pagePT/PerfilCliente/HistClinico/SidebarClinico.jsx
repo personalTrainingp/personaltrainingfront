@@ -236,9 +236,9 @@ var dd = {
 			table: {
 				widths: ['*', '*', '*', '*'],
 				body: [
-					[{text: 'Sufre o sufrió de alguna de estas enfermedades, dolencias o condiciones?', style: 'tableHeader', colSpan: 4}],
-					[{text: `Enf. Cardiovascular ( ${PAT612 ? 'X':''} )`}, {text: `Hígado graso ( ${PAT613 ? 'X':''} )`}, {text: `Osteoporosis/osteopenia ( ${PAT614 ? 'X':''} )`}, {text: `Intestino Irritable – D ( ${PAT615 ? 'X':''} )`}],
-					[{text: `Diabetes ( ${PAT616 ? 'X':''} ) RI ( ${PAT617 ? 'X':''}  )`}, {text: `Enf. Renal ( ${PAT618 ? 'X':''} )`}, {text: `Gota ( ${PAT619 ? 'X':''} ) `}, {text: `Nauseas/ Vómitos ( ${PAT620 ? 'X':''} )`}],
+					// [{text: 'Sufre o sufrió de alguna de estas enfermedades, dolencias o condiciones?', style: 'tableHeader', colSpan: 4}],
+					[{text: `Enf. Cardiovascular ( ${PAT612 ? 'X':''} )`, style: 'tableHeader'}, {text: `Hígado graso ( ${PAT613 ? 'X':''} )`, style: 'tableHeader',}, {text: `Osteoporosis/osteopenia ( ${PAT614 ? 'X':''} )`, style: 'tableHeader'}, {text: `Intestino Irritable – D ( ${PAT615 ? 'X':''} )`, style: 'tableHeader',}],
+					[{text: `Diabetes ( ${PAT616 ? 'X':''} ) RI ( ${PAT617 ? 'X':''}  )`, style: 'tableHeader'}, {text: `Enf. Renal ( ${PAT618 ? 'X':''} )`, style: 'tableHeader'}, {text: `Gota ( ${PAT619 ? 'X':''} ) `, style: 'tableHeader'}, {text: `Nauseas/ Vómitos ( ${PAT620 ? 'X':''} )`, style: 'tableHeader',}],
 					[{text: `Resistencia a la insulina ( ${PAT621 ? 'X':''}  )`}, {text: `Enf. Pancreática ( ${PAT622 ? 'X':''} )`}, {text: `Hipertiroidismo ( ${PAT623 ? 'X':''} )`}, {text: `Falta de apetito ( ${PAT624 ? 'X':''} )`}],
 					[{text: `Enf. Pulmonar ( ${PAT625 ? 'X':''} )`}, {text: `Enf. Pulmonar ( ${PAT626 ? 'X':''} )`}, {text: `Hipotiroidismo ( ${PAT627 ? 'X':''} ) `}, {text: `Gastritis y/o úlceras ( ${PAT628 ? 'X':''} )`}],
 					[{text: `Colesterol elevado ( ${PAT629 ? 'X':''} )`}, {text: `Cáncer ( ${PAT630 ? 'X':''} )`}, {text: `Enfermedad autoinmune ( ${PAT631 ? 'X':''} )`}, {text: `Estrés ( ${PAT632 ? 'X':''} ) Ansiedad ( ${PAT633 ? 'X':''} )`}],
@@ -396,7 +396,7 @@ var dd = {
 	styles: {
 
 		tableExample: {
-			fontSize: 10
+			// fontSize: 10
 			// margin: [0, 5, 0, 15]
 		},
 		subTitle: {
@@ -436,14 +436,15 @@ var dd = {
 	const pdfGenerator = pdfMake.createPdf(dd)
 	pdfGenerator.getBlob((blob)=>{
 		// Crear un archivo para el FormData con el PDF generado
-		formData.append('pdfFile', blob, 'reporte.pdf');
+		
+		formData.append('file', blob, `historial-clinico-${dataCli.id_cli}.pdf`);
 		
 		const url = URL.createObjectURL(blob)
 		seturl(url)
+		startRegisterClinico(formState, formStateAntPatNutr, formData, dataCli.id_cli)
+		pdfGenerator.download()
 	})
-	console.log(formData);
-	startRegisterClinico(formState, formStateAntPatNutr, formData, dataCli.id_cli)
-	pdfGenerator.download()
+	
   }
   return (
     <Sidebar visible={show} onHide={onHide} style={{width: '1450px'}}>

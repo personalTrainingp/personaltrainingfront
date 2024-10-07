@@ -35,6 +35,9 @@ export const authClientSlice = createSlice({
 		onSetNutricionDIETA: (state, { payload }) => {
 			state.dataNutricion_DIETA = payload;
 		},
+		onSetHistorialClinico: (state, { payload }) => {
+			state.dataNutricion_HISTORIAL_CLINICO = payload;
+		},
 	},
 });
 export const {
@@ -45,4 +48,5 @@ export const {
 	onSetClientes,
 	clearErrorMessage,
 	onFinishSuccessStatus,
+	onSetHistorialClinico,
 } = authClientSlice.actions;

@@ -1,6 +1,6 @@
 import { PTApi } from '@/common';
 import { onGetMetas } from '@/store/uiMeta/metaSlice';
-import { onSetNutricionDIETA } from '@/store/usuario/usuarioClienteSlice';
+import { onSetHistorialClinico, onSetNutricionDIETA } from '@/store/usuario/usuarioClienteSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -44,26 +44,44 @@ export const useNutricionCliente = () => {
 	};
 
 	const startRegisterClinico = async (formState, formStateAp, formData, id_cli) => {
-		const { data: dataClinico } = await PTApi.post(`/dieta/post-clinico/${id_cli}`, {
-			formState,
-		});
-		const keysWithTrue = Object.keys(formStateAp)
-			.filter((key) => formStateAp[key]) // Filtrar solo los que son `true`
-			.map((key) => parseInt(key.replace('PAT', ''))); // Extraer el número y convertirlo a entero
-		await keysWithTrue.forEach(async (f) => {
-			const { data: dataAntPenales } = await PTApi.post(`/parametros/post-param-3/ANT-PAT`, {
-				id_1: dataClinico.id_hist_clinico,
-				id_2: f,
-				id_3: 0,
+		try {
+			const { data: dataClinico } = await PTApi.post(`/dieta/post-clinico/${id_cli}`, {
+				formState,
 			});
-		});
-		
+			const { data: clinico } = await PTApi.post(
+				`/storage/blob/create/${dataClinico.uid_FILE}?container=nutricion-historialclinico`,
+				formData
+			);
+			const keysWithTrue = Object.keys(formStateAp)
+				.filter((key) => formStateAp[key]) // Filtrar solo los que son `true`
+				.map((key) => parseInt(key.replace('PAT', ''))); // Extraer el número y convertirlo a entero
+			await keysWithTrue.forEach(async (f) => {
+				const { data: dataAntPenales } = await PTApi.post(
+					`/parametros/post-param-3/ANT-PAT`,
+					{
+						id_1: dataClinico.id_hist_clinico,
+						id_2: f,
+						id_3: 0,
+					}
+				);
+			});
+			await obtenerHistClinico(id_cli);
+		} catch (error) {
+			console.log(error);
+		}
+
 		// console.log(formState, formStateAp, formData, id_cli);
 		// const { } = await PTApi.
-		// const { data: clinico } = await PTApi.post(
-		// 	`/storage/blob/create/${data.uid_clinico}?container=nutricion-dietas`,
-		// 	formData
-		// );
+	};
+
+	const obtenerHistClinico = async (id_cli) => {
+		try {
+			const { data } = await PTApi.get(`/dieta/get-h-clinico/${id_cli}`);
+
+			dispatch(onSetHistorialClinico(data?.HcxCliente));
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return {
@@ -71,6 +89,7 @@ export const useNutricionCliente = () => {
 		obtenerDietasxCliente,
 		EliminarDietaxID,
 		startRegisterClinico,
+		obtenerHistClinico,
 		isLoading,
 	};
 };

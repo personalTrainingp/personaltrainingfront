@@ -17,11 +17,12 @@ export const ScreenNutricionista = ({id_cli, dataCli}) => {
     const [showSideBarClinico, setshowSideBarClinico] = useState(false)
     const [isOpenModalPlanAlimenticio, setisOpenModalPlanAlimenticio] = useState(false)
     
-  const { obtenerDietasxCliente, EliminarDietaxID, isLoading  } = useNutricionCliente()
+  const { obtenerDietasxCliente, EliminarDietaxID, isLoading, obtenerHistClinico  } = useNutricionCliente()
   
-  const { status, userCliente, dataNutricion_DIETA } = useSelector(e=>e.authClient)
+  const { status, userCliente, dataNutricion_DIETA, dataNutricion_HISTORIAL_CLINICO } = useSelector(e=>e.authClient)
     useEffect(() => {
         obtenerDietasxCliente(id_cli)
+        obtenerHistClinico(id_cli)
     }, [])
     
     const onCloseSideBarClinico = ()=>{
@@ -67,9 +68,8 @@ export const ScreenNutricionista = ({id_cli, dataCli}) => {
                 <Col xxl={12}>
                 {
                     dataNutricion_DIETA.map(d=>{
-                        
                         return(
-                        <ItemDieta url={d.tb_image.name_image} onDeleteDieta={()=>onDeleteDieta(d.id)} key={d.id} id_dieta_cli={d.id} nombre_dieta={d.nombre_dieta} descripcion_dieta={d.descripcion_dieta}/>
+                        <ItemDieta  key={d.id} url={d.tb_image.name_image} onDeleteDieta={()=>onDeleteDieta(d.id)} id_dieta_cli={d.id} nombre_dieta={d.nombre_dieta} descripcion_dieta={d.descripcion_dieta}/>
                         )
                     })
                 }
@@ -82,8 +82,15 @@ export const ScreenNutricionista = ({id_cli, dataCli}) => {
                     <Button label="Agregar" onClick={onOpenSideBarClinico} icon="pi pi-plus" iconPos="right"/>
                     </Col>
                 </Row>
-                
-                <ItemClinico id_consulta_cli={1234}/>
+                {
+                    dataNutricion_HISTORIAL_CLINICO.map(h=>{
+                        console.log(h);
+                        
+                        return(
+                            <ItemClinico url={h?.tb_image?.name_image} fec_created={h.createdAt}/>
+                        )
+                    })
+                }
             </TabPanel>
         </TabView>
         <SidebarClinico onHide={onCloseSideBarClinico} show={showSideBarClinico} dataCli={dataCli}/>

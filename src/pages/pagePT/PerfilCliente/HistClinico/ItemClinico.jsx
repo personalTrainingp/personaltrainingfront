@@ -1,8 +1,11 @@
+import { DateMask } from '@/components/CurrencyMask'
+import config from '@/config'
+import dayjs from 'dayjs'
 import React from 'react'
 import { Card, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-export const ItemClinico = ({data, id_consulta_cli}) => {
+export const ItemClinico = ({data, fec_created, onDeleteHClinico, url}) => {
   return (
     
     <Card className="mb-1 shadow-none border">
@@ -16,17 +19,19 @@ export const ItemClinico = ({data, id_consulta_cli}) => {
             </div>
             <div className="col ps-0">
                 <Link to="" className="text-muted fw-bold">
-                    Consulta Nº {id_consulta_cli}
+                    Historial
                 </Link>
+                <br/>
+                <span className='fs-6'>Fecha de creacion: <DateMask date={fec_created} format={'dddd D [de] MMMM [del] YYYY [a las] hh:mm A'}/></span>
             </div>
             <div className="col-auto">
-                <Link to="" className="btn btn-link btn-lg text-muted">
+                <Link to={`${config.API_IMG.FILE_HISTORIAL_CLINICO}${url}`} className="btn btn-link btn-lg text-muted">
                     <i className="pi pi-download"></i>
                 </Link>
-                <Link to="" className="btn btn-link btn-lg text-muted">
+                {/* <Link to="" className="btn btn-link btn-lg text-muted">
                     <i className="pi pi-pencil"></i>
-                </Link>
-                <Link to="" className="btn btn-link btn-lg text-muted">
+                </Link> */}
+                <Link to="" className="btn btn-link btn-lg text-muted" onClick={onDeleteHClinico}>
                     <i className="pi pi-times"></i>
                 </Link>
             </div>
