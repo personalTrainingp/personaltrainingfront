@@ -140,7 +140,7 @@ export const PerfilCliente = () => {
                 <TabPanel header='NUTRICIONISTA'>
                 <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
                   {/* <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/> */}
-                  <ScreenNutricionista id_cli={userCliente?.id_cli}/>
+                  <ScreenNutricionista id_cli={userCliente?.id_cli} dataCli={userCliente}/>
                 </ScrollPanel>
                 </TabPanel>
               </TabView>

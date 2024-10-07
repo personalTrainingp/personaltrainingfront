@@ -40,12 +40,12 @@ export const PerfilProv = () => {
                         <div className='m-2 text-center'>
                             <span className='fs-3 fw-bold'>
                                 <p className='mb-0 pb-0'>
-                                <span>
-                                    {proveedor.razon_social_prov}
+                                <span className='font-15 text-primary'>
+                                {proveedor.parametro_oficio?.label_param} 
                                 </span>
                                 <br/>
-                                <span className='font-15'>
-                                {proveedor.parametro_oficio?.label_param} 
+                                <span>
+                                    {proveedor.razon_social_prov}
                                 </span>
                                 </p>
                                 </span>

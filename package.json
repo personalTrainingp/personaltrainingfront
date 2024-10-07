@@ -51,6 +51,7 @@
     "moment": "^2.30.1",
     "nouislider": "^15.7.1",
     "nouislider-react": "^3.4.1",
+    "pdfmake": "^0.2.13",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
     "primereact": "^10.6.5",

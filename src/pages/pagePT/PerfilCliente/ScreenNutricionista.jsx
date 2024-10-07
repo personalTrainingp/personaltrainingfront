@@ -12,7 +12,7 @@ import { useNutricionCliente } from '@/hooks/hookApi/useNutricionCliente';
 import { useSelector } from 'react-redux';
 import { confirmDialog } from 'primereact/confirmdialog';
 
-export const ScreenNutricionista = ({id_cli}) => {
+export const ScreenNutricionista = ({id_cli, dataCli}) => {
     const {getRootProps, getInputProps, acceptedFiles} = useDropzone({noDrag: true});
     const [showSideBarClinico, setshowSideBarClinico] = useState(false)
     const [isOpenModalPlanAlimenticio, setisOpenModalPlanAlimenticio] = useState(false)
@@ -23,6 +23,7 @@ export const ScreenNutricionista = ({id_cli}) => {
     useEffect(() => {
         obtenerDietasxCliente(id_cli)
     }, [])
+    
     const onCloseSideBarClinico = ()=>{
         setshowSideBarClinico(false)
     }
@@ -81,10 +82,11 @@ export const ScreenNutricionista = ({id_cli}) => {
                     <Button label="Agregar" onClick={onOpenSideBarClinico} icon="pi pi-plus" iconPos="right"/>
                     </Col>
                 </Row>
+                
                 <ItemClinico id_consulta_cli={1234}/>
             </TabPanel>
         </TabView>
-        <SidebarClinico onHide={onCloseSideBarClinico} show={showSideBarClinico}/>
+        <SidebarClinico onHide={onCloseSideBarClinico} show={showSideBarClinico} dataCli={dataCli}/>
         <ModalDieta onHide={onCloseModalFilePlanAlimenticio} id_cli={id_cli} show={isOpenModalPlanAlimenticio}/>
     </>
   )

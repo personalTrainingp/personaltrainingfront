@@ -9,6 +9,22 @@ dayjs.extend(utc);
 dayjs.extend(localizedFormat);
 dayjs.locale(es);
 export const helperFunctions = () => {
+	const calcularEdad = (fechaNacimiento) => {
+		const hoy = dayjs();
+		const nacimiento = dayjs(fechaNacimiento);
+
+		let edad = hoy.year() - nacimiento.year();
+
+		// Si el mes y el día no han llegado aún este año, resta 1 a la edad
+		if (
+			hoy.month() < nacimiento.month() ||
+			(hoy.month() === nacimiento.month() && hoy.date() < nacimiento.date())
+		) {
+			edad--;
+		}
+
+		return edad;
+	};
 	const base64ToFile = (base64String, fileName) => {
 		// Decodificar el string base64
 		const byteString = atob(base64String.split(',')[1]);
@@ -172,5 +188,6 @@ export const helperFunctions = () => {
 		daysUTC,
 		base64ToFile,
 		sumarDiasHabiles,
+		calcularEdad,
 	};
 };

@@ -43,10 +43,34 @@ export const useNutricionCliente = () => {
 		}
 	};
 
+	const startRegisterClinico = async (formState, formStateAp, formData, id_cli) => {
+		const { data: dataClinico } = await PTApi.post(`/dieta/post-clinico/${id_cli}`, {
+			formState,
+		});
+		const keysWithTrue = Object.keys(formStateAp)
+			.filter((key) => formStateAp[key]) // Filtrar solo los que son `true`
+			.map((key) => parseInt(key.replace('PAT', ''))); // Extraer el número y convertirlo a entero
+		await keysWithTrue.forEach(async (f) => {
+			const { data: dataAntPenales } = await PTApi.post(`/parametros/post-param-3/ANT-PAT`, {
+				id_1: dataClinico.id_hist_clinico,
+				id_2: f,
+				id_3: 0,
+			});
+		});
+		
+		// console.log(formState, formStateAp, formData, id_cli);
+		// const { } = await PTApi.
+		// const { data: clinico } = await PTApi.post(
+		// 	`/storage/blob/create/${data.uid_clinico}?container=nutricion-dietas`,
+		// 	formData
+		// );
+	};
+
 	return {
 		startRegisterDieta,
 		obtenerDietasxCliente,
 		EliminarDietaxID,
+		startRegisterClinico,
 		isLoading,
 	};
 };
