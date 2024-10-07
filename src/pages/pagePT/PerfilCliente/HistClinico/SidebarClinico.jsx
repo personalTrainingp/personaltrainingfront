@@ -134,8 +134,8 @@ export const SidebarClinico = ({show, onHide, dataCli}) => {
 		antec_pat_tratam_perdida_peso,
 		hora_acostarse,
 		horaDeDespierto,
-		horario_desayuno,
 		horaDeDormir,
+		horario_desayuno,
 		lugar_desayuno,
 		alimentacion_actual_desayuno,
 		alimentacion_plan_desayuno,
@@ -163,8 +163,6 @@ export const SidebarClinico = ({show, onHide, dataCli}) => {
 		consumo_gaseosa,
 		consumo_dulces,
 		cambios_fin_semana,
-		hora_dormir,
-		hora_despertar,
 		onInputChange,
 		formState,
 		onResetForm: onResetConsulta} = useForm(registerConsulta)
@@ -281,7 +279,7 @@ var dd = {
 		},
 		
 		{
-			text: 'Despiertas a las: ',
+			text: `Despiertas a las:  ${horaDeDespierto.length>0?dayjs(horaDeDespierto, 'HH:mm').format('hh:mm A'):''}`,
 			style:'subSubTitle',
 			pageBreak: 'before'
 		},
@@ -394,7 +392,7 @@ var dd = {
 			}
 		},
 		{
-			text: 'Duerme a las: ',
+			text: `Duerme a las: ${horaDeDormir.length>0?dayjs(horaDeDormir, 'HH:mm').format('hh:mm A'):''}`,
 			style:'subSubTitle',
 		},
 	],
@@ -410,7 +408,7 @@ var dd = {
 			margin: [4, 10, 0, 7]
 		},
 		subSubTitle:{
-			fontSize: 10,
+			fontSize: 12,
 			bold: true
 		},
 		header: {
@@ -909,6 +907,42 @@ var dd = {
 				<TabPanel header='ALIMENTACION'>
 					<ScrollPanel style={{height: '25rem'}}>
 						<Row>
+							<Col xxl={12}>
+							<Row>
+								<Col xxl={2}>
+									<div className="mb-2">
+										<label htmlFor="horaDeDespierto" className="form-label">
+											DESPIERTA A LAS:
+										</label>
+										<input
+											className="form-control"
+											type='time'
+											name="horaDeDespierto"
+											value={horaDeDespierto}
+											onChange={onInputChange}
+											id="horaDeDespierto"
+										/>
+									</div>
+								</Col>
+								<Col xxl={2}>
+									<div className="mb-2">
+										<label htmlFor="horaDeDormir" className="form-label">
+											DUERME A LAS:
+										</label>
+										<input
+											className="form-control"
+											type='time'
+											name="horaDeDormir"
+											value={horaDeDormir}
+											onChange={onInputChange}
+											id="horaDeDormir"
+										/>
+									</div>
+								</Col>
+
+							</Row>
+							</Col>
+
 							<Col xxl={2} className='border-right-2'>
 								<h4 className='text-center'>DESAYUNO</h4>
 								<div className="mb-2">
@@ -1227,22 +1261,7 @@ var dd = {
 									/>
 								</div>
 							</Col>
-							<Col xxl={12}>
-								<div className="mb-2">
-									<label htmlFor="lugar_extras" className="form-label">
-										Lugar
-									</label>
-									<input
-										className="form-control"
-										type='text'
-										name="lugar_extras"
-										value={lugar_extras}
-										onChange={onInputChange}
-										id="lugar_extras"
-									/>
-								</div>
-								
-							</Col>
+							
 						</Row>
 					</ScrollPanel>
 				</TabPanel>
