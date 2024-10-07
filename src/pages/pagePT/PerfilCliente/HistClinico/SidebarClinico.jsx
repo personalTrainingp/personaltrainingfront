@@ -3,8 +3,8 @@ import { Sidebar } from 'primereact/sidebar'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap';
 import pdfMake from 'pdfmake/build/pdfmake'
-// import * as pdfFonts from 'pdfmake/build/vfs_fonts'
-import { vfsFonts } from 'pdfmake/build/vfs_fonts';
+import pdfFonts from 'pdfmake/build/vfs_fonts'
+// import { vfsFonts } from 'pdfmake/build/vfs_fonts';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import { arraySexo } from '@/types/type';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useNutricionCliente } from '@/hooks/hookApi/useNutricionCliente';
-pdfMake.vfs = vfsFonts.pdfMake.vfs
+pdfMake.vfs = pdfFonts.pdfMake.vfs
 const registerConsulta = {
   id: 1,
   dato_motivacion: '',
