@@ -20,6 +20,7 @@ export const useUsuarioStore = () => {
 	const dispatch = useDispatch();
 	const { user } = useSelector((e) => e.auth);
 	const [dataClixID, setdataClixID] = useState({});
+	const [dataUltimaMembxCli, setdataUltimaMembxCli] = useState({});
 	const [loading, setloading] = useState(false);
 	const [loadingData, setLoadingData] = useState(true);
 	const [loadingPlanAlim, setloadingPlanAlim] = useState(false);
@@ -121,6 +122,16 @@ export const useUsuarioStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerUltimaMebresiaxCli = async (id_cli) => {
+		try {
+			const { data } = await PTApi.get(`/usuario/get-ultima-membresia-cliente/${id_cli}`);
+			setdataUltimaMembxCli(data);
+			console.log(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const startRegisterUsuarioEmpleado = async (form, formData) => {
 		const { comentario_com } = form.comentarios;
 		const { dataContactsEmerg } = form;
@@ -220,6 +231,8 @@ export const useUsuarioStore = () => {
 		eliminarOneUsuarioCliente,
 		startUpdateUsuarioCliente,
 		obtenerClientexID,
+		obtenerUltimaMebresiaxCli,
+		dataUltimaMembxCli,
 		loadingData,
 		dataClixID,
 		//Empleado

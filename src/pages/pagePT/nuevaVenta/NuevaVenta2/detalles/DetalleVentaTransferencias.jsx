@@ -1,33 +1,33 @@
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const DetalleVentaTransferencias = () => {
+export const DetalleVentaTransferencias = ({name_socio, ultima_mem_socio, sesiones_socio_antiguo, total}) => {
 	return (
     <Table className="table table-centered mb-0">
       <tbody>
         <tr className="text-start">
           <td>
-            <h5 className="m-0">Cliente emisor:</h5>
+            <h5 className="m-0">SOCIO ANTIGUO:</h5>
           </td>
-          <td className="text-start  fw-semibold">Carlos Rosales Morales</td>
+          <td className="text-start  fw-semibold">{name_socio}</td>
         </tr>
         <tr className="text-start">
           <td>
             <h5 className="m-0">Membresia por transferir:</h5>
           </td>
-          <td className="text-start  fw-semibold">RPM 50</td>
+          <td className="text-start  fw-semibold">{ultima_mem_socio}</td>
         </tr>
         <tr className="text-start">
           <td>
-            <h5 className="m-0">Semanas por transferir:</h5>
+            <h5 className="m-0">SESIONES POR TRANSFERIR:</h5>
           </td>
-          <td className="text-start  fw-semibold">24 semanas</td>
+          <td className="text-start  fw-semibold">{sesiones_socio_antiguo}</td>
         </tr>
         <tr className="text-start">
           <td>
             <h5 className="m-0">Total:</h5>
           </td>
-          <td className="text-start fw-semibold">$1234123.00</td>
+          <td className="text-start fw-semibold">{total}</td>
         </tr>
       </tbody>
     </Table>

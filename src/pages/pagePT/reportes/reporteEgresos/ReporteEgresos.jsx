@@ -38,54 +38,36 @@ export const ReporteEgresos = () => {
       <FormatRangoFecha rangoFechas={rangoFechas}/>
       {/* <BtnExportExcelFlujoCaja data={reporte_FlujoCaja}/> */}
     </div>
-    <Card>
-      <Card.Header className='d-flex align-items-center justify-content-between'>
-        <Card.Title>
-          <div>
-            GASTOS POR PROVEEDOR
-          </div>
-        </Card.Title>
-      </Card.Header>
-      <Card.Body>
-        <TabView>
-          <TabPanel leftIcon="pi pi-table mr-2">
-            <TableEgresosProveedor showToast={showToast} data={egresosPorFecha_PROVEEDOR}/>
-          </TabPanel>
-          <TabPanel leftIcon="pi pi-chart-bar mr-2">
-
-          </TabPanel>
-        </TabView>
-      </Card.Body>
-    </Card>
-
-    <Card>
-      <Card.Header>
-        <Card.Title>GASTOS POR CONCEPTOS</Card.Title>
-      </Card.Header>
-      <Card.Body>
-        <TabView>
+    
+    <TabView>
+      <TabPanel header='GASTOS POR PROVEEDOR'>
+            <TabView>
+              <TabPanel leftIcon="pi pi-table mr-2">
+                <TableEgresosProveedor showToast={showToast} data={egresosPorFecha_PROVEEDOR}/>
+              </TabPanel>
+              <TabPanel leftIcon="pi pi-chart-bar mr-2">
+              </TabPanel>
+            </TabView>
+      </TabPanel>
+      <TabPanel header='GASTOS POR CONCEPTOS'>
+      <TabView>
           <TabPanel leftIcon="pi pi-table mr-2">
             <TableEgresosPorGasto data={egresosPorFecha_GASTO} showToast={showToast}/>
           </TabPanel>
           <TabPanel leftIcon="pi pi-chart-bar mr-2">
           </TabPanel>
         </TabView>
-      </Card.Body>
-    </Card>
-    <Card>
-      <Card.Header>
-        <Card.Title>GASTOS POR GRUPO</Card.Title>
-      </Card.Header>
-      <Card.Body>
-        <TabView>
-          <TabPanel leftIcon="pi pi-table mr-2">
-            <TableEgresosPorGrupo data={egresosPorFecha_GRUPO} showToast={showToast}/>
-          </TabPanel>
-          <TabPanel leftIcon="pi pi-chart-bar mr-2">
-          </TabPanel>
-        </TabView>
-      </Card.Body>
-    </Card>
+      </TabPanel>
+      <TabPanel header='GASTOS POR GRUPO'>
+          <TabView>
+              <TabPanel leftIcon="pi pi-table mr-2">
+                <TableEgresosPorGrupo data={egresosPorFecha_GRUPO} showToast={showToast}/>
+              </TabPanel>
+              <TabPanel leftIcon="pi pi-chart-bar mr-2">
+              </TabPanel>
+            </TabView>
+      </TabPanel>
+    </TabView>
     </>
   )
 }

@@ -16,7 +16,7 @@ export const ContratosCliente = () => {
     }
   return (
     <>
-        <PageBreadcrumb title={'CONTRATOS DE CLIENTES'} subName={'T'}/>
+        <PageBreadcrumb title={'CONTRATOS DE SOCIOS'} subName={'T'}/>
         <Row>
             <Col xxl={1}>
             </Col>

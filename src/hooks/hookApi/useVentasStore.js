@@ -84,6 +84,7 @@ export const useVentasStore = () => {
 	const startRegisterVenta = async (formState, funToast) => {
 		try {
 			setloadingVenta(false);
+			// const { } = await PTApi.
 			if (formState.dataVenta.detalle_traspaso.length > 0) {
 				const { data: dataSesiones } = await PTApi.post(
 					'/programaTraining/sesiones/post-sesion',
@@ -99,6 +100,7 @@ export const useVentasStore = () => {
 					dataSesiones,
 				});
 			} else {
+				// const { } = await PTApi.post('/venta/post-ventas')
 				if (formState.dataVenta.detalle_venta_programa.length > 0) {
 					const { base64ToFile } = helperFunctions();
 					if (formState.dataVenta.detalle_venta_programa[0].firmaCli) {
@@ -112,6 +114,7 @@ export const useVentasStore = () => {
 							`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
 							formData
 						);
+						// const { } = await PTApi.post(`/venta/send-email/${}`)
 					}
 				}
 			}

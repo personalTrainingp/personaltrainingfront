@@ -28,7 +28,7 @@ export const ModalTipoCambio = ({show, onHide}) => {
                         value={precio_venta}
                         onChange={onInputChange}
                         id="precio_venta"
-                        placeholder="PRECIO DE VENTA"
+                        placeholder=""
                         required
                     />
                 </div>
@@ -44,7 +44,7 @@ export const ModalTipoCambio = ({show, onHide}) => {
                         value={precio_compra}
                         onChange={onInputChange}
                         id="precio_compra"
-                        placeholder="PRECIO DE VENTA"
+                        placeholder=""
                         style={{ maxHeight: '100px' }}
                         required
                     />

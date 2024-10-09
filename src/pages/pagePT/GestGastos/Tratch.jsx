@@ -16,7 +16,7 @@ import { confirmDialog } from 'primereact/confirmdialog';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { arrayCargoEmpl, arrayFinanzas } from '@/types/type';
 import dayjs from 'dayjs';
-import { FormatoDateMask } from '@/components/CurrencyMask';
+import { FormatoDateMask, FUNMoneyFormatter, MoneyFormatter } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
 import { Col, Modal, Row } from 'react-bootstrap';
@@ -179,7 +179,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const montoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(formatCurrency(rowData.monto, rowData.moneda?rowData.moneda:'PEN'), globalFilterValue)}</span>
+                <span>{highlightText(FUNMoneyFormatter(rowData.monto, rowData.moneda=='PEN'?'S/.':'$ '), globalFilterValue)}</span>
             </div>
         );
     };

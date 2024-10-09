@@ -67,6 +67,8 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 	useEffect(() => {
 		obtenerReporteSeguimiento(SeguimientoClienteActivos)
 	  }, [])
+	  console.log(dataView);
+	  
 	const { diasLaborables, daysUTC } = helperFunctions();
 	const [filters, setFilters] = useState({
 		
