@@ -467,16 +467,10 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name='esCompra' onChange={onInputChange} checked={esCompra} id="flexCheckDefault"/>
                                         <label class="form-check-label" for="flexCheckDefault">
-                                            ¿Se trata de una compra? Si es así, por favor marca la casilla.
+                                            ¿Si se trata de una factura? Si es así, por favor marca la casilla.
                                         </label>
                                     </div>
                                 </div>
-                                        {/* <input type="checkbox" className='form-control' id="compraCheckbox" name="compra" value="si"/>
-                                        <label htmlFor="descripcion" className="form-label">
-                                            ¿Se trata de una compra? Si es así, por favor marca la casilla.
-                                        </label>
-                                    <div className="mb-4">
-                                    </div> */}
                                 </Col>
                                 <Col lg={12}>
                                     <div className="mb-4">
