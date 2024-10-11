@@ -109,7 +109,7 @@ export const DataProveedores = () => {
 								</Col>
 							</Row>
 							<TabView>
-                <TabPanel header={'Activos'}>
+                <TabPanel className='tabPanel-color-success' header={'Activos'}>
                   <CustomersProv estado_prov={true}/>
                 </TabPanel>
                 <TabPanel header={'Inactivos'}>

@@ -67,6 +67,9 @@ export const ReporteEgresos = () => {
               </TabPanel>
             </TabView>
       </TabPanel>
+      <TabPanel header='PERSONALIZACION'>
+        
+      </TabPanel>
     </TabView>
     </>
   )

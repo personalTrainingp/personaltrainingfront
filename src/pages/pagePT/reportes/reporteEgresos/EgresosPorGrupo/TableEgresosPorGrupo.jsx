@@ -1,12 +1,17 @@
-import { CurrencyMask, FormatoDateMask } from '@/components/CurrencyMask';
+import { CurrencyMask, FormatoDateMask, NumberFormatMoney } from '@/components/CurrencyMask';
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
 import { ModalIngresosGastos } from '@/pages/pagePT/GestGastos/ModalIngresosGastos';
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import React, { useState } from 'react'
+import { ModalViewConceptos } from '../ModalViewConceptos';
 
 export const TableEgresosPorGrupo = ({data, showToast}) => {
   const [expandedRows, setExpandedRows] = useState(null);
+  const [selectGrupos, setselectGrupos] = useState(null);
+  const [isopenModalViewConceptos, setisopenModalViewConceptos] = useState(false)
+  const [selectGruposName, setselectGruposName] = useState('')
+
 const grupoBodyTemplate = (rowData)=>{
   return (
     <div>
@@ -33,6 +38,7 @@ const onRowExpand = (event) => {
 };
 const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto } = useGf_GvStore()
 const [isOpenModalEgresos, setisOpenModalEgresos] = useState(false)
+// const [first, setfirst] = useState(second)
     const onCloseModalIvsG = ()=>{
         setisOpenModalEgresos(false)
     }
@@ -77,6 +83,24 @@ const proveedorBodyTemplate = (rowData)=>{
     </div>
   )
 }
+const TotalSolesBodyTemplate = (rowData)=>{
+  return(
+    <div>
+      <NumberFormatMoney amount={rowData.suma_monto_PEN} symbol={''}/>
+    </div>
+  )
+}
+const TotalDolaresBodyTemplate = (rowData)=>{
+  return(
+    <div>
+      {rowData.suma_monto_USD!=0?
+      <NumberFormatMoney amount={rowData.suma_monto_USD}/>
+      :
+      ''
+      }
+    </div>
+  )
+}
 const rowExpansionTemplate = (data) => {
   return (
       <div className="p-3">
@@ -88,14 +112,17 @@ const rowExpansionTemplate = (data) => {
               <Column header="Descripcion" field='descripcion' sortable></Column>
               <Column header="N° Operacion" field='n_operacion' sortable></Column>
               <Column header="Monto"  sortable body={montoMonedaBodyTemplate}></Column>
-              {/* <Column field="date" header="Date" sortable></Column>
-              <Column field="amount" header="Amount" body={amountBodyTemplate} sortable></Column>
-              <Column field="status" header="Status" body={statusOrderBodyTemplate} sortable></Column>
-              <Column headerStyle={{ width: '4rem' }} body={searchBodyTemplate}></Column> */}
           </DataTable>
       </div>
   );
 };
+
+const OpenModalConceptos = (i)=>{
+  setisopenModalViewConceptos(true)
+  setselectGrupos(i)
+  setselectGruposName(i.grupo)
+}
+
   return (
     <div>
         <DataTable 
@@ -110,11 +137,17 @@ const rowExpansionTemplate = (data) => {
           tableStyle={{ minWidth: '30rem' }} 
           scrollable 
           scrollHeight="400px"
+          selection={selectGrupos} onSelectionChange={(e)=>OpenModalConceptos(e.value)}
+          selectionMode="single"
           >
           <Column expander={allowExpansion} style={{ width: '5rem' }} />
-          <Column  header="GRUPO" body={grupoBodyTemplate}></Column>
-          <Column header="TOTAL" body={TotalBodyTemplate}></Column>
+          <Column  header={<h3>GRUPO</h3>} body={grupoBodyTemplate}></Column>
+          
+          <Column header={<div className='d-flex w-50'>TOTAL S/.</div>} body={TotalSolesBodyTemplate}></Column>
+          <Column header={<div className='d-flex w-50'>TOTAL $</div>} body={TotalDolaresBodyTemplate}></Column>
+          {/* <Column header="TOTAL" body={TotalBodyTemplate}></Column> */}
         </DataTable>
+        <ModalViewConceptos label_data={selectGruposName} data={selectGrupos} onHide={()=>setisopenModalViewConceptos(false)} show={isopenModalViewConceptos}/>
         <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
     </div>
   )

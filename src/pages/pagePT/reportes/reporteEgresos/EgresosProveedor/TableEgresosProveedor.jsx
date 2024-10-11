@@ -9,6 +9,7 @@ import { ModalViewConceptos } from '../ModalViewConceptos';
 export const TableEgresosProveedor = ({data, showToast}) => {
   const [expandedRows, setExpandedRows] = useState(null);
   const [selectGrupos, setselectGrupos] = useState(null)
+  const [selectGruposName, setselectGruposName] = useState('');
   const [isopenModalViewConceptos, setisopenModalViewConceptos] = useState(false)
 
 const proveedorBodyTemplate = (rowData)=>{
@@ -110,6 +111,9 @@ const IdProvBodyTemplate =(rowData)=>{
 const OpenModalConceptos = (i)=>{
   setisopenModalViewConceptos(true)
   setselectGrupos(i)
+  console.log(i);
+  
+  setselectGruposName(i.proveedor)
 }
 
   return (
@@ -135,7 +139,7 @@ const OpenModalConceptos = (i)=>{
           <Column header={<div className='d-flex w-50'>TOTAL $</div>} body={TotalDolaresBodyTemplate}></Column>
         </DataTable>
         <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
-        <ModalViewConceptos data={selectGrupos} onHide={()=>setisopenModalViewConceptos(false)} show={isopenModalViewConceptos}/>
+        <ModalViewConceptos label_data={selectGruposName} data={selectGrupos} onHide={()=>setisopenModalViewConceptos(false)} show={isopenModalViewConceptos}/>
     </div>
   )
 }

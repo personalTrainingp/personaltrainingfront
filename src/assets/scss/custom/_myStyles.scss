@@ -3,6 +3,20 @@
   font-family: Poppins, sans-serif;
   // font-size: 20% !important;
 }
+
+.tabPanel-color-success{
+  a{
+    &:hover{
+      opacity: .5;
+    }
+    &:focus{
+      color: #11d445;
+      border-color: #11d445 !important;
+    }
+  }
+}
+
+
 .currency {
   width: 2.5rem; /* Adjust the width to align as needed */
   text-align: right;

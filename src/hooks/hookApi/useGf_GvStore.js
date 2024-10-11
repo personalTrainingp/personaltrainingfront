@@ -17,6 +17,7 @@ import Swal from 'sweetalert2';
 export const useGf_GvStore = () => {
 	const dispatch = useDispatch();
 	const [gastoxID, setgastoxID] = useState({});
+	const [ordenCompra, setOrdenCompra] = useState([]);
 	const [isLoading, setisLoading] = useState(false);
 	const [isLoadingData, setisLoadingData] = useState(true);
 	const [objetoToast, setobjetoToast] = useState({});
@@ -187,6 +188,20 @@ export const useGf_GvStore = () => {
 		}
 	};
 
+	const obtenerOrdenCompra = async (id_enterprice) => {
+		try {
+			setisLoadingData(true);
+
+			const { data } = await PTApi.get(`/egreso/orden-compra/${id_enterprice}`);
+			console.log(data);
+
+			setOrdenCompra(data.gastos);
+			setisLoadingData(false);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return {
 		obtenerParametrosGastosFinanzas,
 		startRegistrarGastos,
@@ -197,7 +212,9 @@ export const useGf_GvStore = () => {
 		startActualizarGastos,
 		startDeleteGasto,
 		obtenerGastosPorFecha,
+		obtenerOrdenCompra,
 		dataGasto,
+		ordenCompra,
 		isLoadingData,
 		setgastoxID,
 		gastoxID,

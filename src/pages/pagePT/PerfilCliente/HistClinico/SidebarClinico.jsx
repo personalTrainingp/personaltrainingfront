@@ -205,228 +205,228 @@ export const SidebarClinico = ({show, onHide, dataCli}) => {
 	const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
 	const [url, seturl] = useState(null)
 		const { calcularEdad } = helperFunctions()
-var dd = {
-	content: [
-		{
-			text: 'HISTORIA NUTRICIONAL',
-			alignment: 'center',
-			style: 'header'
-		},
-		{
-			text: 'I) Datos del paciente',
-			style:'subTitle'
-		},
-		{
-			style: 'tableExample',
-			table: {
-				widths: ['*', '*', '*', '*'],
-				body: [
-					[{text: `NOMBRES Y APELLIDOS: ${dataCli.nombre_cli} ${dataCli.apPaterno_cli} ${dataCli.apMaterno_cli}`, style: 'tableHeader', colSpan: 4}, {}, {}, {}], // Celda que abarca 4 columnas
-					[
-					{text: `EDAD: ${calcularEdad(dataCli.fecNac_cli)} años`, style: 'tableHeader', colSpan: 2}, {}, 
-					{text: `SEXO: ${arraySexo.find(s=>s.value==dataCli.sexo_cli).label}`, style: 'tableHeader', colSpan: 2}, {}
-					], // Dos celdas que abarcan 2 columnas cada una
-					[{text: `MOTIVACIÓN (¿PARA QUÉ QUIERE LOGRAR ESE OBJETIVO?): ${formState.dato_motivacion.toUpperCase()}`, style: 'tableHeader', colSpan: 4}, {}, {}, {}] // Celda que abarca 4 columnas
-				]
-			}
-		},
-		{
-			text: 'II) ANTECEDENTES PATOLÓGICOS',
-			style:'subTitle'
-		},
-		{
-			style: 'tableExample',
-			table: {
-				widths: ['*', '*', '*', '*'],
-				body: [
-					// [{text: 'Sufre o sufrió de alguna de estas enfermedades, dolencias o condiciones?', style: 'tableHeader', colSpan: 4}],
-					[{text: `Enf. Cardiovascular ( ${PAT612 ? 'X':''} )`, style: 'tableHeader'}, {text: `Hígado graso ( ${PAT613 ? 'X':''} )`, style: 'tableHeader',}, {text: `Osteoporosis/osteopenia ( ${PAT614 ? 'X':''} )`, style: 'tableHeader'}, {text: `Intestino Irritable – D ( ${PAT615 ? 'X':''} )`, style: 'tableHeader',}],
-					[{text: `Diabetes ( ${PAT616 ? 'X':''} ) RI ( ${PAT617 ? 'X':''}  )`, style: 'tableHeader'}, {text: `Enf. Renal ( ${PAT618 ? 'X':''} )`, style: 'tableHeader'}, {text: `Gota ( ${PAT619 ? 'X':''} ) `, style: 'tableHeader'}, {text: `Nauseas/ Vómitos ( ${PAT620 ? 'X':''} )`, style: 'tableHeader',}],
-					[{text: `Resistencia a la insulina ( ${PAT621 ? 'X':''}  )`}, {text: `Enf. Pancreática ( ${PAT622 ? 'X':''} )`}, {text: `Hipertiroidismo ( ${PAT623 ? 'X':''} )`}, {text: `Falta de apetito ( ${PAT624 ? 'X':''} )`}],
-					[{text: `Enf. Pulmonar ( ${PAT625 ? 'X':''} )`}, {text: `Enf. Pulmonar ( ${PAT626 ? 'X':''} )`}, {text: `Hipotiroidismo ( ${PAT627 ? 'X':''} ) `}, {text: `Gastritis y/o úlceras ( ${PAT628 ? 'X':''} )`}],
-					[{text: `Colesterol elevado ( ${PAT629 ? 'X':''} )`}, {text: `Cáncer ( ${PAT630 ? 'X':''} )`}, {text: `Enfermedad autoinmune ( ${PAT631 ? 'X':''} )`}, {text: `Estrés ( ${PAT632 ? 'X':''} ) Ansiedad ( ${PAT633 ? 'X':''} )`}],
-					[{text: `Triglicéridos elevados ( ${PAT634 ? 'X':''} )`}, {text: `Migrañas ( ${PAT635 ? 'X':''} )`}, {text: `Dificultad al masticar ( ${PAT636 ? 'X':''} )`}, {text: `Depresión ( ${PAT637 ? 'X':''} ) Insomnio ( ${PAT638 ? 'X':''} )`}],
-					[{text: `Anemia  ( ${PAT639 ? 'X':''} )`}, {text: `Estreñimiento ( ${PAT640 ? 'X':''} )`}, {text: `Intestino Irritable - C ( ${PAT641 ? 'X':''} )`}, {text: `Prostatitis ( ${PAT642 ? 'X':''} )`}],
-					[{text: ' ', colSpan: 4}],
-					[{text: `Algún familiar consanguíneo sufre o sufrió de alguna de estas enfermedades? ${antec_pat_de_algun_familiar}`, colSpan: 4}],
-				]
-			}
-		},
-		{
-			text: 'III) ESTILO DE VIDA',
-			style:'subTitle'
-		},
-		{
-			style: 'tableExample',
-			table: {
-				widths: ['*', '*', '*', '*'],
-				body: [
-					[{text: `¿Fumas o has fumado anteriormente? ( ${antec_pat_fumado.trim().length<=0?'':'SI'} ) ${antec_pat_fumado}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Consumes algún fármaco con frecuencia? ( ${antec_pat_consumes_farmaco.trim().length<=0?'':'SI'} ) ${antec_pat_consumes_farmaco}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Tomas alcohol? ( ${antec_pat_tomas_alcohol.trim().length<=0?'':'SI'} ) ${antec_pat_tomas_alcohol}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Realizas actividad física? ( ${antec_pat_realizas_actividad_fisica.trim().length<=0?'':'SI'} ) ${antec_pat_realizas_actividad_fisica}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Modificaste tu alimentación en los últimos 6 meses? (${antec_pat_modific_tu_alimentacion_ultimos6meses.trim().length<=0?'':'SI'} ) ${antec_pat_modific_tu_alimentacion_ultimos6meses}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Cómo es tu apetito? ${antec_pat_cual_es_tu_apetito}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿A qué hora tienes más hambre? ${antec_pat_hora_de_mas_hambre}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Cuáles son tus alimentos preferidos? ${antec_pat_alimentos_preferidos}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Alimentos que te desagradan? ${antec_pat_alimentos_desagradables}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Alergia o intolerancia a algún alimento? ${antec_pat_alimentos_alergias}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Tomas algún suplemento o complemento? ${antec_pat_alimentos_suplemento_complemento}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Tu alimentación varía de acuerdo a su estado de ánimo? ${antec_pat_alimentos_segun_estado_animo}`, style: 'tableHeader', colSpan: 4}],
-					[{text: `¿Qué tratamientos de pérdida de peso has realizado? ¿Has usado o usas medicamentos para bajar de peso? ${antec_pat_tratam_perdida_peso}`, style: 'tableHeader', colSpan: 4}],
-				]
-			}
-		},
-		
-		{
-			text: `Despiertas a las:  ${horaDeDespierto.length>0?dayjs(horaDeDespierto, 'HH:mm').format('hh:mm A'):''}`,
-			style:'subSubTitle',
-			pageBreak: 'before'
-		},
-		{
-			style: 'tableExample',
-			table: {
-				widths: ['*', '*', '*'],
-				body: [
-					[
-						{text: 'TIEMPO DE COMIDA', style: 'tableHeader'}, 
-						{text: 'ALIMENTACION ACTUAL', style: 'tableHeader'}, 
-						{text: 'PLAN ALIMENTARIO', style: 'tableHeader'}
-					],
-					[
-						{text: 'DESAYUNO', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
-						{text: `${alimentacion_actual_desayuno}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
-						{text: `${alimentacion_plan_desayuno}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
-					],
-					[
-						{text: `Horario : ${horario_desayuno.length>0?dayjs(horario_desayuno, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
-						{},  // Celda vacía porque "rowSpan" ya abarca esta fila
-						{}  // Celda vacía porque "rowSpan" ya abarca esta fila
-					],
-					[
-						{text: `Lugar : ${lugar_desayuno}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
-						{},  // Celda vacía
-						{}  // Celda vacía
-					],
-					[
-						{text: 'MEDIA MAÑANA', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
-						{text: `${alimentacion_actual_media_maniana}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
-						{text: `${alimentacion_plan_media_maniana}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
-					],
-					[
-						{text: `Horario : ${horario_media_maniana.length>0?dayjs(horario_media_maniana, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
-						{},  // Celda vacía porque "rowSpan" ya abarca esta fila
-						{}  // Celda vacía porque "rowSpan" ya abarca esta fila
-					],
-					[
-						{text: `Lugar : ${lugar_media_maniana}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
-						{},  // Celda vacía
-						{}  // Celda vacía
-					],
-					[
-						{text: 'ALMUERZO', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
-						{text: `${alimentacion_actual_almuerzo}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
-						{text: `${alimentacion_plan_almuerzo}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
-					],
-					[
-						{text: `Horario : ${ horario_almuerzo.length>0?dayjs(horario_almuerzo, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
-						{},  // Celda vacía porque "rowSpan" ya abarca esta fila
-						{}  // Celda vacía porque "rowSpan" ya abarca esta fila
-					],
-					[
-						{text: `Lugar : ${lugar_almuerzo}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
-						{},  // Celda vacía
-						{}  // Celda vacía
-					],
-					[
-						{text: 'MEDIA TARDE', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
-						{text: `${alimentacion_actual_media_tarde}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
-						{text: `${alimentacion_plan_media_tarde}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
-					],
-					[
-						{text: `Horario : ${ horario_media_tarde.length>0?dayjs(horario_media_tarde, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
-						{},  // Celda vacía porque "rowSpan" ya abarca esta fila
-						{}  // Celda vacía porque "rowSpan" ya abarca esta fila
-					],
-					[
-						{text: `Lugar : ${lugar_media_tarde}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
-						{},  // Celda vacía
-						{}  // Celda vacía
-					],
-					[
-						{text: 'CENA', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
-						{text: `${alimentacion_actual_cena}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
-						{text: `${alimentacion_plan_cena}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
-					],
-					[
-						{text: `Horario : ${horario_cena.length>0?dayjs(horario_cena, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
-						{},  // Celda vacía porque "rowSpan" ya abarca esta fila
-						{}  // Celda vacía porque "rowSpan" ya abarca esta fila
-					],
-					[
-						{text: `Lugar : ${lugar_cena}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
-						{},  // Celda vacía
-						{}  // Celda vacía
-					],
-					[
-						{text: 'EXTRAS', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
-						{text: `${alimentacion_actual_extras}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
-						{text: `${alimentacion_plan_extras}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
-					],
-					[
-						{text: `Horario : ${horario_extras.length>0?dayjs(horario_extras, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
-						{},  // Celda vacía porque "rowSpan" ya abarca esta fila
-						{}  // Celda vacía porque "rowSpan" ya abarca esta fila
-					],
-					[
-						{text: `Lugar : ${lugar_extras}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
-						{},  // Celda vacía
-						{}  // Celda vacía
-					],
-					[{text: `vasos de agua natural al día: ${vasos_agua_x_dia}`, colSpan: 1}, {text: '', colSpan: 2}],
-					[{text: `Consumo de gaseosa: ${consumo_gaseosa}`, colSpan: 1}, {text: '', colSpan: 2}],
-					[{text: `Consumo de  dulces: ${consumo_dulces}`, colSpan: 1}, {text: '', colSpan: 2}],
-					[{text: `Cambios por fin de semana: ${cambios_fin_semana}`, colSpan: 1}, {text: '', colSpan: 2}],
-					[{text: `Hora de acostarse: ${hora_acostarse}`, colSpan: 1}, {text: '', colSpan: 2}],
-				]
-			}
-		},
-		{
-			text: `Duerme a las: ${horaDeDormir.length>0?dayjs(horaDeDormir, 'HH:mm').format('hh:mm A'):''}`,
-			style:'subSubTitle',
-		},
-	],
-	styles: {
+	var dd = {
+		content: [
+			{
+				text: 'HISTORIA NUTRICIONAL',
+				alignment: 'center',
+				style: 'header'
+			},
+			{
+				text: 'I) Datos del paciente',
+				style:'subTitle'
+			},
+			{
+				style: 'tableExample',
+				table: {
+					widths: ['*', '*', '*', '*'],
+					body: [
+						[{text: `NOMBRES Y APELLIDOS: ${dataCli.nombre_cli} ${dataCli.apPaterno_cli} ${dataCli.apMaterno_cli}`, style: 'tableHeader', colSpan: 4}, {}, {}, {}], // Celda que abarca 4 columnas
+						[
+						{text: `EDAD: ${calcularEdad(dataCli.fecNac_cli)} años`, style: 'tableHeader', colSpan: 2}, {}, 
+						{text: `SEXO: ${arraySexo.find(s=>s.value==dataCli.sexo_cli).label}`, style: 'tableHeader', colSpan: 2}, {}
+						], // Dos celdas que abarcan 2 columnas cada una
+						[{text: `MOTIVACIÓN (¿PARA QUÉ QUIERE LOGRAR ESE OBJETIVO?): ${formState.dato_motivacion.toUpperCase()}`, style: 'tableHeader', colSpan: 4}, {}, {}, {}] // Celda que abarca 4 columnas
+					]
+				}
+			},
+			{
+				text: 'II) ANTECEDENTES PATOLÓGICOS',
+				style:'subTitle'
+			},
+			{
+				style: 'tableExample',
+				table: {
+					widths: ['*', '*', '*', '*'],
+					body: [
+						// [{text: 'Sufre o sufrió de alguna de estas enfermedades, dolencias o condiciones?', style: 'tableHeader', colSpan: 4}],
+						[{text: `Enf. Cardiovascular ( ${PAT612 ? 'X':''} )`, style: 'tableHeader'}, {text: `Hígado graso ( ${PAT613 ? 'X':''} )`, style: 'tableHeader',}, {text: `Osteoporosis/osteopenia ( ${PAT614 ? 'X':''} )`, style: 'tableHeader'}, {text: `Intestino Irritable – D ( ${PAT615 ? 'X':''} )`, style: 'tableHeader',}],
+						[{text: `Diabetes ( ${PAT616 ? 'X':''} ) RI ( ${PAT617 ? 'X':''}  )`, style: 'tableHeader'}, {text: `Enf. Renal ( ${PAT618 ? 'X':''} )`, style: 'tableHeader'}, {text: `Gota ( ${PAT619 ? 'X':''} ) `, style: 'tableHeader'}, {text: `Nauseas/ Vómitos ( ${PAT620 ? 'X':''} )`, style: 'tableHeader',}],
+						[{text: `Resistencia a la insulina ( ${PAT621 ? 'X':''}  )`}, {text: `Enf. Pancreática ( ${PAT622 ? 'X':''} )`}, {text: `Hipertiroidismo ( ${PAT623 ? 'X':''} )`}, {text: `Falta de apetito ( ${PAT624 ? 'X':''} )`}],
+						[{text: `Enf. Pulmonar ( ${PAT625 ? 'X':''} )`}, {text: `Enf. Pulmonar ( ${PAT626 ? 'X':''} )`}, {text: `Hipotiroidismo ( ${PAT627 ? 'X':''} ) `}, {text: `Gastritis y/o úlceras ( ${PAT628 ? 'X':''} )`}],
+						[{text: `Colesterol elevado ( ${PAT629 ? 'X':''} )`}, {text: `Cáncer ( ${PAT630 ? 'X':''} )`}, {text: `Enfermedad autoinmune ( ${PAT631 ? 'X':''} )`}, {text: `Estrés ( ${PAT632 ? 'X':''} ) Ansiedad ( ${PAT633 ? 'X':''} )`}],
+						[{text: `Triglicéridos elevados ( ${PAT634 ? 'X':''} )`}, {text: `Migrañas ( ${PAT635 ? 'X':''} )`}, {text: `Dificultad al masticar ( ${PAT636 ? 'X':''} )`}, {text: `Depresión ( ${PAT637 ? 'X':''} ) Insomnio ( ${PAT638 ? 'X':''} )`}],
+						[{text: `Anemia  ( ${PAT639 ? 'X':''} )`}, {text: `Estreñimiento ( ${PAT640 ? 'X':''} )`}, {text: `Intestino Irritable - C ( ${PAT641 ? 'X':''} )`}, {text: `Prostatitis ( ${PAT642 ? 'X':''} )`}],
+						[{text: ' ', colSpan: 4}],
+						[{text: `Algún familiar consanguíneo sufre o sufrió de alguna de estas enfermedades? ${antec_pat_de_algun_familiar}`, colSpan: 4}],
+					]
+				}
+			},
+			{
+				text: 'III) ESTILO DE VIDA',
+				style:'subTitle'
+			},
+			{
+				style: 'tableExample',
+				table: {
+					widths: ['*', '*', '*', '*'],
+					body: [
+						[{text: `¿Fumas o has fumado anteriormente? ( ${antec_pat_fumado.trim().length<=0?'':'SI'} ) ${antec_pat_fumado}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Consumes algún fármaco con frecuencia? ( ${antec_pat_consumes_farmaco.trim().length<=0?'':'SI'} ) ${antec_pat_consumes_farmaco}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Tomas alcohol? ( ${antec_pat_tomas_alcohol.trim().length<=0?'':'SI'} ) ${antec_pat_tomas_alcohol}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Realizas actividad física? ( ${antec_pat_realizas_actividad_fisica.trim().length<=0?'':'SI'} ) ${antec_pat_realizas_actividad_fisica}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Modificaste tu alimentación en los últimos 6 meses? (${antec_pat_modific_tu_alimentacion_ultimos6meses.trim().length<=0?'':'SI'} ) ${antec_pat_modific_tu_alimentacion_ultimos6meses}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Cómo es tu apetito? ${antec_pat_cual_es_tu_apetito}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿A qué hora tienes más hambre? ${antec_pat_hora_de_mas_hambre}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Cuáles son tus alimentos preferidos? ${antec_pat_alimentos_preferidos}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Alimentos que te desagradan? ${antec_pat_alimentos_desagradables}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Alergia o intolerancia a algún alimento? ${antec_pat_alimentos_alergias}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Tomas algún suplemento o complemento? ${antec_pat_alimentos_suplemento_complemento}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Tu alimentación varía de acuerdo a su estado de ánimo? ${antec_pat_alimentos_segun_estado_animo}`, style: 'tableHeader', colSpan: 4}],
+						[{text: `¿Qué tratamientos de pérdida de peso has realizado? ¿Has usado o usas medicamentos para bajar de peso? ${antec_pat_tratam_perdida_peso}`, style: 'tableHeader', colSpan: 4}],
+					]
+				}
+			},
+			
+			{
+				text: `Despiertas a las:  ${horaDeDespierto.length>0?dayjs(horaDeDespierto, 'HH:mm').format('hh:mm A'):''}`,
+				style:'subSubTitle',
+				pageBreak: 'before'
+			},
+			{
+				style: 'tableExample',
+				table: {
+					widths: ['*', '*', '*'],
+					body: [
+						[
+							{text: 'TIEMPO DE COMIDA', style: 'tableHeader'}, 
+							{text: 'ALIMENTACION ACTUAL', style: 'tableHeader'}, 
+							{text: 'PLAN ALIMENTARIO', style: 'tableHeader'}
+						],
+						[
+							{text: 'DESAYUNO', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
+							{text: `${alimentacion_actual_desayuno}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
+							{text: `${alimentacion_plan_desayuno}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
+						],
+						[
+							{text: `Horario : ${horario_desayuno.length>0?dayjs(horario_desayuno, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
+							{},  // Celda vacía porque "rowSpan" ya abarca esta fila
+							{}  // Celda vacía porque "rowSpan" ya abarca esta fila
+						],
+						[
+							{text: `Lugar : ${lugar_desayuno}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
+							{},  // Celda vacía
+							{}  // Celda vacía
+						],
+						[
+							{text: 'MEDIA MAÑANA', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
+							{text: `${alimentacion_actual_media_maniana}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
+							{text: `${alimentacion_plan_media_maniana}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
+						],
+						[
+							{text: `Horario : ${horario_media_maniana.length>0?dayjs(horario_media_maniana, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
+							{},  // Celda vacía porque "rowSpan" ya abarca esta fila
+							{}  // Celda vacía porque "rowSpan" ya abarca esta fila
+						],
+						[
+							{text: `Lugar : ${lugar_media_maniana}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
+							{},  // Celda vacía
+							{}  // Celda vacía
+						],
+						[
+							{text: 'ALMUERZO', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
+							{text: `${alimentacion_actual_almuerzo}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
+							{text: `${alimentacion_plan_almuerzo}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
+						],
+						[
+							{text: `Horario : ${ horario_almuerzo.length>0?dayjs(horario_almuerzo, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
+							{},  // Celda vacía porque "rowSpan" ya abarca esta fila
+							{}  // Celda vacía porque "rowSpan" ya abarca esta fila
+						],
+						[
+							{text: `Lugar : ${lugar_almuerzo}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
+							{},  // Celda vacía
+							{}  // Celda vacía
+						],
+						[
+							{text: 'MEDIA TARDE', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
+							{text: `${alimentacion_actual_media_tarde}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
+							{text: `${alimentacion_plan_media_tarde}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
+						],
+						[
+							{text: `Horario : ${ horario_media_tarde.length>0?dayjs(horario_media_tarde, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
+							{},  // Celda vacía porque "rowSpan" ya abarca esta fila
+							{}  // Celda vacía porque "rowSpan" ya abarca esta fila
+						],
+						[
+							{text: `Lugar : ${lugar_media_tarde}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
+							{},  // Celda vacía
+							{}  // Celda vacía
+						],
+						[
+							{text: 'CENA', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
+							{text: `${alimentacion_actual_cena}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
+							{text: `${alimentacion_plan_cena}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
+						],
+						[
+							{text: `Horario : ${horario_cena.length>0?dayjs(horario_cena, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
+							{},  // Celda vacía porque "rowSpan" ya abarca esta fila
+							{}  // Celda vacía porque "rowSpan" ya abarca esta fila
+						],
+						[
+							{text: `Lugar : ${lugar_cena}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
+							{},  // Celda vacía
+							{}  // Celda vacía
+						],
+						[
+							{text: 'EXTRAS', alignment: 'center', style: 'tableHeader'},  // Segunda fila de la primera columna
+							{text: `${alimentacion_actual_extras}`, rowSpan: 3},  // Esta celda abarca las siguientes 3 filas
+							{text: `${alimentacion_plan_extras}`, rowSpan: 3}   // Esta celda también abarca las siguientes 3 filas
+						],
+						[
+							{text: `Horario : ${horario_extras.length>0?dayjs(horario_extras, 'HH:mm').format('hh:mm A'):''}`, style: 'tableHeader'},  // Tercera fila de la primera columna
+							{},  // Celda vacía porque "rowSpan" ya abarca esta fila
+							{}  // Celda vacía porque "rowSpan" ya abarca esta fila
+						],
+						[
+							{text: `Lugar : ${lugar_extras}`, style: 'tableHeader'},  // Cuarta fila de la primera columna
+							{},  // Celda vacía
+							{}  // Celda vacía
+						],
+						[{text: `vasos de agua natural al día: ${vasos_agua_x_dia}`, colSpan: 1}, {text: '', colSpan: 2}],
+						[{text: `Consumo de gaseosa: ${consumo_gaseosa}`, colSpan: 1}, {text: '', colSpan: 2}],
+						[{text: `Consumo de  dulces: ${consumo_dulces}`, colSpan: 1}, {text: '', colSpan: 2}],
+						[{text: `Cambios por fin de semana: ${cambios_fin_semana}`, colSpan: 1}, {text: '', colSpan: 2}],
+						[{text: `Hora de acostarse: ${hora_acostarse}`, colSpan: 1}, {text: '', colSpan: 2}],
+					]
+				}
+			},
+			{
+				text: `Duerme a las: ${horaDeDormir.length>0?dayjs(horaDeDormir, 'HH:mm').format('hh:mm A'):''}`,
+				style:'subSubTitle',
+			},
+		],
+		styles: {
 
-		tableExample: {
-			// fontSize: 10
-			// margin: [0, 5, 0, 15]
-		},
-		subTitle: {
-			fontSize: 12,
-			bold: true,
-			margin: [4, 10, 0, 7]
-		},
-		subSubTitle:{
-			fontSize: 12,
-			bold: true
-		},
-		header: {
-			fontSize: 18,
-			bold: true,
-		},
-		subHeader: {
-			fontSize: 13,
-		},
-		quote: {
-			italics: true
-		},
-		small: {
-			fontSize: 8
+			tableExample: {
+				// fontSize: 10
+				// margin: [0, 5, 0, 15]
+			},
+			subTitle: {
+				fontSize: 12,
+				bold: true,
+				margin: [4, 10, 0, 7]
+			},
+			subSubTitle:{
+				fontSize: 12,
+				bold: true
+			},
+			header: {
+				fontSize: 18,
+				bold: true,
+			},
+			subHeader: {
+				fontSize: 13,
+			},
+			quote: {
+				italics: true
+			},
+			small: {
+				fontSize: 8
+			}
 		}
+		
 	}
-	
-}
 	useEffect(() => {
 		obtenerParametroPorEntidadyGrupo('NUTRICION', 'ANT.PATOLOG')
 	}, [])
@@ -439,9 +439,7 @@ var dd = {
 	const pdfGenerator = pdfMake.createPdf(dd)
 	pdfGenerator.getBlob((blob)=>{
 		// Crear un archivo para el FormData con el PDF generado
-		
 		formData.append('file', blob, `historial-clinico-${dataCli.id_cli}.pdf`);
-		
 		const url = URL.createObjectURL(blob)
 		seturl(url)
 		startRegisterClinico(formState, formStateAntPatNutr, formData, dataCli.id_cli)

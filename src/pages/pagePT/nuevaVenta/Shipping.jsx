@@ -25,6 +25,7 @@ import icoAcc from '@/assets/images/PT-images/iconos/acc.png'
 import icoEst from '@/assets/images/PT-images/iconos/estetica.png'
 import icoSupl from '@/assets/images/PT-images/iconos/supl.png'
 import icoNut from '@/assets/images/PT-images/iconos/nutri.png'
+import icoTransf from '@/assets/images/PT-images/iconos/transf.png'
 import { ItemProdServ } from '../reportes/totalVentas/ItemProdServ';
 import { ModalTraspaso } from './ModalTraspaso';
 import { ResumenTraspaso } from './ResumenTraspaso';
@@ -155,7 +156,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
 									<Col className="mb-3" xxl={3} onClick={ClickOpenModalTransfMemb}>
-									<ItemProdServ Inombre={"TRANSFERENCIAS DE MEMBRESIAS"} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+									<ItemProdServ Inombre={"TRANSFERENCIAS DE MEMBRESIAS"} icono={icoTransf} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/>
 									<Col className="mb-3" xxl={3} onClick={onOpenModalTraspaso}>

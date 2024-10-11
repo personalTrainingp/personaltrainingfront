@@ -22,6 +22,7 @@ const GestionProveedores = lazy(() => import('../pages/pagePT/GestProveedores'))
 const GestionProductos = lazy(() => import('../pages/pagePT/GestProductos'));
 const GestionProgramas = lazy(() => import('../pages/pagePT/GestProgramas'));
 const GestionFyG = lazy(() => import('../pages/pagePT/GestGastos'));
+const OrdenCompra = lazy(() => import('../pages/pagePT/GestGastos/ordenCompra'));
 const GestionEmpleados = lazy(() => import('../pages/pagePT/GestEmpleados'));
 const GestionUsuario = lazy(() => import('../pages/pagePT/GestAuthUser'));
 const PerfilCliente = lazy(() => import('../pages/pagePT/PerfilCliente'));
@@ -51,8 +52,10 @@ const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
 const GestContratosClientes = lazy(()=>import('../pages/pagePT/GestContratosCliente'))
 const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
 const ReporteComparativaDeVentasxDia = lazy(()=>import('../pages/pagePT/ReporteComparativoxDia'))
+const ReporteFlujoCaja = lazy(()=>import('../pages/pagePT/FlujoCaja'))
 const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilidadPrograma'))
 const PerfilProveedor = lazy(()=>import('../pages/pagePT/PerfilProveedor'))
+
 /**
  * routes import
  */
@@ -94,6 +97,10 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/proveedores/trabajos-proveedores') && 
 						<Route path='proveedores/trabajos-proveedores' element={<PerfilProveedor/>}/>
 					} */}
+					{
+						sections.find(e=>e.url==='/reporte-admin/flujo-caja') && 
+						<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/reporte-admin/comparativa-dia') && 
 						<Route path='reporte-admin/comparativa-dia' element={<ReporteComparativaDeVentasxDia/>}/>
@@ -141,6 +148,10 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/gestion-programas')&&
                         <Route path='gestion-programas' element={<GestionProgramas/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/orden-compra')&&
+                        <Route path='orden-compra' element={<OrdenCompra/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/gestion-gastosF-gastosV')&&
