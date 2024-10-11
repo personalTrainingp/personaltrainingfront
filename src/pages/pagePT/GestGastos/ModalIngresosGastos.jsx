@@ -29,7 +29,8 @@ const registerIvsG={
     id_rubro: 0,
     descripcion: '',
     cod_trabajo: '',
-    id_prov: 0
+    id_prov: 0,
+    esCompra: false
 }
 export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
     const onClickCancelModal = ()=>{
@@ -71,6 +72,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             id_prov, 
             cod_trabajo,
             descripcion, 
+            esCompra,
             onInputChange, 
             onInputChangeReact, 
             onResetForm,
@@ -459,12 +461,23 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                                 placeholder="EJ. DE1234"
                                             />
                                     </div>
-                                </Col>
-                                {/* <Col lg={2}>
-                                    <div className="mb-4">
-                                        <Button onClick={onOpenModalProveedor}>+</Button>
+                                </Col>                                                                          
+                                <Col lg={12}>
+                                <div className='mb-4'>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name='esCompra' onChange={onInputChange} checked={esCompra} id="flexCheckDefault"/>
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            ¿Se trata de una compra? Si es así, por favor marca la casilla.
+                                        </label>
                                     </div>
-                                </Col> */}
+                                </div>
+                                        {/* <input type="checkbox" className='form-control' id="compraCheckbox" name="compra" value="si"/>
+                                        <label htmlFor="descripcion" className="form-label">
+                                            ¿Se trata de una compra? Si es así, por favor marca la casilla.
+                                        </label>
+                                    <div className="mb-4">
+                                    </div> */}
+                                </Col>
                                 <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="descripcion" className="form-label">

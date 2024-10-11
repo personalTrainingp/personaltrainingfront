@@ -23,6 +23,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 		const { name, value, checked, type } = target;
 		// console.log({ [name]: value });
 		if (type === 'checkbox') {
+			console.log('en checkeeee');
 			console.log([name], checked);
 
 			return setFormState({

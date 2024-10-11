@@ -268,12 +268,88 @@ export const FlujoCaja = () => {
 							</tbody>
 						</Table>
 					</Card>
-					<h4 className="text-center">APORTES</h4>
-					<Card></Card>
+					{/* <h4 className="text-center">APORTES</h4>
+					<Card></Card> */}
 					<h4 className="text-center">EGRESOS</h4>
-					<Card></Card>
+					<Card>
+                        
+						<Table
+							// style={{tableLayout: 'fixed'}}
+							className="table-centered mb-0"
+							hover
+							responsive
+						>
+							<thead className="bg-primary">
+								<tr>
+									<th>ALQUILER</th>
+									<th className='text-white'>ENERO</th>
+									<th className='text-white'>FEBRERO</th>
+									<th className='text-white'>MARZO</th>
+									<th className='text-white'>ABRIL</th>
+									<th className='text-white'>MAYO</th>
+									<th className='text-white'>JUNIO</th>
+									<th className='text-white'>JULIO</th>
+									<th className='text-white'>AGOSTO</th>
+									<th className='text-white'>SEPTIEMBRE</th>
+									<th className='text-white'>OCTUBRE</th>
+									<th className='text-white'>NOVIEMBRE</th>
+									<th className='text-white'>DICIEMBRE</th>
+									<th className='text-white'>TOTAL</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>ALQUILER - TARATA</td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={11923.2} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={12278.4} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={11968} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={3200} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={3200} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+								</tr>
+								<tr>
+									<td>MANTENIMIENTO FIJO</td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={309} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={309} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={309} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+								</tr>
+								<tr>
+									<td>GARANTIA</td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={23846.4} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+									<td><MoneyFormatter amount={0} symbol={'S/.'}/></td>
+								</tr>
+							</tbody>
+						</Table>
+                    </Card>
 					<h4 className="text-center">CREDITO FISCAL</h4>
-					<Card></Card>
+					<Card>
+
+                    </Card>
 				</Col>
 			</Row>
 		</>
