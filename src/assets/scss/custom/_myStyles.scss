@@ -15,7 +15,16 @@
     }
   }
 }
-
+.cabecera-vertical-primary{
+  background-color: #000 !important;
+  color: white !important;
+}
+.cursor-table{
+  cursor: pointer;
+}
+.cursor-table:hover{
+  background-color: #cccccc !important;
+}
 
 .currency {
   width: 2.5rem; /* Adjust the width to align as needed */
