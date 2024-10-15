@@ -25,6 +25,22 @@ export const helperFunctions = () => {
 
 		return edad;
 	};
+	function modificarFechaHabiles(fechaInicial, dias) {
+		let fecha = dayjs(fechaInicial);
+		let contador = 0;
+
+		while (contador < Math.abs(dias)) {
+			// Sumar o restar 1 día, dependiendo si estamos sumando o restando
+			fecha = dias > 0 ? fecha.add(1, 'day') : fecha.subtract(1, 'day');
+
+			// Si el día no es sábado (6) ni domingo (0), lo contamos como día hábil
+			if (fecha.day() !== 0 && fecha.day() !== 6) {
+				contador++;
+			}
+		}
+
+		return fecha.format('YYYY-MM-DD');
+	}
 	const base64ToFile = (base64String, fileName) => {
 		// Decodificar el string base64
 		const byteString = atob(base64String.split(',')[1]);
@@ -180,6 +196,7 @@ export const helperFunctions = () => {
 
 	return {
 		randomFunction,
+		modificarFechaHabiles,
 		generarCombinaciones,
 		objetoComparador,
 		sumarSemanas,

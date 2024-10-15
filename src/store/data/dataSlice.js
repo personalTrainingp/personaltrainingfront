@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 export const dataSlice = createSlice({
-	name: 'dataV',
+	name: 'DATA',
 	initialState: {
 		dataView: [],
 	},

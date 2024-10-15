@@ -2,7 +2,7 @@ import { PageBreadcrumb } from '@/components'
 import { TabPanel, TabView } from 'primereact/tabview'
 import React from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
-import GestGastosFvsV from './ParamsGestGastos'
+import GestGastosFvsV from './ParamsTermGastos'
 
 export const Terminologias = () => {
   return (
@@ -13,7 +13,7 @@ export const Terminologias = () => {
             <Card>
                 <Card.Body>
                     <TabView>
-                        <TabPanel header="Tipo de Egresos">
+                        <TabPanel header="TERMINOLOGIAS DE GASTOS">
                         <GestGastosFvsV/>
                         </TabPanel>
                         <TabPanel header="">

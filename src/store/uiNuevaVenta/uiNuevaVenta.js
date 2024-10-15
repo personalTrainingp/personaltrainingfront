@@ -14,6 +14,7 @@ const initialState = {
 		detalle_venta_programa: [],
 		detalle_venta_fitology: [],
 		detalle_venta_nutricion: [],
+		detalle_venta_transferencia: [],
 		detalle_venta_accesorio: [],
 		detalle_venta_suplementos: [],
 		detalle_traspaso: [],
@@ -47,7 +48,10 @@ export const uiNuevaVentaSlice = createSlice({
 		onSetDetallePrograma: (state, action) => {
 			state.venta.detalle_venta_programa = [action.payload];
 		},
-		onAllDeleteTraspaso:(state)=>{
+		onSetDetalleTransferencia: (state, action) => {
+			state.venta.detalle_venta_transferencia = [action.payload];
+		},
+		onAllDeleteTraspaso: (state) => {
 			state.venta.detalle_traspaso = [];
 		},
 		onDeleteAllPrograma: (state) => {
@@ -117,6 +121,7 @@ export const uiNuevaVentaSlice = createSlice({
 });
 export const {
 	onSetDetalleCli,
+	onSetDetalleTransferencia,
 	onSetDetallePrograma,
 	onSetDetalleTraspaso,
 	onAllDeleteTraspaso,

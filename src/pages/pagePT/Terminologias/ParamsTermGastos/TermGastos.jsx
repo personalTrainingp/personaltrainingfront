@@ -134,17 +134,22 @@ const columnsParamsG = [
 		accessor: 'id_tipoGasto',
 		defaultCanSort: true,
 		Cell:({row})=>{
-			const asdf = arrayFinanzas.find(objeto => objeto.value === row.original.id_tipoGasto).label
+			const asdf = arrayFinanzas.find(objeto => objeto.value === row.original.id_tipoGasto)?.label
 			return asdf
 		}
 	},
 	{
-		Header: 'Nombre del gasto',
+		Header: 'Conceptos',
 		accessor: 'nombre_gasto',
 		defaultCanSort: true,
 	},
 	{
-		Header: 'Action',
+		Header: 'Estado',
+		accessor: 'status',
+		defaultCanSort: true,
+	},
+	{
+		Header: ' ',
 		defaultCanSort: false,
 		Cell: ActionColumnGF,
 	},
