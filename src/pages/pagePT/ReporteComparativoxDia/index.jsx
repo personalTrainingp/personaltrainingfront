@@ -1,0 +1,1 @@
+export { ComparativoxDia as default } from './ComparativoxDia'

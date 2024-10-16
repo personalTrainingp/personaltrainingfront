@@ -1,0 +1,37 @@
+.rbc-toolbar-label{
+    color: black;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-transform: uppercase;
+    font-size: 25px;
+    font-weight: bolder;
+}
+
+.rbc-header{
+    height: 50px;
+    .rbc-button-link{
+        span{
+            font-size: 25px;
+            font-family: "Kanit", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    }
+}
+.rbc-time-header-content{
+    .rbc-allday-cell{
+        display: none;
+    }
+}
+.rbc-time-content{
+    .rbc-allday-cell{
+        display: none;
+    }
+    .rbc-time-column:last-child{
+        display: none;
+    }
+}
+.rbc-time-header-cell{
+    .rbc-header:last-child{
+        display: none;
+    }
+}

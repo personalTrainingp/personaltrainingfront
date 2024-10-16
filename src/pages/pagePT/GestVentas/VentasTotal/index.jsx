@@ -1,0 +1,1 @@
+export { TodoVentas as default } from './TodoVentas'

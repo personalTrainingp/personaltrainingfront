@@ -1,0 +1,1 @@
+export {GestionAlmacen as default} from './GestionAlmacen'
