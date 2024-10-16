@@ -14,7 +14,7 @@ export const useRecursosHumanoReporteStore = () => {
                 fechaHasta: fechaHasta,
             });
             console.log(data);
-            data = data;
+            //data = data;
             return data;
         
         } catch (error) {
