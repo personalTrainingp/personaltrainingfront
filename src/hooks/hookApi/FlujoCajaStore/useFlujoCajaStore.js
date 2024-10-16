@@ -4,6 +4,13 @@ import { useState } from 'react';
 export const useFlujoCajaStore = () => {
 	const [dataIngresos_FC, setdataIngresos_FC] = useState([]);
 	const [dataGastosxANIO, setdataGastosxANIO] = useState([]);
+	const [isLoading, setisLoading] = useState(false);
+	const [dataCreditoFiscal, setdataCreditoFiscal] = useState({
+		msg: '',
+		creditoFiscalAniosAnteriores: 0,
+		facturas: [{ igv: 0, mes: 0, anio: 0, monto_final: 0 }],
+		ventas: [{ igv: 0, mes: 0, anio: 0, monto_final: 0 }],
+	});
 	const obtenerIngresosxMes = async (mes, anio) => {
 		try {
 			const { data } = await PTApi.get('/flujo-caja/ingresos', {
@@ -31,11 +38,26 @@ export const useFlujoCajaStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerCreditoFiscalxANIO = async (anio, enterprice) => {
+		try {
+			const { data } = await PTApi.get(`/flujo-caja/credito-fiscal/${enterprice}`, {
+				params: {
+					anio,
+				},
+			});
+			console.log(data);
 
+			setdataCreditoFiscal(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerIngresosxMes,
 		obtenerGastosxANIO,
+		obtenerCreditoFiscalxANIO,
 		dataIngresos_FC,
+		dataCreditoFiscal,
 		dataGastosxANIO,
 	};
 };

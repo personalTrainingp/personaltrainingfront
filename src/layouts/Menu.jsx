@@ -30,7 +30,6 @@ const MenuItemWithChildren = ({
     if (toggleMenu) toggleMenu(item, status);
     return false;
   };
-  
   return (
     <li className={classNames('side-nav-item', { 'menuitem-active': open })}>
       <Link

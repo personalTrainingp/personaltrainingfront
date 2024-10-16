@@ -29,6 +29,7 @@ import icoTransf from '@/assets/images/PT-images/iconos/transf.png'
 import { ItemProdServ } from '../reportes/totalVentas/ItemProdServ';
 import { ModalTraspaso } from './ModalTraspaso';
 import { ResumenTraspaso } from './ResumenTraspaso';
+import { ResumenVentaTransferencia } from './ResumenVentaTransferencia';
 
 
 export const sumarTarifas = (venta) =>{
@@ -172,6 +173,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 							dataVenta.detalle_venta_accesorio.length <= 0 && 
 							dataVenta.detalle_venta_suplementos.length <= 0 &&
 							dataVenta.detalle_venta_nutricion.length<=0 &&
+							dataVenta.detalle_venta_transferencia.length<=0 &&
 							dataVenta.detalle_traspaso <=0
 							? (
 								<span style={{height: '100px'}}>No hay ningún producto, membresía o servicio registrado</span>
@@ -212,6 +214,12 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 								<>
 									<h4>Venta de citas Nutricion</h4>
 									<ResumenVentaNutricion dataVenta={dataVenta.detalle_venta_nutricion}/>
+								</>
+							)}
+							{dataVenta.detalle_venta_transferencia.length > 0 && (
+								<>
+									<h4>Venta de Transferencias</h4>
+									<ResumenVentaTransferencia dataVenta={dataVenta.detalle_venta_transferencia} detalle_cli_modelo={detalle_cli_modelo} dataPagos={datos_pagos}/>
 								</>
 							)}
 							<Button className={'m-1'} onClick={onSubmitFormVentaANDnew}>Guardar y Nuevo</Button>

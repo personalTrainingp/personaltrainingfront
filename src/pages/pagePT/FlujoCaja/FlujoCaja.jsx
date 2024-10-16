@@ -32,6 +32,7 @@ export const FlujoCaja = () => {
 		{ dataIngresos_FC: DATAingresosDICIEMBRE, obtenerIngresosxMes: obtenerIngresosDICIEMBRE } =
 			useFlujoCajaStore();
             const { obtenerGastosxANIO, dataGastosxANIO } = useFlujoCajaStore()
+            const { dataCreditoFiscal, obtenerCreditoFiscalxANIO } = useFlujoCajaStore()
 	const [objIngresoxMES, setobjIngresoxMES] = useState({
 		enero: 0,
 		febrero: 0,
@@ -59,6 +60,7 @@ export const FlujoCaja = () => {
 		obtenerIngresosOCTUBRE(10, 2024);
 		obtenerIngresosNOVIEMBRE(11, 2024);
 		obtenerIngresosDICIEMBRE(12, 2024);
+        obtenerCreditoFiscalxANIO(2024, 598);
 		// const febrero = obtenerIngresosxMes(2, 2024)
         obtenerGastosxANIO(2024, 598);
 	}, []);
@@ -167,15 +169,95 @@ export const FlujoCaja = () => {
 				};
 		}
 	};
-    console.log(dataGastosxANIO);
+    // Función para sumar los monto_total por cada mes
+//     function sumarMontosPorMes(datos) {
+//         const resultado = datos.map(conceptos => {
+//         const mesesSuma = [];
+        
+//         // Inicializamos el arreglo de meses con los valores en cero
+//         for (let i = 1; i <= 12; i++) {
+//             mesesSuma.push({ mes: i, monto_total: 0 });
+//         }
     
-
+//         // Recorremos cada concepto y sumamos los montos por mes
+//         conceptos.forEach(concepto => {
+//             concepto.items.forEach(item => {
+//             const mesIndex = item.mes - 1; // Los índices de los meses van de 0 a 11
+//             mesesSuma[mesIndex].monto_total += item.monto_total;
+//             });
+//         });
+    
+//         return {
+//             grupo: grupo.grupo,
+//             meses: mesesSuma
+//         };
+//         });
+    
+//         return resultado;
+//     }
+  
+//   const resultadoFinal = sumarMontosPorMes(dataGastosxANIO);
+//     console.log(resultadoFinal);
+    // Función para sumar los monto_total por cada mes
+function sumarMontosPorMes(datos, grupo) {
+    const mesesSuma = [];
+  
+    // Inicializamos el arreglo de meses con los valores en cero
+    for (let i = 1; i <= 12; i++) {
+      mesesSuma.push({ mes: i, monto_total: 0 });
+    }
+  
+    // Recorremos cada concepto y sumamos los montos por mes
+    datos.forEach(concepto => {
+      concepto.items.forEach(item => {
+        const mesIndex = item.mes - 1; // Los índices de los meses van de 0 a 11
+        mesesSuma[mesIndex].monto_total += item.monto_total;
+      });
+    });
+  
+    return { grupo, meses: mesesSuma };
+  }
+  function sumarIngresosXmes(mes) {
+    return obtenerTotalIngresosxxMes(mes).programa_MONTO+obtenerTotalIngresosxxMes(mes).producto17_MONTO+obtenerTotalIngresosxxMes(mes).producto18_MONTO+obtenerTotalIngresosxxMes(mes).citasFito_MONTO+obtenerTotalIngresosxxMes(mes).citasNutri_MONTO
+  }
+  function creditoFiscalAcumulado(len, acumulado) {
+    return dataCreditoFiscal.ventas[len]?.igv -(dataCreditoFiscal.facturas[len]?.igv + acumulado)
+  }
+  function calcularCreditoFiscal(facturas, ventas, initAcumulado) {
+    let acumulado = initAcumulado; // Inicializar con el acumulado proporcionado para el primer mes
+    const resultado = [];
+  
+    // Iterar sobre los meses y años
+    for (let i = 0; i < ventas.length; i++) {
+      const { mes, igv: igvVentas, anio: anioVentas } = ventas[i];
+      const factura = facturas.find(f => f.mes === mes && f.anio === anioVentas);
+      const igvFacturas = factura ? factura.igv : 0;
+  
+      // Calcular el crédito fiscal (creFisc) usando el acumulado actual
+      const creFisc = igvVentas - igvFacturas - acumulado;
+  
+      // Agregar al resultado
+      resultado.push({
+        mes,
+        anio: anioVentas,
+        creFisc,
+        acumulado
+      });
+  
+      // El acumulado para el siguiente mes es el creFisc del mes actual
+      acumulado = creFisc;
+    }
+  
+    return resultado;
+  }
+  console.log(calcularCreditoFiscal(dataCreditoFiscal.facturas, dataCreditoFiscal.ventas, dataCreditoFiscal.creditoFiscalAniosAnteriores));
+  
 	return (
 		<>
 			<PageBreadcrumb subName={'T'} title={'Flujo de Caja'} />
 			<Row>
 				<Col xxl={12}>
-					<h4 className="text-center">INGRESOS</h4>
+					<h4 className="text-center h2">INGRESOS</h4>
 					<Card>
 						<Table
 							// style={{tableLayout: 'fixed'}}
@@ -268,25 +350,152 @@ export const FlujoCaja = () => {
 									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(12).citasFito_MONTO} symbol={'S/.'}/></td>
 									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes('T').citasFito_MONTO} symbol={'S/.'}/></td>
 								</tr>
+                                <tr>
+									<td>TOTAL</td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(1)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(2)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(3)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(4)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(5)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(6)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(7)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(8)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(9)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(10)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(11)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(12)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={
+sumarIngresosXmes(1)+
+sumarIngresosXmes(2)+
+sumarIngresosXmes(3)+
+sumarIngresosXmes(4)+
+sumarIngresosXmes(5)+
+sumarIngresosXmes(6)+
+sumarIngresosXmes(7)+
+sumarIngresosXmes(8)+
+sumarIngresosXmes(9)+
+sumarIngresosXmes(10)+
+sumarIngresosXmes(11)+
+sumarIngresosXmes(12)
+} symbol={'S/.'}/></td>
+								</tr>
 							</tbody>
 						</Table>
 					</Card>
 					{/* <h4 className="text-center">APORTES</h4>
 					<Card></Card> */}
-					<h4 className="text-center">EGRESOS</h4>
+					<h4 className="text-center h2">EGRESOS</h4>
 					<Card>
                         {
-                            dataGastosxANIO.map(g=>(
+                            dataGastosxANIO.map(g=>{
                                 
-						<Table
-                        // style={{tableLayout: 'fixed'}}
-                        className="table-centered mb-0"
-                        hover
-                        responsive
-                    >
-                        <thead className="bg-primary">
-                            <tr>
-                                <th><div style={{width: '150px'}}>{g.grupo}</div></th>
+                                const resultadoFinal = sumarMontosPorMes(g.conceptos, g.grupo);
+                                
+                                return(
+                                <Table
+                                className="table-centered mb-0"
+                                // hover
+                                responsive
+                            >
+                                <thead className="bg-primary">
+                                    <tr>
+                                        <th className='text-white h4'><div style={{width: '150px'}}>{g.grupo}</div></th>
+                                            <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'>S/.</span></th>
+                                            <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'>S/.</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        g.conceptos.map(c=>(
+                                            <tr>
+                                                <td className=''><div style={{width: '150px'}}>{c.concepto}</div></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[0].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[1].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[2].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[3].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[4].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[5].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[6].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[7].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[8].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[9].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[10].monto_total}/></td>
+                                                <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[11].monto_total}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={
+                                                                                                        c.items[0].monto_total+
+                                                                                                        c.items[1].monto_total+
+                                                                                                        c.items[2].monto_total+
+                                                                                                        c.items[3].monto_total+
+                                                                                                        c.items[4].monto_total+
+                                                                                                        c.items[5].monto_total+
+                                                                                                        c.items[6].monto_total+
+                                                                                                        c.items[7].monto_total+
+                                                                                                        c.items[8].monto_total+
+                                                                                                        c.items[9].monto_total+
+                                                                                                        c.items[10].monto_total+
+                                                                                                        c.items[11].monto_total}/></td>
+                                            </tr>
+                                        )
+                                        )
+                                    }
+                                    <tr>
+                                        <td className='fw-bolder h4'>TOTAL</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[0].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[1].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[2].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[3].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[4].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[5].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[6].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[7].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[8].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[9].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[10].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[11].monto_total}/>}</td>
+                                        <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={
+                                                                                                resultadoFinal.meses[0].monto_total+
+                                                                                                resultadoFinal.meses[1].monto_total+
+                                                                                                resultadoFinal.meses[2].monto_total+
+                                                                                                resultadoFinal.meses[3].monto_total+
+                                                                                                resultadoFinal.meses[4].monto_total+
+                                                                                                resultadoFinal.meses[5].monto_total+
+                                                                                                resultadoFinal.meses[6].monto_total+
+                                                                                                resultadoFinal.meses[7].monto_total+
+                                                                                                resultadoFinal.meses[8].monto_total+
+                                                                                                resultadoFinal.meses[9].monto_total+
+                                                                                                resultadoFinal.meses[10].monto_total+
+                                                                                                resultadoFinal.meses[11].monto_total
+                                                                                                }/>}</td>
+                                    </tr>
+                                </tbody>
+                                </Table>
+                            )})
+                        }
+                    </Card>
+					<h4 className="text-center h2">UTILIDAD</h4>
+					<Card>
+                    <Table
+							// style={{tableLayout: 'fixed'}}
+							className="table-centered mb-0"
+							hover
+							responsive
+						>
+							<thead className="bg-primary">
+								<tr>
+									<th>
+										<div style={{ maxWidth: '10px' }}></div>
+									</th>
 									<th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'>S/.</span></th>
 									<th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'>S/.</span></th>
 									<th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'>S/.</span></th>
@@ -300,37 +509,142 @@ export const FlujoCaja = () => {
 									<th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'>S/.</span></th>
 									<th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'>S/.</span></th>
 									<th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'>S/.</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                g.conceptos.map(c=>(
-                                    <tr>
-                                        <td className='text-success'><div style={{width: '150px'}}>{c.concepto}</div></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[0].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[1].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[2].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[3].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[4].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[5].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[6].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[7].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[8].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[9].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[10].monto_total}/></td>
-                                        <td className='text-center'><NumberFormatMoney amount={c.items[11].monto_total}/></td>
-                                    </tr>
-                                )
-                                )
-                            }
-                        </tbody>
-                    </Table>
-                            ))
-                        }
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>INGRESOS</td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(1)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(2)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(3)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(4)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(5)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(6)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(7)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(8)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(9)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(10)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(11)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes(12)} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={sumarIngresosXmes('T')} symbol={'S/.'}/></td>
+								</tr>
+                                <tr>
+									<td>EGRESOS</td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(1).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(2).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(3).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(4).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(5).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(6).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(7).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(8).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(9).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(10).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(11).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(12).producto17_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes('T').producto17_MONTO} symbol={'S/.'}/></td>
+								</tr>
+                                <tr>
+									<td>UTILIDAD</td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(1).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(2).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(3).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(4).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(5).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(6).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(7).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(8).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(9).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(10).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(11).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(12).producto18_MONTO} symbol={'S/.'}/></td>
+									<td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes('T').producto18_MONTO} symbol={'S/.'}/></td>
+								</tr>
+							</tbody>
+						</Table>
                     </Card>
-					<h4 className="text-center">CREDITO FISCAL</h4>
+					<h4 className="text-center h2">CREDITO FISCAL</h4>
 					<Card>
-
+                        {
+                            dataCreditoFiscal.length!==0 && (
+                                <Table
+                                        // style={{tableLayout: 'fixed'}}
+                                        className="table-centered mb-0"
+                                        hover
+                                        responsive
+                                    >
+                                        <thead className="bg-primary">
+                                            <tr>
+                                                <th>
+                                                    <div style={{ maxWidth: '10px' }}></div>
+                                                </th>
+                                                <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'>S/.</span></th>
+                                                <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'>S/.</span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>ACUMULADO</td>
+                                                {/* <td className='text-center'><NumberFormatMoney amount={dataCreditoFiscal.creditoFiscalAniosAnteriores} symbol={'S/.'}/></td> */}
+                                                {
+                                                    calcularCreditoFiscal(dataCreditoFiscal.facturas, dataCreditoFiscal.ventas, dataCreditoFiscal.creditoFiscalAniosAnteriores).map(c=>(
+                                                        <td className='text-center'><NumberFormatMoney amount={c.acumulado} symbol={'S/.'}/></td>
+                                                    ))
+                                                }
+                                            </tr>
+                                            <tr>
+                                                <td>IGV VENTAS</td>
+                                                {
+                                                    dataCreditoFiscal.ventas.map(v=>(
+                                                        <td className='text-center'><NumberFormatMoney amount={v.igv} symbol={'S/.'}/></td>  
+                                                    ))
+                                                }
+                                            </tr>
+                                            <tr>
+                                                <td>IGV COMPRAS</td>
+                                                {
+                                                    dataCreditoFiscal.facturas.map(f=>(
+                                                        <td className='text-center'><NumberFormatMoney amount={f.igv} symbol={'S/.'}/></td>
+                                                    ))
+                                                }
+                                            </tr>
+                                            <tr>
+                                                <td>CREDITO FISCAL</td>
+                                                {
+                                                    calcularCreditoFiscal(dataCreditoFiscal.facturas, dataCreditoFiscal.ventas, dataCreditoFiscal.creditoFiscalAniosAnteriores).map(c=>(
+                                                        <td className='text-center'><NumberFormatMoney amount={c.creFisc} symbol={'S/.'}/></td>
+                                                    ))
+                                                }
+                                                <td className='text-center'><NumberFormatMoney amount={creditoFiscalAcumulado(1)} symbol={'S/.'}/></td>
+                                                {/* <td className='text-center'><NumberFormatMoney amount={creditoFiscalAcumulado(0, dataCreditoFiscal.creditoFiscalAniosAnteriores)} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={creditoFiscalAcumulado(1)} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(3).producto18_MONTO} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(4).producto18_MONTO} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(5).producto18_MONTO} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(6).producto18_MONTO} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(7).producto18_MONTO} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(8).producto18_MONTO} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(9).producto18_MONTO} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(10).producto18_MONTO} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(11).producto18_MONTO} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes(12).producto18_MONTO} symbol={'S/.'}/></td>
+                                                <td className='text-center'><NumberFormatMoney amount={obtenerTotalIngresosxxMes('T').producto18_MONTO} symbol={'S/.'}/></td> */}
+                                            </tr>
+                                        </tbody>
+                                    </Table>
+                            )
+                        }
                     </Card>
 				</Col>
 			</Row>

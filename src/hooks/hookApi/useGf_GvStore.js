@@ -1,4 +1,5 @@
 import { PTApi } from '@/common';
+import { onSetDataView } from '@/store/data/dataSlice';
 import {
 	onSetGastos,
 	onSetParametrosGastos,
@@ -134,6 +135,8 @@ export const useGf_GvStore = () => {
 	const obtenerParametrosGastosFinanzas = async () => {
 		try {
 			let { data } = await PTApi.get(`/parametros/get_params/params-tb-finanzas`);
+
+			dispatch(onSetDataView(data));
 			data = data.reduce((acc, curr) => {
 				let empresa = acc.find((e) => e.id_empresa === curr.id_empresa);
 				if (!empresa) {
