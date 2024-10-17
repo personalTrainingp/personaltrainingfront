@@ -153,6 +153,9 @@ export const arrayOrigenDeCliente = [
 	{ value: 31, label: 'Referidos' },
 	{ value: 32, label: 'Cartera de renovacion' },
 	{ value: 33, label: 'Cartera de reinscripcion' },
+	{ value: 34, label: 'redes sociales - Instagram' },
+	{ value: 35, label: 'redes sociales - facebook' },
+	{ value: 36, label: 'redes sociales - tiktok' },
 ];
 
 export const arrayEstadoCivil = [

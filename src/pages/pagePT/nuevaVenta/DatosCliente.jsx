@@ -81,7 +81,7 @@ const DatosCliente = ({dataCliente}) => {
 											<Select
 												onChange={(e) => onInputChangeReact(e, 'id_empl')}
 												name="id_empl"
-												placeholder={'Seleccionar el asesor'}
+												placeholder={'Seleccionar el vendedor'}
 												className="react-select"
 												classNamePrefix="react-select"
 												options={DataVendedores}

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { FormatoDateMask, FormatoTimeMask, MoneyFormatter } from '../CurrencyMask';
 
-export const ItemVentaMembresia = ({e}) => {
+export const ItemVentaTransferenciaMembresia = ({e}) => {
     console.log(e);
     
   return (
@@ -25,7 +25,7 @@ export const ItemVentaMembresia = ({e}) => {
                     </thead>
                     <tbody>
                         <tr>
-                            <td className="border-0">
+                            {/* <td className="border-0">
                                 <div>
                                     {e.tb_ProgramaTraining.name_pgm} | {e.tb_semana_training.semanas_st} SEMANAS | 
                                 </div>
@@ -52,6 +52,9 @@ export const ItemVentaMembresia = ({e}) => {
 														'dddd D [de] MMMM [del] YYYY'
 													)}
 												</span>
+                            </td> */}
+                            <td className="border-0">
+                                {/* {e.venta_transferencia[0]} */}
                             </td>
                             <td className="border-0">
                                     {<MoneyFormatter amount={e.tarifa_monto} />}

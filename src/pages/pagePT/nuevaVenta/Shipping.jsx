@@ -148,20 +148,20 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 										<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/>
-									<Col className="mb-3" xxl={3} onClick={ClickOpenModalFitology}>
-									<ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
-									</Col>
-									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
 									<Col className="mb-3" xxl={3} onClick={onOpenModalNut}>
 									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
+									<Col className="mb-3" xxl={3} onClick={ClickOpenModalFitology}>
+									<ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+									</Col>
+									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
 									<Col className="mb-3" xxl={3} onClick={ClickOpenModalTransfMemb}>
 									<ItemProdServ Inombre={"TRANSFERENCIAS DE MEMBRESIAS"} icono={icoTransf} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/>
 									<Col className="mb-3" xxl={3} onClick={onOpenModalTraspaso}>
-									<ItemProdServ Inombre={"TRASPASO"} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+									<ItemProdServ Inombre={"TRASPASO PT A CHANGE"} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTraspaso show={modalTraspaso} onHide={onCloseModalTraspaso}/>
 								</Row>

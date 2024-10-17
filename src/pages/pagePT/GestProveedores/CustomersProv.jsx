@@ -102,7 +102,7 @@ const CustomersProv = ({estado_prov}) => {
 	const HistorialProvBodyTemplate = (rowData)=>{
 		
 		return (
-            <Link to={`/perfil-proveedor/${rowData.uid}`} className="action-icon" style={{fontSize: '14px', color: 'blue', textDecoration: 'underline'}}>
+            <Link to={`/perfil-proveedor/${rowData.uid}`} className="action-icon text-primary" style={{fontSize: '14px', color: 'blue', textDecoration: 'underline'}}>
                 Ver Perfil
             </Link>
 		)
@@ -115,7 +115,28 @@ const CustomersProv = ({estado_prov}) => {
 	const razonSocialBodyTemplate = (rowData)=>{
 		return(
 			<>
-			    <span className='fw-bold'><p className='mb-0 pb-0'><span className='text-primary'>{rowData.oficio}</span> {rowData.oficio && '-'} {rowData.column_razon_social}</p></span>
+			    <span className='fw-bold'><p className='mb-0 pb-0'>{rowData.column_razon_social}</p></span>
+			</>
+		)
+	}
+	const oficioBodyTemplate = (rowData)=>{
+		return(
+			<>
+			    <span className='fw-bold'><p className='mb-0 pb-0'><span className='text-primary'>{rowData.oficio}</span></p></span>
+			</>
+		)
+	}
+	const telefonoBodyTemplate = (rowData)=>{
+		return(
+			<>
+			    <span className='fw-bold'><p className='mb-0 pb-0'><span className=''>{rowData.cel_prov&&rowData.cel_prov.match(/.{1,3}/g).join('-')}</span></p></span>
+			</>
+		)
+	}
+	const nombreContactoBodyTemplate = (rowData)=>{
+		return(
+			<>
+			    <span className='fw-bold'><p className='mb-0 pb-0'><span className=''>{rowData.nombre_contacto}</span></p></span>
 			</>
 		)
 	}
@@ -137,7 +158,7 @@ const CustomersProv = ({estado_prov}) => {
 							// onSelectionChange={(e) => setselectedCustomers(e.value)}
 							filters={filters} 
 							filterDisplay="menu" 
-							globalFilterFields={['id', 'oficio', 'column_razon_social', 'razon_social_prov', 'ruc_prov', 'cel_prov', 'nombre_vend_prov', 'Estado']} 
+							globalFilterFields={['id', 'oficio', 'column_razon_social', 'oficio', 'razon_social_prov', 'ruc_prov', 'cel_prov', 'nombre_vend_prov', 'Estado']} 
 							emptyMessage="Egresos no encontrados."
 							showGridlines 
 							// loading={loading} 
@@ -146,9 +167,11 @@ const CustomersProv = ({estado_prov}) => {
 							// onValueChange={valueFiltered}
 							>
 								<Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter/>
-								<Column header="Razon social" field='razon_social_prov' filterField="razon_social_prov" body={razonSocialBodyTemplate} sortable/>
+								<Column header="Servicio" field='oficio' filterField="oficio" body={oficioBodyTemplate} sortable/>
+								<Column header={<span>Nombre del <br/>contacto</span>} field='razon_social_prov' filterField="razon_social_prov" body={nombreContactoBodyTemplate} sortable/>
+								<Column header={'Razon del social'} field='razon_social_prov' filterField="razon_social_prov" body={razonSocialBodyTemplate} sortable/>
 								{/* <Column header="Ruc del proveedor" field='ruc_prov' filterField="ruc_prov" sortable style={{ width: '3rem' }} filter/> */}
-								<Column header="Celular del representante" field='cel_prov' filterField="cel_prov" style={{ minWidth: '10rem' }} sortable/>
+								<Column header="Celular del contacto" field='cel_prov' filterField="cel_prov" style={{ minWidth: '10rem' }} body={telefonoBodyTemplate} sortable/>
 								<Column header="Nombre del Representante" field='nombre_vend_prov' filterField='nombre_vend_prov' style={{ minWidth: '10rem' }} sortable filter/>
 								{/* <Column header="Estado" field='Estado' filterField="Estado" sortable style={{ minWidth: '10rem' }} filter body={EstadoProvBodyTemplate} /> */}
 								<Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={HistorialProvBodyTemplate}/>

@@ -383,11 +383,11 @@ export const SidebarClinico = ({show, onHide, dataCli}) => {
 							{},  // Celda vacía
 							{}  // Celda vacía
 						],
-						[{text: `vasos de agua natural al día: ${vasos_agua_x_dia}`, colSpan: 1}, {text: '', colSpan: 2}],
-						[{text: `Consumo de gaseosa: ${consumo_gaseosa}`, colSpan: 1}, {text: '', colSpan: 2}],
-						[{text: `Consumo de  dulces: ${consumo_dulces}`, colSpan: 1}, {text: '', colSpan: 2}],
-						[{text: `Cambios por fin de semana: ${cambios_fin_semana}`, colSpan: 1}, {text: '', colSpan: 2}],
-						[{text: `Hora de acostarse: ${hora_acostarse}`, colSpan: 1}, {text: '', colSpan: 2}],
+						[{text: `vasos de agua natural al día: `, colSpan: 1}, {text: ` ${vasos_agua_x_dia}`, colSpan: 2}],
+						[{text: `Consumo de gaseosa: `, colSpan: 1}, {text: `${consumo_gaseosa}`, colSpan: 2}],
+						[{text: `Consumo de  dulces: ${consumo_dulces}`, colSpan: 1}, {text: `${consumo_dulces}`, colSpan: 2}],
+						[{text: `Cambios por fin de semana: `, colSpan: 1}, {text: `${cambios_fin_semana}`, colSpan: 2}],
+						[{text: `Hora de acostarse: ${hora_acostarse}`, colSpan: 1}, {text: `${hora_acostarse}`, colSpan: 2}],
 					]
 				}
 			},
@@ -896,6 +896,54 @@ export const SidebarClinico = ({show, onHide, dataCli}) => {
 										value={antec_pat_tratam_perdida_peso}
 										onChange={onInputChange}
 										id="antec_pat_tratam_perdida_peso"
+									/>
+								</div>
+								<div className="mb-2">
+									<label htmlFor="vasos_agua_x_dia" className="form-label">
+										Vasos de agua natural al día
+									</label>
+									<textarea
+										className="form-control"
+										name="vasos_agua_x_dia"
+										value={vasos_agua_x_dia}
+										onChange={onInputChange}
+										id="vasos_agua_x_dia"
+									/>
+								</div>
+								<div className="mb-2">
+									<label htmlFor="consumo_gaseosa" className="form-label">
+										Consumo de gaseosa
+									</label>
+									<textarea
+										className="form-control"
+										name="consumo_gaseosa"
+										value={consumo_gaseosa}
+										onChange={onInputChange}
+										id="consumo_gaseosa"
+									/>
+								</div>
+								<div className="mb-2">
+									<label htmlFor="consumo_dulces" className="form-label">
+										Consumo de dulces:
+									</label>
+									<textarea
+										className="form-control"
+										name="consumo_dulces"
+										value={consumo_dulces}
+										onChange={onInputChange}
+										id="consumo_dulces"
+									/>
+								</div>
+								<div className="mb-2">
+									<label htmlFor="cambios_fin_semana" className="form-label">
+										Cambios por fn de semana:
+									</label>
+									<textarea
+										className="form-control"
+										name="cambios_fin_semana"
+										value={cambios_fin_semana}
+										onChange={onInputChange}
+										id="cambios_fin_semana"
 									/>
 								</div>
 							</Col>

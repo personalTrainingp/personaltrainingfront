@@ -15,6 +15,7 @@ import { classNames } from 'primereact/utils';
 import { TimelineItem } from '@/components';
 import { Link } from 'react-router-dom';
 import { ItemVentaMembresia } from '@/components/ItemsResumenVenta/ItemVentaMembresia';
+import { ItemVentaTransferenciaMembresia } from '@/components/ItemsResumenVenta/ItemVentaTransferenciaMembresia';
 
 export const ModalViewObservacion = ({onHide, show, data, id}) => {
     // console.log(data);
@@ -80,14 +81,62 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                     {
                         dataVentaxID[0]?.detalle_ventaMembresia.length>0 && (
                             dataVentaxID[0]?.detalle_ventaMembresia.map(e=>{
-                                console.log(e);
                                 return(
-                                    
-                                <>
-                                <ItemVentaMembresia e={e}/>
-                            </>
+                                    <>
+                                        <ItemVentaMembresia e={e}/>
+                                    </>
                                 )
 })
+                        )
+                    }
+                    {
+                        dataVentaxID[0]?.detalle_ventaTransferencia.length>0 && (
+                            <>
+                            <div className="text-2xl font-bold text-800">
+                                TRANSFERENCIAS:
+                            </div>
+                            </>
+                        )
+                    }
+                    {
+                        dataVentaxID[0]?.detalle_ventaTransferencia.length>0 && (
+                            dataVentaxID[0]?.detalle_ventaTransferencia.map(e=>{
+                                return(
+                                    <>
+                                        <ItemVentaTransferenciaMembresia e={e}/>
+                                    </>
+                                )
+                            })
+                        )
+                    }
+                    {
+                        dataVentaxID[0]?.detalle_ventaProductos.length>0 && (
+                            dataVentaxID[0]?.detalle_ventaProductos.map(e=>(
+                                <>
+                                <Table responsive hover className="table-centered table-nowrap mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <h5 className="font-14 my-1">
+                                                    <Link to="" className="text-body">
+                                                    {e.tb_producto?.nombre_producto}
+                                                    </Link>
+                                                </h5>
+                                                <span className="text-muted font-13">TIPO: {arrayCategoriaProducto.find(i=>i.value===e.tb_producto?.id_categoria)?.label}</span>
+                                            </td>
+                                            <td>
+                                                <span className="text-muted font-13">CANTIDAD</span> <br />
+                                                <span className="font-14 mt-1 fw-normal">{e.cantidad}</span>
+                                            </td>
+                                            <td>
+                                                <span className="text-muted font-13">MONTO</span> <br />
+                                                <span className="font-14 mt-1 fw-normal">{FUNMoneyFormatter(e.tarifa_monto)}</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </Table>
+                                </>
+                            ))
                         )
                     }
                     {
@@ -103,54 +152,28 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                         dataVentaxID[0]?.detalle_ventaProductos.length>0 && (
                             dataVentaxID[0]?.detalle_ventaProductos.map(e=>(
                                 <>
-                                
-				<Table responsive hover className="table-centered table-nowrap mb-0">
-					<tbody>
-						<tr>
-							<td>
-								<h5 className="font-14 my-1">
-									<Link to="" className="text-body">
-                                    {e.tb_producto?.nombre_producto}
-									</Link>
-								</h5>
-								<span className="text-muted font-13">TIPO: {arrayCategoriaProducto.find(i=>i.value===e.tb_producto?.id_categoria)?.label}</span>
-							</td>
-							<td>
-								<span className="text-muted font-13">CANTIDAD</span> <br />
-								<span className="font-14 mt-1 fw-normal">{e.cantidad}</span>
-							</td>
-							<td>
-                                <span className="text-muted font-13">MONTO</span> <br />
-                                <span className="font-14 mt-1 fw-normal">{FUNMoneyFormatter(e.tarifa_monto)}</span>
-							</td>
-						</tr>
-					</tbody>
-				</Table>
-                                {/* <div className="col-12">
-                                    <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-0 gap-4')}>
-                                        <div className="flex flex-row sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                                            <div className="flex flex-column sm:align-items-start gap-3">
-                                                <b className='text-800'>
-                                                    {e.tb_producto.nombre_producto}
-                                                </b>
-                                                <div className="flex gap-2">
-                                                    <span className="flex align-items-center gap-2">
-                                                        <i className="pi pi-tag"></i>
-                                                        <span className="font-semibold">{arrayCategoriaProducto.find(i=>i.value===e.tb_producto.id_categoria)?.label}</span>
-                                                    </span>
-                                                    <span className="flex align-items-center gap-2">
-                                                        <span className="font-semibold">
-                                                            Cantidad: {e.cantidad}</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                                                <span className="text-2xl font-semibold">
-                                                    PEN {e.tarifa_monto}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> */}
+                                <Table responsive hover className="table-centered table-nowrap mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <h5 className="font-14 my-1">
+                                                    <Link to="" className="text-body">
+                                                    {e.tb_producto?.nombre_producto}
+                                                    </Link>
+                                                </h5>
+                                                <span className="text-muted font-13">TIPO: {arrayCategoriaProducto.find(i=>i.value===e.tb_producto?.id_categoria)?.label}</span>
+                                            </td>
+                                            <td>
+                                                <span className="text-muted font-13">CANTIDAD</span> <br />
+                                                <span className="font-14 mt-1 fw-normal">{e.cantidad}</span>
+                                            </td>
+                                            <td>
+                                                <span className="text-muted font-13">MONTO</span> <br />
+                                                <span className="font-14 mt-1 fw-normal">{FUNMoneyFormatter(e.tarifa_monto)}</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </Table>
                                 </>
                             ))
                         )
