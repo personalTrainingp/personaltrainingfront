@@ -84,10 +84,8 @@ export const ScreenNutricionista = ({id_cli, dataCli}) => {
                 </Row>
                 {
                     dataNutricion_HISTORIAL_CLINICO.map(h=>{
-                        console.log(h);
-                        
                         return(
-                            <ItemClinico url={h?.tb_image?.name_image} fec_created={h.createdAt}/>
+                            <ItemClinico onUpdateHClinico={()=>onUpdateHClinico(h.id)} url={h?.tb_image?.name_image} fec_created={h.createdAt}/>
                         )
                     })
                 }

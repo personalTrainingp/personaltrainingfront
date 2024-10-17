@@ -22,8 +22,9 @@ export const ModalTransferencia = ({show, onHide}) => {
     const { obtenerUltimaMebresiaxCli, dataUltimaMembxCli } = useUsuarioStore()
     
     useEffect(() => {
+        
         obtenerParametrosClientes()
-    }, [])
+    }, [show])
 
     useEffect(() => {
         if(id_cli!==0){

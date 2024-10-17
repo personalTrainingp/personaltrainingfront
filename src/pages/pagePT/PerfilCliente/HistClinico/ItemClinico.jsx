@@ -5,7 +5,7 @@ import React from 'react'
 import { Card, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-export const ItemClinico = ({data, fec_created, onDeleteHClinico, url}) => {
+export const ItemClinico = ({data, fec_created, onUpdateHClinico, onDeleteHClinico, url}) => {
   return (
     
     <Card className="mb-1 shadow-none border">
@@ -31,6 +31,9 @@ export const ItemClinico = ({data, fec_created, onDeleteHClinico, url}) => {
                 {/* <Link to="" className="btn btn-link btn-lg text-muted">
                     <i className="pi pi-pencil"></i>
                 </Link> */}
+                <Link to="" className="btn btn-link btn-lg text-muted" onClick={onUpdateHClinico}>
+                    <i className="pi pi-pencil"></i>
+                </Link>
                 <Link to="" className="btn btn-link btn-lg text-muted" onClick={onDeleteHClinico}>
                     <i className="pi pi-times"></i>
                 </Link>
