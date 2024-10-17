@@ -36,7 +36,7 @@ export const ComprasxCliente = ({uid, dataVenta}) => {
 							return (
 								<AccordionTab header={
 								<div className=''>
-									<span className=''>{arrayFacturas.find(f=>f.value===e.id_tipoFactura).label} {e.numero_transac}</span>
+									<span className=''>{arrayFacturas?.find(f=>f.value===e.id_tipoFactura)?.label} {e.numero_transac}</span>
 									<span className='float-end z-5'>
 										<a className='a-focus' onClick={()=>onModalViewObservacion(e.id)}>Ver detalle de boleta</a>
 										{/* <Button label="Ver detalle de boleta" text onClick={()=>onModalViewObservacion(e.id)} /> */}
