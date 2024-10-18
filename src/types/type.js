@@ -1875,7 +1875,6 @@ export const arrayDistrito = [
 	{ value: '140310', label: 'SALAS' },
 	{ value: '140311', label: 'SAN JOSE' },
 	{ value: '140312', label: 'TUCUME' },
-	{ value: '150101', label: 'LIMA' },
 	{ value: '150102', label: 'ANCON' },
 	{ value: '150105', label: 'BREÑA' },
 	{ value: '150106', label: 'CARABAYLLO' },
@@ -2523,36 +2522,9 @@ export const arrayDistrito = [
 	{ value: '250303', label: 'CURIMANA' },
 	{ value: '250400', label: 'PURUS' },
 	{ value: '250401', label: 'PURUS' },
-	{ value: '010000', label: 'AMAZONAS' },
 	{ value: '010101', label: 'CHACHAPOYAS' },
-	{ value: '010102', label: 'ASUNCION' },
-	{ value: '010103', label: 'BALSAS' },
-	{ value: '010104', label: 'CHETO' },
-	{ value: '010105', label: 'CHILIQUIN' },
 	{ value: '010106', label: 'CHUQUIBAMBA' },
-	{ value: '010107', label: 'GRANADA' },
-	{ value: '010108', label: 'HUANCAS' },
-	{ value: '010109', label: 'LA JALCA' },
-	{ value: '010110', label: 'LEIMEBAMBA' },
-	{ value: '010111', label: 'LEVANTO' },
-	{ value: '010112', label: 'MAGDALENA' },
-	{ value: '010113', label: 'MARISCAL CASTILLA' },
-	{ value: '010114', label: 'MOLINOPAMPA' },
-	{ value: '010115', label: 'MONTEVIDEO' },
-	{ value: '010116', label: 'OLLEROS' },
-	{ value: '010117', label: 'QUINJALCA' },
-	{ value: '010118', label: 'SAN FRANCISCO DE DAGUAS' },
 	{ value: '010119', label: 'SAN ISIDRO DE MAINO' },
-	{ value: '010120', label: 'SOLOCO' },
-	{ value: '010121', label: 'SONCHE' },
-	{ value: '010200', label: 'BAGUA' },
-	{ value: '010201', label: 'BAGUA' },
-	{ value: '010202', label: 'ARAMAN' },
-	{ value: '010203', label: 'COPALLIN' },
-	{ value: '010204', label: 'EL PARCO' },
-	{ value: '010205', label: 'IMAZA' },
-	{ value: '010206', label: 'LA PECA' },
-	{ value: '010300', label: 'BONGARA' },
 	{ value: '010301', label: 'JUMBILLA' },
 	{ value: '010302', label: 'CHISQUILLA' },
 	{ value: '010303', label: 'CHURUJA' },
@@ -2785,7 +2757,6 @@ export const arrayDistrito = [
 	{ value: '021902', label: 'ACOBAMBA' },
 	{ value: '021903', label: 'ALFONSO UGARTE' },
 	{ value: '021904', label: 'CASHAPAMPA' },
-	{ value: '021905', label: 'CHINGALPO' },
 	{ value: '021906', label: 'HUAYLLABAMBA' },
 	{ value: '021907', label: 'QUICHES' },
 	{ value: '021908', label: 'RAGASH' },
@@ -3303,7 +3274,6 @@ export const arrayDistrito = [
 	{ value: '080303', label: 'CACHIMAYO' },
 	{ value: '080304', label: 'CHINCHAYPUJIO' },
 	{ value: '080305', label: 'HUAROCONDO' },
-	{ value: '080306', label: 'LIMATAMBO' },
 	{ value: '080307', label: 'MOLLEPATA' },
 	{ value: '080308', label: 'PUCYURA' },
 	{ value: '080309', label: 'ZURITE' },
@@ -4567,3 +4537,16 @@ export const arrayDistrito = [
 	{ value: '250400', label: 'PURUS' },
 	{ value: '250401', label: 'PURUS' },
 ];
+export function filtrarDuplicados(data) {
+	const vistos = new Set();
+	const resultado = [];
+
+	data.forEach((item) => {
+		if (!vistos.has(item.label)) {
+			resultado.push(item); // Agregar si el label no ha sido visto aún
+			vistos.add(item.label); // Marcar el label como visto
+		}
+	});
+
+	return resultado;
+}

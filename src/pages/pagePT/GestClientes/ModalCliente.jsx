@@ -1,4 +1,4 @@
-import { arrayDistrito, arrayEstadoCivil, arrayEstados, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc } from '@/types/type'
+import { arrayDistrito, arrayEstadoCivil, arrayEstados, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc, filtrarDuplicados } from '@/types/type'
 import React, { useEffect, useState } from 'react'
 import {Modal, Row, Col, Tab, Tabs, Button, ModalBody} from 'react-bootstrap'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
@@ -301,8 +301,8 @@ export const ModalCliente = ({show, onHide}) => {
 											placeholder={'Seleccione el distrito'}
 											className="react-select"
 											classNamePrefix="react-select"
-											options={arrayDistrito}
-											value={arrayDistrito.find(
+											options={filtrarDuplicados(arrayDistrito)}
+											value={filtrarDuplicados(arrayDistrito).find(
 												(option) => option.value === ubigeo_distrito_cli
 											)}
 											required
