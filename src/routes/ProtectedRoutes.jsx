@@ -55,7 +55,7 @@ const ReporteComparativaDeVentasxDia = lazy(()=>import('../pages/pagePT/ReporteC
 const ReporteFlujoCaja = lazy(()=>import('../pages/pagePT/FlujoCaja'))
 const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilidadPrograma'))
 const PerfilProveedor = lazy(()=>import('../pages/pagePT/PerfilProveedor'))
-
+const GestionInventario = lazy(()=>import('../pages/pagePT/GestInventario'))
 const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
 /**
  * routes import
@@ -98,6 +98,11 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/proveedores/trabajos-proveedores') && 
 						<Route path='proveedores/trabajos-proveedores' element={<PerfilProveedor/>}/>
 					} */}
+					
+					{
+						sections.find(e=>e.url==='/gest-inventario') && 
+						<Route path='gest-inventario' element={<GestionInventario/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/reporte-admin/flujo-caja') && 
 						<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja/>}/>

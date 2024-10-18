@@ -18,7 +18,8 @@ const registerProvedor = {
 	cel_vend_prov: '',
 	email_vend_prov: '',
 	estado_prov: true,
-    id_oficio: 0
+    id_oficio: 0,
+    nombre_contacto: ''
 }
 export const ModalProveedor = ({status, dataProv, onHide, show}) => {
     const { ruc_prov, 
@@ -32,6 +33,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
 			cel_vend_prov,
 			email_vend_prov,
             estado_prov,
+            nombre_contacto,
             cci,
             n_cuenta,
             id_tarjeta,
@@ -58,7 +60,6 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                 obtenerOficios()
             }, [])
             
-            console.log(comboOficio);
             
 
 
@@ -101,6 +102,26 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                 <Modal.Body>
                     <form onSubmit={submitProveedor}>
                         <Row>
+                            <Col lg={12}>
+                                <p className='fw-bold fs-5 text-decoration-underline'>
+                                    Datos del Contacto
+                                </p>
+                            </Col>
+                            <Col lg={12}>
+                                <div className="mb-4">
+                                    <label htmlFor="nombre_contacto" className="form-label">
+                                        Nombre del contacto*
+                                    </label>
+                                    <input
+                                        className="form-control"
+                                        name="nombre_contacto"
+                                        id="nombre_contacto"
+                                        value={nombre_contacto}
+                                        onChange={onInputChange}
+                                        placeholder=""
+                                    />
+                                </div>
+                            </Col>
                             <Col lg={12}>
                                 <p className='fw-bold fs-5 text-decoration-underline'>
                                 Datos del proveedor
