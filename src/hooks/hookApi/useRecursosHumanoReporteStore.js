@@ -1,25 +1,31 @@
 import { PTApi } from '@/common/api/';
+import { useState } from 'react';
 
 export const useRecursosHumanoReporteStore = () => {
 
-    const data = [];
+    const [data , setData] = useState({}) ;
 
-    const obtenerGastosPorCargo = async (fechaDesde , fechaHasta) => {
+    const obtenerGastosPorCargo = async (fechaDesdeStr , fechaHastaStr) => {
     
         try {
-            PTApi.get('/recursos-humanos/gastos-por-cargo');
-            const { data } = await PTApi.get('/recursos-humanos/gastos-por-cargo' , {
+            //PTApi.get('/recursosHumanos/gastos-por-cargo');
+            //setstatus('loading');
+            const response  = await PTApi.get('/recursosHumanos/gasto-por-cargo' , {
                 
-                fechaDesde: fechaDesde,
-                fechaHasta: fechaHasta,
+                params: {
+                    fechaDesdeStr: fechaDesdeStr,
+                    fechaHastaStr: fechaHastaStr,
+                }
+
             });
-            console.log(data);
-            //data = data;
-            return data;
+			//setstatus('success');
+
+            setData(response.data.response);
+            //return response.data.response;
         
         } catch (error) {
             console.log(error);
         }
     };
-    return {obtenerGastosPorCargo};
+    return {obtenerGastosPorCargo , data};
 };

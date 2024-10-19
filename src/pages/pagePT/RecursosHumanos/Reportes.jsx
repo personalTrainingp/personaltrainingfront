@@ -12,18 +12,20 @@ export const Reportes = () => {
 
 
     //const { data2 } = useRecursosHumanoReporteStore();
-    const { obtenerGastosPorCargo } = useRecursosHumanoReporteStore();
-    useEffect(() => {
-        obtenerGastosPorCargo('2021-01-01', '2021-12-31');
+    const { obtenerGastosPorCargo  , data } = useRecursosHumanoReporteStore();
 
-    });
+    useEffect(() => {
+        obtenerGastosPorCargo('2024-01-05', '2030-01-06');
+
+    } , [obtenerGastosPorCargo]);
+
     let labels = [];
     // let data = [];
 
     let rangoFechas = [new Date(new Date().getFullYear(), 0, 1), new Date()];
 
-
-    const data = {
+    console.log(data);
+    const data2 = {
         labels: ["Hombre", "Mujer"],
         datasets: [
             {
@@ -75,7 +77,7 @@ export const Reportes = () => {
             <div className=''>
                 <h3 className='text-center'>Reporte Anuales</h3>
                 <div className='row'>
-                    <GraficoBarras data={data} options={options} />
+                    <GraficoBarras data={data2} options={options} />
                     <GraficoLinea />
                     <GraficoPie />
                     <div className='col-md-7 text-center'>
