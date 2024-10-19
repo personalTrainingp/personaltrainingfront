@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 export const useRecursosHumanoReporteStore = () => {
 
-    const [data , setData] = useState({}) ;
+    const [dataPorDepartamento , setData] = useState({}) ;
 
     const obtenerGastosPorCargo = async (fechaDesdeStr , fechaHastaStr) => {
     
@@ -27,5 +27,5 @@ export const useRecursosHumanoReporteStore = () => {
             console.log(error);
         }
     };
-    return {obtenerGastosPorCargo , data};
+    return {obtenerGastosPorCargo , data: dataPorDepartamento};
 };

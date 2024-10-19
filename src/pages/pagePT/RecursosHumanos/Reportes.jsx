@@ -12,19 +12,19 @@ export const Reportes = () => {
 
 
     //const { data2 } = useRecursosHumanoReporteStore();
-    const { obtenerGastosPorCargo  , data } = useRecursosHumanoReporteStore();
+    const { obtenerGastosPorCargo  , data: dataPorDepartamento } = useRecursosHumanoReporteStore();
 
     useEffect(() => {
         obtenerGastosPorCargo('2024-01-05', '2030-01-06');
 
     } , [obtenerGastosPorCargo]);
 
-    let labels = [];
+
     // let data = [];
 
     let rangoFechas = [new Date(new Date().getFullYear(), 0, 1), new Date()];
 
-    console.log(data);
+    console.log(dataPorDepartamento);
     const data2 = {
         labels: ["Hombre", "Mujer"],
         datasets: [
@@ -37,6 +37,10 @@ export const Reportes = () => {
             }
         ]
     };
+
+
+    let labelsForPie = [];
+
 
     const options = {
         responsive: true,
@@ -79,7 +83,7 @@ export const Reportes = () => {
                 <div className='row'>
                     <GraficoBarras data={data2} options={options} />
                     <GraficoLinea />
-                    <GraficoPie />
+                    <GraficoPie dirtData = {dataPorDepartamento} />
                     <div className='col-md-7 text-center'>
                         <div className='card-body text-secondary card border-secondary box-shadow'>
                             <table className='table '>
