@@ -28,7 +28,7 @@ export const VentasPrograma = () => {
           obtenerReporteVentasDeProgramasPorSemanas, ventasxPrograma_ventasDeProgramasPorSemanas, 
           // obtenerReporteVentasPorProgramas_x_ClientesFrecuentes, ventasxPrograma_clientesFrecuentes
          } = useReporteStore()
-  const { obtenerMembresiasxFechaxPrograma, membresiasxFechaxPrograma } = useReporteVentaxProgramaStore()
+  const { obtenerMembresiasxFechaxPrograma, membresiasxFechaxPrograma , estadosClienteMembresia , dataClientes } = useReporteVentaxProgramaStore()
   useEffect(() => {
     obtenerProgramasActivos()
   }, [])
@@ -42,25 +42,40 @@ export const VentasPrograma = () => {
     obtenerReporteVentasDeProgramasPorSemanas(id_programa, rangoDate)
     obtenerMembresiasxFechaxPrograma(id_programa, rangoDate)
     // obtenerReporteVentasPorProgramas_x_ClientesFrecuentes(id_programa, rangoDate)
+
+    estadosClienteMembresia(id_programa , rangoDate[0] , rangoDate[1])
   }, [id_programa, rangoDate])
+
+  
+console.log(dataClientes);
+  let NroClientesNuevo = 0;
+  let NroClientesReinscritos = 0;
+  let NroClientesRenovados = 0;
+
+  if(dataClientes?.CantidadPorEstado?.ClienteNuevo){
+    NroClientesNuevo = dataClientes.CantidadPorEstado.ClienteNuevo;
+    NroClientesReinscritos = dataClientes.CantidadPorEstado.ClienteReinscrito;
+    NroClientesRenovados = dataClientes.CantidadPorEstado.ClienteRenovado;
+  };
+  
   const statisticsClientes = [
     {
       icon: 'mdi mdi-account-star-outline',
       variant: 'primary',
       title: 'CLIENTES NUEVOS',
-      noOfProject: 20//programa_estado_cliente?.nuevos?.length,
+      noOfProject: NroClientesNuevo//programa_estado_cliente?.nuevos?.length,
     },
     {
       icon: 'mdi mdi-account-group',
       variant: 'success',
       title: 'CLIENTES REINSCRITOS',
-      noOfProject: 15//programa_estado_cliente?.reinscritos?.length,
+      noOfProject: NroClientesReinscritos//programa_estado_cliente?.reinscritos?.length,
     },
     {
       icon: 'mdi mdi-autorenew',
       variant: 'info',
       title: 'CLIENTES RENOVADOS',
-      noOfProject: 10//programa_estado_cliente?.renovados?.length,
+      noOfProject: NroClientesRenovados//programa_estado_cliente?.renovados?.length,
     },
   ];
   const programasActivosTODO = [
