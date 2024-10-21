@@ -11,7 +11,7 @@ import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
 import { MultiSelect } from 'primereact/multiselect';
 import { ExportToExcel } from './BtnExportExcel';
 import { Button } from 'primereact/button';
-import { ModalIngresosGastos } from './ModalIngresosGastos';
+import { ModalInventario } from './ModalInventario';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { arrayCargoEmpl, arrayFinanzas } from '@/types/type';
@@ -317,22 +317,19 @@ export default function TableInventario({showToast, id_enterprice}) {
                         onValueChange={valueFiltered}
                         >
                 <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
-                <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
-                <Column header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
-                <Column header="Fecha de comprobante" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter filterElement={dateFilterTemplate}/>
-                <Column header="Tipo de gasto" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
-                <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
-                <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
-                <Column header="Monto" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
-                <Column header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
-                <Column header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
-                body={proveedorBodyTemplate} filter />
+                <Column header="PRODUCTO" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
+                <Column header="MARCA" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
+                <Column header="DESCRIPCION" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter filterElement={dateFilterTemplate}/>
+                <Column header="OBSERVACIONES" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
+                <Column header="CANTIDAD" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
+                <Column header="VALOR UNITARIO DEPRECIADO" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
+                <Column header="LUGAR DE CONPRA O COTIZACION" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
 
                 <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             
-            <ModalIngresosGastos id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
-            <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/>
+            <ModalInventario id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+            {/* <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/> */}
             </>
                 )
                 :(
@@ -342,16 +339,14 @@ export default function TableInventario({showToast, id_enterprice}) {
                     className="p-datatable-striped"
                     >
                         <Column header="Id" style={{ width: '1rem' }}/>
-                        <Column header="Fecha registro" style={{ width: '3rem' }} body={<Skeleton/>} />
-                        <Column header="Fecha pago" style={{ width: '3rem' }} body={<Skeleton/>} />
-                        <Column header="Fecha de comprobante" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="Tipo de gasto" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="Gasto" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="Grupo" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="Monto" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="descripcion" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="Proveedor" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="Action" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="PRODUCTO" style={{ width: '3rem' }} body={<Skeleton/>} />
+                        <Column header="MARCA" style={{ width: '3rem' }} body={<Skeleton/>} />
+                        <Column header="DESCRIPCION" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="OBSERVACIONES" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="CANTIDAD" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="VALOR UNITARIO DEPRECIADO" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="LUGAR DE COMPRA O COTIZACION" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
+                        <Column header="VALOR TOTAL" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
                     </DataTable>
                 )
             }

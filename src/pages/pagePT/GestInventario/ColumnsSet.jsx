@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ModalIngresosGastos } from './ModalIngresosGastos';
+import { ModalInventario } from './ModalInventario';
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
 
 // const columns: ReadonlyArray<Column<Customer>> = [
@@ -23,7 +23,7 @@ const ActionColumnGF = ({ row }) => {
 			<Link to="" className="action-icon" onClick={() => setmodal(true)}>
 				<i className="mdi mdi-delete"></i>
 			</Link>
-			<ModalIngresosGastos show={modalUpdate} onHide={onCloseModal} data={gastoxID} isLoading={isLoading} />
+			<ModalInventario show={modalUpdate} onHide={onCloseModal} data={gastoxID} isLoading={isLoading} />
 		</>
 	);
 };

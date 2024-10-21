@@ -13,6 +13,17 @@ export const useVentasStore = () => {
 	const [msgBox, setmsgBox] = useState({});
 	const [dataVentaxFecha, setdataVentaxFecha] = useState([]);
 	const [IngresosSeparados_x_Fecha, setIngresosSeparados_x_Fecha] = useState([]);
+	const [dataContratos, setdataContratos] = useState([]);
+
+	const obtenerContratosDeClientes = async () => {
+		try {
+			const { data } = await PTApi.get('/venta/obtener-contratos-clientes/598');
+			setdataContratos(data.datacontratosConMembresias);
+			console.log(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	const obtenerVentasPorFecha = async (arrayDate) => {
 		try {
@@ -86,45 +97,36 @@ export const useVentasStore = () => {
 			setloadingVenta(true);
 			console.log(formState);
 
-			const { data } = await PTApi.post('/venta/post-ventas', formState);
-			// if (formState.dataVenta.detalle_traspaso.length > 0) {
-			// 	const { data: dataSesiones } = await PTApi.post(
-			// 		'/programaTraining/sesiones/post-sesion',
-			// 		formState
-			// 	);
-			// 	console.log(dataSesiones);
+			const { base64ToFile } = helperFunctions();
 
-			// 	if (!dataSesiones.id_tt && !dataSesiones.id_st) {
-			// 		return Swal.fire('Error', 'Error, el socio es nuevo', 'error');
-			// 	}
-			// 	const { data } = await PTApi.post('/venta/traspaso-membresia', {
-			// 		formState,
-			// 		dataSesiones,
-			// 	});
-			// } else {
-			// 	// const { } = await PTApi.post('/venta/post-ventas')
-			// 	if (formState.dataVenta.detalle_venta_programa.length > 0) {
-			// 		const { base64ToFile } = helperFunctions();
-			// 		if (formState.dataVenta.detalle_venta_programa[0].firmaCli) {
-			// 			const file = base64ToFile(
-			// 				formState.dataVenta.detalle_venta_programa[0].firmaCli,
-			// 				`firma_cli${formState.detalle_cli_modelo.id_cli}.png`
-			// 			);
-			// 			const formData = new FormData();
-			// 			formData.append('file', file);
-			// 			const { data: blobFirma } = await PTApi.post(
-			// 				`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
-			// 				formData
-			// 			);
-			// 			// const { } = await PTApi.post(`/venta/send-email/${}`)
-			// 		}
-			// 	}
-			// }
+			const { data } = await PTApi.post('/venta/post-ventas/598', formState);
 
-			// const { data: dataMail } = await PTApi.post(`/venta/invoice-mail/15488`, {
-			// 	firma_base64: formState.dataVenta.detalle_venta_programa[0].firmaCli,
-			// });
-			// console.log(dataMail);
+			if (formState.dataVenta.detalle_venta_programa[0]?.firmaCli) {
+				const file = base64ToFile(
+					formState.dataVenta.detalle_venta_programa[0].firmaCli,
+					`firma_cli${formState.detalle_cli_modelo.id_cli}.png`
+				);
+				const formData = new FormData();
+				formData.append('file', file);
+				console.log(data);
+
+				const { data: blobFirma } = await PTApi.post(
+					`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
+					formData
+				);
+				const file_contratoPDF = base64ToFile(
+					data.base64_contratoPDF,
+					`contrato_${formState.detalle_cli_modelo.id_cli}.pdf`
+				);
+				const formData_contratoPDF = new FormData();
+				formData_contratoPDF.append('file', file_contratoPDF);
+				// console.log(formData_contratoPDF);
+
+				const { data: blobContrato } = await PTApi.post(
+					`/storage/blob/create/${data.uid_contrato}?container=contratos-cli`,
+					formData_contratoPDF
+				);
+			}
 			setloadingVenta(false);
 
 			if (data.ok == false) {
@@ -204,6 +206,7 @@ export const useVentasStore = () => {
 		obtenerPDFCONTRATOgenerado,
 		obtenerVentaporId,
 		obtenerVentasPorFecha,
+		obtenerContratosDeClientes,
 		dataVentaxFecha,
 		IngresosSeparados_x_Fecha,
 		loadingVenta,
@@ -211,5 +214,47 @@ export const useVentasStore = () => {
 		isLoading,
 		dataVentas,
 		dataVentaxID,
+		dataContratos,
 	};
 };
+
+//TRATCH
+
+// if (formState.dataVenta.detalle_traspaso.length > 0) {
+// 	const { data: dataSesiones } = await PTApi.post(
+// 		'/programaTraining/sesiones/post-sesion',
+// 		formState
+// 	);
+// 	console.log(dataSesiones);
+
+// 	if (!dataSesiones.id_tt && !dataSesiones.id_st) {
+// 		return Swal.fire('Error', 'Error, el socio es nuevo', 'error');
+// 	}
+// 	const { data } = await PTApi.post('/venta/traspaso-membresia', {
+// 		formState,
+// 		dataSesiones,
+// 	});
+// } else {
+// 	// const { } = await PTApi.post('/venta/post-ventas')
+// 	if (formState.dataVenta.detalle_venta_programa.length > 0) {
+// 		const { base64ToFile } = helperFunctions();
+// 		if (formState.dataVenta.detalle_venta_programa[0].firmaCli) {
+// 			const file = base64ToFile(
+// 				formState.dataVenta.detalle_venta_programa[0].firmaCli,
+// 				`firma_cli${formState.detalle_cli_modelo.id_cli}.png`
+// 			);
+// 			const formData = new FormData();
+// 			formData.append('file', file);
+// 			const { data: blobFirma } = await PTApi.post(
+// 				`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
+// 				formData
+// 			);
+// 			// const { } = await PTApi.post(`/venta/send-email/${}`)
+// 		}
+// 	}
+// }
+
+// const { data: dataMail } = await PTApi.post(`/venta/invoice-mail/15488`, {
+// 	firma_base64: formState.dataVenta.detalle_venta_programa[0].firmaCli,
+// });
+// console.log(dataMail);
