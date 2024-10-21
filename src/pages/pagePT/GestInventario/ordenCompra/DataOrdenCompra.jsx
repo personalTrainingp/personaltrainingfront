@@ -11,7 +11,7 @@ import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
 import { MultiSelect } from 'primereact/multiselect';
 import { ExportToExcel } from '../BtnExportExcel';
 import { Button } from 'primereact/button';
-import { ModalIngresosGastos } from '../ModalIngresosGastos';
+import { ModalInventario } from '../ModalInventario';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { arrayCargoEmpl, arrayFinanzas } from '@/types/type';
@@ -329,7 +329,7 @@ export default function DataOrdenCompra({showToast, id_enterprice}) {
                 <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             
-            <ModalIngresosGastos id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+            <ModalInventario id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
             <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/>
             </>
                 )

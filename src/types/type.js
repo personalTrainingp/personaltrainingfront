@@ -206,7 +206,7 @@ export const arrayCargoEmpl = [
 ];
 
 export const arrayDepartamentoEmpl = [
-	{ label: 'Entrenadores', value: 1 },
+	{ label: 'Entrenadores', value: 1 }, //EMPLEADO, DEPARTAMENTO
 	{ label: 'Ventas', value: 2 },
 	{ label: 'Nutricion', value: 3 },
 	{ label: 'Fitology', value: 4 },
