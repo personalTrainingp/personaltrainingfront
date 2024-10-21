@@ -40,8 +40,9 @@ export const useReporteVentaxProgramaStore = () => {
 				
 	
 				setDataClientes(data.msg);
+				console.log(data.msg);
 		} catch (error) {
-			console.log(error.message);
+			console.log("error Estados Cliente " +error.message);
 		};
 	
 	};

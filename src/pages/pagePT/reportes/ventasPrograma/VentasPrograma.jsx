@@ -52,10 +52,10 @@ console.log(dataClientes);
   let NroClientesReinscritos = 0;
   let NroClientesRenovados = 0;
 
-  if(dataClientes?.CantidadPorEstado?.ClienteNuevo){
-    NroClientesNuevo = dataClientes.CantidadPorEstado.ClienteNuevo;
-    NroClientesReinscritos = dataClientes.CantidadPorEstado.ClienteReinscrito;
-    NroClientesRenovados = dataClientes.CantidadPorEstado.ClienteRenovado;
+  if(dataClientes?.cantidadPorEstado?.ClienteNuevo){
+    NroClientesNuevo = dataClientes.cantidadPorEstado.ClienteNuevo;
+    NroClientesReinscritos = dataClientes.cantidadPorEstado.ClienteReinscrito;
+    NroClientesRenovados = dataClientes.cantidadPorEstado.ClienteRenovado;
   };
   
   const statisticsClientes = [
