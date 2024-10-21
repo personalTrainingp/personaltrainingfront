@@ -1,131 +1,43 @@
-import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
-import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
-import { arrayEstados, arrayFinanzas, arrayMonedas } from '@/types/type'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Modal, ModalBody, Row } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
-import Select from 'react-select'
-import { ModalProveedor } from '../GestProveedores/ModalProveedor'
-import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
-import { useTipoCambioStore } from '@/hooks/hookApi/useTipoCambioStore'
-import { CurrencyMask } from '@/components/CurrencyMask'
-import { InputText } from 'primereact/inputtext'
 const registerIvsG={
-    id_tipoGasto: 0,
-    id_gasto: 0,
-    grupo: '',
-    moneda: '',
-    monto: '0',
-    id_tipo_comprobante: 0,
-    n_comprabante: '',
-    impuesto_igv: false,
-    impuesto_renta: false,
-    fec_pago: '',
-    fec_comprobante: '',
-    id_forma_pago: 0,
-    id_banco_pago: 0,
-    n_operacion: '',
-    id_rubro: 0,
-    descripcion: '',
-    cod_trabajo: '',
-    id_prov: 0,
-    esCompra: false
+    producto: '',
+    marca: '',
+    cantidad: 0,
+    lugar_compra_cotizacion: '',
+    valor_unitario_depreciado: 0,
+    valor_unitario_actual: 0,
+    observacion: '',
+    descripcion: ''
 }
 export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
     const onClickCancelModal = ()=>{
         onHide()
         onResetForm()
     }
-    const [grupoGasto, setgrupoGasto] = useState([])
-    const [gastoxGrupo, setgastoxGrupo] = useState([])
-    const [loadingRegister, setloadingRegister] = useState(false)
-    const { obtenerParametrosGastosFinanzas } = useGf_GvStore()
-    useEffect(() => {
-      obtenerParametrosGastosFinanzas()
-    }, [])
-    const {dataParametrosGastos} = useSelector(e=>e.finanzas)
-    const { obtenerParametroPorEntidadyGrupo: obtenerParametroTipoComprobante, DataGeneral: DataTipoComprobante } = useTerminoStore()
-    const {obtenerParametrosProveedor} = useProveedorStore()
-    // const { obtenerParametroPorEntidadyGrupo: obtenerParametroFormaPago, DataGeneral: DataFormaPago } = useTerminoStore()
-    const { obtenerParametrosFormaPago, DataFormaPago } = useTerminoStore()
-    const { obtenerParametrosBancos, DataBancos } = useTerminoStore()
-    const { startRegistrarGastos, startActualizarGastos, objetoToast, isLoadingData } = useGf_GvStore()
     const [showLoading, setshowLoading] = useState(false)
-    const [loadingParametros, setloadingParametros] = useState(false)
-	const { dataProvCOMBO } = useSelector(e=>e.prov)
+    const { obtener } = useInventarioStore()
     const { formState, 
-            id_tipoGasto, 
-            id_gasto,
-            grupo,
-            moneda, 
-            monto, 
-            id_tipo_comprobante, 
-            n_comprabante, 
-            impuesto_igv,
-            impuesto_renta,
-            fec_pago, 
-            fec_comprobante,
-            id_forma_pago, 
-            id_banco_pago,
-            n_operacion, 
-            id_prov, 
-            cod_trabajo,
-            descripcion, 
-            esCompra,
-            onInputChange, 
-            onInputChangeReact, 
+            producto,
+            marca,
+            cantidad,
+            lugar_compra_cotizacion,
+            valor_unitario_depreciado,
+            valor_unitario_actual,
+            observacion,
+            descripcion,
+            onInputChange,  
             onResetForm,
-            onInputChangeMonto,
-            onInputChangeFunction
         } = useForm(data?data:registerIvsG)
-        useEffect(() => {
-            if(!data){
-                onInputChangeFunction("grupo", 0)
-            }
-        }, [id_tipoGasto])
-        useEffect(() => {
-            if(!data){
-                onInputChangeFunction("id_gasto", 0)
-            }
-        }, [id_tipoGasto, grupo])
-        
-        useEffect(() => {
-            const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos||[]
-            
-            setgrupoGasto(grupos)
-        }, [id_tipoGasto])
-        useEffect(() => {
-            const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
-            console.log(conceptos);
-            
-            setgastoxGrupo(conceptos)
-        }, [grupo])
-        
 
-        
-        useEffect(() => {
-            const inyeccionParametros = async()=>{
-                try {
-                    setloadingParametros(true)
-                    await obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
-                    await obtenerParametrosProveedor()
-                    await obtenerParametrosFormaPago()
-                    await obtenerParametrosBancos()
-                    setloadingParametros(false)
-                } catch (error) {
-                    console.log(error, "en inyeccion");
-                }
-            }
-            inyeccionParametros()
-        }, [])
         const submitGasto = async(e)=>{
             e.preventDefault()
             if(data){
                 // console.log("con");
                 
                 setshowLoading(true)
-                await startActualizarGastos(formState, data.id, id_enterprice)
+                // await startActualizarGastos(formState, data.id, id_enterprice)
                 setshowLoading(false)
                 // console.log("sin ");
                 // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
@@ -133,19 +45,10 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 return;
             }
             setshowLoading(true)
-            await startRegistrarGastos(formState, id_enterprice)
+            // await startRegistrarGastos(formState, id_enterprice)
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()
-        }
-        const [openModalProv, setopenModalProv] = useState(false)
-        const onOpenModalProveedor = ()=>{
-            setopenModalProv(true)
-            onHide()
-        }
-        const onCloseModalProveedor=()=>{
-            setopenModalProv(false)
-            onShow()
         }
   return (
     <>
@@ -170,10 +73,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {(isLoading||loadingParametros) ? (
+                    {(isLoading) ? (
                         <>
-
-                        {loadingParametros&& 'Cargando Parametros'}
                         {isLoading && 'Cargando Datos'}
                         </>
                     ):(
@@ -181,61 +82,91 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                             <Row>
                                 <Col lg={4}>
                                     <div className="mb-4">
-                                        <label htmlFor="n_operacion" className="form-label">
+                                        <label htmlFor="producto" className="form-label">
                                             PRODUCTO
                                         </label>
                                         <input
                                                 className="form-control"
-                                                name="n_operacion"
-                                                id="n_operacion"
-                                                value={n_operacion}
+                                                name="producto"
+                                                id="producto"
+                                                value={producto}
                                                 onChange={onInputChange}
-                                                placeholder="EJ. 12341234"
+                                                placeholder=""
                                             />
                                     </div>
                                 </Col>
                                 <Col lg={4}>
                                     <div className="mb-4">
-                                        <label htmlFor="cod_trabajo" className="form-label">
-                                            CANTIDAD
-                                        </label>
-                                        <input
-                                                className="form-control"
-                                                name="cod_trabajo"
-                                                id="cod_trabajo"
-                                                value={cod_trabajo}
-                                                onChange={onInputChange}
-                                                placeholder="EJ. DE1234"
-                                            />
-                                    </div>
-                                </Col>
-                                <Col lg={4}>
-                                    <div className="mb-4">
-                                        <label htmlFor="cod_trabajo" className="form-label">
-                                            LUGAR DE COMPRA O COTIZACION
-                                        </label>
-                                        <input
-                                                className="form-control"
-                                                name="cod_trabajo"
-                                                id="cod_trabajo"
-                                                value={cod_trabajo}
-                                                onChange={onInputChange}
-                                                placeholder="EJ. DE1234"
-                                            />
-                                    </div>
-                                </Col>
-                                <Col lg={4}>
-                                    <div className="mb-4">
-                                        <label htmlFor="cod_trabajo" className="form-label">
+                                        <label htmlFor="marca" className="form-label">
                                             MARCA
                                         </label>
                                         <input
                                                 className="form-control"
-                                                name="cod_trabajo"
-                                                id="cod_trabajo"
-                                                value={cod_trabajo}
+                                                name="marca"
+                                                id="marca"
+                                                value={marca}
                                                 onChange={onInputChange}
-                                                placeholder="EJ. DE1234"
+                                                placeholder=""
+                                            />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="cantidad" className="form-label">
+                                            CANTIDAD
+                                        </label>
+                                        <input
+                                                className="form-control"
+                                                name="cantidad"
+                                                id="cantidad"
+                                                value={cantidad}
+                                                onChange={onInputChange}
+                                                placeholder=""
+                                            />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="lugar_compra_cotizacion" className="form-label">
+                                            LUGAR DE COMPRA O COTIZACION
+                                        </label>
+                                        <input
+                                                className="form-control"
+                                                name="lugar_compra_cotizacion"
+                                                id="lugar_compra_cotizacion"
+                                                value={lugar_compra_cotizacion}
+                                                onChange={onInputChange}
+                                                placeholder=""
+                                            />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="valor_unitario_depreciado" className="form-label">
+                                            VALOR UNIT. DEPRECIADO
+                                        </label>
+                                        <input
+                                                className="form-control"
+                                                name="valor_unitario_depreciado"
+                                                id="valor_unitario_depreciado"
+                                                value={valor_unitario_depreciado}
+                                                onChange={onInputChange}
+                                                placeholder=""
+                                            />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="valor_unitario_actual" className="form-label">
+                                            VALOR UNIT. ACTUAL
+                                        </label>
+                                        <input
+                                                className="form-control"
+                                                name="valor_unitario_actual"
+                                                id="valor_unitario_actual"
+                                                value={valor_unitario_actual}
+                                                onChange={onInputChange}
+                                                placeholder="E"
                                             />
                                     </div>
                                 </Col>
@@ -250,7 +181,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 id="descripcion"
                                                 value={descripcion}
                                                 onChange={onInputChange}
-                                                placeholder="EJ. comentario u observacion"
+                                                placeholder=""
                                                 required
                                             />
                                     </div>
@@ -264,9 +195,9 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 className="form-control"
                                                 name="descripcion"
                                                 id="descripcion"
-                                                value={descripcion}
+                                                value={observacion}
                                                 onChange={onInputChange}
-                                                placeholder="EJ. comentario u observacion"
+                                                placeholder=""
                                                 required
                                             />
                                     </div>
@@ -281,7 +212,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                     }
                 </Modal.Body>
             </Modal>
-            <ModalProveedor show={openModalProv} onHide={onCloseModalProveedor}/>
         </>
     ) 
 
