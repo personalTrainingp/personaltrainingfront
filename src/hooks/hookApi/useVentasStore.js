@@ -101,7 +101,7 @@ export const useVentasStore = () => {
 
 			const { data } = await PTApi.post('/venta/post-ventas/598', formState);
 
-			if (formState.dataVenta.detalle_venta_programa[0].firmaCli) {
+			if (formState.dataVenta.detalle_venta_programa[0]?.firmaCli) {
 				const file = base64ToFile(
 					formState.dataVenta.detalle_venta_programa[0].firmaCli,
 					`firma_cli${formState.detalle_cli_modelo.id_cli}.png`
