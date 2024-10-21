@@ -31,9 +31,10 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 				[name]: checked,
 			});
 		}
+
 		setFormState({
 			...formState,
-			[name]: value.toUpperCase(),
+			[name]: value,
 		});
 	};
 	const onInputChangeMonto = ({ target }) => {

@@ -32,8 +32,13 @@ export const ModalDieta = ({show, onHide, id_cli}) => {
     
     const onSubmitFilePlanAlimenticio = (e)=>{
         e.preventDefault()
+        console.log(file_DIETA);
+        
         const formData = new FormData();
         formData.append('file', file_DIETA);
+        console.log(formData);
+        
+        
         startRegisterDieta(formData, id_cli, formState)
         cancelModal()
         // startRegisterDieta()

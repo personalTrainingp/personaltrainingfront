@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { FormatoDateMask, FormatoTimeMask, MoneyFormatter } from '../CurrencyMask';
+import config from '@/config';
 
 export const ItemVentaMembresia = ({e}) => {
     console.log(e);
@@ -57,7 +58,7 @@ export const ItemVentaMembresia = ({e}) => {
                                     {<MoneyFormatter amount={e.tarifa_monto} />}
                             </td>
                             <td className="border-0">
-                                <a style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontSize: '15px'}}>CONTRATO</a>
+                                <a href={`${config.API_IMG.FILE_CONTRATOS_CLI}${e.contrato_x_serv.name_image}`} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontSize: '15px'}}>CONTRATO</a>
                             </td>
                         </tr>
                     </tbody>
