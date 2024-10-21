@@ -481,12 +481,6 @@ export const useReporteStore = () => {
 			const { data: dataactivo } = await PTApi.get('/reporte/reporte-seguimiento-membresia', {
 				params: { isClienteActive: true },
 			});
-			const { data: dataInactivo } = await PTApi.get(
-				'/reporte/reporte-seguimiento-membresia',
-				{
-					params: { isClienteActive: false },
-				}
-			);
 
 			// const dataCombination = dataactivo.newMembresias.concat(dataInactivo.newMembresias);
 			// console.log(dataCombination);
