@@ -19,6 +19,7 @@ const registerProvedor = {
 	cel_vend_prov: '',
 	email_vend_prov: '',
 	estado_prov: true,
+    nombre_contacto: '',
     id_oficio: 0,
 }
 export const SectionInfoProv = ({dataProv}) => {
@@ -37,6 +38,7 @@ export const SectionInfoProv = ({dataProv}) => {
         n_cuenta,
         id_tarjeta,
         id_oficio,
+        nombre_contacto,
         formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
         const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
         const { comboOficio, obtenerOficios } = useTerminoStore()
@@ -89,6 +91,27 @@ export const SectionInfoProv = ({dataProv}) => {
     <>
         <form onSubmit={submitProveedor}>
                         <Row>
+                            <Col lg={12}>
+                                <p className='fw-bold fs-5 text-decoration-underline'>
+                                Nombre del contacto
+                                </p>
+                            </Col>
+                            <Col lg={12}>
+                            <div className="mb-4">
+                                <label htmlFor="nombre_contacto" className="form-label">
+                                    nombre del contacto*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="nombre_contacto"
+                                    id="nombre_contacto"
+                                    value={nombre_contacto}
+                                    onChange={onInputChange}
+                                    placeholder="00000000000000"
+                                    required
+                                />
+                            </div>
+                            </Col>
                             <Col lg={12}>
                                 <p className='fw-bold fs-5 text-decoration-underline'>
                                 Datos del proveedor
