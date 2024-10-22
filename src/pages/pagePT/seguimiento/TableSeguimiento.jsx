@@ -58,14 +58,14 @@ function encontrarObjeto(array, fecha_act) {
     // Retornar null si no se encuentra ningún objeto
     return null;
   }
-export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos}) => {
+export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos, id_empresa}) => {
 	const [customers, setCustomers] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedCustomers, setSelectedCustomers] = useState([]);
 	const { reporteSeguimiento, obtenerReporteSeguimiento, agrupado_programas, loadinData } = useReporteStore();
 	const { dataView } = useSelector(e=>e.DATA)
 	useEffect(() => {
-		obtenerReporteSeguimiento(SeguimientoClienteActivos)
+		obtenerReporteSeguimiento(SeguimientoClienteActivos, id_empresa)
 	  }, [])
 	  console.log(dataView);
 	  

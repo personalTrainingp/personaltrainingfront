@@ -88,18 +88,17 @@ const modulosNEW = [
 
 const ModuloDropdown = () => {
 	const { modulos } = useSelector(e=>e.rutas)
-	const [moduloSelect, setModuloSelect] = useState(modulos[0]);
+	const [moduloSelect, setModuloSelect] = useState(0);
 	const { obtenerSeccions } = useRoleStore()
     const [isOpen, toggleDropdown] = useToggle();
 	const handleModuloChange = (modulo) => {
-		setModuloSelect(modulo)
-		// setModuloSelect(modulo);
-		// reloadPageAndRedirect();
+		
+		setModuloSelect(modulo);
+		// obtenerSeccions(modulos[modulo])
 	};
 	useEffect(() => {
-		console.log(modulos[0]);	
-		obtenerSeccions(modulos[0])
-	}, [modulos])
+		obtenerSeccions(modulos[moduloSelect])
+	}, [moduloSelect, modulos])
 	
   return (
     <Dropdown show={isOpen} onToggle={toggleDropdown}>
@@ -110,7 +109,7 @@ const ModuloDropdown = () => {
 				className="nav-link dropdown-toggle arrow-none"
 			>
 				<span className="align-middle d-sm-inline-block text-primary font-bold font-24">
-					{modulos[0]?.name}
+					{modulos[moduloSelect]?.name}
 				</span>
 				<i className="mdi mdi-chevron-down d-sm-inline-block align-middle"></i>
 			</Dropdown.Toggle>
@@ -118,7 +117,7 @@ const ModuloDropdown = () => {
 				<div onClick={toggleDropdown}>
 					{modulos.map((lang, i) => {
 						return (
-							<Link to={lang.path} onClick={() => handleModuloChange(lang)} className="dropdown-item notify-item" key={i + '-mod'}>
+							<Link to={lang.path} onClick={() => handleModuloChange(i)} className="dropdown-item notify-item" key={i + '-mod'}>
 								<span className="align-middle">{lang.name}</span>
 							</Link>
 						);

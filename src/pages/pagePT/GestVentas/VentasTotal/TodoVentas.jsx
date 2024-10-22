@@ -2,7 +2,7 @@ import { Table } from '@/components'
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
 import React, { useState, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode, FilterOperator, locale } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
@@ -19,14 +19,21 @@ import { DateMaskString, FormatoDateMask, MoneyFormatter } from '@/components/Cu
 import dayjs from 'dayjs';
 
 
-export const TodoVentas=()=> {
+export const TodoVentas=({id_empresa})=> {
+  
+  locale('es')
   const { obtenerTablaVentas, dataVentas } = useVentasStore()
   useEffect(() => {
-      obtenerTablaVentas()
+      obtenerTablaVentas(id_empresa)
   }, [])
   const [customers, setCustomers] = useState(null);
+  const [valueFilter, setvalueFilter] = useState([])
     const [filters, setFilters] = useState({
+      
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         fecha_venta: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+        tipo_comprobante: {operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]},
+        "tb_empleado.nombres_apellidos_empl": {operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]}
     });
     const [loading, setLoading] = useState(true);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -38,7 +45,7 @@ export const TodoVentas=()=> {
         };
         fetchData()
         // initFilters();
-    }, [dataVentas]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [dataVentas]);
 
     const getCustomers = (data) => {
         return [...(data || [])].map((d) => {
@@ -46,7 +53,8 @@ export const TodoVentas=()=> {
             let newItem = {...d}
             let date = dayjs.utc(d.fecha_venta);
             newItem.fecha_venta = new Date(date.format());
-            return d;
+            newItem.tipo_comprobante = arrayFacturas.find(e=>e.value===d.id_tipoFactura)?.label
+            return newItem;
         });
     };
 
@@ -62,12 +70,17 @@ export const TodoVentas=()=> {
 
     const renderHeader = () => {
         return (
+          <>
+                  <span className='font-24'>
+                    Total de ventas: {valueFilter?.length==0?customers?.length-1:valueFilter?.length-1}
+                  </span>
             <div className="flex justify-content-end">
                 <IconField iconPosition="left">
                     <InputIcon className="pi pi-search" />
-                    <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+                    <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Buscador general" />
                 </IconField>
             </div>
+          </>
         );
     };
 
@@ -124,23 +137,28 @@ export const TodoVentas=()=> {
 const comprobanteBodyTemplate = (rowData)=>{
   return (
     <>
-    { arrayFacturas.find(e=>e.value===rowData.id_tipoFactura)?.label}
+    { rowData.tipo_comprobante}
     </>
   )
 }
-
+const valueFiltered = (f)=>{
+  setvalueFilter(f)
+}
+  
     const header = renderHeader();
 
     return (
         <>
-          <DataTable value={customers} paginator rows={10} dataKey="id" filters={filters} loading={loading}
-                  globalFilterFields={[]} header={header} emptyMessage="No customers found.">
-              <Column field="id" header="NUMERO DE OPERACION" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="fecha_venta" header="FECHA" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} body={fechaDeComprobanteBodyTemplate}/>
+          <DataTable value={customers} 
+                  onValueChange={valueFiltered}
+                        stripedRows paginator rows={10} dataKey="id" filters={filters} loading={loading}
+                  globalFilterFields={["tb_cliente.nombres_apellidos_cli", "tb_empleado.nombres_apellidos_empl", "tipo_comprobante", "numero_transac"]} header={header} emptyMessage="No customers found.">
+              <Column field="id" header="NUMERO DE OPERACION" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} />
+              <Column field="fecha_venta" header="FECHA" filter filterPlaceholder="BUSCAR FECHA" style={{ minWidth: '8rem' }} body={fechaDeComprobanteBodyTemplate}/>
               <Column field="tb_cliente.nombres_apellidos_cli" header="SOCIOS" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column field="tb_empleado.nombres_apellidos_empl" header="ASESOR COMERCIAL" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="id_tipoFactura" header="COMPROBANTE" body={comprobanteBodyTemplate} filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="numero_transac" header="Nº DE COMPROBANTE" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="tipo_comprobante" header="COMPROBANTE" body={comprobanteBodyTemplate} filter filterPlaceholder="Buscar tipo de comprobante" style={{ minWidth: '12rem' }} />
+              <Column field="numero_transac" header="Nº DE COMPR." filter filterPlaceholder="Search by name" style={{ maxWidth: '7rem' }} />
               <Column header="TOTAL" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="" frozen style={{ minWidth: '12rem' }} body={actionBodyTemplate} />
           </DataTable>

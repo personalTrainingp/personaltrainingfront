@@ -3906,7 +3906,7 @@ export const arrayDistrito = [
 	{ value: '150126', label: 'PUNTA HERMOSA' },
 	{ value: '150127', label: 'PUNTA NEGRA' },
 	{ value: '150129', label: 'SAN BARTOLO' },
-	{ value: '150133', label: 'SAN JUAN DE MIRAFLORES' },
+	{ value: '150133', label: 'SAN JUAN DE M.' },
 	{ value: '150135', label: 'SAN MARTIN DE PORRES' },
 	{ value: '150136', label: 'SAN MIGUEL' },
 	{ value: '150137', label: 'SANTA ANITA' },

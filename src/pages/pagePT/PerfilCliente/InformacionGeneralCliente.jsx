@@ -1,6 +1,6 @@
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore'
 import { useForm } from '@/hooks/useForm'
-import { arrayDistrito, arrayEstadoCivil, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc } from '@/types/type'
+import { arrayDistrito, arrayEstadoCivil, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc, filtrarDuplicados } from '@/types/type'
 import dayjs from 'dayjs'
 import { locale } from 'primereact/api'
 import { Button } from 'primereact/button'
@@ -282,8 +282,8 @@ export const InformacionGeneralCliente = ({data}) => {
                     placeholder={'Seleccione el distrito'}
                     className="react-select"
                     classNamePrefix="react-select"
-                    options={arrayDistrito}
-                    value={arrayDistrito.find(
+                    options={filtrarDuplicados(arrayDistrito)}
+                    value={filtrarDuplicados(arrayDistrito).find(
                         (option) => option.value === ubigeo_distrito_cli
                     ) || 0}
                     required

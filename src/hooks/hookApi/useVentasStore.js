@@ -167,9 +167,9 @@ export const useVentasStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerTablaVentas = async () => {
+	const obtenerTablaVentas = async (id_empresa) => {
 		try {
-			const { data } = await PTApi.get('/venta/get-ventas');
+			const { data } = await PTApi.get(`/venta/get-ventas/${id_empresa}`);
 			// console.log(data);
 			setDataVentas(data.ventas);
 		} catch (error) {

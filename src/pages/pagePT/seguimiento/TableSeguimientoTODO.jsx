@@ -24,6 +24,8 @@ import { useSelector } from 'react-redux';
 import { Message } from 'primereact/message';
 import { Skeleton } from 'primereact/skeleton';
 import { Row } from 'react-bootstrap';
+import { arrayDistrito } from '@/types/type';
+import { BtnExportSeguimiento } from './BtnExportSeguimiento';
 dayjs.extend(utc);
 
 // function obtenerMayorExtensionFin(extensions) {
@@ -58,14 +60,14 @@ function encontrarObjeto(array, fecha_act) {
     // Retornar null si no se encuentra ningún objeto
     return null;
   }
-export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteActivos, esTodo}) => {
+export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, SeguimientoClienteActivos, esTodo}) => {
 	const [customers, setCustomers] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedCustomers, setSelectedCustomers] = useState([]);
 	const { reporteSeguimiento, obtenerReporteSeguimiento, obtenerReporteSeguimientoTODO, viewSeguimiento, agrupado_programas, loadinData } = useReporteStore();
 	const { dataView } = useSelector(e=>e.DATA)
 	useEffect(() => {
-		obtenerReporteSeguimientoTODO()
+		obtenerReporteSeguimientoTODO(id_empresa)
 	  }, [])
 	const { diasLaborables, daysUTC } = helperFunctions();
 	const [filters, setFilters] = useState({
@@ -84,7 +86,8 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 		estado_seguimiento: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 	});
 	const [globalFilterValue, setGlobalFilterValue] = useState('');
-
+	console.log(customers);
+	
 	useEffect(() => {
 		const fetchData = () => {
 			setCustomers(getCustomers(viewSeguimiento));
@@ -98,24 +101,15 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 			
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...d };
-			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st} Semanas`;
+			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st} Semanas | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')}`;
 			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
 			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
 			newItem.diasFaltan = diasLaborables(new Date(), dayjs.utc(fechaaaa))
-			// d.vencimiento_REGALOS_CONGELAMIENTO = new Date(
-			// 	`${new Date(d.fec_fin_mem)}`
-			// );
-            // d.dias = ''
+			newItem.distrito = arrayDistrito.find(
+				(option) => option.value === d.tb_ventum.tb_cliente.ubigeo_distrito_cli
+			)?.label
 			return newItem;
-		});
-	};
-	
-	const formatDate = (value) => {
-		return value.toLocaleDateString('en-US', {
-			day: '2-digit',
-			month: '2-digit',
-			year: 'numeric',
 		});
 	};
 	const diasPorTerminarBodyTemplate = (rowData) => {
@@ -133,7 +127,7 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 
 	const renderHeader = () => {
 		return (
-			<div className="">
+			<div className="d-flex">
 				{/* <h4 className="m-0">Customers</h4> */}
 				<IconField iconPosition="left">
 					<InputIcon className="pi pi-search" />
@@ -143,6 +137,7 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 						placeholder="Buscador global"
 					/>
 				</IconField>
+				<BtnExportSeguimiento dataExport={customers}/>
 			</div>
 		);
 	};
@@ -186,8 +181,12 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 	}
 	const SociosbodyTemplate = (rowData)=>{
 		return (
-            <div className="flex align-items-center font-bold gap-2">
-                <span>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</span>
+            <div className="align-items-center gap-2">
+                <div className='font-bold '>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</div>
+                <div>Email: {rowData.tb_ventum.tb_cliente.email_cli} </div>
+                <div>Telefono: {rowData.tb_ventum.tb_cliente.tel_cli?rowData.tb_ventum.tb_cliente.tel_cli.replace(/ /g, "").match(/.{1,3}/g).join('-'):''} </div>
+                <div>Distrito: {rowData.distrito} </div>
+                {/* <div>EDAD: {rowData.distrito} </div> */}
             </div>
         );
 	}
@@ -273,13 +272,14 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 					paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
 					rowsPerPageOptions={[10, 25, 50]}
 					dataKey="id"
+					stripedRows
 					selection={selectedCustomers}
 					onSelectionChange={(e) => setSelectedCustomers(e.value)}
 					filters={filters}
 					filterDisplay="menu"
-					globalFilterFields={["tb_ventum.tb_cliente.nombres_apellidos_cli", "ProgramavsSemana", "dias"]}
+					globalFilterFields={["tb_ventum.tb_cliente.nombres_apellidos_cli", "distrito", "tb_ventum.tb_cliente.email_cli", "ProgramavsSemana", "dias"]}
 					emptyMessage="Sin clientes."
-					currentPageReportTemplate="Mostrando {first} to {last} of {totalRecords} entries"
+					currentPageReportTemplate="Mostrando {first} HASTA {last} DE {totalRecords} ITEMS"
 				>
 				<Column
 					// field="tb_ventum.tb_cliente.nombres_apellidos_cli"
@@ -295,22 +295,22 @@ export const TableSeguimientoTODO = ({dae, statisticsData, SeguimientoClienteAct
 						filter
 						body={SociosbodyTemplate}
 						filterPlaceholder="Search by name"
-						style={{ minWidth: '14rem' }}
+						style={{ minWidth: '20rem' }}
 					/>
 					<Column
 						field="ProgramavsSemana"
-						header="Programas / Semana"
+						header="Programas / Semana / Horario"
 						sortable
 						filterField="ProgramavsSemana"
 						style={{ minWidth: '14rem' }}
 						filter
-						filterPlaceholder="Search by country"
+						filterPlaceholder="Buscar programa, semana o horario"
 					/>
 					<Column
 						header="VENCIMIENTO"
 						sortable
 						dataType="date"
-						style={{ minWidth: '12rem' }}
+						style={{ minWidth: '10rem' }}
 						body={dateBodyTemplate}
 						// filter
 						// filterElement={dateFilterTemplate}

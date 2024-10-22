@@ -8,9 +8,6 @@ import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
 import dayjs from 'dayjs';
 
 export const BtnExportExcelFlujoCaja = ({id_empresa, dataGastos, dataTipoCambio, dataAporte, dataVentas, fechaInit}) => {
-  // const { obtenerVentasPorFecha } = useVentasStore()
-  // const { obtenerAportesPorFechas } = useAportesIngresosStore()
-  // const { obtenerGastosPorFecha } = useGf_GvStore()
 
   dataGastos = dataGastos.filter(f=>f.tb_parametros_gasto?.id_empresa===id_empresa)
   // const prueba = dataGastos.filter(f=>f.tb_parametros_gasto?.id===686)
