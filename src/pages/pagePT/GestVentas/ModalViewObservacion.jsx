@@ -90,7 +90,7 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                         )
                     }
                     {
-                        dataVentaxID[0]?.detalle_ventaTransferencia.length>0 && (
+                        dataVentaxID[0]?.detalle_ventaTransferencia?.length>0 && (
                             <>
                             <div className="text-2xl font-bold text-800">
                                 TRANSFERENCIAS:
@@ -99,7 +99,7 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                         )
                     }
                     {
-                        dataVentaxID[0]?.detalle_ventaTransferencia.length>0 && (
+                        dataVentaxID[0]?.detalle_ventaTransferencia?.length>0 && (
                             dataVentaxID[0]?.detalle_ventaTransferencia.map(e=>{
                                 return(
                                     <>

@@ -113,7 +113,7 @@ export default function TableClientes() {
     const telefonoBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.tel_cli, globalFilterValue)}</span>
+                <span>{highlightText(rowData.tel_cli?`${rowData.tel_cli}`.replace(/ /g, "").match(/.{1,3}/g).join('-'):'', globalFilterValue)}</span>
             </div>
         );
     }

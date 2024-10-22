@@ -460,12 +460,15 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerReporteSeguimiento = async (isClienteActive) => {
+	const obtenerReporteSeguimiento = async (isClienteActive, id_empresa) => {
 		try {
 			setloadinData(true);
-			const { data } = await PTApi.get('/reporte/reporte-seguimiento-membresia', {
-				params: { isClienteActive },
-			});
+			const { data } = await PTApi.get(
+				`/reporte/reporte-seguimiento-membresia/${id_empresa}`,
+				{
+					params: { isClienteActive },
+				}
+			);
 			// console.log(data.newMembresias);
 			setreporteSeguimiento(data.newMembresias);
 			dispatch(onSetDataView(data.newMembresias));
@@ -475,12 +478,15 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerReporteSeguimientoTODO = async () => {
+	const obtenerReporteSeguimientoTODO = async (id_empresa) => {
 		try {
 			setloadinData(true);
-			const { data: dataactivo } = await PTApi.get('/reporte/reporte-seguimiento-membresia', {
-				params: { isClienteActive: true },
-			});
+			const { data: dataactivo } = await PTApi.get(
+				`/reporte/reporte-seguimiento-membresia/${id_empresa}`,
+				{
+					params: { isClienteActive: true },
+				}
+			);
 
 			// const dataCombination = dataactivo.newMembresias.concat(dataInactivo.newMembresias);
 			// console.log(dataCombination);

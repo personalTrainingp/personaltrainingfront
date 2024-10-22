@@ -30,23 +30,29 @@ export const Seguimiento = () => {
 					<Card>
 						<Card.Body>
 							<TabView>
-								<TabPanel header="Todos">
+								<TabPanel header="CHANGE">
 									<Row>
 										<Col lg={6} className='border-right-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS ACTIVOS</h3>
-											<TableSeguimientoTODO />
+											<TableSeguimientoTODO id_empresa={598}/>
 										</Col>
 										<Col lg={6} className='border-left-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS INACTIVOS</h3>
-											<TableSeguimiento SeguimientoClienteActivos={false} />
+											<TableSeguimiento id_empresa={598} SeguimientoClienteActivos={false} />
 										</Col>
 									</Row>
 								</TabPanel>
-								<TabPanel header="Activos">
-									<TableSeguimiento SeguimientoClienteActivos={true} />
-								</TabPanel>
-								<TabPanel header="Inactivos">
-									<TableSeguimiento SeguimientoClienteActivos={false} />
+								<TabPanel header="EX PT">
+									<Row>
+										<Col lg={6} className='border-right-2 border-primary'>
+											<h3 className='text-primary'>SOCIOS ACTIVOS</h3>
+											<TableSeguimientoTODO id_empresa={0}/>
+										</Col>
+										<Col lg={6} className='border-left-2 border-primary'>
+											<h3 className='text-primary'>SOCIOS INACTIVOS</h3>
+											<TableSeguimiento SeguimientoClienteActivos={false} id_empresa={0} />
+										</Col>
+									</Row>
 								</TabPanel>
 							</TabView>
 						</Card.Body>
