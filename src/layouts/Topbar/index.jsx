@@ -110,17 +110,6 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 						modulo 
 					</strong>
 						<ModuloDropdown/>
-					{/* <button
-						className={`navbar-toggle ${navOpen ? 'open' : ''}`}
-						onClick={toggleMenu}
-					>
-						<div className="lines">
-							<span />
-							<span />
-							<span />
-						</div>
-					</button> */}
-					{/* <TopbarSearch options={searchOptions} /> */}
 				</div>	
 				<ul className="topbar-menu d-flex align-items-center gap-3">
 					<li>
