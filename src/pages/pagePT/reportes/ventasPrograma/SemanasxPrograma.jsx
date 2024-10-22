@@ -3,22 +3,6 @@ import React, { useEffect } from 'react'
 import { Card, ProgressBar } from 'react-bootstrap'
 
 export const SemanasxPrograma = ({data}) => {
-	// useEffect(() => {
-	// 	if(data==undefined) return;
-	// }, [data])
-	// const newData = data.map(e=>e.items)
-	// data = data.map(e=>{
-	// 	return e.items.map(e=>{
-	// 		return {
-	// 			tarifa_monto: e.tarifa_monto
-	// 		}
-	// 	})
-	// })
-	
-	// console.log(data);
-	// data = data.map(e=>{
-	// 	re
-	// })
 	const sumaItemsLength = data.reduce((total, element) => {
 		return total + element.items.length;
 	}, 0);
@@ -31,13 +15,8 @@ export const SemanasxPrograma = ({data}) => {
 		return {
             ...i,
 			cantidad: i.items.length
-            // monto_promedio: i.items.reduce((acc, item) => {
-            //     return acc + item.tarifa_monto;
-            // }, 0) / i.items.length,
-            // porcentaje: ((i.items.length / sumaItemsLength) * 100).toFixed(2)
         }
 	}).sort((a, b) => b.cantidad - a.cantidad);	
-	console.log(data);
   return (
     <div>
         <Card>

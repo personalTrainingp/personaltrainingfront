@@ -13,7 +13,9 @@ export const BtnExportSeguimiento = ({dataExport}) => {
             distrito: arrayDistrito.find(u=>u.value === d.tb_ventum.tb_cliente.ubigeo_distrito_cli)?.label,
             email: d.tb_ventum.tb_cliente.email_cli,
             telefono: d.tb_ventum.tb_cliente.tel_cli,
-            programa_semana_hora: d.ProgramavsSemana,
+            programa: d.ProgramavsSemana.split('|')[0],
+            semana: d.ProgramavsSemana.split('|')[1],
+            hora: d.ProgramavsSemana.split('|')[2],
             fecha_fin: d.fec_fin_mem_new.split('T')[0],
             sesiones_pendientes: d.diasFaltan
         }
@@ -46,7 +48,9 @@ export const BtnExportSeguimiento = ({dataExport}) => {
     { key: 'distrito', width: 20 },
     { key: 'email', width: 20 },
     { key: 'telefono', width: 20 },
-    { key: 'programa_semana_hora', width: 20 },
+    { key: 'programa', width: 20 },
+    { key: 'semana', width: 20 },
+    { key: 'hora', width: 20 },
     { key: 'fecha_fin', width: 20 },
     { key: 'sesiones_pendientes', width: 10 }
   ];
@@ -61,7 +65,7 @@ export const BtnExportSeguimiento = ({dataExport}) => {
     // Combinar las celdas de B4 hasta D4
     ///TODO EGRESOS
     
-    const rowEncabezado = worksheet.addRow(['NOMBRES Y APELLIDOS DE CLIENTES', 'DISTRITOS', 'EMAIL', 'TELEFONOS', "PROGRAMA | SEMANAS | SESIONES | HORA", "FECHA DE VENCIMIENTO", "SESIONES PENDIENTES"]).eachCell((cell) => {
+    const rowEncabezado = worksheet.addRow(['NOMBRES Y APELLIDOS DE CLIENTES', 'DISTRITOS', 'EMAIL', 'TELEFONOS', 'programa', 'semana', 'hora', "FECHA DE VENCIMIENTO", "SESIONES PENDIENTES"]).eachCell((cell) => {
         cell.fill = headerStyle.fill;
         cell.font = headerStyle.font;
         cell.alignment = headerStyle.alignment;
@@ -73,7 +77,9 @@ export const BtnExportSeguimiento = ({dataExport}) => {
             e.distrito,
             e.email,
             e.telefono,
-            e.programa_semana_hora,
+            e.programa,
+            e.semana,
+            e.hora,
             e.fecha_fin,
             e.sesiones_pendientes
         ])

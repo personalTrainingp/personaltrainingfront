@@ -101,7 +101,7 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 			
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...d };
-			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st} Semanas`;
+			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st} Semanas | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')}`;
 			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
 			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
@@ -109,10 +109,6 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 			newItem.distrito = arrayDistrito.find(
 				(option) => option.value === d.tb_ventum.tb_cliente.ubigeo_distrito_cli
 			)?.label
-			// d.vencimiento_REGALOS_CONGELAMIENTO = new Date(
-			// 	`${new Date(d.fec_fin_mem)}`
-			// );
-            // d.dias = ''
 			return newItem;
 		});
 	};
@@ -190,6 +186,7 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
                 <div>Email: {rowData.tb_ventum.tb_cliente.email_cli} </div>
                 <div>Telefono: {rowData.tb_ventum.tb_cliente.tel_cli?rowData.tb_ventum.tb_cliente.tel_cli.replace(/ /g, "").match(/.{1,3}/g).join('-'):''} </div>
                 <div>Distrito: {rowData.distrito} </div>
+                {/* <div>EDAD: {rowData.distrito} </div> */}
             </div>
         );
 	}
@@ -302,12 +299,12 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 					/>
 					<Column
 						field="ProgramavsSemana"
-						header="Programas / Semana"
+						header="Programas / Semana / Horario"
 						sortable
 						filterField="ProgramavsSemana"
 						style={{ minWidth: '14rem' }}
 						filter
-						filterPlaceholder="Search by country"
+						filterPlaceholder="Buscar programa, semana o horario"
 					/>
 					<Column
 						header="VENCIMIENTO"

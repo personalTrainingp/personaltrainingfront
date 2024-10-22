@@ -144,7 +144,6 @@ const comprobanteBodyTemplate = (rowData)=>{
 const valueFiltered = (f)=>{
   setvalueFilter(f)
 }
-  console.log(valueFilter);
   
     const header = renderHeader();
 
