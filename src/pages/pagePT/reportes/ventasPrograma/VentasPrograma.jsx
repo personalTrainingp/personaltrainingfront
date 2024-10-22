@@ -47,7 +47,7 @@ export const VentasPrograma = () => {
   }, [id_programa, rangoDate])
 
   
-console.log(dataClientes);
+
   let NroClientesNuevo = 0;
   let NroClientesReinscritos = 0;
   let NroClientesRenovados = 0;
