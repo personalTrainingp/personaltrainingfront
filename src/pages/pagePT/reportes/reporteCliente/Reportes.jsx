@@ -23,7 +23,12 @@ export const Reportes = () => {
 
     return(
         <div className="container mt-5">
-        <ReportePorMarcacion dataAsistencia = {dataAsistencia.FechaMasRecienteAsistencia} />
+            {
+                dataAsistencia ? (
+                    <ReportePorMarcacion dataAsistencia = {dataAsistencia.FechaMasRecienteAsistencia} />
+
+                ):(<p>Cargando...</p>)
+            }
         </div>
     );
 };
