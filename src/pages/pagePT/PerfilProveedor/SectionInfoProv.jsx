@@ -260,7 +260,7 @@ export const SectionInfoProv = ({dataProv}) => {
                             <Col lg={4}>
                                 <div className="mb-4">
                                     <label htmlFor="id_oficio" className="form-label">
-                                        Oficio del proveedor*
+                                        Servicio y/o producto*
                                     </label>
                                     
                                     <Select

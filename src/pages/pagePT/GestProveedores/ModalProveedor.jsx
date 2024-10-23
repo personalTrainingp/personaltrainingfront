@@ -271,7 +271,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                 
                                 <div className="mb-4">
                                     <label htmlFor="id_oficio" className="form-label">
-                                        Oficio del proveedor*
+                                        Servicio y/o producto*
                                     </label>
                                     
                                     <Select
