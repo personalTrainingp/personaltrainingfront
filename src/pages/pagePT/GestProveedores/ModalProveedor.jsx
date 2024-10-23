@@ -17,9 +17,10 @@ const registerProvedor = {
 	nombre_vend_prov: '',
 	cel_vend_prov: '',
 	email_vend_prov: '',
-	estado_prov: true,
+	estado_prov: false,
     id_oficio: 0,
-    nombre_contacto: ''
+    nombre_contacto: '',
+    es_agente: false
 }
 export const ModalProveedor = ({status, dataProv, onHide, show}) => {
     const { ruc_prov, 
@@ -38,6 +39,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
             n_cuenta,
             id_tarjeta,
             id_oficio,
+            es_agente,
             formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
             const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
             const { comboOficio, obtenerOficios } = useTerminoStore()
@@ -371,6 +373,16 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                         onChange={onInputChange}
                                         placeholder="EJ. VENDEDOR@GMAIL.COM"
                                     />
+                                </div>
+                            </Col>
+                            <Col lg={12}>
+                                <div className='mb-4'>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name='es_agente' onChange={onInputChange} checked={es_agente} id="flexCheckDefault"/>
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            ¿Si es un agente? marcar la casilla.
+                                        </label>
+                                    </div>
                                 </div>
                             </Col>
                             <Col lg={12}>

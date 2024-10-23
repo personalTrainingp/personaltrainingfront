@@ -472,6 +472,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                     </div>
                                 </div>
                                 </Col>
+                                
                                 <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="descripcion" className="form-label">

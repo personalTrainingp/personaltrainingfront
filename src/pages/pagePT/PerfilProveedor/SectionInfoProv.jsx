@@ -20,6 +20,7 @@ const registerProvedor = {
 	email_vend_prov: '',
 	estado_prov: true,
     nombre_contacto: '',
+    es_agente: false,
     id_oficio: 0,
 }
 export const SectionInfoProv = ({dataProv}) => {
@@ -38,6 +39,7 @@ export const SectionInfoProv = ({dataProv}) => {
         n_cuenta,
         id_tarjeta,
         id_oficio,
+        es_agente,
         nombre_contacto,
         formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
         const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
@@ -91,6 +93,16 @@ export const SectionInfoProv = ({dataProv}) => {
     <>
         <form onSubmit={submitProveedor}>
                         <Row>
+                            <Col lg={12}>
+                                <div className='mb-4'>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name='es_agente' onChange={onInputChange} checked={es_agente} id="flexCheckDefault"/>
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            ¿Si es un agente? marcar la casilla.
+                                        </label>
+                                    </div>
+                                </div>
+                            </Col>
                             <Col lg={12}>
                                 <p className='fw-bold fs-5 text-decoration-underline'>
                                 Nombre del contacto

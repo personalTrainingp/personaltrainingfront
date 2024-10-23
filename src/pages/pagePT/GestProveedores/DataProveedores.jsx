@@ -110,10 +110,13 @@ export const DataProveedores = () => {
 							</Row>
 							<TabView>
                 <TabPanel className='tabPanel-color-success' header={'Activos'}>
-                  <CustomersProv estado_prov={true}/>
+                  <CustomersProv estado_prov={true} agente={false}/>
                 </TabPanel>
                 <TabPanel header={'Inactivos'}>
-                  <CustomersProv estado_prov={false}/>
+                  <CustomersProv estado_prov={false} agente={false}/>
+                </TabPanel>
+                <TabPanel header={'AGENTE'}>
+                  <CustomersProv estado_prov={true} agente={true}/>
                 </TabPanel>
               </TabView>
 						</Card.Body>

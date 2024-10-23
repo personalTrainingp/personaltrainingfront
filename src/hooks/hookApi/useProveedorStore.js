@@ -48,11 +48,12 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerProveedores = async (estado_prov) => {
+	const obtenerProveedores = async (estado_prov, agente) => {
 		try {
 			const { data } = await PTApi.get('/proveedor/obtener-proveedores', {
 				params: {
 					estado_prov: estado_prov,
+					es_agente: agente,
 				},
 			});
 			dispatch(onSetProveedores(data.proveedores));

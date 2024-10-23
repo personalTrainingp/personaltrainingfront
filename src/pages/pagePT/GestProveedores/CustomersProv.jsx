@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
 import { Badge } from 'primereact/badge';
 
-const CustomersProv = ({estado_prov}) => {
+const CustomersProv = ({estado_prov, agente}) => {
 	const dispatch = useDispatch()
 	// const [modalProv, toggleModalProv] = useToggle();
     const [filters, setFilters] = useState({
@@ -41,7 +41,7 @@ const CustomersProv = ({estado_prov}) => {
 		setisModalOpenProv(true)
 	}
 	useEffect(() => {
-		obtenerProveedores(estado_prov)
+		obtenerProveedores(estado_prov, agente)
 	}, [])
 	useEffect(() => {
         const fetchData = () => {
@@ -168,8 +168,8 @@ const CustomersProv = ({estado_prov}) => {
 							>
 								<Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter/>
 								<Column header="Servicio" field='oficio' filterField="oficio" body={oficioBodyTemplate} sortable/>
-								<Column header={<span>Nombre del <br/>contacto</span>} field='razon_social_prov' filterField="razon_social_prov" body={nombreContactoBodyTemplate} sortable/>
-								<Column header={'Razon del social'} field='razon_social_prov' filterField="razon_social_prov" body={razonSocialBodyTemplate} sortable/>
+								<Column header={<span>Nombre del <br/>contacto</span>} field='nombre_contacto' filterField="nombre_contacto" body={nombreContactoBodyTemplate} sortable/>
+								<Column header={'Razon social'} field='razon_social_prov' filterField="razon_social_prov" body={razonSocialBodyTemplate} sortable/>
 								{/* <Column header="Ruc del proveedor" field='ruc_prov' filterField="ruc_prov" sortable style={{ width: '3rem' }} filter/> */}
 								<Column header="Celular del contacto" field='cel_prov' filterField="cel_prov" style={{ minWidth: '10rem' }} body={telefonoBodyTemplate} sortable/>
 								<Column header="Nombre del Representante" field='nombre_vend_prov' filterField='nombre_vend_prov' style={{ minWidth: '10rem' }} sortable filter/>
