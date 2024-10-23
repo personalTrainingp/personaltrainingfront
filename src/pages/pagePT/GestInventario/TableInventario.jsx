@@ -21,29 +21,31 @@ import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { ModalImportadorData } from './ModalImportadorData';
+import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore';
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice}) {
     locale('es')
+    
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedCustomers, setselectedCustomers] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const { obtenerGastos, obtenerProveedoresUnicos, isLoadingData } = useGf_GvStore()
-    const {dataGastos, dataProvUnicosxGasto} = useSelector(e=>e.finanzas)
+    const { obtenerArticulos, isLoading } = useInventarioStore()
+    const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     useEffect(() => {
-        obtenerGastos(id_enterprice)
+        obtenerArticulos(id_enterprice)
         // obtenerProveedoresUnicos()
     }, [id_enterprice])
         useEffect(() => {
         const fetchData = () => {
-            setCustomers(getCustomers(dataGastos));
+            setCustomers(getCustomers(dataView));
             setLoading(false);
         };
         fetchData()
         initFilters();
-        }, [dataGastos]);
+        }, [dataView]);
     const getCustomers = (data) => {
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
@@ -80,17 +82,6 @@ export default function TableInventario({showToast, id_enterprice}) {
             )
         );
     };
-    const formatDate = (value) => {
-        return value.toLocaleDateString('es-PE', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            timeZone: 'America/Lima'
-        });
-    };
-    const formatCurrency = (value, currency) => {
-        return value.toLocaleString('en-ES', { style: 'currency', currency });
-    };
     const clearFilter = () => {
         initFilters();
         setGlobalFilterValue('');
@@ -105,12 +96,12 @@ export default function TableInventario({showToast, id_enterprice}) {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
-    const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
+    // const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
     const [showLoading, setshowLoading] = useState(false)
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
             onOpenModalIvsG()
-            obtenerGastoxID(rowData.id)
+            // obtenerGastoxID(rowData.id)
         }
         const confirmDeleteGastoxID = ()=>{
             confirmDialog({
@@ -125,7 +116,7 @@ export default function TableInventario({showToast, id_enterprice}) {
         
         const onAcceptDeleteGasto = async()=>{
             setshowLoading(true)
-            await startDeleteGasto(rowData.id, id_enterprice)
+            // await startDeleteGasto(rowData.id, id_enterprice)
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
@@ -176,30 +167,22 @@ export default function TableInventario({showToast, id_enterprice}) {
         );
     };
     
-    const montoBodyTemplate = (rowData) => {
+    const lugarCompraBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
                 <span>{highlightText(FUNMoneyFormatter(rowData.monto, rowData.moneda=='PEN'?'S/.':'$ '), globalFilterValue)}</span>
             </div>
         );
     };
-
-    const descripcionBodyTemplate = (rowData) => {
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.descripcion, globalFilterValue)}</span>
-            </div>
-        );
-    };
     const {daysUTC} = helperFunctions()
-    const fecRegistroBodyTemplate = (rowData)=>{
+    const productoBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
                 <span>{ FormatoDateMask(rowData.fec_registro, 'dddd D [de] MMMM [del] YYYY [a las] h:mm A') }</span>
             </div>
         );
     }
-    const fecPagoBodyTemplate = (rowData)=>{
+    const marcaBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
                 
@@ -208,7 +191,7 @@ export default function TableInventario({showToast, id_enterprice}) {
             </div>
         );
     }
-    const fecComprobanteBodyTemplate = (rowData)=>{
+    const descripcionBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
                 
@@ -217,31 +200,27 @@ export default function TableInventario({showToast, id_enterprice}) {
             </div>
         );
     }
-    const proveedorBodyTemplate = (rowData)=>{
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData?.tb_Proveedor?.razon_social_prov?rowData.tb_Proveedor.razon_social_prov:'SIN', globalFilterValue)}</span>
-            </div>
-        );
-    }
-    const tipoGastoBodyTemplate = (rowData) => {
+    const cantidadBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
                 <span>{highlightText( rowData.tb_parametros_gasto?.nombre_gasto?rowData.tb_parametros_gasto?.nombre_gasto:'SIN', globalFilterValue)}</span>
             </div>
         );
     };
-    const grupoBodyTemplate = (rowData) => {
+    const valorUnitDeprecBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
                 <span>{highlightText(`${rowData.tb_parametros_gasto?.grupo}`, globalFilterValue)}</span>
             </div>
         );
     };
-    const dateFilterTemplate = (options) => {
-        return <Calendar value={options.value} onChange={(e) => options.filterCallback(e.value, options.index)} dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" mask="99/99/9999" />;
+    const valorUnitActualBodyTemplate = (rowData) => {
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{highlightText(`${rowData.tb_parametros_gasto?.grupo}`, globalFilterValue)}</span>
+            </div>
+        );
     };
-    
     const valueFiltered = (e)=>{
         setvalueFilter(e)
     }
@@ -261,7 +240,7 @@ export default function TableInventario({showToast, id_enterprice}) {
             </div>
         )
     }
-    const tipoGastosBodyTemplate = (rowData)=>{
+    const observacionBodyTemplate = (rowData)=>{
         return (
             
             <div className="flex align-items-center gap-2">
@@ -270,7 +249,7 @@ export default function TableInventario({showToast, id_enterprice}) {
         )
     }
     const onOpenModalGastos = (e)=>{
-        setgastoxID(undefined)
+        // setgastoxID(undefined)
         onOpenModalIvsG(e)
     }
     return (
@@ -290,7 +269,7 @@ export default function TableInventario({showToast, id_enterprice}) {
                 </Modal> 
             }
             {
-                !isLoadingData?(
+                !isLoading?(
                     <>
                     <div>
                         <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
@@ -308,8 +287,8 @@ export default function TableInventario({showToast, id_enterprice}) {
                         onSelectionChange={(e) => setselectedCustomers(e.value)}
                         filters={filters} 
                         filterDisplay="menu" 
-                        globalFilterFields={['id', 'fec_pago', 'id_prov', 'tb_parametros_gasto.nombre_gasto', 'descripcion', 'monto', 'moneda', "tb_Proveedor.razon_social_prov","fec_registro"]} 
-                        emptyMessage="Egresos no encontrados."
+                        globalFilterFields={['id', 'producto', 'marca', 'descripcion', 'observacion', 'cantidad', 'valor_unitario_depreciado', "valor_unitario_actual","lugar_compra_cotizacion"]} 
+                        emptyMessage="ARTICULOS NO ENCONTRADOS."
                         showGridlines 
                         loading={loading} 
                         stripedRows
@@ -317,18 +296,19 @@ export default function TableInventario({showToast, id_enterprice}) {
                         onValueChange={valueFiltered}
                         >
                 <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
-                <Column header="PRODUCTO" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
-                <Column header="MARCA" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
-                <Column header="DESCRIPCION" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter filterElement={dateFilterTemplate}/>
-                <Column header="OBSERVACIONES" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
-                <Column header="CANTIDAD" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
-                <Column header="VALOR UNITARIO DEPRECIADO" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
-                <Column header="LUGAR DE CONPRA O COTIZACION" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
+                <Column header="PRODUCTO" field='producto' filterField="producto" sortable style={{ width: '3rem' }} body={productoBodyTemplate} filter/>
+                <Column header="MARCA" field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
+                <Column header="DESCRIPCION" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
+                <Column header="OBSERVACIONES" field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/>
+                <Column header="CANTIDAD" field='cantidad' filterField="cantidad" sortable style={{ minWidth: '10rem' }} body={cantidadBodyTemplate} filter />
+                <Column header="VALOR UNITARIO DEPRECIADO" field='valor_unitario_depreciado' filterField="valor_unitario_depreciado" style={{ minWidth: '10rem' }} sortable body={valorUnitDeprecBodyTemplate} filter/>
+                <Column header="VALOR UNITARIO ACTUAL" field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
+                <Column header="LUGAR DE COMPRA O COTIZACION" field='lugar_compra_cotizacion' filterField="lugar_compra_cotizacion" style={{ minWidth: '10rem' }} sortable body={lugarCompraBodyTemplate} filter/>
 
                 <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             
-            <ModalInventario id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+            <ModalInventario id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={null} showToast={showToast} isLoading={isLoading}/>
             {/* <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/> */}
             </>
                 )

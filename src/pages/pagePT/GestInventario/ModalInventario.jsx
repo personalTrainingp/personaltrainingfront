@@ -1,7 +1,8 @@
+import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore'
 import { useForm } from '@/hooks/useForm'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Modal, ModalBody, Row } from 'react-bootstrap'
-const registerIvsG={
+const registerArticulo={
     producto: '',
     marca: '',
     cantidad: 0,
@@ -17,7 +18,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         onResetForm()
     }
     const [showLoading, setshowLoading] = useState(false)
-    const { obtener } = useInventarioStore()
+    const { obtenerArticulo, obtenerArticulos, startRegisterArticulos, articulo } = useInventarioStore()
     const { formState, 
             producto,
             marca,
@@ -29,7 +30,11 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             descripcion,
             onInputChange,  
             onResetForm,
-        } = useForm(data?data:registerIvsG)
+        } = useForm(data?data:registerArticulo)
+        useEffect(() => {
+            obtenerArticulos(id_enterprice)
+        }, [])
+        
 
         const submitGasto = async(e)=>{
             e.preventDefault()
@@ -45,7 +50,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 return;
             }
             setshowLoading(true)
-            // await startRegistrarGastos(formState, id_enterprice)
+            await startRegisterArticulos(formState, id_enterprice)
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()
@@ -188,13 +193,13 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                 </Col>
                                 <Col lg={12}>
                                     <div className="mb-4">
-                                        <label htmlFor="descripcion" className="form-label">
+                                        <label htmlFor="observacion" className="form-label">
                                             OBSERVACIONES
                                         </label>
                                         <textarea
                                                 className="form-control"
-                                                name="descripcion"
-                                                id="descripcion"
+                                                name="observacion"
+                                                id="observacion"
                                                 value={observacion}
                                                 onChange={onInputChange}
                                                 placeholder=""

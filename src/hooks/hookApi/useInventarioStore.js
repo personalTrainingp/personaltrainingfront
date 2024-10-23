@@ -1,14 +1,15 @@
 import { PTApi } from '@/common/api/';
+import { onSetDataView } from '@/store/data/dataSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 
-export const useVentasStore = () => {
+export const useInventarioStore = () => {
 	const dispatch = useDispatch();
 	const [statusData, setstatus] = useState('');
 	const [message, setmessage] = useState({ msg: '', ok: false });
 	const [isLoading, setIsLoading] = useState(false);
-	const [proveedor, setProveedor] = useState({
+	const [articulo, setArticulo] = useState({
 		producto: '',
 		marca: '',
 		cantidad: 0,
@@ -18,26 +19,25 @@ export const useVentasStore = () => {
 		observacion: '',
 		descripcion: '',
 	});
-	const startRegisterProveedor = async (formState) => {
+	const startRegisterArticulos = async (formState, id_enterprice) => {
 		try {
 			setIsLoading(true);
-			const { data } = await PTApi.post('/inventario/post-articulo', formState);
+			const { data } = await PTApi.post(
+				`/inventario/post-articulo/${id_enterprice}`,
+				formState
+			);
 			setIsLoading(false);
 			setmessage({ msg: data.msg, ok: data.ok });
-			obtenerParametrosProveedor();
-			obtenerProveedores();
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const obtenerArticulos = async (estado_prov) => {
+	const obtenerArticulos = async (id_enterprice) => {
+
 		try {
-			const { data } = await PTApi.get('/proveedor/obtener-proveedores', {
-				params: {
-					estado_prov: estado_prov,
-				},
-			});
-			dispatch(onSetProveedores(data.proveedores));
+			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_enterprice}`);
+
+			dispatch(onSetDataView(data.articulos));
 		} catch (error) {
 			console.log(error);
 		}
@@ -50,7 +50,7 @@ export const useVentasStore = () => {
 			setstatus('success');
 			// console.log(data.proveedor);
 
-			setProveedor({ proveedor: data.proveedor });
+			setArticulo({ proveedor: data.proveedor });
 		} catch (error) {
 			console.log(error);
 		}
@@ -97,17 +97,14 @@ export const useVentasStore = () => {
 		}
 	};
 	return {
-		startRegisterProveedor,
+		startRegisterArticulos,
 		obtenerArticulos,
 		obtenerArticulo,
 		EliminarArticulo,
 		actualizarArticulo,
-		obtenerProveedor,
-		EliminarProveedor,
-		actualizarProveedor,
 		statusData,
 		message,
 		isLoading,
-		proveedor,
+		articulo,
 	};
 };

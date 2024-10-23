@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode, FilterOperator, locale } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
@@ -27,6 +27,7 @@ import { Row } from 'react-bootstrap';
 import { arrayDistrito } from '@/types/type';
 import { BtnExportSeguimiento } from './BtnExportSeguimiento';
 dayjs.extend(utc);
+locale('es')
 
 // function obtenerMayorExtensionFin(extensions) {
 // 	let mayorFecha = '';
