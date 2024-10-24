@@ -167,7 +167,7 @@ const CustomersProv = ({estado_prov, agente}) => {
 							// onValueChange={valueFiltered}
 							>
 								<Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter/>
-								<Column header="Servicio" field='oficio' filterField="oficio" body={oficioBodyTemplate} sortable/>
+								<Column header="Servicio y/o producto" field='oficio' filterField="oficio" body={oficioBodyTemplate} sortable/>
 								<Column header={<span>Nombre del <br/>contacto</span>} field='nombre_contacto' filterField="nombre_contacto" body={nombreContactoBodyTemplate} sortable/>
 								<Column header={'Razon social'} field='razon_social_prov' filterField="razon_social_prov" body={razonSocialBodyTemplate} sortable/>
 								{/* <Column header="Ruc del proveedor" field='ruc_prov' filterField="ruc_prov" sortable style={{ width: '3rem' }} filter/> */}
