@@ -80,9 +80,9 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                     onCancelForm()
                     return;
                 }
-                await startRegisterProveedor(formState)
-                onCancelForm()
                 setVisible(true);
+                onCancelForm()
+                await startRegisterProveedor(formState, estado_prov, es_agente)
             }
             
             const onCancelForm = ()=>{

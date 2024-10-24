@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { LayoutComentario } from '../GestEmpleados/LayoutComentario';
 import { useSelector } from 'react-redux';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 
 
 const regUsuarioCliente= {
@@ -22,7 +23,7 @@ const regUsuarioCliente= {
     sexo_cli: 0,
     tipoDoc_cli: 0,
     numDoc_cli: '',
-    nacionalidad_cli: 0,
+    nacionalidad_cli: 15,
     ubigeo_distrito_cli: 0,
     direccion_cli: '',
     tipoCli_cli: 0,
@@ -42,6 +43,7 @@ export const ModalCliente = ({show, onHide}) => {
     }
     const { usuarioCliente, dataContactsEmerg, comentarios } = useSelector(e=>e.usuario)
     const  { startRegisterUsuarioCliente, loading } = useUsuarioStore()
+    const { obtenerDistritosxDepxProvincia, dataDistritos } = useTerminoStore()
     const dispatch = useDispatch()
     const { 
             formState,
@@ -82,6 +84,10 @@ export const ModalCliente = ({show, onHide}) => {
         dispatch(onResetComentario())
         dispatch(onReset_CE())
   }
+  useEffect(() => {
+    obtenerDistritosxDepxProvincia(1501, 15)
+  }, [])
+  
 
     const ViewDataImg = (e) => {
         const file = e.target.files[0];
@@ -301,8 +307,8 @@ export const ModalCliente = ({show, onHide}) => {
 											placeholder={'Seleccione el distrito'}
 											className="react-select"
 											classNamePrefix="react-select"
-											options={filtrarDuplicados(arrayDistrito)}
-											value={filtrarDuplicados(arrayDistrito).find(
+											options={dataDistritos}
+											value={dataDistritos.find(
 												(option) => option.value === ubigeo_distrito_cli
 											)}
 											required

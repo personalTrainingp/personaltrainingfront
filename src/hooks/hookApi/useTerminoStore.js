@@ -129,6 +129,17 @@ export const useTerminoStore = () => {
 	const [dataTipoAporte, setdataTipoAporte] = useState([]);
 	const [paquetesDeServicios, setpaquetesDeServicios] = useState([]);
 	const [comboOficio, setcomboOficio] = useState([]);
+	const [dataDistritos, setdataDistritos] = useState([]);
+	const obtenerDistritosxDepxProvincia = async (id_provincia, id_departamento) => {
+		try {
+			const { data } = await PTApi.get(
+				`/parametros/get_params/distritos/${id_departamento}/${id_provincia}`
+			);
+			setdataDistritos(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerOficios = async () => {
 		try {
 			let { data } = await PTApi.get('/parametros/get_params/proveedor/tipo_oficio');
@@ -297,7 +308,18 @@ export const useTerminoStore = () => {
 			setIsLoading(true);
 			const { data: asesoresFit } = await PTApi.get(`/parametros/get_params/empleados/2`);
 			const { data: personalFito } = await PTApi.get(`/parametros/get_params/empleados/4`);
-			setDataVendedores([...asesoresFit, ...personalFito]);
+			const { data: personalEntrenadores } = await PTApi.get(
+				`/parametros/get_params/empleados/1`
+			);
+			const { data: personalNutricion } = await PTApi.get(
+				`/parametros/get_params/empleados/3`
+			);
+			setDataVendedores([
+				...asesoresFit,
+				...personalFito,
+				...personalEntrenadores,
+				...personalNutricion,
+			]);
 		} catch (error) {
 			console.log(error);
 		}
@@ -432,6 +454,7 @@ export const useTerminoStore = () => {
 		}
 	};
 	return {
+		obtenerDistritosxDepxProvincia,
 		obtenerParametrosProductoMarcas,
 		obtenerParametrosProductoCategorias,
 		obtenerParametrosProductoPresentacion,
@@ -463,6 +486,7 @@ export const useTerminoStore = () => {
 		obtenerPaqueteDeServicioParaVender,
 		obtenerEmpleadosPorDepartamentoNutricion,
 		obtenerOficios,
+		dataDistritos,
 		comboOficio,
 		DataEmpleadosDepNutricion,
 		paquetesDeServicios,

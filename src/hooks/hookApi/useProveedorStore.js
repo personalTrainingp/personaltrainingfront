@@ -36,14 +36,14 @@ export const useProveedorStore = () => {
 		parametro_oficio: { label_param: '' },
 		id_oficio: 0,
 	});
-	const startRegisterProveedor = async (formState) => {
+	const startRegisterProveedor = async (formState, estado_prov, agente) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.post('/proveedor/post-proveedor', formState);
 			setIsLoading(false);
 			setmessage({ msg: data.msg, ok: data.ok });
-			obtenerParametrosProveedor();
-			obtenerProveedores();
+			// obtenerParametrosProveedor();
+			await obtenerProveedores(estado_prov, agente);
 		} catch (error) {
 			console.log(error);
 		}
