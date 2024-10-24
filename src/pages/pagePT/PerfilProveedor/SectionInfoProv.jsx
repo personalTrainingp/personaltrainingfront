@@ -43,7 +43,7 @@ export const SectionInfoProv = ({dataProv}) => {
         nombre_contacto,
         formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
         const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
-        const { comboOficio, obtenerOficios } = useTerminoStore()
+        const { comboOficio, obtenerOficios, obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
             const [visible, setVisible] = useState(false);
           
             const toastBC = useRef(null);
@@ -60,6 +60,7 @@ export const SectionInfoProv = ({dataProv}) => {
             }, [visible, isLoading]);
             useEffect(() => {
                 obtenerOficios()
+                obtenerParametroPorEntidadyGrupo('formapago', 'banco')
             }, [])
             
             const confirmDeleteGastoxID = ()=>{
@@ -208,17 +209,17 @@ export const SectionInfoProv = ({dataProv}) => {
                             </Col>
                             <Col lg={4}>
                             <div className="mb-4">
-                                <label htmlFor="direc_prov" className="form-label">
-                                    Tarjeta
+                                <label htmlFor="id_tarjeta" className="form-label">
+                                    BANCO
                                 </label>
                                 <Select
                                         onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
                                         name="id_tarjeta"
-                                        placeholder={'Seleccione la tarjeta'}
+                                        placeholder={'Seleccione el banco'}
                                         className="react-select"
                                         classNamePrefix="react-select"
-                                        options={arrayTarjetasTemp}
-                                        value={arrayTarjetasTemp.find(
+                                        options={DataGeneral}
+                                        value={DataGeneral.find(
                                             (option) => option.value === id_tarjeta
                                         )}
                                     />
