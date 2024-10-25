@@ -305,7 +305,7 @@ export default function TableInventario({showToast, id_enterprice}) {
                 <Column header="VALOR UNITARIO ACTUAL" field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
                 <Column header="LUGAR DE COMPRA O COTIZACION" field='lugar_compra_cotizacion' filterField="lugar_compra_cotizacion" style={{ minWidth: '10rem' }} sortable body={lugarCompraBodyTemplate} filter/>
 
-                <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
+                <Column header="Editar/Eliminar" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             
             <ModalInventario id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={null} showToast={showToast} isLoading={isLoading}/>

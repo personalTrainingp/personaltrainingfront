@@ -61,6 +61,18 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerAgentes = async (agente) => {
+		try {
+			const { data } = await PTApi.get('/proveedor/obtener-agentes', {
+				params: {
+					es_agente: agente,
+				},
+			});
+			dispatch(onSetProveedores(data.proveedores));
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerParametrosProveedor = async () => {
 		try {
 			// setIsLoading(true);

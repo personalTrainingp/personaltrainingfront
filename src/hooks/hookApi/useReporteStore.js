@@ -173,7 +173,7 @@ export const useReporteStore = () => {
 				.map((e) => {
 					// Filtrar productos con id_categoria igual a 17
 					const productosFiltrados = e.detalle_ventaProductos.filter(
-						(item) => item.tb_producto.id_categoria === 17
+						(item) => item.tb_producto.id_categoria === 18
 					);
 
 					return {
@@ -188,7 +188,7 @@ export const useReporteStore = () => {
 			const dataSuplemento = data.reporte
 				.map((e) => {
 					const productosFiltrados = e.detalle_ventaProductos.filter(
-						(item) => item.tb_producto.id_categoria === 18
+						(item) => item.tb_producto.id_categoria === 17
 					);
 					return {
 						id: e.id,

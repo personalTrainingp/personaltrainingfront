@@ -44,8 +44,13 @@ export const SideBarFormPago = ({show, onHide}) => {
     }
     const submitFormaPago = (e) =>{
         e.preventDefault()
-        dispatch(onAddOneDetallePago({...formState, 
+        dispatch(onAddOneDetallePago({
+            ...formState, 
             monto_pago: parseFloat(monto_pago.replace(',', '')), 
+            label_forma_pago: formaPago.find(e=>e.value===id_forma_pago).label,
+            label_banco: dataBancos.find(b=>b.id_banco===id_banco)?.label_banco||0,
+            label_tipo_tarjeta: dataTipoTarjeta.find(tt=>tt.id_tipo_tarjeta===id_tipo_tarjeta)?.label_tipo_tarjeta||'',
+            label_tarjeta: dataTarjetas.find(t=>t.id_tarjeta===id_tarjeta)?.label,
             // label: `${formaPagoSelect.label}${BancoSelect.label?' / '.concat(BancoSelect.label):''}${TipoTarjetaSelect.label?' / '.concat(TipoTarjetaSelect.label):''}${TarjetaSelect.label?' / '.concat(TarjetaSelect.label):''}`, 
             value: `${formState.id_forma_pago}`}))
         cancelModal()

@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
 import { Badge } from 'primereact/badge';
 
-const CustomersProv = ({estado_prov, agente}) => {
+const CustomersAgente = ({estado_prov, agente}) => {
 	const dispatch = useDispatch()
 	// const [modalProv, toggleModalProv] = useToggle();
     const [filters, setFilters] = useState({
@@ -182,4 +182,4 @@ const CustomersProv = ({estado_prov, agente}) => {
 	);
 };
 
-export { CustomersProv };
+export { CustomersAgente };

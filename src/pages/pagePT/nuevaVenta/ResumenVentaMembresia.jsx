@@ -32,9 +32,6 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 	const deleteMembresia = () => {
 		dispatch(onDeleteAllPrograma());
 	};
-	const testClick = () => {
-		console.log('hace click');
-	};
 	const descargarPDFgenerado = () => {
 		obtenerPDFCONTRATOgenerado({ dataVenta, detalle_cli_modelo, dataPagos });
 	};

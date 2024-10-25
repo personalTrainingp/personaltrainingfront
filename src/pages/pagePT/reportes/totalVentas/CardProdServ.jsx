@@ -30,14 +30,14 @@ export const CardProdServ = ({data, dataGen, setclickServProd, clickServProd}) =
                   <Col xxl={4} lg={4} onClick={()=>clickedItemProdServ("acc")}>
                     <ItemProdServ Inombre={"ACCESORIOS"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={100} Icantidad={data?.cantidad_accesorio} Itotal={data?.suma_tarifa_monto_accesorio}/>
                   </Col>
-                  <Col xxl={4} lg={4} onClick={()=>clickedItemProdServ("tra")}>
-                    <ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} icono={icoEst} icowid={100} icohe={100} Iabrev={"tra"} Icantidad={data?.cantidad_citas_FITOL} Itotal={data?.suma_tarifa_monto_citas_FITOL}/>
-                  </Col>
                   <Col xxl={4} lg={4} onClick={()=>clickedItemProdServ("sup")}>
                     <ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"sup"} icono={icoSupl} icowid={100} icohe={100} Icantidad={data?.cantidad_suplementos} Itotal={data?.suma_tarifa_monto_suplementos}/>
                   </Col>
                   <Col xxl={4} lg={4} onClick={()=>clickedItemProdServ("nut")}>
                     <ItemProdServ Inombre={"NUTRICION"} Iabrev={"nut"} icono={icoNut} icowid={100} icohe={100} Icantidad={data?.cantidad_citas_NUTRI} Itotal={data?.suma_tarifa_monto_citas_NUTRI}/>
+                  </Col>
+                  <Col xxl={4} lg={4} onClick={()=>clickedItemProdServ("tra")}>
+                    <ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} icono={icoEst} icowid={100} icohe={100} Iabrev={"tra"} Icantidad={data?.cantidad_citas_FITOL} Itotal={data?.suma_tarifa_monto_citas_FITOL}/>
                   </Col>
                 </div>
 				</SimpleBar>
