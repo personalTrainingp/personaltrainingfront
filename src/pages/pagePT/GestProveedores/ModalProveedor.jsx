@@ -2,6 +2,7 @@ import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayEstados, arrayTarjetasTemp } from '@/types/type'
+import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
@@ -22,7 +23,13 @@ const registerProvedor = {
     nombre_contacto: '',
     es_agente: false
 }
+const registerImgAvatar={
+    imgAvatar_BASE64: ''
+}
 export const ModalProveedor = ({status, dataProv, onHide, show}) => {
+	const [selectedFile, setSelectedFile] = useState(sinAvatar);
+    const [selectedAvatar, setselectedAvatar] = useState(null)
+    const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
     const { ruc_prov, 
             razon_social_prov, 
             tel_prov,
@@ -83,13 +90,23 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                 }
                 setVisible(true);
                 onCancelForm()
-                await startRegisterProveedor(formState, estado_prov, es_agente)
+                await startRegisterProveedor(formState, estado_prov, es_agente, selectedAvatar)
             }
             
             const onCancelForm = ()=>{
                 onHide()
                 onResetForm()
             }
+            
+            const ViewDataImg = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = () => {
+                    setSelectedFile(reader.result);
+                };
+                reader.readAsDataURL(file);
+                setselectedAvatar(file)
+            };
   return (
     <>
         <Toast ref={toastBC} onRemove={clear} />
@@ -105,6 +122,26 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                 <Modal.Body>
                     <form onSubmit={submitProveedor}>
                         <Row>
+                            <Col lg={12}>
+                                <p className='fw-bold fs-5 text-decoration-underline'>
+                                    FOTO DEL PROVEEDOR
+                                </p>
+                            </Col>
+                            <Col lg={12}>
+                            <div className="d-flex justify-content-center">
+							<   img src={selectedFile} width={180} height={180} />
+                            </div>
+                            <input 
+                                type="file" 
+                                className="m-2 fs-6"
+                                accept="image/png, image/jpeg, image/jpg"
+                                name="imgAvatar_BASE64"
+                                onChange={(e)=>{
+                                    onRegisterFileChange(e)
+                                    ViewDataImg(e)
+                                }} 
+                                />
+                            </Col>
                             <Col lg={12}>
                                 <p className='fw-bold fs-5 text-decoration-underline'>
                                     Datos del Contacto

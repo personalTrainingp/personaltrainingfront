@@ -34,12 +34,21 @@ export const useProveedorStore = () => {
 		uid_presupuesto_proveedor: '',
 		uid_documentso_proveedor: '',
 		parametro_oficio: { label_param: '' },
+		parametro_marca: { label_param: '' },
 		id_oficio: 0,
 	});
-	const startRegisterProveedor = async (formState, estado_prov, agente) => {
+	const startRegisterProveedor = async (formState, estado_prov, agente, selectedFile) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.post('/proveedor/post-proveedor', formState);
+			if (selectedFile) {
+				const formData = new FormData();
+				formData.append('file', selectedFile);
+				await PTApi.post(
+					`/storage/blob/create/${data.uid_avatarProv}?container=avatar-proveedores`,
+					formData
+				);
+			}
 			setIsLoading(false);
 			setmessage({ msg: data.msg, ok: data.ok });
 			// obtenerParametrosProveedor();
@@ -101,8 +110,7 @@ export const useProveedorStore = () => {
 		try {
 			setIsLoading(false);
 			const { data } = await PTApi.get(`/proveedor/obtener-proveedor-uid/${uid}`);
-
-			setProveedor(data.proveedor);
+			setProveedor({ ...data.proveedor, ...data.imageProv });
 			setIsLoading(true);
 		} catch (error) {
 			console.log(error);

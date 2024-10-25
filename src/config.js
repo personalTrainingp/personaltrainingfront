@@ -8,6 +8,7 @@ const config = {
 		FILE_CLI_DOC_ADJ: 'https://archivosluroga.blob.core.windows.net/files-adjuntos-clientes/',
 		// LOGO: 'http://localhost:4000/api/file/logo/',
 		AVATARES: 'http://localhost:4000/api/file/avatares/',
+		AVATARES_PROV: 'https://archivosluroga.blob.core.windows.net/avatar-proveedores/',
 		FILE_CONTRATOS_CLI: 'https://archivosluroga.blob.core.windows.net/contratos-cli/',
 	},
 };

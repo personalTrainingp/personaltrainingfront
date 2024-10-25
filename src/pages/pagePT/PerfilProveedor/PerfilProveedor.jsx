@@ -12,6 +12,7 @@ import { SectionInfoProv } from './SectionInfoProv'
 import { ScrollPanel } from 'primereact/scrollpanel'
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { Loading } from '@/components/Loading'
+import config from '@/config'
 export const PerfilProv = () => {
     const {uid} = useParams()
     
@@ -24,7 +25,7 @@ export const PerfilProv = () => {
       <Loading show={isLoading}/>
     )
   }
-  console.log(proveedor);
+  console.log(`${config.API_IMG.AVATARES_PROV}${proveedor.name_image}`);
   
   return (
     <>
@@ -36,7 +37,7 @@ export const PerfilProv = () => {
                     <Card.Body>
                     <div className='' style={{height: '600px', width: '100%'}}>
                         <div className='d-flex align-items-center flex-column'>
-                        <img src={`${sinAvatar}`} className='rounded-circle' width={150} height={150}/>
+                        <img src={`${proveedor.name_image?`${config.API_IMG.AVATARES_PROV}${proveedor.name_image}`:sinAvatar}`} className='rounded-circle' width={150} height={150}/>
                         <div className='m-2 text-center'>
                             <span className='fs-3 fw-bold'>
                                 <p className='mb-0 pb-0'>

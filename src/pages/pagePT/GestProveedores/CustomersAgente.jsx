@@ -76,6 +76,7 @@ const CustomersAgente = ({estado_prov, agente}) => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
 			newItem.oficio = item.parametro_oficio?.label_param
+			newItem.marca = item.parametro_marca?.label_param
 			newItem.column_razon_social= `${item.parametro_oficio?` ${item.razon_social_prov}`:item.razon_social_prov}`
             return newItem;
             });
@@ -174,7 +175,7 @@ const CustomersAgente = ({estado_prov, agente}) => {
 								<Column header="Celular del contacto" field='cel_prov' filterField="cel_prov" style={{ minWidth: '10rem' }} body={telefonoBodyTemplate} sortable/>
 								<Column header="Nombre del Representante" field='nombre_vend_prov' filterField='nombre_vend_prov' style={{ minWidth: '10rem' }} sortable filter/>
 								{/* <Column header="Estado" field='Estado' filterField="Estado" sortable style={{ minWidth: '10rem' }} filter body={EstadoProvBodyTemplate} /> */}
-								<Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={HistorialProvBodyTemplate}/>
+								<Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={HistorialProvBodyTemplate}/>
 							</DataTable>
 				</Col>
 			</Row>

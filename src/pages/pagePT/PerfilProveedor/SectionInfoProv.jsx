@@ -7,6 +7,7 @@ import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
 import Select from 'react-select'
+import sinAvatar from '@/assets/images/sinPhoto.jpg';
 const registerProvedor = {
     ruc_prov: '', 
 	razon_social_prov: '', 
@@ -22,6 +23,10 @@ const registerProvedor = {
     nombre_contacto: '',
     es_agente: false,
     id_oficio: 0,
+}
+
+const registerImgAvatar={
+    imgAvatar_BASE64: ''
 }
 export const SectionInfoProv = ({dataProv}) => {
     const { ruc_prov, 
@@ -42,6 +47,12 @@ export const SectionInfoProv = ({dataProv}) => {
         es_agente,
         nombre_contacto,
         formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
+        
+	const [selectedFile, setSelectedFile] = useState(sinAvatar);
+    const resetAvatar = ()=>{
+        setSelectedFile(sinAvatar)
+    }
+    const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
         const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
         const { comboOficio, obtenerOficios, obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
             const [visible, setVisible] = useState(false);
@@ -73,7 +84,7 @@ export const SectionInfoProv = ({dataProv}) => {
                     accept:  onAcceptDeleteGasto,
                 });
             }
-
+            
 
             const clear = () => {
                 toastBC.current.clear();
@@ -90,10 +101,35 @@ export const SectionInfoProv = ({dataProv}) => {
                 }
                 setVisible(true);
             }
+            
+const ViewDataImg = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+        setSelectedFile(reader.result);
+    };
+    reader.readAsDataURL(file);
+};
+
   return (
     <>
         <form onSubmit={submitProveedor}>
                         <Row>
+                            <Col lg={12}>
+                                <div className='mb-4'>
+                                    <div class="form-check">
+                                        <input
+                                        accept="image/png, image/jpeg, image/jpg"
+                                        name="imgAvatar_BASE64"
+                                        onChange={(e)=>{
+                                            onRegisterFileChange(e)
+                                            ViewDataImg(e)
+                                        }} 
+                                        type="file" className="fs-6" />
+                                        <img src={selectedFile} style={{width: '100px', height: '100px'}}/>
+                                    </div>
+                                </div>
+                            </Col>
                             <Col lg={12}>
                                 <div className='mb-4'>
                                     <div class="form-check">
