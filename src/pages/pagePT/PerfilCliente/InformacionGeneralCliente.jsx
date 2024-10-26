@@ -6,13 +6,14 @@ import { locale } from 'primereact/api'
 import { Button } from 'primereact/button'
 import {  confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { Link, redirect } from 'react-router-dom'
 import Select from 'react-select'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import { useAuthStore } from '@/hooks/useAuthStore'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 
 
 locale('es');
@@ -21,9 +22,11 @@ export const InformacionGeneralCliente = ({data}) => {
     // console.log(data, "info?");
     const navigate = useNavigate();
     // const { obtenerUser } = useAuthStore()
-    // useEffect(() => {
-    //     obtenerUser
-    // }, [])
+    const { obtenerDistritosxDepxProvincia, dataDistritos } = useTerminoStore()
+
+    useEffect(() => {
+        obtenerDistritosxDepxProvincia(1501, 15)
+    }, [])
     
     // console.log(user);
     
@@ -282,8 +285,8 @@ export const InformacionGeneralCliente = ({data}) => {
                     placeholder={'Seleccione el distrito'}
                     className="react-select"
                     classNamePrefix="react-select"
-                    options={filtrarDuplicados(arrayDistrito)}
-                    value={filtrarDuplicados(arrayDistrito).find(
+                    options={dataDistritos}
+                    value={dataDistritos.find(
                         (option) => option.value === ubigeo_distrito_cli
                     ) || 0}
                     required
