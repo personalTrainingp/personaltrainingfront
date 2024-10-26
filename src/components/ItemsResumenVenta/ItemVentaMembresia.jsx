@@ -4,7 +4,6 @@ import { FormatoDateMask, FormatoTimeMask, MoneyFormatter } from '../CurrencyMas
 import config from '@/config';
 
 export const ItemVentaMembresia = ({e}) => {
-    console.log(e);
     
   return (
             
@@ -62,7 +61,6 @@ export const ItemVentaMembresia = ({e}) => {
                                     e.contrato_x_serv?
                                     <a href={`${config.API_IMG.FILE_CONTRATOS_CLI}${e.contrato_x_serv?.name_image}`} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontSize: '15px'}}>CONTRATO</a>
                                     :<>SIN CONTRATO</>
-
                                 }
                             </td>
                         </tr>

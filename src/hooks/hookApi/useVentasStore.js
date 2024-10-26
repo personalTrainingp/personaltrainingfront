@@ -114,19 +114,19 @@ export const useVentasStore = () => {
 					`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
 					formData
 				);
-				const file_contratoPDF = base64ToFile(
-					data.base64_contratoPDF,
-					`contrato_${formState.detalle_cli_modelo.id_cli}.pdf`
-				);
-				const formData_contratoPDF = new FormData();
-				formData_contratoPDF.append('file', file_contratoPDF);
-				// console.log(formData_contratoPDF);
-
-				const { data: blobContrato } = await PTApi.post(
-					`/storage/blob/create/${data.uid_contrato}?container=contratos-cli`,
-					formData_contratoPDF
-				);
 			}
+			const file_contratoPDF = base64ToFile(
+				data.base64_contratoPDF,
+				`contrato_${formState.detalle_cli_modelo.id_cli}.pdf`
+			);
+			const formData_contratoPDF = new FormData();
+			formData_contratoPDF.append('file', file_contratoPDF);
+			// console.log(formData_contratoPDF);
+
+			const { data: blobContrato } = await PTApi.post(
+				`/storage/blob/create/${data.uid_contrato}?container=contratos-cli`,
+				formData_contratoPDF
+			);
 			setloadingVenta(false);
 
 			if (data.ok == false) {

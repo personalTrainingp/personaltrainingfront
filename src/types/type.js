@@ -144,18 +144,18 @@ export const arrayFacturas = [
 	{ value: 84, label: 'Traspaso' },
 ];
 export const arrayOrigenDeCliente = [
-	{ value: 25, label: 'TIS' },
-	{ value: 26, label: 'Invitados' },
-	{ value: 27, label: 'Walking' },
-	{ value: 28, label: 'Llamadas' },
-	{ value: 29, label: 'Mail' },
-	{ value: 30, label: 'Wsp organico' },
-	{ value: 31, label: 'Referidos' },
-	{ value: 32, label: 'Cartera de renovacion' },
-	{ value: 33, label: 'Cartera de reinscripcion' },
-	{ value: 34, label: 'redes sociales - Instagram' },
-	{ value: 35, label: 'redes sociales - facebook' },
-	{ value: 36, label: 'redes sociales - tiktok' },
+	{ value: 684, label: 'TIS' },
+	{ value: 685, label: 'Invitados' },
+	{ value: 686, label: 'Walking' },
+	{ value: 687, label: 'Llamadas' },
+	{ value: 688, label: 'Mail' },
+	{ value: 689, label: 'Wsp organico' },
+	{ value: 690, label: 'Referidos' },
+	{ value: 691, label: 'Cartera de renovacion' },
+	{ value: 692, label: 'Cartera de reinscripcion' },
+	{ value: 693, label: 'redes sociales - Instagram' },
+	{ value: 694, label: 'redes sociales - facebook' },
+	{ value: 695, label: 'redes sociales - tiktok' },
 ];
 
 export const arrayEstadoCivil = [
