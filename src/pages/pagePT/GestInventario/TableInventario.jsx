@@ -19,9 +19,10 @@ import dayjs from 'dayjs';
 import { FormatoDateMask, FUNMoneyFormatter, MoneyFormatter } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
-import { Col, Modal, Row } from 'react-bootstrap';
+import { Card, Col, Modal, Row } from 'react-bootstrap';
 import { ModalImportadorData } from './ModalImportadorData';
 import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore';
+import config from '@/config';
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice}) {
     locale('es')
@@ -52,19 +53,20 @@ export default function TableInventario({showToast, id_enterprice}) {
             let newItem = { ...item };
             // Convertir la fecha a la zona horaria de Lima
             // Realiza las modificaciones en la copia
-            const [year, month, day] = item.fec_pago.split('-').map(Number);
-            const [yearc=year, monthc=month, dayc=day] = item.fec_comprobante.split('-').map(Number)
+            // const [year, month, day] = item.fec_pago.split('-').map(Number);
+            // const [yearc=year, monthc=month, dayc=day] = item.fec_comprobante.split('-').map(Number)
             // const [yearr=year, monthr = month, dayr = day] = item.fec_registro.split('-').map(Number)
             // console.log(item.fec_registro);
             
             let date = dayjs.utc(item.fec_registro);
-            newItem.fec_registro = new Date(date.format());
-            newItem.fec_comprobante =new Date(yearc, monthc-1, dayc);
-            newItem.fec_pago = new Date(year, month - 1, day);
-            newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
+            // newItem.fec_registro = new Date(date.format());
+            // newItem.fec_comprobante =new Date(yearc, monthc-1, dayc);
+            // newItem.fec_pago = new Date(year, month - 1, day);
+            // newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
             return newItem;
             });
     };
+    console.log(dataView);
     
     const highlightText = (text, search) => {
         if (!search) {
@@ -170,7 +172,7 @@ export default function TableInventario({showToast, id_enterprice}) {
     const lugarCompraBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(FUNMoneyFormatter(rowData.monto, rowData.moneda=='PEN'?'S/.':'$ '), globalFilterValue)}</span>
+                <span>{highlightText(rowData.lugar_compra_cotizacion, globalFilterValue)}</span>
             </div>
         );
     };
@@ -182,12 +184,28 @@ export default function TableInventario({showToast, id_enterprice}) {
             </div>
         );
     }
+    const imagenBodyTemplate = (rowData)=>{
+        return (
+            <div className="flex align-items-center gap-2">
+                <img src={`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_image.name_image}`}/>
+            </div>
+        );
+    }
     const marcaBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{FormatoDateMask(rowData.fec_pago, 'dddd D [de] MMMM [del] YYYY') }</span>
+                <span>{rowData.parametro_marca?.label_param}</span>
+            </div>
+        );
+    }
+    const lugarBodyTemplate = (rowData)=>{
+        return (
+            <div className="flex align-items-center gap-2">
+                
+                {/* <span>{formatDate(rowData.fec_pago) }</span> */}
+                <span>{rowData.parametro_lugar_encuentro?.label_param}</span>
             </div>
         );
     }
@@ -196,28 +214,28 @@ export default function TableInventario({showToast, id_enterprice}) {
             <div className="flex align-items-center gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{new Date(rowData.fec_comprobante).getFullYear()===1900? '': FormatoDateMask(rowData.fec_comprobante, 'dddd D [de] MMMM [del] YYYY')}</span>
+                <span>{rowData.descripcion}</span>
             </div>
         );
     }
     const cantidadBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText( rowData.tb_parametros_gasto?.nombre_gasto?rowData.tb_parametros_gasto?.nombre_gasto:'SIN', globalFilterValue)}</span>
+                <span>{highlightText( rowData.cantidad, globalFilterValue)}</span>
             </div>
         );
     };
     const valorUnitDeprecBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(`${rowData.tb_parametros_gasto?.grupo}`, globalFilterValue)}</span>
+                <span>{highlightText(`${rowData.valor_unitario_depreciado}`, globalFilterValue)}</span>
             </div>
         );
     };
     const valorUnitActualBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(`${rowData.tb_parametros_gasto?.grupo}`, globalFilterValue)}</span>
+                <span>{highlightText(`${rowData.valor_unitario_actual}`, globalFilterValue)}</span>
             </div>
         );
     };
@@ -244,7 +262,7 @@ export default function TableInventario({showToast, id_enterprice}) {
         return (
             
             <div className="flex align-items-center gap-2">
-                <span>{highlightText( `${rowData.tipo_gasto}`, globalFilterValue)}</span>
+                <span>{highlightText( `${rowData.observacion}`, globalFilterValue)}</span>
             </div>
         )
     }
@@ -273,6 +291,24 @@ export default function TableInventario({showToast, id_enterprice}) {
                     <>
                     <div>
                         <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
+                        <Row>
+                            <Col lg={3}>
+                                <Card className='m-1 border border-4'>
+                                    <Card.Header>
+                                        <Card.Title style={{}} className='font-24'>
+                                            ESTACIONAMIENTO FRONTIS
+                                        </Card.Title>
+                                    </Card.Header>
+                                    <Card.Body>
+                                        <ul>
+                                            <li>CANTIDAD: 10</li>
+                                            <li>VALOR TOTAL SUMADO: S/.0.00</li>
+                                        </ul>
+                                        
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
                     </div>
                     <DataTable 
                         size='small' 
@@ -296,15 +332,18 @@ export default function TableInventario({showToast, id_enterprice}) {
                         onValueChange={valueFiltered}
                         >
                 <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
-                <Column header="PRODUCTO" field='producto' filterField="producto" sortable style={{ width: '3rem' }} body={productoBodyTemplate} filter/>
+                <Column header="IMAGEN" style={{ width: '3rem' }} body={imagenBodyTemplate}/>
+                <Column header="ARTICULO" field='producto' filterField="producto" sortable style={{ width: '3rem' }} filter/>
                 <Column header="MARCA" field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
                 <Column header="DESCRIPCION" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                 <Column header="OBSERVACIONES" field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/>
                 <Column header="CANTIDAD" field='cantidad' filterField="cantidad" sortable style={{ minWidth: '10rem' }} body={cantidadBodyTemplate} filter />
                 <Column header="VALOR UNITARIO DEPRECIADO" field='valor_unitario_depreciado' filterField="valor_unitario_depreciado" style={{ minWidth: '10rem' }} sortable body={valorUnitDeprecBodyTemplate} filter/>
                 <Column header="VALOR UNITARIO ACTUAL" field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
+                <Column header="VALOR TOTAL" field='valor_total' filterField="valor_total" style={{ minWidth: '10rem' }} sortable filter/>
                 <Column header="LUGAR DE COMPRA O COTIZACION" field='lugar_compra_cotizacion' filterField="lugar_compra_cotizacion" style={{ minWidth: '10rem' }} sortable body={lugarCompraBodyTemplate} filter/>
-
+                <Column header="LUGAR" field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '10rem' }} sortable body={lugarBodyTemplate} filter/>
+                
                 <Column header="Editar/Eliminar" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             

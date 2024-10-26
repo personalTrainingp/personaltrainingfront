@@ -9,6 +9,7 @@ const config = {
 		// LOGO: 'http://localhost:4000/api/file/logo/',
 		AVATARES: 'http://localhost:4000/api/file/avatares/',
 		AVATARES_PROV: 'https://archivosluroga.blob.core.windows.net/avatar-proveedores/',
+		AVATAR_ARTICULO: 'https://archivosluroga.blob.core.windows.net/avatar-articulos/',
 		FILE_CONTRATOS_CLI: 'https://archivosluroga.blob.core.windows.net/contratos-cli/',
 	},
 };

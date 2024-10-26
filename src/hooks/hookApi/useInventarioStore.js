@@ -19,23 +19,32 @@ export const useInventarioStore = () => {
 		observacion: '',
 		descripcion: '',
 	});
-	const startRegisterArticulos = async (formState, id_enterprice) => {
+	const startRegisterArticulos = async (formState, id_enterprice, selectedFile) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.post(
 				`/inventario/post-articulo/${id_enterprice}`,
 				formState
 			);
+			if (selectedFile) {
+				const formData = new FormData();
+				formData.append('file', selectedFile);
+				await PTApi.post(
+					`/storage/blob/create/${data.uid_image}?container=avatar-articulos`,
+					formData
+				);
+			}
 			setIsLoading(false);
+			await obtenerArticulos(id_enterprice);
 			setmessage({ msg: data.msg, ok: data.ok });
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const obtenerArticulos = async (id_enterprice) => {
-
 		try {
 			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_enterprice}`);
+			console.log(data);
 
 			dispatch(onSetDataView(data.articulos));
 		} catch (error) {

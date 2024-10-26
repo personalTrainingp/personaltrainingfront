@@ -1,41 +1,63 @@
 import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
+import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Modal, ModalBody, Row } from 'react-bootstrap'
+import Select from 'react-select'
 const registerArticulo={
     producto: '',
-    marca: '',
+    id_marca: '',
     cantidad: 0,
     lugar_compra_cotizacion: '',
     valor_unitario_depreciado: 0,
     valor_unitario_actual: 0,
     observacion: '',
-    descripcion: ''
+    descripcion: '',
+    valor_total: 0,
+    id_lugar: 0
+}
+const registerImgAvatar={
+    imgAvatar_BASE64: ''
 }
 export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
+	const [selectedFile, setSelectedFile] = useState(sinAvatar);
+    const [selectedAvatar, setselectedAvatar] = useState(null)
     const onClickCancelModal = ()=>{
         onHide()
         onResetForm()
     }
+    const resetAvatar = ()=>{
+        setSelectedFile(sinAvatar)
+    }
     const [showLoading, setshowLoading] = useState(false)
     const { obtenerArticulo, obtenerArticulos, startRegisterArticulos, articulo } = useInventarioStore()
+    const { DataGeneral:dataMarcas, obtenerParametroPorEntidadyGrupo:obtenerMarcas } = useTerminoStore()
+    const { DataGeneral:dataLugares, obtenerParametroPorEntidadyGrupo:obtenerLugares } = useTerminoStore()
     const { formState, 
             producto,
-            marca,
+            id_marca,
             cantidad,
             lugar_compra_cotizacion,
             valor_unitario_depreciado,
             valor_unitario_actual,
+            valor_total,
             observacion,
             descripcion,
+            id_lugar,
             onInputChange,  
             onResetForm,
+            onInputChangeReact
         } = useForm(data?data:registerArticulo)
+        
+    const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
         useEffect(() => {
             obtenerArticulos(id_enterprice)
+            obtenerLugares('articulo', 'lugar_encuentro')
+            obtenerMarcas('producto', 'marca')
         }, [])
         
-
+        
         const submitGasto = async(e)=>{
             e.preventDefault()
             if(data){
@@ -50,11 +72,21 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 return;
             }
             setshowLoading(true)
-            await startRegisterArticulos(formState, id_enterprice)
+            await startRegisterArticulos(formState, id_enterprice, selectedAvatar)
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()
         }
+        
+        const ViewDataImg = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = () => {
+                setSelectedFile(reader.result);
+            };
+            reader.readAsDataURL(file);
+            setselectedAvatar(file)
+        };
   return (
     <>
     {(showLoading)?(
@@ -85,10 +117,27 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                     ):(
                         <form onSubmit={submitGasto}>
                             <Row>
-                                <Col lg={4}>
+                                <Col lg={12}>
+                                <div className="mb-4">
+                                        <label htmlFor="imgAvatar_BASE64" className="form-label">
+                                            IMAGEN DEL ARTICULO
+                                        </label>
+                                        <input
+                                                className="form-control"
+                                                type='file'
+                                                accept="image/*"
+                                                name="imgAvatar_BASE64"
+                                                onChange={(e)=>{
+                                                    onRegisterFileChange(e)
+                                                    ViewDataImg(e)
+                                                }} 
+                                            />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>    
                                     <div className="mb-4">
                                         <label htmlFor="producto" className="form-label">
-                                            PRODUCTO
+                                            ARTICULO
                                         </label>
                                         <input
                                                 className="form-control"
@@ -105,14 +154,39 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                         <label htmlFor="marca" className="form-label">
                                             MARCA
                                         </label>
-                                        <input
-                                                className="form-control"
-                                                name="marca"
-                                                id="marca"
-                                                value={marca}
-                                                onChange={onInputChange}
-                                                placeholder=""
-                                            />
+                                        <Select
+                                            onChange={(e) => onInputChangeReact(e, 'id_marca')}
+                                            name="id_marca"
+                                            placeholder={'Seleccionar la marca'}
+                                            className="react-select"
+                                            classNamePrefix="react-select"
+                                            options={dataMarcas}
+                                            value={dataMarcas.find(
+                                                (option) => option.value === id_marca
+                                            )||0}
+                                            
+                                            required
+                                        />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="marca" className="form-label">
+                                            LUGAR DE ENCUENTRO
+                                        </label>
+                                        <Select
+                                            onChange={(e) => onInputChangeReact(e, 'id_lugar')}
+                                            name="id_lugar"
+                                            placeholder={'Seleccionar el lugar'}
+                                            className="react-select"
+                                            classNamePrefix="react-select"
+                                            options={dataLugares}
+                                            value={dataLugares.find(
+                                                (option) => option.value === id_lugar
+                                            )||0}
+                                            
+                                            required
+                                        />
                                     </div>
                                 </Col>
                                 <Col lg={4}>
@@ -155,6 +229,21 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 name="valor_unitario_depreciado"
                                                 id="valor_unitario_depreciado"
                                                 value={valor_unitario_depreciado}
+                                                onChange={onInputChange}
+                                                placeholder=""
+                                            />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="valor_total" className="form-label">
+                                            VALOR TOTAL
+                                        </label>
+                                        <input
+                                                className="form-control"
+                                                name="valor_total"
+                                                id="valor_total"
+                                                value={valor_total}
                                                 onChange={onInputChange}
                                                 placeholder=""
                                             />
