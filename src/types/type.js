@@ -139,9 +139,9 @@ export const arrayDataTrainer = [
 	{ value: 22, label: 'Esteban Chavez' },
 ];
 export const arrayFacturas = [
-	{ value: 82, label: 'Boleta' },
-	{ value: 83, label: 'Factura' },
-	{ value: 84, label: 'Traspaso' },
+	{ value: 699, label: 'Boleta' },
+	{ value: 700, label: 'Factura' },
+	{ value: 701, label: 'Traspaso' },
 ];
 export const arrayOrigenDeCliente = [
 	{ value: 684, label: 'TIS' },

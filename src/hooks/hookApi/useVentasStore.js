@@ -108,8 +108,6 @@ export const useVentasStore = () => {
 				);
 				const formData = new FormData();
 				formData.append('file', file);
-				console.log(data);
-
 				const { data: blobFirma } = await PTApi.post(
 					`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
 					formData
