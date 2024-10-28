@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
 import { Badge } from 'primereact/badge';
 
-const CustomersAgente = ({estado_prov, agente}) => {
+const CustomersProv = ({estado_prov, agente}) => {
 	const dispatch = useDispatch()
 	// const [modalProv, toggleModalProv] = useToggle();
     const [filters, setFilters] = useState({
@@ -32,7 +32,7 @@ const CustomersAgente = ({estado_prov, agente}) => {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
 	const [isModalOpenProv, setisModalOpenProv] = useState(false)
 	const [Customers, setCustomers] = useState(null);
-	const { obtenerAgentes }= useProveedorStore()
+	const { obtenerProveedores, obtenerAgentes }= useProveedorStore()
 	const { dataProveedores } = useSelector(e=>e.prov)
 	const modalProvClose = ()=>{
 		setisModalOpenProv(false)
@@ -183,4 +183,4 @@ const CustomersAgente = ({estado_prov, agente}) => {
 	);
 };
 
-export { CustomersAgente };
+export { CustomersProv };

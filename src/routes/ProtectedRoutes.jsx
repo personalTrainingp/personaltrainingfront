@@ -54,7 +54,7 @@ const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
 const ReporteComparativaDeVentasxDia = lazy(()=>import('../pages/pagePT/ReporteComparativoxDia'))
 const ReporteFlujoCaja = lazy(()=>import('../pages/pagePT/FlujoCaja'))
 const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilidadPrograma'))
-const PerfilProveedor = lazy(()=>import('../pages/pagePT/PerfilProveedor'))
+const PerfilProveedor = lazy(()=>import('../pages/pagePT/GestProvAgentes'))
 const GestionInventario = lazy(()=>import('../pages/pagePT/GestInventario'))
 const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
 const ReportePorMarcacion = lazy(()=> import('../pages/pagePT/reportes/reporteCliente'))
@@ -95,10 +95,10 @@ export default function ProtectedRoutes() {
 			status  === 'authenticated' ? (
 				<>
 				<Route path="/*" element={<Layout />}>
-					{/* {
-						sections.find(e=>e.url==='/proveedores/trabajos-proveedores') && 
-						<Route path='proveedores/trabajos-proveedores' element={<PerfilProveedor/>}/>
-					} */}
+					{
+						sections.find(e=>e.url==='/proveedores/prov-agentes') && 
+						<Route path='proveedores/prov-agentes' element={<PerfilProveedor/>}/>
+					}
 					
 					{
 						sections.find(e=>e.url==='/gest-inventario') && 

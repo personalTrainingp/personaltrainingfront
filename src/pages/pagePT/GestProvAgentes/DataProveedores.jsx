@@ -35,7 +35,7 @@ export const DataProveedores = () => {
 	
 	return (
 		<>
-			<PageBreadcrumb title="Gestion de proveedores" subName="E" />
+			<PageBreadcrumb title="AGENTES" subName="E" />
 			<Row>
 				<Col xxl={1}>
 				</Col>
@@ -43,20 +43,10 @@ export const DataProveedores = () => {
 					<Card>
 						<Card.Body>
 							<Row>
-								<Col sm={5}>
-									<Button label='Agregar proveedor' onClick={modalProvOpen}/>
-								</Col>
 								<Col sm={7}>
 								</Col>
 							</Row>
-							<TabView>
-                <TabPanel className='tabPanel-color-success' header={'Activos'}>
-                  <CustomersProv estado_prov={true} agente={false}/>
-                </TabPanel>
-                <TabPanel header={'Inactivos'}>
-                  <CustomersProv estado_prov={false} agente={false}/>
-                </TabPanel>
-              </TabView>
+                  				<CustomersProv agente={true}/>
 						</Card.Body>
 					</Card>
 				</Col>

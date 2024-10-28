@@ -40,7 +40,10 @@ export const useProveedorStore = () => {
 	const startRegisterProveedor = async (formState, estado_prov, agente, selectedFile) => {
 		try {
 			setIsLoading(true);
-			const { data } = await PTApi.post('/proveedor/post-proveedor', formState);
+			const { data } = await PTApi.post('/proveedor/post-proveedor', {
+				...formState,
+				id_empresa: 598,
+			});
 			if (selectedFile) {
 				const formData = new FormData();
 				formData.append('file', selectedFile);
@@ -62,7 +65,8 @@ export const useProveedorStore = () => {
 			const { data } = await PTApi.get('/proveedor/obtener-proveedores', {
 				params: {
 					estado_prov: estado_prov,
-					es_agente: agente,
+					es_agente: false,
+					id_empresa: 598,
 				},
 			});
 			dispatch(onSetProveedores(data.proveedores));
@@ -70,11 +74,12 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerAgentes = async (agente) => {
+	const obtenerAgentes = async () => {
 		try {
 			const { data } = await PTApi.get('/proveedor/obtener-agentes', {
 				params: {
-					es_agente: agente,
+					es_agente: true,
+					id_empresa: 598,
 				},
 			});
 			dispatch(onSetProveedores(data.proveedores));
@@ -235,6 +240,7 @@ export const useProveedorStore = () => {
 		obtenerParametrosProveedor,
 		obtenerProveedorxUID,
 		ObtenerContratoxID,
+		obtenerAgentes,
 		gastosxContratoProv,
 		isLoadingContratoProv,
 		isLoading,
