@@ -20,13 +20,13 @@ const posts = [
 			'<p>Story based around the idea of time lapse, animation to post soon!</p>' +
 			'<img src="' +
 			img1 +
-			'" alt="post-img" class="rounded me-1" height="60" />' +
+			'" alt="post-img" className="rounded me-1" height="60" />' +
 			'<img src="' +
 			img2 +
-			'" alt="post-img" class="rounded me-1" height="60" />' +
+			'" alt="post-img" className="rounded me-1" height="60" />' +
 			'<img src="' +
 			img3 +
-			'" alt="post-img" class="rounded me-1" height="60" />',
+			'" alt="post-img" className="rounded me-1" height="60" />',
 		isLiked: false,
 		engagement: true,
 	},
@@ -39,7 +39,7 @@ const posts = [
 		},
 		postedOn: 'about 1 hour ago',
 		content:
-			'<div class="font-16 text-center fst-italic text-dark"><i class="mdi mdi-format-quote-open font-20"></i> Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa.</div>',
+			'<div className="font-16 text-center fst-italic text-dark"><i className="mdi mdi-format-quote-open font-20"></i> Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa.</div>',
 		totalLikes: '28',
 		totalComments: '',
 		isLiked: true,
@@ -82,7 +82,7 @@ const posts = [
 		scope: 'Public',
 		content:
 			'<p>The parallax is a little odd but O.o that house build is awesome!!</p>' +
-			'<iframe src="https://player.vimeo.com/video/87993762" height="300" class="img-fluid border-0"></iframe>',
+			'<iframe src="https://player.vimeo.com/video/87993762" height="300" className="img-fluid border-0"></iframe>',
 		isLiked: false,
 		engagement: false,
 	},

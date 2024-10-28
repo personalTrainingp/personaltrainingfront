@@ -35,13 +35,13 @@ export const CardEstimado = ({ backgroundColor, title, montoSoles, items, icono 
 
 			<Collapse in={open}>
 			<div id="example-collapse-text">
-				<ul class="list-group">
+				<ul className="list-group">
 				{
 					items?.map(e=>(
 						<>
-                                                                <li class="p-2 d-flex justify-content-between align-items-center">
+                                                                <li className="p-2 d-flex justify-content-between align-items-center">
                                                                     {e.label}
-                                                                    <span class="rounded-pill fw-bolder"><MoneyFormatter amount={e.monto}/></span>
+                                                                    <span className="rounded-pill fw-bolder"><MoneyFormatter amount={e.monto}/></span>
                                                                 </li>
 						</>
 					))
@@ -57,22 +57,22 @@ export const CardEstimado = ({ backgroundColor, title, montoSoles, items, icono 
 				// ))
 				//  && (
 				// 	<div id="example-collapse-text">
-				// <ul class="list-group">
-                //                                                 <li class="p-2 d-flex justify-content-between align-items-center">
+				// <ul className="list-group">
+                //                                                 <li className="p-2 d-flex justify-content-between align-items-center">
                 //                                                     RPM 50 XTREME
-                //                                                     <span class="rounded-pill fw-bolder">113,234.00</span>
+                //                                                     <span className="rounded-pill fw-bolder">113,234.00</span>
                 //                                                 </li>
-                //                                                 <li class="p-2 d-flex justify-content-between align-items-center">
+                //                                                 <li className="p-2 d-flex justify-content-between align-items-center">
                 //                                                     FUSION SAVAGE
-                //                                                     <span class="rounded-pill fw-bolder">37,617.00</span>
+                //                                                     <span className="rounded-pill fw-bolder">37,617.00</span>
                 //                                                 </li>
-                //                                                 <li class="p-2 d-flex justify-content-between align-items-center">
+                //                                                 <li className="p-2 d-flex justify-content-between align-items-center">
                 //                                                     MUSCLE SOLID
-                //                                                     <span class="rounded-pill fw-bolder">31,028.00</span>
+                //                                                     <span className="rounded-pill fw-bolder">31,028.00</span>
                 //                                                 </li>
-                //                                                 <li class="p-2 d-flex justify-content-between align-items-center">
+                //                                                 <li className="p-2 d-flex justify-content-between align-items-center">
                 //                                                     CHANGE YOUR LIFE
-                //                                                     <span class="rounded-pill fw-bolder">18,154.00</span>
+                //                                                     <span className="rounded-pill fw-bolder">18,154.00</span>
                 //                                                 </li>
                 //                                             </ul>
 				// </div>

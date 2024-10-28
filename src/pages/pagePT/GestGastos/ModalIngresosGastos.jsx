@@ -464,9 +464,9 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                 </Col>                                                                          
                                 <Col lg={12}>
                                 <div className='mb-4'>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name='esCompra' onChange={onInputChange} checked={esCompra} id="flexCheckDefault"/>
-                                        <label class="form-check-label" for="flexCheckDefault">
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" name='esCompra' onChange={onInputChange} checked={esCompra} id="flexCheckDefault"/>
+                                        <label className="form-check-label" for="flexCheckDefault">
                                             ¿Si se trata de una factura? Si es así, por favor marca la casilla.
                                         </label>
                                     </div>

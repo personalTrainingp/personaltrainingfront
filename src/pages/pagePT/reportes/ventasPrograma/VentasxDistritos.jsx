@@ -1,9 +1,10 @@
 import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
+import { TabPanel, TabView } from 'primereact/tabview';
 import React, { useEffect } from 'react'
 import { Card, ProgressBar } from 'react-bootstrap'
 
-export const SemanasxPrograma = ({data}) => {
-	const sumaItemsLength = data.reduce((total, element) => {
+export const VentasxDistritos = ({data}) => {
+    const sumaItemsLength = data.reduce((total, element) => {
 		return total + element.items.length;
 	}, 0);
 	const sumaItemsTotal_monto = data.reduce((total, element) => {
@@ -20,13 +21,14 @@ export const SemanasxPrograma = ({data}) => {
   return (
     <div>
         <Card>
+            <TabView>
+                <TabPanel header={<>MIRAFLORES 12</>}>
 			<table className="table table-bordered table-centered mb-0">
 				<thead className="table-light">
 					<tr>
-						<th className='text-primary font-bold font-20'>RANKING DE SEMANAS VENDIDAS</th>
-						<th>CANTIDAD</th>
-						<th>MONTO VENTA BRUTA</th>
-						<th>TICKET MEDIO</th>
+						<th className='text-primary font-bold font-20'>SOCIOS</th>
+						<th>TIPO</th>
+						<th>PROGRAMA | SESIONES | HORARIO</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -67,6 +69,8 @@ export const SemanasxPrograma = ({data}) => {
 					}
 				</tbody>
 			</table>
+                </TabPanel>
+            </TabView>
         </Card>
     </div>
   )

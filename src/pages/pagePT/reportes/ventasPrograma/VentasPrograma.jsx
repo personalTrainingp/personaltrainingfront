@@ -1,5 +1,5 @@
 import { PageBreadcrumb } from '@/components'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, FloatingLabel, Form, Row } from 'react-bootstrap'
 import Statistics from './Statistics'
 import { members } from './data'
@@ -14,6 +14,8 @@ import { Statistics2 } from './Statistics2'
 import { SemanasxPrograma } from './SemanasxPrograma'
 import { ContratosMembresia } from './ContratosMembresia'
 import { useReporteVentaxProgramaStore } from '@/hooks/hookApi/Reportes/useReporteVentaxProgramaStore'
+import { Loading } from '@/components/Loading'
+import { VentasxDistritos } from './VentasxDistritos'
 const rangoFechas = {
   rangoDate:[new Date(new Date().getFullYear(), 0, 1), new Date()],
   id_programa: 0
@@ -32,20 +34,28 @@ export const VentasPrograma = () => {
   useEffect(() => {
     obtenerProgramasActivos()
   }, [])
+  const [loading, setloading] = useState(false)
   useEffect(() => {
-    if(id_programa===0) return;
-    if(rangoDate[1]==null) return;
-    if(rangoDate[0]==null) return;
-    obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO(id_programa, rangoDate)
-    obtenerReporteVentasAcumuladas_y_Tickets(id_programa, rangoDate)
-    obtenerReporteVentasPrograma_EstadoCliente(id_programa, rangoDate)
-    obtenerReporteVentasDeProgramasPorSemanas(id_programa, rangoDate)
-    obtenerMembresiasxFechaxPrograma(id_programa, rangoDate)
+    const funcionDataExtract = async()=>{
+      setloading(false)
+      if(rangoDate[1]==null) return;
+      if(rangoDate[0]==null) return;
+      // if(id_programa===0) return;
+      await obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO(id_programa, rangoDate)
+      await obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO(id_programa, rangoDate)
+      await obtenerReporteVentasAcumuladas_y_Tickets(id_programa, rangoDate)
+      await obtenerReporteVentasPrograma_EstadoCliente(id_programa, rangoDate)
+      await obtenerReporteVentasDeProgramasPorSemanas(id_programa, rangoDate)
+      await obtenerMembresiasxFechaxPrograma(id_programa, rangoDate)
+      await estadosClienteMembresia(id_programa , rangoDate[0] , rangoDate[1])
+      setloading(true)
+    }
+    
+    funcionDataExtract()
     // obtenerReporteVentasPorProgramas_x_ClientesFrecuentes(id_programa, rangoDate)
-
-    estadosClienteMembresia(id_programa , rangoDate[0] , rangoDate[1])
   }, [id_programa, rangoDate])
-
+  console.log(loading);
+  
   
 
   let NroClientesNuevo = 0;
@@ -77,6 +87,11 @@ export const VentasPrograma = () => {
       title: 'CLIENTES RENOVADOS',
       noOfProject: NroClientesRenovados//programa_estado_cliente?.renovados?.length,
     },
+    {
+      variant: 'info',
+      title: 'TRASPASO DE PT A CHANGE',
+      noOfProject: ''//programa_estado_cliente?.renovados?.length,
+    }
   ];
   const programasActivosTODO = [
     {value: 0, label: 'TODO LOS PROGRAMAS', urlAvatar: 'None'},
@@ -85,6 +100,7 @@ export const VentasPrograma = () => {
   return (
     <>
     <PageBreadcrumb title="Ventas por programas" subName="Ventas" />
+    
     <Row className='mb-4 align-items-center'>
       <Col xxl={2} md={4} xs={6}>
       <div className="mb-3">
@@ -114,6 +130,14 @@ export const VentasPrograma = () => {
         </div>
       </Col>
     </Row>
+    {
+      loading==false?(
+        <>
+        <Loading show={loading}/>
+        </>
+      ):(
+        <>
+        
     <Row className='align-items-center'>
       <Statistics statisticsData={statisticsClientes}/>
     </Row>
@@ -125,16 +149,16 @@ export const VentasPrograma = () => {
         </Col>
       )
       }
-      <Col xxl={9}>
-        <ProjectStatistics data={programa_comparativa_mejoranio}/>
-      </Col>
-      <Col xxl={3}>
-        <TeamMembers members={members} title={'Ranking de socios'}/>
+      <Col xxl={12}>
+        <VentasxDistritos data={[]}/>
       </Col>
       <Col xxl={12}>
-        <ContratosMembresia/>
+        <ProjectStatistics data={programa_comparativa_mejoranio}/>
       </Col>
     </Row>
+        </>
+      )
+    }
     </>
     
   )

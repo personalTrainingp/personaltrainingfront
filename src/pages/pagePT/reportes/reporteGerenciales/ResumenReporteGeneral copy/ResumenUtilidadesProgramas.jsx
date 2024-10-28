@@ -127,35 +127,35 @@ export const ResumenUtilidadesProgramas = ({ data }) => {
 	// ];
 
 	return (
-			<div class="card">
-                                <div class="card-header">
-                                    <h4 class="header-title">RESUMEN <span class="fs-3">PROGRAMAS</span></h4>
+			<div className="card">
+                                <div className="card-header">
+                                    <h4 className="header-title">RESUMEN <span className="fs-3">PROGRAMAS</span></h4>
                                 </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        {/* <div class="col-xl-9 col-lg-4 col-md-6 col-sm-12">
-                                            <div class="row">
-                                                <div class="col-lg-6">
+                                <div className="card-body">
+                                    <div className="row">
+                                        {/* <div className="col-xl-9 col-lg-4 col-md-6 col-sm-12">
+                                            <div className="row">
+                                                <div className="col-lg-6">
                                                 </div>
                                             </div>
                                         </div> */}
                                         
-                                        <div class="col-sm-12">
-                                            <div class="accordion" id="CardaccordionExample">
-                                                <div class="mb-0">
+                                        <div className="col-sm-12">
+                                            <div className="accordion" id="CardaccordionExample">
+                                                <div className="mb-0">
                                                     <div id="CardheadingOne">
-                                                        <h5 class="m-0">
-                                                            <a class="d-block border border-light p-2 rounded mb-1 bg-success"
+                                                        <h5 className="m-0">
+                                                            <a className="d-block border border-light p-2 rounded mb-1 bg-success"
                                                                 data-bs-toggle="collapse" href="#collapseOne"
                                                                 aria-expanded="true" aria-controls="collapseOne">
-                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                <div className="d-flex justify-content-between align-items-center">
                                                                     <div>
-                                                                        <p class="text-white fw-bold font-18 mb-1">INGRESOS DIRECTOS</p>
-                                                                        <h3 class="text-white my-0"><MoneyFormatter amount={data.totalIngresosProgramas}/></h3>
+                                                                        <p className="text-white fw-bold font-18 mb-1">INGRESOS DIRECTOS</p>
+                                                                        <h3 className="text-white my-0"><MoneyFormatter amount={data.totalIngresosProgramas}/></h3>
                                                                     </div>  
-                                                                    <div class="avatar-sm">
-                                                                        <span class="avatar-title bg-success rounded-circle h3 my-0">
-                                                                            <i class="mdi mdi-arrow-up-bold-outline"></i>
+                                                                    <div className="avatar-sm">
+                                                                        <span className="avatar-title bg-success rounded-circle h3 my-0">
+                                                                            <i className="mdi mdi-arrow-up-bold-outline"></i>
                                                                         </span>
                                                                     </div>                                      
                                                                 </div>
@@ -163,84 +163,84 @@ export const ResumenUtilidadesProgramas = ({ data }) => {
                                                         </h5>
                                                     </div>
                                             
-                                                    <div id="collapseOne" class="collapse show"
+                                                    <div id="collapseOne" className="collapse show"
                                                         aria-labelledby="CardheadingOne" data-bs-parent="#CardaccordionExample">
-                                                        <div class="card-body pt-0 px-1">
-                                                            <ul class="list-group">
-                                                                <li class="p-2 d-flex justify-content-between align-items-center">
+                                                        <div className="card-body pt-0 px-1">
+                                                            <ul className="list-group">
+                                                                <li className="p-2 d-flex justify-content-between align-items-center">
                                                                     <img src={phChange} width={130} height={40} className='m-0'/>
-                                                                    <span class="rounded-pill fw-bolder">S/.55,234.00</span>
+                                                                    <span className="rounded-pill fw-bolder">S/.55,234.00</span>
                                                                 </li>
-                                                                <li class="p-2 d-flex justify-content-between align-items-center">
+                                                                <li className="p-2 d-flex justify-content-between align-items-center">
                                                                     <img src={phMuscle} width={120} height={40} className='m-0'/>
-                                                                    <span class="rounded-pill fw-bolder">S/.10,028.00</span>
+                                                                    <span className="rounded-pill fw-bolder">S/.10,028.00</span>
                                                                 </li>
-                                                                <li class="p-2 d-flex justify-content-between align-items-center">
+                                                                <li className="p-2 d-flex justify-content-between align-items-center">
                                                                     <img src={phFs45} width={70} height={40} className='m-0'/>
-                                                                    <span class="rounded-pill fw-bolder">S/.29,281.00</span>
+                                                                    <span className="rounded-pill fw-bolder">S/.29,281.00</span>
                                                                 </li>
                                                             </ul>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="mb-0">
+                                                <div className="mb-0">
                                                     <div id="CardheadingTwo">
-                                                        <h5 class="m-0">
-                                                            <a class="d-block border border-light p-2 rounded mb-1 bg-danger"
+                                                        <h5 className="m-0">
+                                                            <a className="d-block border border-light p-2 rounded mb-1 bg-danger"
                                                                 data-bs-toggle="collapse" href="#collapseTwo"
                                                                 aria-expanded="false" aria-controls="collapseTwo">
-                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                <div className="d-flex justify-content-between align-items-center">
                                                                     <div>
-                                                                        <p class="font-18 text-white mb-1">EGRESOS DIRECTOS</p>
-                                                                        <h3 class="text-white my-0">S/42,731.67</h3>
+                                                                        <p className="font-18 text-white mb-1">EGRESOS DIRECTOS</p>
+                                                                        <h3 className="text-white my-0">S/42,731.67</h3>
                                                                     </div>  
-                                                                    <div class="avatar-sm">
-                                                                        <span class="avatar-title bg-danger rounded-circle h3 my-0">
-                                                                            <i class="mdi mdi-arrow-down-bold-outline"></i>
+                                                                    <div className="avatar-sm">
+                                                                        <span className="avatar-title bg-danger rounded-circle h3 my-0">
+                                                                            <i className="mdi mdi-arrow-down-bold-outline"></i>
                                                                         </span>
                                                                     </div>                                      
                                                                 </div>
                                                             </a>
                                                         </h5>
                                                     </div>
-                                                    <div id="collapseTwo" class="collapse" aria-labelledby="CardheadingTwo"
+                                                    <div id="collapseTwo" className="collapse" aria-labelledby="CardheadingTwo"
                                                         data-bs-parent="#CardaccordionExample">
-                                                        <div class="card-body pt-0">
-                                                            <ul class="list-group">
-                                                                <li class="p-2 d-flex justify-content-between align-items-center">
+                                                        <div className="card-body pt-0">
+                                                            <ul className="list-group">
+                                                                <li className="p-2 d-flex justify-content-between align-items-center">
                                                                     IGV
-                                                                    <span class="rounded-pill fw-bolder">113,234.00</span>
+                                                                    <span className="rounded-pill fw-bolder">113,234.00</span>
                                                                 </li>
-                                                                <li class="p-2 d-flex justify-content-between align-items-center">
+                                                                <li className="p-2 d-flex justify-content-between align-items-center">
                                                                     POS
-                                                                    <span class="rounded-pill fw-bolder">7,132.58</span>
+                                                                    <span className="rounded-pill fw-bolder">7,132.58</span>
                                                                 </li>
-                                                                <li class="p-2 d-flex justify-content-between align-items-center">
+                                                                <li className="p-2 d-flex justify-content-between align-items-center">
                                                                     RENTA
-                                                                    <span class="rounded-pill fw-bolder">5,085.58</span>
+                                                                    <span className="rounded-pill fw-bolder">5,085.58</span>
                                                                 </li>
-                                                                <li class="p-2 d-flex justify-content-between align-items-center">
+                                                                <li className="p-2 d-flex justify-content-between align-items-center">
                                                                     COMISIONES
-                                                                    <span class="rounded-pill fw-bolder">0.00</span>
+                                                                    <span className="rounded-pill fw-bolder">0.00</span>
                                                                 </li>
                                                             </ul>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="mb-0">
+                                                <div className="mb-0">
                                                     <div id="CardheadingThree">
-                                                        <h5 class="m-0">
-                                                            <a class="d-block border border-light p-2 rounded bg-info"
+                                                        <h5 className="m-0">
+                                                            <a className="d-block border border-light p-2 rounded bg-info"
                                                                 data-bs-toggle="collapse" href="#collapseThree"
                                                                 aria-expanded="false" aria-controls="collapseThree">
-                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                <div className="d-flex justify-content-between align-items-center">
                                                                     <div>
-                                                                        <p class="font-18 text-white mb-1">UTILIDAD</p>
-                                                                        <h3 class="text-white my-0">S/51,811.33</h3>
+                                                                        <p className="font-18 text-white mb-1">UTILIDAD</p>
+                                                                        <h3 className="text-white my-0">S/51,811.33</h3>
                                                                     </div>  
-                                                                    <div class="avatar-sm">
-                                                                        <span class="avatar-title bg-info rounded-circle h3 my-0">
-                                                                            <i class="mdi mdi-chart-line"></i>
+                                                                    <div className="avatar-sm">
+                                                                        <span className="avatar-title bg-info rounded-circle h3 my-0">
+                                                                            <i className="mdi mdi-chart-line"></i>
                                                                         </span>
                                                                     </div>                                      
                                                                 </div>
