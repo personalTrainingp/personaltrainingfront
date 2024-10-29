@@ -27,6 +27,8 @@ export const PerfilProv = () => {
       <Loading show={isLoading}/>
     )
   }
+  console.log(proveedor.tb_images[proveedor.tb_images.length-1]?.name_image);
+  
   return (
     <>
         <Link  to={'/gestion-proveedores'} className='mt-3'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
