@@ -27,7 +27,7 @@ export const PerfilProv = () => {
       <Loading show={isLoading}/>
     )
   }
-  console.log(proveedor);
+  console.log(proveedor.tb_images.length==0);
   
   return (
     <>
@@ -39,7 +39,7 @@ export const PerfilProv = () => {
                     <Card.Body>
                     <div className='' style={{height: '600px', width: '100%'}}>
                         <div className='d-flex align-items-center flex-column'>
-                        <img src={`${proveedor.tb_images?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_images[proveedor.tb_images.length-1].name_image}`:sinAvatar}`} className='rounded-circle' width={150} height={150}/>
+                        <img src={`${proveedor.tb_images.lengt!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_images[proveedor.tb_images.length-1]?.name_image}`:sinAvatar}`} className='rounded-circle' width={150} height={150}/>
                         <div className='m-2 text-center'>
                             <span className='fs-3 fw-bold'>
                                 <p className='mb-0 pb-0'>
