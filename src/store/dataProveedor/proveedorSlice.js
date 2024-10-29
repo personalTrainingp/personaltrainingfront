@@ -5,9 +5,11 @@ export const proveedorSlice = createSlice({
 		errorMessage: undefined,
 		status: 'undefined',
 		proveedor: {
+			id: 0,
 			ruc_prov: '',
 			razon_social_prov: '',
 			tel_prov: '',
+			cel_prov: '',
 			email_prov: '',
 			direccion_prov: '',
 			dni_vend_prov: '',
@@ -15,6 +17,14 @@ export const proveedorSlice = createSlice({
 			tel_vend_prov: '',
 			email_vend_prov: '',
 			estado_prov: true,
+			uid_comentario: '',
+			uid_contrato_proveedor: '',
+			uid_presupuesto_proveedor: '',
+			uid_documentso_proveedor: '',
+			parametro_oficio: { label_param: '' },
+			parametro_marca: { label_param: '' },
+			tb_images: [{ name_image: '' }],
+			id_oficio: 0,
 		},
 		trabajoProv: {
 			id_prov: 0,
@@ -54,6 +64,9 @@ export const proveedorSlice = createSlice({
 		onViewContratoxProv: (state, action) => {
 			state.dataContratoProv = action.payload;
 		},
+		onDataPerfil: (state, action) => {
+			state.proveedor = action.payload;
+		},
 	},
 });
 export const {
@@ -63,4 +76,5 @@ export const {
 	onSetProveedoresCOMBO,
 	onRegisterProveedor,
 	onViewContratoxProv,
+	onDataPerfil,
 } = proveedorSlice.actions;

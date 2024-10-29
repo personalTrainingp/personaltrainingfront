@@ -1,5 +1,6 @@
 import { PTApi } from '@/common/api/';
 import {
+	onDataPerfil,
 	onSetProveedores,
 	onSetProveedoresCOMBO,
 	onViewContratoxProv,
@@ -35,6 +36,7 @@ export const useProveedorStore = () => {
 		uid_documentso_proveedor: '',
 		parametro_oficio: { label_param: '' },
 		parametro_marca: { label_param: '' },
+		tb_images: [{ name_image: '' }],
 		id_oficio: 0,
 	});
 	const startRegisterProveedor = async (formState, estado_prov, agente, selectedFile) => {
@@ -105,7 +107,7 @@ export const useProveedorStore = () => {
 			// console.log(data);
 			setstatus('success');
 			// console.log(data.proveedor);
-
+			dispatch(onDataPerfil(data.proveedor));
 			setProveedor({ proveedor: data.proveedor });
 		} catch (error) {
 			console.log(error);
@@ -115,7 +117,8 @@ export const useProveedorStore = () => {
 		try {
 			setIsLoading(false);
 			const { data } = await PTApi.get(`/proveedor/obtener-proveedor-uid/${uid}`);
-			setProveedor({ ...data.proveedor, ...data.imageProv });
+			dispatch(onDataPerfil(data.proveedor));
+			setProveedor(data.proveedor);
 			setIsLoading(true);
 		} catch (error) {
 			console.log(error);
@@ -137,15 +140,28 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
-	const actualizarProveedor = async (formState, id) => {
+	const actualizarProveedor = async (formState, id, avatarFile, uid) => {
 		try {
 			setIsLoading(true);
-			const { data } = await PTApi.put(`/proveedor/update-proveedor/${id}`, formState);
+			const { data } = await PTApi.put(`/proveedor/update-proveedor/${id}`, {
+				...formState,
+				avatarFile,
+			});
+			console.log(data.proveedor);
+
+			if (avatarFile) {
+				const formData = new FormData();
+				formData.append('file', avatarFile);
+				await PTApi.post(
+					`/storage/blob/create/${data.proveedor.uid_perfil_image}?container=avatar-proveedores`,
+					formData
+				);
+			}
+			await obtenerProveedorxUID(uid);
 			// console.log(id);
 			// dispatch(getProveedores(data));
 			setmessage({ msg: data.msg, ok: data.ok });
 			setIsLoading(false);
-			obtenerProveedores();
 			Swal.fire({
 				icon: 'success',
 				title: 'PROVEEDOR ACTUALIZADO CORRECTAMENTE',

@@ -13,10 +13,12 @@ import { ScrollPanel } from 'primereact/scrollpanel'
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { Loading } from '@/components/Loading'
 import config from '@/config'
+import { useSelector } from 'react-redux'
 export const PerfilProv = () => {
     const {uid} = useParams()
     
-    const { obtenerProveedorxUID, isLoading, proveedor } = useProveedorStore()
+    const { obtenerProveedorxUID, isLoading } = useProveedorStore()
+    const { proveedor } = useSelector(e=>e.prov)
   useEffect(() => {
     obtenerProveedorxUID(uid)
   }, [])
@@ -25,7 +27,7 @@ export const PerfilProv = () => {
       <Loading show={isLoading}/>
     )
   }
-  console.log(`${config.API_IMG.AVATARES_PROV}${proveedor.name_image}`);
+  console.log(proveedor);
   
   return (
     <>
@@ -37,7 +39,7 @@ export const PerfilProv = () => {
                     <Card.Body>
                     <div className='' style={{height: '600px', width: '100%'}}>
                         <div className='d-flex align-items-center flex-column'>
-                        <img src={`${proveedor.name_image?`${config.API_IMG.AVATARES_PROV}${proveedor.name_image}`:sinAvatar}`} className='rounded-circle' width={150} height={150}/>
+                        <img src={`${proveedor.tb_images?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_images[proveedor.tb_images.length-1].name_image}`:sinAvatar}`} className='rounded-circle' width={150} height={150}/>
                         <div className='m-2 text-center'>
                             <span className='fs-3 fw-bold'>
                                 <p className='mb-0 pb-0'>

@@ -95,7 +95,7 @@ export const SectionInfoProv = ({dataProv}) => {
                 e.preventDefault()
                 if(dataProv){
                     // console.log("actualizaro");
-                    actualizarProveedor(formState, dataProv.id)
+                    actualizarProveedor(formState, dataProv.id, formStateAvatar.imgAvatar_BASE64, dataProv.uid)
                     setVisible(true);
                     return;
                 }
@@ -110,6 +110,7 @@ const ViewDataImg = (e) => {
     };
     reader.readAsDataURL(file);
 };
+
 
   return (
     <>
