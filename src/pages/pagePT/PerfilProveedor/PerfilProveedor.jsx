@@ -15,6 +15,7 @@ import { Loading } from '@/components/Loading'
 import config from '@/config'
 import { useSelector } from 'react-redux'
 import { Image } from 'primereact/image'
+import { SectionFacturacionProv } from './SectionFacturacionProv'
 export const PerfilProv = () => {
     const {uid} = useParams()
     
@@ -31,9 +32,10 @@ export const PerfilProv = () => {
   console.log(proveedor.tb_images[proveedor.tb_images.length-1]?.name_image);
   
   return (
-    <>
-        <Link  to={'/gestion-proveedores'} className='mt-3'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
-        <br/>
+    <>  
+        <div className='my-2 py-2 btn btn-primary'>
+            <Link  to={'/gestion-proveedores'} className='fs-3 text-white'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
+        </div>
         <Row>
             <Col xxl={3}>
                 <Card style={{height: '85vh', width: '100%'}}>
@@ -45,12 +47,12 @@ export const PerfilProv = () => {
                         <div className='m-2 text-center'>
                             <span className='fs-3 fw-bold'>
                                 <p className='mb-0 pb-0'>
-                                <span className='font-15 text-primary'>
+                                <span className='fs-2 text-primary'>
                                     {proveedor.parametro_oficio?.label_param} 
                                 </span>
                                 <br/>
-                                <span>
-                                    {proveedor.razon_social_prov}
+                                <span className='fs-1'>
+                                    {proveedor.nombre_contacto}
                                 </span>
                                 </p>
                                 </span>
@@ -62,7 +64,7 @@ export const PerfilProv = () => {
                         </div>
                         </div>
                         
-				<Table responsive className="table table-sm table-centered mb-2 font-14">
+				{/* <Table responsive className="table table-sm table-centered mb-2 font-14">
 					<tbody>
 						<tr className='my-2'>
 							<td>Pendientes</td>
@@ -81,7 +83,7 @@ export const PerfilProv = () => {
 							<td>2</td>
 						</tr>
 					</tbody>
-				</Table>
+				</Table> */}
                     </div>
                     </Card.Body>
                 </Card>
@@ -95,6 +97,11 @@ export const PerfilProv = () => {
                             <TabPanel header={'Informacion del proveedor'}>
                                 <ScrollPanel style={{ width: '100%', height: '65vh' }} className="custombar2">
                                     <SectionInfoProv dataProv={proveedor}/>
+                                </ScrollPanel>
+                            </TabPanel>
+                            <TabPanel header={'FACTURACION'}>
+                                <ScrollPanel style={{ width: '100%', height: '65vh' }} className="custombar2">
+                                    <SectionFacturacionProv dataProv={proveedor}/>
                                 </ScrollPanel>
                             </TabPanel>
                             <TabPanel header={'Comentarios'}>

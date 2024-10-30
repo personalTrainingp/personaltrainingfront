@@ -418,7 +418,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                     <div className="form-check">
                                         <input className="form-check-input" type="checkbox" name='es_agente' onChange={onInputChange} checked={es_agente} id="flexCheckDefault"/>
                                         <label className="form-check-label" for="flexCheckDefault">
-                                            ¿Si es un agente? marcar la casilla.
+                                            ¿Si es un gasto? marcar la casilla.
                                         </label>
                                     </div>
                                 </div>
