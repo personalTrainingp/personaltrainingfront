@@ -14,6 +14,7 @@ import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { Loading } from '@/components/Loading'
 import config from '@/config'
 import { useSelector } from 'react-redux'
+import { Image } from 'primereact/image'
 export const PerfilProv = () => {
     const {uid} = useParams()
     
@@ -39,7 +40,8 @@ export const PerfilProv = () => {
                     <Card.Body>
                     <div className='' style={{height: '600px', width: '100%'}}>
                         <div className='d-flex align-items-center flex-column'>
-                        <img src={`${proveedor.tb_images?.length!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_images[proveedor.tb_images.length-1]?.name_image}`:sinAvatar}`} className='rounded-circle' width={150} height={150}/>
+                        {/* <img src={`${proveedor.tb_images?.length!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_images[proveedor.tb_images.length-1]?.name_image}`:sinAvatar}`} className='rounded-circle' width={150} height={150}/> */}
+                        <Image src={`${proveedor.tb_images?.length!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_images[proveedor.tb_images.length-1]?.name_image}`:sinAvatar}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="250" />
                         <div className='m-2 text-center'>
                             <span className='fs-3 fw-bold'>
                                 <p className='mb-0 pb-0'>
