@@ -122,7 +122,7 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 		});
 	};
 	const diasPorTerminarBodyTemplate = (rowData) => {
-		return `${rowData.diasFaltan} dias`;
+		return `${rowData.diasFaltan} sesiones`;
 	};
 
 	const onGlobalFilterChange = (e) => {

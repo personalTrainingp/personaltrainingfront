@@ -36,7 +36,7 @@ export const NumberFormatMoney = ({ amount }) => {
   
   return formattedAmount
 }
-export const NumberFormatter = ({ amount }) => {
+export const NumberFormatter = ({ amount, splitCaracter }) => {
   const formattedAmount = accounting.formatMoney(amount, {
     symbol: '',  // Símbolo de la moneda
     precision: 2, // Precisión de decimales
@@ -46,7 +46,7 @@ export const NumberFormatter = ({ amount }) => {
   });
   // console.log(formattedAmount.split('.')[0]);
   
-  return formattedAmount.split('.')[0]
+  return formattedAmount.split(splitCaracter?splitCaracter:'.')[0]
 }
 export const FUNMoneyFormatter = (amount, moneda) => {
   const formattedAmount = accounting.formatMoney(amount, {

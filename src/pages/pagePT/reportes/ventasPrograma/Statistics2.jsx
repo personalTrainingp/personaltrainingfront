@@ -3,8 +3,7 @@ import classNames from 'classnames';
 import { CardTitle } from '@/components';
 import { formateo_Moneda, NumberFormatter } from '@/components/CurrencyMask';
 
-export const Statistics2 = ({statisticsData}) => {
-  console.log(statisticsData);
+export const Statistics2 = ({statisticsData, id_programa}) => {
   
 	const formatCurrency = (value) => {
 		return value.toLocaleString('es-PE', { style: 'currency', currency: 'PEN' });
@@ -27,12 +26,20 @@ export const Statistics2 = ({statisticsData}) => {
       noOfProject: formateo_Moneda(statisticsData.ticket_medio?statisticsData.ticket_medio:0),
     },
     {
-      title: 'SEMANAS VENDIDAS POR PROGRAMA',
-      noOfProject: <NumberFormatter amount={statisticsData.semanas_vendidas_programa}/>,
+      title: `SEMANAS VENDIDAS ${id_programa!=0?'POR PROGRAMA':''}`,
+      noOfProject: <NumberFormatter amount={statisticsData.semanas_vendidas_programa} splitCaracter={'.'}/>,
+    },
+    {
+      title: `SESIONES VENDIDAS ${id_programa!=0?`POR PROGRAMA`:''}`,
+      noOfProject: <NumberFormatter amount={statisticsData.semanas_vendidas_programa*5} splitCaracter={'.'}/>,
+    },
+    {
+      title: `TICKET POR SESION ${id_programa!=0?`POR PROGRAMA`:''}`,
+      noOfProject: <NumberFormatter amount={(statisticsData.ventas_acumuladas)/(statisticsData.semanas_vendidas_programa*5)} splitCaracter={','}/>,
     },
     {
       title: 'TICKET PROM SEMANAS',
-      noOfProject: <NumberFormatter amount={statisticsData.ticket_prom_semanas}/>,
+      noOfProject: <NumberFormatter amount={statisticsData.ticket_prom_semanas} splitCaracter={','}/>,
     },
 
   ];

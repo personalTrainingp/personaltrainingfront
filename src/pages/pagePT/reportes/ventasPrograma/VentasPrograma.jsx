@@ -16,24 +16,28 @@ import { ContratosMembresia } from './ContratosMembresia'
 import { useReporteVentaxProgramaStore } from '@/hooks/hookApi/Reportes/useReporteVentaxProgramaStore'
 import { Loading } from '@/components/Loading'
 import { VentasxDistritos } from './VentasxDistritos'
+import { useReporteVentasxProgramasStore } from '@/hooks/hookApi/StoreVentasxProgramas/useReporteVentasxProgramasStore'
 const rangoFechas = {
-  rangoDate:[new Date(new Date().getFullYear(), 0, 1), new Date()],
+  rangoDate:[new Date(new Date().getFullYear(), 8, 16), new Date()],
   id_programa: 0
 }
 export const VentasPrograma = () => {
   const { formState, rangoDate, id_programa, onInputChange, onInputChangeReact, onResetForm } = useForm(rangoFechas)
   const { obtenerProgramasActivos, programasActivos } = useTerminoStore()
   const { 
+          
           obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO, programa_comparativa_mejoranio,
           obtenerReporteVentasPrograma_EstadoCliente, programa_estado_cliente,
           obtenerReporteVentasAcumuladas_y_Tickets, ventasxPrograma_ventasAcumuladasTickets,
           obtenerReporteVentasDeProgramasPorSemanas, ventasxPrograma_ventasDeProgramasPorSemanas, 
           // obtenerReporteVentasPorProgramas_x_ClientesFrecuentes, ventasxPrograma_clientesFrecuentes
          } = useReporteStore()
-  const { obtenerMembresiasxFechaxPrograma, membresiasxFechaxPrograma , estadosClienteMembresia , dataClientes } = useReporteVentaxProgramaStore()
+  const { obtenerMembresiasxFechaxPrograma, membresiasxFechaxPrograma , estadosClienteMembresia , dataClientes,  } = useReporteVentaxProgramaStore()
+  const { obtenerVentasxPrograma, numeroDeTraspaso, ventasxPrograma, obtenerTransferencias_x_pgm_x_Date, transferencias } = useReporteVentasxProgramasStore()
   useEffect(() => {
     obtenerProgramasActivos()
   }, [])
+  
   const [loading, setloading] = useState(false)
   useEffect(() => {
     const funcionDataExtract = async()=>{
@@ -48,15 +52,15 @@ export const VentasPrograma = () => {
       await obtenerReporteVentasDeProgramasPorSemanas(id_programa, rangoDate)
       await obtenerMembresiasxFechaxPrograma(id_programa, rangoDate)
       await estadosClienteMembresia(id_programa , rangoDate[0] , rangoDate[1])
+      await obtenerVentasxPrograma(id_programa, rangoDate)
+      await obtenerTransferencias_x_pgm_x_Date(id_programa, rangoDate)
+      // await obtenerClientesConTraspasos(id_programa, rangoDate)
       setloading(true)
     }
     
     funcionDataExtract()
     // obtenerReporteVentasPorProgramas_x_ClientesFrecuentes(id_programa, rangoDate)
   }, [id_programa, rangoDate])
-  console.log(loading);
-  
-  
 
   let NroClientesNuevo = 0;
   let NroClientesReinscritos = 0;
@@ -67,13 +71,22 @@ export const VentasPrograma = () => {
     NroClientesReinscritos = dataClientes.cantidadPorEstado.ClienteReinscrito;
     NroClientesRenovados = dataClientes.cantidadPorEstado.ClienteRenovado;
   };
-  
   const statisticsClientes = [
     {
       icon: 'mdi mdi-account-star-outline',
       variant: 'primary',
       title: 'CLIENTES NUEVOS',
       noOfProject: NroClientesNuevo//programa_estado_cliente?.nuevos?.length,
+    },
+    {
+      variant: 'info',
+      title: 'TRASPASOS',
+      noOfProject: numeroDeTraspaso-transferencias//programa_estado_cliente?.renovados?.length,
+    },
+    {
+      variant: 'info',
+      title: 'TRANSFERENCIAS',
+      noOfProject: transferencias//programa_estado_cliente?.renovados?.length,
     },
     {
       icon: 'mdi mdi-account-group',
@@ -87,11 +100,6 @@ export const VentasPrograma = () => {
       title: 'CLIENTES RENOVADOS',
       noOfProject: NroClientesRenovados//programa_estado_cliente?.renovados?.length,
     },
-    {
-      variant: 'info',
-      title: 'TRASPASO DE PT A CHANGE',
-      noOfProject: ''//programa_estado_cliente?.renovados?.length,
-    }
   ];
   const programasActivosTODO = [
     {value: 0, label: 'TODO LOS PROGRAMAS', urlAvatar: 'None'},
@@ -142,16 +150,13 @@ export const VentasPrograma = () => {
       <Statistics statisticsData={statisticsClientes}/>
     </Row>
     <Row>
-      <Statistics2 statisticsData={ventasxPrograma_ventasAcumuladasTickets}/>
-      {id_programa!==0 && (
+      <Statistics2 statisticsData={ventasxPrograma_ventasAcumuladasTickets} id_programa={id_programa}/>
         <Col xxl={12}>
         <SemanasxPrograma data={ventasxPrograma_ventasDeProgramasPorSemanas}/>
         </Col>
-      )
-      }
-      <Col xxl={12}>
-        <VentasxDistritos data={[]}/>
-      </Col>
+      {/* <Col xxl={12}>
+        <VentasxDistritos data={ventasxPrograma}/>
+      </Col> */}
       <Col xxl={12}>
         <ProjectStatistics data={programa_comparativa_mejoranio}/>
       </Col>

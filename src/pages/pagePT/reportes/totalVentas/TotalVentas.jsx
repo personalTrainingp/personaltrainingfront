@@ -52,7 +52,7 @@ export const TotalVentas = () => {
   const [clickServProd, setclickServProd] = useState("total")
   const {onInputChange, onResetForm, formState, onInputChangeReact, dates} = useForm(filtrarCalendario)
   const toast = useRef(null)
-  const [rangoFechas, setrangoFechas] = useState([new Date(new Date().getFullYear(), 0, 1), new Date()])
+  const [rangoFechas, setrangoFechas] = useState([new Date(new Date().getFullYear(), 8, 16), new Date()])
   
   useEffect(() => {
     if(rangoFechas[0]===null) return;
@@ -114,6 +114,7 @@ export const TotalVentas = () => {
         }
     }
   }
+  // console.log(clickServProd, TotalDeVentasxProdServ(`${clickServProd}`).data.length, "en linea 117");
   
   return (
     <>
@@ -136,7 +137,7 @@ export const TotalVentas = () => {
     </div>
     <Row>
       <Col xxl={3}>
-        <CardTotal onClick={()=>setclickServProd('total')} title={`Total de venta ${clasesVentasSeparadas(clickServProd)}`} body={<MoneyFormatter amount={TotalDeVentasxProdServ(clickServProd).sumaTotal}/>} span={`${contarVentas(reporteTotalVentasPorTipoCliente)} ventas | ${contarVentasEspeciales(reporteTotalVentasPorTipoCliente)} Canjes`}/>
+        <CardTotal onClick={()=>setclickServProd('total')} title={`Total de venta ${clasesVentasSeparadas(clickServProd)}`} body={<MoneyFormatter amount={TotalDeVentasxProdServ(clickServProd).sumaTotal}/>} span={`${TotalDeVentasxProdServ(`${clickServProd}`).data?.length} ventas `}/>
       </Col>
       <Col xxl={2}>
         <CardTotal title={'Venta del dia'} body={<MoneyFormatter amount={0}/>} span={`${0} ventas`}/>

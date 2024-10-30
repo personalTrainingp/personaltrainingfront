@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 export const useReporteVentaxProgramaStore = () => {
 	const [membresiasxFechaxPrograma, setmembresiasxFechaxPrograma] = useState([]);
-	const [dataClientes , setDataClientes] = useState([]);
+	const [dataClientes, setDataClientes] = useState([]);
 
 	const obtenerMembresiasxFechaxPrograma = async (id_programa, rangoDate) => {
 		try {
@@ -22,32 +22,27 @@ export const useReporteVentaxProgramaStore = () => {
 		}
 	};
 
-	const estadosClienteMembresia = async (id_programa, fechaDesdeStr , fechaHastaStr) => {
+	const estadosClienteMembresia = async (id_programa, fechaDesdeStr, fechaHastaStr) => {
 		try {
-
 			//debugger;
 			fechaDesdeStr = formatearFecha(fechaDesdeStr);
 			fechaHastaStr = formatearFecha(fechaHastaStr);
 
-			const  { data } = await PTApi.post(				
-					'venta/estado-membresia',
-					{
-						tipoPrograma : id_programa,
-						fechaDesde: fechaDesdeStr,
-						fechaHasta: fechaHastaStr
-					},
-				);
-				
-	
-				setDataClientes(data.msg);
-				console.log(data.msg);
+			const { data } = await PTApi.post('venta/estado-membresia', {
+				tipoPrograma: id_programa,
+				fechaDesde: fechaDesdeStr,
+				fechaHasta: fechaHastaStr,
+			});
+			console.log(data, 'estado de membresai');
+
+			setDataClientes(data.msg);
+			console.log(data.msg);
 		} catch (error) {
-			console.log("error Estados Cliente " +error.message);
-		};
-	
+			console.log('error Estados Cliente ' + error.message);
+		}
 	};
 
-	function formatearFecha( fecha){
+	function formatearFecha(fecha) {
 		const year = fecha.getFullYear();
 		const month = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses son base 0, por lo que se suma 1
 		const day = String(fecha.getDate()).padStart(2, '0');
@@ -60,7 +55,6 @@ export const useReporteVentaxProgramaStore = () => {
 		obtenerMembresiasxFechaxPrograma,
 		membresiasxFechaxPrograma,
 		estadosClienteMembresia,
-		dataClientes
+		dataClientes,
 	};
-
 };

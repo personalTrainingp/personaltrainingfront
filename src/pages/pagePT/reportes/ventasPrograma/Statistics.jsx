@@ -7,7 +7,7 @@ const Statistics = ({ statisticsData }) => {
 		<>
 			{(statisticsData || []).map((statistics, index) => {
 				return (
-					<Col xl={3} sm={6} key={index.toString()}>
+					<Col xl={2} sm={6} key={index.toString()}>
 						<Card>
 							<Card.Body>
 								<CardTitle
@@ -15,23 +15,27 @@ const Statistics = ({ statisticsData }) => {
 									title={
 										<>
 											<div className="flex-shrink-0 me-3">
-												<div className="avatar-sm">
-													<span
-														className={classNames(
-															'avatar-title',
-															'bg-' + statistics.variant + '-lighten',
-															'text-' + statistics.variant,
-															'rounded'
-														)}
-													>
-														<i
-															className={classNames(
-																statistics.icon,
-																'font-24'
-															)}
-														></i>
-													</span>
-												</div>
+												{
+													statistics.icon &&(
+														<div className="avatar-sm">
+															<span
+																className={classNames(
+																	'avatar-title',
+																	'bg-' + statistics.variant + '-lighten',
+																	'text-' + statistics.variant,
+																	'rounded'
+																)}
+															>
+																<i
+																	className={classNames(
+																		statistics.icon,
+																		'font-24'
+																	)}
+																></i>
+															</span>
+														</div>
+													)
+												}
 											</div>
 											<div className="flex-grow-1">
 												<h4 className="mt-0 mb-1">{statistics.title}</h4>

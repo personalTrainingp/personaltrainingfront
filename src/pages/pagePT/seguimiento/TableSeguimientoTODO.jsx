@@ -114,7 +114,7 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 		});
 	};
 	const diasPorTerminarBodyTemplate = (rowData) => {
-		return `${rowData.diasFaltan} dias`;
+		return `${rowData.diasFaltan} sesiones`;
 	};
 
 	const onGlobalFilterChange = (e) => {
@@ -186,10 +186,23 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
                 <div className='font-bold '>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</div>
                 <div>Email: {rowData.tb_ventum.tb_cliente.email_cli} </div>
                 <div>Telefono: {rowData.tb_ventum.tb_cliente.tel_cli?rowData.tb_ventum.tb_cliente.tel_cli.replace(/ /g, "").match(/.{1,3}/g).join('-'):''} </div>
-                <div>Distrito: {rowData.distrito} </div>
+                <div className='fw-bold text-primary'>Distrito: {rowData.distrito} </div>
                 {/* <div>EDAD: {rowData.distrito} </div> */}
             </div>
         );
+	}
+	const programaSesioneBodyTemplate = (rowData)=>{
+		return (
+			<>
+			<span className='text-primary fw-semibold font-20'>
+			{rowData.ProgramavsSemana.split('|')[0]} 
+			</span>
+			<br/>
+			{rowData.ProgramavsSemana.split('|')[1]}
+			<br/>
+			{rowData.ProgramavsSemana.split('|')[2]}
+			</>
+		)
 	}
 
 	// const dateFilterTemplate = (options) => {
@@ -229,6 +242,7 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 						body={<Skeleton/>}
 						style={{ minWidth: '14rem' }}
 						filter
+						
 						filterPlaceholder="Search by country"
 					/>
 					<Column
@@ -304,17 +318,9 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 						sortable
 						filterField="ProgramavsSemana"
 						style={{ minWidth: '14rem' }}
+						body={programaSesioneBodyTemplate}
 						filter
 						filterPlaceholder="Buscar programa, semana o horario"
-					/>
-					<Column
-						header="VENCIMIENTO"
-						sortable
-						dataType="date"
-						style={{ minWidth: '10rem' }}
-						body={dateBodyTemplate}
-						// filter
-						// filterElement={dateFilterTemplate}
 					/>
 					<Column
 						field="dias"
@@ -324,6 +330,15 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 						style={{ minWidth: '12rem' }}
 						body={diasPorTerminarBodyTemplate}
 						filter
+					/>
+					<Column
+						header="VENCIMIENTO"
+						sortable
+						dataType="date"
+						style={{ minWidth: '10rem' }}
+						body={dateBodyTemplate}
+						// filter
+						// filterElement={dateFilterTemplate}
 					/>
 					<Column 
 								 field="status" 
