@@ -33,9 +33,10 @@ export const arrayRedesSociales = [
 	{ label: 'TikTok', value: 'TT' },
 ];
 export const arrayPersonalTest = [
-	{ label: 'Test Apellido 1', value: 444 },
-	{ label: 'Test Apellido 2', value: 445 },
-	{ label: 'Test Apellido 3', value: 446 },
+	{ label: 'PAPA', value: 444 },
+	{ label: 'MAMA', value: 445 },
+	{ label: 'TIO', value: 446 },
+	{ label: 'ABUELO', value: 446 },
 ];
 export const arrayCitas = [
 	{ label: 'Test Apellido 1', value: 266 },

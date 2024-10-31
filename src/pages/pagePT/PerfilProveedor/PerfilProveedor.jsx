@@ -16,6 +16,7 @@ import config from '@/config'
 import { useSelector } from 'react-redux'
 import { Image } from 'primereact/image'
 import { SectionFacturacionProv } from './SectionFacturacionProv'
+import { SectionContactoEmergencia } from './SectionContactoEmergencia'
 export const PerfilProv = () => {
     const {uid} = useParams()
     
@@ -34,7 +35,7 @@ export const PerfilProv = () => {
   return (
     <>  
         <div className='my-2 py-2 btn btn-primary'>
-            <Link  to={'/gestion-proveedores'} className='fs-3 text-white'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
+            <Link  to={'/gestion-proveedores'} className='fs-5 text-white'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
         </div>
         <Row>
             <Col xxl={3}>
@@ -94,16 +95,21 @@ export const PerfilProv = () => {
                     </Card.Header>
                     <Card.Body>
                         <TabView>
-                            <TabPanel header={'Informacion del proveedor'}>
-                                <ScrollPanel style={{ width: '100%', height: '65vh' }} className="custombar2">
+                            <TabPanel header={'CONTACTO'}>
+                                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                                     <SectionInfoProv dataProv={proveedor}/>
                                 </ScrollPanel>
                             </TabPanel>
                             <TabPanel header={'FACTURACION'}>
-                                <ScrollPanel style={{ width: '100%', height: '65vh' }} className="custombar2">
+                                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                                     <SectionFacturacionProv dataProv={proveedor}/>
                                 </ScrollPanel>
                             </TabPanel>
+                            {/* <TabPanel header={'CONTACTO DE EMERGENCIA'}>
+                                <ScrollPanel style={{ width: '100%', height: '65vh' }} className="custombar2">
+                                    <SectionContactoEmergencia dataProv={proveedor}/>
+                                </ScrollPanel>
+                            </TabPanel> */}
                             <TabPanel header={'Comentarios'}>
                                 <ScrollPanel style={{ width: '100%', height: '65vh' }} className="custombar3">
                                     <SectionComentarios data={proveedor}/>
@@ -122,6 +128,7 @@ export const PerfilProv = () => {
                 </Card>
             </Col>
         </Row>
+        
     </>
   )
 }

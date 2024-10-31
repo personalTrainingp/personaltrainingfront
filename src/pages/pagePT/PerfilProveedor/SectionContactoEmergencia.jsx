@@ -30,7 +30,7 @@ const registerProvedor = {
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const SectionFacturacionProv = ({dataProv}) => {
+export const SectionContactoEmergencia = ({dataProv}) => {
     const { ruc_prov, 
         razon_social_prov, 
         tel_prov,
@@ -119,8 +119,168 @@ const ViewDataImg = (e) => {
     <>
         <form onSubmit={submitProveedor}>
                         <Row>
-                        <Col lg={2}>
-                            <div className="mb-4" style={{width: '120px'}}>
+                            <Col lg={12}>
+                                <p className='fw-bold fs-5 text-decoration-underline'>
+                                Datos del proveedor
+                                </p>
+                            </Col>
+                            <Col lg={2}>
+                            <div className="mb-4">
+                                <label htmlFor="ruc_prov" className="form-label">
+                                    Ruc*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="ruc_prov"
+                                    id="ruc_prov"
+                                    value={ruc_prov}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                    required
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={5}>
+                            <div className="mb-4">
+                                <label htmlFor="razon_social_prov" className="form-label">
+                                    Razon social*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="razon_social_prov"
+                                    id="razon_social_prov"
+                                    value={razon_social_prov}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                    required
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={2}>
+                            <div className="mb-4">
+                                <label htmlFor="cel_prov" className="form-label">
+                                    N° Celular*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="cel_prov"
+                                    id="cel_prov"
+                                    value={cel_prov}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={2}>
+                            <div className="mb-4">
+                                <label htmlFor="tel_prov" className="form-label">
+                                    N° Telefono*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="tel_prov"
+                                    id="tel_prov"
+                                    value={tel_prov}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={4}>
+                            <div className="mb-4">
+                                <label htmlFor="email_prov" className="form-label">
+                                    Correo*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="email_prov"
+                                    id="email_prov"
+                                    value={email_prov}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={4}>
+                            <div className="mb-4">
+                                <label htmlFor="bene_prov" className="form-label">
+                                    BENEFICIARIO*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="bene_prov"
+                                    id="bene_prov"
+                                    value={bene_prov}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={3}>
+                            <div className="mb-4">
+                                <label htmlFor="id_tarjeta" className="form-label">
+                                    BANCO
+                                </label>
+                                <Select
+                                        onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
+                                        name="id_tarjeta"
+                                        placeholder={'Seleccione el banco'}
+                                        className="react-select"
+                                        classNamePrefix="react-select"
+                                        options={DataGeneral}
+                                        value={DataGeneral.find(
+                                            (option) => option.value === id_tarjeta
+                                        )}
+                                    />
+                            </div>
+                            </Col>
+                            <Col lg={4}>
+                            <div className="mb-4">
+                                <label htmlFor="n_cuenta" className="form-label">
+                                    Numero de cuenta*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="n_cuenta"
+                                    id="n_cuenta"
+                                    value={n_cuenta}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={4}>
+                            <div className="mb-4">
+                                <label htmlFor="cci" className="form-label">
+                                    CCI*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="cci"
+                                    id="cci"
+                                    value={cci}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={8}>
+                            <div className="mb-4">
+                                <label htmlFor="direc_prov" className="form-label">
+                                    Direccion*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="direc_prov"
+                                    id="direc_prov"
+                                    value={direc_prov}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={4}>
+                                <div className="mb-4">
                                     <label htmlFor="estado_prov" className="form-label">
                                         Estado*
                                     </label>
@@ -139,206 +299,14 @@ const ViewDataImg = (e) => {
                                     />
                                 </div>
                             </Col>
-                            <Col lg={2}>
-                            <div className="mb-4" style={{width: '140px'}}>
-                                <label htmlFor="ruc_prov" className="form-label text-primary">
-                                    Ruc*
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="ruc_prov"
-                                    id="ruc_prov"
-                                    value={ruc_prov}
-                                    onChange={onInputChange}
-                                    placeholder=""
-                                    required
-                                />
-                            </div>
-                            </Col>
-                            <Col lg={8}>
-                            </Col>
-                            <Col lg={4}>
-                            <div className="mb-4">
-                                <label htmlFor="razon_social_prov" className="form-label">
-                                    Razon social*
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="razon_social_prov"
-                                    id="razon_social_prov"
-                                    value={razon_social_prov}
-                                    onChange={onInputChange}
-                                    placeholder=""
-                                    required
-                                />
-                            </div>
-                            </Col>
-                            <div className="mb-4" style={{width: '150px'}}>
-                                <label htmlFor="cel_prov" className="form-label">
-                                    N° Celular*
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="cel_prov"
-                                    id="cel_prov"
-                                    value={cel_prov}
-                                    onChange={onInputChange}
-                                    placeholder=""
-                                />
-                            </div>
-                            <div className="mb-4" style={{width: '440px'}}>
-                                <label htmlFor="email_prov" className="form-label">
-                                    Correo corporativo*
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="email_prov"
-                                    id="email_prov"
-                                    value={email_prov}
-                                    onChange={onInputChange}
-                                    placeholder=""
-                                />
-                            </div>
                             
-                            <div className="mb-4" style={{width: '140px'}}>
-                                <label htmlFor="tel_prov" className="form-label">
-                                    N° Telefono*
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="tel_prov"
-                                    id="tel_prov"
-                                    value={tel_prov}
-                                    onChange={onInputChange}
-                                    placeholder=""
-                                />
-                            </div>
-                            <Col lg={4}>
-                            <div className="mb-4">
-                                <label htmlFor="bene_prov" className="form-label">
-                                    BENEFICIARIO*
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="bene_prov"
-                                    id="bene_prov"
-                                    value={bene_prov}
-                                    onChange={onInputChange}
-                                    placeholder=""
-                                />
-                            </div>
-                            </Col>
-                            
-                            <div className="mb-4" style={{width: '190px'}}>
-                                <label htmlFor="id_tarjeta" className="form-label">
-                                    BANCO
-                                </label>
-                                <Select
-                                        onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
-                                        name="id_tarjeta"
-                                        placeholder={'Seleccione el banco'}
-                                        className="react-select"
-                                        classNamePrefix="react-select"
-                                        options={DataGeneral}
-                                        value={DataGeneral.find(
-                                            (option) => option.value === id_tarjeta
-                                        )}
-                                    />
-                            </div>
-                            
-                            <div className="mb-4" style={{width: '240px'}}>
-                                <label htmlFor="n_cuenta" className="form-label">
-                                    Cuenta*
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="n_cuenta"
-                                    id="n_cuenta"
-                                    value={n_cuenta}
-                                    onChange={onInputChange}
-                                    placeholder=""
-                                />
-                            </div>
-                            
-                            <div className="mb-4" style={{width: '260px'}}>
-                                <label htmlFor="cci" className="form-label">
-                                    CCI*
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="cci"
-                                    id="cci"
-                                    value={cci}
-                                    onChange={onInputChange}
-                                    placeholder=""
-                                />
-                            </div>
-                            <Col lg={6}>
-                            <div className="mb-4">
-                                <label htmlFor="direc_prov" className="form-label">
-                                    Direccion*
-                                </label>
-                                <input
-                                    className="form-control"
-                                    name="direc_prov"
-                                    id="direc_prov"
-                                    value={direc_prov}
-                                    onChange={onInputChange}
-                                    placeholder=""
-                                />
-                            </div>
-                            </Col>
-                            <div className="mb-4" style={{width: '250px'}}>
-                                <label htmlFor="id_tarjeta" className="form-label">
-                                    DISTRITO
-                                </label>
-                                <Select
-                                        onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
-                                        name="id_tarjeta"
-                                        placeholder={'Seleccione DISTRITO'}
-                                        className="react-select"
-                                        classNamePrefix="react-select"
-                                        options={DataGeneral}
-                                        value={0}
-                                    />
-                            </div>
-{/*                             
-                            <div className="mb-4" style={{width: '300px'}}>
-                                <label htmlFor="id_tarjeta" className="form-label">
-                                    PROVINCIA
-                                </label>
-                                <Select
-                                        onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
-                                        name="id_tarjeta"
-                                        placeholder={'Seleccione LA PROVINCIA'}
-                                        className="react-select"
-                                        classNamePrefix="react-select"
-                                        options={DataGeneral}
-                                        value={0}
-                                    />
-                            </div>
-                             */}
-                            <div className="mb-4" style={{width: '280px'}}>
-                                <label htmlFor="id_tarjeta" className="form-label">
-                                    DEPARTAMENTO
-                                </label>
-                                <Select
-                                        onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
-                                        name="id_tarjeta"
-                                        placeholder={'Seleccione DEPARTAMENTO'}
-                                        className="react-select"
-                                        classNamePrefix="react-select"
-                                        options={DataGeneral}
-                                        value={0}
-                                    />
-                            </div>
                             <Col lg={12}>
-                                <p className='fw-bold fs-4 text-primary text-decoration-underline'>
+                                <p className='fw-bold fs-5 text-decoration-underline'>
                                 Datos del representante
                                 </p>
                             </Col>
-                            
-                            <div className="mb-4" style={{width: '120px'}}>
+                            <Col lg={4}>
+                                <div className="mb-4">
                                     <label htmlFor="dni_vend_prov" className="form-label">
                                         Dni*
                                     </label>
@@ -351,10 +319,11 @@ const ViewDataImg = (e) => {
                                         placeholder=""
                                     />
                                 </div>
-                            <Col lg={4}>
+                            </Col>
+                            <Col lg={8}>
                                 <div className="mb-4">
                                     <label htmlFor="nombre_vend_prov" className="form-label">
-                                        Nombres y apellidos*
+                                        Nombres*
                                     </label>
                                     <input
                                         className="form-control"
@@ -366,7 +335,8 @@ const ViewDataImg = (e) => {
                                     />
                                 </div>
                             </Col>
-                                <div className="mb-4" style={{width: '150px'}}>
+                            <Col lg={4}>
+                                <div className="mb-4">
                                     <label htmlFor="cel_vend_prov" className="form-label">
                                         N° celular*
                                     </label>
@@ -379,10 +349,11 @@ const ViewDataImg = (e) => {
                                         placeholder=""
                                     />
                                 </div>
-                            <Col lg={5}>
+                            </Col>
+                            <Col lg={8}>
                                 <div className="mb-4">
                                     <label htmlFor="email_vend_prov" className="form-label">
-                                        Correo corporativo*
+                                        Correo*
                                     </label>
                                     <input
                                         className="form-control"
@@ -398,10 +369,6 @@ const ViewDataImg = (e) => {
                                 <Button type='submit'>
                                 Actualizar
                                 </Button>
-                                
-                                <div className='my-2 py-2 btn btn-primary'>
-                                    <Link  to={'/gestion-proveedores'} className='fs-5 text-white'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
-                                </div>
                             </Col>
                         </Row>
                     </form>

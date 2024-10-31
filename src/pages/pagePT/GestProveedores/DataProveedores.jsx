@@ -37,9 +37,7 @@ export const DataProveedores = () => {
 		<>
 			<PageBreadcrumb title="Gestion de proveedores" subName="E" />
 			<Row>
-				<Col xxl={1}>
-				</Col>
-				<Col xs={10}>
+				<Col xs={12}>
 					<Card>
 						<Card.Body>
 							<Row>
@@ -59,8 +57,6 @@ export const DataProveedores = () => {
               </TabView>
 						</Card.Body>
 					</Card>
-				</Col>
-				<Col xxl={1}>
 				</Col>
 			</Row>
       

@@ -1,7 +1,7 @@
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
-import { arrayEstados, arrayTarjetasTemp } from '@/types/type'
+import { arrayEstados, arrayEstadosCitas, arrayPersonalTest, arrayTarjetasTemp } from '@/types/type'
 import { confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
@@ -147,10 +147,10 @@ const ViewDataImg = (e) => {
                                 CONTACTO
                                 </p>
                             </Col> */}
-                            <Col lg={12}>
+                            <Col lg={4}>
                             <div className="mb-4">
                                 <label htmlFor="nombre_contacto" className="form-label">
-                                    nombre del contacto*
+                                    NOMBRES Y APELLIDOS COMPLETOS*
                                 </label>
                                 <input
                                     className="form-control"
@@ -163,7 +163,38 @@ const ViewDataImg = (e) => {
                                 />
                             </div>
                             </Col>
-                            
+                            <Col lg={2}>
+                            <div className="mb-4">
+                                <label htmlFor="tel_prov" className="form-label">
+                                    CELULAR*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="tel_prov"
+                                    id="tel_prov"
+                                    value={tel_prov}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                    required
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={6}>
+                            <div className="mb-4">
+                                <label htmlFor="nombre_contacto" className="form-label">
+                                    CORREO PERSONAL*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="nombre_contacto"
+                                    id="nombre_contacto"
+                                    value={''}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                    required
+                                />
+                            </div>
+                            </Col>
                             <Col lg={4}>
                                 <div className="mb-4">
                                     <label htmlFor="id_oficio" className="form-label">
@@ -182,6 +213,78 @@ const ViewDataImg = (e) => {
                                         )}
                                     />
                                 </div>
+                            </Col>
+                            <Col lg={12}>
+                            <p className='fw-bold fs-4 text-primary text-decoration-underline'>
+                                EMERGENCIA
+                            </p>
+                            </Col>
+                            <Col lg={2}>
+                                <div className="mb-4">
+                                    <label htmlFor="id_oficio" className="form-label">
+                                        FAMILIARIDAD*
+                                    </label>
+                                    <Select
+                                        onChange={(e) => onInputChangeReact(e, 'id_oficio')}
+                                        name="id_oficio"
+                                        placeholder={'familia'}
+                                        className="react-select"
+                                        classNamePrefix="react-select"
+                                        options={arrayPersonalTest}
+                                        value={arrayPersonalTest.find(
+                                            (option) => option.value === id_oficio
+                                        )}
+                                    />
+                                </div>
+                            </Col>
+                            
+                            <Col lg={4}>
+                            <div className="mb-4">
+                                <label htmlFor="nombre_contacto" className="form-label">
+                                    NOMBRES Y APELLIDOS COMPLETOS*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="nombre_contacto"
+                                    id="nombre_contacto"
+                                    value={nombre_contacto}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                    required
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={2}>
+                            <div className="mb-4">
+                                <label htmlFor="tel_prov" className="form-label">
+                                    CELULAR*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="tel_prov"
+                                    id="tel_prov"
+                                    value={tel_prov}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                    required
+                                />
+                            </div>
+                            </Col>
+                            <Col lg={4}>
+                            <div className="mb-4">
+                                <label htmlFor="nombre_contacto" className="form-label">
+                                    CORREO*
+                                </label>
+                                <input
+                                    className="form-control"
+                                    name="nombre_contacto"
+                                    id="nombre_contacto"
+                                    value={''}
+                                    onChange={onInputChange}
+                                    placeholder=""
+                                    required
+                                />
+                            </div>
                             </Col>
                             <Col lg={12}>
                                 <Button type='submit'>
