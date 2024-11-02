@@ -1,3 +1,6 @@
+import { helperFunctions } from '@/common/helpers/helperFunctions'
+import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
+import { onSetBase64Firma } from '@/store/data/dataSlice'
 import { onSetFirmaPgm } from '@/store/uiNuevaVenta/uiNuevaVenta'
 import { Button } from 'primereact/button'
 import React, { useRef } from 'react'
@@ -5,7 +8,9 @@ import {Modal, Col, Row} from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import SignaturePad from 'react-signature-canvas'
 
-export const ModalFirmaDigital = ({show, onHide}) => {
+export const ModalFirmaDigital = ({idVenta, idCli, show, onHide}) => {
+    const { base64ToFile } = helperFunctions()
+    const { agregarFirmaEnContratoCliente } = useVentasStore()
     const refCanvas = useRef({})
     const dispatch = useDispatch()
     const CloseModalFirma = ()=>{
@@ -20,14 +25,23 @@ export const ModalFirmaDigital = ({show, onHide}) => {
         const ctx = canvas.getContext('2d');
         ctx.strokeStyle = '#FFFFFF'; // Establecer el color del trazo en blanco
         const base64firma = refCanvas.current.getTrimmedCanvas().toDataURL("image/png")
-        dispatch(onSetFirmaPgm(base64firma))
+        const file = base64ToFile(
+            base64firma,
+            `firma_cli${idCli}.png`
+        );
+        
+        console.log(file);
+        agregarFirmaEnContratoCliente(file, idVenta, idCli)
+        dispatch(onSetBase64Firma(file))
+        // dispatch(onSetFirmaPgm(base64firma))
         onHide()
     }
+    
   return (
     <>
     <Modal show={show} backdrop={'static'} size='lg'>
         <Modal.Header>
-            <Modal.Title>Firma</Modal.Title>
+            <Modal.Title>Firma DIGITAL</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Row>

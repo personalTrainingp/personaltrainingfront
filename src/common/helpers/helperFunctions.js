@@ -42,7 +42,6 @@ export const helperFunctions = () => {
 		return fecha.format('YYYY-MM-DD');
 	}
 	const base64ToFile = (base64String, fileName) => {
-		console.log(base64String);
 
 		// Decodificar el string base64
 		const byteString = atob(base64String.split(',')[1]);

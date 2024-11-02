@@ -3,7 +3,7 @@ export const dataSlice = createSlice({
 	name: 'DATA',
 	initialState: {
 		dataView: [],
-		BASE64_FIRMA: '',
+		BASE64_FIRMA: null,
 	},
 	reducers: {
 		onSetDataView: (state, { payload }) => {

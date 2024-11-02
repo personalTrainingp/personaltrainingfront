@@ -10,43 +10,31 @@ import Select from 'react-select'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import { Image } from 'primereact/image'
 const registerProvedor = {
-    ruc_prov: '', 
-	razon_social_prov: '', 
-	tel_prov: '',
-	cel_prov: '', 
-	email_prov: '', 
-	direc_prov: '', 
-	dni_vend_prov: '',
-	nombre_vend_prov: '',
-	cel_vend_prov: '',
-	email_vend_prov: '',
-	estado_prov: true,
-    nombre_contacto: '',
-    es_agente: false,
+    id_familiar: 0,
+    nombres_familiar: '',
+    cel_familiar: '',
+    correo_familiar: '',
     id_oficio: 0,
+    es_agente: true,
+    nombre_contacto: '',
+    celular_contacto: '',
+    correo_contacto: '',
 }
 
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
 export const SectionInfoProv = ({dataProv}) => {
-    const { ruc_prov, 
-        razon_social_prov, 
-        tel_prov,
-        cel_prov, 
-        email_prov, 
-        direc_prov, 
-        dni_vend_prov,
-        nombre_vend_prov,
-        cel_vend_prov,
-        email_vend_prov,
-        estado_prov,
-        cci,
-        n_cuenta,
-        id_tarjeta,
+    const { 
+        id_familiar,
+        nombres_familiar,
+        cel_familiar,
+        correo_familiar,
         id_oficio,
         es_agente,
         nombre_contacto,
+        celular_contacto,
+        correo_contacto,
         formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
         
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
@@ -165,14 +153,14 @@ const ViewDataImg = (e) => {
                             </Col>
                             <Col lg={2}>
                             <div className="mb-4">
-                                <label htmlFor="tel_prov" className="form-label">
+                                <label htmlFor="celular_contacto" className="form-label">
                                     CELULAR*
                                 </label>
                                 <input
                                     className="form-control"
-                                    name="tel_prov"
-                                    id="tel_prov"
-                                    value={tel_prov}
+                                    name="celular_contacto"
+                                    id="celular_contacto"
+                                    value={celular_contacto}
                                     onChange={onInputChange}
                                     placeholder=""
                                     required
@@ -181,14 +169,14 @@ const ViewDataImg = (e) => {
                             </Col>
                             <Col lg={6}>
                             <div className="mb-4">
-                                <label htmlFor="nombre_contacto" className="form-label">
+                                <label htmlFor="correo_contacto" className="form-label">
                                     CORREO PERSONAL*
                                 </label>
                                 <input
                                     className="form-control"
-                                    name="nombre_contacto"
-                                    id="nombre_contacto"
-                                    value={''}
+                                    name="correo_contacto"
+                                    id="correo_contacto"
+                                    value={correo_contacto}
                                     onChange={onInputChange}
                                     placeholder=""
                                     required
@@ -221,18 +209,18 @@ const ViewDataImg = (e) => {
                             </Col>
                             <Col lg={2}>
                                 <div className="mb-4">
-                                    <label htmlFor="id_oficio" className="form-label">
+                                    <label htmlFor="id_familiar" className="form-label">
                                         FAMILIARIDAD*
                                     </label>
                                     <Select
-                                        onChange={(e) => onInputChangeReact(e, 'id_oficio')}
-                                        name="id_oficio"
+                                        onChange={(e) => onInputChangeReact(e, 'id_familiar')}
+                                        name="id_familiar"
                                         placeholder={'familia'}
                                         className="react-select"
                                         classNamePrefix="react-select"
                                         options={arrayPersonalTest}
                                         value={arrayPersonalTest.find(
-                                            (option) => option.value === id_oficio
+                                            (option) => option.value === id_familiar
                                         )}
                                     />
                                 </div>
@@ -240,14 +228,14 @@ const ViewDataImg = (e) => {
                             
                             <Col lg={4}>
                             <div className="mb-4">
-                                <label htmlFor="nombre_contacto" className="form-label">
+                                <label htmlFor="nombres_familiar" className="form-label">
                                     NOMBRES Y APELLIDOS COMPLETOS*
                                 </label>
                                 <input
                                     className="form-control"
-                                    name="nombre_contacto"
-                                    id="nombre_contacto"
-                                    value={nombre_contacto}
+                                    name="nombres_familiar"
+                                    id="nombres_familiar"
+                                    value={nombres_familiar}
                                     onChange={onInputChange}
                                     placeholder=""
                                     required
@@ -256,14 +244,14 @@ const ViewDataImg = (e) => {
                             </Col>
                             <Col lg={2}>
                             <div className="mb-4">
-                                <label htmlFor="tel_prov" className="form-label">
+                                <label htmlFor="cel_familiar" className="form-label">
                                     CELULAR*
                                 </label>
                                 <input
                                     className="form-control"
-                                    name="tel_prov"
-                                    id="tel_prov"
-                                    value={tel_prov}
+                                    name="cel_familiar"
+                                    id="cel_familiar"
+                                    value={cel_familiar}
                                     onChange={onInputChange}
                                     placeholder=""
                                     required
@@ -272,14 +260,14 @@ const ViewDataImg = (e) => {
                             </Col>
                             <Col lg={4}>
                             <div className="mb-4">
-                                <label htmlFor="nombre_contacto" className="form-label">
+                                <label htmlFor="correo_familiar" className="form-label">
                                     CORREO*
                                 </label>
                                 <input
                                     className="form-control"
-                                    name="nombre_contacto"
-                                    id="nombre_contacto"
-                                    value={''}
+                                    name="correo_familiar"
+                                    id="correo_familiar"
+                                    value={correo_familiar}
                                     onChange={onInputChange}
                                     placeholder=""
                                     required

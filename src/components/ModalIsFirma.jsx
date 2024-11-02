@@ -4,7 +4,7 @@ import { Card, Col, Row } from 'react-bootstrap'
 import { ModalCargarFirma } from './ModalCargarFirma'
 import { ModalFirmaDigital } from './ModalFirmaDigital'
 
-export const ModalIsFirma = ({show, onHide}) => {
+export const ModalIsFirma = ({show, onHide, idVenta, idCli}) => {
   const [isOpenModalFirmaDigital, setisOpenModalFirmaDigital] = useState(false)
   const [ isOpenModalCargarFirma, setisOpenModalCargarFirma ] = useState(false)
   const onOpenModalFirmaDigital = () => {
@@ -39,8 +39,8 @@ export const ModalIsFirma = ({show, onHide}) => {
               </Col>
             </Row>
         </Dialog>
-        <ModalFirmaDigital onHide={onCloseModalFirmaDigital} show={isOpenModalFirmaDigital}/>
-        <ModalCargarFirma onHide={onCloseModalCargarFirma} show={isOpenModalCargarFirma}/>
+        <ModalFirmaDigital idCli={idCli} idVenta={idVenta} onHide={onCloseModalFirmaDigital} show={isOpenModalFirmaDigital}/>
+        <ModalCargarFirma idCli={idCli} idVenta={idVenta} onHide={onCloseModalCargarFirma} show={isOpenModalCargarFirma}/>
     </>
 
   )

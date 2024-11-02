@@ -1,5 +1,6 @@
 import { PTApi } from '@/common';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
+import { onSetDataView } from '@/store/data/dataSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -13,13 +14,56 @@ export const useVentasStore = () => {
 	const [msgBox, setmsgBox] = useState({});
 	const [dataVentaxFecha, setdataVentaxFecha] = useState([]);
 	const [IngresosSeparados_x_Fecha, setIngresosSeparados_x_Fecha] = useState([]);
+	const [loadingMessage, setloadingMessage] = useState('');
 	const [dataContratos, setdataContratos] = useState([]);
+	const { base64ToFile } = helperFunctions();
 
 	const obtenerContratosDeClientes = async () => {
 		try {
 			const { data } = await PTApi.get('/venta/obtener-contratos-clientes/598');
+			dispatch(onSetDataView(data.datacontratosConMembresias));
 			setdataContratos(data.datacontratosConMembresias);
 			console.log(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const agregarFirmaEnContratoCliente = async (file, idVenta) => {
+		try {
+			const formData = new FormData();
+			const lector = new FileReader();
+			lector.readAsDataURL(file);
+			formData.append('file', file);
+			setloadingMessage('CARGANDO');
+			const { data: dataVentaMembresia } = await PTApi.get(`/venta/get-id-ventas/${idVenta}`);
+			const { data: blobFirma } = await PTApi.post(
+				`/storage/blob/create/${dataVentaMembresia.venta[0].detalle_ventaMembresia[0].uid_firma}?container=firmasmembresia`,
+				formData
+			);
+			setloadingMessage('FIRMA AGREGADA');
+			setTimeout(() => {}, 3000);
+			setloadingMessage('ENVIANDO A SU CORREO');
+
+			const { data: dataMail } = await PTApi.post(`/venta/invoice-mail/${idVenta}`, {
+				firma_base64: lector.result,
+			});
+			setloadingMessage('CORREO ENVIADO');
+			setTimeout(() => {}, 3000);
+			setloadingMessage('GUARDANDO CONTRATO');
+			const file_contratoPDF = base64ToFile(
+				dataMail.base64_contratoPDF,
+				`contrato_${dataVentaMembresia.id_cli}.pdf`
+			);
+			const formData_contratoPDF = new FormData();
+			formData_contratoPDF.append('file', file_contratoPDF);
+
+			const { data: blobContrato } = await PTApi.post(
+				`/storage/blob/create/${dataVentaMembresia.venta[0].detalle_ventaMembresia[0].uid_contrato}?container=contratos-cli`,
+				formData_contratoPDF
+			);
+			obtenerContratosDeClientes();
+			setloadingMessage('CONTRATO GUARDADO');
 		} catch (error) {
 			console.log(error);
 		}
@@ -96,8 +140,6 @@ export const useVentasStore = () => {
 		try {
 			setloadingVenta(true);
 			console.log(formState);
-
-			const { base64ToFile } = helperFunctions();
 
 			const { data } = await PTApi.post('/venta/post-ventas/598', formState);
 
@@ -199,12 +241,14 @@ export const useVentasStore = () => {
 		}
 	};
 	return {
+		agregarFirmaEnContratoCliente,
 		startRegisterVenta,
 		obtenerTablaVentas,
 		obtenerPDFCONTRATOgenerado,
 		obtenerVentaporId,
 		obtenerVentasPorFecha,
 		obtenerContratosDeClientes,
+		loadingMessage,
 		dataVentaxFecha,
 		IngresosSeparados_x_Fecha,
 		loadingVenta,

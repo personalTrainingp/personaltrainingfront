@@ -1,7 +1,7 @@
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
-import { arrayEstados, arrayTarjetasTemp } from '@/types/type'
+import { arrayDepartamento, arrayEstados, arrayTarjetasTemp } from '@/types/type'
 import { confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
@@ -9,46 +9,58 @@ import { Button, Col, Modal, Row } from 'react-bootstrap'
 import Select from 'react-select'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import { Image } from 'primereact/image'
+import { Link } from 'react-router-dom'
 const registerProvedor = {
+    
     ruc_prov: '', 
-	razon_social_prov: '', 
-	tel_prov: '',
-	cel_prov: '', 
-	email_prov: '', 
-	direc_prov: '', 
-	dni_vend_prov: '',
-	nombre_vend_prov: '',
-	cel_vend_prov: '',
-	email_vend_prov: '',
-	estado_prov: true,
-    nombre_contacto: '',
-    es_agente: false,
-    id_oficio: 0,
-    bene_prov: ''
+    id_tarjeta: 0,
+    n_cuenta: '',
+    cci: '',
+    razon_social_prov: '', 
+    tel_prov: '',
+    cel_prov: '', 
+    email_prov: '', 
+    direc_prov: '', 
+    estado_prov: true,
+    titular_cci: '',
+
+    ubigeo_distrito: '',
+    id_departamento: 0,
+
+
+        
+        dni_vend_prov: '',
+        nombre_vend_prov: '',
+        cel_vend_prov: '',
+        email_vend_prov: '',
 }
 
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
 export const SectionFacturacionProv = ({dataProv}) => {
-    const { ruc_prov, 
+    const { 
+        estado_prov,
+        ruc_prov, 
+
         razon_social_prov, 
-        tel_prov,
         cel_prov, 
         email_prov, 
+
+        tel_prov,
+        titular_cci,
+        id_tarjeta,
+        n_cuenta,
+        cci,
+
         direc_prov, 
+        ubigeo_distrito,
+        id_departamento,
+        
         dni_vend_prov,
         nombre_vend_prov,
         cel_vend_prov,
         email_vend_prov,
-        estado_prov,
-        cci,
-        n_cuenta,
-        id_tarjeta,
-        id_oficio,
-        es_agente,
-        nombre_contacto,
-        bene_prov,
         formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
         
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
@@ -58,6 +70,7 @@ export const SectionFacturacionProv = ({dataProv}) => {
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
         const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
         const { comboOficio, obtenerOficios, obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
+        const { obtenerDistritosxDepxProvincia, dataDistritos } = useTerminoStore()
             const [visible, setVisible] = useState(false);
           
             const toastBC = useRef(null);
@@ -75,6 +88,7 @@ export const SectionFacturacionProv = ({dataProv}) => {
             useEffect(() => {
                 obtenerOficios()
                 obtenerParametroPorEntidadyGrupo('formapago', 'banco')
+                obtenerDistritosxDepxProvincia(0,0)
             }, [])
             
             const confirmDeleteGastoxID = ()=>{
@@ -215,14 +229,14 @@ const ViewDataImg = (e) => {
                             </div>
                             <Col lg={4}>
                             <div className="mb-4">
-                                <label htmlFor="bene_prov" className="form-label">
+                                <label htmlFor="titular_cci" className="form-label">
                                     BENEFICIARIO*
                                 </label>
                                 <input
                                     className="form-control"
-                                    name="bene_prov"
-                                    id="bene_prov"
-                                    value={bene_prov}
+                                    name="titular_cci"
+                                    id="titular_cci"
+                                    value={titular_cci}
                                     onChange={onInputChange}
                                     placeholder=""
                                 />
@@ -289,35 +303,19 @@ const ViewDataImg = (e) => {
                             </div>
                             </Col>
                             <div className="mb-4" style={{width: '250px'}}>
-                                <label htmlFor="id_tarjeta" className="form-label">
+                                <label htmlFor="ubigeo_distrito" className="form-label">
                                     DISTRITO
                                 </label>
                                 <Select
-                                        onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
-                                        name="id_tarjeta"
+                                        onChange={(e) => onInputChangeReact(e, 'ubigeo_distrito')}
+                                        name="ubigeo_distrito"
                                         placeholder={'Seleccione DISTRITO'}
                                         className="react-select"
                                         classNamePrefix="react-select"
-                                        options={DataGeneral}
-                                        value={0}
+                                        options={dataDistritos}
+                                        value={dataDistritos.find((option)=>option.value===ubigeo_distrito)}
                                     />
                             </div>
-{/*                             
-                            <div className="mb-4" style={{width: '300px'}}>
-                                <label htmlFor="id_tarjeta" className="form-label">
-                                    PROVINCIA
-                                </label>
-                                <Select
-                                        onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
-                                        name="id_tarjeta"
-                                        placeholder={'Seleccione LA PROVINCIA'}
-                                        className="react-select"
-                                        classNamePrefix="react-select"
-                                        options={DataGeneral}
-                                        value={0}
-                                    />
-                            </div>
-                             */}
                             <div className="mb-4" style={{width: '280px'}}>
                                 <label htmlFor="id_tarjeta" className="form-label">
                                     DEPARTAMENTO
@@ -328,8 +326,10 @@ const ViewDataImg = (e) => {
                                         placeholder={'Seleccione DEPARTAMENTO'}
                                         className="react-select"
                                         classNamePrefix="react-select"
-                                        options={DataGeneral}
-                                        value={0}
+                                        options={arrayDepartamento}
+                                        value={arrayDepartamento.find(
+                                            (option) => option.value === id_departamento
+                                        )}
                                     />
                             </div>
                             <Col lg={12}>
@@ -395,13 +395,12 @@ const ViewDataImg = (e) => {
                                 </div>
                             </Col>
                             <Col lg={12}>
+                                <div className='m-2 py-2 btn btn-primary'>
+                                    <Link  to={'/gestion-proveedores'} className='fs-5 text-white'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
+                                </div>
                                 <Button type='submit'>
                                 Actualizar
                                 </Button>
-                                
-                                <div className='my-2 py-2 btn btn-primary'>
-                                    <Link  to={'/gestion-proveedores'} className='fs-5 text-white'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
-                                </div>
                             </Col>
                         </Row>
                     </form>

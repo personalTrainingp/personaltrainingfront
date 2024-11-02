@@ -130,6 +130,16 @@ export const useTerminoStore = () => {
 	const [paquetesDeServicios, setpaquetesDeServicios] = useState([]);
 	const [comboOficio, setcomboOficio] = useState([]);
 	const [dataDistritos, setdataDistritos] = useState([]);
+	const obtenerDepartamentos = async (id_provincia, id_departamento) => {
+		try {
+			const { data } = await PTApi.get(
+				`/parametros/get_params/distritos/${id_departamento}/${id_provincia}`
+			);
+			setdataDistritos(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerDistritosxDepxProvincia = async (id_provincia, id_departamento) => {
 		try {
 			const { data } = await PTApi.get(

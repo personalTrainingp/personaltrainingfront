@@ -30,8 +30,6 @@ export const PerfilProv = () => {
       <Loading show={isLoading}/>
     )
   }
-  console.log(proveedor.tb_images[proveedor.tb_images.length-1]?.name_image);
-  
   return (
     <>  
         <div className='my-2 py-2 btn btn-primary'>

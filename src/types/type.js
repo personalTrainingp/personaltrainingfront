@@ -15,6 +15,34 @@ export const clasesVentasSeparadas = (tipo) => {
 	}
 };
 
+export const arrayDepartamento = [
+	{ value: '01', label: 'Amazonas' },
+	{ value: '02', label: 'Áncash' },
+	{ value: '03', label: 'Apurímac' },
+	{ value: '04', label: 'Arequipa' },
+	{ value: '05', label: 'Ayacucho' },
+	{ value: '06', label: 'Cajamarca' },
+	{ value: '07', label: 'Callao' },
+	{ value: '08', label: 'Cusco' },
+	{ value: '09', label: 'Huancavelica' },
+	{ value: '10', label: 'Huánuco' },
+	{ value: '11', label: 'Ica' },
+	{ value: '12', label: 'Junín' },
+	{ value: '13', label: 'La Libertad' },
+	{ value: '14', label: 'Lambayeque' },
+	{ value: '15', label: 'Lima' },
+	{ value: '16', label: 'Loreto' },
+	{ value: '17', label: 'Madre de Dios' },
+	{ value: '18', label: 'Moquegua' },
+	{ value: '19', label: 'Pasco' },
+	{ value: '20', label: 'Piura' },
+	{ value: '21', label: 'Puno' },
+	{ value: '22', label: 'San Martín' },
+	{ value: '23', label: 'Tacna' },
+	{ value: '24', label: 'Tumbes' },
+	{ value: '25', label: 'Ucayali' },
+];
+
 export const arrayTipoCambio = [
 	{ label: 'Dolares', value: 'USD' },
 	{ label: 'Soles', value: 'PEN' },

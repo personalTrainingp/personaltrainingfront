@@ -30,7 +30,7 @@ export const ContratosCliente = () => {
             <Col xxl={1}>
             </Col>
         </Row>
-        {/* <ModalTipoCambio show={isOpenModalTipoCambio} onHide={onCloseModalTipoCambio}/> */}
+        {/* */}
     </>
     )
 }

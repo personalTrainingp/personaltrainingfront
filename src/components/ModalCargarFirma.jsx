@@ -1,50 +1,67 @@
+import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
+import { onSetBase64Firma } from '@/store/data/dataSlice';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog'
 import React, { useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-export const ModalCargarFirma = ({show, onHide}) => {
-    const [fileImage, setfileImage] = useState(null)
+export const ModalCargarFirma = ({idVenta, idCli, show, onHide}) => {
+    const [file, setfile] = useState(null)
+    const { agregarFirmaEnContratoCliente } = useVentasStore()
+    const dispatch = useDispatch(); // Obtener el dispatch del store para actualizar el estado de la firma base64
+    const maxSize = 5 * 1024 * 1024; // Tamaño máximo permitido en bytes (5 MB en este caso)
     const onCancelModal = ()=>{
         onHide();
     }
-    const onSubmitModalFirma = ()=>{
-      onCancelModal();
+    const onSubmitModalFirma = (e)=>{
+
+      dispatch(onSetBase64Firma(file))
+      console.log(file);
+      if (file) {
+        if (file.size > maxSize || file.type!=='image/png') {
+          alert("El archivo es demasiado grande, O no cumple con los requisitos del sistema");
+          return;
+        } else {
+            agregarFirmaEnContratoCliente(file, idVenta, idCli)
+            onCancelModal();
+        }
+      }
+  
     }
     const onChangeFileImage = (e)=>{
-      const file = e.target.files[0]
-      const formReader = new FileReader();
-      formReader.onload = () => {
-        
-        setfileImage(formReader.result)
-      }
-        if (file) {
-          formReader.readAsDataURL(file); // Lee el archivo como base64
-        }
+      const fileI = e.target.files[0]
+      setfile(fileI)
     }
     
   return (
     <Dialog header={'Cargar firma'} onHide={onCancelModal} visible={show}>
       <SPANContainer>
         <form id="file-upload-form" className="uploader">
-            <input id="file-upload" onChange={onChangeFileImage} type="file" name="fileUpload" accept="image/*" />
-
-            <label for="file-upload" id="file-drag">
-              <img id="file-image" src={fileImage} alt="Preview" className="hidden"/>
-              <div id="start">
-                <i className="fa fa-download" aria-hidden="true"></i>
-                <div>Selecciona una imagen o arrastrela aqui</div>
-                <div id="notimage" className="hidden">Porfavor seleccione una imagen</div>
-                <span id="file-upload-btn" className="btn btn-primary">Selecciona una imagen</span>
-              </div>
-              <div id="response" className="hidden">
-                <div id="messages"></div>
-                <progress className="progress" id="file-progress" value="0">
-                  <span>0</span>%
-                </progress>
-              </div>
-            </label>
+          <Row>
+            <Col xxl={12}>
+                <div className="dropzone-area my-2">
+                    <div className="file-upload-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2"
+                            stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                        </svg>
+                    </div>
+                    <p>Haga clic para cargar el documento</p>
+                    <input 
+                    accept="image/*"
+                    name='file'
+                    onChange={onChangeFileImage}
+                    type="file" 
+                    required
+                    />
+                    <p className="message">{file ? `${file?.name}, ${file?.size} bytes` : "SIN ARCHIVOS SELECCIONADO"}</p>
+                </div>
+                </Col>
+          </Row>
           </form>
       </SPANContainer>
         <Row>
@@ -60,160 +77,97 @@ export const ModalCargarFirma = ({show, onHide}) => {
 }
 
 const SPANContainer = styled.div`
-
-h2 {
-  font-family: "Roboto", sans-serif;
-  font-size: 26px;
-  line-height: 1;
-  color: #454cad;
-  margin-bottom: 0;
-}
-p {
-  font-family: "Roboto", sans-serif;
-  font-size: 18px;
-  color: #5f6982;
-}
-// Upload Demo
-// 
-.uploader {
-  display: block;
-  clear: both;
-  margin: 0 auto;
-  width: 100%;
-  max-width: 600px;
-
-  label {
-    float: left;
-    clear: both;
+.dropzone-box {
+    color: #a80038;
+    border-radius: 2rem;
+    padding: 2rem;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 36rem;
     width: 100%;
-    padding: 2rem 1.5rem;
+    background-color: #fff;
+}
+
+.dropzone-box h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.dropzone-area {
+    padding: 1rem;
+    position: relative;
+    margin-top: 1rem;
+    min-height: 16rem;
+    display: flex;
     text-align: center;
-    background: #fff;
-    border-radius: 7px;
-    border: 3px solid #eee;
-    transition: all .2s ease;
-    user-select: none;
-
-    &:hover {
-      border-color: #454cad;
-    }
-    &.hover {
-      border: 3px solid #454cad;
-      box-shadow: inset 0 0 0 6px #eee;
-      
-      #start {
-        i.fa {
-          transform: scale(0.8);
-          opacity: 0.3;
-        }
-      }
-    }
-  }
-
-  #start {
-    float: left;
-    clear: both;
-    width: 100%;
-    &.hidden {
-      display: none;
-    }
-    i.fa {
-      font-size: 50px;
-      margin-bottom: 1rem;
-      transition: all .2s ease-in-out;
-    }
-  }
-  #response {
-    float: left;
-    clear: both;
-    width: 100%;
-    &.hidden {
-      display: none;
-    }
-    #messages {
-      margin-bottom: .5rem;
-    }
-  }
-
-  #file-image {
-    display: inline;
-    margin: 0 auto .5rem auto;
-    width: auto;
-    height: auto;
-    max-width: 180px;
-    &.hidden {
-      display: none;
-    }
-  }
-  
-  #notimage {
-    display: block;
-    float: left;
-    clear: both;
-    width: 100%;
-    &.hidden {
-      display: none;
-    }
-  }
-
-  progress,
-  .progress {
-    // appearance: none;
-    display: inline;
-    clear: both;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 180px;
-    height: 8px;
-    border: 0;
-    border-radius: 4px;
-    background-color: #eee;
-    overflow: hidden;
-  }
-
-  .progress[value]::-webkit-progress-bar {
-    border-radius: 4px;
-    background-color: #eee;
-  }
-
-  .progress[value]::-webkit-progress-value {
-    background: linear-gradient(to right, darken(#454cad,8%) 0%, #454cad 50%);
-    border-radius: 4px; 
-  }
-  .progress[value]::-moz-progress-bar {
-    background: linear-gradient(to right, darken(#454cad,8%) 0%, #454cad 50%);
-    border-radius: 4px; 
-  }
-
-  input[type="file"] {
-    display: none;
-  }
-
-  div {
-    margin: 0 0 .5rem 0;
-    color: #5f6982;
-  }
-  .btn {
-    display: inline-block;
-    margin: .5rem .5rem 1rem .5rem;
-    clear: both;
-    font-family: inherit;
-    font-weight: 700;
-    font-size: 14px;
-    text-decoration: none;
-    text-transform: initial;
-    border: none;
-    border-radius: .2rem;
-    outline: none;
-    padding: 0 1rem;
-    height: 36px;
-    line-height: 36px;
-    color: #fff;
-    transition: all 0.2s ease-in-out;
-    box-sizing: border-box;
-    background: #454cad;
-    border-color: #454cad;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 2px dashed #a80038;
+    border-radius: 1rem;
+    color: #a80038;
     cursor: pointer;
-  }
+}
+
+.dropzone-area [type="file"] {
+    cursor: pointer;
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.dropzone-area .file-upload-icon svg {
+    height: 5rem;
+    width: 5rem;
+    margin-bottom: 0.5rem;
+    stroke: #a80038;
+}
+
+.dropzone--over {
+    border-style: solid;
+    background-color: #F8F8FF;
+}
+
+.dropzone-actions {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid #D3D3D3;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.dropzone-actions button {
+    flex-grow: 1;
+    min-height: 3rem;
+    font-size: 1.2rem;
+}
+
+.dropzone-actions button:hover {
+    text-decoration: underline;
+}
+
+.dropzone-actions button[type='reset'] {
+    background-color: transparent;
+    border: 1px solid #D3D3D3;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: #a80038;
+    cursor: pointer;
+}
+
+.dropzone-actions button[type='submit'] {
+    background-color: #a80038;
+    border: 1px solid #a80038;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    cursor: pointer;
 }
 `
