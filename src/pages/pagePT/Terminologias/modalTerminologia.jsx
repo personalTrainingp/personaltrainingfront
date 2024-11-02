@@ -14,7 +14,7 @@ const Parametro = {
     flag: true,
 };
 
-export const ModalTerminologia = ({status, dataProv, onHide, show })=>{
+export const ModalTerminologia = ({status,  dataTerminologia, onHide, show })=>{
 
     const   {
         id_param ,
@@ -49,7 +49,7 @@ export const ModalTerminologia = ({status, dataProv, onHide, show })=>{
                 <>
                     <Modal.Header>
                         <Modal.Title>
-                            {dataProv?'Actualizar Terminologia':'Registrar Terminologia'}
+                            {dataTerminologia?'Actualizar Terminologia':'Registrar Terminologia'}
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -95,7 +95,7 @@ export const ModalTerminologia = ({status, dataProv, onHide, show })=>{
 
                                 <Col lg={12}>
                                     <Button type='submit'>
-                                    {dataProv?'Actualizar':'Registrar'}
+                                    {dataTerminologia?'Actualizar':'Registrar'}
                                     </Button>
                                     <a className='m-3 text-danger' onClick={onCancelForm} style={{cursor: 'pointer'}}>Cancelar</a>
                                 </Col>

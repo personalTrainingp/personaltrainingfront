@@ -13,8 +13,9 @@ export const Terminologias = () => {
 
     const { terminologiaPorEntidad, dataTerminologiaPorEntidad } = useTerminologiaStore();
     console.log(dataTerminologiaPorEntidad);
-    const [isModalOpenProv, setisModalOpenProv] = useState(false)
-    let parametro;
+    const [isModalOpenProv, setisModalOpenProv] = useState(false);
+    const {terminologia} = useSelector(e=>e?.TERMINOLOGIA);
+    console.log(terminologia);
     // const [selectedParametro, setSelectedParametro] = useState(null);
     // useEffect(() => {
     //     if (selectedParametro) {
@@ -32,7 +33,9 @@ export const Terminologias = () => {
         setisModalOpenProv(false)
         //setSelectedParametro(null);
     }
-    const modalProvOpen = () => {
+    const modalProvOpen = (terminologia) => {
+        dispatch({type:'TERMINOLOGIA', payload:terminologia})
+
         setisModalOpenProv(true)
         //setSelectedParametro(parametro);
     }
@@ -60,7 +63,7 @@ export const Terminologias = () => {
 
                                                 <TabPanel  key={`${parametro.entidad_param}-${index}-${count}`} header={parametro.entidad_param}>
                                                     <Col sm={4}>
-                                                        <Button label='Agregar Terminologia' onClick={modalProvOpen} />
+                                                        <Button label='Agregar Terminologia' onClick={() => modalProvOpen(parametro)} />
                                                     </Col>
                                                     <DataTerminologia  data={parametro.parametros} />
                                                 </TabPanel>
@@ -78,7 +81,7 @@ export const Terminologias = () => {
                     </Card>
                 </Col>
             </Row>
-            <ModalTerminologia show={isModalOpenProv} onHide={modalProvClose} ></ModalTerminologia>
+            <ModalTerminologia  show={isModalOpenProv} onHide={modalProvClose} ></ModalTerminologia>
 
         </>
     )
