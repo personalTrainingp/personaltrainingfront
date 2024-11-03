@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import Select from 'react-select'
+import { useTerminologiaStore } from '@/hooks/hookApi/useTerminologiaStore'
 
 const Parametro = {
     id_param: '',
@@ -15,8 +16,9 @@ const Parametro = {
     flag: true,
 };
 
-export const ModalTerminologia = ({status, onHide, show })=>{
+export const ModalTerminologia = ({status, onHide, show  , boleanActualizar})=>{
 
+    const { registrarTerminologia } = useTerminologiaStore();
     const   {
         id_param ,
         entidad_param ,
@@ -24,6 +26,7 @@ export const ModalTerminologia = ({status, onHide, show })=>{
         sigla_param ,
         label_param ,
         estado_param,
+        formState,
         onResetForm, onInputChange, onInputChangeReact } = useForm(Parametro);   
 
     const [visible, setVisible] = useState(false);
@@ -37,11 +40,34 @@ export const ModalTerminologia = ({status, onHide, show })=>{
         onResetForm()
     };
   
-    const submitProveedor = async(e)=>{
+    
+    const { terminologia  } = useSelector(e => e.terminologia);
+    let paramatero;
+    if (terminologia) {
+     paramatero = terminologia?.parametros ? terminologia?.parametros[0] : "";
+        
+    };
+    console.log("terminologia seleccionada" );
+    console.log(paramatero );
+    
+    const submitParametro = async(e)=>{
+        e.preventDefault();
+        Parametro.entidad_param = paramatero.entidad_param;
+        Parametro.grupo_param = paramatero.grupo_param;
+        Parametro.sigla_param = sigla_param;
+        Parametro.label_param = label_param;
+        //Parametro.estado_param = estado_param;
+        console.log(Parametro);
+        registrarTerminologia(Parametro);
+        setVisible(true);
+        onCancelForm();
+        
+        return;
 
     };
-    let terminologia;
 
+    //paramatero.grupo_param
+    //paramatero.entidad_param
     return (
         <>
             <Toast ref={toastBC} onRemove={clear} />
@@ -51,11 +77,11 @@ export const ModalTerminologia = ({status, onHide, show })=>{
                 <>
                     <Modal.Header>
                         <Modal.Title>
-                            {terminologia?'Actualizar Terminologia':'Registrar Terminologia'}
+                            {boleanActualizar?'Actualizar Terminologia':'Registrar Terminologia'}
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <form onSubmit={submitProveedor}>
+                        <form onSubmit={submitParametro}>
                             <Row>
                                 <Col lg={12}>
                                     <p className='fw-bold fs-5 text-decoration-underline'>
@@ -64,13 +90,13 @@ export const ModalTerminologia = ({status, onHide, show })=>{
                                 </Col>
                                 <Col lg={12}>
                                     <div className="mb-4">
-                                        <label htmlFor="nombre_contacto" className="form-label">
+                                        <label htmlFor="label_param" className="form-label">
                                             Label*
                                         </label>
                                         <input
                                             className="form-control"
-                                            name="nombre_contacto"
-                                            id="nombre_contacto"
+                                            name="label_param"
+                                            id="label_param"
                                             value={label_param}
                                             onChange={onInputChange}
                                             placeholder=""
@@ -79,13 +105,13 @@ export const ModalTerminologia = ({status, onHide, show })=>{
                                 </Col>
                                 <Col lg={8}>
                                 <div className="mb-4">
-                                    <label htmlFor="razon_social_prov" className="form-label">
+                                    <label htmlFor="sigla_param" className="form-label">
                                        Sigla*
                                     </label>
                                     <input
                                         className="form-control"
-                                        name="razon_social_prov"
-                                        id="razon_social_prov"
+                                        name="sigla_param"
+                                        id="sigla_param"
                                         value={sigla_param}
                                         onChange={onInputChange}
                                         placeholder=""
@@ -97,7 +123,7 @@ export const ModalTerminologia = ({status, onHide, show })=>{
 
                                 <Col lg={12}>
                                     <Button type='submit'>
-                                    {terminologia?'Actualizar':'Registrar'}
+                                    {boleanActualizar?'Actualizar':'Registrar'}
                                     </Button>
                                     <a className='m-3 text-danger' onClick={onCancelForm} style={{cursor: 'pointer'}}>Cancelar</a>
                                 </Col>

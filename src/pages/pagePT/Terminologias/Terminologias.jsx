@@ -13,15 +13,20 @@ import { onSetTerminologia } from '@/store/dataTerminologia/terminologiaSlice';
 
 export const Terminologias = () => {
 
-    const { terminologiaPorEntidad, dataTerminologiaPorEntidad , seleccionarEntidad} = useTerminologiaStore();
-    console.log(dataTerminologiaPorEntidad);
+    
+    const { terminologiaPorEntidad , seleccionarEntidad} = useTerminologiaStore();
     const [isModalOpenProv, setisModalOpenProv] = useState(false);
     const dispatch = useDispatch();
     useEffect(() => {
         terminologiaPorEntidad();
     }, []);
 
-    //const {dataview} = useSelector(e=>e.DATA)
+  
+    console.log("data view")
+    const test = useSelector(e=>e.DATA)
+    console.log(test);
+
+    let dataTerminologiaPorEntidad = test.dataView;
 
     const modalProvClose = () => {
 
@@ -35,9 +40,7 @@ export const Terminologias = () => {
         setisModalOpenProv(true)
     };
 
-    const { terminologia  } = useSelector(e => e.terminologia);
-    console.log("terminologia seleccionada" );
-    console.log(terminologia );
+
     return (
         <>
             <PageBreadcrumb title={`Terminologias`} subName="E" />
@@ -81,7 +84,7 @@ export const Terminologias = () => {
                     </Card>
                 </Col>
             </Row>
-            <ModalTerminologia  show={isModalOpenProv} onHide={modalProvClose} ></ModalTerminologia>
+            <ModalTerminologia  show={isModalOpenProv} onHide={modalProvClose} boleanActualizar={false} ></ModalTerminologia>
         </>
     )
 }
