@@ -8,21 +8,15 @@ import { DataTerminologia } from './DataTerminologia'
 import { ModalTerminologia } from './modalTerminologia'
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { onSetTerminologia } from '@/store/dataTerminologia/terminologiaSlice';
 
 export const Terminologias = () => {
 
-    const { terminologiaPorEntidad, dataTerminologiaPorEntidad } = useTerminologiaStore();
+    const { terminologiaPorEntidad, dataTerminologiaPorEntidad , seleccionarEntidad} = useTerminologiaStore();
     console.log(dataTerminologiaPorEntidad);
     const [isModalOpenProv, setisModalOpenProv] = useState(false);
-    const {terminologia} = useSelector(e=>e?.TERMINOLOGIA);
-    console.log(terminologia);
-    // const [selectedParametro, setSelectedParametro] = useState(null);
-    // useEffect(() => {
-    //     if (selectedParametro) {
-            
-    //     }
-    // }, [selectedParametro]);
-    
+    const dispatch = useDispatch();
     useEffect(() => {
         terminologiaPorEntidad();
     }, []);
@@ -30,16 +24,20 @@ export const Terminologias = () => {
     //const {dataview} = useSelector(e=>e.DATA)
 
     const modalProvClose = () => {
+
         setisModalOpenProv(false)
         //setSelectedParametro(null);
     }
-    const modalProvOpen = (terminologia) => {
-        dispatch({type:'TERMINOLOGIA', payload:terminologia})
+    const modalProvOpen = (terminologiaData) => {
+        dispatch(onSetTerminologia(terminologiaData));
+
 
         setisModalOpenProv(true)
-        //setSelectedParametro(parametro);
-    }
-    let count = 0;
+    };
+
+    const { terminologia  } = useSelector(e => e.terminologia);
+    console.log("terminologia seleccionada" );
+    console.log(terminologia );
     return (
         <>
             <PageBreadcrumb title={`Terminologias`} subName="E" />
@@ -58,12 +56,14 @@ export const Terminologias = () => {
                                 {
                                     
                                     dataTerminologiaPorEntidad?.parametros?.map((parametro , index) => {
-                                        {count++}
                                         return (
 
-                                                <TabPanel  key={`${parametro.entidad_param}-${index}-${count}`} header={parametro.entidad_param}>
+                                                <TabPanel  key={`${parametro.entidad_param}`} header={parametro.entidad_param}>
                                                     <Col sm={4}>
-                                                        <Button label='Agregar Terminologia' onClick={() => modalProvOpen(parametro)} />
+                                                        <Button label='Agregar Terminologia' onClick={() => {
+                                                            modalProvOpen(parametro);
+                                   
+                                                            }} />
                                                     </Col>
                                                     <DataTerminologia  data={parametro.parametros} />
                                                 </TabPanel>
@@ -82,7 +82,6 @@ export const Terminologias = () => {
                 </Col>
             </Row>
             <ModalTerminologia  show={isModalOpenProv} onHide={modalProvClose} ></ModalTerminologia>
-
         </>
     )
 }

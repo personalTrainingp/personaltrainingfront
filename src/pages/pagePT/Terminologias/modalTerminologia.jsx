@@ -2,6 +2,7 @@ import { useForm } from '@/hooks/useForm'
 import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 import Select from 'react-select'
 
 const Parametro = {
@@ -14,7 +15,7 @@ const Parametro = {
     flag: true,
 };
 
-export const ModalTerminologia = ({status,  dataTerminologia, onHide, show })=>{
+export const ModalTerminologia = ({status, onHide, show })=>{
 
     const   {
         id_param ,
@@ -34,11 +35,12 @@ export const ModalTerminologia = ({status,  dataTerminologia, onHide, show })=>{
     const onCancelForm = ()=>{
         onHide()
         onResetForm()
-    }
+    };
   
     const submitProveedor = async(e)=>{
 
-    }
+    };
+    let terminologia;
 
     return (
         <>
@@ -49,7 +51,7 @@ export const ModalTerminologia = ({status,  dataTerminologia, onHide, show })=>{
                 <>
                     <Modal.Header>
                         <Modal.Title>
-                            {dataTerminologia?'Actualizar Terminologia':'Registrar Terminologia'}
+                            {terminologia?'Actualizar Terminologia':'Registrar Terminologia'}
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -95,7 +97,7 @@ export const ModalTerminologia = ({status,  dataTerminologia, onHide, show })=>{
 
                                 <Col lg={12}>
                                     <Button type='submit'>
-                                    {dataTerminologia?'Actualizar':'Registrar'}
+                                    {terminologia?'Actualizar':'Registrar'}
                                     </Button>
                                     <a className='m-3 text-danger' onClick={onCancelForm} style={{cursor: 'pointer'}}>Cancelar</a>
                                 </Col>

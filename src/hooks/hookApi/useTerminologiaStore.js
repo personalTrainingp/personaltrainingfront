@@ -17,6 +17,8 @@ export const useTerminologiaStore = () =>{
     }; 
 
     return {
-        terminologiaPorEntidad, dataTerminologiaPorEntidad
+        terminologiaPorEntidad, dataTerminologiaPorEntidad , 
     };
+
+
 };
