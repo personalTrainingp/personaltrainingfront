@@ -168,6 +168,8 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
         );
 	}
 	const SociosbodyTemplate = (rowData)=>{
+		console.log(rowData);
+		
 		return (
             <div className="align-items-center gap-2">
                 <div className='font-bold '>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</div>

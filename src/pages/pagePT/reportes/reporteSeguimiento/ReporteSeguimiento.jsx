@@ -10,21 +10,25 @@ export const ReporteSeguimiento = () => {
 	const { reporteSeguimiento, obtenerReporteSeguimiento, obtenerReporteSeguimientoTODO, viewSeguimiento, agrupado_programas, loadinData } = useReporteStore();
     useEffect(() => {
       obtenerReporteSeguimiento(true, 598)
+      obtenerReporteSeguimientoTODO(598)
     }, [])
-    console.log(ordenarPorDistrito(reporteSeguimiento));
-    console.log(ordenarPorHorario(reporteSeguimiento));
+    const [customers, setCustomers] = useState([])
+    console.log(ordenarPorDistrito(viewSeguimiento));
+    console.log(agruparPorHorarioYDistrito(viewSeguimiento));
+    console.log(viewSeguimiento);
+    
     const HorarioBodyTemplate = (rowData)=>{
-        
         return (
             <>
             {rowData.horario}
             </>
         )
     }
+    
     const cantidadBodyTemplate=(rowData)=>{
         return (
             <>
-            {rowData.items.length}
+            {rowData.cantidad}
             </>
         )
     }
@@ -37,17 +41,21 @@ export const ReporteSeguimiento = () => {
             if (periodo === 'AM' && h === 12) h = 0; // Ajustar 12 AM a 0 horas
             return h * 60 + m; // Retornar el tiempo en minutos
         };
-        const hore = ordenarPorHorario(reporteSeguimiento).filter(horario => horario.horario.includes(time))
+        const hore = ordenarPorHorario(viewSeguimiento).map(g=>{return {...g, cantidad: g.items.length}}).filter(horario => horario.horario.includes(time))
         // Ordenar de mayor a menor
-        const horariosOrdenados = hore.sort((a, b) => convertirAHora(b.horario) - convertirAHora(a.horario));
+        
+        const horariosOrdenados = hore.sort((a, b) =>convertirAHora(a.horario) - convertirAHora(b.horario));
         return horariosOrdenados
     }
+    
+    console.log(filtroDeHorario('AM'));
+    
   return (
     <>
         <PageBreadcrumb subName={'T'} title={'REPORTE DE SEGUIMIENTO'}/>
         <Row>
             <Col lg={6}>
-                <h3 className='text-center'>HORARIO MAÑANA</h3>
+                <h3 className='text-center'>HORARIO MAÑANA ({filtroDeHorario('AM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
                 <DataTable
                             stripedRows 
                             value={filtroDeHorario('AM')} 
@@ -58,11 +66,11 @@ export const ReporteSeguimiento = () => {
                             scrollHeight="400px"
                             >
                             <Column header="HORARIO" body={HorarioBodyTemplate}></Column>
-                            <Column header="CANTIDAD" sortable body={cantidadBodyTemplate}></Column>
+                            <Column header="CANTIDAD" filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
                 </DataTable>
             </Col>
             <Col lg={6}>
-                <h3 className='text-center'>HORARIO TARDE</h3>
+                <h3 className='text-center'>HORARIO TARDE ({filtroDeHorario('PM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
                 <DataTable
                             stripedRows 
                             value={filtroDeHorario('PM')} 
@@ -73,8 +81,33 @@ export const ReporteSeguimiento = () => {
                             scrollHeight="400px"
                             >
                             <Column header="HORARIO" body={HorarioBodyTemplate}></Column>
-                            <Column header="CANTIDAD" sortable body={cantidadBodyTemplate}></Column>
+                            <Column header="CANTIDAD" filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
                 </DataTable>
+            </Col>
+            <Col lg={12}>
+                <h3 className='text-center'>POR DISTRITO</h3>
+                <Row>
+                    {
+                        ordenarPorDistrito(viewSeguimiento).map(g=>(
+                            
+                            <Col lg={3}>
+                            <h2 className='text-center'>{g.distrito?`${g.distrito}(${g.items.length})`:'SIN DEFINIR'}</h2>
+                            <DataTable
+                                        stripedRows 
+                                        value={ordenarPorHorario(g.items).map(m=>{return {...m, cantidad: m.items.length}})} 
+                                        size={'small'} 
+                                        tableStyle={{ minWidth: '30rem' }} 
+                                        scrollable 
+                                        selectionMode="single"
+                                        scrollHeight="400px"
+                                        >
+                                        <Column header="HORARIO" body={HorarioBodyTemplate}></Column>
+                                        <Column header="CANTIDAD" filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
+                            </DataTable>
+                        </Col>
+                        ))
+                    }
+                </Row>
             </Col>
         </Row>
     </>
@@ -157,6 +190,7 @@ function ordenarPorHorario(data) {
             agrupadoPorDistrito[horario] = {
                 horario: horario,
                 items: []
+
             };
         }
 
