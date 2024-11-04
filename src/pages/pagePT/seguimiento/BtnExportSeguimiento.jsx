@@ -6,10 +6,12 @@ import dayjs from 'dayjs';
 import { arrayDistrito } from '@/types/type';
 
 export const BtnExportSeguimiento = ({dataExport}) => {
-
+  console.log(dataExport);
+  
     dataExport = dataExport.map(d=>{
         return {
-            nombre_apellidos_cli: d.tb_ventum.tb_cliente.nombres_apellidos_cli,
+            nombres_cli: d.tb_ventum.tb_cliente.nombre_cli,
+            apellidos_cli: `${d.tb_ventum.tb_cliente.apPaterno_cli} ${d.tb_ventum.tb_cliente.apPaterno_cli}`,
             distrito: arrayDistrito.find(u=>u.value === d.tb_ventum.tb_cliente.ubigeo_distrito_cli)?.label,
             email: d.tb_ventum.tb_cliente.email_cli,
             telefono: d.tb_ventum.tb_cliente.tel_cli,
@@ -44,7 +46,8 @@ export const BtnExportSeguimiento = ({dataExport}) => {
     };
   // Definir columnas para las hojas de trabajo
   const columns = [
-    { key: 'nombre_apellidos_cli', width: 40 },
+    { key: 'nombre_cli', width: 40 },
+    { key: 'apellidos_cli', width: 40 },
     { key: 'distrito', width: 20 },
     { key: 'email', width: 20 },
     { key: 'telefono', width: 20 },
@@ -65,7 +68,7 @@ export const BtnExportSeguimiento = ({dataExport}) => {
     // Combinar las celdas de B4 hasta D4
     ///TODO EGRESOS
     
-    const rowEncabezado = worksheet.addRow(['NOMBRES Y APELLIDOS DE CLIENTES', 'DISTRITOS', 'EMAIL', 'TELEFONOS', 'programa', 'semana', 'hora', "FECHA DE VENCIMIENTO", "SESIONES PENDIENTES"]).eachCell((cell) => {
+    const rowEncabezado = worksheet.addRow(['NOMBRES', "APELLIDOS", 'DISTRITOS', 'EMAIL', 'TELEFONOS', 'programa', 'semana', 'hora', "FECHA DE VENCIMIENTO", "SESIONES PENDIENTES"]).eachCell((cell) => {
         cell.fill = headerStyle.fill;
         cell.font = headerStyle.font;
         cell.alignment = headerStyle.alignment;
@@ -73,7 +76,8 @@ export const BtnExportSeguimiento = ({dataExport}) => {
       });
     dataSeguimiento.forEach(e=> {
         const row = worksheet.addRow([
-            e.nombre_apellidos_cli,
+          e.nombres_cli,
+          e.apellidos_cli,
             e.distrito,
             e.email,
             e.telefono,
@@ -83,7 +87,6 @@ export const BtnExportSeguimiento = ({dataExport}) => {
             e.fecha_fin,
             e.sesiones_pendientes
         ])
-                        row.getCell(1).fill = yellowFillStyle.fill;
                         row.eachCell((cell) => {
           cell.alignment = cellStyle.alignment;
           cell.border = cellStyle.border;
