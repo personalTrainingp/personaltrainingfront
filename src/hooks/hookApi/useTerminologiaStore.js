@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 
 export const useTerminologiaStore = () =>{
     let dispatch = useDispatch();
-
+	const [terminologiaPorId, setTerminologiaPorId] = useState({});
     const [dataTerminologiaPorEntidad , SetData] = useState({});
     const terminologiaPorEntidad = async ()=>{
         try {
@@ -33,7 +33,34 @@ export const useTerminologiaStore = () =>{
         };
     };
 
+    const actualizarTerminologia = async (parametroPorEnviar)=>{
+        try {
+
+            const response = await PTApi.post('/parametros/postActualizar', parametroPorEnviar);
+            terminologiaPorEntidad();
+            console.log(response);
+        } catch (error) {
+            console.log(error.message);
+        };
+    };
+
+    const EliminarTerminologia = async (parametroPorEnviar)=>{
+        try {
+            const response = await PTApi.post('/parametros/postEliminar', parametroPorEnviar);
+            terminologiaPorEntidad();
+            console.log(response);
+        } catch (error) {
+            console.log(error.message);
+        };
+    };
+
     return {
-        terminologiaPorEntidad, dataTerminologiaPorEntidad , registrarTerminologia
+        terminologiaPorEntidad, 
+        dataTerminologiaPorEntidad , 
+        registrarTerminologia,
+        terminologiaPorId,
+        setTerminologiaPorId,
+        actualizarTerminologia,
+        EliminarTerminologia
     };
 };

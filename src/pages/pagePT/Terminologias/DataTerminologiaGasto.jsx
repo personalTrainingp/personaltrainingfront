@@ -16,7 +16,7 @@ import { useTerminologiaStore } from '@/hooks/hookApi/useTerminologiaStore';
 import { confirmDialog } from 'primereact/confirmdialog';
 
 
-const DataTerminologia = (({data}) => {
+const DataTerminologiaGasto = (({data}) => {
     const dispatch = useDispatch();
     const {terminologiaPorId,setTerminologiaPorId , actualizarTerminologia  , EliminarTerminologia} = useTerminologiaStore();
 
@@ -118,10 +118,9 @@ const DataTerminologia = (({data}) => {
                         stripedRows
                         scrollable
                     >
-                         <Column header="Id" field='id_param' filterField="id_param" sortable style={{ width: '1rem' }} filter />
-                        <Column header="Grupo" field='grupo_param' filterField="grupo_param" sortable />
-                        <Column header="Sigla" field='sigla_param' filterField='sigla_param'  sortable filter />
-                        <Column header="Label" field='label_param' filterField='label_param'  sortable filter />
+                         <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter />
+                        <Column header="Grupo" field='grupo' filterField="grupo" sortable />
+                        <Column header="Sigla" field='nombre_gasto' filterField='nombre_gasto'  sortable filter />
                         <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right"  body={actionBodyTemplate} />
  
                     </DataTable>
@@ -133,4 +132,4 @@ const DataTerminologia = (({data}) => {
     );
 });
 
-export{DataTerminologia};
+export{DataTerminologiaGasto};

@@ -16,9 +16,9 @@ const Parametro = {
     flag: true,
 };
 
-export const ModalTerminologia = ({status, onHide, show  , boleanActualizar})=>{
+export const ModalTerminologia = ({status, onHide, show  , boleanActualizar , data})=>{
 
-    const { registrarTerminologia } = useTerminologiaStore();
+    const { registrarTerminologia , actualizarTerminologia } = useTerminologiaStore();
     const   {
         id_param ,
         entidad_param ,
@@ -27,7 +27,7 @@ export const ModalTerminologia = ({status, onHide, show  , boleanActualizar})=>{
         label_param ,
         estado_param,
         formState,
-        onResetForm, onInputChange, onInputChangeReact } = useForm(Parametro);   
+        onResetForm, onInputChange, onInputChangeReact } = useForm(data?data:Parametro);   
 
     const [visible, setVisible] = useState(false);
     const toastBC = useRef(null);
@@ -47,21 +47,45 @@ export const ModalTerminologia = ({status, onHide, show  , boleanActualizar})=>{
      paramatero = terminologia?.parametros ? terminologia?.parametros[0] : "";
         
     };
-    console.log("terminologia seleccionada" );
-    console.log(paramatero );
+
     
     const submitParametro = async(e)=>{
         e.preventDefault();
-        Parametro.entidad_param = paramatero.entidad_param;
-        Parametro.grupo_param = paramatero.grupo_param;
-        Parametro.sigla_param = sigla_param;
-        Parametro.label_param = label_param;
+        // Parametro.entidad_param = paramatero.entidad_param;
+        // Parametro.grupo_param = paramatero.grupo_param;
+        // Parametro.sigla_param = sigla_param;
+        // Parametro.label_param = label_param;
         //Parametro.estado_param = estado_param;
-        console.log(Parametro);
-        registrarTerminologia(Parametro);
+
+        const nuevoParametro = {
+            ...Parametro,
+            id_param: id_param,
+            entidad_param: entidad_param,
+            grupo_param: grupo_param,
+            sigla_param: sigla_param,
+            label_param: label_param,
+        };
+        if (boleanActualizar) {
+            actualizarTerminologia(nuevoParametro);
+        }
+        if (!boleanActualizar) {
+            console.log(paramatero);
+            const nuevoParametro = {
+                ...Parametro,
+                id_param: id_param,
+                entidad_param: paramatero.entidad_param,
+                grupo_param: paramatero.grupo_param,
+                sigla_param: sigla_param,
+                label_param: label_param,
+            };
+            console.log("nuevoParametro");
+            console.log(nuevoParametro);
+            registrarTerminologia(nuevoParametro);
+        }
+
         setVisible(true);
         onCancelForm();
-        
+
         return;
 
     };
