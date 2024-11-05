@@ -29,17 +29,6 @@ import { BtnExportSeguimiento } from './BtnExportSeguimiento';
 dayjs.extend(utc);
 locale('es')
 
-// function obtenerMayorExtensionFin(extensions) {
-// 	let mayorFecha = '';
-// 	extensions.forEach((extension) => {
-// 		if (mayorFecha === '' || new Date(extension.extension_fin) > new Date(mayorFecha)) {
-// 			mayorFecha = extension.extension_fin;
-// 		}
-// 	});
-    
-//     console.log(extensions);
-// 	return new Date(mayorFecha);
-// }
 function encontrarObjeto(array, fecha_act) {
     //DESTRUCUTRANDO EL ARRAY
     // const { ... } = array;
@@ -107,9 +96,7 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
 			newItem.diasFaltan = diasLaborables(new Date(), dayjs.utc(fechaaaa))
-			newItem.distrito = arrayDistrito.find(
-				(option) => option.value === d.tb_ventum.tb_cliente.ubigeo_distrito_cli
-			)?.label
+			newItem.distrito = d.tb_ventum.tb_cliente.tb_distrito?.distrito;
 			return newItem;
 		});
 	};
@@ -181,6 +168,8 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
         );
 	}
 	const SociosbodyTemplate = (rowData)=>{
+		console.log(rowData);
+		
 		return (
             <div className="align-items-center gap-2">
                 <div className='font-bold '>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</div>

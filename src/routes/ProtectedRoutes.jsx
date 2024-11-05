@@ -59,6 +59,8 @@ const PerfilProveedor = lazy(()=>import('../pages/pagePT/PerfilProveedor'))
 const GestionInventario = lazy(()=>import('../pages/pagePT/GestInventario'))
 const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
 const ReportePorMarcacion = lazy(()=> import('../pages/pagePT/reportes/reporteCliente'))
+const ReporteSeguimiento = lazy(()=>import('../pages/pagePT/reportes/reporteSeguimiento'))
+const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
 /**
  * routes import
  */
@@ -96,6 +98,15 @@ export default function ProtectedRoutes() {
 			status  === 'authenticated' ? (
 				<>
 				<Route path="/*" element={<Layout />}>
+				{/* /reporte-seguimiento */}
+					{
+                        sections.find(e=>e.url==='/gestion-comercial') && 
+                        <Route path='gestion-comercial' element={<GestionComercial/>}/>
+                    }
+					{
+                        sections.find(e=>e.url==='/reporte/reporte-seguimiento') && 
+                        <Route path='reporte/reporte-seguimiento' element={<ReporteSeguimiento/>}/>
+                    }
 					{
 						sections.find(e=>e.url==='/proveedores/prov-agentes') && 
 						<Route path='proveedores/prov-agentes' element={<GestProvAgente/>}/>

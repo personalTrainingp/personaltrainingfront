@@ -65,47 +65,48 @@ export const DataTableContratoCliente = () => {
       </>
     )
   }
-  console.log(dataView);
-  
 // Función para agrupar por nombres_apellidos_empl y contar firmados y sinFirmas
-const groupedData = dataView.reduce((acc, current) => {
-  const empleado = current.tb_empleado.nombres_apellidos_empl;
-
-  // Buscamos si ya existe una entrada para este empleado
-  let empleadoEntry = acc.find(item => item.nombres_empl === empleado);
-
-  // Si no existe, la inicializamos
-  if (!empleadoEntry) {
-    empleadoEntry = {
-      nombres_empl: empleado,
-      items: [],
-      firmados: 0,
-      sinFirmas: 0
-    };
-    acc.push(empleadoEntry);
-  }
-
-  // Contamos firmados y sinFirmas en detalle_ventaMembresia
-  const { detalle_ventaMembresia } = current;
-  detalle_ventaMembresia.forEach(detalle => {
-    if (detalle.firma_cli) {
-      empleadoEntry.firmados += 1;
-    } else {
-      empleadoEntry.sinFirmas += 1;
+function agruparFirmasxEmpl(dataView) {
+  const groupedData = dataView.reduce((acc, current) => {
+    const empleado = current.tb_empleado?.nombres_apellidos_empl;
+  
+    // Buscamos si ya existe una entrada para este empleado
+    let empleadoEntry = acc.find(item => item.nombres_empl === empleado);
+  
+    // Si no existe, la inicializamos
+    if (!empleadoEntry) {
+      empleadoEntry = {
+        nombres_empl: empleado,
+        items: [],
+        firmados: 0,
+        sinFirmas: 0
+      };
+      acc.push(empleadoEntry);
     }
-  });
-
-  // Agregamos el elemento actual a los items de este empleado
-  empleadoEntry.items.push(current);
-
-  return acc;
-}, []);
+  
+    // Contamos firmados y sinFirmas en detalle_ventaMembresia
+    const { detalle_ventaMembresia } = current;
+    detalle_ventaMembresia.forEach(detalle => {
+      if (detalle.firma_cli) {
+        empleadoEntry.firmados += 1;
+      } else {
+        empleadoEntry.sinFirmas += 1;
+      }
+    });
+  
+    // Agregamos el elemento actual a los items de este empleado
+    empleadoEntry.items.push(current);
+  
+    return acc;
+  }, []);
+  return groupedData;
+}
   return (
     <>
       <Row>
-        {groupedData.map(f=>(
+        {agruparFirmasxEmpl(dataView).map(f=>(
           <Col lg={3}>
-            <Card className='p-2'>
+            <Card className='p-2' style={{height: '130px'}}>
               <Card.Title>
                 {f.nombres_empl}
               </Card.Title>

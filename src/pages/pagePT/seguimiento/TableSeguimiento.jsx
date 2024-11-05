@@ -24,6 +24,7 @@ import { useSelector } from 'react-redux';
 import { Message } from 'primereact/message';
 import { Skeleton } from 'primereact/skeleton';
 import { Row } from 'react-bootstrap';
+import { BtnExportSeguimiento } from './BtnExportSeguimiento';
 dayjs.extend(utc);
 
 // function obtenerMayorExtensionFin(extensions) {
@@ -100,27 +101,16 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 			
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...d };
-			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st} Semanas`;
+			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st} Semanas | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')}`;
 			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
 			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
-			
-			newItem.diasFaltan = diasLaborables(new Date().toISOString(), dayjs.utc(fechaaaa))
-			// d.vencimiento_REGALOS_CONGELAMIENTO = new Date(
-			// 	`${new Date(d.fec_fin_mem)}`
-			// );
-            // d.dias = ''
+			newItem.diasFaltan = diasLaborables(new Date(), dayjs.utc(fechaaaa))
+			newItem.distrito = d.tb_ventum.tb_cliente.tb_distrito?.distrito;
 			return newItem;
 		});
 	};
 	
-	const formatDate = (value) => {
-		return value.toLocaleDateString('en-US', {
-			day: '2-digit',
-			month: '2-digit',
-			year: 'numeric',
-		});
-	};
 	const diasPorTerminarBodyTemplate = (rowData) => {
 		return `${rowData.diasFaltan} sesiones`;
 	};
@@ -136,7 +126,7 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 
 	const renderHeader = () => {
 		return (
-			<div className="">
+			<div className="d-flex">
 				{/* <h4 className="m-0">Customers</h4> */}
 				<IconField iconPosition="left">
 					<InputIcon className="pi pi-search" />
@@ -146,13 +136,22 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 						placeholder="Buscador global"
 					/>
 				</IconField>
+				<BtnExportSeguimiento dataExport={customers}/>
 			</div>
 		);
 	};
 	const dateBodyTemplate = (rowData) => {
 		// console.log(rowData); JSON.stringify(rowData.fecha_fin_new)
 		//dayjs(rowData.fecha_fin_new).format('D [de] MMMM [del] YYYY')
-		return 	<span>{FormatoDateMask(rowData.fec_fin_mem_new, 'dddd D [de] MMMM [del] YYYY') }</span>
+		return 	<span>{FormatoDateMask(rowData.fecha_fin_new, 'dddd D [de] MMMM [del] YYYY') }</span>
+	};
+	
+	const formatDate = (value) => {
+		return value.toLocaleDateString('en-US', {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric',
+		});
 	};
 	const statusBodyTemplate = (rowData) => {
         if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null){
@@ -178,25 +177,32 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
             </div>
         );
 	}
+	
 	const SociosbodyTemplate = (rowData)=>{
 		return (
-            <div className="flex align-items-center font-bold gap-2">
-                <span>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</span>
+            <div className="align-items-center gap-2">
+                <div className='font-bold '>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</div>
+                <div>Email: {rowData.tb_ventum.tb_cliente.email_cli} </div>
+                <div>Telefono: {rowData.tb_ventum.tb_cliente.tel_cli?rowData.tb_ventum.tb_cliente.tel_cli.replace(/ /g, "").match(/.{1,3}/g).join('-'):''} </div>
+                <div className='fw-bold text-primary'>Distrito: {rowData.distrito} </div>
+                {/* <div>EDAD: {rowData.distrito} </div> */}
             </div>
         );
 	}
-
-	// const dateFilterTemplate = (options) => {
-	// 	return (
-	// 		<Calendar
-	// 			value={options.value}
-	// 			onChange={(e) => options.filterCallback(e.value, options.index)}
-	// 			dateFormat="mm/dd/yy"
-	// 			placeholder="mm/dd/yyyy"
-	// 			mask="99/99/9999"
-	// 		/>
-	// 	);
-	// };
+	
+	const programaSesioneBodyTemplate = (rowData)=>{
+		return (
+			<>
+			<span className='text-primary fw-semibold font-20'>
+			{rowData.ProgramavsSemana.split('|')[0]} 
+			</span>
+			<br/>
+			{rowData.ProgramavsSemana.split('|')[1]}
+			<br/>
+			{rowData.ProgramavsSemana.split('|')[2]}
+			</>
+		)
+	}
 
 	const header = renderHeader();
 	return (
@@ -295,6 +301,7 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 					<Column
 						field="ProgramavsSemana"
 						header="Programas / Semanas"
+						body={programaSesioneBodyTemplate}
 						sortable
 						filterField="ProgramavsSemana"
 						style={{ minWidth: '14rem' }}
