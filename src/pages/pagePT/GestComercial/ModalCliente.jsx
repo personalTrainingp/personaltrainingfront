@@ -113,26 +113,11 @@ export const ModalCliente = ({show, onHide}) => {
     </Modal> ) : (
     <Modal show={show} onHide={onHide} size='xl' backdrop={'static'}>
     <Modal.Header>
-        <Modal.Title>Agregar socio</Modal.Title>
+        <Modal.Title>Agregar</Modal.Title>
     </Modal.Header>
     <Modal.Body>
 				<Row>
-					<Col xl={3} className="">
-						<div className="d-flex justify-content-center">
-							<img src={selectedFile} width={180} height={180} />
-						</div>
-						<input 
-                            type="file" 
-                            className="m-2 fs-6"
-                            accept="image/png, image/jpeg, image/jpg"
-                            name="imgAvatar_BASE64"
-                            onChange={(e)=>{
-                                onRegisterFileChange(e)
-                                ViewDataImg(e)
-                            }} 
-                            />
-					</Col>
-					<Col xl={9} className="">
+					<Col xl={12} className="">
 						<form>
                             <Row>
                                 <Col xl={4}>
@@ -419,23 +404,6 @@ export const ModalCliente = ({show, onHide}) => {
 						</form>
 					</Col>
 				</Row>
-				<Row className="">
-                    <Tabs>
-                        <Tab eventKey={'infoContacEmerg'} title={'Informacion de contacto de emergencia'}>
-                            <LayoutInfoContacEmergencia 
-                                />
-                        </Tab>
-                        <Tab eventKey={'infoContac'} title={'Informacion de contacto del socio'}>
-                            <LayoutInfoContacto/>
-                        </Tab>
-                        <Tab eventKey={'comentarios'} title={'Comentario'}>
-                            <LayoutComentario/>
-                        </Tab>
-                        {/* <Tab eventKey={'docanex'} title={'Documentos anexados'}>
-                            <LayoutInfoContacto/>
-                        </Tab> */}
-                    </Tabs>
-                </Row>
                 <Button className='me-3' onClick={onSubmitAgregarCliente}>Guardar socio</Button>
                 <a className='text-danger' onClick={btnCancelModal}>Cancelar</a>
     </Modal.Body>

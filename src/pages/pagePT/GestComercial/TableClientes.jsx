@@ -14,38 +14,40 @@ import { Link } from 'react-router-dom';
 import { arrayDistrito, arrayTipoCliente } from '@/types/type';
 import { useProspectoLeadsStore } from '@/hooks/hookApi/useProspectoLeadsStore';
 import dayjs from 'dayjs';
+import { MoneyFormatter } from '@/components/CurrencyMask';
+import { Card, Col, Row } from 'react-bootstrap';
 
-export default function TableClientes() {
+export default function TableClientes({dataV}) {
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const  { obtenerProspectosLeads } = useProspectoLeadsStore()
-	const { dataView } = useSelector(e=>e.DATA)
-    useEffect(() => {
-        obtenerProspectosLeads()
-    }, [])
+    // const  { obtenerProspectosLeads } = useProspectoLeadsStore()
+	// const { dataView } = useSelector(e=>e.DATA)
+    // useEffect(() => {
+    //     obtenerProspectosLeads()
+    // }, [])
         useEffect(() => {
         const fetchData = () => {
-            setCustomers(getCustomers(dataView));
+            setCustomers(getCustomers(dataV));
             setLoading(false);
         };
         fetchData()
         initFilters();
-        }, []);
+        }, [dataV]);
     const getCustomers = (data) => {
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
-            newItem.estado_lead = item.parametro_estado_lead.label_param
-            newItem.canal_lead = item.parametro_canal.label_param
-            newItem.campania_lead = item.parametro_campania.label_param
+            newItem.estado_lead = item.parametro_estado_lead?.label_param
+            newItem.canal_lead = item.parametro_canal?.label_param
+            newItem.campania_lead = item.parametro_campania?.label_param
             newItem.tipo_cliente = arrayTipoCliente.find(i => i.value === item.tipoCli_cli)?.label;
             // Realiza las modificaciones en la copia
             return newItem;
         });
     };
-    console.log(dataView);
+    console.log(agruparPorCanal(dataV));
     
     const clearFilter = () => {
         initFilters();
@@ -155,22 +157,31 @@ export default function TableClientes() {
     }
     const estadoLeadBodyTemplate = (rowData)=>{
         return (
-            <>
-            {rowData.estado_lead}
-            </>
+            <h3>
+                                        
+                <span className={`badge ${rowData.parametro_estado_lead.id_param==737 && 'text-bg-info'}  
+                                        ${rowData.parametro_estado_lead.id_param==736 && 'text-bg-secondary'}
+                                        ${rowData.parametro_estado_lead.id_param==740 && 'text-bg-warning'} 
+                                        ${rowData.parametro_estado_lead.id_param==739 && 'text-bg-success'}
+                                        ${rowData.parametro_estado_lead.id_param==738 && 'text-bg-success'}
+                                        `}>
+                {rowData.estado_lead}
+                </span>
+            </h3>
         )
     }
     const fechaCitaBodyTemplate = (rowData)=>{
         return (
             <>
-            {rowData.fecha_cita}
+            {rowData.fecha_cita?dayjs(rowData.fecha_cita).format('DD [del] MMMM [del] YYYY'):''}
+            
             </>
         )
     }
     const planBodyTemplate = (rowData)=>{
         return (
             <>
-            {rowData.plan_lead}
+            <MoneyFormatter amount={rowData.plan_lead}/>
             </>
         )
     }
@@ -184,13 +195,72 @@ export default function TableClientes() {
     const canalBodyTemplate = (rowData)=>{
         return (
             <>
-            {rowData.parametro_canal.label_param}
+            {rowData.parametro_canal?.label_param}
             </>
         )
     }
     const header = renderHeader();
 
     return (
+        <>
+            <Row>
+                <Col lg={6}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title>
+                                <h3 className='text-center'>CANALES</h3>
+                            </Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <Row>
+                                {
+                                    agruparPorCanal(dataV).map(d=>(
+                                        <Col>
+                                            <Card className="shadow-none m-0">
+                                                <Card.Body className="text-center">
+                                                    <h3>
+                                                        <span>{d.label_canal}</span>
+                                                    </h3>
+                                                    <p className="text-muted font-24 mb-0">{d.items.length}</p>
+                                                </Card.Body>
+                                            </Card>
+                                        </Col>
+
+                                    ))
+                                }
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col lg={6}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title>
+                                <h3 className='text-center'>CAMPAÑAS</h3>
+                            </Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <Row>
+                                {
+                                    agruparPorCampanias(dataV).map(d=>(
+                                        <Col>
+                                            <Card className="shadow-none m-0">
+                                                <Card.Body className="text-center">
+                                                    <h3>
+                                                        <span>{d.label_campanias}</span>
+                                                    </h3>
+                                                    <p className="text-muted font-24 mb-0">{d.items.length}</p>
+                                                </Card.Body>
+                                            </Card>
+                                        </Col>
+
+                                    ))
+                                }
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
             <DataTable size='small' 
                         value={customers} 
                         paginator 
@@ -228,7 +298,50 @@ export default function TableClientes() {
                 {/* <Column header="Estado" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/> */}
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
+        </>
     );
 }
 
 
+
+// Función para agrupar por label_canal
+const agruparPorCanal = (data) => {
+    return data.reduce((result, item) => {
+      const labelCanal = item.parametro_canal.label_param;
+      
+      // Encuentra el canal en el resultado
+      let canal = result.find(group => group.label_canal === labelCanal);
+      
+      // Si no existe, lo crea
+      if (!canal) {
+        canal = { label_canal: labelCanal, items: [] };
+        result.push(canal);
+      }
+      
+      // Agrega el item al canal correspondiente
+      canal.items.push(item);
+      
+      return result;
+    }, []);
+  };
+
+  // Función para agrupar por label_canal
+  const agruparPorCampanias = (data) => {
+      return data.reduce((result, item) => {
+        const labelCampanias = item.parametro_campania.label_param;
+        
+        // Encuentra el canal en el resultado
+        let canal = result.find(group => group.label_campanias === labelCampanias);
+        
+        // Si no existe, lo crea
+        if (!canal) {
+          canal = { label_campanias: labelCampanias, items: [] };
+          result.push(canal);
+        }
+        
+        // Agrega el item al canal correspondiente
+        canal.items.push(item);
+        
+        return result;
+      }, []);
+    };
