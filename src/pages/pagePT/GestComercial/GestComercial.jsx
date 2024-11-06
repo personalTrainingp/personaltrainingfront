@@ -63,7 +63,7 @@ export const GestComercial = () => {
 // Función para agrupar por label_canal
 const agruparPorEstados = (data) => {
     return data.reduce((result, item) => {
-      const labelEstado = item.parametro_estado_lead.label_param;
+      const labelEstado = item.parametro_estado_lead?.label_param;
       
       // Encuentra el canal en el resultado
       let canal = result.find(group => group.label_estado === labelEstado);
