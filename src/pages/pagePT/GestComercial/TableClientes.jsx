@@ -122,9 +122,10 @@ export default function TableClientes({dataV}) {
     }
     const verHistoryBodyTemplate = (rowData) => {
         return (
-            <Link to={`/historial-cliente/${rowData.uid}`} className="action-icon" style={{fontSize: '14px', color: 'blue', textDecoration: 'underline'}}>
-                Ver Historial
-            </Link>
+            <>
+                <Button icon="pi pi-comment" rounded outlined className="mr-2" 
+                />
+            </>
         );
     }
     const IdBodyTemplate = (rowData, { rowIndex })=>{
@@ -144,7 +145,7 @@ export default function TableClientes({dataV}) {
     const empleadoBodyTemplate = (rowData)=>{
         return (
             <>
-            {rowData.empleado.nombres_apellidos_empl}
+            {rowData.empleado?.nombres_apellidos_empl}
             </>
         )
     }
@@ -211,7 +212,7 @@ export default function TableClientes({dataV}) {
                                 <h3 className='text-center'>CANALES</h3>
                             </Card.Title>
                         </Card.Header>
-                        <Card.Body>
+                        <Card.Body style={{alignItems: 'center'}}>
                             <Row>
                                 {
                                     agruparPorCanal(dataV).map(d=>(
@@ -239,15 +240,15 @@ export default function TableClientes({dataV}) {
                                 <h3 className='text-center'>CAMPAÑAS</h3>
                             </Card.Title>
                         </Card.Header>
-                        <Card.Body>
+                        <Card.Body style={{ alignItems: 'center'}}>
                             <Row>
                                 {
                                     agruparPorCampanias(dataV).map(d=>(
-                                        <Col>
+                                        <Col lg={3}>
                                             <Card className="shadow-none m-0">
                                                 <Card.Body className="text-center">
                                                     <h3>
-                                                        <span>{d.label_campanias}</span>
+                                                        <span className='font-20'>{d.label_campanias}</span>
                                                     </h3>
                                                     <p className="text-muted font-24 mb-0">{d.items.length}</p>
                                                 </Card.Body>
@@ -307,7 +308,7 @@ export default function TableClientes({dataV}) {
 // Función para agrupar por label_canal
 const agruparPorCanal = (data) => {
     return data.reduce((result, item) => {
-      const labelCanal = item.parametro_canal.label_param;
+      const labelCanal = item.parametro_canal?.label_param;
       
       // Encuentra el canal en el resultado
       let canal = result.find(group => group.label_canal === labelCanal);
@@ -328,7 +329,7 @@ const agruparPorCanal = (data) => {
   // Función para agrupar por label_canal
   const agruparPorCampanias = (data) => {
       return data.reduce((result, item) => {
-        const labelCampanias = item.parametro_campania.label_param;
+        const labelCampanias = item.parametro_campania?.label_param;
         
         // Encuentra el canal en el resultado
         let canal = result.find(group => group.label_campanias === labelCampanias);

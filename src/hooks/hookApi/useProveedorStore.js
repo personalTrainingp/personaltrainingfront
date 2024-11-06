@@ -117,6 +117,8 @@ export const useProveedorStore = () => {
 		try {
 			setIsLoading(false);
 			const { data } = await PTApi.get(`/proveedor/obtener-proveedor-uid/${uid}`);
+			console.log(data);
+
 			dispatch(onDataPerfil(data.proveedor));
 			setProveedor(data.proveedor);
 			setIsLoading(true);

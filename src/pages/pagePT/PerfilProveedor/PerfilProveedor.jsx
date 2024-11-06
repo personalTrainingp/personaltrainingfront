@@ -30,6 +30,8 @@ export const PerfilProv = () => {
       <Loading show={isLoading}/>
     )
   }
+  console.log(proveedor);
+  
   return (
     <>  
         <div className='my-2 py-2 btn btn-primary'>
@@ -42,7 +44,7 @@ export const PerfilProv = () => {
                     <div className='' style={{height: '600px', width: '100%'}}>
                         <div className='d-flex align-items-center flex-column'>
                         {/* <img src={`${proveedor.tb_images?.length!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_images[proveedor.tb_images.length-1]?.name_image}`:sinAvatar}`} className='rounded-circle' width={150} height={150}/> */}
-                        <Image src={`${proveedor.tb_images?.length!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_images[proveedor.tb_images.length-1]?.name_image}`:sinAvatar}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="250" />
+                        <Image src={`${proveedor.tb_image?.length!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_image?.name_image}`:sinAvatar}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="250" />
                         <div className='m-2 text-center'>
                             <span className='fs-3 fw-bold'>
                                 <p className='mb-0 pb-0'>
