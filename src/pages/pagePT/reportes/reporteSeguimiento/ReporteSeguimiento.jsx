@@ -7,29 +7,32 @@ import React, { useEffect, useState } from 'react'
 import { Card, Col, Row, Table } from 'react-bootstrap'
 
 export const ReporteSeguimiento = () => {
+    const [selectHorario, setselectHorario] = useState([])
 	const { reporteSeguimiento, obtenerReporteSeguimiento, obtenerReporteSeguimientoTODO, viewSeguimiento, agrupado_programas, loadinData } = useReporteStore();
     useEffect(() => {
       obtenerReporteSeguimiento(true, 598)
       obtenerReporteSeguimientoTODO(598)
     }, [])
     const [customers, setCustomers] = useState([])
-    console.log(ordenarPorDistrito(viewSeguimiento));
-    console.log(agruparPorHorarioYDistrito(viewSeguimiento));
-    console.log(viewSeguimiento);
-    
+    // console.log(ordenarPorDistrito(viewSeguimiento));
+    // console.log(agruparPorHorarioYDistrito(viewSeguimiento));
+    // console.log(viewSeguimiento);
+    const onSelectHorario = (d)=>{
+        setselectHorario(d)
+    }
     const HorarioBodyTemplate = (rowData)=>{
         return (
-            <>
+            <span className='font-20 fw-bold'>
             {rowData.horario}
-            </>
+            </span>
         )
     }
     
     const cantidadBodyTemplate=(rowData)=>{
         return (
-            <>
-            {rowData.cantidad}
-            </>
+            <span className='font-20'>
+            {rowData.cantidad} SOCIOS
+            </span>
         )
     }
     const filtroDeHorario = (time)=>{
@@ -47,67 +50,81 @@ export const ReporteSeguimiento = () => {
         const horariosOrdenados = hore.sort((a, b) =>convertirAHora(a.horario) - convertirAHora(b.horario));
         return horariosOrdenados
     }
-    
-    console.log(filtroDeHorario('AM'));
+    console.log(selectHorario.items, viewSeguimiento, ordenarPorDistrito(selectHorario.items));
     
   return (
     <>
         <PageBreadcrumb subName={'T'} title={'REPORTE DE SEGUIMIENTO'}/>
         <Row>
-            <Col lg={6}>
-                <h3 className='text-center'>HORARIO MAÑANA ({filtroDeHorario('AM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
-                <DataTable
-                            stripedRows 
-                            value={filtroDeHorario('AM')} 
-                            size={'small'} 
-                            tableStyle={{ minWidth: '30rem' }} 
-                            scrollable 
-                            selectionMode="single"
-                            scrollHeight="400px"
-                            >
-                            <Column header="HORARIO" body={HorarioBodyTemplate}></Column>
-                            <Column header="CANTIDAD" filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
-                </DataTable>
+            <Col lg={1}>
             </Col>
-            <Col lg={6}>
-                <h3 className='text-center'>HORARIO TARDE ({filtroDeHorario('PM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
-                <DataTable
-                            stripedRows 
-                            value={filtroDeHorario('PM')} 
-                            size={'small'} 
-                            tableStyle={{ minWidth: '30rem' }} 
-                            scrollable 
-                            selectionMode="single"
-                            scrollHeight="400px"
-                            >
-                            <Column header="HORARIO" body={HorarioBodyTemplate}></Column>
-                            <Column header="CANTIDAD" filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
-                </DataTable>
-            </Col>
-            <Col lg={12}>
-                <h3 className='text-center'>POR DISTRITO</h3>
+            <Col lg={10}>
                 <Row>
-                    {
-                        ordenarPorDistrito(viewSeguimiento).map(g=>(
-                            
-                            <Col lg={3}>
-                            <h2 className='text-center'>{g.distrito?`${g.distrito}(${g.items.length})`:'SIN DEFINIR'}</h2>
+                    <Col lg={6}>
+                    <div>
+                        <h3 className='text-center'>HORARIOS SOCIOS INSCRITOS TURNO AM ({filtroDeHorario('AM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
                             <DataTable
                                         stripedRows 
-                                        value={ordenarPorHorario(g.items).map(m=>{return {...m, cantidad: m.items.length}})} 
+                                        value={filtroDeHorario('AM')} 
+                                        selection={selectHorario} onSelectionChange={(e)=>onSelectHorario(e.value)}
                                         size={'small'} 
-                                        tableStyle={{ minWidth: '30rem' }} 
+                                        
                                         scrollable 
                                         selectionMode="single"
                                         scrollHeight="400px"
+                                        // width={'400'}
                                         >
-                                        <Column header="HORARIO" body={HorarioBodyTemplate}></Column>
-                                        <Column header="CANTIDAD" filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
+                                        <Column header={<span className='font-24'>HORARIO</span>} style={{width: '20px'}} body={HorarioBodyTemplate}></Column>
+                                        <Column header={<span className='font-24'>CANTIDAD</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
                             </DataTable>
-                        </Col>
-                        ))
-                    }
+                    </div>
+                    </Col>
+                    <Col lg={6}>
+                    <div>
+                        <h3 className='text-center'>HORARIOS SOCIOS INSCRITOS TURNO PM ({filtroDeHorario('PM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
+                        <DataTable
+                                    stripedRows 
+                                    value={filtroDeHorario('PM')} 
+                                    selection={selectHorario} onSelectionChange={(e)=>onSelectHorario(e.value)}
+                                    size={'small'} 
+                                    // tableStyle={{ width: '30rem' }} 
+                                    scrollable 
+                                    selectionMode="single"
+                                    scrollHeight="400px"
+                                    >
+                                    <Column header={<span className='font-24'>HORARIO</span>} style={{width: '20px'}} body={HorarioBodyTemplate}></Column>
+                                    <Column header={<span className='font-24'>CANTIDAD</span>} style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
+                        </DataTable>
+                    </div>
+                    </Col>
+                    <Col lg={12}>
+                        <h3 className='text-center'>POR DISTRITO</h3>
+                        <Row>
+                            {
+                                ordenarPorDistrito(selectHorario.items).map(g=>(
+                                    
+                                    <Col lg={4}>
+                                    <h2 className='text-center'>{g.distrito?`${g.distrito}(${g.items.length})`:'SIN DEFINIR'}</h2>
+                                    <DataTable
+                                                stripedRows 
+                                                value={ordenarPorHorario(g.items).map(m=>{return {...m, cantidad: m.items.length}})} 
+                                                size={'small'} 
+                                                // tableStyle={{ minWidth: '30rem' }} 
+                                                scrollable 
+                                                selectionMode="single"
+                                                scrollHeight="400px"
+                                                >
+                                                <Column header={<span className='font-20'>HORARIO</span>}  style={{width: '20px'}} body={HorarioBodyTemplate}></Column>
+                                                <Column header={<span className='font-20'>CANTIDAD</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
+                                    </DataTable>
+                                </Col>
+                                ))
+                            }
+                        </Row>
+                    </Col>
                 </Row>
+            </Col>
+            <Col lg={1}>
             </Col>
         </Row>
     </>
@@ -159,7 +176,7 @@ function ordenarPorDistrito(data) {
     // Creamos un objeto para agrupar los datos por distrito
     const agrupadoPorDistrito = {};
 
-    data.forEach(item => {
+    data?.forEach(item => {
         // Obtenemos el nombre del distrito
         const distrito = item.tb_ventum.tb_cliente?.tb_distrito?.distrito;
 
