@@ -61,7 +61,7 @@ const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'
 const ReportePorMarcacion = lazy(()=> import('../pages/pagePT/reportes/reporteCliente'))
 const ReporteSeguimiento = lazy(()=>import('../pages/pagePT/reportes/reporteSeguimiento'))
 const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
-const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reporte/reporteAsistenciaRH'));
+const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
 /**
  * routes import
  */
