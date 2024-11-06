@@ -11,12 +11,15 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { onSetTerminologia } from '@/store/dataTerminologia/terminologiaSlice';
 import { DataTerminologiaGasto } from './DataTerminologiaGasto';
+import { ModalTerminologiaGasto } from './modalTerminologiaGasto';
 
 export const Terminologias = () => {
 
     
     const { terminologiaPorEntidad , seleccionarEntidad} = useTerminologiaStore();
-    const [isModalOpenProv, setisModalOpenProv] = useState(false);
+    const [isModalOpenTerminologia, setisModalOpenTerminologia] = useState(false);
+    const [isModalOpenTerminologiaGasto, setisModalOpenTerminologiaGasto] = useState(false);
+
     const dispatch = useDispatch();
     useEffect(() => {
         terminologiaPorEntidad();
@@ -28,17 +31,22 @@ export const Terminologias = () => {
     //console.log(test);
 
     let dataTerminologiaPorEntidad = test.dataView;
-    console.log(dataTerminologiaPorEntidad);
-    const modalProvClose = () => {
-
-        setisModalOpenProv(false)
-        //setSelectedParametro(null);
+    //console.log(dataTerminologiaPorEntidad);
+    const modalTerminologiaClose = () => {
+        setisModalOpenTerminologia(false)
     }
-    const modalProvOpen = (terminologiaData) => {
+    const modalTerminologiaGastoClose = () => {
+        setisModalOpenTerminologiaGasto(false)
+    }
+
+    const modalTerminologiaOpen = (terminologiaData) => {
         dispatch(onSetTerminologia(terminologiaData));
+        setisModalOpenTerminologia(true)
+    };
 
-
-        setisModalOpenProv(true)
+    const modalTerminologiaGastoOpen = (terminologiaData) => {
+        dispatch(onSetTerminologia(terminologiaData));
+        setisModalOpenTerminologiaGasto(true)
     };
 
 
@@ -54,32 +62,6 @@ export const Terminologias = () => {
   
                             <TabView className='px-2 mx-1 mb-1'  scrollable='true'>
                                 {
-                                    
-                                    dataTerminologiaPorEntidad?.parametros?.length > 0 && 
-                                    dataTerminologiaPorEntidad?.parametros?.map((parametro , index) => {
-                                        console.log(dataTerminologiaPorEntidad);
-                                        if (parametro.parametros.length === 0) {
-                                            return null;
-                                            
-                                        }else{
-                                            return (
-
-                                                <TabPanel className='px-2'   key={`${parametro.entidad_param}`} header={parametro.entidad_param}>
-                                                    <Col  sm={4}>
-                                                        <Button label='Agregar Terminologia' onClick={() => {
-                                                            modalProvOpen(parametro);
-                                   
-                                                            }} />
-                                                    </Col>
-                                                    <DataTerminologia  data={parametro.parametros} />
-                                                </TabPanel>
-                                            )
-                                        }
-                                    })
-
-                                }
-
-                                {
                                     dataTerminologiaPorEntidad?.parametrosGasto?.length > 0 && 
                                     dataTerminologiaPorEntidad?.parametrosGasto?.map((parametro , index) => {
                                         if (parametro.parametros.length === 0) {
@@ -92,28 +74,42 @@ export const Terminologias = () => {
                                                 <TabPanel  key={`${parametro.empresa}`} header={ parametro.empresa == '0' ? 'PT' : parametro.empresa == '598' ? 'Change' : parametro.empresa == '599' ? "Circus" : ""}>
                                                     <Col sm={4}>
                                                         <Button label='Agregar Terminologia' onClick={() => {
-                                                            modalProvOpen(parametro);
-                                   
+                                                                modalTerminologiaGastoOpen(parametro);
                                                             }} />
                                                     </Col>
                                                     <DataTerminologiaGasto  data={parametro.parametros} />
                                                 </TabPanel>
                                             )
                                         }
-                   
                                     })
-
                                 }
+                                {
+                                    dataTerminologiaPorEntidad?.parametros?.length > 0 && 
+                                    dataTerminologiaPorEntidad?.parametros?.map((parametro , index) => {
+                                        if (parametro.parametros.length === 0) {
+                                            return null;
+                                        }else{
+                                            return (
 
+                                                <TabPanel className='px-2'   key={`${parametro.entidad_param}`} header={parametro.entidad_param}>
+                                                    <Col  sm={4}>
+                                                        <Button label='Agregar Terminologia' onClick={() => {
+                                                                modalTerminologiaOpen(parametro);
+                                                            }} />
+                                                    </Col>
+                                                    <DataTerminologia  data={parametro.parametros} />
+                                                </TabPanel>
+                                            )
+                                        }
+                                    })
+                                }
                             </TabView>
-
-   
-
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
-            <ModalTerminologia  show={isModalOpenProv} onHide={modalProvClose} boleanActualizar={false} ></ModalTerminologia>
+            <ModalTerminologia  show={isModalOpenTerminologia} onHide={modalTerminologiaClose} boleanActualizar={false} ></ModalTerminologia>
+            <ModalTerminologiaGasto  show={isModalOpenTerminologiaGasto} onHide={modalTerminologiaGastoClose} boleanActualizar={false} ></ModalTerminologiaGasto>
         </>
     )
 }

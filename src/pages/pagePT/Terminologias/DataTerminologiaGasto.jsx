@@ -14,23 +14,21 @@ import { useDispatch } from 'react-redux';
 import { onSetTerminologia } from '@/store/dataTerminologia/terminologiaSlice';
 import { useTerminologiaStore } from '@/hooks/hookApi/useTerminologiaStore';
 import { confirmDialog } from 'primereact/confirmdialog';
+import { ModalTerminologiaGasto } from './modalTerminologiaGasto';
 
 
 const DataTerminologiaGasto = (({data}) => {
     const dispatch = useDispatch();
-    const {terminologiaPorId,setTerminologiaPorId , actualizarTerminologia  , EliminarTerminologia} = useTerminologiaStore();
+    const {terminologiaPorId,setTerminologiaPorId , actualizarTerminologiaGasto  ,  EliminarTerminologiaGasto} = useTerminologiaStore();
 
-    const [isModalOpenProv, setisModalOpenProv] = useState(false);
-    const modalProvClose = () => {
+    const [isModalOpenTerminologiaGasto, setisModalOpenTerminologiaGasto] = useState(false);
 
-        setisModalOpenProv(false)
-        //setSelectedParametro(null);
+    const modalTerminologiaGastoClose = () => {
+        setisModalOpenTerminologiaGasto(false)
     }
-    const modalProvOpen = (terminologiaData) => {
+    const modalTerminologiaGastoOpen = (terminologiaData) => {
         dispatch(onSetTerminologia(terminologiaData));
-
-
-        setisModalOpenProv(true)
+        setisModalOpenTerminologiaGasto(true)
     };
 
     const renderHeader = () => {
@@ -52,11 +50,8 @@ const DataTerminologiaGasto = (({data}) => {
     };
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
-            console.log(rowData);
             setTerminologiaPorId(rowData);
-            modalProvOpen();
-
-            //obtenerGastoxID(rowData.id)
+            modalTerminologiaGastoOpen();
         }
         const confirmDeleteTerminologia = ()=>{
             confirmDialog({
@@ -65,15 +60,15 @@ const DataTerminologiaGasto = (({data}) => {
                 icon: 'pi pi-info-circle',
                 defaultFocus: 'reject',
                 acceptClassName: 'p-button-danger',
-                accept:  onAcceptDeleteTerminologia(rowData),
+                accept:  onAcceptDeleteTerminologiaGasto(rowData),
             });
         }
 
 
         
-        const onAcceptDeleteTerminologia = async(rowData)=>{
+        const onAcceptDeleteTerminologiaGasto = async(rowData)=>{
             //setshowLoading(true)
-            await EliminarTerminologia(rowData)
+            await EliminarTerminologiaGasto(rowData)
             //setshowLoading(false)
             showToast('success', 'Eliminar Terminologia', 'Terminologia Eliminado correctamente', 'success')
         }
@@ -126,7 +121,7 @@ const DataTerminologiaGasto = (({data}) => {
                     </DataTable>
                 </Col>
             </Row>
-            <ModalTerminologia  show={isModalOpenProv} onHide={modalProvClose} boleanActualizar={true} data={terminologiaPorId}  ></ModalTerminologia>
+            <ModalTerminologiaGasto  show={isModalOpenTerminologiaGasto} onHide={modalTerminologiaGastoClose} boleanActualizar={true} data={terminologiaPorId}  ></ModalTerminologiaGasto>
 
         </>
     );

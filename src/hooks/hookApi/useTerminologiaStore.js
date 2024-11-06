@@ -10,9 +10,9 @@ export const useTerminologiaStore = () =>{
     const terminologiaPorEntidad = async ()=>{
         try {
             const response = await PTApi.get('/terminologia/terminologiaPorEntidad');
-
+            console.log(response.data.response);
             dispatch(onSetDataView(response.data.response));
- 
+            
             //SetData(response.data.response);
 
         } catch (error) {
@@ -20,7 +20,6 @@ export const useTerminologiaStore = () =>{
         }
 
     }; 
-
 
     const registrarTerminologia = async (parametro)=>{
         try {
@@ -54,6 +53,38 @@ export const useTerminologiaStore = () =>{
         };
     };
 
+    const EliminarTerminologiaGasto = async (parametroGasto)=>{
+        try {
+            const response = await PTApi.post(`/parametroGasto/eliminar-parametro-gasto`, parametroGasto);
+            terminologiaPorEntidad();
+            console.log(response);
+        } catch (error) {
+            console.log(error.message);
+        };
+    };
+
+    const registrarTerminologiaGasto = async (parametroGasto)=>{
+        try {
+            
+            const response = await PTApi.post('/parametroGasto/registrar-parametro-gasto', parametroGasto);
+            terminologiaPorEntidad();
+            console.log(response);
+        } catch (error) {
+            console.log(error.message);
+        };
+    };
+
+    const actualizarTerminologiaGasto = async (ParametroGasto)=>{
+        try {
+
+            const response = await PTApi.post(`/parametroGasto/actualizar-parametro-gasto`, ParametroGasto);
+            terminologiaPorEntidad();
+            console.log(response);
+        } catch (error) {
+            console.log(error.message);
+        };
+    };
+
     return {
         terminologiaPorEntidad, 
         dataTerminologiaPorEntidad , 
@@ -61,6 +92,9 @@ export const useTerminologiaStore = () =>{
         terminologiaPorId,
         setTerminologiaPorId,
         actualizarTerminologia,
-        EliminarTerminologia
+        EliminarTerminologia,
+        EliminarTerminologiaGasto,
+        registrarTerminologiaGasto,
+        actualizarTerminologiaGasto,
     };
 };
