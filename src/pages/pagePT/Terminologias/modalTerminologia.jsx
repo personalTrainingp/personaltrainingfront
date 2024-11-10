@@ -115,7 +115,7 @@ export const ModalTerminologia = ({status, onHide, show  , boleanActualizar , da
                                 <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="label_param" className="form-label">
-                                            Label*
+                                            Concepto*
                                         </label>
                                         <input
                                             className="form-control"

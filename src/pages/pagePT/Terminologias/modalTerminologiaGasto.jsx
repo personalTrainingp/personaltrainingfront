@@ -65,7 +65,7 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
             const nuevoParametroGasto = {
                 //...ParametroGasto,
                 id_empresa: paramateroGasto.id_empresa,
-                grupo: paramateroGasto.grupo,
+                grupo: grupo,
                 id_tipoGasto: paramateroGasto.id_tipoGasto,
                 nombre_gasto: nombre_gasto,
             };
@@ -104,13 +104,28 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
                                 <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="nombre_gasto" className="form-label">
-                                            Nombre del Gasto*
+                                            Concepto*
                                         </label>
                                         <input
                                             className="form-control"
                                             name="nombre_gasto"
                                             id="nombre_gasto"
                                             value={nombre_gasto}
+                                            onChange={onInputChange}
+                                            placeholder=""
+                                        />
+                                    </div>
+                                </Col>
+                                <Col lg={12}>
+                                    <div className="mb-4">
+                                        <label htmlFor="grupo" className="form-label">
+                                            Grupo*
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            name="grupo"
+                                            id="grupo"
+                                            value={grupo}
                                             onChange={onInputChange}
                                             placeholder=""
                                         />
