@@ -61,42 +61,45 @@ export const ReporteSeguimiento = () => {
             <Col lg={10}>
                 <Row>
                     <Col lg={6}>
-                    <div>
-                        <h3 className='text-center'>HORARIOS SOCIOS INSCRITOS TURNO AM ({filtroDeHorario('AM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
+                        <div>
+                            <h3 className='text-center'>HORARIOS SOCIOS INSCRITOS TURNO AM ({filtroDeHorario('AM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
+                                <DataTable
+                                            stripedRows 
+                                            value={filtroDeHorario('AM')} 
+                                            selection={selectHorario} onSelectionChange={(e)=>onSelectHorario(e.value)}
+                                            size={'small'} 
+                                            
+                                            scrollable 
+                                            selectionMode="single"
+                                            scrollHeight="400px"
+                                            // width={'400'}
+                                            >
+                                            <Column header={<span className='font-24'>HORARIO</span>} style={{width: '20px'}} body={HorarioBodyTemplate}></Column>
+                                            <Column header={<span className='font-24'>CANTIDAD</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
+                                </DataTable>
+                        </div>
+                    </Col>
+                    <Col lg={6}>
+                        <div>
+                            <h3 className='text-center'>HORARIOS SOCIOS INSCRITOS TURNO PM ({filtroDeHorario('PM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
                             <DataTable
                                         stripedRows 
-                                        value={filtroDeHorario('AM')} 
+                                        value={filtroDeHorario('PM')} 
                                         selection={selectHorario} onSelectionChange={(e)=>onSelectHorario(e.value)}
                                         size={'small'} 
-                                        
+                                        // tableStyle={{ width: '30rem' }} 
                                         scrollable 
                                         selectionMode="single"
                                         scrollHeight="400px"
-                                        // width={'400'}
                                         >
                                         <Column header={<span className='font-24'>HORARIO</span>} style={{width: '20px'}} body={HorarioBodyTemplate}></Column>
-                                        <Column header={<span className='font-24'>CANTIDAD</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
+                                        <Column header={<span className='font-24'>CANTIDAD</span>} style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
                             </DataTable>
-                    </div>
+                        </div>
                     </Col>
-                    <Col lg={6}>
-                    <div>
-                        <h3 className='text-center'>HORARIOS SOCIOS INSCRITOS TURNO PM ({filtroDeHorario('PM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
-                        <DataTable
-                                    stripedRows 
-                                    value={filtroDeHorario('PM')} 
-                                    selection={selectHorario} onSelectionChange={(e)=>onSelectHorario(e.value)}
-                                    size={'small'} 
-                                    // tableStyle={{ width: '30rem' }} 
-                                    scrollable 
-                                    selectionMode="single"
-                                    scrollHeight="400px"
-                                    >
-                                    <Column header={<span className='font-24'>HORARIO</span>} style={{width: '20px'}} body={HorarioBodyTemplate}></Column>
-                                    <Column header={<span className='font-24'>CANTIDAD</span>} style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
-                        </DataTable>
-                    </div>
-                    </Col>
+                    <br/>
+                    <br/>
+                    <br/>
                     <Col lg={12}>
                         <h3 className='text-center'>POR DISTRITO</h3>
                         <Row>

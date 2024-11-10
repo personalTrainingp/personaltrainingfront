@@ -1,11 +1,14 @@
 import { PageBreadcrumb, Table } from '@/components';
 import React, { useEffect, useState } from 'react'
-import { Button, Card, Col, Row } from 'react-bootstrap';
+import { Card, Col, Row } from 'react-bootstrap';
 import { columns, sizePerPageList } from './ColumnsSet';
 import { products } from './data';
 import { ModalEmpleado } from './ModalEmpleado';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { useSelector } from 'react-redux';
+import { Button } from 'primereact/button';
+import { DataTable } from 'primereact/datatable';
+import { TableEmpleados } from './TableEmpleados';
 
 
 export const GestionEmpleados = () => {
@@ -31,29 +34,13 @@ export const GestionEmpleados = () => {
 						<Card.Body>
 							<Row className="mb-2">
 								<Col sm={5}>
-									<span className="btn btn-danger mb-2" onClick={onModalEmpleadoOpen}>
+									{/* <Button onClick={onModalEmpleadoOpen}>
 										<i className="mdi mdi-plus-circle me-2"></i> Agregar empleados
-									</span>
-								</Col>
-
-								<Col sm={7}>
-									<div className="text-sm-end">
-										<Button variant="success" className="mb-2 me-1">
-											<i className="mdi mdi-cog-outline"></i>
-										</Button>
-
-										<Button variant="light" className="mb-2 me-1">
-											Import
-										</Button>
-
-										<Button variant="light" className="mb-2">
-											Export
-										</Button>
-									</div>
+									</Button> */}
+									<Button label='Agregar empleados' icon={'mdi mdi-plus-circle'} onClick={onModalEmpleadoOpen}/>
 								</Col>
 							</Row>
-
-							<Table
+							{/* <Table
 								columns={columns}
 								data={Dataempleados}
 								pageSize={5}
@@ -63,7 +50,8 @@ export const GestionEmpleados = () => {
 								isSearchable={true}
 								theadClass="table-light"
 								searchBoxClass="mb-2"
-							/>
+							/> */}
+							<TableEmpleados/>
 						</Card.Body>
 					</Card>
 				</Col>

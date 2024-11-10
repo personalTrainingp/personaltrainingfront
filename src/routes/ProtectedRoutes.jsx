@@ -101,6 +101,10 @@ export default function ProtectedRoutes() {
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento */}
 					{
+                        sections.find(e=>e.url==='/reporte-admin/asistenciaReporte') && 
+                        <Route path='reporte-admin/asistenciaReporte' element={<ReporteDeAsistenciaRH/>}/>
+                    }
+					{
                         sections.find(e=>e.url==='/gestion-comercial') && 
                         <Route path='gestion-comercial' element={<GestionComercial/>}/>
                     }

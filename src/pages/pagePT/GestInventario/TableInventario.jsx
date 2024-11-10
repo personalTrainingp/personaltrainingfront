@@ -23,6 +23,7 @@ import { Card, Col, Modal, Row } from 'react-bootstrap';
 import { ModalImportadorData } from './ModalImportadorData';
 import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore';
 import config from '@/config';
+import { Image } from 'primereact/image';
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice}) {
     locale('es')
@@ -187,7 +188,10 @@ export default function TableInventario({showToast, id_enterprice}) {
     const imagenBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <img src={`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_image.name_image}`}/>
+                        <Image src={`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_image.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
+                {/* <img src={`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_image.name_image}`}/>
+                `${proveedor.tb_image?.length!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_image?.name_image}`:sinAvatar}`
+                */}
             </div>
         );
     }
@@ -291,24 +295,6 @@ export default function TableInventario({showToast, id_enterprice}) {
                     <>
                     <div>
                         <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
-                        <Row>
-                            <Col lg={3}>
-                                <Card className='m-1 border border-4'>
-                                    <Card.Header>
-                                        <Card.Title style={{}} className='font-24'>
-                                            ESTACIONAMIENTO FRONTIS
-                                        </Card.Title>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        <ul>
-                                            <li>CANTIDAD: 10</li>
-                                            <li>VALOR TOTAL SUMADO: S/.0.00</li>
-                                        </ul>
-                                        
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        </Row>
                     </div>
                     <DataTable 
                         size='small' 
