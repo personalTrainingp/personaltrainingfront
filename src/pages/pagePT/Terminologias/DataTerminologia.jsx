@@ -44,8 +44,6 @@ const DataTerminologia = (({data}) => {
                     <Button type="button" icon="pi pi-filter-slash" outlined onClick={clearFilter} />
                 </div> */}
                 <div className='d-flex'>
-                    {/* <Button label="IMPORTAR" icon='pi pi-file-import' onClick={()=>setshowModalImportadorData(true)} disabled text/> */}
-                    {/* <ExportToExcel data={valueFilter}/> */}
                 </div>
             </div>
         );
