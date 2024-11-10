@@ -9,9 +9,15 @@ import TableClientes from './TableClientes';
 import { Button } from 'primereact/button';
 import { useProspectoLeadsStore } from '@/hooks/hookApi/useProspectoLeadsStore';
 import { TabPanel, TabView } from 'primereact/tabview';
+import { Calendar } from 'primereact/calendar';
+import { useForm } from '@/hooks/useForm';
 
-
+const rangoFechas = {
+  rangoDate:new Date(),
+  id_programa: 0
+}
 export const GestComercial = () => {
+  const { formState, rangoDate, id_programa, onInputChange, onInputChangeReact, onResetForm } = useForm(rangoFechas)
     const [showModalCliente, setshowModalCliente] = useState(false)
     // const  { obtenerProspectosLeads } = useProspectoLeadsStore()
 	// const { dataView } = useSelector(e=>e.DATA)
@@ -45,6 +51,22 @@ export const GestComercial = () => {
 								{
 									agruparPorEstados(dataView).map(d=>(
 										<TabPanel header={d.label_estado}>
+                      <Col lg={12}>
+                          <div className="flex-auto">
+                            <label htmlFor="buttondisplay" className="font-bold block mb-2">
+                                MES
+                            </label>
+                            <Calendar id="buttondisplay"
+                      view="month"
+                      locale='es'
+                      value={rangoDate}
+                      name="rangoDate"
+                      dateFormat="MM/yy"
+                      onChange={onInputChange}
+                      showIcon
+                      readOnlyInput />
+                          </div>
+                          </Col>
 											<TableClientes dataV={d.items}/>
 										</TabPanel>
 									))

@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useComentarioStore } from './useComentarioStore';
+import { onSetDataView } from '@/store/data/dataSlice';
 
 export const useUsuarioStore = () => {
 	const dispatch = useDispatch();
@@ -185,6 +186,7 @@ export const useUsuarioStore = () => {
 		try {
 			const { data } = await PTApi.get('/usuario/get-empleados');
 			dispatch(onSetEmpleados(data.empleados));
+			dispatch(onSetDataView(data.empleados));
 		} catch (error) {
 			console.log(error);
 		}

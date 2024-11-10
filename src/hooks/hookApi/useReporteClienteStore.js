@@ -12,7 +12,6 @@ export const useReporteClienteStore = () =>{
         } catch (error) {
             console.log(error.message);
         }
-
     };
 
     return {reportePorMarcacion , dataAsistencia};

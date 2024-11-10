@@ -68,6 +68,8 @@ const DatosCliente = ({dataCliente}) => {
 		console.log(dataCli, "cliente change");
 		onInputChangeReact(e, 'id_cli')
 	}
+	console.log(DataClientes);
+	
 	return (
 		<>
 		<form>

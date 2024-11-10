@@ -172,7 +172,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="marca" className="form-label">
-                                            LUGAR DE ENCUENTRO
+                                            UBICACION
                                         </label>
                                         <Select
                                             onChange={(e) => onInputChangeReact(e, 'id_lugar')}
