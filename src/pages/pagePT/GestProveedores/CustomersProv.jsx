@@ -121,8 +121,6 @@ const CustomersProv = ({estado_prov, agente}) => {
 		)
 	}
 	const oficioBodyTemplate = (rowData)=>{
-		console.log(rowData);
-		
 		return(
 			<>
 			    <span className='fw-bold'><p className='mb-0 pb-0'><span className='text-primary'>{rowData.oficio}</span></p></span>

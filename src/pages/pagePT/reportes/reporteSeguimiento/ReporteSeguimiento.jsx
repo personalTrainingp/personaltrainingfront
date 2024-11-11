@@ -101,7 +101,11 @@ export const ReporteSeguimiento = () => {
                     <br/>
                     <br/>
                     <Col lg={12}>
-                        <h3 className='text-center'>POR DISTRITO</h3>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                        <h1 className='text-center'>POR DISTRITO</h1>
                         <Row>
                             {
                                 ordenarPorDistrito(selectHorario.items).map(g=>(

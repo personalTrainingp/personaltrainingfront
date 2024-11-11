@@ -35,11 +35,9 @@ export const InventarioTotalizado = () => {
       groupedData.forEach(group => {
         group.valor_total_sumado = group.valor_total_sumado.toFixed(2);
       });
-    console.log(groupedData);
-    
   return (
     <>
-    <PageBreadcrumb title={'INVENTARIO TOTALIZADO'} subName={'T'}/>
+    <PageBreadcrumb title={'INVENTARIO VALORIZADO'} subName={'T'}/>
     
     <Row>
         {
@@ -47,7 +45,7 @@ export const InventarioTotalizado = () => {
                             <Col lg={3}>
                                 <Card style={{height: '200px', display: 'block'}} className='m-1 border border-4'>
                                     <Card.Header>
-                                        <Card.Title style={{}} className='font-24'>
+                                        <Card.Title className='font-24'>
                                             {g.ubicacion}
                                         </Card.Title>
                                     </Card.Header>
