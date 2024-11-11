@@ -67,8 +67,6 @@ export default function TableInventario({showToast, id_enterprice}) {
             return newItem;
             });
     };
-    console.log(dataView);
-    
     const highlightText = (text, search) => {
         if (!search) {
             return text;
@@ -188,7 +186,7 @@ export default function TableInventario({showToast, id_enterprice}) {
     const imagenBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                        <Image src={`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_image.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
+                        <Image src={`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_image?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
                 {/* <img src={`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_image.name_image}`}/>
                 `${proveedor.tb_image?.length!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_image?.name_image}`:sinAvatar}`
                 */}
@@ -232,14 +230,14 @@ export default function TableInventario({showToast, id_enterprice}) {
     const valorUnitDeprecBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(`${rowData.valor_unitario_depreciado}`, globalFilterValue)}</span>
+                <span><MoneyFormatter amount={rowData.valor_unitario_depreciado}/></span>
             </div>
         );
     };
     const valorUnitActualBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(`${rowData.valor_unitario_actual}`, globalFilterValue)}</span>
+                <span> <MoneyFormatter amount={rowData.valor_unitario_actual}/></span>
             </div>
         );
     };
@@ -267,6 +265,14 @@ export default function TableInventario({showToast, id_enterprice}) {
             
             <div className="flex align-items-center gap-2">
                 <span>{highlightText( `${rowData.observacion}`, globalFilterValue)}</span>
+            </div>
+        )
+    }
+    const valorTotalBodyTemplate = (rowData)=>{
+        return (
+            
+            <div className="flex align-items-center gap-2">
+                <span><MoneyFormatter amount={rowData.valor_total}/></span>
             </div>
         )
     }
@@ -326,7 +332,7 @@ export default function TableInventario({showToast, id_enterprice}) {
                 <Column header="CANTIDAD" field='cantidad' filterField="cantidad" sortable style={{ minWidth: '10rem' }} body={cantidadBodyTemplate} filter />
                 <Column header="VALOR UNITARIO DEPRECIADO" field='valor_unitario_depreciado' filterField="valor_unitario_depreciado" style={{ minWidth: '10rem' }} sortable body={valorUnitDeprecBodyTemplate} filter/>
                 <Column header="VALOR UNITARIO ACTUAL" field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
-                <Column header="VALOR TOTAL" field='valor_total' filterField="valor_total" style={{ minWidth: '10rem' }} sortable filter/>
+                <Column header="VALOR TOTAL" field='valor_total' filterField="valor_total" style={{ minWidth: '10rem' }} body={valorTotalBodyTemplate} sortable filter/>
                 <Column header="LUGAR DE COMPRA O COTIZACION" field='lugar_compra_cotizacion' filterField="lugar_compra_cotizacion" style={{ minWidth: '10rem' }} sortable body={lugarCompraBodyTemplate} filter/>
                 <Column header="LUGAR" field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '10rem' }} sortable body={lugarBodyTemplate} filter/>
                 
