@@ -19,11 +19,11 @@ export const useProspectoLeadsStore = () => {
 			console.log(error);
 		}
 	};
-	const startRegisterProspecto = async (formState) => {
+	const startRegisterProspectoLead = async (formState) => {
 		try {
 			console.log(formState);
-			const { data } = await PTApi.post('/prospecto/post-prospecto', formState);
-			obtenerProspectos();
+			const { data } = await PTApi.post('/prospecto/lead/post-prospecto-lead', formState);
+			obtenerProspectosLeads();
 		} catch (error) {
 			console.log(error);
 		}
@@ -36,11 +36,17 @@ export const useProspectoLeadsStore = () => {
 			console.log(error);
 		}
 	};
-	const startUpdateProspecto = (id) => {};
+	const startUpdateProspecto = async (id) => {
+		try {
+			const {} = await PTApi.put('/prospecto/lead/put-prospecto-lead/');
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const startDeleteProspecto = (id) => {};
 	return {
 		obtenerProspectosLeads,
-		startRegisterProspecto,
+		startRegisterProspectoLead,
 		startUpdateProspecto,
 		startDeleteProspecto,
 		obtenerProspectoxID,

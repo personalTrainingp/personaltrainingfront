@@ -3,7 +3,13 @@
   font-family: Poppins, sans-serif;
   // font-size: 20% !important;
 }
-
+.hover-border-card-primary:hover{
+  border: 3px solid #D41115 !important;
+  cursor: pointer;
+}
+.hover-border-card-primary{
+  border: 3px;
+}
 .tabPanel-color-success{
   a{
     &:hover{

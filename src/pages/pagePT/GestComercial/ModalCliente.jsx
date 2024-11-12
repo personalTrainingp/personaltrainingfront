@@ -12,107 +12,85 @@ import { LayoutComentario } from '../GestEmpleados/LayoutComentario';
 import { useSelector } from 'react-redux';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
+import { useProspectoLeadsStore } from '@/hooks/hookApi/useProspectoLeadsStore';
 
 
-const regUsuarioCliente= {
-    nombre_cli: '',
-    apPaterno_cli: '',
-    apMaterno_cli: '',
-    fecNac_cli: '',
-    estCivil_cli: 0,
-    sexo_cli: 0,
-    tipoDoc_cli: 0,
-    numDoc_cli: '',
-    nacionalidad_cli: 15,
-    ubigeo_distrito_cli: 0,
-    direccion_cli: '',
-    tipoCli_cli: 0,
-    trabajo_cli: '',
-    cargo_cli: '',
-    email_cli: '',
-    tel_cli: '',
+const regUsuariosLeads= {
+    nombres: '', 
+    apellido_materno: '', 
+    celular: '', 
+    id_empl: 0, 
+    id_canal: 0, 
+    id_campania: 0, 
+    ubigeo_distrito: '',
+    plan_lead: '',
+    fecha_cita: '',
+    fecha_registro: '',
+    id_estado_lead: 0,
+    ultimo_dia_seguimiento: '',
 }
-const registerImgAvatar={
-    imgAvatar_BASE64: ''
-}
-export const ModalCliente = ({show, onHide}) => {
-	const [selectedFile, setSelectedFile] = useState(sinAvatar);
-    const [selectedAvatar, setselectedAvatar] = useState(null)
-    const resetAvatar = ()=>{
-        setSelectedFile(sinAvatar)
-    }
-    const { usuarioCliente, dataContactsEmerg, comentarios } = useSelector(e=>e.usuario)
-    const  { startRegisterUsuarioCliente, loading } = useUsuarioStore()
+export const ModalCliente = ({show, onHide, data}) => {
+	const [selectedFile, setSelectedFile] = useState(sinAvatar)
+    const  {  loading } = useUsuarioStore()
     const { obtenerDistritosxDepxProvincia, dataDistritos } = useTerminoStore()
     const dispatch = useDispatch()
     const { 
             formState,
-            nombre_cli, 
-            apPaterno_cli, 
-            apMaterno_cli, 
-            fecNac_cli, 
-            estCivil_cli, 
-            sexo_cli, 
-            tipoDoc_cli, 
-            numDoc_cli, 
-            nacionalidad_cli, 
-            ubigeo_distrito_cli, 
-            direccion_cli, 
-            tipoCli_cli, 
-            trabajo_cli, 
-            cargo_cli, 
-            tel_cli,
-            email_cli,
+            nombres, 
+            apellido_materno, 
+            celular, 
+            id_empl, 
+            id_canal, 
+            id_campania, 
+            ubigeo_distrito,
+            plan_lead,
+            fecha_cita,
+            fecha_registro,
+            id_estado_lead,
+            ultimo_dia_seguimiento,
             onResetForm,
             onInputChange,
-            onInputChangeReact} = useForm(regUsuarioCliente)
-
-
-    const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
+            onInputChangeReact} = useForm(data?data:regUsuariosLeads)
     const { DataAsesores, obtenerParametrosAsesores } = useTerminoStore()
+    const { obtenerParametroPorEntidadyGrupo:obtenerParametroxCanal, DataGeneral:dataCanal }  = useTerminoStore()
+    const { obtenerParametroPorEntidadyGrupo:obtenerParametroxCampania, DataGeneral:dataCampania }  = useTerminoStore()
+    const { obtenerParametroPorEntidadyGrupo:obtenerParametroxEstadoLead, DataGeneral:dataEstadoLead }  = useTerminoStore()
+    const { obtenerProspectosLeads, startRegisterProspecto, startRegisterProspectoLead } = useProspectoLeadsStore()
     useEffect(() => {
         dispatch(onSetUsuarioCliente(formState))
     }, [formState])
-
-  const onSubmitAgregarCliente = ()=>{
-          startRegisterUsuarioCliente({...usuarioCliente, dataContactsEmerg: dataContactsEmerg, comentarios}, selectedAvatar)
-          btnCancelModal()
-  }
   const btnCancelModal = ()=>{
         onHide()
         onResetForm()
-        resetAvatar()
-        dispatch(onResetComentario())
-        dispatch(onReset_CE())
   }
   useEffect(() => {
     obtenerDistritosxDepxProvincia(1501, 15)
     obtenerParametrosAsesores()
+    obtenerParametroxCanal('lead-social', 'canal')
+    obtenerParametroxCampania('lead-social', 'campaña')
+    obtenerParametroxEstadoLead('lead-social', 'estado')
   }, [])
-  
+  const submitProspectosLeads = async(e)=>{
+    e.preventDefault()
+    if(data){
+                    // console.log("con");
+                    
+                    setshowLoading(true)
+                    await startActualizarGastos(formState)
+                    setshowLoading(false)
+                    // console.log("sin ");
+                    // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
+                    onClickCancelModal()
+                    return;
+                }
+                setshowLoading(true)
+    await startRegisterProspectoLead(formState)
+    btnCancelModal()
 
-    const ViewDataImg = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = () => {
-            setSelectedFile(reader.result);
-        };
-        reader.readAsDataURL(file);
-        setselectedAvatar(file)
-    };
+  }
   return (
     <>
-    {loading ? (<Modal size='sm' show={loading}>
-        <ModalBody>
-        <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
-				<span className="loader-box2"></span>
-                <br/>
-                <p className='fw-bold font-16'>
-                    Si demora mucho, comprobar su conexion a internet
-                </p>
-		</div>
-        </ModalBody>
-    </Modal> ) : (
+    {(
     <Modal show={show} onHide={onHide} size='xl' backdrop={'static'}>
     <Modal.Header>
         <Modal.Title>Agregar</Modal.Title>
@@ -120,22 +98,22 @@ export const ModalCliente = ({show, onHide}) => {
     <Modal.Body>
 				<Row>
 					<Col xl={12} className="">
-						<form>
+						<form onSubmit={submitProspectosLeads}>
                             <Row>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="tipoDoc_cli" className="form-label">
+                                        <label htmlFor="id_empl" className="form-label">
                                             ASESOR*
                                         </label>
 										<Select
-											onChange={(e) => onInputChangeReact(e, 'tipoDoc_cli')}
-											name="tipoDoc_cli"
-											placeholder={'Seleccione el tipo de doc'}
+											onChange={(e) => onInputChangeReact(e, 'id_empl')}
+											name="id_empl"
+											placeholder={'Seleccionar al asesor'}
 											className="react-select"
 											classNamePrefix="react-select"
 											options={DataAsesores}
 											value={DataAsesores.find(
-												(option) => option.value === tipoDoc_cli
+												(option) => option.value === id_empl
 											)}
 											required
 										/>
@@ -143,31 +121,30 @@ export const ModalCliente = ({show, onHide}) => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="fecNac_cli" className="form-label">
+                                        <label htmlFor="fecha_registro" className="form-label">
                                             Fecha de registro*
                                         </label>
                                         <input
                                             className="form-control"
                                             type="date"
-                                            name="fecNac_cli"
-                                            value={fecNac_cli}
+                                            name="fecha_registro"
+                                            value={fecha_registro}
                                             onChange={onInputChange}
-                                            id="fecNac_cli"
                                             required
                                         />
                                     </div>
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="nombre_cli" className="form-label">
+                                        <label htmlFor="nombres" className="form-label">
                                             Nombres*
                                         </label>
                                         <input
                                             className="form-control"
                                             type="text"
-                                            name="nombre_cli"
-                                            id="nombre_cli"
-                                            value={nombre_cli}
+                                            name="nombres"
+                                            id="nombres"
+                                            value={nombres}
                                             onChange={onInputChange}
                                             required
                                         />
@@ -175,16 +152,15 @@ export const ModalCliente = ({show, onHide}) => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="apPaterno_cli" className="form-label">
+                                        <label htmlFor="apellido_materno" className="form-label">
                                             Apellidos*
                                         </label>
                                         <input
                                             className="form-control"
                                             type="text"
-                                            name="apPaterno_cli"
-                                            value={apPaterno_cli}
+                                            name="apellido_materno"
+                                            value={apellido_materno}
                                             onChange={onInputChange}
-                                            id="apPaterno_cli"
                                             required
                                         />
                                     </div>
@@ -197,28 +173,27 @@ export const ModalCliente = ({show, onHide}) => {
                                         <input
                                             className="form-control"
                                             type="text"
-                                            name="apPaterno_cli"
-                                            value={apPaterno_cli}
+                                            name="celular"
+                                            value={celular}
                                             onChange={onInputChange}
-                                            id="apPaterno_cli"
                                             required
                                         />
                                     </div>
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="tipoDoc_cli" className="form-label">
+                                        <label htmlFor="ubigeo_distrito" className="form-label">
                                             DISTRITO*
                                         </label>
 										<Select
-											onChange={(e) => onInputChangeReact(e, 'tipoDoc_cli')}
-											name="tipoDoc_cli"
-											placeholder={'Seleccione el tipo de doc'}
+											onChange={(e) => onInputChangeReact(e, 'ubigeo_distrito')}
+											name="ubigeo_distrito"
+											placeholder={'Seleccionar el distrito'}
 											className="react-select"
 											classNamePrefix="react-select"
-											options={arrayTipoDoc}
-											value={arrayTipoDoc.find(
-												(option) => option.value === tipoDoc_cli
+											options={dataDistritos}
+											value={dataDistritos.find(
+												(option) => option.value === ubigeo_distrito
 											)}
 											required
 										/>
@@ -226,18 +201,18 @@ export const ModalCliente = ({show, onHide}) => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="tipoDoc_cli" className="form-label">
+                                        <label htmlFor="id_canal" className="form-label">
                                             CANAL*
                                         </label>
 										<Select
-											onChange={(e) => onInputChangeReact(e, 'tipoDoc_cli')}
-											name="tipoDoc_cli"
-											placeholder={'Seleccione el tipo de doc'}
+											onChange={(e) => onInputChangeReact(e, 'id_canal')}
+											name="id_canal"
+											placeholder={'Seleccione el canal'}
 											className="react-select"
 											classNamePrefix="react-select"
-											options={arrayTipoDoc}
-											value={arrayTipoDoc.find(
-												(option) => option.value === tipoDoc_cli
+											options={dataCanal}
+											value={dataCanal.find(
+												(option) => option.value === id_canal
 											)}
 											required
 										/>
@@ -245,18 +220,18 @@ export const ModalCliente = ({show, onHide}) => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="tipoDoc_cli" className="form-label">
+                                        <label htmlFor="id_campania" className="form-label">
                                             CAMPAÑA*
                                         </label>
 										<Select
-											onChange={(e) => onInputChangeReact(e, 'tipoDoc_cli')}
-											name="tipoDoc_cli"
-											placeholder={'Seleccione el tipo de doc'}
+											onChange={(e) => onInputChangeReact(e, 'id_campania')}
+											name="id_campania"
+											placeholder={'Seleccione la campaña'}
 											className="react-select"
 											classNamePrefix="react-select"
-											options={arrayTipoDoc}
-											value={arrayTipoDoc.find(
-												(option) => option.value === tipoDoc_cli
+											options={dataCampania}
+											value={dataCampania.find(
+												(option) => option.value === id_campania
 											)}
 											required
 										/>
@@ -264,15 +239,14 @@ export const ModalCliente = ({show, onHide}) => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="numDoc_cli" className="form-label">
+                                        <label htmlFor="plan_lead" className="form-label">
                                             PLAN S/.*
                                         </label>
                                         <input
                                             className="form-control"
-                                            type="number"
-                                            name="numDoc_cli"
-                                            id="numDoc_cli"
-                                            value={numDoc_cli}
+                                            type="text"
+                                            name="plan_lead"
+                                            value={plan_lead}
                                             onChange={onInputChange}
                                             required
                                         />
@@ -280,15 +254,14 @@ export const ModalCliente = ({show, onHide}) => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="numDoc_cli" className="form-label">
+                                        <label htmlFor="fecha_cita" className="form-label">
                                             FECHA DE CITA*
                                         </label>
                                         <input
                                             className="form-control"
                                             type="date"
-                                            name="numDoc_cli"
-                                            id="numDoc_cli"
-                                            value={numDoc_cli}
+                                            name="fecha_cita"
+                                            value={fecha_cita}
                                             onChange={onInputChange}
                                             required
                                         />
@@ -296,30 +269,44 @@ export const ModalCliente = ({show, onHide}) => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="nacionalidad_cli" className="form-label">
+                                        <label htmlFor="ultimo_dia_seguimiento" className="form-label">
+                                            ULTIMO DIA DE SEGUIMIENTO*
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            type="date"
+                                            name="ultimo_dia_seguimiento"
+                                            value={ultimo_dia_seguimiento}
+                                            onChange={onInputChange}
+                                            required
+                                        />
+                                    </div>
+                                </Col>
+                                <Col xl={4}>
+                                    <div className="mb-2">
+                                        <label htmlFor="id_estado_lead" className="form-label">
                                             ESTADO*
                                         </label>
 										<Select
-											onChange={(e) => onInputChangeReact(e, 'nacionalidad_cli')}
-											name="nacionalidad_cli"
-											placeholder={'Seleccione la nacionalidad'}
+											onChange={(e) => onInputChangeReact(e, 'id_estado_lead')}
+											name="id_estado_lead"
+											placeholder={'Seleccionar el estado'}
 											className="react-select"
 											classNamePrefix="react-select"
-											options={arrayNacionalidad}
-											value={arrayNacionalidad.find(
-												(option) => option.value === nacionalidad_cli
+											options={dataEstadoLead}
+											value={dataEstadoLead.find(
+												(option) => option.value === id_estado_lead
 											)}
 											required
 										/>
                                     </div>
                                 </Col>
                             </Row>
-                            
+                            <Button className='me-3' type='submit'>Guardar</Button>
+                            <a className='text-danger' onClick={btnCancelModal}>Cancelar</a>
 						</form>
 					</Col>
 				</Row>
-                <Button className='me-3' onClick={onSubmitAgregarCliente}>Guardar</Button>
-                <a className='text-danger' onClick={btnCancelModal}>Cancelar</a>
     </Modal.Body>
     </Modal>
     )

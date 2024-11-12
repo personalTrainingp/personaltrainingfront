@@ -7,6 +7,7 @@ import { ModalTipoCambio } from '../GestTipoCambio/ModalTipoCambio'
 import { ModalIsFirma } from '@/components/ModalIsFirma'
 import { useSelector } from 'react-redux'
 import { Card, Col, Row } from 'react-bootstrap'
+import { TabPanel, TabView } from 'primereact/tabview'
 
 export const DataTableContratoCliente = () => {
   const { obtenerContratosDeClientes, dataContratos } = useVentasStore()
@@ -47,27 +48,27 @@ export const DataTableContratoCliente = () => {
   const nombreSocioBodyTemplate = (rowData)=>{
     return (
       <>
-      {rowData.tb_cliente.nombres_apellidos_cli}
+      {rowData.tb_cliente?.nombres_apellidos_cli}
       </>
     )
   }
   const nombreAsesorBodyTemplate = (rowData)=>{
     return (
       <>
-      {rowData.tb_empleado.nombres_apellidos_empl}
+      {rowData.tb_empleado?.nombres_apellidos_empl}
       </>
     )
   }
   const programaSemanaBodyTemplate = (rowData)=>{
     return (
       <>
-      {rowData.detalle_ventaMembresia[0].tb_ProgramaTraining.name_pgm} | {rowData.detalle_ventaMembresia[0].tb_semana_training.semanas_st*5} SESIONES
+      {rowData.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm} | {rowData.detalle_ventaMembresia[0].tb_semana_training.semanas_st*5} SESIONES
       </>
     )
   }
 // Función para agrupar por nombres_apellidos_empl y contar firmados y sinFirmas
 function agruparFirmasxEmpl(dataView) {
-  const groupedData = dataView.reduce((acc, current) => {
+  const groupedData = dataView?.reduce((acc, current) => {
     const empleado = current.tb_empleado?.nombres_apellidos_empl;
   
     // Buscamos si ya existe una entrada para este empleado
@@ -86,7 +87,7 @@ function agruparFirmasxEmpl(dataView) {
   
     // Contamos firmados y sinFirmas en detalle_ventaMembresia
     const { detalle_ventaMembresia } = current;
-    detalle_ventaMembresia.forEach(detalle => {
+    detalle_ventaMembresia?.forEach(detalle => {
       if (detalle.firma_cli) {
         empleadoEntry.firmados += 1;
       } else {
@@ -101,12 +102,14 @@ function agruparFirmasxEmpl(dataView) {
   }, []);
   return groupedData;
 }
+  console.log(agruparFirmasxEmpl(dataView));
+  
   return (
     <>
       <Row>
         {agruparFirmasxEmpl(dataView).map(f=>(
-          <Col lg={3}>
-            <Card className='p-2' style={{height: '130px'}}>
+          <Col lg={3} className=''>
+            <Card className='p-2 hover-border-card-primary' style={{height: '130px'}}>
               <Card.Title>
                 {f.nombres_empl}
               </Card.Title>
@@ -119,15 +122,24 @@ function agruparFirmasxEmpl(dataView) {
         ))
         }
       </Row>
-      <DataTable value={dataView} paginator rows={10} dataKey="id"
-                    globalFilterFields={['usuario', 'ip', 'accion', 'observacion', 'fecha_audit']} emptyMessage="Sin Contratos">
-                <Column header="SOCIOS" body={nombreSocioBodyTemplate} style={{ minWidth: '12rem' }} />
-                <Column header="Programa | Semanas" body={programaSemanaBodyTemplate} style={{ minWidth: '12rem' }} />
-                <Column header="Asesor comercial" body={nombreAsesorBodyTemplate} style={{ maxWidth: '10rem' }} />
-                <Column header="Firmas" body={firmaBodyTemplate} style={{ maxWidth: '5rem' }} />
-                <Column header="Contratos" body={contratosSociosBodyTemplate} style={{ maxWidth: '20rem' }} />
+      <TabView>
+        {
+          agruparFirmasxEmpl(dataView).map(f=>(
+            <TabPanel header={f.nombres_empl}>
 
-            </DataTable>
+          <DataTable value={f.items} paginator rows={10} dataKey="id"
+                              globalFilterFields={['usuario', 'ip', 'accion', 'observacion', 'fecha_audit']} emptyMessage="Sin Contratos">
+                          <Column header="SOCIOS" body={nombreSocioBodyTemplate} style={{ minWidth: '12rem' }} />
+                          <Column header="Programa | Semanas" body={programaSemanaBodyTemplate} style={{ minWidth: '12rem' }} />
+                          <Column header="Asesor comercial" body={nombreAsesorBodyTemplate} style={{ maxWidth: '10rem' }} />
+                          <Column header="Firmas" body={firmaBodyTemplate} style={{ maxWidth: '5rem' }} />
+                          <Column header="Contratos" body={contratosSociosBodyTemplate} style={{ maxWidth: '20rem' }} />
+
+                      </DataTable>
+            </TabPanel>
+          ))
+        }
+      </TabView>
             <ModalIsFirma idCli={idCli} idVenta={idVenta} show={isOpenModalTipoCambio} onHide={onCloseModalTipoCambio}/> 
     </>
   )
