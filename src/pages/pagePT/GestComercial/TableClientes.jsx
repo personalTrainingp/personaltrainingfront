@@ -16,17 +16,31 @@ import { useProspectoLeadsStore } from '@/hooks/hookApi/useProspectoLeadsStore';
 import dayjs from 'dayjs';
 import { MoneyFormatter } from '@/components/CurrencyMask';
 import { Card, Col, Row } from 'react-bootstrap';
+import { ModalCliente } from './ModalCliente';
+import { ModalComentarios } from './ModalComentarios';
 
 export default function TableClientes({dataV}) {
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    // const  { obtenerProspectosLeads } = useProspectoLeadsStore()
-	// const { dataView } = useSelector(e=>e.DATA)
-    // useEffect(() => {
-    //     obtenerProspectosLeads()
-    // }, [])
+    const [showModalEditComercio, setshowModalEditComercio] = useState(false)
+    const [showModalComentarios, setshowModalComentarios] = useState(false)
+    const [idComercio, setidComercio] = useState(0)
+    
+    const onModalCloseComentarios = ()=>{
+        setshowModalComentarios(false)
+    }
+    const onModalOpenComentarios = ()=>{
+        setshowModalComentarios(true)
+    }
+    const onModalEditComercioxID = (id_comercio)=>{
+        setshowModalEditComercio(true)
+        setidComercio(id_comercio)
+    }
+    const onModalCancelComercioxID = ()=>{
+        setshowModalEditComercio(false)
+    }
         useEffect(() => {
         const fetchData = () => {
             setCustomers(getCustomers(dataV));
@@ -47,7 +61,7 @@ export default function TableClientes({dataV}) {
             return newItem;
         });
     };
-    console.log(agruparPorCanal(dataV));
+    // console.log(agruparPorCanal(dataV));
     
     const clearFilter = () => {
         initFilters();
@@ -123,8 +137,9 @@ export default function TableClientes({dataV}) {
     const verHistoryBodyTemplate = (rowData) => {
         return (
             <>
-                <Button icon="pi pi-comment" rounded outlined className="mr-2" 
-                />
+                <Button icon="pi pi-comment" onClick={()=>onModalOpenComentarios()} rounded outlined className="mr-2" />
+                <Button icon="pi pi-pencil" onClick={()=>onModalEditComercioxID(rowData.id)} rounded outlined className="mr-2" />
+                <Button icon="pi pi-trash" rounded outlined className="mr-2" />
             </>
         );
     }
@@ -160,15 +175,23 @@ export default function TableClientes({dataV}) {
         return (
             <h3>
                                         
-                <span className={`badge ${rowData.parametro_estado_lead.id_param==737 && 'text-bg-info'}  
-                                        ${rowData.parametro_estado_lead.id_param==736 && 'text-bg-secondary'}
-                                        ${rowData.parametro_estado_lead.id_param==740 && 'text-bg-warning'} 
-                                        ${rowData.parametro_estado_lead.id_param==739 && 'text-bg-success'}
-                                        ${rowData.parametro_estado_lead.id_param==738 && 'text-bg-success'}
+                <span className={`badge ${rowData.parametro_estado_lead?.id_param==737 && 'text-bg-info'}  
+                                        ${rowData.parametro_estado_lead?.id_param==736 && 'text-bg-secondary'}
+                                        ${rowData.parametro_estado_lead?.id_param==740 && 'text-bg-warning'} 
+                                        ${rowData.parametro_estado_lead?.id_param==739 && 'text-bg-success'}
+                                        ${rowData.parametro_estado_lead?.id_param==738 && 'text-bg-success'}
                                         `}>
                 {rowData.estado_lead}
                 </span>
             </h3>
+        )
+    }
+    const ultimaFechaDeSeguimiento = ()=>{
+        return (
+            <>
+            {/* {rowData.ultima_fecha_seguimiento?dayjs(rowData.ultima_fecha_seguimiento).format('DD [del] MMMM [del] YYYY'):''} */}
+            
+            </>
         )
     }
     const fechaCitaBodyTemplate = (rowData)=>{
@@ -189,7 +212,7 @@ export default function TableClientes({dataV}) {
     const campaniaBodyTemplate = (rowData)=>{
         return (
             <>
-            {rowData.parametro_campania.label_param}
+            {rowData.parametro_campania?.label_param}
             </>
         )
     }
@@ -205,7 +228,7 @@ export default function TableClientes({dataV}) {
     return (
         <>
             <Row>
-                <Col lg={6}>
+                {/* <Col lg={6}>
                     <Card>
                         <Card.Header>
                             <Card.Title>
@@ -260,7 +283,7 @@ export default function TableClientes({dataV}) {
                             </Row>
                         </Card.Body>
                     </Card>
-                </Col>
+                </Col> */}
             </Row>
             <DataTable size='small' 
                         value={customers} 
@@ -291,14 +314,13 @@ export default function TableClientes({dataV}) {
                 <Column header="CAMPAÑA" style={{ minWidth: '10rem' }} sortable body={campaniaBodyTemplate} filter/>
                 <Column header="PLAN S/." style={{ minWidth: '10rem' }} sortable body={planBodyTemplate} filter/>
                 <Column header="FECHA CITA" style={{ minWidth: '10rem' }} sortable body={fechaCitaBodyTemplate} filter/>
+                <Column header="ULTIMA FECHA DE SEGUIMIENTO" style={{ minWidth: '10rem' }} sortable body={ultimaFechaDeSeguimiento} filter/>
+                {/* <Column header="ULTIMO COMENTARIO" style={{ minWidth: '10rem' }} sortable body={estadoLeadBodyTemplate} filter/> */}
                 <Column header="ESTADO" style={{ minWidth: '10rem' }} sortable body={estadoLeadBodyTemplate} filter/>
-                {/* <Column header="Vencimiento" filterField="vencimiento_REGALOS_CONGELAMIENTO" sortable style={{ minWidth: '10rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate}  dataType="date" /> */}
-                {/* <Column header="Proveedor" filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
-                body={proveedorBodyTemplate} filter filterElement={proveedorFilterTemplate} /> */}
-
-                {/* <Column header="Estado" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/> */}
-                <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
+                <Column header="" filterField="id" style={{ minWidth: '13rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
+            <ModalCliente show={showModalEditComercio} onHide={onModalCancelComercioxID}/>
+            <ModalComentarios show={showModalComentarios} onHide={onModalCloseComentarios}/>
         </>
     );
 }

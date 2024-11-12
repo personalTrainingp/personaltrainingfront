@@ -92,7 +92,7 @@ export const useUsuarioStore = () => {
 			// const { data: dataImg } = await PTApi.get(
 			// 	`/upload/get-upload/${data.cliente?.uid_avatar}`
 			// );
-			await obtenerComentarioxLOCATION(data.uid_comentario);
+			// await obtenerComentarioxLOCATION(data.uid_comentario);
 			dispatch(
 				onSetClient({
 					...data.cliente,

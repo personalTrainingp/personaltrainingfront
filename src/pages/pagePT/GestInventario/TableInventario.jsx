@@ -49,7 +49,7 @@ export default function TableInventario({showToast, id_enterprice}) {
         initFilters();
         }, [dataView]);
     const getCustomers = (data) => {
-        return data.map(item => {
+        return data?.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
             // Convertir la fecha a la zona horaria de Lima

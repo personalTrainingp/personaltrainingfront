@@ -25,7 +25,7 @@ export const GestGastosFvsV = () => {
               <TabPanel header='REDUCTO'>
               <DataTableGastos data={dataView.filter(d=>d.id_empresa === 599)}/>
               </TabPanel>
-              <TabPanel header='PT'>
+              <TabPanel header='HISTORICO'>
               <DataTableGastos data={dataView.filter(d=>d.id_empresa === 0)}/>
               </TabPanel>
             </TabView>

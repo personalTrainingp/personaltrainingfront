@@ -42,7 +42,7 @@ export const Seguimiento = () => {
 										</Col>
 									</Row>
 								</TabPanel>
-								<TabPanel header="EX PT">
+								<TabPanel header="HISTORICO">
 									<Row>
 										<Col lg={6} className='border-right-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS ACTIVOS</h3>

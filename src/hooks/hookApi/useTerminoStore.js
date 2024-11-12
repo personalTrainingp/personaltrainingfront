@@ -106,6 +106,7 @@ export const useTerminoStore = () => {
 	const [DataProducProveedor, setDataProducProveedor] = useState([]);
 	const [DataClientes, setDataClientes] = useState([]);
 	const [DataVendedores, setDataVendedores] = useState([]);
+	const [DataAsesores, setDataAsesores] = useState([]);
 	const [DataProductosSuplementos, setDataProductosSuplementos] = useState([]);
 	const [DataProductosAccesorios, setDataProductosAccesorios] = useState([]);
 	const [DataEmpleadosDepVentas, setDataEmpleadosDepVentas] = useState([]);
@@ -313,6 +314,15 @@ export const useTerminoStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerParametrosAsesores = async () => {
+		try {
+			setIsLoading(true);
+			const { data: asesoresFit } = await PTApi.get(`/parametros/get_params/empleados/2`);
+			setDataAsesores([...asesoresFit]);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerParametrosVendedores = async () => {
 		try {
 			setIsLoading(true);
@@ -471,6 +481,7 @@ export const useTerminoStore = () => {
 		obtenerParametrosProductoProveedor,
 		obtenerParametrosClientes,
 		obtenerParametrosVendedores,
+		obtenerParametrosAsesores,
 		obtenerParametrosProductosCategoriaAccesorios,
 		obtenerParametrosProductosCategoriaSuplementos,
 		obtenerParametrosEmpleadosxDepartamentoVentas,
@@ -496,6 +507,7 @@ export const useTerminoStore = () => {
 		obtenerPaqueteDeServicioParaVender,
 		obtenerEmpleadosPorDepartamentoNutricion,
 		obtenerOficios,
+		DataAsesores,
 		dataDistritos,
 		comboOficio,
 		DataEmpleadosDepNutricion,

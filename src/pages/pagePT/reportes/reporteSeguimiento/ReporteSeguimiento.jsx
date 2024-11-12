@@ -72,9 +72,9 @@ export const ReporteSeguimiento = () => {
                                             scrollable 
                                             selectionMode="single"
                                             scrollHeight="400px"
-                                            // width={'400'}
+                                            width={'400'}
                                             >
-                                            <Column header={<span className='font-24'>HORARIO</span>} style={{width: '20px'}} body={HorarioBodyTemplate}></Column>
+                                            <Column header={<span className='font-24'>HORARIO</span>} style={{width: '300px'}} body={HorarioBodyTemplate}></Column>
                                             <Column header={<span className='font-24'>CANTIDAD</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
                                 </DataTable>
                         </div>
@@ -91,8 +91,9 @@ export const ReporteSeguimiento = () => {
                                         scrollable 
                                         selectionMode="single"
                                         scrollHeight="400px"
+                                        width={'400'}
                                         >
-                                        <Column header={<span className='font-24'>HORARIO</span>} style={{width: '20px'}} body={HorarioBodyTemplate}></Column>
+                                        <Column header={<span className='font-24'>HORARIO</span>} style={{width: '300px'}} body={HorarioBodyTemplate}></Column>
                                         <Column header={<span className='font-24'>CANTIDAD</span>} style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
                             </DataTable>
                         </div>

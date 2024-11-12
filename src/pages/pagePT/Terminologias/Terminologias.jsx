@@ -68,27 +68,30 @@ export const Terminologias = () => {
                                     </Col>
                                 
                                 </TabPanel>
-                               
-                                {
-                                    dataTerminologiaPorEntidad?.parametros?.length > 0 &&
-                                    dataTerminologiaPorEntidad?.parametros?.map((parametro, index) => {
-                                        if (parametro.parametros.length === 0) {
-                                            return null;
-                                        } else {
-                                            return (
+                               <TabPanel header={'TERMINOLOGIAS DEL SISTEMA'}>
+                                <TabView>
+                                        {
+                                            dataTerminologiaPorEntidad?.parametros?.length > 0 &&
+                                            dataTerminologiaPorEntidad?.parametros?.map((parametro, index) => {
+                                                if (parametro.parametros.length === 0) {
+                                                    return null;
+                                                } else {
+                                                    return (
 
-                                                <TabPanel className='px-2' key={`${parametro.entidad_param}`} header={parametro.entidad_param}>
-                                                    <Col sm={4}>
-                                                        <Button label='Agregar Terminologia' onClick={() => {
-                                                            modalTerminologiaOpen(parametro);
-                                                        }} />
-                                                    </Col>
-                                                    <DataTerminologia data={parametro.parametros} />
-                                                </TabPanel>
-                                            )
+                                                        <TabPanel className='px-2' key={`${parametro.entidad_param}`} header={parametro.entidad_param}>
+                                                            <Col sm={4}>
+                                                                <Button label='Agregar Terminologia' onClick={() => {
+                                                                    modalTerminologiaOpen(parametro);
+                                                                }} />
+                                                            </Col>
+                                                            <DataTerminologia data={parametro.parametros} />
+                                                        </TabPanel>
+                                                    )
+                                                }
+                                            })
                                         }
-                                    })
-                                }
+                                </TabView>
+                               </TabPanel>
                             </TabView>
                         </Card.Body>
                     </Card>
