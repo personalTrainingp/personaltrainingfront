@@ -208,6 +208,7 @@ export default function TableInventario({showToast, id_enterprice}) {
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
                 <div>NIVEL {rowData.parametro_nivel?.label_param}</div>
+
                 <div>{rowData.parametro_lugar_encuentro?.label_param}</div>
             </div>
         );

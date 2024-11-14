@@ -33,10 +33,10 @@ export const ReportePorMarcacion = ({dataAsistencia}) => {
                 >
                     <thead className="bg-primary">
                         <tr>
-                            <th scope="col" className="pe-0 me-0">Socio</th>
+                            <th scope="col" className="pe-0 me-0 text-white">Socio</th>
                             {
                                 fechasUnicas.map((fecha , index)=>(
-                                    <th className="w-100 text-nowrap" style={{  }} key={index} scope="col">{fecha}</th>
+                                    <th className="w-100 text-nowrap text-white" style={{  }} key={index} scope="col">{fecha}</th>
                                 ))
                             }
                         </tr>
