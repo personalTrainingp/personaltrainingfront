@@ -30,9 +30,9 @@ export const ReporteSeguimiento = () => {
     
     const cantidadBodyTemplate=(rowData)=>{
         return (
-            <span className='font-20'>
-            {rowData.cantidad}
-            </span>
+            <div className='font-20 text-center'>
+            {rowData.cantidad} 
+            </div>
         )
     }
     const filtroDeHorario = (time)=>{
