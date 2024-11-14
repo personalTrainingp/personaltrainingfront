@@ -47,7 +47,7 @@ export const InventarioTotalizado = () => {
                 return(
                 <>
                 <h3>
-                    NIVEL: {g.nivel==-1?'ESTACIONAMIENTO':g.nivel}
+                    NIVEL {g.nivel==-1?'ESTACIONAMIENTO':g.nivel}
                 </h3>
                 {
                     agruparDataxLugar(g.items).map(f=>(
