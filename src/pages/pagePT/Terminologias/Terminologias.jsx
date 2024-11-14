@@ -62,13 +62,13 @@ export const Terminologias = () => {
                         <Card.Body>
 
                             <TabView className='px-2 mx-1 mb-1' scrollable='true'>
-                                <TabPanel header={"Terminologias de gastos"}>
+                                <TabPanel header={"Terminologia de gastos"}>
                                     <Col sm={12}>
                                        <TerminologiaGastoTabView dataTerminologiaPorEntidad={dataTerminologiaPorEntidad} ></TerminologiaGastoTabView>
                                     </Col>
                                 
                                 </TabPanel>
-                               <TabPanel header={'TERMINOLOGIAS DEL SISTEMA'}>
+                               <TabPanel header={'TERMINOLOGIA DEL SISTEMAS'}>
                                 <TabView>
                                         {
                                             dataTerminologiaPorEntidad?.parametros?.length > 0 &&

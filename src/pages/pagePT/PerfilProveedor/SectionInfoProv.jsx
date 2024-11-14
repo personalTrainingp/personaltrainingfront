@@ -44,6 +44,7 @@ export const SectionInfoProv = ({dataProv}) => {
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
         const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
         const { comboOficio, obtenerOficios, obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
+        const { obtenerParametroPorEntidadyGrupo:obtenerParametroFamilia, DataGeneral:dataFamilia } = useTerminoStore()
             const [visible, setVisible] = useState(false);
           
             const toastBC = useRef(null);
@@ -61,6 +62,7 @@ export const SectionInfoProv = ({dataProv}) => {
             useEffect(() => {
                 obtenerOficios()
                 obtenerParametroPorEntidadyGrupo('formapago', 'banco')
+                obtenerParametroFamilia('familia','familia')
             }, [])
             
             const confirmDeleteGastoxID = ()=>{
@@ -210,7 +212,7 @@ const ViewDataImg = (e) => {
                             <Col lg={2}>
                                 <div className="mb-4">
                                     <label htmlFor="id_familiar" className="form-label">
-                                        FAMILIARIDAD*
+                                        PARENTEZCO*
                                     </label>
                                     <Select
                                         onChange={(e) => onInputChangeReact(e, 'id_familiar')}
@@ -218,8 +220,8 @@ const ViewDataImg = (e) => {
                                         placeholder={'familia'}
                                         className="react-select"
                                         classNamePrefix="react-select"
-                                        options={arrayPersonalTest}
-                                        value={arrayPersonalTest.find(
+                                        options={dataFamilia}
+                                        value={dataFamilia.find(
                                             (option) => option.value === id_familiar
                                         )}
                                     />

@@ -22,7 +22,6 @@ export const ReportePorMarcacion = ({dataAsistencia}) => {
 
 
     const fechasUnicas = obtenerFechasUnicas(dataAsistencia);
-    console.log(dataAsistencia);
     return (
         <div className="card-body text-secondary card border-secondary box-shadow">
             <Card>
