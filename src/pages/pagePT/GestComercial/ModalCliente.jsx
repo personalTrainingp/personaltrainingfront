@@ -55,7 +55,9 @@ export const ModalCliente = ({show, onHide, data}) => {
     const { obtenerParametroPorEntidadyGrupo:obtenerParametroxCanal, DataGeneral:dataCanal }  = useTerminoStore()
     const { obtenerParametroPorEntidadyGrupo:obtenerParametroxCampania, DataGeneral:dataCampania }  = useTerminoStore()
     const { obtenerParametroPorEntidadyGrupo:obtenerParametroxEstadoLead, DataGeneral:dataEstadoLead }  = useTerminoStore()
-    const { obtenerProspectosLeads, startRegisterProspecto, startRegisterProspectoLead } = useProspectoLeadsStore()
+    const { obtenerProspectosLeads, startRegisterProspecto, startRegisterProspectoLead, startUpdateProspectoLead } = useProspectoLeadsStore()
+    // console.log(data);
+        
     useEffect(() => {
         dispatch(onSetUsuarioCliente(formState))
     }, [formState])
@@ -72,18 +74,18 @@ export const ModalCliente = ({show, onHide, data}) => {
   }, [])
   const submitProspectosLeads = async(e)=>{
     e.preventDefault()
-    if(data){
-                    // console.log("con");
-                    
-                    setshowLoading(true)
-                    await startActualizarGastos(formState)
-                    setshowLoading(false)
-                    // console.log("sin ");
-                    // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
-                    onClickCancelModal()
-                    return;
-                }
-                setshowLoading(true)
+        if(data){
+            // console.log("con");
+            
+            // setshowLoading(true)
+            await startUpdateProspectoLead(data.id, formState)
+            // setshowLoading(false)
+            // console.log("sin ");
+            // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
+            btnCancelModal()
+            return;
+        }
+                // setshowLoading(true)
     await startRegisterProspectoLead(formState)
     btnCancelModal()
 
@@ -93,7 +95,7 @@ export const ModalCliente = ({show, onHide, data}) => {
     {(
     <Modal show={show} onHide={onHide} size='xl' backdrop={'static'}>
     <Modal.Header>
-        <Modal.Title>Agregar</Modal.Title>
+        <Modal.Title>{data?'ACTUALIZAR':'AGREGAR'}</Modal.Title>
     </Modal.Header>
     <Modal.Body>
 				<Row>

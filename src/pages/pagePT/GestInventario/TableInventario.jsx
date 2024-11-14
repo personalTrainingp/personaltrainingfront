@@ -204,10 +204,11 @@ export default function TableInventario({showToast, id_enterprice}) {
     }
     const lugarBodyTemplate = (rowData)=>{
         return (
-            <div className="flex align-items-center gap-2">
+            <div className="gap-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
-                <span>{rowData.parametro_lugar_encuentro?.label_param}</span>
+                <div>NIVEL {rowData.parametro_nivel?.label_param}</div>
+                <div>{rowData.parametro_lugar_encuentro?.label_param}</div>
             </div>
         );
     }
@@ -222,7 +223,7 @@ export default function TableInventario({showToast, id_enterprice}) {
     }
     const cantidadBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2">
+            <div className="flex align-items-end w-50 gap-2 justify-content-end">
                 <span>{highlightText( rowData.cantidad, globalFilterValue)}</span>
             </div>
         );
@@ -326,15 +327,15 @@ export default function TableInventario({showToast, id_enterprice}) {
                 <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
                 <Column header="IMAGEN" style={{ width: '3rem' }} body={imagenBodyTemplate}/>
                 <Column header="ARTICULO" field='producto' filterField="producto" sortable style={{ width: '3rem' }} filter/>
+                <Column header="CANTIDAD" field='cantidad' filterField="cantidad" sortable style={{ minWidth: '10rem' }} body={cantidadBodyTemplate} filter />
                 <Column header="MARCA" field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
+                <Column header="UBICACION" field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '10rem' }} sortable body={lugarBodyTemplate} filter/>
                 <Column header="DESCRIPCION" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                 <Column header="OBSERVACIONES" field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/>
-                <Column header="CANTIDAD" field='cantidad' filterField="cantidad" sortable style={{ minWidth: '10rem' }} body={cantidadBodyTemplate} filter />
-                <Column header="VALOR UNITARIO DEPRECIADO" field='valor_unitario_depreciado' filterField="valor_unitario_depreciado" style={{ minWidth: '10rem' }} sortable body={valorUnitDeprecBodyTemplate} filter/>
-                <Column header="VALOR UNITARIO ACTUAL" field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
-                <Column header="VALOR TOTAL" field='valor_total' filterField="valor_total" style={{ minWidth: '10rem' }} body={valorTotalBodyTemplate} sortable filter/>
-                <Column header="LUGAR DE COMPRA O COTIZACION" field='lugar_compra_cotizacion' filterField="lugar_compra_cotizacion" style={{ minWidth: '10rem' }} sortable body={lugarCompraBodyTemplate} filter/>
-                <Column header="LUGAR" field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '10rem' }} sortable body={lugarBodyTemplate} filter/>
+                <Column header="VALOR ADQUISICION" field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
+                <Column header="VALOR ACTUAL" field='valor_unitario_depreciado' filterField="valor_unitario_depreciado" style={{ minWidth: '10rem' }} sortable body={valorUnitDeprecBodyTemplate} filter/>
+                {/* <Column header="VALOR TOTAL" field='valor_total' filterField="valor_total" style={{ minWidth: '10rem' }} body={valorTotalBodyTemplate} sortable filter/> */}
+                {/* <Column header="LUGAR DE COMPRA O COTIZACION" field='lugar_compra_cotizacion' filterField="lugar_compra_cotizacion" style={{ minWidth: '10rem' }} sortable body={lugarCompraBodyTemplate} filter/> */}
                 
                 <Column header="Editar/Eliminar" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>

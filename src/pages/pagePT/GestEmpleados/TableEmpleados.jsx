@@ -13,14 +13,12 @@ import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { Link } from 'react-router-dom';
 import { arrayDistrito, arrayTipoCliente } from '@/types/type';
 
-export const TableEmpleados = () => {
+export const TableEmpleados = ({dataView}) => {
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const  { obtenerUsuariosClientes, obtenerUsuarioEmpleado } = useUsuarioStore()
-	const { Dataclientes } = useSelector(e=>e.authClient)
-	const { dataView } = useSelector(e=>e.DATA)
     useEffect(() => {
         obtenerUsuariosClientes()
         obtenerUsuarioEmpleado()
@@ -29,12 +27,12 @@ export const TableEmpleados = () => {
     
         useEffect(() => {
         const fetchData = () => {
-            setCustomers(getCustomers(Dataclientes));
+            setCustomers(getCustomers(dataView));
             setLoading(false);
         };
         fetchData()
         initFilters();
-        }, [Dataclientes]);
+        }, [dataView]);
     const getCustomers = (data) => {
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
@@ -117,7 +115,7 @@ export const TableEmpleados = () => {
     const telefonoBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.tel_cli?`${rowData.tel_cli}`.replace(/ /g, "").match(/.{1,3}/g).join('-'):'', globalFilterValue)}</span>
+                <span>{highlightText(rowData.telefono_empl?`${rowData.telefono_empl}`.replace(/ /g, "").match(/.{1,3}/g).join('-'):'', globalFilterValue)}</span>
             </div>
         );
     }
@@ -131,15 +129,15 @@ export const TableEmpleados = () => {
     const verHistoryBodyTemplate = (rowData) => {
         return (
             <Link to={`/historial-cliente/${rowData.uid}`} className="action-icon" style={{fontSize: '14px', color: 'blue', textDecoration: 'underline'}}>
-                Ver Historial
+                Ver Perfil
             </Link>
         );
     }
 
-    const ClientesBodyTemplate = (rowData) => {
+    const NombresApellidosEmplBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.nombres_apellidos_cli, globalFilterValue)}</span>
+                <span>{highlightText(rowData.nombres_apellidos_empl, globalFilterValue)}</span>
             </div>
         );
     };
@@ -153,7 +151,14 @@ export const TableEmpleados = () => {
     const emailBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.email_cli, globalFilterValue)}</span>
+                <span>{highlightText(rowData.email_empl, globalFilterValue)}</span>
+            </div>
+        );
+    }
+    const estadoBodyTemplate = (rowData)=>{
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{rowData.estado_empl}</span>
             </div>
         );
     }
@@ -180,11 +185,11 @@ export const TableEmpleados = () => {
                 {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}
                 {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
                 <Column header="Id" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={IdBodyTemplate} filter/>
-                <Column header="SOCIO" filterField="nombres_apellidos_cli" style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>
-                <Column header="TIPO DE SOCIO" filterField={`tipo_cliente`} style={{ minWidth: '10rem' }} sortable body={ProgramaSemanasBodyTemplate} filter/>
+                <Column header="NOMBRES Y APELLIDOS" filterField="nombres_apellidos_empl" style={{ minWidth: '10rem' }} sortable body={NombresApellidosEmplBodyTemplate} filter/>
                 <Column header="EMAIL" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>
                 <Column header="TELEFONO" filterField={`tel_cli`} style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
                 <Column header="DISTRITO" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
+                <Column header="ESTADO" filterField={`estado_empl`} style={{ minWidth: '10rem' }} sortable body={estadoBodyTemplate} filter/>
 
                 {/* <Column header="Vencimiento" filterField="vencimiento_REGALOS_CONGELAMIENTO" sortable style={{ minWidth: '10rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate}  dataType="date" /> */}
                 {/* <Column header="Proveedor" filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  

@@ -47,7 +47,6 @@ export default function TableGestAportes({showToast}) {
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
-            console.log(item);
             // Convertir la fecha a la zona horaria de Lima
             // Realiza las modificaciones en la copia
             const [year, month, day] = item.fecha_aporte.split('-').map(Number);

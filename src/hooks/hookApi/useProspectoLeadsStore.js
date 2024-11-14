@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 
 export const useProspectoLeadsStore = () => {
 	const dispatch = useDispatch();
-	const [prospectoxID, setprospecto] = useState({});
+	const [prospectoLeadxID, setprospectoLeadxID] = useState(null);
 
 	const obtenerProspectosLeads = async () => {
 		try {
@@ -30,26 +30,38 @@ export const useProspectoLeadsStore = () => {
 	};
 	const obtenerProspectoxID = async (id) => {
 		try {
-			const { data } = await PTApi.get(`/prospecto/get-prospecto/${id}`);
-			setprospecto(data.prospecto);
+			const { data } = await PTApi.get(`/prospecto/lead/get-prospecto-lead/${id}`);
+			setprospectoLeadxID(data.prospectoLead);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const startUpdateProspecto = async (id) => {
+	const startUpdateProspectoLead = async (id, formState) => {
 		try {
-			const {} = await PTApi.put('/prospecto/lead/put-prospecto-lead/');
+			console.log(id, formState);
+
+			const { data } = await PTApi.put(`/prospecto/lead/put-prospecto-lead/${id}`, {
+				...formState,
+			});
+			obtenerProspectosLeads();
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const startDeleteProspecto = (id) => {};
+	const startDeleteProspectoLead = async (id) => {
+		try {
+			const { data } = await PTApi.put(`/prospecto/lead/delete-prospecto-lead/${id}`);
+			obtenerProspectosLeads();
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerProspectosLeads,
 		startRegisterProspectoLead,
-		startUpdateProspecto,
-		startDeleteProspecto,
+		startUpdateProspectoLead,
+		startDeleteProspectoLead,
 		obtenerProspectoxID,
-		prospectoxID,
+		prospectoLeadxID,
 	};
 };

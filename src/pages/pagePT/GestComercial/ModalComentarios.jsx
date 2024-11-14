@@ -36,7 +36,7 @@ const regUsuarioCliente= {
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalComentarios = ({show, onHide}) => {
+export const ModalComentarios = ({uid_comentario, show, onHide}) => {
     const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const  { startRegisterUsuarioCliente, loading } = useUsuarioStore()
     const dispatch = useDispatch()
@@ -62,7 +62,7 @@ export const ModalComentarios = ({show, onHide}) => {
         <Modal.Title>COMENTARIOS</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-        <SectionComentario uid_comentario={'e'}/>
+        <SectionComentario uid_comentario={uid_comentario}/>
     </Modal.Body>
     </Modal>
     )

@@ -31,7 +31,7 @@ export const ReporteSeguimiento = () => {
     const cantidadBodyTemplate=(rowData)=>{
         return (
             <span className='font-20'>
-            {rowData.cantidad} SOCIOS
+            {rowData.cantidad}
             </span>
         )
     }
@@ -75,7 +75,7 @@ export const ReporteSeguimiento = () => {
                                             width={'400'}
                                             >
                                             <Column header={<span className='font-24'>HORARIO</span>} style={{width: '300px'}} body={HorarioBodyTemplate}></Column>
-                                            <Column header={<span className='font-24'>CANTIDAD</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
+                                            <Column header={<span className='font-24'>socios inscritos</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
                                 </DataTable>
                         </div>
                     </Col>
@@ -94,7 +94,7 @@ export const ReporteSeguimiento = () => {
                                         width={'400'}
                                         >
                                         <Column header={<span className='font-24'>HORARIO</span>} style={{width: '300px'}} body={HorarioBodyTemplate}></Column>
-                                        <Column header={<span className='font-24'>CANTIDAD</span>} style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
+                                        <Column header={<span className='font-24'>socios inscritos</span>} style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
                             </DataTable>
                         </div>
                     </Col>
@@ -123,7 +123,7 @@ export const ReporteSeguimiento = () => {
                                                 scrollHeight="400px"
                                                 >
                                                 <Column header={<span className='font-20'>HORARIO</span>}  style={{width: '20px'}} body={HorarioBodyTemplate}></Column>
-                                                <Column header={<span className='font-20'>CANTIDAD</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
+                                                <Column header={<span className='font-20'>socios inscritos</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
                                     </DataTable>
                                 </Col>
                                 ))

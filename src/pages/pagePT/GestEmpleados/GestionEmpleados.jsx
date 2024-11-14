@@ -9,12 +9,14 @@ import { useSelector } from 'react-redux';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { TableEmpleados } from './TableEmpleados';
+import { TabPanel, TabView } from 'primereact/tabview';
 
 
 export const GestionEmpleados = () => {
     const [show, setshow] = useState(false)
 	const { obtenerUsuariosEmpleados } = useUsuarioStore()
 	const {Dataempleados}  = useSelector(e=>e.authEmpl)
+	const {dataView}  = useSelector(e=>e.DATA)
     const onModalEmpleadoOpen=()=>{
         setshow(true)
     }
@@ -26,7 +28,7 @@ export const GestionEmpleados = () => {
 	}, [])
     return (
 		<>
-			<PageBreadcrumb title="Gestion de empleados" subName="E-commerce" />
+			<PageBreadcrumb title="COLABORADORES" subName="E-commerce" />
 
 			<Row>
 				<Col xs={12}>
@@ -37,21 +39,24 @@ export const GestionEmpleados = () => {
 									{/* <Button onClick={onModalEmpleadoOpen}>
 										<i className="mdi mdi-plus-circle me-2"></i> Agregar empleados
 									</Button> */}
-									<Button label='Agregar empleados' icon={'mdi mdi-plus-circle'} onClick={onModalEmpleadoOpen}/>
+									<Button label='AGREGAR COLABORADOR' icon={'mdi mdi-plus-circle'} onClick={onModalEmpleadoOpen}/>
 								</Col>
 							</Row>
-							{/* <Table
-								columns={columns}
-								data={Dataempleados}
-								pageSize={5}
-								sizePerPageList={sizePerPageList}
-								isSortable={true}
-								pagination={true}
-								isSearchable={true}
-								theadClass="table-light"
-								searchBoxClass="mb-2"
-							/> */}
-							<TableEmpleados/>
+							<TabView>
+								<TabPanel header='CIRCUS'>
+									<TableEmpleados dataView={dataView}/>
+								</TabPanel>
+								<TabPanel header='CHANGE'>
+									<TabView>
+										<TabPanel header='ACTIVOS'>
+											<TableEmpleados dataView={dataView}/>
+										</TabPanel>
+										<TabPanel header='INACTIVOS'>
+
+										</TabPanel>
+									</TabView>
+								</TabPanel>
+							</TabView>
 						</Card.Body>
 					</Card>
 				</Col>

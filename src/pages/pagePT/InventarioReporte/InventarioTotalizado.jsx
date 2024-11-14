@@ -15,7 +15,75 @@ export const InventarioTotalizado = () => {
     }, [])
 
     const groupedData = Object.values(dataView.reduce((acc, item) => {
-        const label = item.parametro_lugar_encuentro.label_param;
+        const label = item.parametro_nivel?.label_param;
+      
+        // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
+        if (!acc[label]) {
+          acc[label] = { nivel: label, valor_total_sumado: 0, items: [] };
+        }
+        
+        // Sumamos el valor_total del item actual al grupo correspondiente
+        acc[label].valor_total_sumado += item.valor_total;
+        
+        // Añadimos el item al array `items` del grupo correspondiente
+        acc[label].items.push(item);
+        
+        return acc;
+      }, {}));
+      
+      // Convertimos valor_total_sumado a cadena con dos decimales
+      groupedData.forEach(group => {
+        group.valor_total_sumado = group.valor_total_sumado.toFixed(2);
+      });
+      groupedData.sort((a, b) => a.nivel - b.nivel);
+  return (
+    <>
+    <PageBreadcrumb title={'INVENTARIO VALORIZADO'} subName={'T'}/>
+    
+    <Row>
+        {
+            groupedData.map(g=>{
+                
+                console.log(agruparDataxLugar(g.items));
+                
+                return(
+                <>
+                <h3>
+                    NIVEL: {g.nivel==-1?'ESTACIONAMIENTO':g.nivel}
+                </h3>
+                {
+                    agruparDataxLugar(g.items).map(f=>(
+                        <Col lg={3}>
+                        <Card style={{height: '200px', display: 'block'}} className='m-1 border border-4'>
+                            <Card.Header>
+                                <Card.Title className='font-24'>
+                                    {f.ubicacion}
+                                </Card.Title>
+                            </Card.Header>
+                            <Card.Body>
+                                <ul>
+                                    <li>CANTIDAD: {f.items.length}</li>
+                                    <li>VALOR TOTAL SUMADO: <MoneyFormatter amount={f.valor_total_sumado}/></li>
+                                </ul>
+                     
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    ))
+                }
+                </>
+                            
+            )})
+        }
+                        </Row>
+    </>
+  )
+}
+
+function agruparDataxLugar(dataV) {
+    
+    const groupedData = Object.values(dataV.reduce((acc, item) => {
+        const label = item.parametro_lugar_encuentro?.label_param;
       
         // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
         if (!acc[label]) {
@@ -35,32 +103,5 @@ export const InventarioTotalizado = () => {
       groupedData.forEach(group => {
         group.valor_total_sumado = group.valor_total_sumado.toFixed(2);
       });
-  return (
-    <>
-    <PageBreadcrumb title={'INVENTARIO VALORIZADO'} subName={'T'}/>
-    
-    <Row>
-        {
-            groupedData.map(g=>(
-                            <Col lg={3}>
-                                <Card style={{height: '200px', display: 'block'}} className='m-1 border border-4'>
-                                    <Card.Header>
-                                        <Card.Title className='font-24'>
-                                            {g.ubicacion}
-                                        </Card.Title>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        <ul>
-                                            <li>CANTIDAD: {g.items.length}</li>
-                                            <li>VALOR TOTAL SUMADO: <MoneyFormatter amount={g.valor_total_sumado}/></li>
-                                        </ul>
-                                        
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-            ))
-        }
-                        </Row>
-    </>
-  )
+      return groupedData;
 }

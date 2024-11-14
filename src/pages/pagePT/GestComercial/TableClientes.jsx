@@ -18,28 +18,30 @@ import { MoneyFormatter } from '@/components/CurrencyMask';
 import { Card, Col, Row } from 'react-bootstrap';
 import { ModalCliente } from './ModalCliente';
 import { ModalComentarios } from './ModalComentarios';
+import { logEvent } from 'firebase/analytics';
+import { confirmDialog } from 'primereact/confirmdialog';
 
 export default function TableClientes({dataV}) {
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [uidComment, setuidComment] = useState('')
     const [showModalEditComercio, setshowModalEditComercio] = useState(false)
     const [showModalComentarios, setshowModalComentarios] = useState(false)
-    const [idComercio, setidComercio] = useState(0)
-    
+    const { obtenerProspectoxID, prospectoLeadxID, startDeleteProspectoLead } = useProspectoLeadsStore()
     const onModalCloseComentarios = ()=>{
         setshowModalComentarios(false)
     }
-    const onModalOpenComentarios = ()=>{
+    const onModalOpenComentarios = (uid_coment)=>{
         setshowModalComentarios(true)
-    }
-    const onModalEditComercioxID = (id_comercio)=>{
-        setshowModalEditComercio(true)
-        setidComercio(id_comercio)
+        setuidComment(uid_coment)
     }
     const onModalCancelComercioxID = ()=>{
         setshowModalEditComercio(false)
+    }
+    const onModalOpenComercio = ()=>{
+        setshowModalEditComercio(true)
     }
         useEffect(() => {
         const fetchData = () => {
@@ -135,11 +137,32 @@ export default function TableClientes({dataV}) {
         );
     }
     const verHistoryBodyTemplate = (rowData) => {
+        const onModalEditComercioxID = ()=>{
+            onModalOpenComercio()
+            obtenerProspectoxID(rowData.id)
+        }
+        const onModalTrashComercioxID = ()=>{
+            confirmDialog({
+                message: 'Seguro que quieres eliminar?',
+                header: 'Eliminar',
+                icon: 'pi pi-info-circle',
+                defaultFocus: 'reject',
+                acceptClassName: 'p-button-danger',
+                accept:  onAcceptDeleteComercio,
+            });
+        }
+        
+        const onAcceptDeleteComercio = async()=>{
+            // setshowLoading(true)
+            await startDeleteProspectoLead(rowData.id)
+            // setshowLoading(false)
+            // showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
+        }
         return (
             <>
-                <Button icon="pi pi-comment" onClick={()=>onModalOpenComentarios()} rounded outlined className="mr-2" />
+                <Button icon="pi pi-comment" onClick={()=>onModalOpenComentarios(rowData.uid_comentario)} rounded outlined className="mr-2" />
                 <Button icon="pi pi-pencil" onClick={()=>onModalEditComercioxID(rowData.id)} rounded outlined className="mr-2" />
-                <Button icon="pi pi-trash" rounded outlined className="mr-2" />
+                <Button icon="pi pi-trash" onClick={()=>onModalTrashComercioxID(rowData.id)} rounded outlined className="mr-2" />
             </>
         );
     }
@@ -152,8 +175,9 @@ export default function TableClientes({dataV}) {
     }
     const nombreBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.nombres, globalFilterValue)}</span>
+            <div className="">
+                <div><strong>NOMBRES: </strong>{highlightText(rowData.nombres, globalFilterValue)} {highlightText(rowData.apellido_materno?rowData.apellido_materno:'', globalFilterValue)}</div>
+                <div><strong>CELULAR: </strong>{highlightText(rowData.celular, globalFilterValue)}</div>
             </div>
         );
     }
@@ -186,10 +210,10 @@ export default function TableClientes({dataV}) {
             </h3>
         )
     }
-    const ultimaFechaDeSeguimiento = ()=>{
+    const ultimaFechaDeSeguimiento = (rowData)=>{
         return (
             <>
-            {/* {rowData.ultima_fecha_seguimiento?dayjs(rowData.ultima_fecha_seguimiento).format('DD [del] MMMM [del] YYYY'):''} */}
+            {rowData.ultimo_dia_seguimiento?dayjs(rowData.ultimo_dia_seguimiento).format('DD [del] MMMM [del] YYYY'):''}
             
             </>
         )
@@ -306,9 +330,9 @@ export default function TableClientes({dataV}) {
                 <Column header="Id" style={{ minWidth: '5rem' }} sortable body={IdBodyTemplate} filter/>
                 <Column header="ASESOR" filterField="asesor" style={{ minWidth: '10rem' }} sortable body={empleadoBodyTemplate} filter/>
                 <Column header="FECHA DE REGISTRO" style={{ minWidth: '10rem' }} sortable body={FechaRegistroBodyTemplate} filter/>
-                <Column header="NOMBRE" style={{ minWidth: '10rem' }} sortable body={nombreBodyTemplate} filter/>
-                <Column header="APELLIDOS" style={{ minWidth: '10rem' }} sortable body={apellidosBodyTemplate} filter/>
-                <Column header="CELULAR" style={{ minWidth: '10rem' }} sortable body={celularBodyTemplate} filter/>
+                <Column header="NOMBRE" style={{ minWidth: '20rem' }} sortable body={nombreBodyTemplate} filter/>
+                {/* <Column header="APELLIDOS" style={{ minWidth: '10rem' }} sortable body={apellidosBodyTemplate} filter/> */}
+                {/* <Column header="CELULAR" style={{ minWidth: '10rem' }} sortable body={celularBodyTemplate} filter/> */}
                 <Column header="DISTRITO" style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
                 <Column header="CANAL" style={{ minWidth: '10rem' }} sortable body={canalBodyTemplate} filter/>
                 <Column header="CAMPAÑA" style={{ minWidth: '10rem' }} sortable body={campaniaBodyTemplate} filter/>
@@ -319,8 +343,10 @@ export default function TableClientes({dataV}) {
                 <Column header="ESTADO" style={{ minWidth: '10rem' }} sortable body={estadoLeadBodyTemplate} filter/>
                 <Column header="" filterField="id" style={{ minWidth: '13rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
-            <ModalCliente show={showModalEditComercio} onHide={onModalCancelComercioxID}/>
-            <ModalComentarios show={showModalComentarios} onHide={onModalCloseComentarios}/>
+            <ModalCliente 
+            data={prospectoLeadxID} 
+            show={showModalEditComercio} onHide={onModalCancelComercioxID}/>
+            <ModalComentarios uid_comentario={uidComment} show={showModalComentarios} onHide={onModalCloseComentarios}/>
         </>
     );
 }

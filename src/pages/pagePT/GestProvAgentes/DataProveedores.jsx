@@ -35,7 +35,7 @@ export const DataProveedores = () => {
 	
 	return (
 		<>
-			<PageBreadcrumb title="AGENTES" subName="E" />
+			<PageBreadcrumb title="GASTOS" subName="E" />
 			<Row>
 				<Col xxl={1}>
 				</Col>
