@@ -173,9 +173,17 @@ export const useUsuarioStore = () => {
 			console.log(error);
 		}
 	};
-	const startUpdateUsuarioEmpleado = async (formState, uid) => {
+	const startUpdateUsuarioEmpleado = async (formState, uid, avatarFile) => {
 		try {
 			const { data } = await PTApi.put(`/usuario/put-empleado/${uid}`, formState);
+			if (avatarFile) {
+				const formData = new FormData();
+				formData.append('file', avatarFile);
+				await PTApi.post(
+					`/storage/blob/create/${data.empleado.uid_avatar}?container=avatar-empleado`,
+					formData
+				);
+			}
 			obtenerUsuariosEmpleados();
 			console.log('success', data);
 		} catch (error) {

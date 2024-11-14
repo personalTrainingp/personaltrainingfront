@@ -2,9 +2,11 @@ import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayCargoEmpl, arrayDepartamentoEmpl, arrayDistrito, arrayEstadoCivil, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc, arrayTipoJornadaEmpl } from '@/types/type'
 import dayjs from 'dayjs'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
 import Select from 'react-select'
+import sinAvatar from '@/assets/images/sinPhoto.jpg';
+
 /*
 id_cli(pin):7
 uid_avatar(pin):"6350cee2-3ac8-4bad-ac9c-31c2db45a3e4"
@@ -30,6 +32,10 @@ uid_contactsEmergencia(pin):"338478cc-9c50-4c6c-b2c1-a28e0d4ddadb"
 estado_cli(pin):true
 flag(pin):true
 */
+
+const registerImgAvatar={
+    imgAvatar_BASE64: ''
+}
 export const InformacionGeneralEmpleado = ({data}) => {
     const { 
         formState,
@@ -53,13 +59,36 @@ export const InformacionGeneralEmpleado = ({data}) => {
         tipoContrato_empl,
         horario_empl,
         onInputChange, onInputChangeReact, onFileChange } = useForm(data)
+        
+	const [selectedFile, setSelectedFile] = useState(sinAvatar);
+    
+    const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
         const { startUpdateUsuarioEmpleado } = useUsuarioStore()
         const onUpdateEmpleado = ()=>{
-            startUpdateUsuarioEmpleado(formState, data.uid)
+            startUpdateUsuarioEmpleado(formState, data.uid, formStateAvatar.imgAvatar_BASE64, data.uid)
         }
+        
   return (
     <>
     <Row>
+        <Col xl={12}>
+            <div className="m-2">
+                <label htmlFor="nombre_empl" className="form-label">
+                    FOTO*
+                </label>
+                <input
+                    accept="image/png, image/jpeg, image/jpg"
+                    className="form-control"
+                    type="file"
+                    name="imgAvatar_BASE64"
+                    id="imgAvatar_BASE64"
+                    onChange={(e)=>{
+                        onRegisterFileChange(e)
+                    }} 
+                    required
+                />
+            </div>
+        </Col>
         <Col xl={4}>
             <div className="m-2">
                 <label htmlFor="nombre_empl" className="form-label">

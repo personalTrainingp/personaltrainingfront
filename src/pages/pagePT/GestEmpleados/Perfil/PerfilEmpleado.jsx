@@ -23,15 +23,20 @@ export const PerfilEmpleado = () => {
       </>
     )
   }
+  console.log(userEmpleado,`${config.API_IMG.AVATAR_EMPL}${userEmpleado.tb_image?.name_image}`);
+  
   if(userEmpleado==null){
     return <Error404AltPage/>;
   }
   return (
     <>
-    <Link className='mt-3'><i className='mdi mdi-chevron-left'></i>Back</Link>
+    
+    <div className='my-2 py-2 btn btn-primary'>
+        <Link  to={'/gestion-empleados'} className='fs-5 text-white'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
+    </div>
     <Card className='mt-3 p-3'>
       <div className='d-flex align-items-center'>
-        <img src={`${userEmpleado.urlImg==null?sinAvatar:`${config.API_IMG.AVATARES}${userEmpleado.urlImg}`}`} className='rounded-circle' width={150} height={150}/>
+        <img src={`${userEmpleado.tb_image==null?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${userEmpleado.tb_image?.name_image}`}`} className='rounded-circle' width={150} height={150}/>
         <div className='m-2'>
           <span className='fs-1 fw-bold'><p className='mb-0 pb-0'>{userEmpleado.nombre_empl} {userEmpleado.apPaterno_empl} {userEmpleado.apMaterno_empl}</p></span>
           <span className=''>ACTIVO</span>

@@ -44,8 +44,6 @@ export const InventarioTotalizado = () => {
         {
             groupedData.map(g=>{
                 
-                console.log(agruparDataxLugar(g.items));
-                
                 return(
                 <>
                 <h3>
@@ -61,9 +59,9 @@ export const InventarioTotalizado = () => {
                                 </Card.Title>
                             </Card.Header>
                             <Card.Body>
-                                <ul>
-                                    <li>CANTIDAD: {f.items.length}</li>
-                                    <li>VALOR TOTAL SUMADO: <MoneyFormatter amount={f.valor_total_sumado}/></li>
+                                <ul className='text-decoration-none list-unstyled font-18'>
+                                    <li>CANTIDAD DE ITEMS: {f.items.length}</li>
+                                    <li>inversión: <MoneyFormatter amount={f.valor_total_sumado}/></li>
                                 </ul>
                      
                             </Card.Body>

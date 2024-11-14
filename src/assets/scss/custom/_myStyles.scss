@@ -79,6 +79,7 @@
 //   background-color: #D41115;
 // }
 
+
 .hover-card:hover{
     border-color: rgb(205, 133, 0) !important;
 }
@@ -624,3 +625,14 @@ th:last-child {
       background-color: red !important;
     }
   }
+
+  /* Añade este estilo en tu archivo CSS */
+  .dataTable-verticals-lines td{
+  // .dataTable-verticals-lines th 
+  border-right: 1px solid #d9d9d9; /* Cambia el color del borde si deseas otro */
+}
+
+.dataTable-verticals-lines th:last-child,
+.dataTable-verticals-lines td:last-child {
+  border-right: none; /* Elimina el borde de la última columna */
+}

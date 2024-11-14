@@ -128,7 +128,7 @@ export const TableEmpleados = ({dataView}) => {
     }
     const verHistoryBodyTemplate = (rowData) => {
         return (
-            <Link to={`/historial-cliente/${rowData.uid}`} className="action-icon" style={{fontSize: '14px', color: 'blue', textDecoration: 'underline'}}>
+            <Link to={`/perfil-colaborador/${rowData.uid}`} className="action-icon text-primary" style={{fontSize: '14px', textDecoration: 'underline'}}>
                 Ver Perfil
             </Link>
         );
@@ -179,7 +179,7 @@ export const TableEmpleados = ({dataView}) => {
                         filters={filters} 
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         rowsPerPageOptions={[10, 25, 50]} 
-                        globalFilterFields={["id_cli", "nombres_apellidos_cli", "email_cli", "tel_cli", "distrito"]} 
+                        globalFilterFields={["id_cli", "nombres_apellidos_empl", "email_cli", "tel_cli", "distrito"]} 
                         header={header}
                         emptyMessage="SOCIOS NO ENCONTRADOS.">
                 {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}

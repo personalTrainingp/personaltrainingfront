@@ -306,6 +306,7 @@ export default function TableInventario({showToast, id_enterprice}) {
                     </div>
                     <DataTable 
                         size='small' 
+                        className='dataTable-verticals-lines'
                         value={customers} 
                         paginator 
                         header={header}
@@ -319,7 +320,7 @@ export default function TableInventario({showToast, id_enterprice}) {
                         filterDisplay="menu" 
                         globalFilterFields={['id', 'producto', 'marca', 'descripcion', 'observacion', 'cantidad', 'valor_unitario_depreciado', "valor_unitario_actual","lugar_compra_cotizacion"]} 
                         emptyMessage="ARTICULOS NO ENCONTRADOS."
-                        showGridlines 
+                        showGridlines={true}
                         loading={loading} 
                         stripedRows
                         scrollable

@@ -117,7 +117,8 @@ const ViewDataImg = (e) => {
                                             onRegisterFileChange(e)
                                             ViewDataImg(e)
                                         }} 
-                                        type="file" className="fs-6" />
+                                        type="file" className="fs-6" 
+                                        />
                                         <img src={selectedFile} style={{width: '100px', height: '100px'}}/>
                                     </div>
                                 </div>
