@@ -389,7 +389,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
         <Col xl={4}>
         <div className="m-2">
                 <label htmlFor="tipoContrato_empl" className="form-label">
-                    Tipo de jornadad*
+                    Tipo de jornada*
                 </label>
                 <Select
                     onChange={(e) => onInputChangeReact(e, 'tipoContrato_empl')}

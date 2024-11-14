@@ -38,7 +38,7 @@ export const InventarioTotalizado = () => {
       groupedData.sort((a, b) => a.nivel - b.nivel);
   return (
     <>
-    <PageBreadcrumb title={'INVENTARIO VALORIZADO'} subName={'T'}/>
+    <PageBreadcrumb title={'INVENTARIO VALORIZADO AL 31 DE OCTUBRE DEL 2024'} subName={'T'}/>
     
     <Row>
         {
@@ -47,7 +47,7 @@ export const InventarioTotalizado = () => {
                 return(
                 <>
                 <h3>
-                    NIVEL {g.nivel==-1?'ESTACIONAMIENTO':g.nivel}
+                    NIVEL {g.nivel}
                 </h3>
                 {
                     agruparDataxLugar(g.items).map(f=>(
