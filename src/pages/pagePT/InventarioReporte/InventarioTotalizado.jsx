@@ -60,8 +60,8 @@ export const InventarioTotalizado = () => {
                             </Card.Header>
                             <Card.Body>
                                 <ul className='text-decoration-none list-unstyled font-18'>
-                                    <li>CANTIDAD DE ITEMS: {f.items.length}</li>
-                                    <li>inversión: <MoneyFormatter amount={f.valor_total_sumado}/></li>
+                                    <li ><span className='fw-bold'>CANTIDAD DE ITEMS:</span> {f.items.length}</li>
+                                    <li ><span className='fw-bold'>inversión: </span><MoneyFormatter amount={f.valor_total_sumado}/></li>
                                 </ul>
                      
                             </Card.Body>
