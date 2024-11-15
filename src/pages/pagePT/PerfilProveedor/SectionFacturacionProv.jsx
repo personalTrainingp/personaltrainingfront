@@ -313,7 +313,7 @@ const ViewDataImg = (e) => {
                                 />
                             </div>
                             </Col>
-                            <Col xs={12} sm={12} md={2} lg={2} >
+                            <Col xs={12} sm={12} md={3} lg={3} >
                                 <div className="mb-4" >
                                     <label htmlFor="ubigeo_distrito" className="form-label">
                                         DISTRITO
@@ -330,7 +330,7 @@ const ViewDataImg = (e) => {
                                 </div>
                             </Col>
 
-                            <Col xs={12} sm={12} md={2} lg={2} >
+                            <Col xs={12} sm={12} md={3} lg={3} >
                                 <div className="mb-4" >
                                     <label htmlFor="id_tarjeta" className="form-label">
                                         DEPARTAMENTO
