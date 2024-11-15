@@ -213,7 +213,7 @@ const ViewDataImg = (e) => {
                             <Col lg={2}>
                                 <div className="mb-4">
                                     <label htmlFor="id_familiar" className="form-label">
-                                        PARENTEZCO*
+                                        PARENTESCO*
                                     </label>
                                     <Select
                                         onChange={(e) => onInputChangeReact(e, 'id_familiar')}
