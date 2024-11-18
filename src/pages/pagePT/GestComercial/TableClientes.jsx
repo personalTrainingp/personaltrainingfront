@@ -116,9 +116,10 @@ export default function TableClientes({dataV}) {
     };
     
     const FechaRegistroBodyTemplate = (rowData) => {
+        
         return (
             <div className="flex align-items-center gap-2">
-                <span>{dayjs(rowData.fecha_registro ).format('DD [del] MMMM [del] YYYY')}</span>
+                <span>{dayjs(rowData.fecha_registro, 'DD/MM/YYYY').format('DD [del] MMMM [del] YYYY')}</span>
             </div>
         );
     };
@@ -213,7 +214,7 @@ export default function TableClientes({dataV}) {
     const ultimaFechaDeSeguimiento = (rowData)=>{
         return (
             <>
-            {rowData.ultimo_dia_seguimiento?dayjs(rowData.ultimo_dia_seguimiento).format('DD [del] MMMM [del] YYYY'):''}
+            {rowData.ultimo_dia_seguimiento?dayjs(rowData.ultimo_dia_seguimiento, 'DD/MM/YYYY').format('DD [del] MMMM [del] YYYY'):''}
             
             </>
         )
@@ -221,7 +222,7 @@ export default function TableClientes({dataV}) {
     const fechaCitaBodyTemplate = (rowData)=>{
         return (
             <>
-            {rowData.fecha_cita?dayjs(rowData.fecha_cita).format('DD [del] MMMM [del] YYYY'):''}
+            {rowData.fecha_cita?dayjs(rowData.fecha_cita, 'DD/MM/YYYY').format('DD [del] MMMM [del] YYYY'):''}
             
             </>
         )
