@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { useProspectoLeadsStore } from '@/hooks/hookApi/useProspectoLeadsStore';
+import dayjs from 'dayjs';
 
 
 const regUsuariosLeads= {
@@ -88,8 +89,9 @@ export const ModalCliente = ({show, onHide, data}) => {
                 // setshowLoading(true)
     await startRegisterProspectoLead(formState)
     btnCancelModal()
-
   }
+  console.log(formState);
+  
   return (
     <>
     {(

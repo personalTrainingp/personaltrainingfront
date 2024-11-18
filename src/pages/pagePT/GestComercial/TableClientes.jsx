@@ -30,6 +30,8 @@ export default function TableClientes({dataV}) {
     const [showModalEditComercio, setshowModalEditComercio] = useState(false)
     const [showModalComentarios, setshowModalComentarios] = useState(false)
     const { obtenerProspectoxID, prospectoLeadxID, startDeleteProspectoLead } = useProspectoLeadsStore()
+    console.log(dataV);
+    
     const onModalCloseComentarios = ()=>{
         setshowModalComentarios(false)
     }
@@ -119,7 +121,7 @@ export default function TableClientes({dataV}) {
         
         return (
             <div className="flex align-items-center gap-2">
-                <span>{dayjs(rowData.fecha_registro, 'DD/MM/YYYY').format('DD [del] MMMM [del] YYYY')}</span>
+                <span>{dayjs(rowData.fecha_registro, 'YYYY/MM/DD').format('DD [del] MMMM [del] YYYY')}</span>
             </div>
         );
     };
@@ -214,7 +216,7 @@ export default function TableClientes({dataV}) {
     const ultimaFechaDeSeguimiento = (rowData)=>{
         return (
             <>
-            {rowData.ultimo_dia_seguimiento?dayjs(rowData.ultimo_dia_seguimiento, 'DD/MM/YYYY').format('DD [del] MMMM [del] YYYY'):''}
+            {rowData.ultimo_dia_seguimiento?dayjs(rowData.ultimo_dia_seguimiento, 'YYYY/MM/DD').format('DD [del] MMMM [del] YYYY'):''}
             
             </>
         )
@@ -222,7 +224,7 @@ export default function TableClientes({dataV}) {
     const fechaCitaBodyTemplate = (rowData)=>{
         return (
             <>
-            {rowData.fecha_cita?dayjs(rowData.fecha_cita, 'DD/MM/YYYY').format('DD [del] MMMM [del] YYYY'):''}
+            {rowData.fecha_cita?dayjs(rowData.fecha_cita, 'YYYY/MM/DD').format('DD [del] MMMM [del] YYYY'):''}
             
             </>
         )
@@ -245,6 +247,13 @@ export default function TableClientes({dataV}) {
         return (
             <>
             {rowData.parametro_canal?.label_param}
+            </>
+        )
+    }
+    const comentarioBodyTemplate =(rowData)=>{
+        return (
+            <>
+            {rowData.comentario[rowData.comentario.length-1]?.comentario_com}
             </>
         )
     }
@@ -335,6 +344,7 @@ export default function TableClientes({dataV}) {
                 {/* <Column header="APELLIDOS" style={{ minWidth: '10rem' }} sortable body={apellidosBodyTemplate} filter/> */}
                 {/* <Column header="CELULAR" style={{ minWidth: '10rem' }} sortable body={celularBodyTemplate} filter/> */}
                 <Column header="DISTRITO" style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
+                <Column header="ULTIMO COMENTARIO" style={{ minWidth: '10rem' }} sortable body={comentarioBodyTemplate} filter/>
                 <Column header="CANAL" style={{ minWidth: '10rem' }} sortable body={canalBodyTemplate} filter/>
                 <Column header="CAMPAÑA" style={{ minWidth: '10rem' }} sortable body={campaniaBodyTemplate} filter/>
                 <Column header="PLAN S/." style={{ minWidth: '10rem' }} sortable body={planBodyTemplate} filter/>
