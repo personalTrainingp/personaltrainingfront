@@ -130,7 +130,7 @@ const CustomersProv = ({estado_prov, agente}) => {
 	const telefonoBodyTemplate = (rowData)=>{
 		return(
 			<>
-			    <span className='fw-bold'><p className='mb-0 pb-0'><span className=''>{rowData.cel_prov&&rowData.cel_prov.match(/.{1,3}/g).join('-')}</span></p></span>
+			    <span className='fw-bold'><p className='mb-0 pb-0'><span className=''>{rowData.cel_prov&&rowData.cel_prov.match(/.{1,3}/g).join(' ')}</span></p></span>
 			</>
 		)
 	}

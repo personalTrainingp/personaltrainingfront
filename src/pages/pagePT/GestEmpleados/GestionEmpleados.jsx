@@ -14,18 +14,12 @@ import { TabPanel, TabView } from 'primereact/tabview';
 
 export const GestionEmpleados = () => {
     const [show, setshow] = useState(false)
-	const { obtenerUsuariosEmpleados } = useUsuarioStore()
-	const {Dataempleados}  = useSelector(e=>e.authEmpl)
-	const {dataView}  = useSelector(e=>e.DATA)
     const onModalEmpleadoOpen=()=>{
         setshow(true)
     }
     const  onModalEmpleadoClose =()=>{
         setshow(false)
     }
-	useEffect(() => {
-	  obtenerUsuariosEmpleados()
-	}, [])
     return (
 		<>
 			<PageBreadcrumb title="COLABORADORES" subName="E-commerce" />
@@ -44,15 +38,29 @@ export const GestionEmpleados = () => {
 							</Row>
 							<TabView>
 								<TabPanel header='CIRCUS'>
-									<TableEmpleados dataView={dataView}/>
+									<TabView>
+										<TabPanel header='ACTIVOS'>
+											<TableEmpleados  id_empresa={599} id_estado={1}/>
+										</TabPanel>
+										<TabPanel header='INACTIVOS'>
+											<TableEmpleados  id_empresa={599} id_estado={0}/>
+										</TabPanel>
+									</TabView>
 								</TabPanel>
 								<TabPanel header='CHANGE'>
 									<TabView>
 										<TabPanel header='ACTIVOS'>
-											<TableEmpleados dataView={dataView}/>
+											<TableEmpleados  id_empresa={598} id_estado={1}/>
 										</TabPanel>
 										<TabPanel header='INACTIVOS'>
-
+											<TableEmpleados  id_empresa={598} id_estado={0}/>
+										</TabPanel>
+									</TabView>
+								</TabPanel>
+								<TabPanel header='HISTORICO'>
+									<TabView>
+										<TabPanel header='INACTIVOS'>
+											<TableEmpleados id_empresa={0} id_estado={0}/>
 										</TabPanel>
 									</TabView>
 								</TabPanel>

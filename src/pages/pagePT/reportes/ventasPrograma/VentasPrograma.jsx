@@ -17,13 +17,17 @@ import { useReporteVentaxProgramaStore } from '@/hooks/hookApi/Reportes/useRepor
 import { Loading } from '@/components/Loading'
 import { VentasxDistritos } from './VentasxDistritos'
 import { useReporteVentasxProgramasStore } from '@/hooks/hookApi/StoreVentasxProgramas/useReporteVentasxProgramasStore'
+import { ModalCuadroVentas } from './ModalCuadroVentas'
 const rangoFechas = {
   rangoDate:[new Date(new Date().getFullYear(), 8, 16), new Date()],
   id_programa: 0
 }
 export const VentasPrograma = () => {
   const { formState, rangoDate, id_programa, onInputChange, onInputChangeReact, onResetForm } = useForm(rangoFechas)
+  const [isModalCuadroVentas, setisModalCuadroVentas] = useState(false)
+  const [dataSocioxEstado, setdataSocioxEstado] = useState([])
   const { obtenerProgramasActivos, programasActivos } = useTerminoStore()
+  const [obtenerTitleModalCuadro, setobtenerTitleModalCuadro] = useState('')
   const { 
           
           obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO, programa_comparativa_mejoranio,
@@ -37,6 +41,14 @@ export const VentasPrograma = () => {
   useEffect(() => {
     obtenerProgramasActivos()
   }, [])
+  const onModalOpenCuadroVentas = (title, dataSocio)=>{
+    setisModalCuadroVentas(true)
+    setobtenerTitleModalCuadro(title)
+    setdataSocioxEstado(dataSocio)
+  }
+  const onModalCloseCuadroVentas = ()=>{
+    setisModalCuadroVentas(false)
+  }
   
   const [loading, setloading] = useState(false)
   useEffect(() => {
@@ -65,7 +77,8 @@ export const VentasPrograma = () => {
   let NroClientesNuevo = 0;
   let NroClientesReinscritos = 0;
   let NroClientesRenovados = 0;
-
+  console.log(dataClientes);
+  
   if(dataClientes?.cantidadPorEstado?.ClienteNuevo){
     NroClientesNuevo = dataClientes.cantidadPorEstado.ClienteNuevo;
     NroClientesReinscritos = dataClientes.cantidadPorEstado.ClienteReinscrito;
@@ -76,7 +89,7 @@ export const VentasPrograma = () => {
       icon: 'mdi mdi-account-star-outline',
       variant: 'primary',
       title: 'CLIENTES NUEVOS',
-      noOfProject: NroClientesNuevo//programa_estado_cliente?.nuevos?.length,
+      noOfProject: dataClientes.clientesNuevos//programa_estado_cliente?.nuevos?.length,
     },
     {
       variant: 'info',
@@ -92,13 +105,13 @@ export const VentasPrograma = () => {
       icon: 'mdi mdi-account-group',
       variant: 'success',
       title: 'CLIENTES REINSCRITOS',
-      noOfProject: NroClientesReinscritos//programa_estado_cliente?.reinscritos?.length,
+      noOfProject: dataClientes.clientesRei//programa_estado_cliente?.reinscritos?.length,
     },
     {
       icon: 'mdi mdi-autorenew',
       variant: 'info',
       title: 'CLIENTES RENOVADOS',
-      noOfProject: NroClientesRenovados//programa_estado_cliente?.renovados?.length,
+      noOfProject: dataClientes.clientesReno//programa_estado_cliente?.renovados?.length,
     },
   ];
   const programasActivosTODO = [
@@ -147,7 +160,7 @@ export const VentasPrograma = () => {
         <>
         
     <Row className='align-items-center'>
-      <Statistics statisticsData={statisticsClientes}/>
+      <Statistics onModalOpenCuadroVentas={onModalOpenCuadroVentas} statisticsData={statisticsClientes}/>
     </Row>
     <Row>
       <Statistics2 statisticsData={ventasxPrograma_ventasAcumuladasTickets} id_programa={id_programa}/>
@@ -161,6 +174,7 @@ export const VentasPrograma = () => {
         <ProjectStatistics data={programa_comparativa_mejoranio}/>
       </Col>
     </Row>
+    <ModalCuadroVentas dataSocioxEstado={dataSocioxEstado} TitleModalCuadro={obtenerTitleModalCuadro} onHide={onModalCloseCuadroVentas} show={isModalCuadroVentas}/>
         </>
       )
     }

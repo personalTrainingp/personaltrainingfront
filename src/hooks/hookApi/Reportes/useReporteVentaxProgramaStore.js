@@ -33,7 +33,6 @@ export const useReporteVentaxProgramaStore = () => {
 				fechaDesde: fechaDesdeStr,
 				fechaHasta: fechaHastaStr,
 			});
-			console.log(data, 'estado de membresai');
 
 			setDataClientes(data.msg);
 			console.log(data.msg);

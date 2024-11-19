@@ -168,7 +168,7 @@ export const useUsuarioStore = () => {
 					uidLocation: dataCliente.empleado.uid_contactsEmergencia,
 				});
 			}
-			obtenerUsuariosEmpleados();
+			obtenerUsuariosEmpleados(id_empresa, id_estado);
 		} catch (error) {
 			console.log(error);
 		}
@@ -184,22 +184,27 @@ export const useUsuarioStore = () => {
 					formData
 				);
 			}
-			obtenerUsuariosEmpleados();
+			obtenerUsuariosEmpleados(id_empresa, id_estado);
 			console.log('success', data);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const obtenerUsuariosEmpleados = async () => {
+	const obtenerUsuariosEmpleados = async (id_empresa, id_estado) => {
 		try {
-			const { data } = await PTApi.get('/usuario/get-empleados');
+			const { data } = await PTApi.get('/usuario/get-empleados', {
+				params: {
+					id_empresa: id_empresa,
+					id_estado: id_estado,
+				},
+			});
 			dispatch(onSetEmpleados(data.empleados));
 			dispatch(onSetDataView(data.empleados));
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const obtenerUsuarioEmpleado = async (UID) => {
+	const obtenerUsuarioEmpleado = async (UID, id_empresa, id_estado) => {
 		try {
 			dispatch(onLoadingEmpl());
 			const { data } = await PTApi.get(`/usuario/get-empleado/${UID}`);

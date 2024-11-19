@@ -115,7 +115,6 @@ export function Auditoria() {
                 <Column header="Accion" body={actionBodyTemplate} style={{ maxWidth: '5rem' }} />
                 <Column header="Observacion" body={observacionBodyTemplate} style={{ maxWidth: '20rem' }} />
                 <Column header="Fecha de auditoria" body={fechaBodyTemplate} style={{ minWidth: '12rem' }} />
-
             </DataTable>
         </div>
     );

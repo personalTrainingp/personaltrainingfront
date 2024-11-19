@@ -2,13 +2,13 @@ import { Card, Col } from 'react-bootstrap';
 import classNames from 'classnames';
 import { CardTitle } from '@/components';
 
-const Statistics = ({ statisticsData }) => {
+const Statistics = ({ statisticsData, onModalOpenCuadroVentas }) => {
 	return (
 		<>
 			{(statisticsData || []).map((statistics, index) => {
 				return (
 					<Col xl={2} sm={6} key={index.toString()}>
-						<Card>
+						<Card onClick={()=>onModalOpenCuadroVentas(statistics.title, statistics.noOfProject)}>
 							<Card.Body>
 								<CardTitle
 									containerClass="d-flex align-items-center justify-content-between"
@@ -39,7 +39,7 @@ const Statistics = ({ statisticsData }) => {
 											</div>
 											<div className="flex-grow-1">
 												<h4 className="mt-0 mb-1">{statistics.title}</h4>
-												<p className="mb-0 font-20">{statistics.noOfProject}</p>
+												<p className="mb-0 font-20">{statistics.noOfProject.length}</p>
 											</div>
 										</>
 									}

@@ -13,17 +13,16 @@ import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { Link } from 'react-router-dom';
 import { arrayDistrito, arrayTipoCliente } from '@/types/type';
 
-export const TableEmpleados = ({dataView}) => {
+export const TableEmpleados = ({id_empresa, id_estado}) => {
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const  { obtenerUsuariosClientes, obtenerUsuarioEmpleado } = useUsuarioStore()
+    const  { obtenerUsuariosEmpleados } = useUsuarioStore()
+    const {dataView} = useSelector((e) => e.DATA);
     useEffect(() => {
-        obtenerUsuariosClientes()
-        obtenerUsuarioEmpleado()
+        obtenerUsuariosEmpleados(id_empresa, id_estado)
     }, [])
-    console.log(dataView);
     
         useEffect(() => {
         const fetchData = () => {

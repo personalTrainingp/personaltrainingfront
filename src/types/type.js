@@ -208,8 +208,8 @@ export const arrayCategoriaProducto = [
 	{ label: 'Suplementos', value: 17 },
 ];
 export const arrayCargoEmpl = [
-	{ label: 'Entrenador(a) CHANGE 45', value: 'ent_rpm' },
-	// { label: 'Entrenador(a) ', value: 2 },
+	{ label: 'Entrenador(a) CHANGE 45 Y FS45', value: 1 },
+	{ label: 'Entrenador(a) CHANGE 45', value: 2 },
 	{ label: 'Entrenador(a) FS 45', value: 3 },
 	{ label: 'Entrenador(a) MUSCLE 45', value: 4 },
 	{ label: 'Administrador(a)', value: 5 },
