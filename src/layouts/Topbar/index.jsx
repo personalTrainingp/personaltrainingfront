@@ -26,7 +26,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	const { user } = useSelector(e=>e.auth)
 	const { sideBarType } = useThemeCustomizer();
 	const { obtenerUser, usuarioObtenido } = useAuthStore()
-
+	const { section_item } = useSelector(f=>f.DATA)
 	const { width } = useViewport();
 	/**
 	 * Toggle the leftmenu when having mobile screen
@@ -107,9 +107,13 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 						<i className="mdi mdi-menu" />
 					</button>
 					<strong>
-						modulo 
+						modulo
 					</strong>
 						<ModuloDropdown/>
+						{section_item && (
+						<h3  className="text-uppercase fw-bolder text-primary">/ {section_item}
+						</h3>
+						)}
 				</div>	
 				<ul className="topbar-menu d-flex align-items-center gap-3">
 					<li>

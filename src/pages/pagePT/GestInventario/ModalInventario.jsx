@@ -31,7 +31,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         setSelectedFile(sinAvatar)
     }
     const [showLoading, setshowLoading] = useState(false)
-    const { obtenerArticulo, obtenerArticulos, startRegisterArticulos, articulo } = useInventarioStore()
+    const { obtenerArticulo, obtenerArticulos, actualizarArticulo, startRegisterArticulos, articulo } = useInventarioStore()
     const { DataGeneral:dataMarcas, obtenerParametroPorEntidadyGrupo:obtenerMarcas } = useTerminoStore()
     const { DataGeneral:dataLugares, obtenerParametroPorEntidadyGrupo:obtenerLugares } = useTerminoStore()
     const { formState, 
@@ -64,7 +64,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 // console.log("con");
                 
                 setshowLoading(true)
-                // await startActualizarGastos(formState, data.id, id_enterprice)
+                await actualizarArticulo(formState, data.id, selectedAvatar)
                 setshowLoading(false)
                 // console.log("sin ");
                 // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
@@ -72,7 +72,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 return;
             }
             setshowLoading(true)
-            await startRegisterArticulos(formState, id_enterprice, selectedAvatar)
+            await startRegisterArticulos(formState, 599, selectedAvatar)
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()
@@ -87,6 +87,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             reader.readAsDataURL(file);
             setselectedAvatar(file)
         };
+        console.log(data);
+        
   return (
     <>
     {(showLoading)?(
@@ -137,7 +139,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                 <Col lg={4}>    
                                     <div className="mb-4">
                                         <label htmlFor="producto" className="form-label">
-                                            ARTICULO
+                                            ITEM
                                         </label>
                                         <input
                                                 className="form-control"
@@ -165,7 +167,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 (option) => option.value === id_marca
                                             )||0}
                                             
-                                            required
                                         />
                                     </div>
                                 </Col>

@@ -54,19 +54,19 @@ export const useInventarioStore = () => {
 	const obtenerArticulo = async (id) => {
 		try {
 			setstatus('loading');
-			const { data } = await PTApi.get(`/proveedor/obtener-proveedor/${id}`);
+			const { data } = await PTApi.get(`/inventario/obtener-articulo/${id}`);
 			// console.log(data);
 			setstatus('success');
 			// console.log(data.proveedor);
 
-			setArticulo({ proveedor: data.proveedor });
+			setArticulo(data.articulo);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const EliminarArticulo = async (id_prov) => {
+	const EliminarArticulo = async (ID) => {
 		try {
-			const { data } = await PTApi.put(`/proveedor/remove-proveedor/${id_prov}`);
+			const { data } = await PTApi.put(`/inventario/remove-articulo/${ID}`);
 			Swal.fire({
 				icon: 'success',
 				title: 'PROVEEDOR ELIMINADO CORRECTAMENTE',
@@ -75,23 +75,32 @@ export const useInventarioStore = () => {
 			});
 			// console.log(id);
 			// dispatch(getProveedores(data));
-			obtenerProveedores();
+			// obtenerProveedores();
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const actualizarArticulo = async (formState, id) => {
+	const actualizarArticulo = async (formState, id, selectedFile) => {
 		try {
 			setIsLoading(true);
-			const { data } = await PTApi.put(`/proveedor/update-proveedor/${id}`, formState);
+			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, formState);
+
+			if (selectedFile) {
+				const formData = new FormData();
+				formData.append('file', selectedFile);
+				await PTApi.post(
+					`/storage/blob/create/${data.uid_image}?container=avatar-articulos`,
+					formData
+				);
+			}
 			// console.log(id);
 			// dispatch(getProveedores(data));
-			setmessage({ msg: data.msg, ok: data.ok });
+			// setmessage({ msg: data.msg, ok: data.ok });
+			obtenerArticulos(599);
 			setIsLoading(false);
-			obtenerProveedores();
 			Swal.fire({
 				icon: 'success',
-				title: 'PROVEEDOR ACTUALIZADO CORRECTAMENTE',
+				title: 'ARTICULO ACTUALIZADO CORRECTAMENTE',
 				showConfirmButton: false,
 				timer: 1500,
 			});

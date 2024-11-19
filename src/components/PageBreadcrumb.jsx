@@ -1,8 +1,15 @@
-import { ReactNode } from 'react';
+import { onViewSection } from '@/store/data/dataSlice';
+import { ReactNode, useEffect } from 'react';
 import { Row, Col, Breadcrumb } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
+import { useDispatch } from 'react-redux';
 
 const PageBreadcrumb = ({ subName, title, children, btnBack }) => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(onViewSection(title))
+    }, [title])
+  
   return (
     <>
       <Helmet>

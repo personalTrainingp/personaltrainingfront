@@ -4,6 +4,7 @@ export const dataSlice = createSlice({
 	initialState: {
 		dataView: [],
 		BASE64_FIRMA: null,
+		section_item: null,
 	},
 	reducers: {
 		onSetDataView: (state, { payload }) => {
@@ -12,6 +13,9 @@ export const dataSlice = createSlice({
 		onSetBase64Firma: (state, { payload }) => {
 			state.BASE64_FIRMA = payload;
 		},
+		onViewSection: (state, { payload }) => {
+			state.section_item = payload;
+		},
 	},
 });
-export const { onSetDataView, onSetBase64Firma } = dataSlice.actions;
+export const { onSetDataView, onSetBase64Firma, onViewSection } = dataSlice.actions;

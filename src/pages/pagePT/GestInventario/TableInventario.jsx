@@ -24,6 +24,7 @@ import { ModalImportadorData } from './ModalImportadorData';
 import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore';
 import config from '@/config';
 import { Image } from 'primereact/image';
+import sinImage from '@/assets/images/SinImage.jpg'
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice}) {
     locale('es')
@@ -98,11 +99,12 @@ export default function TableInventario({showToast, id_enterprice}) {
         setGlobalFilterValue(value);
     };
     // const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
+    const { obtenerArticulo, articulo } = useInventarioStore()
     const [showLoading, setshowLoading] = useState(false)
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
             onOpenModalIvsG()
-            // obtenerGastoxID(rowData.id)
+            obtenerArticulo(rowData.id)
         }
         const confirmDeleteGastoxID = ()=>{
             confirmDialog({
@@ -114,7 +116,6 @@ export default function TableInventario({showToast, id_enterprice}) {
                 accept:  onAcceptDeleteGasto,
             });
         }
-        
         const onAcceptDeleteGasto = async()=>{
             setshowLoading(true)
             // await startDeleteGasto(rowData.id, id_enterprice)
@@ -184,12 +185,10 @@ export default function TableInventario({showToast, id_enterprice}) {
         );
     }
     const imagenBodyTemplate = (rowData)=>{
+        console.log(rowData.tb_images[rowData.tb_images.length-1]?.name_image);
         return (
             <div className="flex align-items-center gap-2">
-                        <Image src={`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_image?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
-                {/* <img src={`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_image.name_image}`}/>
-                `${proveedor.tb_image?.length!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_image?.name_image}`:sinAvatar}`
-                */}
+                        <Image src={rowData.tb_images.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[rowData.tb_images.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
             </div>
         );
     }
@@ -282,6 +281,8 @@ export default function TableInventario({showToast, id_enterprice}) {
         // setgastoxID(undefined)
         onOpenModalIvsG(e)
     }
+    console.log(customers);
+    
     return (
         <>
             {
@@ -328,7 +329,7 @@ export default function TableInventario({showToast, id_enterprice}) {
                         >
                 <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
                 <Column header="IMAGEN" style={{ width: '3rem' }} body={imagenBodyTemplate}/>
-                <Column header="ARTICULO" field='producto' filterField="producto" sortable style={{ width: '3rem' }} filter/>
+                <Column header="ITEM" field='producto' filterField="producto" sortable style={{ width: '3rem' }} filter/>
                 <Column header="CANTIDAD" field='cantidad' filterField="cantidad" sortable style={{ minWidth: '10rem' }} body={cantidadBodyTemplate} filter />
                 <Column header="MARCA" field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
                 <Column header="UBICACION" field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '10rem' }} sortable body={lugarBodyTemplate} filter/>
@@ -336,13 +337,10 @@ export default function TableInventario({showToast, id_enterprice}) {
                 <Column header="OBSERVACIONES" field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/>
                 <Column header="VALOR ADQUISICION" field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
                 <Column header="VALOR ACTUAL" field='valor_unitario_depreciado' filterField="valor_unitario_depreciado" style={{ minWidth: '10rem' }} sortable body={valorUnitDeprecBodyTemplate} filter/>
-                {/* <Column header="VALOR TOTAL" field='valor_total' filterField="valor_total" style={{ minWidth: '10rem' }} body={valorTotalBodyTemplate} sortable filter/> */}
-                {/* <Column header="LUGAR DE COMPRA O COTIZACION" field='lugar_compra_cotizacion' filterField="lugar_compra_cotizacion" style={{ minWidth: '10rem' }} sortable body={lugarCompraBodyTemplate} filter/> */}
-                
-                <Column header="Editar/Eliminar" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
+                <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             
-            <ModalInventario id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={null} showToast={showToast} isLoading={isLoading}/>
+            <ModalInventario id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             {/* <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/> */}
             </>
                 )
