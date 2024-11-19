@@ -169,21 +169,6 @@ export default function TableInventario({showToast, id_enterprice}) {
         );
     };
     
-    const lugarCompraBodyTemplate = (rowData) => {
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.lugar_compra_cotizacion, globalFilterValue)}</span>
-            </div>
-        );
-    };
-    const {daysUTC} = helperFunctions()
-    const productoBodyTemplate = (rowData)=>{
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{ FormatoDateMask(rowData.fec_registro, 'dddd D [de] MMMM [del] YYYY [a las] h:mm A') }</span>
-            </div>
-        );
-    }
     const imagenBodyTemplate = (rowData)=>{
         console.log(rowData.tb_images[rowData.tb_images.length-1]?.name_image);
         return (

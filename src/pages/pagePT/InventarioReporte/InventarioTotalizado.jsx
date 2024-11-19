@@ -1,18 +1,30 @@
 import { PageBreadcrumb } from '@/components'
-import { MoneyFormatter } from '@/components/CurrencyMask'
+import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask'
 import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore'
 import React, { useEffect, useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+import { ModalTableInventario } from './ModalTableInventario'
 
 export const InventarioTotalizado = () => {
     const { obtenerArticulos, isLoading } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
+    const [dataFilter, setdataFilter] = useState([])
+    const [ubicacion, setubicacion] = useState('')
+    const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
     useEffect(() => {
         obtenerArticulos(599)
         // obtenerProveedoresUnicos()
     }, [])
+    const onOpenModalInventario = (items, ubicacion)=>{
+        setisOpenModalInventarioFiltered(true)
+        setdataFilter(items)
+        setubicacion(ubicacion)
+    }
+    const onCloseModalInventario = ()=>{
+        setisOpenModalInventarioFiltered(false)
+    }
 
     const groupedData = Object.values(dataView.reduce((acc, item) => {
         const label = item.parametro_nivel?.label_param;
@@ -39,41 +51,44 @@ export const InventarioTotalizado = () => {
   return (
     <>
     <PageBreadcrumb title={'INVENTARIO VALORIZADO AL 31 DE OCTUBRE DEL 2024'} subName={'T'}/>
-    
-    <Row>
-        {
-            groupedData.map(g=>{
-                
-                return(
-                <>
-                <h3>
-                    NIVEL {g.nivel}
-                </h3>
-                {
-                    agruparDataxLugar(g.items).map(f=>(
-                        <Col lg={3}>
-                        <Card style={{height: '200px', display: 'block'}} className='m-1 border border-4'>
-                            <Card.Header>
-                                <Card.Title className='font-24'>
-                                    {f.ubicacion}
-                                </Card.Title>
-                            </Card.Header>
-                            <Card.Body>
-                                <ul className='text-decoration-none list-unstyled font-18'>
-                                    <li ><span className='fw-bold'>CANTIDAD DE ITEMS:</span> {f.items.length}</li>
-                                    <li ><span className='fw-bold'>inversión: </span><MoneyFormatter amount={f.valor_total_sumado}/></li>
-                                </ul>
-                     
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                    ))
-                }
-                </>
-                            
-            )})
-        }
-                        </Row>
+        <Row>
+            {
+                groupedData.map(g=>{
+                    
+                    return(
+                    <>
+                    <h1>
+                        NIVEL {g.nivel}
+                    </h1>
+                    {
+                    }
+                    {
+                        agruparDataxLugar(g.items).map(f=>(
+                            <Col lg={4}>
+                            <Card style={{height: '200px', display: 'block'}} onClick={()=>onOpenModalInventario(f.items, f.ubicacion)} className='m-1 border border-4'>
+                                <Card.Header>
+                                    <Card.Title className='font-24 text-primary'>
+                                        {f.ubicacion}
+                                    </Card.Title>
+                                </Card.Header>
+                                <Card.Body>
+                                    <ul className='text-decoration-none list-unstyled font-20'>
+                                        <li ><span className='fw-bold'>ITEMS:</span> {f.items.length}</li>
+                                        <li ><span className='fw-bold'>inversión S/: </span><NumberFormatMoney amount={f.valor_total_sumado}/></li>
+                                        <li ><span className='fw-bold'>inversión $ : </span><NumberFormatMoney amount={(f.valor_total_sumado/3.8).toFixed(2)}/></li>
+                                    </ul>
+                        
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        ))
+                    }
+                    </>
+                                
+                )})
+            }
+        </Row>
+        <ModalTableInventario ubicacion={ubicacion} show={isOpenModalInventarioFiltered} onHide={onCloseModalInventario} data={dataFilter}/>
     </>
   )
 }
