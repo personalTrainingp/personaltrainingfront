@@ -184,7 +184,6 @@ export const useUsuarioStore = () => {
 					formData
 				);
 			}
-			obtenerUsuariosEmpleados(id_empresa, id_estado);
 			console.log('success', data);
 		} catch (error) {
 			console.log(error);
@@ -192,6 +191,7 @@ export const useUsuarioStore = () => {
 	};
 	const obtenerUsuariosEmpleados = async (id_empresa, id_estado) => {
 		try {
+			dispatch(onSetDataView([]));
 			const { data } = await PTApi.get('/usuario/get-empleados', {
 				params: {
 					id_empresa: id_empresa,

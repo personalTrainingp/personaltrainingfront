@@ -54,7 +54,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         useEffect(() => {
             obtenerArticulos(id_enterprice)
             obtenerLugares('articulo', 'lugar_encuentro')
-            obtenerMarcas('producto', 'marca')
+            obtenerMarcas('articulo', 'marca')
         }, [])
         
         
@@ -108,7 +108,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             <Modal size='xl' onHide={onClickCancelModal} show={show}>
                 <Modal.Header>
                     <Modal.Title>
-                        {data?'Actualizar Gasto':'REGISTRAR ARTICULO'}
+                        {data?'ACTUALIZAR ARTICULO':'REGISTRAR ARTICULO'}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

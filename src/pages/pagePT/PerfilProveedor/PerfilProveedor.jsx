@@ -64,27 +64,6 @@ export const PerfilProv = () => {
                                     }</span>
                             </div>
                         </div>
-                        
-				{/* <Table responsive className="table table-sm table-centered mb-2 font-14">
-					<tbody>
-						<tr className='my-2'>
-							<td>Pendientes</td>
-							<td>4</td>
-						</tr>
-						<tr className='my-2'>
-							<td>Completados</td>
-							<td>2</td>
-						</tr>
-                        <tr className='my-2'>
-							<td>Cancelados</td>
-							<td>2</td>
-						</tr>
-                        <tr className='my-2'>
-							<td>RETENIDOS</td>
-							<td>2</td>
-						</tr>
-					</tbody>
-				</Table> */}
                     </div>
                     </Card.Body>
                 </Card>

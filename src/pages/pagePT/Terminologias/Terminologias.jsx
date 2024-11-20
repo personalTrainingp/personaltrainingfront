@@ -13,6 +13,7 @@ import { onSetTerminologia } from '@/store/dataTerminologia/terminologiaSlice';
 import { DataTerminologiaGasto } from './DataTerminologiaGasto';
 import { ModalTerminologiaGasto } from './modalTerminologiaGasto';
 import { TerminologiaGastoTabView } from './TerminologiaGastoTabView';
+import { TerminologiasInventarioLugar } from './TerminologiasInventarioLugar';
 
 export const Terminologias = () => {
 
@@ -91,6 +92,11 @@ export const Terminologias = () => {
                                             })
                                         }
                                 </TabView>
+                               </TabPanel>
+                               <TabPanel header={'TERMINOLOGIAS DEL INVENTARIO (LUGAR)'}>
+                                    <Col sm={12}>
+                                        <TerminologiasInventarioLugar dataTerminologiaPorEntidad={dataTerminologiaPorEntidad}/>
+                                    </Col>
                                </TabPanel>
                             </TabView>
                         </Card.Body>

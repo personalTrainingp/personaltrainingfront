@@ -20,6 +20,7 @@ export const useVentasStore = () => {
 
 	const obtenerContratosDeClientes = async () => {
 		try {
+			dispatch(onSetDataView([]));
 			const { data } = await PTApi.get('/venta/obtener-contratos-clientes/598');
 			dispatch(onSetDataView(data.datacontratosConMembresias));
 			setdataContratos(data.datacontratosConMembresias);

@@ -1,7 +1,7 @@
-import { Card, ProgressBar } from 'react-bootstrap';
+import { Card, Col, ProgressBar, Row, Table } from 'react-bootstrap';
 import classNames from 'classnames';
 import { CardTitle } from '@/components';
-import { MoneyFormatter } from '@/components/CurrencyMask';
+import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import Chart from 'react-apexcharts';
 
 const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
@@ -67,28 +67,42 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
 					title={title}
 					menuItems={false}
 				/>
-                <Chart options={options} series={series} type="bar" height={350} />
-				{(pagos || []).map((task, index) => {
-					return (
-						<div
-							className={classNames({ 'mb-3': index < pagos.length - 1 })}
-							key={task.nombre_producto}
-						>
-							<div className="d-flex align-items-center">
-								<div className="flex-grow-1 ms-2">
-									<h5 className="my-0 fw-semibold">{task.nombre_producto}</h5>
-								</div>
-								{task.completedTask ? (
-									<h5 className="my-0">
-										{task.completedTask}
-									</h5>
-								) : (
-                                    <h5 className="my-0"><MoneyFormatter amount={task.total_ventas} symbol={task.total_ventas=='DOLARES'?'$':'S/'}/> - {((task.total_ventas / dataSumaTotal) * 100).toFixed(2)}%</h5>
-								)}
-							</div>
-						</div>
-					);
-				})}
+				<Row>
+					<Col lg={6}>
+                		<Chart options={options} series={series} type="bar" height={350} />
+					</Col>
+					<Col lg={6}>
+						<Table
+                        // style={{tableLayout: 'fixed'}}
+                        className="table-centered mb-0 fs-4"
+                        hover
+                        responsive
+                    	>
+                        <thead className="bg-primary">
+                            <tr>
+                                <th className='text-white p-1'>ID</th>
+                                <th className='text-white p-1'>FORMA PAGO</th>
+                                <th className='text-white p-1'><span className='w-100 '>S/.</span></th>
+                                <th className='text-white p-1'><span className='w-100 '>%</span></th>
+                            </tr>
+                        </thead>
+						<tbody>
+						{(pagos || []).map((task, index) => {
+							return (
+								
+								<tr>
+								<td className='fw-bold h2'>{index+1}</td>
+								<td className='fw-bold h2'>{task.nombre_producto}</td>
+								<td className='fw-bold h2'><NumberFormatMoney amount={task.total_ventas} symbol={task.total_ventas=='DOLARES'?'$':'S/'}/></td>
+								<td className='fw-bold h2'>{((task.total_ventas / dataSumaTotal) * 100).toFixed(2)}</td>
+							</tr>
+							);
+						})}
+                        </tbody>
+
+					</Table>
+					</Col>
+				</Row>
 			</Card.Body>
 		</Card>
 	);

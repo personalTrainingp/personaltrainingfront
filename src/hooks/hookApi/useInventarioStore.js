@@ -43,9 +43,9 @@ export const useInventarioStore = () => {
 	};
 	const obtenerArticulos = async (id_enterprice) => {
 		try {
+			dispatch(onSetDataView([]));
 			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_enterprice}`);
 			console.log(data);
-
 			dispatch(onSetDataView(data.articulos));
 		} catch (error) {
 			console.log(error);

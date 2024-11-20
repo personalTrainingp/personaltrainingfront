@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { ModalTableInventario } from './ModalTableInventario'
+import sinImage from '@/assets/images/SinImage.jpg'
+import { Image } from 'primereact/image'
 
 export const InventarioTotalizado = () => {
     const { obtenerArticulos, isLoading } = useInventarioStore()
@@ -65,7 +67,7 @@ export const InventarioTotalizado = () => {
                     {
                         agruparDataxLugar(g.items).map(f=>(
                             <Col lg={4}>
-                            <Card style={{height: '200px', display: 'block'}} onClick={()=>onOpenModalInventario(f.items, f.ubicacion)} className='m-1 border border-4'>
+                            <Card style={{display: 'block'}} onClick={()=>onOpenModalInventario(f.items, f.ubicacion)} className='m-1 border border-4'>
                                 <Card.Header>
                                     <Card.Title className='font-24 text-primary'>
                                         {f.ubicacion}
@@ -76,6 +78,9 @@ export const InventarioTotalizado = () => {
                                         <li ><span className='fw-bold'>ITEMS:</span> {f.items.length}</li>
                                         <li ><span className='fw-bold'>inversión S/: </span><NumberFormatMoney amount={f.valor_total_sumado}/></li>
                                         <li ><span className='fw-bold'>inversión $ : </span><NumberFormatMoney amount={(f.valor_total_sumado/3.8).toFixed(2)}/></li>
+                                        <li className='d-flex justify-content-center'>
+                                            <Image src={sinImage}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt={f.ubicacion} preview  height='250' ></Image>
+                                        </li>
                                     </ul>
                         
                                 </Card.Body>

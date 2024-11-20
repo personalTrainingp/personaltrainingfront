@@ -33,6 +33,7 @@ export const useTipoCambioStore = () => {
 	};
 	const obtenerTipoCambioTabla = async () => {
 		try {
+			dispatch(onSetDataView([]));
 			const { data } = await PTApi.get('/tipocambio/obtener-tipo-cambio');
 			dispatch(onSetDataView(data.tipoCambio));
 		} catch (error) {

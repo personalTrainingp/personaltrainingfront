@@ -43,6 +43,7 @@ export const useAportesIngresosStore = () => {
 	};
 	const obtenerAportes = async () => {
 		try {
+			dispatch(onSetDataView([]));
 			setisLoading(true);
 			const { data } = await PTApi.get('/aporte/get-aportes');
 			dispatch(onSetDataView(data.aportes));

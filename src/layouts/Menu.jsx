@@ -5,6 +5,8 @@ import classNames from 'classnames';
 import { Collapse } from 'react-bootstrap';
 import { ThemeSettings, useThemeContext } from '@/common';
 import { findAllParent, findMenuItem } from './utils/menu';
+import { useDispatch } from 'react-redux';
+import { onSetDataView } from '@/store/data/dataSlice';
 
 const MenuItemWithChildren = ({
   item,
@@ -94,9 +96,10 @@ const MenuItem = ({ item, className, linkClassName }) => {
       <MenuItemLink item={item} className={linkClassName} />
     </li>
   );
+  
 };
-
 const MenuItemLink = ({ item, className }) => {
+  
   return (
     <Link
       to={item.url}

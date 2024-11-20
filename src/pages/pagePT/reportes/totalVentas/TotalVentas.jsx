@@ -147,11 +147,11 @@ export const TotalVentas = () => {
       </Col>
     </Row>
     <Row>
-      <Col xxl={5} md={6}>
+      <Col xxl={12} md={6}>
       <Tarjetas tasks={TotalDeVentasxProdServ(clickServProd).forma_pago} title={'Metodos de pago'} dataSumaTotal={TotalDeVentasxProdServ(clickServProd).forma_pago.reduce((total, item) => total + item.monto, 0)}/>
       </Col>
-      <Col xxl={7} md={6}>
-        <TarjetasPago tasks={TotalDeVentasxProdServ(clickServProd).asesores_pago} title={'Ranking de asesores'} dataSumaTotal={TotalDeVentasxProdServ(clickServProd).asesores_pago.reduce((total, item) => total + item.monto, 0)}/>
+      <Col xxl={12} md={6}>
+        <TarjetasPago tasks={TotalDeVentasxProdServ(clickServProd).asesores_pago} title={'Ranking'} dataSumaTotal={TotalDeVentasxProdServ(clickServProd).asesores_pago.reduce((total, item) => total + item.monto, 0)}/>
       </Col>
       <Col xxl={12}>
         <HistorialVentas/>

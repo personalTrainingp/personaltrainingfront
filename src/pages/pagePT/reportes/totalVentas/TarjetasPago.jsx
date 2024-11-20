@@ -1,8 +1,8 @@
-import { Card, ProgressBar } from 'react-bootstrap';
+import { Card, Col, ProgressBar, Row, Table } from 'react-bootstrap';
 import classNames from 'classnames';
 import { CardTitle } from '@/components';
 import SimpleBar from 'simplebar-react';
-import { MoneyFormatter } from '@/components/CurrencyMask';
+import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import Chart from 'react-apexcharts';
 
 export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
@@ -71,30 +71,41 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
 					title={title}
 					menuItems={false}
 				/>
-                <Chart options={options} series={series} type="bar" height={350} />
-                <SimpleBar style={{ maxHeight: '500px' }} className="card-body p-0">
-                    {(pagos || []).map((task, index) => {
-                        return (
-                            <div
-                                className={classNames({ 'mb-3': index < tasks.length - 1 })}
-                                key={tasks.nombre_producto}
-                            >
-                                <div className="d-flex align-items-center">
-                                    <div className="flex-grow-1 ms-2">
-                                        <h5 className="my-0 fw-semibold">{task.nombre_producto}</h5>
-                                    </div>
-                                    {task.completedTask ? (
-                                        <h5 className="my-0">
-                                            {task.completedTask}
-                                        </h5>
-                                    ) : (
-                                        <h5 className="my-0"><MoneyFormatter amount={task.total_ventas}/> - {((task.total_ventas / dataSumaTotal) * 100).toFixed(2)}%</h5>
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </SimpleBar>
+                <Row>
+                  <Col lg={6}>
+                  
+						<Table
+                        // style={{tableLayout: 'fixed'}}
+                        className="table-centered mb-0 fs-4"
+                        hover
+                        responsive
+                    	>
+                        <thead className="bg-primary">
+                            <tr>
+                                <th className='text-white p-1'>ID</th>
+                                <th className='text-white p-1'>ASESORES</th>
+                                <th className='text-white p-1'><span className='w-100 '>S/.</span></th>
+                                <th className='text-white p-1'><span className='w-100 '>%</span></th>
+                            </tr>
+                        </thead>
+						<tbody>
+						{(pagos || []).map((task, index) => {
+							return (
+                <tr>
+                <td>{index+1}</td>          
+								<td className='fw-bold'>{task.nombre_producto}</td>
+								<td><NumberFormatMoney amount={task.total_ventas} symbol={task.total_ventas=='DOLARES'?'$':'S/'}/></td>
+								<td>{((task.total_ventas / dataSumaTotal) * 100).toFixed(2)}</td>
+							</tr>
+							);
+						})}
+                        </tbody>
+					</Table>
+                  </Col>
+                  <Col lg={6}>
+                  <Chart options={options} series={series} type="bar" height={350} />
+                  </Col>
+                </Row>
 			</Card.Body>
 		</Card>
   )
