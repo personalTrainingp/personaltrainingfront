@@ -3,6 +3,12 @@
   font-family: Poppins, sans-serif;
   // font-size: 20% !important;
 }
+label{
+  font-size: 19px;
+}
+input{
+  font-size: 17px !important;
+}
 .hover-border-card-primary:hover{
   border: 3px solid #D41115 !important;
   cursor: pointer;

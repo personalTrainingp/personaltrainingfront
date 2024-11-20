@@ -106,7 +106,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={3}>
             <div className="m-2">
                 <label htmlFor="apPaterno_empl" className="form-label">
                     Apellido paterno*
@@ -123,7 +123,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={3}>
             <div className="m-2">
                 <label htmlFor="apMaterno_empl" className="form-label">
                     Apellido materno*
@@ -140,10 +140,10 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={3}>
             <div className="m-2">
                 <label htmlFor="fecNac_empl" className="form-label">
-                    Fecha de nacimiento*
+                    Fec. de nacimiento*
                 </label>
                 <input
                     className="form-control"
@@ -156,7 +156,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={3}>
             <div className="m-2">
                 <label htmlFor="sexo_empl" className="form-label">
                     Sexo*
@@ -175,10 +175,10 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={3}>
             <div className="m-2">
                 <label htmlFor="estCivil_empl" className="form-label">
-                    Estado civil*
+                    Est. civil*
                 </label>
                 <Select
                     onChange={(e) => onInputChangeReact(e, 'estCivil_empl')}
@@ -194,7 +194,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={3}>
             <div className="m-2">
                 <label htmlFor="fecNac_cli" className="form-label">
                     Tipo de documento*
@@ -213,10 +213,10 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={3}>
             <div className="m-2">
                 <label htmlFor="numDoc_empl" className="form-label">
-                    Numero del documento*
+                    N. del documento*
                 </label>
                 <input
                     className="form-control"
@@ -249,7 +249,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={5}>
         <div className="m-2">
                 <label htmlFor="direccion_empl" className="form-label">
                     Direccion*
@@ -394,7 +394,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 <Select
                     onChange={(e) => onInputChangeReact(e, 'tipoContrato_empl')}
                     name="cargo_empl"
-                    placeholder={'Seleccione el cargo'}
+                    placeholder={'Seleccionar la jornada'}
                     className="react-select"
                     classNamePrefix="react-select"
                     options={arrayTipoJornadaEmpl}
