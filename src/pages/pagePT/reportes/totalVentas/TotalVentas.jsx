@@ -45,7 +45,6 @@ function contarVentas(data) {
 export const TotalVentas = () => {
   
 
-
   const { obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor, reporteTotalVentasPorTipoCliente, obtenerVentas, reporteVentas, reporteDeDetalleVenta, 
     reporteDeVentasPorEmpleados, obtenerReporteDeTotalDeVentasActuales, reporteVentaActual, repoVentasPorSeparado, loading} = useReporteStore()
   

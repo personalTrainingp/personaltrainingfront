@@ -767,7 +767,12 @@ function agruparYSumarMontos(ventas) {
 		// console.log(venta);
 
 		// const { nombres_apellidos_empl } = venta?.tb_empleado;
+
 		const nombres_apellidos_empl = venta?.tb_empleado?.nombres_apellidos_empl;
+		const tb_images = venta?.tb_empleado?.tb_images;
+
+		// Obtener la última imagen, si existe
+		const ultimaImagen = tb_images?.[tb_images.length - 1]?.name_image || null;
 		const montoCitaTrat =
 			venta.detalle_cita_tratest?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) ||
 			0;
@@ -797,7 +802,14 @@ function agruparYSumarMontos(ventas) {
 		if (empleadoExistente) {
 			empleadoExistente.monto += montoTotal;
 		} else {
-			acumulador.push({ empl: nombres_apellidos_empl, monto: montoTotal });
+			acumulador.push({
+				empl: nombres_apellidos_empl,
+				// avatar_image:
+				// 	venta?.tb_empleado?.tb_images[venta?.tb_empleado?.tb_images.length + 1]
+				// 		?.name_image,
+				monto: montoTotal,
+				avatar: ultimaImagen, // Agregar la última imagen como avatar
+			});
 		}
 
 		return acumulador;

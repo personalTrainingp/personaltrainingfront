@@ -4,11 +4,16 @@ import { CardTitle } from '@/components';
 import SimpleBar from 'simplebar-react';
 import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import Chart from 'react-apexcharts';
+import sinAvatar from '@/assets/images/sinPhoto.jpg'
+import config from '@/config';
 
 export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
+  console.log(tasks);
+  
     const pagos = tasks.map(producto => ({
         nombre_producto: producto.empl,
-        total_ventas: producto.monto
+        total_ventas: producto.monto,
+        avatar: producto.avatar
     })).sort((a, b) => b.total_ventas - a.total_ventas) || []
     console.log(pagos);
     
@@ -58,8 +63,6 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
 			},
 		},
       };
-    console.log(dataSumaTotal);
-    
 	const formatCurrency = (value) => {
 		return value.toLocaleString('es-PE', { style: 'currency', currency: 'PEN' });
 	};
@@ -83,6 +86,7 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
                         <thead className="bg-primary">
                             <tr>
                                 <th className='text-white p-1'>ID</th>
+                                <th className='text-white p-1'>Imagen</th>
                                 <th className='text-white p-1'>ASESORES</th>
                                 <th className='text-white p-1'><span className='w-100 '>S/.</span></th>
                                 <th className='text-white p-1'><span className='w-100 '>%</span></th>
@@ -92,7 +96,8 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
 						{(pagos || []).map((task, index) => {
 							return (
                 <tr>
-                <td>{index+1}</td>          
+                <td>{index+1}</td>  
+                <td><img src={task.avatar===null?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${task.avatar}`} width={80}/></td>        
 								<td className='fw-bold'>{task.nombre_producto}</td>
 								<td><NumberFormatMoney amount={task.total_ventas} symbol={task.total_ventas=='DOLARES'?'$':'S/'}/></td>
 								<td>{((task.total_ventas / dataSumaTotal) * 100).toFixed(2)}</td>
