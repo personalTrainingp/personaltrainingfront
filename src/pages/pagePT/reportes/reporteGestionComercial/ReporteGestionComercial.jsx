@@ -44,7 +44,7 @@ export const ReporteGestionComercial = () => {
                                                 </Card.Header>
                                                 <Card.Body>
                                                     <ul className='text-decoration-none list-unstyled font-22'>
-                                                        <li ><span className='fw-bold'>CANTIDAD DE ITEMS:</span> {c.items.length}</li>
+                                                        <li ><span className='fw-bold fs-2'>ITEMS:</span> <span className='fw-bold fs-2 ml-2'>{c.items.length}</span></li>
                                                     </ul>
                                         
                                                 </Card.Body>
@@ -59,18 +59,23 @@ export const ReporteGestionComercial = () => {
                                 <Row>
                                 {
                                     agruparPorCompania(d.items).map(c=>(
-                                        <Col lg={3}>
-                                            <Card style={{height: '200px', display: 'block'}} className='m-1 border border-4'>
-                                                <Card.Header>
-                                                    <Card.Title className='fs-2'>
+                                        <Col lg={4}>
+                                            <Card style={{height: '280px', display: 'block'}} className='m-1 border border-4'>
+                                                {/* <Card.Header>
+                                                    <Card.Title className='fs-2 text-primary'>
                                                         {c.label_param}
                                                     </Card.Title>
-                                                </Card.Header>
-                                                <Card.Body>
-                                                    <ul className='text-decoration-none list-unstyled font-22'>
-                                                        <li ><span className='fw-bold'>CANTIDAD DE ITEMS:</span> {c.items.length}</li>
-                                                    </ul>
-                                        
+                                                </Card.Header> */}
+                                                <Card.Body className='d-flex flex-column h-100'>
+                                                    <div className='fw-bold fs-2 text-primary' style={{height: '100%'}}>
+                                                        {c.label_param}
+                                                    </div>
+                                                    <p className='fs-4'>{c.items[0].parametro_campania.descripcion_param}</p>
+                                                    <div className=' d-flex align-items-end' style={{height: '100%'}}>
+                                                        <ul className='text-decoration-none list-unstyled font-22 m-0' style={{height: 'fit-content'}}>
+                                                            <li ><span className='fw-bold fs-2'>ITEMS:</span> <span className='fw-bold fs-2 ml-2'>{c.items.length}</span></li>
+                                                        </ul>
+                                                    </div>
                                                 </Card.Body>
                                             </Card>
                                         </Col>
@@ -133,9 +138,10 @@ const agruparPorEstados = (data) => {
       // Encuentra el canal en el resultado
       let compania = result.find(group => group.label_param === labelcompania);
       
+      
       // Si no existe, lo crea
       if (!compania) {
-        compania = { label_param: labelcompania, items: [] };
+        compania = { label_param: labelcompania, descripcion: '', items: [] };
         result.push(compania);
       }
       

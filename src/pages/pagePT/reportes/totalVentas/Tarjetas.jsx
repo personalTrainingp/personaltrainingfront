@@ -64,7 +64,7 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
 			<Card.Body>
 				<CardTitle
 					containerClass="d-flex align-items-center justify-content-between mb-3"
-					title={title}
+					title={<h2>{title}</h2>}
 					menuItems={false}
 				/>
 				<Row>

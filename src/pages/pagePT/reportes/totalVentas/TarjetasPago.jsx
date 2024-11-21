@@ -1,22 +1,19 @@
 import { Card, Col, ProgressBar, Row, Table } from 'react-bootstrap';
 import classNames from 'classnames';
 import { CardTitle } from '@/components';
-import SimpleBar from 'simplebar-react';
 import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import Chart from 'react-apexcharts';
 import sinAvatar from '@/assets/images/sinPhoto.jpg'
 import config from '@/config';
 
 export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
-  console.log(tasks);
-  
     const pagos = tasks.map(producto => ({
         nombre_producto: producto.empl,
         total_ventas: producto.monto,
         avatar: producto.avatar
     })).sort((a, b) => b.total_ventas - a.total_ventas) || []
+    // console.log(task.avatar);
     console.log(pagos);
-    
     const series = [
         {
             name: 'TOTAL:',
@@ -71,13 +68,13 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
 			<Card.Body>
 				<CardTitle
 					containerClass="d-flex align-items-center justify-content-between mb-3"
-					title={title}
+					title={<h2>{title}</h2>}
 					menuItems={false}
 				/>
                 <Row>
-                  <Col lg={6}>
+                  <Col lg={12}>
                   
-						<Table
+						      <Table
                         // style={{tableLayout: 'fixed'}}
                         className="table-centered mb-0 fs-4"
                         hover
@@ -89,26 +86,31 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
                                 <th className='text-white p-1'>Imagen</th>
                                 <th className='text-white p-1'>ASESORES</th>
                                 <th className='text-white p-1'><span className='w-100 '>S/.</span></th>
-                                <th className='text-white p-1'><span className='w-100 '>%</span></th>
+                                {/* <th className='text-white p-1'><span className='w-100 '>%</span></th> */}
+                                <th className='text-white p-1'><span className='w-100'></span></th>
+                                <th className='text-white p-1'>%</th>
                             </tr>
                         </thead>
 						<tbody>
 						{(pagos || []).map((task, index) => {
 							return (
                 <tr>
-                <td>{index+1}</td>  
-                <td><img src={task.avatar===null?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${task.avatar}`} width={80}/></td>        
-								<td className='fw-bold'>{task.nombre_producto}</td>
-								<td><NumberFormatMoney amount={task.total_ventas} symbol={task.total_ventas=='DOLARES'?'$':'S/'}/></td>
-								<td>{((task.total_ventas / dataSumaTotal) * 100).toFixed(2)}</td>
-							</tr>
+                  <td style={{width: '25px'}}>{index+1}</td>  
+                  <td style={{width: '25px'}}><img src={task.avatar===null?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${task.avatar}`} width={80}/></td>        
+                  <td className='fw-bold w-25'>{task.nombre_producto}</td>
+                  <td  style={{width: '25px'}}><NumberFormatMoney amount={task.total_ventas} symbol={task.total_ventas=='DOLARES'?'$':'S/'}/></td>
+                  {/* <td>{((task.total_ventas / dataSumaTotal) * 100).toFixed(2)}</td> */}
+					        <td>
+                    <ProgressBar animated now={(task.total_ventas/dataSumaTotal)*100} className="progress-sm" style={{backgroundColor: '#00000042', height: '15px', width: '100%'}} variant="orange" />
+                  </td>
+                  <td>
+                    {((task.total_ventas / dataSumaTotal) * 100).toFixed(2)}
+                  </td>
+							  </tr>
 							);
 						})}
                         </tbody>
 					</Table>
-                  </Col>
-                  <Col lg={6}>
-                  <Chart options={options} series={series} type="bar" height={350} />
                   </Col>
                 </Row>
 			</Card.Body>
