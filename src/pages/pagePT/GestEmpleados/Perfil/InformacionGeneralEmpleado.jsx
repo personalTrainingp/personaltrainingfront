@@ -56,6 +56,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
         cargo_empl,
         departamento_empl,
         salario_empl,
+        email_corporativo,
         tipoContrato_empl,
         horario_empl,
         onInputChange, onInputChangeReact, onFileChange } = useForm(data)
@@ -301,6 +302,23 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
+        
+        <Col xl={4}>
+                                    <div className="mb-2">
+                                        <label htmlFor="email_corporativo" className="form-label">
+                                            Email corporativo*
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            name="email_corporativo"
+                                            id="email_corporativo"
+                                            placeholder="Stock"
+                                            type='email'
+                                            value={email_corporativo}
+                                            onChange={onInputChange}
+                                        />
+                                    </div>
+                                </Col>
         <Col xl={4}>
         <div className="m-2">
                 <label htmlFor="telefono_empl" className="form-label">

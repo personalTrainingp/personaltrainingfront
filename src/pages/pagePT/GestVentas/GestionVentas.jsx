@@ -14,7 +14,7 @@ export const GestionVentas = () => {
                       <TabPanel header='CHANGE'>
                           <TodoVentas id_empresa={598}/>
                       </TabPanel>
-                      <TabPanel header='EX PT'>
+                      <TabPanel header='HISTORICO'>
                           <TodoVentas id_empresa={0}/>
                       </TabPanel>
                     </TabView>

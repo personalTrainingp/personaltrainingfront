@@ -50,6 +50,7 @@ export const InventarioTotalizado = () => {
         group.valor_total_sumado = group.valor_total_sumado.toFixed(2);
       });
       groupedData.sort((a, b) => a.nivel - b.nivel);
+      
   return (
     <>
     <PageBreadcrumb title={'INVENTARIO VALORIZADO'} subName={'T'}/>
@@ -63,6 +64,8 @@ export const InventarioTotalizado = () => {
                         NIVEL {g.nivel}
                     </h1>
                     {
+                        console.log(agruparDataxLugar(g.items))
+                        
                     }
                     {
                         agruparDataxLugar(g.items).map(f=>(

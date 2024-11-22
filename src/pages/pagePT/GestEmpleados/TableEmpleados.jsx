@@ -12,6 +12,9 @@ import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { Link } from 'react-router-dom';
 import { arrayDistrito, arrayTipoCliente } from '@/types/type';
+import sinAvatar from '@/assets/images/sinPhoto.jpg';
+import config from '@/config';
+import { Image } from 'primereact/image';
 
 export const TableEmpleados = ({id_empresa, id_estado}) => {
     const [customers, setCustomers] = useState(null);
@@ -114,7 +117,7 @@ export const TableEmpleados = ({id_empresa, id_estado}) => {
     const telefonoBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.telefono_empl?`${rowData.telefono_empl}`.replace(/ /g, "").match(/.{1,3}/g).join('-'):'', globalFilterValue)}</span>
+                <span>{highlightText(rowData.telefono_empl?`${rowData.telefono_empl}`.replace(/ /g, "").match(/.{1,3}/g).join(' '):'', globalFilterValue)}</span>
             </div>
         );
     }
@@ -149,23 +152,38 @@ export const TableEmpleados = ({id_empresa, id_estado}) => {
     }
     const emailBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.email_empl, globalFilterValue)}</span>
+            <div className="align-items-center flex-column">
+                <span>
+                <strong>EMAIL PERSONAL: </strong>
+                <br/>
+                {highlightText(rowData.email_empl, globalFilterValue)}
+                <br/>
+                </span>
+                {rowData?.email_corporativo&&(
+                    <span>
+                        <strong>EMAIL CORPORATIVO: </strong>
+                <br/>
+                        {highlightText(rowData?.email_corporativo, globalFilterValue)}
+                <br/>
+
+                    </span>)}
             </div>
         );
     }
-    const estadoBodyTemplate = (rowData)=>{
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{rowData.estado_empl}</span>
+    const imagenBodyTemplate = (rowData)=>{
+        
+        return(
+            <div className=''>
+                <Image className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="100" src={rowData.tb_images.length==0?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${rowData.tb_images[rowData.tb_images?.length-1]?.name_image}`}></Image>
             </div>
-        );
+        )
     }
+    console.log(dataView);
     
     const header = renderHeader();
 
     return (
-            <DataTable size='normal' 
+            <DataTable size='small' 
                         value={customers} 
                         paginator 
                         showGridlines 
@@ -183,12 +201,13 @@ export const TableEmpleados = ({id_empresa, id_estado}) => {
                         emptyMessage="SOCIOS NO ENCONTRADOS.">
                 {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}
                 {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
-                <Column header="Id" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={IdBodyTemplate} filter/>
+                <Column header="Id" filterField="id_cli" style={{ minWidth: '2rem' }} sortable body={IdBodyTemplate}/>
+                <Column header="AVATAR" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={imagenBodyTemplate} filter/>
                 <Column header="NOMBRES Y APELLIDOS" filterField="nombres_apellidos_empl" style={{ minWidth: '10rem' }} sortable body={NombresApellidosEmplBodyTemplate} filter/>
                 <Column header="EMAIL" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>
                 <Column header="TELEFONO" filterField={`tel_cli`} style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
                 <Column header="DISTRITO" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
-                <Column header="ESTADO" filterField={`estado_empl`} style={{ minWidth: '10rem' }} sortable body={estadoBodyTemplate} filter/>
+                {/* <Column header="ESTADO" filterField={`estado_empl`} style={{ minWidth: '10rem' }} sortable body={estadoBodyTemplate} filter/> */}
 
                 {/* <Column header="Vencimiento" filterField="vencimiento_REGALOS_CONGELAMIENTO" sortable style={{ minWidth: '10rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate}  dataType="date" /> */}
                 {/* <Column header="Proveedor" filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  

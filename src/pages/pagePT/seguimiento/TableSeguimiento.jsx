@@ -224,7 +224,7 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 						body={<Skeleton/>}
 					/>
 					<Column
-						header="Programa / Semanas"
+						header="Programa / Semanas / HORARIO"
 						sortable
 						body={<Skeleton/>}
 						style={{ minWidth: '14rem' }}
@@ -267,6 +267,7 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 				<DataTable
 					value={customers}
 					size='small'
+					stripedRows
 					paginator
 					header={header}
 					rows={10}
@@ -300,7 +301,7 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 					/>
 					<Column
 						field="ProgramavsSemana"
-						header="Programas / Semanas"
+						header="Programas / Semanas / Horario"
 						body={programaSesioneBodyTemplate}
 						sortable
 						filterField="ProgramavsSemana"

@@ -90,16 +90,19 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
             </div>
         )
     }
+    console.log(data);
+    
   return (
     <Dialog 
     
 			contentStyle={{ height: '800px' }}
-			header={<div className="text-primary">{ubicacion}</div>}
+			header={<div className="text-primary">NIVEL {data[0]?.parametro_nivel?.label_param} - {ubicacion}</div>}
+            footer={<div className='h2'>CANTIDAD {data.reduce((sum, item) => sum + item.cantidad, 0)}</div>}
 			style={{ width: '100%' }}
 			position="bottom"
             visible={show} onHide={onHide}>
         
-			<DataTable value={data} scrollable scrollHeight="flex">
+			<DataTable value={data} stripedRows scrollable scrollHeight="flex">
 				<Column
 					header="Id"
 					body={IdBodyTemplate}
@@ -124,13 +127,14 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
 					style={{ width: '4rem' }}
 					sortable
 				></Column>
-                <Column
+                {/* <Column
 					header="VALOR ADQUISICION"
 					body={valorUnitActualBodyTemplate}
 					style={{ width: '4rem' }}
 					sortable
-				></Column>
+				></Column> */}
 			</DataTable>
+            
     </Dialog>
   )
 }

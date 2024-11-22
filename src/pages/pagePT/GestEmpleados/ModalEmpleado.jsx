@@ -66,6 +66,7 @@ export const ModalEmpleado = ({ show, onHide }) => {
         departamento_empl,
         salario_empl,
         tipoContrato_empl,
+        email_corporativo,
         horario_empl,
         onResetForm,
         onInputChange,
@@ -416,6 +417,22 @@ const ViewDataImg = (e) => {
                                             id="email_empl"
                                             placeholder="Stock"
                                             value={email_empl}
+                                            onChange={onInputChange}
+                                        />
+                                    </div>
+                                </Col>
+                                <Col xl={4}>
+                                    <div className="mb-2">
+                                        <label htmlFor="email_corporativo" className="form-label">
+                                            Email corporativo*
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            name="email_corporativo"
+                                            id="email_corporativo"
+                                            placeholder="Stock"
+                                            type='email'
+                                            value={email_corporativo}
                                             onChange={onInputChange}
                                         />
                                     </div>
