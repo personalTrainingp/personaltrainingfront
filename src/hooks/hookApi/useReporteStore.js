@@ -462,7 +462,7 @@ export const useReporteStore = () => {
 	};
 	const obtenerReporteSeguimiento = async (isClienteActive, id_empresa) => {
 		try {
-			dispatch(onSetDataView([]));
+			await dispatch(onSetDataView([]));
 			setloadinData(true);
 			const { data } = await PTApi.get(
 				`/reporte/reporte-seguimiento-membresia/${id_empresa}`,

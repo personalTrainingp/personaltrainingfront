@@ -119,6 +119,7 @@ export const useTerminoStore = () => {
 	const [DataTarjetas, setDataTarjetas] = useState([]);
 	const [DataTipoTarjetas, setDataTipoTarjetas] = useState([]);
 	const [DataGeneral, setDataGeneral] = useState([]);
+	const [DataPeriodoParam, setDataPeriodoParam] = useState([]);
 	const [dataxParametro, setdataxParametro] = useState('');
 	const [programasActivos, setprogramasActivos] = useState([]);
 	const [dataCitasxCli, setdataCitasxCli] = useState([]);
@@ -234,6 +235,14 @@ export const useTerminoStore = () => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/${entidad}/${grupo}`);
 			setDataGeneral(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerParametroPorEntidadyGrupo_PERIODO = async (entidad, grupo) => {
+		try {
+			const { data } = await PTApi.get(`/parametros/get_params_periodo/${entidad}/${grupo}`);
+			setDataPeriodoParam(data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -507,6 +516,8 @@ export const useTerminoStore = () => {
 		obtenerPaqueteDeServicioParaVender,
 		obtenerEmpleadosPorDepartamentoNutricion,
 		obtenerOficios,
+		obtenerParametroPorEntidadyGrupo_PERIODO,
+		DataPeriodoParam,
 		DataAsesores,
 		dataDistritos,
 		comboOficio,

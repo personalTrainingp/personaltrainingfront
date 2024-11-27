@@ -12,6 +12,11 @@ import { Badge } from 'primereact/badge';
 import { Image } from 'primereact/image';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ScrollPanel } from 'primereact/scrollpanel';
+import { ReporteAsistencia } from './ReporteAsistencia';
+import { PanelPermisos } from './PanelPermisos';
+import { PanelHorasExtras } from './PanelHorasExtras';
+import { PanelTardanzasJustificadas } from './PanelTardanzasJustificadas';
+import { PanelSalidasTempranas } from './PanelSalidasTempranas';
 
 export const PerfilEmpleado = () => {
   const { uid } = useParams()
@@ -68,7 +73,7 @@ export const PerfilEmpleado = () => {
                     <Card.Header>
                     </Card.Header>
                     <Card.Body>
-                        <TabView>
+                        <TabView scrollable>
                             <TabPanel header={'INFORMACION BASICA'}>
                                 <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                                   <InformacionGeneralEmpleado data={userEmpleado}/>
@@ -76,6 +81,21 @@ export const PerfilEmpleado = () => {
                             </TabPanel>
                             <TabPanel header={'Documentos adjuntos'}>
                                 
+                            </TabPanel>
+                            <TabPanel header={'REPORTE DE ASISTENCIAS'}>
+                                <ReporteAsistencia/>
+                            </TabPanel>
+                            <TabPanel header={'PERMISOS'}>
+                              <PanelPermisos/>
+                            </TabPanel>
+                            <TabPanel header={'TARDANZAS JUSTIFICADAS'}>
+                            <PanelTardanzasJustificadas/>
+                            </TabPanel>
+                            <TabPanel header={'HORAS EXTRAS'}>
+                            <PanelHorasExtras/>
+                            </TabPanel>
+                            <TabPanel header={'SALIDAS TEMPRANAS'}>
+                            <PanelSalidasTempranas/>
                             </TabPanel>
                         </TabView>
                     </Card.Body>

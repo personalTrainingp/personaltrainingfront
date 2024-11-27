@@ -8,6 +8,10 @@ export const dataSlice = createSlice({
 	},
 	reducers: {
 		onSetDataView: (state, { payload }) => {
+			if (state.dataView.length > 0) {
+				state.dataView = [];
+				state.dataView = payload;
+			}
 			state.dataView = payload;
 		},
 		onSetBase64Firma: (state, { payload }) => {

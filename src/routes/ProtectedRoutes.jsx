@@ -64,6 +64,7 @@ const ReporteSeguimiento = lazy(()=>import('../pages/pagePT/reportes/reporteSegu
 const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
 const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
 const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
+const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
 /**
  * routes import
  */
@@ -106,7 +107,11 @@ export default function ProtectedRoutes() {
                         sections.find(e=>e.url==='/reporte/gestion-comercial') && 
                         <Route path='reporte/gestion-comercial' element={<ReporteDeGestionComercial/>}/>
                     }
-				{
+					{
+                        sections.find(e=>e.url==='/gest-jornada') && 
+                        <Route path='gest-jornada' element={<GestionJornada/>}/>
+                    }
+					{
                         sections.find(e=>e.url==='/totalizado-inventario') && 
                         <Route path='totalizado-inventario' element={<InventarioTotalizado/>}/>
                     }

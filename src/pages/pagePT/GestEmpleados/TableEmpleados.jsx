@@ -15,6 +15,7 @@ import { arrayDistrito, arrayTipoCliente } from '@/types/type';
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import config from '@/config';
 import { Image } from 'primereact/image';
+import { useDispatch } from 'react-redux';
 
 export const TableEmpleados = ({id_empresa, id_estado}) => {
     const [customers, setCustomers] = useState(null);
@@ -24,6 +25,7 @@ export const TableEmpleados = ({id_empresa, id_estado}) => {
     const  { obtenerUsuariosEmpleados } = useUsuarioStore()
     const {dataView} = useSelector((e) => e.DATA);
     useEffect(() => {
+        // dispatch()
         obtenerUsuariosEmpleados(id_empresa, id_estado)
     }, [])
     

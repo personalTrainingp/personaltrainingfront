@@ -89,11 +89,13 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 	const [globalFilterValue, setGlobalFilterValue] = useState('');
 
 	useEffect(() => {
-		const fetchData = () => {
-			setCustomers(getCustomers(dataView));
-			setLoading(false);
-		};
-		fetchData();
+		if(dataView.length<=0){
+			const fetchData = () => {
+				setCustomers(getCustomers(dataView));
+				setLoading(false);
+			};
+			fetchData();
+		}
 	}, [dataView]);
 
 	const getCustomers = (data) => {
