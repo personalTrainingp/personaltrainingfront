@@ -9,7 +9,7 @@ import Swal from 'sweetalert2'
 
 export const ModalJornada = ({show, onHide, data}) => {
     const [formData, setFormData] = useState({
-        nombreJornada: "",
+        observacion: "",
       });
     const [dataJornada, setDataJornada] = useState([
         {
@@ -107,7 +107,7 @@ export const ModalJornada = ({show, onHide, data}) => {
         });
       }
       const onSubmitAgregarSemanasDeJornada = ()=>{
-        startRegisterJornada(dataJornada, 598, formData.nombreJornada)
+        startRegisterJornada(dataJornada, 598, formData.observacion)
         console.log(dataJornada, formData);
       }
       const footerButtons = (
@@ -127,14 +127,14 @@ export const ModalJornada = ({show, onHide, data}) => {
         header={'Agregar una jornada'}
     >
         <label htmlFor="nombreJornada" className="form-label">
-            NOMBRE DE LA JORNADA
+            OBSERVACION
         </label>
-        <input
+        <textarea
             className="form-control"
             type="text"
-            name="nombreJornada"
+            name="observacion"
             placeholder=""
-            value={formData.nombreJornada}
+            value={formData.observacion}
             onChange={handleInputChangeNombreJornada}
         />
         <br/>

@@ -21,21 +21,33 @@ export const ModalHorasEspeciales = ({show, onHide}) => {
         onHide={onHide}
         position='top'
         style={{width: '40rem'}}
-        header='PERIODO DE ASISTENCIA'
+        header='HORAS DE ASISTENCIAS'
         >
           <form>
             <Row>
-              <Col lg={6}>
-                <label htmlFor="periodo_desde">PERIODO DESDE</label>
-                <InputMask mask="99/99/9999" placeholder="DD/MM/YYYY" name="periodo_desde" readOnly />
+              <Col xxl={12}>
+                <div className="mb-4">
+                    <label htmlFor="periodo_desde" className="form-label">TIPO DE MINUTOS EXTRAS</label>
+                    <InputMask className="form-control" mask="99/99/9999" placeholder="DD/MM/YYYY" name="periodo_desde" readOnly />
+                </div>
+              </Col>
+              <Col xxl={6}>
+                <div className="mb-4">
+                    <label htmlFor="periodo_desde" className="form-label">FECHA</label>
+                    <InputMask className="form-control" mask="99/99/9999" placeholder="DD/MM/YYYY" name="periodo_desde" readOnly />
+                </div>
               </Col>
               <Col lg={6}>
-                <label htmlFor="periodo_hasta">PERIODO HASTA</label>
-                <InputMask mask="99/99/9999" placeholder="DD/MM/YYYY" name="periodo_hasta" readOnly />
+                <div className="mb-4">
+                  <label htmlFor="periodo_desde" className="form-label">MINUTOS EXTRA</label>
+                  <InputMask className="form-control" mask="9999" placeholder="9999" name="periodo_desde" readOnly />
+                </div>
               </Col>
-              <Col lg={6}>
-                <label htmlFor="periodo_hasta">JORNADA</label>
-                <Select />
+              <Col lg={12}>
+                <div className="mb-4">
+                  <label htmlFor="periodo_desde" className="form-label">OBSERVACION</label>
+                  <InputMask className="form-control" mask="9999" placeholder="9999" name="periodo_desde" readOnly />
+                </div>
               </Col>
             </Row>
             <br />

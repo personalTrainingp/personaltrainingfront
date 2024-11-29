@@ -37,11 +37,13 @@ export default function TableGestAportes({showToast}) {
         obtenerAportes()
     }, [])
         useEffect(() => {
-        const fetchData = () => {
-            setCustomers(getCustomers(dataView));
-        };
-        fetchData()
-        initFilters();
+            if(dataView.length<=0){
+                const fetchData = () => {
+                    setCustomers(getCustomers(dataView));
+                };
+                fetchData()
+                initFilters();
+            }
         }, [dataView]);
     const getCustomers = (data) => {
         return data.map(item => {

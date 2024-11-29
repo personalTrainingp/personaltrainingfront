@@ -7,7 +7,7 @@ const Statistics = ({ statisticsData, onModalOpenCuadroVentas }) => {
 		<>
 			{(statisticsData || []).map((statistics, index) => {
 				return (
-					<Col xl={2} sm={6} key={index.toString()}>
+					<Col xl={3} sm={6} key={index.toString()}>
 						<Card onClick={()=>onModalOpenCuadroVentas(statistics.title, statistics.noOfProject)}>
 							<Card.Body>
 								<CardTitle

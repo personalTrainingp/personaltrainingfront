@@ -82,7 +82,7 @@ export const PerfilEmpleado = () => {
                             <TabPanel header={'Documentos adjuntos'}>
                                 
                             </TabPanel>
-                            <TabPanel header={'REPORTE DE ASISTENCIAS'}>
+                            <TabPanel header={'NOMINAS'}>
                                 <ReporteAsistencia/>
                             </TabPanel>
                             <TabPanel header={'PERMISOS'}>

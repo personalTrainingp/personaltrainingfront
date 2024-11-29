@@ -12,6 +12,8 @@ export const useProspectoLeadsStore = () => {
 	const obtenerProspectosLeads = async () => {
 		try {
 			dispatch(onSetDataView([]));
+			console.log("data v sin valores");
+			
 			const { data } = await PTApi.get('/prospecto/lead/get-prospecto-lead');
 			console.log(data);
 

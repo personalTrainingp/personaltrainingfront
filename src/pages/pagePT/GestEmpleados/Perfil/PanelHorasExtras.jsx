@@ -5,6 +5,7 @@ import {  ModalHorasEspeciales } from './ModalHorasEspeciales'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { Table } from 'react-bootstrap'
 import { ModalPermisos } from './ModalPermisos'
+import { ModalHorasExtras } from './ModalHorasExtras'
 
 export const PanelHorasExtras = () => {
 
@@ -54,7 +55,7 @@ return (
                           </tr>
                       </tbody>
                   </Table>
-                      <ModalHorasEspeciales show={isOpenModalReportAsistencia} onHide={onCloseModalReportAsistencia}/>
+                      <ModalHorasExtras show={isOpenModalReportAsistencia} onHide={onCloseModalReportAsistencia}/>
   </>
 )
 }

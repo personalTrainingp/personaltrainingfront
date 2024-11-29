@@ -48,7 +48,7 @@ export const Statistics2 = ({statisticsData, id_programa}) => {
         <Row className='d-flex justify-content-center'>
         {(dataTest || []).map((statistics, index) => {
 				return (
-					<Col xl={2} sm={6} key={index.toString()}>
+					<Col xl={4} sm={6} key={index.toString()}>
 						<Card>
 							<Card.Body>
 								<CardTitle

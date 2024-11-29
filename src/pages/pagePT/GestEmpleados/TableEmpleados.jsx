@@ -26,10 +26,13 @@ export const TableEmpleados = ({id_empresa, id_estado}) => {
     const {dataView} = useSelector((e) => e.DATA);
     useEffect(() => {
         // dispatch()
-        obtenerUsuariosEmpleados(id_empresa, id_estado)
+        if(dataView.length<=0){
+            obtenerUsuariosEmpleados(id_empresa, id_estado)
+        }
     }, [])
     
         useEffect(() => {
+
         const fetchData = () => {
             setCustomers(getCustomers(dataView));
             setLoading(false);

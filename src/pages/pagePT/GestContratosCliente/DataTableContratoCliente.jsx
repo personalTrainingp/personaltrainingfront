@@ -102,8 +102,7 @@ function agruparFirmasxEmpl(dataView) {
   }, []);
   return groupedData;
 }
-  console.log(agruparFirmasxEmpl(dataView));
-  
+
   return (
     <>
       <Row>

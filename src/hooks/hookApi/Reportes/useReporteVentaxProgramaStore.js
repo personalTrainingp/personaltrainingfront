@@ -4,6 +4,7 @@ import { useState } from 'react';
 export const useReporteVentaxProgramaStore = () => {
 	const [membresiasxFechaxPrograma, setmembresiasxFechaxPrograma] = useState([]);
 	const [dataClientes, setDataClientes] = useState([]);
+	const [dataClientesEspeciales, setdataClientesEspeciales] = useState([]);
 
 	const obtenerMembresiasxFechaxPrograma = async (id_programa, rangoDate) => {
 		try {
@@ -38,6 +39,23 @@ export const useReporteVentaxProgramaStore = () => {
 			console.log(data.msg);
 		} catch (error) {
 			console.log('error Estados Cliente ' + error.message);
+		}
+	};
+
+	//Traspasos y transferencias
+	const clientesEspeciales = async (id_programa, fechaDesdeStr, fechaHastaStr) => {
+		try {
+			fechaDesdeStr = formatearFecha(fechaDesdeStr);
+			fechaHastaStr = formatearFecha(fechaHastaStr);
+			const { data } = await PTApi.get('/reporte/programa/clientes-especiales', {
+				id_programa,
+				fechaDesdeStr,
+				fechaHastaStr,
+			});
+			setdataClientesEspeciales(data);
+			console.log(data);
+		} catch (error) {
+			console.log(error);
 		}
 	};
 

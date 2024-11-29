@@ -18,65 +18,83 @@ export const ModalReportAsistencia = ({show, onHide, dataEmpl}) => {
           <div>
             <Row>
               <Col xxl={12}>
-              <Table
-                          className="table-centered mb-0"
-                      >
-                          <thead className="bg-primary">
-                              <tr>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' rowSpan={2} colSpan={1}>FECHA</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={2}>HORARIO</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={2}>JORNADA REAL</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={6}>HORAS</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={2}>PERMISOS</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={2}>SALIDAS</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' rowSpan={2} colSpan={1}>HORAS EXTRAS</th>
-                              </tr>
-                              <tr>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>ENTRADA</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>SALIDA</th>
+              
+              <h3>SEMANA 01</h3>
+                <Table
+                            className="table-centered table-normal mb-0"
+                        >
+                            <thead className="bg-primary">
+                                <tr>
+                                    <th className='text-white text-center p-1' rowSpan={2} colSpan={1}>FECHA</th>
+                                    <th className='text-white text-center p-1' colSpan={2}>HORARIO</th>
+                                    <th className='text-white text-center p-1' colSpan={2}>JORNADA REAL</th>
+                                    <th className='text-white text-center p-1' colSpan={6}>HORAS</th>
+                                    <th className='text-white text-center p-1' colSpan={2}>PERMISOS</th>
+                                    <th className='text-white text-center p-1' colSpan={2}>SALIDAS</th>
+                                    <th className='text-white text-center p-1' rowSpan={2} colSpan={1}>HORAS EXTRAS</th>
+                                </tr>
+                                <tr>
+                                    <th className='text-white text-center p-1' colSpan={1}>ENTRADA</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>SALIDA</th>
 
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>ENTRADA</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>SALIDA</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>ENTRADA</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>SALIDA</th>
 
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>ASIGN.</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>ASIST.</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>JORNADA</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>TARDANZAS</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>S. TEMPR.</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>AUSENCIA</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>AUSENCIA</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>ASIGN.</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>ASIST.</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>JORNADA</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>TARDANZAS</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>S. TEMPR.</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>AUSENCIA</th>
 
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>CON SUELDO</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>SIN SUELDO</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>CON SUELDO</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>SIN SUELDO</th>
 
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>CON SUELDO</th>
-                                  <th className='text-white text-center p-1 border-left-2 border-black' colSpan={1}>SIN SUELDO</th>
-                                  
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                                  <th>ASISTENCIA</th>
-                                  <td>194:17</td>
-                              </tr>
-                              <tr>
-                                  <th>JORNADA</th>
-                                  <td>194:17</td>
-                              </tr>
-                              <tr>
-                                  <th>AUSENCIA</th>
-                                  <td>194:17</td>
-                              </tr>
-                              <tr>
-                                  <th>ATRASO</th>
-                                  <td>194:17</td>
-                              </tr>
-                              <tr>
-                                  <th>SALIDA TEMPRANA</th>
-                                  <td>194:17</td>
-                              </tr>
-                          </tbody>
-                </Table>
+                                    <th className='text-white text-center p-1' colSpan={1}>CON SUELDO</th>
+                                    <th className='text-white text-center p-1' colSpan={1}>SIN SUELDO</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>SABADO <br/> 05/10</th>
+                                    <td>08:00 AM</td>
+                                    <td>12:00 PM</td>
+                                    <td>08:50 AM</td>
+                                    <td>12:10 PM</td>
+                                    <td>07 H. 10 M.</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>DOMINGO <br/> 06/10</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                    </Table>
+                    <br/>
               </Col>
               <Col xxl={2}>
               <Table

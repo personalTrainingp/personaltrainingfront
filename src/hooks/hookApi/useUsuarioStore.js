@@ -198,7 +198,6 @@ export const useUsuarioStore = () => {
 					id_estado: id_estado,
 				},
 			});
-			dispatch(onSetEmpleados(data.empleados));
 			dispatch(onSetDataView(data.empleados));
 		} catch (error) {
 			console.log(error);

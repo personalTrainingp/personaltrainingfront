@@ -5,12 +5,12 @@ import { columns, sizePerPageList } from './ColumnsSet';
 import { ModalCliente } from './ModalCliente';
 import { useSelector } from 'react-redux';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
-import TableClientes from './TableClientes';
 import { Button } from 'primereact/button';
 import { useProspectoLeadsStore } from '@/hooks/hookApi/useProspectoLeadsStore';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Calendar } from 'primereact/calendar';
 import { useForm } from '@/hooks/useForm';
+import TableNoClientes from './TableNoClientes';
 
 const rangoFechas = {
   rangoDate:new Date(),
@@ -25,8 +25,10 @@ export const GestComercial = () => {
     const  { obtenerProspectosLeads } = useProspectoLeadsStore()
 	const { dataView } = useSelector(e=>e.DATA)
     useEffect(() => {
+      if(dataView.length<=0){
         obtenerProspectosLeads()
-    }, [])
+      }
+    }, [dataView])
     const onModalRegClienteOpen=()=>{
         setshowModalCliente(true)
     }
@@ -67,7 +69,7 @@ export const GestComercial = () => {
                       readOnlyInput />
                           </div>
                           </Col>
-											<TableClientes dataV={d.items}/>
+											<TableNoClientes dataV={d.items}/>
 										</TabPanel>
 									))
 								}

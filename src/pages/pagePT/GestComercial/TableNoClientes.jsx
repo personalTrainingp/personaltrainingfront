@@ -21,7 +21,7 @@ import { ModalComentarios } from './ModalComentarios';
 import { logEvent } from 'firebase/analytics';
 import { confirmDialog } from 'primereact/confirmdialog';
 
-export default function TableClientes({dataV}) {
+export default function TableNoClientes({dataV}) {
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -251,9 +251,11 @@ export default function TableClientes({dataV}) {
         )
     }
     const comentarioBodyTemplate =(rowData)=>{
+        console.log(rowData);
+        
         return (
             <>
-            {rowData.comentario[rowData.comentario.length-1]?.comentario_com}
+            {rowData.comentario.length>0&&rowData?.comentario[rowData?.comentario?.length-1]?.comentario_com}
             </>
         )
     }

@@ -6,6 +6,7 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { Table } from 'react-bootstrap'
 import { ModalPermisos } from './ModalPermisos'
 import { ModalTardanzasJustificadas } from './ModalTardanzasJustificadas'
+import { ModalSalidasTempranas } from './ModalSalidasTempranas'
 
 export const PanelSalidasTempranas = () => {
 
@@ -55,7 +56,7 @@ export const PanelSalidasTempranas = () => {
                             </tr>
                         </tbody>
                     </Table>
-                        <ModalTardanzasJustificadas show={isOpenModalReportAsistencia} onHide={onCloseModalReportAsistencia}/>
+                        <ModalSalidasTempranas show={isOpenModalReportAsistencia} onHide={onCloseModalReportAsistencia}/>
     </>
   )
 }

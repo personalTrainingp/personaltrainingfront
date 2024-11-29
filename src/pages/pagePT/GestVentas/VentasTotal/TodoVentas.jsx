@@ -72,7 +72,7 @@ export const TodoVentas=({id_empresa})=> {
         return (
           <>
                   <span className='font-24'>
-                    Total de ventas: {valueFilter?.length==0?customers?.length-1:valueFilter?.length-1}
+                    Total de ventas: {valueFilter?.length==0?customers?.length:valueFilter?.length}
                   </span>
             <div className="flex justify-content-end">
                 <IconField iconPosition="left">
