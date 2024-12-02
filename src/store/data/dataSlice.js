@@ -5,6 +5,7 @@ export const dataSlice = createSlice({
 		dataView: [],
 		BASE64_FIRMA: null,
 		section_item: null,
+		RANGE_DATE: [new Date(new Date().getFullYear(), 8, 16), new Date()],
 	},
 	reducers: {
 		onSetDataView: (state, { payload }) => {
@@ -20,6 +21,9 @@ export const dataSlice = createSlice({
 		onViewSection: (state, { payload }) => {
 			state.section_item = payload;
 		},
+		onSetRangeDate: (state, { payload }) => {
+			state.RANGE_DATE = payload;
+		},
 	},
 });
-export const { onSetDataView, onSetBase64Firma, onViewSection } = dataSlice.actions;
+export const { onSetDataView, onSetBase64Firma, onViewSection, onSetRangeDate } = dataSlice.actions;

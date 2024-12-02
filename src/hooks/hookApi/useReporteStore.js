@@ -3,7 +3,13 @@ import { onSetDataView } from '@/store/data/dataSlice';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import utc from 'dayjs/plugin/utc';
 
+dayjs.extend(utc);
+function formatDateToSQLServerWithDayjs(date) {
+	return dayjs(date).toISOString(); // Asegurar que esté en UTC
+	// .format('YYYY-MM-DD HH:mm:ss.SSS0000 +00:00');
+}
 export const useReporteStore = () => {
 	const dispatch = useDispatch();
 	const [reporteSeguimiento, setreporteSeguimiento] = useState([]);
@@ -37,6 +43,7 @@ export const useReporteStore = () => {
 	const [repoVentasPorSeparado, setrepoVentasPorSeparado] = useState({});
 	const [loading, setloading] = useState(true);
 	const [reporte_FlujoCaja, setreporte_FlujoCaja] = useState([]);
+	const [ventasHoy, setventasHoy] = useState([]);
 	// const [repoVentasPorMembresia, setrepoVentasPorMembresia] = useState([]);
 	// const [repoVentasPorProdAcc, setrepoVentasPorProdAcc] = useState([])
 	// const [repoVentasPorProdSup, setrepoVentasPorProdSup] = useState([])
@@ -126,9 +133,14 @@ export const useReporteStore = () => {
 	const obtenerVentas = async (arrayDate) => {
 		try {
 			setloading(true);
+			// console.log();
+
 			const { data } = await PTApi.get('/reporte/reporte-obtener-ventas', {
 				params: {
-					arrayDate,
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0]),
+						formatDateToSQLServerWithDayjs(arrayDate[1]),
+					],
 				},
 			});
 
@@ -267,7 +279,6 @@ export const useReporteStore = () => {
 					empl_monto: agruparYSumarMontos(dataTotal),
 				},
 			});
-			console.log(agruparYSumarMontos(dataAccesorio));
 			function sumarTotalDetalle(array) {
 				return array.reduce((total, item) => {
 					return total + (item.totalDetalle || 0);
@@ -286,6 +297,167 @@ export const useReporteStore = () => {
 		} catch (error) {
 			console.log(error);
 		}
+	};
+	const obtenerVentasDeHoy = async () => {
+		// try {
+		// 	setloading(true);
+		// 	const { data } = await PTApi.get('/reporte/reporte-obtener-ventas', {
+		// 		params: {
+		// 			arrayDate,
+		// 		},
+		// 	});
+		// 	const dataTotal = data.reporte.map((e) => {
+		// 		// Filtrar productos con id_categoria igual a 17
+		// 		const productosFiltradosAcc = e.detalle_ventaProductos.filter(
+		// 			(item) => item.tb_producto.id_categoria === 17
+		// 		);
+		// 		const productosFiltradosSup = e.detalle_ventaProductos.filter(
+		// 			(item) => item.tb_producto.id_categoria === 18
+		// 		);
+		// 		// const NutFiltrados = e.detalle_ventaCitas?.filter(
+		// 		// 	(item) => item.tb_servicio.tipo_servicio === 'NUTRI'
+		// 		// );
+		// 		// const TratEsteticoFiltrados = e.detalle_ventaCitas.filter(
+		// 		// 	(item) => item.tb_servicio.tipo_servicio === 'FITOL'
+		// 		// );
+		// 		const TratEsteticoFiltrados = [];
+		// 		return {
+		// 			detalle_membresia: e.detalle_ventaMembresia,
+		// 			detalle_prodAccesorios: productosFiltradosAcc,
+		// 			detalle_prodSuplementos: productosFiltradosSup,
+		// 			detalle_cita_tratest: [TratEsteticoFiltrados],
+		// 			detalle_cita_nut: [],
+		// 			detalle_pago: e.detalleVenta_pagoVenta,
+		// 			tb_empleado: e.tb_empleado,
+		// 		};
+		// 	});
+		// 	// console.log(data.reporte);
+		// 	const dataProgramas = data.reporte
+		// 		.map((e) => {
+		// 			return {
+		// 				id: e.id,
+		// 				fecha_venta: e.fecha_venta,
+		// 				detalle_membresia: e.detalle_ventaMembresia,
+		// 				detalle_pago: e.detalleVenta_pagoVenta,
+		// 				tb_empleado: e.tb_empleado,
+		// 			};
+		// 		})
+		// 		.filter((e) => e.detalle_membresia.length > 0);
+		// 	const dataAccesorio = data.reporte
+		// 		.map((e) => {
+		// 			// Filtrar productos con id_categoria igual a 17
+		// 			const productosFiltrados = e.detalle_ventaProductos.filter(
+		// 				(item) => item.tb_producto.id_categoria === 18
+		// 			);
+		// 			return {
+		// 				id: e.id,
+		// 				fecha_venta: e.fecha_venta,
+		// 				detalle_prodAccesorios: productosFiltrados,
+		// 				detalle_pago: e.detalleVenta_pagoVenta,
+		// 				tb_empleado: e.tb_empleado,
+		// 			};
+		// 		})
+		// 		.filter((e) => e.detalle_prodAccesorios.length > 0);
+		// 	const dataSuplemento = data.reporte
+		// 		.map((e) => {
+		// 			const productosFiltrados = e.detalle_ventaProductos.filter(
+		// 				(item) => item.tb_producto.id_categoria === 17
+		// 			);
+		// 			return {
+		// 				id: e.id,
+		// 				fecha_venta: e.fecha_venta,
+		// 				detalle_prodSuplemento: productosFiltrados,
+		// 				detalle_pago: e.detalleVenta_pagoVenta,
+		// 				tb_empleado: e.tb_empleado,
+		// 			};
+		// 		})
+		// 		.filter((e) => e.detalle_prodSuplemento.length > 0);
+		// 	const dataTratamientoEstetico = data.reporte
+		// 		.map((e) => {
+		// 			return {
+		// 				id: e.id,
+		// 				fecha_venta: e.fecha_venta,
+		// 				// detalle_cita_tratest: e.detalle_ventaCitas.filter(
+		// 				// 	(item) => item.tb_servicio.tipo_servicio === 'FITOL'
+		// 				// ),
+		// 				detalle_cita_tratest: [],
+		// 				detalle_pago: e.detalleVenta_pagoVenta,
+		// 				tb_empleado: e.tb_empleado,
+		// 			};
+		// 		})
+		// 		.filter((e) => e.detalle_cita_tratest.length > 0);
+		// 	const dataNutricion = data.reporte
+		// 		.map((e) => {
+		// 			const CitasFiltrados = e.detalle_ventaCitas.filter(
+		// 				(item) => item.tb_servicio?.tipo_servicio === 'NUTRI'
+		// 			);
+		// 			return {
+		// 				id: e.id,
+		// 				fecha_venta: e.fecha_venta,
+		// 				detalle_cita_nut: CitasFiltrados,
+		// 				detalle_pago: e.detalleVenta_pagoVenta,
+		// 				tb_empleado: e.tb_empleado,
+		// 			};
+		// 		})
+		// 		.filter((h) => h.detalle_cita_nut.length > 0);
+		// 	// console.log(data.reporte, sumarDatos(data.reporte));
+		// 	setrepoVentasPorSeparado({
+		// 		dataProgramas: {
+		// 			data: dataProgramas,
+		// 			SumaMonto: sumarMontosDeVentas(dataProgramas),
+		// 			forma_pago_monto: agruparPorFormaPago(dataProgramas),
+		// 			empl_monto: agruparYSumarMontos(dataProgramas),
+		// 		},
+		// 		dataAccesorio: {
+		// 			data: dataAccesorio,
+		// 			SumaMonto: sumarMontosDeVentas(dataAccesorio),
+		// 			forma_pago_monto: agruparPorFormaPago(dataAccesorio),
+		// 			empl_monto: agruparYSumarMontos(dataAccesorio),
+		// 		},
+		// 		dataSuplemento: {
+		// 			data: dataSuplemento,
+		// 			SumaMonto: sumarMontosDeVentas(dataSuplemento),
+		// 			forma_pago_monto: agruparPorFormaPago(dataSuplemento),
+		// 			empl_monto: agruparYSumarMontos(dataSuplemento),
+		// 		},
+		// 		dataTratamientoEstetico: {
+		// 			data: dataTratamientoEstetico,
+		// 			SumaMonto: sumarMontosDeVentas(dataTratamientoEstetico),
+		// 			forma_pago_monto: agruparPorFormaPago(dataTratamientoEstetico),
+		// 			empl_monto: agruparYSumarMontos(dataTratamientoEstetico),
+		// 		},
+		// 		dataNutricion: {
+		// 			data: dataNutricion,
+		// 			SumaMonto: sumarMontosDeVentas(dataNutricion),
+		// 			forma_pago_monto: agruparPorFormaPago(dataNutricion),
+		// 			empl_monto: agruparYSumarMontos(dataNutricion),
+		// 		},
+		// 		total: {
+		// 			data: dataTotal,
+		// 			SumaMonto: sumarMontosDeVentas(dataTotal),
+		// 			forma_pago_monto: agruparPorFormaPago(dataTotal),
+		// 			empl_monto: agruparYSumarMontos(dataTotal),
+		// 		},
+		// 	});
+		// 	console.log(agruparYSumarMontos(dataAccesorio));
+		// 	function sumarTotalDetalle(array) {
+		// 		return array.reduce((total, item) => {
+		// 			return total + (item.totalDetalle || 0);
+		// 		}, 0);
+		// 	}
+		// 	const ordenarPorTotalVentas = (data) => {
+		// 		return data.sort((a, b) => b.total_ventas - a.total_ventas);
+		// 	};
+		// 	setreporteVentas(sumarTotalDetalle(sumarDatos(data.reporte)));
+		// 	setreporteDeDetalle(sumarDatos_y_cantidades(data.reporte));
+		// 	setreporteDeVentasPorEmpleados(
+		// 		ordenarPorTotalVentas(agruparPorEmpleadoConTotales(data.reporte))
+		// 	);
+		// 	setreporteDeVentas(data.reporte);
+		// 	setloading(false);
+		// } catch (error) {
+		// 	console.log(error);
+		// }
 	};
 	const obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor = async (arrayDate) => {
 		try {
@@ -705,6 +877,7 @@ export const useReporteStore = () => {
 		obtenerReporteDeFormasDePagos,
 		obtenerReporteSeguimientoTODO,
 		obtenerReporteDeTotalDeVentasActuales,
+		obtenerVentasDeHoy,
 		reporte_FlujoCaja,
 		repoVentasPorSeparado,
 		reporteVentaActual,

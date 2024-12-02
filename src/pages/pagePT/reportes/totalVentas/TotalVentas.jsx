@@ -15,10 +15,10 @@ import { MoneyFormatter } from '@/components/CurrencyMask'
 import { clasesVentasSeparadas } from '@/types/type'
 import { FormatRangoFecha } from '@/components/componentesReutilizables/FormatRangoFecha'
 import { HistorialVentas } from './HistorialVentas'
+import { FechaRange } from '@/components/RangeCalendars/FechaRange'
+import { useSelector } from 'react-redux'
 
-const filtrarCalendario={
-dates:[]
-}
+
 function contarVentas(data) {
   let totalVentas = 0;
 
@@ -47,24 +47,24 @@ export const TotalVentas = () => {
 
   const { obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor, reporteTotalVentasPorTipoCliente, obtenerVentas, reporteVentas, reporteDeDetalleVenta, 
     reporteDeVentasPorEmpleados, obtenerReporteDeTotalDeVentasActuales, reporteVentaActual, repoVentasPorSeparado, loading} = useReporteStore()
-  
+
+  const {obtenerVentas:obtenerVentasHoy, reporteVentas:reporteVentaHoy} = useReporteStore()
   const [clickServProd, setclickServProd] = useState("total")
-  const {onInputChange, onResetForm, formState, onInputChangeReact, dates} = useForm(filtrarCalendario)
   const toast = useRef(null)
-  const [rangoFechas, setrangoFechas] = useState([new Date(new Date().getFullYear(), 8, 16), new Date()])
+  const { RANGE_DATE } = useSelector(e=>e.DATA)
+  console.log(RANGE_DATE);
   
   useEffect(() => {
-    if(rangoFechas[0]===null) return;
-    if(rangoFechas[1]===null) return;
+    if(RANGE_DATE[0]===null) return;
+    if(RANGE_DATE[1]===null) return;
 
-    obtenerVentas(rangoFechas)
-    obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor(rangoFechas)
+    obtenerVentas(RANGE_DATE)
+    obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor(RANGE_DATE)
     obtenerReporteDeTotalDeVentasActuales()
+    obtenerVentasHoy([new Date(), new Date()])
     // obtenerReporteDeFormasDePagos(rangoFechas)
-  }, [rangoFechas])
-  const showToast = (severity, summary, detail, label) => {
-    toast.current.show({ severity, summary, detail, label });
-  };
+  }, [RANGE_DATE])
+  console.log(reporteVentaHoy);
   
   const TotalDeVentasxProdServ = (prodSer)=>{
     // if(prodSer)
@@ -131,8 +131,8 @@ export const TotalVentas = () => {
       <label htmlFor="buttondisplay" className="font-bold block mb-2">
                       RANGO DE FECHAS
       </label>
-      <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/>
-        <FormatRangoFecha rangoFechas={rangoFechas}/>
+          <FechaRange rangoFechas={RANGE_DATE}/>
+      {/* <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/> */}
     </div>
     <Row>
       <Col xxl={3}>
