@@ -46,13 +46,15 @@ export const TotalVentas = () => {
   
 
   const { obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor, reporteTotalVentasPorTipoCliente, obtenerVentas, reporteVentas, reporteDeDetalleVenta, 
-    reporteDeVentasPorEmpleados, obtenerReporteDeTotalDeVentasActuales, reporteVentaActual, repoVentasPorSeparado, loading} = useReporteStore()
+    reporteDeVentasPorEmpleados, obtenerReporteDeTotalDeVentasActuales, reporteVentaActual, repoVentasPorSeparado, loading,
+    obtenerVentasDeHoy, ventasHoy
+  } = useReporteStore()
 
-  const {obtenerVentas:obtenerVentasHoy, reporteVentas:reporteVentaHoy} = useReporteStore()
+  const { obtenerVentas:obtenerVentasHoy, reporteVentas:reporteVentasHoy, reporteDeVentas:reporteDeVentasHOY } = useReporteStore()
+
   const [clickServProd, setclickServProd] = useState("total")
   const toast = useRef(null)
   const { RANGE_DATE } = useSelector(e=>e.DATA)
-  console.log(RANGE_DATE);
   
   useEffect(() => {
     if(RANGE_DATE[0]===null) return;
@@ -61,11 +63,13 @@ export const TotalVentas = () => {
     obtenerVentas(RANGE_DATE)
     obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor(RANGE_DATE)
     obtenerReporteDeTotalDeVentasActuales()
-    obtenerVentasHoy([new Date(), new Date()])
+    // obtenerVentasDeHoy()
+    obtenerVentasHoy([new Date('2024-12-02T00:00:00'), new Date('2024-12-02T23:59:00')])
     // obtenerReporteDeFormasDePagos(rangoFechas)
   }, [RANGE_DATE])
-  console.log(reporteVentaHoy);
+  console.log(reporteDeVentasHOY, "hoyyy");
   
+
   const TotalDeVentasxProdServ = (prodSer)=>{
     // if(prodSer)
     switch (prodSer) {
@@ -113,6 +117,7 @@ export const TotalVentas = () => {
         }
     }
   }
+  
   // console.log(clickServProd, TotalDeVentasxProdServ(`${clickServProd}`).data.length, "en linea 117");
   
   return (
@@ -136,7 +141,7 @@ export const TotalVentas = () => {
     </div>
     <Row>
       <Col xxl={2}>
-        <CardTotal title={'Venta del dia'} body={<MoneyFormatter amount={0}/>} span={`${0} ventas`}/>
+        <CardTotal title={'Venta del dia'} body={<MoneyFormatter amount={reporteVentasHoy}/>} span={`${reporteDeVentasHOY.length} ventas`}/>
       </Col>
       <Col xxl={3}>
         <CardTotal onClick={()=>setclickServProd('total')} title={`VENTA ACUMULADA por rango de fechas ${clasesVentasSeparadas(clickServProd)}`} body={<MoneyFormatter amount={TotalDeVentasxProdServ(clickServProd).sumaTotal}/>} span={`${TotalDeVentasxProdServ(`${clickServProd}`).data?.length} ventas `}/>
