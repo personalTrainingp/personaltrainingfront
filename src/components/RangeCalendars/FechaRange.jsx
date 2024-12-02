@@ -51,7 +51,7 @@ export const FechaRange = ({rangoFechas}) => {
         </Row>
         <br/>
         <br/>
-                <FormatRangoFecha rangoFechas={rangoFechas}/>
+                {/* <FormatRangoFecha rangoFechas={rangoFechas}/> */}
     </div>
   )
 }

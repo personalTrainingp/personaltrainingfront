@@ -32,10 +32,10 @@ const PageBreadcrumb = ({ subName, title, children, btnBack }) => {
                 <a className='mdi mdi-chevron-left fw-bold' style={{cursor: 'pointer'}} href={btnBack}>Regresar</a>
               )
               }
-              <h3 className="text-uppercase fw-bolder text-primary" style={{fontSize: 25}}>
+              {/* <h3 className="text-uppercase fw-bolder text-primary" style={{fontSize: 25}}>
                 {title}
                 {children ?? null}
-              </h3>
+              </h3> */}
             </div>
           </Col>
         </Row>

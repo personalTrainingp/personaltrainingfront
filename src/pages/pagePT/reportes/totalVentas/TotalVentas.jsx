@@ -128,18 +128,18 @@ export const TotalVentas = () => {
       ):(
         <>
         <div className='flex-auto mb-2'>
-      <label htmlFor="buttondisplay" className="font-bold block mb-2">
+      {/* <label htmlFor="buttondisplay" className="font-bold block mb-2">
                       RANGO DE FECHAS
-      </label>
+      </label> */}
           <FechaRange rangoFechas={RANGE_DATE}/>
       {/* <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/> */}
     </div>
     <Row>
-      <Col xxl={3}>
-        <CardTotal onClick={()=>setclickServProd('total')} title={`Total de venta ${clasesVentasSeparadas(clickServProd)}`} body={<MoneyFormatter amount={TotalDeVentasxProdServ(clickServProd).sumaTotal}/>} span={`${TotalDeVentasxProdServ(`${clickServProd}`).data?.length} ventas `}/>
-      </Col>
       <Col xxl={2}>
         <CardTotal title={'Venta del dia'} body={<MoneyFormatter amount={0}/>} span={`${0} ventas`}/>
+      </Col>
+      <Col xxl={3}>
+        <CardTotal onClick={()=>setclickServProd('total')} title={`VENTA ACUMULADA por rango de fechas ${clasesVentasSeparadas(clickServProd)}`} body={<MoneyFormatter amount={TotalDeVentasxProdServ(clickServProd).sumaTotal}/>} span={`${TotalDeVentasxProdServ(`${clickServProd}`).data?.length} ventas `}/>
       </Col>
       <Col xxl={7}>
         <CardProdServ setclickServProd={setclickServProd} data={reporteDeDetalleVenta} dataGen={reporteVentas}/>

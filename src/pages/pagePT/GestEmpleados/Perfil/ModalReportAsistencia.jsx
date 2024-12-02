@@ -62,8 +62,8 @@ export const ModalReportAsistencia = ({show, onHide, dataEmpl}) => {
                                     <td>12:00 PM</td>
                                     <td>08:50 AM</td>
                                     <td>12:10 PM</td>
-                                    <td>07 H. 10 M.</td>
-                                    <td></td>
+                                    <td>10H 0M</td>
+                                    <td>08H 56M</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>

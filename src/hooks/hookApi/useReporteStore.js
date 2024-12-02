@@ -651,13 +651,13 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerReporteSeguimientoTODO = async (id_empresa) => {
+	const obtenerReporteSeguimientoTODO = async (id_empresa, isClienteActive) => {
 		try {
 			setloadinData(true);
 			const { data: dataactivo } = await PTApi.get(
 				`/reporte/reporte-seguimiento-membresia/${id_empresa}`,
 				{
-					params: { isClienteActive: true },
+					params: { isClienteActive: isClienteActive },
 				}
 			);
 

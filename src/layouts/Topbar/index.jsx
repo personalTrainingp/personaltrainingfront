@@ -111,7 +111,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 					</strong>
 						<ModuloDropdown/>
 						{section_item && (
-						<h3  className="text-uppercase fw-bolder text-primary">/ {section_item}
+						<h3  className="text-uppercase fw-bolder text-primary d-flex justify-content-center align-items-center"><div className='mr-2'>/ {section_item} / </div><div> lunes 16 de septiembre del 2024 <br/> lunes 2 de diciembre del 2024</div> 
 						</h3>
 						)}
 				</div>	

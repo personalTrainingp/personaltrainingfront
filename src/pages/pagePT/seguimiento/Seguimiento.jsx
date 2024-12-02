@@ -34,11 +34,12 @@ export const Seguimiento = () => {
 									<Row>
 										<Col lg={6} className='border-right-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS ACTIVOS</h3>
-											<TableSeguimientoTODO id_empresa={598}/>
+											<TableSeguimientoTODO id_empresa={598} isClienteActive={true}/>
 										</Col>
 										<Col lg={6} className='border-left-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS INACTIVOS</h3>
-											<TableSeguimiento id_empresa={598} SeguimientoClienteActivos={false} />
+											<TableSeguimientoTODO id_empresa={598} isClienteActive={false}/>
+											{/* <TableSeguimiento id_empresa={598} SeguimientoClienteActivos={false} /> */}
 										</Col>
 									</Row>
 								</TabPanel>
@@ -50,7 +51,8 @@ export const Seguimiento = () => {
 										</Col>
 										<Col lg={6} className='border-left-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS INACTIVOS</h3>
-											<TableSeguimiento SeguimientoClienteActivos={false} id_empresa={0} />
+											<TableSeguimientoTODO id_empresa={0} isClienteActive={false}/>
+											{/* <TableSeguimiento SeguimientoClienteActivos={false} id_empresa={0} /> */}
 										</Col>
 									</Row>
 								</TabPanel>

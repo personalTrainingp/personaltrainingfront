@@ -205,6 +205,8 @@ export const TableSeguimiento = ({dae, statisticsData, SeguimientoClienteActivos
 			</>
 		)
 	}
+	console.log(dataView);
+	
 
 	const header = renderHeader();
 	return (

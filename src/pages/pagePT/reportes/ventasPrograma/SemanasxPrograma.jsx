@@ -3,7 +3,6 @@ import React, { useEffect } from 'react'
 import { Card, ProgressBar } from 'react-bootstrap'
 
 export const SemanasxPrograma = ({data}) => {
-	console.log(data);
 	data =data.reduce((acc, { semana, items }) => {
 		const existing = acc.find(group => group.semana === semana);
 		if (existing) {
