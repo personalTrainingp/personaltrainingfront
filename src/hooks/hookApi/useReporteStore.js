@@ -44,6 +44,8 @@ export const useReporteStore = () => {
 	const [loading, setloading] = useState(true);
 	const [reporte_FlujoCaja, setreporte_FlujoCaja] = useState([]);
 	const [ventasHoy, setventasHoy] = useState([]);
+
+	const [ventasxCita, setVentasxCita] = useState([]);
 	// const [repoVentasPorMembresia, setrepoVentasPorMembresia] = useState([]);
 	// const [repoVentasPorProdAcc, setrepoVentasPorProdAcc] = useState([])
 	// const [repoVentasPorProdSup, setrepoVentasPorProdSup] = useState([])
@@ -865,6 +867,21 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	};
+
+	const obtenerUtilidadesPorCita = async(fecha) => {
+		try {
+			const { data } = await PTApi.get('/reporte/utilidades-por-cita' , {
+				params: {
+
+				},
+			});
+			
+		//const [ventasxCita, setVentasxCita] = useState([]);
+		setVentasxCita(data.response)
+		} catch (error) {
+			console.log(error);
+		}
+	}
 	return {
 		loading,
 		obtenerReporteSeguimiento,
@@ -881,6 +898,8 @@ export const useReporteStore = () => {
 		obtenerReporteSeguimientoTODO,
 		obtenerReporteDeTotalDeVentasActuales,
 		obtenerVentasDeHoy,
+		obtenerUtilidadesPorCita,
+		ventasxCita,
 		reporteDeVentas,
 		ventasHoy,
 		reporte_FlujoCaja,

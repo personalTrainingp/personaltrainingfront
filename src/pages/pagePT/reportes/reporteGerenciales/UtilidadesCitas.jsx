@@ -1,3 +1,4 @@
+import { formatNumber } from 'accounting'
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import React from 'react'
@@ -13,11 +14,11 @@ export const UtilidadesCitas = ({name_cita, dataUtilidades}) => {
     <Card.Body>
       
     <DataTable value={dataUtilidades} size={'small'}>
-                    <Column header={name_cita} field='mes'></Column>
-                    <Column header="INGRESOS" field='total_ingresos'></Column>
-                    <Column header="EGRESOS" field='total_ingresos'></Column>
-                    <Column header="UTILIDAD" field='total_bene'></Column>
-                    <Column header="Margen %" field='margen'></Column>
+                    <Column header={name_cita} field='nombre_servicio'></Column>
+                    <Column header="INGRESOS" field='ingresoSoles' body={(rowData) => formatNumber(rowData.ingresoSoles , 2)}></Column>
+                    <Column header="EGRESOS" field='egresoSoles' body={(rowData) => formatNumber(rowData.egresoSoles , 2)}></Column>
+                    <Column header="UTILIDAD" field='utilidad' body={(rowData) => formatNumber(rowData.utilidad , 2)}></Column>
+                    <Column header="Margen %" field='margen' body={(rowData) => (formatNumber(rowData.margen , 2)*100) + "%"}></Column>
                 </DataTable>
     </Card.Body>
     </Card>
