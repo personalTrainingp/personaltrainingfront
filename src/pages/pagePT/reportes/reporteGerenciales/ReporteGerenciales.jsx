@@ -136,6 +136,7 @@ import { UtilidadesCitas } from './UtilidadesCitas'
 import SimpleBar from 'simplebar-react'
 import { SelectButton } from 'primereact/selectbutton'
 import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask'
+import { useDispatch } from 'react-redux';
 
 export const ReporteGerenciales = () => {
   const toast = useRef(null)
@@ -145,6 +146,8 @@ export const ReporteGerenciales = () => {
   const { obtenerAportesPorFechas, dataAportes } = useAportesIngresosStore()
   const { obtenerGastosPorFecha, dataGasto } = useGf_GvStore()
   const { obtenerTipoCambioPorFecha, tipocambio, obtenerTipoDeCambiosPorRangoDeFechas, dataTipoCambio } = useTipoCambioStore()
+  const { obtenerUtilidadesPorCita , ventasxCita } = useReporteStore();
+
   const [anio, setAnio] = useState(2024);
   const items = [
       { name: '2024', value: 2024 },
@@ -161,7 +164,17 @@ export const ReporteGerenciales = () => {
     obtenerGastosPorFecha(rangoFechas)
     obtenerTipoDeCambiosPorRangoDeFechas(rangoFechas)
     // obtenerTipoCambioPorFecha(rangoFechas)
+    obtenerUtilidadesPorCita(rangoFechas)
   }, [rangoFechas])
+
+  
+  let utilidadesxNutricion = {};
+  let utilidadesxTratamientoEstetico =  ventasxCita?.response?.FITOL || {};
+  utilidadesxTratamientoEstetico = Object.values(utilidadesxTratamientoEstetico);
+  console.log("Exito ventas por FITOL");
+  console.log(utilidadesxTratamientoEstetico);
+
+
   const showToast = (severity, summary, detail, label) => {
     toast.current.show({ severity, summary, detail, label });
   };
@@ -308,7 +321,7 @@ const dataUtilidadesNutricion=[
               <UtilidadesProgramas/>
               <UtilidadesProductos name_producto={'SUPLEMENTOS'} dataUtilidades={dataUtilidadesSuplementos}/>
               <UtilidadesProductos name_producto={'ACCESORIOS'} dataUtilidades={dataUtilidadesAccesorio}/>
-              <UtilidadesCitas name_cita={"TRATAMIENTOS ESTETICOS"} dataUtilidades={dataUtilidadesTratEst}/>
+              <UtilidadesCitas name_cita={"TRATAMIENTOS ESTETICOS"} dataUtilidades={utilidadesxTratamientoEstetico}/>
               <UtilidadesCitas name_cita={"NUTRICION"} dataUtilidades={dataUtilidadesNutricion}/>
             </SimpleBar>
           </Col>
