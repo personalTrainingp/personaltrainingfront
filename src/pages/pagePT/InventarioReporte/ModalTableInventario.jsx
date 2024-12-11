@@ -77,7 +77,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     const valorUnitActualBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span> <MoneyFormatter amount={rowData.valor_unitario_actual}/></span>
+                <span> <MoneyFormatter amount={rowData.valor_total}/></span>
             </div>
         );
     };
@@ -122,17 +122,17 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
 					sortable
 				></Column>
                 <Column
-					header="VALOR ACTUAL"
+					header="VALOR UNITARIO"
 					body={valorUnitDeprecBodyTemplate}
 					style={{ width: '4rem' }}
 					sortable
 				></Column>
-                {/* <Column
-					header="VALOR ADQUISICION"
+                <Column
+					header="VALOR TOTAL"
 					body={valorUnitActualBodyTemplate}
 					style={{ width: '4rem' }}
 					sortable
-				></Column> */}
+				></Column>
 			</DataTable>
             
     </Dialog>

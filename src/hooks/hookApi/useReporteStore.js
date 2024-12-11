@@ -163,9 +163,11 @@ export const useReporteStore = () => {
 					detalle_prodAccesorios: productosFiltradosAcc,
 					detalle_prodSuplementos: productosFiltradosSup,
 					detalle_cita_tratest: [TratEsteticoFiltrados],
+					fecha_venta: e.fecha_venta,
 					detalle_cita_nut: [],
 					detalle_pago: e.detalleVenta_pagoVenta,
 					tb_empleado: e.tb_empleado,
+					tb_cliente: e.tb_cliente,
 				};
 			});
 			// console.log(data.reporte);
@@ -175,6 +177,7 @@ export const useReporteStore = () => {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
 						detalle_membresia: e.detalle_ventaMembresia,
+						tb_cliente: e.tb_cliente,
 						detalle_pago: e.detalleVenta_pagoVenta,
 						tb_empleado: e.tb_empleado,
 					};
@@ -190,6 +193,7 @@ export const useReporteStore = () => {
 					return {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
+						tb_cliente: e.tb_cliente,
 						detalle_prodAccesorios: productosFiltrados,
 						detalle_pago: e.detalleVenta_pagoVenta,
 						tb_empleado: e.tb_empleado,
@@ -204,6 +208,7 @@ export const useReporteStore = () => {
 					return {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
+						tb_cliente: e.tb_cliente,
 						detalle_prodSuplemento: productosFiltrados,
 						detalle_pago: e.detalleVenta_pagoVenta,
 						tb_empleado: e.tb_empleado,
@@ -215,6 +220,7 @@ export const useReporteStore = () => {
 					return {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
+						tb_cliente: e.tb_cliente,
 						// detalle_cita_tratest: e.detalle_ventaCitas.filter(
 						// 	(item) => item.tb_servicio.tipo_servicio === 'FITOL'
 						// ),
@@ -232,6 +238,7 @@ export const useReporteStore = () => {
 					return {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
+						tb_cliente: e.tb_cliente,
 						detalle_cita_nut: CitasFiltrados,
 						detalle_pago: e.detalleVenta_pagoVenta,
 						tb_empleado: e.tb_empleado,

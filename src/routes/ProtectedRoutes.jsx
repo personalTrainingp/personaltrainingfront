@@ -65,6 +65,9 @@ const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
 const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
 const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
 const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
+const ResumenComparativo = lazy(()=>import('../pages/pagePT/reportes/ResumenComparativo'))
+const ReporteDemograficoCliente = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoCliente'))
+const ReporteDemograficoxMembresia = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoxMembresia'))
 /**
  * routes import
  */
@@ -103,6 +106,19 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento */}
+					{
+						sections.find(e=>e.url==='/reporte')&&
+                        <Route path='reporte/reporte-demografico-membresia' element={<ReporteDemograficoxMembresia/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte')&&
+                        <Route path='reporte/reporte-demografico' element={<ReporteDemograficoCliente/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte/comparativo-resumen-x-mes')&&
+                        <Route path='reporte/comparativo-resumen-x-mes' element={<ReporteDeGestionComercial/>}/>
+					}
+
 					{
                         sections.find(e=>e.url==='/reporte/gestion-comercial') && 
                         <Route path='reporte/gestion-comercial' element={<ReporteDeGestionComercial/>}/>
@@ -271,6 +287,10 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/reporte') && 
 						<Route path='reporte/ventas-asesor' element={<ReporteVentasAsesor/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/reporte') && 
+						<Route path='reporte/resumen-comparativo' element={<ResumenComparativo/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/reporte') &&

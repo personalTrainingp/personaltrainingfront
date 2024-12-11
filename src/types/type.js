@@ -4566,16 +4566,3 @@ export const arrayDistrito = [
 	{ value: '250400', label: 'PURUS' },
 	{ value: '250401', label: 'PURUS' },
 ];
-export function filtrarDuplicados(data) {
-	const vistos = new Set();
-	const resultado = [];
-
-	data.forEach((item) => {
-		if (!vistos.has(item.label)) {
-			resultado.push(item); // Agregar si el label no ha sido visto aún
-			vistos.add(item.label); // Marcar el label como visto
-		}
-	});
-
-	return resultado;
-}

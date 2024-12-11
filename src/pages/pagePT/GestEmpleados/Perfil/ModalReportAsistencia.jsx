@@ -1,10 +1,62 @@
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Col, Table, Row } from 'react-bootstrap';
+import { usePlanillaStore } from './usePlanillaStore';
+import dayjs from 'dayjs';
+import { TabPanel, TabView } from 'primereact/tabview';
+import { useJornadaStore } from '@/hooks/hookApi/useJornadaStore';
+// import customParseFormat from 'dayjs/plugin/customParseFormat'
+// dayjs.extend(customParseFormat); // Activar la extensión
 
-export const ModalReportAsistencia = ({show, onHide, dataEmpl}) => {
-  
+function restarTiempo(horaInicio, horaFin) {
+
+    // Crear objetos dayjs para las dos horas
+    horaInicio = dayjs(horaInicio, 'hh:mm A'); // 6:00 AM
+    horaFin = dayjs(horaFin, 'hh:mm A'); // 2:00 PM
+    // Calcular la diferencia en horas y minutos
+const diferenciaEnMinutos = horaFin.diff(horaInicio, 'minute');
+const horas = Math.floor(diferenciaEnMinutos / 60); // Obtener horas completas
+const minutos = diferenciaEnMinutos % 60; // Obtener minutos restantes
+// console.log(horaInicio, horaFin);
+    
+return `${horas}H Y ${minutos}M`
+
+}
+
+function restarMinutos(horaInicio, horaFin) {
+
+    // Crear objetos dayjs para las dos horas
+    horaInicio = dayjs(horaInicio, 'hh:mm A'); // 6:00 AM
+    horaFin = dayjs(horaFin, 'hh:mm A'); // 2:00 PM
+    // Calcular la diferencia en horas y minutos
+    const diferencia = horaFin.diff(horaInicio, 'minute'); // Restar en minutos 
+    
+return `${diferencia}`
+
+}
+export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => {
+    const { postPlanillaxEMPL, obtenerAsistenciasxEmpl, obtenerPlanillaxID, dataPlanilla, asistenciaxEmplxPlanilla } = usePlanillaStore()
+    const { dataJornadaxEmpl, obtenerJornadaxEmpleado } = useJornadaStore()
+    useEffect(() => {
+        if(id_planilla==0) return;
+        obtenerPlanillaxID(id_planilla)
+        obtenerAsistenciasxEmpl(uid_empl, id_planilla)
+        obtenerJornadaxEmpleado(uid_empl)
+        }, [id_planilla])
+        // console.log(, dataPlanilla);
+        const arrayDeDiasxSemana = obtenerDiasPorRango(dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY'), dayjs.utc(dataPlanilla.fecha_hasta).format('DD/MM/YYYY'), asistenciaxEmplxPlanilla, dataJornadaxEmpl)
+        console.log(arrayDeDiasxSemana, 
+            arrayDeDiasxSemana.flatMap(f=>f.items).map(m=>{
+                const minTardanzas = restarMinutos(m.marcacionInicio ,m.jornadaEntrada )
+                // console.log(m.marcacionInicio ,m.jornadaEntrada);
+                
+                return {
+                    minutostardanzas: minTardanzas,
+                    ...m,
+                }
+            }), "jorjor");
+        
   return (
     <Dialog
         visible={show}
@@ -13,87 +65,87 @@ export const ModalReportAsistencia = ({show, onHide, dataEmpl}) => {
         style={{width: '120rem'}}
         header='REPORTE DE ASISTENCIA'
         >
-          <h4>PERIODO DESDE: 05/10/2024 </h4>
-          <h4>PERIODO HASTA: 05/11/2024 </h4>
+          <h4>PERIODO DESDE: {dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY')} </h4>
+          <h4>PERIODO HASTA: {dayjs.utc(dataPlanilla.fecha_hasta).format('DD/MM/YYYY')} </h4>
           <div>
             <Row>
               <Col xxl={12}>
-              
-              <h3>SEMANA 01</h3>
-                <Table
-                            className="table-centered table-normal mb-0"
-                        >
-                            <thead className="bg-primary">
-                                <tr>
-                                    <th className='text-white text-center p-1' rowSpan={2} colSpan={1}>FECHA</th>
-                                    <th className='text-white text-center p-1' colSpan={2}>HORARIO</th>
-                                    <th className='text-white text-center p-1' colSpan={2}>JORNADA REAL</th>
-                                    <th className='text-white text-center p-1' colSpan={6}>HORAS</th>
-                                    <th className='text-white text-center p-1' colSpan={2}>PERMISOS</th>
-                                    <th className='text-white text-center p-1' colSpan={2}>SALIDAS</th>
-                                    <th className='text-white text-center p-1' rowSpan={2} colSpan={1}>HORAS EXTRAS</th>
-                                </tr>
-                                <tr>
-                                    <th className='text-white text-center p-1' colSpan={1}>ENTRADA</th>
-                                    <th className='text-white text-center p-1' colSpan={1}>SALIDA</th>
+              {
+                arrayDeDiasxSemana.map(s=>(
+                    <>
+                    <h3>SEMANA {s.semana}</h3>
+                    <Table
+                                className="table-centered table-normal mb-0"
+                            >
+                                <thead className="bg-primary">
+                                    <tr>
+                                        <th className='text-white text-center p-1' rowSpan={2} colSpan={1}>FECHA</th>
+                                        <th className='text-white text-center p-1' colSpan={2}>HORARIO</th>
+                                        <th className='text-white text-center p-1' colSpan={2}>JORNADA REAL</th>
+                                        <th className='text-white text-center p-1' colSpan={4}>HORAS</th>
+                                        <th className='text-white text-center p-1' colSpan={2}>PERMISOS</th>
+                                        <th className='text-white text-center p-1' colSpan={2}>SALIDAS</th>
+                                        <th className='text-white text-center p-1' rowSpan={2} colSpan={1}>HORAS EXTRAS</th>
+                                    </tr>
+                                    <tr>
+                                        <th className='text-white text-center p-1' colSpan={1}>ENTRADA</th>
+                                        <th className='text-white text-center p-1' colSpan={1}>SALIDA</th>
 
-                                    <th className='text-white text-center p-1' colSpan={1}>ENTRADA</th>
-                                    <th className='text-white text-center p-1' colSpan={1}>SALIDA</th>
+                                        <th className='text-white text-center p-1' colSpan={1}>ENTRADA</th>
+                                        <th className='text-white text-center p-1' colSpan={1}>SALIDA</th>
 
-                                    <th className='text-white text-center p-1' colSpan={1}>ASIGN.</th>
-                                    <th className='text-white text-center p-1' colSpan={1}>ASIST.</th>
-                                    <th className='text-white text-center p-1' colSpan={1}>JORNADA</th>
-                                    <th className='text-white text-center p-1' colSpan={1}>TARDANZAS</th>
-                                    <th className='text-white text-center p-1' colSpan={1}>S. TEMPR.</th>
-                                    <th className='text-white text-center p-1' colSpan={1}>AUSENCIA</th>
+                                        <th className='text-white text-center p-1' colSpan={1}>ASIGN.</th>
+                                        <th className='text-white text-center p-1' colSpan={1}>ASIST.</th>
+                                        {/* <th className='text-white text-center p-1' colSpan={1}>JORNADA</th> */}
+                                        <th className='text-white text-center p-1' colSpan={1}>TARDANZAS</th>
+                                        {/* <th className='text-white text-center p-1' colSpan={1}>S. TEMPR.</th> */}
+                                        <th className='text-white text-center p-1' colSpan={1}>S. TEMPR.</th>
 
-                                    <th className='text-white text-center p-1' colSpan={1}>CON SUELDO</th>
-                                    <th className='text-white text-center p-1' colSpan={1}>SIN SUELDO</th>
+                                        <th className='text-white text-center p-1' colSpan={1}>CON SUELDO</th>
+                                        <th className='text-white text-center p-1' colSpan={1}>SIN SUELDO</th>
 
-                                    <th className='text-white text-center p-1' colSpan={1}>CON SUELDO</th>
-                                    <th className='text-white text-center p-1' colSpan={1}>SIN SUELDO</th>
+                                        <th className='text-white text-center p-1' colSpan={1}>CON SUELDO</th>
+                                        <th className='text-white text-center p-1' colSpan={1}>SIN SUELDO</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th>SABADO <br/> 05/10</th>
-                                    <td>08:00 AM</td>
-                                    <td>12:00 PM</td>
-                                    <td>08:50 AM</td>
-                                    <td>12:10 PM</td>
-                                    <td>10H 0M</td>
-                                    <td>08H 56M</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>DOMINGO <br/> 06/10</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                    </Table>
+                                {
+                                    s.items.map(i=>{
+                                        const jornadaEntrada = dayjs(i.jornadaEntrada, 'hh:mm').format('hh:mm A')
+                                        const jornadaSalida = dayjs(i.jornadaSalida, 'hh:mm').format('hh:mm A')
+                                        const marcacionInicio = dayjs.utc(i.marcacionInicio).format('hh:mm A')
+                                        const marcacionFin = dayjs.utc(i.marcacionFin).format('hh:mm A')
+                                        console.log(i.marcacionInicio, dayjs(i.fecha, 'DD/MM').format('dddd DD'), "jor");
+                                        
+                                        return(
+                                                    <tr>
+                                                        <th>{dayjs(i.fecha, 'DD/MM').format('dddd DD')}</th>
+                                                        <td>{i.jornadaEntrada!='00:00'&&jornadaEntrada}</td>
+                                                        <td>{i.jornadaSalida!='00:00'&&jornadaSalida}</td>
+                                                        <td>{i.marcacionInicio!='00:00:00'&&i.jornadaEntrada!='00:00'&&marcacionInicio}</td>
+                                                        <td>{i.marcacionFin!='00:00:00'&&i.jornadaSalida!='00:00'&&marcacionFin}</td>
+                                                        <td>{i.jornadaEntrada!='00:00'&&restarTiempo(jornadaEntrada, jornadaSalida)}</td>
+                                                        <td>{i.marcacionInicio!='00:00:00'&&i.jornadaEntrada!='00:00'&&restarTiempo(marcacionInicio, marcacionFin)}</td>
+                                                        {/* <td></td> */}
+                                                        <td>{i.marcacionInicio!='00:00:00'&&(restarMinutos(marcacionInicio ,jornadaEntrada )<=0) && (restarMinutos(marcacionInicio,jornadaEntrada )>=0)&&`${restarMinutos(marcacionInicio ,jornadaEntrada )} MIN`}</td>
+                                                        <td>{i.marcacionInicio!='00:00:00'&&(restarMinutos(marcacionFin ,jornadaSalida )<=0) && (restarMinutos(marcacionFin ,jornadaSalida )>=0)&&`${restarMinutos(marcacionFin ,jornadaSalida)} MIN`} </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                        )
+                                    }
+                                )
+                                }
+                                </tbody>
+                        </Table>
+                    </>
+                ))
+              }
                     <br/>
               </Col>
               <Col xxl={2}>
@@ -189,6 +241,105 @@ export const ModalReportAsistencia = ({show, onHide, dataEmpl}) => {
 
 
 
+function obtenerDiasPorRango(fechaDesde, fechaHasta, marcaciones, jornadas) {
+    const fechaInicio = dayjs(fechaDesde, 'DD/MM/YYYY');
+    const fechaFin = dayjs(fechaHasta, 'DD/MM/YYYY');
+    const dataDiasRango = [];
+    let semanaActual = [];
+    let semanaNumero = 1;
+    let fechaActual = fechaInicio;
+
+    // Crear un mapa de marcaciones para acceso rápido
+    const mapaMarcaciones = marcaciones.reduce((mapa, item) => {
+        const fecha = dayjs(item.fecha).format('DD/MM/YYYY');
+        mapa[fecha] = {
+            inicio: item.items[0].tiempo_marcacion_new,
+            fin: item.items[item.items.length - 1].tiempo_marcacion_new,
+        };
+        return mapa;
+    }, {});
+
+    // Crear un mapa de jornadas para acceso rápido
+    const mapaJornadas = jornadas.reduce((mapa, item) => {
+        if (!mapa[item.semana]) mapa[item.semana] = {};
+        mapa[item.semana][item.dia] = {
+            entrada: item.entrada,
+            salida: item.salida,
+        };
+        return mapa;
+    }, {});
+
+    const diasSemana = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
+
+    while (fechaActual.isBefore(fechaFin) || fechaActual.isSame(fechaFin)) {
+        const diaFormateado = fechaActual.format('DD/MM/YYYY');
+        
+        const diaSemana = fechaActual.day(); // Obtiene el día de la semana (0=Domingo, 6=Sábado)
+        const nombreDia = diasSemana[diaSemana];
+        const marcacion = mapaMarcaciones[diaFormateado] || { inicio: '00:00:00', fin: '00:00:00' };
+        const jornada = (mapaJornadas[semanaNumero] && mapaJornadas[semanaNumero][nombreDia]) || { entrada: '00:00', salida: '00:00' };
+        // Añadir el día con marcación y jornada al array de la semana actual
+        semanaActual.push({
+            fecha: diaFormateado,
+            marcacionInicio: marcacion.inicio,
+            marcacionFin: marcacion.fin,
+            jornadaEntrada: jornada.entrada,
+            jornadaSalida: jornada.salida,
+        });
+
+        // Si es domingo o el último día del rango, cerrar la semana
+        if (diaSemana === 0 || fechaActual.isSame(fechaFin)) {
+            dataDiasRango.push({
+                semana: semanaNumero,
+                items: [...semanaActual],
+            });
+            semanaActual = [];
+            semanaNumero++;
+        }
+
+        fechaActual = fechaActual.add(1, 'day');
+    }
+
+    return dataDiasRango;
+    // const fechaInicio = dayjs(fechaDesde, 'DD/MM/YYYY');
+    // const fechaFin = dayjs(fechaHasta, 'DD/MM/YYYY');
+    // const dataDiasRango = [];
+    // let semanaActual = [];
+    // let semanaNumero = 1;
+    // let fechaActual = fechaInicio;
+
+    // // Crear un mapa de marcaciones para acceso rápido
+    // const mapaMarcaciones = marcaciones.reduce((mapa, item) => {
+    //     const fecha = dayjs(item.fecha).format('DD/MM');
+    //     mapa[fecha] = {
+    //         inicio: item.items[0].tiempo_marcacion_new,
+    //         fin: item.items[item.items.length - 1].tiempo_marcacion_new,
+    //     };
+    //     return mapa;
+    // }, {});
+
+    // while (fechaActual.isBefore(fechaFin) || fechaActual.isSame(fechaFin)) {
+    //     const diaFormateado = fechaActual.format('DD/MM');
+    //     const marcacion = mapaMarcaciones[diaFormateado] || '00:00:00';
+
+    //     // Añadir el día con su marcación al array de la semana actual
+    //     semanaActual.push({ fecha: diaFormateado, marcacion });
+
+    //     // Si es domingo o el último día del rango, cerrar la semana
+    //     if (fechaActual.day() === 0 || fechaActual.isSame(fechaFin)) {
+    //         dataDiasRango.push({
+    //             semana: semanaNumero,
+    //             items: [...semanaActual],
+    //         });
+    //         semanaActual = [];
+    //         semanaNumero++;
+    //     }
+
+    //     fechaActual = fechaActual.add(1, 'day');
+    // }
+
+    // return dataDiasRango;
+}
 
 
 

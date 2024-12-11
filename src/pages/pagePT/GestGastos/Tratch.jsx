@@ -21,6 +21,7 @@ import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { ModalImportadorData } from './ModalImportadorData';
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 dayjs.extend(utc);
 
 export default function AdvancedFilterDemo({showToast, id_enterprice}) {
@@ -180,7 +181,13 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const montoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(FUNMoneyFormatter(rowData.monto, rowData.moneda=='PEN'?'S/.':'$ '), globalFilterValue)}</span>
+                <span>
+                    {rowData.moneda === 'PEN' ? <SymbolSoles /> : '$'}
+                    {highlightText(
+                        FUNMoneyFormatter(rowData.monto, ''),
+                        globalFilterValue
+                    )}
+                </span>
             </div>
         );
     };

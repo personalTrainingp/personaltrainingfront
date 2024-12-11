@@ -11,12 +11,14 @@ import { useForm } from '@/hooks/useForm'
 import { Toast } from 'primereact/toast'
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore'
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
-import { MoneyFormatter } from '@/components/CurrencyMask'
+import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask'
 import { clasesVentasSeparadas } from '@/types/type'
 import { FormatRangoFecha } from '@/components/componentesReutilizables/FormatRangoFecha'
 import { HistorialVentas } from './HistorialVentas'
 import { FechaRange } from '@/components/RangeCalendars/FechaRange'
 import { useSelector } from 'react-redux'
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
+import dayjs from 'dayjs'
 
 
 function contarVentas(data) {
@@ -64,7 +66,7 @@ export const TotalVentas = () => {
     obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor(RANGE_DATE)
     obtenerReporteDeTotalDeVentasActuales()
     // obtenerVentasDeHoy()
-    obtenerVentasHoy([new Date('2024-12-02T00:00:00'), new Date('2024-12-02T23:59:00')])
+    obtenerVentasHoy([new Date(), new Date()])
     // obtenerReporteDeFormasDePagos(rangoFechas)
   }, [RANGE_DATE])
   console.log(reporteDeVentasHOY, "hoyyy");
@@ -140,13 +142,17 @@ export const TotalVentas = () => {
       {/* <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/> */}
     </div>
     <Row>
-      <Col xxl={2}>
-        <CardTotal title={'Venta del dia'} body={<MoneyFormatter amount={reporteVentasHoy}/>} span={`${reporteDeVentasHOY.length} ventas`}/>
+      <Col xxl={12}>
+        <Row className=' d-flex justify-content-center'>
+          <Col xxl={4}>
+            <CardTotal title={<>VENTA DIA {dayjs(new Date()).format('D [de] MMMM [del] YYYY')}</>} body={<SymbolSoles isbottom={true} numero={<NumberFormatMoney amount={reporteVentasHoy}/>}/>} span={`${reporteDeVentasHOY.length} ventas`}/>
+          </Col>
+          <Col xxl={5}>
+            <CardTotal onClick={()=>setclickServProd('total')} title={`VENTA ACUMULADA por rango de fechas ${clasesVentasSeparadas(clickServProd)}`} body={<SymbolSoles isbottom={true} numero={<NumberFormatMoney amount={TotalDeVentasxProdServ(clickServProd).sumaTotal}/>}/>} span={`${TotalDeVentasxProdServ(`${clickServProd}`).data?.length} ventas `}/>
+          </Col>
+        </Row>
       </Col>
-      <Col xxl={3}>
-        <CardTotal onClick={()=>setclickServProd('total')} title={`VENTA ACUMULADA por rango de fechas ${clasesVentasSeparadas(clickServProd)}`} body={<MoneyFormatter amount={TotalDeVentasxProdServ(clickServProd).sumaTotal}/>} span={`${TotalDeVentasxProdServ(`${clickServProd}`).data?.length} ventas `}/>
-      </Col>
-      <Col xxl={7}>
+      <Col xxl={12}>
         <CardProdServ setclickServProd={setclickServProd} data={reporteDeDetalleVenta} dataGen={reporteVentas}/>
       </Col>
     </Row>

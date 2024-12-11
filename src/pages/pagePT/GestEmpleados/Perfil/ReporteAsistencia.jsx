@@ -7,15 +7,21 @@ import { Table } from 'react-bootstrap'
 import pdfMake from 'pdfmake/build/pdfmake'
 import { fontsRoboto } from '@/assets/fonts/fontsRoboto'
 import { ModalAgregarNomina } from './ModalAgregarNomina'
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
+import { usePlanillaStore } from './usePlanillaStore'
+import dayjs from 'dayjs'
 pdfMake.vfs = fontsRoboto
 
-export const ReporteAsistencia = ({}) => {
+export const ReporteAsistencia = ({uid_empl}) => {
 
     const [isOpenModalAgregarNomina, setisOpenModalAgregarNomina] = useState(false)
 	const [isOpenModalReportNominas, setisOpenModalReportNominas] = useState(false)
 	const [isOpenModalReportAsistencia, setisOpenModalReportAsistencia] = useState(false)
     const [dataPeriodoParamSelect, setdataPeriodoParamSelect] = useState({id_param: '', fecha_hasta: '', fecha_desde:''})
+	const [uidEmpleado, setuidEmpleado] = useState('')
+	const [idPlanilla, setidPlanilla] = useState(0)
     const { DataPeriodoParam, obtenerParametroPorEntidadyGrupo_PERIODO } = useTerminoStore()
+	const { dataPlanillaxEmpl, obtenerPlanillaxEmpl } = usePlanillaStore()
     const onOpenModalReportAsistencia = (id_param, fecha_hasta, fecha_desde)=>{
         setisOpenModalAgregarNomina(true)
         setdataPeriodoParamSelect({id_param, fecha_desde, fecha_hasta})
@@ -25,7 +31,10 @@ export const ReporteAsistencia = ({}) => {
     }
     useEffect(() => {
       obtenerParametroPorEntidadyGrupo_PERIODO('EMPLEADO', 'PERIODO_ASISTENCIA')
+	  obtenerPlanillaxEmpl(uid_empl)
     }, [])
+	console.log(dataPlanillaxEmpl, "plani");
+	
     var dd = {
 		content: [
 			// {
@@ -121,7 +130,9 @@ export const ReporteAsistencia = ({}) => {
         pdfGenerator.download()
       })
     }
-	const onClickModalReporteAsistencia = ()=>{
+	const onClickModalReporteAsistencia = (id_p, uid_emp)=>{
+		setidPlanilla(id_p)
+		setuidEmpleado(uid_emp)
 		setisOpenModalReportAsistencia(true)
 	}	
 	const onClickCloseModalReporteAsistencia = ()=>{
@@ -129,7 +140,7 @@ export const ReporteAsistencia = ({}) => {
 	}
   return (
     <>
-                        <Button onClick={onOpenModalReportAsistencia} className='m-2'>AGREGAR NOMINAS</Button>
+                        <Button onClick={onOpenModalReportAsistencia} className='m-2'>AGREGAR PLANILLA</Button>
                         
                     <Table
                         // style={{tableLayout: 'fixed'}}
@@ -141,27 +152,31 @@ export const ReporteAsistencia = ({}) => {
                             <tr>
                                 <th className='text-white p-1'>ID</th>
                                 <th className='text-white p-1'>FECHA</th>
-                                <th className='text-white p-1'>REMUNERACIONES S/.</th>
-                                <th className='text-white p-1'>DESCUENTOS S/.</th>
-                                <th className='text-white p-1'>APORTES S/.</th>
+                                <th className='text-white p-1'>REMUNERACIONES <SymbolSoles/></th>
+                                <th className='text-white p-1'>DESCUENTOS <SymbolSoles/></th>
+                                <th className='text-white p-1'>APORTES <SymbolSoles/></th>
                                 <th className='text-white p-1'>VER ASISTENCIAS</th>
                                 <th className='text-white p-1'>VER NOMINA</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>01</td>
-                                <td>MIERCOLES 21 DE MAYO DEL 2024</td>
-                                <td>2,000.00</td>
-                                <td>100.00</td>
-                                <td>250.00</td>
-								<td><a onClick={onClickModalReporteAsistencia} className='text-primary border-bottom-2 cursor-pointer'>VER</a></td>
-								<td><a className='text-primary border-bottom-2 cursor-pointer'>VER</a></td>
-                            </tr>
+							{dataPlanillaxEmpl.map(p=>(
+									<tr>
+									<td>{p.id}</td>
+									<td>{dayjs.utc(p.fecha_desde).format('dddd DD [de] MMMM [del] YYYY')}</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td><a onClick={()=>onClickModalReporteAsistencia(p.id, p.uid_empleado)} className='text-primary border-bottom-2 cursor-pointer'>VER</a></td>
+									<td><a className='text-primary border-bottom-2 cursor-pointer'>VER</a></td>
+								</tr>
+							))
+							}
+                            
                         </tbody>
                     </Table>
-                        <ModalAgregarNomina dataPeriodoParamSelect={dataPeriodoParamSelect} show={isOpenModalAgregarNomina} onHide={onCloseModalNomina}/>
-                        <ModalReportAsistencia dataPeriodoParamSelect={dataPeriodoParamSelect} show={isOpenModalReportAsistencia} onHide={onClickCloseModalReporteAsistencia}/>
+                        <ModalAgregarNomina uid_empl={uid_empl} dataPeriodoParamSelect={dataPeriodoParamSelect} show={isOpenModalAgregarNomina} onHide={onCloseModalNomina}/>
+                        <ModalReportAsistencia id_planilla={idPlanilla} uid_empl={uid_empl} dataPeriodoParamSelect={dataPeriodoParamSelect} show={isOpenModalReportAsistencia} onHide={onClickCloseModalReporteAsistencia}/>
     </>
   )
 }

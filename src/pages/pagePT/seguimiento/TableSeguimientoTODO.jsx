@@ -24,7 +24,6 @@ import { useSelector } from 'react-redux';
 import { Message } from 'primereact/message';
 import { Skeleton } from 'primereact/skeleton';
 import { Row } from 'react-bootstrap';
-import { arrayDistrito } from '@/types/type';
 import { BtnExportSeguimiento } from './BtnExportSeguimiento';
 dayjs.extend(utc);
 locale('es')

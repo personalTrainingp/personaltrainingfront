@@ -14,6 +14,12 @@ export const GestionInventario = () => {
         <TabPanel header="CIRCUS">
               <DataInventario id_enterprice={599}/>
         </TabPanel>
+        <TabPanel header="CHANGE">
+              <DataInventario id_enterprice={598}/>
+        </TabPanel>
+        <TabPanel header="MANOJ">
+              <DataInventario id_enterprice={600}/>
+        </TabPanel>
         {/* <TabPanel header="CHANGE">
               <DataInventario id_enterprice={598}/>
         </TabPanel> */}

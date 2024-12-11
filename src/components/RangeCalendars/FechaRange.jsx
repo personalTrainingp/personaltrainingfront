@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap';
 import { FormatRangoFecha } from '../componentesReutilizables/FormatRangoFecha';
 import { Button } from 'primereact/button';
@@ -26,32 +26,68 @@ export const FechaRange = ({rangoFechas}) => {
         
         dispatch(onSetRangeDate([dateRange.fec_desde, dateRange.fec_hasta]))
     }
-    const onChangeButton = ()=>{
-
-    }
+    useEffect(() => {
+        // dispatch()
+		// dispatch(onSetRangeDate([dateRange.fec_desde, dateRange.fec_hasta]))
+    }, [dateRange])
+    
   return (
-    <div className=''>
-        <Row className='d-flex align-items-end'>
-            <Col xxl={2}>
+    <div className='d-flex flex-row aling-items-center'>
+            {/* <div className='d-flex flex-column m-1'>
                 <label>
                     FECHA DESDE
                 </label>
                 <Calendar value={dateRange.fec_desde} locale='es' maxDate={dateRange.fec_hasta} name='fec_desde' onChange={(e)=>setdateRange({fec_desde: e.value, fec_hasta: dateRange.fec_hasta})} showIcon />
-            </Col>
-            <Col xxl={2}>
+            </div>
+            <div className='d-flex flex-column m-1'>
                 <label>
                     FECHA HASTA
                 </label>
                 <Calendar value={dateRange.fec_hasta} locale='es' minDate={dateRange.fec_desde} name='fec_hasta' onChange={(e)=>setdateRange({fec_desde: dateRange.fec_desde, fec_hasta: e.value})} showIcon />
-
+            </div>
+            <div className='d-flex flex-column m-1  justify-content-end'>
+            <Button onClick={onClickFechaRange} className='m-0 '>actualizar</Button>
+            </div> */}
+        {/* */}
+        <Row className='d-flex align-items-end'>
+            <Col xxl={4}>
+                <label className='' style={{fontSize: '28px'}}>
+                    DESDE
+                </label>
+                <Calendar className='' value={dateRange.fec_desde} locale='es' maxDate={dateRange.fec_hasta} name='fec_desde' onChange={(e)=>setdateRange({fec_desde: e.value, fec_hasta: dateRange.fec_hasta})} showIcon />
             </Col>
-            <Col xxl={1} className=''>
-            <Button onClick={onClickFechaRange}>actualizar</Button>
+            <Col xxl={4}>
+                <label className='' style={{fontSize: '28px'}}>
+                    HASTA
+                </label>
+                <Calendar className='' value={dateRange.fec_hasta} locale='es' minDate={dateRange.fec_desde} name='fec_hasta' onChange={(e)=>setdateRange({fec_desde: dateRange.fec_desde, fec_hasta: e.value})} showIcon />
             </Col>
-        </Row>
+            <Col xxl={4} className='' style={{fontSize: '25px'}}>
+            <Button onClick={onClickFechaRange} className='m-0 '>actualizar</Button>
+            </Col>
+        </Row> 
         <br/>
         <br/>
                 {/* <FormatRangoFecha rangoFechas={rangoFechas}/> */}
     </div>
   )
 }
+
+/**
+ * 
+ <div className='d-flex flex-column m-1'>
+                <label>
+                    FECHA DESDE
+                </label>
+                <Calendar value={dateRange.fec_desde} locale='es' maxDate={dateRange.fec_hasta} name='fec_desde' onChange={(e)=>setdateRange({fec_desde: e.value, fec_hasta: dateRange.fec_hasta})} showIcon />
+            </div>
+            <div className='d-flex flex-column m-1'>
+                <label>
+                    FECHA HASTA
+                </label>
+                <Calendar value={dateRange.fec_hasta} locale='es' minDate={dateRange.fec_desde} name='fec_hasta' onChange={(e)=>setdateRange({fec_desde: dateRange.fec_desde, fec_hasta: e.value})} showIcon />
+            </div>
+            <div className='d-flex flex-column m-1  justify-content-end'>
+            <Button onClick={onClickFechaRange} className='m-0 '>actualizar</Button>
+            </div>
+ */
