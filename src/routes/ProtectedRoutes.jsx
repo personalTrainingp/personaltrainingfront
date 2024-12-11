@@ -65,7 +65,7 @@ const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
 const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
 const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
 const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
-const ResumenComparativo = lazy(()=>import('../pages/pagePT/reportes/ResumenComparativo'))
+const ResumenComparativo = lazy(()=>import('../pages/pagePT/reportes/resumenComparativo'))
 const ReporteDemograficoCliente = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoCliente'))
 const ReporteDemograficoxMembresia = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoxMembresia'))
 /**
