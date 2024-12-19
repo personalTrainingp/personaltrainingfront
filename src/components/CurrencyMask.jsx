@@ -58,6 +58,17 @@ export const FUNMoneyFormatter = (amount, moneda) => {
   });
   return formattedAmount
 }
+export const FUNFormatterCom = (amount, splitCaracter) => {
+  const formattedAmount = accounting.formatMoney(amount, {
+    symbol: ``,  // Símbolo de la moneda
+    precision: 2, // Precisión de decimales
+    thousand: ',', // Separador de miles
+    decimal: '.',  // Separador decimal
+    format: '%s%v' // "%s" es el símbolo de la moneda y "%v" es el valor numérico
+  });
+  
+  return formattedAmount.split(splitCaracter?splitCaracter:'.')[0]
+}
 export const formateo_Moneda = (current)=>{
   return <MoneyFormatter amount={current}/>
 }

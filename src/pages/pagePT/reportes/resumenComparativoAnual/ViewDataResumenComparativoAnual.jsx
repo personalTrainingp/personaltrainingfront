@@ -78,7 +78,7 @@ export const ViewDataResumenComparativoAnual = () => {
             style={{ flex: '0 0 auto', width: '150px' }} // Ancho fijo para el botón
         />
         
-        <TableResumenAnual dataMes={dataVentas}/>
+        {/* <TableResumenAnual dataMes={dataVentas}/> */}
       </div>
       ):(
         <> cargando </>

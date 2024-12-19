@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TreeSelect } from 'primereact/treeselect';
+// import { TreeSelect } from 'primereact/treeselect';
 import { NodeService } from './DataTest';
 import Select from 'react-select'
 import { useComboVentasxMesAnioStore } from "./useComboVentasxMesAnioStore";
@@ -8,6 +8,9 @@ import { useForm } from "@/hooks/useForm";
 import { Button } from "primereact/button";
 import { useDispatch } from "react-redux";
 import { onSetMultiDate } from "@/store/data/dataSlice";
+import { TreeSelect } from "antd";
+
+const { SHOW_PARENT } = TreeSelect;
 const selectMeses = {
     rangeMes: []
 }
@@ -38,11 +41,75 @@ function obtenerMesesRango(rangoFechas) {
 
     return resultado;
 }
+
+const treeData = [
+    {
+      value: '2024',
+      title: '2024',
+      children: [
+        {
+          value: 'enero',
+          title: 'enero',
+          children: [
+            {
+              value: 'enero-01',
+              title: '01',
+            },
+            {
+              value: 'enero-02',
+              title: '02',
+            },
+            {
+              value: 'enero-03',
+              title: '03',
+            },
+            {
+              value: 'enero-04',
+              title: '04',
+            },
+            {
+              value: '05',
+              title: '05',
+            },
+          ],
+        },
+        {
+            value: 'febrero',
+            title: 'febrero',
+            children: [
+              {
+                value: '01',
+                title: '01',
+              },
+              {
+                value: '02',
+                title: '02',
+              },
+              {
+                value: '03',
+                title: '03',
+              },
+              {
+                value: '04',
+                title: '04',
+              },
+              {
+                value: '05',
+                title: '05',
+              },
+            ],
+          },
+      ],
+    },
+  ];
 export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactSelect, selectsMulti}) {
     // const [multiMes, setmultiMes] = useState(null)
-    
+    const [valorTree, setvalorTree] = useState()
     console.log(selectsMulti);
-    
+    const onHandleChange = (newValor)=>{
+        console.log(newValor);
+        setvalorTree(newValor)
+    }
     // const { comboMesesActivo, obtenerVentasDeProgramasxFechaVenta } = useComboVentasxMesAnioStore()
     // useEffect(() => {
         //     obtenerVentasDeProgramasxFechaVenta()
@@ -50,7 +117,18 @@ export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactS
     // console.log(comboMesesActivo);
     return (
         <div className="d-flex" style={{ width: '100%', gap: '10px' }}>
-        <Select
+            <TreeSelect
+                showCheckedStrategy="SHOW_PARENT"
+                placeholder= 'Please select'
+                style= {{
+                width: '100%',
+                }}
+                treeCheckable
+                onChange={onHandleChange}
+                value={valorTree}
+                treeData={treeData}
+                />
+        {/* <Select
             isMulti
             options={selectsMulti}
             onChange={(e) => onInputChangeReactSelect(e, 'rangeMes')}
@@ -63,7 +141,7 @@ export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactS
                 flex: '1', // Ocupa el resto del espacio disponible
             }),
             }}
-        />
+        /> */}
         </div>
     );
 }

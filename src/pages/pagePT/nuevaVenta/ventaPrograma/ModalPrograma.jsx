@@ -131,14 +131,12 @@ export const ModalPrograma = ({show, hide}) => {
                 <Row className='container-imgs d-flex justify-content-center'>
                   {
                     datapgmPT.map(e=>{
-                      if(!e.estado_pgm){
-                        return;
-                      }
+                      console.log(`${e.tb_image?.width-100}px`);
                       
                       return(
                       <Col className={`content-img`} style={{cursor: 'pointer'}} key={e.id_pgm}>
                         <label>
-                        <img className={`hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} height={`${e.tb_image?.height-80}`} src={`${config.API_IMG.LOGO}${e.tb_image?.name_image}`}/>
+                        <img className={`hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} width={`${e.tb_image?.width-110}`} height={`${e.tb_image?.height-50}`} src={`${config.API_IMG.LOGO}${e.tb_image?.name_image}`}/>
                           <input
                             value={id_pgm}
                             type="radio"

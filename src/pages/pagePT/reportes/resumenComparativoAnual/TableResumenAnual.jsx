@@ -40,19 +40,29 @@ export const TableResumenAnual = ({dataMes}) => {
             </div>
         )
     }
+    // Estilo personalizado para el cuerpo de cada celda
+    const datebodyTemplate = (rowData, column) => {
+        const value = rowData[column.field];
+        const style = {
+            textAlign: 'right',
+            color: value > 10000 ? 'red' : 'green', // Ejemplo: Condicional por valor
+            fontWeight: value > 10000 ? 'bold' : 'normal',
+        };
+        return <span style={style}>{value}</span>;
+    };
   return (
     <div>
         
     <div>
       <br/>
       
-      <DataTable className='table-normal' reorderableColumns  value={transformedData} scrollable showGridlines tableStyle={{ minWidth: '50rem' }} stripedRows >
+      <DataTable className='table-normal'  value={transformedData} scrollable showGridlines tableStyle={{ minWidth: '50rem' }} stripedRows >
                                 {/* Columna para las métricas */}
-                    <Column field="metric" header="" body={metricBodyTemplate}/>
-
+                <Column field="metric" header="" rowSpan={2} body={metricBodyTemplate} style={{maxWidth: '7rem'}}/>
+                    
                 {/* Generar columnas dinámicas basadas en las fechas */}
                 {dates.map((date) => (
-                <Column key={date} field={date} header={<>{dayjs.utc(date, 'YYYY-MM').format('YYYY MMMM')}</>} />
+                    <Column key={date} body={(rowData) => datebodyTemplate(rowData, { field: date })} style={{paddingLeft: '30px', marginRight: '20px'}} bodyStyle={{ fontSize: '20px',  color: '#333' }} header={<>{dayjs.utc(date, 'YYYY-MM').format('MMMM YYYY')}</>} />
                 ))}
       </DataTable>
       {/* <Table

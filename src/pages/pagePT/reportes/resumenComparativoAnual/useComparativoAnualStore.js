@@ -1,5 +1,10 @@
 import { PTApi } from '@/common';
-import { formateo_Moneda, FUNMoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
+import {
+	formateo_Moneda,
+	FUNFormatterCom,
+	FUNMoneyFormatter,
+	NumberFormatMoney,
+} from '@/components/CurrencyMask';
 import { useState } from 'react';
 
 export const useComparativoAnualStore = () => {
@@ -22,6 +27,19 @@ export const useComparativoAnualStore = () => {
 						},
 					}
 				);
+				const { data: dataTransferencias } = await PTApi.get(
+					'/venta/reporte/obtener-transferencias-resumen-x-mes-anio',
+					{
+						params: {
+							mes,
+							anio,
+						},
+					}
+				);
+				const dataTransf = dataTransferencias.transferencia.map((t) => {
+					return {};
+				});
+				console.log(data.ventasProgramas, dataTransferencias.transferencia, 'linea 34');
 
 				const agruparxIdPgm = Object.values(
 					data?.ventasProgramas?.reduce((acc, item) => {
@@ -69,7 +87,7 @@ export const useComparativoAnualStore = () => {
 
 						return acc;
 					}, {})
-				).filter(p=>p.id_pgm==2);
+				);
 				// const suma_tarifa_total_mes = agruparxIdPgm.map()
 				const tb_ventums = agruparxIdPgm.map((g) =>
 					g.detalle_ventaMembresium.map((f) => f.tb_ventum)
@@ -89,23 +107,31 @@ export const useComparativoAnualStore = () => {
 					},
 					{ sesiones_total: 0 }
 				).sesiones_total;
-				const cantidad_total = agruparxIdPgm
-					.map((g) => g.detalle_ventaMembresium)
-					.flat().length;
+				const nuevos = tb_ventums
+					.flat()
+					.filter((f) => f.id_tipoFactura !== 701 && f.id_tipoFactura !== 702)
+					.filter((v) => v.id_origen !== 691 && v.id_origen !== 692).length;
+				const renovaciones = tb_ventums.flat().filter((f) => f.id_origen == 691).length;
+				const reinscripciones = tb_ventums.flat().filter((f) => f.id_origen == 692).length;
+				const traspasos = tb_ventums.flat().filter((f) => f.id_tipoFactura === 701).length;
+				const transferencias = tb_ventums
+					.flat()
+					.filter((f) => f.id_tipoFactura === 702).length;
+				const cantidad_total =
+					nuevos + renovaciones + reinscripciones + traspasos + transferencias;
+				const cantidad_vendidas = nuevos + renovaciones + reinscripciones;
+				//TODO: ITEMS
 				const item = {
 					date: fecha,
-					cantidad_total: cantidad_total,
-					cantidad_nuevos: tb_ventums
-						.flat()
-						.filter((f) => f.id_tipoFactura !== 701)
-						.filter((v) => v.id_origen !== 691 && v.id_origen !== 692).length,
-					cantidad_renovaciones: tb_ventums.flat().filter((f) => f.id_origen == 691)
-						.length,
-					cantidad_reinscripciones: tb_ventums.flat().filter((f) => f.id_origen == 692)
-						.length,
-					tarifa_total: FUNMoneyFormatter(suma_tarifa_total),
-					ticket_medio: FUNMoneyFormatter(suma_tarifa_total / cantidad_total),
-					sesiones_total: FUNMoneyFormatter(suma_sesiones_total),
+					total_socios: cantidad_total,
+					nuevos: nuevos,
+					renovaciones: renovaciones,
+					reinscripciones: reinscripciones,
+					traspasos: traspasos,
+					// transferencias: transferencias,
+					venta_total: FUNMoneyFormatter(suma_tarifa_total),
+					ticket_medio: FUNMoneyFormatter(suma_tarifa_total / cantidad_vendidas),
+					total_sesiones_vendidas: FUNFormatterCom(suma_sesiones_total),
 				};
 				// console.log(item, 'agrupado');
 				return item;
@@ -113,6 +139,7 @@ export const useComparativoAnualStore = () => {
 
 			// Esperar a que todas las promesas se resuelvan
 			const resultados = await Promise.all(promesas);
+			console.log(calcularVariacion(resultados), 'prrr');
 			// console.log(resultados, 'resu');
 
 			// Actualizar el estado con los datos combinados
@@ -157,3 +184,41 @@ export const useComparativoAnualStore = () => {
 		isLoading,
 	};
 };
+
+function calcularVariacion(data) {
+	if (data.length < 2) {
+		console.error('El array debe tener al menos dos elementos para calcular variaciones.');
+		return data;
+	}
+
+	// Calcula la variación porcentual para cada campo
+	function calcularPorcentaje(valorInicial, valorFinal) {
+		if (valorInicial === 0) return valorFinal === 0 ? 0 : 100;
+		return (((valorFinal - valorInicial) / valorInicial) * 100).toFixed(2);
+	}
+
+	const resultado = [];
+
+	for (let i = 0; i < data.length - 1; i++) {
+		const inicio = data[i];
+		const fin = data[i + 1];
+
+		const variacion = {
+			porcentaje: '%',
+			total_socios_porcentaje: calcularPorcentaje(inicio.total_socios, fin.total_socios),
+			nuevos_porcentaje: calcularPorcentaje(inicio.nuevos, fin.nuevos),
+			renovaciones_porcentaje: calcularPorcentaje(inicio.renovaciones, fin.renovaciones),
+			reinscripciones_porcentaje: calcularPorcentaje(
+				inicio.reinscripciones,
+				fin.reinscripciones
+			),
+		};
+
+		resultado.push(inicio, variacion);
+	}
+
+	// Agrega el último elemento al resultado
+	resultado.push(data[data.length - 1]);
+
+	return resultado;
+}
