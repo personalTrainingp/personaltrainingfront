@@ -12,7 +12,7 @@ import { Toast } from 'primereact/toast'
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore'
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
 import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask'
-import { arrayEstadoCivil, arraySexo, clasesVentasSeparadas } from '@/types/type'
+import { arrayEstadoCivil, arraySexo, arrayTipoCliente, clasesVentasSeparadas } from '@/types/type'
 import { FormatRangoFecha } from '@/components/componentesReutilizables/FormatRangoFecha'
 import { HistorialVentas } from './HistorialVentas'
 import { FechaRange } from '@/components/RangeCalendars/FechaRange'
@@ -20,6 +20,9 @@ import { useSelector } from 'react-redux'
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import dayjs from 'dayjs'
 import { ReportCard } from './ReportCard'
+import { TabPanel, TabView } from 'primereact/tabview'
+import { CardEdad } from './CardEdad'
+import { CardDistritos } from './CardDistritos'
 
 
 function sumarTarifaMonto(detalles) {
@@ -87,10 +90,10 @@ export const ReporteDemograficoCliente = () => {
         switch (prodSer) {
           case "mem":
             return {
-              data: repoVentasPorSeparado.dataProgramas.data,
-              sumaTotal: repoVentasPorSeparado.dataProgramas.SumaMonto,
-              forma_pago: repoVentasPorSeparado.dataProgramas.forma_pago_monto,
-              asesores_pago: repoVentasPorSeparado.dataProgramas.empl_monto
+              data: repoVentasPorSeparado.dataProgramas?.data,
+              sumaTotal: repoVentasPorSeparado.dataProgramas?.SumaMonto,
+              forma_pago: repoVentasPorSeparado.dataProgramas?.forma_pago_monto,
+              asesores_pago: repoVentasPorSeparado.dataProgramas?.empl_monto
             }
           case "acc":
             return {
@@ -147,6 +150,17 @@ export const ReporteDemograficoCliente = () => {
         }
       })
       
+            const dataDemografic_TIPOCLI = TotalDeVentasxProdServ('mem').data?.map(n=>{
+              const match = arrayTipoCliente.find(i=>i.value===n.tb_cliente.tipoCli_cli)
+              return {
+                value: n.tb_cliente.tipoCli_cli,
+                label: match?.label,
+                tb_cliente: n.tb_cliente,
+                tarifa_venta: sumarTarifaMonto(n)
+              }
+            })
+      console.log(dataDemografic_TIPOCLI);
+      
 
       const dataGenero = [].map(d=>{
         return {
@@ -177,16 +191,19 @@ export const ReporteDemograficoCliente = () => {
         </div>
         <Row>
           <Col xxl={12}>
-            <CardProdServ setclickServProd={setclickServProd} data={reporteDeDetalleVenta} dataGen={reporteVentas}/>
+            <CardProdServ setclickServProd={setclickServProd} data={reporteDeDetalleVenta} dataGen={TotalDeVentasxProdServ(clickServProd)}/>
           </Col>
         </Row>
         <Row>
           
-          <Col xxl={6} md={6}>
-            <ReportCard titlo={'GENERO'} data={agrupar(dataDemografic_GENERO)}/>
+          <Col xxl={4} md={6}>
+            <ReportCard titlo={'GENERO'} normalData={arraySexo} data={agrupar(dataDemografic_GENERO)}/>
           </Col>
-          <Col xxl={6} md={6}>
-            <ReportCard titlo={'ESTADO CIVIL'} data={agrupar(dataDemografic_ESTCIVIL)}/>
+          <Col xxl={4} md={6}>
+            <ReportCard titlo={'ESTADO CIVIL'} normalData={arrayEstadoCivil} data={agrupar(dataDemografic_ESTCIVIL)}/>
+          </Col>
+          <Col xxl={4} md={6}>
+            <ReportCard titlo={'TIPO DE CLIENTE'} normalData={arrayTipoCliente} data={agrupar(dataDemografic_TIPOCLI)}/>
           </Col>
 {/*           
           <Col xxl={3} md={6}>
@@ -197,10 +214,12 @@ export const ReporteDemograficoCliente = () => {
             <ReportCard titlo={'TIPO DE SOCIO'}/>
           </Col> */}
           <Col xxl={12} md={6}>
-          <Tarjetas tasks={TotalDeVentasxProdServ(clickServProd).data} title={'RANKING POR DISTRITOS'} dataSumaTotal={0}/>
+          <CardDistritos tasks={TotalDeVentasxProdServ(clickServProd).data} dataSumaTotal={TotalDeVentasxProdServ(clickServProd).asesores_pago.reduce((total, item) => total + item.monto, 0)}/>
+          {/* <Tarjetas  title={'RANKING POR DISTRITOS POR MONTO DE VENTAS'} dataSumaTotal={0}/> */}
           </Col>
           <Col xxl={12} md={6}>
-            <TarjetasPago tasks={TotalDeVentasxProdServ(clickServProd).data} title={'VENTAS POR RANGO DE EDAD'} dataSumaTotal={TotalDeVentasxProdServ(clickServProd).asesores_pago.reduce((total, item) => total + item.monto, 0)}/>
+          <CardEdad tasks={TotalDeVentasxProdServ(clickServProd).data} dataSumaTotal={TotalDeVentasxProdServ(clickServProd).asesores_pago.reduce((total, item) => total + item.monto, 0)}/>
+          
           </Col>
           <Col xxl={12}>
             <HistorialVentas/>

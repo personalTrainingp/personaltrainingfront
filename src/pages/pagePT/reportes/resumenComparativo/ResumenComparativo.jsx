@@ -1,5 +1,5 @@
 import { PageBreadcrumb } from '@/components'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Col, Row, Table } from 'react-bootstrap'
 import { useReporteResumenComparativoStore } from './useReporteResumenComparativoStore'
 import config from '@/config'
@@ -9,12 +9,16 @@ import { FechaRange } from '@/components/RangeCalendars/FechaRange'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc';
+import { ModalSocios } from './ModalSocios'
 
 dayjs.extend(utc);
 export const ResumenComparativo = () => {
     const { obtenerComparativoResumen, dataGroup, loading, dataEstadoGroup, obtenerEstadosOrigenResumen } = useReporteResumenComparativoStore()
 
     const { RANGE_DATE } = useSelector(e=>e.DATA)
+    const [isOpenModalSocio, setisOpenModalSocio] = useState(false)
+    const [clickDataSocios, setclickDataSocios] = useState([])
+    const [clickDataLabel, setclickDataLabel] = useState('')
     useEffect(() => {
         if(RANGE_DATE[0]===null) return;
         if(RANGE_DATE[1]===null) return;
@@ -25,7 +29,16 @@ export const ResumenComparativo = () => {
     // console.log(dataGroup[0].detalle_ventaMembresium);
     
     // console.log(dataGroup, groupByIdOrigen(dataGroup[0].detalle_ventaMembresium));
-    
+    const onOpenModalSOCIOS = (d, label)=>{
+        console.log(d);
+        setclickDataSocios(d.detalle_ventaMembresium)
+        setclickDataLabel(label)
+        setisOpenModalSocio(true)
+    }
+    const onCloseModalSOCIOS = ()=>{
+        setisOpenModalSocio(false)
+    }
+    console.log(dataGroup);
     
     
   return (
@@ -45,7 +58,8 @@ export const ResumenComparativo = () => {
             <Row>
                 
                 {
-                    dataGroup.map(d=>(
+                    dataGroup.map(d=>{
+                        return (
                         <Col key={d.id_pgm} style={{paddingBottom: '1px !important'}} xxl={4}>
                             <Card>
                                 <Card.Header className=' align-self-center'>
@@ -66,16 +80,16 @@ export const ResumenComparativo = () => {
                                                     >
                                                         <tbody>
                                                                     <tr>
-                                                                        <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>venta de <br/> membresias:</span></li>
-                                                                        </td>
-                                                                        <th>
-                                                                            <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{d.detalle_ventaMembresium.length}</span>
-                                                                        </th>
+                                                                            <td className='' onClick={()=>onOpenModalSOCIOS(d, 'ventas')}>
+                                                                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>venta de <br/> membresias:</span></li>
+                                                                            </td>
+                                                                            <th>
+                                                                                <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{d.detalle_ventaMembresium.length}</span>
+                                                                            </th>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2 text-center'><span className='fw-bold text-primary fs-2'>Ventas:</span></li>
+                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Ventas acumulada:</span></li>
                                                                         </td>
                                                                         <th> <span className='fs-2 d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.tarifa_total}/>}/></span></th>
                                                                     </tr>
@@ -108,8 +122,9 @@ export const ResumenComparativo = () => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                    
-                    ))
+                    )
+                    }
+                )
                 }
                 {
                     dataGroup.map(d=>(
@@ -133,7 +148,7 @@ export const ResumenComparativo = () => {
                                                     >
                                                         <tbody>
                                                                     <tr>
-                                                                        <td>
+                                                                        <td onClick={()=>onOpenModalSOCIOS(d, 'nuevos')}>
                                                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>NUEVOS:</span></li>
                                                                         </td>
                                                                         <th>
@@ -147,33 +162,49 @@ export const ResumenComparativo = () => {
                                                                         </th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>
+                                                                        <td onClick={()=>onOpenModalSOCIOS(d, 'renovaciones')}>
+                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>RENOVACIONES:</span></li>
+                                                                        </td>
+                                                                        <th> 
+                                                                        <span style={{fontSize: '40px'}} className=' d-flex justify-content-end align-content-end align-items-end'>{groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0}</span>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td onClick={()=>onOpenModalSOCIOS(d, 'reinscripciones')}>
                                                                             <li className='d-flex flex-row justify-content-between p-2 text-center'><span className='fw-bold text-primary fs-2'>REINSCRIPCIONES:</span></li>
                                                                         </td>
                                                                         <th> <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?.items.length:0}</span></th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>RENOVACIONES:</span></li>
-                                                                        </td>
-                                                                        <th> 
-                                                                        <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0}</span>
-                                                                        </th>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>
+                                                                        <td onClick={()=>onOpenModalSOCIOS(d, 'traspasos')}>
                                                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRASPASOS:</span></li>
                                                                         </td>
                                                                         <th> 
-                                                                        <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen==691)?.items.length}</span>
+                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end'>{groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen==691)?.items.length||0}</span>
                                                                         </th>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>
+                                                                        <td onClick={()=>onOpenModalSOCIOS(d, 'transferencias')}>
                                                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRANSFERENCIAS:</span></li>
                                                                         </td>
                                                                         <th> 
-                                                                        <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen==691)?.items.length}</span>
+                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end'>{groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen==691)?.items.length||0}</span>
+                                                                        </th>
+                                                                    </tr>
+                                                                    
+                                                                    <tr>
+                                                                        <td>
+                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TOTAL:</span></li>
+                                                                        </td>
+                                                                        <th> 
+                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end'>
+                                                                            {
+                                                                            (groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0)+
+                                                                            (groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0)+
+                                                                            (groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0)+
+                                                                            (groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?.items.length:0)+
+                                                                            (groupByIdOrigen(d.detalle_ventaMembresium).filter(({ id_origen }) => id_origen !== 692 && id_origen !== 691).reduce((sum, { items }) => sum + items.length, 0))
+                                                                            }</span>
                                                                         </th>
                                                                     </tr>
                                                                     
@@ -261,7 +292,7 @@ export const ResumenComparativo = () => {
                                     
                                 </Card.Header>
                                 <Card.Body>
-                                <li className='d-flex flex-column'><span className='fw-bold text-primary fs-2'>MEMBRESIAS POR HORARIO</span> <span className='fs-2'>
+                                <li className='d-flex flex-column'><span className='fw-bold text-primary fs-2'>VENTAS POR HORARIO</span> <span className='fs-2'>
                                                 <div className='table-responsive'>
                                                 <Table
                                                         // style={{tableLayout: 'fixed'}}
@@ -360,6 +391,7 @@ export const ResumenComparativo = () => {
             </>
         )
         }
+        <ModalSocios clickDataLabel={clickDataLabel} onHide={onCloseModalSOCIOS} data={clickDataSocios} show={isOpenModalSocio}/>
     </>
   )
 }

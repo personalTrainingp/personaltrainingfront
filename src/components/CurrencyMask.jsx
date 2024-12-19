@@ -50,7 +50,7 @@ export const NumberFormatter = ({ amount, splitCaracter }) => {
 }
 export const FUNMoneyFormatter = (amount, moneda) => {
   const formattedAmount = accounting.formatMoney(amount, {
-    symbol: `${moneda} `,  // Símbolo de la moneda
+    symbol: ``,  // Símbolo de la moneda
     precision: 2, // Precisión de decimales
     thousand: ',', // Separador de miles
     decimal: '.',  // Separador decimal

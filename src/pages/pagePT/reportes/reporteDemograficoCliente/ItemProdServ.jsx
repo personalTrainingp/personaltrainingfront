@@ -4,15 +4,16 @@ import React from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-export const ItemProdServ = ({Icantidad, Itotal, Inombre, Iabrev, icono, icowid, icohe}) => {
+export const ItemProdServ = ({dataGen, Icantidad, Itotal, Inombre, Iabrev, icono, icowid, icohe}) => {
+    console.log(dataGen);
     
   return (
                 <Row>
-                    <Col style={{height: '240px'}}>
-										<Card className="mb-0 h-100 text-center d-flex justify-content-center align-items-center">
+                    <Col className='' style={{height: '360px'}}>
+										<Card className="mb-0 h-100 d-flex justify-content-center align-items-center">
 													<Link
 														to=""
-														className=" text-center text-muted d-flex flex-column justify-content-between  align-items-center"
+														className=" text-black d-flex flex-column justify-content-between  align-items-center"
                                                         // style={{backgroundImage:  `url(${icono})`, position: 'absolute', bottom: '0px', backgroundPosition: 'center', backgroundSize: '70%', width: icowid, height: icohe, backgroundRepeat: 'no-repeat'}}
 														data-bs-toggle="modal"
 														data-bs-target="#exampleModal"
@@ -30,29 +31,31 @@ export const ItemProdServ = ({Icantidad, Itotal, Inombre, Iabrev, icono, icowid,
                                                 backgroundSize: 'cover', // Asegura que el fondo cubra el área sin deformarse
                                                 backgroundPosition: 'center'
                                 }}></div> */}
-                                <div className='m-0 d-flex justify-content-end align-items-end' style={{height: '100px'}}>
+                                <div className='m-0 d-flex justify-content-end align-items-end' style={{height: '140px'}}>
                                   <img src={icono} width={icowid} height={icohe} className='m-0'/>
                                 </div>
-                                                        <span style={{height: '110px', marginTop: '10px'}}>
+                                                        <span style={{height: '200px', marginTop: '10px'}}>
                                                             <h4 
                                                               // style={{fontSize: '15px'}} 
-                                                              className="mt-1 mb-0 d-block fs-2 text-primary font-bolder">
+                                                              className="fs-1 text-center mt-1 mb-0 d-block text-primary font-bolder">
                                                                 {Inombre}
                                                             </h4>
-                                                            <span className='d-flex flex-row'>
-
-                                                            <h4 className="fs-1 mt-1 mb-0 d-block">{Icantidad}<span className='mx-2'>/</span></h4>
-                                                            <h4 className="fs-1 mt-1 mb-0 d-block">
-                                                              <span className='mr-2'>
-                                                              VTAS
+                                                            <h4 className="fs-2 mt-1 mb-0 d-block">SOCIOS: 
+                                                              <span className='ml-3'>
+                                                                {Icantidad}
                                                               </span>
-                                                                  <>
-                                                                  <SymbolSoles isbottom={true} numero={
-                                                                  <NumberFormatMoney amount={Itotal}/>
-                                                                  }/>
-                                                                  </>
-                                                              </h4>
-                                                            </span>
+                                                            </h4>
+                                                            <h4 className="fs-2 mt-1 mb-0 d-block">
+                                                              VENTAS:
+                                                              <span className='ml-3'>
+                                                                    <SymbolSoles isbottom={true} numero={
+                                                                    <NumberFormatMoney amount={Itotal}/>
+                                                                    }/>
+                                                              </span>
+                                                            </h4>
+                                                            <h4 className="fs-1 mt-1 mb-0 text-center text-primary d-block">
+                                                              {((Itotal/dataGen)*100).toFixed(2)} %
+                                                            </h4>
 
                                                         </span>
 														{/* <h4 className="font-15 mt-1 mb-0 d-block">{Inombre}</h4> */}

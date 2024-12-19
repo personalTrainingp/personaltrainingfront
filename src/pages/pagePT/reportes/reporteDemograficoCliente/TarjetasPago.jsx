@@ -42,7 +42,10 @@ function sumarTarifaMonto(detalles) {
       { rango_edad: "22 a 27", min: 22, max: 27 },
       { rango_edad: "16 a 21", min: 16, max: 21 },
       { rango_edad: "10 a 15", min: 10, max: 15 },
-      { rango_edad: "88 a mas", min: 88, max: Infinity },
+      { rango_edad: "58 a 63", min: 58, max: 63 },
+      { rango_edad: "64 a 69", min: 64, max: 69 },
+      { rango_edad: "70 a -|-", min: 70, max: Infinity },
+      // { rango_edad: "88 a mas", min: 88, max: Infinity },
     ];
   
     const resultado = rangos.map((rango) => {
@@ -60,19 +63,17 @@ function sumarTarifaMonto(detalles) {
   
     return resultado;
   };
-export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
+export const TarjetasPago = ({ tasks, title, dataSumaTotal, rangeEdadOrden, labelsGraphic }) => {
     const pagos = tasks.map(t => ({
         fec_nacimiento: t.tb_cliente.fecNac_cli,
         edad: calcularEdad(t.tb_cliente.fecNac_cli, t.fecha_venta),
         tb_cliente: t.tb_cliente,
         suma_tarifa: sumarTarifaMonto(t)
     }))
-    // console.log(task.avatar);
-    console.log(agruparPorRangoEdad(pagos));
     const series = [
         {
             name: 'TOTAL:',
-          data: agruparPorRangoEdad(pagos).map(e=>e.items.length),
+          data: labelsGraphic,
         },
       ];
     const options = {
@@ -83,6 +84,7 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
           bar: {
             horizontal: true,
             barHeight: '90%', // Ajusta este valor para hacer las barras más delgadas
+            // he: ''
           },
         },
         colors: ['#D41115'], // Cambia el color de las barras (puedes añadir más colores si hay múltiples series)
@@ -90,20 +92,29 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
             enabled: true,
             offsetX: 10,
             style: {
-              fontSize: '16px', // Cambia este valor para hacer los números más grandes
+              fontSize: '60px', // Cambia este valor para hacer los números más grandes
             },
 			formatter: function (val, opts) {
 				return ''
 			},
           },
         xaxis: {
-          categories: agruparPorRangoEdad(pagos).map(e=>e.rango_edad),
+          categories: rangeEdadOrden.map(e=>e.rango_edad),
+          fontSize: '45px', // Cambia este valor para hacer los números más grandes
+          labels:{
+            style:{
+              fontSize: '30px', // Cambia este valor para hacer los números más grandes
+              fontWeight: 'bold',
+              // colors: "#D41115", // Cambia el color de las etiquetas
+            }
+          }
         },
         yaxis:{
           labels:{
             style: {
-              fontSize: '15px', // Cambia este valor para hacer los números más grandes
+              fontSize: '30px', // Cambia este valor para hacer los números más grandes
               fontWeight: 'bold',
+              // colors: "#D41115", // Cambia el color de las etiquetas
             },
           }
         },
@@ -118,19 +129,23 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
 	const formatCurrency = (value) => {
 		return value.toLocaleString('es-PE', { style: 'currency', currency: 'PEN' });
 	};
+  const totalSumaTarifa = rangeEdadOrden.reduce((acc, curr) => acc + curr.suma_tarifa_total, 0);
+  const totalSumaPorcentaje = rangeEdadOrden.reduce((acc, curr) => acc + ((curr.suma_tarifa_total/totalSumaTarifa)*100), 0);
+  const ticketMedioSumaTotal = rangeEdadOrden.reduce((acc, curr) => {
+    if (curr.items.length === 0) return acc; // No hacer nada si no hay items
+    return acc + (curr.suma_tarifa_total / curr.items.length); // Sumar la tarifa promedio
+  }, 0);
+	const sumaTotalCantidad = rangeEdadOrden.reduce((total, item) => total + item.items.length, 0);
+  
   return (
     <Card>
 			<Card.Body>
-				<CardTitle
-					containerClass="d-flex align-items-center justify-content-between mb-3"
-					title={<h2>{title}</h2>}
-					menuItems={false}
-				/>
                 <Row>
-                  <Col lg={5}>
-                            <Chart options={options} series={series} type="bar" />
+                  <Col lg={6}>
+                <h2 className='mt-0 text-white bg-primary border rounded-4 p-1'>{title}</h2>
+                            <Chart options={options} series={series} type="bar" width="880" height="700"/>
                   </Col>
-                  <Col lg={7}>
+                  <Col lg={6}>
 						      <Table
                         // style={{tableLayout: 'fixed'}}
                         className="table-centered mb-0 fs-4"
@@ -141,23 +156,34 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
                         <thead className="bg-primary">
                             <tr>
                                 {/* <th className='text-white p-1 fs-3 '>ID</th> */}
-                                <th className='text-white p-1 fs-3 text-center'>EDAD</th>
-                                <th className='text-white p-1 fs-3 text-center'>SOCIOS</th>
+                                <th className='text-center text-white p-1 fs-3'><span>EDAD</span></th>
+                                <th className='text-center text-white p-1 fs-3 ml-1'><span>SOCIOS</span></th>
                                 <th className='text-white p-1 fs-3 text-center'><SymbolSoles isbottom={false}/></th>
+                                <th className='text-white p-1 fs-3 text-center'>%</th>
+                                <th className='text-white p-1 fs-3 text-center'>TICKET MEDIO</th>
                             </tr>
                         </thead>
 						<tbody>
-                {agruparPorRangoEdad(pagos).map((p, index)=>(
+                {rangeEdadOrden.map((p, index)=>(
                   <tr>
                     {/* <tr>{index+1}</tr> */}
-                    <td className='text-center fs-3 p-1'>{p.rango_edad}</td>  
-                    <td className='text-center fs-3 p-1'>{p.items.length}</td>  
-                    <td className='text-center fs-3 p-1'><NumberFormatMoney amount={p.suma_tarifa_total}/></td>  
+                    <td className='text-primary fs-2 p-1'><span className='ml-6'>{p.rango_edad}</span></td>  
+                    <td className='ml-1 fs-2 p-1'><span className='ml-6' style={{marginRight: '0'}}>{p.items.length}</span></td>  
+                    <td className='fs-2 p-1'><span className='ml-6'><NumberFormatMoney amount={p.suma_tarifa_total}/></span></td>  
+                    <td className='text-center fs-2 p-1'>{((p.suma_tarifa_total/totalSumaTarifa)*100).toFixed(2)}</td>  
+                    <td className='text-center fs-2 p-1'><NumberFormatMoney amount={((p.suma_tarifa_total/p.items.length))}/></td>  
                   </tr>
                 ))
                 }
+                
+								<td className='text-center p-1 fs-1 text-primary fw-bold'>TOTAL</td>
+								<td className='text-primary text-center p-1 fs-1 fw-bold'>{sumaTotalCantidad}</td>
+								<td className='text-primary  p-1 fs-1 fw-bold'><NumberFormatMoney amount={totalSumaTarifa}/></td>
+								<td className='text-primary text-center p-1 fs-1 fw-bold'>{totalSumaPorcentaje.toFixed(2)}</td>
+								<td className='text-primary text-center p-1 fs-1 fw-bold'>{(ticketMedioSumaTotal/10).toFixed(2)}</td>
+                <td/>
                         </tbody>
-					</Table>
+					        </Table>
                   </Col>
                 </Row>
 			</Card.Body>

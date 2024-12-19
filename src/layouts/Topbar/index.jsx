@@ -114,7 +114,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 					</strong>
 						<ModuloDropdown/>
 						{section_item && (
-						<h3  className="text-uppercase fw-bolder text-primary d-flex justify-content-center align-items-center"><div className='mr-2'>/ {section_item} / </div><div> {dayjs(RANGE_DATE[0]).format('dddd DD [DE] MMMM [DEL] YYYY')} <br/> {dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM [DEL] YYYY')}</div> 
+						<h3  className="text-uppercase fw-bolder text-primary d-flex justify-content-center align-items-center"><span className='fs-1'> / </span><div className='mx-2'> {section_item} </div><span className='fs-1'> / </span><div className='mx-2'> {dayjs(RANGE_DATE[0]).format('dddd DD [DE] MMMM [DEL] YYYY')} <br/> {dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM [DEL] YYYY')}</div> 
 						</h3>
 						)}
 				</div>	

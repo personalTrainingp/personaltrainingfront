@@ -34,11 +34,11 @@ export const Seguimiento = () => {
 									<Row>
 										<Col lg={6} className='border-right-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS ACTIVOS</h3>
-											<TableSeguimientoTODO id_empresa={598} isClienteActive={true}/>
+											<TableSeguimientoTODO classNameFechaVenc={'text-primary fw-bold fs-3'} id_empresa={598} labelFechaVenc={''} labelSesiones={'sesiones'} labelSesionesPendientes={'Sesiones pendientes'} isClienteActive={true}/>
 										</Col>
 										<Col lg={6} className='border-left-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS INACTIVOS</h3>
-											<TableSeguimientoTODO id_empresa={598} isClienteActive={false}/>
+											<TableSeguimientoTODO classNameFechaVenc={'t'} id_empresa={598} labelFechaVenc={'Fecha de vencimiento'} labelSesiones={'dias'} labelSesionesPendientes={'Dias vencidos'} isClienteActive={false}/>
 											{/* <TableSeguimiento id_empresa={598} SeguimientoClienteActivos={false} /> */}
 										</Col>
 									</Row>
@@ -51,7 +51,7 @@ export const Seguimiento = () => {
 										</Col>
 										<Col lg={6} className='border-left-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS INACTIVOS</h3>
-											<TableSeguimientoTODO id_empresa={0} isClienteActive={false}/>
+											<TableSeguimientoTODO id_empresa={0} labelSesionesPendientes={'dias vencidos'} isClienteActive={false}/>
 											{/* <TableSeguimiento SeguimientoClienteActivos={false} id_empresa={0} /> */}
 										</Col>
 									</Row>

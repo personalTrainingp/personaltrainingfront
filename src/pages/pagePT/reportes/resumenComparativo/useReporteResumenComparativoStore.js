@@ -64,7 +64,7 @@ export const useReporteResumenComparativoStore = () => {
 				return acc;
 			}, {})
 		);
-		console.log(data.ventasProgramas);
+		console.log(data.ventasProgramas, agruparxIdPgm);
 
 		setdataGroup(agruparxIdPgm);
 		setloading(false);

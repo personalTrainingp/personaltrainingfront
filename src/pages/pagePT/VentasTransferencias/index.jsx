@@ -1,0 +1,1 @@
+export { DataTranferencias as default } from './DataTranferencias'

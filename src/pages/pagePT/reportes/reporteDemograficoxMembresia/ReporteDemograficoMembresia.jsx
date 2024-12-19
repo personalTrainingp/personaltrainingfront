@@ -135,6 +135,15 @@ export const ReporteDemograficoMembresia = () => {
           tarifa_venta: sumarTarifaMonto(n)
         }
       })
+      
+            const dataDemografic_TIPOCLI = TotalDeVentasxProdServ('mem').data?.map(n=>{
+              const match = arrayTipoCliente.find(i=>i.value===n.tb_cliente.tipoCli_cli)
+              return {
+                value: n.tb_cliente.tipoCli_cli,
+                label: match.label,
+                tarifa_venta: sumarTarifaMonto(n)
+              }
+            })
 
       return (
         <>
@@ -168,6 +177,10 @@ export const ReporteDemograficoMembresia = () => {
           <Col xxl={6} md={6}>
             <ReportCard titlo={'ESTADO CIVIL'} data={agrupar(dataDemografic_ESTCIVIL)}/>
           </Col>
+          
+                    <Col xxl={12} md={6}>
+                      <ReportCard titlo={'TIPO DE CLIENTE'} data={agrupar(dataDemografic_TIPOCLI)}/>
+                    </Col>
 {/*           
           <Col xxl={3} md={6}>
             <ReportCard titlo={'ESTADO CIVIL'}/>

@@ -68,6 +68,10 @@ const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
 const ResumenComparativo = lazy(()=>import('../pages/pagePT/reportes/resumenComparativo'))
 const ReporteDemograficoCliente = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoCliente'))
 const ReporteDemograficoxMembresia = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoxMembresia'))
+const VentasTransferencias = lazy(()=>import('../pages/pagePT/VentasTransferencias'))
+const ClientesxVentasDeMembresia = lazy(()=>import('../pages/pagePT/MembresiaxCliente'))
+const GestionCambioPrograma = lazy(()=>import('../pages/pagePT/GestionCambioPrograma'))
+const ResumenComparativoAnual = lazy(()=>import('../pages/pagePT/reportes/resumenComparativoAnual'))
 /**
  * routes import
  */
@@ -107,6 +111,10 @@ export default function ProtectedRoutes() {
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento */}
 					{
+						sections.find(e=>e.url==='/ventas-transferencias')&&
+                        <Route path='ventas-transferencias' element={<ResumenComparativoAnual/>}/>
+					}
+					{
 						sections.find(e=>e.url==='/reporte')&&
                         <Route path='reporte/reporte-demografico-membresia' element={<ReporteDemograficoxMembresia/>}/>
 					}
@@ -118,7 +126,6 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/reporte/comparativo-resumen-x-mes')&&
                         <Route path='reporte/comparativo-resumen-x-mes' element={<ReporteDeGestionComercial/>}/>
 					}
-
 					{
                         sections.find(e=>e.url==='/reporte/gestion-comercial') && 
                         <Route path='reporte/gestion-comercial' element={<ReporteDeGestionComercial/>}/>
@@ -138,6 +145,10 @@ export default function ProtectedRoutes() {
 					{
                         sections.find(e=>e.url==='/gestion-comercial') && 
                         <Route path='gestion-comercial' element={<GestionComercial/>}/>
+                    }
+					{
+                        sections.find(e=>e.url==='/gestion-cambio-programa') && 
+                        <Route path='gestion-cambio-programa' element={<GestionCambioPrograma/>}/>
                     }
 					{
                         sections.find(e=>e.url==='/reporte/reporte-seguimiento') && 
@@ -233,6 +244,10 @@ export default function ProtectedRoutes() {
 							<Route path='gestion-clientes' element={<GestionClientes/>}/>
 							<Route path='historial-cliente/:uid' element={<PerfilCliente/>}/>
 						</>
+					}
+					{
+						sections.find(e=>e.url==="/reporte-clientes-membresia")&&
+							<Route path='reporte-clientes-membresia' element={<ClientesxVentasDeMembresia/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/gestion-ventas')&&

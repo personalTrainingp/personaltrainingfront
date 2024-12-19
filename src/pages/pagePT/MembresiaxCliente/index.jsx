@@ -1,0 +1,1 @@
+export { ViewMembresiaxCliente as default } from './ViewMembresiaxCliente'

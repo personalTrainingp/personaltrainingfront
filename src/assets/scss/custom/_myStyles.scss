@@ -11,7 +11,12 @@
 .my-calendar .calendar-header {
   font-size: 20px; /* Cambia el tamaño del encabezado */
 }
-
+text{
+  fill: #D41115 !important;
+}
+#SvgjsTspan21034{
+  font-size: 40px !important;
+}
 .my-calendar .calendar-day {
   font-size: 16px; /* Cambia el tamaño de los días */
 }
@@ -24,6 +29,18 @@
         border-radius: 0 !important;
         border: 2px solid rgb(46, 46, 46) !important;
       }
+      td{
+        border-radius: 0 !important;
+        border: 2px solid rgb(46, 46, 46) !important;
+        margin: 0 !important;
+        padding: 5px !important;
+        font-size: 17px;
+      }
+
+  }
+}
+.table-normal-td{
+  tr{
       td{
         border-radius: 0 !important;
         border: 2px solid rgb(46, 46, 46) !important;

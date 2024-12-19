@@ -1,0 +1,1 @@
+export { ViewDataResumenComparativoAnual as default } from './ViewDataResumenComparativoAnual'

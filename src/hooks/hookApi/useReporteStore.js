@@ -295,6 +295,8 @@ export const useReporteStore = () => {
 			const ordenarPorTotalVentas = (data) => {
 				return data.sort((a, b) => b.total_ventas - a.total_ventas);
 			};
+			console.log(dataProgramas);
+
 			setreporteVentas(sumarTotalDetalle(sumarDatos(data.reporte)));
 			setreporteDeDetalle(sumarDatos_y_cantidades(data.reporte));
 			setreporteDeVentasPorEmpleados(
@@ -672,6 +674,7 @@ export const useReporteStore = () => {
 					params: { isClienteActive: isClienteActive },
 				}
 			);
+			console.log(dataactivo);
 
 			// const dataCombination = dataactivo.newMembresias.concat(dataInactivo.newMembresias);
 			// console.log(dataCombination);
@@ -875,20 +878,18 @@ export const useReporteStore = () => {
 		}
 	};
 
-	const obtenerUtilidadesPorCita = async(fecha) => {
+	const obtenerUtilidadesPorCita = async (fecha) => {
 		try {
-			const { data } = await PTApi.get('/reporte/utilidades-por-cita' , {
-				params: {
-
-				},
+			const { data } = await PTApi.get('/reporte/utilidades-por-cita', {
+				params: {},
 			});
-			
-		//const [ventasxCita, setVentasxCita] = useState([]);
-		setVentasxCita(data.response)
+
+			//const [ventasxCita, setVentasxCita] = useState([]);
+			setVentasxCita(data.response);
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 	return {
 		loading,
 		obtenerReporteSeguimiento,

@@ -1,9 +1,9 @@
 import React from 'react'
 
-export const SymbolSoles = ({numero, isbottom}) => {
+export const SymbolSoles = ({numero, isbottom, fontSizeS}) => {
   return (
     <span className=''>
-        <span className='fs-3 fw-bold mr-2 position-relative' style={{bottom: `${isbottom&&'10px'}`}}>
+        <span className={`${fontSizeS?fontSizeS:'fs-3'} fw-bold mr-2 position-relative`} style={{bottom: `${isbottom&&'10px'}`}}>
             S
             <span className='fs-4'>
             /

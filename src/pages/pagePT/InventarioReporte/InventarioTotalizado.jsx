@@ -56,16 +56,16 @@ export const InventarioTotalizado = () => {
       
   return (
     <>
-    <PageBreadcrumb title={'INVENTARIO VALORIZADO DE ACTIVOS'} subName={'T'}/>
+    <PageBreadcrumb topTitle={<>INVENTARIO VALORIZADO <br/> DE ACTIVOS</>} title={'INVENTARIO VALORIZADO DE ACTIVOS'} subName={'T'}/>
     <TabView>
         <TabPanel header={'CIRCUS'}>
-            <DataView id_empresa={599}/>
+            <DataView id_empresa={599} label_empresa={'CIRCUS'}/>
         </TabPanel>
-        <TabPanel header={'TARATA'}>
-            <DataView id_empresa={598}/>
+        <TabPanel header={'CHANGE'}>
+            <DataView id_empresa={598} label_empresa={'CHANGE'}/>
         </TabPanel>
         <TabPanel header={'MANOJ'}>
-        <DataView id_empresa={600}/>
+        <DataView id_empresa={600} label_empresa={'MANOJ'}/>
         </TabPanel>
     </TabView>
     </>

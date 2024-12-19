@@ -5,7 +5,7 @@ export const clasesVentasSeparadas = (tipo) => {
 		case 'acc':
 			return 'accesorio';
 		case 'sup':
-			return 'suplemento';
+			return 'suplementos';
 		case 'tra':
 			return 'Tratamientos esteticos';
 		case 'nut':
@@ -150,15 +150,17 @@ export const arrayTipoDoc = [
 ];
 export const arrayTipoCliente = [
 	{ label: 'Socio', value: 84 },
-	{ label: 'canje - influencer moda', value: 221 },
-	{ label: 'canje - influencer educacion', value: 222 },
-	{ label: 'canje - artista', value: 223 },
-	{ label: 'canje - maratonista', value: 224 },
-	{ label: 'canje - modelo', value: 225 },
-	{ label: 'canje - actor', value: 226 },
-	{ label: 'canje - influencer', value: 227 },
-	{ label: 'canje - contacto LA', value: 228 },
-	{ label: 'canje - Socio con buenos resultados', value: 229 },
+	{ label: 'canje uso Imagen', value: 229 },
+	{ label: 'canje influencer', value: 266 },
+	// { label: 'canje - influencer moda', value: 221 },
+	// { label: 'canje - influencer educacion', value: 222 },
+	// { label: 'canje - artista', value: 223 },
+	// { label: 'canje - maratonista', value: 224 },
+	// { label: 'canje - modelo', value: 225 },
+	// { label: 'canje - actor', value: 226 },
+	// { label: 'canje - influencer', value: 227 },
+	// { label: 'canje - contacto LA', value: 228 },
+	// { label: 'canje - Socio con buenos resultados', value: 229 },
 	// { label: 'prospecto', value: 265 },
 ];
 
@@ -171,6 +173,7 @@ export const arrayFacturas = [
 	{ value: 699, label: 'Boleta' },
 	{ value: 700, label: 'Factura' },
 	{ value: 701, label: 'Traspaso' },
+	{ value: 702, label: 'TRANSFERENCIA' },
 ];
 export const arrayOrigenDeCliente = [
 	{ value: 684, label: 'TIS' },
@@ -182,15 +185,17 @@ export const arrayOrigenDeCliente = [
 	{ value: 690, label: 'Referidos' },
 	{ value: 691, label: 'Cartera de renovacion' },
 	{ value: 692, label: 'Cartera de reinscripcion' },
-	{ value: 693, label: 'redes sociales - Instagram' },
-	{ value: 694, label: 'redes sociales - facebook' },
-	{ value: 695, label: 'redes sociales - tiktok' },
+	{ value: 693, label: 'Instagram' },
+	{ value: 694, label: 'facebook' },
+	{ value: 695, label: 'tiktok' },
+	{ value: 696, label: 'EX-PT' },
 ];
 
 export const arrayEstadoCivil = [
 	{ label: 'Soltero(a)', value: 10 },
 	{ label: 'Casado(a)', value: 11 },
-	{ label: 'Divorciado(a)', value: 12 },
+	{ label: 'Divorciado(a)', value: 12 }, //
+	{ label: 'VIUDO(A)', value: 13 }, //
 	{ label: 'Otro', value: 0 },
 ];
 
