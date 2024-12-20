@@ -72,13 +72,8 @@ export const ViewDataResumenComparativoAnual = () => {
         
         <div className=''>
         <DataTreeMultiSelect selectsMulti={selectsMulti} defaultOptions={rangeMes} onInputChangeReactSelect={onInputChangeReactSelect}/>
-        <Button 
-            label="ACTUALIZAR" 
-            onClick={onClickActualizar}
-            style={{ flex: '0 0 auto', width: '150px' }} // Ancho fijo para el botón
-        />
         
-        {/* <TableResumenAnual dataMes={dataVentas}/> */}
+        <TableResumenAnual dataMes={dataVentas}/>
       </div>
       ):(
         <> cargando </>

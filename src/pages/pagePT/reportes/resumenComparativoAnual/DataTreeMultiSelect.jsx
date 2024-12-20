@@ -9,6 +9,8 @@ import { Button } from "primereact/button";
 import { useDispatch } from "react-redux";
 import { onSetMultiDate } from "@/store/data/dataSlice";
 import { TreeSelect } from "antd";
+import { ModalFechasParaComparar } from "./ModalFechasParaComparar";
+import { TableFechasComparativas } from "./TableFechasComparativas";
 
 const { SHOW_PARENT } = TreeSelect;
 const selectMeses = {
@@ -104,44 +106,24 @@ const treeData = [
   ];
 export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactSelect, selectsMulti}) {
     // const [multiMes, setmultiMes] = useState(null)
-    const [valorTree, setvalorTree] = useState()
+    const [isOpenModalFechasComparar, setisOpenModalFechasComparar] = useState(false)
     console.log(selectsMulti);
     const onHandleChange = (newValor)=>{
         console.log(newValor);
         setvalorTree(newValor)
     }
-    // const { comboMesesActivo, obtenerVentasDeProgramasxFechaVenta } = useComboVentasxMesAnioStore()
-    // useEffect(() => {
-        //     obtenerVentasDeProgramasxFechaVenta()
-    // }, []); // eslint-disable-line react-hooks/exhaustive-deps
-    // console.log(comboMesesActivo);
+    const onClickModalFechaxComparar = ()=>{
+      setisOpenModalFechasComparar(true)
+    }
+    const onCloseModalFechasxComparar = ()=>{
+      setisOpenModalFechasComparar(false)
+    }
     return (
-        <div className="d-flex" style={{ width: '100%', gap: '10px' }}>
-            <TreeSelect
-                showCheckedStrategy="SHOW_PARENT"
-                placeholder= 'Please select'
-                style= {{
-                width: '100%',
-                }}
-                treeCheckable
-                onChange={onHandleChange}
-                value={valorTree}
-                treeData={treeData}
-                />
-        {/* <Select
-            isMulti
-            options={selectsMulti}
-            onChange={(e) => onInputChangeReactSelect(e, 'rangeMes')}
-            name="rangeMes"
-            defaultValue={defaultOptions}
-            styles={{
-                width: '100%',
-            control: (base) => ({
-                ...base,
-                flex: '1', // Ocupa el resto del espacio disponible
-            }),
-            }}
-        /> */}
+        <div  style={{ width: '100%', gap: '10px' }}>
+                <Button label="agregar fechas" onClick={onClickModalFechaxComparar}/>
+          <span></span>
+                <TableFechasComparativas/>
+                {/* <ModalFechasParaComparar show={isOpenModalFechasComparar} onHide={onCloseModalFechasxComparar}/> */}
         </div>
     );
 }
