@@ -46,6 +46,8 @@ export const useReporteStore = () => {
 	const [ventasHoy, setventasHoy] = useState([]);
 
 	const [ventasxCita, setVentasxCita] = useState([]);
+	const [ventasxProducto, setVentasxProducto] = useState([]);
+
 	// const [repoVentasPorMembresia, setrepoVentasPorMembresia] = useState([]);
 	// const [repoVentasPorProdAcc, setrepoVentasPorProdAcc] = useState([])
 	// const [repoVentasPorProdSup, setrepoVentasPorProdSup] = useState([])
@@ -868,10 +870,11 @@ export const useReporteStore = () => {
 		}
 	};
 
-	const obtenerUtilidadesPorCita = async(fecha) => {
+	const obtenerUtilidadesPorCita = async(rangoFechas) => {
 		try {
 			const { data } = await PTApi.get('/reporte/utilidades-por-cita' , {
 				params: {
+					dateRange:rangoFechas,
 
 				},
 			});
@@ -882,6 +885,28 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	}
+
+	const obtenerUtilidadesPorProducto = async(rangoFechas) => {
+		try {
+			console.log("rangoFechas consulta obtner utilidades por producto");
+
+			console.log(rangoFechas);
+			const { data } = await PTApi.get('/reporte/utilidades-por-producto' , {
+				params: {
+					dateRange:rangoFechas,
+				},
+				
+			});
+			
+		//const [ventasxCita, setVentasxCita] = useState([]);
+		console.log("data antes de enviar");
+		console.log(data);
+		setVentasxProducto(data.response)
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	return {
 		loading,
 		obtenerReporteSeguimiento,
@@ -899,6 +924,8 @@ export const useReporteStore = () => {
 		obtenerReporteDeTotalDeVentasActuales,
 		obtenerVentasDeHoy,
 		obtenerUtilidadesPorCita,
+		obtenerUtilidadesPorProducto,
+		ventasxProducto,
 		ventasxCita,
 		reporteDeVentas,
 		ventasHoy,
