@@ -3,12 +3,44 @@
   font-family: Poppins, sans-serif;
   // font-size: 20% !important;
 }
+/* Supongamos que el componente Calendar tiene una clase específica */
+.my-calendar {
+  font-size: 18px; /* Cambia el tamaño según lo necesites */
+}
+
+.my-calendar .calendar-header {
+  font-size: 20px; /* Cambia el tamaño del encabezado */
+}
+text{
+  fill: #D41115 !important;
+}
+#SvgjsTspan21034{
+  font-size: 40px !important;
+}
+.my-calendar .calendar-day {
+  font-size: 16px; /* Cambia el tamaño de los días */
+}
+.p-inputtext{
+  font-size: 27px !important; /* Cambia el tamaño de los días */
+}
 .table-normal{
   tr{
       th{
         border-radius: 0 !important;
         border: 2px solid rgb(46, 46, 46) !important;
       }
+      td{
+        border-radius: 0 !important;
+        border: 2px solid rgb(46, 46, 46) !important;
+        margin: 0 !important;
+        padding: 5px !important;
+        font-size: 17px;
+      }
+
+  }
+}
+.table-normal-td{
+  tr{
       td{
         border-radius: 0 !important;
         border: 2px solid rgb(46, 46, 46) !important;
@@ -105,12 +137,20 @@ input{
 .hover-card:hover{
     border-color: rgb(205, 133, 0) !important;
 }
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background-color: white !important; /* Para que no se solape con el fondo */
+  z-index: 1; /* Asegura que se mantenga encima de otras columnas */
+  border-right: 1px solid #dee2e6; /* Para que se vea consistente */
+}
 .hover-card-border{
-    border: 5px solid transparent;
-    width: 100%;
+    // border: 5px solid transparent;
+    // width: 100%;
     margin: 10px;
     border-radius: 10px;
     padding: 3px;
+    background-color: #000;
     // background-color: red;
     // height: 80px;
   // border-radius: 100%;
@@ -121,8 +161,8 @@ input{
     // box-shadow: #000 4;
     // transition: box-shadow 0.3s ease;
     // padding: 50%;
-    width: 100%;
-    margin: 10px;
+    // width: 100%;
+    // margin: 10px;
       box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
   -webkit-box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
   -moz-box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);

@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { Link } from 'react-router-dom';
-import { arrayDistrito, arrayTipoCliente } from '@/types/type';
+import { arrayTipoCliente } from '@/types/type';
 import { useProspectoLeadsStore } from '@/hooks/hookApi/useProspectoLeadsStore';
 import dayjs from 'dayjs';
 import { MoneyFormatter } from '@/components/CurrencyMask';
@@ -20,6 +20,7 @@ import { ModalCliente } from './ModalCliente';
 import { ModalComentarios } from './ModalComentarios';
 import { logEvent } from 'firebase/analytics';
 import { confirmDialog } from 'primereact/confirmdialog';
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 
 export default function TableNoClientes({dataV}) {
     const [customers, setCustomers] = useState(null);
@@ -349,7 +350,7 @@ export default function TableNoClientes({dataV}) {
                 <Column header="ULTIMO COMENTARIO" style={{ minWidth: '10rem' }} sortable body={comentarioBodyTemplate} filter/>
                 <Column header="CANAL" style={{ minWidth: '10rem' }} sortable body={canalBodyTemplate} filter/>
                 <Column header="CAMPAÑA" style={{ minWidth: '10rem' }} sortable body={campaniaBodyTemplate} filter/>
-                <Column header="PLAN S/." style={{ minWidth: '10rem' }} sortable body={planBodyTemplate} filter/>
+                <Column header={<>PLAN <SymbolSoles/></>} style={{ minWidth: '10rem' }} sortable body={planBodyTemplate} filter/>
                 <Column header="FECHA CITA" style={{ minWidth: '10rem' }} sortable body={fechaCitaBodyTemplate} filter/>
                 <Column header="ULTIMA FECHA DE SEGUIMIENTO" style={{ minWidth: '10rem' }} sortable body={ultimaFechaDeSeguimiento} filter/>
                 {/* <Column header="ULTIMO COMENTARIO" style={{ minWidth: '10rem' }} sortable body={estadoLeadBodyTemplate} filter/> */}

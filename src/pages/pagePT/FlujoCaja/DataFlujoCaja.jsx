@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import { useFlujoCajaStore } from '@/hooks/hookApi/FlujoCajaStore/useFlujoCajaStore';
 import { Card, Col, Row, Table } from 'react-bootstrap';
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 
 export const DataFlujoCaja = ({id_enterprice}) => {
     const { dataIngresos_FC: DATAingresosENERO, obtenerIngresosxMes: obtenerIngresosENERO } =
@@ -238,19 +239,19 @@ function sumarMontosPorMes(datos, grupo) {
                                 <th>
                                     <div style={{ maxWidth: '10px' }}></div>
                                 </th>
-                                <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'>S/.</span></th>
-                                <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'>S/.</span></th>
+                                <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -370,19 +371,19 @@ sumarIngresosXmes(12)
                             <thead className="bg-primary">
                                 <tr>
                                     <th className='text-white h4'><div style={{width: '260px'}}>{i+1}. {g.grupo}</div></th>
-                                        <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'>S/.</span></th>
-                                        <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'>S/.</span></th>
+                                <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
                                 </tr>
                             </thead>
                             <tbody>

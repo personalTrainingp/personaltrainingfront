@@ -21,6 +21,7 @@ import { useEffect } from 'react';
 import { arrayRoles } from '@/types/type';
 
 import logoDark from '@/assets/images/change-logo-dark-transparente.png';
+import dayjs from 'dayjs';
 const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	const { settings, updateSettings, updateSidebar } = useThemeContext();
 	const { user } = useSelector(e=>e.auth)
@@ -88,10 +89,12 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 			updateSettings({ theme: ThemeSettings.theme.dark });
 		}
 	};
-
+	const { RANGE_DATE } = useSelector(e=>e.DATA)
 	/**
 	 * Toggles the right sidebar
 	 */
+	console.log(dayjs(RANGE_DATE).format('dddd DD [DE] MMMM [DEL] YYYY'));
+	
 	const handleRightSideBar = () => {
 		updateSettings({ rightSidebar: ThemeSettings.rightSidebar.show });
 	};
@@ -111,7 +114,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 					</strong>
 						<ModuloDropdown/>
 						{section_item && (
-						<h3  className="text-uppercase fw-bolder text-primary d-flex justify-content-center align-items-center"><div className='mr-2'>/ {section_item} / </div><div> lunes 16 de septiembre del 2024 <br/> lunes 2 de diciembre del 2024</div> 
+						<h3  className="text-uppercase fw-bolder text-primary d-flex justify-content-center align-items-center"><span className='fs-1'> / </span><div className='mx-2'> {section_item} </div><span className='fs-1'> / </span><div className='mx-2'> {dayjs(RANGE_DATE[0]).format('dddd DD [DE] MMMM [DEL] YYYY')} <br/> {dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM [DEL] YYYY')}</div> 
 						</h3>
 						)}
 				</div>	

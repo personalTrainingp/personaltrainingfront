@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import Select from 'react-select'
+import { useTerminologiaPagos } from './useTerminologiaPagos'
 const registerPago = {
     id_formaPago: 0,
     id_tipo_tarjeta: 0,
@@ -37,6 +38,7 @@ export const SideBarFormPago = ({show, onHide}) => {
         obtenerFormaDePagosActivos,
         dataFormaPagoActivo
 	} = useTerminoStore()
+  const { dataFormaPagos, obtenerFormasPagos } = useTerminologiaPagos()
 	const { obtenerTipoCambioPorFecha, tipocambio } = useTipoCambioStore();
     const cancelModal = () =>{
         onHide()
@@ -58,6 +60,7 @@ export const SideBarFormPago = ({show, onHide}) => {
     useEffect(() => {
         obtenerFormaDePagosActivos()
         obtenerTipoCambioPorFecha(new Date())
+        obtenerFormasPagos()
     }, [])
     // console.log(dataFormaPagoActivo.find(f=>f.id_forma_pago));
     const formaPago = dataFormaPagoActivo.map(f=>({
@@ -90,10 +93,9 @@ export const SideBarFormPago = ({show, onHide}) => {
 
     useEffect(() => {
       const dataBancos = dataTarjetas.find(b=>b.id_tarjeta === id_tarjeta)?.dataBancos || [];
-      console.log(dataBancos);
-      
       setdataBancos(dataBancos)
     }, [id_forma_pago, id_tipo_tarjeta, id_tarjeta])
+    console.log(dataFormaPagoActivo);
     
     // useEffect(() => {
     //   const bancos = dataFormaPagoActivo.find(f=>f.id_forma_pago===id_forma_pago)?.dataBancos||[]

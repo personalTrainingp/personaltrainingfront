@@ -24,7 +24,6 @@ import { useSelector } from 'react-redux';
 import { Message } from 'primereact/message';
 import { Skeleton } from 'primereact/skeleton';
 import { Row } from 'react-bootstrap';
-import { arrayDistrito } from '@/types/type';
 import { BtnExportSeguimiento } from './BtnExportSeguimiento';
 dayjs.extend(utc);
 locale('es')
@@ -50,7 +49,7 @@ function encontrarObjeto(array, fecha_act) {
     // Retornar null si no se encuentra ningún objeto
     return null;
   }
-export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, SeguimientoClienteActivos, esTodo, isClienteActive}) => {
+export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, statisticsData, SeguimientoClienteActivos, esTodo, labelSesiones, labelSesionesPendientes, isClienteActive, sesionesCongReg}) => {
 	const [customers, setCustomers] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedCustomers, setSelectedCustomers] = useState([]);
@@ -85,13 +84,14 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 		};
 		fetchData();
 	}, [viewSeguimiento]);
-
+	// console.log(viewSeguimiento);
+	
 	const getCustomers = (data) => {
 		return [...(data || [])].map((d) => {
 			
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...d };
-			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st} Semanas | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')}`;
+			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st*5} Sesiones | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')}`;
 			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
 			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
@@ -101,7 +101,14 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 		});
 	};
 	const diasPorTerminarBodyTemplate = (rowData) => {
-		return `${rowData.diasFaltan} sesiones`;
+		return (
+			<>
+			<span className='text-primary mr-2 fw-bold fs-3'>
+				{rowData.diasFaltan} 
+			</span>
+				{labelSesiones}
+			</>
+		);
 	};
 
 	const onGlobalFilterChange = (e) => {
@@ -132,7 +139,12 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 	const dateBodyTemplate = (rowData) => {
 		// console.log(rowData); JSON.stringify(rowData.fecha_fin_new)
 		//dayjs(rowData.fecha_fin_new).format('D [de] MMMM [del] YYYY')
-		return 	<span>{FormatoDateMask(rowData.fecha_fin_new, 'dddd D [de] MMMM [del] YYYY') }</span>
+		return 	<span>
+					<span className={classNameFechaVenc}>
+						{FormatoDateMask(rowData.fecha_fin_new, 'dddd D') }
+					</span>
+					{FormatoDateMask(rowData.fecha_fin_new, ' [de] MMMM [del] YYYY') }
+				</span>
 	};
 	const statusBodyTemplate = (rowData) => {
         if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null){
@@ -183,6 +195,10 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 	const programaSesioneBodyTemplate = (rowData)=>{
 		return (
 			<>
+			<span className='text-primary fw-semibold font-20'>
+			{rowData.ProgramavsSemana.split('|')[0]} 
+			</span>
+			<br/>
 			<span className='text-primary fw-semibold font-20'>
 			{rowData.ProgramavsSemana.split('|')[0]} 
 			</span>
@@ -252,7 +268,7 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 						filter
 					/>
 					<Column 
-								 header="SESIONES DE REGALO/CONGELAMIENTO" 
+								 header={<span>SESIONES <br/> REGALO / <br/> CONGELAMIENTO</span>}
 								 sortable 
 								 filterMenuStyle={{ width: '14rem' }} 
 								 style={{ minWidth: '12rem' }} 
@@ -303,7 +319,7 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 					/>
 					<Column
 						field="ProgramavsSemana"
-						header="Programas / Semana / Horario"
+						header="Programas / Sesiones / Horario"
 						sortable
 						filterField="ProgramavsSemana"
 						style={{ minWidth: '14rem' }}
@@ -313,7 +329,7 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 					/>
 					<Column
 						field="dias"
-						header="SESIONES PENDIENTES"
+						header={labelSesionesPendientes}
 						sortable
 						dataType="numeric"
 						style={{ minWidth: '12rem' }}
@@ -321,7 +337,7 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 						filter
 					/>
 					<Column
-						header="VENCIMIENTO"
+						header="Fecha de vencimiento"
 						sortable
 						dataType="date"
 						style={{ minWidth: '10rem' }}
@@ -329,9 +345,12 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 						// filter
 						// filterElement={dateFilterTemplate}
 					/>
+					{
+						
+					}
 					<Column 
 								 field="status" 
-								 header="SESIONES DE REGALO/CONGELAMIENTO" 
+								 header={<span>SESIONES <br/> CONGELAMIENTO/ <br/> REGALO  </span>}
 								 sortable 
 								 filterMenuStyle={{ width: '14rem' }} 
 								 style={{ minWidth: '12rem' }} 
@@ -339,16 +358,6 @@ export const TableSeguimientoTODO = ({dae, id_empresa, statisticsData, Seguimien
 								 filter 
 								 // filterElement={statusFilterTemplate} 
 								 />
-                                 {/* <Column 
-                                              field="status" 
-                                              header="Estado" 
-                                              sortable 
-                                              filterMenuStyle={{ width: '14rem' }} 
-                                              style={{ minWidth: '12rem' }} 
-                                              body={isActiveBodyTemplate} 
-                                              filter 
-                                              // filterElement={statusFilterTemplate} 
-                                              /> */}
 				</DataTable>
 </>
 					)

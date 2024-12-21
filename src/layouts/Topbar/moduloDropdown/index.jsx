@@ -4,6 +4,8 @@ import { Dropdown } from 'react-bootstrap';
 import { useToggle } from '@/hooks';
 import { useRoleStore } from '@/hooks/hookApi/useRoleStore';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { onSetRangeDate, onViewSection } from '@/store/data/dataSlice';
 
 // const modulos = [
 // 	{
@@ -19,6 +21,7 @@ import { useSelector } from 'react-redux';
 // ];
 
 const ModuloDropdown = () => {
+	const dispatch = useDispatch()
 	const { modulos } = useSelector(e=>e.rutas)
 	const [moduloSelect, setModuloSelect] = useState(0);
 	const { obtenerSeccions } = useRoleStore()
@@ -26,10 +29,14 @@ const ModuloDropdown = () => {
 	const handleModuloChange = (modulo) => {
 		
 		setModuloSelect(modulo);
+		// dispatch(onSetRangeDate([]))
+		dispatch(onViewSection(''))
 		// obtenerSeccions(modulos[modulo])
 	};
+
 	useEffect(() => {
 		obtenerSeccions(modulos[moduloSelect])
+		
 	}, [moduloSelect, modulos])
 	
   return (

@@ -4,10 +4,10 @@ import { Row, Col, Breadcrumb } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { useDispatch } from 'react-redux';
 
-const PageBreadcrumb = ({ subName, title, children, btnBack }) => {
+const PageBreadcrumb = ({ subName, title, children, topTitle, btnBack }) => {
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(onViewSection(title))
+    dispatch(onViewSection(topTitle?topTitle:title))
     }, [title])
   
   return (

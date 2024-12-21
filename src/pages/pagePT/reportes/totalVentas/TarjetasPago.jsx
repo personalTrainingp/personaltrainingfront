@@ -5,6 +5,7 @@ import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import Chart from 'react-apexcharts';
 import sinAvatar from '@/assets/images/sinPhoto.jpg'
 import config from '@/config';
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 
 export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
     const pagos = tasks.map(producto => ({
@@ -82,13 +83,13 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
                     	>
                         <thead className="bg-primary">
                             <tr>
-                                <th className='text-white p-1'>ID</th>
-                                <th className='text-white p-1'>Imagen</th>
-                                <th className='text-white p-1'>ASESORES</th>
-                                <th className='text-white p-1'><span className='w-100 '>S/.</span></th>
+                                <th className='text-white p-1 fs-3 '>ID</th>
+                                <th className='text-white p-1 fs-3 '>Imagen</th>
+                                <th className='text-white p-1 fs-3 '>ASESORES</th>
+                                <th className='text-white p-1'><span className='w-100 '><SymbolSoles numero={''} isbottom={false}/></span></th>
                                 {/* <th className='text-white p-1'><span className='w-100 '>%</span></th> */}
                                 <th className='text-white p-1'><span className='w-100'></span></th>
-                                <th className='text-white p-1'>%</th>
+                                <th className='text-white p-1 fs-3 '>%</th>
                             </tr>
                         </thead>
 						<tbody>

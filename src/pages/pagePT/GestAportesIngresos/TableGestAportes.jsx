@@ -22,6 +22,7 @@ import { Col, Modal, Row } from 'react-bootstrap';
 import { ModalImportadorData } from './ModalImportadorData';
 import { ModalAportante } from './ModalAportante';
 import { useAportesIngresosStore } from '@/hooks/hookApi/useAportesIngresosStore';
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 dayjs.extend(utc);
 export default function TableGestAportes({showToast}) {
     locale('es')
@@ -214,7 +215,7 @@ export default function TableGestAportes({showToast}) {
     const montoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(FUNMoneyFormatter(rowData.monto_aporte, rowData.moneda=='PEN'?'S/. ':'$ '), globalFilterValue)}</span>
+                <span>{highlightText(FUNMoneyFormatter(rowData.monto_aporte, rowData.moneda=='PEN'?<><SymbolSoles isbottom={false}/> </>:'$ '), globalFilterValue)}</span>
             </div>
         );
     };

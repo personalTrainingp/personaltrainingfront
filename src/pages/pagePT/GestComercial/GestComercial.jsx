@@ -28,7 +28,7 @@ export const GestComercial = () => {
       if(dataView.length<=0){
         obtenerProspectosLeads()
       }
-    }, [dataView])
+    }, [])
     const onModalRegClienteOpen=()=>{
         setshowModalCliente(true)
     }

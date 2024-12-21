@@ -1,4 +1,3 @@
-import { arrayDistrito, arrayEstadoCivil, arrayEstados, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc, filtrarDuplicados } from '@/types/type'
 import React, { useEffect, useState } from 'react'
 import {Modal, Row, Col, Tab, Tabs, Button, ModalBody} from 'react-bootstrap'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
@@ -14,6 +13,7 @@ import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { useProspectoLeadsStore } from '@/hooks/hookApi/useProspectoLeadsStore';
 import dayjs from 'dayjs';
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 
 
 const regUsuariosLeads= {
@@ -244,7 +244,7 @@ export const ModalCliente = ({show, onHide, data}) => {
                                 <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="plan_lead" className="form-label">
-                                            PLAN S/.*
+                                            PLAN <SymbolSoles/>*
                                         </label>
                                         <input
                                             className="form-control"

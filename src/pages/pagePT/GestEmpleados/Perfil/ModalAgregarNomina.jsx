@@ -1,6 +1,6 @@
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Stepper } from 'primereact/stepper';
 import { StepperPanel } from 'primereact/stepperpanel';
 import { InputText } from 'primereact/inputtext';
@@ -11,19 +11,31 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { InputMask } from "primereact/inputmask";
 import Select from 'react-select';
 import { useForm } from '@/hooks/useForm';
+import { usePlanillaStore } from './usePlanillaStore';
 dayjs.extend(utc);
 const registrarNomina = {
-  fec_desde: null,
-  fec_hasta: null,
+  fecha_desde: null,
+  fecha_hasta: null,
   observacion: '',
 }
-export const ModalAgregarNomina = ({show, onHide}) => {
+export const ModalAgregarNomina = ({show, onHide, uid_empl}) => {
     const stepperRef = useRef(null);
-    const { fec_desde, fec_hasta, observacion, formState, onInputChange } = useForm(registrarNomina)
+    const { fecha_desde, fecha_hasta, observacion, formState, onInputChange, onResetForm } = useForm(registrarNomina)
+
+    const { postPlanillaxEMPL, obtenerAsistenciasxEmpl } = usePlanillaStore()
     
     const onClickModalClose = ()=>{
-      
+      onHide()
+      onResetForm()
     }
+    const onClickSubmitPlanilla = ()=>{
+      postPlanillaxEMPL(formState, uid_empl)//PLANILLA DEL MES DE NOVIEMBRE 2024
+      onClickModalClose()
+    }
+    useEffect(() => {
+      obtenerAsistenciasxEmpl(uid_empl, 4)
+    }, [])
+    
 
     return (
       <Dialog
@@ -31,20 +43,20 @@ export const ModalAgregarNomina = ({show, onHide}) => {
           onHide={onHide}
           position='top'
           style={{width: '40rem'}}
-          header='AGREGAR NOMINA'
+          header='AGREGAR PLANILLA'
           >
             <form>
               <Row>
                 <Col xxl={6}>
                   <div className="mb-4">
-                      <label htmlFor="fec_desde" className="form-label">FECHA DESDE</label>
+                      <label htmlFor="fecha_desde" className="form-label">FECHA DESDE</label>
                       <input
                         type='date'
                         className='form-control'
-                        name="fec_desde"
-                        value={fec_desde}
+                        name="fecha_desde"
+                        value={fecha_desde}
+                        onChange={onInputChange}
                       />
-                      {/* <InputMask className="form-control" mask="99/99/9999" placeholder="DD/MM/YYYY" name="periodo_desde" readOnly /> */}
                   </div>
                 </Col>
                 <Col xxl={6}>
@@ -53,8 +65,9 @@ export const ModalAgregarNomina = ({show, onHide}) => {
                       <input
                         type='date'
                         className='form-control'
-                        name="fec_hasta"
-                        value={fec_hasta}
+                        name="fecha_hasta"
+                        value={fecha_hasta}
+                        onChange={onInputChange}
                       />
                   </div>
                 </Col>
@@ -71,7 +84,7 @@ export const ModalAgregarNomina = ({show, onHide}) => {
                 </Col>
               </Row>
               <br />
-              <Button type='button' label='Agregar' className='p-button-primary' onClick={onClickModalClose} />
+              <Button type='button' label='Agregar' className='p-button-primary' onClick={onClickSubmitPlanilla} />
             </form>
       </Dialog>
     )

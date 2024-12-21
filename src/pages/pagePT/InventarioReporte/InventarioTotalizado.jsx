@@ -7,6 +7,9 @@ import { useSelector } from 'react-redux'
 import { ModalTableInventario } from './ModalTableInventario'
 import sinImage from '@/assets/images/SinImage.jpg'
 import { Image } from 'primereact/image'
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
+import { TabPanel, TabView } from 'primereact/tabview'
+import { DataView } from './DataView'
 
 export const InventarioTotalizado = () => {
     const { obtenerArticulos, isLoading } = useInventarioStore()
@@ -53,49 +56,18 @@ export const InventarioTotalizado = () => {
       
   return (
     <>
-    <PageBreadcrumb title={'INVENTARIO VALORIZADO'} subName={'T'}/>
-        <Row>
-            {
-                groupedData.map(g=>{
-                    
-                    return(
-                    <>
-                    <h1>
-                        NIVEL {g.nivel}
-                    </h1>
-                    {
-                        console.log(agruparDataxLugar(g.items))
-                        
-                    }
-                    {
-                        agruparDataxLugar(g.items).map(f=>(
-                            <Col lg={4}>
-                            <Card style={{display: 'block', height: '530px'}} onClick={()=>onOpenModalInventario(f.items, f.ubicacion)} className='m-1 border border-4'>
-                                <Card.Header>
-                                    <Card.Title className='fs-2 text-primary'>
-                                        {f.ubicacion}
-                                    </Card.Title>
-                                </Card.Header>
-                                <Card.Body>
-                                    <ul className='text-decoration-none list-unstyled font-20'>
-                                        <li ><span className='fw-bold fs-2'>ITEMS:</span> <span className='fs-2'>{f.items.length}</span></li>
-                                        <li ><span className='fw-bold fs-2'>inversión S/: </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado}/></span></li>
-                                        <li ><span className='fw-bold fs-2'>inversión $ : </span><span className='fs-2'><NumberFormatMoney amount={(f.valor_total_sumado/3.8).toFixed(2)}/></span></li>
-                                        <li className='d-flex justify-content-center'>
-                                            <Image src={sinImage}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt={f.ubicacion} preview  height='250' ></Image>
-                                        </li>
-                                    </ul>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        ))
-                    }
-                    </>
-                                
-                )})
-            }
-        </Row>
-        <ModalTableInventario ubicacion={ubicacion} show={isOpenModalInventarioFiltered} onHide={onCloseModalInventario} data={dataFilter}/>
+    <PageBreadcrumb topTitle={<>INVENTARIO VALORIZADO <br/> DE ACTIVOS</>} title={'INVENTARIO VALORIZADO DE ACTIVOS'} subName={'T'}/>
+    <TabView>
+        <TabPanel header={'CIRCUS'}>
+            <DataView id_empresa={599} label_empresa={'CIRCUS'}/>
+        </TabPanel>
+        <TabPanel header={'CHANGE'}>
+            <DataView id_empresa={598} label_empresa={'CHANGE'}/>
+        </TabPanel>
+        <TabPanel header={'MANOJ'}>
+        <DataView id_empresa={600} label_empresa={'MANOJ'}/>
+        </TabPanel>
+    </TabView>
     </>
   )
 }

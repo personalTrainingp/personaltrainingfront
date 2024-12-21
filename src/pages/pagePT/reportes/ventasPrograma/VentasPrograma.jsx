@@ -18,6 +18,8 @@ import { Loading } from '@/components/Loading'
 import { VentasxDistritos } from './VentasxDistritos'
 import { useReporteVentasxProgramasStore } from '@/hooks/hookApi/StoreVentasxProgramas/useReporteVentasxProgramasStore'
 import { ModalCuadroVentas } from './ModalCuadroVentas'
+import { FechaRange } from '@/components/RangeCalendars/FechaRange'
+import { useSelector } from 'react-redux'
 const rangoFechas = {
   rangoDate:[new Date(new Date().getFullYear(), 8, 16), new Date()],
   id_programa: 0
@@ -51,33 +53,33 @@ export const VentasPrograma = () => {
   }
   
   const [loading, setloading] = useState(false)
+  const { RANGE_DATE } = useSelector(e=>e.DATA)
   useEffect(() => {
     const funcionDataExtract = async()=>{
       setloading(false)
-      if(rangoDate[1]==null) return;
-      if(rangoDate[0]==null) return;
+      if(RANGE_DATE[1]==null) return;
+      if(RANGE_DATE[0]==null) return;
       // if(id_programa===0) return;
-      await obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO(id_programa, rangoDate)
-      await obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO(id_programa, rangoDate)
-      await obtenerReporteVentasAcumuladas_y_Tickets(id_programa, rangoDate)
-      await obtenerReporteVentasPrograma_EstadoCliente(id_programa, rangoDate)
-      await obtenerReporteVentasDeProgramasPorSemanas(id_programa, rangoDate)
-      await obtenerMembresiasxFechaxPrograma(id_programa, rangoDate)
-      await estadosClienteMembresia(id_programa , rangoDate[0] , rangoDate[1])
-      await obtenerVentasxPrograma(id_programa, rangoDate)
-      await obtenerTransferencias_x_pgm_x_Date(id_programa, rangoDate)
+      await obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO(id_programa, RANGE_DATE)
+      await obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO(id_programa, RANGE_DATE)
+      await obtenerReporteVentasAcumuladas_y_Tickets(id_programa, RANGE_DATE)
+      await obtenerReporteVentasPrograma_EstadoCliente(id_programa, RANGE_DATE)
+      await obtenerReporteVentasDeProgramasPorSemanas(id_programa, RANGE_DATE)
+      await obtenerMembresiasxFechaxPrograma(id_programa, RANGE_DATE)
+      await estadosClienteMembresia(id_programa , RANGE_DATE[0] , RANGE_DATE[1])
+      await obtenerVentasxPrograma(id_programa, RANGE_DATE)
+      await obtenerTransferencias_x_pgm_x_Date(id_programa, RANGE_DATE)
       // await obtenerClientesConTraspasos(id_programa, rangoDate)
       setloading(true)
     }
     
     funcionDataExtract()
     // obtenerReporteVentasPorProgramas_x_ClientesFrecuentes(id_programa, rangoDate)
-  }, [id_programa, rangoDate])
+  }, [id_programa, RANGE_DATE])
 
   let NroClientesNuevo = 0;
   let NroClientesReinscritos = 0;
   let NroClientesRenovados = 0;
-  console.log(dataClientes);
   
   if(dataClientes?.cantidadPorEstado?.ClienteNuevo){
     NroClientesNuevo = dataClientes.cantidadPorEstado.ClienteNuevo;
@@ -115,14 +117,14 @@ export const VentasPrograma = () => {
     },
   ];
   const programasActivosTODO = [
-    {value: 0, label: 'TODO LOS PROGRAMAS', urlAvatar: 'None'},
+    {value: 0, label: 'TODOS LOS PROGRAMAS', urlAvatar: 'None'},
     ...programasActivos
   ]
   return (
     <>
     <PageBreadcrumb title="Ventas por programas" subName="Ventas" />
     
-    <Row className='mb-4 align-items-center'>
+    <Row className='align-items-center'>
       <Col xxl={2} md={4} xs={6}>
       <div className="mb-3">
         <label htmlFor="id_programa" className="form-label">
@@ -142,13 +144,8 @@ export const VentasPrograma = () => {
         ></Select>
       </div>
       </Col>
-      <Col xxl={3} md={4} xs={6}>
-        <div className="flex-auto">
-          <label htmlFor="buttondisplay" className="font-bold block mb-2">
-              Rango de fecha
-          </label>
-          <Calendar id="buttondisplay" value={rangoDate} name='rangoDate' onChange={onInputChange} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection />
-        </div>
+      <Col xxl={8} md={4} xs={6}>
+        <FechaRange rangoFechas={RANGE_DATE}/>
       </Col>
     </Row>
     {

@@ -1,0 +1,1 @@
+export { ReporteDemograficoMembresia as default } from './ReporteDemograficoMembresia'

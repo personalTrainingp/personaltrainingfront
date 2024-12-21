@@ -20,11 +20,12 @@ import { FormatoDateMask, FUNMoneyFormatter, MoneyFormatter, NumberFormatMoney }
 import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
 import { Card, Col, Modal, Row } from 'react-bootstrap';
-import { ModalImportadorData } from './ModalImportadorData';
+import { ModalImportadorData } from './BtnImportarData/ModalImportadorData';
 import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore';
 import config from '@/config';
 import { Image } from 'primereact/image';
 import sinImage from '@/assets/images/SinImage.jpg'
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice}) {
     locale('es')
@@ -42,7 +43,7 @@ export default function TableInventario({showToast, id_enterprice}) {
         // obtenerProveedoresUnicos()
     }, [id_enterprice])
         useEffect(() => {
-            if(dataView.length<=0){
+            if(dataView.length>=0){
                 const fetchData = () => {
                     setCustomers(getCustomers(dataView));
                     setLoading(false);
@@ -153,6 +154,13 @@ export default function TableInventario({showToast, id_enterprice}) {
         // setGlobalFilterValue('');
     };
     const [showModalImportadorData, setshowModalImportadorData] = useState(false)
+    const onOpenModalImportadorData = ()=>{
+        setshowModalImportadorData(true)
+        
+    }
+    const onCloseModalImportadorData = ()=>{
+        setshowModalImportadorData(false)
+    }
     const renderHeader = () => {
         return (
             <div className="d-flex justify-content-between">
@@ -164,7 +172,7 @@ export default function TableInventario({showToast, id_enterprice}) {
                     <Button type="button" icon="pi pi-filter-slash" outlined onClick={clearFilter} />
                 </div>
                 <div className='d-flex'>
-                    <Button label="IMPORTAR" icon='pi pi-file-import' onClick={()=>setshowModalImportadorData(true)} disabled text/>
+                    <Button label="IMPORTAR" icon='pi pi-file-import' onClick={onOpenModalImportadorData} text/>
                     <ExportToExcel data={valueFilter}/>
                 </div>
             </div>
@@ -172,7 +180,6 @@ export default function TableInventario({showToast, id_enterprice}) {
     };
     
     const imagenBodyTemplate = (rowData)=>{
-        console.log(rowData.tb_images[rowData.tb_images.length-1]?.name_image);
         return (
             <div className="flex align-items-center gap-2">
                         <Image src={rowData.tb_images.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[rowData.tb_images.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
@@ -227,7 +234,7 @@ export default function TableInventario({showToast, id_enterprice}) {
     const valorUnitActualBodyTemplate = (rowData) => {
         return (
             <div className="d-flex align-items-end w-50 gap-2 justify-content-end font-24 border-0"  style={{width: '100px'}}>
-                <> <NumberFormatMoney amount={rowData.valor_unitario_actual}/></>
+                <> <NumberFormatMoney amount={rowData.valor_unitario_depreciado}/></>
             </div>
         );
     };
@@ -271,7 +278,7 @@ export default function TableInventario({showToast, id_enterprice}) {
             
             <div className="d-flex font-24" >
                 <div className='text-right ' style={{marginLeft: '30px'}}>
-                    <NumberFormatMoney amount={rowData.valor_unitario_actual}/>
+                    <NumberFormatMoney amount={rowData.valor_total_dolares}/>
                 </div>
             </div>
         )
@@ -280,7 +287,7 @@ export default function TableInventario({showToast, id_enterprice}) {
         return (
             
             <div className="flex align-items-center gap-2 font-24">
-                <span><MoneyFormatter amount={rowData.valor_total}/></span>
+                <span><NumberFormatMoney amount={rowData.valor_total}/></span>
             </div>
         )
     }
@@ -292,23 +299,6 @@ export default function TableInventario({showToast, id_enterprice}) {
     
     return (
         <>
-            {
-                showLoading&&
-                <Modal size='sm' show={showLoading}>
-                    <Modal.Body>
-                    <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
-                            <span className="loader-box2"></span>
-                            <br/>
-                            <p className='fw-bold font-16'>
-                                Si demora mucho, comprobar su conexion a internet
-                            </p>
-                    </div>
-                    </Modal.Body>
-                </Modal> 
-            }
-            {
-                !isLoading?(
-                    <>
                     <div>
                         <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
                     </div>
@@ -341,38 +331,24 @@ export default function TableInventario({showToast, id_enterprice}) {
                 {/* <Column header={<span className={'font-24'}>INVENTARIO</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/> */}
                 <Column header={<span className={'font-24'}>CANT. </span>} field='cantidad' filterField="cantidad" sortable style={{ minWidth: '5rem' }} body={cantidadBodyTemplate} />
                 <Column header={<span className={'font-24'}>UBICACION</span>} field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '10rem' }} sortable body={lugarBodyTemplate} filter/>
-                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. S/</div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
-                <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO TOTAL S/</div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
+                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolSoles isbottom={false}/></div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
+                <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO TOTAL <SymbolSoles isbottom={false}/></div>} field='valor_unitario_actual' filterField="valor_total" style={{ minWidth: '10rem' }} sortable body={valorTotalBodyTemplate} filter/>
                 {/* <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. $</div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/> */}
-                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO TOTAL $</div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/>
+                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO TOTAL $</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/>
                 <Column header={<span className={'font-24'}>DESCRIPCION</span>} field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                 {/* <Column header={<span className={'font-24'}>OBSERVACION</span>}field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/> */}
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
-            
             <ModalInventario id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
-            {/* <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/> */}
+            <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/>
             </>
-                )
-                :(
-                    //Array.from({ length: 10 }, (v, i) => i)
-                    <DataTable size='large' 
-                    value={Array.from({ length: 10 }, (v, i) => i)} 
-                    className="p-datatable-striped"
-                    >
-                        <Column header="Id" style={{ width: '1rem' }}/>
-                        <Column header="PRODUCTO" style={{ width: '3rem' }} body={<Skeleton/>} />
-                        <Column header="MARCA" style={{ width: '3rem' }} body={<Skeleton/>} />
-                        <Column header="DESCRIPCION" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="OBSERVACIONES" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="CANTIDAD" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="VALOR UNITARIO DEPRECIADO" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="LUGAR DE COMPRA O COTIZACION" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                        <Column header="VALOR TOTAL" style={{ minWidth: '10rem' }} body={<Skeleton/>}/>
-                    </DataTable>
-                )
-            }
-
-        </>
     );
 }
+
+
+
+
+
+
+
+

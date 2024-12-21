@@ -91,6 +91,7 @@ export default function TableClientes() {
         });
         setGlobalFilterValue('');
     };
+    
     const renderHeader = () => {
         return (
             <div className="flex justify-content-between">

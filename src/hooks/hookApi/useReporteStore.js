@@ -167,9 +167,11 @@ export const useReporteStore = () => {
 					detalle_prodAccesorios: productosFiltradosAcc,
 					detalle_prodSuplementos: productosFiltradosSup,
 					detalle_cita_tratest: [TratEsteticoFiltrados],
+					fecha_venta: e.fecha_venta,
 					detalle_cita_nut: [],
 					detalle_pago: e.detalleVenta_pagoVenta,
 					tb_empleado: e.tb_empleado,
+					tb_cliente: e.tb_cliente,
 				};
 			});
 			// console.log(data.reporte);
@@ -179,6 +181,7 @@ export const useReporteStore = () => {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
 						detalle_membresia: e.detalle_ventaMembresia,
+						tb_cliente: e.tb_cliente,
 						detalle_pago: e.detalleVenta_pagoVenta,
 						tb_empleado: e.tb_empleado,
 					};
@@ -194,6 +197,7 @@ export const useReporteStore = () => {
 					return {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
+						tb_cliente: e.tb_cliente,
 						detalle_prodAccesorios: productosFiltrados,
 						detalle_pago: e.detalleVenta_pagoVenta,
 						tb_empleado: e.tb_empleado,
@@ -208,6 +212,7 @@ export const useReporteStore = () => {
 					return {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
+						tb_cliente: e.tb_cliente,
 						detalle_prodSuplemento: productosFiltrados,
 						detalle_pago: e.detalleVenta_pagoVenta,
 						tb_empleado: e.tb_empleado,
@@ -219,6 +224,7 @@ export const useReporteStore = () => {
 					return {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
+						tb_cliente: e.tb_cliente,
 						// detalle_cita_tratest: e.detalle_ventaCitas.filter(
 						// 	(item) => item.tb_servicio.tipo_servicio === 'FITOL'
 						// ),
@@ -236,6 +242,7 @@ export const useReporteStore = () => {
 					return {
 						id: e.id,
 						fecha_venta: e.fecha_venta,
+						tb_cliente: e.tb_cliente,
 						detalle_cita_nut: CitasFiltrados,
 						detalle_pago: e.detalleVenta_pagoVenta,
 						tb_empleado: e.tb_empleado,
@@ -290,6 +297,8 @@ export const useReporteStore = () => {
 			const ordenarPorTotalVentas = (data) => {
 				return data.sort((a, b) => b.total_ventas - a.total_ventas);
 			};
+			console.log(dataProgramas);
+
 			setreporteVentas(sumarTotalDetalle(sumarDatos(data.reporte)));
 			setreporteDeDetalle(sumarDatos_y_cantidades(data.reporte));
 			setreporteDeVentasPorEmpleados(
@@ -667,6 +676,7 @@ export const useReporteStore = () => {
 					params: { isClienteActive: isClienteActive },
 				}
 			);
+			console.log(dataactivo);
 
 			// const dataCombination = dataactivo.newMembresias.concat(dataInactivo.newMembresias);
 			// console.log(dataCombination);
@@ -870,6 +880,7 @@ export const useReporteStore = () => {
 		}
 	};
 
+<<<<<<< HEAD
 	const obtenerUtilidadesPorCita = async(rangoFechas) => {
 		try {
 			const { data } = await PTApi.get('/reporte/utilidades-por-cita' , {
@@ -877,13 +888,20 @@ export const useReporteStore = () => {
 					dateRange:rangoFechas,
 
 				},
+=======
+	const obtenerUtilidadesPorCita = async (fecha) => {
+		try {
+			const { data } = await PTApi.get('/reporte/utilidades-por-cita', {
+				params: {},
+>>>>>>> 22490830892d874f2cda0210658da3912f09b485
 			});
-			
-		//const [ventasxCita, setVentasxCita] = useState([]);
-		setVentasxCita(data.response)
+
+			//const [ventasxCita, setVentasxCita] = useState([]);
+			setVentasxCita(data.response);
 		} catch (error) {
 			console.log(error);
 		}
+<<<<<<< HEAD
 	}
 
 	const obtenerUtilidadesPorProducto = async(rangoFechas) => {
@@ -907,6 +925,9 @@ export const useReporteStore = () => {
 		}
 	}
 
+=======
+	};
+>>>>>>> 22490830892d874f2cda0210658da3912f09b485
 	return {
 		loading,
 		obtenerReporteSeguimiento,

@@ -51,10 +51,17 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 		return value.replace(/,/g, '');
 	};
 	const onInputChangeReact = (value, name) => {
-		console.log(name);
+		console.log(value, name);
 		setFormState({
 			...formState,
 			[name]: value.value,
+		});
+	};
+	const onInputChangeReactSelect = (value, name) => {
+		console.log(value, name);
+		setFormState({
+			...formState,
+			[name]: value,
 		});
 	};
 	const onInputChangePrimeReact = (value, name) => {
@@ -135,6 +142,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 		onInputChangeRange,
 		onInputChangeMonto,
 		valueMonto,
+		onInputChangeReactSelect,
 
 		...formValidation,
 		isFormValid,

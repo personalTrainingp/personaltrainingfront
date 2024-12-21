@@ -6,6 +6,7 @@ export const dataSlice = createSlice({
 		BASE64_FIRMA: null,
 		section_item: null,
 		RANGE_DATE: [new Date(new Date().getFullYear(), 8, 16), new Date()],
+		MULTI_DATE: [],
 	},
 	reducers: {
 		onSetDataView: (state, { payload }) => {
@@ -24,6 +25,10 @@ export const dataSlice = createSlice({
 		onSetRangeDate: (state, { payload }) => {
 			state.RANGE_DATE = payload;
 		},
+		onSetMultiDate: (state, { payload }) => {
+			state.MULTI_DATE = payload;
+		},
 	},
 });
-export const { onSetDataView, onSetBase64Firma, onViewSection, onSetRangeDate } = dataSlice.actions;
+export const { onSetMultiDate, onSetDataView, onSetBase64Firma, onViewSection, onSetRangeDate } =
+	dataSlice.actions;
