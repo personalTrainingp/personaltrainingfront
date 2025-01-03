@@ -194,7 +194,7 @@ export const ResumenComparativo = () => {
 
         ):(
             <>
-            <PageBreadcrumb title={'RESUMEN PARA MARKETING'} subName={'T'}/>
+            <PageBreadcrumb title={'RESUMEN PARA MARKETING'} subName={''}/>
             <FechaRange rangoFechas={RANGE_DATE}/>
             <br/>
             
