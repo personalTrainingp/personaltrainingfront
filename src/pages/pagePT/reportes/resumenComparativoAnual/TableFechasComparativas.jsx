@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap'
 export const TableFechasComparativas = () => {
   return (
     <div style={{ overflowX: "auto", maxWidth: "100%" }}>
-      <Table className='table-frozen-col-1' bordered hover>
+      <Table className='table-frozen-col-1' striped bordered>
         <thead>
           <tr>
             <th rowSpan={2} className="sticky-col"></th>
@@ -61,9 +61,9 @@ export const TableFechasComparativas = () => {
             <tr>
                 <th>TOTAL DE SOCIOS</th>
                 <th>3</th>
-                <th>%</th>
+                <th>{((3-48)/3)*100}</th>
                 <th>48</th>
-                <th>%</th>
+                <th>{((48-37)/48)*100}</th>
                 <th>37</th>
                 <th>%</th>
                 <th>24</th>
@@ -72,7 +72,7 @@ export const TableFechasComparativas = () => {
             <tr>
                 <th>nuevos</th>
                 <th>3</th>
-                <th>%</th>
+                <th>{((3-3)/3)*100}</th>
                 <th>3</th>
                 <th>%</th>
                 <th>16</th>

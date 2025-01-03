@@ -153,16 +153,6 @@ export const ReporteDemograficoCliente = ({RANGE_DATE}) => {
           tarifa_venta: sumarTarifaMonto(n)
         }
       })
-      
-
-      const dataGenero = [].map(d=>{
-        return {
-          label: 'HOMBRE',
-          cantidad: '10',
-          suma_tarifa: 1234
-        }
-      })
-
       return (
         <>
         <PageBreadcrumb title="REPORTE DEMOGRAFICO" subName="Ventas" />

@@ -4,6 +4,8 @@ import { CardTitle } from '@/components';
 import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import Chart from 'react-apexcharts';
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
+import { useState } from 'react';
+import { ModalItems } from './ModalItems/ModalItems';
 function sumarTarifaMonto(detalles) {
 	return [
 	  detalles.detalle_membresia,
@@ -17,6 +19,8 @@ function sumarTarifaMonto(detalles) {
   }
 
   function agruparDistritosPorTarifa(data) {
+	// console.log(data);
+	
 	// Usamos un objeto auxiliar para agrupar por distrito y ubigeo
 	const agrupado = {};
   
@@ -107,8 +111,17 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
 	const formatCurrency = (value) => {
 		return value.toLocaleString('es-PE', { style: 'currency', currency: 'PEN' });
 	};
-	console.log(agruparDistritosPorTarifa(tasks));
-	
+	const [isOpenModalData, setisOpenModalData] = useState(false)
+	const [labelNam, setlabelNam] = useState('')
+	const [data, setdata] = useState([])
+	const onOpenModalData = (d, nameLabel)=>{
+		setisOpenModalData(true)
+		setlabelNam(nameLabel)
+		setdata(d)
+	}
+	const onCloseModalData = ()=>{
+        setisOpenModalData(false)
+    }
 	return (
 		<Card>
 			<Card.Body>
@@ -143,13 +156,13 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
 						{(agruparDistritosPorTarifa(tasks) || []).map((task, index) => {
 							return (
 								
-								<tr>
-								<td className='p-1 fs-2 text-primary'>{task.nombre_distrito}</td>
-								<td className='p-1 fs-2'>{task.items.length}</td>
-								<td className='p-1 fs-2'><NumberFormatMoney amount={task.suma_tarifa_venta} symbol={task.total_ventas=='DOLARES'?'$':'S/'}/></td>
-								<td className='p-1 fs-2'>{((task.items.length/sumaTotalCantidad)*100).toFixed(2)}</td>
-								<td className='p-1 fs-2'>{<NumberFormatMoney amount={(task.suma_tarifa_venta/task.items.length)}/>}</td>
-							</tr>
+								<tr onClick={()=>onOpenModalData(task.items, task.nombre_distrito)}>
+									<td className='p-1 fs-2 text-primary'>{task.nombre_distrito}</td>
+									<td className='p-1 fs-2'>{task.items.length}</td>
+									<td className='p-1 fs-2'><NumberFormatMoney amount={task.suma_tarifa_venta} symbol={task.total_ventas=='DOLARES'?'$':'S/'}/></td>
+									<td className='p-1 fs-2'>{((task.items.length/sumaTotalCantidad)*100).toFixed(2)}</td>
+									<td className='p-1 fs-2'>{<NumberFormatMoney amount={(task.suma_tarifa_venta/task.items.length)}/>}</td>
+								</tr>
 							);
 						})}
 								<td className='p-1 fs-1 text-primary fw-bold'>TOTAL</td>
@@ -162,6 +175,7 @@ const Tarjetas = ({ tasks, title, dataSumaTotal }) => {
 					</Col>
 				</Row>
 			</Card.Body>
+			<ModalItems data={data} labelNam={labelNam} onHide={onCloseModalData} show={isOpenModalData}/>
 		</Card>
 	);
 };

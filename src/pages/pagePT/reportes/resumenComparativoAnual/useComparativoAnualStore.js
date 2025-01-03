@@ -9,7 +9,10 @@ import { useState } from 'react';
 
 export const useComparativoAnualStore = () => {
 	const [dataVentas, setdataVentas] = useState([]);
+	
 	const [isLoading, setisLoading] = useState(false);
+
+
 	const obtenerProgramasxVentasxMULTIDATE = async (rangoDate) => {
 		try {
 			setisLoading(false);

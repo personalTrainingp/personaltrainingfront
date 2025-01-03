@@ -7,6 +7,7 @@ import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { TarjetasPago } from './TarjetasPago';
 import Tarjetas from './Tarjetas';
+import { ModalItems } from './ModalItems/ModalItems';
 function sumarTarifaMonto(detalles) {
 	return [
 	  detalles.detalle_membresia,
@@ -120,6 +121,7 @@ export const CardDistritos = ({tasks, dataSumaTotal}) => {
             {/* <TarjetasPago labelsGraphic={tasks.map(f=>(f.suma_tarifa_total/f.items.length))} rangeEdadOrden={tasks} tasks={tasks} title={'RANKING POR RANGO DE EDAD POR TICKET MEDIO'}/> */}
             </TabPanel>
         </TabView>
+		<ModalItems />
         </>
   )
 }

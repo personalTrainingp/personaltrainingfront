@@ -1,0 +1,1 @@
+export { SeguimientoxMesView as default } from './SeguimientoxMesView'

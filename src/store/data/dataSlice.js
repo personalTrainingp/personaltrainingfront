@@ -5,7 +5,7 @@ export const dataSlice = createSlice({
 		dataView: [],
 		BASE64_FIRMA: null,
 		section_item: null,
-		RANGE_DATE: [new Date(new Date().getFullYear(), 8, 16), new Date()],
+		RANGE_DATE: [new Date(2024, 8, 16), new Date()],
 		MULTI_DATE: [],
 	},
 	reducers: {

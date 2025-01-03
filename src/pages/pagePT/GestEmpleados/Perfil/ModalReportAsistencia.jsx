@@ -21,20 +21,34 @@ const minutos = diferenciaEnMinutos % 60; // Obtener minutos restantes
 // console.log(horaInicio, horaFin);
     
 return `${horas}H Y ${minutos}M`
-
+}
+function calcularMinutosDesdeHoraCero(hora) {
+    // Parsear la hora ingresada
+    const horaIngresada = dayjs(hora, "h:mm A"); // Formato: 6:00 AM
+  
+    // Crear una hora base (00:00)
+    const horaCero = dayjs("00:00", "HH:mm");
+  
+    // Calcular la diferencia en minutos
+    const minutosDesdeHoraCero = horaIngresada.diff(horaCero, "minute");
+  
+    return minutosDesdeHoraCero;
 }
 
 function restarMinutos(horaInicio, horaFin) {
-
-    // Crear objetos dayjs para las dos horas
-    horaInicio = dayjs(horaInicio, 'hh:mm A'); // 6:00 AM
-    horaFin = dayjs(horaFin, 'hh:mm A'); // 2:00 PM
-    // Calcular la diferencia en horas y minutos
-    const diferencia = horaFin.diff(horaInicio, 'minute'); // Restar en minutos 
-    
-return `${diferencia}`
-
+    return calcularMinutosDesdeHoraCero(horaFin)-calcularMinutosDesdeHoraCero(horaInicio)
 }
+// function restarMinutos(horaInicio, horaFin) {
+
+//     // Crear objetos dayjs para las dos horas
+//     horaInicio = dayjs(horaInicio, 'hh:mm A'); // 6:00 AM
+//     horaFin = dayjs(horaFin, 'hh:mm A'); // 2:00 PM
+//     // Calcular la diferencia en horas y minutos
+//     const diferencia = horaFin.diff(horaInicio, 'minute'); // Restar en minutos 
+    
+// return `${diferencia}`
+
+// }
 export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => {
     const { postPlanillaxEMPL, obtenerAsistenciasxEmpl, obtenerPlanillaxID, dataPlanilla, asistenciaxEmplxPlanilla } = usePlanillaStore()
     const { dataJornadaxEmpl, obtenerJornadaxEmpleado } = useJornadaStore()
@@ -46,16 +60,16 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => 
         }, [id_planilla])
         // console.log(, dataPlanilla);
         const arrayDeDiasxSemana = obtenerDiasPorRango(dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY'), dayjs.utc(dataPlanilla.fecha_hasta).format('DD/MM/YYYY'), asistenciaxEmplxPlanilla, dataJornadaxEmpl)
-        console.log(arrayDeDiasxSemana, 
-            arrayDeDiasxSemana.flatMap(f=>f.items).map(m=>{
-                const minTardanzas = restarMinutos(m.marcacionInicio ,m.jornadaEntrada )
-                // console.log(m.marcacionInicio ,m.jornadaEntrada);
+        // console.log(arrayDeDiasxSemana, 
+        //     arrayDeDiasxSemana.flatMap(f=>f.items).map(m=>{
+        //         const minTardanzas = restarMinutos(m.marcacionInicio ,m.jornadaEntrada )
+        //         // console.log(m.marcacionInicio ,m.jornadaEntrada);
                 
-                return {
-                    minutostardanzas: minTardanzas,
-                    ...m,
-                }
-            }), "jorjor");
+        //         return {
+        //             minutostardanzas: minTardanzas,
+        //             ...m,
+        //         }
+        //     }), "jorjor");
         
   return (
     <Dialog
@@ -81,7 +95,7 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => 
                                     <tr>
                                         <th className='text-white text-center p-1' rowSpan={2} colSpan={1}>FECHA</th>
                                         <th className='text-white text-center p-1' colSpan={2}>HORARIO</th>
-                                        <th className='text-white text-center p-1' colSpan={2}>JORNADA REAL</th>
+                                        <th className='text-white text-center p-1' colSpan={2}>CONTROL</th>
                                         <th className='text-white text-center p-1' colSpan={4}>HORAS</th>
                                         <th className='text-white text-center p-1' colSpan={2}>PERMISOS</th>
                                         <th className='text-white text-center p-1' colSpan={2}>SALIDAS</th>
@@ -117,7 +131,12 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => 
                                         const jornadaSalida = dayjs(i.jornadaSalida, 'hh:mm').format('hh:mm A')
                                         const marcacionInicio = dayjs.utc(i.marcacionInicio).format('hh:mm A')
                                         const marcacionFin = dayjs.utc(i.marcacionFin).format('hh:mm A')
-                                        console.log(i.marcacionInicio, dayjs(i.fecha, 'DD/MM').format('dddd DD'), "jor");
+                                        const tardanzas = (!isNaN(restarMinutos( jornadaEntrada, marcacionInicio))&&restarMinutos( jornadaEntrada, marcacionInicio)>0)&& `${restarMinutos( jornadaEntrada, marcacionInicio)} MIN`
+                                        const salidasTempranas = (!isNaN(restarMinutos( jornadaSalida, marcacionFin))&&restarMinutos( jornadaSalida, marcacionFin)<0)&& `${-restarMinutos( jornadaSalida, marcacionFin)} MIN`
+                                        // console.log(new Date(marcacionInicio), i.marcacionInicio, "gg", dayjs(i.fecha, 'DD/MM').format('dddd DD'), "jor");
+                                        // console.log(
+                                        //     calcularMinutosDesdeHoraCero(jornadaEntrada)-calcularMinutosDesdeHoraCero(marcacionInicio)
+                                        // );
                                         
                                         return(
                                                     <tr>
@@ -129,8 +148,9 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => 
                                                         <td>{i.jornadaEntrada!='00:00'&&restarTiempo(jornadaEntrada, jornadaSalida)}</td>
                                                         <td>{i.marcacionInicio!='00:00:00'&&i.jornadaEntrada!='00:00'&&restarTiempo(marcacionInicio, marcacionFin)}</td>
                                                         {/* <td></td> */}
-                                                        <td>{i.marcacionInicio!='00:00:00'&&(restarMinutos(marcacionInicio ,jornadaEntrada )<=0) && (restarMinutos(marcacionInicio,jornadaEntrada )>=0)&&`${restarMinutos(marcacionInicio ,jornadaEntrada )} MIN`}</td>
-                                                        <td>{i.marcacionInicio!='00:00:00'&&(restarMinutos(marcacionFin ,jornadaSalida )<=0) && (restarMinutos(marcacionFin ,jornadaSalida )>=0)&&`${restarMinutos(marcacionFin ,jornadaSalida)} MIN`} </td>
+                                                        <td>{isNaN(marcacionInicio)&& tardanzas}</td>
+                                                        {/* <td>{i.marcacionInicio!='00:00:00'&&(restarMinutos(marcacionFin ,jornadaSalida )<=0) && (restarMinutos(marcacionFin ,jornadaSalida )>=0)&&`${restarMinutos(marcacionFin ,jornadaSalida)} MIN`} </td> */}
+                                                        <td>{isNaN(marcacionInicio)&& salidasTempranas}</td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>

@@ -23,7 +23,6 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
         onHide();
     }
     const { obtenerVentaporId, dataVentaxID, isLoading } = useVentasStore()
-    console.log(dataVentaxID);
     useEffect(() => {
         if(id==0)return;
         obtenerVentaporId(id)
@@ -33,6 +32,7 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
     }, [id])
     const productDialogFooter = (
         <React.Fragment>
+            <Button className='float-left' label="GENERAR PDF" icon="pi pi-file-pdf fs-3" outlined onClick={closeModal} />
             <Button label="Cancel" icon="pi pi-times" outlined onClick={closeModal} />
         </React.Fragment>
     );

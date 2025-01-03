@@ -137,8 +137,8 @@ export const arrayRoles = [
 ];
 
 export const arraySexo = [
-	{ label: 'Masculino', value: 8 },
 	{ label: 'Femenino', value: 9 },
+	{ label: 'Masculino', value: 8 },
 	{ label: 'Otro', value: 0 },
 ];
 
@@ -174,6 +174,7 @@ export const arrayFacturas = [
 	{ value: 700, label: 'Factura' },
 	{ value: 701, label: 'Traspaso' },
 	{ value: 702, label: 'TRANSFERENCIA' },
+	{ value: 703, label: 'CANJE' },
 ];
 export const arrayOrigenDeCliente = [
 	{ value: 684, label: 'TIS' },
@@ -188,7 +189,22 @@ export const arrayOrigenDeCliente = [
 	{ value: 693, label: 'Instagram' },
 	{ value: 694, label: 'facebook' },
 	{ value: 695, label: 'tiktok' },
-	{ value: 696, label: 'EX-PT' },
+	{ value: 696, label: 'EX-PT' }, //TODO LOS TRASPASOS SON EX-PT
+	{ value: 697, label: 'CANJE' },
+
+	{ value: 31, label: 'Referidos' },
+	{ value: 32, label: 'Cartera de renovacion' },
+	{ value: 33, label: 'Cartera de reinscripcion' },
+
+	{ value: 41, label: 'OTROS' },
+	{ value: 40, label: 'OTROS' },
+
+	{ value: 0, label: 'OTROS' },
+
+	{ value: 201, label: 'OTROS' },
+	{ value: 200, label: 'OTROS' },
+	{ value: 34, label: 'Instagram' },
+	{ value: 30, label: 'OTROS' },
 ];
 
 export const arrayEstadoCivil = [

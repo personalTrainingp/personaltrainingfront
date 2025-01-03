@@ -25,6 +25,7 @@ import { Message } from 'primereact/message';
 import { Skeleton } from 'primereact/skeleton';
 import { Row } from 'react-bootstrap';
 import { BtnExportSeguimiento } from './BtnExportSeguimiento';
+import { arrayFacturas } from '@/types/type';
 dayjs.extend(utc);
 locale('es')
 
@@ -90,6 +91,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 		return [...(data || [])].map((d) => {
 			
             // Crea una copia del objeto antes de modificarlo
+			const labelFactura =  d.tb_ventum.id_tipoFactura===701?arrayFacturas.find(f=>f.value==d.tb_ventum.id_tipoFactura)?.label:'VENTA'
             let newItem = { ...d };
 			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st*5} Sesiones | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')}`;
 			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
@@ -97,6 +99,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
 			newItem.diasFaltan = diasLaborables(new Date(), dayjs.utc(fechaaaa))
 			newItem.distrito = d.tb_ventum.tb_cliente.tb_distrito?.distrito;
+			newItem.labelFactura = labelFactura
 			return newItem;
 		});
 	};
@@ -180,27 +183,28 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
         );
 	}
 	const SociosbodyTemplate = (rowData)=>{
-		console.log(rowData);
 		
 		return (
             <div className="align-items-center gap-2">
-                <div className='font-bold '>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</div>
+                <div className='font-bold text-primary'>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</div>
                 <div>Email: {rowData.tb_ventum.tb_cliente.email_cli} </div>
                 <div>Telefono: {rowData.tb_ventum.tb_cliente.tel_cli?rowData.tb_ventum.tb_cliente.tel_cli.replace(/ /g, "").match(/.{1,3}/g).join('-'):''} </div>
-                <div className='fw-bold text-primary'>Distrito: {rowData.distrito} </div>
+                <div className='fw-bold'>Distrito: <span className='text-primary'>{rowData.distrito} </span></div>
                 {/* <div>EDAD: {rowData.distrito} </div> */}
             </div>
         );
 	}
 	const programaSesioneBodyTemplate = (rowData)=>{
+		console.log(rowData);
+		
 		return (
 			<>
 			<span className='text-primary fw-semibold font-20'>
 			{rowData.ProgramavsSemana.split('|')[0]} 
 			</span>
 			<br/>
-			<span className='text-primary fw-semibold font-20'>
-			{rowData.ProgramavsSemana.split('|')[0]} 
+			<span className='fw-semibold font-20'>
+			{rowData.labelFactura} 
 			</span>
 			<br/>
 			{rowData.ProgramavsSemana.split('|')[1]}

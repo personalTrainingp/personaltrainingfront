@@ -56,6 +56,9 @@ export const ReporteSeguimiento = () => {
     <>
         <PageBreadcrumb subName={'T'} title={'REPORTE DE SEGUIMIENTO'}/>
         <Row>
+            
+        </Row>
+        <Row>
             <Col lg={1}>
             </Col>
             <Col lg={10}>

@@ -172,7 +172,7 @@ export const ReporteDemograficoCliente = () => {
 
       return (
         <>
-        <PageBreadcrumb title="REPORTE DEMOGRAFICO" subName="Ventas" />
+        <PageBreadcrumb title="REPORTE DEMOGRAFICOS" subName="Ventas" />
         {
           loading? (
             <div className='text-center'>

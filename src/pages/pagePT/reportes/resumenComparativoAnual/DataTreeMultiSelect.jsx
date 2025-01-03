@@ -123,7 +123,7 @@ export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactS
                 <Button label="agregar fechas" onClick={onClickModalFechaxComparar}/>
           <span></span>
                 <TableFechasComparativas/>
-                {/* <ModalFechasParaComparar show={isOpenModalFechasComparar} onHide={onCloseModalFechasxComparar}/> */}
+                <ModalFechasParaComparar show={isOpenModalFechasComparar} onHide={onCloseModalFechasxComparar}/>
         </div>
     );
 }

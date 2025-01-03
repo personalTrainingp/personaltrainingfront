@@ -1,5 +1,5 @@
 import { TabPanel, TabView } from 'primereact/tabview'
-import React from 'react'
+import React, { useState } from 'react'
 import { TarjetasPago } from './TarjetasPago'
 function calcularEdad(fechaNacimiento, fechaVenta) {
     const hoy = new Date(fechaVenta);
@@ -36,9 +36,10 @@ const agruparPorRangoEdad = (data) => {
       { rango_edad: "22 - 27", min: 22, max: 27 },
       { rango_edad: "16 - 21", min: 16, max: 21 },
       { rango_edad: "10 - 15", min: 10, max: 15 },
+      { rango_edad: "1 - 3", min: 1, max: 3 },
       { rango_edad: "58 - 63", min: 58, max: 63 },
       { rango_edad: "64 - 69", min: 64, max: 69 },
-      { rango_edad: "70 - -->", min: 70, max: Infinity },
+      { rango_edad: "70 - \n 🔝", min: 70, max: Infinity },
       // { rango_edad: "88 a mas", min: 88, max: Infinity },
     ];
   
@@ -76,7 +77,6 @@ export const CardEdad = ({tasks, dataSumaTotal}) => {
         return promedioA;
       });
     console.log(ordenarxTicketMedio);
-    
   return (
     <>
     <TabView>
@@ -90,6 +90,7 @@ export const CardEdad = ({tasks, dataSumaTotal}) => {
         <TarjetasPago labelsGraphic={ordenarxSumaTarifaTotal.map(f=>(f.suma_tarifa_total/f.items.length))} rangeEdadOrden={ordenarxTicketMedio} tasks={tasks} title={'RANKING POR RANGO DE EDAD POR TICKET MEDIO'}/>
         </TabPanel>
     </TabView>
+
     </>
   )
 }

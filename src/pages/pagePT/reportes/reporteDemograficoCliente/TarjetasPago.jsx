@@ -6,6 +6,8 @@ import Chart from 'react-apexcharts';
 import sinAvatar from '@/assets/images/sinPhoto.jpg'
 import config from '@/config';
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
+import { ModalItems } from './ModalItems/ModalItems';
+import { useState } from 'react';
 function calcularEdad(fechaNacimiento, fechaVenta) {
   const hoy = new Date(fechaVenta);
   const nacimiento = new Date(fechaNacimiento);
@@ -137,6 +139,19 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal, rangeEdadOrden, labe
   }, 0);
 	const sumaTotalCantidad = rangeEdadOrden.reduce((total, item) => total + item.items.length, 0);
   
+
+  
+      const [isOpenModalData, setisOpenModalData] = useState(false)
+        const [labelNam, setlabelNam] = useState('')
+        const [data, setdata] = useState([])
+        const onOpenModalData = (d, nameLabel)=>{
+          setisOpenModalData(true)
+          setlabelNam(nameLabel)
+          setdata(d)
+        }
+        const onCloseModalData = ()=>{
+              setisOpenModalData(false)
+          }
   return (
     <Card>
 			<Card.Body>
@@ -165,7 +180,7 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal, rangeEdadOrden, labe
                         </thead>
 						<tbody>
                 {rangeEdadOrden.map((p, index)=>(
-                  <tr>
+                  <tr onClick={()=>onOpenModalData(p.items, p.rango_edad)}>
                     {/* <tr>{index+1}</tr> */}
                     <td className='text-primary fs-2 p-1'><span className='ml-6'>{p.rango_edad}</span></td>  
                     <td className='ml-1 fs-2 p-1'><span className='ml-6' style={{marginRight: '0'}}>{p.items.length}</span></td>  
@@ -187,6 +202,7 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal, rangeEdadOrden, labe
                   </Col>
                 </Row>
 			</Card.Body>
+      <ModalItems onHide={onCloseModalData} show={isOpenModalData} data={data} labelNam={labelNam}/>
 		</Card>
   )
 }

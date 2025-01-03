@@ -11,7 +11,7 @@ export const ModalFechasParaComparar = ({show, onHide}) => {
         </>
     )
   return (
-    <Dialog footer={footerTemplate} position='top' style={{width: '30rem'}} header={'FECHAS PARA COMPARAR'} visible={show} onHide={onHide}>
+    <Dialog footer={footerTemplate} position='top' style={{width: '50rem'}} header={'FECHAS PARA COMPARAR'} visible={show} onHide={onHide}>
         <h4>FECHA 1</h4>
         <Row>
             <Col xxl={6}>

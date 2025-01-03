@@ -17,6 +17,8 @@ import { ModalViewObservacion } from '../ModalViewObservacion';
 import { arrayFacturas } from '@/types/type';
 import { DateMaskString, FormatoDateMask, MoneyFormatter } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
+import { Col, Row } from 'react-bootstrap';
+import { PdfComprobanteVenta } from './PdfComprobanteVenta';
 
 
 export const TodoVentas=({id_empresa})=> {
@@ -117,9 +119,12 @@ export const TodoVentas=({id_empresa})=> {
   };
   const [viewVentas, setviewVentas] = useState(false)
   const [idVentas, setidVentas] = useState(0)
+  const [isPdfOpen, setisPdfOpen] = useState(false)
+  
   const onModalviewVENTAS = (id)=>{
     setidVentas(id)
     setviewVentas(true)
+    setisPdfOpen(true)
   }
   const onModalCancelVENTAS = ()=>{
     setviewVentas(false)
@@ -128,26 +133,46 @@ export const TodoVentas=({id_empresa})=> {
     
     return (
       <div className="flex align-items-center gap-2">
-          <span>{FormatoDateMask(rowData.fecha_venta, 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}</span>
+          <span className='text-primary fw-bold'>{FormatoDateMask(rowData.fecha_venta, 'dddd D [de] MMMM ')}
+          {/* <span className='text-black'></span> */}
+          </span>
+          {FormatoDateMask(rowData.fecha_venta, '[del] YYYY [a las] h:mm A')}
       </div>
     )
   }
+  const onClickPdfComprobante = (id_venta)=>{
+    setidVentas(id_venta)
+    
+  }
   const actionBodyTemplate = (rowData) => {
+    // console.log(rowData);
+    
     return (
-        <React.Fragment>
-            <Button 
-              rounded 
-              className="mr-2 p-0 border-0 text-decoration-underline" 
-              onClick={() => onModalviewVENTAS(rowData.id)} 
-              >DETALLE DE LA VENTA</Button>
-        </React.Fragment>
+          <Row>
+            <Col xxl={12}>
+              <Button 
+                rounded 
+                className=" p-1 border-0 text-decoration-underline" 
+                onClick={() => onModalviewVENTAS(rowData.id)} 
+                >DETALLE DE LA VENTA</Button>
+            </Col>
+          </Row>
     );
 };
 const comprobanteBodyTemplate = (rowData)=>{
   return (
-    <>
+    <div className='text-primary fw-bold'>
     { rowData.tipo_comprobante}
-    </>
+    </div>
+  )
+}
+const logoPdfBodyTemplate = (rowData)=>{
+  return(
+    <Row className='m-0'>
+      <Col xxl={12}>
+        <Button className='m-0' onClick={()=>onClickPdfComprobante(rowData.id)} icon={'pi pi-file-pdf fs-3'}> </Button>
+      </Col>
+    </Row>
   )
 }
 const valueFiltered = (f)=>{
@@ -170,7 +195,9 @@ const valueFiltered = (f)=>{
               <Column field="numero_transac" header="Nº DE COMPR." filter filterPlaceholder="Search by name" style={{ maxWidth: '7rem' }} />
               <Column header="TOTAL" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="" frozen style={{ minWidth: '12rem' }} body={actionBodyTemplate} />
+              <Column header="" frozen style={{ minWidth: '2rem' }} body={logoPdfBodyTemplate} />
           </DataTable>
+          <PdfComprobanteVenta id_venta={idVentas} isPdfOpen={isPdfOpen}/>
           <ModalViewObservacion show={viewVentas} onHide={onModalCancelVENTAS} id={idVentas}/>
         </>
     );

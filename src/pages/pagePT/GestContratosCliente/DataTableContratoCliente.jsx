@@ -8,6 +8,7 @@ import { ModalIsFirma } from '@/components/ModalIsFirma'
 import { useSelector } from 'react-redux'
 import { Card, Col, Row } from 'react-bootstrap'
 import { TabPanel, TabView } from 'primereact/tabview'
+import dayjs from 'dayjs'
 
 export const DataTableContratoCliente = () => {
   const { obtenerContratosDeClientes, dataContratos } = useVentasStore()
@@ -37,6 +38,7 @@ export const DataTableContratoCliente = () => {
     )
   }
   const contratosSociosBodyTemplate = (rowData)=>{
+    // console.log(rowData);
     
     return (
       <>
@@ -46,9 +48,34 @@ export const DataTableContratoCliente = () => {
     )
   }
   const nombreSocioBodyTemplate = (rowData)=>{
+    console.log(rowData);
+    const createdContrato = rowData.createdAt;
+    const createdFirmas = rowData.detalle_ventaMembresia[0].firma_cli;
+    //rowData.detalle_ventaMembresia[0].firma_cli?
+    // Fecha anterior
+    const fechaAnterior = dayjs(createdContrato);
+
+    // Fecha actual
+    const hoy = dayjs(); // Toma la fecha y hora actual
+
+// Diferencia en milisegundos
+  const diferenciaMilisegundos = hoy.diff(fechaAnterior);
+
+  // Calcular días, horas, minutos y segundos
+  const dias = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24));
+  const horas = Math.floor((diferenciaMilisegundos % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutos = Math.floor((diferenciaMilisegundos % (1000 * 60 * 60)) / (1000 * 60));
+  const segundos = Math.floor((diferenciaMilisegundos % (1000 * 60)) / 1000);
+  console.log(`Diferencia: ${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`);
+  
     return (
       <>
       {rowData.tb_cliente?.nombres_apellidos_cli}
+      <br/>
+      {
+        !createdFirmas&&<>tiempo sin firmar: {dias} días, {horas} horas, {minutos} minutos, {segundos} segundos</>
+      }
+      
       </>
     )
   }
