@@ -146,7 +146,7 @@ export const ReporteGerenciales = () => {
   const { obtenerAportesPorFechas, dataAportes } = useAportesIngresosStore()
   const { obtenerGastosPorFecha, dataGasto } = useGf_GvStore()
   const { obtenerTipoCambioPorFecha, tipocambio, obtenerTipoDeCambiosPorRangoDeFechas, dataTipoCambio } = useTipoCambioStore()
-  const { obtenerUtilidadesPorCita , ventasxCita } = useReporteStore();
+  const { obtenerUtilidadesPorCita , ventasxCita  , obtenerUtilidadesPorProducto , ventasxProducto} = useReporteStore();
 
   const [anio, setAnio] = useState(2024);
   const items = [
@@ -165,14 +165,24 @@ export const ReporteGerenciales = () => {
     obtenerTipoDeCambiosPorRangoDeFechas(rangoFechas)
     // obtenerTipoCambioPorFecha(rangoFechas)
     obtenerUtilidadesPorCita(rangoFechas)
+    obtenerUtilidadesPorProducto(rangoFechas)
   }, [rangoFechas])
 
-  
+  console.log("Rango de las fechas");
+  console.log(rangoFechas);
+
+  console.log("ventasxProducto");
+  console.log(ventasxProducto);
+
+  console.log("ventasxCita");
+  console.log(ventasxCita);
   let utilidadesxNutricion = {};
   let utilidadesxTratamientoEstetico =  ventasxCita?.response?.FITOL || {};
   utilidadesxTratamientoEstetico = Object.values(utilidadesxTratamientoEstetico);
-  console.log("Exito ventas por FITOL");
-  console.log(utilidadesxTratamientoEstetico);
+
+  let utilidadxSuplementos = ventasxProducto?.response?.[17] || {};
+  let utilidadxAccesorio = ventasxProducto?.response?.[18] || {};
+
 
 
   const showToast = (severity, summary, detail, label) => {
@@ -319,10 +329,10 @@ const dataUtilidadesNutricion=[
           <Col xxl={6}>
             <SimpleBar style={{height: '700px'}}>
               <UtilidadesProgramas/>
-              <UtilidadesProductos name_producto={'SUPLEMENTOS'} dataUtilidades={dataUtilidadesSuplementos}/>
-              <UtilidadesProductos name_producto={'ACCESORIOS'} dataUtilidades={dataUtilidadesAccesorio}/>
+              <UtilidadesProductos name_producto={'SUPLEMENTOS'} dataUtilidades={utilidadxSuplementos}/>
+              <UtilidadesProductos name_producto={'ACCESORIOS'} dataUtilidades={utilidadxAccesorio}/>
               <UtilidadesCitas name_cita={"TRATAMIENTOS ESTETICOS"} dataUtilidades={utilidadesxTratamientoEstetico}/>
-              <UtilidadesCitas name_cita={"NUTRICION"} dataUtilidades={dataUtilidadesNutricion}/>
+              <UtilidadesCitas name_cita={"NUTRICION"} dataUtilidades={utilidadesxNutricion}/>
             </SimpleBar>
           </Col>
         </Row>

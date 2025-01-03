@@ -46,6 +46,8 @@ export const useReporteStore = () => {
 	const [ventasHoy, setventasHoy] = useState([]);
 
 	const [ventasxCita, setVentasxCita] = useState([]);
+	const [ventasxProducto, setVentasxProducto] = useState([]);
+
 	// const [repoVentasPorMembresia, setrepoVentasPorMembresia] = useState([]);
 	// const [repoVentasPorProdAcc, setrepoVentasPorProdAcc] = useState([])
 	// const [repoVentasPorProdSup, setrepoVentasPorProdSup] = useState([])
@@ -878,10 +880,20 @@ export const useReporteStore = () => {
 		}
 	};
 
+<<<<<<< HEAD
+	const obtenerUtilidadesPorCita = async(rangoFechas) => {
+		try {
+			const { data } = await PTApi.get('/reporte/utilidades-por-cita' , {
+				params: {
+					dateRange:rangoFechas,
+
+				},
+=======
 	const obtenerUtilidadesPorCita = async (fecha) => {
 		try {
 			const { data } = await PTApi.get('/reporte/utilidades-por-cita', {
 				params: {},
+>>>>>>> 22490830892d874f2cda0210658da3912f09b485
 			});
 
 			//const [ventasxCita, setVentasxCita] = useState([]);
@@ -889,7 +901,33 @@ export const useReporteStore = () => {
 		} catch (error) {
 			console.log(error);
 		}
+<<<<<<< HEAD
+	}
+
+	const obtenerUtilidadesPorProducto = async(rangoFechas) => {
+		try {
+			console.log("rangoFechas consulta obtner utilidades por producto");
+
+			console.log(rangoFechas);
+			const { data } = await PTApi.get('/reporte/utilidades-por-producto' , {
+				params: {
+					dateRange:rangoFechas,
+				},
+				
+			});
+			
+		//const [ventasxCita, setVentasxCita] = useState([]);
+		console.log("data antes de enviar");
+		console.log(data);
+		setVentasxProducto(data.response)
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+=======
 	};
+>>>>>>> 22490830892d874f2cda0210658da3912f09b485
 	return {
 		loading,
 		obtenerReporteSeguimiento,
@@ -907,6 +945,8 @@ export const useReporteStore = () => {
 		obtenerReporteDeTotalDeVentasActuales,
 		obtenerVentasDeHoy,
 		obtenerUtilidadesPorCita,
+		obtenerUtilidadesPorProducto,
+		ventasxProducto,
 		ventasxCita,
 		reporteDeVentas,
 		ventasHoy,
