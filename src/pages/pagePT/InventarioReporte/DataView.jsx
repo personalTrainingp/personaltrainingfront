@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { ModalTableInventario } from './ModalTableInventario'
-import sinImage from '@/assets/images/SinImage.jpg'
+import sinImage from '@/assets/images/image_prueba_inventario.jpeg'
 import { Image } from 'primereact/image'
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { TabPanel, TabView } from 'primereact/tabview'
@@ -41,13 +41,14 @@ export const DataView = ({id_empresa, label_empresa}) => {
         }
         
         // Sumamos el valor_total del item actual al grupo correspondiente
-        acc[label].valor_total_sumado += item.valor_total;
+        acc[label].valor_total_sumado += item.costo_total_soles;
         
         // Añadimos el item al array `items` del grupo correspondiente
         acc[label].items.push(item);
         
         return acc;
       }, {}));
+    //   console.log(groupedData);
       
       // Convertimos valor_total_sumado a cadena con dos decimales
       groupedData.forEach(group => {
@@ -68,6 +69,7 @@ export const DataView = ({id_empresa, label_empresa}) => {
     <Row>
             {
                 groupedData.map(g=>{
+                    console.log(agruparDataxLugar(g.items), "agrupada");
                     
                     return(
                     <>
@@ -121,7 +123,7 @@ function agruparDataxLugar(dataV) {
         }
         
         // Sumamos el valor_total del item actual al grupo correspondiente
-        acc[label].valor_total_sumado += item.valor_total;
+        acc[label].valor_total_sumado += item.costo_total_soles;
         
         // Añadimos el item al array `items` del grupo correspondiente
         acc[label].items.push(item);

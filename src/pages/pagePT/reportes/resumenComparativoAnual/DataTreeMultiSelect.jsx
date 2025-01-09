@@ -118,6 +118,68 @@ export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactS
     const onCloseModalFechasxComparar = ()=>{
       setisOpenModalFechasComparar(false)
     }
+    const dataComparativa = [
+      {
+        fecha_desde: '01/09/2024',
+        fecha_hasta: '06/09/2024',
+        total_socios: 0,
+        nuevos: 0,
+        renovaciones: 0,
+        reinscritos: 0,
+        traspasos: 0,
+        venta_total: 0,
+        ticket_medio: 0,
+        total_socios: 0
+      },
+      {
+        fecha_desde: '01/10/2024',
+        fecha_hasta: '06/10/2024',
+        total_socios: 49,
+        nuevos: 0,
+        renovaciones: 0,
+        reinscritos: 0,
+        traspasos: 0,
+        venta_total: 0,
+        ticket_medio: 0,
+        total_socios: 0
+      },
+      {
+        fecha_desde: '01/11/2024',
+        fecha_hasta: '06/11/2024',
+        total_socios: 0,
+        nuevos: 0,
+        renovaciones: 0,
+        reinscritos: 0,
+        traspasos: 0,
+        venta_total: 0,
+        ticket_medio: 0,
+        total_socios: 0
+      },
+      {
+        fecha_desde: '01/12/2024',
+        fecha_hasta: '06/12/2024',
+        total_socios: 0,
+        nuevos: 0,
+        renovaciones: 0,
+        reinscritos: 0,
+        traspasos: 0,
+        venta_total: 0,
+        ticket_medio: 0,
+        total_socios: 0
+      },
+      {
+        fecha_desde: '01/01/2025',
+        fecha_hasta: '06/01/2025',
+        total_socios: 0,
+        nuevos: 0,
+        renovaciones: 0,
+        reinscritos: 0,
+        traspasos: 0,
+        venta_total: 0,
+        ticket_medio: 0,
+        total_socios: 0
+      },
+    ]
     return (
         <div  style={{ width: '100%', gap: '10px' }}>
                 <Button label="agregar fechas" onClick={onClickModalFechaxComparar}/>

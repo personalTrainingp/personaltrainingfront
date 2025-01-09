@@ -1,2 +1,2 @@
-export {Reportes as default} from './Reportes'
+export {PrincipalView as default} from './PrincipalView'
 

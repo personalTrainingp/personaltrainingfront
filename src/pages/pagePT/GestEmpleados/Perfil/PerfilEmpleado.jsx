@@ -37,6 +37,7 @@ export const PerfilEmpleado = () => {
   if(userEmpleado==null){
     return <Error404AltPage/>;
   }
+  const avatarImage=userEmpleado?.tb_images?.length===0?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${userEmpleado.tb_images[userEmpleado.tb_images?.length-1]?.name_image}`
   return (
     <>
     
@@ -50,7 +51,7 @@ export const PerfilEmpleado = () => {
                     <div className='' style={{height: '600px', width: '100%'}}>
                         <div className='d-flex align-items-center flex-column'>
                         {/* <img src={`${proveedor.tb_images?.length!==0?`${config.API_IMG.AVATARES_PROV}${proveedor.tb_images[proveedor.tb_images.length-1]?.name_image}`:sinAvatar}`} className='rounded-circle' width={150} height={150}/> */}
-                        <Image src={userEmpleado?.tb_images?.length===0?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${userEmpleado.tb_images[userEmpleado.tb_images?.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="250" />
+                        <Image src={avatarImage} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="250" />
                             <div className='m-2 text-center'>
                                 <span className='fs-3 fw-bold'>
                                     <p className='mb-0 pb-0'>
@@ -83,7 +84,7 @@ export const PerfilEmpleado = () => {
                                 
                             </TabPanel>
                             <TabPanel header={'NOMINAS'}>
-                                <ReporteAsistencia uid_empl={uid}/>
+                                <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/>
                             </TabPanel>
                             <TabPanel header={'PERMISOS'}>
                               <PanelPermisos/>

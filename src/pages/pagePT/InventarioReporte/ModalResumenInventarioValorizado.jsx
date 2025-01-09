@@ -1,5 +1,5 @@
-import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
-import { NumberFormatMoney } from '@/components/CurrencyMask';
+import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
+import { NumberFormatMoney, NumberFormatter } from '@/components/CurrencyMask';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog'
@@ -16,7 +16,7 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
         }
         
         // Sumamos el valor_total del item actual al grupo correspondiente
-        acc[label].valor_total_sumado += item.valor_total;
+        acc[label].valor_total_sumado += item.costo_total_soles;
         
         // Añadimos el item al array `items` del grupo correspondiente
         acc[label].items.push(item);
@@ -46,17 +46,7 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
     // groupedData = groupedData.push({ubicacion: 'TOTAL'})
     console.log(groupedData);
   return (
-    <Dialog footer={<>
-    <div className='fw-bold fs-3'>
-                    <span className=''>TOTAL DE ITEMS: </span><span>{totalSumaItems}</span>
-                </div>
-                <div className='fw-bold fs-3'>
-                    <span className=''>VALOR TOTAL <SymbolSoles isbottom={false}/>: </span><span><NumberFormatMoney amount={totalSumaValor}/></span>
-                </div>
-                <div className='fw-bold fs-3'>
-                    <span className=''>VALOR TOTAL $: </span><span><NumberFormatMoney amount={totalSumaValor/3.73}/></span>
-                </div>
-    </>} style={{width: '80rem'}} header={<>CUADRO RESUMEN / {label_empresa}</>} visible={show} onHide={onHide}>
+    <Dialog style={{width: '80rem'}} header={<>CUADRO RESUMEN / {label_empresa}</>} visible={show} onHide={onHide}>
         <Row>
             <Col xs={12}>
             <Table
@@ -86,6 +76,32 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                             ))
                                         }
                                     </tbody>
+                                    
+                                                                                                            <tr className='bg-primary text-white'>
+                                                                                                                        <td>
+                                                                                                                            <div className='text-white p-3 fs-2 fw-bold'>
+                                                                                                                                TOTAL
+                                                                                                                            </div>
+                                                                                                                        </td>
+                                                                                                                        <td>
+                                                                                                                            <span className='text-white fs-2 fw-bold'>
+                                                                                                                            {/* <SymbolDolar numero={}/>  */}
+                                                                                                                            <NumberFormatter amount={groupedData.reduce((total, item) => total + (item.items.length || 0), 0)}/>
+                                                                                                                            </span>
+                                                                                                                        </td>
+                                                                                                                        <td>
+                                                                                                                            <span className='text-white fs-2 fw-bold'>
+                                                                                                                            {/* <SymbolDolar numero={}/>  */}
+                                                                                                                            <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado || 0), 0)}/>
+                                                                                                                            </span>
+                                                                                                                        </td>
+                                                                                                                        <td>
+                                                                                                                            <span className='text-white fs-2 fw-bold'>
+                                                                                                                            <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado/3.73 || 0), 0)}/>
+                                                                                                                                
+                                                                                                                            </span>
+                                                                                                                        </td>
+                                                                                                                    </tr>
                                 </Table>
 							{/* <DataTable 
 							size='small' 
@@ -117,29 +133,3 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
 
 
 
-
-function agruparDataxLugar(dataV) {
-    
-    const groupedData = Object.values(dataV.reduce((acc, item) => {
-        const label = item.parametro_lugar_encuentro?.label_param;
-      
-        // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
-        if (!acc[label]) {
-          acc[label] = { ubicacion: label, orden: item.parametro_lugar_encuentro?.orden_param, valor_total_sumado: 0, items: [] };
-        }
-        
-        // Sumamos el valor_total del item actual al grupo correspondiente
-        acc[label].valor_total_sumado += item.valor_total;
-        
-        // Añadimos el item al array `items` del grupo correspondiente
-        acc[label].items.push(item);
-        
-        return acc;
-      }, {}));
-      
-      // Convertimos valor_total_sumado a cadena con dos decimales
-      groupedData.forEach(group => {
-        group.valor_total_sumado = group.valor_total_sumado.toFixed(2);
-      });
-      return groupedData.sort((a, b) => a.orden-b.orden);
-}

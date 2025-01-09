@@ -6,6 +6,7 @@ import { usePlanillaStore } from './usePlanillaStore';
 import dayjs from 'dayjs';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { useJornadaStore } from '@/hooks/hookApi/useJornadaStore';
+import { Image } from 'primereact/image';
 // import customParseFormat from 'dayjs/plugin/customParseFormat'
 // dayjs.extend(customParseFormat); // Activar la extensión
 
@@ -20,7 +21,7 @@ const horas = Math.floor(diferenciaEnMinutos / 60); // Obtener horas completas
 const minutos = diferenciaEnMinutos % 60; // Obtener minutos restantes
 // console.log(horaInicio, horaFin);
     
-return `${horas}H Y ${minutos}M`
+return `${horas} HRS ${minutos!==0?`Y ${minutos} MIN`:''}`
 }
 function calcularMinutosDesdeHoraCero(hora) {
     // Parsear la hora ingresada
@@ -49,7 +50,7 @@ function restarMinutos(horaInicio, horaFin) {
 // return `${diferencia}`
 
 // }
-export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => {
+export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avatarImage}) => {
     const { postPlanillaxEMPL, obtenerAsistenciasxEmpl, obtenerPlanillaxID, dataPlanilla, asistenciaxEmplxPlanilla } = usePlanillaStore()
     const { dataJornadaxEmpl, obtenerJornadaxEmpleado } = useJornadaStore()
     useEffect(() => {
@@ -79,6 +80,9 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => 
         style={{width: '120rem'}}
         header='REPORTE DE ASISTENCIA'
         >
+            <div className='d-flex justify-content-center'>
+                <Image src={avatarImage} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="250" />
+            </div>
           <h4>PERIODO DESDE: {dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY')} </h4>
           <h4>PERIODO HASTA: {dayjs.utc(dataPlanilla.fecha_hasta).format('DD/MM/YYYY')} </h4>
           <div>
@@ -88,38 +92,39 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => 
                 arrayDeDiasxSemana.map(s=>(
                     <>
                     <h3>SEMANA {s.semana}</h3>
+                    <div style={{width: '1300px'}} className='d-flex justify-content-center'>
                     <Table
-                                className="table-centered table-normal mb-0"
+                                className="table-centered table-striped table-normal mb-0"
                             >
                                 <thead className="bg-primary">
                                     <tr>
-                                        <th className='text-white text-center p-1' rowSpan={2} colSpan={1}>FECHA</th>
-                                        <th className='text-white text-center p-1' colSpan={2}>HORARIO</th>
-                                        <th className='text-white text-center p-1' colSpan={2}>CONTROL</th>
-                                        <th className='text-white text-center p-1' colSpan={4}>HORAS</th>
+                                        <th className='text-white text-center p-1' rowSpan={2} colSpan={1} style={{width: '130px'}}>DIA Y FECHA</th>
+                                        <th className='text-white text-center p-1' colSpan={2}>HORARIO </th>
+                                        <th className='text-white text-center p-1' colSpan={2}>ASISTENCIA</th>
+                                        <th className='text-white text-center p-1' colSpan={2}>RESUMEN</th>
                                         <th className='text-white text-center p-1' colSpan={2}>PERMISOS</th>
-                                        <th className='text-white text-center p-1' colSpan={2}>SALIDAS</th>
-                                        <th className='text-white text-center p-1' rowSpan={2} colSpan={1}>HORAS EXTRAS</th>
+                                        {/* <th className='text-white text-center p-1' colSpan={2}>SALIDAS</th> */}
+                                        <th className='text-white text-center p-1' rowSpan={2} colSpan={1} style={{width: '100px'}}>HORAS <br/> EXTRAS</th>
                                     </tr>
                                     <tr>
-                                        <th className='text-white text-center p-1' colSpan={1}>ENTRADA</th>
-                                        <th className='text-white text-center p-1' colSpan={1}>SALIDA</th>
+                                        <th className='text-white text-center p-1' colSpan={1} style={{width: '110px'}}>ENTRADA</th>
+                                        <th className='text-white text-center p-1' colSpan={1} style={{width: '110px'}}>SALIDA</th>
 
-                                        <th className='text-white text-center p-1' colSpan={1}>ENTRADA</th>
-                                        <th className='text-white text-center p-1' colSpan={1}>SALIDA</th>
+                                        <th className='text-white text-center p-1' colSpan={1} style={{width: '110px'}}>ENTRADA</th>
+                                        <th className='text-white text-center p-1' colSpan={1} style={{width: '110px'}}>SALIDA</th>
 
-                                        <th className='text-white text-center p-1' colSpan={1}>ASIGN.</th>
-                                        <th className='text-white text-center p-1' colSpan={1}>ASIST.</th>
+                                        <th className='text-white text-center p-1' colSpan={1} style={{width: '80px'}}>HORAS</th>
+                                        {/* <th className='text-white text-center p-1' colSpan={2}>ASIST.</th> */}
                                         {/* <th className='text-white text-center p-1' colSpan={1}>JORNADA</th> */}
-                                        <th className='text-white text-center p-1' colSpan={1}>TARDANZAS</th>
+                                        <th className='text-white text-center p-1' colSpan={1} style={{width: '80px'}}><div className='p-0' >TARDANZAS</div></th>
                                         {/* <th className='text-white text-center p-1' colSpan={1}>S. TEMPR.</th> */}
-                                        <th className='text-white text-center p-1' colSpan={1}>S. TEMPR.</th>
+                                        {/* <th className='text-white text-center p-1' colSpan={1}>S. TEMPR.</th> */}
 
-                                        <th className='text-white text-center p-1' colSpan={1}>CON SUELDO</th>
-                                        <th className='text-white text-center p-1' colSpan={1}>SIN SUELDO</th>
+                                        <th className='text-white text-center m-0 p-0' colSpan={1} style={{width: '130px'}}><div className='p-0'>AUTORIZADO</div></th>
+                                        <th className='text-white text-center m-0 p-0' colSpan={1} style={{width: '130px'}}><div className='p-0'>NO <br/> AUTORIZADO</div></th>
 
-                                        <th className='text-white text-center p-1' colSpan={1}>CON SUELDO</th>
-                                        <th className='text-white text-center p-1' colSpan={1}>SIN SUELDO</th>
+                                        {/* <th className='text-white text-center p-1' colSpan={1}>CON SUELDO</th>
+                                        <th className='text-white text-center p-1' colSpan={1}>SIN SUELDO</th> */}
                                         
                                     </tr>
                                 </thead>
@@ -127,8 +132,8 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => 
                                     
                                 {
                                     s.items.map(i=>{
-                                        const jornadaEntrada = dayjs(i.jornadaEntrada, 'hh:mm').format('hh:mm A')
-                                        const jornadaSalida = dayjs(i.jornadaSalida, 'hh:mm').format('hh:mm A')
+                                        const jornadaEntrada = dayjs.utc(i.jornadaEntrada, 'hh:mm').format('hh:mm A')
+                                        const jornadaSalida = dayjs.utc(i.jornadaSalida, 'hh:mm').format('hh:mm A')
                                         const marcacionInicio = dayjs.utc(i.marcacionInicio).format('hh:mm A')
                                         const marcacionFin = dayjs.utc(i.marcacionFin).format('hh:mm A')
                                         const tardanzas = (!isNaN(restarMinutos( jornadaEntrada, marcacionInicio))&&restarMinutos( jornadaEntrada, marcacionInicio)>0)&& `${restarMinutos( jornadaEntrada, marcacionInicio)} MIN`
@@ -139,22 +144,23 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => 
                                         // );
                                         
                                         return(
-                                                    <tr>
-                                                        <th>{dayjs(i.fecha, 'DD/MM').format('dddd DD')}</th>
+                                                    <tr className=''>
+                                                        <th>{dayjs.utc(i.fecha, 'DD/MM/YYYY').format('dddd DD')}</th>
                                                         <td>{i.jornadaEntrada!='00:00'&&jornadaEntrada}</td>
                                                         <td>{i.jornadaSalida!='00:00'&&jornadaSalida}</td>
                                                         <td>{i.marcacionInicio!='00:00:00'&&i.jornadaEntrada!='00:00'&&marcacionInicio}</td>
                                                         <td>{i.marcacionFin!='00:00:00'&&i.jornadaSalida!='00:00'&&marcacionFin}</td>
                                                         <td>{i.jornadaEntrada!='00:00'&&restarTiempo(jornadaEntrada, jornadaSalida)}</td>
-                                                        <td>{i.marcacionInicio!='00:00:00'&&i.jornadaEntrada!='00:00'&&restarTiempo(marcacionInicio, marcacionFin)}</td>
+                                                        {/* <td>{i.marcacionInicio!='00:00:00'&&i.jornadaEntrada!='00:00'&&restarTiempo(marcacionInicio, marcacionFin)}</td> */}
                                                         {/* <td></td> */}
                                                         <td>{isNaN(marcacionInicio)&& tardanzas}</td>
                                                         {/* <td>{i.marcacionInicio!='00:00:00'&&(restarMinutos(marcacionFin ,jornadaSalida )<=0) && (restarMinutos(marcacionFin ,jornadaSalida )>=0)&&`${restarMinutos(marcacionFin ,jornadaSalida)} MIN`} </td> */}
-                                                        <td>{isNaN(marcacionInicio)&& salidasTempranas}</td>
+                                                        {/* <td>{isNaN(marcacionInicio)&& salidasTempranas}</td> */}
+                                                        {/* <td></td> */}
                                                         <td></td>
                                                         <td></td>
-                                                        <td></td>
-                                                        <td></td>
+                                                        {/* <td>SALA</td>
+                                                        <td>SALB</td> */}
                                                         <td></td>
                                                     </tr>
                                         )
@@ -163,6 +169,7 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla}) => 
                                 }
                                 </tbody>
                         </Table>
+                    </div>
                     </>
                 ))
               }

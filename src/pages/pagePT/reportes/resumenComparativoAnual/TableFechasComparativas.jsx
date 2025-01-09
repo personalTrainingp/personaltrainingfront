@@ -14,7 +14,7 @@ export const TableFechasComparativas = () => {
                     <br/>
                     HASTA
                     <br/>
-                    20 DE SEPTIEMBRE DEL 2024
+                    6 DE SEPTIEMBRE DEL 2024
                 </div>
             </th>
             <th colSpan={2} className='m-0 p-0 text-center'>

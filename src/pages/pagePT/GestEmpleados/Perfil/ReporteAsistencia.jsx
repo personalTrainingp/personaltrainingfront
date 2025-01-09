@@ -12,7 +12,7 @@ import { usePlanillaStore } from './usePlanillaStore'
 import dayjs from 'dayjs'
 pdfMake.vfs = fontsRoboto
 
-export const ReporteAsistencia = ({uid_empl}) => {
+export const ReporteAsistencia = ({uid_empl, avatarImage}) => {
 
     const [isOpenModalAgregarNomina, setisOpenModalAgregarNomina] = useState(false)
 	const [isOpenModalReportNominas, setisOpenModalReportNominas] = useState(false)
@@ -176,7 +176,7 @@ export const ReporteAsistencia = ({uid_empl}) => {
                         </tbody>
                     </Table>
                         <ModalAgregarNomina uid_empl={uid_empl} dataPeriodoParamSelect={dataPeriodoParamSelect} show={isOpenModalAgregarNomina} onHide={onCloseModalNomina}/>
-                        <ModalReportAsistencia id_planilla={idPlanilla} uid_empl={uid_empl} dataPeriodoParamSelect={dataPeriodoParamSelect} show={isOpenModalReportAsistencia} onHide={onClickCloseModalReporteAsistencia}/>
+                        <ModalReportAsistencia avatarImage={avatarImage} id_planilla={idPlanilla} uid_empl={uid_empl} dataPeriodoParamSelect={dataPeriodoParamSelect} show={isOpenModalReportAsistencia} onHide={onClickCloseModalReporteAsistencia}/>
     </>
   )
 }

@@ -133,7 +133,17 @@ input{
 //   background-color: #D41115;
 // }
 
-
+.custom-legend-item {
+  margin-top: 10px;    /* Margen superior */
+  margin-right: 10005px;  /* Margen derecho */
+  margin-bottom: 20px; /* Margen inferior */
+  margin-left: 30px;   /* Margen izquierdo */
+}
+.container-chart{
+  .apexcharts-legend-series{
+    margin: 2px 50px !important;
+  }
+}
 .hover-card:hover{
     border-color: rgb(205, 133, 0) !important;
 }

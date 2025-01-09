@@ -11,7 +11,9 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc';
 import { ModalSocios } from './ModalSocios'
 import { VentasPorComprobante } from './VentasPorComprobante'
-import { arrayEstadoCivil, arrayOrigenDeCliente, arraySexo } from '@/types/type'
+import { arrayDistritoTest, arrayEstadoCivil, arrayOrigenDeCliente, arraySexo } from '@/types/type'
+import { VentasxMesGrafico } from './VentasxMesGrafico'
+import { VentasMesGrafico } from './HistoricoVentasMembresias/VentasMesGrafico'
 
 dayjs.extend(utc);
 export const ResumenComparativo = () => {
@@ -148,25 +150,22 @@ export const ResumenComparativo = () => {
             return {
                 labelOrigen: sexo.label,
                 items: items, // Si no hay coincidencias, será un array vacío []
+                order: sexo.order
             };
-        });
+        }).sort((a,b)=>a.order-b.order);
     }
     function GroupDistrito(detalledata) {
-        return detalledata.reduce((resultado, item) => {
-            // Buscar si ya existe un grupo con el mismo id_pgm
-            let grupo = resultado.find((g) => g.labelDistrito === item.labelDistrito);
+        return arrayDistritoTest.map((sexo) => {
+            // Filtrar los datos correspondientes al label actual
+            const items = detalledata.filter((item) => item.labelDistrito === sexo.label);
     
-            if (!grupo) {
-                // Si no existe, crear uno nuevo
-                grupo = { labelDistrito: item.labelDistrito, items: [] };
-                resultado.push(grupo);
-            }
-    
-            // Agregar el objeto {venta_venta, id_pgm} al grupo
-            grupo.items.push({ venta_venta: item.venta_venta, labelDistrito: item.labelDistrito });
-    
-            return resultado;
-        }, []);
+            // Retornar la estructura agrupada
+            return {
+                labelDistrito: sexo.label,
+                items: items, // Si no hay coincidencias, será un array vacío []
+                order: sexo.order
+            };
+        }).sort((a,b)=>a.order-b.order);
     }
     function GroupSexo(detalledata) {
         return arraySexo.map((sexo) => {
@@ -177,14 +176,17 @@ export const ResumenComparativo = () => {
             return {
                 labelSexo: sexo.label,
                 items: items, // Si no hay coincidencias, será un array vacío []
+                order: sexo.order
             };
-        });
+        }).sort((a,b)=>a.order-b.order);
     }
     
     /*
     */
   return (
     <>
+    
+    <FechaRange rangoFechas={RANGE_DATE}/>
         {loading ?(
             <div className='text-center'>
             <div className="spinner-border text-primary" role="status">
@@ -194,8 +196,8 @@ export const ResumenComparativo = () => {
 
         ):(
             <>
-            <PageBreadcrumb title={'RESUMEN PARA MARKETING'} subName={''}/>
-            <FechaRange rangoFechas={RANGE_DATE}/>
+
+            {/* <VentasxMesGrafico/> */}
             <br/>
             
             {/* <VentasPorComprobante dataGroup={dataGroup}/> */}
@@ -243,21 +245,21 @@ export const ResumenComparativo = () => {
                                                                                 <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>venta de <br/> membresias:</span></li>
                                                                             </td>
                                                                             <td>
-                                                                                <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{ventas}</span>
+                                                                                <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{ventas}</span>
                                                                             </td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Venta acumulada:</span></li>
+                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Venta <br/> acumulada:</span></li>
                                                                         </td>
-                                                                        <td> <span className='fs-1 d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.tarifa_total}/>}/></span></td>
+                                                                        <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.tarifa_total}/>}/></span></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Ticket medio:</span></li>
+                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Ticket <br/> medio:</span></li>
                                                                         </td>
                                                                         <td> 
-                                                                        <span className='fs-1 d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={(d.tarifa_total/ventas).toFixed(2)}/>}/></span>
+                                                                        <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={(d.tarifa_total/ventas).toFixed(2)}/>}/></span>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -265,7 +267,7 @@ export const ResumenComparativo = () => {
                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Sesiones <br/> vendidas:</span></li>
                                                                         </td>
                                                                         <td> 
-                                                                        <span className='fs-1 d-flex justify-content-end align-content-end align-items-end'><NumberFormatter amount={sesionesVendidas}/></span>
+                                                                        <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><NumberFormatter amount={sesionesVendidas}/></span>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -273,7 +275,7 @@ export const ResumenComparativo = () => {
                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Costo <br/> por sesion:</span></li>
                                                                         </td>
                                                                         <td> 
-                                                                        <span className='fs-1 d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.tarifa_total/sesionesVendidas}/>}/></span>
+                                                                        <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.tarifa_total/sesionesVendidas}/>}/></span>
                                                                         </td>
                                                                     </tr>
                                                                     
@@ -321,7 +323,7 @@ export const ResumenComparativo = () => {
                                                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>NUEVOS:</span></li>
                                                                         </td>
                                                                         <td>
-                                                                            <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{
+                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{
                                                                         // console.log(groupByIdOrigen(d.detalle_ventaMembresium).filter(({ id_origen }) => id_origen !== 692 && id_origen !== 691)
                                                                         // .reduce((sum, { items }) => sum + items.length, 0))
                                                                         }
@@ -332,24 +334,24 @@ export const ResumenComparativo = () => {
                                                                     </tr>
                                                                     <tr>
                                                                         <td onClick={()=>onOpenModalSOCIOS(d, 'renovaciones')}>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>RENOVACIONES:</span></li>
+                                                                            <li className='d-flex  flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>RENOVACIONES:</span></li>
                                                                         </td>
                                                                         <td> 
-                                                                        <span style={{fontSize: '40px'}} className=' d-flex justify-content-end align-content-end align-items-end'>{renovacionesxProgram}</span>
+                                                                        <span style={{fontSize: '40px'}} className=' d-flex fw-bold justify-content-end align-content-end align-items-end'>{renovacionesxProgram}</span>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td onClick={()=>onOpenModalSOCIOS(d, 'reinscripciones')}>
                                                                             <li className='d-flex flex-row justify-content-between p-2 text-center'><span className='fw-bold text-primary fs-2'>REINSCRIPCIONES:</span></li>
                                                                         </td>
-                                                                        <td> <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{reinscripcionesxProgram}</span></td>
+                                                                        <td> <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{reinscripcionesxProgram}</span></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td onClick={()=>onOpenModalSOCIOS(d, 'traspasos')}>
                                                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRASPASOS:</span></li>
                                                                         </td>
                                                                         <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end'>{traspasos.length-d.ventas_transferencias.length||0}</span>
+                                                                        <span style={{fontSize: '40px'}}  className=' d-flex fw-bold justify-content-end align-content-end align-items-end'>{traspasos.length-d.ventas_transferencias.length||0}</span>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -357,7 +359,7 @@ export const ResumenComparativo = () => {
                                                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRANSFERENCIAS:</span></li>
                                                                         </td>
                                                                         <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end'>{d.ventas_transferencias.length||0}</span>
+                                                                        <span style={{fontSize: '40px'}}  className=' d-flex fw-bold justify-content-end align-content-end align-items-end'>{d.ventas_transferencias.length||0}</span>
                                                                         </td>
                                                                     </tr>
                                                                     
@@ -366,7 +368,7 @@ export const ResumenComparativo = () => {
                                                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
                                                                         </td>
                                                                         <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
+                                                                        <span style={{fontSize: '40px'}}  className=' d-flex fw-bold justify-content-end align-content-end align-items-end text-white'>
                                                                             {sumaEstado}</span>
                                                                         </td>
                                                                     </tr>
@@ -488,7 +490,7 @@ export const ResumenComparativo = () => {
                                                                         <td>{dayjs.utc(h.horario).format('hh:mm A')}</td>
                                                                         <td>
                                                                         {/* {h.detalles.length} */}
-                                                                        <span style={{fontSize: '40px'}} className=' d-flex justify-content-end align-content-end align-items-end'>{h.detalles.length}</span>
+                                                                        <span style={{fontSize: '40px'}} className=' d-flex fw-bold justify-content-end align-content-end align-items-end'>{h.detalles.length}</span>
                                                                         {/* {''} */}
                                                                             {/* <span style={{fontSize: '40px', marginRight: '120px'}} className='d-flex justify-content-end align-content-end align-items-end'>{h.detalles.length}</span> */}
                                                                         </td>
@@ -513,14 +515,14 @@ export const ResumenComparativo = () => {
                                                                                 <tr style={{borderTop: '5px solid red'}} key={index}>
                                                                                 <td>{dayjs.utc(h.horario).format('hh:mm A')}</td>
                                                                                 <td>
-                                                                                    <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{h.detalles.length}</span>
+                                                                                    <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{h.detalles.length}</span>
                                                                                 </td>
                                                                             </tr> 
                                                                             ):(
                                                                             <tr className={''} key={index}>
                                                                                 <td>{dayjs.utc(h.horario).format('hh:mm A')}</td>
                                                                                 <td>
-                                                                            <span style={{fontSize: '40px'}} className='d-flex justify-content-end align-content-end align-items-end'>{h.detalles.length}</span>
+                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{h.detalles.length}</span>
                                                                             </td>
                                                                             </tr> 
                                                                             )
@@ -751,13 +753,13 @@ export const ResumenComparativo = () => {
                                                                         GroupDistrito(dataAlterada(d.detalle_ventaMembresium)).map(g=>(
                                                                             
                                                             <tr>
-                                                            <td>
-                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{g.labelDistrito}</span></li>
-                                                            </td>
-                                                            <th> 
-                                                            <span className='fs-1 d-flex justify-content-end align-content-end align-items-end'>{g.items.length}</span>
-                                                            </th>
-                                                        </tr>
+                                                                <td>
+                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{g.labelDistrito}</span></li>
+                                                                </td>
+                                                                <th> 
+                                                                <span className='fs-1 d-flex justify-content-end align-content-end align-items-end'>{g.items.length}</span>
+                                                                </th>
+                                                            </tr>
                                                                         ))
                                                                     }
                                                                 </tbody>

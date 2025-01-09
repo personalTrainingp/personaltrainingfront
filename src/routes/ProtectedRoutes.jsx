@@ -73,6 +73,7 @@ const ClientesxVentasDeMembresia = lazy(()=>import('../pages/pagePT/MembresiaxCl
 const GestionCambioPrograma = lazy(()=>import('../pages/pagePT/GestionCambioPrograma'))
 const ResumenComparativoAnual = lazy(()=>import('../pages/pagePT/reportes/resumenComparativoAnual'))
 const SeguimientoxMesView = lazy(()=>import('../pages/pagePT/reportes/SeguimientoxMes'))
+const FacturacionPublicidad = lazy(()=>import('../pages/pagePT/FacturacionPublicidad'))
 /**
  * routes import
  */
@@ -110,7 +111,12 @@ export default function ProtectedRoutes() {
 			status  === 'authenticated' ? (
 				<>
 				<Route path="/*" element={<Layout />}>
-				{/* /reporte-seguimiento */}
+				{/* /reporte-seguimiento  /facturacion-publicidad*/}
+				
+				{
+						sections.find(e=>e.url==='/facturacion-publicidad')&&
+                        <Route path='facturacion-publicidad' element={<FacturacionPublicidad/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/reporte/seguimiento-x-mes')&&
                         <Route path='reporte/seguimiento-x-mes' element={<SeguimientoxMesView/>}/>

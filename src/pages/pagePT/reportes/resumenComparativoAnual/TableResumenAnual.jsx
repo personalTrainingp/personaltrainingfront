@@ -65,34 +65,6 @@ export const TableResumenAnual = ({dataMes}) => {
                     <Column key={date} body={(rowData) => datebodyTemplate(rowData, { field: date })} style={{paddingLeft: '30px', marginRight: '20px'}} bodyStyle={{ fontSize: '20px',  color: '#333' }} header={<>{dayjs.utc(date, 'YYYY-MM').format('MMMM YYYY')}</>} />
                 ))}
       </DataTable>
-      {/* <Table
-      className="table-centered mb-0"
-      hover
-      responsive
-      >
-        <thead className='bg-primary'>
-            <tr>
-                <th></th>
-                <th>ENERO</th>
-                <th>FEBRERO</th>
-                <th>MARZO</th>
-                <th>ABRIL</th>
-                <th>MAYO</th>
-                <th>JUNIO</th>
-                <th>JULIO</th>
-                <th>AGOSTO</th>
-                <th>ENERO</th>
-                <th>FEBRERO</th>
-                <th>MARZO</th>
-                <th>ABRIL</th>
-                <th>MAYO</th>
-                <th>JUNIO</th>
-                <th>JULIO</th>
-                <th>AGOSTO</th>
-            </tr>
-        </thead>
-
-      </Table> */}
     </div>
     </div>
   )

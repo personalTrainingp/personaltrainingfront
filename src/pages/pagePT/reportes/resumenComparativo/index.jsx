@@ -1,1 +1,1 @@
-export { ResumenComparativo as default } from './ResumenComparativo';
+export { PrincipalView as default } from './PrincipalView';

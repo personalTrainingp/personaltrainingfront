@@ -880,20 +880,10 @@ export const useReporteStore = () => {
 		}
 	};
 
-<<<<<<< HEAD
-	const obtenerUtilidadesPorCita = async(rangoFechas) => {
-		try {
-			const { data } = await PTApi.get('/reporte/utilidades-por-cita' , {
-				params: {
-					dateRange:rangoFechas,
-
-				},
-=======
 	const obtenerUtilidadesPorCita = async (fecha) => {
 		try {
 			const { data } = await PTApi.get('/reporte/utilidades-por-cita', {
 				params: {},
->>>>>>> 22490830892d874f2cda0210658da3912f09b485
 			});
 
 			//const [ventasxCita, setVentasxCita] = useState([]);
@@ -901,7 +891,6 @@ export const useReporteStore = () => {
 		} catch (error) {
 			console.log(error);
 		}
-<<<<<<< HEAD
 	}
 
 	const obtenerUtilidadesPorProducto = async(rangoFechas) => {
@@ -925,9 +914,6 @@ export const useReporteStore = () => {
 		}
 	}
 
-=======
-	};
->>>>>>> 22490830892d874f2cda0210658da3912f09b485
 	return {
 		loading,
 		obtenerReporteSeguimiento,

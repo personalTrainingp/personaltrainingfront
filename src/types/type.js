@@ -137,9 +137,9 @@ export const arrayRoles = [
 ];
 
 export const arraySexo = [
-	{ label: 'Femenino', value: 9 },
-	{ label: 'Masculino', value: 8 },
-	{ label: 'Otro', value: 0 },
+	{ label: 'Femenino', value: 9, order: 1 },
+	{ label: 'Masculino', value: 8, order: 2 },
+	{ label: 'Otro', value: 0, order: 3 },
 ];
 
 export const arrayTipoDoc = [
@@ -177,34 +177,58 @@ export const arrayFacturas = [
 	{ value: 703, label: 'CANJE' },
 ];
 export const arrayOrigenDeCliente = [
-	{ value: 684, label: 'TIS' },
-	{ value: 685, label: 'Invitados' },
-	{ value: 686, label: 'Walking' },
-	{ value: 687, label: 'Llamadas' },
-	{ value: 688, label: 'Mail' },
-	{ value: 689, label: 'Wsp organico' },
-	{ value: 690, label: 'Referidos' },
-	{ value: 691, label: 'Cartera de renovacion' },
-	{ value: 692, label: 'Cartera de reinscripcion' },
-	{ value: 693, label: 'Instagram' },
-	{ value: 694, label: 'facebook' },
-	{ value: 695, label: 'tiktok' },
-	{ value: 696, label: 'EX-PT' }, //TODO LOS TRASPASOS SON EX-PT
-	{ value: 697, label: 'CANJE' },
+	// { value: 684, label: 'TIS', order: 1 },
+	// { value: 685, label: 'Invitados', order: 11 },
+	{ value: 686, label: 'Walking', order: 7 },
+	// { value: 687, label: 'Llamadas', order: 9 },
+	{ value: 688, label: 'Mail', order: 10 },
+	{ value: 690, label: 'Referidos', order: 6 },
+	{ value: 691, label: 'Cartera de renovacion', order: 4 },
+	{ value: 692, label: 'Cartera de reinscripcion', order: 5 },
+	{ value: 693, label: 'Instagram', order: 1 },
+	{ value: 689, label: 'Wsp organico', order: 11 },
+	{ value: 694, label: 'facebook', order: 2 },
+	{ value: 695, label: 'tiktok', order: 3 },
+	{ value: 696, label: 'EX-PT', order: 8 }, //TODO LOS TRASPASOS SON EX-PT
+	// { value: 697, label: 'CANJE' },
 
-	{ value: 31, label: 'Referidos' },
-	{ value: 32, label: 'Cartera de renovacion' },
-	{ value: 33, label: 'Cartera de reinscripcion' },
+	// { value: 31, label: 'Referidos 1' },
+	// { value: 32, label: 'Cartera de renovacion 1' },
+	// { value: 33, label: 'Cartera de reinscripcion 1' },
 
-	{ value: 41, label: 'OTROS' },
-	{ value: 40, label: 'OTROS' },
+	// { value: 41, label: 'OTROS 1' },
+	// { value: 40, label: 'OTROS 2' },
 
-	{ value: 0, label: 'OTROS' },
+	// { value: 0, label: 'OTROS 3' },
 
-	{ value: 201, label: 'OTROS' },
-	{ value: 200, label: 'OTROS' },
-	{ value: 34, label: 'Instagram' },
-	{ value: 30, label: 'OTROS' },
+	// { value: 201, label: 'OTROS 4' },
+	// { value: 200, label: 'OTROS 5' },
+	// { value: 34, label: 'Instagram 1' },
+	// { value: 30, label: 'OTROS 7' },
+];
+
+export const arrayDistritoTest = [
+	{ label: 'Miraflores', order: 0 },
+	{ label: 'Barranco', order: 1 },
+	{ label: 'Surquillo', order: 2 },
+	{ label: 'Santiago de Surco', order: 3 },
+	{ label: 'San Isidro', order: 4 },
+	{ label: 'Jesús María', order: 5 },
+	{ label: 'Ate', order: 6 },
+	{ label: 'Lima', order: 7 },
+	{ label: 'La Molina', order: 8 },
+	{ label: 'Magdalena del Mar', order: 9 },
+	/* 
+	La Molina,
+	Ate,
+	Surquillo,
+	Lima,
+	Chorrillos,
+	Barranco,
+	Magdalena del Mar,
+	Jesús María,
+	San Isidro,
+	*/
 ];
 
 export const arrayEstadoCivil = [
