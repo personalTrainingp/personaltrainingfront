@@ -891,28 +891,25 @@ export const useReporteStore = () => {
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 
-	const obtenerUtilidadesPorProducto = async(rangoFechas) => {
+	const obtenerUtilidadesPorProducto = async (rangoFechas) => {
 		try {
-			console.log("rangoFechas consulta obtner utilidades por producto");
-
 			console.log(rangoFechas);
-			const { data } = await PTApi.get('/reporte/utilidades-por-producto' , {
+			const { data } = await PTApi.get('/reporte/utilidades-por-producto', {
 				params: {
-					dateRange:rangoFechas,
+					dateRange: rangoFechas,
 				},
-				
 			});
-			
-		//const [ventasxCita, setVentasxCita] = useState([]);
-		console.log("data antes de enviar");
-		console.log(data);
-		setVentasxProducto(data.response)
+
+			//const [ventasxCita, setVentasxCita] = useState([]);
+			console.log('data antes de enviar');
+			console.log(data);
+			setVentasxProducto(data.response);
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 
 	return {
 		loading,
