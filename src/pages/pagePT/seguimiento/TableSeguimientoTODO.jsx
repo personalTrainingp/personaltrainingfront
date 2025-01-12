@@ -76,7 +76,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 		estado_seguimiento: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 	});
 	const [globalFilterValue, setGlobalFilterValue] = useState('');
-	console.log(customers);
+	// console.log(customers, "customers");
 	
 	useEffect(() => {
 		const fetchData = () => {
@@ -85,10 +85,11 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 		};
 		fetchData();
 	}, [viewSeguimiento]);
-	// console.log(viewSeguimiento);
+	console.log(viewSeguimiento, "view");
 	
 	const getCustomers = (data) => {
 		return [...(data || [])].map((d) => {
+			console.log(data, "getCustomers");
 			
             // Crea una copia del objeto antes de modificarlo
 			const labelFactura =  d.tb_ventum.id_tipoFactura===701?arrayFacturas.find(f=>f.value==d.tb_ventum.id_tipoFactura)?.label:'VENTA'

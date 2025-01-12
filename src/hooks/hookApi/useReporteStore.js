@@ -676,7 +676,7 @@ export const useReporteStore = () => {
 					params: { isClienteActive: isClienteActive },
 				}
 			);
-			console.log(dataactivo);
+			console.log(dataactivo, 'dattaaaaaaaaaaaa');
 
 			// const dataCombination = dataactivo.newMembresias.concat(dataInactivo.newMembresias);
 			// console.log(dataCombination);

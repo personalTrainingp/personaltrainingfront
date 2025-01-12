@@ -65,6 +65,8 @@ export const useReporteResumenComparativoStore = () => {
 		// 	venta_transferencia: [],
 		// },
 	]);
+	const [dataHorarios, sethorarios] = useState([]);
+	const [dataTarifas, settarifas] = useState([]);
 	const [dataGroupTRANSFERENCIAS, setdataGroupTRANSFERENCIAS] = useState([]);
 	const [loading, setloading] = useState(false);
 	const [dataEstadoGroup, setdataEstadoGroup] = useState([]);
@@ -85,6 +87,7 @@ export const useReporteResumenComparativoStore = () => {
 					venta_venta: f.venta_venta,
 					id_pgm: f.venta_venta[0].venta_transferencia[0].detalle_ventaMembresia[0]
 						.id_pgm,
+					// id_tarifa: f.detalle_ventaMembresia
 				};
 			})
 			.flat();
@@ -121,6 +124,7 @@ export const useReporteResumenComparativoStore = () => {
 						acc[id_pgm].detalle_ventaMembresium.push({
 							horario: detalle_ventaMembresium.horario || null,
 							tarifa_monto: detalle_ventaMembresium.tarifa_monto || 0,
+							id_tarifa: detalle_ventaMembresium.id_tarifa || 0,
 							tb_semana_training: detalle_ventaMembresium.tb_semana_training || null,
 							tb_ventum: detalle_ventaMembresium.tb_ventum || null,
 						});
@@ -162,7 +166,7 @@ export const useReporteResumenComparativoStore = () => {
 		});
 
 		// console.log(agruparPorIdPgm(dataTransferencias), agruparxIdPgm, ventasUnificadas);
-		console.log(agruparxIdPgm, '149');
+		// console.log(agruparxIdPgm, '149');
 
 		setdataGroup(ventasUnificadas);
 		setdataGroupTRANSFERENCIAS(agruparPorIdPgm(dataTransferencias));
@@ -246,10 +250,45 @@ export const useReporteResumenComparativoStore = () => {
 		}
 	};
 	const obtenerVentasxComprobantes = async (RANGE_DATE, id_factura) => {};
+	const obtenerHorariosPorPgm = async () => {
+		try {
+			const { data } = await PTApi.get('/programaTraining/horario/get-tb-pgm');
+			const dataAlter = data.map((e) => {
+				return {
+					id: e.id_horarioPgm,
+					...e,
+				};
+			});
+			// console.log(data);
+			sethorarios(dataAlter);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerTarifasPorPgm = async () => {
+		try {
+			const { data } = await PTApi.get('/programaTraining/tarifa/obtener-toda-tarifas');
+			// const dataAlter = data.map((e) => {
+			// 	return {
+			// 		id: e.id_horarioPgm,
+			// 		...e,
+			// 	};
+			// });
+			settarifas(data);
+			// sethorarios(dataAlter);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	
 	return {
 		obtenerComparativoResumen,
 		obtenerEstadosOrigenResumen,
+		obtenerHorariosPorPgm,
+		obtenerTarifasPorPgm,
 		// dataEstadoGroup,
+		dataTarifas,
+		dataHorarios,
 		dataGroupTRANSFERENCIAS,
 		dataGroup,
 		loading,

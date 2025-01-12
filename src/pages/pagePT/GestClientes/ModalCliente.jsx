@@ -24,6 +24,7 @@ const regUsuarioCliente= {
     tipoDoc_cli: 0,
     numDoc_cli: '',
     nacionalidad_cli: 15,
+    id_distrito_trabajo: 0,
     ubigeo_distrito_cli: 0,
     direccion_cli: '',
     tipoCli_cli: 0,
@@ -43,7 +44,8 @@ export const ModalCliente = ({show, onHide}) => {
     }
     const { usuarioCliente, dataContactsEmerg, comentarios } = useSelector(e=>e.usuario)
     const  { startRegisterUsuarioCliente, loading } = useUsuarioStore()
-    const { obtenerDistritosxDepxProvincia, dataDistritos } = useTerminoStore()
+    const { obtenerDistritosxDepxProvincia:obtenerDistritosDeLima, dataDistritos:distritosDeLima } = useTerminoStore()
+    const { obtenerDistritosxDepxProvincia:obtenerDistritosDeCallao, dataDistritos:distritosDeCallao } = useTerminoStore()
     const dispatch = useDispatch()
     const { 
             formState,
@@ -56,7 +58,8 @@ export const ModalCliente = ({show, onHide}) => {
             tipoDoc_cli, 
             numDoc_cli, 
             nacionalidad_cli, 
-            ubigeo_distrito_cli, 
+            ubigeo_distrito_cli,
+            ubigeo_distrito_trabajo, 
             direccion_cli, 
             tipoCli_cli, 
             trabajo_cli, 
@@ -85,7 +88,8 @@ export const ModalCliente = ({show, onHide}) => {
         dispatch(onReset_CE())
   }
   useEffect(() => {
-    obtenerDistritosxDepxProvincia(1501, 15)
+    obtenerDistritosDeLima(1501, 15)
+    obtenerDistritosDeCallao(701, 7)
   }, [])
   
 
@@ -98,6 +102,10 @@ export const ModalCliente = ({show, onHide}) => {
         reader.readAsDataURL(file);
         setselectedAvatar(file)
     };
+    const dataDistritos = [
+        ...distritosDeLima,
+        ...distritosDeCallao
+    ]
   return (
     <>
     {loading ? (<Modal size='sm' show={loading}>
@@ -345,6 +353,25 @@ export const ModalCliente = ({show, onHide}) => {
 											options={arrayTipoCliente}
 											value={arrayTipoCliente.find(
 												(option) => option.value === tipoCli_cli
+											)}
+											required
+										/>
+                                    </div>
+                                </Col>
+                                <Col xl={4}>
+                                    <div className="mb-2">
+                                        <label htmlFor="id_distrito_trabajo" className="form-label">
+                                            Distrito del trabajo*
+                                        </label>
+										<Select
+											onChange={(e) => onInputChangeReact(e, 'id_distrito_trabajo')}
+											name="id_distrito_trabajo"
+											placeholder={'Seleccione el distrito de trabajo'}
+											className="react-select"
+											classNamePrefix="react-select"
+											options={dataDistritos}
+											value={dataDistritos.find(
+												(option) => option.value === ubigeo_distrito_cli
 											)}
 											required
 										/>

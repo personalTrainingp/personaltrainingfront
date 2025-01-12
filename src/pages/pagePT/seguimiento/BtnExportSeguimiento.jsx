@@ -6,8 +6,8 @@ import dayjs from 'dayjs';
 import { arrayDistrito } from '@/types/type';
 
 export const BtnExportSeguimiento = ({dataExport}) => {
-  console.log(dataExport);
-  
+    console.log(dataExport, "999");
+    
     dataExport = dataExport.map(d=>{
         return {
             nombres_cli: d.tb_ventum.tb_cliente.nombre_cli,
@@ -22,6 +22,7 @@ export const BtnExportSeguimiento = ({dataExport}) => {
             sesiones_pendientes: d.diasFaltan
         }
     })
+    console.log(dataExport, "daaaaa");
   
   const exportToExcel = async () => {
     // Crear un nuevo libro de trabajo Excel

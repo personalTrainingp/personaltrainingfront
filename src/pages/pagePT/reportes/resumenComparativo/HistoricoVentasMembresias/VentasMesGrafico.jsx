@@ -86,14 +86,14 @@ export const VentasMesGrafico = () => {
                 // tarifa_monto: g.detalle_ventaMembresium.map(m=>m.tarifa_monto)
               }
             })
-            console.log(dataGroup, "ventas");
+            // console.log(dataGroup, "ventas");
             dataAlter = dataAlter.map(a=>{
               return {
                 data: a.data.map(g=>g.tarifa_monto_total),
                 name: a.name,
               }
             })
-            console.log(dataAlter, "ventas mes historico");
+            // console.log(dataAlter, "ventas mes historico");
             
 
         const series = dataAlter

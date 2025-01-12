@@ -29,17 +29,26 @@ const agruparPorRangoEdad = (data) => {
     const rangos = [
       { rango_edad: "38 - 42", min: 38, max: 42 },
       { rango_edad: "43 - 47", min: 43, max: 47 },
-      { rango_edad: "28 - 32", min: 28, max: 32 },
+      { rango_edad: "30 - 32", min: 30, max: 32 },
       { rango_edad: "48 - 52", min: 48, max: 52 },
       { rango_edad: "33 - 37", min: 33, max: 37 },
       { rango_edad: "53 - 57", min: 53, max: 57 },
-      { rango_edad: "22 - 27", min: 22, max: 27 },
+      { rango_edad: "22 - 29", min: 22, max: 29 },
       { rango_edad: "16 - 21", min: 16, max: 21 },
       { rango_edad: "10 - 15", min: 10, max: 15 },
-      { rango_edad: "1 - 3", min: 1, max: 3 },
+      // { rango_edad: "1 - 3", min: 1, max: 3 },
       { rango_edad: "58 - 63", min: 58, max: 63 },
       { rango_edad: "64 - 69", min: 64, max: 69 },
       { rango_edad: "70 - \n 🔝", min: 70, max: Infinity },
+
+
+      // { rango_edad: "28", min: 28, max: 28 },
+      // { rango_edad: "29", min: 29, max: 29 },
+      // { rango_edad: "30", min: 30, max: 30 },
+      // { rango_edad: "31", min: 31, max: 31 },
+      // { rango_edad: "32", min: 32, max: 32 },
+      // { rango_edad: "28", min: 28, max: 28 },
+
       // { rango_edad: "88 a mas", min: 88, max: Infinity },
     ];
   
