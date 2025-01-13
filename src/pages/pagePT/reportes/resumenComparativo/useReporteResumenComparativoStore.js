@@ -83,6 +83,7 @@ export const useReporteResumenComparativoStore = () => {
 		// },
 	]);
 
+	const [dataIdPgmCero, setdataIdPgmCero] = useState({});
 	const [dataHorarios, sethorarios] = useState([]);
 	const [dataMarcacions, setdataMarcacions] = useState([]);
 	const [dataAsesoresFit, setdataAsesoresFit] = useState([]);
@@ -100,7 +101,6 @@ export const useReporteResumenComparativoStore = () => {
 				],
 			},
 		});
-		console.log(data, '111');
 
 		const dataTransferencias = data.ventasTransferencias
 			.map((f) => {
@@ -186,6 +186,7 @@ export const useReporteResumenComparativoStore = () => {
 				fecha_venta: g.tb_ventum.fecha_venta,
 				fec_inicio_mem: g.fec_inicio_mem,
 				fec_fin_mem: g.fec_fin_mem,
+				id_venta: g.id_venta,
 				tb_marcacions: g.tb_ventum.tb_cliente.tb_marcacions.filter((item) => {
 					const tiempo = new Date(item.tiempo_marcacion_new);
 					const fechasEntrelaza = {
@@ -216,20 +217,38 @@ export const useReporteResumenComparativoStore = () => {
 				marcacionesxMembresia: marcacionesxMembresia ? marcacionesxMembresia.items : [],
 			};
 		});
-
-		console.log(
-			agruparPorIdPgmMarcacions(dataMarcaciones),
-			dataMarcaciones,
-			agruparPrimeraMarcacionGlobal(dataMarcaciones),
-			agruparMarcacionesPorSemana(dataMarcaciones)
+		// Crear el objeto id_pgm: 0 que suma todos los demás
+		const totalObject = ventasUnificadas?.reduce(
+			(total, current) => {
+				total.tarifa_total += current.tarifa_total;
+				total.sesiones_total += current.sesiones_total;
+				total.detalle_ventaMembresium.push(...current.detalle_ventaMembresium);
+				total.tb_image.push(...current.tb_image);
+				return total;
+			},
+			{
+				id_pgm: 0,
+				tarifa_total: 0,
+				sesiones_total: 0,
+				detalle_ventaMembresium: [],
+				tb_image: [],
+			}
 		);
+
+
+		// console.log(
+		// 	agruparPorIdPgmMarcacions(dataMarcaciones),
+		// 	dataMarcaciones,
+		// 	agruparPrimeraMarcacionGlobal(dataMarcaciones),
+		// 	agruparMarcacionesPorSemana(dataMarcaciones)
+		// );
 
 		// console.log(agruparPorIdPgm(dataTransferencias), agruparxIdPgm, ventasUnificadas);
 		// console.log(agruparxIdPgm, '149');
-
 		setdataGroup(ventasUnificadas);
-		setdataMarcacions(agruparPorIdPgmMarcacions(dataMarcaciones));
+		setdataMarcacions(dataMarcaciones);
 		setdataGroupTRANSFERENCIAS(agruparPorIdPgm(dataTransferencias));
+		setdataIdPgmCero(totalObject);
 		setloading(false);
 		// setdataEstadoGroup(groupByIdOrigen(data.ventasProgramas));
 		// setdataAuditoria(data.audit);
@@ -365,6 +384,7 @@ export const useReporteResumenComparativoStore = () => {
 		obtenerAsesoresFit,
 		dataAsesoresFit,
 		dataMarcacions,
+		dataIdPgmCero,
 		// dataEstadoGroup,
 		dataTarifas,
 		dataHorarios,
