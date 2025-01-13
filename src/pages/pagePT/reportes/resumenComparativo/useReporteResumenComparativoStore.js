@@ -24,6 +24,23 @@ const agruparPorIdPgm = (data) => {
 		return resultado;
 	}, []);
 };
+const agruparPorIdPgmMarcacions = (data) => {
+	return data.reduce((resultado, item) => {
+		// Buscar si ya existe un grupo con el mismo id_pgm
+		let grupo = resultado.find((g) => g.id_pgm === item.id_pgm);
+
+		if (!grupo) {
+			// Si no existe, crear uno nuevo
+			grupo = { id_pgm: item.id_pgm, items: [] };
+			resultado.push(grupo);
+		}
+
+		// Agregar el objeto {venta_venta, id_pgm} al grupo
+		grupo.items.push(item);
+
+		return resultado;
+	}, []);
+};
 
 export const useReporteResumenComparativoStore = () => {
 	const [dataGroup, setdataGroup] = useState([
@@ -65,7 +82,10 @@ export const useReporteResumenComparativoStore = () => {
 		// 	venta_transferencia: [],
 		// },
 	]);
+
 	const [dataHorarios, sethorarios] = useState([]);
+	const [dataMarcacions, setdataMarcacions] = useState([]);
+	const [dataAsesoresFit, setdataAsesoresFit] = useState([]);
 	const [dataTarifas, settarifas] = useState([]);
 	const [dataGroupTRANSFERENCIAS, setdataGroupTRANSFERENCIAS] = useState([]);
 	const [loading, setloading] = useState(false);
@@ -80,6 +100,7 @@ export const useReporteResumenComparativoStore = () => {
 				],
 			},
 		});
+		console.log(data, '111');
 
 		const dataTransferencias = data.ventasTransferencias
 			.map((f) => {
@@ -113,6 +134,9 @@ export const useReporteResumenComparativoStore = () => {
 						!acc[id_pgm].detalle_ventaMembresium.some(
 							(membresia) =>
 								membresia.horario === detalle_ventaMembresium.horario &&
+								membresia.fec_fin_mem === detalle_ventaMembresium.fec_fin_mem &&
+								membresia.fec_inicio_mem ===
+									detalle_ventaMembresium.fec_inicio_mem &&
 								membresia.tarifa_monto === detalle_ventaMembresium.tarifa_monto &&
 								membresia.tb_ventum?.id === detalle_ventaMembresium.tb_ventum?.id
 						)
@@ -124,6 +148,8 @@ export const useReporteResumenComparativoStore = () => {
 						acc[id_pgm].detalle_ventaMembresium.push({
 							horario: detalle_ventaMembresium.horario || null,
 							tarifa_monto: detalle_ventaMembresium.tarifa_monto || 0,
+							fec_fin_mem: detalle_ventaMembresium.fec_fin_mem,
+							fec_inicio_mem: detalle_ventaMembresium.fec_inicio_mem,
 							id_tarifa: detalle_ventaMembresium.id_tarifa || 0,
 							tb_semana_training: detalle_ventaMembresium.tb_semana_training || null,
 							tb_ventum: detalle_ventaMembresium.tb_ventum || null,
@@ -152,23 +178,57 @@ export const useReporteResumenComparativoStore = () => {
 				return acc;
 			}, {})
 		);
+
+		const dataMarcaciones = data.membresias.map((g) => {
+			return {
+				id: g.id,
+				id_pgm: g.id_pgm,
+				fecha_venta: g.tb_ventum.fecha_venta,
+				fec_inicio_mem: g.fec_inicio_mem,
+				fec_fin_mem: g.fec_fin_mem,
+				tb_marcacions: g.tb_ventum.tb_cliente.tb_marcacions.filter((item) => {
+					const tiempo = new Date(item.tiempo_marcacion_new);
+					const fechasEntrelaza = {
+						tiempo: tiempo,
+						fecha_fin_mem: new Date(g.fec_fin_mem),
+						fecha_inicio_mem: new Date(g.fec_inicio_mem),
+					};
+					return (
+						fechasEntrelaza.tiempo >= fechasEntrelaza.fecha_inicio_mem &&
+						fechasEntrelaza.tiempo <= fechasEntrelaza.fecha_fin_mem
+					);
+				}),
+				nombres_apellidos_cli: g.tb_ventum.tb_cliente.nombres_apellidos_cli,
+			};
+		});
 		const ventasUnificadas = agruparxIdPgm.map((venta) => {
 			// Busca las transferencias asociadas al id_pgm
 			const transferencia = agruparPorIdPgm(dataTransferencias).find(
 				(transferencia) => transferencia.id_pgm === venta.id_pgm
 			);
-
+			const marcacionesxMembresia = agruparPorIdPgmMarcacions(dataMarcaciones).find(
+				(marcacion) => marcacion.id_pgm === venta.id_pgm
+			);
 			// Agrega la propiedad ventas_transferencias al objeto venta
 			return {
 				...venta,
 				ventas_transferencias: transferencia ? transferencia.items : [],
+				marcacionesxMembresia: marcacionesxMembresia ? marcacionesxMembresia.items : [],
 			};
 		});
+
+		console.log(
+			agruparPorIdPgmMarcacions(dataMarcaciones),
+			dataMarcaciones,
+			agruparPrimeraMarcacionGlobal(dataMarcaciones),
+			agruparMarcacionesPorSemana(dataMarcaciones)
+		);
 
 		// console.log(agruparPorIdPgm(dataTransferencias), agruparxIdPgm, ventasUnificadas);
 		// console.log(agruparxIdPgm, '149');
 
 		setdataGroup(ventasUnificadas);
+		setdataMarcacions(agruparPorIdPgmMarcacions(dataMarcaciones));
 		setdataGroupTRANSFERENCIAS(agruparPorIdPgm(dataTransferencias));
 		setloading(false);
 		// setdataEstadoGroup(groupByIdOrigen(data.ventasProgramas));
@@ -274,18 +334,37 @@ export const useReporteResumenComparativoStore = () => {
 			// 		...e,
 			// 	};
 			// });
-			settarifas(data);
+			const dataAlter = data.map((d) => {
+				return {
+					value: d.id_tt,
+					label: d.nombreTarifa_tt,
+					// tarifaCash_tt
+					...d,
+				};
+			});
+			settarifas(dataAlter);
 			// sethorarios(dataAlter);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	
+	const obtenerAsesoresFit = async () => {
+		try {
+			const { data: asesoresFit } = await PTApi.get(`/parametros/get_params/empleados/2`);
+			setdataAsesoresFit(asesoresFit);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return {
 		obtenerComparativoResumen,
 		obtenerEstadosOrigenResumen,
 		obtenerHorariosPorPgm,
 		obtenerTarifasPorPgm,
+		obtenerAsesoresFit,
+		dataAsesoresFit,
+		dataMarcacions,
 		// dataEstadoGroup,
 		dataTarifas,
 		dataHorarios,
@@ -294,6 +373,101 @@ export const useReporteResumenComparativoStore = () => {
 		loading,
 	};
 };
+
+function agruparMarcacionesPorSemana(data) {
+	return data.map((obj) => {
+		const inicioMem = dayjs(obj.fec_inicio_mem);
+
+		// Filtrar la primera marcación de cada día
+		const primerasMarcaciones = Object.values(
+			obj.tb_marcacions.reduce((acumulador, marcacion) => {
+				const fechaDia = dayjs(marcacion.tiempo_marcacion).format('YYYY-MM-DD');
+				if (
+					!acumulador[fechaDia] ||
+					dayjs(marcacion.tiempo_marcacion).isBefore(
+						acumulador[fechaDia].tiempo_marcacion
+					)
+				) {
+					acumulador[fechaDia] = marcacion; // Guardar la más temprana del día
+				}
+				return acumulador;
+			}, {})
+		);
+
+		// Agrupar las primeras marcaciones por semana
+		const marcacionPorSemana = primerasMarcaciones.reduce((acumulador, marcacion) => {
+			const fechaMarcacion = dayjs(marcacion.tiempo_marcacion);
+
+			// Calcular la semana desde el inicio de la membresía
+			const diasDesdeInicio = fechaMarcacion.diff(inicioMem, 'day');
+			const semana = Math.floor(diasDesdeInicio / 7) + 1;
+
+			// Buscar o crear el grupo para esta semana
+			let grupo = acumulador.find((g) => g.semana === semana);
+			if (!grupo) {
+				grupo = { semana, items: [] };
+				acumulador.push(grupo);
+			}
+
+			// Añadir la marcación al grupo
+			grupo.items.push(marcacion);
+
+			return acumulador;
+		}, []);
+
+		// Retornar el objeto original con el nuevo array `marcacionPorSemana`
+		return { ...obj, marcacionPorSemana };
+	});
+}
+
+function agruparPrimeraMarcacionGlobal(data) {
+	const marcacionesPorSemanaGlobal = {};
+
+	data.forEach((obj) => {
+		const inicioMem = dayjs(obj.fec_inicio_mem);
+
+		// Filtrar la primera marcación de cada día
+		const primerasMarcaciones = Object.values(
+			obj.tb_marcacions.reduce((acumulador, marcacion) => {
+				const fechaDia = dayjs(marcacion.tiempo_marcacion).format('YYYY-MM-DD');
+				if (
+					!acumulador[fechaDia] ||
+					dayjs(marcacion.tiempo_marcacion).isBefore(
+						acumulador[fechaDia].tiempo_marcacion
+					)
+				) {
+					acumulador[fechaDia] = marcacion; // Guardar la más temprana del día
+				}
+				return acumulador;
+			}, {})
+		);
+
+		// Agrupar las primeras marcaciones por semana
+		primerasMarcaciones.forEach((marcacion) => {
+			const fechaMarcacion = dayjs(marcacion.tiempo_marcacion);
+
+			// Calcular la semana desde el inicio de la membresía
+			const diasDesdeInicio = fechaMarcacion.diff(inicioMem, 'day');
+			const semana = Math.floor(diasDesdeInicio / 7) + 1;
+
+			// Inicializar el grupo de la semana si no existe
+			if (!marcacionesPorSemanaGlobal[semana]) {
+				marcacionesPorSemanaGlobal[semana] = { semana, items: [] };
+			}
+
+			// Añadir la marcación al grupo global
+			marcacionesPorSemanaGlobal[semana].items.push({
+				...marcacion,
+				fec_inicio_mem: obj.fec_inicio_mem,
+				tb_marcacions: obj.tb_marcacions,
+				marcacionPorSemana: obj.marcacionPorSemana,
+			});
+		});
+	});
+
+	// Convertir el objeto en un array
+	return Object.values(marcacionesPorSemanaGlobal);
+}
 
 // const { data: dataRenovacion } = await PTApi.get(
 // 	`/venta/reporte/obtener-estado-cliente-resumen/691`,

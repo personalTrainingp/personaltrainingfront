@@ -20,7 +20,7 @@ import { ModalTableSocios } from './ModalTableSocios'
 
 dayjs.extend(utc);
 export const ResumenComparativo = () => {
-    const { obtenerComparativoResumen, obtenerHorariosPorPgm, dataTarifas, dataHorarios, dataGroup, loading, dataGroupTRANSFERENCIAS, dataEstadoGroup, obtenerEstadosOrigenResumen, obtenerTarifasPorPgm } = useReporteResumenComparativoStore()
+    const { obtenerComparativoResumen, obtenerHorariosPorPgm, dataMarcacions, dataTarifas, dataHorarios, dataGroup, loading, dataGroupTRANSFERENCIAS, dataEstadoGroup, obtenerEstadosOrigenResumen, obtenerTarifasPorPgm, dataAsesoresFit, obtenerAsesoresFit } = useReporteResumenComparativoStore()
 
     const { RANGE_DATE } = useSelector(e=>e.DATA)
     const [isOpenModalSocio, setisOpenModalSocio] = useState(false)
@@ -29,6 +29,7 @@ export const ResumenComparativo = () => {
     const [clickDataLabel, setclickDataLabel] = useState('')
     useEffect(() => {
         obtenerTarifasPorPgm()
+        obtenerAsesoresFit()
     }, [])
     
     useEffect(() => {
@@ -48,142 +49,7 @@ export const ResumenComparativo = () => {
     const onCloseModalSOCIOS = ()=>{
         setisOpenModalSocio(false)
     }
-    const dataNewGroup = dataGroup.map(f=>{
-        return {
-            ...f,
-            detalle_ventaMembresium: f.detalle_ventaMembresium.map(g=>{
-                return {...g, id_tipoFactura: g.tb_ventum?.id_tipoFactura}
-            })
-        }
-    })
-    function dataAlterada(detalleMem) {
-        return detalleMem.map(g=>{
-            const tb_ventum = g.tb_ventum
-            const tb_cliente = g.tb_ventum?.tb_cliente
-            const nombres_apellidos_cli = `${tb_cliente?.nombre_cli} ${tb_cliente?.apPaterno_cli} ${tb_cliente?.apMaterno_cli}`
-            const estCivil_cli = tb_cliente?.estCivil_cli;
-            const sexo_cli=tb_cliente?.sexo_cli;
-            const origen = tb_ventum?.id_origen
-            const labelDistrito = tb_cliente?.tb_distrito.distrito
-            const labelEstCivil = arrayEstadoCivil.find(f=>f.value === estCivil_cli)?.label
-            const labelOrigen = arrayOrigenDeCliente.find(f=>f.value === origen)?.label
-            const labelSexo = arraySexo.find(f=>f.value === sexo_cli)?.label
-            return {
-                nombres_apellidos_cli,
-                tarifa_monto: g.tarifa_monto,
-                labelDistrito,
-                labelEstCivil,
-                labelOrigen,
-                labelSexo
-            }
-        })
-    }
-    const ProcData = dataGroup.map(f=>f.detalle_ventaMembresium?.map(g=>{
-        const tb_ventum = g.tb_ventum
-        const tb_cliente = g.tb_ventum?.tb_cliente
-        const nombres_apellidos_cli = `${tb_cliente?.nombre_cli} ${tb_cliente?.apPaterno_cli} ${tb_cliente?.apMaterno_cli}`
-        const estCivil_cli = tb_cliente?.estCivil_cli;
-        const sexo_cli=tb_cliente?.sexo_cli;
-        const origen = tb_ventum?.id_origen
-        const labelDistrito = tb_cliente?.tb_distrito?.distrito
-        const labelEstCivil = arrayEstadoCivil.find(f=>f.value === estCivil_cli)?.label
-        const labelOrigen = arrayOrigenDeCliente.find(f=>f.value === origen)?.label
-        const labelSexo = arraySexo.find(f=>f.value === sexo_cli)?.label
-        return {
-            nombres_apellidos_cli,
-            tarifa_monto: g.tarifa_monto,
-            labelDistrito,
-            labelEstCivil,
-            labelOrigen,
-            labelSexo
-        }
-    }))
-    function GroupProcedencia(detalledata) {
-        // console.log(detalledata);
-        
-        return arrayOrigenDeCliente.map((sexo) => {
-            // Filtrar los datos correspondientes al label actual
-            const items = detalledata.filter((item) => item.labelOrigen === sexo.label);
-    
-            // Retornar la estructura agrupada
-            return {
-                labelOrigen: sexo.label,
-                items: items, // Si no hay coincidencias, será un array vacío []
-                order: sexo.order
-            };
-        }).sort((a,b)=>a.order-b.order);
-    }
-    function GroupDistrito(detalledata) {
-        return arrayDistritoTest.map((sexo) => {
-            // Filtrar los datos correspondientes al label actual
-            const items = detalledata.filter((item) => item.labelDistrito === sexo.label);
-    
-            // Retornar la estructura agrupada
-            return {
-                labelDistrito: sexo.label,
-                items: items, // Si no hay coincidencias, será un array vacío []
-                order: sexo.order
-            };
-        }).sort((a,b)=>a.order-b.order);
-    }
-    function GroupSexo(detalledata) {
-        return arraySexo.map((sexo) => {
-            // Filtrar los datos correspondientes al label actual
-            const items = detalledata.filter((item) => item.labelSexo === sexo.label);
-    
-            // Retornar la estructura agrupada
-            return {
-                labelSexo: sexo.label,
-                items: items, // Si no hay coincidencias, será un array vacío []
-                order: sexo.order
-            };
-        }).sort((a,b)=>a.order-b.order);
-    }
-    const agruparPorHorario = (data, id_pgm) => {
-        data=data.map(g=>{
-            return{
-                id_pgm,
-                ...g
-            }
-        }
-        )
-        const arr1 = dataHorarios
-        const arr2 = data
-        // Extraer los horarios únicos de arr1
-    // Crear un mapa de horarios de arr1 para facilitar la búsqueda
-    const horariosArr1 = arr1.map((item) => item.time_HorarioPgm);
-
-    // Crear la estructura agrupada
-    const agrupados = arr2.reduce((acc, item) => {
-        if (horariosArr1.includes(item.horario)) {
-        // Verificar si ya existe el horario en el resultado acumulado
-        let horarioExistente = acc.find((h) => h.horario === item.horario);
-        if (!horarioExistente) {
-            // Si no existe, lo agregamos con su primer item
-            acc.push({
-            horario: item.horario,
-            items: [item],
-            });
-        } else {
-            // Si ya existe, agregamos el item al array de items
-            horarioExistente.items.push(item);
-        }
-        }
-        return acc;
-    }, []);
-
-    // Asegurarnos de que todos los horarios de arr1 estén presentes, incluso si no hay datos
-    horariosArr1.forEach((horario) => {
-        if (!agrupados.find((h) => h.horario === horario)) {
-        agrupados.push({
-            horario,
-            items: [],
-        });
-        }
-    });
-
-    return agrupados;
-    };
+    //AGRUPADO POR ARRAYS
     function agruparPorSexo(detalledata) {
         return arraySexo.map(({ label, value, order }) => {
             const items = detalledata.filter(
@@ -200,7 +66,7 @@ export const ResumenComparativo = () => {
     function agruparPorDistrito(detalledata) {
         return arrayDistritoTest.map(({ label, value, order }) => {
             const items = detalledata.filter(
-              (cliente) => cliente.tb_ventum.tb_cliente.tb_distrito.distrito === value
+              (cliente) => cliente.tb_ventum.tb_cliente.tb_distrito.distrito === label
             );
             return {
               propiedad: label,
@@ -210,8 +76,142 @@ export const ResumenComparativo = () => {
             };
           });
     }
+    function agruparPorTarifas(detalledata) {
+        
+        const tarifas = dataTarifas.map(({ label, value, order }) => {
+            const items = detalledata.filter(
+              (cliente) => cliente.id_tarifa === value
+            );
+            
+            return {
+              propiedad: label,
+              order,
+              value,
+              items,
+            };
+          });
+          return tarifas.filter(f=>f.items.length > 0);
+    }
+    function agruparPorProcedencia(detalledata) {
+        return arrayOrigenDeCliente.map(({ label, value, order }) => {
+            const items = detalledata.filter(
+              (cliente) => cliente.tb_ventum.id_origen === value
+            );
+            return {
+              propiedad: label,
+              order,
+              value,
+              items,
+            };
+          });
+    }
+    function agruparPorEstCivil(detalledata) {
+        return arrayEstadoCivil.map(({ label, value, order }) => {
+            const items = detalledata.filter(
+              (cliente) => cliente.tb_ventum.tb_cliente.estCivil_cli === value
+            );
+            return {
+              propiedad: label,
+              order,
+              value,
+              items,
+            };
+          });
+    }
+    //AGRUPAR POR HORARIOS
+    function agruparPorHorarios(detalledata) {
+        return arrayOrigenDeCliente.map(({ label, value, order }) => {
+            const items = detalledata.filter(
+              (cliente) => cliente.horario === value
+            );
+            return {
+              propiedad: label,
+              order,
+              value,
+              items,
+            };
+          });
+    }
+    function agruparPorSesiones(data) {
+        const resultado = [];
+      
+        data.forEach((item) => {
+          const { sesiones } = item.tb_semana_training;
+      
+          // Verificar si ya existe un grupo con la misma cantidad de sesiones
+          let grupo = resultado.find((g) => g.propiedad === sesiones);
+      
+          if (!grupo) {
+            // Si no existe, crear un nuevo grupo
+            grupo = { propiedad: sesiones, items: [] };
+            resultado.push(grupo);
+          }
+      
+          // Agregar el item al grupo correspondiente
+          grupo.items.push(item);
+        });
+      
+        return resultado;
+      }
+    //AGRUPADO POR DIFERENTE DE MYOR A MENOR
+    const agruparPorRangoEdad = (data) => {
+        const rangos = [
+            { rango_edad: "38 a 42", min: 38, max: 42 },
+            { rango_edad: "43 a 47", min: 43, max: 47 },
+            { rango_edad: "28 a 32", min: 28, max: 32 },
+            { rango_edad: "48 a 52", min: 48, max: 52 },
+            { rango_edad: "33 a 37", min: 33, max: 37 },
+            { rango_edad: "53 a 57", min: 53, max: 57 },
+            { rango_edad: "22 a 27", min: 22, max: 27 },
+            { rango_edad: "16 a 21", min: 16, max: 21 },
+            { rango_edad: "10 a 15", min: 10, max: 15 },
+            { rango_edad: "58 a 63", min: 58, max: 63 },
+            { rango_edad: "64 a 69", min: 64, max: 69 },
+            { rango_edad: "70 a -|-", min: 70, max: Infinity },
+          ];
+          // Función para calcular la edad
+  const calcularEdad = (fechaNacimiento, fechaVenta) => {
+    const nacimiento = new Date(fechaNacimiento);
+    const venta = new Date(fechaVenta);
+    let edad = venta.getFullYear() - nacimiento.getFullYear();
+    if (
+      venta.getMonth() < nacimiento.getMonth() ||
+      (venta.getMonth() === nacimiento.getMonth() && venta.getDate() < nacimiento.getDate())
+    ) {
+      edad--;
+    }
+    return edad;
+  };
+
+  // Crear un objeto para agrupar por rango de edad
+  const agrupado = rangos.map(rango => ({
+    propiedad: rango.rango_edad,
+    items: [],
+  }));
+
+  // Agrupar los datos
+  data.forEach(item => {
+    const { fecNac_cli } = item.tb_ventum.tb_cliente;
+    const { fecha_venta } = item.tb_ventum;
+    const edad = calcularEdad(fecNac_cli, fecha_venta);
+
+    const rango = agrupado.find(r => edad >= rangos.find(rg => rg.rango_edad === r.propiedad).min && edad <= rangos.find(rg => rg.rango_edad === r.propiedad).max);
+    if (rango) {
+      rango.items.push(item);
+    }
+  });
+
+  return agrupado;
+      };
+      
+    
     // console.log(dataTarifas, "tarifas");
     const dataAlter = dataGroup.map(d=>{
+        const avatarPrograma = {
+            urlImage: `${config.API_IMG.LOGO}${d.tb_image[0].name_image}`,
+            width: d.tb_image[0].width,
+            height: d.tb_image[0].height
+        }
         const ventasEnCeros = d.detalle_ventaMembresium.filter(f=>f.tarifa_monto===0)
         const ventasSinCeros = d.detalle_ventaMembresium.filter(f=>f.tarifa_monto!==0)
         const TransferenciasEnCeros = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===702)
@@ -221,6 +221,14 @@ export const ResumenComparativo = () => {
         const membresiasReinscritos = ventasSinCeros.filter(g=>g.tb_ventum.id_origen===692)
         const porSexo = agruparPorSexo(ventasSinCeros)
         const porDistrito= agruparPorDistrito(ventasSinCeros)
+        const sumaDeSesiones = ventasSinCeros.reduce((total, item) => total + (item?.tb_semana_training.sesiones || 0), 0)
+        const sumaDeVentasEnSoles = ventasSinCeros.reduce((total, item) => total + (item?.tarifa_monto || 0), 0)
+        const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros)
+        const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros)
+        const agrupadoPorEstadoCivil = agruparPorEstCivil(ventasSinCeros)
+        const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros)
+        console.log(d);
+        
         // const porHorario =
         // const porHorarios
         // const porProcedencia
@@ -229,11 +237,19 @@ export const ResumenComparativo = () => {
         // const tarifas
         // const porEstadoCivil
         // const porRangoEdad
-        console.log({porSexo, porDistrito, ventasEnCeros, ventasSinCeros, membresiasNuevas, membresiasRenovadas, membresiasReinscritos}, "alter");
+        console.log({agruparPorRangoEdades, agrupadoPorEstadoCivil, agrupadoPorTarifas, agrupadoPorSesiones, sumaDeVentasEnSoles, sumaDeSesiones, porSexo, porDistrito, ventasEnCeros, ventasSinCeros, membresiasNuevas, membresiasRenovadas, membresiasReinscritos}, "alter");
         return {
+            agruparPorRangoEdades,
+            agrupadoPorEstadoCivil,
+            agrupadoPorTarifas,
+            agrupadoPorSesiones,
+            sumaDeVentasEnSoles,
+            sumaDeSesiones,
+            avatarPrograma,
             ventasEnCeros, 
             TraspasosEnCero,
             TransferenciasEnCeros,
+            porDistrito,
             porSexo,
             ventasSinCeros, 
             membresiasNuevas, 
@@ -256,41 +272,22 @@ export const ResumenComparativo = () => {
 
         ):(
             <>
-
-            {/* <VentasxMesGrafico/> */}
             <br/>
             
-            {/* <VentasPorComprobante dataGroup={dataGroup}/> */}
             <Row>
-                <SimpleBar style={{ maxHeight: '100%'}} scrollbarMaxSize={320}>
+                {/* POR VENTAS */}
+                <SimpleBar style={{ maxHeight: '100%'}} scrollbarMaxSize={300}>
                     <div className='d-flex'>
                         {
-                            dataGroup.map(d=>{
-
-                                
-                                const ventasSinCeros = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura!==701 && f.id_tipoFactura!==702).map(m=>m.items).flat()
-                                const traspasos = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura==701).map(m=>m.items).flat()
-                                const nuevosxProgram = groupByIdOrigen(ventasSinCeros).filter(f=>f.id_origen!==691&&f.id_origen!==692)
-                                const reinscripcionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?.items.length:0
-                                const renovacionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0
-                                // console.log(d.detalle_ventaMembresium, "newww");
-                                const ventas = nuevosxProgram
-                                .reduce((sum, { items }) => sum + items.length, 0)+renovacionesxProgram+reinscripcionesxProgram
-                                
-                                const sesionesVendidas = ventasSinCeros.map(t=>t.tb_semana_training?.sesiones).reduce((acumulador, numero) => acumulador + numero, 0)
-                                const avatarPrograma = {
-                                    urlImage: `${config.API_IMG.LOGO}${d.tb_image[0].name_image}`,
-                                    width: d.tb_image[0].width,
-                                    height: d.tb_image[0].height
-                                }
+                            dataAlter.map(d=>{
                                 return (
-                                <Col className='mx-2' key={d.id_pgm} style={{paddingBottom: '1px !important'}} xxl={4}>
+                                <Col className='mx-1' style={{paddingBottom: '1px !important'}} xxl={4}>
                                     <Card>
                                         <Card.Header className=' align-self-center'>
                                             {/* <Card.Title>
                                                 <h4>{d.name_pgm}</h4>
                                             </Card.Title> */}
-                                            <img src={avatarPrograma.urlImage} height={avatarPrograma.height} width={avatarPrograma.width}/>
+                                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
                                             
                                         </Card.Header>
                                         <Card.Body style={{paddingBottom: '1px !important'}}>
@@ -304,25 +301,25 @@ export const ResumenComparativo = () => {
                                                             >
                                                                 <tbody>
                                                                             <tr>
-                                                                                    <td className='' onClick={()=>onOpenModalSOCIOS(ventasSinCeros, avatarPrograma, 'ventas')}>
+                                                                                    <td className=''>
                                                                                         <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>venta de <br/> membresias:</span></li>
                                                                                     </td>
                                                                                     <td>
-                                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{ventas}</span>
+                                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d.ventasSinCeros.length}</span>
                                                                                     </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>
                                                                                     <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Venta <br/> acumulada:</span></li>
                                                                                 </td>
-                                                                                <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.tarifa_total}/>}/></span></td>
+                                                                                <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles}/>}/></span></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>
                                                                                     <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Ticket <br/> medio:</span></li>
                                                                                 </td>
                                                                                 <td> 
-                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={(d.tarifa_total/ventas).toFixed(2)}/>}/></span>
+                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={(d.sumaDeVentasEnSoles/d.ventasSinCeros.length).toFixed(2)}/>}/></span>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -330,7 +327,7 @@ export const ResumenComparativo = () => {
                                                     <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Sesiones <br/> vendidas:</span></li>
                                                                                 </td>
                                                                                 <td> 
-                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><NumberFormatter amount={sesionesVendidas}/></span>
+                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><NumberFormatter amount={d.sumaDeSesiones}/></span>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -338,7 +335,7 @@ export const ResumenComparativo = () => {
                                                     <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Costo <br/> por sesion:</span></li>
                                                                                 </td>
                                                                                 <td> 
-                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.tarifa_total/sesionesVendidas}/>}/></span>
+                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles/d.sumaDeSesiones}/>}/></span>
                                                                                 </td>
                                                                             </tr>
                                                                             
@@ -360,538 +357,19 @@ export const ResumenComparativo = () => {
                         </Col>
                     </div>
                 </SimpleBar>
-                
-                {/* <CardGraficoTotalDeEstadoCliente/> */}
-                {
-                    dataGroup.map(d=>
-                    {
-                        const ventasSinCeros = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura!==701 && f.id_tipoFactura!==702).map(m=>m.items).flat()
-                        const traspasos = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura==701).map(m=>m.items).flat()
-                        const nuevosxProgram = groupByIdOrigen(ventasSinCeros).filter(f=>f.id_origen!==691&&f.id_origen!==692)
-                        const reinscripcionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?.items.length:0
-                        const renovacionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0
-                        const sumaEstado = nuevosxProgram.reduce((sum, { items }) => sum + items.length, 0)+reinscripcionesxProgram+renovacionesxProgram+traspasos.length
-                        // console.log(groupByIdOrigen(ventasSinCeros).map(g=>g.items).flat(), "newww");
-                        const avatarPrograma = {
-                            urlImage: `${config.API_IMG.LOGO}${d.tb_image[0].name_image}`,
-                            width: d.tb_image[0].width,
-                            height: d.tb_image[0].height
-                        }
-                        return(
-                        <Col key={d.id_pgm} style={{paddingBottom: '1px !important'}} xxl={4}>
-                            <Card>
-                                <Card.Header className=' align-self-center'>
-                                    <img src={`${config.API_IMG.LOGO}${d.tb_image[0].name_image}`} height={d.tb_image[0].height} width={d.tb_image[0].width}/>
-                                    
-                                </Card.Header>
-                                <Card.Body style={{paddingBottom: '1px !important'}}>
-                                    <br/>
-                                    <Table
-                                                        // style={{tableLayout: 'fixed'}}
-                                                        className="table-centered mb-0"
-                                                        // hover
-                                                        striped
-                                                        responsive
-                                                    >
-                                                        <tbody>
-                                                                    <tr>
-                                                                        <td onClick={()=>onOpenModalSOCIOS(groupByIdOrigen(ventasSinCeros).map(g=>g.items).flat() || [], avatarPrograma, 'nuevos')}>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>NUEVOS:</span></li>
-                                                                        </td>
-                                                                        <td>
-                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{
-                                                                        // console.log(groupByIdOrigen(d.detalle_ventaMembresium).filter(({ id_origen }) => id_origen !== 692 && id_origen !== 691)
-                                                                        // .reduce((sum, { items }) => sum + items.length, 0))
-                                                                        }
-                                                                        {nuevosxProgram
-                                                                        .reduce((sum, { items }) => sum + items.length, 0)}
-                                                                        </span>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td onClick={()=>onOpenModalSOCIOS(d, 'renovaciones')}>
-                                                                            <li className='d-flex  flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>RENOVACIONES:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}} className=' d-flex fw-bold justify-content-end align-content-end align-items-end'>{renovacionesxProgram}</span>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td onClick={()=>onOpenModalSOCIOS(d, 'reinscripciones')}>
-                                                                            <li className='d-flex flex-row justify-content-between p-2 text-center'><span className='fw-bold text-primary fs-2'>REINSCRIPCIONES:</span></li>
-                                                                        </td>
-                                                                        <td> <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{reinscripcionesxProgram}</span></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td onClick={()=>onOpenModalSOCIOS(d, 'traspasos')}>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRASPASOS:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex fw-bold justify-content-end align-content-end align-items-end'>{traspasos.length-d.ventas_transferencias.length||0}</span>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td onClick={()=>onOpenModalSOCIOS(d, 'transferencias')}>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRANSFERENCIAS:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex fw-bold justify-content-end align-content-end align-items-end'>{d.ventas_transferencias.length||0}</span>
-                                                                        </td>
-                                                                    </tr>
-                                                                    
-                                                                    <tr className='bg-primary'>
-                                                                        <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex fw-bold justify-content-end align-content-end align-items-end text-white'>
-                                                                            {sumaEstado}</span>
-                                                                        </td>
-                                                                    </tr>
-                                                                    
-                                                        </tbody>
-                                                    </Table>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    )
-                    }
-                )
-                }
-                <VentasPorComprobante dataGroup={dataGroup}/>
-                {
-                    // dataEstadoGroup.map(d=>(
-                    //     <Col key={d.id_pgm} style={{paddingBottom: '1px !important'}} xxl={4}>
-                    //         <Card>
-                    //         <Card.Header className=' align-self-center'>
-                    //                 {/* <Card.Title>
-                    //                     <h4>{d.name_pgm}</h4>
-                    //                 </Card.Title> */}
-                    //                 <img src={`${config.API_IMG.LOGO}${d.tb_image[0].name_image}`} height={d.tb_image[0].height} width={d.tb_image[0].width}/>
-                                    
-                    //             </Card.Header>
-                    //             <Card.Body>
-                    //             <li className='d-flex flex-column'><span className='fw-bold text-primary fs-2'></span> <span className='fs-2'>
-                    //                             <div className='table-responsive'>
-                    //                             <Table
-                    //                                     // style={{tableLayout: 'fixed'}}
-                    //                                     className="table-centered mb-0"
-                    //                                     hover
-                    //                                     striped
-                    //                                     responsive
-                    //                                 >
-                    //                                     <tbody>
-                    //                                             <tr>
-                    //                                                 <td>NUEVOS</td>
-                    //                                                 <th>
-                    //                                                     <span style={{fontSize: '40px', marginRight: '120px'}} className='d-flex justify-content-end align-content-end align-items-end'>{d.detallesNuevos.length}</span>
-                    //                                                 </th>
-                    //                                             </tr> 
-                                                                
-                    //                                             <tr>
-                    //                                                 <td>REINSCRIPCIONES</td>
-                    //                                                 <th>
-                    //                                                     <span style={{fontSize: '40px', marginRight: '120px'}} className='d-flex justify-content-end align-content-end align-items-end'>{d.detallesReinscritos.length}</span>
-                    //                                                 </th>
-                    //                                             </tr> 
-                    //                                             <tr>
-                    //                                                 <td>RENOVACIONES</td>
-                    //                                                 <th>
-                    //                                                     <span style={{fontSize: '40px', marginRight: '120px'}} className='d-flex justify-content-end align-content-end align-items-end'>{d.detallesRenovaciones.length}</span>
-                    //                                                 </th>
-                    //                                             </tr> 
-                    //                                             <tr>
-                    //                                                 <td>TRANSFERENCIAS</td>
-                    //                                                 <th>
-                    //                                                     <span style={{fontSize: '40px', marginRight: '120px'}} className='d-flex justify-content-end align-content-end align-items-end'>30</span>
-                    //                                                 </th>
-                    //                                             </tr> 
-                    //                                             <tr>
-                    //                                                 <td>TRASPASOS</td>
-                    //                                                 <th>
-                    //                                                     <span style={{fontSize: '40px', marginRight: '120px'}} className='d-flex justify-content-end align-content-end align-items-end'>{d.detallesTraspasos.length}</span>
-                    //                                                 </th>
-                    //                                             </tr> 
-                    //                                     </tbody>
-                    //                                 </Table>
-                    //                             </div>
-                    //                             </span></li>
-                    //             </Card.Body>
-                    //         </Card>
-                    //     </Col>
-                    // ))
-                }
-                {
-                    dataGroup.map(d=>{
-                        console.log(agruparPorHorario(d.detalle_ventaMembresium, d.id_pgm), d, "horario");
-                        
-                        return(
-                        <Col key={d.id_pgm} style={{paddingBottom: '1px !important'}} xxl={4}>
-                            <Card>
-                            <Card.Header className=' align-self-center'>
-                                    {/* <Card.Title>
-                                        <h4>{d.name_pgm}</h4>
-                                    </Card.Title> */}
-                                    <img src={`${config.API_IMG.LOGO}${d.tb_image[0].name_image}`} height={d.tb_image[0].height} width={d.tb_image[0].width}/>
-                                    
-                                </Card.Header>
-                                <Card.Body>
-                                <li className='d-flex flex-column'><span className='fw-bold text-primary fs-2'>VENTAS POR HORARIO</span> <span className='fs-2'>
-                                                <Table
-                                                        // style={{tableLayout: 'fixed'}}
-                                                        className="table-centered mb-0"
-                                                        // hover
-                                                        striped
-                                                        responsive
-                                                    >
-                                                        <thead className="bg-primary">
-                                                            <tr>
-                                                                <th className='text-white p-2 py-2'>Horarios</th>
-                                                                <th className='text-white p-2 py-2' 
-                                                                >
-                                                                    <div 
-                                                                style={{marginLeft: '60px'}}>
-                                                                    CANT.
-                                                                    </div>
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {
-                                                                agruparPorHorario(d.detalle_ventaMembresium, d.id_pgm).sort((a, b) => new Date(a.horario) - new Date(b.horario))
-                                                                .filter(item => {
-                                                                    const hour = dayjs.utc(item.horario).hour();
-                                                                    const isAM = dayjs.utc(item.horario).format('A') === 'AM';
-                                                                    return hour <= 12 && isAM;
-                                                                }).map(h=>{
-                                                                    // console.log(h, 'hhhhhhhhh');
-                                                                    
-                                                                    return (
-                                                                    <tr>
-                                                                        <td>{dayjs.utc(h.horario).format('hh:mm A')}</td>
-                                                                        <td>
-                                                                        {/* {h.detalles.length} */}
-                                                                        <span style={{fontSize: '40px'}} className=' d-flex fw-bold justify-content-end align-content-end align-items-end'>{h.items.length}</span>
-                                                                        {/* {''} */}
-                                                                            {/* <span style={{fontSize: '40px', marginRight: '120px'}} className='d-flex justify-content-end align-content-end align-items-end'>{h.detalles.length}</span> */}
-                                                                        </td>
-                                                                    </tr> 
-                                                                )
-                                                                }
-                                                            )
-                                                            }
-                                                            {
-                                                                agruparPorHorario(d.detalle_ventaMembresium, d.id_pgm).sort((a, b) => new Date(a.horario) - new Date(b.horario)).filter(item => {
-                                                                    const hour = dayjs(item.horario).hour();
-                                                                    const isAM = dayjs(item.horario).format('A') === 'PM';
-                                                                    return hour >= 12 && isAM;
-                                                                }).map((h, index)=>{
-                                                                    
-                                                                    return (
-                                                                        <>
-                                                                        {/* <div className={index==0&&'border-primary border-bottom-3'} style={{height: '100px'}}>
-                                                                        </div> */}
-                                                                        {
-                                                                            index==0?(
-
-                                                                                <tr style={{borderTop: '5px solid red'}} key={index}>
-                                                                                <td>{dayjs.utc(h.horario).format('hh:mm A')}</td>
-                                                                                <td>
-                                                                                    <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{h.items.length}</span>
-                                                                                </td>
-                                                                            </tr> 
-                                                                            ):(
-                                                                            <tr className={''} key={index}>
-                                                                                <td>{dayjs.utc(h.horario).format('hh:mm A')}</td>
-                                                                                <td>
-                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{h.items.length}</span>
-                                                                            </td>
-                                                                            </tr> 
-                                                                            )
-                                                                        }
-                                                                        </>
-                                                                )
-                                                                }
-                                                            )
-                                                            }
-                                                        </tbody>
-                                                            
-                                                            <tr className='bg-primary'>
-                                                                        <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                                            {agruparPorHorario(d.detalle_ventaMembresium).reduce((sum, item) => sum + item.items.length, 0)}
-                                                                            </span> 
-                                                                        </td>
-                                                                    </tr>
-                                                    </Table>
-                                                </span></li>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        )
-                    }
-                    )
-                }
-                
-                {
-                        dataGroup.map(d=>{
-                            const ventasSinCeros = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura!==701).map(m=>m.items).flat()
-                            const traspasos = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura==701).map(m=>m.items).flat()
-                            const nuevosxProgram = groupByIdOrigen(ventasSinCeros).filter(f=>f.id_origen!==691&&f.id_origen!==692)
-                            const reinscripcionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?.items.length:0
-                            const renovacionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0
-                            const sumaEstado = nuevosxProgram.reduce((sum, { items }) => sum + items.length, 0)+reinscripcionesxProgram+renovacionesxProgram+traspasos.length
-                            
-                            return(
-                            <Col key={d.id_pgm} style={{paddingBottom: '1px !important'}} xxl={4}>
-                                <Card>
-                                <Card.Header className=' align-self-center'>
-                                        {/* <Card.Title>
-                                            <h4>{d.name_pgm}</h4>
-                                        </Card.Title> */}
-                                        <img src={`${config.API_IMG.LOGO}${d.tb_image[0].name_image}`} height={d.tb_image[0].height} width={d.tb_image[0].width}/>
-                                        
-                                    </Card.Header>
-                                    <Card.Body>
-                                    <li className='d-flex flex-column'><span className='fs-2'>
-                                                    <div className='table-responsive'>
-                                                    <Table
-                                                            // style={{tableLayout: 'fixed'}}
-                                                            className="table-centered mb-0"
-                                                            // hover
-                                                            striped
-                                                            responsive
-                                                        >
-                                                            <thead className="bg-primary">
-                                                                <tr>
-                                                                    <th className='text-white p-2 py-2'>PROCEDENCIA</th>
-                                                                    <th className='text-white p-2 py-2' 
-                                                                    >
-                                                                        CANT.
-                                                                        {/* <div 
-                                                                    style={{marginLeft: '60px'}}>
-                                                                        </div> */}
-                                                                    </th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                
-                                                                {
-                                                                    GroupProcedencia(dataAlterada(d.detalle_ventaMembresium)).map(g=>(
-                                                                        
-                                                            <tr>
-                                                            <td>
-                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{g.labelOrigen}</span></li>
-                                                            </td>
-                                                            <th> 
-                                                            <span className='fs-1 d-flex justify-content-end align-content-end align-items-end'>{g.items.length}</span>
-                                                            </th>
-                                                        </tr>
-                                                                    ))
-                                                                }
-                                                                
-                                                            </tbody>
-                                                        <tr className='bg-primary'>
-                                                                        <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                                            {sumaEstado}</span>
-                                                                        </td>
-                                                                    </tr>
-                                                        </Table>
-                                                    </div>
-                                                    </span></li>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                            )
-                        }
-                        )
-                    }
-
-                    
-                {
-                        dataGroup.map(d=>{
-                            const ventasSinCeros = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura!==701).map(m=>m.items).flat()
-                            const traspasos = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura==701).map(m=>m.items).flat()
-                            const nuevosxProgram = groupByIdOrigen(ventasSinCeros).filter(f=>f.id_origen!==691&&f.id_origen!==692)
-                            const reinscripcionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?.items.length:0
-                            const renovacionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0
-                            const sumaEstado = nuevosxProgram.reduce((sum, { items }) => sum + items.length, 0)+reinscripcionesxProgram+renovacionesxProgram+traspasos.length
-                            console.log(GroupSexo(dataAlterada(d.detalle_ventaMembresium)));
-                            
-                            return(
-                            <Col key={d.id_pgm} style={{paddingBottom: '1px !important'}} xxl={4}>
-                                <Card>
-                                <Card.Header className=' align-self-center'>
-                                        {/* <Card.Title>
-                                            <h4>{d.name_pgm}</h4>
-                                        </Card.Title> */}
-                                        <img src={`${config.API_IMG.LOGO}${d.tb_image[0].name_image}`} height={d.tb_image[0].height} width={d.tb_image[0].width}/>
-                                        
-                                    </Card.Header>
-                                    <Card.Body>
-                                    <li className='d-flex flex-column'><span className='fs-2'>
-                                                    <div className='table-responsive'>
-                                                    <Table
-                                                            // style={{tableLayout: 'fixed'}}
-                                                            className="table-centered mb-0"
-                                                            // hover
-                                                            striped
-                                                            responsive
-                                                        >
-                                                            <thead className="bg-primary">
-                                                                <tr>
-                                                                    <th className='text-white p-2 py-2'>SEXO</th>
-                                                                    <th className='text-white p-2 py-2' 
-                                                                    >
-                                                                        <div 
-                                                                    style={{marginLeft: '60px'}}>
-                                                                        CANT.
-                                                                        </div>
-                                                                    </th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {
-                                                                    GroupSexo(dataAlterada(d.detalle_ventaMembresium)).map(g=>(
-                                                                        
-                                                            <tr>
-                                                            <td>
-                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{g.labelSexo}</span></li>
-                                                            </td>
-                                                            <th> 
-                                                            <span className='fs-1 d-flex justify-content-end align-content-end align-items-end'>{g.items.length}</span>
-                                                            </th>
-                                                        </tr>
-                                                                    ))
-                                                                }
-                                                            </tbody>
-                                                            
-                                                        <tr className='bg-primary'>
-                                                                        <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                                            {sumaEstado}</span>
-                                                                        </td>
-                                                                    </tr>
-                                                        </Table>
-                                                    </div>
-                                                    </span></li>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                            )
-                        }
-                        )
-                    }
-                    {
-                            dataGroup.map(d=>{
-                                const ventasSinCeros = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura!==701).map(m=>m.items).flat()
-                            const traspasos = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura==701).map(m=>m.items).flat()
-                            const nuevosxProgram = groupByIdOrigen(ventasSinCeros).filter(f=>f.id_origen!==691&&f.id_origen!==692)
-                            const reinscripcionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?.items.length:0
-                            const renovacionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0
-                            const sumaEstado = nuevosxProgram.reduce((sum, { items }) => sum + items.length, 0)+reinscripcionesxProgram+renovacionesxProgram+traspasos.length
-                            
-                                return(
-                                <Col key={d.id_pgm} style={{paddingBottom: '1px !important'}} xxl={4}>
-                                    <Card>
-                                    <Card.Header className=' align-self-center'>
-                                            {/* <Card.Title>
-                                                <h4>{d.name_pgm}</h4>
-                                            </Card.Title> */}
-                                            <img src={`${config.API_IMG.LOGO}${d.tb_image[0].name_image}`} height={d.tb_image[0].height} width={d.tb_image[0].width}/>
-                                            
-                                        </Card.Header>
-                                        <Card.Body>
-                                        <li className='d-flex flex-column'><span className='fs-2'>
-                                                        <div className='table-responsive'>
-                                                        <Table
-                                                                // style={{tableLayout: 'fixed'}}
-                                                                className="table-centered mb-0"
-                                                                // hover
-                                                                striped
-                                                                responsive
-                                                            >
-                                                                <thead className="bg-primary">
-                                                                    <tr>
-                                                                        <th className='text-white p-2 py-2'>DISTRITO</th>
-                                                                        <th className='text-white p-2 py-2' 
-                                                                        >
-                                                                            <div 
-                                                                        style={{marginLeft: '60px'}}>
-                                                                            CANT.
-                                                                            </div>
-                                                                        </th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {
-                                                                        GroupDistrito(dataAlterada(d.detalle_ventaMembresium)).map(g=>(
-                                                                            
-                                                            <tr>
-                                                                <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{g.labelDistrito}</span></li>
-                                                                </td>
-                                                                <th> 
-                                                                <span className='fs-1 d-flex justify-content-end align-content-end align-items-end'>{g.items.length}</span>
-                                                                </th>
-                                                            </tr>
-                                                                        ))
-                                                                    }
-                                                                </tbody>
-                                                                
-                                                        <tr className='bg-primary'>
-                                                                        <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                                            {sumaEstado}</span>
-                                                                        </td>
-                                                                    </tr>
-                                                            </Table>
-                                                        </div>
-                                                        </span></li>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                                )
-                            }
-                            )
-                        }
+                {/* POR ESTADO DEL CLIENTE */}
+                <SimpleBar style={{ maxHeight: '100%'}} scrollbarMaxSize={300}>
+                    <div className='d-flex'>
                         {
-                            dataGroup.map(d=>{
-
-                                
-                                const ventasSinCeros = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura!==701 || f.id_tipoFactura!==702).map(m=>m.items).flat()
-                                const traspasos = groupByIdFactura(d.detalle_ventaMembresium).filter(f=>f.id_tipoFactura==701).map(m=>m.items).flat()
-                                const nuevosxProgram = groupByIdOrigen(ventasSinCeros).filter(f=>f.id_origen!==691&&f.id_origen!==692)
-                                const reinscripcionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===692)?.items.length:0
-                                const renovacionesxProgram = groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?groupByIdOrigen(d.detalle_ventaMembresium).find(f=>f.id_origen===691)?.items.length:0
-                                // console.log(d.detalle_ventaMembresium, "newww");
-                                const ventas = nuevosxProgram
-                                .reduce((sum, { items }) => sum + items.length, 0)+renovacionesxProgram+reinscripcionesxProgram
-                                
-                                const sesionesVendidas = ventasSinCeros.map(t=>t.tb_semana_training?.sesiones).reduce((acumulador, numero) => acumulador + numero, 0)
-                                console.log(ventasSinCeros, "ventasss");
-                                
+                            dataAlter.map(d=>{
                                 return (
-                                <Col className='mx-2' key={d.id_pgm} style={{paddingBottom: '1px !important'}} xxl={4}>
+                                <Col className='mx-1' style={{paddingBottom: '1px !important'}} xxl={4}>
                                     <Card>
                                         <Card.Header className=' align-self-center'>
                                             {/* <Card.Title>
                                                 <h4>{d.name_pgm}</h4>
                                             </Card.Title> */}
-                                            <img src={`${config.API_IMG.LOGO}${d.tb_image[0].name_image}`} height={d.tb_image[0].height} width={d.tb_image[0].width}/>
+                                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
                                             
                                         </Card.Header>
                                         <Card.Body style={{paddingBottom: '1px !important'}}>
@@ -905,41 +383,41 @@ export const ResumenComparativo = () => {
                                                             >
                                                                 <tbody>
                                                                             <tr>
-                                                                                    <td className='' onClick={()=>onOpenModalSOCIOS(d, 'ventas')}>
-                                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>venta de <br/> membresias:</span></li>
+                                                                                    <td className=''>
+                                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>NUEVOS:</span></li>
                                                                                     </td>
                                                                                     <td>
-                                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{ventas}</span>
+                                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d.membresiasNuevas.length}</span>
                                                                                     </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>
-                                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Venta <br/> acumulada:</span></li>
+                                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>RENOVACIONES:</span></li>
                                                                                 </td>
-                                                                                <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.tarifa_total}/>}/></span></td>
+                                                                                <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.membresiasRenovadas.length}</span></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>
-                                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Ticket <br/> medio:</span></li>
+                                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>REINSCRITOS:</span></li>
                                                                                 </td>
                                                                                 <td> 
-                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={(d.tarifa_total/ventas).toFixed(2)}/>}/></span>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>
-                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Sesiones <br/> vendidas:</span></li>
-                                                                                </td>
-                                                                                <td> 
-                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><NumberFormatter amount={sesionesVendidas}/></span>
+                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.membresiasReinscritos.length}</span>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td>
-                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Costo <br/> por sesion:</span></li>
+                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRASPASOS PT:</span></li>
                                                                                 </td>
                                                                                 <td> 
-                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.tarifa_total/sesionesVendidas}/>}/></span>
+                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.TraspasosEnCero.length}</span>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRANSFERENCIAS (COSTO CERO):</span></li>
+                                                                                </td>
+                                                                                <td> 
+                                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.TransferenciasEnCeros.length}</span>
                                                                                 </td>
                                                                             </tr>
                                                                             
@@ -952,7 +430,373 @@ export const ResumenComparativo = () => {
                             }
                         )
                         }
+                        <Col className='mx-2' xxl={4}>
+                            <Card>
+                                <Card.Header>
+                                    <h1 className='text-center'>TOTAL</h1>
+                                </Card.Header>
+                            </Card>
+                        </Col>
+                    </div>
+                </SimpleBar>
+                {/* POR ASESORES */}
+                    
+                {/* POR TARIFAS */}
+                {/* POR PROCEDENCIA */}
+                {/* ------------------------------------------------------------------------------------------------------------------------------------- */}
+                {/* --------------------------------------ESTADISTICAS DE CLIENTE(TODOS, VENTAS)------------------------------------------------------------------------ */}
+                {/* ------------------------------------------------------------------------------------------------------------------------------------- */}
 
+                {/* POR SEMANAS */}
+                <SimpleBar style={{ maxHeight: '100%'}} scrollbarMaxSize={300}>
+                    <div className='d-flex'>
+                        {
+                            dataAlter.map(d=>{
+                                return (
+                                <Col className='mx-1' style={{paddingBottom: '1px !important'}} xxl={4}>
+                                    <Card>
+                                        <Card.Header className=' align-self-center'>
+                                            {/* <Card.Title>
+                                                <h4>{d.name_pgm}</h4>
+                                            </Card.Title> */}
+                                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
+                                            
+                                        </Card.Header>
+                                        <Card.Body style={{paddingBottom: '1px !important'}}>
+                                            <br/>
+                                            <Table
+                                                                // style={{tableLayout: 'fixed'}}
+                                                                className="table-centered mb-0"
+                                                                // hover
+                                                                striped
+                                                                responsive
+                                                            >
+                                                                <tbody>
+                                                                    {
+                                                                        d.agrupadoPorSesiones.map(p=>{
+                                                                            return (
+                                                                                <tr>
+                                                                                        <td className=''>
+                                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
+                                                                                        </td>
+                                                                                </tr>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </tbody>
+                                                            </Table>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            )
+                            }
+                        )
+                        }
+                        <Col className='mx-2' xxl={4}>
+                            <Card>
+                                <Card.Header>
+                                    <h1 className='text-center'>TOTAL</h1>
+                                </Card.Header>
+                            </Card>
+                        </Col>
+                    </div>
+                </SimpleBar>
+                {/* POR DISTRITO */}
+                <SimpleBar style={{ maxHeight: '100%'}} scrollbarMaxSize={300}>
+                    <div className='d-flex'>
+                        {
+                            dataAlter.map(d=>{
+                                console.log(d.porSexo, "por sexo");
+                                
+                                return (
+                                <Col className='mx-1' style={{paddingBottom: '1px !important'}} xxl={4}>
+                                    <Card>
+                                        <Card.Header className=' align-self-center'>
+                                            {/* <Card.Title>
+                                                <h4>{d.name_pgm}</h4>
+                                            </Card.Title> */}
+                                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
+                                            
+                                        </Card.Header>
+                                        <Card.Body style={{paddingBottom: '1px !important'}}>
+                                            <br/>
+                                            <Table
+                                                                // style={{tableLayout: 'fixed'}}
+                                                                className="table-centered mb-0"
+                                                                // hover
+                                                                striped
+                                                                responsive
+                                                            >
+                                                                <tbody>
+                                                                    {
+                                                                        d.porDistrito.map(p=>{
+                                                                            return (
+                                                                                <tr>
+                                                                                        <td className=''>
+                                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
+                                                                                        </td>
+                                                                                </tr>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </tbody>
+                                                            </Table>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            )
+                            }
+                        )
+                        }
+                        <Col className='mx-2' xxl={4}>
+                            <Card>
+                                <Card.Header>
+                                    <h1 className='text-center'>TOTAL</h1>
+                                </Card.Header>
+                            </Card>
+                        </Col>
+                    </div>
+                </SimpleBar>
+                {/* POR HORARIOS */}
+                {/* POR RANGO DE EDAD */}
+                <SimpleBar style={{ maxHeight: '100%'}} scrollbarMaxSize={300}>
+                    <div className='d-flex'>
+                        {
+                            dataAlter.map(d=>{
+                                return (
+                                <Col className='mx-1' style={{paddingBottom: '1px !important'}} xxl={4}>
+                                    <Card>
+                                        <Card.Header className=' align-self-center'>
+                                            {/* <Card.Title>
+                                                <h4>{d.name_pgm}</h4>
+                                            </Card.Title> */}
+                                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
+                                            
+                                        </Card.Header>
+                                        <Card.Body style={{paddingBottom: '1px !important'}}>
+                                            <br/>
+                                            <Table
+                                                                // style={{tableLayout: 'fixed'}}
+                                                                className="table-centered mb-0"
+                                                                // hover
+                                                                striped
+                                                                responsive
+                                                            >
+                                                                <tbody>
+                                                                    {
+                                                                        d.agruparPorRangoEdades.map(p=>{
+                                                                            return (
+                                                                                <tr>
+                                                                                        <td className=''>
+                                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
+                                                                                        </td>
+                                                                                </tr>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </tbody>
+                                                            </Table>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            )
+                            }
+                        )
+                        }
+                        <Col className='mx-2' xxl={4}>
+                            <Card>
+                                <Card.Header>
+                                    <h1 className='text-center'>TOTAL</h1>
+                                </Card.Header>
+                            </Card>
+                        </Col>
+                    </div>
+                </SimpleBar>
+                {/* POR ESTADO CIVIL */}
+                <SimpleBar style={{ maxHeight: '100%'}} scrollbarMaxSize={300}>
+                    <div className='d-flex'>
+                        {
+                            dataAlter.map(d=>{
+                                return (
+                                <Col className='mx-1' style={{paddingBottom: '1px !important'}} xxl={4}>
+                                    <Card>
+                                        <Card.Header className=' align-self-center'>
+                                            {/* <Card.Title>
+                                                <h4>{d.name_pgm}</h4>
+                                            </Card.Title> */}
+                                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
+                                            
+                                        </Card.Header>
+                                        <Card.Body style={{paddingBottom: '1px !important'}}>
+                                            <br/>
+                                            <Table
+                                                                // style={{tableLayout: 'fixed'}}
+                                                                className="table-centered mb-0"
+                                                                // hover
+                                                                striped
+                                                                responsive
+                                                            >
+                                                                <tbody>
+                                                                    {
+                                                                        d.agrupadoPorEstadoCivil.map(p=>{
+                                                                            return (
+                                                                                <tr>
+                                                                                        <td className=''>
+                                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
+                                                                                        </td>
+                                                                                </tr>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </tbody>
+                                                            </Table>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            )
+                            }
+                        )
+                        }
+                        <Col className='mx-2' xxl={4}>
+                            <Card>
+                                <Card.Header>
+                                    <h1 className='text-center'>TOTAL</h1>
+                                </Card.Header>
+                            </Card>
+                        </Col>
+                    </div>
+                </SimpleBar>
+                
+                {/* POR SEXO */}
+                <SimpleBar style={{ maxHeight: '100%'}} scrollbarMaxSize={300}>
+                    <div className='d-flex'>
+                        {
+                            dataAlter.map(d=>{
+                                console.log(d.porSexo, "por sexo");
+                                
+                                return (
+                                <Col className='mx-1' style={{paddingBottom: '1px !important'}} xxl={4}>
+                                    <Card>
+                                        <Card.Header className=' align-self-center'>
+                                            {/* <Card.Title>
+                                                <h4>{d.name_pgm}</h4>
+                                            </Card.Title> */}
+                                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
+                                            
+                                        </Card.Header>
+                                        <Card.Body style={{paddingBottom: '1px !important'}}>
+                                            <br/>
+                                            <Table
+                                                                // style={{tableLayout: 'fixed'}}
+                                                                className="table-centered mb-0"
+                                                                // hover
+                                                                striped
+                                                                responsive
+                                                            >
+                                                                <tbody>
+                                                                    {
+                                                                        d.porSexo.map(p=>{
+                                                                            return (
+                                                                                <tr>
+                                                                                        <td className=''>
+                                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
+                                                                                        </td>
+                                                                                </tr>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </tbody>
+                                                            </Table>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            )
+                            }
+                        )
+                        }
+                        <Col className='mx-2' xxl={4}>
+                            <Card>
+                                <Card.Header>
+                                    <h1 className='text-center'>TOTAL</h1>
+                                </Card.Header>
+                            </Card>
+                        </Col>
+                    </div>
+                </SimpleBar>
+                
+                {/* POR MARCACIONES */}
+                <SimpleBar style={{ maxHeight: '100%'}} scrollbarMaxSize={300}>
+                    <div className='d-flex'>
+                        {
+                            dataAlter.map(d=>{
+                                return (
+                                <Col className='mx-1' style={{paddingBottom: '1px !important'}} xxl={4}>
+                                    <Card>
+                                        <Card.Header className=' align-self-center'>
+                                            {/* <Card.Title>
+                                                <h4>{d.name_pgm}</h4>
+                                            </Card.Title> */}
+                                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
+                                            
+                                        </Card.Header>
+                                        <Card.Body style={{paddingBottom: '1px !important'}}>
+                                            <br/>
+                                            <Table
+                                                                // style={{tableLayout: 'fixed'}}
+                                                                className="table-centered mb-0"
+                                                                // hover
+                                                                striped
+                                                                responsive
+                                                            >
+                                                                <tbody>
+                                                                    {
+                                                                        d.porSexo.map(p=>{
+                                                                            return (
+                                                                                <tr>
+                                                                                        <td className=''>
+                                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
+                                                                                        </td>
+                                                                                </tr>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </tbody>
+                                                            </Table>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            )
+                            }
+                        )
+                        }
+                        <Col className='mx-2' xxl={4}>
+                            <Card>
+                                <Card.Header>
+                                    <h1 className='text-center'>TOTAL</h1>
+                                </Card.Header>
+                            </Card>
+                        </Col>
+                    </div>
+                </SimpleBar>
+                
             </Row>
             </>
         )

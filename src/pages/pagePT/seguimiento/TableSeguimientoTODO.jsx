@@ -85,11 +85,11 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 		};
 		fetchData();
 	}, [viewSeguimiento]);
-	console.log(viewSeguimiento, "view");
+	// console.log(viewSeguimiento, "view");
 	
 	const getCustomers = (data) => {
 		return [...(data || [])].map((d) => {
-			console.log(data, "getCustomers");
+			// console.log(data, "getCustomers");
 			
             // Crea una copia del objeto antes de modificarlo
 			const labelFactura =  d.tb_ventum.id_tipoFactura===701?arrayFacturas.find(f=>f.value==d.tb_ventum.id_tipoFactura)?.label:'VENTA'
@@ -196,7 +196,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
         );
 	}
 	const programaSesioneBodyTemplate = (rowData)=>{
-		console.log(rowData);
+		// console.log(rowData);
 		
 		return (
 			<>

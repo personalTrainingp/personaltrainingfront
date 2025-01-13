@@ -43,7 +43,6 @@ const agruparPorRangoEdad = (data) => {
     { rango_edad: "58 a 63", min: 58, max: 63 },
     { rango_edad: "64 a 69", min: 64, max: 69 },
     { rango_edad: "70 a -|-", min: 70, max: Infinity },
-    // { rango_edad: "88 a mas", min: 88, max: Infinity },
   ];
 
   const resultado = rangos.map((rango) => {

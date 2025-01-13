@@ -24,7 +24,7 @@ const regUsuarioCliente= {
     tipoDoc_cli: 0,
     numDoc_cli: '',
     nacionalidad_cli: 15,
-    id_distrito_trabajo: 0,
+    ubigeo_distrito_trabajo: 0,
     ubigeo_distrito_cli: 0,
     direccion_cli: '',
     tipoCli_cli: 0,
@@ -360,18 +360,18 @@ export const ModalCliente = ({show, onHide}) => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="id_distrito_trabajo" className="form-label">
+                                        <label htmlFor="ubigeo_distrito_trabajo" className="form-label">
                                             Distrito del trabajo*
                                         </label>
 										<Select
-											onChange={(e) => onInputChangeReact(e, 'id_distrito_trabajo')}
-											name="id_distrito_trabajo"
+											onChange={(e) => onInputChangeReact(e, 'ubigeo_distrito_trabajo')}
+											name="ubigeo_distrito_trabajo"
 											placeholder={'Seleccione el distrito de trabajo'}
 											className="react-select"
 											classNamePrefix="react-select"
 											options={dataDistritos}
 											value={dataDistritos.find(
-												(option) => option.value === ubigeo_distrito_cli
+												(option) => option.value === ubigeo_distrito_trabajo
 											)}
 											required
 										/>

@@ -23,7 +23,7 @@ export const useUsuarioStore = () => {
 	const [dataClixID, setdataClixID] = useState({});
 	const [dataUltimaMembxCli, setdataUltimaMembxCli] = useState({});
 	const [loading, setloading] = useState(false);
-	const [loadingData, setLoadingData] = useState(true);
+	const [loadingData, setLoadingData] = useState(false);
 	const [loadingPlanAlim, setloadingPlanAlim] = useState(false);
 
 	const { obtenerComentarioxLOCATION } = useComentarioStore();
