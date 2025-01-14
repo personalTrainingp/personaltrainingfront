@@ -151,22 +151,23 @@ export const ResumenComparativo = () => {
         });
       
         return resultado;
-      }
+    }
     //AGRUPADO POR DIFERENTE DE MYOR A MENOR
     const agruparPorRangoEdad = (data) => {
         const rangos = [
-            { rango_edad: "38 a 42", min: 38, max: 42 },
-            { rango_edad: "43 a 47", min: 43, max: 47 },
-            { rango_edad: "28 a 32", min: 28, max: 32 },
-            { rango_edad: "48 a 52", min: 48, max: 52 },
-            { rango_edad: "33 a 37", min: 33, max: 37 },
-            { rango_edad: "53 a 57", min: 53, max: 57 },
-            { rango_edad: "22 a 27", min: 22, max: 27 },
-            { rango_edad: "16 a 21", min: 16, max: 21 },
-            { rango_edad: "10 a 15", min: 10, max: 15 },
-            { rango_edad: "58 a 63", min: 58, max: 63 },
-            { rango_edad: "64 a 69", min: 64, max: 69 },
-            { rango_edad: "70 a -|-", min: 70, max: Infinity },
+            { rango_edad: "40 - 49", min: 40, max: 49 },
+            // { rango_edad: "43 a 47", min: 43, max: 47 },
+            { rango_edad: "30 - 39", min: 30, max: 39 },
+            { rango_edad: "50 - 57", min: 50, max: 57 },
+            { rango_edad: "58 - 75", min: 58, max: 75 },
+            // { rango_edad: "34 a 39", min: 34, max: 39 },
+            // { rango_edad: "56 a 59", min: 56, max: 59 },
+            { rango_edad: "21 - 29", min: 21, max: 29 },
+            // { rango_edad: "16 a 24", min: 16, max: 24 },
+            { rango_edad: "12 - 20", min: 12, max: 20 },
+            // { rango_edad: "60 a 69", min: 60, max: 69 },
+            // { rango_edad: "64 a 69", min: 64, max: 69 },
+            // { rango_edad: "76 a -|-", min: 70, max: Infinity },
           ];
           // Función para calcular la edad
   const calcularEdad = (fechaNacimiento, fechaVenta) => {
@@ -182,6 +183,13 @@ export const ResumenComparativo = () => {
     return edad;
   };
 
+  function calcularDiferenciaFechas(fechaInicio, fechaFin) {
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+  
+    const diferenciaAnios = fin.getFullYear() - inicio.getFullYear();
+    return diferenciaAnios;
+  }
   // Crear un objeto para agrupar por rango de edad
   const agrupado = rangos.map(rango => ({
     propiedad: rango.rango_edad,
@@ -192,7 +200,7 @@ export const ResumenComparativo = () => {
   data?.forEach(item => {
     const { fecNac_cli } = item.tb_ventum.tb_cliente;
     const { fecha_venta } = item.tb_ventum;
-    const edad = calcularEdad(fecNac_cli, fecha_venta);
+    const edad = calcularDiferenciaFechas(fecNac_cli, fecha_venta);
 
     const rango = agrupado.find(r => edad >= rangos.find(rg => rg.rango_edad === r.propiedad).min && edad <= rangos.find(rg => rg.rango_edad === r.propiedad).max);
     if (rango) {
@@ -200,7 +208,7 @@ export const ResumenComparativo = () => {
     }
   });
 
-  return agrupado;
+  return agrupado.sort((a,b)=>b.items.length-a.items.length);
       };
       
     // console.log(dataTarifas, "tarifas");
@@ -233,7 +241,7 @@ export const ResumenComparativo = () => {
         const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros)
         const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros)
         const agrupadoPorEstadoCivil = agruparPorEstCivil(ventasSinCeros)
-        const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros)
+        const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>a.items.length > b.items.length)
         const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
         // console.log(activosDeVentasPorSemanaMarcacions,  test, 'activossss');
         
@@ -295,10 +303,11 @@ export const ResumenComparativo = () => {
         const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros)
         const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros)
         const agrupadoPorEstadoCivil = agruparPorEstCivil(ventasSinCeros)
-        const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros)
+        const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>a.items.length > b.items.length)
         const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
+        // const 
         // console.log(activosDeVentasPorSemanaMarcacions,  test, 'activossss');
-        console.log(TransferenciasEnCeros);
+        // console.log(agruparPorRangoEdades, "EDAD");
         
         // const porHorario =
         // const porHorarios
@@ -531,9 +540,9 @@ export const ResumenComparativo = () => {
                                                                             </td>
                                                                             <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.membresiasRenovadas.length}</span></td>
                                                                         </tr>
-                                                                        <tr onClick={()=>onOpenModalSOCIOS(d.membresiasReinscritos, d.avatarPrograma, `REINSCRITOS`)}>
+                                                                        <tr onClick={()=>onOpenModalSOCIOS(d.membresiasReinscritos, d.avatarPrograma, `REINSCRIPCIONES`)}>
                                                                             <td>
-                                                                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>REINSCRITOS:</span></li>
+                                                                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>REINSCRIPCIONES:</span></li>
                                                                             </td>
                                                                             <td> 
                                                                             <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.membresiasReinscritos.length}</span>
@@ -911,7 +920,7 @@ export const ResumenComparativo = () => {
                                                             {
                                                                 d.agruparPorRangoEdades.map(p=>{
                                                                     return (
-                                                                        <tr>
+                                                                        <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `RANGO DE EDAD - ${p.propiedad}`)}>
                                                                                 <td className=''>
                                                                                     <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
                                                                                 </td>
@@ -969,7 +978,7 @@ export const ResumenComparativo = () => {
                                                                     {
                                                                         d.agruparPorRangoEdades.map(p=>{
                                                                             return (
-                                                                                <tr>
+                                                                                <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `RANGO DE EDAD - ${p.propiedad}`)}>
                                                                                         <td className=''>
                                                                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
                                                                                         </td>

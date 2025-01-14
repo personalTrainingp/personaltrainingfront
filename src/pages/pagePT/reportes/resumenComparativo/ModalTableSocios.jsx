@@ -5,6 +5,13 @@ import { Dialog } from 'primereact/dialog'
 import React from 'react'
 import { Table } from 'react-bootstrap'
 
+function calcularDiferenciaFechas(fechaInicio, fechaFin) {
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+  
+    const diferenciaAnios = fin.getFullYear() - inicio.getFullYear();
+    return diferenciaAnios;
+  }
 export const ModalTableSocios = ({clickDataSocios, avatarProgramaSelect, clickDataLabel, show, onHide}) => {
     // console.log(clickDataSocios, "modal ");
     console.log('asdfasdf');
@@ -17,6 +24,9 @@ export const ModalTableSocios = ({clickDataSocios, avatarProgramaSelect, clickDa
             nombres_socios: `${d.tb_ventum.tb_cliente.nombre_cli} ${d.tb_ventum.tb_cliente.apPaterno_cli} ${d.tb_ventum.tb_cliente.apMaterno_cli}`,
             monto: d.tarifa_monto,
             sesionesVendidas: d.tb_semana_training.sesiones,
+            fecha_venta: `${d.tb_ventum.fecha_venta}`,
+            fecha_nacimiento: `${d.tb_ventum.tb_cliente.fecNac_cli}`,
+            edad: calcularDiferenciaFechas(d.tb_ventum.tb_cliente.fecNac_cli, d.tb_ventum.fecha_venta ),
             nombre_tarifa: '',
             // fecha_inicio: '',
             // fecha_fin: '',
@@ -38,6 +48,8 @@ export const ModalTableSocios = ({clickDataSocios, avatarProgramaSelect, clickDa
                             <th className='text-white p-1 fs-3'>Socio</th>
                             <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'><SymbolSoles numero={''} isbottom={false}/></div></th>
                             <th className='text-white p-1 fs-3'>Sesiones vendidas</th>
+                            <th className='text-white p-1 fs-3'>FECHA DE NACIMIENTO</th>
+                            <th className='text-white p-1 fs-3'>EDADES</th>
                             {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>Tarifas</div></th> */}
                             {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de inicio de la membresia</div></th> */}
                             {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de fin de membresia</div></th> */}
@@ -52,7 +64,9 @@ export const ModalTableSocios = ({clickDataSocios, avatarProgramaSelect, clickDa
                                 <tr>
                                     <td className='fs-2'>{d.nombres_socios}</td>
                                     <td className='fs-2'><span className='d-flex justify-content-end'><NumberFormatMoney amount={d.monto}/></span></td>
-                                    <td className='fs-2'>{d.sesionesVendidas}</td>
+                                    <td className='fs-2 text-center'>{d.sesionesVendidas}</td>
+                                    <td className='fs-2'>{ dayjs.utc(d.fecha_nacimiento).format('dddd DD [DE] MMMM [DEL] YYYY')}</td>
+                                    <td className='fs-2 text-center'>{d.edad}</td>
                                     <td className='fs-2'><span className='d-flex justify-content-end'>{dayjs.utc(d.fecha_venta).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
                                 </tr>
                             ))

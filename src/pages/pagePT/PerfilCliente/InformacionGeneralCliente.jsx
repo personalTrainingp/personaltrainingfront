@@ -40,6 +40,7 @@ export const InformacionGeneralCliente = ({data}) => {
         numDoc_cli, 
         nacionalidad_cli, 
         ubigeo_distrito_cli, //distrito
+        ubigeo_distrito_trabajo,
         direccion_cli, 
         tipoCli_cli, 
         trabajo_cli, 
@@ -346,14 +347,14 @@ export const InformacionGeneralCliente = ({data}) => {
                                             Distrito del trabajo*
                                         </label>
 										<Select
-											onChange={(e) => onInputChangeReact(e, 'id_distrito_trabajo')}
-											name="id_distrito_trabajo"
+											onChange={(e) => onInputChangeReact(e, 'ubigeo_distrito_trabajo')}
+											name="ubigeo_distrito_trabajo"
 											placeholder={'Seleccione el distrito de trabajo'}
 											className="react-select"
 											classNamePrefix="react-select"
 											options={dataDistritos}
 											value={dataDistritos.find(
-												(option) => option.value === ubigeo_distrito_cli
+												(option) => option.value === ubigeo_distrito_trabajo
 											)}
 											required
 										/>
@@ -427,6 +428,14 @@ export const InformacionGeneralCliente = ({data}) => {
                             
 						</form>
 					</Col>
+                    <Row>
+                        <Col xl={4}>
+                            <Button label='ACTUALIZAR' onClick={onUpdateCliente}/>
+                        </Col>
+                        <Col xl={4}>
+                            <Button label='ELIMINAR' onClick={onEliminarCliente}/>
+                        </Col>
+                    </Row>
 				</Row>
     </>
   )

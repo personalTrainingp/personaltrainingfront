@@ -158,7 +158,7 @@ export default function TableClientes() {
     const header = renderHeader();
 
     return (
-            <DataTable size='normal' 
+            <DataTable  size='small' 
                         value={customers} 
                         paginator 
                         showGridlines 
