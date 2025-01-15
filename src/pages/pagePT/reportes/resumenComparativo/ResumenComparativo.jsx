@@ -17,6 +17,8 @@ import { VentasMesGrafico } from './HistoricoVentasMembresias/VentasMesGrafico'
 import { CardGraficoTotalDeEstadoCliente } from './HistoricoVentasMembresias/CardGraficoTotalDeEstadoCliente'
 import SimpleBar from 'simplebar-react'
 import { ModalTableSocios } from './ModalTableSocios'
+import { ItemTableTotal } from './ItemTableTotal'
+import { TableTotal } from './TableTotal'
 
 dayjs.extend(utc);
 export const ResumenComparativo = () => {
@@ -64,6 +66,8 @@ export const ResumenComparativo = () => {
           });
     }
     function agruparPorDistrito(detalledata) {
+        const arrayDistritos = detalledata?.map(d=>d.tb_ventum.tb_cliente.tb_distrito.distrito)
+        // console.log(detalledata, arrayDistritos, "detalledata");
         return arrayDistritoTest?.map(({ label, value, order }) => {
             const items = detalledata?.filter(
               (cliente) => cliente.tb_ventum.tb_cliente.tb_distrito.distrito === label
@@ -305,6 +309,10 @@ export const ResumenComparativo = () => {
         const agrupadoPorEstadoCivil = agruparPorEstCivil(ventasSinCeros)
         const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>a.items.length > b.items.length)
         const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
+        const avataresDeProgramas = dataIdPgmCero.tb_image
+        // const montoTotal_ACTIVO = []
+        // console.log(dataIdPgmCero);
+        
         // const 
         // console.log(activosDeVentasPorSemanaMarcacions,  test, 'activossss');
         // console.log(agruparPorRangoEdades, "EDAD");
@@ -335,10 +343,11 @@ export const ResumenComparativo = () => {
             ventasSinCeros, 
             membresiasNuevas, 
             membresiasRenovadas, 
-            membresiasReinscritos
+            membresiasReinscritos,
+            avataresDeProgramas
         }
     })
-    console.log(dataIdPgmCero);
+    console.log({dataIdPgmCero});
     
   return (
     <>
@@ -647,6 +656,77 @@ export const ResumenComparativo = () => {
             </Row>
         </Col>
         {/* POR ASESORES */}
+        <Col xxl={12}>
+            <Row>
+                    {
+                        dataAlter.map(d=>{
+                            return (
+                            <Col style={{paddingBottom: '1px !important'}} xxl={4}>
+                                <Card>
+                                    <Card.Header className=' align-self-center'>
+                                        {/* <Card.Title>
+                                            <h4>{d.name_pgm}</h4>
+                                        </Card.Title> */}
+                                        <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
+                                        
+                                    </Card.Header>
+                                    <Card.Body style={{paddingBottom: '1px !important'}}>
+                                        <br/>
+                                        <Table
+                                                            // style={{tableLayout: 'fixed'}}
+                                                            className="table-centered mb-0"
+                                                            // hover
+                                                            striped
+                                                            responsive
+                                                        >
+                                                            <tbody>
+                                                                {
+                                                                    d.agrupadoPorSesiones.map(p=>{
+                                                                        return (
+                                                                            <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `SESIONES - ${p.propiedad}`)}>
+                                                                                    <td className=''>
+                                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad} SESIONES:</span></li>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
+                                                                                    </td>
+                                                                            </tr>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </tbody>
+                                                            
+                                                    <tr className='bg-primary'>
+                                                                    <td>
+                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
+                                                                    </td>
+                                                                    <td> 
+                                                                    <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
+                                                                        {d.agrupadoPorSesiones.reduce((acc, curr) => acc + curr.items.length, 0)}
+                                                                        
+                                                                    </span>
+                                                                    </td>
+                                                                </tr>
+                                                        </Table>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        )
+                        }
+                        )
+                    }
+                    {
+                        dataAlterIdPgmCero.map(d=>{
+                            return (
+                            <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                                <TableTotal avataresDeProgramas={d.avataresDeProgramas} labelTotal={'SESIONES'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorSesiones}/>
+                            </Col>
+                        )
+                        }
+                        )
+                    }
+            </Row>
+        </Col>
             
         {/* POR TARIFAS */}
         {/* POR PROCEDENCIA */}
@@ -658,125 +738,6 @@ export const ResumenComparativo = () => {
         <Col xxl={12}>
         <Row>
                 {
-                    dataAlter.map(d=>{
-                        return (
-                        <Col style={{paddingBottom: '1px !important'}} xxl={4}>
-                            <Card>
-                                <Card.Header className=' align-self-center'>
-                                    {/* <Card.Title>
-                                        <h4>{d.name_pgm}</h4>
-                                    </Card.Title> */}
-                                    <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
-                                    
-                                </Card.Header>
-                                <Card.Body style={{paddingBottom: '1px !important'}}>
-                                    <br/>
-                                    <Table
-                                                        // style={{tableLayout: 'fixed'}}
-                                                        className="table-centered mb-0"
-                                                        // hover
-                                                        striped
-                                                        responsive
-                                                    >
-                                                        <tbody>
-                                                            {
-                                                                d.agrupadoPorSesiones.map(p=>{
-                                                                    return (
-                                                                        <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `SESIONES - ${p.propiedad}`)}>
-                                                                                <td className=''>
-                                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad} SESIONES:</span></li>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
-                                                                                </td>
-                                                                        </tr>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </tbody>
-                                                        
-                                                <tr className='bg-primary'>
-                                                                <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                </td>
-                                                                <td> 
-                                                                <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                                    {d.agrupadoPorSesiones.reduce((acc, curr) => acc + curr.items.length, 0)}
-                                                                    
-                                                                </span>
-                                                                </td>
-                                                            </tr>
-                                                    </Table>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    )
-                    }
-                )
-                }
-                {
-                    dataAlterIdPgmCero.map(d=>{
-                        return (
-                        <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                            <Card>
-                                <Card.Header className=' align-self-center'>
-                                    {/* <Card.Title>
-                                        <h4>{d.name_pgm}</h4>
-                                    </Card.Title> */}
-                                    {/* <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/> */}
-                                    {/* <h1>TOTAL</h1> */}
-                                    <div style={{fontSize: '120px'}}>TOTAL</div>
-                                </Card.Header>
-                                <Card.Body style={{paddingBottom: '1px !important'}}>
-                                    <br/>
-                                    <Table
-                                                        // style={{tableLayout: 'fixed'}}
-                                                        className="table-centered mb-0"
-                                                        // hover
-                                                        striped
-                                                        responsive
-                                                    >
-                                                        <tbody>
-                                                            {
-                                                                d.agrupadoPorSesiones.map(p=>{
-                                                                    return (
-                                                                        <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `SESIONES - ${p.propiedad}`)}>
-                                                                                <td className=''>
-                                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad} SESIONES:</span></li>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
-                                                                                </td>
-                                                                        </tr>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </tbody>
-                                                        
-                                                <tr className='bg-primary'>
-                                                                <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                </td>
-                                                                <td> 
-                                                                <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                                    {d.agrupadoPorSesiones.reduce((acc, curr) => acc + curr.items.length, 0)}
-                                                                    
-                                                                </span>
-                                                                </td>
-                                                            </tr>
-                                                    </Table>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    )
-                    }
-                )
-                }
-        </Row>
-        </Col>
-        <Col xxl={12}>
-        <Row>
-        {
                     dataAlter.map(d=>{
                         return (
                         <Col style={{paddingBottom: '1px !important'}} xxl={4}>
@@ -831,71 +792,23 @@ export const ResumenComparativo = () => {
                         </Col>
                     )
                     }
-                )
+                    )
                 }
                 {
-                            dataAlterIdPgmCero.map(d=>{
-                                return (
-                                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                                    <Card>
-                                        <Card.Header className=' align-self-center'>
-                                            {/* <Card.Title>
-                                                <h4>{d.name_pgm}</h4>
-                                            </Card.Title> */}
-                                            {/* <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/> */}
-                                            {/* <h1>TOTAL</h1> */}
-                                        <div style={{fontSize: '120px'}}>TOTAL</div>
-                                        </Card.Header>
-                                        <Card.Body style={{paddingBottom: '1px !important'}}>
-                                            <br/>
-                                            <Table
-                                                                // style={{tableLayout: 'fixed'}}
-                                                                className="table-centered mb-0"
-                                                                // hover
-                                                                striped
-                                                                responsive
-                                                            >
-                                                                <tbody>
-                                                                    {
-                                                                        d.porDistrito.map(p=>{
-                                                                            return (
-                                                                                <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `DISTRITO - ${p.propiedad}`)}>
-                                                                                        <td className=''>
-                                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items?.length}</span>
-                                                                                        </td>
-                                                                                </tr>
-                                                                            )
-                                                                        })
-                                                                    }
-                                                                </tbody>
-                                                                
-                                                        <tr className='bg-primary'>
-                                                                        <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                                            {d.porDistrito?.reduce((acc, curr) => acc + curr.items?.length, 0)}
-                                                                            
-                                                                        </span>
-                                                                        </td>
-                                                                    </tr>
-                                                            </Table>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            )
-                            }
+                    dataAlterIdPgmCero.map(d=>{
+                            return (
+                            <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                                <TableTotal avataresDeProgramas={d.avataresDeProgramas} labelTotal={'DISTRITO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porDistrito}/>
+                            </Col>
                         )
                         }
+                    )
+                }
         </Row>
         </Col>
         <Col xxl={12}>
         <Row>
-        {
+                {
                     dataAlter.map(d=>{
                         return (
                         <Col style={{paddingBottom: '1px !important'}} xxl={4}>
@@ -950,66 +863,18 @@ export const ResumenComparativo = () => {
                         </Col>
                     )
                     }
-                )
+                    )
                 }
                 {
-                            dataAlterIdPgmCero.map(d=>{
-                                return (
-                                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                                    <Card>
-                                        <Card.Header className=' align-self-center'>
-                                            {/* <Card.Title>
-                                                <h4>{d.name_pgm}</h4>
-                                            </Card.Title> */}
-                                            {/* <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/> */}
-                                            {/* <h1>TOTAL</h1> */}
-                                        <div style={{fontSize: '120px'}}>TOTAL</div>
-                                        </Card.Header>
-                                        <Card.Body style={{paddingBottom: '1px !important'}}>
-                                            <br/>
-                                            <Table
-                                                                // style={{tableLayout: 'fixed'}}
-                                                                className="table-centered mb-0"
-                                                                // hover
-                                                                striped
-                                                                responsive
-                                                            >
-                                                                <tbody>
-                                                                    {
-                                                                        d.agruparPorRangoEdades.map(p=>{
-                                                                            return (
-                                                                                <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `RANGO DE EDAD - ${p.propiedad}`)}>
-                                                                                        <td className=''>
-                                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
-                                                                                        </td>
-                                                                                </tr>
-                                                                            )
-                                                                        })
-                                                                    }
-                                                                </tbody>
-                                                                
-                                                        <tr className='bg-primary'>
-                                                                        <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                                            {d.agruparPorRangoEdades.reduce((acc, curr) => acc + curr.items.length, 0)}
-                                                                            
-                                                                        </span>
-                                                                        </td>
-                                                                    </tr>
-                                                            </Table>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            )
-                            }
+                    dataAlterIdPgmCero.map(d=>{
+                            return (
+                            <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                                <TableTotal avataresDeProgramas={d.avataresDeProgramas} labelTotal={'RANGO DE EDAD'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agruparPorRangoEdades}/>
+                            </Col>
                         )
                         }
+                    )
+                }
         </Row>
         </Col>
         <Col xxl={12}>
@@ -1075,55 +940,8 @@ export const ResumenComparativo = () => {
                             dataAlterIdPgmCero.map(d=>{
                                 return (
                                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                                    <Card>
-                                        <Card.Header className=' align-self-center'>
-                                            {/* <Card.Title>
-                                                <h4>{d.name_pgm}</h4>
-                                            </Card.Title> */}
-                                            {/* <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/> */}
-                                            {/* <h1>TOTAL</h1> */}
-                                        <div style={{fontSize: '120px'}}>TOTAL</div>
-                                        </Card.Header>
-                                        <Card.Body style={{paddingBottom: '1px !important'}}>
-                                            <br/>
-                                            <Table
-                                                                // style={{tableLayout: 'fixed'}}
-                                                                className="table-centered mb-0"
-                                                                // hover
-                                                                striped
-                                                                responsive
-                                                            >
-                                                                <tbody>
-                                                                    {
-                                                                        d.agrupadoPorEstadoCivil.map(p=>{
-                                                                            return (
-                                                                                <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `ESTADO CIVIL - ${p.propiedad}`)}>
-                                                                                        <td className=''>
-                                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items?.length}</span>
-                                                                                        </td>
-                                                                                </tr>
-                                                                            )
-                                                                        })
-                                                                    }
-                                                                </tbody>
-                                                                
-                                                        <tr className='bg-primary'>
-                                                                        <td>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                        </td>
-                                                                        <td> 
-                                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                                            {d.agrupadoPorEstadoCivil?.reduce((acc, curr) => acc + curr.items?.length, 0)}
-                                                                            
-                                                                        </span>
-                                                                        </td>
-                                                                    </tr>
-                                                            </Table>
-                                        </Card.Body>
-                                    </Card>
+                                <TableTotal avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ESTADO CIVIL'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorEstadoCivil}/>
+                                    
                                 </Col>
                             )
                             }
@@ -1194,55 +1012,7 @@ export const ResumenComparativo = () => {
                                 dataAlterIdPgmCero.map(d=>{
                                     return (
                                     <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                                        <Card>
-                                            <Card.Header className=' align-self-center'>
-                                                {/* <Card.Title>
-                                                    <h4>{d.name_pgm}</h4>
-                                                </Card.Title> */}
-                                                {/* <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/> */}
-                                                {/* <h1>TOTAL</h1> */}
-                                        <div style={{fontSize: '120px'}}>TOTAL</div>
-                                            </Card.Header>
-                                            <Card.Body style={{paddingBottom: '1px !important'}}>
-                                                <br/>
-                                                <Table
-                                                                    // style={{tableLayout: 'fixed'}}
-                                                                    className="table-centered mb-0"
-                                                                    // hover
-                                                                    striped
-                                                                    responsive
-                                                                >
-                                                                    <tbody>
-                                                                        {
-                                                                            d.porSexo.map(p=>{
-                                                                                return (
-                                                                                    <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `GENERO - ${p.propiedad}`)}>
-                                                                                            <td>
-                                                                                                <li  className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>{p.propiedad}:</span></li>
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items?.length}</span>
-                                                                                            </td>
-                                                                                    </tr>
-                                                                                )
-                                                                            })
-                                                                        }
-                                                                    </tbody>
-                                                                    
-                                                            <tr className='bg-primary'>
-                                                                            <td>
-                                                                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL:</span></li>
-                                                                            </td>
-                                                                            <td> 
-                                                                            <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                                                {d.porSexo?.reduce((acc, curr) => acc + curr.items?.length, 0)}
-                                                                                
-                                                                            </span>
-                                                                            </td>
-                                                                        </tr>
-                                                                </Table>
-                                            </Card.Body>
-                                        </Card>
+                                <TableTotal avataresDeProgramas={d.avataresDeProgramas} labelTotal={'SEXO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porSexo}/>
                                     </Col>
                                 )
                                 }

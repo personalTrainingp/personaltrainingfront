@@ -218,6 +218,11 @@ export const arrayDistritoTest = [
 	{ label: 'Lima', order: 7 },
 	{ label: 'La Molina', order: 8 },
 	{ label: 'Magdalena del Mar', order: 9 },
+	// { label: 'Callao', order: 10 },
+	{ label: 'San Juan de Lurigancho', order: 11 },
+	{ label: 'Chorrillos', order: 12 },
+	{ label: 'San Borja', order: 13 },
+	{ label: 'Callao', order: 14 },
 	/* 
 	La Molina,
 	Ate,

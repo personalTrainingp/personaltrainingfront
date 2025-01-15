@@ -66,10 +66,18 @@ export const useUsuarioStore = () => {
 			console.log(error);
 		}
 	};
-	const startUpdateUsuarioCliente = async (formState, uid) => {
+	const startUpdateUsuarioCliente = async (formState, uid, avatarFile) => {
 		try {
 			const { data } = await PTApi.put(`/usuario/put-cliente/${uid}`, formState);
-			await obtenerUsuariosClientes();
+
+			if (avatarFile) {
+				const formData = new FormData();
+				formData.append('file', avatarFile);
+				await PTApi.post(
+					`/storage/blob/create/${data.cliente.uid_avatar}?container=avatarclientes`,
+					formData
+				);
+			}
 			await obtenerOneUsuarioCliente(uid);
 		} catch (error) {
 			console.log(error);

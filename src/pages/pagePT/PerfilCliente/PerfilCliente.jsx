@@ -21,6 +21,7 @@ import Swal from 'sweetalert2';
 import { ScreenNutricionista } from './ScreenNutricionista';
 import { useNutricionCliente } from '@/hooks/hookApi/useNutricionCliente';
 import { SectionFiles } from './SectionFiles';
+import { Image } from 'primereact/image';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
@@ -79,8 +80,8 @@ export const PerfilCliente = () => {
     return <Error404AltPage/>;
   }
   
+  const avatarUrl = userCliente?.tb_images&&userCliente?.tb_images[userCliente.tb_images?.length-1]?.name_image
   
-  // console.log(userCliente.urlImg, config.API_IMG.AVATARES);
   return (
     <>
     <Link  to={'/gestion-clientes'} className='mt-3'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
@@ -98,7 +99,7 @@ export const PerfilCliente = () => {
             <Card className='mt-3 p-3'>
               <div className='' style={{height: '600px', width: '100%'}}>
                 <div className='d-flex align-items-center flex-column'>
-                  <img src={`${userCliente.urlImg==null?sinAvatar:`${config.API_IMG.AVATARES}${userCliente.urlImg}`}`} className='rounded-circle' width={150} height={150}/>
+                  <Image indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170"  src={`${avatarUrl==null?sinAvatar:`${config.API_IMG.AVATAR_CLI}${avatarUrl}`}`} className='rounded-circle'/>
                   <div className='m-2 text-center'>
                     <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{userCliente.nombre_cli} {userCliente.apPaterno_cli} {userCliente.apMaterno_cli}</p></span>
                     <span className='text-center'>ACTIVO</span>

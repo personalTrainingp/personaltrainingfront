@@ -6,7 +6,7 @@ import { locale } from 'primereact/api'
 import { Button } from 'primereact/button'
 import {  confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { Link, redirect } from 'react-router-dom'
 import Select from 'react-select'
@@ -14,9 +14,14 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import { useAuthStore } from '@/hooks/useAuthStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
+import sinAvatar from '@/assets/images/sinPhoto.jpg';
 
 
 locale('es');
+
+const registerImgAvatar={
+    imgAvatar_BASE64: ''
+}
 export const InformacionGeneralCliente = ({data}) => {
     // console.log(data);
     // console.log(data, "info?");
@@ -27,6 +32,7 @@ export const InformacionGeneralCliente = ({data}) => {
         const { obtenerDistritosxDepxProvincia:obtenerDistritosDeCallao, dataDistritos:distritosDeCallao } = useTerminoStore()
 
     
+        const [selectedFile, setSelectedFile] = useState(sinAvatar);
     // console.log(user);
     
     const { formState, 
@@ -48,6 +54,8 @@ export const InformacionGeneralCliente = ({data}) => {
         email_cli, 
         tel_cli,
         onInputChange, onInputChangeReact, onFileChange } = useForm(data)
+        
+            const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
         const { eliminarOneUsuarioCliente, startUpdateUsuarioCliente }  = useUsuarioStore()
         const toast = useRef(null);
 
@@ -85,7 +93,7 @@ export const InformacionGeneralCliente = ({data}) => {
                 icon: 'pi pi-question-circle',
                 defaultFocus: 'accept',
                 accept: ()=>{
-                    startUpdateUsuarioCliente(formState, data.uid)
+                    startUpdateUsuarioCliente(formState, data.uid, formStateAvatar.imgAvatar_BASE64)
                 },
                 reject
             });
@@ -102,6 +110,15 @@ export const InformacionGeneralCliente = ({data}) => {
         ...distritosDeLima,
         ...distritosDeCallao
     ]
+    const ViewDataImg = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+            setSelectedFile(reader.result);
+        };
+        reader.readAsDataURL(file);
+    };
+    
   return (
     <>
     
@@ -126,6 +143,20 @@ export const InformacionGeneralCliente = ({data}) => {
 					<Col xl={12} className="">
 						<form>
                             <Row>
+                                <Col xl={12}>
+                                {/* <Button label='ACTUALIZAR FOTO' /> */}
+							    <img src={selectedFile} width={180} height={180} />
+                                <input 
+                                    type="file" 
+                                    className="m-2 fs-6"
+                                    accept="image/png, image/jpeg, image/jpg"
+                                    name="imgAvatar_BASE64"
+                                    onChange={(e)=>{
+                                        onRegisterFileChange(e)
+                                        ViewDataImg(e)
+                                    }} 
+                                    />
+                                </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="nombre_cli" className="form-label">

@@ -3,7 +3,7 @@ export const authClientSlice = createSlice({
 	name: 'authClient',
 	initialState: {
 		status: 'empty', //'empty', 'full'
-		userCliente: {},
+		userCliente: [],
 		userAvatar: {},
 		errorMessage: undefined,
 		Dataclientes: [],
