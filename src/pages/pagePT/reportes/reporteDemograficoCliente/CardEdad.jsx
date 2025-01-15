@@ -69,8 +69,8 @@ const agruparPorRangoEdad = (data) => {
   };
 export const CardEdad = ({tasks, dataSumaTotal}) => {
     const pagos = tasks.map(t => ({
-        fec_nacimiento: t.tb_cliente.fecNac_cli,
-        edad: calcularEdad(t.tb_cliente.fecNac_cli, t.fecha_venta),
+        fec_nacimiento: t.tb_cliente.fecha_nacimiento,
+        edad: calcularEdad(t.tb_cliente.fecha_nacimiento, t.fecha_venta),
         tb_cliente: t.tb_cliente,
         suma_tarifa: sumarTarifaMonto(t)
     }))

@@ -19,6 +19,8 @@ import { DateMaskString, FormatoDateMask, MoneyFormatter } from '@/components/Cu
 import dayjs from 'dayjs';
 import { Col, Row } from 'react-bootstrap';
 import { PdfComprobanteVenta } from './PdfComprobanteVenta';
+import config from '@/config';
+import sinAvatar from '@/assets/images/sinPhoto.jpg';
 
 
 export const TodoVentas=({id_empresa})=> {
@@ -175,6 +177,20 @@ const logoPdfBodyTemplate = (rowData)=>{
     </Row>
   )
 }
+const infoClienteBodyTemplate = (rowData)=>{
+  const avatarCli = rowData.tb_cliente?.tb_images[rowData.tb_cliente.tb_images.length-1]?.name_image
+  return(
+    <Row className='m-0'>
+      <Col xxl={12}>
+      <div className='d-flex justify-content-between align-items-center'>
+        {/* <span className='text-primary fw-bold'>{rowData.tb_cliente.nombres_apellidos_cli}</span> */}
+        <img width={90} height={80} className='border-circle' src={rowData.tb_cliente?.tb_images.length>0?`${config.API_IMG.AVATAR_CLI}${avatarCli}`:sinAvatar}/>
+        <span className='text-primary fw-bold ml-2' style={{width: '190px'}}>{rowData.tb_cliente.nombres_apellidos_cli}</span>
+      </div>
+      </Col>
+    </Row>
+  )
+}
 const valueFiltered = (f)=>{
   setvalueFilter(f)
 }
@@ -187,9 +203,10 @@ const valueFiltered = (f)=>{
                   onValueChange={valueFiltered}
                         stripedRows paginator rows={10} dataKey="id" filters={filters} loading={loading}
                   globalFilterFields={["tb_cliente.nombres_apellidos_cli", "tb_empleado.nombres_apellidos_empl", "tipo_comprobante", "numero_transac"]} header={header} emptyMessage="No customers found.">
-              <Column field="id" header="NUMERO DE OPERACION" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} />
+              <Column field="id" header="Id" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} />
+              {/* <Column field="id" header="Foto de" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} /> */}
               <Column field="fecha_venta" header="FECHA" filter filterPlaceholder="BUSCAR FECHA" style={{ minWidth: '8rem' }} body={fechaDeComprobanteBodyTemplate}/>
-              <Column field="tb_cliente.nombres_apellidos_cli" header="SOCIOS" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="tb_cliente.nombres_apellidos_cli" body={infoClienteBodyTemplate} header="SOCIOS" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column field="tb_empleado.nombres_apellidos_empl" header="ASESOR COMERCIAL" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column field="tipo_comprobante" header="COMPROBANTE" body={comprobanteBodyTemplate} filter filterPlaceholder="Buscar tipo de comprobante" style={{ minWidth: '12rem' }} />
               <Column field="numero_transac" header="Nº DE COMPR." filter filterPlaceholder="Search by name" style={{ maxWidth: '7rem' }} />

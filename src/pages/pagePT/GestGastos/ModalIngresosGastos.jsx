@@ -101,8 +101,10 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             
             setgastoxGrupo(conceptos)
         }, [grupo])
+        console.log("asdfasdf");
         
-
+        console.log(data, "ddddddd");
+        
         
         useEffect(() => {
             const inyeccionParametros = async()=>{

@@ -19,6 +19,7 @@ const regUsuarioCliente= {
     apPaterno_cli: '',
     apMaterno_cli: '',
     fecNac_cli: '',
+    fecha_nacimiento: '',
     estCivil_cli: 0,
     sexo_cli: 0,
     tipoDoc_cli: 0,
@@ -31,7 +32,7 @@ const regUsuarioCliente= {
     cargo_cli: '',
     email_cli: '',
     tel_cli: '',
-}
+}   
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }

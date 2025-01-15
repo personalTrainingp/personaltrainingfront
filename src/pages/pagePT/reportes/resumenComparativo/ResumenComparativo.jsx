@@ -202,9 +202,9 @@ export const ResumenComparativo = () => {
 
   // Agrupar los datos
   data?.forEach(item => {
-    const { fecNac_cli } = item.tb_ventum.tb_cliente;
+    const { fecha_nacimiento } = item.tb_ventum.tb_cliente;
     const { fecha_venta } = item.tb_ventum;
-    const edad = calcularDiferenciaFechas(fecNac_cli, fecha_venta);
+    const edad = calcularDiferenciaFechas(fecha_nacimiento, fecha_venta);
 
     const rango = agrupado.find(r => edad >= rangos.find(rg => rg.rango_edad === r.propiedad).min && edad <= rangos.find(rg => rg.rango_edad === r.propiedad).max);
     if (rango) {

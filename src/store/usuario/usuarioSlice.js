@@ -10,6 +10,7 @@ export const usuarioSlice = createSlice({
 			apPaterno_cli: '',
 			apMaterno_cli: '',
 			fecNac_cli: '',
+			fecha_nacimiento: '',
 			estCivil_cli: 0,
 			sexo_cli: 0,
 			tipoDoc_cli: 0,

@@ -18,7 +18,7 @@ const regUsuarioCliente= {
     nombre_cli: '',
     apPaterno_cli: '',
     apMaterno_cli: '',
-    fecNac_cli: '',
+    fecha_nacimiento: '',
     estCivil_cli: 0,
     sexo_cli: 0,
     tipoDoc_cli: 0,
@@ -52,7 +52,7 @@ export const ModalCliente = ({show, onHide}) => {
             nombre_cli, 
             apPaterno_cli, 
             apMaterno_cli, 
-            fecNac_cli, 
+            fecha_nacimiento,
             estCivil_cli, 
             sexo_cli, 
             tipoDoc_cli, 
@@ -196,16 +196,16 @@ export const ModalCliente = ({show, onHide}) => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="fecNac_cli" className="form-label">
+                                        <label htmlFor="fecha_nacimiento" className="form-label">
                                             Fecha de nacimiento*
                                         </label>
                                         <input
                                             className="form-control"
                                             type="date"
-                                            name="fecNac_cli"
-                                            value={fecNac_cli}
+                                            name="fecha_nacimiento"
+                                            value={fecha_nacimiento}
                                             onChange={onInputChange}
-                                            id="fecNac_cli"
+                                            id="fecha_nacimiento"
                                             placeholder="Fecha de nacimiento"
                                             required
                                         />

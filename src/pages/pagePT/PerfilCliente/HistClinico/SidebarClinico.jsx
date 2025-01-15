@@ -223,7 +223,7 @@ export const SidebarClinico = ({show, onHide, dataCli}) => {
 					body: [
 						[{text: `NOMBRES Y APELLIDOS: ${dataCli.nombre_cli} ${dataCli.apPaterno_cli} ${dataCli.apMaterno_cli}`, style: 'tableHeader', colSpan: 4}, {}, {}, {}], // Celda que abarca 4 columnas
 						[
-						{text: `EDAD: ${calcularEdad(dataCli.fecNac_cli)} años`, style: 'tableHeader', colSpan: 2}, {}, 
+						{text: `EDAD: ${calcularEdad(dataCli.fecha_nacimiento)} años`, style: 'tableHeader', colSpan: 2}, {}, 
 						{text: `SEXO: ${arraySexo.find(s=>s.value==dataCli.sexo_cli).label}`, style: 'tableHeader', colSpan: 2}, {}
 						], // Dos celdas que abarcan 2 columnas cada una
 						[{text: `MOTIVACIÓN (¿PARA QUÉ QUIERE LOGRAR ESE OBJETIVO?): ${formState.dato_motivacion.toUpperCase()}`, style: 'tableHeader', colSpan: 4}, {}, {}, {}] // Celda que abarca 4 columnas

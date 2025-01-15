@@ -39,7 +39,7 @@ export const InformacionGeneralCliente = ({data}) => {
         nombre_cli, 
         apPaterno_cli, 
         apMaterno_cli, 
-        fecNac_cli, 
+        fecha_nacimiento,
         sexo_cli, 
         estCivil_cli, 
         tipoDoc_cli, 
@@ -210,16 +210,16 @@ export const InformacionGeneralCliente = ({data}) => {
                                 </Col>
                                 <Col xl={4}>
                                     <div className="mb-2">
-                                        <label htmlFor="fecNac_cli" className="form-label">
+                                        <label htmlFor="fecha_nacimiento" className="form-label">
                                             Fecha de nacimiento*
                                         </label>
                                         <input
                                             className="form-control"
                                             type="date"
-                                            name="fecNac_cli"
-                                            value={fecNac_cli}
+                                            name="fecha_nacimiento"
+                                            value={fecha_nacimiento}
                                             onChange={onInputChange}
-                                            id="fecNac_cli"
+                                            id="fecha_nacimiento"
                                             placeholder="Fecha de nacimiento"
                                             required
                                         />
