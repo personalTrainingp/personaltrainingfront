@@ -132,7 +132,9 @@ input{
 // .bg-primary--ctss{
 //   background-color: #D41115;
 // }
-
+td, th {
+  vertical-align: middle !important; /* O use 'baseline' según tu diseño */
+}
 .custom-legend-item {
   margin-top: 10px;    /* Margen superior */
   margin-right: 10005px;  /* Margen derecho */

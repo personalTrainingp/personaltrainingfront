@@ -62,6 +62,7 @@ const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'
 const ReportePorMarcacion = lazy(()=> import('../pages/pagePT/reportes/reporteCliente'))
 const ReporteSeguimiento = lazy(()=>import('../pages/pagePT/reportes/reporteSeguimiento'))
 const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
+const ReporteSesionesxMem = lazy(()=>import('../pages/pagePT/reportes/reporteSesionesxMem'))
 const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
 const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
 const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
@@ -74,6 +75,7 @@ const GestionCambioPrograma = lazy(()=>import('../pages/pagePT/GestionCambioProg
 const ResumenComparativoAnual = lazy(()=>import('../pages/pagePT/reportes/resumenComparativoAnual'))
 const SeguimientoxMesView = lazy(()=>import('../pages/pagePT/reportes/SeguimientoxMes'))
 const FacturacionPublicidad = lazy(()=>import('../pages/pagePT/FacturacionPublicidad'))
+const ResumenDemograficoxPrograma = lazy(()=>import('../pages/pagePT/reportes/resumenDemograficoComparativo'))
 /**
  * routes import
  */
@@ -115,7 +117,7 @@ export default function ProtectedRoutes() {
 				
 				{
 						sections.find(e=>e.url==='/facturacion-publicidad')&&
-                        <Route path='facturacion-publicidad' element={<FacturacionPublicidad/>}/>
+                        <Route path='facturacion-publicidad' element={<ReporteSesionesxMem/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/reporte/seguimiento-x-mes')&&
@@ -127,7 +129,7 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/reporte')&&
-                        <Route path='reporte/reporte-demografico-membresia' element={<ReporteDemograficoxMembresia/>}/>
+                        <Route path='reporte/reporte-demografico-membresia' element={<ResumenDemograficoxPrograma/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/reporte')&&

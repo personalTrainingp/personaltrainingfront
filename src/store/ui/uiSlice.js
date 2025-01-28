@@ -5,14 +5,18 @@ export const uiSlice = createSlice({
 	initialState: {
 		dataView: [],
 		loading: false,
+		viewSubTitle: '',
 	},
 	reducers: {
-		onSetData: (state, {payload}) => {
-			state.dataView=payload
+		onSetData: (state, { payload }) => {
+			state.dataView = payload;
 		},
 		RESET_DATA: () => {
-			state.dataView=[]
+			state.dataView = [];
+		},
+		onSetViewSubTitle: (state, { payload }) => {
+			state.viewSubTitle = payload;
 		},
 	},
 });
-export const { onSetData } = uiSlice.actions;
+export const { onSetData, onSetViewSubTitle } = uiSlice.actions;

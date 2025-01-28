@@ -82,10 +82,10 @@ export const useReporteResumenComparativoStore = () => {
 		// 	venta_transferencia: [],
 		// },
 	]);
+	const [dataClientesxMarcacion, setdataClientesxMarcacion] = useState([]);
 
 	const [dataIdPgmCero, setdataIdPgmCero] = useState({});
 	const [dataHorarios, sethorarios] = useState([]);
-	const [dataMarcacions, setdataMarcacions] = useState([]);
 	const [dataAsesoresFit, setdataAsesoresFit] = useState([]);
 	const [dataTarifas, settarifas] = useState([]);
 	const [dataGroupTRANSFERENCIAS, setdataGroupTRANSFERENCIAS] = useState([]);
@@ -137,6 +137,8 @@ export const useReporteResumenComparativoStore = () => {
 								membresia.fec_fin_mem === detalle_ventaMembresium.fec_fin_mem &&
 								membresia.fec_inicio_mem ===
 									detalle_ventaMembresium.fec_inicio_mem &&
+								membresia.tarifa_venta ===
+									detalle_ventaMembresium.tb_tarifa_venta &&
 								membresia.tarifa_monto === detalle_ventaMembresium.tarifa_monto &&
 								membresia.tb_ventum?.id === detalle_ventaMembresium.tb_ventum?.id
 						)
@@ -153,6 +155,7 @@ export const useReporteResumenComparativoStore = () => {
 							id_tarifa: detalle_ventaMembresium.id_tarifa || 0,
 							tb_semana_training: detalle_ventaMembresium.tb_semana_training || null,
 							tb_ventum: detalle_ventaMembresium.tb_ventum || null,
+							tarifa_venta: detalle_ventaMembresium.tarifa_venta || null,
 						});
 					}
 				} else {
@@ -179,42 +182,19 @@ export const useReporteResumenComparativoStore = () => {
 			}, {})
 		);
 
-		const dataMarcaciones = data.membresias.map((g) => {
-			return {
-				id: g.id,
-				id_pgm: g.id_pgm,
-				fecha_venta: g.tb_ventum.fecha_venta,
-				fec_inicio_mem: g.fec_inicio_mem,
-				fec_fin_mem: g.fec_fin_mem,
-				id_venta: g.id_venta,
-				tb_marcacions: g.tb_ventum.tb_cliente.tb_marcacions.filter((item) => {
-					const tiempo = new Date(item.tiempo_marcacion_new);
-					const fechasEntrelaza = {
-						tiempo: tiempo,
-						fecha_fin_mem: new Date(g.fec_fin_mem),
-						fecha_inicio_mem: new Date(g.fec_inicio_mem),
-					};
-					return (
-						fechasEntrelaza.tiempo >= fechasEntrelaza.fecha_inicio_mem &&
-						fechasEntrelaza.tiempo <= fechasEntrelaza.fecha_fin_mem
-					);
-				}),
-				nombres_apellidos_cli: g.tb_ventum.tb_cliente.nombres_apellidos_cli,
-			};
-		});
 		const ventasUnificadas = agruparxIdPgm.map((venta) => {
 			// Busca las transferencias asociadas al id_pgm
 			const transferencia = agruparPorIdPgm(dataTransferencias).find(
 				(transferencia) => transferencia.id_pgm === venta.id_pgm
 			);
-			const marcacionesxMembresia = agruparPorIdPgmMarcacions(dataMarcaciones).find(
-				(marcacion) => marcacion.id_pgm === venta.id_pgm
-			);
+			// const marcacionesxMembresia = agruparPorIdPgmMarcacions(dataMarcaciones).find(
+			// 	(marcacion) => marcacion.id_pgm === venta.id_pgm
+			// );
 			// Agrega la propiedad ventas_transferencias al objeto venta
 			return {
 				...venta,
 				ventas_transferencias: transferencia ? transferencia.items : [],
-				marcacionesxMembresia: marcacionesxMembresia ? marcacionesxMembresia.items : [],
+				// marcacionesxMembresia: marcacionesxMembresia ? marcacionesxMembresia.items : [],
 			};
 		});
 		// Crear el objeto id_pgm: 0 que suma todos los demás
@@ -234,7 +214,7 @@ export const useReporteResumenComparativoStore = () => {
 				tb_image: [],
 			}
 		);
-
+		console.log(data);
 
 		// console.log(
 		// 	agruparPorIdPgmMarcacions(dataMarcaciones),
@@ -246,12 +226,24 @@ export const useReporteResumenComparativoStore = () => {
 		// console.log(agruparPorIdPgm(dataTransferencias), agruparxIdPgm, ventasUnificadas);
 		// console.log(agruparxIdPgm, '149');
 		setdataGroup(ventasUnificadas);
-		setdataMarcacions(dataMarcaciones);
+		// setdataMarcacions(dataMarcaciones);
 		setdataGroupTRANSFERENCIAS(agruparPorIdPgm(dataTransferencias));
 		setdataIdPgmCero(totalObject);
 		setloading(false);
 		// setdataEstadoGroup(groupByIdOrigen(data.ventasProgramas));
 		// setdataAuditoria(data.audit);
+	};
+	const obtenerClientesConMarcacion = async () => {
+		try {
+			console.log('asdfasdf', 'acaaa 257');
+			const { data } = await PTApi.get(`/usuario/get-marcacions/cliente`);
+			console.log('259 linea');
+
+			console.log({ dataMarcaciones: data });
+			setdataClientesxMarcacion(data);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 	const obtenerEstadosOrigenResumen = async (RANGE_DATE) => {
 		try {
@@ -382,8 +374,10 @@ export const useReporteResumenComparativoStore = () => {
 		obtenerHorariosPorPgm,
 		obtenerTarifasPorPgm,
 		obtenerAsesoresFit,
+		obtenerClientesConMarcacion,
+		dataClientesxMarcacion,
 		dataAsesoresFit,
-		dataMarcacions,
+		// dataMarcacions,
 		dataIdPgmCero,
 		// dataEstadoGroup,
 		dataTarifas,

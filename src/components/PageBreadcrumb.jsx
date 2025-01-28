@@ -8,7 +8,7 @@ const PageBreadcrumb = ({ subName, title, children, topTitle, btnBack }) => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(onViewSection(topTitle?topTitle:title))
-    }, [title])
+    }, [title, topTitle])
   
   return (
     <>
