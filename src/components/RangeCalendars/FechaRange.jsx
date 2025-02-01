@@ -33,22 +33,6 @@ export const FechaRange = ({rangoFechas}) => {
     
   return (
     <div className='d-flex flex-row aling-items-center'>
-            {/* <div className='d-flex flex-column m-1'>
-                <label>
-                    FECHA DESDE
-                </label>
-                <Calendar value={dateRange.fec_desde} locale='es' maxDate={dateRange.fec_hasta} name='fec_desde' onChange={(e)=>setdateRange({fec_desde: e.value, fec_hasta: dateRange.fec_hasta})} showIcon />
-            </div>
-            <div className='d-flex flex-column m-1'>
-                <label>
-                    FECHA HASTA
-                </label>
-                <Calendar value={dateRange.fec_hasta} locale='es' minDate={dateRange.fec_desde} name='fec_hasta' onChange={(e)=>setdateRange({fec_desde: dateRange.fec_desde, fec_hasta: e.value})} showIcon />
-            </div>
-            <div className='d-flex flex-column m-1  justify-content-end'>
-            <Button onClick={onClickFechaRange} className='m-0 '>actualizar</Button>
-            </div> */}
-        {/* */}
         <Row className='d-flex align-items-end'>
             <Col xxl={4}>
                 <label className='' style={{fontSize: '28px'}}>
@@ -68,7 +52,6 @@ export const FechaRange = ({rangoFechas}) => {
         </Row> 
         <br/>
         <br/>
-                {/* <FormatRangoFecha rangoFechas={rangoFechas}/> */}
     </div>
   )
 }

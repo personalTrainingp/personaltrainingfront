@@ -10,7 +10,7 @@ export const PrincipalView = () => {
     <>
         
             <PageBreadcrumb title={`comparativa`} topTitle={<h1 style={{fontSize: '37px', color: 'black'}}>{viewSubTitle}</h1>} subName={''}/>
-            <VentasMesGrafico/>
+            {/* <VentasMesGrafico/> */}
             <ResumenComparativo/>
     </>
   )

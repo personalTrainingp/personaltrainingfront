@@ -4,7 +4,6 @@ import { ItemTablePgm } from './ItemTablePgm';
 import { FormatTable } from './Component/FormatTable';
 
 export const ItemCardPgm = ({avatarPrograma, aforo, isViewGenere, arrayEstadistico, labelParam, onOpenModalSOCIOS, isViewSesiones, isTarifaCash}) => {
-  console.log({arrayEstadistico});
   
   return (
     <Card>

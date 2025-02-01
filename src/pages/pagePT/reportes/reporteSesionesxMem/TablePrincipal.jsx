@@ -22,7 +22,37 @@ import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { useReporteSesionesUsadasStore } from './useReporteSesionesUsadasStore';
 import { ModalAsistencias } from './ModalAsistencias';
 dayjs.extend(utc);
+function contarAsistenciasConsecutivas(tb_marcacion, fecha_inicio_mem, numero) {
+    const fechas = tb_marcacion.map(m => new Date(m.fecha).toISOString().split('T')[0]);
+    fechas.sort();
+    
+    let cantidad = 0;
+    let contador = 0;
+    let inicio = null;
 
+    for (let i = 0; i < fechas.length; i++) {
+        if (inicio === null) {
+            inicio = fechas[i];
+            contador = 1;
+        } else {
+            let fechaActual = new Date(inicio);
+            fechaActual.setDate(fechaActual.getDate() + 1);
+
+            if (fechas[i] === fechaActual.toISOString().split('T')[0]) {
+                contador++;
+                if (contador === numero) {
+                    cantidad++;
+                    inicio = null;
+                }
+            } else {
+                inicio = fechas[i];
+                contador = 1;
+            }
+        }
+    }
+
+    return { numero, cantidad };
+}
 
 const calcularSemanas = (tb_marcacion, fecha_inicio_mem, fecha_fin_mem, numeroDias, incluirMayorIgual, diasConsecutivos) => {
     const resultadoSemanas = [];
@@ -116,12 +146,16 @@ export function TablePrincipal({showToast}) {
         return data.map(item => {
             let newItem = { ...item };
             newItem.alterSemanas = calcularSemanas(item.marcacion, item.fecha_inicio_mem, item.fecha_fin_mem, 5, true, false).join(', ')
+            // console.log(contarAsistenciasConsecutivas(item.marcacion, item.fecha_inicio_mem, 5));
+            newItem.alterSemanas_consecutivas_len = calcularSemanas(item.marcacion, item.fecha_inicio_mem, item.fecha_fin_mem, 5, true, true).length
+            const porcenta = (((newItem.alterSemanas_consecutivas_len*5)/item.sesiones_vendidas)*100).toFixed(2)
+            newItem.porcentAsistencia5PrimeroDiasConsecutivos = porcenta
             newItem.alterSemanas_len = calcularSemanas(item.marcacion, item.fecha_inicio_mem, item.fecha_fin_mem, 5, true, false).length
             newItem.alterSemanas_consecutivas = calcularSemanas(item.marcacion, item.fecha_inicio_mem, item.fecha_fin_mem, 5, true, true).join(', ')
-            newItem.alterSemanas_consecutivas_len = calcularSemanas(item.marcacion, item.fecha_inicio_mem, item.fecha_fin_mem, 5, true, true).length
             return newItem;
             });
     };
+    console.log({customers});
     
     const highlightText = (text, search) => {
         if (!search) {
@@ -229,11 +263,13 @@ export function TablePrincipal({showToast}) {
         );
     }
     const cantidadSesionesUsadasBodyTemplate = (rowData) => {
+        console.log(rowData.porcentAsistencia5PrimeroDiasConsecutivos);
+        
         return (
             <div className="align-items-center gap-2">
                 <span>{highlightText( `${rowData.sesiones_usadas}`, globalFilterValue)}</span>
                 <br/>
-                <span className='font-bold'>PORCENTAJE: {highlightText( `${((rowData.sesiones_usadas/rowData.sesiones_vendidas)*100).toFixed(2)}`, globalFilterValue)}</span>
+                <span className='font-bold'>PORCENTAJE: {highlightText( `${rowData.porcentAsistencia5PrimeroDiasConsecutivos}`, globalFilterValue)}</span>
             </div>
         );
     };
@@ -338,10 +374,10 @@ export function TablePrincipal({showToast}) {
                 <Column field='nombres_apellidos_cli' header="Nombre del cliente" sortable style={{ width: '15rem' }} body={nombres_apellidos_cliBodyTemplate} filter />
                 <Column field='nombre_programa' header="Programa"  style={{ width: '7rem' }} body={programaTrainingBodyTemplate} filter  />
                 <Column field='sesiones_usadas' header="Cantidad de semanas Vendidas" sortable style={{ minWidth: '10rem' }} body={cantidadSemanaVendidasBodyTemplate} filter />
-                <Column field='sesiones_vendidas' header="Cantidad Sesiones Vendidas" style={{ minWidth: '10rem' }} sortable body={cantidadSesionesVendidasBodyTemplate} filter/>
-                <Column field='sesiones_usadas' header="Cantidad de sesiones asistidas" sortable style={{ minWidth: '10rem' }} body={cantidadSesionesUsadasBodyTemplate} filter />
-                <Column field='alterSemanas_consecutivas_len' header="semanas consecutivas" sortable style={{ minWidth: '10rem' }} body={cantidadSemanasConsecutivas} filter />
-                <Column field='alterSemanas_len' header="semanas" sortable style={{ minWidth: '10rem' }} body={cantidadSemanasAsistidas} filter />
+                <Column field='sesiones_vendidas' header="Sesiones Vendidas" style={{ minWidth: '10rem' }} sortable body={cantidadSesionesVendidasBodyTemplate} filter/>
+                <Column field='sesiones_usadas' header="sesiones asistidas" sortable style={{ minWidth: '10rem' }} body={cantidadSesionesUsadasBodyTemplate} filter />
+                <Column field='alterSemanas_consecutivas_len' header="semanas cumplidos" sortable style={{ minWidth: '10rem' }} body={cantidadSemanasConsecutivas} filter />
+                {/* <Column field='alterSemanas_len' header="semanas" sortable style={{ minWidth: '10rem' }} body={cantidadSemanasAsistidas} filter /> */}
                 <Column field='alterSemanas_len' header="nutricion" sortable style={{ minWidth: '10rem' }} body={nutricionBodyTemplate} filter />
                 <Column field='fecha_inicio_mem' header="Fecha de inicio" style={{ minWidth: '10rem' }} sortable body={fechaInicioBodyTemplate} filter/>
                 <Column field='fecha_fin_mem' header="Fecha fin" style={{ minWidth: '10rem' }} sortable body={fechaFinBodyTemplate} filter/>

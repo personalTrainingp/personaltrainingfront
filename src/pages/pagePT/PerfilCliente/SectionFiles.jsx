@@ -37,6 +37,7 @@ export const SectionFiles = ({uid_file}) => {
             }
         });
     }
+    
     return(
         <>
         <Button label='Agregar documento' onClick={onOpenModalAddFile}/>

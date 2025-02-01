@@ -53,7 +53,9 @@ export const FormatTable = ({ data, tFood }) => {
               {row.map((col, colIndex) => (
                 <td key={colIndex}>
                   <li className={`d-flex flex-row justify-content-between p-2 ${(`${col.value}`.split(' ')[1]==='PM'?'bg-primary text-white':`${col.isPropiedad?'text-primary':'text-black'}`)}`}>
-                                        <span style={{fontSize: '40px'}} className={`fw-bold ml-3 fs-1`}>{col.value}</span>
+                    
+                                        <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{col.value}</span>
+                    {/* {col.isPropiedad && <div className='pi pi-external-link m-0 cursor-pointer' />} */}
                   </li>
                 </td>
               ))}
@@ -63,7 +65,7 @@ export const FormatTable = ({ data, tFood }) => {
         <tr className='bg-primary'>
         {data[0].map((col) => (
           <td>
-          <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>{col.tFood}</span></li>
+          <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '40px'}}>{col.tFood}</span></li>
       </td>
               
             ))}

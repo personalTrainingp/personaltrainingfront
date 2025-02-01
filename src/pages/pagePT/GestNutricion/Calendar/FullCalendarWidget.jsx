@@ -98,7 +98,7 @@ const FullCalendarWidget = ({
   let newData=data.map(e=>{
     return {
       id: e.id,
-      title: e.tb_cliente.nombres_apellidos_cli,
+      title: e.tb_cliente?.nombres_apellidos_cli,
       id_cli: e.id_cli,
       id_detallecita: e.id_detallecita,
       start: new Date(e.fecha_init),

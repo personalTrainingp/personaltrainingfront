@@ -125,21 +125,6 @@ export const InformacionGeneralCliente = ({data}) => {
     <Toast ref={toast} />
     
     <Row>
-					{/* <Col xl={3} className="">
-						<div className="d-flex justify-content-center">
-							<img src={selectedFile} width={180} height={180} />
-						</div>
-						<input 
-                            type="file" 
-                            className="m-2 fs-6"
-                            accept="image/png, image/jpeg, image/jpg"
-                            name="imgAvatar_BASE64"
-                            onChange={(e)=>{
-                                onRegisterFileChange(e)
-                                ViewDataImg(e)
-                            }} 
-                            />
-					</Col> */}
 					<Col xl={12} className="">
 						<form>
                             <Row>

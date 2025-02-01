@@ -48,7 +48,7 @@ export const ModalTableSocios = ({clickDataSocios, avatarProgramaSelect, clickDa
                         <tr>
                             <th className='text-white p-1 fs-3'>Socio</th>
                             <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'><SymbolSoles numero={''} isbottom={false}/></div></th>
-                            <th className='text-white p-1 fs-3'>Sesiones vendidas</th>
+                            <th className='text-white p-1 fs-3'>Sesiones</th>
                             <th className='text-white p-1 fs-3'>FECHA DE NACIMIENTO</th>
                             <th className='text-white p-1 fs-3'>EDAD</th>
                             {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>Tarifas</div></th> */}

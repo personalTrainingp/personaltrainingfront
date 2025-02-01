@@ -38,7 +38,7 @@ export const ItemTablePgm = ({arrayEstadistico, labelParam, avatarPrograma, isVi
                     }
                     
                     <th className='text-white text-center'>SOCIOS </th>
-                    <th className='text-white text-center'>%SOCIOS </th>
+                    <th className='text-white text-center'>% SOCIOS </th>
                 </tr>
             </thead>
             <tbody>

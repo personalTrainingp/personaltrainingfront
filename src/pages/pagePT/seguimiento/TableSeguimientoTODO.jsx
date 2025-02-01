@@ -92,7 +92,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 			// console.log(data, "getCustomers");
 			
             // Crea una copia del objeto antes de modificarlo
-			const labelFactura =  d.tb_ventum.id_tipoFactura===701?arrayFacturas.find(f=>f.value==d.tb_ventum.id_tipoFactura)?.label:'VENTA'
+			const labelFactura =  arrayFacturas.find(f=>f.value ===d.tb_ventum.id_tipoFactura)?.label
             let newItem = { ...d };
 			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st*5} Sesiones | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')}`;
 			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
@@ -302,7 +302,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 					onSelectionChange={(e) => setSelectedCustomers(e.value)}
 					filters={filters}
 					filterDisplay="menu"
-					globalFilterFields={["tb_ventum.tb_cliente.nombres_apellidos_cli", "distrito", "tb_ventum.tb_cliente.email_cli", "ProgramavsSemana", "dias"]}
+					globalFilterFields={["labelFactura", "tb_ventum.tb_cliente.nombres_apellidos_cli", "distrito",  "ProgramavsSemana", "dias"]}
 					emptyMessage="Sin clientes."
 					currentPageReportTemplate="Mostrando {first} HASTA {last} DE {totalRecords} ITEMS"
 				>

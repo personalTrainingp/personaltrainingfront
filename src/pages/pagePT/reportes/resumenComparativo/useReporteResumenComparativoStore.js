@@ -115,6 +115,7 @@ export const useReporteResumenComparativoStore = () => {
 		const agruparxIdPgm = Object.values(
 			data.ventasProgramas.reduce((acc, item) => {
 				const { id_pgm, detalle_ventaMembresium, tb_image } = item;
+				console.log(detalle_ventaMembresium);
 
 				// Inicializar el acumulador para el id_pgm si no existe
 				if (!acc[id_pgm]) {
@@ -214,7 +215,7 @@ export const useReporteResumenComparativoStore = () => {
 				tb_image: [],
 			}
 		);
-		console.log(data);
+		console.log({ ventasUnificadas });
 
 		// console.log(
 		// 	agruparPorIdPgmMarcacions(dataMarcaciones),

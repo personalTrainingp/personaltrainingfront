@@ -6,6 +6,23 @@ function formatDateToSQLServerWithDayjs(date) {
 	// .format('YYYY-MM-DD HH:mm:ss.SSS0000 +00:00');
 }
 
+const agruparPorIdPgm = (data) => {
+	return data.reduce((resultado, item) => {
+		// Buscar si ya existe un grupo con el mismo id_pgm
+		let grupo = resultado.find((g) => g.id_pgm === item.id_pgm);
+
+		if (!grupo) {
+			// Si no existe, crear uno nuevo
+			grupo = { id_pgm: item.id_pgm, items: [] };
+			resultado.push(grupo);
+		}
+
+		// Agregar el objeto {venta_venta, id_pgm} al grupo
+		grupo.items.push({ venta_venta: item.venta_venta, id_pgm: item.id_pgm });
+
+		return resultado;
+	}, []);
+};
 const filterMembresias = (membresias, rangeDate) => {
 	const [rangeStart, rangeEnd] = rangeDate.map((date) => new Date(date)); // Convertimos las fechas del rango a objetos Date
 
@@ -22,6 +39,7 @@ const filterMembresias = (membresias, rangeDate) => {
 export const useReporteDemograficoxMembresiaStore = () => {
 	const [dataMembresiasxPrograma, setdataMembresiasxPrograma] = useState([]);
 	const [isLoadingData, setisLoadingData] = useState(false);
+	const [dataIdPgmCero, setdataIdPgmCero] = useState({});
 	const obtenerDemografiaMembresia = async (RANGE_DATE) => {
 		try {
 			setisLoadingData(false);
@@ -33,6 +51,8 @@ export const useReporteDemograficoxMembresiaStore = () => {
 					],
 				},
 			});
+
+			const dataTransferencias = [];
 			const membresiasFiltradas = filterMembresias(data.vm, RANGE_DATE);
 
 			const agruparxIdPgm = Object.values(
@@ -111,7 +131,41 @@ export const useReporteDemograficoxMembresiaStore = () => {
 					return acc;
 				}, {})
 			);
+
+			const ventasUnificadas = agruparxIdPgm.map((venta) => {
+				// Busca las transferencias asociadas al id_pgm
+				const transferencia = agruparPorIdPgm(dataTransferencias).find(
+					(transferencia) => transferencia.id_pgm === venta.id_pgm
+				);
+				// const marcacionesxMembresia = agruparPorIdPgmMarcacions(dataMarcaciones).find(
+				// 	(marcacion) => marcacion.id_pgm === venta.id_pgm
+				// );
+				// Agrega la propiedad ventas_transferencias al objeto venta
+				return {
+					...venta,
+					ventas_transferencias: transferencia ? transferencia.items : [],
+					// marcacionesxMembresia: marcacionesxMembresia ? marcacionesxMembresia.items : [],
+				};
+			});
+			// Crear el objeto id_pgm: 0 que suma todos los demás
+			const totalObject = ventasUnificadas?.reduce(
+				(total, current) => {
+					total.tarifa_total += current.tarifa_total;
+					total.sesiones_total += current.sesiones_total;
+					total.detalle_ventaMembresium.push(...current.detalle_ventaMembresium);
+					total.tb_image.push(...current.tb_image);
+					return total;
+				},
+				{
+					id_pgm: 0,
+					tarifa_total: 0,
+					sesiones_total: 0,
+					detalle_ventaMembresium: [],
+					tb_image: [],
+				}
+			);
 			setdataMembresiasxPrograma(agruparxIdPgm);
+			setdataIdPgmCero(totalObject);
 			setisLoadingData(true);
 		} catch (error) {
 			console.log(error);
@@ -120,6 +174,7 @@ export const useReporteDemograficoxMembresiaStore = () => {
 	return {
 		obtenerDemografiaMembresia,
 		dataMembresiasxPrograma,
+		dataIdPgmCero,
 		isLoadingData,
 	};
 };

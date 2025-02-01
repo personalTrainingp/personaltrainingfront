@@ -26,6 +26,7 @@ import { onSetViewSubTitle } from '@/store'
 import { ItemTablePgm } from './ItemTablePgm'
 import { ItemCardPgm } from './ItemCardPgm'
 import { FormatTable } from './Component/FormatTable'
+import { onSetDataView } from '@/store/data/dataSlice'
 
 dayjs.extend(utc);
 export const ResumenComparativo = () => {
@@ -37,12 +38,13 @@ export const ResumenComparativo = () => {
             obtenerAsesoresFit,
             obtenerClientesConMarcacion } = useReporteResumenComparativoStore()
 
-    const { RANGE_DATE } = useSelector(e=>e.DATA)
+    const dispatch = useDispatch()
+    const { RANGE_DATE, dataView } = useSelector(e=>e.DATA)
     const [isOpenModalSocio, setisOpenModalSocio] = useState(false)
     const [avatarProgramaSelect, setavatarProgramaSelect] = useState({})
     const [clickDataSocios, setclickDataSocios] = useState([])
     const [clickDataLabel, setclickDataLabel] = useState('')
-    
+    // COuseSelector(e=>e.DATA)
     useEffect(() => {
         if(RANGE_DATE[0]===null) return;
         if(RANGE_DATE[1]===null) return;
@@ -54,10 +56,13 @@ export const ResumenComparativo = () => {
     const onOpenModalSOCIOS = (d, avatarPrograma=[], label)=>{
         // console.log(d, "d???????????");
         setavatarProgramaSelect(avatarPrograma)
+        dispatch(onSetDataView(d))
         setclickDataSocios(d)
         setclickDataLabel(label)
         setisOpenModalSocio(true)
     }
+    console.log({dataView});
+    
     const onCloseModalSOCIOS = ()=>{
         setisOpenModalSocio(false)
     }
@@ -145,7 +150,7 @@ export const ResumenComparativo = () => {
               value,
               items,
             };
-          });
+          }).sort((a,b)=>b.items.length-a.items.length);
     }
     function agruparPorEstCivil(detalledata) {
         return arrayEstadoCivil?.map(({ label, value, order }) => {
@@ -290,7 +295,8 @@ export const ResumenComparativo = () => {
       }
 
 
-
+      console.log({dataGroup});
+      
     const dataAlter = dataGroup.map(d=>{
         const avatarPrograma = {
             urlImage: `${config.API_IMG.LOGO}${d.tb_image[0].name_image}`,
@@ -320,6 +326,7 @@ export const ResumenComparativo = () => {
           const ventasSinCeros =  agruparPorVenta(test).filter(f=>f.tarifa_monto!==0)
           const TransferenciasEnCeros = d.ventas_transferencias
         const TraspasosEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===701)
+        const CanjesEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===703)
         const membresiasNuevas = ventasSinCeros.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692)
         const membresiasRenovadas = ventasSinCeros.filter(g=>g.tb_ventum.id_origen===691)
         const membresiasReinscritos = ventasSinCeros.filter(g=>g.tb_ventum.id_origen===692)
@@ -329,9 +336,9 @@ export const ResumenComparativo = () => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
             return [
-            { header: "SEXO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "GENERO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-            { header: "%socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 ]
             }
             )
@@ -341,7 +348,7 @@ export const ResumenComparativo = () => {
                 return [
                 { header: "DISTRITO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
                 { header: "SOCIOS", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-                { header: "%SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+                { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                     ]
                 }
                 )
@@ -352,7 +359,7 @@ export const ResumenComparativo = () => {
             { header: "sesiones", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
             { header: "SEMANAS", value: grupo.propiedad/5,isPropiedad: true, tFood: '' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-            { header: "%socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 ]
             }
             )
@@ -362,7 +369,7 @@ export const ResumenComparativo = () => {
             return [
             { header: "EST. CIVIL", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-            { header: "%socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 ]
             }
             )
@@ -373,7 +380,7 @@ export const ResumenComparativo = () => {
                 return [
                 { header: "PROCEDENCIA", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
                 { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-                { header: "%socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+                { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                     ]
                 }
                 )
@@ -384,21 +391,45 @@ export const ResumenComparativo = () => {
                 return [
                 { header: "ASESORES", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
                 { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-                { header: "%socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+                { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                     ]
                 }
                 )
                 
-            const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros)
-            const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>a.items.length > b.items.length)
+            const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros).map((grupo, index, array) => {
+                return [
+                    { header: "PROMOCION", isTime: true, value: grupo.propiedad, isPropiedad: true, tFood: '' },
+                    { header: <>SEMANAS<br/>(sesiones)</>, value: <div style={{fontSize: '26px'}}>{grupo.semanas} SEMANAS<br/> {grupo.sesiones} SESIONES</div>, items: grupo.items, tFood: '' },
+                    { header: <div className='d-flex justify-content-center'>S/.</div>, value: <NumberFormatMoney amount={grupo.tarifaCash_tt}/>, tFood: '' },
+                    { header: <div className='d-flex justify-content-center'>FECHA</div>, value: <div className='text-primary'>INICIO: {grupo.semanas}<br/> FIN: {grupo.sesiones}</div>, items: grupo.items },
+                    // { header: "FIN", isSummary: true, value: `${(((grupo.items.length/aforo)*100)).toFixed(2)}`, items: grupo.items, tFood: '100 h' },
+                    // { header: "socios", isSummary: true, value: grupo.items.length, items: grupo.items },
+                  ]
+            })
+            
+            const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>a.items.length > b.items.length).map((grupo, index, array) => {
+                const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
+                const sumaTotalFem = array.reduce((total, item) => total + (item?.sexo[0].items.length || 0), 0)
+                const sumaTotalMasc = array.reduce((total, item) => total + (item?.sexo[1].items.length || 0), 0)
+                const sumaXITEMS = grupo.items.length
+                console.log({array, sumaTotalFem, sumaTotalMasc}, "array en rango de edad");
+                
+                return [
+                    { header: "RANGO DE EDAD", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+                    { header: "SOCIOS", isSummary: true, value: grupo.items.length, items: grupo.items, tFood: `${sumaTotal.toFixed(0)}` },
+                    { header: "FEM", isSummary: true, value: grupo.sexo[0].items.length, items: grupo.items, tFood: `${sumaTotalFem.toFixed(0)}` },
+                    { header: `MASC`, isSummary: true, value: grupo.sexo[1].items.length, tFood: sumaTotalMasc },
+                  ]
+            })
             const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
         const agrupadoPorHorario = agruparPorHorarios(ventasSinCeros).sort((a,b)=>b.items.length-a.items.length).map((grupo, index, array) => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
             return [
                 { header: "Horario", isTime: true, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
-                { header: "socios", isSummary: true, value: grupo.items.length, items: grupo.items },
-                { header: "% POR HORARIO", isSummary: true, value: `${(((grupo.items.length/aforo)*100)).toFixed(2)}`, items: grupo.items, tFood: '100 h' },
+                { header: "socios PAGANTES", isSummary: true, value: grupo.items.length, items: grupo.items },
+                { header: "CUPOS DISPONIBLES", isSummary: true, value: aforo-grupo.items.length, items: grupo.items },
+                { header: "% OCUPADO", isSummary: true, value: `${(((grupo.items.length/aforo)*100)).toFixed(2)}`, items: grupo.items, tFood: '100 h' },
                 { header: `% PENDIENTE`, isSummary: true, value: `${(100-((grupo.items.length/aforo)*100)).toFixed(2)}`, tFood: '100 p' },
               ]
         })
@@ -411,6 +442,7 @@ export const ResumenComparativo = () => {
         // const tarifas
         // console.log({activosDeVentasPorSemanaMarcacions, agruparPorRangoEdades, agrupadoPorEstadoCivil, agrupadoPorTarifas, agrupadoPorSesiones, sumaDeVentasEnSoles, sumaDeSesiones, porSexo, porDistrito, ventasEnCeros, ventasSinCeros, membresiasNuevas, membresiasRenovadas, membresiasReinscritos}, "alter");
         return {
+            CanjesEnCero,
             aforo,
             agrupadoPorVendedores,
             agrupadoPorHorario,
@@ -460,6 +492,7 @@ export const ResumenComparativo = () => {
         const ventasSinCeros = agruparPorVenta(test)?.filter(f=>f.tarifa_monto!==0)
         const TransferenciasEnCeros = d.ventas_transferencias
         const TraspasosEnCero = ventasEnCeros?.filter(f=>f.tb_ventum.id_tipoFactura===701)
+        const clientesCanjes = ventasEnCeros?.filter(f=>f.tb_ventum.id_tipoFactura===703)
         const membresiasNuevas = ventasSinCeros?.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692)
         const membresiasRenovadas = ventasSinCeros?.filter(g=>g.tb_ventum.id_origen===691)
         const membresiasReinscritos = ventasSinCeros?.filter(g=>g.tb_ventum.id_origen===692)
@@ -473,12 +506,15 @@ export const ResumenComparativo = () => {
         const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros)
         const agrupadoPorHorario = agruparPorHorarios(ventasSinCeros)
         const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>a.items.length > b.items.length)
+        // const clientesCanjes = []
         // const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
         const avataresDeProgramas = dataIdPgmCero.tb_image
         // const montoTotal_ACTIVO = []
         const agrupadoPorProcedencia = agruparPorProcedencia(ventasSinCeros)
         console.log({ agrupadoPorVendedores, agruparPorRangoEdades, agrupadoPorEstadoCivil, agrupadoPorTarifas, agrupadoPorSesiones, sumaDeVentasEnSoles, sumaDeSesiones, porSexo, porDistrito, ventasEnCeros, ventasSinCeros, membresiasNuevas, membresiasRenovadas, membresiasReinscritos}, "alter");
         return {
+            clientesCanjes,
+            // clientesCanjes,
             agrupadoPorHorario,
             agrupadoPorVendedores,
             agrupadoPorProcedencia,
@@ -523,6 +559,10 @@ export const ResumenComparativo = () => {
         {
             propiedad: 'TRANSFERENCIAS (COSTO CERO)',
             items: []
+        },
+        {
+            propiedad: 'CANJES',
+            items: dataAlterIdPgmCero?.map(f=>f.clientesCanjes).flat()
         }
     ]
     
@@ -554,7 +594,7 @@ export const ResumenComparativo = () => {
                                                 <tbody>
                                                             <tr>
                                                                     <td className=''>
-                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>venta de <br/> membresias:</span></li>
+                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>venta de <br/> membresias</span></li>
                                                                     </td>
                                                                     <td>
                                                                         <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d.ventasSinCeros.length}</span>
@@ -562,13 +602,13 @@ export const ResumenComparativo = () => {
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Venta <br/> acumulada:</span></li>
+                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Venta <br/> acumulada</span></li>
                                                                 </td>
                                                                 <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles}/>}/></span></td>
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Ticket <br/> medio:</span></li>
+                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Ticket <br/> medio</span></li>
                                                                 </td>
                                                                 <td> 
                                                                 <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={(d.sumaDeVentasEnSoles/d.ventasSinCeros.length).toFixed(2)}/>}/></span>
@@ -576,7 +616,7 @@ export const ResumenComparativo = () => {
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Sesiones <br/> vendidas:</span></li>
+                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Sesiones <br/> vendidas</span></li>
                                                                 </td>
                                                                 <td> 
                                                                 <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><NumberFormatter amount={d.sumaDeSesiones}/></span>
@@ -584,7 +624,7 @@ export const ResumenComparativo = () => {
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>PRECIO <br/> por sesion:</span></li>
+                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>PRECIO <br/> por sesion</span></li>
                                                                 </td>
                                                                 <td> 
                                                                 <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles/d.sumaDeSesiones}/>}/></span>
@@ -714,7 +754,7 @@ export const ResumenComparativo = () => {
                                                 <tbody>
                                                             <tr onClick={()=>onOpenModalSOCIOS(d.membresiasNuevas, d.avatarPrograma, `NUEVOS`)}>
                                                                     <td className=''>
-                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>NUEVOS:</span></li>
+                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>NUEVOS</span></li>
                                                                     </td>
                                                                     <td>
                                                                         <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d.membresiasNuevas.length}</span>
@@ -722,13 +762,13 @@ export const ResumenComparativo = () => {
                                                             </tr>
                                                             <tr onClick={()=>onOpenModalSOCIOS(d.membresiasRenovadas, d.avatarPrograma, `RENOVACIONES`)}>
                                                                 <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>RENOVACIONES:</span></li>
+                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>RENOVACIONES</span></li>
                                                                 </td>
                                                                 <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.membresiasRenovadas.length}</span></td>
                                                             </tr>
                                                             <tr onClick={()=>onOpenModalSOCIOS(d.membresiasReinscritos, d.avatarPrograma, `REINSCRIPCIONES`)}>
                                                                 <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>REINSCRIPCIONES:</span></li>
+                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>REINSCRIPCIONES</span></li>
                                                                 </td>
                                                                 <td> 
                                                                 <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.membresiasReinscritos.length}</span>
@@ -736,7 +776,7 @@ export const ResumenComparativo = () => {
                                                             </tr>
                                                             <tr onClick={()=>onOpenModalSOCIOS(d.TraspasosEnCero, d.avatarPrograma, `TRASPASOS`)}>
                                                                 <td>
-                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRASPASOS PT:</span></li>
+                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRASPASOS PT</span></li>
                                                                 </td>
                                                                 <td> 
                                                                 <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.TraspasosEnCero.length}</span>
@@ -744,10 +784,18 @@ export const ResumenComparativo = () => {
                                                             </tr>
                                                             <tr onClick={()=>onOpenModalSOCIOS(d.TransferenciasEnCeros, d.avatarPrograma, `TRANSFERENCIAS`)}>
                                                                 <td>
-                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRANSFERENCIAS <br/>(COSTO CERO):</span></li>
+                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRANSFERENCIAS <br/>(COSTO CERO)</span></li>
                                                                 </td>
                                                                 <td> 
                                                                 <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.TransferenciasEnCeros.length}</span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr onClick={()=>onOpenModalSOCIOS(d.CanjesEnCero, d.avatarPrograma, `CANJES`)}>
+                                                                <td>
+                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>CANJES <br/>(COSTO CERO)</span></li>
+                                                                </td>
+                                                                <td> 
+                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'>{d.CanjesEnCero.length}</span>
                                                                 </td>
                                                             </tr>
                                                             
@@ -804,7 +852,7 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     {/* <FormatTable data={d.agrupadoPorHorario}/> */}
                     <ItemCardPgm aforo={d.aforo} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorario} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
                 </Col>
@@ -832,7 +880,7 @@ export const ResumenComparativo = () => {
                 return (
                 <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
                     {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-                    <ItemCardPgm aforo={d.aforo} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.porSexo} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SEXO'}/>
+                    <ItemCardPgm aforo={d.aforo} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.porSexo} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'GENERO'}/>
                 </Col>
             )
             }
@@ -844,7 +892,7 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                    <TableTotal titleH1={''} isTime avataresDeProgramas={d.avataresDeProgramas} labelTotal={'SEXO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porSexo}/>
+                    <TableTotal titleH1={''} isTime avataresDeProgramas={d.avataresDeProgramas} labelTotal={'GENERO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porSexo}/>
                 </Col>
             )
             }
@@ -887,93 +935,13 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVORANGODEEDAD/SEXOPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important'}} xxl={4}>
-                    <Card>
-                        <Card.Header className=' align-self-center'>
-                            {/* <Card.Title>
-                                <h4>{d.name_pgm}</h4>
-                            </Card.Title> */}
-                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
-                            
-                        </Card.Header>
-                        <Card.Body style={{paddingBottom: '1px !important'}}>
-                            <br/>
-                            <Table
-                                                // style={{tableLayout: 'fixed'}}
-                                                className="table-centered mb-0"
-                                                // hover
-                                                striped
-                                                responsive
-                                            >
-                                                
-                                                <thead className='bg-primary fs-3'>
-                                                    <tr>
-                                                        <th className='text-white '>RANGO EDAD </th>
-                                                        <th className='text-white '> SOCIOS </th>
-                                                        <th className='text-white '>FEMENINO </th>
-                                                        <th className='text-white '>MASCULINO </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {
-                                                        d.agruparPorRangoEdades.map(p=>{
-                                                            return (
-                                                                <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `RANGO DE EDAD - ${p.propiedad}`)}>
-                                                                        <td className=''>
-                                                                            <div className='d-flex justify-content-end pr-5'>
-                                                                                <span className='fw-bold text-primary fs-1 text-center ml-4'>{p.propiedad}</span>
-                                                                            </div>
-
-                                                                        </td>
-                                                                        <td className=''>
-                                                                            <div className='d-flex justify-content-end' style={{width: '45px'}}>
-                                                                            <span style={{fontSize: '40px'}} className='fw-bold fs-1 ml-4 '>{p.items.length}</span>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div className='d-flex justify-content-end' style={{width: '120px'}}>
-                                                                                <span className='fw-bold fs-1 mr-5'>{p.sexo[0].items.length}</span>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td className=''>
-                                                                            <div className='d-flex justify-content-end' style={{width: '120px'}}>
-                                                                                <span style={{fontSize: '40px'}} className='fw-bold fs-1 mr-5'>{p.sexo[1].items.length}</span>
-                                                                            </div>
-                                                                        </td>
-                                                                </tr>
-                                                            )
-                                                        })
-                                                    }
-                                                </tbody>
-                                                
-                                        <tr className='bg-primary text-white'>
-                                                        <td className=''>
-                                                                                <span className='fw-bold fs-2 text-center ml-4 text-white'>TOTAL</span>
-                                                                        </td>
-                                                                        <td className=''>
-                                                                            <div className='bg-danger d-flex justify-content-end' style={{width: '85px'}}>
-                                                                            <span style={{fontSize: '40px'}} className='fw-bold fs-2 text-white'>{d.agruparPorRangoEdades.reduce((acc, curr) => acc + curr.items.length, 0)}</span>
-
-                                                                            </div>
-                                                                        </td>
-                                                                        <td className=''>
-                                                                            <div className='d-flex justify-content-end' style={{width: '85px'}}>
-                                                                                <span style={{fontSize: '40px'}} className='fw-bold fs-2 text-white ml-5'>{d.agruparPorRangoEdades.reduce((acc, curr) => acc + curr.sexo[0].items.length, 0)}</span>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td className=''>
-                                                                            <div className='d-flex justify-content-end' style={{width: '85px'}}>
-                                                                                <span style={{fontSize: '40px'}} className='fw-bold fs-2 text-white ml-5'>{d.agruparPorRangoEdades.reduce((acc, curr) => acc + curr.sexo[1].items.length, 0)}</span>
-                                                                            </div>
-
-                                                                        </td>
-
-                                                        {/* 
-                                                        */}
-                                                    </tr>
-                                            </Table>
-                        </Card.Body>
-                    </Card>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
+                    arrayEstadistico={d.agruparPorRangoEdades} 
+                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
+                    // isViewSesiones={true} 
+                    labelParam={'RANGO DE EDAD'}/>
                 </Col>
             )
             }
@@ -1024,7 +992,7 @@ export const ResumenComparativo = () => {
         },
         {
             isComparative: true,
-            title: 'COMPARATIVO ASESORES',
+            title: 'COMPARATIVO VENTAS ASESORES',
             id: 'COMPARATIVOASESORES',
             HTML: dataAlter.map(d=>{
                 return (
@@ -1041,7 +1009,7 @@ export const ResumenComparativo = () => {
             )
         },
         {
-            title: 'COMPARATIVO ASESORES - TOTAL',
+            title: 'COMPARATIVO VENTAS ASESORES - TOTAL',
             id: 'COMPARATIVOASESORESTOTAL',
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
@@ -1091,83 +1059,13 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVOPROMOCIONESPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important'}} xxl={4}>
-                    <Card>
-                        <Card.Header className=' align-self-center'>
-                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
-                            
-                        </Card.Header>
-                        <Card.Body>
-                            <br/>
-                            <Table
-                                                className="table-centered mb-0"
-                                                striped
-                                                responsive
-                                            >
-                                                
-                                                <thead className='bg-primary fs-3'>
-                                                    <tr>
-                                                        <th className='text-white text-center fs-3' style={{width: '590px'}}>{''} </th>
-                                                        <th className='text-white text-center fs-3'>SEM </th>
-                                                        <th className='text-white text-center fs-3'>SES </th>
-                                                        <th className='text-white text-center fs-3'> <SymbolSoles isbottom={false} fontSizeS={'16px'}/> </th>
-                                                        <th className='text-white text-center fs-3'> SOC </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {
-                                                        d.agrupadoPorTarifas.map(p=>{
-                                                            console.log(p);
-                                                            
-                                                            return (
-                                                                <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `TARIFA - ${p.propiedad}`)}>
-                                                                        <td className=''>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'>
-                                                                                <div>
-                                                                                    <span className='fw-bold text-primary fs-2'>{p.propiedad}</span>
-                                                                                    <br/>
-                                                                                    <span className='fw-bold fs-3'>INICIO: <br/> 01/11/2024</span>
-                                                                                    <br/>
-                                                                                    <span className='fw-bold fs-3'>FIN:<br/> 01/12/2024</span>
-                                                                                </div>
-                                                                            </li>
-                                                                        </td>
-                                                                        <td className=''>
-                                                                            {/* <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold fs-2'>{p.semanas}</span></li> */}
-                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.semanas}</span>
-                                                                        </td>
-                                                                        <td className=''>
-                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.semanas*5}</span>
-                                                                            {/* <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold fs-2'>{p.semanas*5}</span></li> */}
-                                                                        </td>
-                                                                        <td className=''>
-                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'><NumberFormatMoney amount={p.tarifaCash_tt}/></span>
-                                                                        </td>
-                                                                        <td>
-                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{p.items.length}</span>
-                                                                        </td>
-                                                                </tr>
-                                                            )
-                                                        })
-                                                    }
-                                                </tbody>
-                                                
-                                        <tr className='bg-primary'>
-                                                        <td>
-                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>TOTAL</span></li>
-                                                        </td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td> 
-                                                        <span style={{fontSize: '40px'}}  className=' d-flex justify-content-end align-content-end align-items-end text-white'>
-                                                            {d.agrupadoPorTarifas.reduce((acc, curr) => acc + curr.items.length, 0)}
-                                                            
-                                                        </span>
-                                                        </td>
-                                                    </tr>
-                                            </Table>
-                        </Card.Body>
-                    </Card>
+                    <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
+                    arrayEstadistico={d.agrupadoPorTarifas} 
+                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
+                    isViewSesiones={true} 
+                    labelParam={'PROMO'}/>
                 </Col>
             )
             }
@@ -1186,7 +1084,6 @@ export const ResumenComparativo = () => {
         )
         },
     ]
-    const dispatch = useDispatch()
     const [extractTitle, setextractTitle] = useState('')
     const sectionRefs = data.map(() =>
         useInView({
@@ -1200,8 +1097,6 @@ export const ResumenComparativo = () => {
             setextractTitle(data[index].title)
             // setActiveSection(sections[index].title);
             // dispatch(onSetViewSubTitle(`${data[index].title}`))
-
-            console.log(`Estás en: ${data[index].title}`);
           }
         });
       }, [sectionRefs]);
@@ -1221,7 +1116,7 @@ export const ResumenComparativo = () => {
     <Row>
         {data.map((section, index) => (
             <Col xxl={12} ref={sectionRefs[index].ref}>
-            <Row>
+            <Row className='d-flex justify-content-center'>
                 <br/>
         {/* <h1 className='pt-5' style={{fontSize: '60px'}}>{section.title}</h1> */}
                     {section.HTML}

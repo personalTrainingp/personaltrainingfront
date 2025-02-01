@@ -13,26 +13,23 @@ const registerExRegalos ={
     dias_habiles: 1,
     observacion: '',
 }
-const valorDef = {
-    tb_ProgramaTraining:'', 
-    tb_semana_training:'', 
-    fec_inicio_mem:'', 
-    fec_fin_mem: ''
-}
-export const ModalExtensionRegalo = ({show, onHide, id_cli, dataUltimaMembresia}) => {
+export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
     const {formState, dias_habiles, observacion, onResetForm, onInputChange, onInputChangeReact} = useForm(registerExRegalos)
-    const { postExtension } = useExtensionStore()
+    const { postExtension, obtenerUltimaMembresiaxIdCli, dataUltimaMembresia } = useExtensionStore()
     
     const [loadingUltimaMembresia, setloadingUltimaMembresia] = useState(false)
-	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia[0]||valorDef
+	// const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia[0]||valorDef
     const cancelarExtensionRegalo = ()=>{
         onHide()
         onResetForm()
     }   
+    useEffect(() => {
+            obtenerUltimaMembresiaxIdCli(id_cli)
+    }, [])
     const submitExtensionRegalo = (e)=>{
         e.preventDefault()
-        postExtension(formState, 'REG', dataUltimaMembresia.id, fec_inicio_mem, fec_fin_mem)
-        console.log(formState);
+        // postExtension(formState, 'REG', dataUltimaMembresia.id, fec_inicio_mem, fec_fin_mem)
+        console.log(formState, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles));
         cancelarExtensionRegalo()
     }
   return (
@@ -45,65 +42,56 @@ export const ModalExtensionRegalo = ({show, onHide, id_cli, dataUltimaMembresia}
         className="p-fluid"
         onHide={cancelarExtensionRegalo}
         >
-            {
-                (loadingUltimaMembresia||id_cli)?(
-                    <>
-                        <form onSubmit={submitExtensionRegalo}>
-                            <Row>
-                                <Col>
-                                    <div className="field">
-                                        <label htmlFor="dias_habiles" className="font-bold">
-                                            Dias*
-                                        </label>
-                                        <InputText
-                                            value={dias_habiles}
-                                            name='dias_habiles'
-                                            onChange={onInputChange}
-                                            max={1}
-                                            required
-                                            autoFocus
-                                        />
-                                    </div>
-                                </Col>
-                                <Col lg={12}>
-                                    <div className="field">
-                                        <label htmlFor="observacion" className="font-bold">
-                                            Observacion
-                                        </label>
-                                        <InputTextarea
-                                            id="observacion"
-                                            value={observacion}
-                                            name='observacion'
-                                            onChange={onInputChange}
-                                            autoFocus
-                                            rows={3}
-                                            cols={20}
-                                        />
-                                    </div>
-                                </Col>
-                                <Col lg={6}>
-                                <Row>
-                                    <Col lg={6}>
-                                        {/* <Button label="Cancelar" icon="pi pi-times" severity="danger" text /> */}
-                                        <Button label="Cancelar" icon="pi pi-times" severity="danger" outlined onClick={cancelarExtensionRegalo} />
-                                    </Col>
-                                    <Col lg={6}>
-                                        <Button label="Guardar" icon="pi pi-check" severity='success' type='submit' />
-                                    </Col>
-                                </Row>
-                                </Col>
-                            </Row>
-                            <br/>
-                            <div><strong>ULTIMA MEMBRESIA: </strong>{tb_ProgramaTraining?.name_pgm} | {tb_semana_training?.semanas_st} SEMANAS</div>
-                            <div><strong>FECHA EN LA QUE SE TERMINA SU MEMBRESIA: </strong><DateMask date={sumarDiasHabiles(fec_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
-                        </form>
-                    </>
-                ):(
-                    <>
-                    Cargando...
-                    </>
-                )
-            }
+          <form onSubmit={submitExtensionRegalo}>
+          <Row>
+                                          <Col>
+                                              <div className="field">
+                                                  <label htmlFor="dias_habiles" className="font-bold">
+                                                      Dias*
+                                                  </label>
+                                                  <InputText
+                                                      value={dias_habiles}
+                                                      name='dias_habiles'
+                                                      onChange={onInputChange}
+                                                      max={1}
+                                                      required
+                                                      autoFocus
+                                                  />
+                                              </div>
+                                          </Col>
+                                          <Col lg={12}>
+                                              <div className="field">
+                                                  <label htmlFor="observacion" className="font-bold">
+                                                      Observacion
+                                                  </label>
+                                                  <InputTextarea
+                                                      id="observacion"
+                                                      value={observacion}
+                                                      name='observacion'
+                                                      onChange={onInputChange}
+                                                      autoFocus
+                                                      rows={3}
+                                                      cols={20}
+                                                  />
+                                              </div>
+                                          </Col>
+                                          <Col lg={6}>
+                                          <Row>
+                                              <Col lg={6}>
+                                                  {/* <Button label="Cancelar" icon="pi pi-times" severity="danger" text /> */}
+                                                  <Button label="Cancelar" icon="pi pi-times" severity="danger" outlined onClick={cancelarExtensionRegalo} />
+                                              </Col>
+                                              <Col lg={6}>
+                                                  <Button label="Guardar" icon="pi pi-check" severity='success' type='submit' />
+                                              </Col>
+                                          </Row>
+                                          </Col>
+                                      </Row>
+                                      <br/>
+          <div><strong>ULTIMA MEMBRESIA: </strong>{dataUltimaMembresia[0]?.nombre_membresia} | {dataUltimaMembresia[0]?.semanas_membresia} SEMANAS</div>
+          <div><strong>FECHA EN LA QUE SE TERMINA SU MEMBRESIA: 
+            </strong> <DateMask date={sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
+          </form>
     </Dialog>
   )
 }

@@ -14,6 +14,7 @@ import { useInView } from 'react-intersection-observer'
 import { onSetViewSubTitle } from '@/store'
 import { ItemCardPgm } from './ItemCardPgm'
 import { ModalTableSocios } from './ModalTableSocios'
+import { TableTotal } from './TableTotal'
 dayjs.extend(utc);
 
 function agruparPorVenta(data) {
@@ -35,7 +36,9 @@ function agruparPorVenta(data) {
   }
   
   
-function agruparPorCliente(data) {
+function agruparPorCliente(data=[]) {
+  // console.log({data});
+  
         const filteredData = [];
     const seenClients = new Set();
 
@@ -182,7 +185,7 @@ return filteredData
 export const ResumenComparativo = () => {
     const loading = false;
     const { RANGE_DATE } = useSelector(e=>e.DATA)
-    const { dataMembresiasxPrograma, obtenerDemografiaMembresia } = useReporteDemograficoxMembresiaStore()
+    const { dataMembresiasxPrograma, dataIdPgmCero, obtenerDemografiaMembresia } = useReporteDemograficoxMembresiaStore()
         useEffect(() => {
             if(RANGE_DATE[0]===null) return;
             if(RANGE_DATE[1]===null) return;
@@ -232,16 +235,7 @@ export const ResumenComparativo = () => {
         //   })
           const aforo = d.id_pgm===2?36:d.id_pgm===3?10:d.id_pgm===4?14:''
           
-          const ventasEnCeros =  agruparPorVenta(d.detalle_ventaMembresium).filter(f=>f.tarifa_monto===0)
-          const ventasSinCeros =  agruparPorVenta(d.detalle_ventaMembresium).filter(f=>f.tarifa_monto!==0)
           const todoVentas = agruparPorVenta(agruparPorCliente(d.detalle_ventaMembresium))
-          const TransferenciasEnCeros = d.ventas_transferencias
-        const TraspasosEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===701)
-        const membresiasNuevas = ventasSinCeros.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692)
-        const membresiasRenovadas = ventasSinCeros.filter(g=>g.tb_ventum.id_origen===691)
-        const membresiasReinscritos = ventasSinCeros.filter(g=>g.tb_ventum.id_origen===692)
-        const sumaDeSesiones = ventasSinCeros.reduce((total, item) => total + (item?.tb_semana_training.sesiones || 0), 0)
-        const sumaDeVentasEnSoles = ventasSinCeros.reduce((total, item) => total + (item?.tarifa_monto || 0), 0)
         const porSexo = agruparPorSexo(todoVentas).map((grupo, index, array) => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
@@ -304,6 +298,46 @@ export const ResumenComparativo = () => {
             agrupadoPorRangoEdadSexo
         }
     })
+
+    
+    const dataAlterIdPgmCero =
+    [dataIdPgmCero]?.map(d=>{
+        const avatarPrograma = {
+            urlImage: 'TOTAL',
+        }
+          const todoVentas = agruparPorVenta(agruparPorCliente(d.detalle_ventaMembresium))
+        
+        const porSexo = agruparPorSexo(todoVentas)
+        const porDistrito= agruparPorDistrito(todoVentas)
+        // const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros)
+        // const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros)
+        const agrupadoPorEstadoCivil = agruparPorEstCivil(todoVentas)
+        // const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros)
+        const agrupadoPorHorario = agruparPorHorarios(todoVentas)
+        const agruparPorRangoEdades = agruparPorRangoEdad(todoVentas).sort((a,b)=>a.items.length > b.items.length)
+        const clientesCanjes = []
+        // const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
+        const avataresDeProgramas = dataIdPgmCero.tb_image
+        // const montoTotal_ACTIVO = []
+        // const agrupadoPorProcedencia = agruparPorProcedencia(ventasSinCeros)
+        // console.log({ agrupadoPorVendedores, agruparPorRangoEdades, agrupadoPorEstadoCivil, agrupadoPorTarifas, agrupadoPorSesiones, sumaDeVentasEnSoles, sumaDeSesiones, porSexo, porDistrito, ventasEnCeros, ventasSinCeros, membresiasNuevas, membresiasRenovadas, membresiasReinscritos}, "alter");
+        return {
+            // clientesCanjes,
+            // clientesCanjes,
+            agrupadoPorHorario,
+            // agrupadoPorVendedores,
+            // agrupadoPorProcedencia,
+            // activosDeVentasPorSemanaMarcacions,
+            agruparPorRangoEdades,
+            agrupadoPorEstadoCivil,
+            // agrupadoPorTarifas,
+            // agrupadoPorSesiones,
+            avatarPrograma,
+            porDistrito,
+            porSexo,
+            avataresDeProgramas
+        }
+    })
     
     const data = [
         {
@@ -324,6 +358,19 @@ export const ResumenComparativo = () => {
             }
             )
         },
+      //   {
+      //     isComparative: true,
+      //     title: 'SOCIOS TOTAL POR GENERO - RESUMEN',
+      //     id: 'COMPARATIVOSEXO',
+      //     HTML: dataAlterIdPgmCero.map(d=>{
+      //                     return(
+      //                         <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+      //                             <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'INSCRITOS POR CATEGORIA'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porSexo}/>
+      //                         </Col>
+      //                     )
+      //                 }
+      //             )
+      // },
         {
             isComparative: true,
             title: 'SOCIOS TOTAL POR ESTADO CIVIL',
