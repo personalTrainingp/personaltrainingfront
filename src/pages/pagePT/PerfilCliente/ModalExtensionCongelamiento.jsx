@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { DateMask } from '@/components/CurrencyMask';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
+import { useExtensionStore } from '@/hooks/hookApi/useExtensionStore';
 
  // Función para sumar días hábiles a una fecha
  const addBusinessDays = (date, daysToAdd) => {
@@ -39,7 +40,7 @@ import { helperFunctions } from '@/common/helpers/helperFunctions';
 const registerExCongelamiento ={
     extension_inicio: '',
     extension_fin: '',
-    dias_habiles: '',
+    dias_habiles: 0,
 }
 const valorDef = {
     tb_ProgramaTraining:'', 
@@ -47,18 +48,23 @@ const valorDef = {
     fec_inicio_mem:'', 
     fec_fin_mem: ''
 }
-export const ModalExtensionCongelamiento = ({show, onHide, id_cli, dataUltimaMembresia}) => {
+export const ModalExtensionCongelamiento = ({show, onHide, id_cli}) => {
     const {formState, extension_inicio, extension_fin, dias_habiles, observacion, img_prueba_extension, onResetForm, onInputChange, onInputChangeReact, onInputChangeFunction} = useForm(registerExCongelamiento)
     // const { obtenerUltimaMembresiaPorCliente, dataUltimaMembresia } = useTerminoStore()
     const [loadingUltimaMembresia, setloadingUltimaMembresia] = useState(false)
 	// const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
-	const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia[0]||valorDef
+    const { postExtension, obtenerUltimaMembresiaxIdCli, dataUltimaMembresia } = useExtensionStore()
+    useEffect(() => {
+obtenerUltimaMembresiaxIdCli(id_cli)
+    }, [])
+    
     const cancelarExtensionCongelamiento = ()=>{
         onHide()
         onResetForm()
     }
-    const submitExtensionCongelamiento = ()=>{
-
+    const submitExtensionCongelamiento = (e)=>{
+        e.preventDefault()
+        postExtension(formState.dias_habiles, formState.observacion, 'CON', dataUltimaMembresia[0].id_venta, formState.extension_inicio, formState.extension_fin)
         cancelarExtensionCongelamiento()
     }
     const productDialogFooter = (
@@ -82,7 +88,6 @@ export const ModalExtensionCongelamiento = ({show, onHide, id_cli, dataUltimaMem
       onInputChangeFunction("extension_fin", end)
     }
   }, [extension_inicio, dias_habiles]);
-  const { sumarDiasHabiles } = helperFunctions()
   return (
     <Dialog
         visible={show}
@@ -182,11 +187,43 @@ export const ModalExtensionCongelamiento = ({show, onHide, id_cli, dataUltimaMem
                 </Col>
             </Row>
             <br/>
-            <div><strong>Ultima membresia: </strong>{tb_ProgramaTraining?.name_pgm} | {tb_semana_training?.semanas_st} SEMANAS</div>
-            <div><strong>Fecha en la que termina su membresia: </strong><DateMask date={sumarDiasHabiles(fec_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
+            
+                      <div><strong>ULTIMA MEMBRESIA: </strong>{dataUltimaMembresia[0]?.nombre_membresia} | {dataUltimaMembresia[0]?.semanas_membresia} SEMANAS</div>
+                      <div><strong>FECHA EN LA QUE SE TERMINA SU MEMBRESIA: 
+                        </strong> <DateMask date={sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
         </form>
                 )
             }
     </Dialog>
   )
 }
+
+function sumarDiasHabiles(fecha, n_dia) {
+    if(!fecha){
+        return 'No fue posible cargar la fecha';
+    }
+  // Convertir la cadena de fecha a un objeto Date
+  let date = new Date(fecha);
+  
+  // Crear un arreglo de tamaño n_dia
+  let dias = Array.from({ length: n_dia }, (_, i) => i);
+
+  // Usar forEach para iterar sobre los días
+  dias.forEach(() => {
+    // Incrementar la fecha en un día
+    date.setDate(date.getDate() + 1);
+
+    // Obtener el día de la semana (0=Domingo, 1=Lunes, ..., 6=Sábado)
+    let diaSemana = date.getDay();
+
+    // Si el día es fin de semana (Sábado o Domingo), saltar hasta el lunes
+    if (diaSemana === 5) { // Sábado
+      date.setDate(date.getDate() + 2); // Saltar a lunes
+    } else if (diaSemana === 0) { // Domingo
+      date.setDate(date.getDate() + 1); // Saltar a lunes
+    }
+  });
+
+  // Retornar la nueva fecha en formato ISO 8601
+  return date.toISOString().split('T')[0];
+  }

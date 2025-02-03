@@ -1,11 +1,19 @@
 import { PTApi } from '@/common';
+import dayjs from 'dayjs';
 import { useState } from 'react';
-
+const obtenerMayorFechaExtensionFin = (data) => {
+	return data.reduce(
+		(max, item) =>
+			dayjs(item.extension_fin, 'YYYY-MM-DD').isAfter(dayjs(max)) ? item.extension_fin : max,
+		data[0]?.extension_fin || null
+	);
+};
 export const useExtensionStore = () => {
 	const [dataExtension, setdataExtension] = useState([]);
 	const [dataUltimaMembresia, setdataUltimaMembresia] = useState([]);
 	const postExtension = async (
-		formState,
+		dias_habiles,
+		observacion,
 		tipo_extension,
 		id_venta,
 		extension_inicio,
@@ -15,8 +23,9 @@ export const useExtensionStore = () => {
 			const { data } = await PTApi.post(
 				`/extension-membresia/post-extension/${tipo_extension}/${id_venta}`,
 				{
-					...formState,
-					extension_inicio,
+					dias_habiles,
+					observacion,
+					extension_inicio: dayjs.utc(extension_inicio).format('YYYY-MM-DD'),
 					extension_fin,
 				}
 			);
@@ -35,19 +44,20 @@ export const useExtensionStore = () => {
 	};
 	const obtenerUltimaMembresiaxIdCli = async (id_cli) => {
 		try {
-			console.log('entraaa');
-
 			const { data } = await PTApi.get(`/usuario/get-ultima-membresia-cliente/${id_cli}`);
-			console.log([data.ultimaMembresia]);
+			console.log(data, 'ddd');
 
 			const dataOrden = [data.ultimaMembresia]?.map((f) => {
 				return {
-					id: f.id,
+					id_venta: f.id,
 					nombre_membresia: f?.detalle_ventaMembresia[0].tb_ProgramaTraining.name_pgm,
 					sesiones_membresia: f.detalle_ventaMembresia[0].tb_semana_training.sesiones,
 					semanas_membresia: f.detalle_ventaMembresia[0].tb_semana_training.semanas_st,
 					fecha_inicio_mem: f.detalle_ventaMembresia[0].fec_inicio_mem,
-					fecha_fin_mem: f.detalle_ventaMembresia[0].fec_fin_mem,
+					fecha_fin_mem: obtenerMayorFechaExtensionFin(
+						f.detalle_ventaMembresia[0].tb_extension_membresia
+					),
+					// f.detalle_ventaMembresia[0].fec_fin_mem,
 				};
 			});
 			console.log('asdf');

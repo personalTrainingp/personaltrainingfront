@@ -26,6 +26,7 @@ import { Skeleton } from 'primereact/skeleton';
 import { Row } from 'react-bootstrap';
 import { BtnExportSeguimiento } from './BtnExportSeguimiento';
 import { arrayFacturas } from '@/types/type';
+import { useSeguimientoStore } from './useSeguimientoStore';
 dayjs.extend(utc);
 locale('es')
 
@@ -55,9 +56,11 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 	const [loading, setLoading] = useState(false);
 	const [selectedCustomers, setSelectedCustomers] = useState([]);
 	const { reporteSeguimiento, obtenerReporteSeguimiento, obtenerReporteSeguimientoTODO, viewSeguimiento, agrupado_programas, loadinData } = useReporteStore();
+	const { dataSeguimientos, obtenerTodoSeguimiento } = useSeguimientoStore()
 	const { dataView } = useSelector(e=>e.DATA)
 	useEffect(() => {
 		obtenerReporteSeguimientoTODO(id_empresa, isClienteActive)
+		obtenerTodoSeguimiento(id_empresa, isClienteActive)
 	  }, [])
 	const { diasLaborables, daysUTC } = helperFunctions();
 	const [filters, setFilters] = useState({

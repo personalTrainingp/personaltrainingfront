@@ -2,6 +2,7 @@ import { Button } from 'primereact/button'
 import React, { useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { ModalCambioPrograma } from './ModalCambioPrograma'
+import { PageBreadcrumb } from '@/components'
 
 export const ViewTableGestionCambioPrograma = () => {
     const [isOpenModalCambioPrograma, setisOpenModalCambioPrograma] = useState(false)
@@ -13,6 +14,7 @@ export const ViewTableGestionCambioPrograma = () => {
     }
   return (
     <Row>
+        <PageBreadcrumb title={'Cambio de programa'}/>
         <ModalCambioPrograma onHide={onCloseModalCambioPrograma} show={isOpenModalCambioPrograma}/>
         <Col xxl={1}>
         </Col>

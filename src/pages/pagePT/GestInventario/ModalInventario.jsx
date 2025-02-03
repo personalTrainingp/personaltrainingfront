@@ -15,7 +15,8 @@ const registerArticulo={
     observacion: '',
     descripcion: '',
     valor_total: 0,
-    id_lugar: 0
+    id_lugar: 0,
+    id: 0
 }
 const registerImgAvatar={
     imgAvatar_BASE64: ''
@@ -23,10 +24,7 @@ const registerImgAvatar={
 export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const [selectedAvatar, setselectedAvatar] = useState(null)
-    const onClickCancelModal = ()=>{
-        onHide()
-        onResetForm()
-    }
+    
     const resetAvatar = ()=>{
         setSelectedFile(sinAvatar)
     }
@@ -47,7 +45,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             onResetForm,
             onInputChangeReact
         } = useForm(data?data:registerArticulo)
-        
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
         useEffect(() => {
             obtenerArticulos(id_enterprice)
@@ -62,7 +59,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 // console.log("con");
                 
                 setshowLoading(true)
-                await actualizarArticulo(formState, data.id, selectedAvatar)
+                await actualizarArticulo(formState, data.id, selectedAvatar, id_enterprice)
                 setshowLoading(false)
                 // console.log("sin ");
                 // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
@@ -70,7 +67,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 return;
             }
             setshowLoading(true)
-            await startRegisterArticulos(formState, 599, selectedAvatar)
+            await startRegisterArticulos(formState, id_enterprice, selectedAvatar)
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()
@@ -85,8 +82,10 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             reader.readAsDataURL(file);
             setselectedAvatar(file)
         };
-        console.log(data);
-        
+        const onClickCancelModal = ()=>{
+            onResetForm()
+            onHide()
+        }
   return (
     <>
     {(showLoading)?(
@@ -94,10 +93,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         <ModalBody>
         <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
 				<span className="loader-box2"></span>
-                <br/>
-                <p className='fw-bold font-16'>
-                    Si demora mucho, comprobar su conexion a internet
-                </p>
 		</div>
         </ModalBody>
     </Modal> 

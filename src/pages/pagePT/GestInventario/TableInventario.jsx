@@ -102,7 +102,7 @@ export default function TableInventario({showToast, id_enterprice}) {
         setGlobalFilterValue(value);
     };
     // const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
-    const { obtenerArticulo, articulo } = useInventarioStore()
+    const { obtenerArticulo, articulo, setArticulo } = useInventarioStore()
     const [showLoading, setshowLoading] = useState(false)
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
@@ -292,11 +292,9 @@ export default function TableInventario({showToast, id_enterprice}) {
         )
     }
     const onOpenModalGastos = (e)=>{
-        // setgastoxID(undefined)
+        setArticulo(undefined)
         onOpenModalIvsG(e)
     }
-    console.log(customers);
-    
     return (
         <>
                     <div>

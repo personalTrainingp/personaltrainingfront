@@ -13,6 +13,7 @@ const registerExRegalos ={
     dias_habiles: 1,
     observacion: '',
 }
+
 export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
     const {formState, dias_habiles, observacion, onResetForm, onInputChange, onInputChangeReact} = useForm(registerExRegalos)
     const { postExtension, obtenerUltimaMembresiaxIdCli, dataUltimaMembresia } = useExtensionStore()
@@ -26,10 +27,12 @@ export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
     useEffect(() => {
             obtenerUltimaMembresiaxIdCli(id_cli)
     }, [])
+    console.log(dataUltimaMembresia);
+    
     const submitExtensionRegalo = (e)=>{
         e.preventDefault()
-        // postExtension(formState, 'REG', dataUltimaMembresia.id, fec_inicio_mem, fec_fin_mem)
-        console.log(formState, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles));
+        postExtension(formState.dias_habiles, formState.observacion, 'REG', dataUltimaMembresia[0].id_venta, dataUltimaMembresia[0].fecha_fin_mem, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles))
+        // console.log(...formState, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles));
         cancelarExtensionRegalo()
     }
   return (

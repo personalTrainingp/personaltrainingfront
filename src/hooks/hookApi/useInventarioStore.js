@@ -10,14 +10,15 @@ export const useInventarioStore = () => {
 	const [message, setmessage] = useState({ msg: '', ok: false });
 	const [isLoading, setIsLoading] = useState(false);
 	const [articulo, setArticulo] = useState({
-		producto: '',
-		marca: '',
-		cantidad: 0,
-		lugar_compra_cotizacion: '',
-		valor_unitario_depreciado: 0,
-		valor_unitario_actual: 0,
-		observacion: '',
-		descripcion: '',
+		// id: 0,
+		// producto: '',
+		// marca: '',
+		// cantidad: 0,
+		// lugar_compra_cotizacion: '',
+		// valor_unitario_depreciado: 0,
+		// valor_unitario_actual: 0,
+		// observacion: '',
+		// descripcion: '',
 	});
 	const startRegisterArticulos = async (formState, id_enterprice, selectedFile) => {
 		try {
@@ -80,7 +81,7 @@ export const useInventarioStore = () => {
 			console.log(error);
 		}
 	};
-	const actualizarArticulo = async (formState, id, selectedFile) => {
+	const actualizarArticulo = async (formState, id, selectedFile, id_enterprice) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, formState);
@@ -96,7 +97,7 @@ export const useInventarioStore = () => {
 			// console.log(id);
 			// dispatch(getProveedores(data));
 			// setmessage({ msg: data.msg, ok: data.ok });
-			obtenerArticulos(599);
+			obtenerArticulos(id_enterprice);
 			setIsLoading(false);
 			Swal.fire({
 				icon: 'success',
@@ -116,6 +117,7 @@ export const useInventarioStore = () => {
 	};
 	return {
 		startRegisterArticulos,
+		setArticulo,
 		obtenerArticulos,
 		obtenerArticulo,
 		EliminarArticulo,
