@@ -234,7 +234,7 @@ export default function TableInventario({showToast, id_enterprice}) {
     const valorUnitActualBodyTemplate = (rowData) => {
         return (
             <div className="d-flex align-items-end w-50 gap-2 justify-content-end font-24 border-0"  style={{width: '100px'}}>
-                <> <NumberFormatMoney amount={rowData.valor_unitario_depreciado}/></>
+                <> <NumberFormatMoney amount={rowData.costo_unitario}/></>
             </div>
         );
     };
@@ -278,7 +278,7 @@ export default function TableInventario({showToast, id_enterprice}) {
             
             <div className="d-flex font-24" >
                 <div className='text-right ' style={{marginLeft: '30px'}}>
-                    <NumberFormatMoney amount={rowData.valor_total_dolares}/>
+                    <NumberFormatMoney amount={rowData.costo_total_dolares}/>
                 </div>
             </div>
         )
@@ -287,7 +287,7 @@ export default function TableInventario({showToast, id_enterprice}) {
         return (
             
             <div className="flex align-items-center gap-2 font-24">
-                <span><NumberFormatMoney amount={rowData.valor_total}/></span>
+                <span><NumberFormatMoney amount={rowData.costo_total_soles}/></span>
             </div>
         )
     }
@@ -331,8 +331,8 @@ export default function TableInventario({showToast, id_enterprice}) {
                 {/* <Column header={<span className={'font-24'}>INVENTARIO</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/> */}
                 <Column header={<span className={'font-24'}>CANT. </span>} field='cantidad' filterField="cantidad" sortable style={{ minWidth: '5rem' }} body={cantidadBodyTemplate} />
                 <Column header={<span className={'font-24'}>UBICACION</span>} field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '10rem' }} sortable body={lugarBodyTemplate} filter/>
-                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolSoles isbottom={false}/></div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
-                <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO TOTAL <SymbolSoles isbottom={false}/></div>} field='valor_unitario_actual' filterField="valor_total" style={{ minWidth: '10rem' }} sortable body={valorTotalBodyTemplate} filter/>
+                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolSoles isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
+                <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO TOTAL <SymbolSoles isbottom={false}/></div>} field='costo_total_soles' filterField="costo_total_soles" style={{ minWidth: '10rem' }} sortable body={valorTotalBodyTemplate} filter/>
                 {/* <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. $</div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/> */}
                 <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO TOTAL $</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/>
                 <Column header={<span className={'font-24'}>DESCRIPCION</span>} field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>

@@ -179,7 +179,7 @@ export const TableEmpleados = ({id_empresa, id_estado}) => {
         
         return(
             <div className=''>
-                <Image className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="100" src={rowData.tb_images.length==0?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${rowData.tb_images[rowData.tb_images?.length-1]?.name_image}`}></Image>
+                <Image className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="100" src={rowData.tb_images?.length==0?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${rowData.tb_images[rowData.tb_images?.length-1]?.name_image}`}></Image>
             </div>
         )
     }
