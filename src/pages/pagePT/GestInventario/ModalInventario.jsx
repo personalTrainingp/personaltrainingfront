@@ -38,11 +38,9 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             producto,
             id_marca,
             cantidad,
-            lugar_compra_cotizacion,
-            valor_unitario_depreciado,
-            valor_unitario_actual,
-            valor_total,
-            observacion,
+            costo_total_dolares,
+            costo_total_soles,
+            costo_unitario,
             descripcion,
             id_lugar,
             onInputChange,  
@@ -207,29 +205,14 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                 </Col>
                                 <Col lg={4}>
                                     <div className="mb-4">
-                                        <label htmlFor="lugar_compra_cotizacion" className="form-label">
-                                            LUGAR DE COMPRA O COTIZACION
-                                        </label>
-                                        <input
-                                                className="form-control"
-                                                name="lugar_compra_cotizacion"
-                                                id="lugar_compra_cotizacion"
-                                                value={lugar_compra_cotizacion}
-                                                onChange={onInputChange}
-                                                placeholder=""
-                                            />
-                                    </div>
-                                </Col>
-                                <Col lg={4}>
-                                    <div className="mb-4">
-                                        <label htmlFor="valor_unitario_depreciado" className="form-label">
+                                        <label htmlFor="costo_unitario" className="form-label">
                                             VALOR UNIT. DEPRECIADO
                                         </label>
                                         <input
                                                 className="form-control"
-                                                name="valor_unitario_depreciado"
-                                                id="valor_unitario_depreciado"
-                                                value={valor_unitario_depreciado}
+                                                name="costo_unitario"
+                                                id="costo_unitario"
+                                                value={costo_unitario}
                                                 onChange={onInputChange}
                                                 placeholder=""
                                             />
@@ -237,14 +220,14 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                 </Col>
                                 <Col lg={4}>
                                     <div className="mb-4">
-                                        <label htmlFor="valor_total" className="form-label">
-                                            VALOR TOTAL
+                                        <label htmlFor="costo_total_soles" className="form-label">
+                                            VALOR TOTAL(soles)
                                         </label>
                                         <input
                                                 className="form-control"
-                                                name="valor_total"
-                                                id="valor_total"
-                                                value={valor_total}
+                                                name="costo_total_soles"
+                                                id="costo_total_soles"
+                                                value={costo_total_soles}
                                                 onChange={onInputChange}
                                                 placeholder=""
                                             />
@@ -252,14 +235,14 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                 </Col>
                                 <Col lg={4}>
                                     <div className="mb-4">
-                                        <label htmlFor="valor_unitario_actual" className="form-label">
+                                        <label htmlFor="costo_total_dolares" className="form-label">
                                             VALOR UNIT. ACTUAL
                                         </label>
                                         <input
                                                 className="form-control"
-                                                name="valor_unitario_actual"
-                                                id="valor_unitario_actual"
-                                                value={valor_unitario_actual}
+                                                name="costo_total_dolares"
+                                                id="costo_total_dolares"
+                                                value={costo_total_dolares}
                                                 onChange={onInputChange}
                                                 placeholder="E"
                                             />
@@ -281,7 +264,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             />
                                     </div>
                                 </Col>
-                                <Col lg={12}>
+                                {/* <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="observacion" className="form-label">
                                             OBSERVACIONES
@@ -290,13 +273,13 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 className="form-control"
                                                 name="observacion"
                                                 id="observacion"
-                                                value={observacion}
+                                                value={descripcion}
                                                 onChange={onInputChange}
                                                 placeholder=""
                                                 required
                                             />
                                     </div>
-                                </Col>
+                                </Col> */}
                                 <Col>
                                     <Button className='mx-2' type='submit'>Guardar</Button>
                                     <a className='mx-2' style={{cursor: 'pointer', color: 'red'}} onClick={onClickCancelModal}>Cancelar</a>

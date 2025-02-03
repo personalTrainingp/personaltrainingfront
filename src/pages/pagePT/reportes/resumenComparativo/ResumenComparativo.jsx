@@ -206,7 +206,7 @@ export const ResumenComparativo = () => {
           grupo.items.push(item);
         });
       
-        return resultado;
+        return resultado.sort((a,b)=>b.items.length-a.items.length);
     }
     function agruparPorVenta(data) {
         if (!Array.isArray(data)) {
