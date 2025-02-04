@@ -70,12 +70,6 @@ export const ModalExtensionCongelamiento = ({show, onHide, id_cli}) => {
 obtenerUltimaMembresiaxIdCli(id_cli)
     }, [])
 
-// Función para verificar si un día es hábil (lunes a viernes)
-const esDiaHabil = (fecha) => {
-  const diaSemana = dayjs(fecha).day();
-  return diaSemana !== 0 && diaSemana !== 6; // No es sábado ni domingo
-};
-
     
     const cancelarExtensionCongelamiento = ()=>{
         onHide()
@@ -110,6 +104,8 @@ const esDiaHabil = (fecha) => {
       onInputChangeFunction("extension_fin", end)
     }
   }, [extension_inicio, dias_habiles]);
+  console.log({dataUltimaMembresia}, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles, dataUltimaMembresia[0]?.fecha_fin_mem_default), "dias habil");
+  
   return (
     <Dialog
         visible={show}
@@ -212,7 +208,7 @@ const esDiaHabil = (fecha) => {
             
                       <div><strong>ULTIMA MEMBRESIA: </strong>{dataUltimaMembresia[0]?.nombre_membresia} | {dataUltimaMembresia[0]?.semanas_membresia} SEMANAS</div>
                       <div><strong>FECHA EN LA QUE SE TERMINA SU MEMBRESIA: 
-                        </strong> <DateMask date={sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
+                        </strong> <DateMask date={sumarDiasHabiles(dataUltimaMembresia[0]?dataUltimaMembresia[0]?.fecha_fin_mem:'', dias_habiles, dataUltimaMembresia[0]?.fecha_fin_mem_default)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
         </form>
                 )
             }
@@ -220,9 +216,11 @@ const esDiaHabil = (fecha) => {
   )
 }
 
-function sumarDiasHabiles(fecha, n_dia) {
+function sumarDiasHabiles(fecha_extension, n_dia, fecha_default) {
+  let fecha = fecha_extension
+  console.log(fecha);
     if(!fecha){
-        return 'No fue posible cargar la fecha';
+        return fecha = fecha_default;
     }
   // Convertir la cadena de fecha a un objeto Date
   let date = new Date(fecha);

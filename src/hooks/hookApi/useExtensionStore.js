@@ -54,6 +54,7 @@ export const useExtensionStore = () => {
 					sesiones_membresia: f.detalle_ventaMembresia[0].tb_semana_training.sesiones,
 					semanas_membresia: f.detalle_ventaMembresia[0].tb_semana_training.semanas_st,
 					fecha_inicio_mem: f.detalle_ventaMembresia[0].fec_inicio_mem,
+					fecha_fin_mem_default: f.detalle_ventaMembresia[0].fec_fin_mem,
 					fecha_fin_mem: obtenerMayorFechaExtensionFin(
 						f.detalle_ventaMembresia[0].tb_extension_membresia
 					),

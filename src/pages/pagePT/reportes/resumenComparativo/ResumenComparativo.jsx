@@ -108,7 +108,7 @@ export const ResumenComparativo = () => {
       
           if (!grupo) {
             // Si no existe, crear un nuevo grupo
-            grupo = { propiedad: nombreTarifa_tt, unif: labelTarifa, tarifaCash_tt, sesiones, semanas: (sesiones/5).toFixed(0), items: [] };
+            grupo = { propiedad: <>{nombreTarifa_tt} <br/> <div className='text-black'>{(sesiones/5).toFixed(0)} SEMANAS</div> </>, unif: labelTarifa, tarifaCash_tt, sesiones, semanas: (sesiones/5).toFixed(0), items: [] };
             resultado.push(grupo);
           }
       
@@ -424,13 +424,15 @@ export const ResumenComparativo = () => {
             const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
         const agrupadoPorHorario = agruparPorHorarios(ventasSinCeros).sort((a,b)=>b.items.length-a.items.length).map((grupo, index, array) => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
+            const sumaTotalCuposDispo = array.reduce((total, item) => total + (aforo-grupo.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
+
             return [
                 { header: "Horario", isTime: true, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
-                { header: "socios PAGANTES", isSummary: true, value: grupo.items.length, items: grupo.items },
-                { header: "CUPOS DISPONIBLES", isSummary: true, value: aforo-grupo.items.length, items: grupo.items },
-                { header: "% OCUPADO", isSummary: true, value: `${(((grupo.items.length/aforo)*100)).toFixed(2)}`, items: grupo.items, tFood: '100 h' },
-                { header: `% PENDIENTE`, isSummary: true, value: `${(100-((grupo.items.length/aforo)*100)).toFixed(2)}`, tFood: '100 p' },
+                { header: "socios PAGANTES", isSummary: true, value: grupo.items.length, items: grupo.items, tFood: sumaTotal },
+                { header: "CUPOS DISPONIBLES", isSummary: true, value: aforo-grupo.items.length, items: grupo.items, tFood: sumaTotalCuposDispo },
+                { header: "% OCUPADO", isSummary: true, value: `${(((grupo.items.length/aforo)*100)).toFixed(2)}`, items: grupo.items, tFood: '100 ' },
+                { header: `% PENDIENTE`, isSummary: true, value: `${(100-((grupo.items.length/aforo)*100)).toFixed(2)}`, tFood: '' },
               ]
         })
         // console.log({ventasSinCeros, agrupadoPorHorario, agrupadoPorTarifas, agrupadoPorVendedores, agru: agruparPorVenta(test)});

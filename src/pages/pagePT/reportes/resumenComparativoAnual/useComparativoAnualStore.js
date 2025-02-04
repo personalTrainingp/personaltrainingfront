@@ -9,9 +9,8 @@ import { useState } from 'react';
 
 export const useComparativoAnualStore = () => {
 	const [dataVentas, setdataVentas] = useState([]);
-	
-	const [isLoading, setisLoading] = useState(false);
 
+	const [isLoading, setisLoading] = useState(false);
 
 	const obtenerProgramasxVentasxMULTIDATE = async (rangoDate) => {
 		try {
@@ -110,14 +109,19 @@ export const useComparativoAnualStore = () => {
 					},
 					{ sesiones_total: 0 }
 				).sesiones_total;
-				const nuevos = tb_ventums
+				const ventasSinCero = tb_ventums
 					.flat()
-					.filter((f) => f.id_tipoFactura !== 701 && f.id_tipoFactura !== 702)
-					.filter((v) => v.id_origen !== 691 && v.id_origen !== 692).length;
+					.filter((f) => f.id_tipoFactura === 699 && f.id_tipoFactura === 700);
+				const ventasConCero = tb_ventums
+					.flat()
+					.filter((f) => f.id_tipoFactura !== 699 && f.id_tipoFactura !== 700);
+				const nuevos = ventasSinCero
+					.flat()
+					.filter((f) => f.id_origen !== 691 && f.id_origen !== 692).length;
 				const renovaciones = tb_ventums.flat().filter((f) => f.id_origen == 691).length;
 				const reinscripciones = tb_ventums.flat().filter((f) => f.id_origen == 692).length;
-				const traspasos = tb_ventums.flat().filter((f) => f.id_tipoFactura === 701).length;
-				const transferencias = tb_ventums
+				const traspasos = ventasConCero.flat().filter((f) => f.id_tipoFactura === 701).length;
+				const transferencias = ventasConCero
 					.flat()
 					.filter((f) => f.id_tipoFactura === 702).length;
 				const cantidad_total =

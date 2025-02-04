@@ -31,7 +31,7 @@ export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
     
     const submitExtensionRegalo = (e)=>{
         e.preventDefault()
-        postExtension(formState.dias_habiles, formState.observacion, 'REG', dataUltimaMembresia[0].id_venta, dataUltimaMembresia[0].fecha_fin_mem, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles))
+        postExtension(formState.dias_habiles, formState.observacion, 'REG', dataUltimaMembresia[0].id_venta, dataUltimaMembresia[0].fecha_fin_mem, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles, dataUltimaMembresia[0]?.fecha_fin_mem_default))
         // console.log(...formState, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles));
         cancelarExtensionRegalo()
     }
@@ -93,38 +93,40 @@ export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
                                       <br/>
           <div><strong>ULTIMA MEMBRESIA: </strong>{dataUltimaMembresia[0]?.nombre_membresia} | {dataUltimaMembresia[0]?.semanas_membresia} SEMANAS</div>
           <div><strong>FECHA EN LA QUE SE TERMINA SU MEMBRESIA: 
-            </strong> <DateMask date={sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
+            </strong> <DateMask date={sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles, dataUltimaMembresia[0]?.fecha_fin_mem_default)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
           </form>
     </Dialog>
   )
 }
 
-function sumarDiasHabiles(fecha, n_dia) {
-    if(!fecha){
-        return 'No fue posible cargar la fecha';
-    }
-  // Convertir la cadena de fecha a un objeto Date
-  let date = new Date(fecha);
+function sumarDiasHabiles(fecha_extension, n_dia, fecha_default) {
+    let fecha = fecha_extension
+    console.log(fecha);
+      if(!fecha){
+          return fecha = fecha_default;
+      }
+    // Convertir la cadena de fecha a un objeto Date
+    let date = new Date(fecha);
+    
+    // Crear un arreglo de tamaño n_dia
+    let dias = Array.from({ length: n_dia }, (_, i) => i);
   
-  // Crear un arreglo de tamaño n_dia
-  let dias = Array.from({ length: n_dia }, (_, i) => i);
-
-  // Usar forEach para iterar sobre los días
-  dias.forEach(() => {
-    // Incrementar la fecha en un día
-    date.setDate(date.getDate() + 1);
-
-    // Obtener el día de la semana (0=Domingo, 1=Lunes, ..., 6=Sábado)
-    let diaSemana = date.getDay();
-
-    // Si el día es fin de semana (Sábado o Domingo), saltar hasta el lunes
-    if (diaSemana === 5) { // Sábado
-      date.setDate(date.getDate() + 2); // Saltar a lunes
-    } else if (diaSemana === 0) { // Domingo
-      date.setDate(date.getDate() + 1); // Saltar a lunes
+    // Usar forEach para iterar sobre los días
+    dias.forEach(() => {
+      // Incrementar la fecha en un día
+      date.setDate(date.getDate() + 1);
+  
+      // Obtener el día de la semana (0=Domingo, 1=Lunes, ..., 6=Sábado)
+      let diaSemana = date.getDay();
+  
+      // Si el día es fin de semana (Sábado o Domingo), saltar hasta el lunes
+      if (diaSemana === 5) { // Sábado
+        date.setDate(date.getDate() + 2); // Saltar a lunes
+      } else if (diaSemana === 0) { // Domingo
+        date.setDate(date.getDate() + 1); // Saltar a lunes
+      }
+    });
+  
+    // Retornar la nueva fecha en formato ISO 8601
+    return date.toISOString().split('T')[0];
     }
-  });
-
-  // Retornar la nueva fecha en formato ISO 8601
-  return date.toISOString().split('T')[0];
-  }
