@@ -10,11 +10,18 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { DateMask } from '@/components/CurrencyMask';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useExtensionStore } from '@/hooks/hookApi/useExtensionStore';
-
+const esDiaHabil = (fecha) => {
+  const diaSemana = dayjs(fecha).day();
+  return diaSemana !== 0 && diaSemana !== 6; // No es sábado ni domingo
+};
  // Función para sumar días hábiles a una fecha
  const addBusinessDays = (date, daysToAdd) => {
     let currentDate = dayjs(date);
     let addedDays = 0;
+      // Si el primer día es hábil, lo contamos
+    if (esDiaHabil(currentDate)) {
+      addedDays++;
+    }
     while (addedDays < daysToAdd) {
       currentDate = currentDate.add(1, 'day');
       if (currentDate.day() !== 0 && currentDate.day() !== 6) {
@@ -29,12 +36,17 @@ import { useExtensionStore } from '@/hooks/hookApi/useExtensionStore';
     let currentDate = dayjs(start);
     let endDate = dayjs(end);
     let businessDays = 0;
+      // Si el primer día es hábil, lo contamos
+      if (esDiaHabil(currentDate)) {
+        businessDays++;
+      }
     while (currentDate.isBefore(endDate)) {
       currentDate = currentDate.add(1, 'day');
       if (currentDate.day() !== 0 && currentDate.day() !== 6) {
         businessDays++;
       }
     }
+    
     return businessDays;
   };
 const registerExCongelamiento ={
@@ -57,6 +69,13 @@ export const ModalExtensionCongelamiento = ({show, onHide, id_cli}) => {
     useEffect(() => {
 obtenerUltimaMembresiaxIdCli(id_cli)
     }, [])
+
+// Función para verificar si un día es hábil (lunes a viernes)
+const esDiaHabil = (fecha) => {
+  const diaSemana = dayjs(fecha).day();
+  return diaSemana !== 0 && diaSemana !== 6; // No es sábado ni domingo
+};
+
     
     const cancelarExtensionCongelamiento = ()=>{
         onHide()
@@ -76,7 +95,10 @@ obtenerUltimaMembresiaxIdCli(id_cli)
       // Efecto para actualizar días cuando se seleccionan fechas
   useEffect(() => {
     if (extension_inicio && extension_fin) {
-      const diffDays = differenceInBusinessDays(extension_inicio, extension_fin);
+      let diffDays = differenceInBusinessDays(extension_inicio, extension_fin);
+          // Si el día de inicio no es sábado ni domingo, contar ese día
+            // Si el día de inicio es hábil, contar ese día
+        
       onInputChangeFunction("dias_habiles", diffDays)
     }
   }, [extension_inicio, extension_fin]);
