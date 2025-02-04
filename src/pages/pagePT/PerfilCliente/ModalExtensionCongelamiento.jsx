@@ -104,7 +104,7 @@ obtenerUltimaMembresiaxIdCli(id_cli)
       onInputChangeFunction("extension_fin", end)
     }
   }, [extension_inicio, dias_habiles]);
-  console.log({dataUltimaMembresia}, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles, dataUltimaMembresia[0]?.fecha_fin_mem_default), "dias habil");
+  console.log(sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles));
   
   return (
     <Dialog
@@ -208,7 +208,7 @@ obtenerUltimaMembresiaxIdCli(id_cli)
             
                       <div><strong>ULTIMA MEMBRESIA: </strong>{dataUltimaMembresia[0]?.nombre_membresia} | {dataUltimaMembresia[0]?.semanas_membresia} SEMANAS</div>
                       <div><strong>FECHA EN LA QUE SE TERMINA SU MEMBRESIA: 
-                        </strong> <DateMask date={sumarDiasHabiles(dataUltimaMembresia[0]?dataUltimaMembresia[0]?.fecha_fin_mem:'', dias_habiles, dataUltimaMembresia[0]?.fecha_fin_mem_default)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
+                        </strong> <DateMask date={sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles)} format={"dddd D [de] MMMM [del] YYYY"}/></div>
         </form>
                 )
             }
@@ -216,11 +216,9 @@ obtenerUltimaMembresiaxIdCli(id_cli)
   )
 }
 
-function sumarDiasHabiles(fecha_extension, n_dia, fecha_default) {
-  let fecha = fecha_extension
-  console.log(fecha);
+function sumarDiasHabiles(fecha, n_dia) {
     if(!fecha){
-        return fecha = fecha_default;
+        return 'No fue posible cargar la fecha';
     }
   // Convertir la cadena de fecha a un objeto Date
   let date = new Date(fecha);

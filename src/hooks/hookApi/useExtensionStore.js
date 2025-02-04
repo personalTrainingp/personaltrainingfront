@@ -48,6 +48,23 @@ export const useExtensionStore = () => {
 			console.log(data, 'ddd');
 
 			const dataOrden = [data.ultimaMembresia]?.map((f) => {
+				console.log(
+					obtenerMayorFechaExtensionFin(
+						f.detalle_ventaMembresia[0].tb_extension_membresia
+					)
+						? obtenerMayorFechaExtensionFin(
+								f.detalle_ventaMembresia[0].tb_extension_membresia
+							)
+						: f.detalle_ventaMembresia[0].fec_fin_mem,
+					'aqqqqq'
+				);
+				const fecha_fin_mem = obtenerMayorFechaExtensionFin(
+					f.detalle_ventaMembresia[0].tb_extension_membresia
+				)
+					? obtenerMayorFechaExtensionFin(
+							f.detalle_ventaMembresia[0].tb_extension_membresia
+						)
+					: f.detalle_ventaMembresia[0].fec_fin_mem;
 				return {
 					id_venta: f.id,
 					nombre_membresia: f?.detalle_ventaMembresia[0].tb_ProgramaTraining.name_pgm,
@@ -55,13 +72,10 @@ export const useExtensionStore = () => {
 					semanas_membresia: f.detalle_ventaMembresia[0].tb_semana_training.semanas_st,
 					fecha_inicio_mem: f.detalle_ventaMembresia[0].fec_inicio_mem,
 					fecha_fin_mem_default: f.detalle_ventaMembresia[0].fec_fin_mem,
-					fecha_fin_mem: obtenerMayorFechaExtensionFin(
-						f.detalle_ventaMembresia[0].tb_extension_membresia
-					),
+					fecha_fin_mem: fecha_fin_mem,
 					// f.detalle_ventaMembresia[0].fec_fin_mem,
 				};
 			});
-			console.log('asdf');
 
 			console.log({ dataOrden }, 'asdfff');
 
