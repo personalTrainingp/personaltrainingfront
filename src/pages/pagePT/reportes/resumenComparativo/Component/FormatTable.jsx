@@ -32,7 +32,7 @@ export const FormatTable = ({ data, tFood }) => {
       responsive>
         <thead className='bg-primary fs-2'>
           <tr>
-            {data[0].map((col) => (
+            {data[0]?.map((col) => (
               <th className={`text-white`} key={col.header}>
                 {col.header}{' '}
                 {/* <Button
@@ -63,7 +63,7 @@ export const FormatTable = ({ data, tFood }) => {
           ))}
         </tbody>
         <tr className='bg-primary'>
-        {data[0].map((col) => (
+        {data[0]?.map((col) => (
           <td>
           <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '40px'}}>{col.tFood}</span></li>
       </td>

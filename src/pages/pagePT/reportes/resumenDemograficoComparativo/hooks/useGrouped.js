@@ -5,7 +5,7 @@ export const useGrouped = () => {
 	function agruparPorSexo(detalledata) {
 		return arraySexo?.map(({ label, value, order }) => {
 			const items = detalledata?.filter(
-				(cliente) => cliente.tb_ventum.tb_cliente.sexo_cli === value
+				(cliente) => cliente?.tb_ventum?.tb_cliente.sexo_cli === value
 			);
 			return {
 				propiedad: label,

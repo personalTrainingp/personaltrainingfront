@@ -1,124 +1,254 @@
 import { PageBreadcrumb } from '@/components'
-import { Loading } from '@/components/Loading'
 import React, { useEffect, useState } from 'react'
 import { Card, Col, Row, Table } from 'react-bootstrap'
+import { useReporteResumenComparativoStore } from './useReporteResumenComparativoStore'
+import config from '@/config'
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
+import { FUNMoneyFormatter, NumberFormatMoney, NumberFormatter } from '@/components/CurrencyMask'
 import { FechaRange } from '@/components/RangeCalendars/FechaRange'
+import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc';
-import { useReporteDemograficoxMembresiaStore } from './useReporteDemograficoxMembresiaStore'
-import { useSelector } from 'react-redux'
-import config from '@/config'
-import { arrayDistritoTest, arrayEstadoCivil, arraySexo } from '@/types/type'
-import { useDispatch } from 'react-redux'
-import { useInView } from 'react-intersection-observer'
-import { onSetViewSubTitle } from '@/store'
-import { ItemCardPgm } from './ItemCardPgm'
+import { ModalSocios } from './ModalSocios'
+import { VentasPorComprobante } from './VentasPorComprobante'
+import { arrayDistritoTest, arrayEstadoCivil, arrayOrigenDeCliente, arrayOrigenEnCeroDeCliente, arraySexo } from '@/types/type'
+import { VentasxMesGrafico } from './VentasxMesGrafico'
+import { VentasMesGrafico } from './HistoricoVentasMembresias/VentasMesGrafico'
+import { CardGraficoTotalDeEstadoCliente } from './HistoricoVentasMembresias/CardGraficoTotalDeEstadoCliente'
+import SimpleBar from 'simplebar-react'
 import { ModalTableSocios } from './ModalTableSocios'
+import { ItemTableTotal } from './ItemTableTotal'
 import { TableTotal } from './TableTotal'
+import { Loading } from '@/components/Loading'
+import { useInView } from 'react-intersection-observer'
+import { useDispatch } from 'react-redux'
+import { onSetViewSubTitle } from '@/store'
+import { ItemTablePgm } from './ItemTablePgm'
+import { ItemCardPgm } from './ItemCardPgm'
+import { FormatTable } from './Component/FormatTable'
+import { onSetDataView } from '@/store/data/dataSlice'
+import { FormatDataTable } from './Component/FormatDataTable'
+
 dayjs.extend(utc);
+export const ResumenComparativo = () => {
+    const { obtenerComparativoResumen, dataIdPgmCero, 
+            obtenerHorariosPorPgm, dataMarcacions, dataTarifas, dataHorarios, 
+            dataGroup, loading, dataGroupTRANSFERENCIAS, dataEstadoGroup, 
+            dataClientesxMarcacion,
+            obtenerEstadosOrigenResumen, obtenerTarifasPorPgm, dataAsesoresFit, 
+            obtenerAsesoresFit,
+            obtenerClientesConMarcacion } = useReporteResumenComparativoStore()
 
-function agruparPorVenta(data) {
-    if (!Array.isArray(data)) {
-        console.error("La variable 'data' no es un array válido.");
-        return [];
-      }
+    const dispatch = useDispatch()
+    const { RANGE_DATE, dataView } = useSelector(e=>e.DATA)
+    const [isOpenModalSocio, setisOpenModalSocio] = useState(false)
+    const [avatarProgramaSelect, setavatarProgramaSelect] = useState({})
+    const [clickDataSocios, setclickDataSocios] = useState([])
+    const [clickDataLabel, setclickDataLabel] = useState('')
+    // COuseSelector(e=>e.DATA)
+    useEffect(() => {
+        if(RANGE_DATE[0]===null) return;
+        if(RANGE_DATE[1]===null) return;
+        obtenerComparativoResumen(RANGE_DATE)
+        obtenerHorariosPorPgm()
+        obtenerClientesConMarcacion()
+        // obtenerEstadosOrigenResumen(RANGE_DATE)
+    }, [RANGE_DATE])
+    const onOpenModalSOCIOS = (d, avatarPrograma=[], label)=>{
+        // console.log(d, "d???????????");
+        setavatarProgramaSelect(avatarPrograma)
+        dispatch(onSetDataView(d))
+        setclickDataSocios(d)
+        setclickDataLabel(label)
+        setisOpenModalSocio(true)
+    }
+    console.log({dataView});
     
-      const resultado = data?.reduce((acc, item) => {
-        const idVenta = item?.tb_ventum?.id; // Usar el operador de encadenamiento opcional
-        if (!acc.has(idVenta)) {
-          acc.set(idVenta, item);
-        }
-        return acc;
-      }, new Map());
-    
-      // Convertir el Map en un array
-      return Array.from(resultado?.values());
-  }
-  
-  
-function agruparPorCliente(data=[]) {
-  // console.log({data});
-  
-        const filteredData = [];
-    const seenClients = new Set();
-
-        for (const item of data) {
-        const idCli = item.tb_ventum.id_cli;
-        if (!seenClients.has(idCli)) {
-            filteredData.push(item);
-            seenClients.add(idCli);
-        }
-        }
-return filteredData
-  }
-      //AGRUPADO POR ARRAYS
-      function agruparPorSexo(detalledata) {
-          return arraySexo?.map(({ label, value, order }) => {
-              const items = detalledata?.filter(
-                (cliente) => cliente.tb_ventum.tb_cliente.sexo_cli === value
-              );
-              return {
-                propiedad: label,
-                order,
-                value,
-                items,
-              };
-            });
+    const onCloseModalSOCIOS = ()=>{
+        setisOpenModalSocio(false)
+    }
+    //AGRUPADO POR ARRAYS
+    function agruparPorSexo(detalledata) {
+        return arraySexo?.map(({ label, value, order }) => {
+            const items = detalledata?.filter(
+              (cliente) => cliente.tb_ventum.tb_cliente.sexo_cli === value
+            );
+            return {
+              propiedad: label,
+              order,
+              value,
+              items,
+            };
+          });
+    }
+    function agruparPorDistrito(detalledata) {
+        const arrayDistritos = detalledata?.map(d=>d.tb_ventum.tb_cliente.tb_distrito.distrito)
+        // console.log(detalledata, arrayDistritos, "detalledata");
+        return arrayDistritoTest?.map(({ label, value, order }) => {
+            const items = detalledata?.filter(
+              (cliente) => cliente.tb_ventum.tb_cliente.tb_distrito.distrito === label
+            );
+            return {
+              propiedad: label,
+              order,
+              value,
+              items,
+            };
+          });
+    }
+    function agruparPorTarifas(data) {
+        const resultado = [];
+      
+        data?.forEach((item) => {
+            // console.log(item, "items");
+            const {sesiones, semanas_st} = item.tb_semana_training
+          const { nombreTarifa_tt, descripcionTarifa_tt, tarifaCash_tt, id_tt, fecha_fin, fecha_inicio, id_tipo_promocion } = item.tarifa_venta;
+            const labelTarifa = `${nombreTarifa_tt}-${sesiones}`
+          // Verificar si ya existe un grupo con la misma cantidad de sesiones
+          let grupo = resultado?.find((g) => g.unif === labelTarifa);
+      
+          if (!grupo) {
+            // Si no existe, crear un nuevo grupo
+            grupo = { propiedad: <div className={id_tipo_promocion===3050?'text-black':''}>{nombreTarifa_tt} <br/> <div className='text-black'>{semanas_st} SEMANAS</div> <span className='font-24 mr-3'>x</span> <SymbolSoles isbottom={true}  numero={<NumberFormatMoney amount={tarifaCash_tt}/>}/><br/> {id_tipo_promocion===3050?'PROMOCION INTERNA':'PROMOCION REDES SOCIALES'} </div>, 
+            unif: labelTarifa, 
+            tarifaCash_tt, 
+            sesiones, 
+            semanas: (sesiones/5).toFixed(0), 
+            items: [] ,
+            fecha_inicio,
+            fecha_fin
+        };
+            resultado.push(grupo);
+          }
+      
+          // Agregar el item al grupo correspondiente
+          grupo.items.push(item);
+        });
+      
+        return resultado.sort((a,b)=>b.items.length-a.items.length);
+    }
+    function agruparPorVendedores(data) {
+        const resultado = [];
+      
+        data?.forEach((item) => {
+          const { id_empl, apMaterno_empl, apPaterno_empl, nombre_empl } = item.tb_ventum.tb_empleado;
+      
+          // Verificar si ya existe un grupo con la misma cantidad de sesiones
+          let grupo = resultado?.find((g) => g.propiedad === nombre_empl);
+      
+          if (!grupo) {
+            // Si no existe, crear un nuevo grupo
+            grupo = { propiedad: nombre_empl, items: [] };
+            resultado.push(grupo);
+          }
+      
+          // Agregar el item al grupo correspondiente
+          grupo.items.push(item);
+        });
+      
+        return resultado.sort((a,b)=>b.items.length-a.items.length);
+    }
+    function agruparPorProcedencia(detalledata) {
+        return arrayOrigenDeCliente?.map(({ label, value, order }) => {
+            const items = detalledata?.filter(
+              (cliente) => cliente.tb_ventum.id_origen === value
+            );
+            return {
+              propiedad: label,
+              order,
+              value,
+              items,
+            };
+          }).sort((a,b)=>b.items.length-a.items.length);
+    }
+    function agruparPorProcedenciaEnCero(detalledata) {
+        return arrayOrigenEnCeroDeCliente?.map(({ label, value, order }) => {
+            const items = detalledata?.filter(
+              (cliente) => cliente.tb_ventum.id_origen === value
+            );
+            return {
+              propiedad: label,
+              order,
+              value,
+              items,
+            };
+          }).sort((a,b)=>b.items.length-a.items.length);
+    }
+    function agruparPorEstCivil(detalledata) {
+        return arrayEstadoCivil?.map(({ label, value, order }) => {
+            const items = detalledata?.filter(
+              (cliente) => cliente.tb_ventum.tb_cliente.estCivil_cli === value
+            );
+            return {
+              propiedad: label,
+              order,
+              value,
+              items,
+            };
+          });
+    }
+    //AGRUPAR POR HORARIOS
+    function agruparPorHorarios(data) {
+        const resultado = [];
+        
+        data?.forEach((item) => {
+          const { horario, tarifa_monto } = item;
+          
+          const formatHorario = dayjs.utc(horario).format('hh:mm A') 
+        //   console.log(horario, formatHorario, "horarrrr");
+          // Verificar si ya existe un grupo con la misma cantidad de sesiones
+          let grupo = resultado?.find((g) => g.propiedad === formatHorario);
+      
+          if (!grupo) {
+            // Si no existe, crear un nuevo grupo
+            grupo = { propiedad: formatHorario, items: [], tarifa_monto };
+            resultado.push(grupo);
+          }
+          // Agregar el item al grupo correspondiente
+          grupo.items.push(item);
+        });
+        
+        return resultado.sort((a,b)=>b.items.length-a.items.length).sort((a,b)=>b.tarifa_monto-a.tarifa_monto);
+    }
+    function agruparPorSesiones(data) {
+        const resultado = [];
+      
+        data?.forEach((item) => {
+          const { sesiones, semanas_st } = item.tb_semana_training;
+      
+          // Verificar si ya existe un grupo con la misma cantidad de sesiones
+          let grupo = resultado?.find((g) => g.lbel === sesiones);
+      
+          if (!grupo) {
+            // Si no existe, crear un nuevo grupo
+            grupo = {  lbel: sesiones, propiedad: <div style={{width: '350px'}}>{semanas_st} SEMANAS <br/> {sesiones} Sesiones</div>, semanas_st, items: [] };
+            resultado.push(grupo);
+          }
+      
+          // Agregar el item al grupo correspondiente
+          grupo.items.push(item);
+        });
+      
+        return resultado.sort((a,b)=>b.items.length-a.items.length);
+    }
+    function agruparPorVenta(data) {
+        if (!Array.isArray(data)) {
+            console.error("La variable 'data' no es un array válido.");
+            return [];
+          }
+        
+          const resultado = data?.reduce((acc, item) => {
+            const idVenta = item?.tb_ventum?.id; // Usar el operador de encadenamiento opcional
+            if (!acc.has(idVenta)) {
+              acc.set(idVenta, item);
+            }
+            return acc;
+          }, new Map());
+        
+          // Convertir el Map en un array
+          return Array.from(resultado?.values());
       }
       
-          function agruparPorEstCivil(detalledata) {
-              return arrayEstadoCivil?.map(({ label, value, order }) => {
-                  const items = detalledata?.filter(
-                    (cliente) => cliente.tb_ventum.tb_cliente.estCivil_cli === value
-                  );
-                  return {
-                    propiedad: label,
-                    order,
-                    value,
-                    items,
-                  };
-                });
-          }
-          
-              //AGRUPAR POR HORARIOS
-              function agruparPorHorarios(data) {
-                  const resultado = [];
-                  
-                  data?.forEach((item) => {
-                    const { horario, tarifa_monto } = item;
-          
-                      const formatHorario = dayjs.utc(horario).format('hh:mm A')
-                    // Verificar si ya existe un grupo con la misma cantidad de sesiones
-                    let grupo = resultado?.find((g) => g.propiedad === formatHorario);
-                
-                    if (!grupo) {
-                      // Si no existe, crear un nuevo grupo
-                      grupo = { propiedad: formatHorario, items: [], tarifa_monto };
-                      resultado.push(grupo);
-                    }
-                    // Agregar el item al grupo correspondiente
-                    grupo.items.push(item);
-                  });
-                  
-                  return resultado.sort((a,b)=>b.items.length-a.items.length).sort((a,b)=>b.tarifa_monto-a.tarifa_monto);
-              }
-              
-                  function agruparPorDistrito(detalledata) {
-                      const arrayDistritos = detalledata?.map(d=>d.tb_ventum.tb_cliente.tb_distrito.distrito)
-                      // console.log(detalledata, arrayDistritos, "detalledata");
-                      return arrayDistritoTest?.map(({ label, value, order }) => {
-                          const items = detalledata?.filter(
-                            (cliente) => cliente.tb_ventum.tb_cliente.tb_distrito.distrito === label
-                          );
-                          return {
-                            propiedad: label,
-                            order,
-                            value,
-                            items,
-                          };
-                        });
-                  }
-                  
     //AGRUPADO POR DIFERENTE DE MYOR A MENOR
     const agruparPorRangoEdad = (data) => {
         const rangos = [
@@ -127,6 +257,7 @@ return filteredData
             { rango_edad: "30 - 39", min: 30, max: 39 },
             { rango_edad: "50 - 57", min: 50, max: 57 },
             { rango_edad: "58 - 75", min: 58, max: 75 },
+            { rango_edad: "75 a mas", min: 75, max: Infinity },
             // { rango_edad: "34 a 39", min: 34, max: 39 },
             // { rango_edad: "56 a 59", min: 56, max: 59 },
             { rango_edad: "22 - 29", min: 22, max: 29 },
@@ -182,199 +313,757 @@ return filteredData
     }
   }).sort((a,b)=>b.items.length-a.items.length);
       };
-export const ResumenComparativo = () => {
-    const loading = false;
-    const { RANGE_DATE } = useSelector(e=>e.DATA)
-    const { dataMembresiasxPrograma, dataIdPgmCero, obtenerDemografiaMembresia } = useReporteDemograficoxMembresiaStore()
-        useEffect(() => {
-            if(RANGE_DATE[0]===null) return;
-            if(RANGE_DATE[1]===null) return;
-            obtenerDemografiaMembresia(RANGE_DATE)
-            // obtenerEstadosOrigenResumen(RANGE_DATE)
-        }, [RANGE_DATE])
-        // console.log({RANGE_DATE, MEM: agruparPorVenta(dataMembresiasxPrograma)});
-        
-            const [isOpenModalSocio, setisOpenModalSocio] = useState(false)
-            const [avatarProgramaSelect, setavatarProgramaSelect] = useState({})
-            const [clickDataSocios, setclickDataSocios] = useState([])
-            const [clickDataLabel, setclickDataLabel] = useState('')
-        
 
-        const onOpenModalSOCIOS = (d, avatarPrograma=[], label)=>{
-            // console.log(d, "d???????????");
-            setavatarProgramaSelect(avatarPrograma)
-            setclickDataSocios(d)
-            setclickDataLabel(label)
-            setisOpenModalSocio(true)
-        }
-        const onCloseModalSOCIOS = ()=>{
-            setisOpenModalSocio(false)
-        }
-    const dataAlter = dataMembresiasxPrograma.map(d=>{
+      const AlterGrupo=(data)=>{
+        data.map()
+      }
+
+
+      console.log({dataGroup});
+      
+    const dataAlter = dataGroup.map(d=>{
         const avatarPrograma = {
             urlImage: `${config.API_IMG.LOGO}${d.tb_image[0].name_image}`,
             width: d.tb_image[0].width,
             height: d.tb_image[0].height
         }
         
-        // const test =  d.detalle_ventaMembresium?.map((item) => {
-        //     const relacionado = dataClientesxMarcacion.find(
-        //         (obj) => {
+        const test =  d.detalle_ventaMembresium?.map((item) => {
+            const relacionado = dataClientesxMarcacion.find(
+                (obj) => {
 
-        //             return obj.id_cli === item.tb_ventum.id_cli
-        //         }
-        //       )
-        //       return relacionado
-        //         ? { ...item, tb_marcacions: relacionado.tb_marcacions.filter((f)=>{
-        //             const tiempoMarcacion = new Date(f.tiempo_marcacion);
-        //             const fechaInicio = new Date(item.fec_inicio_mem);
-        //             const fechaFin = new Date(item.fec_fin_mem);
-        //             return tiempoMarcacion >= fechaInicio && tiempoMarcacion <= fechaFin
-        //         }) }
-        //         : {...item, tb_marcacions: []};
-        //   })
-          const aforo = d.id_pgm===2?36:d.id_pgm===3?10:d.id_pgm===4?14:''
+                    return obj.id_cli === item.tb_ventum.id_cli
+                }
+              )
+              return relacionado
+                ? { ...item, tb_marcacions: relacionado.tb_marcacions.filter((f)=>{
+                    const tiempoMarcacion = new Date(f.tiempo_marcacion);
+                    const fechaInicio = new Date(item.fec_inicio_mem);
+                    const fechaFin = new Date(item.fec_fin_mem);
+                    return tiempoMarcacion >= fechaInicio && tiempoMarcacion <= fechaFin
+                }) }
+                : {...item, tb_marcacions: []};
+          })
+          const aforo = d.id_pgm===2?18:d.id_pgm===3?10:d.id_pgm===4?14:''
+          const aforo_turno = d.id_pgm===2?36:d.id_pgm===3?10:d.id_pgm===4?14:''
           
-          const todoVentas = agruparPorVenta(agruparPorCliente(d.detalle_ventaMembresium))
-        const porSexo = agruparPorSexo(todoVentas).map((grupo, index, array) => {
+          const ventasEnCeros =  agruparPorVenta(test)
+          const ventasSinCeros =  agruparPorVenta(test)
+          const TransferenciasEnCeros = d.ventas_transferencias
+        const TraspasosEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===701)
+        const CanjesEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===703)
+        const membresiasNuevas = ventasSinCeros.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692)
+        const membresiasRenovadas = ventasSinCeros.filter(g=>g.tb_ventum.id_origen===691)
+        const membresiasReinscritos = ventasSinCeros.filter(g=>g.tb_ventum.id_origen===692)
+        const sumaDeSesiones = ventasSinCeros.reduce((total, item) => total + (item?.tb_semana_training.sesiones || 0), 0)
+        const sumaDeVentasEnSoles = ventasSinCeros.reduce((total, item) => total + (item?.tarifa_monto || 0), 0)
+        const porSexo = agruparPorSexo(ventasSinCeros).map((grupo, index, array) => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
             return [
             { header: "GENERO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-            { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 ]
             }
             )
-        const agrupadoPorEstadoCivil = agruparPorEstCivil(todoVentas).map((grupo, index, array) => {
+            const porDistrito= agruparPorDistrito(ventasSinCeros).sort((a,b)=>b.items.length-a.items.length).map((grupo, index, array) => {
+                const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
+                const sumaXITEMS = grupo.items.length
+                
+                const sumaMontoxItems = grupo.items.reduce((total, item) => total+(item?.tarifa_monto||0), 0)
+                const sumaTotalMonto = array.reduce((total, item)=>total + (item?.items.reduce((total, item) => total+(item?.tarifa_monto||0), 0) || 0), 0)
+                console.log({grupo}, "por dist", sumaMontoxItems);
+                return [
+                { header: "DISTRITO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+                { header: <>SOCIOS <br/> % SOCIOS</>, isSummary: true, value: <>{sumaXITEMS} <br/> {((sumaXITEMS/sumaTotal)*100).toFixed(2)} </>, tFood: <>{sumaTotal} <br/> {((sumaXITEMS/sumaXITEMS)*100).toFixed(2)}</> },
+                // { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+                { header: "VENTA", isSummary: true, value: <NumberFormatMoney amount={sumaMontoxItems}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaTotalMonto}/>},
+                    ]
+                }
+                )
+        const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros).map((grupo, index, array) => {
+            const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
+            const sumaXITEMS = grupo.items.length
+            return [
+            { header: "sesiones", value: grupo.lbel, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "SEMANAS", value: grupo.semanas_st,isPropiedad: true, tFood: '' },
+            { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+                ]
+            }
+            )
+        const agrupadoPorEstadoCivil = agruparPorEstCivil(ventasSinCeros).map((grupo, index, array) => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
             return [
             { header: "EST. CIVIL", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-            { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 ]
             }
             )
-            const agrupadoPorHorario = agruparPorHorarios(todoVentas).sort((a,b)=>b.items.length-a.items.length).map((grupo, index, array) => {
+            
+            const agrupadoPorProcedencia = agruparPorProcedencia(ventasSinCeros).map((grupo, index, array) => {
                 const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
                 const sumaXITEMS = grupo.items.length
                 return [
-                { header: "Horario", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+                { header: "PROCEDENCIA", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
                 { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-                { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+                { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                     ]
                 }
                 )
                 
-            const porDistrito= agruparPorDistrito(todoVentas).sort((a,b)=>b.items.length-a.items.length).map((grupo, index, array) => {
+            const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros).map((grupo, index, array) => {
                 const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
                 const sumaXITEMS = grupo.items.length
                 return [
-                { header: "DISTRITO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
-                { header: "SOCIOS", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-                { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+                { header: "ASESORES", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+                { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
+                { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                     ]
                 }
                 )
-            const agrupadoPorRangoEdadSexo = agruparPorRangoEdad(todoVentas).sort((a,b)=>a.items.length > b.items.length).map((grupo, index, array) => {
+                
+            const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros).map((grupo, index, array) => {
+                const sumaTotalSocio = array.reduce((total, item) => total + (item?.items.length || 0), 0)
+
+                return [
+                    { header: "PROMOCION", isTime: true, value: grupo.propiedad, isPropiedad: true, tFood: '' },
+                    { header: "SOCIOS", isTime: true, value: grupo.items.length, tFood: sumaTotalSocio },
+                    // { header: <>SEMANAS<br/>(sesiones)</>, value: <div style={{fontSize: '26px'}}>{grupo.semanas} SEMANAS<br/> {grupo.sesiones} SESIONES</div>, items: grupo.items, tFood: '' },
+                    // { header: <div className='d-flex justify-content-center'>S/.</div>, value: <NumberFormatMoney amount={grupo.tarifaCash_tt}/>, tFood: '' },
+                    { header: <div className='d-flex justify-content-center'>FECHA</div>, value: <div className='text-primary'> <span className='text-black'>INICIO: </span><br/>{dayjs(grupo.fecha_inicio, 'YYYY-MM-DD').format('DD/MM/YYYY')}<br/> <span className='text-black'>FIN: </span> <br/>{grupo.fecha_fin?dayjs(grupo.fecha_fin, 'YYYY-MM-DD').format('DD/MM/YYYY'):'ABIERTO'}<br/> </div>, items: grupo.items },
+                    // { header: "FIN", isSummary: true, value: `${(((grupo.items.length/aforo)*100)).toFixed(2)}`, items: grupo.items, tFood: '100 h' },
+                    // { header: "socios", isSummary: true, value: grupo.items.length, items: grupo.items },
+                  ]
+            })
+            
+            const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>{
+                if (a.propiedad === '75 a mas') return 1; // '75 a mas' va al final
+                if (b.propiedad === '75 a mas') return -1; // '75 a mas' va al final
+                return a.items.length > b.items.length
+            }).map((grupo, index, array) => {
                 const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
+                const sumaTotalFem = array.reduce((total, item) => total + (item?.sexo[0].items.length || 0), 0)
+                const sumaTotalMasc = array.reduce((total, item) => total + (item?.sexo[1].items.length || 0), 0)
                 const sumaXITEMS = grupo.items.length
                 return [
-                { header: "DISTRITO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
-                { header: "SOCIOS", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-                { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
-                    ]
-                }
-                )
+                    { header: "RANGO DE EDAD", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+                    { header: "SOCIOS", isSummary: true, value: grupo.items.length, items: grupo.items, tFood: `${sumaTotal.toFixed(0)}` },
+                    { header: "FEM", isSummary: true, value: grupo.sexo[0].items.length, items: grupo.items, tFood: `${sumaTotalFem.toFixed(0)}` },
+                    { header: `MASC`, isSummary: true, value: grupo.sexo[1].items.length, tFood: sumaTotalMasc },
+                  ]
+            })
+            const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
+        const agrupadoPorHorario = agruparPorHorarios(ventasSinCeros)
+        .sort((a, b) => b.items.length - a.items.length)
+        .map((f) => {
+          const cuposDispo = aforo - f.items.length;
+          const cuposOcupado = f.items.length;
+          return { ...f, cuposDispo, cuposOcupado };
+        })
+        .map((grupo, index, array) => {
+          const sumaTotal = array.reduce((total, item) => total + (item?.cuposOcupado || 0), 0);
+          const sumarCuposDispo = array.reduce((total, item) => total + item.cuposDispo, 0);
+          
+          // Porcentajes globales (sumatoria total)
+          const sumaPorcentajeOcupados = ((sumaTotal / aforo) * 100).toFixed(2);
+          const sumaPorcentajeDispo = ((sumarCuposDispo / aforo) * 100).toFixed(2);
+          
+          // Porcentajes individuales por grupo
+          const porcentajeOcupadoGrupo = ((grupo.cuposOcupado / aforo) * 100).toFixed(2);
+          const porcentajePendienteGrupo = ((grupo.cuposDispo / aforo) * 100).toFixed(2);
+      
+          return [
+            { header: "TURNO", isTime: true, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "SOCIOS PAGANTES", isSummary: true, value: grupo.cuposOcupado, items: grupo.items, tFood: sumaTotal },
+            { header: "CUPOS DISPONIBLES", isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
+            { header: "% OCUPADO", isSummary: true, value: <NumberFormatMoney amount={porcentajeOcupadoGrupo}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaPorcentajeOcupados/array.length} /> },
+            { header: "% PENDIENTE", isSummary: true, value: <NumberFormatMoney amount={porcentajePendienteGrupo}/>, tFood: <NumberFormatMoney amount={sumaPorcentajeDispo/array.length}/> },
+          ];
+        });
+        const agrupadoPorProcedenciaCeros = agruparPorProcedenciaEnCero(CanjesEnCero).map((grupo, index, array) => {
+            const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
+            const sumaXITEMS = grupo.items.length
+            return [
+            { header: "PROCEDENCIA", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+                ]
+            }
+            )
+            
+        // console.log({ventasSinCeros, agrupadoPorHorario, agrupadoPorTarifas, agrupadoPorVendedores, agru: agruparPorVenta(test)});
+        // console.log({test, horarios: agruparPrimeraMarcacionGlobal(ventasSinCeros), semana: agruparMarcacionesPorSemana(ventasSinCeros), agruparPorProcedencia: agruparPorProcedencia(ventasSinCeros)});;
+        
+        // const porHorarios
+        // const porProcedencia
+        // const porAsesor
+        // const tarifas
+        // console.log({activosDeVentasPorSemanaMarcacions, agruparPorRangoEdades, agrupadoPorEstadoCivil, agrupadoPorTarifas, agrupadoPorSesiones, sumaDeVentasEnSoles, sumaDeSesiones, porSexo, porDistrito, ventasEnCeros, ventasSinCeros, membresiasNuevas, membresiasRenovadas, membresiasReinscritos}, "alter");
         return {
-            porDistrito,
-            todoVentas,
+            CanjesEnCero,
             aforo,
-            porSexo,
-            agrupadoPorEstadoCivil,
-            avatarPrograma,
+            aforo_turno,
+            agrupadoPorVendedores,
             agrupadoPorHorario,
-            agrupadoPorRangoEdadSexo
+            agrupadoPorProcedencia,
+            activosDeVentasPorSemanaMarcacions,
+            agruparPorRangoEdades,
+            agrupadoPorEstadoCivil,
+            agrupadoPorTarifas,
+            agrupadoPorProcedenciaCeros,
+            agrupadoPorSesiones,
+            sumaDeVentasEnSoles,
+            sumaDeSesiones,
+            avatarPrograma,
+            ventasEnCeros, 
+            TraspasosEnCero,
+            TransferenciasEnCeros,
+            porDistrito,
+            porSexo,
+            ventasSinCeros, 
+            membresiasNuevas, 
+            membresiasRenovadas, 
+            membresiasReinscritos
         }
     })
-
     
     const dataAlterIdPgmCero =
     [dataIdPgmCero]?.map(d=>{
         const avatarPrograma = {
             urlImage: 'TOTAL',
         }
-          const todoVentas = agruparPorVenta(agruparPorCliente(d.detalle_ventaMembresium))
-        
-        const porSexo = agruparPorSexo(todoVentas)
-        const porDistrito= agruparPorDistrito(todoVentas)
-        // const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros)
-        // const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros)
-        const agrupadoPorEstadoCivil = agruparPorEstCivil(todoVentas)
-        // const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros)
-        const agrupadoPorHorario = agruparPorHorarios(todoVentas)
-        const agruparPorRangoEdades = agruparPorRangoEdad(todoVentas).sort((a,b)=>a.items.length > b.items.length)
-        const clientesCanjes = []
+        const test = d.detalle_ventaMembresium?.map((item) => {
+            const relacionado = dataClientesxMarcacion.find(
+                (obj) => {
+
+                    return obj.id_cli === item.tb_ventum.id_cli
+                }
+              )
+              return relacionado
+                ? { ...item, tb_marcacions: relacionado.tb_marcacions.filter((f)=>{
+                    const tiempoMarcacion = new Date(f.tiempo_marcacion);
+                    const fechaInicio = new Date(item.fec_inicio_mem);
+                    const fechaFin = new Date(item.fec_fin_mem);
+                    return tiempoMarcacion >= fechaInicio && tiempoMarcacion <= fechaFin
+                }) }
+                : {...item, tb_marcacions: []};
+          });
+        const ventasEnCeros = agruparPorVenta(test)?.filter(f=>f.tarifa_monto===0)
+        const ventasSinCeros = agruparPorVenta(test)?.filter(f=>f.tarifa_monto!==0)
+        const TransferenciasEnCeros = d.ventas_transferencias
+        const TraspasosEnCero = ventasEnCeros?.filter(f=>f.tb_ventum.id_tipoFactura===701)
+        const clientesCanjes = ventasEnCeros?.filter(f=>f.tb_ventum.id_tipoFactura===703)
+        const membresiasNuevas = ventasSinCeros?.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692)
+        const membresiasRenovadas = ventasSinCeros?.filter(g=>g.tb_ventum.id_origen===691)
+        const membresiasReinscritos = ventasSinCeros?.filter(g=>g.tb_ventum.id_origen===692)
+        const porSexo = agruparPorSexo(ventasSinCeros)
+        const porDistrito= agruparPorDistrito(ventasSinCeros)
+        const sumaDeSesiones = ventasSinCeros?.reduce((total, item) => total + (item?.tb_semana_training.sesiones || 0), 0)
+        const sumaDeVentasEnSoles = ventasSinCeros?.reduce((total, item) => total + (item?.tarifa_monto || 0), 0)
+        const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros).map((g)=>{
+            return {
+                ...g,
+            }
+        })
+        const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros)
+        const agrupadoPorEstadoCivil = agruparPorEstCivil(ventasSinCeros)
+        const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros)
+        const agrupadoPorHorario = agruparPorHorarios(ventasSinCeros)
+        const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>a.items.length > b.items.length)
+        // const clientesCanjes = []
         // const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
         const avataresDeProgramas = dataIdPgmCero.tb_image
         // const montoTotal_ACTIVO = []
-        // const agrupadoPorProcedencia = agruparPorProcedencia(ventasSinCeros)
-        // console.log({ agrupadoPorVendedores, agruparPorRangoEdades, agrupadoPorEstadoCivil, agrupadoPorTarifas, agrupadoPorSesiones, sumaDeVentasEnSoles, sumaDeSesiones, porSexo, porDistrito, ventasEnCeros, ventasSinCeros, membresiasNuevas, membresiasRenovadas, membresiasReinscritos}, "alter");
+        const agrupadoPorProcedencia = agruparPorProcedencia(ventasSinCeros)
+        const agrupadoPorProcedenciaCeros = agruparPorProcedenciaEnCero(clientesCanjes)
+        console.log({ agrupadoPorVendedores, agruparPorRangoEdades, agrupadoPorEstadoCivil, agrupadoPorTarifas, agrupadoPorSesiones, sumaDeVentasEnSoles, sumaDeSesiones, porSexo, porDistrito, ventasEnCeros, ventasSinCeros, membresiasNuevas, membresiasRenovadas, membresiasReinscritos}, "alter");
         return {
+            clientesCanjes,
             // clientesCanjes,
-            // clientesCanjes,
+            agrupadoPorProcedenciaCeros,
             agrupadoPorHorario,
-            // agrupadoPorVendedores,
-            // agrupadoPorProcedencia,
+            agrupadoPorVendedores,
+            agrupadoPorProcedencia,
             // activosDeVentasPorSemanaMarcacions,
             agruparPorRangoEdades,
             agrupadoPorEstadoCivil,
-            // agrupadoPorTarifas,
-            // agrupadoPorSesiones,
+            agrupadoPorTarifas,
+            agrupadoPorSesiones,
+            sumaDeVentasEnSoles,
+            sumaDeSesiones,
             avatarPrograma,
+            ventasEnCeros, 
+            TraspasosEnCero,
+            TransferenciasEnCeros,
             porDistrito,
             porSexo,
+            ventasSinCeros, 
+            membresiasNuevas, 
+            membresiasRenovadas, 
+            membresiasReinscritos,
             avataresDeProgramas
         }
     })
+
+    const dataInscritosCategoria = [
+        {
+            propiedad: 'NUEVOS',
+            items: dataAlterIdPgmCero?.map(f=>f.membresiasNuevas).flat()
+        },
+        {
+            propiedad: 'RENOVACIONES',
+            items: dataAlterIdPgmCero?.map(f=>f.membresiasRenovadas).flat()
+        },
+        {
+            propiedad: 'REINSCRITOS',
+            items: dataAlterIdPgmCero?.map(f=>f.membresiasReinscritos).flat()
+        },
+        {
+            propiedad: 'TRASPASOS PT',
+            items: dataAlterIdPgmCero?.map(f=>f.TraspasosEnCero).flat()
+        },
+        {
+            propiedad: 'TRANSFERENCIAS (COSTO CERO)',
+            items: []
+        },
+        {
+            propiedad: 'CANJES',
+            items: dataAlterIdPgmCero?.map(f=>f.clientesCanjes).flat()
+        }
+    ]
     
+
     const data = [
         {
-            isComparative: true,
-            title: 'SOCIOS TOTAL POR GENERO',
-            id: 'COMPARATIVOSEXO',
+            title: 'VENTAS POR PROGRAMA',
+            id: 'comparativoventasenprograma',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
-                    arrayEstadistico={d.porSexo} 
-                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
-                    isViewSesiones={true} 
-                    labelParam={'GENERO'}/>
+                <Col style={{paddingBottom: '1px !important'}} xxl={4}>
+                    <Card>
+                        <Card.Header className=' align-self-center'>
+                            {/* <Card.Title>
+                                <h4>{d.name_pgm}</h4>
+                            </Card.Title> */}
+                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
+                            
+                        </Card.Header>
+                        <Card.Body style={{paddingBottom: '1px !important'}}>
+                            <br/>
+                            <Table
+                                                // style={{tableLayout: 'fixed'}}
+                                                className="table-centered mb-0"
+                                                // hover
+                                                striped
+                                                responsive
+                                            >
+                                                <tbody>
+                                                            <tr>
+                                                                    <td className=''>
+                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>venta de <br/> membresias</span></li>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d.ventasSinCeros.length}</span>
+                                                                    </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Venta <br/> acumulada</span></li>
+                                                                </td>
+                                                                <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles}/>}/></span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Ticket <br/> medio</span></li>
+                                                                </td>
+                                                                <td> 
+                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={(d.sumaDeVentasEnSoles/d.ventasSinCeros.length).toFixed(2)}/>}/></span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Sesiones <br/> vendidas</span></li>
+                                                                </td>
+                                                                <td> 
+                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><NumberFormatter amount={d.sumaDeSesiones}/></span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>PRECIO <br/> por sesion</span></li>
+                                                                </td>
+                                                                <td> 
+                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles/d.sumaDeSesiones}/>}/></span>
+                                                                </td>
+                                                            </tr>
+                                                            
+                                                </tbody>
+                                            </Table>
+                        </Card.Body>
+                    </Card>
                 </Col>
             )
             }
             )
         },
-      //   {
-      //     isComparative: true,
-      //     title: 'SOCIOS TOTAL POR GENERO - RESUMEN',
-      //     id: 'COMPARATIVOSEXO',
-      //     HTML: dataAlterIdPgmCero.map(d=>{
-      //                     return(
-      //                         <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-      //                             <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'INSCRITOS POR CATEGORIA'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porSexo}/>
-      //                         </Col>
-      //                     )
-      //                 }
-      //             )
-      // },
+        {
+            title: 'PROMEDIO VENTAS ACUMULADAS - TOTAL',
+            id: 'comparativoventastotal',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                    <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                        <Card>
+{/* <h1 className='pt-5' style={{fontSize: '60px'}}>comparativo VENTAS TOTAL</h1> */}
+                            <Card.Header className=' d-flex align-self-center'>
+                                
+                                {
+                                    d.avataresDeProgramas?.map((d, index)=>{
+    
+                                        return(
+                                            <div>
+                                                <img className='m-4' src={`${config.API_IMG.LOGO}${d.name_image}`} height={d.height} width={d.width}/>
+                                                <span style={{fontSize: '50px'}}>{index===2?'':'+'}</span>
+                                            </div>
+                                        )
+                                    }
+                                )
+                                }
+                                {/* <Card.Title>
+                                    <h4>{d.name_pgm}</h4>
+                                </Card.Title> */}
+                                {/* <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/> */}
+                                {/* <h2>TOTAL</h2> */}
+                            </Card.Header>
+                            <Card.Body className='d-flex justify-content-center' style={{paddingBottom: '1px !important'}}>
+                                <br/>
+                                <div  style={{width: '1080px'}}>
+                                <Table
+                                                    // style={{tableLayout: 'fixed'}}
+                                                    className="table-centered mb-0"
+                                                    // hover
+                                                    striped
+                                                    responsive
+                                                >
+                                                    <tbody>
+                                                                <tr>
+                                                                        <td className=''>
+                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>venta de membresias</span></li>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d?.ventasSinCeros?.length}</span>
+                                                                        </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>Venta acumulada</span></li>
+                                                                    </td>
+                                                                    <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles}/>}/></span></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>Ticket medio</span></li>
+                                                                    </td>
+                                                                    <td> 
+                                                                    <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={(d.sumaDeVentasEnSoles/d.ventasSinCeros?.length).toFixed(2)}/>}/></span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>Sesiones vendidas</span></li>
+                                                                    </td>
+                                                                    <td> 
+                                                                    <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><NumberFormatter amount={d.sumaDeSesiones}/></span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>PRECIO por sesion</span></li>
+                                                                    </td>
+                                                                    <td> 
+                                                                    <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles/d.sumaDeSesiones}/>}/></span>
+                                                                    </td>
+                                                                </tr>
+                                                                
+                                                    </tbody>
+                                                </Table>
+                                </div>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                )
+            })
+        },
         {
             isComparative: true,
-            title: 'SOCIOS TOTAL POR ESTADO CIVIL',
-            id: 'COMPARATIVOESTADOCIVIL',
+            title: 'SOCIOS TOTAL POR CATEGORIA',
+            id: 'comparativoINSCRITOSPORCATEGORIASPORPROGRAMA',
+            HTML: dataAlter.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                    <Card>
+                        <Card.Header className=' align-self-center'>
+                            {/* <Card.Title>
+                                <h4>{d.name_pgm}</h4>
+                            </Card.Title> */}
+                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
+                            
+                        </Card.Header>
+                        <Card.Body style={{paddingBottom: '1px !important'}}>
+                            <br/>
+                            <Table
+                                                // style={{tableLayout: 'fixed'}}
+                                                className="table-centered mb-0"
+                                                // hover
+                                                striped
+                                                responsive
+                                            >
+                                                <thead className='bg-primary fs-2'>
+                                                    <tr>
+                                                        <th className={`text-white`}>
+                                                            {'CATEGORIA'}{' '}
+                                                        </th>
+                                                        <th className={`text-white`}>
+                                                            {'SOCIOS'}{' '}
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                            <tr onClick={()=>onOpenModalSOCIOS(d.membresiasNuevas, d.avatarPrograma, `NUEVOS`)}>
+                                                                    <td className=''>
+                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>NUEVOS</span></li>
+                                                                    </td>
+                                                                    <td className=''>
+                                                                        <li className={`d-flex flex-row justify-content-between p-2`}>
+                                                                                                <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.membresiasNuevas.length}</span>
+                                                                        </li>
+                                                                    </td>
+                                                            </tr>
+                                                            <tr onClick={()=>onOpenModalSOCIOS(d.membresiasRenovadas, d.avatarPrograma, `RENOVACIONES`)}>
+                                                                <td>
+                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>RENOVACIONES</span></li>
+                                                                </td>
+                                                                <td className=''>
+                                                                        <li className={`d-flex flex-row justify-content-between p-2`}>
+                                                                                                <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.membresiasRenovadas.length}</span>
+                                                                        </li>
+                                                                    </td>
+                                                            </tr>
+                                                            <tr onClick={()=>onOpenModalSOCIOS(d.membresiasReinscritos, d.avatarPrograma, `REINSCRIPCIONES`)}>
+                                                                <td>
+                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>REINSCRIPCIONES</span></li>
+                                                                </td>
+                                                                <td className=''>
+                                                                    <li className={`d-flex flex-row justify-content-between p-2`}>
+                                                                                            <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.membresiasReinscritos.length}</span>
+                                                                    </li>
+                                                                </td>
+                                                            </tr>
+                                                            <tr onClick={()=>onOpenModalSOCIOS(d.TraspasosEnCero, d.avatarPrograma, `TRASPASOS`)}>
+                                                                <td>
+                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRASPASOS PT</span></li>
+                                                                </td>
+                                                                <td className=''>
+                                                                    <li className={`d-flex flex-row justify-content-between p-2`}>
+                                                                                            <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.TraspasosEnCero.length}</span>
+                                                                    </li>
+                                                                </td>
+                                                            </tr>
+                                                            <tr onClick={()=>onOpenModalSOCIOS(d.TransferenciasEnCeros, d.avatarPrograma, `TRANSFERENCIAS`)}>
+                                                                <td>
+                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRANSFERENCIAS <br/>(COSTO CERO)</span></li>
+                                                                </td>
+                                                                <td className=''>
+                                                                    <li className={`d-flex flex-row justify-content-between p-2`}>
+                                                                                            <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.TransferenciasEnCeros.length}</span>
+                                                                    </li>
+                                                                </td>
+                                                            </tr>
+                                                            <tr onClick={()=>onOpenModalSOCIOS(d.CanjesEnCero, d.avatarPrograma, `CANJES`)}>
+                                                                <td>
+                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>CANJES <br/>(COSTO CERO)</span></li>
+                                                                </td>
+                                                                <td className=''>
+                                                                    <li className={`d-flex flex-row justify-content-between p-2`}>
+                                                                                            <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.CanjesEnCero.length}</span>
+                                                                    </li>
+                                                                </td>
+                                                            </tr>
+                                                    </tbody>
+                                                        <tr className='bg-primary'>
+                                                            <td>
+                                                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '40px'}}>{'TOTAL'}</span></li>
+                                                            </td>
+                                                            <td>
+                                                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '40px'}}>{d.membresiasNuevas.length+d.membresiasRenovadas.length+d.membresiasReinscritos.length+d.TraspasosEnCero.length+d.TransferenciasEnCeros.length+d.CanjesEnCero.length}</span></li>
+                                                            </td>
+                                                    </tr>
+                                            </Table>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            )
+            }
+        )
+        },
+        {
+            title: 'SOCIOS TOTAL POR CATEGORIA - RESUMEN',
+            id: 'comparativoinscritosporcategoriatotal',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return(
+                    <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                        <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'INSCRITOS POR CATEGORIA'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={dataInscritosCategoria}/>
+                    </Col>
+                )
+            }
+        )
+        },
+        {
+            isComparative: true,
+            title: 'COMPRA DE SEMANAS (SESIONES) POR SOCIO',
+            id: 'COMPARATIVOPORSESIONESPORPROGRAMA',
+            HTML: dataAlter.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                    {/* <FormatTable data={d.agrupadoPorSesiones}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} isSesion={true} arrayEstadistico={d.agrupadoPorSesiones} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
+                </Col>
+            )
+            }
+            )
+        },
+        {
+            title: 'COMPRA DE SEMANAS (SESIONES) POR SOCIO - TOTAL',
+            id: 'COMPARATIVOPORSESIONESTOTAL',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                    <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'SESIONES'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorSesiones}/>
+                </Col>
+            )
+            }
+            )
+        },
+        {
+            isComparative: true,
+            title: 'SOCIOS PAGANTES POR HORARIO VS AFORO ',
+            id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
+            HTML: dataAlter.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm aforo={d.aforo} aforoTurno={d.aforo_turno} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorario} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
+                </Col>
+            )
+            }
+            )
+        },
+        {
+            title: 'SOCIOS PAGANTES POR HORARIO VS AFORO  - TOTAL',
+            id: 'COMPARATIVOPORHORARIOTOTAL',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                    <TableTotal titleH1={''} isTime avataresDeProgramas={d.avataresDeProgramas} labelTotal={'HORARIO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorHorario}/>
+                </Col>
+            )
+            }
+        )
+        },
+        {
+            isComparative: true,
+            title: 'SOCIOS PAGANTES POR GENERO',
+            id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
+            HTML: dataAlter.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} arrayEstadistico={d.porSexo} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'GENERO'}/>
+                </Col>
+            )
+            }
+            )
+        },
+        {
+            title: 'SOCIOS PAGANTES POR GENERO - TOTAL',
+            id: 'COMPARATIVOPORHORARIOTOTAL',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                    <TableTotal titleH1={''} isTime avataresDeProgramas={d.avataresDeProgramas} labelTotal={'GENERO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porSexo}/>
+                </Col>
+            )
+            }
+        )
+        },
+        {
+            isComparative: true,
+            title: 'SOCIOS PAGANTES POR DISTRITO',
+            id: 'COMPARATIVOPROGRAMASPORDISTRITO',
+            HTML: dataAlter.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
+                    arrayEstadistico={d.porDistrito} 
+                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
+                    isViewSesiones={true} 
+                    labelParam={'DISTRITO'}/>
+                </Col>
+            )
+            }
+            )
+        },
+        {
+            title: 'SOCIOS PAGANTES POR DISTRITO - TOTAL',
+            id: 'COMPARATIVOTOTALPORDISTRITO',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                    return (
+                    <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                        <TableTotal  titleH1={''}  avataresDeProgramas={d.avataresDeProgramas} labelTotal={'DISTRITO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porDistrito}/>
+                    </Col>
+                )
+                }
+            )
+        },
+        
+        {
+            isComparative: true,
+            title: 'SOCIOS PAGANTES RANGO DE EDAD POR PROGRAMA / GENERO',
+            id: 'COMPARATIVORANGODEEDAD/SEXOPORPROGRAMA',
+            HTML: dataAlter.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
+                    arrayEstadistico={d.agruparPorRangoEdades} 
+                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
+                    // isViewSesiones={true} 
+                    labelParam={'RANGO DE EDAD'}/>
+                </Col>
+            )
+            }
+            )
+        },
+        {
+            title: 'SOCIOS PAGANTES RANGO DE EDAD TOTAL / GENERO ',
+            id: 'COMPARATIVORANGODEEDADTOTAL',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                    <TableTotal isNeedGenere={true} titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'RANGO DE EDAD'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agruparPorRangoEdades}/>
+                </Col>
+            )
+            }
+        )
+        },
+        {
+            isComparative: true,
+            title: 'SOCIOS PAGANTES ESTADO CIVIL',
+            id: 'COMPARATIVOESTADOCIVILPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
@@ -390,93 +1079,144 @@ export const ResumenComparativo = () => {
             )
         },
         {
-            isComparative: true,
-            title: 'SOCIOS TOTAL POR HORARIO',
-            id: 'SOCIOSTOTALPORHORARIO',
-            HTML: dataAlter.map(d=>{
+            title: 'SOCIOS PAGANTES ESTADO CIVIL - TOTAL',
+            id: 'COMPARATIVOTOTALESTADOCIVIL',
+            HTML: dataAlterIdPgmCero.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
-                    arrayEstadistico={d.agrupadoPorHorario} 
-                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
-                    isViewSesiones={true} 
-                    labelParam={'HORARIO'}/>
-                </Col>
-            )
-            }
-            )
-        },
-        {
-            isComparative: true,
-            title: 'SOCIOS TOTAL POR DISTRITO',
-            id: 'SOCIOSTOTALPORDISTRITO',
-            HTML: dataAlter.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
-                    arrayEstadistico={d.porDistrito} 
-                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
-                    isViewSesiones={true} 
-                    labelParam={'HORARIO'}/>
-                </Col>
-            )
-            }
-            )
-        },
-        {
-            isComparative: true,
-            title: 'SOCIOS TOTAL POR RANGO DE EDAD',
-            id: 'SOCIOSTOTALPORRANGODEEDAD',
-            HTML: dataAlter.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
-                    arrayEstadistico={d.agrupadoPorRangoEdadSexo} 
-                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
-                    isViewSesiones={true} 
-                    labelParam={'HORARIO'}/>
-                </Col>
-            )
-            }
-            )
-        },
-        // {
-        //     isComparative: true,
-        //     title: 'SOCIOS TOTAL POR HORARIO',
-        //     id: 'COMPARATIVOESTADOCIVIL',
-        //     HTML: dataAlter.map(d=>{
-        //         return (
-        //         <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-        //             {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-        //             <ItemCardPgm avatarPrograma={d.avatarPrograma} 
-        //             arrayEstadistico={d.agrupadoPorHorario} 
-        //             onOpenModalSOCIOS={onOpenModalSOCIOS} 
-        //             isViewSesiones={true} 
-        //             labelParam={'HORARIO'}/>
-        //         </Col>
-        //     )
-        //     }
-        //     )
-        // },
-        // {
-        //     title: 'COMPARATIVO ESTADO CIVIL - TOTAL',
-        //     id: 'COMPARATIVOTOTALESTADOCIVIL',
-        //     HTML: dataAlterIdPgmCero.map(d=>{
-        //         return (
-        //         <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-        //         <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ESTADO CIVIL'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorEstadoCivil}/>
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ESTADO CIVIL'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorEstadoCivil}/>
                     
-        //         </Col>
-        //     )
-        //     }
-        // )
-        // },
+                </Col>
+            )
+            }
+        )
+        },
+        {
+            isComparative: true,
+            title: 'COMPARATIVO VENTAS ASESORES',
+            id: 'COMPARATIVOASESORES',
+            HTML: dataAlter.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
+                    arrayEstadistico={d.agrupadoPorVendedores} 
+                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
+                    isViewSesiones={true} 
+                    labelParam={'ASESORES'}/>
+                </Col>
+            )
+            }
+            )
+        },
+        {
+            title: 'COMPARATIVO VENTAS ASESORES - TOTAL',
+            id: 'COMPARATIVOASESORESTOTAL',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorVendedores}/>
+                    
+                </Col>
+            )
+            }
+        )
+        },
+        {
+            isComparative: true,
+            title: 'SOCIOS PAGANTES POR PROCEDENCIA',
+            id: 'COMPARATIVOPROCEDENCIA',
+            HTML: dataAlter.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
+                    arrayEstadistico={d.agrupadoPorProcedencia} 
+                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
+                    isViewSesiones={true} 
+                    labelParam={'ASESORES'}/>
+                </Col>
+            )
+            }
+            )
+        },
+        {
+            title: 'SOCIOS PAGANTES POR PROCEDENCIA - TOTAL',
+            id: 'COMPARATIVOPROCEDENCIATOTAL',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorProcedencia}/>
+                    
+                </Col>
+            )
+            }
+        )
+        },
+        
+        {
+            isComparative: true,
+            title: 'SOCIOS CANJE POR PROCEDENCIA',
+            id: 'COMPARATIVOPROCEDENCIA',
+            HTML: dataAlter.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
+                    arrayEstadistico={d.agrupadoPorProcedenciaCeros} 
+                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
+                    isViewSesiones={true} 
+                    labelParam={'PROCEDENCIA'}/>
+                </Col>
+            )
+            }
+            )
+        },
+        {
+            title: 'SOCIOS CANJE POR PROCEDENCIA - TOTAL',
+            id: 'COMPARATIVOPROCEDENCIATOTAL',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                <TableTotal IsVentaCero titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'PROCEDENCIA'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorProcedenciaCeros}/>
+                    
+                </Col>
+            )
+            }
+        )
+        },
+        {
+            isComparative: true,
+            title: 'SOCIOS PAGANTES POR PROMOCIONES',
+            id: 'COMPARATIVOPROMOCIONESPORPROGRAMA',
+            HTML: dataAlter.map(d=>{
+                return (
+                    <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
+                    arrayEstadistico={d.agrupadoPorTarifas} 
+                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
+                    isViewSesiones={true} 
+                    labelParam={'PROMO'}/>
+                </Col>
+            )
+            }
+        )
+        },
+        {
+            title: 'SOCIOS PAGANTES POR PROMOCIONES - TOTAL',
+            id: 'COMPARATIVOTOTALDEPROMOCIONES',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+        <FormatDataTable arrayEstadistico={d.agrupadoPorTarifas}/>
+            {/* <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'PROMOCION'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorTarifas}/> */}
+                </Col>
+            )
+            }
+        )
+        },
     ]
-    
-    const dispatch = useDispatch()
     const [extractTitle, setextractTitle] = useState('')
     const sectionRefs = data.map(() =>
         useInView({
@@ -490,8 +1230,6 @@ export const ResumenComparativo = () => {
             setextractTitle(data[index].title)
             // setActiveSection(sections[index].title);
             // dispatch(onSetViewSubTitle(`${data[index].title}`))
-
-            console.log(`Estás en: ${data[index].title}`);
           }
         });
       }, [sectionRefs]);
@@ -511,8 +1249,9 @@ export const ResumenComparativo = () => {
     <Row>
         {data.map((section, index) => (
             <Col xxl={12} ref={sectionRefs[index].ref}>
-            <Row>
+            <Row className='d-flex justify-content-center'>
                 <br/>
+        {/* <h1 className='pt-5' style={{fontSize: '60px'}}>{section.title}</h1> */}
                     {section.HTML}
             </Row>
         </Col>
@@ -521,16 +1260,217 @@ export const ResumenComparativo = () => {
     </>
 )
 }
-
                                     <ModalTableSocios
                                     clickDataSocios={clickDataSocios}
                                     avatarProgramaSelect={avatarProgramaSelect}
                                     clickDataLabel={clickDataLabel} show={isOpenModalSocio} onHide={onCloseModalSOCIOS}/>
-                                    {/* <ModalTableSocios
-                                    clickDataSocios={clickDataSocios}
-                                    avatarProgramaSelect={avatarProgramaSelect}
-                                    clickDataLabel={clickDataLabel} show={isOpenModalSocio} onHide={onCloseModalSOCIOS}/> */}
         {/* <ModalSocios clickDataLabel={clickDataLabel} onHide={onCloseModalSOCIOS} data={clickDataSocios} show={isOpenModalSocio}/> */}
     </>
   )
+}
+
+// Agrupar por id_pgm con categorías separadas
+function agruparVentasConDetalles({
+    ventasProgramaNuevo = [],
+    ventasProgramaReinscritos = [],
+    ventasProgramaRenovaciones = [],
+    ventasProgramaTraspasos = [],
+    ventasProgramaTransferencias = [],
+}) {
+    const agrupados = {};
+
+    const agregarDetalles = (array, tipo) => {
+        array.forEach((venta) => {
+            const { name_pgm, id_pgm, tb_image, detalle_ventaMembresium } = venta;
+
+            // Generar una clave única para el agrupamiento
+            const key = `${name_pgm}_${id_pgm}`;
+
+            // Si el grupo no existe, se inicializa
+            if (!agrupados[key]) {
+                agrupados[key] = {
+                    name_pgm,
+                    id_pgm,
+                    tb_image: [],
+                    detallesNuevos: [],
+                    detallesReinscritos: [],
+                    detallesRenovaciones: [],
+                    detallesTraspasos: [],
+                    detalleTransferencias: [],
+                };
+            }
+
+            // Agregar `tb_image` solo si no está ya incluido
+            if (!agrupados[key].tb_image.some((img) => img === tb_image)) {
+                agrupados[key].tb_image.push(tb_image);
+            }
+            console.log(tipo, "dddd");
+            
+
+            // Agregar el detalle al tipo correspondiente
+            agrupados[key][tipo].push(detalle_ventaMembresium);
+        });
+    };
+
+    // Procesar cada tipo de ventas
+    agregarDetalles(ventasProgramaNuevo, "detallesNuevos");
+    agregarDetalles(ventasProgramaReinscritos, "detallesReinscritos");
+    agregarDetalles(ventasProgramaRenovaciones, "detallesRenovaciones");
+    agregarDetalles(ventasProgramaTraspasos, "detallesTraspasos");
+    agregarDetalles(ventasProgramaTransferencias, "detalleTransferencias");
+    
+
+    // Convertir el objeto agrupado en un array
+    return Object.values(agrupados);
+}
+
+// Ejemplo de uso con los arrays proporcionados
+// const ventasUnidas = 
+
+
+  const groupByIdOrigen = (data) => {
+	return data.reduce((acc, item) => {
+		const idOrigen = item.tb_ventum?.id_origen;
+
+		// Busca si ya existe un grupo para este id_origen
+		let group = acc.find((g) => g.id_origen === idOrigen);
+
+		if (!group) {
+			// Si no existe, crea uno nuevo
+			group = { id_origen: idOrigen, items: [] };
+			acc.push(group);
+		}
+
+		// Agrega el elemento al grupo correspondiente
+		group.items.push(item);
+		return acc;
+	}, []);
+};
+const groupByIdFactura = (data) => {
+  return data.reduce((acc, item) => {
+      const idFactura = item.tb_ventum?.id_tipoFactura;
+
+      // Busca si ya existe un grupo para este id_origen
+      let group = acc.find((g) => g.id_tipoFactura === idFactura);
+
+      if (!group) {
+          // Si no existe, crea uno nuevo
+          group = { id_tipoFactura: idFactura, items: [] };
+          acc.push(group);
+      }
+
+      // Agrega el elemento al grupo correspondiente
+      group.items.push(item);
+      return acc;
+  }, []);
+};
+
+
+function agruparMarcacionesPorSemana(data=[]) {
+    if (!Array.isArray(data)) {
+        throw new Error("El parámetro 'data' debe ser un array.");
+    }
+    return data?.map((obj) => {
+        const inicioMem = dayjs(obj.fec_inicio_mem);
+        // Validar que `tb_marcacions` sea un array
+        if (!Array.isArray(obj.tb_marcacions)) {
+            console.warn("El objeto 'tb_marcacions' no es un array o está ausente.", obj);
+            return; // Saltar al siguiente objeto
+        }
+        // Filtrar la primera marcación de cada día
+        const primerasMarcaciones = Object.values(
+            obj.tb_marcacions?.reduce((acumulador, marcacion) => {
+                const fechaDia = dayjs(marcacion.tiempo_marcacion).format('YYYY-MM-DD');
+                if (
+                    !acumulador[fechaDia] ||
+                    dayjs(marcacion.tiempo_marcacion).isBefore(
+                        acumulador[fechaDia].tiempo_marcacion
+                    )
+                ) {
+                    acumulador[fechaDia] = marcacion; // Guardar la más temprana del día
+                }
+                return acumulador;
+            }, {})
+        );
+
+        // Agrupar las primeras marcaciones por semana
+        const marcacionPorSemana = primerasMarcaciones.reduce((acumulador, marcacion) => {
+            const fechaMarcacion = dayjs(marcacion.tiempo_marcacion);
+
+            // Calcular la semana desde el inicio de la membresía
+            const diasDesdeInicio = fechaMarcacion.diff(inicioMem, 'day');
+            const semana = Math.floor(diasDesdeInicio / 7) + 1;
+
+            // Buscar o crear el grupo para esta semana
+            let grupo = acumulador.find((g) => g.semana === semana);
+            if (!grupo) {
+                grupo = { semana, items: [] };
+                acumulador.push(grupo);
+            }
+
+            // Añadir la marcación al grupo
+            grupo.items.push(marcacion);
+
+            return acumulador;
+        }, []);
+
+        // Retornar el objeto original con el nuevo array `marcacionPorSemana`
+        return { ...obj, marcacionPorSemana };
+    });
+}
+
+function agruparPrimeraMarcacionGlobal(data) {
+    const marcacionesPorSemanaGlobal = {};
+    // if (!Array.isArray(data)) {
+    //     throw new Error("El parámetro 'data' debe ser un array.");
+    // }
+    data?.forEach((obj) => {
+        const inicioMem = dayjs(obj?.fec_inicio_mem);
+
+        // Validar que `tb_marcacions` sea un array
+        if (!Array.isArray(obj.tb_marcacions)) {
+            console.warn("El objeto 'tb_marcacions' no es un array o está ausente.", obj);
+            return; // Saltar al siguiente objeto
+        }
+        // Filtrar la primera marcación de cada día
+        const primerasMarcaciones = Object.values(
+            obj.tb_marcacions?.reduce((acumulador, marcacion) => {
+                const fechaDia = dayjs(marcacion?.tiempo_marcacion).format('YYYY-MM-DD');
+                if (
+                    !acumulador[fechaDia] ||
+                    dayjs(marcacion?.tiempo_marcacion).isBefore(
+                        acumulador[fechaDia]?.tiempo_marcacion
+                    )
+                ) {
+                    acumulador[fechaDia] = marcacion; // Guardar la más temprana del día
+                }
+                return acumulador;
+            }, {})
+        );
+
+        // Agrupar las primeras marcaciones por semana
+        primerasMarcaciones.forEach((marcacion) => {
+            const fechaMarcacion = dayjs(marcacion.tiempo_marcacion);
+
+            // Calcular la semana desde el inicio de la membresía
+            const diasDesdeInicio = fechaMarcacion.diff(inicioMem, 'day');
+            const semana = Math.floor(diasDesdeInicio / 7) + 1;
+
+            // Inicializar el grupo de la semana si no existe
+            if (!marcacionesPorSemanaGlobal[semana]) {
+                marcacionesPorSemanaGlobal[semana] = { propiedad: semana, items: [] };
+            }
+
+            // Añadir la marcación al grupo TOTAL
+            marcacionesPorSemanaGlobal[semana].items.push({
+                ...marcacion,
+                fec_inicio_mem: obj.fec_inicio_mem,
+                tb_marcacions: obj.tb_marcacions,
+                marcacionPorSemana: obj.marcacionPorSemana,
+            });
+        });
+    });
+
+    // Convertir el objeto en un array
+    return Object.values(marcacionesPorSemanaGlobal);
 }

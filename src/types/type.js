@@ -177,9 +177,6 @@ export const arrayFacturas = [
 	{ value: 703, label: 'CANJE' },
 ];
 export const arrayOrigenDeCliente = [
-	// { value: 684, label: 'TIS', order: 1 },
-	// { value: 685, label: 'Invitados', order: 11 },
-	// { value: 687, label: 'Llamadas', order: 9 },
 	{ value: 686, label: 'Walking', order: 7 },
 	{ value: 687, label: 'Mail', order: 10 },
 
@@ -193,23 +190,22 @@ export const arrayOrigenDeCliente = [
 	{ value: 693, label: 'Instagram', order: 1 },
 	{ value: 694, label: 'facebook', order: 2 },
 	{ value: 695, label: 'tiktok', order: 3 },
-	{ value: 696, label: 'EX-PT', order: 8 }, //TODO LOS TRASPASOS SON EX-PT
+	// { value: 696, label: 'EX-PT', order: 8 }, //TODO LOS TRASPASOS SON EX-PT
 	{ value: 689, label: 'Wsp organico', order: 11 },
-	// { value: 697, label: 'CANJE' },
-
-	// { value: 31, label: 'Referidos 1' },
-	// { value: 32, label: 'Cartera de renovacion 1' },
-	// { value: 33, label: 'Cartera de reinscripcion 1' },
-
-	// { value: 41, label: 'OTROS 1' },
-	// { value: 40, label: 'OTROS 2' },
-
-	// { value: 0, label: 'OTROS 3' },
-
-	// { value: 201, label: 'OTROS 4' },
-	// { value: 200, label: 'OTROS 5' },
-	// { value: 34, label: 'Instagram 1' },
-	// { value: 30, label: 'OTROS 7' },
+	{ value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
+	{ value: 690, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
+	{ value: 690, label: 'INFLUENCER DE VENTAS', order: 16 },
+];
+export const arrayOrigenEnCeroDeCliente = [
+	{ value: 688, label: 'USO DE IMAGEN (RAFAEL PIZARRO)', order: 11 },
+	{ value: 697, label: 'USO DE IMAGEN (LANDING)', order: 12 },
+	{ value: 698, label: '(RAL)', order: 13 },
+	// { value: 691, label: 'Cartera de renovacion', order: 4 },
+	// { value: 692, label: 'Cartera de reinscripcion', order: 5 },
+	// { value: 696, label: 'EX-PT', order: 8 },
+	{ value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
+	{ value: 690, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
+	{ value: 690, label: 'INFLUENCER DE VENTAS', order: 16 },
 ];
 
 export const arrayDistritoTest = [
@@ -229,6 +225,9 @@ export const arrayDistritoTest = [
 	{ label: 'La Molina', order: 12 },
 	// { label: 'Callao', order: 10 },
 	{ label: 'San Juan de Lurigancho', order: 13 },
+	// { label: 'Breña', order: 13 },
+	{ label: 'La Victoria', order: 13 },
+	{ label: 'Santa Anita', order: 13 },
 	/* 
 	La Molina,
 	Ate,

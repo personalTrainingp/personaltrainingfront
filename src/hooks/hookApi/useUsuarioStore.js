@@ -36,7 +36,7 @@ export const useUsuarioStore = () => {
 			// 	comentario: comentario_com,
 			// });
 			setloading(true);
-			const { data: dataCliente } = await PTApi.post('/usuario/post-cliente', {
+			const { data: dataCliente } = await PTApi.post('/usuario/post-cliente/598', {
 				...form,
 			});
 			if (selectedFile !== null) {
@@ -85,7 +85,7 @@ export const useUsuarioStore = () => {
 	};
 	const obtenerUsuariosClientes = async () => {
 		try {
-			const { data } = await PTApi.get('/usuario/get-clientes');
+			const { data } = await PTApi.get('/usuario/get-clientes/598');
 			dispatch(onSetClientes(data.clientes));
 		} catch (error) {
 			console.log(error);

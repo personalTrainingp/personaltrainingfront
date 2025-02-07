@@ -6,7 +6,7 @@ import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import config from '@/config'
 import { useGrouped } from './hooks/useGrouped'
 
-export const TableTotal = ({isTime, titleH1, isNeedGenere, labelTicketMedio='Ticket medio', avataresDeProgramas=[], arrayEstadistico=[], labelTotal, onOpenModalSOCIOS}) => {
+export const TableTotal = ({IsVentaCero, isTime, titleH1, isNeedGenere, labelTicketMedio='Ticket medio', avataresDeProgramas=[], arrayEstadistico=[], labelTotal, onOpenModalSOCIOS}) => {
     const { agruparPorSexo } = useGrouped()
     const estadisticas = arrayEstadistico.map(d=>{
         const arrayGeneral = arrayEstadistico.map(f=>f.items).flat()
@@ -30,7 +30,10 @@ export const TableTotal = ({isTime, titleH1, isNeedGenere, labelTicketMedio='Tic
             items: d.items || [],
             propiedad: d.propiedad
         }
-    }).sort((a,b)=>{
+    }).sort((a,b)=>b.monto_total-a.monto_total)
+    /**
+     * 
+     * .sort((a,b)=>{
         if (a.cantidad === b.cantidad) {
             // Si las cantidades son iguales, ordenar por monto
             return b.monto_total-a.monto_total;
@@ -38,6 +41,7 @@ export const TableTotal = ({isTime, titleH1, isNeedGenere, labelTicketMedio='Tic
           // Ordenar por cantidad
           return b.cantidad-a.cantidad;
     })
+     */
   return (
     <Card>
         <h1 className='pt-5' style={{fontSize: '60px'}}>
@@ -73,20 +77,19 @@ export const TableTotal = ({isTime, titleH1, isNeedGenere, labelTicketMedio='Tic
                                                 <tr>
                                                     <th className='text-white text-center'></th>
                                                     <th className='text-white text-center' style={{width: '290px'}}>{labelTotal} </th>
+                                                    {
+                                                        !IsVentaCero && <th className='text-white text-center'> <SymbolSoles isbottom={false} fontSizeS={'16px'}/>  VENTA TOTAL </th>
+                                                    }
                                                     <th className='text-white text-center'>SOCIOS </th>
                                                     <th className='text-white text-center'>FEM. </th>
                                                     <th className='text-white text-center'>MASC. </th>
+                                                    {
+                                                        !IsVentaCero &&<th className='text-white text-center'> % VENTA TOTAL</th>
+                                                    }
                                                     <th className='text-white text-center'> % SOCIOS </th>
                                                     <th className='text-white text-center'>
                                                         TICKET MEDIO 
                                                         </th>
-                                                    <th className='text-white text-center'> 
-                                                    <SymbolSoles isbottom={false} fontSizeS={'16px'}/>  VENTA TOTAL 
-                                                        {/* <div style={{width: '500px'}}>
-            
-                                                        </div> */}
-                                                        </th>
-                                                    <th className='text-white text-center'> % VENTA TOTAL</th>
                                                 </tr>
                                             </thead>
                                             ):(
@@ -95,18 +98,25 @@ export const TableTotal = ({isTime, titleH1, isNeedGenere, labelTicketMedio='Tic
                                                 <tr>
                                                 <th className='text-white text-center'></th>
                                                     <th className='text-white text-center' style={{width: '290px'}}>{labelTotal} </th>
+                                                    {
+                                                        !IsVentaCero &&
+                                                        <th className='text-white text-center'> 
+                                                            <SymbolSoles isbottom={false} fontSizeS={'16px'}/>  VENTA TOTAL 
+                                                        </th>
+                                                    }
                                                     <th className='text-white text-center'>SOCIOS </th>
+                                                    {
+                                                        !IsVentaCero &&
+                                                        <th className='text-white text-center'> % VENTA TOTAL</th>
+                                                    }
                                                     <th className='text-white text-center'> % SOCIOS </th>
+                                                    {
+                                                        !IsVentaCero &&
                                                     <th className='text-white text-center'>
                                                         TICKET MEDIO 
                                                         </th>
-                                                    <th className='text-white text-center'> 
-                                                    <SymbolSoles isbottom={false} fontSizeS={'16px'}/>  VENTA TOTAL 
-                                                        {/* <div style={{width: '500px'}}>
-            
-                                                        </div> */}
-                                                        </th>
-                                                    <th className='text-white text-center'> % VENTA TOTAL</th>
+
+                                                    }
                                                 </tr>
                                             </thead>
                                             )
@@ -118,6 +128,7 @@ export const TableTotal = ({isTime, titleH1, isNeedGenere, labelTicketMedio='Tic
                                             return (
                                                 <ItemTableTotal 
                                                 index={index}
+                                                IsVentaCero={IsVentaCero}
                                                 isTime
                                                 isNeedGenere={isNeedGenere}
                                                 pFem={p.pFem.length}
@@ -142,6 +153,12 @@ export const TableTotal = ({isTime, titleH1, isNeedGenere, labelTicketMedio='Tic
                                     <td>
                                         <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}>TOTAL</span></li>
                                     </td>
+                                    {
+                                        !IsVentaCero && 
+                                        <td>
+                                            <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}><NumberFormatMoney amount={estadisticas.reduce((acc, item)=>acc+item.monto_total,0)}/></span></li>
+                                        </td>
+                                    }
                                     <td> 
                                         <li className=' text-center list-unstyled p-2'>
                                             <span className='fw-bold text-white' style={{fontSize: '40px'}}>{arrayEstadistico?.reduce((acc, curr) => acc + curr.items?.length, 0)}</span>
@@ -156,7 +173,6 @@ export const TableTotal = ({isTime, titleH1, isNeedGenere, labelTicketMedio='Tic
                                             </td>
                                         )
                                     }
-                                    
                                     {
                                         isNeedGenere && (
                                                 <td> 
@@ -169,15 +185,18 @@ export const TableTotal = ({isTime, titleH1, isNeedGenere, labelTicketMedio='Tic
                                     <td>
                                         <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}>{estadisticas.reduce((acc, item)=>acc+item.porcentajeCantidad,0).toFixed(2)}</span></li>
                                     </td>
-                                    <td>
-                                        <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}><NumberFormatMoney amount={estadisticas.reduce((acc, item)=>acc+item.monto_total,0)/arrayEstadistico?.reduce((acc, curr) => acc + curr.items?.length, 0)}/></span></li>
-                                    </td>
-                                    <td>
-                                        <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}><NumberFormatMoney amount={estadisticas.reduce((acc, item)=>acc+item.monto_total,0)}/></span></li>
-                                    </td>
-                                    <td>
-                                        <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}>{estadisticas.reduce((acc, item)=>acc+item.porcentajeCantidad,0).toFixed(2)}</span></li>
-                                    </td>
+                                    {
+                                        !IsVentaCero &&
+                                        <td>
+                                            <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}>{estadisticas.reduce((acc, item)=>acc+item.porcentajeCantidad,0).toFixed(2)}</span></li>
+                                        </td>
+                                    }
+                                    {
+                                        !IsVentaCero && 
+                                        <td>
+                                            <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}><NumberFormatMoney amount={estadisticas.reduce((acc, item)=>acc+item.monto_total,0)/arrayEstadistico?.reduce((acc, curr) => acc + curr.items?.length, 0)}/></span></li>
+                                        </td>
+                                    }
                                     
                                 </tr>
                             </Table>

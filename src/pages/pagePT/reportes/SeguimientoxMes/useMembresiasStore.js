@@ -5,6 +5,7 @@ import {
 	FUNMoneyFormatter,
 	NumberFormatMoney,
 } from '@/components/CurrencyMask';
+import dayjs from 'dayjs';
 import { useState } from 'react';
 
 export const useComparativoAnualStore = () => {
@@ -14,8 +15,25 @@ export const useComparativoAnualStore = () => {
 			console.log('funciona');
 
 			const { data } = await PTApi.get('/venta/reporte/obtener-todo-membresias');
-			console.log(agruparPorMesesConCeros(data.membresias));
-			setviewDataMembresias(agruparPorMesesConCeros(data.membresias));
+			const dataAlter = data.membresias.map((mem) => {
+				const fecha_inicio_memb = mem.detalle_ventaMembresia[0]?.fec_inicio_mem;
+				const fecha_fin_memb = mem.detalle_ventaMembresia[0]?.fec_fin_mem;
+				const cliente = mem.tb_cliente.nombres_apellidos_cli;
+
+				return {
+					detalle_ventaMembresia: mem.detalle_ventaMembresia.map((m) => {
+						return {
+							cliente,
+							...m,
+							fec_inicio_mem: dayjs.utc(m.fec_inicio_mem).format('YYYY-MM-DD'),
+						};
+					}),
+				};
+			});
+			console.log({ dataAlter });
+
+			console.log(agruparPorMesesConCeros(dataAlter));
+			setviewDataMembresias(agruparPorMesesConCeros(dataAlter));
 		} catch (error) {
 			console.log(error);
 		}
@@ -36,13 +54,12 @@ function agruparPorMesesConCeros(data) {
 			const { id_pgm, fec_inicio_mem, fec_fin_mem } = membresia;
 
 			// Crear fechas de inicio (fijo) y fin (última fecha de membresía)
-			const fechaInicio = new Date(
-				Math.max(
-					new Date(anioInicioFijo, mesInicioFijo - 1).getTime(),
-					new Date(fec_inicio_mem).getTime()
-				)
-			);
-			const fechaFin = new Date(fec_fin_mem);
+			const fechaInicio = dayjs(fec_inicio_mem).isBefore(
+				dayjs(`${anioInicioFijo}-${mesInicioFijo}-01`)
+			)
+				? dayjs(`${anioInicioFijo}-${mesInicioFijo}-01`)
+				: dayjs(fec_inicio_mem);
+			const fechaFin = dayjs(fec_fin_mem);
 
 			// Inicializar el grupo para este id_pgm si no existe
 			let grupo = resultado.find((grupo) => grupo.id_pgm === id_pgm);
@@ -52,10 +69,10 @@ function agruparPorMesesConCeros(data) {
 			}
 
 			// Rellenar meses del rango con sus items
-			let fechaActual = new Date(fechaInicio);
-			while (fechaActual <= fechaFin) {
-				const mes = fechaActual.getMonth() + 1; // Mes (1-12)
-				const anio = fechaActual.getFullYear();
+			let fechaActual = fechaInicio;
+			while (fechaActual.isBefore(fechaFin) || fechaActual.isSame(fechaFin, 'month')) {
+				const mes = fechaActual.month() + 1; // Mes (1-12)
+				const anio = fechaActual.year();
 
 				// Buscar o agregar un mes y año al grupo
 				let itemMes = grupo.items.find((i) => i.mes === mes && i.anio === anio);
@@ -71,7 +88,7 @@ function agruparPorMesesConCeros(data) {
 				itemMes.total += 1; // Aquí puedes cambiar por la lógica para calcular el total según lo que desees
 
 				// Avanzar al siguiente mes
-				fechaActual.setMonth(fechaActual.getMonth() + 1);
+				fechaActual = fechaActual.add(1, 'month');
 			}
 		});
 	});

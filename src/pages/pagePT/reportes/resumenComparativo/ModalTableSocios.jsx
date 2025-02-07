@@ -32,7 +32,7 @@ export const ModalTableSocios = ({clickDataSocios, avatarProgramaSelect, clickDa
             fecha_nacimiento: `${d.tb_ventum.tb_cliente.fecha_nacimiento}`,
             edad: calcularDiferenciaFechas(d.tb_ventum.tb_cliente.fecha_nacimiento, d.tb_ventum.fecha_venta ),
             nombre_tarifa: '',
-            origen_label: arrayOrigenDeCliente.find(f=>f.value===id_origen).label,
+            // origen_label: arrayOrigenDeCliente.find(f=>f.value===id_origen).label,
             // fecha_inicio: '',
             // fecha_fin: '',
             observacion: d.tb_ventum.observacion,

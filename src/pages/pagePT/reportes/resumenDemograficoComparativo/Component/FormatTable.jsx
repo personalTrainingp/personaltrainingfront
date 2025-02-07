@@ -7,7 +7,7 @@ function sumarValoresPorHeader(array, isSummary) {
     return item ? total + item.value : total;
   }, 0);
 }
-export const FormatTable = ({ data, tFood, onOpenModalSOCIOS }) => {
+export const FormatTable = ({ data, tFood }) => {
     const [tableData, setTableData] = useState(data);
     const [sortOrder, setSortOrder] = useState('asc');
     const [sortKey, setSortKey] = useState('');
@@ -24,15 +24,15 @@ export const FormatTable = ({ data, tFood, onOpenModalSOCIOS }) => {
       setSortKey(key);
       setTableData(sortedData);
     };
-    console.log({tableData});
+    console.log({data});
     
     return (
       <Table className="table-centered mb-0"
       striped
       responsive>
-        <thead className='bg-primary fs-3'>
+        <thead className='bg-primary fs-2'>
           <tr>
-            {data[0].map((col) => (
+            {data[0]?.map((col) => (
               <th className={`text-white`} key={col.header}>
                 {col.header}{' '}
                 {/* <Button
@@ -51,9 +51,11 @@ export const FormatTable = ({ data, tFood, onOpenModalSOCIOS }) => {
           {tableData.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {row.map((col, colIndex) => (
-                <td onClick={()=>onOpenModalSOCIOS(col.items, '', 'SS')} key={colIndex}>
+                <td key={colIndex}>
                   <li className={`d-flex flex-row justify-content-between p-2 ${(`${col.value}`.split(' ')[1]==='PM'?'bg-primary text-white':`${col.isPropiedad?'text-primary':'text-black'}`)}`}>
-                                        <span style={{fontSize: '40px'}} className={`fw-bold ml-3 fs-2`}>{col.value}</span>
+                    
+                                        <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{col.value}</span>
+                    {/* {col.isPropiedad && <div className='pi pi-external-link m-0 cursor-pointer' />} */}
                   </li>
                 </td>
               ))}
@@ -61,9 +63,9 @@ export const FormatTable = ({ data, tFood, onOpenModalSOCIOS }) => {
           ))}
         </tbody>
         <tr className='bg-primary'>
-        {data[0].map((col) => (
+        {data[0]?.map((col) => (
           <td>
-          <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white fs-2'>{col.tFood}</span></li>
+          <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '40px'}}>{col.tFood}</span></li>
       </td>
               
             ))}

@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import { ItemTablePgm } from './ItemTablePgm';
 import { FormatTable } from './Component/FormatTable';
 
-export const ItemCardPgm = ({avatarPrograma, aforo, isViewGenere, arrayEstadistico, labelParam, onOpenModalSOCIOS, isViewSesiones, isTarifaCash}) => {
+export const ItemCardPgm = ({avatarPrograma, isSesion, aforo, aforoTurno, isViewGenere, arrayEstadistico, labelParam, onOpenModalSOCIOS, isViewSesiones, isTarifaCash}) => {
   
   return (
     <Card>
@@ -14,11 +14,14 @@ export const ItemCardPgm = ({avatarPrograma, aforo, isViewGenere, arrayEstadisti
                         <Card.Body>
                           {
                             aforo && (
-                              <h1 className='text-center'>AFORO {aforo}</h1>
+                              <>
+                                <h1 className='text-center'>AFORO POR TURNO {aforo}</h1>
+                                <h1 className='text-center'>AFORO POR HORA { aforoTurno}</h1>
+                              </>
                             )
                           }
                             <br/>
-                            <FormatTable data={arrayEstadistico}/>
+                            <FormatTable isSesion={isSesion} data={arrayEstadistico}/>
                         </Card.Body>
                     </Card>
   )

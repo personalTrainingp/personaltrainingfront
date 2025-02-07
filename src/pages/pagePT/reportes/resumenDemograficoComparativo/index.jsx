@@ -1,1 +1,1 @@
-export { PrincipalView as default } from './PrincipalView'
+export { PrincipalView as default } from './PrincipalView';

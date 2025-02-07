@@ -19,7 +19,7 @@ export const InventarioTotalizado = () => {
     const [ubicacion, setubicacion] = useState('')
     const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
     useEffect(() => {
-        obtenerArticulos(599)
+        obtenerArticulos(598)
         // obtenerProveedoresUnicos()
     }, [])
     const onOpenModalInventario = (items, ubicacion)=>{
@@ -58,9 +58,9 @@ export const InventarioTotalizado = () => {
     <>
     <PageBreadcrumb title={'INVENTARIO VALORIZADO DE ACTIVOS'} subName={'T'}/>
     <TabView>
-        <TabPanel header={'CIRCUS'}>
+        {/* <TabPanel header={'CIRCUS'}>
             <DataView id_empresa={599} label_empresa={'CIRCUS'}/>
-        </TabPanel>
+        </TabPanel> */}
         <TabPanel header={'CHANGE'}>
             <DataView id_empresa={598} label_empresa={'CHANGE'}/>
         </TabPanel>

@@ -978,3 +978,113 @@
     </>
 )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<Col style={{paddingBottom: '1px !important'}} xxl={4}>
+                    <Card>
+                        <Card.Header className=' align-self-center'>
+                            {/* <Card.Title>
+                                <h4>{d.name_pgm}</h4>
+                            </Card.Title> */}
+                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
+                            
+                        </Card.Header>
+                        <Card.Body style={{paddingBottom: '1px !important'}}>
+                            <br/>
+                            <Table
+                                                // style={{tableLayout: 'fixed'}}
+                                                className="table-centered mb-0"
+                                                // hover
+                                                striped
+                                                responsive
+                                            >
+                                                
+                                                <thead className='bg-primary fs-3'>
+                                                    <tr>
+                                                        <th className='text-white '>RANGO EDAD </th>
+                                                        <th className='text-white '> SOCIOS </th>
+                                                        <th className='text-white '>FEMENINO </th>
+                                                        <th className='text-white '>MASCULINO </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        d.agruparPorRangoEdades.map(p=>{
+                                                            return (
+                                                                <tr onClick={()=>onOpenModalSOCIOS(p.items, d.avatarPrograma, `RANGO DE EDAD - ${p.propiedad}`)}>
+                                                                        <td className=''>
+                                                                            <div className='d-flex justify-content-end pr-5'>
+                                                                                <span className='fw-bold text-primary fs-1 text-center ml-4'>{p.propiedad}</span>
+                                                                            </div>
+
+                                                                        </td>
+                                                                        <td className=''>
+                                                                            <div className='d-flex justify-content-end' style={{width: '45px'}}>
+                                                                            <span style={{fontSize: '40px'}} className='fw-bold fs-1 ml-4 '>{p.items.length}</span>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div className='d-flex justify-content-end' style={{width: '120px'}}>
+                                                                                <span className='fw-bold fs-1 mr-5'>{p.sexo[0].items.length}</span>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className=''>
+                                                                            <div className='d-flex justify-content-end' style={{width: '120px'}}>
+                                                                                <span style={{fontSize: '40px'}} className='fw-bold fs-1 mr-5'>{p.sexo[1].items.length}</span>
+                                                                            </div>
+                                                                        </td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
+                                                </tbody>
+                                                
+                                        <tr className='bg-primary text-white'>
+                                                        <td className=''>
+                                                                                <span className='fw-bold fs-2 text-center ml-4 text-white'>TOTAL</span>
+                                                                        </td>
+                                                                        <td className=''>
+                                                                            <div className='bg-danger d-flex justify-content-end' style={{width: '85px'}}>
+                                                                            <span style={{fontSize: '40px'}} className='fw-bold fs-2 text-white'>{d.agruparPorRangoEdades.reduce((acc, curr) => acc + curr.items.length, 0)}</span>
+
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className=''>
+                                                                            <div className='d-flex justify-content-end' style={{width: '85px'}}>
+                                                                                <span style={{fontSize: '40px'}} className='fw-bold fs-2 text-white ml-5'>{d.agruparPorRangoEdades.reduce((acc, curr) => acc + curr.sexo[0].items.length, 0)}</span>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className=''>
+                                                                            <div className='d-flex justify-content-end' style={{width: '85px'}}>
+                                                                                <span style={{fontSize: '40px'}} className='fw-bold fs-2 text-white ml-5'>{d.agruparPorRangoEdades.reduce((acc, curr) => acc + curr.sexo[1].items.length, 0)}</span>
+                                                                            </div>
+
+                                                                        </td>
+
+                                                        {/* 
+                                                        */}
+                                                    </tr>
+                                            </Table>
+                        </Card.Body>
+                    </Card>
+                </Col>
