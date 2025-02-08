@@ -87,9 +87,9 @@ export const TableTotal = ({IsVentaCero, isTime, titleH1, isNeedGenere, labelTic
                                                         !IsVentaCero &&<th className='text-white text-center'> % VENTA TOTAL</th>
                                                     }
                                                     <th className='text-white text-center'> % SOCIOS </th>
-                                                    <th className='text-white text-center'>
+                                                    {/* <th className='text-white text-center'>
                                                         TICKET MEDIO 
-                                                        </th>
+                                                        </th> */}
                                                 </tr>
                                             </thead>
                                             ):(
@@ -110,13 +110,13 @@ export const TableTotal = ({IsVentaCero, isTime, titleH1, isNeedGenere, labelTic
                                                         <th className='text-white text-center'> % VENTA TOTAL</th>
                                                     }
                                                     <th className='text-white text-center'> % SOCIOS </th>
-                                                    {
+                                                    {/* {
                                                         !IsVentaCero &&
                                                     <th className='text-white text-center'>
                                                         TICKET MEDIO 
                                                         </th>
 
-                                                    }
+                                                    } */}
                                                 </tr>
                                             </thead>
                                             )
@@ -191,12 +191,12 @@ export const TableTotal = ({IsVentaCero, isTime, titleH1, isNeedGenere, labelTic
                                             <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}>{estadisticas.reduce((acc, item)=>acc+item.porcentajeCantidad,0).toFixed(2)}</span></li>
                                         </td>
                                     }
-                                    {
+                                    {/* {
                                         !IsVentaCero && 
                                         <td>
                                             <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}><NumberFormatMoney amount={estadisticas.reduce((acc, item)=>acc+item.monto_total,0)/arrayEstadistico?.reduce((acc, curr) => acc + curr.items?.length, 0)}/></span></li>
                                         </td>
-                                    }
+                                    } */}
                                     
                                 </tr>
                             </Table>

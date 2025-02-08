@@ -190,11 +190,11 @@ export const arrayOrigenDeCliente = [
 	{ value: 693, label: 'Instagram', order: 1 },
 	{ value: 694, label: 'facebook', order: 2 },
 	{ value: 695, label: 'tiktok', order: 3 },
-	// { value: 696, label: 'EX-PT', order: 8 }, //TODO LOS TRASPASOS SON EX-PT
+	{ value: 696, label: 'EX-PT', order: 8 }, //TODO LOS TRASPASOS SON EX-PT
 	{ value: 689, label: 'Wsp organico', order: 11 },
 	{ value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
-	{ value: 690, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
-	{ value: 690, label: 'INFLUENCER DE VENTAS', order: 16 },
+	{ value: 691, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
+	{ value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
 ];
 export const arrayOrigenEnCeroDeCliente = [
 	{ value: 688, label: 'USO DE IMAGEN (RAFAEL PIZARRO)', order: 11 },

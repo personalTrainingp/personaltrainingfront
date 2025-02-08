@@ -28,8 +28,9 @@ import { ItemCardPgm } from './ItemCardPgm'
 import { FormatTable } from './Component/FormatTable'
 import { onSetDataView } from '@/store/data/dataSlice'
 import { FormatDataTable } from './Component/FormatDataTable'
-
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(utc);
+dayjs.extend(customParseFormat);
 export const ResumenComparativo = () => {
     const { obtenerComparativoResumen, dataIdPgmCero, 
             obtenerHorariosPorPgm, dataMarcacions, dataTarifas, dataHorarios, 
@@ -194,7 +195,9 @@ export const ResumenComparativo = () => {
         data?.forEach((item) => {
           const { horario, tarifa_monto } = item;
           
-          const formatHorario = dayjs.utc(horario).format('hh:mm A') 
+          const formatHorario = dayjs.utc(horario).format("hh:mm A")
+          console.log({formatHorario, horario});
+          
         //   console.log(horario, formatHorario, "horarrrr");
           // Verificar si ya existe un grupo con la misma cantidad de sesiones
           let grupo = resultado?.find((g) => g.propiedad === formatHorario);
@@ -363,7 +366,7 @@ export const ResumenComparativo = () => {
             return [
             { header: "GENERO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2) && 0, items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) && 0 },
                 ]
             }
             )
@@ -376,7 +379,7 @@ export const ResumenComparativo = () => {
                 console.log({grupo}, "por dist", sumaMontoxItems);
                 return [
                 { header: "DISTRITO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
-                { header: <>SOCIOS <br/> % SOCIOS</>, isSummary: true, value: <>{sumaXITEMS} <br/> {((sumaXITEMS/sumaTotal)*100).toFixed(2)} </>, tFood: <>{sumaTotal} <br/> {((sumaXITEMS/sumaXITEMS)*100).toFixed(2)}</> },
+                { header: <>SOCIOS <br/> % SOCIOS</>, isSummary: true, value: <>{sumaXITEMS} <br/> {((sumaXITEMS/sumaTotal||0)*100).toFixed(2)} </>, tFood: <>{sumaTotal} <br/> {((sumaXITEMS/sumaXITEMS)*100).toFixed(2) && 0}</> },
                 // { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 { header: "VENTA", isSummary: true, value: <NumberFormatMoney amount={sumaMontoxItems}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaTotalMonto}/>},
                     ]
@@ -399,7 +402,7 @@ export const ResumenComparativo = () => {
             return [
             { header: "EST. CIVIL", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100||0).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100||0).toFixed(2) },
                 ]
             }
             )
@@ -552,8 +555,8 @@ export const ResumenComparativo = () => {
                 }) }
                 : {...item, tb_marcacions: []};
           });
-        const ventasEnCeros = agruparPorVenta(test)?.filter(f=>f.tarifa_monto===0)
-        const ventasSinCeros = agruparPorVenta(test)?.filter(f=>f.tarifa_monto!==0)
+        const ventasEnCeros = agruparPorVenta(test)
+        const ventasSinCeros = agruparPorVenta(test)
         const TransferenciasEnCeros = d.ventas_transferencias
         const TraspasosEnCero = ventasEnCeros?.filter(f=>f.tb_ventum.id_tipoFactura===701)
         const clientesCanjes = ventasEnCeros?.filter(f=>f.tb_ventum.id_tipoFactura===703)
@@ -638,318 +641,10 @@ export const ResumenComparativo = () => {
     
 
     const data = [
-        {
-            title: 'VENTAS POR PROGRAMA',
-            id: 'comparativoventasenprograma',
-            HTML: dataAlter.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important'}} xxl={4}>
-                    <Card>
-                        <Card.Header className=' align-self-center'>
-                            {/* <Card.Title>
-                                <h4>{d.name_pgm}</h4>
-                            </Card.Title> */}
-                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
-                            
-                        </Card.Header>
-                        <Card.Body style={{paddingBottom: '1px !important'}}>
-                            <br/>
-                            <Table
-                                                // style={{tableLayout: 'fixed'}}
-                                                className="table-centered mb-0"
-                                                // hover
-                                                striped
-                                                responsive
-                                            >
-                                                <tbody>
-                                                            <tr>
-                                                                    <td className=''>
-                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>venta de <br/> membresias</span></li>
-                                                                    </td>
-                                                                    <td>
-                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d.ventasSinCeros.length}</span>
-                                                                    </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Venta <br/> acumulada</span></li>
-                                                                </td>
-                                                                <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles}/>}/></span></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Ticket <br/> medio</span></li>
-                                                                </td>
-                                                                <td> 
-                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={(d.sumaDeVentasEnSoles/d.ventasSinCeros.length).toFixed(2)}/>}/></span>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>Sesiones <br/> vendidas</span></li>
-                                                                </td>
-                                                                <td> 
-                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><NumberFormatter amount={d.sumaDeSesiones}/></span>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>PRECIO <br/> por sesion</span></li>
-                                                                </td>
-                                                                <td> 
-                                                                <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles/d.sumaDeSesiones}/>}/></span>
-                                                                </td>
-                                                            </tr>
-                                                            
-                                                </tbody>
-                                            </Table>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            )
-            }
-            )
-        },
-        {
-            title: 'PROMEDIO VENTAS ACUMULADAS - TOTAL',
-            id: 'comparativoventastotal',
-            HTML: dataAlterIdPgmCero.map(d=>{
-                return (
-                    <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                        <Card>
-{/* <h1 className='pt-5' style={{fontSize: '60px'}}>comparativo VENTAS TOTAL</h1> */}
-                            <Card.Header className=' d-flex align-self-center'>
-                                
-                                {
-                                    d.avataresDeProgramas?.map((d, index)=>{
-    
-                                        return(
-                                            <div>
-                                                <img className='m-4' src={`${config.API_IMG.LOGO}${d.name_image}`} height={d.height} width={d.width}/>
-                                                <span style={{fontSize: '50px'}}>{index===2?'':'+'}</span>
-                                            </div>
-                                        )
-                                    }
-                                )
-                                }
-                                {/* <Card.Title>
-                                    <h4>{d.name_pgm}</h4>
-                                </Card.Title> */}
-                                {/* <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/> */}
-                                {/* <h2>TOTAL</h2> */}
-                            </Card.Header>
-                            <Card.Body className='d-flex justify-content-center' style={{paddingBottom: '1px !important'}}>
-                                <br/>
-                                <div  style={{width: '1080px'}}>
-                                <Table
-                                                    // style={{tableLayout: 'fixed'}}
-                                                    className="table-centered mb-0"
-                                                    // hover
-                                                    striped
-                                                    responsive
-                                                >
-                                                    <tbody>
-                                                                <tr>
-                                                                        <td className=''>
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>venta de membresias</span></li>
-                                                                        </td>
-                                                                        <td>
-                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d?.ventasSinCeros?.length}</span>
-                                                                        </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>Venta acumulada</span></li>
-                                                                    </td>
-                                                                    <td> <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles}/>}/></span></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>Ticket medio</span></li>
-                                                                    </td>
-                                                                    <td> 
-                                                                    <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={(d.sumaDeVentasEnSoles/d.ventasSinCeros?.length).toFixed(2)}/>}/></span>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>Sesiones vendidas</span></li>
-                                                                    </td>
-                                                                    <td> 
-                                                                    <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><NumberFormatter amount={d.sumaDeSesiones}/></span>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>PRECIO por sesion</span></li>
-                                                                    </td>
-                                                                    <td> 
-                                                                    <span className='fs-1 fw-bold d-flex justify-content-end align-content-end align-items-end'><SymbolSoles isbottom={true} numero={ <NumberFormatMoney amount={d.sumaDeVentasEnSoles/d.sumaDeSesiones}/>}/></span>
-                                                                    </td>
-                                                                </tr>
-                                                                
-                                                    </tbody>
-                                                </Table>
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                )
-            })
-        },
+
         {
             isComparative: true,
-            title: 'SOCIOS TOTAL POR CATEGORIA',
-            id: 'comparativoINSCRITOSPORCATEGORIASPORPROGRAMA',
-            HTML: dataAlter.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    <Card>
-                        <Card.Header className=' align-self-center'>
-                            {/* <Card.Title>
-                                <h4>{d.name_pgm}</h4>
-                            </Card.Title> */}
-                            <img src={d.avatarPrograma.urlImage} height={d.avatarPrograma.height} width={d.avatarPrograma.width}/>
-                            
-                        </Card.Header>
-                        <Card.Body style={{paddingBottom: '1px !important'}}>
-                            <br/>
-                            <Table
-                                                // style={{tableLayout: 'fixed'}}
-                                                className="table-centered mb-0"
-                                                // hover
-                                                striped
-                                                responsive
-                                            >
-                                                <thead className='bg-primary fs-2'>
-                                                    <tr>
-                                                        <th className={`text-white`}>
-                                                            {'CATEGORIA'}{' '}
-                                                        </th>
-                                                        <th className={`text-white`}>
-                                                            {'SOCIOS'}{' '}
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                            <tr onClick={()=>onOpenModalSOCIOS(d.membresiasNuevas, d.avatarPrograma, `NUEVOS`)}>
-                                                                    <td className=''>
-                                                                        <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>NUEVOS</span></li>
-                                                                    </td>
-                                                                    <td className=''>
-                                                                        <li className={`d-flex flex-row justify-content-between p-2`}>
-                                                                                                <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.membresiasNuevas.length}</span>
-                                                                        </li>
-                                                                    </td>
-                                                            </tr>
-                                                            <tr onClick={()=>onOpenModalSOCIOS(d.membresiasRenovadas, d.avatarPrograma, `RENOVACIONES`)}>
-                                                                <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>RENOVACIONES</span></li>
-                                                                </td>
-                                                                <td className=''>
-                                                                        <li className={`d-flex flex-row justify-content-between p-2`}>
-                                                                                                <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.membresiasRenovadas.length}</span>
-                                                                        </li>
-                                                                    </td>
-                                                            </tr>
-                                                            <tr onClick={()=>onOpenModalSOCIOS(d.membresiasReinscritos, d.avatarPrograma, `REINSCRIPCIONES`)}>
-                                                                <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>REINSCRIPCIONES</span></li>
-                                                                </td>
-                                                                <td className=''>
-                                                                    <li className={`d-flex flex-row justify-content-between p-2`}>
-                                                                                            <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.membresiasReinscritos.length}</span>
-                                                                    </li>
-                                                                </td>
-                                                            </tr>
-                                                            <tr onClick={()=>onOpenModalSOCIOS(d.TraspasosEnCero, d.avatarPrograma, `TRASPASOS`)}>
-                                                                <td>
-                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRASPASOS PT</span></li>
-                                                                </td>
-                                                                <td className=''>
-                                                                    <li className={`d-flex flex-row justify-content-between p-2`}>
-                                                                                            <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.TraspasosEnCero.length}</span>
-                                                                    </li>
-                                                                </td>
-                                                            </tr>
-                                                            <tr onClick={()=>onOpenModalSOCIOS(d.TransferenciasEnCeros, d.avatarPrograma, `TRANSFERENCIAS`)}>
-                                                                <td>
-                                                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>TRANSFERENCIAS <br/>(COSTO CERO)</span></li>
-                                                                </td>
-                                                                <td className=''>
-                                                                    <li className={`d-flex flex-row justify-content-between p-2`}>
-                                                                                            <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.TransferenciasEnCeros.length}</span>
-                                                                    </li>
-                                                                </td>
-                                                            </tr>
-                                                            <tr onClick={()=>onOpenModalSOCIOS(d.CanjesEnCero, d.avatarPrograma, `CANJES`)}>
-                                                                <td>
-                                    <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>CANJES <br/>(COSTO CERO)</span></li>
-                                                                </td>
-                                                                <td className=''>
-                                                                    <li className={`d-flex flex-row justify-content-between p-2`}>
-                                                                                            <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{d.CanjesEnCero.length}</span>
-                                                                    </li>
-                                                                </td>
-                                                            </tr>
-                                                    </tbody>
-                                                        <tr className='bg-primary'>
-                                                            <td>
-                                                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '40px'}}>{'TOTAL'}</span></li>
-                                                            </td>
-                                                            <td>
-                                                                <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '40px'}}>{d.membresiasNuevas.length+d.membresiasRenovadas.length+d.membresiasReinscritos.length+d.TraspasosEnCero.length+d.TransferenciasEnCeros.length+d.CanjesEnCero.length}</span></li>
-                                                            </td>
-                                                    </tr>
-                                            </Table>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            )
-            }
-        )
-        },
-        {
-            title: 'SOCIOS TOTAL POR CATEGORIA - RESUMEN',
-            id: 'comparativoinscritosporcategoriatotal',
-            HTML: dataAlterIdPgmCero.map(d=>{
-                return(
-                    <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                        <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'INSCRITOS POR CATEGORIA'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={dataInscritosCategoria}/>
-                    </Col>
-                )
-            }
-        )
-        },
-        {
-            isComparative: true,
-            title: 'COMPRA DE SEMANAS (SESIONES) POR SOCIO',
-            id: 'COMPARATIVOPORSESIONESPORPROGRAMA',
-            HTML: dataAlter.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorSesiones}/> */}
-                    <ItemCardPgm avatarPrograma={d.avatarPrograma} isSesion={true} arrayEstadistico={d.agrupadoPorSesiones} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
-                </Col>
-            )
-            }
-            )
-        },
-        {
-            title: 'COMPRA DE SEMANAS (SESIONES) POR SOCIO - TOTAL',
-            id: 'COMPARATIVOPORSESIONESTOTAL',
-            HTML: dataAlterIdPgmCero.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                    <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'SESIONES'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorSesiones}/>
-                </Col>
-            )
-            }
-            )
-        },
-        {
-            isComparative: true,
-            title: 'SOCIOS PAGANTES POR HORARIO VS AFORO ',
+            title: 'SOCIOS POR HORARIO VS AFORO ',
             id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
@@ -962,7 +657,7 @@ export const ResumenComparativo = () => {
             )
         },
         {
-            title: 'SOCIOS PAGANTES POR HORARIO VS AFORO  - TOTAL',
+            title: 'SOCIOS POR HORARIO VS AFORO  - TOTAL',
             id: 'COMPARATIVOPORHORARIOTOTAL',
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
@@ -975,7 +670,7 @@ export const ResumenComparativo = () => {
         },
         {
             isComparative: true,
-            title: 'SOCIOS PAGANTES POR GENERO',
+            title: 'SOCIOS POR GENERO',
             id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
@@ -988,7 +683,7 @@ export const ResumenComparativo = () => {
             )
         },
         {
-            title: 'SOCIOS PAGANTES POR GENERO - TOTAL',
+            title: 'SOCIOS POR GENERO - TOTAL',
             id: 'COMPARATIVOPORHORARIOTOTAL',
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
@@ -1001,7 +696,7 @@ export const ResumenComparativo = () => {
         },
         {
             isComparative: true,
-            title: 'SOCIOS PAGANTES POR DISTRITO',
+            title: 'SOCIOS POR DISTRITO',
             id: 'COMPARATIVOPROGRAMASPORDISTRITO',
             HTML: dataAlter.map(d=>{
                 return (
@@ -1018,7 +713,7 @@ export const ResumenComparativo = () => {
             )
         },
         {
-            title: 'SOCIOS PAGANTES POR DISTRITO - TOTAL',
+            title: 'SOCIOS POR DISTRITO - TOTAL',
             id: 'COMPARATIVOTOTALPORDISTRITO',
             HTML: dataAlterIdPgmCero.map(d=>{
                     return (
@@ -1032,7 +727,7 @@ export const ResumenComparativo = () => {
         
         {
             isComparative: true,
-            title: 'SOCIOS PAGANTES RANGO DE EDAD POR PROGRAMA / GENERO',
+            title: 'SOCIOS RANGO DE EDAD POR PROGRAMA / GENERO',
             id: 'COMPARATIVORANGODEEDAD/SEXOPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
@@ -1049,7 +744,7 @@ export const ResumenComparativo = () => {
             )
         },
         {
-            title: 'SOCIOS PAGANTES RANGO DE EDAD TOTAL / GENERO ',
+            title: 'SOCIOS RANGO DE EDAD TOTAL / GENERO ',
             id: 'COMPARATIVORANGODEEDADTOTAL',
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
@@ -1062,7 +757,7 @@ export const ResumenComparativo = () => {
         },
         {
             isComparative: true,
-            title: 'SOCIOS PAGANTES ESTADO CIVIL',
+            title: 'SOCIOS ESTADO CIVIL',
             id: 'COMPARATIVOESTADOCIVILPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
@@ -1079,138 +774,13 @@ export const ResumenComparativo = () => {
             )
         },
         {
-            title: 'SOCIOS PAGANTES ESTADO CIVIL - TOTAL',
+            title: 'SOCIOS ESTADO CIVIL - TOTAL',
             id: 'COMPARATIVOTOTALESTADOCIVIL',
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
                 <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ESTADO CIVIL'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorEstadoCivil}/>
                     
-                </Col>
-            )
-            }
-        )
-        },
-        {
-            isComparative: true,
-            title: 'COMPARATIVO VENTAS ASESORES',
-            id: 'COMPARATIVOASESORES',
-            HTML: dataAlter.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
-                    arrayEstadistico={d.agrupadoPorVendedores} 
-                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
-                    isViewSesiones={true} 
-                    labelParam={'ASESORES'}/>
-                </Col>
-            )
-            }
-            )
-        },
-        {
-            title: 'COMPARATIVO VENTAS ASESORES - TOTAL',
-            id: 'COMPARATIVOASESORESTOTAL',
-            HTML: dataAlterIdPgmCero.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorVendedores}/>
-                    
-                </Col>
-            )
-            }
-        )
-        },
-        {
-            isComparative: true,
-            title: 'SOCIOS PAGANTES POR PROCEDENCIA',
-            id: 'COMPARATIVOPROCEDENCIA',
-            HTML: dataAlter.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
-                    arrayEstadistico={d.agrupadoPorProcedencia} 
-                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
-                    isViewSesiones={true} 
-                    labelParam={'ASESORES'}/>
-                </Col>
-            )
-            }
-            )
-        },
-        {
-            title: 'SOCIOS PAGANTES POR PROCEDENCIA - TOTAL',
-            id: 'COMPARATIVOPROCEDENCIATOTAL',
-            HTML: dataAlterIdPgmCero.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorProcedencia}/>
-                    
-                </Col>
-            )
-            }
-        )
-        },
-        
-        {
-            isComparative: true,
-            title: 'SOCIOS CANJE POR PROCEDENCIA',
-            id: 'COMPARATIVOPROCEDENCIA',
-            HTML: dataAlter.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
-                    arrayEstadistico={d.agrupadoPorProcedenciaCeros} 
-                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
-                    isViewSesiones={true} 
-                    labelParam={'PROCEDENCIA'}/>
-                </Col>
-            )
-            }
-            )
-        },
-        {
-            title: 'SOCIOS CANJE POR PROCEDENCIA - TOTAL',
-            id: 'COMPARATIVOPROCEDENCIATOTAL',
-            HTML: dataAlterIdPgmCero.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                <TableTotal IsVentaCero titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'PROCEDENCIA'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorProcedenciaCeros}/>
-                    
-                </Col>
-            )
-            }
-        )
-        },
-        {
-            isComparative: true,
-            title: 'SOCIOS PAGANTES POR PROMOCIONES',
-            id: 'COMPARATIVOPROMOCIONESPORPROGRAMA',
-            HTML: dataAlter.map(d=>{
-                return (
-                    <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
-                    arrayEstadistico={d.agrupadoPorTarifas} 
-                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
-                    isViewSesiones={true} 
-                    labelParam={'PROMO'}/>
-                </Col>
-            )
-            }
-        )
-        },
-        {
-            title: 'SOCIOS PAGANTES POR PROMOCIONES - TOTAL',
-            id: 'COMPARATIVOTOTALDEPROMOCIONES',
-            HTML: dataAlterIdPgmCero.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-        <FormatDataTable arrayEstadistico={d.agrupadoPorTarifas}/>
-            {/* <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'PROMOCION'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorTarifas}/> */}
                 </Col>
             )
             }

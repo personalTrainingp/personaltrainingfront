@@ -74,14 +74,14 @@ export const ItemTableTotal = ({index, IsVentaCero, isTime, isNeedGenere, pFem, 
 				</li>
 			</td>
 			{
-				!IsVentaCero &&
-				<td className="text-center">
-					<li className="list-unstyled p-2">
-						<div className="fw-bold fs-1 " >
-							<NumberFormatMoney amount={ticketMedio} />
-						</div>
-					</li>
-				</td>
+				// !IsVentaCero &&
+				// <td className="text-center">
+				// 	<li className="list-unstyled p-2">
+				// 		<div className="fw-bold fs-1 " >
+				// 			<NumberFormatMoney amount={ticketMedio} />
+				// 		</div>
+				// 	</li>
+				// </td>
 			}
 		</tr>
   );

@@ -102,10 +102,10 @@ export const useReporteResumenComparativoStore = () => {
 	const [dataGroupTRANSFERENCIAS, setdataGroupTRANSFERENCIAS] = useState([]);
 	const [loading, setloading] = useState(false);
 	const [dataEstadoGroup, setdataEstadoGroup] = useState([]);
-	const obtenerComparativoResumen = async () => {
+	const obtenerComparativoResumen = async (RANGE_MEM) => {
 		setloading(true);
 		const RANGE_DATE = [new Date(2024, 8, 16), new Date()];
-		const RANGE_MEM = [new Date(2025, 1, 1), new Date()];
+		// const RANGE_MEM = [new Date(2025, 1, 1), new Date()];
 		const { data } = await PTApi.get('/venta/reporte/obtener-comparativo-resumen', {
 			params: {
 				arrayDate: [
@@ -209,8 +209,9 @@ export const useReporteResumenComparativoStore = () => {
 				...venta,
 				detalle_ventaMembresium: venta.detalle_ventaMembresium.filter(
 					({ fec_inicio_mem, fec_fin_mem }) => {
+						const fecha_inicio_mem = dayjs.utc(fec_inicio_mem).format('YYYY-MM-DD');
 						// Crear fechas de inicio (fijo) y fin (última fecha de membresía)
-						const fechaInicio = dayjs(fec_inicio_mem);
+						const fechaInicio = dayjs(fecha_inicio_mem);
 						const fechaFin = dayjs(fec_fin_mem);
 
 						return fechaInicio.isBefore(RANGE_MEM[1]) && fechaFin.isAfter(RANGE_MEM[0]);

@@ -44,7 +44,7 @@ export const ModalTableSocios = ({clickDataSocios, avatarProgramaSelect, clickDa
             fecha_venta: d.tb_ventum.fecha_venta,
             // asesor_venta: '',
         }
-    })
+    }).sort((a, b) => new Date(a.fecha_inicio_mem) - new Date(b.fecha_inicio_mem))
   return (
     <Dialog header={clickDataLabel} style={{width: '100rem'}} visible={show} onHide={onHide}>
         <div className='d-flex justify-content-center mb-3'>
@@ -90,8 +90,8 @@ export const ModalTableSocios = ({clickDataSocios, avatarProgramaSelect, clickDa
                                     <td className='fs-2'>{ dayjs.utc(d.fecha_nacimiento).format('dddd DD [DE] MMMM [DEL] YYYY')}</td>
                                     <td className='fs-2 text-center'>{d.edad}</td>
                                     {/* <td className='fs-2'><span className='d-flex justify-content-end'>{dayjs.utc(d.fecha_venta).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td> */}
-                                    <td className='fs-2 text-center'>{d.fecha_inicio_mem}</td>
-                                    <td className='fs-2 text-center'>{d.fecha_fin_mem}</td>
+                                    <td className='fs-2 text-center'>{dayjs.utc(d.fecha_inicio_mem).format('DD [de] MMMM [del] YYYY')}</td>
+                                    <td className='fs-2 text-center'>{dayjs(d.fecha_fin_mem).format('DD [de] MMMM [del] YYYY')}</td>
                                     {/* <td className='fs-2 text-center'>{d.origen_label}</td> */}
                                 </tr>
                             ))
