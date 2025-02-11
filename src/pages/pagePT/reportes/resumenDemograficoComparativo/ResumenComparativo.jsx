@@ -46,6 +46,7 @@ export const ResumenComparativo = () => {
     const [avatarProgramaSelect, setavatarProgramaSelect] = useState({})
     const [clickDataSocios, setclickDataSocios] = useState([])
     const [clickDataLabel, setclickDataLabel] = useState('')
+    const [isDataNeedGruped, setisDataNeedGruped] = useState(false)
     // COuseSelector(e=>e.DATA)
     useEffect(() => {
         if(RANGE_DATE[0]===null) return;
@@ -55,11 +56,12 @@ export const ResumenComparativo = () => {
         obtenerClientesConMarcacion()
         // obtenerEstadosOrigenResumen(RANGE_DATE)
     }, [RANGE_DATE])
-    const onOpenModalSOCIOS = (d, avatarPrograma=[], label)=>{
+    const onOpenModalSOCIOS = (d, avatarPrograma=[], label, )=>{
         // console.log(d, "d???????????");
         setavatarProgramaSelect(avatarPrograma)
         dispatch(onSetDataView(d))
         setclickDataSocios(d)
+        setisDataNeedGruped(datagruped)
         setclickDataLabel(label)
         setisOpenModalSocio(true)
     }
@@ -366,7 +368,7 @@ export const ResumenComparativo = () => {
             return [
             { header: "GENERO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2) && 0, items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) && 0 },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100||0).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100||0).toFixed(2) },
                 ]
             }
             )

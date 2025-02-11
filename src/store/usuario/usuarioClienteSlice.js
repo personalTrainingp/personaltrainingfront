@@ -5,7 +5,7 @@ export const authClientSlice = createSlice({
 		status: 'empty', //'empty', 'full'
 		userCliente: [],
 		userAvatar: {},
-		errorMessage: undefined,
+		errorMessage: [],
 		Dataclientes: [],
 		datafilesAdj: [],
 		dataNutricion_DIETA: [],
@@ -26,8 +26,11 @@ export const authClientSlice = createSlice({
 		onFinishSuccessStatus: (state, action) => {
 			state.status = 'full';
 		},
+		onAddArrayErrors: (state, action) => {
+			state.errorMessage = [...state.errorMessage, ...action.payload];
+		},
 		clearErrorMessage: (state) => {
-			state.errorMessage = undefined;
+			state.errorMessage = [];
 		},
 		onSetClientes: (state, { payload }) => {
 			state.Dataclientes = payload;
@@ -41,6 +44,7 @@ export const authClientSlice = createSlice({
 	},
 });
 export const {
+	onAddArrayErrors,
 	onSetDataFileAdj,
 	onLoadingClient,
 	onSetNutricionDIETA,

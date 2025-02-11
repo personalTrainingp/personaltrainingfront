@@ -28,6 +28,8 @@ import { ItemCardPgm } from './ItemCardPgm'
 import { FormatTable } from './Component/FormatTable'
 import { onSetDataView } from '@/store/data/dataSlice'
 import { FormatDataTable } from './Component/FormatDataTable'
+import { ModalTableSociosCanje } from './ModalTableSociosCanje'
+import { TableTotalS } from './TableTotalS'
 
 dayjs.extend(utc);
 export const ResumenComparativo = () => {
@@ -45,6 +47,8 @@ export const ResumenComparativo = () => {
     const [avatarProgramaSelect, setavatarProgramaSelect] = useState({})
     const [clickDataSocios, setclickDataSocios] = useState([])
     const [clickDataLabel, setclickDataLabel] = useState('')
+    const [isDataNeedGruped, setisDataNeedGruped] = useState(false)
+    const [isOpenModalSOCIOSCanjes, setisOpenModalSOCIOSCanjes] = useState(false)
     // COuseSelector(e=>e.DATA)
     useEffect(() => {
         if(RANGE_DATE[0]===null) return;
@@ -54,13 +58,37 @@ export const ResumenComparativo = () => {
         obtenerClientesConMarcacion()
         // obtenerEstadosOrigenResumen(RANGE_DATE)
     }, [RANGE_DATE])
-    const onOpenModalSOCIOS = (d, avatarPrograma=[], label)=>{
+    const onOpenModalSOCIOS = (d, avatarPrograma=[], label, isdatagruped)=>{
         // console.log(d, "d???????????");
-        setavatarProgramaSelect(avatarPrograma)
-        dispatch(onSetDataView(d))
-        setclickDataSocios(d)
-        setclickDataLabel(label)
-        setisOpenModalSocio(true)
+        if(isdatagruped){
+            console.log(isdatagruped, "hola");
+            setclickDataSocios(d)
+            setisDataNeedGruped(isdatagruped)
+            setisOpenModalSocio(true)
+        }else{
+            setisOpenModalSocio(true)
+            setavatarProgramaSelect(avatarPrograma)
+            dispatch(onSetDataView(d))
+            setclickDataSocios(d)
+            setclickDataLabel(label)
+
+        }
+    }
+    const onCloseModalSOCIOSCANJE = (d, avatarPrograma=[], label, isdatagruped)=>{
+        // console.log(d, "d???????????");
+        if(isdatagruped){
+            console.log(isdatagruped, "hola");
+            setclickDataSocios(d)
+            setisDataNeedGruped(isdatagruped)
+            setisOpenModalSocio(true)
+        }else{
+            setisOpenModalSocio(true)
+            setavatarProgramaSelect(avatarPrograma)
+            dispatch(onSetDataView(d))
+            setclickDataSocios(d)
+            setclickDataLabel(label)
+
+        }
     }
     console.log({dataView});
     
@@ -263,6 +291,7 @@ export const ResumenComparativo = () => {
             { rango_edad: "22 - 29", min: 22, max: 29 },
             // { rango_edad: "16 a 24", min: 16, max: 24 },
             { rango_edad: "12 - 21", min: 12, max: 21 },
+            { rango_edad: '0 - 11', min: 0, max: 11} 
             // { rango_edad: "60 a 69", min: 60, max: 69 },
             // { rango_edad: "64 a 69", min: 64, max: 69 },
             // { rango_edad: "76 a -|-", min: 70, max: Infinity },
@@ -317,10 +346,37 @@ export const ResumenComparativo = () => {
       const AlterGrupo=(data)=>{
         data.map()
       }
+      const generarResumen = (array, grupo, labelCaracter, index, objDeleting) => {
+        const arrayGeneral = array.map(f=>f.items).flat()
+        const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0);
+        const cantidadxProps = grupo.items.length
+        const porcentajexProps = ((cantidadxProps/sumaTotal)*100).toFixed(2);
+        const montoxProps = grupo.items.reduce((total, item)=>total + (item?.tarifa_monto||0),0)
+        const sumaMontoTotal =  arrayGeneral.reduce((acc, item)=>acc+item?.tarifa_monto, 0)
+        const porcentajexMontoProps = ((montoxProps/sumaMontoTotal)*100).toFixed(2)
+        const ticketMedio = (montoxProps/cantidadxProps)||0
+        const sumaTicketMedio = sumaTotal ? (sumaMontoTotal / sumaTotal) : 0;
+        // const sumaTicketMedioProp = estadisticas.reduce((acc, item)=>acc+item.monto_total,0)/arrayEstadistico?.reduce((acc, curr) => acc + curr.items?.length, 0)
+        // const porcentajexMontoProps = (array).toFixed(2)
+        console.log({grupo, array}, {montoxProps});
+        const isSortable = true
+        let resumen = [
+            { header: labelCaracter, isIndexado: true, onClick: onOpenModalSOCIOS, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL', order: 1 },
+            { header: 'S. VENTA TOTAL', isSortable, HTML: <NumberFormatMoney amount={montoxProps}/>, value: montoxProps, tFood: <NumberFormatMoney amount={sumaMontoTotal}/>, order: 2 },
+            { header: 'SOCIOS', isSortable, value: cantidadxProps, tFood: sumaTotal, order: 3 },
+            { header: `% VENTA TOTAL`, isSortable, value: porcentajexMontoProps, tFood: 100, order: 4 },
+            { header: `% SOCIOS`, isSortable, value: porcentajexProps, tFood: 100, order: 5 },
+            { header: `% TICKET MEDIO`, isSortable, value: ticketMedio, HTML: <NumberFormatMoney amount={ticketMedio}/>, tFood: <NumberFormatMoney amount={sumaTicketMedio}/>, order: 5 },
+        ]
+            // Filtrar los elementos que no están en objDeleting
+            if (Array.isArray(objDeleting)) {
+                const headersAEliminar = objDeleting.map(obj => obj.header);
+                resumen = resumen.filter(item => !headersAEliminar.includes(item.header));
+            }
+        return resumen.sort((a, b) => a.order - b.order);
+    };
+    
 
-
-      console.log({dataGroup});
-      
     const dataAlter = dataGroup.map(d=>{
         const avatarPrograma = {
             urlImage: `${config.API_IMG.LOGO}${d.tb_image[0].name_image}`,
@@ -376,7 +432,7 @@ export const ResumenComparativo = () => {
                 console.log({grupo}, "por dist", sumaMontoxItems);
                 return [
                 { header: "DISTRITO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
-                { header: <>SOCIOS <br/> % SOCIOS</>, isSummary: true, value: <>{sumaXITEMS} <br/> {((sumaXITEMS/sumaTotal)*100).toFixed(2)} </>, tFood: <>{sumaTotal} <br/> {((sumaXITEMS/sumaXITEMS)*100).toFixed(2)}</> },
+                { header: <>SOCIOS <br/> % SOCIOS</>, isSummary: true, value: <><span className='text-primary'>{sumaXITEMS}</span> <br/> <span className=''>{((sumaXITEMS/sumaTotal)*100).toFixed(2)}</span> </>, tFood: <>{sumaTotal} <br/> {((sumaXITEMS/sumaXITEMS)*100).toFixed(2)}</> },
                 // { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 { header: "VENTA", isSummary: true, value: <NumberFormatMoney amount={sumaMontoxItems}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaTotalMonto}/>},
                     ]
@@ -397,7 +453,7 @@ export const ResumenComparativo = () => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
             return [
-            { header: "EST. CIVIL", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "EST. CIVIL (A)", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
             { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 ]
@@ -410,7 +466,7 @@ export const ResumenComparativo = () => {
                 return [
                 { header: "PROCEDENCIA", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
                 { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-                { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+                { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100||0).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100||0).toFixed(2) },
                     ]
                 }
                 )
@@ -489,8 +545,8 @@ export const ResumenComparativo = () => {
             const sumaXITEMS = grupo.items.length
             return [
             { header: "PROCEDENCIA", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
-            { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+            { header: "socios", isSortable: true, isSummary: true, value: grupo.items.length, tFood: sumaTotal },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100||0).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100||0).toFixed(2) },
                 ]
             }
             )
@@ -552,39 +608,87 @@ export const ResumenComparativo = () => {
                 }) }
                 : {...item, tb_marcacions: []};
           });
-        const ventasEnCeros = agruparPorVenta(test)?.filter(f=>f.tarifa_monto===0)
-        const ventasSinCeros = agruparPorVenta(test)?.filter(f=>f.tarifa_monto!==0)
+        const ventasEnCeros = agruparPorVenta(d.detalle_ventaMembresium)?.filter(f=>f.tarifa_monto===0)
+        const ventasSinCeros = agruparPorVenta(d.detalle_ventaMembresium)?.filter(f=>f.tarifa_monto!==0)
         const TransferenciasEnCeros = d.ventas_transferencias
         const TraspasosEnCero = ventasEnCeros?.filter(f=>f.tb_ventum.id_tipoFactura===701)
         const clientesCanjes = ventasEnCeros?.filter(f=>f.tb_ventum.id_tipoFactura===703)
         const membresiasNuevas = ventasSinCeros?.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692)
         const membresiasRenovadas = ventasSinCeros?.filter(g=>g.tb_ventum.id_origen===691)
         const membresiasReinscritos = ventasSinCeros?.filter(g=>g.tb_ventum.id_origen===692)
-        const porSexo = agruparPorSexo(ventasSinCeros)
-        const porDistrito= agruparPorDistrito(ventasSinCeros)
+        const porSexo = agruparPorSexo(ventasSinCeros).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'genero', index)
+                ]
+            }
+            )
+        const porDistrito= agruparPorDistrito(ventasSinCeros).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'DISTRITO', index)
+                ]
+            }
+            )
         const sumaDeSesiones = ventasSinCeros?.reduce((total, item) => total + (item?.tb_semana_training.sesiones || 0), 0)
         const sumaDeVentasEnSoles = ventasSinCeros?.reduce((total, item) => total + (item?.tarifa_monto || 0), 0)
-        const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros).map((g)=>{
-            return {
-                ...g,
+        const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'SESIONES', index)
+                ]
             }
-        })
-        const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros)
-        const agrupadoPorEstadoCivil = agruparPorEstCivil(ventasSinCeros)
-        const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros)
-        const agrupadoPorHorario = agruparPorHorarios(ventasSinCeros)
-        const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>a.items.length > b.items.length)
+            )
+        const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'PROMOCIONES', index)
+                ]
+            }
+            )
+        const agrupadoPorEstadoCivil = agruparPorEstCivil(ventasSinCeros).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'ESTADO CIVIL (A)', index)
+                ]
+            }
+            )
+        const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'ASESORES', index)
+                ]
+            }
+            )
+        const agrupadoPorHorario = agruparPorHorarios(ventasSinCeros).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'HORARIO', index)
+                ]
+            }
+            )
+        const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>a.items.length > b.items.length).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'RANGO DE EDAD', index)
+                ]
+            }
+            )
         // const clientesCanjes = []
         // const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
         const avataresDeProgramas = dataIdPgmCero.tb_image
         // const montoTotal_ACTIVO = []
-        const agrupadoPorProcedencia = agruparPorProcedencia(ventasSinCeros)
-        const agrupadoPorProcedenciaCeros = agruparPorProcedenciaEnCero(clientesCanjes)
-        console.log({ agrupadoPorVendedores, agruparPorRangoEdades, agrupadoPorEstadoCivil, agrupadoPorTarifas, agrupadoPorSesiones, sumaDeVentasEnSoles, sumaDeSesiones, porSexo, porDistrito, ventasEnCeros, ventasSinCeros, membresiasNuevas, membresiasRenovadas, membresiasReinscritos}, "alter");
+        const agrupadoPorProcedencia = agruparPorProcedencia(ventasSinCeros).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'PROCEDENCIA', index)
+                ]
+            }
+            )
+        const agrupadoPorProcedenciaCeros = agruparPorProcedenciaEnCero(clientesCanjes).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'PROCEDENCIA', index, [{header: 'S. VENTA TOTAL'}, {header: `% VENTA TOTAL`}, {header: `% TICKET MEDIO`}])
+                ]
+            }
+            )
+        const agrupadoPorSociosCanjes = agruparPorProcedenciaEnCero(clientesCanjes)
+        
         return {
             clientesCanjes,
             // clientesCanjes,
             agrupadoPorProcedenciaCeros,
+            agrupadoPorSociosCanjes,
             agrupadoPorHorario,
             agrupadoPorVendedores,
             agrupadoPorProcedencia,
@@ -915,7 +1019,7 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return(
                     <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                        <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'INSCRITOS POR CATEGORIA'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={dataInscritosCategoria}/>
+                        <TableTotalS titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'INSCRITOS POR CATEGORIA'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={dataInscritosCategoria}/>
                     </Col>
                 )
             }
@@ -941,7 +1045,7 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                    <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'SESIONES'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorSesiones}/>
+                    <TableTotal data={d.agrupadoPorSesiones} titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'SESIONES'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorSesiones}/>
                 </Col>
             )
             }
@@ -967,7 +1071,7 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                    <TableTotal titleH1={''} isTime avataresDeProgramas={d.avataresDeProgramas} labelTotal={'HORARIO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorHorario}/>
+                    <TableTotal titleH1={''} isTime avataresDeProgramas={d.avataresDeProgramas} labelTotal={'HORARIO'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorHorario}/>
                 </Col>
             )
             }
@@ -993,7 +1097,7 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                    <TableTotal titleH1={''} isTime avataresDeProgramas={d.avataresDeProgramas} labelTotal={'GENERO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porSexo}/>
+                    <TableTotal data={d.porSexo} titleH1={''} isTime avataresDeProgramas={d.avataresDeProgramas} labelTotal={'GENERO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porSexo}/>
                 </Col>
             )
             }
@@ -1023,7 +1127,7 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                     return (
                     <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                        <TableTotal  titleH1={''}  avataresDeProgramas={d.avataresDeProgramas} labelTotal={'DISTRITO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porDistrito}/>
+                        <TableTotal data={d.porDistrito} titleH1={''}  avataresDeProgramas={d.avataresDeProgramas} labelTotal={'DISTRITO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porDistrito}/>
                     </Col>
                 )
                 }
@@ -1054,7 +1158,14 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                    <TableTotal isNeedGenere={true} titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'RANGO DE EDAD'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agruparPorRangoEdades}/>
+                    <TableTotal 
+                        isNeedGenere={true} 
+                        data={d.agruparPorRangoEdades}
+                        titleH1={''} 
+                        avataresDeProgramas={d.avataresDeProgramas} 
+                        labelTotal={'RANGO DE EDAD'} 
+                        onOpenModalSOCIOS={onOpenModalSOCIOS} 
+                        arrayEstadistico={d.agruparPorRangoEdades}/>
                 </Col>
             )
             }
@@ -1072,7 +1183,7 @@ export const ResumenComparativo = () => {
                     arrayEstadistico={d.agrupadoPorEstadoCivil} 
                     onOpenModalSOCIOS={onOpenModalSOCIOS} 
                     isViewSesiones={true} 
-                    labelParam={'EST. CIVIL'}/>
+                    labelParam={'EST. CIVIL (A)'}/>
                 </Col>
             )
             }
@@ -1084,7 +1195,7 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ESTADO CIVIL'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorEstadoCivil}/>
+                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ESTADO CIVIL (A)'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorEstadoCivil}/>
                     
                 </Col>
             )
@@ -1098,7 +1209,6 @@ export const ResumenComparativo = () => {
             HTML: dataAlter.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.agrupadoPorVendedores} 
                     onOpenModalSOCIOS={onOpenModalSOCIOS} 
@@ -1115,7 +1225,7 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorVendedores}/>
+                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorVendedores}/>
                     
                 </Col>
             )
@@ -1129,7 +1239,6 @@ export const ResumenComparativo = () => {
             HTML: dataAlter.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.agrupadoPorProcedencia} 
                     onOpenModalSOCIOS={onOpenModalSOCIOS} 
@@ -1146,7 +1255,7 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorProcedencia}/>
+                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorProcedencia}/>
                     
                 </Col>
             )
@@ -1161,7 +1270,6 @@ export const ResumenComparativo = () => {
             HTML: dataAlter.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.agrupadoPorProcedenciaCeros} 
                     onOpenModalSOCIOS={onOpenModalSOCIOS} 
@@ -1178,8 +1286,9 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                <TableTotal IsVentaCero titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'PROCEDENCIA'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorProcedenciaCeros}/>
-                    
+                    {/* <TableTotal/> */}
+                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'procedencia'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorProcedenciaCeros}/>
+                        
                 </Col>
             )
             }
@@ -1209,8 +1318,8 @@ export const ResumenComparativo = () => {
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-        <FormatDataTable arrayEstadistico={d.agrupadoPorTarifas}/>
-            {/* <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'PROMOCION'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.agrupadoPorTarifas}/> */}
+        {/* <FormatDataTable arrayEstadistico={d.agrupadoPorTarifas}/> */}
+            <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'PROMOCION'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorTarifas}/>
                 </Col>
             )
             }
@@ -1239,13 +1348,14 @@ export const ResumenComparativo = () => {
       
   return (
     <>
-    
     <FechaRange rangoFechas={RANGE_DATE}/>
-    {loading ?(
-                        <Loading show={loading}/>
-):(
-    <>
-    <br/>
+    {
+        loading ?
+        (
+            <>LOADIN</>
+        )
+        : 
+
     <Row>
         {data.map((section, index) => (
             <Col xxl={12} ref={sectionRefs[index].ref}>
@@ -1257,11 +1367,10 @@ export const ResumenComparativo = () => {
         </Col>
         ))}
     </Row>
-    </>
-)
-}
+    }
                                     <ModalTableSocios
                                     clickDataSocios={clickDataSocios}
+                                    isDataNeedGruped={isDataNeedGruped}
                                     avatarProgramaSelect={avatarProgramaSelect}
                                     clickDataLabel={clickDataLabel} show={isOpenModalSocio} onHide={onCloseModalSOCIOS}/>
         {/* <ModalSocios clickDataLabel={clickDataLabel} onHide={onCloseModalSOCIOS} data={clickDataSocios} show={isOpenModalSocio}/> */}

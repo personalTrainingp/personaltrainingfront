@@ -5,9 +5,8 @@ import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import config from '@/config'
 import { useGrouped } from './hooks/useGrouped'
-import { FormatTable } from './Component/FormatTable'
 
-export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime, titleH1, isNeedGenere, labelTicketMedio='Ticket medio', avataresDeProgramas=[], arrayEstadistico=[], labelTotal, onOpenModalSOCIOS}) => {
+export const TableTotalS = ({agruparPorSocios, IsVentaCero, isCanje, isTime, titleH1, isNeedGenere, labelTicketMedio='Ticket medio', avataresDeProgramas=[], arrayEstadistico=[], labelTotal, onOpenModalSOCIOS}) => {
     const { agruparPorSexo } = useGrouped()
     const estadisticas = arrayEstadistico.map(d=>{
         // console.log(d, "holahola");
@@ -33,45 +32,9 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
             items: d.items || [],
             propiedad: d.propiedad
         }
-    }).sort((a,b)=>b.monto_total-a.monto_total).map((grupo, index, array) => {
-        return [
-        { header: labelTotal, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
-        { header: "socios",  value: grupo.cantidad, tFood: grupo.cantidad },
-        { header: "% socios", isSummary: true, value: '', items: grupo.items, tFood: '' },
-            ]
-        }
-        )
-    console.log(estadisticas, "arraaaaa");
+    }).sort((a,b)=>b.monto_total-a.monto_total)
+    console.log(arrayEstadistico, "arraaaaa");
     
-    
-    // const estadisticasCanje = arrayEstadistico.map(d=>{
-    //     // console.log(d, "holahola");
-        
-    //     const arrayGeneral = arrayEstadistico.map(f=>f.items).flat()
-    //     const cantidad = d.items?.length
-    //     const cantidadEstadisticas =  arrayEstadistico?.reduce((acc, item)=>acc+item.items?.length, 0)
-    //     const sumaMontoTotal =  arrayGeneral.reduce((acc, item)=>acc+item?.tarifa_monto, 0)
-    //     const monto_total =  d.items?.reduce((acc, item)=>acc+item?.tarifa_monto, 0)
-    //     const ticketMedio = (monto_total/cantidad)||0
-    //     const porcentajeCantidad = (cantidad/cantidadEstadisticas)*100
-    //     const porcentajeMonto = (monto_total/sumaMontoTotal)*100
-    //     const agrupadoPorSexo = agruparPorSexo(d.items)
-    //     console.log(d.items, agruparxCliente(d.items));
-        
-    //     // console.log(agrupadoPorSexo);
-    //     return {
-    //         pFem: agrupadoPorSexo[0].items,
-    //         pMasc: agrupadoPorSexo[1].items,
-    //         cantidad,
-    //         monto_total,
-    //         ticketMedio,
-    //         cantidadCanje: agruparxCliente(d.items).length||[].length,
-    //         porcentajeCantidad,
-    //         porcentajeMonto,
-    //         items: d.items || [],
-    //         propiedad: d.propiedad
-    //     }
-    // }).sort((a,b)=>b.monto_total-a.monto_total)
     /**
      * 
      * .sort((a,b)=>{
@@ -107,45 +70,7 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
         <Card.Body className='d-flex justify-content-center' style={{paddingBottom: '1px !important'}}>
             <br/>
 <div  style={{width: '2000px'}}>
-    <FormatTable data={data}/>
-</div>
-        </Card.Body>
-    </Card>
-  )
-}
-
-
-
-const agruparxCliente = (data)=>{
-    console.log(data, "dddddd 151");
     
-    const groupedData = Object.values(
-        data.reduce((acc, item) => {
-          const nombres_socios = item.tb_ventum.id_cli;
-          if (!acc[nombres_socios]) {
-            acc[nombres_socios] = { nombres_socios, items: [] };
-          }
-          acc[nombres_socios].items.push(item);
-          return acc;
-        }, {})
-      );
-    return groupedData      
-}
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * 
-
 <Table
                                 // style={{tableLayout: 'fixed'}}
                                 className="table-centered mb-0"
@@ -281,4 +206,26 @@ const agruparxCliente = (data)=>{
                                     
                                 </tr>
                             </Table>
- */
+</div>
+        </Card.Body>
+    </Card>
+  )
+}
+
+
+
+const agruparxCliente = (data)=>{
+    console.log(data, "dddddd 151");
+    
+    const groupedData = Object.values(
+        data.reduce((acc, item) => {
+          const nombres_socios = item.tb_ventum.id_cli;
+          if (!acc[nombres_socios]) {
+            acc[nombres_socios] = { nombres_socios, items: [] };
+          }
+          acc[nombres_socios].items.push(item);
+          return acc;
+        }, {})
+      );
+    return groupedData      
+}

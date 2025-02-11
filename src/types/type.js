@@ -180,9 +180,9 @@ export const arrayOrigenDeCliente = [
 	{ value: 686, label: 'Walking', order: 7 },
 	{ value: 687, label: 'Mail', order: 10 },
 
-	{ value: 688, label: 'USO DE IMAGEN (RAFAEL PIZARRO)', order: 11 },
-	{ value: 697, label: 'USO DE IMAGEN (LANDING)', order: 12 },
-	{ value: 698, label: '(RAL)', order: 13 },
+	// { value: 688, label: 'USO DE IMAGEN (RAFAEL PIZARRO)', order: 11 },
+	// { value: 697, label: 'USO DE IMAGEN (LANDING)', order: 12 },
+	// { value: 698, label: '(RAL)', order: 13 },
 
 	{ value: 690, label: 'Referidos', order: 6 },
 	{ value: 691, label: 'Cartera de renovacion', order: 4 },
@@ -192,9 +192,9 @@ export const arrayOrigenDeCliente = [
 	{ value: 695, label: 'tiktok', order: 3 },
 	{ value: 696, label: 'EX-PT', order: 8 }, //TODO LOS TRASPASOS SON EX-PT
 	{ value: 689, label: 'Wsp organico', order: 11 },
-	{ value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
-	{ value: 691, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
-	{ value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
+	// { value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
+	// { value: 691, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
+	// { value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
 ];
 export const arrayOrigenEnCeroDeCliente = [
 	{ value: 688, label: 'USO DE IMAGEN (RAFAEL PIZARRO)', order: 11 },
@@ -204,8 +204,8 @@ export const arrayOrigenEnCeroDeCliente = [
 	// { value: 692, label: 'Cartera de reinscripcion', order: 5 },
 	// { value: 696, label: 'EX-PT', order: 8 },
 	{ value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
-	{ value: 690, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
-	{ value: 690, label: 'INFLUENCER DE VENTAS', order: 16 },
+	{ value: 691, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
+	{ value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
 ];
 
 export const arrayDistritoTest = [
@@ -242,10 +242,10 @@ export const arrayDistritoTest = [
 ];
 
 export const arrayEstadoCivil = [
-	{ label: 'Soltero(a)', value: 10 },
-	{ label: 'Casado(a)', value: 11 },
-	{ label: 'Divorciado(a)', value: 12 }, //
-	{ label: 'VIUDO(A)', value: 13 }, //
+	{ label: 'Soltero', value: 10 },
+	{ label: 'Casado', value: 11 },
+	{ label: 'Divorciado', value: 12 }, //
+	{ label: 'VIUDO', value: 13 }, //
 	{ label: 'Otro', value: 0 },
 ];
 

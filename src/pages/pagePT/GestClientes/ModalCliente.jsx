@@ -1,5 +1,5 @@
 import { arrayDistrito, arrayEstadoCivil, arrayEstados, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc } from '@/types/type'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {Modal, Row, Col, Tab, Tabs, Button, ModalBody} from 'react-bootstrap'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import Select from 'react-select'
@@ -12,6 +12,9 @@ import { LayoutComentario } from '../GestEmpleados/LayoutComentario';
 import { useSelector } from 'react-redux';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
+import { Loading } from '@/components/Loading';
+import { Toast } from 'primereact/toast';
+import { clearErrorMessage } from '@/store/usuario/usuarioClienteSlice';
 
 
 const regUsuarioCliente= {
@@ -37,8 +40,20 @@ const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
 export const ModalCliente = ({show, onHide}) => {
+    const [isShow, setisShow] = useState(show)
+    const refToast = useRef(null)
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const [selectedAvatar, setselectedAvatar] = useState(null)
+        const { errorMessage } = useSelector(e=>e.authClient)
+    const showToastCliente = (severity, summary, detail, label, life)=>{
+        refToast.current.show({
+          severity: severity,
+          summary: summary,
+          detail: detail,
+          label: label,
+          life: life
+        });
+      }
     const resetAvatar = ()=>{
         setSelectedFile(sinAvatar)
     }
@@ -77,12 +92,13 @@ export const ModalCliente = ({show, onHide}) => {
     }, [formState])
 
   const onSubmitAgregarCliente = ()=>{
-          startRegisterUsuarioCliente({...usuarioCliente, dataContactsEmerg: dataContactsEmerg, comentarios}, selectedAvatar)
-          btnCancelModal()
+        dispatch(clearErrorMessage())
+          startRegisterUsuarioCliente({...usuarioCliente, dataContactsEmerg: dataContactsEmerg, comentarios}, selectedAvatar, btnCancelModal, showToastCliente)
   }
   const btnCancelModal = ()=>{
         onHide()
         onResetForm()
+        dispatch(clearErrorMessage())
         resetAvatar()
         dispatch(onResetComentario())
         dispatch(onReset_CE())
@@ -106,19 +122,12 @@ export const ModalCliente = ({show, onHide}) => {
         ...distritosDeLima,
         ...distritosDeCallao
     ]
+    // console.log({formStateAvatar.imgAvatar_BASE64});
+    
   return (
     <>
-    {loading ? (<Modal size='sm' show={loading}>
-        <ModalBody>
-        <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
-				<span className="loader-box2"></span>
-                <br/>
-                <p className='fw-bold font-16'>
-                    Si demora mucho, comprobar su conexion a internet
-                </p>
-		</div>
-        </ModalBody>
-    </Modal> ) : (
+            <Toast  ref={refToast}/>
+    {loading ? (<Loading show={loading}/> ) : (
     <Modal show={show} onHide={onHide} size='xl' backdrop={'static'}>
     <Modal.Header>
         <Modal.Title>Agregar socio</Modal.Title>
@@ -156,7 +165,7 @@ export const ModalCliente = ({show, onHide}) => {
                                             value={nombre_cli}
                                             onChange={onInputChange}
                                             placeholder="Nombres completo"
-                                            required
+                                            // required
                                         />
                                     </div>
                                 </Col>
@@ -173,7 +182,7 @@ export const ModalCliente = ({show, onHide}) => {
                                             onChange={onInputChange}
                                             id="apPaterno_cli"
                                             placeholder="Apellido paterno"
-                                            required
+                                            // required
                                         />
                                     </div>
                                 </Col>
@@ -190,7 +199,7 @@ export const ModalCliente = ({show, onHide}) => {
                                             onChange={onInputChange}
                                             id="apMaterno_cli"
                                             placeholder="Apellido materno"
-                                            required
+                                            // required
                                         />
                                     </div>
                                 </Col>
@@ -207,7 +216,7 @@ export const ModalCliente = ({show, onHide}) => {
                                             onChange={onInputChange}
                                             id="fecha_nacimiento"
                                             placeholder="Fecha de nacimiento"
-                                            required
+                                            // required
                                         />
                                     </div>
                                 </Col>
@@ -226,7 +235,7 @@ export const ModalCliente = ({show, onHide}) => {
 											value={arrayEstadoCivil.find(
 												(option) => option.value === estCivil_cli
 											)}
-											required
+											// required
 										/>
                                     </div>
                                 </Col>
@@ -245,7 +254,7 @@ export const ModalCliente = ({show, onHide}) => {
 											value={arraySexo.find(
 												(option) => option.value === sexo_cli
 											)}
-											required
+											// required
 										/>
                                     </div>
                                 </Col>
@@ -264,7 +273,7 @@ export const ModalCliente = ({show, onHide}) => {
 											value={arrayTipoDoc.find(
 												(option) => option.value === tipoDoc_cli
 											)}
-											required
+											// required
 										/>
                                     </div>
                                 </Col>
@@ -281,7 +290,7 @@ export const ModalCliente = ({show, onHide}) => {
                                             value={numDoc_cli}
                                             onChange={onInputChange}
                                             placeholder="Documento de identidad"
-                                            required
+                                            // required
                                         />
                                     </div>
                                 </Col>
@@ -300,7 +309,7 @@ export const ModalCliente = ({show, onHide}) => {
 											value={arrayNacionalidad.find(
 												(option) => option.value === nacionalidad_cli
 											)}
-											required
+											// required
 										/>
                                     </div>
                                 </Col>
@@ -319,7 +328,7 @@ export const ModalCliente = ({show, onHide}) => {
 											value={dataDistritos.find(
 												(option) => option.value === ubigeo_distrito_cli
 											)}
-											required
+											// required
 										/>
                                     </div>
                                 </Col>
@@ -354,7 +363,7 @@ export const ModalCliente = ({show, onHide}) => {
 											value={arrayTipoCliente.find(
 												(option) => option.value === tipoCli_cli
 											)}
-											required
+											// required
 										/>
                                     </div>
                                 </Col>
@@ -373,7 +382,7 @@ export const ModalCliente = ({show, onHide}) => {
 											value={dataDistritos.find(
 												(option) => option.value === ubigeo_distrito_trabajo
 											)}
-											required
+											// required
 										/>
                                     </div>
                                 </Col>
@@ -465,6 +474,16 @@ export const ModalCliente = ({show, onHide}) => {
                 </Row>
                 <Button className='me-3' onClick={onSubmitAgregarCliente}>Guardar socio</Button>
                 <a className='text-danger' onClick={btnCancelModal}>Cancelar</a>
+                <br/>
+                {
+                    errorMessage?.map(e=>{
+                        return (
+                            <div key={e} className="alert alert-danger" role="alert">
+                                {e}
+                            </div>
+                        )
+                    })
+                }
     </Modal.Body>
     </Modal>
     )

@@ -1,5 +1,6 @@
 import { PTApi } from '@/common';
 import {
+	onAddArrayErrors,
 	onFinishSuccessStatus,
 	onLoadingClient,
 	onSetClient,
@@ -28,16 +29,24 @@ export const useUsuarioStore = () => {
 
 	const { obtenerComentarioxLOCATION } = useComentarioStore();
 
-	const startRegisterUsuarioCliente = async (form, selectedFile) => {
+	const startRegisterUsuarioCliente = async (
+		form,
+		selectedFile,
+		btnCancelModal,
+		showToastCliente
+	) => {
 		const { comentario_com } = form.comentarios;
 		const { dataContactsEmerg } = form;
 		try {
 			// const { data: dataCo } = await PTApi.post('/servicios/observacion/post', {
 			// 	comentario: comentario_com,
 			// });
+			console.log(selectedFile?.name, 'antes de consultar api');
+
 			setloading(true);
 			const { data: dataCliente } = await PTApi.post('/usuario/post-cliente/598', {
 				...form,
+				name_image: selectedFile?.name,
 			});
 			if (selectedFile !== null) {
 				const formData = new FormData();
@@ -60,10 +69,20 @@ export const useUsuarioStore = () => {
 					uidLocation: dataCliente.cliente.uid_contactsEmergencia,
 				});
 			}
+			btnCancelModal();
 			setloading(false);
 			await obtenerUsuariosClientes();
 		} catch (error) {
 			console.log(error);
+
+			if (error.response.data.Componenterrors) {
+				dispatch(
+					onAddArrayErrors(
+						Object.values(error.response.data.Componenterrors).map((item) => item.msg)
+					)
+				);
+			}
+			setloading(false);
 		}
 	};
 	const startUpdateUsuarioCliente = async (formState, uid, avatarFile) => {

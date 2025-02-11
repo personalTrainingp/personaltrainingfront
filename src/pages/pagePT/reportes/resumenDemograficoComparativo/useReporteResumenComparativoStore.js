@@ -106,6 +106,8 @@ export const useReporteResumenComparativoStore = () => {
 		setloading(true);
 		const RANGE_DATE = [new Date(2024, 8, 16), new Date()];
 		// const RANGE_MEM = [new Date(2025, 1, 1), new Date()];
+		console.log(dayjs(RANGE_MEM[0]).toISOString(), 'rango de membresia');
+
 		const { data } = await PTApi.get('/venta/reporte/obtener-comparativo-resumen', {
 			params: {
 				arrayDate: [
@@ -208,8 +210,10 @@ export const useReporteResumenComparativoStore = () => {
 			return {
 				...venta,
 				detalle_ventaMembresium: venta.detalle_ventaMembresium.filter(
-					({ fec_inicio_mem, fec_fin_mem }) => {
+					({ fec_inicio_mem, fec_fin_mem, tb_ventum }) => {
 						const fecha_inicio_mem = dayjs.utc(fec_inicio_mem).format('YYYY-MM-DD');
+						console.log(fecha_inicio_mem, fec_inicio_mem, tb_ventum.id);
+
 						// Crear fechas de inicio (fijo) y fin (última fecha de membresía)
 						const fechaInicio = dayjs(fecha_inicio_mem);
 						const fechaFin = dayjs(fec_fin_mem);
