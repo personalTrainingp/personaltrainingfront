@@ -41,7 +41,7 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
             ]
         }
         )
-    console.log(estadisticas, "arraaaaa");
+    console.log({estadisticas, labelTotal, data}, "arraaaaa");
     
     
     // const estadisticasCanje = arrayEstadistico.map(d=>{

@@ -51,7 +51,7 @@ export const FormatTable = ({ data=[] }) => {
         {sortedData.map((row, rowIndex) => (
           <tr key={rowIndex}>
             {row?.map((col, colIndex) => (
-              <td key={colIndex}>
+              <td key={colIndex} onClick={col.onClick}>
               <li className={`d-flex flex-row justify-content-between p-2 ${(`${col.value}`.split(' ')[1]==='PM'?'bg-primary text-white':`${col.isPropiedad?'text-primary':'text-black'}`)}`}>
                 
                                     <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}><span className='mr-4 text-black'>{col.isIndexado? rowIndex+1:''} </span>{col.HTML ?? col.value}</span>

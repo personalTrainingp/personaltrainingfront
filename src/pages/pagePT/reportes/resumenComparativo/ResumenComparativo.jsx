@@ -361,12 +361,12 @@ export const ResumenComparativo = () => {
         console.log({grupo, array}, {montoxProps});
         const isSortable = true
         let resumen = [
-            { header: labelCaracter, isIndexado: true, onClick: onOpenModalSOCIOS, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL', order: 1 },
-            { header: 'S. VENTA TOTAL', isSortable, HTML: <NumberFormatMoney amount={montoxProps}/>, value: montoxProps, tFood: <NumberFormatMoney amount={sumaMontoTotal}/>, order: 2 },
+            { header: labelCaracter, isIndexado: true, onClick: ()=>onOpenModalSOCIOS(grupo.items, '', labelCaracter, false), items: grupo.items, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL', order: 1 },
+            { header: 'S/. VENTA TOTAL', isSortable, HTML: <NumberFormatMoney amount={montoxProps}/>, value: montoxProps, tFood: <NumberFormatMoney amount={sumaMontoTotal}/>, order: 2 },
             { header: 'SOCIOS', isSortable, value: cantidadxProps, tFood: sumaTotal, order: 3 },
             { header: `% VENTA TOTAL`, isSortable, value: porcentajexMontoProps, tFood: 100, order: 4 },
             { header: `% SOCIOS`, isSortable, value: porcentajexProps, tFood: 100, order: 5 },
-            { header: `% TICKET MEDIO`, isSortable, value: ticketMedio, HTML: <NumberFormatMoney amount={ticketMedio}/>, tFood: <NumberFormatMoney amount={sumaTicketMedio}/>, order: 5 },
+            { header: `S/. TICKET MEDIO`, isSortable, value: ticketMedio, HTML: <NumberFormatMoney amount={ticketMedio}/>, tFood: <NumberFormatMoney amount={sumaTicketMedio}/>, order: 5 },
         ]
             // Filtrar los elementos que no están en objDeleting
             if (Array.isArray(objDeleting)) {
@@ -375,6 +375,37 @@ export const ResumenComparativo = () => {
             }
         return resumen.sort((a, b) => a.order - b.order);
     };
+    function agruparPorCliente(data) {
+        // Agrupar por id_cli
+        const agrupado = Object.values(
+            data.reduce((acc, item) => {
+            const id_cli = item.tb_ventum.id_cli;
+            if (!acc[id_cli]) {
+                acc[id_cli] = { id_cli, items: [] };
+            }
+            acc[id_cli].items.push(item);
+            return acc;
+            }, {})
+        );
+
+        // Filtrar clientes que tienen al menos un id_tipoFactura = 701
+        const clientesFiltrados = agrupado
+            .filter(cliente => cliente.items.some(item => item.tb_ventum.id_tipoFactura === 701))
+            .map(cliente => ({
+            id_cli: cliente.id_cli,
+            items: cliente.items.filter(item => item.tb_ventum.id_tipoFactura !== 701) // Remover los "traspaso"
+            }))
+            .filter(cliente => cliente.items.length > 0); // Eliminar clientes sin items
+
+        // Obtener todos los items acumulados
+        const ventas = clientesFiltrados.flatMap(cliente => cliente.items);
+
+        return {
+            clientes: clientesFiltrados,
+            ventas // Acumulado de todos los items
+        };
+      }
+
     
 
     const dataAlter = dataGroup.map(d=>{
@@ -417,7 +448,7 @@ export const ResumenComparativo = () => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
             return [
-            { header: "GENERO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "GENERO", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
             { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 ]
@@ -431,7 +462,7 @@ export const ResumenComparativo = () => {
                 const sumaTotalMonto = array.reduce((total, item)=>total + (item?.items.reduce((total, item) => total+(item?.tarifa_monto||0), 0) || 0), 0)
                 console.log({grupo}, "por dist", sumaMontoxItems);
                 return [
-                { header: "DISTRITO", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+                { header: "DISTRITO", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
                 { header: <>SOCIOS <br/> % SOCIOS</>, isSummary: true, value: <><span className='text-primary'>{sumaXITEMS}</span> <br/> <span className=''>{((sumaXITEMS/sumaTotal)*100).toFixed(2)}</span> </>, tFood: <>{sumaTotal} <br/> {((sumaXITEMS/sumaXITEMS)*100).toFixed(2)}</> },
                 // { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 { header: "VENTA", isSummary: true, value: <NumberFormatMoney amount={sumaMontoxItems}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaTotalMonto}/>},
@@ -453,7 +484,7 @@ export const ResumenComparativo = () => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
             return [
-            { header: "EST. CIVIL (A)", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "EST. CIVIL (A)", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
             { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 ]
@@ -464,7 +495,7 @@ export const ResumenComparativo = () => {
                 const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
                 const sumaXITEMS = grupo.items.length
                 return [
-                { header: "PROCEDENCIA", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+                { header: "PROCEDENCIA", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
                 { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
                 { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100||0).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100||0).toFixed(2) },
                     ]
@@ -475,7 +506,7 @@ export const ResumenComparativo = () => {
                 const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
                 const sumaXITEMS = grupo.items.length
                 return [
-                { header: "ASESORES", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+                { header: "ASESORES", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
                 { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
                 { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                     ]
@@ -486,7 +517,7 @@ export const ResumenComparativo = () => {
                 const sumaTotalSocio = array.reduce((total, item) => total + (item?.items.length || 0), 0)
 
                 return [
-                    { header: "PROMOCION", isTime: true, value: grupo.propiedad, isPropiedad: true, tFood: '' },
+                    { header: "PROMOCION", isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: '' },
                     { header: "SOCIOS", isTime: true, value: grupo.items.length, tFood: sumaTotalSocio },
                     // { header: <>SEMANAS<br/>(sesiones)</>, value: <div style={{fontSize: '26px'}}>{grupo.semanas} SEMANAS<br/> {grupo.sesiones} SESIONES</div>, items: grupo.items, tFood: '' },
                     // { header: <div className='d-flex justify-content-center'>S/.</div>, value: <NumberFormatMoney amount={grupo.tarifaCash_tt}/>, tFood: '' },
@@ -506,7 +537,7 @@ export const ResumenComparativo = () => {
                 const sumaTotalMasc = array.reduce((total, item) => total + (item?.sexo[1].items.length || 0), 0)
                 const sumaXITEMS = grupo.items.length
                 return [
-                    { header: "RANGO DE EDAD", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+                    { header: "RANGO DE EDAD", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
                     { header: "SOCIOS", isSummary: true, value: grupo.items.length, items: grupo.items, tFood: `${sumaTotal.toFixed(0)}` },
                     { header: "FEM", isSummary: true, value: grupo.sexo[0].items.length, items: grupo.items, tFood: `${sumaTotalFem.toFixed(0)}` },
                     { header: `MASC`, isSummary: true, value: grupo.sexo[1].items.length, tFood: sumaTotalMasc },
@@ -533,7 +564,7 @@ export const ResumenComparativo = () => {
           const porcentajePendienteGrupo = ((grupo.cuposDispo / aforo) * 100).toFixed(2);
       
           return [
-            { header: "TURNO", isTime: true, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "TURNO", isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
             { header: "SOCIOS PAGANTES", isSummary: true, value: grupo.cuposOcupado, items: grupo.items, tFood: sumaTotal },
             { header: "CUPOS DISPONIBLES", isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
             { header: "% OCUPADO", isSummary: true, value: <NumberFormatMoney amount={porcentajeOcupadoGrupo}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaPorcentajeOcupados/array.length} /> },
@@ -544,7 +575,7 @@ export const ResumenComparativo = () => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
             return [
-            { header: "PROCEDENCIA", value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "PROCEDENCIA", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSortable: true, isSummary: true, value: grupo.items.length, tFood: sumaTotal },
             { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100||0).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100||0).toFixed(2) },
                 ]
@@ -682,10 +713,14 @@ export const ResumenComparativo = () => {
                 ]
             }
             )
+            console.log(d, agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)), agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)), agruparPorVenta(d.detalle_ventaMembresium), "aroga");
+            
         const agrupadoPorSociosCanjes = agruparPorProcedenciaEnCero(clientesCanjes)
         
         return {
             clientesCanjes,
+            ventasDespuesDeTraspaso: agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)),
+            ITEMSventasDespuesDeTraspaso: agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)),
             // clientesCanjes,
             agrupadoPorProcedenciaCeros,
             agrupadoPorSociosCanjes,
@@ -853,6 +888,16 @@ export const ResumenComparativo = () => {
                                                     responsive
                                                 >
                                                     <tbody>
+                                                                <tr>
+                                                                        <td className='' 
+                                                                        onClick={()=>onOpenModalSOCIOS(d?.ventasDespuesDeTraspaso.ventas, '', 'VENTAS DESPUES DE TRASPASO', false)}
+                                                                        >
+                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>VENTAS DESPUES DE TRASPASO</span></li>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d?.ventasDespuesDeTraspaso.clientes.length}</span>
+                                                                        </td>
+                                                                </tr>
                                                                 <tr>
                                                                         <td className=''>
                                                                             <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>venta de membresias</span></li>
@@ -1153,7 +1198,7 @@ export const ResumenComparativo = () => {
             )
         },
         {
-            title: 'SOCIOS PAGANTES RANGO DE EDAD TOTAL / GENERO ',
+            title: 'SOCIOS PAGANTES RANGO DE EDAD TOTAL / GENERO - TOTAL ',
             id: 'COMPARATIVORANGODEEDADTOTAL',
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
@@ -1251,6 +1296,19 @@ export const ResumenComparativo = () => {
         },
         {
             title: 'SOCIOS PAGANTES POR PROCEDENCIA - TOTAL',
+            id: 'COMPARATIVOPROCEDENCIATOTAL',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorProcedencia}/>
+                    
+                </Col>
+            )
+            }
+        )
+        },
+        {
+            title: 'SOCIOS DESPUES DEL TRASPASO POR PROCEDENCIA - TOTAL',
             id: 'COMPARATIVOPROCEDENCIATOTAL',
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (

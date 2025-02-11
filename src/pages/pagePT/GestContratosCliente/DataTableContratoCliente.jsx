@@ -9,14 +9,16 @@ import { useSelector } from 'react-redux'
 import { Card, Col, Row } from 'react-bootstrap'
 import { TabPanel, TabView } from 'primereact/tabview'
 import dayjs from 'dayjs'
+import { useContratosDeClientes } from './useContratosDeClientes'
 
 export const DataTableContratoCliente = () => {
-  const { obtenerContratosDeClientes, dataContratos } = useVentasStore()
+  const { obtenerContratosDeClientes, dataContratos } = useContratosDeClientes()
   // const {  } = useState(0)
   const [idVenta, setidVenta] = useState(0)
   const [idCli, setidCli] = useState(0)
   const [isOpenModalTipoCambio, setisOpenModalTipoCambio] = useState(false)
   const { dataView } =useSelector(e=>e.DATA)
+  const [data, setdata] = useState(dataView)
     const onOpenModalTipoCambio = (id_venta, idCli) =>{
         setisOpenModalTipoCambio(true)
         setidVenta(id_venta)
@@ -48,7 +50,6 @@ export const DataTableContratoCliente = () => {
     )
   }
   const nombreSocioBodyTemplate = (rowData)=>{
-    console.log(rowData);
     const createdContrato = rowData.createdAt;
     const createdFirmas = rowData.detalle_ventaMembresia[0].firma_cli;
     //rowData.detalle_ventaMembresia[0].firma_cli?
@@ -66,11 +67,10 @@ export const DataTableContratoCliente = () => {
   const horas = Math.floor((diferenciaMilisegundos % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutos = Math.floor((diferenciaMilisegundos % (1000 * 60 * 60)) / (1000 * 60));
   const segundos = Math.floor((diferenciaMilisegundos % (1000 * 60)) / 1000);
-  console.log(`Diferencia: ${dias} días, ${horas} horas, ${minutos} minutos, ${segundos} segundos`);
   
     return (
       <>
-      {rowData.tb_cliente?.nombres_apellidos_cli}
+      {rowData.nombre_apellidos}
       <br/>
       {
         !createdFirmas&&<>tiempo sin firmar: {dias} días, {horas} horas, {minutos} minutos, {segundos} segundos</>
@@ -82,21 +82,28 @@ export const DataTableContratoCliente = () => {
   const nombreAsesorBodyTemplate = (rowData)=>{
     return (
       <>
-      {rowData.tb_empleado?.nombres_apellidos_empl}
+      {rowData.asesor}
       </>
     )
   }
   const programaSemanaBodyTemplate = (rowData)=>{
     return (
       <>
-      {rowData.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm} | {rowData.detalle_ventaMembresia[0].tb_semana_training.semanas_st*5} SESIONES
+      {rowData.pgmYsem}
       </>
     )
+  }
+  const onClickChangeData = (data, labelData)=>{
+    console.log(data, "datachange");
+    
+    // console.log('click change data');
+    setdata(data)
+    // setDataView(dataContratos)
   }
 // Función para agrupar por nombres_apellidos_empl y contar firmados y sinFirmas
 function agruparFirmasxEmpl(dataView) {
   const groupedData = dataView?.reduce((acc, current) => {
-    const empleado = current.tb_empleado?.nombres_apellidos_empl;
+    const empleado = current.asesor;
   
     // Buscamos si ya existe una entrada para este empleado
     let empleadoEntry = acc.find(item => item.nombres_empl === empleado);
@@ -106,8 +113,8 @@ function agruparFirmasxEmpl(dataView) {
       empleadoEntry = {
         nombres_empl: empleado,
         items: [],
-        firmados: 0,
-        sinFirmas: 0
+        firmados: [],
+        sinFirmas: []
       };
       acc.push(empleadoEntry);
     }
@@ -116,9 +123,9 @@ function agruparFirmasxEmpl(dataView) {
     const { detalle_ventaMembresia } = current;
     detalle_ventaMembresia?.forEach(detalle => {
       if (detalle.firma_cli) {
-        empleadoEntry.firmados += 1;
+        empleadoEntry.firmados.push(current)
       } else {
-        empleadoEntry.sinFirmas += 1;
+        empleadoEntry.sinFirmas.push(current)
       }
     });
   
@@ -129,43 +136,83 @@ function agruparFirmasxEmpl(dataView) {
   }, []);
   return groupedData;
 }
+// Función para agrupar por nombres_apellidos_empl y contar firmados y sinFirmas
+function agruparVentasClientesxAvatar(dataView) {
+  const groupedData = dataView?.reduce((acc, current) => {
+    const empleado = current.asesor;
+  
+    // Buscamos si ya existe una entrada para este empleado
+    let empleadoEntry = acc.find(item => item.nombres_empl === empleado);
+  
+    // Si no existe, la inicializamos
+    if (!empleadoEntry) {
+      empleadoEntry = {
+        nombres_empl: empleado,
+        items: [],
+        fotos: [],
+        sinFotos: []
+      };
+      acc.push(empleadoEntry);
+    }
+  
+    // Contamos firmados y sinFirmas en detalle_ventaMembresia
+    const { images_cli } = current;
+    if(images_cli?.length==0){
+      empleadoEntry.sinFotos.push(current);
+    }else{
+      empleadoEntry.fotos.push(current);
+    }
+  
+    // Agregamos el elemento actual a los items de este empleado
+    empleadoEntry.items.push(current);
+  
+    return acc;
+  }, []);
+  return groupedData;
+}
+console.log(data);
 
   return (
     <>
       <Row>
         {agruparFirmasxEmpl(dataView).map(f=>(
           <Col lg={3} className=''>
-            <Card className='p-2 hover-border-card-primary' style={{height: '130px'}}>
+            <Card className='p-2' style={{height: '130px'}}>
               <Card.Title>
                 {f.nombres_empl}
               </Card.Title>
               <ul className='text-decoration-none'>
-                <li className=''>FIRMADOS: {f.firmados}</li>
-                <li>SIN FIRMA: {f.sinFirmas}</li>
+                <li className='hover-border-card-primary' onClick={()=>onClickChangeData(f.firmados, `FIRMADOS - ${f.nombres_empl}`)}>FIRMADOS: {f.firmados.length}</li>
+                <li className='hover-border-card-primary' onClick={()=>onClickChangeData(f.sinFirmas, `NO FIRMADOS - ${f.nombres_empl}`)}>SIN FIRMA: {f.sinFirmas.length}</li>
+              </ul>
+            </Card>
+          </Col>
+        ))
+        }
+        {agruparVentasClientesxAvatar(dataView).map((f, index)=>(
+          <Col lg={3} className='' key={index}>
+            <Card className='p-2' style={{height: '130px'}}>
+              <Card.Title>
+                {f.nombres_empl}
+              </Card.Title>
+              <ul className='text-decoration-none'>
+                <li className='hover-border-card-primary' onClick={()=>onClickChangeData(f.fotos, `CON FOTO - ${f.nombres_empl}`)}>CON FOTO: {f.fotos.length}</li>
+                <li className='hover-border-card-primary' onClick={()=>onClickChangeData(f.sinFotos, `SIN FOTO - ${f.nombres_empl}`)}>SIN FOTO: {f.sinFotos.length}</li>
               </ul>
             </Card>
           </Col>
         ))
         }
       </Row>
-      <TabView>
-        {
-          agruparFirmasxEmpl(dataView).map(f=>(
-            <TabPanel header={f.nombres_empl}>
+                  <DataTable value={data} paginator rows={10} dataKey="id"
+                  globalFilterFields={['usuario', 'ip', 'accion', 'observacion', 'fecha_audit']} emptyMessage="Sin Contratos">
+              <Column header="SOCIOS" body={nombreSocioBodyTemplate} style={{ minWidth: '12rem' }} />
+              <Column header="Programa | Semanas" body={programaSemanaBodyTemplate} style={{ minWidth: '12rem' }} />
+              <Column header="Asesor comercial" body={nombreAsesorBodyTemplate} style={{ maxWidth: '10rem' }} />
+              <Column header="Firmas" body={firmaBodyTemplate} style={{ maxWidth: '5rem' }} />
+              <Column header="Contratos" body={contratosSociosBodyTemplate} style={{ maxWidth: '20rem' }} />
 
-          <DataTable value={f.items} paginator rows={10} dataKey="id"
-                              globalFilterFields={['usuario', 'ip', 'accion', 'observacion', 'fecha_audit']} emptyMessage="Sin Contratos">
-                          <Column header="SOCIOS" body={nombreSocioBodyTemplate} style={{ minWidth: '12rem' }} />
-                          <Column header="Programa | Semanas" body={programaSemanaBodyTemplate} style={{ minWidth: '12rem' }} />
-                          <Column header="Asesor comercial" body={nombreAsesorBodyTemplate} style={{ maxWidth: '10rem' }} />
-                          <Column header="Firmas" body={firmaBodyTemplate} style={{ maxWidth: '5rem' }} />
-                          <Column header="Contratos" body={contratosSociosBodyTemplate} style={{ maxWidth: '20rem' }} />
-
-                      </DataTable>
-            </TabPanel>
-          ))
-        }
-      </TabView>
+          </DataTable>
             <ModalIsFirma idCli={idCli} idVenta={idVenta} show={isOpenModalTipoCambio} onHide={onCloseModalTipoCambio}/> 
     </>
   )

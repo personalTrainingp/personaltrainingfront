@@ -220,7 +220,7 @@ export default function TableInventario({showToast, id_enterprice}) {
     const cantidadBodyTemplate = (rowData) => {
         return (
             <div className="d-flex align-items-end w-50 gap-2 justify-content-end font-24">
-                <span>{highlightText( rowData.cantidad, globalFilterValue)}</span>
+                <span>{highlightText( `${rowData.cantidad}`, globalFilterValue)}</span>
             </div>
         );
     };
