@@ -15,8 +15,7 @@ const registerArticulo={
     observacion: '',
     descripcion: '',
     valor_total: 0,
-    id_lugar: 0,
-    id: 0
+    id_lugar: 0
 }
 const registerImgAvatar={
     imgAvatar_BASE64: ''

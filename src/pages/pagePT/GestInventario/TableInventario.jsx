@@ -35,7 +35,7 @@ export default function TableInventario({showToast, id_enterprice}) {
     const [loading, setLoading] = useState(false);
     const [selectedCustomers, setselectedCustomers] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const { obtenerArticulos, isLoading } = useInventarioStore()
+    const { obtenerArticulos, isLoading, EliminarArticulo } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     useEffect(() => {
@@ -111,8 +111,8 @@ export default function TableInventario({showToast, id_enterprice}) {
         }
         const confirmDeleteGastoxID = ()=>{
             confirmDialog({
-                message: 'Seguro que quiero eliminar el gasto?',
-                header: 'Eliminar gasto',
+                message: 'Seguro que quiero eliminar el item?',
+                header: 'Eliminar item',
                 icon: 'pi pi-info-circle',
                 defaultFocus: 'reject',
                 acceptClassName: 'p-button-danger',
@@ -121,7 +121,7 @@ export default function TableInventario({showToast, id_enterprice}) {
         }
         const onAcceptDeleteGasto = async()=>{
             setshowLoading(true)
-            // await startDeleteGasto(rowData.id, id_enterprice)
+            await EliminarArticulo(rowData.id, id_enterprice)
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }

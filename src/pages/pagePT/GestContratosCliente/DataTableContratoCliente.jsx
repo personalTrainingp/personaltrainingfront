@@ -33,6 +33,14 @@ export const DataTableContratoCliente = () => {
     obtenerContratosDeClientes()
   }, [])
   
+  const FotoBodyTemplate = (rowData)=>{
+    return (
+      <>
+      {rowData.detalle_ventaMembresia[0].firma_cli==null?<a onClick={()=>onOpenModalTipoCambio(rowData.id, rowData.id_cli)} className='underline cursor-pointer'>SIN FOTO</a>:'FOTO'}
+      </>
+    )
+  }
+
   const firmaBodyTemplate = (rowData)=>{
     return (
       <>
@@ -122,13 +130,20 @@ function agruparFirmasxEmpl(dataView) {
         nombres_empl: empleado,
         items: [],
         firmados: [],
-        sinFirmas: []
+        sinFirmas: [],
+        fotos: [],
+        sinFotos: []
       };
       acc.push(empleadoEntry);
     }
   
     // Contamos firmados y sinFirmas en detalle_ventaMembresia
-    const { detalle_ventaMembresia } = current;
+    const { detalle_ventaMembresia, images_cli } = current;
+    if(images_cli?.length==0){
+      empleadoEntry.sinFotos.push(current);
+    }else{
+      empleadoEntry.fotos.push(current);
+    }
     detalle_ventaMembresia?.forEach(detalle => {
       if (detalle.firma_cli) {
         empleadoEntry.firmados.push(current)
@@ -184,19 +199,21 @@ function agruparVentasClientesxAvatar(dataView) {
       <Row>
         {agruparFirmasxEmpl(dataView).map(f=>(
           <Col lg={3} className=''>
-            <Card className='p-2' style={{height: '130px'}}>
-              <Card.Title>
+            <Card className='p-2'>
+              <Card.Title className='fs-3 text-primary'>
                 {f.nombres_empl}
               </Card.Title>
               <ul className='text-decoration-none'>
-                <li className='hover-border-card-primary' onClick={()=>onClickChangeData(f.firmados, `FIRMADOS - ${f.nombres_empl}`)}>FIRMADOS: {f.firmados.length}</li>
-                <li className='hover-border-card-primary' onClick={()=>onClickChangeData(f.sinFirmas, `NO FIRMADOS - ${f.nombres_empl}`)}>SIN FIRMA: {f.sinFirmas.length}</li>
+                <li className='hover-border-card-primary m-1 fs-4' onClick={()=>onClickChangeData(f.firmados, `FIRMADOS - ${f.nombres_empl}`)}>FIRMADOS: {f.firmados.length}</li>
+                <li className='hover-border-card-primary m-1 fs-4' onClick={()=>onClickChangeData(f.sinFirmas, `NO FIRMADOS - ${f.nombres_empl}`)}>SIN FIRMA: {f.sinFirmas.length}</li>
+                <li className='hover-border-card-primary m-1 fs-4' onClick={()=>onClickChangeData(f.fotos, `CON FOTO - ${f.nombres_empl}`)}>CON FOTO: {f.fotos.length}</li>
+                <li className='hover-border-card-primary m-1 fs-4' onClick={()=>onClickChangeData(f.sinFotos, `SIN FOTO - ${f.nombres_empl}`)}>SIN FOTO: {f.sinFotos.length}</li>
               </ul>
             </Card>
           </Col>
         ))
         }
-        {agruparVentasClientesxAvatar(dataView).map((f, index)=>(
+        {/* {agruparVentasClientesxAvatar(dataView).map((f, index)=>(
           <Col lg={3} className='' key={index}>
             <Card className='p-2' style={{height: '130px'}}>
               <Card.Title>
@@ -209,7 +226,7 @@ function agruparVentasClientesxAvatar(dataView) {
             </Card>
           </Col>
         ))
-        }
+        } */}
       </Row>
                   <DataTable value={data} paginator rows={10} dataKey="id"
                   globalFilterFields={['usuario', 'ip', 'accion', 'observacion', 'fecha_audit']} emptyMessage="Sin Contratos">
@@ -217,6 +234,7 @@ function agruparVentasClientesxAvatar(dataView) {
               <Column header="SOCIOS" body={nombreSocioBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="Programa | Semanas" body={programaSemanaBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="MONTO" body={tarifaMontoBodyTemplate} style={{ minWidth: '12rem' }} />
+              <Column header="FOTO" body={FotoBodyTemplate} style={{ maxWidth: '5rem' }} />
               <Column header="Firmas" body={firmaBodyTemplate} style={{ maxWidth: '5rem' }} />
               <Column header="Contratos" body={contratosSociosBodyTemplate} style={{ maxWidth: '20rem' }} />
 
