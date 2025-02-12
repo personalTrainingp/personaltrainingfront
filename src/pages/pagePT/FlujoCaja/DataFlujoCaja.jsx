@@ -48,21 +48,21 @@ export const DataFlujoCaja = ({id_enterprice}) => {
 		diciembre: 0,
 	});
 	useEffect(() => {
-		obtenerIngresosENERO(1, 2024);
-		obtenerIngresosFEBRERO(2, 2024);
-		obtenerIngresosMARZO(3, 2024);
-		obtenerIngresosABRIL(4, 2024);
-		obtenerIngresosMAYO(5, 2024);
-		obtenerIngresosJUNIO(6, 2024);
-		obtenerIngresosJULIO(7, 2024);
-		obtenerIngresosAGOSTO(8, 2024);
-		obtenerIngresosSEPTIEMBRE(9, 2024);
-		obtenerIngresosOCTUBRE(10, 2024);
-		obtenerIngresosNOVIEMBRE(11, 2024);
-		obtenerIngresosDICIEMBRE(12, 2024);
-        obtenerCreditoFiscalxANIO(2024, id_enterprice);
-		// const febrero = obtenerIngresosxMes(2, 2024)
-        obtenerGastosxANIO(2024, id_enterprice);
+		obtenerIngresosENERO(1, 2025);
+		obtenerIngresosFEBRERO(2, 2025);
+		obtenerIngresosMARZO(3, 2025);
+		obtenerIngresosABRIL(4, 2025);
+		obtenerIngresosMAYO(5, 2025);
+		obtenerIngresosJUNIO(6, 2025);
+		obtenerIngresosJULIO(7, 2025);
+		obtenerIngresosAGOSTO(8, 2025);
+		obtenerIngresosSEPTIEMBRE(9, 2025);
+		obtenerIngresosOCTUBRE(10, 2025);
+		obtenerIngresosNOVIEMBRE(11, 2025);
+		obtenerIngresosDICIEMBRE(12, 2025);
+        obtenerCreditoFiscalxANIO(2025, id_enterprice);
+		// const febrero = obtenerIngresosxMes(2, 2025)
+        obtenerGastosxANIO(2025, id_enterprice);
 	}, []);
 	const obtenerTotalIngresosxxMes = (mes) => {
 		switch (mes) {
@@ -239,19 +239,19 @@ function sumarMontosPorMes(datos, grupo) {
                                 <th>
                                     <div style={{ maxWidth: '10px' }}></div>
                                 </th>
-                                <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'></span></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -353,7 +353,7 @@ sumarIngresosXmes(12)
                 </Card>
                 {/* <h4 className="text-center">APORTES</h4>
                 <Card></Card> */}
-                <h4 className="text-center h2">EGRESOS</h4>
+                <h4 className="text-center h2">EGRESOS <span className='ml-3'><SymbolSoles isbottom={false} classN={'mb-4'}/></span></h4>
                 <Card>
                     {
                         dataGastosxANIO.map((g, i)=>{
@@ -370,27 +370,27 @@ sumarIngresosXmes(12)
                         >
                             <thead className="bg-primary">
                                 <tr>
-                                    <th className='text-white h4'><div style={{width: '260px'}}>{i+1}. {g.grupo}</div></th>
-                                <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
-                                <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'><SymbolSoles isbottom={false}/></span></th>
+                                <th className='text-white fs-2'><div style={{width: '260px'}}>{i+1}. {g.grupo}</div></th>
+                                <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'></span></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     g.conceptos.map((c, index)=>(
                                         <tr>
-                                            <td className=''><div style={{width: '250px'}}>{index+1}. {c.concepto}</div></td>
+                                            <td className='fw-bold fs-4'><div style={{width: '250px'}}>{index+1}. {c.concepto}</div></td>
                                             <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[0].monto_total}/></td>
                                             <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[1].monto_total}/></td>
                                             <td className='text-center cursor-table'><NumberFormatMoney amount={c.items[2].monto_total}/></td>

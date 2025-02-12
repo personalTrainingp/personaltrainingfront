@@ -17,7 +17,7 @@ export const GestionInventario = () => {
         <TabPanel header="CHANGE">
               <DataInventario id_enterprice={598}/>
         </TabPanel>
-        <TabPanel header="MANOJ">
+        <TabPanel header="MP">
               <DataInventario id_enterprice={600}/>
         </TabPanel>
         {/* <TabPanel header="CHANGE">

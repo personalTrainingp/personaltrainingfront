@@ -64,8 +64,8 @@ export const InventarioTotalizado = () => {
         <TabPanel header={'CHANGE'}>
             <DataView id_empresa={598} label_empresa={'CHANGE'}/>
         </TabPanel>
-        <TabPanel header={'MANOJ'}>
-        <DataView id_empresa={600} label_empresa={'MANOJ'}/>
+        <TabPanel header={'MP'}>
+        <DataView id_empresa={600} label_empresa={'MP'}/>
         </TabPanel>
     </TabView>
     </>

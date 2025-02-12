@@ -18,16 +18,12 @@ export const ContratosCliente = () => {
     <>
         <PageBreadcrumb title={'CONTRATOS DE SOCIOS'} subName={'T'}/>
         <Row>
-            <Col xxl={1}>
-            </Col>
-            <Col xxl={10}>
+            <Col xxl={12}>
                 <Card>
                     <Card.Body>
                         <DataTableContratoCliente/>
                     </Card.Body>
                 </Card>
-            </Col>
-            <Col xxl={1}>
             </Col>
         </Row>
         {/* */}

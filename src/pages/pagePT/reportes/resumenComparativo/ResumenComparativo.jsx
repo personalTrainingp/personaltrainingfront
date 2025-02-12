@@ -157,16 +157,15 @@ export const ResumenComparativo = () => {
     }
     function agruparPorVendedores(data) {
         const resultado = [];
-      
+        
         data?.forEach((item) => {
-          const { id_empl, apMaterno_empl, apPaterno_empl, nombre_empl } = item.tb_ventum.tb_empleado;
-      
+          const { id_empl, apMaterno_empl, apPaterno_empl, nombre_empl, estado_empl } = item.tb_ventum.tb_empleado;
           // Verificar si ya existe un grupo con la misma cantidad de sesiones
           let grupo = resultado?.find((g) => g.propiedad === nombre_empl);
       
           if (!grupo) {
             // Si no existe, crear un nuevo grupo
-            grupo = { propiedad: nombre_empl, items: [] };
+            grupo = { propiedad: nombre_empl, estado_empl, items: [] };
             resultado.push(grupo);
           }
       
@@ -346,7 +345,7 @@ export const ResumenComparativo = () => {
       const AlterGrupo=(data)=>{
         data.map()
       }
-      const generarResumen = (array, grupo, labelCaracter, index, objDeleting) => {
+      const generarResumen = (array, grupo, labelCaracter, index, objDeleting, objAumenta=[]) => {
         const arrayGeneral = array.map(f=>f.items).flat()
         const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0);
         const cantidadxProps = grupo.items.length
@@ -368,12 +367,21 @@ export const ResumenComparativo = () => {
             { header: `% SOCIOS`, isSortable, value: porcentajexProps, tFood: 100, order: 5 },
             { header: `S/. TICKET MEDIO`, isSortable, value: ticketMedio, HTML: <NumberFormatMoney amount={ticketMedio}/>, tFood: <NumberFormatMoney amount={sumaTicketMedio}/>, order: 5 },
         ]
-            // Filtrar los elementos que no están en objDeleting
+            // 1️⃣ Filtrar los elementos de resumen que estén en objDeleting
             if (Array.isArray(objDeleting)) {
                 const headersAEliminar = objDeleting.map(obj => obj.header);
                 resumen = resumen.filter(item => !headersAEliminar.includes(item.header));
             }
-        return resumen.sort((a, b) => a.order - b.order);
+
+            // 2️⃣ Crear un mapa de objAumenta para sobrescribir elementos de resumen
+            const objAumentaMap = new Map(objAumenta.map(item => [item.header, item]));
+
+            // 3️⃣ Fusionar los datos, dando prioridad a objAumenta
+            resumen = resumen.filter(item => !objAumentaMap.has(item.header)); // Eliminar duplicados
+            resumen = [...resumen, ...objAumentaMap.values()]; // Agregar objAumenta
+
+            // 4️⃣ Ordenar por la propiedad order
+            return resumen.sort((a, b) => a.order - b.order);
     };
     function agruparPorCliente(data) {
         // Agrupar por id_cli
@@ -680,8 +688,10 @@ export const ResumenComparativo = () => {
             }
             )
         const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros).map((grupo, index, array) => {
+            
             return [
-                ...generarResumen(array, grupo, 'ASESORES', index)
+                ...generarResumen(array, grupo, 'ASESORES', index, [], [{header: 'ASESORES', HTML: <span className={grupo.estado_empl?'text-primary':'text-black'}>{grupo.propiedad}</span>, order: 0}]),
+                // {header: 'ESTADO', value: `${grupo.estado_empl}`}
                 ]
             }
             )

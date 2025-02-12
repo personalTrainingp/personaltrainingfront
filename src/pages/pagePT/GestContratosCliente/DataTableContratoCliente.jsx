@@ -10,6 +10,7 @@ import { Card, Col, Row } from 'react-bootstrap'
 import { TabPanel, TabView } from 'primereact/tabview'
 import dayjs from 'dayjs'
 import { useContratosDeClientes } from './useContratosDeClientes'
+import { NumberFormatMoney } from '@/components/CurrencyMask'
 
 export const DataTableContratoCliente = () => {
   const { obtenerContratosDeClientes, dataContratos } = useContratosDeClientes()
@@ -81,15 +82,22 @@ export const DataTableContratoCliente = () => {
   }
   const nombreAsesorBodyTemplate = (rowData)=>{
     return (
-      <>
+      <span className='text-primary fw-bold'>
       {rowData.asesor}
-      </>
+      </span>
     )
   }
   const programaSemanaBodyTemplate = (rowData)=>{
     return (
       <>
       {rowData.pgmYsem}
+      </>
+    )
+  }
+  const tarifaMontoBodyTemplate = (rowData)=>{
+    return (
+      <>
+      <NumberFormatMoney amount={rowData.detalle_ventaMembresia[0]?.tarifa_monto}/>
       </>
     )
   }
@@ -170,7 +178,6 @@ function agruparVentasClientesxAvatar(dataView) {
   }, []);
   return groupedData;
 }
-console.log(data);
 
   return (
     <>
@@ -206,9 +213,10 @@ console.log(data);
       </Row>
                   <DataTable value={data} paginator rows={10} dataKey="id"
                   globalFilterFields={['usuario', 'ip', 'accion', 'observacion', 'fecha_audit']} emptyMessage="Sin Contratos">
+              <Column header="Asesor comercial" body={nombreAsesorBodyTemplate} style={{ maxWidth: '15rem' }} />
               <Column header="SOCIOS" body={nombreSocioBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="Programa | Semanas" body={programaSemanaBodyTemplate} style={{ minWidth: '12rem' }} />
-              <Column header="Asesor comercial" body={nombreAsesorBodyTemplate} style={{ maxWidth: '10rem' }} />
+              <Column header="MONTO" body={tarifaMontoBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="Firmas" body={firmaBodyTemplate} style={{ maxWidth: '5rem' }} />
               <Column header="Contratos" body={contratosSociosBodyTemplate} style={{ maxWidth: '20rem' }} />
 

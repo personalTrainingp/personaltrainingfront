@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import { useImpuestosStore } from '@/hooks/hookApi/useImpuestosStore'
 import { Divider } from 'primereact/divider'
 import { Toast } from 'primereact/toast';
+import { Button } from 'primereact/button'
 
 export const NuevaVenta2 = () => {
 
@@ -38,7 +39,10 @@ export const NuevaVenta2 = () => {
             <CardCliente dataCliente={detalle_cli_modelo}/>
         </Col>
         <Col lg={9}>
-            <CardVenta dataVenta={venta} detalle_cli_modelo={detalle_cli_modelo} datos_pagos={datos_pagos} funToast={showToastVenta}/>
+        <div>
+              {/* <Button label='AGREGAR CLIENTE' className='float-end'/> */}
+              <CardVenta dataVenta={venta} detalle_cli_modelo={detalle_cli_modelo} datos_pagos={datos_pagos} funToast={showToastVenta}/>
+        </div>
         </Col>
       </Row>
       
