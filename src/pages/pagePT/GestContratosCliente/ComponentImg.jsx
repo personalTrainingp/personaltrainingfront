@@ -9,15 +9,16 @@ export const ComponentImg = ({width, height, imgDefault}) => {
   
     const handlePaste = (event) => {
       const items = event.clipboardData.items;
+      
       for (let item of items) {
         if (item.type.startsWith("image")) {
           const file = item.getAsFile();
           const reader = new FileReader();
           reader.onload = (e) => setImage(e.target.result);
           reader.readAsDataURL(file);
+          setobjFile(file);
         }
       }
-      setobjFile(event.target.files[0])
     };
   
     const handleDrop = (event) => {
@@ -27,8 +28,8 @@ export const ComponentImg = ({width, height, imgDefault}) => {
         const reader = new FileReader();
         reader.onload = (e) => setImage(e.target.result);
         reader.readAsDataURL(file);
+        setobjFile(file);
       }
-      setobjFile(event.target.files[0])
     };
   
     const handleFileChange = (event) => {
