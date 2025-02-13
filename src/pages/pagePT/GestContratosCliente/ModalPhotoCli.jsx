@@ -56,7 +56,7 @@ export const ModalPhotoCli = ({show, onHide, id_cli, uidAvtr}) => {
     
     // console.log({images_cli: images_cli[images_cli.length - 1].name_image});
     const strImage = `${config.API_IMG.AVATAR_CLI}${dataAvataresxUID}`
-    console.log(strImage, uidAvtr, "dvat");
+    console.log({strImage, dataAvataresxUID, uidAvtr}, "dvat");
     const imagePrime2 = strImage
   return (
     <>
@@ -68,11 +68,8 @@ export const ModalPhotoCli = ({show, onHide, id_cli, uidAvtr}) => {
         :(
         )
     } */}
-    {
-        !isLoadingAvtr?(
-            <Loading show={isLoadingAvtr}/>
-        ):(
-            <Dialog visible={show} onHide={onHideModalPhotoCli} header={'AGREGAR FOTO'}>
+    
+    <Dialog visible={show} onHide={onHideModalPhotoCli} header={'AGREGAR FOTO'}>
                         <div className='d-flex justify-content-center flex-column'>
                             <div className='m-auto'>
                                 <ComponentImg  width={320} height={350} imgDefault={imagePrime2}/>
@@ -96,8 +93,6 @@ export const ModalPhotoCli = ({show, onHide, id_cli, uidAvtr}) => {
                             }
                         </div>
                     </Dialog>
-        )
-    }
     </>
   )
 }
