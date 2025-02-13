@@ -1,4 +1,4 @@
-import { MoneyFormatter } from '@/components/CurrencyMask';
+import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import config from '@/config';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
@@ -10,16 +10,16 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     console.log(data);
     const IdBodyTemplate = (rowData)=>{
         return (
-            <>
+            <div className="flex align-items-center gap-2 fs-2">
             {rowData.id}
-            </>
+            </div>
         )
     }
     const itemBodyTemplate = (rowData)=>{
         return (
-            <>
+            <div  className="flex align-items-center gap-2 fs-2">
             {rowData.producto}
-            </>
+            </div>
         )
     }
     
@@ -54,7 +54,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     
     const descripcionBodyTemplate = (rowData)=>{
         return (
-            <div className="flex align-items-center gap-2">
+            <div className="flex align-items-center gap-2 fs-2">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
                 <span>{rowData.descripcion}</span>
@@ -63,7 +63,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     }
     const cantidadBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-end w-50 gap-2 justify-content-center">
+            <div className="flex align-items-end gap-2 fs-2 justify-content-center">
                 <span>{rowData.cantidad}</span>
             </div>
         );
@@ -71,30 +71,30 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     
     const valorUnitDeprecBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2">
-                <span><MoneyFormatter amount={rowData.costo_unitario}/></span>
+            <div className="flex align-items-center gap-2 fs-2">
+                <span><NumberFormatMoney amount={rowData.costo_unitario}/></span>
             </div>
         );
     };
     const valorUnitActualBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2">
-                <span> <MoneyFormatter amount={rowData.costo_total_soles}/></span>
+            <div className="flex align-items-center gap-2 fs-2">
+                <span> <NumberFormatMoney amount={rowData.costo_total_soles}/></span>
             </div>
         );
     };
     
     const costoTotalDolaresBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2">
-                <span> <MoneyFormatter amount={rowData.costo_total_dolares}/></span>
+            <div className="flex align-items-center gap-2 fs-2">
+                <span> <NumberFormatMoney amount={rowData.costo_total_dolares}/></span>
             </div>
         );
     };
     
     const imagenArtBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2">
+            <div className="flex align-items-center">
                         <Image src={rowData.tb_images.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[rowData.tb_images.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
             </div>
         );
@@ -102,7 +102,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     const observacionBodyTemplate = (rowData)=>{
         return (
             
-            <div className="flex align-items-center gap-2">
+            <div className="flex align-items-center gap-2 fs-2">
                 <span>{highlightText( `${rowData.observacion}`, globalFilterValue)}</span>
             </div>
         )
@@ -129,7 +129,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
                 <Column
 					header="Foto"
 					body={imagenArtBodyTemplate}
-					style={{ width: '4rem' }}
+					style={{ width: '2rem' }}
 					sortable
 				></Column>
                 <Column
@@ -145,19 +145,19 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
 					sortable
 				></Column>
                 <Column
-					header="COSTO UNITARIO"
+					header="COSTO UNITARIO S/."
 					body={valorUnitDeprecBodyTemplate}
 					style={{ width: '4rem' }}
 					sortable
 				></Column>
                 <Column
-					header="COSTO TOTAL SOLES"
+					header="COSTO TOTAL SOLES S/."
 					body={valorUnitActualBodyTemplate}
 					style={{ width: '4rem' }}
 					sortable
 				></Column>
                 <Column
-					header="COSTO TOTAL DOLARES"
+					header="COSTO TOTAL DOLARES $"
 					body={costoTotalDolaresBodyTemplate}
 					style={{ width: '4rem' }}
 					sortable

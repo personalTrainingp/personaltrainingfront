@@ -56,7 +56,7 @@ export const InventarioTotalizado = () => {
       
   return (
     <>
-    <PageBreadcrumb title={'INVENTARIO VALORIZADO DE ACTIVOS'} subName={'T'}/>
+    <PageBreadcrumb title={'INVENTARIO VALORIZADO DE ACTIVOS POR ZONA'} subName={'T'}/>
     <TabView>
         {/* <TabPanel header={'CIRCUS'}>
             <DataView id_empresa={599} label_empresa={'CIRCUS'}/>

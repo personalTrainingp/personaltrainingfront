@@ -118,7 +118,8 @@ export const InformacionGeneralCliente = ({data}) => {
         };
         reader.readAsDataURL(file);
     };
-    
+    // console.log(dataDistritos.find(e=>e.value===`${ubigeo_distrito_trabajo}`), ubigeo_distrito_trabajo, "ubi");
+        
   return (
     <>
     
@@ -369,9 +370,7 @@ export const InformacionGeneralCliente = ({data}) => {
 											className="react-select"
 											classNamePrefix="react-select"
 											options={dataDistritos}
-											value={dataDistritos.find(
-												(option) => option.value === ubigeo_distrito_trabajo
-											)}
+											value={dataDistritos.find(e=>e.value===`${ubigeo_distrito_trabajo}`)}
 											required
 										/>
                                     </div>

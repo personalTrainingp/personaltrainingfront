@@ -11,11 +11,15 @@ import { TabPanel, TabView } from 'primereact/tabview'
 import dayjs from 'dayjs'
 import { useContratosDeClientes } from './useContratosDeClientes'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
+import { ModalPhotoCli } from './ModalPhotoCli'
 
 export const DataTableContratoCliente = () => {
-  const { obtenerContratosDeClientes, dataContratos } = useContratosDeClientes()
+  const { obtenerContratosDeClientes, dataContratos, isLoading } = useContratosDeClientes()
   // const {  } = useState(0)
   const [idVenta, setidVenta] = useState(0)
+  const [dataImages, setdataImages] = useState([])
+  const [uidAvtr, setuidAvtr] = useState('')
+  const [isModalPhotoCli, setisModalPhotoCli] = useState(false)
   const [idCli, setidCli] = useState(0)
   const [isOpenModalTipoCambio, setisOpenModalTipoCambio] = useState(false)
   const { dataView } =useSelector(e=>e.DATA)
@@ -25,18 +29,28 @@ export const DataTableContratoCliente = () => {
         setidVenta(id_venta)
         setidCli(idCli)
     }
+    console.log(isLoading);
     
     const onCloseModalTipoCambio = () =>{
         setisOpenModalTipoCambio(false)
     }
-  useEffect(() => {
-    obtenerContratosDeClientes()
-  }, [])
-  
+    const onOpenModalPhotoCli = (row)=>{
+      setisModalPhotoCli(true)
+      setdataImages(row.tb_cliente.tb_images)
+      setuidAvtr(row.tb_cliente.uid_avatar)
+      setidCli(row.id_cli)
+    }
+    const onCloseModalPhotoCli = ()=>{
+      setisModalPhotoCli(false)
+    }
+    useEffect(() => {
+      obtenerContratosDeClientes()
+    }, [])
+    
   const FotoBodyTemplate = (rowData)=>{
     return (
       <>
-      {rowData.detalle_ventaMembresia[0].firma_cli==null?<a onClick={()=>onOpenModalTipoCambio(rowData.id, rowData.id_cli)} className='underline cursor-pointer'>SIN FOTO</a>:'FOTO'}
+      {rowData.images_cli.length===0?<a onClick={()=>onOpenModalPhotoCli(rowData)} className='underline cursor-pointer'>SIN FOTO</a>:<a onClick={()=>onOpenModalPhotoCli(rowData)} className='underline cursor-pointer'>CON FOTO</a>}
       </>
     )
   }
@@ -44,7 +58,13 @@ export const DataTableContratoCliente = () => {
   const firmaBodyTemplate = (rowData)=>{
     return (
       <>
-      {rowData.detalle_ventaMembresia[0].firma_cli==null?<a onClick={()=>onOpenModalTipoCambio(rowData.id, rowData.id_cli)} className='underline cursor-pointer'>SIN FIRMA</a>:'con firma'}
+        {
+          rowData.detalle_ventaMembresia[0].tarifa_monto!==0 && (
+            <>
+            {rowData.detalle_ventaMembresia[0].firma_cli==null?<a onClick={()=>onOpenModalTipoCambio(rowData.id, rowData.id_cli)} className='underline cursor-pointer'>SIN FIRMA</a>:'con firma'}
+            </>
+          )
+        }
       </>
     )
   }
@@ -53,7 +73,13 @@ export const DataTableContratoCliente = () => {
     
     return (
       <>
-        {rowData.detalle_ventaMembresia[0].firma_cli==null?'':<a href={`${config.API_IMG.FILE_CONTRATOS_CLI}${rowData.detalle_ventaMembresia[0].contrato_x_serv?.name_image}`}>CONTRATO</a>}
+      {
+        rowData.detalle_ventaMembresia[0].tarifa_monto!==0 && (
+          <>
+            {rowData.detalle_ventaMembresia[0].firma_cli==null?'':<a href={`${config.API_IMG.FILE_CONTRATOS_CLI}${rowData.detalle_ventaMembresia[0].contrato_x_serv?.name_image}`}>CONTRATO</a>}
+          </>
+        )
+      }
         
       </>
     )
@@ -145,10 +171,12 @@ function agruparFirmasxEmpl(dataView) {
       empleadoEntry.fotos.push(current);
     }
     detalle_ventaMembresia?.forEach(detalle => {
-      if (detalle.firma_cli) {
-        empleadoEntry.firmados.push(current)
-      } else {
-        empleadoEntry.sinFirmas.push(current)
+      if(detalle.tarifa_monto!==0){
+          if (detalle.firma_cli) {
+            empleadoEntry.firmados.push(current)
+          } else {
+            empleadoEntry.sinFirmas.push(current)
+          }
       }
     });
   
@@ -228,7 +256,7 @@ function agruparVentasClientesxAvatar(dataView) {
         ))
         } */}
       </Row>
-                  <DataTable value={data} paginator rows={10} dataKey="id"
+                  <DataTable size='small' value={data} paginator rows={10} dataKey="id"
                   globalFilterFields={['usuario', 'ip', 'accion', 'observacion', 'fecha_audit']} emptyMessage="Sin Contratos">
               <Column header="Asesor comercial" body={nombreAsesorBodyTemplate} style={{ maxWidth: '15rem' }} />
               <Column header="SOCIOS" body={nombreSocioBodyTemplate} style={{ minWidth: '12rem' }} />
@@ -240,6 +268,7 @@ function agruparVentasClientesxAvatar(dataView) {
 
           </DataTable>
             <ModalIsFirma idCli={idCli} idVenta={idVenta} show={isOpenModalTipoCambio} onHide={onCloseModalTipoCambio}/> 
+            <ModalPhotoCli uidAvtr={uidAvtr} id_cli={idCli} show={isModalPhotoCli} onHide={onCloseModalPhotoCli}/>
     </>
   )
 }

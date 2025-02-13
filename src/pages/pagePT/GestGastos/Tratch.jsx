@@ -21,7 +21,7 @@ import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { ModalImportadorData } from './ModalImportadorData';
-import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
+import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 dayjs.extend(utc);
 
 export default function AdvancedFilterDemo({showToast, id_enterprice}) {
@@ -181,8 +181,8 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const montoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>
-                    {rowData.moneda === 'PEN' ? <SymbolSoles /> : '$'}
+                <span className={rowData.moneda === 'PEN'?'':'text-success fw-bold'}>
+                        {rowData.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
                     {highlightText(
                         FUNMoneyFormatter(rowData.monto, ''),
                         globalFilterValue
@@ -202,7 +202,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const {daysUTC} = helperFunctions()
     const fecRegistroBodyTemplate = (rowData)=>{
         return (
-            <div className="flex align-items-center gap-2">
+            <div className="flex align-items-center gap-2 ">
                 <span>{ FormatoDateMask(rowData.fec_registro, 'dddd D [de] MMMM [del] YYYY [a las] h:mm A') }</span>
             </div>
         );
@@ -241,7 +241,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     };
     const grupoBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2">
+            <div className="flex align-items-center gap-2" >
                 <span>{highlightText(`${rowData.tb_parametros_gasto?.grupo}`, globalFilterValue)}</span>
             </div>
         );
@@ -272,7 +272,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const tipoGastosBodyTemplate = (rowData)=>{
         return (
             
-            <div className="flex align-items-center gap-2">
+            <div className="flex align-items-center gap-2 ">
                 <span>{highlightText( `${rowData.tipo_gasto}`, globalFilterValue)}</span>
             </div>
         )
@@ -331,7 +331,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
                 <Column header="Tipo de gasto" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
                 <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
                 <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
-                <Column header="Monto" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
+                <Column header={<>MONTO</>} field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
                 <Column header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                 <Column header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
                 body={proveedorBodyTemplate} filter />

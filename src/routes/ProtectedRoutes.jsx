@@ -63,6 +63,7 @@ const ReportePorMarcacion = lazy(()=> import('../pages/pagePT/reportes/reporteCl
 const ReporteSeguimiento = lazy(()=>import('../pages/pagePT/reportes/reporteSeguimiento'))
 const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
 const ReporteSesionesxMem = lazy(()=>import('../pages/pagePT/reportes/reporteSesionesxMem'))
+const ResultadoChange = lazy(()=>import('../pages/pagePT/reportes/resultadoChange'))
 const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
 const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
 const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
@@ -114,8 +115,11 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad*/}
-				
-				{
+					{
+						sections.find(e=>e.url==='/resultados-change')&&
+                        <Route path='resultados-change' element={<ResultadoChange/>}/>
+					}
+					{
 						sections.find(e=>e.url==='/facturacion-publicidad')&&
                         <Route path='facturacion-publicidad' element={<ReporteSesionesxMem/>}/>
 					}

@@ -200,7 +200,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="costo_unitario" className="form-label">
-                                            VALOR UNIT. DEPRECIADO
+                                            COSTO UNITARIO
                                         </label>
                                         <input
                                                 className="form-control"
@@ -230,7 +230,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="costo_total_dolares" className="form-label">
-                                            VALOR UNIT. ACTUAL
+                                            COSTO TOTAL DOLARES
                                         </label>
                                         <input
                                                 className="form-control"

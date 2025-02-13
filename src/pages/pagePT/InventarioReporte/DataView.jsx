@@ -37,11 +37,13 @@ export const DataView = ({id_empresa, label_empresa}) => {
       
         // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
         if (!acc[label]) {
-          acc[label] = { nivel: label, valor_total_sumado: 0, items: [] };
+          acc[label] = { nivel: label, valor_total_sumado_soles: 0, valor_total_sumado_dolares: 0, cantidad_sumado: 0, items: [] };
         }
         
         // Sumamos el valor_total del item actual al grupo correspondiente
-        acc[label].valor_total_sumado += item.costo_total_soles;
+        acc[label].valor_total_sumado_soles += item.costo_total_soles;
+        acc[label].valor_total_sumado_dolares += item.costo_total_soles;
+        acc[label].cantidad_sumado += item.costo_total_soles;
         
         // Añadimos el item al array `items` del grupo correspondiente
         acc[label].items.push(item);
@@ -52,7 +54,7 @@ export const DataView = ({id_empresa, label_empresa}) => {
       
       // Convertimos valor_total_sumado a cadena con dos decimales
       groupedData.forEach(group => {
-        group.valor_total_sumado = group.valor_total_sumado.toFixed(2);
+        group.valor_total_sumado_soles = group.valor_total_sumado_soles
       });
       groupedData.sort((a, b) => a.nivel - b.nivel);
       
@@ -63,6 +65,8 @@ export const DataView = ({id_empresa, label_empresa}) => {
       const onCloseModalResumenValorizado = ()=>{
         setisOpenModalResumenValorizado(false)
       }
+      console.log(groupedData, "ggg");
+      
   return (
     <>
     <Button label='RESUMEN VALORIZADO' onClick={onOpenModalResumenValorizado} text/>
@@ -88,11 +92,14 @@ export const DataView = ({id_empresa, label_empresa}) => {
                                 </Card.Header>
                                 <Card.Body>
                                     <ul className='text-decoration-none list-unstyled font-20'>
-                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>ITEMS:</span> <span className='fs-2'>{f.items.length}</span></li>
-                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión <SymbolSoles isbottom={false}/>: </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado}/></span></li>
-                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión $ : </span><span className='fs-2'><NumberFormatMoney amount={(f.valor_total_sumado/3.8).toFixed(2)}/></span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>ITEMS:</span> <span className='fs-2'>{f.cantidad_sumado}</span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión <SymbolSoles isbottom={false}/>: </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado_soles}/></span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión $ : </span><span className='fs-2'><NumberFormatMoney amount={(f.valor_total_sumado_dolares)}/></span></li>
+                                        <br/>
                                         <li className='d-flex justify-content-center'>
-                                            <Image src={sinImage}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt={f.ubicacion} preview  height='250' ></Image>
+                                            <Image src={sinImage}  className='rounded-circle m-2' indicatorIcon={<i className="pi pi-search"></i>} alt={f.ubicacion} preview  height='250' ></Image>
+                                            <Image src={sinImage}  className='rounded-circle m-2' indicatorIcon={<i className="pi pi-search"></i>} alt={f.ubicacion} preview  height='250' ></Image>
+                                            <Image src={sinImage}  className='rounded-circle m-2' indicatorIcon={<i className="pi pi-search"></i>} alt={f.ubicacion} preview  height='250' ></Image>
                                         </li>
                                     </ul>
                                 </Card.Body>
@@ -119,11 +126,13 @@ function agruparDataxLugar(dataV) {
       
         // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
         if (!acc[label]) {
-          acc[label] = { ubicacion: label, orden: item.parametro_lugar_encuentro?.orden_param, valor_total_sumado: 0, items: [] };
+          acc[label] = { ubicacion: label, orden: item.parametro_lugar_encuentro?.orden_param, valor_total_sumado_soles: 0, valor_total_sumado_dolares: 0, cantidad_sumado: 0, items: [] };
         }
         
         // Sumamos el valor_total del item actual al grupo correspondiente
-        acc[label].valor_total_sumado += item.costo_total_soles;
+        acc[label].valor_total_sumado_soles += item.costo_total_soles;
+        acc[label].valor_total_sumado_dolares += item.costo_total_dolares;
+        acc[label].cantidad_sumado += item.cantidad;
         
         // Añadimos el item al array `items` del grupo correspondiente
         acc[label].items.push(item);
@@ -133,7 +142,7 @@ function agruparDataxLugar(dataV) {
       
       // Convertimos valor_total_sumado a cadena con dos decimales
       groupedData.forEach(group => {
-        group.valor_total_sumado = group.valor_total_sumado.toFixed(2);
+        group.valor_total_sumado = group.valor_total_sumado;
       });
       return groupedData.sort((a, b) => a.orden-b.orden);
 }
