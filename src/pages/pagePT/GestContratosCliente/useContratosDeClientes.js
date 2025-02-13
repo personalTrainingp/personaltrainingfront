@@ -7,7 +7,8 @@ export const useContratosDeClientes = () => {
 	const dispatch = useDispatch();
 	const [dataContratos, setdataContratos] = useState([]);
 	const [isLoading, setisLoading] = useState(false);
-	const [dataAvataresxUID, setdataAvataresxUID] = useState('');
+	const [isLoadingAvtr, setisLoadingAvtr] = useState(false);
+	const [dataAvataresxUID, setdataAvataresxUID] = useState({});
 	const obtenerContratosDeClientes = async () => {
 		try {
 			setisLoading(false);
@@ -47,13 +48,17 @@ export const useContratosDeClientes = () => {
 	};
 	const obtenerAvataresxUidCli = async (uidAvtr) => {
 		try {
+			setisLoadingAvtr(false);
 			const { data } = await PTApi.get(`/storage/blob/upload/get-upload/${uidAvtr}`);
+			console.log(data, 'data');
 			setdataAvataresxUID(data.name_image);
+			setisLoadingAvtr(true);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	return {
+		isLoadingAvtr,
 		obtenerAvataresxUidCli,
 		obtenerContratosDeClientes,
 		postAvatarImagesCliente,

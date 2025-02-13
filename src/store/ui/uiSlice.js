@@ -6,8 +6,22 @@ export const uiSlice = createSlice({
 		dataView: [],
 		loading: false,
 		viewSubTitle: '',
+		cadenaBLOB: '',
+		BLOB: {
+			cadenaBLOB: '',
+			FILE: {},
+		},
 	},
 	reducers: {
+		onSetCadenaBLOB: (state, { payload }) => {
+			state.BLOB.cadenaBLOB = payload;
+		},
+		onClearFileBLOB: (state) => {
+			state.BLOB.FILE = {};
+		},
+		onSetFileBLOB: (state, { payload }) => {
+			state.BLOB.FILE = payload;
+		},
 		onSetData: (state, { payload }) => {
 			state.dataView = payload;
 		},
@@ -19,4 +33,5 @@ export const uiSlice = createSlice({
 		},
 	},
 });
-export const { onSetData, onSetViewSubTitle } = uiSlice.actions;
+export const { onSetData, onSetViewSubTitle, onSetCadenaBLOB, onSetFileBLOB, onClearFileBLOB } =
+	uiSlice.actions;
