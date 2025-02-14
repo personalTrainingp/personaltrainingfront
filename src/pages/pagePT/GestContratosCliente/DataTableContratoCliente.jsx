@@ -105,10 +105,22 @@ export const DataTableContratoCliente = () => {
   
     return (
       <>
-      {rowData.nombre_apellidos}
+      {
+        rowData.detalle_ventaMembresia[0].tarifa_monto!==0 ? (
+          <span className={`${!createdFirmas?'text-primary':'text-black'}`}>
+            {rowData.nombre_apellidos}
+          </span>
+        ): (
+          <span className={`text-black`}>
+            {rowData.nombre_apellidos}
+          </span>
+        )
+      }
       <br/>
       {
-        !createdFirmas&&<>tiempo sin firmar: {dias} días, {horas} horas, {minutos} minutos, {segundos} segundos</>
+        rowData.detalle_ventaMembresia[0].tarifa_monto!==0 && (
+          !createdFirmas&&<>tiempo sin firmar: {dias} días, {horas} horas, {minutos} minutos, {segundos} segundos</>
+        )
       }
       
       </>

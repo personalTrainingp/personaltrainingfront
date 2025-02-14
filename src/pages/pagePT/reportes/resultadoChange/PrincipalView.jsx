@@ -18,26 +18,26 @@ export const PrincipalView = () => {
   return (
     <>
       <Row>
-        <Col lg={1}>
-        </Col>
-        <Col lg={10}>
+        <Col lg={12}>
         <Card>
           <Card.Header>
             <Button label='AGREGAR MES' onClick={onOpenModalAddMesResChange}/>
           </Card.Header>
           <Card.Body>
-            {
-              dataF.map((f, index)=>{
-                
-                return (
-                  <TableEstadist data={f} key={index}/>
-                )
-              })
-            }
+            <Row>
+              {
+                dataF.map((f, index)=>{
+                  
+                  return (
+                    <Col lg={4}>
+                      <TableEstadist data={f} key={index}/>
+                    </Col>
+                  )
+                })
+              }
+            </Row>
           </Card.Body>
         </Card>
-        </Col>
-        <Col lg={1}>
         </Col>
       </Row>
       <ModalAddMesResChange show={isOpenModalAddMesResChange} onHide={onCloseModalAddMesResChange}/>

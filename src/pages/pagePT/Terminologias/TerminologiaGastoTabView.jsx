@@ -53,7 +53,7 @@ export const TerminologiaGastoTabView = ({ dataTerminologiaPorEntidad }) => {
                                     //`${parametro.empresa} + ${index}`
                                 } else {
                                     return (
-                                        <TabPanel key={`${parametro.empresa}`} className={''} header={parametro.empresa == '0' ? 'HISTORICO' : parametro.empresa == '598' ? 'Change' : parametro.empresa == '599' ? "Circus" : ""}>
+                                        <TabPanel key={`${parametro.empresa}`} className={''} header={parametro.empresa == '0' ? 'HISTORICO' : parametro.empresa == '598' ? 'Change' : parametro.empresa == '599' ? "Circus" : parametro.empresa == '600' ? 'RAL' :""}>
                                             <Col sm={4}>
                                                 <Button label='Agregar Terminologia' onClick={() => {
                                                     modalTerminologiaGastoOpen(parametro);

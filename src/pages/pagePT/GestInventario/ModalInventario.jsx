@@ -15,7 +15,8 @@ const registerArticulo={
     observacion: '',
     descripcion: '',
     valor_total: 0,
-    id_lugar: 0
+    id_lugar: 0,
+    fecha_entrada: ''
 }
 const registerImgAvatar={
     imgAvatar_BASE64: ''
@@ -38,6 +39,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             costo_total_dolares,
             costo_total_soles,
             costo_unitario,
+            fecha_entrada,
             descripcion,
             id_lugar,
             onInputChange,  
@@ -180,6 +182,22 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             
                                             required
                                         />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="fecha_entrada" className="form-label">
+                                            FECHA DE ENTRADA
+                                        </label>
+                                        <input
+                                                className="form-control"
+                                                name="fecha_entrada"
+                                                id="fecha_entrada"
+                                                value={fecha_entrada}
+                                                type='date'
+                                                onChange={onInputChange}
+                                                placeholder=""
+                                            />
                                     </div>
                                 </Col>
                                 <Col lg={4}>

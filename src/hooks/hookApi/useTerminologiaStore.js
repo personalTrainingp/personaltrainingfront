@@ -12,7 +12,21 @@ export const useTerminologiaStore = () => {
 			dispatch(onSetDataView([]));
 			const response = await PTApi.get('/terminologia/terminologiaPorEntidad');
 			console.log(response.data.response);
-			dispatch(onSetDataView(response.data.response));
+			dispatch(
+				onSetDataView({
+					...response.data.response,
+					articulosLugar: response.data.response.parametros,
+					// .filter((f) => f.entidad_param === 'articulo')
+					// .parametros.filter((g) => g.grupo_param === 'lugar_encuentro'),
+				})
+			);
+			console.log({
+				...response.data.response,
+				articulosLugar: response.data.response.parametros
+					.filter((f) => f.entidad_param === 'articulo')[0]
+					.parametros.filter((f) => f.grupo_param === 'lugar_encuentro'),
+				// .parametros.filter((g) => g.grupo_param === 'lugar_encuentro'),
+			});
 
 			//SetData(response.data.response);
 		} catch (error) {

@@ -20,6 +20,9 @@ export const GestionGastos = () => {
         <TabPanel header="OTROS">
               <GestionGastosIngresos id_enterprice={0}/>
         </TabPanel>
+        <TabPanel header="RAL">
+              <GestionGastosIngresos id_enterprice={600}/>
+        </TabPanel>
       </TabView>
     </Card>
     </>

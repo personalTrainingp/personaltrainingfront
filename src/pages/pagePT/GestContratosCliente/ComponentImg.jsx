@@ -1,4 +1,5 @@
 import { onSetCadenaBLOB, onSetFileBLOB } from "@/store";
+import { Image } from "primereact/image";
 import { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 
@@ -53,15 +54,15 @@ export const ComponentImg = ({width, height, imgDefault}) => {
     return (
       <div
         className="border-2 border-dashed border-primary text-center align-items-center p-2 text-primary fw-bold fs-3 flex items-center justify-center cursor-pointer"
-        style={{ width: width, height: height }}
+        // style={{ width: width, height: height }}
         onClick={() => fileInputRef.current.click()}
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
       >
         {image ? (
-          <img src={image} 
+          <Image src={image} 
           // width={width} height={heigth} 
-          alt="Uploaded" className="w-full h-full object-cover" />
+          alt="CARGAR FOTO" className="w-full h-full object-cover" />
         ) : (
           <p>Pega, arrastra o haz clic para subir imagen</p>
         )}
