@@ -33,8 +33,8 @@ export const TableTotalS = ({agruparPorSocios, IsVentaCero, isCanje, isTime, tit
             propiedad: d.propiedad
         }
     }).sort((a,b)=>b.monto_total-a.monto_total)
-    console.log(arrayEstadistico, "arraaaaa");
-    
+    const dataSinCero = arrayEstadistico.filter(a=>a.propiedad!=='TRASPASOS PT' && a.propiedad!=='CANJES' && a.propiedad!=='TRANSFERENCIAS (COSTO CERO)')
+    console.log(arrayEstadistico, dataSinCero, "TableTotalS");
     /**
      * 
      * .sort((a,b)=>{
@@ -200,7 +200,7 @@ export const TableTotalS = ({agruparPorSocios, IsVentaCero, isCanje, isTime, tit
                                     {
                                         !IsVentaCero && 
                                         <td>
-                                            <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}><NumberFormatMoney amount={estadisticas.reduce((acc, item)=>acc+item.monto_total,0)/arrayEstadistico?.reduce((acc, curr) => acc + curr.items?.length, 0)}/></span></li>
+                                            <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}><NumberFormatMoney amount={estadisticas.reduce((acc, item)=>acc+item.monto_total,0)/dataSinCero?.reduce((acc, curr) => acc + curr.items?.length, 0)}/></span></li>
                                         </td>
                                     }
                                     

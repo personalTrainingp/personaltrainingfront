@@ -8,7 +8,6 @@ export const SymbolSoles = ({numero, isbottom, fontSizeS, classN, bottomClasss})
             <span className={`${fontSizeS?fontSizeS:'fs-4'}`}>
             /
             </span>
-            . 
         </span>
         <span>
             {numero}
@@ -21,7 +20,6 @@ export const SymbolDolar = ({numero, isbottom, fontSizeS}) => {
     <span className=''>
         <span className={`${fontSizeS?fontSizeS:'fs-3'} fw-bold mr-2 position-relative`} style={{bottom: `${isbottom&&'10px'}`}}>
             $
-            . 
         </span>
         <span>
             {numero}

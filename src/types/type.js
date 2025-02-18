@@ -228,6 +228,7 @@ export const arrayDistritoTest = [
 	// { label: 'Breña', order: 13 },
 	{ label: 'La Victoria', order: 13 },
 	{ label: 'Santa Anita', order: 13 },
+	{ label: 'Breña', order: 13 },
 	/* 
 	La Molina,
 	Ate,

@@ -106,7 +106,7 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
         </Card.Header>
         <Card.Body className='d-flex justify-content-center' style={{paddingBottom: '1px !important'}}>
             <br/>
-<div  style={{width: '2000px'}}>
+<div  style={{width: '2300px'}}>
     <FormatTable data={data}/>
 </div>
         </Card.Body>

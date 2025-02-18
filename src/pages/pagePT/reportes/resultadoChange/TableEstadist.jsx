@@ -1,16 +1,16 @@
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
-import { NumberFormatMoney } from '@/components/CurrencyMask';
+import { NumberFormatMoney, NumberFormatter } from '@/components/CurrencyMask';
+import { Button } from 'primereact/button';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
 export const TableEstadist = ({data}) => {
   return (
-    
-    <Table className="table-centered mb-0" style={{width: '750px'}} striped responsive>
+    <Table className="table-centered mb-0" striped responsive>
       <thead className='bg-primary fs-2'>
         <tr>
               <th className={`text-white`} >
-                {data.mes}
+                {data.fecha}
               </th>
               <th className={`text-white`} >
                 {/* {data.mes} */}
@@ -26,7 +26,7 @@ export const TableEstadist = ({data}) => {
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles numero={<NumberFormatMoney amount={data.inversion}/>}/></span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles numero={<NumberFormatMoney amount={data.inversion}/>}/> <Button icon={'pi pi-arrow-up-right'}/></span>
               </li>
             </td>
           </tr>
@@ -50,7 +50,7 @@ export const TableEstadist = ({data}) => {
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.numero_mensajes}</span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><NumberFormatter amount={data.numero_mensajes }/> <Button icon={'pi pi-arrow-up-right'}/></span>
               </li>
             </td>
           </tr>
@@ -98,7 +98,7 @@ export const TableEstadist = ({data}) => {
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{(data.facturacion/data.inversion).toFixed(0)}</span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{(data.inversion/data.facturacion).toFixed(0)}</span>
               </li>
             </td>
           </tr>

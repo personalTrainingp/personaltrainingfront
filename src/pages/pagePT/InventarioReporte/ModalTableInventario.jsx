@@ -1,3 +1,4 @@
+import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import config from '@/config';
 import { Column } from 'primereact/column';
@@ -7,7 +8,6 @@ import { Image } from 'primereact/image';
 import React from 'react'
 
 export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
-    console.log(data);
     const IdBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2 fs-2">
@@ -63,7 +63,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     }
     const cantidadBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-end gap-2 fs-2 justify-content-center">
+            <div className="text-primary fw-bold flex align-items-end gap-2 fs-2 justify-content-center">
                 <span>{rowData.cantidad}</span>
             </div>
         );
@@ -91,14 +91,30 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
             </div>
         );
     };
-    
-    const imagenArtBodyTemplate = (rowData) => {
+    const numeradorBodyTemplate = (rowData, { rowIndex })=>{
+        return(
+            <div className="flex align-items-center gap-2 fs-2">
+                <span>{rowIndex + 1}</span>
+            </div>
+        )
+    }
+    const imagenArtBodyTemplate = (rowData, { rowIndex }) => {
         return (
+            <>
+            
             <div className="flex align-items-center">
                         <Image src={rowData.tb_images.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[rowData.tb_images.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
             </div>
+            </>
         );
     };
+    const tcBodyTemplate = (rowData) =>{
+        return (
+            <div className='fs-2'>
+            {(rowData.costo_total_soles/rowData.costo_total_dolares).toFixed(2)}
+            </div>
+        )
+    }
     const observacionBodyTemplate = (rowData)=>{
         return (
             
@@ -107,16 +123,15 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
             </div>
         )
     }
-    console.log(data);
-    
   return (
     <Dialog 
     
 			contentStyle={{ height: '800px' }}
-			header={<div className="text-primary">{data[0]?.parametro_nivel?.label_param && 'NIVEL'} {data[0]?.parametro_nivel?.label_param} {data[0]?.parametro_nivel?.label_param&& '-'} {ubicacion}</div>}
-            footer={<div className='h2'>CANTIDAD {data.reduce((sum, item) => sum + item.cantidad, 0)}</div>}
+			header={<div className="text-primary fs-1">INVENTARIO  <span className=''>{data[0]?.parametro_nivel?.label_param && 'NIVEL'} {data[0]?.parametro_nivel?.label_param} {data[0]?.parametro_nivel?.label_param&& '-'} {ubicacion}</span> / CANTIDAD DE ARTICULOS {data.reduce((sum, item) => sum + item.cantidad, 0)}</div>}
+            // footer={<div className='h2'>COSTO TOTAL SOLES <NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_soles, 0)}/> / COSTO TOTAL DOLARES <NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_dolares, 0)}/></div>}
 			style={{ width: '100%', height: '100%' }}
 			position="bottom"
+            
             visible={show} onHide={onHide}>
         
 			<DataTable value={data} stripedRows size='small' scrollHeight="flex">
@@ -127,38 +142,53 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
 					sortable
 				></Column> */}
                 <Column
-					header="Foto"
+					header=""
+					body={numeradorBodyTemplate}
+					style={{ width: '2rem' }}
+				></Column>
+                <Column
+					header={<span className='fs-2'>Foto</span>}
 					body={imagenArtBodyTemplate}
 					style={{ width: '2rem' }}
+                    footer={<div className='fs-2 text-primary'>TOTAL</div>}
 					sortable
 				></Column>
                 <Column
-					header="ITEM"
+					header={<span className='fs-2'>ITEM</span>}
 					body={itemBodyTemplate}
 					style={{ width: '4rem' }}
 					sortable
 				></Column>
                 <Column
-					header="CANTIDAD"
+					header={<span className='fs-2'>CANTIDAD ARTICULOS</span>}
 					body={cantidadBodyTemplate}
 					style={{ width: '4rem' }}
 					sortable
 				></Column>
                 <Column
-					header="COSTO UNITARIO S/."
+					header={<span className='fs-2'>COSTO UNITARIO S/.</span>}
 					body={valorUnitDeprecBodyTemplate}
 					style={{ width: '4rem' }}
 					sortable
 				></Column>
                 <Column
-					header="COSTO TOTAL SOLES S/."
+					header={<span className='fs-2'>COSTO TOTAL SOLES S/.</span>}
 					body={valorUnitActualBodyTemplate}
 					style={{ width: '4rem' }}
+                    footer={<div className='fs-2 text-primary'><SymbolSoles numero={<NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_soles, 0)}/>}/></div>}
 					sortable
 				></Column>
                 <Column
-					header="COSTO TOTAL DOLARES $"
+					header={<span className='fs-2'>TC</span>}
+					body={tcBodyTemplate}
+					style={{ width: '4rem' }}
+                    footer={<div className='fs-2 text-primary'><SymbolSoles numero={<NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_soles, 0)}/>}/></div>}
+					sortable
+				></Column>
+                <Column
+					header={<span className='fs-2'>COSTO TOTAL DOLARES $</span>}
 					body={costoTotalDolaresBodyTemplate}
+                    footer={<div className='fs-2 text-primary'>$. <NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_dolares, 0)}/></div>}
 					style={{ width: '4rem' }}
 					sortable
 				></Column>

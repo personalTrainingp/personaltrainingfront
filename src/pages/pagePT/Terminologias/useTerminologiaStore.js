@@ -7,6 +7,18 @@ export const useTerminologiaStore = () => {
 	let dispatch = useDispatch();
 	const [terminologiaPorId, setTerminologiaPorId] = useState({});
 	const [dataTerminologiaPorEntidad, SetData] = useState({});
+	const [dataT, setdataT] = useState([]);
+
+	const obtenerParametrosLugares = async () => {
+		try {
+			const { data } = await PTApi.get(`/inventario/parametros-lugares`);
+			console.log(data);
+
+			setdataT(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const terminologiaPorEntidad = async () => {
 		try {
 			dispatch(onSetDataView([]));
@@ -102,6 +114,8 @@ export const useTerminologiaStore = () => {
 	};
 
 	return {
+		obtenerParametrosLugares,
+		dataT,
 		terminologiaPorEntidad,
 		dataTerminologiaPorEntidad,
 		registrarTerminologia,

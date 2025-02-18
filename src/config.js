@@ -1,6 +1,7 @@
 const config = {
 	API_URL: process.env.REACT_APP_API_URL,
 	API_IMG: {
+		ARTICULO_LUGAR: 'https://archivosluroga.blob.core.windows.net/articulos-lugares/',
 		LOGO: 'https://archivosluroga.blob.core.windows.net/membresiaavatar/',
 		FILE_DIETA: 'https://archivosluroga.blob.core.windows.net/nutricion-dietas/',
 		FILE_HISTORIAL_CLINICO:

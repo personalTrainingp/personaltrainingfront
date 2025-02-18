@@ -7,10 +7,11 @@ import { useSelector } from 'react-redux'
 import { ModalTableInventario } from './ModalTableInventario'
 import sinImage from '@/assets/images/image_prueba_inventario.jpeg'
 import { Image } from 'primereact/image'
-import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
+import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { Button } from 'primereact/button'
 import { ModalResumenInventarioValorizado } from './ModalResumenInventarioValorizado'
+import { ImagesGrids } from './ImagesGrids'
 
 export const DataView = ({id_empresa, label_empresa}) => {
     const { obtenerArticulos, isLoading } = useInventarioStore()
@@ -65,11 +66,9 @@ export const DataView = ({id_empresa, label_empresa}) => {
       const onCloseModalResumenValorizado = ()=>{
         setisOpenModalResumenValorizado(false)
       }
-      console.log(groupedData, "ggg");
-      
   return (
     <>
-    <Button label='RESUMEN VALORIZADO' onClick={onOpenModalResumenValorizado} text/>
+    <Button label={<span className='fs-2'>RESUMEN VALORIZADO</span>} onClick={onOpenModalResumenValorizado} text/>
     <Row>
             {
                 groupedData.map(g=>{
@@ -84,7 +83,7 @@ export const DataView = ({id_empresa, label_empresa}) => {
                     {
                         agruparDataxLugar(g.items).map(f=>(
                             <Col lg={4}>
-                            <Card style={{display: 'block', height: '530px'}} onClick={()=>onOpenModalInventario(f.items, f.ubicacion)} className='m-1 border border-4'>
+                            <Card  onClick={()=>onOpenModalInventario(f.items, f.ubicacion)} className='m-1 border border-4'>
                                 <Card.Header>
                                     <Card.Title className='fs-2 text-primary'>
                                         {f.ubicacion}
@@ -92,16 +91,15 @@ export const DataView = ({id_empresa, label_empresa}) => {
                                 </Card.Header>
                                 <Card.Body>
                                     <ul className='text-decoration-none list-unstyled font-20'>
-                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>ITEMS:</span> <span className='fs-2'>{f.cantidad_sumado}</span></li>
-                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión <SymbolSoles isbottom={false}/>: </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado_soles}/></span></li>
-                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión $ : </span><span className='fs-2'><NumberFormatMoney amount={(f.valor_total_sumado_dolares)}/></span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>ITEMS</span> <span className='fs-2'>{f.cantidad_sumado}</span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión S/. </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado_soles}/></span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>inversión <SymbolDolar fontSizeS={'20px'}/> </span><span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={(f.valor_total_sumado_dolares)}/></span></li>
                                         <br/>
-                                        <li className='d-flex justify-content-center'>
-                                            <Image src={sinImage}  className='rounded-circle m-2' indicatorIcon={<i className="pi pi-search"></i>} alt={f.ubicacion} preview  height='250' ></Image>
-                                            <Image src={sinImage}  className='rounded-circle m-2' indicatorIcon={<i className="pi pi-search"></i>} alt={f.ubicacion} preview  height='250' ></Image>
-                                            <Image src={sinImage}  className='rounded-circle m-2' indicatorIcon={<i className="pi pi-search"></i>} alt={f.ubicacion} preview  height='250' ></Image>
-                                        </li>
                                     </ul>
+                                    
+                                    <div style={{width: '100%', height: 'auto'}} className='border border-gray-300'>
+                                            <ImagesGrids images={f.tb_images}/>
+                                          </div>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -111,8 +109,11 @@ export const DataView = ({id_empresa, label_empresa}) => {
                                 
                 )})
             }
+            <Col lg={8}>
+          <ModalResumenInventarioValorizado label_empresa={label_empresa} data={dataView} show={isOpenModalResumenValorizado} onHide={onCloseModalResumenValorizado}/>
+
+            </Col>
         </Row>
-        <ModalResumenInventarioValorizado label_empresa={label_empresa} data={dataView} show={isOpenModalResumenValorizado} onHide={onCloseModalResumenValorizado}/>
         <ModalTableInventario ubicacion={ubicacion} show={isOpenModalInventarioFiltered} onHide={onCloseModalInventario} data={dataFilter}/>
     </>
   )
@@ -126,7 +127,7 @@ function agruparDataxLugar(dataV) {
       
         // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
         if (!acc[label]) {
-          acc[label] = { ubicacion: label, orden: item.parametro_lugar_encuentro?.orden_param, valor_total_sumado_soles: 0, valor_total_sumado_dolares: 0, cantidad_sumado: 0, items: [] };
+          acc[label] = { ubicacion: label, tb_images: item.parametro_lugar_encuentro?.tb_images, orden: item.parametro_lugar_encuentro?.orden_param, valor_total_sumado_soles: 0, valor_total_sumado_dolares: 0, cantidad_sumado: 0, items: [] };
         }
         
         // Sumamos el valor_total del item actual al grupo correspondiente

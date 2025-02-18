@@ -1,27 +1,36 @@
-import { Card, Col, Row } from 'react-bootstrap'
+import { Card, Col, Row, Table } from 'react-bootstrap'
 import React, { useEffect, useMemo, useState } from 'react';
 import { TabPanel, TabView } from 'primereact/tabview'
 import { Button } from 'primereact/button';
 import { DataTerminologiaGasto } from './DataTerminologiaGasto';
-import { useTerminologiaStore } from '@/hooks/hookApi/useTerminologiaStore'
 import { onSetTerminologia } from '@/store/dataTerminologia/terminologiaSlice';
 import { ModalTerminologiaGasto } from './modalTerminologiaGasto';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import { useTerminologiaStore } from './useTerminologiaStore';
+import { ModalAgregarImgs } from './ModalAgregarImgs';
 
 export const TerminologiasInventarioLugar = ({dataTerminologiaPorEntidad}) => {
-
-    const { terminologiaPorEntidad, seleccionarEntidad } = useTerminologiaStore();
+    const { obtenerParametrosLugares, dataT } = useTerminologiaStore()
     const [isModalOpenTerminologia, setisModalOpenTerminologia] = useState(false);
     const [isModalOpenTerminologiaGasto, setisModalOpenTerminologiaGasto] = useState(false);
-
+    const [isModalOpenAgregarImgs, setisModalOpenAgregarImgs] = useState(false)
+    const [dataRow, setdataRow] = useState({})
     const dispatch = useDispatch();
+    console.log({dataT});
+    
     useEffect(() => {
-        terminologiaPorEntidad();
+        obtenerParametrosLugares();
     }, []);
-
     const test = useSelector(e => e.DATA)
-
+    const onOpenModalAgregarImg = (row) => {
+        console.log(row, "rooo");
+        setdataRow(row)
+        setisModalOpenAgregarImgs(true)
+    }
+    const onCloseModalAgregarImg = () => {
+        setisModalOpenAgregarImgs(false)
+    }
     const modalTerminologiaClose = () => {
         setisModalOpenTerminologia(false)
     }
@@ -41,7 +50,33 @@ export const TerminologiasInventarioLugar = ({dataTerminologiaPorEntidad}) => {
 
     return (
         <>
-            <Card>
+            <Table>
+                
+            <thead className="bg-primary">
+                                                                    <tr>
+                                                                        <th className='text-white p-2 py-2'>LUGAR</th>
+                                                                        <th className='text-white p-2 py-2' >ORDEN</th>
+                                                                        <th className='text-white p-2 py-2' ></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {
+                                                                        dataT.map(d=>{
+                                                                            return (
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <span className='fw-boldd'>{d.label_param}</span>
+                                                                                        </td>
+                                                                                        <td>{d.orden_param}</td>
+                                                                                        <td><button onClick={()=>onOpenModalAgregarImg(d)}>AGREGAR IMAGENES</button></td>
+                                                                                    </tr>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </tbody>
+            </Table>
+            <ModalAgregarImgs show={isModalOpenAgregarImgs} onHide={onCloseModalAgregarImg} uidImageParam={dataRow.uid_image}/>
+            {/* <Card>
                 <Card.Body>
 
                     <TabView className='px-2 mx-1 mb-1' scrollable='true'>
@@ -50,7 +85,6 @@ export const TerminologiasInventarioLugar = ({dataTerminologiaPorEntidad}) => {
                             dataTerminologiaPorEntidad?.parametrosGasto?.map((parametro, index) => {
                                 if (parametro.parametros.length === 0) {
                                     return null;
-                                    //`${parametro.empresa} + ${index}`
                                 } else {
                                     return (
                                         <TabPanel key={`${parametro.empresa}`} className={''} header={parametro.empresa == '0' ? 'HISTORICO' : parametro.empresa == '598' ? 'Change' : parametro.empresa == '599' ? "Circus" : parametro.empresa == '600' ? "RAL" : ""}>
@@ -65,10 +99,9 @@ export const TerminologiasInventarioLugar = ({dataTerminologiaPorEntidad}) => {
                                 }
                             })
                         }
-
                     </TabView>
                 </Card.Body>
-            </Card>
+            </Card> */}
             <ModalTerminologiaGasto show={isModalOpenTerminologiaGasto} onHide={modalTerminologiaGastoClose} boleanActualizar={false} ></ModalTerminologiaGasto>
         </>
     );

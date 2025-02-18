@@ -14,6 +14,7 @@ import { DataTerminologiaGasto } from './DataTerminologiaGasto';
 import { ModalTerminologiaGasto } from './modalTerminologiaGasto';
 import { TerminologiaGastoTabView } from './TerminologiaGastoTabView';
 import { TerminologiasInventarioLugar } from './TerminologiasInventarioLugar';
+import { TerminologiaSistemas } from './TerminologiaSistemas';
 
 export const Terminologias = () => {
 
@@ -67,11 +68,11 @@ export const Terminologias = () => {
                                     <Col sm={12}>
                                        <TerminologiaGastoTabView dataTerminologiaPorEntidad={dataTerminologiaPorEntidad} ></TerminologiaGastoTabView>
                                     </Col>
-                                
                                 </TabPanel>
                                <TabPanel header={'TERMINOLOGIA DEL SISTEMAS'}>
-                                <TabView>
-                                        {
+                                    <TerminologiaSistemas/>
+                                {/* <TabView> */}
+                                        {/* {
                                             dataTerminologiaPorEntidad?.parametros?.length > 0 &&
                                             dataTerminologiaPorEntidad?.parametros?.map((parametro, index) => {
                                                 if (parametro.parametros.length === 0) {
@@ -80,6 +81,7 @@ export const Terminologias = () => {
                                                     return (
 
                                                         <TabPanel className='px-2' key={`${parametro.entidad_param}`} header={parametro.entidad_param}>
+                                                            
                                                             <Col sm={4}>
                                                                 <Button label='Agregar Terminologia' onClick={() => {
                                                                     modalTerminologiaOpen(parametro);
@@ -90,8 +92,8 @@ export const Terminologias = () => {
                                                     )
                                                 }
                                             })
-                                        }
-                                </TabView>
+                                        } */}
+                                {/* </TabView> */}
                                </TabPanel>
                                <TabPanel header={'TERMINOLOGIAS DEL INVENTARIO (LUGAR)'}>
                                     <Col sm={12}>

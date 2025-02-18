@@ -30,6 +30,7 @@ import { onSetDataView } from '@/store/data/dataSlice'
 import { FormatDataTable } from './Component/FormatDataTable'
 import { ModalTableSociosCanje } from './ModalTableSociosCanje'
 import { TableTotalS } from './TableTotalS'
+import { Button } from 'primereact/button'
 
 dayjs.extend(utc);
 export const ResumenComparativo = () => {
@@ -355,9 +356,10 @@ export const ResumenComparativo = () => {
         const porcentajexMontoProps = ((montoxProps/sumaMontoTotal)*100).toFixed(2)
         const ticketMedio = (montoxProps/cantidadxProps)||0
         const sumaTicketMedio = sumaTotal ? (sumaMontoTotal / sumaTotal) : 0;
+        const sumaDeSesionesxProps = grupo.items.reduce((total, item)=>total + (item?.tb_semana_training.sesiones||0),0)
         // const sumaTicketMedioProp = estadisticas.reduce((acc, item)=>acc+item.monto_total,0)/arrayEstadistico?.reduce((acc, curr) => acc + curr.items?.length, 0)
-        // const porcentajexMontoProps = (array).toFixed(2)
-        console.log({grupo, array}, {montoxProps});
+        // const porcentajexMontoProps = (array).toFixed(2) d.sumaDeVentasEnSoles/d.sumaDeSesiones
+        //d.sumaDeVentasEnSoles/d.sumaDeSesiones
         const isSortable = true
         let resumen = [
             { header: labelCaracter, isIndexado: true, onClick: ()=>onOpenModalSOCIOS(grupo.items, '', labelCaracter, false), items: grupo.items, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL', order: 1 },
@@ -366,6 +368,7 @@ export const ResumenComparativo = () => {
             { header: `% VENTA TOTAL`, isSortable, value: porcentajexMontoProps, tFood: 100, order: 4 },
             { header: `% SOCIOS`, isSortable, value: porcentajexProps, tFood: 100, order: 5 },
             { header: `S/. TICKET MEDIO`, isSortable, value: ticketMedio, HTML: <NumberFormatMoney amount={ticketMedio}/>, tFood: <NumberFormatMoney amount={sumaTicketMedio}/>, order: 5 },
+            { header: `S/. PRECIO POR SESION`, isSortable, value: montoxProps, HTML: <NumberFormatMoney amount={montoxProps/sumaDeSesionesxProps}/>, tFood: <NumberFormatMoney amount={sumaMontoTotal}/>, order: 5 },
         ]
             // 1️⃣ Filtrar los elementos de resumen que estén en objDeleting
             if (Array.isArray(objDeleting)) {
@@ -494,7 +497,7 @@ export const ResumenComparativo = () => {
             return [
             { header: "EST. CIVIL (A)", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
-            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+            { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100||0).toFixed(2), items: grupo.items, tFood: (100).toFixed(2) },
                 ]
             }
             )
@@ -677,7 +680,7 @@ export const ResumenComparativo = () => {
             )
         const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros).map((grupo, index, array) => {
             return [
-                ...generarResumen(array, grupo, 'PROMOCIONES', index)
+                ...generarResumen(array, grupo, 'PROMOCIONES', index, {}, [{header: '', HTML: <Button label='VER PROMOCION' onClick={()=>window.open('https://www.facebook.com/61561916447046/posts/122130972314397214/', "_blank")}/>}])
                 ]
             }
             )
@@ -777,7 +780,7 @@ export const ResumenComparativo = () => {
         },
         {
             propiedad: 'TRANSFERENCIAS (COSTO CERO)',
-            items: []
+            items: dataAlterIdPgmCero?.map(f=>f.clientesCanjes).flat()
         },
         {
             propiedad: 'CANJES',
@@ -1317,19 +1320,19 @@ export const ResumenComparativo = () => {
             }
         )
         },
-        {
-            title: 'SOCIOS DESPUES DEL TRASPASO POR PROCEDENCIA - TOTAL',
-            id: 'COMPARATIVOPROCEDENCIATOTAL',
-            HTML: dataAlterIdPgmCero.map(d=>{
-                return (
-                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorProcedencia}/>
+        // {
+        //     title: 'SOCIOS DESPUES DEL TRASPASO POR PROCEDENCIA - TOTAL',
+        //     id: 'COMPARATIVOPROCEDENCIATOTAL',
+        //     HTML: dataAlterIdPgmCero.map(d=>{
+        //         return (
+        //         <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+        //         <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorProcedencia}/>
                     
-                </Col>
-            )
-            }
-        )
-        },
+        //         </Col>
+        //     )
+        //     }
+        // )
+        // },
         
         {
             isComparative: true,
