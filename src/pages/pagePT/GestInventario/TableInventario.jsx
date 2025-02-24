@@ -250,10 +250,10 @@ export default function TableInventario({showToast, id_enterprice}) {
     const onOpenModalIvsG = ()=>{
         setisOpenModalEgresos(true)
     }   
-    const IdBodyTemplate = (rowData)=>{
+    const IdBodyTemplate = (rowData, { rowIndex })=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(`${rowData.id}`, globalFilterValue)}</span>
+                <span>{highlightText(`${rowIndex+1}`, globalFilterValue)}</span>
             </div>
         )
     }
