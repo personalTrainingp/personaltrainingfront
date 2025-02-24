@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Dialog } from 'primereact/dialog'
 import { TabPanel, TabView } from 'primereact/tabview'
 import React from 'react'
@@ -56,8 +57,8 @@ export const ModalDetalleMembresia = ({show, onHide, dataRow}) => {
                             dataRegalos.map(d=>{
                                 return (
                                     <tr>
-                                            <td className='fs-3'>{d.extension_inicio}</td>
-                                            <td className='fs-3'>{d.extension_fin}</td>
+                                            <td className='fs-3'>{dayjs(d.extension_inicio).format('dddd DD [de] MMM [DEL] YYYY')} </td>
+                                            <td className='fs-3'>{dayjs(d.extension_fin).format('dddd DD [de] MMM [DEL] YYYY')}</td>
                                             <td className='fs-3'>{d.observacion}</td>
                                     </tr>
                                 )

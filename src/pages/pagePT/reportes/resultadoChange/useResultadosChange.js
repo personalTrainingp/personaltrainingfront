@@ -87,7 +87,7 @@ export const useResultadosChange = () => {
 					fecha: g.fecha,
 					facturacion: inversionxProps,
 					inversion: 0,
-					numero_mensaje: 0,
+					numero_mensajes: 0,
 					conversor: 0,
 					ticket_medio: inversionxProps / g.items.length,
 					numero_cierre: g.items.length,

@@ -251,10 +251,10 @@ const onOpenModal = (e)=>{
                 {f.nombres_empl}
               </Card.Title>
               <ul className='text-decoration-none'>
-                <li className='hover-border-card-primary m-1 fs-4' onClick={()=>onClickChangeData(f.firmados, `FIRMADOS - ${f.nombres_empl}`)}>FIRMADOS: {f.firmados.length}</li>
-                <li className='hover-border-card-primary m-1 fs-4' onClick={()=>onClickChangeData(f.sinFirmas, `NO FIRMADOS - ${f.nombres_empl}`)}>SIN FIRMA: {f.sinFirmas.length}</li>
-                <li className='hover-border-card-primary m-1 fs-4' onClick={()=>onClickChangeData(f.fotos, `CON FOTO - ${f.nombres_empl}`)}>CON FOTO: {f.fotos.length}</li>
-                <li className='hover-border-card-primary m-1 fs-4' onClick={()=>onClickChangeData(f.sinFotos, `SIN FOTO - ${f.nombres_empl}`)}>SIN FOTO: {f.sinFotos.length}</li>
+                <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.firmados, `FIRMADOS - ${f.nombres_empl}`)}>FIRMADOS: {f.firmados.length}</li>
+                <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.sinFirmas, `NO FIRMADOS - ${f.nombres_empl}`)}>SIN FIRMA: {f.sinFirmas.length}</li>
+                <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.fotos, `CON FOTO - ${f.nombres_empl}`)}>CON FOTO: {f.fotos.length}</li>
+                <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.sinFotos, `SIN FOTO - ${f.nombres_empl}`)}>SIN FOTO: {f.sinFotos.length}</li>
               </ul>
             </Card>
           </Col>

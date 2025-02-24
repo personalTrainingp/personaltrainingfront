@@ -20,8 +20,39 @@ export const PrincipalView = () => {
   useEffect(() => {
     obtenerTodoVentas()
   }, [])
-  console.log(dataRes);
-  
+
+  const dataPrueba = [
+    {
+      fecha: 'septiembre 2024',
+      inversion: 4.47,
+      numero_mensajes: 2
+    },
+    {
+      fecha: 'octubre 2024',
+      inversion: 113.86,
+      numero_mensajes: 348
+    },
+    {
+      fecha: 'noviembre 2024',
+      inversion: 66.13,
+      numero_mensajes: 282
+    },
+    {
+      fecha: 'diciembre 2024',
+      inversion: 223.46,
+      numero_mensajes: 787
+    },
+    {
+      fecha: 'enero 2025',
+      inversion: 245.06,
+      numero_mensajes: 1155
+    },
+    {
+      fecha: 'febrero 2025',
+      inversion: 805,
+      numero_mensajes: 996
+    }
+  ]
   
   return (
     <>
@@ -36,10 +67,11 @@ export const PrincipalView = () => {
             <Row>
               {
                 data.map((f, index)=>{
-                  
+                  const dataInv = dataPrueba.map(m=>{return {...m, inversion: m.inversion*3.75}}).find((p)=>p.fecha ===f.fecha)
+                  const acumula = {...f, ...dataInv}
                   return (
                     <Col lg={4}>
-                      <TableEstadist data={f} key={index}/>
+                      <TableEstadist data={acumula} onOpenModalAddMesResChange={onOpenModalAddMesResChange} key={index}/>
                     </Col>
                   )
                 })
