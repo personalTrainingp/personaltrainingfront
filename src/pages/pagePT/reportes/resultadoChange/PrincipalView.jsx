@@ -24,39 +24,57 @@ export const PrincipalView = () => {
   const dataPrueba = [
     {
       fecha: 'septiembre 2024',
-      inversion: 4.47,
-      numero_mensajes: 2
+      inversion: 16.77,
+      facturacion: 0,
+      numero_mensajes: 2,
+      numero_cierre: 0,
+      ticket_medio: 0,
     },
     {
       fecha: 'octubre 2024',
-      inversion: 113.86,
-      numero_mensajes: 348
+      inversion: 427,
+      facturacion: 6261,
+      numero_cierre: 3,
+      numero_mensajes: 348,
+      ticket_medio: 2087,
     },
     {
       fecha: 'noviembre 2024',
-      inversion: 66.13,
-      numero_mensajes: 282
+      inversion: 248,
+      facturacion: 5325,
+      numero_cierre: 10,
+      numero_mensajes: 282,
+      ticket_medio: 591.67,
     },
     {
       fecha: 'diciembre 2024',
-      inversion: 223.46,
-      numero_mensajes: 787
+      inversion: 838,
+      facturacion: 25192,
+      numero_cierre: 38,
+      numero_mensajes: 787,
+      ticket_medio: 662.95,
     },
     {
       fecha: 'enero 2025',
-      inversion: 245.06,
-      numero_mensajes: 1155
+      inversion: 919,
+      facturacion: 19523,
+      numero_cierre: 19,
+      numero_mensajes: 1155,
+      ticket_medio: 1096.95,
     },
     {
       fecha: 'febrero 2025',
       inversion: 805,
-      numero_mensajes: 996
+      facturacion: 16654,
+      numero_cierre: 17,
+      numero_mensajes: 996,
+      ticket_medio: 969.65,
     }
   ]
   
   return (
     <>
-    <PageBreadcrumb title={'RESULTADOS CHANGE'}/>
+    <PageBreadcrumb title={'RESULTADOS por INVERSION DIGITAL'}/>
       <Row>
         <Col lg={12}>
         <Card>

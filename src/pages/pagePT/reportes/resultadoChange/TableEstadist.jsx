@@ -1,4 +1,4 @@
-import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
+import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { NumberFormatMoney, NumberFormatter } from '@/components/CurrencyMask';
 import { Button } from 'primereact/button';
 import React from 'react'
@@ -26,7 +26,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange}) => {
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles numero={<NumberFormatMoney amount={data.inversion}/>}/></span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={data.inversion}/>}/></span>
               </li>
             </td>
           </tr>
@@ -69,7 +69,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange}) => {
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'ventas'}</span>
+                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'SOCIOS'}</span>
               </li>
             </td>
             <td>
@@ -86,7 +86,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange}) => {
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{<SymbolSoles numero={<NumberFormatMoney amount={(data.inversion/data.numero_cierre)}/>}/>}</span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.numero_cierre===0?0:<SymbolSoles numero={<NumberFormatMoney amount={(data.inversion/data.numero_cierre)}/>}/>}</span>
               </li>
             </td>
           </tr>
@@ -110,7 +110,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange}) => {
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles numero={<NumberFormatMoney amount={(data.ticket_medio)}/>}/></span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles numero={<NumberFormatMoney amount={(data.facturacion/data.numero_cierre).toFixed(2)}/>}/></span>
               </li>
             </td>
           </tr>

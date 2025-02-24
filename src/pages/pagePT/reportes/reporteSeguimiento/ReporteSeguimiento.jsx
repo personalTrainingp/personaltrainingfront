@@ -1,11 +1,12 @@
 import { PageBreadcrumb } from '@/components'
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
-import dayjs from 'dayjs';
+import dayjs, { utc } from 'dayjs';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import React, { useEffect, useState } from 'react'
 import { Card, Col, Row, Table } from 'react-bootstrap'
-
+dayjs.extend(utc);
+locale('es')
 export const ReporteSeguimiento = () => {
     const [selectHorario, setselectHorario] = useState([])
 	const { reporteSeguimiento, obtenerReporteSeguimiento, obtenerReporteSeguimientoTODO, viewSeguimiento, agrupado_programas, loadinData } = useReporteStore();
@@ -65,7 +66,7 @@ export const ReporteSeguimiento = () => {
                 <Row>
                     <Col lg={6}>
                         <div>
-                            <h3 className='text-center'>HORARIOS SOCIOS INSCRITOS TURNO AM ({filtroDeHorario('AM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
+                                <h3 className='text-center'>HORARIOS SOCIOS ACTIVOS AM ({filtroDeHorario('AM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
                                 <DataTable
                                             stripedRows 
                                             value={filtroDeHorario('AM')} 
@@ -84,7 +85,7 @@ export const ReporteSeguimiento = () => {
                     </Col>
                     <Col lg={6}>
                         <div>
-                            <h3 className='text-center'>HORARIOS SOCIOS INSCRITOS TURNO PM ({filtroDeHorario('PM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
+                            <h3 className='text-center'>HORARIOS SOCIOS ACTIVOS PM ({filtroDeHorario('PM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
                             <DataTable
                                         stripedRows 
                                         value={filtroDeHorario('PM')} 
