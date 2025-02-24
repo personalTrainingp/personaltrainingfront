@@ -869,7 +869,6 @@ export const ResumenComparativo = () => {
                 return (
                     <Col style={{paddingBottom: '1px !important'}} xxl={12}>
                         <Card>
-{/* <h1 className='pt-5' style={{fontSize: '60px'}}>comparativo VENTAS TOTAL</h1> */}
                             <Card.Header className=' d-flex align-self-center'>
                                 
                                 {

@@ -61,8 +61,13 @@ export const ComponentImg = ({width, height, imgDefault}) => {
       >
         {image ? (
           <Image src={image} 
+          style={{objectFit: 'cover'}}
+          width="auto"
+          height="700"
           // width={width} height={heigth} 
-          alt="CARGAR FOTO" className="w-full h-full object-cover" />
+          alt="CARGAR FOTO" 
+          // className="w-full h-full object-cover" 
+          />
         ) : (
           <p>Pega, arrastra o haz clic para subir imagen</p>
         )}

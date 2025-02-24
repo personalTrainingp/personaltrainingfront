@@ -27,14 +27,14 @@ export const ItemVentaMembresia = ({e}) => {
                         <tr>
                             <td className="border-0">
                                 <div>
-                                    {e.tb_ProgramaTraining.name_pgm} | {e.tb_semana_training.semanas_st} SEMANAS | 
+                                    {e.tb_ProgramaTraining.name_pgm} / {e.tb_semana_training.semanas_st} SEMANAS 
                                 </div>
                                 <div>
-                                    {e.tb_semana_training.nutricion_st} NUTRICION | {e.tb_semana_training.congelamiento_st} CONGELAMIENTO
+                                    {e.tb_semana_training.nutricion_st} NUTRICION / {e.tb_semana_training.congelamiento_st} CONGELAMIENTO
                                 </div>
                                 
 												<span className="text-muted font-weight-normal d-block">
-													Inicia:{' '}
+													Inicio:{' '}
 													{FormatoDateMask(
 														e.fec_inicio_mem,
 														'dddd D [de] MMMM [del] YYYY'
@@ -59,8 +59,8 @@ export const ItemVentaMembresia = ({e}) => {
                             <td className="border-0">
                                 {
                                     e.contrato_x_serv?
-                                    <a href={`${config.API_IMG.FILE_CONTRATOS_CLI}${e.contrato_x_serv?.name_image}`} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontSize: '15px'}}>CONTRATO</a>
-                                    :<>SIN CONTRATO</>
+                                    <a  href={`${config.API_IMG.FILE_CONTRATOS_CLI}${e.contrato_x_serv?.name_image}`} style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer', fontSize: '15px'}}>CONTRATO</a>
+                                    :<span className='text-primary'>SIN CONTRATO</span>
                                 }
                             </td>
                         </tr>

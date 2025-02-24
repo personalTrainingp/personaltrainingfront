@@ -80,12 +80,6 @@ obtenerUltimaMembresiaxIdCli(id_cli)
         postExtension(formState.dias_habiles, formState.observacion, 'CON', dataUltimaMembresia[0].id_venta, formState.extension_inicio, formState.extension_fin)
         cancelarExtensionCongelamiento()
     }
-    const productDialogFooter = (
-		<React.Fragment>
-			<Button label="Cancel" icon="pi pi-times" severity='danger' outlined onClick={cancelarExtensionCongelamiento} />
-			<Button label="Guardar" icon="pi pi-check" severity='success' onClick={submitExtensionCongelamiento} />
-		</React.Fragment>
-	);
       // Efecto para actualizar días cuando se seleccionan fechas
   useEffect(() => {
     if (extension_inicio && extension_fin) {

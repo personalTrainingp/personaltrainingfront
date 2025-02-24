@@ -62,10 +62,13 @@ export const InventarioTotalizado = () => {
             <DataView id_empresa={599} label_empresa={'CIRCUS'}/>
         </TabPanel> */}
         <TabPanel header={<span className='fs-2'>CHANGE</span>}>
-            <DataView id_empresa={598} label_empresa={'CHANGE'}/>
+            <DataView isResumenxZonaLoc id_empresa={598} label_empresa={'CHANGE'}/>
         </TabPanel>
         <TabPanel header={<span className='fs-2'>MP</span>}>
-        <DataView id_empresa={600} label_empresa={'MP'}/>
+        <DataView isResumenxZonaLoc={false} id_empresa={600} label_empresa={'MP'}/>
+        </TabPanel>
+        <TabPanel header={<span className='fs-2'>CIRCUS</span>}>
+        <DataView isResumenxZonaLoc={false} id_empresa={599} label_empresa={'CIRCUS'}/>
         </TabPanel>
     </TabView>
     </>

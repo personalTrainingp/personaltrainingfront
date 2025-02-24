@@ -180,20 +180,6 @@ export const ModalProspectos = ({show, onHide}) => {
                         <div className="field">
                             <label className="mb-3 font-bold">Programa de interes*</label>
                             <div className="formgrid grid">
-                                {/* {
-                                    programasActivos.map(e=>(
-                                        <div className="field-radiobutton col-6" key={e.value}>
-                                            <RadioButton
-                                                inputId={e.value}
-                                                name="id_pgm"
-                                                value={e.value}
-                                                checked={id_pgm===e.value}
-                                                onChange={onInputChange}
-                                            />
-                                            <label htmlFor={e.value}>{e.label}</label>
-                                        </div>
-                                    ))
-                                } */}
                                 {
                                     datapgmPT.map(e=>{
                                         // console.log(e);
@@ -205,7 +191,7 @@ export const ModalProspectos = ({show, onHide}) => {
                                     return(
                                     <Col className={`content-img`} xl={3} lg={4} sm={3} xs={6} style={{cursor: 'pointer'}} key={e.id_pgm}>
                                         <label>
-                                        <img className={`hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} src={`${config.API_IMG.LOGO}${e.tb_image?.name_image}`}/>
+                                        <img className={`hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} width={e.tb_image?.width} height={50} src={`${config.API_IMG.LOGO}${e.tb_image?.name_image}`}/>
                                         <input
                                             value={e.id_pgm}
                                             type="radio"

@@ -16,12 +16,11 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { ReportesxCliente } from './ReportesxCliente';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
-import { ConfirmDialog } from 'primereact/confirmdialog';
 import Swal from 'sweetalert2';
 import { ScreenNutricionista } from './ScreenNutricionista';
-import { useNutricionCliente } from '@/hooks/hookApi/useNutricionCliente';
 import { SectionFiles } from './SectionFiles';
 import { Image } from 'primereact/image';
+import { PanelMembresias } from './PanelMembresias/PanelMembresias';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
@@ -84,7 +83,7 @@ export const PerfilCliente = () => {
   
   return (
     <>
-    <Link  to={'/gestion-clientes'} className='mt-3'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
+    {/* <Link  to={'/gestion-clientes'} className='mt-3'><i className='mdi mdi-chevron-left'></i>Regresar</Link> */}
     {isOpenModalRegalos &&
       <ModalExtensionRegalo onHide={modalCloseRegalos} show={isOpenModalRegalos} id_cli={userCliente?.id_cli} dataUltimaMembresia={dataUltimaMembresia}/>
     }
@@ -95,9 +94,9 @@ export const PerfilCliente = () => {
     }
     <Row>
       
-    <Col lg={4}>
-            <Card className='mt-3 p-3'>
-              <div className='' style={{height: '600px', width: '100%'}}>
+    <Col lg={3}>
+            <Card className='mt-3 p-3'  style={{width: '100%', height: '85vh'}}>
+              <div className='' style={{height: '100%', width: '100%'}}>
                 <div className='d-flex align-items-center flex-column'>
                   <Image indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170"  src={`${avatarUrl==null?sinAvatar:`${config.API_IMG.AVATAR_CLI}${avatarUrl}`}`} className='rounded-circle'/>
                   <div className='m-2 text-center'>
@@ -114,43 +113,46 @@ export const PerfilCliente = () => {
               </div>
             </Card>
           </Col>
-          <Col lg={8}>
-        <Card className='mt-3 p-3'>
-          <div className='flex-auto'>
+          <Col lg={9}>
+        <Card className='mt-3 p-3' style={{width: '100%', height: '85vh'}}>
               <TabView>
                 <TabPanel header='Informacion basica'>
-                  <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                  <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                       <InformacionGeneralCliente data={userCliente}/>
                   </ScrollPanel>
                 </TabPanel>
+                <TabPanel header='MEMBRESIAS'>
+                  <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
+                      <PanelMembresias id_cli={userCliente.id_cli}/>
+                  </ScrollPanel>
+                </TabPanel>
                 <TabPanel header='Documentos adjuntos'>
-                <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                   <SectionFiles uid_file={userCliente.uid_file_adj}/>
                 </ScrollPanel>
                 </TabPanel>
                 <TabPanel header='Comentarios'>
-                <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                   <SectionComentarios data={userCliente}/>
                 </ScrollPanel>
                 </TabPanel>
                 <TabPanel header='Compras'>
-                <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                   <ComprasxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
                 </ScrollPanel>
                 </TabPanel>
                 <TabPanel header='Reportes'>
-                <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                   <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/>
                 </ScrollPanel>
                 </TabPanel>
                 <TabPanel header='NUTRICIONISTA'>
-                <ScrollPanel style={{ width: '100%', height: '500px' }} className="custombar2">
+                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                   {/* <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/> */}
                   <ScreenNutricionista id_cli={userCliente?.id_cli} dataCli={userCliente}/>
                 </ScrollPanel>
                 </TabPanel>
               </TabView>
-          </div>
         </Card>
           </Col>
     </Row>

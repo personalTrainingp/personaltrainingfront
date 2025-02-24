@@ -26,7 +26,7 @@ export const useContratosDeClientes = () => {
 					asesor: dc.tb_empleado.nombres_apellidos_empl,
 					detalle_ventaMembresia: dc.detalle_ventaMembresia,
 					createdAt: dc.createdAt,
-					pgmYsem: `${dc.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm} | ${dc.detalle_ventaMembresia[0].tb_semana_training.semanas_st} SEMANAS`,
+					pgmYsem: `${dc.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm} / ${dc.detalle_ventaMembresia[0].tb_semana_training.semanas_st} SEMANAS`,
 				};
 			});
 			dispatch(onSetDataView(dataContratos));

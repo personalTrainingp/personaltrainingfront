@@ -29,8 +29,6 @@ export const DataTableContratoCliente = () => {
         setidVenta(id_venta)
         setidCli(idCli)
     }
-    console.log(isLoading);
-    
     const onCloseModalTipoCambio = () =>{
         setisOpenModalTipoCambio(false)
     }
@@ -50,7 +48,10 @@ export const DataTableContratoCliente = () => {
   const FotoBodyTemplate = (rowData)=>{
     return (
       <>
-      {rowData.images_cli.length===0?<a onClick={()=>onOpenModalPhotoCli(rowData)} className='underline cursor-pointer'>SIN FOTO</a>:<a onClick={()=>onOpenModalPhotoCli(rowData)} className='underline cursor-pointer'>CON FOTO</a>}
+      {rowData.images_cli.length===0?
+      <a onClick={()=>onOpenModalPhotoCli(rowData)} className='underline cursor-pointer fw-bold'>SIN FOTO</a>:
+      <a onClick={()=>onOpenModalPhotoCli(rowData)} className='text-black underline cursor-pointer'>CON FOTO</a>
+      }
       </>
     )
   }
@@ -61,7 +62,7 @@ export const DataTableContratoCliente = () => {
         {
           rowData.detalle_ventaMembresia[0].tarifa_monto!==0 && (
             <>
-            {rowData.detalle_ventaMembresia[0].firma_cli==null?<a onClick={()=>onOpenModalTipoCambio(rowData.id, rowData.id_cli)} className='underline cursor-pointer'>SIN FIRMA</a>:'con firma'}
+            {rowData.detalle_ventaMembresia[0].firma_cli==null?<a onClick={()=>onOpenModalTipoCambio(rowData.id, rowData.id_cli)} className='underline cursor-pointer fw-bold'>SIN FIRMA</a>:'con firma'}
             </>
           )
         }
@@ -76,7 +77,7 @@ export const DataTableContratoCliente = () => {
       {
         rowData.detalle_ventaMembresia[0].tarifa_monto!==0 && (
           <>
-            {rowData.detalle_ventaMembresia[0].firma_cli==null?'':<a href={`${config.API_IMG.FILE_CONTRATOS_CLI}${rowData.detalle_ventaMembresia[0].contrato_x_serv?.name_image}`}>CONTRATO</a>}
+            {rowData.detalle_ventaMembresia[0].firma_cli==null?'':<a className='text-black underline' href={`${config.API_IMG.FILE_CONTRATOS_CLI}${rowData.detalle_ventaMembresia[0].contrato_x_serv?.name_image}`}>CONTRATO</a>}
           </>
         )
       }
@@ -107,11 +108,11 @@ export const DataTableContratoCliente = () => {
       <>
       {
         rowData.detalle_ventaMembresia[0].tarifa_monto!==0 ? (
-          <span className={`${!createdFirmas?'text-primary':'text-black'}`}>
+          <span className={`${!createdFirmas || rowData.images_cli.length===0 ?'text-primary fw-bold':'text-black'}`}>
             {rowData.nombre_apellidos}
           </span>
         ): (
-          <span className={`text-black`}>
+          <span className={rowData.images_cli.length===0 ?'text-primary fw-bold':'text-black'}>
             {rowData.nombre_apellidos}
           </span>
         )
@@ -119,7 +120,7 @@ export const DataTableContratoCliente = () => {
       <br/>
       {
         rowData.detalle_ventaMembresia[0].tarifa_monto!==0 && (
-          !createdFirmas&&<>tiempo sin firmar: {dias} días, {horas} horas, {minutos} minutos, {segundos} segundos</>
+          !createdFirmas&&<span className='text-primary fw-bold'>tiempo sin firmar: {dias} días, {horas} horas, {minutos} minutos, {segundos} segundos</span>
         )
       }
       
@@ -234,6 +235,12 @@ function agruparVentasClientesxAvatar(dataView) {
   return groupedData;
 }
 
+
+const onOpenModal = (e)=>{
+  setgastoxID(undefined)
+  // onOpenModalIvsG(e)
+}
+
   return (
     <>
       <Row>
@@ -253,26 +260,12 @@ function agruparVentasClientesxAvatar(dataView) {
           </Col>
         ))
         }
-        {/* {agruparVentasClientesxAvatar(dataView).map((f, index)=>(
-          <Col lg={3} className='' key={index}>
-            <Card className='p-2' style={{height: '130px'}}>
-              <Card.Title>
-                {f.nombres_empl}
-              </Card.Title>
-              <ul className='text-decoration-none'>
-                <li className='hover-border-card-primary' onClick={()=>onClickChangeData(f.fotos, `CON FOTO - ${f.nombres_empl}`)}>CON FOTO: {f.fotos.length}</li>
-                <li className='hover-border-card-primary' onClick={()=>onClickChangeData(f.sinFotos, `SIN FOTO - ${f.nombres_empl}`)}>SIN FOTO: {f.sinFotos.length}</li>
-              </ul>
-            </Card>
-          </Col>
-        ))
-        } */}
       </Row>
-                  <DataTable size='small' value={data} paginator rows={10} dataKey="id"
+                  <DataTable size='small' stripedRows value={data} paginator rows={10} dataKey="id"
                   globalFilterFields={['usuario', 'ip', 'accion', 'observacion', 'fecha_audit']} emptyMessage="Sin Contratos">
               <Column header="Asesor comercial" body={nombreAsesorBodyTemplate} style={{ maxWidth: '15rem' }} />
               <Column header="SOCIOS" body={nombreSocioBodyTemplate} style={{ minWidth: '12rem' }} />
-              <Column header="Programa | Semanas" body={programaSemanaBodyTemplate} style={{ minWidth: '12rem' }} />
+              <Column header="Programa / Semanas" body={programaSemanaBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="MONTO" body={tarifaMontoBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="FOTO" body={FotoBodyTemplate} style={{ maxWidth: '5rem' }} />
               <Column header="Firmas" body={firmaBodyTemplate} style={{ maxWidth: '5rem' }} />

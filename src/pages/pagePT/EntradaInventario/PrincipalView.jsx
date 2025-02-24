@@ -23,9 +23,7 @@ export const PrincipalView = () => {
   return (
     <>
     <Row>
-      <Col lg={1}>
-      </Col>
-      <Col lg={10}>
+      <Col lg={12}>
         <Card>
           <Card.Header>
             <Button onClick={onOpenModalEntradaInventario}>AGREGAR ENTRADA</Button>
@@ -34,8 +32,6 @@ export const PrincipalView = () => {
             <FormatTable data={[dataForTable]}/>
           </Card.Body>
         </Card>
-      </Col>
-      <Col lg={1}>
       </Col>
     </Row>
     <ModalEntradaInventario onHide={onCloseModalEntradaInventario} show={isModalEntradaInventario}/>

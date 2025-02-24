@@ -13,7 +13,7 @@ import { Button } from 'primereact/button'
 import { ModalResumenInventarioValorizado } from './ModalResumenInventarioValorizado'
 import { ImagesGrids } from './ImagesGrids'
 
-export const DataView = ({id_empresa, label_empresa}) => {
+export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
     const { obtenerArticulos, isLoading } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
@@ -69,8 +69,8 @@ export const DataView = ({id_empresa, label_empresa}) => {
   return (
     <>
     <Button label={<span className='fs-2'>RESUMEN VALORIZADO</span>} onClick={onOpenModalResumenValorizado} text/>
-    <Row>
-            {
+        <Row>
+            {isResumenxZonaLoc &&
                 groupedData.map(g=>{
                     console.log(agruparDataxLugar(g.items), "agrupada");
                     
