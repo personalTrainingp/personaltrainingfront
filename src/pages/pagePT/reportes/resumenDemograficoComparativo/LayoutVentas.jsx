@@ -237,20 +237,6 @@ export const ResumenComparativo = () => {
             };
           });
     }
-    //AGRUPAR POR HORARIOS
-    function agruparPorHorarios(detalledata) {
-        return arrayOrigenDeCliente.map(({ label, value, order }) => {
-            const items = detalledata.filter(
-              (cliente) => cliente.horario === value
-            );
-            return {
-              propiedad: label,
-              order,
-              value,
-              items,
-            };
-          });
-    }
     //AGRUPADO POR DIFERENTE DE MYOR A MENOR
     function agruparPorRangoEdad(detalleData) {
         

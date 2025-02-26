@@ -1,147 +1,157 @@
 import { PageBreadcrumb } from '@/components'
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
-import dayjs, { utc } from 'dayjs';
+import dayjs, { locale, utc } from 'dayjs';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import React, { useEffect, useState } from 'react'
 import { Card, Col, Row, Table } from 'react-bootstrap'
+import { ItemCardPgm } from './ItemCardPgm';
+import { NumberFormatMoney } from '@/components/CurrencyMask';
+import config from '@/config';
 dayjs.extend(utc);
 locale('es')
+
 export const ReporteSeguimiento = () => {
     const [selectHorario, setselectHorario] = useState([])
 	const { reporteSeguimiento, obtenerReporteSeguimiento, obtenerReporteSeguimientoTODO, viewSeguimiento, agrupado_programas, loadinData } = useReporteStore();
     useEffect(() => {
       obtenerReporteSeguimiento(true, 598)
-      obtenerReporteSeguimientoTODO(598)
+      obtenerReporteSeguimientoTODO(598, true)
     }, [])
-    const [customers, setCustomers] = useState([])
-    // console.log(ordenarPorDistrito(viewSeguimiento));
-    // console.log(agruparPorHorarioYDistrito(viewSeguimiento));
-    // console.log(viewSeguimiento);
-    const onSelectHorario = (d)=>{
-        setselectHorario(d)
-    }
-    const HorarioBodyTemplate = (rowData)=>{
-        return (
-            <span className='font-20 fw-bold'>
-            {rowData.horario}
-            </span>
-        )
-    }
+
     
-    const cantidadBodyTemplate=(rowData)=>{
-        return (
-            <div className='font-20 text-center'>
-            {rowData.cantidad} 
-            </div>
-        )
-    }
-    const filtroDeHorario = (time)=>{
-// Función para convertir el horario a un valor numérico para la comparación
-        const convertirAHora = (horario) => {
-            const [hora, periodo] = horario.split(' ');
-            let [h, m] = hora.split(':').map(Number);
-            if (periodo === 'PM' && h !== 12) h += 12; // Convertir a formato de 24 horas
-            if (periodo === 'AM' && h === 12) h = 0; // Ajustar 12 AM a 0 horas
-            return h * 60 + m; // Retornar el tiempo en minutos
-        };
-        const hore = ordenarPorHorario(viewSeguimiento).map(g=>{return {...g, cantidad: g.items.length}}).filter(horario => horario.horario.includes(time))
-        // Ordenar de mayor a menor
+    const generarResumen = (array, grupo, labelCaracter, index, objDeleting, objAumenta=[]) => {
+        const isSortable = true
+        const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0);
+        let resumen = [
+            { header: labelCaracter, isIndexado: true, items: grupo.items, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL', order: 1 },
+            { header: 'SOCIOS', items: grupo.items, value: grupo.items.length, tFood: sumaTotal, order: 3 },
+        ]
         
-        const horariosOrdenados = hore.sort((a, b) =>convertirAHora(a.horario) - convertirAHora(b.horario));
-        return horariosOrdenados
-    }
-    console.log(selectHorario.items, viewSeguimiento, ordenarPorDistrito(selectHorario.items));
+            // 1️⃣ Filtrar los elementos de resumen que estén en objDeleting
+            if (Array.isArray(objDeleting)) {
+                const headersAEliminar = objDeleting.map(obj => obj.header);
+                resumen = resumen.filter(item => !headersAEliminar.includes(item.header));
+            }
+
+            // 2️⃣ Crear un mapa de objAumenta para sobrescribir elementos de resumen
+            const objAumentaMap = new Map(objAumenta.map(item => [item.header, item]));
+
+            // 3️⃣ Fusionar los datos, dando prioridad a objAumenta
+            resumen = resumen.filter(item => !objAumentaMap.has(item.header)); // Eliminar duplicados
+            resumen = [...resumen, ...objAumentaMap.values()]; // Agregar objAumenta
+
+            // 4️⃣ Ordenar por la propiedad order
+            return resumen.sort((a, b) => a.order - b.order);
+        };
+    function agruparPorPrograma(data) {
+        return Object.values(data.reduce((acc, item) => {
+            const { id_pgm, name_pgm } = item.tb_ProgramaTraining;
     
+            if (!acc[id_pgm]) {
+                acc[id_pgm] = { id_pgm, name_pgm, items: [] };
+            }
+    
+            acc[id_pgm].items.push(item);
+            return acc;
+        }, {}));
+    }
+    const dataAlter = agruparPorPrograma(viewSeguimiento).map((data)=>{
+        console.log(data, "daaa");
+        
+        const avatarPrograma = {
+            urlImage: `${config.API_IMG.LOGO}${data?.items[0].tb_ProgramaTraining.tb_image.name_image}`,
+            width: data?.items[0].tb_ProgramaTraining.tb_image.width,
+            height: data?.items[0].tb_ProgramaTraining.tb_image.height
+        }
+        
+        const aforo = data.id_pgm===2?18:data.id_pgm===3?10:data.id_pgm===4?14:''
+        const aforo_turno = data.id_pgm===2?36:data.id_pgm===3?10:data.id_pgm===4?14:''
+        
+        const agrupadoPorHorario = agruparPorHorarios(data.items).sort((a, b) => b.items.length - a.items.length).map((f) => {
+            const cuposDispo = aforo - f.items.length;
+            const cuposOcupado = f.items.length;
+            return { ...f, cuposDispo, cuposOcupado };
+          }).map((grupo, index, array) => {
+                    const sumaTotal = array.reduce((total, item) => total + (item?.cuposOcupado || 0), 0);
+                    const sumarCuposDispo = array.reduce((total, item) => total + item.cuposDispo, 0);
+                    // Porcentajes globales (sumatoria total)
+                    const sumaPorcentajeOcupados = ((sumaTotal / aforo) * 100).toFixed(2);
+                    const sumaPorcentajeDispo = ((sumarCuposDispo / aforo) * 100).toFixed(2);
+                    // Porcentajes individuales por grupo
+                    const porcentajeOcupadoGrupo = ((grupo.cuposOcupado / aforo) * 100).toFixed(2);
+                    const porcentajePendienteGrupo = ((grupo.cuposDispo / aforo) * 100).toFixed(2);
+                    return [
+                        { header: "TURNO", isIndexado: true,  isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
+                        { header: "SOCIOS PAGANTES", isSummary: true, value: grupo.cuposOcupado, items: grupo.items, tFood: sumaTotal },
+                        { header: "CUPOS DISPONIBLES", isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
+                        { header: "% OCUPADO", isSummary: true, value: <NumberFormatMoney amount={porcentajeOcupadoGrupo}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaPorcentajeOcupados/array.length} /> },
+                        { header: "% PENDIENTE", isSummary: true, value: <NumberFormatMoney amount={porcentajePendienteGrupo}/>, tFood: <NumberFormatMoney amount={sumaPorcentajeDispo/array.length}/> },
+                    ];
+                  });
+        return {
+            avatarPrograma,
+            aforo_turno,
+            aforo,
+            agrupadoPorHorario
+        }
+    })
+    const data = [
+        {            
+                    isComparative: true,
+                    title: 'SOCIOS PAGANTES POR HORARIO VS AFORO ',
+                    id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
+                    HTML: dataAlter.map(d=>{
+                        return (
+                        <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
+                            <ItemCardPgm aforo={d.aforo} aforoTurno={d.aforo_turno} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorario} isViewSesiones={true} labelParam={'HORARIO'}/>
+                        </Col>
+                    )
+                    }
+                    )
+        }
+    ]
+    console.log({viewSeguimiento, dataAlter}, agruparPorPrograma(viewSeguimiento));
   return (
     <>
-        <PageBreadcrumb subName={'T'} title={'REPORTE DE SEGUIMIENTO'}/>
+        <PageBreadcrumb subName={'T'} title={'REPORTE DE SEGUIMIENTO DE SOCIOS ACTIVOS'}/>
         <Row>
-            
-        </Row>
-        <Row>
-            <Col lg={1}>
-            </Col>
-            <Col lg={10}>
-                <Row>
-                    <Col lg={6}>
-                        <div>
-                                <h3 className='text-center'>HORARIOS SOCIOS ACTIVOS AM ({filtroDeHorario('AM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
-                                <DataTable
-                                            stripedRows 
-                                            value={filtroDeHorario('AM')} 
-                                            selection={selectHorario} onSelectionChange={(e)=>onSelectHorario(e.value)}
-                                            size={'small'} 
-                                            
-                                            scrollable 
-                                            selectionMode="single"
-                                            scrollHeight="400px"
-                                            width={'400'}
-                                            >
-                                            <Column header={<span className='font-24'>HORARIO</span>} style={{width: '300px'}} body={HorarioBodyTemplate}></Column>
-                                            <Column header={<span className='font-24'>socios inscritos</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
-                                </DataTable>
-                        </div>
-                    </Col>
-                    <Col lg={6}>
-                        <div>
-                            <h3 className='text-center'>HORARIOS SOCIOS ACTIVOS PM ({filtroDeHorario('PM').reduce((suma, item) => suma + item.cantidad, 0)})</h3>
-                            <DataTable
-                                        stripedRows 
-                                        value={filtroDeHorario('PM')} 
-                                        selection={selectHorario} onSelectionChange={(e)=>onSelectHorario(e.value)}
-                                        size={'small'} 
-                                        // tableStyle={{ width: '30rem' }} 
-                                        scrollable 
-                                        selectionMode="single"
-                                        scrollHeight="400px"
-                                        width={'400'}
-                                        >
-                                        <Column header={<span className='font-24'>HORARIO</span>} style={{width: '300px'}} body={HorarioBodyTemplate}></Column>
-                                        <Column header={<span className='font-24'>socios inscritos</span>} style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
-                            </DataTable>
-                        </div>
-                    </Col>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <Col lg={12}>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                        <h1 className='text-center'>POR DISTRITO</h1>
-                        <Row>
-                            {
-                                ordenarPorDistrito(selectHorario.items).map(g=>(
-                                    
-                                    <Col lg={4}>
-                                    <h2 className='text-center'>{g.distrito?`${g.distrito}(${g.items.length})`:'SIN DEFINIR'}</h2>
-                                    <DataTable
-                                                stripedRows 
-                                                value={ordenarPorHorario(g.items).map(m=>{return {...m, cantidad: m.items.length}})} 
-                                                size={'small'} 
-                                                // tableStyle={{ minWidth: '30rem' }} 
-                                                scrollable 
-                                                selectionMode="single"
-                                                scrollHeight="400px"
-                                                >
-                                                <Column header={<span className='font-20'>HORARIO</span>}  style={{width: '20px'}} body={HorarioBodyTemplate}></Column>
-                                                <Column header={<span className='font-20'>socios inscritos</span>}  style={{width: '20px'}} filterField='cantidad' field='cantidad' sortable body={cantidadBodyTemplate}></Column>
-                                    </DataTable>
-                                </Col>
-                                ))
-                            }
+            {data.map((section, index) => (
+                        <Col xxl={12}>
+                        <Row className='d-flex justify-content-center'>
+                            <br/>
+                                {section.HTML}
                         </Row>
                     </Col>
-                </Row>
-            </Col>
-            <Col lg={1}>
-            </Col>
+                    ))}
         </Row>
     </>
   )
 }
+
+    //AGRUPAR POR HORARIOS
+    function agruparPorHorarios(data) {
+        const resultado = [];
+        
+        data?.forEach((item) => {
+          const { horario, tarifa_monto } = item;
+          
+          const formatHorario = dayjs.utc(horario).format('hh:mm A') 
+        //   console.log(horario, formatHorario, "horarrrr");
+          // Verificar si ya existe un grupo con la misma cantidad de sesiones
+          let grupo = resultado?.find((g) => g.propiedad === formatHorario);
+      
+          if (!grupo) {
+            // Si no existe, crear un nuevo grupo
+            grupo = { propiedad: formatHorario, items: [], tarifa_monto };
+            resultado.push(grupo);
+          }
+          // Agregar el item al grupo correspondiente
+          grupo.items.push(item);
+        });
+        
+        return resultado.sort((a,b)=>b.items.length-a.items.length).sort((a,b)=>b.tarifa_monto-a.tarifa_monto);
+    }
 // {
 //     ordenarPorDistrito(reporteSeguimiento).map(f=>(
 //                 <th>{f.distrito}</th>

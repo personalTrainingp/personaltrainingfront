@@ -65,8 +65,6 @@ export const useResultadosChange = () => {
 	const obtenerTodoVentas = async () => {
 		try {
 			const RANGE_DATE = [new Date(2024, 8, 16), new Date()];
-			// const RANGE_MEM = [new Date(2025, 1, 1), new Date()];
-
 			const { data } = await PTApi.get('/venta/reporte/obtener-comparativo-resumen', {
 				params: {
 					arrayDate: [
@@ -76,7 +74,10 @@ export const useResultadosChange = () => {
 				},
 			});
 			const ventasSinCero = data.ventasProgramas.filter(
-				(f) => f.detalle_ventaMembresium.tarifa_monto !== 0
+				(f) =>
+					f.detalle_ventaMembresium.tarifa_monto !== 0 &&
+					(f.detalle_ventaMembresium.tb_ventum.id_origen === 693 ||
+						f.detalle_ventaMembresium.tb_ventum.id_origen === 694)
 			);
 			const dataAlter = agruparPorMes(agruparPorVenta(ventasSinCero)).map((g) => {
 				const inversionxProps = g.items.reduce(

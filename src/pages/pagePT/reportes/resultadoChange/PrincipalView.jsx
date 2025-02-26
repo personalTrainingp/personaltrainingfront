@@ -6,16 +6,24 @@ import { useSelector } from 'react-redux'
 import { TableEstadist } from './TableEstadist'
 import { PageBreadcrumb } from '@/components'
 import { useResultadosChange } from './useResultadosChange'
+import { ModalVistaSocios } from './ModalVistaSocios'
 
 export const PrincipalView = () => {
   const [isOpenModalAddMesResChange, setisOpenModalAddMesResChange] = useState(false)
   const { obtenerTodoVentas, data } = useResultadosChange()
+  const [isOpenModalViewVentas, setisOpenModalViewVentas] = useState(false)
   const {dataRes} = useSelector(e=>e.DATA)
   const onOpenModalAddMesResChange = () => {
     setisOpenModalAddMesResChange(true)
   }
   const onCloseModalAddMesResChange = () => {
     setisOpenModalAddMesResChange(false)
+  }
+  const onOpenModalDataViewVentas = ()=>{
+    setisOpenModalViewVentas(true)
+  }
+  const onCloseModalDataViewVentas = ()=>{
+    setisOpenModalViewVentas(false)
   }
   useEffect(() => {
     obtenerTodoVentas()
@@ -25,50 +33,50 @@ export const PrincipalView = () => {
     {
       fecha: 'septiembre 2024',
       inversion: 16.77,
-      facturacion: 0,
+      // facturacion: 0,
       numero_mensajes: 2,
       numero_cierre: 0,
-      ticket_medio: 0,
+      // ticket_medio: 0,
     },
     {
       fecha: 'octubre 2024',
       inversion: 427,
-      facturacion: 6261,
+      // facturacion: 6261,
       numero_cierre: 3,
       numero_mensajes: 348,
-      ticket_medio: 2087,
+      // ticket_medio: 2087,
     },
     {
       fecha: 'noviembre 2024',
       inversion: 248,
-      facturacion: 5325,
+      // facturacion: 5325,
       numero_cierre: 10,
       numero_mensajes: 282,
-      ticket_medio: 591.67,
+      // ticket_medio: 591.67,
     },
     {
       fecha: 'diciembre 2024',
       inversion: 838,
-      facturacion: 25192,
+      // facturacion: 25192,
       numero_cierre: 38,
       numero_mensajes: 787,
-      ticket_medio: 662.95,
+      // ticket_medio: 662.95,
     },
     {
       fecha: 'enero 2025',
       inversion: 919,
-      facturacion: 19523,
+      // facturacion: 19523,
       numero_cierre: 19,
       numero_mensajes: 1155,
-      ticket_medio: 1096.95,
+      // ticket_medio: 1096.95,
     },
     {
       fecha: 'febrero 2025',
-      inversion: 805,
-      facturacion: 16654,
-      numero_cierre: 17,
-      numero_mensajes: 996,
-      ticket_medio: 969.65,
+      inversion: 3438.75/3.75,
+      // facturacion: 21151,
+      numero_cierre: 20,
+      numero_mensajes: 961,
+      // ticket_medio: 969.65,
     }
   ]
   
@@ -78,9 +86,6 @@ export const PrincipalView = () => {
       <Row>
         <Col lg={12}>
         <Card>
-          <Card.Header>
-            <Button label='AGREGAR MES' onClick={onOpenModalAddMesResChange}/>
-          </Card.Header>
           <Card.Body>
             <Row>
               {
@@ -89,7 +94,7 @@ export const PrincipalView = () => {
                   const acumula = {...f, ...dataInv}
                   return (
                     <Col lg={4}>
-                      <TableEstadist data={acumula} onOpenModalAddMesResChange={onOpenModalAddMesResChange} key={index}/>
+                      <TableEstadist onDataViewVentas={()=>onOpenModalDataViewVentas()} data={acumula} onOpenModalAddMesResChange={onOpenModalAddMesResChange} key={index}/>
                     </Col>
                   )
                 })
@@ -100,6 +105,7 @@ export const PrincipalView = () => {
         </Col>
       </Row>
       <ModalAddMesResChange show={isOpenModalAddMesResChange} onHide={onCloseModalAddMesResChange}/>
+      <ModalVistaSocios show={isOpenModalViewVentas} onHide={onCloseModalDataViewVentas}/>
     </>
   )
 }

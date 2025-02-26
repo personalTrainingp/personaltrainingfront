@@ -61,6 +61,12 @@ input{
   border: 3px solid #D41115 !important;
   cursor: pointer;
 }
+.hover-text:hover{
+  color: blue;
+}
+.text-color-dolar{
+  color: #1E8727
+}
 .hover-border-card-primary{
   border: 3px solid transparent;
 }

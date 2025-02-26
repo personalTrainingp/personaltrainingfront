@@ -1,6 +1,5 @@
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
-import { arrayOrigenDeCliente } from '@/types/type';
 import dayjs from 'dayjs';
 import { Dialog } from 'primereact/dialog'
 import { Image } from 'primereact/image';
@@ -37,9 +36,6 @@ export const ModalTableSocios = ({clickDataSocios, avatarProgramaSelect, clickDa
             nombre_tarifa: '',
             fecha_fin_mem,
             fecha_inicio_mem,
-            // origen_label: arrayOrigenDeCliente.find(f=>f.value===id_origen).label,
-            // fecha_inicio: '',
-            // fecha_fin: '',
             observacion: d.tb_ventum.observacion,
             fecha_venta: d.tb_ventum.fecha_venta,
             // asesor_venta: '',

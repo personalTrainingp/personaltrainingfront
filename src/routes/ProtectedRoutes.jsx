@@ -78,6 +78,9 @@ const ResumenComparativoAnual = lazy(()=>import('../pages/pagePT/reportes/resume
 const SeguimientoxMesView = lazy(()=>import('../pages/pagePT/reportes/SeguimientoxMes'))
 const FacturacionPublicidad = lazy(()=>import('../pages/pagePT/FacturacionPublicidad'))
 const ResumenDemograficoxPrograma = lazy(()=>import('../pages/pagePT/reportes/resumenDemograficoComparativo'))
+const ViewAdquision = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/adquision'))
+const ViewRenovacion = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/renovacion'))
+const ViewReinscripcion = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/reinscripcion'))
 /**
  * routes import
  */
@@ -117,6 +120,18 @@ export default function ProtectedRoutes() {
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad*/}
 					{
+						sections.find(e=>e.url==='/mkt-adquisicion')&&
+                        <Route path='mkt-adquisicion' element={<ViewAdquision/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/mkt-renovacion')&&
+                        <Route path='mkt-renovacion' element={<ViewRenovacion/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/mkt-reinscripcion')&&
+                        <Route path='mkt-reinscripcion' element={<ViewReinscripcion/>}/>
+					}
+					{
 						sections.find(e=>e.url==='/resultados-change')&&
                         <Route path='resultados-change' element={<ResultadoChange/>}/>
 					}
@@ -141,8 +156,8 @@ export default function ProtectedRoutes() {
                         <Route path='reporte/reporte-demografico' element={<ReporteDemograficoCliente/>}/>
 					}
 					{
-						sections.find(e=>e.url==='/reporte/comparativo-resumen-x-mes')&&
-                        <Route path='reporte/comparativo-resumen-x-mes' element={<ReporteDeGestionComercial/>}/>
+						sections.find(e=>e.url==='/reporte/comparativo-resumen-x-mes')&& //asdf
+                        <Route path='reporte/comparativo-resumen-x-mes' element={<ResumenComparativoAnual/>}/>
 					}
 					{
                         sections.find(e=>e.url==='/reporte/gestion-comercial') && 

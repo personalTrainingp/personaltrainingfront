@@ -6,7 +6,7 @@ import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog'
 import { Image } from 'primereact/image';
 import React from 'react'
-
+import sinImage from '@/assets/images/imageBlanck.jpg'
 export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     const IdBodyTemplate = (rowData)=>{
         return (
@@ -86,7 +86,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     
     const costoTotalDolaresBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2 fs-2">
+            <div className="flex align-items-center gap-2 fs-2 fw-bold text-color-dolar">
                 <span> <NumberFormatMoney amount={rowData.costo_total_dolares}/></span>
             </div>
         );
@@ -186,9 +186,9 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
 					sortable
 				></Column>
                 <Column
-					header={<span className='fs-2'>COSTO TOTAL DOLARES $</span>}
+					header={<span className='fs-2 text-color-dolar'>COSTO TOTAL DOLARES $</span>}
 					body={costoTotalDolaresBodyTemplate}
-                    footer={<div className='fs-2 text-primary'>$. <NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_dolares, 0)}/></div>}
+                    footer={<div className='fs-2 text-color-dolar'>$. <NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_dolares, 0)}/></div>}
 					style={{ width: '4rem' }}
 					sortable
 				></Column>

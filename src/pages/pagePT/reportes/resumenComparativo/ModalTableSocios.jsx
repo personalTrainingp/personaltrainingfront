@@ -23,7 +23,6 @@ export const ModalTableSocios = ({ dataArrayGrouped,clickDataSocios, avatarProgr
     console.log({clickDataSocios, avatarProgramaSelect, isDataNeedGruped});
     
     const dataAlter = clickDataSocios?.map(d=>{
-        // console.log(d, "fecha_ventario");
         const id_origen = d.tb_ventum.id_origen
         return {
             nombres_socios: `${d.tb_ventum.tb_cliente.nombre_cli} ${d.tb_ventum.tb_cliente.apPaterno_cli} ${d.tb_ventum.tb_cliente.apMaterno_cli}`,
@@ -33,9 +32,6 @@ export const ModalTableSocios = ({ dataArrayGrouped,clickDataSocios, avatarProgr
             fecha_nacimiento: `${d.tb_ventum.tb_cliente.fecha_nacimiento}`,
             edad: calcularDiferenciaFechas(d.tb_ventum.tb_cliente.fecha_nacimiento, d.tb_ventum.fecha_venta ),
             nombre_tarifa: '',
-            // origen_label: arrayOrigenDeCliente.find(f=>f.value===id_origen).label,
-            // fecha_inicio: '',
-            // fecha_fin: '',
             observacion: d.tb_ventum.observacion,
             fecha_venta: d.tb_ventum.fecha_venta,
             // asesor_venta: '',

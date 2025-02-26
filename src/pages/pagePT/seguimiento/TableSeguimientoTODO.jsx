@@ -27,6 +27,7 @@ import { Row } from 'react-bootstrap';
 import { BtnExportSeguimiento } from './BtnExportSeguimiento';
 import { arrayFacturas } from '@/types/type';
 import { useSeguimientoStore } from './useSeguimientoStore';
+import { Link } from 'react-router-dom';
 dayjs.extend(utc);
 locale('es')
 
@@ -187,10 +188,9 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
         );
 	}
 	const SociosbodyTemplate = (rowData)=>{
-		
 		return (
             <div className="align-items-center gap-2">
-                <div className='font-bold text-primary'>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</div>
+                <Link to={`/historial-cliente/${rowData.tb_ventum.tb_cliente.uid}`} className='font-bold hover-text'>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</Link>
                 <div>Email: {rowData.tb_ventum.tb_cliente.email_cli} </div>
                 <div>Telefono: {rowData.tb_ventum.tb_cliente.tel_cli?rowData.tb_ventum.tb_cliente.tel_cli.replace(/ /g, "").match(/.{1,3}/g).join('-'):''} </div>
                 <div className='fw-bold'>Distrito: <span className='text-primary'>{rowData.distrito} </span></div>
@@ -353,9 +353,6 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 						// filter
 						// filterElement={dateFilterTemplate}
 					/>
-					{
-						
-					}
 					<Column 
 								 field="status" 
 								 header={<span>SESIONES <br/> CONGELAMIENTO/ <br/> REGALO  </span>}

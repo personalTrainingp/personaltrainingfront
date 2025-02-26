@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const TableEstadist = ({data, onOpenModalAddMesResChange}) => {
+export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVentas}) => {
   return (
     <Table className="table-centered mb-0" striped responsive>
       <thead className='bg-primary fs-2' onClick={onOpenModalAddMesResChange}>
@@ -38,7 +38,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange}) => {
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles numero={<NumberFormatMoney amount={data.facturacion}/>}/></span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={data.facturacion}/>}/></span>
               </li>
             </td>
           </tr>
@@ -72,8 +72,8 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange}) => {
                 <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'SOCIOS'}</span>
               </li>
             </td>
-            <td>
-              <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
+            <td onClick={onDataViewVentas}>
+              <li className={`d-flex flex-row justify-content-between p-1 float-end`} >
                 <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.numero_cierre}</span>
               </li>
             </td>
@@ -86,7 +86,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange}) => {
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.numero_cierre===0?0:<SymbolSoles numero={<NumberFormatMoney amount={(data.inversion/data.numero_cierre)}/>}/>}</span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.numero_cierre===0?0:<SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={(data.inversion/data.numero_cierre)}/>}/>}</span>
               </li>
             </td>
           </tr>
@@ -110,7 +110,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange}) => {
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles numero={<NumberFormatMoney amount={(data.facturacion/data.numero_cierre).toFixed(2)}/>}/></span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={(data.facturacion/data.numero_cierre).toFixed(2)}/>}/></span>
               </li>
             </td>
           </tr>
