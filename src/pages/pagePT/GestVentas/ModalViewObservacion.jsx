@@ -9,20 +9,28 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { RadioButton } from 'primereact/radiobutton';
 import { TabPanel, TabView } from 'primereact/tabview';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal, Tab, Table, Tabs } from 'react-bootstrap'
 import { classNames } from 'primereact/utils';
 import { TimelineItem } from '@/components';
 import { Link } from 'react-router-dom';
 import { ItemVentaMembresia } from '@/components/ItemsResumenVenta/ItemVentaMembresia';
 import { ItemVentaTransferenciaMembresia } from '@/components/ItemsResumenVenta/ItemVentaTransferenciaMembresia';
-
+import Select from 'react-select'
 export const ModalViewObservacion = ({onHide, show, data, id}) => {
     // console.log(data);
     const closeModal = ()=>{
         onHide();
     }
     const { obtenerVentaporId, dataVentaxID, isLoading } = useVentasStore()
+    const [isProcedenciaCustom, setisProcedenciaCustom] = useState(false)
+    const [formOrigen, setformOrigen] = useState({
+        id_origen: dataVentaxID[0]?.id_origen,
+      })
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setformOrigen({ ...formData, [name]: value });
+      };
     useEffect(() => {
         if(id==0)return;
         obtenerVentaporId(id)
@@ -36,6 +44,16 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
             <Button label="Cancel" icon="pi pi-times" outlined onClick={closeModal} />
         </React.Fragment>
     );
+    const onCustomProcedencia = ()=>{
+        setisProcedenciaCustom(true)
+    }
+    const onCloseCustomProcedencia = ()=>{
+        setisProcedenciaCustom(false)
+    }
+    const onSubmitCustomProcedencia = ()=>{
+        console.log(formOrigen);
+        
+    }
   return (
     <Dialog visible={show} style={{ width: '50rem', height: '80rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Venta #${id}`} modal className="p-fluid" footer={productDialogFooter} onHide={closeModal}>
         {
@@ -54,7 +72,34 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                     </li>
                     <li className='mb-4'>
                         <span>Procedencia: </span>
-                        <span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>{arrayOrigenDeCliente.find(e=>e.value===dataVentaxID[0]?.id_origen)?.label}</span>
+                        <span className='d-flex align-items-center' style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>
+                            {
+                                isProcedenciaCustom?(
+                                    <>
+                                        <Select
+                                            onChange={handleChange}
+                                            name={"id_origen"}
+                                            placeholder={'Seleccionar el origen'}
+                                            className="react-select"
+                                            classNamePrefix="react-select"
+                                            options={arrayOrigenDeCliente}
+                                            value={arrayOrigenDeCliente.find(
+                                                (option) => option.value === formOrigen
+                                            )}
+                                            //   defaultValue={optionsAlmacenProd[id_almacen]}
+                                            required
+                                        ></Select>
+                                    <i className='pi pi-check hover-text cursor-pointer ml-4' onClick={onSubmitCustomProcedencia}></i>
+                                    <i className='pi pi-times hover-text cursor-pointer ml-4' onClick={onCloseCustomProcedencia}></i>
+                                    </>
+                                ):(
+                                    <>
+                                    {arrayOrigenDeCliente.find(e=>e.value===dataVentaxID[0]?.id_origen)?.label} 
+                                    <i className='pi pi-pencil hover-text cursor-pointer ml-4' onClick={onCustomProcedencia}></i>
+                                    </>
+                                )
+                            }
+                        </span>
                     </li>
                     <li className='mb-4'>
                         <span>{arrayFacturas.find(e=>e.value===dataVentaxID[0]?.id_tipoFactura)?.label}</span>

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { FormatoDateMask, FormatoTimeMask, MoneyFormatter } from '../CurrencyMask';
 import config from '@/config';
+import dayjs from 'dayjs';
 
 export const ItemVentaMembresia = ({e}) => {
     
@@ -40,7 +41,9 @@ export const ItemVentaMembresia = ({e}) => {
 														'dddd D [de] MMMM [del] YYYY'
 													)}{' '}
 													a las{' '}
-													<FormatoTimeMask
+                                                    {e.horario}
+                                                    {/* {dayjs(e.horario, 'hh:mm:ss').format('hh:mm A')} */}
+													{/* <FormatoTimeMask
 														date={e.horario.trim()}
 														format={'hh:mm A'}
 													/>
@@ -50,7 +53,7 @@ export const ItemVentaMembresia = ({e}) => {
 													{FormatoDateMask(
 														e.fec_fin_mem,
 														'dddd D [de] MMMM [del] YYYY'
-													)}
+													)} */}
 												</span>
                             </td>
                             <td className="border-0">

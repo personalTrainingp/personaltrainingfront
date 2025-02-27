@@ -57,10 +57,18 @@ export const PanelMembresias = ({id_cli}) => {
                 return (
                     <tr key={`${programa}-${fecha_venta}`}>
                             {/* <td className='fs-3'>{fecha_venta}</td> */}
-                            <td className='fs-3'>{programa} <br/>{semanas_vendidas} SEMANAS</td>
+                            <td className='fs-3'>
+                                <span>
+                                    {programa} / {semanas_vendidas} SEMANAS
+                                </span>
+                                <br/>
+                                <span>
+                                    3 NUTRI / 1 CONG
+                                </span>
+                            </td>
                             <td className='fs-3'>{fecha_inicio}</td>
                             <td className='fs-3'>{fecha_fin}</td>
-                            <td className='fs-4 underline text-primary cursor-pointer' onClick={()=>onOpenModalDetalleMembresia(f)}>VER DETALLE</td>
+                            <td className='fs-4 underline text-primary cursor-pointer' onClick={()=>onOpenModalDetalleMembresia(f)}>DETALLE</td>
                     </tr>
                 )
             })

@@ -79,14 +79,14 @@ export const TodoVentas=({id_empresa})=> {
         return (
           <>
                   <span className='font-24'>
-                    Total de ventas: {valueFilter?.length==0?customers?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length:valueFilter?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length}
+                    CANTIDAD DE ITEMS: {valueFilter?.length==0?customers?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length:valueFilter?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length}
                   </span> 
-                  <span className='font-24 mx-2'>
+                  {/* <span className='font-24 mx-2'>
                     |
                   </span>
                   <span className='font-24'>
-                    Total de ventas: {valueFilter?.length==0?customers?.length:valueFilter?.length}
-                  </span>
+                    FACTURAS: {valueFilter?.length==0?customers?.length:valueFilter?.length}
+                  </span> */}
             <div className="flex justify-content-end">
                 <IconField iconPosition="left">
                     <InputIcon className="pi pi-search" />

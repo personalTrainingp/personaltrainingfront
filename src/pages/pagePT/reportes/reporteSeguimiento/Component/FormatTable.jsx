@@ -28,7 +28,6 @@ export const FormatTable = ({ data=[] }) => {
     setSortedData(sorted);
     setSortConfig({ key: header, direction });
   };
-  console.log({sortedData, data});
   
   // Obtener encabezados desde la primera fila de datos
   const headers = data[0]?.map((col) => col.header);
@@ -52,9 +51,9 @@ export const FormatTable = ({ data=[] }) => {
           <tr key={rowIndex}>
             {row?.map((col, colIndex) => (
               <td key={colIndex} onClick={col.onClick}>
-              <li className={`d-flex flex-row justify-content-between p-2`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>
-                  <span className='mr-4 text-black'>{col.isIndexado? rowIndex+1:''} </span>
+              <li className={`d-flex flex-row justify-content-between p-1`}>
+                <span style={{fontSize: '35px'}} className={`fw-bold ml-1`}>
+                  <span className='mr-1 text-black'>{col.isIndexado? rowIndex+1:''} </span>
                   <span className={`${(`${col.value}`.split(' ')[1]==='PM'?'bg-primary text-white':`${col.isPropiedad?'text-primary':'text-black'}`)}`}>{col.HTML ?? col.value}</span></span>
               </li>
             </td>

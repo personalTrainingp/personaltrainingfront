@@ -16,7 +16,7 @@ import { Tag } from 'primereact/tag';
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import dayjs from 'dayjs';
-import { FormatoDateMask } from '@/components/CurrencyMask';
+import { FormatoDateMask, FormatoTimeMask } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { StatisticSeguimiento } from './StatisticSeguimiento';
@@ -199,7 +199,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
         );
 	}
 	const programaSesioneBodyTemplate = (rowData)=>{
-		// console.log(rowData);
+		console.log(rowData.ProgramavsSemana);
 		
 		return (
 			<>
@@ -213,7 +213,12 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 			<br/>
 			{rowData.ProgramavsSemana.split('|')[1]}
 			<br/>
-			{rowData.ProgramavsSemana.split('|')[2]}
+			
+			<FormatoTimeMask
+				date={rowData.ProgramavsSemana.split('|')[2]}
+				format={'hh:mm A'}
+			/>
+			{/* {rowData.ProgramavsSemana.split('|')[2]} */}
 			</>
 		)
 	}
