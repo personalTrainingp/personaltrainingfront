@@ -94,9 +94,9 @@ export const ReporteSeguimiento = () => {
                         // { header: "", isIndexado: true, isTime: true, value: '', items: grupo.items,  tFood: 'TOTAL' },
                         { header: "TURNO",  isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
                         { header: "SOCIOS ACTIVOS", isSummary: true, value: grupo.cuposOcupado, items: grupo.items, tFood: sumaTotal },
-                        { header: "CUPOS", isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
+                        { header: "CUPOS POR TURNO", isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
                         { header: <>AUSENTISMO <br/> 30%</>, isSummary: true, value: ausentismo, items: grupo.items, tFood: '' },
-                        { header: <>TOTAL CUPOS</>, isSummary: true, value:  <>{numberCuposDisponible+ausentismo}</>, tFood: sumaCuposTentativo },
+                        { header: <>TOTAL CUPOS POR TURNO</>, isSummary: true, value:  <>{numberCuposDisponible+ausentismo}</>, tFood: sumaCuposTentativo },
                         // { header: "% OCUPADO", isSummary: true, value: <NumberFormatMoney amount={porcentajeOcupadoGrupo}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaPorcentajeOcupados/array.length} /> },
                         // { header: "% PENDIENTE", isSummary: true, value: <NumberFormatMoney amount={porcentajePendienteGrupo}/>, tFood: <NumberFormatMoney amount={sumaPorcentajeDispo/array.length}/> },
                     ];

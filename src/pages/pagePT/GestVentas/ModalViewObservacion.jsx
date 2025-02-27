@@ -17,19 +17,20 @@ import { Link } from 'react-router-dom';
 import { ItemVentaMembresia } from '@/components/ItemsResumenVenta/ItemVentaMembresia';
 import { ItemVentaTransferenciaMembresia } from '@/components/ItemsResumenVenta/ItemVentaTransferenciaMembresia';
 import Select from 'react-select'
+import { useGestVentasStore } from './useGestVentasStore';
 export const ModalViewObservacion = ({onHide, show, data, id}) => {
     // console.log(data);
     const closeModal = ()=>{
         onHide();
     }
     const { obtenerVentaporId, dataVentaxID, isLoading } = useVentasStore()
+    const { putVentas } = useGestVentasStore()
     const [isProcedenciaCustom, setisProcedenciaCustom] = useState(false)
     const [formOrigen, setformOrigen] = useState({
         id_origen: dataVentaxID[0]?.id_origen,
       })
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setformOrigen({ ...formData, [name]: value });
+      const handleChange = (e, name) => {
+        setformOrigen({ ...formOrigen, [name]: e.value });
       };
     useEffect(() => {
         if(id==0)return;
@@ -51,8 +52,8 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
         setisProcedenciaCustom(false)
     }
     const onSubmitCustomProcedencia = ()=>{
-        console.log(formOrigen);
-        
+        putVentas(formOrigen.id_origen, dataVentaxID[0].id, obtenerVentaporId)
+        onCloseCustomProcedencia()
     }
   return (
     <Dialog visible={show} style={{ width: '50rem', height: '80rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Venta #${id}`} modal className="p-fluid" footer={productDialogFooter} onHide={closeModal}>
@@ -77,7 +78,7 @@ export const ModalViewObservacion = ({onHide, show, data, id}) => {
                                 isProcedenciaCustom?(
                                     <>
                                         <Select
-                                            onChange={handleChange}
+                                            onChange={(e)=>handleChange(e, 'id_origen')}
                                             name={"id_origen"}
                                             placeholder={'Seleccionar el origen'}
                                             className="react-select"
