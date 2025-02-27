@@ -72,8 +72,6 @@ export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
         <Row>
             {isResumenxZonaLoc &&
                 groupedData.map(g=>{
-                    console.log(agruparDataxLugar(g.items), "agrupada");
-                    
                     return(
                     <>
                     <h1>
@@ -92,6 +90,7 @@ export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
                                 <Card.Body>
                                     <ul className='text-decoration-none list-unstyled font-20'>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>ITEMS</span> <span className='fs-2'>{f.cantidad_sumado}</span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>MANO DE OBRA S/.</span> <span className='fs-2'><NumberFormatMoney amount={f.valor_mano_obra_sumado_soles}/></span></li>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión S/. </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado_soles}/></span></li>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>inversión <SymbolDolar fontSizeS={'20px'}/> </span><span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={(f.valor_total_sumado_dolares)}/></span></li>
                                         <br/>
@@ -127,11 +126,21 @@ function agruparDataxLugar(dataV) {
       
         // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
         if (!acc[label]) {
-          acc[label] = { ubicacion: label, tb_images: item.parametro_lugar_encuentro?.tb_images, orden: item.parametro_lugar_encuentro?.orden_param, valor_total_sumado_soles: 0, valor_total_sumado_dolares: 0, cantidad_sumado: 0, items: [] };
+          acc[label] = { 
+              ubicacion: label, 
+              tb_images: item.parametro_lugar_encuentro?.tb_images, 
+              orden: item.parametro_lugar_encuentro?.orden_param, 
+              valor_total_sumado_soles: 0, 
+              valor_mano_obra_sumado_soles: 0, 
+              valor_total_sumado_dolares: 0, 
+              cantidad_sumado: 0, 
+              items: [] 
+            };
         }
         
         // Sumamos el valor_total del item actual al grupo correspondiente
         acc[label].valor_total_sumado_soles += item.costo_total_soles;
+        acc[label].valor_mano_obra_sumado_soles += item.mano_obra_soles;
         acc[label].valor_total_sumado_dolares += item.costo_total_dolares;
         acc[label].cantidad_sumado += item.cantidad;
         

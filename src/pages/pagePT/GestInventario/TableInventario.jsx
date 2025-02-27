@@ -277,12 +277,23 @@ export default function TableInventario({showToast, id_enterprice}) {
         return (
             
             <div className="d-flex font-24" >
-                <div className='text-right ' style={{marginLeft: '30px'}}>
+                <div className='text-right text-color-dolar fw-bold' style={{marginLeft: '30px'}}>
                     <NumberFormatMoney amount={rowData.costo_total_dolares}/>
                 </div>
             </div>
         )
     }
+    
+        const costoManoObraBodyTemplate = (rowData)=>{
+            return (
+                
+                <div className="d-flex font-24" >
+                    <div className='text-right fw-bold' style={{marginLeft: '30px'}}>
+                        <NumberFormatMoney amount={rowData.mano_obra_soles}/>
+                    </div>
+                </div>
+            )
+        }
     const valorTotalBodyTemplate = (rowData)=>{
         return (
             
@@ -332,7 +343,8 @@ export default function TableInventario({showToast, id_enterprice}) {
                 <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolSoles isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={valorUnitActualBodyTemplate} filter/>
                 <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO TOTAL <SymbolSoles isbottom={false}/></div>} field='costo_total_soles' filterField="costo_total_soles" style={{ minWidth: '10rem' }} sortable body={valorTotalBodyTemplate} filter/>
                 {/* <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. $</div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/> */}
-                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO TOTAL $</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/>
+                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO MANO OBRA</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '10rem' }} sortable body={costoManoObraBodyTemplate} filter/>
+                <Column header={<div className={'font-24 text-color-dolar fw-bold'} style={{width: '100px'}}>COSTO TOTAL $</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/>
                 <Column header={<span className={'font-24'}>DESCRIPCION</span>} field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                 {/* <Column header={<span className={'font-24'}>OBSERVACION</span>}field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/> */}
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>

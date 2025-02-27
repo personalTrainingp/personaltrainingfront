@@ -47,7 +47,6 @@ export const PanelMembresias = ({id_cli}) => {
         <tbody>
         {
             dataMembresias?.map((f)=>{
-                console.log(f, "dd");
                 const fecha_venta = dayjs.utc(f.fecha_venta).format('dddd DD [de] MMMM [del] YYYY')
                 const detalle_ventamembresia = f.detalle_ventaMembresia[0];
                 const programa = detalle_ventamembresia.tb_ProgramaTraining.name_pgm

@@ -32,6 +32,7 @@ export const PerfilCliente = () => {
   const [dataVentas, setdataVentas] = useState([])
   // const [isOpenModalRegalos, setisOpenModal] = useState(false)
   const { status, userCliente } = useSelector(e=>e.authClient)
+  
   useEffect(() => {
     obtenerUltimaMembresiaPorCliente(uid)
     obtenerOneUsuarioCliente(uid)

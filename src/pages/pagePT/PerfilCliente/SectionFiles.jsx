@@ -21,7 +21,9 @@ export const SectionFiles = ({uid_file}) => {
     }
     useEffect(() => {
         obtenerFilesxUIDLOCATION(uid_file)
-    }, [uid_file])
+    }, [])
+    console.log({datafilesAdj}, uid_file);
+    
     const onDeleteFile=(id)=>{
         confirmDialog({
             message: 'Estas seguro de querer eliminar este documento',

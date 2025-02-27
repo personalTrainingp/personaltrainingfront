@@ -7,11 +7,13 @@ import { TableEstadist } from './TableEstadist'
 import { PageBreadcrumb } from '@/components'
 import { useResultadosChange } from './useResultadosChange'
 import { ModalVistaSocios } from './ModalVistaSocios'
+import { GrafLineal } from './GrafLineal'
 
 export const PrincipalView = () => {
   const [isOpenModalAddMesResChange, setisOpenModalAddMesResChange] = useState(false)
   const { obtenerTodoVentas, data } = useResultadosChange()
   const [isOpenModalViewVentas, setisOpenModalViewVentas] = useState(false)
+  const [rowViewModal, setRowViewModal] = useState({})
   const {dataRes} = useSelector(e=>e.DATA)
   const onOpenModalAddMesResChange = () => {
     setisOpenModalAddMesResChange(true)
@@ -19,8 +21,9 @@ export const PrincipalView = () => {
   const onCloseModalAddMesResChange = () => {
     setisOpenModalAddMesResChange(false)
   }
-  const onOpenModalDataViewVentas = ()=>{
+  const onOpenModalDataViewVentas = (row)=>{
     setisOpenModalViewVentas(true)
+    setRowViewModal(row)
   }
   const onCloseModalDataViewVentas = ()=>{
     setisOpenModalViewVentas(false)
@@ -85,6 +88,9 @@ export const PrincipalView = () => {
     <PageBreadcrumb title={'RESULTADOS por INVERSION DIGITAL'}/>
       <Row>
         <Col lg={12}>
+          <GrafLineal/>
+        </Col>
+        <Col lg={12}>
         <Card>
           <Card.Body>
             <Row>
@@ -92,9 +98,11 @@ export const PrincipalView = () => {
                 data.map((f, index)=>{
                   const dataInv = dataPrueba.map(m=>{return {...m, inversion: m.inversion*3.75}}).find((p)=>p.fecha ===f.fecha)
                   const acumula = {...f, ...dataInv}
+                  console.log(f, "fff");
+                  
                   return (
                     <Col lg={4}>
-                      <TableEstadist onDataViewVentas={()=>onOpenModalDataViewVentas()} data={acumula} onOpenModalAddMesResChange={onOpenModalAddMesResChange} key={index}/>
+                      <TableEstadist onDataViewVentas={()=>onOpenModalDataViewVentas(f)} data={acumula} onOpenModalAddMesResChange={onOpenModalAddMesResChange} key={index}/>
                     </Col>
                   )
                 })
@@ -105,7 +113,10 @@ export const PrincipalView = () => {
         </Col>
       </Row>
       <ModalAddMesResChange show={isOpenModalAddMesResChange} onHide={onCloseModalAddMesResChange}/>
-      <ModalVistaSocios show={isOpenModalViewVentas} onHide={onCloseModalDataViewVentas}/>
+      {
+        rowViewModal &&
+      <ModalVistaSocios data={rowViewModal} show={isOpenModalViewVentas} onHide={onCloseModalDataViewVentas}/>
+      }
     </>
   )
 }

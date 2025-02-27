@@ -108,6 +108,16 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
             </>
         );
     };
+    const costoManoObraBodyTemplate = (rowData)=>{
+        return (
+            
+            <div className="d-flex font-24" >
+                <div className='text-right fw-bold' style={{marginLeft: '30px'}}>
+                    <NumberFormatMoney amount={rowData.mano_obra_soles}/>
+                </div>
+            </div>
+        )
+    }
     const tcBodyTemplate = (rowData) =>{
         return (
             <div className='fs-2'>
@@ -176,6 +186,13 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
 					body={valorUnitActualBodyTemplate}
 					style={{ width: '4rem' }}
                     footer={<div className='fs-2 text-primary'><SymbolSoles numero={<NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_soles, 0)}/>}/></div>}
+					sortable
+				></Column>
+                <Column
+					header={<span className='fs-2'>COSTO MANO DE OBRA</span>}
+					body={costoManoObraBodyTemplate}
+					style={{ width: '4rem' }}
+                    // footer={<div className='fs-2 text-primary'><SymbolSoles numero={<NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_soles, 0)}/>}/></div>}
 					sortable
 				></Column>
                 <Column

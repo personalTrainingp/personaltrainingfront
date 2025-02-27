@@ -8,9 +8,10 @@ import { Card, Col, Row, Table } from 'react-bootstrap'
 import { ItemCardPgm } from './ItemCardPgm';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 import config from '@/config';
+import _ from 'lodash';
 dayjs.extend(utc);
 locale('es')
-
+const suma = (a, b, c) => a + b + c;
 export const ReporteSeguimiento = () => {
     const [selectHorario, setselectHorario] = useState([])
 	const { reporteSeguimiento, obtenerReporteSeguimiento, obtenerReporteSeguimientoTODO, viewSeguimiento, agrupado_programas, loadinData } = useReporteStore();
@@ -18,7 +19,7 @@ export const ReporteSeguimiento = () => {
       obtenerReporteSeguimiento(true, 598)
       obtenerReporteSeguimientoTODO(598, true)
     }, [])
-
+    
     
     const generarResumen = (array, grupo, labelCaracter, index, objDeleting, objAumenta=[]) => {
         const isSortable = true
@@ -65,28 +66,49 @@ export const ReporteSeguimiento = () => {
             height: data?.items[0].tb_ProgramaTraining.tb_image.height
         }
         
-        const aforo = data.id_pgm===2?18:data.id_pgm===3?10:data.id_pgm===4?14:''
+        // const aforo = data.id_pgm===2?18:data.id_pgm===3?10:data.id_pgm===4?14:''
+        const aforo = [2, 3, 4].includes(data.id_pgm) ? ({ 2: 18, 3: 10, 4: 14 })[data.id_pgm] : 0;
         const aforo_turno = data.id_pgm===2?36:data.id_pgm===3?10:data.id_pgm===4?14:''
-        
-        const agrupadoPorHorario = agruparPorHorarios(data.items).sort((a, b) => b.items.length - a.items.length).map((f) => {
-            const cuposDispo = aforo - f.items.length;
-            const cuposOcupado = f.items.length;
-            return { ...f, cuposDispo, cuposOcupado };
-          }).map((grupo, index, array) => {
-                    const sumaTotal = array.reduce((total, item) => total + (item?.cuposOcupado || 0), 0);
-                    const sumarCuposDispo = array.reduce((total, item) => total + item.cuposDispo, 0);
+        const porcentajeAusentismo = 30;
+
+
+        const agrupadoPorHorario = agruparPorHorarios(data.items)
+        // .map((f) => {
+        //     const cuposDispo = aforo - f.items.length;
+        //     const cuposOcupado = f.items.length;
+        //     const ausentismo = Math.round(aforo * (porcentajeAusentismo / 100));
+        //     const cuposTentativos = cuposDispo+cuposOcupado+ausentismo
+        //     return { ...f, cuposDispo, cuposOcupado, ausentismo,cuposTentativos };
+        //   })
+          .map((grupo, index, array) => {
+                    let cuposDispo = aforo - grupo.items.length;
+                    let cuposOcupado = grupo.items.length;
+                    let ausentismo = Math.round(aforo * (porcentajeAusentismo / 100));
+                    const cuposTentativos = cuposDispo+cuposOcupado+ausentismo
+                    let sumaTotal = array.reduce((total, i) => total + (i?.cuposOcupado || 0), 0);
+                    let sumarCuposDispo = array.reduce((total, i) => total + i.cuposDispo, 0);
                     // Porcentajes globales (sumatoria total)
-                    const sumaPorcentajeOcupados = ((sumaTotal / aforo) * 100).toFixed(2);
-                    const sumaPorcentajeDispo = ((sumarCuposDispo / aforo) * 100).toFixed(2);
-                    // Porcentajes individuales por grupo
-                    const porcentajeOcupadoGrupo = ((grupo.cuposOcupado / aforo) * 100).toFixed(2);
-                    const porcentajePendienteGrupo = ((grupo.cuposDispo / aforo) * 100).toFixed(2);
+                    // const sumaPorcentajeOcupados = ((sumaTotal / aforo) * 100).toFixed(2);
+                    // const sumaPorcentajeDispo = ((sumarCuposDispo / aforo) * 100).toFixed(2);
+                    // // Porcentajes individuales por grupo
+                    // const porcentajeOcupadoGrupo = ((grupo.cuposOcupado / aforo) * 100).toFixed(2);
+                    // const porcentajePendienteGrupo = ((grupo.cuposDispo / aforo) * 100).toFixed(2);
+                    // const ausentismo = grupo.ausentismo; 
+                    let numberCuposOcupados = Number(cuposOcupado) || 0;
+                    let numberCuposDisponible = Number(cuposDispo) || 0;
+                    let numeroCom = cuposOcupado
+                    let suma1 = suma(0,cuposDispo, ausentismo)
+                    const arr = [cuposDispo, cuposOcupado, ausentismo]
+                    console.log({arr}, 'ausents');
+                    
                     return [
                         { header: "TURNO", isIndexado: true,  isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
-                        { header: "SOCIOS PAGANTES", isSummary: true, value: grupo.cuposOcupado, items: grupo.items, tFood: sumaTotal },
-                        { header: "CUPOS DISPONIBLES", isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
-                        { header: "% OCUPADO", isSummary: true, value: <NumberFormatMoney amount={porcentajeOcupadoGrupo}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaPorcentajeOcupados/array.length} /> },
-                        { header: "% PENDIENTE", isSummary: true, value: <NumberFormatMoney amount={porcentajePendienteGrupo}/>, tFood: <NumberFormatMoney amount={sumaPorcentajeDispo/array.length}/> },
+                        { header: "SOCIOS ACTIVOS", isSummary: true, value: cuposOcupado, items: grupo.items, tFood: sumaTotal },
+                        { header: "CUPOS DISPONIBLES", isSummary: true, value: cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
+                        { header: <>AUSENTISMO <br/> 30%</>, isSummary: true, value: ausentismo, items: grupo.items, tFood: '' },
+                        { header: <>CUPOS TENTATIVO</>, HTML: <>{arr.reduce((total, i) => total + (i || 0), 0)} </>, isSummary: true, value:  0, tFood: '' },
+                        // { header: "% OCUPADO", isSummary: true, value: <NumberFormatMoney amount={porcentajeOcupadoGrupo}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaPorcentajeOcupados/array.length} /> },
+                        // { header: "% PENDIENTE", isSummary: true, value: <NumberFormatMoney amount={porcentajePendienteGrupo}/>, tFood: <NumberFormatMoney amount={sumaPorcentajeDispo/array.length}/> },
                     ];
                   });
         return {
@@ -101,9 +123,9 @@ export const ReporteSeguimiento = () => {
                     isComparative: true,
                     title: 'SOCIOS PAGANTES POR HORARIO VS AFORO ',
                     id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
-                    HTML: dataAlter.map(d=>{
+                    HTML: dataAlter.map((d, index)=>{
                         return (
-                        <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
+                        <Col key={index} style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                             <ItemCardPgm aforo={d.aforo} aforoTurno={d.aforo_turno} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorario} isViewSesiones={true} labelParam={'HORARIO'}/>
                         </Col>
                     )
@@ -115,16 +137,23 @@ export const ReporteSeguimiento = () => {
   return (
     <>
         <PageBreadcrumb subName={'T'} title={'REPORTE DE SEGUIMIENTO DE SOCIOS ACTIVOS'}/>
+        {
+            loadinData?
+            <>LOADING</>
+            :
+            
         <Row>
-            {data.map((section, index) => (
-                        <Col xxl={12}>
-                        <Row className='d-flex justify-content-center'>
-                            <br/>
-                                {section.HTML}
-                        </Row>
-                    </Col>
-                    ))}
-        </Row>
+        {data.map((section, index) => (
+                    <Col xxl={12}>
+                    <Row className='d-flex justify-content-center'>
+                        <br/>
+                            {section.HTML}
+                    </Row>
+                </Col>
+                ))}
+    </Row>
+        }
+        
     </>
   )
 }
