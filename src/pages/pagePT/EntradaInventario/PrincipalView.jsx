@@ -1,8 +1,10 @@
-import { FormatTable } from '@/components/ComponentTable/FormatTable'
 import { Button } from 'primereact/button'
 import React, { useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { ModalEntradaInventario } from './ModalEntradaInventario'
+import { PageBreadcrumb } from '@/components'
+import { TabPanel, TabView } from 'primereact/tabview'
+import { DataEntrada } from './DataEntrada'
 
 export const PrincipalView = () => {
   const [isModalEntradaInventario, setisModalEntradaInventario] = useState(false)
@@ -12,29 +14,22 @@ export const PrincipalView = () => {
   const onCloseModalEntradaInventario = ()=>{
     setisModalEntradaInventario(false)
   }
-  const dataForTable = [
-    {header: '', isSortable: true, value: '1', tFood: '', order: 3},
-    {header: 'ITEM', isSortable: true, value: 4, tFood: 'TOTAL', order: 3},
-    {header: 'CANTIDAD', isSortable: true, value: 4, tFood: '', order: 3},
-    {header: 'FECHA DE ENTRADA', isSortable: true, value: 4, tFood: '', order: 3},
-    {header: 'MOTIVO', isSortable: true, value: 4, tFood: '', order: 3},
-    {header: 'OBSERVACION', isSortable: true, value: 4, tFood: '', order: 3},
-  ]
   return (
     <>
+    <PageBreadcrumb title={'ENTRADA DE ITEMS'}/>
     <Row>
-      <Col lg={12}>
-        <Card>
-          <Card.Header>
-            <Button onClick={onOpenModalEntradaInventario}>AGREGAR ENTRADA</Button>
-          </Card.Header>
-          <Card.Body>
-            <FormatTable data={[dataForTable]}/>
-          </Card.Body>
-        </Card>
-      </Col>
+      <TabView>
+              <TabPanel header="CHANGE THE SLIM STUDIO">
+                    <DataEntrada id_enterprice={598} actionKardex={'entrada'}/>
+              </TabPanel>
+              <TabPanel header="MP">
+                    <DataEntrada id_enterprice={600} actionKardex={'entrada'}/>
+              </TabPanel>
+              <TabPanel header="CIRCUS SALON">
+                    <DataEntrada id_enterprice={599} actionKardex={'entrada'}/>
+              </TabPanel>
+            </TabView>
     </Row>
-    <ModalEntradaInventario onHide={onCloseModalEntradaInventario} show={isModalEntradaInventario}/>
     </>
   )
 }

@@ -31,6 +31,7 @@ import { FormatDataTable } from './Component/FormatDataTable'
 import { ModalTableSociosCanje } from './ModalTableSociosCanje'
 import { TableTotalS } from './TableTotalS'
 import { Button } from 'primereact/button'
+import { SpeedDial } from 'primereact/speeddial'
 
 dayjs.extend(utc);
 export const ResumenComparativo = () => {
@@ -91,7 +92,6 @@ export const ResumenComparativo = () => {
 
         }
     }
-    console.log({dataView});
     
     const onCloseModalSOCIOS = ()=>{
         setisOpenModalSocio(false)
@@ -111,6 +111,21 @@ export const ResumenComparativo = () => {
           });
     }
     function agruparPorDistrito(detalledata) {
+        // const arrayDistritos = detalledata?.map(d=>d.tb_ventum.tb_cliente.tb_distrito?.distrito)
+        // console.log(detalledata, arrayDistritos, "detalledata");
+        return arrayDistritoTest?.map(({ label, value, order }) => {
+            const items = detalledata?.filter(
+              (cliente) => cliente.tb_ventum.tb_cliente.tb_distrito?.distrito === label
+            );
+            return {
+              propiedad: label,
+              order,
+              value,
+              items,
+            };
+          });
+    }
+    function agruparPorDistritoTrabajo(detalledata) {
         const arrayDistritos = detalledata?.map(d=>d.tb_ventum.tb_cliente.tb_distrito.distrito)
         // console.log(detalledata, arrayDistritos, "detalledata");
         return arrayDistritoTest?.map(({ label, value, order }) => {
@@ -670,6 +685,12 @@ export const ResumenComparativo = () => {
                 ]
             }
             )
+        const porDistritoTrabajo = agruparPorDistrito(ventasSinCeros).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'DISTRITO', index)
+                ]
+            }
+            )
         const sumaDeSesiones = ventasSinCeros?.reduce((total, item) => total + (item?.tb_semana_training.sesiones || 0), 0)
         const sumaDeVentasEnSoles = ventasSinCeros?.reduce((total, item) => total + (item?.tarifa_monto || 0), 0)
         const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros).map((grupo, index, array) => {
@@ -680,7 +701,7 @@ export const ResumenComparativo = () => {
             )
         const agrupadoPorTarifas = agruparPorTarifas(ventasSinCeros).map((grupo, index, array) => {
             return [
-                ...generarResumen(array, grupo, 'PROMOCIONES', index, {}, [{header: '', HTML: <Button label='VER PROMOCION' onClick={()=>window.open('https://www.facebook.com/61561916447046/posts/122130972314397214/', "_blank")}/>}])
+                ...generarResumen(array, grupo, 'PROMOCIONES', index, {})
                 ]
             }
             )
@@ -1190,6 +1211,39 @@ export const ResumenComparativo = () => {
                 }
             )
         },
+
+
+        
+        {
+            isComparative: true,
+            title: 'SOCIOS PAGANTES POR DISTRITO TRABAJO',
+            id: 'COMPARATIVOPROGRAMASPORDISTRITO',
+            HTML: dataAlter.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
+                    arrayEstadistico={d.porDistritoTrabajo} 
+                    onOpenModalSOCIOS={onOpenModalSOCIOS} 
+                    isViewSesiones={true} 
+                    labelParam={'DISTRITO'}/>
+                </Col>
+            )
+            }
+            )
+        },
+        {
+            title: 'SOCIOS PAGANTES POR DISTRITO TRABAJO - TOTAL',
+            id: 'COMPARATIVOTOTALPORDISTRITO',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                    return (
+                    <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                        <TableTotal data={d.porDistritoTrabajo} titleH1={''}  avataresDeProgramas={d.avataresDeProgramas} labelTotal={'DISTRITO'} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={d.porDistrito}/>
+                    </Col>
+                )
+                }
+            )
+        },
         
         {
             isComparative: true,
@@ -1415,7 +1469,43 @@ export const ResumenComparativo = () => {
       useEffect(() => {
         dispatch(onSetViewSubTitle(extractTitle))
       }, [sectionRefs])
-      
+      const items = [
+        {
+            label: 'Add',
+            icon: 'pi pi-pencil',
+            command: () => {
+                toast.current.show({ severity: 'info', summary: 'Add', detail: 'Data Added' });
+            }
+        },
+        {
+            label: 'Update',
+            icon: 'pi pi-refresh',
+            command: () => {
+                toast.current.show({ severity: 'success', summary: 'Update', detail: 'Data Updated' });
+            }
+        },
+        {
+            label: 'Delete',
+            icon: 'pi pi-trash',
+            command: () => {
+                toast.current.show({ severity: 'error', summary: 'Delete', detail: 'Data Deleted' });
+            }
+        },
+        {
+            label: 'Upload',
+            icon: 'pi pi-upload',
+            command: () => {
+                router.push('/fileupload');
+            }
+        },
+        {
+            label: 'React Website',
+            icon: 'pi pi-external-link',
+            command: () => {
+                window.location.href = 'https://react.dev/';
+            }
+        }
+    ];
   return (
     <>
     <FechaRange rangoFechas={RANGE_DATE}/>
@@ -1438,12 +1528,12 @@ export const ResumenComparativo = () => {
         ))}
     </Row>
     }
+    <SpeedDial model={items} direction="up" className="speeddial-bottom-right right-0 bottom-0" buttonClassName="p-button-danger" />
                                     <ModalTableSocios
                                     clickDataSocios={clickDataSocios}
                                     isDataNeedGruped={isDataNeedGruped}
                                     avatarProgramaSelect={avatarProgramaSelect}
                                     clickDataLabel={clickDataLabel} show={isOpenModalSocio} onHide={onCloseModalSOCIOS}/>
-        {/* <ModalSocios clickDataLabel={clickDataLabel} onHide={onCloseModalSOCIOS} data={clickDataSocios} show={isOpenModalSocio}/> */}
     </>
   )
 }

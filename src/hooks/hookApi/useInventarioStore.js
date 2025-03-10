@@ -9,6 +9,7 @@ export const useInventarioStore = () => {
 	const [statusData, setstatus] = useState('');
 	const [message, setmessage] = useState({ msg: '', ok: false });
 	const [isLoading, setIsLoading] = useState(false);
+	const [dataFechas, setdataFechas] = useState([]);
 	const [articulo, setArticulo] = useState({
 		// id: 0,
 		// producto: '',
@@ -20,6 +21,18 @@ export const useInventarioStore = () => {
 		// observacion: '',
 		// descripcion: '',
 	});
+	const obtenerFechasInventario = async (id_empresa) => {
+		try {
+			const { data } = await PTApi.get(
+				`/inventario/obtener-inventario-y-kardex-x-fechas/${id_empresa}`
+			);
+			console.log(data, 'invvv');
+
+			setdataFechas(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const startRegisterArticulos = async (formState, id_enterprice, selectedFile) => {
 		try {
 			setIsLoading(true);
@@ -119,6 +132,8 @@ export const useInventarioStore = () => {
 		}
 	};
 	return {
+		dataFechas,
+		obtenerFechasInventario,
 		startRegisterArticulos,
 		setArticulo,
 		obtenerArticulos,

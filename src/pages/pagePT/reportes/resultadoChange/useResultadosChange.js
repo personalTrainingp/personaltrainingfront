@@ -80,18 +80,22 @@ export const useResultadosChange = () => {
 						f.detalle_ventaMembresium.tb_ventum.id_origen === 694)
 			);
 			const dataAlter = agruparPorMes(agruparPorVenta(ventasSinCero)).map((g) => {
-				const inversionxProps = g.items.reduce(
+				const facturacionxProps = g.items.reduce(
 					(total, item) => total + (item?.detalle_ventaMembresium.tarifa_monto || 0),
 					0
 				);
+				const numero_cierre = g.items.length;
+
 				return {
 					fecha: g.fecha,
-					facturacion: inversionxProps,
+					facturacion: facturacionxProps,
 					inversion: 0,
 					numero_mensajes: 0,
-					conversor: 0,
-					ticket_medio: inversionxProps / g.items.length,
-					numero_cierre: g.items.length,
+					// conversor: 0,
+					// cac: facturacionxProps / numero_cierre || 0,
+					// roas: 0 / facturacionxProps,
+					ticket_medio: facturacionxProps / numero_cierre || 0,
+					numero_cierre: numero_cierre,
 					items: g.items,
 				};
 			});

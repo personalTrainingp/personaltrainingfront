@@ -1,0 +1,1 @@
+export { InventarioTotalizado as default } from './InventarioTotalizado'

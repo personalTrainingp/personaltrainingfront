@@ -151,7 +151,7 @@ const FullCalendarWidget = ({
           // Crear un nuevo evento con un único slot
         const newEvent = {
           start: slotInfo.start,
-          end: dayjs(slotInfo.start).add(20, 'minute').toDate(), // Duración fija de 20 minutos usando dayjs
+          end: dayjs(slotInfo.start).add(10, 'minute').toDate(), // Duración fija de 20 minutos usando dayjs
           title: 'Nuevo evento',
         };
       setonModalAddEditEvent(true)
@@ -200,7 +200,7 @@ const FullCalendarWidget = ({
                   agenda: "Agenda",
                   showMore: total => `+ Ver más (${total})`
                 }}
-                step={20}
+                step={10}
                 timeslots={1}
                 min={new Date(2024, 0, 1, 6, 0, 0)} // Mostrar desde las 6:00 AM
                 max={new Date(2024, 0, 1, 21, 50, 0)} // Hasta las 11:59 PM

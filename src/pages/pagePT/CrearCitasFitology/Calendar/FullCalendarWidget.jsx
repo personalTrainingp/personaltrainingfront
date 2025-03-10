@@ -95,8 +95,6 @@ const FullCalendarWidget = ({
     }
 
     const handleSelectSlot = (esto) => {
-      console.log(esto);
-      
       // const end = new Date(start);
       // end.setMinutes(end.getMinutes() + 30); // Duración fija de 30 minutos
       // const dateSelect = {start: new Date(start), end: new Date(end)}

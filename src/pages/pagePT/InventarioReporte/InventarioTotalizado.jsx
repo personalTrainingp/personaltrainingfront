@@ -10,14 +10,16 @@ import { Image } from 'primereact/image'
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { DataView } from './DataView'
+import { FechaRange } from '@/components/RangeCalendars/FechaRange'
 
 export const InventarioTotalizado = () => {
     const { obtenerArticulos, isLoading } = useInventarioStore()
-    const {dataView} = useSelector(e=>e.DATA)
+    const {dataView, RANGE_DATE} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     const [dataFilter, setdataFilter] = useState([])
     const [ubicacion, setubicacion] = useState('')
     const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
+    
     useEffect(() => {
         obtenerArticulos(598)
         // obtenerProveedoresUnicos()
@@ -56,21 +58,24 @@ export const InventarioTotalizado = () => {
       
   return (
     <>
-    <PageBreadcrumb title={'INVENTARIO VALORIZADO DE ACTIVOS POR ZONA'} subName={'T'}/>
-    <TabView>
-        {/* <TabPanel header={'CIRCUS'}>
-            <DataView id_empresa={599} label_empresa={'CIRCUS'}/>
-        </TabPanel> */}
-        <TabPanel header={<span className='fs-2'>CHANGE THE SLIM STUDIO</span>}>
-            <DataView isResumenxZonaLoc id_empresa={598} label_empresa={'CHANGE'}/>
-        </TabPanel>
-        <TabPanel header={<span className='fs-2'>MP</span>}>
-        <DataView isResumenxZonaLoc={false} id_empresa={600} label_empresa={'MP'}/>
-        </TabPanel>
-        <TabPanel header={<span className='fs-2'>CIRCUS SALON</span>}>
-        <DataView isResumenxZonaLoc={true} id_empresa={599} label_empresa={'CIRCUS'}/>
-        </TabPanel>
-    </TabView>
+        <PageBreadcrumb title={'INVENTARIO VALORIZADO DE ACTIVOS POR ZONA'} subName={'T'}/>
+        {/* <FechaRange rangoFechas={RANGE_DATE}/> */}
+          <h1 className='d-flex'><img width={300} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/></h1>
+          <TabView>
+            <TabPanel header={<h2 className='card p-4 mb-0'>FEBRERO</h2>}>
+                <DataView isResumenxZonaLoc id_empresa={598} label_empresa={'CHANGE'}/>
+            </TabPanel>
+          </TabView>
+        {/* <TabView> */}
+            {/* <TabPanel header={<span className='fs-2'>CHANGE THE SLIM STUDIO</span>}>
+            </TabPanel>
+            <TabPanel header={<span className='fs-2'>CIRCUS SALON</span>}>
+            <DataView isResumenxZonaLoc={true} id_empresa={599} label_empresa={'CIRCUS'}/>
+            </TabPanel>
+            <TabPanel header={<span className='fs-2'>MP</span>}>
+            <DataView isResumenxZonaLoc={false} id_empresa={600} label_empresa={'MP'}/>
+            </TabPanel> */}
+        {/* </TabView> */}
     </>
   )
 }

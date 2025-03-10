@@ -36,7 +36,7 @@ export const PrincipalView = () => {
     {
       fecha: 'septiembre 2024',
       inversion: 16.77,
-      // facturacion: 0,
+      facturacion: 0,
       numero_mensajes: 2,
       numero_cierre: 0,
       // ticket_medio: 0,
@@ -44,7 +44,7 @@ export const PrincipalView = () => {
     {
       fecha: 'octubre 2024',
       inversion: 427,
-      // facturacion: 6261,
+      facturacion: 6261,
       numero_cierre: 3,
       numero_mensajes: 348,
       // ticket_medio: 2087,
@@ -52,7 +52,7 @@ export const PrincipalView = () => {
     {
       fecha: 'noviembre 2024',
       inversion: 248,
-      // facturacion: 5325,
+      facturacion: 5325,
       numero_cierre: 10,
       numero_mensajes: 282,
       // ticket_medio: 591.67,
@@ -60,7 +60,7 @@ export const PrincipalView = () => {
     {
       fecha: 'diciembre 2024',
       inversion: 838,
-      // facturacion: 25192,
+      facturacion: 25192,
       numero_cierre: 38,
       numero_mensajes: 787,
       // ticket_medio: 662.95,
@@ -68,38 +68,62 @@ export const PrincipalView = () => {
     {
       fecha: 'enero 2025',
       inversion: 919,
-      // facturacion: 19523,
+      facturacion: 19523,
       numero_cierre: 19,
       numero_mensajes: 1155,
       // ticket_medio: 1096.95,
     },
     {
       fecha: 'febrero 2025',
-      inversion: 3438.75/3.75,
-      // facturacion: 21151,
-      numero_cierre: 20,
-      numero_mensajes: 961,
+      inversion: 1006.89,
+      facturacion: 29824,
+      numero_cierre: 27,
+      numero_mensajes: 1080,
       // ticket_medio: 969.65,
+    },
+    {
+      fecha: 'marzo 2025',
+      inversion: 73.12,
+      facturacion: 599,
+      numero_cierre: 1,
+      numero_mensajes: 86,
     }
   ]
+
+  const dataInv = data.map((f, index)=>{
+    // const dae = dataPrueba.filter(g=>g.fecha===f.fecha)
+    const daeFind = dataPrueba.find(g=>g.fecha===f.fecha)
+    const inversion = daeFind.inversion*3.75
+    const acumula = {...f, ...daeFind}
+    return { 
+      ...acumula,
+      inversion: inversion,
+      facturacion: daeFind.facturacion,
+      numero_cierre: daeFind.numero_cierre,
+      cac: (inversion/daeFind.numero_cierre||0).toFixed(2),
+      ticket_medio: (daeFind.facturacion/daeFind.numero_cierre)||0,
+      conversor: ((daeFind.numero_cierre/daeFind.numero_mensajes)*100).toFixed(2),
+      roas: (daeFind.facturacion/inversion).toFixed(0)
+    }
+  })
+
+  console.log({dataInv});
+  
   
   return (
     <>
     <PageBreadcrumb title={'RESULTADOS por INVERSION DIGITAL'}/>
       <Row>
         <Col lg={12}>
-          <GrafLineal/>
+          <GrafLineal data={dataInv}/>
         </Col>
         <Col lg={12}>
         <Card>
           <Card.Body>
             <Row>
               {
-                data.map((f, index)=>{
-                  const dataInv = dataPrueba.map(m=>{return {...m, inversion: m.inversion*3.75}}).find((p)=>p.fecha ===f.fecha)
-                  const acumula = {...f, ...dataInv}
-                  console.log(f, "fff");
-                  
+                dataInv.map((f, index)=>{
+                  const acumula = {...f}
                   return (
                     <Col lg={4}>
                       <TableEstadist onDataViewVentas={()=>onOpenModalDataViewVentas(f)} data={acumula} onOpenModalAddMesResChange={onOpenModalAddMesResChange} key={index}/>

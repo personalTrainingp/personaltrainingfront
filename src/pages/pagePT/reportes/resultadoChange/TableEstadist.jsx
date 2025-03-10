@@ -62,7 +62,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVenta
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{((data.numero_cierre/data.numero_mensajes)*100).toFixed(2)} %</span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.conversor} %</span>
               </li>
             </td>
           </tr>
@@ -86,7 +86,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVenta
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.numero_cierre===0?0:<SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={(data.inversion/data.numero_cierre)}/>}/>}</span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.cac}</span>
               </li>
             </td>
           </tr>
@@ -98,7 +98,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVenta
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{(data.facturacion/data.inversion).toFixed(0)}</span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{(data.roas)}</span>
               </li>
             </td>
           </tr>
@@ -110,7 +110,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVenta
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={(data.facturacion/data.numero_cierre).toFixed(2)}/>}/></span>
+                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={(data.ticket_medio).toFixed(2)}/>}/></span>
               </li>
             </td>
           </tr>

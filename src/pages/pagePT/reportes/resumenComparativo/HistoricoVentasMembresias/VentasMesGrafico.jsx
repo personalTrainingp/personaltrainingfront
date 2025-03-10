@@ -66,6 +66,24 @@ function generarMeses(desdeAnio, desdeMes) {
 
   return meses
 }
+
+function agruparPorVenta(data) {
+  if (!Array.isArray(data)) {
+      console.error("La variable 'data' no es un array válido.");
+      return [];
+    }
+  
+    const resultado = data?.reduce((acc, item) => {
+      const idVenta = item?.tb_ventum?.id; // Usar el operador de encadenamiento opcional
+      if (!acc.has(idVenta)) {
+        acc.set(idVenta, item);
+      }
+      return acc;
+    }, new Map());
+  
+    // Convertir el Map en un array
+    return Array.from(resultado?.values());
+}
 export const VentasMesGrafico = () => {
         const { obtenerComparativoResumen, dataGroup, loading, dataGroupTRANSFERENCIAS, dataEstadoGroup, obtenerEstadosOrigenResumen } = useReporteResumenComparativoStore()
         // const { obtenerVentasMembresia } = useVentasMembresiaStore()

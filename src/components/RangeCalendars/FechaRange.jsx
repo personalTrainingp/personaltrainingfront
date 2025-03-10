@@ -32,7 +32,7 @@ export const FechaRange = ({rangoFechas}) => {
     }, [dateRange])
     
   return (
-    <div className='d-flex flex-row aling-items-center'>
+    <div className='d-flex flex-row aling-items-center position-fixed z-4 w-100 bg-white p-1'>
         <Row className='d-flex align-items-end'>
             <Col xxl={4}>
                 <label className='' style={{fontSize: '28px'}}>

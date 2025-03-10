@@ -4,28 +4,36 @@ import React, { useEffect } from 'react'
 import { useEntradaInventario } from './useEntradaInventario'
 import Select from 'react-select'
 import { useForm } from '@/hooks/useForm'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 const regRegistro = {
     id_item: 0,
     cantidad:  0,
     id_motivo: 0, 
     observacion: '',
     fecha_cambio: '',
-    action: 'ENTRADA'
 }
-export const ModalEntradaInventario = ({show, onHide}) => {
-    const { obtenerArticulosInventario, dataArticulos } = useEntradaInventario()
+export const ModalEntradaInventario = ({action, id_enterprice, show, onHide}) => {
+    const { obtenerArticulosInventario, dataArticulos, postKardex } = useEntradaInventario()
+    const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
     const { formState, id_item, cantidad, fecha_cambio, id_motivo, observacion, onInputChange, onInputChangeReact, onResetForm } = useForm(regRegistro)
     useEffect(() => {
-        obtenerArticulosInventario()
+        obtenerArticulosInventario(id_enterprice)
+        obtenerParametroPorEntidadyGrupo('kardex', action)
     }, [])
     const onCancelModal = ()=>{
         onHide()
         onResetForm()
     }
+
+    const onSubmitKardex = (e)=>{
+        e.preventDefault()
+        postKardex(action, id_enterprice, formState)
+        // onCancelModal()
+    }
     
   return (
     <Dialog header={'ENTRADA DE ARTICULO'} style={{width: '40rem'}} visible={show} onHide={onHide}>
-        <form>
+        <form onSubmit={onSubmitKardex}>
             <div className='m-2'>
                 <label>ITEM</label>
                 <Select
@@ -52,13 +60,13 @@ export const ModalEntradaInventario = ({show, onHide}) => {
             <div className='m-2'>
                 <label>MOTIVO</label>
                 <Select
-                    options={dataArticulos}
+                    options={DataGeneral}
                     onChange={(e) => onInputChangeReact(e, 'id_motivo')}
                     name="id_motivo"
                     placeholder={'Selecciona el motivo'}
                     className="react-select"
                     classNamePrefix="react-select"
-                    value={dataArticulos.find(
+                    value={DataGeneral.find(
                     	(option) => option.value === id_motivo
                     )}
                     required
@@ -68,7 +76,7 @@ export const ModalEntradaInventario = ({show, onHide}) => {
                 <label>OBSERVACION</label>
                 <textarea className='form-control' onChange={onInputChange} id="" value={observacion} name='observacion'></textarea>
             </div>
-            <Button label='AGREGAR'/>
+            <Button label='AGREGAR' type='submit'/>
             <Button label='cancelar' text onClick={onCancelModal}/>
         </form>
     </Dialog>

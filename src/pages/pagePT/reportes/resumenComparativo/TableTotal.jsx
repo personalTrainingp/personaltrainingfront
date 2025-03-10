@@ -86,7 +86,7 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
     
   return (
     <Card>
-        <h1 className='pt-5' style={{fontSize: '60px'}}>
+        <h1 className='pt-1' style={{fontSize: '20px'}}>
             {titleH1}
         </h1>
         <Card.Header className='d-flex align-self-center'>
@@ -106,9 +106,9 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
         </Card.Header>
         <Card.Body className='d-flex justify-content-center' style={{paddingBottom: '1px !important'}}>
             <br/>
-<div  style={{width: '2300px'}}>
-    <FormatTable data={data}/>
-</div>
+        <div  style={{width: '100%'}}>
+            <FormatTable data={data}/>
+        </div>
         </Card.Body>
     </Card>
   )

@@ -24,8 +24,6 @@ export const FormatTable = ({ data, tFood }) => {
       setSortKey(key);
       setTableData(sortedData);
     };
-    console.log({data});
-    
     return (
       <Table className="table-centered mb-0"
       striped

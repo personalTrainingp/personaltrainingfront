@@ -35,12 +35,12 @@ export const FormatTable = ({ data=[] }) => {
 
   return (
     <Table className="table-centered mb-0" striped responsive>
-      <thead className='bg-primary fs-2'>
+      <thead className='bg-primary'>
         <tr>
           {headers?.map((header, index) => {
             const isSortable = data[0][index]?.isSortable;
             return (
-              <th className={`text-white`} key={index} onClick={() => isSortable && handleSort(header)} style={{ cursor: isSortable ? "pointer" : "default" }}>
+              <th className={`text-white fs-3`} key={index} onClick={() => isSortable && handleSort(header)} style={{ cursor: isSortable ? "pointer" : "default" }}>
                 {header} {isSortable && (sortConfig.key === header ? (sortConfig.direction === "asc" ? "↑" : "↓") : "↕")}
               </th>
             );
@@ -54,7 +54,7 @@ export const FormatTable = ({ data=[] }) => {
               <td key={colIndex} onClick={col.onClick}>
               <li className={`d-flex flex-row justify-content-between p-2 ${(`${col.value}`.split(' ')[1]==='PM'?'bg-primary text-white':`${col.isPropiedad?'text-primary':'text-black'}`)}`}>
                 
-                                    <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}><span className='mr-4 text-black'>{col.isIndexado? rowIndex+1:''} </span>{col.HTML ?? col.value}</span>
+                                    <span style={{fontSize: '25px'}} className={`fw-bold ml-3`}><span className='mr-4 text-black'>{col.isIndexado? rowIndex+1:''} </span>{col.HTML ?? col.value}</span>
                 {/* {col.isPropiedad && <div className='pi pi-external-link m-0 cursor-pointer' />} */}
               </li>
             </td>
@@ -67,7 +67,7 @@ export const FormatTable = ({ data=[] }) => {
         <tr className='bg-primary'>
           {data[0]?.map((col, index) => (
             <td key={index}>
-            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '40px'}}>{col.tFood}</span></li>
+            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '25px'}}>{col.tFood}</span></li>
         </td>
             // <td key={index}>{col.tFood}</td>
           ))}

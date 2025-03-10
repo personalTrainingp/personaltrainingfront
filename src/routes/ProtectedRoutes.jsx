@@ -59,6 +59,7 @@ const PerfilProveedor = lazy(()=>import('../pages/pagePT/PerfilProveedor'))
 const GestionInventario = lazy(()=>import('../pages/pagePT/GestInventario'))
 const InventarioTotalizado = lazy(()=>import('../pages/pagePT/InventarioReporte'))
 const EntradaInventario = lazy(()=>import('../pages/pagePT/EntradaInventario'))
+const SalidaInventario = lazy(()=>import('../pages/pagePT/SalidaInventario'))
 const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
 const ReportePorMarcacion = lazy(()=> import('../pages/pagePT/reportes/reporteCliente'))
 const ReporteSeguimiento = lazy(()=>import('../pages/pagePT/reportes/reporteSeguimiento'))
@@ -81,6 +82,8 @@ const ResumenDemograficoxPrograma = lazy(()=>import('../pages/pagePT/reportes/re
 const ViewAdquision = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/adquision'))
 const ViewRenovacion = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/renovacion'))
 const ViewReinscripcion = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/reinscripcion'))
+const CitasxNutricionista = lazy(()=>import('../pages/pagePT/reportes/citasxEstados'))
+const GeneradorFechas = lazy(()=>import('../pages/pagePT/generadorFechas/GeneradorFechasInventario'))
 /**
  * routes import
  */
@@ -119,6 +122,19 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad*/}
+					{/* {
+						sections.find(e=>e.url==='/entrada-')&&
+                        <Route path='mkt-adquisicion' element={<ViewAdquision/>}/>
+					} */}
+					
+					{
+						sections.find(e=>e.url==='/generador-fechas-inventario')&&
+                        <Route path='generador-fechas-inventario' element={<GeneradorFechas/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/citas-x-nutricionista')&&
+                        <Route path='citas-x-nutricionista' element={<CitasxNutricionista/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/mkt-adquisicion')&&
                         <Route path='mkt-adquisicion' element={<ViewAdquision/>}/>
@@ -177,7 +193,7 @@ export default function ProtectedRoutes() {
                     }
 					{
                         sections.find(e=>e.url==='/salida-inventario') && 
-                        <Route path='salida-inventario' element={<EntradaInventario/>}/>
+                        <Route path='salida-inventario' element={<SalidaInventario/>}/>
                     }
 					{
                         sections.find(e=>e.url==='/reporte-admin/asistenciaReporte') && 
@@ -392,10 +408,6 @@ export default function ProtectedRoutes() {
 					{sections.find(e=>e.url==='/reporte-admin/ReportePorMarcacion')&&
 						<Route path="reporte-admin/ReportePorMarcacion" element={<ReportePorMarcacion />} />
 					}
-
-
-					
-
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>
 					<Route path="pages/*" element={<OtherPages />} />

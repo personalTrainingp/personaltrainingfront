@@ -12,7 +12,7 @@
   font-size: 20px; /* Cambia el tamaño del encabezado */
 }
 text{
-  fill: #D41115 !important;
+  // fill: #D41115 !important;
 }
 #SvgjsTspan21034{
   font-size: 40px !important;
@@ -53,6 +53,21 @@ text{
 }
 label{
   font-size: 19px;
+}
+.row-danger {
+  background-color: rgba(255, 0, 0, 0.2) !important;
+  color: #D41115;
+}
+.row-trash {
+  background-color: rgba(255, 0, 0, 0.532) !important;
+  color: #D41115;
+}
+.row-color-danger {
+  color: #D41115;
+}
+.row-congelamiento {
+  background-color: #AFCDFB !important;
+  color: #3B82F6 !important;
 }
 input{
   font-size: 17px !important;

@@ -15,6 +15,7 @@ import { DateMask, FormatoDateMask } from '@/components/CurrencyMask';
 import dayjs, { utc } from 'dayjs';
 import { Link } from 'react-router-dom';
 import { Loading } from '@/components/Loading';
+import { RadioButton } from 'primereact/radiobutton';
 
 dayjs.extend(utc);
 const registerCita = {
@@ -30,6 +31,11 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	const { obtenerParametrosClientes, DataClientes, obtenerEmpleadosPorDepartamentoNutricion, DataEmpleadosDepNutricion } = useTerminoStore()
 	const [clienteSel, setclienteSel] = useState({})
 	
+	const catXMin = [
+        { name: 'CITA DE 20 MIN', key: 'A' },
+        { name: 'CITA DE 30 MIN', key: 'B' },
+    ];
+	const [selectedCategory, setSelectedCategory] = useState(catXMin[0]);
 	useEffect(() => {
 		obtenerParametrosClientes()
 		obtenerEmpleadosPorDepartamentoNutricion()
@@ -158,7 +164,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 								</Col>
 								<Col sm={12}>
 									<div className='m-2'>
-										<label>Sesiones disponible:</label>
+										<label>Sesiones disponibles:</label>
 										<Select
 											onChange={(e) => onInputChangeReact(e, 'id_cita_adquirida')}
 											name="id_cita_adquirida"
@@ -203,6 +209,20 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 											required
 										/>
 									</div>
+								</Col>
+								<Col sm={12}>
+								<div className="flex justify-content-center">
+									<div className="flex flex-row gap-3">
+										{catXMin.map((category) => {
+											return (
+												<div key={category.key} className="flex align-items-center">
+													<RadioButton inputId={category.key} name="category" value={category} onChange={(e) => setSelectedCategory(e.value)} checked={selectedCategory.key === category.key} />
+													<label htmlFor={category.key} className="ml-2">{category.name}</label>
+												</div>
+											);
+										})}
+									</div>
+								</div>
 								</Col>
 	
 							</Row>

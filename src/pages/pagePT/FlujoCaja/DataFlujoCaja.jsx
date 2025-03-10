@@ -370,7 +370,7 @@ sumarIngresosXmes(12)
                         >
                             <thead className="bg-primary">
                                 <tr>
-                                <th className='text-white fs-2'><div style={{width: '260px'}}>{i+1}. {g.grupo}</div></th>
+                                <th className='text-primary fs-2'><div className='bg-white p-1 rounded rounded-3' style={{width: '260px'}}>{i+1}. {g.grupo}</div></th>
                                 <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'></span></th>
                                 <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'></span></th>
                                 <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'></span></th>

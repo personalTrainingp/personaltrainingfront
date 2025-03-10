@@ -64,15 +64,17 @@ function generarMeses(desdeAnio, desdeMes) {
 
   return meses
 }
-export const GrafLineal = () => {
+export const GrafLineal = ({data}) => {
         // const { obtenerComparativoResumen, dataGroup, loading, dataGroupTRANSFERENCIAS, dataEstadoGroup, obtenerEstadosOrigenResumen } = useReporteResumenComparativoStore()
         // const { obtenerVentasMembresia } = useVentasMembresiaStore()
-        useEffect(() => {
-                if(RANGE_DATE[0]===null) return;
-                if(RANGE_DATE[1]===null) return;
-                // obtenerComparativoResumen(RANGE_DATE)
-                // obtenerEstadosOrigenResumen(RANGE_DATE)
-            }, [])
+        // console.log(data, "toc");
+        
+        // useEffect(() => {
+        //         if(RANGE_DATE[0]===null) return;
+        //         if(RANGE_DATE[1]===null) return;
+        //         // obtenerComparativoResumen(RANGE_DATE)
+        //         // obtenerEstadosOrigenResumen(RANGE_DATE)
+        //     }, [])
             //TODO: DATA MAPEADA, PARA SOLO VENTAS
             let dataAlter = []
             // dataGroup.map(g=>{
@@ -85,112 +87,95 @@ export const GrafLineal = () => {
             //     // tarifa_monto: g.detalle_ventaMembresium.map(m=>m.tarifa_monto)
             //   }
             // })
-            dataAlter = dataAlter.map(a=>{
-              return {
-                data: a.data.map(g=>g.tarifa_monto_total),
-                name: a.name,
-              }
-            })
             // console.log(dataAlter, "ventas mes historico");
             
 
-        const series = dataAlter
-        const options = {
-            chart: {
-              height: 350,
-              type: 'line',
-              zoom: {
-                enabled: false
+            const series = [
+              { name: "Facturación", data: data.map((item) => parseFloat(item.facturacion.toFixed(2))) },
+              { name: "Conversor", data: data.map((item) => parseFloat(item.conversor)) },
+              { name: "Inversión", data: data.map((item) => parseFloat(item.inversion.toFixed(2))) },
+              { name: "Número de Cierre", data: data.map((item) => parseFloat(item.numero_cierre.toFixed(2))) },
+              { name: "Ticket Medio", data: data.map((item) => parseFloat(item.ticket_medio.toFixed(2))) },
+              { name: "CAC", data: data.map((item) => parseFloat(item.cac)) },
+              { name: "ROAS", data: data.map((item) => parseFloat(item.roas)) },
+              { name: "NUMERO DE MENSAJES", data: data.map((item) => parseFloat(item.numero_mensajes.toFixed(2))) },
+            ];
+          
+            const options = {
+              chart: {
+                type: "line",
+                toolbar: { show: false },
               },
-            },
-            dataLabels: {
-              enabled: false
-            },
-            stroke: {
-              width: [5, 7, 5],
-              curve: 'straight',
-              dashArray: [0, 8, 5]
-            },
-            title: {
-              text: 'MONTO',
-              align: 'left'
-            },
-            legend: {
-              formatter: function(val, opts) {
-                return `
-                <div className='custom-legend-item'>
-                  <img width=${val.width_image} height=80 src='${config.API_IMG.LOGO}${val}'></img>
-                </div>
-                `; 
+              xaxis: {
+                categories: data.map((item) => item.fecha),
+                labels: {
+                  style: {
+                    fontSize: '12px',
+                    color: '#000000'
+                  },
+                  rotate: -45,
+                  formatter: (value) => value,
+                },
+                tickPlacement: "on",
               },
-              
-              tooltipHoverFormatter: function(val, opts) {
-                return val
-              }
-            },
-            markers: {
-              size: 0,
-              hover: {
-                sizeOffset: 6
-              }
-            },
-            xaxis: {
-              categories: generarMeses(2024, 9),
-              labels:{
+              yaxis: {
+                labels: {
+                  formatter: function (value) {
+                    return value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                  },
+                  style: {
+                    fontWeight: "bold", // Aplica negrita
+                    color: "#000", // Color negro para etiquetas del eje Y
+                    color: ["#B00007", "#F1BD00", "#1869C5", "#16A111", "#9426B2"], // Asegura que el color sea negro
+                  },
+                },
+                title: {
+                  text: "Valores",
+                  style: {
+                    color: "#000",
+                  },
+                },
+              },
+              stroke: {
+                curve: "smooth",
+              },
+              markers: {
+                size: 4,
+              },
+              dataLabels: {
+                background: {
+                  enabled: true,
+                  padding: 4,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  // opacity: 0.9,
+                  // dropShadow: {
+                  //   enabled: true,
+                  //   top: 1,
+                  //   left: 1,
+                  //   blur: 1,
+                  //   color: '#ffffff',
+                  //   opacity: 0.45
+                  // }
+                },
+                enabled: true,
                 style: {
-                  fontSize: '25px',
+                  fontSize: '30px',
+                  fontFamily: 'Helvetica, Arial, sans-serif',
                   fontWeight: 'bold',
+                  // colors: ["#000"]
+                },
+                formatter: (value) => {
+                  return value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 },
               },
-              offsetY: 30, // Ajusta el espacio horizontal
-              offsetX: 0, // Ajusta el espacio horizontal
-            },
-            yaxis: {
-              // offsetY: 10, // Ajusta el espacio horizontal
-              labels:{
-                style: {
-                  fontSize: '25px',
-                  fontWeight: 'bold',
-                },
-                formatter: function(val, opts) {
-                  // console.log(opts, "opttt");
-                        // Formatea el número como moneda
-                return new Intl.NumberFormat('es-PE', { 
-                  style: 'currency', 
-                  currency: 'PEN' // Cambia a tu moneda deseada, por ejemplo, USD, EUR, etc.
-                }).format(val);
+              legend: {
+                labels: {
+                  colors: ["#B00007", "#F1BD00", "#1869C5", "#16A111", "#9426B2", "#FF8000", "#0057D9", "#D10012"],
                 },
               },
-            },
-            tooltip: {
-              y: [
-                {
-                  title: {
-                    formatter: function (val) {
-                      return val + " (mins)"
-                    }
-                  }
-                },
-                {
-                  title: {
-                    formatter: function (val) {
-                      return val + " per session"
-                    }
-                  }
-                },
-                {
-                  title: {
-                    formatter: function (val) {
-                      return val;
-                    }
-                  }
-                }
-              ]
-            },
-            grid: {
-              borderColor: '#f1f1f1',
-            }
-          }
+              colors: ["#B00007", "#F1BD00", "#1869C5", "#16A111", "#9426B2", "#FF8000", "#0057D9", "#D10012"],
+            };
           
     const formatCurrency = (value) => {
         return value.toLocaleString('es-PE', { style: 'currency', currency: 'PEN' });

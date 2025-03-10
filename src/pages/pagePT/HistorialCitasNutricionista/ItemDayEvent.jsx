@@ -34,7 +34,7 @@ export const ItemDayEvent = ({data, getEstado}) => {
                   <li className="list-inline-item"><i className="fa fa-location-arrow" aria-hidden="true"></i><strong>Nutricionista:</strong> {nombre_empleado}</li>
                   <li>
                     {/* <Button className='leyenda-asistio text-black shadow-none border-none m-1 rounded-5 font-12'>Asistió</Button> */}
-                    <Button className='leyenda-no-asistio text-black shadow-none border-none m-1 rounded-5 font-12'>No asistió</Button>
+                    {/* <Button className='leyenda-no-asistio text-black shadow-none border-none m-1 rounded-5 font-12'>No asistió</Button> */}
                   </li>
                 </ul>
               </div>

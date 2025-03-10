@@ -50,9 +50,10 @@ export const PanelMembresias = ({id_cli}) => {
                 const fecha_venta = dayjs.utc(f.fecha_venta).format('dddd DD [de] MMMM [del] YYYY')
                 const detalle_ventamembresia = f.detalle_ventaMembresia[0];
                 const programa = detalle_ventamembresia.tb_ProgramaTraining.name_pgm
-                const fecha_inicio = detalle_ventamembresia.fec_inicio_mem
-                const fecha_fin = detalle_ventamembresia.fec_fin_mem
+                const fecha_inicio = dayjs.utc(detalle_ventamembresia.fec_inicio_mem).format('dddd DD [de] MMMM [del] YYYY')
+                const fecha_fin = dayjs(detalle_ventamembresia.fec_fin_mem).format('dddd DD [de] MMMM [del] YYYY')
                 const semanas_vendidas = detalle_ventamembresia.tb_semana_training.semanas_st
+                console.log(f, "feeee");
                 
                 return (
                     <tr key={`${programa}-${fecha_venta}`}>

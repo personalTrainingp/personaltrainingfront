@@ -56,7 +56,7 @@ export const TodoVentas=({id_empresa})=> {
             // d.date = new Date(d.date);
             let newItem = {...d}
             let date = dayjs.utc(d.fecha_venta);
-            newItem.fecha_venta = new Date(date.format());
+            newItem.fecha_venta_v = new Date(date.format());
             newItem.tipo_comprobante = arrayFacturas.find(e=>e.value===d.id_tipoFactura)?.label
             return newItem;
         });
@@ -71,9 +71,6 @@ export const TodoVentas=({id_empresa})=> {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
-
-    console.log(customers?.filter(f=>f.detalleVenta_pagoVenta !== 0));
-    
 
     const renderHeader = () => {
         return (
@@ -132,13 +129,12 @@ export const TodoVentas=({id_empresa})=> {
     setviewVentas(false)
   }
   const fechaDeComprobanteBodyTemplate = (rowData)=>{
-    
     return (
       <div className="flex align-items-center gap-2">
-          <span className='text-primary fw-bold'>{FormatoDateMask(rowData.fecha_venta, 'dddd D [de] MMMM ')}
+          <span className='text-primary fw-bold'>{FormatoDateMask(rowData.fecha_venta_v, 'dddd D [de] MMMM ')}
           {/* <span className='text-black'></span> */}
           </span>
-          {FormatoDateMask(rowData.fecha_venta, '[del] YYYY [a las] h:mm A')}
+          {FormatoDateMask(rowData.fecha_venta_v, '[del] YYYY [a las] h:mm A')}
       </div>
     )
   }
@@ -147,17 +143,19 @@ export const TodoVentas=({id_empresa})=> {
     
   }
   const actionBodyTemplate = (rowData) => {
-    // console.log(rowData);
-    
     return (
           <Row>
-            <Col xxl={12}>
-              <Button 
-                rounded 
-                className=" p-1 border-0 text-decoration-underline" 
-                onClick={() => onModalviewVENTAS(rowData.id)} 
-                >DETALLE DE LA VENTA</Button>
-            </Col>
+            {
+              rowData.status_remove==1 && (
+              <Col xxl={12}>
+                <Button 
+                  rounded 
+                  className=" p-1 border-0 text-decoration-underline" 
+                  onClick={() => onModalviewVENTAS(rowData.id)} 
+                  >DETALLE DE LA VENTA</Button>
+              </Col>
+              )
+            }
           </Row>
     );
 };
@@ -174,6 +172,22 @@ const logoPdfBodyTemplate = (rowData)=>{
       <Col xxl={12}>
         <Button className='m-0' onClick={()=>onClickPdfComprobante(rowData.id)} icon={'pi pi-file-pdf fs-3'}> </Button>
       </Col>
+    </Row>
+  )
+}
+const removeVentaBodyTemplate = (rowData)=>{
+  return(
+    <Row className='m-0'>
+      {
+              rowData.status_remove==1 ? (
+              <Col xxl={12}>
+              <Button className='m-0' onClick={()=>onClickPdfComprobante(rowData.id)} icon={'pi pi-trash fs-3'}> </Button>
+            </Col>): (
+              <div className='text-white fs-3'>
+              ELIMINADO
+              </div>
+            )
+            }
     </Row>
   )
 }
@@ -194,13 +208,30 @@ const infoClienteBodyTemplate = (rowData)=>{
 const valueFiltered = (f)=>{
   setvalueFilter(f)
 }
-  
+const rowClassName = (rowData) => {
+  return rowExtension(rowData);
+};
+
+const rowExtension = (rowData)=>{
+  switch (rowData.status_remove) {
+    case 0:
+      return 'row-trash'
+      break;
+    case 2:
+    return 'row-congelamiento'
+    break;
+    default:
+      return ''
+      break;
+}
+}
     const header = renderHeader();
 
     return (
         <>
           <DataTable value={customers} 
                   onValueChange={valueFiltered}
+                  rowClassName={rowClassName}
                         stripedRows paginator rows={10} dataKey="id" filters={filters} loading={loading}
                   globalFilterFields={["tb_cliente.nombres_apellidos_cli", "tb_empleado.nombres_apellidos_empl", "tipo_comprobante", "numero_transac"]} header={header} emptyMessage="No customers found.">
               <Column field="id" header="Id" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} />
@@ -212,7 +243,8 @@ const valueFiltered = (f)=>{
               <Column field="numero_transac" header="Nº DE COMPR." filter filterPlaceholder="Search by name" style={{ maxWidth: '7rem' }} />
               <Column header="TOTAL" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="" frozen style={{ minWidth: '12rem' }} body={actionBodyTemplate} />
-              <Column header="" frozen style={{ minWidth: '2rem' }} body={logoPdfBodyTemplate} />
+              {/* <Column header="" frozen style={{ minWidth: '2rem' }} body={logoPdfBodyTemplate} /> */}
+              <Column header="" frozen style={{ minWidth: '2rem' }} body={removeVentaBodyTemplate} />
           </DataTable>
           <PdfComprobanteVenta id_venta={idVentas} isPdfOpen={isPdfOpen}/>
           <ModalViewObservacion show={viewVentas} onHide={onModalCancelVENTAS} id={idVentas}/>

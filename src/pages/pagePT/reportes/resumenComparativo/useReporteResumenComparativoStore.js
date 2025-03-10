@@ -1,9 +1,12 @@
 import { PTApi } from '@/common';
-import dayjs from 'dayjs';
+import dayjs, { utc } from 'dayjs';
 import { useState } from 'react';
+dayjs.extend(utc);
 
 function formatDateToSQLServerWithDayjs(date) {
-	return dayjs(date).toISOString(); // Asegurar que esté en UTC
+	console.log(dayjs.utc(date).format('YYYY-MM-DD HH:mm:ss.SSS'), 'dame');
+
+	return dayjs.utc(date).format('YYYY-MM-DD HH:mm:ss.SSS'); // Asegurar que esté en UTC
 	// .format('YYYY-MM-DD HH:mm:ss.SSS0000 +00:00');
 }
 

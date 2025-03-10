@@ -25,6 +25,7 @@ export const ModalCambioPrograma = ({show, onHide}) => {
         startObtenerTBProgramaPT()
         obtenerParametroPorEntidadyGrupo('cambio_pgm', 'motivo')
     }, [])
+    console.log(datapgmPT);
     
     datapgmPT = datapgmPT.map(f=>{
         return{
@@ -32,7 +33,7 @@ export const ModalCambioPrograma = ({show, onHide}) => {
             label: f.name_pgm
         }
     })
-    console.log(DataClientes);
+    
     const onCancelarCambioPrograma = ()=>{
         onHide()
         onResetForm()
@@ -64,6 +65,7 @@ export const ModalCambioPrograma = ({show, onHide}) => {
                 type='date'
                 className='form-control'
                 value={fecha_cambio}
+                name='fecha_cambio'
                 onChange={onInputChange}
                 />
         </div>
@@ -75,6 +77,21 @@ export const ModalCambioPrograma = ({show, onHide}) => {
                 }}
                 name={'id_cli'}
                 placeholder={'Seleccionar el programa'}
+                className="react-select"
+                options={datapgmPT}
+                value={datapgmPT.find(e=>e.value===id_pgm) || 0}
+                classNamePrefix="react-select"
+                required
+            ></Select>
+        </div>
+        <div className='mb-2'>
+            <label>Horario:</label>
+            <Select
+                onChange={(e) => {
+                return onInputChangeReact(e, 'id_cli')
+                }}
+                name={'id_cli'}
+                placeholder={'Seleccionar el horario'}
                 className="react-select"
                 options={datapgmPT}
                 value={datapgmPT.find(e=>e.value===id_pgm) || 0}

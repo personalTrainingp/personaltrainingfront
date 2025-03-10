@@ -157,6 +157,8 @@ export const DataTableContratoCliente = () => {
   }
 // Función para agrupar por nombres_apellidos_empl y contar firmados y sinFirmas
 function agruparFirmasxEmpl(dataView) {
+  console.log({dataView});
+  
   const groupedData = dataView?.reduce((acc, current) => {
     const empleado = current.asesor;
   

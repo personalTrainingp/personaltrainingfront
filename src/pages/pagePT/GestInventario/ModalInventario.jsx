@@ -116,7 +116,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                 <Col lg={12}>
                                 <div className="mb-4">
                                         <label htmlFor="imgAvatar_BASE64" className="form-label">
-                                            IMAGEN DEL ARTICULO
+                                            FOTO DEL ARTICULO
                                         </label>
                                         <input
                                                 className="form-control"
@@ -233,7 +233,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="costo_total_soles" className="form-label">
-                                            VALOR TOTAL(soles)
+                                            COSTO TOTAL SOLES
                                         </label>
                                         <input
                                                 className="form-control"
@@ -256,7 +256,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 id="costo_total_dolares"
                                                 value={costo_total_dolares}
                                                 onChange={onInputChange}
-                                                placeholder="E"
+                                                // placeholder="E"
                                             />
                                     </div>
                                 </Col>

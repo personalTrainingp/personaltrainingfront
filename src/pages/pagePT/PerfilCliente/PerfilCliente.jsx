@@ -21,6 +21,7 @@ import { ScreenNutricionista } from './ScreenNutricionista';
 import { SectionFiles } from './SectionFiles';
 import { Image } from 'primereact/image';
 import { PanelMembresias } from './PanelMembresias/PanelMembresias';
+import { Button } from 'primereact/button';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
@@ -104,12 +105,9 @@ export const PerfilCliente = () => {
                     <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{userCliente.nombre_cli} {userCliente.apPaterno_cli} {userCliente.apMaterno_cli}</p></span>
                     <span className='text-center'>ACTIVO</span>
                   </div>
-                  <div className='btn btn-danger m-1' onClick={modalOpenRegalos}>
-                    CREAR REGALOS
-                  </div>
-                  <div className='btn btn-info m-1' onClick={modalOpenCongelamiento}>
-                    CREAR CONGELAMIENTO
-                  </div>
+                  <Button className='m-1' style={{background: '#FF5757'}} label='CREAR REGALOS' onClick={modalOpenRegalos}/>
+                  <Button className='m-1' style={{background: '#06B6D4'}} label='CREAR CONGELAMIENTO' onClick={modalOpenCongelamiento}/>
+                  
                 </div>
               </div>
             </Card>

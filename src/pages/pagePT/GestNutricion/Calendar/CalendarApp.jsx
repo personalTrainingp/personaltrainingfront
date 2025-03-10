@@ -36,7 +36,7 @@ const CalendarApp = ({tipo_serv}) => {
 									<SidePanel />
 									<div className='bg-primary' style={{width: '100%'}}>
 										<h1 className='text-center'>
-											PRIMERA CITA: <br/> <span className='fs-2'>40 MINUTOS</span>
+											PRIMERA CITA: <br/> <span className='fs-2'>30 MINUTOS</span>
 										</h1>
 										<h1 className='text-center'>
 											CITA DE SEGUIMIENTO: <br/><span className='fs-2'>20 MINUTOS</span>

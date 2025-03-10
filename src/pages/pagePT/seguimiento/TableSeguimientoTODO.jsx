@@ -105,17 +105,22 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 			newItem.diasFaltan = diasLaborables(new Date(), dayjs.utc(fechaaaa))
 			newItem.distrito = d.tb_ventum.tb_cliente.tb_distrito?.distrito;
 			newItem.labelFactura = labelFactura
+			newItem.diasExt = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.dias_habiles
+			newItem.name_Ext = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.tipo_extension
+			newItem.inicio_Ext = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.extension_inicio
+			newItem.fin_Ext = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.extension_fin
+
 			return newItem;
 		});
 	};
 	const diasPorTerminarBodyTemplate = (rowData) => {
 		return (
-			<>
-			<span className='text-primary mr-2 fw-bold fs-3'>
-				{rowData.diasFaltan} 
-			</span>
-				{labelSesiones}
-			</>
+			<div>
+				<span className='mr-2 fw-bold fs-3'>
+					{rowData.diasFaltan} 
+				</span>
+					{labelSesiones}
+			</div>
 		);
 	};
 
@@ -148,7 +153,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 		// console.log(rowData); JSON.stringify(rowData.fecha_fin_new)
 		//dayjs(rowData.fecha_fin_new).format('D [de] MMMM [del] YYYY')
 		return 	<span>
-					<span className={classNameFechaVenc}>
+					<span>
 						{FormatoDateMask(rowData.fecha_fin_new, 'dddd D') }
 					</span>
 					{FormatoDateMask(rowData.fecha_fin_new, ' [de] MMMM [del] YYYY') }
@@ -164,46 +169,82 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
             }
         }
 		if(encontrarObjeto(rowData.tb_extension_membresia, new Date()).tipo_extension==='REG'){
-			return <Message icon={'pi pi-gift'} severity="error" text={'REGALO'} />;
+			return (
+				<>
+				<Message icon={'pi pi-gift'} severity="error" text={
+				<>
+				<span className='fw-bold fs-2 mr-2'>
+					{rowData.diasExt} 
+				</span>
+				SESIONES DE REGALO
+				<br/>
+				<span className='fw-bold mr-2'>
+					Desde: 
+				</span>
+				{dayjs(rowData.inicio_Ext, 'YYYY-MM-DD').format('dddd DD  [del] MMMM [DE] YYYY')}
+				<br/>
+				<span className='fw-bold mr-2'>
+					Hasta: 
+				</span>
+				{dayjs(rowData.fin_Ext, 'YYYY-MM-DD').format('dddd DD  [del] MMMM [DE] YYYY')}
+				</>
+			}  />  
+				</>
+			);
 		}
 		if(encontrarObjeto(rowData.tb_extension_membresia, new Date()).tipo_extension==='CON'){
-			return <Message icon={'pi pi-slack'} severity="info" text={'CONGELAMIENTO'} />;
+			return <Message icon={'pi pi-slack'} severity="info" text={
+				<>
+				<span className='fw-bold fs-2 mr-2'>
+					{rowData.diasExt} 
+				</span>
+				SESIONES DE CONGELAMIENTO
+				<br/>
+				<span className='fw-bold mr-2'>
+					Desde: 
+				</span>
+				{dayjs(rowData.inicio_Ext, 'YYYY-MM-DD').format('dddd DD [del] MMMM [DE] YYYY')}
+				<br/>
+				<span className='fw-bold mr-2'>
+					Hasta: 
+				</span>
+				{dayjs(rowData.fin_Ext, 'YYYY-MM-DD').format('dddd DD [del] MMMM [DE] YYYY')}
+				</>
+			} />;
 		}
 	};
-    const isActiveBodyTemplate = (rowData)=>{
-        if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null){
-            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date().toISOString(), rowData.fec_fin_mem_new)<=0) {
-                return <Message severity="error" text="INACTIVO" />
-            }
-            if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date().toISOString(), rowData.fec_fin_mem_new)>0){
-                return <Message severity="success" text="ACTIVO" />
-            }
-        }
-    }
+    // const isActiveBodyTemplate = (rowData)=>{
+    //     if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null){
+    //         if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date().toISOString(), rowData.fec_fin_mem_new)<=0) {
+    //             return <Message severity="error" text="INACTIVO" />
+    //         }
+    //         if(encontrarObjeto(rowData.tb_extension_membresia, new Date())===null && diasLaborables(new Date().toISOString(), rowData.fec_fin_mem_new)>0){
+    //             return <Message severity="success" text="ACTIVO" />
+    //         }
+    //     }
+    // }
 	const IdBodyTemplate = (rowData, { rowIndex })=>{
         return (
-            <div className="flex align-items-center gap-2">
+            <div className={`flex align-items-center gap-2`}>
                 <span>{rowIndex + 1}</span>
             </div>
         );
 	}
 	const SociosbodyTemplate = (rowData)=>{
 		return (
-            <div className="align-items-center gap-2">
-                <Link to={`/historial-cliente/${rowData.tb_ventum.tb_cliente.uid}`} className='font-bold hover-text'>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</Link>
+            <div className={`align-items-center gap-2`}>
+                <Link  to={`/historial-cliente/${rowData.tb_ventum.tb_cliente.uid}`} className={`font-bold hover-text`}>{rowData.tb_ventum.tb_cliente.nombres_apellidos_cli}</Link>
                 <div>Email: {rowData.tb_ventum.tb_cliente.email_cli} </div>
                 <div>Telefono: {rowData.tb_ventum.tb_cliente.tel_cli?rowData.tb_ventum.tb_cliente.tel_cli.replace(/ /g, "").match(/.{1,3}/g).join('-'):''} </div>
-                <div className='fw-bold'>Distrito: <span className='text-primary'>{rowData.distrito} </span></div>
+                <div className={`fw-bold`}>Distrito: <span className={`'${rowExtension(rowData)}'`}>{rowData.distrito} </span></div>
                 {/* <div>EDAD: {rowData.distrito} </div> */}
             </div>
         );
 	}
 	const programaSesioneBodyTemplate = (rowData)=>{
-		console.log(rowData.ProgramavsSemana);
-		
 		return (
-			<>
-			<span className='text-primary fw-semibold font-20'>
+			<div className=''>
+			<span className='fw-semibold font-20'>
 			{rowData.ProgramavsSemana.split('|')[0]} 
 			</span>
 			<br/>
@@ -219,7 +260,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 				format={'hh:mm A'}
 			/>
 			{/* {rowData.ProgramavsSemana.split('|')[2]} */}
-			</>
+			</div>
 		)
 	}
 
@@ -234,7 +275,23 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 	// 		/>
 	// 	);
 	// };
-
+	    // Función para asignar una clase CSS a la fila
+		const rowClassName = (rowData) => {
+			return rowExtension(rowData);
+		};
+		const rowExtension = (rowData)=>{
+			switch (encontrarObjeto(rowData.tb_extension_membresia, new Date())?.tipo_extension) {
+				case 'REG':
+					return 'row-danger'
+					break;
+				case 'CON':
+				return 'row-congelamiento'
+				break;
+				default:
+					return 'row-color-danger'
+					break;
+	}
+		}
 	const header = renderHeader();
 	return (
 			<>
@@ -299,11 +356,12 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 				<DataTable
 					value={customers}
 					size='small'
+					rowClassName={rowClassName}
 					paginator
 					header={header}
 					rows={10}
 					paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-					rowsPerPageOptions={[10, 25, 50]}
+					rowsPerPageOptions={[10, 25, 50, 300]}
 					dataKey="id"
 					stripedRows
 					selection={selectedCustomers}

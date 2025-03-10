@@ -14,7 +14,7 @@ import { ModalResumenInventarioValorizado } from './ModalResumenInventarioValori
 import { ImagesGrids } from './ImagesGrids'
 
 export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
-    const { obtenerArticulos, isLoading } = useInventarioStore()
+    const { obtenerArticulos, isLoading, obtenerFechasInventario } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     const [dataFilter, setdataFilter] = useState([])
@@ -22,6 +22,7 @@ export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
     const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
     useEffect(() => {
         obtenerArticulos(id_empresa)
+        obtenerFechasInventario(id_empresa)
         // obtenerProveedoresUnicos()
     }, [id_empresa])
     const onOpenModalInventario = (items, ubicacion)=>{
@@ -66,6 +67,8 @@ export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
       const onCloseModalResumenValorizado = ()=>{
         setisOpenModalResumenValorizado(false)
       }
+      console.log(groupedData);
+      
   return (
     <>
     <Button label={<span className='fs-2'>RESUMEN VALORIZADO</span>} onClick={onOpenModalResumenValorizado} text/>
@@ -76,7 +79,6 @@ export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
                     <>
                     <h1>
                         {g.nivel!=null && <>NIVEL {g.nivel}</>}
-                        
                     </h1>
                     {
                         agruparDataxLugar(g.items).map(f=>(
