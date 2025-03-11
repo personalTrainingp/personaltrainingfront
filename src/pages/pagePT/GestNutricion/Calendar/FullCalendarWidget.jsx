@@ -142,24 +142,41 @@ const FullCalendarWidget = ({
     const [idCita, setidCita] = useState(0)
     const [selectDATE, setselectDATE] = useState({start: '', end: ''})
     const { minutosperCita } = useSelector(i=>i.ui)
+    const [minPerCita, setminPerCita] = useState({})
 
     const onCloseModalAddEditEvent = ()=>{
       setonModalAddEditEvent(false)
     }
     console.log(minutosperCita.value);
-    
+
+    useEffect(() => {
+      if (idCita !== 0 && !selectDATE?.start) return; // Solo ejecutar si hay una cita seleccionada
+      
+      setselectDATE((prev) => ({
+        ...prev,
+        end: dayjs(prev.start).add(minutosperCita.value, 'minute').toDate(),
+        minD: minutosperCita.value
+      }));
+      
+    console.log({selectDATE}, "en full calendar");
+    }, [minutosperCita]);
+
     const handleSelectSlot = (slotInfo) => {
       setidCita(0)
+      
       // const dateSelect = {start: new Date(start), end: new Date(end)}
-          // Crear un nuevo evento con un único slot
-        const newEvent = {
-          start: slotInfo.start,
-          end: dayjs(slotInfo.start).add(minutosperCita.value, 'minute').toDate(), // Duración fija de 20 minutos usando dayjs
-          title: 'Nuevo evento',
-        };
+      // Crear un nuevo evento con un único slot
+      const newEvent = {
+        start: slotInfo.start,
+        end: dayjs(slotInfo.start).add(minutosperCita.value, 'minute').toDate(), // Duración fija de 20 minutos usando dayjs
+        minD: minutosperCita.value,
+        title: 'Nuevo evento',
+      };
+      // console.log("hand", slotInfo);
       setonModalAddEditEvent(true)
       setselectDATE({...newEvent})
     };
+    
     const onDoubleSelectEvent = (e)=>{
       const dateSelect = {start: new Date(e.start), end: new Date(e.end)}
       setidCita(e.id)

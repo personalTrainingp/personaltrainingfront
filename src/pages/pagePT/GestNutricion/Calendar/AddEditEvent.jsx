@@ -49,7 +49,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	}, [id_cli])
 	useEffect(() => {
 		dispatch(onSetMinPerCita(selectedCategory))
-	}, [selectedCategory])
+	}, [])
 	
 	// useEffect(() => {
 	// 	if(id_cli==0) return;
@@ -59,7 +59,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 		const clienteSELECT= DataClientes.find(
 			(option) => option.value === id_cli
 		)
-		onPostCita(selectDATE, id_cli, id_cita_adquirida, tipo_serv, id_empl);
+		onPostCita({...selectDATE, end: new Date(dayjs(selectDATE.start).add(selectedCategory.value, 'minute').toDate())}, id_cli, id_cita_adquirida, tipo_serv, id_empl);
 		cancelModal()
 	}
 	const cancelModal = ()=>{
@@ -123,9 +123,12 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 							<br/>
 							<br/>
 							<span className='font-17'>
-								{FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+								De: {FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
 							</span>
 							<br/>
+							<span className='font-17'>
+								Hasta: {FormatoDateMask(new Date(dayjs(selectDATE.start).add(selectedCategory.value, 'minute').toDate()), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+							</span>
 						</>
 						:
 						<>
@@ -135,9 +138,12 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 							<br/>
 							<br/>
 							<span className='font-17'>
-								{FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+								De: {FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
 							</span>
 							<br/>
+							<span className='font-17'>
+								Hasta: {FormatoDateMask(new Date(selectDATE.end), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+							</span>
 						</>}
 					modal
 					className="p-fluid"

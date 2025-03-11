@@ -70,6 +70,7 @@ export const useCitaStore = () => {
 		// hora_servicio
 	) => {
 		try {
+			setloadingAction(true);
 			const { data } = await PTApi.post(`/cita/post-cita`, {
 				// ...formState,
 				id_cli,
@@ -80,6 +81,7 @@ export const useCitaStore = () => {
 				status_cita: 500,
 			});
 			obtenerCitasxSERVICIO(tipo_cita);
+			setloadingAction(true);
 			// setprogramaPT(data)
 		} catch (error) {
 			console.log(error);
