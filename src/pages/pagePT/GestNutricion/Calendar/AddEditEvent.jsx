@@ -16,6 +16,8 @@ import dayjs, { utc } from 'dayjs';
 import { Link } from 'react-router-dom';
 import { Loading } from '@/components/Loading';
 import { RadioButton } from 'primereact/radiobutton';
+import { useDispatch } from 'react-redux';
+import { onSetMinPerCita } from '@/store';
 
 dayjs.extend(utc);
 const registerCita = {
@@ -24,6 +26,7 @@ const registerCita = {
 	id_empl: 0
 }
 const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
+	const dispatch = useDispatch()
 	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPostCita, obtenerCitasNutricionalesxCliente, dataCitaxCliente, loading } =  useCitaStore()
 	// const { onPutCita, loadingAction:loadingPutCita } = useCitaStore()
 	const { onDeleteCitaxId, onPutCita, loadingAction } = useCitaStore()
@@ -32,8 +35,8 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	const [clienteSel, setclienteSel] = useState({})
 	
 	const catXMin = [
-        { name: 'CITA DE 20 MIN', key: 'A' },
-        { name: 'CITA DE 30 MIN', key: 'B' },
+        { name: 'CITA DE 20 MIN', key: 'A', value: 20 },
+        { name: 'CITA DE 30 MIN', key: 'B', value: 30 },
     ];
 	const [selectedCategory, setSelectedCategory] = useState(catXMin[0]);
 	useEffect(() => {
@@ -44,6 +47,9 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 		if(id_cli==0) return;
 		obtenerCitasNutricionalesxCliente(id_cli, new Date(selectDATE.start))
 	}, [id_cli])
+	useEffect(() => {
+		dispatch(onSetMinPerCita(selectedCategory))
+	}, [selectedCategory])
 	
 	// useEffect(() => {
 	// 	if(id_cli==0) return;
@@ -95,6 +101,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 			</div>
 		</React.Fragment>
 	);
+	
 	return (
 		<>
 			{
@@ -116,12 +123,9 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 							<br/>
 							<br/>
 							<span className='font-17'>
-								De: {FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+								{FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
 							</span>
 							<br/>
-							<span className='font-17'>
-								Hasta: {FormatoDateMask(new Date(selectDATE.end), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
-							</span>
 						</>
 						:
 						<>
@@ -131,12 +135,9 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 							<br/>
 							<br/>
 							<span className='font-17'>
-								De: {FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+								{FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
 							</span>
 							<br/>
-							<span className='font-17'>
-								Hasta: {FormatoDateMask(new Date(selectDATE.end), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
-							</span>
 						</>}
 					modal
 					className="p-fluid"
@@ -213,11 +214,11 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 								<Col sm={12}>
 								<div className="flex justify-content-center">
 									<div className="flex flex-row gap-3">
-										{catXMin.map((category) => {
+										{catXMin.map((citaxmin) => {
 											return (
-												<div key={category.key} className="flex align-items-center">
-													<RadioButton inputId={category.key} name="category" value={category} onChange={(e) => setSelectedCategory(e.value)} checked={selectedCategory.key === category.key} />
-													<label htmlFor={category.key} className="ml-2">{category.name}</label>
+												<div key={citaxmin.key} className="flex align-items-center">
+													<RadioButton inputId={citaxmin.key} name="citaxmin" value={citaxmin} onChange={(e) => setSelectedCategory(e.value)} checked={selectedCategory.key === citaxmin.key} />
+													<label htmlFor={citaxmin.key} className="ml-2">{citaxmin.name}</label>
 												</div>
 											);
 										})}

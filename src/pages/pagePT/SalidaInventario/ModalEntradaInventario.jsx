@@ -28,7 +28,7 @@ export const ModalEntradaInventario = ({action, id_enterprice, show, onHide}) =>
     const onSubmitKardex = (e)=>{
         e.preventDefault()
         postKardex(action, id_enterprice, formState)
-        // onCancelModal()
+        onCancelModal()
     }
     
   return (

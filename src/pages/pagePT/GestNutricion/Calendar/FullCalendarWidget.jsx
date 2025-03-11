@@ -10,6 +10,7 @@ import AddEditEvent from './AddEditEvent';
 import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
 import { FormatoTimeMask } from '@/components/CurrencyMask';
 import { Card } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 dayjs.locale('es')
 const locales = {
   'es': es,
@@ -140,18 +141,20 @@ const FullCalendarWidget = ({
     const [onModalAddEditEvent, setonModalAddEditEvent] = useState(false)
     const [idCita, setidCita] = useState(0)
     const [selectDATE, setselectDATE] = useState({start: '', end: ''})
+    const { minutosperCita } = useSelector(i=>i.ui)
 
     const onCloseModalAddEditEvent = ()=>{
       setonModalAddEditEvent(false)
     }
-
+    console.log(minutosperCita.value);
+    
     const handleSelectSlot = (slotInfo) => {
       setidCita(0)
       // const dateSelect = {start: new Date(start), end: new Date(end)}
           // Crear un nuevo evento con un único slot
         const newEvent = {
           start: slotInfo.start,
-          end: dayjs(slotInfo.start).add(10, 'minute').toDate(), // Duración fija de 20 minutos usando dayjs
+          end: dayjs(slotInfo.start).add(minutosperCita.value, 'minute').toDate(), // Duración fija de 20 minutos usando dayjs
           title: 'Nuevo evento',
         };
       setonModalAddEditEvent(true)

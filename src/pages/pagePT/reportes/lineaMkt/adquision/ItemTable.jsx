@@ -1,8 +1,26 @@
 import { FormatTable } from '@/components/ComponentTable/FormatTable'
+import { FormatTable2 } from '@/components/ComponentTable/FormatTable2'
 import React from 'react'
+import { Col, Row } from 'react-bootstrap'
 
-export const ItemTable = () => {
+export const ItemTable = ({dataF}) => {
   return (
-    <FormatTable data={[[{header: 'HGOLA'}]]}/>
+    <Row>
+    {
+      dataF.map(f=>{
+        return (
+        <Col lg={4}>
+            <FormatTable2 data={ [f] }/>
+        </Col>
+        )
+      })
+    }
+      {/* {
+        dataF.map(f=>{
+          return (
+          )
+        })
+      } */}
+    </Row>
   )
 }

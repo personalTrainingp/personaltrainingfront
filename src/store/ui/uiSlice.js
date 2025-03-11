@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const uiSlice = createSlice({
 	name: 'ui',
 	initialState: {
+		minutosperCita: 0,
 		dataView: [],
 		loading: false,
 		viewSubTitle: '',
@@ -31,7 +32,10 @@ export const uiSlice = createSlice({
 		onSetViewSubTitle: (state, { payload }) => {
 			state.viewSubTitle = payload;
 		},
+		onSetMinPerCita: (state, { payload }) => {
+			state.minutosperCita = payload;
+		},
 	},
 });
-export const { onSetData, onSetViewSubTitle, onSetCadenaBLOB, onSetFileBLOB, onClearFileBLOB } =
+export const { onSetData, onSetMinPerCita, onSetViewSubTitle, onSetCadenaBLOB, onSetFileBLOB, onClearFileBLOB } =
 	uiSlice.actions;
