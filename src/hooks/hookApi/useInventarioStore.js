@@ -8,6 +8,7 @@ export const useInventarioStore = () => {
 	const dispatch = useDispatch();
 	const [statusData, setstatus] = useState('');
 	const [message, setmessage] = useState({ msg: '', ok: false });
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [dataFechas, setdataFechas] = useState([]);
 	const [articulo, setArticulo] = useState({
@@ -21,14 +22,25 @@ export const useInventarioStore = () => {
 		// observacion: '',
 		// descripcion: '',
 	});
+
+	const obtenerInventarioKardexxFechas = async (id_empresa) => {
+		try {
+			const { data } = await PTApi.get(
+				`/inventario/obtener-inventario-y-kardex-x-fechas/${id_empresa}`
+			);
+			setdataFechas(data.inventario_x_fechas);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerFechasInventario = async (id_empresa) => {
 		try {
 			const { data } = await PTApi.get(
 				`/inventario/obtener-inventario-y-kardex-x-fechas/${id_empresa}`
 			);
-			console.log(data, 'invvv');
-
-			setdataFechas(data);
+			console.log(data.inventario_x_fechas, 'invvv');
+			// dispatch(onSetDataView(data.inventario_x_fechas));
+			setdataFechas(data.inventario_x_fechas);
 		} catch (error) {
 			console.log(error);
 		}
@@ -133,6 +145,7 @@ export const useInventarioStore = () => {
 	};
 	return {
 		dataFechas,
+		obtenerInventarioKardexxFechas,
 		obtenerFechasInventario,
 		startRegisterArticulos,
 		setArticulo,

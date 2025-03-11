@@ -25,7 +25,7 @@ export const ModalCambioPrograma = ({show, onHide}) => {
         startObtenerTBProgramaPT()
         obtenerParametroPorEntidadyGrupo('cambio_pgm', 'motivo')
     }, [])
-    console.log(datapgmPT);
+    console.log({datapgmPT});
     
     datapgmPT = datapgmPT.map(f=>{
         return{
@@ -39,7 +39,8 @@ export const ModalCambioPrograma = ({show, onHide}) => {
         onResetForm()
     }
     const onSubmitCambioPrograma = ()=>{
-
+        console.log();
+        
     }
   return (
     <Dialog style={{width: '50rem'}} visible={show} onHide={onCancelarCambioPrograma} header={'AGREGAR CAMBIO DE PROGRAMA'}>

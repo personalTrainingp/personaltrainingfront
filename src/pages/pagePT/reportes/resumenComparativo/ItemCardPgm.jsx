@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import { ItemTablePgm } from './ItemTablePgm';
 import { FormatTable } from './Component/FormatTable';
 
-export const ItemCardPgm = ({avatarPrograma, isSesion, aforo, aforoTurno, isViewGenere, arrayEstadistico, labelParam, onOpenModalSOCIOS, isViewSesiones, isTarifaCash}) => {
+export const ItemCardPgm = ({grafPie, avatarPrograma, isSesion, aforo, aforoTurno, isViewGenere, arrayEstadistico, labelParam, onOpenModalSOCIOS, isViewSesiones, isTarifaCash}) => {
   
   return (
     <Card>
@@ -11,6 +11,7 @@ export const ItemCardPgm = ({avatarPrograma, isSesion, aforo, aforoTurno, isView
                             <img src={avatarPrograma.urlImage} height={avatarPrograma.height} width={avatarPrograma.width}/>
                             
                         </Card.Header>
+                        {grafPie}
                         <Card.Body>
                           {
                             aforo && (

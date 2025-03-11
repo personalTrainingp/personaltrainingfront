@@ -107,7 +107,7 @@ export const TodoVentas=({id_empresa})=> {
         const sumaTotal = combinedArray.reduce((total, item) => total + item.tarifa_monto, 0);
 
       return(
-          <div className="flex align-items-center gap-2">
+          <div className={`flex align-items-center ${rowExtensionColor(rowData, 'text-primary')} gap-2`}>
             
               <span>{<MoneyFormatter  amount={sumaTotal}/> }</span>
           </div>
@@ -130,8 +130,8 @@ export const TodoVentas=({id_empresa})=> {
   }
   const fechaDeComprobanteBodyTemplate = (rowData)=>{
     return (
-      <div className="flex align-items-center gap-2">
-          <span className='text-primary fw-bold'>{FormatoDateMask(rowData.fecha_venta_v, 'dddd D [de] MMMM ')}
+      <div className={`flex align-items-center gap-2 ${rowExtensionColor(rowData, 'text-primary')}`}>
+          <span className={`text-primary ${rowExtensionColor(rowData, 'text-primary')} fw-bold`}>{FormatoDateMask(rowData.fecha_venta_v, 'dddd D [de] MMMM ')}
           {/* <span className='text-black'></span> */}
           </span>
           {FormatoDateMask(rowData.fecha_venta_v, '[del] YYYY [a las] h:mm A')}
@@ -161,7 +161,7 @@ export const TodoVentas=({id_empresa})=> {
 };
 const comprobanteBodyTemplate = (rowData)=>{
   return (
-    <div className='text-primary fw-bold'>
+    <div className={`${rowExtensionColor(rowData, 'text-primary')} fw-bold`}>
     { rowData.tipo_comprobante}
     </div>
   )
@@ -199,10 +199,31 @@ const infoClienteBodyTemplate = (rowData)=>{
       <div className='d-flex justify-content-between align-items-center'>
         {/* <span className='text-primary fw-bold'>{rowData.tb_cliente.nombres_apellidos_cli}</span> */}
         <img width={90} height={80} className='border-circle' src={rowData.tb_cliente?.tb_images.length>0?`${config.API_IMG.AVATAR_CLI}${avatarCli}`:sinAvatar}/>
-        <span className='text-primary fw-bold ml-2' style={{width: '190px'}}>{rowData.tb_cliente.nombres_apellidos_cli}</span>
+        <span className={`${rowExtensionColor(rowData, 'text-primary')} fw-bold ml-2`} style={{width: '190px'}}>{rowData.tb_cliente.nombres_apellidos_cli}</span>
       </div>
       </Col>
     </Row>
+  )
+}
+const asesorBodyTemplate = (rowData)=>{
+  return (
+    <div className={`${rowExtensionColor(rowData, 'text-primary')} fw-bold`}>
+    { rowData.tb_empleado.nombres_apellidos_empl}
+    </div>
+  )
+}
+const ncomprobanteBodyTemplate = (rowData)=>{
+  return (
+    <div className={`${rowExtensionColor(rowData, 'text-primary')} fw-bold`}>
+    { rowData.numero_transac}
+    </div>
+  )
+}
+const idBodyTemplate = (rowData)=>{
+  return(
+    <div className={`${rowExtensionColor(rowData, 'text-primary')} fw-bold`}>
+    { rowData.id}
+    </div>
   )
 }
 const valueFiltered = (f)=>{
@@ -225,6 +246,16 @@ const rowExtension = (rowData)=>{
       break;
 }
 }
+const rowExtensionColor = (rowData, color_pr)=>{
+  switch (rowData.status_remove) {
+    case 0:
+      return 'text-white'
+      break;
+    default:
+    return color_pr
+    break;
+}
+}
     const header = renderHeader();
 
     return (
@@ -234,13 +265,13 @@ const rowExtension = (rowData)=>{
                   rowClassName={rowClassName}
                         stripedRows paginator rows={10} dataKey="id" filters={filters} loading={loading}
                   globalFilterFields={["tb_cliente.nombres_apellidos_cli", "tb_empleado.nombres_apellidos_empl", "tipo_comprobante", "numero_transac"]} header={header} emptyMessage="No customers found.">
-              <Column field="id" header="Id" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} />
+              <Column field="id" header="Id" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} body={idBodyTemplate}/>
               {/* <Column field="id" header="Foto de" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} /> */}
               <Column field="fecha_venta" header="FECHA" filter filterPlaceholder="BUSCAR FECHA" style={{ minWidth: '8rem' }} body={fechaDeComprobanteBodyTemplate}/>
               <Column field="tb_cliente.nombres_apellidos_cli" body={infoClienteBodyTemplate} header="SOCIOS" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="tb_empleado.nombres_apellidos_empl" header="ASESOR COMERCIAL" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="tb_empleado.nombres_apellidos_empl" header="ASESOR COMERCIAL" body={asesorBodyTemplate} filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column field="tipo_comprobante" header="COMPROBANTE" body={comprobanteBodyTemplate} filter filterPlaceholder="Buscar tipo de comprobante" style={{ minWidth: '12rem' }} />
-              <Column field="numero_transac" header="Nº DE COMPR." filter filterPlaceholder="Search by name" style={{ maxWidth: '7rem' }} />
+              <Column field="numero_transac" header="Nº DE COMPR." body={ncomprobanteBodyTemplate} filter filterPlaceholder="Search by name" style={{ maxWidth: '7rem' }} />
               <Column header="TOTAL" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="" frozen style={{ minWidth: '12rem' }} body={actionBodyTemplate} />
               {/* <Column header="" frozen style={{ minWidth: '2rem' }} body={logoPdfBodyTemplate} /> */}

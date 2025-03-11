@@ -20,13 +20,14 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
 
         // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
         if (!acc[label]) {
-            acc[label] = { ubicacion: label, tb_images: item.parametro_lugar_encuentro?.tb_images, orden: item.parametro_lugar_encuentro?.orden_param, valor_total_sumado_soles: 0, valor_total_sumado_dolares: 0, cantidad_sumado: 0, items: [] };
+            acc[label] = { ubicacion: label, tb_images: item.parametro_lugar_encuentro?.tb_images, orden: item.parametro_lugar_encuentro?.orden_param, valor_total_sumado_soles: 0, valor_total_sumado_dolares: 0, stock_final_sumado: 0, stock_inicial_sumado: 0, items: [] };
           }
           
           // Sumamos el valor_total del item actual al grupo correspondiente
           acc[label].valor_total_sumado_soles += item.costo_total_soles;
           acc[label].valor_total_sumado_dolares += item.costo_total_dolares;
-          acc[label].cantidad_sumado += item.cantidad;
+          acc[label].stock_final_sumado += item.stock_final;
+          acc[label].stock_inicial_sumado += item.stock_inicial;
           
         
         // Añadimos el item al array `items` del grupo correspondiente
@@ -69,6 +70,7 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                     <thead className="bg-primary">
                                         <tr>
                                             <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '350px'}}>UBICACION</div></th>
+                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '200px'}}>CANTIDAD INICIAL</div></th>
                                             <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '200px'}}>CANTIDAD DE ITEMS</div></th>
                                             <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px'}}>INVERSION S/</div></th>
                                             <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>INVERSION <SymbolDolar/></div></th>
@@ -81,7 +83,8 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                             groupedData.map(g=>(
                                                 <tr>
                                                     <td style={{width: '30px !important'}} className='font-24 p-1 fw-bold text-primary'><div  style={{width: '350px'}}>{g.ubicacion}</div></td>
-                                                    <th style={{width: '30px !important'}} className='text-center font-24 p-1'><div className='text-end' style={{width: '140px'}}>{g.cantidad_sumado}</div></th>
+                                                    <th style={{width: '30px !important'}} className='text-center font-24 p-1'><div className='text-end' style={{width: '140px'}}>{g.stock_inicial_sumado}</div></th>
+                                                    <th style={{width: '30px !important'}} className='text-center font-24 p-1'><div className='text-end' style={{width: '140px'}}>{g.stock_final_sumado}</div></th>
                                                     <th style={{width: '30px !important'}} className='font-24 p-1 '><div className='text-end ml-3' style={{width: '140px'}}><NumberFormatMoney amount={g.valor_total_sumado_soles}/></div></th>
                                                     <th style={{width: '30px !important'}} className='text-center font-24 p-1'><div className='fw-bold ml-4 text-end' style={{width: '140px', color: '#1E8727'}}><NumberFormatMoney amount={g.valor_total_sumado_dolares}/></div></th>
                                                     {/* <th style={{width: '30px !important'}} className='text-center font-24 p-1'><div style={{width: '80px'}}><NumberFormatMoney amount={g.valor_total_sumado_soles/g.valor_total_sumado_dolares}/></div></th> */}
@@ -104,7 +107,7 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                                                                                                         <td>
                                                                                                                             <span className='text-white fs-2 fw-bold ml-7'>
                                                                                                                             {/* <SymbolDolar numero={}/>  */}
-                                                                                                                            <NumberFormatter amount={groupedData.reduce((total, item) => total + (item.cantidad_sumado || 0), 0)}/>
+                                                                                                                            <NumberFormatter amount={groupedData.reduce((total, item) => total + (item.stock_final_sumado || 0), 0)}/>
                                                                                                                             </span>
                                                                                                                             
                                                                                                                             <br/>

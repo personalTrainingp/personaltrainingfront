@@ -83,10 +83,10 @@ export const PrincipalView = () => {
     },
     {
       fecha: 'marzo 2025',
-      inversion: 73.12,
+      inversion: 200,
       facturacion: 599,
       numero_cierre: 1,
-      numero_mensajes: 86,
+      numero_mensajes: 233,
     }
   ]
 

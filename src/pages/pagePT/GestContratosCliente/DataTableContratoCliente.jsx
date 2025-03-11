@@ -246,21 +246,27 @@ const onOpenModal = (e)=>{
   return (
     <>
       <Row>
-        {agruparFirmasxEmpl(dataView).map(f=>(
-          <Col lg={3} className=''>
-            <Card className='p-2'>
-              <Card.Title className='fs-3 text-primary'>
-                {f.nombres_empl}
-              </Card.Title>
-              <ul className='text-decoration-none'>
-                <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.firmados, `FIRMADOS - ${f.nombres_empl}`)}>FIRMADOS: {f.firmados.length}</li>
-                <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.sinFirmas, `NO FIRMADOS - ${f.nombres_empl}`)}>SIN FIRMA: {f.sinFirmas.length}</li>
-                <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.fotos, `CON FOTO - ${f.nombres_empl}`)}>CON FOTO: {f.fotos.length}</li>
-                <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.sinFotos, `SIN FOTO - ${f.nombres_empl}`)}>SIN FOTO: {f.sinFotos.length}</li>
-              </ul>
-            </Card>
-          </Col>
-        ))
+        {agruparFirmasxEmpl(dataView).map(f=>{
+          const contratos = f.firmados.length + f.sinFirmas.length
+          const fotosSinFoto = f.fotos.length + f.sinFotos.length
+          return(
+            <Col lg={3} className=''>
+              <Card className='p-2'>
+                <Card.Title className='fs-3 text-primary'>
+                  {f.nombres_empl}
+                </Card.Title>
+                <ul className='text-decoration-none'>
+                  <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.firmados, `FIRMADOS - ${f.nombres_empl}`)}><span style={{fontWeight: '13px'}}>FIRMADOS:</span> <span className='text-primary'>{f.firmados.length}</span> - <span className=''>{((f.firmados.length/contratos)*100).toFixed(2)} %</span>  </li>
+                  <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.sinFirmas, `NO FIRMADOS - ${f.nombres_empl}`)}><span style={{fontWeight: '13px'}}>SIN FIRMA:</span> <span className='text-primary'>{f.sinFirmas.length}</span> - <span>{((f.sinFirmas.length/contratos)*100).toFixed(2)} %</span> </li>
+                  <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.fotos, `CON FOTO - ${f.nombres_empl}`)}><span style={{fontWeight: '13px'}}>CON FOTO: </span> <span className='text-primary'>{f.fotos.length}</span> - <span> </span> {((f.fotos.length/fotosSinFoto)*100).toFixed(2)} %</li>
+                  <li className='hover-border-card-primary m-1 fs-3' onClick={()=>onClickChangeData(f.sinFotos, `SIN FOTO - ${f.nombres_empl}`)}><span style={{fontWeight: '13px'}}>SIN FOTO:</span> <span className='text-primary'>{f.sinFotos.length}</span> - <span></span> {((f.sinFotos.length/fotosSinFoto)*100).toFixed(2)} %</li>
+                </ul>
+              </Card>
+            </Col>
+          )
+        }
+        
+      )
         }
       </Row>
                   <DataTable size='small' stripedRows value={data} paginator rows={10} dataKey="id"
@@ -272,7 +278,6 @@ const onOpenModal = (e)=>{
               <Column header="FOTO" body={FotoBodyTemplate} style={{ maxWidth: '5rem' }} />
               <Column header="Firmas" body={firmaBodyTemplate} style={{ maxWidth: '5rem' }} />
               <Column header="Contratos" body={contratosSociosBodyTemplate} style={{ maxWidth: '20rem' }} />
-
           </DataTable>
             <ModalIsFirma idCli={idCli} idVenta={idVenta} show={isOpenModalTipoCambio} onHide={onCloseModalTipoCambio}/> 
             <ModalPhotoCli uidAvtr={uidAvtr} id_cli={idCli} show={isModalPhotoCli} onHide={onCloseModalPhotoCli}/>

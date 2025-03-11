@@ -59,7 +59,7 @@
 .apexcharts-legend-text {
     color: var(--#{$prefix}tertiary-color) !important;
     font-family: $font-family-base  !important;
-    font-size: 13px !important;
+    font-size: 13px;
     vertical-align: middle;
 }
 

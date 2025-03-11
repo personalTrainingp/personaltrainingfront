@@ -180,9 +180,9 @@ export const arrayOrigenDeCliente = [
 	{ value: 686, label: 'Walking', order: 7 }, //998
 	{ value: 687, label: 'Mail', order: 10 }, //1000
 
-	{ value: 688, label: 'USO DE IMAGEN (RAFAEL PIZARRO)', order: 11 },
-	{ value: 697, label: 'USO DE IMAGEN (LANDING)', order: 12 },
-	{ value: 698, label: '(RAL)', order: 13 },
+	// { value: 688, label: 'USO DE IMAGEN (RAFAEL PIZARRO)', order: 11 },
+	// { value: 697, label: 'USO DE IMAGEN (LANDING)', order: 12 },
+	// { value: 698, label: '(RAL)', order: 13 },
 
 	{ value: 690, label: 'Referidos', order: 6 }, //997
 	{ value: 691, label: 'Cartera de renovacion', order: 4 }, //995
@@ -192,9 +192,9 @@ export const arrayOrigenDeCliente = [
 	{ value: 695, label: 'tiktok', order: 3 }, //994
 	{ value: 696, label: 'EX-PT', order: 8 }, //TODO LOS TRASPASOS SON EX-PT //999
 	{ value: 689, label: 'Wsp organico', order: 11 }, //1001
-	{ value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
-	{ value: 691, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
-	{ value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
+	// { value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
+	// { value: 691, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
+	// { value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
 ];
 export const arrayOrigenEnCeroDeCliente = [
 	{ value: 688, label: 'USO DE IMAGEN (RAFAEL PIZARRO)', order: 11 },

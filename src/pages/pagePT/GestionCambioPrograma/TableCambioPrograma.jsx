@@ -178,13 +178,13 @@ export default function TableCambioPrograma() {
                         emptyMessage="SOCIOS NO ENCONTRADOS.">
                 {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}
                 {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
-                <Column header="Id" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={IdBodyTemplate} filter/>
-                <Column header="SOCIO" filterField="nombres_apellidos_cli" style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>
-                <Column header="FECHA DE CAMBIO DE PROGRAMA" filterField={`tipo_cliente`} style={{ minWidth: '10rem' }} sortable body={ProgramaSemanasBodyTemplate} filter/>
-                <Column header="PROGRAMA" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>
-                <Column header="HORARIO" filterField={`tel_cli`} style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
-                <Column header="MOTIVO" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
-                <Column header="OBSERVACION" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
+                <Column header="Id"  style={{ minWidth: '10rem' }} sortable body={IdBodyTemplate} filter/>
+                <Column header="SOCIO"  style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>
+                <Column header="FECHA DE CAMBIO DE PROGRAMA"  style={{ minWidth: '10rem' }} sortable body={ProgramaSemanasBodyTemplate} filter/>
+                <Column header="PROGRAMA"  style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>
+                <Column header="HORARIO"  style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
+                <Column header="MOTIVO"  style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
+                <Column header="OBSERVACION"  style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
 
                 {/* <Column header="Vencimiento" filterField="vencimiento_REGALOS_CONGELAMIENTO" sortable style={{ minWidth: '10rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate}  dataType="date" /> */}
                 {/* <Column header="Proveedor" filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  

@@ -32,6 +32,7 @@ import { ModalTableSociosCanje } from './ModalTableSociosCanje'
 import { TableTotalS } from './TableTotalS'
 import { Button } from 'primereact/button'
 import { SpeedDial } from 'primereact/speeddial'
+import { GrafPie } from './GrafPie'
 
 dayjs.extend(utc);
 export const ResumenComparativo = () => {
@@ -984,6 +985,8 @@ export const ResumenComparativo = () => {
             title: 'SOCIOS TOTAL POR CATEGORIA',
             id: 'comparativoINSCRITOSPORCATEGORIASPORPROGRAMA',
             HTML: dataAlter.map(d=>{
+                //data a analizar
+                
                 return (
                 <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
                     <Card>
@@ -1085,6 +1088,9 @@ export const ResumenComparativo = () => {
                                                     </tr>
                                             </Table>
                         </Card.Body>
+                        <GrafPie height={600} width={600} data={
+                            [{label: 'NUEVOS', val: d.membresiasNuevas.length}, {label: 'RENOVACIONES', val: d.membresiasRenovadas.length}, {label: 'REINSCRIPCIONES', val: d.membresiasReinscritos.length}]}/>
+                        <GrafPie height={600} width={600} data={[{label: 'NUEVOS', val: d.membresiasNuevas.length}, {label: 'RENOVACIONES', val: d.membresiasRenovadas.length}, {label: 'REINSCRIPCIONES', val: d.membresiasReinscritos.length}, {label: 'TRASPASOS', val: d.TraspasosEnCero.length}, {label: 'TRANSFERENCIAS', val: d.TransferenciasEnCeros.length}, {label: 'CANJES', val: d.CanjesEnCero.length, color: '#fff33'}]}/>
                     </Card>
                 </Col>
             )
@@ -1095,9 +1101,24 @@ export const ResumenComparativo = () => {
             title: 'SOCIOS TOTAL POR CATEGORIA - RESUMEN',
             id: 'comparativoinscritosporcategoriatotal',
             HTML: dataAlterIdPgmCero.map(d=>{
+                const dataSeg = dataInscritosCategoria.map(c=>{
+                    return{
+                        label: c.propiedad,
+                        val: c.items.length
+                    }
+                }).filter(c=>c.label==='NUEVOS' || c.label ==='RENOVACIONES' || c.label==='REINSCRITOS')
+                const dataSeg1 = dataInscritosCategoria.map(c=>{
+                    return{
+                        label: c.propiedad,
+                        val: c.items.length
+                    }
+                })
                 return(
                     <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                        <TableTotalS titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'INSCRITOS POR CATEGORIA'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={dataInscritosCategoria}/>
+                        {/* <div style={{width: '400px', height: '400px'}}>
+                            <GrafPie data={dataSeg}/>
+                        </div> */}
+                        <TableTotalS grafPieGeneral={<GrafPie data={dataSeg1} height={800} width={800}/>} grafPie={<GrafPie data={dataSeg} height={600} width={600}/>} titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'INSCRITOS POR CATEGORIA'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={dataInscritosCategoria}/>
                     </Col>
                 )
             }
@@ -1348,9 +1369,16 @@ export const ResumenComparativo = () => {
             title: 'SOCIOS PAGANTES POR PROCEDENCIA',
             id: 'COMPARATIVOPROCEDENCIA',
             HTML: dataAlter.map(d=>{
+                const formattedData = d.agrupadoPorProcedencia.map(group => {
+                    const propiedadObj = group.find(item => item.isPropiedad);
+                    return {
+                      label: propiedadObj.value,
+                      val: propiedadObj.items.length
+                    };
+                  });
                 return (
                 <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
-                    <ItemCardPgm avatarPrograma={d.avatarPrograma} 
+                    <ItemCardPgm grafPie={<GrafPie data={formattedData} width={500} height={500}/>} avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.agrupadoPorProcedencia} 
                     onOpenModalSOCIOS={onOpenModalSOCIOS} 
                     isViewSesiones={true} 
@@ -1364,6 +1392,8 @@ export const ResumenComparativo = () => {
             title: 'SOCIOS PAGANTES POR PROCEDENCIA - TOTAL',
             id: 'COMPARATIVOPROCEDENCIATOTAL',
             HTML: dataAlterIdPgmCero.map(d=>{
+                console.log(d.agrupadoPorProcedencia);
+                
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
                 <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorProcedencia}/>

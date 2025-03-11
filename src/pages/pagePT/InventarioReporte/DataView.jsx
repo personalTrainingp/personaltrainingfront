@@ -13,18 +13,16 @@ import { Button } from 'primereact/button'
 import { ModalResumenInventarioValorizado } from './ModalResumenInventarioValorizado'
 import { ImagesGrids } from './ImagesGrids'
 
-export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
-    const { obtenerArticulos, isLoading, obtenerFechasInventario } = useInventarioStore()
+export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc}) => {
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     const [dataFilter, setdataFilter] = useState([])
     const [ubicacion, setubicacion] = useState('')
     const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
-    useEffect(() => {
-        obtenerArticulos(id_empresa)
-        obtenerFechasInventario(id_empresa)
+    // useEffect(() => {
+        // obtenerFechasInventario(id_empresa)
         // obtenerProveedoresUnicos()
-    }, [id_empresa])
+    // }, [id_empresa])
     const onOpenModalInventario = (items, ubicacion)=>{
         setisOpenModalInventarioFiltered(true)
         setdataFilter(items)
@@ -34,7 +32,7 @@ export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
         setisOpenModalInventarioFiltered(false)
     }
 
-    const groupedData = Object.values(dataView.reduce((acc, item) => {
+    const groupedData = Object.values(dvi.reduce((acc, item) => {
         const label = item.parametro_nivel?.label_param;
       
         // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
@@ -67,13 +65,14 @@ export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
       const onCloseModalResumenValorizado = ()=>{
         setisOpenModalResumenValorizado(false)
       }
-      console.log(groupedData);
+      console.log({dataView, dvi});
       
   return (
     <>
     <Button label={<span className='fs-2'>RESUMEN VALORIZADO</span>} onClick={onOpenModalResumenValorizado} text/>
         <Row>
-            {isResumenxZonaLoc &&
+          larrrr
+            {/* {isResumenxZonaLoc &&
                 groupedData.map(g=>{
                     return(
                     <>
@@ -109,9 +108,9 @@ export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
                     </>
                                 
                 )})
-            }
+            } */}
             <Col lg={8}>
-          <ModalResumenInventarioValorizado label_empresa={label_empresa} data={dataView} show={isOpenModalResumenValorizado} onHide={onCloseModalResumenValorizado}/>
+          <ModalResumenInventarioValorizado label_empresa={label_empresa} data={dvi} show={isOpenModalResumenValorizado} onHide={onCloseModalResumenValorizado}/>
 
             </Col>
         </Row>

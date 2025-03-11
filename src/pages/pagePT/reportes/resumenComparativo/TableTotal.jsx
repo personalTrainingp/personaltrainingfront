@@ -6,6 +6,7 @@ import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import config from '@/config'
 import { useGrouped } from './hooks/useGrouped'
 import { FormatTable } from './Component/FormatTable'
+import { GrafPie } from './GrafPie'
 
 export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime, titleH1, isNeedGenere, labelTicketMedio='Ticket medio', avataresDeProgramas=[], arrayEstadistico=[], labelTotal, onOpenModalSOCIOS}) => {
     const { agruparPorSexo } = useGrouped()
@@ -83,7 +84,14 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
           return b.cantidad-a.cantidad;
     })
      */
-    
+    const dataGrafico = data?.map(group=>{
+        const propiedadObj = group.find(item => item.isPropiedad);
+                    return {
+                        label: propiedadObj?.value,
+                        val: propiedadObj?.items?.length
+                    };
+    })
+    console.log({damm: dataGrafico, data});
   return (
     <Card>
         <h1 className='pt-1' style={{fontSize: '20px'}}>
@@ -110,6 +118,7 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
             <FormatTable data={data}/>
         </div>
         </Card.Body>
+        {/* <GrafPie data={dataGrafico} height={800} width={800}/> */}
     </Card>
   )
 }
