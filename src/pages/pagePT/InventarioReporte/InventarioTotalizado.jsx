@@ -11,6 +11,7 @@ import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { DataView } from './DataView'
 import { FechaRange } from '@/components/RangeCalendars/FechaRange'
+import dayjs from 'dayjs'
 
 export const InventarioTotalizado = () => {
     const { obtenerArticulos, isLoading, obtenerInventarioKardexxFechas, dataFechas } = useInventarioStore()
@@ -57,7 +58,7 @@ export const InventarioTotalizado = () => {
     //   });
     //   groupedData.sort((a, b) => a.nivel - b.nivel);
       
-    console.log(dataFechas);
+    console.log({dataFechas});
       
   return (
     <>
@@ -68,7 +69,7 @@ export const InventarioTotalizado = () => {
             {
               dataFechas?.map(m=>{
                 return (
-                  <TabPanel header={<h2 className='card p-4 mb-0'>{m.fecha_hasta}</h2>}>
+                  <TabPanel header={<h2 className='card p-4 mb-0'>{dayjs.utc(m.fechaHasta).format('dddd DD [DE] MMMM [del] YYYY')}</h2>}>
                       <DataView dvi={m.articulos_directos} isResumenxZonaLoc id_empresa={598} label_empresa={'CHANGE'}/>
                   </TabPanel>
                 )

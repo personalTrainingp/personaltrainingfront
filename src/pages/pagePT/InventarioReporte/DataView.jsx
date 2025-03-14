@@ -71,8 +71,7 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc}) =>
     <>
     <Button label={<span className='fs-2'>RESUMEN VALORIZADO</span>} onClick={onOpenModalResumenValorizado} text/>
         <Row>
-          larrrr
-            {/* {isResumenxZonaLoc &&
+            {isResumenxZonaLoc &&
                 groupedData.map(g=>{
                     return(
                     <>
@@ -108,7 +107,7 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc}) =>
                     </>
                                 
                 )})
-            } */}
+            }
             <Col lg={8}>
           <ModalResumenInventarioValorizado label_empresa={label_empresa} data={dvi} show={isOpenModalResumenValorizado} onHide={onCloseModalResumenValorizado}/>
 

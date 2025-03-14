@@ -64,7 +64,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     const cantidadBodyTemplate = (rowData) => {
         return (
             <div className="text-primary fw-bold flex align-items-end gap-2 fs-2 justify-content-center">
-                <span>{rowData.cantidad}</span>
+                <span>{rowData.stock_final}</span>
             </div>
         );
     };
@@ -103,7 +103,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
             <>
             
             <div className="flex align-items-center">
-                        <Image src={rowData.tb_images.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[rowData.tb_images.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
+                        <Image src={rowData.tb_images?.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[rowData.tb_images.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
             </div>
             </>
         );

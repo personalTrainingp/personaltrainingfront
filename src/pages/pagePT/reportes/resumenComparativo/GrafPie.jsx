@@ -12,13 +12,21 @@ export const GrafPie = ({data=[], width, height}) => {
         labels: dataS.map(l=>l.label),
         legend: {
           fontSize: '24px',
+          margin: '20px',
           position: "bottom",
           labels: {
             colors: "#000", // Color del texto de la leyenda
           },
         },
+        plotOptions: {
+          pie: {
+            dataLabels: {
+              offset: 50, // Ajusta para que las etiquetas salgan del borde del pastel
+            },
+            expandOnClick: false, // Evita que se expanda el gráfico al hacer clic
+          },
+        },
         dataLabels: {
-          offsetY: -100, // Ajusta este valor para subir los números
           enabled: true,
           formatter: (val, { seriesIndex, w }) => {
             const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
@@ -29,7 +37,8 @@ export const GrafPie = ({data=[], width, height}) => {
           style: {
             fontSize: "24px",
             fontWeight: "bold",
-            colors: ["#fff"],
+            padding: 10, // Añadir margen interno
+            colors: ["#000"],
           },
         },
       };
@@ -37,7 +46,7 @@ export const GrafPie = ({data=[], width, height}) => {
       const series = dataS.map(l=>l.value); // Valores de cada segmento
     
   return (
-    <div className='m-auto'>
+    <div className='m-5 d-flex justify-content-center align-items-center' style={{width: '800px', height: '1000px'}}>
         <Chart options={options} series={series} type="pie" width={width} height={height} />
     </div>
   )

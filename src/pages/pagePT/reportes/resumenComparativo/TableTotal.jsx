@@ -42,7 +42,22 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
             ]
         }
         )
-    console.log({estadisticas, labelTotal, data}, "arraaaaa");
+        const result = data?.map(subArray => {
+            const firstObj = subArray[0]; // Tomar solo el primer objeto de cada subarray
+            return {
+              val: firstObj?.items?.length || 0, // Si 'items' no existe, devuelve 0
+              label: firstObj?.value || '' // Si 'value' no existe, devuelve cadena vacía
+            };
+          });
+
+    //     const formattedData = data?.map(group => {
+    //         const propiedadObj = group.find(item => item.isPropiedad);
+    //         return {
+    //           label: propiedadObj?.value,
+    //           val: propiedadObj?.items?.length
+    //         };
+    //       });
+    // console.log({estadisticas, labelTotal, data}, "arraaaaa");
     
     
     // const estadisticasCanje = arrayEstadistico.map(d=>{
@@ -91,7 +106,6 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
                         val: propiedadObj?.items?.length
                     };
     })
-    console.log({damm: dataGrafico, data});
   return (
     <Card>
         <h1 className='pt-1' style={{fontSize: '20px'}}>
@@ -116,6 +130,7 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
             <br/>
         <div  style={{width: '100%'}}>
             <FormatTable data={data}/>
+                                <GrafPie height={700} width={1000} data={result}/>
         </div>
         </Card.Body>
         {/* <GrafPie data={dataGrafico} height={800} width={800}/> */}

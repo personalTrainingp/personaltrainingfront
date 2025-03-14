@@ -9,7 +9,7 @@ export const ItemTable = ({dataF}) => {
     {
       dataF.map(f=>{
         return (
-        <Col lg={4}>
+        <Col lg={3}>
             <FormatTable2 data={ [f] }/>
         </Col>
         )

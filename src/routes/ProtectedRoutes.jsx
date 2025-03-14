@@ -84,6 +84,7 @@ const ViewRenovacion = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/renova
 const ViewReinscripcion = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/reinscripcion'))
 const CitasxNutricionista = lazy(()=>import('../pages/pagePT/reportes/citasxEstados'))
 const GeneradorFechas = lazy(()=>import('../pages/pagePT/generadorFechas/GeneradorFechasInventario'))
+const EntradaArticulosForm = lazy(()=>import('../pages/pagePT/EntradaInventarioForm'))
 /**
  * routes import
  */
@@ -129,7 +130,7 @@ export default function ProtectedRoutes() {
 					
 					{
 						sections.find(e=>e.url==='/generador-fechas-inventario')&&
-                        <Route path='generador-fechas-inventario' element={<GeneradorFechas/>}/>
+                        <Route path='generador-fechas-inventario' element={<EntradaArticulosForm/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/citas-x-nutricionista')&&

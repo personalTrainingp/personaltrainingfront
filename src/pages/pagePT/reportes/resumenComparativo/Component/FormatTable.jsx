@@ -67,7 +67,7 @@ export const FormatTable = ({ data=[] }) => {
         <tr className='bg-primary'>
           {data[0]?.map((col, index) => (
             <td key={index}>
-            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '25px'}}>{col.tFood}</span></li>
+            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '30px'}}>{col.tFood}</span></li>
         </td>
             // <td key={index}>{col.tFood}</td>
           ))}

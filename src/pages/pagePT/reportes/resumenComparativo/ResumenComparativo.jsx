@@ -112,34 +112,49 @@ export const ResumenComparativo = () => {
           });
     }
     function agruparPorDistrito(detalledata) {
-        // const arrayDistritos = detalledata?.map(d=>d.tb_ventum.tb_cliente.tb_distrito?.distrito)
-        // console.log(detalledata, arrayDistritos, "detalledata");
-        return arrayDistritoTest?.map(({ label, value, order }) => {
-            const items = detalledata?.filter(
-              (cliente) => cliente.tb_ventum.tb_cliente.tb_distrito?.distrito === label
-            );
-            return {
-              propiedad: label,
-              order,
-              value,
-              items,
-            };
-          });
+        const resultado = [];
+        
+        detalledata?.forEach((item) => {
+            
+          const { tarifa_monto } = item;
+          const { distrito } = item.tb_ventum.tb_cliente.ubigeo_nac;
+          
+          // Verificar si ya existe un grupo con la misma cantidad de sesiones
+          let grupo = resultado?.find((g) => g.propiedad === distrito);
+      
+          if (!grupo) {
+            // Si no existe, crear un nuevo grupo
+            grupo = { propiedad: distrito, items: [], tarifa_monto };
+            resultado.push(grupo);
+          }
+          // Agregar el item al grupo correspondiente
+          grupo.items.push(item);
+        });
+        
+        return resultado.sort((a,b)=>b.items.length-a.items.length).sort((a,b)=>b.tarifa_monto-a.tarifa_monto);
     }
     function agruparPorDistritoTrabajo(detalledata) {
-        const arrayDistritos = detalledata?.map(d=>d.tb_ventum.tb_cliente.tb_distrito.distrito)
-        // console.log(detalledata, arrayDistritos, "detalledata");
-        return arrayDistritoTest?.map(({ label, value, order }) => {
-            const items = detalledata?.filter(
-              (cliente) => cliente.tb_ventum.tb_cliente.tb_distrito.distrito === label
-            );
-            return {
-              propiedad: label,
-              order,
-              value,
-              items,
-            };
-          });
+        const resultado = [];
+        
+        detalledata?.forEach((item) => {
+            
+          const { tarifa_monto } = item;
+          
+          const { distrito } = (item.tb_ventum.tb_cliente?.ubigeo_trabajo) || {};
+          
+          // Verificar si ya existe un grupo con la misma cantidad de sesiones
+          let grupo = resultado?.find((g) => g.propiedad === distrito);
+      
+          if (!grupo) {
+            // Si no existe, crear un nuevo grupo
+            grupo = { propiedad: distrito, items: [], tarifa_monto };
+            resultado.push(grupo);
+          }
+          // Agregar el item al grupo correspondiente
+          grupo.items.push(item);
+        });
+        
+        return resultado.sort((a,b)=>b.items.length-a.items.length).sort((a,b)=>b.tarifa_monto-a.tarifa_monto);
     }
     function agruparPorTarifas(data) {
         const resultado = [];
@@ -154,7 +169,9 @@ export const ResumenComparativo = () => {
       
           if (!grupo) {
             // Si no existe, crear un nuevo grupo
-            grupo = { propiedad: <div className={id_tipo_promocion===3050?'text-black':''}>{nombreTarifa_tt} <br/> <div className='text-black'>{semanas_st} SEMANAS</div> <span className='font-24 mr-3'>x</span> <SymbolSoles isbottom={true}  numero={<NumberFormatMoney amount={tarifaCash_tt}/>}/><br/> {id_tipo_promocion===3050?'PROMOCION INTERNA':'PROMOCION REDES SOCIALES'} </div>, 
+            grupo = { 
+                // propiedad: <div className={id_tipo_promocion===3050?'text-black':''}>{nombreTarifa_tt} <br/> <div className='text-black'>{semanas_st} SEMANAS</div> <span className='font-24 mr-3'>x</span> <SymbolSoles isbottom={true}  numero={<NumberFormatMoney amount={tarifaCash_tt}/>}/><br/> {id_tipo_promocion===3050?'PROMOCION INTERNA':'PROMOCION REDES SOCIALES'} </div>, 
+                propiedad: `${nombreTarifa_tt} ${semanas_st} SEMANAS ${tarifaCash_tt}`, 
             unif: labelTarifa, 
             tarifaCash_tt, 
             sesiones, 
@@ -265,7 +282,10 @@ export const ResumenComparativo = () => {
       
           if (!grupo) {
             // Si no existe, crear un nuevo grupo
-            grupo = {  lbel: sesiones, propiedad: <div style={{width: '350px'}}>{semanas_st} SEMANAS <br/> {sesiones} Sesiones</div>, semanas_st, items: [] };
+            grupo = {  lbel: sesiones, 
+                // propiedad: <div style={{width: '350px'}}>{semanas_st} SEMANAS <br/> {sesiones} Sesiones</div>, 
+                propiedad: `${semanas_st} SEMANAS ${sesiones} SESIONES`, 
+                semanas_st, items: [] };
             resultado.push(grupo);
           }
       
@@ -465,6 +485,8 @@ export const ResumenComparativo = () => {
           const ventasSinCeros =  agruparPorVenta(test).filter(f=>f.tarifa_monto!==0)
           const TransferenciasEnCeros = d.ventas_transferencias
         const TraspasosEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===701)
+        console.log({ventasSinCeros});
+        
         const CanjesEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===703)
         const membresiasNuevas = ventasSinCeros.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692)
         const membresiasRenovadas = ventasSinCeros.filter(g=>g.tb_ventum.id_origen===691)
@@ -496,11 +518,27 @@ export const ResumenComparativo = () => {
                     ]
                 }
                 )
+                
+            const porDistritoTrabajo = agruparPorDistritoTrabajo(ventasSinCeros).sort((a,b)=>b.items.length-a.items.length).map((grupo, index, array) => {
+                const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
+                const sumaXITEMS = grupo.items.length
+                
+                const sumaMontoxItems = grupo.items.reduce((total, item) => total+(item?.tarifa_monto||0), 0)
+                const sumaTotalMonto = array.reduce((total, item)=>total + (item?.items.reduce((total, item) => total+(item?.tarifa_monto||0), 0) || 0), 0)
+                console.log({grupo}, "por dist", sumaMontoxItems);
+                return [
+                { header: "DISTRITO", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
+                { header: <>SOCIOS <br/> % SOCIOS</>, isSummary: true, value: <><span className='text-primary'>{sumaXITEMS}</span> <br/> <span className=''>{((sumaXITEMS/sumaTotal)*100).toFixed(2)}</span> </>, tFood: <>{sumaTotal} <br/> {((sumaXITEMS/sumaXITEMS)*100).toFixed(2)}</> },
+                // { header: "% SOCIOS", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
+                { header: "VENTA", isSummary: true, value: <NumberFormatMoney amount={sumaMontoxItems}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaTotalMonto}/>},
+                    ]
+                }
+                )
         const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros).map((grupo, index, array) => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
             return [
-            { header: "sesiones", value: grupo.lbel, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "sesiones", value: grupo.lbel,items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
             { header: "SEMANAS", value: grupo.semanas_st,isPropiedad: true, tFood: '' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
             { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
@@ -632,6 +670,7 @@ export const ResumenComparativo = () => {
             agrupadoPorSesiones,
             sumaDeVentasEnSoles,
             sumaDeSesiones,
+            porDistritoTrabajo,
             avatarPrograma,
             ventasEnCeros, 
             TraspasosEnCero,
@@ -686,7 +725,7 @@ export const ResumenComparativo = () => {
                 ]
             }
             )
-        const porDistritoTrabajo = agruparPorDistrito(ventasSinCeros).map((grupo, index, array) => {
+        const porDistritoTrabajo = agruparPorDistritoTrabajo(ventasSinCeros).map((grupo, index, array) => {
             return [
                 ...generarResumen(array, grupo, 'DISTRITO', index)
                 ]
@@ -695,6 +734,8 @@ export const ResumenComparativo = () => {
         const sumaDeSesiones = ventasSinCeros?.reduce((total, item) => total + (item?.tb_semana_training.sesiones || 0), 0)
         const sumaDeVentasEnSoles = ventasSinCeros?.reduce((total, item) => total + (item?.tarifa_monto || 0), 0)
         const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros).map((grupo, index, array) => {
+            console.log(array, "agru por ses");
+            
             return [
                 ...generarResumen(array, grupo, 'SESIONES', index)
                 ]
@@ -713,9 +754,8 @@ export const ResumenComparativo = () => {
             }
             )
         const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros).map((grupo, index, array) => {
-            
             return [
-                ...generarResumen(array, grupo, 'ASESORES', index, [], [{header: 'ASESORES', HTML: <span className={grupo.estado_empl?'text-primary':'text-black'}>{grupo.propiedad}</span>, order: 0}]),
+                ...generarResumen(array, grupo, 'ASESORES', index, [], [{header: 'ASESORES', value: grupo.propiedad, isPropiedad: true, items: grupo.items, HTML: <span className={grupo.estado_empl?'text-primary':'text-black'}>{grupo.propiedad}</span>, order: 0}]),
                 // {header: 'ESTADO', value: `${grupo.estado_empl}`}
                 ]
             }
@@ -762,6 +802,7 @@ export const ResumenComparativo = () => {
             agrupadoPorHorario,
             agrupadoPorVendedores,
             agrupadoPorProcedencia,
+            porDistritoTrabajo,
             // activosDeVentasPorSemanaMarcacions,
             agruparPorRangoEdades,
             agrupadoPorEstadoCivil,
@@ -988,7 +1029,7 @@ export const ResumenComparativo = () => {
                 //data a analizar
                 
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     <Card>
                         <Card.Header className=' align-self-center'>
                             {/* <Card.Title>
@@ -1090,7 +1131,7 @@ export const ResumenComparativo = () => {
                         </Card.Body>
                         <GrafPie height={600} width={600} data={
                             [{label: 'NUEVOS', val: d.membresiasNuevas.length}, {label: 'RENOVACIONES', val: d.membresiasRenovadas.length}, {label: 'REINSCRIPCIONES', val: d.membresiasReinscritos.length}]}/>
-                        <GrafPie height={600} width={600} data={[{label: 'NUEVOS', val: d.membresiasNuevas.length}, {label: 'RENOVACIONES', val: d.membresiasRenovadas.length}, {label: 'REINSCRIPCIONES', val: d.membresiasReinscritos.length}, {label: 'TRASPASOS', val: d.TraspasosEnCero.length}, {label: 'TRANSFERENCIAS', val: d.TransferenciasEnCeros.length}, {label: 'CANJES', val: d.CanjesEnCero.length, color: '#fff33'}]}/>
+                        <GrafPie height={1000} width={1000} data={[{label: 'NUEVOS', val: d.membresiasNuevas.length}, {label: 'RENOVACIONES', val: d.membresiasRenovadas.length}, {label: 'REINSCRIPCIONES', val: d.membresiasReinscritos.length}, {label: 'TRASPASOS', val: d.TraspasosEnCero.length}, {label: 'TRANSFERENCIAS', val: d.TransferenciasEnCeros.length}, {label: 'CANJES', val: d.CanjesEnCero.length, color: '#fff33'}]}/>
                     </Card>
                 </Col>
             )
@@ -1130,7 +1171,7 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVOPORSESIONESPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     {/* <FormatTable data={d.agrupadoPorSesiones}/> */}
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} isSesion={true} arrayEstadistico={d.agrupadoPorSesiones} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
                 </Col>
@@ -1182,7 +1223,7 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     {/* <FormatTable data={d.agrupadoPorHorario}/> */}
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} arrayEstadistico={d.porSexo} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'GENERO'}/>
                 </Col>
@@ -1208,7 +1249,7 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVOPROGRAMASPORDISTRITO',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     {/* <FormatTable data={d.agrupadoPorHorario}/> */}
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.porDistrito} 
@@ -1241,7 +1282,7 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVOPROGRAMASPORDISTRITO',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     {/* <FormatTable data={d.agrupadoPorHorario}/> */}
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.porDistritoTrabajo} 
@@ -1272,7 +1313,7 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVORANGODEEDAD/SEXOPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     {/* <FormatTable data={d.agrupadoPorHorario}/> */}
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.agruparPorRangoEdades} 
@@ -1309,7 +1350,7 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVOESTADOCIVILPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     {/* <FormatTable data={d.agrupadoPorHorario}/> */}
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.agrupadoPorEstadoCivil} 
@@ -1340,7 +1381,7 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVOASESORES',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.agrupadoPorVendedores} 
                     onOpenModalSOCIOS={onOpenModalSOCIOS} 
@@ -1377,7 +1418,7 @@ export const ResumenComparativo = () => {
                     };
                   });
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     <ItemCardPgm grafPie={<GrafPie data={formattedData} width={500} height={500}/>} avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.agrupadoPorProcedencia} 
                     onOpenModalSOCIOS={onOpenModalSOCIOS} 
@@ -1423,7 +1464,7 @@ export const ResumenComparativo = () => {
             id: 'COMPARATIVOPROCEDENCIA',
             HTML: dataAlter.map(d=>{
                 return (
-                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={4}>
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     <ItemCardPgm avatarPrograma={d.avatarPrograma} 
                     arrayEstadistico={d.agrupadoPorProcedenciaCeros} 
                     onOpenModalSOCIOS={onOpenModalSOCIOS} 
@@ -1473,7 +1514,7 @@ export const ResumenComparativo = () => {
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
         {/* <FormatDataTable arrayEstadistico={d.agrupadoPorTarifas}/> */}
-            <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'PROMOCION'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorTarifas}/>
+            <TableTotal  titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'PROMOCION'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorTarifas}/>
                 </Col>
             )
             }

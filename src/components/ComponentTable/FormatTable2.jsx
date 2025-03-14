@@ -21,7 +21,7 @@ export const FormatTable2 = ({ data, tFood }) => {
   return (
     <>
       {tableData.map((section, sectionIndex) => (
-        <Table striped responsive className="table-centered mb-4" key={sectionIndex}>
+        <Table striped responsive className="table-centered mb-4 fs-3 fw-bold" key={sectionIndex}>
           <thead className='bg-primary text-white'>
             <tr>
               {section.header.map((col, index) => (

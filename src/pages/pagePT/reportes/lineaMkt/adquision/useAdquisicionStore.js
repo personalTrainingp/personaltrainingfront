@@ -70,6 +70,8 @@ function agruparPorMesYAnio(data) {
 	// Generamos los meses en orden cronológico
 	while (fechaIteracion.isBefore(fin) || fechaIteracion.isSame(fin, 'month')) {
 		meses.push({
+			anio: fechaIteracion.format('YYYY'),
+			mes: fechaIteracion.format('MMMM'),
 			fecha: fechaIteracion.format('MMMM YYYY'),
 			items: [],
 		});
