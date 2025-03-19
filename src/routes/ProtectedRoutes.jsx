@@ -85,6 +85,9 @@ const ViewReinscripcion = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/rei
 const CitasxNutricionista = lazy(()=>import('../pages/pagePT/reportes/citasxEstados'))
 const GeneradorFechas = lazy(()=>import('../pages/pagePT/generadorFechas/GeneradorFechasInventario'))
 const EntradaArticulosForm = lazy(()=>import('../pages/pagePT/EntradaInventarioForm'))
+const TransferenciasArticulos = lazy(()=>import('../pages/pagePT/TransferenciaEmpresaInventario'))
+const ArticulosNuevos = lazy(()=>import('../pages/pagePT/GestArticulosChorrillos'))
+
 /**
  * routes import
  */
@@ -123,11 +126,15 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad*/}
-					{/* {
-						sections.find(e=>e.url==='/entrada-')&&
-                        <Route path='mkt-adquisicion' element={<ViewAdquision/>}/>
-					} */}
+					{
+						sections.find(e=>e.url==='/agregar-articulos-chorrillos')&&
+                        <Route path='agregar-articulos-chorrillos' element={<ArticulosNuevos/>}/>
+					}
 					
+					{
+						sections.find(e=>e.url==='/transferencia-inventario')&&
+                        <Route path='transferencia-inventario' element={<TransferenciasArticulos/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/generador-fechas-inventario')&&
                         <Route path='generador-fechas-inventario' element={<EntradaArticulosForm/>}/>

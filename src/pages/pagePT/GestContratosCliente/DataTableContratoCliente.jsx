@@ -12,9 +12,15 @@ import dayjs from 'dayjs'
 import { useContratosDeClientes } from './useContratosDeClientes'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { ModalPhotoCli } from './ModalPhotoCli'
+import { FilterMatchMode } from 'primereact/api'
+import { IconField } from 'primereact/iconfield'
+import { InputIcon } from 'primereact/inputicon'
+import { InputText } from 'primereact/inputtext'
+import { Button } from 'primereact/button'
 
 export const DataTableContratoCliente = () => {
   const { obtenerContratosDeClientes, dataContratos, isLoading } = useContratosDeClientes()
+    const [customers, setCustomers] = useState([]);
   // const {  } = useState(0)
   const [idVenta, setidVenta] = useState(0)
   const [dataImages, setdataImages] = useState([])
@@ -23,7 +29,45 @@ export const DataTableContratoCliente = () => {
   const [idCli, setidCli] = useState(0)
   const [isOpenModalTipoCambio, setisOpenModalTipoCambio] = useState(false)
   const { dataView } =useSelector(e=>e.DATA)
+    const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [data, setdata] = useState(dataView)
+    const [filters, setFilters] = useState({
+      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    });
+    
+	const onGlobalFilterChange = (e) => {
+		const value = e.target.value;
+		let _filters = { ...filters };
+		_filters['global'].value = value;
+		
+		setFilters(_filters);
+		setGlobalFilterValue(value);
+	};
+
+      const getCustomers = (data) => {
+        return [...(data || [])].map((d) => {
+          
+                // Crea una copia del objeto antes de modificarlo
+          let newItem = { ...d };
+          return newItem;
+        });
+      };
+        const renderHeader = () => {
+          return (
+            <div className="d-flex">
+              {/* <h4 className="m-0">Customers</h4> */}
+              <IconField iconPosition="left">
+                <InputIcon className="pi pi-search" />
+                <InputText
+                  value={globalFilterValue}
+                  onChange={onGlobalFilterChange}
+                  placeholder="Buscador global"
+                />
+              </IconField>
+              <Button label='TODOS' onClick={()=>setdata(dataView)}/>
+            </div>
+          );
+        };
     const onOpenModalTipoCambio = (id_venta, idCli) =>{
         setisOpenModalTipoCambio(true)
         setidVenta(id_venta)
@@ -44,6 +88,16 @@ export const DataTableContratoCliente = () => {
     useEffect(() => {
       obtenerContratosDeClientes()
     }, [])
+    
+      useEffect(() => {
+        if(dataView.length<=0){
+          const fetchData = () => {
+            setCustomers(getCustomers(dataView));
+            // setLoading(false);
+          };
+          fetchData();
+        }
+      }, [dataView]);
     
   const FotoBodyTemplate = (rowData)=>{
     return (
@@ -149,16 +203,13 @@ export const DataTableContratoCliente = () => {
     )
   }
   const onClickChangeData = (data, labelData)=>{
-    console.log(data, "datachange");
-    
     // console.log('click change data');
     setdata(data)
     // setDataView(dataContratos)
   }
 // Función para agrupar por nombres_apellidos_empl y contar firmados y sinFirmas
 function agruparFirmasxEmpl(dataView) {
-  console.log({dataView});
-  
+
   const groupedData = dataView?.reduce((acc, current) => {
     const empleado = current.asesor;
   
@@ -243,6 +294,7 @@ const onOpenModal = (e)=>{
   // onOpenModalIvsG(e)
 }
 
+const header = renderHeader();
   return (
     <>
       <Row>
@@ -264,15 +316,15 @@ const onOpenModal = (e)=>{
               </Card>
             </Col>
           )
-        }
-        
-      )
-        }
+        })}
       </Row>
-                  <DataTable size='small' stripedRows value={data} paginator rows={10} dataKey="id"
-                  globalFilterFields={['usuario', 'ip', 'accion', 'observacion', 'fecha_audit']} emptyMessage="Sin Contratos">
+                  <DataTable 
+					        header={header}
+                  filters={filters}
+                  size='small' stripedRows value={data} paginator rows={10} dataKey="id"
+                  globalFilterFields={['nombre_apellidos']} emptyMessage="Sin Contratos">
               <Column header="Asesor comercial" body={nombreAsesorBodyTemplate} style={{ maxWidth: '15rem' }} />
-              <Column header="SOCIOS" body={nombreSocioBodyTemplate} style={{ minWidth: '12rem' }} />
+              <Column field='nombre_apellidos' header="SOCIOS" body={nombreSocioBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="Programa / Semanas" body={programaSemanaBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="MONTO" body={tarifaMontoBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="FOTO" body={FotoBodyTemplate} style={{ maxWidth: '5rem' }} />

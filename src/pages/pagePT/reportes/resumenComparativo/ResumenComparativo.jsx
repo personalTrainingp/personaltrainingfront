@@ -455,7 +455,7 @@ export const ResumenComparativo = () => {
 
     
 
-    const dataAlter = dataGroup.map(d=>{
+    const dataAlter = dataGroup.map((d, array)=>{
         const avatarPrograma = {
             urlImage: `${config.API_IMG.LOGO}${d.tb_image[0].name_image}`,
             width: d.tb_image[0].width,
@@ -856,7 +856,8 @@ export const ResumenComparativo = () => {
         {
             title: 'VENTAS POR PROGRAMA',
             id: 'comparativoventasenprograma',
-            HTML: dataAlter.map(d=>{
+            HTML: dataAlter.map((d, array)=>{
+                const dataGen = dataAlterIdPgmCero.map(c=>c.ventasSinCeros.length)[0]
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={4}>
                     <Card>
@@ -882,7 +883,7 @@ export const ResumenComparativo = () => {
                                                                         <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-2'>venta de <br/> membresias</span></li>
                                                                     </td>
                                                                     <td>
-                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d.ventasSinCeros.length}</span>
+                                                                        <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d.ventasSinCeros.length} / {((d.ventasSinCeros.length/dataGen)*100).toFixed(2)}%</span>
                                                                     </td>
                                                             </tr>
                                                             <tr>

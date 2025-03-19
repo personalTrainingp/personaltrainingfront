@@ -15,6 +15,12 @@ export const clasesVentasSeparadas = (tipo) => {
 	}
 };
 
+export const arrayEmpresa = [
+	{value: 598, label: 'CHANGE'},
+	{value: 599, label: 'CIRCUS'},
+	{value: 601, label: 'CHORRILLOS'},
+]
+
 export const arrayDepartamento = [
 	{ value: '01', label: 'Amazonas' },
 	{ value: '02', label: 'Áncash' },

@@ -13,7 +13,7 @@ import { Button } from 'primereact/button'
 import { ModalResumenInventarioValorizado } from './ModalResumenInventarioValorizado'
 import { ImagesGrids } from './ImagesGrids'
 
-export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc}) => {
+export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kardexSalida, kardexEntrada, transferencias}) => {
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     const [dataFilter, setdataFilter] = useState([])
@@ -65,10 +65,119 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc}) =>
       const onCloseModalResumenValorizado = ()=>{
         setisOpenModalResumenValorizado(false)
       }
-      console.log({dataView, dvi});
+      console.log({dataView, dvi, kardexSalida, kardexEntrada, transferencias});
       
   return (
     <>
+    <Row>
+      <Col lg={3}>
+        <Card>
+            <Card.Header>
+                  <Card.Title className='fs-2 text-primary'>
+                    ARTICULOS NUEVOS
+                  </Card.Title>
+                </Card.Header>
+                <Card.Body>
+                  <table className="table font-14">
+                              <thead>
+                                  <tr>
+                                      <th className="bg-light p-1">
+                                          <span className=" text-uppercase">PRODUCTO</span>
+                                      </th>
+                                      <th className="bg-light p-1">
+                                          <span className=" text-uppercase">CANTIDAD</span>
+                                      </th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                {
+                                  [].map(k=>{
+                                    return (
+
+                                      <tr>
+                                      <td className="border-0">
+                                        {k.articulos_kardex.producto}
+                                      </td>
+                                      <td className="border-0">
+                                        {k.cantidad                                        }
+                                      </td>
+                                  </tr>
+                                    )
+                                  })
+                                }
+                              </tbody>
+                          </table>
+                </Card.Body>
+          </Card>
+      </Col>
+      <Col lg={3}>
+        <Card>
+          <Card.Header>
+                <Card.Title className='fs-2 text-primary'>
+                  ENTRADAS
+                </Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <div className='text-center'>
+                </div>
+              </Card.Body>
+        </Card>
+      </Col>
+      <Col lg={3}>
+        <Card>
+            <Card.Header>
+                  <Card.Title className='fs-2 text-primary'>
+                    SALIDAS
+                  </Card.Title>
+                </Card.Header>
+                <Card.Body>
+                  
+                <table className="table font-14">
+                              <thead>
+                                  <tr>
+                                      <th className="bg-light p-1">
+                                          <span className=" text-uppercase">PRODUCTO</span>
+                                      </th>
+                                      <th className="bg-light p-1">
+                                          <span className=" text-uppercase">CANTIDAD</span>
+                                      </th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                {
+                                  kardexSalida.map(k=>{
+                                    return (
+
+                                      <tr>
+                                      <td className="border-0">
+                                        {k.articulos_kardex.producto}
+                                      </td>
+                                      <td className="border-0">
+                                        {k.cantidad                                        }
+                                      </td>
+                                  </tr>
+                                    )
+                                  })
+                                }
+                              </tbody>
+                          </table>
+                </Card.Body>
+        </Card>
+      </Col>
+      <Col lg={3}>
+        <Card>
+            <Card.Header>
+                  <Card.Title className='fs-2 text-primary'>
+                    TRANSFERENCIAS
+                  </Card.Title>
+                </Card.Header>
+                <Card.Body>
+                  <div className='text-center'>
+                  </div>
+                </Card.Body>
+          </Card>
+      </Col>
+    </Row>
     <Button label={<span className='fs-2'>RESUMEN VALORIZADO</span>} onClick={onOpenModalResumenValorizado} text/>
         <Row>
             {isResumenxZonaLoc &&

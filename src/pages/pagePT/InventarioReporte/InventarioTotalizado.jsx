@@ -70,7 +70,7 @@ export const InventarioTotalizado = () => {
               dataFechas?.map(m=>{
                 return (
                   <TabPanel header={<h2 className='card p-4 mb-0'>{dayjs.utc(m.fechaHasta).format('dddd DD [DE] MMMM [del] YYYY')}</h2>}>
-                      <DataView dvi={m.articulos_directos} isResumenxZonaLoc id_empresa={598} label_empresa={'CHANGE'}/>
+                      <DataView dvi={m.articulos_directos} kardexEntrada={m.kardexEntrada} kardexSalida={m.kardexSalida} isResumenxZonaLoc id_empresa={598} label_empresa={'CHANGE'}/>
                   </TabPanel>
                 )
               })

@@ -16,18 +16,18 @@ export const PrincipalView = () => {
   }
   return (
     <>
-    <PageBreadcrumb title={'ENTRADA DE ITEMS'}/>
+    <PageBreadcrumb title={'Transferencia DE ITEMS'}/>
     <Row>
-      <TabView>
+            <TabView>
               <TabPanel header="CHANGE THE SLIM STUDIO">
-                    <DataEntrada id_enterprice={598} actionKardex={'entrada'}/>
+                    <DataEntrada id_enterprice={598} actionKardex={'traspaso'}/>
               </TabPanel>
               <TabPanel header="CIRCUS SALON">
-                    <DataEntrada id_enterprice={599} actionKardex={'entrada'}/>
+                    <DataEntrada id_enterprice={599} actionKardex={'traspaso'}/>
               </TabPanel>
-                            <TabPanel header="CHORRILLOS">
-                                  <DataEntrada id_enterprice={601} actionKardex={'entrada'}/>
-                            </TabPanel>
+              <TabPanel header="CHORRILLOS">
+                    <DataEntrada id_enterprice={601} actionKardex={'traspaso'}/>
+              </TabPanel>
             </TabView>
     </Row>
     </>

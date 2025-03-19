@@ -132,6 +132,26 @@ export const useTerminoStore = () => {
 	const [paquetesDeServicios, setpaquetesDeServicios] = useState([]);
 	const [comboOficio, setcomboOficio] = useState([]);
 	const [dataDistritos, setdataDistritos] = useState([]);
+	const [dataZonas, setdataZonas] = useState([]);
+	const obtenerZonas = async (id_enterprice) => {
+		try {
+			console.log({ id_enterprice });
+
+			let { data } = await PTApi.get(
+				`/parametros/get_params/articulo/zonas/${id_enterprice}`
+			);
+			const dataAlter = data.map((z) => {
+				return {
+					label: z.nombre_zona,
+					value: z.id,
+				};
+			});
+
+			setdataZonas(dataAlter);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerDepartamentos = async (id_provincia, id_departamento) => {
 		try {
 			const { data } = await PTApi.get(
@@ -517,6 +537,8 @@ export const useTerminoStore = () => {
 		obtenerEmpleadosPorDepartamentoNutricion,
 		obtenerOficios,
 		obtenerParametroPorEntidadyGrupo_PERIODO,
+		obtenerZonas,
+		dataZonas,
 		DataPeriodoParam,
 		DataAsesores,
 		dataDistritos,

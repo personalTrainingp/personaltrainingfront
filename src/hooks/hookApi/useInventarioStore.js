@@ -48,7 +48,6 @@ export const useInventarioStore = () => {
 	const startRegisterArticulos = async (formState, id_enterprice, selectedFile) => {
 		try {
 			setIsLoading(true);
-			console.log('llego', formState);
 			const { data } = await PTApi.post(
 				`/inventario/post-articulo/${id_enterprice}`,
 				formState
@@ -92,10 +91,10 @@ export const useInventarioStore = () => {
 			console.log(error);
 		}
 	};
-	const EliminarArticulo = async (ID) => {
+	const EliminarArticulo = async (ID, id_enterprice) => {
 		try {
 			const { data } = await PTApi.put(`/inventario/remove-articulo/${ID}`);
-			obtenerArticulos(598);
+			obtenerArticulos(id_enterprice);
 			Swal.fire({
 				icon: 'success',
 				title: 'ARTICULO ELIMINADO CORRECTAMENTE',

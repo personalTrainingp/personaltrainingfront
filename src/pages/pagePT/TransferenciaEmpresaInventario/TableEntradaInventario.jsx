@@ -188,8 +188,7 @@ export default function TableEntradaInventario({id_enterprice, action}) {
                 {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
                 <Column header="Id" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={IdBodyTemplate} filter/>
                 <Column header="ITEM" filterField="nombres_apellidos_cli" style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>
-                <Column header="CANTIDAD INICIAL" filterField={`tipo_cliente`} style={{ minWidth: '10rem' }} sortable body={cantidadInicialBodyTemplate} filter/>
-                <Column header="CANTIDAD ENTRADA" filterField={`tipo_cliente`} style={{ minWidth: '10rem' }} sortable body={cantidadKardexBodyTemplate} filter/>
+                <Column header="CANTIDAD TRANSFERIDA" filterField={`tipo_cliente`} style={{ minWidth: '10rem' }} sortable body={cantidadKardexBodyTemplate} filter/>
                 <Column header="FECHA EN LA QUE SALIO" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={fechaKardexBodyTemplate} filter/>
                 <Column header="MOTIVO" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={motivoBodyTemplate} filter/>
                 <Column header="OBSERVACION" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/>

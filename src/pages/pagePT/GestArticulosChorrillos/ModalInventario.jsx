@@ -160,7 +160,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             />
                                     </div>
                                 </Col>
-                                <Col lg={4}>
+                                {/* <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="marca" className="form-label">
                                             MARCA
@@ -178,7 +178,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             
                                         />
                                     </div>
-                                </Col>
+                                </Col> */}
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="marca" className="form-label">
@@ -199,7 +199,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                         />
                                     </div>
                                 </Col>
-                                <Col lg={4}>
+                                {/* <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="fecha_entrada" className="form-label">
                                             FECHA DE ENTRADA
@@ -214,7 +214,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 placeholder=""
                                             />
                                     </div>
-                                </Col>
+                                </Col> */}
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="cantidad" className="form-label">
@@ -230,7 +230,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             />
                                     </div>
                                 </Col>
-                                <Col lg={4}>
+                                {/* <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="costo_unitario" className="form-label">
                                             COSTO UNITARIO SOLES
@@ -290,15 +290,15 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 required
                                             />
                                     </div>
-                                </Col>
-                                <Col lg={12}>
+                                </Col> */}
+                                {/* <Col lg={12}>
                                     <div>
                                         COSTO TOTAL EN SOLES: <NumberFormatMoney amount={costo_total_s}/>
                                     </div>
                                     <div>
                                         COSTO TOTAL EN DOLARES: <NumberFormatMoney amount={costo_total_d}/>
                                     </div>
-                                </Col>
+                                </Col> */}  
                                 {/* <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="observacion" className="form-label">

@@ -231,8 +231,6 @@ export const useReporteResumenComparativoStore = () => {
 			}
 		);
 
-		console.log({ totalObject, ventasUnificadas });
-
 		// console.log(
 		// 	agruparPorIdPgmMarcacions(dataMarcaciones),
 		// 	dataMarcaciones,

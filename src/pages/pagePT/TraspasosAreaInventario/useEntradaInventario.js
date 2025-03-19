@@ -21,7 +21,7 @@ export const useEntradaInventario = () => {
 					cantidad: `CANTIDAD: ${a.cantidad}`,
 					price: `PRECIO: ${FUNMoneyFormatter(a.costo_unitario)}`,
 					image: `${config.API_IMG.AVATAR_ARTICULO}${a.tb_images[a.tb_images.length - 1].name_image}`,
-					width: '110px',
+					width: '150px',
 				};
 			});
 			setdataArticulos(dataAlter);

@@ -18,12 +18,13 @@ const regRegistro = {
 }
 export const ModalEntradaInventario = ({action, id_enterprice, show, onHide}) => {
     const { obtenerArticulosInventario, dataArticulos, postKardex } = useEntradaInventario()
-    const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
+    const { obtenerParametroPorEntidadyGrupo, DataGeneral, dataZonas, obtenerZonas } = useTerminoStore()
     const { formState, id_item, cantidad, fecha_cambio, id_motivo, observacion, onInputChange, onInputChangeReact, onResetForm } = useForm(regRegistro)
     const [selectedValue, setSelectedValue] = useState(null);
     useEffect(() => {
         obtenerArticulosInventario(id_enterprice)
         obtenerParametroPorEntidadyGrupo('kardex', action)
+        obtenerZonas(id_enterprice)
     }, [])
     const onCancelModal = ()=>{
         onHide()
@@ -83,7 +84,7 @@ const CustomSingleValue = (props) => {
                     <input type='text' name='cantidad' onChange={onInputChange} value={cantidad} className='form-control'/>
                 </div>
                 <div className='m-2'>
-                    <label>FECHA DE SALIDA</label>
+                    <label>FECHA DE TRASPASO</label>
                     <input type='date' name='fecha_cambio' onChange={onInputChange} value={fecha_cambio} className='form-control'/>
                 </div>
                 <div className='m-2'>

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { FormatTable } from '@/components/ComponentTable/FormatTable'
 import { ModalEntradaInventario } from './ModalEntradaInventario'
 import TableEntradaInventario from './TableEntradaInventario'
-export const DataEntrada = ({id_enterprice, actionKardex}) => {
+export const  DataEntrada = ({id_enterprice, actionKardex}) => {
     const [isModalEntradaInventario, setisModalEntradaInventario] = useState(false)
       const onOpenModalEntradaInventario = () => {
         setisModalEntradaInventario(true)
@@ -22,7 +22,7 @@ export const DataEntrada = ({id_enterprice, actionKardex}) => {
   ]
   return (
     <>
-            <Button onClick={onOpenModalEntradaInventario}>AGREGAR SALIDA</Button>
+            <Button onClick={onOpenModalEntradaInventario}>AGREGAR TRANSPASO</Button>
             <TableEntradaInventario id_enterprice={id_enterprice} action={actionKardex}/>
             <ModalEntradaInventario action={actionKardex} id_enterprice={id_enterprice} onHide={onCloseModalEntradaInventario} show={isModalEntradaInventario}/>
     </>
