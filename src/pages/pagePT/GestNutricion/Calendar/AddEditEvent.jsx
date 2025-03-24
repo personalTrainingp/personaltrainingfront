@@ -45,7 +45,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	}, [])
 	useEffect(() => {
 		if(id_cli==0) return;
-		obtenerCitasNutricionalesxCliente(id_cli, new Date(selectDATE.start))
+		obtenerCitasNutricionalesxCliente(id_cli, new Date(selectDATE?.start))
 	}, [id_cli])
 	useEffect(() => {
 		dispatch(onSetMinPerCita(selectedCategory))
@@ -59,7 +59,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 		const clienteSELECT= DataClientes.find(
 			(option) => option.value === id_cli
 		)
-		onPostCita({...selectDATE, end: new Date(dayjs(selectDATE.start).add(selectedCategory.value, 'minute').toDate())}, id_cli, id_cita_adquirida, tipo_serv, id_empl);
+		onPostCita({...selectDATE, end: new Date(dayjs(selectDATE?.start).add(selectedCategory.value, 'minute').toDate())},  selectDATE?.title?.value, id_cita_adquirida, tipo_serv, id_empl);
 		cancelModal()
 	}
 	const cancelModal = ()=>{
@@ -74,18 +74,17 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 		if(dataCita){
 			onDeleteCitaxId(dataCita.id)
 		}
+		
 		// onPutCita({id: formState.id, status_cita: 501}, tipo_serv, tipo_serv);
         cancelModal()
 	}
+	// console.log(selectDATE.title.uid);
+	
 	const productDialogFooter = (
 		<React.Fragment>
 			<div className='d-flex justify-content-between align-items-center'>
-				{id_cli!==0 && (
-					<Link to={`/historial-cliente/${DataClientes.find(
-						(option) => option.value === id_cli
-					)?.uid}`} className='text-primary font-bold' style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Perfil del socio</Link>
-				)
-				}
+				
+				<Link to={`/historial-cliente/${selectDATE?.title?.uid}`} className='text-primary font-bold' style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Perfil del socio</Link>
 				<span>
 					<Button label="Salir" severity="info" outlined className='border border-2 border-success m-1 text-success' icon="pi pi-times" onClick={cancelModal} />
 					{
@@ -115,7 +114,8 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 					visible={show}
 					style={{ width: '50rem', height: '45rem' }}
 					breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-					header={dataCita==null?
+					header={
+						dataCita==null?
 						<> 
 						<span className='shadow shadow-3 border border-3 rounded rounded-4 p-2'>
 								CREAR CITA
@@ -123,11 +123,11 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 							<br/>
 							<br/>
 							<span className='font-17'>
-								De: {FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+								De: {FormatoDateMask(new Date(dayjs(selectDATE?.start)), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
 							</span>
 							<br/>
 							<span className='font-17'>
-								Hasta: {FormatoDateMask(new Date(dayjs(selectDATE.start).add(selectedCategory.value, 'minute').toDate()), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+								Hasta: {FormatoDateMask(new Date(dayjs(selectDATE?.start).add(selectedCategory.value, 'minute').toDate()), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
 							</span>
 						</>
 						:
@@ -138,13 +138,14 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 							<br/>
 							<br/>
 							<span className='font-17'>
-								De: {FormatoDateMask(new Date(selectDATE.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+								De: {FormatoDateMask(new Date(selectDATE?.start), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
 							</span>
 							<br/>
 							<span className='font-17'>
-								Hasta: {FormatoDateMask(new Date(selectDATE.end), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+								Hasta: {FormatoDateMask(new Date(selectDATE?.end), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
 							</span>
-						</>}
+						</>
+						}
 					modal
 					className="p-fluid"
 					footer={productDialogFooter}
@@ -154,22 +155,13 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 							<Row>
 								<Col sm={12}>
 									<div className='m-2'>
-										<label>Socio:</label>
-										<Select
-											onChange={(e) => onInputChangeReact(e, 'id_cli')}
-											name="id_cli"
-											placeholder={'Selecciona el socio'}
-											className="react-select"
-											classNamePrefix="react-select"
-											options={DataClientes}
-											value={DataClientes.find(
-												(option) => option.value === id_cli
-											)}
-											required
-										/>
+										<label>Socio:</label> 
+										<span className='ml-3 fs-3'>
+											{selectDATE?.title?.label}
+										</span>
 									</div>
 								</Col>
-								<Col sm={12}>
+								{/* <Col sm={12}>
 									<div className='m-2'>
 										<label>Sesiones disponibles:</label>
 										<Select
@@ -186,7 +178,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 											required
 										/>
 									</div>
-								</Col>
+								</Col> */}
 								<Col sm={12}>
 									<div className='m-2'>
 										<label>{tipo_serv=='FITOL'?'Personal para el tratamiento estetico':'Nutricionista'}:</label>

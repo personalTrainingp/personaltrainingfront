@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const dataSlice = createSlice({
 	name: 'DATA',
 	initialState: {
+		dataEntrada: [],
 		dataView: [],
 		dataF: [],
 		dataRes: [],

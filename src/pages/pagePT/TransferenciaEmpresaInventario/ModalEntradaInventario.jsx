@@ -21,7 +21,7 @@ const regRegistro = {
 export const ModalEntradaInventario = ({action, id_enterprice, show, onHide}) => {
     const { obtenerArticulosInventario, dataArticulos, postKardex } = useEntradaInventario()
     const { obtenerParametroPorEntidadyGrupo, DataGeneral, dataZonas, obtenerZonas } = useTerminoStore()
-    const { obtenerParametroPorEntidadyGrupo:obtenerMotivosTransferencia, DataGeneral:dataMotivoTransferencia} = useTerminoStore()
+    // const { obtenerParametroPorEntidadyGrupo:obtenerMotivosTransferencia, DataGeneral:dataMotivoTransferencia} = useTerminoStore()
     const { formState, cantidad, fecha_cambio, id_motivo, id_empresa, observacion, onInputChange, onInputChangeReact, onResetForm } = useForm(regRegistro)
     const [dataInitempresa, setdataInitempresa] = useState(id_enterprice)
     const [dataInitTraspaso, setdataInitTraspaso] = useState(0)
@@ -29,7 +29,6 @@ export const ModalEntradaInventario = ({action, id_enterprice, show, onHide}) =>
     useEffect(() => {
         obtenerArticulosInventario(id_enterprice)
         obtenerParametroPorEntidadyGrupo('kardex', action)
-        obtenerMotivosTransferencia()
     }, [])
     useEffect(() => {
       setdataInitTraspaso(0)
@@ -45,7 +44,7 @@ export const ModalEntradaInventario = ({action, id_enterprice, show, onHide}) =>
 
     const onSubmitKardex = (e)=>{
         e.preventDefault()
-        postKardex(action, id_enterprice, {...formState, id_item: selectedValue})
+        postKardex(action, id_enterprice, {...formState, id_item: selectedValue, id_enterprice: dataInitempresa, id_lugar_destino: dataInitTraspaso})
         onCancelModal()
     }
 

@@ -200,9 +200,9 @@ td, th {
   -moz-box-shadow: 0px 0px 9px 4px rgba(0,0,0,0.13);
   // border-radius: 100%;
 }
-.rbc-events-container{
-  position: static !important;
-}
+// .rbc-events-container{
+//   position: static !important;
+// }
 .signatureCanvas{
     border: 1px solid black;
     width: 100%;
@@ -293,10 +293,10 @@ td, th {
     margin-right: 0px !important;
 }
 /* Efecto hover en las celdas vacías */
-// .rbc-day-slot .rbc-timeslot-group .rbc-time-slot:hover {
-//   background-color: red !important; /* Cambia el color de fondo al gris */
-//   cursor: pointer;
-// }
+.rbc-day-slot .rbc-timeslot-group .rbc-time-slot:hover {
+  background-color: red !important; /* Cambia el color de fondo al gris */
+  cursor: pointer;
+}
 .p-selectbutton{
   .p-button:active, .p-button.p-highlight:active, .p-button:focus, .p-button.p-highlight:focus, .p-button{
     background-color: $white !important;
@@ -355,9 +355,9 @@ td, th {
   background-color: #d3d3d3; /* Cambia el color de fondo al gris */
   cursor: pointer;
 }
-// .rbc-event, .rbc-day-slot .rbc-background-event{
-//     border-radius: 0 !important;
-// }
+.rbc-event, .rbc-day-slot .rbc-background-event{
+    border-radius: 0 !important;
+}
 /* Personalizar el fondo y color del texto de la cabecera */
 .p-datatable .p-datatable-thead > tr > th {
   background-color: $primary;

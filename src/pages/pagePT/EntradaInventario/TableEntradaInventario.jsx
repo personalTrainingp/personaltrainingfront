@@ -14,8 +14,17 @@ import { Link } from 'react-router-dom';
 import { arrayDistrito, arrayTipoCliente } from '@/types/type';
 import { useEntradaInventario } from './useEntradaInventario';
 
+const initTable = {
+    action: "",
+    articulos_kardex: {producto: ''},
+    cantidad: 0,
+    fecha_cambio: "",
+    observacion: "",
+    parametro_motivo: {label_param: ''},
+  } 
+  
 export default function TableEntradaInventario({id_enterprice, action}) {
-    const [customers, setCustomers] = useState(null);
+    const [customers, setCustomers] = useState([initTable]);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -26,7 +35,7 @@ export default function TableEntradaInventario({id_enterprice, action}) {
     }, [])
         useEffect(() => {
         const fetchData = () => {
-            setCustomers(getCustomers(dataView));
+            setCustomers(getCustomers([initTable]));
             setLoading(false);
         };
         fetchData()
@@ -36,8 +45,7 @@ export default function TableEntradaInventario({id_enterprice, action}) {
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
-            newItem.distrito = arrayDistrito.find(i => i.value === item.ubigeo_distrito)?.label;
-            newItem.tipo_cliente = arrayTipoCliente.find(i => i.value === item.tipoCli_cli)?.label;
+            newItem.label_motivo=item.parametro_motivo?.label_param||''
             // Realiza las modificaciones en la copia
             return newItem;
         });
@@ -83,12 +91,6 @@ export default function TableEntradaInventario({id_enterprice, action}) {
     const initFilters = () => {
         setFilters({
             global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['nombres_apellidos_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['distrito']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['email_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['tel_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['tipo_cliente']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            // 'ProgramavsSemana': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         });
         setGlobalFilterValue('');
     };
@@ -115,7 +117,7 @@ export default function TableEntradaInventario({id_enterprice, action}) {
     const motivoBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.parametro_motivo.label_param, globalFilterValue)}</span>
+                <span>{highlightText(rowData.label_motivo, globalFilterValue)}</span>
             </div>
         );
     }

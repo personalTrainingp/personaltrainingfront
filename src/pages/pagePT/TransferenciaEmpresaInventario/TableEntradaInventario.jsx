@@ -14,8 +14,17 @@ import { Link } from 'react-router-dom';
 import { arrayDistrito, arrayTipoCliente } from '@/types/type';
 import { useEntradaInventario } from './useEntradaInventario';
 
+const initTable = {
+    action: "",
+    articulos_kardex: {producto: ''},
+    cantidad: 0,
+    fecha_cambio: "",
+    observacion: "",
+    parametro_motivo: {label_param: ''},
+  }
+  
 export default function TableEntradaInventario({id_enterprice, action}) {
-    const [customers, setCustomers] = useState(null);
+    const [customers, setCustomers] = useState([initTable]);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -36,8 +45,6 @@ export default function TableEntradaInventario({id_enterprice, action}) {
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
-            newItem.distrito = arrayDistrito.find(i => i.value === item.ubigeo_distrito)?.label;
-            newItem.tipo_cliente = arrayTipoCliente.find(i => i.value === item.tipoCli_cli)?.label;
             // Realiza las modificaciones en la copia
             return newItem;
         });
@@ -83,12 +90,6 @@ export default function TableEntradaInventario({id_enterprice, action}) {
     const initFilters = () => {
         setFilters({
             global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['nombres_apellidos_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['distrito']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['email_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['tel_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['tipo_cliente']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            // 'ProgramavsSemana': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         });
         setGlobalFilterValue('');
     };
@@ -186,12 +187,12 @@ export default function TableEntradaInventario({id_enterprice, action}) {
                         emptyMessage="Items NO ENCONTRADOS.">
                 {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}
                 {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
-                <Column header="Id" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={IdBodyTemplate} filter/>
-                <Column header="ITEM" filterField="nombres_apellidos_cli" style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>
-                <Column header="CANTIDAD TRANSFERIDA" filterField={`tipo_cliente`} style={{ minWidth: '10rem' }} sortable body={cantidadKardexBodyTemplate} filter/>
-                <Column header="FECHA EN LA QUE SALIO" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={fechaKardexBodyTemplate} filter/>
-                <Column header="MOTIVO" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={motivoBodyTemplate} filter/>
-                <Column header="OBSERVACION" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/>
+                <Column header="Id" style={{ minWidth: '10rem' }} sortable body={IdBodyTemplate} filter/>
+                <Column header="ITEM" style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>
+                <Column header="CANTIDAD TRANSFERIDA" style={{ minWidth: '10rem' }} sortable body={cantidadKardexBodyTemplate} filter/>
+                <Column header="FECHA EN LA QUE SALIO" style={{ minWidth: '10rem' }} sortable body={fechaKardexBodyTemplate} filter/>
+                <Column header="MOTIVO" style={{ minWidth: '10rem' }} sortable body={motivoBodyTemplate} filter/>
+                <Column header="OBSERVACION" style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/>
                 {/* <Column header="Vencimiento" filterField="vencimiento_REGALOS_CONGELAMIENTO" sortable style={{ minWidth: '10rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate}  dataType="date" /> */}
                 {/* <Column header="Proveedor" filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
                 body={proveedorBodyTemplate} filter filterElement={proveedorFilterTemplate} /> */}

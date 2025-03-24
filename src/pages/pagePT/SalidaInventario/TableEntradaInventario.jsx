@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { Button } from 'primereact/button';
-import { Calendar } from 'primereact/calendar';
 import { useSelector } from 'react-redux';
-import { helperFunctions } from '@/common/helpers/helperFunctions';
-import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
-import { Link } from 'react-router-dom';
 import { arrayDistrito, arrayTipoCliente } from '@/types/type';
 import { useEntradaInventario } from './useEntradaInventario';
 
+const initTable = {
+  action: "",
+  articulos_kardex: {producto: ''},
+  cantidad: 0,
+  fecha_cambio: "",
+  observacion: "",
+  parametro_motivo: {label_param: ''},
+}
+
 export default function TableEntradaInventario({id_enterprice, action}) {
-    const [customers, setCustomers] = useState(null);
+    const [customers, setCustomers] = useState([initTable]);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const  { obtenerTablePrincipal } = useEntradaInventario()
-	const { dataView } = useSelector(e=>e.DATA)
+	let { dataView } = useSelector(e=>e.DATA)
     useEffect(() => {
         obtenerTablePrincipal(action, id_enterprice)
     }, [])
@@ -36,17 +41,10 @@ export default function TableEntradaInventario({id_enterprice, action}) {
         return data.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
-            newItem.distrito = arrayDistrito.find(i => i.value === item.ubigeo_distrito)?.label;
-            newItem.tipo_cliente = arrayTipoCliente.find(i => i.value === item.tipoCli_cli)?.label;
+            newItem.label_motivo=item.parametro_motivo?.label_param||''
+
             // Realiza las modificaciones en la copia
             return newItem;
-        });
-    };
-    const formatDate = (value) => {
-        return value.toLocaleDateString('en-ES', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
         });
     };
     const clearFilter = () => {
@@ -83,11 +81,11 @@ export default function TableEntradaInventario({id_enterprice, action}) {
     const initFilters = () => {
         setFilters({
             global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['nombres_apellidos_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['distrito']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['email_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['tel_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            ['tipo_cliente']: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            // ['nombres_apellidos_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            // ['distrito']: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            // ['email_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            // ['tel_cli']: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            // ['tipo_cliente']: { value: null, matchMode: FilterMatchMode.CONTAINS },
             // 'ProgramavsSemana': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         });
         setGlobalFilterValue('');
@@ -115,7 +113,7 @@ export default function TableEntradaInventario({id_enterprice, action}) {
     const motivoBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.parametro_motivo.label_param, globalFilterValue)}</span>
+                <span>{highlightText(rowData.label_motivo, globalFilterValue)}</span>
             </div>
         );
     }
@@ -184,20 +182,13 @@ export default function TableEntradaInventario({id_enterprice, action}) {
                         globalFilterFields={["id_cli", "nombres_apellidos_cli", "email_cli", "tel_cli", "distrito"]} 
                         header={header}
                         emptyMessage="Items NO ENCONTRADOS.">
-                {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}
-                {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
-                <Column header="Id" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={IdBodyTemplate} filter/>
-                <Column header="ITEM" filterField="nombres_apellidos_cli" style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>
-                <Column header="CANTIDAD INICIAL" filterField={`tipo_cliente`} style={{ minWidth: '10rem' }} sortable body={cantidadInicialBodyTemplate} filter/>
-                <Column header="CANTIDAD ENTRADA" filterField={`tipo_cliente`} style={{ minWidth: '10rem' }} sortable body={cantidadKardexBodyTemplate} filter/>
-                <Column header="FECHA EN LA QUE SALIO" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={fechaKardexBodyTemplate} filter/>
-                <Column header="MOTIVO" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={motivoBodyTemplate} filter/>
-                <Column header="OBSERVACION" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/>
-                {/* <Column header="Vencimiento" filterField="vencimiento_REGALOS_CONGELAMIENTO" sortable style={{ minWidth: '10rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate}  dataType="date" /> */}
-                {/* <Column header="Proveedor" filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
-                body={proveedorBodyTemplate} filter filterElement={proveedorFilterTemplate} /> */}
-
-                {/* <Column header="Estado" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/> */}
+                <Column header="Id"style={{ minWidth: '10rem' }} sortable body={IdBodyTemplate} filter/>
+                <Column header="ITEM"style={{ minWidth: '10rem' }} sortable body={ClientesBodyTemplate} filter/>
+                <Column header="CANTIDAD INICIAL"style={{ minWidth: '10rem' }} sortable body={cantidadInicialBodyTemplate} filter/>
+                <Column header="CANTIDAD ENTRADA" style={{ minWidth: '10rem' }} sortable body={cantidadKardexBodyTemplate} filter/>
+                <Column header="FECHA EN LA QUE SALIO" style={{ minWidth: '10rem' }} sortable body={fechaKardexBodyTemplate} filter/>
+                <Column header="MOTIVO" style={{ minWidth: '10rem' }} sortable body={motivoBodyTemplate} filter/>
+                <Column header="OBSERVACION" style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/>
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
     );

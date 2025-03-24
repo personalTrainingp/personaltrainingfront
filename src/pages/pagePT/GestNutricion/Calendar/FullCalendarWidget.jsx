@@ -211,9 +211,9 @@ const FullCalendarWidget = ({
                   timeSlotWrapper: TimeSlotWrapper,
                 }}
                 messages={{
-                  next: "SEMANA Siguiente",
+                  next: "SEMANA SIGUIENTE",
                   today: "Hoy",
-                  previous: "SEMANA Anterior",
+                  previous: "SEMANA ANTERIOR",
                   month: "Mes",
                   week: "Semana",
                   day: "Día",

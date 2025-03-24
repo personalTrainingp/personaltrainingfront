@@ -58,6 +58,7 @@ export default function useCalendar() {
 	const onDrop = (arg) => {
 		const dropEventData = arg;
 		const title = dropEventData.draggedEl.title;
+
 		if (title == null) {
 		} else {
 			let newEvent = {

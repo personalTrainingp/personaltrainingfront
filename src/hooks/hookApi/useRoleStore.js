@@ -9,6 +9,8 @@ export const useRoleStore = () => {
 		try {
 			const uid = localStorage.getItem('uid-user');
 			const { data } = await PTApi.get(`/rol/get-module-x-rol/${uid}`);
+			console.log(data);
+			
 			dispatch(onSetModulos(data.MODULOS_ITEMS));
 		} catch (error) {
 			console.log(error);

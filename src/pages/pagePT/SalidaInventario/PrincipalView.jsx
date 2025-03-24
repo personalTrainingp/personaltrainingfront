@@ -1,7 +1,5 @@
-import { Button } from 'primereact/button'
 import React, { useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
-import { ModalEntradaInventario } from './ModalEntradaInventario'
 import { PageBreadcrumb } from '@/components'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { DataEntrada } from './DataEntrada'
