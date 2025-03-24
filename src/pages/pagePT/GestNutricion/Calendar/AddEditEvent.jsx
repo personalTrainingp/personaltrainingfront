@@ -59,7 +59,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 		const clienteSELECT= DataClientes.find(
 			(option) => option.value === id_cli
 		)
-		onPostCita({...selectDATE, end: new Date(dayjs(selectDATE?.start).add(selectedCategory.value, 'minute').toDate())},  selectDATE?.title?.value, id_cita_adquirida, tipo_serv, id_empl);
+		onPostCita({...selectDATE, end: new Date(dayjs(selectDATE?.start).add(selectedCategory.value, 'minute').toDate())},  id_cli, id_cita_adquirida, tipo_serv, id_empl);
 		cancelModal()
 	}
 	const cancelModal = ()=>{
@@ -156,9 +156,16 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 								<Col sm={12}>
 									<div className='m-2'>
 										<label>Socio:</label> 
-										<span className='ml-3 fs-3'>
-											{selectDATE?.title?.label}
-										</span>
+										<Select
+											onChange={(e) => onInputChangeReact(e, 'id_cli')}
+											name="id_cli"
+											placeholder={'Seleccionar...'}
+											className="react-select"
+											classNamePrefix="react-select"
+											options={DataClientes}
+											value={DataClientes.find((op)=>op.value===id_cli)}
+											required
+										/>
 									</div>
 								</Col>
 								{/* <Col sm={12}>
