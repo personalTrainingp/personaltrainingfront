@@ -5,8 +5,8 @@ import AddEditEvent from './AddEditEvent';
 import { useCalendar } from './hooks';
 import SidePanel from './SidePanel';
 import { PageBreadcrumb } from '@/components';
-
-const CalendarApp = ({tipo_serv}) => {
+import App from '../Calendar2/App';
+export const CalendarApp = ({tipo_serv}) => {
 	const {
 		isOpen,
 		onOpenModal,
@@ -67,7 +67,7 @@ const CalendarApp = ({tipo_serv}) => {
 									</div>
 									<br/>
 									{/* fullcalendar control */}
-									<FullCalendarWidget
+									<App
 										onDateClick={onDateClick}
 										onEventClick={onEventClick}
 										onDrop={onDrop}
@@ -86,5 +86,3 @@ const CalendarApp = ({tipo_serv}) => {
 		</>
 	);
 };
-
-export { CalendarApp };
