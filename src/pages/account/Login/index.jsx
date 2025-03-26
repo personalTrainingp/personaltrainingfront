@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/hooks/useAuthStore"
 import { useForm } from "@/hooks/useForm"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "react-bootstrap";
 import Swal from 'sweetalert2';
 import positivotransparente_LOGO from '@/assets/images/brand-change/Positivo-transparente.png'
@@ -20,8 +20,7 @@ const registerFormField ={
 
 export default function Login() {
   
-  const { startLogin, startRegister, errorMessage } = useAuthStore()
-
+  const { startLogin, startRegister, errorMessage, jwtInfo } = useAuthStore()
   const { usuario_user, password_user, onInputChange: onLoginInputChange } = useForm(loginFormField)
 
 

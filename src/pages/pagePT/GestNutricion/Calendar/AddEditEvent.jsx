@@ -83,8 +83,11 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	const productDialogFooter = (
 		<React.Fragment>
 			<div className='d-flex justify-content-between align-items-center'>
-				
-				<Link to={`/historial-cliente/${selectDATE?.title?.uid}`} className='text-primary font-bold' style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Perfil del socio</Link>
+				{
+					id_cli != 0 && (
+						<Link to={`/historial-cliente/${DataClientes.find((op)=>op.value===id_cli)?.uid}`} className='text-primary font-bold' style={{color: 'blue', textDecoration: 'underline', cursor: 'pointer'}}>Perfil del socio</Link>
+					)
+				}
 				<span>
 					<Button label="Salir" severity="info" outlined className='border border-2 border-success m-1 text-success' icon="pi pi-times" onClick={cancelModal} />
 					{

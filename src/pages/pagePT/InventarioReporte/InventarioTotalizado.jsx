@@ -64,6 +64,7 @@ export const InventarioTotalizado = () => {
     <>
         <PageBreadcrumb title={'INVENTARIO VALORIZADO DE ACTIVOS POR ZONA'} subName={'T'}/>
         {/* <FechaRange rangoFechas={RANGE_DATE}/> */}
+        <TabView></TabView>
           <h1 className='d-flex'><img width={300} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/></h1>
           <TabView>
             {

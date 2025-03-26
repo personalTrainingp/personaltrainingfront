@@ -10,6 +10,7 @@ import { RESET_INITIAL_RUTAS, onSetModulos } from '@/store/sections/RutasSlice';
 
 export const useAuthStore = () => {
 	const { status, user, errorMessage } = useSelector((state) => state.auth);
+	const [jwtInfo, setjwtInfo] = useState([]);
 	const [usuarioObtenido, setusuarioObtenido] = useState({});
 	const dispatch = useDispatch();
 	const { obtenerModulos, obtenerSeccions } = useRoleStore();
@@ -22,6 +23,9 @@ export const useAuthStore = () => {
 				usuario_user,
 				password_user,
 			});
+			setjwtInfo(data);
+			console.log({ dameLogin: data });
+
 			localStorage.setItem('token', data?.token);
 			localStorage.setItem('uid-user', data.uid);
 			localStorage.setItem('token-init-date', new Date().getTime());
@@ -144,6 +148,7 @@ export const useAuthStore = () => {
 		startLogin,
 		startLogout,
 		obtenerUser,
+		jwtInfo,
 		// startRegister,
 		// startLogout,
 	};
