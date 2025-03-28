@@ -19,6 +19,11 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
     const [dataFilter, setdataFilter] = useState([])
     const [ubicacion, setubicacion] = useState('')
     const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
+    useEffect(() => {
+        obtenerArticulos(598)
+        // obtenerProveedoresUnicos()
+        obtenerInventarioKardexxFechas(598)
+    }, [])
     // useEffect(() => {
         // obtenerFechasInventario(id_empresa)
         // obtenerProveedoresUnicos()

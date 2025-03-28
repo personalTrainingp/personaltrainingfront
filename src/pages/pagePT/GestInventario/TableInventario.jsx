@@ -27,8 +27,9 @@ import { Image } from 'primereact/image';
 import sinImage from '@/assets/images/SinImage.jpg'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 dayjs.extend(utc);
-export default function TableInventario({showToast, id_enterprice}) {
+export default function TableInventario({showToast, id_enterprice, id_zona}) {
     locale('es')
+    console.log({id_enterprice});
     
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
@@ -360,7 +361,7 @@ export default function TableInventario({showToast, id_enterprice}) {
                 {/* <Column header={<span className={'font-24'}>OBSERVACION</span>}field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/> */}
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
-            <ModalInventario id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
+            <ModalInventario id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/>
             </>
     );

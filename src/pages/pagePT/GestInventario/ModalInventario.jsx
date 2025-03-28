@@ -24,7 +24,7 @@ const registerArticulo={
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
+export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice, id_zona}) => {
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const [selectedAvatar, setselectedAvatar] = useState(null)
     
@@ -64,7 +64,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         
         useEffect(() => {
             obtenerArticulos(id_enterprice)
-            obtenerZonas(id_enterprice)
+            obtenerZonas(id_zona)
             obtenerMarcas('articulo', 'marca')
         }, [])
         

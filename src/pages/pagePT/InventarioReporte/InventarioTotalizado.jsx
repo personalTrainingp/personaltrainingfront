@@ -64,8 +64,10 @@ export const InventarioTotalizado = () => {
     <>
         <PageBreadcrumb title={'INVENTARIO VALORIZADO DE ACTIVOS POR ZONA'} subName={'T'}/>
         {/* <FechaRange rangoFechas={RANGE_DATE}/> */}
-        <TabView></TabView>
-          <h1 className='d-flex'><img width={300} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/></h1>
+        <TabView>
+          <TabPanel header={
+            <h1 className='d-flex'><img width={300} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/></h1>
+          }>
           <TabView>
             {
               dataFechas?.map(m=>{
@@ -77,6 +79,24 @@ export const InventarioTotalizado = () => {
               })
             }
           </TabView>
+          </TabPanel>
+          <TabPanel header={
+            'CIRCUS'
+            // <h1 className='d-flex'><img width={300} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/></h1>
+          }>
+          <TabView>
+            {
+              dataFechas?.map(m=>{
+                return (
+                  <TabPanel header={<h2 className='card p-4 mb-0'>{dayjs.utc(m.fechaHasta).format('dddd DD [DE] MMMM [del] YYYY')}</h2>}>
+                      <DataView dvi={m.articulos_directos} kardexEntrada={m.kardexEntrada} kardexSalida={m.kardexSalida} isResumenxZonaLoc id_empresa={599} label_empresa={'CIRCUS'}/>
+                  </TabPanel>
+                )
+              })
+            }
+          </TabView>
+          </TabPanel>
+        </TabView>
         {/* <TabView> */}
             {/* <TabPanel header={<span className='fs-2'>CHANGE THE SLIM STUDIO</span>}>
             </TabPanel>
