@@ -336,7 +336,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
                         onSelectionChange={(e) => setselectedCustomers(e.value)}
                         filters={filters} 
                         filterDisplay="menu" 
-                        globalFilterFields={['id', 'producto', 'marca', 'descripcion', 'observacion', 'cantidad', 'valor_unitario_depreciado', "valor_unitario_actual","lugar_compra_cotizacion"]} 
+                        globalFilterFields={['id', "parametro_lugar_encuentro.label_param", 'producto', 'marca', 'descripcion', 'observacion', 'cantidad', 'valor_unitario_depreciado', "valor_unitario_actual","lugar_compra_cotizacion"]} 
                         emptyMessage="ARTICULOS NO ENCONTRADOS."
                         showGridlines={true}
                         loading={loading} 
