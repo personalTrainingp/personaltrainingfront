@@ -57,6 +57,7 @@ const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilida
 const GestProvAgente = lazy(()=>import('../pages/pagePT/GestProvAgentes'))
 const PerfilProveedor = lazy(()=>import('../pages/pagePT/PerfilProveedor'))
 const GestionInventario = lazy(()=>import('../pages/pagePT/GestInventario'))
+const GestionInventarioProy = lazy(()=>import('../pages/pagePT/GestInventarioProy'))
 const InventarioTotalizado = lazy(()=>import('../pages/pagePT/InventarioReporte'))
 const EntradaInventario = lazy(()=>import('../pages/pagePT/EntradaInventario'))
 const SalidaInventario = lazy(()=>import('../pages/pagePT/SalidaInventario'))
@@ -224,6 +225,10 @@ export default function ProtectedRoutes() {
 						<Route path='proveedores/prov-agentes' element={<GestProvAgente/>}/>
 					}
 					
+					{
+						sections.find(e=>e.url==='/gest-inventario-circus') && 
+						<Route path='gest-inventario-circus' element={<GestionInventarioProy/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/gest-inventario') && 
 						<Route path='gest-inventario' element={<GestionInventario/>}/>
