@@ -12,7 +12,7 @@ const registerArticulo={
     id_lugar: 0,
     fecha_entrada: '',
     cantidad: 1,
-    costo_unitario: 0,
+    costo_unitario_soles: 0,
     costo_unitario_dolares: 0,
     mano_obra_dolares: 0,
     mano_obra_soles: 0,
@@ -40,7 +40,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             producto,
             id_marca,
             cantidad,
-            costo_unitario,
+            costo_unitario_soles,
             costo_unitario_dolares,
             mano_obra_soles,
             mano_obra_dolares,
@@ -55,20 +55,19 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
     const [costo_total_s, setcosto_total_s] = useState(0)
     const [costo_total_d, setcosto_total_d] = useState(0)
         useEffect(() => {
-            setcosto_total_s(Number(costo_unitario*cantidad) + Number(mano_obra_soles))
-        }, [costo_unitario, cantidad, mano_obra_soles])
+            setcosto_total_s(Number(costo_unitario_soles*cantidad) + Number(mano_obra_soles))
+        }, [costo_unitario_soles, cantidad, mano_obra_soles])
 
         useEffect(() => {
             setcosto_total_d(Number(costo_unitario_dolares*cantidad) + Number(mano_obra_dolares))
         }, [costo_unitario_dolares, cantidad, mano_obra_dolares])
+        console.log({costo_total_d, mano_obra_dolares, costo_unitario_dolares, cantidad});
         
         useEffect(() => {
             obtenerArticulos(id_enterprice)
             obtenerZonas(id_zona)
             obtenerMarcas('articulo', 'marca')
         }, [])
-        
-        
         const submitGasto = async(e)=>{
             e.preventDefault()
             if(data){
@@ -142,6 +141,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                     onRegisterFileChange(e)
                                                     ViewDataImg(e)
                                                 }} 
+                                                required
                                             />
                                     </div>
                                 </Col>
@@ -157,6 +157,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 value={producto}
                                                 onChange={onInputChange}
                                                 placeholder=""
+                                                required
                                             />
                                     </div>
                                 </Col>
@@ -175,7 +176,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             value={dataMarcas.find(
                                                 (option) => option.value === id_marca
                                             )||0}
-                                            
+                                            required
                                         />
                                     </div>
                                 </Col>
@@ -212,6 +213,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 type='date'
                                                 onChange={onInputChange}
                                                 placeholder=""
+                                                required
                                             />
                                     </div>
                                 </Col>
@@ -227,21 +229,23 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 value={cantidad}
                                                 onChange={onInputChange}
                                                 placeholder=""
+                                                required
                                             />
                                     </div>
                                 </Col>
                                 <Col lg={4}>
                                     <div className="mb-4">
-                                        <label htmlFor="costo_unitario" className="form-label">
+                                        <label htmlFor="costo_unitario_soles" className="form-label">
                                             COSTO UNITARIO SOLES
                                         </label>
                                         <input
                                                 className="form-control"
-                                                name="costo_unitario"
-                                                id="costo_unitario"
-                                                value={costo_unitario}
+                                                name="costo_unitario_soles"
+                                                id="costo_unitario_soles"
+                                                value={costo_unitario_soles}
                                                 onChange={onInputChange}
                                                 placeholder=""
+                                                required
                                             />
                                     </div>
                                 </Col>
@@ -256,6 +260,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 id="costo_unitario_dolares"
                                                 value={costo_unitario_dolares}
                                                 onChange={onInputChange}
+                                                required
                                                 placeholder=""
                                             />
                                     </div>
@@ -271,7 +276,24 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 id="mano_obra_soles"
                                                 value={mano_obra_soles}
                                                 onChange={onInputChange}
+                                                required
                                                 placeholder=""
+                                            />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="mano_obra_dolares" className="form-label">
+                                            COSTO MANO OBRA DOLARES
+                                        </label>
+                                        <input
+                                                className="form-control"
+                                                name="mano_obra_dolares"
+                                                id="mano_obra_dolares"
+                                                value={mano_obra_dolares}
+                                                onChange={onInputChange}
+                                                placeholder=""
+                                                required
                                             />
                                     </div>
                                 </Col>

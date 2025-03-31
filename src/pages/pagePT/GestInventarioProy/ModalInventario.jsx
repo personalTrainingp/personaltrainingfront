@@ -275,6 +275,21 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             />
                                     </div>
                                 </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="mano_obra_dolares" className="form-label">
+                                            COSTO MANO OBRA DOLARES
+                                        </label>
+                                        <input
+                                                className="form-control"
+                                                name="mano_obra_dolares"
+                                                id="mano_obra_dolares"
+                                                value={mano_obra_dolares}
+                                                onChange={onInputChange}
+                                                placeholder=""
+                                            />
+                                    </div>
+                                </Col>
                                 <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="descripcion" className="form-label">

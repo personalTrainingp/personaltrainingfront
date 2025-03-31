@@ -29,8 +29,6 @@ import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice, id_zona}) {
     locale('es')
-    console.log({id_enterprice});
-    
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -211,10 +209,8 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
         return (
             <div className="flex align-items-center gap-2 font-24">
                 
-                {/* <span>{formatDate(rowData.fec_pago) }</span> */}
                 <>{rowData.descripcion}</>
                 <br/>
-                {highlightText( `${rowData.observacion}`, globalFilterValue)}
             </div>
         );
     }
@@ -235,7 +231,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
     const costounitariosolesBodyTemplate = (rowData) => {
         return (
             <div className="d-flex align-items-end w-50 gap-2 justify-content-end font-24 border-0"  style={{width: '100px'}}>
-                <> <NumberFormatMoney amount={rowData.costo_unitario}/></>
+                <> <NumberFormatMoney amount={rowData.costo_unitario_soles}/></>
             </div>
         );
     };
@@ -275,11 +271,12 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
         )
     }
     const costototaldolaresBodyTemplate = (rowData)=>{
+        const costo_total_dolares = (rowData.costo_unitario_dolares*rowData.cantidad)+rowData.mano_obra_dolares
         return (
             
             <div className="d-flex font-24" >
                 <div className='text-right text-color-dolar fw-bold' style={{marginLeft: '30px'}}>
-                    <NumberFormatMoney amount={rowData.costo_total_dolares}/>
+                    <NumberFormatMoney amount={costo_total_dolares}/>
                 </div>
             </div>
         )
@@ -306,10 +303,11 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
             )
         }
     const costototalsolesBodyTemplate = (rowData)=>{
+        const costo_total_soles = (rowData.costo_unitario_soles*rowData.cantidad)+rowData.mano_obra_soles
         return (
             
             <div className="flex align-items-center gap-2 font-24">
-                <span><NumberFormatMoney amount={rowData.costo_total_soles}/></span>
+                <span><NumberFormatMoney amount={costo_total_soles}/></span>
             </div>
         )
     }
@@ -336,7 +334,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
                         onSelectionChange={(e) => setselectedCustomers(e.value)}
                         filters={filters} 
                         filterDisplay="menu" 
-                        globalFilterFields={['id', "parametro_lugar_encuentro.label_param", 'producto', 'marca', 'descripcion', 'observacion', 'cantidad', 'valor_unitario_depreciado', "valor_unitario_actual","lugar_compra_cotizacion"]} 
+                        globalFilterFields={['id', "parametro_lugar_encuentro.label_param", 'producto', 'marca', 'descripcion', 'observacion', 'cantidad', 'costo_unitario_soles', "costo_unitario_dolares","lugar_compra_cotizacion"]} 
                         emptyMessage="ARTICULOS NO ENCONTRADOS."
                         showGridlines={true}
                         loading={loading} 
