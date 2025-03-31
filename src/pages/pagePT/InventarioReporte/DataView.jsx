@@ -19,8 +19,9 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
     const [dataFilter, setdataFilter] = useState([])
     const [ubicacion, setubicacion] = useState('')
     const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
+    const { obtenerInventarioKardexxFechas } = useInventarioStore()
     useEffect(() => {
-        obtenerArticulos(598)
+        // obtenerArticulos(598, true)
         // obtenerProveedoresUnicos()
         obtenerInventarioKardexxFechas(598)
     }, [])
@@ -150,7 +151,7 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
                               </thead>
                               <tbody>
                                 {
-                                  kardexSalida.map(k=>{
+                                  kardexSalida?.map(k=>{
                                     return (
 
                                       <tr>

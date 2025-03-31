@@ -21,7 +21,7 @@ export const DataView = ({id_empresa, label_empresa, isResumenxZonaLoc}) => {
     const [ubicacion, setubicacion] = useState('')
     const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
     useEffect(() => {
-        obtenerArticulos(id_empresa)
+        obtenerArticulos(id_empresa, true)
         // obtenerProveedoresUnicos()
     }, [id_empresa])
     const onOpenModalInventario = (items, ubicacion)=>{

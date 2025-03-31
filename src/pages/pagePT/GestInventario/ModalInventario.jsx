@@ -24,7 +24,7 @@ const registerArticulo={
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice, id_zona}) => {
+export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice, id_zona, flag}) => {
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const [selectedAvatar, setselectedAvatar] = useState(null)
     
@@ -61,8 +61,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         useEffect(() => {
             setcosto_total_d(Number(costo_unitario_dolares*cantidad) + Number(mano_obra_dolares))
         }, [costo_unitario_dolares, cantidad, mano_obra_dolares])
-        console.log({costo_total_d, mano_obra_dolares, costo_unitario_dolares, cantidad});
-        
         useEffect(() => {
             obtenerArticulos(id_enterprice)
             obtenerZonas(id_zona)
@@ -74,7 +72,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 // console.log("con");
                 
                 setshowLoading(true)
-                await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, data.id, selectedAvatar, id_enterprice)
+                await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, data.id, selectedAvatar, id_enterprice, flag)
                 setshowLoading(false)
                 // console.log("sin ");
                 // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
@@ -82,7 +80,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 return;
             }
             setshowLoading(true)
-            await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, id_enterprice, selectedAvatar)
+            await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, id_enterprice, selectedAvatar, flag)
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()

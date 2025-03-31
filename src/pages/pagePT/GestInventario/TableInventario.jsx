@@ -120,7 +120,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         }
         const onAcceptDeleteGasto = async()=>{
             setshowLoading(true)
-            await EliminarArticulo(rowData.id, id_enterprice)
+            await EliminarArticulo(rowData.id, id_enterprice, flag)
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
@@ -334,7 +334,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
                         onSelectionChange={(e) => setselectedCustomers(e.value)}
                         filters={filters} 
                         filterDisplay="menu" 
-                        globalFilterFields={['id', "parametro_lugar_encuentro.label_param", 'producto', 'marca', 'descripcion', 'observacion', 'cantidad', 'costo_unitario_soles', "costo_unitario_dolares","lugar_compra_cotizacion"]} 
+                        globalFilterFields={['id', "parametro_marca.label_param", "parametro_lugar_encuentro.label_param", 'producto', 'marca', 'descripcion', 'observacion', 'cantidad', 'costo_unitario_soles', "costo_unitario_dolares","lugar_compra_cotizacion"]} 
                         emptyMessage="ARTICULOS NO ENCONTRADOS."
                         showGridlines={true}
                         loading={loading} 
@@ -359,7 +359,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
                 {/* <Column header={<span className={'font-24'}>OBSERVACION</span>}field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/> */}
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
-            <ModalInventario id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
+            <ModalInventario flag={flag} id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/>
             </>
     );
