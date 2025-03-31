@@ -141,7 +141,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                     onRegisterFileChange(e)
                                                     ViewDataImg(e)
                                                 }} 
-                                                required
                                             />
                                     </div>
                                 </Col>
