@@ -68,10 +68,12 @@ export const useInventarioStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerArticulos = async (id_enterprice) => {
+	const obtenerArticulos = async (id_enterprice, flag) => {
 		try {
 			dispatch(onSetDataView([]));
-			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_enterprice}`);
+			const { data } = await PTApi.get(
+				`/inventario/obtener-inventario/${id_enterprice}/${flag}`
+			);
 			dispatch(onSetDataView(data.articulos));
 		} catch (error) {
 			console.log(error);

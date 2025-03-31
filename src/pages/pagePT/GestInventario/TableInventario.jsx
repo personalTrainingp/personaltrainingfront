@@ -27,7 +27,7 @@ import { Image } from 'primereact/image';
 import sinImage from '@/assets/images/SinImage.jpg'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 dayjs.extend(utc);
-export default function TableInventario({showToast, id_enterprice, id_zona}) {
+export default function TableInventario({showToast, flag, id_enterprice, id_zona}) {
     locale('es')
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
@@ -38,7 +38,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     useEffect(() => {
-        obtenerArticulos(id_enterprice)
+        obtenerArticulos(id_enterprice, flag)
         // obtenerProveedoresUnicos()
     }, [id_enterprice])
         useEffect(() => {
