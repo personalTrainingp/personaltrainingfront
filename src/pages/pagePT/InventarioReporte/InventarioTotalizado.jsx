@@ -13,18 +13,16 @@ import { DataView } from './DataView'
 import { FechaRange } from '@/components/RangeCalendars/FechaRange'
 import dayjs from 'dayjs'
 
-export const InventarioTotalizado = () => {
+export const InventarioTotalizado = ({id_empresa, label_empresa}) => {
     const { obtenerArticulos, isLoading, obtenerInventarioKardexxFechas, dataFechas } = useInventarioStore()
-    const {dataView, RANGE_DATE} = useSelector(e=>e.DATA)
-    const [valueFilter, setvalueFilter] = useState([])
     const [dataFilter, setdataFilter] = useState([])
     const [ubicacion, setubicacion] = useState('')
     const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
     
     useEffect(() => {
-        obtenerArticulos(598)
+        // obtenerArticulos(598)
         // obtenerProveedoresUnicos()
-        obtenerInventarioKardexxFechas(598)
+        obtenerInventarioKardexxFechas(id_empresa)
     }, [])
     const onOpenModalInventario = (items, ubicacion)=>{
         setisOpenModalInventarioFiltered(true)
@@ -34,7 +32,8 @@ export const InventarioTotalizado = () => {
     const onCloseModalInventario = ()=>{
         setisOpenModalInventarioFiltered(false)
     }
-
+    console.log({dataFechas});
+    
     // const groupedData = Object.values(dataView.reduce((acc, item) => {
     //     const label = item.parametro_nivel?.label_param;
       
@@ -58,14 +57,31 @@ export const InventarioTotalizado = () => {
     //   });
     //   groupedData.sort((a, b) => a.nivel - b.nivel);
       
-    console.log({dataFechas});
-      
   return (
     <>
-        <PageBreadcrumb title={'INVENTARIO VALORIZADO DE ACTIVOS POR ZONA'} subName={'T'}/>
+    <TabView>
+    {
+              dataFechas?.map(m=>{
+                return (
+                  <TabPanel header={<h2 className='card p-4 mb-0'>{dayjs.utc(m.fechaHasta).format('dddd DD [DE] MMMM [del] YYYY')}</h2>}>
+                      <DataView dvi={m.articulos_directos} kardexEntrada={m.totalKardexEntrada} kardexSalida={m.totalKardexSalida} isResumenxZonaLoc id_empresa={id_empresa} label_empresa={label_empresa}/>
+                  </TabPanel>
+                )
+              })
+            }
+    </TabView>
+            {/* <DataView isResumenxZonaLoc={true} id_empresa={id_empresa} label_empresa={label_empresa}/> */}
         {/* <FechaRange rangoFechas={RANGE_DATE}/> */}
-        <TabView>
-          <TabPanel header={
+        {/* <TabView> */}
+          {/* <TabPanel header={
+            <h1 className='d-flex'><img width={300} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/></h1>
+          }>
+          <TabView>
+            
+          </TabView>
+          </TabPanel> */}
+          {/* <TabPanel header={
+            'CIRCUS'
             <h1 className='d-flex'><img width={300} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/></h1>
           }>
           <TabView>
@@ -73,30 +89,14 @@ export const InventarioTotalizado = () => {
               dataFechas?.map(m=>{
                 return (
                   <TabPanel header={<h2 className='card p-4 mb-0'>{dayjs.utc(m.fechaHasta).format('dddd DD [DE] MMMM [del] YYYY')}</h2>}>
-                      <DataView dvi={m.articulos_directos} kardexEntrada={m.totalKardexEntrada} kardexSalida={m.totalKardexSalida} isResumenxZonaLoc id_empresa={598} label_empresa={'CHANGE'}/>
+                      <DataView dvi={m.articulos_directos} kardexEntrada={m.totalKardexEntrada} kardexSalida={m.kardexSalidaArray} isResumenxZonaLoc id_empresa={599} label_empresa={'CIRCUS'}/>
                   </TabPanel>
                 )
               })
             }
           </TabView>
-          </TabPanel>
-          <TabPanel header={
-            'CIRCUS'
-            // <h1 className='d-flex'><img width={300} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/></h1>
-          }>
-          <TabView>
-            {
-              dataFechas?.map(m=>{
-                return (
-                  <TabPanel header={<h2 className='card p-4 mb-0'>{dayjs.utc(m.fechaHasta).format('dddd DD [DE] MMMM [del] YYYY')}</h2>}>
-                      <DataView dvi={m.articulos_directos} kardexEntrada={m.totalKardexEntrada} kardexSalida={m.totalKardexSalida} isResumenxZonaLoc id_empresa={599} label_empresa={'CIRCUS'}/>
-                  </TabPanel>
-                )
-              })
-            }
-          </TabView>
-          </TabPanel>
-        </TabView>
+          </TabPanel> */}
+        {/* </TabView> */}
         {/* <TabView> */}
             {/* <TabPanel header={<span className='fs-2'>CHANGE THE SLIM STUDIO</span>}>
             </TabPanel>

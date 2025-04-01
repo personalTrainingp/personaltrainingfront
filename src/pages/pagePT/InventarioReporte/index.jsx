@@ -1,1 +1,1 @@
-export { InventarioTotalizado as default } from './InventarioTotalizado'
+export { App as default } from './App'

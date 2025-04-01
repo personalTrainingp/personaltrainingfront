@@ -19,11 +19,11 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
     const [dataFilter, setdataFilter] = useState([])
     const [ubicacion, setubicacion] = useState('')
     const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
-    const { obtenerInventarioKardexxFechas } = useInventarioStore()
+    const { obtenerInventarioKardexxFechas, dataFechas } = useInventarioStore()
     useEffect(() => {
         // obtenerArticulos(598, true)
         // obtenerProveedoresUnicos()
-        obtenerInventarioKardexxFechas(598)
+        obtenerInventarioKardexxFechas(id_empresa)
     }, [])
     // useEffect(() => {
         // obtenerFechasInventario(id_empresa)
@@ -37,7 +37,6 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
     const onCloseModalInventario = ()=>{
         setisOpenModalInventarioFiltered(false)
     }
-
     const groupedData = Object.values(dvi.reduce((acc, item) => {
         const label = item.parametro_nivel?.label_param;
       
@@ -76,7 +75,7 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
   return (
     <>
     <Row>
-      <Col lg={3}>
+      {/* <Col lg={3}>
         <Card>
             <Card.Header>
                   <Card.Title className='fs-2 text-primary'>
@@ -182,12 +181,11 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
                   </div>
                 </Card.Body>
           </Card>
-      </Col>
+      </Col> */}
     </Row>
     <Button label={<span className='fs-2'>RESUMEN VALORIZADO</span>} onClick={onOpenModalResumenValorizado} text/>
         <Row>
-            {isResumenxZonaLoc &&
-                groupedData.map(g=>{
+            {groupedData.map(g=>{
                     return(
                     <>
                     <h1>
