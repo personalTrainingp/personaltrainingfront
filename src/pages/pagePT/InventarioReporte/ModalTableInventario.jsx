@@ -64,7 +64,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     const cantidadBodyTemplate = (rowData) => {
         return (
             <div className="text-primary fw-bold flex align-items-end gap-2 fs-2 justify-content-center">
-                <span>{rowData.stock_final}</span>
+                <span>{rowData.cantidad}</span>
             </div>
         );
     };
@@ -72,22 +72,24 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     const valorUnitDeprecBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2 fs-2">
-                <span><NumberFormatMoney amount={rowData.costo_unitario}/></span>
+                <span><NumberFormatMoney amount={rowData.costo_unitario_soles}/></span>
             </div>
         );
     };
     const valorUnitActualBodyTemplate = (rowData) => {
+        const costo_total_soles = (rowData.costo_unitario_soles*rowData.cantidad)+rowData.mano_obra_soles
         return (
             <div className="flex align-items-center gap-2 fs-2">
-                <span> <NumberFormatMoney amount={rowData.costo_total_soles}/></span>
+                <span> <NumberFormatMoney amount={costo_total_soles}/></span>
             </div>
         );
     };
     
     const costoTotalDolaresBodyTemplate = (rowData) => {
+        const costo_total_dolares = (rowData.costo_total_dolares*rowData.cantidad)+rowData.mano_obra_dolares
         return (
             <div className="flex align-items-center gap-2 fs-2 fw-bold text-color-dolar">
-                <span> <NumberFormatMoney amount={rowData.costo_total_dolares}/></span>
+                <span> <NumberFormatMoney amount={costo_total_dolares}/></span>
             </div>
         );
     };
@@ -99,11 +101,12 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
         )
     }
     const imagenArtBodyTemplate = (rowData, { rowIndex }) => {
+        
         return (
             <>
-            
             <div className="flex align-items-center">
-                        <Image src={rowData.tb_images?.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[rowData.tb_images.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
+            <Image src={rowData.tb_images.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
+                        {/* <Image src={rowData.tb_images?.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[rowData.tb_images.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" /> */}
             </div>
             </>
         );
@@ -119,10 +122,12 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
             </div>
         )
     }
-    const tcBodyTemplate = (rowData) =>{
+    const costoManoObraDolaresBodyTemplate = (rowData) =>{
+        console.log(rowData);
+        
         return (
             <div className='fs-2'>
-            {(rowData.costo_total_soles/rowData.costo_total_dolares).toFixed(2)}
+            {(rowData.mano_obra_dolares).toFixed(2)}
             </div>
         )
     }
@@ -183,8 +188,15 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
 					sortable
 				></Column>
                 <Column
-					header={<span className='fs-2'>COSTO MANO DE OBRA</span>}
+					header={<span className='fs-2'>COSTO MANO DE OBRA S/.</span>}
 					body={costoManoObraBodyTemplate}
+					style={{ width: '4rem' }}
+                    // footer={<div className='fs-2 text-primary'><SymbolSoles numero={<NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_soles, 0)}/>}/></div>}
+					sortable
+				></Column>
+                <Column
+					header={<span className='fs-2'>COSTO MANO DE OBRA $</span>}
+					body={costoManoObraDolaresBodyTemplate}
 					style={{ width: '4rem' }}
                     // footer={<div className='fs-2 text-primary'><SymbolSoles numero={<NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_soles, 0)}/>}/></div>}
 					sortable
@@ -196,13 +208,13 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
                     footer={<div className='fs-2 text-primary'><SymbolSoles numero={<NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_soles, 0)}/>}/></div>}
 					sortable
 				></Column>
-                <Column
+                {/* <Column
 					header={<span className='fs-2'>TC</span>}
 					body={tcBodyTemplate}
 					style={{ width: '4rem' }}
                     footer={<div className='fs-2 text-primary'><SymbolSoles numero={<NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_soles, 0)}/>}/></div>}
 					sortable
-				></Column>
+				></Column> */}
                 <Column
 					header={<span className='fs-2 text-color-dolar'>COSTO TOTAL DOLARES $</span>}
 					body={costoTotalDolaresBodyTemplate}
