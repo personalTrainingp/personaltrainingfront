@@ -26,10 +26,11 @@ import config from '@/config';
 import { Image } from 'primereact/image';
 import sinImage from '@/assets/images/SinImage.jpg'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
+import { TabPanel, TabView } from 'primereact/tabview';
 dayjs.extend(utc);
 export default function TableInventario({showToast, flag, id_enterprice, id_zona}) {
     locale('es')
-    const [customers, setCustomers] = useState(null);
+    const [customers, setCustomers] = useState([]);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedCustomers, setselectedCustomers] = useState([])
@@ -188,8 +189,8 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const marcaBodyTemplate = (rowData)=>{
         return (
             <>
-            <div className='text-primary fw-bold'>MARCA</div>
-            <div className="flex align-items-center gap-2 font-24">
+            <div className=''>MARCA</div>
+            <div className="flex align-items-center gap-2 font-24 fw-bold">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
                 <span>{rowData.parametro_marca?.label_param}</span>
@@ -200,8 +201,8 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const lugarBodyTemplate = (rowData)=>{
         return (
             <>
-                <div className='fw-bold text-primary'>UBICACION</div>
-            <div className="gap-2 font-24">
+                <div className=''>UBICACION</div>
+            <div className="gap-2 font-24 fw-bold">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
                 {/* <div>NIVEL {rowData.parametro_nivel?.label_param}</div> */}
@@ -213,8 +214,8 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const descripcionBodyTemplate = (rowData)=>{
         return (
             <>
-                <div className='fw-bold text-primary'>DESCRIPCION</div>
-            <div className="flex align-items-center gap-2 font-24">
+                <div className=''>DESCRIPCION</div>
+            <div className="fw-bold flex align-items-center gap-2 font-24">
                 <>{rowData.descripcion}</>
                 <br/>
             </div>
@@ -224,8 +225,8 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const cantidadBodyTemplate = (rowData) => {
         return (
             <>
-                <div className='fw-bold text-primary'>CANT.</div>
-            <div className="d-flex align-items-end w-50 gap-2 justify-content-end font-24">
+                <div className=''>CANT.</div>
+            <div className="fw-bold d-flex align-items-end w-50 gap-2 justify-content-end font-24">
                 <span>{highlightText( `${rowData.cantidad}`, globalFilterValue)}</span>
             </div>
             </>
@@ -241,10 +242,12 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const costounitariosolesBodyTemplate = (rowData) => {
         return (
             <>
-                <div className='fw-bold text-primary'>COSTO UNITARIO S/.</div>
-            <div className="d-flex align-items-end w-50 gap-2 justify-content-end font-24 border-0"  style={{width: '100px'}}>
-                <> <NumberFormatMoney amount={rowData.costo_unitario_soles}/></>
-            </div>
+                <div className=''>COSTO UNIT. S/.</div>
+                <div className="d-flex font-24 w-100 " >
+                    <div className='text-left w-100 fw-bold text-right'>
+                        <NumberFormatMoney amount={rowData.costo_unitario_soles}/>
+                    </div>
+                </div>
             </>
         );
     };
@@ -278,8 +281,8 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const ItemBodyTemplate = (rowData)=>{
         return (
             <>
-                <div className='fw-bold text-primary'>PRODUCTO</div>
-            <div className="flex align-items-center gap-2 font-24">
+                <div className=''>PRODUCTO</div>
+            <div className="flex align-items-center gap-2 font-24 fw-bold">
                 <span>{rowData.producto}</span>
             </div>
             </>
@@ -289,35 +292,37 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         const costo_total_dolares = (rowData.costo_unitario_dolares*rowData.cantidad)+rowData.mano_obra_dolares
         return (
             <>
-                <div className='fw-bold text-primary'>COSTO TOTAL $.</div>
-            <div className="d-flex font-24" >
-                <div className='text-right text-color-dolar fw-bold' style={{marginLeft: '30px'}}>
+                <div className='text-color-dolar'>COSTO TOTAL $.</div>
+                <div className="d-flex font-24 w-100" >
+                    <div className='text-left w-100 text-color-dolar fw-bold text-right'>
                     <NumberFormatMoney amount={costo_total_dolares}/>
+                    </div>
                 </div>
-            </div>
             </>
         )
     }
     const costounitariodolaresBodyTemplate = (rowData)=>{
         return (
-            <> 
-            <div className='fw-bold text-primary'> COSTO UNITARIO $.</div>
-            <div className="d-flex font-24" >
-                <div className='text-right text-color-dolar fw-bold' style={{marginLeft: '30px'}}>
+            <div className=''> 
+            <div className='text-color-dolar'> COSTO UNITARIO $.</div>
+            
+                <div className="d-flex font-24 w-100" >
+                    <div className='text-left w-100 text-color-dolar fw-bold text-right'>
                     <NumberFormatMoney amount={rowData.costo_unitario_dolares}/>
+                    </div>
                 </div>
             </div>
-            </>
         )
     }
     
         const costoManoObraBodyTemplate = (rowData)=>{
             return (
                 <>
-                <div className='fw-bold text-primary'> COSTO MANO DE OBRA S/.</div>
-                <div className="d-flex font-24" >
-                    <div className='text-right fw-bold' style={{marginLeft: '30px'}}>
-                        <NumberFormatMoney amount={rowData.mano_obra_soles}/>
+                <div className=''> COSTO MANO OBRA S/.</div>
+                
+                <div className="d-flex font-24 w-100" >
+                    <div className='text-left w-100 fw-bold text-right'>
+                    <NumberFormatMoney amount={rowData.mano_obra_soles}/>
                     </div>
                 </div>
                 </>
@@ -327,10 +332,13 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         const costo_total_soles = (rowData.costo_unitario_soles*rowData.cantidad)+rowData.mano_obra_soles
         return (
             <>
-                <div className='fw-bold text-primary'> COSTO TOTAL S/.</div>
-            <div className="flex align-items-center gap-2 font-24">
-                <span><NumberFormatMoney amount={costo_total_soles}/></span>
-            </div>
+                <div className=''> COSTO TOTAL S/.</div>
+            
+                <div className="d-flex font-24 w-100" >
+                    <div className='text-left w-100 fw-bold text-right'>
+                    <NumberFormatMoney amount={costo_total_soles}/>
+                    </div>
+                </div>
             </>
         )
     }
@@ -338,50 +346,72 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         setArticulo(undefined)
         onOpenModalIvsG(e)
     }
+    const groupedData = Object.values(
+        customers?.reduce((acc, item) => {
+          const key = item.parametro_lugar_encuentro.label_param;
+          if (!acc[key]) {
+            acc[key] = { lugar: key, items: [] };
+          }
+          acc[key].items.push(item);
+          return acc;
+        }, {})
+      );
+      
+      
     return (
         <>
                     <div>
                         <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
                     </div>
-                    <DataTable  
-                        className='dataTable-verticals-lines'
-                        value={customers} 
-                        paginator 
-                        header={header}
-                        rows={10} 
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        rowsPerPageOptions={[10, 25, 50, 100, 250]} 
-                        dataKey="id"
-				        selection={selectedCustomers}
-                        onSelectionChange={(e) => setselectedCustomers(e.value)}
-                        filters={filters} 
-                        filterDisplay="menu" 
-                        globalFilterFields={['id', "parametro_marca.label_param", "parametro_lugar_encuentro.label_param", 'producto', 'marca', 'descripcion', 'observacion', 'cantidad', 'costo_unitario_soles', "costo_unitario_dolares","lugar_compra_cotizacion"]} 
-                        emptyMessage="ARTICULOS NO ENCONTRADOS."
-                        showGridlines={true}
-                        loading={loading} 
-                        stripedRows
-                        scrollable
-                        
-                        onValueChange={valueFiltered}
-                        >
-                <Column header={<span className={'font-24'}>Id</span>} field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
-                <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '3rem' }} body={imagenBodyTemplate}/>
-                <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
-                <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
-                {/* <Column header={<span className={'font-24'}>INVENTARIO</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/> */}
-                <Column header={<span className={'font-24'}>UBICACION</span>} field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '10rem' }} sortable body={lugarBodyTemplate} filter/>
-                <Column header={<span className={'font-24'}>CANT. </span>} field='cantidad' filterField="cantidad" sortable style={{ minWidth: '5rem' }} body={cantidadBodyTemplate} />
-                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolSoles isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={costounitariosolesBodyTemplate} filter/>
-                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolDolar isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={costounitariodolaresBodyTemplate} filter/>
-                <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO MANO OBRA</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '10rem' }} sortable body={costoManoObraBodyTemplate} filter/>
-                <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO TOTAL <SymbolSoles isbottom={false}/></div>} field='costo_total_soles' filterField="costo_total_soles" style={{ minWidth: '10rem' }} sortable body={costototalsolesBodyTemplate} filter/>
-                {/* <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. $</div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/> */}
-                <Column header={<div className={'font-24 text-color-dolar fw-bold'} style={{width: '100px'}}>COSTO TOTAL $</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '10rem' }} sortable body={costototaldolaresBodyTemplate} filter/>
-                <Column header={<span className={'font-24'}>DESCRIPCION</span>} field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
-                {/* <Column header={<span className={'font-24'}>OBSERVACION</span>}field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/> */}
-                <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
-            </DataTable>
+                    <TabView>
+                        {
+                            groupedData.map(g=>{
+                                return (
+                                    <TabPanel header={g.lugar}>
+                                        <DataTable  
+                                            className='dataTable-verticals-lines dataTable-inventario'
+                                            value={g.items} 
+                                            paginator 
+                                            header={header}
+                                            rows={10} 
+                                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                                            rowsPerPageOptions={[10, 25, 50, 100, 250]} 
+                                            dataKey="id"
+                                            selection={selectedCustomers}
+                                            onSelectionChange={(e) => setselectedCustomers(e.value)}
+                                            filters={filters} 
+                                            filterDisplay="menu" 
+                                            globalFilterFields={['id', "parametro_marca.label_param", "parametro_lugar_encuentro.label_param", 'producto', 'marca', 'descripcion', 'observacion', 'cantidad', 'costo_unitario_soles', "costo_unitario_dolares","lugar_compra_cotizacion"]} 
+                                            emptyMessage="ARTICULOS NO ENCONTRADOS."
+                                            showGridlines={true}
+                                            loading={loading} 
+                                            stripedRows
+                                            scrollable
+                                            
+                                            onValueChange={valueFiltered}
+                                            >
+                                    <Column header={<span className={'font-24'}>Id</span>} field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
+                                    <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '3rem' }} body={imagenBodyTemplate}/>
+                                    <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
+                                    <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
+                                    {/* <Column header={<span className={'font-24'}>INVENTARIO</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/> */}
+                                    <Column header={<span className={'font-24'}>UBICACION</span>} field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '10rem' }} sortable body={lugarBodyTemplate} filter/>
+                                    <Column header={<span className={'font-24'}>CANT. </span>} field='cantidad' filterField="cantidad" sortable style={{ minWidth: '5rem' }} body={cantidadBodyTemplate} />
+                                    <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolSoles isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={costounitariosolesBodyTemplate} filter/>
+                                    <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolDolar isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={costounitariodolaresBodyTemplate} filter/>
+                                    <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO MANO OBRA</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '15rem' }} sortable body={costoManoObraBodyTemplate} filter/>
+                                    <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO TOTAL <SymbolSoles isbottom={false}/></div>} field='costo_total_soles' filterField="costo_total_soles" style={{ minWidth: '10rem' }} sortable body={costototalsolesBodyTemplate} filter/>
+                                    {/* <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. $</div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/> */}
+                                    <Column header={<div className={'font-24 text-color-dolar fw-bold'} style={{width: '100px'}}>COSTO TOTAL $</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '10rem' }} sortable body={costototaldolaresBodyTemplate} filter/>
+                                    <Column header={<span className={'font-24'}>DESCRIPCION</span>} field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
+                                    {/* <Column header={<span className={'font-24'}>OBSERVACION</span>}field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/> */}
+                                    <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
+                                </DataTable>
+                                    </TabPanel>
+                                )
+                            })
+                        }
+                    </TabView>
             <ModalInventario flag={flag} id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/>
             </>

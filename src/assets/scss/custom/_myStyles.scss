@@ -11,6 +11,14 @@
 .my-calendar .calendar-header {
   font-size: 20px; /* Cambia el tamaño del encabezado */
 }
+.dataTable-inventario{
+  table{
+    td{
+      vertical-align: top !important;
+      // background-color: red;
+    }
+  }
+}
 text{
   // fill: #D41115 !important;
 }
