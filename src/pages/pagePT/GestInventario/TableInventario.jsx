@@ -187,17 +187,20 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     }
     const marcaBodyTemplate = (rowData)=>{
         return (
+            <>
+            <div className='text-primary fw-bold'>MARCA</div>
             <div className="flex align-items-center gap-2 font-24">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
                 <span>{rowData.parametro_marca?.label_param}</span>
             </div>
+            </>
         );
     }
     const lugarBodyTemplate = (rowData)=>{
         return (
             <>
-                <div className='fw-bold'>UBICACION</div>
+                <div className='fw-bold text-primary'>UBICACION</div>
             <div className="gap-2 font-24">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
@@ -210,7 +213,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const descripcionBodyTemplate = (rowData)=>{
         return (
             <>
-                <div className='fw-bold'>DESCRIPCION</div>
+                <div className='fw-bold text-primary'>DESCRIPCION</div>
             <div className="flex align-items-center gap-2 font-24">
                 <>{rowData.descripcion}</>
                 <br/>
@@ -221,7 +224,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const cantidadBodyTemplate = (rowData) => {
         return (
             <>
-                <div className='fw-bold'>CANT.</div>
+                <div className='fw-bold text-primary'>CANT.</div>
             <div className="d-flex align-items-end w-50 gap-2 justify-content-end font-24">
                 <span>{highlightText( `${rowData.cantidad}`, globalFilterValue)}</span>
             </div>
@@ -238,7 +241,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const costounitariosolesBodyTemplate = (rowData) => {
         return (
             <>
-                <div className='fw-bold'>COSTO UNITARIO S/.</div>
+                <div className='fw-bold text-primary'>COSTO UNITARIO S/.</div>
             <div className="d-flex align-items-end w-50 gap-2 justify-content-end font-24 border-0"  style={{width: '100px'}}>
                 <> <NumberFormatMoney amount={rowData.costo_unitario_soles}/></>
             </div>
@@ -275,7 +278,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const ItemBodyTemplate = (rowData)=>{
         return (
             <>
-                <div className='fw-bold'>PRODUCTO</div>
+                <div className='fw-bold text-primary'>PRODUCTO</div>
             <div className="flex align-items-center gap-2 font-24">
                 <span>{rowData.producto}</span>
             </div>
@@ -286,7 +289,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         const costo_total_dolares = (rowData.costo_unitario_dolares*rowData.cantidad)+rowData.mano_obra_dolares
         return (
             <>
-                <div className='fw-bold'>COSTO TOTAL $.</div>
+                <div className='fw-bold text-primary'>COSTO TOTAL $.</div>
             <div className="d-flex font-24" >
                 <div className='text-right text-color-dolar fw-bold' style={{marginLeft: '30px'}}>
                     <NumberFormatMoney amount={costo_total_dolares}/>
@@ -297,8 +300,8 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     }
     const costounitariodolaresBodyTemplate = (rowData)=>{
         return (
-            <>
-            <div className='fw-bold'> COSTO UNITARIO $.</div>
+            <> 
+            <div className='fw-bold text-primary'> COSTO UNITARIO $.</div>
             <div className="d-flex font-24" >
                 <div className='text-right text-color-dolar fw-bold' style={{marginLeft: '30px'}}>
                     <NumberFormatMoney amount={rowData.costo_unitario_dolares}/>
@@ -311,7 +314,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         const costoManoObraBodyTemplate = (rowData)=>{
             return (
                 <>
-                <div className='fw-bold'> COSTO MANO DE OBRA S/.</div>
+                <div className='fw-bold text-primary'> COSTO MANO DE OBRA S/.</div>
                 <div className="d-flex font-24" >
                     <div className='text-right fw-bold' style={{marginLeft: '30px'}}>
                         <NumberFormatMoney amount={rowData.mano_obra_soles}/>
@@ -324,7 +327,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         const costo_total_soles = (rowData.costo_unitario_soles*rowData.cantidad)+rowData.mano_obra_soles
         return (
             <>
-                <div className='fw-bold'> COSTO TOTAL S/.</div>
+                <div className='fw-bold text-primary'> COSTO TOTAL S/.</div>
             <div className="flex align-items-center gap-2 font-24">
                 <span><NumberFormatMoney amount={costo_total_soles}/></span>
             </div>
