@@ -9,7 +9,6 @@ export const PrincipalView = () => {
     <>
         <PageBreadcrumb title={'REPORTE DE PLANILLA'}/>
         <br/>
-            <Button label='AGREGAR PLANILLA'/>
         <Card>
             <Row>
                 <Col xxl={1}>

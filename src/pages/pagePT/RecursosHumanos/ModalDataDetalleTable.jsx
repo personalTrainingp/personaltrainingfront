@@ -16,9 +16,7 @@ export const ModalDataDetalleTable = ({mesAnio, show, onHide, data}) => {
               <th className='text-white'>CARGO</th>
               <th className='text-white'>COLABORADOR</th>
               <th className='text-white'>SEGUN CONTRATO <SymbolSoles fontSizeS={'10px'}/></th>
-              {/* className='text-white' <th>DICIEMBRE</th> */}
               <th className='text-white'>DIAS LABORABLES SEGUN CONTRATO</th>
-              <th className='text-white'>DIAS ASISTENCIA</th>
               <th className='text-white'>DIAS CON TARDANZA (3MIN TOLERANCIA)</th>
               <th className='text-white'>DESCUENTO</th>
               <th className='text-white'>MONTO A PAGAR <SymbolSoles fontSizeS={'10px'}/></th>
@@ -32,8 +30,7 @@ export const ModalDataDetalleTable = ({mesAnio, show, onHide, data}) => {
                 <td>{item.cargo}</td>
                 <td>{item.nombre_apellidos}</td>
                 <td><NumberFormatMoney amount={item.monto_pago}/></td>
-                <td>{item.dias_laborables_contrato}</td>
-                <td>{item.dias_asistencia}</td>
+                <td>{31}</td>
                 <td>{item.dias_tardanzas}</td>
                 <td>{item.descuento}</td>
                 <td><NumberFormatMoney amount={(item.monto_pago-item.descuento)}/></td>

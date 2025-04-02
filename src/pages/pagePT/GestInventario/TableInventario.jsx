@@ -196,29 +196,36 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     }
     const lugarBodyTemplate = (rowData)=>{
         return (
+            <>
+                <div className='fw-bold'>UBICACION</div>
             <div className="gap-2 font-24">
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
                 {/* <div>NIVEL {rowData.parametro_nivel?.label_param}</div> */}
-
                 <div>{rowData.parametro_lugar_encuentro?.label_param}</div>
             </div>
+            </>
         );
     }
     const descripcionBodyTemplate = (rowData)=>{
         return (
+            <>
+                <div className='fw-bold'>DESCRIPCION</div>
             <div className="flex align-items-center gap-2 font-24">
-                
                 <>{rowData.descripcion}</>
                 <br/>
             </div>
+            </>
         );
     }
     const cantidadBodyTemplate = (rowData) => {
         return (
+            <>
+                <div className='fw-bold'>CANT.</div>
             <div className="d-flex align-items-end w-50 gap-2 justify-content-end font-24">
                 <span>{highlightText( `${rowData.cantidad}`, globalFilterValue)}</span>
             </div>
+            </>
         );
     };
     // const valorUnitDeprecBodyTemplate = (rowData) => {
@@ -230,9 +237,12 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     // };
     const costounitariosolesBodyTemplate = (rowData) => {
         return (
+            <>
+                <div className='fw-bold'>COSTO UNITARIO S/.</div>
             <div className="d-flex align-items-end w-50 gap-2 justify-content-end font-24 border-0"  style={{width: '100px'}}>
                 <> <NumberFormatMoney amount={rowData.costo_unitario_soles}/></>
             </div>
+            </>
         );
     };
     const valueFiltered = (e)=>{
@@ -264,51 +274,61 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     }
     const ItemBodyTemplate = (rowData)=>{
         return (
-            
+            <>
+                <div className='fw-bold'>PRODUCTO</div>
             <div className="flex align-items-center gap-2 font-24">
                 <span>{rowData.producto}</span>
             </div>
+            </>
         )
     }
     const costototaldolaresBodyTemplate = (rowData)=>{
         const costo_total_dolares = (rowData.costo_unitario_dolares*rowData.cantidad)+rowData.mano_obra_dolares
         return (
-            
+            <>
+                <div className='fw-bold'>COSTO TOTAL $.</div>
             <div className="d-flex font-24" >
                 <div className='text-right text-color-dolar fw-bold' style={{marginLeft: '30px'}}>
                     <NumberFormatMoney amount={costo_total_dolares}/>
                 </div>
             </div>
+            </>
         )
     }
     const costounitariodolaresBodyTemplate = (rowData)=>{
         return (
-            
+            <>
+            <div className='fw-bold'> COSTO UNITARIO $.</div>
             <div className="d-flex font-24" >
                 <div className='text-right text-color-dolar fw-bold' style={{marginLeft: '30px'}}>
                     <NumberFormatMoney amount={rowData.costo_unitario_dolares}/>
                 </div>
             </div>
+            </>
         )
     }
     
         const costoManoObraBodyTemplate = (rowData)=>{
             return (
-                
+                <>
+                <div className='fw-bold'> COSTO MANO DE OBRA S/.</div>
                 <div className="d-flex font-24" >
                     <div className='text-right fw-bold' style={{marginLeft: '30px'}}>
                         <NumberFormatMoney amount={rowData.mano_obra_soles}/>
                     </div>
                 </div>
+                </>
             )
         }
     const costototalsolesBodyTemplate = (rowData)=>{
         const costo_total_soles = (rowData.costo_unitario_soles*rowData.cantidad)+rowData.mano_obra_soles
         return (
-            
+            <>
+                <div className='fw-bold'> COSTO TOTAL S/.</div>
             <div className="flex align-items-center gap-2 font-24">
                 <span><NumberFormatMoney amount={costo_total_soles}/></span>
             </div>
+            </>
         )
     }
     const onOpenModalGastos = (e)=>{
@@ -320,8 +340,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
                     <div>
                         <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
                     </div>
-                    <DataTable 
-                        size='small' 
+                    <DataTable  
                         className='dataTable-verticals-lines'
                         value={customers} 
                         paginator 
@@ -340,6 +359,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
                         loading={loading} 
                         stripedRows
                         scrollable
+                        
                         onValueChange={valueFiltered}
                         >
                 <Column header={<span className={'font-24'}>Id</span>} field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
