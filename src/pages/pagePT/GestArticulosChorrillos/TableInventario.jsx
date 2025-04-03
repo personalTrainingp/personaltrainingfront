@@ -42,7 +42,7 @@ export default function TableInventario({showToast, id_enterprice}) {
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     useEffect(() => {
-        obtenerArticulos(id_enterprice)
+        obtenerArticulos(id_enterprice, true)
         // obtenerProveedoresUnicos()
     }, [id_enterprice])
         useEffect(() => {

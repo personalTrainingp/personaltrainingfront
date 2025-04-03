@@ -32,8 +32,6 @@ export const InventarioTotalizado = ({id_empresa, label_empresa}) => {
     const onCloseModalInventario = ()=>{
         setisOpenModalInventarioFiltered(false)
     }
-    console.log({dataFechas});
-    
     // const groupedData = Object.values(dataView.reduce((acc, item) => {
     //     const label = item.parametro_nivel?.label_param;
       

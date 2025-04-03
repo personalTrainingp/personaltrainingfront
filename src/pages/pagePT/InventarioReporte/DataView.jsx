@@ -19,12 +19,6 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
     const [dataFilter, setdataFilter] = useState([])
     const [ubicacion, setubicacion] = useState('')
     const [isOpenModalInventarioFiltered, setisOpenModalInventarioFiltered] = useState(false)
-    const { obtenerInventarioKardexxFechas, dataFechas } = useInventarioStore()
-    useEffect(() => {
-        // obtenerArticulos(598, true)
-        // obtenerProveedoresUnicos()
-        obtenerInventarioKardexxFechas(id_empresa)
-    }, [])
     // useEffect(() => {
         // obtenerFechasInventario(id_empresa)
         // obtenerProveedoresUnicos()
@@ -61,7 +55,7 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
       groupedData.forEach(group => {
         group.valor_total_sumado_soles = group.valor_total_sumado_soles
       });
-      groupedData.sort((a, b) => a.nivel - b.nivel);
+      groupedData.sort((a, b) => a.orden_zona - b.orden_zona);
       
       const [isOpenModalResumenValorizado, setisOpenModalResumenValorizado] = useState(false)
       const onOpenModalResumenValorizado = ()=>{
@@ -70,8 +64,6 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
       const onCloseModalResumenValorizado = ()=>{
         setisOpenModalResumenValorizado(false)
       }
-      console.log({dataView, dvi, kardexSalida, kardexEntrada, transferencias});
-      
   return (
     <>
     <Row>
@@ -192,19 +184,22 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
                         {g.nivel!=null && <>NIVEL {g.nivel}</>}
                     </h1>
                     {
-                        agruparDataxLugar(g.items).map(f=>(
+                        agruparDataxLugar(g.items).map(f=>{
+                            const nivel = f.items[0].parametro_lugar_encuentro.label_nivel
+                          return (
                             <Col lg={4}>
                             <Card  onClick={()=>onOpenModalInventario(f.items, f.ubicacion)} className='m-1 border border-4'>
                                 <Card.Header>
                                     <Card.Title className='fs-2 text-primary'>
-                                        {f.ubicacion}
+                                      <span></span>
+                                    NIVEL {nivel} <br/> {f.ubicacion}
                                     </Card.Title>
                                 </Card.Header>
                                 <Card.Body>
                                     <ul className='text-decoration-none list-unstyled font-20'>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>ITEMS</span> <span className='fs-2'>{f.cantidad_sumado}</span></li>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>MANO DE OBRA S/.</span> <span className='fs-2'><NumberFormatMoney amount={f.valor_mano_obra_sumado_soles}/></span></li>
-                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>MANO DE OBRA <SymbolDolar/></span> <span className='fs-2'><NumberFormatMoney amount={f.valor_mano_obra_sumado_dolares}/></span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>MANO DE OBRA <SymbolDolar fontSizeS={'20px'}/></span> <span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={f.valor_mano_obra_sumado_dolares}/></span></li>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión S/. </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado_soles}/></span></li>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>inversión <SymbolDolar fontSizeS={'20px'}/> </span><span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={(f.valor_total_sumado_dolares)}/></span></li>
                                         <br/>
@@ -216,7 +211,9 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
                                 </Card.Body>
                             </Card>
                         </Col>
-                        ))
+                        )
+                        }
+                      )
                     }
                     </>
                                 
