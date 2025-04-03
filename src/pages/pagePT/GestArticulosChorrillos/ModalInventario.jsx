@@ -63,7 +63,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         }, [costo_unitario_dolares, cantidad, mano_obra_dolares])
         
         useEffect(() => {
-            obtenerArticulos(id_enterprice)
+            obtenerArticulos(id_enterprice, true)
             obtenerZonas(id_enterprice)
             obtenerMarcas('articulo', 'marca')
         }, [])
