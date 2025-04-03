@@ -85,6 +85,7 @@ export const useInventarioStore = () => {
 			const { data } = await PTApi.get(`/inventario/obtener-articulo/${id}`);
 			// console.log(data);
 			setstatus('success');
+
 			// console.log(data.proveedor);
 
 			setArticulo(data.articulo);
@@ -92,16 +93,16 @@ export const useInventarioStore = () => {
 			console.log(error);
 		}
 	};
-	const EliminarArticulo = async (ID, id_enterprice) => {
+	const EliminarArticulo = async (ID, id_enterprice, flag) => {
 		try {
 			const { data } = await PTApi.put(`/inventario/remove-articulo/${ID}`);
-			obtenerArticulos(id_enterprice);
 			Swal.fire({
 				icon: 'success',
 				title: 'ARTICULO ELIMINADO CORRECTAMENTE',
 				showConfirmButton: false,
 				timer: 1500,
 			});
+			obtenerArticulos(id_enterprice, flag);
 			// console.log(id);
 			// dispatch(getProveedores(data));
 			// obtenerProveedores();

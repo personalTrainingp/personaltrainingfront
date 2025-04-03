@@ -52,6 +52,8 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
                 initFilters();
             }
         }, [dataView]);
+        console.log(customers);
+        
     const getCustomers = (data) => {
         return data?.map(item => {
             // Crea una copia del objeto antes de modificarlo
@@ -111,8 +113,8 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         }
         const confirmDeleteGastoxID = ()=>{
             confirmDialog({
-                message: 'Seguro que quiero eliminar el item?',
-                header: 'Eliminar item',
+                message: `Seguro que quieres ${flag?'eliminar': 'restaurar'} el item?`,
+                header: `${flag?'eliminar': 'restaurar'} item`,
                 icon: 'pi pi-info-circle',
                 defaultFocus: 'reject',
                 acceptClassName: 'p-button-danger',
