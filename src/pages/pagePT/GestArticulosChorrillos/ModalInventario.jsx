@@ -275,6 +275,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             />
                                     </div>
                                 </Col>
+                                */}
                                 <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="descripcion" className="form-label">
@@ -290,7 +291,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 required
                                             />
                                     </div>
-                                </Col> */}
+                                </Col> 
                                 {/* <Col lg={12}>
                                     <div>
                                         COSTO TOTAL EN SOLES: <NumberFormatMoney amount={costo_total_s}/>
