@@ -379,7 +379,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
                                     <TabPanel header={g.lugar}>
                                         <DataTable  
                                             className='dataTable-verticals-lines dataTable-inventario'
-                                            value={customers} 
+                                            value={g.items} 
                                             paginator 
                                             header={header}
                                             rows={10} 
