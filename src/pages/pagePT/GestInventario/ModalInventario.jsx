@@ -24,7 +24,7 @@ const registerArticulo={
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice, id_zona, flag}) => {
+export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice, id_zona}) => {
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const [selectedAvatar, setselectedAvatar] = useState(null)
     
@@ -62,17 +62,18 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             setcosto_total_d(Number(costo_unitario_dolares*cantidad) + Number(mano_obra_dolares))
         }, [costo_unitario_dolares, cantidad, mano_obra_dolares])
         useEffect(() => {
-            obtenerArticulos(id_enterprice, true)
-            obtenerZonas(id_zona)
-            obtenerMarcas('articulo', 'marca')
-        }, [])
+            if(show){
+                obtenerZonas(id_zona)
+                obtenerMarcas('articulo', 'marca')
+            }
+        }, [show])
         const submitGasto = async(e)=>{
             e.preventDefault()
             if(data){
                 // console.log("con");
                 
                 setshowLoading(true)
-                await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, data.id, selectedAvatar, id_enterprice, flag)
+                await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, data.id, selectedAvatar, id_enterprice)
                 setshowLoading(false)
                 // console.log("sin ");
                 // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
@@ -80,7 +81,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 return;
             }
             setshowLoading(true)
-            await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, id_enterprice, selectedAvatar, flag)
+            await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, id_enterprice, selectedAvatar)
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()

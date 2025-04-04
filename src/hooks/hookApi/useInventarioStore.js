@@ -44,7 +44,7 @@ export const useInventarioStore = () => {
 			console.log(error);
 		}
 	};
-	const startRegisterArticulos = async (formState, id_enterprice, selectedFile, flag) => {
+	const startRegisterArticulos = async (formState, id_enterprice, selectedFile) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.post(
@@ -61,17 +61,17 @@ export const useInventarioStore = () => {
 				);
 			}
 			setIsLoading(false);
-			await obtenerArticulos(id_enterprice, flag);
+			await obtenerArticulos(id_enterprice);
 			setmessage({ msg: data.msg, ok: data.ok });
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const obtenerArticulos = async (id_enterprice, flag) => {
+	const obtenerArticulos = async (id_enterprice) => {
 		try {
 			dispatch(onSetDataView([]));
 			const { data } = await PTApi.get(
-				`/inventario/obtener-inventario/${id_enterprice}/${flag}`
+				`/inventario/obtener-inventario/${id_enterprice}`
 			);
 			dispatch(onSetDataView(data.articulos));
 		} catch (error) {
@@ -84,15 +84,12 @@ export const useInventarioStore = () => {
 			const { data } = await PTApi.get(`/inventario/obtener-articulo/${id}`);
 			// console.log(data);
 			setstatus('success');
-
-			// console.log(data.proveedor);
-
 			setArticulo(data.articulo);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const EliminarArticulo = async (ID, id_enterprice, flag) => {
+	const EliminarArticulo = async (ID, id_enterprice) => {
 		try {
 			const { data } = await PTApi.put(`/inventario/remove-articulo/${ID}`);
 			Swal.fire({
@@ -101,7 +98,7 @@ export const useInventarioStore = () => {
 				showConfirmButton: false,
 				timer: 1500,
 			});
-			obtenerArticulos(id_enterprice, flag);
+			obtenerArticulos(id_enterprice);
 			// console.log(id);
 			// dispatch(getProveedores(data));
 			// obtenerProveedores();
@@ -109,7 +106,7 @@ export const useInventarioStore = () => {
 			console.log(error);
 		}
 	};
-	const actualizarArticulo = async (formState, id, selectedFile, id_enterprice, flag) => {
+	const actualizarArticulo = async (formState, id, selectedFile, id_enterprice) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, formState);
@@ -125,7 +122,7 @@ export const useInventarioStore = () => {
 			// console.log(id);
 			// dispatch(getProveedores(data));
 			// setmessage({ msg: data.msg, ok: data.ok });
-			obtenerArticulos(id_enterprice, flag);
+			obtenerArticulos(id_enterprice);
 			setIsLoading(false);
 			Swal.fire({
 				icon: 'success',

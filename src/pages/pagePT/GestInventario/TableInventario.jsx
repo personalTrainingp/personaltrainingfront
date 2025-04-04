@@ -28,7 +28,7 @@ import sinImage from '@/assets/images/SinImage.jpg'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { TabPanel, TabView } from 'primereact/tabview';
 dayjs.extend(utc);
-export default function TableInventario({showToast, flag, id_enterprice, id_zona}) {
+export default function TableInventario({showToast, id_enterprice, id_zona}) {
     locale('es')
     const [customers, setCustomers] = useState([]);
     const [filters, setFilters] = useState(null);
@@ -39,7 +39,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     useEffect(() => {
-        obtenerArticulos(id_enterprice, flag)
+        obtenerArticulos(id_enterprice)
         // obtenerProveedoresUnicos()
     }, [id_enterprice])
         useEffect(() => {
@@ -111,8 +111,8 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         }
         const confirmDeleteGastoxID = ()=>{
             confirmDialog({
-                message: `Seguro que quieres ${flag?'eliminar': 'restaurar'} el item?`,
-                header: `${flag?'eliminar': 'restaurar'} item`,
+                message: `Seguro que quieres eliminar el item?`,
+                header: `eliminar item`,
                 icon: 'pi pi-info-circle',
                 defaultFocus: 'reject',
                 acceptClassName: 'p-button-danger',
@@ -121,7 +121,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         }
         const onAcceptDeleteGasto = async()=>{
             setshowLoading(true)
-            await EliminarArticulo(rowData.id, id_enterprice, flag)
+            await EliminarArticulo(rowData.id, id_enterprice)
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
@@ -179,10 +179,19 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         );
     };
     
-    const imagenBodyTemplate = (rowData)=>{
+    const imagenBodyTemplate = (rowData)=>{    
+        const images = [...(rowData.tb_images || [])];
+
+    // Ordenamos por ID descendente
+    const sortedImages = images.sort((a, b) => b.id - a.id);
+    const latestImage = sortedImages[0]?.name_image;
+
+    const imageUrl = latestImage
+        ? `${config.API_IMG.AVATAR_ARTICULO}${latestImage}`
+        : sinImage;
         return (
             <div className="flex align-items-center gap-2">
-                        <Image src={rowData.tb_images.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[rowData.tb_images.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
+                        <Image src={rowData.tb_images.length===0?sinImage:`${imageUrl}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
             </div>
         );
     }
@@ -370,12 +379,12 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
                                     <TabPanel header={g.lugar}>
                                         <DataTable  
                                             className='dataTable-verticals-lines dataTable-inventario'
-                                            value={g.items} 
+                                            value={customers} 
                                             paginator 
                                             header={header}
                                             rows={10} 
                                             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                                            rowsPerPageOptions={[10, 25, 50, 100, 250]} 
+                                            rowsPerPageOptions={[10, 25, 50, 100, 250, 500]} 
                                             dataKey="id"
                                             selection={selectedCustomers}
                                             onSelectionChange={(e) => setselectedCustomers(e.value)}
@@ -412,7 +421,7 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
                             })
                         }
                     </TabView>
-            <ModalInventario flag={flag} id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
+            <ModalInventario id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/>
             </>
     );

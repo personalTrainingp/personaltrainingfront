@@ -4,7 +4,7 @@ import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import TableInventario from './TableInventario'
 import { Toast } from 'primereact/toast'
 
-export const DataInventario = ({id_enterprice, id_zona, flag}) => {
+export const DataInventario = ({id_enterprice, id_zona}) => {
     const [isOpenModalIvsG, setIsOpenModalIvsG] = useState(false)
     const toast = useRef(null);
     const { dataGastos } = useSelector(e=>e.finanzas)
@@ -14,7 +14,7 @@ export const DataInventario = ({id_enterprice, id_zona, flag}) => {
   return (
     <>
         <Toast ref={toast}/>
-        <TableInventario flag={flag} showToast={showToast} id_enterprice={id_enterprice} id_zona={id_zona}/>
+        <TableInventario showToast={showToast} id_enterprice={id_enterprice} id_zona={id_zona}/>
     </>
   )
 }
