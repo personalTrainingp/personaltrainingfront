@@ -142,7 +142,7 @@ export const useTerminoStore = () => {
 			);
 			const dataAlter = data.map((z) => {
 				return {
-					label: z.nombre_zona,
+					label: `${z.nombre_zona} - NIVEL ${z.nivel}`,
 					value: z.id,
 				};
 			});

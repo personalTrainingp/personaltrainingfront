@@ -192,7 +192,7 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
                                 <Card.Header>
                                     <Card.Title className='fs-2 text-primary'>
                                       <span></span>
-                                    NIVEL {nivel} <br/> {f.ubicacion}
+                                    NIVEL {nivel?.split(' ')[0]}<span className='ml-2 font-24'>{nivel?.split(' ')[1]}</span> <br/> {f.ubicacion}
                                     </Card.Title>
                                 </Card.Header>
                                 <Card.Body>
