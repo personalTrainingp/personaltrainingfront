@@ -52,8 +52,6 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
                 initFilters();
             }
         }, [dataView]);
-        console.log(customers);
-        
     const getCustomers = (data) => {
         return data?.map(item => {
             // Crea una copia del objeto antes de modificarlo
@@ -352,13 +350,13 @@ export default function TableInventario({showToast, flag, id_enterprice, id_zona
         customers?.reduce((acc, item) => {
           const key = item.parametro_lugar_encuentro.label_param;
           if (!acc[key]) {
-            acc[key] = { lugar: key, items: [] };
+            acc[key] = { lugar: key, orden_param: item.parametro_lugar_encuentro.orden_param, items: [] };
           }
           acc[key].items.push(item);
           return acc;
         }, {})
       );
-      
+      groupedData.sort((a,b)=>a.orden_param-b.orden_param)
       
     return (
         <>
