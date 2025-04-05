@@ -35,7 +35,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
     const [loading, setLoading] = useState(false);
     const [selectedCustomers, setselectedCustomers] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const { obtenerArticulos, isLoading, EliminarArticulo } = useInventarioStore()
+    const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     useEffect(() => {
@@ -109,6 +109,16 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
             onOpenModalIvsG()
             obtenerArticulo(rowData.id)
         }
+        const onClickRestaurarModalEgresos = ()=>{
+            confirmDialog({
+                message: `Seguro que quieres restaurar el item?`,
+                header: `eliminar item`,
+                icon: 'pi pi-info-circle',
+                defaultFocus: 'reject',
+                acceptClassName: 'p-button-danger',
+                accept:  onAcceptRestaurarGasto,
+            });
+        }
         const confirmDeleteGastoxID = ()=>{
             confirmDialog({
                 message: `Seguro que quieres eliminar el item?`,
@@ -125,6 +135,12 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
+        const onAcceptRestaurarGasto = async()=>{
+            setshowLoading(true)
+            await RestaurarArticulo(rowData.id, id_enterprice)
+            setshowLoading(false)
+            showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
+        }
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
@@ -133,6 +149,14 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
                 <Button icon="pi pi-trash" rounded outlined severity="danger" 
                 onClick={confirmDeleteGastoxID} 
                 />
+                {
+                    id_enterprice===610 && (
+                        <Button icon="pi pi-reply" rounded outlined className="mr-2" 
+                        onClick={onClickRestaurarModalEgresos} 
+                        />
+                        
+                    )
+                }
             </React.Fragment>
         );
     }
@@ -404,16 +428,14 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
                                     <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
                                     {/* <Column header={<span className={'font-24'}>INVENTARIO</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/> */}
-                                    <Column header={<span className={'font-24'}>UBICACION</span>} field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '10rem' }} sortable body={lugarBodyTemplate} filter/>
+                                    <Column header={<span className={'font-24'}>UBIC.</span>} field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '2rem' }} sortable body={lugarBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>CANT. </span>} field='cantidad' filterField="cantidad" sortable style={{ minWidth: '5rem' }} body={cantidadBodyTemplate} />
                                     <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolSoles isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={costounitariosolesBodyTemplate} filter/>
                                     <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolDolar isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={costounitariodolaresBodyTemplate} filter/>
-                                    <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO MANO OBRA</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '15rem' }} sortable body={costoManoObraBodyTemplate} filter/>
+                                    <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO MANO OBRA</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '5rem' }} sortable body={costoManoObraBodyTemplate} filter/>
                                     <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO TOTAL <SymbolSoles isbottom={false}/></div>} field='costo_total_soles' filterField="costo_total_soles" style={{ minWidth: '10rem' }} sortable body={costototalsolesBodyTemplate} filter/>
-                                    {/* <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. $</div>} field='valor_unitario_actual' filterField="valor_unitario_actual" style={{ minWidth: '10rem' }} sortable body={valorUnitActualDolaresBodyTemplate} filter/> */}
                                     <Column header={<div className={'font-24 text-color-dolar fw-bold'} style={{width: '100px'}}>COSTO TOTAL $</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '10rem' }} sortable body={costototaldolaresBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>DESCRIPCION</span>} field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
-                                    {/* <Column header={<span className={'font-24'}>OBSERVACION</span>}field='observacion' filterField='observacion' style={{ minWidth: '10rem' }} sortable body={observacionBodyTemplate} filter/> */}
                                     <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
                                 </DataTable>
                                     </TabPanel>

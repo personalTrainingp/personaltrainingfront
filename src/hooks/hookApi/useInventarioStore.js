@@ -70,9 +70,7 @@ export const useInventarioStore = () => {
 	const obtenerArticulos = async (id_enterprice) => {
 		try {
 			dispatch(onSetDataView([]));
-			const { data } = await PTApi.get(
-				`/inventario/obtener-inventario/${id_enterprice}`
-			);
+			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_enterprice}`);
 			dispatch(onSetDataView(data.articulos));
 		} catch (error) {
 			console.log(error);
@@ -106,6 +104,29 @@ export const useInventarioStore = () => {
 			console.log(error);
 		}
 	};
+
+	const RestaurarArticulo = async (id, id_enterprice) => {
+		try {
+			setIsLoading(true);
+			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, {id_empresa: 602});
+			obtenerArticulos(id_enterprice);
+			setIsLoading(false);
+			Swal.fire({
+				icon: 'success',
+				title: 'ARTICULO ACTUALIZADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 1500,
+			});
+		} catch (error) {
+			console.log(error);
+			Swal.fire({
+				icon: 'success',
+				title: 'OCURRIO UN PROBLEMA',
+				showConfirmButton: false,
+				timer: 1500,
+			});
+		}
+	};
 	const actualizarArticulo = async (formState, id, selectedFile, id_enterprice) => {
 		try {
 			setIsLoading(true);
@@ -119,9 +140,6 @@ export const useInventarioStore = () => {
 					formData
 				);
 			}
-			// console.log(id);
-			// dispatch(getProveedores(data));
-			// setmessage({ msg: data.msg, ok: data.ok });
 			obtenerArticulos(id_enterprice);
 			setIsLoading(false);
 			Swal.fire({
@@ -150,6 +168,7 @@ export const useInventarioStore = () => {
 		obtenerArticulo,
 		EliminarArticulo,
 		actualizarArticulo,
+		RestaurarArticulo,
 		statusData,
 		message,
 		isLoading,
