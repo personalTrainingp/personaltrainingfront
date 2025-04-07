@@ -108,7 +108,9 @@ export const useInventarioStore = () => {
 	const RestaurarArticulo = async (id, id_enterprice) => {
 		try {
 			setIsLoading(true);
-			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, {id_empresa: 602});
+			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, {
+				id_empresa: 602,
+			});
 			obtenerArticulos(id_enterprice);
 			setIsLoading(false);
 			Swal.fire({
