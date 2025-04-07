@@ -193,7 +193,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
                         <InputIcon className="pi pi-search" />
                         <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Buscador general" />
                     </IconField>
-                    <Button type="button" icon="pi pi-filter-slash" outlined onClick={clearFilter} />
                 </div>
                 <div className='d-flex'>
                     <Button label="IMPORTAR" icon='pi pi-file-import' onClick={onOpenModalImportadorData} text/>
@@ -239,7 +238,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
                 
                 {/* <span>{formatDate(rowData.fec_pago) }</span> */}
                 {/* <div>NIVEL {rowData.parametro_nivel?.label_param}</div> */}
-                <div>{rowData.parametro_lugar_encuentro?.label_param}</div>
+                <div>{rowData.parametro_lugar_encuentro?.label_param} - NIVEL { rowData.parametro_lugar_encuentro?.nivel }</div>
             </div>
             </>
         );
@@ -381,7 +380,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
     }
     const groupedData = Object.values(
         customers?.reduce((acc, item) => {
-          const key = `${item.parametro_lugar_encuentro.label_param}${item.parametro_lugar_encuentro.nivel?`- NIVEL ${item.parametro_lugar_encuentro.nivel}`:''}`;
+          const key = `${item.parametro_lugar_encuentro.label_param}${item.parametro_lugar_encuentro.nivel?` - NIVEL ${item.parametro_lugar_encuentro.nivel}`:''}`;
           if (!acc[key]) {
             acc[key] = { lugar: key, orden_param: item.parametro_lugar_encuentro.orden_param, items: [] };
           }
@@ -428,7 +427,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
                                             loading={loading} 
                                             stripedRows
                                             scrollable
-                                            
                                             onValueChange={valueFiltered}
                                             >
                                     <Column header={<span className={'font-24'}>Id</span>} field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>

@@ -1,19 +1,28 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Table } from 'react-bootstrap'
+import { useKardexStore } from './hook/useKardexStore'
 
 export const KardexxArticulo = ({id_articulo, movimiento}) => {
+    const { obtenerKardexXArticuloXMovimiento, postKardexxMovimientoxArticulo } = useKardexStore()
+    useEffect(() => {
+        obtenerKardexXArticuloXMovimiento({id_articulo, movimiento})
+    }, [])
+    
   return (
         <Table className="table-centered mb-0" striped responsive>
-          <thead className='bg-primary fs-2'>
+          <thead className='bg-primary fs-4'>
             <tr>
-                  <th className={`text-white`} >
-                    
-                  </th>
                   <th className={`text-white`} >
                     CANTIDAD
                   </th>
                   <th className={`text-white`} >
-                    FECHA DE MOVIMIENTO
+                    FECHA DE MOV.
+                  </th>
+                  <th className={`text-white`} >
+                    EMPRESA
+                  </th>
+                  <th className={`text-white`} >
+                    LUGAR
                   </th>
                   <th className={`text-white`} >
                     MOTIVO
@@ -27,12 +36,12 @@ export const KardexxArticulo = ({id_articulo, movimiento}) => {
               <tr>
                 <td>
                   <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                    <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'INVERSION'}</span>
+                    TRANSFERENCIAS
                   </li>
                 </td>
                 <td>
                   <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
-                    <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}></span>
+
                   </li>
                 </td>
               </tr>
