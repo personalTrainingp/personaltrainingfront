@@ -45,7 +45,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
         useEffect(() => {
             if(dataView.length>=0){
                 const fetchData = () => {
-                    setCustomers(getCustomers(dataView));
+                    setCustomers(getCustomers([...dataView]));
                     setLoading(false);
                 };
                 fetchData()
@@ -390,7 +390,15 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
         }, {})
       );
       groupedData.sort((a,b)=>a.orden_param-b.orden_param)
-      
+      // Agregamos el grupo "todos"
+        const todosGroup = {
+            lugar: 'todos',
+            orden_param: -1, // o algún valor que definas para ordenar este grupo
+            items: customers || []
+        };
+        
+        // Si quieres que "todos" esté al inicio:
+        groupedData.unshift(todosGroup);
     return (
         <>
                     <div>
