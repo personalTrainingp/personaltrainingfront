@@ -56,18 +56,8 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
         return data?.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
-            // Convertir la fecha a la zona horaria de Lima
-            // Realiza las modificaciones en la copia
-            // const [year, month, day] = item.fec_pago.split('-').map(Number);
-            // const [yearc=year, monthc=month, dayc=day] = item.fec_comprobante.split('-').map(Number)
-            // const [yearr=year, monthr = month, dayr = day] = item.fec_registro.split('-').map(Number)
-            // console.log(item.fec_registro);
-            
+
             let date = dayjs.utc(item.fec_registro);
-            // newItem.fec_registro = new Date(date.format());
-            // newItem.fec_comprobante =new Date(yearc, monthc-1, dayc);
-            // newItem.fec_pago = new Date(year, month - 1, day);
-            // newItem.tipo_gasto = arrayFinanzas.find(e=>e.value === item?.tb_parametros_gasto?.id_tipoGasto)?.label
             return newItem;
             });
     };
@@ -264,13 +254,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
             </>
         );
     };
-    // const valorUnitDeprecBodyTemplate = (rowData) => {
-    //     return (
-    //         <div className="flex align-items-end w-50 gap-2 justify-content-end font-24">
-    //             <><MoneyFormatter amount={rowData.valor_unitario_depreciado}/></>
-    //         </div>
-    //     );
-    // };
     const costounitariosolesBodyTemplate = (rowData) => {
         return (
             <>
@@ -299,14 +282,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
         return (
             <div className="flex align-items-center gap-2">
                 <span>{highlightText(`${rowIndex+1}`, globalFilterValue)}</span>
-            </div>
-        )
-    }
-    const observacionBodyTemplate = (rowData)=>{
-        return (
-            
-            <div className="flex align-items-center gap-2 font-24">
-                <span>{highlightText( `${rowData.observacion}`, globalFilterValue)}</span>
             </div>
         )
     }
@@ -398,6 +373,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
         
         // Si quieres que "todos" esté al inicio:
         groupedData.unshift(todosGroup);
+        
     return (
         <>
                     <div>

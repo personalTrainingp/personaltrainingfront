@@ -8,7 +8,6 @@ import 'flatpickr/dist/themes/material_green.css';
 import { useForm } from '@/hooks/useForm';
 import { useProgramaTrainingStore } from '@/hooks/hookApi/useProgramaTrainingStore';
 import { useSelector } from 'react-redux';
-import { getEnvVariables } from '@/common';
 import { columns, sizePerPageList } from './ColumnsSet';
 import { arrayDataTrainer } from '@/types/type';
 const RegisterprogramaaTraining = {
@@ -19,7 +18,6 @@ const RegisterprogramaaTraining = {
 const registerImgProgram = {
 	base64_pgm: '',
 };
-const { API_URL } = getEnvVariables()
 export const GestProgramas = () => {
 	const [onModal, setonModal] = useState(false);
 	const [isActive, setisActive] = useState(true);
@@ -150,13 +148,6 @@ export const GestProgramas = () => {
 				</Modal.Body>
 			</Modal>
 			<Row>
-				{datapgmPT.map((project) => {
-					return (
-						<Col md={6} xxl={3} key={'proj-' + project.id_pgm}>
-							<ProjectCard project={project} columns={columns} data={project.tb_HorarioProgramaPTs} DataTrainerPrueba={arrayDataTrainer} API_URL={API_URL} />
-						</Col>
-					);
-				})}
 			</Row>
 		</>
 	);

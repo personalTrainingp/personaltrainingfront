@@ -1,3 +1,4 @@
+
 import { PTApi } from '@/common/api/';
 import { onSetDataView } from '@/store/data/dataSlice';
 import { useState } from 'react';
@@ -69,7 +70,6 @@ export const useInventarioStore = () => {
 	};
 	const obtenerArticulos = async (id_enterprice) => {
 		try {
-			dispatch(onSetDataView([]));
 			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_enterprice}`);
 			dispatch(onSetDataView(data.articulos));
 		} catch (error) {
