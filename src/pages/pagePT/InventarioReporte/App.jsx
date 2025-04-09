@@ -17,6 +17,9 @@ export const App = () => {
         <TabPanel header='PROYECTO CIRCUS'>
         <InventarioTotalizado id_empresa={602} label_empresa={'PROYECTO CIRCUS'}/>
         </TabPanel>
+        <TabPanel header='CIRCUS INFRAESTRUCTURA'>
+        <InventarioTotalizado id_empresa={610} label_empresa={'CIRCUS INFRAESTRUCTURA'}/>
+        </TabPanel>
     </TabView>
     </>
   )

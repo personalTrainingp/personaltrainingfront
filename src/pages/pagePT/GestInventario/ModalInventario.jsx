@@ -353,7 +353,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                         )
                     } */}
                     
-                    {(isLoading) ? (
+                    {/* {(isLoading) ? (
                         <>
                         {isLoading && 'Cargando Datos'}
                         </>
@@ -553,22 +553,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                         COSTO TOTAL EN DOLARES: <NumberFormatMoney amount={costo_total_d}/>
                                     </div>
                                 </Col>
-                                {/* <Col lg={12}>
-                                    <div className="mb-4">
-                                        <label htmlFor="observacion" className="form-label">
-                                            OBSERVACIONES
-                                        </label>
-                                        <textarea
-                                                className="form-control"
-                                                name="observacion"
-                                                id="observacion"
-                                                value={descripcion}
-                                                onChange={onInputChange}
-                                                placeholder=""
-                                                required
-                                            />
-                                    </div>
-                                </Col> */}
                                 <Col>
                                     <Button className='mx-2' type='submit'>Guardar</Button>
                                     <a className='mx-2' style={{cursor: 'pointer', color: 'red'}} onClick={onClickCancelModal}>Cancelar</a>
@@ -576,7 +560,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                             </Row>
                         </form>
                     )
-                    }
+                    } */}
                 </Modal.Body>
             </Modal>
         </>
