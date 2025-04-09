@@ -353,7 +353,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                         )
                     } */}
                     
-                    {/* {(isLoading) ? (
+                    {(isLoading) ? (
                         <>
                         {isLoading && 'Cargando Datos'}
                         </>
@@ -560,7 +560,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                             </Row>
                         </form>
                     )
-                    } */}
+                    }
                 </Modal.Body>
             </Modal>
         </>

@@ -99,14 +99,24 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
             onOpenModalIvsG()
             obtenerArticulo(rowData.id)
         }
-        const onClickRestaurarModalEgresos = ()=>{
+        const onClickInfrCircu = ()=>{
             confirmDialog({
-                message: `Seguro que quieres restaurar el item?`,
+                message: ` Seguro que quieres trasladar a proy circus el item?`,
                 header: `eliminar item`,
                 icon: 'pi pi-info-circle',
                 defaultFocus: 'reject',
                 acceptClassName: 'p-button-danger',
-                accept:  onAcceptRestaurarGasto,
+                accept:  onAcceptUpd602,
+            });
+        }
+        const onClickProyCircus = ()=>{
+            confirmDialog({
+                message: `Seguro que quieres trasladar a infraestructura el item?`,
+                header: `eliminar item`,
+                icon: 'pi pi-info-circle',
+                defaultFocus: 'reject',
+                acceptClassName: 'p-button-danger',
+                accept:  onAcceptUpd610,
             });
         }
         const confirmDeleteGastoxID = ()=>{
@@ -125,9 +135,15 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
-        const onAcceptRestaurarGasto = async()=>{
+        const onAcceptUpd602 = async()=>{
             setshowLoading(true)
-            await RestaurarArticulo(rowData.id, id_enterprice)
+            await RestaurarArticulo(rowData.id, id_enterprice, 602)
+            setshowLoading(false)
+            showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
+        }
+        const onAcceptUpd610 = async()=>{
+            setshowLoading(true)
+            await RestaurarArticulo(rowData.id, id_enterprice, 610)
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
@@ -142,7 +158,15 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
                 {
                     id_enterprice===610 && (
                         <Button icon="pi pi-reply" rounded outlined className="mr-2" 
-                        onClick={onClickRestaurarModalEgresos} 
+                        onClick={onClickInfrCircu} 
+                        />
+                        
+                    )
+                }
+                {
+                    id_enterprice===602 && (
+                        <Button icon="pi pi-reply" rounded outlined className="mr-2" 
+                        onClick={onClickProyCircus} 
                         />
                         
                     )

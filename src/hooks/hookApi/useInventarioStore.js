@@ -105,11 +105,11 @@ export const useInventarioStore = () => {
 		}
 	};
 
-	const RestaurarArticulo = async (id, id_enterprice) => {
+	const RestaurarArticulo = async (id, id_enterprice, id_traslado) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, {
-				id_empresa: 602,
+				id_empresa: id_traslado,
 			});
 			obtenerArticulos(id_enterprice);
 			setIsLoading(false);
