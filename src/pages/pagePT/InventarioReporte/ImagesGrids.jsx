@@ -2,6 +2,7 @@ import config from '@/config';
 import React from 'react'
 
 export const ImagesGrids = ({images}) => {
+  
   const getGridStyles = () => {
     if (images?.length === 1) {
       return { gridTemplateColumns: "1fr", gridTemplateRows: "260px" };
@@ -25,8 +26,6 @@ export const ImagesGrids = ({images}) => {
 
   const layoutClass = gridStyles[images?.length] || "grid-cols-2 grid-rows-2"; // Manejo de casos extra
   // const srcImg = `${config.API_IMG.ARTICULO_LUGAR}${}`
-  console.log(images, "imggggg");
-  
   return (
     <div
       className="grid gap-2 w-full h-full"

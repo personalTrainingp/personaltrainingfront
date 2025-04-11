@@ -133,6 +133,66 @@ export const useTerminoStore = () => {
 	const [comboOficio, setcomboOficio] = useState([]);
 	const [dataDistritos, setdataDistritos] = useState([]);
 	const [dataZonas, setdataZonas] = useState([]);
+
+	const getEtiquetasxEntidadGrupo = async (entidad, grupo) => {
+		try {
+			let { data } = await PTApi.get(`/parametros/get_params/etiquetas/${entidad}/${grupo}`);
+
+			const etiquetasxValores = data.etiquetasxID.map((t) => {
+				return {
+					id_fila: t.id_fila,
+					value: t.parametro_etiqueta?.id_param,
+					label: t.parametro_etiqueta?.label_param,
+				};
+			});
+			return etiquetasxValores;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const getEtiquetasxIdEntidadGrupo = async (entidad, grupo, id_fila) => {
+		try {
+			let { data } = await PTApi.get(
+				`/parametros/get_params/etiquetas/${entidad}/${grupo}/${id_fila}`
+			);
+
+			const etiquetasxValores = data.etiquetasxID.map((t) => {
+				return {
+					value: t.parametro_etiqueta?.id_param,
+					label: t.parametro_etiqueta?.label_param,
+				};
+			});
+			return etiquetasxValores;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const putEtiquetaxEntidadxGrupo = async (entidad, grupo, id_fila, etiquetas) => {
+		try {
+			let { data } = await PTApi.put(
+				`/parametros/get_params/etiquetas/${entidad}/${grupo}/${id_fila}`,
+				{
+					etiquetas,
+				}
+			);
+			console.log('listo');
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const postEtiquetaxEntidadxGrupo = async (entidad, grupo, id_fila, etiquetas) => {
+		try {
+			let { data } = await PTApi.post(
+				`/parametros/get_params/etiquetas/${entidad}/${grupo}/${id_fila}`,
+				{
+					etiquetas,
+				}
+			);
+			console.log('listo');
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerZonas = async (id_enterprice) => {
 		try {
 			console.log({ id_enterprice });
@@ -503,6 +563,10 @@ export const useTerminoStore = () => {
 		}
 	};
 	return {
+		getEtiquetasxEntidadGrupo,
+		putEtiquetaxEntidadxGrupo,
+		getEtiquetasxIdEntidadGrupo,
+		postEtiquetaxEntidadxGrupo,
 		obtenerDistritosxDepxProvincia,
 		obtenerParametrosProductoMarcas,
 		obtenerParametrosProductoCategorias,

@@ -219,10 +219,7 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
                                 
                 )})
             }
-            <Col lg={8}>
           <ModalResumenInventarioValorizado label_empresa={label_empresa} data={dvi} show={isOpenModalResumenValorizado} onHide={onCloseModalResumenValorizado}/>
-
-            </Col>
         </Row>
         <ModalTableInventario ubicacion={ubicacion} show={isOpenModalInventarioFiltered} onHide={onCloseModalInventario} data={dataFilter}/>
     </>
@@ -234,7 +231,6 @@ function agruparDataxLugar(dataV) {
     
     const groupedData = Object.values(dataV.reduce((acc, item) => {
         const label = item.parametro_lugar_encuentro?.label_param;
-      
         // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
         if (!acc[label]) {
           acc[label] = { 

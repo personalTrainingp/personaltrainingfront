@@ -51,10 +51,9 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 		return value.replace(/,/g, '');
 	};
 	const onInputChangeReact = (value, name) => {
-		console.log(value, name);
 		setFormState({
 			...formState,
-			[name]: value.value,
+			[name]: Array.isArray(value) ? value : value?.value,
 		});
 	};
 	const onInputChangeReactSelect = (value, name) => {

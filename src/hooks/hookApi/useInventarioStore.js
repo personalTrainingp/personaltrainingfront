@@ -1,14 +1,21 @@
-
 import { PTApi } from '@/common/api/';
 import { onSetDataView } from '@/store/data/dataSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
+import { useTerminoStore } from './useTerminoStore';
 
 export const useInventarioStore = () => {
 	const dispatch = useDispatch();
 	const [statusData, setstatus] = useState('');
 	const [message, setmessage] = useState({ msg: '', ok: false });
+
+	const {
+		postEtiquetaxEntidadxGrupo,
+		getEtiquetasxIdEntidadGrupo,
+		putEtiquetaxEntidadxGrupo,
+		getEtiquetasxEntidadGrupo,
+	} = useTerminoStore();
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [dataFechas, setdataFechas] = useState([]);
@@ -23,12 +30,14 @@ export const useInventarioStore = () => {
 		// observacion: '',
 		// descripcion: '',
 	});
+	const [dataEtiquetaxIdEntidadGrupo, setdataEtiquetaxIdEntidadGrupo] = useState([]);
 
 	const obtenerInventarioKardexxFechas = async (id_empresa) => {
 		try {
 			const { data } = await PTApi.get(
 				`/inventario/obtener-inventario-y-kardex-x-fechas/${id_empresa}`
 			);
+
 			setdataFechas(data.inventario_x_fechas);
 		} catch (error) {
 			console.log(error);
@@ -45,7 +54,12 @@ export const useInventarioStore = () => {
 			console.log(error);
 		}
 	};
-	const startRegisterArticulos = async (formState, id_enterprice, selectedFile) => {
+	const startRegisterArticulos = async (
+		formState,
+		etiquetas_busquedas,
+		id_enterprice,
+		selectedFile
+	) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.post(
@@ -61,6 +75,12 @@ export const useInventarioStore = () => {
 					formData
 				);
 			}
+			postEtiquetaxEntidadxGrupo(
+				'articulo',
+				'etiqueta_busqueda',
+				data.id_articulo,
+				etiquetas_busquedas
+			);
 			setIsLoading(false);
 			await obtenerArticulos(id_enterprice);
 			setmessage({ msg: data.msg, ok: data.ok });
@@ -71,7 +91,16 @@ export const useInventarioStore = () => {
 	const obtenerArticulos = async (id_enterprice) => {
 		try {
 			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_enterprice}`);
-			dispatch(onSetDataView(data.articulos));
+			const arrayEtiquetas = await getEtiquetasxEntidadGrupo('articulo', 'etiqueta_busqueda');
+			const articulos = data.articulos.map((m) => {
+				return {
+					etiquetas_busquedas: arrayEtiquetas.filter((f) => f.id_fila === m.id),
+					...m,
+				};
+			});
+			console.log(articulos, 'carlos');
+
+			dispatch(onSetDataView(articulos));
 		} catch (error) {
 			console.log(error);
 		}
@@ -80,9 +109,20 @@ export const useInventarioStore = () => {
 		try {
 			setstatus('loading');
 			const { data } = await PTApi.get(`/inventario/obtener-articulo/${id}`);
+			const dataEtiquetasxIdEntidadGrupo = await getEtiquetasxIdEntidadGrupo(
+				'articulo',
+				'etiqueta_busqueda',
+				id
+			);
+			console.log({ dataEtiquetasxIdEntidadGrupo });
 			// console.log(data);
 			setstatus('success');
-			setArticulo(data.articulo);
+			setArticulo({
+				...data.articulo,
+				etiquetas_busquedas: dataEtiquetasxIdEntidadGrupo,
+				// dataEtiquetasxIdEntidadGrupo: dataEtiquetasxIdEntidadGrupo,
+			});
+			setdataEtiquetaxIdEntidadGrupo(dataEtiquetasxIdEntidadGrupo);
 		} catch (error) {
 			console.log(error);
 		}
@@ -129,10 +169,13 @@ export const useInventarioStore = () => {
 			});
 		}
 	};
-	const actualizarArticulo = async (formState, id, selectedFile, id_enterprice) => {
+	const actualizarArticulo = async (formState, etiquetas, id, selectedFile, id_enterprice) => {
 		try {
 			setIsLoading(true);
-			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, formState);
+			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, {
+				formState: { ...formState },
+			});
+			await putEtiquetaxEntidadxGrupo('articulo', 'etiqueta_busqueda', id, etiquetas);
 
 			if (selectedFile) {
 				const formData = new FormData();
@@ -171,6 +214,7 @@ export const useInventarioStore = () => {
 		EliminarArticulo,
 		actualizarArticulo,
 		RestaurarArticulo,
+		dataEtiquetaxIdEntidadGrupo,
 		statusData,
 		message,
 		isLoading,

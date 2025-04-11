@@ -3,7 +3,9 @@ import { Card, Tab, Tabs } from 'react-bootstrap'
 import { DataInventario } from './DataInventario'
 import { PageBreadcrumb } from '@/components'
 import { TabPanel, TabView } from 'primereact/tabview'
-
+import ImgproyCircus3 from '@/assets/images/pr_tercer_nivel.jpeg'
+import ImgproyCircus2 from '@/assets/images/pr_segundo_nivel.jpeg'
+import ImgproyCircus1 from '@/assets/images/pr_primer_nivel.jpeg'
 export const GestionInventario = () => {
   return (
     <>
@@ -24,7 +26,7 @@ export const GestionInventario = () => {
               <DataInventario id_enterprice={599} id_zona={599}/>
         </TabPanel>
         <TabPanel header="PROYECTO CIRCUS">
-              <DataInventario id_enterprice={602} id_zona={599}/>
+              <DataInventario ImgproyCircus3={ImgproyCircus3} ImgproyCircus2={ImgproyCircus2} ImgproyCircus1={ImgproyCircus1} id_enterprice={602} id_zona={599}/>
         </TabPanel>
         <TabPanel header="CIRCUS INFRAESTRUCTURA">
               <DataInventario id_enterprice={610} id_zona={599}/>

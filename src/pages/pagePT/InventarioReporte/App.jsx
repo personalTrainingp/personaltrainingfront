@@ -15,7 +15,7 @@ export const App = () => {
             <InventarioTotalizado id_empresa={599} label_empresa={'CIRCUS'}/>
         </TabPanel>
         <TabPanel header='PROYECTO CIRCUS'>
-        <InventarioTotalizado id_empresa={602} label_empresa={'PROYECTO CIRCUS'}/>
+        <InventarioTotalizado  id_empresa={602} label_empresa={'PROYECTO CIRCUS'}/>
         </TabPanel>
         <TabPanel header='CIRCUS INFRAESTRUCTURA'>
         <InventarioTotalizado id_empresa={610} label_empresa={'CIRCUS INFRAESTRUCTURA'}/>

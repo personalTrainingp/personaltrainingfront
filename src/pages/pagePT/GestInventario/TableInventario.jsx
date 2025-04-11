@@ -28,7 +28,7 @@ import sinImage from '@/assets/images/SinImage.jpg'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { TabPanel, TabView } from 'primereact/tabview';
 dayjs.extend(utc);
-export default function TableInventario({showToast, id_enterprice, id_zona}) {
+export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
     locale('es')
     const [customers, setCustomers] = useState([]);
     const [filters, setFilters] = useState(null);
@@ -56,6 +56,9 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
         return data?.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
+            console.log(item, "customers");
+            
+            newItem.etiquetas_str = item.etiquetas_busquedas.map(item => `${item.label}`).join(', ')
 
             let date = dayjs.utc(item.fec_registro);
             return newItem;
@@ -168,7 +171,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
                         <Button icon="pi pi-reply" rounded outlined className="mr-2" 
                         onClick={onClickProyCircus} 
                         />
-                        
                     )
                 }
             </React.Fragment>
@@ -260,9 +262,30 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
     const descripcionBodyTemplate = (rowData)=>{
         return (
             <>
-                <div className=''>DESCRIPCION</div>
+                
+                <span>
+                    <div className=''>DESCRIPCION</div>
+                    <div className="fw-bold flex align-items-center gap-2 font-24">
+                        <>{rowData.descripcion}</>
+                        <br/>
+                    </div>
+                </span>
+                <span>
+                    <div className=''>ETIQUETAS</div>
+                    <div className="fw-bold flex align-items-center gap-2 font-24">
+                        <>{rowData.etiquetas_str}</>
+                        <br/>
+                    </div>
+                </span>
+            </>
+        );
+    }
+    const etiquetasBodyTemplate = (rowData)=>{
+        return (
+            <>
+                <div className=''>ETIQUETAS</div>
             <div className="fw-bold flex align-items-center gap-2 font-24">
-                <>{rowData.descripcion}</>
+                <>{rowData.etiquetas_str}</>
                 <br/>
             </div>
             </>
@@ -397,10 +420,17 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
         
         // Si quieres que "todos" esté al inicio:
         groupedData.unshift(todosGroup);
-        
     return (
         <>
                     <div>
+                        <div className='m-2 d-flex justify-content-center align-items-center'>
+                        <Image src={ImgproyCircus1}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
+                        </Image>
+                        <Image src={ImgproyCircus2}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
+                        </Image>
+                        <Image src={ImgproyCircus3}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
+                        </Image>
+                        </div>
                         <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
                     </div>
                     <TabView>
