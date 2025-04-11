@@ -172,9 +172,7 @@ export const useInventarioStore = () => {
 	const actualizarArticulo = async (formState, etiquetas, id, selectedFile, id_enterprice) => {
 		try {
 			setIsLoading(true);
-			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, {
-				formState: { ...formState },
-			});
+			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, formState);
 			await putEtiquetaxEntidadxGrupo('articulo', 'etiqueta_busqueda', id, etiquetas);
 
 			if (selectedFile) {
