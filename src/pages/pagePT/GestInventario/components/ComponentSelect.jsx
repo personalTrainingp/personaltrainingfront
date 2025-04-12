@@ -31,40 +31,45 @@ export const ComponentSelect = ({options, postOptions, onChange, value}) => {
   //       setSeleccionadas([...seleccionadas, nuevaOpcion]);
   //     });
   // };
-
+  const onInputValue = (val)=>{
+    setInputValue(val)
+  }
+  console.log({inputValue}, "inpu vall");
+  
   return (
     <CreatableSelect
       isMulti
       value={value}
       onChange={onChange}
-      onInputChange={(value) => setInputValue(value)}
+      onInputChange={(value) => onInputValue(value)}
       options={options}
       onCreateOption={postOptions}
       placeholder="Buscar o agregar..."
-      noOptionsMessage={() =>
-        inputValue ? (
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>No encontrado</span>
-            <button
-              style={{
-                marginLeft: '1rem',
-                cursor: 'pointer',
-                background: '#007bff',
-                color: 'white',
-                border: 'none',
-                padding: '2px 8px',
-                borderRadius: '4px',
-              }}
-              onMouseDown={(e) => {
-                e.preventDefault(); // Evita que react-select cierre el menú
-                postOptions(inputValue);
-              }}
-            >
-              Agregar opción: "{inputValue}"
-            </button>
-          </div>
-        ) : 'Escribe para buscar o crear'
-      }
+  // filterOption={() => false} // <-- fuerza que nunca haya coincidencias
+      // noOptionsMessage={() =>
+      //   inputValue ? (
+      //     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      //       <span>No encontrado</span>
+      //       <button
+      //         style={{
+      //           marginLeft: '1rem',
+      //           cursor: 'pointer',
+      //           background: '#007bff',
+      //           color: 'white',
+      //           border: 'none',
+      //           padding: '2px 8px',
+      //           borderRadius: '4px',
+      //         }}
+      //         onMouseDown={(e) => {
+      //           e.preventDefault(); // Evita que react-select cierre el menú
+      //           postOptions(inputValue);
+      //         }}
+      //       >
+      //         Agregar opción: "{inputValue}"
+      //       </button>
+      //     </div>
+      //   ) : 'Escribe para buscar o crear'
+      // }
     />
   );
 }

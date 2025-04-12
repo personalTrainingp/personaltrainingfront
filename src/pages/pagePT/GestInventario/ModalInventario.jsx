@@ -114,6 +114,9 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             onResetForm()
             onHide()
         }
+        const onPostOption = ()=>{
+
+        }
   return (
     <>
     {(showLoading)?(
@@ -148,6 +151,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                         <ComponentSelect 
                                         options={dataEtiquetasBusqueda}
                                         onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
+                                        postOptions={onPostOption}
                                         value={etiquetas_busquedas}
                                         name="etiquetas_busquedas"
                                         />

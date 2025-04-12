@@ -75,12 +75,14 @@ export const useInventarioStore = () => {
 					formData
 				);
 			}
-			postEtiquetaxEntidadxGrupo(
-				'articulo',
-				'etiqueta_busqueda',
-				data.id_articulo,
-				etiquetas_busquedas
-			);
+			if(etiquetas_busquedas.length>0){
+				postEtiquetaxEntidadxGrupo(
+					'articulo',
+					'etiqueta_busqueda',
+					data.id_articulo,
+					etiquetas_busquedas
+				);
+			}
 			setIsLoading(false);
 			await obtenerArticulos(id_enterprice);
 			setmessage({ msg: data.msg, ok: data.ok });

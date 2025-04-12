@@ -71,11 +71,13 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         
         const submitGasto = async(e)=>{
             e.preventDefault()
+            console.log("holaa cho");
+            
             if(data){
                 // console.log("con");
                 
                 setshowLoading(true)
-                await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, data.id, selectedAvatar, id_enterprice)
+                await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], data.id, selectedAvatar, id_enterprice)
                 setshowLoading(false)
                 // console.log("sin ");
                 // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
@@ -83,7 +85,10 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 return;
             }
             setshowLoading(true)
-            await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, id_enterprice, selectedAvatar)
+            console.log(id_enterprice, "idddd?");
+            console.log({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], id_enterprice, selectedAvatar);
+            
+            await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], id_enterprice, selectedAvatar)
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()
