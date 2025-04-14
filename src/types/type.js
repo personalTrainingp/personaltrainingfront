@@ -16,10 +16,10 @@ export const clasesVentasSeparadas = (tipo) => {
 };
 
 export const arrayEmpresa = [
-	{value: 598, label: 'CHANGE'},
-	{value: 599, label: 'CIRCUS'},
-	{value: 601, label: 'CHORRILLOS'},
-]
+	{ value: 598, label: 'CHANGE' },
+	{ value: 599, label: 'CIRCUS' },
+	{ value: 601, label: 'CHORRILLOS' },
+];
 
 export const arrayDepartamento = [
 	{ value: '01', label: 'Amazonas' },
@@ -339,8 +339,9 @@ export const arrayServiciosNutricionalesTest = [
 // ];
 
 export const arrayFinanzas = [
-	{ label: '250 | Fijos [EGRESOS]', value: 250 },
-	{ label: '260 | Variables [EGRESOS]', value: 260 },
+	{ label: '250 | Fijos', value: 250 },
+	{ label: '260 | VARIABLES', value: 260 },
+	{ label: '270 | ACTIVOS', value: 270 },
 	// { label: '330 | Caja chica[INGRESOS]', value: 330 },
 	// { label: '340 | exepcionales[INGRESOS]', value: 340 },
 	// { label: '370 | inversion activos', value: 370 },
