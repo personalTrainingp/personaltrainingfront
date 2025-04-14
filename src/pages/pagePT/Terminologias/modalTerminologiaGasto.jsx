@@ -5,22 +5,22 @@ import { Button, Col, Modal, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import Select from 'react-select'
 import { useTerminologiaStore } from '@/hooks/hookApi/useTerminologiaStore'
+import { arrayFinanzas } from '@/types/type'
 
 const ParametroGasto = {
     id: 0,
-    id_empresa: '',
     grupo: '',
     id_tipoGasto: '',
     nombre_gasto: '',
     flag: true,
 };
 
-export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar , data})=>{
-
+export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar, id_empresa , data})=>{
+    console.log(id_empresa, "dddd");
+    
     const { registrarTerminologiaGasto , actualizarTerminologiaGasto } = useTerminologiaStore();
     const   {
         id,
-        id_empresa,
         grupo,
         id_tipoGasto,
         nombre_gasto,
@@ -50,7 +50,7 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
     const submitParametro = async(e)=>{
         e.preventDefault();
         const nuevoParametroGasto = {
-            ...ParametroGasto,
+            // ...ParametroGasto,
             id: id,
             id_empresa: id_empresa,
             grupo: grupo,
@@ -64,11 +64,12 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
             //console.log(paramatero);
             const nuevoParametroGasto = {
                 //...ParametroGasto,
-                id_empresa: paramateroGasto.id_empresa,
+                id_empresa: id_empresa,
                 grupo: grupo,
-                id_tipoGasto: paramateroGasto.id_tipoGasto,
+                id_tipoGasto: id_tipoGasto,
                 nombre_gasto: nombre_gasto,
             };
+            
             registrarTerminologiaGasto(nuevoParametroGasto);
         }
 
@@ -100,6 +101,25 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
                                     <p className='fw-bold fs-5 text-decoration-underline'>
                                         Datos de la terminologia Gasto
                                     </p>
+                                </Col>
+                                <Col lg={12}>
+                                    <div className="mb-4">
+                                        <label htmlFor="nombre_gasto" className="form-label">
+                                            TIPO DE GASTO*
+                                        </label>
+                                        <Select
+                                            onChange={(e) => onInputChangeReact(e, 'id_tipoGasto')}
+                                            name="id_tipoGasto"
+                                            placeholder={'SELECCIONAR EL TIPO DE GASTO'}
+                                            className="react-select"
+                                            classNamePrefix="react-select"
+                                            options={arrayFinanzas}
+                                            value={arrayFinanzas.find(
+                                                (option) => option.value === id_tipoGasto
+                                            )}
+                                            required
+                                        />
+                                    </div>
                                 </Col>
                                 <Col lg={12}>
                                     <div className="mb-4">

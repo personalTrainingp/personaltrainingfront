@@ -15,9 +15,10 @@ import { onSetTerminologia } from '@/store/dataTerminologia/terminologiaSlice';
 import { useTerminologiaStore } from '@/hooks/hookApi/useTerminologiaStore';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { ModalTerminologiaGasto } from './modalTerminologiaGasto';
+import { arrayFinanzas } from '@/types/type';
 
 
-const DataTerminologiaGasto = (({data}) => {
+const DataTerminologiaGasto = (({data, id_empresa}) => {    
     const dispatch = useDispatch();
     const {terminologiaPorId,setTerminologiaPorId , actualizarTerminologiaGasto  ,  EliminarTerminologiaGasto} = useTerminologiaStore();
 
@@ -86,9 +87,16 @@ const DataTerminologiaGasto = (({data}) => {
     const onOpenModalIvsG = ()=>{
         //setisOpenModalEgresos(true)
     }   
+    const tipoGastoBodyTemplate = (rowData)=>{
+        return (
+            <>
+                {arrayFinanzas.find(g=>g.value===rowData.id_tipoGasto)?.label}
+            </>
+        )
+    }
 
 	const header = renderHeader()
-
+    
     return (
         <>
             <Row>
@@ -113,7 +121,8 @@ const DataTerminologiaGasto = (({data}) => {
                         stripedRows
                         scrollable
                     >
-                         <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter />
+                        <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter />
+                        <Column header="Gasto" field='id_tipoGasto' filterField="id_tipoGasto" body={tipoGastoBodyTemplate} sortable />
                         <Column header="Grupo" field='grupo' filterField="grupo" sortable />
                         <Column header="CONCEPTO" field='nombre_gasto' filterField='nombre_gasto'  sortable filter />
                         <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right"  body={actionBodyTemplate} />
@@ -121,7 +130,7 @@ const DataTerminologiaGasto = (({data}) => {
                     </DataTable>
                 </Col>
             </Row>
-            <ModalTerminologiaGasto  show={isModalOpenTerminologiaGasto} onHide={modalTerminologiaGastoClose} boleanActualizar={true} data={terminologiaPorId}  ></ModalTerminologiaGasto>
+            <ModalTerminologiaGasto  id_empresa={id_empresa} show={isModalOpenTerminologiaGasto} onHide={modalTerminologiaGastoClose} boleanActualizar={true} data={terminologiaPorId}  ></ModalTerminologiaGasto>
 
         </>
     );

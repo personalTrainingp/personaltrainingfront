@@ -114,7 +114,15 @@ input{
 .cursor-table:hover{
   background-color: #cccccc !important;
 }
+.cursor-text-primary{
+  color: black;
+  cursor: pointer;
+}
 
+.cursor-text-primary:hover{
+  color: red;
+  cursor: pointer;
+}
 .currency {
   width: 2.5rem; /* Adjust the width to align as needed */
   text-align: right;

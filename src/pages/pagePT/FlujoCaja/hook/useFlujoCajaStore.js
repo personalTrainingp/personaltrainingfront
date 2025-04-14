@@ -33,8 +33,6 @@ export const useFlujoCajaStore = () => {
 					anio,
 				},
 			});
-			console.log(data, "dad");
-			
 			setdataGastosxANIO(ordenarDatosPorGrupo(data.gastos, []));
 		} catch (error) {
 			console.log(error);
@@ -112,7 +110,6 @@ function ordenarDatosPorGrupo(datos) {
 			fec_registro: item.fec_registro,
 			monto: item.monto,
 			moneda: item.moneda,
-			
 		});
 	});
 	resultado = resultado.map((r) => {
@@ -139,7 +136,6 @@ function ordenarDatosPorGrupo(datos) {
 			}),
 		};
 	});
-	console.log(resultado);
 
 	// Asegurarse de que los meses estén en el rango 1-12 y si no hay ítems, poner monto_total 0
 	// resultado.forEach((grupo) => {
@@ -280,7 +276,6 @@ function ordenarDatos(dataGastos, dataTipoCambio) {
 			dataConceptos: agruparPorNombreGasto(e.data),
 		};
 	});
-	console.log(dataGastos2);
 
 	return dataGastos2;
 }

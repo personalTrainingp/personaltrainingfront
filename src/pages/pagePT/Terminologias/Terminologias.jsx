@@ -11,7 +11,6 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { onSetTerminologia } from '@/store/dataTerminologia/terminologiaSlice';
 import { DataTerminologiaGasto } from './DataTerminologiaGasto';
-import { ModalTerminologiaGasto } from './modalTerminologiaGasto';
 import { TerminologiaGastoTabView } from './TerminologiaGastoTabView';
 import { TerminologiasInventarioLugar } from './TerminologiasInventarioLugar';
 import { TerminologiaSistemas } from './TerminologiaSistemas';
@@ -66,11 +65,46 @@ export const Terminologias = () => {
                             <TabView className='px-2 mx-1 mb-1' scrollable='true'>
                                 <TabPanel header={"Terminologia de gastos"}>
                                     <Col sm={12}>
-                                       <TerminologiaGastoTabView dataTerminologiaPorEntidad={dataTerminologiaPorEntidad} ></TerminologiaGastoTabView>
+                                        <TabView>
+                                            <TabPanel header='HISTORICO'>
+                                                <TerminologiaGastoTabView id_empresa={0}/>
+                                            </TabPanel>
+                                            <TabPanel header='RAL'>
+                                                <TerminologiaGastoTabView id_empresa={600}/>
+                                            </TabPanel>
+                                            <TabPanel header='CHANGE'>
+                                                <TerminologiaGastoTabView id_empresa={598}/>
+                                            </TabPanel>
+                                            <TabPanel header='CIRCUS'>
+                                                <TerminologiaGastoTabView id_empresa={599}/>
+                                            </TabPanel>
+                                            <TabPanel header='SAN EXPEDITO'>
+                                                <TerminologiaGastoTabView id_empresa={601}/>
+                                            </TabPanel>
+                                        </TabView>
                                     </Col>
                                 </TabPanel>
                                <TabPanel header={'TERMINOLOGIA DEL SISTEMAS'}>
                                     <TerminologiaSistemas/>
+                               </TabPanel>
+                               <TabPanel header={'TERMINOLOGIAS DEL INVENTARIO (LUGAR)'}>
+                                    <Col sm={12}>
+                                        <TerminologiasInventarioLugar dataTerminologiaPorEntidad={dataTerminologiaPorEntidad}/>
+                                    </Col>
+                               </TabPanel>
+                            </TabView>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+            <ModalTerminologia show={isModalOpenTerminologia} onHide={modalTerminologiaClose} boleanActualizar={false} ></ModalTerminologia>
+        </>
+    )
+}
+
+
+
+
                                 {/* <TabView> */}
                                         {/* {
                                             dataTerminologiaPorEntidad?.parametros?.length > 0 &&
@@ -94,18 +128,3 @@ export const Terminologias = () => {
                                             })
                                         } */}
                                 {/* </TabView> */}
-                               </TabPanel>
-                               <TabPanel header={'TERMINOLOGIAS DEL INVENTARIO (LUGAR)'}>
-                                    <Col sm={12}>
-                                        <TerminologiasInventarioLugar dataTerminologiaPorEntidad={dataTerminologiaPorEntidad}/>
-                                    </Col>
-                               </TabPanel>
-                            </TabView>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-            <ModalTerminologia show={isModalOpenTerminologia} onHide={modalTerminologiaClose} boleanActualizar={false} ></ModalTerminologia>
-        </>
-    )
-}

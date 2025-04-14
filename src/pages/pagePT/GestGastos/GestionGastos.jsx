@@ -14,6 +14,9 @@ export const GestionGastos = () => {
         <TabPanel header="CIRCUS">
               <GestionGastosIngresos id_enterprice={599}/>
         </TabPanel>
+        <TabPanel header="SAN EXPEDITO">
+              <GestionGastosIngresos id_enterprice={601}/>
+        </TabPanel>
         <TabPanel header="CHANGE">
               <GestionGastosIngresos id_enterprice={598}/>
         </TabPanel>

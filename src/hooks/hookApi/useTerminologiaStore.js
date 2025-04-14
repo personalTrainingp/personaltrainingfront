@@ -7,24 +7,17 @@ export const useTerminologiaStore = () => {
 	let dispatch = useDispatch();
 	const [terminologiaPorId, setTerminologiaPorId] = useState({});
 	const [dataTerminologiaPorEntidad, SetData] = useState({});
-	const terminologiaPorEntidad = async () => {
+	const terminologiaPorEntidad = async (id_empresa) => {
 		try {
-			dispatch(onSetDataView([]));
-			const response = await PTApi.get('/terminologia/terminologiaPorEntidad');
-			dispatch(
-				onSetDataView({
-					...response.data.response,
-					// .filter((f) => f.entidad_param === 'articulo')
-					// .parametros.filter((g) => g.grupo_param === 'lugar_encuentro'),
-				})
-			);
-			console.log({
-				...response.data.response,
-				articulosLugar: response.data.response.parametros
-					.filter((f) => f.entidad_param === 'articulo')[0]
-					.parametros.filter((f) => f.grupo_param === 'lugar_encuentro'),
-				// .parametros.filter((g) => g.grupo_param === 'lugar_encuentro'),
-			});
+			const { data } = await PTApi.get(`/terminologia/terminologiaxEmpresa/${id_empresa}`);
+			dispatch(onSetDataView(data.termGastos));
+			// console.log({
+			// 	...response.data.response,
+			// 	articulosLugar: response.data.response.parametros
+			// 		.filter((f) => f.entidad_param === 'articulo')[0]
+			// 		.parametros.filter((f) => f.grupo_param === 'lugar_encuentro'),
+			// 	// .parametros.filter((g) => g.grupo_param === 'lugar_encuentro'),
+			// });
 
 			//SetData(response.data.response);
 		} catch (error) {
