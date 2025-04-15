@@ -88,7 +88,7 @@ export const PanelMembresias = ({id_cli}) => {
                 const semanas_vendidas = detalle_ventamembresia.tb_semana_training?.semanas_st
                 return (
                     <div key={`${programa}-${fecha_venta}`} className='m-auto shadow-3 border-1 rounded-1 d-flex p-2'>
-                        {/* <div style={{width: '25%'}} className='p-2'>
+                        <div style={{width: '25%'}} className='p-2'>
                             <Image src={`${config.API_IMG.LOGO}${Imgprograma}`} width='100%'/>
                             <span className='fw-bold fs-4 d-flex flex-column'>
                                 <span>
@@ -98,28 +98,21 @@ export const PanelMembresias = ({id_cli}) => {
                         </div>
                         <div style={{width: '75%'}} className='d-flex flex-column'>
                             <span>
+                                FECHA DE VENTA: <strong>{fecha_venta}</strong>
+                            </span>
+                            <span>
                                 FECHA DE INICIO: <strong>{fecha_inicio}</strong>
                             </span>
                             <span>
                                 FECHA DE FIN: <strong>{fecha_fin}</strong>
                             </span>
                             <span>
-                                NUTRICION: <strong>{fecha_fin}</strong>
+                                NUTRICION: <strong>{detalle_ventamembresia.tb_semana_training.nutricion_st}</strong>
                             </span>
                             <span>
-                                CONGELAMIENTO: <strong>{fecha_fin}</strong>
+                                CONGELAMIENTO: <strong>{detalle_ventamembresia.tb_semana_training.congelamiento_st}</strong>
                             </span>
-                        </div> */}
-                            <td className=''>
-                                <span className='fw-bold fs-2'>
-                                    {programa} / {semanas_vendidas} SEMANAS
-                                </span>
-                                <br/>
-                                <span>
-                                    3 NUTRICION / 1 CONGELAMIENTO
-                                </span>
-                            </td>
-                            <td className='fs-3'>{fecha_inicio}</td>
+                        </div>
                             <td className='fs-4 underline text-primary cursor-pointer' onClick={()=>onOpenModalDetalleMembresia(f)}>DETALLE</td>
                     </div>
                 )
