@@ -38,6 +38,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         onResetForm()
     }
     const [grupoGasto, setgrupoGasto] = useState([])
+    const [openModalProv, setopenModalProv] = useState(false)
     const [gastoxGrupo, setgastoxGrupo] = useState([])
     const [loadingRegister, setloadingRegister] = useState(false)
     const { obtenerParametrosGastosFinanzas } = useGf_GvStore()
@@ -97,30 +98,37 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         }, [id_tipoGasto])
         useEffect(() => {
             const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
-            console.log(conceptos);
-            
             setgastoxGrupo(conceptos)
         }, [grupo])
-        console.log("asdfasdf");
-        
-        console.log(data, "ddddddd");
         
         
         useEffect(() => {
-            const inyeccionParametros = async()=>{
-                try {
-                    setloadingParametros(true)
-                    await obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
-                    await obtenerParametrosProveedor()
-                    await obtenerParametrosFormaPago()
-                    await obtenerParametrosBancos()
-                    setloadingParametros(false)
-                } catch (error) {
-                    console.log(error, "en inyeccion");
-                }
+            // const inyeccionParametros = async()=>{
+            //     try {
+            //         setloadingParametros(true)
+            //         await obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
+            //         await obtenerParametrosProveedor()
+            //         await obtenerParametrosFormaPago()
+            //         await obtenerParametrosBancos()
+            //         setloadingParametros(false)
+            //     } catch (error) {
+            //         console.log(error, "en inyeccion");
+            //     }
+            // }
+            // inyeccionParametros()
+            if(show){
+                obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
+                obtenerParametrosProveedor()
+                obtenerParametrosFormaPago()
+                obtenerParametrosBancos()
             }
-            inyeccionParametros()
-        }, [])
+        }, [show])
+        useEffect(() => {
+            if(!openModalProv){
+                obtenerParametrosProveedor()
+            }
+        }, [openModalProv])
+        
         const submitGasto = async(e)=>{
             e.preventDefault()
             if(data){
@@ -140,7 +148,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             // showToast(objetoToast);
             onClickCancelModal()
         }
-        const [openModalProv, setopenModalProv] = useState(false)
         const onOpenModalProveedor = ()=>{
             setopenModalProv(true)
             onHide()
@@ -168,7 +175,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             <Modal size='xl' onHide={onClickCancelModal} show={show}>
                 <Modal.Header>
                     <Modal.Title>
-                        {data?'Actualizar Gasto':'Registro Gasto'}
+                        {data?'Actualizar Gasto':'Registro Gasto'} <Button>ACTUALIZAR TERMINOLOGIAS</Button>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -501,7 +508,11 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                     }
                 </Modal.Body>
             </Modal>
-            <ModalProveedor show={openModalProv} onHide={onCloseModalProveedor}/>
+            {
+                openModalProv&&(
+                    <ModalProveedor show={openModalProv} onHide={onCloseModalProveedor}/>
+                )
+            }
         </>
     ) 
 

@@ -56,7 +56,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         return data?.map(item => {
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
-            console.log(item, "customers");
             
             newItem.etiquetas_str = item.etiquetas_busquedas.map(item => `${item.label}`).join(', ')
 

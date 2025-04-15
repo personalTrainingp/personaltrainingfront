@@ -20,6 +20,10 @@ import { arrayFinanzas } from '@/types/type';
 
 const DataTerminologiaGasto = (({data, id_empresa}) => {    
     const dispatch = useDispatch();
+    const [filters, setFilters] = useState({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    });
+    const [globalFilterValue, setGlobalFilterValue] = useState('');
     const {terminologiaPorId,setTerminologiaPorId , actualizarTerminologiaGasto  ,  EliminarTerminologiaGasto} = useTerminologiaStore();
 
     const [isModalOpenTerminologiaGasto, setisModalOpenTerminologiaGasto] = useState(false);
@@ -35,13 +39,12 @@ const DataTerminologiaGasto = (({data, id_empresa}) => {
     const renderHeader = () => {
         return (
             <div className="d-flex justify-content-between">
-                {/* <div className='d-flex'>
+                <div className='d-flex'>
                     <IconField iconPosition="left">
                         <InputIcon className="pi pi-search" />
                         <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Buscador general" />
                     </IconField>
-                    <Button type="button" icon="pi pi-filter-slash" outlined onClick={clearFilter} />
-                </div> */}
+                </div>
                 <div className='d-flex'>
                     {/* <Button label="IMPORTAR" icon='pi pi-file-import' onClick={()=>setshowModalImportadorData(true)} disabled text/> */}
                     {/* <ExportToExcel data={valueFilter}/> */}
@@ -94,6 +97,17 @@ const DataTerminologiaGasto = (({data, id_empresa}) => {
             </>
         )
     }
+    
+    const onGlobalFilterChange = (e) => {
+        const value = e.target.value;
+        let _filters = { ...filters };
+
+        _filters['global'].value = value;
+
+        setFilters(_filters);
+        setGlobalFilterValue(value);
+    };
+
 
 	const header = renderHeader()
     
@@ -112,18 +126,18 @@ const DataTerminologiaGasto = (({data, id_empresa}) => {
                         dataKey="id_param"
                         // selection={selectedCustomers}
                         // onSelectionChange={(e) => setselectedCustomers(e.value)}
-                        // filters={filters} 
+                        filters={filters} 
                         filterDisplay="menu"
-                        // globalFilterFields={['id', 'oficio', 'column_razon_social', 'nombre_contacto', 'oficio', 'razon_social_prov', 'ruc_prov', 'cel_prov', 'nombre_vend_prov', 'Estado']} 
+                        globalFilterFields={['grupo', 'nombre_gasto', 'id_tipoGasto']} 
                         emptyMessage="Terminologias no encontradas."
                         showGridlines
                         // loading={loading} 
                         stripedRows
                         scrollable
                     >
-                        <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter />
-                        <Column header="Gasto" field='id_tipoGasto' filterField="id_tipoGasto" body={tipoGastoBodyTemplate} sortable />
-                        <Column header="Grupo" field='grupo' filterField="grupo" sortable />
+                        <Column header="ID" field='id' filterField="id" sortable style={{ width: '1rem' }} filter />
+                        <Column header="GASTO" field='id_tipoGasto' filterField="id_tipoGasto" body={tipoGastoBodyTemplate} sortable />
+                        <Column header="GRUPO" field='grupo' filterField="grupo" sortable />
                         <Column header="CONCEPTO" field='nombre_gasto' filterField='nombre_gasto'  sortable filter />
                         <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right"  body={actionBodyTemplate} />
  

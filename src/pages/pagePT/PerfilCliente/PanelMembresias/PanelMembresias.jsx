@@ -88,7 +88,7 @@ export const PanelMembresias = ({id_cli}) => {
                 const semanas_vendidas = detalle_ventamembresia.tb_semana_training?.semanas_st
                 return (
                     <div key={`${programa}-${fecha_venta}`} className='m-auto shadow-3 border-1 rounded-1 d-flex p-2'>
-                        <div style={{width: '25%'}} className='p-2'>
+                        {/* <div style={{width: '25%'}} className='p-2'>
                             <Image src={`${config.API_IMG.LOGO}${Imgprograma}`} width='100%'/>
                             <span className='fw-bold fs-4 d-flex flex-column'>
                                 <span>
@@ -109,8 +109,8 @@ export const PanelMembresias = ({id_cli}) => {
                             <span>
                                 CONGELAMIENTO: <strong>{fecha_fin}</strong>
                             </span>
-                        </div>
-                            {/* <td className=''>
+                        </div> */}
+                            <td className=''>
                                 <span className='fw-bold fs-2'>
                                     {programa} / {semanas_vendidas} SEMANAS
                                 </span>
@@ -120,7 +120,7 @@ export const PanelMembresias = ({id_cli}) => {
                                 </span>
                             </td>
                             <td className='fs-3'>{fecha_inicio}</td>
-                            <td className='fs-4 underline text-primary cursor-pointer' onClick={()=>onOpenModalDetalleMembresia(f)}>DETALLE</td> */}
+                            <td className='fs-4 underline text-primary cursor-pointer' onClick={()=>onOpenModalDetalleMembresia(f)}>DETALLE</td>
                     </div>
                 )
             })
