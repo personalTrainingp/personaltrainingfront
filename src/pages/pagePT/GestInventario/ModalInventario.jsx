@@ -11,6 +11,9 @@ import { KardexxArticulo } from './KardexxArticulo';
 import { MultiSelect } from 'primereact/multiselect';
 import { ComponentSelect } from './components/ComponentSelect';
 import { compararArrays } from './helpers/compararArrays';
+import { ImagenUploader } from '@/components/ImagenUploader';
+import config from '@/config';
+import { urlToBlob } from '@/helper/urlToBlob';
 const registerArticulo={
     producto: '',
     id_marca: '',
@@ -31,7 +34,10 @@ const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
 export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice, id_zona}) => {
-	const [selectedFile, setSelectedFile] = useState(sinAvatar);
+    const blobImage = urlToBlob(`${config.API_IMG.AVATAR_ARTICULO}${data?.dataImg?.name_image}`)
+    // console.log(`${config.API_IMG.AVATAR_ARTICULO}${data.dataImg?.name_image}`);
+    // const [imagen, setImagen] = useState(`${config.API_IMG.AVATAR_ARTICULO}${data?.dataImg?.name_image}`); // base64
+	const [selectedFile, setSelectedFile] = useState(data?blobImage:sinAvatar);
     const [selectedAvatar, setselectedAvatar] = useState(null)
     const [showLoading, setshowLoading] = useState(false)
     const { obtenerArticulo, obtenerArticulos, actualizarArticulo, startRegisterArticulos, articulo } = useInventarioStore()
@@ -56,7 +62,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             onResetForm,
             onInputChangeReact
         } = useForm(data?data:registerArticulo)
-    const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
+    const { formState: formStateAvatar, onFileChange: onRegisterFileChange, onResetForm:resetFile } = useForm(registerImgAvatar)
     const [costo_total_s, setcosto_total_s] = useState(0)
     const [costo_total_d, setcosto_total_d] = useState(0)
         useEffect(() => {
@@ -81,6 +87,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 setshowLoading(true)
                 await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, etiquetas_busquedas, data.id, selectedAvatar, id_enterprice)
                 setshowLoading(false)
+                resetFile()
                 // console.log("sin ");
                 // const arrayCompare = compararArrays(data?.dataEtiquetasxIdEntidadGrupo, etiquetas_busquedas)
                 // console.log({arrayCompare});
@@ -91,6 +98,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             }
             setshowLoading(true)
             await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, etiquetas_busquedas, id_enterprice, selectedAvatar)
+            resetFile()
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()
@@ -108,9 +116,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             onResetForm()
             onHide()
         }
-        const onPostOption = ()=>{
-
-        }
+        console.log({formStateAvatar});
+        
   return (
     <>
     {(showLoading)?(
@@ -145,7 +152,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                         <ComponentSelect 
                                         options={dataEtiquetasBusqueda}
                                         onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
-                                        postOptions={onPostOption}
+                                        // postOptions={onPostOption}
                                         value={etiquetas_busquedas}
                                         name="etiquetas_busquedas"
                                         />
@@ -156,7 +163,15 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                         <label htmlFor="imgAvatar_BASE64" className="form-label">
                                             FOTO DEL ARTICULO
                                         </label>
-                                        <input
+                                        <ImagenUploader 
+                                          name="imgAvatar_BASE64"
+                                          value={formStateAvatar.imgAvatar_BASE64}
+                                          onChange={(e)=>{
+                                            onRegisterFileChange(e)
+                                            ViewDataImg(e)
+                                        }}
+                                        />
+                                        {/* <input
                                                 className="form-control"
                                                 type='file'
                                                 accept="image/*"
@@ -165,7 +180,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                     onRegisterFileChange(e)
                                                     ViewDataImg(e)
                                                 }} 
-                                            />
+                                            /> */}
+                                            
                                     </div>
                                 </Col>
                                 <Col lg={4}>    

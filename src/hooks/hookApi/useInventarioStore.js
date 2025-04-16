@@ -109,6 +109,13 @@ export const useInventarioStore = () => {
 		try {
 			setstatus('loading');
 			const { data } = await PTApi.get(`/inventario/obtener-articulo/${id}`);
+			console.log(data, 'dattaaaa');
+
+			const { data: dataImg } = await PTApi.get(
+				`/storage/blob/upload/get-upload/${data?.articulo?.uid_image}`
+			);
+			console.log(dataImg, 'dataimgggg');
+
 			const dataEtiquetasxIdEntidadGrupo = await getEtiquetasxIdEntidadGrupo(
 				'articulo',
 				'etiqueta_busqueda',
@@ -120,6 +127,7 @@ export const useInventarioStore = () => {
 			setArticulo({
 				...data.articulo,
 				etiquetas_busquedas: dataEtiquetasxIdEntidadGrupo,
+				dataImg,
 				// dataEtiquetasxIdEntidadGrupo: dataEtiquetasxIdEntidadGrupo,
 			});
 			setdataEtiquetaxIdEntidadGrupo(dataEtiquetasxIdEntidadGrupo);
@@ -174,7 +182,6 @@ export const useInventarioStore = () => {
 			setIsLoading(true);
 			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, formState);
 			await putEtiquetaxEntidadxGrupo('articulo', 'etiqueta_busqueda', id, etiquetas);
-			console.log(selectedFile, 'seee');
 
 			if (selectedFile) {
 				const formData = new FormData();

@@ -51,7 +51,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             onResetForm,
             onInputChangeReact
         } = useForm(data?data:registerArticulo)
-    const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
+    const { formState: formStateAvatar, onFileChange: onRegisterFileChange, onResetForm:onResetFormAvatar } = useForm(registerImgAvatar)
     const [costo_total_s, setcosto_total_s] = useState(0)
     const [costo_total_d, setcosto_total_d] = useState(0)
         useEffect(() => {
@@ -79,17 +79,19 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 setshowLoading(true)
                 await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], data.id, selectedAvatar, id_enterprice)
                 setshowLoading(false)
+                onResetFormAvatar()
                 // console.log("sin ");
                 // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
                 onClickCancelModal()
                 return;
             }
             setshowLoading(true)
-            console.log(id_enterprice, "idddd?");
-            console.log({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], id_enterprice, selectedAvatar);
+            // console.log(id_enterprice, "idddd?");
+            // console.log({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], id_enterprice, selectedAvatar);
             
             await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], id_enterprice, selectedAvatar)
             setshowLoading(false)
+            onResetFormAvatar()
             // showToast(objetoToast);
             onClickCancelModal()
         }
