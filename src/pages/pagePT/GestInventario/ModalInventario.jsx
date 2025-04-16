@@ -33,9 +33,6 @@ const registerImgAvatar={
 export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice, id_zona}) => {
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const [selectedAvatar, setselectedAvatar] = useState(null)
-    const resetAvatar = ()=>{
-        setSelectedFile(sinAvatar)
-    }
     const [showLoading, setshowLoading] = useState(false)
     const { obtenerArticulo, obtenerArticulos, actualizarArticulo, startRegisterArticulos, articulo } = useInventarioStore()
     const { DataGeneral:dataMarcas, obtenerParametroPorEntidadyGrupo:obtenerMarcas } = useTerminoStore()
@@ -59,15 +56,12 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             onResetForm,
             onInputChangeReact
         } = useForm(data?data:registerArticulo)
-        
-  const [EtiquetasBusqueda, setEtiquetasBusqueda] = useState([]);
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
     const [costo_total_s, setcosto_total_s] = useState(0)
     const [costo_total_d, setcosto_total_d] = useState(0)
         useEffect(() => {
             setcosto_total_s(Number(costo_unitario_soles*cantidad) + Number(mano_obra_soles))
         }, [costo_unitario_soles, cantidad, mano_obra_soles])
-
         useEffect(() => {
             setcosto_total_d(Number(costo_unitario_dolares*cantidad) + Number(mano_obra_dolares))
         }, [costo_unitario_dolares, cantidad, mano_obra_dolares])

@@ -75,7 +75,7 @@ export const useInventarioStore = () => {
 					formData
 				);
 			}
-			if(etiquetas_busquedas.length>0){
+			if (etiquetas_busquedas.length > 0) {
 				postEtiquetaxEntidadxGrupo(
 					'articulo',
 					'etiqueta_busqueda',
@@ -100,8 +100,6 @@ export const useInventarioStore = () => {
 					...m,
 				};
 			});
-			console.log(articulos, 'carlos');
-
 			dispatch(onSetDataView(articulos));
 		} catch (error) {
 			console.log(error);
@@ -176,6 +174,7 @@ export const useInventarioStore = () => {
 			setIsLoading(true);
 			const { data } = await PTApi.put(`/inventario/update-articulo/${id}`, formState);
 			await putEtiquetaxEntidadxGrupo('articulo', 'etiqueta_busqueda', id, etiquetas);
+			console.log(selectedFile, 'seee');
 
 			if (selectedFile) {
 				const formData = new FormData();
