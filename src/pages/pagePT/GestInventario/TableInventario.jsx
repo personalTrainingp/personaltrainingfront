@@ -27,6 +27,7 @@ import { Image } from 'primereact/image';
 import sinImage from '@/assets/images/SinImage.jpg'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { TabPanel, TabView } from 'primereact/tabview';
+import { ModalAgrupadoxEtiquetas } from './ModalAgrupadoxEtiquetas';
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
     locale('es')
@@ -419,6 +420,16 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         
         // Si quieres que "todos" esté al inicio:
         groupedData.unshift(todosGroup);
+
+        const [dataAgrupadoEtiquetas, setdataAgrupadoEtiquetas] = useState([])
+        const [isOpenModalAgruparxEtiquetas, setisOpenModalAgruparxEtiquetas] = useState(false)
+        const onOpenModalAgrupadoxEtiquetas = (data)=>{
+            setisOpenModalAgruparxEtiquetas(true)
+            setdataAgrupadoEtiquetas(data)
+        }
+        const onCloseModalAgrupadoxEtiquetas = ()=>{
+            setisOpenModalAgruparxEtiquetas(false)
+        }
     return (
         <>
                     <div>
@@ -437,6 +448,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                             groupedData.map(g=>{
                                 return (
                                     <TabPanel header={g.lugar}>
+                                        <Button label='POR ETIQUETAS' text onClick={()=>onOpenModalAgrupadoxEtiquetas(agruparXetiquetas(g.items))}/>
                                         <DataTable  
                                             className='dataTable-verticals-lines dataTable-inventario'
                                             value={g.items} 
@@ -480,6 +492,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                     </TabView>
             <ModalInventario id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/>
+            <ModalAgrupadoxEtiquetas show={isOpenModalAgruparxEtiquetas} onHide={onCloseModalAgrupadoxEtiquetas} data={dataAgrupadoEtiquetas}/>
             </>
     );
 }
@@ -491,3 +504,26 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
 
 
 
+function agruparXetiquetas(arrayOriginal) {
+    
+    // Creamos un objeto para agrupar por etiquetas
+    const agrupadoPorEtiqueta = {};
+    // Recorrer cada objeto del array original
+    arrayOriginal.forEach(item => {
+    // Por cada etiqueta del objeto
+    item.etiquetas_busquedas.forEach(etiqueta => {
+        // Si la etiqueta aún no existe en el objeto acumulador, la creamos
+        if (!agrupadoPorEtiqueta[etiqueta.label]) {
+        agrupadoPorEtiqueta[etiqueta.label] = {
+            etiqueta_busqueda: etiqueta.label,
+            items: []
+        };
+        }
+        // Agregamos el objeto actual al array de items de la etiqueta correspondiente
+        agrupadoPorEtiqueta[etiqueta.label].items.push(item);
+    });
+    });
+    // Convertimos el objeto agrupado en un array
+    const nuevoArray = Object.values(agrupadoPorEtiqueta);
+    return nuevoArray;
+}
