@@ -116,7 +116,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             onResetForm()
             onHide()
         }
-        console.log({formStateAvatar});
         
   return (
     <>

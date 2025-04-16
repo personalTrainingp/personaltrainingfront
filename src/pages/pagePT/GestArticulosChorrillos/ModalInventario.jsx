@@ -63,15 +63,16 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         }, [costo_unitario_dolares, cantidad, mano_obra_dolares])
         
         useEffect(() => {
-            obtenerArticulos(id_enterprice, true)
-            obtenerZonas(id_enterprice)
-            obtenerMarcas('articulo', 'marca')
-        }, [])
+            if(show){
+                obtenerArticulos(id_enterprice)
+                obtenerZonas(id_enterprice)
+                obtenerMarcas('articulo', 'marca')
+            }
+        }, [show])
         
         
         const submitGasto = async(e)=>{
             e.preventDefault()
-            console.log("holaa cho");
             
             if(data){
                 // console.log("con");
