@@ -82,6 +82,8 @@ export const ModalAgrupadoxEtiquetas = ({show, onHide, data}) => {
                                                     </Card.Text>
                                                     <Card.Link href="#"><span className='text-black underline'>UBICACION:</span> <span className='fw-bold text-primary'>{i.parametro_lugar_encuentro?.label_param} - NIVEL <span className='fs-4'>{i.parametro_lugar_encuentro?.nivel?.split(' ')[0]}</span> <span className='fs-6'>{i.parametro_lugar_encuentro?.nivel?.split(' ')[1]}</span></span></Card.Link>
                                                     <br/>
+                                                    <Card.Link href="#"><span className='text-black underline'>MARCA:</span> <span className='fw-bold text-primary'>{i.parametro_marca?.label_param}</span></Card.Link>
+                                                    <br/>
                                                     <Card.Link href="#"><span className='text-black underline'>CANTIDAD:</span> <span className='fw-bold text-primary'>{i.cantidad}</span></Card.Link>
                                                     <br/>
                                                     <Card.Link href="#"><span className='text-black underline'>COSTO UNITARIO SOLES:</span> <span className='fw-bold text-primary'><SymbolSoles numero={<NumberFormatMoney amount={i.costo_unitario_soles}/>} fontSizeS={'10'} bottomClasss={'7'}/></span></Card.Link>
