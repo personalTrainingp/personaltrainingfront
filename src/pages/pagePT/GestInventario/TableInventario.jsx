@@ -21,16 +21,19 @@ import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
 import { Card, Col, Modal, Row } from 'react-bootstrap';
 import { ModalImportadorData } from './BtnImportarData/ModalImportadorData';
-import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore';
+// import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore';
 import config from '@/config';
 import { Image } from 'primereact/image';
 import sinImage from '@/assets/images/SinImage.jpg'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ModalAgrupadoxEtiquetas } from './ModalAgrupadoxEtiquetas';
+import { useInventarioStore } from './hook/useInventarioStore';
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
     locale('es')
+    const dt = useRef(null);
+    const [first, setFirst] = useState(0); // fila inicial (ej: página 2 es fila 10 si tienes rows=5)
     const [customers, setCustomers] = useState([]);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -41,6 +44,12 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const [valueFilter, setvalueFilter] = useState([])
     useEffect(() => {
         obtenerArticulos(id_enterprice)
+        
+        dt.current?.filter(globalFilterValue, 'global', 'contains');
+        console.log(globalFilterValue);
+        // setTimeout(() => {
+        //     setGlobalFilterValue((prev) => prev); // Forzar re-render y reaplicar filtro
+        // }, 0);
         // obtenerProveedoresUnicos()
     }, [id_enterprice])
         useEffect(() => {
@@ -451,6 +460,8 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                         <Button label='POR ETIQUETAS' text onClick={()=>onOpenModalAgrupadoxEtiquetas(agruparXetiquetas(g.items))}/>
                                         <DataTable  
                                             className='dataTable-verticals-lines dataTable-inventario'
+                                            first={first}
+                                            onPage={(e) => setFirst(e.first)}
                                             value={g.items} 
                                             paginator 
                                             header={header}

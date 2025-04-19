@@ -81,14 +81,10 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], data.id, selectedAvatar, id_enterprice)
                 setshowLoading(false)
                 onResetFormAvatar()
-                // console.log("sin ");
-                // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
                 onClickCancelModal()
                 return;
             }
             setshowLoading(true)
-            // console.log(id_enterprice, "idddd?");
-            // console.log({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], id_enterprice, selectedAvatar);
             
             await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], id_enterprice, selectedAvatar)
             setshowLoading(false)

@@ -1,9 +1,9 @@
 import { PTApi } from '@/common/api/';
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { onSetDataView } from '@/store/data/dataSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
-import { useTerminoStore } from './useTerminoStore';
 
 export const useInventarioStore = () => {
 	const dispatch = useDispatch();
@@ -18,6 +18,7 @@ export const useInventarioStore = () => {
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [dataFechas, setdataFechas] = useState([]);
+	const [articulos, setarticulos] = useState([])
 	const [articulo, setArticulo] = useState({
 		// id: 0,
 		// producto: '',
@@ -83,7 +84,7 @@ export const useInventarioStore = () => {
 				);
 			}
 			setIsLoading(false);
-			await obtenerArticulos(id_enterprice);
+			// await obtenerArticulos(id_enterprice);
 			setmessage({ msg: data.msg, ok: data.ok });
 		} catch (error) {
 			console.log(error);
