@@ -89,17 +89,11 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         const submitGasto = async(e)=>{
             e.preventDefault()
             if(data){
-                // console.log("con");
                 
                 setshowLoading(true)
                 await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, etiquetas_busquedas, data.id, selectedAvatar, id_enterprice)
                 setshowLoading(false)
                 resetAvatar()
-                // console.log("sin ");
-                // const arrayCompare = compararArrays(data?.dataEtiquetasxIdEntidadGrupo, etiquetas_busquedas)
-                // console.log({arrayCompare});
-                
-                // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
                 onClickCancelModal()
                 return;
             }
@@ -187,8 +181,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                     value={etiquetas_busquedas}
                                                     name="etiquetas_busquedas"
                                                 />
-                                                {/* <ComponentSelect 
-                                                /> */}
                                             </div>
                                         </Col>
                                         <Col lg={4}>    
