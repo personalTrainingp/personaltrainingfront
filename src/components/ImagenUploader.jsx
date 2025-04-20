@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-export const ImagenUploader = ({ accept = 'image/*', onChange, name, value }) => {
+export const ImagenUploader = ({ accept = 'image/*', height='100%', onChange, name, value }) => {
   const inputRef = useRef(null);
   const dropZoneRef = useRef(null);
   const [preview, setPreview] = useState(null);
@@ -89,7 +89,7 @@ export const ImagenUploader = ({ accept = 'image/*', onChange, name, value }) =>
           src={preview}
           alt="preview"
           style={{
-            height: '100%',
+            height: height,
             width: '100%',
             objectFit: 'contain',
           }}

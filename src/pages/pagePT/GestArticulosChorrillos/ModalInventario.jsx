@@ -6,13 +6,15 @@ import React, { useEffect, useState } from 'react'
 import { Button, Col, Modal, ModalBody, Row } from 'react-bootstrap'
 import Select from 'react-select'
 import { NumberFormatMoney } from '@/components/CurrencyMask';
+import config from '@/config';
+import { ImagenUploader } from '@/components/ImagenUploader';
 const registerArticulo={
     producto: '',
     id_marca: '',
     id_lugar: 0,
     fecha_entrada: '',
     cantidad: 1,
-    costo_unitario: 0,
+    costo_unitario_soles: 0,
     costo_unitario_dolares: 0,
     mano_obra_dolares: 0,
     mano_obra_soles: 0,
@@ -29,7 +31,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
     const [selectedAvatar, setselectedAvatar] = useState(null)
     
     const resetAvatar = ()=>{
-        setSelectedFile(sinAvatar)
+        setSelectedFile(null)
+        setselectedAvatar(null)
     }
     const [showLoading, setshowLoading] = useState(false)
     const { obtenerArticulo, obtenerArticulos, actualizarArticulo, startRegisterArticulos, articulo } = useInventarioStore()
@@ -40,13 +43,14 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             producto,
             id_marca,
             cantidad,
-            costo_unitario,
+            costo_unitario_soles,
             costo_unitario_dolares,
             mano_obra_soles,
             mano_obra_dolares,
-            fecha_entrada,
+            // fecha_entrada,
             descripcion,
             id_lugar,
+            // etiquetas_busquedas,
             onInputChange,  
             onResetForm,
             onInputChangeReact
@@ -55,8 +59,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
     const [costo_total_s, setcosto_total_s] = useState(0)
     const [costo_total_d, setcosto_total_d] = useState(0)
         useEffect(() => {
-            setcosto_total_s(Number(costo_unitario*cantidad) + Number(mano_obra_soles))
-        }, [costo_unitario, cantidad, mano_obra_soles])
+            setcosto_total_s(Number(costo_unitario_soles*cantidad) + Number(mano_obra_soles))
+        }, [costo_unitario_soles, cantidad, mano_obra_soles])
 
         useEffect(() => {
             setcosto_total_d(Number(costo_unitario_dolares*cantidad) + Number(mano_obra_dolares))
@@ -64,7 +68,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
         
         useEffect(() => {
             if(show){
-                obtenerArticulos(id_enterprice)
+                // obtenerArticulos(id_enterprice)
                 obtenerZonas(id_enterprice)
                 obtenerMarcas('articulo', 'marca')
             }
@@ -75,20 +79,19 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             e.preventDefault()
             
             if(data){
-                // console.log("con");
                 
                 setshowLoading(true)
                 await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], data.id, selectedAvatar, id_enterprice)
+                resetAvatar()
                 setshowLoading(false)
-                onResetFormAvatar()
                 onClickCancelModal()
                 return;
             }
             setshowLoading(true)
             
             await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, [], id_enterprice, selectedAvatar)
+            resetAvatar()
             setshowLoading(false)
-            onResetFormAvatar()
             // showToast(objetoToast);
             onClickCancelModal()
         }
@@ -106,6 +109,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             onResetForm()
             onHide()
         }
+        
   return (
     <>
     {(showLoading)?(
@@ -137,16 +141,15 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                         <label htmlFor="imgAvatar_BASE64" className="form-label">
                                             FOTO DEL ARTICULO
                                         </label>
-                                        <input
-                                                className="form-control"
-                                                type='file'
-                                                accept="image/*"
-                                                name="imgAvatar_BASE64"
-                                                onChange={(e)=>{
-                                                    onRegisterFileChange(e)
-                                                    ViewDataImg(e)
-                                                }} 
-                                            />
+                                        <ImagenUploader
+                                            name="imgAvatar_BASE64"
+                                            value={`${config.API_IMG.AVATAR_ARTICULO}${data?.dataImg?.name_image}`}
+                                            height='300px'
+                                            onChange={(e)=>{
+                                            onRegisterFileChange(e)
+                                            ViewDataImg(e)
+                                            }}
+                                        />
                                     </div>
                                 </Col>
                                 <Col lg={4}>    
@@ -234,16 +237,16 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             />
                                     </div>
                                 </Col>
-                                {/* <Col lg={4}>
+                                <Col lg={4}>
                                     <div className="mb-4">
-                                        <label htmlFor="costo_unitario" className="form-label">
+                                        <label htmlFor="costo_unitario_soles" className="form-label">
                                             COSTO UNITARIO SOLES
                                         </label>
                                         <input
                                                 className="form-control"
-                                                name="costo_unitario"
-                                                id="costo_unitario"
-                                                value={costo_unitario}
+                                                name="costo_unitario_soles"
+                                                id="costo_unitario_soles"
+                                                value={costo_unitario_soles}
                                                 onChange={onInputChange}
                                                 placeholder=""
                                             />
@@ -279,6 +282,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             />
                                     </div>
                                 </Col>
+                                {/* 
                                 */}
                                 <Col lg={12}>
                                     <div className="mb-4">

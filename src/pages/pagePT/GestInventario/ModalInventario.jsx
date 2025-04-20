@@ -47,6 +47,11 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
     
     // const { DataGeneral:dataLugares, obtenerParametroPorEntidadyGrupo:obtenerLugares } = useTerminoStore()
     const { obtenerZonas, dataZonas } =  useTerminoStore()
+    
+    const resetAvatar = ()=>{
+        setSelectedFile(null)
+        setselectedAvatar(null)
+    }
     const { formState, 
             producto,
             id_marca,
@@ -89,7 +94,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 setshowLoading(true)
                 await actualizarArticulo({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, etiquetas_busquedas, data.id, selectedAvatar, id_enterprice)
                 setshowLoading(false)
-                resetFile()
+                resetAvatar()
                 // console.log("sin ");
                 // const arrayCompare = compararArrays(data?.dataEtiquetasxIdEntidadGrupo, etiquetas_busquedas)
                 // console.log({arrayCompare});
@@ -100,7 +105,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             }
             setshowLoading(true)
             await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, etiquetas_busquedas, id_enterprice, selectedAvatar)
-            resetFile()
+            resetAvatar()
             setshowLoading(false)
             // showToast(objetoToast);
             onClickCancelModal()
