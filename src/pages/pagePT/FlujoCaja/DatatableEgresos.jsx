@@ -1,0 +1,147 @@
+import React, { useEffect, useState } from 'react'
+import { useFlujoCajaStore } from './hook/useFlujoCajaStore'
+import { Table } from 'react-bootstrap'
+import { NumberFormatMoney } from '@/components/CurrencyMask'
+import { ModalDetallexCelda } from './ModalDetallexCelda'
+
+export const DatatableEgresos = ({id_enterprice, anio}) => {
+        const [dataModal, setdataModal] = useState({})
+            const [isOpenModalDetallexCelda, setisOpenModalDetallexCelda] = useState(false)
+    const  { obtenerGastosxANIO, dataGastosxANIO } = useFlujoCajaStore()
+    useEffect(() => {
+        obtenerGastosxANIO(anio, id_enterprice)
+    }, [id_enterprice, anio])
+    
+    // Función para sumar los monto_total por cada mes
+    function sumarMontosPorMes(datos, grupo) {
+        const mesesSuma = [];
+        // Inicializamos el arreglo de meses con los valores en cero
+        for (let i = 1; i <= 12; i++) {
+        mesesSuma.push({ mes: i, monto_total: 0 });
+        }
+    
+        // Recorremos cada concepto y sumamos los montos por mes
+        datos.forEach(concepto => {
+        concepto.items.forEach(item => {
+            const mesIndex = item.mes - 1; // Los índices de los meses van de 0 a 11
+            mesesSuma[mesIndex].monto_total += item.monto_total;
+        });
+        });
+    
+        return { grupo, meses: mesesSuma };
+    }
+    
+    const onCloseModalDetallexCelda = ()=>{
+        setisOpenModalDetallexCelda(false)
+        setdataModal([])
+    }
+    
+    const onOpenModalDetallexCelda = (data)=>{
+        setisOpenModalDetallexCelda(true)        
+        setdataModal(data)
+    }
+  return (
+    <>
+    
+                    {
+                        dataGastosxANIO.map((g, i)=>{
+                            
+                            const resultadoFinal = sumarMontosPorMes(g.conceptos, g.grupo);
+                            
+                            return(
+                            <Table
+                            striped
+                            className="table-centered mb-0"
+                            // hover
+    
+                            responsive
+                        >
+                            <thead className="bg-primary">
+                                <tr>
+                                <th className='text-primary fs-2'><span className='bg-white p-1 rounded rounded-3' style={{width: '260px'}}>{i+1}. {g.grupo}</span></th>
+                                <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>ABRIL <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>MAYO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>JUNIO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>JULIO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>AGOSTO <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>SEPTIEMBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>OCTUBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>NOVIEMBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>DICIEMBRE <span className='w-100 float-end'></span></th>
+                                <th className='text-white text-center p-1'>TOTAL <span className='w-100 float-end'></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    g.conceptos.map((c, index)=>(
+                                        <tr>
+                                            <td className='fw-bold fs-4'><div style={{width: '250px'}}>{index+1}. {c.concepto}</div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda({...c.items[0], concepto: c.concepto, grupo: g.grupo})}><NumberFormatMoney amount={c.items[0].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda({...c.items[1], concepto: c.concepto, grupo: g.grupo})}><NumberFormatMoney amount={c.items[1].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda({...c.items[2], concepto: c.concepto, grupo: g.grupo})}><NumberFormatMoney amount={c.items[2].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda({...c.items[3], concepto: c.concepto, grupo: g.grupo})}><NumberFormatMoney amount={c.items[3].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda({...c.items[4], concepto: c.concepto, grupo: g.grupo})}><NumberFormatMoney amount={c.items[4].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda({...c.items[5], concepto: c.concepto, grupo: g.grupo})}><NumberFormatMoney amount={c.items[5].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda({...c.items[6], concepto: c.concepto, grupo: g.grupo})}><NumberFormatMoney amount={c.items[6].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda({...c.items[7], concepto: c.concepto, grupo: g.grupo})}><NumberFormatMoney amount={c.items[7].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda({...c.items[8], concepto: c.concepto, grupo: g.grupo})}><NumberFormatMoney amount={c.items[8].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda({...c.items[9], concepto: c.concepto, grupo: g.grupo})}><NumberFormatMoney amount={c.items[9].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda(c.items[10])}><NumberFormatMoney amount={c.items[10].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda(c.items[11])}><NumberFormatMoney amount={c.items[11].monto_total}/></div></td>
+                                            <td className='text-center'><div className='cursor-text-primary' onClick={()=>onOpenModalDetallexCelda(c.items[12])}><NumberFormatMoney amount={
+                                                                                                    c.items[0].monto_total+
+                                                                                                    c.items[1].monto_total+
+                                                                                                    c.items[2].monto_total+
+                                                                                                    c.items[3].monto_total+
+                                                                                                    c.items[4].monto_total+
+                                                                                                    c.items[5].monto_total+
+                                                                                                    c.items[6].monto_total+
+                                                                                                    c.items[7].monto_total+
+                                                                                                    c.items[8].monto_total+
+                                                                                                    c.items[9].monto_total+
+                                                                                                    c.items[10].monto_total+
+                                                                                                    c.items[11].monto_total}/></div></td>
+                                        </tr>
+                                    )
+                                    )
+                                }
+                                <tr>
+                                    <td className='fw-bolder h4'>TOTAL</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[0].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[1].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[2].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[3].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[4].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[5].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[6].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[7].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[8].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[9].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[10].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={resultadoFinal.meses[11].monto_total}/>}</td>
+                                    <td className='text-center fw-bolder h4'>{<NumberFormatMoney amount={
+                                                                                            resultadoFinal.meses[0].monto_total+
+                                                                                            resultadoFinal.meses[1].monto_total+
+                                                                                            resultadoFinal.meses[2].monto_total+
+                                                                                            resultadoFinal.meses[3].monto_total+
+                                                                                            resultadoFinal.meses[4].monto_total+
+                                                                                            resultadoFinal.meses[5].monto_total+
+                                                                                            resultadoFinal.meses[6].monto_total+
+                                                                                            resultadoFinal.meses[7].monto_total+
+                                                                                            resultadoFinal.meses[8].monto_total+
+                                                                                            resultadoFinal.meses[9].monto_total+
+                                                                                            resultadoFinal.meses[10].monto_total+
+                                                                                            resultadoFinal.meses[11].monto_total
+                                                                                            }/>}</td>
+                                </tr>
+                            </tbody>
+                            </Table>
+                        )})
+                    }
+                        <ModalDetallexCelda data={dataModal} onHide={onCloseModalDetallexCelda} show={isOpenModalDetallexCelda}/>
+    </>
+  )
+}

@@ -42,6 +42,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
+    const [search, setSearch] = useState('');
     useEffect(() => {
         obtenerArticulos(id_enterprice)
         
@@ -186,6 +187,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         );
     }
 
+
     const initFilters = () => {
         setFilters({
             global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -213,16 +215,12 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const renderHeader = () => {
         return (
             <div className="d-flex justify-content-between">
-                <div className='d-flex'>
-                    <IconField iconPosition="left">
-                        <InputIcon className="pi pi-search" />
-                        <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Buscador general" />
-                    </IconField>
-                </div>
-                <div className='d-flex'>
-                    <Button label="IMPORTAR" icon='pi pi-file-import' onClick={onOpenModalImportadorData} text/>
-                    <ExportToExcel data={valueFilter}/>
-                </div>
+                      <InputText
+                        placeholder="Buscar..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="mb-3"
+                    />
             </div>
         );
     };
@@ -455,14 +453,21 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                     <TabView>
                         {
                             groupedData.map(g=>{
+                                
+                                const filterData = g.items.filter((item) =>
+                                    Object.values(item).some((value) =>
+                                    String(value).toLowerCase().includes(search.toLowerCase())
+                                    )
+                                );
                                 return (
                                     <TabPanel header={g.lugar}>
                                         <Button label='POR ETIQUETAS' text onClick={()=>onOpenModalAgrupadoxEtiquetas(agruparXetiquetas(g.items))}/>
+                                            
                                         <DataTable  
                                             className='dataTable-verticals-lines dataTable-inventario'
                                             first={first}
                                             onPage={(e) => setFirst(e.first)}
-                                            value={g.items} 
+                                            value={filterData} 
                                             paginator 
                                             header={header}
                                             rows={10} 

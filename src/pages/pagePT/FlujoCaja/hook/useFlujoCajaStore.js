@@ -28,11 +28,9 @@ export const useFlujoCajaStore = () => {
 	};
 	const obtenerGastosxANIO = async (anio, enterprice) => {
 		try {
-			const { data } = await PTApi.get(`/flujo-caja/get-gasto-x-grupo/${enterprice}`, {
-				params: {
-					anio,
-				},
-			});
+			const { data } = await PTApi.get(`/flujo-caja/get-gasto-x-grupo/${enterprice}/${anio}`);
+			console.log(data, 'gastooo');
+
 			setdataGastosxANIO(ordenarDatosPorGrupo(data.gastos, []));
 		} catch (error) {
 			console.log(error);

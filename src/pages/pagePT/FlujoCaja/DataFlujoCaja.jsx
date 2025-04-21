@@ -349,8 +349,6 @@ sumarIngresosXmes(12)
                     </tbody>
                 </Table>
             </Card>
-            {/* <h4 className="text-center">APORTES</h4>
-            <Card></Card> */}
             <h4 className="text-center h2">EGRESOS <span className='ml-3'><SymbolSoles isbottom={false} classN={'mb-4'}/></span></h4>
             <Card>
                 {
