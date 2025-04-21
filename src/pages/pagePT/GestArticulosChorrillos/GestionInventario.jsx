@@ -8,9 +8,16 @@ export const GestionInventario = () => {
   return (
     <>
     
-    <PageBreadcrumb title={'INVENTARIO DE CHORRILLOS'} subName={'T'}/>
+    <PageBreadcrumb title={'INVENTARIOS'} subName={'T'}/>
     <Card className='p-4 m-2'>
+    <TabView>
+      <TabPanel header={'CHORRILLOS'}>
               <DataInventario id_enterprice={601}/>
+      </TabPanel>
+      <TabPanel header={'REDUCTO INVENTARIO TOTAL'}>
+              <DataInventario id_enterprice={599}/>
+      </TabPanel>
+    </TabView>
     </Card>
     </>
   )

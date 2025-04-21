@@ -94,7 +94,60 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                             ))
                                         }
                                     </tbody>
-                                    
+                                    <tr className='bg-primary text-white'>
+                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '350px'}}></div></td>
+                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '200px', color: '#FFF'}}>CANTIDAD</div></td>
+                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>INVERSION S/.</div></td>
+                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>INVERSION <SymbolDolar/></div></td>
+                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>MANO DE OBRA S/.</div></td>
+                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>MANO DE OBRA <SymbolDolar/> </div></td>
+                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>INVERSION TOTAL S/.</div></td>
+                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>INVERSION TOTAL <SymbolDolar/></div></td>
+                                            {/* <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}><div style={{width: '80px'}}>t.c</div></th> */}
+                                            {/* <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}>P.C</th> */}
+                                        </tr>
+                                    {/* <tr className='bg-primary text-white'>
+                                                                                                                        <td>
+                                                                                                                        </td>
+                                                                                                                        <td>
+                                                                                                                            <span className='text-white fs-3 fw-bold ml-7'>
+                                                                                                                            CANT.
+                                                                                                                            </span>
+                                                                                                                        </td>
+                                                                                                                        <td>
+                                                                                                                            <span className='text-white fs-3 fw-bold'>
+                                                                                                                            	    INVERSION S/.
+                                                                                                                            </span>
+                                                                                                                        </td>
+                                                                                                                        <td>
+                                                                                                                            <span className='fw-bold ' style={{color: '#1E8727', fontSize: '25px'}}>
+                                                                                                                            INVERSION $.
+                                                                                                                            </span>
+                                                                                                                        </td>
+                                                                                                                        <td>
+                                                                                                                            <span className='text-white fs-3 fw-bold'>
+                                                                                                                            MANO DE OBRA S/.
+                                                                                                                            
+                                                                                                                            </span>
+                                                                                                                        </td>
+                                                                                                                        <td>
+                                                                                                                            <span className='fw-bold ' style={{color: '#1E8727', fontSize: '25px'}}>
+                                                                                                                            MANO DE OBRA $.
+                                                                                                                            </span>
+                                                                                                                        </td>
+                                                                                                                        <td>
+                                                                                                                            <span className='text-white fs-3 fw-bold'>
+                                                                                                                            INVERSION TOTAL S/.
+                                                                                                                            </span>
+                                                                                                                        </td>
+                                                                                                                        <td>
+                                                                                                                            <span className='fw-bold ' style={{color: '#1E8727', fontSize: '25px'}}>
+                                                                                                                            INVERSION TOTAL $.
+                                                                                                                            </span>
+                                                                                                                        </td>
+                                                                                                                    </tr> */}
+
+
                                                                                                             <tr className='bg-primary text-white'>
                                                                                                                         <td>
                                                                                                                             <span className='text-white fs-2 fw-bold'>
@@ -103,33 +156,27 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                                                                                                             
                                                                                                                             <br/>
                                                                                                                                 <span className='text-white fs-2 fw-bold'>
-                                                                                                                                    {/* TC: 3.74 */}
                                                                                                                                 </span>
                                                                                                                         </td>
                                                                                                                         <td>
                                                                                                                             <span className='text-white fs-2 fw-bold ml-7'>
-                                                                                                                            {/* <SymbolDolar numero={}/>  */}
                                                                                                                             <NumberFormatter amount={groupedData.reduce((total, item) => total + (item.cantidad || 0), 0)}/>
                                                                                                                             </span>
                                                                                                                             
                                                                                                                             <br/>
                                                                                                                                 <span className='text-white fs-2 fw-bold'>
-                                                                                                                                    {/* TC: 3.74 */}
                                                                                                                                 </span>
                                                                                                                         </td>
                                                                                                                         <td>
                                                                                                                             <span className='text-white fs-2 fw-bold'>
-                                                                                                                            {/* <SymbolDolar numero={}/>  */}
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_soles-item.mano_obra_total_sumado_soles || 0), 0)}/> 
                                                                                                                             </span>
                                                                                                                                 <br/>
                                                                                                                                 <span className='text-white fs-2 fw-bold'>
-                                                                                                                                    {/* TC: 3.74 */}
                                                                                                                                 </span>
                                                                                                                         </td>
                                                                                                                         <td>
                                                                                                                             <span className='fw-bold ' style={{color: '#1E8727', fontSize: '34px'}}>
-                                                                                                                            {/* <SymbolDolar numero={}/>  */}
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_dolares-item.mano_obra_total_sumado_dolares || 0), 0)}/>
                                                                                                                             </span>
                                                                                                                                 <br/>
@@ -139,17 +186,14 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                                                                                                         </td>
                                                                                                                         <td>
                                                                                                                             <span className='text-white fs-2 fw-bold'>
-                                                                                                                            {/* <SymbolDolar numero={}/>  */}
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.mano_obra_total_sumado_soles || 0), 0)}/> 
                                                                                                                             </span>
                                                                                                                                 <br/>
                                                                                                                                 <span className='text-white fs-2 fw-bold'>
-                                                                                                                                    {/* TC: 3.74 */}
                                                                                                                                 </span>
                                                                                                                         </td>
                                                                                                                         <td>
                                                                                                                             <span className='fw-bold ' style={{color: '#1E8727', fontSize: '34px'}}>
-                                                                                                                            {/* <SymbolDolar numero={}/>  */}
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.mano_obra_total_sumado_dolares || 0), 0)}/>
                                                                                                                             </span>
                                                                                                                                 <br/>
@@ -159,12 +203,10 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                                                                                                         </td>
                                                                                                                         <td>
                                                                                                                             <span className='text-white fs-2 fw-bold'>
-                                                                                                                            {/* <SymbolDolar numero={}/>  */}
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_soles || 0), 0)}/> 
                                                                                                                             </span>
                                                                                                                                 <br/>
                                                                                                                                 <span className='text-white fs-2 fw-bold'>
-                                                                                                                                    {/* TC: 3.74 */}
                                                                                                                                 </span>
                                                                                                                         </td>
                                                                                                                         <td>
@@ -176,8 +218,6 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                                                                                                                     TC: 3.65
                                                                                                                                 </span>
                                                                                                                         </td>
-                                                                                                                        {/* <td>
-                                                                                                                        </td> */}
                                                                                                                     </tr>
                                 </Table>
 							{/* <DataTable 

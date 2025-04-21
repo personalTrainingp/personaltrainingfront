@@ -29,6 +29,7 @@ import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ModalAgrupadoxEtiquetas } from './ModalAgrupadoxEtiquetas';
 import { useInventarioStore } from './hook/useInventarioStore';
+import { ModalItemAgrupadoxEtiquetas } from './ModalItemAgrupadoxEtiquetas';
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
     locale('es')

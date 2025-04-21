@@ -5,12 +5,12 @@ import { Dialog } from 'primereact/dialog'
 import { Image } from 'primereact/image';
 import { TabPanel, TabView } from 'primereact/tabview';
 import React, { useState } from 'react'
-import { Card } from 'react-bootstrap';
+import { Card, Col, Row } from 'react-bootstrap';
+import SimpleBar from 'simplebar-react';
+import { ModalItemAgrupadoxEtiquetas } from './ModalItemAgrupadoxEtiquetas';
 
 export const ModalAgrupadoxEtiquetas = ({show, onHide, data}) => {
-    // const [dataEti, setdataEti] = useState([])
-    // console.log(data, "daaaa");
-    
+    const [filtroProducto, setFiltroProducto] = useState('');
     const imagenBodyTemplate = (tb_images)=>{    
         const images = [...(tb_images || [])];
 
@@ -50,69 +50,63 @@ export const ModalAgrupadoxEtiquetas = ({show, onHide, data}) => {
             </div>
         )
     }
+    console.log(data, "dameeee");
+    
   return (
-    <Dialog header='Agrupado por etiquetas' style={{width: '50rem'}} visible={show} onHide={onHide}>
-        <TabView>
-            {
-                data?.map(d=>{
-                    
-                    return (
-                        <TabPanel header={d.etiqueta_busqueda}>
-                            {
-                                d.items?.map(i=>{
-                                    console.log(i, "iii");
-                                    const costo_total_soles = (i.cantidad*i.costo_unitario_soles)+i.mano_obra_soles
-                                    const costo_total_dolares = (i.cantidad*i.costo_unitario_dolares)+i.mano_obra_dolares
-                                    return (
-                                        <Card style={{ width: '100%' }}>
-                                        <Card.Body>
-                                            <div className='d-flex flex-row'>
-                                                <div className='' style={{width: '30%'}}>
-                                                    {
-                                                        imagenBodyTemplate(i?.tb_images)
-                                                    }
-                                                </div>
-                                                <div className='' style={{width: '70%'}}>
-                                                    <Card.Text>
-                                                        <span className='fw-bold fs-3'>{i.producto}</span>
-                                                        <br/>
-                                                        <span className='text-black underline'>DESCRIPCION</span>
-                                                        <br/>
-                                                        {i.descripcion}
-                                                    </Card.Text>
-                                                    <Card.Link href="#"><span className='text-black underline'>UBICACION:</span> <span className='fw-bold text-primary'>{i.parametro_lugar_encuentro?.label_param} - NIVEL <span className='fs-4'>{i.parametro_lugar_encuentro?.nivel?.split(' ')[0]}</span> <span className='fs-6'>{i.parametro_lugar_encuentro?.nivel?.split(' ')[1]}</span></span></Card.Link>
-                                                    <br/>
-                                                    <Card.Link href="#"><span className='text-black underline'>MARCA:</span> <span className='fw-bold text-primary'>{i.parametro_marca?.label_param}</span></Card.Link>
-                                                    <br/>
-                                                    <Card.Link href="#"><span className='text-black underline'>CANTIDAD:</span> <span className='fw-bold text-primary'>{i.cantidad}</span></Card.Link>
-                                                    <br/>
-                                                    <Card.Link href="#"><span className='text-black underline'>COSTO UNITARIO SOLES:</span> <span className='fw-bold text-primary'><SymbolSoles numero={<NumberFormatMoney amount={i.costo_unitario_soles}/>} fontSizeS={'10'} bottomClasss={'7'}/></span></Card.Link>
-                                                    <br/>
-                                                    <Card.Link href="#"><span className='text-black underline'>MANO DE OBRA SOLES:</span> <span className='fw-bold text-primary'><SymbolSoles numero={<NumberFormatMoney amount={i.mano_obra_soles}/>} fontSizeS={'10'} bottomClasss={'7'}/></span></Card.Link>
-                                                    <br/>
-                                                    <Card.Link href="#"><span className='text-black underline'>COSTO TOTAL SOLES:</span> <span className='fw-bold text-primary'><SymbolSoles numero={<NumberFormatMoney amount={costo_total_soles}/>} fontSizeS={'10'} bottomClasss={'7'}/></span></Card.Link>
-                                                    <br/>
-                                                    <Card.Link href="#"><span className='text-color-dolar underline'>COSTO UNITARIO DOLARES:</span> <span className='fw-bold text-color-dolar'><SymbolDolar numero={<NumberFormatMoney amount={i.costo_unitario_dolares}/>} fontSizeS={'10'} bottomClasss={'7'}/></span></Card.Link>
-                                                    <br/>
-                                                    <Card.Link href="#"><span className='text-color-dolar underline'>MANO DE OBRA DOLARES:</span> <span className='fw-bold text-color-dolar'><SymbolDolar numero={<NumberFormatMoney amount={i.mano_obra_dolares}/>} fontSizeS={'10'} bottomClasss={'7'}/></span></Card.Link>
-                                                    <br/>
-                                                    <Card.Link href="#"><span className='text-color-dolar underline'>COSTO TOTAL DOLARES:</span> <span className='fw-bold text-color-dolar'><SymbolDolar numero={<NumberFormatMoney amount={costo_total_dolares}/>} fontSizeS={'10'} bottomClasss={'7'}/></span></Card.Link>
-                                                    <br/>
-                                                </div>
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                    )
-                                })
-                            }
-                            {
-                                footerAgrupadoxEtiquetas(d.items)
-                            }
-                        </TabPanel>
-                    )
-                })
-            }
-        </TabView>
+    <>
+    <Dialog header='Agrupado por etiquetas' style={{width: '70rem', height: '100rem'}} visible={show} onHide={onHide}>
+        {/* <div className=''>
+
+        </div> */}
+        <Row>
+            <Col lg={12}>
+                <input
+                    type="text"
+                    placeholder="Buscar ETIQUETA..."
+                    className="form-control mb-3"
+                    value={filtroProducto}
+                    onChange={(e) => setFiltroProducto(e.target.value.toLowerCase())}
+                />
+                <SimpleBar style={{maxHeight: '31rem'}}>
+                    <Row>
+                    {
+                        data.filter(d => d.etiqueta_busqueda?.toLowerCase().includes(filtroProducto)).map(d=>{
+                            const sumation = sumarTotales(d.items)
+                            return (
+                                <Col lg={4}>
+                                        <Card style={{height: '90%'}} className='p-2 d-flex justify-content-around flex-column hover-card cursor-pointer'>
+                                            <h4>{d.etiqueta_busqueda}</h4>
+                                            <span className='text-primary fw-bold'>CANTIDAD: {sumation.cantidad}</span>
+                                            <span>COSTO TOTAL SOLES: <SymbolSoles fontSizeS={'font-15'} bottomClasss={8} numero={<NumberFormatMoney amount={sumation.costo_total_soles}/>}/></span>
+                                            <span className='text-color-dolar'>COSTO TOTAL DOLARES: <SymbolDolar fontSizeS={'font-17'} numero={<NumberFormatMoney amount={sumation.costo_total_dolares}/>}/></span>
+                                            <span>MANO DE OBRA SOLES: <SymbolSoles fontSizeS={'font-15'} bottomClasss={8} numero={<NumberFormatMoney amount={sumation.mano_obra_soles}/>}/></span>
+                                            <span className='text-color-dolar'>MANO DE OBRA DOLARES: <SymbolDolar fontSizeS={'font-17'} numero={<NumberFormatMoney amount={sumation.mano_obra_dolares}/>}/></span>
+                                        </Card>
+                                </Col>
+                            )
+                        })
+                    }
+                    </Row>
+
+                </SimpleBar>
+            </Col>
+        </Row>
     </Dialog>
+    <ModalItemAgrupadoxEtiquetas />
+    </>
   )
 }
+function sumarTotales(data) {
+    return data.reduce(
+        (acc, item) => {
+          acc.cantidad += item.cantidad || 0;
+          acc.costo_unitario_soles += item.costo_unitario_soles || 0;
+          acc.costo_total_soles += ((item.cantidad || 0) * (item.costo_unitario_soles || 0))+(item.mano_obra_soles || 0);
+          acc.costo_total_dolares += ((item.cantidad || 0) * (item.costo_unitario_dolares || 0))+(item.mano_obra_dolares || 0);
+          acc.mano_obra_soles += (item.mano_obra_soles || 0);
+          acc.mano_obra_dolares += (item.mano_obra_dolares || 0);
+          return acc;
+        },
+        { cantidad: 0, costo_unitario_soles: 0, costo_total_soles: 0, costo_total_dolares: 0, mano_obra_dolares: 0, mano_obra_soles: 0 }
+      );
+  }

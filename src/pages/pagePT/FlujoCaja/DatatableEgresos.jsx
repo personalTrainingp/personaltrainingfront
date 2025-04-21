@@ -58,7 +58,7 @@ export const DatatableEgresos = ({id_enterprice, anio}) => {
                         >
                             <thead className="bg-primary">
                                 <tr>
-                                <th className='text-primary fs-2'><span className='bg-white p-1 rounded rounded-3' style={{width: '260px'}}>{i+1}. {g.grupo}</span></th>
+                                <th className='text-primary fs-3'><span className='bg-white p-1 rounded rounded-3' style={{width: '260px'}}>{i+1}. {g.grupo}</span></th>
                                 <th className='text-white text-center p-1'>ENERO <span className='w-100 float-end'></span></th>
                                 <th className='text-white text-center p-1'>FEBRERO <span className='w-100 float-end'></span></th>
                                 <th className='text-white text-center p-1'>MARZO <span className='w-100 float-end'></span></th>
