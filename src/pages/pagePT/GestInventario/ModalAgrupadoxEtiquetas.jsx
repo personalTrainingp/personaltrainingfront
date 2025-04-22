@@ -10,6 +10,9 @@ import SimpleBar from 'simplebar-react';
 import { ModalItemAgrupadoxEtiquetas } from './ModalItemAgrupadoxEtiquetas';
 
 export const ModalAgrupadoxEtiquetas = ({show, onHide, data}) => {
+    const [dataEtiquetaxItem, setdataEtiquetaxItem] = useState([])
+    const [nombreEtiquetaSelectionada, setnombreEtiquetaSelectionada] = useState('')
+    const [isOpenModalEtiquetaxItem, setisOpenModalEtiquetaxItem] = useState(false)
     const [filtroProducto, setFiltroProducto] = useState('');
     const imagenBodyTemplate = (tb_images)=>{    
         const images = [...(tb_images || [])];
@@ -50,8 +53,17 @@ export const ModalAgrupadoxEtiquetas = ({show, onHide, data}) => {
             </div>
         )
     }
-    console.log(data, "dameeee");
-    
+    const onOpenModalEtiquetaxItem = (data, nombre_etiqueta)=>{
+        setdataEtiquetaxItem(data)
+        setnombreEtiquetaSelectionada(nombre_etiqueta)
+        setisOpenModalEtiquetaxItem(true)
+    }
+    const onCloseModalEtiquetaxItem = ()=>{
+        setisOpenModalEtiquetaxItem(false)
+    }
+
+
+
   return (
     <>
     <Dialog header='Agrupado por etiquetas' style={{width: '70rem', height: '100rem'}} visible={show} onHide={onHide}>
@@ -74,7 +86,7 @@ export const ModalAgrupadoxEtiquetas = ({show, onHide, data}) => {
                             const sumation = sumarTotales(d.items)
                             return (
                                 <Col lg={4}>
-                                        <Card style={{height: '90%'}} className='p-2 d-flex justify-content-around flex-column hover-card cursor-pointer'>
+                                        <Card onClick={()=>onOpenModalEtiquetaxItem(d.items, d.etiqueta_busqueda)} style={{height: '90%'}} className='p-2 d-flex justify-content-around flex-column hover-card cursor-pointer'>
                                             <h4>{d.etiqueta_busqueda}</h4>
                                             <span className='text-primary fw-bold'>CANTIDAD: {sumation.cantidad}</span>
                                             <span>COSTO TOTAL SOLES: <SymbolSoles fontSizeS={'font-15'} bottomClasss={8} numero={<NumberFormatMoney amount={sumation.costo_total_soles}/>}/></span>
@@ -92,7 +104,7 @@ export const ModalAgrupadoxEtiquetas = ({show, onHide, data}) => {
             </Col>
         </Row>
     </Dialog>
-    <ModalItemAgrupadoxEtiquetas />
+    <ModalItemAgrupadoxEtiquetas show={isOpenModalEtiquetaxItem} onHide={onCloseModalEtiquetaxItem} data={dataEtiquetaxItem} etiquetaNombre={nombreEtiquetaSelectionada}/>
     </>
   )
 }

@@ -46,13 +46,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const [search, setSearch] = useState('');
     useEffect(() => {
         obtenerArticulos(id_enterprice)
-        
-        dt.current?.filter(globalFilterValue, 'global', 'contains');
-        console.log(globalFilterValue);
-        // setTimeout(() => {
-        //     setGlobalFilterValue((prev) => prev); // Forzar re-render y reaplicar filtro
-        // }, 0);
-        // obtenerProveedoresUnicos()
     }, [id_enterprice])
         useEffect(() => {
             if(dataView.length>=0){

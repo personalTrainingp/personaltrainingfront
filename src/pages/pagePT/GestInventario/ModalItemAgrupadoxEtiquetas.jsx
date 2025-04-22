@@ -7,10 +7,8 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import React, { useState } from 'react'
 import { Card } from 'react-bootstrap';
 
-export const ModalItemAgrupadoxEtiquetas = ({show, onHide, data}) => {
+export const ModalItemAgrupadoxEtiquetas = ({show, onHide, data, etiquetaNombre}) => {
     // const [dataEti, setdataEti] = useState([])
-    // console.log(data, "daaaa");
-    
     const imagenBodyTemplate = (tb_images)=>{    
         const images = [...(tb_images || [])];
 
@@ -51,14 +49,9 @@ export const ModalItemAgrupadoxEtiquetas = ({show, onHide, data}) => {
         )
     }
   return (
-    <Dialog header='Agrupado por etiquetas' style={{width: '50rem'}} visible={show} onHide={onHide}>
-        <TabView>
-            {
-                data?.map(d=>{
-                    return (
-                        <TabPanel header={d.etiqueta_busqueda}>
-                            {
-                                d.items?.map(i=>{
+    <Dialog header={etiquetaNombre} style={{width: '50rem'}} visible={show} onHide={onHide}>
+        {
+                                data.map(i=>{
                                     const costo_total_soles = (i.cantidad*i.costo_unitario_soles)+i.mano_obra_soles
                                     const costo_total_dolares = (i.cantidad*i.costo_unitario_dolares)+i.mano_obra_dolares
                                     return (
@@ -104,13 +97,8 @@ export const ModalItemAgrupadoxEtiquetas = ({show, onHide, data}) => {
                                 })
                             }
                             {
-                                footerAgrupadoxEtiquetas(d.items)
+                                footerAgrupadoxEtiquetas(data)
                             }
-                        </TabPanel>
-                    )
-                })
-            }
-        </TabView>
     </Dialog>
   )
 }
