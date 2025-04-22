@@ -83,27 +83,34 @@ export const PrincipalView = () => {
     },
     {
       fecha: 'marzo 2025',
-      inversion: 200,
-      facturacion: 2917,
-      numero_cierre: 3,
-      numero_mensajes: 233,
+      inversion: 1133.6,
+      facturacion: 13383,
+      numero_cierre: 17,
+      numero_mensajes: 1354,
+    },
+    {
+      fecha: 'abril 2025',
+      inversion: 789.85,
+      facturacion: 17129,
+      numero_cierre: 13,
+      numero_mensajes: 725,
     }
   ]
 
   const dataInv = data.map((f, index)=>{
     // const dae = dataPrueba.filter(g=>g.fecha===f.fecha)
     const daeFind = dataPrueba.find(g=>g.fecha===f.fecha)
-    const inversion = daeFind.inversion*3.75
+    const inversion = daeFind?.inversion*3.75
     const acumula = {...f, ...daeFind}
     return { 
       ...acumula,
       inversion: inversion,
-      facturacion: daeFind.facturacion,
-      numero_cierre: daeFind.numero_cierre,
-      cac: (inversion/daeFind.numero_cierre||0).toFixed(2),
-      ticket_medio: (daeFind.facturacion/daeFind.numero_cierre)||0,
-      conversor: ((daeFind.numero_cierre/daeFind.numero_mensajes)*100).toFixed(2),
-      roas: (daeFind.facturacion/inversion).toFixed(0)
+      facturacion: daeFind?.facturacion,
+      numero_cierre: daeFind?.numero_cierre,
+      cac: (inversion/daeFind?.numero_cierre||0).toFixed(2),
+      ticket_medio: (daeFind?.facturacion/daeFind?.numero_cierre)||0,
+      conversor: ((daeFind?.numero_cierre/daeFind?.numero_mensajes)*100).toFixed(2),
+      roas: (daeFind?.facturacion/inversion).toFixed(0)
     }
   })
 
@@ -115,7 +122,7 @@ export const PrincipalView = () => {
     <PageBreadcrumb title={'RESULTADOS por INVERSION DIGITAL'}/>
       <Row>
         <Col lg={12}>
-          <GrafLineal data={dataInv}/>
+          {/* <GrafLineal data={dataInv}/> */}
         </Col>
         <Col lg={12}>
         <Card>

@@ -21,96 +21,96 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVenta
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'INVERSION'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'INVERSION'}</span>
               </li>
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={data.inversion}/>}/></span>
+                <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={data.inversion}/>}/></span>
               </li>
             </td>
           </tr>
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'FACTURACION'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'FACTURACION'}</span>
               </li>
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={data.facturacion}/>}/></span>
+                <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={data.facturacion}/>}/></span>
               </li>
             </td>
           </tr>
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'MENSAJES'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'MENSAJES'}</span>
               </li>
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><NumberFormatter amount={data.numero_mensajes }/></span>
+                <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}><NumberFormatter amount={data.numero_mensajes }/></span>
               </li>
             </td>
           </tr>
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'CONVERSION'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'CONVERSION'}</span>
               </li>
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.conversor} %</span>
+                <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}>{data.conversor} %</span>
               </li>
             </td>
           </tr>
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'SOCIOS'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'SOCIOS'}</span>
               </li>
             </td>
             <td onClick={onDataViewVentas}>
               <li className={`d-flex flex-row justify-content-between p-1 float-end`} >
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.numero_cierre}</span>
+                <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}>{data.numero_cierre}</span>
               </li>
             </td>
           </tr>
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 text-primary`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'CAC'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'CAC'}</span>
               </li>
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{data.cac}</span>
+                <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}>{data.cac}</span>
               </li>
             </td>
           </tr>
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 text-primary`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'ROAS'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'ROAS'}</span>
               </li>
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}>{(data.roas)}</span>
+                <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}>{(data.roas)}</span>
               </li>
             </td>
           </tr>
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 text-primary`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-3`}>{'TICKET MEDIO'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'TICKET MEDIO'}</span>
               </li>
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-2 float-end`}>
-                <span style={{fontSize: '45px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={(data.ticket_medio).toFixed(2)}/>}/></span>
+                <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={(data.ticket_medio).toFixed(2)}/>}/></span>
               </li>
             </td>
           </tr>

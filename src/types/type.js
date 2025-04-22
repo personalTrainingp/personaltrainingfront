@@ -20,6 +20,13 @@ export const arrayEmpresa = [
 	{ value: 599, label: 'CIRCUS' },
 	{ value: 601, label: 'CHORRILLOS' },
 ];
+export const arrayEmpresaFinan = [
+	{ value: 598, label: 'CHANGE' },
+	{ value: 599, label: 'CIRCUS' },
+	{ value: 601, label: 'SAN EXPEDITO' },
+	{ value: 0, label: 'OTROS' },
+	{ value: 600, label: 'RAL' },
+];
 
 export const arrayDepartamento = [
 	{ value: '01', label: 'Amazonas' },
