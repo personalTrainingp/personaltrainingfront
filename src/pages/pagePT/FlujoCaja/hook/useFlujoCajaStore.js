@@ -1,5 +1,6 @@
 import { PTApi } from '@/common';
 import { useState } from 'react';
+import dayjs from 'dayjs';
 
 export const useFlujoCajaStore = () => {
 	const [dataIngresos_FC, setdataIngresos_FC] = useState([]);
@@ -29,9 +30,14 @@ export const useFlujoCajaStore = () => {
 	const obtenerGastosxANIO = async (anio, enterprice) => {
 		try {
 			const { data } = await PTApi.get(`/flujo-caja/get-gasto-x-grupo/${enterprice}/${anio}`);
-			console.log(data, 'gastooo');
 
-			setdataGastosxANIO(ordenarDatosPorGrupo(data.gastos, []));
+			const { data: dataParametrosGastos } = await PTApi.get(
+				`/terminologia/terminologiaxEmpresa/${enterprice}`
+			);
+
+			setdataGastosxANIO(
+				agruparPorGrupoYConcepto(data.gastos, dataParametrosGastos.termGastos)
+			);
 		} catch (error) {
 			console.log(error);
 		}
@@ -134,24 +140,6 @@ function ordenarDatosPorGrupo(datos) {
 			}),
 		};
 	});
-
-	// Asegurarse de que los meses estén en el rango 1-12 y si no hay ítems, poner monto_total 0
-	// resultado.forEach((grupo) => {
-	// 	grupo.conceptos.forEach((concepto) => {
-	// 		for (let mes = 1; mes <= 12; mes++) {
-	// 			if (!concepto.items.find((i) => i.mes === mes)) {
-	// 				concepto.items.push({
-	// 					mes: mes,
-	// 					monto_total: 0,
-	// 					items: [],
-	// 				});
-	// 			}
-	// 		}
-	// 		// Ordenar los meses de 1 a 12
-	// 		concepto.items.sort((a, b) => a.mes - b.mes);
-	// 	});
-	// });
-
 	return resultado;
 }
 function ordenarDatos(dataGastos, dataTipoCambio) {
@@ -276,4 +264,61 @@ function ordenarDatos(dataGastos, dataTipoCambio) {
 	});
 
 	return dataGastos2;
+}
+
+function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
+	const meses = Array.from({ length: 12 }, (_, i) => i + 1);
+
+	// Agrupar grupos únicos
+	const gruposMap = {};
+
+	dataGrupos.forEach((grupo) => {
+		const nombreGrupo = grupo.grupo?.trim()?.toUpperCase() || 'SIN GRUPO';
+		if (!gruposMap[nombreGrupo]) gruposMap[nombreGrupo] = [];
+		gruposMap[nombreGrupo].push(grupo);
+	});
+
+	const resultado = Object.entries(gruposMap).map(([grupoNombre, conceptosUnicos]) => {
+		// obtener conceptos únicos (nombre_gasto)
+		const conceptosUnicosPorNombre = [
+			...new Set(conceptosUnicos.map((c) => c.nombre_gasto?.trim()?.toUpperCase())),
+		];
+
+		const conceptos = conceptosUnicosPorNombre.map((nombreConcepto) => {
+			// Filtrar los gastos que coincidan con el grupo y concepto
+			const itemsDelConcepto = dataGastos.filter((g) => {
+				const pg = g.tb_parametros_gasto || {};
+				const grupoGasto = pg.grupo?.trim()?.toUpperCase();
+				const nombreGasto = pg.nombre_gasto?.trim()?.toUpperCase();
+				return grupoGasto === grupoNombre && nombreGasto === nombreConcepto;
+			});
+
+			const itemsPorMes = meses.map((mes) => {
+				const itemsMes = itemsDelConcepto.filter(
+					(item) => dayjs(item.fec_comprobante).month() + 1 === mes
+				);
+
+				// Aquí puedes ajustar el monto según qué campo quieras sumar
+				const monto_total = itemsMes.reduce((sum, g) => sum + (g.monto || 0), 0);
+
+				return {
+					mes,
+					monto_total,
+					items: itemsMes,
+				};
+			});
+
+			return {
+				concepto: nombreConcepto,
+				items: itemsPorMes,
+			};
+		});
+
+		return {
+			grupo: grupoNombre,
+			conceptos,
+		};
+	});
+
+	return resultado;
 }

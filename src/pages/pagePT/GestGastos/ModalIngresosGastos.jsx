@@ -1,7 +1,7 @@
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
-import { arrayEmpresa, arrayEmpresaFinan, arrayEstados, arrayFinanzas, arrayMonedas } from '@/types/type'
+import { arrayEstados, arrayFinanzas, arrayMonedas } from '@/types/type'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Modal, ModalBody, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
@@ -13,7 +13,6 @@ import { CurrencyMask } from '@/components/CurrencyMask'
 import { InputText } from 'primereact/inputtext'
 const registerIvsG={
     id_tipoGasto: 0,
-    id_empresa: 0,
     id_gasto: 0,
     grupo: '',
     moneda: '',
@@ -42,6 +41,10 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const [openModalProv, setopenModalProv] = useState(false)
     const [gastoxGrupo, setgastoxGrupo] = useState([])
     const [loadingRegister, setloadingRegister] = useState(false)
+    const { obtenerParametrosGastosFinanzas } = useGf_GvStore()
+    useEffect(() => {
+      obtenerParametrosGastosFinanzas()
+    }, [])
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
     const { obtenerParametroPorEntidadyGrupo: obtenerParametroTipoComprobante, DataGeneral: DataTipoComprobante } = useTerminoStore()
     const {obtenerParametrosProveedor} = useProveedorStore()
@@ -53,7 +56,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const [loadingParametros, setloadingParametros] = useState(false)
 	const { dataProvCOMBO } = useSelector(e=>e.prov)
     const { formState, 
-            id_empresa,
             id_tipoGasto, 
             id_gasto,
             grupo,
@@ -82,32 +84,38 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             if(!data){
                 onInputChangeFunction("grupo", 0)
             }
-        }, [id_tipoGasto, id_empresa])
+        }, [id_tipoGasto])
         useEffect(() => {
             if(!data){
                 onInputChangeFunction("id_gasto", 0)
             }
-        }, [id_tipoGasto, grupo, id_empresa])
-        useEffect(() => {
-            
-        }, [])
+        }, [id_tipoGasto, grupo])
         
-        // useEffect(() => {
-        //     const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos||[]
-        //     setgrupoGasto(grupos)
-        // }, [id_tipoGasto])
         useEffect(() => {
             const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos||[]
+            
             setgrupoGasto(grupos)
-        }, [id_tipoGasto, id_empresa])
+        }, [id_tipoGasto])
         useEffect(() => {
             const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
             setgastoxGrupo(conceptos)
         }, [grupo])
         
-        console.log(dataParametrosGastos, "param");
         
         useEffect(() => {
+            // const inyeccionParametros = async()=>{
+            //     try {
+            //         setloadingParametros(true)
+            //         await obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
+            //         await obtenerParametrosProveedor()
+            //         await obtenerParametrosFormaPago()
+            //         await obtenerParametrosBancos()
+            //         setloadingParametros(false)
+            //     } catch (error) {
+            //         console.log(error, "en inyeccion");
+            //     }
+            // }
+            // inyeccionParametros()
             if(show){
                 obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
                 obtenerParametrosProveedor()
@@ -180,25 +188,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                     ):(
                         <form onSubmit={submitGasto}>
                             <Row>
-                                <Col lg={4}>
-                                    <div className="mb-4">
-                                        <label htmlFor="id_empresa" className="form-label">
-                                            EMPRESA*
-                                        </label>
-                                        <Select
-                                            onChange={(e) => onInputChangeReact(e, 'id_tipoGasto')}
-                                            name="id_tipoGasto"
-                                            placeholder={'Seleccione el tipo de gasto'}
-                                            className="react-select"
-                                            classNamePrefix="react-select"
-                                            options={arrayEmpresaFinan}
-                                            value={arrayEmpresaFinan.find(
-                                                (option) => option.value === id_empresa
-                                            )||0}
-                                            required
-                                        />
-                                    </div>
-                                </Col>
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="id_tipoGasto" className="form-label">
