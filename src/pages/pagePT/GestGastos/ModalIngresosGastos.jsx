@@ -229,7 +229,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="id_gasto" className="form-label">
-                                            Gastos*
+                                            Conceptos*
                                         </label>
                                         <Select
                                             onChange={(e) => onInputChangeReact(e, 'id_gasto')}
