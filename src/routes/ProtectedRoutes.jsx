@@ -71,7 +71,7 @@ const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporte
 const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
 const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
 const ResumenComparativo = lazy(()=>import('../pages/pagePT/reportes/resumenComparativo'))
-const ReporteDemograficoCliente = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoCliente'))
+// const ReporteDemograficoCliente = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoCliente'))
 const ReporteDemograficoxMembresia = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoxMembresia'))
 const VentasTransferencias = lazy(()=>import('../pages/pagePT/VentasTransferencias'))
 const ClientesxVentasDeMembresia = lazy(()=>import('../pages/pagePT/MembresiaxCliente'))
@@ -176,10 +176,10 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/reporte')&&
                         <Route path='reporte/reporte-demografico-membresia' element={<ResumenDemograficoxPrograma/>}/>
 					}
-					{
+					{/* {
 						sections.find(e=>e.url==='/reporte')&&
                         <Route path='reporte/reporte-demografico' element={<ReporteDemograficoCliente/>}/>
-					}
+					} */}
 					{
 						sections.find(e=>e.url==='/reporte/comparativo-resumen-x-mes')&& //asdf
                         <Route path='reporte/comparativo-resumen-x-mes' element={<ResumenComparativoAnual/>}/>

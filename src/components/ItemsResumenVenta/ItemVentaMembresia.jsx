@@ -42,18 +42,6 @@ export const ItemVentaMembresia = ({e}) => {
 													)}{' '}
 													a las{' '}
                                                     {e.horario}
-                                                    {/* {dayjs(e.horario, 'hh:mm:ss').format('hh:mm A')} */}
-													{/* <FormatoTimeMask
-														date={e.horario.trim()}
-														format={'hh:mm A'}
-													/>
-												</span>
-												<span className="text-muted font-weight-normal d-block">
-													Finaliza:{' '}
-													{FormatoDateMask(
-														e.fec_fin_mem,
-														'dddd D [de] MMMM [del] YYYY'
-													)} */}
 												</span>
                             </td>
                             <td className="border-0">

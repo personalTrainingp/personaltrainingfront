@@ -11,14 +11,14 @@ export const App = () => {
         <TabPanel header='CHANGE THE SLIM STUDIO'>
             <InventarioTotalizado id_empresa={598} label_empresa={'CHANGE'}/>
         </TabPanel>
-        <TabPanel header='CIRCUS'>
-            <InventarioTotalizado id_empresa={599} label_empresa={'CIRCUS'}/>
+        <TabPanel header='REDUCTO INVENTARIO TOTAL'>
+            <InventarioTotalizado id_empresa={599} label_empresa={'REDUCTO INVENTARIO TOTAL'}/>
         </TabPanel>
-        <TabPanel header='PROYECTO CIRCUS'>
-        <InventarioTotalizado  id_empresa={602} label_empresa={'PROYECTO CIRCUS'}/>
+        <TabPanel header='CIRCUS CO.'>
+        <InventarioTotalizado  id_empresa={602} label_empresa={'CIRCUS CO.'}/>
         </TabPanel>
-        <TabPanel header='CIRCUS INFRAESTRUCTURA'>
-        <InventarioTotalizado id_empresa={610} label_empresa={'CIRCUS INFRAESTRUCTURA'}/>
+        <TabPanel header='REDUCTO INFRAESTRUCTURA'>
+        <InventarioTotalizado id_empresa={610} label_empresa={'REDUCTO INFRAESTRUCTURA'}/>
         </TabPanel>
     </TabView>
     </>

@@ -3,24 +3,13 @@ import { FilterMatchMode, FilterOperator, locale } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
-import { Calendar } from 'primereact/calendar';
 import { useSelector } from 'react-redux';
-import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
-import { MultiSelect } from 'primereact/multiselect';
-import { ExportToExcel } from './BtnExportExcel';
 import { Button } from 'primereact/button';
-import { ModalInventario } from './ModalInventario';
 import { confirmDialog } from 'primereact/confirmdialog';
-import { helperFunctions } from '@/common/helpers/helperFunctions';
-import { arrayCargoEmpl, arrayFinanzas } from '@/types/type';
 import dayjs from 'dayjs';
-import { FormatoDateMask, FUNMoneyFormatter, MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
+import { NumberFormatMoney } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
-import { Skeleton } from 'primereact/skeleton';
-import { Card, Col, Modal, Row } from 'react-bootstrap';
-import { ModalImportadorData } from './BtnImportarData/ModalImportadorData';
+import { ModalInventario } from './ModalInventario';
 // import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore';
 import config from '@/config';
 import { Image } from 'primereact/image';
@@ -29,7 +18,6 @@ import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ModalAgrupadoxEtiquetas } from './ModalAgrupadoxEtiquetas';
 import { useInventarioStore } from './hook/useInventarioStore';
-import { ModalItemAgrupadoxEtiquetas } from './ModalItemAgrupadoxEtiquetas';
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
     locale('es')
@@ -62,7 +50,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             // Crea una copia del objeto antes de modificarlo
             let newItem = { ...item };
             
-            newItem.etiquetas_str = item.etiquetas_busquedas.map(item => `${item.label}`).join(', ')
+            newItem.etiquetas_str = item.etiquetas_busquedas?.map(item => `${item.label}`).join(', ')
 
             let date = dayjs.utc(item.fec_registro);
             return newItem;
@@ -501,7 +489,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                         }
                     </TabView>
             <ModalInventario id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
-            <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/>
+            {/* <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/> */}
             <ModalAgrupadoxEtiquetas show={isOpenModalAgruparxEtiquetas} onHide={onCloseModalAgrupadoxEtiquetas} data={dataAgrupadoEtiquetas}/>
             </>
     );

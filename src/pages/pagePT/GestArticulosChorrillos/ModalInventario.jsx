@@ -5,7 +5,6 @@ import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Modal, ModalBody, Row } from 'react-bootstrap'
 import Select from 'react-select'
-import { NumberFormatMoney } from '@/components/CurrencyMask';
 import config from '@/config';
 import { ImagenUploader } from '@/components/ImagenUploader';
 const registerArticulo={

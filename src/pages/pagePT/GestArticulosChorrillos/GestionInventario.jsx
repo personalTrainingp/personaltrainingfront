@@ -14,8 +14,8 @@ export const GestionInventario = () => {
       <TabPanel header={'CHORRILLOS'}>
               <DataInventario id_enterprice={601}/>
       </TabPanel>
-      <TabPanel header={'REDUCTO INVENTARIO TOTAL'}>
-              <DataInventario id_enterprice={599}/>
+      <TabPanel header={'CIRCUS CO.'}>
+              <DataInventario id_enterprice={602}/>
       </TabPanel>
     </TabView>
     </Card>

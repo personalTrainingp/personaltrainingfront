@@ -23,22 +23,6 @@ export const ResumenCliente = ({data}) => {
 		obtenerUltimaMembresiaPorCliente(data.id_cli)
 		obtenerClientexID(data.id_cli)
 	}, [data.id_cli])
-	// console.log(dataUltimaMembresia);
-	
-	// const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia!==undefined?dataUltimaMembresia:[]
-	// useEffect(() => {
-	// 	if (dataUltimaMembresia?.length === 0) {
-	// 		return setestadoCliente('Nuevo');
-	// 	}
-	// 	const ultimaFechaExpiracion = new Date(fec_fin_mem);
-	
-	// 	if (ultimaFechaExpiracion >= hoy) {
-	// 		return setestadoCliente('Renovación');
-	// 	} else {
-	// 		return setestadoCliente('Reinscrito');
-	// 	}
-	// }, [dataUltimaMembresiaPorCliente])
-	
 	return (
 		<div className="mt-lg-0">
 			{/* <h4 className="header-title ">Datos del cliente</h4> */}

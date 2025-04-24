@@ -13,22 +13,19 @@ export const GestionInventario = () => {
     <PageBreadcrumb title={'GESTION DE INVENTARIO'} subName={'T'}/>
     <Card className='p-4 m-2'>
       <TabView>
-        {/* <TabPanel header="CIRCUS">
-              <DataInventario id_enterprice={599}/>
-        </TabPanel> */}
         <TabPanel header="CHANGE THE SLIM STUDIO">
               <DataInventario id_enterprice={598} id_zona={598}/>
         </TabPanel>
         <TabPanel header="MP">
               <DataInventario id_enterprice={600} id_zona={600}/>
         </TabPanel>
-        <TabPanel header="CIRCUS SALON">
+        <TabPanel header="REDUCTO INVENTARIO TOTAL">
               <DataInventario id_enterprice={599} id_zona={599}/>
         </TabPanel>
-        <TabPanel header="PROYECTO CIRCUS">
+        <TabPanel header="CIRCUS CO.">
               <DataInventario ImgproyCircus3={ImgproyCircus3} ImgproyCircus2={ImgproyCircus2} ImgproyCircus1={ImgproyCircus1} id_enterprice={602} id_zona={599}/>
         </TabPanel>
-        <TabPanel header="CIRCUS INFRAESTRUCTURA">
+        <TabPanel header="REDUCTO INFRAESTRUCTURA">
               <DataInventario id_enterprice={610} id_zona={599}/>
         </TabPanel>
         <TabPanel header="CHORRILLOS">

@@ -7,14 +7,14 @@ import { Button, Col, Modal, ModalBody, Row } from 'react-bootstrap'
 import Select, { components } from 'react-select'
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 import { TabPanel, TabView } from 'primereact/tabview';
-import { KardexxArticulo } from './KardexxArticulo';
-import { MultiOpcionSelect } from './components/ComponentSelect';
-import { compararArrays } from './helpers/compararArrays';
 import { ImagenUploader } from '@/components/ImagenUploader';
 import config from '@/config';
 import { urlToBlob } from '@/helper/urlToBlob';
 import { useKardexStore } from './hook/useKardexStore';
 import { useInventarioStore } from './hook/useInventarioStore';
+import { KardexxArticulo } from './KardexxArticulo';
+import { MultiOpcionSelect } from './components/ComponentSelect';
+import { compararArrays } from './helpers/compararArrays';
 const registerArticulo={
     producto: '',
     id_marca: '',

@@ -22,7 +22,7 @@ export const PrincipalView = () => {
               <TabPanel header="CHANGE THE SLIM STUDIO">
                     <DataEntrada id_enterprice={598} actionKardex={'entrada'}/>
               </TabPanel>
-              <TabPanel header="CIRCUS SALON">
+              <TabPanel header="REDUCTO INVENTARIO TOTAL">
                     <DataEntrada id_enterprice={599} actionKardex={'entrada'}/>
               </TabPanel>
                             <TabPanel header="CHORRILLOS">
