@@ -430,7 +430,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                         <Image src={ImgproyCircus3}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
                         </Image>
                         </div>
-                        <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
+                        {/* <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} /> */}
                     </div>
                     <TabView>
                         {
