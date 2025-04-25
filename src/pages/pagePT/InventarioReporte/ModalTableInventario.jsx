@@ -198,7 +198,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
 					header={<span className='fs-2'>COSTO MANO DE OBRA $</span>}
 					body={costoManoObraDolaresBodyTemplate}
 					style={{ width: '4rem' }}
-                    // footer={<div className='fs-2 text-primary'><SymbolSoles numero={<NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_soles, 0)}/>}/></div>}
+                    footer={<div className='fs-2 text-color-dolar'>$. <NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_dolares, 0)}/></div>}
 					sortable
 				></Column>
                 <Column

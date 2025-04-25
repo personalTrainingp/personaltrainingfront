@@ -34,7 +34,7 @@ export const useFlujoCajaStore = () => {
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/terminologiaxEmpresa/${enterprice}`
 			);
-
+			
 			setdataGastosxANIO(
 				agruparPorGrupoYConcepto(data.gastos, dataParametrosGastos.termGastos)
 			);

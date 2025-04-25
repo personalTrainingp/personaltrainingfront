@@ -33,6 +33,12 @@ export const useInventarioStore = () => {
 
 	const obtenerInventarioKardexxFechas = async (id_empresa) => {
 		try {
+			// const { data } = await PTApi.get(
+			// 	`/inventario/obtener-inventario-y-kardex-x-fechas/${id_empresa}`
+			// );
+
+			// setdataFechas(data.inventario_x_fechas);
+			
 			const { data } = await PTApi.get(
 				`/inventario/obtener-inventario-y-kardex-x-fechas/${id_empresa}`
 			);
@@ -226,3 +232,27 @@ export const useInventarioStore = () => {
 		articulo,
 	};
 };
+
+function agruparPorFechaHasta(arrays) {
+	const resultado = {};
+
+	arrays.forEach((obj) => {
+		const fecha = obj.fechaHasta;
+		if (!resultado[fecha]) {
+			resultado[fecha] = {
+				fechaHasta: fecha,
+				articulos_directos: [],
+				kardexSalidaArray: [],
+				transferencias: [],
+				totalKardexEntrada: 0,
+			};
+		}
+
+		resultado[fecha].articulos_directos.push(...(obj.articulos_directos || []));
+		resultado[fecha].kardexSalidaArray.push(...(obj.kardexSalidaArray || []));
+		resultado[fecha].transferencias.push(...(obj.transferencias || []));
+		resultado[fecha].totalKardexEntrada += obj.totalKardexEntrada || 0;
+	});
+
+	return Object.values(resultado);
+}

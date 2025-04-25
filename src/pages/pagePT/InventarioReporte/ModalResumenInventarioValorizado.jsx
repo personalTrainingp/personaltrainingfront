@@ -66,12 +66,12 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                             <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '350px'}}>UBICACION</div></th>
                                             <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '200px'}}>CANTIDAD</div></th>
                                             {/* <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '200px'}}></div></th> */}
-                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px'}}>INVERSION S/.</div></th>
-                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>INVERSION <SymbolDolar/></div></th>
-                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px'}}>MANO DE OBRA S/.</div></th>
-                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px'}}>MANO DE OBRA <SymbolDolar/> </div></th>
-                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px'}}>INVERSION TOTAL S/.</div></th>
-                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>INVERSION TOTAL <SymbolDolar/></div></th>
+                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px'}}>ACTIVOS <br/>(+M.O) <br/> S/.</div></th>
+                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>ACTIVOS <br/>(+M.O) <br/><SymbolDolar/></div></th>
+                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px'}}>MANO DE OBRA <br/> S/.</div></th>
+                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px'}}>MANO DE OBRA <br/> <SymbolDolar/> </div></th>
+                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px'}}>INVERSION <br/> TOTAL <br/> S/.</div></th>
+                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>INVERSION <br/> TOTAL <br/><SymbolDolar/></div></th>
                                             {/* <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}><div style={{width: '80px'}}>t.c</div></th> */}
                                             {/* <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}>P.C</th> */}
                                         </tr>
@@ -94,18 +94,63 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                             ))
                                         }
                                     </tbody>
-                                    <tr className='bg-primary text-white'>
-                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '350px'}}></div></td>
-                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '200px', color: '#FFF'}}>CANTIDAD</div></td>
-                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>INVERSION S/.</div></td>
-                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>INVERSION <SymbolDolar/></div></td>
-                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>MANO DE OBRA S/.</div></td>
-                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>MANO DE OBRA <SymbolDolar/> </div></td>
-                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>INVERSION TOTAL S/.</div></td>
-                                            <td className='text-white text-center font-20 p-0' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>INVERSION TOTAL <SymbolDolar/></div></td>
-                                            {/* <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}><div style={{width: '80px'}}>t.c</div></th> */}
-                                            {/* <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}>P.C</th> */}
+                                    <tfoot className='bg-primary'>
+                                    <tr>
+                                            <th className='text-white text-center font-24 p-0' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '350px'}}>TOTAL<br/>
+                                                <br/>
+                                                <span>
+                                                    <br/>
+                                                    T.C: 3.65
+                                                </span></div></th>
+                                            <th className='text-white text-right font-24 p-0' style={{margin: '0 !important', width: '10px'}}><div className='' style={{width: '150px'}}>
+                                                CANTIDAD
+                                                <br/>
+                                                ITEMS
+                                                <br/>
+                                                <span>
+                                                    <br/>
+                                                <NumberFormatter amount={groupedData.reduce((total, item) => total + (item.cantidad || 0), 0)}/>
+                                                </span>
+                                                </div>
+                                            </th>
+                                            <th className='text-white text-right font-24 p-0' style={{margin: '0 !important', width: '10px'}}><div style={{width: '160px'}}>
+                                                ACTIVOS <br/>(+M.O) <br/> S/.
+                                                <br/>
+                                                <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_soles-item.mano_obra_total_sumado_soles || 0), 0)}/> 
+                                                </div>
+                                            </th>
+                                            <th className='text-white text-right font-24 p-0' style={{margin: '0 !important', width: '10px'}}><div style={{width: '160px', color: '#1E8727'}}>ACTIVOS <br/>(+M.O) <br/><SymbolDolar/>
+                                            <br/>
+                                            <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_dolares-item.mano_obra_total_sumado_dolares || 0), 0)}/>
+                                            </div></th>
+                                            <th className='text-white text-right font-24 p-0' style={{margin: '0 !important', width: '10px'}}><div style={{width: '160px'}}>MANO DE<br/> OBRA <br/> S/.
+                                                <br/>
+                                                <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.mano_obra_total_sumado_soles || 0), 0)}/> 
+                                                </div></th>
+                                            <th className='text-white text-right font-24 p-0' style={{margin: '0 !important', width: '10px'}}><div style={{width: '160px', color: '#1E8727'}}>MANO DE <br/> OBRA <br/> <SymbolDolar/> 
+                                                <br/>
+                                                <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.mano_obra_total_sumado_dolares || 0), 0)}/>
+                                            </div></th>
+                                            <th className='text-white text-right font-24 p-0' style={{margin: '0 !important', width: '10px'}}><div style={{width: '160px'}}>INVERSION <br/> TOTAL <br/> S/.
+                                                <br/>
+                                                <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_soles || 0), 0)}/> 
+                                                </div></th>
+                                            <th className='text-white text-right font-24 p-0' style={{margin: '0 !important', width: '10px'}}><div style={{width: '160px', color: '#1E8727'}}>INVERSION <br/> TOTAL <br/> <SymbolDolar/>
+                                                <br/>
+                                                <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_dolares || 0), 0)}/>
+                                                </div></th>
                                         </tr>
+                                    </tfoot>
+                                    {/* <tr className='bg-primary text-white'>
+                                            <td className='text-white text-center font-20 p-0 fw-bold' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '350px'}}></div></td>
+                                            <td className='text-white text-center font-20 p-0 fw-bold' style={{margin: '0 !important', width: '20px'}}><div className='' style={{width: '200px', color: '#FFF'}}>CANTIDAD</div></td>
+                                            <td className='text-white text-center font-20 p-0 fw-bold' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>ACTIVOS <br/>(+M.O) <br/> S/.</div></td>
+                                            <td className='text-white text-center font-20 p-0 fw-bold' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>ACTIVOS <br/>(+M.O) <br/> <SymbolDolar/></div></td>
+                                            <td className='text-white text-center font-20 p-0 fw-bold' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>MANO DE OBRA S/.</div></td>
+                                            <td className='text-white text-center font-20 p-0 fw-bold' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>MANO DE OBRA <SymbolDolar/> </div></td>
+                                            <td className='text-white text-center font-20 p-0 fw-bold' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#FFF'}}>INVERSION TOTAL S/.</div></td>
+                                            <td className='text-white text-center font-20 p-0 fw-bold' style={{margin: '0 !important', width: '140px'}}><div style={{width: '140px', color: '#1E8727'}}>INVERSION TOTAL <SymbolDolar/></div></td>
+                                        </tr> */}
                                     {/* <tr className='bg-primary text-white'>
                                                                                                                         <td>
                                                                                                                         </td>
@@ -148,77 +193,54 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
                                                                                                                     </tr> */}
 
 
-                                                                                                            <tr className='bg-primary text-white'>
-                                                                                                                        <td>
+                                                                                                            {/* <tr className='bg-primary text-white'>
+                                                                                                                        <th>
+                                                                                                                                <span className='fs-2 fw-bold' style={{color: '#1E8727', fontSize: '32px'}}>
+                                                                                                                                    TC: 3.65
+                                                                                                                                </span>
+                                                                                                                            <br/>
                                                                                                                             <span className='text-white fs-2 fw-bold'>
                                                                                                                                 TOTAL
                                                                                                                             </span>
-                                                                                                                            
-                                                                                                                            <br/>
-                                                                                                                                <span className='text-white fs-2 fw-bold'>
+                                                                                                                        </th>
+                                                                                                                        <th className='h-0 bg-danger'>
+                                                                                                                            <div className='bg-black'>
+                                                                                                                                <span className='text-white fs-2 fw-bold ml-7'>
+                                                                                                                                <NumberFormatter amount={groupedData.reduce((total, item) => total + (item.cantidad || 0), 0)}/>
                                                                                                                                 </span>
-                                                                                                                        </td>
-                                                                                                                        <td>
-                                                                                                                            <span className='text-white fs-2 fw-bold ml-7'>
-                                                                                                                            <NumberFormatter amount={groupedData.reduce((total, item) => total + (item.cantidad || 0), 0)}/>
-                                                                                                                            </span>
-                                                                                                                            
-                                                                                                                            <br/>
-                                                                                                                                <span className='text-white fs-2 fw-bold'>
-                                                                                                                                </span>
-                                                                                                                        </td>
-                                                                                                                        <td>
+                                                                                                                            </div>
+                                                                                                                        </th>
+                                                                                                                        <th>
                                                                                                                             <span className='text-white fs-2 fw-bold'>
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_soles-item.mano_obra_total_sumado_soles || 0), 0)}/> 
                                                                                                                             </span>
-                                                                                                                                <br/>
-                                                                                                                                <span className='text-white fs-2 fw-bold'>
-                                                                                                                                </span>
-                                                                                                                        </td>
-                                                                                                                        <td>
+                                                                                                                        </th>
+                                                                                                                        <th>
                                                                                                                             <span className='fw-bold ' style={{color: '#1E8727', fontSize: '34px'}}>
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_dolares-item.mano_obra_total_sumado_dolares || 0), 0)}/>
                                                                                                                             </span>
-                                                                                                                                <br/>
-                                                                                                                                <span className='fs-2 fw-bold' style={{color: '#1E8727', fontSize: '32px'}}>
-                                                                                                                                    TC: 3.65
-                                                                                                                                </span>
-                                                                                                                        </td>
-                                                                                                                        <td>
-                                                                                                                            <span className='text-white fs-2 fw-bold'>
+                                                                                                                        </th>
+                                                                                                                        <th>
+                                                                                                                            <span className='text-white fs-2 fw-bold' style={{fontSize: '34px'}}>
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.mano_obra_total_sumado_soles || 0), 0)}/> 
                                                                                                                             </span>
-                                                                                                                                <br/>
-                                                                                                                                <span className='text-white fs-2 fw-bold'>
-                                                                                                                                </span>
-                                                                                                                        </td>
-                                                                                                                        <td>
+                                                                                                                        </th>
+                                                                                                                        <th>
                                                                                                                             <span className='fw-bold ' style={{color: '#1E8727', fontSize: '34px'}}>
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.mano_obra_total_sumado_dolares || 0), 0)}/>
                                                                                                                             </span>
-                                                                                                                                <br/>
-                                                                                                                                <span className='fs-2 fw-bold' style={{color: '#1E8727', fontSize: '32px'}}>
-                                                                                                                                    TC: 3.65
-                                                                                                                                </span>
-                                                                                                                        </td>
-                                                                                                                        <td>
+                                                                                                                        </th>
+                                                                                                                        <th>
                                                                                                                             <span className='text-white fs-2 fw-bold'>
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_soles || 0), 0)}/> 
                                                                                                                             </span>
-                                                                                                                                <br/>
-                                                                                                                                <span className='text-white fs-2 fw-bold'>
-                                                                                                                                </span>
-                                                                                                                        </td>
-                                                                                                                        <td>
+                                                                                                                        </th>
+                                                                                                                        <th>
                                                                                                                             <span className='fw-bold ' style={{color: '#1E8727', fontSize: '34px'}}>
                                                                                                                             <NumberFormatMoney amount={groupedData.reduce((total, item) => total + (item.valor_total_sumado_dolares || 0), 0)}/>
                                                                                                                             </span>
-                                                                                                                                <br/>
-                                                                                                                                <span className='fs-2 fw-bold' style={{color: '#1E8727', fontSize: '32px'}}>
-                                                                                                                                    TC: 3.65
-                                                                                                                                </span>
-                                                                                                                        </td>
-                                                                                                                    </tr>
+                                                                                                                        </th>
+                                                                                                                    </tr> */}
                                 </Table>
 							{/* <DataTable 
 							size='small' 

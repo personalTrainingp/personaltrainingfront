@@ -5,7 +5,7 @@ import { PageBreadcrumb } from '@/components'
 import { TabPanel, TabView } from 'primereact/tabview'
 import ImgproyCircus3 from '@/assets/images/pr_tercer_nivel.jpeg'
 import ImgproyCircus2 from '@/assets/images/pr_segundo_nivel.jpeg'
-import ImgproyCircus1 from '@/assets/images/pr_primer_nivel.jpeg'
+import ImgproyCircus1 from '@/assets/images/pr_primer_nivel.png'
 export const GestionInventario = () => {
   return (
     <>
