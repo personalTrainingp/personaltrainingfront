@@ -196,13 +196,13 @@ const App = ({  onDateClick,
           return; // Cancela el drop
         }
         await confirmDialog({
-                        message: 'Seguro que quieres actualizar la cita?',
+                        message: `Seguro que quieres actualizar la cita al ${start}?`,
                         header: 'Actualizar fecha de cita',
                         icon: 'pi pi-info-circle',
                         defaultFocus: 'reject',
                         acceptClassName: 'p-button-danger',
                         accept:  ()=>{
-                          onPutCita({fecha_init: start, fecha_final: end, id: event.id}, tipo_serv)
+                          onPutCita({fecha_init: start, fecha_final: end, id: event.id, isUpdateTime: true}, tipo_serv)
                           return 
                         },
                     });

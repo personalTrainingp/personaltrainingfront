@@ -28,7 +28,6 @@ const registerCita = {
 const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	const dispatch = useDispatch()
 	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPostCita, obtenerCitasNutricionalesxCliente, dataCitaxCliente, loading } =  useCitaStore()
-	// const { onPutCita, loadingAction:loadingPutCita } = useCitaStore()
 	const { onDeleteCitaxId, onPutCita, loadingAction } = useCitaStore()
 	const { formState, id_cli, status_cita, id_cita_adquirida, id_empl, onInputChange, onInputChangeReact, onResetForm } = useForm(dataCita?dataCita:registerCita)
 	const { obtenerParametrosClientes, DataClientes, obtenerEmpleadosPorDepartamentoNutricion, DataEmpleadosDepNutricion } = useTerminoStore()
@@ -67,15 +66,13 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
         onHide()
     }
 	const editarEvento = ()=>{
-		onPutCita(formState, tipo_serv);
+		onPutCita({...formState, isUpdateTime: true}, tipo_serv);
         cancelModal()
 	}
 	const eliminarEvento = ()=>{
 		if(dataCita){
 			onDeleteCitaxId(dataCita.id)
 		}
-		
-		// onPutCita({id: formState.id, status_cita: 501}, tipo_serv, tipo_serv);
         cancelModal()
 	}
 	// console.log(selectDATE.title.uid);

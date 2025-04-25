@@ -11,6 +11,9 @@ export const GestionInventario = () => {
     <PageBreadcrumb title={'INVENTARIOS'} subName={'T'}/>
     <Card className='p-4 m-2'>
     <TabView>
+      <TabPanel header={'CHANGE THE SLIM STUDIO'}>
+              <DataInventario id_enterprice={598}/>
+      </TabPanel>
       <TabPanel header={'CHORRILLOS'}>
               <DataInventario id_enterprice={601}/>
       </TabPanel>
