@@ -66,7 +66,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
         onHide()
     }
 	const editarEvento = ()=>{
-		onPutCita({...formState, isUpdateTime: true}, tipo_serv);
+		onPutCita({...formState, isUpdateTime: false}, tipo_serv);
         cancelModal()
 	}
 	const eliminarEvento = ()=>{
