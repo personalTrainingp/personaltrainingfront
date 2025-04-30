@@ -32,6 +32,7 @@ export const PrincipalView = () => {
     obtenerTodoVentas()
   }, [])
 
+
   const dataPrueba = [
     {
       fecha: 'septiembre 2024',
@@ -58,9 +59,9 @@ export const PrincipalView = () => {
       // ticket_medio: 591.67,
     },
     {
-      fecha: 'diciembre 2024',
+      fecha: 'diciembre 2024', 
       inversion: 838,
-      facturacion: 25192,
+      facturacion: 25192, //ALTERADO
       numero_cierre: 38,
       numero_mensajes: 787,
       // ticket_medio: 662.95,
@@ -76,7 +77,7 @@ export const PrincipalView = () => {
     {
       fecha: 'febrero 2025',
       inversion: 1006.89,
-      facturacion: 29824,
+      facturacion: 29824,// ALTERADO
       numero_cierre: 27,
       numero_mensajes: 1080,
       // ticket_medio: 969.65,
@@ -84,14 +85,14 @@ export const PrincipalView = () => {
     {
       fecha: 'marzo 2025',
       inversion: 1133.6,
-      facturacion: 13383,
+      facturacion: 13383,// ALTERADO
       numero_cierre: 17,
       numero_mensajes: 1354,
     },
     {
       fecha: 'abril 2025',
       inversion: 789.85,
-      facturacion: 17129,
+      facturacion: 17129,// ALTERADO
       numero_cierre: 13,
       numero_mensajes: 725,
     }
@@ -105,16 +106,15 @@ export const PrincipalView = () => {
     return { 
       ...acumula,
       inversion: inversion,
-      facturacion: daeFind?.facturacion,
+      facturacionDigital: f?.facturacionDigital,
+      facturacion: f?.facturacion,
       numero_cierre: daeFind?.numero_cierre,
-      cac: (inversion/daeFind?.numero_cierre||0).toFixed(2),
+      cac: ((daeFind?.numero_cierre || 0) === 0 ? 0 : inversion / daeFind.numero_cierre).toFixed(2),
       ticket_medio: (daeFind?.facturacion/daeFind?.numero_cierre)||0,
       conversor: ((daeFind?.numero_cierre/daeFind?.numero_mensajes)*100).toFixed(2),
       roas: (daeFind?.facturacion/inversion).toFixed(0)
     }
   })
-
-  console.log({dataInv});
   
   
   return (
@@ -122,22 +122,21 @@ export const PrincipalView = () => {
     <PageBreadcrumb title={'RESULTADOS por INVERSION DIGITAL'}/>
       <Row>
         <Col lg={12}>
-          {/* <GrafLineal data={dataInv}/> */}
         </Col>
         <Col lg={12}>
         <Card>
           <Card.Body>
             <Row>
-              {
-                dataInv.map((f, index)=>{
-                  const acumula = {...f}
-                  return (
-                    <Col lg={4}>
-                      <TableEstadist onDataViewVentas={()=>onOpenModalDataViewVentas(f)} data={acumula} onOpenModalAddMesResChange={onOpenModalAddMesResChange} key={index}/>
-                    </Col>
-                  )
-                })
-              }
+                {
+                  dataInv.map((f, index)=>{
+                    const acumula = {...f}
+                    return (
+                      <Col lg={4}>
+                        <TableEstadist onDataViewVentas={()=>onOpenModalDataViewVentas(f)} data={acumula} onOpenModalAddMesResChange={onOpenModalAddMesResChange} key={index}/>
+                      </Col>
+                    )
+                  })
+                }
             </Row>
           </Card.Body>
         </Card>

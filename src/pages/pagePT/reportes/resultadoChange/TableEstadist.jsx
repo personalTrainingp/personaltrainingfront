@@ -33,12 +33,24 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVenta
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'FACTURACION'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'VENTAS'}</span>
               </li>
             </td>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
                 <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={data.facturacion}/>}/></span>
+              </li>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'VENTAS DIGITAL'}</span>
+              </li>
+            </td>
+            <td>
+              <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
+                <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}><SymbolSoles fontSizeS={'fs-1'} numero={<NumberFormatMoney amount={data.facturacionDigital}/>}/></span>
               </li>
             </td>
           </tr>

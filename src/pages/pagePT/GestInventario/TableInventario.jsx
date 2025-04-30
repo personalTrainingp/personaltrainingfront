@@ -114,6 +114,16 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                 accept:  onAcceptUpd610,
             });
         }
+        const onClickChange = ()=>{
+            confirmDialog({
+                message: `Seguro que quieres trasladar a chorrillos el item?`,
+                header: `eliminar item`,
+                icon: 'pi pi-info-circle',
+                defaultFocus: 'reject',
+                acceptClassName: 'p-button-danger',
+                accept:  onAcceptUpd598,
+            });
+        }
         const confirmDeleteGastoxID = ()=>{
             confirmDialog({
                 message: `Seguro que quieres eliminar el item?`,
@@ -142,6 +152,12 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
+        const onAcceptUpd598 = async()=>{
+            setshowLoading(true)
+            await RestaurarArticulo(rowData.id, id_enterprice, 601)
+            setshowLoading(false)
+            showToast('success', 'Eliminar gasto', 'Gasto a chorrillos correctamente', 'success')
+        }
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
@@ -162,6 +178,13 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                     id_enterprice===602 && (
                         <Button icon="pi pi-reply" rounded outlined className="mr-2" 
                         onClick={onClickProyCircus} 
+                        />
+                    )
+                }
+                {
+                    id_enterprice===598 && (
+                        <Button icon="pi pi-reply" rounded outlined className="mr-2" 
+                        onClick={onClickChange} 
                         />
                     )
                 }
