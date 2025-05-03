@@ -144,7 +144,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         }
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
+                {/* <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
                 onClick={onClickEditModalEgresos} 
                 />
                 <Button icon="pi pi-trash" rounded outlined severity="danger" 
@@ -164,7 +164,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                         onClick={onClickProyCircus} 
                         />
                     )
-                }
+                } */}
             </React.Fragment>
         );
     }
