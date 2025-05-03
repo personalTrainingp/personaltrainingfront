@@ -61,7 +61,7 @@ export const ItemTableTotal = ({index, IsVentaCero, isTime, isNeedGenere, pFem, 
 				<td className="text-center">
 					<li className="list-unstyled p-2">
 						<div className="fw-bold fs-1 " >
-							{porcentajeMonto.toFixed(2)}
+							{porcentajeMonto.toFixed(2)} %
 						</div>
 					</li>
 				</td>
@@ -69,7 +69,7 @@ export const ItemTableTotal = ({index, IsVentaCero, isTime, isNeedGenere, pFem, 
 			<td className="text-center">
 				<li className="list-unstyled p-2">
 					<div className="fw-bold fs-1 " >
-						{porcentajeCantidad.toFixed(2)}
+						{porcentajeCantidad.toFixed(2)} %
 					</div>
 				</li>
 			</td>

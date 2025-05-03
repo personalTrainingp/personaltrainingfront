@@ -401,7 +401,7 @@ export const ResumenComparativo = () => {
             { header: labelCaracter, isIndexado: true, onClick: ()=>onOpenModalSOCIOS(grupo.items, '', labelCaracter, false), items: grupo.items, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL', order: 1 },
             { header: 'S/. VENTA TOTAL', isSortable, HTML: <NumberFormatMoney amount={montoxProps}/>, value: montoxProps, tFood: <NumberFormatMoney amount={sumaMontoTotal}/>, order: 2 },
             { header: 'SOCIOS', isSortable, value: cantidadxProps, tFood: sumaTotal, order: 3 },
-            { header: `% VENTA TOTAL`, isSortable, value: porcentajexMontoProps, tFood: 100, order: 4 },
+            { header: `% VENTA TOTAL`, isSortable, HTML: <>{porcentajexMontoProps} %</>, value: porcentajexMontoProps, tFood: 100, order: 4 },
             { header: `% SOCIOS`, isSortable, value: porcentajexProps, tFood: 100, order: 5 },
             { header: `S/. TICKET MEDIO`, isSortable, value: ticketMedio, HTML: <NumberFormatMoney amount={ticketMedio}/>, tFood: <NumberFormatMoney amount={sumaTicketMedio}/>, order: 5 },
             { header: `S/. PRECIO POR SESION`, isSortable, value: montoxProps, HTML: <NumberFormatMoney amount={montoxProps/sumaDeSesionesxProps}/>, tFood: <NumberFormatMoney amount={sumaMontoTotal}/>, order: 5 },

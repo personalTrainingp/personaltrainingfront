@@ -108,10 +108,10 @@ export const PrincipalView = () => {
       inversion: inversion,
       facturacionDigital: f?.facturacionDigital,
       facturacion: f?.facturacion,
-      numero_cierre: daeFind?.numero_cierre,
-      cac: ((daeFind?.numero_cierre || 0) === 0 ? 0 : inversion / daeFind.numero_cierre).toFixed(2),
-      ticket_medio: (daeFind?.facturacion/daeFind?.numero_cierre)||0,
-      conversor: ((daeFind?.numero_cierre/daeFind?.numero_mensajes)*100).toFixed(2),
+      numero_cierre: f?.numero_cierre,
+      cac: ((f?.numero_cierre || 0) === 0 ? 0 : inversion / f.numero_cierre).toFixed(2),
+      ticket_medio: (daeFind?.facturacion/f?.numero_cierre)||0,
+      conversor: ((f?.numero_cierre/daeFind?.numero_mensajes)*100).toFixed(2),
       roas: (daeFind?.facturacion/inversion).toFixed(0)
     }
   })

@@ -78,21 +78,29 @@ export const useResultadosChange = () => {
 				idsPermitidos.includes(item.detalle_ventaMembresium?.tb_ventum?.id_origen)
 			);
 
-			const ventasSinCero = filtrado.filter(
-				(f) =>
-					f.detalle_ventaMembresium.tarifa_monto !== 0 &&
-					(f.detalle_ventaMembresium.tb_ventum.id_origen === 693 ||
-						f.detalle_ventaMembresium.tb_ventum.id_origen === 694)
+			const ventasSinCero = data.ventasProgramas.filter(
+				(f) => f.detalle_ventaMembresium.tarifa_monto !== 0
 			);
+
 			const dataAlter = agruparPorMes(agruparPorVenta(ventasSinCero)).map((g) => {
+				console.log(g, 'gema');
+				const filtradoRedes = g.items?.filter((item) =>
+					idsPermitidos.includes(item.detalle_ventaMembresium?.tb_ventum?.id_origen)
+				);
+
+				const facturacionRedesxProps = filtradoRedes.reduce(
+					(total, item) => total + (item?.detalle_ventaMembresium.tarifa_monto || 0),
+					0
+				);
 				const facturacionxProps = g.items.reduce(
 					(total, item) => total + (item?.detalle_ventaMembresium.tarifa_monto || 0),
 					0
 				);
-				const numero_cierre = g.items.length;
+				const numero_cierre = filtradoRedes.items.length;
 
 				return {
 					fecha: g.fecha,
+					facturacionDigital: facturacionRedesxProps,
 					facturacion: facturacionxProps,
 					inversion: 0,
 					numero_mensajes: 0,
@@ -101,7 +109,7 @@ export const useResultadosChange = () => {
 					// roas: 0 / facturacionxProps,
 					ticket_medio: facturacionxProps / numero_cierre || 0,
 					numero_cierre: numero_cierre,
-					items: g.items,
+					items: filtradoRedes.items,
 				};
 			});
 			dispatch(onDataFail(dataAlter));

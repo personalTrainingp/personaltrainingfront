@@ -78,13 +78,13 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVenta
               </li>
             </td>
           </tr>
-          <tr>
+          <tr onClick={onDataViewVentas}>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'SOCIOS'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'SOCIOS DIGITAL'}</span>
               </li>
             </td>
-            <td onClick={onDataViewVentas}>
+            <td>
               <li className={`d-flex flex-row justify-content-between p-1 float-end`} >
                 <span style={{fontSize: '40px'}} className={`fw-bold ml-3`}>{data.numero_cierre}</span>
               </li>
