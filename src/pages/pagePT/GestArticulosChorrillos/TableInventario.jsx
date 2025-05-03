@@ -19,7 +19,7 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { ModalAgrupadoxEtiquetas } from './ModalAgrupadoxEtiquetas';
 import { useInventarioStore } from './hook/useInventarioStore';
 dayjs.extend(utc);
-export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
+export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3, btnEdit, btnDelete, btnAdd}) {
     locale('es')
     const dt = useRef(null);
     const [first, setFirst] = useState(0); // fila inicial (ej: página 2 es fila 10 si tienes rows=5)
@@ -144,12 +144,20 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         }
         return (
             <React.Fragment>
-                {/* <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
-                onClick={onClickEditModalEgresos} 
-                />
-                <Button icon="pi pi-trash" rounded outlined severity="danger" 
-                onClick={confirmDeleteGastoxID} 
-                />
+                {
+                    btnEdit && (
+                        <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
+                        onClick={onClickEditModalEgresos} 
+                        />
+                    )
+                }
+                {
+                    btnDelete && (
+                        <Button icon="pi pi-trash" rounded outlined severity="danger" 
+                        onClick={confirmDeleteGastoxID} 
+                        />
+                    )
+                }
                 {
                     id_enterprice===610 && (
                         <Button icon="pi pi-reply" rounded outlined className="mr-2" 
@@ -164,7 +172,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                         onClick={onClickProyCircus} 
                         />
                     )
-                } */}
+                }
             </React.Fragment>
         );
     }
@@ -430,7 +438,11 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                         <Image src={ImgproyCircus3}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
                         </Image>
                         </div>
-                        {/* <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} /> */}
+                        {
+                            btnAdd && (
+                                <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
+                            )
+                        }
                     </div>
                     <TabView>
                         {

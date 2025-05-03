@@ -12,13 +12,13 @@ export const GestionInventario = () => {
     <Card className='p-4 m-2'>
     <TabView>
       <TabPanel header={'CHANGE THE SLIM STUDIO'}>
-              <DataInventario id_enterprice={598}/>
+              <DataInventario id_enterprice={598} />
       </TabPanel>
       <TabPanel header={'MANOJ'}>
               <DataInventario id_enterprice={600}/>
       </TabPanel>
       <TabPanel header={'CHORRILLOS'}>
-              <DataInventario id_enterprice={601}/>
+              <DataInventario btnAdd btnDelete btnEdit id_enterprice={601} />
       </TabPanel>
       <TabPanel header={'INVENTARIO MADRE COPIA SEMANA PASADA'}>
               <DataInventario id_enterprice={599}/>
