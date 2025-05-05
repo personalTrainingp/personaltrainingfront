@@ -12,8 +12,6 @@ const sumarTarifaMonto = (items)=>{
     return ventas
 }
 const propsResumen = (items)=>{
-  console.log({items});
-  
   const numero_cierre = items.length
   const ventas = sumarTarifaMonto(items)
   const ticket_medio = ventas / numero_cierre || 0
@@ -60,6 +58,15 @@ export const PrincipalView = () => {
   useEffect(() => {
     obtenerTodoVentas()
   }, [])
+  const dataNueva = data.map(d=>{
+    return {
+      ...d,
+      
+			itemsxDia: dataAgrupadoPorDIAMESANIO(d.items),
+    }
+  })
+  console.log(transformarArray(data).filter(f=>f.anio==='2024'), data, dataNueva, "dataventa");
+  
   return (
     <>
     <PageBreadcrumb title={'VENTAS COMPARATIVAS POR AÑO'}/>
@@ -86,4 +93,63 @@ export const PrincipalView = () => {
     </Row>
     </>
   )
+}
+
+
+
+function dataAgrupadoPorDIAMESANIO(data) {
+
+// Obtener el rango de fechas (mínimo y máximo)
+const startDate = new Date(Math.min(...data.map(item => new Date(item.detalle_ventaMembresium.tb_ventum.fecha_venta))));
+const endDate = new Date(Math.max(...data.map(item => new Date(item.detalle_ventaMembresium.tb_ventum.fecha_venta))));
+
+// Crear el array de días de un mes
+const getDaysOfMonth = (year, month) => {
+  const daysInMonth = new Date(year, month, 0).getDate(); // Total de días en el mes
+  const days = [];
+  for (let day = 1; day <= daysInMonth; day++) {
+    days.push(day); // Solo el día
+  }
+  return days;
+};
+
+// Agrupar los datos por día
+const groupedByMonth = data.reduce((acc, item) => {
+  const fecha = new Date(item.detalle_ventaMembresium.tb_ventum.fecha_venta);
+  const dia = fecha.getDate();
+  const mes = fecha.getMonth() + 1; // Mes es 0-indexed, sumamos 1
+  const anio = fecha.getFullYear();
+
+  const param = `${dia.toString().padStart(2, '0')}-${mes.toString().padStart(2, '0')}-${anio}`;
+
+  let monthGroup = acc.find(group => group.mes === mes && group.anio === anio);
+
+  if (!monthGroup) {
+    monthGroup = {
+      param: `${dia.toString().padStart(2, '0')}-${mes.toString().padStart(2, '0')}-${anio}`,
+      mes: mes.toString().padStart(2, '0'),
+      anio,
+      items: getDaysOfMonth(anio, mes).map(day => ({
+        dia: day,
+        items: [] // Inicializamos con un array vacío para cada día
+      }))
+    };
+    acc.push(monthGroup);
+  }
+
+  const dayGroup = monthGroup.items.find(day => day.dia === dia);
+  if (dayGroup) {
+    dayGroup.items.push(item); // Agregar el item correspondiente al día
+  }
+
+  return acc;
+}, []);
+
+// Asegurarse de que cada día tenga el formato correcto
+groupedByMonth.forEach(monthGroup => {
+  monthGroup.items.forEach(day => {
+    day.param = `${day.dia.toString().padStart(2, '0')}-${monthGroup.mes}-${monthGroup.anio}`;
+  });
+});
+return groupedByMonth;
 }

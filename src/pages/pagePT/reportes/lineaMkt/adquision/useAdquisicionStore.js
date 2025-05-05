@@ -77,7 +77,6 @@ function agruparPorMesYAnio(data) {
 		});
 		fechaIteracion = fechaIteracion.add(1, 'month');
 	}
-	console.log(data);
 
 	// Agrupar datos por mes
 	data?.forEach((item) => {
@@ -85,12 +84,44 @@ function agruparPorMesYAnio(data) {
 			'MMMM YYYY'
 		);
 		const grupo = meses.find((m) => m.fecha === mesVenta);
+
 		if (grupo) {
 			grupo.items.push(item);
 		}
 	});
+	const nuevaData = meses.map((m) => {
+		return {
+			...m,
+		};
+	});
 
-	return meses;
+	return nuevaData;
+}
+
+function agruparPorMesYAnioYDia(data) {
+	const grouped = data.reduce((acc, item) => {
+		const fecha = new Date(item.detalle_ventaMembresium.tb_ventum.fecha_venta);
+		const dia = fecha.getDate();
+		const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+		const anio = fecha.getFullYear();
+		const param = `${dia.toString().padStart(2, '0')}-${mes}-${anio}`;
+
+		let group = acc.find((group) => group.param === param);
+		if (!group) {
+			group = {
+				dia,
+				mes,
+				anio,
+				param,
+				items: [],
+			};
+			acc.push(group);
+		}
+
+		group.items.push(item);
+		return acc;
+	}, []);
+	return grouped;
 }
 
 function eliminarDuplicadosPorId(data) {
@@ -123,6 +154,12 @@ export const useAdquisicionStore = () => {
 				(f) => f.detalle_ventaMembresium.tarifa_monto !== 0
 			);
 			dispatch(onDataFail(ventasSinCero));
+			console.log(
+				eliminarDuplicadosPorId(ventasSinCero),
+				agruparPorMesYAnioYDia(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
+				'nuevo?'
+			);
+
 			// console.log(
 			// 	agruparPorMesYAnio(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
 			// 	'holi'
