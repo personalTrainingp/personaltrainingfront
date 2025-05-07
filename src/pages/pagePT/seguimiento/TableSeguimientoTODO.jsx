@@ -58,6 +58,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 	const [selectedCustomers, setSelectedCustomers] = useState([]);
 	const { reporteSeguimiento, obtenerReporteSeguimiento, obtenerReporteSeguimientoTODO, viewSeguimiento, agrupado_programas, loadinData } = useReporteStore();
 	const { dataSeguimientos, obtenerTodoSeguimiento } = useSeguimientoStore()
+		const [valueFilter, setvalueFilter] = useState([])
 	const { dataView } = useSelector(e=>e.DATA)
 	useEffect(() => {
 		obtenerReporteSeguimientoTODO(id_empresa, isClienteActive)
@@ -98,12 +99,14 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
             // Crea una copia del objeto antes de modificarlo
 			const labelFactura =  arrayFacturas.find(f=>f.value ===d.tb_ventum.id_tipoFactura)?.label
             let newItem = { ...d };
+			console.log({newItem, d});
+			
 			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st*5} Sesiones | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')}`;
 			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
 			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
 			newItem.diasFaltan = diasLaborables(new Date(), dayjs.utc(fechaaaa))
-			newItem.distrito = d.tb_ventum.tb_cliente.tb_distrito?.distrito;
+			newItem.distrito = d.tb_ventum.tb_cliente.ubigeo_nac?.distrito;
 			newItem.labelFactura = labelFactura
 			newItem.diasExt = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.dias_habiles
 			newItem.name_Ext = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.tipo_extension
@@ -223,6 +226,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
     //         }
     //     }
     // }
+	
 	const IdBodyTemplate = (rowData, { rowIndex })=>{
         return (
             <div className={`flex align-items-center gap-2`}>
@@ -292,7 +296,13 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 					break;
 	}
 		}
+		
+		const valueFiltered = (e)=>{
+			setvalueFilter(e)
+		}
 	const header = renderHeader();
+	console.log({valueFilter, viewSeguimiento});
+	
 	return (
 			<>
 				{
@@ -351,7 +361,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 <>
 	
                                 <Row>
-							        <StatisticSeguimiento  data={viewSeguimiento} statisticsData={agrupado_programas} />
+							        <StatisticSeguimiento  data={viewSeguimiento} dataFiltered={agruparPorPrograma(valueFilter)} statisticsData={agrupado_programas} />
                                 </Row>
 				<DataTable
 					value={customers}
@@ -366,6 +376,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 					stripedRows
 					selection={selectedCustomers}
 					onSelectionChange={(e) => setSelectedCustomers(e.value)}
+					onValueChange={valueFiltered}
 					filters={filters}
 					filterDisplay="menu"
 					globalFilterFields={["labelFactura", "tb_ventum.tb_cliente.nombres_apellidos_cli", "distrito",  "ProgramavsSemana", "dias"]}
@@ -433,3 +444,45 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 			</>
 	);
 };
+
+
+
+
+function agruparPorPrograma(datos) {
+	const resultado = [];
+
+	datos.forEach((item) => {
+		const { id_pgm, name_pgm, tb_image } = item.tb_ProgramaTraining;
+
+		// Buscar si ya existe un grupo para este id_pgm
+		let grupo = resultado.find((g) => g.tb_programa_training.id_pgm === id_pgm);
+
+		if (!grupo) {
+			// Si no existe, crear un nuevo grupo
+			grupo = {
+				tb_programa_training: {
+					id_pgm,
+					name_pgm,
+					tb_image,
+				},
+				todo: [],
+			};
+			resultado.push(grupo);
+		}
+
+		// Añadir el item al grupo correspondiente
+		grupo.todo.push(item);
+	});
+	function ordenarPorIdPgm(data) {
+		const orden = [2, 4, 3];
+
+		return data.sort((a, b) => {
+			return (
+				orden.indexOf(a.tb_programa_training.id_pgm) -
+				orden.indexOf(b.tb_programa_training.id_pgm)
+			);
+		});
+	}
+
+	return ordenarPorIdPgm(resultado);
+}

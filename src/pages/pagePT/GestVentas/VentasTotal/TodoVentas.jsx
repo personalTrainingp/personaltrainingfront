@@ -1,6 +1,6 @@
 import { Table } from '@/components'
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { classNames } from 'primereact/utils';
 import { FilterMatchMode, FilterOperator, locale } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
@@ -72,24 +72,46 @@ export const TodoVentas=({id_empresa})=> {
         setGlobalFilterValue(value);
     };
 
+
     const renderHeader = () => {
         return (
           <>
-                  <span className='font-24'>
-                    CANTIDAD DE ITEMS: {valueFilter?.length==0?customers?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length:valueFilter?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length}
-                  </span> 
-                  {/* <span className='font-24 mx-2'>
-                    |
-                  </span>
-                  <span className='font-24'>
-                    FACTURAS: {valueFilter?.length==0?customers?.length:valueFilter?.length}
-                  </span> */}
-            <div className="flex justify-content-end">
-                <IconField iconPosition="left">
-                    <InputIcon className="pi pi-search" />
-                    <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Buscador general" />
-                </IconField>
-            </div>
+                  <div className='d-flex flex-row d-flex justify-content-between'>
+                    <div className=''>
+                      <div className='d-flex flex-row d-flex justify-content-center align-items-center fs-3'>
+                      COMPRAS <br/> POR SOCIO
+                      <span className='bg-white d-flex border-2 rounded-2 justify-content-center align-items-center mx-2'>
+                      <input className='form-control border-none' value={globalFilterValue} onChange={onGlobalFilterChange}/>
+                        <div className='m-2 text-primary'>
+                          {valueFilter?.length==0?customers?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length:valueFilter?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length}
+                        </div>
+                      </span>
+                      </div>
+                    </div>
+                    <div className=''>
+                      <div className='d-flex flex-row d-flex justify-content-center align-items-center fs-3'>
+                      CANJES <br/> POR SOCIO
+                      <span className='bg-white d-flex border-2 rounded-2 justify-content-center align-items-center mx-2'>
+                      <input className='form-control border-none' value={globalFilterValue} onChange={onGlobalFilterChange}/>
+                        <div className='m-2 text-primary'>
+                          {valueFilter?.length==0?customers?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length:valueFilter?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length}
+                        </div>
+                      </span>
+                      </div>
+                    </div>
+                    <div className=''>
+                      <div className='d-flex flex-row d-flex justify-content-center align-items-center fs-3'>
+                      VENTAS <br/> POR ASESOR
+                      <span className='bg-white d-flex border-2 rounded-2 justify-content-center align-items-center mx-2'>
+                      <input className='form-control border-none' value={globalFilterValue} onChange={onGlobalFilterChange}/>
+                        <div className='m-2 text-primary'>
+                          {valueFilter?.length==0?customers?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length:valueFilter?.filter(f=>f.detalleVenta_pagoVenta !== 0.0)?.length}
+                        </div>
+                      </span>
+                      </div>
+                    </div>
+                  </div>
+                  
           </>
         );
     };
@@ -109,7 +131,7 @@ export const TodoVentas=({id_empresa})=> {
       return(
           <div className={`flex align-items-center ${rowExtensionColor(rowData, 'text-primary')} gap-2`}>
             
-              <span>{<MoneyFormatter  amount={sumaTotal}/> }</span>
+              <span className='fw-bold'>{<MoneyFormatter  amount={sumaTotal}/> }</span>
           </div>
       )
     }
@@ -262,14 +284,15 @@ const rowExtensionColor = (rowData, color_pr)=>{
         <>
           <DataTable value={customers} 
                   onValueChange={valueFiltered}
+                  filterDisplay="row"
                   rowClassName={rowClassName}
                         stripedRows paginator rows={10} dataKey="id" filters={filters} loading={loading}
                   globalFilterFields={["tb_cliente.nombres_apellidos_cli", "tb_empleado.nombres_apellidos_empl", "tipo_comprobante", "numero_transac"]} header={header} emptyMessage="No customers found.">
               <Column field="id" header="Id" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} body={idBodyTemplate}/>
               {/* <Column field="id" header="Foto de" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} /> */}
-              <Column field="fecha_venta" header="FECHA" filter filterPlaceholder="BUSCAR FECHA" style={{ minWidth: '8rem' }} body={fechaDeComprobanteBodyTemplate}/>
-              <Column field="tb_cliente.nombres_apellidos_cli" body={infoClienteBodyTemplate} header="SOCIOS" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-              <Column field="tb_empleado.nombres_apellidos_empl" header="ASESOR COMERCIAL" body={asesorBodyTemplate} filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="fecha_venta" header="FECHA" filterPlaceholder="BUSCAR FECHA" style={{ minWidth: '8rem' }} body={fechaDeComprobanteBodyTemplate}/>
+              <Column field="tb_cliente.nombres_apellidos_cli" filterField='tb_cliente.nombres_apellidos_cli'  body={infoClienteBodyTemplate} header="SOCIOS" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
+              <Column field="tb_empleado.nombres_apellidos_empl" filterField='tb_empleado.nombres_apellidos_empl' header="ASESOR COMERCIAL" body={asesorBodyTemplate} filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column field="tipo_comprobante" header="COMPROBANTE" body={comprobanteBodyTemplate} filter filterPlaceholder="Buscar tipo de comprobante" style={{ minWidth: '12rem' }} />
               <Column field="numero_transac" header="Nº DE COMPR." body={ncomprobanteBodyTemplate} filter filterPlaceholder="Search by name" style={{ maxWidth: '7rem' }} />
               <Column header="TOTAL" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />

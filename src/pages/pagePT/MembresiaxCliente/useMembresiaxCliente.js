@@ -4,11 +4,12 @@ import { useState } from 'react';
 
 export const useMembresiaxCliente = () => {
 	const [data, setdata] = useState([]);
+	
 	const obtenerClientesMembretados = async () => {
 		try {
 			const { data: dataClientesxMembresia } = await PTApi.get('/venta/clientes-membresias');
 			console.log('khe?');
-			console.log(dataClientesxMembresia.clientesConMembresia);
+			console.log(dataClientesxMembresia, "hola?");
 			const dataNew = dataClientesxMembresia.clientesConMembresia.map((d) => {
 				return {
 					nombres_apellidos_cli: d.nombres_apellidos_cli,

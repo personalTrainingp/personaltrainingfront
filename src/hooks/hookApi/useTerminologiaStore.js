@@ -7,6 +7,25 @@ export const useTerminologiaStore = () => {
 	let dispatch = useDispatch();
 	const [terminologiaPorId, setTerminologiaPorId] = useState({});
 	const [dataTerminologiaPorEntidad, SetData] = useState({});
+
+	const PostFechasPeriodo = async (entidad, grupo, formState) => {
+		try {
+			const { data } = PTApi.post(
+				`/parametros/post-parametros-periodo/${entidad}/${grupo}`,
+				formState
+			);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerFechasPeriodo = async (entidad, grupo) => {
+		try {
+			const { data } = PTApi.get(`/parametros/get_params_periodo/${entidad}/${grupo}`);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const terminologiaPorEntidad = async (id_empresa) => {
 		try {
 			const { data } = await PTApi.get(`/terminologia/terminologiaxEmpresa/${id_empresa}`);
@@ -105,5 +124,7 @@ export const useTerminologiaStore = () => {
 		EliminarTerminologiaGasto,
 		registrarTerminologiaGasto,
 		actualizarTerminologiaGasto,
+		PostFechasPeriodo,
+		obtenerFechasPeriodo,
 	};
 };

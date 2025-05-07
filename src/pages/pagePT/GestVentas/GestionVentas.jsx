@@ -7,7 +7,7 @@ import { TabPanel, TabView } from 'primereact/tabview'
 export const GestionVentas = () => {
   return (
     <>
-    <PageBreadcrumb title="COMPROBANTES DE VENTAS POR DIA" subName="Ventas" />
+    <PageBreadcrumb title="DETALLE DE COMPRAS-CANJES-VENTAS POR SOCIO" subName="Ventas" />
     <Card>
         <Card.Body>
                     <TabView>

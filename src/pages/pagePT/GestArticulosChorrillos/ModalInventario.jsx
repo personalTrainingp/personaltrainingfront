@@ -7,6 +7,8 @@ import { Button, Col, Modal, ModalBody, Row } from 'react-bootstrap'
 import Select from 'react-select'
 import config from '@/config';
 import { ImagenUploader } from '@/components/ImagenUploader';
+import { MultiOpcionSelect } from '../GestInventario/components/ComponentSelect';
+import { NumberFormatMoney } from '@/components/CurrencyMask';
 const registerArticulo={
     producto: '',
     id_marca: '',
@@ -36,7 +38,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
     const [showLoading, setshowLoading] = useState(false)
     const { obtenerArticulo, obtenerArticulos, actualizarArticulo, startRegisterArticulos, articulo } = useInventarioStore()
     const { DataGeneral:dataMarcas, obtenerParametroPorEntidadyGrupo:obtenerMarcas } = useTerminoStore()
-    // const { DataGeneral:dataLugares, obtenerParametroPorEntidadyGrupo:obtenerLugares } = useTerminoStore()
+    const { DataGeneral:dataLugares, obtenerParametroPorEntidadyGrupo:obtenerLugares } = useTerminoStore()
+        const { DataGeneral:dataEtiquetasBusqueda, obtenerParametroPorEntidadyGrupo:obtenerEtiquetasBusqueda } = useTerminoStore()
     const { obtenerZonas, dataZonas } =  useTerminoStore()
     const { formState, 
             producto,
@@ -46,10 +49,10 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             costo_unitario_dolares,
             mano_obra_soles,
             mano_obra_dolares,
-            // fecha_entrada,
+            fecha_entrada,
             descripcion,
             id_lugar,
-            // etiquetas_busquedas,
+            etiquetas_busquedas,
             onInputChange,  
             onResetForm,
             onInputChangeReact
@@ -136,6 +139,19 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                         <form onSubmit={submitGasto}>
                             <Row>
                                 <Col lg={12}>
+                                                                            <div className="mb-4">
+                                                                                <label htmlFor="etiquetas_busquedas" className="form-label">
+                                                                                    ETIQUETAS DE BUSQUEDA
+                                                                                </label>
+                                                                                <MultiOpcionSelect
+                                                                                    options={dataEtiquetasBusqueda}
+                                                                                    onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
+                                                                                    value={etiquetas_busquedas}
+                                                                                    name="etiquetas_busquedas"
+                                                                                />
+                                                                            </div>
+                                                                        </Col>
+                                <Col lg={12}>
                                 <div className="mb-4">
                                         <label htmlFor="imgAvatar_BASE64" className="form-label">
                                             FOTO DEL ARTICULO
@@ -166,7 +182,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             />
                                     </div>
                                 </Col>
-                                {/* <Col lg={4}>
+                                <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="marca" className="form-label">
                                             MARCA
@@ -184,7 +200,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             
                                         />
                                     </div>
-                                </Col> */}
+                                </Col>
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="marca" className="form-label">
@@ -205,7 +221,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                         />
                                     </div>
                                 </Col>
-                                {/* <Col lg={4}>
+                                <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="fecha_entrada" className="form-label">
                                             FECHA DE ENTRADA
@@ -220,7 +236,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 placeholder=""
                                             />
                                     </div>
-                                </Col> */}
+                                </Col>
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="cantidad" className="form-label">
@@ -299,15 +315,15 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             />
                                     </div>
                                 </Col> 
-                                {/* <Col lg={12}>
+                                <Col lg={12}>
                                     <div>
                                         COSTO TOTAL EN SOLES: <NumberFormatMoney amount={costo_total_s}/>
                                     </div>
                                     <div>
                                         COSTO TOTAL EN DOLARES: <NumberFormatMoney amount={costo_total_d}/>
                                     </div>
-                                </Col> */}  
-                                {/* <Col lg={12}>
+                                </Col>  
+                                <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="observacion" className="form-label">
                                             OBSERVACIONES
@@ -322,7 +338,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                 required
                                             />
                                     </div>
-                                </Col> */}
+                                </Col>
                                 <Col>
                                     <Button className='mx-2' type='submit'>Guardar</Button>
                                     <a className='mx-2' style={{cursor: 'pointer', color: 'red'}} onClick={onClickCancelModal}>Cancelar</a>

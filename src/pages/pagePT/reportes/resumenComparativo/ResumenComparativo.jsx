@@ -754,6 +754,8 @@ export const ResumenComparativo = () => {
             }
             )
         const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros).map((grupo, index, array) => {
+            console.log({ventasSinCeros});
+            
             return [
                 ...generarResumen(array, grupo, 'ASESORES', index, [], [{header: 'ASESORES', value: grupo.propiedad, isPropiedad: true, items: grupo.items, HTML: <span className={grupo.estado_empl?'text-primary':'text-black'}>{grupo.propiedad}</span>, order: 0}]),
                 // {header: 'ESTADO', value: `${grupo.estado_empl}`}
@@ -1396,6 +1398,19 @@ export const ResumenComparativo = () => {
         {
             title: 'COMPARATIVO VENTAS ASESORES - TOTAL',
             id: 'COMPARATIVOASESORESTOTAL',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                <TableTotal titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'ASESORES'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorVendedores}/>
+                    
+                </Col>
+            )
+            }
+        )
+        },
+        {
+            title: 'COMPARATIVO VENTAS ASESORES x NUEVOS - TOTAL',
+            id: 'COMPARATIVOASESORESXNUEVOSTOTAL',
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>

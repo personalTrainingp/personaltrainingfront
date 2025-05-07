@@ -1,5 +1,5 @@
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
-import { NumberFormatMoney } from '@/components/CurrencyMask';
+import { DateMask, NumberFormatMoney } from '@/components/CurrencyMask';
 import { arrayOrigenDeCliente } from '@/types/type';
 import dayjs from 'dayjs';
 import { Dialog } from 'primereact/dialog'
@@ -84,7 +84,7 @@ export const ModalTableSocios = ({ dataArrayGrouped,clickDataSocios, avatarProgr
                                         <td className='fs-2 text-center'>{d.sesionesVendidas}</td>
                                         <td className='fs-2'>{ dayjs.utc(d.fecha_nacimiento).format('dddd DD [DE] MMMM [DEL] YYYY')}</td>
                                         <td className='fs-2 text-center'>{d.edad}</td>
-                                        <td className='fs-2'><span className='d-flex justify-content-end'>{dayjs.utc(d.fecha_venta).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
+                                        <td className='fs-2'><span className='d-flex justify-content-end'>{dayjs.utc(d.fecha_venta).format('dddd DD [DE] MMMM [DEL] YYYY [:] hh:mm')}</span></td>
                                         <td className='fs-2 text-center'>{d.origen_label}</td>
                                     </tr>
                                 )
@@ -131,7 +131,7 @@ export const ModalTableSocios = ({ dataArrayGrouped,clickDataSocios, avatarProgr
                                         <td className='fs-2 text-center'>{d.sesionesVendidas}</td>
                                         <td className='fs-2'>{ dayjs.utc(d.fecha_nacimiento).format('dddd DD [DE] MMMM [DEL] YYYY')}</td>
                                         <td className='fs-2 text-center'>{d.edad}</td>
-                                        <td className='fs-2'><span className='d-flex justify-content-end'>{dayjs.utc(d.fecha_venta).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
+                                        <td className='fs-2'><span className='d-flex justify-content-end'><DateMask date={d.fecha_venta} format={'dddd DD [DE] MMMM [DEL] YYYY [ a las ] hh:mm A'}/> </span></td>
                                         <td className='fs-2 text-center'>{d.origen_label}</td>
                                     </tr>
                                 ))
