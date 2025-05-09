@@ -82,8 +82,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             if(show){
                 obtenerZonas(id_zona)
                 obtenerMarcas('articulo', 'marca')
-                obtenerEtiquetasBusqueda('articulo', 'etiqueta_busqueda')
-
+                obtenerEtiquetasBusqueda('nueva-venta', 'etiqueta_busqueda_origen')
             }
         }, [show])
         const submitGasto = async(e)=>{

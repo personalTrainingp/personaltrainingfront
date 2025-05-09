@@ -4,12 +4,34 @@ import { CardTitle } from '@/components';
 import { parsePath } from 'react-router-dom';
 import config from '@/config';
 import { NumberFormatter } from '@/components/CurrencyMask';
+import { useMemo, useState } from 'react';
 
-export const StatisticSeguimiento = ({statisticsData, data, dataFiltered=[]}) => {
+export const StatisticSeguimiento = ({h3Title, text_search, statisticsData, data, dataFiltered=[]}) => {
     console.log({dataFiltered, statisticsData});
-    
+    const stat = (statisticsData).map((statistics, index) => {
+        const n_clientes = statistics.todo.length
+        const porcent_clientes = data.length
+        return {
+            n_clientes,
+            porcent_clientes,
+        }
+    })
+      // 1) Total de clientes pendientes (suma de todos los statistics.todo.length)
+        const totalClientesPendientes = useMemo(
+            () => statisticsData.reduce((sum, stat) => sum + stat.todo.length, 0),
+            [statisticsData]
+        )
+        
+      // 2) Total de clientes pendientes (suma de todos los statistics.todo.length)
+      const totalClientesPendientesxFilter = useMemo(
+        () => dataFiltered.reduce((sum, stat) => sum + stat.todo.length, 0),
+        [dataFiltered]
+    )
+
+
     return (
         <>
+        <div className='fs-2 fw-bold text-primary'>{h3Title} <span className='fs-1 text-black'>TOTAL {totalClientesPendientes}</span></div>
         {(statisticsData).map((statistics, index) => {
             const n_clientes = statistics.todo.length
             const porcent_clientes = data.length
@@ -40,6 +62,7 @@ export const StatisticSeguimiento = ({statisticsData, data, dataFiltered=[]}) =>
                 </>
             );
         })}
+        <div className='fs-2 fw-bold text-primary'>{h3Title}  <span className='fs-1 text-black'>{text_search} {totalClientesPendientesxFilter}</span></div>
         {(dataFiltered).map((statistics, index) => {
             const n_clientes = statistics.todo.length
             const porcent_clientes = data.length

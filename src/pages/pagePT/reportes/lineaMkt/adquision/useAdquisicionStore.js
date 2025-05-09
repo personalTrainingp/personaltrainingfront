@@ -14,14 +14,41 @@
 
 // function eliminarDuplicadosPorId(data) {
 // 	const idsProcesados = new Set();
-// 	return data.filter(({ detalle_ventaMembresium }) => {
-// 		const idVenta = detalle_ventaMembresium?.tb_ventum?.id;
-// 		if (idVenta && !idsProcesados.has(idVenta)) {
-// 			idsProcesados.add(idVenta);
-// 			return true;
-// 		}
-// 		return false;
-// 	});
+// 	return data
+// 		.filter(({ detalle_ventaMembresium }) => {
+// 			const idVenta = detalle_ventaMembresium?.tb_ventum?.id;
+// 			if (idVenta && !idsProcesados.has(idVenta)) {
+// 				idsProcesados.add(idVenta);
+// 				return true;
+// 			}
+// 			return false;
+// 		})
+// 		.map((orig) => {
+// 			const venta = orig.detalle_ventaMembresium?.tb_ventum;
+// 			if (!venta) return orig;
+
+// 			// formateo
+// 			const fechaFormateada = venta.fecha_venta
+// 				? DateMaskString(venta.fecha_venta)
+// 				: venta.fecha_venta;
+
+// 			// clonar sólo el nivel que necesitamos cambiar
+// 			const nuevoVentum = {
+// 				...venta,
+// 				fecha_venta: fechaFormateada,
+// 			};
+
+// 			const nuevaMembresia = {
+// 				...orig.detalle_ventaMembresium,
+// 				tb_ventum: nuevoVentum,
+// 			};
+
+// 			// devolvemos un item completamente “nuevo”
+// 			return {
+// 				...orig,
+// 				detalle_ventaMembresium: nuevaMembresia,
+// 			};
+// 		});
 // }
 
 // function agruparPorMesYAnio(data) {
@@ -143,12 +170,21 @@
 // 			const { data: dataFechas } = await PTApi.get(
 // 				'/parametros/get_params_periodo/reporte-ventas/comparativaFechas'
 // 			);
-// 			console.log({ dataFechas, dataCom });
 
-// 			const ventasSinCero = data.ventasProgramas.filter(
+// 			const ventasSinCero = dataCom.ventasProgramas.filter(
 // 				(f) => f.detalle_ventaMembresium.tarifa_monto !== 0
 // 			);
-// 			dispatch(onDataFail(ventasSinCero));
+// 			// const test = eliminarDuplicadosPorId(ventasSinCero).map(
+// 			// 	(v) => v.detalle_ventaMembresium.tb_ventum
+// 			// );
+// 			// console.log(eliminarDuplicadosPorId(ventasSinCero), test, 'aqui 177');
+
+// 			// dispatch(onDataFail(ventasSinCero));
+// 			dispatch(
+// 				onSetDataView(
+// 					filtrarPorIntervalos(eliminarDuplicadosPorId(ventasSinCero), dataFechas)
+// 				)
+// 			);
 
 // 			setdata([]);
 // 		} catch (error) {
@@ -169,14 +205,51 @@
 // 			const venta = new Date(item.detalle_ventaMembresium.tb_ventum.fecha_venta);
 // 			return venta >= desde && venta <= hasta;
 // 		});
+// 		const items = groupByDate(items_filters)[0];
 
 // 		return {
 // 			fechas: {
 // 				fecha_desde: fecha_desde_param,
 // 				fecha_hasta: fecha_hasta_param,
 // 			},
-// 			items_filters,
+// 			items_filters: items,
 // 		};
+// 	});
+// }
+
+// function groupByDate(data) {
+// 	// 1) Agrupa los elementos por clave "YYYY-MM"
+// 	const temp = {};
+// 	data.forEach((item) => {
+// 		// Extraemos fecha “YYYY-MM-DD”
+// 		const fechaStr = item.detalle_ventaMembresium.tb_ventum.fecha_venta.split('T')[0];
+// 		const [anioStr, mesStr, diaStr] = fechaStr.split('-');
+// 		const anio = parseInt(anioStr, 10);
+// 		const mes = mesStr; // dos dígitos
+// 		const dia = parseInt(diaStr, 10);
+// 		const key = `${anioStr}-${mesStr}`;
+
+// 		if (!temp[key]) {
+// 			temp[key] = { anio, mes, byDay: {} };
+// 		}
+// 		if (!temp[key].byDay[dia]) {
+// 			temp[key].byDay[dia] = [];
+// 		}
+// 		temp[key].byDay[dia].push(item);
+// 	});
+
+// 	// 2) Para cada mes, construye un array de 31 días
+// 	return Object.values(temp).map(({ anio, mes, byDay }) => {
+// 		const dias = [];
+// 		for (let day = 1; day <= 31; day++) {
+// 			dias.push({
+// 				dia: day,
+// 				mes,
+// 				anio,
+// 				items: byDay[day] || [],
+// 			});
+// 		}
+// 		return dias;
 // 	});
 // }
 
@@ -196,15 +269,42 @@ function formatDateToSQLServerWithDayjs(date) {
 
 function eliminarDuplicadosPorId(data) {
 	const idsProcesados = new Set();
-	return data.filter(({ detalle_ventaMembresium }) => {
-		const idVenta = detalle_ventaMembresium?.tb_ventum?.id;
-		const fecha_venta = detalle_ventaMembresium?.tb_ventum?.fecha_venta;
-		if (idVenta && !idsProcesados.has(idVenta)) {
-			idsProcesados.add(idVenta);
-			return true;
-		}
-		return false;
-	});
+	return data
+		.filter(({ detalle_ventaMembresium }) => {
+			const idVenta = detalle_ventaMembresium?.tb_ventum?.id;
+			const fecha_venta = detalle_ventaMembresium?.tb_ventum?.fecha_venta;
+			if (idVenta && !idsProcesados.has(idVenta)) {
+				idsProcesados.add(idVenta);
+				return true;
+			}
+			return false;
+		}) // 2) Formateamos la fecha de venta
+		.map((orig) => {
+			const venta = orig.detalle_ventaMembresium?.tb_ventum;
+			if (!venta) return orig;
+
+			// formateo
+			const fechaFormateada = venta.fecha_venta
+				? DateMaskString(venta.fecha_venta)
+				: venta.fecha_venta;
+
+			// clonar sólo el nivel que necesitamos cambiar
+			const nuevoVentum = {
+				...venta,
+				fecha_venta: fechaFormateada,
+			};
+
+			const nuevaMembresia = {
+				...orig.detalle_ventaMembresium,
+				tb_ventum: nuevoVentum,
+			};
+
+			// devolvemos un item completamente “nuevo”
+			return {
+				...orig,
+				detalle_ventaMembresium: nuevaMembresia,
+			};
+		});
 }
 
 function agruparPorMesYAnio(data) {
@@ -312,7 +412,7 @@ export const useAdquisicionStore = () => {
 	const dispatch = useDispatch();
 	const obtenerTodoVentas = async () => {
 		try {
-			const RANGE_DATE = [new Date(2025, 4, 1), new Date(2025, 4, 10)];
+			const RANGE_DATE = [new Date(2024, 8, 16), new Date()];
 			const { data } = await PTApi.get('/venta/reporte/obtener-comparativo-resumen', {
 				params: {
 					arrayDate: [

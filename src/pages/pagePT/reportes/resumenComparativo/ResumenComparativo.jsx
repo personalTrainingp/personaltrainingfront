@@ -64,7 +64,6 @@ export const ResumenComparativo = () => {
     const onOpenModalSOCIOS = (d, avatarPrograma=[], label, isdatagruped)=>{
         // console.log(d, "d???????????");
         if(isdatagruped){
-            console.log(isdatagruped, "hola");
             setclickDataSocios(d)
             setisDataNeedGruped(isdatagruped)
             setisOpenModalSocio(true)
@@ -80,7 +79,6 @@ export const ResumenComparativo = () => {
     const onCloseModalSOCIOSCANJE = (d, avatarPrograma=[], label, isdatagruped)=>{
         // console.log(d, "d???????????");
         if(isdatagruped){
-            console.log(isdatagruped, "hola");
             setclickDataSocios(d)
             setisDataNeedGruped(isdatagruped)
             setisOpenModalSocio(true)
@@ -406,6 +404,8 @@ export const ResumenComparativo = () => {
             { header: `S/. TICKET MEDIO`, isSortable, value: ticketMedio, HTML: <NumberFormatMoney amount={ticketMedio}/>, tFood: <NumberFormatMoney amount={sumaTicketMedio}/>, order: 5 },
             { header: `S/. PRECIO POR SESION`, isSortable, value: montoxProps, HTML: <NumberFormatMoney amount={montoxProps/sumaDeSesionesxProps}/>, tFood: <NumberFormatMoney amount={sumaMontoTotal}/>, order: 5 },
         ]
+            console.log({resumen});
+            
             // 1️⃣ Filtrar los elementos de resumen que estén en objDeleting
             if (Array.isArray(objDeleting)) {
                 const headersAEliminar = objDeleting.map(obj => obj.header);

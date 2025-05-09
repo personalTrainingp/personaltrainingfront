@@ -52,7 +52,7 @@ function encontrarObjeto(array, fecha_act) {
     // Retornar null si no se encuentra ningún objeto
     return null;
   }
-export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, statisticsData, SeguimientoClienteActivos, esTodo, labelSesiones, labelSesionesPendientes, isClienteActive, sesionesCongReg}) => {
+export const TableSeguimientoTODO = ({h3Title, dae, classNameFechaVenc, id_empresa, statisticsData, SeguimientoClienteActivos, esTodo, labelSesiones, labelSesionesPendientes, isClienteActive, sesionesCongReg, clasific}) => {
 	const [customers, setCustomers] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedCustomers, setSelectedCustomers] = useState([]);
@@ -85,12 +85,13 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 	
 	useEffect(() => {
 		const fetchData = () => {
-			setCustomers(getCustomers(viewSeguimiento));
+			setCustomers(filtradosDe(getCustomers(viewSeguimiento)));
 			setLoading(false);
 		};
 		fetchData();
 	}, [viewSeguimiento]);
 	// console.log(viewSeguimiento, "view");
+	console.log({customers});
 	
 	const getCustomers = (data) => {
 		return [...(data || [])].map((d) => {
@@ -99,11 +100,12 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
             // Crea una copia del objeto antes de modificarlo
 			const labelFactura =  arrayFacturas.find(f=>f.value ===d.tb_ventum.id_tipoFactura)?.label
             let newItem = { ...d };
-			console.log({newItem, d});
 			
 			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st*5} Sesiones | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')}`;
 			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
 			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
+			console.log({newItem, d, fn: new Date(newItem.fecha_fin_new)});
+			
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
 			newItem.diasFaltan = diasLaborables(new Date(), dayjs.utc(fechaaaa))
 			newItem.distrito = d.tb_ventum.tb_cliente.ubigeo_nac?.distrito;
@@ -112,10 +114,42 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 			newItem.name_Ext = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.tipo_extension
 			newItem.inicio_Ext = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.extension_inicio
 			newItem.fin_Ext = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.extension_fin
-
+			
 			return newItem;
 		});
 	};
+	function filtradosDe(datos) {
+		// calculamos los límites
+		const hoy           = dayjs()             // 08/05/2025
+		const haceCuatroMeses = hoy.subtract(4, 'month')     // 08/01/2025
+		// calculamos 4 meses atrás + 1 día desde hoy (08/05/2025)
+		const corte = dayjs()
+		.subtract(4, 'month')
+		.add(1, 'day')
+		.valueOf()   // milisegundos desde 1970
+		let filtrados = []
+		if(isClienteActive){
+			filtrados = datos;
+		}
+		if(clasific==='reno'){
+			// filtrado
+			filtrados = datos.filter(item => {
+				const fecha = dayjs(item.fecha_fin_new).valueOf()
+				return (
+				  fecha >= haceCuatroMeses.valueOf() &&
+				  fecha <= hoy.valueOf()
+				)
+			  })
+		}
+		if(clasific==='rei'){
+			// filtrado
+			filtrados = datos.filter(item => {
+				const fechaMs = dayjs(item.fecha_fin_new).valueOf()
+				return fechaMs <= corte
+			  })
+		}
+		return filtrados;
+	}
 	const diasPorTerminarBodyTemplate = (rowData) => {
 		return (
 			<div>
@@ -361,7 +395,7 @@ export const TableSeguimientoTODO = ({dae, classNameFechaVenc, id_empresa, stati
 <>
 	
                                 <Row>
-							        <StatisticSeguimiento  data={viewSeguimiento} dataFiltered={agruparPorPrograma(valueFilter)} statisticsData={agrupado_programas} />
+							        <StatisticSeguimiento h3Title={h3Title} text_search={globalFilterValue}  data={viewSeguimiento} dataFiltered={agruparPorPrograma(valueFilter)} statisticsData={agruparPorPrograma(customers)} />
                                 </Row>
 				<DataTable
 					value={customers}

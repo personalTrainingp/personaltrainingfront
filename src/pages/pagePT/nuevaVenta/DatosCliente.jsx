@@ -7,10 +7,12 @@ import { ResumenCliente } from './ResumenCliente';
 import { useDispatch } from 'react-redux';
 import { onSetDetalleCli } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import Select from 'react-select';
+import { MultiOpcionSelect } from '../GestInventario/components/ComponentSelect';
 
 const DatosCliente = ({dataCliente}) => {
 	const dispatch = useDispatch()
 	const {obtenerParametrosClientes, DataClientes, obtenerParametrosVendedores, DataVendedores} = useTerminoStore()
+	const { DataGeneral:dataEtiquetasBusqueda, obtenerParametroPorEntidadyGrupo:obtenerEtiquetasBusqueda } = useTerminoStore()
 	const [MsgValidation, setMsgValidation] = useState('')
 	const [clienteSelect, setClienteSelect] = useState({})
 	const [EmpleadoSelect, setEmpleadoSelect] = useState({})
@@ -21,11 +23,13 @@ const DatosCliente = ({dataCliente}) => {
 		id_tipo_transaccion, 
 		numero_transac, 
 		id_origen, 
+		etiquetas_busquedas,
 		observacion,
 		onInputChangeReact, onInputChange } = useForm(dataCliente)
 	useEffect(() => {
 		obtenerParametrosClientes()
 		obtenerParametrosVendedores()
+		obtenerEtiquetasBusqueda('articulo', 'etiqueta_busqueda')
 	}, [])
 	useEffect(() => {
 		dispatch(onSetDetalleCli({
@@ -113,7 +117,7 @@ const DatosCliente = ({dataCliente}) => {
 										</Col>
 										<Col xl={12}>
 										<div className='mb-2'>
-											<Select
+											{/* <Select
 												onChange={(e) => onInputChangeReact(e, 'id_origen')}
 												name="id_origen"
 												placeholder={'De donde nos conoce el socio'}
@@ -124,6 +128,13 @@ const DatosCliente = ({dataCliente}) => {
 													(option) => option.value === id_origen
 												) || 0}
 												required
+											/> */}
+											<MultiOpcionSelect
+												options={dataEtiquetasBusqueda}
+												placeholder={'ORIGEN'}
+												onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
+												value={etiquetas_busquedas}
+												name="etiquetas_busquedas"
 											/>
 										</div>
 										</Col>

@@ -12,6 +12,8 @@ export const FormatTable = ({ data=[] }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "desc" });
 
   const handleSort = (header) => {
+    console.log(header);
+    
     const isDescending = sortConfig.key === header && sortConfig.direction === "desc";
     const direction = isDescending ? "asc" : "desc";
 

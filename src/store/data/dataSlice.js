@@ -26,7 +26,7 @@ export const dataSlice = createSlice({
 			);
 		},
 		onSetDataView: (state, { payload }) => {
-			if (state.dataView.length > 0) {
+			if (state.dataView?.length > 0) {
 				state.dataView = [];
 				state.dataView = payload;
 			}

@@ -13,6 +13,8 @@ import Select from 'react-select'
 import dayjs from 'dayjs'
 import { FormatTable3 } from '../FormatTable3'
 import { ItemsxFecha } from '../ItemsxFecha'
+import { useSelector } from 'react-redux'
+import SimpleBar from 'simplebar-react'
 const sumarTarifaMonto = (items)=>{
       const ventas = items.reduce((accum, item) => accum + (item.detalle_ventaMembresium?.tarifa_monto || 0), 0)
     return ventas
@@ -31,6 +33,7 @@ export const PrincipalView = () => {
   const [isOpenModalFilteredDia, setisOpenModalFilteredDia] = useState(false)
   const [resultadosFiltrados, setResultadosFiltrados] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { dataView } = useSelector(e=>e.DATA)
   useEffect(() => {
     obtenerTodoVentas()
   }, [])
@@ -75,75 +78,83 @@ export const PrincipalView = () => {
       setIsLoading(false);
     }, 600);
   }
-  console.log({resultadosFiltrados});
+  console.log({resultadosFiltrados, dataView});
   
   return (
     <>
-    <PageBreadcrumb title={'VENTAS COMPARATIVAS POR AÑO'}/>
+    <PageBreadcrumb title={'VENTAS COMPARATIVAS POR MES'}/>
     <Row>
-      <Col lg={12}>
-        <div>
-        <h1>DESDE</h1>
-        <Select
-          onChange={handleChangedesde}
-          name="desdeOption"
-          placeholder={''}
-          className="react-select"
-          classNamePrefix="react-select"
-          options={dias}
-          value={desdeOption||0}
-          defaultValue={1}
-          required
-        />
-        </div>
-        <div>
-        <h1>HASTA</h1>
-        <Select
-          onChange={handleChangehasta}
-          name="hastaOption"
-          placeholder={''}
-          className="react-select"
-          classNamePrefix="react-select"
-          options={dias}
-          value={hastaOption||0}
-          defaultValue={30}
-          required
-      />
-        </div>
-        <Button
-          label={isLoading ? 'Cargando...' : 'Buscar'}
-          icon={isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-search'}
-          className="p-button-primary mt-3"
-          onClick={() =>onClickFilter()}
-        />
-      </Col>
+      <div className='d-flex align-items-center'>
+            <h1>DESDE</h1>
+            <div>
+            <Select
+              onChange={handleChangedesde}
+              name="desdeOption"
+              placeholder={''}
+              className="react-select mx-3 fs-3 w-75 fw-bold"
+              classNamePrefix="react-select"
+              options={dias}
+              value={desdeOption||0}
+              defaultValue={1}
+              required
+            />
+            </div>
+            <h1>HASTA</h1>
+            <div>
+            <Select
+              onChange={handleChangehasta}
+              name="hastaOption"
+              placeholder={''}
+              className="react-select mx-3 fs-3 w-75 fw-bold"
+              classNamePrefix="react-select"
+              options={dias}
+              value={hastaOption||0}
+              defaultValue={30}
+              required
+            />
+            </div>
+            <div>
+              <Button
+                label={isLoading ? 'Cargando...' : 'Buscar'}
+                icon={isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-search'}
+                className="p-button-primary"
+                onClick={() =>onClickFilter()}
+              />
+            </div>
+      </div>
 
-      <Col lg={12}>
-      {/* <GrafLineal data={data}/> */}
-      {
-        agruparxAnio(resultadosFiltrados).map(r=>{
-          
-          return (
-            <Card>
-              <Card.Body>
-                <Row>
-                  {
-                    r.items.map(i=>{
-                      return (
-                        <Col lg={4}>
-                        <ItemsxFecha i={i}/>
-                        </Col>
-                      )
-                    })
-                    
-                  }
-                </Row>
-              </Card.Body>
-            </Card>
-          )
-        })
-      }
-      </Col>
+      <Col lg={12} style={{ padding: 2 }}>
+      <SimpleBar
+        style={{
+          maxWidth: '100%',        // ancho total
+          overflowX: 'auto',       // scroll horizontal
+          overflowY: 'hidden'      // sin scroll vertical
+        }}
+        autoHide={false}
+        forceVisible="x"           // fuerza siempre visible el scrollbar X
+      >
+        {/* Row de Bootstrap como flex, pero sin wrap */}
+        <Row
+          style={{
+            display: 'flex',
+            flexWrap: 'nowrap',     // sin saltos de línea
+            gap: '1rem'             // espacio entre columnas (puedes usar gx-3)
+          }}
+        >
+          {resultadosFiltrados.map((r, idx) => (
+            <Col
+              lg={4}
+              key={idx}
+              style={{
+                flex: '0 0 auto'    // que cada Col ocupe su ancho y no crezca ni encoja
+              }}
+            >
+              <ItemsxFecha i={r} />
+            </Col>
+          ))}
+        </Row>
+      </SimpleBar>
+    </Col>
     </Row>  
     </>
   )

@@ -10,6 +10,7 @@ import {TableSeguimiento} from './TableSeguimiento';
 import { useSelector } from 'react-redux';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { TableSeguimientoTODO } from './TableSeguimientoTODO';
+import SimpleBar from 'simplebar-react';
 
 
 
@@ -20,10 +21,12 @@ export const Seguimiento = () => {
 //   useEffect(() => {
 //     obtenerReporteSeguimiento()
 //   }, [])
+//RENOVACIONES HASTA EL 4 MES 
+//REINSCRIPCIONES 4MESES Y UN DIA
   
   return (
 		<>
-			<PageBreadcrumb title="Seguimiento" subName="Ventas" />
+			<PageBreadcrumb title="ACTIVOS - RENOVACIONES - REINSCRIPCIONES" subName="Ventas" />
 			<Row></Row>
 			<Row>
 				<Col>
@@ -31,7 +34,39 @@ export const Seguimiento = () => {
 						<Card.Body>
 							<TabView>
 								<TabPanel header="CHANGE">
-									<Row>
+									<SimpleBar
+											style={{
+											  maxWidth: '100%',        // ancho total
+											  overflowX: 'auto',       // scroll horizontal
+											  overflowY: 'hidden'      // sin scroll vertical
+											}}
+											autoHide={false}
+											forceVisible="x"           // fuerza siempre visible el scrollbar X
+										  >
+											{/* Row de Bootstrap como flex, pero sin wrap */}
+											<Row
+											  style={{
+												display: 'flex',
+												flexWrap: 'nowrap',     // sin saltos de línea
+												gap: '1rem'             // espacio entre columnas (puedes usar gx-3)
+											  }}
+											>
+												<Col lg={6} className='border-right-2 border-primary'>
+													{/* <h3 className='text-primary'>SOCIOS ACTIVOS</h3> */}
+													<TableSeguimientoTODO h3Title={<span className='text-primary'>SOCIOS ACTIVOS</span>} classNameFechaVenc={'text-primary fw-bold fs-3'} id_empresa={598} labelFechaVenc={''} labelSesiones={'sesiones'} labelSesionesPendientes={'Sesiones pendientes'} isClienteActive={true}/>
+												</Col>
+												<Col lg={6} className='border-left-2 border-primary'>
+													{/* <h3 className='text-primary'>RENOVACIONES PENDIENTES TOTAL</h3> */}
+													<TableSeguimientoTODO h3Title={<span className='text-primary'>RENOVACIONES PENDIENTES</span>} classNameFechaVenc={'t'} id_empresa={598} labelFechaVenc={'Fecha de vencimiento'} labelSesiones={'dias'} labelSesionesPendientes={'Dias vencidos'} clasific={'reno'} isClienteActive={false}/>
+													{/* <TableSeguimiento id_empresa={598} SeguimientoClienteActivos={false} /> */}
+												</Col>
+												<Col lg={6} className='border-left-2 border-primary'>
+													<TableSeguimientoTODO h3Title={<span className='text-primary'>REINSCRIPCIONES PENDIENTES</span>} classNameFechaVenc={'t'} id_empresa={598} labelFechaVenc={'Fecha de vencimiento'} labelSesiones={'dias'} labelSesionesPendientes={'Dias vencidos'} clasific={'rei'} isClienteActive={false}/>
+													{/* <TableSeguimiento id_empresa={598} SeguimientoClienteActivos={false} /> */}
+												</Col>
+											</Row>
+										  </SimpleBar>
+									{/* <Row>
 										<Col lg={6} className='border-right-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS ACTIVOS</h3>
 											<TableSeguimientoTODO classNameFechaVenc={'text-primary fw-bold fs-3'} id_empresa={598} labelFechaVenc={''} labelSesiones={'sesiones'} labelSesionesPendientes={'Sesiones pendientes'} isClienteActive={true}/>
@@ -39,9 +74,8 @@ export const Seguimiento = () => {
 										<Col lg={6} className='border-left-2 border-primary'>
 											<h3 className='text-primary'>SOCIOS INACTIVOS</h3>
 											<TableSeguimientoTODO classNameFechaVenc={'t'} id_empresa={598} labelFechaVenc={'Fecha de vencimiento'} labelSesiones={'dias'} labelSesionesPendientes={'Dias vencidos'} isClienteActive={false}/>
-											{/* <TableSeguimiento id_empresa={598} SeguimientoClienteActivos={false} /> */}
 										</Col>
-									</Row>
+									</Row> */}
 								</TabPanel>
 								<TabPanel header="HISTORICO">
 									<Row>

@@ -139,18 +139,18 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                         <form onSubmit={submitGasto}>
                             <Row>
                                 <Col lg={12}>
-                                                                            <div className="mb-4">
-                                                                                <label htmlFor="etiquetas_busquedas" className="form-label">
-                                                                                    ETIQUETAS DE BUSQUEDA
-                                                                                </label>
-                                                                                <MultiOpcionSelect
-                                                                                    options={dataEtiquetasBusqueda}
-                                                                                    onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
-                                                                                    value={etiquetas_busquedas}
-                                                                                    name="etiquetas_busquedas"
-                                                                                />
-                                                                            </div>
-                                                                        </Col>
+                                    <div className="mb-4">
+                                        <label htmlFor="etiquetas_busquedas" className="form-label">
+                                            ETIQUETAS DE BUSQUEDA
+                                        </label>
+                                        <MultiOpcionSelect
+                                            options={dataEtiquetasBusqueda}
+                                            onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
+                                            value={etiquetas_busquedas}
+                                            name="etiquetas_busquedas"
+                                        />
+                                    </div>
+                                </Col>
                                 <Col lg={12}>
                                 <div className="mb-4">
                                         <label htmlFor="imgAvatar_BASE64" className="form-label">
