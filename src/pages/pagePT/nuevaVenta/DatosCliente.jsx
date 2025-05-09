@@ -117,7 +117,7 @@ const DatosCliente = ({dataCliente}) => {
 										</Col>
 										<Col xl={12}>
 										<div className='mb-2'>
-											{/* <Select
+											<Select
 												onChange={(e) => onInputChangeReact(e, 'id_origen')}
 												name="id_origen"
 												placeholder={'De donde nos conoce el socio'}
@@ -128,14 +128,14 @@ const DatosCliente = ({dataCliente}) => {
 													(option) => option.value === id_origen
 												) || 0}
 												required
-											/> */}
-											<MultiOpcionSelect
+											/>
+											{/* <MultiOpcionSelect
 												options={dataEtiquetasBusqueda}
 												placeholder={'ORIGEN'}
 												onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
 												value={etiquetas_busquedas}
 												name="etiquetas_busquedas"
-											/>
+											/> */}
 										</div>
 										</Col>
 										<Col xl={12}>
