@@ -19,7 +19,7 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { ModalAgrupadoxEtiquetas } from './ModalAgrupadoxEtiquetas';
 import { useInventarioStore } from './hook/useInventarioStore';
 dayjs.extend(utc);
-export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3, btnEdit, btnDelete, btnAdd}) {
+export default function TableInventario({showToast, id_empresa_zona, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3, btnEdit, btnDelete, btnAdd}) {
     locale('es')
     const dt = useRef(null);
     const [first, setFirst] = useState(0); // fila inicial (ej: página 2 es fila 10 si tienes rows=5)
@@ -500,7 +500,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                             })
                         }
                     </TabView>
-            <ModalInventario id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
+            <ModalInventario id_empresa_zona={id_empresa_zona} id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             {/* <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/> */}
             <ModalAgrupadoxEtiquetas show={isOpenModalAgruparxEtiquetas} onHide={onCloseModalAgrupadoxEtiquetas} data={dataAgrupadoEtiquetas}/>
             </>
