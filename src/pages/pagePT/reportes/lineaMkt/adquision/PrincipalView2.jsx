@@ -15,6 +15,7 @@ import { FormatTable3 } from '../FormatTable3'
 import { ItemsxFecha } from '../ItemsxFecha'
 import { useSelector } from 'react-redux'
 import SimpleBar from 'simplebar-react'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 const sumarTarifaMonto = (items)=>{
       const ventas = items.reduce((accum, item) => accum + (item.detalle_ventaMembresium?.tarifa_monto || 0), 0)
     return ventas
@@ -49,7 +50,17 @@ export const PrincipalView = () => {
   }
   const [desdeOption, setdesdeOption] = useState({ dia: 1, value: 1, label: 1 });
   const [hastaOption, sethastaOption] = useState({ dia: 31, value: 31, label: 31 });
+    // ... todos tus estados previos
 
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(resultadosFiltrados);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setResultadosFiltrados(items);
+  };
   const handleChangedesde = (selectedOption) => {
     setdesdeOption(selectedOption);
   };
@@ -124,36 +135,43 @@ export const PrincipalView = () => {
       </div>
 
       <Col lg={12} style={{ padding: 2 }}>
-      <SimpleBar
-        style={{
-          maxWidth: '100%',        // ancho total
-          overflowX: 'auto',       // scroll horizontal
-          overflowY: 'hidden'      // sin scroll vertical
-        }}
-        autoHide={false}
-        forceVisible="x"           // fuerza siempre visible el scrollbar X
-      >
-        {/* Row de Bootstrap como flex, pero sin wrap */}
-        <Row
+        <DragDropContext onDragEnd={onDragEnd}>
+    <Droppable droppableId="resultados" direction="horizontal">
+      {(provided) => (
+        <div
+          {...provided.droppableProps}
+          ref={provided.innerRef}
           style={{
             display: 'flex',
-            flexWrap: 'nowrap',     // sin saltos de línea
-            gap: '1rem'             // espacio entre columnas (puedes usar gx-3)
+            overflowX: 'auto',  // scroll horizontal aquí
+            gap: '1rem',
+            padding: '1rem',
+            flexWrap: 'nowrap'
           }}
         >
           {resultadosFiltrados.map((r, idx) => (
-            <Col
-              lg={4}
-              key={idx}
-              style={{
-                flex: '0 0 auto'    // que cada Col ocupe su ancho y no crezca ni encoja
-              }}
-            >
-              <ItemsxFecha i={r} />
-            </Col>
+            <Draggable key={idx} draggableId={`result-${idx}`} index={idx}>
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  style={{
+                    flex: '0 0 auto',
+                    width: '33%',
+                    ...provided.draggableProps.style
+                  }}
+                >
+                  <ItemsxFecha i={r} />
+                </div>
+              )}
+            </Draggable>
           ))}
-        </Row>
-      </SimpleBar>
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
+  </DragDropContext>
     </Col>
     </Row>  
     </>

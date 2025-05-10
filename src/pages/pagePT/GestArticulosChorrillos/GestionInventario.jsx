@@ -24,10 +24,10 @@ export const GestionInventario = () => {
               <DataInventario id_enterprice={599}/>
       </TabPanel>
       <TabPanel header={'CIRCUS CO.'}>
-              <DataInventario id_enterprice={602}/>
+              <DataInventario id_enterprice={602} btnAdd btnDelete btnEdit/>
       </TabPanel>
       <TabPanel header={'REDUCTO INFRAESTRUCTURA'}>
-              <DataInventario id_enterprice={610}/>
+              <DataInventario id_enterprice={610} btnAdd btnDelete btnEdit/>
       </TabPanel>
     </TabView>
     </Card>
