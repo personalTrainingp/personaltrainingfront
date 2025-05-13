@@ -4,7 +4,7 @@ import { ItemTablePgm } from './ItemTablePgm';
 import { FormatTable } from './Component/FormatTable';
 import { GrafPie } from './GrafPie';
 
-export const ItemCardPgm = ({grafPie, avatarPrograma, isSesion, aforo, aforoTurno, isViewGenere, arrayEstadistico, labelParam, onOpenModalSOCIOS, isViewSesiones, isTarifaCash}) => {
+export const ItemCardPgm = ({grafPie, titleRecurrent, avatarPrograma, isSesion, aforo, aforoTurno, isViewGenere, arrayEstadistico, labelParam, onOpenModalSOCIOS, isViewSesiones, isTarifaCash}) => {
   const result = arrayEstadistico?.map(subArray => {
     const firstObj = subArray[0]||[]; // Tomar solo el primer objeto de cada subarray
     return {
@@ -14,8 +14,11 @@ export const ItemCardPgm = ({grafPie, avatarPrograma, isSesion, aforo, aforoTurn
   });
   return (
     <Card>
-                        <Card.Header className=' align-self-center'>
+                        <Card.Header className='d-flex align-items-center align-self-center'>
                             <img src={avatarPrograma.urlImage} height={avatarPrograma.height} width={avatarPrograma.width}/>
+                          <div className='mx-7 '>
+                            {titleRecurrent}
+                          </div>
                             
                         </Card.Header>
                         <Card.Body>

@@ -16,41 +16,18 @@ import { ItemsxFecha } from '../ItemsxFecha'
 import { useSelector } from 'react-redux'
 import SimpleBar from 'simplebar-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { DataDroppable } from './DataDroppable'
 const sumarTarifaMonto = (items)=>{
       const ventas = items.reduce((accum, item) => accum + (item.detalle_ventaMembresium?.tarifa_monto || 0), 0)
     return ventas
 }
-const propsResumen = (items)=>{
-  const numero_cierre = items.length
-  const ventas = sumarTarifaMonto(items)
-  const ticket_medio = ventas / numero_cierre || 0
-  return {
-    numero_cierre,
-    ventas, ticket_medio
-  }
-}
-export const PrincipalView = () => {
-  const { obtenerTodoVentas, data, dataVendedores } = useAdquisicionStore()
-  const [isOpenModalFilteredDia, setisOpenModalFilteredDia] = useState(false)
+export const DataDroppable = ({dataMeses, hastaOption, desdeOption}) => {
   const [resultadosFiltrados, setResultadosFiltrados] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { dataView } = useSelector(e=>e.DATA)
-  useEffect(() => {
-    obtenerTodoVentas()
-  }, [])
-  const onCloseModalFilteredDia = ()=>{
-    setisOpenModalFilteredDia(false)
-  }
-  const onOpenModalFilteredDia = ()=>{
-    setisOpenModalFilteredDia(true)
-  }
+  const dataTotal = dataMeses;
   const dias = []
   for (let i = 1; i <= 31; i++) {
     dias.push({dia: i, value: i, label: i});
   }
-  const [desdeOption, setdesdeOption] = useState({ dia: 1, value: 1, label: 1 });
-  const [hastaOption, sethastaOption] = useState({ dia: 31, value: 31, label: 31 });
     // ... todos tus estados previos
 
   const onDragEnd = (result) => {
@@ -62,27 +39,20 @@ export const PrincipalView = () => {
 
     setResultadosFiltrados(items);
   };
-  const handleChangedesde = (selectedOption) => {
-    setdesdeOption(selectedOption);
-  };
-  const handleChangehasta = (selectedOption) => {
-    sethastaOption(selectedOption);
-  };
   useEffect(() => {
-    if (data?.length > 0) {
+    if (dataMeses?.length > 0) {
       onClickFilter();
     }
-  }, [data]);
-  console.log(data, "dataventa", dias);
+  }, [dataMeses, hastaOption, desdeOption]);
   const onClickFilter = ()=>{
     setIsLoading(true);
     setTimeout(() => {
       const desde = desdeOption?.value || 1;
       const hasta = hastaOption?.value || 31;
-      const dataFiltrada = data.map(({ anio, mes, itemsDia }) => ({
+      const dataFiltrada = dataMeses.map(({ anio, mes, itemsDia }) => ({
         anio,
         mes,
-        itemsDia,
+        dataTotal: itemsDia,
         itemsDia: itemsDia?.filter(d => d.dia >= desde && d.dia <= hasta),
       }));
       
@@ -90,65 +60,10 @@ export const PrincipalView = () => {
       setIsLoading(false);
     }, 600);
   }
+  
   return (
     <>
-    <PageBreadcrumb title={'VENTAS POR DIA Y POR MES'}/>
-    <Row>
-      <div className='position-fixed bg-white'>
-        <div className='d-flex align-items-center'>
-              <h1>DESDE</h1>
-              <div>
-              <Select
-                onChange={handleChangedesde}
-                name="desdeOption"
-                placeholder={''}
-                className="react-select mx-3 fs-3 w-75 fw-bold"
-                classNamePrefix="react-select"
-                options={dias}
-                value={desdeOption||0}
-                defaultValue={1}
-                required
-              />
-              </div>
-              <h1>HASTA</h1>
-              <div>
-              <Select
-                onChange={handleChangehasta}
-                name="hastaOption"
-                placeholder={''}
-                className="react-select mx-3 fs-3 w-75 fw-bold"
-                classNamePrefix="react-select"
-                options={dias}
-                value={hastaOption||0}
-                defaultValue={30}
-                required
-              />
-              </div>
-              <div>
-                <Button
-                  label={isLoading ? 'Cargando...' : 'Buscar'}
-                  icon={isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-search'}
-                  className="p-button-primary"
-                  onClick={() =>onClickFilter()}
-                />
-              </div>
-        </div>
-      </div>
-      <div className='mt-3'>
-            <DataDroppable dataMeses={data} desdeOption={desdeOption} hastaOption={hastaOption}/>
-      {
-        dataVendedores.map(g=>{
-          return (
-            <>
-            <h1>{g.nombre_empl}</h1>
-            <DataDroppable dataMeses={g.items} desdeOption={desdeOption} hastaOption={hastaOption}/>
-            </>
-          )
-        })
-      }
-      </div>
-      {/* <Col lg={12} className='mt-6' style={{ padding: 2 }}>
-        <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd}>
     <Droppable droppableId="resultados" direction="horizontal">
       {(provided) => (
         <div
@@ -175,7 +90,7 @@ export const PrincipalView = () => {
                     ...provided.draggableProps.style
                   }}
                 >
-                  <ItemsxFecha i={r} array={data} />
+                  <ItemsxFecha i={r} arrayTotal={r.dataTotal} />
                 </div>
               )}
             </Draggable>
@@ -184,48 +99,7 @@ export const PrincipalView = () => {
         </div>
       )}
     </Droppable>
-  </DragDropContext>
-      </Col>
-      <Col lg={12} className='mt-6' style={{ padding: 2 }}>
-        <DragDropContext onDragEnd={onDragEnd}>
-    <Droppable droppableId="resultados" direction="horizontal">
-      {(provided) => (
-        <div
-          {...provided.droppableProps}
-          ref={provided.innerRef}
-          style={{
-            display: 'flex',
-            overflowX: 'auto',  // scroll horizontal aquí
-            gap: '1rem',
-            padding: '1rem',
-            flexWrap: 'nowrap'
-          }}
-        >
-          {resultadosFiltrados.map((r, idx) => (
-            <Draggable key={idx} draggableId={`result-${idx}`} index={idx}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  style={{
-                    flex: '0 0 auto',
-                    width: '33%',
-                    ...provided.draggableProps.style
-                  }}
-                >
-                  <ItemsxFecha i={r} />
-                </div>
-              )}
-            </Draggable>
-          ))}
-          {provided.placeholder}
-        </div>
-      )}
-    </Droppable>
-  </DragDropContext>
-      </Col> */}
-    </Row>  
+  </DragDropContext> 
     </>
   )
 }

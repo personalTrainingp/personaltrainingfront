@@ -308,13 +308,13 @@ function eliminarDuplicadosPorId(data) {
 }
 
 function agruparPorMesYAnio(data) {
-	const inicio = dayjs('2024-09-01'); // Empezar desde septiembre 2024
-	const fin = dayjs(); // Fecha actual
+	const inicio = dayjs('2024-09-01'); // Desde septiembre 2024
+	const fin = dayjs(); // Hasta el mes actual
 
 	const meses = [];
 	let fechaIteracion = inicio;
 
-	// Generamos los meses en orden cronológico
+	// Generamos los meses con estructura vacía
 	while (fechaIteracion.isBefore(fin) || fechaIteracion.isSame(fin, 'month')) {
 		meses.push({
 			anio: fechaIteracion.format('YYYY'),
@@ -328,22 +328,40 @@ function agruparPorMesYAnio(data) {
 	// Agrupar datos por mes
 	data?.forEach((item) => {
 		const mesVenta = DateMaskString(
-			item.detalle_ventaMembresium?.tb_ventum.fecha_venta,
+			item.detalle_ventaMembresium?.tb_ventum?.fecha_venta,
 			'MMMM YYYY'
 		);
 		const grupo = meses.find((m) => m.fecha === mesVenta);
-
-		if (grupo) {
-			grupo.items.push(item);
-		}
+		if (grupo) grupo.items.push(item);
 	});
+
+	// Retornar meses con items agrupados por día (aunque vacíos)
 	const nuevaData = meses.map((m) => {
+		const itemsDia = [];
+		for (let d = 1; d <= 31; d++) {
+			itemsDia.push({
+				dia: d,
+				mes: dayjs().month(m.mes).format('MM'), // mes en "09", "10", etc.
+				anio: parseInt(m.anio),
+				items: [],
+			});
+		}
+
+		// Agrupar si hay items
+		if (m.items.length > 0) {
+			const agrupado = groupByDate(m.items)[0];
+			if (agrupado) {
+				agrupado.forEach((itemDia, i) => {
+					itemsDia[i] = itemDia; // sobrescribe solo si hay info
+				});
+			}
+		}
+
 		return {
 			...m,
-			itemsDia: [],
+			itemsDia,
 		};
 	});
-	console.log({ nuevaData });
 
 	return nuevaData;
 }
@@ -407,8 +425,37 @@ function agruparPorMesYAnioYDia(data) {
 	return resultadoFinal;
 }
 
+function agruparPorVendedores(data) {
+	const resultado = [];
+
+	data?.forEach((item) => {
+		const { nombre_empl } = item.detalle_ventaMembresium.tb_ventum.tb_empleado;
+
+		// Verificar si ya existe un grupo con la misma cantidad de sesiones
+		let grupo = resultado?.find((g) => g.lbel === nombre_empl);
+
+		if (!grupo) {
+			// Si no existe, crear un nuevo grupo
+			grupo = {
+				lbel: nombre_empl,
+				// propiedad: <div style={{width: '350px'}}>{semanas_st} SEMANAS <br/> {sesiones} Sesiones</div>,
+				propiedad: `${nombre_empl}`,
+				nombre_empl,
+				items: [],
+			};
+			resultado.push(grupo);
+		}
+
+		// Agregar el item al grupo correspondiente
+		grupo.items.push(item);
+	});
+
+	return resultado.sort((a, b) => b.items.length - a.items.length);
+}
+
 export const useAdquisicionStore = () => {
 	const [data, setdata] = useState([]);
+	const [dataVendedores, setdataVendedores] = useState([]);
 	const dispatch = useDispatch();
 	const obtenerTodoVentas = async () => {
 		try {
@@ -432,17 +479,29 @@ export const useAdquisicionStore = () => {
 			).map((f) => {
 				return {
 					...f,
-					itemsDia: Object.values(groupByDate(f.items)[0]),
 				};
 			});
+			const vendedores = agruparPorVendedores(eliminarDuplicadosPorId(ventasSinCero)).map(
+				(f) => {
+					return {
+						...f,
+						items: agruparPorMesYAnio(f.items, '2024-09-01', 9).map((m) => {
+							return {
+								...m,
+							};
+						}),
+					};
+				}
+			);
 			console.log(
 				{ agregarItemsDias },
+				{ vend: vendedores },
 				eliminarDuplicadosPorId(ventasSinCero),
 				agruparPorMesYAnioYDia(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
 				agruparPorMesYAnio(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
 				'holi'
 			);
-
+			setdataVendedores(vendedores);
 			setdata(agregarItemsDias);
 		} catch (error) {
 			console.log(error);
@@ -451,6 +510,7 @@ export const useAdquisicionStore = () => {
 	return {
 		obtenerTodoVentas,
 		data,
+		dataVendedores,
 	};
 };
 
@@ -486,6 +546,6 @@ function groupByDate(data) {
 				items: byDay[day] || [],
 			});
 		}
-		return { ...dias };
+		return dias;
 	});
 }

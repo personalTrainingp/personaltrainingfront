@@ -39,10 +39,8 @@ export const ResumenComparativo = () => {
     const { obtenerComparativoResumen, dataIdPgmCero, 
             obtenerHorariosPorPgm, dataMarcacions, dataTarifas, dataHorarios, 
             dataGroup, loading, dataGroupTRANSFERENCIAS, dataEstadoGroup, 
-            dataClientesxMarcacion,
             obtenerEstadosOrigenResumen, obtenerTarifasPorPgm, dataAsesoresFit, 
-            obtenerAsesoresFit,
-            obtenerClientesConMarcacion } = useReporteResumenComparativoStore()
+            obtenerAsesoresFit } = useReporteResumenComparativoStore()
 
     const dispatch = useDispatch()
     const { RANGE_DATE, dataView } = useSelector(e=>e.DATA)
@@ -58,7 +56,7 @@ export const ResumenComparativo = () => {
         if(RANGE_DATE[1]===null) return;
         obtenerComparativoResumen(RANGE_DATE)
         obtenerHorariosPorPgm()
-        obtenerClientesConMarcacion()
+        // obtenerClientesConMarcacion()
         // obtenerEstadosOrigenResumen(RANGE_DATE)
     }, [RANGE_DATE])
     const onOpenModalSOCIOS = (d, avatarPrograma=[], label, isdatagruped)=>{
@@ -233,6 +231,28 @@ export const ResumenComparativo = () => {
             };
           }).sort((a,b)=>b.items.length-a.items.length);
     }
+    function agruparPorVentaDistritoPorPgmPorSemanas(detalledata) {
+        const resultado = [];
+        
+        detalledata?.forEach((item) => {
+            
+          const { tarifa_monto } = item;
+          const { distrito } = item.tb_ventum.tb_cliente.ubigeo_nac;
+          
+          // Verificar si ya existe un grupo con la misma cantidad de sesiones
+          let grupo = resultado?.find((g) => g.propiedad === distrito);
+      
+          if (!grupo) {
+            // Si no existe, crear un nuevo grupo
+            grupo = { propiedad: distrito, items: [], tarifa_monto };
+            resultado.push(grupo);
+          }
+          // Agregar el item al grupo correspondiente
+          grupo.items.push(item);
+        });
+        
+        return resultado.sort((a,b)=>b.items.length-a.items.length).sort((a,b)=>b.tarifa_monto-a.tarifa_monto);
+    }
     function agruparPorEstCivil(detalledata) {
         return arrayEstadoCivil?.map(({ label, value, order }) => {
             const items = detalledata?.filter(
@@ -282,7 +302,7 @@ export const ResumenComparativo = () => {
             // Si no existe, crear un nuevo grupo
             grupo = {  lbel: sesiones, 
                 // propiedad: <div style={{width: '350px'}}>{semanas_st} SEMANAS <br/> {sesiones} Sesiones</div>, 
-                propiedad: `${semanas_st} SEMANAS ${sesiones} SESIONES`, 
+                propiedad: `${semanas_st} SEMANAS (${sesiones} SESIONES)`, 
                 semanas_st, items: [] };
             resultado.push(grupo);
           }
@@ -404,8 +424,6 @@ export const ResumenComparativo = () => {
             { header: `S/. TICKET MEDIO`, isSortable, value: ticketMedio, HTML: <NumberFormatMoney amount={ticketMedio}/>, tFood: <NumberFormatMoney amount={sumaTicketMedio}/>, order: 5 },
             { header: `S/. PRECIO POR SESION`, isSortable, value: montoxProps, HTML: <NumberFormatMoney amount={montoxProps/sumaDeSesionesxProps}/>, tFood: <NumberFormatMoney amount={sumaMontoTotal}/>, order: 5 },
         ]
-            console.log({resumen});
-            
             // 1️⃣ Filtrar los elementos de resumen que estén en objDeleting
             if (Array.isArray(objDeleting)) {
                 const headersAEliminar = objDeleting.map(obj => obj.header);
@@ -462,30 +480,29 @@ export const ResumenComparativo = () => {
             height: d.tb_image[0].height
         }
         
-        const test =  d.detalle_ventaMembresium?.map((item) => {
-            const relacionado = dataClientesxMarcacion.find(
-                (obj) => {
+        // const test =  d.detalle_ventaMembresium?.map((item) => {
+        //     const relacionado = dataClientesxMarcacion.find(
+        //         (obj) => {
 
-                    return obj.id_cli === item.tb_ventum.id_cli
-                }
-              )
-              return relacionado
-                ? { ...item, tb_marcacions: relacionado.tb_marcacions.filter((f)=>{
-                    const tiempoMarcacion = new Date(f.tiempo_marcacion);
-                    const fechaInicio = new Date(item.fec_inicio_mem);
-                    const fechaFin = new Date(item.fec_fin_mem);
-                    return tiempoMarcacion >= fechaInicio && tiempoMarcacion <= fechaFin
-                }) }
-                : {...item, tb_marcacions: []};
-          })
+        //             return obj.id_cli === item.tb_ventum.id_cli
+        //         }
+        //       )
+        //       return relacionado
+        //         ? { ...item, tb_marcacions: relacionado.tb_marcacions.filter((f)=>{
+        //             const tiempoMarcacion = new Date(f.tiempo_marcacion);
+        //             const fechaInicio = new Date(item.fec_inicio_mem);
+        //             const fechaFin = new Date(item.fec_fin_mem);
+        //             return tiempoMarcacion >= fechaInicio && tiempoMarcacion <= fechaFin
+        //         }) }
+        //         : {...item, tb_marcacions: []};
+        //   })
           const aforo = d.id_pgm===2?18:d.id_pgm===3?10:d.id_pgm===4?14:''
           const aforo_turno = d.id_pgm===2?36:d.id_pgm===3?10:d.id_pgm===4?14:''
           
-          const ventasEnCeros =  agruparPorVenta(test).filter(f=>f.tarifa_monto===0)
-          const ventasSinCeros =  agruparPorVenta(test).filter(f=>f.tarifa_monto!==0)
+          const ventasEnCeros =  agruparPorVenta(d.detalle_ventaMembresium).filter(f=>f.tarifa_monto===0)
+          const ventasSinCeros =  agruparPorVenta(d.detalle_ventaMembresium).filter(f=>f.tarifa_monto!==0)
           const TransferenciasEnCeros = d.ventas_transferencias
         const TraspasosEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===701)
-        console.log({ventasSinCeros});
         
         const CanjesEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===703)
         const membresiasNuevas = ventasSinCeros.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692)
@@ -509,7 +526,6 @@ export const ResumenComparativo = () => {
                 
                 const sumaMontoxItems = grupo.items.reduce((total, item) => total+(item?.tarifa_monto||0), 0)
                 const sumaTotalMonto = array.reduce((total, item)=>total + (item?.items.reduce((total, item) => total+(item?.tarifa_monto||0), 0) || 0), 0)
-                console.log({grupo}, "por dist", sumaMontoxItems);
                 return [
                 { header: "DISTRITO", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
                 { header: <>SOCIOS <br/> % SOCIOS</>, isSummary: true, value: <><span className='text-primary'>{sumaXITEMS}</span> <br/> <span className=''>{((sumaXITEMS/sumaTotal)*100).toFixed(2)}</span> </>, tFood: <>{sumaTotal} <br/> {((sumaXITEMS/sumaXITEMS)*100).toFixed(2)}</> },
@@ -525,7 +541,6 @@ export const ResumenComparativo = () => {
                 
                 const sumaMontoxItems = grupo.items.reduce((total, item) => total+(item?.tarifa_monto||0), 0)
                 const sumaTotalMonto = array.reduce((total, item)=>total + (item?.items.reduce((total, item) => total+(item?.tarifa_monto||0), 0) || 0), 0)
-                console.log({grupo}, "por dist", sumaMontoxItems);
                 return [
                 { header: "DISTRITO", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
                 { header: <>SOCIOS <br/> % SOCIOS</>, isSummary: true, value: <><span className='text-primary'>{sumaXITEMS}</span> <br/> <span className=''>{((sumaXITEMS/sumaTotal)*100).toFixed(2)}</span> </>, tFood: <>{sumaTotal} <br/> {((sumaXITEMS/sumaXITEMS)*100).toFixed(2)}</> },
@@ -538,8 +553,8 @@ export const ResumenComparativo = () => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
             return [
-            { header: "sesiones", value: grupo.lbel,items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
-            { header: "SEMANAS", value: grupo.semanas_st,isPropiedad: true, tFood: '' },
+            { header: "semanas (sesiones)", value: grupo.propiedad,items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
+            // { header: "SEMANAS", value: grupo.semanas_st,isPropiedad: true, tFood: '' },
             { header: "socios", isSummary: true, value: grupo.items.length, tFood: sumaTotal },
             { header: "% socios", isSummary: true, value: ((sumaXITEMS/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: ((sumaXITEMS/sumaXITEMS)*100).toFixed(2) },
                 ]
@@ -608,7 +623,8 @@ export const ResumenComparativo = () => {
                     { header: `MASC`, isSummary: true, value: grupo.sexo[1].items.length, tFood: sumaTotalMasc },
                   ]
             })
-            const activosDeVentasPorSemanaMarcacions = agruparPrimeraMarcacionGlobal(ventasSinCeros) 
+            const activosDeVentasPorSemanaMarcacions = []
+            //agruparPrimeraMarcacionGlobal(ventasSinCeros) 
         const agrupadoPorHorario = agruparPorHorarios(ventasSinCeros)
         .sort((a, b) => b.items.length - a.items.length)
         .map((f) => {
@@ -646,7 +662,19 @@ export const ResumenComparativo = () => {
                 ]
             }
             )
+            const arTest = agruparPorDistrito(ventasSinCeros).map(d=>{
+            return {
+                ...d,
+                agrupadoPorSesiones: agruparPorSesiones(d.items).map((grupo, index, array) => {
             
+            return [
+                ...generarResumen(array, grupo, <div className='ml-3'>SEMANAS (SESIONES)</div>, index)
+                ]
+            }
+            )
+            }
+        })
+
         // console.log({ventasSinCeros, agrupadoPorHorario, agrupadoPorTarifas, agrupadoPorVendedores, agru: agruparPorVenta(test)});
         // console.log({test, horarios: agruparPrimeraMarcacionGlobal(ventasSinCeros), semana: agruparMarcacionesPorSemana(ventasSinCeros), agruparPorProcedencia: agruparPorProcedencia(ventasSinCeros)});;
         
@@ -656,6 +684,7 @@ export const ResumenComparativo = () => {
         // const tarifas
         // console.log({activosDeVentasPorSemanaMarcacions, agruparPorRangoEdades, agrupadoPorEstadoCivil, agrupadoPorTarifas, agrupadoPorSesiones, sumaDeVentasEnSoles, sumaDeSesiones, porSexo, porDistrito, ventasEnCeros, ventasSinCeros, membresiasNuevas, membresiasRenovadas, membresiasReinscritos}, "alter");
         return {
+            arTest,
             CanjesEnCero,
             aforo,
             aforo_turno,
@@ -686,25 +715,25 @@ export const ResumenComparativo = () => {
     
     const dataAlterIdPgmCero =
     [dataIdPgmCero]?.map(d=>{
+        // const test = d.detalle_ventaMembresium?.map((item) => {
+        //     const relacionado = dataClientesxMarcacion.find(
+        //         (obj) => {
+
+        //             return obj.id_cli === item.tb_ventum.id_cli
+        //         }
+        //       )
+        //       return relacionado
+        //         ? { ...item, tb_marcacions: relacionado.tb_marcacions.filter((f)=>{
+        //             const tiempoMarcacion = new Date(f.tiempo_marcacion);
+        //             const fechaInicio = new Date(item.fec_inicio_mem);
+        //             const fechaFin = new Date(item.fec_fin_mem);
+        //             return tiempoMarcacion >= fechaInicio && tiempoMarcacion <= fechaFin
+        //         }) }
+        //         : {...item, tb_marcacions: []};
+        //   });
         const avatarPrograma = {
             urlImage: 'TOTAL',
         }
-        const test = d.detalle_ventaMembresium?.map((item) => {
-            const relacionado = dataClientesxMarcacion.find(
-                (obj) => {
-
-                    return obj.id_cli === item.tb_ventum.id_cli
-                }
-              )
-              return relacionado
-                ? { ...item, tb_marcacions: relacionado.tb_marcacions.filter((f)=>{
-                    const tiempoMarcacion = new Date(f.tiempo_marcacion);
-                    const fechaInicio = new Date(item.fec_inicio_mem);
-                    const fechaFin = new Date(item.fec_fin_mem);
-                    return tiempoMarcacion >= fechaInicio && tiempoMarcacion <= fechaFin
-                }) }
-                : {...item, tb_marcacions: []};
-          });
         const ventasEnCeros = agruparPorVenta(d.detalle_ventaMembresium)?.filter(f=>f.tarifa_monto===0)
         const ventasSinCeros = agruparPorVenta(d.detalle_ventaMembresium)?.filter(f=>f.tarifa_monto!==0)
         const TransferenciasEnCeros = d.ventas_transferencias
@@ -734,10 +763,9 @@ export const ResumenComparativo = () => {
         const sumaDeSesiones = ventasSinCeros?.reduce((total, item) => total + (item?.tb_semana_training.sesiones || 0), 0)
         const sumaDeVentasEnSoles = ventasSinCeros?.reduce((total, item) => total + (item?.tarifa_monto || 0), 0)
         const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros).map((grupo, index, array) => {
-            console.log(array, "agru por ses");
             
             return [
-                ...generarResumen(array, grupo, 'SESIONES', index)
+                ...generarResumen(array, grupo, 'SEMANAS(SESIONES)', index)
                 ]
             }
             )
@@ -754,7 +782,6 @@ export const ResumenComparativo = () => {
             }
             )
         const agrupadoPorVendedores = agruparPorVendedores(ventasSinCeros).map((grupo, index, array) => {
-            console.log({ventasSinCeros});
             
             return [
                 ...generarResumen(array, grupo, 'ASESORES', index, [], [{header: 'ASESORES', value: grupo.propiedad, isPropiedad: true, items: grupo.items, HTML: <span className={grupo.estado_empl?'text-primary':'text-black'}>{grupo.propiedad}</span>, order: 0}]),
@@ -790,12 +817,28 @@ export const ResumenComparativo = () => {
                 ]
             }
             )
-            console.log(d, agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)), agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)), agruparPorVenta(d.detalle_ventaMembresium), "aroga");
+            // console.log(d, agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)), agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)), agruparPorVenta(d.detalle_ventaMembresium), "aroga");
             
         const agrupadoPorSociosCanjes = agruparPorProcedenciaEnCero(clientesCanjes)
+        const agrupadoxDistritoxPrograma = []
+        const arTest = agruparPorDistrito(ventasSinCeros).map(d=>{
+            return {
+                ...d,
+                agrupadoPorSesiones: agruparPorSesiones(d.items).map((grupo, index, array) => {
+            
+            return [
+                ...generarResumen(array, grupo, 'SEMANAS (SESIONES)', index)
+                ]
+            }
+            )
+            }
+        })
+
         
         return {
             clientesCanjes,
+            arTest,
+            agrupadoxDistritoxPrograma,
             ventasDespuesDeTraspaso: agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)),
             ITEMSventasDespuesDeTraspaso: agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)),
             // clientesCanjes,
@@ -1170,7 +1213,7 @@ export const ResumenComparativo = () => {
         },
         {
             isComparative: true,
-            title: 'COMPRA DE SEMANAS (SESIONES) POR SOCIO',
+            title: 'venta semana (SESIONES) por distrito',
             id: 'COMPARATIVOPORSESIONESPORPROGRAMA',
             HTML: dataAlter.map(d=>{
                 return (
@@ -1181,9 +1224,9 @@ export const ResumenComparativo = () => {
             )
             }
             )
-        },
+        },//VENTA POR SEMANA(SESIONES) POR DISTRITO
         {
-            title: 'COMPRA DE SEMANAS (SESIONES) POR SOCIO - TOTAL',
+            title: 'comparativo distritos por venta por semana por programa',
             id: 'COMPARATIVOPORSESIONESTOTAL',
             HTML: dataAlterIdPgmCero.map(d=>{
                 return (
@@ -1194,6 +1237,51 @@ export const ResumenComparativo = () => {
             }
             )
         },
+        {
+            isComparative: true,
+            title: 'comparativo distritos por venta por semana por programa',
+            id: 'comparativodistritosporventaporsemanaporprograma',
+            HTML: dataAlter.map(d=>{
+                return (
+                    <Col>
+                        <Row>
+                            {
+                                d.arTest.map(g=>{
+                                    return (
+                                            <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={12}>
+                                                asdf
+                                                <ItemCardPgm titleRecurrent={<div className='fs-1'>{g.propiedad}</div>} avatarPrograma={d.avatarPrograma} isSesion={true} arrayEstadistico={g.agrupadoPorSesiones} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
+                                            </Col>
+                                    )
+                                })
+                            }
+                        </Row>
+                    </Col>
+            )
+            }
+            )
+        },
+        // {
+        //     title: 'comparativo distritos por venta por semana por programa',
+        //     id: 'comparativodistritosporventaporsemanaporprograma',
+        //     HTML: dataAlterIdPgmCero.map(d=>{
+        //         return (
+        //         <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+        //             {
+        //                 d.arTest.map(t=>{
+        //                     return (
+        //                         <>
+        //                         <TableTotal data={t.agrupadoPorSesiones} titleH1={<span style={{fontSize: '50px'}}>{t.propiedad}</span>} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'SESIONES'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={t.agrupadoPorSesiones}/>
+        //                         </>
+        //                     )
+        //                 })
+        //             }
+        //         </Col>
+        //     )
+        //     }
+        //     )
+        // },
+        
         {
             isComparative: true,
             title: 'SOCIOS PAGANTES POR HORARIO VS AFORO ',
@@ -1449,7 +1537,6 @@ export const ResumenComparativo = () => {
             title: 'SOCIOS PAGANTES POR PROCEDENCIA - TOTAL',
             id: 'COMPARATIVOPROCEDENCIATOTAL',
             HTML: dataAlterIdPgmCero.map(d=>{
-                console.log(d.agrupadoPorProcedencia);
                 
                 return (
                 <Col style={{paddingBottom: '1px !important'}} xxl={12}>
@@ -1540,7 +1627,7 @@ export const ResumenComparativo = () => {
     const [extractTitle, setextractTitle] = useState('')
     const sectionRefs = data.map(() =>
         useInView({
-          threshold: 0.2, // Activa cuando el 50% de la sección esté visible
+          threshold: 0.1, // Activa cuando el 50% de la sección esté visible
           triggerOnce: false, // Detectar entrada y salida constantemente
         })
       );
@@ -1660,8 +1747,6 @@ function agruparVentasConDetalles({
             if (!agrupados[key].tb_image.some((img) => img === tb_image)) {
                 agrupados[key].tb_image.push(tb_image);
             }
-            console.log(tipo, "dddd");
-            
 
             // Agregar el detalle al tipo correspondiente
             agrupados[key][tipo].push(detalle_ventaMembresium);

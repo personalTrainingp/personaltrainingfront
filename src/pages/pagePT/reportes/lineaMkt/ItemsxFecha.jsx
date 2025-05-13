@@ -58,30 +58,53 @@ import React from 'react'
 import { FormatTable3 } from './FormatTable3'
 import dayjs from 'dayjs'
 
-export const ItemsxFecha = ({i}) => {
-    const itemsDia = i.itemsDia.map(f=>{
-      return {
-        items: f.items
-      }
-    })
+export const ItemsxFecha = ({i, arrayTotal}) => {
+  
+  const itemsDia = i.itemsDia.map(f=>{
+    return {
+      items: f.items
+    }
+  })
+    const itemsDiaTotal = arrayTotal.map(f=>{
+    return {
+      items: f.items
+    }
+  })
+  console.log({arrayTotal, itemsDiaTotal, itemsDia, i});
     //Opción 1: flatMap (ES2020+)
     const flattened1 = itemsDia.flatMap(obj => obj.items);
+    const flattened2 = itemsDiaTotal.flatMap(obj => obj.items);
+
     
     const cartera_renovacion = flattened1.filter(f => f.detalle_ventaMembresium.tb_ventum.id_origen === 691)
     const cartera_reinscripciones = flattened1.filter(f => f.detalle_ventaMembresium.tb_ventum.id_origen === 692)
     const nuevos = flattened1.filter(f => f.detalle_ventaMembresium.tb_ventum.id_origen !== 692 && f.detalle_ventaMembresium.tb_ventum.id_origen !== 691)
-    const fechaInicio = dayjs(fechaSegura(i.itemsDia[0].dia, i.mes, i.anio)).format('dddd DD')
+    const fechaInicio = dayjs(fechaSegura(i.itemsDia[0]?.dia, i.mes, i.anio)).format('dddd DD')
     const fechaFin = dayjs(fechaSegura(i.itemsDia[i.itemsDia.length-1].dia, i.mes, i.anio)).format('dddd DD')
+    const dataFlat1 = resumenCarteras(flattened1)
+    const dataFlat2 = resumenCarteras(flattened2)
+    console.log({dataFlat1, dataFlat2});
   return (
     <>
-    <FormatTable3 value={'todo'} classNameTH={'text-white'} classNameTHEAD={'bg-secondary'} flattened1={flattened1} header={<> <span className='fs-1'>{i.mes} {i.anio}</span> <br/>   {fechaInicio} al {fechaFin} <div className='fs-1 bg-primary m-0 p-0'>TOTAL</div></>}/>
-    <FormatTable3 value={'nuevos'} flattened1={nuevos} header={<div className='fs-1'>NUEVOS</div>}/>
-    <FormatTable3 value={'reno'} flattened1={cartera_renovacion} header={<div className='fs-1'>RENOVACIONES</div>}/>
-    <FormatTable3 value={'rei'} flattened1={cartera_reinscripciones} header={<div className='fs-1'>REINSCRIPCIONES</div>}/>
+    <FormatTable3 rangeFecStr={`${fechaInicio} al ${fechaFin}`} value={'todo'} classNameTH={'text-white'} classNameTHEAD={'bg-primary'} 
+                  flattened1={flattened1} flattened2={flattened2} header={<> <span className='fs-1'>{i.mes} {i.anio}</span></>}/>
+    <FormatTable3 rangeFecStr={`${fechaInicio} al ${fechaFin}`} flattened2={dataFlat2.nuevos} value={'nuevos'} flattened1={dataFlat1.nuevos} header={<div className='fs-1'>NUEVOS</div>}/>
+    <FormatTable3 rangeFecStr={`${fechaInicio} al ${fechaFin}`} flattened2={dataFlat2.cartera_renovacion} value={'reno'} flattened1={dataFlat1.cartera_renovacion} header={<div className='fs-1'>RENOVACIONES</div>}/>
+    <FormatTable3 rangeFecStr={`${fechaInicio} al ${fechaFin}`} flattened2={dataFlat2.cartera_reinscripciones} value={'rei'} flattened1={dataFlat1.cartera_reinscripciones} header={<div className='fs-1'>REINSCRIPCIONES</div>}/>
     </>
   )
 }
-
+function resumenCarteras(flattened1) {
+   const cartera_renovacion = flattened1.filter(f => f.detalle_ventaMembresium.tb_ventum.id_origen === 691)
+    const cartera_reinscripciones = flattened1.filter(f => f.detalle_ventaMembresium.tb_ventum.id_origen === 692)
+    const nuevos = flattened1.filter(f => f.detalle_ventaMembresium.tb_ventum.id_origen !== 692 && f.detalle_ventaMembresium.tb_ventum.id_origen !== 691)
+    
+  return {
+    cartera_reinscripciones,
+    cartera_renovacion,
+    nuevos
+  }
+}
 const mesesMap = {
   enero:      1,
   febrero:    2,

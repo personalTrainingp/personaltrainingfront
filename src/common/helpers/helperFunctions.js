@@ -42,7 +42,6 @@ export const helperFunctions = () => {
 		return fecha.format('YYYY-MM-DD');
 	}
 	const base64ToFile = (base64String, fileName) => {
-
 		// Decodificar el string base64
 		const byteString = atob(base64String.split(',')[1]);
 
@@ -134,29 +133,38 @@ export const helperFunctions = () => {
 		return nuevaFecha.format('YYYY-MM-DD');
 	};
 	const diasLaborables = (fechaInicio, fechaFin) => {
-		let diasLaborables = 0;
 		const fechaInicioParsed = dayjs(fechaInicio);
 		const fechaFinParsed = dayjs(fechaFin);
 
-		// Determina la dirección de la iteración
-		const direccion = fechaFinParsed.isAfter(fechaInicioParsed) ? 1 : -1;
-
-		// Calcula el número total de días
+		// Número total de días, incluyendo el día final
 		const totalDias = Math.abs(fechaFinParsed.diff(fechaInicioParsed, 'day')) + 1;
 
-		// Inicializa fechaActual
-		let fechaActual = fechaInicioParsed;
+		// Si quieres que el resultado sea negativo si se va hacia atrás:
+		const direccion = fechaFinParsed.isAfter(fechaInicioParsed) ? 1 : -1;
+		return direccion * totalDias;
+		// let diasLaborables = 0;
+		// const fechaInicioParsed = dayjs(fechaInicio);
+		// const fechaFinParsed = dayjs(fechaFin);
 
-		// Itera sobre el rango de días
-		for (let i = 0; i < totalDias; i++) {
-			// Si el día actual es laborable (de lunes a viernes)
-			if (fechaActual.day() !== 0 && fechaActual.day() !== 6) {
-				diasLaborables += direccion;
-			}
-			fechaActual = fechaActual.add(direccion, 'day');
-		}
+		// // Determina la dirección de la iteración
+		// const direccion = fechaFinParsed.isAfter(fechaInicioParsed) ? 1 : -1;
 
-		return diasLaborables;
+		// // Calcula el número total de días
+		// const totalDias = Math.abs(fechaFinParsed.diff(fechaInicioParsed, 'day')) + 1;
+
+		// // Inicializa fechaActual
+		// let fechaActual = fechaInicioParsed;
+
+		// // Itera sobre el rango de días
+		// for (let i = 0; i < totalDias; i++) {
+		// 	// Si el día actual es laborable (de lunes a viernes)
+		// 	if (fechaActual.day() !== 0 && fechaActual.day() !== 6) {
+		// 		diasLaborables += direccion;
+		// 	}
+		// 	fechaActual = fechaActual.add(direccion, 'day');
+		// }
+
+		// return diasLaborables;
 	};
 	const estadoExtension = (fecha_inicio, fecha_fin, actual) => {};
 	const daysUTC = (fecha) => {

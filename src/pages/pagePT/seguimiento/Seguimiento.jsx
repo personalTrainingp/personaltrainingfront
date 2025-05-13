@@ -57,11 +57,11 @@ export const Seguimiento = () => {
 												</Col>
 												<Col lg={6} className='border-left-2 border-primary'>
 													{/* <h3 className='text-primary'>RENOVACIONES PENDIENTES TOTAL</h3> */}
-													<TableSeguimientoTODO h3Title={<span className='text-primary'>RENOVACIONES PENDIENTES</span>} classNameFechaVenc={'t'} id_empresa={598} labelFechaVenc={'Fecha de vencimiento'} labelSesiones={'dias'} labelSesionesPendientes={'Dias vencidos'} clasific={'reno'} isClienteActive={false}/>
+													<TableSeguimientoTODO h3Title={<span className='text-primary'>RENOVACIONES VENCIDAS</span>} classNameFechaVenc={'t'} id_empresa={598} labelFechaVenc={'Fecha de vencimiento'} labelSesiones={'dias'} labelSesionesPendientes={'Dias vencidos'} clasific={'reno'} isClienteActive={false}/>
 													{/* <TableSeguimiento id_empresa={598} SeguimientoClienteActivos={false} /> */}
 												</Col>
 												<Col lg={6} className='border-left-2 border-primary'>
-													<TableSeguimientoTODO h3Title={<span className='text-primary'>REINSCRIPCIONES PENDIENTES</span>} classNameFechaVenc={'t'} id_empresa={598} labelFechaVenc={'Fecha de vencimiento'} labelSesiones={'dias'} labelSesionesPendientes={'Dias vencidos'} clasific={'rei'} isClienteActive={false}/>
+													<TableSeguimientoTODO h3Title={<span className='text-primary'>REINSCRIPCIONES VENCIDAS</span>} classNameFechaVenc={'t'} id_empresa={598} labelFechaVenc={'Fecha de vencimiento'} labelSesiones={'dias'} labelSesionesPendientes={'Dias vencidos'} clasific={'rei'} isClienteActive={false}/>
 													{/* <TableSeguimiento id_empresa={598} SeguimientoClienteActivos={false} /> */}
 												</Col>
 											</Row>

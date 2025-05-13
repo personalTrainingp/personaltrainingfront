@@ -56,7 +56,7 @@ export const FormatTable = ({ data=[] }) => {
               <td key={colIndex} onClick={col.onClick}>
               <li className={`d-flex flex-row justify-content-between p-2 ${(`${col.value}`.split(' ')[1]==='PM'?'bg-primary text-white':`${col.isPropiedad?'text-primary':'text-black'}`)}`}>
                 
-                                    <span style={{fontSize: '25px'}} className={`fw-bold ml-3`}><span className='mr-4 text-black'>{col.isIndexado? rowIndex+1:''} </span>{col.HTML ?? col.value}</span>
+                                    <span style={{fontSize: '25px'}} className={`fw-bold ml-4`}><span className='mr-0 text-black'></span>{col.HTML ?? col.value}</span>
                 {/* {col.isPropiedad && <div className='pi pi-external-link m-0 cursor-pointer' />} */}
               </li>
             </td>

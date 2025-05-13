@@ -22,6 +22,8 @@ export const PrincipalView = () => {
     setisOpenModalAddMesResChange(false)
   }
   const onOpenModalDataViewVentas = (row)=>{
+    console.log(row, "roow");
+    
     setisOpenModalViewVentas(true)
     setRowViewModal(row)
   }
@@ -97,12 +99,14 @@ export const PrincipalView = () => {
       numero_mensajes: 725,
     }
   ]
-
+  
   const dataInv = data.map((f, index)=>{
     // const dae = dataPrueba.filter(g=>g.fecha===f.fecha)
     const daeFind = dataPrueba.find(g=>g.fecha===f.fecha)
     const inversion = daeFind?.inversion*3.75
     const acumula = {...f, ...daeFind}
+    console.log({acumula, f, daeFind});
+    
     return { 
       ...acumula,
       inversion: inversion,

@@ -83,10 +83,10 @@ export const useResultadosChange = () => {
 			);
 
 			const dataAlter = agruparPorMes(agruparPorVenta(ventasSinCero)).map((g) => {
-				console.log(g, 'gema');
 				const filtradoRedes = g.items?.filter((item) =>
 					idsPermitidos.includes(item.detalle_ventaMembresium?.tb_ventum?.id_origen)
 				);
+				console.log(filtradoRedes, 'gema');
 
 				const facturacionRedesxProps = filtradoRedes.reduce(
 					(total, item) => total + (item?.detalle_ventaMembresium.tarifa_monto || 0),
@@ -96,7 +96,7 @@ export const useResultadosChange = () => {
 					(total, item) => total + (item?.detalle_ventaMembresium.tarifa_monto || 0),
 					0
 				);
-				const numero_cierre = filtradoRedes.items.length;
+				const numero_cierre = filtradoRedes?.length;
 
 				return {
 					fecha: g.fecha,

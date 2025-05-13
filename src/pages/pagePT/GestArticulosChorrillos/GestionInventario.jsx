@@ -18,7 +18,7 @@ export const GestionInventario = () => {
               <DataInventario id_enterprice={600}/>
       </TabPanel>
       <TabPanel header={'CHORRILLOS'}>
-              <DataInventario btnAdd btnDelete btnEdit id_enterprice={601} />
+              <DataInventario btnAdd btnDelete btnEdit id_enterprice={601} id_empresa_zona={601} />
       </TabPanel>
       <TabPanel header={'INVENTARIO MADRE COPIA SEMANA PASADA'}>
               <DataInventario id_enterprice={599} id_empresa_zona={599}/>

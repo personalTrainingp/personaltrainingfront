@@ -108,9 +108,9 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
     })
   return (
     <Card>
-        <h1 className='pt-1' style={{fontSize: '20px'}}>
+        <div className='text-center'>
             {titleH1}
-        </h1>
+        </div>
         <Card.Header className='d-flex align-self-center'>
             {avataresDeProgramas.map((d, index)=>{
                 
