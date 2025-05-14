@@ -97,6 +97,11 @@ export const PrincipalView = () => {
       facturacion: 17129,// ALTERADO
       numero_cierre: 13,
       numero_mensajes: 725,
+    },
+    {
+      fecha: 'mayo 2025',
+      inversion: 539.467,
+      numero_mensajes: 393,
     }
   ]
   
@@ -114,9 +119,9 @@ export const PrincipalView = () => {
       facturacion: f?.facturacion,
       numero_cierre: f?.numero_cierre,
       cac: ((f?.numero_cierre || 0) === 0 ? 0 : inversion / f.numero_cierre).toFixed(2),
-      ticket_medio: (daeFind?.facturacion/f?.numero_cierre)||0,
+      ticket_medio: (f?.facturacionDigital/f?.numero_cierre)||0,
       conversor: ((f?.numero_cierre/daeFind?.numero_mensajes)*100).toFixed(2),
-      roas: (daeFind?.facturacion/inversion).toFixed(0)
+      roas: (f?.facturacion/inversion).toFixed(0)
     }
   })
   

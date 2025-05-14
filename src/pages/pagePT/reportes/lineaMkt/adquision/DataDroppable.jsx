@@ -1,6 +1,6 @@
 import { PageBreadcrumb } from '@/components'
 import { Button } from 'primereact/button'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { ItemTable } from './ItemTable'
 import { useAdquisicionStore } from './useAdquisicionStore'
@@ -60,15 +60,39 @@ export const DataDroppable = ({dataMeses, hastaOption, desdeOption}) => {
       setIsLoading(false);
     }, 600);
   }
-  
+    const scrollRef = useRef(null);
+
+  const scroll = (offset) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+  };
   return (
     <>
+    
+    <div>
+      {/* Botones de navegación */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        gap: '0.5rem',
+        marginBottom: '0.5rem'
+      }}>
+        <button onClick={() => scroll(-300)} aria-label="Izquierda">◀</button>
+        <button onClick={() => scroll(300)} aria-label="Derecha">▶</button>
+      </div>
+    </div>
+
     <DragDropContext onDragEnd={onDragEnd}>
     <Droppable droppableId="resultados" direction="horizontal">
       {(provided) => (
         <div
           {...provided.droppableProps}
-          ref={provided.innerRef}
+           /* Merge refs: react-beautiful-dnd + nuestro scrollRef */
+              ref={el => {
+                provided.innerRef(el);
+                scrollRef.current = el;
+              }}
           style={{
             display: 'flex',
             overflowX: 'auto',  // scroll horizontal aquí

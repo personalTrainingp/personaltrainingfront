@@ -63,6 +63,7 @@ addLocale('es', {
 locale('es');
 const App = () => {
 	return (
+        
 		<Provider store={store}>
 		<ThemeProvider>
 			<NotificationProvider>

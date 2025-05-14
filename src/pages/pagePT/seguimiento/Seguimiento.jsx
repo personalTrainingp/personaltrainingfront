@@ -4,7 +4,7 @@ import { Table, PageBreadcrumb } from '@/components';
 import { columns, sizePerPageList } from './ColumnsSet';
 import { StatisticSeguimiento } from './StatisticSeguimiento';
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import {TableSeguimiento} from './TableSeguimiento';
 import { useSelector } from 'react-redux';
@@ -23,11 +23,29 @@ export const Seguimiento = () => {
 //   }, [])
 //RENOVACIONES HASTA EL 4 MES 
 //REINSCRIPCIONES 4MESES Y UN DIA
-  
+    // ref para acceder al scroll interno de SimpleBar
+  const simpleBarRef = useRef(null);
+
+  const scroll = (offset) => {
+    if (!simpleBarRef.current) return;
+    // obtenemos el elemento con overflow
+    const scrollEl = simpleBarRef.current.getScrollElement();
+    scrollEl.scrollBy({ left: offset, behavior: 'smooth' });
+  };
+
   return (
 		<>
 			<PageBreadcrumb title="ACTIVOS - RENOVACIONES - REINSCRIPCIONES" subName="Ventas" />
-			<Row></Row>
+			      <div style={{
+						display: 'flex',
+						justifyContent: 'flex-end',
+						gap: '0.5rem',
+						marginBottom: '0.5rem',
+						fontSize: '50px',
+					}}>
+						<button onClick={() => scroll(-300)} aria-label="Izquierda">◀</button>
+						<button onClick={() => scroll(300)} aria-label="Derecha">▶</button>
+					</div>
 			<Row>
 				<Col>
 					<Card>
@@ -35,6 +53,7 @@ export const Seguimiento = () => {
 							<TabView>
 								<TabPanel header="CHANGE">
 									<SimpleBar
+											ref={simpleBarRef}
 											style={{
 											  maxWidth: '100%',        // ancho total
 											  overflowX: 'auto',       // scroll horizontal

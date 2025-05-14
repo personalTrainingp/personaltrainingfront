@@ -33,7 +33,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVenta
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'VENTAS'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'VENTAS TOTAL'}</span>
               </li>
             </td>
             <td>

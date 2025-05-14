@@ -1,4 +1,5 @@
 import { PTApi } from '@/common';
+import { DateMaskString } from '@/components/CurrencyMask';
 import { onDataFail, onSetDataView } from '@/store/data/dataSlice';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
@@ -21,7 +22,7 @@ const agruparPorMes = (data) => {
 	// Generamos los meses en orden cronológico
 	while (fechaIteracion.isBefore(fin) || fechaIteracion.isSame(fin, 'month')) {
 		meses.push({
-			fecha: fechaIteracion.format('MMMM YYYY'),
+			fecha: DateMaskString(fechaIteracion, 'MMMM YYYY'),
 			items: [],
 		});
 		fechaIteracion = fechaIteracion.add(1, 'month');
