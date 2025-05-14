@@ -37,6 +37,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const onClickCancelModal = ()=>{
         onHide()
         onResetForm()
+            setid_empresa(id_enterprice)
     }
     const [grupoGasto, setgrupoGasto] = useState([])
     const [openModalProv, setopenModalProv] = useState(false)
