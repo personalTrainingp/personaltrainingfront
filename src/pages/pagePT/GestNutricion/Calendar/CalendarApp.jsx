@@ -34,14 +34,17 @@ export const CalendarApp = ({tipo_serv}) => {
 							<Row>
 								<Col xl={4}>
 									<SidePanel />
-									{/* <div className='bg-primary' style={{width: '100%'}}>
+									<div className='bg-primary' style={{width: '100%'}}>
 										<h1 className='text-center'>
 											PRIMERA CITA: <br/> <span className='fs-2'>30 MINUTOS</span>
 										</h1>
 										<h1 className='text-center'>
 											CITA DE SEGUIMIENTO: <br/><span className='fs-2'>20 MINUTOS</span>
 										</h1>
-									</div> */}
+									</div>
+										{/* <a href='' className='fs-1 underline'>
+											Ayuda memoria pendientes nutricion
+										</a> */}
 								</Col>
 								<Col xl={8}>
 								

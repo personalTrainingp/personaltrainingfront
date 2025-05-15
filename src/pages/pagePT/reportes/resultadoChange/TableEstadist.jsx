@@ -33,7 +33,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVenta
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'VENTAS TOTAL'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'VENTA TOTAL'}</span>
               </li>
             </td>
             <td>
@@ -45,7 +45,7 @@ export const TableEstadist = ({data, onOpenModalAddMesResChange, onDataViewVenta
           <tr>
             <td>
               <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>{'VENTAS DIGITAL'}</span>
+                <span style={{fontSize: '30px'}} className={`fw-bold ml-3`}>VENTAS <br/> DIGITAL</span>
               </li>
             </td>
             <td>

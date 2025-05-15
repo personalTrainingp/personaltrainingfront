@@ -37,7 +37,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const onClickCancelModal = ()=>{
         onHide()
         onResetForm()
-            setid_empresa(id_enterprice)
+        setid_empresa(id_enterprice)
     }
     const [grupoGasto, setgrupoGasto] = useState([])
     const [openModalProv, setopenModalProv] = useState(false)
@@ -45,8 +45,10 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const [loadingRegister, setloadingRegister] = useState(false)
     const { obtenerParametrosGastosFinanzas } = useGf_GvStore()
     useEffect(() => {
-      obtenerParametrosGastosFinanzas()
-    }, [])
+        if(show){
+            obtenerParametrosGastosFinanzas()
+        }
+    }, [show])
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
     const { obtenerParametroPorEntidadyGrupo: obtenerParametroTipoComprobante, DataGeneral: DataTipoComprobante } = useTerminoStore()
     const {obtenerParametrosProveedor} = useProveedorStore()

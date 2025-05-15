@@ -30,6 +30,16 @@ export const FlujoCaja = () => {
                         </TabPanel>
                     </TabView>
                 </TabPanel>
+                <TabPanel header='SAN EXPEDITO'>
+                    <TabView>
+                        <TabPanel header={'2024'}>
+                            <DatatableEgresos id_enterprice={601} anio={2024}/>
+                        </TabPanel>
+                        <TabPanel header={'2025'}>
+                            <DatatableEgresos id_enterprice={601} anio={2025}/>
+                        </TabPanel>
+                    </TabView>
+                </TabPanel>
             </TabView>
 		</>
 	);

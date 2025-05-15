@@ -90,9 +90,9 @@ export const PrincipalView = () => {
       setIsLoading(false);
     }, 600);
   }
-  return (
+  return (//comparativo ventas por categoria total por dia vs mes //comparativo ventas por asesor por categoria por dia vs mes
     <>
-    <PageBreadcrumb title={'VENTAS POR DIA Y POR MES'}/>
+    <PageBreadcrumb title={'comparativo ventas por categoria total por dia vs mes'}/>
     <Row>
       <div className='position-fixed bg-white'>
         <div className='d-flex align-items-center'>
