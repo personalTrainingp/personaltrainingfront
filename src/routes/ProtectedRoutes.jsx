@@ -62,7 +62,7 @@ const InventarioTotalizado = lazy(()=>import('../pages/pagePT/InventarioReporte'
 const EntradaInventario = lazy(()=>import('../pages/pagePT/EntradaInventario'))
 const SalidaInventario = lazy(()=>import('../pages/pagePT/SalidaInventario'))
 const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
-const ReportePorMarcacion = lazy(()=> import('../pages/pagePT/reportes/reporteCliente'))
+const PuntoEquilibrio = lazy(()=> import('../pages/pagePT/reportes/puntoEquilibrio'))
 const ReporteSeguimiento = lazy(()=>import('../pages/pagePT/reportes/reporteSeguimiento'))
 const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
 const ReporteSesionesxMem = lazy(()=>import('../pages/pagePT/reportes/reporteSesionesxMem'))
@@ -419,7 +419,7 @@ export default function ProtectedRoutes() {
 						<Route path="reporte-admin/RecursosHumanoReportes" element={<RecursosHumanoReportes />} />
 					}
 					{sections.find(e=>e.url==='/reporte-admin/ReportePorMarcacion')&&
-						<Route path="reporte-admin/ReportePorMarcacion" element={<ReportePorMarcacion />} />
+						<Route path="reporte-admin/punto-equilibrio" element={<PuntoEquilibrio />} />
 					}
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>

@@ -43,12 +43,15 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const [openModalProv, setopenModalProv] = useState(false)
     const [gastoxGrupo, setgastoxGrupo] = useState([])
     const [loadingRegister, setloadingRegister] = useState(false)
-    const { obtenerParametrosGastosFinanzas } = useGf_GvStore()
+        const [isAddGrupo, setisAddGrupo] = useState(false)
+    const { obtenerParametrosGastosFinanzas, registrarParametrosGastosFinanzas, isLoadingParametros } = useGf_GvStore()
+    console.log({isLoadingParametros});
+    
     useEffect(() => {
         if(show){
             obtenerParametrosGastosFinanzas()
         }
-    }, [show])
+    }, [show, isLoadingParametros])
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
     const { obtenerParametroPorEntidadyGrupo: obtenerParametroTipoComprobante, DataGeneral: DataTipoComprobante } = useTerminoStore()
     const {obtenerParametrosProveedor} = useProveedorStore()
@@ -102,7 +105,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         
         useEffect(() => {
             const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos||[]
-            
             setgrupoGasto(grupos)
         }, [id_tipoGasto, id_empresa])
         useEffect(() => {
@@ -151,6 +153,19 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         const onCloseModalProveedor=()=>{
             setopenModalProv(false)
             onShow()
+        }
+        const onClickAgregarGrupo = (valueSelect)=>{
+            // console.log({id_empresa, valueSelect, id_tipoGasto}, formState);
+            setisAddGrupo(false)
+            registrarParametrosGastosFinanzas({id_empresa, grupo: valueSelect, id_tipoGasto})
+            setisAddGrupo(true)
+        }
+        const onViewSelectionNotResult = (nameSelect, valueSelect)=>{
+            if(nameSelect==='grupo'){
+                if(id_tipoGasto!==0 && id_empresa!==0){
+                    return <button className='' onClick={()=>onClickAgregarGrupo(valueSelect)}>Agregar grupo</button>
+                }
+            }
         }
   return (
     <>
@@ -233,6 +248,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                             placeholder={'Seleccionar el grupo'}
                                             className="react-select"
                                             classNamePrefix="react-select"
+                                            noOptionsMessage={(e) => onViewSelectionNotResult('grupo', e.inputValue)}
                                             options={grupoGasto||[]}
                                             value={grupoGasto.find(
                                                 (option)=>option.value==grupo

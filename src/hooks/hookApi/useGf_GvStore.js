@@ -23,6 +23,7 @@ export const useGf_GvStore = () => {
 	const [isLoadingData, setisLoadingData] = useState(true);
 	const [objetoToast, setobjetoToast] = useState({});
 	const [dataGasto, setdataGasto] = useState([]);
+	const [isLoadingParametros, setisLoadingParametros] = useState(false);
 	const obtenerProveedoresUnicos = async () => {
 		try {
 			const { data } = await PTApi.get('/egreso/get-proveedores-unicos');
@@ -135,7 +136,6 @@ export const useGf_GvStore = () => {
 	const obtenerParametrosGastosFinanzas = async () => {
 		try {
 			let { data } = await PTApi.get(`/parametros/get_params/params-tb-finanzas`);
-
 			dispatch(onSetDataView(data));
 			data = data.reduce((acc, curr) => {
 				let empresa = acc.find((e) => e.id_empresa === curr.id_empresa);
@@ -178,6 +178,20 @@ export const useGf_GvStore = () => {
 		}
 	};
 
+	const registrarParametrosGastosFinanzas = async (formState) => {
+		try {
+			setisLoadingParametros(false);
+			const { data } = await PTApi.post(
+				'/parametroGasto/registrar-parametro-gasto',
+				formState
+			);
+			await obtenerParametrosGastosFinanzas();
+			setisLoadingParametros(true);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const obtenerGastosPorFecha = async (arrayDate) => {
 		try {
 			const { data } = await PTApi.get('/reporte/reporte-egresos', {
@@ -206,6 +220,7 @@ export const useGf_GvStore = () => {
 	};
 
 	return {
+		registrarParametrosGastosFinanzas,
 		obtenerParametrosGastosFinanzas,
 		startRegistrarGastos,
 		obtenerGastos,
@@ -221,6 +236,7 @@ export const useGf_GvStore = () => {
 		isLoadingData,
 		setgastoxID,
 		gastoxID,
+		isLoadingParametros,
 		isLoading,
 		objetoToast,
 	};

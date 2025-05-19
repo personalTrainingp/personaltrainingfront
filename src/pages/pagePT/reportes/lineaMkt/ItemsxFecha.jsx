@@ -95,7 +95,7 @@ export const ItemsxFecha = ({i, arrayTotal}) => {
   )
 }
 function resumenCarteras(flattened1) {
-   const cartera_renovacion = flattened1.filter(f => f.detalle_ventaMembresium.tb_ventum.id_origen === 691)
+   const cartera_renovacion = flattened1.filter(f => f.detalle_ventaMembresium.tb_ventum.id_origen === 691 || f.detalle_ventaMembresium.tb_ventum.id_origen === 696)
     const cartera_reinscripciones = flattened1.filter(f => f.detalle_ventaMembresium.tb_ventum.id_origen === 692)
     const nuevos = flattened1.filter(f => f.detalle_ventaMembresium.tb_ventum.id_origen !== 692 && f.detalle_ventaMembresium.tb_ventum.id_origen !== 691)
     

@@ -109,7 +109,7 @@ export function Auditoria() {
     return (
         <div className="card">
             <DataTable value={dataAuditoria} paginator rows={10} dataKey="id" filters={filters} filterDisplay="row" loading={loading}
-                    globalFilterFields={['usuario', 'ip', 'accion', 'observacion', 'fecha_audit']} header={header} emptyMessage="Sin Registro de auditoria">
+                    globalFilterFields={['auth_user.usuario_user', 'ip_user', 'accion', 'observacion', 'fecha_audit']} header={header} emptyMessage="Sin Registro de auditoria">
                 <Column header="Usuario" body={usuarioAuthBodyTemplate} style={{ minWidth: '12rem' }} />
                 <Column header="Ip" body={ipAuthBodyTemplate} style={{ minWidth: '12rem' }} />
                 <Column header="Accion" body={actionBodyTemplate} style={{ maxWidth: '5rem' }} />
