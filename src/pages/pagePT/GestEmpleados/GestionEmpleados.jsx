@@ -69,7 +69,7 @@ export const GestionEmpleados = () => {
 					</Card>
 				</Col>
 			</Row>
-            <ModalEmpleado show={show} onHide={onModalEmpleadoClose}/>
+            <ModalEmpleado show={show} onHide={onModalEmpleadoClose} id_Estado={true} id_empresa={599}/>
 		</>
 	);
 }

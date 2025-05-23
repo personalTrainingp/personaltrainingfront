@@ -418,7 +418,7 @@ export default function ProtectedRoutes() {
 					{sections.find(e=>e.url==='/reporte-admin/RecursosHumanoReportes')&&
 						<Route path="reporte-admin/RecursosHumanoReportes" element={<RecursosHumanoReportes />} />
 					}
-					{sections.find(e=>e.url==='/reporte-admin/ReportePorMarcacion')&&
+					{sections.find(e=>e.url==='/reporte-admin/punto-equilibrio')&&
 						<Route path="reporte-admin/punto-equilibrio" element={<PuntoEquilibrio />} />
 					}
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>

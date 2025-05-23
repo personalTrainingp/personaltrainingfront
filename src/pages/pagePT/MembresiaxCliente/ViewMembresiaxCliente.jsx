@@ -306,6 +306,7 @@ const rowExtensionColor = (rowData, color_pr)=>{
               <Column  header="Programas" body={membresiaBodyTemplate} filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column  header="tipo de pago" body={pagoBodyTemplate} filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column header="Origen" body={origenBodyTemplate} style={{ minWidth: '12rem' }} />
+              <Column header="COMPROBANTE" body={comprobanteBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="TOTAL" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="" frozen style={{ minWidth: '12rem' }} body={actionBodyTemplate} />
               {/* <Column header="" frozen style={{ minWidth: '2rem' }} body={logoPdfBodyTemplate} /> */}

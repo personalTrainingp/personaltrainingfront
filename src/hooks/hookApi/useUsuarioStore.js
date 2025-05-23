@@ -160,7 +160,7 @@ export const useUsuarioStore = () => {
 		}
 	};
 
-	const startRegisterUsuarioEmpleado = async (form, formData) => {
+	const startRegisterUsuarioEmpleado = async (form, formData, id_empresa, id_estado) => {
 		const { comentario_com } = form.comentarios;
 		const { dataContactsEmerg } = form;
 

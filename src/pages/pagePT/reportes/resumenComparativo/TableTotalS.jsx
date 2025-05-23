@@ -22,6 +22,8 @@ export const TableTotalS = ({grafPie, grafPieGeneral, agruparPorSocios, IsVentaC
         const agrupadoPorSexo = agruparPorSexo(d.items)
         // console.log(agrupadoPorSexo);
         return {
+            header: d.header,
+            transferenciaCero: d.transferenciaCero,
             pFem: agrupadoPorSexo[0].items,
             pMasc: agrupadoPorSexo[1].items,
             cantidad,
@@ -134,6 +136,8 @@ export const TableTotalS = ({grafPie, grafPieGeneral, agruparPorSocios, IsVentaC
                                                         return (
                                                             <ItemTableTotal 
                                                             index={index}
+                                                            header={p.header}
+                                                            transferenciaCero={p.transferenciaCero}
                                                             IsVentaCero={IsVentaCero}
                                                             isTime
                                                             isNeedGenere={isNeedGenere}

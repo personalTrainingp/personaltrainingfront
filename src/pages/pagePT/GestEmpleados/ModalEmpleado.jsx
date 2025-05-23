@@ -39,7 +39,7 @@ const registroEmpleado={
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalEmpleado = ({ show, onHide }) => {
+export const ModalEmpleado = ({ show, onHide, id_empresa, id_Estado }) => {
     const dispatch = useDispatch()
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const resetAvatar = ()=>{
@@ -83,7 +83,7 @@ export const ModalEmpleado = ({ show, onHide }) => {
     
     const formData = new FormData();
     formData.append('avatar', formStateAvatar.imgAvatar_BASE64);
-        startRegisterUsuarioEmpleado({...usuarioEmpleado, dataContactsEmerg: dataContactsEmerg, comentarios}, formData)
+        startRegisterUsuarioEmpleado({...usuarioEmpleado, dataContactsEmerg: dataContactsEmerg, comentarios}, formData, id_empresa, id_Estado)
     btnCancelModal()
 }
   const btnCancelModal = ()=>{

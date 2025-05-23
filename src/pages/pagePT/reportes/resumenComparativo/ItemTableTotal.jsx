@@ -1,7 +1,7 @@
 import { NumberFormatMoney, NumberFormatter } from '@/components/CurrencyMask';
 import React from 'react'
 
-export const ItemTableTotal = ({index, IsVentaCero, isTime, isNeedGenere, pFem, pMasc,  label, onClick, cantidad, porcentajeCantidad, monto, ticketMedio, porcentajeMonto, items=[]}) => {
+export const ItemTableTotal = ({index, header, IsVentaCero, isTime, isNeedGenere, pFem, pMasc,  label, onClick, cantidad, porcentajeCantidad, monto, ticketMedio, porcentajeMonto, items=[]}) => {
 	console.log(label, "labe");
 	
   return (
@@ -13,7 +13,7 @@ export const ItemTableTotal = ({index, IsVentaCero, isTime, isNeedGenere, pFem, 
 			</td>
 			<td className="text-center">
 				<li className="list-unstyled p-2">
-					<div className={`fw-bold text-primary fs-1 ${isTime && (`${label}`.split(' ')[1]=='PM'&&'bg-primary text-white')}`}>{label}</div>
+					<div className={`fw-bold text-primary fs-1 ${isTime && (`${label}`.split(' ')[1]=='PM'&&'bg-primary text-white')}`}>{header}</div>
 				</li>
 			</td>
 			{

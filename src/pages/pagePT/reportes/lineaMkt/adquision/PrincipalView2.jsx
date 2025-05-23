@@ -90,6 +90,37 @@ export const PrincipalView = () => {
       setIsLoading(false);
     }, 600);
   }
+  
+    function agruparPorCliente(data) {
+        // Agrupar por id_cli
+        const agrupado = Object.values(
+            data.reduce((acc, item) => {
+            const id_cli = item.tb_ventum.id_cli;
+            if (!acc[id_cli]) {
+                acc[id_cli] = { id_cli, items: [] };
+            }
+            acc[id_cli].items.push(item);
+            return acc;
+            }, {})
+        );
+
+        // Filtrar clientes que tienen al menos un id_tipoFactura = 701
+        const clientesFiltrados = agrupado
+            .filter(cliente => cliente.items.some(item => item.tb_ventum.id_tipoFactura === 701))
+            .map(cliente => ({
+            id_cli: cliente.id_cli,
+            items: cliente.items.filter(item => item.tb_ventum.id_tipoFactura !== 701) // Remover los "traspaso"
+            }))
+            .filter(cliente => cliente.items.length > 0); // Eliminar clientes sin items
+
+        // Obtener todos los items acumulados
+        const ventas = clientesFiltrados.flatMap(cliente => cliente.items);
+
+        return {
+            clientes: clientesFiltrados,
+            ventas // Acumulado de todos los items
+        };
+      }
   return (//comparativo ventas por categoria total por dia vs mes //comparativo ventas por asesor por categoria por dia vs mes
     <>
     <PageBreadcrumb title={'comparativo ventas por categoria total por dia vs mes'}/>

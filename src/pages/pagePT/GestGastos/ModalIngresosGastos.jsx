@@ -110,7 +110,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         useEffect(() => {
             const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
             setgastoxGrupo(conceptos)
-        }, [grupo])
+        }, [grupo, id_tipoGasto, id_empresa])
         
         
         useEffect(() => {
@@ -186,7 +186,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             <Modal size='xl' onHide={onClickCancelModal} show={show}>
                 <Modal.Header>
                     <Modal.Title>
-                        {data?'Actualizar Gasto':'Registro Gasto'} <Button>ACTUALIZAR TERMINOLOGIAS</Button>
+                        {data?'Actualizar Gasto':'Registro Gasto'}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

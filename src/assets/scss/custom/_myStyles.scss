@@ -62,6 +62,13 @@ text{
 label{
   font-size: 19px;
 }
+.table-responsive {
+  display: block;          /* para que el contenedor actúe como bloque desplazable */
+  width: 100%;
+  overflow-x: auto;        /* scroll horizontal */
+  overflow-y: hidden;      /* sin scroll vertical */
+  -webkit-overflow-scrolling: touch; /* inercia en iOS */
+}
 .row-danger {
   background-color: rgba(255, 0, 0, 0.2) !important;
   color: #D41115;

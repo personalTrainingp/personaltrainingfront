@@ -22,7 +22,12 @@ const agruparPorIdPgm = (data) => {
 		}
 
 		// Agregar el objeto {venta_venta, id_pgm} al grupo
-		grupo.items.push({ venta_venta: item.venta_venta, id_pgm: item.id_pgm });
+		grupo.items.push({
+			venta_venta: item.venta_venta,
+			tb_ventum: { id: item.venta_venta[0].id },
+			tarifa_monto: 0,
+			id_pgm: item.id_pgm,
+		});
 
 		return resultado;
 	}, []);
@@ -213,9 +218,11 @@ export const useReporteResumenComparativoStore = () => {
 				// marcacionesxMembresia: marcacionesxMembresia ? marcacionesxMembresia.items : [],
 			};
 		});
+
 		// Crear el objeto id_pgm: 0 que suma todos los demás
 		const totalObject = ventasUnificadas?.reduce(
 			(total, current) => {
+				total.ventas_transferencias.push(...current.ventas_transferencias);
 				total.tarifa_total += current.tarifa_total;
 				total.sesiones_total += current.sesiones_total;
 				total.detalle_ventaMembresium.push(...current.detalle_ventaMembresium);
@@ -227,6 +234,7 @@ export const useReporteResumenComparativoStore = () => {
 				tarifa_total: 0,
 				sesiones_total: 0,
 				detalle_ventaMembresium: [],
+				ventas_transferencias: [],
 				tb_image: [],
 			}
 		);

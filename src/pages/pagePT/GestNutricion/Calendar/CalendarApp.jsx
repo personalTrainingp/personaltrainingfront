@@ -25,7 +25,7 @@ export const CalendarApp = ({tipo_serv}) => {
 
 	return (
 		<>
-			<PageBreadcrumb title={tipo_serv=='NUTRI'?"Crear citas Nutricionista": "tratamientos esteticos"} subName="Apps" />
+			<PageBreadcrumb title={tipo_serv=='NUTRI'?"Agenda Nutricionista": "tratamientos esteticos"} subName="Apps" />
 
 			<Row>
 				<Col>

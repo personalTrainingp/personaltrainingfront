@@ -1,19 +1,12 @@
 import React from "react";
 import { Card, Table } from "react-bootstrap";
+import { PuntoEquilibrioxEmpresa } from "./PuntoEquilibrioxEmpresa";
 
 
 export const App = () => {
 
 
     return (
-        <div className="card-body text-secondary card border-secondary box-shadow">
-            <Card>
-
-            </Card>
-            <table className="table table-hover">
-   
-                
-            </table>
-        </div>
+        <PuntoEquilibrioxEmpresa id_empresa={598}/>
     );
 }

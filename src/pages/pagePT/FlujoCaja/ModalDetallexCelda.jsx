@@ -6,21 +6,21 @@ import React from 'react'
 import { Table } from 'react-bootstrap'
 
 export const ModalDetallexCelda = ({show, onHide, data}) => {
-  console.log(data, agruparPorComprobante(data?.items), "ddaa");
-  
+  const onModalDetalleGasto = (idGasto)=>{
+
+  }
   return (
     <Dialog visible={show} style={{width: '90rem'}} onHide={onHide} header={`EGRESOS POR DETALLE - ${data?.grupo} - ${data?.concepto}`}>
         <Table responsive hover striped>
           <thead className='bg-primary'>
               <tr>
                   <th className='text-white p-1 fs-3'>PROV. / COLABORADOR</th>
-                  <th className='text-white p-1 fs-3'>descripcion</th>
+                  <th className='text-white p-1 fs-3'>descripcion / evento</th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de comprobante</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de pago</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>monto</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>DOCUMENTO</div></th>
-                  {/* <th className='text-white p-1 fs-3'>%</th> */}
-                  {/* <th className='text-white p-1 fs-3'><div className=''>TICKET M.</div></th> */}
+                  <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'></div></th>
               </tr>
           </thead>
           <tbody>
@@ -35,6 +35,7 @@ export const ModalDetallexCelda = ({show, onHide, data}) => {
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{dayjs(f.fec_pago).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}><NumberFormatMoney amount={f.monto}/></span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_comprobante?.label_param}</span></td>
+                          <td className='fs-2' onClick={()=>onModalDetalleGasto(f.id)}><span className={isSinDoc?'text-primary':'text-black'}><i className='pi pi-pencil fw-bold text-primary cursor-pointer p-1 fs-2'/></span></td>
                       </tr>
                     )
                   })

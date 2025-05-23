@@ -30,6 +30,8 @@ export const TodoVentas=({id_empresa})=> {
   useEffect(() => {
       obtenerTablaVentas(id_empresa)
   }, [])
+  console.log(dataVentas);
+  
   const [customers, setCustomers] = useState(null);
   const [valueFilter, setvalueFilter] = useState([])
     const [filters, setFilters] = useState({
@@ -241,6 +243,13 @@ const ncomprobanteBodyTemplate = (rowData)=>{
     </div>
   )
 }
+const observacionBodyTemplate = (rowData)=>{
+  return (
+    <div className={`${rowExtensionColor(rowData, 'text-primary')} fw-bold`}>
+    { rowData.observacion}
+    </div>
+  )
+}
 const idBodyTemplate = (rowData)=>{
   return(
     <div className={`${rowExtensionColor(rowData, 'text-primary')} fw-bold`}>
@@ -284,10 +293,10 @@ const rowExtensionColor = (rowData, color_pr)=>{
         <>
           <DataTable value={customers} 
                   onValueChange={valueFiltered}
-                  filterDisplay="row"
+                  filterDisplay="menu"
                   rowClassName={rowClassName}
                         stripedRows paginator rows={10} dataKey="id" filters={filters} loading={loading}
-                  globalFilterFields={["tb_cliente.nombres_apellidos_cli", "tb_empleado.nombres_apellidos_empl", "tipo_comprobante", "numero_transac"]} header={header} emptyMessage="No customers found.">
+                  globalFilterFields={["observacion","tb_cliente.nombres_apellidos_cli", "tb_empleado.nombres_apellidos_empl", "tipo_comprobante", "numero_transac"]} header={header} emptyMessage="No customers found.">
               <Column field="id" header="Id" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} body={idBodyTemplate}/>
               {/* <Column field="id" header="Foto de" filter filterPlaceholder="Search by name" style={{ minWidth: '5rem' }} /> */}
               <Column field="fecha_venta" header="FECHA" filterPlaceholder="BUSCAR FECHA" style={{ minWidth: '8rem' }} body={fechaDeComprobanteBodyTemplate}/>
@@ -295,6 +304,7 @@ const rowExtensionColor = (rowData, color_pr)=>{
               <Column field="tb_empleado.nombres_apellidos_empl" filterField='tb_empleado.nombres_apellidos_empl' header="ASESOR COMERCIAL" body={asesorBodyTemplate} filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
               <Column field="tipo_comprobante" header="COMPROBANTE" body={comprobanteBodyTemplate} filter filterPlaceholder="Buscar tipo de comprobante" style={{ minWidth: '12rem' }} />
               <Column field="numero_transac" header="Nº DE COMPR." body={ncomprobanteBodyTemplate} filter filterPlaceholder="Search by name" style={{ maxWidth: '7rem' }} />
+              <Column field="observacion" header="observacion" body={observacionBodyTemplate} filter filterPlaceholder="Search by name" style={{ maxWidth: '15rem' }} />
               <Column header="TOTAL" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="" frozen style={{ minWidth: '12rem' }} body={actionBodyTemplate} />
               {/* <Column header="" frozen style={{ minWidth: '2rem' }} body={logoPdfBodyTemplate} /> */}

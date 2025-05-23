@@ -185,7 +185,7 @@ export const arrayDataTrainer = [
 export const arrayFacturas = [
 	{ value: 699, label: 'Boleta' },
 	{ value: 700, label: 'Factura' },
-	{ value: 701, label: 'Traspaso' },
+	{ value: 701, label: 'Traspaso pt' },
 	{ value: 702, label: 'TRANSFERENCIA' },
 	{ value: 703, label: 'CANJE' },
 ];
@@ -303,6 +303,11 @@ export const arrayCargoEmpl = [
 	{ label: 'Psicologia', value: 22 },
 	{ label: 'Sistemas', value: 23 },
 	{ label: 'Gerente general', value: 25 },
+	{ label: 'Estilista', value: 26 },
+	{ label: 'Asistente de estilista', value: 27 },
+	{ label: 'recepcionista', value: 28 },
+	{ label: 'JEFE DE SALON', value: 29 },
+	{ label: 'MKT COMERCIAL', value: 30 },
 ];
 
 export const arrayDepartamentoEmpl = [
@@ -310,6 +315,8 @@ export const arrayDepartamentoEmpl = [
 	{ label: 'Ventas', value: 2 },
 	{ label: 'Nutricion', value: 3 },
 	{ label: 'Fitology', value: 4 },
+	{ label: 'Peluqueria', value: 5 },
+	{ label: 'recepcion', value: 6 },
 ];
 
 export const arrayTipoJornadaEmpl = [

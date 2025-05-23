@@ -502,10 +502,11 @@ export const ResumenComparativo = () => {
           const ventasEnCeros =  agruparPorVenta(d.detalle_ventaMembresium).filter(f=>f.tarifa_monto===0)
           const ventasSinCeros =  agruparPorVenta(d.detalle_ventaMembresium).filter(f=>f.tarifa_monto!==0)
           const TransferenciasEnCeros = d.ventas_transferencias
+          
         const TraspasosEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===701)
         
         const CanjesEnCero = ventasEnCeros.filter(f=>f.tb_ventum.id_tipoFactura===703)
-        const membresiasNuevas = ventasSinCeros.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692)
+        const membresiasNuevas = ventasSinCeros.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692&& f.tb_ventum.id_origen!==696)
         const membresiasRenovadas = ventasSinCeros.filter(g=>g.tb_ventum.id_origen===691)
         const membresiasReinscritos = ventasSinCeros.filter(g=>g.tb_ventum.id_origen===692)
         const sumaDeSesiones = ventasSinCeros.reduce((total, item) => total + (item?.tb_semana_training.sesiones || 0), 0)
@@ -737,11 +738,13 @@ export const ResumenComparativo = () => {
         const ventasEnCeros = agruparPorVenta(d.detalle_ventaMembresium)?.filter(f=>f.tarifa_monto===0)
         const ventasSinCeros = agruparPorVenta(d.detalle_ventaMembresium)?.filter(f=>f.tarifa_monto!==0)
         const TransferenciasEnCeros = d.ventas_transferencias
+        console.log({t: d});
+        
         const TraspasosEnCero = ventasEnCeros?.filter(f=>f.tb_ventum.id_tipoFactura===701)
         const clientesCanjes = ventasEnCeros?.filter(f=>f.tb_ventum.id_tipoFactura===703)
-        const membresiasNuevas = ventasSinCeros?.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692)
+        const membresiasNuevas = ventasSinCeros?.filter(f=>f.tb_ventum.id_origen!==691 && f.tb_ventum.id_origen!==692 && f.tb_ventum.id_origen!==696)
         const membresiasRenovadas = ventasSinCeros?.filter(g=>g.tb_ventum.id_origen===691)
-        const membresiasReinscritos = ventasSinCeros?.filter(g=>g.tb_ventum.id_origen===692)
+        const membresiasReinscritos = ventasSinCeros?.filter(g=>g.tb_ventum.id_origen===692 || g.tb_ventum.id_origen==696)
         const porSexo = agruparPorSexo(ventasSinCeros).map((grupo, index, array) => {
             return [
                 ...generarResumen(array, grupo, 'genero', index)
@@ -872,31 +875,37 @@ export const ResumenComparativo = () => {
     const dataInscritosCategoria = [
         {
             propiedad: 'NUEVOS',
+            header: 'NUEVOS',
             items: dataAlterIdPgmCero?.map(f=>f.membresiasNuevas).flat()
         },
         {
             propiedad: 'RENOVACIONES',
+            header: 'RENOVACIONES',
             items: dataAlterIdPgmCero?.map(f=>f.membresiasRenovadas).flat()
         },
         {
             propiedad: 'REINSCRITOS',
+            header: 'REINSCRITOS',
             items: dataAlterIdPgmCero?.map(f=>f.membresiasReinscritos).flat()
         },
         {
-            propiedad: 'TRASPASOS PT',
-            items: dataAlterIdPgmCero?.map(f=>f.TraspasosEnCero).flat()
-        },
-        {
-            propiedad: 'TRANSFERENCIAS (COSTO CERO)',
-            items: dataAlterIdPgmCero?.map(f=>f.clientesCanjes).flat()
-        },
-        {
             propiedad: 'CANJES',
+            header: 'CANJES',
             items: dataAlterIdPgmCero?.map(f=>f.clientesCanjes).flat()
-        }
+        },
+        {
+            propiedad: 'TRANSFERENCIAS EX-PT A TERCEROS',
+            header: 'TRANSFERENCIAS EX-PT A TERCEROS',
+            items: dataAlterIdPgmCero?.map(f=>f.TransferenciasEnCeros).flat()
+        },
+        {
+            propiedad: 'TOTAL TRASPASOS EX-PT',
+            header: <>TOTAL TRASPASOS <br/> EX-PT ({dataAlterIdPgmCero[0].TraspasosEnCero.length})</>,
+            items: dataAlterIdPgmCero[0].TraspasosEnCero.slice(0, Math.max(0, dataAlterIdPgmCero[0].TraspasosEnCero?.length - dataAlterIdPgmCero[0].TransferenciasEnCeros?.length)),
+        },
     ]
+    console.log({dataAlterIdPgmCero});
     
-
     const data = [
         {
             title: 'VENTAS POR PROGRAMA',
@@ -1011,12 +1020,12 @@ export const ResumenComparativo = () => {
                                                     <tbody>
                                                                 <tr>
                                                                         <td className='' 
-                                                                        onClick={()=>onOpenModalSOCIOS(d?.ventasDespuesDeTraspaso.ventas, '', 'VENTAS DESPUES DE TRASPASO', false)}
+                                                                        onClick={()=>onOpenModalSOCIOS(d?.ventasDespuesDeTraspaso.ventas, '', 'VENTAS POR TRASPASO EX-PT', false)}
                                                                         >
-                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>VENTAS DESPUES DE TRASPASO</span></li>
+                                                                            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-primary fs-1'>VENTAS POR TRASPASO EX-PT</span></li>
                                                                         </td>
                                                                         <td>
-                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d?.ventasDespuesDeTraspaso.clientes.length}</span>
+                                                                            <span style={{fontSize: '40px'}} className='d-flex fw-bold justify-content-end align-content-end align-items-end'>{d?.ventasDespuesDeTraspaso.clientes.length===0?0:d?.ventasDespuesDeTraspaso.ventas.length}</span>
                                                                         </td>
                                                                 </tr>
                                                                 <tr>
@@ -1196,7 +1205,7 @@ export const ResumenComparativo = () => {
                 }).filter(c=>c.label==='NUEVOS' || c.label ==='RENOVACIONES' || c.label==='REINSCRITOS')
                 const dataSeg1 = dataInscritosCategoria.map(c=>{
                     return{
-                        label: c.propiedad,
+                        label: c.header,
                         val: c.items.length
                     }
                 })
@@ -1205,7 +1214,7 @@ export const ResumenComparativo = () => {
                         {/* <div style={{width: '400px', height: '400px'}}>
                             <GrafPie data={dataSeg}/>
                         </div> */}
-                        <TableTotalS grafPieGeneral={<GrafPie data={dataSeg1} height={800} width={800}/>} grafPie={<GrafPie data={dataSeg} height={600} width={600}/>} titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'INSCRITOS POR CATEGORIA'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={dataInscritosCategoria}/>
+                        <TableTotalS titleH1={''} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'INSCRITOS POR CATEGORIA'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={dataInscritosCategoria}/>
                     </Col>
                 )
             }

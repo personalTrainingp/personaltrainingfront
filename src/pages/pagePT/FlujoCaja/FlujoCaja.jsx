@@ -21,7 +21,7 @@ export const FlujoCaja = () => {
 		<>
 			<PageBreadcrumb subName={'T'} title={'Flujo de Caja'} />
             <TabView>
-                <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} header={<TabIcon width={220} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/>}>
+                <TabPanel  header={<TabIcon width={220} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/>}>
                     <TabView>
                         <TabPanel header={<div className='fs-1 text-black'>2024</div>}>
                             <DatatableEgresos id_enterprice={598} anio={2024}/>
@@ -31,7 +31,7 @@ export const FlujoCaja = () => {
                         </TabPanel>
                     </TabView>
                 </TabPanel>
-                <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mx-5' header={<TabIcon width={180} src='https://sistema-circus.vercel.app/assets/Positivo-transparente-c932a60a.png'/>}>
+                <TabPanel  className='mx-5' header={<TabIcon width={180} src='https://sistema-circus.vercel.app/assets/Positivo-transparente-c932a60a.png'/>}>
                     <TabView>
                         <TabPanel header={<div className='fs-1  text-black'>2024</div>}>
                             <DatatableEgresos id_enterprice={599} anio={2024}/>
@@ -41,7 +41,7 @@ export const FlujoCaja = () => {
                         </TabPanel>
                     </TabView>
                 </TabPanel>
-                <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mb-2' header={<div style={{fontSize: '45px'}} className=' fw-medium text-black'>ISE SAC</div>}>
+                <TabPanel  className='mb-2' header={<div style={{fontSize: '45px'}} className=' fw-medium text-black'>ISE SAC</div>}>
                     <TabView>
                         <TabPanel header={<div className='fs-1 text-black'>2024</div>}>
                             <DatatableEgresos textColor={'bg-primary'} id_enterprice={601} anio={2024}/>
