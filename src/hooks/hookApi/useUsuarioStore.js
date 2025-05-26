@@ -170,6 +170,7 @@ export const useUsuarioStore = () => {
 			// });
 			const { data: dataCliente } = await PTApi.post('/usuario/post-empleado', {
 				...form,
+				id_empresa: id_empresa,
 			});
 			let formDataTieneDatos = false;
 

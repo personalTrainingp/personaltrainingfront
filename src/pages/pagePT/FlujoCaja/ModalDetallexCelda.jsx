@@ -2,14 +2,27 @@ import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import dayjs from 'dayjs'
 import { Dialog } from 'primereact/dialog'
-import React from 'react'
+import React, { useState } from 'react'
 import { Table } from 'react-bootstrap'
+import { ModalIngresosGastos } from '../GestGastos/ModalIngresosGastos'
+import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 
-export const ModalDetallexCelda = ({show, onHide, data}) => {
-  const onModalDetalleGasto = (idGasto)=>{
-
+export const ModalDetallexCelda = ({id_enterprice, show, onShow, onHide, data, obtenerGastosxANIO}) => {
+  const [isModalDetalleGasto, setisModalDetalleGasto] = useState(false)
+  const [ModalDetalleGasto, setModalDetalleGasto] = useState({})
+  const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
+  const onOpenModalDetalleGasto = (idGasto)=>{
+    setisModalDetalleGasto(true);
+    onHide()
+    obtenerGastoxID(idGasto)
+  }
+  const onCloseModalDetalleGasto = ()=>{
+    setisModalDetalleGasto(false);
+    // onShow()
+    obtenerGastosxANIO()
   }
   return (
+    <>
     <Dialog visible={show} style={{width: '90rem'}} onHide={onHide} header={`EGRESOS POR DETALLE - ${data?.grupo} - ${data?.concepto}`}>
         <Table responsive hover striped>
           <thead className='bg-primary'>
@@ -35,7 +48,7 @@ export const ModalDetallexCelda = ({show, onHide, data}) => {
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{dayjs(f.fec_pago).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}><NumberFormatMoney amount={f.monto}/></span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_comprobante?.label_param}</span></td>
-                          <td className='fs-2' onClick={()=>onModalDetalleGasto(f.id)}><span className={isSinDoc?'text-primary':'text-black'}><i className='pi pi-pencil fw-bold text-primary cursor-pointer p-1 fs-2'/></span></td>
+                          <td className='fs-2' onClick={()=>onOpenModalDetalleGasto(f.id)}><span className={isSinDoc?'text-primary':'text-black'}><i className='pi pi-pencil fw-bold text-primary cursor-pointer p-1 fs-2'/></span></td>
                       </tr>
                     )
                   })
@@ -53,6 +66,8 @@ export const ModalDetallexCelda = ({show, onHide, data}) => {
           })
         }
     </Dialog>
+    <ModalIngresosGastos onHide={onCloseModalDetalleGasto} data={gastoxID} isLoading={isLoading} id_enterprice={id_enterprice} onShow={()=>setisModalDetalleGasto(true)} show={isModalDetalleGasto}   />
+    </>
   )
 }
 

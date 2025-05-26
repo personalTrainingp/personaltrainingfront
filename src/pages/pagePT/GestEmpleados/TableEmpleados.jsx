@@ -16,9 +16,11 @@ import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import config from '@/config';
 import { Image } from 'primereact/image';
 import { useDispatch } from 'react-redux';
+import { ModalEmpleado } from './ModalEmpleado';
 
-export const TableEmpleados = ({id_empresa, id_estado}) => {
+export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) => {
     const [customers, setCustomers] = useState(null);
+    const [isOpenModalRegisterEmpleado, setisOpenModalRegisterEmpleado] = useState(false)
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -50,17 +52,15 @@ export const TableEmpleados = ({id_empresa, id_estado}) => {
             return newItem;
         });
     };
-    const formatDate = (value) => {
-        return value.toLocaleDateString('en-ES', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-    };
     const clearFilter = () => {
         initFilters();
     };
-    
+    const onOpenModalRegisterEmpleado = ()=>{
+        setisOpenModalRegisterEmpleado(true)
+    }
+    const onCloseModalRegisterEmpleado=()=>{
+        setisOpenModalRegisterEmpleado(false)
+    }
     const highlightText = (text, search) => {
         if (!search) {
             return text;
@@ -112,13 +112,6 @@ export const TableEmpleados = ({id_empresa, id_estado}) => {
         );
     };
     
-    const ProgramaSemanasBodyTemplate = (rowData) => {
-        return (
-            <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.tipo_cliente, globalFilterValue)}</span>
-            </div>
-        );
-    };
     const telefonoBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
@@ -183,11 +176,15 @@ export const TableEmpleados = ({id_empresa, id_estado}) => {
             </div>
         )
     }
-    console.log(dataView);
-    
     const header = renderHeader();
 
     return (
+        <>
+        {
+            isOpenButtonRegister && (
+                <Button label='AGREGAR COLABORADOR' icon={'mdi mdi-plus-circle'} onClick={onOpenModalRegisterEmpleado}/>
+            )
+        }
             <DataTable size='small' 
                         value={customers} 
                         paginator 
@@ -221,5 +218,7 @@ export const TableEmpleados = ({id_empresa, id_estado}) => {
                 {/* <Column header="Estado" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/> */}
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
+            <ModalEmpleado show={isOpenModalRegisterEmpleado} onHide={onCloseModalRegisterEmpleado} id_Estado={true} id_empresa={id_empresa}/>
+        </>
     );
 }

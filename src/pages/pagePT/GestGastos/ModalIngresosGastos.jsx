@@ -45,8 +45,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     const [loadingRegister, setloadingRegister] = useState(false)
         const [isAddGrupo, setisAddGrupo] = useState(false)
     const { obtenerParametrosGastosFinanzas, registrarParametrosGastosFinanzas, isLoadingParametros } = useGf_GvStore()
-    console.log({isLoadingParametros});
-    
     useEffect(() => {
         if(show){
             obtenerParametrosGastosFinanzas()

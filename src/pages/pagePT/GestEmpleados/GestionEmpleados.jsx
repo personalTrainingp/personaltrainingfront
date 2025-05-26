@@ -33,14 +33,14 @@ export const GestionEmpleados = () => {
 									{/* <Button onClick={onModalEmpleadoOpen}>
 										<i className="mdi mdi-plus-circle me-2"></i> Agregar empleados
 									</Button> */}
-									<Button label='AGREGAR COLABORADOR' icon={'mdi mdi-plus-circle'} onClick={onModalEmpleadoOpen}/>
+									{/* <Button label='AGREGAR COLABORADOR' icon={'mdi mdi-plus-circle'} onClick={onModalEmpleadoOpen}/> */}
 								</Col>
 							</Row>
 							<TabView>
 								<TabPanel header='CIRCUS'>
 									<TabView>
 										<TabPanel header='ACTIVOS'>
-											<TableEmpleados  id_empresa={599} id_estado={1}/>
+											<TableEmpleados  id_empresa={599} id_estado={1} isOpenButtonRegister={true}/>
 										</TabPanel>
 										<TabPanel header='INACTIVOS'>
 											<TableEmpleados  id_empresa={599} id_estado={0}/>
@@ -50,7 +50,7 @@ export const GestionEmpleados = () => {
 								<TabPanel header='CHANGE'>
 									<TabView>
 										<TabPanel header='ACTIVOS'>
-											<TableEmpleados  id_empresa={598} id_estado={1}/>
+											<TableEmpleados  id_empresa={598} id_estado={1} isOpenButtonRegister={true}/>
 										</TabPanel>
 										<TabPanel header='INACTIVOS'>
 											<TableEmpleados  id_empresa={598} id_estado={0}/>
@@ -69,7 +69,6 @@ export const GestionEmpleados = () => {
 					</Card>
 				</Col>
 			</Row>
-            <ModalEmpleado show={show} onHide={onModalEmpleadoClose} id_Estado={true} id_empresa={599}/>
 		</>
 	);
 }

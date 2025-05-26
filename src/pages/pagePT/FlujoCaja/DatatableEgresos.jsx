@@ -30,8 +30,6 @@ export const DatatableEgresos = ({id_enterprice, anio}) => {
     
         return { grupo, meses: mesesSuma };
     }
-    console.log({dataGastosxANIO});
-    
     const onCloseModalDetallexCelda = ()=>{
         setisOpenModalDetallexCelda(false)
         setdataModal([])
@@ -146,7 +144,7 @@ export const DatatableEgresos = ({id_enterprice, anio}) => {
                                 </div>
                         )})
                     }
-                        <ModalDetallexCelda data={dataModal} onHide={onCloseModalDetallexCelda} show={isOpenModalDetallexCelda}/>
+                        <ModalDetallexCelda id_enterprice={id_enterprice} obtenerGastosxANIO={()=>obtenerGastosxANIO(anio, id_enterprice)} data={dataModal} onShow={()=>setisOpenModalDetallexCelda(true)} onHide={onCloseModalDetallexCelda} show={isOpenModalDetallexCelda}/>
     </>
   )
 }

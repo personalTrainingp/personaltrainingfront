@@ -1,6 +1,6 @@
 import { ThemeSettings, useThemeContext } from '@/common';
 import { lazy, useEffect } from 'react';
-import { Navigate, Route, Routes as ReactRoutes } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, Route, Routes as ReactRoutes, useNavigate } from 'react-router-dom';
 import VerticalLayout from '@/layouts/Vertical';
 import HorizontalLayout from '@/layouts/Horizontal';
 import { useSelector } from 'react-redux';
@@ -425,7 +425,7 @@ export default function ProtectedRoutes() {
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>
 					<Route path="pages/*" element={<OtherPages />} />
 					<Route path='home' element={<Home/>}/>
-					<Route path='*' element={<Navigate to={"/home"}/>}/>
+					{/* <Route path='*' element={<Navigate to={"home"}/>}/> */}
 				</Route>
 				</>
 		)
