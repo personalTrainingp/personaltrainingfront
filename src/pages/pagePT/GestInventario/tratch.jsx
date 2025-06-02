@@ -10,7 +10,7 @@
                 <span className="loader-box2"></span>
                 <br/>
                 <p className='fw-bold font-16'>
-                    Si demora mucho, comprobar su conexion a internet
+                    
                 </p>
         </div>
         </Modal.Body>

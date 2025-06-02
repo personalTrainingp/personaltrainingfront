@@ -207,6 +207,7 @@ export default function TableInventario({showToast, id_empresa_zona, id_enterpri
             <div className="d-flex justify-content-between">
                       <InputText
                         placeholder="Buscar..."
+                        autoFocus
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="mb-3"

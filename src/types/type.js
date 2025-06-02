@@ -317,6 +317,7 @@ export const arrayDepartamentoEmpl = [
 	{ label: 'Fitology', value: 4 },
 	{ label: 'Peluqueria', value: 5 },
 	{ label: 'recepcion', value: 6 },
+	{ label: 'Marketing', value: 7 },
 ];
 
 export const arrayTipoJornadaEmpl = [

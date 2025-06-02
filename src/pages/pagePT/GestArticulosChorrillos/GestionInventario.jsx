@@ -4,6 +4,9 @@ import { DataInventario } from './DataInventario'
 import { PageBreadcrumb } from '@/components'
 import { TabPanel, TabView } from 'primereact/tabview'
 
+import ImgproyCircus3 from '@/assets/images/pr_tercer_nivel.jpeg'
+import ImgproyCircus2 from '@/assets/images/pr_segundo_nivel.jpeg'
+import ImgproyCircus1 from '@/assets/images/pr_primer_nivel.png'
 export const GestionInventario = () => {
   return (
     <>
@@ -24,7 +27,7 @@ export const GestionInventario = () => {
               <DataInventario id_enterprice={599} id_empresa_zona={599}/>
       </TabPanel>
       <TabPanel header={'CIRCUS CO.'}>
-              <DataInventario id_enterprice={602} id_empresa_zona={599} btnAdd btnDelete btnEdit/>
+              <DataInventario ImgproyCircus1={ImgproyCircus1} ImgproyCircus2={ImgproyCircus2} ImgproyCircus3={ImgproyCircus3} id_enterprice={602} id_empresa_zona={599} btnAdd btnDelete btnEdit/>
       </TabPanel>
       <TabPanel header={'REDUCTO INFRAESTRUCTURA'}>
               <DataInventario id_enterprice={610} id_empresa_zona={599} btnAdd btnDelete btnEdit/>

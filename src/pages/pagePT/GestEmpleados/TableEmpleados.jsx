@@ -27,11 +27,8 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     const  { obtenerUsuariosEmpleados } = useUsuarioStore()
     const {dataView} = useSelector((e) => e.DATA);
     useEffect(() => {
-        // dispatch()
-        if(dataView.length<=0){
-            obtenerUsuariosEmpleados(id_empresa, id_estado)
-        }
-    }, [])
+        obtenerUsuariosEmpleados(id_empresa, id_estado)
+    }, [id_empresa, id_estado])
     
         useEffect(() => {
 
