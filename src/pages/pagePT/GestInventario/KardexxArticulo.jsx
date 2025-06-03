@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react'
 import { Table } from 'react-bootstrap'
 import { useKardexStore } from './hook/useKardexStore'
+import { useSelector } from 'react-redux'
 
 export const KardexxArticulo = ({id_articulo, movimiento}) => {
-    const { obtenerKardexXArticuloXMovimiento, postKardexxMovimientoxArticulo } = useKardexStore()
+    const { obtenerKardexXArticuloXMovimiento, postKardexxMovimientoxArticulo, dataMovimientos } = useKardexStore()
     useEffect(() => {
         obtenerKardexXArticuloXMovimiento({id_articulo, movimiento})
     }, [])
+    console.log({dataMovimientos});
     
   return (
         <Table className="table-centered mb-0" striped responsive>
@@ -33,18 +35,30 @@ export const KardexxArticulo = ({id_articulo, movimiento}) => {
             </tr>
           </thead>
           <tbody>
-              <tr>
-                <td>
-                  <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
-                    TRANSFERENCIAS
-                  </li>
-                </td>
-                <td>
-                  <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
-
-                  </li>
-                </td>
-              </tr>
+            {
+              dataMovimientos.map(d=>{
+                return (
+                  <tr>
+                    <td>
+                      <li className={`d-flex flex-row justify-content-between p-1 text-primary`}>
+                        {d.cantidad}
+                      </li>
+                    </td>
+                    <td>
+                      <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
+                        {d.parametro_lugar_destino.nombre_zona}
+                      </li>
+                    </td>
+                    <td>
+                      <li className={`d-flex flex-row justify-content-between p-1 float-end`}>
+                        {d.parametro_motivo.label_param}
+                      </li>
+                    </td>
+                    
+                  </tr>
+                )
+              })
+            }
           </tbody>
         </Table>
   )

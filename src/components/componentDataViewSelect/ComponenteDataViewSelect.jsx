@@ -7,7 +7,7 @@ export const ComponenteDataViewSelect = ({options, value, onChange, name}) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Filtra las opciones según el término de búsqueda. Se buscan coincidencias en label, category o price.
-  const filteredOptions = options.filter(option => {
+  const filteredOptions = options?.filter(option => {
     const lowerSearch = searchTerm.toLowerCase();
     return (
       (option.label && option.label.toLowerCase().includes(lowerSearch)) ||

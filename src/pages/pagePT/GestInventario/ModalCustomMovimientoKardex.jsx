@@ -1,49 +1,40 @@
 import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
-import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import React, { useEffect, useState } from 'react'
-import { useEntradaInventario } from './useEntradaInventario'
-import Select, { components } from 'react-select'
+import Select from 'react-select'
 import { useForm } from '@/hooks/useForm'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { Col, Row } from 'react-bootstrap'
-import { OrderList } from 'primereact/orderlist'
-import { ComponenteDataViewSelect } from '@/components/componentDataViewSelect/ComponenteDataViewSelect';
+import { useKardexStore } from './hook/useKardexStore';
+import { Sidebar } from 'primereact/sidebar'
 const regRegistro = {
-    id_item: 0,
     cantidad:  0,
     id_motivo: 0, 
     observacion: '',
     fecha_cambio: '',
 }
-export const ModalEntradaInventario = ({action, id_enterprice, show, onHide}) => {
-    const { obtenerArticulosInventario, dataArticulos, postKardex } = useEntradaInventario()
-    const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
-    const { formState, id_item, cantidad, fecha_cambio, id_motivo, observacion, onInputChange, onInputChangeReact, onResetForm } = useForm(regRegistro)
-    const [selectedValue, setSelectedValue] = useState(null);
-    useEffect(() => {
-        obtenerArticulosInventario(id_enterprice)
-        obtenerParametroPorEntidadyGrupo('kardex', action)
-    }, [])
-    const onCancelModal = ()=>{
-        onHide()
-        onResetForm()
-    }
-
+export const ModalCustomMovimientoKardex = ({onHide, show, movimiento, idArticulo}) => {
+        const { postKardexxMovimientoxArticulo, dataArticulos } = useKardexStore()
+        const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
+        const { formState, cantidad, fecha_cambio, id_motivo, observacion, onInputChange, onInputChangeReact, onResetForm } = useForm(regRegistro)
+        useEffect(() => {
+            obtenerParametroPorEntidadyGrupo('kardex', movimiento)
+        }, [])
+        const onCancelModal = ()=>{
+            onHide()
+            onResetForm()
+        }
     const onSubmitKardex = (e)=>{
         e.preventDefault()
-        postKardex(action, id_enterprice, {...formState, id_item: selectedValue})
-        onCancelModal()
+        postKardexxMovimientoxArticulo(action, id_enterprice, {...formState, id_item: idArticulo})
+        // onCancelModal()
     }
 
   return (
-    <Dialog header={'SALIDA DE ARTICULO'} style={{width: '100rem'}} visible={show} onHide={onHide}>
+    <Dialog onHide={onHide} visible={show} header={`AGREGAR ${movimiento}`} style={{width: '30rem', height: '40rem'}}>
         <form onSubmit={onSubmitKardex}>
         <Row>
-            <Col lg={6}>
-                <ComponenteDataViewSelect name={'id_item'} options={dataArticulos} onChange={(newValue) => setSelectedValue(newValue)} value={selectedValue}/>
-            </Col>
-            <Col lg={6}>
+            <Col lg={12}>
                 <div className='m-2'>
                     <label>CANTIDAD</label>
                     <input type='text' name='cantidad' onChange={onInputChange} value={cantidad} className='form-control'/>

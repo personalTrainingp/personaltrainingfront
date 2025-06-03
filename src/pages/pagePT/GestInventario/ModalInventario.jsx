@@ -147,225 +147,227 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                         {isLoading && 'Cargando Datos'}
                         </>
                     ):(
-                        <form onSubmit={submitGasto}>
-                            <Row>
-                                <Col lg={4}>
-                                
-                                <div className="mb-4">
-                                        <label htmlFor="imgAvatar_BASE64" className="form-label">
-                                            FOTO DEL ARTICULO
-                                        </label>
-                                        <ImagenUploader 
-                                          name="imgAvatar_BASE64"
-                                          value={`${config.API_IMG.AVATAR_ARTICULO}${data?.dataImg?.name_image}`}
-                                          height='300px'
-                                          onChange={(e)=>{
-                                            onRegisterFileChange(e)
-                                            ViewDataImg(e)
-                                        }}
-                                        />
-                                    </div>
-                                </Col>
-                                <Col lg={8}>
+                        <>
+                                <form onSubmit={submitGasto}>
                                     <Row>
-                                        <Col lg={12}>
-                                            <div className="mb-4">
-                                                <label htmlFor="etiquetas_busquedas" className="form-label">
-                                                    ETIQUETAS DE BUSQUEDA
+                                        <Col lg={4}>
+                                        
+                                        <div className="mb-4">
+                                                <label htmlFor="imgAvatar_BASE64" className="form-label">
+                                                    FOTO DEL ARTICULO
                                                 </label>
-                                                <MultiOpcionSelect
-                                                    options={dataEtiquetasBusqueda}
-                                                    onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
-                                                    postOptions={handleCrearEtiquetaBusqueda}
-                                                    value={etiquetas_busquedas}
-                                                    name="etiquetas_busquedas"
+                                                <ImagenUploader 
+                                                name="imgAvatar_BASE64"
+                                                value={`${config.API_IMG.AVATAR_ARTICULO}${data?.dataImg?.name_image}`}
+                                                height='300px'
+                                                onChange={(e)=>{
+                                                    onRegisterFileChange(e)
+                                                    ViewDataImg(e)
+                                                }}
                                                 />
                                             </div>
                                         </Col>
-                                        <Col lg={4}>    
-                                            <div className="mb-4">
-                                                <label htmlFor="producto" className="form-label">
-                                                    ITEM
-                                                </label>
-                                                <input
-                                                        className="form-control"
-                                                        name="producto"
-                                                        id="producto"
-                                                        value={producto}
-                                                        onChange={onInputChange}
-                                                        placeholder=""
-                                                        required
-                                                    />
-                                            </div>
-                                        </Col>
-                                        <Col lg={4}>
-                                            <div className="mb-4">
-                                                <label htmlFor="marca" className="form-label">
-                                                    MARCA
-                                                </label>
-                                                <Select
-                                                    onChange={(e) => onInputChangeReact(e, 'id_marca')}
-                                                    name="id_marca"
-                                                    placeholder={'Seleccionar la marca'}
-                                                    className="react-select"
-                                                    classNamePrefix="react-select"
-                                                    options={dataMarcas}
-                                                    value={dataMarcas.find(
-                                                        (option) => option.value === id_marca
-                                                    )||0}
-                                                    required
-                                                />
-                                            </div>
-                                        </Col>
-                                        <Col lg={4}>
-                                            <div className="mb-4">
-                                                <label htmlFor="marca" className="form-label">
-                                                    UBICACION
-                                                </label>
-                                                <Select
-                                                    onChange={(e) => onInputChangeReact(e, 'id_lugar')}
-                                                    name="id_lugar"
-                                                    placeholder={'Seleccionar el lugar'}
-                                                    className="react-select"
-                                                    classNamePrefix="react-select"
-                                                    options={dataZonas}
-                                                    value={dataZonas.find(
-                                                        (option) => option.value === id_lugar
-                                                    )||0}
-                                                    
-                                                    required
-                                                />
-                                            </div>
-                                        </Col>
-                                        <Col lg={4}>
-                                            <div className="mb-4">
-                                                <label htmlFor="fecha_entrada" className="form-label">
-                                                    FECHA DE ENTRADA
-                                                </label>
-                                                <input
-                                                        className="form-control"
-                                                        name="fecha_entrada"
-                                                        id="fecha_entrada"
-                                                        value={fecha_entrada}
-                                                        type='date'
-                                                        onChange={onInputChange}
-                                                        placeholder=""
-                                                        required
-                                                    />
-                                            </div>
-                                        </Col>
-                                        <Col lg={4}>
-                                            <div className="mb-4">
-                                                <label htmlFor="cantidad" className="form-label">
-                                                    CANTIDAD
-                                                </label>
-                                                <input
-                                                        className="form-control"
-                                                        name="cantidad"
-                                                        id="cantidad"
-                                                        value={cantidad}
-                                                        onChange={onInputChange}
-                                                        placeholder=""
-                                                        required
-                                                    />
-                                            </div>
-                                        </Col>
-                                        <Col lg={4}>
-                                            <div className="mb-4">
-                                                <label htmlFor="costo_unitario_soles" className="form-label">
-                                                    COSTO UNITARIO SOLES
-                                                </label>
-                                                <input
-                                                        className="form-control"
-                                                        name="costo_unitario_soles"
-                                                        id="costo_unitario_soles"
-                                                        value={costo_unitario_soles}
-                                                        onChange={onInputChange}
-                                                        placeholder=""
-                                                        required
-                                                    />
-                                            </div>
-                                        </Col>
-                                        <Col lg={4}>
-                                            <div className="mb-4">
-                                                <label htmlFor="costo_unitario_dolares" className="form-label">
-                                                    COSTO UNITARIO DOLARES
-                                                </label>
-                                                <input
-                                                        className="form-control"
-                                                        name="costo_unitario_dolares"
-                                                        id="costo_unitario_dolares"
-                                                        value={costo_unitario_dolares}
-                                                        onChange={onInputChange}
-                                                        required
-                                                        placeholder=""
-                                                    />
-                                            </div>
-                                        </Col>
-                                        <Col lg={4}>
-                                            <div className="mb-4">
-                                                <label htmlFor="mano_obra_soles" className="form-label">
-                                                    COSTO MANO OBRA SOLES
-                                                </label>
-                                                <input
-                                                        className="form-control"
-                                                        name="mano_obra_soles"
-                                                        id="mano_obra_soles"
-                                                        value={mano_obra_soles}
-                                                        onChange={onInputChange}
-                                                        required
-                                                        placeholder=""
-                                                    />
-                                            </div>
-                                        </Col>
-                                        <Col lg={4}>
-                                            <div className="mb-4">
-                                                <label htmlFor="mano_obra_dolares" className="form-label">
-                                                    COSTO MANO OBRA DOLARES
-                                                </label>
-                                                <input
-                                                        className="form-control"
-                                                        name="mano_obra_dolares"
-                                                        id="mano_obra_dolares"
-                                                        value={mano_obra_dolares}
-                                                        onChange={onInputChange}
-                                                        placeholder=""
-                                                        required
-                                                    />
-                                            </div>
-                                        </Col>
-                                        <Col lg={12}>
-                                            <div className="mb-4">
-                                                <label htmlFor="descripcion" className="form-label">
-                                                    DESCRIPCION
-                                                </label>
-                                                <textarea
-                                                        className="form-control"
-                                                        name="descripcion"
-                                                        id="descripcion"
-                                                        value={descripcion}
-                                                        onChange={onInputChange}
-                                                        placeholder=""
-                                                        required
-                                                    />
-                                            </div>
-                                        </Col>
-                                        <Col lg={12}>
-                                            <div>
-                                                COSTO TOTAL EN SOLES: <NumberFormatMoney amount={costo_total_s}/>
-                                            </div>
-                                            <div>
-                                                COSTO TOTAL EN DOLARES: <NumberFormatMoney amount={costo_total_d}/>
-                                            </div>
-                                        </Col>
-                                        <Col>
-                                            <Button className='mx-2' type='submit'>Guardar</Button>
-                                            <a className='mx-2' style={{cursor: 'pointer', color: 'red'}} onClick={onClickCancelModal}>Cancelar</a>
+                                        <Col lg={8}>
+                                            <Row>
+                                                <Col lg={12}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="etiquetas_busquedas" className="form-label">
+                                                            ETIQUETAS DE BUSQUEDA
+                                                        </label>
+                                                        <MultiOpcionSelect
+                                                            options={dataEtiquetasBusqueda}
+                                                            onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
+                                                            postOptions={handleCrearEtiquetaBusqueda}
+                                                            value={etiquetas_busquedas}
+                                                            name="etiquetas_busquedas"
+                                                        />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>    
+                                                    <div className="mb-4">
+                                                        <label htmlFor="producto" className="form-label">
+                                                            ITEM
+                                                        </label>
+                                                        <input
+                                                                className="form-control"
+                                                                name="producto"
+                                                                id="producto"
+                                                                value={producto}
+                                                                onChange={onInputChange}
+                                                                placeholder=""
+                                                                required
+                                                            />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="marca" className="form-label">
+                                                            MARCA
+                                                        </label>
+                                                        <Select
+                                                            onChange={(e) => onInputChangeReact(e, 'id_marca')}
+                                                            name="id_marca"
+                                                            placeholder={'Seleccionar la marca'}
+                                                            className="react-select"
+                                                            classNamePrefix="react-select"
+                                                            options={dataMarcas}
+                                                            value={dataMarcas.find(
+                                                                (option) => option.value === id_marca
+                                                            )||0}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="marca" className="form-label">
+                                                            UBICACION
+                                                        </label>
+                                                        <Select
+                                                            onChange={(e) => onInputChangeReact(e, 'id_lugar')}
+                                                            name="id_lugar"
+                                                            placeholder={'Seleccionar el lugar'}
+                                                            className="react-select"
+                                                            classNamePrefix="react-select"
+                                                            options={dataZonas}
+                                                            value={dataZonas.find(
+                                                                (option) => option.value === id_lugar
+                                                            )||0}
+                                                            
+                                                            required
+                                                        />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="fecha_entrada" className="form-label">
+                                                            FECHA DE ENTRADA
+                                                        </label>
+                                                        <input
+                                                                className="form-control"
+                                                                name="fecha_entrada"
+                                                                id="fecha_entrada"
+                                                                value={fecha_entrada}
+                                                                type='date'
+                                                                onChange={onInputChange}
+                                                                placeholder=""
+                                                                required
+                                                            />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="cantidad" className="form-label">
+                                                            CANTIDAD
+                                                        </label>
+                                                        <input
+                                                                className="form-control"
+                                                                name="cantidad"
+                                                                id="cantidad"
+                                                                value={cantidad}
+                                                                onChange={onInputChange}
+                                                                placeholder=""
+                                                                required
+                                                            />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="costo_unitario_soles" className="form-label">
+                                                            COSTO UNITARIO SOLES
+                                                        </label>
+                                                        <input
+                                                                className="form-control"
+                                                                name="costo_unitario_soles"
+                                                                id="costo_unitario_soles"
+                                                                value={costo_unitario_soles}
+                                                                onChange={onInputChange}
+                                                                placeholder=""
+                                                                required
+                                                            />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="costo_unitario_dolares" className="form-label">
+                                                            COSTO UNITARIO DOLARES
+                                                        </label>
+                                                        <input
+                                                                className="form-control"
+                                                                name="costo_unitario_dolares"
+                                                                id="costo_unitario_dolares"
+                                                                value={costo_unitario_dolares}
+                                                                onChange={onInputChange}
+                                                                required
+                                                                placeholder=""
+                                                            />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="mano_obra_soles" className="form-label">
+                                                            COSTO MANO OBRA SOLES
+                                                        </label>
+                                                        <input
+                                                                className="form-control"
+                                                                name="mano_obra_soles"
+                                                                id="mano_obra_soles"
+                                                                value={mano_obra_soles}
+                                                                onChange={onInputChange}
+                                                                required
+                                                                placeholder=""
+                                                            />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="mano_obra_dolares" className="form-label">
+                                                            COSTO MANO OBRA DOLARES
+                                                        </label>
+                                                        <input
+                                                                className="form-control"
+                                                                name="mano_obra_dolares"
+                                                                id="mano_obra_dolares"
+                                                                value={mano_obra_dolares}
+                                                                onChange={onInputChange}
+                                                                placeholder=""
+                                                                required
+                                                            />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={12}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="descripcion" className="form-label">
+                                                            DESCRIPCION
+                                                        </label>
+                                                        <textarea
+                                                                className="form-control"
+                                                                name="descripcion"
+                                                                id="descripcion"
+                                                                value={descripcion}
+                                                                onChange={onInputChange}
+                                                                placeholder=""
+                                                                required
+                                                            />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={12}>
+                                                    <div>
+                                                        COSTO TOTAL EN SOLES: <NumberFormatMoney amount={costo_total_s}/>
+                                                    </div>
+                                                    <div>
+                                                        COSTO TOTAL EN DOLARES: <NumberFormatMoney amount={costo_total_d}/>
+                                                    </div>
+                                                </Col>
+                                                <Col>
+                                                    <Button className='mx-2' type='submit'>Guardar</Button>
+                                                    <a className='mx-2' style={{cursor: 'pointer', color: 'red'}} onClick={onClickCancelModal}>Cancelar</a>
+                                                </Col>
+                                            </Row>
                                         </Col>
                                     </Row>
-                                </Col>
-                            </Row>
-                        </form>
+                                </form>
+                        </>
                     )
                     }
                 </Modal.Body>
@@ -377,3 +379,4 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
     </>
   )
 }
+

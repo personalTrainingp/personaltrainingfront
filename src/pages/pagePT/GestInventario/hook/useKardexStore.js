@@ -1,21 +1,44 @@
 import { PTApi } from '@/common';
-import React from 'react';
+import { onSetDataView } from '@/store/data/dataSlice';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export const useKardexStore = () => {
-	const obtenerKardexXArticuloXMovimiento = async ({ id_articulo, movimiento }) => {
+	const dispatch = useDispatch();
+	const [dataMovimientos, setdataMovimientos] = useState([]);
+	const obtenerKardexXArticuloXMovimiento = async (id_articulo, movimiento) => {
 		try {
 			const { data } = await PTApi.get(
 				`/inventario/movimiento-x-articulo/${id_articulo}/${movimiento}`
 			);
+			const modelo = data?.movimientos.map((e) => {
+				return {
+					id: e?.id,
+					cantidad: e?.cantidad,
+					fecha_cambio: e.fecha_cambio,
+					parametro_lugar_destino: {
+						nombre_zona: e?.parametro_lugar_destino?.nombre_zona,
+					},
+					parametro_motivo: {
+						label_param: e.parametro_motivo?.label_param,
+					},
+					observacion: e?.observacion,
+				};
+			});
+			console.log(data, modelo, 'aqui?');
+			// dispatch(onSetDataView(data?.movimiento));
+			setdataMovimientos(modelo);
+
+			// dispatch();
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const postKardexxMovimientoxArticulo = async ({ id_articulo, movimiento }) => {
+	const postKardexxMovimientoxArticulo = async (action, id_enterprice, formState) => {
 		try {
-			const { data } = await PTApi.get(
-				`/inventario/movimiento-x-articulo/${id_articulo}/${movimiento}`
-			);
+			await PTApi.post(`/inventario/post-kardex/${action}/${id_enterprice}`, {
+				...formState,
+			});
 		} catch (error) {
 			console.log(error);
 		}
@@ -85,5 +108,6 @@ export const useKardexStore = () => {
 	return {
 		obtenerKardexXArticuloXMovimiento,
 		postKardexxMovimientoxArticulo,
+		dataMovimientos,
 	};
 };

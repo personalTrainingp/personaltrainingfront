@@ -18,6 +18,7 @@ import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ModalAgrupadoxEtiquetas } from './ModalAgrupadoxEtiquetas';
 import { useInventarioStore } from './hook/useInventarioStore';
+import { ModalMovimientoItem } from './ModalMovimientoItem';
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
     locale('es')
@@ -94,6 +95,10 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             onOpenModalIvsG()
             obtenerArticulo(rowData.id)
         }
+        const onClickCubeModalEgresos = ()=>{
+            onOpenModalCube()
+            obtenerArticulo(rowData.id)
+        }
         const onClickInfrCircu = ()=>{
             confirmDialog({
                 message: ` Seguro que quieres trasladar a proy circus el item?`,
@@ -160,6 +165,9 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         }
         return (
             <React.Fragment>
+                <Button icon="pi pi-box" rounded outlined className="mr-2" 
+                onClick={onClickCubeModalEgresos} 
+                />
                 <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
                 onClick={onClickEditModalEgresos} 
                 />
@@ -331,11 +339,18 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     
     const header = renderHeader();
     const [isOpenModalEgresos, setisOpenModalEgresos] = useState(false)
+    const [isOpenModalCube, setisOpenModalCube] = useState(false)
     const onCloseModalIvsG = ()=>{
         setisOpenModalEgresos(false)
     }
     const onOpenModalIvsG = ()=>{
         setisOpenModalEgresos(true)
+    }   
+    const onOpenModalCube = ()=>{
+        setisOpenModalCube(true)
+    }   
+    const onCloseModalCube = ()=>{
+        setisOpenModalCube(false)
     }   
     const IdBodyTemplate = (rowData, { rowIndex })=>{
         return (
@@ -513,6 +528,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                     </TabView>
             <ModalInventario id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             {/* <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/> */}
+            <ModalMovimientoItem idArticulo={articulo?articulo.id:0} show={isOpenModalCube} onHide={onCloseModalCube}/>
             <ModalAgrupadoxEtiquetas show={isOpenModalAgruparxEtiquetas} onHide={onCloseModalAgrupadoxEtiquetas} data={dataAgrupadoEtiquetas}/>
             </>
     );

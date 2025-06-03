@@ -17,6 +17,7 @@ import config from '@/config';
 import { Image } from 'primereact/image';
 import { useDispatch } from 'react-redux';
 import { ModalEmpleado } from './ModalEmpleado';
+import dayjs from 'dayjs';
 
 export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) => {
     const [customers, setCustomers] = useState(null);
@@ -138,6 +139,14 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
             </div>
         );
     };
+
+    const FecNacEmplBodyTemplate = (rowData) => {
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{dayjs(rowData.fecNac_empl).format('dddd DD [DE] MMMM') }</span>
+            </div>
+        );
+    };
     const IdBodyTemplate = (rowData, { rowIndex })=>{
         return (
             <div className="flex align-items-center gap-2">
@@ -203,6 +212,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                 <Column header="Id" filterField="id_cli" style={{ minWidth: '2rem' }} sortable body={IdBodyTemplate}/>
                 <Column header="AVATAR" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={imagenBodyTemplate} filter/>
                 <Column header="NOMBRES Y APELLIDOS" filterField="nombres_apellidos_empl" style={{ minWidth: '10rem' }} sortable body={NombresApellidosEmplBodyTemplate} filter/>
+                <Column header="cumpleaños" style={{ minWidth: '10rem' }} sortable body={FecNacEmplBodyTemplate} filter/>
                 <Column header="EMAIL" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>
                 <Column header="TELEFONO" filterField={`tel_cli`} style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
                 <Column header="DISTRITO" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
