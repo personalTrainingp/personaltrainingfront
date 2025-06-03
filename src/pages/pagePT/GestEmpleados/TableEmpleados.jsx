@@ -143,7 +143,8 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     const FecNacEmplBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{dayjs(rowData.fecNac_empl).format('dddd DD [DE] MMMM') }</span>
+                {/* {rowData.fecNac_empl} */}
+                <span>{dayjs(rowData.fecNac_empl, 'YYYY-MM-DD').format('dddd DD [DE] MMMM') }</span>
             </div>
         );
     };
