@@ -14,12 +14,12 @@ export const GestionInventario = () => {
         {/* <TabPanel header="CIRCUS">
               <DataInventario id_enterprice={599}/>
         </TabPanel> */}
-        <TabPanel header="CIRCUS SALON">
+        {/* <TabPanel header="CIRCUS SALON">
               <DataInventario id_enterprice={599}  id_zona={599}/>
         </TabPanel>
         <TabPanel header="CIRCUS CO.">
               <DataInventario id_enterprice={602} id_zona={599}/>
-        </TabPanel>
+        </TabPanel> */}
       </TabView>
     </Card>
     </>
