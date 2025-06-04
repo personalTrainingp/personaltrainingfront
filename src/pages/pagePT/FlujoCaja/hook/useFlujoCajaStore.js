@@ -34,6 +34,7 @@ export const useFlujoCajaStore = () => {
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/terminologiaxEmpresa/${enterprice}`
 			);
+			console.log({ dataParametrosGastos });
 
 			setdataGastosxANIO(
 				agruparPorGrupoYConcepto(data.gastos, dataParametrosGastos.termGastos)
@@ -269,23 +270,42 @@ function ordenarDatos(dataGastos, dataTipoCambio) {
 function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 	const meses = Array.from({ length: 12 }, (_, i) => i + 1);
 
-	// Agrupar grupos únicos
-	const gruposMap = {};
-
-	dataGrupos.forEach((grupo) => {
-		const nombreGrupo = grupo.grupo?.trim()?.toUpperCase() || 'SIN GRUPO';
-		if (!gruposMap[nombreGrupo]) gruposMap[nombreGrupo] = [];
-		gruposMap[nombreGrupo].push(grupo);
+	// 1. Construir un mapa temporal: grupoNombre → [ todos los objetos de dataGrupos que pertenecen a ese grupo ]
+	const gruposMapTemp = {};
+	dataGrupos.forEach((entry) => {
+		const nombreGrupo = entry.grupo?.trim()?.toUpperCase() || 'SIN GRUPO';
+		if (!gruposMapTemp[nombreGrupo]) {
+			gruposMapTemp[nombreGrupo] = [];
+		}
+		gruposMapTemp[nombreGrupo].push(entry);
 	});
 
-	const resultado = Object.entries(gruposMap).map(([grupoNombre, conceptosUnicos]) => {
-		// obtener conceptos únicos (nombre_gasto)
-		const conceptosUnicosPorNombre = [
-			...new Set(conceptosUnicos.map((c) => c.nombre_gasto?.trim()?.toUpperCase())),
-		];
+	// 2. Convertir el mapa en un array de [grupoNombre, arrayDeEntradas], ordenado POR parametro_grupo.orden
+	//    (asumimos que para todas las entradas de un mismo grupo, parametro_grupo.orden es igual)
+	const gruposOrdenados = Object.entries(gruposMapTemp).sort(([, entradasA], [, entradasB]) => {
+		// tomo el primer objeto de cada array para leer parametro_grupo.orden
+		const ordenA = entradasA[0].parametro_grupo?.orden ?? 0;
+		const ordenB = entradasB[0].parametro_grupo?.orden ?? 0;
+		return ordenA - ordenB;
+	});
 
+	// 3. Para cada grupoOrdenado, ordenar sus conceptos internos según su propio "orden"
+	const resultado = gruposOrdenados.map(([grupoNombre, entradasDeGrupo]) => {
+		// a) ordenar las entradasDeGrupo por entry.orden (el orden del concepto dentro del grupo)
+		entradasDeGrupo.sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
+
+		// b) extraer los nombres únicos de concepto (nombre_gasto) en ese orden
+		const conceptosUnicosPorNombre = [];
+		entradasDeGrupo.forEach((c) => {
+			const nombreConcepto = c.nombre_gasto?.trim()?.toUpperCase() || 'SIN CONCEPTO';
+			if (!conceptosUnicosPorNombre.includes(nombreConcepto)) {
+				conceptosUnicosPorNombre.push(nombreConcepto);
+			}
+		});
+
+		// c) construir la lista de conceptos con monto por mes
 		const conceptos = conceptosUnicosPorNombre.map((nombreConcepto) => {
-			// Filtrar los gastos que coincidan con el grupo y concepto
+			// filtrar todos los gastos de dataGastos que coincidan con este grupo + concepto
 			const itemsDelConcepto = dataGastos.filter((g) => {
 				const pg = g.tb_parametros_gasto || {};
 				const grupoGasto = pg.grupo?.trim()?.toUpperCase();
@@ -293,14 +313,12 @@ function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 				return grupoGasto === grupoNombre && nombreGasto === nombreConcepto;
 			});
 
+			// para cada mes (1 a 12), sumar los montos
 			const itemsPorMes = meses.map((mes) => {
 				const itemsMes = itemsDelConcepto.filter(
 					(item) => dayjs(item.fec_comprobante).month() + 1 === mes
 				);
-
-				// Aquí puedes ajustar el monto según qué campo quieras sumar
 				const monto_total = itemsMes.reduce((sum, g) => sum + (g.monto || 0), 0);
-
 				return {
 					mes,
 					monto_total,
@@ -320,5 +338,6 @@ function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 		};
 	});
 
+	console.log({ resultado });
 	return resultado;
 }

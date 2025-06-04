@@ -3,6 +3,8 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import React, { useEffect, useState } from 'react';
 import { DataFlujoCaja } from './DataFlujoCaja';
 import { DatatableEgresos } from './DatatableEgresos';
+import { useSelector } from 'react-redux';
+
 // Componente reutilizable para iconos en los tabs
 const TabIcon = ({ src, alt, width }) => (
     <div className='h-100'>
@@ -14,40 +16,39 @@ const TabIcon = ({ src, alt, width }) => (
         />
     </div>
 );
-
 export const FlujoCaja = () => {
-	
+	const {viewSubTitle} = useSelector(e=>e.ui)
 	return (
 		<>
-			<PageBreadcrumb subName={'T'} title={'Flujo de Caja'} />
-            <TabView>
+			<PageBreadcrumb subName={'T'} title={`Flujo de Caja ${viewSubTitle}`} />
+            <TabView >
                 <TabPanel  header={<TabIcon width={220} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/>}>
                     <TabView>
                         <TabPanel header={<div className='fs-1 text-black'>2024</div>}>
-                            <DatatableEgresos id_enterprice={598} anio={2024}/>
+                            <DatatableEgresos nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2024}/>
                         </TabPanel>
                         <TabPanel header={<div className='fs-1 text-black'>2025</div>}>
-                            <DatatableEgresos id_enterprice={598} anio={2025}/>
+                            <DatatableEgresos nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2025}/>
                         </TabPanel>
                     </TabView>
                 </TabPanel>
-                <TabPanel  className='mx-5' header={<TabIcon width={180} src='https://sistema-circus.vercel.app/assets/Positivo-transparente-c932a60a.png'/>}>
-                    <TabView>
-                        <TabPanel header={<div className='fs-1  text-black'>2024</div>}>
-                            <DatatableEgresos id_enterprice={599} anio={2024}/>
-                        </TabPanel>
-                        <TabPanel header={<div className='fs-1 text-black'>2025</div>}>
-                            <DatatableEgresos id_enterprice={599} anio={2025}/>
-                        </TabPanel>
-                    </TabView>
-                </TabPanel>
-                <TabPanel  className='mb-2' header={<div style={{fontSize: '45px'}} className=' fw-medium text-black'>ISE SAC</div>}>
+                <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mx-5' header={<TabIcon width={180} src='https://sistema-circus.vercel.app/assets/Positivo-transparente-c932a60a.png'/>}>
                     <TabView>
                         <TabPanel header={<div className='fs-1 text-black'>2024</div>}>
-                            <DatatableEgresos textColor={'bg-primary'} id_enterprice={601} anio={2024}/>
+                            <DatatableEgresos nombre_empresa={'CIRCUS'} background={'bg-circus'} id_enterprice={599} anio={2024}/>
                         </TabPanel>
                         <TabPanel header={<div className='fs-1 text-black'>2025</div>}>
-                            <DatatableEgresos textColor={'bg-secondary'} id_enterprice={601} anio={2025}/>
+                            <DatatableEgresos nombre_empresa={'CIRCUS'} background={'bg-circus'} id_enterprice={599} anio={2025}/>
+                        </TabPanel>
+                    </TabView>
+                </TabPanel>
+                <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mb-2' headerClassName="mi-tab-verde" header={<div style={{fontSize: '40px', color: '#17a700'}} className=' fw-medium'>INVERSIONES <br/> SAN EXPEDITO</div>}>
+                    <TabView>
+                        <TabPanel header={<div className='fs-1 text-black'>2024</div>}>
+                            <DatatableEgresos background={'bg-greenISESAC'} id_enterprice={601} anio={2024} nombre_empresa={'ISE SAC'}/>
+                        </TabPanel>
+                        <TabPanel header={<div className='fs-1 text-black'>2025</div>}>
+                            <DatatableEgresos background={'bg-greenISESAC'} id_enterprice={601} anio={2025} nombre_empresa={'ISE SAC'}/>
                         </TabPanel>
                     </TabView>
                 </TabPanel>

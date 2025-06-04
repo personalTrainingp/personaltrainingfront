@@ -18,6 +18,7 @@ import { Image } from 'primereact/image';
 import { useDispatch } from 'react-redux';
 import { ModalEmpleado } from './ModalEmpleado';
 import dayjs from 'dayjs';
+import { FormatoDateMask } from '@/components/CurrencyMask';
 
 export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) => {
     const [customers, setCustomers] = useState(null);
@@ -141,10 +142,11 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     };
 
     const FecNacEmplBodyTemplate = (rowData) => {
+            const [year, month, day] = rowData.fecNac_empl.split('-').map(Number);
         return (
             <div className="flex align-items-center gap-2">
-                {/* {rowData.fecNac_empl} */}
-                <span>{dayjs(rowData.fecNac_empl, 'YYYY-MM-DD').format('dddd DD [DE] MMMM') }</span>
+                {rowData.fecNac_empl}
+                <span>{FormatoDateMask(new Date(year, month-1, day) , 'dddd D [de] MMMM [del] YYYY') }</span>
             </div>
         );
     };

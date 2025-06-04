@@ -59,6 +59,19 @@ text{
 
   }
 }
+.bg-change{
+  background-color: #CD1014;
+}
+.bg-circus{
+  background-color: #EEBE00;
+}
+.bg-greenISESAC{
+  background-color: #17a700;
+}
+.mi-tab-verde.p-highlight {
+  border-bottom: 3px solid #17a700 !important; /* línea inferior verde */
+  color:          #17a700 !important;           /* opcional: texto verde */
+}
 label{
   font-size: 19px;
 }
