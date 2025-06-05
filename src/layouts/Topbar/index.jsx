@@ -7,7 +7,7 @@ import SearchDropdown from './SearchDropdown';
 import TopbarSearch from './TopbarSearch';
 // import AppsDropdown from './AppsDropdown';
 import MaximizeScreen from './MaximizeScreen';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 // assets
 import userImage from '@/assets/images/users/avatar-1.jpg';
@@ -17,10 +17,12 @@ import { useViewport } from '@/hooks';
 import ModuloDropdown from './moduloDropdown';
 import { useSelector } from 'react-redux';
 import { useAuthStore } from '@/hooks/useAuthStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { arrayRoles } from '@/types/type';
 
 import logoDark from '@/assets/images/change-logo-dark-transparente.png';
+import logoCircus from '@/assets/images/circus.png';
+import logoSE from '@/assets/images/isesac.png';
 import dayjs from 'dayjs';
 const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	const { settings, updateSettings, updateSidebar } = useThemeContext();
@@ -101,8 +103,23 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 		obtenerUser()
 		console.log("usuario presente");
 	}, [])
+	const options = [
+	{ src: logoDark, url: 'https://localhost:5174/reporte-admin/flujo-caja' },
+	{ src: logoCircus, url: 'https://change-the-slim-studio-sigma.vercel.app/reporte-admin/flujo-caja' },
+	{ src: logoSE, url: 'https://localhost:5173/reporte-admin/flujo-caja' },
+	];
+	  // Estado para llevar el logo seleccionado; por defecto, logoDark
+  const [selectedLogo, setSelectedLogo] = useState(options[0].src);
+
+	// Función que maneja el cambio de logo cuando el usuario hace clic en un item
+	const handleSelect = (opt) => {
+		window.location.href = opt.url;
+		// setSelectedLogo(opt.src);
+			
+	};
+
 	return (
-		<div className={'navbar-custom'}>
+		<div className={'navbar-custom'} style={{height: '6rem'}}>
 			<div className="topbar container-fluid">
 				<div className="d-flex align-items-center gap-lg-2 gap-1">
 					<button className="button-toggle-menu" onClick={handleLeftMenuCallBack}>
@@ -113,28 +130,47 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 					</strong>
 						<ModuloDropdown/>
 						{section_item && (
-						<h3  className="text-uppercase fw-bolder text-primary d-flex justify-content-center align-items-center"><span className='fs-1'> / </span><div className='mx-2'> {section_item} </div><span className='fs-1'> / </span><div className='mx-2'> {RANGE_DATE[0] instanceof Date?dayjs(RANGE_DATE[0]).format('dddd DD [DE] MMMM [DEL] YYYY'):RANGE_DATE[0]} <br/> {dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM YYYY')}</div> 
+						<h3  className="text-uppercase fw-bolder text-primary d-flex justify-content-center align-items-center">
+							<span className='fs-1'> / </span>
+							<div className='mx-2'> {section_item} </div>
+							<span className='fs-1'> / </span>
+							<div className='mx-2'> {RANGE_DATE[0] instanceof Date?dayjs(RANGE_DATE[0]).format('dddd DD [DE] MMMM [DEL] YYYY'):RANGE_DATE[0]} <br/> {dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM YYYY')}</div> 
 						</h3>
 						)}
 				</div>	
 				<ul className="topbar-menu d-flex align-items-center gap-3">
 					<li>
-						<img src={logoDark} alt="logo" width={'150'} style={{height: '40px'}} />
+						<Dropdown>
+							{/* El Toggle muestra siempre la imagen actualmente seleccionada */}
+							<Dropdown.Toggle
+								as="div"
+								style={{ cursor: 'pointer' }}
+								id="dropdown-logo"
+							>
+								<img
+								src={selectedLogo}
+								alt="logo seleccionado"
+								width={150}
+								style={{ height: 'auto' }}
+								/>
+							</Dropdown.Toggle>
+								<Dropdown.Menu>
+									{options.map((opt, idx) => (
+									<Dropdown.Item
+										key={idx}
+										onClick={() => handleSelect(opt)}
+									>
+										<img
+										src={opt.src}
+										alt={`logo opción ${idx}`}
+										width={150}
+										style={{ height: '40px' }}
+										/>
+									</Dropdown.Item>
+									))}
+								</Dropdown.Menu>
+							</Dropdown>
 					</li>
-					{/* <li className="d-sm-inline-block">
-						<OverlayTrigger
-							placement="left"
-							overlay={<Tooltip id="dark-mode-toggler">Theme Mode</Tooltip>}
-						>
-							<div className="nav-link" id="light-dark-mode" onClick={toggleDarkMode}>
-								<i className="ri-moon-line font-22" />
-							</div>
-						</OverlayTrigger>
-					</li> */}
-
-					{/* <li className="d-none d-md-inline-block">
-						<MaximizeScreen />
-					</li> */}
 					
 					<li className="dropdown">
 						<ProfileDropdown

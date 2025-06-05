@@ -5,6 +5,8 @@ import dayjs from 'dayjs';
 export const useFlujoCajaStore = () => {
 	const [dataIngresos_FC, setdataIngresos_FC] = useState([]);
 	const [dataGastosxANIO, setdataGastosxANIO] = useState([]);
+	const [dataGastosxANIOCIRCUS, setdataGastosxANIOCIRCUS] = useState([]);
+	const [dataGastosxANIOSE, setdataGastosxANIOSE] = useState([]);
 	const [isLoading, setisLoading] = useState(false);
 	const [dataCreditoFiscal, setdataCreditoFiscal] = useState({
 		msg: '',
@@ -34,8 +36,6 @@ export const useFlujoCajaStore = () => {
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/terminologiaxEmpresa/${enterprice}`
 			);
-			console.log({ dataParametrosGastos });
-
 			setdataGastosxANIO(
 				agruparPorGrupoYConcepto(data.gastos, dataParametrosGastos.termGastos)
 			);
