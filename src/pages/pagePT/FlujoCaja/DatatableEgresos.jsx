@@ -13,7 +13,8 @@ export const DatatableEgresos = ({
   anio,
   nombre_empresa,
   background,
-  arrayRangeDate
+  arrayRangeDate,
+  bgMultiValue
 }) => {
   const [dataModal, setDataModal] = useState(null)
   const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false)
@@ -31,9 +32,9 @@ export const DatatableEgresos = ({
       'JUNIO',
       'JULIO',
       'AGOSTO',
-      'SEPTIEMBRE',
+      'SEPTIEMB.',
       'OCTUBRE',
-      'NOVIEMBRE',
+      'NOVIEMB.',
       'DICIEMBRE'
     ],
     []
@@ -112,12 +113,12 @@ export const DatatableEgresos = ({
     [selectedMonths]
   )
   const widthHeadergrupos = 150
-
+  const backgroundMultiValue = bgMultiValue
   return (
     <>
-      <div style={{ width: '550rem' }}>
+      <div>
         {/* === MULTI‐SELECT PARA ELEGIR MESES === */}
-        <div style={{ marginBottom: '1rem', width: '110rem' }}>
+        <div style={{ marginBottom: '1rem', width: '95vw' }}>
           <Select
             options={monthOptions}
             isMulti
@@ -129,14 +130,31 @@ export const DatatableEgresos = ({
             styles={{
               control: provided => ({
                 ...provided,
-                fontSize: '1rem'
-              })
+                fontSize: '1.9rem',
+                color: 'white'
+              }),
+              menuList: (provided, state) => ({
+                ...provided,
+                padding: '12px 16px',   // Espaciado interno para que cada opción sea más “alta”
+              }),
+                 // Contenedor de las etiquetas seleccionadas ("pills")
+              multiValue: (provided) => ({
+                ...provided,
+                backgroundColor: backgroundMultiValue,       // fondo rojo para cada etiqueta
+                color: 'white'
+              }),
+                  // Texto dentro de cada pill
+              multiValueLabel: (provided) => ({
+                ...provided,
+                color: 'white',               // texto blanco sobre rojo
+                fontSize: '1.45vw',
+              }),
             }}
           />
         </div>
 
         {/* === TABLA ÚNICA CON TODOS LOS GRUPOS Y LA SUMA GENERAL === */}
-        <div className="table-responsive" style={{ width: '110rem' }}>
+        <div className="table-responsive" style={{ width: '95vw' }}>
           <Table striped responsive>
             {/* ==== Para cada grupo: encabezado, conceptos, total de grupo ==== */}
             {totalesPorGrupo.map((grp, i) => (
@@ -144,21 +162,21 @@ export const DatatableEgresos = ({
                 {/* Encabezado del grupo */}
                 <thead className={background}>
                   <tr>
-                    <th className="text-black fs-4">
-                      <div className="p-1 rounded rounded-3" style={{ width: 150 }}>
-                        {i + 1}. {grp.grupo}
+                    <th className="text-black fs-2">
+                      <div className="p-1 rounded rounded-3" style={{ width: 350 }}>
+                        {i + 1}. {grp.grupo==='ATENCIÓN AL CLIENTE'?(<>ATENCION AL <span className='ml-5'>CLIENTE</span></>):grp.grupo==='COMPRA PRODUCTOS/ACTIVOS'?(<>COMPRA INSUMOS <span className='ml-5'>ACTIVOS</span></>):grp.grupo}
                       </div>
                     </th>
                     {/* Sólo iterar sobre los meses seleccionados */}
                     {mesesSeleccionadosNums.map(mesNum => (
-                      <th key={mesNum} className="text-white text-center p-1 fs-4">
-                        <div className='bg-black' style={{ width: 150 }}>
+                      <th key={mesNum} className="text-white text-center p-1 fs-2">
+                        <div className='' style={{ width: 150 }}>
                           {mesesNombres[mesNum - 1]}
                         </div>
                       </th>
                     ))}
-                    <th className="text-center p-1 fs-3 text-black">
-                      <div className='bg-black' style={{ width: 150 }}>
+                    <th className="text-center p-1 fs-2 text-black ">
+                      <div className='' style={{ width: 150 }}>
                         TOTAL
                       </div>
                     </th>
@@ -174,7 +192,7 @@ export const DatatableEgresos = ({
                     )
                     return (
                       <tr key={c.concepto}>
-                        <td className="fw-bold fs-4">
+                        <td className="fw-bold fs-2">
                           <div>
                             {idx + 1}.{' '}
                             {c.concepto ===
@@ -201,10 +219,10 @@ export const DatatableEgresos = ({
                           return (
                             <td
                               key={mesNum}
-                              className="text-center fs-4"
+                              className="text-center fs-1"
                             >
                               <div
-                                className="cursor-text-primary font-24"
+                                className="cursor-text-primary fs-2"
                                 style={{ width: 150 }}
                                 onClick={() =>
                                   onOpenModalDetallexCelda({
@@ -220,9 +238,9 @@ export const DatatableEgresos = ({
                           )
                         })}
                         {/* Total anual del concepto */}
-                        <td className="text-center fs-5">
+                        <td className="text-center fs-2" style={{width: '20px'}}>
                           <div
-                            className="cursor-text-primary fw-bold font-24"
+                            className="cursor-text-primary fw-bold"
                             style={{ width: 150 }}
                             onClick={() =>
                               onOpenModalDetallexCelda({
@@ -242,14 +260,24 @@ export const DatatableEgresos = ({
 
                   {/* Fila de totales del grupo */}
                   <tr>
-                    <td className="fw-bolder fs-3">TOTAL</td>
+                    <td className="fw-bolder fs-2">TOTAL</td>
                     {mesesSeleccionadosNums.map(mesNum => (
-                      <td key={mesNum} className="text-center fw-bolder fs-4">
-                        <NumberFormatMoney amount={grp.mesesSuma[mesNum - 1]} />
+                      <td key={mesNum} className="text-center fw-bolder fs-2">
+                        <div 
+                          // className='bg-danger'
+                            style={{ width: 150 }}
+                          >
+                          <NumberFormatMoney amount={grp.mesesSuma[mesNum - 1]} />
+                        </div>
                       </td>
                     ))}
-                    <td className="text-center fw-bolder fs-3">
+                    <td className="text-center fw-bolder fs-2">
+                      <div 
+                          // className='bg-danger'
+                            style={{ width: 150 }}
+                        >
                       <NumberFormatMoney amount={grp.totalAnual} />
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -259,37 +287,47 @@ export const DatatableEgresos = ({
             {/* ==== Sección final: encabezado de MESES y fila de GASTOS ==== */}
             <thead className={background}>
               <tr>
-                <th style={{ width: '300px' }} className="text-black fs-3">
-                  MESES
+                <th style={{ width: '300px' }} className="text-black fs-2">
+                  MES
                 </th>
                 {mesesSeleccionadosNums.map(mesNum => (
-                  <th key={mesNum} className="text-white text-center p-1 fs-4">
-                    <div className='' 
-                            style={{ width: 250 }}
+                  <th key={mesNum} className="text-white text-center p-1 fs-2">
+                    <div 
+                    // className='bg-danger' 
+                     style={{ width: 150 }}
                     >
                       {mesesNombres[mesNum - 1]}
                     </div>
                   </th>
                 ))}
-                <th className="fw-bolder fs-3">TOTAL</th>
+                    <th className="text-center p-1 fs-2 text-black ">
+                      <div className='' style={{ width: 150 }}>
+                        TOTAL
+                      </div>
+                    </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="fw-bold fs-2">GASTOS</td>
+                <td className="fw-bold fs-2">TOTAL EGRESOS</td>
                 {mesesSeleccionadosNums.map(mesNum => (
                   <td
                     key={mesNum}
-                    className="text-center fs-3"
-                    style={{ width: '70px' }}
+                    className="text-center fs-2 fw-bold"
+                    style={{ width: '100px' }}
                   >
                     <div className=''>
                       <NumberFormatMoney amount={totalPorMes[mesNum - 1]} />
                     </div>
                   </td>
                 ))}
-                <td className="text-center fw-bolder fs-3">
-                  <NumberFormatMoney amount={totalGeneral} />
+                <td className="text-center fw-bolder fs-2">
+                  <div 
+                    // className='bg-danger' 
+                     style={{ width: 150 }}
+                  >
+                    <NumberFormatMoney amount={totalGeneral} />
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -339,7 +377,7 @@ export const TablaSumaGastosPorMes = ({
         <Table striped responsive>
           <thead className={background}>
             <tr>
-              <th style={{width: '300px'}} className="text-black fs-3">MESES</th>
+              <th style={{width: '300px'}} className="text-black fs-2">MESES</th>
 
               {/* Sólo las columnas de meses seleccionados */}
               {mesesMostrar.map(mesNum => (
@@ -350,7 +388,7 @@ export const TablaSumaGastosPorMes = ({
                 </th>
               ))}
 
-              <th className="fw-bolder fs-3">TOTAL</th>
+              <th className="fw-bolder fs-2">TOTAL</th>
             </tr>
           </thead>
           <tbody>
@@ -359,7 +397,7 @@ export const TablaSumaGastosPorMes = ({
               {mesesMostrar.map(mesNum => (
                 <td
                   key={mesNum}
-                  className="text-center fs-3"
+                  className="text-center fs-2"
                   style={{ width: '70px' }}
                 >
                   <NumberFormatMoney amount={totalPorMes[mesNum - 1]} />
