@@ -16,7 +16,7 @@ import { confirmDialog } from 'primereact/confirmdialog';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { arrayCargoEmpl, arrayFinanzas } from '@/types/type';
 import dayjs from 'dayjs';
-import { FormatoDateMask, FUNMoneyFormatter, MoneyFormatter } from '@/components/CurrencyMask';
+import { FormatoDateMask, FUNMoneyFormatter, MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
 import { Col, Modal, Row } from 'react-bootstrap';
@@ -270,12 +270,29 @@ export default function DataOrdenCompra({showToast, id_enterprice}) {
             </div>
         )
     }
+    const IGVBodyTemplate = (rowData)=>{
+        const monto = rowData.monto;
+        const baseIGV = (monto/1.18)
+        const igvCompra = baseIGV*0.18
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{<NumberFormatMoney amount={igvCompra}/>}</span>
+            </div>
+        )
+    }
     const onOpenModalGastos = (e)=>{
         setgastoxID(undefined)
         onOpenModalIvsG(e)
     }
+    console.log({customers});
+    const sumaMonto = customers.reduce((acum, item) => acum + item.monto, 0);
+    const baseIGV = (sumaMonto/1.18)
+    const igvCompra = baseIGV*0.18
     return (
         <>
+            <div className='h1 text-primary'>
+                IGV COMPRA TOTAL: <NumberFormatMoney amount={igvCompra}/>
+            </div>
             {
                 showLoading&&
                 <Modal size='sm' show={showLoading}>
@@ -322,6 +339,7 @@ export default function DataOrdenCompra({showToast, id_enterprice}) {
                 <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
                 <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
                 <Column header="Monto" field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
+                <Column header="IGV" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={IGVBodyTemplate} filter/>
                 <Column header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                 <Column header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
                 body={proveedorBodyTemplate} filter />
