@@ -143,10 +143,9 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
 
     const FecNacEmplBodyTemplate = (rowData) => {
             const [year, month, day] = rowData.fecNac_empl.split('-').map(Number);
-            const fechaCumple = new Date(year, month-1, day)
         return (
             <div className="flex align-items-center gap-2">
-                <span>{rowData.fecha_nacimiento}<br/>{FormatoDateMask(dayjs(fechaCumple) , 'dddd D [de] MMMM [del] YYYY') }</span>
+                <span>{FormatoDateMask(rowData.fecha_nacimiento , 'dddd D [de] MMMM') }</span>
             </div>
         );
     };
