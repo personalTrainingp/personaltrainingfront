@@ -5,7 +5,7 @@ import { Table } from 'react-bootstrap'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { ModalDetallexCelda } from './ModalDetallexCelda'
 import { useDispatch } from 'react-redux'
-import { onSetViewSubTitle } from '@/store'
+import { onSetColorView, onSetViewSubTitle } from '@/store'
 import { onSetRangeDate } from '@/store/data/dataSlice'
 
 export const DatatableEgresos = ({
@@ -61,6 +61,7 @@ export const DatatableEgresos = ({
   // 5) Al cambiar nombre_empresa, actualizar subtítulo y rango de fechas
   useEffect(() => {
     dispatch(onSetViewSubTitle(nombre_empresa))
+    dispatch(onSetColorView(bgMultiValue))
     dispatch(onSetRangeDate(arrayRangeDate))
   }, [nombre_empresa])
 

@@ -104,22 +104,23 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 		console.log("usuario presente");
 	}, [])
 	const options = [
-	{ src: logoDark, url: 'https://localhost:5174/reporte-admin/flujo-caja' },
-	{ src: logoCircus, url: 'https://change-the-slim-studio-sigma.vercel.app/reporte-admin/flujo-caja' },
-	{ src: logoSE, url: 'https://localhost:5173/reporte-admin/flujo-caja' },
+	{ src: logoDark, url: 'https://localhost:5174/reporte-admin/flujo-caja', w: '280px', h: 'auto' },
+	{ src: logoCircus, url: 'https://change-the-slim-studio-sigma.vercel.app/reporte-admin/flujo-caja', w: '180px', h: '150px' },
+	{ src: logoSE, url: 'https://localhost:5173/reporte-admin/flujo-caja', w: '250px', h: 'auto' },
 	];
 	  // Estado para llevar el logo seleccionado; por defecto, logoDark
-  const [selectedLogo, setSelectedLogo] = useState(options[0].src);
+  const [selectedLogo, setSelectedLogo] = useState(options[0]);
 
 	// Función que maneja el cambio de logo cuando el usuario hace clic en un item
 	const handleSelect = (opt) => {
-		window.location.href = opt.url;
-		// setSelectedLogo(opt.src);
+		// window.location.href = opt.url;
+		setSelectedLogo(opt);
 			
 	};
+	const { colorEmpresa } = useSelector(e=>e.ui)
 
 	return (
-		<div className={'navbar-custom'} style={{height: '6rem'}}>
+		<div className={'navbar-custom d-flex'} style={{height: '8rem'}}>
 			<div className="topbar container-fluid">
 				<div className="d-flex align-items-center gap-lg-2 gap-1">
 					<button className="button-toggle-menu" onClick={handleLeftMenuCallBack}>
@@ -128,9 +129,9 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 					<strong>
 						modulo
 					</strong>
-						<ModuloDropdown/>
+						<ModuloDropdown colorEmpresa={colorEmpresa}/>
 						{section_item && (
-						<h3  className="text-uppercase fw-bolder text-primary d-flex justify-content-center align-items-center">
+						<h3 style={{color: colorEmpresa}} className="text-uppercase fw-bolder d-flex justify-content-center align-items-center">
 							<span className='fs-1'> / </span>
 							<div className='mx-2'> {section_item} </div>
 							<span className='fs-1'> / </span>
@@ -138,7 +139,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 						</h3>
 						)}
 				</div>	
-				<ul className="topbar-menu d-flex align-items-center gap-3">
+				<ul className=" d-flex align-items-center gap-3">
 					<li>
 						<Dropdown>
 							{/* El Toggle muestra siempre la imagen actualmente seleccionada */}
@@ -148,10 +149,10 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 								id="dropdown-logo"
 							>
 								<img
-								src={selectedLogo}
+								src={selectedLogo.src}
 								alt="logo seleccionado"
-								width={150}
-								style={{ height: 'auto' }}
+								//width={selectedLogo.w} inversiones san expedito=>250px
+								style={{ height: selectedLogo.h, width: selectedLogo.w}}
 								/>
 							</Dropdown.Toggle>
 								<Dropdown.Menu>
@@ -164,7 +165,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 										src={opt.src}
 										alt={`logo opción ${idx}`}
 										width={150}
-										style={{ height: '40px' }}
+										style={{ height: 'auto' }}
 										/>
 									</Dropdown.Item>
 									))}

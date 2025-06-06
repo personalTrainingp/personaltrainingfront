@@ -20,7 +20,7 @@ import { onSetRangeDate, onViewSection } from '@/store/data/dataSlice';
 // 	}
 // ];
 
-const ModuloDropdown = () => {
+const ModuloDropdown = ({colorEmpresa}) => {
 	const dispatch = useDispatch()
 	const { modulos } = useSelector(e=>e.rutas)
 	const [moduloSelect, setModuloSelect] = useState(0);
@@ -47,7 +47,7 @@ const ModuloDropdown = () => {
 				onClick={toggleDropdown}
 				className="nav-link dropdown-toggle arrow-none"
 			>
-				<span className="align-middle d-sm-inline-block text-primary font-bold font-24">
+				<span style={{color: colorEmpresa}} className="align-middle d-sm-inline-block font-bold font-24">
 					{modulos[moduloSelect]?.name}
 				</span>
 				<i className="mdi mdi-chevron-down d-sm-inline-block align-middle"></i>

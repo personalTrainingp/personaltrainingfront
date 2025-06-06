@@ -8,6 +8,7 @@ export const uiSlice = createSlice({
 		loading: false,
 		viewSubTitle: '',
 		cadenaBLOB: '',
+		colorEmpresa: 'bg-change',
 		BLOB: {
 			cadenaBLOB: '',
 			FILE: {},
@@ -32,10 +33,20 @@ export const uiSlice = createSlice({
 		onSetViewSubTitle: (state, { payload }) => {
 			state.viewSubTitle = payload;
 		},
+		onSetColorView: (state, { payload }) => {
+			state.colorEmpresa = payload;
+		},
 		onSetMinPerCita: (state, { payload }) => {
 			state.minutosperCita = payload;
 		},
 	},
 });
-export const { onSetData, onSetMinPerCita, onSetViewSubTitle, onSetCadenaBLOB, onSetFileBLOB, onClearFileBLOB } =
-	uiSlice.actions;
+export const {
+	onSetData,
+	onSetMinPerCita,
+	onSetViewSubTitle,
+	onSetColorView,
+	onSetCadenaBLOB,
+	onSetFileBLOB,
+	onClearFileBLOB,
+} = uiSlice.actions;
