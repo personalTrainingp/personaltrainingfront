@@ -285,7 +285,7 @@ export default function DataOrdenCompra({showToast, id_enterprice}) {
         onOpenModalIvsG(e)
     }
     console.log({customers});
-    const sumaMonto = customers.reduce((acum, item) => acum + item.monto, 0);
+    const sumaMonto = customers?.reduce((acum, item) => acum + item.monto, 0);
     const baseIGV = (sumaMonto/1.18)
     const igvCompra = baseIGV*0.18
     return (
