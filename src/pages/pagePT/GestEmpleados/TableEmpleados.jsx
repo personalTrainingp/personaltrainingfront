@@ -145,7 +145,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
             const [year, month, day] = rowData.fecNac_empl.split('-').map(Number);
         return (
             <div className="flex align-items-center gap-2">
-                <span>{FormatoDateMask(rowData.fecha_nacimiento , 'dddd D [de] MMMM') }</span>
+                <span>{dayjs.utc(rowData.fecha_nacimiento).format('dddd D [de] MMMM')}</span>
             </div>
         );
     };

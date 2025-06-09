@@ -22,6 +22,8 @@ import { Skeleton } from 'primereact/skeleton';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { ModalImportadorData } from './ModalImportadorData';
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
+import { ModalTipoDeCambio } from './ModalTipoDeCambio';
+import { useTcStore } from './hooks/useTcStore';
 dayjs.extend(utc);
 
 export default function AdvancedFilterDemo({showToast, id_enterprice}) {
@@ -38,6 +40,10 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
         obtenerGastos(id_enterprice)
         // obtenerProveedoresUnicos()
     }, [id_enterprice])
+    useEffect(() => {
+
+    }, [])
+    
         useEffect(() => {
         const fetchData = () => {
             setCustomers(getCustomers(dataGastos));
@@ -180,14 +186,15 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     
     const montoBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2">
-                <span className={rowData.moneda === 'PEN'?'':'text-success fw-bold'}>
+            <div className=" gap-2">
+                <div>12</div>
+                <div className={rowData.moneda === 'PEN'?'':'text-success fw-bold'}>
                         {rowData.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
                     {highlightText(
                         FUNMoneyFormatter(rowData.monto, ''),
                         globalFilterValue
                     )}
-                </span>
+                </div>
             </div>
         );
     };
@@ -256,6 +263,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     
     const header = renderHeader();
     const [isOpenModalEgresos, setisOpenModalEgresos] = useState(false)
+    const [isOpenModalTC, setisOpenModalTC] = useState(false)
     const onCloseModalIvsG = ()=>{
         setisOpenModalEgresos(false)
     }
@@ -281,6 +289,12 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
         setgastoxID(undefined)
         onOpenModalIvsG(e)
     }
+    const onOpenModalTC = (e)=>{
+        setisOpenModalTC(true)
+    }
+    const onCloseModalTC = (e)=>{
+        setisOpenModalTC(false)
+    }
     return (
         <>
             {
@@ -289,10 +303,6 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
                     <Modal.Body>
                     <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
                             <span className="loader-box2"></span>
-                            <br/>
-                            <p className='fw-bold font-16'>
-                                Si demora mucho, comprobar su conexion a internet
-                            </p>
                     </div>
                     </Modal.Body>
                 </Modal> 
@@ -301,7 +311,8 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
                 !isLoadingData?(
                     <>
                     <div>
-                        <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
+                        <Button className='m-1' label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
+                        <Button className='m-1' label="TIPO DE CAMBIO" severity="success" text onClick={onOpenModalTC} />
                     </div>
                     <DataTable 
                         size='small' 
@@ -341,6 +352,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
             
             <ModalIngresosGastos id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
             <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/>
+            <ModalTipoDeCambio onShow={onOpenModalTC} show={isOpenModalTC} onHide={onCloseModalTC}/>
             </>
                 )
                 :(

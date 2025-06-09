@@ -1,4 +1,4 @@
-import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
+import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import dayjs from 'dayjs'
 import { Dialog } from 'primereact/dialog'
@@ -21,6 +21,8 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
     // onShow()
     obtenerGastosxANIO(anio, id_enterprice)
   }
+  console.log({data});
+  
   return (
     <>
     <Dialog visible={show} style={{width: '100rem'}} onHide={onHide} header={`EGRESOS POR DETALLE - ${data?.grupo} - ${data?.concepto}`}>
@@ -47,7 +49,20 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.descripcion}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{dayjs(f.fec_comprobante).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{dayjs(f.fec_pago).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
-                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}><NumberFormatMoney amount={f.monto}/></span></td>
+                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-green'}>
+                            <div>
+                              {/* {f.moneda ==='USD' && <SymbolDolar numero={<NumberFormatMoney amount={f.monto}/>}/>} */}
+                            </div>
+                            <div>
+                              {
+                                f.tc!==1 && (
+                                  <>
+                                  <SymbolSoles numero={<NumberFormatMoney amount={f.monto * f.tc}/>}/>
+                                  </>
+                                )
+                              }
+                            </div>
+                          </span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_comprobante?.label_param}</span></td>
                       </tr>
                     )
