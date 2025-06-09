@@ -6,6 +6,7 @@ import { CustomTc } from './CustomTc'
 import { useTcStore } from './hooks/useTcStore'
 import { useSelector } from 'react-redux'
 import { DateMask, DateMaskString, FormatoDateMask, NumberFormatMoney } from '@/components/CurrencyMask'
+import dayjs from 'dayjs'
 
 export const ModalTipoDeCambio = ({show, onHide, onShow}) => {
     const [isOpenModalCustomTC, setisOpenModalCustomTC] = useState(false)
@@ -52,18 +53,17 @@ export const ModalTipoDeCambio = ({show, onHide, onShow}) => {
       const termino = posteriores.length
         ? posteriores[0].fecha
         : null;
-
       return (
         <tr key={e.id}>
           {/* Fecha inicio */}
           <td className="fs-2 text-black">
-            {DateMaskString(e.fecha, 'DD/MM/YYYY')}
+            {DateMaskString(dayjs.utc(e.fecha), 'DD/MM/YYYY')}
           </td>
 
           {/* Fecha término = la siguiente fecha cronológica */}
           <td className="fs-2 text-black">
             {termino
-              ? <DateMask date={e.fecha} format={'DD/MM/YYYY'}/>
+              ? <><DateMask date={dayjs.utc(termino)} format={'DD/MM/YYYY'}/></>
               : /* opcional: '-' o mismo día */ 'INDEFINIDO'}
           </td>
 
