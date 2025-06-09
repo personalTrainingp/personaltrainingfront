@@ -88,7 +88,7 @@ export const useFlujoCajaStore = () => {
 };
 function aplicarTipoDeCambio(dataTC, dataGastos) {
 	return dataGastos.map((gasto) => {
-		const fechaGasto = new Date(gasto.fec_comprobante);
+		const fechaGasto = new Date(gasto.fec_pago);
 
 		const tcMatch = dataTC.find((tc) => {
 			if (tc.moneda === gasto.moneda) return false;
@@ -114,8 +114,6 @@ function aplicarTipoDeCambio(dataTC, dataGastos) {
 
 function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 	const meses = Array.from({ length: 12 }, (_, i) => i + 1);
-	console.log({ dataGastos });
-
 	// 1. Construir un mapa temporal: grupoNombre → [ todos los objetos de dataGrupos que pertenecen a ese grupo ]
 	const gruposMapTemp = {};
 	dataGrupos.forEach((entry) => {
