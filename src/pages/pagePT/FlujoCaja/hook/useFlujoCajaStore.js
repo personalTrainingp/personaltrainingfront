@@ -46,7 +46,7 @@ export const useFlujoCajaStore = () => {
 				const termino = posteriores.length ? posteriores[0].fecha : null;
 				return {
 					moneda: e.monedaDestino,
-					multiplicador: 9.9,
+					multiplicador: e.precio_compra,
 					// monedaOrigen: e.monedaOrigen,
 					fecha_inicio_tc: e.fecha,
 					fecha_fin_tc: termino, // null si no hay próximo cambio
