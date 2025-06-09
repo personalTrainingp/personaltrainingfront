@@ -5,7 +5,7 @@ import { Table } from 'react-bootstrap'
 import { CustomTc } from './CustomTc'
 import { useTcStore } from './hooks/useTcStore'
 import { useSelector } from 'react-redux'
-import { DateMaskString, NumberFormatMoney } from '@/components/CurrencyMask'
+import { DateMask, DateMaskString, FormatoDateMask, NumberFormatMoney } from '@/components/CurrencyMask'
 
 export const ModalTipoDeCambio = ({show, onHide, onShow}) => {
     const [isOpenModalCustomTC, setisOpenModalCustomTC] = useState(false)
@@ -20,10 +20,10 @@ export const ModalTipoDeCambio = ({show, onHide, onShow}) => {
         onShow()
     }
     useEffect(() => {
-        if(isOpenModalCustomTC){
+        if(show){
             obtenerTcs()
         }
-    }, [isOpenModalCustomTC])
+    }, [show])
   return (
     <>
     <Dialog onHide={onHide} visible={show} style={{width: '70rem'}} header={'TIPOS DE CAMBIO'}>
@@ -63,7 +63,7 @@ export const ModalTipoDeCambio = ({show, onHide, onShow}) => {
           {/* Fecha término = la siguiente fecha cronológica */}
           <td className="fs-2 text-black">
             {termino
-              ? DateMaskString(termino, 'DD/MM/YYYY')
+              ? <DateMask date={e.fecha} format={'DD/MM/YYYY'}/>
               : /* opcional: '-' o mismo día */ 'INDEFINIDO'}
           </td>
 
