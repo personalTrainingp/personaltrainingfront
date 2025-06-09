@@ -52,15 +52,16 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-green'}>
                             <div>
                               {/* {f.moneda ==='USD' && <SymbolDolar numero={<NumberFormatMoney amount={f.monto}/>}/>} */}
+                                  <SymbolSoles numero={<NumberFormatMoney amount={f.monto * f.tc}/>}/>
                             </div>
                             <div>
-                              {
+                              {/* {
                                 f.tc!==1 && (
                                   <>
                                   <SymbolSoles numero={<NumberFormatMoney amount={f.monto * f.tc}/>}/>
                                   </>
                                 )
-                              }
+                              } */}
                             </div>
                           </span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_comprobante?.label_param}</span></td>
@@ -99,7 +100,7 @@ function agruparPorComprobante(data) {
         items: []
       };
     }
-    grupos[nombre_com].monto_total += item.monto || 0;
+    grupos[nombre_com].monto_total += item.monto*item.tc || 0;
     grupos[nombre_com].items.push(item);
   });
 
