@@ -131,9 +131,7 @@ export const DatatableEgresos = ({
 	const widthHeadergrupos = 150;
 	const backgroundMultiValue = bgMultiValue;
 	return (
-		<>
-			<div>
-				{/* === MULTI‐SELECT PARA ELEGIR MESES === */}
+		<>{/* === MULTI‐SELECT PARA ELEGIR MESES === */}
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
 					<Select
 						options={monthOptions}
@@ -168,6 +166,8 @@ export const DatatableEgresos = ({
 						}}
 					/>
 				</div>
+			<div>
+				
 
 				{/* === TABLA ÚNICA CON TODOS LOS GRUPOS Y LA SUMA GENERAL === */}
 				<div className="table-responsive" style={{ width: '95vw' }}>
