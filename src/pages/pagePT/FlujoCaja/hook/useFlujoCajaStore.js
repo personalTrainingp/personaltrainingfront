@@ -65,13 +65,13 @@ export const useFlujoCajaStore = () => {
 				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTCs, data.gastos),
 					dataParametrosGastos.termGastos
-				).filter((e) => e.grupo !== 'PRESTAMOS')
+				).filter((e) => e.grupo !== '')
 			);
 			setdataPrestamos(
 				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTCs, data.gastos),
 					dataParametrosGastos.termGastos
-				).filter((e) => e.grupo === 'PRESTAMOS')
+				).filter((e) => e.grupo === '')
 			);
 		} catch (error) {
 			console.log(error);

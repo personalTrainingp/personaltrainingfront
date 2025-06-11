@@ -91,6 +91,14 @@ export const DatatableEgresos = ({
 			};
 		});
 	}, [dataGastosxANIO]);
+	// justo después de tu useMemo que calcula totalPorMes y totalGeneral
+		const prestamosGroup = totalesPorGrupo.find(
+		(g) => g.grupo.toUpperCase() === 'PRESTAMOS'
+		) || { mesesSuma: Array(12).fill(0), totalAnual: 0 };
+	// 1) Prepara el array sin “PRESTAMOS”
+	const gruposSinPrestamos = totalesPorGrupo.filter(
+	(g) => g.grupo.toUpperCase() !== 'PRESTAMOS'
+	);
 
 	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
 	const { totalPorMes, totalGeneral } = useMemo(() => {
@@ -181,8 +189,8 @@ export const DatatableEgresos = ({
           <col className={`${bgTotal}`} style={{ width: 150 }} />
           <col className={`${bgTotal}`} style={{ width: 150 }} />
         </colgroup>
-        {totalesPorGrupo.map((grp, i) => {
-          const sumaTotalAnualGrupos = totalesPorGrupo.reduce(
+        {gruposSinPrestamos.map((grp, i) => {
+          const sumaTotalAnualGrupos = gruposSinPrestamos.reduce(
             (acc, g) => acc + g.totalAnual,
             0
           );
@@ -392,16 +400,33 @@ export const DatatableEgresos = ({
             <td className="fw-bold fs-2">TOTAL EGRESOS</td>
             {mesesSeleccionadosNums.map(mesNum => (
               <td key={mesNum} className="text-center fs-1 fw-bold">
-                <NumberFormatMoney amount={totalPorMes[mesNum - 1]} />
+                <NumberFormatMoney amount={totalPorMes[mesNum - 1]-prestamosGroup.mesesSuma[mesNum - 1]} />
               </td>
             ))}
             <td className="text-center fw-bolder fs-1">
-              <NumberFormatMoney amount={totalGeneral} />
+              <NumberFormatMoney amount={totalGeneral-prestamosGroup.totalAnual} />
             </td>
             <td className="text-center fw-bolder fs-1">100</td>
           </tr>
+			{/* NUEVA fila de TOTAL PRESTAMOS */}
+			<tr className={`bg-azulfuerte`}>
+				<td className="fw-bold fs-2">TOTAL PRESTAMOS</td>
+				{mesesSeleccionadosNums.map((mesNum) => (
+				<td key={mesNum} className="text-center fs-1 fw-bold">
+					<NumberFormatMoney amount={prestamosGroup.mesesSuma[mesNum - 1]} />
+				</td>
+				))}
+				<td className="text-center fw-bolder fs-1">
+				<NumberFormatMoney amount={prestamosGroup.totalAnual} />
+				</td>
+				<td className="text-center fw-bolder fs-1">
+				{totalGeneral > 0
+					? ((prestamosGroup.totalAnual / totalGeneral) * 100).toFixed(2)
+					: '0.00'}
+				</td>
+			</tr>
         </tbody>
-      </Table>
+      				</Table>
 				</div>
 			</div>
 
