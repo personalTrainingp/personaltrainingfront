@@ -21,7 +21,6 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
     // onShow()
     obtenerGastosxANIO(anio, id_enterprice)
   }
-  console.log({data});
   
   return (
     <>

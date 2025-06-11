@@ -6,29 +6,35 @@ import { useSelector } from 'react-redux'
 import Select from 'react-select'
 import { useTerminologiaStore } from '@/hooks/hookApi/useTerminologiaStore'
 import { arrayFinanzas } from '@/types/type'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 
 const ParametroGasto = {
-    id: 0,
     grupo: '',
     id_tipoGasto: '',
+    id_grupo: 0,
     nombre_gasto: '',
+    orden: 0,
     flag: true,
 };
 
 export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar, id_empresa , data})=>{
-    console.log(id_empresa, "dddd");
-    
     const { registrarTerminologiaGasto , actualizarTerminologiaGasto } = useTerminologiaStore();
+    const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
     const   {
         id,
         grupo,
         id_tipoGasto,
+        orden,
         nombre_gasto,
+        id_grupo,
         formState,
         onResetForm, onInputChange, onInputChangeReact } = useForm(data?data:ParametroGasto);   
 
     const [visible, setVisible] = useState(false);
     const toastBC = useRef(null);
+    useEffect(() => {
+        obtenerParametroPorEntidadyGrupo('grupos-gastos', id_empresa)
+    }, [])
     const clear = () => {
         toastBC.current.clear();
         setVisible(false);
@@ -45,32 +51,17 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
      paramateroGasto = terminologia?.parametros ? terminologia?.parametros[0] : "";
         
     };
-
-    
     const submitParametro = async(e)=>{
         e.preventDefault();
-        const nuevoParametroGasto = {
-            // ...ParametroGasto,
-            id: id,
-            id_empresa: id_empresa,
-            grupo: grupo,
-            id_tipoGasto: id_tipoGasto,
-            nombre_gasto: nombre_gasto,
-        };
         if (boleanActualizar) {
-            actualizarTerminologiaGasto(nuevoParametroGasto);
+            await actualizarTerminologiaGasto({...formState, id_empresa, grupo: dataParametros.find(
+                                                (option) => option.value === id_grupo
+                                            ).label});
         }
         if (!boleanActualizar) {
-            //console.log(paramatero);
-            const nuevoParametroGasto = {
-                //...ParametroGasto,
-                id_empresa: id_empresa,
-                grupo: grupo,
-                id_tipoGasto: id_tipoGasto,
-                nombre_gasto: nombre_gasto,
-            };
-            
-            registrarTerminologiaGasto(nuevoParametroGasto);
+            await registrarTerminologiaGasto({...formState, id_empresa, grupo: dataParametros.find(
+                                                (option) => option.value === id_grupo
+                                            ).label});
         }
 
         setVisible(true);
@@ -79,7 +70,13 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
         return;
 
     };
-
+    
+    const dataParametros = DataGeneral.map(d=>{
+        return {
+            value: d.id,
+            label: d.param_label
+        }
+    })
     //paramatero.grupo_param
     //paramatero.entidad_param
     return (
@@ -123,16 +120,20 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
                                 </Col>
                                 <Col lg={12}>
                                     <div className="mb-4">
-                                        <label htmlFor="grupo" className="form-label">
+                                        <label htmlFor="id_grupo" className="form-label">
                                             Grupo*
                                         </label>
-                                        <input
-                                            className="form-control"
-                                            name="grupo"
-                                            id="grupo"
-                                            value={grupo}
-                                            onChange={onInputChange}
-                                            placeholder=""
+                                        <Select
+                                            onChange={(e) => onInputChangeReact(e, 'id_grupo')}
+                                            name="id_grupo"
+                                            placeholder={'SELECCIONAR EL GRUPO'}
+                                            className="react-select"
+                                            classNamePrefix="react-select"
+                                            options={dataParametros}
+                                            value={dataParametros.find(
+                                                (option) => option.value === id_grupo
+                                            )}
+                                            required
                                         />
                                     </div>
                                 </Col>
@@ -146,6 +147,21 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
                                             name="nombre_gasto"
                                             id="nombre_gasto"
                                             value={nombre_gasto}
+                                            onChange={onInputChange}
+                                            placeholder=""
+                                        />
+                                    </div>
+                                </Col>
+                                <Col lg={12}>
+                                    <div className="mb-4">
+                                        <label htmlFor="orden" className="form-label">
+                                            ORDEN*
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            name="orden"
+                                            id="orden"
+                                            value={orden}
                                             onChange={onInputChange}
                                             placeholder=""
                                         />

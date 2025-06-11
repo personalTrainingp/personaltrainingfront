@@ -21,7 +21,6 @@ export const TerminologiaGastoTabView = ({ dataTerminologiaPorEntidad, id_empres
     }, [id_empresa]);
 
     const { dataView } = useSelector(e => e.DATA)
-    console.log(dataView, "testtt");
     
     const modalTerminologiaClose = () => {
         setisModalOpenTerminologia(false)
@@ -39,23 +38,10 @@ export const TerminologiaGastoTabView = ({ dataTerminologiaPorEntidad, id_empres
         dispatch(onSetTerminologia(terminologiaData));
         setisModalOpenTerminologiaGasto(true)
     };
-    // console.log({dataTerminologiaPorEntidad});
-    
     return (
         <>
             <Card>
                 <Card.Body>
-                    {/* {
-                        dataView.map(d=>{
-                            console.log(d, "dam");
-                            
-                            return (
-                                <>
-                                </>
-                            )
-                        })
-                    } */}
-                    
                     <Col sm={4}>
                                         <Button label='Agregar Terminologia' onClick={() => {
                                             modalTerminologiaGastoOpen(dataView);

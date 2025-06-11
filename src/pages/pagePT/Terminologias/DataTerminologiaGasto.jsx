@@ -52,37 +52,37 @@ const DataTerminologiaGasto = (({data, id_empresa}) => {
             </div>
         );
     };
-    const actionBodyTemplate = (rowData)=>{
-        const onClickEditModalEgresos = ()=>{
-            setTerminologiaPorId(rowData);
-            modalTerminologiaGastoOpen();
-        }
-        const confirmDeleteTerminologia = ()=>{
+        const onAcceptDeleteTerminologiaGasto = async(id)=>{
+            //setshowLoading(true)   
+            await EliminarTerminologiaGasto(id, id_empresa)
+            //setshowLoading(false)
+            // showToast('success', 'Eliminar Terminologia', 'Terminologia Eliminado correctamente', 'success')
+        }        
+        const confirmDeleteTerminologia = (id)=>{
             confirmDialog({
                 message: 'Seguro que quiero eliminar la Terminologia?',
                 header: 'Eliminar Terminologia',
                 icon: 'pi pi-info-circle',
                 defaultFocus: 'reject',
                 acceptClassName: 'p-button-danger',
-                accept:  onAcceptDeleteTerminologiaGasto(rowData),
+                accept:  ()=>onAcceptDeleteTerminologiaGasto(id),
             });
         }
 
+    const actionBodyTemplate = (rowData)=>{
+        const onClickEditModalEgresos = ()=>{
+            setTerminologiaPorId(rowData);
+            modalTerminologiaGastoOpen();
+        }
 
         
-        const onAcceptDeleteTerminologiaGasto = async(rowData)=>{
-            //setshowLoading(true)
-            await EliminarTerminologiaGasto(rowData)
-            //setshowLoading(false)
-            showToast('success', 'Eliminar Terminologia', 'Terminologia Eliminado correctamente', 'success')
-        }
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
                 onClick={onClickEditModalEgresos} 
                 />
                 <Button icon="pi pi-trash" rounded outlined severity="danger" 
-                onClick={confirmDeleteTerminologia} 
+                onClick={()=>confirmDeleteTerminologia(rowData.id)} 
                 />
             </React.Fragment>
         );
@@ -123,7 +123,7 @@ const DataTerminologiaGasto = (({data, id_empresa}) => {
                         rows={10}
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         rowsPerPageOptions={[10, 25, 50, 100, 250]}
-                        dataKey="id_param"
+                        dataKey="id"
                         // selection={selectedCustomers}
                         // onSelectionChange={(e) => setselectedCustomers(e.value)}
                         filters={filters} 
@@ -138,6 +138,7 @@ const DataTerminologiaGasto = (({data, id_empresa}) => {
                         <Column header="ID" field='id' filterField="id" sortable style={{ width: '1rem' }} filter />
                         <Column header="GASTO" field='id_tipoGasto' filterField="id_tipoGasto" body={tipoGastoBodyTemplate} sortable />
                         <Column header="GRUPO" field='grupo' filterField="grupo" sortable />
+                        <Column header="ORDEN" field='orden' filterField="orden" sortable />
                         <Column header="CONCEPTO" field='nombre_gasto' filterField='nombre_gasto'  sortable filter />
                         <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right"  body={actionBodyTemplate} />
  

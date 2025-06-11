@@ -16,16 +16,10 @@ import { TerminologiasInventarioLugar } from './TerminologiasInventarioLugar';
 import { TerminologiaSistemas } from './TerminologiaSistemas';
 
 export const Terminologias = () => {
-
- 
-    const { terminologiaPorEntidad, seleccionarEntidad } = useTerminologiaStore();
     const [isModalOpenTerminologia, setisModalOpenTerminologia] = useState(false);
     const [isModalOpenTerminologiaGasto, setisModalOpenTerminologiaGasto] = useState(false);
 
     const dispatch = useDispatch();
-    useEffect(() => {
-        terminologiaPorEntidad();
-    }, []);
 
 
     //console.log("data view")

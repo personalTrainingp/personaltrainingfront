@@ -29,16 +29,18 @@ export const useTerminologiaStore = () => {
 	const terminologiaPorEntidad = async (id_empresa) => {
 		try {
 			const { data } = await PTApi.get(`/terminologia/terminologiaxEmpresa/${id_empresa}`);
-			dispatch(onSetDataView(data.termGastos));
-			// console.log({
-			// 	...response.data.response,
-			// 	articulosLugar: response.data.response.parametros
-			// 		.filter((f) => f.entidad_param === 'articulo')[0]
-			// 		.parametros.filter((f) => f.grupo_param === 'lugar_encuentro'),
-			// 	// .parametros.filter((g) => g.grupo_param === 'lugar_encuentro'),
-			// });
-
-			//SetData(response.data.response);
+			const terminologiaGastos = data.termGastos.map((d) => {
+				return {
+					id_tipoGasto: d.id_tipoGasto,
+					nombre_gasto: d.nombre_gasto,
+					orden: d.orden || '',
+					grupo:
+						d.parametro_grupo?.param_label ||
+						` ${d.parametro_grupo?.param_label} | ${d.grupo}`,
+					id: d.id,
+				};
+			});
+			dispatch(onSetDataView(terminologiaGastos));
 		} catch (error) {
 			console.log(error.message);
 		}
@@ -56,8 +58,10 @@ export const useTerminologiaStore = () => {
 
 	const actualizarTerminologia = async (parametroPorEnviar) => {
 		try {
+			console.log({ parametroPorEnviar });
+
 			const response = await PTApi.post('/parametros/postActualizar', parametroPorEnviar);
-			terminologiaPorEntidad();
+			terminologiaPorEntidad(parametroPorEnviar.id_empresa);
 			console.log(response);
 		} catch (error) {
 			console.log(error.message);
@@ -74,13 +78,10 @@ export const useTerminologiaStore = () => {
 		}
 	};
 
-	const EliminarTerminologiaGasto = async (parametroGasto) => {
+	const EliminarTerminologiaGasto = async (id, id_empresa) => {
 		try {
-			const response = await PTApi.post(
-				`/parametroGasto/eliminar-parametro-gasto`,
-				parametroGasto
-			);
-			terminologiaPorEntidad();
+			const response = await PTApi.put(`/parametroGasto/eliminar-parametro-gasto/${id}`);
+			terminologiaPorEntidad(id_empresa);
 			console.log(response);
 		} catch (error) {
 			console.log(error.message);
@@ -89,11 +90,12 @@ export const useTerminologiaStore = () => {
 
 	const registrarTerminologiaGasto = async (parametroGasto) => {
 		try {
+			// console.log(parametroGasto);
 			const response = await PTApi.post(
 				'/parametroGasto/registrar-parametro-gasto',
 				parametroGasto
 			);
-			terminologiaPorEntidad();
+			await terminologiaPorEntidad(parametroGasto.id_empresa);
 			console.log(response);
 		} catch (error) {
 			console.log(error.message);
@@ -102,11 +104,11 @@ export const useTerminologiaStore = () => {
 
 	const actualizarTerminologiaGasto = async (ParametroGasto) => {
 		try {
-			const response = await PTApi.post(
+			const response = await PTApi.put(
 				`/parametroGasto/actualizar-parametro-gasto`,
 				ParametroGasto
 			);
-			terminologiaPorEntidad();
+			terminologiaPorEntidad(ParametroGasto.id_empresa);
 			console.log(response);
 		} catch (error) {
 			console.log(error.message);

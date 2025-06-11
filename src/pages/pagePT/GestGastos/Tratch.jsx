@@ -187,7 +187,6 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const montoBodyTemplate = (rowData) => {
         return (
             <div className=" gap-2">
-                <div>12</div>
                 <div className={rowData.moneda === 'PEN'?'':'text-success fw-bold'}>
                         {rowData.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
                     {highlightText(

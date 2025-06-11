@@ -47,6 +47,48 @@ text{
 
   }
 }
+/* en tu archivo .css */
+
+.sticky-left {
+  position: sticky;
+  left: 0;
+  background-color: inherit;
+  z-index: 5;        /* por encima de las celdas normales */
+  width: 350;
+}
+
+.sticky-right {
+  position: sticky;
+  right: 0;
+  background-color: inherit;
+  z-index: 5;
+  width: 150;
+}
+
+// .table-responsive {
+//   overflow-x: auto; /* permite scroll horizontal */
+// }
+
+// th, td {
+//   white-space: nowrap; /* evita que se rompa el texto */
+// }
+
+// /* Columna izquierda fija */
+// .sticky-left {
+//   position: sticky;
+//   left: 0;
+//   z-index: 10;       /* para que quede por encima de las celdas que se mueven */
+//   background: #fff;  /* mismo fondo que tu tabla */
+// }
+
+// /* Columna derecha fija (TOTAL) */
+// .sticky-right {
+//   position: sticky;
+//   right: 0;
+//   z-index: 10;
+//   background: #fff;
+// }
+
 .table-normal-td{
   tr{
       td{

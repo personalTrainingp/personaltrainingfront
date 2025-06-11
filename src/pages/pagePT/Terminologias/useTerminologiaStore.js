@@ -74,7 +74,7 @@ export const useTerminologiaStore = () => {
 		}
 	};
 
-	const EliminarTerminologiaGasto = async (parametroGasto) => {
+	const EliminarTerminologiaGasto = async (id, id_empresa) => {
 		try {
 			const response = await PTApi.post(
 				`/parametroGasto/eliminar-parametro-gasto`,
