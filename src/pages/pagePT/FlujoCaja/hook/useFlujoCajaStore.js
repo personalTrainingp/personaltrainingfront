@@ -9,6 +9,7 @@ export const useFlujoCajaStore = () => {
 	const [dataGastosxANIOCIRCUS, setdataGastosxANIOCIRCUS] = useState([]);
 	const [dataGastosxANIOSE, setdataGastosxANIOSE] = useState([]);
 	const [isLoading, setisLoading] = useState(false);
+	const [dataPrestamos, setdataPrestamos] = useState([]);
 	const [dataCreditoFiscal, setdataCreditoFiscal] = useState({
 		msg: '',
 		creditoFiscalAniosAnteriores: 0,
@@ -52,12 +53,25 @@ export const useFlujoCajaStore = () => {
 					fecha_fin_tc: termino, // null si no hay próximo cambio
 				};
 			});
+			console.log(
+				agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTCs, data.gastos),
+					dataParametrosGastos.termGastos
+				).filter((e) => e.grupo !== 'PRESTAMOS'),
+				'aquiiiii'
+			);
 
 			setdataGastosxANIO(
 				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTCs, data.gastos),
 					dataParametrosGastos.termGastos
-				)
+				).filter((e) => e.grupo !== 'PRESTAMOS')
+			);
+			setdataPrestamos(
+				agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTCs, data.gastos),
+					dataParametrosGastos.termGastos
+				).filter((e) => e.grupo === 'PRESTAMOS')
 			);
 		} catch (error) {
 			console.log(error);

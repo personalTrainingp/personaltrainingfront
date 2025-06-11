@@ -56,6 +56,24 @@ text{
   z-index: 5;        /* por encima de las celdas normales */
   width: 350;
 }
+.bg-verdeclaro{
+  background-color: #a7f0ba;
+}
+.text-verde{
+  color: #a7f0ba;
+}
+
+
+.bg-amarilloclaro{
+  background-color: #fff9c3;
+}
+.bg-rojoclaro{
+  background-color: #f6bebe;
+}
+
+.bg-celesteclaro{
+  background-color: #3e74ff;
+}
 
 .sticky-right {
   position: sticky;
@@ -109,6 +127,16 @@ text{
 }
 .bg-greenISESAC{
   background-color: #17a700;
+}
+
+.text-ISESAC{
+  color: #17a700;
+}
+.text-circus{
+  color: #EEBE00;
+}
+.text-change{
+  color: #CD1014;
 }
 .mi-tab-verde.p-highlight {
   border-bottom: 3px solid #17a700 !important; /* línea inferior verde */
