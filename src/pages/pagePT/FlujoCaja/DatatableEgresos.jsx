@@ -152,9 +152,9 @@ useEffect(() => {
 
 	const widthHeadergrupos = 150;
 	const backgroundMultiValue = bgMultiValue;
-	const onViewMoved = (e)=>{
-		const items = e.conceptos.flatMap(c => c.items).flatMap(m => m.items)
-		console.log({ak: e, items});
+	const onViewMoved = (e, met)=>{
+		const items = e.conceptos[1].items[met - 1].items
+		console.log({ak: e, items, met});
 		onOpenModalDetallexCelda({
                                 items,
                                 concepto: 'TODOS',
@@ -448,7 +448,7 @@ useEffect(() => {
 				<td className="fw-bold fs-2">TOTAL PRESTAMOS</td>
 				{mesesSeleccionadosNums.map((mesNum) => (
 				<td key={mesNum} className="text-center fs-1 fw-bold">
-					<div className='bg-porsiaca text-right' onClick={()=>onViewMoved(prestamosGroup)}>
+					<div className='bg-porsiaca text-right' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
 						<NumberFormatMoney amount={prestamosGroup.mesesSuma[mesNum - 1]} />
 					</div>
 				</td>
