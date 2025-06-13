@@ -1695,7 +1695,7 @@ export const ResumenComparativo = () => {
     {
         loading ?
         (
-            <>LOADIN</>
+            <>LOADING</>
         )
         : 
 

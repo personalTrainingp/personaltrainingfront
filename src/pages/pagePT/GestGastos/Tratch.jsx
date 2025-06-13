@@ -19,14 +19,16 @@ import dayjs from 'dayjs';
 import { FormatoDateMask, FUNMoneyFormatter, MoneyFormatter } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
 import { Skeleton } from 'primereact/skeleton';
-import { Col, Modal, Row } from 'react-bootstrap';
+import { Col, Modal } from 'react-bootstrap';
 import { ModalImportadorData } from './ModalImportadorData';
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { ModalTipoDeCambio } from './ModalTipoDeCambio';
 import { useTcStore } from './hooks/useTcStore';
+import { Row } from 'primereact/row';
+import { ColumnGroup } from 'primereact/columngroup';
 dayjs.extend(utc);
 
-export default function AdvancedFilterDemo({showToast, id_enterprice}) {
+export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}) {
     locale('es')
     const [customers, setCustomers] = useState(null);
     const [filters, setFilters] = useState(null);
@@ -294,6 +296,16 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
     const onCloseModalTC = (e)=>{
         setisOpenModalTC(false)
     }
+    const headerGroup = (
+  <ColumnGroup>
+    <Row className="bg-danger text-white">
+      <Column header="ID" />
+      <Column header="Fecha registro" />
+      <Column header="Edad" />
+      <Column header="Email" />
+    </Row>
+  </ColumnGroup>
+);
     return (
         <>
             {
@@ -334,19 +346,19 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
                         scrollable
                         onValueChange={valueFiltered}
                         >
-                <Column header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
-                <Column header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
-                <Column header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
-                <Column header="Fecha de comprobante" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter filterElement={dateFilterTemplate}/>
-                <Column header="Tipo de gasto" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
-                <Column header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
-                <Column header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
-                <Column header={<>MONTO</>} field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
-                <Column header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
-                <Column header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
-                body={proveedorBodyTemplate} filter />
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Fecha de comprobante" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter filterElement={dateFilterTemplate}/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Tipo de gasto" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header={<>MONTO</>} field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
+                                body={proveedorBodyTemplate} filter />
 
-                <Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
+                                <Column headerClassName="bg-danger text-white" headerStyle={{ color: '#fff' }}  header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             
             <ModalIngresosGastos id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
@@ -355,7 +367,6 @@ export default function AdvancedFilterDemo({showToast, id_enterprice}) {
             </>
                 )
                 :(
-                    //Array.from({ length: 10 }, (v, i) => i)
                     <DataTable size='large' 
                     value={Array.from({ length: 10 }, (v, i) => i)} 
                     className="p-datatable-striped"

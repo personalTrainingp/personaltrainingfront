@@ -7,7 +7,7 @@ import { Table } from 'react-bootstrap'
 import { ModalIngresosGastos } from '../GestGastos/ModalIngresosGastos'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 
-export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO}) => {
+export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
   const [isModalDetalleGasto, setisModalDetalleGasto] = useState(false)
   const [ModalDetalleGasto, setModalDetalleGasto] = useState({})
   const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
@@ -26,8 +26,8 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
   return (
     <>
     <Dialog visible={show} style={{width: '100rem'}} onHide={onHide} header={`EGRESOS POR DETALLE - ${data?.grupo} - ${data?.concepto}`}>
-        <Table responsive hover striped>
-          <thead className='bg-primary'>
+        <Table  responsive hover striped>
+          <thead className={`${bgEmpresa}`}>
               <tr>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'></div></th>
                   <th className='text-white p-1 fs-3'>PROV. / COLABORADOR</th>

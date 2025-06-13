@@ -4,7 +4,7 @@ import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import AdvancedFilterDemo from './Tratch'
 import { Toast } from 'primereact/toast'
 
-export const GestionGastosIngresos = ({id_enterprice}) => {
+export const GestionGastosIngresos = ({id_enterprice, bgEmpresa}) => {
     const toast = useRef(null);
     const showToast = (dataToast) => {
       toast.current.show(dataToast);
@@ -12,7 +12,7 @@ export const GestionGastosIngresos = ({id_enterprice}) => {
   return (
     <>
         <Toast ref={toast}/>
-        <AdvancedFilterDemo showToast={showToast} id_enterprice={id_enterprice}/>
+        <AdvancedFilterDemo bgEmpresa={bgEmpresa} showToast={showToast} id_enterprice={id_enterprice}/>
     </>
   )
 }

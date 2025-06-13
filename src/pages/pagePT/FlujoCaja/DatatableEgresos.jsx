@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useMemo } from 'react';
 import Select from 'react-select'; // <-- importar react-select
 import { useFlujoCajaStore } from './hook/useFlujoCajaStore';
@@ -52,8 +53,22 @@ export const DatatableEgresos = ({
 	);
 
 	// 3) Estado local para los meses seleccionados (inicialmente, todos)
-	const [selectedMonths, setSelectedMonths] = useState(monthOptions);
-
+	const [selectedMonths, setSelectedMonths] = useState(() => {
+  // intenta leer un array de valores [1,2,3...]
+  const stored = localStorage.getItem('selectedMonths')
+  if (stored) {
+    const vals = JSON.parse(stored)
+    // reconstruye el array de opciones a partir de los valores guardados
+    return monthOptions.filter(opt => vals.includes(opt.value))
+  }
+  // si no hay nada en storage, selecciona todos por defecto
+  return monthOptions
+});
+// 4) Persiste en localStorage cada vez que cambie la selección
+useEffect(() => {
+  const vals = selectedMonths.map(opt => opt.value)
+  localStorage.setItem('selectedMonths', JSON.stringify(vals))
+}, [selectedMonths])
 	// 4) Cada vez que cambia empresa o año, recargar datos
 	useEffect(() => {
 		obtenerGastosxANIO(anio, id_enterprice);
@@ -130,7 +145,6 @@ export const DatatableEgresos = ({
 		setIsOpenModalDetallexCelda(true);
 	};
 
-	// 9) Extraer lista de meses numéricos seleccionados (por ejemplo [1, 3, 7])
 	const mesesSeleccionadosNums = useMemo(
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
@@ -138,6 +152,15 @@ export const DatatableEgresos = ({
 
 	const widthHeadergrupos = 150;
 	const backgroundMultiValue = bgMultiValue;
+	const onViewMoved = (e)=>{
+		const items = e.conceptos.flatMap(c => c.items).flatMap(m => m.items)
+		console.log({ak: e, items});
+		onOpenModalDetallexCelda({
+                                items,
+                                concepto: 'TODOS',
+                                grupo: 'PRESTAMOS',
+                              })
+	}
 	return (
 		<>{/* === MULTI‐SELECT PARA ELEGIR MESES === */}
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
@@ -189,7 +212,7 @@ export const DatatableEgresos = ({
           <col className={`${bgTotal}`} style={{ width: 150 }} />
           <col className={`${bgTotal}`} style={{ width: 150 }} />
         </colgroup>
-        {gruposSinPrestamos.map((grp, i) => {
+        {gruposSinPrestamos.map((grp, i, arr) => {
           const sumaTotalAnualGrupos = gruposSinPrestamos.reduce(
             (acc, g) => acc + g.totalAnual,
             0
@@ -368,14 +391,18 @@ export const DatatableEgresos = ({
                   </td>
                 </tr>
                 <tr className={`${bgTotal}`}>
-                  <td className="fw-bolder fs-2" colSpan={12}>
-                    <span className='fs-1 mr-3'>%</span> DE REPRESENTACIÓN COMPARATIVO VS. TODOS LOS GRUPOS {' '}
-                    <span className='fs-1' style={{ marginLeft: 160 }}>
-                      {sumaTotalAnualGrupos > 0
+					<td className="fw-bolder fs-2" colSpan={selectedMonths.length+1}>
+						<span className='fs-1 mr-3'>%</span> DE REPRESENTACIÓN COMPARATIVO VS. TODOS LOS GRUPOS
+                  	</td>
+					<td className="fw-bolder fs-2">
+						<div className='bg-porsiaca text-right'>
+							{sumaTotalAnualGrupos > 0
                         ? ((grp.totalAnual / sumaTotalAnualGrupos) * 100).toFixed(2)
                         : '0.00'}%
-                    </span>
-                  </td>
+						</div>
+                  	</td>
+					<td>
+					</td>
                 </tr>
               </tbody>
             </React.Fragment>
@@ -400,29 +427,43 @@ export const DatatableEgresos = ({
             <td className="fw-bold fs-2">TOTAL EGRESOS</td>
             {mesesSeleccionadosNums.map(mesNum => (
               <td key={mesNum} className="text-center fs-1 fw-bold">
-                <NumberFormatMoney amount={totalPorMes[mesNum - 1]-prestamosGroup.mesesSuma[mesNum - 1]} />
+				<div className='bg-porsiaca text-right'>
+                	<NumberFormatMoney amount={totalPorMes[mesNum - 1]-prestamosGroup.mesesSuma[mesNum - 1]} />
+				</div>
               </td>
             ))}
             <td className="text-center fw-bolder fs-1">
-              <NumberFormatMoney amount={totalGeneral-prestamosGroup.totalAnual} />
+				<div className='bg-porsiaca text-right'>
+              		<NumberFormatMoney amount={totalGeneral-prestamosGroup.totalAnual} />
+				</div>
             </td>
-            <td className="text-center fw-bolder fs-1">100</td>
+            <td className="text-center fw-bolder fs-1">
+				<div className='bg-porsiaca text-right'>
+					100
+				</div>
+			</td>
           </tr>
 			{/* NUEVA fila de TOTAL PRESTAMOS */}
 			<tr className={`bg-azulfuerte`}>
 				<td className="fw-bold fs-2">TOTAL PRESTAMOS</td>
 				{mesesSeleccionadosNums.map((mesNum) => (
 				<td key={mesNum} className="text-center fs-1 fw-bold">
-					<NumberFormatMoney amount={prestamosGroup.mesesSuma[mesNum - 1]} />
+					<div className='bg-porsiaca text-right' onClick={()=>onViewMoved(prestamosGroup)}>
+						<NumberFormatMoney amount={prestamosGroup.mesesSuma[mesNum - 1]} />
+					</div>
 				</td>
 				))}
 				<td className="text-center fw-bolder fs-1">
-				<NumberFormatMoney amount={prestamosGroup.totalAnual} />
+					<div className='bg-porsiaca text-right'>
+						<NumberFormatMoney amount={prestamosGroup.totalAnual} />
+					</div>
 				</td>
 				<td className="text-center fw-bolder fs-1">
-				{totalGeneral > 0
-					? ((prestamosGroup.totalAnual / totalGeneral) * 100).toFixed(2)
-					: '0.00'}
+					<div className='bg-porsiaca text-right'>
+						{totalGeneral > 0
+							? ((prestamosGroup.totalAnual / totalGeneral) * 100).toFixed(2)
+							: '0.00'}
+					</div>
 				</td>
 			</tr>
         </tbody>
@@ -437,6 +478,7 @@ export const DatatableEgresos = ({
 				show={isOpenModalDetallexCelda}
 				id_enterprice={id_enterprice}
 				anio={anio}
+				bgEmpresa={background}
 			/>
 		</>
 	);

@@ -196,3 +196,104 @@ function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 	console.log({ resultado });
 	return resultado;
 }
+
+function agruparPorGrupoYConcepto2(dataGastos, dataGrupos) {
+	const meses = Array.from({ length: 12 }, (_, i) => i + 1);
+
+	// 1. Construir un mapa temporal: grupoNombre → [ entradas de dataGrupos ]
+	const gruposMapTemp = {};
+	dataGrupos.forEach((entry) => {
+		const nombreGrupo = entry.grupo?.trim()?.toUpperCase() || 'SIN GRUPO';
+		if (!gruposMapTemp[nombreGrupo]) {
+			gruposMapTemp[nombreGrupo] = [];
+		}
+		gruposMapTemp[nombreGrupo].push(entry);
+	});
+
+	// 2. Ordenar grupos por parametro_grupo.orden
+	const gruposOrdenados = Object.entries(gruposMapTemp).sort(([, a], [, b]) => {
+		const ordenA = a[0].parametro_grupo?.orden ?? 0;
+		const ordenB = b[0].parametro_grupo?.orden ?? 0;
+		return ordenA - ordenB;
+	});
+
+	// 3. Generar resultado inicial por grupo y concepto
+	const resultado = gruposOrdenados.map(([grupoNombre, entradasDeGrupo]) => {
+		entradasDeGrupo.sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
+
+		// Nombres únicos de conceptos
+		const conceptosUnicos = [];
+		entradasDeGrupo.forEach((c) => {
+			const nombre = c.nombre_gasto?.trim()?.toUpperCase() || 'SIN CONCEPTO';
+			if (!conceptosUnicos.includes(nombre)) conceptosUnicos.push(nombre);
+		});
+
+		// Construir items por mes para cada concepto
+		const conceptos = conceptosUnicos.map((nombreConcepto) => {
+			const itemsDelConcepto = dataGastos.filter((g) => {
+				const pg = g.tb_parametros_gasto || {};
+				return (
+					pg.grupo?.trim()?.toUpperCase() === grupoNombre &&
+					pg.nombre_gasto?.trim()?.toUpperCase() === nombreConcepto
+				);
+			});
+
+			const items = meses.map((mes) => {
+				const gastosMes = itemsDelConcepto.filter(
+					(g) => dayjs(g.fec_comprobante).month() + 1 === mes
+				);
+				const monto_total = gastosMes.reduce((sum, g) => sum + (g.monto * g.tc || 0), 0);
+				return { mes, monto_total, items: gastosMes };
+			});
+
+			return { concepto: nombreConcepto, items };
+		});
+
+		return { grupo: grupoNombre, conceptos };
+	});
+
+	// 4. Calcular totales generales y de "PRESTAMOS"
+	// Encontrar el grupo de PRESTAMOS en resultado
+	const prestGroup = resultado.find((r) => r.grupo === 'PRESTAMOS');
+
+	const itemsPrestamos = meses.map((mes) => {
+		const monto = prestGroup
+			? prestGroup.conceptos.reduce((acc, c) => {
+					const it = c.items.find((i) => i.mes === mes);
+					return acc + (it?.monto_total || 0);
+				}, 0)
+			: 0;
+		const items = prestGroup
+			? prestGroup.conceptos.flatMap((c) => c.items.filter((i) => i.mes === mes))
+			: [];
+		return { mes, monto_total: monto, items };
+	});
+
+	const itemsEgresos = meses.map((mes) => {
+		const monto = resultado.reduce((accG, g) => {
+			return (
+				accG +
+				g.conceptos.reduce((accC, c) => {
+					const it = c.items.find((i) => i.mes === mes);
+					return accC + (it?.monto_total || 0);
+				}, 0)
+			);
+		}, 0);
+		const items = resultado.flatMap((g) =>
+			g.conceptos.flatMap((c) => c.items.filter((i) => i.mes === mes))
+		);
+		return { mes, monto_total: monto, items };
+	});
+
+	// Agregar nuevo grupo 'MES' con totales
+	resultado.push({
+		grupo: 'MES',
+		conceptos: [
+			{ concepto: 'TOTAL EGRESOS', items: itemsEgresos },
+			{ concepto: 'TOTAL PRESTAMOS', items: itemsPrestamos },
+		],
+	});
+
+	console.log({ resultado });
+	return resultado;
+}

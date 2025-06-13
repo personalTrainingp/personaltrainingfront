@@ -6,6 +6,7 @@ import { useCalendar } from './hooks';
 import SidePanel from './SidePanel';
 import { PageBreadcrumb } from '@/components';
 import App from '../Calendar2/App';
+import pptNut from './Área de nutrición Change - Cambios.pptx (2).pdf'
 export const CalendarApp = ({tipo_serv}) => {
 	const {
 		isOpen,
@@ -42,9 +43,11 @@ export const CalendarApp = ({tipo_serv}) => {
 											CITA DE SEGUIMIENTO: <br/><span className='fs-2'>20 MINUTOS</span>
 										</h1>
 									</div>
-										{/* <a href='' className='fs-1 underline'>
+									<div className='text-center'>
+										<a href={pptNut} className='fs-4 underline'>
 											Ayuda memoria pendientes nutricion
-										</a> */}
+										</a>
+									</div>
 								</Col>
 								<Col xl={8}>
 								

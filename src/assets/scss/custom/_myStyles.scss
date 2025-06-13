@@ -19,9 +19,6 @@
     }
   }
 }
-text{
-  // fill: #D41115 !important;
-}
 #SvgjsTspan21034{
   font-size: 40px !important;
 }
@@ -75,6 +72,9 @@ text{
   background-color: #3e74ff;
 }
 
+.text-azulfuerte{
+  color: #3e74ff;
+}
 .sticky-right {
   position: sticky;
   right: 0;
@@ -82,7 +82,6 @@ text{
   z-index: 5;
   width: 150;
 }
-
 // .table-responsive {
 //   overflow-x: auto; /* permite scroll horizontal */
 // }
@@ -178,7 +177,7 @@ input{
   color: blue;
 }
 .text-color-dolar{
-  color: #1E8727
+  color: #20D097
 }
 .hover-border-card-primary{
   border: 3px solid transparent;
@@ -465,20 +464,20 @@ td, th {
     border-radius: 0 !important;
 }
 /* Personalizar el fondo y color del texto de la cabecera */
-.p-datatable .p-datatable-thead > tr > th {
-  background-color: $primary;
-  color: white;
-}
+// .p-datatable .p-datatable-thead > tr > th {
+//   background-color: $primary;
+//   color: white;
+// }
 
 /* Personalizar íconos de ordenación */
-.p-datatable .p-datatable-thead > tr > th .p-sortable-column-icon {
-  color: white; /* Cambia el color del ícono de ordenación */
-}
+// .p-datatable .p-datatable-thead > tr > th .p-sortable-column-icon {
+//   color: white; /* Cambia el color del ícono de ordenación */
+// }
 
 /* Personalizar íconos de filtrado */
-.p-datatable .p-datatable-thead > tr > th .p-column-filter, .p-column-filter-menu-button {
-  color: white; /* Cambia el color del ícono de filtrado */
-}
+// .p-datatable .p-datatable-thead > tr > th .p-column-filter, .p-column-filter-menu-button {
+//   color: white; /* Cambia el color del ícono de filtrado */
+// }
 
 button{
   border-radius: 10px;
@@ -765,6 +764,10 @@ th:last-child {
   }
 
 
+.p-inputtext .p-component .p-inputtext .p-component{
+  color: #D41115 !important;
+  font-weight: bold !important;
+}
 
   //SCROLLBAR GENERAL
   body {

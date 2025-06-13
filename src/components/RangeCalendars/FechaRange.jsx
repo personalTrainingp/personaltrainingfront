@@ -7,6 +7,7 @@ import { Calendar } from 'primereact/calendar';
 import { useDispatch } from 'react-redux';
 import { onSetRangeDate } from '@/store/data/dataSlice';
 import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 
 const regsFechas = {
 fec_desde: new Date(new Date().getFullYear(), 8, 16),
@@ -56,6 +57,70 @@ export const FechaRange = ({rangoFechas}) => {
   )
 }
 
+export const FechaRangeMES = ({ rangoFechas, textColor }) => {
+    const dispatch = useDispatch();
+  const currentYear = dayjs().year();
+
+  // Estado con fecha inicio y fin del mes seleccionado
+  const [dateRange, setDateRange] = useState(() => {
+    if (rangoFechas?.[0] && rangoFechas?.[1]) {
+      return {
+        fec_desde: new Date(rangoFechas[0]),
+        fec_hasta: new Date(rangoFechas[1])
+      };
+    }
+    // por defecto, mes actual
+    return {
+      fec_desde: dayjs().startOf('month').toDate(),
+      fec_hasta: dayjs().endOf('month').toDate()
+    };
+  });
+
+  // Sincronizar si cambia externamente rangoFechas
+  useEffect(() => {
+    if (rangoFechas?.[0] && rangoFechas?.[1]) {
+      setDateRange({
+        fec_desde: new Date(rangoFechas[0]),
+        fec_hasta: new Date(rangoFechas[1])
+      });
+    }
+  }, [rangoFechas]);
+
+  // Al pulsar Actualizar, despacha el array [fec_desde, fec_hasta] en ISO
+  const onClickActualizar = () => {
+    dispatch(onSetRangeDate([
+      dayjs(dateRange.fec_desde).startOf('day').toISOString(),
+      dayjs(dateRange.fec_hasta).endOf('day').toISOString()
+    ]));
+  };
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '40px' }}>
+      <Calendar
+        value={dateRange.fec_desde}
+        onChange={e => {
+          const sel = e.value;
+          setDateRange({
+            fec_desde: dayjs(sel).startOf('month').toDate(),
+            fec_hasta: dayjs(sel).endOf('month').toDate()
+          });
+        }}
+        view="month"
+        dateFormat="mm/yy"
+        mask="99/9999"
+        monthNavigator
+        yearNavigator
+        yearRange={`${currentYear - 2}:${currentYear + 1}`}
+        locale="es"
+        showIcon
+        inputStyle={{ color: textColor, fontWeight: 'bold', width: '200px'}}
+      />
+      <Button style={{backgroundColor: textColor, borderColor: textColor}} onClick={onClickActualizar}>
+        Actualizar
+      </Button>
+    </div>
+  );
+};
 /**
  * 
  <div className='d-flex flex-column m-1'>
