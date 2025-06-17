@@ -56,7 +56,10 @@ export const FlujoCaja = () => {
                 <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mb-2' headerClassName="mi-tab-verde" header={<div style={{fontSize: '40px', color: '#17a700'}} className=' fw-medium'>INVERSIONES <br/> SAN EXPEDITO <br/> circus</div>}>
                     <TabView>
                         <TabPanel header={<div className='text-black' style={{fontSize: '50px'}}>2025</div>}>
-                            <DataTableGastos bgTotal={'bg-verdeclaro'} arrayRangeDate={[new Date(2025, 1, 15), new Date()]} background={'bg-greenISESAC'} id_enterprice={601} anio={2025} nombre_empresa={'ISE SAC'}/>
+                            <DataTableGastos bgTotal={'bg-amarilloclaro'} arrayRangeDate={[new Date(2025, 1, 15), new Date()]} background={'bg-circus'} id_enterprice={601} anio={2025} nombre_empresa={'ISE SAC Y CIRCUS'}/>
+                        </TabPanel>
+                        <TabPanel header={<div className='text-black' style={{fontSize: '50px'}}>2024</div>}>
+                            <DataTableGastos bgTotal={'bg-amarilloclaro'} arrayRangeDate={[new Date(2025, 1, 15), new Date()]} background={'bg-circus'} id_enterprice={601} anio={2024} nombre_empresa={'ISE SAC Y CIRCUS'}/>
                         </TabPanel>
                     </TabView>
                 </TabPanel>

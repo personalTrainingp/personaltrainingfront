@@ -29,7 +29,8 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
         id_grupo,
         formState,
         onResetForm, onInputChange, onInputChangeReact } = useForm(data?data:ParametroGasto);   
-
+        console.log({data});
+        
     const [visible, setVisible] = useState(false);
     const toastBC = useRef(null);
     useEffect(() => {
@@ -43,8 +44,6 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
         onHide()
         onResetForm()
     };
-  
-    
     const { terminologia  } = useSelector(e => e.terminologia);
     let paramateroGasto;
     if (terminologia) {

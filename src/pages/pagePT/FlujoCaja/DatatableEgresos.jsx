@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useMemo } from 'react';
 import Select from 'react-select'; // <-- importar react-select
 import { useFlujoCajaStore } from './hook/useFlujoCajaStore';
@@ -154,7 +153,6 @@ useEffect(() => {
 	const backgroundMultiValue = bgMultiValue;
 	const onViewMoved = (e, met)=>{
 		const items = e.conceptos[1].items[met - 1].items
-		console.log({ak: e, items, met});
 		onOpenModalDetallexCelda({
                                 items,
                                 concepto: 'TODOS',
@@ -223,15 +221,11 @@ useEffect(() => {
               {/* Encabezado del grupo */}
               <thead className={background}>
                 <tr>
-                  <th className="text-black fs-2">
+                  <th className="text-black fs-1">
                     <div className="p-1 rounded rounded-3" style={{ width: 350 }}>
                       {grp.grupo === 'ATENCIÓN AL CLIENTE' ? (
                         <>
                           {i + 1}. ATENCION AL <span className="ml-5">CLIENTE</span>
-                        </>
-                      ) : grp.grupo === 'COMPRA PRODUCTOS/ACTIVOS' ? (
-                        <>
-                          {i + 1}. COMPRA INSUMOS <span className="ml-5">ACTIVOS</span>
                         </>
                       ) : grp.grupo === 'PRESTAMOS' ? (
                         <span className='text-danger'>PRESTAMOS</span>
@@ -374,7 +368,7 @@ useEffect(() => {
 												return (
 													<td
 														key={mesNum}
-														className="text-center fw-bolder fs-2"
+														className="text-center fw-bolder fs-1"
 													>
 														<div style={{ width: 150 }} className='bg-porsiaca text-right'>
 															{pctMesGrupo}
@@ -384,24 +378,31 @@ useEffect(() => {
 											})}
                   <td className="fw-bolder fs-2" >
                   </td>
-                  <td className="fw-bolder fs-2" >
+                  <td className="fw-bolder fs-1" >
 					<div className='bg-porsiaca text-right'>
 						100
 					</div>
                   </td>
                 </tr>
                 <tr className={`${bgTotal}`}>
-					<td className="fw-bolder fs-2" colSpan={selectedMonths.length+1}>
-						<span className='fs-1 mr-3'>%</span> DE REPRESENTACIÓN COMPARATIVO VS. TODOS LOS GRUPOS
+					<td className="fw-bolder fs-1" colSpan={selectedMonths.length+1}>
+						<span className='fs-1 mr-3'>%</span> PROMEDIO DE REPRESENTACIÓN ACUMULADA VS. TODOS LOS RUBROS
                   	</td>
-					<td className="fw-bolder fs-2">
-						<div className='bg-porsiaca text-right'>
+					<td className="fw-bolder fs-1">
+						<div className='bg-porsiaca text-right fs-1'>
 							{sumaTotalAnualGrupos > 0
                         ? ((grp.totalAnual / sumaTotalAnualGrupos) * 100).toFixed(2)
                         : '0.00'}%
 						</div>
                   	</td>
 					<td>
+					</td>
+                </tr>
+                <tr>
+					<td className="fw-bolder fs-2" colSpan={selectedMonths.length+1}>
+						<div className='bg-danger opacity-0'>
+asdf
+						</div>
 					</td>
                 </tr>
               </tbody>

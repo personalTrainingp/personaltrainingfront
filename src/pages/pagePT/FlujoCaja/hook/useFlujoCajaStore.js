@@ -128,7 +128,7 @@ function aplicarTipoDeCambio(dataTC, dataGastos) {
 
 function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 	const meses = Array.from({ length: 12 }, (_, i) => i + 1);
-	// 1. Construir un mapa temporal: grupoNombre → [ todos los objetos de dataGrupos que pertenecen a ese grupo ]
+
 	const gruposMapTemp = {};
 	dataGrupos.forEach((entry) => {
 		const nombreGrupo = entry.grupo?.trim()?.toUpperCase() || 'SIN GRUPO';
@@ -138,20 +138,17 @@ function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 		gruposMapTemp[nombreGrupo].push(entry);
 	});
 
-	// 2. Convertir el mapa en un array de [grupoNombre, arrayDeEntradas], ordenado POR parametro_grupo.orden
-	//    (asumimos que para todas las entradas de un mismo grupo, parametro_grupo.orden es igual)
+	// Ordenar los grupos, undefined orden al final
 	const gruposOrdenados = Object.entries(gruposMapTemp).sort(([, entradasA], [, entradasB]) => {
-		// tomo el primer objeto de cada array para leer parametro_grupo.orden
-		const ordenA = entradasA[0].parametro_grupo?.orden ?? 0;
-		const ordenB = entradasB[0].parametro_grupo?.orden ?? 0;
-		return ordenA - ordenB;
+		const ordenA = entradasA[0].parametro_grupo?.orden;
+		const ordenB = entradasB[0].parametro_grupo?.orden;
+		return (ordenA ?? Infinity) - (ordenB ?? Infinity);
 	});
-	// 3. Para cada grupoOrdenado, ordenar sus conceptos internos según su propio "orden"
-	const resultado = gruposOrdenados.map(([grupoNombre, entradasDeGrupo]) => {
-		// a) ordenar las entradasDeGrupo por entry.orden (el orden del concepto dentro del grupo)
-		entradasDeGrupo.sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
 
-		// b) extraer los nombres únicos de concepto (nombre_gasto) en ese orden
+	const resultado = gruposOrdenados.map(([grupoNombre, entradasDeGrupo]) => {
+		// Ordenar conceptos dentro del grupo, undefined orden al final
+		entradasDeGrupo.sort((a, b) => (a.orden ?? Infinity) - (b.orden ?? Infinity));
+
 		const conceptosUnicosPorNombre = [];
 		entradasDeGrupo.forEach((c) => {
 			const nombreConcepto = c.nombre_gasto?.trim()?.toUpperCase() || 'SIN CONCEPTO';
@@ -159,16 +156,15 @@ function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 				conceptosUnicosPorNombre.push(nombreConcepto);
 			}
 		});
-		// c) construir la lista de conceptos con monto por mes
+
 		const conceptos = conceptosUnicosPorNombre.map((nombreConcepto) => {
-			// filtrar todos los gastos de dataGastos que coincidan con este grupo + concepto
 			const itemsDelConcepto = dataGastos.filter((g) => {
 				const pg = g.tb_parametros_gasto || {};
 				const grupoGasto = pg.grupo?.trim()?.toUpperCase();
 				const nombreGasto = pg.nombre_gasto?.trim()?.toUpperCase();
 				return grupoGasto === grupoNombre && nombreGasto === nombreConcepto;
 			});
-			// para cada mes (1 a 12), sumar los montos
+
 			const itemsPorMes = meses.map((mes) => {
 				const itemsMes = itemsDelConcepto.filter(
 					(item) => dayjs(item.fec_comprobante).month() + 1 === mes
@@ -193,7 +189,6 @@ function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 		};
 	});
 
-	console.log({ resultado });
 	return resultado;
 }
 

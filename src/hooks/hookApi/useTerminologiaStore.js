@@ -29,11 +29,13 @@ export const useTerminologiaStore = () => {
 	const terminologiaPorEntidad = async (id_empresa) => {
 		try {
 			const { data } = await PTApi.get(`/terminologia/terminologiaxEmpresa/${id_empresa}`);
+
 			const terminologiaGastos = data.termGastos.map((d) => {
 				return {
 					id_tipoGasto: d.id_tipoGasto,
 					nombre_gasto: d.nombre_gasto,
 					orden: d.orden || '',
+					id_grupo: d.parametro_grupo?.id || d.parametro_grupo?.id,
 					grupo:
 						d.parametro_grupo?.param_label ||
 						` ${d.parametro_grupo?.param_label} | ${d.grupo}`,

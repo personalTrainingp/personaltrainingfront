@@ -1,5 +1,5 @@
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
-import { NumberFormatMoney } from '@/components/CurrencyMask'
+import { FUNMoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask'
 import dayjs from 'dayjs'
 import { Dialog } from 'primereact/dialog'
 import React, { useState } from 'react'
@@ -21,7 +21,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
     // onShow()
     obtenerGastosxANIO(anio, id_enterprice)
   }
-  console.log({data});
+  console.log({data: agruparPorComprobante(data?.items)});
   
   return (
     <>
@@ -38,6 +38,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de pago</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>monto</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>DOCUMENTO</div></th>
+                  <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>FORMA DE PAGO</div></th>
               </tr>
           </thead>
           <tbody>
@@ -50,7 +51,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.tb_Proveedor?.razon_social_prov}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.descripcion}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_comprabante}</span></td>
-                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_operacion}</span></td>
+                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_operacion===''?'EFECTIVO':f.n_operacion}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{dayjs(f.fec_comprobante).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{dayjs(f.fec_pago).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-green'}>
@@ -62,6 +63,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                             </div>
                           </span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_comprobante?.label_param}</span></td>
+                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_forma_pago?.label_param}</span></td>
                       </tr>
                     )
                   })
@@ -69,11 +71,20 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
           </tbody>
         </Table>
         {
-          agruparPorComprobante(data?.items).map(g=>{
+          data?.grupo==='PRESTAMOS' && (
+            <div className='fs-1'>
+              NOTA: PODRIA HABER UNA DIFERENCIA ENTRE EL IMPORTE DE PUBLICIDAD DIGITAL VS PRESTAMOS RAL, PORQUE FACEBOOK EMITE LA FACTURA ANTES DEL CARGO EN LA TARJETA DE CREDITO
+            </div>
+          )
+        }
+        <span className='fs-1'>RESUMEN:</span>
+        {
+          agruparPorComprobante(data?.items).map(m=>{
+            const formasPago = agruparPorFormaPago(m?.items).map(item => `${item.nombre_fp}: ${FUNMoneyFormatter(item.monto_total)}`).join(', ');
+            
             return (
-              <>
-              <span className={g.nombre_com==='SIN DOCUMENTO'?'text-primary fs-1 fw-bold': 'fs-1 fw-bold'}>{g.nombre_com}: <SymbolSoles isbottom={'12'} numero={<NumberFormatMoney amount={g.monto_total}/>}/></span>
-              <br/>
+              <> 
+              <div className='fs-2'>{m.nombre_com}: <SymbolSoles isbottom={'12'} numero={<NumberFormatMoney amount={m.monto_total}/>}/>  ({formasPago})</div>
               </>
             )
           })
@@ -100,6 +111,27 @@ function agruparPorComprobante(data) {
     grupos[nombre_com].monto_total += item.monto*item.tc || 0;
     grupos[nombre_com].items.push(item);
   });
+  
+  return Object.values(grupos);
+}
 
+
+function agruparPorFormaPago(data) {
+  const grupos = {};
+
+  data?.forEach(item => {
+    const nombre_fp = item?.parametro_forma_pago?.label_param || 'SIN DOCUMENTO';
+    if (!grupos[nombre_fp]) {
+      grupos[nombre_fp] = {
+        nombre_fp,
+        monto_total: 0,
+        items: []
+      };
+    }
+    grupos[nombre_fp].monto_total += item.monto*item.tc || 0;
+    grupos[nombre_fp].items.push(item);
+  });
+  console.log(Object.values(grupos));
+  
   return Object.values(grupos);
 }

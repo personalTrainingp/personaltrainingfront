@@ -16,6 +16,7 @@ export const useGastosCIRCUSYSE = () => {
 	const obtenerGastosxANIOCIRCUSYSE = async (anio, enterprice) => {
 		try {
 			const unirGrupos = unirPorGrupoYConcepto(dataGastosxANIOCIRCUS, dataGastosxANIOSE);
+			console.log({ unirGrupos });
 			setdataGasto(unirGrupos);
 		} catch (error) {
 			console.log(error);
@@ -64,11 +65,10 @@ function unirPorGrupoYConcepto(data1, data2) {
 				const c2 = conceptos2.get(conceptoNombre) || null;
 
 				// Caso A: existe en ambos -> fusionamos mes a mes
+				// Caso A: existe en ambos -> fusionamos mes a mes
 				if (c1 && c2) {
-					// Suponemos que c1.items y c2.items son arrays de longitud 12,
-					// cada índice i corresponde al mes i+1.
 					const itemsCombinados = c1.items.map((mesObj1, idx) => {
-						const mes = mesObj1.mes; // debería coincidir con idx+1
+						const mes = mesObj1.mes;
 						const mesObj2 = c2.items[idx] || { monto_total: 0, items: [] };
 
 						return {
@@ -79,7 +79,7 @@ function unirPorGrupoYConcepto(data1, data2) {
 					});
 
 					conceptosFusionados.push({
-						concepto: conceptoNombre, // nombre sin sufijo
+						concepto: `${conceptoNombre} (AMBOS)`, // ← aquí está el cambio
 						items: itemsCombinados,
 					});
 				}

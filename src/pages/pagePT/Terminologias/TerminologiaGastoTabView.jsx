@@ -21,6 +21,7 @@ export const TerminologiaGastoTabView = ({ dataTerminologiaPorEntidad, id_empres
     }, [id_empresa]);
 
     const { dataView } = useSelector(e => e.DATA)
+    console.log({dataView});
     
     const modalTerminologiaClose = () => {
         setisModalOpenTerminologia(false)
