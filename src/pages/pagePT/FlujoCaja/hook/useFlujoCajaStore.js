@@ -9,7 +9,7 @@ export const useFlujoCajaStore = () => {
 	const [dataGastosxANIOCIRCUS, setdataGastosxANIOCIRCUS] = useState([]);
 	const [dataGastosxANIOSE, setdataGastosxANIOSE] = useState([]);
 	const [isLoading, setisLoading] = useState(false);
-	const [dataPrestamos, setdataPrestamos] = useState([]);
+	const [dataNoPagos, setdataNoPagos] = useState([]);
 	const [dataCreditoFiscal, setdataCreditoFiscal] = useState({
 		msg: '',
 		creditoFiscalAniosAnteriores: 0,
@@ -54,24 +54,29 @@ export const useFlujoCajaStore = () => {
 				};
 			});
 			console.log(
+				data.gastos,
 				agruparPorGrupoYConcepto(
-					aplicarTipoDeCambio(dataTCs, data.gastos),
+					aplicarTipoDeCambio(dataTCs, data.gastos).filter(
+						(e) => e.id_estado_gasto === 1424
+					),
 					dataParametrosGastos.termGastos
 				).filter((e) => e.grupo !== 'PRESTAMOS'),
 				'aquiiiii'
 			);
-
 			setdataGastosxANIO(
 				agruparPorGrupoYConcepto(
-					aplicarTipoDeCambio(dataTCs, data.gastos),
+					aplicarTipoDeCambio(dataTCs, data.gastos).filter(
+						(e) => e.id_estado_gasto === 1423
+					),
 					dataParametrosGastos.termGastos
 				).filter((e) => e.grupo !== '')
 			);
-			setdataPrestamos(
-				agruparPorGrupoYConcepto(
-					aplicarTipoDeCambio(dataTCs, data.gastos),
-					dataParametrosGastos.termGastos
-				).filter((e) => e.grupo === '')
+			setdataNoPagos(
+				estructurarParaDetalle(
+					aplicarTipoDeCambio(dataTCs, data.gastos).filter(
+						(e) => e.id_estado_gasto === 1424
+					)
+				)
 			);
 		} catch (error) {
 			console.log(error);
@@ -98,6 +103,7 @@ export const useFlujoCajaStore = () => {
 		dataIngresos_FC,
 		dataCreditoFiscal,
 		dataGastosxANIO,
+		dataNoPagos,
 	};
 };
 function aplicarTipoDeCambio(dataTC, dataGastos) {
@@ -291,4 +297,24 @@ function agruparPorGrupoYConcepto2(dataGastos, dataGrupos) {
 
 	console.log({ resultado });
 	return resultado;
+}
+
+function estructurarParaDetalle(dataOriginal) {
+	return dataOriginal.map((item) => {
+		const fecha = new Date(item.fec_pago || item.fec_comprobante || item.fec_registro);
+		const mes = fecha.getMonth() + 1; // getMonth() retorna 0-11
+		return {
+			mes,
+			concepto: 'CUENTAS POR PAGAR',
+			grupo: 'CUENTAS POR PAGAR',
+			monto: item.monto,
+			items: [item],
+			moneda: item.moneda,
+			forma_pago: item.parametro_forma_pago?.label_param || '',
+			banco: item.parametro_banco?.label_param || '',
+			proveedor: item.tb_Proveedor?.razon_social_prov || '',
+			comprobante: item.parametro_comprobante?.label_param || '',
+			n_comprobante: item.n_comprabante,
+		};
+	});
 }

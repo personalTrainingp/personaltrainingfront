@@ -137,7 +137,7 @@ const DataTerminologiaGasto = (({data, id_empresa}) => {
                     >
                         <Column header="ID" field='id' filterField="id" sortable style={{ width: '1rem' }} filter />
                         <Column header="GASTO" field='id_tipoGasto' filterField="id_tipoGasto" body={tipoGastoBodyTemplate} sortable />
-                        <Column header="GRUPO" field='grupo' filterField="grupo" sortable />
+                        <Column header="RUBRO" field='grupo' filterField="grupo" sortable />
                         <Column header="ORDEN" field='orden' filterField="orden" sortable />
                         <Column header="CONCEPTO" field='nombre_gasto' filterField='nombre_gasto'  sortable filter />
                         <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right"  body={actionBodyTemplate} />

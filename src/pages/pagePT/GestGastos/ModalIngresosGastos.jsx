@@ -31,7 +31,8 @@ const registerIvsG={
     descripcion: '',
     cod_trabajo: '',
     id_prov: 0,
-    esCompra: false
+    esCompra: false,
+    id_estado_gasto: 0
 }
 export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
     const onClickCancelModal = ()=>{
@@ -52,6 +53,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     }, [show, isLoadingParametros])
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
     const { obtenerParametroPorEntidadyGrupo: obtenerParametroTipoComprobante, DataGeneral: DataTipoComprobante } = useTerminoStore()
+    const { obtenerParametroPorEntidadyGrupo: obtenerParametroEstadoGasto, DataGeneral: DataEstadosGasto } = useTerminoStore()
     const {obtenerParametrosProveedor} = useProveedorStore()
     // const { obtenerParametroPorEntidadyGrupo: obtenerParametroFormaPago, DataGeneral: DataFormaPago } = useTerminoStore()
     const { obtenerParametrosFormaPago, DataFormaPago } = useTerminoStore()
@@ -68,6 +70,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             moneda, 
             monto, 
             id_tipo_comprobante, 
+            id_estado_gasto,
             n_comprabante, 
             impuesto_igv,
             impuesto_renta,
@@ -114,6 +117,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         useEffect(() => {
             if(show){
                 obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
+                obtenerParametroEstadoGasto('egresos', 'estado-gasto')
                 obtenerParametrosProveedor()
                 obtenerParametrosFormaPago()
                 obtenerParametrosBancos()
@@ -161,7 +165,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
         const onViewSelectionNotResult = (nameSelect, valueSelect)=>{
             if(nameSelect==='grupo'){
                 if(id_tipoGasto!==0 && id_empresa!==0){
-                    return <button className='' onClick={()=>onClickAgregarGrupo(valueSelect)}>Agregar grupo</button>
+                    return <button className='' onClick={()=>onClickAgregarGrupo(valueSelect)}>Agregar rubro</button>
                 }
             }
         }
@@ -238,7 +242,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="grupo" className="form-label">
-                                            Grupo*
+                                            Rubro*
                                         </label>
                                         <Select
                                             onChange={(e) => onInputChangeReact(e, 'grupo')}
@@ -483,6 +487,25 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                                 <Button onClick={onOpenModalProveedor}>+</Button>
                                             </Col>
                                         </Row>
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
+                                        <label htmlFor="id_estado_gasto" className="form-label">
+                                            ESTADOS*
+                                        </label>
+                                        <Select
+                                            onChange={(e) => onInputChangeReact(e, 'id_estado_gasto')}
+                                            name="id_estado_gasto"
+                                            placeholder={'Seleccionar el estado'}
+                                            className="react-select"
+                                            classNamePrefix="react-select"
+                                            options={DataEstadosGasto||[]}
+                                            value={DataEstadosGasto.find(
+                                                (option)=>option.value==id_estado_gasto
+                                            )||''}
+                                            required
+                                        />
                                     </div>
                                 </Col>
                                 <Col lg={4}>

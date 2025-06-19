@@ -152,6 +152,8 @@ useEffect(() => {
 	const widthHeadergrupos = 150;
 	const backgroundMultiValue = bgMultiValue;
 	const onViewMoved = (e, met)=>{
+		console.log({e: e?.conceptos.flatMap(f=>f.items).flatMap(f=>f.items), met});
+		
 		const items = e.conceptos[1].items[met - 1].items
 		onOpenModalDetallexCelda({
                                 items,
@@ -159,6 +161,9 @@ useEffect(() => {
                                 grupo: 'PRESTAMOS',
                               })
 	}
+	const cuentasPorPagar = [0, 0, 0, 0, 1500, 13000, 0, 0, 0, 0, 0, 0]; // tu array fijo
+	const prestamosPorPagar = [0, 0, 6700, 2000, 4100, 2000, 0, 0, 0, 0, 0, 0]; // tu array fijo
+	const RalprestamosPorPagar = [0, 0, 6700, 2000, 4100, 2000, 0, 0, 0, 0, 0, 0]; // tu array fijo
 	return (
 		<>{/* === MULTI‐SELECT PARA ELEGIR MESES === */}
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
@@ -221,21 +226,32 @@ useEffect(() => {
               {/* Encabezado del grupo */}
               <thead className={background}>
                 <tr>
-                  <th className="text-black fs-1">
-                    <div className="p-1 rounded rounded-3" style={{ width: 350 }}>
-                      {grp.grupo === 'ATENCIÓN AL CLIENTE' ? (
-                        <>
-                          {i + 1}. ATENCION AL <span className="ml-5">CLIENTE</span>
-                        </>
-                      ) : grp.grupo === 'PRESTAMOS' ? (
-                        <span className='text-danger'>PRESTAMOS</span>
-                      ) : (
-                        <>
-                          {i + 1}. {grp.grupo}
-                        </>
-                      )}
-                    </div>
-                  </th>
+					<th className="text-black fs-1">
+						<div
+							className="p-1 rounded rounded-3"
+							style={{
+							width: 450,
+							hyphens: 'auto',
+							wordBreak: 'break-word',
+							overflowWrap: 'break-word',
+							whiteSpace: 'normal',
+							lineHeight: '1.2',
+							}}
+							lang="es" // Importante para la división correcta de palabras
+						>
+							{grp.grupo === 'ATENCIÓN AL CLIENTE' ? (
+							<>
+								{i + 1}. ATENCIÓN AL CLIENTE
+							</>
+							) : grp.grupo === 'PRESTAMOS' ? (
+							<span className="text-danger">PRESTAMOS</span>
+							) : (
+							<>
+								{i + 1}. {grp.grupo}
+							</>
+							)}
+						</div>
+						</th>
 
                   {mesesSeleccionadosNums.map(mesNum => (
                     <th
@@ -290,7 +306,7 @@ useEffect(() => {
                         );
                       })}
                       <td
-                        className={`${bgTotal} text-center fw-bold fs-1`}
+                        className={`${bgTotal} text-center fw-bold`}
                         onClick={() => onOpenModalDetallexCelda({
                           concepto: c.concepto,
                           grupo: grp.grupo,
@@ -298,7 +314,7 @@ useEffect(() => {
                           monto_total: totalConcepto,
                         })}
                       >
-						<div className='bg-porsiaca text-right'>
+						<div className='bg-porsiaca text-right' style={{fontSize: '40px'}}>
                         	<NumberFormatMoney amount={totalConcepto} />
 						</div>
                       </td>
@@ -341,8 +357,8 @@ useEffect(() => {
 					  )
 				  }
 				  )}
-                  <td className="text-center fw-bolder fs-1">
-					<div className='bg-porsiaca text-right'>
+                  <td className="text-center fw-bolder">
+					<div className='bg-porsiaca text-right' style={{fontSize: '40px'}}>
                     	<NumberFormatMoney amount={grp.totalAnual} />
 					</div>
                   </td>
@@ -370,8 +386,8 @@ useEffect(() => {
 														key={mesNum}
 														className="text-center fw-bolder fs-1"
 													>
-														<div style={{ width: 150 }} className='bg-porsiaca text-right'>
-															{pctMesGrupo}
+														<div style={{ width: 150 }} className='text-right'>
+															{pctMesGrupo}%
 														</div>
 													</td>
 												);
@@ -380,27 +396,28 @@ useEffect(() => {
                   </td>
                   <td className="fw-bolder fs-1" >
 					<div className='bg-porsiaca text-right'>
-						100
 					</div>
                   </td>
                 </tr>
                 <tr className={`${bgTotal}`}>
-					<td className="fw-bolder fs-1" colSpan={selectedMonths.length+1}>
+					<td className="fw-bolder fs-1" colSpan={selectedMonths.length}>
 						<span className='fs-1 mr-3'>%</span> PROMEDIO DE REPRESENTACIÓN ACUMULADA VS. TODOS LOS RUBROS
                   	</td>
-					<td className="fw-bolder fs-1">
-						<div className='bg-porsiaca text-right fs-1'>
+					<td className="fw-bolder">
+						<div className='text-right' style={{ width: 150, fontSize: '45px' }}>
 							{sumaTotalAnualGrupos > 0
                         ? ((grp.totalAnual / sumaTotalAnualGrupos) * 100).toFixed(2)
                         : '0.00'}%
 						</div>
+                  	</td>
+					<td className="fw-bolder fs-1">
                   	</td>
 					<td>
 					</td>
                 </tr>
                 <tr>
 					<td className="fw-bolder fs-2" colSpan={selectedMonths.length+1}>
-						<div className='bg-danger opacity-0'>
+						<div className='opacity-0'>
 asdf
 						</div>
 					</td>
@@ -444,23 +461,105 @@ asdf
 				</div>
 			</td>
           </tr>
+          <tr className={`bg-white text-change`}>
+            <td className="fw-bold fs-2 text-change">
+				<div className='text-change'>
+					CUENTAS POR PAGAR
+				</div>
+			</td>
+            {mesesSeleccionadosNums.map(mesNum => (
+              <td key={mesNum} className="text-center fs-1 fw-bold">
+				<div className='bg-porsiaca text-right text-change'>
+                	<NumberFormatMoney amount={cuentasPorPagar[mesNum - 1] || 0} />
+				</div>
+              </td>
+            ))}
+            <td className="text-center fw-bolder fs-1">
+				<div className='bg-porsiaca text-right text-change'>
+              		<NumberFormatMoney amount={cuentasPorPagar.reduce((a, b) => a + b, 0)} />
+				</div>
+            </td>
+            <td className="text-center fw-bolder fs-1">
+				<div className='bg-porsiaca text-right text-change'>
+					100
+				</div>
+			</td>
+          </tr>
 			{/* NUEVA fila de TOTAL PRESTAMOS */}
-			<tr className={`bg-azulfuerte`}>
-				<td className="fw-bold fs-2">TOTAL PRESTAMOS</td>
+			<tr className={`bg-celeste`}>
+				<td className="fw-bold fs-2">
+					<div className='text-black'>
+						PRESTAMOS RAL
+					</div>
+				</td>
 				{mesesSeleccionadosNums.map((mesNum) => (
 				<td key={mesNum} className="text-center fs-1 fw-bold">
-					<div className='bg-porsiaca text-right' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
+					<div className='bg-porsiaca text-right text-black' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
 						<NumberFormatMoney amount={prestamosGroup.mesesSuma[mesNum - 1]} />
 					</div>
 				</td>
 				))}
 				<td className="text-center fw-bolder fs-1">
-					<div className='bg-porsiaca text-right'>
-						<NumberFormatMoney amount={prestamosGroup.totalAnual} />
+					<div className='bg-porsiaca text-right text-black'>
+						<NumberFormatMoney amount={totalGeneral-prestamosGroup.totalAnual} />
 					</div>
 				</td>
 				<td className="text-center fw-bolder fs-1">
-					<div className='bg-porsiaca text-right'>
+					<div className='bg-porsiaca text-right text-black'>
+						{totalGeneral > 0
+							? ((prestamosGroup.totalAnual / totalGeneral) * 100).toFixed(2)
+							: '0.00'}
+					</div>
+				</td>
+			</tr>
+			{/* NUEVA fila de TOTAL PRESTAMOS */}
+			<tr className={`bg-verdeclaro`}>
+				<td className="fw-bold fs-2">
+					<div className='text-black'>
+						DEVOLUCION PRESTAMOS
+					</div>
+				</td>
+				{mesesSeleccionadosNums.map((mesNum) => (
+				<td key={mesNum} className="text-center fs-1 fw-bold">
+					<div className='bg-porsiaca text-right text-black' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
+						<NumberFormatMoney amount={prestamosPorPagar[mesNum - 1] || 0} />
+					</div>
+				</td>
+				))}
+				<td className="text-center fw-bolder fs-1">
+					<div className='bg-porsiaca text-right text-black'>
+						<NumberFormatMoney amount={prestamosPorPagar.reduce((a, b) => a + b, 0)} />
+					</div>
+				</td>
+				<td className="text-center fw-bolder fs-1">
+					<div className='bg-porsiaca text-right text-black'>
+						{totalGeneral > 0
+							? ((prestamosGroup.totalAnual / totalGeneral) * 100).toFixed(2)
+							: '0.00'}
+					</div>
+				</td>
+			</tr>
+			{/* NUEVA fila de TOTAL PRESTAMOS */}
+			<tr className={`bg-celeste`}>
+				<td className="fw-bold fs-2">
+					<div className='text-change'>
+						DEUDA A RAL
+					</div>
+				</td>
+				{mesesSeleccionadosNums.map((mesNum) => (
+				<td key={mesNum} className="text-center fs-1 fw-bold">
+					<div className='bg-porsiaca text-right text-change' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
+						<NumberFormatMoney amount={prestamosPorPagar[mesNum - 1] || 0} />
+					</div>
+				</td>
+				))}
+				<td className="text-center fw-bolder fs-1">
+					<div className='bg-porsiaca text-right text-change'>
+						<NumberFormatMoney amount={prestamosPorPagar.reduce((a, b) => a + b, 0)} />
+					</div>
+				</td>
+				<td className="text-center fw-bolder fs-1">
+					<div className='bg-porsiaca text-right text-change'>
 						{totalGeneral > 0
 							? ((prestamosGroup.totalAnual / totalGeneral) * 100).toFixed(2)
 							: '0.00'}

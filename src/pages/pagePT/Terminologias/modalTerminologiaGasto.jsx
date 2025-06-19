@@ -120,7 +120,7 @@ export const ModalTerminologiaGasto = ({status, onHide, show  , boleanActualizar
                                 <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="id_grupo" className="form-label">
-                                            Grupo*
+                                            Rubro*
                                         </label>
                                         <Select
                                             onChange={(e) => onInputChangeReact(e, 'id_grupo')}
