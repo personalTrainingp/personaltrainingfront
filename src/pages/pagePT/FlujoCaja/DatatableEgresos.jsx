@@ -19,9 +19,9 @@ export const DatatableEgresos = ({
 }) => {
 	const [dataModal, setDataModal] = useState(null);
 	const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false);
-	const { obtenerGastosxANIO, dataGastosxANIO } = useFlujoCajaStore();
+	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos } = useFlujoCajaStore();
 	const dispatch = useDispatch();
-
+	
 	// 1) Nombres de los meses (índices 0–11)
 	const mesesNombres = useMemo(
 		() => [
@@ -105,6 +105,9 @@ useEffect(() => {
 			};
 		});
 	}, [dataGastosxANIO]);
+
+	
+	
 	// justo después de tu useMemo que calcula totalPorMes y totalGeneral
 		const prestamosGroup = totalesPorGrupo.find(
 		(g) => g.grupo.toUpperCase() === 'PRESTAMOS'
@@ -113,7 +116,8 @@ useEffect(() => {
 	const gruposSinPrestamos = totalesPorGrupo.filter(
 	(g) => g.grupo.toUpperCase() !== 'PRESTAMOS'
 	);
-
+	const gruposNPagos = totalesGrupo(dataNoPagos)
+	console.log({dataNoPagos, nPagos: totalesGrupo(dataNoPagos)});
 	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
 	const { totalPorMes, totalGeneral } = useMemo(() => {
 		// otro array de 12 meses en cero
@@ -134,6 +138,11 @@ useEffect(() => {
 		const sumaAnual = totales.reduce((acc, v) => acc + v, 0);
 		return { totalPorMes: totales, totalGeneral: sumaAnual };
 	}, [dataGastosxANIO]);
+
+	const { totalPorMes:totalesNpagos, totalGeneral: totalgeneralNpagos}= totalGeneralYsumaTotal(dataNoPagos)
+
+	console.log({totalPorMes, totalesNpagos});
+	
 	// 8) Funciones para abrir/cerrar el modal
 	const onCloseModalDetallexCelda = () => {
 		setIsOpenModalDetallexCelda(false);
@@ -143,25 +152,23 @@ useEffect(() => {
 		setDataModal(itemDetail);
 		setIsOpenModalDetallexCelda(true);
 	};
-
 	const mesesSeleccionadosNums = useMemo(
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
 	);
 
-	const widthHeadergrupos = 150;
 	const backgroundMultiValue = bgMultiValue;
-	const onViewMoved = (e, met)=>{
-		console.log({e: e?.conceptos.flatMap(f=>f.items).flatMap(f=>f.items), met});
+	const onViewMoved = (e, met, concepto, grupo)=>{
+		console.log({ asdf: unirPorMes(e.flatMap(f=>f.conceptos)), met});
 		
-		const items = e.conceptos[1].items[met - 1].items
+		const items = unirPorMes(e.flatMap(f=>f.conceptos))[met - 1].items
 		onOpenModalDetallexCelda({
                                 items,
-                                concepto: 'TODOS',
-                                grupo: 'PRESTAMOS',
+                                concepto,
+                                grupo,
                               })
 	}
-	const cuentasPorPagar = [0, 0, 0, 0, 1500, 13000, 0, 0, 0, 0, 0, 0]; // tu array fijo
+	// const cuentasPorPagar = [0, 0, 0, 0, 1500, 13000, 0, 0, 0, 0, 0, 0]; // tu array fijo
 	const prestamosPorPagar = [0, 0, 6700, 2000, 4100, 2000, 0, 0, 0, 0, 0, 0]; // tu array fijo
 	const RalprestamosPorPagar = [0, 0, 6700, 2000, 4100, 2000, 0, 0, 0, 0, 0, 0]; // tu array fijo
 	return (
@@ -336,8 +343,6 @@ useEffect(() => {
                 <tr className={`${bgTotal}`}>
                   <td className="fw-bolder fs-1">TOTAL</td>
                   {mesesSeleccionadosNums.map(mesNum => {
-					console.log({grp});
-					
 						const montoMes = grp.mesesSuma[mesNum - 1];
 												// 2) porcentaje del total del grupo en este mes sobre el total general de ese mes
 												const baseMes = totalPorMes[mesNum - 1] || 0;
@@ -445,7 +450,7 @@ asdf
             <td className="fw-bold fs-2">TOTAL EGRESOS</td>
             {mesesSeleccionadosNums.map(mesNum => (
               <td key={mesNum} className="text-center fs-1 fw-bold">
-				<div className='bg-porsiaca text-right'>
+				<div className='bg-porsiaca text-right' onClick={()=>onViewMoved(dataGastosxANIO, mesNum, 'TOTALES', '')}>
                 	<NumberFormatMoney amount={totalPorMes[mesNum - 1]-prestamosGroup.mesesSuma[mesNum - 1]} />
 				</div>
               </td>
@@ -469,14 +474,14 @@ asdf
 			</td>
             {mesesSeleccionadosNums.map(mesNum => (
               <td key={mesNum} className="text-center fs-1 fw-bold">
-				<div className='bg-porsiaca text-right text-change'>
-                	<NumberFormatMoney amount={cuentasPorPagar[mesNum - 1] || 0} />
+				<div className='bg-porsiaca text-right text-change' onClick={()=>onViewMoved(dataNoPagos, mesNum, 'CUENTAS POR PAGAR', '')}>
+                	<NumberFormatMoney amount={totalesNpagos[mesNum - 1] || 0} />
 				</div>
               </td>
             ))}
             <td className="text-center fw-bolder fs-1">
 				<div className='bg-porsiaca text-right text-change'>
-              		<NumberFormatMoney amount={cuentasPorPagar.reduce((a, b) => a + b, 0)} />
+              		<NumberFormatMoney amount={totalgeneralNpagos} />
 				</div>
             </td>
             <td className="text-center fw-bolder fs-1">
@@ -583,3 +588,75 @@ asdf
 		</>
 	);
 };
+
+
+function unirPorMes(data) {
+  const resultado = [];
+
+  data.forEach(({ items }) => {
+    items.forEach(({ mes, monto_total, items: subitems }) => {
+      let existente = resultado.find(r => r.mes === mes);
+      if (!existente) {
+        existente = { mes, monto_total: 0, items: [] };
+        resultado.push(existente);
+      }
+      existente.monto_total += monto_total;
+      existente.items.push(...subitems);
+    });
+  });
+
+  return resultado;
+}
+function totalesGrupo(dataGastoXgrpxconcepto) {
+	return useMemo(() => {
+		return dataGastoXgrpxconcepto.map((g) => {
+			// inicializamos un array de 12 meses en cero
+			const mesesSuma = Array.from({ length: 12 }, () => 0);
+
+			g.conceptos.forEach((concepto) => {
+				concepto.items.forEach(({ mes, items }) => {
+					// items aquí es el array de gastos de ese mes; sumamos cada gasto[i].monto (o el campo que corresponda)
+					const sumaDelMes = items.reduce((acc, gasto) => {
+						return acc + (gasto.monto*gasto.tc || 0);
+					}, 0);
+					mesesSuma[mes - 1] += sumaDelMes;
+				});
+			});
+
+			const totalAnual = mesesSuma.reduce((sum, m) => sum + m, 0);
+			return {
+				grupo: g.grupo,
+				mesesSuma,
+				totalAnual,
+				conceptos: g.conceptos,
+			};
+		});
+	}, [dataGastoXgrpxconcepto]);
+	
+}
+
+function totalGeneralYsumaTotal(dataGasto) {
+		const { totalPorMes, totalGeneral } = useMemo(() => {
+		// otro array de 12 meses en cero
+		const totales = Array.from({ length: 12 }, () => 0);
+
+		dataGasto.forEach((grupo) => {
+			grupo.conceptos.forEach((concepto) => {
+				concepto.items.forEach(({ mes, items }) => {
+					// sumamos aquí cada gasto.monto dentro de items
+					const sumaDelMes = items.reduce((acc, gasto) => {
+						return acc + (gasto.monto || 0);
+					}, 0);
+					totales[mes - 1] += sumaDelMes;
+				});
+			});
+		});
+
+		const sumaAnual = totales.reduce((acc, v) => acc + v, 0);
+		return { totalPorMes: totales, totalGeneral: sumaAnual };
+	}, [dataGasto]);
+	return {
+		totalPorMes,
+		totalGeneral
+	}
+}

@@ -21,7 +21,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
     // onShow()
     obtenerGastosxANIO(anio, id_enterprice)
   }
-  console.log({data: agruparPorComprobante(data?.items)});
+  console.log({data: data});
   
   return (
     <>

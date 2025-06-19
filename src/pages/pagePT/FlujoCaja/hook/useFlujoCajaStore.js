@@ -53,29 +53,20 @@ export const useFlujoCajaStore = () => {
 					fecha_fin_tc: termino, // null si no hay próximo cambio
 				};
 			});
-			console.log(
-				data.gastos,
-				agruparPorGrupoYConcepto(
-					aplicarTipoDeCambio(dataTCs, data.gastos).filter(
-						(e) => e.id_estado_gasto === 1424
-					),
-					dataParametrosGastos.termGastos
-				).filter((e) => e.grupo !== 'PRESTAMOS'),
-				'aquiiiii'
-			);
 			setdataGastosxANIO(
 				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTCs, data.gastos).filter(
 						(e) => e.id_estado_gasto === 1423
 					),
 					dataParametrosGastos.termGastos
-				).filter((e) => e.grupo !== '')
+				)
 			);
 			setdataNoPagos(
-				estructurarParaDetalle(
+				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTCs, data.gastos).filter(
 						(e) => e.id_estado_gasto === 1424
-					)
+					),
+					dataParametrosGastos.termGastos
 				)
 			);
 		} catch (error) {
