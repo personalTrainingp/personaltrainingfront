@@ -159,8 +159,6 @@ useEffect(() => {
 
 	const backgroundMultiValue = bgMultiValue;
 	const onViewMoved = (e, met, concepto, grupo)=>{
-		console.log({ asdf: unirPorMes(e.flatMap(f=>f.conceptos)), met});
-		
 		const items = unirPorMes(e.flatMap(f=>f.conceptos))[met - 1].items
 		onOpenModalDetallexCelda({
                                 items,
@@ -423,7 +421,10 @@ useEffect(() => {
                 <tr>
 					<td className="fw-bolder fs-2" colSpan={selectedMonths.length+1}>
 						<div className='opacity-0'>
-asdf
+							asdf
+						</div>
+						<div>
+							NOTA: TODOS LOS PAGOS QUE FIGURAN AQUI, ESTAN HECHOS EN BASE A LA FECHA DE PROVISION
 						</div>
 					</td>
                 </tr>
@@ -521,7 +522,7 @@ asdf
 			<tr className={`bg-verdeclaro`}>
 				<td className="fw-bold fs-2">
 					<div className='text-black'>
-						DEVOLUCION PRESTAMOS
+						DEVOLUCION PRESTAMOS A RAL
 					</div>
 				</td>
 				{mesesSeleccionadosNums.map((mesNum) => (
@@ -548,7 +549,7 @@ asdf
 			<tr className={`bg-celeste`}>
 				<td className="fw-bold fs-2">
 					<div className='text-change'>
-						DEUDA A RAL
+						SALDO DEUDA A RAL
 					</div>
 				</td>
 				{mesesSeleccionadosNums.map((mesNum) => (

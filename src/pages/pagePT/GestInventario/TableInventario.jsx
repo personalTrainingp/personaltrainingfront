@@ -528,7 +528,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                     </TabView>
             <ModalInventario id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             {/* <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/> */}
-            <ModalMovimientoItem idArticulo={articulo?articulo.id:0} show={isOpenModalCube} onHide={onCloseModalCube}/>
+            <ModalMovimientoItem id_enterprice={id_enterprice} idArticulo={articulo?articulo.id:0} show={isOpenModalCube} onHide={onCloseModalCube}/>
             <ModalAgrupadoxEtiquetas show={isOpenModalAgruparxEtiquetas} onHide={onCloseModalAgrupadoxEtiquetas} data={dataAgrupadoEtiquetas}/>
             </>
     );

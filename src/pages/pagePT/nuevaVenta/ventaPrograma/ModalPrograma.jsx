@@ -126,17 +126,15 @@ export const ModalPrograma = ({show, hide}) => {
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <Col xxl={7}>
+            <Col xxl={12}>
               <div>
-                <Row className='container-imgs d-flex justify-content-center'>
+                <div className='d-flex justify-content-center align-items-center'>
                   {
                     datapgmPT.map(e=>{
-                      console.log(`${e.tb_image?.width-100}px`);
-                      
                       return(
-                      <Col className={`content-img`} style={{cursor: 'pointer'}} key={e.id_pgm}>
+                      <div className={`content-img`} style={{cursor: 'pointer'}} key={e.id_pgm}>
                         <label>
-                        <img className={`hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} width={`${e.tb_image?.width-110}`} height={`${e.tb_image?.height-50}`} src={`${config.API_IMG.LOGO}${e.tb_image?.name_image}`}/>
+                        <img className={`hover-card-border ${id_pgm==e.id_pgm?'card-border':''}`} width={`${e.tb_image?.width-50}`} height={`100%`} src={`${config.API_IMG.LOGO}${e.tb_image?.name_image}`}/>
                           <input
                             value={id_pgm}
                             type="radio"
@@ -145,11 +143,11 @@ export const ModalPrograma = ({show, hide}) => {
                             onChange={(o)=>onChangeFunction(o, e)}
                           />
                         </label>
-                      </Col>
+                      </div>
                       )
                     })
                   }
-                </Row>
+                </div>
               <form onSubmit={onSubmitRegisterPrograma} className='mt-3'>
                           <input 
                             type='text' 
@@ -231,7 +229,7 @@ export const ModalPrograma = ({show, hide}) => {
                   </form>
               </div>
             </Col>
-            <Col lg={5}>
+            <Col lg={12}>
                 {dataPrograma && (
                   <Row>
                     <Col>

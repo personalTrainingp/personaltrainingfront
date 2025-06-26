@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { Link } from 'react-router-dom';
-import { arrayDistrito, arrayTipoCliente } from '@/types/type';
+import { arrayCargoEmpl, arrayDistrito, arrayTipoCliente } from '@/types/type';
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import config from '@/config';
 import { Image } from 'primereact/image';
@@ -184,6 +184,13 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
             </div>
         )
     }
+    const cargoBodyTemplate = (rowData)=>{
+        return (
+            <div className="">
+                {arrayCargoEmpl.find(f=>f.value===Number(rowData?.cargo_empl))?.label}
+            </div>
+        )
+    }
     const header = renderHeader();
 
     return (
@@ -206,13 +213,14 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                         filters={filters} 
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         rowsPerPageOptions={[10, 25, 50]} 
-                        globalFilterFields={["id_cli", "nombres_apellidos_empl", "email_cli", "tel_cli", "distrito"]} 
+                        globalFilterFields={["id_cli", "nombres_apellidos_empl", "email_cli", "tel_cli", "distrito", "cargo_empl"]} 
                         header={header}
                         emptyMessage="SOCIOS NO ENCONTRADOS.">
                 {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}
                 {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
-                <Column header="Id" filterField="id_cli" style={{ minWidth: '2rem' }} sortable body={IdBodyTemplate}/>
+                {/* <Column header="Id" filterField="id_cli" style={{ minWidth: '2rem' }} sortable body={IdBodyTemplate}/> */}
                 <Column header="AVATAR" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={imagenBodyTemplate} filter/>
+                <Column header="CARGO" style={{ minWidth: '2rem' }} body={cargoBodyTemplate}/>
                 <Column header="NOMBRES Y APELLIDOS" filterField="nombres_apellidos_empl" style={{ minWidth: '10rem' }} sortable body={NombresApellidosEmplBodyTemplate} filter/>
                 <Column header="cumpleaños" style={{ minWidth: '10rem' }} sortable body={FecNacEmplBodyTemplate} filter/>
                 <Column header="EMAIL" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>

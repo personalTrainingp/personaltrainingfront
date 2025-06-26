@@ -2,10 +2,11 @@ import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayCargoEmpl, arrayDepartamentoEmpl, arrayDistrito, arrayEstadoCivil, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc, arrayTipoJornadaEmpl } from '@/types/type'
 import dayjs from 'dayjs'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
 import Select from 'react-select'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 
 /*
 id_cli(pin):7
@@ -60,10 +61,21 @@ export const InformacionGeneralEmpleado = ({data}) => {
         tipoContrato_empl,
         horario_empl,
         onInputChange, onInputChangeReact, onFileChange } = useForm(data)
+	    const [selectedFile, setSelectedFile] = useState(sinAvatar);
         
-	const [selectedFile, setSelectedFile] = useState(sinAvatar);
-    
+                const { obtenerDistritosxDepxProvincia:obtenerDistritosDeLima, dataDistritos:distritosDeLima } = useTerminoStore()
+                const { obtenerDistritosxDepxProvincia:obtenerDistritosDeCallao, dataDistritos:distritosDeCallao } = useTerminoStore()
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
+    
+            
+              useEffect(() => {
+                obtenerDistritosDeLima(1501, 15)
+                obtenerDistritosDeCallao(701, 7)
+              }, [])
+        const dataDistritos = [
+            ...distritosDeLima,
+            ...distritosDeCallao
+        ]
         const { startUpdateUsuarioEmpleado } = useUsuarioStore()
         const onUpdateEmpleado = ()=>{
             startUpdateUsuarioEmpleado(formState, data.uid, formStateAvatar.imgAvatar_BASE64, data.uid)
@@ -278,8 +290,8 @@ export const InformacionGeneralEmpleado = ({data}) => {
                     placeholder={'Seleccione el distrito'}
                     className="react-select"
                     classNamePrefix="react-select"
-                    options={arrayDistrito}
-                    value={arrayDistrito.find(
+                    options={dataDistritos}
+                    value={dataDistritos.find(
                         (option) => option.value === ubigeo_distrito_empl
                     )}
                     required

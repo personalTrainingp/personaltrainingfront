@@ -30,13 +30,9 @@ export const InformacionGeneralCliente = ({data}) => {
     
         const { obtenerDistritosxDepxProvincia:obtenerDistritosDeLima, dataDistritos:distritosDeLima } = useTerminoStore()
         const { obtenerDistritosxDepxProvincia:obtenerDistritosDeCallao, dataDistritos:distritosDeCallao } = useTerminoStore()
-
-    
         const [selectedFile, setSelectedFile] = useState(sinAvatar);
-    // console.log(user);
-    
     const { formState, 
-        nombre_cli, 
+        nombre_cli,     
         apPaterno_cli, 
         apMaterno_cli, 
         fecha_nacimiento,

@@ -12,26 +12,32 @@ const regRegistro = {
     id_motivo: 0, 
     observacion: '',
     fecha_cambio: '',
+    id_lugar_destino: 0
 }
-export const ModalCustomMovimientoKardex = ({onHide, show, movimiento, idArticulo}) => {
+export const ModalCustomMovimientoKardex = ({onHide, show, movimiento, idArticulo, id_enterprice}) => {
         const { postKardexxMovimientoxArticulo, dataArticulos } = useKardexStore()
         const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
-        const { formState, cantidad, fecha_cambio, id_motivo, observacion, onInputChange, onInputChangeReact, onResetForm } = useForm(regRegistro)
+            const { obtenerZonas, dataZonas } =  useTerminoStore()
+        const { formState, cantidad, fecha_cambio, id_motivo, observacion, id_lugar_destino, onInputChange, onInputChangeReact, onResetForm } = useForm(regRegistro)
         useEffect(() => {
-            obtenerParametroPorEntidadyGrupo('kardex', movimiento)
-        }, [])
+            if(show){
+                obtenerParametroPorEntidadyGrupo('kardex', movimiento)
+                obtenerZonas(id_enterprice)
+            }
+        }, [show])
         const onCancelModal = ()=>{
             onHide()
             onResetForm()
         }
     const onSubmitKardex = (e)=>{
         e.preventDefault()
-        postKardexxMovimientoxArticulo(action, id_enterprice, {...formState, id_item: idArticulo})
+        postKardexxMovimientoxArticulo(movimiento, id_enterprice, {...formState, id_item: idArticulo})
         // onCancelModal()
     }
 
   return (
     <Dialog onHide={onHide} visible={show} header={`AGREGAR ${movimiento}`} style={{width: '30rem', height: '40rem'}}>
+        {id_enterprice}
         <form onSubmit={onSubmitKardex}>
         <Row>
             <Col lg={12}>
@@ -58,6 +64,44 @@ export const ModalCustomMovimientoKardex = ({onHide, show, movimiento, idArticul
                         required
                     />
                 </div>
+                {
+                    movimiento === 'traspaso' && (
+                        <div className='m-2'>
+                            <label>ZONAS</label>
+                            <Select
+                                options={dataZonas}
+                                onChange={(e) => onInputChangeReact(e, 'id_lugar_destino')}
+                                name="id_lugar_destino"
+                                placeholder={'Selecciona la zona'}
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                value={dataZonas.find(
+                                    (option) => option.value === id_lugar_destino
+                                )}
+                                required
+                            />
+                        </div>
+                    )
+                }
+                {/* {
+                    movimiento === 'traspaso' && (
+                        <div className='m-2'>
+                            <label>EMPRESA</label>
+                            <Select
+                                options={dataZonas}
+                                onChange={(e) => onInputChangeReact(e, 'id_lugar_destino')}
+                                name="id_lugar_destino"
+                                placeholder={'Selecciona la zona'}
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                value={dataZonas.find(
+                                    (option) => option.value === id_lugar_destino
+                                )}
+                                required
+                            />
+                        </div>
+                    )
+                } */}
                 <div className='m-2'>
                     <label>OBSERVACION</label>
                     <textarea className='form-control' onChange={onInputChange} id="" value={observacion} name='observacion'></textarea>

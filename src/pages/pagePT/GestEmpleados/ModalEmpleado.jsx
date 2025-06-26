@@ -88,8 +88,8 @@ export const ModalEmpleado = ({ show, onHide, id_empresa, id_Estado }) => {
 }
   const btnCancelModal = ()=>{
     onHide()
-    onResetForm()
-    resetAvatar()
+    // onResetForm()
+    // resetAvatar()
     dispatch(onResetComentario())
     dispatch(onReset_CE())
 }

@@ -25,20 +25,28 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
   
   return (
     <>
-    <Dialog visible={show} style={{width: '100rem'}} onHide={onHide} header={`EGRESOS POR DETALLE - ${data?.grupo} - ${data?.concepto}`}>
+    <Dialog visible={show} style={{width: '120rem'}} onHide={onHide} header={`EGRESOS POR DETALLE - ${data?.grupo} - ${data?.concepto}`}>
         <Table  responsive hover striped>
           <thead className={`${bgEmpresa}`}>
               <tr>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'></div></th>
-                  <th className='text-white p-1 fs-3'>PROV. / COLABORADOR</th>
-                  <th className='text-white p-1 fs-3'>descripcion / evento</th>
-                  <th className='text-white p-1 fs-3'>N° DE COMPROBANTE </th>
-                  <th className='text-white p-1 fs-3'>N° OPERACION </th>
+                  <th className='text-white p-1 fs-3'>
+                    <div className='bg-porsiaca' style={{width: '350px'}}>
+                      PROVEEDOR/<br/> COLABORADOR
+                    </div>
+                    </th>
+                  <th className='text-white p-1 fs-3'>
+                    <div  className='bg-porsiaca' style={{width: '350px'}}>
+                      descripcion / evento
+                    </div>
+                  </th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de comprobante</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de pago</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>monto</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>DOCUMENTO</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>FORMA DE PAGO</div></th>
+                  <th className='text-white p-1 fs-3'>N° DE COMPROBANTE </th>
+                  <th className='text-white p-1 fs-3'>N° OPERACION </th>
               </tr>
           </thead>
           <tbody>
@@ -50,8 +58,6 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                           <td className='fs-2' onClick={()=>onOpenModalDetalleGasto(f.id)}><span className={isSinDoc?'text-primary':'text-black'}><i className='pi pi-pencil fw-bold text-primary cursor-pointer p-1 fs-2'/></span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.tb_Proveedor?.razon_social_prov}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.descripcion}</span></td>
-                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_comprabante}</span></td>
-                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_operacion===''?'EFECTIVO':f.n_operacion}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{dayjs(f.fec_comprobante).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{dayjs(f.fec_pago).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-green'}>
@@ -64,6 +70,8 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                           </span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_comprobante?.label_param}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_forma_pago?.label_param}</span></td>
+                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_comprabante}</span></td>
+                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_operacion===''?'EFECTIVO':f.n_operacion}</span></td>
                       </tr>
                     )
                   })

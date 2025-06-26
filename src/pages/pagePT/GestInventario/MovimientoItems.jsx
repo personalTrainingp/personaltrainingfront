@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 import { ModalCustomMovimientoKardex } from './ModalCustomMovimientoKardex';
 import { Dialog } from 'primereact/dialog';
 
-export const MovimientoItems = ({onShowInventario, idArticulo, movimiento}) => {
+export const MovimientoItems = ({onShowInventario, idArticulo, movimiento, id_enterprice}) => {
   const { obtenerKardexXArticuloXMovimiento, dataMovimientos } = useKardexStore()
   useEffect(() => {
     obtenerKardexXArticuloXMovimiento(idArticulo, movimiento)
@@ -72,7 +72,7 @@ export const MovimientoItems = ({onShowInventario, idArticulo, movimiento}) => {
             }
                 </tbody>
               </Table>
-      <ModalCustomMovimientoKardex  idArticulo={idArticulo} show={isOpenModalCustomMovKardex} movimiento={movimiento} onHide={onCloseModalCustomMovKardex}/>
+      <ModalCustomMovimientoKardex id_enterprice={id_enterprice} idArticulo={idArticulo} show={isOpenModalCustomMovKardex} movimiento={movimiento} onHide={onCloseModalCustomMovKardex}/>
     </div>
   )
 }

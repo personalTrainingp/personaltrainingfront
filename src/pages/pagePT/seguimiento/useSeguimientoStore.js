@@ -29,21 +29,6 @@
 
 import { PTApi } from '@/common';
 import { useState } from 'react';
-function agregarDiasHabiles(fecha, dias) {
-	let fechaB = new Date(fecha);
-	let diasAgregados = 0;
-
-	while (diasAgregados < dias) {
-		fechaB.setDate(fechaB.getDate() + 1);
-		let diaSemana = fechaB.getDay();
-		if (diaSemana !== 0 && diaSemana !== 6) {
-			// Evita sábado (6) y domingo (0)
-			diasAgregados++;
-		}
-	}
-
-	return fechaB;
-}
 export const useSeguimientoStore = () => {
 	const [dataSeguimientos, setdataSeguimientos] = useState([]);
 	const obtenerTodoSeguimiento = async (id_empresa, isClienteActive) => {

@@ -286,6 +286,22 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
             </div>
         )
     }
+    const nComprobanteBodyTemplate = (rowData)=>{
+        return (
+            
+            <div className="flex align-items-center gap-2 ">
+                <span>{highlightText( `${rowData.n_comprabante}`, globalFilterValue)}</span>
+            </div>
+        )
+    }
+    const nOperacionBodyTemplate =(rowData)=>{
+        return (
+            
+            <div className="flex align-items-center gap-2 ">
+                <span>{highlightText( `${rowData.n_operacion}`, globalFilterValue)}</span>
+            </div>
+        )
+    }
     const onOpenModalGastos = (e)=>{
         setgastoxID(undefined)
         onOpenModalIvsG(e)
@@ -306,6 +322,8 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
     </Row>
   </ColumnGroup>
 );
+console.log({customers});
+
     return (
         <>
             {
@@ -338,7 +356,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
                         onSelectionChange={(e) => setselectedCustomers(e.value)}
                         filters={filters} 
                         filterDisplay="menu" 
-                        globalFilterFields={['id', 'fec_pago', 'id_prov', 'tb_parametros_gasto.nombre_gasto', 'descripcion', 'monto', 'moneda', "tb_Proveedor.razon_social_prov","fec_registro"]} 
+                        globalFilterFields={['id', 'fec_pago', 'id_prov', 'tb_parametros_gasto.nombre_gasto', 'descripcion', 'monto', 'n_operacion', 'n_comprabante', 'moneda', "tb_Proveedor.razon_social_prov","fec_registro"]} 
                         emptyMessage="Egresos no encontrados."
                         showGridlines 
                         loading={loading} 
@@ -347,12 +365,14 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
                         onValueChange={valueFiltered}
                         >
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Id" field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="COMPROBANTE" field='n_comprabante' filterField="n_comprabante" sortable style={{ width: '1rem' }} filter body={nComprobanteBodyTemplate}/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="OPERACION" field='n_operacion' filterField="n_operacion" sortable style={{ width: '1rem' }} filter body={nOperacionBodyTemplate}/>
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Fecha registro" field='fec_registro' filterField="fec_registro" sortable dataType="date" style={{ width: '3rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate} />
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Fecha pago" field='fec_pago' filterField="fec_pago" sortable dataType="date" style={{ width: '3rem' }} body={fecPagoBodyTemplate} filter filterElement={dateFilterTemplate} />
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Fecha de comprobante" field='fec_comprobante' filterField="fec_comprobante" style={{ minWidth: '10rem' }} sortable body={fecComprobanteBodyTemplate} dataType="date" filter filterElement={dateFilterTemplate}/>
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Tipo de gasto" field='tipo_gasto' filterField='tipo_gasto' style={{ minWidth: '10rem' }} sortable body={tipoGastosBodyTemplate} filter/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="RUBRO" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
-                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Grupo" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header={<>MONTO</>} field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  

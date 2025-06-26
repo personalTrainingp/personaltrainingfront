@@ -1,6 +1,9 @@
 *{
   text-transform: uppercase !important;
   font-family: Poppins, sans-serif;
+  line-height: 1.5;
+  font-feature-settings: "tnum" !important;
+  
   // font-size: 20% !important;
 }
 /* Supongamos que el componente Calendar tiene una clase específica */
