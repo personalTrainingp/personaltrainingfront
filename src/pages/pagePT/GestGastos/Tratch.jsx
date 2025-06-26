@@ -38,6 +38,8 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
     const { obtenerGastos, obtenerProveedoresUnicos, isLoadingData } = useGf_GvStore()
     const {dataGastos, dataProvUnicosxGasto} = useSelector(e=>e.finanzas)
     const [valueFilter, setvalueFilter] = useState([])
+        const [search, setSearch] = useState('');
+    
     useEffect(() => {
         obtenerGastos(id_enterprice)
         // obtenerProveedoresUnicos()
@@ -45,7 +47,6 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
     useEffect(() => {
 
     }, [])
-    
         useEffect(() => {
         const fetchData = () => {
             setCustomers(getCustomers(dataGastos));
@@ -171,13 +172,14 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
     const renderHeader = () => {
         return (
             <div className="d-flex justify-content-between">
-                <div className='d-flex'>
-                    <IconField iconPosition="left">
-                        <InputIcon className="pi pi-search" />
-                        <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Buscador general" />
-                    </IconField>
-                    <Button type="button" icon="pi pi-filter-slash" outlined onClick={clearFilter} />
-                </div>
+                <div className="d-flex justify-content-between">
+                                      <InputText
+                                        placeholder="Buscar..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="mb-3"
+                                    />
+                            </div>
                 <div className='d-flex'>
                     <Button label="IMPORTAR" icon='pi pi-file-import' onClick={()=>setshowModalImportadorData(true)} disabled text/>
                     <ExportToExcel data={valueFilter}/>
@@ -193,7 +195,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
                         {rowData.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
                     {highlightText(
                         FUNMoneyFormatter(rowData.monto, ''),
-                        globalFilterValue
+                        search
                     )}
                 </div>
             </div>
@@ -236,21 +238,21 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
     const proveedorBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData?.tb_Proveedor?.razon_social_prov?rowData.tb_Proveedor.razon_social_prov:'SIN', globalFilterValue)}</span>
+                <span>{highlightText(rowData?.tb_Proveedor?.razon_social_prov?rowData.tb_Proveedor.razon_social_prov:'SIN', search)}</span>
             </div>
         );
     }
     const tipoGastoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText( rowData.tb_parametros_gasto?.nombre_gasto?rowData.tb_parametros_gasto?.nombre_gasto:'SIN', globalFilterValue)}</span>
+                <span>{highlightText( rowData.tb_parametros_gasto?.nombre_gasto?rowData.tb_parametros_gasto?.nombre_gasto:'SIN', search)}</span>
             </div>
         );
     };
     const grupoBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2" >
-                <span>{highlightText(`${rowData.tb_parametros_gasto?.grupo}`, globalFilterValue)}</span>
+                <span>{highlightText(`${rowData.tb_parametros_gasto?.grupo}`, search)}</span>
             </div>
         );
     };
@@ -274,7 +276,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
     const IdBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(`${rowData.id}`, globalFilterValue)}</span>
+                <span>{highlightText(`${rowData.id}`, search)}</span>
             </div>
         )
     }
@@ -282,7 +284,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
         return (
             
             <div className="flex align-items-center gap-2 ">
-                <span>{highlightText( `${rowData.tipo_gasto}`, globalFilterValue)}</span>
+                <span>{highlightText( `${rowData.tipo_gasto}`, search)}</span>
             </div>
         )
     }
@@ -290,7 +292,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
         return (
             
             <div className="flex align-items-center gap-2 ">
-                <span>{highlightText( `${rowData.n_comprabante}`, globalFilterValue)}</span>
+                <span>{highlightText( `${rowData.n_comprabante}`, search)}</span>
             </div>
         )
     }
@@ -298,7 +300,7 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
         return (
             
             <div className="flex align-items-center gap-2 ">
-                <span>{highlightText( `${rowData.n_operacion}`, globalFilterValue)}</span>
+                <span>{highlightText( `${rowData.n_operacion}`, search)}</span>
             </div>
         )
     }
@@ -324,6 +326,24 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
 );
 console.log({customers});
 
+                                const flattenObjectValues = (obj) => {
+    let result = [];
+    for (let key in obj) {
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+            result = result.concat(flattenObjectValues(obj[key]));
+        } else {
+            result.push(String(obj[key]));
+        }
+    }
+    return result;
+};
+
+const filterData = customers?.filter((item) => {
+    const values = flattenObjectValues(item);
+    return values.some((value) =>
+        value.toLowerCase().includes(search.toLowerCase())
+    );
+});
     return (
         <>
             {
@@ -345,7 +365,7 @@ console.log({customers});
                     </div>
                     <DataTable 
                         size='small' 
-                        value={customers} 
+                        value={filterData} 
                         paginator 
                         header={header}
                         rows={10} 
