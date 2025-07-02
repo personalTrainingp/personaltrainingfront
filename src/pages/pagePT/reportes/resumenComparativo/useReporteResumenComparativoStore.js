@@ -4,31 +4,13 @@ import { useState } from 'react';
 dayjs.extend(utc);
 
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
-	const d = new Date(date);
+	const base = dayjs.utc(date);
 
-	if (isStart) {
-		d.setHours(0, 0, 0, 0); // 00:00:00.000
-	} else {
-		d.setHours(23, 59, 59, 999); // 23:59:59.999
-	}
+	const formatted = isStart
+		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]')
+		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
 
-	// Formato: 'YYYY-MM-DDTHH:mm:ss.SSS0000 -05:00'
-	const pad = (n, len = 2) => String(n).padStart(len, '0');
-	const year = d.getFullYear();
-	const month = pad(d.getMonth() + 1);
-	const day = pad(d.getDate());
-	const hours = pad(d.getHours());
-	const minutes = pad(d.getMinutes());
-	const seconds = pad(d.getSeconds());
-	const millis = pad(d.getMilliseconds(), 3);
-
-	// Completar los 7 dígitos de fracción de segundo
-	const fullMillis = `${millis}0000`;
-
-	// Offset manual -5:00 (hora de Perú)
-	const offset = '-05:00';
-
-	return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${fullMillis} ${offset}`;
+	return formatted;
 }
 
 const agruparPorIdPgm = (data) => {
