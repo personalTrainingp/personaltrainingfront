@@ -453,9 +453,38 @@ function agruparPorVendedores(data) {
 	return resultado.sort((a, b) => b.items.length - a.items.length);
 }
 
+function agruparPorPgm(data) {
+	const resultado = [];
+
+	data?.forEach((item) => {
+		const { name_pgm } = item;
+
+		// Verificar si ya existe un grupo con la misma cantidad de sesiones
+		let grupo = resultado?.find((g) => g.lbel === name_pgm);
+
+		if (!grupo) {
+			// Si no existe, crear un nuevo grupo
+			grupo = {
+				lbel: name_pgm,
+				// propiedad: <div style={{width: '350px'}}>{semanas_st} SEMANAS <br/> {sesiones} Sesiones</div>,
+				propiedad: `${name_pgm}`,
+				name_pgm,
+				items: [],
+			};
+			resultado.push(grupo);
+		}
+
+		// Agregar el item al grupo correspondiente
+		grupo.items.push(item);
+	});
+
+	return resultado.sort((a, b) => b.items.length - a.items.length);
+}
+
 export const useAdquisicionStore = () => {
 	const [data, setdata] = useState([]);
 	const [dataVendedores, setdataVendedores] = useState([]);
+	const [dataProgramas, setdataProgramas] = useState([]);
 	const dispatch = useDispatch();
 	const obtenerTodoVentas = async () => {
 		try {
@@ -493,14 +522,25 @@ export const useAdquisicionStore = () => {
 					};
 				}
 			);
+			const programas = agruparPorPgm(eliminarDuplicadosPorId(ventasSinCero)).map((f) => {
+				return {
+					...f,
+					items: agruparPorMesYAnio(f.items, '2024-09-01', 9).map((m) => {
+						return {
+							...m,
+						};
+					}),
+				};
+			});
 			console.log(
 				{ agregarItemsDias },
-				{ vend: vendedores },
+				{ vend: programas },
 				eliminarDuplicadosPorId(ventasSinCero),
 				agruparPorMesYAnioYDia(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
 				agruparPorMesYAnio(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
 				'holi'
 			);
+			setdataProgramas(programas);
 			setdataVendedores(vendedores);
 			setdata(agregarItemsDias);
 		} catch (error) {
@@ -511,6 +551,7 @@ export const useAdquisicionStore = () => {
 		obtenerTodoVentas,
 		data,
 		dataVendedores,
+		dataProgramas,
 	};
 };
 

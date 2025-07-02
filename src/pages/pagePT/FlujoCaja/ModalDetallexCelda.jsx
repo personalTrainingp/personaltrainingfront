@@ -68,7 +68,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                                   <SymbolSoles numero={<NumberFormatMoney amount={f.monto * f.tc}/>}/>
                             </div>
                           </span></td>
-                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_comprobante?.label_param}</span></td>
+                          <td className='fs-2 text-primary'><span className={'text-primary fw-bold'}>{f.parametro_comprobante?.label_param}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_forma_pago?.label_param}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_comprabante}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_operacion===''?'EFECTIVO':f.n_operacion}</span></td>
@@ -85,24 +85,44 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
             </div>
           )
         }
-        <span className='fs-1'>RESUMEN:</span>
-        {
-          agruparPorComprobante(data?.items).map(m=>{
-            const formasPago = agruparPorFormaPago(m?.items).map(item => `${item.nombre_fp}: ${FUNMoneyFormatter(item.monto_total)}`).join(', ');
-            
-            return (
-              <> 
-              <div className='fs-2'>{m.nombre_com}: <SymbolSoles isbottom={'12'} numero={<NumberFormatMoney amount={m.monto_total}/>}/>  ({formasPago})</div>
-              </>
-            )
-          })
-        }
+        <div className='d-flex justify-content-around'>
+          <div>
+            <span className='text-white bg-primary fs-1'>GASTOS PROVEEDORES</span>
+            {
+              agruparPorProveedor(data?.items).map((m, i)=>{
+                return (
+                  <>
+                  <div className='fs-2'><span className='text-primary fw-bold'>{i+1}. </span>{m.nombre_fp}: {FUNMoneyFormatter(m.monto_total)}</div>
+                  </>
+                )
+              })
+            }
+          </div>
+          <div className=''>
+            <span className='text-white bg-primary fs-1'>FORMA DE PAGO:</span>
+            {
+              agruparPorComprobante(data?.items).map((m, i)=>{
+                const formasPago = agruparPorFormaPago(m?.items).map(item => `${item.nombre_fp}: ${FUNMoneyFormatter(item.monto_total)}`).join(', ');
+                console.log({formasPago: agruparPorProveedor(m?.items), items: m})
+                return (
+                  <> 
+                  <div className='fs-2'><span className='text-primary fw-bold'>{i+1}. {m.nombre_com} (3)</span>: <SymbolSoles isbottom={'12'} numero={<NumberFormatMoney amount={m.monto_total}/>}/>  ({formasPago})</div>
+                  </>
+                )
+              })
+            }
+          </div>
+        </div>
     </Dialog>
     <ModalIngresosGastos onHide={onCloseModalDetalleGasto} data={gastoxID} isLoading={isLoading} id_enterprice={id_enterprice} onShow={()=>setisModalDetalleGasto(true)} show={isModalDetalleGasto}   />
     </>
   )
 }
-
+const ordenComprobante = [
+  {nombre_com: 'FACTURA', orden: 1},
+  {nombre_com: 'BOLETA', orden: 2},
+  {nombre_com: 'CARGO', orden: 3},
+]
 
 function agruparPorComprobante(data) {
   const grupos = {};
@@ -129,6 +149,27 @@ function agruparPorFormaPago(data) {
 
   data?.forEach(item => {
     const nombre_fp = item?.parametro_forma_pago?.label_param || 'SIN DOCUMENTO';
+    if (!grupos[nombre_fp]) {
+      grupos[nombre_fp] = {
+        nombre_fp,
+        monto_total: 0,
+        items: []
+      };
+    }
+    grupos[nombre_fp].monto_total += item.monto*item.tc || 0;
+    grupos[nombre_fp].items.push(item);
+  });
+  console.log(Object.values(grupos));
+  
+  return Object.values(grupos);
+}
+
+
+function agruparPorProveedor(data) {
+  const grupos = {};
+
+  data?.forEach(item => {
+    const nombre_fp = item?.tb_Proveedor?.razon_social_prov || 'SIN DOCUMENTO';
     if (!grupos[nombre_fp]) {
       grupos[nombre_fp] = {
         nombre_fp,

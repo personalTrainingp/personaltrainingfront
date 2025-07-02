@@ -3,11 +3,14 @@ import dayjs, { utc } from 'dayjs';
 import { useState } from 'react';
 dayjs.extend(utc);
 
-function formatDateToSQLServerWithDayjs(date) {
-	console.log(dayjs.utc(date).format('YYYY-MM-DD HH:mm:ss.SSS'), 'dame');
+function formatDateToSQLServerWithDayjs(date, isStart = true) {
+	const base = dayjs.utc(date);
 
-	return dayjs.utc(date).format('YYYY-MM-DD HH:mm:ss.SSS'); // Asegurar que esté en UTC
-	// .format('YYYY-MM-DD HH:mm:ss.SSS0000 +00:00');
+	const formatted = isStart
+		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS')
+		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS');
+
+	return formatted;
 }
 
 const agruparPorIdPgm = (data) => {
@@ -115,8 +118,8 @@ export const useReporteResumenComparativoStore = () => {
 		const { data } = await PTApi.get('/venta/reporte/obtener-comparativo-resumen', {
 			params: {
 				arrayDate: [
-					formatDateToSQLServerWithDayjs(RANGE_DATE[0]),
-					formatDateToSQLServerWithDayjs(RANGE_DATE[1]),
+					formatDateToSQLServerWithDayjs(RANGE_DATE[0], true),
+					formatDateToSQLServerWithDayjs(RANGE_DATE[1], false),
 				],
 			},
 		});

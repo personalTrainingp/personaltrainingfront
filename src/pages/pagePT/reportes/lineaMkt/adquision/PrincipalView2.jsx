@@ -31,7 +31,7 @@ const propsResumen = (items)=>{
   }
 }
 export const PrincipalView = () => {
-  const { obtenerTodoVentas, data, dataVendedores } = useAdquisicionStore()
+  const { obtenerTodoVentas, data, dataVendedores, dataProgramas } = useAdquisicionStore()
   const [isOpenModalFilteredDia, setisOpenModalFilteredDia] = useState(false)
   const [resultadosFiltrados, setResultadosFiltrados] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -121,6 +121,8 @@ export const PrincipalView = () => {
             ventas // Acumulado de todos los items
         };
       }
+      console.log({data});
+      
   return (//comparativo ventas por categoria total por dia vs mes //comparativo ventas por asesor por categoria por dia vs mes
     <>
     <PageBreadcrumb title={'comparativo ventas por categoria total por dia vs mes'}/>
@@ -172,6 +174,16 @@ export const PrincipalView = () => {
           return (
             <>
             <h1>{g.nombre_empl}</h1>
+            <DataDroppable dataMeses={g.items} desdeOption={desdeOption} hastaOption={hastaOption}/>
+            </>
+          )
+        })
+      }
+      {
+        dataProgramas.map(g=>{
+          return (
+            <>
+            <h1 className='text-center'>{g.name_pgm}</h1>
             <DataDroppable dataMeses={g.items} desdeOption={desdeOption} hastaOption={hastaOption}/>
             </>
           )
