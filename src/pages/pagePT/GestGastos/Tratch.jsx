@@ -65,7 +65,6 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
             const [yearc=year, monthc=month, dayc=day] = item.fec_comprobante.split('-').map(Number)
             // const [yearr=year, monthr = month, dayr = day] = item.fec_registro.split('-').map(Number)
             // console.log(item.fec_registro);
-            
             let date = dayjs.utc(item.fec_registro);
             newItem.fec_registro = new Date(date.format());
             newItem.fec_comprobante =new Date(yearc, monthc-1, dayc);

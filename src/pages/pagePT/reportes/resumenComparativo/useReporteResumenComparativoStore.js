@@ -241,6 +241,7 @@ export const useReporteResumenComparativoStore = () => {
 				tb_image: [],
 			}
 		);
+		console.log({ aqui: data, RANGE_DATE });
 
 		// console.log(
 		// 	agruparPorIdPgmMarcacions(dataMarcaciones),
