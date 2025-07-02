@@ -4,11 +4,11 @@ import { useState } from 'react';
 dayjs.extend(utc);
 
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
-	const base = dayjs(date);
+	const base = dayjs.utc(date);
 
 	const formatted = isStart
-		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS')
-		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS');
+		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]')
+		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
 
 	return formatted;
 }
@@ -203,7 +203,13 @@ export const useReporteResumenComparativoStore = () => {
 				tb_image: [],
 			}
 		);
-		console.log({ aqui: data, RANGE_DATE });
+		console.log({
+			aqui: data,
+			RANGE_DATE: [
+				formatDateToSQLServerWithDayjs(RANGE_DATE[0], true),
+				formatDateToSQLServerWithDayjs(RANGE_DATE[1], false),
+			],
+		});
 
 		// console.log(
 		// 	agruparPorIdPgmMarcacions(dataMarcaciones),
