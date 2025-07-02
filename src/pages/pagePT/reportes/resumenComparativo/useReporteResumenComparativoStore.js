@@ -4,7 +4,7 @@ import { useState } from 'react';
 dayjs.extend(utc);
 
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
-	const base = dayjs.utc(date);
+	const base = dayjs(date);
 
 	const formatted = isStart
 		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS')
@@ -65,45 +65,7 @@ function agruparPorCliente(detalle_ventaMembresium) {
 }
 
 export const useReporteResumenComparativoStore = () => {
-	const [dataGroup, setdataGroup] = useState([
-		// {
-		// 	id_pgm: 0,
-		// 	tarifa_total: 0,
-		// 	sesiones_total: 0,
-		// 	detalle_ventaMembresium: [
-		// 		{
-		// 			horario: '0',
-		// 			tarifa_monto: 0,
-		// 			tb_semana_training: { sesiones: 0 },
-		// 			tb_ventum: {
-		// 				id_tipoFactura: 0,
-		// 				fecha_venta: '0',
-		// 				id_cli: 0,
-		// 				id: 0,
-		// 				id_origen: 0,
-		// 			},
-		// 		},
-		// 	],
-		// 	tb_image: [{ name_image: '', height: '0', width: '0' }],
-		// 	venta_transferencia: [],
-		// },
-		// {
-		// 	id_pgm: 3,
-		// 	tarifa_total: 0,
-		// 	sesiones_total: 0,
-		// 	detalle_ventaMembresium: [],
-		// 	tb_image: [],
-		// 	venta_transferencia: [],
-		// },
-		// {
-		// 	id_pgm: 4,
-		// 	tarifa_total: 0,
-		// 	sesiones_total: 0,
-		// 	detalle_ventaMembresium: [],
-		// 	tb_image: [],
-		// 	venta_transferencia: [],
-		// },
-	]);
+	const [dataGroup, setdataGroup] = useState([]);
 	const [dataClientesxMarcacion, setdataClientesxMarcacion] = useState([]);
 	const [dataMembresiaPorCliente, setdataMembresiaPorCliente] = useState([]);
 	const [dataIdPgmCero, setdataIdPgmCero] = useState({});
