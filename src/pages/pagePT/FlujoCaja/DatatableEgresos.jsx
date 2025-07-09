@@ -19,7 +19,7 @@ export const DatatableEgresos = ({
 }) => {
 	const [dataModal, setDataModal] = useState(null);
 	const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false);
-	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos, obtenerVentasxANIO, dataVentas } = useFlujoCajaStore();
+	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos } = useFlujoCajaStore();
 	const dispatch = useDispatch();
 	
 	// 1) Nombres de los meses (índices 0–11)
@@ -71,7 +71,7 @@ useEffect(() => {
 	// 4) Cada vez que cambia empresa o año, recargar datos
 	useEffect(() => {
 		obtenerGastosxANIO(anio, id_enterprice);
-		obtenerVentasxANIO(anio, id_enterprice)
+		// obtenerVentasxANIO(anio, id_enterprice)
 	}, [anio, id_enterprice]);
 
 	// 5) Al cambiar nombre_empresa, actualizar subtítulo y rango de fechas
