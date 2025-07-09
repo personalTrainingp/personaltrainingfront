@@ -1,395 +1,221 @@
+// Refactor completo de EmpresaPuntoEquilibrio.jsx
 import React, { useEffect, useMemo, useState } from 'react'
-import { useReportePuntoEquilibrioStore } from './useReportePuntoEquilibrioStore'
+import { useSelector } from 'react-redux'
 import { Col, Row, Table } from 'react-bootstrap'
+import { useReportePuntoEquilibrioStore } from './useReportePuntoEquilibrioStore'
+import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
+import { FechaRangeMES } from '@/components/RangeCalendars/FechaRange'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { ModalConceptos } from './ModalConceptos'
-import dayjs from 'dayjs'
-import { FechaRangeMES } from '@/components/RangeCalendars/FechaRange'
-import { useSelector } from 'react-redux'
 
-export const EmpresaPuntoEquilibrio = ({id_empresa,  background, textEmpresa, bgHEX}) => {
+export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bgHEX, id_empresa_ventas }) => {
   const { obtenerGastosxFecha, dataGastos, dataPrestamos } = useReportePuntoEquilibrioStore()
-      const { RANGE_DATE, dataView } = useSelector(e=>e.DATA)
+  const { obtenerVentasPorFecha, dataVentaxFecha } = useVentasStore()
+  const { RANGE_DATE } = useSelector(e => e.DATA)
   useEffect(() => {
     obtenerGastosxFecha(RANGE_DATE, id_empresa)
+    obtenerVentasPorFecha(RANGE_DATE, id_empresa_ventas)
   }, [id_empresa, RANGE_DATE])
-  console.log(dataGastos.find(gr=>gr.grupo==="RECURSOS HUMANOS")?.conceptos.find(con=>con.concepto==='PLANILLA')?.items, "rrr");
-  const planillas = dataGastos.find(gr=>gr.grupo==="RECURSOS HUMANOS")?.conceptos.find(con=>con.concepto==='PLANILLA')?.items
-    // 1) Calcula totales con useMemo
-  const totalMontopen = useMemo(
-    () => dataGastos.reduce((sum, g) => sum + (g.montopen || 0), 0),
-    [dataGastos]
-  );
-  const totalMontousd = useMemo(
-    () => dataGastos.reduce((sum, g) => sum + (g.montousd || 0), 0),
-    [dataGastos]
-  );
-  const [dataProp, setdataProp] = useState({isView: false, data: []})
-  const onOpenModalConceptos=(data)=>{
-    setdataProp({isView: true, data: data.conceptos})
+  const [dataProp, setdataProp] = useState({ isView: false, data: [] })
+  const openModal = data => setdataProp({ isView: true, data: data.conceptos })
+  const closeModal = () => setdataProp({ isView: false, data: [] })
+  const totalMontopen = useMemo(() => dataGastos.reduce((sum, g) => sum + (g.montopen || 0), 0), [dataGastos])
+  const totalMontousd = useMemo(() => dataGastos.reduce((sum, g) => sum + (g.montousd || 0), 0), [dataGastos])
+  const productos = dataVentaxFecha.productos || []
+  const membresias = dataVentaxFecha.membresias || []
+  const sumaventaProductos = productos.reduce((sum, p) => sum + p.tarifa_monto, 0)
+  const getMembresiaData = (cond) => membresias.filter(cond).reduce((acc, item) => {
+    acc.cantidad++
+    acc.total += item.tarifa_monto
+    return acc
+  }, { cantidad: 0, total: 0 })
+  const rei = getMembresiaData(m => m.id_origen === 692)
+  const reno = getMembresiaData(m => m.id_origen === 691)
+  const nuevos = getMembresiaData(m => m.id_origen !== 691 && m.id_origen !== 692)
+  const ventasPartidas = {
+    cantRei: rei.cantidad,
+    cantReno: reno.cantidad,
+    cantNuevo: nuevos.cantidad,
+    cantProd: productos.length,
+    sumaventaRei: rei.total,
+    sumaventaReno: reno.total,
+    sumaventaNuevos: nuevos.total,
+    sumaventaProductos,
+    total: rei.total + reno.total + nuevos.total,
+    cantTotal: rei.cantidad + reno.cantidad + nuevos.cantidad
   }
-  const onCloseModalConceptos=()=>{
-    setdataProp({isView: false, data: []})
-  }
-  console.log({RANGE_DATE: dayjs(RANGE_DATE[0]).format('MMMM')});
-  
-  return (
-		<div className="w-100">
-              <FechaRangeMES rangoFechas={RANGE_DATE} textColor={`${bgHEX}`}/>
-              <br/>
-			<Row>
-				<Col lg={6}>
-					<Row>
-						<Col lg={12}>
-							<Table striped>
-								<thead className={`${background}`}>
-									<tr>
-										<th className="text-white p-1" colSpan={2}>
-											<div style={{ fontSize: '48px' }}>
-												{dayjs(RANGE_DATE[0]).format('MMMM')}<span className="mx-4">EGRESOS</span> 2025
-											</div>
-										</th>
-										<th className="text-white text-center p-1">
-											<div style={{ fontSize: '50px' }}>S/.</div>
-										</th>
-										<th className="text-white text-center p-1">
-											<div style={{ fontSize: '50px' }}>$</div>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{dataGastos.map((g, index) => {
-										return (
-											<tr className={``}>
-												<td
-													className={`text-center fw-bolder fs-1 `}
-													colSpan={2}
-												>
-													<div
-														className={`bg-porsiaca text-left ${textEmpresa}`}
-														onClick={() => onOpenModalConceptos(g)}
-													>
-														<span className="mr-4">{index + 1}</span>
-														{g.grupo}
-													</div>
-												</td>
-												<td
-													className={`text-center ${g.montopen === 0 ? 'fw-light' : 'fw-bold'} fs-1`}
-												>
-													<div className="bg-porsiaca text-right mr-4">
-														<NumberFormatMoney amount={g.montopen} />
-													</div>
-												</td>
-												<td
-													className={`text-center ${g.montousd === 0 ? 'fw-light' : 'fw-bold'} fs-1`}
-												>
-													<div
-														className={`bg-porsiaca text-right   ${g.montousd !== 0 && 'text-ISESAC'}`}
-													>
-														<NumberFormatMoney amount={g.montousd} />
-													</div>
-												</td>
-											</tr>
-										);
-									})}
-								</tbody>
-								<tfoot className={`${background}`}>
-									<tr>
-										<td
-											colSpan={2}
-											className="fw-bold text-start text-white"
-											style={{ fontSize: '40px' }}
-										>
-											Total
-										</td>
-										<td
-											className="fw-bold text-right"
-											style={{ fontSize: '40px' }}
-										>
-                      <span className='text-change mr-4'>
-											  <NumberFormatMoney amount={-totalMontopen} />
-                      </span>
-										</td>
-										<td
-											className="fw-bold text-right"
-											style={{ fontSize: '40px' }}
-										>
-                      <span className='text-change'>
-											  <NumberFormatMoney amount={-totalMontousd} />
-                      </span>
-										</td>
-									</tr>
-								</tfoot>
-							</Table>
-						</Col>
-						<Col lg={12}>
-							<TableRH
-								background={background}
-                RANGE_DATE={RANGE_DATE}
-								data={dataPrestamos}
-								textEmpresa={textEmpresa}
-							/>
-						</Col>
-					</Row>
-				</Col>
-				<Col className='ml-8'>
-					<Row>
-						<Col lg={12} className="mb-5">
-							<TableVentas 
-                RANGE_DATE={RANGE_DATE}
-              background={background} textEmpresa={textEmpresa} />
-						</Col>
-						<Col lg={12}>
-							<TableDetalle
-								background={background}
-                RANGE_DATE={RANGE_DATE}
-								totalEgresosPEN={totalMontopen}
-								totalEgresosUSD={totalMontousd}
-								textEmpresa={textEmpresa}
-							/>
-						</Col>
-					</Row>
-				</Col>
-			</Row>
-			<ModalConceptos
-				background={background}
-				textEmpresa={textEmpresa}
-				onHide={onCloseModalConceptos}
-				show={dataProp.isView}
-				dataProp={dataProp.data}
-			/>
-		</div>
-  );
-}
 
-const TableRH=({data, background, textEmpresa, RANGE_DATE})=>{
   return (
-    <div>
-        <Table striped>
-          <thead className={`bg-azulfuerte`}>
-            <tr>
-              <th className="text-black fs-2"></th>
-              <th className="text-white text-center p-1"><div style={{fontSize: '50px'}}> {dayjs(RANGE_DATE[0]).format('MMMM')}<span className='mx-4'>PRESTAMOS</span> 2025 </div></th>
-              <th className="text-white text-center p-1"><div  style={{fontSize: '50px'}}>S/.</div></th>
-              <th className="text-white text-center p-1"><div style={{fontSize: '50px'}}>$</div></th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            {
-              data.map((g, index)=>{
-                return (
-                  <tr className={``}>
-                    <td className="fw-bold fs-1">
-                      <div className={`bg-porsiaca text-left text-azulfuerte`}>
-                        {index+1}
-                      </div>
-                    
-                      </td>
-                    <td className={`text-center fw-bolder fs-1`}>
-                      <div className={`bg-porsiaca text-left text-azulfuerte`}>
-                        {/* {g.grupo} */}
-                        PRESTAMOS RAL
-                      </div>
-                    </td>
-                    <td className={`text-center ${g.montopen===0?'fw-light':'fw-bold'} fs-1`}>
-                      <div className='bg-porsiaca text-right'>
-                        <NumberFormatMoney amount={g.montopen}/>
-                      </div>
-                    </td>
-                    <td className={`text-center ${g.montousd===0?'fw-light':'fw-bold'} fs-1`}>
-                      <div className={`bg-porsiaca text-right  ${g.montousd!==0&&'text-ISESAC'}`}>
-                        <NumberFormatMoney amount={g.montousd}/>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })
-            }
-          </tbody>
-        </Table>
+    <div className="w-100">
+      <FechaRangeMES rangoFechas={RANGE_DATE} textColor={bgHEX} />
+      <br />
+      <Row>
+        <Col lg={6}>
+          <TableGastos data={dataGastos} background={background} textEmpresa={textEmpresa} onOpen={openModal} totalPEN={totalMontopen} totalUSD={totalMontousd} id_empresa={id_empresa} />
+          <TablePrestamos data={dataPrestamos} id_empresa={id_empresa} />
+        </Col>
+        <Col className='ml-8'>
+          <TableVentas background={background} textEmpresa={textEmpresa} ventasPartidas={ventasPartidas} />
+          <TableResumen totalIngresos={ventasPartidas.total} totalEgresosPEN={totalMontopen} totalEgresosUSD={totalMontousd} id_empresa={id_empresa} textEmpresa={textEmpresa} background={background} />
+        </Col>
+      </Row>
+      <ModalConceptos background={background} textEmpresa={textEmpresa} onHide={closeModal} show={dataProp.isView} dataProp={dataProp.data} />
     </div>
   )
+
 }
 
+const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD, id_empresa }) => (
+  <Table striped style={{fontSize: '25px'}}>
+    <thead className={background}>
+      <tr>
+        <th className="text-white" colSpan={2}>EGRESOS</th>
+        <th className="text-white text-center">S/.</th>
+        {/* <th className="text-white text-center">{id_empresa !== 601 ? <span className="text-ISESAC">$</span> : '$'}</th> */}
+      </tr>
+    </thead>
+    <tbody>
+      {data.map((g, i) => (
+        <tr key={i}>
+          <td colSpan={2} className="bg-porsiaca text-left fw-bold" onClick={() => onOpen(g)}>
+            <div className={`${textEmpresa}`}>
+              {i + 1}. {g.grupo}
+            </div>
+          </td>
+          <td className="text-end bg-porsiaca">
+            <NumberFormatMoney amount={g.montopen} />
+          </td>
+          {/* <td className="text-end bg-porsiaca">
+            <NumberFormatMoney amount={g.montousd} />
+          </td> */}
+        </tr>
+      ))}
+    </tbody>
+    <tfoot className={background}>
+      <tr>
+        <td colSpan={2} className="text-white fw-bold">Total</td>
+        <td className="text-end text-white fw-bold"><NumberFormatMoney amount={-totalPEN} /></td>
+        {/* <td className="text-end text-white fw-bold"><NumberFormatMoney amount={-totalUSD} /></td> */}
+      </tr>
+    </tfoot>
+  </Table>
+)
 
-const TableVentas=({data, background, textEmpresa, RANGE_DATE})=>{
+const TablePrestamos = ({ data, id_empresa }) => (
+  <Table striped style={{fontSize: '25px'}}>
+    <thead className="bg-azulfuerte">
+      <tr>
+        <th></th>
+        <th>PRESTAMOS</th>
+        <th>S/.</th>
+        {/* <th>{id_empresa !== 601 ? <span className="text-ISESAC">$</span> : '$'}</th> */}
+      </tr>
+    </thead>
+    <tbody>
+      {data.map((g, i) => (
+        <tr key={i}>
+          <td className="bg-porsiaca">{i + 1}</td>
+          <td className="bg-porsiaca">PRESTAMOS RAL</td>
+          <td className="text-end bg-porsiaca"><NumberFormatMoney amount={g.montopen} /></td>
+          {/* <td className="text-end bg-porsiaca"><NumberFormatMoney amount={g.montousd} /></td> */}
+        </tr>
+      ))}
+    </tbody>
+  </Table>
+)
+
+const TableVentas = ({ background, textEmpresa, ventasPartidas }) => {
+  const conceptos = [
+    { label: 'NUEVOS', cantidad: ventasPartidas.cantNuevo, monto: ventasPartidas.sumaventaNuevos },
+    { label: 'RENOVACIONES', cantidad: ventasPartidas.cantReno, monto: ventasPartidas.sumaventaReno },
+    { label: 'REINSCRIPCIONES', cantidad: ventasPartidas.cantRei, monto: ventasPartidas.sumaventaRei },
+    { label: 'MONKEY FIT (USUARIOS)', cantidad: 0, monto: ventasPartidas.monkfit || 0 },
+  ]
+
   return (
-    <div>
-        <Table striped>
-          <thead className={`${background}`}>
-            
-            <tr>
-              <th className="text-white p-1" colSpan={2}><div style={{fontSize: '48px'}}> {dayjs(RANGE_DATE[0]).format('MMMM')}<span className='mx-4'>VENTAS</span> 2025</div></th>
-              <th className="text-white text-center p-1"><div  style={{fontSize: '50px'}}>S/.</div></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className={``}>
-              
-                    <td className={`text-center fw-bolder fs-1`} colSpan={2}>
-													<div
-														className={`bg-porsiaca text-left ${textEmpresa}`}
-														// onClick={() => onOpenModalConceptos(g)}
-													>
-														<span className="mr-4">{1}</span>
-                              NUEVOS
-													</div>
-                    </td>
-                    <td className={`text-center ${0===0?'fw-light':'fw-bold'} fs-1`}>
-                      <div className={`bg-porsiaca text-right  ${0!==0&&'text-ISESAC'}`}>
-                        <NumberFormatMoney amount={0}/>
-                      </div>
-                    </td>
-                  </tr>
-                  
-            <tr className={``}>
-                    <td className={`text-center fw-bolder fs-1`} colSpan={2}>
-                      
-													<div
-														className={`bg-porsiaca text-left ${textEmpresa}`}
-														// onClick={() => onOpenModalConceptos(g)}
-													>
-														<span className="mr-4">{2}</span>
-                              RENOVACIONES
-													</div>
-                    </td>
-                    <td className={`text-center ${0===0?'fw-light':'fw-bold'} fs-1`}>
-                      <div className={`bg-porsiaca text-right  ${0!==0&&'text-ISESAC'}`}>
-                        <NumberFormatMoney amount={0}/>
-                      </div>
-                    </td>
-                  </tr>
-                  
-            <tr className={``}>
-                    <td className={`text-center fw-bolder fs-1`} colSpan={2}>
-                      
-													<div
-														className={`bg-porsiaca text-left ${textEmpresa}`}
-														// onClick={() => onOpenModalConceptos(g)}
-													>
-														<span className="mr-4">{3}</span>
-                              REINSCRIPCIONES
-													</div>
-                    </td>
-                    <td className={`text-center ${0===0?'fw-light':'fw-bold'} fs-1`}>
-                      <div className={`bg-porsiaca text-right  ${0!==0&&'text-ISESAC'}`}>
-                        <NumberFormatMoney amount={0}/>
-                      </div>
-                    </td>
-                  </tr>
-            <tr className={``}>
-                    <td className={`text-center fw-bolder fs-1`} colSpan={2}>
-                      
-													<div
-														className={`bg-porsiaca text-left ${textEmpresa}`}
-														// onClick={() => onOpenModalConceptos(g)}
-													>
-														<span className="mr-4">{4}</span>
-                              MONKEY FIT
-													</div>
-                    </td>
-                    <td className={`text-center ${0===0?'fw-light':'fw-bold'} fs-1`}>
-                      <div className={`bg-porsiaca text-right  ${0!==0&&'text-ISESAC'}`}>
-                        <NumberFormatMoney amount={0}/>
-                      </div>
-                    </td>
-                  </tr>
-            <tr className={``}>
-                    <td className={`text-center fw-bolder fs-1`} colSpan={2}>
-                      
-													<div
-														className={`bg-porsiaca text-left ${textEmpresa}`}
-														// onClick={() => onOpenModalConceptos(g)}
-													>
-														<span className="mr-4">{5}</span>
-                              PRODUCTOS
-													</div>
-                    </td>
-                    <td className={`text-center ${0===0?'fw-light':'fw-bold'} fs-1`}>
-                      <div className={`bg-porsiaca text-right  ${0!==0&&'text-ISESAC'}`}>
-                        <NumberFormatMoney amount={0}/>
-                      </div>
-                    </td>
-                  </tr>
-          </tbody>
-          
-          <tfoot className={`${background}`}>
-            <tr>
-              <td colSpan={2} className="fw-bold text-start text-white" style={{fontSize: '40px'}}>
-                Total
+    <>
+      <Table striped style={{fontSize: '25px'}}>
+        <thead className={background}>
+          <tr>
+            <th className='text-white'>INGRESOS</th><th className='text-white'>cant.</th><th className='text-white'>S/.</th>
+          </tr>
+        </thead>
+        <tbody>
+          {conceptos.map((c, i) => (
+            <tr key={i}>
+              <td className="bg-porsiaca text-start">
+                <div className={`${textEmpresa} fw-bold`}>
+                  {i + 1}. {c.label}
+                </div>
               </td>
-              <td className="fw-bold text-right  text-white" style={{fontSize: '40px'}}>
-                <NumberFormatMoney amount={0} />
-              </td>
+              <td className="text-end bg-porsiaca">{c.cantidad}</td>
+              <td className="text-end bg-porsiaca"><NumberFormatMoney amount={c.monto} /></td>
             </tr>
-          </tfoot>
-        </Table>
-    </div>
+          ))}
+        </tbody>
+        <tfoot className={background}>
+          <tr>
+            <td className="fw-bold text-white">Total</td>
+            <td className="fw-bold text-white text-end">{ventasPartidas.cantTotal}</td>
+            <td className="fw-bold text-white text-end"><NumberFormatMoney amount={ventasPartidas.total} /></td>
+          </tr>
+        </tfoot>
+      </Table>
+
+      <Table striped>
+        <thead className={background} style={{fontSize: '25px'}}>
+          <tr>
+            <th className='text-white'>PRODUCTOS</th>
+            <th className='text-end text-white'><div className='' style={{width: '15px'}}>{ventasPartidas.cantProd}</div></th>
+            <th className='text-end text-white'><div className='' style={{width: '15px'}}><NumberFormatMoney amount={ventasPartidas.sumaventaProductos} /></div></th>
+          </tr>
+        </thead>
+      </Table>
+    </>
   )
 }
 
-
-const TableDetalle=({data, background, textEmpresa, totalEgresosUSD, totalEgresosPEN, RANGE_DATE})=>{
-  return (
-    <div>
-        <Table striped>
-          <thead className={`${background}`}>
-            <tr>
-              <th className="text-white p-1" colSpan={1}><div style={{fontSize: '37px'}}> {dayjs(RANGE_DATE[0]).format('MMMM')}<span className='mx-3'>COMPARATIVO</span> 2025</div></th>
-              <th className="text-white text-center p-1"><div  style={{fontSize: '37px'}}>S/.</div></th>
-              <th className="text-white text-center p-1"><div  style={{fontSize: '37px'}}>$</div></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className={``}>
-                    <td className={`text-center fw-bolder fs-1`}>
-                      <div className={`bg-porsiaca text-left ${textEmpresa} mr-4`}>
-                        INGRESOS
-                      </div>
-                    </td>
-                    <td className={`text-center ${0===0?'fw-light':'fw-bold'} fs-1`}>
-                      <div className={`bg-porsiaca text-right  ${0!==0&&'text-ISESAC'} mr-4`}>
-                        <NumberFormatMoney amount={0}/>
-                      </div>
-                    </td>
-                  </tr>
-            <tr className={``}>
-                    <td className={`text-center fw-bolder fs-1`}>
-                      <div className={`bg-porsiaca text-left ${textEmpresa}`}>
-                        EGRESOS
-                      </div>
-                    </td>
-                    <td className={`text-center ${0===0?'fw-light':'fw-bold'} fs-1 `}>
-                      <div className={`bg-porsiaca text-right  ${0!==0&&'text-ISESAC'} mr-4`}>
-                        <NumberFormatMoney amount={-totalEgresosPEN}/>
-                      </div>
-                    </td>
-                    <td className={`text-center ${0===0?'fw-light':'fw-bold'} fs-1`}>
-                      <div className={`bg-porsiaca text-right  ${0!==0&&'text-ISESAC'}`}>
-                        <NumberFormatMoney amount={-totalEgresosUSD}/>
-                      </div>
-                    </td>
-                  </tr>
-            <tr className={``}>
-                    <td className={`text-center fw-bolder`}  style={{fontSize: '40px'}}>
-                      <div className={`bg-porsiaca text-left ${textEmpresa}`}>
-                        UTILIDAD
-                      </div>
-                    </td>
-                    <td className={`text-center ${2===0?'fw-light':'fw-bold'}`}  style={{fontSize: '40px'}}>
-                      <div className={`bg-porsiaca text-right text-change  ${2!==0&&'text-ISESAC'} mr-4`}>
-                        <NumberFormatMoney amount={-totalEgresosPEN}/>
-                      </div>
-                    </td>
-                    <td className={`text-center ${2===0?'fw-light':'fw-bold'}`}  style={{fontSize: '40px'}}>
-                      <div className={`bg-porsiaca text-right text-change  ${2!==0&&'text-ISESAC'}`}>
-                        <NumberFormatMoney amount={-totalEgresosUSD}/>
-                      </div>
-                    </td>
-                  </tr>
-          </tbody>
-        </Table>
-    </div>
-  )
-}
+const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empresa, textEmpresa, background }) => (
+  <Table striped style={{fontSize: '25px'}}>
+    <thead className={`${background} `}>
+      <tr >
+        <th className='text-white'>UTILIDAD</th>
+        <th className='text-white text-end'>S/.</th>
+        {/* <th>{id_empresa !== 601 ? <span className="text-ISESAC">$</span> : '$'}</th> */}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="bg-porsiaca text-start">
+          <div className={`${textEmpresa} fw-bold`}>
+            INGRESOS
+          </div>
+          </td>
+        <td className="text-end bg-porsiaca fw-bold"><NumberFormatMoney amount={totalIngresos} /></td>
+        {/* <td></td> */}
+      </tr>
+      <tr>
+        <td className="bg-porsiaca text-start">
+          <div className={`${textEmpresa} fw-bold`}>
+            EGRESOS
+          </div>
+        </td>
+        <td className="text-end bg-porsiaca fw-bold text-change"><NumberFormatMoney amount={-totalEgresosPEN} /></td>
+        {/* <td className="text-end bg-porsiaca fw-bold text-change"><NumberFormatMoney amount={-totalEgresosUSD} /></td> */}
+      </tr>
+      <tr>
+        <td className="bg-porsiaca text-start">
+          <div className={`${textEmpresa} fw-bold`}>
+            TOTAL
+          </div>
+        </td>
+        <td className={`text-end bg-porsiaca fw-bold ${totalIngresos - totalEgresosPEN < 0 ? 'text-change' : ''}`}>
+          <NumberFormatMoney amount={totalIngresos - totalEgresosPEN} />
+        </td>
+        {/* <td className="text-end bg-porsiaca fw-bold text-change">
+          <NumberFormatMoney amount={-totalEgresosUSD} />
+        </td> */}
+      </tr>
+    </tbody>
+  </Table>
+)

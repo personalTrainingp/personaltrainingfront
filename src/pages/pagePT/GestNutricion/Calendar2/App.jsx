@@ -13,7 +13,7 @@ import { FormatoTimeMask } from '@/components/CurrencyMask';
 import { Card } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog } from 'primereact/confirmdialog';
 dayjs.locale('es')
 const locales = {
   'es': es,

@@ -1,4 +1,5 @@
 import { PTApi } from '@/common';
+import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import dayjs, { utc } from 'dayjs';
 import { useState } from 'react';
 dayjs.extend(utc);
@@ -230,8 +231,8 @@ export const useReporteResumenComparativoStore = () => {
 	};
 	const obtenerClientesConMarcacion = async () => {
 		try {
-			console.log('asdfasdf', 'acaaa 257');
 			const { data } = await PTApi.get(`/usuario/get-marcacions/cliente`);
+			// await obtenerVentasPorFecha()
 			console.log('259 linea');
 
 			console.log({ dataMarcaciones: data });

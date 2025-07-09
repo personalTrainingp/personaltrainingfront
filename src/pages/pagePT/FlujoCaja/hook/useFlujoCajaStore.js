@@ -2,10 +2,39 @@ import { PTApi } from '@/common';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { DateMaskString } from '@/components/CurrencyMask';
+import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 
+function formatDateToSQLServerWithDayjs(date, isStart = true) {
+	const base = dayjs(date);
+
+	const formatted = isStart
+		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]')
+		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
+
+	return formatted;
+}
+function agruparPorProducto(data) {
+	const resultado = [];
+
+	data.forEach((item) => {
+		const existente = resultado.find((r) => r.concepto === item.concepto);
+		if (existente) {
+			existente.items.push(item);
+		} else {
+			resultado.push({
+				concepto: item.concepto,
+				items: [item],
+			});
+		}
+	});
+
+	return resultado;
+}
 export const useFlujoCajaStore = () => {
+	const { obtenerVentasPorFecha, dataVentaxFecha } = useVentasStore();
 	const [dataIngresos_FC, setdataIngresos_FC] = useState([]);
 	const [dataGastosxANIO, setdataGastosxANIO] = useState([]);
+	const [dataVentas, setdataVentas] = useState([]);
 	const [dataGastosxANIOCIRCUS, setdataGastosxANIOCIRCUS] = useState([]);
 	const [dataGastosxANIOSE, setdataGastosxANIOSE] = useState([]);
 	const [isLoading, setisLoading] = useState(false);
@@ -73,6 +102,69 @@ export const useFlujoCajaStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerVentasxANIO = async (anio, enterprice) => {
+		try {
+			await obtenerVentasPorFecha(
+				[
+					formatDateToSQLServerWithDayjs(obtenerRangoAnual(anio)[0], true),
+					formatDateToSQLServerWithDayjs(obtenerRangoAnual(anio)[1], false),
+				],
+				enterprice
+			);
+			const claseMembresia = dataVentaxFecha.membresias?.map((membresia) => {
+				return {
+					concepto: membresia?.membresia?.tb_ProgramaTraining?.name_pgm || '',
+					tarifa_monto: membresia?.membresia?.tarifa_monto || '',
+					fecha: membresia?.fecha_venta || '',
+				};
+			});
+			const claseProductos = dataVentaxFecha.productos?.map((producto) => {
+				return {
+					concepto: producto?.producto?.producto?.nombre_producto || '',
+					tarifa_monto: producto?.producto?.tarifa_monto || '',
+					fecha: producto?.fecha_venta || '',
+				};
+			});
+			const claseServicio = dataVentaxFecha.servicio?.map((producto) => {
+				return {
+					concepto: producto?.producto?.producto?.nombre_producto || '',
+					tarifa_monto: producto?.producto?.tarifa_monto || '',
+					fecha: producto?.fecha_venta || '',
+				};
+			});
+			// console.log(
+			// 	agruparPorMes(claseMembresia),
+			// 	dataVentaxFecha,
+			// 	agruparPorProducto(claseMembresia).map((membresia) => {
+			// 		return { ...membresia, items: agruparPorMes(membresia.items) };
+			// 	}),
+			// 	agruparPorProducto(claseProductos).map((membresia) => {
+			// 		return { ...membresia, items: agruparPorMes(membresia.items) };
+			// 	}),
+			// 	'aqui ventas?',
+			// 	ventasOrdenadas
+			// );
+			// console.log({
+			// 	dataVentaxFecha,
+			// 	aniorange: [
+			// 		formatDateToSQLServerWithDayjs(obtenerRangoAnual(anio)[0], true),
+			// 		formatDateToSQLServerWithDayjs(obtenerRangoAnual(anio)[1], false),
+			// 	],
+			// 	anio,
+			// });
+			setdataVentas(
+				generarVentasOrdenadas(
+					[
+						{ grupo: 'MEMBRESIAS', data: claseMembresia },
+						{ grupo: 'PRODUCTOS', data: claseProductos },
+					],
+					anio
+				)
+			);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerCreditoFiscalxANIO = async (anio, enterprice) => {
 		try {
 			const { data } = await PTApi.get(`/flujo-caja/credito-fiscal/${enterprice}`, {
@@ -88,6 +180,7 @@ export const useFlujoCajaStore = () => {
 		}
 	};
 	return {
+		obtenerVentasxANIO,
 		obtenerIngresosxMes,
 		obtenerGastosxANIO,
 		obtenerCreditoFiscalxANIO,
@@ -95,8 +188,91 @@ export const useFlujoCajaStore = () => {
 		dataCreditoFiscal,
 		dataGastosxANIO,
 		dataNoPagos,
+		dataVentas,
 	};
 };
+function generarVentasOrdenadas(gruposData, anioFiltro) {
+	return gruposData?.map(({ grupo, data }) => {
+		const conceptos = agruparPorProducto(data).map((producto) => {
+			return {
+				...producto,
+				items: agruparPorMes(producto.items, anioFiltro),
+			};
+		});
+
+		const mesesSuma = Array(12).fill(0);
+		let totalAnual = 0;
+
+		conceptos.forEach((concepto) => {
+			concepto.items.forEach((mesObj, i) => {
+				mesesSuma[i] += mesObj.monto_total;
+				totalAnual += mesObj.monto_total;
+			});
+		});
+
+		return {
+			grupo,
+			conceptos,
+			mesesSuma,
+			totalAnual,
+		};
+	});
+}
+
+function obtenerRangoAnual(anio) {
+	const desde = `${anio}-01-01`;
+	const hasta = `${anio}-12-31`;
+	return [desde, hasta];
+}
+function agruparPorMes(data) {
+	const agrupado = {};
+
+	data.forEach((item) => {
+		const fecha = new Date(item.fecha);
+		const anio = fecha.getUTCFullYear();
+		const mes = fecha.getUTCMonth() + 1;
+
+		const key = `${anio}-${mes}`;
+		if (!agrupado[key]) {
+			agrupado[key] = {
+				anio,
+				mes,
+				monto_total: 0,
+				items: [],
+			};
+		}
+
+		agrupado[key].items.push(item);
+		agrupado[key].monto_total += item.tarifa_monto || 0;
+	});
+
+	// Obtener todos los años presentes
+	const añosUnicos = [...new Set(data.map((item) => new Date(item.fecha).getUTCFullYear()))];
+
+	// Generar los 12 meses para cada año
+	const resultado = [];
+	añosUnicos.forEach((anio) => {
+		for (let mes = 1; mes <= 12; mes++) {
+			const key = `${anio}-${mes}`;
+			if (agrupado[key]) {
+				resultado.push(agrupado[key]);
+			} else {
+				resultado.push({
+					anio,
+					mes,
+					monto_total: 0,
+					items: [],
+				});
+			}
+		}
+	});
+
+	// Ordenar por año y mes
+	resultado.sort((a, b) => a.anio - b.anio || a.mes - b.mes);
+
+	return resultado;
+}
+
 function aplicarTipoDeCambio(dataTC, dataGastos) {
 	return dataGastos.map((gasto) => {
 		const fechaGasto = new Date(gasto.fec_pago);

@@ -19,7 +19,7 @@ export const DatatableEgresos = ({
 }) => {
 	const [dataModal, setDataModal] = useState(null);
 	const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false);
-	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos } = useFlujoCajaStore();
+	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos, obtenerVentasxANIO, dataVentas } = useFlujoCajaStore();
 	const dispatch = useDispatch();
 	
 	// 1) Nombres de los meses (índices 0–11)
@@ -71,6 +71,7 @@ useEffect(() => {
 	// 4) Cada vez que cambia empresa o año, recargar datos
 	useEffect(() => {
 		obtenerGastosxANIO(anio, id_enterprice);
+		obtenerVentasxANIO(anio, id_enterprice)
 	}, [anio, id_enterprice]);
 
 	// 5) Al cambiar nombre_empresa, actualizar subtítulo y rango de fechas
@@ -141,7 +142,6 @@ useEffect(() => {
 
 	const { totalPorMes:totalesNpagos, totalGeneral: totalgeneralNpagos}= totalGeneralYsumaTotal(dataNoPagos)
 
-	console.log({totalPorMes, totalesNpagos});
 	
 	// 8) Funciones para abrir/cerrar el modal
 	const onCloseModalDetallexCelda = () => {
@@ -166,6 +166,7 @@ useEffect(() => {
                                 grupo,
                               })
 	}
+	
 	// const cuentasPorPagar = [0, 0, 0, 0, 1500, 13000, 0, 0, 0, 0, 0, 0]; // tu array fijo
 	const prestamosPorPagar = [0, 0, 6700, 2000, 4100, 2000, 0, 0, 0, 0, 0, 0]; // tu array fijo
 	const RalprestamosPorPagar = [0, 0, 6700, 2000, 4100, 2000, 0, 0, 0, 0, 0, 0]; // tu array fijo
@@ -206,8 +207,6 @@ useEffect(() => {
 					/>
 				</div>
 			<div>
-				
-
 				{/* === TABLA ÚNICA CON TODOS LOS GRUPOS Y LA SUMA GENERAL === */}
 				<div className="table-responsive" style={{ width: '95vw' }}>
 					<Table>
@@ -297,7 +296,7 @@ useEffect(() => {
                         return (
                           <td key={mesNum} className="text-center fs-1">
                             <div
-                              className="cursor-text-primary fs-2 bg-porsiaca text-right"
+                              className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
                               style={{ width: 150 }}
                               onClick={() => onOpenModalDetallexCelda({
                                 ...itemMes,
@@ -342,7 +341,6 @@ useEffect(() => {
                   <td className="fw-bolder fs-1">TOTAL</td>
                   {mesesSeleccionadosNums.map(mesNum => {
 						const montoMes = grp.mesesSuma[mesNum - 1];
-												// 2) porcentaje del total del grupo en este mes sobre el total general de ese mes
 												const baseMes = totalPorMes[mesNum - 1] || 0;
 												const pctMesGrupo =
 													baseMes > 0
@@ -378,7 +376,6 @@ useEffect(() => {
                   </td>
 				  {mesesSeleccionadosNums.map((mesNum) => {
 												const montoMes = grp.mesesSuma[mesNum - 1];
-												// 2) porcentaje del total del grupo en este mes sobre el total general de ese mes
 												const baseMes = totalPorMes[mesNum - 1] || 0;
 												const pctMesGrupo =
 													baseMes > 0
@@ -420,9 +417,6 @@ useEffect(() => {
                 </tr>
                 <tr>
 					<td className="fw-bolder fs-2" colSpan={selectedMonths.length+1}>
-						<div className='opacity-0'>
-							asdf
-						</div>
 						<div>
 							NOTA: TODOS LOS PAGOS QUE FIGURAN AQUI, ESTAN HECHOS EN BASE A LA FECHA DE PROVISION
 						</div>
@@ -432,7 +426,214 @@ useEffect(() => {
             </React.Fragment>
           );
         })}
+		{/* VENTAS */}
+        {/* {dataVentas?.map((grp, i, arr) => {
+          const sumaTotalAnualGrupos = dataVentas.reduce(
+            (acc, g) => acc + g.totalAnual,
+            0
+          );
+		  
+          return (
+            <React.Fragment key={grp.grupo}>
+              <thead className={background}>
+                <tr>
+					<th className="text-black fs-1">
+						<div
+							className="p-1 rounded rounded-3"
+							style={{
+							width: 450,
+							hyphens: 'auto',
+							wordBreak: 'break-word',
+							overflowWrap: 'break-word',
+							whiteSpace: 'normal',
+							lineHeight: '1.2',
+							}}
+							lang="es"
+						>
+							{grp.grupo === 'ATENCIÓN AL CLIENTE' ? (
+							<>
+								{i + 1}. ATENCIÓN AL CLIENTE
+							</>
+							) : grp.grupo === 'PRESTAMOS' ? (
+							<span className="text-danger">PRESTAMOS</span>
+							) : (
+							<>
+								{i + 1}. {grp.grupo}
+							</>
+							)}
+						</div>
+						</th>
 
+                  {mesesSeleccionadosNums.map(mesNum => (
+                    <th
+                      key={mesNum}
+                      className="text-white text-center p-1 fs-2"
+                    >
+                      {mesesNombres[mesNum - 1]}
+                    </th>
+                  ))}
+
+                  <th className={`${bgTotal} text-white text-center p-1 fs-1`}>
+                    TOTAL
+                  </th>
+                  <th className="text-white text-center p-1 fs-1">
+                    %
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {grp.conceptos.map((c, idx) => {
+					
+                  const totalConcepto = c.items.reduce(
+                    (sum, it) => sum + (it.monto_total || 0),
+                    0
+                  );
+                  const pctConcepto = grp.totalAnual > 0
+                    ? ((totalConcepto / grp.totalAnual) * 100).toFixed(2)
+                    : '0.00';
+
+                  return (
+                    <tr key={c.concepto}>
+                      <td className="fw-bold fs-2">
+                        {idx + 1}. {c.concepto}
+                      </td>
+                      {mesesSeleccionadosNums.map(mesNum => {
+                        const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
+                        return (
+                          <td key={mesNum} className="text-center fs-1">
+                            <div
+                              className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
+                              style={{ width: 150 }}
+                              onClick={() => onOpenModalDetallexCelda({
+                                ...itemMes,
+                                concepto: c.concepto,
+                                grupo: grp.grupo,
+                              })}
+                            >
+                              <NumberFormatMoney amount={itemMes.monto_total} />
+                            </div>
+                          </td>
+                        );
+                      })}
+                      <td
+                        className={`${bgTotal} text-center fw-bold`}
+                        onClick={() => onOpenModalDetallexCelda({
+                          concepto: c.concepto,
+                          grupo: grp.grupo,
+                          mes: null,
+                          monto_total: totalConcepto,
+                        })}
+                      >
+						<div className={`bg-porsiaca text-right ${totalConcepto<=0?'':'fw-bold'}`} style={{fontSize: '40px'}}>
+                        	<NumberFormatMoney amount={totalConcepto} />
+						</div>
+                      </td>
+                      <td className={`${bgTotal} text-center fw-bold fs-1`}
+                        onClick={() => onOpenModalDetallexCelda({
+                          concepto: c.concepto,
+                          grupo: grp.grupo,
+                          mes: null,
+                          monto_total: totalConcepto,
+                        })}>
+							<div className='bg-porsiaca text-right'>
+                        		{pctConcepto}
+							</div>
+                      </td>
+                    </tr>
+                  );
+                })}
+
+                <tr className={`${bgTotal}`}>
+                  <td className="fw-bolder fs-1">TOTAL</td>
+                  {mesesSeleccionadosNums.map(mesNum => {
+						const montoMes = grp.mesesSuma[mesNum - 1];
+												const baseMes = totalPorMes[mesNum - 1] || 0;
+												const pctMesGrupo =
+													baseMes > 0
+														? ((montoMes / baseMes) * 100).toFixed(2)
+														: '0.00';
+					  return(
+																			<td
+														key={mesNum}
+														className="text-center fw-bolder fs-1"
+													>
+														<div style={{ width: 150 }} className='bg-porsiaca text-right'>
+															<NumberFormatMoney amount={montoMes} />
+														</div>
+													</td>
+					  )
+				  }
+				  )}
+                  <td className="text-center fw-bolder">
+					<div className='bg-porsiaca text-right' style={{fontSize: '40px'}}>
+                    	<NumberFormatMoney amount={grp.totalAnual} />
+					</div>
+                  </td>
+                  <td className="text-center fw-bolder fs-1">
+					<div className='bg-porsiaca text-right'>
+				  		100
+					</div>
+				  </td>
+                </tr>
+
+                <tr>
+                  <td className="fw-bolder fs-2" >
+                    <span className='fs-1 mr-3'>%</span> POR MES {grp.grupo}
+                  </td>
+				  {mesesSeleccionadosNums.map((mesNum) => {
+												const montoMes = grp.mesesSuma[mesNum - 1];
+												const baseMes = totalPorMes[mesNum - 1] || 0;
+												const pctMesGrupo =
+													baseMes > 0
+														? ((montoMes / baseMes) * 100).toFixed(2)
+														: '0.00';
+												return (
+													<td
+														key={mesNum}
+														className="text-center fw-bolder fs-1"
+													>
+														<div style={{ width: 150 }} className='text-right'>
+															{pctMesGrupo}%
+														</div>
+													</td>
+												);
+											})}
+                  <td className="fw-bolder fs-2" >
+                  </td>
+                  <td className="fw-bolder fs-1" >
+					<div className='bg-porsiaca text-right'>
+					</div>
+                  </td>
+                </tr>
+                <tr className={`${bgTotal}`}>
+					<td className="fw-bolder fs-1" colSpan={selectedMonths.length}>
+						<span className='fs-1 mr-3'>%</span> PROMEDIO DE REPRESENTACIÓN ACUMULADA VS. TODOS LOS RUBROS
+                  	</td>
+					<td className="fw-bolder">
+						<div className='text-right' style={{ width: 150, fontSize: '45px' }}>
+							{sumaTotalAnualGrupos > 0
+                        ? ((grp.totalAnual / sumaTotalAnualGrupos) * 100).toFixed(2)
+                        : '0.00'}%
+						</div>
+                  	</td>
+					<td className="fw-bolder fs-1">
+                  	</td>
+					<td>
+					</td>
+                </tr>
+                <tr>
+					<td className="fw-bolder fs-2" colSpan={selectedMonths.length+1}>
+						<div>
+							NOTA: TODOS LOS PAGOS QUE FIGURAN AQUI, ESTAN HECHOS EN BASE A LA FECHA DE PROVISION
+						</div>
+					</td>
+                </tr>
+              </tbody>
+            </React.Fragment>
+          );
+        })} */}
+		{/* TOTALES */}
         <thead className={background}>
           <tr>
             <th className="text-black fs-2">MES</th>
@@ -445,7 +646,6 @@ useEffect(() => {
             <th className="text-white text-center p-1 fs-1">%</th>
           </tr>
         </thead>
-
         <tbody>
           <tr className={`${bgTotal}`}>
             <td className="fw-bold fs-2">TOTAL EGRESOS</td>

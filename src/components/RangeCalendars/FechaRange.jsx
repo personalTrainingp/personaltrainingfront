@@ -95,7 +95,7 @@ export const FechaRangeMES = ({ rangoFechas, textColor }) => {
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '40px' }}>
+    <div className='justify-content-center' style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '15px' }}>
       <Calendar
         value={dateRange.fec_desde}
         onChange={e => {
@@ -106,14 +106,19 @@ export const FechaRangeMES = ({ rangoFechas, textColor }) => {
           });
         }}
         view="month"
-        dateFormat="mm/yy"
+        dateFormat="MM/yy"
         mask="99/9999"
         monthNavigator
         yearNavigator
         yearRange={`${currentYear - 2}:${currentYear + 1}`}
         locale="es"
-        showIcon
-        inputStyle={{ color: textColor, fontWeight: 'bold', width: '200px'}}
+          pt={{
+            header: { className: 'custom-calendar-header' },
+            monthDropdown: { style: { fontSize: '4.3rem', fontWeight: 'bold' } },
+            yearDropdown: { style: { fontSize: '4.3rem', fontWeight: 'bold' } }
+          }}
+        className='fs-2'
+        inputStyle={{ color: textColor, fontWeight: 'bold', width: '400px'}}
       />
       <Button style={{backgroundColor: textColor, borderColor: textColor}} onClick={onClickActualizar}>
         Actualizar

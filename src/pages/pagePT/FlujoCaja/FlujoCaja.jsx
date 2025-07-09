@@ -36,10 +36,10 @@ export const FlujoCaja = () => {
                 <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mb-2' header={<TabIcon width={180} src='https://sistema-circus.vercel.app/assets/Positivo-transparente-c932a60a.png'/>}>
                     <TabView>
                         <TabPanel header={<div className='text-circus' style={{fontSize: '60px'}}>2024</div>}>
-                            <DatatableEgresos bgTotal={'bg-amarilloclaro'} bgMultiValue={'#EEBE00'}  arrayRangeDate={[new Date(2025, 1, 15), new Date()]} nombre_empresa={'CIRCUS'} background={'bg-circus'} id_enterprice={599} anio={2024}/>
+                            <DatatableEgresos bgTotal={'bg-amarilloclaro'} bgMultiValue={'#EEBE00'}  arrayRangeDate={[new Date(2025, 1, 15), new Date()]} nombre_empresa={'CIRCUS'} background={'bg-greenISESAC'} id_enterprice={599} anio={2024}/>
                         </TabPanel>
                         <TabPanel header={<div className='text-circus' style={{fontSize: '60px'}}>2025</div>}>
-                            <DatatableEgresos bgTotal={'bg-amarilloclaro'} bgMultiValue={'#EEBE00'} arrayRangeDate={[new Date(2025, 1, 15), new Date()]} nombre_empresa={'CIRCUS'} background={'bg-circus'} id_enterprice={599} anio={2025}/>
+                            <DatatableEgresos bgTotal={'bg-verdeclaro'} bgMultiValue={'#EEBE00'} arrayRangeDate={[new Date(2025, 1, 15), new Date()]} nombre_empresa={'CIRCUS'} background={'bg-greenISESAC'} id_enterprice={599} anio={2025}/>
                         </TabPanel>
                     </TabView>
                 </TabPanel>

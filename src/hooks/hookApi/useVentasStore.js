@@ -1,9 +1,106 @@
 import { PTApi } from '@/common';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { onSetDataView } from '@/store/data/dataSlice';
+import dayjs, { utc } from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
+dayjs.extend(utc);
+
+function formatDateToSQLServerWithDayjs(date, isStart = true) {
+	const base = dayjs(date);
+
+	const formatted = isStart
+		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]')
+		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
+
+	return formatted;
+}
+function desestructurarVentas(ventas) {
+	const resultado = {
+		membresias: [],
+		productos: [],
+		citas: [],
+	};
+
+	ventas.forEach((venta) => {
+		// Calcular total de tarifa_monto por cada tipo
+		const totalMembresia = (venta.detalle_ventaMembresia || []).reduce(
+			(acc, m) => acc + (m.tarifa_monto || 0),
+			0
+		);
+		const totalProducto = (venta.detalle_ventaProductos || []).reduce(
+			(acc, p) => acc + (p.tarifa_monto || 0),
+			0
+		);
+		const totalCita = (venta.detalle_ventaCitas || []).reduce(
+			(acc, c) => acc + (c.tarifa_monto || 0),
+			0
+		);
+
+		const base = {
+			id: venta.id,
+			id_cli: venta.id_cli,
+			id_empl: venta.id_empl,
+			id_tipoFactura: venta.id_tipoFactura,
+			id_origen: venta.id_origen,
+			numero_transac: venta.numero_transac,
+			flag: venta.flag,
+			fecha_venta: venta.fecha_venta,
+			cliente: venta.tb_cliente || {},
+			empleado: venta.tb_empleado || {},
+			pagos: venta.detalle_ventaPagoVenta || [],
+			tarifa_monto_total: totalMembresia + totalProducto + totalCita,
+		};
+
+		(venta.detalle_ventaMembresia || []).forEach((membresia) => {
+			resultado.membresias.push({
+				...base,
+				membresia: {
+					...membresia,
+					programa: membresia.tb_programa_training || {},
+					semana: membresia.tb_semanas_training || {},
+				},
+				tarifa_monto: membresia.tarifa_monto || 0,
+			});
+		});
+
+		(venta.detalle_ventaProductos || []).forEach((producto) => {
+			resultado.productos.push({
+				...base,
+				producto: {
+					...producto,
+					producto: producto.tb_producto || {},
+				},
+				tarifa_monto: producto.tarifa_monto || 0,
+			});
+		});
+
+		(venta.detalle_ventaServicios || []).forEach((servicio) => {
+			resultado.servicios.push({
+				...base,
+				servicios: {
+					...servicio,
+					servicio: servicio.tb_producto || {},
+				},
+				tarifa_monto: producto.tarifa_monto || 0,
+			});
+		});
+
+		(venta.detalle_ventaCitas || []).forEach((cita) => {
+			resultado.citas.push({
+				...base,
+				cita: {
+					...cita,
+					servicio: cita.tb_servicio || {},
+				},
+				tarifa_monto: cita.tarifa_monto || 0,
+			});
+		});
+	});
+
+	return resultado;
+}
 
 export const useVentasStore = () => {
 	const dispatch = useDispatch();
@@ -12,7 +109,7 @@ export const useVentasStore = () => {
 	const [isLoading, setisLoading] = useState(false);
 	const [loadingVenta, setloadingVenta] = useState(false);
 	const [msgBox, setmsgBox] = useState({});
-	const [dataVentaxFecha, setdataVentaxFecha] = useState([]);
+	const [dataVentaxFecha, setdataVentaxFecha] = useState({});
 	const [IngresosSeparados_x_Fecha, setIngresosSeparados_x_Fecha] = useState([]);
 	const [loadingMessage, setloadingMessage] = useState('');
 	const [dataContratos, setdataContratos] = useState([]);
@@ -70,11 +167,22 @@ export const useVentasStore = () => {
 		}
 	};
 
-	const obtenerVentasPorFecha = async (arrayDate) => {
+	const obtenerVentasPorFecha = async (arrayDate, id_empresa) => {
 		try {
-			const { data } = await PTApi.get('/venta/get-ventas-x-fecha', {
+			console.log({
+				arrayDate,
+				arrayDates: [
+					formatDateToSQLServerWithDayjs(arrayDate[0], true),
+					formatDateToSQLServerWithDayjs(arrayDate[1], false),
+				],
+			});
+
+			const { data } = await PTApi.get(`/venta/get-ventas-x-fecha/${id_empresa}`, {
 				params: {
-					arrayDate,
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
 				},
 			});
 			let ingresosSeparados = data.ventas.map((e) => {
@@ -116,7 +224,6 @@ export const useVentasStore = () => {
 					}, 0),
 				};
 			});
-
 			const resultado = ingresosSeparados.reduce(
 				(acc, obj) => {
 					// Sumar cada propiedad
@@ -130,9 +237,10 @@ export const useVentasStore = () => {
 				},
 				{ accesorios: 0, fitology: 0, nutricion: 0, programas: 0, suplementos: 0 }
 			);
+			console.log({ resve: resultado, data, destr: desestructurarVentas(data.ventas) });
 
 			setIngresosSeparados_x_Fecha(resultado);
-			setdataVentaxFecha(data.ventas);
+			setdataVentaxFecha(desestructurarVentas(data.ventas));
 		} catch (error) {
 			console.log(error);
 		}

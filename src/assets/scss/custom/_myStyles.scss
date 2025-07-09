@@ -124,6 +124,25 @@
 
   }
 }
+/* Aumentar tamaño del mes y año */
+.custom-calendar-header {
+  font-size: 5.3rem !important; /* Ajusta el tamaño aquí */
+  font-weight: bold;
+}
+
+.p-datepicker .p-datepicker-month,
+.p-datepicker .p-datepicker-year {
+  font-size: 5.3rem  !important; /* Tamaño de los select */
+  font-weight: bold;
+}
+
+.total-rounded-bottom td {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  overflow: hidden;
+  background-color: inherit;
+}
+
 .bg-change{
   background-color: #CD1014;
 }

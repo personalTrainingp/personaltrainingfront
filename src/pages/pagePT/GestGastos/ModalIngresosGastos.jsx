@@ -328,7 +328,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                             value={DataTipoComprobante.find(
                                                 (option) => option.value === id_tipo_comprobante
                                             )||0}
-                                            required
                                         />
                                     </div>
                                 </Col>
@@ -344,7 +343,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                                 value={n_comprabante}
                                                 onChange={onInputChange}
                                                 placeholder="EJ. 6060606"
-                                                required
                                             />
                                     </div>
                                 </Col>
@@ -480,7 +478,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                                     value={dataProvCOMBO.find(
                                                         (option)=>option.value === id_prov
                                                     )||0}
-                                                    required
                                                 />
                                             </Col>
                                             <Col xxl={1}>
@@ -504,7 +501,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                             value={DataEstadosGasto.find(
                                                 (option)=>option.value==id_estado_gasto
                                             )||''}
-                                            required
                                         />
                                     </div>
                                 </Col>
@@ -546,7 +542,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                                 value={descripcion}
                                                 onChange={onInputChange}
                                                 placeholder="EJ. comentario u observacion"
-                                                required
                                             />
                                     </div>
                                 </Col>

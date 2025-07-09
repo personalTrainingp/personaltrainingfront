@@ -37,18 +37,39 @@ export const useReportePuntoEquilibrioStore = () => {
 					},
 				}
 			);
+			const { data: dataTC } = await PTApi.get('/tipoCambio/');
+			const dataTCs = dataTC.tipoCambios.map((e, i, arr) => {
+				const posteriores = arr
+					.filter((item) => new Date(item.fecha) > new Date(e.fecha))
+					.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+				const termino = posteriores.length ? posteriores[0].fecha : null;
+				return {
+					moneda: e.monedaDestino,
+					multiplicador: e.precio_compra,
+					// monedaOrigen: e.monedaOrigen,
+					fecha_inicio_tc: e.fecha,
+					fecha_fin_tc: termino, // null si no hay próximo cambio
+				};
+			});
 			console.log({ dataVentas });
 
 			// const {data: dataVentas} = await PTApi
 			setdataGastos(
-				agruparPorGrupoYConcepto(dataGastos.gastos, dataParametrosGastos.termGastos).filter(
-					(e) => e.grupo !== 'PRESTAMOS'
-				)
+				agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTCs, dataGastos.gastos).filter(
+						(e) => e.id_estado_gasto === 1423
+					),
+					dataParametrosGastos.termGastos
+				).filter((e) => e.grupo !== 'PRESTAMOS')
 			);
 			setdataPrestamos(
-				agruparPorGrupoYConcepto(dataGastos.gastos, dataParametrosGastos.termGastos).filter(
-					(e) => e.grupo === 'PRESTAMOS'
-				)
+				agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTCs, dataGastos.gastos).filter(
+						(e) => e.id_estado_gasto === 1423
+					),
+					dataParametrosGastos.termGastos
+				).filter((e) => e.grupo === 'PRESTAMOS')
 			);
 			console.log({
 				data: agruparPorGrupoYConcepto(dataGastos.gastos, dataParametrosGastos.termGastos),
@@ -142,4 +163,30 @@ function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 
 	console.log({ resultado });
 	return resultado;
+}
+
+function aplicarTipoDeCambio(dataTC, dataGastos) {
+	return dataGastos.map((gasto) => {
+		const fechaGasto = new Date(gasto.fec_pago);
+
+		const tcMatch = dataTC.find((tc) => {
+			if (tc.moneda === gasto.moneda) return false;
+
+			const inicio = new Date(tc.fecha_inicio_tc);
+			// Debe ser posterior o igual al inicio
+			if (fechaGasto < inicio) return false;
+
+			// Si hay fecha_fin_tc, también debe ser ≤ fin
+			if (tc.fecha_fin_tc) {
+				const fin = new Date(tc.fecha_fin_tc);
+				if (fechaGasto > fin) return false;
+			}
+			// Si fecha_fin_tc es null, este tramo sigue abierto
+			return true;
+		});
+
+		const resultado = { tc: 1, ...gasto };
+		if (tcMatch) resultado.tc = tcMatch.multiplicador;
+		return resultado;
+	});
 }
