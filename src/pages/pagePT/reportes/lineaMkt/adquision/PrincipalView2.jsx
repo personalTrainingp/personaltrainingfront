@@ -1,7 +1,7 @@
 import { PageBreadcrumb } from '@/components'
 import { Button } from 'primereact/button'
 import React, { useEffect, useState } from 'react'
-import { Card, Col, Row } from 'react-bootstrap'
+import { Card, Col, Row, Table } from 'react-bootstrap'
 import { ItemTable } from './ItemTable'
 import { useAdquisicionStore } from './useAdquisicionStore'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux'
 import SimpleBar from 'simplebar-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DataDroppable } from './DataDroppable'
+import { TabPanel, TabView } from 'primereact/tabview'
 const sumarTarifaMonto = (items)=>{
       const ventas = items.reduce((accum, item) => accum + (item.detalle_ventaMembresium?.tarifa_monto || 0), 0)
     return ventas
@@ -73,7 +74,6 @@ export const PrincipalView = () => {
       onClickFilter();
     }
   }, [data]);
-  console.log(data, "dataventa", dias);
   const onClickFilter = ()=>{
     setIsLoading(true);
     setTimeout(() => {
@@ -121,11 +121,12 @@ export const PrincipalView = () => {
             ventas // Acumulado de todos los items
         };
       }
-      console.log({data});
+      console.log({dataProgramas, data});
       
-  return (//comparativo ventas por categoria total por dia vs mes //comparativo ventas por asesor por categoria por dia vs mes
+  return (
     <>
     <PageBreadcrumb title={'comparativo ventas por categoria total por dia vs mes'}/>
+    {/* {JSON.stringify(data)} */}
     <Row>
       <div className='position-fixed bg-white'>
         <div className='d-flex align-items-center'>
@@ -170,25 +171,109 @@ export const PrincipalView = () => {
       <div className='mt-3'>
             <DataDroppable dataMeses={data} desdeOption={desdeOption} hastaOption={hastaOption}/>
       {
-        dataVendedores.map(g=>{
-          return (
-            <>
-            <h1>{g.nombre_empl}</h1>
-            <DataDroppable dataMeses={g.items} desdeOption={desdeOption} hastaOption={hastaOption}/>
-            </>
-          )
-        })
-      }
-      {
         dataProgramas.map(g=>{
           return (
             <>
-            <h1 className='text-center'>{g.name_pgm}</h1>
+            <h1 className='text-center' style={{fontSize: '90px'}}>{g.name_pgm}</h1>
             <DataDroppable dataMeses={g.items} desdeOption={desdeOption} hastaOption={hastaOption}/>
             </>
           )
         })
       }
+      {/* 
+            // <DataDroppable dataMeses={g.items} desdeOption={desdeOption} hastaOption={hastaOption}/>
+      */}
+      </div>
+      <div>
+        <h1>DETALLE EN PROGRAMA</h1>
+        <div className='mt-3'>
+          <TabView>
+            <TabPanel header={<div style={{fontSize: '60px'}}>2024</div>}>
+              {
+              dataProgramas.map(datapgm=>{
+                  const items2024=datapgm?.items.filter(aio=>aio.anio==='2024')
+                  console.log({items2024});
+                  
+                  return (
+                    <>
+                    <h1 className='text-center'>
+                      {datapgm?.lbel}
+                    </h1>
+                    <div className='' style={{display: 'flex', justifyContent: 'center'}}>
+                      <TablaResumen data={items2024}/>
+                    </div>
+                    </>
+                  )
+                })
+              }
+              <h1 className='text-center'>CHANGE 45 + FISIO MUSCLE + FS 45</h1>
+              <TablaResumen data={data.filter(d=>d.anio==='2024')}/>
+            </TabPanel>
+            <TabPanel header={<div style={{fontSize: '60px'}}>2025</div>}>
+              {
+              dataProgramas.map(datapgm=>{
+                  const items2024=datapgm?.items.filter(aio=>aio.anio==='2025')
+                  return (
+                    <>
+                      <h1 className='text-center' style={{fontSize: '60px'}}>
+                      {datapgm?.lbel}
+                    </h1>
+                    <TablaResumen data={items2024}/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    </>
+                  )
+                })
+              }
+              <h1 className='text-center'>CHANGE 45 + FISIO MUSCLE + FS 45</h1>
+              <TablaResumen data={data.filter(d=>d.anio==='2025')}/>
+            </TabPanel>
+          </TabView>
+        </div>
+      </div>
+      <div>
+        <h1>DETALLE EN ASESOR</h1>
+        <div className='mt-3'>
+          <TabView>
+            <TabPanel header={<div style={{fontSize: '60px'}}>2024</div>}>
+              {
+              dataProgramas.map(datapgm=>{
+                  const items2024=datapgm?.items.filter(aio=>aio.anio==='2024')
+                  console.log({items2024});
+                  
+                  return (
+                    <>
+                    <h1 className='text-center'>
+                      {datapgm?.lbel}
+                    </h1>
+                    <TablaResumen data={items2024}/>
+                    </>
+                  )
+                })
+              }
+              <h1 className='text-center'>CHANGE 45 + FISIO MUSCLE + FS 45</h1>
+              <TablaResumen data={data.filter(d=>d.anio==='2024')}/>
+            </TabPanel>
+            <TabPanel header={<div style={{fontSize: '60px'}}>2025</div>}>
+              {
+              dataProgramas.map(datapgm=>{
+                  const items2024=datapgm?.items.filter(aio=>aio.anio==='2025')
+                  return (
+                    <>
+                    <h1 className='text-center'>
+                      {datapgm?.lbel}
+                    </h1>
+                    <TablaResumen data={items2024}/>
+                    </>
+                  )
+                })
+              }
+              <h1 className='text-center'>CHANGE 45 + FISIO MUSCLE + FS 45</h1>
+              <TablaResumen data={data.filter(d=>d.anio==='2025')}/>
+            </TabPanel>
+          </TabView>
+        </div>
       </div>
       {/* <Col lg={12} className='mt-6' style={{ padding: 2 }}>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -273,6 +358,143 @@ export const PrincipalView = () => {
   )
 }
 
+const TablaResumen = ({data}) => {
+  return (
+    <Table striped style={{width: '2200px'}}>
+      <thead className={'bg-primary'}>
+        <tr>
+          <th className='fs-3 pl-5 text-center'></th>
+          {data.map((d, i) => (
+            <th className='fs-3 text-center text-white' key={i}>
+              <div className='' style={{fontSize: '55px'}}>
+                {d.fecha.split(' ')[0].toUpperCase()}
+              </div>
+              </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className='fs-3 fw-bold' >
+            <div style={{fontSize: '35px'}}>
+              SOCIOS VENTAS
+            </div>
+          </td>
+          {data.map((d, i) => {
+            const tarifa_monto = d.items.reduce(
+                (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+                0
+              );
+            return (
+              <>
+              <td className='fs-2 text-center' key={i}>
+                <div className='d-flex justify-content-around'>
+                  <div>
+                    {d.items.length}
+                  </div>
+                  <div>
+                    <NumberFormatMoney amount={tarifa_monto}/>
+                  </div>
+                </div>
+              </td>
+              </>
+            )
+          }
+          )}
+        </tr>
+        <tr>
+          <td className='fs-3 fw-bold'>
+            <div style={{fontSize: '35px'}}>
+              SOCIOS NUEVOS
+            </div>
+          </td>
+          {data.map((d, i) => (
+            <td className='fs-2' key={i}>
+              <div className='d-flex justify-content-around'>
+                <div>
+                  {d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen !==691 && i.detalle_ventaMembresium.tb_ventum.id_origen !==692).length}
+                </div>
+                <div>
+                  <NumberFormatMoney
+                  amount={d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen !==691 && i.detalle_ventaMembresium.tb_ventum.id_origen !==692).reduce(
+                    (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+                    0
+                  )}
+                  />
+                </div>
+              </div>
+            </td>
+          ))}
+        </tr>
+        <tr>
+          <td className='fs-3 fw-bold'>
+            <div style={{fontSize: '35px'}}>
+              RENOVACIONES
+              </div>
+              </td>
+          {data.map((d, i) => (
+            <td className='fs-2' key={i}>
+              <div className='d-flex justify-content-around'>
+                <div>
+                  {d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 691).length}
+                </div>
+                <div>
+                  <NumberFormatMoney
+                    amount={
+                      d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 691).reduce(
+                    (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+                    0
+                  )
+                    }
+                  />
+                </div>
+              </div>
+              </td>
+          ))}
+        </tr>
+        <tr>
+          <td className='fs-3 fw-bold'>
+            <div style={{fontSize: '35px'}}>
+              REINSCRIPCIONES
+            </div>
+          </td>
+          {data.map((d, i) => (
+            <td className='fs-2' key={i}>
+              <div className='d-flex justify-content-around'>
+                <div>
+                  {d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 692).length}
+                </div>
+                <div>
+                  <NumberFormatMoney amount={d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 692).reduce(
+                    (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+                    0
+                  )}/>
+                </div>
+              </div>
+            </td>
+          ))}
+        </tr>
+        <tr>
+          <td className='fs-3 fw-bold'>
+            <div style={{fontSize: '35px'}}>
+            TICKET MEDIO
+            </div>
+          </td>
+          {data.map((d, i) => {
+            const tarifa_monto = d.items.reduce(
+                (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+                0
+              );
+            return (
+              <td className='fs-2 text-center' key={i}><NumberFormatMoney amount={tarifa_monto/d.items.length}/></td>
+            )
+          }
+          )}
+        </tr>
+      </tbody>
+    </Table>
+  );
+};
 function agruparxAnio(data) {
   const resultado = Object.values(
     data.reduce((acc, item) => {

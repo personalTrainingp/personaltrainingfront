@@ -529,7 +529,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                     </div>
                                 </div>
                                 </Col>
-                                
                                 <Col lg={12}>
                                     <div className="mb-4">
                                         <label htmlFor="descripcion" className="form-label">
@@ -547,6 +546,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                 </Col>
                                 <Col>
                                     <Button className='mx-2' type='submit'>Guardar</Button>
+                                    <Button className='mx-2' type='submit'>Guardar y nuevo</Button>
                                     <a className='mx-2' style={{cursor: 'pointer', color: 'red'}} onClick={onClickCancelModal}>Cancelar</a>
                                 </Col>
                             </Row>

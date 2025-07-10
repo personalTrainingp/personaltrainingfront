@@ -481,10 +481,22 @@ function agruparPorPgm(data) {
 	return resultado.sort((a, b) => b.items.length - a.items.length);
 }
 
+const agruparPorAnio = (datos) => {
+	return Object.values(
+		datos.reduce((acc, item) => {
+			if (!acc[item.anio]) {
+				acc[item.anio] = { anio: item.anio, items: [] };
+			}
+			acc[item.anio].items.push(item);
+			return acc;
+		}, {})
+	);
+};
+
 export const useAdquisicionStore = () => {
 	const [data, setdata] = useState([]);
 	const [dataVendedores, setdataVendedores] = useState([]);
-	const [dataProgramas, setdataProgramas] = useState([]);
+	const [dataProgramas, setdataProgramasXAnio] = useState([]);
 	const dispatch = useDispatch();
 	const obtenerTodoVentas = async () => {
 		try {
@@ -532,15 +544,34 @@ export const useAdquisicionStore = () => {
 					}),
 				};
 			});
-			console.log(
-				{ agregarItemsDias },
-				{ vend: programas },
+			const dataxAnio = agruparPorMesYAnio(
 				eliminarDuplicadosPorId(ventasSinCero),
+				'2024-09-01',
+				9
+			).map((vent) => {
+				return {
+					...vent,
+					items: agruparPorPgm(eliminarDuplicadosPorId(vent.items)).map((f) => {
+						return {
+							...f,
+							items: agruparPorMesYAnio(f.items, '2024-09-01', 9).map((m) => {
+								return {
+									...m,
+								};
+							}),
+						};
+					}),
+				};
+			});
+			console.log(
+				{ dataxAnio: igualarItemsPorAnio(dataxAnio) },
+				{ vend: vendedores },
+				{ a: eliminarDuplicadosPorId(ventasSinCero) },
 				agruparPorMesYAnioYDia(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
 				agruparPorMesYAnio(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
 				'holi'
 			);
-			setdataProgramas(programas);
+			setdataProgramasXAnio(programas);
 			setdataVendedores(vendedores);
 			setdata(agregarItemsDias);
 		} catch (error) {
@@ -554,6 +585,32 @@ export const useAdquisicionStore = () => {
 		dataProgramas,
 	};
 };
+function igualarItemsPorAnio(data) {
+	// Obtener todos los labels únicos existentes
+	const allLabels = new Set();
+	data.forEach(({ items }) => {
+		items.forEach(({ lbel }) => {
+			allLabels.add(lbel);
+		});
+	});
+
+	// Convertir el Set en Array
+	const labelsArray = Array.from(allLabels);
+
+	// Para cada año, asegurarse que tenga todos los labels
+	const resultado = data.map(({ anio, items }) => {
+		const mapItems = Object.fromEntries(items.map((i) => [i.lbel, i]));
+
+		// Construir lista completa con los labels asegurando que existan
+		const newItems = labelsArray.map((lbel) => {
+			return mapItems[lbel] || { lbel, items: [] };
+		});
+
+		return { anio, items: newItems };
+	});
+
+	return resultado;
+}
 
 function groupByDate(data) {
 	// 1) Agrupa los elementos por clave "YYYY-MM"
