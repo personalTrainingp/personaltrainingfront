@@ -563,13 +563,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                 </Col>
                                 <Col>
                                     <Button className='mx-2' type='submit'>Guardar</Button>
-                                    {
-                                        data?(
-                                            <></>
-                                        ):(
-                                            <Button className='mx-2' onClick={onClickSaveAndNew}>Guardar y nuevo</Button>
-                                        )
-                                    }
+                                    <Button className='mx-2' onClick={onClickSaveAndNew}>Guardar y nuevo</Button>
                                     <a className='mx-2' style={{cursor: 'pointer', color: 'red'}} onClick={onClickCancelModal}>Cancelar</a>
                                 </Col>
                             </Row>
