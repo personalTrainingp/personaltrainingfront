@@ -162,6 +162,23 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             registrarParametrosGastosFinanzas({id_empresa, grupo: valueSelect, id_tipoGasto})
             setisAddGrupo(true)
         }
+        const onClickSaveAndNew=async(e)=>{
+            e.preventDefault()
+            if(data){
+                // console.log("con");
+                
+                setshowLoading(true)
+                await startActualizarGastos(formState, data.id, id_enterprice)
+                setshowLoading(false)
+                // console.log("sin ");
+                // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
+                onClickCancelModal()
+                return;
+            }
+            setshowLoading(true)
+            await startRegistrarGastos(formState, id_enterprice)
+            setshowLoading(false)
+        }
         const onViewSelectionNotResult = (nameSelect, valueSelect)=>{
             if(nameSelect==='grupo'){
                 if(id_tipoGasto!==0 && id_empresa!==0){
@@ -546,7 +563,13 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                 </Col>
                                 <Col>
                                     <Button className='mx-2' type='submit'>Guardar</Button>
-                                    <Button className='mx-2' type='submit'>Guardar y nuevo</Button>
+                                    {
+                                        data?(
+                                            <></>
+                                        ):(
+                                            <Button className='mx-2' onClick={onClickSaveAndNew}>Guardar y nuevo</Button>
+                                        )
+                                    }
                                     <a className='mx-2' style={{cursor: 'pointer', color: 'red'}} onClick={onClickCancelModal}>Cancelar</a>
                                 </Col>
                             </Row>
