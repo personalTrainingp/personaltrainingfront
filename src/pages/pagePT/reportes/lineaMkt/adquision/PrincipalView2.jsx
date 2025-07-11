@@ -18,6 +18,7 @@ import SimpleBar from 'simplebar-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DataDroppable } from './DataDroppable'
 import { TabPanel, TabView } from 'primereact/tabview'
+import { TableDataComparativaVendedores } from './TableDataComparativaVendedores'
 const sumarTarifaMonto = (items)=>{
       const ventas = items.reduce((accum, item) => accum + (item.detalle_ventaMembresium?.tarifa_monto || 0), 0)
     return ventas
@@ -32,7 +33,7 @@ const propsResumen = (items)=>{
   }
 }
 export const PrincipalView = () => {
-  const { obtenerTodoVentas, data, dataVendedores, dataProgramas } = useAdquisicionStore()
+  const { obtenerTodoVentas, data, dataVendedores, dataProgramas, dataUnif } = useAdquisicionStore()
   const [isOpenModalFilteredDia, setisOpenModalFilteredDia] = useState(false)
   const [resultadosFiltrados, setResultadosFiltrados] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -121,7 +122,7 @@ export const PrincipalView = () => {
             ventas // Acumulado de todos los items
         };
       }
-      console.log({dataProgramas, data});
+      console.log({dataProgramas, data: dataProgramas.flatMap(pgm => pgm.items).filter(item => item.anio === '2024')});
       
   return (
     <>
@@ -196,12 +197,15 @@ export const PrincipalView = () => {
                   
                   return (
                     <>
-                    <h1 className='text-center'>
+                    <h1 className='text-center' style={{fontSize: '60px'}}>
                       {datapgm?.lbel}
                     </h1>
                     <div className='' style={{display: 'flex', justifyContent: 'center'}}>
                       <TablaResumen data={items2024}/>
                     </div>
+                    <br/>
+                    <br/>
+                    <br/>
                     </>
                   )
                 })
@@ -218,7 +222,9 @@ export const PrincipalView = () => {
                       <h1 className='text-center' style={{fontSize: '60px'}}>
                       {datapgm?.lbel}
                     </h1>
-                    <TablaResumen data={items2024}/>
+                    <div className='' style={{display: 'flex', justifyContent: 'center'}}>
+                      <TablaResumen data={items2024}/>
+                    </div>
                     <br/>
                     <br/>
                     <br/>
@@ -247,13 +253,13 @@ export const PrincipalView = () => {
                     <h1 className='text-center'>
                       {datapgm?.lbel}
                     </h1>
-                    <TablaResumen data={items2024}/>
+                    <TablaResumen2 data={items2024}/>
                     </>
                   )
                 })
               }
               <h1 className='text-center'>CHANGE 45 + FISIO MUSCLE + FS 45</h1>
-              <TablaResumen data={data.filter(d=>d.anio==='2024')}/>
+              <TablaResumen2 data={dataUnif.filter(item => item.anio === '2024')}/>
             </TabPanel>
             <TabPanel header={<div style={{fontSize: '60px'}}>2025</div>}>
               {
@@ -264,95 +270,17 @@ export const PrincipalView = () => {
                     <h1 className='text-center'>
                       {datapgm?.lbel}
                     </h1>
-                    <TablaResumen data={items2024}/>
+                    <TablaResumen2 data={items2024}/>
                     </>
                   )
                 })
               }
               <h1 className='text-center'>CHANGE 45 + FISIO MUSCLE + FS 45</h1>
-              <TablaResumen data={data.filter(d=>d.anio==='2025')}/>
+              <TablaResumen2 data={dataUnif.filter(d=>d.anio==='2025')}/>
             </TabPanel>
           </TabView>
         </div>
       </div>
-      {/* <Col lg={12} className='mt-6' style={{ padding: 2 }}>
-        <DragDropContext onDragEnd={onDragEnd}>
-    <Droppable droppableId="resultados" direction="horizontal">
-      {(provided) => (
-        <div
-          {...provided.droppableProps}
-          ref={provided.innerRef}
-          style={{
-            display: 'flex',
-            overflowX: 'auto',  // scroll horizontal aquí
-            gap: '1rem',
-            padding: '1rem',
-            flexWrap: 'nowrap'
-          }}
-        >
-          {resultadosFiltrados.map((r, idx, array) => (
-            <Draggable key={idx} draggableId={`result-${idx}`} index={idx}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  style={{
-                    flex: '0 0 auto',
-                    width: '33%',
-                    ...provided.draggableProps.style
-                  }}
-                >
-                  <ItemsxFecha i={r} array={data} />
-                </div>
-              )}
-            </Draggable>
-          ))}
-          {provided.placeholder}
-        </div>
-      )}
-    </Droppable>
-  </DragDropContext>
-      </Col>
-      <Col lg={12} className='mt-6' style={{ padding: 2 }}>
-        <DragDropContext onDragEnd={onDragEnd}>
-    <Droppable droppableId="resultados" direction="horizontal">
-      {(provided) => (
-        <div
-          {...provided.droppableProps}
-          ref={provided.innerRef}
-          style={{
-            display: 'flex',
-            overflowX: 'auto',  // scroll horizontal aquí
-            gap: '1rem',
-            padding: '1rem',
-            flexWrap: 'nowrap'
-          }}
-        >
-          {resultadosFiltrados.map((r, idx) => (
-            <Draggable key={idx} draggableId={`result-${idx}`} index={idx}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  style={{
-                    flex: '0 0 auto',
-                    width: '33%',
-                    ...provided.draggableProps.style
-                  }}
-                >
-                  <ItemsxFecha i={r} />
-                </div>
-              )}
-            </Draggable>
-          ))}
-          {provided.placeholder}
-        </div>
-      )}
-    </Droppable>
-  </DragDropContext>
-      </Col> */}
     </Row>  
     </>
   )
@@ -360,228 +288,363 @@ export const PrincipalView = () => {
 
 const TablaResumen = ({data}) => {
   return (
-    <Table striped style={{width: '2200px'}}>
-      <thead className={'bg-primary'}>
-        <tr>
-          <th className='fs-3 pl-5 text-center'></th>
-          {data.map((d, i) => (
-            <th className='fs-3 text-center text-white' key={i}>
-              <div className='' style={{fontSize: '55px'}}>
-                {d.fecha.split(' ')[0].toUpperCase()}
-              </div>
-              </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td className='fs-3 fw-bold' >
-            <div style={{fontSize: '35px'}}>
-              SOCIOS VENTAS
-            </div>
-          </td>
-          {data.map((d, i) => {
-            const tarifa_monto = d.items.reduce(
-                (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
-                0
-              );
-            return (
-              <>
-              <td className='fs-2 text-center' key={i}>
-                <div className='d-flex justify-content-around'>
-                  <div>
-                    {d.items.length}
-                  </div>
-                  <div>
-                    <NumberFormatMoney amount={tarifa_monto}/>
-                  </div>
+    <div style={{ overflowX: 'auto', width: '100%' }}>
+      <Table striped bordered className="border border-black" style={{width: '2200px'}}>
+        <thead className={'bg-primary'}>
+          <tr>
+            <th className='fs-3 pl-5 text-center'></th>
+            {data.map((d, i) => (
+              <th className='fs-3 text-center text-white' key={i}>
+                <div className='' style={{fontSize: '55px', width: '300px'}}>
+                  {d.fecha.split(' ')[0].toUpperCase()}
                 </div>
-              </td>
-              </>
-            )
-          }
-          )}
-        </tr>
-        <tr>
-          <td className='fs-3 fw-bold'>
-            <div style={{fontSize: '35px'}}>
-              SOCIOS NUEVOS
-            </div>
-          </td>
-          {data.map((d, i) => (
-            <td className='fs-2' key={i}>
-              <div className='d-flex justify-content-around'>
-                <div>
-                  {d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen !==691 && i.detalle_ventaMembresium.tb_ventum.id_origen !==692).length}
-                </div>
-                <div>
-                  <NumberFormatMoney
-                  amount={d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen !==691 && i.detalle_ventaMembresium.tb_ventum.id_origen !==692).reduce(
-                    (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
-                    0
-                  )}
-                  />
-                </div>
+                </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className='fs-3 fw-bold' >
+              <div style={{fontSize: '35px'}}>
+                SOCIOS VENTAS
               </div>
             </td>
-          ))}
-        </tr>
-        <tr>
-          <td className='fs-3 fw-bold'>
-            <div style={{fontSize: '35px'}}>
-              RENOVACIONES
-              </div>
-              </td>
-          {data.map((d, i) => (
-            <td className='fs-2' key={i}>
-              <div className='d-flex justify-content-around'>
-                <div>
-                  {d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 691).length}
-                </div>
-                <div>
-                  <NumberFormatMoney
-                    amount={
-                      d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 691).reduce(
-                    (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
-                    0
-                  )
-                    }
-                  />
-                </div>
-              </div>
-              </td>
-          ))}
-        </tr>
-        <tr>
-          <td className='fs-3 fw-bold'>
-            <div style={{fontSize: '35px'}}>
-              REINSCRIPCIONES
-            </div>
-          </td>
-          {data.map((d, i) => (
-            <td className='fs-2' key={i}>
-              <div className='d-flex justify-content-around'>
-                <div>
-                  {d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 692).length}
-                </div>
-                <div>
-                  <NumberFormatMoney amount={d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 692).reduce(
-                    (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
-                    0
-                  )}/>
-                </div>
+            {data.map((d, i) => {
+              const tarifa_monto = d.items.reduce(
+                  (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+                  0
+                );
+              return (
+                <>
+                <td className='fs-2 text-center' key={i}>
+                  <div className='d-flex mx-4'>
+                    <div className='text-change fw-bold' dir="rtl">
+                      {d.items.length}
+                    </div>
+                    <div className={`ms-auto ${tarifa_monto<=0?'':'text-black fw-bold'}`}>
+                      <NumberFormatMoney amount={tarifa_monto}/>
+                    </div>
+                  </div>
+                </td>
+                </>
+              )
+            }
+            )}
+          </tr>
+          <tr>
+            <td className='fs-3 fw-bold'>
+              <div style={{fontSize: '35px'}}>
+                SOCIOS NUEVOS
               </div>
             </td>
-          ))}
-        </tr>
-        <tr>
-          <td className='fs-3 fw-bold'>
-            <div style={{fontSize: '35px'}}>
-            TICKET MEDIO
-            </div>
-          </td>
-          {data.map((d, i) => {
-            const tarifa_monto = d.items.reduce(
-                (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
-                0
-              );
-            return (
-              <td className='fs-2 text-center' key={i}><NumberFormatMoney amount={tarifa_monto/d.items.length}/></td>
-            )
-          }
-          )}
-        </tr>
-      </tbody>
-    </Table>
-  );
-};
-function agruparxAnio(data) {
-  const resultado = Object.values(
-    data.reduce((acc, item) => {
-      if (!acc[item.anio]) {
-        acc[item.anio] = { anio: item.anio, items: [] };
-      }
-      acc[item.anio].items.push(item);
-      return acc;
-    }, {})
-  );
-
-  return resultado
-  // const resultado = [];
-          
-  //         data?.forEach((item) => {
-  //           const { anio } = item;
+            {data.map((d, i) => {
+              const NuevosCantidad = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen !==691 && i.detalle_ventaMembresium.tb_ventum.id_origen !==692).length
+              const ventasNuevos = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen !==691 && i.detalle_ventaMembresium.tb_ventum.id_origen !==692).reduce(
+                        (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+                        0
+                      )
+              return (
+                <td className='fs-2' key={i}>
+                  <div className='d-flex mx-4'>
+                    <div className='text-change fw-bold'>
+                      {NuevosCantidad}
+                    </div>
+                    <div className={`ms-auto ${ventasNuevos<=0?'':'text-black fw-bold'}`}>
+                      <NumberFormatMoney
+                      amount={ventasNuevos}
+                      />
+                    </div>
+                  </div>
+                </td>
+              )
+            }
             
-  //         //   console.log(horario, formatHorario, "horarrrr");
-  //           // Verificar si ya existe un grupo con la misma cantidad de sesiones
-  //           let grupo = resultado?.find((g) => g.anio === anio);
-        
-  //           if (!grupo) {
-  //             // Si no existe, crear un nuevo grupo
-  //             grupo = { anio: anio, items: [] };
-  //             resultado.push(grupo);
-  //           }
-  //           // Agregar el item al grupo correspondiente
-  //           grupo.items.push(item);
-  //         });
-          
-  //         return resultado;
-}
-
-
-function dataAgrupadoPorDIAMESANIO(data) {
-
-// Obtener el rango de fechas (mínimo y máximo)
-const startDate = new Date(Math.min(...data.map(item => new Date(item.detalle_ventaMembresium.tb_ventum.fecha_venta))));
-const endDate = new Date(Math.max(...data.map(item => new Date(item.detalle_ventaMembresium.tb_ventum.fecha_venta))));
-
-// Crear el array de días de un mes
-const getDaysOfMonth = (year, month) => {
-  const daysInMonth = new Date(year, month, 0).getDate(); // Total de días en el mes
-  const days = [];
-  for (let day = 1; day <= daysInMonth; day++) {
-    days.push(day); // Solo el día
-  }
-  return days;
+            )}
+          </tr>
+          <tr>
+            <td className='fs-3 fw-bold'>
+              <div style={{fontSize: '35px'}}>
+                RENOVACIONES
+                </div>
+                </td>
+            {data.map((d, i) => {
+              const renovacionesCantidad = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 691).length
+              const Ventasrenovaciones = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 691).reduce(
+                        (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+                        0
+                      )
+              return (
+                <td className='fs-2' key={i}>
+                  <div className='d-flex mx-4'>
+                    <div className='text-change fw-bold'>
+                      {renovacionesCantidad}
+                    </div>
+                    <div className={`ms-auto ${Ventasrenovaciones<=0?'':'text-black fw-bold'}`}>
+                      <NumberFormatMoney
+                        amount={Ventasrenovaciones}
+                      />
+                    </div>
+                  </div>
+                  </td>
+              )
+            }
+            )}
+          </tr>
+          <tr>
+            <td className='fs-3 fw-bold'>
+              <div style={{fontSize: '35px'}}>
+                REINSCRIPCIONES
+              </div>
+            </td>
+            {data.map((d, i) => {
+                const reiCantidad = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 692).length
+                const reiVentas = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 692).reduce(
+                      (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+                      0
+                    )
+              return (
+              <td className='fs-2' key={i}>
+                <div className='d-flex mx-4'>
+                  <div className='text-change fw-bold'>
+                    {reiCantidad}
+                  </div>
+                  <div className={`ms-auto ${reiVentas<=0?'':'text-black fw-bold'}`}>
+                    <NumberFormatMoney amount={reiVentas}/>
+                  </div>
+                </div>
+              </td>
+              )
+            } 
+            )}
+          </tr>
+          <tr>
+            <td className='fs-3 fw-bold'>
+              <div style={{fontSize: '35px'}}>
+              TICKET MEDIO
+              </div>
+            </td>
+            {data.map((d, i) => {
+              const tarifa_monto = d.items.reduce(
+                  (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+                  0
+                );
+                const ticket_medio = ((tarifa_monto/d.items.length) || 0)
+              return (
+                <td className='fs-2 text-center' key={i}>
+                  <div className={`${ticket_medio<=0.0?'':'text-black fw-bold'}`}>
+                    <NumberFormatMoney amount={ticket_medio}/>
+                  </div>
+                </td>
+              )
+            }
+            )}
+          </tr>
+        </tbody>
+      </Table>
+    </div>
+  );
 };
 
-// Agrupar los datos por día
-const groupedByMonth = data.reduce((acc, item) => {
-  const fecha = new Date(item.detalle_ventaMembresium.tb_ventum.fecha_venta);
-  const dia = fecha.getDate();
-  const mes = fecha.getMonth() + 1; // Mes es 0-indexed, sumamos 1
-  const anio = fecha.getFullYear();
+const TablaResumen2 = ({data}) => {
+  return (
+    <div style={{ overflowX: 'auto', width: '100%' }}>
+      <Table striped bordered className="border-change" style={{width: '2500px'}}>
+        <thead className={'bg-primary'} style={{width: '5000px'}}>
+          <tr>
+            <th className='fs-3 pl-5 text-center'></th>
+            {data.map((d, i) => (
+              <th className='fs-3 text-center text-white' key={i}>
+                <div className='text-center' style={{fontSize: '55px', width: 'auto'}}>
+                  {d.fecha.split(' ')[0].toUpperCase()}
+                </div>
+                <div className='d-flex justify-content-around' key={i} style={{fontSize: '38px', width: '2000px'}}>
+                {
+                  d.itemVendedores?.map((d, i)=>{
+                    return (
+                        <div className='fw-bold text-white'>
+                          {d?.nombre}
+                        </div>
+                    )
+                  })
+                }
+                </div>
+                <div className='d-flex  justify-content-around' key={i} style={{fontSize: '35px', width: '2000px'}}>
+                {
+                  d.itemVendedores?.map((d, i)=>{
+                    return (
+                        <div className='d-flex mx-5' style={{fontSize: '35px', width: '100%'}}>
+                          <div className='fw-bold ml-5'  style={{width: '23%'}}>
+                            SOCIOS
+                          </div>
+                          <div className='fw-bold ms-auto' style={{width: '44%'}}>
+                            VENTAS
+                          </div>
+                          <div className='fw-bold ms-auto' style={{width: '33%'}}>
+                            TICKET MEDIO
+                          </div>
+                        </div>
+                    )
+                  })
+                }
+                </div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className='fs-3 fw-bold' >
+              <div style={{fontSize: '35px'}}>
+                SOCIOS VENTAS
+              </div>
+            </td>
+            {data.map((d, i) => {
+              
+              return (
+                <>
+                <td className='fs-2 text-center' key={i}>
+                  <div className='d-flex justify-content-around' key={i} style={{fontSize: '35px', width: '2000px'}}>
+                    {
+                  d.itemVendedores?.map((d, i)=>{
+                    return (
+                        <div className='d-flex mx-5' style={{fontSize: '35px', width: '100%'}}>
+                          <div className={`fw-bold text-end ${d.puesto.socios==='p'?'':'text-change'}`}  style={{width: '23%'}}>
+                            {d.socios}
+                          </div>
+                          <div className={`fw-bold ms-auto text-end ${d.puesto.tarifa==='p'?'':'text-change'} `}  style={{width: '44%'}}>
+                              <NumberFormatMoney amount={d.tarifa}/>
+                          </div>
+                          <div className={`fw-bold text-end ${d.puesto.ticket_medio==='p'?'':'text-change'}`}  style={{width: '33%'}}>
+                              <NumberFormatMoney amount={d.ticket_medio}/>
+                          </div>
+                        </div>
+                    )
+                  })
+                }
+                  </div>
+                </td>
+                </>
+              )
+            }
+            )}
+          </tr>
+          <tr>
+            <td className='fs-3 fw-bold'>
+              <div style={{fontSize: '35px'}}>
+                SOCIOS NUEVOS
+              </div>
+            </td>
+            {data.map((d, i) => {
+              
+              return (
+                <>
+                <td className='fs-2 text-center' key={i}>
+                  <div className='d-flex justify-content-around' key={i} style={{fontSize: '35px', width: '2000px'}}>
+                    {
+                  d.itemVendedores?.map((d, i)=>{
+                    return (
+                        <div className='d-flex mx-5' style={{fontSize: '35px', width: '100%'}}>
+                          <div className={`fw-bold text-end ${d.nuevos.puesto.socios==='p'?'':'text-change'}`}  style={{width: '23%'}}>
+                            {d.nuevos.socios}
+                          </div>
+                          <div className={`fw-bold ms-auto text-end ${d.nuevos.puesto.tarifa==='p'?'':'text-change'}`}  style={{width: '44%'}}>
+                              <NumberFormatMoney amount={d.nuevos.tarifa}/>
+                          </div>
+                          <div className={`fw-bold text-end ${d.nuevos.puesto.ticket_medio==='p'?'':'text-change'}`}  style={{width: '33%'}}>
+                              <NumberFormatMoney amount={d.nuevos.ticket_medio}/>
+                          </div>
+                        </div>
+                    )
+                  })
+                }
+                  </div>
+                </td>
+                </>
+              )
+            }
+            )}
+          </tr>
+          <tr>
+            <td className='fs-3 fw-bold'>
+              <div style={{fontSize: '35px'}}>
+                RENOVACIONES
+                </div>
+                </td>
+                
+            {data.map((d, i) => {
+              
+              return (
+                <>
+                <td className='fs-2 text-center' key={i}>
+                  <div className='d-flex justify-content-around' key={i} style={{fontSize: '35px', width: '2000px'}}>
 
-  const param = `${dia.toString().padStart(2, '0')}-${mes.toString().padStart(2, '0')}-${anio}`;
+                    {
+                  d.itemVendedores?.map((d, i)=>{
+                    return (
+                        <div className='d-flex mx-5' style={{fontSize: '35px', width: '100%'}}>
+                          <div className={`fw-bold text-end ${d.renovaciones.puesto.socios==='p'?'':'text-change'}`}  style={{width: '23%'}}>
+                            {d.renovaciones.socios}
+                          </div>
+                          <div className={`fw-bold ms-auto text-end ${d.renovaciones.puesto.tarifa==='p'?'':'text-change'}`}  style={{width: '44%'}}>
+                              <NumberFormatMoney amount={d.renovaciones.tarifa}/>
+                          </div>
+                          <div className={`fw-bold ms-auto text-end ${d.renovaciones.puesto.ticket_medio==='p'?'':'text-change'}`}  style={{width: '33%'}}>
+                              <NumberFormatMoney amount={d.renovaciones.ticket_medio}/>
+                          </div>
+                        </div>
+                    )
+                  })
+                }
+                  </div>
+                </td>
+                </>
+              )
+            }
+            )}
+          </tr>
+          <tr>
+            <td className='fs-3 fw-bold'>
+              <div style={{fontSize: '35px'}}>
+                REINSCRIPCIONES
+              </div>
+            </td>
+            
+            {data.map((d, i) => {
+              
+              return (
+                <>
+                <td className='fs-2 text-center' key={i}>
+                  <div className='d-flex justify-content-around' key={i} style={{fontSize: '35px', width: '2000px'}}>
 
-  let monthGroup = acc.find(group => group.mes === mes && group.anio === anio);
+                    {
+                  d.itemVendedores?.map((d, i)=>{
+                    return (
+                        <div className='d-flex mx-5' style={{fontSize: '35px', width: '100%'}}>
+                          <div className={`fw-bold text-end ${d.reinscripciones.puesto.socios==='p'?'':'text-change'}`} style={{width: '23%'}}>
+                            {d.reinscripciones.socios}
+                          </div>
+                          <div className={`fw-bold ms-auto text-end ${d.reinscripciones.puesto.tarifa==='p'?'':'text-change'}`} style={{width: '44%'}}>
+                              <NumberFormatMoney amount={d.reinscripciones.tarifa}/>
+                          </div>
+                          <div className={`fw-bold ms-auto text-end ${d.reinscripciones.puesto.ticket_medio==='p'?'':'text-change'}`} style={{width: '33%'}}>
+                              <NumberFormatMoney amount={d.reinscripciones.ticket_medio}/>
+                          </div>
+                        </div>
+                    )
+                  })
+                }
+                  </div>
+                </td>
+                </>
+              )
+            }
+            )}
+          </tr>
+        </tbody>
+      </Table>
+    </div>
+  );
+};
 
-  if (!monthGroup) {
-    monthGroup = {
-      param: `${dia.toString().padStart(2, '0')}-${mes.toString().padStart(2, '0')}-${anio}`,
-      mes: mes.toString().padStart(2, '0'),
-      anio,
-      items: getDaysOfMonth(anio, mes).map(day => ({
-        dia: day,
-        items: [] // Inicializamos con un array vacío para cada día
-      }))
-    };
-    acc.push(monthGroup);
-  }
 
-  const dayGroup = monthGroup.items.find(day => day.dia === dia);
-  if (dayGroup) {
-    dayGroup.items.push(item); // Agregar el item correspondiente al día
-  }
 
-  return acc;
-}, []);
-
-// Asegurarse de que cada día tenga el formato correcto
-groupedByMonth.forEach(monthGroup => {
-  monthGroup.items.forEach(day => {
-    day.param = `${day.dia.toString().padStart(2, '0')}-${monthGroup.mes}-${monthGroup.anio}`;
-  });
-});
-return groupedByMonth;
-}

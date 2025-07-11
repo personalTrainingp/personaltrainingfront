@@ -495,6 +495,7 @@ const agruparPorAnio = (datos) => {
 
 export const useAdquisicionStore = () => {
 	const [data, setdata] = useState([]);
+	const [dataUnif, setdataUnif] = useState([]);
 	const [dataVendedores, setdataVendedores] = useState([]);
 	const [dataProgramas, setdataProgramasXAnio] = useState([]);
 	const dispatch = useDispatch();
@@ -540,6 +541,138 @@ export const useAdquisicionStore = () => {
 					items: agruparPorMesYAnio(f.items, '2024-09-01', 9).map((m) => {
 						return {
 							...m,
+							itemVendedores: (() => {
+								const getNombre = (f) => f.nombre_empl || f.lbl || f.propiedad;
+
+								const calcularDatos = (items) => {
+									const socios = items.length;
+									const tarifa = items.reduce(
+										(total, item) =>
+											total +
+											(item?.detalle_ventaMembresium?.tarifa_monto || 0),
+										0
+									);
+									return {
+										socios,
+										tarifa,
+										ticket_medio: tarifa / (socios || 1),
+									};
+								};
+
+								const vendedores = agruparPorVendedores(m.items).map((f) => {
+									const nombre = getNombre(f);
+
+									const nuevosItems = f.items.filter((item) => {
+										const origen =
+											item?.detalle_ventaMembresium?.tb_ventum?.id_origen;
+										return origen !== 691 && origen !== 692;
+									});
+
+									const renovacionesItems = f.items.filter(
+										(item) =>
+											item?.detalle_ventaMembresium?.tb_ventum?.id_origen ===
+											691
+									);
+
+									const reinscripcionesItems = f.items.filter(
+										(item) =>
+											item?.detalle_ventaMembresium?.tb_ventum?.id_origen ===
+											692
+									);
+
+									return {
+										nombre,
+										...calcularDatos(f.items),
+										nuevos: { nombre, ...calcularDatos(nuevosItems) },
+										renovaciones: {
+											nombre,
+											...calcularDatos(renovacionesItems),
+										},
+										reinscripciones: {
+											nombre,
+											...calcularDatos(reinscripcionesItems),
+										},
+									};
+								});
+
+								// FUNCIONES PARA RANKEAR
+								const setPuestos = (lista, campo) => {
+									const ordenados = [...lista].sort(
+										(a, b) => b[campo] - a[campo]
+									);
+									const total = ordenados.length;
+
+									return lista.map((v) => {
+										const index = ordenados.findIndex(
+											(x) => x.nombre === v.nombre
+										);
+										if (index === 0) return { ...v, [`puesto_${campo}`]: 'p' };
+										if (index === total - 1)
+											return { ...v, [`puesto_${campo}`]: 'u' };
+										return { ...v, [`puesto_${campo}`]: index + 1 };
+									});
+								};
+
+								// 1. PUESTOS GENERALES
+								let conPuestos = setPuestos(vendedores, 'socios');
+								conPuestos = setPuestos(conPuestos, 'tarifa');
+								conPuestos = setPuestos(conPuestos, 'ticket_medio');
+
+								// 2. PUESTOS NUEVOS
+								let nuevos = conPuestos.map((v) => v.nuevos);
+								nuevos = setPuestos(nuevos, 'socios');
+								nuevos = setPuestos(nuevos, 'tarifa');
+								nuevos = setPuestos(nuevos, 'ticket_medio');
+
+								// 3. PUESTOS RENOVACIONES
+								let renovaciones = conPuestos.map((v) => v.renovaciones);
+								renovaciones = setPuestos(renovaciones, 'socios');
+								renovaciones = setPuestos(renovaciones, 'tarifa');
+								renovaciones = setPuestos(renovaciones, 'ticket_medio');
+
+								// 4. PUESTOS REINSCRIPCIONES
+								let reinscripciones = conPuestos.map((v) => v.reinscripciones);
+								reinscripciones = setPuestos(reinscripciones, 'socios');
+								reinscripciones = setPuestos(reinscripciones, 'tarifa');
+								reinscripciones = setPuestos(reinscripciones, 'ticket_medio');
+
+								// 5. COMBINAR TODO
+								return conPuestos.map((v, i) => ({
+									nombre: v.nombre,
+									socios: v.socios,
+									tarifa: v.tarifa,
+									ticket_medio: v.ticket_medio,
+									puesto: {
+										socios: v.puesto_socios,
+										tarifa: v.puesto_tarifa,
+										ticket_medio: v.puesto_ticket_medio,
+									},
+									nuevos: {
+										...v.nuevos,
+										puesto: {
+											socios: nuevos[i].puesto_socios,
+											tarifa: nuevos[i].puesto_tarifa,
+											ticket_medio: nuevos[i].puesto_ticket_medio,
+										},
+									},
+									renovaciones: {
+										...v.renovaciones,
+										puesto: {
+											socios: renovaciones[i].puesto_socios,
+											tarifa: renovaciones[i].puesto_tarifa,
+											ticket_medio: renovaciones[i].puesto_ticket_medio,
+										},
+									},
+									reinscripciones: {
+										...v.reinscripciones,
+										puesto: {
+											socios: reinscripciones[i].puesto_socios,
+											tarifa: reinscripciones[i].puesto_tarifa,
+											ticket_medio: reinscripciones[i].puesto_ticket_medio,
+										},
+									},
+								}));
+							})(),
 						};
 					}),
 				};
@@ -548,23 +681,138 @@ export const useAdquisicionStore = () => {
 				eliminarDuplicadosPorId(ventasSinCero),
 				'2024-09-01',
 				9
-			).map((vent) => {
+			).map((m) => {
 				return {
-					...vent,
-					items: agruparPorPgm(eliminarDuplicadosPorId(vent.items)).map((f) => {
-						return {
-							...f,
-							items: agruparPorMesYAnio(f.items, '2024-09-01', 9).map((m) => {
-								return {
-									...m,
-								};
-							}),
+					...m,
+					itemVendedores: (() => {
+						const getNombre = (f) => f.nombre_empl || f.lbl || f.propiedad;
+
+						const calcularDatos = (items) => {
+							const socios = items.length;
+							const tarifa = items.reduce(
+								(total, item) =>
+									total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+								0
+							);
+							return {
+								socios,
+								tarifa,
+								ticket_medio: tarifa / (socios || 1),
+							};
 						};
-					}),
+
+						const vendedores = agruparPorVendedores(m.items).map((f) => {
+							const nombre = getNombre(f);
+
+							const nuevosItems = f.items.filter((item) => {
+								const origen = item?.detalle_ventaMembresium?.tb_ventum?.id_origen;
+								return origen !== 691 && origen !== 692;
+							});
+
+							const renovacionesItems = f.items.filter(
+								(item) =>
+									item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 691
+							);
+
+							const reinscripcionesItems = f.items.filter(
+								(item) =>
+									item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 692
+							);
+
+							return {
+								nombre,
+								...calcularDatos(f.items),
+								nuevos: { nombre, ...calcularDatos(nuevosItems) },
+								renovaciones: {
+									nombre,
+									...calcularDatos(renovacionesItems),
+								},
+								reinscripciones: {
+									nombre,
+									...calcularDatos(reinscripcionesItems),
+								},
+							};
+						});
+
+						// FUNCIONES PARA RANKEAR
+						const setPuestos = (lista, campo) => {
+							const ordenados = [...lista].sort((a, b) => b[campo] - a[campo]);
+							const total = ordenados.length;
+
+							return lista.map((v) => {
+								const index = ordenados.findIndex((x) => x.nombre === v.nombre);
+								if (index === 0) return { ...v, [`puesto_${campo}`]: 'p' };
+								if (index === total - 1) return { ...v, [`puesto_${campo}`]: 'u' };
+								return { ...v, [`puesto_${campo}`]: index + 1 };
+							});
+						};
+
+						// 1. PUESTOS GENERALES
+						let conPuestos = setPuestos(vendedores, 'socios');
+						conPuestos = setPuestos(conPuestos, 'tarifa');
+						conPuestos = setPuestos(conPuestos, 'ticket_medio');
+
+						// 2. PUESTOS NUEVOS
+						let nuevos = conPuestos.map((v) => v.nuevos);
+						nuevos = setPuestos(nuevos, 'socios');
+						nuevos = setPuestos(nuevos, 'tarifa');
+						nuevos = setPuestos(nuevos, 'ticket_medio');
+
+						// 3. PUESTOS RENOVACIONES
+						let renovaciones = conPuestos.map((v) => v.renovaciones);
+						renovaciones = setPuestos(renovaciones, 'socios');
+						renovaciones = setPuestos(renovaciones, 'tarifa');
+						renovaciones = setPuestos(renovaciones, 'ticket_medio');
+
+						// 4. PUESTOS REINSCRIPCIONES
+						let reinscripciones = conPuestos.map((v) => v.reinscripciones);
+						reinscripciones = setPuestos(reinscripciones, 'socios');
+						reinscripciones = setPuestos(reinscripciones, 'tarifa');
+						reinscripciones = setPuestos(reinscripciones, 'ticket_medio');
+
+						// 5. COMBINAR TODO
+						return conPuestos.map((v, i) => ({
+							nombre: v.nombre,
+							socios: v.socios,
+							tarifa: v.tarifa,
+							ticket_medio: v.ticket_medio,
+							puesto: {
+								socios: v.puesto_socios,
+								tarifa: v.puesto_tarifa,
+								ticket_medio: v.puesto_ticket_medio,
+							},
+							nuevos: {
+								...v.nuevos,
+								puesto: {
+									socios: nuevos[i].puesto_socios,
+									tarifa: nuevos[i].puesto_tarifa,
+									ticket_medio: nuevos[i].puesto_ticket_medio,
+								},
+							},
+							renovaciones: {
+								...v.renovaciones,
+								puesto: {
+									socios: renovaciones[i].puesto_socios,
+									tarifa: renovaciones[i].puesto_tarifa,
+									ticket_medio: renovaciones[i].puesto_ticket_medio,
+								},
+							},
+							reinscripciones: {
+								...v.reinscripciones,
+								puesto: {
+									socios: reinscripciones[i].puesto_socios,
+									tarifa: reinscripciones[i].puesto_tarifa,
+									ticket_medio: reinscripciones[i].puesto_ticket_medio,
+								},
+							},
+						}));
+					})(),
 				};
 			});
 			console.log(
-				{ dataxAnio: igualarItemsPorAnio(dataxAnio) },
+				{ programas },
+				{ dataxAnio },
+				// { dataxAnio: igualarItemsPorAnio(dataxAnio) },
 				{ vend: vendedores },
 				{ a: eliminarDuplicadosPorId(ventasSinCero) },
 				agruparPorMesYAnioYDia(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
@@ -574,6 +822,7 @@ export const useAdquisicionStore = () => {
 			setdataProgramasXAnio(programas);
 			setdataVendedores(vendedores);
 			setdata(agregarItemsDias);
+			setdataUnif(dataxAnio);
 		} catch (error) {
 			console.log(error);
 		}
@@ -583,6 +832,7 @@ export const useAdquisicionStore = () => {
 		data,
 		dataVendedores,
 		dataProgramas,
+		dataUnif,
 	};
 };
 function igualarItemsPorAnio(data) {
