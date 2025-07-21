@@ -31,6 +31,9 @@ export const GestionInventario = () => {
         <TabPanel header="CHORRILLOS">
               <DataInventario id_enterprice={601} id_zona={601}/>
         </TabPanel>
+        <TabPanel header="PLANOS REDUCTO">
+            
+        </TabPanel>
       </TabView>
     </Card>
     </>

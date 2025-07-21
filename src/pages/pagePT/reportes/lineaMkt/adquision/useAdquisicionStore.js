@@ -495,9 +495,13 @@ const agruparPorAnio = (datos) => {
 
 export const useAdquisicionStore = () => {
 	const [data, setdata] = useState([]);
+	const [dataVentas, setdataVentas] = useState([]);
 	const [dataUnif, setdataUnif] = useState([]);
 	const [dataVendedores, setdataVendedores] = useState([]);
 	const [dataProgramas, setdataProgramasXAnio] = useState([]);
+	const [dataProgramasx, setdataProgramasx] = useState([]);
+	const [dataTotalPgmX, setdataTotalPgmX] = useState([]);
+	const [dataVendedorAnualizados, setdataVendedorAnualizados] = useState([]);
 	const dispatch = useDispatch();
 	const obtenerTodoVentas = async () => {
 		try {
@@ -535,6 +539,7 @@ export const useAdquisicionStore = () => {
 					};
 				}
 			);
+
 			const programas = agruparPorPgm(eliminarDuplicadosPorId(ventasSinCero)).map((f) => {
 				return {
 					...f,
@@ -543,7 +548,6 @@ export const useAdquisicionStore = () => {
 							...m,
 							itemVendedores: (() => {
 								const getNombre = (f) => f.nombre_empl || f.lbl || f.propiedad;
-
 								const calcularDatos = (items) => {
 									const socios = items.length;
 									const tarifa = items.reduce(
@@ -558,16 +562,14 @@ export const useAdquisicionStore = () => {
 										ticket_medio: tarifa / (socios || 1),
 									};
 								};
-
+								// Paso 1: construir vendedores con estructura intacta
 								const vendedores = agruparPorVendedores(m.items).map((f) => {
 									const nombre = getNombre(f);
-
 									const nuevosItems = f.items.filter((item) => {
 										const origen =
 											item?.detalle_ventaMembresium?.tb_ventum?.id_origen;
 										return origen !== 691 && origen !== 692;
 									});
-
 									const renovacionesItems = f.items.filter(
 										(item) =>
 											item?.detalle_ventaMembresium?.tb_ventum?.id_origen ===
@@ -582,101 +584,431 @@ export const useAdquisicionStore = () => {
 
 									return {
 										nombre,
-										...calcularDatos(f.items),
-										nuevos: { nombre, ...calcularDatos(nuevosItems) },
-										renovaciones: {
-											nombre,
-											...calcularDatos(renovacionesItems),
-										},
-										reinscripciones: {
-											nombre,
-											...calcularDatos(reinscripcionesItems),
+										datos: {
+											total: calcularDatos(f.items),
+											nuevos: { nombre, ...calcularDatos(nuevosItems) },
+											renovaciones: {
+												nombre,
+												...calcularDatos(renovacionesItems),
+											},
+											reinscripciones: {
+												nombre,
+												...calcularDatos(reinscripcionesItems),
+											},
 										},
 									};
 								});
 
-								// FUNCIONES PARA RANKEAR
-								const setPuestos = (lista, campo) => {
+								// Paso 2: función para poner puestos dentro de datos
+								const setPuestosEnSubobjeto = (lista, tipoBloque, campo) => {
 									const ordenados = [...lista].sort(
-										(a, b) => b[campo] - a[campo]
+										(a, b) =>
+											b.datos[tipoBloque][campo] - a.datos[tipoBloque][campo]
 									);
-									const total = ordenados.length;
 
 									return lista.map((v) => {
-										const index = ordenados.findIndex(
-											(x) => x.nombre === v.nombre
-										);
-										if (index === 0) return { ...v, [`puesto_${campo}`]: 'p' };
-										if (index === total - 1)
-											return { ...v, [`puesto_${campo}`]: 'u' };
-										return { ...v, [`puesto_${campo}`]: index + 1 };
+										const valorActual = v.datos[tipoBloque][campo];
+										const cantidadIguales = ordenados.filter(
+											(x) => x.datos[tipoBloque][campo] === valorActual
+										).length;
+
+										let puesto;
+										if (cantidadIguales > 1) {
+											puesto = 'i';
+										} else {
+											const index = ordenados.findIndex(
+												(x) => x.nombre === v.nombre
+											);
+											if (index === 0) puesto = 'p';
+											else if (index === ordenados.length - 1) puesto = 'u';
+											else puesto = index + 1;
+										}
+
+										return {
+											...v,
+											datos: {
+												...v.datos,
+												[tipoBloque]: {
+													...v.datos[tipoBloque],
+													puesto: {
+														...(v.datos[tipoBloque].puesto || {}),
+														[campo]: puesto,
+													},
+												},
+											},
+										};
 									});
 								};
 
-								// 1. PUESTOS GENERALES
-								let conPuestos = setPuestos(vendedores, 'socios');
-								conPuestos = setPuestos(conPuestos, 'tarifa');
-								conPuestos = setPuestos(conPuestos, 'ticket_medio');
+								// Paso 3: aplicar puestos por cada tipo y métrica
+								let conPuestos = vendedores;
 
-								// 2. PUESTOS NUEVOS
-								let nuevos = conPuestos.map((v) => v.nuevos);
-								nuevos = setPuestos(nuevos, 'socios');
-								nuevos = setPuestos(nuevos, 'tarifa');
-								nuevos = setPuestos(nuevos, 'ticket_medio');
+								['total', 'nuevos', 'renovaciones', 'reinscripciones'].forEach(
+									(tipo) => {
+										['socios', 'tarifa', 'ticket_medio'].forEach((campo) => {
+											conPuestos = setPuestosEnSubobjeto(
+												conPuestos,
+												tipo,
+												campo
+											);
+										});
+									}
+								);
 
-								// 3. PUESTOS RENOVACIONES
-								let renovaciones = conPuestos.map((v) => v.renovaciones);
-								renovaciones = setPuestos(renovaciones, 'socios');
-								renovaciones = setPuestos(renovaciones, 'tarifa');
-								renovaciones = setPuestos(renovaciones, 'ticket_medio');
+								// Paso 4: debug
+								console.log(
+									'DEBUG puestos',
+									conPuestos.map((v) => ({
+										nombre: v.nombre,
+										total: v.datos.total.puesto,
+										nuevos: v.datos.nuevos.puesto,
+										renovaciones: v.datos.renovaciones.puesto,
+										reinscripciones: v.datos.reinscripciones.puesto,
+									}))
+								);
 
-								// 4. PUESTOS REINSCRIPCIONES
-								let reinscripciones = conPuestos.map((v) => v.reinscripciones);
-								reinscripciones = setPuestos(reinscripciones, 'socios');
-								reinscripciones = setPuestos(reinscripciones, 'tarifa');
-								reinscripciones = setPuestos(reinscripciones, 'ticket_medio');
-
-								// 5. COMBINAR TODO
-								return conPuestos.map((v, i) => ({
-									nombre: v.nombre,
-									socios: v.socios,
-									tarifa: v.tarifa,
-									ticket_medio: v.ticket_medio,
-									puesto: {
-										socios: v.puesto_socios,
-										tarifa: v.puesto_tarifa,
-										ticket_medio: v.puesto_ticket_medio,
-									},
-									nuevos: {
-										...v.nuevos,
-										puesto: {
-											socios: nuevos[i].puesto_socios,
-											tarifa: nuevos[i].puesto_tarifa,
-											ticket_medio: nuevos[i].puesto_ticket_medio,
-										},
-									},
-									renovaciones: {
-										...v.renovaciones,
-										puesto: {
-											socios: renovaciones[i].puesto_socios,
-											tarifa: renovaciones[i].puesto_tarifa,
-											ticket_medio: renovaciones[i].puesto_ticket_medio,
-										},
-									},
-									reinscripciones: {
-										...v.reinscripciones,
-										puesto: {
-											socios: reinscripciones[i].puesto_socios,
-											tarifa: reinscripciones[i].puesto_tarifa,
-											ticket_medio: reinscripciones[i].puesto_ticket_medio,
-										},
-									},
-								}));
+								return conPuestos;
 							})(),
 						};
 					}),
 				};
 			});
+
+			const programasx = agruparPorPgm(eliminarDuplicadosPorId(ventasSinCero)).map((f) => {
+				return {
+					...f,
+					items: agruparPorMesYAnio(f.items, '2024-09-01', 9).map((m) => {
+						return {
+							...m,
+							datos: (() => {
+								const getNombre = (f) => f.nombre_empl || f.lbl || f.propiedad;
+								const calcularDatos = (items) => {
+									const socios = items.length;
+									const tarifa = items.reduce(
+										(total, item) =>
+											total +
+											(item?.detalle_ventaMembresium?.tarifa_monto || 0),
+										0
+									);
+									return {
+										socios,
+										tarifa,
+										ticket_medio: tarifa / (socios || 1),
+									};
+								};
+								// Paso 1: construir vendedores con estructura intacta
+								const vendedores = agruparPorVendedores(m.items).map((f) => {
+									const nombre = getNombre(f);
+									const nuevosItems = f.items.filter((item) => {
+										const origen =
+											item?.detalle_ventaMembresium?.tb_ventum?.id_origen;
+										return origen !== 691 && origen !== 692;
+									});
+									const renovacionesItems = f.items.filter(
+										(item) =>
+											item?.detalle_ventaMembresium?.tb_ventum?.id_origen ===
+											691
+									);
+
+									const reinscripcionesItems = f.items.filter(
+										(item) =>
+											item?.detalle_ventaMembresium?.tb_ventum?.id_origen ===
+											692
+									);
+
+									return {
+										nombre,
+										datos: {
+											total: calcularDatos(f.items),
+											nuevos: { ...calcularDatos(nuevosItems) },
+											renovaciones: {
+												...calcularDatos(renovacionesItems),
+											},
+											reinscripciones: {
+												...calcularDatos(reinscripcionesItems),
+											},
+										},
+									};
+								});
+
+								// Paso 2: función para poner puestos dentro de datos
+								const setPuestosEnSubobjeto = (lista, tipoBloque, campo) => {
+									const ordenados = [...lista].sort(
+										(a, b) =>
+											b.datos[tipoBloque][campo] - a.datos[tipoBloque][campo]
+									);
+
+									return lista.map((v) => {
+										const valorActual = v.datos[tipoBloque][campo];
+										const cantidadIguales = ordenados.filter(
+											(x) => x.datos[tipoBloque][campo] === valorActual
+										).length;
+
+										let puesto;
+										if (cantidadIguales > 1) {
+											puesto = 'i';
+										} else {
+											const index = ordenados.findIndex(
+												(x) => x.nombre === v.nombre
+											);
+											if (index === 0) puesto = 'p';
+											else if (index === ordenados.length - 1) puesto = 'u';
+											else puesto = index + 1;
+										}
+
+										return {
+											...v,
+											datos: {
+												...v.datos,
+												[tipoBloque]: {
+													...v.datos[tipoBloque],
+													puesto: {
+														...(v.datos[tipoBloque].puesto || {}),
+														[campo]: puesto,
+													},
+												},
+											},
+										};
+									});
+								};
+
+								// Paso 3: aplicar puestos por cada tipo y métrica
+								let conPuestos = vendedores;
+
+								['total', 'nuevos', 'renovaciones', 'reinscripciones'].forEach(
+									(tipo) => {
+										['socios', 'tarifa', 'ticket_medio'].forEach((campo) => {
+											conPuestos = setPuestosEnSubobjeto(
+												conPuestos,
+												tipo,
+												campo
+											);
+										});
+									}
+								);
+								// Paso 4: calcular totales generales
+								const totalGeneral = [
+									'total',
+									'nuevos',
+									'renovaciones',
+									'reinscripciones',
+								].reduce((acc, tipo) => {
+									const socios = conPuestos.reduce(
+										(suma, v) => suma + (v.datos[tipo]?.socios || 0),
+										0
+									);
+									const tarifa = conPuestos.reduce(
+										(suma, v) => suma + (v.datos[tipo]?.tarifa || 0),
+										0
+									);
+									const ticket_medio = tarifa / (socios || 1);
+
+									acc[tipo] = {
+										socios,
+										tarifa,
+										ticket_medio,
+									};
+
+									return acc;
+								}, {});
+								return totalGeneral;
+							})(),
+						};
+					}),
+				};
+			});
+
+			const dataTotalProgramax = (() => {
+				const agrupados = agruparPorMesYAnio(
+					eliminarDuplicadosPorId(ventasSinCero),
+					'2024-09-01',
+					9
+				);
+
+				const itemsMensuales = agrupados.map((m) => {
+					return {
+						...m,
+						datos: (() => {
+							const getNombre = (f) => f.nombre_empl || f.lbl || f.propiedad;
+							const calcularDatos = (items) => {
+								const socios = items.length;
+								const tarifa = items.reduce(
+									(total, item) =>
+										total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+									0
+								);
+								return {
+									socios,
+									tarifa,
+									ticket_medio: tarifa / (socios || 1),
+								};
+							};
+							const vendedores = agruparPorVendedores(m.items).map((f) => {
+								const nombre = getNombre(f);
+								const nuevosItems = f.items.filter((item) => {
+									const origen =
+										item?.detalle_ventaMembresium?.tb_ventum?.id_origen;
+									return origen !== 691 && origen !== 692;
+								});
+								const renovacionesItems = f.items.filter(
+									(item) =>
+										item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 691
+								);
+								const reinscripcionesItems = f.items.filter(
+									(item) =>
+										item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 692
+								);
+
+								return {
+									nombre,
+									datos: {
+										total: calcularDatos(f.items),
+										nuevos: calcularDatos(nuevosItems),
+										renovaciones: calcularDatos(renovacionesItems),
+										reinscripciones: calcularDatos(reinscripcionesItems),
+									},
+								};
+							});
+
+							const setPuestosEnSubobjeto = (lista, tipoBloque, campo) => {
+								const ordenados = [...lista].sort(
+									(a, b) =>
+										b.datos[tipoBloque][campo] - a.datos[tipoBloque][campo]
+								);
+
+								return lista.map((v) => {
+									const valorActual = v.datos[tipoBloque][campo];
+									const cantidadIguales = ordenados.filter(
+										(x) => x.datos[tipoBloque][campo] === valorActual
+									).length;
+
+									let puesto;
+									if (cantidadIguales > 1) puesto = 'i';
+									else {
+										const index = ordenados.findIndex(
+											(x) => x.nombre === v.nombre
+										);
+										puesto =
+											index === 0
+												? 'p'
+												: index === ordenados.length - 1
+													? 'u'
+													: index + 1;
+									}
+
+									return {
+										...v,
+										datos: {
+											...v.datos,
+											[tipoBloque]: {
+												...v.datos[tipoBloque],
+												puesto: {
+													...(v.datos[tipoBloque].puesto || {}),
+													[campo]: puesto,
+												},
+											},
+										},
+									};
+								});
+							};
+							let conPuestos = vendedores;
+							['total', 'nuevos', 'renovaciones', 'reinscripciones'].forEach(
+								(tipo) => {
+									['socios', 'tarifa', 'ticket_medio'].forEach((campo) => {
+										conPuestos = setPuestosEnSubobjeto(conPuestos, tipo, campo);
+									});
+								}
+							);
+
+							const totalGeneral = [
+								'total',
+								'nuevos',
+								'renovaciones',
+								'reinscripciones',
+							].reduce((acc, tipo) => {
+								const socios = conPuestos.reduce(
+									(suma, v) => suma + (v.datos[tipo]?.socios || 0),
+									0
+								);
+								const tarifa = conPuestos.reduce(
+									(suma, v) => suma + (v.datos[tipo]?.tarifa || 0),
+									0
+								);
+								const ticket_medio = tarifa / (socios || 1);
+								acc[tipo] = { socios, tarifa, ticket_medio };
+								return acc;
+							}, {});
+
+							return totalGeneral;
+						})(),
+					};
+				});
+
+				// Agrupar y ordenar por año, agregando resumen al finalizar cada año
+				const itemsOrdenados = [];
+				const porAnio = {};
+
+				// Agrupar mensual por año
+				for (const item of itemsMensuales) {
+					const anio = item.anio;
+					if (!porAnio[anio]) porAnio[anio] = [];
+					porAnio[anio].push(item);
+				}
+
+				// Insertar resumen anual tras cada año
+				for (const anio of Object.keys(porAnio).sort()) {
+					const itemsDelAnio = porAnio[anio];
+					itemsOrdenados.push(...itemsDelAnio); // añadir los meses
+
+					const itemsTotalesDelAnio = itemsDelAnio.flatMap((i) => i.items); // ✅ ventas reales
+
+					// Clasificar por tipo
+					const nuevosItems = itemsTotalesDelAnio.filter((item) => {
+						const origen = item?.detalle_ventaMembresium?.tb_ventum?.id_origen;
+						return origen !== 691 && origen !== 692;
+					});
+					const renovacionesItems = itemsTotalesDelAnio.filter(
+						(item) => item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 691
+					);
+					const reinscripcionesItems = itemsTotalesDelAnio.filter(
+						(item) => item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 692
+					);
+
+					const calcularDatos = (items) => {
+						const socios = items.length;
+						const tarifa = items.reduce(
+							(total, item) =>
+								total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+							0
+						);
+						return {
+							socios,
+							tarifa,
+							ticket_medio: tarifa / (socios || 1),
+						};
+					};
+
+					const resumen = {
+						anio,
+						mes: `TOTAL`,
+						fecha: `TOTAL ${anio}`,
+						items: itemsTotalesDelAnio,
+						datos: {
+							total: calcularDatos(itemsTotalesDelAnio),
+							nuevos: calcularDatos(nuevosItems),
+							renovaciones: calcularDatos(renovacionesItems),
+							reinscripciones: calcularDatos(reinscripcionesItems),
+						},
+					};
+
+					itemsOrdenados.push(resumen); // añadir el TOTAL anual
+				}
+				return {
+					name_pgm: 'TOTAL',
+					items: itemsOrdenados,
+				};
+			})();
+
 			const dataxAnio = agruparPorMesYAnio(
 				eliminarDuplicadosPorId(ventasSinCero),
 				'2024-09-01',
@@ -737,12 +1069,24 @@ export const useAdquisicionStore = () => {
 						// FUNCIONES PARA RANKEAR
 						const setPuestos = (lista, campo) => {
 							const ordenados = [...lista].sort((a, b) => b[campo] - a[campo]);
-							const total = ordenados.length;
 
 							return lista.map((v) => {
+								const valorActual = v[campo];
+
+								// Verifica si hay más de uno con el mismo valor
+								const cantidadIguales = ordenados.filter(
+									(x) => x[campo] === valorActual
+								).length;
+
+								if (cantidadIguales > 1) {
+									return { ...v, [`puesto_${campo}`]: 'i' }; // empate
+								}
+
 								const index = ordenados.findIndex((x) => x.nombre === v.nombre);
+
 								if (index === 0) return { ...v, [`puesto_${campo}`]: 'p' };
-								if (index === total - 1) return { ...v, [`puesto_${campo}`]: 'u' };
+								if (index === ordenados.length - 1)
+									return { ...v, [`puesto_${campo}`]: 'u' };
 								return { ...v, [`puesto_${campo}`]: index + 1 };
 							});
 						};
@@ -809,16 +1153,267 @@ export const useAdquisicionStore = () => {
 					})(),
 				};
 			});
-			console.log(
-				{ programas },
-				{ dataxAnio },
-				// { dataxAnio: igualarItemsPorAnio(dataxAnio) },
-				{ vend: vendedores },
-				{ a: eliminarDuplicadosPorId(ventasSinCero) },
-				agruparPorMesYAnioYDia(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
-				agruparPorMesYAnio(eliminarDuplicadosPorId(ventasSinCero), '2024-09-01', 9),
-				'holi'
-			);
+			const dataVentas = {
+				lbl: '',
+				items: agruparPorMesYAnio(
+					eliminarDuplicadosPorId(ventasSinCero),
+					'2024-09-01',
+					9
+				).map((m) => {
+					return {
+						...m,
+						itemVendedores: (() => {
+							const getNombre = (f) => f.nombre_empl || f.lbl || f.propiedad;
+							const calcularDatos = (items) => {
+								const socios = items.length;
+								const tarifa = items.reduce(
+									(total, item) =>
+										total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+									0
+								);
+								return {
+									socios,
+									tarifa,
+									ticket_medio: tarifa / (socios || 1),
+								};
+							};
+							// Paso 1: construir vendedores con estructura intacta
+							const vendedores = agruparPorVendedores(m.items).map((f) => {
+								const nombre = getNombre(f);
+								const nuevosItems = f.items.filter((item) => {
+									const origen =
+										item?.detalle_ventaMembresium?.tb_ventum?.id_origen;
+									return origen !== 691 && origen !== 692;
+								});
+								const renovacionesItems = f.items.filter(
+									(item) =>
+										item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 691
+								);
+
+								const reinscripcionesItems = f.items.filter(
+									(item) =>
+										item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 692
+								);
+
+								return {
+									nombre,
+									datos: {
+										total: calcularDatos(f.items),
+										nuevos: { nombre, ...calcularDatos(nuevosItems) },
+										renovaciones: {
+											nombre,
+											...calcularDatos(renovacionesItems),
+										},
+										reinscripciones: {
+											nombre,
+											...calcularDatos(reinscripcionesItems),
+										},
+									},
+								};
+							});
+
+							// Paso 2: función para poner puestos dentro de datos
+							const setPuestosEnSubobjeto = (lista, tipoBloque, campo) => {
+								const ordenados = [...lista].sort(
+									(a, b) =>
+										b.datos[tipoBloque][campo] - a.datos[tipoBloque][campo]
+								);
+
+								return lista.map((v) => {
+									const valorActual = v.datos[tipoBloque][campo];
+									const cantidadIguales = ordenados.filter(
+										(x) => x.datos[tipoBloque][campo] === valorActual
+									).length;
+
+									let puesto;
+									if (cantidadIguales > 1) {
+										puesto = 'i';
+									} else {
+										const index = ordenados.findIndex(
+											(x) => x.nombre === v.nombre
+										);
+										if (index === 0) puesto = 'p';
+										else if (index === ordenados.length - 1) puesto = 'u';
+										else puesto = index + 1;
+									}
+
+									return {
+										...v,
+										datos: {
+											...v.datos,
+											[tipoBloque]: {
+												...v.datos[tipoBloque],
+												puesto: {
+													...(v.datos[tipoBloque].puesto || {}),
+													[campo]: puesto,
+												},
+											},
+										},
+									};
+								});
+							};
+
+							// Paso 3: aplicar puestos por cada tipo y métrica
+							let conPuestos = vendedores;
+
+							['total', 'nuevos', 'renovaciones', 'reinscripciones'].forEach(
+								(tipo) => {
+									['socios', 'tarifa', 'ticket_medio'].forEach((campo) => {
+										conPuestos = setPuestosEnSubobjeto(conPuestos, tipo, campo);
+									});
+								}
+							);
+
+							// Paso 4: debug
+							console.log(
+								'DEBUG puestos',
+								conPuestos.map((v) => ({
+									nombre: v.nombre,
+									total: v.datos.total.puesto,
+									nuevos: v.datos.nuevos.puesto,
+									renovaciones: v.datos.renovaciones.puesto,
+									reinscripciones: v.datos.reinscripciones.puesto,
+								}))
+							);
+
+							return conPuestos;
+						})(),
+					};
+				}),
+			};
+			const dataVendedoresAnualizados = {
+				lbl: '',
+				items: agruparPorMesYAnio(
+					eliminarDuplicadosPorId(ventasSinCero),
+					'2024-09-01',
+					9
+				).map((m) => {
+					return {
+						...m,
+						itemVendedores: (() => {
+							const getNombre = (f) => f.nombre_empl || f.lbl || f.propiedad;
+							const calcularDatos = (items) => {
+								const socios = items.length;
+								const tarifa = items.reduce(
+									(total, item) =>
+										total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
+									0
+								);
+								return {
+									socios,
+									tarifa,
+									ticket_medio: tarifa / (socios || 1),
+								};
+							};
+							// Paso 1: construir vendedores con estructura intacta
+							const vendedores = agruparPorVendedores(m.items).map((f) => {
+								const nombre = getNombre(f);
+								const nuevosItems = f.items.filter((item) => {
+									const origen =
+										item?.detalle_ventaMembresium?.tb_ventum?.id_origen;
+									return origen !== 691 && origen !== 692;
+								});
+								const renovacionesItems = f.items.filter(
+									(item) =>
+										item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 691
+								);
+
+								const reinscripcionesItems = f.items.filter(
+									(item) =>
+										item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 692
+								);
+
+								return {
+									nombre,
+									datos: {
+										total: calcularDatos(f.items),
+										nuevos: { nombre, ...calcularDatos(nuevosItems) },
+										renovaciones: {
+											nombre,
+											...calcularDatos(renovacionesItems),
+										},
+										reinscripciones: {
+											nombre,
+											...calcularDatos(reinscripcionesItems),
+										},
+									},
+								};
+							});
+
+							// Paso 2: función para poner puestos dentro de datos
+							const setPuestosEnSubobjeto = (lista, tipoBloque, campo) => {
+								const ordenados = [...lista].sort(
+									(a, b) =>
+										b.datos[tipoBloque][campo] - a.datos[tipoBloque][campo]
+								);
+
+								return lista.map((v) => {
+									const valorActual = v.datos[tipoBloque][campo];
+									const cantidadIguales = ordenados.filter(
+										(x) => x.datos[tipoBloque][campo] === valorActual
+									).length;
+
+									let puesto;
+									if (cantidadIguales > 1) {
+										puesto = 'i';
+									} else {
+										const index = ordenados.findIndex(
+											(x) => x.nombre === v.nombre
+										);
+										if (index === 0) puesto = 'p';
+										else if (index === ordenados.length - 1) puesto = 'u';
+										else puesto = index + 1;
+									}
+
+									return {
+										...v,
+										datos: {
+											...v.datos,
+											[tipoBloque]: {
+												...v.datos[tipoBloque],
+												puesto: {
+													...(v.datos[tipoBloque].puesto || {}),
+													[campo]: puesto,
+												},
+											},
+										},
+									};
+								});
+							};
+
+							// Paso 3: aplicar puestos por cada tipo y métrica
+							let conPuestos = vendedores;
+
+							['total', 'nuevos', 'renovaciones', 'reinscripciones'].forEach(
+								(tipo) => {
+									['socios', 'tarifa', 'ticket_medio'].forEach((campo) => {
+										conPuestos = setPuestosEnSubobjeto(conPuestos, tipo, campo);
+									});
+								}
+							);
+
+							// Paso 4: debug
+							console.log(
+								'DEBUG puestos',
+								conPuestos.map((v) => ({
+									nombre: v.nombre,
+									total: v.datos.total.puesto,
+									nuevos: v.datos.nuevos.puesto,
+									renovaciones: v.datos.renovaciones.puesto,
+									reinscripciones: v.datos.reinscripciones.puesto,
+								}))
+							);
+
+							return conPuestos;
+						})(),
+					};
+				}),
+			};
+			console.log({ dataVendedoresAnualizados });
+			setdataVendedorAnualizados(dataVendedoresAnualizados);
+			setdataTotalPgmX(dataTotalProgramax);
+			setdataProgramasx(programasx);
+			setdataVentas(dataVentas);
 			setdataProgramasXAnio(programas);
 			setdataVendedores(vendedores);
 			setdata(agregarItemsDias);
@@ -829,38 +1424,16 @@ export const useAdquisicionStore = () => {
 	};
 	return {
 		obtenerTodoVentas,
+		dataVendedorAnualizados,
+		dataTotalPgmX,
 		data,
 		dataVendedores,
 		dataProgramas,
 		dataUnif,
+		dataVentas,
+		dataProgramasx,
 	};
 };
-function igualarItemsPorAnio(data) {
-	// Obtener todos los labels únicos existentes
-	const allLabels = new Set();
-	data.forEach(({ items }) => {
-		items.forEach(({ lbel }) => {
-			allLabels.add(lbel);
-		});
-	});
-
-	// Convertir el Set en Array
-	const labelsArray = Array.from(allLabels);
-
-	// Para cada año, asegurarse que tenga todos los labels
-	const resultado = data.map(({ anio, items }) => {
-		const mapItems = Object.fromEntries(items.map((i) => [i.lbel, i]));
-
-		// Construir lista completa con los labels asegurando que existan
-		const newItems = labelsArray.map((lbel) => {
-			return mapItems[lbel] || { lbel, items: [] };
-		});
-
-		return { anio, items: newItems };
-	});
-
-	return resultado;
-}
 
 function groupByDate(data) {
 	// 1) Agrupa los elementos por clave "YYYY-MM"

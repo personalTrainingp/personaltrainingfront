@@ -1,10 +1,10 @@
 import { PageBreadcrumb } from '@/components'
 import { Button } from 'primereact/button'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Card, Col, Row, Table } from 'react-bootstrap'
 import { ItemTable } from './ItemTable'
 import { useAdquisicionStore } from './useAdquisicionStore'
-import { NumberFormatMoney } from '@/components/CurrencyMask'
+import { NumberFormatMoney, NumberFormatter } from '@/components/CurrencyMask'
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { GrafLineal } from './GrafLineal'
 import { ModalFilterRangeFechas } from './ModalFilterRangeFechas'
@@ -15,25 +15,22 @@ import { FormatTable3 } from '../FormatTable3'
 import { ItemsxFecha } from '../ItemsxFecha'
 import { useSelector } from 'react-redux'
 import SimpleBar from 'simplebar-react'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DataDroppable } from './DataDroppable'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { TableDataComparativaVendedores } from './TableDataComparativaVendedores'
+import config from '@/config'
+import { useInView } from 'react-intersection-observer'
+import { onSetViewSubTitle } from '@/store'
+import { useDispatch } from 'react-redux'
+import { TableResumen3 } from './TableResumen3'
+import { TableResumen4 } from './TableResumen4'
+import { GraficoLineal } from './GraficoLineal'
 const sumarTarifaMonto = (items)=>{
       const ventas = items.reduce((accum, item) => accum + (item.detalle_ventaMembresium?.tarifa_monto || 0), 0)
     return ventas
 }
-const propsResumen = (items)=>{
-  const numero_cierre = items.length
-  const ventas = sumarTarifaMonto(items)
-  const ticket_medio = ventas / numero_cierre || 0
-  return {
-    numero_cierre,
-    ventas, ticket_medio
-  }
-}
 export const PrincipalView = () => {
-  const { obtenerTodoVentas, data, dataVendedores, dataProgramas, dataUnif } = useAdquisicionStore()
+  const { obtenerTodoVentas, data, dataVendedores, dataProgramas, dataUnif, dataVentas, dataProgramasx, dataTotalPgmX, dataVendedorAnualizados } = useAdquisicionStore()
   const [isOpenModalFilteredDia, setisOpenModalFilteredDia] = useState(false)
   const [resultadosFiltrados, setResultadosFiltrados] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -91,109 +88,262 @@ export const PrincipalView = () => {
       setIsLoading(false);
     }, 600);
   }
-  
-    function agruparPorCliente(data) {
-        // Agrupar por id_cli
-        const agrupado = Object.values(
-            data.reduce((acc, item) => {
-            const id_cli = item.tb_ventum.id_cli;
-            if (!acc[id_cli]) {
-                acc[id_cli] = { id_cli, items: [] };
-            }
-            acc[id_cli].items.push(item);
-            return acc;
-            }, {})
-        );
+  const programas2024 = useMemo(() => {
+  return dataProgramas.map(datapgm => ({
+    ...datapgm,
+    items: datapgm.items.filter(item => item.anio === '2024'),
+  }));
+}, [dataProgramas]);
 
-        // Filtrar clientes que tienen al menos un id_tipoFactura = 701
-        const clientesFiltrados = agrupado
-            .filter(cliente => cliente.items.some(item => item.tb_ventum.id_tipoFactura === 701))
-            .map(cliente => ({
-            id_cli: cliente.id_cli,
-            items: cliente.items.filter(item => item.tb_ventum.id_tipoFactura !== 701) // Remover los "traspaso"
-            }))
-            .filter(cliente => cliente.items.length > 0); // Eliminar clientes sin items
+const programas2025 = useMemo(() => {
+  return dataProgramas.map(datapgm => {
+    const filtrados = datapgm.items.filter(item => item.anio === '2025');
+    console.log({ resu2025: filtrados }); // solo se ejecuta 1 vez por cambio de dataProgramas
+    return {
+      ...datapgm,
+      items: filtrados
+    };
+  });
+}, [dataProgramas]);
 
-        // Obtener todos los items acumulados
-        const ventas = clientesFiltrados.flatMap(cliente => cliente.items);
+const unif2024 = useMemo(() => dataUnif.filter(item => item.anio === '2024'), [dataUnif]);
+const unif2025 = useMemo(() => dataUnif.filter(item => item.anio === '2025'), [dataUnif]);
+const dispatch = useDispatch()
+console.log({unif2024, programas2024, dt: dataVentas.items, dataProgramas, d1: [dataProgramasx[0]]});
+    const [extractTitle, setextractTitle] = useState('')
+    
 
-        return {
-            clientes: clientesFiltrados,
-            ventas // Acumulado de todos los items
-        };
-      }
-      console.log({dataProgramas, data: dataProgramas.flatMap(pgm => pgm.items).filter(item => item.anio === '2024')});
+const dataDetalleSeccion = [
+  {
+    title: 'd1',
+    HTML: <div className='mt-3'>
+          <TabView>
+            <TabPanel header={<div style={{fontSize: '60px'}}>2024</div>}>
+              {
+              programas2024.map(datapgm=>{
+                  return (
+                    <>
+                    <h1 className='text-center'>
+                      <img src={`${config.API_IMG.LOGO}${datapgm.items[0]?.items[0]?.tb_image?.name_image}`} height={datapgm.items[0].items[0]?.tb_image?.height} width={datapgm.items[0].items[0]?.tb_image?.width}/>
+                    </h1>
+                    
+                    <TablaResumen2 data={datapgm.items}/>
+                    </>
+                  )
+                })
+              }
+                <h1 className='text-center'>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png' width={300}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png' width={200}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png' width={200}/>
+                    </span>
+                  </div>
+                </h1>
+            </TabPanel>
+            <TabPanel header={<div style={{fontSize: '60px'}}>2025</div>}>
+                {programas2025.map(pgm => (
+                  <div key={pgm.id}>
+                    <h1 className='text-center'>
+                      <img src={`${config.API_IMG.LOGO}${pgm.items[0].items[0].tb_image.name_image}`} height={pgm.items[0].items[0].tb_image.height} width={pgm.items[0].items[0].tb_image.width}/>
+                    </h1>
+                    <TablaResumen2 data={pgm.items} />
+                  </div>
+                  ))}
+                <h1 className='text-center mt-5'>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png' width={350} height={100}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png' width={300} height={100}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png' width={180} height={100}/>
+                    </span>
+                  </div>
+                </h1>
+                <TabView>
+                  <TabPanel header={'TABLA'}>
+                    <TablaResumen2 data={dataVentas.items}/>
+                  </TabPanel>
+                  <TabPanel header={'GRAFICO'}>
+                    <GraficoLineal data={dataVentas.items}/>
+                  </TabPanel>
+                </TabView>
+            </TabPanel>
+          </TabView>
+        </div>
+  },
+  {
+    title: 'COMPARATIVO VENTAS ANUALIZADO POR PROGRAMAS Y CATEGORIA',
+    HTML: 
+    <TabView>
+          <TabPanel header={<>CHANGE 45</>}>
+                <TablaResumen3 imgs={
+                  <>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png' width={350} height={100}/>
+                    </span>
+                  </div>
+                  </>
+                } data={[dataProgramasx[0]]}/>
+          </TabPanel>
+          <TabPanel header={<>FISIO MUSCLE</>}>
+                <TablaResumen3 imgs={<>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png' width={300} height={100}/>
+                    </span>
+                  </div>
+                  </>} data={[dataProgramasx[1]]}/>
+          </TabPanel>
+          <TabPanel header={<>FS 45</>}>
+                <TablaResumen3 imgs={
+                  <>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png' width={180} height={100}/>
+                    </span>
+                  </div>
+                  </>
+                } data={[dataProgramasx[2]]}/>
+          </TabPanel>
+          <TabPanel header={<>TOTAL</>}>
+                <TableResumen3 imgs={<>
+                  
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png' width={350} height={100}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png' width={300} height={100}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png' width={180} height={100}/>
+                    </span>
+                  </div>
+                  </>} rawData={dataTotalPgmX.items}/>
+          </TabPanel>
+        </TabView>
+  },
+  {
+    title: 'COMPARATIVO VENTAS ANUALIZADO POR PROGRAMAS Y CATEGORIA - POR VENDEDOR',
+    HTML: 
+    <TabView>
+          <TabPanel header={<>CHANGE 45</>}>
+                <TablaResumen3 imgs={
+                  <>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png' width={350} height={100}/>
+                    </span>
+                  </div>
+                  </>
+                } data={[dataProgramasx[0]]}/>
+          </TabPanel>
+          <TabPanel header={<>FISIO MUSCLE</>}>
+                <TablaResumen3 imgs={<>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png' width={300} height={100}/>
+                    </span>
+                  </div>
+                  </>} data={[dataProgramasx[1]]}/>
+          </TabPanel>
+          <TabPanel header={<>FS 45</>}>
+                <TablaResumen3 imgs={
+                  <>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png' width={180} height={100}/>
+                    </span>
+                  </div>
+                  </>
+                } data={[dataProgramasx[2]]}/>
+          </TabPanel>
+          <TabPanel header={<>TOTAL</>}>
+                <TableResumen4 imgs={<>
+                  
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png' width={350} height={100}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png' width={300} height={100}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png' width={180} height={100}/>
+                    </span>
+                  </div>
+                  </>} rawData={dataVendedorAnualizados?.items}/>
+          </TabPanel>
+        </TabView>
+  }
+]
+const sectionRefs = dataDetalleSeccion.map(() =>
+        useInView({
+          threshold: 0.1, // Activa cuando el 50% de la sección esté visible
+          triggerOnce: false, // Detectar entrada y salida constantemente
+        })
+      );
       
+            useEffect(() => {
+              sectionRefs.forEach(({ inView }, index) => {
+                if (inView) {
+                  console.log("accccc");
+                  
+                  setextractTitle(dataDetalleSeccion[index]?.title)
+                    dispatch(onSetViewSubTitle(extractTitle))
+                  // setActiveSection(sections[index].title);
+                  // dispatch(onSetViewSubTitle(`${data[index].title}`))
+                }
+              });
+            }, [sectionRefs]);
+                    const {viewSubTitle} = useSelector(d=>d.ui)
+                  
   return (
     <>
-    <PageBreadcrumb title={'comparativo ventas por categoria total por dia vs mes'}/>
+    <PageBreadcrumb title={`${viewSubTitle}`}/>
     {/* {JSON.stringify(data)} */}
     <Row>
-      <div className='position-fixed bg-white'>
-        <div className='d-flex align-items-center'>
-              <h1>DESDE</h1>
-              <div>
-              <Select
-                onChange={handleChangedesde}
-                name="desdeOption"
-                placeholder={''}
-                className="react-select mx-3 fs-3 w-75 fw-bold"
-                classNamePrefix="react-select"
-                options={dias}
-                value={desdeOption||0}
-                defaultValue={1}
-                required
-              />
-              </div>
-              <h1>HASTA</h1>
-              <div>
-              <Select
-                onChange={handleChangehasta}
-                name="hastaOption"
-                placeholder={''}
-                className="react-select mx-3 fs-3 w-75 fw-bold"
-                classNamePrefix="react-select"
-                options={dias}
-                value={hastaOption||0}
-                defaultValue={30}
-                required
-              />
-              </div>
-              <div>
-                <Button
-                  label={isLoading ? 'Cargando...' : 'Buscar'}
-                  icon={isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-search'}
-                  className="p-button-primary"
-                  onClick={() =>onClickFilter()}
-                />
-              </div>
-        </div>
-      </div>
-      <div className='mt-3'>
-            <DataDroppable dataMeses={data} desdeOption={desdeOption} hastaOption={hastaOption}/>
-      {
-        dataProgramas.map(g=>{
-          return (
-            <>
-            <h1 className='text-center' style={{fontSize: '90px'}}>{g.name_pgm}</h1>
-            <DataDroppable dataMeses={g.items} desdeOption={desdeOption} hastaOption={hastaOption}/>
-            </>
-          )
-        })
-      }
-      {/* 
-            // <DataDroppable dataMeses={g.items} desdeOption={desdeOption} hastaOption={hastaOption}/>
-      */}
-      </div>
-      <div>
-        <h1>DETALLE EN PROGRAMA</h1>
-        <div className='mt-3'>
+        {/* <h1>DETALLE EN PROGRAMA</h1> */}
+        {/* <div className='mt-3'>
           <TabView>
             <TabPanel header={<div style={{fontSize: '60px'}}>2024</div>}>
               {
               dataProgramas.map(datapgm=>{
                   const items2024=datapgm?.items.filter(aio=>aio.anio==='2024')
-                  console.log({items2024});
                   
                   return (
                     <>
@@ -236,55 +386,156 @@ export const PrincipalView = () => {
               <TablaResumen data={data.filter(d=>d.anio==='2025')}/>
             </TabPanel>
           </TabView>
-        </div>
-      </div>
-      <div>
+        </div> */}
+
+        {
+          dataDetalleSeccion.map((section, index)=>{
+            return (
+              <div ref={sectionRefs[index].ref}>
+                {section.HTML}
+              </div>
+            )
+          })
+        }
+      {/* <div>
         <h1>DETALLE EN ASESOR</h1>
         <div className='mt-3'>
           <TabView>
             <TabPanel header={<div style={{fontSize: '60px'}}>2024</div>}>
               {
-              dataProgramas.map(datapgm=>{
-                  const items2024=datapgm?.items.filter(aio=>aio.anio==='2024')
-                  console.log({items2024});
-                  
+              programas2024.map(datapgm=>{
                   return (
                     <>
                     <h1 className='text-center'>
-                      {datapgm?.lbel}
+                      <img src={`${config.API_IMG.LOGO}${datapgm.items[0]?.items[0]?.tb_image?.name_image}`} height={datapgm.items[0].items[0]?.tb_image?.height} width={datapgm.items[0].items[0]?.tb_image?.width}/>
                     </h1>
-                    <TablaResumen2 data={items2024}/>
+                    
+                    <TablaResumen2 data={datapgm.items}/>
                     </>
                   )
                 })
               }
-              <h1 className='text-center'>CHANGE 45 + FISIO MUSCLE + FS 45</h1>
-              <TablaResumen2 data={dataUnif.filter(item => item.anio === '2024')}/>
+              
+                <h1 className='text-center'>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png' width={300}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png' width={200}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png' width={200}/>
+                    </span>
+                  </div>
+                </h1>
             </TabPanel>
             <TabPanel header={<div style={{fontSize: '60px'}}>2025</div>}>
-              {
-              dataProgramas.map(datapgm=>{
-                  const items2024=datapgm?.items.filter(aio=>aio.anio==='2025')
-                  return (
-                    <>
+                {programas2025.map(pgm => (
+                  <div key={pgm.id}>
                     <h1 className='text-center'>
-                      {datapgm?.lbel}
+                      <img src={`${config.API_IMG.LOGO}${pgm.items[0].items[0].tb_image.name_image}`} height={pgm.items[0].items[0].tb_image.height} width={pgm.items[0].items[0].tb_image.width}/>
                     </h1>
-                    <TablaResumen2 data={items2024}/>
-                    </>
-                  )
-                })
-              }
-              <h1 className='text-center'>CHANGE 45 + FISIO MUSCLE + FS 45</h1>
-              <TablaResumen2 data={dataUnif.filter(d=>d.anio==='2025')}/>
+                    {pgm.items[0].items[0]?.tb_image?.height}asdf
+                    {pgm.items[0].items[0]?.tb_image?.width}
+                    <TablaResumen2 data={pgm.items} />
+                  </div>
+                  ))}
+                <h1 className='text-center mt-5'>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png' width={350} height={100}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png' width={300} height={100}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png' width={180} height={100}/>
+                    </span>
+                  </div>
+                </h1>
             </TabPanel>
           </TabView>
         </div>
       </div>
+      <div>
+        <h1>DETALLE POR MES</h1>
+        <TabView>
+          <TabPanel header={<>CHANGE 45</>}>
+                <TablaResumen3 imgs={
+                  <>
+                  
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png' width={350} height={100}/>
+                    </span>
+                  </div>
+                  </>
+                } data={[dataProgramasx[0]]}/>
+          </TabPanel>
+          <TabPanel header={<>FISIO MUSCLE</>}>
+                <TablaResumen3 imgs={<>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png' width={300} height={100}/>
+                    </span>
+                  </div>
+                  </>} data={[dataProgramasx[1]]}/>
+          </TabPanel>
+          <TabPanel header={<>FS 45</>}>
+                <TablaResumen3 imgs={
+                  <>
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png' width={180} height={100}/>
+                    </span>
+                  </div>
+                  </>
+                } data={[dataProgramasx[2]]}/>
+          </TabPanel>
+          <TabPanel header={<>TOTAL</>}>
+                <TablaResumen3 imgs={<>
+                  
+                  <div className='d-flex justify-content-center align-items-center'>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png' width={350} height={100}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png' width={300} height={100}/>
+                    </span>
+                    <span className='mx-4 fs-2'>
+                      +
+                    </span>
+                    <span className=''>
+                      <img src='https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png' width={180} height={100}/>
+                    </span>
+                  </div>
+                  </>} data={[dataTotalPgmX]}/>
+          </TabPanel>
+        </TabView>
+      </div> */}
     </Row>  
     </>
   )
 }
+
+
+
 
 const TablaResumen = ({data}) => {
   return (
@@ -295,7 +546,7 @@ const TablaResumen = ({data}) => {
             <th className='fs-3 pl-5 text-center'></th>
             {data.map((d, i) => (
               <th className='fs-3 text-center text-white' key={i}>
-                <div className='' style={{fontSize: '55px', width: '300px'}}>
+                <div className='' style={{fontSize: '55px', width: '300px', writingMode: 'vertical-lr', transform: 'rotate(180deg)'}}>
                   {d.fecha.split(' ')[0].toUpperCase()}
                 </div>
                 </th>
@@ -318,9 +569,9 @@ const TablaResumen = ({data}) => {
                 <>
                 <td className='fs-2 text-center' key={i}>
                   <div className='d-flex mx-4'>
-                    <div className='text-change fw-bold' dir="rtl">
+                    {/* <div className='text-change fw-bold' dir="rtl">
                       {d.items.length}
-                    </div>
+                    </div> */}
                     <div className={`ms-auto ${tarifa_monto<=0?'':'text-black fw-bold'}`}>
                       <NumberFormatMoney amount={tarifa_monto}/>
                     </div>
@@ -346,9 +597,9 @@ const TablaResumen = ({data}) => {
               return (
                 <td className='fs-2' key={i}>
                   <div className='d-flex mx-4'>
-                    <div className='text-change fw-bold'>
+                    {/* <div className='text-change fw-bold'>
                       {NuevosCantidad}
-                    </div>
+                    </div> */}
                     <div className={`ms-auto ${ventasNuevos<=0?'':'text-black fw-bold'}`}>
                       <NumberFormatMoney
                       amount={ventasNuevos}
@@ -376,9 +627,9 @@ const TablaResumen = ({data}) => {
               return (
                 <td className='fs-2' key={i}>
                   <div className='d-flex mx-4'>
-                    <div className='text-change fw-bold'>
+                    {/* <div className='text-change fw-bold'>
                       {renovacionesCantidad}
-                    </div>
+                    </div> */}
                     <div className={`ms-auto ${Ventasrenovaciones<=0?'':'text-black fw-bold'}`}>
                       <NumberFormatMoney
                         amount={Ventasrenovaciones}
@@ -405,9 +656,9 @@ const TablaResumen = ({data}) => {
               return (
               <td className='fs-2' key={i}>
                 <div className='d-flex mx-4'>
-                  <div className='text-change fw-bold'>
+                  {/* <div className='text-change fw-bold'>
                     {reiCantidad}
-                  </div>
+                  </div> */}
                   <div className={`ms-auto ${reiVentas<=0?'':'text-black fw-bold'}`}>
                     <NumberFormatMoney amount={reiVentas}/>
                   </div>
@@ -420,7 +671,7 @@ const TablaResumen = ({data}) => {
           <tr>
             <td className='fs-3 fw-bold'>
               <div style={{fontSize: '35px'}}>
-              TICKET MEDIO
+              TICK. MED.
               </div>
             </td>
             {data.map((d, i) => {
@@ -431,8 +682,11 @@ const TablaResumen = ({data}) => {
                 const ticket_medio = ((tarifa_monto/d.items.length) || 0)
               return (
                 <td className='fs-2 text-center' key={i}>
-                  <div className={`${ticket_medio<=0.0?'':'text-black fw-bold'}`}>
-                    <NumberFormatMoney amount={ticket_medio}/>
+                  <div className='d-flex mx-4'>
+                    <div className={`ms-auto ${ticket_medio<=0.0?'':'text-black fw-bold'}`}>
+                      <NumberFormatMoney amount={ticket_medio}/>
+                    </div>
+
                   </div>
                 </td>
               )
@@ -446,202 +700,401 @@ const TablaResumen = ({data}) => {
 };
 
 const TablaResumen2 = ({data}) => {
+const ordenarAsesores = (lista) =>
+  [...lista].sort((a, b) => {
+    if (a.nombre?.toLowerCase() === 'alvaro') return -1;
+    if (b.nombre?.toLowerCase() === 'alvaro') return 1;
+    return 0;
+  });
+  const thEstilo = {
+  // border: '3px solid #dc3545',
+  padding: '10px'
+  };
+const tdEstilo = {
+  border: '3px solid #dc3545',
+  padding: '10px',
+  fontSize: '20px'
+};
+  const tipos = ['total', 'nuevos', 'renovaciones', 'reinscripciones'];
+  const tipoLabels = {
+    total: 'SOCIOS VENTAS',
+    nuevos: 'SOCIOS NUEVOS',
+    renovaciones: 'RENOVACIONES',
+    reinscripciones: 'REINSCRIPCIONES',
+  };
+  const widthTable=90
   return (
-    <div style={{ overflowX: 'auto', width: '100%' }}>
-      <Table striped bordered className="border-change" style={{width: '2500px'}}>
-        <thead className={'bg-primary'} style={{width: '5000px'}}>
+    <div style={{ overflowX: 'auto' }}>
+      <table 
+      style={{
+        width: '100%',
+        minWidth: '1000px',
+        textAlign: 'center',
+        fontFamily: 'sans-serif',
+        color: 'black'
+      }}>
+        <thead 
+                  className='bg-primary rounded-0'
+        >
+          {/* Fila Mes */}
           <tr>
-            <th className='fs-3 pl-5 text-center'></th>
-            {data.map((d, i) => (
-              <th className='fs-3 text-center text-white' key={i}>
-                <div className='text-center' style={{fontSize: '55px', width: 'auto'}}>
-                  {d.fecha.split(' ')[0].toUpperCase()}
-                </div>
-                <div className='d-flex justify-content-around' key={i} style={{fontSize: '38px', width: '2000px'}}>
-                {
-                  d.itemVendedores?.map((d, i)=>{
-                    return (
-                        <div className='fw-bold text-white'>
-                          {d?.nombre}
-                        </div>
-                    )
-                  })
-                }
-                </div>
-                <div className='d-flex  justify-content-around' key={i} style={{fontSize: '35px', width: '2000px'}}>
-                {
-                  d.itemVendedores?.map((d, i)=>{
-                    return (
-                        <div className='d-flex mx-5' style={{fontSize: '35px', width: '100%'}}>
-                          <div className='fw-bold ml-5'  style={{width: '23%'}}>
-                            SOCIOS
-                          </div>
-                          <div className='fw-bold ms-auto' style={{width: '44%'}}>
-                            VENTAS
-                          </div>
-                          <div className='fw-bold ms-auto' style={{width: '33%'}}>
-                            TICKET MEDIO
-                          </div>
-                        </div>
-                    )
-                  })
-                }
+            <th className='rounded-0' style={thEstilo} rowSpan={3}></th>
+            {data.map((mes, i) => (
+              <th
+                key={i}
+                  className='bg-primary rounded-0 text-black'
+                colSpan={ordenarAsesores(mes.itemVendedores).length * 3}
+                style={{
+                  ...thEstilo,
+                  color: 'white',
+                  fontSize: '44px',
+                  // borderRight: '6px solid #dc3545',
+                }}
+              >
+                <div>
+                  {mes.mes.toUpperCase()}
                 </div>
               </th>
             ))}
           </tr>
+
+          {/* Fila Asesores */}
+          <tr>
+            {data.map((mes, mi) => {
+              return (
+                <>
+                {
+                  ordenarAsesores(mes.itemVendedores)?.map((asesor, ai, arr) => (
+                    <th
+                      className='bg-primary rounded-0 text-white'
+                      key={`${mi}-${ai}`}
+                      colSpan={3}
+                      style={{
+                        ...thEstilo,
+                        color: 'white',
+                        fontSize: '20px',
+                        // borderRight: ai === mes.itemVendedores.length - 1 ? '6px solid #dc3545' : '2px solid #dc3545',
+                      }}
+                    >
+                      <div>
+                        {asesor.nombre.toUpperCase()} (<NumberFormatter amount={(((asesor.datos.total.tarifa)/(arr.reduce((total, item)=>total + item.datos.total.tarifa, 0)))*100).toFixed(2)}/>)
+                      </div>
+                    </th>
+                  ))
+                }
+                </>
+              )
+            }
+            )}
+          </tr>
+
+          {/* Fila etiquetas: SOCIOS / VENTAS / TICK. MED. */}
+          <tr>
+            {data.map((mes) =>
+              ordenarAsesores(mes.itemVendedores)?.map((asesor, ai) =>
+                ['SOCIOS', 'VENTAS', 'TICK. MED.'].map((label, idx) => (
+                  <th
+                    key={`${ai}-${idx}`}
+                    className='bg-primary  rounded-0'
+                    style={{
+                      ...thEstilo,
+                      color: 'white',
+                      fontSize: '16px',
+                    }}
+                  >
+                    <div>
+                      {label}
+                    </div>
+                  </th>
+                ))
+              )
+            )}
+          </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className='fs-3 fw-bold' >
-              <div style={{fontSize: '35px'}}>
-                SOCIOS VENTAS
-              </div>
-            </td>
-            {data.map((d, i) => {
-              
-              return (
-                <>
-                <td className='fs-2 text-center' key={i}>
-                  <div className='d-flex justify-content-around' key={i} style={{fontSize: '35px', width: '2000px'}}>
-                    {
-                  d.itemVendedores?.map((d, i)=>{
-                    return (
-                        <div className='d-flex mx-5' style={{fontSize: '35px', width: '100%'}}>
-                          <div className={`fw-bold text-end ${d.puesto.socios==='p'?'':'text-change'}`}  style={{width: '23%'}}>
-                            {d.socios}
-                          </div>
-                          <div className={`fw-bold ms-auto text-end ${d.puesto.tarifa==='p'?'':'text-change'} `}  style={{width: '44%'}}>
-                              <NumberFormatMoney amount={d.tarifa}/>
-                          </div>
-                          <div className={`fw-bold text-end ${d.puesto.ticket_medio==='p'?'':'text-change'}`}  style={{width: '33%'}}>
-                              <NumberFormatMoney amount={d.ticket_medio}/>
-                          </div>
-                        </div>
-                    )
-                  })
-                }
-                  </div>
-                </td>
-                </>
-              )
-            }
-            )}
-          </tr>
-          <tr>
-            <td className='fs-3 fw-bold'>
-              <div style={{fontSize: '35px'}}>
-                SOCIOS NUEVOS
-              </div>
-            </td>
-            {data.map((d, i) => {
-              
-              return (
-                <>
-                <td className='fs-2 text-center' key={i}>
-                  <div className='d-flex justify-content-around' key={i} style={{fontSize: '35px', width: '2000px'}}>
-                    {
-                  d.itemVendedores?.map((d, i)=>{
-                    return (
-                        <div className='d-flex mx-5' style={{fontSize: '35px', width: '100%'}}>
-                          <div className={`fw-bold text-end ${d.nuevos.puesto.socios==='p'?'':'text-change'}`}  style={{width: '23%'}}>
-                            {d.nuevos.socios}
-                          </div>
-                          <div className={`fw-bold ms-auto text-end ${d.nuevos.puesto.tarifa==='p'?'':'text-change'}`}  style={{width: '44%'}}>
-                              <NumberFormatMoney amount={d.nuevos.tarifa}/>
-                          </div>
-                          <div className={`fw-bold text-end ${d.nuevos.puesto.ticket_medio==='p'?'':'text-change'}`}  style={{width: '33%'}}>
-                              <NumberFormatMoney amount={d.nuevos.ticket_medio}/>
-                          </div>
-                        </div>
-                    )
-                  })
-                }
-                  </div>
-                </td>
-                </>
-              )
-            }
-            )}
-          </tr>
-          <tr>
-            <td className='fs-3 fw-bold'>
-              <div style={{fontSize: '35px'}}>
-                RENOVACIONES
-                </div>
-                </td>
-                
-            {data.map((d, i) => {
-              
-              return (
-                <>
-                <td className='fs-2 text-center' key={i}>
-                  <div className='d-flex justify-content-around' key={i} style={{fontSize: '35px', width: '2000px'}}>
+          {tipos.map((tipo) => (
+            <tr key={tipo}>
+              <td style={{ ...tdEstilo, fontWeight: 'bold', textAlign: 'left', paddingLeft: '10px' }}>
+                {tipoLabels[tipo]}
+              </td>
+              {data.map((mes) => {
+                  const puestos = ordenarAsesores(mes.itemVendedores)?.map((asesor) => {
+                  const p = asesor?.datos?.[tipo] || {};
+                  return {
+                    sociosPuesto: p?.puesto.socios ?? 0,
+                    tarifaPuesto: p?.puesto.tarifa ?? 0,
+                    ticketPuesto: p?.puesto.ticket_medio ?? 0,
+                  };
+                });
+                const contar = (arr, key) =>
+                  arr.reduce((acc, item) => {
+                    const val = item[key];
+                    acc[val] = (acc[val] || 0) + 1;
+                    return acc;
+                  }, {});
 
-                    {
-                  d.itemVendedores?.map((d, i)=>{
-                    return (
-                        <div className='d-flex mx-5' style={{fontSize: '35px', width: '100%'}}>
-                          <div className={`fw-bold text-end ${d.renovaciones.puesto.socios==='p'?'':'text-change'}`}  style={{width: '23%'}}>
-                            {d.renovaciones.socios}
-                          </div>
-                          <div className={`fw-bold ms-auto text-end ${d.renovaciones.puesto.tarifa==='p'?'':'text-change'}`}  style={{width: '44%'}}>
-                              <NumberFormatMoney amount={d.renovaciones.tarifa}/>
-                          </div>
-                          <div className={`fw-bold ms-auto text-end ${d.renovaciones.puesto.ticket_medio==='p'?'':'text-change'}`}  style={{width: '33%'}}>
-                              <NumberFormatMoney amount={d.renovaciones.ticket_medio}/>
-                          </div>
-                        </div>
-                    )
-                  })
-                }
-                  </div>
-                </td>
-                </>
-              )
-            }
-            )}
-          </tr>
-          <tr>
-            <td className='fs-3 fw-bold'>
-              <div style={{fontSize: '35px'}}>
-                REINSCRIPCIONES
-              </div>
-            </td>
-            
-            {data.map((d, i) => {
-              
-              return (
-                <>
-                <td className='fs-2 text-center' key={i}>
-                  <div className='d-flex justify-content-around' key={i} style={{fontSize: '35px', width: '2000px'}}>
+                const countSocios = contar(puestos, 'sociosPuesto');
+                const countTarifa = contar(puestos, 'tarifaPuesto');
+                const countTicket = contar(puestos, 'ticketPuesto');
+                return (
+                  <>
+                  {
+                    ordenarAsesores(mes.itemVendedores)?.map((asesor, ai) => {
+                      
+                      const entry = asesor?.datos[tipo] || {};
+                      const socios = entry?.socios ?? 0;
+                      const tarifa = entry?.tarifa ?? 0;
+                      const ticket = entry?.ticket_medio ?? 0;  
 
-                    {
-                  d.itemVendedores?.map((d, i)=>{
-                    return (
-                        <div className='d-flex mx-5' style={{fontSize: '35px', width: '100%'}}>
-                          <div className={`fw-bold text-end ${d.reinscripciones.puesto.socios==='p'?'':'text-change'}`} style={{width: '23%'}}>
-                            {d.reinscripciones.socios}
-                          </div>
-                          <div className={`fw-bold ms-auto text-end ${d.reinscripciones.puesto.tarifa==='p'?'':'text-change'}`} style={{width: '44%'}}>
-                              <NumberFormatMoney amount={d.reinscripciones.tarifa}/>
-                          </div>
-                          <div className={`fw-bold ms-auto text-end ${d.reinscripciones.puesto.ticket_medio==='p'?'':'text-change'}`} style={{width: '33%'}}>
-                              <NumberFormatMoney amount={d.reinscripciones.ticket_medio}/>
-                          </div>
-                        </div>
-                    )
-                  })
-                }
-                  </div>
-                </td>
-                </>
-              )
-            }
-            )}
-          </tr>
+                      let sociosPuesto = entry?.puesto.socios ?? '';
+                      let tarifaPuesto = entry?.puesto.tarifa ?? '';
+                      let ticketPuesto = entry?.puesto.ticket_medio ?? '';
+                      if ((sociosPuesto === 0 || sociosPuesto === 1) && countSocios[sociosPuesto] > 1) sociosPuesto = 'i';
+                      if ((tarifaPuesto === 0 || tarifaPuesto === 1) && countTarifa[tarifaPuesto] > 1) tarifaPuesto = 'i';
+                      if ((ticketPuesto === 0 || ticketPuesto === 1) && countTicket[ticketPuesto] > 1) ticketPuesto = 'i';
+                      return (
+                        <>
+                          <td
+                            key={`${tipo}-${ai}-socios`}
+                            style={{
+                              ...tdEstilo,
+                              borderLeft: `${ai==0?'14px solid #000000ff':'8px solid #dc3545'}`
+                            }}
+                          >
+                            <div style={{width: `${widthTable}px`, fontWeight: `${socios==0?'':'bolder'}`}} className={`text-right pr-5 ${sociosPuesto==='i' ? '' : sociosPuesto==='p' ? '' : 'text-change'}`}>
+                              {socios}
+                            </div>
+                          </td>
+                          <td key={`${tipo}-${ai}-ventas`} style={tdEstilo}>
+                            <div style={{width: `${widthTable}px`, fontWeight: `${tarifa==0.00?'':'bolder'}`}} className={`text-end ${tarifaPuesto==='i' ? '' : tarifaPuesto==='p' ? '' : 'text-change'}`}>
+                              <NumberFormatMoney amount={tarifa}/>
+                            </div>
+                          </td>
+                          <td
+                            key={`${tipo}-${ai}-ticket`}
+                            style={{
+                              ...tdEstilo,
+                              borderRight: ai === ordenarAsesores(mes.itemVendedores).length - 1 ? '14px solid #000000ff' : '2px solid #dc3545'
+                            }}
+                          >
+                            <div style={{width: `${widthTable}px`, fontWeight: `${ticket==0.00?'':'bolder'}`}} className={`text-end ${ticketPuesto==='i' ? 'text-black' : ticketPuesto==='p' ? '' : 'text-change'}`}>
+                              <NumberFormatMoney amount={ticket}/>
+                            </div>
+                          </td>
+                        </>
+                      );
+                    })
+                  }
+                  </>
+                )
+              }
+              )}
+            </tr>
+          ))}
         </tbody>
-      </Table>
+      </table>
+    </div>
+  );
+};
+
+
+const TablaResumen3 = ({data, imgs}) => {
+
+    const thEstilo = {
+    border: '2px solid red',
+    padding: '10px',
+    fontWeight: 'bold',
+  };
+
+  const tdEstilo = {
+    border: '2px solid red',
+    padding: '10px',
+    fontSize: '16px',
+  };
+
+  // const meses = ['SEPTIEMBRE 2024', 'OCTUBRE 2024', 'NOVIEMBRE 2024', 'DICIEMBRE 2024'];
+  const bordesPorPgm = '10px solid black';
+  const bordesB = '5px solid black';
+  const grupos = data;
+  const tipos = ['total', 'nuevos', 'renovaciones', 'reinscripciones'];
+  const subtipos = ['socios', 'tarifa', 'ticket_medio'];
+  
+  // Obtener todos los meses únicos del primer grupo (asume estructura uniforme)
+  const meses = Array.from(
+  new Map(
+    grupos
+      .flatMap((grupo) => grupo?.items)
+      .map((d) => [`${d?.anio}-${d?.mes.toUpperCase()}`, { anio: d?.anio, mes: d?.mes.toUpperCase() }])
+  ).values()
+).sort((a, b) => {
+  const mesA = a.mes === 'TOTAL' ? 13 : new Date(`${a.mes} 1, ${a.anio}`).getMonth();
+  const mesB = b.mes === 'TOTAL' ? 13 : new Date(`${b.mes} 1, ${b.anio}`).getMonth();
+  return a.anio - b.anio || mesA - mesB;
+});
+  
+
+  return (
+    <div className='text-black' style={{ maxHeight: '800px', overflowY: 'auto' }}>
+      <table
+        style={{
+          width: '100%',
+          minWidth: '1200px',
+          textAlign: 'center',
+          fontFamily: 'sans-serif',
+          borderCollapse: 'collapse', // 🔑 importante
+          border: bordesB,
+        }}
+      >
+        <thead 
+          style={{ 
+            position: 'sticky', 
+            top: '3px', 
+            backgroundColor: 'white', 
+            borderBottom: '10px solid red',
+            zIndex: 1 
+            }}>
+          <tr>
+            {grupos.map((grupo, i) => (
+              <th
+                key={i}
+                colSpan={13}
+                className=' fs-1 p-0 borde-grueso'
+                style={{
+                  ...thEstilo,
+                  fontSize: '18px',
+                  // borderRight: bordesPorPgm,
+                  // borderLeft: bordesPorPgm,
+                  // borderTop: bordesB,
+                  // borderBottom: bordesB,
+                }}
+              >
+                {imgs}
+              </th>
+            ))}
+          </tr>
+          <tr >
+            <th className='bg-primary rounded-0' rowSpan={1} >
+              <div className='fs-3'>
+                <span>
+                  MES
+                </span>
+              </div>
+            </th>
+            {grupos.map((_, i) =>
+              tipos.map((label, j) => (
+                <th
+                  key={`${i}-${j}`}
+                  className='bg-primary text-white'
+                  colSpan={3}
+                  style={{
+                    ...thEstilo,
+                    borderBottom: bordesB,
+                    borderTop: bordesB,
+                    borderRight: `${j === 3 ? bordesPorPgm : bordesB}`,
+                    borderLeft: `${j === 0 ? bordesPorPgm : bordesB}`,
+                  }}
+                >
+                  <div className='fs-2'>
+                    {label.toUpperCase()}
+                  </div>
+                </th>
+              ))
+            )}
+          </tr>
+          <tr>
+            <th className='bg-primary rounded-0' rowSpan={1}>
+              <div className='fs-3'>
+                <span>
+                  AÑO
+                </span>
+              </div>
+            </th>
+            {grupos.map(() =>
+              tipos.flatMap((_, i1) =>
+                subtipos.map((label, i) => (
+                  <th
+                    key={label + i}
+                    className='bg-primary text-white'
+                    style={{
+                      ...thEstilo,
+                      borderRight: i === 2 ? (i1 === 3 ? bordesPorPgm : '') : '',
+                      borderLeft: i === 0 ? (i1 === 0 ? bordesPorPgm : bordesB) : '',
+                    }}
+                  >
+                    <div className='fs-4' style={{ width: '100%' }}>
+                      {label.toUpperCase().replace('_', ' ')=='TARIFA'?'VENTAS':label.toUpperCase().replace('_', ' ')}
+                    </div>
+                  </th>
+                ))
+              )
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {meses.map((mes, mi) => (
+            <tr key={mi}>
+              <td
+                className=''
+                style={{
+                  ...tdEstilo,
+                  fontWeight: 'bold',
+                  textAlign: 'left',
+                  paddingLeft: '10px',
+                  borderRight: `${bordesPorPgm}`,
+                  borderBottom: `${mes.mes==='TOTAL'?'8px solid black':''}`
+                }}
+              >
+                <div className={`text-center ${mes?.mes=='TOTAL'?'fs-1':'fs-3'}`} style={{ width: '150px', }}>
+                  {mes.mes}
+                  <br/>
+                  {mes.anio}
+                </div>
+              </td>
+              {grupos.map((grupo, gi) => {
+                const objMes = grupo?.items.find((d) => d.fecha.toUpperCase() === `${mes.mes} ${mes.anio}`);
+                const dato = objMes?.datos || {};
+                
+                
+                return tipos.flatMap((tipo, im) => {
+                  const datos = dato[tipo] || {};
+                  
+                  return [
+                    <td 
+                      key={`${gi}-${tipo}-socios-${mi}`} 
+                      className={`${im!==0?'bg-gray':''}`}
+                      style={{...tdEstilo, borderBottom: `${mes.mes==='TOTAL'?'8px solid black':''}`}}>
+                      <div className={`text-end w-75 ${datos.socios==0?'':'fw-bold'} ${mes?.mes=='TOTAL'?'fs-1':''}`} style={{ fontSize: '24px' }}>
+                        <NumberFormatter amount={datos.socios} />
+                      </div>
+                    </td>,
+                    <td 
+                      key={`${gi}-${tipo}-tarifa-${mi}`} 
+                      className={`${im!==0?'bg-gray':''}`}
+                      style={{...tdEstilo, borderBottom: `${mes.mes==='TOTAL'?'8px solid black':''}`}}>
+                      <div className={`text-end w-100 ${datos.tarifa==0.0?'':'fw-bold'} ${mes?.mes=='TOTAL'?'fs-1':''}`} style={{ fontSize: '24px' }}>
+                        <NumberFormatter amount={datos.tarifa} />
+                      </div>
+                    </td>,
+                    <td
+                      key={`${gi}-${tipo}-ticket-${mi}`}
+                      className={`${im!==0?'bg-gray':''}`}
+                      style={{
+                        ...tdEstilo,
+                        borderRight: `${im === 3 ? bordesPorPgm : bordesB}`,
+                        borderBottom: `${mes.mes==='TOTAL'?'8px solid black':''}`
+                      }}
+                    >
+                      <div className={`text-end w-100 ${datos.ticket_medio==0.0?'':'fw-bold'} ${mes?.mes=='TOTAL'?'fs-1':''}`} style={{ fontSize: '24px' }}>
+                        <NumberFormatMoney amount={datos.ticket_medio} />
+                      </div>
+                    </td>
+                  ];
+                });
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
