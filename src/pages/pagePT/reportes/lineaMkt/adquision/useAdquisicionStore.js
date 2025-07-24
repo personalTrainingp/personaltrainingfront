@@ -481,6 +481,33 @@ function agruparPorPgm(data) {
 	return resultado.sort((a, b) => b.items.length - a.items.length);
 }
 
+//AGRUPAR POR HORARIOS
+function agruparPorHorarios(data) {
+	const resultado = [];
+
+	data?.forEach((item) => {
+		const { horario, tarifa_monto, tb_ventum } = item.detalle_ventaMembresium;
+		const { fecha_venta } = tb_ventum;
+
+		const formatHorario = dayjs.utc(horario).format('A');
+		//   console.log(horario, formatHorario, "horarrrr");
+		// Verificar si ya existe un grupo con la misma cantidad de sesiones
+		let grupo = resultado?.find((g) => g.propiedad === formatHorario);
+
+		if (!grupo) {
+			// Si no existe, crear un nuevo grupo
+			grupo = { propiedad: formatHorario, items: [], tarifa_monto };
+			resultado.push(grupo);
+		}
+		// Agregar el item al grupo correspondiente
+		grupo.items.push(item);
+	});
+
+	return resultado
+		.sort((a, b) => b.items.length - a.items.length)
+		.sort((a, b) => b.tarifa_monto - a.tarifa_monto);
+}
+
 const agruparPorAnio = (datos) => {
 	return Object.values(
 		datos.reduce((acc, item) => {
@@ -1171,10 +1198,28 @@ export const useAdquisicionStore = () => {
 										total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
 									0
 								);
+								console.log({ its: agruparPorHorarios(items) });
+
 								return {
 									socios,
 									tarifa,
 									ticket_medio: tarifa / (socios || 1),
+									PM: agruparPorHorarios(items)
+										?.find((hora) => hora.propiedad === 'PM')
+										?.items.reduce(
+											(total, item) =>
+												total +
+												(item?.detalle_ventaMembresium?.tarifa_monto || 0),
+											0
+										),
+									AM: agruparPorHorarios(items)
+										?.find((hora) => hora.propiedad === 'AM')
+										?.items.reduce(
+											(total, item) =>
+												total +
+												(item?.detalle_ventaMembresium?.tarifa_monto || 0),
+											0
+										),
 								};
 							};
 							// Paso 1: construir vendedores con estructura intacta
@@ -1258,9 +1303,15 @@ export const useAdquisicionStore = () => {
 
 							['total', 'nuevos', 'renovaciones', 'reinscripciones'].forEach(
 								(tipo) => {
-									['socios', 'tarifa', 'ticket_medio'].forEach((campo) => {
-										conPuestos = setPuestosEnSubobjeto(conPuestos, tipo, campo);
-									});
+									['socios', 'tarifa', 'ticket_medio', 'PM', 'AM'].forEach(
+										(campo) => {
+											conPuestos = setPuestosEnSubobjeto(
+												conPuestos,
+												tipo,
+												campo
+											);
+										}
+									);
 								}
 							);
 

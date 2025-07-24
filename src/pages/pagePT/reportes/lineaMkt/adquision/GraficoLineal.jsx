@@ -36,8 +36,13 @@ export const GraficoLineal = ({data}) => {
       categories: fechas,
       title: { text: "Meses" },
     },
+    
     yaxis: {
-      title: { text: "Tarifa" },
+      title: { text: 'Tarifa', style: { fontSize: '16px' } },
+      labels: {
+        style: { fontSize: '14px' },
+        formatter: (val) => `S/ ${val.toLocaleString('es-PE')}`,
+      },
     },
     title: {
       text: "Tarifa por Vendedor por Mes",

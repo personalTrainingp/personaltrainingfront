@@ -289,6 +289,28 @@ export const ResumenComparativo = () => {
         
         return resultado.sort((a,b)=>b.items.length-a.items.length).sort((a,b)=>b.tarifa_monto-a.tarifa_monto);
     }
+    
+    //AGRUPAR POR HORARIOS
+    function agruparPorHorariosDeVenta(data) {
+        const resultado = [];
+        
+        data?.forEach((item) => {
+          const { horario, tarifa_monto, tb_ventum } = item;
+          const {fecha_venta} = tb_ventum          
+          const formatHorario = dayjs.utc(fecha_venta).locale('es').subtract(5, 'hour').format('A')
+          let grupo = resultado?.find((g) => g.propiedad === formatHorario);
+      
+          if (!grupo) {
+            // Si no existe, crear un nuevo grupo
+            grupo = { propiedad: formatHorario, items: [], tarifa_monto };
+            resultado.push(grupo);
+          }
+          // Agregar el item al grupo correspondiente
+          grupo.items.push(item);
+        });
+        
+        return resultado.sort((a,b)=>b.items.length-a.items.length).sort((a,b)=>b.tarifa_monto-a.tarifa_monto);
+    }
     function agruparPorSesiones(data) {
         const resultado = [];
       
@@ -339,7 +361,7 @@ export const ResumenComparativo = () => {
             { rango_edad: "30 - 39", min: 30, max: 39 },
             { rango_edad: "50 - 57", min: 50, max: 57 },
             { rango_edad: "58 - 75", min: 58, max: 75 },
-            { rango_edad: "75 a mas", min: 75, max: Infinity },
+            { rango_edad: "76 a mas", min: 76, max: Infinity },
             // { rango_edad: "34 a 39", min: 34, max: 39 },
             // { rango_edad: "56 a 59", min: 56, max: 59 },
             { rango_edad: "22 - 29", min: 22, max: 29 },
@@ -620,8 +642,8 @@ export const ResumenComparativo = () => {
                 return [
                     { header: "RANGO DE EDAD", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
                     { header: "SOCIOS", isSummary: true, value: grupo.items.length, items: grupo.items, tFood: `${sumaTotal.toFixed(0)}` },
-                    { header: "FEM", isSummary: true, value: grupo.sexo[0].items.length, items: grupo.items, tFood: `${sumaTotalFem.toFixed(0)}` },
-                    { header: `MASC`, isSummary: true, value: grupo.sexo[1].items.length, tFood: sumaTotalMasc },
+                    { header: "FEMENINO", isSummary: true, value: grupo.sexo[0].items.length, items: grupo.items, tFood: `${sumaTotalFem.toFixed(0)}` },
+                    { header: `MASCULINO`, isSummary: true, value: grupo.sexo[1].items.length, tFood: sumaTotalMasc },
                   ]
             })
             const activosDeVentasPorSemanaMarcacions = []
@@ -653,6 +675,23 @@ export const ResumenComparativo = () => {
             { header: "% PENDIENTE", isSummary: true, value: <NumberFormatMoney amount={porcentajePendienteGrupo}/>, tFood: <NumberFormatMoney amount={sumaPorcentajeDispo/array.length}/> },
           ];
         });
+        const agrupadoPorHorarioDeVenta = agruparPorHorariosDeVenta(ventasSinCeros)
+        .sort((a, b) => b.items.length - a.items.length)
+        .map((f) => {
+          const cuposDispo = aforo - f.items.length;
+          const cuposOcupado = f.items.length;
+          return { ...f, cuposDispo, cuposOcupado };
+        })
+        .map((grupo, index, array) => {
+          const sumaTotal = array.reduce((total, item) => total + (item?.cuposOcupado || 0), 0);
+          return [
+            { header: "TURNO", isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
+            { header: "SOCIOS", isSummary: true, value: grupo.cuposOcupado, items: grupo.items, tFood: sumaTotal },
+          ];
+        });
+        console.log({agrupadoPorHorarioDeVenta: agruparPorHorariosDeVenta(ventasSinCeros)
+        .sort((a, b) => b.items.length - a.items.length)});
+        
         const agrupadoPorProcedenciaCeros = agruparPorProcedenciaEnCero(CanjesEnCero).map((grupo, index, array) => {
             const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0)
             const sumaXITEMS = grupo.items.length
@@ -690,6 +729,7 @@ export const ResumenComparativo = () => {
             aforo,
             aforo_turno,
             agrupadoPorVendedores,
+            agrupadoPorHorarioDeVenta,
             agrupadoPorHorario,
             agrupadoPorProcedencia,
             activosDeVentasPorSemanaMarcacions,
@@ -798,6 +838,12 @@ export const ResumenComparativo = () => {
                 ]
             }
             )
+        const agrupadoPorHorarioVenta = agruparPorHorariosDeVenta(ventasSinCeros).map((grupo, index, array) => {
+            return [
+                ...generarResumen(array, grupo, 'HORARIO', index)
+                ]
+            }
+            )
         const agruparPorRangoEdades = agruparPorRangoEdad(ventasSinCeros).sort((a,b)=>a.items.length > b.items.length).map((grupo, index, array) => {
             return [
                 ...generarResumen(array, grupo, 'RANGO DE EDAD', index)
@@ -848,6 +894,7 @@ export const ResumenComparativo = () => {
             agrupadoPorProcedenciaCeros,
             agrupadoPorSociosCanjes,
             agrupadoPorHorario,
+            agrupadoPorHorarioVenta,
             agrupadoPorVendedores,
             agrupadoPorProcedencia,
             porDistritoTrabajo,
@@ -871,6 +918,9 @@ export const ResumenComparativo = () => {
             avataresDeProgramas
         }
     })
+
+
+
 
     const dataInscritosCategoria = [
         {
@@ -904,7 +954,6 @@ export const ResumenComparativo = () => {
             items: dataAlterIdPgmCero[0].TraspasosEnCero.slice(0, Math.max(0, dataAlterIdPgmCero[0].TraspasosEnCero?.length - dataAlterIdPgmCero[0].TransferenciasEnCeros?.length)),
         },
     ]
-    console.log({dataAlterIdPgmCero});
     
     const data = [
         {
@@ -1270,6 +1319,30 @@ export const ResumenComparativo = () => {
             }
             )
         },
+        {
+            isComparative: true,
+            title: 'comparativo distritos por venta por semana por programa',
+            id: 'comparativodistritosporventaporsemanaporprograma',
+            HTML: dataAlter.map(d=>{
+                return (
+                    <Col>
+                        <Row>
+                            {
+                                d.arTest.map(g=>{
+                                    return (
+                                            <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={12}>
+                                                asdf
+                                                <ItemCardPgm titleRecurrent={<div className='fs-1'>{g.propiedad}</div>} avatarPrograma={d.avatarPrograma} isSesion={true} arrayEstadistico={g.agrupadoPorSesiones} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
+                                            </Col>
+                                    )
+                                })
+                            }
+                        </Row>
+                    </Col>
+            )
+            }
+            )
+        },
         // {
         //     title: 'comparativo distritos por venta por semana por programa',
         //     id: 'comparativodistritosporventaporsemanaporprograma',
@@ -1293,18 +1366,33 @@ export const ResumenComparativo = () => {
         
         {
             isComparative: true,
-            title: 'SOCIOS PAGANTES POR HORARIO VS AFORO ',
-            id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
+            title: 'HORARIOS DE VENTA ',
+            id: 'HORARIOSVENTA',
             HTML: dataAlter.map(d=>{
                 return (
                 <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
                     {/* <FormatTable data={d.agrupadoPorHorario}/> */}
-                    <ItemCardPgm aforo={d.aforo} aforoTurno={d.aforo_turno} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorario} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
+                    <ItemCardPgm avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorarioDeVenta} onOpenModalSOCIOS={onOpenModalSOCIOS} labelParam={'HORARIO'}/>
                 </Col>
-            )
+            )   
             }
             )
         },
+        {
+            isComparative: true,
+            title: 'TOTAL HISTORICO ACUMULADO DE VENTAS POR TURNO',
+            id: 'HORARIOSVENTA',
+            HTML: dataAlterIdPgmCero.map(d=>{
+                return (
+                <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={12}>
+                    {/* <FormatTable data={d.agrupadoPorHorario}/> */}
+                    <TableTotal titleH1={''} isTime avataresDeProgramas={d.avataresDeProgramas} labelTotal={'HORARIO'} onOpenModalSOCIOS={onOpenModalSOCIOS} data={d.agrupadoPorHorarioVenta}/>
+                </Col>
+            )   
+            }
+            )
+        },
+
         {
             title: 'SOCIOS PAGANTES POR HORARIO VS AFORO  - TOTAL',
             id: 'COMPARATIVOPORHORARIOTOTAL',
@@ -1378,7 +1466,7 @@ export const ResumenComparativo = () => {
         
         {
             isComparative: true,
-            title: 'SOCIOS PAGANTES POR DISTRITO TRABAJO',
+            title: 'SOCIOS PAGANTES POR DISTRITO DE TRABAJO',
             id: 'COMPARATIVOPROGRAMASPORDISTRITO',
             HTML: dataAlter.map(d=>{
                 return (
@@ -1395,7 +1483,7 @@ export const ResumenComparativo = () => {
             )
         },
         {
-            title: 'SOCIOS PAGANTES POR DISTRITO TRABAJO - TOTAL',
+            title: 'SOCIOS PAGANTES POR DISTRITO DE TRABAJO - TOTAL',
             id: 'COMPARATIVOTOTALPORDISTRITO',
             HTML: dataAlterIdPgmCero.map(d=>{
                     return (

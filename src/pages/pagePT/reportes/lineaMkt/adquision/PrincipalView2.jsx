@@ -29,6 +29,7 @@ const sumarTarifaMonto = (items)=>{
       const ventas = items.reduce((accum, item) => accum + (item.detalle_ventaMembresium?.tarifa_monto || 0), 0)
     return ventas
 }
+
 export const PrincipalView = () => {
   const { obtenerTodoVentas, data, dataVendedores, dataProgramas, dataUnif, dataVentas, dataProgramasx, dataTotalPgmX, dataVendedorAnualizados } = useAdquisicionStore()
   const [isOpenModalFilteredDia, setisOpenModalFilteredDia] = useState(false)
@@ -535,171 +536,9 @@ const sectionRefs = dataDetalleSeccion.map(() =>
 }
 
 
-
-
-const TablaResumen = ({data}) => {
-  return (
-    <div style={{ overflowX: 'auto', width: '100%' }}>
-      <Table striped bordered className="border border-black" style={{width: '2200px'}}>
-        <thead className={'bg-primary'}>
-          <tr>
-            <th className='fs-3 pl-5 text-center'></th>
-            {data.map((d, i) => (
-              <th className='fs-3 text-center text-white' key={i}>
-                <div className='' style={{fontSize: '55px', width: '300px', writingMode: 'vertical-lr', transform: 'rotate(180deg)'}}>
-                  {d.fecha.split(' ')[0].toUpperCase()}
-                </div>
-                </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className='fs-3 fw-bold' >
-              <div style={{fontSize: '35px'}}>
-                SOCIOS VENTAS
-              </div>
-            </td>
-            {data.map((d, i) => {
-              const tarifa_monto = d.items.reduce(
-                  (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
-                  0
-                );
-              return (
-                <>
-                <td className='fs-2 text-center' key={i}>
-                  <div className='d-flex mx-4'>
-                    {/* <div className='text-change fw-bold' dir="rtl">
-                      {d.items.length}
-                    </div> */}
-                    <div className={`ms-auto ${tarifa_monto<=0?'':'text-black fw-bold'}`}>
-                      <NumberFormatMoney amount={tarifa_monto}/>
-                    </div>
-                  </div>
-                </td>
-                </>
-              )
-            }
-            )}
-          </tr>
-          <tr>
-            <td className='fs-3 fw-bold'>
-              <div style={{fontSize: '35px'}}>
-                SOCIOS NUEVOS
-              </div>
-            </td>
-            {data.map((d, i) => {
-              const NuevosCantidad = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen !==691 && i.detalle_ventaMembresium.tb_ventum.id_origen !==692).length
-              const ventasNuevos = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen !==691 && i.detalle_ventaMembresium.tb_ventum.id_origen !==692).reduce(
-                        (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
-                        0
-                      )
-              return (
-                <td className='fs-2' key={i}>
-                  <div className='d-flex mx-4'>
-                    {/* <div className='text-change fw-bold'>
-                      {NuevosCantidad}
-                    </div> */}
-                    <div className={`ms-auto ${ventasNuevos<=0?'':'text-black fw-bold'}`}>
-                      <NumberFormatMoney
-                      amount={ventasNuevos}
-                      />
-                    </div>
-                  </div>
-                </td>
-              )
-            }
-            
-            )}
-          </tr>
-          <tr>
-            <td className='fs-3 fw-bold'>
-              <div style={{fontSize: '35px'}}>
-                RENOVACIONES
-                </div>
-                </td>
-            {data.map((d, i) => {
-              const renovacionesCantidad = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 691).length
-              const Ventasrenovaciones = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 691).reduce(
-                        (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
-                        0
-                      )
-              return (
-                <td className='fs-2' key={i}>
-                  <div className='d-flex mx-4'>
-                    {/* <div className='text-change fw-bold'>
-                      {renovacionesCantidad}
-                    </div> */}
-                    <div className={`ms-auto ${Ventasrenovaciones<=0?'':'text-black fw-bold'}`}>
-                      <NumberFormatMoney
-                        amount={Ventasrenovaciones}
-                      />
-                    </div>
-                  </div>
-                  </td>
-              )
-            }
-            )}
-          </tr>
-          <tr>
-            <td className='fs-3 fw-bold'>
-              <div style={{fontSize: '35px'}}>
-                REINSCRIPCIONES
-              </div>
-            </td>
-            {data.map((d, i) => {
-                const reiCantidad = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 692).length
-                const reiVentas = d.items.filter(i=>i.detalle_ventaMembresium.tb_ventum.id_origen === 692).reduce(
-                      (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
-                      0
-                    )
-              return (
-              <td className='fs-2' key={i}>
-                <div className='d-flex mx-4'>
-                  {/* <div className='text-change fw-bold'>
-                    {reiCantidad}
-                  </div> */}
-                  <div className={`ms-auto ${reiVentas<=0?'':'text-black fw-bold'}`}>
-                    <NumberFormatMoney amount={reiVentas}/>
-                  </div>
-                </div>
-              </td>
-              )
-            } 
-            )}
-          </tr>
-          <tr>
-            <td className='fs-3 fw-bold'>
-              <div style={{fontSize: '35px'}}>
-              TICK. MED.
-              </div>
-            </td>
-            {data.map((d, i) => {
-              const tarifa_monto = d.items.reduce(
-                  (total, item) => total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
-                  0
-                );
-                const ticket_medio = ((tarifa_monto/d.items.length) || 0)
-              return (
-                <td className='fs-2 text-center' key={i}>
-                  <div className='d-flex mx-4'>
-                    <div className={`ms-auto ${ticket_medio<=0.0?'':'text-black fw-bold'}`}>
-                      <NumberFormatMoney amount={ticket_medio}/>
-                    </div>
-
-                  </div>
-                </td>
-              )
-            }
-            )}
-          </tr>
-        </tbody>
-      </Table>
-    </div>
-  );
-};
-
 const TablaResumen2 = ({data}) => {
+  console.log({data});
+  
 const ordenarAsesores = (lista) =>
   [...lista].sort((a, b) => {
     if (a.nombre?.toLowerCase() === 'alvaro') return -1;
@@ -708,12 +547,19 @@ const ordenarAsesores = (lista) =>
   });
   const thEstilo = {
   // border: '3px solid #dc3545',
+  // width: '2000px',
   padding: '10px'
   };
 const tdEstilo = {
   border: '3px solid #dc3545',
   padding: '10px',
-  fontSize: '20px'
+  fontSize: '27px'
+};
+const stickyFirstColStyle = {
+  position: 'sticky',
+  left: 0,
+  zIndex: 2,
+  background: 'white', // importante para que no se vea transparente
 };
   const tipos = ['total', 'nuevos', 'renovaciones', 'reinscripciones'];
   const tipoLabels = {
@@ -722,37 +568,60 @@ const tdEstilo = {
     renovaciones: 'RENOVACIONES',
     reinscripciones: 'REINSCRIPCIONES',
   };
-  const widthTable=90
+  const widthTable=150
+  const cuotasMetas = [
+    {
+      mes: 'JULIO',
+      meta: 60000,
+    },
+  ]
   return (
     <div style={{ overflowX: 'auto' }}>
       <table 
       style={{
         width: '100%',
-        minWidth: '1000px',
+        minWidth: '1400px',
         textAlign: 'center',
         fontFamily: 'sans-serif',
         color: 'black'
       }}>
         <thead 
                   className='bg-primary rounded-0'
+
         >
           {/* Fila Mes */}
           <tr>
-            <th className='rounded-0' style={thEstilo} rowSpan={3}></th>
+            <th className='rounded-0' style={{...stickyFirstColStyle, ...thEstilo, backgroundColor: '#D41115'}} rowSpan={5}></th>
             {data.map((mes, i) => (
               <th
                 key={i}
                   className='bg-primary rounded-0 text-black'
-                colSpan={ordenarAsesores(mes.itemVendedores).length * 3}
+                colSpan={ordenarAsesores(mes.itemVendedores).length * 5}
                 style={{
                   ...thEstilo,
                   color: 'white',
                   fontSize: '44px',
-                  // borderRight: '6px solid #dc3545',
+                  borderLeft: '14px solid #000000ff'
                 }}
               >
-                <div>
+                <div className='d-flex flex-column align-items-center'>
                   {mes.mes.toUpperCase()}
+                  <br/>
+                  <div >
+                        {
+                          !cuotasMetas.find(e=>e?.mes===mes.mes.toUpperCase())?(''):(
+                            <div className='text-left d-flex flex-column'>
+                              <span className='fs-2'>
+                              CUOTA: <NumberFormatMoney amount={cuotasMetas.find(e=>e?.mes===mes.mes.toUpperCase())?.meta}/> (100%)
+                              </span>
+                              <span className='fs-2'>
+                                AVANCE: <NumberFormatMoney amount={ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0)}/> ({((ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0) )/(cuotasMetas.find(e=>e?.mes===mes.mes.toUpperCase())?.meta))*100}%)
+                                
+                              </span>
+                            </div>
+                          )
+                        }
+                  </div>
                 </div>
               </th>
             ))}
@@ -768,16 +637,21 @@ const tdEstilo = {
                     <th
                       className='bg-primary rounded-0 text-white'
                       key={`${mi}-${ai}`}
-                      colSpan={3}
+                      colSpan={5}
                       style={{
                         ...thEstilo,
                         color: 'white',
                         fontSize: '20px',
-                        // borderRight: ai === mes.itemVendedores.length - 1 ? '6px solid #dc3545' : '2px solid #dc3545',
+                        borderLeft: ai === 0 ? '14px solid #000000ff' : '',
                       }}
                     >
-                      <div>
-                        {asesor.nombre.toUpperCase()} (<NumberFormatter amount={(((asesor.datos.total.tarifa)/(arr.reduce((total, item)=>total + item.datos.total.tarifa, 0)))*100).toFixed(2)}/>)
+                      <div className='d-flex flex-column fs-2'>
+                        <span>
+                        {asesor.nombre.toUpperCase()}
+                        </span>
+                        <span className='fs-2 ml-5'>
+                          <NumberFormatMoney amount={(asesor.datos.total.tarifa)}/> ({(((asesor.datos.total.tarifa)/(arr.reduce((total, item)=>total + item.datos.total.tarifa, 0)))*100).toFixed(2)}%)
+                        </span>
                       </div>
                     </th>
                   ))
@@ -792,14 +666,15 @@ const tdEstilo = {
           <tr>
             {data.map((mes) =>
               ordenarAsesores(mes.itemVendedores)?.map((asesor, ai) =>
-                ['SOCIOS', 'VENTAS', 'TICK. MED.'].map((label, idx) => (
+                ['SOCIOS', 'VENTAS', 'TICK. MED.', 'VENTAS PM', ' VENTAS AM'].map((label, idx) => (
                   <th
                     key={`${ai}-${idx}`}
                     className='bg-primary  rounded-0'
                     style={{
                       ...thEstilo,
                       color: 'white',
-                      fontSize: '16px',
+                      fontSize: '23px',
+                      borderLeft: `${ai==0 && idx==0?'14px solid #000000ff':''}`
                     }}
                   >
                     <div>
@@ -814,7 +689,7 @@ const tdEstilo = {
         <tbody>
           {tipos.map((tipo) => (
             <tr key={tipo}>
-              <td style={{ ...tdEstilo, fontWeight: 'bold', textAlign: 'left', paddingLeft: '10px' }}>
+              <td style={{ ...tdEstilo, ...stickyFirstColStyle,  fontWeight: 'bold', textAlign: 'left', paddingLeft: '10px' }}>
                 {tipoLabels[tipo]}
               </td>
               {data.map((mes) => {
@@ -845,6 +720,8 @@ const tdEstilo = {
                       const socios = entry?.socios ?? 0;
                       const tarifa = entry?.tarifa ?? 0;
                       const ticket = entry?.ticket_medio ?? 0;  
+                      const pm = entry?.PM
+                      const am = entry?.AM
 
                       let sociosPuesto = entry?.puesto.socios ?? '';
                       let tarifaPuesto = entry?.puesto.tarifa ?? '';
@@ -874,11 +751,35 @@ const tdEstilo = {
                             key={`${tipo}-${ai}-ticket`}
                             style={{
                               ...tdEstilo,
-                              borderRight: ai === ordenarAsesores(mes.itemVendedores).length - 1 ? '14px solid #000000ff' : '2px solid #dc3545'
+                              // borderRight: ai === ordenarAsesores(mes.itemVendedores).length - 1 ? '14px solid #000000ff' : '2px solid #dc3545'
                             }}
                           >
                             <div style={{width: `${widthTable}px`, fontWeight: `${ticket==0.00?'':'bolder'}`}} className={`text-end ${ticketPuesto==='i' ? 'text-black' : ticketPuesto==='p' ? '' : 'text-change'}`}>
                               <NumberFormatMoney amount={ticket}/>
+                            </div>
+                          </td>
+                          <td
+                            key={`${tipo}-${ai}-ticket`}
+                            style={{
+                              ...tdEstilo,
+                              // borderRight: ai === ordenarAsesores(mes.itemVendedores).length - 1 ? '14px solid #000000ff' : '2px solid #dc3545'
+                            }}
+                          >
+                            <div style={{width: `${widthTable}px`, fontWeight: `${ticket==0.00?'':'bolder'}`}} className={`text-end ${ticketPuesto==='i' ? 'text-black' : ticketPuesto==='p' ? '' : 'text-change'}`}>
+                              {/* <NumberFormatMoney amount={ticket}/> */}
+                              <NumberFormatMoney amount={pm?pm:0}/>
+                            </div>
+                          </td>
+                          <td
+                            key={`${tipo}-${ai}-ticket`}
+                            style={{
+                              ...tdEstilo,
+                              borderRight: ai === ordenarAsesores(mes.itemVendedores).length - 1 ? '14px solid #000000ff' : '2px solid #dc3545'
+                            }}
+                          >
+                            <div style={{width: `${widthTable}px`, fontWeight: `${ticket==0.00?'':'bolder'}`}} className={`text-end ${ticketPuesto==='i' ? 'text-black' : ticketPuesto==='p' ? '' : 'text-change'}`}>
+                              {/* <NumberFormatMoney amount={ticket}/> */}
+                              <NumberFormatMoney amount={am?am:0}/>
                             </div>
                           </td>
                         </>

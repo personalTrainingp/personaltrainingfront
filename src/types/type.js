@@ -152,7 +152,6 @@ export const arrayRoles = [
 export const arraySexo = [
 	{ label: 'Femenino', value: 9, order: 1 },
 	{ label: 'Masculino', value: 8, order: 2 },
-	{ label: 'Otro', value: 0, order: 3 },
 ];
 
 export const arrayTipoDoc = [

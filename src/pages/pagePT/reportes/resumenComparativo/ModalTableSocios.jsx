@@ -16,6 +16,25 @@ function calcularDiferenciaFechas(fechaInicio, fechaFin) {
     const diferenciaAnios = fin.getFullYear() - inicio.getFullYear();
     return diferenciaAnios;
   }
+
+  function agruparPorEdad(data) {
+  const agrupado = {};
+
+  data.forEach(({ items }) => {
+    items.forEach((item) => {
+      const edad = item.edad;
+      if (!agrupado[edad]) {
+        agrupado[edad] = [];
+      }
+      agrupado[edad].push(item);
+    });
+  });
+
+  return Object.entries(agrupado).map(([edad, items]) => ({
+    edad: Number(edad),
+    items,
+  }));
+}
 export const ModalTableSocios = ({ dataArrayGrouped,clickDataSocios, avatarProgramaSelect, clickDataLabel, show, onHide}) => {
     // console.log(clickDataSocios, "modal ");
     console.log('asdfasdf');
@@ -141,6 +160,23 @@ export const ModalTableSocios = ({ dataArrayGrouped,clickDataSocios, avatarProgr
 
             )
         }
+        
+        <div>
+            <span className='fs-1 text-primary fw-bold'>
+                EDADES
+            </span>
+            <br/>
+            {
+                agruparPorEdad(agruparxCliente(dataAlter)).map((edad, i)=>{
+                    return (
+                        <div className='fs-2'>
+                        {edad.edad} AÑOS ({edad.items.length})
+                        <br/>
+                        </div>
+                    )
+                })
+            }
+        </div>
     </Dialog>
   )
 }
