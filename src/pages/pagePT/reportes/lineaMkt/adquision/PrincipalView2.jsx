@@ -615,7 +615,7 @@ const stickyFirstColStyle = {
                               CUOTA: <NumberFormatMoney amount={cuotasMetas.find(e=>e?.mes===mes.mes.toUpperCase())?.meta}/> (100%)
                               </span>
                               <span className='fs-2'>
-                                AVANCE: <NumberFormatMoney amount={ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0)}/> ({((ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0) )/(cuotasMetas.find(e=>e?.mes===mes.mes.toUpperCase())?.meta))*100}%)
+                                AVANCE: <NumberFormatMoney amount={ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0)}/> (<NumberFormatter amount={((ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0) )/(cuotasMetas.find(e=>e?.mes===mes.mes.toUpperCase())?.meta))*100}/>%)
                                 
                               </span>
                             </div>
