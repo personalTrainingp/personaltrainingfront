@@ -208,6 +208,7 @@ export const arrayOrigenDeCliente = [
 	// { value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
 	// { value: 691, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
 	// { value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
+	{ value: 1470, label: 'MONKEY FIT' },
 ];
 export const arrayOrigenEnCeroDeCliente = [
 	{ value: 688, label: 'USO DE IMAGEN (RAFAEL PIZARRO)', order: 11 },

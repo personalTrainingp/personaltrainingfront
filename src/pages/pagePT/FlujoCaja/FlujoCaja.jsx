@@ -48,8 +48,6 @@ export const FlujoCaja = () => {
                         <TabPanel header={<div className='text-ISESAC' style={{fontSize: '60px'}}>2024</div>}>
                             <DatatableEgresos bgTotal={'bg-verdeclaro'} bgMultiValue={'#17a700'} arrayRangeDate={[new Date(2024, 1, 15), new Date()]} background={'bg-greenISESAC'} id_enterprice={599} anio={2024} nombre_empresa={'REDUCTO'}/>
                         </TabPanel>
-                    </TabView>
-                    <TabView>
                         <TabPanel header={<div className='text-ISESAC' style={{fontSize: '60px'}}>2025</div>}>
                             <DatatableEgresos bgTotal={'bg-verdeclaro'} bgMultiValue={'#17a700'} arrayRangeDate={[new Date(2025, 1, 15), new Date()]} background={'bg-greenISESAC'} id_enterprice={599} anio={2025} nombre_empresa={'REDUCTO'}/>
                         </TabPanel>
