@@ -66,7 +66,9 @@ export const ReporteSeguimiento = () => {
         
         const aforo = data.id_pgm===2?18:data.id_pgm===3?10:data.id_pgm===4?14:''
         const aforo_turno = data.id_pgm===2?36:data.id_pgm===3?10:data.id_pgm===4?14:''
-        const porcentajeAusentismo = 30;
+        const porcentajeAusentismo = 33;
+
+        const notas = data.id_pgm===2?(18):data.id_pgm===3?10:data.id_pgm===4?14:'aquiii'
 
 
         const agrupadoPorHorario = agruparPorHorarios(data.items).sort((a, b) => b.items.length - a.items.length).map((f) => {
@@ -88,26 +90,75 @@ export const ReporteSeguimiento = () => {
                     const totalTentativo = (numberCuposOcupados + numberCuposDisponible + ausentismo);
                     const sumaAusentismo = array.length*ausentismo
                     const sumaCuposTentativo = sumarCuposDispo+sumaAusentismo
-                    console.log(numberCuposOcupados, 'ausents');
-                    
                     return [
                         // { header: "", isIndexado: true, isTime: true, value: '', items: grupo.items,  tFood: 'TOTAL' },
                         { header: "TURNO",  isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
-                        { header: "SOCIOS ACTIVOS", isSummary: true, value: grupo.cuposOcupado, items: grupo.items, tFood: sumaTotal },
-                        { header: "CUPOS POR TURNO", isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
-                        { header: <>AUSENTISMO <br/> 30%</>, isSummary: true, value: ausentismo, items: grupo.items, tFood: '' },
-                        { header: <>TOTAL CUPOS POR TURNO</>, isSummary: true, value:  <>{numberCuposDisponible+ausentismo}</>, tFood: sumaCuposTentativo },
-                        // { header: "% OCUPADO", isSummary: true, value: <NumberFormatMoney amount={porcentajeOcupadoGrupo}/>, items: grupo.items, tFood: <NumberFormatMoney amount={sumaPorcentajeOcupados/array.length} /> },
-                        // { header: "% PENDIENTE", isSummary: true, value: <NumberFormatMoney amount={porcentajePendienteGrupo}/>, tFood: <NumberFormatMoney amount={sumaPorcentajeDispo/array.length}/> },
+                        { header: <>TOTAL <br/> SOCIOS <br/> ACTIVOS</>, isSummary: true, value: <span style={{fontSize: '50px'}}>{grupo.cuposOcupado}</span>, items: grupo.items, tFood: sumaTotal },
+                        { header: <>VENTAS DISPONIBLES <br/> POR <br/> TURNO</>, isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
+                        { header: <>VENTAS CUPOS AUSENTISMO <br/> 33%</>, isSummary: true, value: ausentismo, items: grupo.items, tFood: sumaAusentismo },
+                        { header: <>TOTAL CUPOS DISPONIBLES DE VENTA POR TURNO</>, isSummary: true, value:  <span style={{fontSize: '50px'}} className='text-change'>{numberCuposDisponible+ausentismo}</span>, tFood: sumaCuposTentativo },
                     ];
                   });
         return {
             avatarPrograma,
             aforo_turno,
             aforo,
-            agrupadoPorHorario
+            agrupadoPorHorario,
+            notas
         }
     })
+    const dataGrande = [{id_pgm: 0, name_pgm: 'TOTAL', items: viewSeguimiento}].map((data)=>{
+        const avatarPrograma = {
+            urlImage: `total_pgm`,
+            width: data?.items[0]?.tb_ProgramaTraining?.tb_image?.width,
+            height: data?.items[0]?.tb_ProgramaTraining?.tb_image?.height
+        }
+        
+        const aforo = data.id_pgm===0?42:''
+        const aforo_turno = data.id_pgm===0?60:''
+        const porcentajeAusentismo = 33;
+        const notas = data.id_pgm===0?14:'aquiii'
+
+
+
+        const agrupadoPorHorario = agruparPorHorarios(data.items).sort((a, b) => b.items.length - a.items.length).map((f) => {
+            const cuposDispo = aforo - f.items.length;
+            const cuposOcupado = f.items.length;
+            return { ...f, cuposDispo, cuposOcupado };
+          }).map((grupo, index, array) => {
+                    const sumaTotal = array.reduce((total, item) => total + (item?.cuposOcupado || 0), 0);
+                    const sumarCuposDispo = array.reduce((total, item) => total + item.cuposDispo, 0);
+                    // Porcentajes globales (sumatoria total)
+                    const sumaPorcentajeOcupados = ((sumaTotal / aforo) * 100).toFixed(2);
+                    const sumaPorcentajeDispo = ((sumarCuposDispo / aforo) * 100).toFixed(2);
+                    // Porcentajes individuales por grupo
+                    const porcentajeOcupadoGrupo = ((grupo.cuposOcupado / aforo) * 100).toFixed(2);
+                    const porcentajePendienteGrupo = ((grupo.cuposDispo / aforo) * 100).toFixed(2);
+                    const ausentismo = Math.round(aforo * (porcentajeAusentismo / 100)); 
+                    const numberCuposOcupados = parseInt(grupo.cuposOcupado) || 0;
+                    const numberCuposDisponible = parseInt(grupo.cuposDispo) || 0;
+                    const totalTentativo = (numberCuposOcupados + numberCuposDisponible + ausentismo);
+                    const sumaAusentismo = array.length*ausentismo
+                    const sumaCuposTentativo = sumarCuposDispo+sumaAusentismo
+                    return [
+                        // { header: "", isIndexado: true, isTime: true, value: '', items: grupo.items,  tFood: 'TOTAL' },
+                        { header: "TURNO",  isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
+                        { header: <>TOTAL <br/> SOCIOS <br/> ACTIVOS</>, isSummary: true, value: <span style={{fontSize: '50px'}}>{grupo.cuposOcupado}</span>, items: grupo.items, tFood: sumaTotal },
+                        { header: <>VENTAS DISPONIBLES <br/> POR <br/> TURNO</>, isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
+                        { header: <>VENTAS CUPOS AUSENTISMO <br/> 33%</>, isSummary: true, value: ausentismo, items: grupo.items, tFood: sumaAusentismo },
+                        { header: <>TOTAL CUPOS DISPONIBLES DE VENTA POR TURNO</>, isSummary: true, value:  <span style={{fontSize: '50px'}} className='text-change'>{numberCuposDisponible+ausentismo}</span>, tFood: sumaCuposTentativo },
+                    ];
+                  });
+        return {
+            avatarPrograma,
+            aforo_turno,
+            aforo,
+            agrupadoPorHorario,
+            notas
+        }
+    })
+    console.log({viewSeguimiento, seg2: agruparPorPrograma(viewSeguimiento), dataGrande});
+    
     const data = [
         {            
                     isComparative: true,
@@ -115,8 +166,21 @@ export const ReporteSeguimiento = () => {
                     id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
                     HTML: dataAlter.map(d=>{
                         return (
-                        <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={6}>
-                            <ItemCardPgm aforo={d.aforo} aforoTurno={d.aforo_turno} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorario} isViewSesiones={true} labelParam={'HORARIO'}/>
+                        <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                            <ItemCardPgm aforo={d.aforo} notas={d.notas} aforoTurno={d.aforo_turno} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorario} isViewSesiones={true} labelParam={'HORARIO'}/>
+                        </Col>
+                    )
+                    }
+                    )
+        },
+        {            
+                    isComparative: true,
+                    title: 'SOCIOS PAGANTES POR HORARIO VS AFORO ',
+                    id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
+                    HTML: dataGrande.map(d=>{
+                        return (
+                        <Col style={{paddingBottom: '1px !important'}} xxl={12}>
+                            <ItemCardPgm aforo={d.aforo} notas={d.notas} aforoTurno={d.aforo_turno} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorario} isViewSesiones={true} labelParam={'HORARIO'}/>
                         </Col>
                     )
                     }
@@ -125,7 +189,7 @@ export const ReporteSeguimiento = () => {
     ]
   return (
     <>
-        <PageBreadcrumb subName={'T'} title={'REPORTE DE SEGUIMIENTO DE SOCIOS ACTIVOS'}/>
+        <PageBreadcrumb subName={'T'} title={'CUPOS DISPONIBLES DE VENTAS POR TURNO'}/>
         {
             loadinData?(
                 <>loading</>

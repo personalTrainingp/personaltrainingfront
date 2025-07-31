@@ -28,50 +28,75 @@ export const FormatTable = ({ data=[] }) => {
     setSortedData(sorted);
     setSortConfig({ key: header, direction });
   };
-  
   // Obtener encabezados desde la primera fila de datos
   const headers = data[0]?.map((col) => col.header);
 
   return (
-    <Table className="table-centered mb-0" striped responsive>
-      <thead className='bg-primary fs-2'>
-        <tr>
-          {headers?.map((header, index) => {
-            const isSortable = data[0][index]?.isSortable;
-            return (
-              <th className={`text-white`} key={index} onClick={() => isSortable && handleSort(header)} style={{ cursor: isSortable ? "pointer" : "default" }}>
-                {header} {isSortable && (sortConfig.key === header ? (sortConfig.direction === "asc" ? "↑" : "↓") : "↕")}
-              </th>
-            );
-          })}
-        </tr>
-      </thead>
-      <tbody>
-        {sortedData.map((row, rowIndex) => (
-          <tr key={rowIndex}>
-            {row?.map((col, colIndex) => (
-              <td key={colIndex} onClick={col.onClick}>
-              <li className={`d-flex flex-row justify-content-between p-1`}>
-                <span style={{fontSize: '35px'}} className={`fw-bold ml-1`}>
-                  <span className='mr-1 text-black'>{col.isIndexado? rowIndex+1:''} </span>
-                  <span className={`${(`${col.value}`.split(' ')[1]==='PM'?'bg-primary text-white':`${col.isPropiedad?'text-primary':'text-black'}`)}`}>{col.HTML ?? col.value}</span></span>
-              </li>
+    <div style={{ maxHeight: '700px', overflowY: 'auto' }}>
+  <table className="table table-striped mb-0" style={{ width: '100%', tableLayout: 'fixed' }}>
+    <thead className='bg-primary' style={{ position: 'sticky', top: 0, zIndex: 10, color: 'white', fontSize: '23px' }}>
+      <tr>
+        {headers?.map((header, index) => {
+          const isSortable = data[0][index]?.isSortable;
+          return (
+            <th
+              key={index}
+              onClick={() => isSortable && handleSort(header)}
+              className='bg-primary'
+              style={{
+                cursor: isSortable ? "pointer" : "default",
+              }}
+            >
+              <div style={{width: '300px'}} className='d-flex justify-content-center'>
+                <div>
+                  {header}{" "}
+                  {isSortable &&
+                    (sortConfig.key === header
+                      ? sortConfig.direction === "asc"
+                        ? "↑"
+                        : "↓"
+                      : "↕")}
+                </div>
+              </div>
+            </th>
+          );
+        })}
+      </tr>
+    </thead>
+    <tbody>
+      {sortedData.map((row, rowIndex) => (
+        <tr key={rowIndex}>
+          {row.map((col, colIndex) => (
+            <td key={colIndex} onClick={col.onClick}>
+                <div style={{ fontSize: '35px', width: '300px' }} className={`fw-bold ${colIndex==0?'text-start':'text-end'}`}>
+                  <span className={`mr-1 text-black ${colIndex==0?'':'d-none'}`}>
+                    {col.isIndexado ? rowIndex + 1 : ''} 
+                  </span>
+                  <span style={{marginRight: '120px'}} className={` ${(`${col.value}`.split(' ')[1] === 'PM' ? 'bg-primary text-white' : (col.isPropiedad ? 'text-primary' : 'text-black'))}`}>
+                    {col.HTML ?? col.value}
+                  </span>
+                </div>
             </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-      <tfoot>
-        <tr className='bg-primary'>
-          {data[0]?.map((col, index) => (
-            <td key={index}>
-            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '40px'}}>{col.tFood}</span></li>
-        </td>
-            // <td key={index}>{col.tFood}</td>
           ))}
         </tr>
-      </tfoot>
-    </Table>
+      ))}
+    </tbody>
+    <tfoot  style={{ position: 'sticky', bottom: 0, zIndex: 2,  }} className="bg-primary">
+      <tr>
+        {data[0]?.map((col, index) => (
+          <td key={index}>
+            <div style={{ fontSize: '50px', width: '300px' }} className={`fw-bold ${index==0?'text-start':'text-end'}`}>
+              <span className={`fw-bold text-white ${index===0?'':''}`} style={{ marginRight: '120px' }}>
+                {col.tFood}
+              </span>
+            </div>
+          </td>
+        ))}
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
   );
 }
 
