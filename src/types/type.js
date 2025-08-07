@@ -310,6 +310,7 @@ export const arrayCargoEmpl = [
 	{ label: 'MKT COMERCIAL', value: 30 },
 	{ label: 'RECUPERACION DE CARTERA', value: 31 },
 	{ label: 'ASESOR FINANCIERO Y COMERCIAL', value: 32 },
+	{ label: 'MANICURISTA', value: 62 },
 ];
 
 export const arrayDepartamentoEmpl = [

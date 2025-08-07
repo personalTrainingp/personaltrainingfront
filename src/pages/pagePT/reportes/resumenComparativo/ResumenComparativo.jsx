@@ -639,11 +639,17 @@ export const ResumenComparativo = () => {
                 const sumaTotalFem = array.reduce((total, item) => total + (item?.sexo[0].items.length || 0), 0)
                 const sumaTotalMasc = array.reduce((total, item) => total + (item?.sexo[1].items.length || 0), 0)
                 const sumaXITEMS = grupo.items.length
+                const porcentajeSocios = ((sumaXITEMS/sumaTotal)*100)
+                const porcentajeSociosFem = ((grupo.sexo[0].items.length/sumaTotalFem)*100)
+                const porcentajeSociosMas = ((grupo.sexo[1].items.length/sumaTotalMasc)*100)
                 return [
                     { header: "RANGO DE EDAD", value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
                     { header: "SOCIOS", isSummary: true, value: grupo.items.length, items: grupo.items, tFood: `${sumaTotal.toFixed(0)}` },
+                    { header: "% SOCIOS", isSummary: true, value: <><NumberFormatMoney amount={porcentajeSocios}/></>, items: array.items, tFood: `${100}` },
                     { header: "FEMENINO", isSummary: true, value: grupo.sexo[0].items.length, items: grupo.items, tFood: `${sumaTotalFem.toFixed(0)}` },
+                    { header: "% FEMENINO", isSummary: true, value: <><NumberFormatMoney amount={porcentajeSociosFem}/></>, items: array.items, tFood: `${100}` },
                     { header: `MASCULINO`, isSummary: true, value: grupo.sexo[1].items.length, tFood: sumaTotalMasc },
+                    { header: "% MASCULINO", isSummary: true, value: <><NumberFormatMoney amount={porcentajeSociosMas}/></>, items: array.items, tFood: `${100}` },
                   ]
             })
             const activosDeVentasPorSemanaMarcacions = []
@@ -1233,8 +1239,10 @@ export const ResumenComparativo = () => {
                                                     </tr>
                                             </Table>
                         </Card.Body>
+                        <h1 className='text-center'>SOCIOS TOTAL POR CATEGORIA VENTAS</h1>
                         <GrafPie height={600} width={600} data={
                             [{label: 'NUEVOS', val: d.membresiasNuevas.length}, {label: 'RENOVACIONES', val: d.membresiasRenovadas.length}, {label: 'REINSCRIPCIONES', val: d.membresiasReinscritos.length}]}/>
+                        <h1 className='text-center'>SOCIOS TOTAL POR CATEGORIA</h1>
                         <GrafPie height={1000} width={1000} data={[{label: 'NUEVOS', val: d.membresiasNuevas.length}, {label: 'RENOVACIONES', val: d.membresiasRenovadas.length}, {label: 'REINSCRIPCIONES', val: d.membresiasReinscritos.length}, {label: 'TRASPASOS', val: d.TraspasosEnCero.length}, {label: 'TRANSFERENCIAS', val: d.TransferenciasEnCeros.length}, {label: 'CANJES', val: d.CanjesEnCero.length, color: '#fff33'}]}/>
                     </Card>
                 </Col>

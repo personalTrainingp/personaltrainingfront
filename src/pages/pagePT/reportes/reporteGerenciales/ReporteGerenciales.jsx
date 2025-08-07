@@ -48,11 +48,11 @@ export const ReporteGerenciales = () => {
       <TabPanel style={{alignItems: 'flex-end', display: 'flex'}}  header={<TabIcon width={220} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/>}>
         <EmpresaPuntoEquilibrio id_empresa={598} id_empresa_ventas={598} background={'bg-change'} bgHEX={'#CD1014'} textEmpresa={'text-change'} RANGE_DATE={RANGE_DATE}/>
       </TabPanel>
-      <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mb-2' header={<TabIcon width={180} src='https://sistema-circus.vercel.app/assets/Positivo-transparente-c932a60a.png'/>}>
-        <EmpresaPuntoEquilibrio id_empresa={599} id_empresa_ventas={599} background={'bg-circus'} bgHEX={'#EEBE00'} textEmpresa={'text-circus'} RANGE_DATE={RANGE_DATE}/>
+      <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mb-2' header={<div style={{fontSize: '40px', color: '#17a700'}} className=' fw-medium'>REDUCTO</div>}>
+        <EmpresaPuntoEquilibrio id_empresa={599} id_empresa_ventas={599} background={'bg-greenISESAC'} bgHEX={'#17a700'} textEmpresa={'text-ISESAC'} RANGE_DATE={RANGE_DATE}/>
       </TabPanel>
-      <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mb-2' headerClassName="mi-tab-verde" header={<div style={{fontSize: '40px', color: '#17a700'}} className=' fw-medium'>INVERSIONES <br/> SAN EXPEDITO</div>} >
-        <EmpresaPuntoEquilibrio id_empresa={601} id_empresa_ventas={599} background={'bg-greenISESAC'} textEmpresa={'text-ISESAC'} RANGE_DATE={RANGE_DATE}/>
+      <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mb-2' headerClassName="mi-tab-verde" header={<TabIcon width={180} src='https://sistema-circus.vercel.app/assets/Positivo-transparente-c932a60a.png'/>} >
+        <EmpresaPuntoEquilibrio id_empresa={601} id_empresa_ventas={599} background={'bg-circus'} textEmpresa={'text-circus'} bgHEX={'#EEBE00'} RANGE_DATE={RANGE_DATE}/>
       </TabPanel>
     </TabView>
     </>

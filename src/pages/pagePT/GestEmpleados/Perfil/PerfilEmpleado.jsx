@@ -17,6 +17,7 @@ import { PanelPermisos } from './PanelPermisos';
 import { PanelHorasExtras } from './PanelHorasExtras';
 import { PanelTardanzasJustificadas } from './PanelTardanzasJustificadas';
 import { PanelSalidasTempranas } from './PanelSalidasTempranas';
+import { App as AppParientes } from './Parientes/App';
 
 export const PerfilEmpleado = () => {
   const { uid } = useParams()
@@ -78,6 +79,11 @@ export const PerfilEmpleado = () => {
                             <TabPanel header={'INFORMACION BASICA'}>
                                 <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                                   <InformacionGeneralEmpleado data={userEmpleado}/>
+                                </ScrollPanel>
+                            </TabPanel>
+                            <TabPanel header={'PARIENTES'}>
+                                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
+                                  <AppParientes/>
                                 </ScrollPanel>
                             </TabPanel>
                             <TabPanel header={'Documentos adjuntos'}>

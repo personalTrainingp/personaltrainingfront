@@ -75,6 +75,9 @@ export const Terminologias = () => {
                                             <TabPanel header='SAN EXPEDITO'>
                                                 <TerminologiaGastoTabView id_empresa={601}/>
                                             </TabPanel>
+                                            <TabPanel header='MANICURE'>
+                                                <TerminologiaGastoTabView id_empresa={700}/>
+                                            </TabPanel>
                                         </TabView>
                                     </Col>
                                 </TabPanel>

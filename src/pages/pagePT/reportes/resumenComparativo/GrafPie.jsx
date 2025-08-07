@@ -46,7 +46,7 @@ export const GrafPie = ({data=[], width, height}) => {
       const series = dataS.map(l=>l.value); // Valores de cada segmento
     
   return (
-    <div className='m-5 d-flex justify-content-center align-items-center' style={{width: '800px', height: '1000px'}}>
+    <div className='m-5 d-flex justify-content-center align-items-center'>
         <Chart options={options} series={series} type="pie" width={width} height={height} />
     </div>
   )

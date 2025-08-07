@@ -1198,8 +1198,6 @@ export const useAdquisicionStore = () => {
 										total + (item?.detalle_ventaMembresium?.tarifa_monto || 0),
 									0
 								);
-								console.log({ its: agruparPorHorarios(items) });
-
 								return {
 									socios,
 									tarifa,
@@ -1234,7 +1232,6 @@ export const useAdquisicionStore = () => {
 									(item) =>
 										item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 691
 								);
-
 								const reinscripcionesItems = f.items.filter(
 									(item) =>
 										item?.detalle_ventaMembresium?.tb_ventum?.id_origen === 692
@@ -1313,18 +1310,6 @@ export const useAdquisicionStore = () => {
 										}
 									);
 								}
-							);
-
-							// Paso 4: debug
-							console.log(
-								'DEBUG puestos',
-								conPuestos.map((v) => ({
-									nombre: v.nombre,
-									total: v.datos.total.puesto,
-									nuevos: v.datos.nuevos.puesto,
-									renovaciones: v.datos.renovaciones.puesto,
-									reinscripciones: v.datos.reinscripciones.puesto,
-								}))
 							);
 
 							return conPuestos;

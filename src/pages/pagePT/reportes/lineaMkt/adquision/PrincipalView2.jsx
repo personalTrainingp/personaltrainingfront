@@ -537,8 +537,6 @@ const sectionRefs = dataDetalleSeccion.map(() =>
 
 
 const TablaResumen2 = ({data}) => {
-  console.log({data});
-  
 const ordenarAsesores = (lista) =>
   [...lista].sort((a, b) => {
     if (a.nombre?.toLowerCase() === 'alvaro') return -1;
@@ -591,12 +589,12 @@ const stickyFirstColStyle = {
         >
           {/* Fila Mes */}
           <tr>
-            <th className='rounded-0' style={{...stickyFirstColStyle, ...thEstilo, backgroundColor: '#D41115'}} rowSpan={5}></th>
+            <th className='rounded-0' style={{...stickyFirstColStyle, ...thEstilo, backgroundColor: '#D41115'}} rowSpan={4}></th>
             {data.map((mes, i) => (
               <th
                 key={i}
                   className='bg-primary rounded-0 text-black'
-                colSpan={ordenarAsesores(mes.itemVendedores).length * 5}
+                colSpan={ordenarAsesores(mes.itemVendedores).length * 4}
                 style={{
                   ...thEstilo,
                   color: 'white',
@@ -616,7 +614,6 @@ const stickyFirstColStyle = {
                               </span>
                               <span className='fs-2'>
                                 AVANCE: <NumberFormatMoney amount={ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0)}/> (<NumberFormatter amount={((ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0) )/(cuotasMetas.find(e=>e?.mes===mes.mes.toUpperCase())?.meta))*100}/>%)
-                                
                               </span>
                             </div>
                           )
@@ -637,7 +634,7 @@ const stickyFirstColStyle = {
                     <th
                       className='bg-primary rounded-0 text-white'
                       key={`${mi}-${ai}`}
-                      colSpan={5}
+                      colSpan={4}
                       style={{
                         ...thEstilo,
                         color: 'white',
@@ -666,7 +663,7 @@ const stickyFirstColStyle = {
           <tr>
             {data.map((mes) =>
               ordenarAsesores(mes.itemVendedores)?.map((asesor, ai) =>
-                ['SOCIOS', 'VENTAS', 'TICK. MED.', 'VENTAS PM', ' VENTAS AM'].map((label, idx) => (
+                ['SOCIOS', 'VENTAS', 'VENTAS TURNO', 'TICK. MED.'].map((label, idx) => (
                   <th
                     key={`${ai}-${idx}`}
                     className='bg-primary  rounded-0'
@@ -720,6 +717,8 @@ const stickyFirstColStyle = {
                       const socios = entry?.socios ?? 0;
                       const tarifa = entry?.tarifa ?? 0;
                       const ticket = entry?.ticket_medio ?? 0;  
+                      const pmPuestos = entry.puesto.PM??'';
+                      const amPuestos = entry.puesto.AM??'';
                       const pm = entry?.PM
                       const am = entry?.AM
 
@@ -738,8 +737,8 @@ const stickyFirstColStyle = {
                               borderLeft: `${ai==0?'14px solid #000000ff':'8px solid #dc3545'}`
                             }}
                           >
-                            <div style={{width: `${widthTable}px`, fontWeight: `${socios==0?'':'bolder'}`}} className={`text-right pr-5 ${sociosPuesto==='i' ? '' : sociosPuesto==='p' ? '' : 'text-change'}`}>
-                              {socios}
+                            <div style={{width: `${widthTable-50}px`, fontWeight: `${socios==0?'':'bolder'}`}} className={`text-right pr-5 ${sociosPuesto==='i' ? '' : sociosPuesto==='p' ? '' : 'text-change'}`}>
+                            {socios}
                             </div>
                           </td>
                           <td key={`${tipo}-${ai}-ventas`} style={tdEstilo}>
@@ -754,8 +753,16 @@ const stickyFirstColStyle = {
                               // borderRight: ai === ordenarAsesores(mes.itemVendedores).length - 1 ? '14px solid #000000ff' : '2px solid #dc3545'
                             }}
                           >
-                            <div style={{width: `${widthTable}px`, fontWeight: `${ticket==0.00?'':'bolder'}`}} className={`text-end ${ticketPuesto==='i' ? 'text-black' : ticketPuesto==='p' ? '' : 'text-change'}`}>
-                              <NumberFormatMoney amount={ticket}/>
+                            <div style={{width: `${widthTable}px`, fontWeight: `${ticket==0.00?'':'bolder'}`}} className={`text-end `}>
+                              {/* <NumberFormatMoney amount={ticket}/> */}
+                              <span className={`${amPuestos==='i' ? 'text-black' : amPuestos==='p' ? '' : 'text-change'}`}>
+                                <div className={`text-center `}>AM</div> 
+                                <NumberFormatMoney amount={am?am:0}/> 
+                              </span>
+                              <span className={`${pmPuestos==='i' ? 'text-black' : pmPuestos==='p' ? '' : 'text-change'}`}>
+                              <div  className={`text-center`}>PM</div>
+                              <NumberFormatMoney amount={pm?pm:0}/>
+                              </span>
                             </div>
                           </td>
                           <td
@@ -766,20 +773,7 @@ const stickyFirstColStyle = {
                             }}
                           >
                             <div style={{width: `${widthTable}px`, fontWeight: `${ticket==0.00?'':'bolder'}`}} className={`text-end ${ticketPuesto==='i' ? 'text-black' : ticketPuesto==='p' ? '' : 'text-change'}`}>
-                              {/* <NumberFormatMoney amount={ticket}/> */}
-                              <NumberFormatMoney amount={pm?pm:0}/>
-                            </div>
-                          </td>
-                          <td
-                            key={`${tipo}-${ai}-ticket`}
-                            style={{
-                              ...tdEstilo,
-                              borderRight: ai === ordenarAsesores(mes.itemVendedores).length - 1 ? '14px solid #000000ff' : '2px solid #dc3545'
-                            }}
-                          >
-                            <div style={{width: `${widthTable}px`, fontWeight: `${ticket==0.00?'':'bolder'}`}} className={`text-end ${ticketPuesto==='i' ? 'text-black' : ticketPuesto==='p' ? '' : 'text-change'}`}>
-                              {/* <NumberFormatMoney amount={ticket}/> */}
-                              <NumberFormatMoney amount={am?am:0}/>
+                              <NumberFormatMoney amount={ticket}/>
                             </div>
                           </td>
                         </>

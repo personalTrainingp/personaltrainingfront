@@ -85,9 +85,6 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
           <td className="text-end bg-porsiaca">
             <NumberFormatMoney amount={g.montopen} />
           </td>
-          {/* <td className="text-end bg-porsiaca">
-            <NumberFormatMoney amount={g.montousd} />
-          </td> */}
         </tr>
       ))}
     </tbody>
