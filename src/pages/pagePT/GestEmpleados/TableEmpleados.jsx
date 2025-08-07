@@ -136,7 +136,8 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     const NombresApellidosEmplBodyTemplate = (rowData) => {
         return (
             <div className="flex align-items-center gap-2">
-                <span>{highlightText(rowData.nombres_apellidos_empl, globalFilterValue)}</span>
+                <span className='text-primary'>{highlightText(`${rowData.nombre_empl}`, globalFilterValue)}</span>
+                <span>{highlightText(`${rowData.apPaterno_empl}`, globalFilterValue)}</span>
             </div>
         );
     };
@@ -180,13 +181,17 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
         
         return(
             <div className=''>
-                <Image className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="100" src={rowData.tb_images?.length==0?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${rowData.tb_images[rowData.tb_images?.length-1]?.name_image}`}></Image>
+                {JSON.stringify()}
+                <Image className='rounded-circle' 
+                indicatorIcon={<i className="pi pi-search"></i>} 
+                alt="Image" preview width="100" 
+                src={rowData.tb_images?.length==0?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${rowData.tb_images[0]?.name_image}`}></Image>
             </div>
         )
     }
     const cargoBodyTemplate = (rowData)=>{
         return (
-            <div className="">
+            <div className="fw-bold text-primary">
                 {arrayCargoEmpl.find(f=>f.value===Number(rowData?.cargo_empl))?.label}
             </div>
         )
@@ -219,7 +224,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                 {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}
                 {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
                 {/* <Column header="Id" filterField="id_cli" style={{ minWidth: '2rem' }} sortable body={IdBodyTemplate}/> */}
-                <Column header="AVATAR" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={imagenBodyTemplate} filter/>
+                <Column header="FOTO" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={imagenBodyTemplate} filter/>
                 <Column header="CARGO" style={{ minWidth: '2rem' }} body={cargoBodyTemplate}/>
                 <Column header="NOMBRES Y APELLIDOS" filterField="nombres_apellidos_empl" style={{ minWidth: '10rem' }} sortable body={NombresApellidosEmplBodyTemplate} filter/>
                 <Column header="cumpleaños" style={{ minWidth: '10rem' }} sortable body={FecNacEmplBodyTemplate} filter/>

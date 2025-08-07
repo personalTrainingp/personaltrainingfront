@@ -26,6 +26,7 @@ export const arrayEmpresaFinan = [
 	{ value: 601, label: 'SAN EXPEDITO' },
 	{ value: 0, label: 'OTROS' },
 	{ value: 600, label: 'RAL' },
+	{ value: 700, label: 'MANICURE' },
 ];
 
 export const arrayDepartamento = [
@@ -311,6 +312,7 @@ export const arrayCargoEmpl = [
 	{ label: 'RECUPERACION DE CARTERA', value: 31 },
 	{ label: 'ASESOR FINANCIERO Y COMERCIAL', value: 32 },
 	{ label: 'MANICURISTA', value: 62 },
+	{ label: 'ADMINISTRACION Y ATENCION AL CLIENTE', value: 63 },
 ];
 
 export const arrayDepartamentoEmpl = [
