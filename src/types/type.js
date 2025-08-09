@@ -312,7 +312,7 @@ export const arrayCargoEmpl = [
 	{ label: 'RECUPERACION DE CARTERA', value: 31 },
 	{ label: 'ASESOR FINANCIERO Y COMERCIAL', value: 32 },
 	{ label: 'MANICURISTA', value: 62 },
-	{ label: 'ADMINISTRACION Y ATENCION AL CLIENTE', value: 63 },
+	{ label: 'ADMINISTRACION / ATENCION AL CLIENTE', value: 63 },
 ];
 
 export const arrayDepartamentoEmpl = [

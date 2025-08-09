@@ -82,7 +82,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             if(show){
                 obtenerZonas(id_zona)
                 obtenerMarcas('articulo', 'marca')
-                obtenerEtiquetasBusqueda('nueva-venta', 'etiqueta_busqueda_origen')
+                obtenerEtiquetasBusqueda('articulo', 'etiqueta_busqueda')
             }
         }, [show])
         const submitGasto = async(e)=>{
@@ -123,6 +123,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             };
             onInputChangeReact([...etiquetas_busquedas, nuevaOpcion], 'etiquetas_busquedas');
         };
+        console.log({dataEtiquetasBusqueda});
   return (
     <>
     {(showLoading)?(
@@ -174,13 +175,21 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                         <label htmlFor="etiquetas_busquedas" className="form-label">
                                                             ETIQUETAS DE BUSQUEDA
                                                         </label>
+                                                        
                                                         <MultiOpcionSelect
+                                                            options={dataEtiquetasBusqueda}
+                                                            onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
+                                                            value={etiquetas_busquedas}
+                                                            name="etiquetas_busquedas"
+                                                        />
+                                                        
+                                                        {/* <MultiOpcionSelect
                                                             options={dataEtiquetasBusqueda}
                                                             onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
                                                             postOptions={handleCrearEtiquetaBusqueda}
                                                             value={etiquetas_busquedas}
                                                             name="etiquetas_busquedas"
-                                                        />
+                                                        /> */}
                                                     </div>
                                                 </Col>
                                                 <Col lg={4}>    

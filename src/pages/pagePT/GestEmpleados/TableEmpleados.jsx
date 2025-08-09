@@ -113,7 +113,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     
     const telefonoBodyTemplate = (rowData)=>{
         return (
-            <div className="flex align-items-center gap-2">
+            <div className="flex align-items-center fw-bold" style={{fontSize: '22px'}}>
                 <span>{highlightText(rowData.telefono_empl?`${rowData.telefono_empl}`.replace(/ /g, "").match(/.{1,3}/g).join(' '):'', globalFilterValue)}</span>
             </div>
         );
@@ -127,7 +127,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     }
     const verHistoryBodyTemplate = (rowData) => {
         return (
-            <Link to={`/perfil-colaborador/${rowData.uid}`} className="action-icon text-primary" style={{fontSize: '14px', textDecoration: 'underline'}}>
+            <Link to={`/perfil-colaborador/${rowData.uid}`} className="action-icon text-primary fw-bold" style={{fontSize: '14px', textDecoration: 'underline'}}>
                 Ver Perfil
             </Link>
         );
@@ -135,9 +135,12 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
 
     const NombresApellidosEmplBodyTemplate = (rowData) => {
         return (
-            <div className="flex align-items-center gap-2">
-                <span className='text-primary'>{highlightText(`${rowData.nombre_empl}`, globalFilterValue)}</span>
-                <span>{highlightText(`${rowData.apPaterno_empl}`, globalFilterValue)}</span>
+            <div className="">
+                <span className='text-primary fs-2 fw-bold'>{highlightText(`${rowData.nombre_empl.split(' ')[0]} `, globalFilterValue)} </span>
+                <span className=''>{highlightText(`${rowData.nombre_empl.split(' ')[1] || ''} `, globalFilterValue)} </span>
+                <br/>
+                <span>{highlightText(`${rowData.apPaterno_empl} `, globalFilterValue)} </span>
+                <span>{highlightText(`${rowData.apMaterno_empl} `, globalFilterValue)}</span>
             </div>
         );
     };
@@ -145,8 +148,8 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     const FecNacEmplBodyTemplate = (rowData) => {
             const [year, month, day] = rowData.fecNac_empl.split('-').map(Number);
         return (
-            <div className="flex align-items-center gap-2">
-                <span>{dayjs.utc(rowData.fecha_nacimiento).format('dddd D [de] MMMM')}</span>
+            <div className="flex align-items-center gap-2 text-primary fw-bold">
+                <span>{dayjs.utc(rowData.fecha_nacimiento).format('D [de] MMMM')}</span>
             </div>
         );
     };
@@ -161,16 +164,20 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
         return (
             <div className="align-items-center flex-column">
                 <span>
-                <strong>EMAIL PERSONAL: </strong>
+                <span>EMAIL PERSONAL: </span>
                 <br/>
-                {highlightText(rowData.email_empl, globalFilterValue)}
+                <strong>
+                    {highlightText(rowData.email_empl, globalFilterValue)}
+                </strong>
                 <br/>
                 </span>
                 {rowData?.email_corporativo&&(
                     <span>
-                        <strong>EMAIL CORPORATIVO: </strong>
+                        <span>EMAIL CORPORATIVO: </span>
                 <br/>
+                    <strong className=''>
                         {highlightText(rowData?.email_corporativo, globalFilterValue)}
+                    </strong>
                 <br/>
 
                     </span>)}
@@ -178,20 +185,19 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
         );
     }
     const imagenBodyTemplate = (rowData)=>{
-        
+        const imgsSort = [...(rowData.tb_images || [])]?.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt))
         return(
             <div className=''>
-                {JSON.stringify()}
                 <Image className='rounded-circle' 
                 indicatorIcon={<i className="pi pi-search"></i>} 
                 alt="Image" preview width="100" 
-                src={rowData.tb_images?.length==0?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${rowData.tb_images[0]?.name_image}`}></Image>
+                src={imgsSort?.length==0?sinAvatar:`${config.API_IMG.AVATAR_EMPL}${imgsSort[0]?.name_image}`}></Image>
             </div>
         )
     }
     const cargoBodyTemplate = (rowData)=>{
         return (
-            <div className="fw-bold text-primary">
+            <div className="fw-bold text-primary" style={{fontSize: '20px'}}>
                 {arrayCargoEmpl.find(f=>f.value===Number(rowData?.cargo_empl))?.label}
             </div>
         )
@@ -205,6 +211,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                 <Button label='AGREGAR COLABORADOR' icon={'mdi mdi-plus-circle'} onClick={onOpenModalRegisterEmpleado}/>
             )
         }
+            <div className='fs-1'>
             <DataTable size='small' 
                         value={customers} 
                         paginator 
@@ -226,10 +233,10 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                 {/* <Column header="Id" filterField="id_cli" style={{ minWidth: '2rem' }} sortable body={IdBodyTemplate}/> */}
                 <Column header="FOTO" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={imagenBodyTemplate} filter/>
                 <Column header="CARGO" style={{ minWidth: '2rem' }} body={cargoBodyTemplate}/>
-                <Column header="NOMBRES Y APELLIDOS" filterField="nombres_apellidos_empl" style={{ minWidth: '10rem' }} sortable body={NombresApellidosEmplBodyTemplate} filter/>
-                <Column header="cumpleaños" style={{ minWidth: '10rem' }} sortable body={FecNacEmplBodyTemplate} filter/>
+                <Column header={<>NOMBRES <br/> APELLIDOS</>} filterField="nombres_apellidos_empl" style={{ minWidth: 'auto' }} sortable body={NombresApellidosEmplBodyTemplate} filter/>
+                <Column header="CELULAR" filterField={`tel_cli`} style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
                 <Column header="EMAIL" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>
-                <Column header="TELEFONO" filterField={`tel_cli`} style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
+                <Column header="cumpleaños" style={{ minWidth: '10rem' }} sortable body={FecNacEmplBodyTemplate} filter/>
                 <Column header="DISTRITO" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
                 {/* <Column header="ESTADO" filterField={`estado_empl`} style={{ minWidth: '10rem' }} sortable body={estadoBodyTemplate} filter/> */}
 
@@ -240,6 +247,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                 {/* <Column header="Estado" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/> */}
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
+            </div>
             <ModalEmpleado show={isOpenModalRegisterEmpleado} onHide={onCloseModalRegisterEmpleado} id_Estado={true} id_empresa={id_empresa}/>
         </>
     );
