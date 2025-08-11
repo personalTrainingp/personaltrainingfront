@@ -190,16 +190,16 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
     <>
     {(showLoading)?(
         <Modal size='sm' show={showLoading}>
-        <ModalBody>
-        <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
-				<span className="loader-box2"></span>
-                <br/>
-                <p className='fw-bold font-16'>
-                    Si demora mucho, comprobar su conexion a internet
-                </p>
-		</div>
-        </ModalBody>
-    </Modal> 
+            <ModalBody>
+            <div className='d-flex flex-column align-items-center justify-content-center text-center' style={{height: '15vh'}}>
+                    <span className="loader-box2"></span>
+                    <br/>
+                    <p className='fw-bold font-16'>
+                        Si demora mucho, comprobar su conexion a internet
+                    </p>
+            </div>
+            </ModalBody>
+        </Modal> 
     ):(
         <>
             <Modal size='xl' onHide={onClickCancelModal} show={show}>

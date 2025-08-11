@@ -18,6 +18,7 @@ import { PanelHorasExtras } from './PanelHorasExtras';
 import { PanelTardanzasJustificadas } from './PanelTardanzasJustificadas';
 import { PanelSalidasTempranas } from './PanelSalidasTempranas';
 import { App as AppParientes } from './Parientes/App';
+import { SectionComentario } from '@/components/Comentario/SectionComentario';
 
 export const PerfilEmpleado = () => {
   const { uid } = useParams()
@@ -60,7 +61,17 @@ export const PerfilEmpleado = () => {
                                     </p>
                                     </span>
                                 {/* <span className='text-center'>{proveedor.estado_prov? */}
+                                {
+                                  userEmpleado.estado_empl ? (
+                                    <>
                                     <Badge value="Activo" size="xlarge" severity="success"></Badge>
+                                    </>
+                                  ): (
+                                    <>
+                                    <Badge value="INACTIVO" size="xlarge" severity="danger"></Badge>
+                                    </>
+                                  )
+                                }
                                     {/* :  */}
                                     {/* <Badge value="INACTIVO" size="xlarge" severity="danger"></Badge> */}
                                     {/* }</span> */}
@@ -88,6 +99,9 @@ export const PerfilEmpleado = () => {
                             </TabPanel>
                             <TabPanel header={'Documentos adjuntos'}>
                                 
+                            </TabPanel>
+                            <TabPanel header={'COMENTARIOS'}>
+                                                <SectionComentario uid_comentario={userEmpleado.uid}/>
                             </TabPanel>
                             <TabPanel header={'NOMINAS'}>
                                 <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/>

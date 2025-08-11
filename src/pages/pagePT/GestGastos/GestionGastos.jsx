@@ -20,7 +20,6 @@ export const GestionGastos = () => {
     <PageBreadcrumb title={'GESTION DE EGRESOS'} subName={'T'}/>
     <Card className='p-4 m-2'>
       <TabView>
-            
         <TabPanel header="MANICURE">
               <GestionGastosIngresos id_enterprice={700} bgEmpresa={'bg-success'}/>
         </TabPanel>

@@ -440,13 +440,13 @@ const ViewDataImg = (e) => {
                                 <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="telefono_empl" className="form-label">
-                                            Telefono*
+                                            CELULAR*
                                         </label>
                                         <input
                                             className="form-control"
                                             name="telefono_empl"
                                             id="telefono_empl"
-                                            placeholder="Stock"
+                                            placeholder="9..."
                                             value={telefono_empl}
                                             onChange={onInputChange}
                                         />
