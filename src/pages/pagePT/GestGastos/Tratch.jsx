@@ -90,37 +90,19 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
             )
         );
     };
-    const formatDate = (value) => {
-        return value.toLocaleDateString('es-PE', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            timeZone: 'America/Lima'
-        });
-    };
-    const formatCurrency = (value, currency) => {
-        return value.toLocaleString('en-ES', { style: 'currency', currency });
-    };
-    const clearFilter = () => {
-        initFilters();
-        setGlobalFilterValue('');
-    };
-
-    const onGlobalFilterChange = (e) => {
-        const value = e.target.value;
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
-        setGlobalFilterValue(value);
-    };
     const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
     const [showLoading, setshowLoading] = useState(false)
+    const [isCopy, setisCopy] = useState(false)
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
             onOpenModalIvsG()
             obtenerGastoxID(rowData.id)
+
+        }
+        const onClickCopyModalEgresos = ()=>{
+            onOpenModalIvsG()
+            obtenerGastoxID(rowData.id)
+            setisCopy(true)
         }
         const confirmDeleteGastoxID = ()=>{
             confirmDialog({
@@ -132,7 +114,6 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
                 accept:  onAcceptDeleteGasto,
             });
         }
-        
         const onAcceptDeleteGasto = async()=>{
             setshowLoading(true)
             await startDeleteGasto(rowData.id, id_enterprice)
@@ -144,8 +125,11 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
                 <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
                 onClick={onClickEditModalEgresos} 
                 />
-                <Button icon="pi pi-trash" rounded outlined severity="danger" 
+                <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
                 onClick={confirmDeleteGastoxID} 
+                />
+                <Button icon="pi pi-copy" rounded outlined severity="danger" 
+                onClick={onClickCopyModalEgresos} 
                 />
             </React.Fragment>
         );
@@ -208,7 +192,6 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
             </div>
         );
     };
-    const {daysUTC} = helperFunctions()
     const fecRegistroBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2 ">
@@ -396,10 +379,10 @@ const filterData = customers?.filter((item) => {
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
                                 body={proveedorBodyTemplate} filter />
-                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Action" filterField="id" style={{ minWidth: '12rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
             </DataTable>
             
-            <ModalIngresosGastos id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+            <ModalIngresosGastos setisCopyHide={()=>setisCopy(false)} isCopy={isCopy} id_enterprice={id_enterprice} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
             <ModalImportadorData onHide={()=>setshowModalImportadorData(false)} onShow={showModalImportadorData}/>
             <ModalTipoDeCambio onShow={onOpenModalTC} show={isOpenModalTC} onHide={onCloseModalTC}/>
             </>

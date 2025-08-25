@@ -137,7 +137,10 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
         return (
             <div className="">
                 <span className='text-primary fs-2 fw-bold'>{highlightText(`${rowData.nombre_empl.split(' ')[0]} `, globalFilterValue)} </span>
-                <span className=''>{highlightText(`${rowData.nombre_empl.split(' ')[1] || ''} `, globalFilterValue)} </span>
+                {
+                    rowData.nombre_empl.split(' ')[1] && (<br/>)
+                }
+                <span className=''>{highlightText(`${rowData.nombre_empl.split(' ')[1] || ''} `, globalFilterValue)} {highlightText(`${rowData.nombre_empl.split(' ')[2] || ''} `, globalFilterValue)} </span>
                 <br/>
                 <span>{highlightText(`${rowData.apPaterno_empl} `, globalFilterValue)} </span>
                 <span>{highlightText(`${rowData.apMaterno_empl} `, globalFilterValue)}</span>

@@ -18,6 +18,7 @@ import { PanelHorasExtras } from './PanelHorasExtras';
 import { PanelTardanzasJustificadas } from './PanelTardanzasJustificadas';
 import { PanelSalidasTempranas } from './PanelSalidasTempranas';
 import { App as AppParientes } from './Parientes/App';
+import { App as AppContratos } from './Contrato/App';
 import { SectionComentario } from '@/components/Comentario/SectionComentario';
 
 export const PerfilEmpleado = () => {
@@ -34,7 +35,7 @@ export const PerfilEmpleado = () => {
       </>
     )
   }
-  console.log(userEmpleado);
+  console.log({userEmpleado});
   
   if(userEmpleado==null){
     return <Error404AltPage/>;
@@ -101,10 +102,11 @@ export const PerfilEmpleado = () => {
                                 
                             </TabPanel>
                             <TabPanel header={'COMENTARIOS'}>
-                                                <SectionComentario uid_comentario={userEmpleado.uid}/>
+                                                <SectionComentario uid_comentario={userEmpleado.uid_comentario}/>
                             </TabPanel>
                             <TabPanel header={'NOMINAS'}>
-                                <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/>
+                              <AppContratos uid_empleado={userEmpleado.uid_empleado}/>
+                                {/* <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/> */}
                             </TabPanel>
                             <TabPanel header={'PERMISOS'}>
                               <PanelPermisos/>

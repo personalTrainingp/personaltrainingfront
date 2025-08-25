@@ -24,7 +24,7 @@ export const PanelTardanzasJustificadas = () => {
   }, [])
 return (
   <>
-                      <Button onClick={onOpenModalReportAsistencia} className='m-2'>AGREGAR TARDANZAS JUSTIFICADAS</Button>
+                      <Button onClick={onOpenModalReportAsistencia} className='m-2'>AGREGAR TARDANZAS</Button>
                       
                   <Table
                       // style={{tableLayout: 'fixed'}}

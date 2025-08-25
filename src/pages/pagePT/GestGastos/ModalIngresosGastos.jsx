@@ -34,11 +34,12 @@ const registerIvsG={
     esCompra: false,
     id_estado_gasto: 0
 }
-export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
+export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
     const onClickCancelModal = ()=>{
         onHide()
         onResetForm()
         setid_empresa(id_enterprice)
+        setisCopyHide()
     }
     const [grupoGasto, setgrupoGasto] = useState([])
     const [openModalProv, setopenModalProv] = useState(false)
@@ -134,6 +135,15 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             if(data){
                 // console.log("con");
                 
+                if(isCopy){
+                    setshowLoading(true)
+                    const {  id, ...valores } = formState;
+                    console.log("valores repetidos", valores);
+                    
+                    await startRegistrarGastos(valores, id_enterprice)
+                    setshowLoading(false)
+                    return;
+                }
                 setshowLoading(true)
                 await startActualizarGastos(formState, data.id, id_enterprice)
                 setshowLoading(false)
@@ -205,7 +215,7 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
             <Modal size='xl' onHide={onClickCancelModal} show={show}>
                 <Modal.Header>
                     <Modal.Title>
-                        {data?'Actualizar Gasto':'Registro Gasto'}
+                        {data? isCopy?'REGISTRO DE GASTO CON VALORES REPETIDOS': 'Actualizar Gasto':'Registro Gasto'}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -563,7 +573,6 @@ export const ModalIngresosGastos = ({onHide, show, data, isLoading, onShow, show
                                 </Col>
                                 <Col>
                                     <Button className='mx-2' type='submit'>Guardar</Button>
-                                    <Button className='mx-2' onClick={onClickSaveAndNew}>Guardar y nuevo</Button>
                                     <a className='mx-2' style={{cursor: 'pointer', color: 'red'}} onClick={onClickCancelModal}>Cancelar</a>
                                 </Col>
                             </Row>

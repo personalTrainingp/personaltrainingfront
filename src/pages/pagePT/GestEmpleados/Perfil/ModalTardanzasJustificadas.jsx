@@ -27,7 +27,7 @@ export const ModalTardanzasJustificadas = ({show, onHide}) => {
     onHide={onHide}
     position='top'
     style={{width: '40rem'}}
-    header='AGREGAR AGREGAR TARDANZAS'
+    header='AGREGAR TARDANZAS'
     >
       <div>
         <Row>
