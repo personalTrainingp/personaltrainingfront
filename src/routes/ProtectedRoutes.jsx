@@ -88,7 +88,7 @@ const GeneradorFechas = lazy(()=>import('../pages/pagePT/generadorFechas/Generad
 const EntradaArticulosForm = lazy(()=>import('../pages/pagePT/EntradaInventarioForm'))
 const TransferenciasArticulos = lazy(()=>import('../pages/pagePT/TransferenciaEmpresaInventario'))
 const ArticulosNuevos = lazy(()=>import('../pages/pagePT/GestArticulosChorrillos'))
-
+const ResumenEjecutivo = lazy(()=>import('../pages/pagePT/reportes/resumenEjecutivo'))
 /**
  * routes import
  */
@@ -127,6 +127,11 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad*/}
+					{
+						sections.find(e=>e.url==='/resumen-ejecutivo')&&
+                        <Route path='resumen-ejecutivo' element={<ResumenEjecutivo/>}/>
+					}
+					
 					{
 						sections.find(e=>e.url==='/agregar-articulos-chorrillos')&&
                         <Route path='agregar-articulos-chorrillos' element={<ArticulosNuevos/>}/>

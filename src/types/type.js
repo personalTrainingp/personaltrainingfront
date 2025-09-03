@@ -22,8 +22,8 @@ export const arrayEmpresa = [
 ];
 export const arrayEmpresaFinan = [
 	{ value: 598, label: 'CHANGE' },
-	{ value: 599, label: 'CIRCUS' },
-	{ value: 601, label: 'SAN EXPEDITO' },
+	{ value: 599, label: 'REDUCTO' },
+	{ value: 601, label: 'CIRCUS' },
 	{ value: 0, label: 'OTROS' },
 	{ value: 600, label: 'RAL' },
 	{ value: 700, label: 'MANICURE' },
