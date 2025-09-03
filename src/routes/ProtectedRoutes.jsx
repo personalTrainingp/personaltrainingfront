@@ -88,7 +88,7 @@ const GeneradorFechas = lazy(()=>import('../pages/pagePT/generadorFechas/Generad
 const EntradaArticulosForm = lazy(()=>import('../pages/pagePT/EntradaInventarioForm'))
 const TransferenciasArticulos = lazy(()=>import('../pages/pagePT/TransferenciaEmpresaInventario'))
 const ArticulosNuevos = lazy(()=>import('../pages/pagePT/GestArticulosChorrillos'))
-const ResumenEjecutivo = lazy(()=>import('../pages/pagePT/reportes/resumenEjecutivo'))
+const ResumenEjecutivo = lazy(()=>import('../pages/pagePT/reportes/resumenEjecutivo/Index.jsx'))
 /**
  * routes import
  */
