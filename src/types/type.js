@@ -25,8 +25,9 @@ export const arrayEmpresaFinan = [
 	{ value: 599, label: 'REDUCTO' },
 	{ value: 601, label: 'CIRCUS' },
 	{ value: 0, label: 'OTROS' },
-	{ value: 600, label: 'RAL' },
+	{ value: 600, label: 'OTROS RAL' },
 	{ value: 700, label: 'MANICURE' },
+	{ value: 800, label: 'RAL' },
 ];
 
 export const arrayDepartamento = [

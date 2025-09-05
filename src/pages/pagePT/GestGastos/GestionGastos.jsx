@@ -40,8 +40,11 @@ export const GestionGastos = () => {
             </div>
               <GestionGastosIngresos id_enterprice={598} bgEmpresa={'bg-danger'}/>
         </TabPanel>
-        <TabPanel header="RAL">
+        <TabPanel header="OTROS RAL">
               <GestionGastosIngresos id_enterprice={600} bgEmpresa={'bg-danger'}/>
+        </TabPanel>
+        <TabPanel header="RAL">
+              <GestionGastosIngresos id_enterprice={800} bgEmpresa={'bg-danger'}/>
         </TabPanel>
         <TabPanel header="OTROS">
               <GestionGastosIngresos id_enterprice={0} bgEmpresa={'bg-danger'}/>

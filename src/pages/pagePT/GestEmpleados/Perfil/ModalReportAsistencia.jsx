@@ -71,7 +71,7 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avat
         //             ...m,
         //         }
         //     }), "jorjor");
-        
+                                            console.log({arrayDeDiasxSemana});
   return (
     <Dialog
         visible={show}
@@ -140,8 +140,8 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avat
                                         const salidasTempranas = (!isNaN(restarMinutos( jornadaSalida, marcacionFin))&&restarMinutos( jornadaSalida, marcacionFin)<0)&& `${-restarMinutos( jornadaSalida, marcacionFin)} MIN`
                                         // console.log(new Date(marcacionInicio), i.marcacionInicio, "gg", dayjs(i.fecha, 'DD/MM').format('dddd DD'), "jor");
                                         // console.log(
-                                        //     calcularMinutosDesdeHoraCero(jornadaEntrada)-calcularMinutosDesdeHoraCero(marcacionInicio)
-                                        // );
+                                            //     calcularMinutosDesdeHoraCero(jornadaEntrada)-calcularMinutosDesdeHoraCero(marcacionInicio)
+                                            // );
                                         
                                         return(
                                                     <tr className=''>

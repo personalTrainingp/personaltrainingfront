@@ -170,7 +170,7 @@ export const TodoVentas=({id_empresa})=> {
     return (
           <Row>
             {
-              rowData.status_remove==1 && (
+              (
               <Col xxl={12}>
                 <Button 
                   rounded 
@@ -308,7 +308,7 @@ const rowExtensionColor = (rowData, color_pr)=>{
               <Column header="TOTAL" body={totalVentasBodyTemplate} style={{ minWidth: '12rem' }} />
               <Column header="" frozen style={{ minWidth: '12rem' }} body={actionBodyTemplate} />
               {/* <Column header="" frozen style={{ minWidth: '2rem' }} body={logoPdfBodyTemplate} /> */}
-              <Column header="" frozen style={{ minWidth: '2rem' }} body={removeVentaBodyTemplate} />
+              {/* <Column header="" frozen style={{ minWidth: '2rem' }} body={removeVentaBodyTemplate} /> */}
           </DataTable>
           <PdfComprobanteVenta id_venta={idVentas} isPdfOpen={isPdfOpen}/>
           <ModalViewObservacion show={viewVentas} onHide={onModalCancelVENTAS} id={idVentas}/>
