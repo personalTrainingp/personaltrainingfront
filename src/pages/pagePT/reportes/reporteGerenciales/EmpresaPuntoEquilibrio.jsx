@@ -12,6 +12,7 @@ export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bg
   const { obtenerGastosxFecha, dataGastos, dataPrestamos } = useReportePuntoEquilibrioStore()
   const { obtenerVentasPorFecha, dataVentaxFecha } = useVentasStore()
   const { RANGE_DATE } = useSelector(e => e.DATA)
+
   useEffect(() => {
     obtenerGastosxFecha(RANGE_DATE, id_empresa)
     obtenerVentasPorFecha(RANGE_DATE, id_empresa_ventas)
@@ -29,6 +30,8 @@ export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bg
     acc.total += item.tarifa_monto
     return acc
   }, { cantidad: 0, total: 0 })
+  console.log({membresias, dataVentaxFecha});
+  
   const rei = getMembresiaData(m => m.id_origen === 692)
   const reno = getMembresiaData(m => m.id_origen === 691)
   const nuevos = getMembresiaData(m => m.id_origen !== 691 && m.id_origen !== 692)
