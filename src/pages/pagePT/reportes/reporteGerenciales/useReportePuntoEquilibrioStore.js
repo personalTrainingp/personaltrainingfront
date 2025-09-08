@@ -9,6 +9,7 @@ function formatDateToSQLServerWithDayjs(date) {
 	// .format('YYYY-MM-DD HH:mm:ss.SSS0000 +00:00');
 }
 export const useReportePuntoEquilibrioStore = () => {
+	const [dataPorPagar, setdataPorPagar] = useState([]);
 	const [dataGastos, setdataGastos] = useState([]);
 	const [dataPrestamos, setdataPrestamos] = useState([]);
 	const [dataAportes, setdataAportes] = useState([]);
@@ -52,8 +53,12 @@ export const useReportePuntoEquilibrioStore = () => {
 					fecha_fin_tc: termino, // null si no hay próximo cambio
 				};
 			});
-			console.log({ dataVentas });
-
+			setdataPorPagar(
+				agruparPorGrupoYConcepto(
+					dataGastos.gastos.filter((gasto) => gasto.id_estado_gasto === 1424),
+					dataParametrosGastos.termGastos
+				).filter((e) => e.grupo !== 'PRESTAMOS')
+			);
 			// const {data: dataVentas} = await PTApi
 			setdataGastos(
 				agruparPorGrupoYConcepto(
@@ -83,6 +88,7 @@ export const useReportePuntoEquilibrioStore = () => {
 		obtenerGastosxFecha,
 		dataGastos,
 		dataPrestamos,
+		dataPorPagar,
 	};
 };
 

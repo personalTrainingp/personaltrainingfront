@@ -9,7 +9,7 @@ import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { ModalConceptos } from './ModalConceptos'
 
 export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bgHEX, id_empresa_ventas }) => {
-  const { obtenerGastosxFecha, dataGastos, dataPrestamos } = useReportePuntoEquilibrioStore()
+  const { obtenerGastosxFecha, dataGastos, dataPrestamos, dataPorPagar } = useReportePuntoEquilibrioStore()
   const { obtenerVentasPorFecha, dataVentaxFecha } = useVentasStore()
   const { RANGE_DATE } = useSelector(e => e.DATA)
 
@@ -54,7 +54,7 @@ export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bg
       <br />
       <Row>
         <Col lg={6}>
-          <TableGastos data={dataGastos} background={background} textEmpresa={textEmpresa} onOpen={openModal} totalPEN={totalMontopen} totalUSD={totalMontousd} id_empresa={id_empresa} />
+          <TableGastos dataPorPagar={dataPorPagar} data={dataGastos} background={background} textEmpresa={textEmpresa} onOpen={openModal} totalPEN={totalMontopen} totalUSD={totalMontousd} id_empresa={id_empresa} />
           <TablePrestamos data={dataPrestamos} id_empresa={id_empresa} />
         </Col>
         <Col className='ml-8'>
@@ -68,29 +68,52 @@ export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bg
 
 }
 
-const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD, id_empresa }) => (
+const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD, id_empresa, dataPorPagar }) => (
   <Table striped style={{fontSize: '25px'}}>
     <thead className={background}>
       <tr>
-        <th className="text-white" colSpan={2}>EGRESOS</th>
-        <th className="text-white text-center">S/.</th>
-        {/* <th className="text-white text-center">{id_empresa !== 601 ? <span className="text-ISESAC">$</span> : '$'}</th> */}
+        <th className="text-white p-1" colSpan={2}>
+          <div>
+            <span className="mx-4">EGRESOS</span>
+          </div>
+        </th>
+        <th className="text-white text-center p-1">
+          <div>CANCELADO</div>
+        </th>
+        <th className="text-white text-center p-1">
+          <div>PAGO PENDIENTE</div>
+        </th>
       </tr>
     </thead>
     <tbody>
       {/* {JSON.stringify(data, null, 2)} */}
-      {data.map((g, i) => (
-        <tr key={i}>
-          <td colSpan={2} className="bg-porsiaca text-left fw-bold" onClick={() => onOpen(g)}>
-            <div className={`${textEmpresa}`}>
-              {i + 1}. {g.grupo}
-            </div>
-          </td>
-          <td className="text-end bg-porsiaca">
-            <NumberFormatMoney amount={g.montopen +(g.montousd*3.7) } />
-          </td>
-        </tr>
-      ))}
+      {data.map((g, i) => {
+        const porPagar = dataPorPagar[i]; // Suponiendo orden igual
+        return (
+          <tr key={i}>
+            <td colSpan={2} className="bg-porsiaca text-center fw-bolder">
+              <div className={`${textEmpresa} bg-porsiaca text-left`}>
+                {i + 1}. {g.grupo}
+              </div>
+            </td>
+            <td className="text-end bg-porsiaca" onClick={() => onOpen(g)}>
+              <div className={`${(g.montopen +(g.montousd*3.7)) === 0 ? 'fw-light' : 'fw-bold'}`}>
+              <NumberFormatMoney amount={g.montopen +(g.montousd*3.7) } />
+              </div>
+            </td>
+												<td
+													className={`text-center ${porPagar?.montopen === 0 ? 'fw-light' : 'fw-bold'}`}
+												>
+													<div 
+														onClick={() => onOpen(porPagar)}
+                            className={`bg-porsiaca text-right mr-4 ${(porPagar?.montopen + porPagar?.montousd * 3.7 || 0)<=0?'':'text-change'}`}>
+														<NumberFormatMoney amount={porPagar?.montopen + porPagar?.montousd * 3.7 || 0} />
+													</div>
+												</td>
+          </tr>
+        )
+      }
+      )}
     </tbody>
     <tfoot className={background}>
       <tr>
@@ -182,7 +205,6 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
       <tr >
         <th className='text-white'>UTILIDAD</th>
         <th className='text-white text-end'>S/</th>
-        {/* <th>{id_empresa !== 601 ? <span className="text-ISESAC">$</span> : '$'}</th> */}
       </tr>
     </thead>
     <tbody>
@@ -201,7 +223,11 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
             EGRESOS
           </div>
         </td>
-        <td className="text-end bg-porsiaca fw-bold text-change">-<NumberFormatMoney amount={totalEgresosPEN+(totalEgresosUSD*3.7)} /></td>
+        <td className="text-end bg-porsiaca fw-bold">
+          <span className='text-change'>
+            {'-'}<NumberFormatMoney amount={totalEgresosPEN+(totalEgresosUSD*3.7)} />
+          </span>
+        </td>
         {/* <td className="text-end bg-porsiaca fw-bold text-change"><NumberFormatMoney amount={-totalEgresosUSD} /></td> */}
       </tr>
       <tr>
@@ -210,8 +236,10 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
             TOTAL
           </div>
         </td>
-        <td className={`text-end bg-porsiaca fw-bold ${totalIngresos - (totalEgresosPEN+(totalEgresosUSD*3.7)) < 0 ? 'text-change' : ''}`}>
-          <NumberFormatMoney amount={totalIngresos - (totalEgresosPEN+(totalEgresosUSD*3.7))} />
+        <td className={`text-end bg-porsiaca fw-bold`}>
+          <div className={`${totalIngresos - (totalEgresosPEN+(totalEgresosUSD*3.7)) < 0 ? 'text-change' : ''}`}>
+            <NumberFormatMoney amount={totalIngresos - (totalEgresosPEN+(totalEgresosUSD*3.7))} />
+          </div>
         </td>
         {/* <td className="text-end bg-porsiaca fw-bold text-change">
           <NumberFormatMoney amount={-totalEgresosUSD} />
