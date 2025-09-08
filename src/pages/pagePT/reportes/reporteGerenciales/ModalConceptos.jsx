@@ -4,14 +4,13 @@ import React from 'react'
 import { Table } from 'react-bootstrap';
 
 export const ModalConceptos = ({dataProp, show, onHide, textEmpresa, background}) => {
-    console.log({dataProp});
     
   return (
     <Dialog visible={show} onHide={onHide}>
                 <Table striped>
                   <thead className={`${background}`}>
                     <tr>
-                      <th className="text-white p-1"><div style={{fontSize: '48px'}}> MAYO <span className='mx-4'>COMPARATIVO</span> 2025</div></th>
+                      <th className="text-white p-1"><div style={{fontSize: '48px'}}><span className='mx-4'>COMPARATIVO</span> 2025</div></th>
                       <th className="text-white text-center p-1"><div  style={{fontSize: '50px'}}>S/.</div></th>
                       <th className="text-white text-center p-1"><div  style={{fontSize: '50px'}}>$</div></th>
                     </tr>

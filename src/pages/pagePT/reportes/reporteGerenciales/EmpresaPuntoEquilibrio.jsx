@@ -78,6 +78,7 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
       </tr>
     </thead>
     <tbody>
+      {/* {JSON.stringify(data, null, 2)} */}
       {data.map((g, i) => (
         <tr key={i}>
           <td colSpan={2} className="bg-porsiaca text-left fw-bold" onClick={() => onOpen(g)}>
@@ -86,7 +87,7 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
             </div>
           </td>
           <td className="text-end bg-porsiaca">
-            <NumberFormatMoney amount={g.montopen} />
+            <NumberFormatMoney amount={g.montopen +(g.montousd*3.7) } />
           </td>
         </tr>
       ))}
@@ -94,7 +95,8 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
     <tfoot className={background}>
       <tr>
         <td colSpan={2} className="text-white fw-bold">Total</td>
-        <td className="text-end text-white fw-bold"><NumberFormatMoney amount={-totalPEN} /></td>
+        <td className="text-end text-white fw-bold"><NumberFormatMoney amount={totalPEN+(totalUSD*3.7)} /></td>
+        {/* <br/>{totalUSD} */}
         {/* <td className="text-end text-white fw-bold"><NumberFormatMoney amount={-totalUSD} /></td> */}
       </tr>
     </tfoot>
@@ -199,7 +201,7 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
             EGRESOS
           </div>
         </td>
-        <td className="text-end bg-porsiaca fw-bold text-change"><NumberFormatMoney amount={-totalEgresosPEN} /></td>
+        <td className="text-end bg-porsiaca fw-bold text-change">-<NumberFormatMoney amount={totalEgresosPEN+(totalEgresosUSD*3.7)} /></td>
         {/* <td className="text-end bg-porsiaca fw-bold text-change"><NumberFormatMoney amount={-totalEgresosUSD} /></td> */}
       </tr>
       <tr>
@@ -208,8 +210,8 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
             TOTAL
           </div>
         </td>
-        <td className={`text-end bg-porsiaca fw-bold ${totalIngresos - totalEgresosPEN < 0 ? 'text-change' : ''}`}>
-          <NumberFormatMoney amount={totalIngresos - totalEgresosPEN} />
+        <td className={`text-end bg-porsiaca fw-bold ${totalIngresos - (totalEgresosPEN+(totalEgresosUSD*3.7)) < 0 ? 'text-change' : ''}`}>
+          <NumberFormatMoney amount={totalIngresos - (totalEgresosPEN+(totalEgresosUSD*3.7))} />
         </td>
         {/* <td className="text-end bg-porsiaca fw-bold text-change">
           <NumberFormatMoney amount={-totalEgresosUSD} />
