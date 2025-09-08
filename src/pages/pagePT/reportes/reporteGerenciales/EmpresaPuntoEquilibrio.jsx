@@ -181,7 +181,7 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
     <thead className={`${background} `}>
       <tr >
         <th className='text-white'>UTILIDAD</th>
-        <th className='text-white text-end'>S/.</th>
+        <th className='text-white text-end'>S/</th>
         {/* <th>{id_empresa !== 601 ? <span className="text-ISESAC">$</span> : '$'}</th> */}
       </tr>
     </thead>
