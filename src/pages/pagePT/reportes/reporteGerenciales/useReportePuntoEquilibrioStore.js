@@ -1,4 +1,5 @@
 import { PTApi } from '@/common';
+import { useTipoCambioStore } from '@/hooks/hookApi/useTipoCambioStore';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
 
@@ -76,9 +77,14 @@ export const useReportePuntoEquilibrioStore = () => {
 					dataParametrosGastos.termGastos
 				).filter((e) => e.grupo === 'PRESTAMOS')
 			);
-			console.log({
-				data: agruparPorGrupoYConcepto(dataGastos.gastos, dataParametrosGastos.termGastos),
-			});
+			// console.log({
+			// 	data99: agruparPorGrupoYConcepto(
+			// 		aplicarTipoDeCambio(dataTCs, dataGastos.gastos).filter(
+			// 			(e) => e.id_estado_gasto === 1423
+			// 		),
+			// 		dataParametrosGastos.termGastos
+			// 	).filter((e) => e.grupo !== 'PRESTAMOS'),
+			// });
 		} catch (error) {
 			console.log(error);
 		}
@@ -152,6 +158,7 @@ function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 			const pg = g.tb_parametros_gasto || {};
 			return pg.grupo?.trim()?.toUpperCase() === grupoNombre;
 		});
+		const montoTotalEnSoles = gastosDelGrupo.reduce((sum, g) => sum + g.monto * g.tc, 0);
 		const montousdGrupo = gastosDelGrupo
 			.filter((g) => g.moneda === 'USD')
 			.reduce((sum, g) => sum + g.monto, 0);
@@ -163,6 +170,7 @@ function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 			grupo: grupoNombre,
 			montousd: montousdGrupo,
 			montopen: montopenGrupo,
+			montoTotalEnSoles,
 			conceptos,
 		};
 	});

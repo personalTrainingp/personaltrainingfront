@@ -7,7 +7,7 @@ export const useTcStore = () => {
 	const postTc = async (formState, monedaDestino, monedaOrigen) => {
 		try {
 			const { data } = await PTApi.post(
-				`/tipoCambio/${monedaDestino}/${monedaOrigen}`,
+				`/tipoCambio/${monedaOrigen}/${monedaDestino}`,
 				formState
 			);
 		} catch (error) {

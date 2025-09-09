@@ -5,6 +5,7 @@ import dayjs, { utc } from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
+import { useTipoCambioStore } from './useTipoCambioStore';
 dayjs.extend(utc);
 
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
@@ -114,7 +115,7 @@ export const useVentasStore = () => {
 	const [loadingMessage, setloadingMessage] = useState('');
 	const [dataContratos, setdataContratos] = useState([]);
 	const { base64ToFile } = helperFunctions();
-
+	const { obtenerTipoCambioPorFecha, dataTipoCambio } = useTipoCambioStore()
 	const obtenerContratosDeClientes = async () => {
 		try {
 			dispatch(onSetDataView([]));

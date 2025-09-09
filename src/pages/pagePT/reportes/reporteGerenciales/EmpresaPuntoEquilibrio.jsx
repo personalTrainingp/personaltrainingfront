@@ -20,7 +20,7 @@ export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bg
   const [dataProp, setdataProp] = useState({ isView: false, data: [] })
   const openModal = data => setdataProp({ isView: true, data: data.conceptos })
   const closeModal = () => setdataProp({ isView: false, data: [] })
-  const totalMontopen = useMemo(() => dataGastos.reduce((sum, g) => sum + (g.montopen || 0), 0), [dataGastos])
+  const totalMontopen = useMemo(() => dataGastos.reduce((sum, g) => sum + (g.montoTotalEnSoles || 0), 0), [dataGastos])
   const totalMontousd = useMemo(() => dataGastos.reduce((sum, g) => sum + (g.montousd || 0), 0), [dataGastos])
   const productos = dataVentaxFecha.productos || []
   const membresias = dataVentaxFecha.membresias || []
@@ -30,7 +30,7 @@ export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bg
     acc.total += item.tarifa_monto
     return acc
   }, { cantidad: 0, total: 0 })
-  console.log({membresias, dataVentaxFecha});
+  console.log({dataGastos});
   
   const rei = getMembresiaData(m => m.id_origen === 692)
   const reno = getMembresiaData(m => m.id_origen === 691)
@@ -48,13 +48,17 @@ export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bg
     cantTotal: rei.cantidad + reno.cantidad + nuevos.cantidad
   }
 
+const totalPorPagar = dataPorPagar.reduce(
+  (acc, g) => acc + (g.montopen + g.montousd * 3.7),
+  0
+);
   return (
     <div className="w-100">
       <FechaRangeMES rangoFechas={RANGE_DATE} textColor={bgHEX} />
       <br />
       <Row>
         <Col lg={6}>
-          <TableGastos dataPorPagar={dataPorPagar} data={dataGastos} background={background} textEmpresa={textEmpresa} onOpen={openModal} totalPEN={totalMontopen} totalUSD={totalMontousd} id_empresa={id_empresa} />
+          <TableGastos dataPorPagar={dataPorPagar} totalPorPagar={totalPorPagar} data={dataGastos} background={background} textEmpresa={textEmpresa} onOpen={openModal} totalPEN={totalMontopen} totalUSD={totalMontousd} id_empresa={id_empresa} />
           <TablePrestamos data={dataPrestamos} id_empresa={id_empresa} />
         </Col>
         <Col className='ml-8'>
@@ -68,7 +72,7 @@ export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bg
 
 }
 
-const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD, id_empresa, dataPorPagar }) => (
+const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD, id_empresa, dataPorPagar, totalPorPagar }) => (
   <Table striped style={{fontSize: '25px'}}>
     <thead className={background}>
       <tr>
@@ -89,6 +93,8 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
       {/* {JSON.stringify(data, null, 2)} */}
       {data.map((g, i) => {
         const porPagar = dataPorPagar[i]; // Suponiendo orden igual
+        console.log({data});
+        
         return (
           <tr key={i}>
             <td colSpan={2} className="bg-porsiaca text-center fw-bolder">
@@ -97,8 +103,8 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
               </div>
             </td>
             <td className="text-end bg-porsiaca" onClick={() => onOpen(g)}>
-              <div className={`${(g.montopen +(g.montousd*3.7)) === 0 ? 'fw-light' : 'fw-bold'}`}>
-              <NumberFormatMoney amount={g.montopen +(g.montousd*3.7) } />
+              <div className={`${(g.montoTotalEnSoles) === 0 ? 'fw-light' : 'fw-bold'}`}>
+              <NumberFormatMoney amount={g.montoTotalEnSoles } />
               </div>
             </td>
 												<td
@@ -118,7 +124,8 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
     <tfoot className={background}>
       <tr>
         <td colSpan={2} className="text-white fw-bold">Total</td>
-        <td className="text-end text-white fw-bold"><NumberFormatMoney amount={totalPEN+(totalUSD*3.7)} /></td>
+        <td className="text-end text-white fw-bold"><NumberFormatMoney amount={totalPEN} /></td>
+        <td className="text-end text-white fw-bold"><NumberFormatMoney amount={totalPorPagar} /></td>
         {/* <br/>{totalUSD} */}
         {/* <td className="text-end text-white fw-bold"><NumberFormatMoney amount={-totalUSD} /></td> */}
       </tr>
@@ -225,7 +232,7 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
         </td>
         <td className="text-end bg-porsiaca fw-bold">
           <span className='text-change'>
-            {'-'}<NumberFormatMoney amount={totalEgresosPEN+(totalEgresosUSD*3.7)} />
+            {'-'}<NumberFormatMoney amount={totalEgresosPEN} />
           </span>
         </td>
         {/* <td className="text-end bg-porsiaca fw-bold text-change"><NumberFormatMoney amount={-totalEgresosUSD} /></td> */}
@@ -237,8 +244,8 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
           </div>
         </td>
         <td className={`text-end bg-porsiaca fw-bold`}>
-          <div className={`${totalIngresos - (totalEgresosPEN+(totalEgresosUSD*3.7)) < 0 ? 'text-change' : ''}`}>
-            <NumberFormatMoney amount={totalIngresos - (totalEgresosPEN+(totalEgresosUSD*3.7))} />
+          <div className={`${totalIngresos - (totalEgresosPEN) < 0 ? 'text-change' : ''}`}>
+            <NumberFormatMoney amount={totalIngresos - (totalEgresosPEN)} />
           </div>
         </td>
         {/* <td className="text-end bg-porsiaca fw-bold text-change">

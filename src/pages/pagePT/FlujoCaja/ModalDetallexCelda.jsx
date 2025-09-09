@@ -27,8 +27,8 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
     <>
     <Dialog visible={show} style={{width: '120rem'}} onHide={onHide} header={`EGRESOS POR DETALLE - ${data?.grupo} - ${data?.concepto}`}>
         <Table  responsive hover striped>
-          <thead className={`${bgEmpresa}`}>
-              <tr>
+          <thead >
+              <tr className={`${bgEmpresa} bg-primary`}>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'></div></th>
                   <th className='text-white p-1 fs-3'>
                     <div className='bg-porsiaca' style={{width: '350px'}}>
@@ -65,7 +65,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                               {f.moneda ==='USD' && <SymbolDolar numero={<NumberFormatMoney amount={f.monto}/>}/>}
                             </div>
                             <div>
-                                  <SymbolSoles numero={<NumberFormatMoney amount={f.monto * f.tc}/>}/>
+                                  {f.moneda ==='PEN' &&<SymbolSoles numero={<NumberFormatMoney amount={f.monto}/>}/>}
                             </div>
                           </span></td>
                           <td className='fs-2 text-primary'><span className={'text-primary fw-bold'}>{f.parametro_comprobante?.label_param}</span></td>
