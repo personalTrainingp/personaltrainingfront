@@ -63,6 +63,8 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-green'}>
                             <div>
                               {f.moneda ==='USD' && <SymbolDolar numero={<NumberFormatMoney amount={f.monto}/>}/>}
+                              <br/>
+                              {f.moneda ==='USD' && `T.C.: ${f.tc}`}
                             </div>
                             <div>
                                   {f.moneda ==='PEN' &&<SymbolSoles numero={<NumberFormatMoney amount={f.monto}/>}/>}

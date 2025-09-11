@@ -93,8 +93,6 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
       {/* {JSON.stringify(data, null, 2)} */}
       {data.map((g, i) => {
         const porPagar = dataPorPagar[i]; // Suponiendo orden igual
-        console.log({data});
-        
         return (
           <tr key={i}>
             <td colSpan={2} className="bg-porsiaca text-center fw-bolder">

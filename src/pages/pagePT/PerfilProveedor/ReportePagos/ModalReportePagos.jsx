@@ -333,13 +333,13 @@ export const ModalReportePagos = ({objContrato, monto, codigo_pago, nombre_prov,
 												<span className='fw-bolder underline'>MONTO: </span>
 												<span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}><MoneyFormatter amount={objContrato.monto_contrato} symbol={objContrato.tipo_moneda}/></span>
 											</li>
-											<li className='mb-2 p-2'>
+											{/* <li className='mb-2 p-2'>
 												<span className='fw-bolder underline'>FIRMA: </span>
 												<span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>(CARGAR FIRMA) (VER FIRMA)</span>
 											</li>
 											<li className='mb-2 p-2'>
 												<a className='underline cursor-pointer'>ELIMINAR</a>
-											</li>
+											</li> */}
 										</ul>
 									</div>
 								</TabPanel>

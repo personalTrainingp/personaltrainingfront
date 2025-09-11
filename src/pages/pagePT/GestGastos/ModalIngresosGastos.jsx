@@ -11,6 +11,7 @@ import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { useTipoCambioStore } from '@/hooks/hookApi/useTipoCambioStore'
 import { CurrencyMask } from '@/components/CurrencyMask'
 import { InputText } from 'primereact/inputtext'
+import { useProveedoresStore } from './useProveedoresStore'
 const registerIvsG={
     id_empresa: 0,
     id_tipoGasto: 0,
@@ -29,7 +30,7 @@ const registerIvsG={
     n_operacion: '',
     id_rubro: 0,
     descripcion: '',
-    cod_trabajo: '',
+    id_contrato_prov: 0,
     id_prov: 0,
     esCompra: false,
     id_estado_gasto: 0
@@ -47,6 +48,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
     const [loadingRegister, setloadingRegister] = useState(false)
         const [isAddGrupo, setisAddGrupo] = useState(false)
     const { obtenerParametrosGastosFinanzas, registrarParametrosGastosFinanzas, isLoadingParametros } = useGf_GvStore()
+    const { dataTrabajosProv, obtenerTrabajosxProv } = useProveedoresStore()
     useEffect(() => {
         if(show){
             obtenerParametrosGastosFinanzas()
@@ -81,7 +83,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
             id_banco_pago,
             n_operacion, 
             id_prov, 
-            cod_trabajo,
+            id_contrato_prov,
             descripcion, 
             esCompra,
             onInputChange, 
@@ -195,6 +197,10 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                     return <button className='' onClick={()=>onClickAgregarGrupo(valueSelect)}>Agregar rubro</button>
                 }
             }
+        }
+        const onChangeProveedores = (e)=>{
+            onInputChangeReact(e, 'id_prov')
+            obtenerTrabajosxProv(e.value)
         }
   return (
     <>
@@ -496,7 +502,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                         <Row>
                                             <Col xxl={10}>
                                                 <Select
-                                                    onChange={(e) => onInputChangeReact(e, 'id_prov')}
+                                                    onChange={onChangeProveedores}
                                                     name="id_prov"
                                                     placeholder={'Seleccionar el proveedor'}
                                                     className="react-select"
@@ -533,6 +539,24 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                 </Col>
                                 <Col lg={4}>
                                     <div className="mb-4">
+                                        <label htmlFor="id_contrato_prov" className="form-label">
+                                            TRABAJOS DE PROVEEDORES
+                                        </label>
+                                        <Select
+                                            onChange={(e) => onInputChangeReact(e, 'id_contrato_prov')}
+                                            name="id_contrato_prov"
+                                            placeholder={'Seleccione el trabajo del proveedor'}
+                                            className="react-select"
+                                            classNamePrefix="react-select"
+                                            options={dataTrabajosProv}
+                                            value={dataTrabajosProv.find(
+                                                (option) => option.value === id_contrato_prov
+                                            )||0}
+                                        />
+                                    </div>
+                                </Col>
+                                {/* <Col lg={4}>
+                                    <div className="mb-4">
                                         <label htmlFor="cod_trabajo" className="form-label">
                                             Codigo de trabajo
                                         </label>
@@ -545,7 +569,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                                 placeholder="EJ. DE1234"
                                             />
                                     </div>
-                                </Col>                                                                          
+                                </Col>                                                                           */}
                                 <Col lg={12}>
                                 <div className='mb-4'>
                                     <div className="form-check">

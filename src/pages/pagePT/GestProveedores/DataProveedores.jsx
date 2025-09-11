@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { CustomersProv } from './CustomersProv';
-
+import App from './PagosProveedores'
 export const DataProveedores = () => {
 	const [isModalOpenProv, setisModalOpenProv] = useState(false)
 	const modalProvClose = ()=>{
@@ -48,13 +48,20 @@ export const DataProveedores = () => {
 								</Col>
 							</Row>
 							<TabView>
-                <TabPanel className='tabPanel-color-success' header={'Activos'}>
-                  <CustomersProv estado_prov={true} agente={false}/>
-                </TabPanel>
-                <TabPanel header={'Inactivos'}>
-                  <CustomersProv estado_prov={false} agente={false}/>
-                </TabPanel>
-              </TabView>
+								<TabPanel header={'PROVEEDORES'}>
+									<TabView>
+						<TabPanel className='tabPanel-color-success' header={'Activos'}>
+						<CustomersProv estado_prov={true} agente={false}/>
+						</TabPanel>
+						<TabPanel header={'Inactivos'}>
+						<CustomersProv estado_prov={false} agente={false}/>
+						</TabPanel>
+									</TabView>
+								</TabPanel>
+								<TabPanel header={'TRABAJOS PROVEEDOR'}>
+									<App/>
+								</TabPanel>
+							</TabView>
 						</Card.Body>
 					</Card>
 				</Col>

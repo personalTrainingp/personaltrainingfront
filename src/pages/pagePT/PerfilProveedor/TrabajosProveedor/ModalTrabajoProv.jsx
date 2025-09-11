@@ -20,6 +20,7 @@ const registerTrabajo = {
 };
 export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
 	const [file_presupuesto, setfile_presupuesto] = useState(null);
+	const [file_contrato, setfile_contrato] = useState(null);
 	const {
 		formState,
 		cod_trabajo,
@@ -27,8 +28,8 @@ export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
 		fecha_inicio,
 		fecha_fin,
 		hora_fin,
-		monto,
-		id_estado,
+		monto_contrato,
+		estado_contrato,
 		observacion,
 		onInputChange,
 		onInputChangeReact,
@@ -46,11 +47,27 @@ export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
 		formData.append('file', file_presupuesto);
 		postContratoProv(formState, id_prov, formData)
 		setfile_presupuesto()
+		
 		onCancelModal();
 	};
 	return (
 		<Dialog header="Agregar Trabajos" style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>
 			<form onSubmit={onSubmitTrabajo}>
+				{/* <div className='mb-3'>
+					<label htmlFor="penalidad_fijo" className="form-label">
+						CONTRATO*
+					</label>
+					<input
+							className="form-control bg-black text-white"
+							placeholder="file_presupuesto"
+							value={file_presupuesto}
+							name="penalidad_fijo"
+							// id="penalidad_fijo"
+							type="file"
+							onChange={onInputChange}
+							required
+						/>
+				</div> */}
 				<div className='mb-3'>
 					<label htmlFor="penalidad_fijo" className="form-label">
 						PRESUPUESTO*
@@ -59,7 +76,7 @@ export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
 							className="form-control bg-black text-white"
 							placeholder="file_presupuesto"
 							value={file_presupuesto}
-							name="penalidad_fijo"
+							name="file_presupuesto"
 							// id="penalidad_fijo"
 							type="file"
 							onChange={onInputChange}
@@ -97,18 +114,18 @@ export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
 					/>
 				</div>
 				<div className="mb-3">
-                            <label htmlFor="id_estado" className="font-bold">
+                            <label htmlFor="estado_contrato" className="font-bold">
                                 Estado*
                             </label>
                             <Select
-                                onChange={(e) => onInputChangeReact(e, 'id_estado')}
-                                name="id_estado"
+                                onChange={(e) => onInputChangeReact(e, 'estado_contrato')}
+                                name="estado_contrato"
                                 placeholder={'Seleccionar el estado'}
                                 className="react-select"
                                 classNamePrefix="react-select"
                                 options={arrayEstadoContrato}
                                 value={arrayEstadoContrato.find(
-                                    (option) => option.value === id_estado
+                                    (option) => option.value === estado_contrato
                                 )||0}
                                 required
 							/>
@@ -134,7 +151,7 @@ export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
 					</label>
 					<input
 						className="form-control"
-						placeholder="Fecha de inicio"
+						placeholder="Fecha FIN"
 						value={fecha_fin}
 						name="fecha_fin"
 						id="fecha_fin"
@@ -159,21 +176,21 @@ export const ModalTrabajoProv = ({ show, onHide, id_prov }) => {
 					/>
 				</div>
         <div className="mb-3">
-					<label htmlFor="monto" className="form-label">
+					<label htmlFor="monto_contrato" className="form-label">
 						Monto*
 					</label>
 					<input
 						className="form-control"
 						placeholder="Presupuesto"
-						value={monto}
-						name="monto"
-						id="monto"
+						value={monto_contrato}
+						name="monto_contrato"
+						id="monto_contrato"
 						type="text"
 						onChange={onInputChange}
 						required
 					/>
 				</div>
-        <div className="mb-3">
+        		<div className="mb-3">
 					<label htmlFor="observacion" className="form-label">
 						Observacion*
 					</label>

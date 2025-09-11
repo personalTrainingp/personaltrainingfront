@@ -78,7 +78,7 @@ export default function ExecutiveTable({ data, cutDay }) {
                       isDark ? "text-white" : "text-black"
                     }`}
                   >
-                    <div className="text-black bg-primary" style={{width: '350px'}}>
+                    <div className="text-black" style={{width: '350px'}}>
                       {r.label}
                     </div>
                   </td>

@@ -15,8 +15,7 @@ export const useImageStore = () => {
 	// updatedAt: '',
 	const obtenerImages = async (UID) => {
 		try {
-			const { data: dataImg } = await PTApi.get(`/upload/get-upload/${UID}`);
-			console.log(dataImg);
+			const { data: dataImg } = await PTApi.get(`/storage/blob/upload/gets-upload/${UID}`);
 			setImages(dataImg);
 			// setprogramaPT(data)
 		} catch (error) {

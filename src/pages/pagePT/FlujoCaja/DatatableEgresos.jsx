@@ -277,6 +277,7 @@ useEffect(() => {
 
               <tbody>
                 {grp.conceptos.map((c, idx) => {
+					console.log({c});
 					
                   const totalConcepto = c.items.reduce(
                     (sum, it) => sum + (it.monto_total || 0),

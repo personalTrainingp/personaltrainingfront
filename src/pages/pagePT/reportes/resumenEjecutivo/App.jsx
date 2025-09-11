@@ -32,6 +32,7 @@ export const App = ({ id_empresa }) => {
 
   // Día de corte 1..31 (si no quieres corte, deja null)
   const [cutDay, setCutDay] = useState(21);
+  const [initDay, setInitDay] = useState(1);
 
   const tableData = useMemo(() => ventasToExecutiveData({
     ventas: dataVentas,
@@ -40,6 +41,7 @@ export const App = ({ id_empresa }) => {
     titleRight: `RESUMEN EJECUTIVO HASTA EL ${cutDay} DE CADA MES`,
     marketing,
     cutDay,               // coméntalo si no quieres corte
+    initDay,
     footerFullMonth: true // footer = mes completo
   }), [dataVentas, columns, marketing, cutDay]);
   // Mapea tus IDs reales
@@ -58,6 +60,12 @@ export const App = ({ id_empresa }) => {
       <Row className="mb-3">
         <Col lg={12}>
           <div style={{ display:"flex", alignItems:"center" }}>
+            <label style={{ fontWeight: 600 }}>Día de inicio:</label>
+            <select value={initDay} onChange={e=>setInitDay(parseInt(e.target.value,10))}>
+              {Array.from({length:31},(_,i)=>i+1).map(n => <option key={n} value={n}>{n}</option>)}
+            </select>
+          </div>
+          <div style={{ display:"flex", alignItems:"center" }}>
             <label style={{ fontWeight: 600 }}>Día de corte:</label>
             <select value={cutDay} onChange={e=>setCutDay(parseInt(e.target.value,10))}>
               {Array.from({length:31},(_,i)=>i+1).map(n => <option key={n} value={n}>{n}</option>)}
@@ -69,11 +77,12 @@ export const App = ({ id_empresa }) => {
         <Col lg={6} className="pt-0">
           <Row>
             <Col className="pt-0">
-              <ExecutiveTable data={tableData} cutDay={cutDay} />
+              <ExecutiveTable data={tableData} initDay={initDay} cutDay={cutDay} />
             </Col>
             <Col>
           <ClientesPorOrigen
             ventas={dataVentas}
+            initDay={initDay}
             columns={columns}
             originMap={{}}
             originsOrder={[]}
@@ -86,6 +95,7 @@ export const App = ({ id_empresa }) => {
         <Col lg={6}>
               <ComparativoVsActual
                   ventas={dataVentas}
+                  initDay={initDay}
                   columns={columns}
                   cutDay={cutDay}            // día de corte opcional (1..31)
                   referenceMonth={"agosto"} // opcional; si lo omites, usa el último mes con datos

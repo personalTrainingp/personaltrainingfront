@@ -181,7 +181,7 @@ export const useProveedorStore = () => {
 		}
 	};
 	//CONTRATO
-	const postContratoProv = async (formState, id_prov, formFile) => {
+	const postContratoProv = async (formState, id_prov, formFile, formFileContrato) => {
 		try {
 			setisLoadingContratoProv(true);
 			const { data } = await PTApi.post('/proveedor/post-contrato-prov', {
@@ -190,8 +190,14 @@ export const useProveedorStore = () => {
 			});
 			if (formFile) {
 				await PTApi.post(
-					`/storage/blob/create/${data.uid_presupuesto}?container=presupuestos-proveedores`,
+					`/storage/blob/create/${data.contratoProv.uid_presupuesto}?container=presupuestos-proveedores`,
 					formFile
+				);
+			}
+			if (formFileContrato) {
+				await PTApi.post(
+					`/storage/blob/create/${data.contratoProv.uid_contrato}?container=contratos-proveedores`,
+					formFileContrato
 				);
 			}
 			setisLoadingContratoProv(false);

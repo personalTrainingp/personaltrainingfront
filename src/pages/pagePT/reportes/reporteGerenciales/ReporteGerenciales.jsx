@@ -42,7 +42,7 @@ export const ReporteGerenciales = () => {
     const { RANGE_DATE, dataView } = useSelector(e=>e.DATA)
   return (
     <>
-    <PageBreadcrumb title="PUNTO DE EQUILIBRIO" subName="reporte-gerenciales" />
+    <PageBreadcrumb title="FLUJO DE INGRESOS VS EGRESOS" subName="reporte-gerenciales" />
         {/* <FechaRangeMES rangoFechas={RANGE_DATE}/> */}
     <TabView>
       <TabPanel style={{alignItems: 'flex-end', display: 'flex'}}  header={<TabIcon width={220} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/>}>

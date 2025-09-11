@@ -14,6 +14,10 @@ const config = {
 		AVATARES_PROV: 'https://archivosluroga.blob.core.windows.net/avatar-proveedores/',
 		AVATAR_ARTICULO: 'https://archivosluroga.blob.core.windows.net/avatar-articulos/',
 		FILE_CONTRATOS_CLI: 'https://archivosluroga.blob.core.windows.net/contratos-cli/',
+		FILES_PRESUPUESTOS_PROV:
+			'https://archivosluroga.blob.core.windows.net/presupuestos-proveedores/',
+		FILES_CONTRATO_PROV:
+			'https://archivosluroga.blob.core.windows.net/contratos-proveedores/',
 	},
 };
 
