@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { CustomersProv } from './CustomersProv';
-import App from './PagosProveedores'
+import { App } from './PagosProveedores/App';
 export const DataProveedores = () => {
 	const [isModalOpenProv, setisModalOpenProv] = useState(false)
 	const modalProvClose = ()=>{
