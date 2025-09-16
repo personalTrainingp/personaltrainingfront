@@ -19,9 +19,10 @@ const registerTrabajo = {
     observacion: '',
     id_estado: 505
 };
-export const ModalCustomPagosProveedores = ({ show, onHide }) => {
+export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
     const [file_presupuesto, setfile_presupuesto] = useState(null);
     const [file_contrato, setfile_contrato] = useState(null);
+    const [file_compromisoPago, setfile_compromisoPago] = useState(null);
     const {
         formState,
         cod_trabajo,
@@ -47,11 +48,18 @@ export const ModalCustomPagosProveedores = ({ show, onHide }) => {
     };
     const onSubmitTrabajo = (e) => {
         e.preventDefault();
-        postContratoProv(formState, id_prov, file_presupuesto, file_contrato)
+        postContratoProv({...formState, id_empresa}, id_prov, file_presupuesto, file_contrato, file_compromisoPago)
         console.log({formState, id_prov, file_presupuesto});
         
         onCancelModal();
     };
+    const onFileCompromisoPagoChange = (e)=>{
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        setfile_compromisoPago(formData);
+        // reader.readAsDataURL(file);
+    }
     const onFilePresupuestoChange = (e)=>{
         const file = e.target.files[0];
         const formData = new FormData();
@@ -79,7 +87,23 @@ export const ModalCustomPagosProveedores = ({ show, onHide }) => {
     })
     return (
         <Dialog header="Agregar Trabajos" style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>
+            {id_empresa}
             <form onSubmit={onSubmitTrabajo}>
+                <div className='mb-3'>
+                    <label htmlFor="penalidad_fijo" className="form-label">
+                        COMPROMISO PAGO*
+                    </label>
+                    <input
+                            className="form-control bg-black text-white"
+                            placeholder="file_compromisoPago"
+                            // value={file_presupuesto}
+                            name="file_compromisoPago"
+                            // id="penalidad_fijo"
+                            type="file"
+                            onChange={(e)=>onFileCompromisoPagoChange(e)}
+                            required
+                        />
+                </div>
                 <div className='mb-3'>
                     <label htmlFor="penalidad_fijo" className="form-label">
                         PRESUPUESTO*

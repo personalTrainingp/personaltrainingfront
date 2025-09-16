@@ -1,121 +1,299 @@
-// components/ExecutiveTable.jsx
 import React from "react";
 
-// data.shape:
-// {
-//   titleLeft, titleRight,
-//   columns: [{ key:'marzo', label:'MARZO', currency:'S/.' }, ...],
-//   rows: [{ label, key, type:'currency'|'number', values:{ marzo: 0, ... }, emphasis? }, ...],
-//   footer: { label, type:'currency'|'number', values:{ marzo: 0, ... } }
-// }
+/**
+ * ExecutiveSummaryTable
+ * --------------------------------------------------------------
+ * Tabla de "RESUMEN EJECUTIVO HASTA EL <cutDay> DE CADA MES".
+ *
+ * Props esperadas:
+ *  - ventas: Array<Venta>
+ *      {
+ *        fecha_venta: ISOString,
+ *        detalle_ventaservicios?: Array<{ cantidad?: number, tarifa_monto?: number }>,
+ *        detalle_ventaProductos?: Array<{ cantidad?: number, tarifa_monto?: number }>,
+ *        // también se aceptan llaves en snake/variantes: detalle_ventaproductos
+ *      }
+ *  - fechas: Array<{ label: string; anio: string | number; mes: string }>
+ *      // ej.: [{ label: 'MAYO', anio: '2025', mes: 'mayo' }, ...]
+ *      // "mes" debe ir en español en minúsculas (enero..diciembre). Se aceptan
+ *      // variantes "septiembre"/"setiembre".
+ *  - dataMktByMonth: Record<string, { inversiones_redes?: number; leads?: number; cpl?: number; cac?: number }>
+ *      // clave recomendada: `${anio}-${mes}` (mes en minúsculas), por ejemplo: "2025-agosto".
+ *      // Si cpl o cac no vienen, se dejan en 0. (No se derivan automáticamente).
+ *  - initialDay?: number  // día inicial a considerar (incl.) -> default 1
+ *  - cutDay?: number      // día final a considerar (incl.)   -> default 21
+ *
+ *  Ejemplo de uso rápido:
+ *  <ExecutiveSummaryTable
+ *     ventas={misVentas}
+ *     fechas={[{label:'MAYO', anio: '2025', mes: 'mayo'}, {label:'JUNIO', anio:'2025', mes:'junio'}]}
+ *     dataMktByMonth={{ '2025-mayo': {inversiones_redes: 4895, leads: 408, cpl: 12, cac: 0} }}
+ *     initialDay={1}
+ *     cutDay={21}
+ *  />
+ */
+export default function ExecutiveTable({
+  ventas = [],
+  fechas = [],
+  dataMktByMonth = {},
+  initialDay = 1,
+  cutDay = 21,
+}) {
+  // --------------------------- Helpers ---------------------------
+  const MESES = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "setiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+  ];
 
-const fmtCurrency = (n) => {
-  if (n === null || n === undefined || Number.isNaN(Number(n))) return "";
-  try {
-    return new Intl.NumberFormat("es-PE", {
-      style: "currency",
-      currency: "PEN",
-      minimumFractionDigits: 2,
-    }).format(Number(n));
-  } catch {
-    return `${Number(n)}`;
-  }
-};
-const fmtNumber = (n) =>
-  n === null || n === undefined ? "" : new Intl.NumberFormat("es-PE").format(Number(n));
+  const aliasMes = (m) => (m === "septiembre" ? "setiembre" : m);
 
-const Cell = ({ type, value }) => (type === "currency" ? fmtCurrency(value) : fmtNumber(value));
+  const toLimaDate = (iso) => {
+    if (!iso) return null;
+    try {
+      const d = new Date(iso);
+      // convert UTC -> Lima (-05:00)
+      const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
+      return new Date(utcMs - 5 * 60 * 60000);
+    } catch (_) {
+      return null;
+    }
+  };
 
-export default function ExecutiveTable({ data, cutDay }) {
-  const { titleLeft, titleRight, columns, rows, footer } = data;
+  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
+  const fmtMoney = (n) =>
+    new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN" }).format(
+      Number(n || 0)
+    );
+
+  const fmtNum = (n, d = 0) =>
+    new Intl.NumberFormat("es-PE", { minimumFractionDigits: d, maximumFractionDigits: d }).format(
+      Number(n || 0)
+    );
+
+  // Aceptar varias llaves de detalle para robustez
+  const getDetalleServicios = (v) => v?.detalle_ventaMembresia || v?.detalle_ventaMembresia || [];
+  const getDetalleProductos = (v) =>
+    v?.detalle_ventaProductos || v?.detalle_ventaproductos || v?.detalle_venta_productos || [];
+
+  // Filtrar ventas por mes/año + rango de días [initialDay, cutDay]
+  const computeMetricsForMonth = (anio, mesNombre) => {
+    const mesAlias = aliasMes(String(mesNombre).toLowerCase());
+    const monthIdx = MESES.indexOf(mesAlias); // 0..11
+    if (monthIdx < 0) return null;
+
+    let totalServ = 0;
+    let cantServ = 0;
+    let totalProd = 0;
+    let cantProd = 0;
+
+    for (const v of ventas) {
+      const d = toLimaDate(v?.fecha_venta);
+      if (!d) continue;
+      if (d.getFullYear() !== Number(anio)) continue;
+      if (d.getMonth() !== monthIdx) continue;
+
+      const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+      const from = clamp(Number(initialDay || 1), 1, lastDay);
+      const to = clamp(Number(cutDay || lastDay), from, lastDay);
+      const dia = d.getDate();
+      if (dia < from || dia > to) continue;
+
+      // Servicios
+      for (const s of getDetalleServicios(v)) {
+        const cantidad = Number(s?.cantidad || 1);
+        const linea = Number(s?.tarifa_monto || 0) * cantidad;
+        totalServ += linea;
+        cantServ += cantidad;
+      }
+      // Productos
+      for (const p of getDetalleProductos(v)) {
+        const cantidad = Number(p?.cantidad || 1);
+        const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0) * cantidad;
+        totalProd += linea;
+        cantProd += cantidad;
+      }
+    }
+
+    const ticketServ = cantServ ? totalServ / cantServ : 0;
+    const ticketProd = cantProd ? totalProd / cantProd : 0;
+
+    const key = `${anio}-${mesAlias}`;
+    const mk = dataMktByMonth?.[key] || {};
+
+    return {
+      mkInv: Number(mk?.inversiones_redes || 0),
+      mkLeads: Number(mk?.leads || 0),
+      mkCpl: Number(mk?.cpl || 0),
+      mkCac: Number(mk?.cac || 0),
+      totalServ,
+      cantServ,
+      ticketServ,
+      totalProd,
+      cantProd,
+      ticketProd,
+      totalMes: totalServ + totalProd,
+    };
+  };
+
+  const rows = [
+    { key: "mkInv", label: "INVERSIÓN REDES", type: "money" },
+    { key: "mkLeads", label: "LEADS", type: "int" },
+    { key: "mkCpl", label: "CPL", type: "float2" },
+    { key: "totalServ", label: "VENTA SERVICIOS", type: "money" },
+    { key: "ticketServ", label: "TICKET PROMEDIO SERV.", type: "money" },
+    { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
+    { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
+    { key: "cantServ", label: "CANTIDAD SERVICIOS", type: "int" },
+    { key: "ticketProd", label: "TICKET PROMEDIO PROD.", type: "money" },
+  ];
+
+  // Precalcular métricas por columna (mes)
+  const perMonth = fechas.map((f) => ({
+    label: String(f?.label || "").toUpperCase(),
+    anio: f?.anio,
+    mes: String(f?.mes || "").toLowerCase(),
+    metrics: computeMetricsForMonth(f?.anio, f?.mes),
+  }));
+
+  // --------------------------- Styles ---------------------------
+  // Respetando el esquema de colores del ejemplo (negro/rojo/blanco)
+  const cBlack = "#000000";
+  const cWhite = "#ffffff";
+  const cRed = "#c00000"; // rojo intenso para las bandas inferiores
+  const border = "1px solid #333";
+
+  const sWrap = {
+    fontFamily: "Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif",
+    color: cBlack,
+  };
+
+  const sHeader = {
+    background: cBlack,
+    color: cWhite,
+    textAlign: "center",
+    padding: "25px 12px",
+    fontWeight: 700,
+    letterSpacing: 0.2,
+  };
+
+  const sTable = {
+    width: "100%",
+    borderCollapse: "collapse",
+    tableLayout: "fixed",
+  };
+
+  const sThMes = {
+    // background: "#231f20",
+    color: cWhite,
+    border,
+    // padding: "8px 10px",
+    textAlign: "center",
+    fontWeight: 700,
+    fontSize: 13,
+  };
+
+  const sThLeft = { ...sThMes, textAlign: "left", width: 260 };
+  const sCell = { border, padding: "8px 10px", fontSize: 13, background: cWhite };
+  const sCellBold = { ...sCell, fontWeight: 700 };
+
+  const sRowBlack = { background: cBlack, color: cWhite, fontWeight: 700 };
+  const sRowRed = { background: cRed, color: cWhite, fontWeight: 800 };
+
+  // --------------------------- Render ---------------------------
   return (
-    <div>
-      {/* Header negro */}
-      <div className="w-full bg-black text-white rounded-t-2xl">
-        <div className="mx-auto max-w-6xl px-4 py-4 text-center text-xl md:text-2xl font-extrabold">
-        {titleRight}
-        </div>
-        </div>
-      <div className="overflow-x-auto bg-white shadow-2xl rounded-b-2xl ring-1 ring-black/10">
-        <table className="w-full table-fixed border-collapse">
-          <thead>
-            <tr>
-              <th className="bg-primary text-black border border-black px-3 text-left uppercase font-extrabold fs-3">
-                <div className="">
-                  MES
+    <div style={sWrap}>
+      <div style={sHeader}>
+        RESUMEN EJECUTIVO HASTA EL {cutDay} DE CADA MES
+      </div>
+
+      <table style={sTable}>
+        <thead>
+          <tr  className="bg-primary">
+            <th style={sThLeft}>MES</th>
+            {perMonth.map((m, idx) => (
+              <th key={idx} style={sThMes}>
+                <div>
+                  {m.label}
                 </div>
               </th>
-              {columns.map((c) => (
-                <th
-                  key={c.key}
-                  className="bg-primary text-black border border-black px-3 text-left uppercase font-extrabold fs-3"
-                >
-                  <div className="">
-                    <div className="font-extrabold text-center">{c.label}</div>
-                    {/* <div className="font-extrabold">{c.currency ?? "S/."}</div> */}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {rows.map((r, idx) => {
-              const isDark = r.emphasis === "dark";
-              const isLight = r.emphasis === "light";
-              const baseRow = isDark
-                ? "bg-black text-white"
-                : isLight
-                ? "bg-neutral-100"
-                : idx % 2 === 1
-                ? "bg-neutral-50"
-                : "bg-white";
-              return (
-                <tr key={r.key} className={baseRow}>
-                  <td
-                    className={`fs-3 border border-black font-semibold ${
-                      isDark ? "text-white" : "text-black"
-                    }`}
-                  >
-                    <div className="text-black" style={{width: '350px'}}>
-                      {r.label}
-                    </div>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.key}>
+              <td style={sCellBold}>{r.label}</td>
+              {perMonth.map((m, idx) => {
+                const val = m.metrics?.[r.key] ?? 0;
+                let txt = "";
+                if (r.type === "money") txt = fmtMoney(val);
+                else if (r.type === "float2") txt = fmtNum(val, 2);
+                else txt = fmtNum(val, 0);
+                return (
+                  <td key={idx} style={sCell}>
+                    {txt}
                   </td>
-                  {columns.map((c) => (
-                    <td
-                      key={c.key}
-                      className={`pl-4 border border-black text-right ${
-                        isDark ? "text-white" : "text-black"
-                      }`}
-                      style={{fontSize: '20px'}}
-                    >
-                      <Cell type={r.type} value={r.values[c.key]} />
-                    </td>
-                  ))}
-                </tr>
-              );
-            })}
-          </tbody>
-
-          <tfoot>
-            <tr>
-              <td className="bg-primary text-black border border-black py-2 fs-3">
-                <div className="font-extrabold uppercase leading-tight">VENTA TOTAL</div>
-                <div className="font-bold uppercase -mt-1">ACUMULADA POR MES</div>
-              </td>
-              {columns.map((c) => (
-                <td
-                  key={c.key}
-                  className="fs-2 bg-primary text-black border border-black pl-4 text-right font-extrabold"
-                >
-                  <Cell type={footer.type} value={footer.values[c.key]} />
-                </td>
-              ))}
+                );
+              })}
             </tr>
-          </tfoot>
-        </table>
-      </div>
+          ))}
+
+          {/* Fila negra: TOTAL MES */}
+          <tr style={sRowBlack}>
+            <td style={{ ...sCellBold, background: "transparent", color: cWhite }}>TOTAL MES</td>
+            {perMonth.map((m, idx) => (
+              <td key={idx} style={{ ...sCellBold, background: "transparent", color: cWhite }}>
+                {fmtMoney(m.metrics?.totalMes || 0)}
+              </td>
+            ))}
+          </tr>
+
+          {/* CAC */}
+          <tr>
+            <td style={sCellBold}>CAC (S/)</td>
+            {perMonth.map((m, idx) => (
+              <td key={idx} style={sCell}>
+                {fmtNum(m.metrics?.mkCac || 0, 2)}
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+
+      {/* Bandas Rojas Inferiores */}
+      <table style={{ ...sTable,}}>
+        <thead>
+          <tr style={sRowRed}>
+            <th style={{ ...sThLeft, background: "transparent", color: cWhite }}>VENTA TOTAL</th>
+            {perMonth.map((m, idx) => (
+              <th key={idx} style={{ ...sThMes, background: "transparent", color: cWhite }}>
+                {fmtMoney(m.metrics?.totalMes || 0)}
+              </th>
+            ))}
+          </tr>
+          <tr style={sRowRed}>
+            <th style={{ ...sThLeft, background: "transparent", color: cWhite }}>ACUMULADA POR MES</th>
+            {perMonth.map((m, idx) => (
+              <th key={idx} style={{ ...sThMes, background: "transparent", color: cWhite }}>
+                {/* En el ejemplo visual es el mismo valor del mes; si se requiere acumulado YTD,
+                    cambiar aquí por una suma progresiva. */}
+                {fmtMoney(m.metrics?.totalMes || 0)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+      </table>
     </div>
   );
 }

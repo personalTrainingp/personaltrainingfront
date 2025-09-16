@@ -2,7 +2,7 @@ import { PTApi } from '@/common';
 import { useState } from 'react';
 
 export const useImageStore = () => {
-	const [images, setImages] = useState();
+	const [images, setImages] = useState([]);
 	// clasificacion_image: '',
 	// createdAt: '',
 	// extension_image: '',
@@ -15,6 +15,7 @@ export const useImageStore = () => {
 	// updatedAt: '',
 	const obtenerImages = async (UID) => {
 		try {
+			setImages([]);
 			const { data: dataImg } = await PTApi.get(`/storage/blob/upload/gets-upload/${UID}`);
 			setImages(dataImg);
 			// setprogramaPT(data)

@@ -433,8 +433,12 @@ export const ResumenComparativo = () => {
         const ticketMedio = (montoxProps/cantidadxProps)||0
         const sumaTicketMedio = sumaTotal ? (sumaMontoTotal / sumaTotal) : 0;
         const sumaDeSesionesxProps = grupo.items.reduce((total, item)=>total + (item?.tb_semana_training.sesiones||0),0)
+        const sumaDeSesiones = arrayGeneral.reduce((total, item)=>total + (item?.tb_semana_training.sesiones||0),0)
+        const promedioPrecioxSesiones = arrayGeneral.reduce((total, item)=>total + (item?.tb_semana_training?.sesiones||0),0)
         // const sumaTicketMedioProp = estadisticas.reduce((acc, item)=>acc+item.monto_total,0)/arrayEstadistico?.reduce((acc, curr) => acc + curr.items?.length, 0)
         // const porcentajexMontoProps = (array).toFixed(2) d.sumaDeVentasEnSoles/d.sumaDeSesiones
+        console.log({array, arrayGeneral});
+        
         //d.sumaDeVentasEnSoles/d.sumaDeSesiones
         const isSortable = true
         let resumen = [
@@ -444,7 +448,7 @@ export const ResumenComparativo = () => {
             { header: `% VENTA TOTAL`, isSortable, HTML: <>{porcentajexMontoProps} %</>, value: porcentajexMontoProps, tFood: 100, order: 4 },
             { header: `% SOCIOS`, isSortable, value: porcentajexProps, tFood: 100, order: 5 },
             { header: `S/. TICKET MEDIO`, isSortable, value: ticketMedio, HTML: <NumberFormatMoney amount={ticketMedio}/>, tFood: <NumberFormatMoney amount={sumaTicketMedio}/>, order: 5 },
-            { header: `S/. PRECIO POR SESION`, isSortable, value: montoxProps, HTML: <NumberFormatMoney amount={montoxProps/sumaDeSesionesxProps}/>, tFood: <NumberFormatMoney amount={sumaMontoTotal}/>, order: 5 },
+            { header: `S/. PRECIO POR SESION`, isSortable, value: montoxProps, HTML: <NumberFormatMoney amount={montoxProps/sumaDeSesionesxProps}/>, tFood: <NumberFormatMoney amount={sumaMontoTotal/sumaDeSesiones}/>, order: 5 },
         ]
             // 1️⃣ Filtrar los elementos de resumen que estén en objDeleting
             if (Array.isArray(objDeleting)) {

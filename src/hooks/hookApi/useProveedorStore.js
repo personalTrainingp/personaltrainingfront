@@ -181,13 +181,25 @@ export const useProveedorStore = () => {
 		}
 	};
 	//CONTRATO
-	const postContratoProv = async (formState, id_prov, formFile, formFileContrato) => {
+	const postContratoProv = async (
+		formState,
+		id_prov,
+		formFile,
+		formFileContrato,
+		formFileCompromisoPago
+	) => {
 		try {
 			setisLoadingContratoProv(true);
 			const { data } = await PTApi.post('/proveedor/post-contrato-prov', {
 				...formState,
 				id_prov: id_prov,
 			});
+			if (formFileCompromisoPago) {
+				await PTApi.post(
+					`/storage/blob/create/${data.contratoProv.uid_compromisoPago}?container=compromiso-pago-proveedores`,
+					formFileCompromisoPago
+				);
+			}
 			if (formFile) {
 				await PTApi.post(
 					`/storage/blob/create/${data.contratoProv.uid_presupuesto}?container=presupuestos-proveedores`,

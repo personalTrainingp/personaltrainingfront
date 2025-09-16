@@ -58,8 +58,18 @@ export const DataProveedores = () => {
 						</TabPanel>
 									</TabView>
 								</TabPanel>
-								<TabPanel header={'TRABAJOS PROVEEDOR'}>
-									<App/>
+								<TabPanel header={'CONTRATOS POR PROVEEDOR'}>
+									<TabView>
+										<TabPanel header={'CHANGE'}>
+											<App id_empresa={598}/>
+										</TabPanel>
+										<TabPanel header={'CIRCUS'}>
+											<App id_empresa={599}/>
+										</TabPanel>
+										<TabPanel header={'REDUCTO'}>
+											<App id_empresa={600}/>
+										</TabPanel>
+									</TabView>
 								</TabPanel>
 							</TabView>
 						</Card.Body>

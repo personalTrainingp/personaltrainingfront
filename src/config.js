@@ -16,8 +16,9 @@ const config = {
 		FILE_CONTRATOS_CLI: 'https://archivosluroga.blob.core.windows.net/contratos-cli/',
 		FILES_PRESUPUESTOS_PROV:
 			'https://archivosluroga.blob.core.windows.net/presupuestos-proveedores/',
-		FILES_CONTRATO_PROV:
-			'https://archivosluroga.blob.core.windows.net/contratos-proveedores/',
+		FILES_CONTRATO_PROV: 'https://archivosluroga.blob.core.windows.net/contratos-proveedores/',
+		FILES_COMPROMISO_PAGO_PROV:
+			'https://archivosluroga.blob.core.windows.net/compromiso-pago-proveedores/',
 	},
 };
 
