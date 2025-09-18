@@ -144,21 +144,23 @@ export const ClientesPorOrigen=({
     border: "1px solid #333",
     headRow: "#e9eef6",
   };
+  
 
   const sTitle = {
     background: C.black,
     color: C.white,
     textAlign: "center",
-    padding: "8px 12px",
-    fontWeight: 800,
+    padding: "25px 12px",
+    fontWeight: 700,
     letterSpacing: 0.2,
+    fontSize: 25
   };
 
   const sTable = { width: "100%", borderCollapse: "collapse", tableLayout: "fixed" };
   const sHeadLeft = { background: C.red, color: C.white, padding: "10px", border: C.border, textAlign: "left", width: 260 };
   const sHead = { background: C.red, color: C.white, padding: "10px", border: C.border, textAlign: "center" };
-  const sCell = { background: C.white, color: "#000", padding: "10px", border: C.border, fontSize: 14, textAlign: "center" };
-  const sCellLeft = { ...sCell, textAlign: "left", fontWeight: 700 };
+  const sCell = { background: C.white, color: "#000", padding: "10px", border: C.border, fontSize: 17, textAlign: "center" };
+  const sCellLeft = { ...sCell, textAlign: "left", fontWeight: 700, fontSize: 15 };
 
   // --------------------------- Render ---------------------------
   return (

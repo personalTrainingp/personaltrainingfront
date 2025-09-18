@@ -185,6 +185,7 @@ export default function ExecutiveTable({
     padding: "25px 12px",
     fontWeight: 700,
     letterSpacing: 0.2,
+    fontSize: 25
   };
 
   const sTable = {
@@ -200,12 +201,13 @@ export default function ExecutiveTable({
     // padding: "8px 10px",
     textAlign: "center",
     fontWeight: 700,
-    fontSize: 13,
+    fontSize: 20,
+    padding: "10px"
   };
 
-  const sThLeft = { ...sThMes, textAlign: "left", width: 260 };
-  const sCell = { border, padding: "8px 10px", fontSize: 13, background: cWhite };
-  const sCellBold = { ...sCell, fontWeight: 700 };
+  const sThLeft = { ...sThMes, textAlign: "left", width: 260, fontSize: 20};
+  const sCell = { border, padding: "8px 10px", fontSize: 13, background: cWhite, fontSize: 20 };
+  const sCellBold = { ...sCell, fontWeight: 700, fontSize: 17 };
 
   const sRowBlack = { background: cBlack, color: cWhite, fontWeight: 700 };
   const sRowRed = { background: cRed, color: cWhite, fontWeight: 800 };

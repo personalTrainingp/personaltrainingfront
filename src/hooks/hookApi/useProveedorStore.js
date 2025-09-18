@@ -205,7 +205,7 @@ export const useProveedorStore = () => {
 					`/storage/blob/create/${data.contratoProv.uid_presupuesto}?container=presupuestos-proveedores`,
 					formFile
 				);
-			}
+			}	
 			if (formFileContrato) {
 				await PTApi.post(
 					`/storage/blob/create/${data.contratoProv.uid_contrato}?container=contratos-proveedores`,

@@ -6,6 +6,8 @@ import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 import { useImageStore } from '@/hooks/hookApi/useImageStore';
 import config from '@/config';
+import { ModalCustomPagosProveedores } from './ModalCustomPagosProveedores';
+import { ModalCustomDescuentos } from './ModalCustomDescuentos';
   // Descarga segura
   const safeDownload = (url, filename) => {
     const a = document.createElement('a');
@@ -44,6 +46,7 @@ export const TablePagos = ({id_empresa}) => {
   const { obtenerProveedores } = useProveedorStore();
   const { dataProveedores } = useSelector((s) => s.prov);
 const [pending, setPending] = useState(null); // {tipo:'presupuesto'|'contrato'}
+  const [isOpenModalCustomDescuentos, setisOpenModalCustomDescuentos] = useState({isOpen: false, nombreTrabajo: null, idContrato: 0})
 
   // acordeones
   const [openProv, setOpenProv] = useState({});       // { [id_prov]: boolean }
@@ -107,6 +110,9 @@ useEffect(() => {
       setPending({ tipo: 'compromisoPago' });
       await obtenerImages(uid);
   }
+  const onClickOpenModalCustomDescuentos = async(nombreTrabajo, idContrato)=>{
+    setisOpenModalCustomDescuentos({isOpen: true, nombreTrabajo: nombreTrabajo, idContrato})
+  }
   return (
     <div>
       <Table bordered responsive hover className="align-middle">
@@ -125,13 +131,10 @@ useEffect(() => {
           {grupos.map((grupo) => {
             const proveedor = (dataProveedores ?? []).find((p) => p.id === grupo.id_prov);
             const razon = proveedor?.nombre_contacto?? `Prov #${grupo.id_prov}`;
-            const ruc = proveedor?.ruc?? `Prov #${grupo.id_prov}`;
-            
-
+            const ruc = proveedor?.razon_social_prov?? `Prov #${grupo.id_prov}`;
             const montoContratos = grupo.items.reduce((t, it) => t + (Number(it?.monto_contrato) || 0), 0);
             const sumarPagos = grupo.items.reduce((t, it) => t + (Number(it?.sumaPagos) || 0), 0);
             const saldo = montoContratos - sumarPagos;
-
             const isOpen = !!openProv[grupo.id_prov];
 
             return (
@@ -181,6 +184,7 @@ useEffect(() => {
                             <th className="text-white">Fecha fin</th>
                             <th className="text-white">CONCEPTOS</th>
                             <th className="text-end text-white">Monto <br/> contrato</th>
+                            <th className="text-end text-white">PENALIDAD</th>
                             <th className="text-end text-white">Pago <br/> Acumulado</th>
                             <th className="text-end text-white">
                               Saldo
@@ -198,7 +202,7 @@ useEffect(() => {
                             return (
                               <React.Fragment key={c.id}>
                                 {/* Fila resumen contrato */}
-                                <tr className=''>
+                                <tr className='fs-4'>
                                   <td 
                                         onClick={() => toggleContrato(c.id)}
                                         className='cursor-pointer'
@@ -219,11 +223,11 @@ useEffect(() => {
                                     </div>
                                   </td>
                                   <td className="text-end">{fmt(c?.monto_contrato)}</td>
+                                  <td className="text-end">{12.40}</td>
                                   <td className="text-end">{fmt(totalPagado)}</td>
                                   <td className="text-end fw-semibold">{fmt(saldoContrato)}</td>
                                   <td className='' onClick={()=>onClickOpenFileCompromisoPago(c?.uid_compromisoPago)}>
                                     <i className='pi pi-file'></i>
-                                    {/* {JSON.stringify(c, null,2)} */}
                                   </td>
                                 </tr>
 
@@ -237,6 +241,11 @@ useEffect(() => {
                                         </div>
                                         <div className="text-end">
                                           <small>Total pagado: <strong>{fmt(totalPagado)}</strong></small>
+                                        </div>
+                                      </div>
+                                      <div className="d-flex justify-content-between align-items-center mb-2">
+                                        <div className="fw-semibold">
+                                          <Button className='' onClick={()=>onClickOpenModalCustomDescuentos(c?.observacion, c.id)}>AGREGAR PENALIDAD</Button>
                                         </div>
                                       </div>
                                       <Table size="sm" bordered responsive>
@@ -277,6 +286,7 @@ useEffect(() => {
           })}
         </tbody>
       </Table>
+      <ModalCustomDescuentos idContrato={isOpenModalCustomDescuentos.idContrato} trabajo={isOpenModalCustomDescuentos.nombreTrabajo} show={isOpenModalCustomDescuentos.isOpen} onHide={()=>setisOpenModalCustomDescuentos({isOpen: false, nombreTrabajo: null})}/>
     </div>
   );
 };

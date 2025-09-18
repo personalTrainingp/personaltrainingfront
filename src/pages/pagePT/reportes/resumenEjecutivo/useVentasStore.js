@@ -73,9 +73,26 @@ function desestructurarVentas(ventas) {
 	return resultado;
 }
 
+const agruparPorMes = (arr) => {
+	return Object.values(
+		arr.reduce((acc, item) => {
+			// clave YYYY-MMMM en zona horaria de Lima
+			const key = dayjs.utc(item.fecha).tz('America/Lima').format('YYYY-MMMM');
+
+			if (!acc[key]) {
+				acc[key] = { fecha: key, items: [] };
+			}
+			acc[key].items.push(item);
+			return acc;
+		}, {})
+	);
+};
+
 export const useVentasStore = () => {
 	const dispatch = useDispatch();
 	const [dataVentas, setDataVentas] = useState([]);
+	const [dataLead, setDataLead] = useState([]);
+	const [dataLeadPorMesAnio, setdataLeadPorMesAnio] = useState([]);
 	const [dataVentaxID, setdataVentaxID] = useState({});
 	const [isLoading, setisLoading] = useState(false);
 	const [loadingVenta, setloadingVenta] = useState(false);
@@ -87,6 +104,31 @@ export const useVentasStore = () => {
 	const [dataContratos, setdataContratos] = useState([]);
 	const { base64ToFile } = helperFunctions();
 
+	const obtenerLeads = async (id_empresa) => {
+		try {
+			const { data } = await PTApi.get(`/lead/leads/${id_empresa}`);
+
+			const dataAlter = agruparPorMes(data?.leads).map((lead) => {
+				return {
+					[lead.fecha]: {
+						inversiones_redes: lead.items.reduce(
+							(total, item) => item.monto + total,
+							0
+						),
+						leads: lead.items.reduce((total, item) => Number(item.cantidad) + total, 0),
+						cpl: Number(
+							`${lead.items.reduce((total, item) => item.monto + total, 0) / lead.items.reduce((total, item) => Number(item.cantidad) + total, 0)}`
+						).toFixed(2),
+					},
+				};
+			});
+			console.log({ data: data.leads, dataAl: agruparPorMes(data?.leads), dataAlter });
+			setDataLead(data.leads);
+			setdataLeadPorMesAnio(agruparPorMes(data?.leads));
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerVentasxComprobantes = async (id_comprobante) => {
 		try {
 			const { data } = await PTApi.get(
@@ -141,10 +183,13 @@ export const useVentasStore = () => {
 		}
 	};
 	return {
+		obtenerLeads,
 		obtenerTablaVentas,
 		obtenerVentaporId,
 		obtenerVentasPorFecha,
 		obtenerVentasxComprobantes,
+		dataLeadPorMesAnio,
+		dataLead,
 		dataComprobante,
 		loadingMessage,
 		dataVentaxFecha,

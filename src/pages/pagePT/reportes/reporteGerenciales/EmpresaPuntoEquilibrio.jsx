@@ -85,7 +85,7 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
           <div>CANCELADO</div>
         </th>
         <th className="text-white text-center p-1">
-          <div>PAGO PENDIENTE</div>
+          <div>PAGO <br/> PENDIENTE</div>
         </th>
       </tr>
     </thead>
@@ -106,11 +106,11 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
               </div>
             </td>
 												<td
-													className={`text-center ${porPagar?.montopen === 0 ? 'fw-light' : 'fw-bold'}`}
+													className={`text-center`}
 												>
 													<div 
 														onClick={() => onOpen(porPagar)}
-                            className={`bg-porsiaca text-right mr-4 ${(porPagar?.montopen + porPagar?.montousd * 3.7 || 0)<=0?'':'text-change'}`}>
+                            className={`bg-porsiaca text-right mr-4 ${(porPagar?.montopen + porPagar?.montousd * 3.7)<=0?'':'text-change fw-bold'}`}>
 														<NumberFormatMoney amount={porPagar?.montopen + porPagar?.montousd * 3.7 || 0} />
 													</div>
 												</td>
@@ -166,7 +166,9 @@ const TableVentas = ({ background, textEmpresa, ventasPartidas }) => {
       <Table striped style={{fontSize: '25px'}}>
         <thead className={background}>
           <tr>
-            <th className='text-white'>INGRESOS</th><th className='text-white'>cant.</th><th className='text-white'>S/.</th>
+            <th className='text-white'>INGRESOS</th>
+            <th className='text-white'><div className='text-center '  style={{marginLeft: '10px', width: '20px'}}>CANT.</div></th>
+            <th className='text-white'><div className='text-center ' style={{marginLeft: '80px'}}>S/.</div></th>
           </tr>
         </thead>
         <tbody>
@@ -177,8 +179,8 @@ const TableVentas = ({ background, textEmpresa, ventasPartidas }) => {
                   {i + 1}. {c.label}
                 </div>
               </td>
-              <td className="text-end bg-porsiaca">{c.cantidad}</td>
-              <td className="text-end bg-porsiaca"><NumberFormatMoney amount={c.monto} /></td>
+              <td className="text-end bg-porsiaca"><div className={`${c.cantidad>0?'fw-bold':''}`}>{c.cantidad}</div></td>
+              <td className="text-end bg-porsiaca"><div className={`${c.monto>0?'fw-bold':''}`}><NumberFormatMoney amount={c.monto} /></div></td>
             </tr>
           ))}
         </tbody>
@@ -190,13 +192,12 @@ const TableVentas = ({ background, textEmpresa, ventasPartidas }) => {
           </tr>
         </tfoot>
       </Table>
-
       <Table striped>
         <thead className={background} style={{fontSize: '25px'}}>
           <tr>
-            <th className='text-white'>PRODUCTOS</th>
-            <th className='text-end text-white'><div className='' style={{width: '15px'}}>{ventasPartidas.cantProd}</div></th>
-            <th className='text-end text-white'><div className='' style={{width: '15px'}}><NumberFormatMoney amount={ventasPartidas.sumaventaProductos} /></div></th>
+            <th className='text-white'> <div className='' style={{width: '170px'}}>PRODUCTOS</div></th>
+            <th className='text-end text-white'><div className=''>{ventasPartidas.cantProd}</div></th>
+            <th className='text-end text-white'><div className=''><NumberFormatMoney amount={ventasPartidas.sumaventaProductos} /></div></th>
           </tr>
         </thead>
       </Table>
@@ -208,19 +209,24 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
   <Table striped style={{fontSize: '25px'}}>
     <thead className={`${background} `}>
       <tr >
-        <th className='text-white'>UTILIDAD</th>
-        <th className='text-white text-end'>S/</th>
+        <th className='text-white'><div style={{width: '400px'}}>UTILIDAD</div></th>
+        <th className='text-white'></th>
+        <th className='text-white'><div style={{marginLeft: '500px'}}>S/.</div></th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td className="bg-porsiaca text-start">
-          <div className={`${textEmpresa} fw-bold`}>
+        <td className="bg-porsiaca text-start text-primary">
+          <div className={`fw-bold`}>
             INGRESOS
           </div>
-          </td>
-        <td className="text-end bg-porsiaca fw-bold"><NumberFormatMoney amount={totalIngresos} /></td>
-        {/* <td></td> */}
+        </td>
+          <td></td>
+        <td className="bg-porsiaca fw-bold">
+          <div className='text-end'>
+          <NumberFormatMoney amount={totalIngresos} />
+          </div>
+        </td>
       </tr>
       <tr>
         <td className="bg-porsiaca text-start">
@@ -228,12 +234,12 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
             EGRESOS
           </div>
         </td>
+          <td></td>
         <td className="text-end bg-porsiaca fw-bold">
           <span className='text-change'>
             {'-'}<NumberFormatMoney amount={totalEgresosPEN} />
           </span>
         </td>
-        {/* <td className="text-end bg-porsiaca fw-bold text-change"><NumberFormatMoney amount={-totalEgresosUSD} /></td> */}
       </tr>
       <tr>
         <td className="bg-porsiaca text-start">
@@ -241,14 +247,12 @@ const TableResumen = ({ totalIngresos, totalEgresosPEN, totalEgresosUSD, id_empr
             TOTAL
           </div>
         </td>
+          <td></td>
         <td className={`text-end bg-porsiaca fw-bold`}>
           <div className={`${totalIngresos - (totalEgresosPEN) < 0 ? 'text-change' : ''}`}>
             <NumberFormatMoney amount={totalIngresos - (totalEgresosPEN)} />
           </div>
         </td>
-        {/* <td className="text-end bg-porsiaca fw-bold text-change">
-          <NumberFormatMoney amount={-totalEgresosUSD} />
-        </td> */}
       </tr>
     </tbody>
   </Table>

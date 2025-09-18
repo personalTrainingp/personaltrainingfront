@@ -161,16 +161,17 @@ export const ComparativoVsActual=({
     background: C.black,
     color: C.white,
     textAlign: "center",
-    padding: "8px 12px",
-    fontWeight: 800,
+    padding: "25px 12px",
+    fontWeight: 700,
     letterSpacing: 0.2,
+    fontSize: 25
   };
 
   const sTable = { width: "100%", borderCollapse: "collapse", tableLayout: "fixed" };
-  const sHeadLeft = { background: C.red, color: C.white, padding: "10px", border: C.cellBorder, textAlign: "left" };
-  const sHead = { background: C.red, color: C.white, padding: "10px", border: C.cellBorder, textAlign: "center" };
+  const sHeadLeft = { background: C.red, color: C.white, padding: "10px", border: C.cellBorder, textAlign: "left", fontSize: 20 };
+  const sHead = { background: C.red, color: C.white, padding: "10px", border: C.cellBorder, textAlign: "center", fontSize: 20 };
   const sCell = { background: C.white, color: "#000", padding: "8px 10px", border: C.cellBorder, fontSize: 13 };
-  const sCellBold = { ...sCell, fontWeight: 700 };
+  const sCellBold = { ...sCell, fontWeight: 700, fontSize: 17 };
   const sRowShade = { background: C.greyRow };
 
   const MoneyCell = ({ value }) => {
@@ -192,7 +193,7 @@ export const ComparativoVsActual=({
   const MonthHead = ({ col }) => (
     <th style={sHead}>
       <div>{col.label}</div>
-      {col.isRef && <div style={{ fontSize: 12 }}>• REF</div>}
+      {col.isRef && <div style={{ fontSize: 12 }}></div>}
     </th>
   );
 
