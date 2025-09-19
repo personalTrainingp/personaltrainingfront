@@ -49,7 +49,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
     const onSubmitTrabajo = (e) => {
         e.preventDefault();
         postContratoProv({...formState, id_empresa}, id_prov, file_presupuesto, file_contrato, file_compromisoPago)
-        console.log({formState, id_prov, file_presupuesto});
+        console.log({formState, id_prov, file_presupuesto, file_contrato, file_compromisoPago});
         
         onCancelModal();
     };
@@ -104,7 +104,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
                             required
                         />
                 </div>
-                <div className='mb-3'>
+                {/* <div className='mb-3'>
                     <label htmlFor="penalidad_fijo" className="form-label">
                         PRESUPUESTO*
                     </label>
@@ -118,7 +118,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
                             onChange={(e)=>onFilePresupuestoChange(e)}
                             required
                         />
-                </div>
+                </div> */}
                 <div className='mb-3'>
                     <label htmlFor="penalidad_fijo" className="form-label">
                         CONTRATO*
@@ -151,7 +151,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
                         required
                     />
                 </div>
-                <div className="mb-3">
+                {/* <div className="mb-3">
                     <label htmlFor="cod_trabajo" className="form-label">
                         Codigo del contrato*
                     </label>
@@ -165,8 +165,8 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
                         onChange={onInputChange}
                         required
                     />
-                </div>
-                <div className="mb-3">
+                </div> */}
+                {/* <div className="mb-3">
                     <label htmlFor="penalidad_fijo" className="form-label">
                         Penalidad por dia*
                     </label>
@@ -180,7 +180,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
                         onChange={onInputChange}
                         required
                     />
-                </div>
+                </div> */}
                 <div className="mb-3">
                             <label htmlFor="estado_contrato" className="font-bold">
                                 Estado*

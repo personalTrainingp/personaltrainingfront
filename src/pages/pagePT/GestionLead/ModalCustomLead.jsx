@@ -9,9 +9,9 @@ const customLead = {
     cantidad: 0,
     monto: 0
 }
-export const ModalCustomLead = ({show, onHide, id, id_empresa=598}) => {
+export const ModalCustomLead = ({show, onHide, id, id_empresa=598, formUpdating}) => {
     const { postLead, updateLead } = useGestionLeadStore()
-    const {formState, fecha, cantidad, monto, onInputChange, onResetForm} = useForm(customLead)
+    const {formState, fecha, cantidad, monto, onInputChange, onResetForm} = useForm(id===0?customLead:formUpdating)
     const onCancelCustomLead = (e)=>{
         // e.preventDefault()
         onHide()
@@ -22,15 +22,16 @@ export const ModalCustomLead = ({show, onHide, id, id_empresa=598}) => {
         if(id!==0){
             updateLead(id, formState, id_empresa)
         }else{
-            postLead(598, formState)
+            postLead(id_empresa, formState)
         }
         onCancelCustomLead()
     }
+    console.log({fecha});
+    
   return (
-    <Dialog visible={show} onHide={onHide} header={'AGREGAR LEAD'}>
+    <Dialog visible={show} onHide={onHide} header={`${id!==0?'EDITAR LEAD': 'AGREGAR LEAD'}`}>
         <form>
             <div className='mb-2'>
-                {id}
                 <label>CANTIDAD</label>
                 <input
                     className='form-control'

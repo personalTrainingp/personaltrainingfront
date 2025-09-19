@@ -25,15 +25,15 @@ export const useGestionLeadStore = () => {
 	const updateLead = async (id, formState, id_empresa) => {
 		try {
 			const { data } = await PTApi.put(`/lead/${id}`, formState);
-			await obtenerLeads(598);
+			await obtenerLeads(id_empresa);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const deleteLead = async (id) => {
+	const deleteLead = async (id, id_empresa) => {
 		try {
 			const { data } = await PTApi.put(`/lead/delete/${id}`);
-			await obtenerLeads(598);
+			await obtenerLeads(id_empresa);
 		} catch (error) {
 			console.log(error);
 		}

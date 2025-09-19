@@ -423,8 +423,8 @@ export default function ProtectedRoutes() {
 					{sections.find(e=>e.url==='/reporte-admin/RecursosHumanoReportes')&&
 						<Route path="reporte-admin/RecursosHumanoReportes" element={<RecursosHumanoReportes />} />
 					}
-					{sections.find(e=>e.url==='/reporte-admin/punto-equilibrio')&&
-						<Route path="reporte-admin/punto-equilibrio" element={<PuntoEquilibrio />} />
+					{sections.find(e=>e.url==='/reporte-admin/gestion-lead')&&
+						<Route path="reporte-admin/gestion-lead" element={<PuntoEquilibrio />} />
 					}
 					<Route path='programa/:uid' element={<PerfilPrograma/>}/>
 					<Route path='gestion-descuentos' element={<GestionDescuentos/>}/>

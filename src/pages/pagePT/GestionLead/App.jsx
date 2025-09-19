@@ -5,45 +5,45 @@ import { PageBreadcrumb } from '@/components'
 import { Button } from 'primereact/button'
 import { TableGestionLead } from './TableGestionLead'
 import { ModalCustomLead } from './ModalCustomLead'
-import { useSelector } from 'react-redux'
 import { confirmDialog } from 'primereact/confirmdialog'
+import { TabPanel, TabView } from 'primereact/tabview'
 
 export const App = () => {
-  const { obtenerLeads, deleteLead } = useGestionLeadStore()
-  const { dataView } = useSelector(e=>e.DATA)
-  const [isOpenModalCustomLead, setisOpenModalCustomLead] = useState({isOpen: false, id: 0})
-  const onClickCustomLead = (id)=>{
-    setisOpenModalCustomLead({isOpen: true, id: id})
+  const { deleteLead } = useGestionLeadStore()
+  const [isOpenModalCustomLead, setisOpenModalCustomLead] = useState({isOpen: false, id: 0, id_empresa: 598, formUpdating: {}})
+  const onClickCustomLead = (id, id_empresa, formUpdating)=>{
+    setisOpenModalCustomLead({isOpen: true, id: id, id_empresa, formUpdating})
   }
-  const onDeleteItemLead = (id)=>{
+  const onDeleteItemLead = (id, id_empresa)=>{
     confirmDialog({
       header: 'Confirmar eliminación',
       message: '¿Está seguro de eliminar este lead?',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        deleteLead(id)
+        deleteLead(id, id_empresa)
       },
       reject: () => {
           // nothing to do
       }
     })
   }
-  useEffect(() => {
-    obtenerLeads(598)
-  }, [])
   
   return (
     <>
       <PageBreadcrumb title={'GESTION DE LEADS'}/>
       <Row> 
         <Col lg={12}>
-        <Button label='AGREGAR LEAD' onClick={()=>onClickCustomLead(0)}/>
-        </Col>
-        <Col lg={12}>
-          <TableGestionLead onDeleteItemLead={onDeleteItemLead} onClickCustomLead={onClickCustomLead} data={dataView}/>
+          <TabView>
+            <TabPanel header='CHANGE'>
+              <TableGestionLead id_empresa={598} onDeleteItemLead={onDeleteItemLead} onClickCustomLead={onClickCustomLead}/>
+            </TabPanel>
+            <TabPanel header='CIRCUS'>
+              <TableGestionLead id_empresa={599} onDeleteItemLead={onDeleteItemLead} onClickCustomLead={onClickCustomLead}/>
+            </TabPanel>
+          </TabView>
         </Col>
       </Row>
-      <ModalCustomLead id={isOpenModalCustomLead.id} onHide={()=>setisOpenModalCustomLead({isOpen: false, id: 0})} show={isOpenModalCustomLead.isOpen}/>
+      <ModalCustomLead formUpdating={isOpenModalCustomLead?.formUpdating} id_empresa={isOpenModalCustomLead.id_empresa} id={isOpenModalCustomLead.id} onHide={()=>setisOpenModalCustomLead({isOpen: false, id: 0})} show={isOpenModalCustomLead.isOpen}/>
     </>
   )
 }
