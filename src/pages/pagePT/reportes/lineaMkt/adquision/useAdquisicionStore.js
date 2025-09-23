@@ -542,7 +542,7 @@ export const useAdquisicionStore = () => {
 				},
 			});
 			const ventasSinCero = data.ventasProgramas.filter(
-				(f) => f.detalle_ventaMembresium.tarifa_monto !== 0
+				(f) => f.detalle_ventaMembresium?.tarifa_monto !== 0
 			);
 			dispatch(onDataFail(ventasSinCero));
 			const agregarItemsDias = agruparPorMesYAnio(

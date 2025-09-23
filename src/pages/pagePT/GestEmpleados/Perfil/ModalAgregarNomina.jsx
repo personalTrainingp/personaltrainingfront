@@ -36,7 +36,7 @@ export const ModalAgregarNomina = ({show, onHide, uid_empl}) => {
       obtenerAsistenciasxEmpl(uid_empl, 4)
     }, [])
     
-
+    
     return (
       <Dialog
           visible={show}

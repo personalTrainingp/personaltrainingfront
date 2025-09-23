@@ -1,52 +1,88 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ItemContrato } from './ItemContrato'
 import { Table } from 'react-bootstrap'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
-import { ModalAgregarJornada } from './Jornada/ModalAgregarJornada'
+import { ModalCustomJornada } from './Jornada/ModalCustomJornada'
+import { Button } from 'primereact/button'
+import { ModalCustomContrato } from './ModalCustomContrato'
+import { useContratoColaboradorStore } from './useContratoColaboradorStore'
+import { useSelector } from 'react-redux'
+import dayjs from 'dayjs'
 
-export const DataTableContratos = () => {
-  const [isOpenModalVerAsistencia, setisOpenModalVerAsistencia] = useState({isOpenModal: false, fecha_inicio: '', fecha_fin: ''})
+export const DataTableContratos = ({id_empleado}) => {
+  const [isOpenModalVerAsistencia, setisOpenModalVerAsistencia] = useState({isOpenModal: false, fecha_inicio: '', fecha_fin: '', id: 0})
+  const [isOpenModalCustomContrato, setisOpenModalCustomContrato] = useState({isOpen: false})
+  const { obtenerContratosxColaborador } = useContratoColaboradorStore()
+  const { dataView } = useSelector(e=>e.DATA)
+  const onClickVerAsistencia=(asistencia, id)=>{
+    setisOpenModalVerAsistencia({fecha_fin: asistencia.fecha_fin, fecha_inicio: asistencia.fecha_inicio, isOpenModal: true, id: id})
+  }
+  const onClickCustomContrato = ()=>{
+    setisOpenModalCustomContrato({isOpen: true})
+  }
+
+  useEffect(() => {
+    obtenerContratosxColaborador(id_empleado)
+  }, [id_empleado])
   return (
     <div>
+      <div className='mb-2'>
+        <Button label='AGREGAR CONTRATO' onClick={onClickCustomContrato}/>
+      </div>
       <Table>
                   <thead className='bg-primary'>
                       <tr>
-                          <th>CARGO</th>
-                          <th>MONTO A GANAR</th>
-                          <th>FECHA DE INICIO</th>
-                          <th>FECHA DE FIN</th>
-                          <th>MIS ASISTENCIAS</th>
-                          <th></th>
-                          <th></th>
+                          <th className='text-white'>SUELDO</th>
+                          <th className='text-white'>FECHA DE INICIO</th>
+                          <th className='text-white'>FECHA DE FIN</th>
+                          <th className='text-white'>MIS ASISTENCIAS</th>
+                          <th className='text-white'>OBSERVACIONES</th>
+                          <th className='text-white'></th>
                       </tr>
                   </thead>
                   <tbody>
-                      <tr>
-                          <th>SISTEMAS</th>
+                        {
+                          dataView.map(d=>{
+                            return (
+                        <tr>
                           <th>
                             <div className=''>
-                              <NumberFormatMoney amount={1300}/>
+                              {/* {JSON.stringify(d, null, 2)} */}
+                              <NumberFormatMoney amount={d.sueldo}/>
                             </div>
                           </th>
-                          <th>21/09/2024</th>
-                          <th>21/10/2025</th>
+                          <th>{dayjs.utc(d.fecha_inicio).format('dddd DD [DE] MMMM [DEL] YYYY')}</th>
+                          <th>{dayjs.utc(d.fecha_fin).format('dddd DD [DE] MMMM [DEL] YYYY')}</th>
                           <th>
-                            <div className='' onClick={()=>setisOpenModalVerAsistencia({isOpenModal:true, fecha_fin:'21/09/2025', fecha_inicio: '21/10/2024'})}>
+                            <div className='' onClick={()=>onClickVerAsistencia({isOpenModal:true, fecha_fin:'2025-10-21', fecha_inicio: '2024-10-21'}, d?.id)}>
                               VER
                             </div>
                           </th>
                           <th>
-                            <i className='text-primary cursor-pointer'>EDITAR</i>
+                            {d.observacion}
                           </th>
                           <th>
-                            <i className='text-primary cursor-pointer'>DELETE</i>
+                            <div className='d-flex gap-2'>
+                              <div>
+                                <i className='text-primary cursor-pointer'>EDITAR</i>
+                              </div>
+                              <div>
+                                <i className='text-primary cursor-pointer'>DELETE</i>
+                              </div>
+                            </div>
                           </th>
                       </tr>
+                            )
+                          })
+                        }
                   </tbody>
               </Table>
-              <ModalAgregarJornada 
+              {JSON.stringify(isOpenModalVerAsistencia, null, 2)}
+              <ModalCustomContrato id_empleado={id_empleado} show={isOpenModalCustomContrato.isOpen} onHide={()=>setisOpenModalCustomContrato({isOpen: false})}/>
+              <ModalCustomJornada 
                     onHide={()=>setisOpenModalVerAsistencia({isOpenModal: false, fecha_fin: '', fecha_inicio: ''})}
                     show={isOpenModalVerAsistencia.isOpenModal}
+                    id_contrato={isOpenModalVerAsistencia.id}
                     arrayFecha={[new Date(isOpenModalVerAsistencia.fecha_inicio), new Date(isOpenModalVerAsistencia.fecha_fin)]}
                     horarios={
                       [

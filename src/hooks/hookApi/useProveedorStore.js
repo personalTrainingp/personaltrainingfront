@@ -1,4 +1,5 @@
 import { PTApi } from '@/common/api/';
+import { onSetDataView } from '@/store/data/dataSlice';
 import {
 	onDataPerfil,
 	onSetProveedores,
@@ -205,7 +206,7 @@ export const useProveedorStore = () => {
 					`/storage/blob/create/${data.contratoProv.uid_presupuesto}?container=presupuestos-proveedores`,
 					formFile
 				);
-			}	
+			}
 			if (formFileContrato) {
 				await PTApi.post(
 					`/storage/blob/create/${data.contratoProv.uid_contrato}?container=contratos-proveedores`,
@@ -231,6 +232,7 @@ export const useProveedorStore = () => {
 	const ObtenerContratoxID = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/proveedor/obtener-contrato/${id}`);
+			dispatch(onSetDataView(data.contratoProv));
 			setdataContrato(data.contratosProv);
 		} catch (error) {
 			console.log(error);

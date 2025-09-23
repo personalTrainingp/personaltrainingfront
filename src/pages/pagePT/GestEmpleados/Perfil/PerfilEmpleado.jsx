@@ -104,21 +104,21 @@ export const PerfilEmpleado = () => {
                             <TabPanel header={'COMENTARIOS'}>
                                                 <SectionComentario uid_comentario={userEmpleado.uid_comentario}/>
                             </TabPanel>
-                            <TabPanel header={'NOMINAS'}>
-                              {/* <AppContratos uid_empleado={userEmpleado.uid_empleado}/> */}
-                                <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/>
+                            <TabPanel header={'PLANILLA'}>
+                              <AppContratos id_empleado={userEmpleado.id_empl}/>
+                                {/* <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/> */}
                             </TabPanel>
                             <TabPanel header={'PERMISOS'}>
                               <PanelPermisos/>
                             </TabPanel>
                             <TabPanel header={'TARDANZAS JUSTIFICADAS'}>
-                            <PanelTardanzasJustificadas/>
+                              <PanelTardanzasJustificadas/>
                             </TabPanel>
                             <TabPanel header={'HORAS EXTRAS'}>
-                            <PanelHorasExtras/>
+                              <PanelHorasExtras/>
                             </TabPanel>
                             <TabPanel header={'SALIDAS TEMPRANAS'}>
-                            <PanelSalidasTempranas/>
+                              <PanelSalidasTempranas/>
                             </TabPanel>
                         </TabView>
                     </Card.Body>

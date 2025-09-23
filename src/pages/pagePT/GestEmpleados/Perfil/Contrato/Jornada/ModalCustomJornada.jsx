@@ -6,6 +6,8 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
+import { arrayTipoJornada } from '@/types/type';
+import { useContratoColaboradorStore } from '../useContratoColaboradorStore';
 
 dayjs.locale('es');
 
@@ -98,19 +100,10 @@ const getMonthsInRange = (from, to) => {
   }
   return months;
 };
-
-// ---------- Modales: Especial ----------
-const tiposEspecial = [
-  { label: 'Refrigerio', value: 'refrigerio' },
-  { label: 'Virtual', value: 'virtual' },
-  { label: 'Descanso', value: 'descanso' },
-//   { label: 'Otro', value: 'otro' },
-];
-
 const ModalEspecial = ({ visible, onHide, onAdd }) => {
   const [inicio, setInicio] = useState('12:00');
   const [fin, setFin] = useState('13:00');
-  const [tipo, setTipo] = useState('refrigerio');
+  const [tipo, setTipo] = useState(1500);
   const [obs, setObs] = useState('');
 
   const parseHM = (s) => {
@@ -140,7 +133,7 @@ const ModalEspecial = ({ visible, onHide, onAdd }) => {
         </div>
         <div>
           <label>Tipo</label>
-          <Dropdown options={tiposEspecial} value={tipo} onChange={(e) => setTipo(e.value)} />
+          <Dropdown options={arrayTipoJornada} value={tipo} onChange={(e) => setTipo(e.value)} />
         </div>
         <div>
           <label>Observación</label>
@@ -251,10 +244,18 @@ const ModalJornada = ({
 };
 
 // ---------- Panel derecho: items pintados ----------
-const PanelItems = ({ items, onToggleDetail, onDelete }) => {
+const PanelItems = ({ items, onToggleDetail, onDelete, id_contrato }) => {
+  const { postTipoContratoxDia } = useContratoColaboradorStore()
+  const onClickPostItems = (it)=>{
+      console.log({it, df: dataFlatMapItems(it, id_contrato)});
+    postTipoContratoxDia(dataFlatMapItems(it, id_contrato))
+  }
   return (
     <div style={{ borderLeft: '1px solid #eee', paddingLeft: 12 }}>
       <div style={{ fontWeight: 700, marginBottom: 8 }}>Items creados</div>
+      {/* <pre>
+        {JSON.stringify(items, null, 2)}
+      </pre> */}
       {items.length === 0 && <div style={{ opacity: .7 }}>Aún no hay items</div>}
       {items.map((it) => (
         <div key={it.id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 10, marginBottom: 10, background: '#fff' }}>
@@ -289,17 +290,21 @@ const PanelItems = ({ items, onToggleDetail, onDelete }) => {
           )}
         </div>
       ))}
+      <Button label='AGREGAR ' onClick={()=>onClickPostItems(items)}/>
+
+
     </div>
   );
 };
 
 // ---------- Componente principal ----------
-export const ModalAgregarJornada = ({
+export const ModalCustomJornada = ({
   show,
   onHide,
   arrayFecha = [new Date(), 'indefinido'],
   horarios = [{ horario: '12:00' }, { horario: '15:00' }, { horario: '18:00' }],
   uid_empl,
+  id_contrato
 }) => {
   const [from, to] = arrayFecha || [];
   const months = useMemo(() => getMonthsInRange(from, to), [from, to]);
@@ -329,7 +334,6 @@ export const ModalAgregarJornada = ({
   const handleAceptarJornada = (data) => {
     setPainter(data); // activar modo pintura
   };
-
   // Hover: calcular set según modo
   const computeHoverSet = useCallback((dateUnderCursor) => {
     if (!painter) return new Set();
@@ -437,7 +441,7 @@ export const ModalAgregarJornada = ({
 
   // Render
   return (
-    <Dialog onHide={onHide} visible={show} header={'AGREGAR JORNADA'} style={{ width: '95vw', maxWidth: 1400 }}>
+    <Dialog onHide={onHide} visible={show} header={`AGREGAR JORNADA ${id_contrato}`} style={{ width: '95vw', maxWidth: 1400 }}>
       <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr 320px', gap: 12, minHeight: 500 }}>
         {/* Sidebar izquierda */}
         <div style={{ borderRight: '1px solid #eee', paddingRight: 12 }}>
@@ -462,7 +466,6 @@ export const ModalAgregarJornada = ({
               : <>Selecciona un horario para configurar la jornada.</>}
           </div>
         </div>
-
         {/* Grid de meses */}
         <div style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
           {months.map((m) => (
@@ -478,7 +481,7 @@ export const ModalAgregarJornada = ({
         </div>
 
         {/* Panel derecho items */}
-        <PanelItems items={items} onToggleDetail={toggleDetail} onDelete={deleteItem} />
+        <PanelItems items={items} id_contrato={id_contrato} onToggleDetail={toggleDetail} onDelete={deleteItem} />
       </div>
 
       {/* Modal jornada */}
@@ -491,3 +494,32 @@ export const ModalAgregarJornada = ({
     </Dialog>
   );
 };
+
+function dataFlatMapItems(dataFlat, id_contrato) {
+  return dataFlat.flatMap((item) => {
+  // normales
+  const normales = item.fechas.map((fecha) => ({
+    id_tipo_horario: 0,
+    fecha,
+    hora_inicio: item.horario_inicio,
+    minutos: item.total_minutos,
+    observacion: "",
+    id_contrato,
+  }));
+
+  // especiales
+  const especiales = item.especiales.flatMap((esp) =>
+    item.fechas.map((fecha) => ({
+      id_tipo_horario: esp.tipo,
+      hora_inicio: esp.inicio,
+      minutos: esp.minutos,
+      fecha,
+      observacion: esp.observacion,
+      id_contrato
+    }))
+  );
+
+  return [...normales, ...especiales];
+});
+}
+

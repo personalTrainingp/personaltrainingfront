@@ -150,7 +150,7 @@ useEffect(() => {
                       aria-controls={`row-${grupo.id_prov}`}
                       style={{ textDecoration: 'none' }}
                     >
-                      {isOpen ? 'v' : '>'}
+                      VER <br/> contrato
                     </Button>
                   </td>
                   <td className='fs-3'><div className='' style={{width: '400px'}}>{razon}</div></td>

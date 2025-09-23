@@ -196,12 +196,12 @@ export const ReporteDemograficoCliente = ({RANGE_DATE}) => {
           <Col xxl={6} md={6}>
             <ReportCard titlo={'TIPO DE SOCIO'}/>
           </Col> */}
-          <Col xxl={12} md={6}>
+          {/* <Col xxl={12} md={6}>
           <Tarjetas tasks={TotalDeVentasxProdServ('mem').data} title={'RANKING POR DISTRITOS'} dataSumaTotal={0}/>
           </Col>
           <Col xxl={12} md={6}>
             <TarjetasPago tasks={TotalDeVentasxProdServ('mem').data} title={'VENTAS POR RANGO DE EDAD'} dataSumaTotal={TotalDeVentasxProdServ(clickServProd).asesores_pago.reduce((total, item) => total + item.monto, 0)}/>
-          </Col>
+          </Col> */}
           <Col xxl={12}>
             <HistorialVentas/>
           </Col>

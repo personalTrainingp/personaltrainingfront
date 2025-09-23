@@ -38,41 +38,19 @@ export const GestComercial = () => {
 	
   return (
     <>
-    			<PageBreadcrumb title="GESTION COMERCIAL" subName="E-commerce" />
+    			<PageBreadcrumb title="GESTION DE RESERVAS MONKEY FIT" subName="E-commerce" />
                 
 			<Row>
 				<Col xs={12}>
 							<Row className="mb-2">
 								<Col sm={5}>
-									<Button label='Agregar' icon={'mdi mdi-plus-circle'} onClick={onModalRegClienteOpen}/>
+									<Button label='Agregar reservas' icon={'mdi mdi-plus-circle'} onClick={onModalRegClienteOpen}/>
 								</Col>
 							</Row>
 					<Card>
 						<Card.Body>
 							<TabView>
-								{
-									agruparPorEstados(dataView).map(d=>(
-										<TabPanel header={d.label_estado}>
-                      <Col lg={12}>
-                          <div className="flex-auto">
-                            <label htmlFor="buttondisplay" className="font-bold block mb-2">
-                                MES
-                            </label>
-                            <Calendar id="buttondisplay"
-                      view="month"
-                      locale='es'
-                      value={rangoDate}
-                      name="rangoDate"
-                      dateFormat="MM/yy"
-                      onChange={onInputChange}
-                      showIcon
-                      readOnlyInput />
-                          </div>
-                          </Col>
-											<TableNoClientes dataV={d.items}/>
-										</TabPanel>
-									))
-								}
+                
 							</TabView>
 						</Card.Body>
 					</Card>

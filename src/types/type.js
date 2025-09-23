@@ -14,6 +14,11 @@ export const clasesVentasSeparadas = (tipo) => {
 			return '';
 	}
 };
+export const arrayTipoJornada = [
+	{ value: 1501, label: 'DESCANSO' },
+	{ value: 1500, label: 'REFRIGERIO' },
+	{ value: 1499, label: 'VIRTUAL' },
+];
 
 export const arrayEmpresa = [
 	{ value: 598, label: 'CHANGE' },
@@ -166,6 +171,7 @@ export const arrayTipoCliente = [
 	{ label: 'Socio', value: 84 },
 	{ label: 'canje uso Imagen', value: 229 },
 	{ label: 'canje influencer', value: 266 },
+	{ label: 'CLIENTE MONKEY FIT', value: 267 },
 	// { label: 'canje - influencer moda', value: 221 },
 	// { label: 'canje - influencer educacion', value: 222 },
 	// { label: 'canje - artista', value: 223 },

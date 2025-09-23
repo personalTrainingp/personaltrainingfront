@@ -150,10 +150,10 @@ export const useReporteStore = () => {
 			const dataTotal = data.reporte.map((e) => {
 				// Filtrar productos con id_categoria igual a 17
 				const productosFiltradosAcc = e.detalle_ventaProductos.filter(
-					(item) => item.tb_producto.id_categoria === 17
+					(item) => item.tb_producto?.id_categoria === 17
 				);
 				const productosFiltradosSup = e.detalle_ventaProductos.filter(
-					(item) => item.tb_producto.id_categoria === 18
+					(item) => item.tb_producto?.id_categoria === 18
 				);
 				// const NutFiltrados = e.detalle_ventaCitas?.filter(
 				// 	(item) => item.tb_servicio.tipo_servicio === 'NUTRI'
@@ -191,7 +191,7 @@ export const useReporteStore = () => {
 				.map((e) => {
 					// Filtrar productos con id_categoria igual a 17
 					const productosFiltrados = e.detalle_ventaProductos.filter(
-						(item) => item.tb_producto.id_categoria === 18
+						(item) => item.tb_producto?.id_categoria === 18
 					);
 
 					return {
@@ -207,7 +207,7 @@ export const useReporteStore = () => {
 			const dataSuplemento = data.reporte
 				.map((e) => {
 					const productosFiltrados = e.detalle_ventaProductos.filter(
-						(item) => item.tb_producto.id_categoria === 17
+						(item) => item.tb_producto?.id_categoria === 17
 					);
 					return {
 						id: e.id,
@@ -485,7 +485,7 @@ export const useReporteStore = () => {
 				},
 			});
 			const agrupadoPorTipoCliente = data.reporte.reduce((acc, venta) => {
-				const tipoCli = venta.tb_cliente.tipoCli_cli;
+				const tipoCli = venta.tb_cliente?.tipoCli_cli;
 				let grupo = acc.find((g) => g.tipo_cli === tipoCli);
 
 				if (!grupo) {
@@ -522,7 +522,7 @@ export const useReporteStore = () => {
 				},
 			});
 			const agrupadoPorTipoCliente = data.reporte.reduce((acc, venta) => {
-				const tipoCli = venta.tb_cliente.tipoCli_cli;
+				const tipoCli = venta.tb_cliente?.tipoCli_cli;
 				let grupo = acc.find((g) => g.tipo_cli === tipoCli);
 
 				if (!grupo) {
