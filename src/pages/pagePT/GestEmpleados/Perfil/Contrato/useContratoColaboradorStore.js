@@ -16,7 +16,6 @@ export const useContratoColaboradorStore = () => {
 		try {
 			const { data } = await PTApi.get(`/jornada/jornada/${id_empl}`);
 			console.log({ data, id_empl });
-
 			dispatch(onSetDataView(data.contratos));
 		} catch (error) {
 			console.log(error);
@@ -29,7 +28,7 @@ export const useContratoColaboradorStore = () => {
 			console.log(error);
 		}
 	};
-	
+
 	return {
 		postContratoColaborador,
 		obtenerContratosxColaborador,

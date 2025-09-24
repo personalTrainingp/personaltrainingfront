@@ -6,12 +6,12 @@ import 'dayjs/locale/es'  // importante para español
 export const GraficoLinealInversionRedes = ({ data = [], fechas = [new Date()] }) => {
   dayjs.locale('es') // cambia idioma global a español
 
-  const monthKey = (f) => dayjs(f).format('YYYY-MMMM')
-
+  const monthKey = (f) => dayjs.utc(f).format('YYYY-MMMM')
+  
   const { categories, series } = useMemo(() => {
     if (!fechas.length) return { categories: [], series: [] }
 
-    const firstDate = dayjs(fechas[0])
+    const firstDate = dayjs.utc(fechas[0])
     const daysInMonth = firstDate.daysInMonth()
 
     // 👉 eje X con formato “lunes 1 agosto 2025”
@@ -29,7 +29,7 @@ export const GraficoLinealInversionRedes = ({ data = [], fechas = [new Date()] }
       const buckets = Array(daysInMonth).fill(0)
 
       for (const it of items) {
-        const d = dayjs(it.fecha)
+        const d = dayjs.utc(it.fecha)
         if (d.month() !== firstDate.month() || d.year() !== firstDate.year()) continue
         const day = d.date()
         const val = Number(

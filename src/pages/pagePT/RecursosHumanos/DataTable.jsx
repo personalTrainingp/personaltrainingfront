@@ -1,16 +1,35 @@
 import { NumberFormatMoney } from '@/components/CurrencyMask'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Table } from 'react-bootstrap'
 import { ModalDataDetalleTable } from './ModalDataDetalleTable'
+import { useReportePlanillaStore } from './useReportePlanillaStore'
+import dayjs from 'dayjs'
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
+function generarRangoMeses(mesAnio) {
+  const [mesStr, anioStr] = mesAnio.trim().split("/");
+  const mes = Number(mesStr);
+  const anio = Number(anioStr);
+  if (!mes || !anio) throw new Error("Formato esperado: MM/YYYY");
+
+  const ultimoDia = new Date(anio, mes, 0).getDate();
+
+  const inicio = dayjs.utc(new Date(Date.UTC(anio, mes - 1, 1))).startOf("day");
+  const fin    = dayjs.utc(new Date(Date.UTC(anio, mes - 1, ultimoDia))).endOf("day");
+  console.log({inicio, fin});
+  
+  return [inicio.toISOString(), fin.toISOString()];
+}
 export const DataTable = () => {
     const [isOpenModalDetalleData, setisOpenModalDetalleData] = useState(false)
-    const [selectMes, setselectMes] = useState('')
+    const { obtenerMarcacionxFecha,obtenerContratosDeEmpleados, dataMarcacionxFecha, dataContratoxFecha } = useReportePlanillaStore()
+    const [selectMes, setselectMes] = useState([])
     const [selectitems, setselectitems] = useState([])
     // Simulando datos para la tabla
   const data = [
     {
-        mes: '12/2024',
+        mes: '08/2025',
         items_colaboradores_activos: [
             {cci: '', banco: 'bbva',cargo: 'contadora', nombre_apellidos: 'OFELIA VASQUEZ GARCIA', monto_pago: 2000, dias_tardanzas: 0, descuento: 0 }, 
             {cci: '00219319363020306118', banco: 'bcp',cargo: 'administracion', nombre_apellidos: 'MIRTHA MARQUEZ LEVANO', monto_pago: 2000, dias_tardanzas: 0, descuento: 0 },
@@ -28,10 +47,26 @@ export const DataTable = () => {
         ],
     }
   ]
+  useEffect(() => {
+    if(isOpenModalDetalleData){
+      obtenerMarcacionxFecha(selectMes, 598)
+      obtenerContratosDeEmpleados(selectMes)
+    }
+  }, [selectMes, isOpenModalDetalleData])
+  const dataContratoConMarcacion = dataContratoxFecha.map(c =>{
+    const dataMarcacions = dataMarcacionxFecha.filter(m=>m.dni===c.numDoc_empl)
+    const dataPlanilla = unirAsistenciaYContrato(dataMarcacions, c?._empl[0]?.contrato_empl?.filter(f=>f.id_tipo_horario===0))
+    return {
+      dataMarcacions,
+      dataPlanilla,
+      ...c
+    }
+  })
+  console.log({dataMarcacionxFecha, dataContratoxFecha, dataContratoConMarcacion});
   const onClickDetalleData = (items, mesAnio)=>{
     onOpenModalDetalleData()
       setselectitems(items)
-      setselectMes(mesAnio)
+      setselectMes(generarRangoMeses(mesAnio))
   }
   const onOpenModalDetalleData = ()=>{
     setisOpenModalDetalleData(true)
@@ -67,7 +102,75 @@ export const DataTable = () => {
             }
         </tbody>
     </Table>
-    <ModalDataDetalleTable show={isOpenModalDetalleData} onHide={onCloseModalDetalleData} data={selectitems} mesAnio={selectMes}/>
+    <ModalDataDetalleTable dataContratoConMarcacion={dataContratoConMarcacion} show={isOpenModalDetalleData} onHide={onCloseModalDetalleData} data={selectitems} mesAnio={selectMes}/>
     </>
   )
+}
+
+
+function unirAsistenciaYContrato(dataMarcacion = [], contrato_empl = []) {
+  const toDateStr = (iso) => {
+    const d = new Date(iso);
+    return isNaN(d) ? null : d.toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
+  };
+  const toTimeStr = (iso) => {
+    const d = new Date(iso);
+    return isNaN(d) ? null : d.toISOString().slice(11, 19); // HH:MM:SS
+  };
+  const timeToMinutes = (hhmmss) => {
+    if (!hhmmss) return null;
+    const [h, m, s] = hhmmss.split(":").map(Number);
+    return h * 60 + m + Math.floor((s || 0) / 60);
+  };
+
+  // Index de marcación: quedarse con la más temprana por día
+  const marcasByDate = new Map();
+  for (const m of dataMarcacion) {
+    const raw = m.tiempo_marcacion_new ?? m.tiempo_marcacion;
+    if (!raw) continue;
+    const iso = raw.includes("T") ? raw : raw.replace(" ", "T") + ".000Z";
+    const fecha = toDateStr(iso);
+    const hora = toTimeStr(iso);
+    if (!fecha || !hora) continue;
+
+    const curr = marcasByDate.get(fecha);
+    if (!curr || timeToMinutes(hora) < timeToMinutes(curr.hora_marca)) {
+      marcasByDate.set(fecha, { hora_marca: hora });
+    }
+  }
+
+  // Armar resultado SOLO por días con contrato
+  const out = [];
+  for (const c of contrato_empl) {
+    const fecha = toDateStr(c.fecha);
+    const hora_inicio = toTimeStr(c.hora_inicio); // viene con 1970, solo hora
+    if (!fecha || !hora_inicio) continue;
+
+    const marca = marcasByDate.get(fecha) || { hora_marca: null };
+
+    const minutosIni = timeToMinutes(hora_inicio);
+    const minutosMarca = timeToMinutes(marca.hora_marca);
+    const minutosDiferencia =
+      minutosIni != null && minutosMarca != null
+        ? String(minutosMarca - minutosIni)
+        : null;
+
+    out.push({
+      fecha,
+      asistenciaYcontrato: {
+        contrato_empl: {
+          hora_inicio,
+          minutos: c.minutos ?? null,
+        },
+        marcacion_empl: {
+          hora_marca: marca.hora_marca,
+        },
+        minutosDiferencia,
+      },
+    });
+  }
+
+  // Orden por fecha asc
+  out.sort((a, b) => (a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0));
+  return out;
 }

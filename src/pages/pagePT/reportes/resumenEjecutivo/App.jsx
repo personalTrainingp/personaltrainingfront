@@ -149,7 +149,6 @@ export const App = ({ id_empresa }) => {
                   <GraficoLinealInversionRedes
                     data={dataLeadPorMesAnio}
                     fechas={[new Date()]}
-
                   />
             </Col>
           </Row>

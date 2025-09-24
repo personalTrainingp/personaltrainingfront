@@ -4,16 +4,16 @@ import { Dialog } from 'primereact/dialog'
 import React from 'react'
 import { Table } from 'react-bootstrap'
 
-export const ModalDataDetalleTable = ({mesAnio, show, onHide, data}) => {
+export const ModalDataDetalleTable = ({mesAnio, show, onHide, data, dataContratoConMarcacion}) => {
   console.log(data, "porrrr");
   
   return (
-    <Dialog header={`DETALLE DEL ${mesAnio}`} visible={show} onHide={onHide}>
+    <Dialog header={`PLANILLA AGOSTO`} visible={show} onHide={onHide}>
       <div className='fs-4'>
         <Table striped responsive>
           <thead className='bg-primary text-white'>
             <tr className='text-white'>
-              <th className='text-white'>CARGO</th>
+              {/* <th className='text-white'>CARGO</th> */}
               <th className='text-white'>COLABORADOR</th>
               <th className='text-white'>SEGUN CONTRATO <SymbolSoles fontSizeS={'10px'}/></th>
               <th className='text-white'>DIAS LABORABLES SEGUN CONTRATO</th>
@@ -25,17 +25,14 @@ export const ModalDataDetalleTable = ({mesAnio, show, onHide, data}) => {
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => (
+            {dataContratoConMarcacion?.map((item, index) => (
               <tr key={index}>
-                <td>{item.cargo}</td>
-                <td>{item.nombre_apellidos}</td>
-                <td><NumberFormatMoney amount={item.monto_pago}/></td>
-                <td>{31}</td>
-                <td>{item.dias_tardanzas}</td>
-                <td>{item.descuento}</td>
-                <td><NumberFormatMoney amount={(item.monto_pago-item.descuento)}/></td>
-                <td>{item.banco}</td>
-                <td>{item.cci}</td>
+                {/* <td>{item.cargo}</td> */}
+                {/* <td>{item.nombre_empl}</td> */}
+                <td>{item.nombre_empl}</td>
+                <td><NumberFormatMoney amount={item._empl[0].sueldo}/></td>
+                <td>31</td>
+                <td>{item.dataPlanilla?.filter(p=>Number(p.asistenciaYcontrato.minutosDiferencia)>=0).length}</td>
               </tr>
             ))}
           </tbody>

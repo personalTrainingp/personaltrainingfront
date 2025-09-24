@@ -3,7 +3,8 @@ import TopBarTheme from '@/components/ThemeCustomizer/TopBarTheme';
 import { useState } from 'react';
 
 export const useReportePlanillaStore = () => {
-	const [data, setdata] = useState([]);
+	const [dataMarcacionxFecha, setdataMarcacionxFecha] = useState([]);
+	const [dataContratoxFecha, setdataContratoxFecha] = useState([]);
 	const obtenerReportePlanilla = async () => {
 		try {
 			const { data: dataClientesxMembresia } = await PTApi.get('/venta/clientes-membresias');
@@ -28,8 +29,39 @@ export const useReportePlanillaStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerMarcacionxFecha = async (arrayFecha, id_empresa) => {
+		try {
+			const { data } = await PTApi.get(
+				`/marcacion/obtenerMarcacionFecha/${id_empresa}/${arrayFecha}`,
+				{
+					params: {
+						arrayFecha: [arrayFecha[0], arrayFecha[1]],
+					},
+				}
+			);
+			setdataMarcacionxFecha(data.asistencia);
+			console.log(data, arrayFecha);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerContratosDeEmpleados = async (arrayFecha) => {
+		try {
+			const { data } = await PTApi.get('/jornada/obtener-contratos', {
+				params: {
+					arrayFecha: [arrayFecha[0], arrayFecha[1]],
+				},
+			});
+			setdataContratoxFecha(data.empleados);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerReportePlanilla,
-		data,
+		obtenerMarcacionxFecha,
+		obtenerContratosDeEmpleados,
+		dataMarcacionxFecha,
+		dataContratoxFecha,
 	};
 };
