@@ -157,8 +157,8 @@ useEffect(() => {
                   <td className='fs-3'><div className='' style={{width: '400px'}}>{razon}</div></td>
                   <td className='fs-3'>{ruc}</td>
                   <td className="text-end fs-3">{grupo.items.length}</td>
-                  <td className="text-end fs-3">{fmt(sumarPagos)}</td>
                   <td className="text-end fs-3">{fmt(montoContratos)}</td>
+                  <td className="text-end fs-3">{fmt(sumarPagos) }</td>
                   <td className="text-end fs-3 fw-bold">{fmt(saldo)}</td>
                 </tr>
 
