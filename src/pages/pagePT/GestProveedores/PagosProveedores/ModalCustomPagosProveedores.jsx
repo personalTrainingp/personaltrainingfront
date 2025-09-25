@@ -87,7 +87,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
     })
     return (
         <Dialog header="Agregar Trabajos" style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>
-            {id_empresa}
+            {/* {id_empresa} */}
             <form onSubmit={onSubmitTrabajo}>
                 <div className='mb-3'>
                     <label htmlFor="penalidad_fijo" className="form-label">
@@ -121,7 +121,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
                 </div> */}
                 <div className='mb-3'>
                     <label htmlFor="penalidad_fijo" className="form-label">
-                        CONTRATO*
+                        CONTRATO / PRESUPUESTO*
                     </label>
                     <input
                             className="form-control bg-black text-white"

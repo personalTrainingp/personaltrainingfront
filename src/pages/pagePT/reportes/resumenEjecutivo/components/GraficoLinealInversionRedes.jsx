@@ -1,71 +1,73 @@
-import React, { useMemo } from 'react'
-import Chart from 'react-apexcharts'
-import dayjs from 'dayjs'
-import 'dayjs/locale/es'  // importante para español
+import React from "react";
+import Chart from "react-apexcharts";
+import dayjs from "dayjs";
+import "dayjs/locale/es"; // para días en español
+dayjs.locale("es");
 
-export const GraficoLinealInversionRedes = ({ data = [], fechas = [new Date()] }) => {
-  dayjs.locale('es') // cambia idioma global a español
+export const GraficoLinealInversionRedes = ({ data }) => {
+  const firstFour = data.slice(0, 4).reverse();
 
-  const monthKey = (f) => dayjs.utc(f).format('YYYY-MMMM')
-  
-  const { categories, series } = useMemo(() => {
-    if (!fechas.length) return { categories: [], series: [] }
+  const series = firstFour.map((m, idx) => {
+    const items = Array.isArray(m.items) ? m.items : [];
+    const baseMonth = items[0] ? dayjs(items[0].fecha) : dayjs();
+    const daysInMonth = baseMonth.daysInMonth();
+    const buckets = Array(daysInMonth).fill(0);
 
-    const firstDate = dayjs.utc(fechas[0])
-    const daysInMonth = firstDate.daysInMonth()
+    for (const it of items) {
+      const d = dayjs(it.fecha);
+      if (!d.isValid()) continue;
+      if (d.month() !== baseMonth.month() || d.year() !== baseMonth.year())
+        continue;
 
-    // 👉 eje X con formato “lunes 1 agosto 2025”
-    const cats = Array.from({ length: daysInMonth }, (_, i) =>
-      firstDate.date(i + 1).format('dddd D')
-    )
+      const day = d.date();
+      const raw =
+        typeof it?.cantidad === "string" ? it.cantidad.trim() : it?.cantidad;
+      const val = Number(raw);
+      buckets[day - 1] += Number.isFinite(val) ? val : 0;
+    }
 
-    const mapByMonth = new Map(
-      data.map((m) => [m.fecha, Array.isArray(m.items) ? m.items : []])
-    )
+    return {
+      name: m?.fecha ?? `Serie ${idx + 1}`,
+      data: buckets,
+    };
+  });
 
-    const srs = fechas.map((f) => {
-      const key = monthKey(f)
-      const items = mapByMonth.get(key) ?? []
-      const buckets = Array(daysInMonth).fill(0)
+  // Generar categorías tipo "lunes 1"
+  const baseMonth = firstFour[0]?.items?.[0]
+    ? dayjs(firstFour[0].items[0].fecha)
+    : dayjs();
+  const daysInMonth = baseMonth.daysInMonth();
 
-      for (const it of items) {
-        const d = dayjs.utc(it.fecha)
-        if (d.month() !== firstDate.month() || d.year() !== firstDate.year()) continue
-        const day = d.date()
-        const val = Number(
-          it.monto ?? (typeof it.cantidad === 'string' ? it.cantidad.trim() : it.cantidad) ?? 0
-        ) || 0
-        buckets[day - 1] += val
-      }
-
-      return { name: key, data: buckets }
-    })
-
-    return { categories: cats, series: srs }
-  }, [data, fechas])
-
-  const options = {
-    chart: { type: 'line', toolbar: { show: false } },
-    stroke: { curve: 'smooth', width: 3 },
-      markers: { 
-    size: 4,            // tamaño de los puntos
-    colors: ['#000'],   // color de relleno negro
-    strokeColors: '#000', // borde también negro
-    strokeWidth: 2
+  const categories = Array.from({ length: daysInMonth }, (_, i) => {
+    const d = baseMonth.date(i + 1);
+    return `${d.format("dddd")}    ${i + 1}`;
+  });
+const options = {
+  chart: { type: "line", toolbar: { show: false }, parentHeightOffset: 0 },
+  stroke: { curve: "smooth", width: 3 },
+  markers: { size: 4 },
+  grid: {
+    padding: { bottom: 90, left: 8, right: 8 }, // ⬅️ espacio extra para etiquetas verticales
   },
-    xaxis: {
-      categories,
-      labels: {
-        rotate: -45, // gira etiquetas si son largas
-        style: { fontSize: '11px' },
-      },
+  xaxis: {
+    categories,
+    labels: {
+      rotate: -90,
+      rotateAlways: true,
+      hideOverlappingLabels: false,
+      trim: false,
+      // si tienes muchas etiquetas, usa 9–10 px
+      style: { fontSize: "10px" },
+      offsetY: 8,
+      // estos ayudan si tu versión los soporta:
+      minHeight: 80,
+      maxHeight: 120,
     },
+  },
+  yaxis: { title: { text: "Cantidad" } },
+  legend: { position: "top", floating: true, offsetY: 8 }, // libera espacio abajo
+};
 
-    yaxis: { title: { text: 'Valor' }, decimalsInFloat: 2 },
-    tooltip: { x: { show: true } },
-    legend: { position: 'top' },
-    grid: { strokeDashArray: 4 },
-  }
+  return <Chart options={options} series={series} type="line" height={450} />;
+};
 
-  return <Chart options={options} series={series} type="line" width={'100%'} height={360} />
-}

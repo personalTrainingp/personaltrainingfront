@@ -77,7 +77,7 @@ const agruparPorMes = (arr) => {
 	return Object.values(
 		arr.reduce((acc, item) => {
 			// clave YYYY-MMMM en zona horaria de Lima
-			const key = dayjs.utc(item.fecha).tz('America/Lima').format('YYYY-MMMM');
+			const key = dayjs.utc(item.fecha).format('YYYY-MMMM');
 
 			if (!acc[key]) {
 				acc[key] = { fecha: key, items: [] };

@@ -22,9 +22,6 @@ export const ItemTrabajoProv = ({onOpenModalFirma, onOpenModalVerPagos, tipo_mon
           <i className="mdi mdi-calendar me-1"></i> MONTO: <MoneyFormatter amount={monto} symbol={tipo_moneda=='PEN'?'S/. ':'$ '}/>
           <br/>
           <div>
-          {/* <a className="action-icon mx-2" onClick={onOpenModalVerPagos} style={{fontSize: '16px', color: 'blue', textDecoration: 'underline'}}>
-                    Ver Detalles
-            </a> */}
             <a className="action-icon mx-2" onClick={onOpenModalVerPagos} style={{fontSize: '16px', color: 'blue', textDecoration: 'underline'}}>
                     Ver Detalle
             </a>

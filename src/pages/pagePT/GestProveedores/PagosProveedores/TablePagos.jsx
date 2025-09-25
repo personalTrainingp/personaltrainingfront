@@ -175,21 +175,41 @@ useEffect(() => {
                               </div>
                             </th>
                             {/* <th className="text-white">PRESUPUESTO</th> */}
-                            <th className="text-white">CONTRATO / <br/> penalidad</th>
+                            <th className="text-white">CONTRATO <br/> <div className='d-flex justify-content-center' style={{position: 'sticky', top: '60px'}}><div className='text-center border-2' style={{width: '40px'}}></div></div> <br/> PRESUPUESTO</th>
                             <th className="text-white">
-                              <div className='' style={{width: '100px'}}>
+                              <div className='text-center' style={{width: '100px'}}>
                                 Fecha inicio
                               </div>
                             </th>
-                            <th className="text-white">Fecha fin</th>
-                            <th className="text-white">CONCEPTOS</th>
-                            <th className="text-end text-white">Monto <br/> contrato</th>
+                            <th className="text-white">
+                              <div className='text-center'>
+                                Fecha fin
+                              </div>
+                            </th>
+                            <th className="text-white">
+                              <div className='text-center'>
+                                CONCEPTOS
+                              </div>
+                            </th>
+                            <th className="text-end text-white">
+                              <div className='text-center'>
+                              Monto <br/> contrato
+                              </div>
+                            </th>
                             <th className="text-end text-white">PENALIDAD</th>
-                            <th className="text-end text-white">Pago <br/> Acumulado</th>
+                            <th className="text-end text-white">
+                              <div className='text-center'>
+                                Pago <br/> Acumulado
+                              </div>
+                            </th>
                             <th className="text-end text-white">
                               Saldo
                             </th>
-                            <th className="text-white">COMPROMISO <br/>DE PAGO / LETRA</th>
+                            <th className="text-white">
+                              <div className='text-center'>
+                                COMPROMISO <br/>DE PAGO <br/><div className='d-flex justify-content-center' style={{position: 'sticky', top: '100px'}}><div className='text-center border-2' style={{width: '40px'}}></div></div><br/> LETRA
+                              </div>
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -202,7 +222,7 @@ useEffect(() => {
                             return (
                               <React.Fragment key={c.id}>
                                 {/* Fila resumen contrato */}
-                                <tr className='fs-4'>
+                                <tr className='fs-3'>
                                   <td 
                                         onClick={() => toggleContrato(c.id)}
                                         className='cursor-pointer'
@@ -213,7 +233,6 @@ useEffect(() => {
                                     </td>
                                   <td className='' onClick={()=>onClickOpenFileContrato(c.uid_contrato)}>
                                     <i className='pi pi-file'></i>
-                                    {/* {JSON.stringify(c, null,2)} */}
                                   </td>
                                   <td>{c?.fecha_inicio ?? '-'}</td>
                                   <td>{c?.fecha_fin ?? '-'}</td>
@@ -223,7 +242,7 @@ useEffect(() => {
                                     </div>
                                   </td>
                                   <td className="text-end">{fmt(c?.monto_contrato)}</td>
-                                  <td className="text-end">{12.40}</td>
+                                  <td className="text-end">{0}</td>
                                   <td className="text-end">{fmt(totalPagado)}</td>
                                   <td className="text-end fw-semibold">{fmt(saldoContrato)}</td>
                                   <td className='' onClick={()=>onClickOpenFileCompromisoPago(c?.uid_compromisoPago)}>

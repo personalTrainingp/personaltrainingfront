@@ -88,74 +88,102 @@ export default function ExecutiveTable({
 
   // Filtrar ventas por mes/año + rango de días [initialDay, cutDay]
   const computeMetricsForMonth = (anio, mesNombre) => {
-    const mesAlias = aliasMes(String(mesNombre).toLowerCase());
-    const monthIdx = MESES.indexOf(mesAlias); // 0..11
-    if (monthIdx < 0) return null;
+  const mesAlias = aliasMes(String(mesNombre).toLowerCase());
+  const monthIdx = MESES.indexOf(mesAlias); // 0..11
+  if (monthIdx < 0) return null;
 
-    let totalServ = 0;
-    let cantServ = 0;
-    let totalProd = 0;
-    let cantProd = 0;
+  // Acumulados HASTA cutDay
+  let totalServ = 0, cantServ = 0, totalProd = 0, cantProd = 0;
 
-    for (const v of ventas) {
-      const d = toLimaDate(v?.fecha_venta);
-      if (!d) continue;
-      if (d.getFullYear() !== Number(anio)) continue;
-      if (d.getMonth() !== monthIdx) continue;
+  // Acumulados del MES COMPLETO (1–31)
+  let totalServFull = 0, cantServFull = 0, totalProdFull = 0, cantProdFull = 0;
 
-      const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-      const from = clamp(Number(initialDay || 1), 1, lastDay);
-      const to = clamp(Number(cutDay || lastDay), from, lastDay);
-      const dia = d.getDate();
-      if (dia < from || dia > to) continue;
+  // Precalcular límites de días
+  const from = clamp(Number(initialDay || 1), 1, 31);
+  const toDefault = 31; // por defecto 31, luego se ajusta por mes real por cada venta
 
-      // Servicios
-      for (const s of getDetalleServicios(v)) {
-        const cantidad = Number(s?.cantidad || 1);
-        const linea = Number(s?.tarifa_monto || 0) * cantidad;
-        totalServ += linea;
-        cantServ += cantidad;
-      }
-      // Productos
-      for (const p of getDetalleProductos(v)) {
-        const cantidad = Number(p?.cantidad || 1);
-        const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0) * cantidad;
-        totalProd += linea;
-        cantProd += cantidad;
-      }
+  for (const v of ventas) {
+    const d = toLimaDate(v?.fecha_venta);
+    if (!d) continue;
+    if (d.getFullYear() !== Number(anio)) continue;
+    if (d.getMonth() !== monthIdx) continue;
+
+    // Mes completo: SIEMPRE sumar
+    for (const s of getDetalleServicios(v)) {
+      const cantidad = Number(s?.cantidad || 1);
+      const linea = Number(s?.tarifa_monto || 0) * cantidad;
+      totalServFull += linea;
+      cantServFull += cantidad;
+    }
+    for (const p of getDetalleProductos(v)) {
+      const cantidad = Number(p?.cantidad || 1);
+      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0) * cantidad;
+      totalProdFull += linea;
+      cantProdFull += cantidad;
     }
 
-    const ticketServ = cantServ ? totalServ / cantServ : 0;
-    const ticketProd = cantProd ? totalProd / cantProd : 0;
+    // Corte por días: solo si cae dentro [from, cutDay] del mes real
+    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    const to = clamp(Number(cutDay || lastDay), from, lastDay);
+    const dia = d.getDate();
+    if (dia < from || dia > to) continue;
 
-    const key = `${anio}-${mesAlias}`;
-    const mk = dataMktByMonth?.[key] || {};
+    for (const s of getDetalleServicios(v)) {
+      const cantidad = Number(s?.cantidad || 1);
+      const linea = Number(s?.tarifa_monto || 0) * cantidad;
+      totalServ += linea;
+      cantServ += cantidad;
+    }
+    for (const p of getDetalleProductos(v)) {
+      const cantidad = Number(p?.cantidad || 1);
+      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0) * cantidad;
+      totalProd += linea;
+      cantProd += cantidad;
+    }
+  }
 
-    return {
-      mkInv: Number(mk?.inversiones_redes || 0),
-      mkLeads: Number(mk?.leads || 0),
-      mkCpl: Number(mk?.cpl || 0),
-      mkCac: Number(mk?.cac || 0),
-      totalServ,
-      cantServ,
-      ticketServ,
-      totalProd,
-      cantProd,
-      ticketProd,
-      totalMes: totalServ + totalProd,
-    };
+  const ticketServ = cantServ ? totalServ / cantServ : 0;
+  const ticketProd = cantProd ? totalProd / cantProd : 0;
+
+  const key = `${anio}-${mesAlias}`;
+  const mk = dataMktByMonth?.[key] || {};
+
+  return {
+    mkInv: Number(mk?.inversiones_redes*3.7 || 0),
+    mkLeads: Number(mk?.leads || 0),
+    mkCpl: Number(mk?.cpl*3.7 || 0),
+    mkCac: Number(mk?.cac || 0),
+
+    // HASTA cutDay
+    totalServ,
+    cantServ,
+    ticketServ,
+    totalProd,
+    cantProd,
+    ticketProd,
+    totalMes: totalServ + totalProd,
+
+    // MES COMPLETO (1–31)
+    totalServFull,
+    cantServFull,
+    ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
+    totalProdFull,
+    cantProdFull,
+    ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
+    totalMesFull: totalServFull + totalProdFull,
+  };
   };
 
   const rows = [
     { key: "mkInv", label: "INVERSIÓN REDES", type: "money" },
     { key: "mkLeads", label: "LEADS", type: "int" },
     { key: "mkCpl", label: "CPL", type: "float2" },
-    { key: "totalServ", label: "VENTA SERVICIOS", type: "money" },
-    { key: "ticketServ", label: "TICKET PROMEDIO SERV.", type: "money" },
+    { key: "totalServ", label: "VENTA MEMBRESIA", type: "money" },
+    { key: "ticketServ", label: "TICKET PROMEDIO MEM.", type: "money" },
     { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
     { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
-    { key: "cantServ", label: "CANTIDAD SERVICIOS", type: "int" },
-    { key: "ticketProd", label: "TICKET PROMEDIO PROD.", type: "money" },
+    { key: "cantServ", label: "CANTIDAD MEMBRESIA", type: "int" },
+    { key: "ticketProd", label: "TICKET PROMEDIO MEM.", type: "money" },
   ];
 
   // Precalcular métricas por columna (mes)
@@ -277,20 +305,10 @@ export default function ExecutiveTable({
       <table style={{ ...sTable,}}>
         <thead>
           <tr style={sRowRed}>
-            <th style={{ ...sThLeft, background: "transparent", color: cWhite }}>VENTA TOTAL</th>
+            <th style={{ ...sThLeft, background: "transparent", color: cWhite }}>VENTA TOTAL <br/> ACUMULADA POR MES</th>
             {perMonth.map((m, idx) => (
               <th key={idx} style={{ ...sThMes, background: "transparent", color: cWhite }}>
-                {fmtMoney(m.metrics?.totalMes || 0)}
-              </th>
-            ))}
-          </tr>
-          <tr style={sRowRed}>
-            <th style={{ ...sThLeft, background: "transparent", color: cWhite }}>ACUMULADA POR MES</th>
-            {perMonth.map((m, idx) => (
-              <th key={idx} style={{ ...sThMes, background: "transparent", color: cWhite }}>
-                {/* En el ejemplo visual es el mismo valor del mes; si se requiere acumulado YTD,
-                    cambiar aquí por una suma progresiva. */}
-                {fmtMoney(m.metrics?.totalMes || 0)}
+                {fmtMoney(m.metrics?.totalMesFull  || 0)}
               </th>
             ))}
           </tr>

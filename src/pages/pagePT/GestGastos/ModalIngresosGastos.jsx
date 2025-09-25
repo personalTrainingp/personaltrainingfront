@@ -49,11 +49,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         const [isAddGrupo, setisAddGrupo] = useState(false)
     const { obtenerParametrosGastosFinanzas, registrarParametrosGastosFinanzas, isLoadingParametros } = useGf_GvStore()
     const { dataTrabajosProv, obtenerTrabajosxProv } = useProveedoresStore()
-    useEffect(() => {
-        if(show){
-            obtenerParametrosGastosFinanzas()
-        }
-    }, [show, isLoadingParametros])
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
     const { obtenerParametroPorEntidadyGrupo: obtenerParametroTipoComprobante, DataGeneral: DataTipoComprobante } = useTerminoStore()
     const { obtenerParametroPorEntidadyGrupo: obtenerParametroEstadoGasto, DataGeneral: DataEstadosGasto } = useTerminoStore()
@@ -95,6 +90,12 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         useEffect(() => {
             setid_empresa(id_enterprice)
         }, [id_enterprice])
+        useEffect(() => {
+            if(show){
+                obtenerParametrosGastosFinanzas()
+
+            }
+        }, [show, isLoadingParametros])
         
         useEffect(() => {
             if(!data){
@@ -106,7 +107,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                 onInputChangeFunction("id_gasto", 0)
             }
         }, [id_tipoGasto, grupo, id_empresa])
-        
         useEffect(() => {
             const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos||[]
             setgrupoGasto(grupos)
@@ -115,8 +115,11 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
             const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
             setgastoxGrupo(conceptos)
         }, [grupo, id_tipoGasto, id_empresa])
-        
-        
+        useEffect(() => {
+            if(id_prov>0){
+                obtenerTrabajosxProv(id_prov)
+            }
+        }, [id_prov])
         useEffect(() => {
             if(show){
                 obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')

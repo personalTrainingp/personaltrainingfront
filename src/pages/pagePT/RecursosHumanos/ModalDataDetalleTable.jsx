@@ -17,7 +17,7 @@ export const ModalDataDetalleTable = ({mesAnio, show, onHide, data, dataContrato
               <th className='text-white'>COLABORADOR</th>
               <th className='text-white'>SEGUN CONTRATO <SymbolSoles fontSizeS={'10px'}/></th>
               <th className='text-white'>DIAS LABORABLES SEGUN CONTRATO</th>
-              <th className='text-white'>DIAS CON TARDANZA (3MIN TOLERANCIA)</th>
+              <th className='text-white'>DIAS CON TARDANZA</th>
               <th className='text-white'>DESCUENTO</th>
               <th className='text-white'>MONTO A PAGAR <SymbolSoles fontSizeS={'10px'}/></th>
               <th className='text-white'>BANCO</th>
