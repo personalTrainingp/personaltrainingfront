@@ -63,7 +63,7 @@ useEffect(() => {
     obtenerContratosPendientes(id_empresa);
     obtenerTrabajosPendientes();
     obtenerProveedores(true, true);
-  }, []);
+  }, [id_empresa]);
 
   // 1) Une contrato + pagos + sumaPagos
   const contratosConPagos = useMemo(() => {
@@ -115,6 +115,7 @@ useEffect(() => {
   }
   return (
     <div>
+      {id_empresa}
       <Table bordered responsive hover className="align-middle">
         <thead className="bg-primary fs-2">
           <tr>
