@@ -38,8 +38,9 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
         onInputChangeReact,
         onResetForm,
     } = useForm(registerTrabajo);
-    const { postContratoProv, obtenerProveedores } = useProveedorStore()
-  const { dataProveedores } = useSelector((s) => s.prov);
+    const { postContratoProv, obtenerProveedores, obtenerParametrosProveedor } = useProveedorStore()
+
+  const { dataProveedores, dataProvCOMBO } = useSelector((s) => s.prov);
     const onCancelModal = () => {
         onHide();
         onResetForm()
@@ -76,7 +77,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
     }
     useEffect(() => {
         if(show){
-            obtenerProveedores(true, true)
+            obtenerParametrosProveedor()
         }
     }, [show])
     const proveedores = dataProveedores.map(prov=>{
@@ -144,8 +145,8 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
                         placeholder={'Seleccionar el proveedor'}
                         className="react-select"
                         classNamePrefix="react-select"
-                        options={proveedores}
-                        value={proveedores.find(
+                        options={dataProvCOMBO}
+                        value={dataProvCOMBO.find(
                             (option) => option.value === id_prov
                         )||0}
                         required

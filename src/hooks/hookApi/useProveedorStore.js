@@ -68,7 +68,7 @@ export const useProveedorStore = () => {
 			const { data } = await PTApi.get('/proveedor/obtener-proveedores', {
 				params: {
 					estado_prov: estado_prov,
-					es_agente: false,
+					es_agente: agente,
 					id_empresa: 598,
 				},
 			});

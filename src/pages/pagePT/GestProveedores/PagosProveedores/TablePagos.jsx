@@ -110,7 +110,8 @@ useEffect(() => {
   }
   return (
     <div>
-      {id_empresa}
+      {/* {id_empresa}
+       */}
       <Table bordered responsive hover className="align-middle">
         <thead className="bg-primary fs-2">
           <tr>
