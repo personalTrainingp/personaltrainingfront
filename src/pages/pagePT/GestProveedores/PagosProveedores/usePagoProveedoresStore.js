@@ -5,11 +5,11 @@ import { useState } from 'react';
 export const usePagoProveedoresStore = () => {
 	const [dataPagosContratos, setdataPagosContratos] = useState([]);
 	const [dataContratosPendientes, setdataContratosPendientes] = useState([]);
-	const obtenerTrabajosPendientes = async () => {
+	const obtenerTrabajosPendientes = async (id_empresa) => {
 		try {
-			const { data } = await PTApi.get('/egreso/obtener-pagos-contratos/598');
+			const { data } = await PTApi.get(`/egreso/obtener-pagos-contratos/${id_empresa}`);
 			// const {data:dataProvee} = await PTApi.get
-			console.log(data);
+			console.log(data.gastos);
 			setdataPagosContratos(data.gastos);
 		} catch (error) {
 			console.log(error);
@@ -34,13 +34,13 @@ export const usePagoProveedoresStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerPenalidades = async(id_empresa)=>{
+	const obtenerPenalidades = async (id_empresa) => {
 		try {
-			const {data} = await PTApi.get(`/proveedor/penalidad/${id_empresa}`)
+			const { data } = await PTApi.get(`/proveedor/penalidad/${id_empresa}`);
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 	return {
 		obtenerTrabajosPendientes,
 		dataPagosContratos,

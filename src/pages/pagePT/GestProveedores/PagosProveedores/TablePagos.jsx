@@ -61,7 +61,7 @@ useEffect(() => {
 
   useEffect(() => {
     obtenerContratosPendientes(id_empresa);
-    obtenerTrabajosPendientes();
+    obtenerTrabajosPendientes(id_empresa);
     obtenerProveedores(true, true);
   }, [id_empresa]);
 
@@ -94,11 +94,6 @@ useEffect(() => {
   const toggleContrato = (id_contrato) =>
     setOpenContrato((prev) => ({ ...prev, [id_contrato]: !prev[id_contrato] }));
   
-  const onClickOpenFilePresupuesto = async(uid)=>{
-        if (!uid) return;
-        setPending({ tipo: 'presupuesto' });
-        await obtenerImages(uid);
-  }
     const onClickOpenFileContrato = async(uid)=>{
       if (!uid) return;
       setPending({ tipo: 'contrato' });
@@ -141,6 +136,13 @@ useEffect(() => {
             return (
               <React.Fragment key={grupo.id_prov}>
                 {/* Fila resumen proveedor */}
+                <pre>
+                  {/* {JSON.stringify(dataContratosPendientes, null, 2)} */}
+                  {/* ************************************************** */}
+                  {/* {JSON.stringify(dataPagosContratos, null, 2)} */}
+                  {/* ************************************************** */}
+                  {/* {JSON.stringify(dataPagosContratos, null, 2)} */}
+                </pre>
                 <tr>
                   <td className="text-center">
                     <Button

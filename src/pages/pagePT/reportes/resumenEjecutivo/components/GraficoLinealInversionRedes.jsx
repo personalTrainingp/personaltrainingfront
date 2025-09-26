@@ -9,12 +9,12 @@ export const GraficoLinealInversionRedes = ({ data }) => {
 
   const series = firstFour.map((m, idx) => {
     const items = Array.isArray(m.items) ? m.items : [];
-    const baseMonth = items[0] ? dayjs(items[0].fecha) : dayjs();
+    const baseMonth = items[0] ? dayjs.utc(items[0].fecha) : dayjs();
     const daysInMonth = baseMonth.daysInMonth();
     const buckets = Array(daysInMonth).fill(0);
 
     for (const it of items) {
-      const d = dayjs(it.fecha);
+      const d = dayjs.utc(it.fecha);
       if (!d.isValid()) continue;
       if (d.month() !== baseMonth.month() || d.year() !== baseMonth.year())
         continue;

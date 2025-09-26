@@ -64,10 +64,10 @@ export const DataProveedores = () => {
 											<App id_empresa={598}/>
 										</TabPanel>
 										<TabPanel header={'CIRCUS'}>
-											<App id_empresa={599}/>
+											<App id_empresa={601}/>
 										</TabPanel>
 										<TabPanel header={'REDUCTO'}>
-											<App id_empresa={600}/>
+											<App id_empresa={599}/>
 										</TabPanel>
 									</TabView>
 								</TabPanel>
