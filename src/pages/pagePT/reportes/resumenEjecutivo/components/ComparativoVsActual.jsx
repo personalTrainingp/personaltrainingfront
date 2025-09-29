@@ -90,11 +90,11 @@ export const ComparativoVsActual=({
 
       for (const s of getDetalleServicios(v)) {
         const cantidad = Number(s?.cantidad || 1);
-        bucket.serv += Number(s?.tarifa_monto || 0) * cantidad;
+        bucket.serv += Number(s?.tarifa_monto || 0);
       }
       for (const p of getDetalleProductos(v)) {
         const cantidad = Number(p?.cantidad || 1);
-        const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0) * cantidad;
+        const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
         bucket.prod += linea;
       }
       bucket.total = bucket.serv + bucket.prod;
