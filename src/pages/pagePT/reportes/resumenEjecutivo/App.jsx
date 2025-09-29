@@ -9,6 +9,35 @@ import { ComparativoVsActual } from "./components/ComparativoVsActual";
 import { buildDataMktByMonth } from "./adapters/buildDataMktByMonth";
 import { GraficoLinealInversionRedes } from "./components/GraficoLinealInversionRedes";
 
+const RealTimeClock = () => {
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timerId);
+  }, []);
+
+  const formattedTime = currentTime.toLocaleTimeString("es-PE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  return (
+    <div
+      style={{
+        fontWeight: 700,
+        fontSize: "2em",
+          // marginTop: "15px", // Eliminado para centrar verticalmente
+        color: "black",
+      }}
+    >
+      Hora: {formattedTime}
+    </div>
+  );
+};
 export const App = ({ id_empresa }) => {
   const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
 
@@ -61,24 +90,43 @@ export const App = ({ id_empresa }) => {
   const dataMkt = buildDataMktByMonth(dataLead, initDay, cutDay)
   return (
     <>
-          <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
-
+      <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
       <Row className="mb-3">
         <Col lg={12}>
-          <div style={{ display:"flex", alignItems:"center" }}>
-            <label style={{ fontWeight: 600 }}>Día de inicio:</label>
-            <select value={initDay} onChange={e=>setInitDay(parseInt(e.target.value,10))}>
-              {Array.from({length:31},(_,i)=>i+1).map(n => <option key={n} value={n}>{n}</option>)}
-            </select>
-          </div>
-          <div style={{ display:"flex", alignItems:"center" }}>
-            <label style={{ fontWeight: 600 }}>Día de corte:</label>
-            <select value={cutDay} onChange={e=>setCutDay(parseInt(e.target.value,10))}>
-              {Array.from({length:31},(_,i)=>i+1).map(n => <option key={n} value={n}>{n}</option>)}
-            </select>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "40px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <label style={{ fontWeight: 600, fontSize: "2em", color: "black" }}>Día de inicio:</label>
+              <select
+                value={initDay}
+                onChange={(e) => setInitDay(parseInt(e.target.value, 10))}
+                style={{ fontSize: "1.5em" }}
+              >
+                {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <label style={{ fontWeight: 600, fontSize: "2em", color: "black" }}>Día de corte:</label>
+              <select
+                value={cutDay}
+                onChange={(e) => setCutDay(parseInt(e.target.value, 10))}
+                style={{ fontSize: "1.5em" }}
+              >
+                {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <RealTimeClock />
           </div>
         </Col>
       </Row>
+
       <Row className="">
         <Col lg={6} className="pt-0">
           <Row>
