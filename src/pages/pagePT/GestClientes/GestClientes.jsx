@@ -25,7 +25,7 @@ export const GestClientes = () => {
 	
   return (
     <>
-    			<PageBreadcrumb title="GESTION DE CLIENTESSS PRUEBA" subName="E-commerce" />
+    			<PageBreadcrumb title="GESTION DE SOCIO" subName="E-commerce" />
                 
 			<Row>
 				<Col xs={12}>
