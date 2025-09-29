@@ -14,22 +14,22 @@ export const GestionInventario = () => {
     <PageBreadcrumb title={'INVENTARIOS'} subName={'T'}/>
     <Card className='p-4 m-2'>
     <TabView>
-      <TabPanel header={'CHANGE THE SLIM STUDIO'}>
+      <TabPanel header={<>CHANGE<br/> INVENTARIO TOTAL</>}>
               <DataInventario id_enterprice={598} id_empresa_zona={598} btnAdd btnDelete btnEdit/>
       </TabPanel>
-      <TabPanel header={'MANOJ'}>
+      <TabPanel header={<>MP<br/>TARATA</>}>
               <DataInventario id_enterprice={600}/>
       </TabPanel>
       <TabPanel header={'CHORRILLOS'}>
               <DataInventario btnAdd btnDelete btnEdit id_enterprice={601} id_empresa_zona={601} />
       </TabPanel>
-      <TabPanel header={'INVENTARIO MADRE COPIA SEMANA PASADA'}>
+      <TabPanel header={<>REDUCTO<br/>INVENTARIO TOTAL</>}>
               <DataInventario id_enterprice={599} id_empresa_zona={599}/>
       </TabPanel>
-      <TabPanel header={'CIRCUS CO.'}>
+      <TabPanel header={<>CIRCUS<br/> BUSSINESS</>}>
               <DataInventario ImgproyCircus1={ImgproyCircus1} ImgproyCircus2={ImgproyCircus2} ImgproyCircus3={ImgproyCircus3} id_enterprice={602} id_empresa_zona={599} btnAdd btnDelete btnEdit/>
       </TabPanel>
-      <TabPanel header={'REDUCTO INFRAESTRUCTURA'}>
+      <TabPanel header={<>INVENTARIO SIN INCLUIR <br/> CIRCUS BUSSINESS</>}>
               <DataInventario id_enterprice={610} id_empresa_zona={599} btnAdd btnDelete btnEdit/>
       </TabPanel>
     </TabView>

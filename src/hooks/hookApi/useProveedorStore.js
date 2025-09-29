@@ -68,11 +68,15 @@ export const useProveedorStore = () => {
 			const { data } = await PTApi.get('/proveedor/obtener-proveedores', {
 				params: {
 					estado_prov: estado_prov,
-					es_agente: agente,
 					id_empresa: 598,
 				},
 			});
-			dispatch(onSetProveedores(data.proveedores));
+			const dataProv = data.proveedores.sort((a, b) => {
+				if (a.parametro_oficio === null && b.parametro_oficio !== null) return 1; // a al final
+				if (a.parametro_oficio !== null && b.parametro_oficio === null) return -1; // b al final
+				return 0; // mantiene el orden relativo entre iguales
+			});
+			dispatch(onSetProveedores(dataProv));
 		} catch (error) {
 			console.log(error);
 		}

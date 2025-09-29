@@ -51,7 +51,7 @@ export const DataProveedores = () => {
 								<TabPanel header={'PROVEEDORES'}>
 									<TabView>
 						<TabPanel className='tabPanel-color-success' header={'Activos'}>
-						<CustomersProv estado_prov={true} agente={false}/>
+						<CustomersProv estado_prov={true} agente={true}/>
 						</TabPanel>
 						<TabPanel header={'Inactivos'}>
 						<CustomersProv estado_prov={false} agente={false}/>
