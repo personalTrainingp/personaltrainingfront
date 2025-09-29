@@ -50,12 +50,20 @@ export const DataProveedores = () => {
 							<TabView>
 								<TabPanel header={'PROVEEDORES'}>
 									<TabView>
-						<TabPanel className='tabPanel-color-success' header={'Activos'}>
-						<CustomersProv estado_prov={true} agente={true}/>
-						</TabPanel>
-						<TabPanel header={'Inactivos'}>
-						<CustomersProv estado_prov={false} agente={false}/>
-						</TabPanel>
+										<TabPanel header={'CHANGE'}>
+											<CustomersProv estado_prov={true} agente={true} id_empresa={598}/>
+										</TabPanel>
+										<TabPanel header={'CIRCUS'}>
+											<CustomersProv estado_prov={true} agente={true} id_empresa={601}/>
+										</TabPanel>
+										<TabPanel header={'REDUCTO'}>
+											<CustomersProv estado_prov={true} agente={true} id_empresa={599}/>
+										</TabPanel>
+										{/* <TabPanel className='tabPanel-color-success' header={'Activos'}>
+										</TabPanel>
+										<TabPanel header={'Inactivos'}>
+										<CustomersProv estado_prov={false} agente={false}/>
+										</TabPanel> */}
 									</TabView>
 								</TabPanel>
 								<TabPanel header={'CONTRATOS POR PROVEEDOR'}>

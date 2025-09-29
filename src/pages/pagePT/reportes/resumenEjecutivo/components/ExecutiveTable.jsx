@@ -111,13 +111,13 @@ export default function ExecutiveTable({
     // Mes completo: SIEMPRE sumar
     for (const s of getDetalleServicios(v)) {
       const cantidad = Number(s?.cantidad || 1);
-      const linea = Number(s?.tarifa_monto || 0) * cantidad;
+      const linea = Number(s?.tarifa_monto || 0);
       totalServFull += linea;
       cantServFull += cantidad;
     }
     for (const p of getDetalleProductos(v)) {
       const cantidad = Number(p?.cantidad || 1);
-      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0) * cantidad;
+      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
       totalProdFull += linea;
       cantProdFull += cantidad;
     }
@@ -130,13 +130,13 @@ export default function ExecutiveTable({
 
     for (const s of getDetalleServicios(v)) {
       const cantidad = Number(s?.cantidad || 1);
-      const linea = Number(s?.tarifa_monto || 0) * cantidad;
+      const linea = Number(s?.tarifa_monto || 0);
       totalServ += linea;
       cantServ += cantidad;
     }
     for (const p of getDetalleProductos(v)) {
       const cantidad = Number(p?.cantidad || 1);
-      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0) * cantidad;
+      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
       totalProd += linea;
       cantProd += cantidad;
     }
@@ -291,7 +291,7 @@ export default function ExecutiveTable({
 
           {/* CAC */}
           <tr>
-            <td style={sCellBold}>CAC (S/)</td>
+            <td style={sCellBold}>CAC DIGITAL (S/)</td>
             {perMonth.map((m, idx) => (
               <td key={idx} style={sCell}>
                 {fmtNum(m.metrics?.mkCac || 0, 2)}
