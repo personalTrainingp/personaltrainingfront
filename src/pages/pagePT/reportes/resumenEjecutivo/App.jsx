@@ -72,7 +72,7 @@ export const App = ({ id_empresa }) => {
   };
 
   // Día de corte 1..31 (si no quieres corte, deja null)
-  const [cutDay, setCutDay] = useState(21);
+  const [cutDay, setCutDay] = useState(new Date().getDate()); 
   const [initDay, setInitDay] = useState(1);
   console.log({dataVentas});
   
