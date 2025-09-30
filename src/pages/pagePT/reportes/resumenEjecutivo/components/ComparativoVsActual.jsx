@@ -171,7 +171,7 @@ export const ComparativoVsActual=({
   const sHeadLeft = { background: C.red, color: C.white, padding: "10px", border: C.cellBorder, textAlign: "left", fontSize: 20 };
   const sHead = { background: C.red, color: C.white, padding: "10px", border: C.cellBorder, textAlign: "center", fontSize: 20 };
   const sCell = { background: C.white, color: "#000", padding: "8px 10px", border: C.cellBorder, fontSize: 13 };
-  const sCellBold = { ...sCell, fontWeight: 700, fontSize: 17 };
+  const sCellBold = { ...sCell, fontWeight: 700, fontSize: 19 };
   const sRowShade = { background: C.greyRow };
 
   const MoneyCell = ({ value }) => {

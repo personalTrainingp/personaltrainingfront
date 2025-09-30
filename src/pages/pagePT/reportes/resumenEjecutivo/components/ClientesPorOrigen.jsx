@@ -156,7 +156,7 @@ export const ClientesPorOrigen=({
   const sTable = { width: "100%", borderCollapse: "collapse", tableLayout: "fixed" };
   const sHeadLeft = { background: C.red, color: C.white, padding: "10px", border: C.border, textAlign: "left", width: 260 };
   const sHead = { background: C.red, color: C.white, padding: "10px", border: C.border, textAlign: "center" };
-  const sCell = { background: C.white, color: "#000", padding: "10px", border: C.border, fontSize: 17, textAlign: "center" };
+  const sCell = { background: C.white, color: "#000", padding: "10px", border: C.border, fontSize: 19, textAlign: "center" };
   const sCellLeft = { ...sCell, textAlign: "left", fontWeight: 700, fontSize: 15 };
 
   const lastMonthKey = monthKeys[monthKeys.length - 1]?.key;

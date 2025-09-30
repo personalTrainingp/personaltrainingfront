@@ -234,7 +234,7 @@ export default function ExecutiveTable({
   };
 
   const sThLeft = { ...sThMes, textAlign: "left", width: 260, fontSize: 20};
-  const sCell = { border, padding: "8px 10px", fontSize: 13, background: cWhite, fontSize: 20 };
+  const sCell = { border, padding: "8px 10px", fontSize: 13, background: cWhite, fontSize: 19 };
   const sCellBold = { ...sCell, fontWeight: 700, fontSize: 17 };
 
   const sRowBlack = { background: cBlack, color: cWhite, fontWeight: 700 };
