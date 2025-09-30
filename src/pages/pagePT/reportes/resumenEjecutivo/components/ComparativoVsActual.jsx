@@ -177,17 +177,18 @@ export const ComparativoVsActual=({
   const MoneyCell = ({ value }) => {
     const v = Number(value || 0);
     const neg = v < 0;
+    const absValue= Math.abs(v);
     return (
-      <td style={{ ...sCellBold, color: neg ? C.green : C.red }}>
-        {fmtDeltaMoney(v)}
+      <td style={{ ...sCellBold, color: neg ? C.red : C.green }}>
+        {neg? '-' : ''}{fmtDeltaMoney(absValue)}
       </td>
     );
   };
 
   const PctCell = ({ value }) => {
-    const v = Number(value || 0);
-    const neg = v < 0;
-    return <td style={{ ...sCellBold, color: neg ? C.green : C.red }}>{fmtPct(v)}</td>;
+  const v = Number(value || 0);
+  const neg = v < 0;
+  return <td style={{ ...sCellBold, color: neg ? C.red : C.green }}>{fmtPct(v)}</td>;
   };
 
   const MonthHead = ({ col }) => (
