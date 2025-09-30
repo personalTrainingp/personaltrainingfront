@@ -281,15 +281,31 @@ export default function ExecutiveTable({
 
         {/* Fila negra: TOTAL y día de hoy */}
 <tr style={sRowBlack}>
-  <td style={{ ...sCellBold, background: "transparent", color: cWhite }}>
+  <td
+    style={{
+      ...sCellBold,
+      background: "transparent",
+      color: cWhite,
+      fontSize: "18px",   // 👈 aquí el cambio
+    }}
+  >
     TOTAL {new Date().getDate()}
   </td>
   {perMonth.map((m, idx) => (
-    <td key={idx} style={{ ...sCellBold, background: "transparent", color: cWhite }}>
+    <td
+      key={idx}
+      style={{
+        ...sCellBold,
+        background: "transparent",
+        color: cWhite,
+        fontSize: "21px",   // 👈 también aquí
+      }}
+    >
       {fmtMoney(m.metrics?.totalMes || 0)}
     </td>
   ))}
 </tr>
+
 
 
           {/* CAC */}
