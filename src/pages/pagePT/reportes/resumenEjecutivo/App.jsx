@@ -45,12 +45,20 @@ const RealTimeClock = () => {
   );
 };
 export const App = ({ id_empresa }) => {
-  const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
-
-  useEffect(() => { 
-    obtenerTablaVentas(598); 
-    obtenerLeads(598)
-  }, [id_empresa]);
+ const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
+  const { obtenerVentas, repoVentasPorSeparado, loading } = useReporteStore();
+  const [clickServProd, setclickServProd] = useState("total");
+  const { RANGE_DATE } = useSelector(e => e.DATA);
+  const dispatch = useDispatch();
+ 
+  useEffect(() => {
+    console.log('RANGE_DATE:', RANGE_DATE);
+    if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
+      obtenerVentas(RANGE_DATE);
+    }
+    obtenerTablaVentas(id_empresa || 598);
+    obtenerLeads(id_empresa || 598);
+  }, [id_empresa, RANGE_DATE]);
 
   // columnas (las del diseño de tu imagen)
   const columns = useMemo(() => ([
@@ -94,6 +102,26 @@ export const App = ({ id_empresa }) => {
     1457: "CARTERA",
   };
   const dataMkt = buildDataMktByMonth(dataLead, initDay, cutDay)
+   const TotalDeVentasxProdServ = (prodSer) => { 
+    switch (prodSer) {
+      case 'total':
+        return {
+          data: repoVentasPorSeparado.total?.data,
+          sumaTotal: repoVentasPorSeparado.total?.SumaMonto,
+          forma_pago: repoVentasPorSeparado.total?.forma_pago_monto,
+          asesores_pago: repoVentasPorSeparado.total?.empl_monto
+        };
+      
+    }
+  };
+  useEffect(() => {
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth();
+    const startDate = new Date(year, month, initDay);
+    const endDate = new Date(year, month, cutDay);
+    dispatch(onSetRangeDate([startDate, endDate]));
+  }, [initDay, cutDay, dispatch]);
+
   return (
     <>
       <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
@@ -205,6 +233,25 @@ export const App = ({ id_empresa }) => {
                     fechas={[new Date()]}
                   />
             </Col>
+             {/* 👇 Aquí agregamos la tabla de ranking */}
+    <Col lg={12} className="mb-4">
+      <TarjetasPago
+        tasks={
+          (TotalDeVentasxProdServ("total")?.asesores_pago || [])
+            .filter(item => item.monto && item.monto > 0)
+            .map(item => ({
+              ...item,
+              nombre: item.nombre?.split(" ")[0] || item.nombre
+            }))
+        }
+        title={"Ranking"}
+        dataSumaTotal={
+          (TotalDeVentasxProdServ("total")?.asesores_pago || [])
+            .filter(item => item.monto && item.monto > 0)
+            .reduce((total, item) => total + item.monto, 0) || 0
+        }
+      />
+    </Col>
           </Row>
         </Col>
       </Row>

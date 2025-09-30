@@ -9,10 +9,10 @@ import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 
 export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
     const pagos = tasks.map(producto => ({
-        nombre_producto: producto.empl,
-        total_ventas: producto.monto,
-        avatar: producto.avatar
-    })).sort((a, b) => b.total_ventas - a.total_ventas) || []
+    nombre_producto: producto.empl?.split(' ')[0] || producto.empl,
+    total_ventas: producto.monto,
+    avatar: producto.avatar
+  })).sort((a, b) => b.total_ventas - a.total_ventas) || []
     // console.log(task.avatar);
     console.log(pagos);
     const series = [

@@ -244,7 +244,7 @@ export default function ExecutiveTable({
   return (
     <div style={sWrap}>
       <div style={sHeader}>
-         iINFORME GERENCIAL {cutDay} DE CADA MES
+         iINFORME GERENCIAL AL {cutDay} DE CADA MES
       </div>
 
       <table style={sTable}>
@@ -289,7 +289,7 @@ export default function ExecutiveTable({
       fontSize: "18px",   // 👈 aquí el cambio
     }}
   >
-    TOTAL {new Date().getDate()}
+    TOTAL AL {new Date().getDate()}
   </td>
   {perMonth.map((m, idx) => (
     <td
