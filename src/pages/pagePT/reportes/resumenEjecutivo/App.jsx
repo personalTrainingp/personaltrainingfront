@@ -4,10 +4,16 @@ import { useVentasStore } from "./useVentasStore";
 import { ventasToExecutiveData } from "./adapters/ventasToExecutiveData";
 import ExecutiveTable from "./components/ExecutiveTable";
 import { PageBreadcrumb } from "@/components";
-import {ClientesPorOrigen} from "./components/ClientesPorOrigen";
+import { ClientesPorOrigen } from "./components/ClientesPorOrigen";
 import { ComparativoVsActual } from "./components/ComparativoVsActual";
 import { buildDataMktByMonth } from "./adapters/buildDataMktByMonth";
 import { GraficoLinealInversionRedes } from "./components/GraficoLinealInversionRedes";
+import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
+import { TarjetasPago } from '../totalVentas/TarjetasPago';
+import { useSelector, useDispatch } from 'react-redux';
+import { ResumenComparativo } from "../resumenComparativo/ResumenComparativo";
+import { onSetRangeDate } from '@/store/data/dataSlice';
+//import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
 
 const RealTimeClock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -145,7 +151,7 @@ export const App = ({ id_empresa }) => {
             </Col>
             <Col lg={12}>
               <ClientesPorOrigen
-                ventas={dataVentas}             // tu array de ventas
+                ventas={dataVentas.filter(v => v.id_origen && v.id_origen !== 0)}           // tu array de ventas
                 fechas={[
                   // { label: 'MAYO', anio: '2025', mes: 'mayo' },
                   { label: 'JUNIO', anio: '2025', mes: 'junio' },

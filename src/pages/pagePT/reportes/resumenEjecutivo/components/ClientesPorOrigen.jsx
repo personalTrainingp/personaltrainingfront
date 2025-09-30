@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
 /**
- * ClientsByOriginTable
+ * ClientsByOriginTable 
  * --------------------------------------------------------------
  * Tabla: "CLIENTES POR ORIGEN DEL 1 HASTA <cutDay>".
  * Agrupa por id_origen (mapeado con originMap). Cuenta clientes únicos por mes y origen.
@@ -75,58 +75,53 @@ export const ClientesPorOrigen=({
   }));
 
   // Map claveMes -> Map origin -> Set/contador
-  const base = new Map();
-  monthKeys.forEach((m) => base.set(m.key, new Map()));
+ const base = new Map();
+    monthKeys.forEach((m) => base.set(m.key, new Map()));
 
-  for (const v of ventas) {
-    const d = toLimaDate(v?.fecha_venta);
-    if (!d) continue;
+    for (const v of ventas) {
+      const d = toLimaDate(v?.fecha_venta);
+      if (!d) continue;
 
-    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-    const from = clamp(Number(initialDay || 1), 1, last);
-    const to = clamp(Number(cutDay || last), from, last);
-    const dia = d.getDate();
-    if (dia < from || dia > to) continue;
+      const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+      const from = clamp(Number(initialDay || 1), 1, last);
+      const to = clamp(Number(cutDay || last), from, last);
+      const dia = d.getDate();
+      if (dia < from || dia > to) continue;
 
-    const mes = MESES[d.getMonth()];
-    const keyMes = `${d.getFullYear()}-${mes}`;
-    if (!base.has(keyMes)) continue; // sólo contamos lo que se muestra en columnas
+      const mes = MESES[d.getMonth()];
+      const keyMes = `${d.getFullYear()}-${mes}`;
+      if (!base.has(keyMes)) continue;
 
-    const originId = v?.id_origen ?? 0;
-    const origin = labelOfOrigin(originId);
+      const originId = v?.id_origen ?? 0;
+      const origin = labelOfOrigin(originId);
 
-    const bucket = base.get(keyMes);
-    if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
+      const bucket = base.get(keyMes);
+      if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
 
-    if (uniqueByClient) {
-      const set = bucket.get(origin);
-      const idCli = v?.id_cli ?? `venta-${v?.id ?? Math.random()}`;
-      set.add(String(idCli));
-    } else {
-      bucket.set(origin, Number(bucket.get(origin) || 0) + 1);
-    }
+      if (uniqueByClient) {
+        const set = bucket.get(origin);
+        const idCli = v?.id_cli ?? `venta-${v?.id ?? Math.random()}`;
+        set.add(String(idCli));
+      } else {
+        bucket.set(origin, Number(bucket.get(origin) || 0) + 1);
+      }
+
   }
 
   // Reunir todos los orígenes presentes (incluye los que aparezcan en originMap aunque estén en 0)
-  const allOrigins = new Set();
-  // Desde los datos
-  for (const m of base.values()) {
-    for (const o of m.keys()) allOrigins.add(o);
-  }
-  // Desde el mapa de referencia
-  Object.values(originMap || {}).forEach((name) => allOrigins.add(String(name).toUpperCase()));
+   const allOrigins = new Set();
+    for (const m of base.values()) for (const o of m.keys()) allOrigins.add(o);
+    Object.values(originMap || {}).forEach((name) => allOrigins.add(String(name).toUpperCase()));
 
-  const orderedOrigins = Array.from(allOrigins);
-  // Orden: los del originMap primero en el orden que vinieron, luego el resto alfabético
-  const prefer = Object.values(originMap || {}).map((n) => String(n).toUpperCase());
-  orderedOrigins.sort((a, b) => {
-    const ia = prefer.indexOf(a);
-    const ib = prefer.indexOf(b);
-    if (ia !== -1 && ib !== -1) return ia - ib;
-    if (ia !== -1) return -1;
-    if (ib !== -1) return 1;
-    return a.localeCompare(b);
-  });
+    const orderedOrigins = Array.from(allOrigins);
+    const prefer = Object.values(originMap || {}).map((n) => String(n).toUpperCase());
+    orderedOrigins.sort((a, b) => {
+      const ia = prefer.indexOf(a), ib = prefer.indexOf(b);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
+      return a.localeCompare(b);
+    });
 
   const getCount = (keyMes, origin) => {
     const m = base.get(keyMes);
@@ -135,6 +130,8 @@ export const ClientesPorOrigen=({
     if (!v) return 0;
     return uniqueByClient ? v.size : Number(v);
   };
+      const [highlightMax, setHighlightMax] = useState(false);
+    const toggleHighlight = () => setHighlightMax(!highlightMax);
 
   // --------------------------- Styles ---------------------------
   const C = {
@@ -162,31 +159,66 @@ export const ClientesPorOrigen=({
   const sCell = { background: C.white, color: "#000", padding: "10px", border: C.border, fontSize: 17, textAlign: "center" };
   const sCellLeft = { ...sCell, textAlign: "left", fontWeight: 700, fontSize: 15 };
 
+  const lastMonthKey = monthKeys[monthKeys.length - 1]?.key;
+    const maxValueLastCol = Math.max(...orderedOrigins.map(o => getCount(lastMonthKey, o)));
+
+    // --------------------------- Render ---------------------------
+    // Ordenar por la última columna (mayor a menor), y en caso de empate, por la suma total
+    const sortedOrigins = [...orderedOrigins].sort((a, b) => {
+      const va = getCount(lastMonthKey, a);
+      const vb = getCount(lastMonthKey, b);
+      if (vb !== va) return vb - va;
+      // Si hay empate en la última columna, ordenar por suma total
+      const sumA = monthKeys.reduce((acc, m) => acc + getCount(m.key, a), 0);
+      const sumB = monthKeys.reduce((acc, m) => acc + getCount(m.key, b), 0);
+      return sumB - sumA;
+    });
+
+    // Primer lugar para highlight
+    const highlightOrigin = highlightMax ? sortedOrigins[0] : null;
+
   // --------------------------- Render ---------------------------
   return (
     <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
       <div style={sTitle}>CLIENTES POR ORIGEN DEL {initialDay} HASTA {cutDay}</div>
 
-      <table style={sTable}>
-        <thead>
-          <tr>
-            <th style={sHeadLeft}>MES</th>
-            {monthKeys.map((m) => (
-              <th key={m.key} style={sHead}>{m.label}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {orderedOrigins.map((origin) => (
-            <tr key={origin}>
-              <td style={sCellLeft}>{origin}</td>
+    
+        <table style={sTable}>
+          <thead>
+            <tr>
+              <th style={sHeadLeft} onClick={toggleHighlight}>MES</th>
               {monthKeys.map((m) => (
-                <td key={`${m.key}-${origin}`} style={sCell}>{getCount(m.key, origin)}</td>
+                <th key={m.key} style={sHead} onClick={toggleHighlight}>{m.label}</th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+          </thead>
+          <tbody>
+            {sortedOrigins.map((origin) => (
+              <tr key={origin}>
+                <td style={sCellLeft}>{origin}</td>
+                {monthKeys.map((m, idx) => {
+                  const value = getCount(m.key, origin);
+                  // Highlight solo el primer lugar en la última columna
+                  const isMax = highlightMax && m.key === lastMonthKey && origin === highlightOrigin;
+                  return (
+                    <td
+                      key={`${m.key}-${origin}`}
+                      style={{
+                        ...sCell,
+                        fontWeight: isMax ? 700 : "normal",
+                        backgroundColor: isMax ? "#ffff99" : sCell.background,
+                        color: isMax ? "#c00000" : sCell.color
+                      }}
+                    >
+                      {value}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+

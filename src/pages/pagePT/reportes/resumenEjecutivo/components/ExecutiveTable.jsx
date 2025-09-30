@@ -244,7 +244,7 @@ export default function ExecutiveTable({
   return (
     <div style={sWrap}>
       <div style={sHeader}>
-        RESUMEN EJECUTIVO HASTA EL {cutDay} DE CADA MES
+         iINFORME GERENCIAL {cutDay} DE CADA MES
       </div>
 
       <table style={sTable}>
@@ -279,15 +279,18 @@ export default function ExecutiveTable({
             </tr>
           ))}
 
-          {/* Fila negra: TOTAL MES */}
-          <tr style={sRowBlack}>
-            <td style={{ ...sCellBold, background: "transparent", color: cWhite }}>TOTAL MES</td>
-            {perMonth.map((m, idx) => (
-              <td key={idx} style={{ ...sCellBold, background: "transparent", color: cWhite }}>
-                {fmtMoney(m.metrics?.totalMes || 0)}
-              </td>
-            ))}
-          </tr>
+        {/* Fila negra: TOTAL y día de hoy */}
+<tr style={sRowBlack}>
+  <td style={{ ...sCellBold, background: "transparent", color: cWhite }}>
+    TOTAL {new Date().getDate()}
+  </td>
+  {perMonth.map((m, idx) => (
+    <td key={idx} style={{ ...sCellBold, background: "transparent", color: cWhite }}>
+      {fmtMoney(m.metrics?.totalMes || 0)}
+    </td>
+  ))}
+</tr>
+
 
           {/* CAC */}
           <tr>
