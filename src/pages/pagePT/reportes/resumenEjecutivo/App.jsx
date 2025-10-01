@@ -51,7 +51,21 @@ export const App = ({ id_empresa }) => {
   const [clickServProd, setclickServProd] = useState("total");
   const { RANGE_DATE } = useSelector(e => e.DATA);
   const dispatch = useDispatch();
- 
+   const [cutDay, setCutDay] = useState(new Date().getDate()); 
+  const [initDay, setInitDay] = useState(1);
+  console.log({dataVentas});
+ // Estado para mes seleccionado
+const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 1 = enero ... 12 = diciembre
+const year = new Date().getFullYear();
+
+useEffect(() => {
+  const year = new Date().getFullYear();
+  const startDate = new Date(year, selectedMonth - 1, initDay);
+  const endDate = new Date(year, selectedMonth - 1, cutDay);
+  dispatch(onSetRangeDate([startDate, endDate]));
+}, [selectedMonth, initDay, cutDay, dispatch]);
+
+
   useEffect(() => {
     console.log('RANGE_DATE:', RANGE_DATE);
     if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
@@ -97,13 +111,9 @@ useEffect(() => {
   };
 
   // Día de corte 1..31 (si no quieres corte, deja null)
-  const [cutDay, setCutDay] = useState(new Date().getDate()); 
-  const [initDay, setInitDay] = useState(1);
-  console.log({dataVentas});
-  
+ 
 
-
-  const tableData = useMemo(() => ventasToExecutiveData({
+   const tableData = useMemo(() => ventasToExecutiveData({
     ventas: dataVentas,
     columns,
     titleLeft: "CIRCUS",
@@ -133,13 +143,7 @@ useEffect(() => {
       
     }
   };
-  useEffect(() => {
-    const year = new Date().getFullYear();
-    const month = new Date().getMonth();
-    const startDate = new Date(year, month, initDay);
-    const endDate = new Date(year, month, cutDay);
-    dispatch(onSetRangeDate([startDate, endDate]));
-  }, [initDay, cutDay, dispatch]);
+  
   
  function generarResumenRanking(array) {
   // Totales generales
@@ -265,40 +269,60 @@ const rankingDataUnicos = Object.values(
       <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
       <Row className="mb-3">
         <Col lg={12}>
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"40px" }}>
-            {/* Día de inicio */}
-            <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-              <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Día de inicio:</label>
-              <select
-                value={initDay}
-                onChange={e => setInitDay(parseInt(e.target.value, 10))}
-                style={{ fontSize: '1.5em' }}
-              >
-                {Array.from({ length: 31 }, (_, i) => i + 1).map(n => (
-                  <option key={n} value={n}>{n}</option>
-                ))}
-              </select>
-            </div>
-            {/* Día de corte */}
-            <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-              <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Día de corte:</label>
-              <select
-                value={cutDay}
-                onChange={e => setCutDay(parseInt(e.target.value, 10))}
-                style={{ fontSize: '1.5em' }}
-              >
-                {Array.from({ length: 31 }, (_, i) => i + 1).map(n => (
-                  <option key={n} value={n}>{n}</option>
-                ))}
-              </select>
-            </div>
-            {/* Hora actual */}
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <span style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>
-                Hora: {new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false })}
-              </span>
-            </div>
-          </div>
+         <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"40px" }}>
+  {/* Día de inicio */}
+  <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+    <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Día de inicio:</label>
+    <select
+      value={initDay}
+      onChange={e => setInitDay(parseInt(e.target.value, 10))}
+      style={{ fontSize: '1.5em' }}
+    >
+      {Array.from({ length: 31 }, (_, i) => i + 1).map(n => (
+        <option key={n} value={n}>{n}</option>
+      ))}
+    </select>
+  </div>
+
+  {/* Día de corte */}
+  <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+    <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Día de corte:</label>
+    <select
+      value={cutDay}
+      onChange={e => setCutDay(parseInt(e.target.value, 10))}
+      style={{ fontSize: '1.5em' }}
+    >
+      {Array.from({ length: 31 }, (_, i) => i + 1).map(n => (
+        <option key={n} value={n}>{n}</option>
+      ))}
+    </select>
+  </div>
+
+  {/* 👇 Nuevo: Selector de mes */}
+  <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+    <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Mes:</label>
+    <select
+      value={selectedMonth}
+      onChange={e => setSelectedMonth(parseInt(e.target.value, 10))}
+      style={{ fontSize: '1.5em' }}
+    >
+      {[
+        "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
+        "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"
+      ].map((mes, idx) => (
+        <option key={idx+1} value={idx+1}>{mes}</option>
+      ))}
+    </select>
+  </div>
+
+  {/* Hora actual */}
+  <div style={{ display: "flex", alignItems: "center" }}>
+    <span style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>
+      Hora: {new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false })}
+    </span>
+  </div>
+</div>
+
         </Col>
       </Row>
       <Row className="mb-4">
@@ -388,9 +412,7 @@ const rankingDataUnicos = Object.values(
           </Col>
           
         </Col>
-   {
-
-/*<Row>
+<Row>
   <Col lg={12}>
     <SumaDeSesiones
       resumenArray={resumenFilas}
@@ -398,8 +420,7 @@ const rankingDataUnicos = Object.values(
       avataresDeProgramas={avataresDeProgramas}
     />
   </Col>
-</Row>*/
-}
+</Row>
       </Row>
     </>
   );

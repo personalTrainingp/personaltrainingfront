@@ -985,57 +985,54 @@ function sumarMontosDeVentas(ventas) {
 	}, 0);
 }
 function agruparYSumarMontos(ventas) {
-	return ventas.reduce((acumulador, venta) => {
-		// console.log(venta);
+  return ventas.reduce((acumulador, venta) => {
+    const nombres_apellidos_empl = venta?.tb_empleado?.nombres_apellidos_empl;
+    const tb_images = venta?.tb_empleado?.tb_images;
 
-		// const { nombres_apellidos_empl } = venta?.tb_empleado;
+    // Obtener la última imagen, si existe
+    const ultimaImagen = tb_images?.[tb_images.length - 1]?.name_image || null;
 
-		const nombres_apellidos_empl = venta?.tb_empleado?.nombres_apellidos_empl;
-		const tb_images = venta?.tb_empleado?.tb_images;
+    // ---- Montos por tipo de producto/servicio ----
+    const montoCitaTrat =
+      venta.detalle_cita_tratest?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+    const montoCitasNut =
+      venta.detalle_cita_nut?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+    const montoMembresia =
+      venta.detalle_membresia?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+    const montoProdAccesorio =
+      venta.detalle_prodAccesorios?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+    const montoProdSuplementos =
+      venta.detalle_prodSuplemento?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
 
-		// Obtener la última imagen, si existe
-		const ultimaImagen = tb_images?.[tb_images.length - 1]?.name_image || null;
-		const montoCitaTrat =
-			venta.detalle_cita_tratest?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) ||
-			0;
-		const montoCitasNut =
-			venta.detalle_cita_nut?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
-		const montoMembresia =
-			venta.detalle_membresia?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
-		const montoProdAccesorio =
-			venta.detalle_prodAccesorios?.reduce(
-				(sum, item) => sum + (item.tarifa_monto || 0),
-				0
-			) || 0;
-		const montoProdSuplementos =
-			venta.detalle_prodSuplemento?.reduce(
-				(sum, item) => sum + (item.tarifa_monto || 0),
-				0
-			) || 0;
+    const montoTotal =
+      montoCitaTrat + montoCitasNut + montoMembresia + montoProdAccesorio + montoProdSuplementos;
 
-		const montoTotal =
-			montoCitaTrat +
-			montoCitasNut +
-			montoMembresia +
-			montoProdAccesorio +
-			montoProdSuplementos;
+    // ---- Todos los items asociados a esta venta (para contar SOCIOS y SESIONES) ----
+    const itemsVenta = [
+      ...(venta.detalle_cita_tratest || []),
+      ...(venta.detalle_cita_nut || []),
+      ...(venta.detalle_membresia || []),
+      ...(venta.detalle_prodAccesorios || []),
+      ...(venta.detalle_prodSuplemento || []),
+    ];
+
+
 		const empleadoExistente = acumulador.find((item) => item.empl === nombres_apellidos_empl);
 
 		if (empleadoExistente) {
 			empleadoExistente.monto += montoTotal;
+			empleadoExistente.items.push(...itemsVenta); // 👈 sumamos los contratos
 		} else {
 			acumulador.push({
 				empl: nombres_apellidos_empl,
-				// avatar_image:
-				// 	venta?.tb_empleado?.tb_images[venta?.tb_empleado?.tb_images.length + 1]
-				// 		?.name_image,
 				monto: montoTotal,
-				avatar: ultimaImagen, // Agregar la última imagen como avatar
+				avatar: ultimaImagen, // última imagen como avatar
+				items: itemsVenta,    // 👈 guardamos los contratos aquí
 			});
 		}
 
-		return acumulador;
-	}, []);
+    return acumulador;
+  }, []);
 }
 function agruparPorFormaPago(data) {
 	// Crear un objeto para acumular los montos por forma de pago
