@@ -18,8 +18,9 @@ import { HistorialVentas } from './HistorialVentas'
 import { FechaRange } from '@/components/RangeCalendars/FechaRange'
 import { useSelector } from 'react-redux'
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
-import dayjs from 'dayjs'
-
+import dayjs, { utc } from 'dayjs'
+import "dayjs/locale/es";
+dayjs.extend(utc)
 
 function contarVentas(data) {
   let totalVentas = 0;
@@ -145,7 +146,7 @@ export const TotalVentas = () => {
       <Col xxl={12}>
         <Row className=' d-flex justify-content-center'>
           <Col xxl={4}>
-            <CardTotal title={<>VENTA DIA {dayjs(new Date()).format('D [de] MMMM [del] YYYY')}</>} body={<SymbolSoles isbottom={true} numero={<NumberFormatMoney amount={reporteVentasHoy}/>}/>} span={`${reporteDeVentasHOY.length} ventas`}/>
+            <CardTotal title={<>VENTA DIA {dayjs.utc(new Date()).format('D [de] MMMM [del] YYYY')}</>} body={<SymbolSoles isbottom={true} numero={<NumberFormatMoney amount={reporteVentasHoy}/>}/>} span={`${reporteDeVentasHOY.length} ventas`}/>
           </Col>
           <Col xxl={5}>
             <CardTotal onClick={()=>setclickServProd('total')} title={`VENTA ACUMULADA por rango de fechas ${clasesVentasSeparadas(clickServProd)}`} body={<SymbolSoles isbottom={true} numero={<NumberFormatMoney amount={TotalDeVentasxProdServ(clickServProd).sumaTotal}/>}/>} span={`${TotalDeVentasxProdServ(`${clickServProd}`).data?.length} ventas `}/>

@@ -4,11 +4,16 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import utc from 'dayjs/plugin/utc';
-
+import 'dayjs/locale/es';
 dayjs.extend(utc);
-function formatDateToSQLServerWithDayjs(date) {
-	return dayjs(date).toISOString(); // Asegurar que esté en UTC
-	// .format('YYYY-MM-DD HH:mm:ss.SSS0000 +00:00');
+function formatDateToSQLServerWithDayjs(date, isStart = true) {
+	const base = dayjs.utc(date);
+
+	const formatted = isStart
+		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]')
+		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
+
+	return formatted;
 }
 export const useReporteStore = () => {
 	const dispatch = useDispatch();
@@ -137,15 +142,21 @@ export const useReporteStore = () => {
 	const obtenerVentas = async (arrayDate) => {
 		try {
 			setloading(true);
+			console.log(
+				[
+					formatDateToSQLServerWithDayjs(arrayDate[0], true),
+					formatDateToSQLServerWithDayjs(arrayDate[1], false),
+				],
+				'en 136'
+			);
 			const { data } = await PTApi.get('/reporte/reporte-obtener-ventas', {
 				params: {
 					arrayDate: [
-						formatDateToSQLServerWithDayjs(arrayDate[0]),
-						formatDateToSQLServerWithDayjs(arrayDate[1]),
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
 					],
 				},
 			});
-			console.log(data, 'en 136');
 
 			const dataTotal = data.reporte.map((e) => {
 				// Filtrar productos con id_categoria igual a 17
