@@ -168,10 +168,11 @@ export const App = ({ id_empresa }) => {
               <ExecutiveTable    ventas={dataVentas}
                 fechas={[
                   // { label: 'MAYO',  anio: '2025', mes: 'mayo' },
-                  { label: 'JUNIO', anio: '2025', mes: 'junio' },
+                  // { label: 'JUNIO', anio: '2025', mes: 'junio' },
                   { label: 'JULIO', anio: '2025', mes: 'julio' },
                   { label: 'AGOSTO',anio: '2025', mes: 'agosto' },
                   { label: 'SEPTIEMBRE',anio: '2025', mes: 'septiembre' },
+                  { label: 'OCTUBRE',anio: '2025', mes: 'octubre' },
                 ]}
                 dataMktByMonth={dataMkt}
                 initialDay={initDay}
@@ -182,10 +183,11 @@ export const App = ({ id_empresa }) => {
                 ventas={dataVentas.filter(v => v.id_origen && v.id_origen !== 0)}           // tu array de ventas
                 fechas={[
                   // { label: 'MAYO', anio: '2025', mes: 'mayo' },
-                  { label: 'JUNIO', anio: '2025', mes: 'junio' },
+                  // { label: 'JUNIO', anio: '2025', mes: 'junio' },
                   { label: 'JULIO', anio: '2025', mes: 'julio' },
                   { label: 'AGOSTO', anio: '2025', mes: 'agosto' },
-                  { label: 'SEPTIEMBRE', anio: '2025', mes: 'septiembre' }, // acepta 'setiembre'
+                  { label: 'SEPTIEMBRE', anio: '2025', mes: 'septiembre' }, 
+                  { label: 'OCTUBRE', anio: '2025', mes: 'octubre' }, 
                 ]}
                 initialDay={initDay}
                 cutDay={cutDay}
@@ -216,10 +218,11 @@ export const App = ({ id_empresa }) => {
               <ComparativoVsActual
                   fechas={[
                     // { label: 'MAYO',  anio: '2025', mes: 'mayo' },
-                    { label: 'JUNIO', anio: '2025', mes: 'junio' },
+                    // { label: 'JUNIO', anio: '2025', mes: 'junio' },
                     { label: 'JULIO', anio: '2025', mes: 'julio' },
                     { label: 'AGOSTO',anio: '2025', mes: 'agosto' },
                     { label: 'SEPTIEMBRE',anio: '2025', mes: 'septiembre' },
+                    { label: 'OCTUBRE',anio: '2025', mes: 'octubre' },
                   ]}
                   ventas={dataVentas}
                   initialDay={initDay}

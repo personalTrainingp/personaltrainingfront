@@ -44,6 +44,17 @@ export const useTerminologiaStore = () => {
 		}
 	};
 
+	const registrarTerminologiaxEntidadyGrupo = async (formState, entidad, grupo) => {
+		try {
+			const response = await PTApi.post(
+				`/parametros/postRegistrar/${grupo}/${entidad}`,
+				formState
+			);
+			console.log(response);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const registrarTerminologia = async (parametro) => {
 		try {
 			const response = await PTApi.post('/parametros/postRegistrar', parametro);
@@ -114,6 +125,7 @@ export const useTerminologiaStore = () => {
 	};
 
 	return {
+		registrarTerminologiaxEntidadyGrupo,
 		obtenerParametrosLugares,
 		dataT,
 		terminologiaPorEntidad,
