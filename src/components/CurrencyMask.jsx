@@ -6,6 +6,10 @@ import 'dayjs/locale/es'; // Importa el idioma español si no lo has hecho ya
 
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat);
+import utc from "dayjs/plugin/utc";
+import "dayjs/locale/es";
+
+dayjs.extend(utc);
 export const CurrencyMask = (e) => {
   let value = e.target.value;
   value = value.replace(/\D/g,"")
@@ -76,11 +80,11 @@ export const formateo_Moneda = (current)=>{
 
 export const DateMask = ({date, format}) => {
   //'D [de] MMMM [del] YYYY'
-  return dayjs.utc(date).locale('es').format(format)
+  return dayjs.utc(date).subtract(5, "hour").locale("es").format(format)
 }
 export const DateMaskString = (date, format) => {
   //'D [de] MMMM [del] YYYY'
-  return dayjs(date).locale('es').format(format)
+  return dayjs.utc(date).subtract(5, "hour").locale("es").format(format)
 }
 
 export const FormatoDateMask = (date, format)=>{

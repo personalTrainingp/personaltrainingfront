@@ -66,11 +66,6 @@ export const DataProveedores = () => {
 										<TabPanel header={'REDUCTO'}>
 											<CustomersProv estado_prov={true} agente={true} id_empresa={599}/>
 										</TabPanel>
-										{/* <TabPanel className='tabPanel-color-success' header={'Activos'}>
-										</TabPanel>
-										<TabPanel header={'Inactivos'}>
-										<CustomersProv estado_prov={false} agente={false}/>
-										</TabPanel> */}
 									</TabView>
 								</TabPanel>
 								<TabPanel header={'CONTRATOS POR PROVEEDOR'}>
