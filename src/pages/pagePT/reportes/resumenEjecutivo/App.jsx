@@ -4,10 +4,16 @@ import { useVentasStore } from "./useVentasStore";
 import { ventasToExecutiveData } from "./adapters/ventasToExecutiveData";
 import ExecutiveTable from "./components/ExecutiveTable";
 import { PageBreadcrumb } from "@/components";
-import {ClientesPorOrigen} from "./components/ClientesPorOrigen";
+import { ClientesPorOrigen } from "./components/ClientesPorOrigen";
 import { ComparativoVsActual } from "./components/ComparativoVsActual";
 import { buildDataMktByMonth } from "./adapters/buildDataMktByMonth";
 import { GraficoLinealInversionRedes } from "./components/GraficoLinealInversionRedes";
+import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
+import { TarjetasPago } from '../totalVentas/TarjetasPago';
+import { useSelector, useDispatch } from 'react-redux';
+import { ResumenComparativo } from "../resumenComparativo/ResumenComparativo";
+import { onSetRangeDate } from '@/store/data/dataSlice';
+//import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
 
 const RealTimeClock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -39,12 +45,20 @@ const RealTimeClock = () => {
   );
 };
 export const App = ({ id_empresa }) => {
-  const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
-
-  useEffect(() => { 
-    obtenerTablaVentas(598); 
-    obtenerLeads(598)
-  }, [id_empresa]);
+ const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
+  const { obtenerVentas, repoVentasPorSeparado, loading } = useReporteStore();
+  const [clickServProd, setclickServProd] = useState("total");
+  const { RANGE_DATE } = useSelector(e => e.DATA);
+  const dispatch = useDispatch();
+ 
+  useEffect(() => {
+    console.log('RANGE_DATE:', RANGE_DATE);
+    if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
+      obtenerVentas(RANGE_DATE);
+    }
+    obtenerTablaVentas(id_empresa || 598);
+    obtenerLeads(id_empresa || 598);
+  }, [id_empresa, RANGE_DATE]);
 
   // columnas (las del diseño de tu imagen)
   const columns = useMemo(() => ([
@@ -66,7 +80,7 @@ export const App = ({ id_empresa }) => {
   };
 
   // Día de corte 1..31 (si no quieres corte, deja null)
-  const [cutDay, setCutDay] = useState(21);
+  const [cutDay, setCutDay] = useState(new Date().getDate()); 
   const [initDay, setInitDay] = useState(1);
   console.log({dataVentas});
   
@@ -88,6 +102,26 @@ export const App = ({ id_empresa }) => {
     1457: "CARTERA",
   };
   const dataMkt = buildDataMktByMonth(dataLead, initDay, cutDay)
+   const TotalDeVentasxProdServ = (prodSer) => { 
+    switch (prodSer) {
+      case 'total':
+        return {
+          data: repoVentasPorSeparado.total?.data,
+          sumaTotal: repoVentasPorSeparado.total?.SumaMonto,
+          forma_pago: repoVentasPorSeparado.total?.forma_pago_monto,
+          asesores_pago: repoVentasPorSeparado.total?.empl_monto
+        };
+      
+    }
+  };
+  useEffect(() => {
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth();
+    const startDate = new Date(year, month, initDay);
+    const endDate = new Date(year, month, cutDay);
+    dispatch(onSetRangeDate([startDate, endDate]));
+  }, [initDay, cutDay, dispatch]);
+
   return (
     <>
       <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
@@ -145,7 +179,7 @@ export const App = ({ id_empresa }) => {
             </Col>
             <Col lg={12}>
               <ClientesPorOrigen
-                ventas={dataVentas}             // tu array de ventas
+                ventas={dataVentas.filter(v => v.id_origen && v.id_origen !== 0)}           // tu array de ventas
                 fechas={[
                   // { label: 'MAYO', anio: '2025', mes: 'mayo' },
                   { label: 'JUNIO', anio: '2025', mes: 'junio' },
@@ -199,6 +233,25 @@ export const App = ({ id_empresa }) => {
                     fechas={[new Date()]}
                   />
             </Col>
+             {/* 👇 Aquí agregamos la tabla de ranking */}
+    <Col lg={12} className="mb-4">
+      <TarjetasPago
+        tasks={
+          (TotalDeVentasxProdServ("total")?.asesores_pago || [])
+            .filter(item => item.monto && item.monto > 0)
+            .map(item => ({
+              ...item,
+              nombre: item.nombre?.split(" ")[0] || item.nombre
+            }))
+        }
+        title={"Ranking"}
+        dataSumaTotal={
+          (TotalDeVentasxProdServ("total")?.asesores_pago || [])
+            .filter(item => item.monto && item.monto > 0)
+            .reduce((total, item) => total + item.monto, 0) || 0
+        }
+      />
+    </Col>
           </Row>
         </Col>
       </Row>
