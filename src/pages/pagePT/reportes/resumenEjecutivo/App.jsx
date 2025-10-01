@@ -11,7 +11,6 @@ import { GraficoLinealInversionRedes } from "./components/GraficoLinealInversion
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
 import { TarjetasPago } from '../totalVentas/TarjetasPago';
 import { useSelector, useDispatch } from 'react-redux';
-import { ResumenComparativo } from "../resumenComparativo/ResumenComparativo";
 import { onSetRangeDate } from '@/store/data/dataSlice';
 import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
 
@@ -143,7 +142,32 @@ useEffect(() => {
       
     }
   };
-  
+  const MESES = [
+  "enero","febrero","marzo","abril","mayo","junio",
+  "julio","agosto","septiembre","octubre","noviembre","diciembre"
+];
+
+function getLastNMonths(selectedMonth, year, n = 4) {
+  const result = [];
+  let monthIdx = selectedMonth - 1; // 0-based
+  let currentYear = year;
+
+  for (let i = 0; i < n; i++) {
+    const mesNombre = MESES[monthIdx];
+    result.push({ 
+      label: mesNombre.toUpperCase(), 
+      anio: currentYear.toString(), 
+      mes: mesNombre 
+    });
+    monthIdx--;
+    if (monthIdx < 0) {
+      monthIdx = 11; // diciembre
+      currentYear--; // retrocede un año
+    }
+  }
+  return result.reverse(); // para que quede cronológico
+}
+
   
  function generarResumenRanking(array) {
   // Totales generales
@@ -263,6 +287,7 @@ const rankingDataUnicos = Object.values(
   }, {})
 );
 
+const mesesSeleccionados = getLastNMonths(selectedMonth, year);
 
  return (
     <>
@@ -328,18 +353,13 @@ const rankingDataUnicos = Object.values(
       <Row className="mb-4">
         <Col lg={6} className="pt-0">
           <div style={{marginBottom: '30px'}}>
-            <ExecutiveTable
-              ventas={dataVentas}
-              fechas={[
-                { label: 'JUNIO', anio: '2025', mes: 'junio' },
-                { label: 'JULIO', anio: '2025', mes: 'julio' },
-                { label: 'AGOSTO',anio: '2025', mes: 'agosto' },
-                { label: 'SEPTIEMBRE',anio: '2025', mes: 'septiembre' },
-              ]}
-              dataMktByMonth={dataMkt}
-              initialDay={initDay}
-              cutDay={cutDay}
-            />
+           <ExecutiveTable
+  ventas={dataVentas}
+  fechas={mesesSeleccionados}
+  dataMktByMonth={dataMkt}
+  initialDay={initDay}
+  cutDay={cutDay}
+/>
           </div>
           <div style={{marginBottom: '32px'}}>
             <ClientesPorOrigen
@@ -412,6 +432,7 @@ const rankingDataUnicos = Object.values(
           </Col>
           
         </Col>
+{/*
 <Row>
   <Col lg={12}>
     <SumaDeSesiones
@@ -421,6 +442,7 @@ const rankingDataUnicos = Object.values(
     />
   </Col>
 </Row>
+*/}
       </Row>
     </>
   );
