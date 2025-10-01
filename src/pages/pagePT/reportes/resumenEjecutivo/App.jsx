@@ -13,8 +13,9 @@ import { TarjetasPago } from '../totalVentas/TarjetasPago';
 import { useSelector, useDispatch } from 'react-redux';
 import { ResumenComparativo } from "../resumenComparativo/ResumenComparativo";
 import { onSetRangeDate } from '@/store/data/dataSlice';
-//import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
+import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
 
+import axios from 'axios';
 const RealTimeClock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -60,6 +61,22 @@ export const App = ({ id_empresa }) => {
     obtenerLeads(id_empresa || 598);
   }, [id_empresa, RANGE_DATE]);
 
+  const [programas, setProgramas] = useState([]);
+
+useEffect(() => {
+  const fetchProgramas = async () => {
+    try {
+      const { data } = await axios.get("http://localhost:4000/api/programaTraining/get_tb_pgm");
+      console.log("Programas desde backend:", data);
+      setProgramas(data || []);
+    } catch (err) {
+      console.error("Error obteniendo programas:", err);
+    }
+  };
+  fetchProgramas();
+}, []);
+
+
   // columnas (las del diseño de tu imagen)
   const columns = useMemo(() => ([
     // { key: "marzo",  label: "MARZO",  currency: "S/." },
@@ -84,6 +101,8 @@ export const App = ({ id_empresa }) => {
   const [initDay, setInitDay] = useState(1);
   console.log({dataVentas});
   
+
+
   const tableData = useMemo(() => ventasToExecutiveData({
     ventas: dataVentas,
     columns,
@@ -121,139 +140,266 @@ export const App = ({ id_empresa }) => {
     const endDate = new Date(year, month, cutDay);
     dispatch(onSetRangeDate([startDate, endDate]));
   }, [initDay, cutDay, dispatch]);
+  
+ function generarResumenRanking(array) {
+  // Totales generales
+  const sumaMontoTotal = array.reduce((acc, row) => acc + (row?.monto || 0), 0);
 
-  return (
+  // Usamos los socios que ya trae rankingData (evitamos recalcular mal)
+  const sumaTotalSocios = array.reduce((acc, row) => acc + (row.socios || 0), 0);
+
+  // Total de sesiones
+  const sumaTotalSesiones = array.reduce((acc, row) => acc + (row.sesiones || 0), 0);
+
+  // Filas por asesor
+  const resumenFilas = array.map((row) => {
+    const nombreAsesor = row.empl?.split(" ")[0] || row.nombre || "";
+    // Ajuste: dividir socios entre 2 y multiplicar ticket medio por 2
+    const sociosAjustados = row.socios ? row.socios / 2 : 0;
+    const ticketMedioAjustado = sociosAjustados ? (row.monto / sociosAjustados).toFixed(2) : "0.00";
+
+    return [
+      { header: "ASESORES", value: nombreAsesor, isPropiedad: true },
+      {
+        header: "S/. VENTA TOTAL",
+        value: row.monto?.toLocaleString("es-PE", { minimumFractionDigits: 2 }) || "0.00",
+      },
+      { header: "SOCIOS", value: sociosAjustados },
+      {
+        header: "% VENTA TOTAL",
+        value: sumaMontoTotal ? ((row.monto / sumaMontoTotal) * 100).toFixed(2) + " %" : "0 %",
+      },
+      {
+        header: "% SOCIOS",
+        value: sumaTotalSocios ? ((sociosAjustados / (sumaTotalSocios / 2)) * 100).toFixed(2) : "0",
+      },
+      {
+        header: "S/. TICKET MEDIO",
+        value: ticketMedioAjustado,
+      },
+      {
+        header: "S/. PRECIO POR SESION",
+        value: row.sesiones ? (row.monto / row.sesiones).toFixed(2) : "0.00",
+      },
+    ];
+  });
+
+  // Fila de totales
+  const resumenTotales = [
+    { header: "ASESORES", value: "TOTAL" },
+    {
+      header: "S/. VENTA TOTAL",
+      value: sumaMontoTotal.toLocaleString("es-PE", { minimumFractionDigits: 2 }),
+    },
+    { header: "SOCIOS", value: sumaTotalSocios/2 },
+    { header: "% VENTA TOTAL", value: "100 %" },
+    { header: "% SOCIOS", value: "100 %" },
+    {
+      header: "S/. TICKET MEDIO",
+      value: sumaTotalSocios ? (sumaMontoTotal / (sumaTotalSocios / 2)).toFixed(2) : "0.00",
+
+    },
+    {
+      header: "S/. PRECIO POR SESION",
+      value: sumaTotalSesiones ? (sumaMontoTotal / sumaTotalSesiones).toFixed(2) : "0.00",
+    },
+  ];
+
+  return { resumenFilas, resumenTotales };
+}
+const avataresDeProgramas = [
+  { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png", name_image: "CHANGE 45" },
+  { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png", name_image: "FS 45" },
+  { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png", name_image: "FISIO MUSCLE" },
+ // { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/cyl-avatar.png", name_image: "CHANGE YOUR LIFE" },
+  { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/vertikal CHANGE.png", name_image: "VERTIKAL CHANGE" },
+];
+
+console.log("=== Datos crudos de asesores_pago ===");
+console.log(TotalDeVentasxProdServ("total")?.asesores_pago);
+const rankingData = (TotalDeVentasxProdServ("total")?.asesores_pago || [])
+  .filter(item => item.monto && item.monto > 0)
+  .map(item => {
+    const nombre = item.tb_empleado?.nombres_apellidos_empl || item.nombre || "SIN NOMBRE";
+    const socios = Array.isArray(item.items) ? item.items.length : (item.socios || 0);
+    const sesiones = Array.isArray(item.items)
+      ? item.items.reduce((acc, it) => acc + (it?.tb_semana_training?.sesiones || 0), 0)
+      : (item.sesiones || 0);
+
+    const ticketMedio = socios ? (item.monto / socios).toFixed(2) : "0.00";
+    const precioPorSesion = sesiones ? (item.monto / sesiones).toFixed(2) : "0.00";
+
+    return {
+      ...item,
+      nombre,
+      socios,
+      sesiones,
+      ticketMedio,
+      precioPorSesion
+    };
+  });
+
+
+console.log("=== rankingData procesado ===");
+console.log(rankingData);
+
+const { resumenFilas, resumenTotales } = 
+  rankingData.length > 0 ? generarResumenRanking(rankingData) : { resumenFilas: [], resumenTotales: [] };
+const rankingDataUnicos = Object.values(
+  rankingData.reduce((acc, item) => {
+    if (!acc[item.nombre]) {
+      acc[item.nombre] = { ...item };
+    } else {
+      // Si hay repetidos, suma montos, socios y sesiones
+      acc[item.nombre].monto += item.monto;
+      acc[item.nombre].socios += item.socios;
+      acc[item.nombre].sesiones += item.sesiones;
+    }
+    return acc;
+  }, {})
+);
+
+
+ return (
     <>
       <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
       <Row className="mb-3">
         <Col lg={12}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "40px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <label style={{ fontWeight: 600, fontSize: "2em", color: "black" }}>Día de inicio:</label>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"40px" }}>
+            {/* Día de inicio */}
+            <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+              <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Día de inicio:</label>
               <select
                 value={initDay}
-                onChange={(e) => setInitDay(parseInt(e.target.value, 10))}
-                style={{ fontSize: "1.5em" }}
+                onChange={e => setInitDay(parseInt(e.target.value, 10))}
+                style={{ fontSize: '1.5em' }}
               >
-                {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
+                {Array.from({ length: 31 }, (_, i) => i + 1).map(n => (
+                  <option key={n} value={n}>{n}</option>
                 ))}
               </select>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <label style={{ fontWeight: 600, fontSize: "2em", color: "black" }}>Día de corte:</label>
+            {/* Día de corte */}
+            <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+              <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Día de corte:</label>
               <select
                 value={cutDay}
-                onChange={(e) => setCutDay(parseInt(e.target.value, 10))}
-                style={{ fontSize: "1.5em" }}
+                onChange={e => setCutDay(parseInt(e.target.value, 10))}
+                style={{ fontSize: '1.5em' }}
               >
-                {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
+                {Array.from({ length: 31 }, (_, i) => i + 1).map(n => (
+                  <option key={n} value={n}>{n}</option>
                 ))}
               </select>
             </div>
-            <RealTimeClock />
+            {/* Hora actual */}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>
+                Hora: {new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false })}
+              </span>
+            </div>
           </div>
         </Col>
       </Row>
-
-      <Row className="">
+      <Row className="mb-4">
         <Col lg={6} className="pt-0">
-          <Row>
-            <Col lg={12} className="mb-4">
-              <ExecutiveTable    ventas={dataVentas}
-                fechas={[
-                  // { label: 'MAYO',  anio: '2025', mes: 'mayo' },
-                  { label: 'JUNIO', anio: '2025', mes: 'junio' },
-                  { label: 'JULIO', anio: '2025', mes: 'julio' },
-                  { label: 'AGOSTO',anio: '2025', mes: 'agosto' },
-                  { label: 'SEPTIEMBRE',anio: '2025', mes: 'septiembre' },
-                ]}
-                dataMktByMonth={dataMkt}
-                initialDay={initDay}
-                cutDay={cutDay} />
-            </Col>
-            <Col lg={12}>
-              <ClientesPorOrigen
-                ventas={dataVentas.filter(v => v.id_origen && v.id_origen !== 0)}           // tu array de ventas
-                fechas={[
-                  // { label: 'MAYO', anio: '2025', mes: 'mayo' },
-                  { label: 'JUNIO', anio: '2025', mes: 'junio' },
-                  { label: 'JULIO', anio: '2025', mes: 'julio' },
-                  { label: 'AGOSTO', anio: '2025', mes: 'agosto' },
-                  { label: 'SEPTIEMBRE', anio: '2025', mes: 'septiembre' }, // acepta 'setiembre'
-                ]}
-                initialDay={initDay}
-                cutDay={cutDay}
-                originMap={{
-                  686: 'Walking',
-                  687: 'Mail',
-                  690: 'REFERIDOS',
-                  691: 'CARTERA DE RENOVACION',
-                  692: 'Cartera de reinscripcion',
-                  693: 'Instagram',
-                  694: 'Facebook',
-                  695: 'tiktok',
-                  696: 'EX-PT reinscripcion',
-                  689: 'WSP organico',
-                  1470: 'CORPORATIVOS BBVA',
-                  // 1454: 'WALK-IN',
-                  // 1455: 'DIGITAL',
-                  // 1456: 'REFERIDO',
-                  // 1457: 'CARTERA',
-                }}
-              />
-            </Col>
-          </Row>
+          <div style={{marginBottom: '30px'}}>
+            <ExecutiveTable
+              ventas={dataVentas}
+              fechas={[
+                { label: 'JUNIO', anio: '2025', mes: 'junio' },
+                { label: 'JULIO', anio: '2025', mes: 'julio' },
+                { label: 'AGOSTO',anio: '2025', mes: 'agosto' },
+                { label: 'SEPTIEMBRE',anio: '2025', mes: 'septiembre' },
+              ]}
+              dataMktByMonth={dataMkt}
+              initialDay={initDay}
+              cutDay={cutDay}
+            />
+          </div>
+          <div style={{marginBottom: '32px'}}>
+            <ClientesPorOrigen
+              ventas={dataVentas}
+              fechas={[
+                { label: 'JUNIO', anio: '2025', mes: 'junio' },
+                { label: 'JULIO', anio: '2025', mes: 'julio' },
+                { label: 'AGOSTO', anio: '2025', mes: 'agosto' },
+                { label: 'SEPTIEMBRE', anio: '2025', mes: 'septiembre' },
+              ]}
+              initialDay={initDay}
+              cutDay={cutDay}
+              originMap={{
+                686: 'Walking',
+                687: 'Mail',
+                690: 'REFERIDOS',
+                691: 'CARTERA DE RENOVACION',
+                692: 'Cartera de reinscripcion',
+                693: 'Instagram',
+                694: 'Facebook',
+                695: 'tiktok',
+                696: 'EX-PT reinscripcion',
+                689: 'WSP organico',
+                1470: 'CORPORATIVOS BBVA',
+              }}
+            />
+          </div>
         </Col>
         <Col lg={6}>
-          <Row>
-            <Col lg={12} className="mb-4">
-              <ComparativoVsActual
-                  fechas={[
-                    // { label: 'MAYO',  anio: '2025', mes: 'mayo' },
-                    { label: 'JUNIO', anio: '2025', mes: 'junio' },
-                    { label: 'JULIO', anio: '2025', mes: 'julio' },
-                    { label: 'AGOSTO',anio: '2025', mes: 'agosto' },
-                    { label: 'SEPTIEMBRE',anio: '2025', mes: 'septiembre' },
-                  ]}
-                  ventas={dataVentas}
-                  initialDay={initDay}
-                  cutDay={cutDay}            // día de corte opcional (1..31)
-                  // referenceMonth={"agosto"} // opcional; si lo omites, usa el último mes con datos
-                />
-            </Col>
-            <Col lg={12}>
-                  <GraficoLinealInversionRedes
-                    data={dataLeadPorMesAnio}
-                    fechas={[new Date()]}
-                  />
-            </Col>
-             {/* 👇 Aquí agregamos la tabla de ranking */}
-    <Col lg={12} className="mb-4">
-      <TarjetasPago
-        tasks={
-          (TotalDeVentasxProdServ("total")?.asesores_pago || [])
-            .filter(item => item.monto && item.monto > 0)
-            .map(item => ({
-              ...item,
-              nombre: item.nombre?.split(" ")[0] || item.nombre
-            }))
-        }
-        title={"Ranking"}
-        dataSumaTotal={
-          (TotalDeVentasxProdServ("total")?.asesores_pago || [])
-            .filter(item => item.monto && item.monto > 0)
-            .reduce((total, item) => total + item.monto, 0) || 0
-        }
-      />
-    </Col>
-          </Row>
+          <div style={{marginBottom: '32px'}}>
+            <ComparativoVsActual
+              fechas={[
+                { label: 'JUNIO', anio: '2025', mes: 'junio' },
+                { label: 'JULIO', anio: '2025', mes: 'julio' },
+                { label: 'AGOSTO',anio: '2025', mes: 'agosto' },
+                { label: 'SEPTIEMBRE',anio: '2025', mes: 'septiembre' },
+              ]}
+              ventas={dataVentas}
+              initialDay={initDay}
+              cutDay={cutDay}
+            />
+          </div>
+          <div style={{marginBottom: '32px'}}>
+            <GraficoLinealInversionRedes
+              data={dataLeadPorMesAnio}
+              fechas={[new Date()]}
+            />
+          </div>
+          <Col lg={12}>
+            {/* 👇 Y justo después el Ranking */}
+            <div style={{marginTop: '15px,'}}>
+              <TarjetasPago
+                tasks={
+                  (TotalDeVentasxProdServ("total")?.asesores_pago || [])
+                    .filter(item => item.monto && item.monto > 0)
+                    .map(item => ({
+                      ...item,
+                      nombre: item.nombre?.split(" ")[0] || item.nombre
+                    }))
+                }
+                title={"Ranking"}
+                dataSumaTotal={
+                  (TotalDeVentasxProdServ("total")?.asesores_pago || [])
+                    .filter(item => item.monto && item.monto > 0)
+                    .reduce((total, item) => total + item.monto, 0) || 0
+                }
+              />
+            </div>
+      
+          </Col>
+          
         </Col>
+   {
+
+/*<Row>
+  <Col lg={12}>
+    <SumaDeSesiones
+      resumenArray={resumenFilas}
+      resumenTotales={resumenTotales}
+      avataresDeProgramas={avataresDeProgramas}
+    />
+  </Col>
+</Row>*/
+}
       </Row>
     </>
   );
