@@ -3,12 +3,30 @@ import React from "react";
 export function SumaDeSesiones({ resumenArray, resumenTotales, avataresDeProgramas = [] }) {
   if (!Array.isArray(resumenArray) || resumenArray.length === 0) return null;
 
-  // Filtramos para eliminar las dos últimas columnas
   const filterCols = (cols) => cols.slice(0, -2);
+
+  // Índice de la columna "S/. VENTA TOTAL"
+  const ventaTotalIndex = resumenArray[0].findIndex(col => col.header.includes('VENTA TOTAL'));
+
+  // Filtramos, convertimos a número y ordenamos
+  const resumenFiltrado = resumenArray
+    .filter(fila => fila[0].value !== 'TOTAL') // excluir fila TOTAL
+    .map(fila => ({
+      fila,
+      venta: parseFloat(
+        String(fila[ventaTotalIndex]?.value || '0')
+          .replace(/\./g, '')   // eliminamos puntos de miles
+          .replace(',', '.')    // convertimos coma decimal a punto
+      ) || 0
+    }))
+    .filter(item => item.venta > 0) // solo ventas mayores a 0
+    .sort((a, b) => b.venta - a.venta) // ordenar descendente
+    .slice(0, 2) // solo los 2 primeros
+    .map(item => item.fila); // recuperamos solo la fila original
 
   return (
     <div style={{ margin: "32px 0" }}>
-      {/* Avatares de programas */}
+      {/* Avatares */}
       {Array.isArray(avataresDeProgramas) && avataresDeProgramas.length > 0 && (
         <div style={{ display: "flex", gap: "24px", justifyContent: "center", marginBottom: "16px" }}>
           {avataresDeProgramas.map((img, idx) => (
@@ -35,7 +53,7 @@ export function SumaDeSesiones({ resumenArray, resumenTotales, avataresDeProgram
           </tr>
         </thead>
         <tbody>
-          {resumenArray.map((fila, idx) => (
+          {resumenFiltrado.map((fila, idx) => (
             <tr key={idx}>
               {filterCols(fila).map((col, j) => (
                 <td key={j} className={col.isPropiedad ? "fw-bold" : ""}>

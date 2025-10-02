@@ -124,13 +124,14 @@ export const ComparativoVsActual=({
     const key = keyOf(f.anio, f.mes);
     const vals = dataByMonth.get(key) || { serv: 0, prod: 0, total: 0 };
 
-    const dServ = vals.serv - refVals.serv;
-    const dProd = vals.prod - refVals.prod;
-    const dTot = vals.total - refVals.total;
+    const dServ = refVals.serv - vals.serv;
+const dProd = refVals.prod - vals.prod;
+const dTot = refVals.total - vals.total;
+
 
     const pct = (val, ref) => {
       if (!ref) return 0;
-      return ((val - ref) / ref) * 100;
+      return ((ref - val) / ref) * 100;
     };
 
     return {
