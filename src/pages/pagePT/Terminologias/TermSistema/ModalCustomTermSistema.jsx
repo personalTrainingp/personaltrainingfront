@@ -5,7 +5,9 @@ import { useTerminologiaStore } from '../useTerminologiaStore';
 
 export const ModalCustomTermSistema = ({ show, onHide, entidad, grupo, id = 0, label = '' }) => {
   const [labelParam, setLabelParam] = useState(label?.trim() ?? '');
-  const { registrarTerminologiaxEntidadyGrupo /*, actualizarTerminologia*/ } = useTerminologiaStore();
+  const { registrarTerminologiaxEntidadyGrupo 
+    , actualizarTerminologia
+  } = useTerminologiaStore();
 
   // Sincroniza el input al abrir/cambiar label
   useEffect(() => {

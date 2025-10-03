@@ -67,7 +67,7 @@ export const useTerminologiaStore = () => {
 
 	const actualizarTerminologia = async (parametroPorEnviar) => {
 		try {
-			const response = await PTApi.post('/parametros/postActualizar', parametroPorEnviar);
+			const response = await PTApi.put('/parametros/postActualizar', parametroPorEnviar);
 			terminologiaPorEntidad();
 			console.log(response);
 		} catch (error) {

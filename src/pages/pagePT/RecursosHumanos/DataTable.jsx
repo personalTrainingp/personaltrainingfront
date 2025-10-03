@@ -80,7 +80,7 @@ export const DataTable = () => {
   return (
     <>
       <Select
-        options={[{label: '08/2025', value: '08/2025'}, {label: '07/2025', value: '07/2025'}, {label: '06/2025', value: '06/2025'}]}
+        options={[{label: '09/2025', value: '09/2025'}, {label: '08/2025', value: '08/2025'}, {label: '07/2025', value: '07/2025'}, {label: '06/2025', value: '06/2025'}]}
         onChange={(e)=>onChangeDetallePlanilla(e.value)}
       />
     <ModalDataDetalleTable dataContratoxFecha={dataContratoxFecha} unirAsistenciaYContrato={unirAsistenciaYContrato} dataMarcacionxFecha={dataMarcacionxFecha} dataContratoConMarcacion={dataContratoConMarcacion} show={isOpenModalDetalleData} onHide={onCloseModalDetalleData} mesAnio={selectMes}/>

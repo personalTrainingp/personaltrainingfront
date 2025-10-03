@@ -63,12 +63,12 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerProveedores = async (estado_prov, agente) => {
+	const obtenerProveedores = async (estado_prov, agente, id_empresa) => {
 		try {
 			const { data } = await PTApi.get('/proveedor/obtener-proveedores', {
 				params: {
 					estado_prov: estado_prov,
-					id_empresa: 598,
+					id_empresa: id_empresa,
 				},
 			});
 			const dataProv = data.proveedores.sort((a, b) => {
@@ -94,10 +94,12 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerParametrosProveedor = async () => {
+	const obtenerParametrosProveedor = async (id_empresa) => {
 		try {
 			// setIsLoading(true);
-			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
+			const { data } = await PTApi.get(
+				`/parametros/get_params/producto/proveedor/${id_empresa}`
+			);
 			// setDataProducProveedor(data);
 			dispatch(onSetProveedoresCOMBO(data));
 			// setIsLoading(false);

@@ -22,13 +22,13 @@ export const useTrabajosProvStore = () => {
 		email_vend_prov: '',
 		estado_prov: true,
 	});
-	const startRegisterProveedor = async (formState) => {
+	const startRegisterProveedor = async (formState, id_empresa) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.post('/proveedor/post-proveedor', formState);
 			setmessage({ msg: data.msg, ok: data.ok });
 			setIsLoading(false);
-			obtenerParametrosProveedor();
+			obtenerParametrosProveedor(id_empresa);
 			obtenerProveedores();
 		} catch (error) {
 			console.log(error);
@@ -42,10 +42,12 @@ export const useTrabajosProvStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerParametrosProveedor = async () => {
+	const obtenerParametrosProveedor = async (id_empresa) => {
 		try {
 			// setIsLoading(true);
-			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
+			const { data } = await PTApi.get(
+				`/parametros/get_params/producto/proveedor/${id_empresa}`
+			);
 			// setDataProducProveedor(data);
 			console.log(data);
 			dispatch(onSetProveedoresCOMBO(data));
