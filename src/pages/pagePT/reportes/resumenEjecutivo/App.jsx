@@ -13,6 +13,8 @@
   import { useSelector, useDispatch } from 'react-redux';
   import { onSetRangeDate } from '@/store/data/dataSlice';
   import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
+  import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
+
 
   import axios from 'axios';
   const RealTimeClock = () => {
@@ -88,6 +90,138 @@
     };
     fetchProgramas();
   }, []);
+// 👇 lee los datos por programa (como en ty)
+const { obtenerComparativoResumen, dataGroup } = useReporteResumenComparativoStore();
+
+// 👇 ya usas RANGE_DATE; dispara la carga por programa
+useEffect(() => {
+  if (RANGE_DATE?.[0] && RANGE_DATE?.[1]) {
+    obtenerComparativoResumen(RANGE_DATE);
+  }
+}, [RANGE_DATE]);
+
+// 👇 mapeo de id de programa a la etiqueta que usas en avatares
+const progNameById = {
+  2: "CHANGE 45",
+  3: "FS 45",
+  4: "FISIO MUSCLE",
+  5: "VERTIKAL CHANGE",
+};
+
+// 👉 construimos el override dinámico { "CHANGE 45": { ALEJANDRO: 19, ALVARO: 12 }, "FS 45": {...} }
+const sociosOverride = useMemo(() => {
+  try {
+    if (!Array.isArray(dataGroup)) {
+      console.log("[sociosOverride] dataGroup NO es array:", dataGroup);
+      return {};
+    }
+
+    // Rango real (00:00:00 y 23:59:59.999)
+    const start = RANGE_DATE?.[0] ? new Date(RANGE_DATE[0]) : null;
+    const end   = RANGE_DATE?.[1] ? new Date(RANGE_DATE[1]) : null;
+    if (end) end.setHours(23,59,59,999);
+
+    console.log("[sociosOverride] RANGE_DATE raw:", RANGE_DATE);
+    console.log("[sociosOverride] start:", start, "end (EO day):", end);
+
+    // Normalizador robusto de fechas del backend
+    const parseBackendDate = (s) => {
+      if (!s) return null;
+      // ejemplos backend: "2025-09-24 15:13:05.000 -05:00"
+      // 1) mete la 'T' y pega el offset al tiempo
+      const normalized = String(s).replace(" ", "T").replace(" -", "-");
+      const d = new Date(normalized);
+      if (!Number.isNaN(d.getTime())) return d;
+      // fallback con dayjs (por si llega en otro formato)
+      const d2 = dayjs(s).toDate();
+      return Number.isNaN(d2.getTime()) ? null : d2;
+    };
+
+    const res = {};
+
+    for (const pgm of dataGroup) {
+      const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "").trim().toUpperCase();
+      if (!progKey) continue;
+      if (!res[progKey]) res[progKey] = {};
+
+      const source = Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : [];
+      console.log(`\n[${progKey}] total detalle_ventaMembresium:`, source.length);
+
+      // 1) filtra ventas pagadas dentro del rango
+      const ventas = source.filter(v => {
+        if (!v || Number(v?.tarifa_monto) === 0) return false; // quita canjes/traspasos
+        const iso =
+          v?.tb_ventum?.fecha_venta ||
+          v?.tb_ventum?.createdAt ||
+          v?.fecha_venta ||
+          v?.createdAt;
+
+        const d = parseBackendDate(iso);
+
+        if (!d || !start || !end) {
+          if (!d) console.log(`[${progKey}] fecha invalida:`, iso);
+          return false;
+        }
+        const ok = d >= start && d <= end;
+        if (!ok) {
+          // ayuda visual para entender por qué no entra al rango
+          console.log(
+            `[${progKey}] fuera de rango -> fecha:`, d,
+            "| start:", start,
+            "| end:", end,
+            "| raw:", iso
+          );
+        }
+        return ok;
+      });
+
+      console.log(`[${progKey}] ventas dentro de rango:`, ventas.length);
+
+      // 2) por asesor (clientes únicos)
+      const porAsesor = new Map();
+      for (const v of ventas) {
+        const nombreFull =
+          v?.tb_ventum?.tb_empleado?.nombre_empl ||
+          v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
+          v?.tb_ventum?.tb_empleado?.nombres_apellidos ||
+          "";
+        const asesor = (nombreFull.split(" ")[0] || "").toUpperCase();
+        if (!asesor) {
+          console.log(`[${progKey}] venta sin asesor:`, v?.tb_ventum?.tb_empleado);
+          continue;
+        }
+        const idCliente =
+          v?.tb_ventum?.id_cli ??
+          v?.id_cli ??
+          v?.tb_cliente?.id_cli ??
+          v?.tb_ventum?.tb_cliente?.id_cli;
+
+        if (!idCliente) {
+          console.log(`[${progKey}] venta sin id_cli:`, v?.tb_ventum);
+          continue;
+        }
+
+        if (!porAsesor.has(asesor)) porAsesor.set(asesor, new Set());
+        porAsesor.get(asesor).add(idCliente);
+      }
+
+      porAsesor.forEach((setIds, asesor) => {
+        res[progKey][asesor] = setIds.size;
+      });
+
+      console.log(`[${progKey}] override por asesor:`, Object.fromEntries(
+        Array.from(porAsesor.entries()).map(([k, s]) => [k, s.size])
+      ));
+    }
+
+    console.log("[sociosOverride] RESULT:", res);
+    return res;
+  } catch (e) {
+    console.error("[sociosOverride] error:", e);
+    return {};
+  }
+}, [dataGroup, RANGE_DATE]);
+
 
 
     // columnas (las del diseño de tu imagen)
@@ -231,40 +365,59 @@
   }
 
   const avataresDeProgramas = [
-    { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/change-avatar.png", name_image: "CHANGE 45" },
-    { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/fs-avatar.png", name_image: "FS 45" },
-    { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/muscle-avatar.png", name_image: "FISIO MUSCLE" },
+    { urlImage: "/change_blanco.png", name_image: "CHANGE 45" },
+    { urlImage: "/fs45_blanco.png", name_image: "FS 45" },
+    { urlImage: "/muscle_blanco.png", name_image: "FISIO MUSCLE" },
   // { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/cyl-avatar.png", name_image: "CHANGE YOUR LIFE" },
    { urlImage: "/vertikal_act.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
-];
+];  
 
   const rankingData = (TotalDeVentasxProdServ("total")?.asesores_pago || [])
-    .filter(item => item.monto && item.monto > 0)
-    .map(item => {
-      const nombre = item.tb_empleado?.nombres_apellidos_empl || item.nombre || "SIN NOMBRE";
-      const socios = Array.isArray(item.items) ? item.items.length : (item.socios || 0);
-      const sesiones = Array.isArray(item.items)
-        ? item.items.reduce((acc, it) => acc + (it?.tb_semana_training?.sesiones || 0), 0)
-        : (item.sesiones || 0);
+  .filter(item => item.monto && item.monto > 0)
+  .map(item => {
+    const nombre = item.tb_empleado?.nombres_apellidos_empl || item.nombre || "SIN NOMBRE";
 
-      const ticketMedio = socios ? (item.monto / socios).toFixed(2) : "0.00";
-      const precioPorSesion = sesiones ? (item.monto / sesiones).toFixed(2) : "0.00";
+    let socios;
+    if (typeof item.socios === "number") {
+      socios = item.socios;
+    } else if (Array.isArray(item.items)) {
 
-      return {
-        ...item,
-        nombre,
-        socios,
-        sesiones,
-        ticketMedio,
-        precioPorSesion
-     };
+      const uniqueSocios = new Set(
+        item.items.map(it =>
+      
+          it?.id_cli ?? it?.tb_venta?.id_cli ?? it?.venta?.id_cli ?? it?.id_venta ?? it?.id
+        )
+      );
+      socios = uniqueSocios.size;
+    } else {
+      socios = 0;
+    }
+
+    // Sesiones: suma segura
+    const sesiones = Array.isArray(item.items)
+      ? item.items.reduce(
+          (acc, it) => acc + (it?.tb_semana_training?.sesiones ?? it?.sesiones ?? 0),
+          0
+        )
+      : (item.sesiones || 0);
+
+    const ticketMedio = socios ? (item.monto / socios).toFixed(2) : "0.00";
+    const precioPorSesion = sesiones ? (item.monto / sesiones).toFixed(2) : "0.00";
+
+    return {
+      ...item,
+      nombre,
+      socios,                 
+      sesiones,
+      ticketMedio,
+      precioPorSesion,
+    };
   })
-     .filter(item => item.monto > 0)
   .sort((a, b) => b.monto - a.monto);
 
   const { resumenFilas, resumenTotales } = 
     rankingData.length > 0 ? generarResumenRanking(rankingData) : { resumenFilas: [], resumenTotales: [] };
-  // -------------------- CALCULO RÁPIDO DE CAC usando la tabla "Clientes por origen" --------------------
+
   const detectDigitalOrigin = (venta) => {
     const raw = venta?.id_origen ?? venta?.origen ?? venta?.origen_nombre ?? venta?.origin ?? venta?.source ?? venta?.canal ?? "";
     const asNum = Number(raw);
@@ -302,10 +455,9 @@
 
       const origin = detectDigitalOrigin(v);
       if (origin === "instagram" || origin === "tiktok" || origin === "facebook") {
-        // si cada fila representa 1 cliente
+      
         cnt += 1;
-        // si quieres contar un campo distinto (p.ej. v.cantidad), cámbialo:
-        // cnt += Number(v.cantidad || 1)
+     
       }
       
     }
@@ -324,8 +476,8 @@
         const key = `${f?.anio}-${mesKeyName}`;
         const inversionesRaw = Number(copy[key]?.inversiones_redes || 0);
 
-        // Ajusta aquí si en tu tabla ya multiplicas por 3.7 para mostrar (por ahora uso el valor tal cual)
-        const inversion = inversionesRaw; // si necesitas: inversionesRaw * 3.7
+       
+        const inversion = inversionesRaw;
 
         const clientesDigitales = countDigitalClientsForMonth(dataVentas || [], f?.anio, f?.mes, initDay, cutDay);
         const cac = clientesDigitales > 0 ? inversion / clientesDigitales : 0;
@@ -337,7 +489,7 @@
 
       return copy;
     } catch (err) {
-      //console.error("Error calculando dataMktWithCac:", err);
+    
       return dataMkt || {};
     }
   }, [dataMkt, dataVentas, mesesSeleccionados, initDay, cutDay]);
@@ -478,15 +630,16 @@
             
           </Col>
 
- { /*<Row>
+ <Row>
     <Col lg={12}>
-      <SumaDeSesiones
+      <SumaDeSesiones   
         resumenArray={resumenFilas}
         resumenTotales={resumenTotales}
         avataresDeProgramas={avataresDeProgramas}
+       sociosOverride={sociosOverride}
       />
     </Col>
-  </Row>*/}
+  </Row>
 
         </Row>
       </>

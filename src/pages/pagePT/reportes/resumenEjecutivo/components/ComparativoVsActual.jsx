@@ -23,7 +23,6 @@ export const ComparativoVsActual=({
   cutDay = 21,
   refMonthKey,
 }) => {
-  // --------------------------- Helpers ---------------------------
   const MESES = [
     "enero",
     "febrero",
@@ -64,14 +63,14 @@ export const ComparativoVsActual=({
     return `${fmtMoney(v)}`;
   };
 
-  // Aceptar nombres alternos de detalle
+
   const getDetalleServicios = (v) => v?.detalle_ventaMembresia || v?.detalle_ventaMembresia || [];
   const getDetalleProductos = (v) =>
     v?.detalle_ventaProductos || v?.detalle_ventaproductos || v?.detalle_venta_productos || [];
 
-  // Aggregate por mes dentro del rango [initialDay..cutDay]
+ 
   const sumByMonth = () => {
-    const map = new Map(); // key -> {serv, prod, total}
+    const map = new Map(); 
 
     for (const v of ventas) {
       const d = toLimaDate(v?.fecha_venta);
@@ -181,7 +180,7 @@ const dTot = refVals.total - vals.total;
     const absValue= Math.abs(v);
     return (
       <td style={{ ...sCellBold, color: neg ? C.red : C.green }}>
-        {neg? '-' : ''}{fmtDeltaMoney(absValue)}
+        {neg? '-' : '+'}{fmtDeltaMoney(absValue)}
       </td>
     );
   };
@@ -199,7 +198,6 @@ const dTot = refVals.total - vals.total;
     </th>
   );
 
-  // --------------------------- Render ---------------------------
   return (
     <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
       <div style={sTitle}>COMPARATIVO MENSUAL VS MES ACTUAL</div>
