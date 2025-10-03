@@ -35,10 +35,10 @@ export const DataTableTerminologiaSistema = ({dataTerm, entidad, grupo}) => {
             dataView.map(d=>{
               return (
                 <tr>
-                  <td>{d.value}</td>
-                  <td>{d.label}</td>
+                  <td>{d?.value}</td>
+                  <td>{d?.label}</td>
                   <td>
-                    <i onClick={()=>onOpenModalCustomTermSistema(d.value, d.label)} className='pi pi-pencil mx-4'></i>
+                    <i onClick={()=>onOpenModalCustomTermSistema(d?.value, d?.label)} className='pi pi-pencil mx-4'></i>
                     <i  className='pi pi-trash  '></i>
                   </td>
                 </tr>
