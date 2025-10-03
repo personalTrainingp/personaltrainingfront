@@ -32,7 +32,7 @@ export const DataTableTerminologiaSistema = ({dataTerm, entidad, grupo}) => {
         </thead>
         <tbody>
           {
-            dataView.map(d=>{
+            dataView?.map(d=>{
               return (
                 <tr>
                   <td>{d?.value}</td>
