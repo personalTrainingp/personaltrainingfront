@@ -1,22 +1,18 @@
 import React from "react";
 
 /**
- * MonthlyVsCurrentComparativo
+ * ComparativoVsActual
  * --------------------------------------------------------------
- * Cuadro: "COMPARATIVO MENSUAL VS MES ACTUAL".
- * Respeta paleta (negro / rojo / blanco) como la imagen enviada.
+ * Cuadro: "COMPARATIVO MENSUAL VS MES ACTUAL"
  *
  * Props:
  *  - ventas: Array<Venta>
- *      Cada venta debe traer fecha_venta (ISO) y detalles de servicios/productos.
- *      Acepta llaves: detalle_ventaservicios, detalle_ventaProductos, detalle_ventaproductos
  *  - fechas: Array<{ label: string; anio: string|number; mes: string }>
- *      Lista de columnas en orden. "mes" en español minúsculas (enero..diciembre; admite "septiembre"/"setiembre").
- *  - initialDay?: number    // default 1
- *  - cutDay?: number        // default 21
- *  - refMonthKey?: string   // clave del mes de referencia `${anio}-${mes}`; default: último de `fechas`
+ *  - initialDay?: number
+ *  - cutDay?: number
+ *  - refMonthKey?: string
  */
-export const ComparativoVsActual=({
+export const ComparativoVsActual = ({
   ventas = [],
   fechas = [],
   initialDay = 1,
@@ -53,24 +49,22 @@ export const ComparativoVsActual=({
   const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
   const fmtMoney = (n) =>
-    new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN" }).format(Number(n || 0));
+    new Intl.NumberFormat("es-PE", {
+      style: "currency",
+      currency: "PEN",
+    }).format(Number(n || 0));
   const fmtPct = (n) =>
-    new Intl.NumberFormat("es-PE", { maximumFractionDigits: 0 }).format(Number(n || 0)) + "%";
+    new Intl.NumberFormat("es-PE", {
+      maximumFractionDigits: 0,
+    }).format(Number(n || 0)) + "%";
 
-  const fmtDeltaMoney = (n) => {
-    const v = Number(n || 0);
-    if (v < 0) return `(${fmtMoney(Math.abs(v))})`;
-    return `${fmtMoney(v)}`;
-  };
-
-
-  const getDetalleServicios = (v) => v?.detalle_ventaMembresia || v?.detalle_ventaMembresia || [];
+  // ---------------------- Helpers ----------------------
+  const getDetalleServicios = (v) => v?.detalle_ventaMembresia || [];
   const getDetalleProductos = (v) =>
     v?.detalle_ventaProductos || v?.detalle_ventaproductos || v?.detalle_venta_productos || [];
 
- 
   const sumByMonth = () => {
-    const map = new Map(); 
+    const map = new Map();
 
     for (const v of ventas) {
       const d = toLimaDate(v?.fecha_venta);
@@ -88,13 +82,10 @@ export const ComparativoVsActual=({
       const bucket = map.get(key);
 
       for (const s of getDetalleServicios(v)) {
-        const cantidad = Number(s?.cantidad || 1);
         bucket.serv += Number(s?.tarifa_monto || 0);
       }
       for (const p of getDetalleProductos(v)) {
-        const cantidad = Number(p?.cantidad || 1);
-        const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
-        bucket.prod += linea;
+        bucket.prod += Number(p?.tarifa_monto || p?.precio_unitario || 0);
       }
       bucket.total = bucket.serv + bucket.prod;
     }
@@ -102,6 +93,8 @@ export const ComparativoVsActual=({
   };
 
   const dataByMonth = sumByMonth();
+
+  // Mes de referencia
   const computeRefKeyFromVentas = () => {
     let latest = null;
     for (const v of ventas) {
@@ -110,44 +103,51 @@ export const ComparativoVsActual=({
       if (!latest || d > latest) latest = d;
     }
     if (!latest) {
-      return fechas.length ? keyOf(fechas[fechas.length - 1].anio, fechas[fechas.length - 1].mes) : null;
+      return fechas.length
+        ? keyOf(fechas[fechas.length - 1].anio, fechas[fechas.length - 1].mes)
+        : null;
     }
     const mAlias = MESES[latest.getMonth()];
     return keyOf(latest.getFullYear(), mAlias);
   };
+
   const refKey = refMonthKey || computeRefKeyFromVentas();
   const refVals = (refKey && dataByMonth.get(refKey)) || { serv: 0, prod: 0, total: 0 };
 
-  // Calcular deltas vs REF
+  // ---------------------- Columnas ----------------------
   const columns = fechas.map((f) => {
     const key = keyOf(f.anio, f.mes);
     const vals = dataByMonth.get(key) || { serv: 0, prod: 0, total: 0 };
 
-    const dServ = refVals.serv - vals.serv;
-const dProd = refVals.prod - vals.prod;
-const dTot = refVals.total - vals.total;
-
-
-    const pct = (val, ref) => {
-      if (!ref) return 0;
-      return ((ref - val) / ref) * 100;
-    };
+    let delta, pct;
+    if (key === refKey) {
+      // 👉 Si es el mes de referencia, usar sus propios valores
+      delta = { serv: vals.serv, prod: vals.prod, total: vals.total };
+      pct = { serv: 100, prod: 100, total: 100 };
+    } else {
+      delta = {
+        serv: refVals.serv - vals.serv,
+        prod: refVals.prod - vals.prod,
+        total: refVals.total - vals.total,
+      };
+      pct = {
+        serv: refVals.serv ? (delta.serv / refVals.serv) * 100 : 0,
+        prod: refVals.prod ? (delta.prod / refVals.prod) * 100 : 0,
+        total: refVals.total ? (delta.total / refVals.total) * 100 : 0,
+      };
+    }
 
     return {
       key,
       label: String(f.label || "").toUpperCase(),
       isRef: key === refKey,
       vals,
-      delta: { serv: dServ, prod: dProd, total: dTot },
-      pct: {
-        serv: pct(vals.serv, refVals.serv),
-        prod: pct(vals.prod, refVals.prod),
-        total: pct(vals.total, refVals.total),
-      },
+      delta,
+      pct,
     };
   });
 
-  // --------------------------- Styles ---------------------------
+  // ---------------------- Styles ----------------------
   const C = {
     black: "#000000",
     white: "#ffffff",
@@ -164,7 +164,7 @@ const dTot = refVals.total - vals.total;
     padding: "25px 12px",
     fontWeight: 700,
     letterSpacing: 0.2,
-    fontSize: 25
+    fontSize: 25,
   };
 
   const sTable = { width: "100%", borderCollapse: "collapse", tableLayout: "fixed" };
@@ -177,18 +177,25 @@ const dTot = refVals.total - vals.total;
   const MoneyCell = ({ value }) => {
     const v = Number(value || 0);
     const neg = v < 0;
-    const absValue= Math.abs(v);
+    const absValue = Math.abs(v);
     return (
       <td style={{ ...sCellBold, color: neg ? C.red : C.green }}>
-        {neg? '-' : '+'}{fmtDeltaMoney(absValue)}
+        {neg ? "-" : "+"}
+        {fmtMoney(absValue)}
       </td>
     );
   };
 
   const PctCell = ({ value }) => {
-  const v = Number(value || 0);
-  const neg = v < 0;
-  return <td style={{ ...sCellBold, color: neg ? C.red : C.green }}>{fmtPct(v)}</td>;
+    const v = Number(value || 0);
+    const isNeg = v < 0;
+    const sign = v > 0 ? "+" : "";
+    return (
+      <td style={{ ...sCellBold, color: isNeg ? C.red : C.green }}>
+        {sign}
+        {fmtPct(v)}
+      </td>
+    );
   };
 
   const MonthHead = ({ col }) => (
@@ -198,6 +205,7 @@ const dTot = refVals.total - vals.total;
     </th>
   );
 
+  // ---------------------- Render ----------------------
   return (
     <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
       <div style={sTitle}>COMPARATIVO MENSUAL VS MES ACTUAL</div>
@@ -281,4 +289,4 @@ const dTot = refVals.total - vals.total;
       </table>
     </div>
   );
-}
+};

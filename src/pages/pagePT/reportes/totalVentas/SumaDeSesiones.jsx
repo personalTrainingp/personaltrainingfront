@@ -70,8 +70,8 @@ filas = filas.filter(fila => {
         <div style={{ margin: "32px 0" }}>
           <h2 className="fw-bold text-center mb-4">Venta de programas</h2>
 
-          <table className="table table-bordered table-striped text-center">
-            <thead className="bg-dark text-white">
+          <table className="table table-bordered table-striped text-center border border-black">
+            <thead className="bg-dark text-white ">
               <tr>
                 <th style={{ width: "180px" , fontSize:'20px',color:'white'}}>Nombre</th>
                 {avataresDeProgramas.map((img, idx) => (
