@@ -321,7 +321,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                         className="react-select"
                                         classNamePrefix="react-select"
                                         options={comboOficio}
-                                        value={comboOficio?.find(
+                                        value={comboOficio.find(
                                             (option) => option.value === id_oficio
                                         )}
                                     />

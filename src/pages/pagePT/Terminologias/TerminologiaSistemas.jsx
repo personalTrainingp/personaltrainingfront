@@ -11,9 +11,9 @@ export const TerminologiaSistemas = () => {
             command: () => setContenido({entidad: 'proveedor', grupo: 'tipo_oficio'}),
         },
     ];
-    useEffect(() => {
+    // useEffect(() => {
       
-    }, [])
+    // }, [])
     
   return (
     <>

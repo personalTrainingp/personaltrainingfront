@@ -14,7 +14,7 @@ export const useTerminoSistema = () => {
 	const obtenerTerminologiaSistema = async (entidad, grupo) => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/${entidad}/${grupo}`);
-			dispatch(onSetDataView(data?.parametros));
+			dispatch(onSetDataView(data));
 		} catch (error) {
 			console.log(error);
 		}

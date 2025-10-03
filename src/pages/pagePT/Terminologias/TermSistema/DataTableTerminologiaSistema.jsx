@@ -17,10 +17,13 @@ export const DataTableTerminologiaSistema = ({dataTerm, entidad, grupo}) => {
   }
   useEffect(() => {
     obtenerTerminologiaSistema(entidad, grupo)
+    
   }, [entidad])
   
   return (
     <div>
+      {entidad}
+      {grupo}
       <Button label='AGREGAR' onClick={()=>onOpenModalCustomTermSistema(0, '')}/>
       <Table>
         <thead>
