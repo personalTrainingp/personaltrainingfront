@@ -105,8 +105,8 @@ export const PerfilEmpleado = () => {
                                                 <SectionComentario uid_comentario={userEmpleado.uid_comentario}/>
                             </TabPanel>
                             <TabPanel header={'PLANILLA'}>
-                              {/* <AppContratos id_empleado={userEmpleado.id_empl}/> */}
-                                <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/>
+                              <AppContratos id_empleado={userEmpleado.id_empl}/>
+                                {/* <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/> */}
                             </TabPanel>
                             <TabPanel header={'PERMISOS'}>
                               <PanelPermisos/>

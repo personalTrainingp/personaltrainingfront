@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
 import { Badge } from 'primereact/badge';
 
-const CustomersProv = ({estado_prov, agente}) => {
+const CustomersProv = ({estado_prov, agente, id_empresa}) => {
 	const dispatch = useDispatch()
 	// const [modalProv, toggleModalProv] = useToggle();
     const [filters, setFilters] = useState({
@@ -41,8 +41,8 @@ const CustomersProv = ({estado_prov, agente}) => {
 		setisModalOpenProv(true)
 	}
 	useEffect(() => {
-		obtenerProveedores(estado_prov, agente)
-	}, [])
+		obtenerProveedores(estado_prov, agente, id_empresa)
+	}, [id_empresa])
 	useEffect(() => {
         const fetchData = () => {
             setCustomers(getCustomers(dataProveedores));

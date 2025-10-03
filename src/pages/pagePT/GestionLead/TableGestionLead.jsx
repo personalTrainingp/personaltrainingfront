@@ -34,7 +34,7 @@ export const TableGestionLead = ({onClickCustomLead, onDeleteItemLead, id_empres
                                 return (
                                     <tr>
                                         <td>
-                                            <DateMask date={m.fecha} format={'dddd DD [DE] MMMM [DEL] YYYY'}/>
+                                            {dayjs.utc(m.fecha).format('dddd DD [DE] MMMM [DEL] YYYY')}
                                         </td>
                                         <td>{m.cantidad}</td>
                                         <td>

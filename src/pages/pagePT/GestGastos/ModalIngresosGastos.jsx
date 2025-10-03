@@ -124,14 +124,14 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
             if(show){
                 obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
                 obtenerParametroEstadoGasto('egresos', 'estado-gasto')
-                obtenerParametrosProveedor()
+                obtenerParametrosProveedor(id_enterprice)
                 obtenerParametrosFormaPago()
                 obtenerParametrosBancos()
             }
         }, [show])
         useEffect(() => {
             if(!openModalProv){
-                obtenerParametrosProveedor()
+                obtenerParametrosProveedor(id_enterprice)
             }
         }, [openModalProv])
         

@@ -77,7 +77,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa }) => {
     }
     useEffect(() => {
         if(show){
-            obtenerParametrosProveedor()
+            obtenerParametrosProveedor(id_empresa)
         }
     }, [show])
     const proveedores = dataProveedores.map(prov=>{
