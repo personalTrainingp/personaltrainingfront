@@ -53,8 +53,7 @@ export const SectionInfoProv = ({dataProv}) => {
                 toastBC.current?.show({
                   severity: `${message.ok?'success':'danger'}`,
                   summary: message.msg,
-                  life: 1500,  // Duración del toast en milisegundos (3 segundos)
-                //   sticky: true,
+                  life: 1500, 
                   position: 'top-right'
                 });
               }
@@ -199,7 +198,7 @@ const ViewDataImg = (e) => {
                                         className="react-select"
                                         classNamePrefix="react-select"
                                         options={comboOficio}
-                                        value={comboOficio.find(
+                                        value={comboOficio?.find(
                                             (option) => option.value === id_oficio
                                         )}
                                     />

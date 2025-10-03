@@ -64,7 +64,7 @@ export const Terminologias = () => {
                                                 <TerminologiaGastoTabView id_empresa={0}/>
                                             </TabPanel>
                                             <TabPanel header='RAL'>
-                                                <TerminologiaGastoTabView id_empresa={600}/>
+                                                <TerminologiaGastoTabView id_empresa={800}/>
                                             </TabPanel>
                                             <TabPanel header='CHANGE'>
                                                 <TerminologiaGastoTabView id_empresa={598}/>

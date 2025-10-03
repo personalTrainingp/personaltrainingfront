@@ -5,6 +5,7 @@ import { ModalDataDetalleTable } from './ModalDataDetalleTable'
 import { useReportePlanillaStore } from './useReportePlanillaStore'
 import dayjs from 'dayjs'
 import utc from "dayjs/plugin/utc";
+import Select from 'react-select'
 dayjs.extend(utc);
 
 function generarRangoMeses(mesAnio) {
@@ -21,11 +22,13 @@ function generarRangoMeses(mesAnio) {
   
   return [inicio.toISOString(), fin.toISOString()];
 }
+
+
 export const DataTable = () => {
+    const [optionsMeses, setoptionsMeses] = useState('')
     const [isOpenModalDetalleData, setisOpenModalDetalleData] = useState(false)
     const { obtenerMarcacionxFecha,obtenerContratosDeEmpleados, dataMarcacionxFecha, dataContratoxFecha } = useReportePlanillaStore()
     const [selectMes, setselectMes] = useState([])
-    const [selectitems, setselectitems] = useState([])
     // Simulando datos para la tabla
   const data = [
     {
@@ -48,14 +51,12 @@ export const DataTable = () => {
     }
   ]
   useEffect(() => {
-    if(isOpenModalDetalleData){
-      obtenerMarcacionxFecha(selectMes, 598)
-      obtenerContratosDeEmpleados(selectMes)
-    }
-  }, [selectMes, isOpenModalDetalleData])
+    obtenerMarcacionxFecha(selectMes, 598)
+    obtenerContratosDeEmpleados(selectMes)
+  }, [selectMes])
   const dataContratoConMarcacion = dataContratoxFecha.map(c =>{
     const dataMarcacions = dataMarcacionxFecha.filter(m=>m.dni===c.numDoc_empl)
-    const dataPlanilla = unirAsistenciaYContrato(dataMarcacions, c?._empl[0]?.contrato_empl?.filter(f=>f.id_tipo_horario===0))
+    const dataPlanilla = unirAsistenciaYContrato(dataMarcacions, c?._empl[0]?.contrato_empl?.filter(f=>f.id_tipo_horario===0), c.salario_empl)
     return {
       dataMarcacions,
       dataPlanilla,
@@ -63,9 +64,10 @@ export const DataTable = () => {
     }
   })
   console.log({dataMarcacionxFecha, dataContratoxFecha, dataContratoConMarcacion});
-  const onClickDetalleData = (items, mesAnio)=>{
-    onOpenModalDetalleData()
-      setselectitems(items)
+  const onChangeDetallePlanilla = (mesAnio)=>{
+    // onOpenModalDetalleData()
+    
+    // setoptionsMeses(mesAnio)
       setselectMes(generarRangoMeses(mesAnio))
   }
   const onOpenModalDetalleData = ()=>{
@@ -74,41 +76,20 @@ export const DataTable = () => {
   const onCloseModalDetalleData = ()=>{
     setisOpenModalDetalleData(false)
   }
+  
   return (
     <>
-    <Table>
-        <thead>
-            <tr>
-                <th>MES</th>
-                <th>COLABORADORES BENEFICIADOS</th>
-                <th>MONTO A PAGAR FICTICIO</th>
-                <th>MONTO A PAGAR REAL</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {
-                data.map(d=>{
-                    return (
-                        <tr>
-                            <td>{d.mes}</td>
-                            <td>{d.items_colaboradores_activos.length}</td>
-                            <td><NumberFormatMoney amount={d.items_colaboradores_activos.reduce((acc, item) => acc + item.monto_pago, 0)}/></td>
-                            <td><NumberFormatMoney amount={d.items_colaboradores_activos.reduce((acc, item) => acc + item.monto_asistido, 0)}/></td>
-                            <td> <a onClick={()=>onClickDetalleData(d.items_colaboradores_activos, d.mes)} className='text-primary underline cursor-pointer'>VER DETALLE</a></td>
-                        </tr>
-                    )
-                })
-            }
-        </tbody>
-    </Table>
-    <ModalDataDetalleTable dataContratoConMarcacion={dataContratoConMarcacion} show={isOpenModalDetalleData} onHide={onCloseModalDetalleData} data={selectitems} mesAnio={selectMes}/>
+      <Select
+        options={[{label: '08/2025', value: '08/2025'}, {label: '07/2025', value: '07/2025'}, {label: '06/2025', value: '06/2025'}]}
+        onChange={(e)=>onChangeDetallePlanilla(e.value)}
+      />
+    <ModalDataDetalleTable dataContratoxFecha={dataContratoxFecha} unirAsistenciaYContrato={unirAsistenciaYContrato} dataMarcacionxFecha={dataMarcacionxFecha} dataContratoConMarcacion={dataContratoConMarcacion} show={isOpenModalDetalleData} onHide={onCloseModalDetalleData} mesAnio={selectMes}/>
     </>
   )
 }
 
 
-function unirAsistenciaYContrato(dataMarcacion = [], contrato_empl = []) {
+function unirAsistenciaYContrato(dataMarcacion = [], contrato_empl = [], sueldoMensual) {
   const toDateStr = (iso) => {
     const d = new Date(iso);
     return isNaN(d) ? null : d.toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
@@ -152,25 +133,35 @@ function unirAsistenciaYContrato(dataMarcacion = [], contrato_empl = []) {
     const minutosMarca = timeToMinutes(marca.hora_marca);
     const minutosDiferencia =
       minutosIni != null && minutosMarca != null
-        ? String(minutosMarca - minutosIni)
-        : null;
-
+        ? Number(minutosMarca - minutosIni)
+        : c.minutos;
+    const minutosContratadosDelDia = c.minutos ?? null
+    const minutosAsistidosDelDia = minutosContratadosDelDia-minutosDiferencia
     out.push({
       fecha,
       asistenciaYcontrato: {
         contrato_empl: {
           hora_inicio,
-          minutos: c.minutos ?? null,
+          minutos: minutosContratadosDelDia,
         },
         marcacion_empl: {
           hora_marca: marca.hora_marca,
         },
+        minutosContratadosDelDia,
         minutosDiferencia,
+        minutosAsistidosDelDia: minutosDiferencia<=(-1)?minutosContratadosDelDia:minutosAsistidosDelDia,
+        sueldoNeto: valorDelDia(c.minutos ?? null, minutosDiferencia<=(-1)?minutosContratadosDelDia:minutosAsistidosDelDia, sueldoMensual/31)
       },
     });
-  }
+  } 
 
-  // Orden por fecha asc
+  // Orden por fecha asc !((c.minutos ?? null)-marca.hora_marca)?(minutosDiferencia>0?minutosDiferencia:0):minutosDiferencia
   out.sort((a, b) => (a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0));
   return out;
+}
+
+function valorDelDia(minutosContratadoDelDia, minutosAsistidosDelDia, sueldoDelDia) {
+
+  const valorDia = (minutosAsistidosDelDia*sueldoDelDia)/minutosContratadoDelDia
+  return valorDia;
 }
