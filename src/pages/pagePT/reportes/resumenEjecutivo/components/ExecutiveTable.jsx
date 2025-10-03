@@ -38,7 +38,12 @@ export default function ExecutiveTable({
   dataMktByMonth = {},
   initialDay = 1,
   cutDay = 21,
-}) {
+
+}) {  console.log("DataMktByMonth completo:", dataMktByMonth);
+  console.log(dataMktByMonth["2025-abril"]); 
+  console.log(dataMktByMonth["2025-marzo"]?.inversiones_redes);
+  console.log(dataMktByMonth["2025-febrero"]?.leads);
+  console.log(dataMktByMonth["2025-mayo"]?.cpl);
   // --------------------------- Helpers ---------------------------
   const MESES = [
     "enero",
@@ -147,12 +152,15 @@ export default function ExecutiveTable({
 
   const key = `${anio}-${mesAlias}`;
   const mk = dataMktByMonth?.[key] || {};
-
+const mkInvAdjusted = Number(mk?.inversiones_redes * 3.7 || 0);
+const clientesDigitales = mk?.clientes_digitales || 0;
+const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
   return {
-    mkInv: Number(mk?.inversiones_redes*3.7 || 0),
+    mkInv: mkInvAdjusted,
     mkLeads: Number(mk?.leads || 0),
     mkCpl: Number(mk?.cpl*3.7 || 0),
-    mkCac: Number(mk?.cac || 0),
+     mkLeads: Number(mk?.leads || 0),
+     mkCac,
 
     // HASTA cutDay
     totalServ,
@@ -244,7 +252,7 @@ export default function ExecutiveTable({
   return (
     <div style={sWrap}>
       <div style={sHeader}>
-         iINFORME GERENCIAL AL {cutDay} DE CADA MES
+         INFORME GERENCIAL AL {cutDay} DE CADA MES
       </div>
 
       <table style={sTable}>
@@ -289,7 +297,7 @@ export default function ExecutiveTable({
       fontSize: "18px",   // 👈 aquí el cambio
     }}
   >
-    TOTAL AL {new Date().getDate()}
+    TOTAL AL {cutDay}
   </td>
   {perMonth.map((m, idx) => (
     <td
