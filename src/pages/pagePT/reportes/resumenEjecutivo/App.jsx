@@ -47,7 +47,15 @@
           </div>
         );
       };
-      // 👉 Validaciones automáticas
+  // 1) utilidades arriba del componente (o al inicio del componente)
+const parseBackendDate = (s) => {
+  if (!s) return null;
+  const normalized = String(s).replace(" ", "T").replace(" -", "-");
+  const d = new Date(normalized);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= end);
+
   
       export const App = ({ id_empresa }) => {
       const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
@@ -112,120 +120,171 @@
       5: "VERTIKAL CHANGE",
     };
 
-    // 👉 construimos el override dinámico { "CHANGE 45": { ALEJANDRO: 19, ALVARO: 12 }, "FS 45": {...} }
-    const sociosOverride = useMemo(() => {
-      try {
-        if (!Array.isArray(dataGroup)) {
-          console.log("[sociosOverride] dataGroup NO es array:", dataGroup);
-          return {};
-        }
+   const { start, end } = useMemo(() => {
+    const s = RANGE_DATE?.[0] ? new Date(RANGE_DATE[0]) : null;
+    const e = RANGE_DATE?.[1] ? new Date(RANGE_DATE[1]) : null;
+    if (e) e.setHours(23, 59, 59, 999);
+    return { start: s, end: e };
+  }, [RANGE_DATE]);
+const advisorOriginByProg = useMemo(() => {
+  const outSets = {};
+  const src = Array.isArray(dataGroup) ? dataGroup : [];
 
-        // Rango real (00:00:00 y 23:59:59.999)
-        const start = RANGE_DATE?.[0] ? new Date(RANGE_DATE[0]) : null;
-        const end   = RANGE_DATE?.[1] ? new Date(RANGE_DATE[1]) : null;
-        if (end) end.setHours(23,59,59,999);
+  for (const pgm of src) {
+    const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "").trim().toUpperCase();
+    if (!progKey) continue;
+    if (!outSets[progKey]) outSets[progKey] = {};
 
-        console.log("[sociosOverride] RANGE_DATE raw:", RANGE_DATE);
-        console.log("[sociosOverride] start:", start, "end (EO day):", end);
+    const items = Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : [];
 
-        // Normalizador robusto de fechas del backend
-        const parseBackendDate = (s) => {
-          if (!s) return null;
-          // ejemplos backend: "2025-09-24 15:13:05.000 -05:00"
-          // 1) mete la 'T' y pega el offset al tiempo
-          const normalized = String(s).replace(" ", "T").replace(" -", "-");
-          const d = new Date(normalized);
-          if (!Number.isNaN(d.getTime())) return d;
-          // fallback con dayjs (por si llega en otro formato)
-          const d2 = dayjs(s).toDate();
-          return Number.isNaN(d2.getTime()) ? null : d2;
+    // solo ventas pagadas en rango
+    const pagadas = items.filter(v => {
+      if (Number(v?.tarifa_monto) === 0) return false;
+      const iso = v?.tb_ventum?.fecha_venta || v?.tb_ventum?.createdAt || v?.fecha_venta || v?.createdAt;
+      const d = parseBackendDate(iso);
+      return isBetween(d, start, end);
+    });
+
+    for (const v of pagadas) {
+      const nombreFull =
+        v?.tb_ventum?.tb_empleado?.nombre_empl ||
+        v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
+        v?.tb_ventum?.tb_empleado?.nombres_apellidos || "";
+      const asesor = (nombreFull.split(" ")[0] || "").toUpperCase();
+      if (!asesor) continue;
+
+      const idCliente =
+        v?.tb_ventum?.id_cli ??
+        v?.id_cli ??
+        v?.tb_cliente?.id_cli ??
+        v?.tb_ventum?.tb_cliente?.id_cli;
+      if (!idCliente) continue;
+
+      // clasificador por origen (igual que gg)
+      const o = v?.tb_ventum?.id_origen;
+      let tipo = "nuevos";
+      if (o === 691) tipo = "renovaciones";
+      else if (o === 692 || o === 696) tipo = "reinscripciones";
+
+      if (!outSets[progKey][asesor]) {
+        outSets[progKey][asesor] = {
+          nuevos: new Set(),
+          renovaciones: new Set(),
+          reinscripciones: new Set(),
         };
-
-        const res = {};
-
-        for (const pgm of dataGroup) {
-          const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "").trim().toUpperCase();
-          if (!progKey) continue;
-          if (!res[progKey]) res[progKey] = {};
-
-          const source = Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : [];
-          console.log(`\n[${progKey}] total detalle_ventaMembresium:`, source.length);
-
-          // 1) filtra ventas pagadas dentro del rango
-          const ventas = source.filter(v => {
-            if (!v || Number(v?.tarifa_monto) === 0) return false; // quita canjes/traspasos
-            const iso =
-              v?.tb_ventum?.fecha_venta ||
-              v?.tb_ventum?.createdAt ||
-              v?.fecha_venta ||
-              v?.createdAt;
-
-            const d = parseBackendDate(iso);
-
-            if (!d || !start || !end) {
-              if (!d) console.log(`[${progKey}] fecha invalida:`, iso);
-              return false;
-            }
-            const ok = d >= start && d <= end;
-            if (!ok) {
-              // ayuda visual para entender por qué no entra al rango
-              console.log(
-                `[${progKey}] fuera de rango -> fecha:`, d,
-                "| start:", start,
-                "| end:", end,
-                "| raw:", iso
-              );
-            }
-            return ok;
-          });
-
-          console.log(`[${progKey}] ventas dentro de rango:`, ventas.length);
-
-          // 2) por asesor (clientes únicos)
-          const porAsesor = new Map();
-          for (const v of ventas) {
-            const nombreFull =
-              v?.tb_ventum?.tb_empleado?.nombre_empl ||
-              v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
-              v?.tb_ventum?.tb_empleado?.nombres_apellidos ||
-              "";
-            const asesor = (nombreFull.split(" ")[0] || "").toUpperCase();
-            if (!asesor) {
-              console.log(`[${progKey}] venta sin asesor:`, v?.tb_ventum?.tb_empleado);
-              continue;
-            }
-            const idCliente =
-              v?.tb_ventum?.id_cli ??
-              v?.id_cli ??
-              v?.tb_cliente?.id_cli ??
-              v?.tb_ventum?.tb_cliente?.id_cli;
-
-            if (!idCliente) {
-              console.log(`[${progKey}] venta sin id_cli:`, v?.tb_ventum);
-              continue;
-            }
-
-            if (!porAsesor.has(asesor)) porAsesor.set(asesor, new Set());
-            porAsesor.get(asesor).add(idCliente);
-          }
-
-          porAsesor.forEach((setIds, asesor) => {
-            res[progKey][asesor] = setIds.size;
-          });
-
-          console.log(`[${progKey}] override por asesor:`, Object.fromEntries(
-            Array.from(porAsesor.entries()).map(([k, s]) => [k, s.size])
-          ));
-        }
-
-        console.log("[sociosOverride] RESULT:", res);
-        return res;
-      } catch (e) {
-        console.error("[sociosOverride] error:", e);
-        return {};
       }
-    }, [dataGroup, RANGE_DATE]);
+      outSets[progKey][asesor][tipo].add(idCliente);
+    }
+  }
 
+  // convierte Sets -> contadores
+  const outCounts = {};
+  Object.entries(outSets).forEach(([progKey, asesoresObj]) => {
+    outCounts[progKey] = {};
+    Object.entries(asesoresObj).forEach(([asesor, byTipo]) => {
+      outCounts[progKey][asesor] = {
+        nuevos: byTipo.nuevos.size,
+        renovaciones: byTipo.renovaciones.size,
+        reinscripciones: byTipo.reinscripciones.size,
+      };
+    });
+  });
+
+  return outCounts;
+}, [dataGroup, start, end, progNameById]);
+
+  // 3) NUEVO: originBreakdown en su propio useMemo (fuera de sociosOverride)
+  const originBreakdown = useMemo(() => {
+    const out = {};
+    const src = Array.isArray(dataGroup) ? dataGroup : [];
+    for (const pgm of src) {
+      const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "")
+        .trim()
+        .toUpperCase();
+      if (!progKey) continue;
+
+      const items = Array.isArray(pgm?.detalle_ventaMembresium)
+        ? pgm.detalle_ventaMembresium
+        : [];
+
+      // quitar canjes/traspasos (monto 0) y filtrar por rango
+      const pagadas = items.filter((v) => {
+        if (Number(v?.tarifa_monto) === 0) return false;
+        const iso =
+          v?.tb_ventum?.fecha_venta ||
+          v?.tb_ventum?.createdAt ||
+          v?.fecha_venta ||
+          v?.createdAt;
+        const d = parseBackendDate(iso);
+        return isBetween(d, start, end);
+      });
+
+      const renovaciones = pagadas.filter((v) => v?.tb_ventum?.id_origen === 691).length;
+      const reinscripciones = pagadas.filter(
+        (v) => v?.tb_ventum?.id_origen === 692 || v?.tb_ventum?.id_origen === 696
+      ).length;
+      const nuevos = pagadas.length - renovaciones - reinscripciones;
+
+      out[progKey] = { nuevos, renovaciones, reinscripciones };
+    }
+    return out;
+  }, [dataGroup, start, end, progNameById]);
+
+  // 4) sociosOverride queda limpio (sin hooks adentro)
+  const sociosOverride = useMemo(() => {
+    try {
+      if (!Array.isArray(dataGroup)) return {};
+      const res = {};
+      for (const pgm of dataGroup) {
+        const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "")
+          .trim()
+          .toUpperCase();
+        if (!progKey) continue;
+        if (!res[progKey]) res[progKey] = {};
+
+        const source = Array.isArray(pgm?.detalle_ventaMembresium)
+          ? pgm.detalle_ventaMembresium
+          : [];
+
+        const ventas = source.filter((v) => {
+          if (!v || Number(v?.tarifa_monto) === 0) return false;
+          const iso =
+            v?.tb_ventum?.fecha_venta ||
+            v?.tb_ventum?.createdAt ||
+            v?.fecha_venta ||
+            v?.createdAt;
+          const d = parseBackendDate(iso);
+          return isBetween(d, start, end);
+        });
+
+        const porAsesor = new Map();
+        for (const v of ventas) {
+          const nombreFull =
+            v?.tb_ventum?.tb_empleado?.nombre_empl ||
+            v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
+            v?.tb_ventum?.tb_empleado?.nombres_apellidos ||
+            "";
+          const asesor = (nombreFull.split(" ")[0] || "").toUpperCase();
+          if (!asesor) continue;
+          const idCliente =
+            v?.tb_ventum?.id_cli ??
+            v?.id_cli ??
+            v?.tb_cliente?.id_cli ??
+            v?.tb_ventum?.tb_cliente?.id_cli;
+          if (!idCliente) continue;
+
+          if (!porAsesor.has(asesor)) porAsesor.set(asesor, new Set());
+          porAsesor.get(asesor).add(idCliente);
+        }
+        porAsesor.forEach((setIds, asesor) => {
+          res[progKey][asesor] = setIds.size;
+        });
+      }
+      return res;
+    } catch {
+      return {};
+    }
+  }, [dataGroup, start, end, progNameById]);
 
 
         // columnas (las del diseño de tu imagen)
@@ -375,7 +434,7 @@
       const avataresDeProgramas = [
         { urlImage: "/change_blanco.png", name_image: "CHANGE 45" },
         { urlImage: "/fs45_blanco.png", name_image: "FS 45" },
-        { urlImage: "/muscle_blanco.png", name_image: "FISIO MUSCLE" },
+        { urlImage: "/fs45_blancos.png", name_image: "FISIO MUSCLE",scale :1.5 },
       // { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/cyl-avatar.png", name_image: "CHANGE YOUR LIFE" },
       { urlImage: "/vertikal_act.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
     ];  
@@ -473,39 +532,16 @@
       };
 
       const mesesSeleccionados = getLastNMonths(selectedMonth, year);
+const dataMktWithCac = useMemo(() => {
+  try {
+    const copy = { ...(dataMkt || {}) };
+    // ...
+    return copy;
+  } catch (err) {
+    return dataMkt || {};
+  }
+}, [dataMkt, dataVentas, mesesSeleccionados, initDay, cutDay]);
 
-      const dataMktWithCac = useMemo(() => {
-        
-        try {
-        
-          const copy = { ...(dataMkt || {}) };
-          const meses = mesesSeleccionados || [];
-          meses.forEach((f) => {
-            const mesRaw = String(f?.mes || "").toLowerCase();
-            const mesKeyName = mesRaw === "septiembre" ? "setiembre" : mesRaw;
-            const key = `${f?.anio}-${mesKeyName}`;
-            const inversionesRaw = Number(copy[key]?.inversiones_redes || 0);
-
-          
-            const inversion = inversionesRaw;
-
-            const clientesDigitales = countDigitalClientsForMonth(dataVentas || [], f?.anio, f?.mes, initDay, cutDay);
-            const cac = clientesDigitales > 0 ? inversion / clientesDigitales : 0;
-
-            if (!copy[key]) copy[key] = { inversiones_redes: inversionesRaw, leads: 0, cpl: 0, cac: 0 };
-            copy[key].cac = cac;
-            copy[key].clientes_digitales = clientesDigitales;
-          });
-
-          return copy;
-        } catch (err) {
-        
-          return dataMkt || {};
-          
-        }
-      },
-      console.log("dataMktWithCac RECOMPUTE"),
-      [dataMkt, dataVentas, mesesSeleccionados, initDay, cutDay]);
 
       // 1) Rango visible esperado (las 4 llaves que usa la tabla)
   useEffect(() => {
@@ -694,12 +730,14 @@
 
     <Row>
         <Col lg={12}>
-          <SumaDeSesiones   
-            resumenArray={resumenFilas}
-            resumenTotales={resumenTotales}
-            avataresDeProgramas={avataresDeProgramas}
-          sociosOverride={sociosOverride}
-          />
+          <SumaDeSesiones
+  resumenArray={resumenFilas}
+  resumenTotales={resumenTotales}
+  avataresDeProgramas={avataresDeProgramas}
+  sociosOverride={sociosOverride}
+  originBreakdown={originBreakdown} 
+   advisorOriginByProg={advisorOriginByProg}  // 👈 pásalo
+/>
         </Col>
       </Row>
 
