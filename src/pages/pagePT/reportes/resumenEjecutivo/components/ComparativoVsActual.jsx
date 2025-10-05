@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Card } from "react-bootstrap";
 /**
  * ComparativoVsActual
  * --------------------------------------------------------------
@@ -95,23 +95,9 @@ export const ComparativoVsActual = ({
   const dataByMonth = sumByMonth();
 
   // Mes de referencia
-  const computeRefKeyFromVentas = () => {
-    let latest = null;
-    for (const v of ventas) {
-      const d = toLimaDate(v?.fecha_venta);
-      if (!d) continue;
-      if (!latest || d > latest) latest = d;
-    }
-    if (!latest) {
-      return fechas.length
-        ? keyOf(fechas[fechas.length - 1].anio, fechas[fechas.length - 1].mes)
-        : null;
-    }
-    const mAlias = MESES[latest.getMonth()];
-    return keyOf(latest.getFullYear(), mAlias);
-  };
+const refKeyFromFechas= fechas.length ? keyOf(fechas[fechas.length - 1].anio, fechas[fechas.length - 1].mes) : null;
 
-  const refKey = refMonthKey || computeRefKeyFromVentas();
+  const refKey = refMonthKey || refKeyFromFechas;
   const refVals = (refKey && dataByMonth.get(refKey)) || { serv: 0, prod: 0, total: 0 };
 
   // ---------------------- Columnas ----------------------
@@ -206,87 +192,92 @@ export const ComparativoVsActual = ({
   );
 
   // ---------------------- Render ----------------------
+ // ---------------------- Render ----------------------
   return (
-    <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
-      <div style={sTitle}>COMPARATIVO MENSUAL VS MES ACTUAL</div>
+    <Card className="shadow-sm rounded-3 overflow-hidden">
+      <Card.Body style={{ padding: "0" }}>
+        <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
+          <div style={sTitle}>COMPARATIVO MENSUAL VS MES ACTUAL</div>
 
-      {/* SERVICIOS */}
-      <table style={sTable}>
-        <thead>
-          <tr>
-            <th style={sHeadLeft}>SERVICIOS</th>
-            {columns.map((c) => (
-              <MonthHead key={c.key} col={c} />
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={{ ...sCellBold, textAlign: "left" }}>VENTAS</td>
-            {columns.map((c) => (
-              <MoneyCell key={c.key} value={c.delta.serv} />
-            ))}
-          </tr>
-          <tr style={sRowShade}>
-            <td style={{ ...sCellBold, textAlign: "left" }}>%</td>
-            {columns.map((c) => (
-              <PctCell key={c.key} value={c.pct.serv} />
-            ))}
-          </tr>
-        </tbody>
-      </table>
+          {/* SERVICIOS */}
+          <table style={sTable}>
+            <thead>
+              <tr>
+                <th style={sHeadLeft}>SERVICIOS</th>
+                {columns.map((c) => (
+                  <MonthHead key={c.key} col={c} />
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ ...sCellBold, textAlign: "left" }}>VENTAS</td>
+                {columns.map((c) => (
+                  <MoneyCell key={c.key} value={c.delta.serv} />
+                ))}
+              </tr>
+              <tr style={sRowShade}>
+                <td style={{ ...sCellBold, textAlign: "left" }}>%</td>
+                {columns.map((c) => (
+                  <PctCell key={c.key} value={c.pct.serv} />
+                ))}
+              </tr>
+            </tbody>
+          </table>
 
-      {/* PRODUCTOS */}
-      <table style={{ ...sTable, marginTop: 12 }}>
-        <thead>
-          <tr>
-            <th style={sHeadLeft}>PRODUCTOS</th>
-            {columns.map((c) => (
-              <MonthHead key={c.key} col={c} />
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={{ ...sCellBold, textAlign: "left" }}>VENTAS</td>
-            {columns.map((c) => (
-              <MoneyCell key={c.key} value={c.delta.prod} />
-            ))}
-          </tr>
-          <tr style={sRowShade}>
-            <td style={{ ...sCellBold, textAlign: "left" }}>%</td>
-            {columns.map((c) => (
-              <PctCell key={c.key} value={c.pct.prod} />
-            ))}
-          </tr>
-        </tbody>
-      </table>
+          {/* PRODUCTOS */}
+          <table style={{ ...sTable, marginTop: 12 }}>
+            <thead>
+              <tr>
+                <th style={sHeadLeft}>PRODUCTOS</th>
+                {columns.map((c) => (
+                  <MonthHead key={c.key} col={c} />
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ ...sCellBold, textAlign: "left" }}>VENTAS</td>
+                {columns.map((c) => (
+                  <MoneyCell key={c.key} value={c.delta.prod} />
+                ))}
+              </tr>
+              <tr style={sRowShade}>
+                <td style={{ ...sCellBold, textAlign: "left" }}>%</td>
+                {columns.map((c) => (
+                  <PctCell key={c.key} value={c.pct.prod} />
+                ))}
+              </tr>
+            </tbody>
+          </table>
 
-      {/* TOTAL */}
-      <table style={{ ...sTable, marginTop: 12 }}>
-        <thead>
-          <tr>
-            <th style={sHeadLeft}>TOTAL</th>
-            {columns.map((c) => (
-              <MonthHead key={c.key} col={c} />
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={{ ...sCellBold, textAlign: "left" }}>VENTAS</td>
-            {columns.map((c) => (
-              <MoneyCell key={c.key} value={c.delta.total} />
-            ))}
-          </tr>
-          <tr style={sRowShade}>
-            <td style={{ ...sCellBold, textAlign: "left" }}>%</td>
-            {columns.map((c) => (
-              <PctCell key={c.key} value={c.pct.total} />
-            ))}
-          </tr>
-        </tbody>
-      </table>
-    </div>
+          {/* TOTAL */}
+          <table style={{ ...sTable, marginTop: 12 }}>
+            <thead>
+              <tr>
+                <th style={sHeadLeft}>TOTAL</th>
+                {columns.map((c) => (
+                  <MonthHead key={c.key} col={c} />
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ ...sCellBold, textAlign: "left" }}>VENTAS</td>
+                {columns.map((c) => (
+                  <MoneyCell key={c.key} value={c.delta.total} />
+                ))}
+              </tr>
+              <tr style={sRowShade}>
+                <td style={{ ...sCellBold, textAlign: "left" }}>%</td>
+                {columns.map((c) => (
+                  <PctCell key={c.key} value={c.pct.total} />
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </Card.Body>
+    </Card>
   );
 };
