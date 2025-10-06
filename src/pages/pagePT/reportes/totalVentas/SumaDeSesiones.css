@@ -31,3 +31,35 @@
 .tabla-sesiones tbody tr:first-child td:first-child {
   border-top-color: #fff !important;
 }
+/* hace que el bloque 3-en-1 cubra todo el alto del <td> */
+.tabla-sesiones td.triptych {
+  position: relative;
+  padding: 0;              /* sin padding, para que no quede “aire” */
+}
+
+.tabla-sesiones td.triptych > .tri-box {
+  position: absolute;
+ inset: 0;     
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background: #fff;
+}
+
+/* celdas internas ocupan todo el alto */
+.tabla-sesiones td.triptych > .tri-box > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  height: 100%;
+}
+
+/* líneas verticales centradas que SI llegan de borde a borde */
+.tabla-sesiones td.triptych > .tri-box > div:nth-child(2) {
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+}
+/* Quitar el borde derecho SOLO del último TD (columna TOTAL) de la última fila */
+.tabla-sesiones tbody tr:last-child td:last-child {
+  border-right: none !important;
+}

@@ -403,7 +403,7 @@ return (
                     <div
                       style={{
                         width: 80,
-                        height: 80,
+                        height: 100,
                         borderRadius: 10,
                         overflow: "hidden",
                         margin: "0 auto",
@@ -433,11 +433,11 @@ return (
                  {visiblePrograms.map(({ key: pk }, cidx) => {
   const counts = advisorOriginByProg?.[pk]?.[asesor] || { nuevos:0, renovaciones:0, reinscripciones:0 };
   return (
-    <td key={cidx} style={{ border: "1px solid #000", padding: 0 }}>  {/* 👈 sin padding */}
-      <div style={cellBox}>
-        <div style={cellItem}><p style={cellValue}>{fmt(counts.nuevos, true)}</p></div>
-        <div style={cellItemMiddle}><p style={cellValue}>{fmt(counts.renovaciones, true)}</p></div>
-        <div style={cellItemLast}><p style={cellValue}>{fmt(counts.reinscripciones, true)}</p></div>
+     <td key={cidx} className="triptych" style={{ border: "1px solid #000" }}>
+      <div className="tri-box">
+        <div><p style={cellValue}>{fmt(counts.nuevos, true)}</p></div>
+        <div><p style={cellValue}>{fmt(counts.renovaciones, true)}</p></div>
+        <div><p style={cellValue}>{fmt(counts.reinscripciones, true)}</p></div>
       </div>
     </td>
   );
@@ -469,19 +469,13 @@ return (
               {visiblePrograms.map(({ key: pk }, idx) => {
                 const s = totalByProgAndOrigin(pk);
                 return (
-                  <td key={idx} style={{ border: "1px solid #000" }}>
-                    <div style={cellBox}>
-                      <div style={{ ...cellItem, borderRight: "1px solid #000" }}>
-                        <p style={cellValue}>{fmt(s.nuevos, true)}</p>
-                      </div>
-                      <div style={{ ...cellItem, borderRight: "1px solid #000" }}>
-                        <p style={cellValue}>{fmt(s.renovaciones, true)}</p>
-                      </div>
-                      <div style={cellItemLast}>
-                        <p style={cellValue}>{fmt(s.reinscripciones, true)}</p>
-                      </div>
-                    </div>
-                  </td>
+                  <td key={idx} className="triptych" style={{ border: "1px solid #000" }}>
+        <div className="tri-box">
+          <div><p style={cellValue}>{fmt(s.nuevos, true)}</p></div>
+          <div><p style={cellValue}>{fmt(s.renovaciones, true)}</p></div>
+          <div><p style={cellValue}>{fmt(s.reinscripciones, true)}</p></div>
+        </div>
+      </td>
                 );
               })}
 
