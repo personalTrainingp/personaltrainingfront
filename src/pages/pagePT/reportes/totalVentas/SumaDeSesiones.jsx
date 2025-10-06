@@ -310,7 +310,7 @@ return (
                 }}
               />
               
-              <th style={{ width: 100, ...thName, border: "1px solid #000" }}>IMAGEN</th>
+              <th style={{ width: 100, ...thName}}>IMAGEN</th>
               <th style={{ ...thName, border: "1px solid #000" }}>NOMBRE</th>
 
               {visiblePrograms.map(({ img }, idx) => {
@@ -366,14 +366,14 @@ return (
 
               const badgeStyle = (n) => ({
                 display: n <= 2 ? "inline-flex" : "none",
-                width: 24,
-                height: 24,
+                width: 50,
+                height: 50,
                 borderRadius: "50%",
                 border: "2px solid #000",
                 alignItems: "center",
                 justifyContent: "center",
                 fontWeight: 900,
-                fontSize: 14,
+                fontSize: 19,
                 color: "#000",
                 background: n === 1 ? "#D4AF37" : "#C0C0C0",
               });
@@ -397,7 +397,6 @@ return (
                     style={{
                       width: 80,
                       background: "transparent",
-                      border: "none",
                       position: "relative",
                     }}
                   >

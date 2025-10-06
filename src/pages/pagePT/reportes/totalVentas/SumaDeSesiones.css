@@ -1,36 +1,33 @@
-/* --- PRIMERA COLUMNA (ranking) --- */
-
-/* Header de la 1ª columna: blanco y sin texto ni bordes */
-.tabla-sesiones thead th:first-child {
-  background: #fff !important;      /* tapa el bg-secondary */
-  color: transparent !important;     /* oculta el texto */
-  border: none !important;           /* sin borde */
-  box-shadow: none !important;
-  padding: 0 !important;
+/* Borde exterior de la tabla en blanco */
+.tabla-sesiones {
+  border-left: 1px solid #fff !important;
+  border-top:  1px solid #fff !important;
+  border-bottom: 1px solid #fff !important;
 }
 
-/* Celdas del body en la 1ª columna: fondo blanco, sin bordes, sin padding */
-.tabla-sesiones tbody td:first-child {
-  background: #fff !important;       /* “en blanco” */
-  border: none !important;           /* quita todos los bordes */
-  padding: 0 !important;
-  text-align: center;
-}
-
-/* Quita la línea que deja table-bordered entre col. 1 y col. 2 */
-.tabla-sesiones thead th:nth-child(2),
-.tabla-sesiones tbody td:nth-child(2) {
-  border-left: none !important;
-}
-
-/* Opcional: ancho fijo para estabilidad */
+/* Columna 1 (ranking): SIN borde izquierdo (blanco) */
 .tabla-sesiones thead th:first-child,
 .tabla-sesiones tbody td:first-child {
+  background: #fff !important;
+  color: transparent !important;
+  padding: 0 !important;
+  border-left: 1px solid #fff !important;   /* 👈 ahora blanco */
+  border-right: none !important;            /* dejamos que “gane” el borde de IMAGEN */
+  border-top: none !important;
+  border-bottom: none !important;
   width: 36px;
 }
 
-/* Si tu número va en un <span> como badge, evita que “ensucie” el blanco */
-.tabla-sesiones tbody td:first-child span {
-  background-clip: padding-box;      /* que el badge no pinte fuera */
-  pointer-events: none;              /* solo visual */
+/* Columna 2 (IMAGEN): sigue con borde completo y lado izquierdo marcado */
+.tabla-sesiones thead th:nth-child(2),
+.tabla-sesiones tbody td:nth-child(2) {
+  border: 1px solid #000 !important;
+  border-left-width: 1px !important;        /* asegura que sea el primer borde visible */
+  background: #fff;
+}
+
+/* Por si Bootstrap pinta algo en la celda superior-izquierda */
+.tabla-sesiones thead tr:first-child th:first-child,
+.tabla-sesiones tbody tr:first-child td:first-child {
+  border-top-color: #fff !important;
 }
