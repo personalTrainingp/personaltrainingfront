@@ -531,14 +531,32 @@ const advisorOriginByProg = useMemo(() => {
 
       const mesesSeleccionados = getLastNMonths(selectedMonth, year);
 const dataMktWithCac = useMemo(() => {
-  try {
-    const copy = { ...(dataMkt || {}) };
-    // ...
-    return copy;
-  } catch (err) {
-    return dataMkt || {};
+  const base = { ...(dataMktByMonth || {}) };
+
+  for (const f of mesesSeleccionados) {
+    const mesKey = f.mes === 'septiembre' ? 'setiembre' : f.mes;
+    const key = `${f.anio}-${mesKey}`;
+
+    // objeto del mes (crea si no existe)
+    const obj = { ...(base[key] || {}) };
+
+    // inversión (sin duplicar conversiones)
+    const inversion = Number(obj.inversiones_redes ?? obj.inversion_redes ?? 0);
+
+    // clientes digitales calculados desde ventas en el rango
+    const clientes = countDigitalClientsForMonth(
+      dataVentas || [], f.anio, f.mes, initDay, cutDay
+    );
+
+    // guardar dentro del objeto del mes
+    obj.clientes_digitales = clientes;
+    obj.cac = clientes > 0 ? +(inversion / clientes).toFixed(2) : 0;
+
+    base[key] = obj;
   }
-}, [dataMkt, dataVentas, mesesSeleccionados, initDay, cutDay]);
+  return base;
+}, [dataMktByMonth, dataVentas, mesesSeleccionados, initDay, cutDay]);
+
 
 
       // 1) Rango visible esperado (las 4 llaves que usa la tabla)

@@ -151,15 +151,17 @@ export default function ExecutiveTable({
   const ticketProd = cantProd ? totalProd / cantProd : 0;
 
   const key = `${anio}-${mesAlias}`;
-  const mk = dataMktByMonth?.[key] || {};
+  const mk = dataMktByMonth?.[key] || {}
+  const invBase = (mk.inversiones_redes ?? mk.inversion_redes ?? mk.inv ?? 0);;
 const mkInvAdjusted = Number(mk?.inversiones_redes * 3.7 || 0);
 const clientesDigitales = mk?.clientes_digitales || 0;
+ const leads = Number(mk.leads ?? 0);
+ const cplBase = Number(mk.cpl ?? 0) * 3.7;
 const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
   return {
     mkInv: mkInvAdjusted,
-    mkLeads: Number(mk?.leads || 0),
-    mkCpl: Number(mk?.cpl*3.7 || 0),
-     mkLeads: Number(mk?.leads || 0),
+    mkCpl: cplBase,
+     mkLeads:leads,
      mkCac,
 
     // HASTA cutDay
