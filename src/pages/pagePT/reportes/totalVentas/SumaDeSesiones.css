@@ -1,0 +1,36 @@
+/* --- PRIMERA COLUMNA (ranking) --- */
+
+/* Header de la 1ª columna: blanco y sin texto ni bordes */
+.tabla-sesiones thead th:first-child {
+  background: #fff !important;      /* tapa el bg-secondary */
+  color: transparent !important;     /* oculta el texto */
+  border: none !important;           /* sin borde */
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Celdas del body en la 1ª columna: fondo blanco, sin bordes, sin padding */
+.tabla-sesiones tbody td:first-child {
+  background: #fff !important;       /* “en blanco” */
+  border: none !important;           /* quita todos los bordes */
+  padding: 0 !important;
+  text-align: center;
+}
+
+/* Quita la línea que deja table-bordered entre col. 1 y col. 2 */
+.tabla-sesiones thead th:nth-child(2),
+.tabla-sesiones tbody td:nth-child(2) {
+  border-left: none !important;
+}
+
+/* Opcional: ancho fijo para estabilidad */
+.tabla-sesiones thead th:first-child,
+.tabla-sesiones tbody td:first-child {
+  width: 36px;
+}
+
+/* Si tu número va en un <span> como badge, evita que “ensucie” el blanco */
+.tabla-sesiones tbody td:first-child span {
+  background-clip: padding-box;      /* que el badge no pinte fuera */
+  pointer-events: none;              /* solo visual */
+}

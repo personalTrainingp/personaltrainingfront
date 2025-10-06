@@ -1,5 +1,6 @@
   import React, { useMemo } from "react";
   import { Row, Col } from "react-bootstrap";
+import './SumaDeSesiones.css';
 
   const toNumber = (v) => {
     const s = String(v ?? "0").trim();
@@ -175,25 +176,35 @@ const normalizeImgUrl = (u) => {
     };
 
     // mini-celdas (3 en 1)
-    const cellBox = {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr 1fr",
-      width: "100%",
-      height: 38,
-      border: "1px solid #000",
-      borderRadius: 4,
-      overflow: "hidden",
-      background: "#fff",
-    };
-    const cellItem = {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontWeight: 800,
-      borderRight: "1px solid #000",
-    };
-    const cellItemLast = { ...cellItem, borderRight: "none" };
-    const cellValue = { fontSize: 19, lineHeight: 1, margin: 0 };
+ // wrapper 3-en-1: ocupa todo el alto del <td>
+const cellBox = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr 1fr",
+  width: "100%",
+  height: "100%",     // antes 38
+  minHeight: 80,     // opcional para asegurar altura visible
+  background: "#fff",
+};
+
+// sub-celdas estiradas a todo el alto
+const cellItem = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: 800,
+  height: "100%",
+};
+
+const cellItemMiddle = {
+  ...cellItem,
+  borderLeft: "1px solid #000",
+  borderRight: "1px solid #000",
+};
+
+const cellItemLast = { ...cellItem };
+const cellItemLeftBorder = { ...cellItem, borderLeft: "1px solid #000" };
+const cellValue = { fontSize: 19, lineHeight: 1, margin: 0 };
+
     const miniRow = {
       display: "grid",
       gridTemplateColumns: "repeat(3, 1fr)",
@@ -247,17 +258,59 @@ const allProg = avataresDeProgramas.map((img, idx) => ({
 }));
 
 const visiblePrograms = allProg.filter(({ key }) => totalOnlyByProg(key) > 0);
+// Columna "fantasma" para ranking
+const rankHeadGhost = {
+  width: 36,
+  background: "transparent",
+  color: "transparent",
+  border: "none",
+  padding: 0,
+};
+
+const rankCellGhost = {
+  width: 36,
+  border: "none",
+  background: "transparent",
+  textAlign: "center",
+};
+
+// Badge redondo para 1 y 2
+const badgeStyle = (n) => ({
+  display: n <= 2 ? "inline-flex" : "none",
+  width: 24,
+  height: 24,
+  borderRadius: "50%",
+  border: "2px solid #000",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: 900,
+  fontSize: 14,
+  color: "#000",
+  background: n === 1 ? "#D4AF37" : "#C0C0C0", // 1 dorado, 2 plateado
+});
+
 return (
   <Row>
     <Col lg={12}>
       <div style={{ margin: "32px 0" }}>
         <table
-          className="table text-center"
+          className="table text-center tabla-sesiones"
           style={{ borderCollapse: "collapse", width: "100%", border: "1px solid #000" }}
         >
           <thead className="bg-secondary text-white">
             <tr>
-              <th style={{ width:100, ...thName, border: "1px solid #000" }}>IMAGEN</th>
+              {/* Columna de ranking: header fantasma (blanco para tapar el gris del thead) */}
+              <th
+                style={{
+                  width: 36,
+                  background: "#fff",
+                  color: "transparent",
+                  border: "none",
+                  padding: 0,
+                }}
+              />
+              
+              <th style={{ width: 100, ...thName, border: "1px solid #000" }}>IMAGEN</th>
               <th style={{ ...thName, border: "1px solid #000" }}>NOMBRE</th>
 
               {visiblePrograms.map(({ img }, idx) => {
@@ -305,31 +358,70 @@ return (
             {filas.map((fila, ridx) => {
               const asesor = fila[0]?.value ?? "";
               const totalFila = fila.slice(1).reduce((acc, c) => acc + toNumber(c?.value), 0);
-              const rank = rankByAdvisor[asesor] ?? "";
+              const rank = rankByAdvisor[asesor] ?? 0;
               const key = norm(asesor);
               const imgUrl = normalizeImgUrl(
                 avatarByAdvisor[key] || imageByAdvisor[key] || ""
               );
 
+              const badgeStyle = (n) => ({
+                display: n <= 2 ? "inline-flex" : "none",
+                width: 24,
+                height: 24,
+                borderRadius: "50%",
+                border: "2px solid #000",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 900,
+                fontSize: 14,
+                color: "#000",
+                background: n === 1 ? "#D4AF37" : "#C0C0C0",
+              });
+
               return (
                 <tr key={ridx} style={{ background: "#fff", fontSize: 19 }}>
-                  {/* IMAGEN (badge fuera de la celda) */}
-          <td
-  style={{
-    width: 110,
-    background: "transparent",
-    border: "none",
-    position: "relative",
-    paddingLeft: 28,       // espacio para el badge “pseudo-fuera”
-  }}
->
-  <div style={{ width:100, height:100, borderRadius:10, overflow:"hidden", margin:"0 auto", background:"#f3f3f3" }}>
-    {imgUrl ? (
-      <img src={imgUrl} alt={asesor} loading="lazy"
-           style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }} />
-    ) : null}
-  </div>
-</td>
+                  {/* Ranking (solo 1 y 2). Sin bordes. */}
+                  <td
+                    style={{
+                      width: 36,
+                      border: "none",
+                      background: "transparent",
+                      textAlign: "center",
+                    }}
+                  >
+                    <span style={badgeStyle(rank)}>{rank}</span>
+                  </td>
+
+                  {/* IMAGEN */}
+                  <td
+                    style={{
+                      width: 80,
+                      background: "transparent",
+                      border: "none",
+                      position: "relative",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: 10,
+                        overflow: "hidden",
+                        margin: "0 auto",
+                        background: "#f3f3f3",
+                      }}
+                    >
+                      {imgUrl ? (
+                        <img
+                          src={imgUrl}
+                          alt={asesor}
+                          loading="lazy"
+                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        />
+                      ) : null}
+                    </div>
+                  </td>
+
                   {/* NOMBRE */}
                   <td
                     className="fw-bold text-start"
@@ -338,31 +430,21 @@ return (
                     {asesor}
                   </td>
 
-                  {/* celdas por PROGRAMA (solo visibles) */}
-                  {visiblePrograms.map(({ key: pk }, cidx) => {
-                    const counts = advisorOriginByProg?.[pk]?.[asesor] || {
-                      nuevos: 0,
-                      renovaciones: 0,
-                      reinscripciones: 0,
-                    };
-                    return (
-                      <td key={cidx} style={{ border: "1px solid #000" }}>
-                        <div style={cellBox}>
-                          <div style={{ ...cellItem, borderRight: "1px solid #000" }}>
-                            <p style={cellValue}>{fmt(counts.nuevos, true)}</p>
-                          </div>
-                          <div style={{ ...cellItem, borderRight: "1px solid #000" }}>
-                            <p style={cellValue}>{fmt(counts.renovaciones, true)}</p>
-                          </div>
-                          <div style={cellItemLast}>
-                            <p style={cellValue}>{fmt(counts.reinscripciones, true)}</p>
-                          </div>
-                        </div>
-                      </td>
-                    );
-                  })}
+                  {/* Programas visibles */}
+                 {visiblePrograms.map(({ key: pk }, cidx) => {
+  const counts = advisorOriginByProg?.[pk]?.[asesor] || { nuevos:0, renovaciones:0, reinscripciones:0 };
+  return (
+    <td key={cidx} style={{ border: "1px solid #000", padding: 0 }}>  {/* 👈 sin padding */}
+      <div style={cellBox}>
+        <div style={cellItem}><p style={cellValue}>{fmt(counts.nuevos, true)}</p></div>
+        <div style={cellItemMiddle}><p style={cellValue}>{fmt(counts.renovaciones, true)}</p></div>
+        <div style={cellItemLast}><p style={cellValue}>{fmt(counts.reinscripciones, true)}</p></div>
+      </div>
+    </td>
+  );
+})}
 
-                  {/* S/. por asesor */}
+                  {/* S/. */}
                   <td className="fw-bold" style={{ border: "1px solid #000", minWidth: 90 }}>
                     {fmt(moneyByAdvisor[norm(asesor)]?.money ?? 0, true)}
                   </td>
@@ -375,9 +457,12 @@ return (
               );
             })}
 
-            {/* Fila SOCIOS POR PROGRAMA */}
+            {/* SOCIOS POR PROGRAMA */}
             <tr className="fw-bold" style={{ background: "#fff", fontSize: 19 }}>
+              {/* Celda de ranking vacía para alinear */}
+              <td style={{ width: 36, border: "none", background: "transparent" }} />
               <td style={{ width: 110, background: "transparent", border: "none" }}></td>
+
               <td className="text-start" style={{ border: "1px solid #000" }}>
                 SOCIOS POR PROGRAMA
               </td>
@@ -419,9 +504,12 @@ return (
               </td>
             </tr>
 
-            {/* TOTAL PROGRAMA (sumatoria por programa) */}
+            {/* TOTAL PROGRAMA */}
             <tr className="fw-bold" style={{ background: "#fff", fontSize: 19 }}>
+              {/* Celda de ranking vacía para alinear */}
+              <td style={{ width: 36, border: "none", background: "transparent" }} />
               <td style={{ width: 110, background: "transparent", border: "none" }}></td>
+
               <td className="text-start" style={{ border: "1px solid #000" }}>
                 TOTAL
               </td>
@@ -442,4 +530,5 @@ return (
     </Col>
   </Row>
 );
+
   }
