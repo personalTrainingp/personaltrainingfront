@@ -94,12 +94,10 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerParametrosProveedor = async (id_empresa) => {
+	const obtenerParametrosProveedor = async () => {
 		try {
 			// setIsLoading(true);
-			const { data } = await PTApi.get(
-				`/parametros/get_params/producto/proveedor/${id_empresa}`
-			);
+			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
 			// setDataProducProveedor(data);
 			dispatch(onSetProveedoresCOMBO(data));
 			// setIsLoading(false);
