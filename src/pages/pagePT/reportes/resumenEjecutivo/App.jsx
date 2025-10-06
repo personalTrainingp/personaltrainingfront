@@ -14,7 +14,7 @@
       import { onSetRangeDate } from '@/store/data/dataSlice';
       import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
       import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
-
+      import config from '@/config';
 
       import axios from 'axios';
 
@@ -111,7 +111,7 @@ const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= 
         obtenerComparativoResumen(RANGE_DATE);
       }
     }, [RANGE_DATE]);
-
+   
     // 👇 mapeo de id de programa a la etiqueta que usas en avatares
     const progNameById = {
       2: "CHANGE 45",
@@ -136,7 +136,7 @@ const advisorOriginByProg = useMemo(() => {
     if (!outSets[progKey]) outSets[progKey] = {};
 
     const items = Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : [];
-
+  
     // solo ventas pagadas en rango
     const pagadas = items.filter(v => {
       if (Number(v?.tarifa_monto) === 0) return false;
@@ -367,8 +367,6 @@ const advisorOriginByProg = useMemo(() => {
         }
         return result.reverse(); // para que quede cronológico
       }
-
-        
       function generarResumenRanking(array) {
         // Totales generales
         const sumaMontoTotal = array.reduce((acc, row) => acc + (row?.monto || 0), 0);
@@ -434,7 +432,7 @@ const advisorOriginByProg = useMemo(() => {
       const avataresDeProgramas = [
         { urlImage: "/change_blanco.png", name_image: "CHANGE 45" },
         { urlImage: "/fs45_blanco.png", name_image: "FS 45" },
-        { urlImage: "/fs45_blancos.png", name_image: "FISIO MUSCLE",scale :1.5 },
+        { urlImage: "/fs45_blancos.png", name_image: "FISIO MUSCLE",scale :2 },
       // { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/cyl-avatar.png", name_image: "CHANGE YOUR LIFE" },
       { urlImage: "/vertikal_act.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
     ];  
@@ -570,6 +568,42 @@ const dataMktWithCac = useMemo(() => {
       console.log('[LEADS] sin filas');
     }
   }, [dataLead]);
+const norm = (s) =>
+  String(s ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase();
+
+const AVATAR_BASE = config?.API_IMG?.AVATAR_EMPL || ""; // ej: "https://tu-api/upload/get-upload/"
+
+const avatarByAdvisor = useMemo(() => {
+  const lista = repoVentasPorSeparado?.total?.empl_monto || [];
+  const map = {};
+
+  for (const it of lista) {
+    // clave = primer nombre normalizado (igual que en SumaDeSesiones)
+    const fullName = it?.empl || it?.tb_empleado?.nombres_apellidos_empl || it?.nombre || "";
+    const key = norm((fullName.split(" ")[0] || "").trim());
+    if (!key) continue;
+
+    // usa el mismo campo que ya te funciona en TarjetasPago
+    const raw =
+      it?.avatar ||
+      it?.tb_empleado?.avatar ||
+      it?.tb_empleado?.tb_images?.[ (it?.tb_empleado?.tb_images?.length||0) - 1 ]?.name_image ||
+      "";
+
+    if (!raw) continue;
+
+    // misma regla que en TarjetasPago
+    const url = /^https?:\/\//i.test(raw) ? raw : `${config.API_IMG.AVATAR_EMPL}${raw}`;
+    map[key] = url;
+  }
+
+  console.log('[avatarByAdvisor keys]', Object.keys(map), map);
+  return map;
+}, [repoVentasPorSeparado?.total?.empl_monto]);
+
 
       return (
           <>
@@ -736,7 +770,8 @@ const dataMktWithCac = useMemo(() => {
   avataresDeProgramas={avataresDeProgramas}
   sociosOverride={sociosOverride}
   originBreakdown={originBreakdown} 
-   advisorOriginByProg={advisorOriginByProg}  // 👈 pásalo
+   advisorOriginByProg={advisorOriginByProg} 
+    avatarByAdvisor={avatarByAdvisor}
 />
         </Col>
       </Row>
