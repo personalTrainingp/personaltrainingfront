@@ -678,7 +678,7 @@ const avatarByAdvisor = useMemo(() => {
       value={initDay}
       onChange={e => {
         const val = parseInt(e.target.value, 10);
-        if (val <= cutDay) setInitDay(val); // 👈 extra validación al seleccionar
+        if (val <= cutDay) setInitDay(val); // 
       }}
       style={{ fontSize: '1.5em' }}
     >
@@ -688,7 +688,6 @@ const avatarByAdvisor = useMemo(() => {
     </select>
   </div>
 
-  {/* Día de corte */}
 {/* Día de corte */}
 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
   <label style={{ fontWeight: 600, fontSize: "2em", color: "black" }}>
@@ -725,10 +724,6 @@ const avatarByAdvisor = useMemo(() => {
     ))}
   </select>
 </div>
-
-
-
-
         {/* Hora actual */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <span style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>

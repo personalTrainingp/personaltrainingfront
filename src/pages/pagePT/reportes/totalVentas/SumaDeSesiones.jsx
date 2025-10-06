@@ -344,26 +344,28 @@ return (
     <th style={{ fontSize: 25, color: "#fff", border: "1px solid #000", minWidth: 90 }}>TOTAL</th>
   </tr>
 
-  {/* 🔹 Fila 2: Subetiquetas NUEVOS / RENOV. / REINSC. */}
-  <tr>
-    <th style={rankHeadGhost} />
-    <th style={{ border: "none", background: "#fff" }}></th>
-    <th style={{ border: "1px solid #000", background: "#5c6670", color: "#fff" }}></th>
+ {/* 🔹 Fila 2: Subetiquetas NUEVOS / RENOV. / REINSC. */}
+{/* 🔹 Fila 2: Subetiquetas NUEVOS / RENOV. / REINSC. */}
+<tr>
+  <th style={rankHeadGhost} />
+  <th style={{ border: "none", background: "#fff" }} />
+  <th style={{ border: "1px solid #000", background: "#5c6670" }} />
 
-    {visiblePrograms.map((_, idx) => (
-      <th key={idx} style={{ border: "1px solid #000", background: "#e9eef6" }}>
-        <div style={miniRow}>
-          <div><div style={miniTitle}>NUEVOS</div></div>
-          <div><div style={miniTitle}>RENOV.</div></div>
-          <div><div style={miniTitle}>REINSC.</div></div>
-        </div>
-      </th>
-    ))}
+  {visiblePrograms.map((_, idx) => (
+    <th key={idx} className="triptych-head" style={{ border: "1px solid #000" }}>
+      <div className="tri-box-head">
+        <div><div className="miniTitle">NUEVOS</div></div>
+        <div><div className="miniTitle">RENOV.</div></div>
+        <div><div className="miniTitle">REINSC.</div></div>
+      </div>
+    </th>
+  ))}
 
-    {/* columnas S/. y TOTAL vacías */}
-    <th style={{ border: "1px solid #000", background: "#5c6670" }}></th>
-    <th style={{ border: "1px solid #000", background: "#5c6670" }}></th>
-  </tr>
+  <th style={{ border: "1px solid #000", background: "#5c6670" }} />
+  <th style={{ border: "1px solid #000", background: "#5c6670" }} />
+</tr>
+
+
 </thead>
 
 

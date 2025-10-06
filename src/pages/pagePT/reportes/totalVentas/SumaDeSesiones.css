@@ -6,6 +6,11 @@
     border-right: 1px solid #fff !important;  /* <- faltaba */
 
 }
+/* ---- triptych del BODY: queda igual, solo agrego box-sizing/height ---- */
+.tabla-sesiones td.triptych {
+  position: relative;
+  padding: 0;
+}
 
 /* Columna 1 (ranking): SIN borde izquierdo (blanco) */
 .tabla-sesiones thead th:first-child,
@@ -45,8 +50,39 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   background: #fff;
+    box-sizing: border-box;         /* <- para que los bordes cuenten bien */
+
+}
+.tabla-sesiones th.triptych-head > .tri-box-head{
+  position: absolute;
+  inset: 0;                    /* ocupa todo el th */
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background: #e9eef6;         /* mismo tono del “ribbon” */
+  box-sizing: border-box;
+}
+.tabla-sesiones th.triptych-head > .tri-box-head > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.tabla-sesiones th.triptych-head > .tri-box-head > div + div{
+  border-left: 1px solid #000;
+}
+.tabla-sesiones th.triptych-head {
+  position: relative;  /* asegura que el contenido absoluto se ancle al th */
+  height: 45px;        /* evita que crezca descontroladamente */
+  padding: 0;
 }
 
+.miniTitle {
+  color: #c00000;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: .3px;
+  margin: 0;
+}
 /* celdas internas ocupan todo el alto */
 .tabla-sesiones td.triptych > .tri-box > div {
   display: flex;
@@ -54,14 +90,59 @@
   justify-content: center;
   font-weight: 800;
   height: 100%;
+  border: none;
 }
 
 /* líneas verticales centradas que SI llegan de borde a borde */
-.tabla-sesiones td.triptych > .tri-box > div:nth-child(2) {
-  border-left: 1px solid #000;
-  border-right: 1px solid #000;
+/* Mantén el layout actual */
+.tabla-sesiones td.triptych {
+  position: relative;
+  padding: 0;
 }
+.tabla-sesiones td.triptych > .tri-box {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background: #fff;
+}
+
+/* Estilo base de cada mini-bloque */
+.tabla-sesiones td.triptych > .tri-box > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  height: 100%;
+  /* importante: sin bordes aquí */
+  border: none;
+}
+
+/* ✅ separadores internos entre las 3 celdas */
+.tabla-sesiones td.triptych > .tri-box > div + div {
+  border-left: 1px solid #000;
+}
+
 /* Quitar el borde derecho SOLO del último TD (columna TOTAL) de la última fila */
 .tabla-sesiones tbody tr:last-child td:last-child {
   border-right: none !important;
 }
+/* separadores en el encabezado “ribbon” */
+.mini-row3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;                /* sin gap para que el borde toque */
+  background: #e9eef6;
+  padding: 10px 8px;
+  border-radius: 8px;
+}
+.mini-row3 > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.mini-row3 > div + div {
+  border-left: 1px solid #000;
+}
+
