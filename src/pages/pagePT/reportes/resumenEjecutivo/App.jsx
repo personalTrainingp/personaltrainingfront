@@ -15,7 +15,6 @@
       import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
       import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
       import config from '@/config';
-
       import axios from 'axios';
 
       const RealTimeClock = () => {
@@ -306,6 +305,30 @@ const advisorOriginByProg = useMemo(() => {
           cac:             { marzo: null,  abril: null,   mayo: null,   junio: null,   julio: null,   agosto: null, septiembre: 0   },
         };
 
+   const daysInmonth = (y,m1to12)=>  new Date(y,m1to12,0).getDate();
+function handleMonthChange(newMonth) {
+  const today = new Date();
+  const currentMonth = today.getMonth() + 1;
+  const currentYear = today.getFullYear();
+
+  const lastDayTarget = daysInmonth(year, newMonth); // 👈 nombre corregido
+  let nextCutDay;
+
+  // ✅ Si el mes es el actual, limita el día de corte al día de hoy
+  if (newMonth === currentMonth && year === currentYear) {
+    nextCutDay = Math.min(today.getDate(), lastDayTarget);
+  } else {
+    nextCutDay = Math.min(cutDay, lastDayTarget);
+  }
+
+  const nextInitDay = Math.min(initDay, nextCutDay);
+
+  setSelectedMonth(newMonth);
+  setCutDay(nextCutDay);
+  setInitDay(nextInitDay);
+}
+
+
 
         const tableData = useMemo(() => ventasToExecutiveData({
           ventas: dataVentas,
@@ -536,19 +559,13 @@ const dataMktWithCac = useMemo(() => {
   for (const f of mesesSeleccionados) {
     const mesKey = f.mes === 'septiembre' ? 'setiembre' : f.mes;
     const key = `${f.anio}-${mesKey}`;
-
-    // objeto del mes (crea si no existe)
     const obj = { ...(base[key] || {}) };
-
-    // inversión (sin duplicar conversiones)
     const inversion = Number(obj.inversiones_redes ?? obj.inversion_redes ?? 0);
 
-    // clientes digitales calculados desde ventas en el rango
     const clientes = countDigitalClientsForMonth(
       dataVentas || [], f.anio, f.mes, initDay, cutDay
     );
 
-    // guardar dentro del objeto del mes
     obj.clientes_digitales = clientes;
     obj.cac = clientes > 0 ? +(inversion / clientes).toFixed(2) : 0;
 
@@ -557,19 +574,14 @@ const dataMktWithCac = useMemo(() => {
   return base;
 }, [dataMktByMonth, dataVentas, mesesSeleccionados, initDay, cutDay]);
 
-
-
-      // 1) Rango visible esperado (las 4 llaves que usa la tabla)
   useEffect(() => {
     const expected = mesesSeleccionados.map(f => 
       `${f.anio}-${(f.mes === 'septiembre' ? 'setiembre' : f.mes)}`
     );
-    console.log('[EXEC] meses esperados:', expected);
   }, [mesesSeleccionados]);
 
   // 2) Qué meses realmente construyó buildDataMktByMonth
   useEffect(() => {
-    console.log('[MKT] keys disponibles:', Object.keys(dataMktByMonth || {}));
   }, [dataMktByMonth]);
 
   // 3) Qué abarca dataLead (mínima y máxima fecha)
@@ -581,9 +593,7 @@ const dataMktWithCac = useMemo(() => {
     if (ds.length) {
       const min = new Date(Math.min(...ds));
       const max = new Date(Math.max(...ds));
-      console.log('[LEADS] filas:', ds.length, '| min:', min, '| max:', max);
     } else {
-      console.log('[LEADS] sin filas');
     }
   }, [dataLead]);
 const norm = (s) =>
@@ -592,7 +602,7 @@ const norm = (s) =>
     .replace(/[\u0300-\u036f]/g, "")
     .toUpperCase();
 
-const AVATAR_BASE = config?.API_IMG?.AVATAR_EMPL || ""; // ej: "https://tu-api/upload/get-upload/"
+const AVATAR_BASE = config?.API_IMG?.AVATAR_EMPL || ""; 
 
 const avatarByAdvisor = useMemo(() => {
   const lista = repoVentasPorSeparado?.total?.empl_monto || [];
@@ -618,9 +628,9 @@ const avatarByAdvisor = useMemo(() => {
     map[key] = url;
   }
 
-  console.log('[avatarByAdvisor keys]', Object.keys(map), map);
   return map;
 }, [repoVentasPorSeparado?.total?.empl_monto]);
+
 
 
       return (
@@ -634,18 +644,32 @@ const avatarByAdvisor = useMemo(() => {
         {/* 👇 Nuevo: Selector de mes */}
         <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
           <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Mes:</label>
-          <select
-            value={selectedMonth}
-            onChange={e => setSelectedMonth(parseInt(e.target.value, 10))}
-            style={{ fontSize: '1.7em' , fontWeight: "bold" }}
-          >
-            {[
-              "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
-              "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"
-            ].map((mes, idx) => (
-              <option key={idx+1} value={idx+1}>{mes}</option>
-            ))}
-          </select>
+         <select
+  value={selectedMonth}
+  onChange={e => {
+    const newMonth = parseInt(e.target.value, 10);
+    const currentMonth = new Date().getMonth() + 1;
+
+    // 🚫 Evita seleccionar meses futuros
+    if (newMonth > currentMonth) return;
+
+    handleMonthChange(newMonth);
+  }}
+  style={{ fontSize: '1.7em', fontWeight: "bold" }}
+>
+  {[
+    "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
+    "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"
+  ].map((mes, idx) => {
+    const currentMonth = new Date().getMonth() + 1;
+    const disabled = idx + 1 > currentMonth; // 🔒 meses futuros bloqueados
+    return (
+      <option key={idx + 1} value={idx + 1} disabled={disabled}>
+        {mes}
+      </option>
+    );
+  })}
+</select>
         </div>
       {/* Día de inicio */}
   <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
@@ -665,34 +689,43 @@ const avatarByAdvisor = useMemo(() => {
   </div>
 
   {/* Día de corte */}
-  <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-    <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Día de corte:</label>
-    <select
-      value={cutDay}
-      onChange={e => {
-        const val = parseInt(e.target.value, 10);
-        const today = new Date().getDate();
-        const currentMonth = new Date().getMonth() + 1;
+{/* Día de corte */}
+<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+  <label style={{ fontWeight: 600, fontSize: "2em", color: "black" }}>
+    Día de corte:
+  </label>
+  <select
+    value={cutDay}
+    onChange={(e) => {
+      const val = parseInt(e.target.value, 10);
+      const today = new Date();
+      const currentMonth = today.getMonth() + 1;
+      const currentDay = today.getDate();
 
-        // 👇 validación directa al seleccionar
-        if (selectedMonth === currentMonth && val > today) {
-          setCutDay(today);
-        } else {
-          setCutDay(val);
-        }
+      const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
+      const lastDayTarget = daysInMonth(year, selectedMonth);
 
-        // 👇 si día inicio quedó mayor, corregir
-        if (initDay > val) {
-          setInitDay(val);
-        }
-      }}
-      style={{ fontSize: '1.5em' }}
-    >
-      {Array.from({ length: 31 }, (_, i) => i + 1).map(n => (
-        <option key={n} value={n}>{n}</option>
-      ))}
-    </select>
-  </div>
+      let next = Math.min(val, lastDayTarget);
+
+      if (selectedMonth === currentMonth) {
+        next = Math.min(next, currentDay);
+      }
+      setCutDay(next);
+
+      if (initDay > next) {
+        setInitDay(next);
+      }
+    }}
+    style={{ fontSize: "1.5em" }}
+  >
+    {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
+      <option key={n} value={n}>
+        {n}
+      </option>
+    ))}
+  </select>
+</div>
+
 
 
 
@@ -703,7 +736,6 @@ const avatarByAdvisor = useMemo(() => {
           </span>
         </div>
       </div>
-
               </Col>
             </Row>
             <Row className="mb-4">
@@ -774,12 +806,9 @@ const avatarByAdvisor = useMemo(() => {
                           .reduce((total, item) => total + item.monto, 0) || 0
                       }
                     />
-                  </div>
-            
-                </Col>
-                
+                  </div>            
+                </Col>               
               </Col>
-
     <Row>
         <Col lg={12}>
           <SumaDeSesiones

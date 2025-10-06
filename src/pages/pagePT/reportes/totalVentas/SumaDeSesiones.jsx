@@ -163,10 +163,10 @@ const normalizeImgUrl = (u) => {
       headText: "#ffffff",
       red: "#c00000",
     };
-    const thName = { width: 180, fontSize: 20, color: C.headText };
+    const thName = { width: 180, fontSize: 25, color: C.headText };
     const avatarBox = {
-      width: 180,
-      height: 80,
+      width: 190,
+      height: 100,
       margin: "0 auto",
       display: "flex",
       alignItems: "center",
@@ -203,7 +203,7 @@ const cellItemMiddle = {
 
 const cellItemLast = { ...cellItem };
 const cellItemLeftBorder = { ...cellItem, borderLeft: "1px solid #000" };
-const cellValue = { fontSize: 19, lineHeight: 1, margin: 0 };
+const cellValue = { fontSize: 25, lineHeight: 1, margin: 0 };
 
     const miniRow = {
       display: "grid",
@@ -297,62 +297,75 @@ return (
           className="table text-center tabla-sesiones"
           style={{ borderCollapse: "collapse", width: "100%", border: "1px solid #000" }}
         >
-          <thead className="bg-secondary text-white">
-            <tr>
-              {/* Columna de ranking: header fantasma (blanco para tapar el gris del thead) */}
-              <th
-                style={{
-                  width: 36,
-                  background: "#fff",
-                  color: "transparent",
-                  border: "none",
-                  padding: 0,
-                }}
-              />
-              
-              <th style={{ width: 100, ...thName}}>IMAGEN</th>
-              <th style={{ ...thName, border: "1px solid #000" }}>NOMBRE</th>
+         <thead className="bg-secondary text-white">
+  {/* 🔹 Fila 1: IMAGEN + NOMBRE + Avatares */}
+  <tr>
+    {/* Columna ranking vacía */}
+    <th style={{ width: 36, background: "#fff", color: "transparent", border: "none", padding: 0 }} />
+    <th style={{ width: 100, ...thName }}>IMAGEN</th>
+    <th style={{ ...thName, border: "1px solid #000" }}>NOMBRE</th>
 
-              {visiblePrograms.map(({ img }, idx) => {
-                const scale = Number(img?.scale ?? 1);
-                return (
-                  <th key={idx} style={{ border: "1px solid #000" }}>
-                    <div
-                      style={{
-                        ...avatarBox,
-                        overflow: scale > 1 ? "visible" : "hidden",
-                      }}
-                    >
-                      <img
-                        src={img.urlImage}
-                        alt={img.name_image}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "contain",
-                          transform: `scale(${scale})`,
-                          transformOrigin: "center",
-                        }}
-                      />
-                    </div>
+    {/* Programas visibles (solo los avatares) */}
+    {visiblePrograms.map(({ img }, idx) => {
+      const scale = Number(img?.scale ?? 1);
+      return (
+        <th
+          key={idx}
+          style={{
+            border: "1px solid #000",
+            verticalAlign: "middle",
+            background: "#5c6670",
+          }}
+        >
+          <div
+            style={{
+              ...avatarBox,
+              overflow: scale > 1 ? "visible" : "hidden",
+            }}
+          >
+            <img
+              src={img.urlImage}
+              alt={img.name_image}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                transform: `scale(${scale})`,
+                transformOrigin: "center",
+              }}
+            />
+          </div>
+        </th>
+      );
+    })}
 
-                    <div style={miniRow}>
-                      <div><div style={miniTitle}>NUEVOS</div></div>
-                      <div><div style={miniTitle}>RENOV.</div></div>
-                      <div><div style={miniTitle}>REINSC.</div></div>
-                    </div>
-                  </th>
-                );
-              })}
+    {/* columnas finales */}
+    <th style={{ fontSize: 25, color: "#fff", border: "1px solid #000", minWidth: 90 }}>S/.</th>
+    <th style={{ fontSize: 25, color: "#fff", border: "1px solid #000", minWidth: 90 }}>TOTAL</th>
+  </tr>
 
-              <th style={{ fontSize: 20, color: "#fff", border: "1px solid #000", minWidth: 90 }}>
-                S/.
-              </th>
-              <th style={{ fontSize: 20, color: "#fff", border: "1px solid #000", minWidth: 90 }}>
-                TOTAL
-              </th>
-            </tr>
-          </thead>
+  {/* 🔹 Fila 2: Subetiquetas NUEVOS / RENOV. / REINSC. */}
+  <tr>
+    <th style={rankHeadGhost} />
+    <th style={{ border: "none", background: "#fff" }}></th>
+    <th style={{ border: "1px solid #000", background: "#5c6670", color: "#fff" }}></th>
+
+    {visiblePrograms.map((_, idx) => (
+      <th key={idx} style={{ border: "1px solid #000", background: "#e9eef6" }}>
+        <div style={miniRow}>
+          <div><div style={miniTitle}>NUEVOS</div></div>
+          <div><div style={miniTitle}>RENOV.</div></div>
+          <div><div style={miniTitle}>REINSC.</div></div>
+        </div>
+      </th>
+    ))}
+
+    {/* columnas S/. y TOTAL vacías */}
+    <th style={{ border: "1px solid #000", background: "#5c6670" }}></th>
+    <th style={{ border: "1px solid #000", background: "#5c6670" }}></th>
+  </tr>
+</thead>
+
 
           <tbody>
             {filas.map((fila, ridx) => {
@@ -379,7 +392,7 @@ return (
               });
 
               return (
-                <tr key={ridx} style={{ background: "#fff", fontSize: 19 }}>
+                <tr key={ridx} style={{ background: "#fff", fontSize: 25 }}>
                   {/* Ranking (solo 1 y 2). Sin bordes. */}
                   <td
                     style={{
@@ -457,13 +470,13 @@ return (
             })}
 
             {/* SOCIOS POR PROGRAMA */}
-            <tr className="fw-bold" style={{ background: "#fff", fontSize: 19 }}>
+            <tr className="fw-bold" style={{ background: "#fff", fontSize: 25 }}>
               {/* Celda de ranking vacía para alinear */}
               <td style={{ width: 36, border: "none", background: "transparent" }} />
               <td style={{ width: 110, background: "transparent", border: "none" }}></td>
 
               <td className="text-start" style={{ border: "1px solid #000" }}>
-                SOCIOS POR PROGRAMA
+                SOCIOS POR CANAL
               </td>
 
               {visiblePrograms.map(({ key: pk }, idx) => {
@@ -498,8 +511,7 @@ return (
             </tr>
 
             {/* TOTAL PROGRAMA */}
-            <tr className="fw-bold" style={{ background: "#fff", fontSize: 19 }}>
-              {/* Celda de ranking vacía para alinear */}
+            <tr className="fw-bold" style={{ background: "#fff", fontSize: 25 }}>
               <td style={{ width: 36, border: "none", background: "transparent" }} />
               <td style={{ width: 110, background: "transparent", border: "none" }}></td>
 
@@ -513,7 +525,6 @@ return (
                 </td>
               ))}
 
-              {/* columnas S/. y TOTAL vacías */}
               <td></td>
               <td></td>
             </tr>
