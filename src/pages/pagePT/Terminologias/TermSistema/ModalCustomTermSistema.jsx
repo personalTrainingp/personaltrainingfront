@@ -24,7 +24,7 @@ export const ModalCustomTermSistema = ({ show, onHide, entidad, grupo, id = 0, l
       registrarTerminologiaxEntidadyGrupo({ label_param: value }, entidad, grupo);
     } else {
       // Editar (ajusta según tu store):
-      // actualizarTerminologia({ id, label_param: value, entidad, grupo });
+      actualizarTerminologia( {label_param: value }, id, entidad, grupo);
     }
     onHide?.();
   };

@@ -9,6 +9,7 @@ import {
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
+import { useTerminoStore } from './useTerminoStore';
 
 export const useProveedorStore = () => {
 	const dispatch = useDispatch();
@@ -18,6 +19,8 @@ export const useProveedorStore = () => {
 	const [isLoadingContratoProv, setisLoadingContratoProv] = useState(false);
 	const [gastosxContratoProv, setgastosxContratoProv] = useState([]);
 	const [dataContrato, setdataContrato] = useState([]);
+	const { DataGeneral: dataOficios, obtenerParametroPorEntidadyGrupo: obtenerOficios } =
+		useTerminoStore();
 	const [proveedor, setProveedor] = useState({
 		id: 0,
 		ruc_prov: '',
@@ -97,9 +100,16 @@ export const useProveedorStore = () => {
 	const obtenerParametrosProveedor = async () => {
 		try {
 			// setIsLoading(true);
+			await obtenerOficios('proveedor', 'tipo_oficio');
 			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
+
 			// setDataProducProveedor(data);
-			dispatch(onSetProveedoresCOMBO(data));
+			const dataAlter = data.map(term=>{
+				return {
+					label: `${dataOficios.find(oficio=>oficio?.value===term?.id_oficio)?.label ??'SIN ASIGNAR'} | ${term?.label}`
+				}
+			})
+			dispatch(onSetProveedoresCOMBO(dataAlter));
 			// setIsLoading(false);
 		} catch (error) {
 			console.log(error);
@@ -225,6 +235,46 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
+
+	const putContratoProv = async (
+		formState,
+		id_prov,
+		formFile,
+		formFileContrato,
+		formFileCompromisoPago
+	) => {
+		try {
+			setisLoadingContratoProv(true);
+			const { data } = await PTApi.post('/proveedor/put-contrato-prov', {
+				...formState,
+				id_prov: id_prov,
+			});
+			if (formFileCompromisoPago) {
+				await PTApi.post(
+					`/storage/blob/create/${data.contratoProv.uid_compromisoPago}?container=compromiso-pago-proveedores`,
+					formFileCompromisoPago
+				);
+			}
+			if (formFile) {
+				await PTApi.post(
+					`/storage/blob/create/${data.contratoProv.uid_presupuesto}?container=presupuestos-proveedores`,
+					formFile
+				);
+			}
+			if (formFileContrato) {
+				await PTApi.post(
+					`/storage/blob/create/${data.contratoProv.uid_contrato}?container=contratos-proveedores`,
+					formFileContrato
+				);
+			}
+			setisLoadingContratoProv(false);
+			setmessage({ msg: data.msg, ok: data.ok });
+			// obtenerProveedores();
+			ObtenerContratosProvxID(id_prov);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const ObtenerContratosProvxID = async (id_prov) => {
 		try {
 			const { data } = await PTApi.get(`/proveedor/obtener-contratos/${id_prov}`);
@@ -290,6 +340,7 @@ export const useProveedorStore = () => {
 		proveedor,
 		message,
 		postContratoProv,
+		putContratoProv,
 		ObtenerContratosProvxID,
 		EliminarContratoProvxID,
 		obtenerEgresosPorCodigoProv,

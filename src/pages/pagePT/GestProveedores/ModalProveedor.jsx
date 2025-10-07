@@ -7,6 +7,7 @@ import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
 import Select from 'react-select'
+import { SelectOficio } from './SelectOficio';
 const registerProvedor = {
     ruc_prov: '', 
 	razon_social_prov: '', 
@@ -96,6 +97,9 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
             const onCancelForm = ()=>{
                 onHide()
                 onResetForm()
+            }
+            const onClickOpenModalCustomOficios = ()=>{
+
             }
             
             const ViewDataImg = (e) => {
@@ -292,7 +296,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                 />
                             </div>
                             </Col>
-                            <Col lg={8}>
+                            <Col lg={12}>
                             <div className="mb-4">
                                 <label htmlFor="direc_prov" className="form-label">
                                     Direccion*
@@ -307,27 +311,32 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                 />
                             </div>
                             </Col>
-                            <Col lg={4}>
-                                
-                                <div className="mb-4">
-                                    <label htmlFor="id_oficio" className="form-label">
-                                        Servicio y/o producto*
-                                    </label>
-                                    
-                                    <Select
-                                        onChange={(e) => onInputChangeReact(e, 'id_oficio')}
-                                        name="id_oficio"
-                                        placeholder={'Seleccione el oficio del proveedor'}
-                                        className="react-select"
-                                        classNamePrefix="react-select"
-                                        options={comboOficio}
-                                        value={comboOficio.find(
-                                            (option) => option.value === id_oficio
-                                        )}
-                                    />
-                                </div>
+                            <Col lg={12}>
+                                <Row>
+                                    <Col lg={10}>
+                                        <div className="mb-4">
+                                            <label htmlFor="id_oficio" className="form-label">
+                                                Servicio y/o producto*
+                                            </label>
+                                            <SelectOficio
+                                                comboOficio={[
+                                                    { label: 'Carpintero', value: 1 },
+                                                    { label: 'Electricista', value: 2 },
+                                                ]}
+                                                id_oficio={2}
+                                                onInputChangeReact={(e, field) => console.log('Seleccionó:', e, field)}
+                                                onAgregarOficio={(nuevo) => console.log('Nuevo oficio:', nuevo)}
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col lg={2}>
+                                        <div className='h-100 text-center d-flex align-items-center'>
+                                            <Button onClick={()=>onClickOpenModalCustomOficios()}>+</Button>
+                                        </div>
+                                    </Col>
+                                </Row>
                             </Col>
-                            <Col lg={4}>
+                            <Col lg={12}>
                                 
                                 <div className="mb-4">
                                     <label htmlFor="estado_prov" className="form-label">

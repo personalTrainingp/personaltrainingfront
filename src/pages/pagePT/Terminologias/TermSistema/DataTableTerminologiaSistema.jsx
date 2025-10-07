@@ -4,10 +4,11 @@ import { ModalCustomTermSistema } from './ModalCustomTermSistema'
 import { useTerminoSistema } from './useTerminoSistema'
 import { Button } from 'primereact/button'
 import { useSelector } from 'react-redux'
+import { confirmDialog } from 'primereact/confirmdialog'
 
 export const DataTableTerminologiaSistema = ({dataTerm, entidad, grupo}) => {
   const [isOpenModalCustomTermSistema, setisOpenModalCustomTermSistema] = useState({isOpen: false, id: 0, label: ''})
-  const { obtenerTerminologiaSistema } = useTerminoSistema()
+  const { obtenerTerminologiaSistema, deleteTerminologia } = useTerminoSistema()
   const {dataView} = useSelector(e=>e.DATA)
   const onOpenModalCustomTermSistema = (id, label)=>{
     setisOpenModalCustomTermSistema({isOpen: true, id, label})
@@ -17,13 +18,21 @@ export const DataTableTerminologiaSistema = ({dataTerm, entidad, grupo}) => {
   }
   useEffect(() => {
     obtenerTerminologiaSistema(entidad, grupo)
-    
   }, [entidad])
-  
+  const onDeleteTermSis = (idTer)=>{
+    confirmDialog({
+        message: `Seguro que quieres eliminar la terminologia?`,
+        header: `eliminar terminologia`,
+        icon: 'pi pi-info-circle',
+        defaultFocus: 'reject',
+        acceptClassName: 'p-button-danger',
+        accept:  ()=>{
+          deleteTerminologia(idTer, entidad, grupo)
+        },
+    });
+  }
   return (
     <div>
-      {entidad}
-      {grupo}
       <Button label='AGREGAR' onClick={()=>onOpenModalCustomTermSistema(0, '')}/>
       <Table>
         <thead>
@@ -42,7 +51,7 @@ export const DataTableTerminologiaSistema = ({dataTerm, entidad, grupo}) => {
                   <td>{d?.label}</td>
                   <td>
                     <i onClick={()=>onOpenModalCustomTermSistema(d?.value, d?.label)} className='pi pi-pencil mx-4'></i>
-                    <i  className='pi pi-trash  '></i>
+                    <i onClick={()=>onDeleteTermSis(d.value)} className='pi pi-trash  '></i>
                   </td>
                 </tr>
               )

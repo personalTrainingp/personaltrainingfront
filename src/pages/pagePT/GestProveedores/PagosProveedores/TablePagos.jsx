@@ -35,7 +35,7 @@ import { ModalCustomDescuentos } from './ModalCustomDescuentos';
         break;
     }
   }
-export const TablePagos = ({id_empresa}) => {
+export const TablePagos = ({id_empresa, setmodalCustomPagosProv}) => {
   const {
     obtenerTrabajosPendientes,
     dataPagosContratos,
@@ -137,13 +137,6 @@ useEffect(() => {
             return (
               <React.Fragment key={grupo.id_prov}>
                 {/* Fila resumen proveedor */}
-                <pre>
-                  {/* {JSON.stringify(dataContratosPendientes, null, 2)} */}
-                  {/* ************************************************** */}
-                  {/* {JSON.stringify(dataPagosContratos, null, 2)} */}
-                  {/* ************************************************** */}
-                  {/* {JSON.stringify(dataPagosContratos, null, 2)} */}
-                </pre>
                 <tr>
                   <td className="text-center">
                     <Button
@@ -214,6 +207,8 @@ useEffect(() => {
                                 COMPROMISO <br/>DE PAGO <br/><div className='d-flex justify-content-center' style={{position: 'sticky', top: '100px'}}><div className='text-center border-2' style={{width: '40px'}}></div></div><br/> LETRA
                               </div>
                             </th>
+                            <th className="text-white">
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -225,7 +220,6 @@ useEffect(() => {
                             const totalPagado = Number(c?.sumaPagos) || 0;
                             return (
                               <React.Fragment key={c.id}>
-                                {/* Fila resumen contrato */}
                                 <tr className='fs-3'>
                                   <td 
                                         onClick={() => toggleContrato(c.id)}
@@ -251,6 +245,12 @@ useEffect(() => {
                                   <td className="text-end fw-semibold">{fmt(saldoContrato)}</td>
                                   <td className='' onClick={()=>onClickOpenFileCompromisoPago(c?.uid_compromisoPago)}>
                                     <i className='pi pi-file'></i>
+                                  </td>
+                                  <td className="text-end">
+                                    <div>
+                                      <i className='pi pi-trash'></i>
+                                      <i className='pi pi-pencil' onClick={()=>setmodalCustomPagosProv({isOpen: true, id: c.id, id_empresa: 0})}></i>
+                                    </div>
                                   </td>
                                 </tr>
 
