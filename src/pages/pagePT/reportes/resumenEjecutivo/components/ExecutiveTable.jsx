@@ -204,8 +204,6 @@ const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
     metrics: computeMetricsForMonth(f?.anio, f?.mes),
   }));
 
-  // --------------------------- Styles ---------------------------
-  // Respetando el esquema de colores del ejemplo (negro/rojo/blanco)
   const cBlack = "#000000";
   const cWhite = "#ffffff";
   const cRed = "#c00000"; // rojo intenso para las bandas inferiores

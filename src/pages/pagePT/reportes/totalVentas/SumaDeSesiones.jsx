@@ -1,7 +1,6 @@
   import React, { useMemo } from "react";
   import { Row, Col } from "react-bootstrap";
 import './SumaDeSesiones.css';
-
   const toNumber = (v) => {
     const s = String(v ?? "0").trim();
     if (s.includes("%")) return Number(s.replace("%", "").trim());
@@ -12,7 +11,6 @@ import './SumaDeSesiones.css';
     if (num === 0 && !mostrarCero) return "";
     return num.toLocaleString("es-PE");
   };
-
   // normalizador para comparar headers/keys
   const norm = (s) =>
     String(s ?? "")
@@ -36,7 +34,7 @@ const normalizeImgUrl = (u) => {
   export function SumaDeSesiones({
     
     resumenArray,
-    resumenTotales,                 // compat
+    resumenTotales,                 
     avataresDeProgramas = [],
     sociosOverride = {},
     originBreakdown = {},
@@ -118,7 +116,6 @@ const normalizeImgUrl = (u) => {
   return map;
 }, [resumenArray]);
 
-
     // dinero por asesor (y % si la data lo trae)
     const moneyByAdvisor = useMemo(() => {
       const map = {};
@@ -155,7 +152,6 @@ const normalizeImgUrl = (u) => {
 
     // totales
     const sumCol = (idx) => filas.reduce((acc, f) => acc + toNumber(f[idx]?.value), 0);
-    const totalGeneral = progKeys.reduce((acc, pk, i) => acc + sumCol(i + 1), 0);
 
     // estilos
     const C = {
@@ -174,49 +170,8 @@ const normalizeImgUrl = (u) => {
       borderRadius: 12,
       overflow: "hidden",
     };
-
-    // mini-celdas (3 en 1)
- // wrapper 3-en-1: ocupa todo el alto del <td>
-const cellBox = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr 1fr",
-  width: "100%",
-  height: "100%",     // antes 38
-  minHeight: 80,     // opcional para asegurar altura visible
-  background: "#fff",
-};
-
 // sub-celdas estiradas a todo el alto
-const cellItem = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontWeight: 800,
-  height: "100%",
-};
-
-const cellItemMiddle = {
-  ...cellItem,
-  borderLeft: "1px solid #000",
-  borderRight: "1px solid #000",
-};
-
-const cellItemLast = { ...cellItem };
-const cellItemLeftBorder = { ...cellItem, borderLeft: "1px solid #000" };
 const cellValue = { fontSize: 25, lineHeight: 1, margin: 0 };
-
-    const miniRow = {
-      display: "grid",
-      gridTemplateColumns: "repeat(3, 1fr)",
-      gap: 6,
-      alignItems: "center",
-      justifyItems: "center",
-      background: "#e9eef6",
-      padding: "10px 8px",
-      borderRadius: 8,
-      marginTop: 8,
-    };
-    const miniTitle = { color: C.red, fontWeight: 800, fontSize: 12, letterSpacing: 0.3 };
 
     // totales por PROGRAMA (desglosados por origen)
     const totalByProgAndOrigin = (pk) => {
@@ -257,7 +212,7 @@ const allProg = avataresDeProgramas.map((img, idx) => ({
   key: (String(img?.name_image ?? "").trim().toUpperCase()),
 }));
 
-const visiblePrograms = allProg.filter(({ key }) => totalOnlyByProg(key) > 0);
+const visiblePrograms = allProg
 // Columna "fantasma" para ranking
 const rankHeadGhost = {
   width: 36,
@@ -266,28 +221,20 @@ const rankHeadGhost = {
   border: "none",
   padding: 0,
 };
-
-const rankCellGhost = {
-  width: 36,
-  border: "none",
-  background: "transparent",
-  textAlign: "center",
-};
-
-// Badge redondo para 1 y 2
-const badgeStyle = (n) => ({
-  display: n <= 2 ? "inline-flex" : "none",
-  width: 24,
-  height: 24,
-  borderRadius: "50%",
-  border: "2px solid #000",
-  alignItems: "center",
-  justifyContent: "center",
-  fontWeight: 900,
-  fontSize: 14,
-  color: "#000",
-  background: n === 1 ? "#D4AF37" : "#C0C0C0", // 1 dorado, 2 plateado
-});
+// arriba del return
+const DashCell = ({ min = 90 }) => (
+  <td
+    style={{
+      border: "1px solid #000",
+      minWidth: min,
+      textAlign: "center",
+      fontWeight: 700,
+      color: "#000",
+    }}
+  >
+    -
+  </td>
+);
 
 return (
   <Row>
@@ -297,77 +244,61 @@ return (
           className="table text-center tabla-sesiones"
           style={{ borderCollapse: "collapse", width: "100%", border: "1px solid #000" }}
         >
-         <thead className="bg-secondary text-white">
-  {/* 🔹 Fila 1: IMAGEN + NOMBRE + Avatares */}
-  <tr>
-    {/* Columna ranking vacía */}
-    <th style={{ width: 36, background: "#fff", color: "transparent", border: "none", padding: 0 }} />
-    <th style={{ width: 100, ...thName }}>IMAGEN</th>
-    <th style={{ ...thName, border: "1px solid #000" }}>NOMBRE</th>
+          <thead className="bg-secondary text-white">
+            {/* Fila 1: IMAGEN + Avatares */}
+            <tr>
+             
+              {/* IMAGEN */}
+              <th style={{ width: 150, ...thName }}>ASESORES</th>
 
-    {/* Programas visibles (solo los avatares) */}
-    {visiblePrograms.map(({ img }, idx) => {
-      const scale = Number(img?.scale ?? 1);
-      return (
-        <th
-          key={idx}
-          style={{
-            border: "1px solid #000",
-            verticalAlign: "middle",
-            background: "#5c6670",
-          }}
-        >
-          <div
-            style={{
-              ...avatarBox,
-              overflow: scale > 1 ? "visible" : "hidden",
-            }}
-          >
-            <img
-              src={img.urlImage}
-              alt={img.name_image}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                transform: `scale(${scale})`,
-                transformOrigin: "center",
-              }}
-            />
-          </div>
-        </th>
-      );
-    })}
+              {/* Avatares de programas */}
+              {visiblePrograms.map(({ img }, idx) => {
+                const scale = Number(img?.scale ?? 1);
+                return (
+                  <th
+                    key={idx}
+                    style={{ border: "1px solid #000", verticalAlign: "middle", background: "#5c6670" }}
+                  >
+                    <div style={{ ...avatarBox, overflow: scale > 1 ? "visible" : "hidden" }}>
+                      <img
+                        src={img.urlImage}
+                        alt={img.name_image}
+                        style={{ width: "100%", height: "100%", objectFit: "contain", transform: `scale(${scale})` }}
+                      />
+                    </div>
+                  </th>
+                );
+              })}
 
-    {/* columnas finales */}
-    <th style={{ fontSize: 25, color: "#fff", border: "1px solid #000", minWidth: 90 }}>S/.</th>
-    <th style={{ fontSize: 25, color: "#fff", border: "1px solid #000", minWidth: 90 }}>TOTAL</th>
-  </tr>
+              {/* columnas finales */}
+              <th style={{ fontSize: 20, color: "#fff", border: "1px solid #000", minWidth: 80 }}>TOTAL SOCIOS</th>
+              <th style={{ fontSize: 20, color: "#fff", border: "1px solid #000", minWidth: 90 }}>S/.</th>
+              <th style={{ fontSize: 20, color: "#fff", border: "1px solid #000", minWidth: 60 }}>%</th>
+     
+            </tr>
 
- {/* 🔹 Fila 2: Subetiquetas NUEVOS / RENOV. / REINSC. */}
-{/* 🔹 Fila 2: Subetiquetas NUEVOS / RENOV. / REINSC. */}
-<tr>
-  <th style={rankHeadGhost} />
-  <th style={{ border: "none", background: "#fff" }} />
-  <th style={{ border: "1px solid #000", background: "#5c6670" }} />
+            {/* Fila 2: sub-etiquetas NUEVOS / RENOV. / REINSC. */}
+            <tr>
+              {/* debajo de IMAGEN no hay subtítulo */}
+              <th style={{ border: "none", background: "#fff" }} />
 
-  {visiblePrograms.map((_, idx) => (
-    <th key={idx} className="triptych-head" style={{ border: "1px solid #000" }}>
-      <div className="tri-box-head">
-        <div><div className="miniTitle">NUEVOS</div></div>
-        <div><div className="miniTitle">RENOV.</div></div>
-        <div><div className="miniTitle">REINSC.</div></div>
-      </div>
-    </th>
-  ))}
+              {visiblePrograms.map((_, idx) => (
+                <th key={idx} className="triptych-head" style={{ border: "1px solid #000" }}>
+                  <div className="tri-box-head">
+                    <div><div className="miniTitle">NUEVOS</div></div>
+                    <div><div className="miniTitle">RENOV.</div></div>
+                    <div><div className="miniTitle">REINSC.</div></div>
+                  </div>
+                </th>
+              ))}
 
-  <th style={{ border: "1px solid #000", background: "#5c6670" }} />
-  <th style={{ border: "1px solid #000", background: "#5c6670" }} />
-</tr>
-
-
-</thead>
-
+              {/* S/., %, TOTAL sin subtítulo */}
+                     <th style={{ border: "1px solid #000", background: "#5c6670" }} />
+              <th style={{ border: "1px solid #000", background: "#5c6670" }} />
+              <th style={{ border: "1px solid #000", background: "#5c6670" }} />
+       
+            </tr>
+          </thead>
 
           <tbody>
             {filas.map((fila, ridx) => {
@@ -375,161 +306,137 @@ return (
               const totalFila = fila.slice(1).reduce((acc, c) => acc + toNumber(c?.value), 0);
               const rank = rankByAdvisor[asesor] ?? 0;
               const key = norm(asesor);
-              const imgUrl = normalizeImgUrl(
-                avatarByAdvisor[key] || imageByAdvisor[key] || ""
-              );
+              const imgUrl = normalizeImgUrl(avatarByAdvisor[key] || imageByAdvisor[key] || "");
 
               const badgeStyle = (n) => ({
-                display: n <= 2 ? "inline-flex" : "none",
-                width: 50,
-                height: 50,
-                borderRadius: "50%",
-                border: "2px solid #000",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 900,
-                fontSize: 19,
-                color: "#000",
-                background: n === 1 ? "#D4AF37" : "#C0C0C0",
+                
               });
 
               return (
                 <tr key={ridx} style={{ background: "#fff", fontSize: 25 }}>
-                  {/* Ranking (solo 1 y 2). Sin bordes. */}
-                  <td
-                    style={{
-                      width: 36,
-                      border: "none",
-                      background: "transparent",
-                      textAlign: "center",
-                    }}
-                  >
-                    <span style={badgeStyle(rank)}>{rank}</span>
-                  </td>
+                  {/* Ranking */}
+                 
 
-                  {/* IMAGEN */}
-                  <td
-                    style={{
-                      width: 80,
-                      background: "transparent",
-                      position: "relative",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 80,
-                        height: 100,
-                        borderRadius: 10,
-                        overflow: "hidden",
-                        margin: "0 auto",
-                        background: "#f3f3f3",
-                      }}
-                    >
-                      {imgUrl ? (
-                        <img
-                          src={imgUrl}
-                          alt={asesor}
-                          loading="lazy"
-                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        />
-                      ) : null}
-                    </div>
-                  </td>
+                  {/* IMAGEN + NOMBRE */}
+                 <td className="img-with-name">
+  <div className="img-cap">
+    {/* Imagen del asesor */}
+    {imgUrl && <img src={imgUrl} alt={asesor} loading="lazy" />}
 
-                  {/* NOMBRE */}
-                  <td
-                    className="fw-bold text-start"
-                    style={{ border: "1px solid #000", paddingLeft: 12 }}
-                  >
-                    {asesor}
-                  </td>
+    {/* Nombre */}
+    <div className="cap">{asesor}</div>
 
+    {/* 🏆 Copa dorada solo para  1er lugar */}
+{rank === 1 && (
+  <div className="copa-champions" title="Primer lugar 🏆">
+    <img
+      src="/copa_1_lugar.jpg"
+      alt="Copa Champions"
+      style={{ width: '45px', height: '70px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))', }}
+    />
+  </div>
+)}
+  </div>
+</td>
                   {/* Programas visibles */}
-                 {visiblePrograms.map(({ key: pk }, cidx) => {
-  const counts = advisorOriginByProg?.[pk]?.[asesor] || { nuevos:0, renovaciones:0, reinscripciones:0 };
-  return (
-     <td key={cidx} className="triptych" style={{ border: "1px solid #000" }}>
-      <div className="tri-box">
-        <div><p style={cellValue}>{fmt(counts.nuevos, true)}</p></div>
-        <div><p style={cellValue}>{fmt(counts.renovaciones, true)}</p></div>
-        <div><p style={cellValue}>{fmt(counts.reinscripciones, true)}</p></div>
-      </div>
-    </td>
-  );
-})}
+                  {visiblePrograms.map(({ key: pk }, cidx) => {
+                    const counts = advisorOriginByProg?.[pk]?.[asesor] || {
+                      nuevos: 0, renovaciones: 0, reinscripciones: 0,
+                    };
+                    return (
+                      <td key={cidx} className="triptych" style={{ border: "1px solid #000" }}>
+                        <div className="tri-box">
+                          <div><p style={cellValue}>{fmt(counts.nuevos, true)}</p></div>
+                          <div><p style={cellValue}>{fmt(counts.renovaciones, true)}</p></div>
+                          <div><p style={cellValue}>{fmt(counts.reinscripciones, true)}</p></div>
+                        </div>
+                      </td>
+                    );
+                  })}
+                   <td className="fw-bold" style={{ border: "1px solid #000", minWidth: 90 }}>
+                    {fmt(totalFila, true)}
+                  </td>
 
                   {/* S/. */}
                   <td className="fw-bold" style={{ border: "1px solid #000", minWidth: 90 }}>
                     {fmt(moneyByAdvisor[norm(asesor)]?.money ?? 0, true)}
                   </td>
 
-                  {/* TOTAL (conteo de socios) */}
-                  <td style={{ border: "1px solid #000", minWidth: 90 }}>
-                    {fmt(totalFila, true)}
+                  {/* % */}
+                  <td className="fw-bold"style={{ border: "1px solid #000", minWidth: 80 }}>
+                    {`${Number(moneyByAdvisor[norm(asesor)]?.pct || 0).toFixed(0)}`}
                   </td>
+
+                  {/* TOTAL (conteo de socios) */}                
                 </tr>
               );
             })}
 
-            {/* SOCIOS POR PROGRAMA */}
-            <tr className="fw-bold" style={{ background: "#fff", fontSize: 25 }}>
-              {/* Celda de ranking vacía para alinear */}
-              <td style={{ width: 36, border: "none", background: "transparent" }} />
-              <td style={{ width: 110, background: "transparent", border: "none" }}></td>
+           {/* SOCIOS POR CANAL */}
+<tr className="fw-bold fila-secundaria" style={{ background: "#fff", fontSize: 25 }}>
+  <td className="img-with-name">
+    <div className="img-cap only-text">
+      <div className="cap ">SOCIOS POR CANAL</div>
+    </div>
+  </td>
 
-              <td className="text-start" style={{ border: "1px solid #000" }}>
-                SOCIOS POR CANAL
-              </td>
-
-              {visiblePrograms.map(({ key: pk }, idx) => {
-                const s = totalByProgAndOrigin(pk);
-                return (
-                  <td key={idx} className="triptych" style={{ border: "1px solid #000" }}>
+  {visiblePrograms.map(({ key: pk }, idx) => {
+    const s = totalByProgAndOrigin(pk);
+    return (
+      <td key={idx} className="triptych fw-bold" style={{ border: "1px solid #000" }}>
         <div className="tri-box">
           <div><p style={cellValue}>{fmt(s.nuevos, true)}</p></div>
           <div><p style={cellValue}>{fmt(s.renovaciones, true)}</p></div>
           <div><p style={cellValue}>{fmt(s.reinscripciones, true)}</p></div>
         </div>
       </td>
-                );
-              })}
+    );
+  })}
 
-              {/* S/. total */}
-              <td className="fw-bold" style={{ border: "1px solid #000", minWidth: 90 }}>
-                {fmt(grandMoney, true)}
-              </td>
+  {/* TOTAL SOCIOS */}
+  <td className="fw-bold" style={{ border: "1px solid #000", minWidth: 90 }}>
+    {fmt(
+      visiblePrograms.reduce(
+        (acc, { key: pk }, i) =>
+          acc + filas.reduce((a, f) => a + toNumber(f[i + 1]?.value), 0),
+        0
+      ),
+      true
+    )}
+  </td>
+  {/* S/. (vacío, pero con borde) */}
+  <DashCell />
+  {/* % (vacío, pero con borde) */}
+  <DashCell />
+</tr>
 
-              {/* TOTAL GENERAL (conteo de socios) */}
-              <td style={{ border: "1px solid #000", minWidth: 90 }}>
-                {fmt(
-                  visiblePrograms.reduce(
-                    (acc, { key: pk }, i) =>
-                      acc + filas.reduce((a, f) => a + toNumber(f[i + 1]?.value), 0),
-                    0
-                  ),
-                  true
-                )}
-              </td>
-            </tr>
+           {/* TOTAL (por programa, suma simple) */}
+<tr className="fw-bold fila-secundaria" style={{ background: "#fff", fontSize: 25 }}>
+  <td className="img-with-name">
+    <div className="img-cap only-text">
+      <div className="cap">TOTAL</div>
+    </div>
+  </td>
 
-            {/* TOTAL PROGRAMA */}
-            <tr className="fw-bold" style={{ background: "#fff", fontSize: 25 }}>
-              <td style={{ width: 36, border: "none", background: "transparent" }} />
-              <td style={{ width: 110, background: "transparent", border: "none" }}></td>
+  {visiblePrograms.map(({ key: pk }, idx) => (
+    <td key={idx} style={{ border: "1px solid #000" }}>
+      {fmt(totalOnlyByProg(pk), true)}
+    </td>
+  ))}
 
-              <td className="text-start" style={{ border: "1px solid #000" }}>
-                TOTAL
-              </td>
+  {/* TOTAL SOCIOS (vacío, pero con borde) */}
+  <DashCell />
 
-              {visiblePrograms.map(({ key: pk }, idx) => (
-                <td key={idx} style={{ border: "1px solid #000" }}>
-                  {fmt(totalOnlyByProg(pk), true)}
-                </td>
-              ))}
+  {/* S/. total */}
+  <td className="fw-bold" style={{ border: "1px solid #000", minWidth: 150 }}>
+    {fmt(grandMoney, true)}
+  </td>
 
-              <td></td>
-              <td></td>
-            </tr>
+  {/* % total */}
+  <td className="fw-bold" style={{ border: "1px solid #000", minWidth: 80 }}>
+    100%
+  </td>
+</tr>
           </tbody>
         </table>
       </div>

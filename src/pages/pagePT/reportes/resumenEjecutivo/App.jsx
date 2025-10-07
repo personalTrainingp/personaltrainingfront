@@ -454,8 +454,8 @@ function handleMonthChange(newMonth) {
 
       const avataresDeProgramas = [
         { urlImage: "/change_blanco.png", name_image: "CHANGE 45" },
-        { urlImage: "/fs45_blanco.png", name_image: "FS 45" },
-        { urlImage: "/fs45_blancos.png", name_image: "FISIO MUSCLE",scale :2 },
+        { urlImage: "/fs45_blanco.png", name_image: "FS 45",scale :1.3 },
+        { urlImage: "/fs45_blancos.png", name_image: "FISIO MUSCLE",scale :1.7 },
       // { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/cyl-avatar.png", name_image: "CHANGE YOUR LIFE" },
       { urlImage: "/vertikal_act.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
     ];  
