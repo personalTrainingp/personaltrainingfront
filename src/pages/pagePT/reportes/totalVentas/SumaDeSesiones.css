@@ -1,21 +1,21 @@
-.tabla-sesiones td.triptych {
-  position: relative;
-  padding: 0;
-}
 /* hace que el bloque 3-en-1 cubra todo el alto del <td> */
 .tabla-sesiones td.triptych {
   position: relative;
-  padding: 0;              
+  padding: 0; 
+  width: 90px; /* 👈 ajusta este valor según lo que desees */
+  min-width: 90px;
+  max-width: 100px;
+             
 }
 
 .tabla-sesiones td.triptych > .tri-box {
   position: absolute;
- inset: 0;     
+  inset: 0;     
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   background: #fff;
-    box-sizing: border-box;         
-
+  box-sizing: border-box;         
+  column-gap: 0;
 }
 .copa-champions {
   position: absolute;
@@ -61,11 +61,14 @@
   position: relative; 
   height: 45px;       
   padding: 10;
+  width: 90px; /* igual que las celdas para mantener proporción */
+  min-width: 90px;
+  max-width: 100px;
 }
 .miniTitle {
   color: #c00000;
   font-weight: 800;
-  font-size: 15px;
+  font-size: 10px;
   letter-spacing: .3px;
   margin: 0;
 }
@@ -78,20 +81,6 @@
   height: 100%;
   border: none;
 }
-
-/* Mantén el layout actual */
-.tabla-sesiones td.triptych {
-  position: relative;
-  padding: 0;
-}
-.tabla-sesiones td.triptych > .tri-box {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  background: #fff;
-}
-
 /* Estilo base de cada mini-bloque */
 .tabla-sesiones td.triptych > .tri-box > div {
   display: flex;
@@ -106,7 +95,11 @@
 .tabla-sesiones td.triptych > .tri-box > div + div {
   border-left: 1px solid #000;
 }
-
+.tabla-sesiones td.triptych > .tri-box > div p {
+  font-size: 16px;   /* antes era 25px o 20px */
+  margin: 0;
+  padding: 2px 0;
+}
 /* Quitar el borde derecho SOLO del último TD (columna TOTAL) de la última fila */
 .tabla-sesiones tbody tr:last-child td:last-child {
   border-right: none !important;
