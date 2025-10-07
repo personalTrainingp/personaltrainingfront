@@ -14,8 +14,7 @@
       import { onSetRangeDate } from '@/store/data/dataSlice';
       import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
       import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
-
-
+      import config from '@/config';
       import axios from 'axios';
 
       const RealTimeClock = () => {
@@ -111,7 +110,7 @@ const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= 
         obtenerComparativoResumen(RANGE_DATE);
       }
     }, [RANGE_DATE]);
-
+   
     // 👇 mapeo de id de programa a la etiqueta que usas en avatares
     const progNameById = {
       2: "CHANGE 45",
@@ -136,7 +135,7 @@ const advisorOriginByProg = useMemo(() => {
     if (!outSets[progKey]) outSets[progKey] = {};
 
     const items = Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : [];
-
+  
     // solo ventas pagadas en rango
     const pagadas = items.filter(v => {
       if (Number(v?.tarifa_monto) === 0) return false;
@@ -306,6 +305,30 @@ const advisorOriginByProg = useMemo(() => {
           cac:             { marzo: null,  abril: null,   mayo: null,   junio: null,   julio: null,   agosto: null, septiembre: 0   },
         };
 
+   const daysInmonth = (y,m1to12)=>  new Date(y,m1to12,0).getDate();
+function handleMonthChange(newMonth) {
+  const today = new Date();
+  const currentMonth = today.getMonth() + 1;
+  const currentYear = today.getFullYear();
+
+  const lastDayTarget = daysInmonth(year, newMonth); // 👈 nombre corregido
+  let nextCutDay;
+
+  // ✅ Si el mes es el actual, limita el día de corte al día de hoy
+  if (newMonth === currentMonth && year === currentYear) {
+    nextCutDay = Math.min(today.getDate(), lastDayTarget);
+  } else {
+    nextCutDay = Math.min(cutDay, lastDayTarget);
+  }
+
+  const nextInitDay = Math.min(initDay, nextCutDay);
+
+  setSelectedMonth(newMonth);
+  setCutDay(nextCutDay);
+  setInitDay(nextInitDay);
+}
+
+
 
         const tableData = useMemo(() => ventasToExecutiveData({
           ventas: dataVentas,
@@ -367,8 +390,6 @@ const advisorOriginByProg = useMemo(() => {
         }
         return result.reverse(); // para que quede cronológico
       }
-
-        
       function generarResumenRanking(array) {
         // Totales generales
         const sumaMontoTotal = array.reduce((acc, row) => acc + (row?.monto || 0), 0);
@@ -434,7 +455,7 @@ const advisorOriginByProg = useMemo(() => {
       const avataresDeProgramas = [
         { urlImage: "/change_blanco.png", name_image: "CHANGE 45" },
         { urlImage: "/fs45_blanco.png", name_image: "FS 45" },
-        { urlImage: "/fs45_blancos.png", name_image: "FISIO MUSCLE",scale :1.5 },
+        { urlImage: "/fs45_blancos.png", name_image: "FISIO MUSCLE" },
       // { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/cyl-avatar.png", name_image: "CHANGE YOUR LIFE" },
       { urlImage: "/vertikal_act.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
     ];  
@@ -533,27 +554,34 @@ const advisorOriginByProg = useMemo(() => {
 
       const mesesSeleccionados = getLastNMonths(selectedMonth, year);
 const dataMktWithCac = useMemo(() => {
-  try {
-    const copy = { ...(dataMkt || {}) };
-    // ...
-    return copy;
-  } catch (err) {
-    return dataMkt || {};
+  const base = { ...(dataMktByMonth || {}) };
+
+  for (const f of mesesSeleccionados) {
+    const mesKey = f.mes === 'septiembre' ? 'setiembre' : f.mes;
+    const key = `${f.anio}-${mesKey}`;
+    const obj = { ...(base[key] || {}) };
+    const inversion = Number(obj.inversiones_redes ?? obj.inversion_redes ?? 0);
+
+    const clientes = countDigitalClientsForMonth(
+      dataVentas || [], f.anio, f.mes, initDay, cutDay
+    );
+
+    obj.clientes_digitales = clientes;
+    obj.cac = clientes > 0 ? +(inversion / clientes).toFixed(2) : 0;
+
+    base[key] = obj;
   }
-}, [dataMkt, dataVentas, mesesSeleccionados, initDay, cutDay]);
+  return base;
+}, [dataMktByMonth, dataVentas, mesesSeleccionados, initDay, cutDay]);
 
-
-      // 1) Rango visible esperado (las 4 llaves que usa la tabla)
   useEffect(() => {
     const expected = mesesSeleccionados.map(f => 
       `${f.anio}-${(f.mes === 'septiembre' ? 'setiembre' : f.mes)}`
     );
-    console.log('[EXEC] meses esperados:', expected);
   }, [mesesSeleccionados]);
 
   // 2) Qué meses realmente construyó buildDataMktByMonth
   useEffect(() => {
-    console.log('[MKT] keys disponibles:', Object.keys(dataMktByMonth || {}));
   }, [dataMktByMonth]);
 
   // 3) Qué abarca dataLead (mínima y máxima fecha)
@@ -565,11 +593,45 @@ const dataMktWithCac = useMemo(() => {
     if (ds.length) {
       const min = new Date(Math.min(...ds));
       const max = new Date(Math.max(...ds));
-      console.log('[LEADS] filas:', ds.length, '| min:', min, '| max:', max);
     } else {
-      console.log('[LEADS] sin filas');
     }
   }, [dataLead]);
+const norm = (s) =>
+  String(s ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase();
+
+const AVATAR_BASE = config?.API_IMG?.AVATAR_EMPL || ""; 
+
+const avatarByAdvisor = useMemo(() => {
+  const lista = repoVentasPorSeparado?.total?.empl_monto || [];
+  const map = {};
+
+  for (const it of lista) {
+    // clave = primer nombre normalizado (igual que en SumaDeSesiones)
+    const fullName = it?.empl || it?.tb_empleado?.nombres_apellidos_empl || it?.nombre || "";
+    const key = norm((fullName.split(" ")[0] || "").trim());
+    if (!key) continue;
+
+    // usa el mismo campo que ya te funciona en TarjetasPago
+    const raw =
+      it?.avatar ||
+      it?.tb_empleado?.avatar ||
+      it?.tb_empleado?.tb_images?.[ (it?.tb_empleado?.tb_images?.length||0) - 1 ]?.name_image ||
+      "";
+
+    if (!raw) continue;
+
+    // misma regla que en TarjetasPago
+    const url = /^https?:\/\//i.test(raw) ? raw : `${config.API_IMG.AVATAR_EMPL}${raw}`;
+    map[key] = url;
+  }
+
+  return map;
+}, [repoVentasPorSeparado?.total?.empl_monto]);
+
+
 
       return (
           <>
@@ -582,18 +644,32 @@ const dataMktWithCac = useMemo(() => {
         {/* 👇 Nuevo: Selector de mes */}
         <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
           <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Mes:</label>
-          <select
-            value={selectedMonth}
-            onChange={e => setSelectedMonth(parseInt(e.target.value, 10))}
-            style={{ fontSize: '1.7em' , fontWeight: "bold" }}
-          >
-            {[
-              "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
-              "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"
-            ].map((mes, idx) => (
-              <option key={idx+1} value={idx+1}>{mes}</option>
-            ))}
-          </select>
+         <select
+  value={selectedMonth}
+  onChange={e => {
+    const newMonth = parseInt(e.target.value, 10);
+    const currentMonth = new Date().getMonth() + 1;
+
+    // 🚫 Evita seleccionar meses futuros
+    if (newMonth > currentMonth) return;
+
+    handleMonthChange(newMonth);
+  }}
+  style={{ fontSize: '1.7em', fontWeight: "bold" }}
+>
+  {[
+    "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
+    "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"
+  ].map((mes, idx) => {
+    const currentMonth = new Date().getMonth() + 1;
+    const disabled = idx + 1 > currentMonth; // 🔒 meses futuros bloqueados
+    return (
+      <option key={idx + 1} value={idx + 1} disabled={disabled}>
+        {mes}
+      </option>
+    );
+  })}
+</select>
         </div>
       {/* Día de inicio */}
   <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
@@ -602,7 +678,7 @@ const dataMktWithCac = useMemo(() => {
       value={initDay}
       onChange={e => {
         const val = parseInt(e.target.value, 10);
-        if (val <= cutDay) setInitDay(val); // 👈 extra validación al seleccionar
+        if (val <= cutDay) setInitDay(val); // 
       }}
       style={{ fontSize: '1.5em' }}
     >
@@ -612,38 +688,42 @@ const dataMktWithCac = useMemo(() => {
     </select>
   </div>
 
-  {/* Día de corte */}
-  <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-    <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Día de corte:</label>
-    <select
-      value={cutDay}
-      onChange={e => {
-        const val = parseInt(e.target.value, 10);
-        const today = new Date().getDate();
-        const currentMonth = new Date().getMonth() + 1;
+{/* Día de corte */}
+<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+  <label style={{ fontWeight: 600, fontSize: "2em", color: "black" }}>
+    Día de corte:
+  </label>
+  <select
+    value={cutDay}
+    onChange={(e) => {
+      const val = parseInt(e.target.value, 10);
+      const today = new Date();
+      const currentMonth = today.getMonth() + 1;
+      const currentDay = today.getDate();
 
-        // 👇 validación directa al seleccionar
-        if (selectedMonth === currentMonth && val > today) {
-          setCutDay(today);
-        } else {
-          setCutDay(val);
-        }
+      const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
+      const lastDayTarget = daysInMonth(year, selectedMonth);
 
-        // 👇 si día inicio quedó mayor, corregir
-        if (initDay > val) {
-          setInitDay(val);
-        }
-      }}
-      style={{ fontSize: '1.5em' }}
-    >
-      {Array.from({ length: 31 }, (_, i) => i + 1).map(n => (
-        <option key={n} value={n}>{n}</option>
-      ))}
-    </select>
-  </div>
+      let next = Math.min(val, lastDayTarget);
 
+      if (selectedMonth === currentMonth) {
+        next = Math.min(next, currentDay);
+      }
+      setCutDay(next);
 
-
+      if (initDay > next) {
+        setInitDay(next);
+      }
+    }}
+    style={{ fontSize: "1.5em" }}
+  >
+    {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
+      <option key={n} value={n}>
+        {n}
+      </option>
+    ))}
+  </select>
+</div>
         {/* Hora actual */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <span style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>
@@ -651,7 +731,6 @@ const dataMktWithCac = useMemo(() => {
           </span>
         </div>
       </div>
-
               </Col>
             </Row>
             <Row className="mb-4">
@@ -722,12 +801,9 @@ const dataMktWithCac = useMemo(() => {
                           .reduce((total, item) => total + item.monto, 0) || 0
                       }
                     />
-                  </div>
-            
-                </Col>
-                
+                  </div>            
+                </Col>               
               </Col>
-
     <Row>
         <Col lg={12}>
           <SumaDeSesiones
@@ -736,7 +812,8 @@ const dataMktWithCac = useMemo(() => {
   avataresDeProgramas={avataresDeProgramas}
   sociosOverride={sociosOverride}
   originBreakdown={originBreakdown} 
-   advisorOriginByProg={advisorOriginByProg}  // 👈 pásalo
+   advisorOriginByProg={advisorOriginByProg} 
+    avatarByAdvisor={avatarByAdvisor}
 />
         </Col>
       </Row>

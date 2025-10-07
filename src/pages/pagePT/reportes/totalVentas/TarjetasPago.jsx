@@ -19,7 +19,7 @@
   .slice(0, 2);                           
 
       // console.log(task.avatar);
-      console.log(pagos);
+      //console.log(pagos);
       const series = [
           {
               name: 'TOTAL:',
