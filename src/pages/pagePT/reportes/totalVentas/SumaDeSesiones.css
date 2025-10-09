@@ -1,4 +1,4 @@
-/* hace que el bloque 3-en-1 cubra todo el alto del <td> */
+  /* hace que el bloque 3-en-1 cubra todo el alto del <td> */
 .tabla-sesiones td.triptych {
   position: relative;
   padding: 0; 
@@ -9,12 +9,13 @@
 }
 
 .tabla-sesiones td.triptych > .tri-box {
-  position: absolute;
-  inset: 0;     
+  position: static;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  height: 100%;          /* ocupa toda la altura del td */
+  min-height: 100%;      /* asegura estirar si la fila crece */
   background: #fff;
-  box-sizing: border-box;         
+  box-sizing: border-box;
   column-gap: 0;
 }
 .copa-champions {
@@ -54,13 +55,19 @@
   justify-content: center;
   height: 100%;
 }
-.tabla-sesiones th.triptych-head > .tri-box-head > div + div{
-  border-left: 1px solid #000;
+
+.tabla-sesiones th.triptych-head > .tri-box-head {
+  position: static;       /* ✅ */
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 100%;
+  background: #6c757d;
+  box-sizing: border-box;
 }
 .tabla-sesiones th.triptych-head {
   position: relative; 
   height: 45px;       
-  padding: 10;
+  padding: 0;
   width: 90px; /* igual que las celdas para mantener proporción */
   min-width: 90px;
   max-width: 100px;
@@ -68,19 +75,12 @@
 .miniTitle {
   color: #c00000;
   font-weight: 800;
-  font-size: 10px;
+  font-size: 15px;
   letter-spacing: .3px;
   margin: 0;
 }
-/* celdas internas ocupan todo el alto */
-.tabla-sesiones td.triptych > .tri-box > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  height: 100%;
-  border: none;
-}
+
+
 /* Estilo base de cada mini-bloque */
 .tabla-sesiones td.triptych > .tri-box > div {
   display: flex;
@@ -91,20 +91,13 @@
   border: none;
 }
 
-/* ✅ separadores internos entre las 3 celdas */
-.tabla-sesiones td.triptych > .tri-box > div + div {
-  border-left: 1px solid #000;
-}
+
 .tabla-sesiones td.triptych > .tri-box > div p {
   font-size: 16px;   /* antes era 25px o 20px */
   margin: 0;
   padding: 2px 0;
 }
-/* Quitar el borde derecho SOLO del último TD (columna TOTAL) de la última fila */
-.tabla-sesiones tbody tr:last-child td:last-child {
-  border-right: none !important;
-}
-/* separadores en el encabezado “ribbon” */
+
 .mini-row3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -119,8 +112,56 @@
   justify-content: center;
   height: 100%;
 }
-.mini-row3 > div + div {
-  border-left: 1px solid #000;
+
+/* === Divisiones verticales perfectas en las columnas con avatares y triptych === */
+.tabla-sesiones th.avatar-col,
+.tabla-sesiones th.triptych-head,
+.tabla-sesiones td.triptych {
+  position: relative;
+  overflow: visible;
+}
+
+/* Crea 2 líneas verticales internas (1/3 y 2/3) */
+.tabla-sesiones th.avatar-col::before,
+.tabla-sesiones th.avatar-col::after,
+.tabla-sesiones th.triptych-head::before,
+.tabla-sesiones th.triptych-head::after,
+.tabla-sesiones td.triptych::before,
+.tabla-sesiones td.triptych::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  width: 1px;
+  background: #fff;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Colocación exacta sin colisión visual */
+.tabla-sesiones th.avatar-col::before,
+.tabla-sesiones th.triptych-head::before,
+.tabla-sesiones td.triptych::before {
+  left: calc(33.3333% - 0.5px);
+}
+
+.tabla-sesiones th.avatar-col::after,
+.tabla-sesiones th.triptych-head::after,
+.tabla-sesiones td.triptych::after {
+  left: calc(66.6667% - 0.5px);
+}
+
+/* 💡 Evita doble línea (borde + pseudo-línea) */
+.tabla-sesiones td.triptych > .tri-box > div + div,
+.tabla-sesiones th.triptych-head > .tri-box-head > div + div {
+  border-left: none !important;
+}
+
+/* Uniforma grosor para evitar “doble negro” */
+.tabla-sesiones th,
+.tabla-sesiones td {
+  border: 1px solid #000 !important;
+  box-sizing: border-box;
 }
 
 /* Columna IMAGEN (con nombre abajo) */
@@ -160,14 +201,14 @@
   font-size: 22px;
 }
 /* Fuerza bordes en las 3 últimas columnas (TOTAL SOCIOS, S/., %) */
-.tabla-sesiones thead th:nth-last-child(-n+3),
-.tabla-sesiones tbody td:nth-last-child(-n+3) {
-  border: 1px solid #000 !important;
+/* ✅ Aplica solo a las últimas 3 columnas REALES, sin tocar las del centro */
+.tabla-sesiones thead tr > th:nth-last-of-type(-n+3),
+.tabla-sesiones tbody tr > td:nth-last-of-type(-n+3) {
+  border-left: 2px solid #000 !important;
+  border-right: 1px solid #000 !important;
 }
 
-.tabla-sesiones tbody tr:last-child td:last-child {
-  border-right: 1px solid #000 !important;  /* antes se quitaba, lo restauramos */
-}
+
 /* --- Columna TOTAL SOCIOS: evita ensanchamiento --- */
 .tabla-sesiones td.img-with-name.only-text .cap,
 .tabla-sesiones td.img-with-name .img-cap.only-text .cap {
@@ -207,6 +248,76 @@
   text-align: center;
   font-weight: 800;
   font-size: 22px;
-  line-height: 3.1; /* reduce espacio vertical */
-   padding: 8px 4px;  /* da espacio interno lateral */
+  line-height: 3.1; 
+   padding: 8px 4px;
+}
+.tabla-sesiones td,
+.tabla-sesiones th {
+  border: 1px solid #000;
+}
+/* === Engrosar borde izquierdo (2px) de cada columna de avatar === */
+
+/* Encabezado de los avatares */
+.tabla-sesiones th.avatar-col {
+  border-left: 2px solid #000 !important;
+}
+
+/* Cuerpo de la tabla (todas las filas bajo esas columnas) */
+.tabla-sesiones td.triptych {
+  border-left: 2px solid #000 !important;
+}
+
+  .tabla-sesiones th.avatar-col::before,
+.tabla-sesiones th.avatar-col::after,
+.tabla-sesiones td.triptych::before,
+.tabla-sesiones td.triptych::after {
+  width: 1px !important;
+  background: #000;
+}
+
+.tabla-sesiones th.triptych-head:nth-of-type(3n+2) {
+  border-left: 2px solid #000 !important;
+}
+.tabla-sesiones td.triptych::before,
+.tabla-sesiones td.triptych::after,
+.tabla-sesiones th.triptych-head::before,
+.tabla-sesiones th.triptych-head::after {
+  width: 1px !important;
+  background: #000;
+}
+/* === Línea gruesa solo en el inicio de cada bloque de programa === */
+.tabla-sesiones th.triptych-head.program-start,
+.tabla-sesiones td.triptych.program-start {
+  border-left: 2px solid #000 !important;
+}
+.tabla-sesiones {
+  border-collapse: collapse; 
+}
+.tabla-sesiones th.program-start,
+.tabla-sesiones td.program-start {
+  border-left: 2px solid #000 !important;
+}
+.tabla-sesiones th.program-end,
+.tabla-sesiones td.program-end {
+  border-right: 2px solid #000 !important;
+}
+/* ❌ Quitar líneas internas en los 4 avatares */
+.tabla-sesiones th.avatar-col::before,
+.tabla-sesiones th.avatar-col::after {
+  display: none !important;
+}
+/* 💥 Quitar completamente la línea entre "ASESORES" y la fila de minitítulos */
+.tabla-sesiones thead tr:first-child th:first-child,
+.tabla-sesiones thead tr:nth-child(2) th:first-child {
+  border-bottom: none !important;
+}
+.tabla-sesiones thead tr:nth-child(2) th:first-child {
+  border-top: none !important;
+}
+.tabla-sesiones thead tr:first-child th:nth-last-child(-n+3),
+.tabla-sesiones thead tr:nth-child(2) th:nth-last-child(-n+3) {
+  border-bottom: none !important;
+}
+.tabla-sesiones thead tr:nth-child(2) th:nth-last-child(-n+3) {
+  border-top: none !important;
 }
