@@ -116,7 +116,7 @@
         return map;
       }, [resumenArray]);
 
-          // dinero por asesor (y % si la data lo trae)
+          // dinero por asesor 
           const moneyByAdvisor = useMemo(() => {
             const map = {};
             if (!Array.isArray(resumenArray)) return map;
@@ -139,7 +139,7 @@
             return map;
           }, [resumenArray]);
 
-          // ranking por S/.
+          // ranking por de asesores S/.
           const rankByAdvisor = useMemo(() => {
             const order = [...asesores].sort(
               (a, b) =>
@@ -236,7 +236,7 @@
           className="table text-center tabla-sesiones"
           style={{ borderCollapse: "collapse", width: "100%" }}
         >
-          <thead className="bg-secondary text-white">
+          <thead className="bg-black text-white">
             {/* Fila 1: IMAGEN + Avatares */}
             <tr>
               <th style={{ width: 150, ...thName }}>ASESORES</th>
@@ -249,8 +249,7 @@
                     key={idx}
                     className={`avatar-col program-start ${isLast ? "program-end" : ""}`}
                     style={{
-                      verticalAlign: "middle",
-                      background: "#5c6670",
+                      verticalAlign: "middle"
                     }}
                   >
                     <div
@@ -363,7 +362,6 @@
                 </tr>
               );
             })}
-
             {/* SOCIOS POR CANAL */}
             <tr className="fw-bold fila-secundaria" style={{ background: "#fff", fontSize: 25 }}>
               <td className="img-with-name">

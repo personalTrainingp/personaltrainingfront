@@ -1,27 +1,25 @@
-  /* hace que el bloque 3-en-1 cubra todo el alto del <td> */
 .tabla-sesiones td.triptych {
   position: relative;
   padding: 0; 
-  width: 90px; /* 👈 ajusta este valor según lo que desees */
+  width: 90px; 
   min-width: 90px;
   max-width: 100px;
              
 }
-
 .tabla-sesiones td.triptych > .tri-box {
   position: static;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  height: 100%;          /* ocupa toda la altura del td */
-  min-height: 100%;      /* asegura estirar si la fila crece */
+  height: 100%;          
+  min-height: 100%;     
   background: #fff;
   box-sizing: border-box;
   column-gap: 0;
 }
 .copa-champions {
   position: absolute;
-  top: 5px;          /* 🔝 ajusta altura respecto al contenedor */
-  left: -10px;        /* 👈 mueve la copa hacia la izquierda */
+  top: 5px;          
+  left: -10px;      
   z-index: 3;
 }
 .copa-champions img {
@@ -30,9 +28,8 @@
   filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,0.4)) invert(0);
   mix-blend-mode: darken;
 }
-/* contenedor de la imagen del asesor */
 .tabla-sesiones td.img-with-name .img-cap {
-  position: relative; /* 👈 importante para que la copa se ancle aquí */
+  position: relative; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,7 +43,6 @@
   inset: 0;                   
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  background: #6c757d;        
   box-sizing: border-box;
 }
 .tabla-sesiones th.triptych-head > .tri-box-head > div {
@@ -57,31 +53,28 @@
 }
 
 .tabla-sesiones th.triptych-head > .tri-box-head {
-  position: static;       /* ✅ */
+  position: static;     
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   height: 100%;
-  background: #6c757d;
+  background: #000;
   box-sizing: border-box;
 }
 .tabla-sesiones th.triptych-head {
   position: relative; 
   height: 45px;       
   padding: 0;
-  width: 90px; /* igual que las celdas para mantener proporción */
+  width: 90px;
   min-width: 90px;
   max-width: 100px;
 }
 .miniTitle {
-  color: #c00000;
+  color: #fff;
   font-weight: 800;
   font-size: 15px;
   letter-spacing: .3px;
   margin: 0;
 }
-
-
-/* Estilo base de cada mini-bloque */
 .tabla-sesiones td.triptych > .tri-box > div {
   display: flex;
   align-items: center;
@@ -91,9 +84,8 @@
   border: none;
 }
 
-
 .tabla-sesiones td.triptych > .tri-box > div p {
-  font-size: 16px;   /* antes era 25px o 20px */
+  font-size: 16px;  
   margin: 0;
   padding: 2px 0;
 }
@@ -113,7 +105,6 @@
   height: 100%;
 }
 
-/* === Divisiones verticales perfectas en las columnas con avatares y triptych === */
 .tabla-sesiones th.avatar-col,
 .tabla-sesiones th.triptych-head,
 .tabla-sesiones td.triptych {
@@ -192,37 +183,21 @@
 
 .tabla-sesiones td.img-with-name .img-cap .cap{
   font-weight: 800;
-  font-size: 20px;  /* ajústalo a tu gusto */
+  font-size: 20px;
   text-align: center;
 }
 
-/* Cuando esa celda solo lleva texto (SOCIOS POR CANAL / TOTAL) */
 .tabla-sesiones td.img-with-name .img-cap.only-text .cap{
   font-size: 22px;
 }
-/* Fuerza bordes en las 3 últimas columnas (TOTAL SOCIOS, S/., %) */
-/* ✅ Aplica solo a las últimas 3 columnas REALES, sin tocar las del centro */
 .tabla-sesiones thead tr > th:nth-last-of-type(-n+3),
 .tabla-sesiones tbody tr > td:nth-last-of-type(-n+3) {
   border-left: 2px solid #000 !important;
   border-right: 1px solid #000 !important;
 }
 
-
-/* --- Columna TOTAL SOCIOS: evita ensanchamiento --- */
-.tabla-sesiones td.img-with-name.only-text .cap,
-.tabla-sesiones td.img-with-name .img-cap.only-text .cap {
-  white-space: normal !important;   /* permite salto de línea */
-  word-break: break-word !important; /* divide palabras si son largas */
-  text-align: center;
-  font-weight: 800;
-  font-size: 20px;
-  line-height: 3; /* reduce espacio vertical */
-  padding: 0 8px;   /* da espacio interno lateral */
-}
-/* ✅ Fondo gris (secondary) solo para SOCIOS POR CANAL y TOTAL */
 .tabla-sesiones tbody tr.fila-secundaria td.img-with-name {
-  background: #6c757d !important;  /* color secondary de Bootstrap */
+  background: #000000 !important; 
   color: #fff !important;
 }
 
@@ -232,7 +207,7 @@
 
 
 .tabla-sesiones td.img-with-name .img-cap {
-  position: relative; /* 👈 necesario para ubicar la copa */
+  position: relative; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -240,11 +215,10 @@
   gap: .5rem;
   padding: .25rem 0;
 }
-/* --- Columna TOTAL SOCIOS: evita ensanchamiento --- */
 .tabla-sesiones td.img-with-name.only-text .cap,
 .tabla-sesiones td.img-with-name .img-cap.only-text .cap {
-  white-space: normal !important;   /* permite salto de línea */
-  word-break: break-word !important; /* divide palabras si son largas */
+  white-space: normal !important;   
+  word-break: break-word !important;
   text-align: center;
   font-weight: 800;
   font-size: 22px;
@@ -255,14 +229,12 @@
 .tabla-sesiones th {
   border: 1px solid #000;
 }
-/* === Engrosar borde izquierdo (2px) de cada columna de avatar === */
+/* === No tocar ni yo se lo que hice :v, pero funciona === */
 
-/* Encabezado de los avatares */
 .tabla-sesiones th.avatar-col {
   border-left: 2px solid #000 !important;
 }
 
-/* Cuerpo de la tabla (todas las filas bajo esas columnas) */
 .tabla-sesiones td.triptych {
   border-left: 2px solid #000 !important;
 }
@@ -285,7 +257,7 @@
   width: 1px !important;
   background: #000;
 }
-/* === Línea gruesa solo en el inicio de cada bloque de programa === */
+
 .tabla-sesiones th.triptych-head.program-start,
 .tabla-sesiones td.triptych.program-start {
   border-left: 2px solid #000 !important;
@@ -301,12 +273,10 @@
 .tabla-sesiones td.program-end {
   border-right: 2px solid #000 !important;
 }
-/* ❌ Quitar líneas internas en los 4 avatares */
 .tabla-sesiones th.avatar-col::before,
 .tabla-sesiones th.avatar-col::after {
   display: none !important;
 }
-/* 💥 Quitar completamente la línea entre "ASESORES" y la fila de minitítulos */
 .tabla-sesiones thead tr:first-child th:first-child,
 .tabla-sesiones thead tr:nth-child(2) th:first-child {
   border-bottom: none !important;
