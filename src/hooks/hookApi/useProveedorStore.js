@@ -99,17 +99,15 @@ export const useProveedorStore = () => {
 	};
 	const obtenerParametrosProveedor = async () => {
 		try {
-			// setIsLoading(true);
-			await obtenerOficios('proveedor', 'tipo_oficio');
 			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
 
 			// setDataProducProveedor(data);
-			const dataAlter = data.map(term=>{
-				return {
-					label: `${dataOficios.find(oficio=>oficio?.value===term?.id_oficio)?.label ??'SIN ASIGNAR'} | ${term?.label}`
-				}
-			})
-			dispatch(onSetProveedoresCOMBO(dataAlter));
+			// const dataAlter = data.map((term) => {
+			// 	return {
+			// 		label: `${dataOficios.find((oficio) => oficio?.value === term?.id_oficio)?.label ?? 'SIN ASIGNAR'} | ${term?.label}`,
+			// 	};
+			// });
+			dispatch(onSetProveedoresCOMBO(data));
 			// setIsLoading(false);
 		} catch (error) {
 			console.log(error);
