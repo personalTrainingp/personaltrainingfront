@@ -1,137 +1,70 @@
-/* hace que el bloque 3-en-1 cubra todo el alto del <td> */
-.tabla-sesiones td.triptych {
-  position: relative;
-  padding: 0; 
-  width: 90px; /* 👈 ajusta este valor según lo que desees */
-  min-width: 90px;
-  max-width: 100px;
-             
+.tabla-sesiones {
+  border-collapse: collapse;
 }
 
-.tabla-sesiones td.triptych > .tri-box {
-  position: absolute;
-  inset: 0;     
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  background: #fff;
-  box-sizing: border-box;         
-  column-gap: 0;
-}
-.copa-champions {
-  position: absolute;
-  top: 5px;          /* 🔝 ajusta altura respecto al contenedor */
-  left: -10px;        /* 👈 mueve la copa hacia la izquierda */
-  z-index: 3;
-}
-.copa-champions img {
-  width: 70px;
-  height: auto;
-  filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,0.4)) invert(0);
-  mix-blend-mode: darken;
-}
-/* contenedor de la imagen del asesor */
-.tabla-sesiones td.img-with-name .img-cap {
-  position: relative; /* 👈 importante para que la copa se ancle aquí */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  padding: .25rem 0;
-}
-
-.tabla-sesiones th.triptych-head > .tri-box-head{
-  position: absolute;
-  inset: 0;                   
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  background: #6c757d;        
+.tabla-sesiones th,
+.tabla-sesiones td {
+  border: 1px solid #000 !important;
   box-sizing: border-box;
 }
+
+/* --- Estructura base triptych --- */
+.tabla-sesiones td.triptych {
+  position: relative;
+  padding: 0;
+  width: 90px;
+  min-width: 90px;
+  max-width: 100px;
+}
+
+
+.tabla-sesiones td.triptych > .tri-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 100%;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* --- Encabezado triptych --- */
+.tabla-sesiones th.triptych-head {
+  position: relative;
+  height: 45px;
+  padding: 0;
+  width: 90px;
+  background: #000;
+}
+
+.tabla-sesiones th.triptych-head > .tri-box-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 100%;
+}
+
 .tabla-sesiones th.triptych-head > .tri-box-head > div {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
 }
-.tabla-sesiones th.triptych-head > .tri-box-head > div + div{
-  border-left: 1px solid #000;
-}
-.tabla-sesiones th.triptych-head {
-  position: relative; 
-  height: 45px;       
-  padding: 10;
-  width: 90px; /* igual que las celdas para mantener proporción */
-  min-width: 90px;
-  max-width: 100px;
-}
+
 .miniTitle {
-  color: #c00000;
+  color: #fff;
   font-weight: 800;
-  font-size: 10px;
+  font-size: 15px;
   letter-spacing: .3px;
   margin: 0;
 }
-/* celdas internas ocupan todo el alto */
-.tabla-sesiones td.triptych > .tri-box > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  height: 100%;
-  border: none;
-}
-/* Estilo base de cada mini-bloque */
-.tabla-sesiones td.triptych > .tri-box > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  height: 100%;
-  border: none;
-}
 
-/* ✅ separadores internos entre las 3 celdas */
-.tabla-sesiones td.triptych > .tri-box > div + div {
-  border-left: 1px solid #000;
-}
-.tabla-sesiones td.triptych > .tri-box > div p {
-  font-size: 16px;   /* antes era 25px o 20px */
-  margin: 0;
-  padding: 2px 0;
-}
-/* Quitar el borde derecho SOLO del último TD (columna TOTAL) de la última fila */
-.tabla-sesiones tbody tr:last-child td:last-child {
-  border-right: none !important;
-}
-/* separadores en el encabezado “ribbon” */
-.mini-row3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;                
-  background: #e9eef6;
-  padding: 10px 8px;
-  border-radius: 8px;
-}
-.mini-row3 > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-.mini-row3 > div + div {
-  border-left: 1px solid #000;
-}
-
-/* Columna IMAGEN (con nombre abajo) */
-.tabla-sesiones td.img-with-name{
+/* --- Imagen + nombre asesor --- */
+.tabla-sesiones td.img-with-name {
   border: 1px solid #000 !important;
   width: 110px;
   background: #fff;
   vertical-align: middle;
 }
 
-.tabla-sesiones td.img-with-name .img-cap{
+.tabla-sesiones td.img-with-name .img-cap {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -140,73 +73,124 @@
   padding: .25rem 0;
 }
 
-.tabla-sesiones td.img-with-name .img-cap img{
+.tabla-sesiones td.img-with-name .img-cap img {
   width: 80px;
   height: 100px;
   border-radius: 10px;
   object-fit: cover;
-  display: block;
   background: #f3f3f3;
 }
 
-.tabla-sesiones td.img-with-name .img-cap .cap{
-  font-weight: 800;
-  font-size: 20px;  /* ajústalo a tu gusto */
-  text-align: center;
-}
-
-/* Cuando esa celda solo lleva texto (SOCIOS POR CANAL / TOTAL) */
-.tabla-sesiones td.img-with-name .img-cap.only-text .cap{
-  font-size: 22px;
-}
-/* Fuerza bordes en las 3 últimas columnas (TOTAL SOCIOS, S/., %) */
-.tabla-sesiones thead th:nth-last-child(-n+3),
-.tabla-sesiones tbody td:nth-last-child(-n+3) {
-  border: 1px solid #000 !important;
-}
-
-.tabla-sesiones tbody tr:last-child td:last-child {
-  border-right: 1px solid #000 !important;  /* antes se quitaba, lo restauramos */
-}
-/* --- Columna TOTAL SOCIOS: evita ensanchamiento --- */
-.tabla-sesiones td.img-with-name.only-text .cap,
-.tabla-sesiones td.img-with-name .img-cap.only-text .cap {
-  white-space: normal !important;   /* permite salto de línea */
-  word-break: break-word !important; /* divide palabras si son largas */
-  text-align: center;
+.tabla-sesiones td.img-with-name .img-cap .cap {
   font-weight: 800;
   font-size: 20px;
-  line-height: 3; /* reduce espacio vertical */
-  padding: 0 8px;   /* da espacio interno lateral */
-}
-/* ✅ Fondo gris (secondary) solo para SOCIOS POR CANAL y TOTAL */
-.tabla-sesiones tbody tr.fila-secundaria td.img-with-name {
-  background: #6c757d !important;  /* color secondary de Bootstrap */
-  color: #fff !important;
+  text-align: center;
 }
 
+.tabla-sesiones td.img-with-name .img-cap.only-text .cap,
+.tabla-sesiones td.img-with-name.only-text .cap {
+  font-size: 22px;
+  line-height: 3.1;
+  padding: 8px 4px;
+  white-space: normal !important;
+  word-break: break-word !important;
+  text-align: center;
+  font-weight: 800;
+}
+
+/* --- Copa de campeón --- */
+.copa-champions {
+  position: absolute;
+  top: 5px;
+  left: -10px;
+  z-index: 3;
+}
+.copa-champions img {
+  width: 70px;
+  height: auto;
+  filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+  mix-blend-mode: darken;
+}
+
+/* --- Subdivisiones internas triptych --- */
+.tabla-sesiones th.triptych-head,
+.tabla-sesiones td.triptych {
+  position: relative;
+  overflow: visible;
+}
+.tabla-sesiones th.triptych-head::before,
+.tabla-sesiones th.triptych-head::after,
+.tabla-sesiones td.triptych::before,
+.tabla-sesiones td.triptych::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  width: 1px;
+  background: #000;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.tabla-sesiones th.triptych-head::before,
+.tabla-sesiones td.triptych::before {
+  left: calc(33.3333% - 0.5px);
+}
+
+.tabla-sesiones th.triptych-head::after,
+.tabla-sesiones td.triptych::after {
+  left: calc(66.6667% - 0.5px);
+}
+
+/* --- Borde grueso inicio/fin de bloque --- */
+.tabla-sesiones th.program-start,
+.tabla-sesiones td.program-start {
+  border-left: 2px solid #000 !important;
+}
+
+.tabla-sesiones th.program-end,
+.tabla-sesiones td.program-end {
+  border-right: 2px solid #000 !important;
+}
+
+/* --- Últimas 3 columnas (totales) --- */
+.tabla-sesiones thead tr > th:nth-last-of-type(-n+3),
+.tabla-sesiones tbody tr > td:nth-last-of-type(-n+3) {
+  border-left: 2px solid #000 !important;
+}
+
+/* --- Fila secundaria (Totales) --- */
+.tabla-sesiones tbody tr.fila-secundaria td.img-with-name {
+  background: #000 !important;
+  color: #fff !important;
+}
 .tabla-sesiones tbody tr.fila-secundaria td.img-with-name .cap {
   color: #fff !important;
 }
 
-
-.tabla-sesiones td.img-with-name .img-cap {
-  position: relative; /* 👈 necesario para ubicar la copa */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  padding: .25rem 0;
+/* --- Eliminar líneas duplicadas --- */
+.tabla-sesiones th.avatar-col::before,
+.tabla-sesiones th.avatar-col::after {
+  display: none !important;
 }
-/* --- Columna TOTAL SOCIOS: evita ensanchamiento --- */
-.tabla-sesiones td.img-with-name.only-text .cap,
-.tabla-sesiones td.img-with-name .img-cap.only-text .cap {
-  white-space: normal !important;   /* permite salto de línea */
-  word-break: break-word !important; /* divide palabras si son largas */
-  text-align: center;
-  font-weight: 800;
-  font-size: 22px;
-  line-height: 3.1; /* reduce espacio vertical */
-   padding: 8px 4px;  /* da espacio interno lateral */
+/*--- no tocar estas lineas son vitales para el armado de la tabla, ni yo se lo que hice v::after::before xd --- */
+.tabla-sesiones thead tr:first-child th:first-child,
+.tabla-sesiones thead tr:nth-child(2) th:first-child {
+  border-bottom: none !important;
+}
+.tabla-sesiones thead tr:nth-child(2) th:first-child {
+  border-top: none !important;
+}
+.tabla-sesiones thead tr:first-child th:nth-last-child(-n+3),
+.tabla-sesiones thead tr:nth-child(2) th:nth-last-child(-n+3) {
+  border-bottom: none !important;
+}
+.tabla-sesiones thead tr:nth-child(2) th:nth-last-child(-n+3) {
+  border-top: none !important;
+}
+.tabla-sesiones td.triptych > .tri-box > div p {
+  font-weight: 800 !important; 
+  font-size: 17px; 
+  margin: 0;
+  padding: 2px 0;
 }
