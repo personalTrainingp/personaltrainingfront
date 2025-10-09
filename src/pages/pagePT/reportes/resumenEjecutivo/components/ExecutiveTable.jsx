@@ -39,12 +39,7 @@ export default function ExecutiveTable({
   initialDay = 1,
   cutDay = 21,
 
-}) {  console.log("DataMktByMonth completo:", dataMktByMonth);
-  console.log(dataMktByMonth["2025-abril"]); 
-  console.log(dataMktByMonth["2025-marzo"]?.inversiones_redes);
-  console.log(dataMktByMonth["2025-febrero"]?.leads);
-  console.log(dataMktByMonth["2025-mayo"]?.cpl);
-  // --------------------------- Helpers ---------------------------
+}) {  
   const MESES = [
     "enero",
     "febrero",
@@ -294,7 +289,7 @@ const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
       ...sCellBold,
       background: "transparent",
       color: cWhite,
-      fontSize: "18px",   // 👈 aquí el cambio
+      fontSize: "18px",
     }}
   >
     TOTAL AL {cutDay}
@@ -306,16 +301,13 @@ const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
         ...sCellBold,
         background: "transparent",
         color: cWhite,
-        fontSize: "21px",   // 👈 también aquí
+        fontSize: "21px",
       }}
     >
       {fmtMoney(m.metrics?.totalMes || 0)}
     </td>
   ))}
 </tr>
-
-
-
           {/* CAC */}
           <tr>
             <td style={sCellBold}>CAC DIGITAL (S/)</td>

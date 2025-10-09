@@ -1,35 +1,70 @@
+.tabla-sesiones {
+  border-collapse: collapse;
+}
+
+.tabla-sesiones th,
+.tabla-sesiones td {
+  border: 1px solid #000 !important;
+  box-sizing: border-box;
+}
+
+/* --- Estructura base triptych --- */
 .tabla-sesiones td.triptych {
   position: relative;
-  padding: 0; 
-  width: 90px; 
+  padding: 0;
+  width: 90px;
   min-width: 90px;
   max-width: 100px;
-             
 }
+
+
 .tabla-sesiones td.triptych > .tri-box {
-  position: static;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  height: 100%;          
-  min-height: 100%;     
+  height: 100%;
   background: #fff;
   box-sizing: border-box;
-  column-gap: 0;
 }
-.copa-champions {
-  position: absolute;
-  top: 5px;          
-  left: -10px;      
-  z-index: 3;
+
+/* --- Encabezado triptych --- */
+.tabla-sesiones th.triptych-head {
+  position: relative;
+  height: 45px;
+  padding: 0;
+  width: 90px;
+  background: #000;
 }
-.copa-champions img {
-  width: 70px;
-  height: auto;
-  filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,0.4)) invert(0);
-  mix-blend-mode: darken;
+
+.tabla-sesiones th.triptych-head > .tri-box-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 100%;
 }
+
+.tabla-sesiones th.triptych-head > .tri-box-head > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.miniTitle {
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: .3px;
+  margin: 0;
+}
+
+/* --- Imagen + nombre asesor --- */
+.tabla-sesiones td.img-with-name {
+  border: 1px solid #000 !important;
+  width: 110px;
+  background: #fff;
+  vertical-align: middle;
+}
+
 .tabla-sesiones td.img-with-name .img-cap {
-  position: relative; 
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,83 +73,51 @@
   padding: .25rem 0;
 }
 
-.tabla-sesiones th.triptych-head > .tri-box-head{
+.tabla-sesiones td.img-with-name .img-cap img {
+  width: 80px;
+  height: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #f3f3f3;
+}
+
+.tabla-sesiones td.img-with-name .img-cap .cap {
+  font-weight: 800;
+  font-size: 20px;
+  text-align: center;
+}
+
+.tabla-sesiones td.img-with-name .img-cap.only-text .cap,
+.tabla-sesiones td.img-with-name.only-text .cap {
+  font-size: 22px;
+  line-height: 3.1;
+  padding: 8px 4px;
+  white-space: normal !important;
+  word-break: break-word !important;
+  text-align: center;
+  font-weight: 800;
+}
+
+/* --- Copa de campeón --- */
+.copa-champions {
   position: absolute;
-  inset: 0;                   
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  box-sizing: border-box;
+  top: 5px;
+  left: -10px;
+  z-index: 3;
 }
-.tabla-sesiones th.triptych-head > .tri-box-head > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.tabla-sesiones th.triptych-head > .tri-box-head {
-  position: static;     
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  height: 100%;
-  background: #000;
-  box-sizing: border-box;
-}
-.tabla-sesiones th.triptych-head {
-  position: relative; 
-  height: 45px;       
-  padding: 0;
-  width: 90px;
-  min-width: 90px;
-  max-width: 100px;
-}
-.miniTitle {
-  color: #fff;
-  font-weight: 800;
-  font-size: 15px;
-  letter-spacing: .3px;
-  margin: 0;
-}
-.tabla-sesiones td.triptych > .tri-box > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  height: 100%;
-  border: none;
+.copa-champions img {
+  width: 70px;
+  height: auto;
+  filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+  mix-blend-mode: darken;
 }
 
-.tabla-sesiones td.triptych > .tri-box > div p {
-  font-size: 16px;  
-  margin: 0;
-  padding: 2px 0;
-}
-
-.mini-row3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;                
-  background: #e9eef6;
-  padding: 10px 8px;
-  border-radius: 8px;
-}
-.mini-row3 > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.tabla-sesiones th.avatar-col,
+/* --- Subdivisiones internas triptych --- */
 .tabla-sesiones th.triptych-head,
 .tabla-sesiones td.triptych {
   position: relative;
   overflow: visible;
 }
-
-/* Crea 2 líneas verticales internas (1/3 y 2/3) */
-.tabla-sesiones th.avatar-col::before,
-.tabla-sesiones th.avatar-col::after,
 .tabla-sesiones th.triptych-head::before,
 .tabla-sesiones th.triptych-head::after,
 .tabla-sesiones td.triptych::before,
@@ -124,159 +127,53 @@
   top: -1px;
   bottom: -1px;
   width: 1px;
-  background: #fff;
+  background: #000;
   pointer-events: none;
   z-index: 5;
 }
 
-/* Colocación exacta sin colisión visual */
-.tabla-sesiones th.avatar-col::before,
 .tabla-sesiones th.triptych-head::before,
 .tabla-sesiones td.triptych::before {
   left: calc(33.3333% - 0.5px);
 }
 
-.tabla-sesiones th.avatar-col::after,
 .tabla-sesiones th.triptych-head::after,
 .tabla-sesiones td.triptych::after {
   left: calc(66.6667% - 0.5px);
 }
 
-/* 💡 Evita doble línea (borde + pseudo-línea) */
-.tabla-sesiones td.triptych > .tri-box > div + div,
-.tabla-sesiones th.triptych-head > .tri-box-head > div + div {
-  border-left: none !important;
-}
-
-/* Uniforma grosor para evitar “doble negro” */
-.tabla-sesiones th,
-.tabla-sesiones td {
-  border: 1px solid #000 !important;
-  box-sizing: border-box;
-}
-
-/* Columna IMAGEN (con nombre abajo) */
-.tabla-sesiones td.img-with-name{
-  border: 1px solid #000 !important;
-  width: 110px;
-  background: #fff;
-  vertical-align: middle;
-}
-
-.tabla-sesiones td.img-with-name .img-cap{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  padding: .25rem 0;
-}
-
-.tabla-sesiones td.img-with-name .img-cap img{
-  width: 80px;
-  height: 100px;
-  border-radius: 10px;
-  object-fit: cover;
-  display: block;
-  background: #f3f3f3;
-}
-
-.tabla-sesiones td.img-with-name .img-cap .cap{
-  font-weight: 800;
-  font-size: 20px;
-  text-align: center;
-}
-
-.tabla-sesiones td.img-with-name .img-cap.only-text .cap{
-  font-size: 22px;
-}
-.tabla-sesiones thead tr > th:nth-last-of-type(-n+3),
-.tabla-sesiones tbody tr > td:nth-last-of-type(-n+3) {
-  border-left: 2px solid #000 !important;
-  border-right: 1px solid #000 !important;
-}
-
-.tabla-sesiones tbody tr.fila-secundaria td.img-with-name {
-  background: #000000 !important; 
-  color: #fff !important;
-}
-
-.tabla-sesiones tbody tr.fila-secundaria td.img-with-name .cap {
-  color: #fff !important;
-}
-
-
-.tabla-sesiones td.img-with-name .img-cap {
-  position: relative; 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  padding: .25rem 0;
-}
-.tabla-sesiones td.img-with-name.only-text .cap,
-.tabla-sesiones td.img-with-name .img-cap.only-text .cap {
-  white-space: normal !important;   
-  word-break: break-word !important;
-  text-align: center;
-  font-weight: 800;
-  font-size: 22px;
-  line-height: 3.1; 
-   padding: 8px 4px;
-}
-.tabla-sesiones td,
-.tabla-sesiones th {
-  border: 1px solid #000;
-}
-/* === No tocar ni yo se lo que hice :v, pero funciona === */
-
-.tabla-sesiones th.avatar-col {
-  border-left: 2px solid #000 !important;
-}
-
-.tabla-sesiones td.triptych {
-  border-left: 2px solid #000 !important;
-}
-
-  .tabla-sesiones th.avatar-col::before,
-.tabla-sesiones th.avatar-col::after,
-.tabla-sesiones td.triptych::before,
-.tabla-sesiones td.triptych::after {
-  width: 1px !important;
-  background: #000;
-}
-
-.tabla-sesiones th.triptych-head:nth-of-type(3n+2) {
-  border-left: 2px solid #000 !important;
-}
-.tabla-sesiones td.triptych::before,
-.tabla-sesiones td.triptych::after,
-.tabla-sesiones th.triptych-head::before,
-.tabla-sesiones th.triptych-head::after {
-  width: 1px !important;
-  background: #000;
-}
-
-.tabla-sesiones th.triptych-head.program-start,
-.tabla-sesiones td.triptych.program-start {
-  border-left: 2px solid #000 !important;
-}
-.tabla-sesiones {
-  border-collapse: collapse; 
-}
+/* --- Borde grueso inicio/fin de bloque --- */
 .tabla-sesiones th.program-start,
 .tabla-sesiones td.program-start {
   border-left: 2px solid #000 !important;
 }
+
 .tabla-sesiones th.program-end,
 .tabla-sesiones td.program-end {
   border-right: 2px solid #000 !important;
 }
+
+/* --- Últimas 3 columnas (totales) --- */
+.tabla-sesiones thead tr > th:nth-last-of-type(-n+3),
+.tabla-sesiones tbody tr > td:nth-last-of-type(-n+3) {
+  border-left: 2px solid #000 !important;
+}
+
+/* --- Fila secundaria (Totales) --- */
+.tabla-sesiones tbody tr.fila-secundaria td.img-with-name {
+  background: #000 !important;
+  color: #fff !important;
+}
+.tabla-sesiones tbody tr.fila-secundaria td.img-with-name .cap {
+  color: #fff !important;
+}
+
+/* --- Eliminar líneas duplicadas --- */
 .tabla-sesiones th.avatar-col::before,
 .tabla-sesiones th.avatar-col::after {
   display: none !important;
 }
+/*--- no tocar estas lineas son vitales para el armado de la tabla, ni yo se lo que hice v::after::before xd --- */
 .tabla-sesiones thead tr:first-child th:first-child,
 .tabla-sesiones thead tr:nth-child(2) th:first-child {
   border-bottom: none !important;
@@ -290,4 +187,10 @@
 }
 .tabla-sesiones thead tr:nth-child(2) th:nth-last-child(-n+3) {
   border-top: none !important;
+}
+.tabla-sesiones td.triptych > .tri-box > div p {
+  font-weight: 800 !important; 
+  font-size: 17px; 
+  margin: 0;
+  padding: 2px 0;
 }
