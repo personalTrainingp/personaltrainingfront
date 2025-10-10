@@ -89,6 +89,7 @@ const EntradaArticulosForm = lazy(()=>import('../pages/pagePT/EntradaInventarioF
 const TransferenciasArticulos = lazy(()=>import('../pages/pagePT/TransferenciaEmpresaInventario'))
 const ArticulosNuevos = lazy(()=>import('../pages/pagePT/GestArticulosChorrillos'))
 const ResumenEjecutivo = lazy(()=>import('../pages/pagePT/reportes/resumenEjecutivo/Index.jsx'))
+const GestionCentroDeArchivos = lazy(()=>import('../pages/pagePT/GestCentroArchivo'))
 /**
  * routes import
  */
@@ -330,6 +331,9 @@ export default function ProtectedRoutes() {
 					}
 					{sections.find(e=>e.url==='/gestion-auth-usuario')&&
 					<Route path='gestion-auth-usuario' element={<GestionUsuario/>}/>
+					}
+					{sections.find(e=>e.url==='/centro-archivos')&&
+					<Route path='centro-archivos' element={<GestionCentroDeArchivos/>}/>
 					}
 					{sections.find(e=>e.url==='/metas')&&
 					<Route path='metas' element={<GestionMeta/>}/>

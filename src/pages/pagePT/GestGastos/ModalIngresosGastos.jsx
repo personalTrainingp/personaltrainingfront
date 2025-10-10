@@ -151,6 +151,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                     
                     await startRegistrarGastos(valores, id_enterprice)
                     setshowLoading(false)
+                    onClickCancelModal()
                     return;
                 }
                 setshowLoading(true)

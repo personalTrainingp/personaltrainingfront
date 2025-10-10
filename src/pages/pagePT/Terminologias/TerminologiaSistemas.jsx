@@ -7,8 +7,16 @@ export const TerminologiaSistemas = () => {
     const [contenido, setContenido] = useState({entidad: "todos", grupo: 'todos'});
     const items = [
         {
-            label: 'OFICIOS DE PROVEEDORES',
+            label: 'PROVEEDORES(OFICIOS)',
             command: () => setContenido({entidad: 'proveedor', grupo: 'tipo_oficio'}),
+        },
+        {
+            label: 'ARTICULOS(MARCA)',
+            command: () => setContenido({entidad: 'articulo', grupo: 'marca'}),
+        },
+        {
+            label: 'ARTICULOS(ETIQUETA BUSQUEDA)',
+            command: () => setContenido({entidad: 'articulo', grupo: 'etiqueta_busqueda'}),
         },
     ];
     // useEffect(() => {
