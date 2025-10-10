@@ -100,7 +100,7 @@ export const useProveedorStore = () => {
 	const obtenerParametrosProveedor = async () => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
-
+			console.log({ data });
 			// setDataProducProveedor(data);
 			// const dataAlter = data.map((term) => {
 			// 	return {

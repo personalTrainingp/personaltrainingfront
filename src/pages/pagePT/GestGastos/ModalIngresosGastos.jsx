@@ -42,6 +42,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         setid_empresa(id_enterprice)
         setisCopyHide()
     }
+    const { DataGeneral:dataOficios, obtenerParametroPorEntidadyGrupo:obtenerOficios } = useTerminoStore()
     const [grupoGasto, setgrupoGasto] = useState([])
     const [openModalProv, setopenModalProv] = useState(false)
     const [gastoxGrupo, setgastoxGrupo] = useState([])
@@ -58,9 +59,11 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
     const { obtenerParametrosBancos, DataBancos } = useTerminoStore()
     const { startRegistrarGastos, startActualizarGastos, objetoToast, isLoadingData } = useGf_GvStore()
     const [showLoading, setshowLoading] = useState(false)
+
     const [loadingParametros, setloadingParametros] = useState(false)
 	const { dataProvCOMBO } = useSelector(e=>e.prov)
     const [id_empresa, setid_empresa] = useState(0)
+    const [id_oficio, setid_oficio] = useState(0)
     const { formState, 
             id_tipoGasto, 
             id_gasto,
@@ -93,6 +96,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         useEffect(() => {
             if(show){
                 obtenerParametrosGastosFinanzas()
+                obtenerOficios('proveedor','tipo_oficio')
 
             }
         }, [show, isLoadingParametros])
@@ -204,6 +208,9 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         const onChangeProveedores = (e)=>{
             onInputChangeReact(e, 'id_prov')
             obtenerTrabajosxProv(e.value)
+        }
+        const onChangeOficioProvs = (e)=>{
+            setid_oficio(e.value)
         }
   return (
     <>
@@ -499,6 +506,25 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                 </Col>
                                 <Col lg={4}>
                                     <div className="mb-4">
+                                        {/* {JSON.stringify(dataOficios, null, 2)} */}
+                                        <label htmlFor="id_prov" className="form-label">
+                                            Oficios*
+                                        </label>
+                                        <Select
+                                                    onChange={onChangeOficioProvs}
+                                                    name="id_oficio"
+                                                    placeholder={'Seleccionar el oficio'}
+                                                    className="react-select"
+                                                    classNamePrefix="react-select"
+                                                    options={[...dataOficios, {value: 0, label: 'TODOS'}]}
+                                                    value={[...dataOficios, {value: 0, label: 'TODOS'}].find(
+                                                        (option)=>option.value === id_oficio
+                                                    )||0}
+                                                />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mb-4">
                                         <label htmlFor="id_prov" className="form-label">
                                             Proveedor*
                                         </label>
@@ -510,7 +536,13 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                                     placeholder={'Seleccionar el proveedor'}
                                                     className="react-select"
                                                     classNamePrefix="react-select"
-                                                    options={dataProvCOMBO}
+                                                    options={dataProvCOMBO.filter(prov=>{
+                                                        if(id_oficio!==0){
+                                                            return prov.id_oficio===id_oficio
+                                                        }else{
+                                                            return true;
+                                                        }
+                                                    })}
                                                     value={dataProvCOMBO.find(
                                                         (option)=>option.value === id_prov
                                                     )||0}
