@@ -6,42 +6,56 @@ import React, { useEffect } from 'react'
 import Select from 'react-select'
 import { useParientesStore } from './useParientesStore'
 const customPariente={
-
+     id_tipo_pariente:0, nombres:'', telefono:'', email:'', comentario:''
 }
-export const ModalCustom = ({show, onHide}) => {
+export const ModalCustom = ({show, onHide, uid_contactsEmergencia, id, data}) => {
     const { obtenerParametroPorEntidadyGrupo: obtenerTipoFamilia, DataGeneral:dataTipoFamilia } = useTerminoStore()
-    const { onPostParientes } = useParientesStore()
-    const { formState, id_tipo_familia, nombre, telefono, email, observacion, onInputChangeReact, onInputChange } = useForm(customPariente)
+    const { onPostParientes, onUpdatePariente, onGetParientexId, dataPariente } = useParientesStore()
+    const { formState, id_tipo_pariente, nombres, telefono, email, comentario, onInputChangeReact, onInputChange, onResetForm } = useForm(id?dataPariente:customPariente)
     useEffect(() => {
         if(show){
-            obtenerTipoFamilia('familia', 'familia')
+            obtenerTipoFamilia('familia', 'familia')    
+            onGetParientexId(id)
         }
     }, [show])
     const onClickSubmitParientes = (e)=>{
-        e.preventDefaul()
-        onPostParientes(formState)
+        e.preventDefault()
+        if(id==0){
+            onPostParientes(formState, uid_contactsEmergencia, 'EMPLEADO')
+            onCancelContactoEmergencia()
+            return;
+        }else{
+            onUpdatePariente(formState, id, uid_contactsEmergencia, 'EMPLEADO')
+            onCancelContactoEmergencia()
+            return;
+        }
+    }
+    const onCancelContactoEmergencia= ()=>{
+        onHide()
+        onResetForm()
     }
   return (
-    <Dialog visible={show} onHide={onHide} header={'AGREGAR PARIENTE'} style={{width: '30rem', height: '40rem'}}>
-        <form onSubmit={onClickSubmitParientes}>
+    <Dialog visible={show} onHide={onHide} header={id==0?'AGREGAR PARIENTE':'EDITAR PARIENTE'} style={{width: '30rem', height: '40rem'}}>
+        {/* {JSON.stringify(dataPariente, null, 2)} */}
+        <form>
             <div className='mb-2'>
                 <label>PARENTESCO:</label>
                 <Select
                     placeholder={'Selecciona el parentesco'}
-                    onChange={(e)=>onInputChangeReact(e.value, 'id_tipo_familia')}
+                    onChange={(e)=>onInputChangeReact(e, 'id_tipo_pariente')}
                     className="react-select"
                     classNamePrefix="react-select"
                     options={dataTipoFamilia}
-                    name='id_tipo_familia'
-                    value={dataTipoFamilia.find((op)=>op.value===id_tipo_familia)}
+                    name='id_tipo_pariente'
+                    value={dataTipoFamilia.find((op)=>op.value===id_tipo_pariente)}
                     required
                 />
             </div>
             <div className='mb-2'>
             <label>NOMBRE:</label>
             <input
-                name='nombre'
-                value={nombre}
+                name='nombres'
+                value={nombres}
                 onChange={onInputChange}
                 className='form-control'
                 type='text'
@@ -70,15 +84,15 @@ export const ModalCustom = ({show, onHide}) => {
             <div className='mb-2'>
                 <label>COMENTARIO:</label>
                 <textarea
-                    name='observacion'
-                    value={observacion}
+                    name='comentario'
+                    value={comentario}
                     onChange={onInputChange}
                     className='form-control'
                     
                 />
             </div>
-            <Button label='AGREGAR' type='submit'/>
-            <Button label='CANCELAR' text/>
+            <Button label='AGREGAR' onClick={onClickSubmitParientes}/>
+            <Button label='CANCELAR' text onClick={onCancelContactoEmergencia}/>
         </form>
     </Dialog>
   )

@@ -18,6 +18,7 @@ import { PanelHorasExtras } from './PanelHorasExtras';
 import { PanelTardanzasJustificadas } from './PanelTardanzasJustificadas';
 import { PanelSalidasTempranas } from './PanelSalidasTempranas';
 import { App as AppParientes } from './Parientes/App';
+import { App as AppDocumentosAdjuntos } from './DocumentosAdjuntos/App';
 import { App as AppContratos } from './Contrato/App';
 import { SectionComentario } from '@/components/Comentario/SectionComentario';
 
@@ -93,15 +94,17 @@ export const PerfilEmpleado = () => {
                                   <InformacionGeneralEmpleado data={userEmpleado}/>
                                 </ScrollPanel>
                             </TabPanel>
-                            <TabPanel header={'PARIENTES'}>
+                            <TabPanel header={'CONTACTO DE EMERGENCIA'}>
                                 <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
-                                  <AppParientes/>
+                                  {/* {JSON.stringify(userEmpleado, null, 2)} */}
+                                  <AppParientes uid_contactsEmergencia={userEmpleado.uid_contactsEmergencia}/>
                                 </ScrollPanel>
                             </TabPanel>
                             <TabPanel header={'Documentos adjuntos'}>
-                                
+                                <AppDocumentosAdjuntos/>
                             </TabPanel>
                             <TabPanel header={'COMENTARIOS'}>
+
                                                 <SectionComentario uid_comentario={userEmpleado.uid_comentario}/>
                             </TabPanel>
                             <TabPanel header={'PLANILLA'}>

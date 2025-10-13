@@ -199,9 +199,25 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
         )
     }
     const cargoBodyTemplate = (rowData)=>{
+        const cargoLabel = arrayCargoEmpl.find(f=>f.value===Number(rowData?.cargo_empl))?.label
         return (
             <div className="fw-bold text-primary" style={{fontSize: '20px'}}>
-                {arrayCargoEmpl.find(f=>f.value===Number(rowData?.cargo_empl))?.label}
+                {/* {cargoLabel.split('/')[0]} */}
+                {
+                    cargoLabel==='ASESOR FINANCIERO Y COMERCIAL'?(
+                        <>
+                        ASESOR FINANCIERO
+                        <br/>
+                        COMERCIAL
+                        </>
+                    ):(
+                        <>
+                        {cargoLabel.split('/')[0]}
+                        <br/>
+                        {cargoLabel.split('/')[1]}
+                        </>
+                    )
+                }
             </div>
         )
     }
