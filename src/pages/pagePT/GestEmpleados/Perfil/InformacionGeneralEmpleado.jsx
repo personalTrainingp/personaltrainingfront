@@ -60,6 +60,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
         email_corporativo,
         tipoContrato_empl,
         horario_empl,
+        estado_empl,
         onInputChange, onInputChangeReact, onFileChange } = useForm(data)
 	    const [selectedFile, setSelectedFile] = useState(sinAvatar);
         
@@ -436,6 +437,25 @@ export const InformacionGeneralEmpleado = ({data}) => {
             </div>
         </Col>
         <Col xl={4}>
+        <div className="m-2">
+                <label htmlFor="estado_empl" className="form-label">
+                    ESTADO*
+                </label>
+                <Select
+                    onChange={(e) => onInputChangeReact(e, 'estado_empl')}
+                    name="estado_empl"
+                    placeholder={'Seleccionar el estado'}
+                    className="react-select"
+                    classNamePrefix="react-select"
+                    options={[{label: 'ACTIVO', value: 1}, {label: 'INACTIVO', value: 0}]}
+                    value={[{label: 'ACTIVO', value: 1}, {label: 'INACTIVO', value: 0}].find(
+                        (option) => option.value === estado_empl
+                    )}
+                    required
+                />
+            </div>
+        </Col>
+        <Col xl={4}>
             <div className="m-2">
                 <label htmlFor="horario_empl" className="form-label">
                     Horario*
@@ -451,6 +471,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
+        {/* {JSON.stringify(data, null, 2)} */}
         <Button onClick={onUpdateEmpleado}>Guardar</Button>
     </Row>
     </>

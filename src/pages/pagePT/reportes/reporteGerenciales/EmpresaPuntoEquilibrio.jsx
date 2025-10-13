@@ -94,6 +94,11 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
       {data.map((g, i) => {
         const porPagar = dataPorPagar[i]; // Suponiendo orden igual
         return (
+          <>
+          {
+            (g.montoTotalEnSoles==0)?(
+              <></>
+            ): (
           <tr key={i}>
             <td colSpan={2} className="bg-porsiaca text-center fw-bolder">
               <div className={`${textEmpresa} bg-porsiaca text-left`}>
@@ -115,6 +120,10 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
 													</div>
 												</td>
           </tr>
+
+            )
+          }
+          </>
         )
       }
       )}
