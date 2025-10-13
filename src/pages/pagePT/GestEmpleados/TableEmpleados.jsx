@@ -221,6 +221,13 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
             </div>
         )
     }
+    const idBodyTemplate = (rowData, {rowIndex})=>{
+        return (
+            <>
+            {rowIndex+1}
+            </>
+        )
+    }
     const header = renderHeader();
 
     return (
@@ -247,23 +254,15 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                         globalFilterFields={["id_cli", "nombres_apellidos_empl", "email_cli", "tel_cli", "distrito", "cargo_empl"]} 
                         header={header}
                         emptyMessage="SOCIOS NO ENCONTRADOS.">
-                {/* <Column header="Tipo de gasto" filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter /> */}
-                {/* <Column header="Monto" filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/> */}
-                {/* <Column header="Id" filterField="id_cli" style={{ minWidth: '2rem' }} sortable body={IdBodyTemplate}/> */}
+                <Column header="ID" style={{ minWidth: '2rem' }} body={idBodyTemplate}/>
                 <Column header="FOTO" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={imagenBodyTemplate} filter/>
                 <Column header="CARGO" style={{ minWidth: '2rem' }} body={cargoBodyTemplate}/>
                 <Column header={<>NOMBRES <br/> APELLIDOS</>} filterField="nombres_apellidos_empl" style={{ minWidth: 'auto' }} sortable body={NombresApellidosEmplBodyTemplate} filter/>
                 <Column header="CELULAR" filterField={`tel_cli`} style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
                 <Column header="EMAIL" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>
-                <Column header="cumpleaños" style={{ minWidth: '10rem' }} sortable body={FecNacEmplBodyTemplate} filter/>
-                <Column header="DISTRITO" filterField={`distrito`} style={{ minWidth: '10rem' }} sortable body={distritoBodyTemplate} filter/>
-                {/* <Column header="ESTADO" filterField={`estado_empl`} style={{ minWidth: '10rem' }} sortable body={estadoBodyTemplate} filter/> */}
-
-                {/* <Column header="Vencimiento" filterField="vencimiento_REGALOS_CONGELAMIENTO" sortable style={{ minWidth: '10rem' }} body={fecRegistroBodyTemplate} filter filterElement={dateFilterTemplate}  dataType="date" /> */}
-                {/* <Column header="Proveedor" filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
-                body={proveedorBodyTemplate} filter filterElement={proveedorFilterTemplate} /> */}
-
-                {/* <Column header="Estado" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/> */}
+                <Column header="CONTACTO EMERGENCIA" style={{ minWidth: '10rem' }} sortable filter/>
+                <Column header="DNI" style={{ minWidth: '10rem' }} sortable filter/>
+                <Column header="CV" style={{ minWidth: '10rem' }} sortable  filter/>
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
             </div>

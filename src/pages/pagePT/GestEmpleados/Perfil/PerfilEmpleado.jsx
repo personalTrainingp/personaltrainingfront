@@ -101,28 +101,32 @@ export const PerfilEmpleado = () => {
                                 </ScrollPanel>
                             </TabPanel>
                             <TabPanel header={'Documentos adjuntos'}>
-                                <AppDocumentosAdjuntos/>
+                                <AppDocumentosAdjuntos uid_docs={userEmpleado.uid_avatar}/>
                             </TabPanel>
                             <TabPanel header={'COMENTARIOS'}>
-
-                                                <SectionComentario uid_comentario={userEmpleado.uid_comentario}/>
+                              <SectionComentario uid_comentario={userEmpleado.uid_comentario}/>
                             </TabPanel>
                             <TabPanel header={'PLANILLA'}>
-                              <AppContratos id_empleado={userEmpleado.id_empl}/>
                                 {/* <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/> */}
+                                <TabView>
+                                  <TabPanel header={'CONTRATOS'}>
+                                    <AppContratos id_empleado={userEmpleado.id_empl}/>
+                                  </TabPanel>
+                                  <TabPanel header={'PERMISOS'}>
+                                    <PanelPermisos/>
+                                  </TabPanel>
+                                  <TabPanel header={'TARDANZAS JUSTIFICADAS'}>
+                                    <PanelTardanzasJustificadas/>
+                                  </TabPanel>
+                                  <TabPanel header={'HORAS EXTRAS'}>
+                                    <PanelHorasExtras/>
+                                  </TabPanel>
+                                  <TabPanel header={'SALIDAS TEMPRANAS'}>
+                                    <PanelSalidasTempranas/>
+                                  </TabPanel>
+                                </TabView>
                             </TabPanel>
-                            <TabPanel header={'PERMISOS'}>
-                              <PanelPermisos/>
-                            </TabPanel>
-                            <TabPanel header={'TARDANZAS JUSTIFICADAS'}>
-                              <PanelTardanzasJustificadas/>
-                            </TabPanel>
-                            <TabPanel header={'HORAS EXTRAS'}>
-                              <PanelHorasExtras/>
-                            </TabPanel>
-                            <TabPanel header={'SALIDAS TEMPRANAS'}>
-                              <PanelSalidasTempranas/>
-                            </TabPanel>
+
                         </TabView>
                     </Card.Body>
                 </Card>
