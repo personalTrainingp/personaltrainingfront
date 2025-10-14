@@ -13,6 +13,7 @@ import { DataView } from './DataView'
 import { FechaRange } from '@/components/RangeCalendars/FechaRange'
 import dayjs from 'dayjs'
 import { onSetViewSubTitle } from '@/store'
+import { inventarioReporteStore } from './inventarioReporteStore'
 
 export const InventarioTotalizado = ({id_empresa, label_empresa}) => {
     const { obtenerArticulos, isLoading, obtenerInventarioKardexxFechas, dataFechas } = useInventarioStore()
@@ -55,11 +56,13 @@ export const InventarioTotalizado = ({id_empresa, label_empresa}) => {
     //     group.valor_total_sumado = group.valor_total_sumado.toFixed(2);
     //   });
     //   groupedData.sort((a, b) => a.nivel - b.nivel);
+    const { obtenerContratosPendientes } = inventarioReporteStore()
     const dispatch = useDispatch()
     useEffect(() => {
       dispatch(onSetViewSubTitle(`INVENTARIO VALORIZADO POR ZONA - ${label_empresa}`))
+      obtenerContratosPendientes(id_empresa)
     }, [id_empresa])
-    
+    const { dataContratoProv } = useSelector(e=>e.prov)
   return (
     <>
     <TabView>
@@ -67,7 +70,7 @@ export const InventarioTotalizado = ({id_empresa, label_empresa}) => {
               dataFechas?.map(m=>{
                 return (
                   <TabPanel header={<></>}>
-                      <DataView dvi={m.articulos_directos} kardexEntrada={m.totalKardexEntrada} kardexSalida={m.totalKardexSalida} isResumenxZonaLoc id_empresa={id_empresa} label_empresa={label_empresa}/>
+                      <DataView dvi={m.articulos_directos} dataContratoProv={dataContratoProv} kardexEntrada={m.totalKardexEntrada} kardexSalida={m.totalKardexSalida} isResumenxZonaLoc id_empresa={id_empresa} label_empresa={label_empresa}/>
                   </TabPanel>
                 )
               })

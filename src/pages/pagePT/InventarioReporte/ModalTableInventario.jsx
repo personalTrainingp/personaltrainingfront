@@ -126,7 +126,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
         console.log(rowData);
         
         return (
-            <div className='fs-2'>
+            <div className='fs-2 text-color-dolar'>
             {(rowData.mano_obra_dolares).toFixed(2)}
             </div>
         )
@@ -195,7 +195,7 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
 					sortable
 				></Column>
                 <Column
-					header={<span className='fs-2'>COSTO MANO DE OBRA $</span>}
+					header={<span className='fs-2 text-color-dolar'>COSTO MANO DE OBRA $</span>}
 					body={costoManoObraDolaresBodyTemplate}
 					style={{ width: '4rem' }}
                     footer={<div className='fs-2 text-color-dolar'>$. <NumberFormatMoney amount={data.reduce((sum, item) => sum + item.costo_total_dolares, 0)}/></div>}

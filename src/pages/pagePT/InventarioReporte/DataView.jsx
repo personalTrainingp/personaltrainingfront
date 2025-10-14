@@ -13,7 +13,7 @@ import { Button } from 'primereact/button'
 import { ModalResumenInventarioValorizado } from './ModalResumenInventarioValorizado'
 import { ImagesGrids } from './ImagesGrids'
 
-export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kardexSalida, kardexEntrada, transferencias}) => {
+export const DataView = ({id_empresa, dvi, label_empresa, dataContratoProv, isResumenxZonaLoc, kardexSalida, kardexEntrada, transferencias}) => {
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
     const [dataFilter, setdataFilter] = useState([])
@@ -66,115 +66,6 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
       }
   return (
     <>
-    <Row>
-      {/* <Col lg={3}>
-        <Card>
-            <Card.Header>
-                  <Card.Title className='fs-2 text-primary'>
-                    ARTICULOS NUEVOS
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  <table className="table font-14">
-                              <thead>
-                                  <tr>
-                                      <th className="bg-light p-1">
-                                          <span className=" text-uppercase">PRODUCTO</span>
-                                      </th>
-                                      <th className="bg-light p-1">
-                                          <span className=" text-uppercase">CANTIDAD</span>
-                                      </th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                {
-                                  [].map(k=>{
-                                    return (
-
-                                      <tr>
-                                      <td className="border-0">
-                                        {k.articulos_kardex.producto}
-                                      </td>
-                                      <td className="border-0">
-                                        {k.cantidad                                        }
-                                      </td>
-                                  </tr>
-                                    )
-                                  })
-                                }
-                              </tbody>
-                          </table>
-                </Card.Body>
-          </Card>
-      </Col>
-      <Col lg={3}>
-        <Card>
-          <Card.Header>
-                <Card.Title className='fs-2 text-primary'>
-                  ENTRADAS
-                </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <div className='text-center'>
-                </div>
-              </Card.Body>
-        </Card>
-      </Col>
-      <Col lg={3}>
-        <Card>
-            <Card.Header>
-                  <Card.Title className='fs-2 text-primary'>
-                    SALIDAS
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  
-                <table className="table font-14">
-                              <thead>
-                                  <tr>
-                                      <th className="bg-light p-1">
-                                          <span className=" text-uppercase">PRODUCTO</span>
-                                      </th>
-                                      <th className="bg-light p-1">
-                                          <span className=" text-uppercase">CANTIDAD</span>
-                                      </th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                {
-                                  kardexSalida?.map(k=>{
-                                    return (
-
-                                      <tr>
-                                      <td className="border-0">
-                                        {k.articulos_kardex.producto}
-                                      </td>
-                                      <td className="border-0">
-                                        {k.cantidad                                        }
-                                      </td>
-                                  </tr>
-                                    )
-                                  })
-                                }
-                              </tbody>
-                          </table>
-                </Card.Body>
-        </Card>
-      </Col>
-      <Col lg={3}>
-        <Card>
-            <Card.Header>
-                  <Card.Title className='fs-2 text-primary'>
-                    TRANSFERENCIAS
-                  </Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  <div className='text-center'>
-                  </div>
-                </Card.Body>
-          </Card>
-      </Col> */}
-    </Row>
     <Button label={<span className='fs-2'>RESUMEN VALORIZADO</span>} onClick={onOpenModalResumenValorizado} text/>
         <Row>
             {groupedData.map(g=>{
@@ -186,6 +77,10 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
                     {
                         agruparDataxLugar(g.items).map(f=>{
                             const nivel = f.items[0].parametro_lugar_encuentro.label_nivel
+                            const id_lugar = f.items[0].id_lugar
+                            const contratosxLugar = dataContratoProv.filter(f=>f.id_zona===id_lugar)
+                            const mano_obra_soles = contratosxLugar.reduce((total, item) => item.mano_obra_soles+total, 0)
+                            const mano_obra_dolares = contratosxLugar.reduce((total, item) => item.mano_obra_dolares+total, 0)
                           return (
                             <Col lg={4}>
                             <Card  onClick={()=>onOpenModalInventario(f.items, f.ubicacion)} className='m-1 border border-4'>
@@ -200,8 +95,8 @@ export const DataView = ({id_empresa, dvi, label_empresa, isResumenxZonaLoc, kar
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>ITEMS</span> <span className='fs-2'>{f.cantidad_sumado}</span></li>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>ACTIVOS(+M.O) S/. </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado_soles-f.valor_mano_obra_sumado_soles}/></span></li>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>ACTIVOS(+M.O) <SymbolDolar fontSizeS={'20px'}/> </span><span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={(f.valor_total_sumado_dolares-f.valor_mano_obra_sumado_dolares)}/></span></li>
-                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>MANO DE OBRA S/.</span> <span className='fs-2'><NumberFormatMoney amount={f.valor_mano_obra_sumado_soles}/></span></li>
-                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>MANO DE OBRA <SymbolDolar fontSizeS={'20px'}/></span> <span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={f.valor_mano_obra_sumado_dolares}/></span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>MANO DE OBRA S/.</span> <span className='fs-2'><NumberFormatMoney amount={mano_obra_soles}/></span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>MANO DE OBRA <SymbolDolar fontSizeS={'20px'}/></span> <span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={mano_obra_dolares}/></span></li>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión total S/. </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado_soles}/></span></li>
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>inversión total <SymbolDolar fontSizeS={'20px'}/> </span><span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={(f.valor_total_sumado_dolares)}/></span></li>
                                         <br/>
