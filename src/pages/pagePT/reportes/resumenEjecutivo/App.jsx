@@ -370,7 +370,7 @@ function handleMonthChange(newMonth) {
         "julio","agosto","septiembre","octubre","noviembre","diciembre"
       ];
 
-      function getLastNMonths(selectedMonth, year, n = 4) {
+      function getLastNMonths(selectedMonth, year, n = 8) {
         const result = [];
         let monthIdx = selectedMonth - 1; // 0-based
         let currentYear = year;
@@ -552,7 +552,7 @@ function handleMonthChange(newMonth) {
         return cnt;
       };
 
-      const mesesSeleccionados = getLastNMonths(selectedMonth, year);
+      const mesesSeleccionados = getLastNMonths(selectedMonth, year,8);
 const dataMktWithCac = useMemo(() => {
   const base = { ...(dataMktByMonth || {}) };
 
@@ -734,7 +734,7 @@ const avatarByAdvisor = useMemo(() => {
               </Col>
             </Row>
             <Row className="mb-4">
-              <Col lg={6} className="pt-0">
+              <Col lg={12} className="pt-0">
                 <div style={{marginBottom: '30px'}}>
                 <ExecutiveTable
         ventas={dataVentas}
@@ -766,7 +766,7 @@ const avatarByAdvisor = useMemo(() => {
                   />
                 </div>
               </Col>
-              <Col lg={6}>
+              <Col lg={12}>
                 <div style={{marginBottom: '32px'}}>
                   <ComparativoVsActual
                   ventas={dataVentas}
