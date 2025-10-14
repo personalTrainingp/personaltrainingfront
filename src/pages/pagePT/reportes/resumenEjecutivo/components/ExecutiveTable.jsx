@@ -243,7 +243,22 @@ const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
   const sRowBlack = { background: cBlack, color: cWhite, fontWeight: 700 };
   const sRowRed = { background: cRed, color: cWhite, fontWeight: 800 };
 
-  // --------------------------- Render ---------------------------
+const metasPorMes = {
+  enero: 50000,
+  febrero: 50000,
+  marzo: 50000,
+  abril: 50000,
+  mayo: 50000,
+  junio: 50000,
+  julio: 60000,
+  agosto: 70000,
+  setiembre: 75000,
+  septiembre: 75000,
+  octubre: 85000,
+  noviembre: 85000,
+  diciembre: 85000,
+};
+
   return (
     <div style={sWrap}>
       <div style={sHeader}>
@@ -308,6 +323,70 @@ const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
     </td>
   ))}
 </tr>
+<tr>
+  <td style={sCellBold}>META DEL MES</td>
+  {perMonth.map((m,idx) =>{
+    const meta = metasPorMes[m.mes] || 0;
+    return(
+       <td key={idx} style={{ ...sCell, fontWeight: 700 }}>
+        {fmtMoney(meta)}
+      </td>
+    );
+ })}
+</tr>
+<tr>
+  <td style={sCellBold}>% RESTANTE PARA META</td>
+  {perMonth.map((m, idx) => {
+    const meta = metasPorMes[m.mes] || 0;
+    const total = m.metrics?.totalMes || 0;
+    const porcentaje = meta > 0 ? (100 - (total / meta) * 100) : 0;
+    const restante = porcentaje < 0 ? 0 : porcentaje;
+    const color =
+      total >= meta ? "#007b00" : "#c00000"; 
+    return (
+      <td
+        key={idx}
+        style={{
+          ...sCell,
+          fontWeight: 700,
+          color,
+        }}
+      >
+        {fmtNum(restante, 2)} %
+      </td>
+    );
+  })}
+</tr>
+{/* % META ALCANZADA */}
+<tr>
+  <td style={sCellBold}>% META ALCANZADA</td>
+  {perMonth.map((m, idx) => {
+    const meta = metasPorMes[m.mes] || 0;
+    const total = m.metrics?.totalMes || 0;
+    const porcentaje = meta > 0 ? (total / meta) * 100 : 0;
+    const color =
+      porcentaje >= 100 ? "#007b00" : "#c00000"; // verde si >=100%, rojo si no
+    return (
+      <td
+        key={idx}
+        style={{
+          ...sCell,
+          fontWeight: 700,
+          color,
+        }}
+      >
+        {fmtNum(porcentaje, 2)} %
+      </td>
+    );
+  })}
+</tr>
+
+{/* % RESTANTE PARA META */}
+
+
+
+
+
           {/* CAC */}
           <tr>
             <td style={sCellBold}>CAC DIGITAL (S/)</td>

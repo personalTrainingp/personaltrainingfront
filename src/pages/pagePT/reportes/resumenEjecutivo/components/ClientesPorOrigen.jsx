@@ -92,11 +92,14 @@ export const ClientesPorOrigen=({
       const keyMes = `${d.getFullYear()}-${mes}`;
       if (!base.has(keyMes)) continue;
 
-      const originId = v?.id_origen ?? 0;
-      const origin = labelOfOrigin(originId);
+const originId = v?.id_origen;
+if (!originId || originId === 0) continue; // 👈 ignora ventas sin origen válido
 
-      const bucket = base.get(keyMes);
-      if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
+const origin = labelOfOrigin(originId);
+const bucket = base.get(keyMes);
+if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
+
+
 
       if (uniqueByClient) {
         const set = bucket.get(origin);
