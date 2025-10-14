@@ -306,7 +306,7 @@ const ViewDataImg = (e) => {
                                         />
                                     </div>
                                 </Col>
-                                <Col xl={4}>
+                                {/* <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="fecContrato_empl" className="form-label">
                                             Fecha de contrato*
@@ -320,8 +320,8 @@ const ViewDataImg = (e) => {
                                             onChange={onInputChange}
                                         />
                                     </div>
-                                </Col>
-                                <Col xl={4}>
+                                </Col> */}
+                                {/* <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="horario_empl" className="form-label">
                                             Horario de trabajo*
@@ -335,8 +335,8 @@ const ViewDataImg = (e) => {
                                             onChange={onInputChange}
                                         />
                                     </div>
-                                </Col>
-                                <Col xl={4}>
+                                </Col> */}
+                                {/* <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="cargo_empl" className="form-label">
                                             Cargo*
@@ -353,8 +353,8 @@ const ViewDataImg = (e) => {
 											)}
 										/>
                                     </div>
-                                </Col>
-                                <Col xl={4}>
+                                </Col> */}
+                                {/* <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="departamento_empl" className="form-label">
                                             Departamento*
@@ -372,8 +372,8 @@ const ViewDataImg = (e) => {
 											required
 										/>
                                     </div>
-                                </Col>
-                                <Col xl={4}>
+                                </Col> */}
+                                {/* <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="salario_empl" className="form-label">
                                             Salario*
@@ -387,8 +387,8 @@ const ViewDataImg = (e) => {
                                             onChange={onInputChange}
                                         />
                                     </div>
-                                </Col>
-                                <Col xl={4}>
+                                </Col> */}
+                                {/* <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="salario_empl" className="form-label">
                                             Jornada laboral*
@@ -405,7 +405,7 @@ const ViewDataImg = (e) => {
 											)}
 										/>
                                     </div>
-                                </Col>
+                                </Col> */}
                                 <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="email_empl" className="form-label">
@@ -457,7 +457,7 @@ const ViewDataImg = (e) => {
 						</form>
 					</Col>
 				</Row>
-				<Row className="">
+				{/* <Row className="">
                     <Tabs>
                         <Tab eventKey={'infoContacEmerg'} title={'Informacion de contacto de emergencia'}>
                             <LayoutInfoContacEmergencia/>
@@ -465,14 +465,8 @@ const ViewDataImg = (e) => {
                         <Tab eventKey={'comentarios'} title={'Comentario'}>
                             <LayoutComentario/>
                         </Tab>
-                        {/* <Tab eventKey={'infoFinan'} title={'Informacion financiera'}>
-                            <LayoutInfoFinan/>
-                        </Tab>
-                        <Tab eventKey={'infoDocAnex'} title={'Documentos anexados'}>
-                            <LayoutDocAnex/>
-                        </Tab> */}
                     </Tabs>
-                </Row>
+                </Row> */}
                 
                 <Button className='me-3' onClick={onSubmitAgregarEmpleado}>Guardar Empleado</Button>
                 <a className='text-danger' onClick={btnCancelModal}>Cancelar</a>

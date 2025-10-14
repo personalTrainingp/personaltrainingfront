@@ -66,7 +66,7 @@ export const InventarioTotalizado = ({id_empresa, label_empresa}) => {
     {
               dataFechas?.map(m=>{
                 return (
-                  <TabPanel header={<>{m.fechaHasta}</>}>
+                  <TabPanel header={<></>}>
                       <DataView dvi={m.articulos_directos} kardexEntrada={m.totalKardexEntrada} kardexSalida={m.totalKardexSalida} isResumenxZonaLoc id_empresa={id_empresa} label_empresa={label_empresa}/>
                   </TabPanel>
                 )

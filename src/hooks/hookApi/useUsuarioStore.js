@@ -183,19 +183,6 @@ export const useUsuarioStore = () => {
 			if (formDataTieneDatos) {
 				await PTApi.post(`/upload/avatar/${dataCliente.empleado.uid_avatar}`, formData);
 			}
-			if (comentario_com.trim().length > 0) {
-				await PTApi.post('/servicios/comentario/post', {
-					uidLocation: dataCliente.empleado.uid_comentario,
-					uid_usuario: user.uid,
-					comentario_com,
-				});
-			}
-			if (dataContactsEmerg.length > 0) {
-				await PTApi.post('/servicios/contacto-emergencia/post', {
-					contactosDeEmergencia: form.dataContactsEmerg,
-					uidLocation: dataCliente.empleado.uid_contactsEmergencia,
-				});
-			}
 			obtenerUsuariosEmpleados(id_empresa, id_estado);
 		} catch (error) {
 			console.log(error);

@@ -1,4 +1,5 @@
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore';
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { useForm } from '@/hooks/useForm';
 import { arrayCargoEmpl, arrayEmpresaFinan, arrayEstadoContrato, arrayEstadoTask } from '@/types/type';
 import { Button } from 'primereact/button';
@@ -7,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import Select from 'react-select';
+import { usePagoProveedoresStore } from './usePagoProveedoresStore';
 const registerTrabajo = {
     id_prov: 0,
     cod_trabajo: '',
@@ -18,12 +20,18 @@ const registerTrabajo = {
     monto_contrato: 0,
     observacion: '',
     id_estado: 505,
-    id_empresa: 0
+    mano_obra_soles: 0,
+    mano_obra_dolares: 0,
+    id_empresa: 0,
+    id_zona: 0
 };
-export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, data }) => {
+export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0 }) => {
     const [file_presupuesto, setfile_presupuesto] = useState(null);
     const [file_contrato, setfile_contrato] = useState(null);
     const [file_compromisoPago, setfile_compromisoPago] = useState(null);
+    const { postContratoProv, obtenerProveedores, obtenerParametrosProveedor } = useProveedorStore()
+    const { obtenerContratoxId, dataContrato, updateContratoxId } = usePagoProveedoresStore()
+
     const {
         formState,
         cod_trabajo,
@@ -36,13 +44,22 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, d
         observacion,
         id_prov,
         id_empresa,
+        mano_obra_soles,
+        mano_obra_dolares,
+        id_zona,
         onInputChange,
         onInputChangeReact,
         onResetForm,
-    } = useForm(data?data:registerTrabajo);
-    const { postContratoProv, obtenerProveedores, obtenerParametrosProveedor } = useProveedorStore()
-
+    } = useForm(id==0?registerTrabajo:dataContrato);
+    const { obtenerZonas, dataZonas } =  useTerminoStore()
   const { dataProveedores, dataProvCOMBO } = useSelector((s) => s.prov);
+  useEffect(() => {
+    if(show || id!==0){
+        
+        obtenerContratoxId(id)
+    }
+  }, [id, show])
+  
     const onCancelModal = () => {
         onHide();
         onResetForm()
@@ -51,10 +68,14 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, d
     };
     const onSubmitTrabajo = (e) => {
         e.preventDefault();
-        postContratoProv({...formState}, id_prov, file_presupuesto, file_contrato, file_compromisoPago)
-        console.log({formState, id_prov, file_presupuesto, file_contrato, file_compromisoPago});
-        
-        onCancelModal();
+        if(id==0){
+            postContratoProv({...formState}, id_prov, file_presupuesto, file_contrato, file_compromisoPago)
+            onCancelModal();
+            return;
+        }else{
+            updateContratoxId(id, {...formState}, id_empresa)
+            onCancelModal();
+        }
     };
     const onFileCompromisoPagoChange = (e)=>{
         const file = e.target.files[0];
@@ -78,10 +99,12 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, d
         // reader.readAsDataURL(file);
     }
     useEffect(() => {
-        if(show){
-            obtenerParametrosProveedor(id_empresa1)
+        if(show || id_empresa){
+            obtenerParametrosProveedor(id_empresa)
+            obtenerZonas(id_empresa)
         }
-    }, [show])
+    }, [show, id_empresa])
+    
     const proveedores = dataProveedores.map(prov=>{
         return {
             label: prov.razon_social_prov,
@@ -156,12 +179,29 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, d
                             <Select
                                 onChange={(e) => onInputChangeReact(e, 'id_empresa')}
                                 name="id_empresa"
-                                placeholder={'Seleccionar el estado'}
+                                placeholder={'Seleccionar la empresa'}
                                 className="react-select"
                                 classNamePrefix="react-select"
                                 options={arrayEmpresaFinan}
                                 value={arrayEmpresaFinan.find(
                                     (option) => option.value === id_empresa
+                                )||0}
+                                required
+                            />
+                        </div>
+                <div className="mb-3">
+                            <label htmlFor="id_zona" className="font-bold">
+                                ZONA*
+                            </label>
+                            <Select
+                                onChange={(e) => onInputChangeReact(e, 'id_zona')}
+                                name="id_zona"
+                                placeholder={'Seleccionar el zona'}
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                options={dataZonas}
+                                value={dataZonas.find(
+                                    (option) => option.value === id_zona
                                 )||0}
                                 required
                             />
@@ -243,6 +283,36 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, d
                         required
                     />
                 </div>
+                <div className="mb-3">
+					<label htmlFor="mano_obra_soles" className="form-label">
+						MANO DE OBRA EN SOLES*
+					</label>
+					<input
+						className="form-control"
+						placeholder="mano de obra en soles"
+						value={mano_obra_soles}
+						name="mano_obra_soles"
+						id="mano_obra_soles"
+						type="text"
+						onChange={onInputChange}
+						required
+					/>
+				</div>
+                <div className="mb-3">
+					<label htmlFor="mano_obra_dolares" className="form-label">
+						MANO DE OBRA EN DOLARES*
+					</label>
+					<input
+						className="form-control"
+						placeholder="mano de obra en dolares"
+						value={mano_obra_dolares}
+						name="mano_obra_dolares"
+						id="mano_obra_dolares"
+						type="text"
+						onChange={onInputChange}
+						required
+					/>
+				</div>
                 <div className="mb-3">
                     <label htmlFor="observacion" className="form-label">
                         Observacion*

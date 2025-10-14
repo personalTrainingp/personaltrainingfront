@@ -89,7 +89,7 @@ export const PerfilEmpleado = () => {
                     </Card.Header>
                     <Card.Body>
                         <TabView scrollable>
-                            <TabPanel header={'INFORMACION BASICA'}>
+                            <TabPanel header={'INFORMACION PERSONAL'}>
                                 <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                                   <InformacionGeneralEmpleado data={userEmpleado}/>
                                 </ScrollPanel>
@@ -106,7 +106,7 @@ export const PerfilEmpleado = () => {
                             <TabPanel header={'COMENTARIOS'}>
                               <SectionComentario uid_comentario={userEmpleado.uid_comentario}/>
                             </TabPanel>
-                            <TabPanel header={'PLANILLA'}>
+                            <TabPanel header={'RECURSOS HUMANOS'}>
                                 {/* <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/> */}
                                 <TabView>
                                   <TabPanel header={'CONTRATOS'}>

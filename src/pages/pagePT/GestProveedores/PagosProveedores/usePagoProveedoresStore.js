@@ -1,15 +1,20 @@
 import { PTApi } from '@/common';
 import { useImageStore } from '@/hooks/hookApi/useImageStore';
+import { onSetDataPagosProv, onViewContratoxProv } from '@/store/dataProveedor/proveedorSlice';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export const usePagoProveedoresStore = () => {
 	const [dataPagosContratos, setdataPagosContratos] = useState([]);
 	const [dataContratosPendientes, setdataContratosPendientes] = useState([]);
+	const [dataContrato, setdataContrato] = useState({});
+	const dispatch = useDispatch();
 	const obtenerTrabajosPendientes = async (id_empresa) => {
 		try {
 			const { data } = await PTApi.get(`/egreso/obtener-pagos-contratos/${id_empresa}`);
 			// const {data:dataProvee} = await PTApi.get
-			console.log(data.gastos);
+			// console.log(data.gastos);
+			dispatch(onSetDataPagosProv(data.gastos));
 			setdataPagosContratos(data.gastos);
 		} catch (error) {
 			console.log(error);
@@ -20,8 +25,7 @@ export const usePagoProveedoresStore = () => {
 			const { data } = await PTApi.get(
 				`/proveedor/obtener-trabajos-proveedores/${id_empresa}`
 			);
-			// const {data:dataProvee} = await PTApi.get
-			console.log({ data: data.dataContratos });
+			dispatch(onViewContratoxProv(data.dataContratos));
 			setdataContratosPendientes(data.dataContratos);
 		} catch (error) {
 			console.log(error);
@@ -30,6 +34,23 @@ export const usePagoProveedoresStore = () => {
 	const postPenalidades = async (formState, idContrato) => {
 		try {
 			const { data } = await PTApi.post(`/proveedor/penalidad/${idContrato}`, formState);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerContratoxId = async (id) => {
+		try {
+			const { data } = await PTApi.get(`/proveedor/contrato/${id}`);
+
+			setdataContrato(data.contratoProv);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const updateContratoxId = async (id, formState, id_empresa) => {
+		try {
+			const { data } = await PTApi.put(`/proveedor/put-contrato-prov/${id}`, formState);
+			await obtenerContratosPendientes(id_empresa);
 		} catch (error) {
 			console.log(error);
 		}
@@ -43,9 +64,12 @@ export const usePagoProveedoresStore = () => {
 	};
 	return {
 		obtenerTrabajosPendientes,
+		obtenerContratoxId,
 		dataPagosContratos,
 		dataContratosPendientes,
+		dataContrato,
 		obtenerContratosPendientes,
 		postPenalidades,
+		updateContratoxId,
 	};
 };

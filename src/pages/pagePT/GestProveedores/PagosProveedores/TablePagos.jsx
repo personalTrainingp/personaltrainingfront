@@ -35,16 +35,14 @@ import { ModalCustomDescuentos } from './ModalCustomDescuentos';
         break;
     }
   }
-export const TablePagos = ({id_empresa, setmodalCustomPagosProv}) => {
+export const TablePagos = ({id_empresa, onOpenModalCustomPagosProv}) => {
   const {
     obtenerTrabajosPendientes,
-    dataPagosContratos,
-    dataContratosPendientes,
     obtenerContratosPendientes,
   } = usePagoProveedoresStore();
 	const {obtenerImages, images} = useImageStore()
   const { obtenerProveedores } = useProveedorStore();
-  const { dataProveedores } = useSelector((s) => s.prov);
+  const { dataProveedores, dataContratoProv, dataPagosProv } = useSelector((s) => s.prov);
 const [pending, setPending] = useState(null); // {tipo:'presupuesto'|'contrato'}
   const [isOpenModalCustomDescuentos, setisOpenModalCustomDescuentos] = useState({isOpen: false, nombreTrabajo: null, idContrato: 0})
 
@@ -67,13 +65,13 @@ useEffect(() => {
 
   // 1) Une contrato + pagos + sumaPagos
   const contratosConPagos = useMemo(() => {
-    const pagos = dataPagosContratos ?? [];
-    return (dataContratosPendientes ?? []).map((contrato) => {
+    const pagos = dataPagosProv ?? [];
+    return (dataContratoProv ?? []).map((contrato) => {
       const dataPagos = pagos.filter((g) => g?.id_contrato_prov === contrato?.id);
       const sumaPagos = dataPagos.reduce((t, it) => t + (Number(it?.monto) || 0), 0);
       return { ...contrato, dataPagos, sumaPagos };
     });
-  }, [dataContratosPendientes, dataPagosContratos]);
+  }, [dataContratoProv, dataPagosProv]);
 
   // 2) Agrupa por proveedor
   const grupos = useMemo(() => {
@@ -249,7 +247,7 @@ useEffect(() => {
                                   <td className="text-end">
                                     <div>
                                       <i className='pi pi-trash'></i>
-                                      <i className='pi pi-pencil' onClick={()=>setmodalCustomPagosProv({isOpen: true, id: c.id, id_empresa: 0})}></i>
+                                      <i className='pi pi-pencil' onClick={()=>onOpenModalCustomPagosProv(c.id, id_empresa)}></i>
                                     </div>
                                   </td>
                                 </tr>

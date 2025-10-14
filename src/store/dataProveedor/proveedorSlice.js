@@ -40,12 +40,16 @@ export const proveedorSlice = createSlice({
 			observaciones: '',
 		},
 		dataContratoProv: [],
-		dataAgentes: [],
 		dataProveedores: [],
+		dataPagosProv: [],
+		dataAgentes: [],
 		dataProvCOMBO: [],
 		modalProvSlice: false,
 	},
 	reducers: {
+		onSetDataPagosProv: (state, { payload }) => {
+			state.dataPagosProv = payload;
+		},
 		onSetProveedores: (state, { payload }) => {
 			state.dataProveedores = payload;
 		},
@@ -70,6 +74,7 @@ export const proveedorSlice = createSlice({
 	},
 });
 export const {
+	onSetDataPagosProv,
 	onModalInfoProv,
 	onSetProveedores,
 	onSetAgentes,
