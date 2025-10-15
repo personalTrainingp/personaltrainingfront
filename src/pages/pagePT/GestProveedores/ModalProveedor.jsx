@@ -338,22 +338,25 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                             <label htmlFor="id_oficio" className="form-label">
                                                 Servicio y/o producto*
                                             </label>
-                                            <SelectOficio
-                                                comboOficio={[
-                                                    { label: 'Carpintero', value: 1 },
-                                                    { label: 'Electricista', value: 2 },
-                                                ]}
-                                                id_oficio={2}
-                                                onInputChangeReact={(e, field) => console.log('Seleccionó:', e, field)}
-                                                onAgregarOficio={(nuevo) => console.log('Nuevo oficio:', nuevo)}
-                                            />
+                                            
+                                            <Select
+                                                    onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
+                                                    name="id_tarjeta"
+                                                    placeholder={'Seleccione el banco'}
+                                                    className="react-select"
+                                                    classNamePrefix="react-select"
+                                                    options={comboOficio}
+                                                    value={comboOficio.find(
+                                                        (option) => option.value === id_oficio
+                                                    )}
+                                                />
                                         </div>
                                     </Col>
-                                    <Col lg={2}>
+                                    {/* <Col lg={2}>
                                         <div className='h-100 text-center d-flex align-items-center'>
                                             <Button onClick={()=>onClickOpenModalCustomOficios()}>+</Button>
                                         </div>
-                                    </Col>
+                                    </Col> */}
                                 </Row>
                             </Col>
                             <Col lg={12}>

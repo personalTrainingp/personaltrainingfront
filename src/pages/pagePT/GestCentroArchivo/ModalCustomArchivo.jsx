@@ -44,7 +44,7 @@ export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
         const formData = new FormData()
         formData.append('file', file)
         console.log({formData, file});
-        onPostArchivCenter(formState)
+        // onPostArchivCenter(formState)
         // postFiles(uid_file, formState, formData)
         cancelModal()
     }
