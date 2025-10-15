@@ -85,7 +85,7 @@ export const useProveedorStore = () => {
 				if (a.parametro_oficio !== null && b.parametro_oficio === null) return -1; // b al final
 				return 0; // mantiene el orden relativo entre iguales
 			});
-			dispatch(onSetProveedores(dataProv));
+			dispatch(onSetProveedores(data.proveedores));
 		} catch (error) {
 			console.log(error);
 		}

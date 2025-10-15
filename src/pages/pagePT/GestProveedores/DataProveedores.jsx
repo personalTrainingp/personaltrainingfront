@@ -61,10 +61,24 @@ export const DataProveedores = () => {
 											</TabView>
 										</TabPanel>
 										<TabPanel header={'CIRCUS'}>
+											<TabView>
+												<TabPanel header={'ACTIVOS'}>
 											<CustomersProv estado_prov={true} agente={true} id_empresa={601}/>
+												</TabPanel>
+												<TabPanel header={'INACTIVOS'}>
+											<CustomersProv estado_prov={false} agente={true} id_empresa={601}/>
+												</TabPanel>
+											</TabView>
 										</TabPanel>
 										<TabPanel header={'REDUCTO'}>
-											<CustomersProv estado_prov={true} agente={true} id_empresa={599}/>
+											<TabView>
+													<TabPanel header={'ACTIVOS'}>
+												<CustomersProv estado_prov={true} agente={true} id_empresa={599}/>
+													</TabPanel>
+													<TabPanel header={'INACTIVOS'}>
+												<CustomersProv estado_prov={false} agente={true} id_empresa={599}/>
+													</TabPanel>
+											</TabView>
 										</TabPanel>
 									</TabView>
 								</TabPanel>

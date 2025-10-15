@@ -1,18 +1,8 @@
 import { Row, Col, Card,  Modal } from 'react-bootstrap';
-import { Table, PageBreadcrumb } from '@/components';
-import { Proveedores } from '../data';
-import { columns, sizePerPageList } from './ColumnsSet';
-import { useToggle } from '@/hooks';
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { use } from 'i18next';
-import { useForm } from '@/hooks/useForm';
 import { useDispatch } from 'react-redux';
-import { helperFunctions } from '@/common/helpers/helperFunctions';
-import { useOptionsStore } from '@/hooks/useOptionsStore';
-import Select from 'react-select';
-import { ModalProveedor } from './ModalProveedor';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -128,10 +118,11 @@ const CustomersProv = ({estado_prov, agente, id_empresa}) => {
 		)
 	}
 	const telefonoBodyTemplate = (rowData)=>{
+		const waMe = `https://wa.me/${rowData.cel_prov}`
 		return(
-			<>
+			<a href={waMe} target='_blank' className=''>
 			    <span className='fw-bold'><p className='mb-0 pb-0'><span className=''>{rowData.cel_prov&&rowData.cel_prov.match(/.{1,3}/g).join(' ')}</span></p></span>
-			</>
+			</a>
 		)
 	}
 	const nombreContactoBodyTemplate = (rowData)=>{
