@@ -197,8 +197,8 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0 })
                                 placeholder={'Seleccionar el zona'}
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                options={dataZonas}
-                                value={dataZonas.find(
+                                options={[{value: 0, label: 'EN BLANCO'}, ...dataZonas]}
+                                value={[{value: 0, label: 'EN BLANCO'}, ...dataZonas].find(
                                     (option) => option.value === id_zona
                                 )||0}
                                 required
