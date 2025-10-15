@@ -5,13 +5,15 @@ import { useGestionLeadStore } from './useGestionLeadStore'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import { Button } from 'primereact/button'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 
 export const TableGestionLead = ({onClickCustomLead, onDeleteItemLead, id_empresa=598}) => {
         const { obtenerLeads } = useGestionLeadStore()
+        const { DataGeneral:dataRedesInvertidas, obtenerParametroPorEntidadyGrupo:obtenerRedesInvertidas } = useTerminoStore()
         const { dataView } = useSelector(e=>e.DATA)
-        
         useEffect(() => {
             obtenerLeads(id_empresa)
+            obtenerRedesInvertidas('inversion', 'redes')
         }, [])
   return (
     <>
@@ -22,6 +24,7 @@ export const TableGestionLead = ({onClickCustomLead, onDeleteItemLead, id_empres
                     <thead className='bg-primary'>
                         <tr>
                             <th className='text-white'>FECHA</th>
+                            <th className='text-white'>RED</th>
                             <th className='text-white'>CANT. LEAD</th>
                             <th className='text-white'>COSTO POR LEAD</th>
                             <th className='text-white'>COSTO INVERTIDO</th>
@@ -36,6 +39,7 @@ export const TableGestionLead = ({onClickCustomLead, onDeleteItemLead, id_empres
                                         <td>
                                             {dayjs.utc(m.fecha).format('dddd DD [DE] MMMM [DEL] YYYY')}
                                         </td>
+                                        <td>{dataRedesInvertidas.find(d=>d.value===m.id_red)?.label}</td>
                                         <td>{m.cantidad}</td>
                                         <td>
                                             <div className=''>
@@ -49,7 +53,7 @@ export const TableGestionLead = ({onClickCustomLead, onDeleteItemLead, id_empres
                                         </td>
                                         <td>
                                             <div className='d-flex'>
-                                                <span className='mr-3' onClick={()=>onClickCustomLead(m?.id, id_empresa, {fecha: dayjs.utc(m.fecha).format('YYYY-MM-DD'), cantidad: m.cantidad, monto: m.monto})}>
+                                                <span className='mr-3' onClick={()=>onClickCustomLead(m?.id, id_empresa, {fecha: dayjs.utc(m.fecha).format('YYYY-MM-DD'), cantidad: m.cantidad, monto: m.monto, id_red: m.id_red})}>
                                                     <i className='pi pi-pencil'></i>
                                                     {/* {JSON.stringify(m, null, 2)} */}
                                                 </span>

@@ -115,9 +115,12 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     };
     
     const telefonoBodyTemplate = (rowData)=>{
+        const waTel = `https://wa.me/${rowData.telefono_empl}`
         return (
             <div className="flex align-items-center fw-bold" style={{fontSize: '22px'}}>
-                <span>{highlightText(rowData.telefono_empl?`${rowData.telefono_empl}`.replace(/ /g, "").match(/.{1,3}/g).join(' '):'', globalFilterValue)}</span>
+                <a className='' href={waTel} target='_blank'>
+                    <span>{highlightText(rowData.telefono_empl?`${rowData.telefono_empl}`.replace(/ /g, "").match(/.{1,3}/g).join(' '):'', globalFilterValue)}</span>
+                </a>
             </div>
         );
     }
