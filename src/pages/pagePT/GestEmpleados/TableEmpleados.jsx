@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import { ModalEmpleado } from './ModalEmpleado';
 import dayjs from 'dayjs';
 import { FormatoDateMask } from '@/components/CurrencyMask';
+import { useEmpleadosStore } from './useEmpleadosStore';
 
 export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) => {
     const [customers, setCustomers] = useState(null);
@@ -27,9 +28,11 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const  { obtenerUsuariosEmpleados } = useUsuarioStore()
+    const { dataParientes, obtenerParientesEmpleados } = useEmpleadosStore()
     const {dataView} = useSelector((e) => e.DATA);
     useEffect(() => {
         obtenerUsuariosEmpleados(id_empresa, id_estado)
+        obtenerParientesEmpleados()
     }, [id_empresa, id_estado])
     
         useEffect(() => {
@@ -127,7 +130,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     }
     const verHistoryBodyTemplate = (rowData) => {
         return (
-            <Link to={`/perfil-colaborador/${rowData.uid}`} className="action-icon text-primary fw-bold" style={{fontSize: '14px', textDecoration: 'underline'}}>
+            <Link to={`/perfil-colaborador/${rowData.uid}`} className="action-icon text-primary fw-bold" style={{fontSize: '20px', textDecoration: 'underline'}}>
                 Ver Perfil
             </Link>
         );
@@ -156,31 +159,54 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
             </div>
         );
     };
-    const IdBodyTemplate = (rowData, { rowIndex })=>{
+    const ContactoEmergenciaBodyTemplate = (rowData)=>{
+        const dataPariente = dataParientes.filter(d=>d.uid_location===rowData.uid_contactsEmergencia)
         return (
-            <div className="flex align-items-center gap-2">
-                <span>{rowIndex + 1}</span>
+            <div style={{fontSize: '20px'}} className={`flex align-items-center gap-2 ml-7  fw-bold ${dataPariente.length>0?'text-ISESAC':'text-change'}`}>
+                {dataPariente.length>0?'SI':'NO'}
             </div>
         );
     }
+    const toMailto = (value, subject = "", body = "") => {
+  // extrae el correo aunque venga como "Nombre <correo@dom.com>"
+  const match = String(value).match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}/);
+  if (!match) return null;
+  const email = match[0];
+  const qs = `?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return `mailto:${email}${qs}`;
+};
+
+
     const emailBodyTemplate = (rowData) => {
+        const urlMail =`mailto:${rowData.email_empl}`
+        const urlMailCorp =`mailto:${rowData.email_corporativo}`
+        // window.location.href = urlMail;
         return (
-            <div className="align-items-center flex-column">
+            <div className="align-items-center flex-column ml-4">
                 <span>
                 <span>EMAIL PERSONAL: </span>
                 <br/>
+                <a href={toMailto(urlMail)}>
                 <strong>
-                    {highlightText(rowData.email_empl, globalFilterValue)}
+                    {highlightText(rowData.email_empl.split('@')[0], globalFilterValue)}
                 </strong>
+                <br/>
+                <strong>
+                    @{highlightText(rowData.email_empl.split('@')[1], globalFilterValue)}
+                </strong>
+                </a>
                 <br/>
                 </span>
                 {rowData?.email_corporativo&&(
                     <span>
                         <span>EMAIL CORPORATIVO: </span>
                 <br/>
+                <a href={urlMailCorp}>
                     <strong className=''>
                         {highlightText(rowData?.email_corporativo, globalFilterValue)}
                     </strong>
+
+                </a>
                 <br/>
 
                     </span>)}
@@ -239,6 +265,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
             )
         }
             <div className='fs-1'>
+                {/* {JSON.stringify(dataParientes, null, 2)} */}
             <DataTable size='small' 
                         value={customers} 
                         paginator 
@@ -256,14 +283,14 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                         header={header}
                         emptyMessage="SOCIOS NO ENCONTRADOS.">
                 <Column header="ID" style={{ minWidth: '2rem' }} body={idBodyTemplate}/>
-                <Column header="FOTO" filterField="id_cli" style={{ minWidth: '10rem' }} sortable body={imagenBodyTemplate} filter/>
-                <Column header="CARGO" style={{ minWidth: '2rem' }} body={cargoBodyTemplate}/>
-                <Column header={<>NOMBRES <br/> APELLIDOS</>} filterField="nombres_apellidos_empl" style={{ minWidth: 'auto' }} sortable body={NombresApellidosEmplBodyTemplate} filter/>
-                <Column header="CELULAR" filterField={`tel_cli`} style={{ minWidth: '10rem' }} sortable body={telefonoBodyTemplate} filter/>
-                <Column header="EMAIL" filterField={`email_cli`} style={{ minWidth: '10rem' }} sortable body={emailBodyTemplate} filter/>
-                <Column header="CONTACTO EMERGENCIA" style={{ minWidth: '10rem' }} sortable filter/>
-                <Column header="DNI" style={{ minWidth: '10rem' }} sortable filter/>
-                <Column header="CV" style={{ minWidth: '10rem' }} sortable  filter/>
+                <Column header={<div style={{fontSize: '20px'}}>FOTO</div>} filterField="id_cli" style={{ minWidth: '10rem' }} body={imagenBodyTemplate} />
+                <Column header={<div style={{fontSize: '20px'}}>CARGO</div>} style={{ minWidth: '2rem' }} body={cargoBodyTemplate}/>
+                <Column header={<div style={{fontSize: '20px'}}>NOMBRES <br/> APELLIDOS</div>} filterField="nombres_apellidos_empl" style={{ minWidth: 'auto' }} body={NombresApellidosEmplBodyTemplate}/>
+                <Column header={<div style={{fontSize: '20px'}}>CELULAR</div>} filterField={`tel_cli`} style={{ minWidth: '10rem' }} body={telefonoBodyTemplate} />
+                <Column header={<div style={{fontSize: '20px'}} className='ml-6'>EMAIL</div>} filterField={`email_cli`} style={{ minWidth: '10rem' }} body={emailBodyTemplate}/>
+                <Column header={<div style={{fontSize: '20px'}} className='ml-1'>CONTACTO EMERGENCIA</div>} style={{ minWidth: '10rem' }} body={ContactoEmergenciaBodyTemplate}/>
+                <Column header={<div style={{fontSize: '20px'}} className='ml-5'>DNI</div>} style={{ minWidth: '10rem' }}/>
+                <Column header={<div style={{fontSize: '20px'}}>CV</div>} style={{ minWidth: '10rem' }}/>
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
             </div>
