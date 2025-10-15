@@ -131,7 +131,6 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0 })
                             // id="penalidad_fijo"
                             type="file"
                             onChange={(e)=>onFileCompromisoPagoChange(e)}
-                            required
                         />
                 </div>
                 <div className='mb-3'>
@@ -146,7 +145,6 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0 })
                             // id="penalidad_fijo"
                             type="file"
                             onChange={(e)=>onFileContratoChange(e)}
-                            required
                         />
                 </div>
                         </>
