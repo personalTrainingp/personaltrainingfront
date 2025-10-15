@@ -143,8 +143,6 @@ const CustomersProv = ({estado_prov, agente, id_empresa}) => {
 	}
 	return (
 		<>
-		<pre>
-		</pre>
 			<Row>
 				<Col xs={12}>
 							

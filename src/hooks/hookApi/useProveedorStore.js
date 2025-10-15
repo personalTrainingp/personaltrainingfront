@@ -43,12 +43,18 @@ export const useProveedorStore = () => {
 		tb_images: [{ name_image: '' }],
 		id_oficio: 0,
 	});
-	const startRegisterProveedor = async (formState, estado_prov, agente, selectedFile) => {
+	const startRegisterProveedor = async (
+		formState,
+		estado_prov,
+		agente,
+		selectedFile,
+		id_empresa
+	) => {
 		try {
 			setIsLoading(true);
 			const { data } = await PTApi.post('/proveedor/post-proveedor', {
 				...formState,
-				id_empresa: 598,
+				id_empresa,
 			});
 			if (selectedFile) {
 				const formData = new FormData();

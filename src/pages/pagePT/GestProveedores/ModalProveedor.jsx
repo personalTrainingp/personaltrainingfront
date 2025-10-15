@@ -22,7 +22,8 @@ const registerProvedor = {
 	estado_prov: false,
     id_oficio: 0,
     nombre_contacto: '',
-    es_agente: false
+    es_agente: false,
+    id_empresa: 0
 }
 const registerImgAvatar={
     imgAvatar_BASE64: ''
@@ -46,6 +47,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
             cci,
             n_cuenta,
             id_tarjeta,
+            id_empresa,
             id_oficio,
             es_agente,
             formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
@@ -91,7 +93,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                 }
                 setVisible(true);
                 onCancelForm()
-                await startRegisterProveedor(formState, estado_prov, es_agente, selectedAvatar)
+                await startRegisterProveedor(formState, estado_prov, es_agente, selectedAvatar, id_empresa)
             }
             
             const onCancelForm = ()=>{
@@ -126,6 +128,24 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                 <Modal.Body>
                     <form onSubmit={submitProveedor}>
                         <Row>
+                            <Col lg={12}>
+                                <div className="mb-4">
+                                    <label htmlFor="id_empresa" className="form-label">
+                                        EMPRESA
+                                    </label>
+                                    <Select
+                                            onChange={(e) => onInputChangeReact(e, 'id_empresa')}
+                                            name="id_empresa"
+                                            placeholder={'Seleccionar la empresa'}
+                                            className="react-select"
+                                            classNamePrefix="react-select"
+                                            options={[{value: 598, label: 'CHANGE'}, {value: 599, label: 'REDUCTO'}, {value: 601, label: 'CIRCUS'}]}
+                                            value={DataGeneral.find(
+                                                (option) => option.value === id_empresa
+                                            )}
+                                        />
+                                </div>
+                            </Col>
                             <Col lg={12}>
                                 <p className='fw-bold fs-5 text-decoration-underline'>
                                     FOTO DEL PROVEEDOR
