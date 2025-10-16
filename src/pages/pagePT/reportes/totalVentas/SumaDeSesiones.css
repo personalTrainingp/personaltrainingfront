@@ -7,7 +7,6 @@
   border: 1px solid #000 !important;
   box-sizing: border-box;
 }
-
 /* --- Estructura base triptych --- */
 .tabla-sesiones td.triptych {
   position: relative;
@@ -16,8 +15,6 @@
   min-width: 90px;
   max-width: 100px;
 }
-
-
 .tabla-sesiones td.triptych > .tri-box {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

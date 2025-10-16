@@ -82,7 +82,6 @@
                     <Col lg={12}>
                     
                     <Table
-                          // style={{tableLayout: 'fixed'}}
                           className="table-centered mb-0 fs-4"
                           hover
                           responsive
