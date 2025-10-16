@@ -141,7 +141,6 @@
   left: calc(66.6667% - 0.5px);
 }
 
-/* --- Borde grueso inicio/fin de bloque --- */
 .tabla-sesiones th.program-start,
 .tabla-sesiones td.program-start {
   border-left: 2px solid red !important;
@@ -164,6 +163,17 @@
 .tabla-sesiones tbody td:last-child {
   border-right: 2px solid red !important;
 }
+.tabla-sesiones {
+  --accent-red: red;
+}
+.tabla-sesiones tbody tr.fila-total {
+  position: relative;
+  box-shadow:
+    inset 0 2px 0 var(--accent-red),
+    inset 0 -2px 0 var(--accent-red);
+}
+
+
 .tabla-sesiones tbody tr.fila-secundaria td.img-with-name {
   background: #000 !important;
   color: #fff !important;
@@ -203,6 +213,7 @@
   border-top: none !important;    
 }
 .tabla-sesiones .is-bold { font-weight: 800; }
+/* --- Inicio de Tarjetas pago --- */
 
 .rank-avatar {
   position: relative;                

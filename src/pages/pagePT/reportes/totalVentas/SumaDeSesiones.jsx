@@ -429,7 +429,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                 </tr>
 
                 {/* TOTAL */}
-                <tr className="fw-bold fila-secundaria" style={{ background: "#fff", fontSize: 25 }}>
+                <tr className="fw-bold fila-secundaria fila-total" style={{ background: "#fff", fontSize: 25 }}>
                   <td className="img-with-name">
                     <div className="img-cap only-text">
                       <div className="cap">TOTAL</div>
