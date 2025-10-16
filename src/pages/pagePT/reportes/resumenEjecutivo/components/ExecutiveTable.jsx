@@ -193,10 +193,10 @@ return {
     { key: "mkCpl", label: "COSTO POR LEADS", type: "float2" },
     { key: "totalServ", label: "VENTA MEMBRESIA", type: "money" },
     { key: "cantServ", label: "CANTIDAD MEMBRESIA", type: "int" },
-    { key: "ticketServ", label: "TICKET PROMEDIO MEM.", type: "money" },
+    { key: "ticketServ", label: "TICKET MEDIO MEMBRESIA", type: "money" },
     { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
     { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
-    { key: "ticketProd", label: "TICKET PROMEDIO PRODUCTOS", type: "money" },
+    { key: "ticketProd", label: "TICKET MEDIO PRODUCTOS", type: "money" },
   ];
 
   // Precalcular métricas por columna (mes)
