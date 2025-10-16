@@ -125,7 +125,7 @@ useEffect(() => {
         <tbody>
           {grupos.map((grupo) => {
             const proveedor = (dataProveedores ?? []).find((p) => p.id === grupo.id_prov);
-            const razon = proveedor?.nombre_contacto?? `Prov #${grupo.id_prov}`;
+            const razon = proveedor?.nombre_contacto?`${grupo.id_prov} / ${proveedor?.nombre_contacto}`: `Prov #${grupo.id_prov}`;
             const ruc = proveedor?.razon_social_prov?? `Prov #${grupo.id_prov}`;
             const montoContratos = grupo.items.reduce((t, it) => t + (Number(it?.monto_contrato) || 0), 0);
             const sumarPagos = grupo.items.reduce((t, it) => t + (Number(it?.sumaPagos) || 0), 0);
