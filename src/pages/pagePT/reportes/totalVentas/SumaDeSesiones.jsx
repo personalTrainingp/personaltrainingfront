@@ -40,7 +40,24 @@
               advisorOriginByProg = {},
                 avatarByAdvisor = {},   
             }) {
-              
+       const filtrarAsesoresConProgramas = (filas, advisorOriginByProg) => {
+  return filas.filter((fila) => {
+    const asesor = fila[0]?.value ?? "";
+    // recorrer todos los programas visibles
+    for (const pk of Object.keys(advisorOriginByProg)) {
+      const counts = advisorOriginByProg?.[pk]?.[asesor];
+      if (counts && (
+          Number(counts.nuevos) > 0 ||
+          Number(counts.renovaciones) > 0 ||
+          Number(counts.reinscripciones) > 0
+        )) {
+        return true; // 👈 tiene al menos un programa vendido
+      }
+    }
+    return false; // 👈 eliminar asesores sin programas
+  });
+};
+       
               const progKeys = avataresDeProgramas.map(
                 (p) => String(p?.name_image ?? "").trim().toUpperCase()
               );
@@ -69,8 +86,9 @@
                 const totalRow = fila.slice(1).reduce((acc, c) => acc + toNumber(c.value), 0);
                 return totalRow > 0;
               });
-
+              filas = filtrarAsesoresConProgramas(filas, advisorOriginByProg);
               // totales por programa (desde filas)
+              
               const colTotalByProg = {};
               progKeys.forEach((pk, i) => {
                 const colIdx = i + 1; // +1 por "NOMBRE"
@@ -143,8 +161,17 @@
                 return map;
               }, [asesores, moneyByAdvisor]);
 
-              const sumCol = (idx) => filas.reduce((acc, f) => acc + toNumber(f[idx]?.value), 0);
+const totalVisibleMoney = filas.reduce((acc, fila) => {
+  const asesor = fila[0]?.value ?? "";
+  return acc + (moneyByAdvisor[norm(asesor)]?.money || 0);
+}, 0);
 
+Object.keys(moneyByAdvisor).forEach((key) => {
+  const visible = filas.find((f) => norm(f[0]?.value) === key);
+  if (!visible) return; // si no está visible, no recalcular
+  const m = moneyByAdvisor[key]?.money || 0;
+  moneyByAdvisor[key].pct = totalVisibleMoney > 0 ? (m * 100) / totalVisibleMoney : 0;
+});
               // estilos
               const C = {
                 dark: "#5c6670",
@@ -183,7 +210,8 @@
                   { nuevos: 0, renovaciones: 0, reinscripciones: 0 }
                 );
               };
-              
+              // 🔹 Filtra asesores que no vendieron programas (solo membresías)
+
               const grandMoney = useMemo(() => {
                 const cellsFromResumenTotales = Array.isArray(resumenTotales) ? resumenTotales : null;
                 const cellsFromResumenArrayTotal = Array.isArray(resumenArray)
@@ -401,7 +429,7 @@
                 </tr>
 
                 {/* TOTAL */}
-                <tr className="fw-bold fila-secundaria" style={{ background: "#fff", fontSize: 25 }}>
+                <tr className="fw-bold fila-secundaria fila-total" style={{ background: "#fff", fontSize: 25 }}>
                   <td className="img-with-name">
                     <div className="img-cap only-text">
                       <div className="cap">TOTAL</div>
