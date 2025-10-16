@@ -93,13 +93,11 @@ export const ClientesPorOrigen=({
       if (!base.has(keyMes)) continue;
 
 const originId = v?.id_origen;
-if (!originId || originId === 0) continue; // 👈 ignora ventas sin origen válido
+if (!originId || originId === 0) continue; 
 
 const origin = labelOfOrigin(originId);
 const bucket = base.get(keyMes);
 if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
-
-
 
       if (uniqueByClient) {
         const set = bucket.get(origin);
@@ -111,7 +109,6 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
 
   }
 
-  // Reunir todos los orígenes presentes (incluye los que aparezcan en originMap aunque estén en 0)
    const allOrigins = new Set();
     for (const m of base.values()) for (const o of m.keys()) allOrigins.add(o);
     Object.values(originMap || {}).forEach((name) => allOrigins.add(String(name).toUpperCase()));
@@ -165,8 +162,7 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
   const lastMonthKey = monthKeys[monthKeys.length - 1]?.key;
     const maxValueLastCol = Math.max(...orderedOrigins.map(o => getCount(lastMonthKey, o)));
 
-    // --------------------------- Render ---------------------------
-    // Ordenar por la última columna (mayor a menor), y en caso de empate, por la suma total
+
     const sortedOrigins = [...orderedOrigins].sort((a, b) => {
       const va = getCount(lastMonthKey, a);
       const vb = getCount(lastMonthKey, b);

@@ -101,17 +101,14 @@ const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= 
         };
         fetchProgramas();
       }, []);
-    // 👇 lee los datos por programa (como en ty)
     const { obtenerComparativoResumen, dataGroup } = useReporteResumenComparativoStore();
 
-    // 👇 ya usas RANGE_DATE; dispara la carga por programa
     useEffect(() => {
       if (RANGE_DATE?.[0] && RANGE_DATE?.[1]) {
         obtenerComparativoResumen(RANGE_DATE);
       }
     }, [RANGE_DATE]);
    
-    // 👇 mapeo de id de programa a la etiqueta que usas en avatares
     const progNameById = {
       2: "CHANGE 45",
       3: "FS 45",
@@ -159,7 +156,6 @@ const advisorOriginByProg = useMemo(() => {
         v?.tb_ventum?.tb_cliente?.id_cli;
       if (!idCliente) continue;
 
-      // clasificador por origen (igual que gg)
       const o = v?.tb_ventum?.id_origen;
       let tipo = "nuevos";
       if (o === 691) tipo = "renovaciones";
@@ -175,8 +171,6 @@ const advisorOriginByProg = useMemo(() => {
       outSets[progKey][asesor][tipo].add(idCliente);
     }
   }
-
-  // convierte Sets -> contadores
   const outCounts = {};
   Object.entries(outSets).forEach(([progKey, asesoresObj]) => {
     outCounts[progKey] = {};
@@ -192,7 +186,6 @@ const advisorOriginByProg = useMemo(() => {
   return outCounts;
 }, [dataGroup, start, end, progNameById]);
 
-  // 3) NUEVO: originBreakdown en su propio useMemo (fuera de sociosOverride)
   const originBreakdown = useMemo(() => {
     const out = {};
     const src = Array.isArray(dataGroup) ? dataGroup : [];
@@ -206,7 +199,6 @@ const advisorOriginByProg = useMemo(() => {
         ? pgm.detalle_ventaMembresium
         : [];
 
-      // quitar canjes/traspasos (monto 0) y filtrar por rango
       const pagadas = items.filter((v) => {
         if (Number(v?.tarifa_monto) === 0) return false;
         const iso =
@@ -229,7 +221,6 @@ const advisorOriginByProg = useMemo(() => {
     return out;
   }, [dataGroup, start, end, progNameById]);
 
-  // 4) sociosOverride queda limpio (sin hooks adentro)
   const sociosOverride = useMemo(() => {
     try {
       if (!Array.isArray(dataGroup)) return {};
@@ -284,9 +275,6 @@ const advisorOriginByProg = useMemo(() => {
       return {};
     }
   }, [dataGroup, start, end, progNameById]);
-
-
-        // columnas (las del diseño de tu imagen)
         const columns = useMemo(() => ([
           { key: "marzo",  label: "MARZO",  currency: "S/." },
           { key: "abril",  label: "ABRIL",  currency: "S/." },
@@ -297,7 +285,6 @@ const advisorOriginByProg = useMemo(() => {
           { key: "septiembre", label: "SEPTIEMBRE", currency: "S/." },
         ]), []);
 
-        // (opcional) KPIs de marketing por mes
         const marketing = {
           inversion_redes: { marzo: 1098, abril: 3537, mayo: 4895, junio: 4622, julio: 4697, agosto: 5119, septiembre: 0 },
           leads:           { marzo: 84,  abril: 214,  mayo: 408,  junio: 462,  julio: 320,  agosto: 417, septiembre: 0  },
@@ -311,10 +298,9 @@ function handleMonthChange(newMonth) {
   const currentMonth = today.getMonth() + 1;
   const currentYear = today.getFullYear();
 
-  const lastDayTarget = daysInmonth(year, newMonth); // 👈 nombre corregido
+  const lastDayTarget = daysInmonth(year, newMonth); 
   let nextCutDay;
 
-  // ✅ Si el mes es el actual, limita el día de corte al día de hoy
   if (newMonth === currentMonth && year === currentYear) {
     nextCutDay = Math.min(today.getDate(), lastDayTarget);
   } else {
@@ -336,11 +322,10 @@ function handleMonthChange(newMonth) {
           titleLeft: "CIRCUS",
           titleRight: `RESUMEN EJECUTIVO HASTA EL ${cutDay} DE CADA MES`,
           marketing,
-          cutDay,               // coméntalo si no quieres corte
+          cutDay,              
           initDay,
-          footerFullMonth: true // footer = mes completo
+          footerFullMonth: true 
         }), [dataVentas, columns, marketing, cutDay]);
-        // Mapea tus IDs reales
         const originMap = {
           1454: "WALK-IN",
           1455: "DIGITAL",
@@ -384,24 +369,21 @@ function handleMonthChange(newMonth) {
           });
           monthIdx--;
           if (monthIdx < 0) {
-            monthIdx = 11; // diciembre
-            currentYear--; // retrocede un año
+            monthIdx = 11; 
+            currentYear--; 
           }
         }
-        return result.reverse(); // para que quede cronológico
+        return result.reverse(); 
       }
       function generarResumenRanking(array) {
-        // Totales generales
         const sumaMontoTotal = array.reduce((acc, row) => acc + (row?.monto || 0), 0);
         const sumaTotalSocios = array.reduce((acc, row) => acc + (row.socios || 0), 0);
         const sumaTotalSesiones = array.reduce((acc, row) => acc + (row.sesiones || 0), 0);
 
-        // Filas por asesor
         const resumenFilas = array.map((row) => {
           const nombreAsesor = row.empl?.split(" ")[0] || row.nombre || "";
           const socios = row.socios || 0;
 
-          // Ticket medio: monto / socios (sin dividir entre 2)
           const ticketMedio = socios ? (row.monto / socios).toFixed(2) : "0.00";
 
           return [
@@ -456,7 +438,6 @@ function handleMonthChange(newMonth) {
         { urlImage: "/change_blanco.png", name_image: "CHANGE 45" },
         { urlImage: "/fs45_blanco.png", name_image: "FS 45" },
         { urlImage: "/fs45_blancos.png", name_image: "FISIO MUSCLE" },
-      // { urlImage: "https://archivosluroga.blob.core.windows.net/membresiaavatar/cyl-avatar.png", name_image: "CHANGE YOUR LIFE" },
       { urlImage: "/vertikal_act.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
     ];  
 
@@ -481,7 +462,6 @@ function handleMonthChange(newMonth) {
           socios = 0;
         }
 
-        // Sesiones: suma segura
         const sesiones = Array.isArray(item.items)
           ? item.items.reduce(
               (acc, it) => acc + (it?.tb_semana_training?.sesiones ?? it?.sesiones ?? 0),
@@ -521,7 +501,7 @@ function handleMonthChange(newMonth) {
         return null;
       };
 
-      const countDigitalClientsForMonth = (ventasList = [], anio, mesNombre, fromDay = 1, cut = 21) => {
+      const countDigitalClientsForMonth = (ventasList = [], anio, mesNombre, fromDay = 1, cut = {cutDay}) => {
         
         const MESES_LOCAL = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
         const monthLower = String(mesNombre).toLowerCase();
@@ -542,12 +522,9 @@ function handleMonthChange(newMonth) {
           if (dia < from || dia > to) continue;
 
           const origin = detectDigitalOrigin(v);
-          if (origin === "instagram" || origin === "tiktok" || origin === "facebook") {
-          
-            cnt += 1;
-        
-          }
-          
+          if (origin === "instagram" || origin === "tiktok" || origin === "facebook") {          
+            cnt += 1;      
+          }        
         }
         return cnt;
       };
@@ -580,11 +557,9 @@ const dataMktWithCac = useMemo(() => {
     );
   }, [mesesSeleccionados]);
 
-  // 2) Qué meses realmente construyó buildDataMktByMonth
   useEffect(() => {
   }, [dataMktByMonth]);
 
-  // 3) Qué abarca dataLead (mínima y máxima fecha)
   useEffect(() => {
     const parse = v => v?.fecha ?? v?.createdAt ?? v?.fecha_venta;
     const ds = (dataLead || [])
@@ -609,12 +584,10 @@ const avatarByAdvisor = useMemo(() => {
   const map = {};
 
   for (const it of lista) {
-    // clave = primer nombre normalizado (igual que en SumaDeSesiones)
     const fullName = it?.empl || it?.tb_empleado?.nombres_apellidos_empl || it?.nombre || "";
     const key = norm((fullName.split(" ")[0] || "").trim());
     if (!key) continue;
 
-    // usa el mismo campo que ya te funciona en TarjetasPago
     const raw =
       it?.avatar ||
       it?.tb_empleado?.avatar ||
@@ -623,16 +596,12 @@ const avatarByAdvisor = useMemo(() => {
 
     if (!raw) continue;
 
-    // misma regla que en TarjetasPago
     const url = /^https?:\/\//i.test(raw) ? raw : `${config.API_IMG.AVATAR_EMPL}${raw}`;
     map[key] = url;
   }
 
   return map;
 }, [repoVentasPorSeparado?.total?.empl_monto]);
-
-
-
       return (
           <>
             <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
@@ -641,7 +610,6 @@ const avatarByAdvisor = useMemo(() => {
               <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"40px" }}>
 
                 
-        {/* 👇 Nuevo: Selector de mes */}
         <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
           <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Mes:</label>
          <select
@@ -650,7 +618,6 @@ const avatarByAdvisor = useMemo(() => {
     const newMonth = parseInt(e.target.value, 10);
     const currentMonth = new Date().getMonth() + 1;
 
-    // 🚫 Evita seleccionar meses futuros
     if (newMonth > currentMonth) return;
 
     handleMonthChange(newMonth);
@@ -662,7 +629,7 @@ const avatarByAdvisor = useMemo(() => {
     "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"
   ].map((mes, idx) => {
     const currentMonth = new Date().getMonth() + 1;
-    const disabled = idx + 1 > currentMonth; // 🔒 meses futuros bloqueados
+    const disabled = idx + 1 > currentMonth; 
     return (
       <option key={idx + 1} value={idx + 1} disabled={disabled}>
         {mes}
@@ -783,7 +750,6 @@ const avatarByAdvisor = useMemo(() => {
                   />
                 </div>
                 <Col lg={12}>
-                  {/* 👇 Y justo después el Ranking */}
                   <div style={{marginTop: '15px'}}>
                     <TarjetasPago
                       tasks={

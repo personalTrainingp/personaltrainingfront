@@ -38,8 +38,7 @@ export default function ExecutiveTable({
   dataMktByMonth = {},
   initialDay = 1,
   cutDay = 21,
-
-}) {  
+}) {
   const MESES = [
     "enero",
     "febrero",
@@ -61,7 +60,6 @@ export default function ExecutiveTable({
     if (!iso) return null;
     try {
       const d = new Date(iso);
-      // convert UTC -> Lima (-05:00)
       const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
       return new Date(utcMs - 5 * 60 * 60000);
     } catch (_) {
@@ -81,34 +79,27 @@ export default function ExecutiveTable({
       Number(n || 0)
     );
 
-  // Aceptar varias llaves de detalle para robustez
   const getDetalleServicios = (v) => v?.detalle_ventaMembresia || v?.detalle_ventaMembresia || [];
   const getDetalleProductos = (v) =>
     v?.detalle_ventaProductos || v?.detalle_ventaproductos || v?.detalle_venta_productos || [];
 
-  // Filtrar ventas por mes/año + rango de días [initialDay, cutDay]
   const computeMetricsForMonth = (anio, mesNombre) => {
   const mesAlias = aliasMes(String(mesNombre).toLowerCase());
   const monthIdx = MESES.indexOf(mesAlias); // 0..11
   if (monthIdx < 0) return null;
 
-  // Acumulados HASTA cutDay
   let totalServ = 0, cantServ = 0, totalProd = 0, cantProd = 0;
 
-  // Acumulados del MES COMPLETO (1–31)
   let totalServFull = 0, cantServFull = 0, totalProdFull = 0, cantProdFull = 0;
 
-  // Precalcular límites de días
   const from = clamp(Number(initialDay || 1), 1, 31);
-  const toDefault = 31; // por defecto 31, luego se ajusta por mes real por cada venta
-
+  const toDefault = 31; 
   for (const v of ventas) {
     const d = toLimaDate(v?.fecha_venta);
     if (!d) continue;
     if (d.getFullYear() !== Number(anio)) continue;
     if (d.getMonth() !== monthIdx) continue;
 
-    // Mes completo: SIEMPRE sumar
     for (const s of getDetalleServicios(v)) {
       const cantidad = Number(s?.cantidad || 1);
       const linea = Number(s?.tarifa_monto || 0);
@@ -122,7 +113,6 @@ export default function ExecutiveTable({
       cantProdFull += cantidad;
     }
 
-    // Corte por días: solo si cae dentro [from, cutDay] del mes real
     const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
     const to = clamp(Number(cutDay || lastDay), from, lastDay);
     const dia = d.getDate();
@@ -145,50 +135,68 @@ export default function ExecutiveTable({
   const ticketServ = cantServ ? totalServ / cantServ : 0;
   const ticketProd = cantProd ? totalProd / cantProd : 0;
 
-  const key = `${anio}-${mesAlias}`;
-  const mk = dataMktByMonth?.[key] || {}
-  const invBase = (mk.inversiones_redes ?? mk.inversion_redes ?? mk.inv ?? 0);;
-const mkInvAdjusted = Number(mk?.inversiones_redes * 3.7 || 0);
-const clientesDigitales = mk?.clientes_digitales || 0;
- const leads = Number(mk.leads ?? 0);
- const cplBase = Number(mk.cpl ?? 0) * 3.7;
+const key = `${anio}-${aliasMes(String(mesNombre).toLowerCase())}`;
+const mk = dataMktByMonth?.[key] ?? {};
+const FACTOR = 3.7;
+
+const invTotal = Number(mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0);
+const mkInvAdjusted = invTotal * FACTOR;
+
+const leads = Number(mk?.leads ?? 0);
+const mkCpl = Number(mk?.cpl ?? 0) * FACTOR;
+
+const clientesDigitales = Number(mk?.clientes_digitales ?? 0);
 const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
-  return {
-    mkInv: mkInvAdjusted,
-    mkCpl: cplBase,
-     mkLeads:leads,
-     mkCac,
 
-    // HASTA cutDay
-    totalServ,
-    cantServ,
-    ticketServ,
-    totalProd,
-    cantProd,
-    ticketProd,
-    totalMes: totalServ + totalProd,
+const porRedRaw = mk?.por_red ?? mk?.inv_por_canal ?? {};
+const por_red = Object.fromEntries(
+  Object.entries(porRedRaw).map(([k, v]) => [String(k).toLowerCase(), Number(v ?? 0) * FACTOR])
+);
 
-    // MES COMPLETO (1–31)
-    totalServFull,
-    cantServFull,
-    ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
-    totalProdFull,
-    cantProdFull,
-    ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
-    totalMesFull: totalServFull + totalProdFull,
+const leads_por_red = mk?.leads_por_red ?? {};
+const cpl_por_red   = mk?.cpl_por_red ?? {};
+
+return {
+  mkInv: mkInvAdjusted,
+  mkCpl,
+  mkLeads: leads,
+  mkCac,
+
+  // 👇 ahora disponible para tus subfilas
+  por_red,
+  leads_por_red,
+  cpl_por_red,
+
+  // HASTA cutDay
+  totalServ,
+  cantServ,
+  ticketServ,
+  totalProd,
+  cantProd,
+  ticketProd,
+  totalMes: totalServ + totalProd,
+
+  // MES COMPLETO (1–31)
+  totalServFull,
+  cantServFull,
+  ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
+  totalProdFull,
+  cantProdFull,
+  ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
+  totalMesFull: totalServFull + totalProdFull,
+};
+
   };
-  };
-
   const rows = [
     { key: "mkInv", label: "INVERSIÓN REDES", type: "money" },
     { key: "mkLeads", label: "LEADS", type: "int" },
-    { key: "mkCpl", label: "CPL", type: "float2" },
+    { key: "mkCpl", label: "COSTO POR LEADS", type: "float2" },
     { key: "totalServ", label: "VENTA MEMBRESIA", type: "money" },
+    { key: "cantServ", label: "CANTIDAD MEMBRESIA", type: "int" },
     { key: "ticketServ", label: "TICKET PROMEDIO MEM.", type: "money" },
     { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
     { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
-    { key: "cantServ", label: "CANTIDAD MEMBRESIA", type: "int" },
-    { key: "ticketProd", label: "TICKET PROMEDIO MEM.", type: "money" },
+    { key: "ticketProd", label: "TICKET PROMEDIO PRODUCTOS", type: "money" },
   ];
 
   // Precalcular métricas por columna (mes)
@@ -235,9 +243,8 @@ const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
     fontSize: 20,
     padding: "10px"
   };
-
-  const sThLeft = { ...sThMes, textAlign: "left", width: 260, fontSize: 20};
-  const sCell = { border, padding: "8px 10px", fontSize: 13, background: cWhite, fontSize: 19 };
+  const sThLeft = { ...sThMes, textAlign: "left", width: 260};
+  const sCell = { border, padding: "8px 10px", background: cWhite, fontSize: 19 };
   const sCellBold = { ...sCell, fontWeight: 700, fontSize: 17 };
 
   const sRowBlack = { background: cBlack, color: cWhite, fontWeight: 700 };
@@ -296,7 +303,6 @@ const metasPorMes = {
               })}
             </tr>
           ))}
-
         {/* Fila negra: TOTAL y día de hoy */}
 <tr style={sRowBlack}>
   <td
@@ -307,7 +313,7 @@ const metasPorMes = {
       fontSize: "18px",
     }}
   >
-    TOTAL AL {cutDay}
+     VENTA TOTAL AL {cutDay}
   </td>
   {perMonth.map((m, idx) => (
     <td
@@ -365,7 +371,7 @@ const metasPorMes = {
     const total = m.metrics?.totalMes || 0;
     const porcentaje = meta > 0 ? (total / meta) * 100 : 0;
     const color =
-      porcentaje >= 100 ? "#007b00" : "#c00000"; // verde si >=100%, rojo si no
+      porcentaje >= 100 ? "#007b00" : "#c00000"; 
     return (
       <td
         key={idx}
@@ -380,16 +386,9 @@ const metasPorMes = {
     );
   })}
 </tr>
-
-{/* % RESTANTE PARA META */}
-
-
-
-
-
           {/* CAC */}
           <tr>
-            <td style={sCellBold}>CAC DIGITAL (S/)</td>
+            <td style={sCellBold}>Calculo Adquisición Cliente Digital</td>
             {perMonth.map((m, idx) => (
               <td key={idx} style={sCell}>
                 {fmtNum(m.metrics?.mkCac || 0, 2)}
