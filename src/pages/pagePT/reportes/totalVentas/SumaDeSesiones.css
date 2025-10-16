@@ -145,21 +145,26 @@
 /* --- Borde grueso inicio/fin de bloque --- */
 .tabla-sesiones th.program-start,
 .tabla-sesiones td.program-start {
-  border-left: 2px solid #000 !important;
+  border-left: 2px solid red !important;
 }
 
 .tabla-sesiones th.program-end,
 .tabla-sesiones td.program-end {
-  border-right: 2px solid #000 !important;
+  border-right: 2px solid red !important;
 }
 
-/* --- Últimas 3 columnas (totales) --- */
-.tabla-sesiones thead tr > th:nth-last-of-type(-n+3),
-.tabla-sesiones tbody tr > td:nth-last-of-type(-n+3) {
-  border-left: 2px solid #000 !important;
+.tabla-sesiones thead tr > th:nth-last-of-type(-n+4),
+.tabla-sesiones tbody tr > td:nth-last-of-type(-n+4) {
+  border-left: 2px solid red !important;
 }
-
-/* --- Fila secundaria (Totales) --- */
+.tabla-sesiones thead th:first-child,
+.tabla-sesiones tbody td:first-child {
+  border-left: 2px solid red !important;
+}
+.tabla-sesiones thead th:last-child,
+.tabla-sesiones tbody td:last-child {
+  border-right: 2px solid red !important;
+}
 .tabla-sesiones tbody tr.fila-secundaria td.img-with-name {
   background: #000 !important;
   color: #fff !important;
@@ -168,12 +173,10 @@
   color: #fff !important;
 }
 
-/* --- Eliminar líneas duplicadas --- */
 .tabla-sesiones th.avatar-col::before,
 .tabla-sesiones th.avatar-col::after {
   display: none !important;
 }
-/*--- no tocar estas lineas son vitales para el armado de la tabla, ni yo se lo que hice v::after::before xd --- */
 .tabla-sesiones thead tr:first-child th:first-child,
 .tabla-sesiones thead tr:nth-child(2) th:first-child {
   border-bottom: none !important;
@@ -189,8 +192,11 @@
   border-top: none !important;
 }
 .tabla-sesiones td.triptych > .tri-box > div p {
-  font-weight: 800 !important; 
-  font-size: 17px; 
+  font-weight: 400;      
+  font-size: 17px;
   margin: 0;
   padding: 2px 0;
 }
+
+.tabla-sesiones .is-bold { font-weight: 800; }
+

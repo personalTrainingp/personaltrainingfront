@@ -1,4 +1,3 @@
-// === Helper: convertir dataMkt -> dataMktByMonth ===
 export function buildDataMktByMonth(dataMkt = [], initialDay = 1, cutDay = 21) {
   const MESES = [
     "enero","febrero","marzo","abril","mayo","junio",
@@ -22,7 +21,7 @@ export function buildDataMktByMonth(dataMkt = [], initialDay = 1, cutDay = 21) {
     const s = String(str).toLowerCase();
     if (s.includes("tiktok") || s.includes("tik")) return "tiktok";
     if (s.includes("insta") || s.includes("ig")) return "instagram";
-    if (s.includes("face") || s.includes("fb")) return "facebook";
+    if (s.includes("meta") || s.includes("fb")) return "Meta";
     return "otros";
   };
 
@@ -58,7 +57,7 @@ export function buildDataMktByMonth(dataMkt = [], initialDay = 1, cutDay = 21) {
 
     acc[key].inversiones_redes += inv;
     acc[key].leads += leadsNum;
-    acc[key].por_red[red] += inv; // 👈 acumula inversión por red
+    acc[key].por_red[red] += inv; 
   }
 
   // cpl = inversión / leads (si hay leads)

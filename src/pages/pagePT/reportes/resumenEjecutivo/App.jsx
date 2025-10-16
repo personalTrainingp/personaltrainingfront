@@ -438,7 +438,7 @@ function handleMonthChange(newMonth) {
         { urlImage: "/change_blanco.png", name_image: "CHANGE 45" },
         { urlImage: "/fs45_blanco.png", name_image: "FS 45" },
         { urlImage: "/fs45_blancos.png", name_image: "FISIO MUSCLE" },
-      { urlImage: "/vertikal_act.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
+      { urlImage: "/vertikal_letra.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
     ];  
 
       const rankingData = (TotalDeVentasxProdServ("total")?.asesores_pago || [])

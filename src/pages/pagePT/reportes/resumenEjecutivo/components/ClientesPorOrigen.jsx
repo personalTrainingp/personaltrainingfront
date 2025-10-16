@@ -64,8 +64,6 @@ export const ClientesPorOrigen=({
     return String(originMap?.[k] || originMap?.[Number(k)] || k).toUpperCase();
   };
 
-  // --------------------------- Aggregation ---------------------------
-  // Prepara estructura de meses visibles
   const monthKeys = fechas.map((f) => ({
     key: `${f.anio}-${aliasMes(f.mes)}`,
     anio: Number(f.anio),
@@ -74,7 +72,6 @@ export const ClientesPorOrigen=({
     idx: monthIdx(f.mes),
   }));
 
-  // Map claveMes -> Map origin -> Set/contador
  const base = new Map();
     monthKeys.forEach((m) => base.set(m.key, new Map()));
 
@@ -133,7 +130,6 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
       const [highlightMax, setHighlightMax] = useState(false);
     const toggleHighlight = () => setHighlightMax(!highlightMax);
 
-  // --------------------------- Styles ---------------------------
   const C = {
     black: "#000000",
     red: "#c00000",
@@ -167,21 +163,16 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
       const va = getCount(lastMonthKey, a);
       const vb = getCount(lastMonthKey, b);
       if (vb !== va) return vb - va;
-      // Si hay empate en la última columna, ordenar por suma total
       const sumA = monthKeys.reduce((acc, m) => acc + getCount(m.key, a), 0);
       const sumB = monthKeys.reduce((acc, m) => acc + getCount(m.key, b), 0);
       return sumB - sumA;
     });
 
-    // Primer lugar para highlight
     const highlightOrigin = highlightMax ? sortedOrigins[0] : null;
 
-  // --------------------------- Render ---------------------------
   return (
     <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
       <div style={sTitle}>CLIENTES POR ORIGEN AL {cutDay} </div>
-
-    
         <table style={sTable}>
           <thead>
             <tr>
@@ -197,7 +188,6 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
                 <td style={sCellLeft}>{origin}</td>
                 {monthKeys.map((m, idx) => {
                   const value = getCount(m.key, origin);
-                  // Highlight solo el primer lugar en la última columna
                   const isMax = highlightMax && m.key === lastMonthKey && origin === highlightOrigin;
                   return (
                     <td
