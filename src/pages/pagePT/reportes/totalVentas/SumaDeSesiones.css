@@ -177,16 +177,12 @@
   display: none !important;
 }
 .tabla-sesiones thead tr:first-child th:first-child,
-.tabla-sesiones thead tr:nth-child(2) th:first-child {
-  border-bottom: none !important;
-}
+
 .tabla-sesiones thead tr:nth-child(2) th:first-child {
   border-top: none !important;
 }
 .tabla-sesiones thead tr:first-child th:nth-last-child(-n+3),
-.tabla-sesiones thead tr:nth-child(2) th:nth-last-child(-n+3) {
-  border-bottom: none !important;
-}
+
 .tabla-sesiones thead tr:nth-child(2) th:nth-last-child(-n+3) {
   border-top: none !important;
 }
@@ -196,21 +192,28 @@
   margin: 0;
   padding: 2px 0;
 }
+.tabla-sesiones thead tr:last-child th {
+  border-bottom: 2px solid red !important;
+}
 
+.tabla-sesiones thead tr:not(:last-child) th {
+  border-bottom: none !important; 
+}
+.tabla-sesiones thead tr + tr th {
+  border-top: none !important;    
+}
 .tabla-sesiones .is-bold { font-weight: 800; }
 
-/* Contenedor de la imagen en TarjetasPago */
 .rank-avatar {
-  position: relative;                /* <- NECESARIO para anclar la copa */
+  position: relative;                
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 140px;                      /* ancho de la columna imagen */
-  height: 100px;                     /* alto visible */
-  overflow: hidden;                  /* evita desbordes */
+  width: 140px;                     
+  height: 100px;                     
+  overflow: hidden;                
 }
 
-/* Avatar con tamaño fijo */
 .rank-avatar .avatar {
   width: 90px;
   height: 90px;
@@ -219,7 +222,6 @@
   background: #f3f3f3;
 }
 
-/* (ya la tienes en otros lados; la dejo aquí por claridad) */
 .copa-champions {
   position: absolute;
   top: 5px;
@@ -227,18 +229,16 @@
   z-index: 3;
 }
 .copa-champions img {
-  width: 45px;      /* ajusta si quieres más grande/pequeña la copa */
+  width: 45px;      
   height: auto;
   filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,.4));
   mix-blend-mode: darken;
 }
 
-/* Fuerza ancho de la columna "Imagen" en la tabla del ranking */
 .table-centered thead th:nth-child(2),
 .table-centered tbody td:nth-child(2) {
-  width: 160px;   /* debe ser >= que .rank-avatar width */
+  width: 160px;  
 }
-/* Celda de imagen en TarjetasPago */
 .rank-img-cell {
   width: 170px;
   min-width: 170px;
@@ -246,17 +246,15 @@
   vertical-align: middle;
 }
 
-/* Contenedor relativo como en SumaDeSesiones */
 .rank-img-cell .img-cap {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: .5rem;
-  height: 110px;        /* alto consistente */
+  height: 110px;       
 }
 
-/* Avatar: mismo look */
 .rank-img-cell .avatar {
   width: 90px;
   height: 110px;
@@ -265,7 +263,6 @@
   background: #f3f3f3;
 }
 
-/* Copa: misma posición/estética que ya usas */
 .copa-champions {
   position: absolute;
   top: 5px;
