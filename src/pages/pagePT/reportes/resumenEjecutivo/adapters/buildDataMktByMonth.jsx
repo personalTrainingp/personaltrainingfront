@@ -18,14 +18,20 @@ export function buildDataMktByMonth(dataMkt = [], initialDay = 1, cutDay = 21) {
     }
   };
 
-  // Acumulador por key `${anio}-${mes}`
+  const detectRed = (str = "") => {
+    const s = String(str).toLowerCase();
+    if (s.includes("tiktok") || s.includes("tik")) return "tiktok";
+    if (s.includes("insta") || s.includes("ig")) return "instagram";
+    if (s.includes("face") || s.includes("fb")) return "facebook";
+    return "otros";
+  };
+
   const acc = Object.create(null);
 
   for (const it of dataMkt) {
     const d = toLimaDate(it?.fecha);
     if (!d) continue;
 
-    // Filtrado por rango de días del mes
     const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
     const from = clamp(Number(initialDay || 1), 1, lastDay);
     const to = clamp(Number(cutDay || lastDay), from, lastDay);
@@ -35,21 +41,30 @@ export function buildDataMktByMonth(dataMkt = [], initialDay = 1, cutDay = 21) {
     const mesNombre = aliasMes(MESES[d.getMonth()]);
     const key = `${d.getFullYear()}-${mesNombre}`;
 
-    if (!acc[key]) acc[key] = { inversiones_redes: 0, leads: 0, cpl: 0, cac: 0 };
+    // inicialización
+    if (!acc[key]) {
+      acc[key] = {
+        inversiones_redes: 0,
+        leads: 0,
+        cpl: 0,
+        cac: 0,
+        por_red: { instagram: 0, tiktok: 0, facebook: 0, otros: 0 },
+      };
+    }
 
     const inv = Number(it?.monto || 0);
-    // "cantidad" viene como string (p.ej. "17 "), limpiamos y convertimos
     const leadsNum = Number(String(it?.cantidad ?? "0").replace(/[^\d.]/g, "")) || 0;
+    const red = detectRed(it?.descripcion || it?.nombre_red || it?.canal || "");
 
     acc[key].inversiones_redes += inv;
     acc[key].leads += leadsNum;
+    acc[key].por_red[red] += inv; // 👈 acumula inversión por red
   }
 
   // cpl = inversión / leads (si hay leads)
   for (const k of Object.keys(acc)) {
     const { inversiones_redes, leads } = acc[k];
     acc[k].cpl = leads > 0 ? inversiones_redes / leads : 0;
-    // Deja cac en 0 salvo que tú lo calcules/inyectes aparte
   }
 
   return acc;

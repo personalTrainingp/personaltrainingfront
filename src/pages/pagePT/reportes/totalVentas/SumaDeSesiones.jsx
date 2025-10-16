@@ -11,7 +11,6 @@
           if (num === 0 && !mostrarCero) return "";
           return num.toLocaleString("es-PE");
         };
-        // normalizador para comparar headers/keys
         const norm = (s) =>
           String(s ?? "")
             .normalize("NFD")
@@ -414,7 +413,6 @@
                   </td>
                 );
               })}
-
               <DashCell />
               <td className="fw-bold" style={{ minWidth: 150 }}>{fmt(grandMoney, true)}</td>
               <td className="fw-bold" style={{ minWidth: 80 }}>100%</td>
