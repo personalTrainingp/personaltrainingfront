@@ -32,7 +32,6 @@
   height: 45px;
   padding: 0;
   width: 90px;
-  background: #000;
 }
 
 .tabla-sesiones th.triptych-head > .tri-box-head {
@@ -57,7 +56,7 @@
 
 /* --- Imagen + nombre asesor --- */
 .tabla-sesiones td.img-with-name {
-  border: 1px solid #000 !important;
+  border: 2px solid red !important;
   width: 110px;
   background: #fff;
   vertical-align: middle;
@@ -200,3 +199,82 @@
 
 .tabla-sesiones .is-bold { font-weight: 800; }
 
+/* Contenedor de la imagen en TarjetasPago */
+.rank-avatar {
+  position: relative;                /* <- NECESARIO para anclar la copa */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;                      /* ancho de la columna imagen */
+  height: 100px;                     /* alto visible */
+  overflow: hidden;                  /* evita desbordes */
+}
+
+/* Avatar con tamaño fijo */
+.rank-avatar .avatar {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f3f3f3;
+}
+
+/* (ya la tienes en otros lados; la dejo aquí por claridad) */
+.copa-champions {
+  position: absolute;
+  top: 5px;
+  left: -10px;
+  z-index: 3;
+}
+.copa-champions img {
+  width: 45px;      /* ajusta si quieres más grande/pequeña la copa */
+  height: auto;
+  filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,.4));
+  mix-blend-mode: darken;
+}
+
+/* Fuerza ancho de la columna "Imagen" en la tabla del ranking */
+.table-centered thead th:nth-child(2),
+.table-centered tbody td:nth-child(2) {
+  width: 160px;   /* debe ser >= que .rank-avatar width */
+}
+/* Celda de imagen en TarjetasPago */
+.rank-img-cell {
+  width: 170px;
+  min-width: 170px;
+  padding: 8px 12px;
+  vertical-align: middle;
+}
+
+/* Contenedor relativo como en SumaDeSesiones */
+.rank-img-cell .img-cap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  height: 110px;        /* alto consistente */
+}
+
+/* Avatar: mismo look */
+.rank-img-cell .avatar {
+  width: 90px;
+  height: 110px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #f3f3f3;
+}
+
+/* Copa: misma posición/estética que ya usas */
+.copa-champions {
+  position: absolute;
+  top: 5px;
+  left: -10px;
+  z-index: 3;
+}
+.copa-champions img {
+  width: 65px;
+  height: 80px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.4));
+  mix-blend-mode: darken;
+}
