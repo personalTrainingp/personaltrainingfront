@@ -3,6 +3,7 @@ import { Table } from 'react-bootstrap'
 import { useCenterArchive } from './useCenterArchive'
 import { useSelector } from 'react-redux'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
+import config from '@/config'
 
 export const DataTable = ({uid_location}) => {
   const { obtenerArchivCenterxUidLocation } = useCenterArchive()
@@ -34,7 +35,9 @@ export const DataTable = ({uid_location}) => {
                       {index+1}
                     </td>
                     <td>
-                      <i className='pi pi-file-pdf'></i>
+                      <a href={`${config.API_IMG.FILES_COLABORADORES}${d.tb_image?.name_image}`} target='_blank'>
+                        <i className='pi pi-file-pdf'></i>
+                      </a>
                     </td>
                     <td>
                       {datatipoDoc.find(e=>e.value===d.id_tipo_doc)?.label}
