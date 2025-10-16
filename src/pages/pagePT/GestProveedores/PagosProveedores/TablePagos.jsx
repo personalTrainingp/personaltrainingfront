@@ -60,7 +60,7 @@ useEffect(() => {
   useEffect(() => {
     obtenerContratosPendientes(id_empresa);
     obtenerTrabajosPendientes(id_empresa);
-    obtenerProveedores(true, true);
+    obtenerProveedores(true, true, id_empresa);
   }, [id_empresa]);
 
   // 1) Une contrato + pagos + sumaPagos

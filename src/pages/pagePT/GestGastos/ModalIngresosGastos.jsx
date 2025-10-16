@@ -97,7 +97,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
             if(show){
                 obtenerParametrosGastosFinanzas()
                 obtenerOficios('proveedor','tipo_oficio')
-
             }
         }, [show, isLoadingParametros])
         
