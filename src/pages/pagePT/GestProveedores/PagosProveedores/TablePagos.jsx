@@ -114,7 +114,7 @@ useEffect(() => {
         <thead className="bg-primary fs-2">
           <tr>
             <th style={{ width: 44 }} />
-            <th><div className="text-white" style={{width: '400px'}}>Nombres y apellidos</div></th>
+            <th><div className="text-white" style={{width: '400px'}}>Nombres y apellidos / Razon social</div></th>
             <th><div className="text-white">RUC</div></th>
               <th className="text-end"><div className="text-white">CONTRATO <br/> PENDIENTES</div></th>
             <th className="text-end"><div className="text-white">MONTO <br/> CONTRATO</div></th>
@@ -125,13 +125,12 @@ useEffect(() => {
         <tbody>
           {grupos.map((grupo) => {
             const proveedor = (dataProveedores ?? []).find((p) => p.id === grupo.id_prov);
-            const razon = proveedor?.nombre_contacto?`${grupo.id_prov} / ${proveedor?.nombre_contacto}`: `Prov #${grupo.id_prov}`;
-            const ruc = proveedor?.razon_social_prov?? `Prov #${grupo.id_prov}`;
+            const razon = proveedor?.razon_social_prov?`${grupo.id_prov} / ${proveedor?.razon_social_prov}`: `Prov #${grupo.id_prov}`;
+            const ruc = proveedor?.ruc_prov?? `Prov #${grupo.id_prov}`;
             const montoContratos = grupo.items.reduce((t, it) => t + (Number(it?.monto_contrato) || 0), 0);
             const sumarPagos = grupo.items.reduce((t, it) => t + (Number(it?.sumaPagos) || 0), 0);
             const saldo = montoContratos - sumarPagos;
             const isOpen = !!openProv[grupo.id_prov];
-
             return (
               <React.Fragment key={grupo.id_prov}>
                 {/* Fila resumen proveedor */}
