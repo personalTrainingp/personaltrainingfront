@@ -94,14 +94,13 @@
   font-weight: 800;
 }
 
-/* --- Copa de campeón --- */
-.copa-champions {
+.tabla-sesiones .copa-champions {
   position: absolute;
   top: 5px;
   left: -10px;
   z-index: 3;
 }
-.copa-champions img {
+.tabla-sesiones .copa-champions img {
   width: 70px;
   height: auto;
   filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,0.4));
@@ -230,15 +229,15 @@
   background: #f3f3f3;
 }
 
-.copa-champions {
+.ranking-card .copa-champions {
   position: absolute;
   top: 5px;
   left: -10px;
   z-index: 3;
 }
-.copa-champions img {
-  width: 45px;      
-  height: auto;
+.ranking-card .copa-champions img {
+  width: 65px;      
+  height: 75px;
   filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,.4));
   mix-blend-mode: darken;
 }

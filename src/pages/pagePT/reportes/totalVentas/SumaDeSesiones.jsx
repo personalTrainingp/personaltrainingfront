@@ -447,6 +447,10 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                   <DashCell />
                   <td className="fw-bold" style={{ minWidth: 150 }}>{fmt(grandMoney, true)}</td>
                   <td className="fw-bold" style={{ minWidth: 80 }}>100%</td>
+                  <style>{`
+  .tabla-sesiones thead tr:last-child th { border-bottom: 2px solid red !important; }
+`}</style>
+
                 </tr>
               </tbody>
             </table>
