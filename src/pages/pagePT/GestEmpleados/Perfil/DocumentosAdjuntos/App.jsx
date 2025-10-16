@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { ModalCustomDocAdjuntos } from './ModalCustomDocAdjuntos'
 import { DataTable } from './DataTable'
 import { Button } from 'primereact/button'
+import { ModalCustomArchivo } from './ModalCustomArchivo'
 
 export const App = ({uid_docs}) => {
     const [isOpenModalCustomDocAdj, setisOpenModalCustomDocAdj] = useState({isOpen: false, id: 0})
@@ -14,8 +14,8 @@ export const App = ({uid_docs}) => {
   return (
     <div>
         <Button label='AGREGAR DOCUMENTO' onClick={()=>onOpenModalCustomDocAdj(0)}/>
-        <ModalCustomDocAdjuntos uid_docs={uid_docs} show={isOpenModalCustomDocAdj.isOpen} id={isOpenModalCustomDocAdj.id} onHide={onCloseModalCustomDocAdj} />
-        <DataTable uid_docs={uid_docs}/>
+        <ModalCustomArchivo uid_location={uid_docs} show={isOpenModalCustomDocAdj.isOpen} id={isOpenModalCustomDocAdj.id} onHide={onCloseModalCustomDocAdj} />
+        <DataTable uid_location={uid_docs}/>
         {uid_docs}
     </div>
   )

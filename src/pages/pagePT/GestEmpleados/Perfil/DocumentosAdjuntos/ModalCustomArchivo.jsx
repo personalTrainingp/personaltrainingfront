@@ -6,29 +6,26 @@ import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components'
 import Select from 'react-select'
 import { Button } from 'primereact/button'
-import { useFilesStore } from '@/hooks/hookApi/useFilesStore'
 import Swal from 'sweetalert2'
 import { useCenterArchive } from './useCenterArchive'
 const registerFile = {
   id_tipo_doc: 0,
   observacion: '',
   titulo: '',
-  id_seccionVisible: 0
 }
 const registerArchivo={
     imgAvatar_BASE64: ''
 }
-export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
+export const ModalCustomArchivo = ({uid_location, show, onHide, id}) => {
   const [file, setfile] = useState(null)
-  const { formState, id_tipo_doc, id_seccionVisible, titulo, observacion, onInputChangeReact, onInputChange, onResetForm } = useForm(registerFile)
-  const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
+  const { formState, id_tipo_doc, titulo, observacion, onInputChangeReact, onInputChange, onResetForm } = useForm(registerFile)
   const { obtenerParametroPorEntidadyGrupo:obtenerTipoDoc, DataGeneral:datatipoDoc } = useTerminoStore()
-  const { postFiles } = useFilesStore()
   const { onPostArchivCenter } = useCenterArchive()
   useEffect(() => {
-    obtenerParametroPorEntidadyGrupo('files', 'tipo_doc')
-    obtenerTipoDoc('centro-archivo','tipo-archivo')
-  }, [])
+    if(show){
+        obtenerTipoDoc('centro-archivo','tipo-archivo-doc-colaboradores')
+    }
+  }, [show])
     
     const onSubmitFile = (e)=>{
         e.preventDefault()
@@ -45,8 +42,8 @@ export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
         formData.append('file', file)
         console.log({formData, file});
         // onPostArchivCenter(formState)
-        postFiles(uid_file, formState, formData)
-        // cancelModal()
+        onPostArchivCenter(formState, formData, uid_location)
+        cancelModal()
     }
     const cancelModal = ()=>{
         setfile(null)
@@ -88,25 +85,6 @@ export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
                 </Col>
                 <Col xxl={12}>
                     <div className="mb-2">
-                        <label htmlFor="id_seccionVisible" className="form-label">
-                            Seccion:
-                        </label>
-                        <Select
-                                onChange={(e)=>onInputChangeReact(e, "id_seccionVisible")}
-                                name={"id_seccionVisible"}
-                                placeholder={'Seleccione la seccion'}
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                value={DataGeneral.find(
-                                    (option) => option.value === id_seccionVisible
-                                )}
-                                options={[{value: 0, label: 'M.O.F. MARKETING'}, {value: 1, label: 'M.O.F. ADMINISTRACION'}, {value: 2, label: 'M.O.F. DISEÑO'}]}
-                                required
-                        ></Select>
-                    </div>
-                </Col>
-                <Col xxl={12}>
-                    <div className="mb-2">
                         <label htmlFor="id_tipo_doc" className="form-label">
                             TIPO DE ARCHIVO:
                         </label>
@@ -116,10 +94,10 @@ export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
                                 placeholder={'Seleccione el tipo de documento'}
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                value={DataGeneral.find(
+                                value={datatipoDoc.find(
                                     (option) => option.value === id_tipo_doc
                                 )}
-                                options={[{value: 0, label: 'M.O.F. MARKETING'}, {value: 1, label: 'M.O.F. ADMINISTRACION'}, {value: 2, label: 'M.O.F. DISEÑO'}]}
+                                options={datatipoDoc}
                                 required
                         ></Select>
                     </div>

@@ -118,7 +118,6 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0 })
                 {
                     id==0?(
                         <>
-                 
                 <div className='mb-3'>
                     <label htmlFor="penalidad_fijo" className="form-label">
                         COMPROMISO PAGO*
