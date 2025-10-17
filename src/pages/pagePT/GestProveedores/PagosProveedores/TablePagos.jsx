@@ -8,6 +8,8 @@ import { useImageStore } from '@/hooks/hookApi/useImageStore';
 import config from '@/config';
 import { ModalCustomPagosProveedores } from './ModalCustomPagosProveedores';
 import { ModalCustomDescuentos } from './ModalCustomDescuentos';
+import dayjs from 'dayjs';
+import { confirmDialog } from 'primereact/confirmdialog';
   // Descarga segura
   const safeDownload = (url, filename) => {
     const a = document.createElement('a');
@@ -39,6 +41,7 @@ export const TablePagos = ({id_empresa, onOpenModalCustomPagosProv}) => {
   const {
     obtenerTrabajosPendientes,
     obtenerContratosPendientes,
+    deleteContratoxId
   } = usePagoProveedoresStore();
 	const {obtenerImages, images} = useImageStore()
   const { obtenerProveedores } = useProveedorStore();
@@ -72,7 +75,6 @@ useEffect(() => {
       return { ...contrato, dataPagos, sumaPagos };
     });
   }, [dataContratoProv, dataPagosProv]);
-
   // 2) Agrupa por proveedor
   const grupos = useMemo(() => {
     const map = new Map();
@@ -105,6 +107,21 @@ useEffect(() => {
   }
   const onClickOpenModalCustomDescuentos = async(nombreTrabajo, idContrato)=>{
     setisOpenModalCustomDescuentos({isOpen: true, nombreTrabajo: nombreTrabajo, idContrato})
+  }
+  const onDeleteContrato = (id)=>{
+    confirmDialog(
+      {
+                    header: 'Confirmar eliminación',
+            message: '¿Está seguro de eliminar este contrato?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+              deleteContratoxId(id, id_empresa)
+            },
+            reject: () => {
+                // nothing to do
+            }
+      }
+    )
   }
   return (
     <div>
@@ -144,7 +161,7 @@ useEffect(() => {
                       aria-controls={`row-${grupo.id_prov}`}
                       style={{ textDecoration: 'none' }}
                     >
-                      VER <br/> contrato
+                      HISTORIAL DE <br/> CONTRATOS
                     </Button>
                   </td>
                   <td className='fs-3'><div className='' style={{width: '400px'}}>{razon}</div></td>
@@ -222,15 +239,25 @@ useEffect(() => {
                                         onClick={() => toggleContrato(c.id)}
                                         className='cursor-pointer'
                                   >
-                                    <div className='p-0 m-0' style={{width: '40px'}}>
+                                    <div className='p-0 m-0' style={{width: '70px'}}>
                                       {c.id}
                                     </div>
                                     </td>
                                   <td className='' onClick={()=>onClickOpenFileContrato(c.uid_contrato)}>
-                                    <i className='pi pi-file'></i>
+                                    <div className='text-center'>
+                                      <i className='pi pi-file-pdf fs-2 bg-change p-1 rounded-3 text-white cursor-pointer'></i>
+                                    </div>
                                   </td>
-                                  <td>{c?.fecha_inicio ?? '-'}</td>
-                                  <td>{c?.fecha_fin ?? '-'}</td>
+                                  <td>
+                                    <div className='' style={{width: '200px'}}>
+                                      {dayjs.utc(c.fecha_inicio,'YYYY-MM-DD').format('dddd DD [DE] MMMM [DEL] YYYY')}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div  className='' style={{width: '200px'}}>
+                                      {dayjs.utc(c.fecha_fin,'YYYY-MM-DD').format('dddd DD [DE] MMMM [DEL] YYYY')}
+                                    </div>
+                                  </td>
                                   <td>
                                     <div className='' style={{width: '600px'}}>
                                       {c?.observacion ?? '-'}
@@ -241,12 +268,18 @@ useEffect(() => {
                                   <td className="text-end">{fmt(totalPagado)}</td>
                                   <td className="text-end fw-semibold">{fmt(saldoContrato)}</td>
                                   <td className='' onClick={()=>onClickOpenFileCompromisoPago(c?.uid_compromisoPago)}>
-                                    <i className='pi pi-file'></i>
+                                    <div className='text-center'>
+                                      <i className='pi pi-file-pdf fs-2 bg-change p-1 rounded-3 text-white cursor-pointer'></i>
+                                    </div>
                                   </td>
                                   <td className="text-end">
-                                    <div>
-                                      <i className='pi pi-trash'></i>
-                                      <i className='pi pi-pencil' onClick={()=>onOpenModalCustomPagosProv(c.id, id_empresa)}></i>
+                                    <div className='d-flex gap-4'>
+                                      <div>
+                                        <i className='pi pi-trash fs-2' onClick={()=>onDeleteContrato(c.id) }></i>
+                                      </div>
+                                      <div>
+                                        <i className='pi pi-pencil fs-2' onClick={()=>onOpenModalCustomPagosProv(c.id, id_empresa)}></i>
+                                      </div>
                                     </div>
                                   </td>
                                 </tr>

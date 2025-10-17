@@ -28,11 +28,12 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     const [loading, setLoading] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const  { obtenerUsuariosEmpleados } = useUsuarioStore()
-    const { dataParientes, obtenerParientesEmpleados } = useEmpleadosStore()
+    const { dataParientes, obtenerParientesEmpleados, obtenerDocumentosDeEmpleados, dataDocumentosInternosEmpl } = useEmpleadosStore()
     const {dataView} = useSelector((e) => e.DATA);
     useEffect(() => {
         obtenerUsuariosEmpleados(id_empresa, id_estado)
         obtenerParientesEmpleados()
+        obtenerDocumentosDeEmpleados()
     }, [id_empresa, id_estado])
     
         useEffect(() => {
@@ -170,6 +171,26 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
             </div>
         );
     }
+    const cvBodyTemplate = (rowData)=>{
+        const dataDocsInternos = dataDocumentosInternosEmpl.filter(e=>e.uid_location===rowData.tb_images[0]?.uid_location)
+        const cvs =dataDocsInternos.filter(doc=>doc.id_tipo_doc===1519)
+        return (
+            <div style={{fontSize: '20px'}} className={`flex align-items-center gap-2 ml-7  fw-bold ${cvs.length>0?'text-ISESAC':'text-change'}`}>
+                {cvs.length>0?'SI':'NO'}
+
+            </div>
+        );
+    }
+    const dniBodyTemplate = (rowData)=>{
+        const dataDocsInternos = dataDocumentosInternosEmpl.filter(e=>e.uid_location===rowData.tb_images[0]?.uid_location)
+        const dnis =dataDocsInternos.filter(doc=>doc.id_tipo_doc===1518)
+        return (
+            <div style={{fontSize: '20px'}} className={`flex align-items-center gap-2 ml-7  fw-bold ${dnis.length>0?'text-ISESAC':'text-change'}`}>
+                {dnis.length>0?'SI':'NO'}
+
+            </div>
+        );
+    }
     const toMailto = (value, subject = "", body = "") => {
   // extrae el correo aunque venga como "Nombre <correo@dom.com>"
   const match = String(value).match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}/);
@@ -269,6 +290,10 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
         }
             <div className='fs-1'>
                 {/* {JSON.stringify(dataParientes, null, 2)} */}
+                {/* <pre>
+                {JSON.stringify(dataDocumentosInternosEmpl, null, 2)}
+
+                </pre> */}
             <DataTable size='small' 
                         value={customers} 
                         paginator 
@@ -291,9 +316,9 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                 <Column header={<div style={{fontSize: '20px'}}>NOMBRES <br/> APELLIDOS</div>} filterField="nombres_apellidos_empl" style={{ minWidth: 'auto' }} body={NombresApellidosEmplBodyTemplate}/>
                 <Column header={<div style={{fontSize: '20px'}}>CELULAR</div>} filterField={`tel_cli`} style={{ minWidth: '10rem' }} body={telefonoBodyTemplate} />
                 <Column header={<div style={{fontSize: '20px'}} className='ml-6'>EMAIL</div>} filterField={`email_cli`} style={{ minWidth: '10rem' }} body={emailBodyTemplate}/>
-                <Column header={<div style={{fontSize: '20px'}} className='ml-1'>CONTACTO EMERGENCIA</div>} style={{ minWidth: '10rem' }} body={ContactoEmergenciaBodyTemplate}/>
-                <Column header={<div style={{fontSize: '20px'}} className='ml-5'>DNI</div>} style={{ minWidth: '10rem' }}/>
-                <Column header={<div style={{fontSize: '20px'}}>CV</div>} style={{ minWidth: '10rem' }}/>
+                <Column header={<div style={{fontSize: '20px'}} className='ml-1'>CONTACTO <br/> EMERGENCIA</div>} style={{ minWidth: '10rem' }} body={ContactoEmergenciaBodyTemplate}/>
+                <Column header={<div style={{fontSize: '20px'}} className='ml-7'>DNI</div>} style={{ minWidth: '10rem' }} body={dniBodyTemplate}/>
+                <Column header={<div style={{fontSize: '20px'}} className='ml-7'>CV</div>} style={{ minWidth: '10rem' }} body={cvBodyTemplate}/>
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
             </div>

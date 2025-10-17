@@ -451,10 +451,13 @@ td, th {
   background-color: red !important; /* Cambia el color de fondo al gris */
   cursor: pointer;
 }
+.p-button.p-highlight:focus{
+  border-color: none;
+}
 .p-selectbutton{
   .p-button:active, .p-button.p-highlight:active, .p-button:focus, .p-button.p-highlight:focus, .p-button{
-    background-color: $white !important;
-    border: 1px solid $black !important;
+    // background-color: $white !important;
+    // border: 1px solid $black !important;
     border-radius: 12px;
     color: $black !important;
   }
@@ -955,4 +958,42 @@ button{
 
 .bg-gray {
   background-color: #f0f0f0;
+}
+
+
+/* 🔹 Elimina bordes y separación entre botones */
+.estado-select .p-button {
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  flex: 1;
+}
+
+/* 🔹 Fondo sólido según estado seleccionado */
+.estado-select.activo .p-button.p-highlight {
+  background-color: #198754 !important; /* Verde success */
+  color: white !important;
+}
+
+.estado-select.inactivo .p-button.p-highlight {
+  background-color: #dc3545 !important; /* Rojo danger */
+  color: white !important;
+}
+
+/* 🔹 Fondo gris para el no seleccionado */
+.estado-select .p-button:not(.p-highlight) {
+  background-color: #ccc !important;
+  color: #333 !important;
+}
+
+/* 🔹 Sin bordes internos entre los dos botones */
+.estado-select .p-button:first-child {
+  border-top-left-radius: 6px !important;
+  border-bottom-left-radius: 6px !important;
+}
+
+.estado-select .p-button:last-child {
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
 }
