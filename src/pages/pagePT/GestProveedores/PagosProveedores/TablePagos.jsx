@@ -130,7 +130,7 @@ useEffect(() => {
       <Table bordered responsive hover className="align-middle">
         <thead className="bg-primary fs-2">
           <tr>
-            <th style={{ width: 44 }} />
+            <th style={{ width: 44 }}>HISTORIAL DE <br/> CONTRATOS</th>
             <th><div className="text-white" style={{width: '400px'}}>Nombres y apellidos / Razon social</div></th>
             <th><div className="text-white">RUC</div></th>
               <th className="text-end"><div className="text-white">CONTRATO <br/> PENDIENTES</div></th>
@@ -161,7 +161,7 @@ useEffect(() => {
                       aria-controls={`row-${grupo.id_prov}`}
                       style={{ textDecoration: 'none' }}
                     >
-                      HISTORIAL DE <br/> CONTRATOS
+                      VER <br/> CONTRATOS
                     </Button>
                   </td>
                   <td className='fs-3'><div className='' style={{width: '400px'}}>{razon}</div></td>
@@ -226,7 +226,7 @@ useEffect(() => {
                           </tr>
                         </thead>
                         <tbody>
-                          {grupo.items.map((c) => {
+                          {grupo.items.sort((a, b) => a.fecha_inicio - b.fecha_inicio).map((c) => {
                             const saldoContrato =
                               (Number(c?.monto_contrato) || 0) - (Number(c?.sumaPagos) || 0);
                             const isOpenContrato = !!openContrato[c.id];
@@ -245,7 +245,7 @@ useEffect(() => {
                                     </td>
                                   <td className='' onClick={()=>onClickOpenFileContrato(c.uid_contrato)}>
                                     <div className='text-center'>
-                                      <i className='pi pi-file-pdf fs-2 bg-change p-1 rounded-3 text-white cursor-pointer'></i>
+                                      <i className='pi pi-file-pdf bg-change p-1 rounded-3 text-white cursor-pointer' style={{fontSize: '90px'}}></i>
                                     </div>
                                   </td>
                                   <td>
@@ -269,7 +269,7 @@ useEffect(() => {
                                   <td className="text-end fw-semibold">{fmt(saldoContrato)}</td>
                                   <td className='' onClick={()=>onClickOpenFileCompromisoPago(c?.uid_compromisoPago)}>
                                     <div className='text-center'>
-                                      <i className='pi pi-file-pdf fs-2 bg-change p-1 rounded-3 text-white cursor-pointer'></i>
+                                      <i className='pi pi-file-pdf fs-2 bg-change p-1 rounded-3 text-white cursor-pointer'  style={{fontSize: '90px'}}></i>
                                     </div>
                                   </td>
                                   <td className="text-end">
