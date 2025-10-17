@@ -15,7 +15,7 @@ export const useEmpleadosStore = () => {
 	};
 	const obtenerDocumentosDeEmpleados = async () => {
 		try {
-			const { data } = await PTApi.get('/fils/interno/1517');
+			const { data } = await PTApi.get('/fils/interno/tb/1517');
 
 			setdataDocumentosInternosEmpl(data.documentosInternos);
 		} catch (error) {
