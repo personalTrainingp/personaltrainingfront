@@ -71,7 +71,7 @@
       return value.toLocaleString('es-PE', { style: 'currency', currency: 'PEN' });
     };
     return (
-      <Card>
+      <Card className="ranking-card"> 
         <Card.Body>
           <CardTitle
             containerClass="d-flex align-items-center justify-content-between mb-3"

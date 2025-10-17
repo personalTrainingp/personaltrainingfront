@@ -46,7 +46,6 @@
           </div>
         );
       };
-  // 1) utilidades arriba del componente (o al inicio del componente)
 const parseBackendDate = (s) => {
   if (!s) return null;
   const normalized = String(s).replace(" ", "T").replace(" -", "-");
@@ -115,8 +114,34 @@ const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= 
       4: "FISIO MUSCLE",
       5: "VERTIKAL CHANGE",
     };
+const [canalParams, setCanalParams] = useState([
+ 
+]);
 
-   const { start, end } = useMemo(() => {
+useEffect(() => {
+  (async () => {
+    try {
+      const { data } = await axios.get(
+        "http://localhost:4000/api/parametros/get_params/inversion/redes"
+      );
+      const mapped = (Array.isArray(data) ? data : []).map(d => ({
+        id_param: (d.value),
+        label_param: (d.label),
+
+      }));
+            console.log({mapped})
+
+      setCanalParams(mapped);
+    } catch (e) {
+      console.warn("No se pudieron cargar canalParams, uso fallback 1514/1515:", e?.message);
+      setCanalParams([
+        { id_param: "1514", label_param: "TIKTOK ADS" },
+        { id_param: "1515", label_param: "META ADS"  },
+      ]);
+    }
+  })();
+}, []);
+  const { start, end } = useMemo(() => {
     const s = RANGE_DATE?.[0] ? new Date(RANGE_DATE[0]) : null;
     const e = RANGE_DATE?.[1] ? new Date(RANGE_DATE[1]) : null;
     if (e) e.setHours(23, 59, 59, 999);
@@ -333,11 +358,13 @@ function handleMonthChange(newMonth) {
           1457: "CARTERA",
         };
         const dataMktByMonth = useMemo(
-    () => buildDataMktByMonth(dataLead, initDay, cutDay, { debug: true }), 
-    [dataLead, initDay, cutDay]
+    () => buildDataMktByMonth(dataLead, initDay, cutDay, canalParams), 
+    [dataLead, initDay, cutDay,canalParams]
   );
-        const dataMkt = buildDataMktByMonth(dataLead, initDay, cutDay)
-
+const dataMkt = useMemo(
+  () => buildDataMktByMonth(dataLead, initDay, cutDay, canalParams),
+  [dataLead, initDay, cutDay, canalParams]
+);
         const TotalDeVentasxProdServ = (prodSer) => { 
           switch (prodSer) {
             case 'total':
@@ -357,7 +384,7 @@ function handleMonthChange(newMonth) {
 
       function getLastNMonths(selectedMonth, year, n = 8) {
         const result = [];
-        let monthIdx = selectedMonth - 1; // 0-based
+        let monthIdx = selectedMonth - 1; 
         let currentYear = year;
 
         for (let i = 0; i < n; i++) {

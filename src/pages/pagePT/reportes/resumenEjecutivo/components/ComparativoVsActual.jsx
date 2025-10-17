@@ -113,7 +113,7 @@
       } else {
         delta = {
           serv: refVals.serv - vals.serv,
-          prod: refVals.prod - vals.prod,
+          prod: vals.prod -refVals.prod ,
           total: refVals.total - vals.total,
         };
         pct = {
