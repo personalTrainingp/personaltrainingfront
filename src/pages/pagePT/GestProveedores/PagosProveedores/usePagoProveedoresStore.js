@@ -62,6 +62,14 @@ export const usePagoProveedoresStore = () => {
 			console.log(error);
 		}
 	};
+	const deleteContratoxId = async (id, id_empresa) => {
+		try {
+			const { data } = await PTApi.put(`/proveedor/delete-contrato-prov/${id}`);
+			await obtenerContratosPendientes(id_empresa);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerTrabajosPendientes,
 		obtenerContratoxId,
@@ -71,5 +79,6 @@ export const usePagoProveedoresStore = () => {
 		obtenerContratosPendientes,
 		postPenalidades,
 		updateContratoxId,
+		deleteContratoxId,
 	};
 };
