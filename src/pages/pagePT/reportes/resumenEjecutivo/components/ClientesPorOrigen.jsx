@@ -170,44 +170,69 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
 
     const highlightOrigin = highlightMax ? sortedOrigins[0] : null;
 
-  return (
-    <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
-      <div style={sTitle}>CLIENTES POR ORIGEN AL {cutDay} </div>
-        <table style={sTable}>
-          <thead>
-            <tr>
-              <th style={sHeadLeft} onClick={toggleHighlight}>MES</th>
-              {monthKeys.map((m) => (
-                <th key={m.key} style={sHead} onClick={toggleHighlight}>{m.label}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {sortedOrigins.map((origin) => (
-              <tr key={origin}>
-                <td style={sCellLeft}>{origin}</td>
-                {monthKeys.map((m, idx) => {
-                  const value = getCount(m.key, origin);
-                  const isMax = highlightMax && m.key === lastMonthKey && origin === highlightOrigin;
-                  return (
-                    <td
-                      key={`${m.key}-${origin}`}
-                      style={{
-                        ...sCell,
-                        fontWeight: isMax ? 700 : "normal",
-                        backgroundColor: isMax ? "#ffff99" : sCell.background,
-                        color: isMax ? "#c00000" : sCell.color
-                      }}
-                    >
-                      {value}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
+ return (
+  <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
+    <div style={sTitle}>CLIENTES POR ORIGEN AL {cutDay}</div>
 
+    <table style={sTable}>
+      <thead>
+        <tr>
+          <th style={sHeadLeft} onClick={toggleHighlight}>
+            MES
+          </th>
+          {monthKeys.map((m, idx) => {
+            const isLastCol = idx === monthKeys.length - 1;
+            return (
+              <th
+                key={m.key}
+                style={{
+                  ...sHead,
+                  background: isLastCol ? "#c00000" : sHead.background,
+                  fontSize: isLastCol ? 22 : sHead.fontSize,
+                }}
+                onClick={toggleHighlight}
+              >
+                {m.label}
+              </th>
+            );
+          })}
+        </tr>
+      </thead>
+
+      <tbody>
+        {sortedOrigins.map((origin) => (
+          <tr key={origin}>
+            <td style={sCellLeft}>{origin}</td>
+
+            {monthKeys.map((m, idx) => {
+              const value = getCount(m.key, origin);
+              const isLastCol = idx === monthKeys.length - 1;
+              const isMax =
+                highlightMax && m.key === lastMonthKey && origin === highlightOrigin;
+
+              return (
+                <td
+                  key={`${m.key}-${origin}`}
+                  style={{
+                    ...sCell,
+                    backgroundColor: isLastCol
+                      ? "#c00000"
+                      : isMax
+                      ? "#ffff99"
+                      : sCell.background,
+                    color: isLastCol ? "#fff" : isMax ? "#c00000" : sCell.color,
+                    fontWeight: 700,
+                    fontSize: isLastCol ? 25 : sCell.fontSize,
+                  }}
+                >
+                  {value}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+}

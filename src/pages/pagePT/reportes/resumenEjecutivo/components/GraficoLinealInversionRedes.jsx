@@ -1,7 +1,7 @@
 import React from "react";
 import Chart from "react-apexcharts";
 import dayjs from "dayjs";
-import "dayjs/locale/es"; // para días en español
+import "dayjs/locale/es"; 
 dayjs.locale("es");
 
 export const GraficoLinealInversionRedes = ({ data }) => {
