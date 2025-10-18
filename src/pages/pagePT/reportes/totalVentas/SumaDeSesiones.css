@@ -169,7 +169,15 @@
     inset 0 -2px 0 var(--accent-red);
 }
 
-
+/* fuerza color rojo para todos los fw-bold dentro de tu tabla */
+.tabla-sesiones.table > :not(caption) > * > *.fw-bold {
+  color: #c00000 !important;
+}
+/* TOTAL: pinta en rojo todas las celdas de la fila, excepto la primera (nombre) */
+.tabla-sesiones.table > tbody > tr.fila-total > td:not(.img-with-name) {
+  color: #c00000 !important;
+  font-weight: 800; /* por si alguna no viene bold */
+}
 .tabla-sesiones tbody tr.fila-secundaria td.img-with-name {
   background: #000 !important;
   color: #fff !important;

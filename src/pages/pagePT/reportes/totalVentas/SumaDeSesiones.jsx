@@ -195,6 +195,8 @@ Object.keys(moneyByAdvisor).forEach((key) => {
       lineHeight: 1,
       margin: 0,
       fontWeight: isZero(v) ? 400 : 700,
+        color: isZero(v) ? "#000" : "#c00000", // <- rojo si es bold
+
     });
     const tdBoldClassIf = (v) => (isZero(v) ? "" : "fw-bold");
           const cellValue = { fontSize: 25, lineHeight: 1, margin: 0 };
@@ -246,7 +248,8 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                 minWidth: min,
                 textAlign: "center",
                 fontWeight: 700,
-                color: "#000",
+  color: "#c00000", // <- rojo si es bold
+                
               }}
             >
               -
@@ -447,9 +450,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                   <DashCell />
                   <td className="fw-bold" style={{ minWidth: 150 }}>{fmt(grandMoney, true)}</td>
                   <td className="fw-bold" style={{ minWidth: 80 }}>100%</td>
-                  <style>{`
-  .tabla-sesiones thead tr:last-child th { border-bottom: 2px solid red !important; }
-`}</style>
+
 
                 </tr>
               </tbody>
