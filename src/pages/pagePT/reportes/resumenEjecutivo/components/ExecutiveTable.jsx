@@ -219,7 +219,7 @@ return (
                 key={idx}
                 style={{
                   ...sThMes,
-                  background: isLast ? "#c00000" : cBlack,
+                  background: isLast ? "#000" : cBlack,
                   fontSize: isLast ? 23 : sThMes.fontSize,
                 }}
               >
@@ -230,9 +230,19 @@ return (
         </tr>
       </thead>
       <tbody>
-        {rows.map((r) => (
-          <tr key={r.key}>
-            <td style={sCellBold}>{r.label}</td>
+       {rows.map((r) => (
+  <tr key={r.key}>
+    <td
+      style={{
+        ...sCellBold,
+        background: "#c00000",
+        color: "#fff",
+        fontWeight: 800,
+      }}
+    >
+      {r.label}
+    </td>
+
             {perMonth.map((m, idx) => {
               const val = m.metrics?.[r.key] ?? 0;
               let txt = "";
@@ -271,9 +281,10 @@ return (
                 key={idx}
                 style={{
                   ...sCellBold,
-                  background: isLast ? "#c00000" : "transparent",
+                  background: isLast ? "#000" : "transparent",
                   color: "#fff",
                   fontSize: isLast ? 23 : "21px",
+                  textAlign:"center"
                 }}
               >
                 {fmtMoney(m.metrics?.totalMes || 0)}
@@ -284,7 +295,12 @@ return (
 
         {/* META DEL MES */}
         <tr>
-          <td style={sCellBold}>CUOTA  DEL MES</td>
+          <td style={{
+        ...sCellBold,
+        background: "#c00000",
+        color: "#fff",
+        fontWeight: 800,
+      }}>CUOTA  DEL MES</td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             const meta = metasPorMes[m.mes] || 0;
@@ -307,7 +323,12 @@ return (
 
         {/* % RESTANTE PARA META */}
         <tr>
-          <td style={sCellBold}>% RESTANTE PARA CUOTA</td>
+          <td style={{
+        ...sCellBold,
+        background: "#c00000",
+        color: "#fff",
+        fontWeight: 800,
+      }}>% RESTANTE PARA CUOTA</td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             const meta = metasPorMes[m.mes] || 0;
@@ -334,7 +355,12 @@ return (
 
         {/* % META ALCANZADA */}
         <tr>
-          <td style={sCellBold}>% ALCANCE DE CUOTA</td>
+          <td style={{
+        ...sCellBold,
+        background: "#c00000",
+        color: "#fff",
+        fontWeight: 800,
+      }}>% ALCANCE DE CUOTA</td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             const meta = metasPorMes[m.mes] || 0;
@@ -360,7 +386,12 @@ return (
 
         {/* CAC */}
         <tr>
-          <td style={sCellBold}>Calculo Adquisición Cliente Digital</td>
+          <td style={{
+        ...sCellBold,
+        background: "#c00000",
+        color: "#fff",
+        fontWeight: 800,
+      }}>Calculo Adquisición Cliente Digital</td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             return (
@@ -370,7 +401,7 @@ return (
                   ...sCell,
                   background: isLast ? "#c00000" : sCell.background,
                   color: isLast ? "#fff" : sCell.color,
-                  fontSize: isLast ? 23 : sCell.fontSize,
+                  fontSize: isLast ? 24 : sCell.fontSize,
                 }}
               >
                 {fmtNum(m.metrics?.mkCac || 0, 2)}
@@ -397,7 +428,7 @@ return (
                   ...sThMes,
                   background: isLast ? "#c00000" : "transparent",
                   color: "#fff",
-                  fontSize: isLast ? 23 : sThMes.fontSize,
+                  fontSize: isLast ? 24 : 24,
                 }}
               >
                 {fmtMoney(m.metrics?.totalMesFull || 0)}
@@ -405,6 +436,38 @@ return (
             );
           })}
         </tr>
+        {/* 🗓️ Fila de los meses al final */}
+<tr>
+  <td
+    style={{
+      ...sCellBold,
+      background: "#000",
+      color: "#fff",
+      textAlign: "center",
+      fontWeight: 800,
+      fontSize: 18,
+    }}
+  ></td>
+
+  {perMonth.map((m, idx) => {
+    const isLast = idx === perMonth.length - 1;
+    return (
+      <td
+        key={`footer-month-${idx}`}
+        style={{
+          ...sCellBold,
+          background: isLast ? "#000" : "#000",
+          color: "#fff",
+          fontSize: isLast ? 23 : sCellBold.fontSize,
+          textAlign: "center",
+        }}
+      >
+        {m.label}
+      </td>
+    );
+  })}
+</tr>
+
       </thead>
     </table>
   </div>

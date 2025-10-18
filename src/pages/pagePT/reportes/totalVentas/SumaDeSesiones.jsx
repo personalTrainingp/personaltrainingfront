@@ -191,15 +191,14 @@ Object.keys(moneyByAdvisor).forEach((key) => {
               };
               const isZero = (v) => Number(v) === 0;
     const cellBoldIf = (v) => ({
-      fontSize: 25,
+  fontSize: isZero(v) ? 25 : 29,  
       lineHeight: 1,
       margin: 0,
       fontWeight: isZero(v) ? 400 : 700,
-        color: isZero(v) ? "#000" : "#c00000", // <- rojo si es bold
+        color: isZero(v) ? "#000" : "#c00000", 
 
     });
     const tdBoldClassIf = (v) => (isZero(v) ? "" : "fw-bold");
-          const cellValue = { fontSize: 25, lineHeight: 1, margin: 0 };
 
               const totalByProgAndOrigin = (pk) => {
                 const asesoresObj = advisorOriginByProg?.[pk] || {};
@@ -212,7 +211,6 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                   { nuevos: 0, renovaciones: 0, reinscripciones: 0 }
                 );
               };
-              // 🔹 Filtra asesores que no vendieron programas (solo membresías)
 
               const grandMoney = useMemo(() => {
                 const cellsFromResumenTotales = Array.isArray(resumenTotales) ? resumenTotales : null;
@@ -265,7 +263,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
               className="table text-center tabla-sesiones"
               style={{ borderCollapse: "collapse", width: "100%" }}
             >
-              <thead className="bg-black text-white">
+<thead style={{ backgroundColor: "#C00000", color: "#fff" }}>
                 {/* Fila 1: IMAGEN + Avatares */}
                 <tr>
                   <th style={{ width: 150, ...thName }}>ASESORES</th>
@@ -310,7 +308,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                 </tr>
 
                 <tr>
-                  <th style={{ border: "none", background: "#fff" }} />
+                  <th  style={{ border: "none", background: "#fff" }} />
 
                   {visiblePrograms.map((_, idx) => {
                     const isLast = idx === visiblePrograms.length - 1;
@@ -339,7 +337,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                   const key = norm(asesor);
                   const imgUrl = normalizeImgUrl(avatarByAdvisor[key] || imageByAdvisor[key] || "");
                   return (
-                    <tr key={ridx} style={{ background: "#fff", fontSize: 25 }}>
+                    <tr key={ridx} style={{ background: "#fff", fontSize: 29 }}>
                       <td className="img-with-name">
                         <div className="img-cap">
                           {imgUrl && <img src={imgUrl} alt={asesor} loading="lazy" />}
@@ -394,10 +392,10 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                   );
                 })}
                 {/* SOCIOS POR CANAL */}
-                <tr className=" fila-secundaria" style={{ background: "#fff", fontSize: 25 }}>
+                <tr className=" fila-secundaria" style={{ background: "#fff", fontSize: 29 }}>
                   <td className="img-with-name">
                     <div className="img-cap only-text">
-                      <div className="cap">SOCIOS POR CANAL</div>
+                      <div className="cap">SOCIOS POR CANAL DE VENTA</div>
                     </div>
                   </td>
 
@@ -432,7 +430,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                 </tr>
 
                 {/* TOTAL */}
-                <tr className="fw-bold fila-secundaria fila-total" style={{ background: "#fff", fontSize: 25 }}>
+                <tr className="fw-bold fila-secundaria fila-total" style={{ background: "#fff", fontSize: 29 }}>
                   <td className="img-with-name">
                     <div className="img-cap only-text">
                       <div className="cap">TOTAL</div>

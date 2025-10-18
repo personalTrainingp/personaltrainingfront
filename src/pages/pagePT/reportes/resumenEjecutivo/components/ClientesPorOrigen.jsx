@@ -200,7 +200,16 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
       <tbody>
         {sortedOrigins.map((origin) => (
           <tr key={origin}>
-            <td style={sCellLeft}>{origin}</td>
+<td
+  style={{
+    ...sCellLeft,
+    background: "#c00000",
+    color: "#fff",
+    fontWeight: 800,
+  }}
+>
+  {origin}
+</td>
 
             {monthKeys.map((m, idx) => {
               const value = getCount(m.key, origin);
