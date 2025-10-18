@@ -271,14 +271,14 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                     const scale = Number(img?.scale ?? 1);
                     const isLast = idx === visiblePrograms.length - 1;
                     return (
-                      <th
+                      <th 
                         key={idx}
-                        className={`avatar-col program-start ${isLast ? "program-end" : ""}`}
+                        className={` avatar-col program-start  ${isLast ? "program-end" : ""}`}
                         style={{
                           verticalAlign: "middle"
                         }}
                       >
-                        <div
+                        <div 
                           style={{
                             ...avatarBox,
                             overflow: scale > 1 ? "visible" : "hidden",
@@ -303,7 +303,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                     TOTAL SOCIOS
                   </th>
                   <th style={{ fontSize: 20, color: "#fff", minWidth: 90,width:60 }}>S/.</th>
-                  <th style={{ fontSize: 20, color: "#fff", minWidth: 60,width:60 }}>%</th>
+                  <th  style={{ fontSize: 20, color: "#fff", minWidth: 60,width:60 }}>%</th>
                 </tr>
 
                 <tr>

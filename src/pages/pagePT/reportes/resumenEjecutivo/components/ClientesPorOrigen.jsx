@@ -151,9 +151,9 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
 
   const sTable = { width: "100%", borderCollapse: "collapse", tableLayout: "fixed" };
   const sHeadLeft = { background: C.red, color: C.white, padding: "10px", border: C.border, textAlign: "left", width: 260 };
-  const sHead = { background: C.red, color: C.white, padding: "10px", border: C.border, textAlign: "center" };
+  const sHead = { background: C.red, color: C.white, padding: "10px", border: C.border, textAlign: "center",fontSize:20 };
   const sCell = { background: C.white, color: "#000", padding: "10px", border: C.border, fontSize: 19, textAlign: "center" };
-  const sCellLeft = { ...sCell, textAlign: "left", fontWeight: 700, fontSize: 15 };
+  const sCellLeft = { ...sCell, textAlign: "left", fontWeight: 700, fontSize: 17 };
 
   const lastMonthKey = monthKeys[monthKeys.length - 1]?.key;
     const maxValueLastCol = Math.max(...orderedOrigins.map(o => getCount(lastMonthKey, o)));
@@ -177,9 +177,7 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
     <table style={sTable}>
       <thead>
         <tr>
-          <th style={sHeadLeft} onClick={toggleHighlight}>
-            MES
-          </th>
+          <th style={sHeadLeft} onClick={toggleHighlight}></th>
           {monthKeys.map((m, idx) => {
             const isLastCol = idx === monthKeys.length - 1;
             return (
@@ -231,6 +229,44 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
             })}
           </tr>
         ))}
+
+        {/* 🧮 Fila TOTAL */}
+        <tr>
+          <td
+            style={{
+              ...sCellLeft,
+              background: "#c00000",
+              color: "#fff",
+              fontSize: 25,
+              fontWeight: 800,
+            }}
+          >
+            TOTAL
+          </td>
+
+          {monthKeys.map((m, idx) => {
+            const totalMes = sortedOrigins.reduce(
+              (acc, origin) => acc + getCount(m.key, origin),
+              0
+            );
+            const isLastCol = idx === monthKeys.length - 1;
+            return (
+              <td
+                key={`total-${m.key}`}
+                style={{
+                  ...sCell,
+                  background: "#c00000",
+                  color: "#fff",
+                  fontWeight: 800,
+                  fontSize: isLastCol ? 25 : 24,
+                  textAlign: "center",
+                }}
+              >
+                {totalMes}
+              </td>
+            );
+          })}
+        </tr>
       </tbody>
     </table>
   </div>

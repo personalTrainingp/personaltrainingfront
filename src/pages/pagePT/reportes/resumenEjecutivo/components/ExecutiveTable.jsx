@@ -154,10 +154,10 @@ const mkCpl = leads > 0 ? (mkInvAdjusted / leads) : 0;
 
   const rows = [
     { key: "mkInv", label: "INVERSIÓN REDES", type: "money" },
-    { key: "mkInvTikTok", label: "— TikTok", type: "money" },
-    { key: "mkInvMeta",   label: "— Meta",   type: "money" }, 
-    { key: "mkLeads", label: "LEADS", type: "int" },
-    { key: "mkCpl", label: "COSTO POR LEADS", type: "float2" },
+    { key: "mkInvTikTok", label: " TikTok", type: "money" },
+    { key: "mkInvMeta",   label: " Meta",   type: "money" }, 
+    { key: "mkLeads", label: "CANTIDAD LEADS", type: "int" },
+    { key: "mkCpl", label: "COSTO POR LEAD", type: "float2" },
     { key: "totalServ", label: "VENTA MEMBRESIAS", type: "money" },
     { key: "cantServ", label: "CANTIDAD MEMBRESIAS", type: "int" },
     { key: "ticketServ", label: "TICKET MEDIO MEMBRESIAS", type: "money" },
@@ -175,7 +175,7 @@ const mkCpl = leads > 0 ? (mkInvAdjusted / leads) : 0;
 
   const cBlack = "#000000";
   const cWhite = "#ffffff";
-  const cRed = "red";
+  const cRed = "#c00000";
   const border = "1px solid #333";
 
   const sWrap = {
@@ -192,13 +192,12 @@ const mkCpl = leads > 0 ? (mkInvAdjusted / leads) : 0;
     fontSize: 25
   };
   const sTable = { width: "100%", borderCollapse: "collapse", tableLayout: "fixed" };
-  const sThMes = { color: cWhite, border, textAlign: "center", fontWeight: 700, fontSize: 20, padding: "10px" };
-  const sThLeft = { ...sThMes, textAlign: "left", width: 260 };
-  const sCell = { border, padding: "8px 10px", background: cWhite, fontSize: 19 };
-  const sCellBold = { ...sCell, fontWeight: 700, fontSize: 17 };
+  const sThMes = { color: cWhite, textAlign: "center", fontWeight: 700, fontSize: 23, padding: "10px" ,border:"1px solid red"};
+  const sThLeft = { ...sThMes, textAlign: "center", width: 260 };
+  const sCell = { border, padding: "8px 10px", background: cWhite, fontSize: 19,textAlign:"center" };
+  const sCellBold = {border, padding: "8px 10px", background: cWhite, fontWeight: 700, fontSize: 17, };
   const sRowBlack = { background: cBlack, color: cWhite, fontWeight: 700 };
   const sRowRed = { background: cRed, color: cWhite, fontWeight: 800 };
-const tbfinal ={fontSize:27,color:'red'}
   const metasPorMes = {
     enero: 50000, febrero: 50000, marzo: 50000, abril: 50000, mayo: 50000, junio: 50000,
     julio: 60000, agosto: 70000, setiembre: 75000, septiembre: 75000,
@@ -212,7 +211,7 @@ return (
     <table style={sTable}>
       <thead>
         <tr>
-          <th className="bg-black" style={sThLeft}>MES</th>
+          <th className="bg-black " style={sThLeft}></th>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             return (
@@ -220,7 +219,7 @@ return (
                 key={idx}
                 style={{
                   ...sThMes,
-                  background: isLast ? "red" : cBlack,
+                  background: isLast ? "#c00000" : cBlack,
                   fontSize: isLast ? 23 : sThMes.fontSize,
                 }}
               >
@@ -247,7 +246,7 @@ return (
                   key={idx}
                   style={{
                     ...sCell,
-                    background: isLast ? "red" : sCell.background,
+                    background: isLast ? "#c00000" : sCell.background,
                     color: isLast ? "#fff" : sCell.color,
                     fontWeight: isLast ? 700 : "normal",
                     fontSize: isLast ? 23 : sCell.fontSize,
@@ -272,7 +271,7 @@ return (
                 key={idx}
                 style={{
                   ...sCellBold,
-                  background: isLast ? "red" : "transparent",
+                  background: isLast ? "#c00000" : "transparent",
                   color: "#fff",
                   fontSize: isLast ? 23 : "21px",
                 }}
@@ -285,7 +284,7 @@ return (
 
         {/* META DEL MES */}
         <tr>
-          <td style={sCellBold}>META DEL MES</td>
+          <td style={sCellBold}>CUOTA  DEL MES</td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             const meta = metasPorMes[m.mes] || 0;
@@ -295,7 +294,7 @@ return (
                 style={{
                   ...sCell,
                   fontWeight: 700,
-                  background: isLast ? "red" : sCell.background,
+                  background: isLast ? "#c00000" : sCell.background,
                   color: isLast ? "#fff" : sCell.color,
                   fontSize: isLast ? 23 : sCell.fontSize,
                 }}
@@ -308,7 +307,7 @@ return (
 
         {/* % RESTANTE PARA META */}
         <tr>
-          <td style={sCellBold}>% RESTANTE PARA META</td>
+          <td style={sCellBold}>% RESTANTE PARA CUOTA</td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             const meta = metasPorMes[m.mes] || 0;
@@ -323,7 +322,7 @@ return (
                   ...sCell,
                   fontWeight: 700,
                   color: isLast ? "#fff" : color,
-                  background: isLast ? "red" : sCell.background,
+                  background: isLast ? "#c00000" : sCell.background,
                   fontSize: isLast ? 23 : sCell.fontSize,
                 }}
               >
@@ -335,7 +334,7 @@ return (
 
         {/* % META ALCANZADA */}
         <tr>
-          <td style={sCellBold}>% META ALCANZADA</td>
+          <td style={sCellBold}>% ALCANCE DE CUOTA</td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             const meta = metasPorMes[m.mes] || 0;
@@ -349,8 +348,8 @@ return (
                   ...sCell,
                   fontWeight: 700,
                   color: isLast ? "#fff" : color,
-                  background: isLast ? "red" : sCell.background,
-                  fontSize: isLast ? 20 : sCell.fontSize,
+                  background: isLast ? "#c00000" : sCell.background,
+                  fontSize: isLast ? 23 : sCell.fontSize,
                 }}
               >
                 {fmtNum(porcentaje, 2)} %
@@ -369,7 +368,7 @@ return (
                 key={idx}
                 style={{
                   ...sCell,
-                  background: isLast ? "red" : sCell.background,
+                  background: isLast ? "#c00000" : sCell.background,
                   color: isLast ? "#fff" : sCell.color,
                   fontSize: isLast ? 23 : sCell.fontSize,
                 }}
@@ -386,7 +385,7 @@ return (
     <table style={sTable}>
       <thead>
         <tr style={sRowRed}>
-          <th style={{ ...sThLeft, background: "transparent", color: cWhite }}>
+          <th style={{ ...sThLeft, background: "transparent", color: cWhite,fontSize:20  }}>
             VENTA TOTAL <br /> ACUMULADA POR MES
           </th>
           {perMonth.map((m, idx) => {
@@ -396,7 +395,7 @@ return (
                 key={idx}
                 style={{
                   ...sThMes,
-                  background: isLast ? "red" : "transparent",
+                  background: isLast ? "#c00000" : "transparent",
                   color: "#fff",
                   fontSize: isLast ? 23 : sThMes.fontSize,
                 }}
