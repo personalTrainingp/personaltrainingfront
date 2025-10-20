@@ -1,7 +1,7 @@
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
-import { arrayEstados, arrayTarjetasTemp } from '@/types/type'
+import { arrayEmpresaFinan, arrayEstados, arrayTarjetasTemp } from '@/types/type'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
@@ -139,8 +139,8 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                             placeholder={'Seleccionar la empresa'}
                                             className="react-select"
                                             classNamePrefix="react-select"
-                                            options={[{value: 598, label: 'CHANGE'}, {value: 599, label: 'REDUCTO'}, {value: 601, label: 'CIRCUS'}]}
-                                            value={DataGeneral.find(
+                                            options={arrayEmpresaFinan}
+                                            value={arrayEmpresaFinan.find(
                                                 (option) => option.value === id_empresa
                                             )}
                                         />

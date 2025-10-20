@@ -17,7 +17,9 @@ export const useGestionLeadStore = () => {
 		try {
 			const { data } = await PTApi.get(`/lead/leads/${id_empresa}`);
 
-			dispatch(onSetDataView(data.leads));
+			dispatch(
+				onSetDataView(data.leads?.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)))
+			);
 		} catch (error) {
 			console.log(error);
 		}

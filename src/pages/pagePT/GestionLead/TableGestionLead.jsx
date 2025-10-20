@@ -15,6 +15,8 @@ export const TableGestionLead = ({onClickCustomLead, onDeleteItemLead, id_empres
             obtenerLeads(id_empresa)
             obtenerRedesInvertidas('inversion', 'redes')
         }, [])
+        console.log({dataView});
+        
   return (
     <>
                     <Button label='AGREGAR LEAD' onClick={()=>onClickCustomLead(0, id_empresa, {})}/>
@@ -32,6 +34,7 @@ export const TableGestionLead = ({onClickCustomLead, onDeleteItemLead, id_empres
                         </tr>
                     </thead>
                     <tbody>
+
                         {
                             dataView?.map(m=>{
                                 return (
