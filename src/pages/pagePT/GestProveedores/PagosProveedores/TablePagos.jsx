@@ -177,8 +177,8 @@ useEffect(() => {
                   <tr id={`row-${grupo.id_prov}`}>
                     <td colSpan={6} className="bg-light">
                       <Table size="sm" bordered responsive className="mb-2">
-                        <thead className='fs-3'>
-                          <tr className="bg-black">
+                        <thead className={`fs-3 ${classNameTablePrincipal}`}>
+                          <tr>
                             {/* <th style={{ width: 36 }} className="text-white" /> */}
                             <th className="text-white bg-secondary">
                               <div className='text-center' style={{width: '30px'}}>
