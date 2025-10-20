@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button as Btn } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { usePagoProveedoresStore } from './usePagoProveedoresStore';
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore';
@@ -10,6 +10,7 @@ import { ModalCustomDescuentos } from './ModalCustomDescuentos';
 import dayjs from 'dayjs';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
 
 // Descarga segura
 const safeDownload = (url, filename) => {
@@ -163,12 +164,12 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
               HISTORIAL DE <br /> CONTRATOS
             </th>
             <th>
-              <div className="text-white" style={{ width: '400px' }}>
+              <div className="text-white  text-center" style={{ width: '400px' }}>
                 Nombres y apellidos / Razon social
               </div>
             </th>
             <th>
-              <div className="text-white">RUC</div>
+              <div className="text-white text-center">RUC</div>
             </th>
             <th className="text-center">
               <div className="text-white">CONTRATO <br /> PENDIENTES</div>
@@ -196,14 +197,14 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
             return (
               <tr key={grupo.id_prov}>
                 <td className="text-center">
-                  <Button
+                  <Btn
                     variant="link"
                     size="sm"
                     onClick={() => handleOpenDialog(grupo)}
                     style={{ textDecoration: 'none' }}
                   >
                     VER <br /> CONTRATOS
-                  </Button>
+                  </Btn>
                 </td>
                 <td className="fs-3">
                   <div style={{ width: '400px' }}>{razon}</div>
@@ -244,7 +245,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
               <thead className={`fs-3 ${classNameTablePrincipal}`}>
                 <tr>
                   <th className="text-white bg-secondary">
-                    <div className="text-center" style={{ width: '30px' }}>
+                    <div className="text-center">
                       ID
                     </div>
                   </th>
@@ -297,7 +298,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                     return (
                       <React.Fragment key={c.id}>
                         <tr className="fs-3">
-                          <td onClick={() => toggleContrato(c.id)} className="cursor-pointer">
+                          <td onClick={() => toggleContrato(c.id)} className="cursor-pointer text-center">
                             <div className="p-0 m-0" style={{ width: '70px' }}>{c.id}</div>
                           </td>
                           <td onClick={() => onClickOpenFileContrato(c.uid_contrato)}>
@@ -319,9 +320,21 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                             <div style={{ width: '600px' }}>{c?.observacion ?? '-'}</div>
                           </td>
                           <td className="text-end">{fmt(c?.monto_contrato)}</td>
-                          <td className="text-end">{fmt(totalPagado)}</td>
-                          <td className="text-end">{0}</td>
-                          <td className="text-end fw-semibold">{fmt(saldoContrato)}</td>
+                          <td className="text-end">
+                            <div className='' style={{width: '110px'}}>
+                              {fmt(totalPagado)}
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <div style={{width: '110px'}}>
+                              {0}
+                            </div>
+                            </td>
+                          <td className="text-end fw-semibold">
+                            <div style={{width: '110px'}}>
+                              {fmt(saldoContrato)}
+                            </div>
+                          </td>
                           <td onClick={() => onClickOpenFileCompromisoPago(c?.uid_compromisoPago)}>
                             <div className="text-center">
                               <i className="pi pi-file-pdf bg-change p-1 rounded-3 text-white cursor-pointer" style={{ fontSize: '90px' }}></i>
@@ -330,10 +343,12 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                           <td className="text-end">
                             <div className="d-flex gap-4">
                               <div>
-                                <i className="pi pi-trash fs-2" onClick={() => onDeleteContrato(c.id)}></i>
+                                <Button icon="pi pi-trash" rounded outlined onClick={() => onDeleteContrato(c.id)}/>
+                                {/* <i className="pi pi-trash fs-2" onClick={() => onDeleteContrato(c.id)}></i> */}
                               </div>
                               <div>
-                                <i className="pi pi-pencil fs-2" onClick={() => onOpenModalCustomPagosProv(c.id, id_empresa)}></i>
+                                <Button icon="pi pi-pencil" rounded outlined onClick={() => onOpenModalCustomPagosProv(c.id, id_empresa)}/>
+                                {/* <i className="pi pi-pencil fs-2" onClick={() => onOpenModalCustomPagosProv(c.id, id_empresa)}></i> */}
                               </div>
                             </div>
                           </td>
@@ -351,7 +366,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                               </div>
                               <div className="d-flex justify-content-between align-items-center mb-2">
                                 <div className="fw-semibold">
-                                  <Button onClick={() => onClickOpenModalCustomDescuentos(c?.observacion, c.id)}>AGREGAR PENALIDAD</Button>
+                                  <Btn onClick={() => onClickOpenModalCustomDescuentos(c?.observacion, c.id)}>AGREGAR PENALIDAD</Btn>
                                 </div>
                               </div>
                               <Table size="sm" bordered responsive>
