@@ -85,13 +85,13 @@ export const DataProveedores = () => {
 								<TabPanel header={'CONTRATOS POR PROVEEDOR'}>
 									<TabView>
 										<TabPanel header={'CHANGE'}>
-											<App id_empresa={598}/>
+											<App id_empresa={598} bgEmpresa='bg-change' classNameTablePrincipal={'bg-change p-2'}/>
 										</TabPanel>
 										<TabPanel header={'CIRCUS'}>
-											<App id_empresa={601}/>
+											<App id_empresa={601} bgEmpresa='bg-circus' classNameTablePrincipal={'bg-circus p-2'}/>
 										</TabPanel>
 										<TabPanel header={'REDUCTO'}>
-											<App id_empresa={599}/>
+											<App id_empresa={599} bgEmpresa='bg-greenISESAC' classNameTablePrincipal={'bg-greenISESAC p-2'}/>
 										</TabPanel>
 									</TabView>
 								</TabPanel>

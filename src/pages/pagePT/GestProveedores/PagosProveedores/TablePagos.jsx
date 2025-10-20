@@ -37,7 +37,7 @@ import { confirmDialog } from 'primereact/confirmdialog';
         break;
     }
   }
-export const TablePagos = ({id_empresa, onOpenModalCustomPagosProv}) => {
+export const TablePagos = ({id_empresa, onOpenModalCustomPagosProv, bgEmpresa, classNameTablePrincipal}) => {
   const {
     obtenerTrabajosPendientes,
     obtenerContratosPendientes,
@@ -128,14 +128,14 @@ useEffect(() => {
       {/* {id_empresa}
        */}
       <Table bordered responsive hover className="align-middle">
-        <thead className="bg-primary fs-2">
+        <thead className={classNameTablePrincipal}>
           <tr>
-            <th style={{ width: 44 }}>HISTORIAL DE <br/> CONTRATOS</th>
+            <th className='text-white' style={{ width: 44 }}>HISTORIAL DE <br/> CONTRATOS</th>
             <th><div className="text-white" style={{width: '400px'}}>Nombres y apellidos / Razon social</div></th>
             <th><div className="text-white">RUC</div></th>
-              <th className="text-end"><div className="text-white">CONTRATO <br/> PENDIENTES</div></th>
-            <th className="text-end"><div className="text-white">MONTO <br/> CONTRATO</div></th>
-            <th className="text-end"><div className="text-white">PAGO <br/> ACUMULADO</div></th>
+              <th className="text-center"><div className="text-white">CONTRATO <br/> PENDIENTES</div></th>
+            <th className="text-center"><div className="text-white">MONTO <br/> CONTRATO</div></th>
+            <th className="text-center"><div className="text-white">PAGO <br/> ACUMULADO</div></th>
             <th className="text-end"><div className="text-white">SALDO</div></th>
           </tr>
         </thead>
@@ -177,8 +177,8 @@ useEffect(() => {
                   <tr id={`row-${grupo.id_prov}`}>
                     <td colSpan={6} className="bg-light">
                       <Table size="sm" bordered responsive className="mb-2">
-                        <thead className='fs-3'>
-                          <tr className="bg-black">
+                        <thead className={`fs-3 ${classNameTablePrincipal}`}>
+                          <tr>
                             {/* <th style={{ width: 36 }} className="text-white" /> */}
                             <th className="text-white bg-secondary">
                               <div className='text-center' style={{width: '30px'}}>
@@ -187,8 +187,8 @@ useEffect(() => {
                             </th>
                             {/* <th className="text-white">PRESUPUESTO</th> */}
                             <th className="text-white">CONTRATO <br/> <div className='d-flex justify-content-center' style={{position: 'sticky', top: '60px'}}><div className='text-center border-2' style={{width: '40px'}}></div></div> <br/> PRESUPUESTO</th>
-                            <th className="text-white">
-                              <div className='text-center' style={{width: '100px'}}>
+                            <th className="text-white text-center">
+                              <div className='text-center'>
                                 Fecha inicio
                               </div>
                             </th>
@@ -207,14 +207,14 @@ useEffect(() => {
                               Monto <br/> contrato
                               </div>
                             </th>
-                            <th className="text-end text-white">PENALIDAD</th>
                             <th className="text-end text-white">
                               <div className='text-center'>
-                                Pago <br/> Acumulado
+                                Adelanto
                               </div>
                             </th>
-                            <th className="text-end text-white">
-                              Saldo
+                            <th className="text-center text-white">PENALIDAD</th>
+                            <th className="text-center text-white">
+                              Saldo <br/> A pagar
                             </th>
                             <th className="text-white">
                               <div className='text-center'>
@@ -226,7 +226,7 @@ useEffect(() => {
                           </tr>
                         </thead>
                         <tbody>
-                          {grupo.items.sort((a, b) => a.fecha_inicio - b.fecha_inicio).map((c) => {
+                          {grupo.items.sort((a, b) => new Date(a.fecha_inicio) - new Date(b.fecha_inicio)).map((c) => {
                             const saldoContrato =
                               (Number(c?.monto_contrato) || 0) - (Number(c?.sumaPagos) || 0);
                             const isOpenContrato = !!openContrato[c.id];
@@ -264,12 +264,12 @@ useEffect(() => {
                                     </div>
                                   </td>
                                   <td className="text-end">{fmt(c?.monto_contrato)}</td>
-                                  <td className="text-end">{0}</td>
                                   <td className="text-end">{fmt(totalPagado)}</td>
+                                  <td className="text-end">{0}</td>
                                   <td className="text-end fw-semibold">{fmt(saldoContrato)}</td>
                                   <td className='' onClick={()=>onClickOpenFileCompromisoPago(c?.uid_compromisoPago)}>
                                     <div className='text-center'>
-                                      <i className='pi pi-file-pdf fs-2 bg-change p-1 rounded-3 text-white cursor-pointer'  style={{fontSize: '90px'}}></i>
+                                      <i className='pi pi-file-pdf bg-change p-1 rounded-3 text-white cursor-pointer'  style={{fontSize: '90px'}}></i>
                                     </div>
                                   </td>
                                   <td className="text-end">
