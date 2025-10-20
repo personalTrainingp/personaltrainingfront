@@ -187,8 +187,8 @@ useEffect(() => {
                             </th>
                             {/* <th className="text-white">PRESUPUESTO</th> */}
                             <th className="text-white">CONTRATO <br/> <div className='d-flex justify-content-center' style={{position: 'sticky', top: '60px'}}><div className='text-center border-2' style={{width: '40px'}}></div></div> <br/> PRESUPUESTO</th>
-                            <th className="text-white">
-                              <div className='text-center' style={{width: '100px'}}>
+                            <th className="text-white text-center">
+                              <div className='text-center'>
                                 Fecha inicio
                               </div>
                             </th>
