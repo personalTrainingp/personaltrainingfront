@@ -142,7 +142,6 @@ const mkCplMeta   = mkLeadsMeta   > 0 ? invMetaAdj   / mkLeadsMeta   : 0;
       mkInv: mkInvAdjusted,
       mkInvTikTok,      
       mkInvMeta,       
-      mkCpl,
       mkLeads: leads,
       mkCac,
   mkLeadsTikTok,
