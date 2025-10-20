@@ -119,7 +119,25 @@ const mkCpl = leads > 0 ? (mkInvAdjusted / leads) : 0;
 
     const leads_por_red = mk?.leads_por_red ?? {};
     const cpl_por_red   = mk?.cpl_por_red ?? {};
+// === LEADS por red ===
+const mkLeadsTikTok = Number(
+  leads_por_red["1514"] ?? leads_por_red["tiktok"] ?? leads_por_red["tik tok"] ?? 0
+);
+const mkLeadsMeta = Number(
+  leads_por_red["1515"] ?? leads_por_red["meta"] ?? leads_por_red["facebook"] ?? 0
+);
 
+// === INVERSIÓN ajustada por red (por_red ya * FACTOR) ===
+const invTikTokAdj = Number(
+  (por_red["1514"] ?? por_red["tiktok"] ?? por_red["tik tok"] ?? 0)
+);
+const invMetaAdj = Number(
+  (por_red["1515"] ?? por_red["meta"] ?? 0)
+);
+
+// === CPL por red (con inversión ajustada) ===
+const mkCplTikTok = mkLeadsTikTok > 0 ? invTikTokAdj / mkLeadsTikTok : 0;
+const mkCplMeta   = mkLeadsMeta   > 0 ? invMetaAdj   / mkLeadsMeta   : 0;
     return {
       mkInv: mkInvAdjusted,
       mkInvTikTok,      
@@ -127,7 +145,11 @@ const mkCpl = leads > 0 ? (mkInvAdjusted / leads) : 0;
       mkCpl,
       mkLeads: leads,
       mkCac,
-
+  mkLeadsTikTok,
+  mkLeadsMeta,
+  mkCpl,
+  mkCplTikTok,
+  mkCplMeta,
       por_red,
       leads_por_red,
       cpl_por_red,
@@ -199,7 +221,7 @@ const mkCpl = leads > 0 ? (mkInvAdjusted / leads) : 0;
   const sRowBlack = { background: cBlack, color: cWhite, fontWeight: 700 };
   const sRowRed = { background: cRed, color: cWhite, fontWeight: 800 };
   const metasPorMes = {
-    enero: 50000, febrero: 50000, marzo: 50000, abril: 50000, mayo: 50000, junio: 50000,
+    enero: 50000, febrero: 50000, marzo: 50000, abril: 55000, mayo: 55000, junio: 60000,
     julio: 60000, agosto: 70000, setiembre: 75000, septiembre: 75000,
     octubre: 85000, noviembre: 85000, diciembre: 85000,
   };
@@ -211,7 +233,7 @@ return (
     <table style={sTable}>
       <thead>
         <tr>
-          <th className="bg-black " style={sThLeft}></th>
+          <th className="bg-black" style={sThLeft}></th>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             return (
@@ -229,49 +251,194 @@ return (
           })}
         </tr>
       </thead>
+
       <tbody>
-       {rows.map((r) => (
-  <tr key={r.key}>
-    <td
-      style={{
-        ...sCellBold,
-        background: "#c00000",
-        color: "#fff",
-        fontWeight: 800,
-      }}
-    >
-      {r.label}
-    </td>
+        {rows.map((r) => (
+          <React.Fragment key={r.key}>
+            {/* Fila base */}
+            <tr>
+              <td
+                style={{
+                  ...sCellBold,
+                  background: "#c00000",
+                  color: "#fff",
+                  fontWeight: 800,
+                }}
+              >
+                {r.label}
+              </td>
 
-            {perMonth.map((m, idx) => {
-              const val = m.metrics?.[r.key] ?? 0;
-              let txt = "";
-              if (r.type === "money") txt = fmtMoney(val);
-              else if (r.type === "float2") txt = fmtNum(val, 2);
-              else txt = fmtNum(val, 0);
+              {perMonth.map((m, idx) => {
+                const val = m.metrics?.[r.key] ?? 0;
+                let txt = "";
+                if (r.type === "money") txt = fmtMoney(val);
+                else if (r.type === "float2") txt = fmtNum(val, 2);
+                else txt = fmtNum(val, 0);
 
-              const isLast = idx === perMonth.length - 1;
-              return (
-                <td
-                  key={idx}
-                  style={{
-                    ...sCell,
-                    background: isLast ? "#c00000" : sCell.background,
-                    color: isLast ? "#fff" : sCell.color,
-                    fontWeight: isLast ? 700 : "normal",
-                    fontSize: isLast ? 23 : sCell.fontSize,
-                  }}
-                >
-                  {txt}
-                </td>
-              );
-            })}
-          </tr>
+                const isLast = idx === perMonth.length - 1;
+                return (
+                  <td
+                    key={idx}
+                    style={{
+                      ...sCell,
+                      background: isLast ? "#c00000" : sCell.background,
+                      color: isLast ? "#fff" : sCell.color,
+                      fontWeight: isLast ? 700 : "normal",
+                      fontSize: isLast ? 23 : sCell.fontSize,
+                    }}
+                  >
+                    {txt}
+                  </td>
+                );
+              })}
+            </tr>
+
+            {/* Debajo de CANTIDAD LEADS: Meta y TikTok */}
+            {r.key === "mkLeads" && (
+              <>
+                <tr>
+                  <td
+                    style={{
+                      ...sCellBold,
+                      background: "#c00000",
+                      color: "#fff",
+                      fontWeight: 800,
+                    }}
+                  >
+                    LEADS — META
+                  </td>
+                  {perMonth.map((m, idx) => {
+                    const isLast = idx === perMonth.length - 1;
+                    const val = m.metrics?.mkLeadsMeta ?? 0;
+                    return (
+                      <td
+                        key={`leads-meta-${idx}`}
+                        style={{
+                          ...sCell,
+                          background: isLast ? "#c00000" : sCell.background,
+                          color: isLast ? "#fff" : sCell.color,
+                          fontWeight: isLast ? 700 : "normal",
+                          fontSize: isLast ? 23 : sCell.fontSize,
+                        }}
+                      >
+                        {fmtNum(val, 0)}
+                      </td>
+                    );
+                  })}
+                </tr>
+
+                <tr>
+                  <td
+                    style={{
+                      ...sCellBold,
+                      background: "#c00000",
+                      color: "#fff",
+                      fontWeight: 800,
+                    }}
+                  >
+                    LEADS — TIKTOK
+                  </td>
+                  {perMonth.map((m, idx) => {
+                    const isLast = idx === perMonth.length - 1;
+                    const val = m.metrics?.mkLeadsTikTok ?? 0;
+                    return (
+                      <td
+                        key={`leads-tt-${idx}`}
+                        style={{
+                          ...sCell,
+                          background: isLast ? "#c00000" : sCell.background,
+                          color: isLast ? "#fff" : sCell.color,
+                          fontWeight: isLast ? 700 : "normal",
+                          fontSize: isLast ? 23 : sCell.fontSize,
+                        }}
+                      >
+                        {fmtNum(val, 0)}
+                      </td>
+                    );
+                  })}
+                </tr>
+              </>
+            )}
+
+            {/* Debajo de COSTO POR LEAD: CPL por Meta y TikTok */}
+            {r.key === "mkCpl" && (
+              <>
+                <tr>
+                  <td
+                    style={{
+                      ...sCellBold,
+                      background: "#c00000",
+                      color: "#fff",
+                      fontWeight: 800,
+                    }}
+                  >
+                    CPL — META
+                  </td>
+                  {perMonth.map((m, idx) => {
+                    const isLast = idx === perMonth.length - 1;
+                    const val = m.metrics?.mkCplMeta ?? 0;
+                    return (
+                      <td
+                        key={`cpl-meta-${idx}`}
+                        style={{
+                          ...sCell,
+                          background: isLast ? "#c00000" : sCell.background,
+                          color: isLast ? "#fff" : sCell.color,
+                          fontWeight: isLast ? 700 : "normal",
+                          fontSize: isLast ? 23 : sCell.fontSize,
+                        }}
+                      >
+                        {fmtNum(val, 2)}
+                      </td>
+                    );
+                  })}
+                </tr>
+
+                <tr>
+                  <td
+                    style={{
+                      ...sCellBold,
+                      background: "#c00000",
+                      color: "#fff",
+                      fontWeight: 800,
+                    }}
+                  >
+                    CPL — TIKTOK
+                  </td>
+                  {perMonth.map((m, idx) => {
+                    const isLast = idx === perMonth.length - 1;
+                    const val = m.metrics?.mkCplTikTok ?? 0;
+                    return (
+                      <td
+                        key={`cpl-tt-${idx}`}
+                        style={{
+                          ...sCell,
+                          background: isLast ? "#c00000" : sCell.background,
+                          color: isLast ? "#fff" : sCell.color,
+                          fontWeight: isLast ? 700 : "normal",
+                          fontSize: isLast ? 23 : sCell.fontSize,
+                        }}
+                      >
+                        {fmtNum(val, 2)}
+                      </td>
+                    );
+                  })}
+                </tr>
+              </>
+            )}
+          </React.Fragment>
         ))}
 
         {/* VENTA TOTAL AL cutDay */}
         <tr style={sRowBlack}>
-          <td style={{ ...sCellBold, background: "transparent", color: cWhite, fontSize: "18px" }}>
+          <td
+            style={{
+              ...sCellBold,
+              background: "transparent",
+              color: cWhite,
+              fontSize: "18px",
+            }}
+          >
             VENTA TOTAL AL {cutDay}
           </td>
           {perMonth.map((m, idx) => {
@@ -284,7 +451,7 @@ return (
                   background: isLast ? "#000" : "transparent",
                   color: "#fff",
                   fontSize: isLast ? 23 : "21px",
-                  textAlign:"center"
+                  textAlign: "center",
                 }}
               >
                 {fmtMoney(m.metrics?.totalMes || 0)}
@@ -293,14 +460,18 @@ return (
           })}
         </tr>
 
-        {/* META DEL MES */}
+        {/* CUOTA DEL MES */}
         <tr>
-          <td style={{
-        ...sCellBold,
-        background: "#c00000",
-        color: "#fff",
-        fontWeight: 800,
-      }}>CUOTA  DEL MES</td>
+          <td
+            style={{
+              ...sCellBold,
+              background: "#c00000",
+              color: "#fff",
+              fontWeight: 800,
+            }}
+          >
+            CUOTA DEL MES
+          </td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             const meta = metasPorMes[m.mes] || 0;
@@ -321,19 +492,23 @@ return (
           })}
         </tr>
 
-        {/* % RESTANTE PARA META */}
+        {/* % RESTANTE PARA CUOTA */}
         <tr>
-          <td style={{
-        ...sCellBold,
-        background: "#c00000",
-        color: "#fff",
-        fontWeight: 800,
-      }}>% RESTANTE PARA CUOTA</td>
+          <td
+            style={{
+              ...sCellBold,
+              background: "#c00000",
+              color: "#fff",
+              fontWeight: 800,
+            }}
+          >
+            % RESTANTE PARA CUOTA
+          </td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             const meta = metasPorMes[m.mes] || 0;
             const total = m.metrics?.totalMes || 0;
-            const porcentaje = meta > 0 ? (100 - (total / meta) * 100) : 0;
+            const porcentaje = meta > 0 ? 100 - (total / meta) * 100 : 0;
             const restante = porcentaje < 0 ? 0 : porcentaje;
             const color = total >= meta ? "#007b00" : "#c00000";
             return (
@@ -353,14 +528,18 @@ return (
           })}
         </tr>
 
-        {/* % META ALCANZADA */}
+        {/* % ALCANCE DE CUOTA */}
         <tr>
-          <td style={{
-        ...sCellBold,
-        background: "#c00000",
-        color: "#fff",
-        fontWeight: 800,
-      }}>% ALCANCE DE CUOTA</td>
+          <td
+            style={{
+              ...sCellBold,
+              background: "#c00000",
+              color: "#fff",
+              fontWeight: 800,
+            }}
+          >
+            % ALCANCE DE CUOTA
+          </td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             const meta = metasPorMes[m.mes] || 0;
@@ -386,12 +565,16 @@ return (
 
         {/* CAC */}
         <tr>
-          <td style={{
-        ...sCellBold,
-        background: "#c00000",
-        color: "#fff",
-        fontWeight: 800,
-      }}>Calculo Adquisición Cliente Digital</td>
+          <td
+            style={{
+              ...sCellBold,
+              background: "#c00000",
+              color: "#fff",
+              fontWeight: 800,
+            }}
+          >
+            Calculo Adquisición Cliente Digital
+          </td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
             return (
@@ -416,7 +599,14 @@ return (
     <table style={sTable}>
       <thead>
         <tr style={sRowRed}>
-          <th style={{ ...sThLeft, background: "transparent", color: cWhite,fontSize:20  }}>
+          <th
+            style={{
+              ...sThLeft,
+              background: "transparent",
+              color: cWhite,
+              fontSize: 20,
+            }}
+          >
             VENTA TOTAL <br /> ACUMULADA POR MES
           </th>
           {perMonth.map((m, idx) => {
@@ -436,41 +626,40 @@ return (
             );
           })}
         </tr>
-        {/* 🗓️ Fila de los meses al final */}
-<tr>
-  <td
-    style={{
-      ...sCellBold,
-      background: "#000",
-      color: "#fff",
-      textAlign: "center",
-      fontWeight: 800,
-      fontSize: 18,
-    }}
-  ></td>
 
-  {perMonth.map((m, idx) => {
-    const isLast = idx === perMonth.length - 1;
-    return (
-      <td
-        key={`footer-month-${idx}`}
-        style={{
-          ...sCellBold,
-          background: isLast ? "#000" : "#000",
-          color: "#fff",
-          fontSize: isLast ? 23 : sCellBold.fontSize,
-          textAlign: "center",
-        }}
-      >
-        {m.label}
-      </td>
-    );
-  })}
-</tr>
+        {/* Fila de los meses al final */}
+        <tr>
+          <td
+            style={{
+              ...sCellBold,
+              background: "#000",
+              color: "#fff",
+              textAlign: "center",
+              fontWeight: 800,
+              fontSize: 18,
+            }}
+          ></td>
 
+          {perMonth.map((m, idx) => {
+            const isLast = idx === perMonth.length - 1;
+            return (
+              <td
+                key={`footer-month-${idx}`}
+                style={{
+                  ...sCellBold,
+                  background: isLast ? "#000" : "#000",
+                  color: "#fff",
+                  fontSize: isLast ? 23 : sCellBold.fontSize,
+                  textAlign: "center",
+                }}
+              >
+                {m.label}
+              </td>
+            );
+          })}
+        </tr>
       </thead>
     </table>
   </div>
 );
-
 }

@@ -46,6 +46,27 @@
           </div>
         );
       };
+      // === Hora Lima (UTC-5) ===
+
+// Convierte un ISO/Date a la "misma" fecha/hora pero interpretada en Lima
+export function limaFromISO(iso) {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d)) return null;
+  const utc = d.getTime() + d.getTimezoneOffset() * 60000;
+  return new Date(utc - 5 * 60 * 60000); // UTC-5
+}
+
+// 00:00:00 del día en Lima
+export function limaStartOfDay(d) {
+  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 5, 0, 0, 0));
+}
+
+// 23:59:59.999 del día en Lima
+export function limaEndOfDay(d) {
+  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + 1, 4, 59, 59, 999));
+}
+
 const parseBackendDate = (s) => {
   if (!s) return null;
   const normalized = String(s).replace(" ", "T").replace(" -", "-");
@@ -69,16 +90,19 @@ const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= 
       const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 1 = enero ... 12 = diciembre
       const year = new Date().getFullYear();
 
-      useEffect(() => {
-        const year = new Date().getFullYear();
-        const startDate = new Date(year, selectedMonth - 1, initDay);
-        const endDate = new Date(year, selectedMonth - 1, cutDay);
-        dispatch(onSetRangeDate([startDate, endDate]));
-      }, [selectedMonth, initDay, cutDay, dispatch]);
+     useEffect(() => {
+  const y = new Date().getFullYear();
+  const startLocal = new Date(y, selectedMonth - 1, initDay);
+  const endLocal   = new Date(y, selectedMonth - 1, cutDay);
+
+  const startLima = limaStartOfDay(startLocal);
+  const endLima   = limaEndOfDay(endLocal);
+
+  dispatch(onSetRangeDate([startLima, endLima]));
+}, [selectedMonth, initDay, cutDay, dispatch]);
 
 
         useEffect(() => {
-          console.log('RANGE_DATE:', RANGE_DATE);
           if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
             obtenerVentas(RANGE_DATE);
           }
@@ -129,7 +153,6 @@ useEffect(() => {
         label_param: (d.label),
 
       }));
-            console.log({mapped})
 
       setCanalParams(mapped);
     } catch (e) {
@@ -144,7 +167,6 @@ useEffect(() => {
   const { start, end } = useMemo(() => {
     const s = RANGE_DATE?.[0] ? new Date(RANGE_DATE[0]) : null;
     const e = RANGE_DATE?.[1] ? new Date(RANGE_DATE[1]) : null;
-    if (e) e.setHours(23, 59, 59, 999);
     return { start: s, end: e };
   }, [RANGE_DATE]);
 const advisorOriginByProg = useMemo(() => {
@@ -539,7 +561,8 @@ const dataMkt = useMemo(
         for (const v of ventasList) {
           const iso = v?.fecha_venta || v?.fecha || v?.createdAt;
           if (!iso) continue;
-          const d = new Date(iso);
+          const d = limaFromISO(iso);
+              if (!d) continue;
           if (d.getFullYear() !== Number(anio)) continue;
           if (d.getMonth() !== monthIdx) continue;
           const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
@@ -590,7 +613,7 @@ const dataMktWithCac = useMemo(() => {
   useEffect(() => {
     const parse = v => v?.fecha ?? v?.createdAt ?? v?.fecha_venta;
     const ds = (dataLead || [])
-      .map(x => new Date(parse(x)))
+      .map(x => limaFromISO(parse(x)))
       .filter(d => !Number.isNaN(d.getTime()));
     if (ds.length) {
       const min = new Date(Math.min(...ds));

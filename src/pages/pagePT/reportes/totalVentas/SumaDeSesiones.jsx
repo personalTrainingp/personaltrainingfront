@@ -51,10 +51,10 @@
           Number(counts.renovaciones) > 0 ||
           Number(counts.reinscripciones) > 0
         )) {
-        return true; // 👈 tiene al menos un programa vendido
+        return true; 
       }
     }
-    return false; // 👈 eliminar asesores sin programas
+    return false; 
   });
 };
        
@@ -395,7 +395,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                 <tr className=" fila-secundaria" style={{ background: "#fff", fontSize: 29 }}>
                   <td className="img-with-name">
                     <div className="img-cap only-text">
-                      <div className="cap">SOCIOS POR CANAL DE VENTA</div>
+                      <div className="cap">SOCIOS POR CANAL <br/>DE VENTA</div>
                     </div>
                   </td>
 
