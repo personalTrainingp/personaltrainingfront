@@ -787,7 +787,7 @@ const avatarByAdvisor = useMemo(() => {
                             nombre: item.nombre?.split(" ")[0] || item.nombre
                           }))
                       }
-                      title={"Ranking"}
+                      title={"Ranking Venta Membresias"}
                       dataSumaTotal={
                         (TotalDeVentasxProdServ("total")?.asesores_pago || [])
                           .filter(item => item.monto && item.monto > 0)

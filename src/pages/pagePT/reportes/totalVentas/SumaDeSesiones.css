@@ -1,274 +1,145 @@
+/* ================== Tabla sesiones (vars + base) ================== */
 .tabla-sesiones {
+  --accent-red: red;
+  --text-red: #c00000;
   border-collapse: collapse;
 }
-
 .tabla-sesiones th,
 .tabla-sesiones td {
   border: 1px solid #000 !important;
   box-sizing: border-box;
 }
-/* --- Estructura base triptych --- */
-.tabla-sesiones td.triptych {
+
+/* ================== Triptych (celdas y encabezado) ================== */
+.tabla-sesiones :is(th.triptych-head, td.triptych) {
   position: relative;
+  overflow: visible;
+  width: 90px; min-width: 90px; max-width: 100px;
   padding: 0;
-  width: 90px;
-  min-width: 90px;
-  max-width: 100px;
 }
+.tabla-sesiones th.triptych-head { height: 45px; }
+.tabla-sesiones th.triptych-head > .tri-box-head,
 .tabla-sesiones td.triptych > .tri-box {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   height: 100%;
   background: #fff;
-  box-sizing: border-box;
 }
 
-/* --- Encabezado triptych --- */
-.tabla-sesiones th.triptych-head {
-  position: relative;
-  height: 45px;
-  padding: 0;
-  width: 90px;
+/* El contenedor interno que tú dejaste en blanco, en negro también */
+.tabla-sesiones thead th.triptych-head > .tri-box-head {
+  background: #c00000 !important;
 }
 
-.tabla-sesiones th.triptych-head > .tri-box-head {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  height: 100%;
+/* Títulos "miniTitle" siempre blancos en el header */
+.tabla-sesiones thead th.triptych-head .miniTitle {
+  color: #fff !important;
 }
 
 .tabla-sesiones th.triptych-head > .tri-box-head > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
 }
+.miniTitle{ color:#fff; font-weight:800; font-size:15px; letter-spacing:.3px; margin:0; }
 
-.miniTitle {
-  color: #fff;
-  font-weight: 800;
-  font-size: 15px;
-  letter-spacing: .3px;
-  margin: 0;
+/* subdivisiones internas del triptych */
+.tabla-sesiones :is(th.triptych-head, td.triptych)::before,
+.tabla-sesiones :is(th.triptych-head, td.triptych)::after {
+  content:""; position:absolute; top:-1px; bottom:-1px; width:1px; background:#c00000; pointer-events:none; z-index:5;
 }
+.tabla-sesiones :is(th.triptych-head, td.triptych)::before { left: calc(33.3333% - .5px); }
+.tabla-sesiones :is(th.triptych-head, td.triptych)::after  { left: calc(66.6667% - .5px); }
 
-/* --- Imagen + nombre asesor --- */
-.tabla-sesiones td.img-with-name {
-  border: 2px solid red !important;
-  width: 110px;
-  background: #fff;
-  vertical-align: middle;
+/* límites de cada programa */
+.tabla-sesiones :is(th.program-start, td.program-start){ border-left: 2px solid var(--accent-red) !important; }
+.tabla-sesiones :is(th.program-end,   td.program-end)  { border-right:2px solid var(--accent-red) !important; }
+
+/* bordes rojos externos e inferiores de header */
+.tabla-sesiones :is(thead th:first-child, tbody td:first-child){ border-left: 2px solid var(--accent-red) !important; }
+.tabla-sesiones :is(thead th:last-child,  tbody td:last-child) { border-right:2px solid var(--accent-red) !important; }
+.tabla-sesiones thead tr:last-child th { border-bottom: 2px solid var(--accent-red) !important; }
+.tabla-sesiones thead tr:not(:last-child) th,
+.tabla-sesiones thead tr + tr th { border-bottom: none !important; border-top: none !important; }
+
+/* ================== Columna imagen + nombre ================== */
+.tabla-sesiones td.img-with-name{
+  border:2px solid var(--accent-red) !important; width:110px; background:#fff; vertical-align: middle;
 }
-
-.tabla-sesiones td.img-with-name .img-cap {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  padding: .25rem 0;
+.tabla-sesiones td.img-with-name .img-cap{
+  position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem; padding:.25rem 0;
 }
-
-.tabla-sesiones td.img-with-name .img-cap img {
-  width: 80px;
-  height: 100px;
-  border-radius: 10px;
-  object-fit: cover;
-  background: #f3f3f3;
+.tabla-sesiones td.img-with-name .img-cap img{
+  width:80px; height:100px; border-radius:10px; object-fit:cover; background:#f3f3f3;
 }
-
-.tabla-sesiones td.img-with-name .img-cap .cap {
-  font-weight: 800;
-  font-size: 20px;
-  text-align: center;
-}
-
+.tabla-sesiones td.img-with-name .img-cap .cap{ font-weight:800; font-size:20px; text-align:center; }
 .tabla-sesiones td.img-with-name .img-cap.only-text .cap,
-.tabla-sesiones td.img-with-name.only-text .cap {
-  font-size: 22px;
-  line-height: 3.1;
-  padding: 8px 4px;
-  white-space: normal !important;
-  word-break: break-word !important;
-  text-align: center;
-  font-weight: 800;
+.tabla-sesiones td.img-with-name.only-text .cap{
+  font-size:22px; line-height:3.1; padding:8px 4px; white-space:normal!important; word-break:break-word!important; text-align:center; font-weight:800;
 }
 
-.tabla-sesiones .copa-champions {
-  position: absolute;
-  top: 5px;
-  left: -10px;
-  z-index: 3;
-}
-.tabla-sesiones .copa-champions img {
-  width: 70px;
-  height: auto;
-  filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,0.4));
-  mix-blend-mode: darken;
+/* trofeo */
+.tabla-sesiones .copa-champions{ position:absolute; top:5px; left:-10px; z-index:3; }
+.tabla-sesiones .copa-champions img{ width:70px; height:auto; filter:brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,.4)); mix-blend-mode:darken; }
+
+/* textos dentro de triptych */
+.tabla-sesiones td.triptych > .tri-box > div p{
+  font-weight:400; font-size:17px; margin:0; padding:2px 0;
 }
 
-/* --- Subdivisiones internas triptych --- */
-.tabla-sesiones th.triptych-head,
-.tabla-sesiones td.triptych {
-  position: relative;
-  overflow: visible;
+/* ================== Colores de totales y negritas ================== */
+/* pisa el color por defecto de Bootstrap en cualquier .fw-bold dentro de la tabla */
+.tabla-sesiones.table > :not(caption) > * > *.fw-bold{ color: var(--text-red) !important; }
+/* fila TOTAL: todas las celdas (menos la de nombre) en rojo y bold */
+.tabla-sesiones.table > tbody > tr.fila-total > td:not(.img-with-name){
+  color: var(--text-red) !important; font-weight:800;
 }
-.tabla-sesiones th.triptych-head::before,
-.tabla-sesiones th.triptych-head::after,
-.tabla-sesiones td.triptych::before,
-.tabla-sesiones td.triptych::after {
-  content: "";
-  position: absolute;
-  top: -1px;
-  bottom: -1px;
-  width: 1px;
-  background: #000;
-  pointer-events: none;
-  z-index: 5;
-}
+/* fila secundaria: primera celda en negro invertido */
+.tabla-sesiones tbody tr.fila-secundaria td.img-with-name{ background:#c00000 !important; color:#fff !important; }
+.tabla-sesiones tbody tr.fila-secundaria td.img-with-name .cap{ color:#fff !important; }
 
-.tabla-sesiones th.triptych-head::before,
-.tabla-sesiones td.triptych::before {
-  left: calc(33.3333% - 0.5px);
+/* banda roja superior/inf. de fila TOTAL */
+.tabla-sesiones tbody tr.fila-total{
+  position:relative;
+  box-shadow: inset 0 2px 0 var(--accent-red), inset 0 -2px 0 var(--accent-red);
 }
-
-.tabla-sesiones th.triptych-head::after,
-.tabla-sesiones td.triptych::after {
-  left: calc(66.6667% - 0.5px);
+.tabla-sesiones thead tr:first-child th:first-child {
+  background: #c00000 !important;
+  color: #fff !important;   /* texto en blanco para contraste */
 }
-
-.tabla-sesiones th.program-start,
-.tabla-sesiones td.program-start {
-  border-left: 2px solid red !important;
-}
-
-.tabla-sesiones th.program-end,
-.tabla-sesiones td.program-end {
-  border-right: 2px solid red !important;
-}
-
-.tabla-sesiones thead tr > th:nth-last-of-type(-n+4),
-.tabla-sesiones tbody tr > td:nth-last-of-type(-n+4) {
-  border-left: 2px solid red !important;
-}
-.tabla-sesiones thead th:first-child,
-.tabla-sesiones tbody td:first-child {
-  border-left: 2px solid red !important;
-}
-.tabla-sesiones thead th:last-child,
-.tabla-sesiones tbody td:last-child {
-  border-right: 2px solid red !important;
-}
-.tabla-sesiones {
-  --accent-red: red;
-}
-.tabla-sesiones tbody tr.fila-total {
-  position: relative;
-  box-shadow:
-    inset 0 2px 0 var(--accent-red),
-    inset 0 -2px 0 var(--accent-red);
-}
-
-
-.tabla-sesiones tbody tr.fila-secundaria td.img-with-name {
-  background: #000 !important;
-  color: #fff !important;
-}
-.tabla-sesiones tbody tr.fila-secundaria td.img-with-name .cap {
-  color: #fff !important;
-}
-
-.tabla-sesiones th.avatar-col::before,
-.tabla-sesiones th.avatar-col::after {
-  display: none !important;
-}
-.tabla-sesiones thead tr:first-child th:first-child,
-
 .tabla-sesiones thead tr:nth-child(2) th:first-child {
-  border-top: none !important;
+  background: #c00000 !important;
+  color: #fff !important;
 }
-.tabla-sesiones thead tr:first-child th:nth-last-child(-n+3),
+/* Penúltima columna con borde rojo en ambos lados (thead + tbody) */
+.tabla-sesiones thead tr > th:nth-last-of-type(2),
+.tabla-sesiones tbody tr > td:nth-last-of-type(2) {
+  border-left: 2px solid red !important;
+  border-right: 2px solid red !important;
+}
+/* Fila 1 del thead: últimos 3 TH en rojo */
+.tabla-sesiones thead tr:first-child th:nth-last-child(-n+3) {
+  background: #c00000 !important;
+  color: #fff !important;
+}
 
 .tabla-sesiones thead tr:nth-child(2) th:nth-last-child(-n+3) {
-  border-top: none !important;
+  background: #c00000 !important;
+  color: #fff !important;
 }
-.tabla-sesiones td.triptych > .tri-box > div p {
-  font-weight: 400;      
-  font-size: 17px;
-  margin: 0;
-  padding: 2px 0;
-}
-.tabla-sesiones thead tr:last-child th {
-  border-bottom: 2px solid red !important;
-}
+/*OTRA VISTA*/
 
-.tabla-sesiones thead tr:not(:last-child) th {
-  border-bottom: none !important; 
-}
-.tabla-sesiones thead tr + tr th {
-  border-top: none !important;    
-}
-.tabla-sesiones .is-bold { font-weight: 800; }
-/* --- Inicio de Tarjetas pago --- */
+/* avatar-col: sin subdivisiones */
+.tabla-sesiones th.avatar-col::before,
+.tabla-sesiones th.avatar-col::after{ display:none !important; }
 
-/* --- Ranking (TarjetasPago) - scopeado al Card --- */
-.ranking-card .rank-avatar {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 140px;
-  height: 100px;
-  overflow: hidden;
-}
+/* ================== Ranking (scopeado) ================== */
+.ranking-card .rank-avatar{ position:relative; display:inline-flex; align-items:center; justify-content:center; width:140px; height:100px; overflow:hidden; }
+.ranking-card .rank-avatar .avatar{ width:90px; height:90px; object-fit:cover; border-radius:8px; background:#f3f3f3; }
+.ranking-card .copa-champions{ position:absolute; top:5px; left:-10px; z-index:3; }
+.ranking-card .copa-champions img{ width:65px; height:75px; filter:brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,.4)); mix-blend-mode:darken; }
+.ranking-card .table-centered :is(thead th:nth-child(2), tbody td:nth-child(2)){ width:160px; }
+.ranking-card .rank-img-cell{ width:170px; min-width:170px; padding:8px 12px; vertical-align:middle; }
+.ranking-card .rank-img-cell .img-cap{ position:relative; display:flex; align-items:center; justify-content:center; gap:.5rem; height:110px; }
+.ranking-card .rank-img-cell .avatar{ width:90px; height:110px; border-radius:10px; object-fit:cover; background:#f3f3f3; }
 
-.ranking-card .rank-avatar .avatar {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 8px;
-  background: #f3f3f3;
-}
-
-/* Copa sobre la imagen */
-.ranking-card .copa-champions {
-  position: absolute;
-  top: 5px;
-  left: -10px;
-  z-index: 3;
-}
-.ranking-card .copa-champions img {
-  width: 65px;
-  height: 75px; /* o 80px si te gusta más alto */
-  filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,.4));
-  mix-blend-mode: darken;
-}
-
-/* Ajuste de ancho solo en la columna IMAGEN del ranking */
-.ranking-card .table-centered thead th:nth-child(2),
-.ranking-card .table-centered tbody td:nth-child(2) {
-  width: 160px;
-}
-
-/* Celda de imagen + contenedor interior */
-.ranking-card .rank-img-cell {
-  width: 170px;
-  min-width: 170px;
-  padding: 8px 12px;
-  vertical-align: middle;
-}
-.ranking-card .rank-img-cell .img-cap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  height: 110px;
-}
-.ranking-card .rank-img-cell .avatar {
-  width: 90px;
-  height: 110px;
-  border-radius: 10px;
-  object-fit: cover;
-  background: #f3f3f3;
-}
+/* util */
+.tabla-sesiones .is-bold{ font-weight:800; }
