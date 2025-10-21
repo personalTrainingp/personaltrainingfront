@@ -84,6 +84,7 @@ export const ModalCustomLead = ({show, onHide, id, id_empresa=598, formUpdating}
                     onChange={onInputChange}
                 />
             </div>
+            <span className='font-10'>x</span>1.18= {monto*1.18}
             <div className='mb-2'>
                 <Button label='AGREGAR' type='submit' onClick={(e)=>onClickCustomLead(e)} />
                 <Button label='CANCELAR' text onClick={(e)=>onCancelCustomLead(e)}/>

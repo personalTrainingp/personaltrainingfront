@@ -28,8 +28,8 @@ export const TableGestionLead = ({onClickCustomLead, onDeleteItemLead, id_empres
                             <th className='text-white'>FECHA</th>
                             <th className='text-white'>RED</th>
                             <th className='text-white'>CANT. LEAD</th>
-                            <th className='text-white'>COSTO POR LEAD(CON IGV)</th>
                             <th className='text-white'>COSTO POR LEAD(SIN IGV)</th>
+                            <th className='text-white'>COSTO POR LEAD(CON IGV)</th>
                             <th className='text-white'>COSTO INVERTIDO(CON IGV)</th>
                             <th className='text-white'>COSTO INVERTIDO(SIN IGV)</th>
                             <th className='text-white'></th>
@@ -45,24 +45,33 @@ export const TableGestionLead = ({onClickCustomLead, onDeleteItemLead, id_empres
                                             {dayjs.utc(m.fecha).format('dddd DD [DE] MMMM [DEL] YYYY')}
                                         </td>
                                         <td>{dataRedesInvertidas.find(d=>d.value===m.id_red)?.label}</td>
-                                        <td>{m.cantidad}</td>
+                                        <td>
+                                            <div>
+                                                <p className='text-muted'>CANT. LEAD</p>
+                                                {m.cantidad}
+                                            </div>
+                                        </td>
                                         <td>
                                             <div className=''>
+                                                <p className='text-muted'>COSTO POR LEAD(SIN IGV)</p>
                                                 <NumberFormatMoney amount={m.monto!==0 && m.monto/m.cantidad}/>
                                             </div>
                                         </td>
                                         <td>
                                             <div className=''>
+                                                <p className='text-muted'>COSTO POR LEAD(CON IGV)</p>
                                                 <NumberFormatMoney amount={m.monto!==0 && (m.monto/1.18)/m.cantidad}/>
                                             </div>
                                         </td>
                                         <td>
                                             <div className=''>
+                                                <p className='text-muted'>COSTO INVERTIDO(CON IGV)</p>
                                                 <NumberFormatMoney amount={m.monto}/>
                                             </div>
                                         </td>
                                         <td>
                                             <div className=''>
+                                                <p className='text-muted'>COSTO INVERTIDO(SIN IGV)</p>
                                                 <NumberFormatMoney amount={m.monto/1.18}/>
                                             </div>
                                         </td>

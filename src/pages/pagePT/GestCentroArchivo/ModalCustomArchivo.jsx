@@ -9,6 +9,7 @@ import { Button } from 'primereact/button'
 import { useFilesStore } from '@/hooks/hookApi/useFilesStore'
 import Swal from 'sweetalert2'
 import { useCenterArchive } from './useCenterArchive'
+import { arrayEmpresaFinan } from '@/types/type'
 const registerFile = {
   id_tipo_doc: 0,
   observacion: '',
@@ -20,7 +21,7 @@ const registerArchivo={
 }
 export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
   const [file, setfile] = useState(null)
-  const { formState, id_tipo_doc, id_seccionVisible, titulo, observacion, onInputChangeReact, onInputChange, onResetForm } = useForm(registerFile)
+  const { formState, id_tipo_doc, id_empresa, id_seccionVisible, titulo, observacion, onInputChangeReact, onInputChange, onResetForm } = useForm(registerFile)
   const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
   const { obtenerParametroPorEntidadyGrupo:obtenerTipoDoc, DataGeneral:datatipoDoc } = useTerminoStore()
   const { postFiles } = useFilesStore()
@@ -44,8 +45,8 @@ export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
         const formData = new FormData()
         formData.append('file', file)
         console.log({formData, file});
-        // onPostArchivCenter(formState)
-        postFiles(uid_file, formState, formData)
+        onPostArchivCenter(formState, id_seccionVisible, id_empresa, formData)
+        // postFiles(uid_file, formState, formData)
         // cancelModal()
     }
     const cancelModal = ()=>{
@@ -88,6 +89,25 @@ export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
                 </Col>
                 <Col xxl={12}>
                     <div className="mb-2">
+                        <label htmlFor="id_empresa" className="form-label">
+                            Empresa:
+                        </label>
+                        <Select
+                                onChange={(e)=>onInputChangeReact(e, "id_empresa")}
+                                name={"id_empresa"}
+                                placeholder={'Seleccione la empresa'}
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                value={arrayEmpresaFinan.find(
+                                    (option) => option.value === id_empresa
+                                )}
+                                options={arrayEmpresaFinan}
+                                required
+                        ></Select>
+                    </div>
+                </Col>
+                <Col xxl={12}>
+                    <div className="mb-2">
                         <label htmlFor="id_seccionVisible" className="form-label">
                             Seccion:
                         </label>
@@ -116,10 +136,10 @@ export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
                                 placeholder={'Seleccione el tipo de documento'}
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                value={DataGeneral.find(
+                                value={datatipoDoc.find(
                                     (option) => option.value === id_tipo_doc
                                 )}
-                                options={[{value: 0, label: 'M.O.F. MARKETING'}, {value: 1, label: 'M.O.F. ADMINISTRACION'}, {value: 2, label: 'M.O.F. DISEÑO'}]}
+                                options={datatipoDoc}
                                 required
                         ></Select>
                     </div>

@@ -17,12 +17,11 @@ const registerTransferencia = {
 export const ModalTransferencia = ({show, onHide}) => {
     const dispatch = useDispatch()
   const { obtenerParametrosLogosProgramas, obtenerSemanasPorPrograma, obtenerTarifasPorSemanas, obtenerHorariosPorPrograma, DataHorarioPGM, DataSemanaPGM, DataTarifaSM } = useTerminoStore()
-    const { formState, fec_init_mem, id_horario, id_cli, onResetForm, onInputChangeReact, onInputChange } = useForm(registerTransferencia)
+    const { formState, tarifa_monto, fec_init_mem, id_horario, id_cli, onResetForm, onInputChangeReact, onInputChange } = useForm(registerTransferencia)
     const { obtenerParametrosClientes, DataClientes } = useTerminoStore()
     const { obtenerUltimaMebresiaxCli, dataUltimaMembxCli } = useUsuarioStore()
     
     useEffect(() => {
-        
         obtenerParametrosClientes()
     }, [show])
 
@@ -45,9 +44,9 @@ export const ModalTransferencia = ({show, onHide}) => {
     }
     const submitTransferencia = (e) =>{
         e.preventDefault()
+            dispatch(onSetDetalleTransferencia({...formState, id_membresia: dataUltimaMembxCli.ultimaMembresia?.id, label_pgm: dataUltimaMembxCli.ultimaMembresia?.detalle_ventaMembresia[0].tb_ProgramaTraining.name_pgm, label_cliente_antiguo: DataClientes.find(c=>c.value===id_cli)?.label, fec_fin_mem: modificarFechaHabiles(fec_init_mem, diasLaborables(new Date(), dataUltimaMembxCli.ultimaMembresia?.detalle_ventaMembresia[0].fec_fin_mem)), sesiones_disponibles: diasLaborables(new Date(), dataUltimaMembxCli.ultimaMembresia?.detalle_ventaMembresia[0].fec_fin_mem), label_horario: DataHorarioPGM.find(h=>h.value===id_horario)?.horario}))
         
-                            dispatch(onSetDetalleTransferencia({...formState, id_membresia: dataUltimaMembxCli.ultimaMembresia.id, label_pgm: dataUltimaMembxCli.ultimaMembresia?.detalle_ventaMembresia[0].tb_ProgramaTraining.name_pgm, label_cliente_antiguo: DataClientes.find(c=>c.value===id_cli).label, fec_fin_mem: modificarFechaHabiles(fec_init_mem, diasLaborables(new Date(), dataUltimaMembxCli.ultimaMembresia?.detalle_ventaMembresia[0].fec_fin_mem)), sesiones_disponibles: diasLaborables(new Date(), dataUltimaMembxCli.ultimaMembresia?.detalle_ventaMembresia[0].fec_fin_mem), label_horario: DataHorarioPGM.find(h=>h.value===id_horario).horario}))
-        cancelModal()
+            cancelModal()
     }
     const { diasLaborables, sumarDiasHabiles, modificarFechaHabiles } = helperFunctions()
     return (
@@ -95,18 +94,18 @@ export const ModalTransferencia = ({show, onHide}) => {
                     </Col>
                     <Col lg={12}>
                         <div className="mb-2">
-                            <label htmlFor="id_horario" className="form-label">
-                                Horario
+                            <label htmlFor="tarifa_monto" className="form-label">
+                                TARIFAS
                             </label>
                             <Select
-                                onChange={(e) =>onInputChangeReact(e, "id_horario")}
-                                name={'id_horario'}
-                                placeholder={'Seleccionar el horario'}
+                                onChange={(e) =>onInputChangeReact(e, "tarifa_monto")}
+                                name={'tarifa_monto'}
+                                placeholder={'Seleccionar la tarifa'}
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                options={DataHorarioPGM}
+                                options={[{value: 400, label: 'TARIFA CON COSTO'}, {value: 0, label: 'TARIFA SIN COSTO'}]}
                                 value={DataHorarioPGM.find(
-                                    (option) => option.value === id_horario
+                                    (option) => option.value === tarifa_monto
                                 )}
                                 required
                             />

@@ -178,9 +178,9 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
               <div className="text-white">MONTO <br /> CONTRATO</div>
             </th>
             <th className="text-center">
-              <div className="text-white">PAGO <br /> ACUMULADO</div>
+              <div className="text-white">ADELANTO</div>
             </th>
-            <th className="text-end">
+            <th className="text-center">
               <div className="text-white">SALDO</div>
             </th>
           </tr>
@@ -210,7 +210,11 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                   <div style={{ width: '400px' }}>{razon}</div>
                 </td>
                 <td className="fs-3">{ruc}</td>
-                <td className="text-end fs-3">{grupo.items.length}</td>
+                <td className="text-end fs-3">
+                  <div className='' style={{width: '50px'}}>
+                    {grupo.items.length}
+                  </div>
+                </td>
                 <td className="text-end fs-3">{fmt(montoContratos)}</td>
                 <td className="text-end fs-3">{fmt(sumarPagos)}</td>
                 <td className="text-end fs-3 fw-bold">{fmt(saldo)}</td>
@@ -249,7 +253,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                       ID
                     </div>
                   </th>
-                  <th className="text-white">
+                  <th className="text-white text-center">
                     CONTRATO <br />
                     <div className="d-flex justify-content-center" style={{ position: 'sticky', top: '60px' }}>
                       <div className="text-center border-2" style={{ width: '40px' }}></div>
@@ -319,7 +323,8 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                           <td>
                             <div style={{ width: '600px' }}>{c?.observacion ?? '-'}</div>
                           </td>
-                          <td className="text-end">{fmt(c?.monto_contrato)}</td>
+                          <td className="text-end">
+                            {fmt(c?.monto_contrato)}</td>
                           <td className="text-end">
                             <div className='' style={{width: '110px'}}>
                               {fmt(totalPagado)}

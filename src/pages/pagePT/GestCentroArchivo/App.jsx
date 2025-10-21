@@ -16,8 +16,8 @@ export const App = () => {
     <>
     <PageBreadcrumb title={'CENTRO DE ARCHIVO'} />
     <Button label='Agregar archivo' onClick={onClickOpenModalCustomArchivo}/>
-    <DataTable/>
-    <ModalCustomArchivo  onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
+    <DataTable />
+    <ModalCustomArchivo onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
     </>
   )
 }
