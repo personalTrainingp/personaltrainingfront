@@ -240,7 +240,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
         visible={dialogProv.visible}
         onHide={handleHideDialog}
         dismissableMask
-        style={{ width: '90vw', maxWidth: 1400 }}
+        style={{ width: '100vw', maxWidth: 1800 }}
         contentStyle={{ paddingTop: 0 }}
       >
         {dialogProv.grupo && (
