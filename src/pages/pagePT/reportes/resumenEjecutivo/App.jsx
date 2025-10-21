@@ -38,7 +38,6 @@
             style={{
               fontWeight: 700,
               fontSize: "2em",
-                // marginTop: "15px", // Eliminado para centrar verticalmente
               color: "black",
             }}
           >
@@ -46,9 +45,7 @@
           </div>
         );
       };
-      // === Hora Lima (UTC-5) ===
 
-// Convierte un ISO/Date a la "misma" fecha/hora pero interpretada en Lima
 export function limaFromISO(iso) {
   if (!iso) return null;
   const d = new Date(iso);
@@ -57,12 +54,10 @@ export function limaFromISO(iso) {
   return new Date(utc - 5 * 60 * 60000); // UTC-5
 }
 
-// 00:00:00 del día en Lima
 export function limaStartOfDay(d) {
   return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 5, 0, 0, 0));
 }
 
-// 23:59:59.999 del día en Lima
 export function limaEndOfDay(d) {
   return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + 1, 4, 59, 59, 999));
 }
@@ -86,8 +81,7 @@ const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= 
         const [initDay, setInitDay] = useState(1);
   
   
-      // Estado para mes seleccionado
-      const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 1 = enero ... 12 = diciembre
+      const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
       const year = new Date().getFullYear();
 
      useEffect(() => {
@@ -180,7 +174,6 @@ const advisorOriginByProg = useMemo(() => {
 
     const items = Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : [];
   
-    // solo ventas pagadas en rango
     const pagadas = items.filter(v => {
       if (Number(v?.tarifa_monto) === 0) return false;
       const iso = v?.tb_ventum?.fecha_venta || v?.tb_ventum?.createdAt || v?.fecha_venta || v?.createdAt;
@@ -484,10 +477,10 @@ const dataMkt = useMemo(
       }
 
       const avataresDeProgramas = [
-        { urlImage: "/change_blanco.png", name_image: "CHANGE 45" },
-        { urlImage: "/fs45_blanco.png", name_image: "FS 45" },
-        { urlImage: "/fs45_blancos.png", name_image: "FISIO MUSCLE" },
-      { urlImage: "/vertikal_letra.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
+        { urlImage: "/change_negro.png", name_image: "CHANGE 45" },
+        { urlImage: "/fs45_negro.png", name_image: "FS 45" },
+        { urlImage: "/fisio_muscle_negro.png", name_image: "FISIO MUSCLE" },
+      { urlImage: "/vertikal_negro.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
     ];  
 
       const rankingData = (TotalDeVentasxProdServ("total")?.asesores_pago || [])
@@ -750,7 +743,7 @@ const avatarByAdvisor = useMemo(() => {
       </div>
               </Col>
             </Row>
-            <Row className="mb-4">
+            <Row className="mb-6">
               <Col lg={12} className="pt-0">
                 <div style={{marginBottom: '30px'}}>
                 <ExecutiveTable
@@ -761,7 +754,7 @@ const avatarByAdvisor = useMemo(() => {
         cutDay={cutDay}
       />
                 </div>
-                <div style={{marginBottom: '32px'}}>
+                <div style={{marginBottom: '32px',marginTop:"80px"}}>
                   <ClientesPorOrigen
                     ventas={dataVentas}
                     fechas={mesesSeleccionados}
@@ -784,7 +777,7 @@ const avatarByAdvisor = useMemo(() => {
                 </div>
               </Col>
               <Col lg={12}>
-                <div style={{marginBottom: '32px'}}>
+                <div style={{marginBottom: '32px',marginTop:"90px"}}>
                   <ComparativoVsActual
                   ventas={dataVentas}
         fechas={mesesSeleccionados}
@@ -793,32 +786,34 @@ const avatarByAdvisor = useMemo(() => {
         cutDay={cutDay}
                   />
                 </div>
-                <div style={{marginBottom: '32px'}}>
+                <div style={{marginBottom: '32px',marginTop:"90px"}}>
                   <GraficoLinealInversionRedes
                     data={dataLeadPorMesAnio}
                     fechas={[new Date()]}
                   />
                 </div>
-                <Col lg={12}>
-                  <div style={{marginTop: '15px'}}>
-                    <TarjetasPago
-                      tasks={
-                        (TotalDeVentasxProdServ("total")?.asesores_pago || [])
-                          .filter(item => item.monto && item.monto > 0)
-                          .map(item => ({
-                            ...item,
-                            nombre: item.nombre?.split(" ")[0] || item.nombre
-                          }))
-                      }
-                      title={"Ranking Venta Membresias"}
-                      dataSumaTotal={
-                        (TotalDeVentasxProdServ("total")?.asesores_pago || [])
-                          .filter(item => item.monto && item.monto > 0)
-                          .reduce((total, item) => total + item.monto, 0) || 0
-                      }
-                    />
-                  </div>            
-                </Col>               
+               <Col lg={12}>
+  <div style={{ marginTop: '15px' }}>
+   <TarjetasPago
+  tasks={
+    (TotalDeVentasxProdServ("total")?.asesores_pago || [])
+      .filter(item =>
+        item.monto > 0 &&
+        (item.tipo === "programa" ||
+         item.categoria === "PROGRAMAS" ||
+         item.id_programa !== null)
+      )
+      .map(item => ({
+        ...item,
+        nombre: item.nombre?.split(" ")[0] || item.nombre
+      }))
+  }
+  title={"Ranking Venta Membresías"}
+/>
+
+  </div>
+</Col>
+       
               </Col>
     <Row>
         <Col lg={12}>

@@ -9,7 +9,7 @@ import Account from '@/pages/account';
 import { Home } from '@/pages/pagePT/Home';
 import { PerfilPrograma } from '@/pages/pagePT/GestProgramas/PerfilPrograma';
 import CrearCitasNutricion from '@/pages/pagePT/GestNutricion';
-
+import GestionMonkFit from "../pages/pagePT/GestionMonkFit/app.jsx";
 
 
 
@@ -143,7 +143,8 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/resumen-ejecutivo')&&
                         <Route path='resumen-ejecutivo' element={<ResumenEjecutivo/>}/>
 					}
-					
+					<Route path="gestion-monkfit" element={<GestionMonkFit />} />
+
 					{
 						sections.find(e=>e.url==='/agregar-articulos-chorrillos')&&
                         <Route path='agregar-articulos-chorrillos' element={<ArticulosNuevos/>}/>

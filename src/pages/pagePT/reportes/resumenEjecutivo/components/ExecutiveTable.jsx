@@ -173,19 +173,24 @@ const mkCplMeta   = mkLeadsMeta   > 0 ? invMetaAdj   / mkLeadsMeta   : 0;
     };
   };
 
-  const rows = [
-    { key: "mkInv", label: "INVERSIÓN REDES", type: "money" },
-    { key: "mkInvTikTok", label: " TikTok", type: "money" },
-    { key: "mkInvMeta",   label: " Meta",   type: "money" }, 
-    { key: "mkLeads", label: "CANTIDAD LEADS", type: "int" },
-    { key: "mkCpl", label: "COSTO POR LEAD", type: "float2" },
-    { key: "totalServ", label: "VENTA MEMBRESIAS", type: "money" },
-    { key: "cantServ", label: "CANTIDAD MEMBRESIAS", type: "int" },
-    { key: "ticketServ", label: "TICKET MEDIO MEMBRESIAS", type: "money" },
-    { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
-    { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
-    { key: "ticketProd", label: "TICKET MEDIO PRODUCTOS", type: "money" },
-  ];
+const rows = [
+  { key: "mkInv", label: "INVERSIÓN REDES", type: "money" },
+  { key: "mkInvTikTok", label: " Inversion TikTok", type: "money" },
+    { key: "mkLeadsTikTok", label: "CANTIDAD LEADS — TIKTOK", type: "int" },
+  { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
+  { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
+    { key: "mkLeadsMeta", label: "CANTIDAD LEADS — META", type: "int" },
+  { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
+  { key: "mkLeads", label: "CANTIDAD LEADS", type: "int" },
+  { key: "mkCpl", label: "COSTO POR LEAD", type: "float2" },
+  { key: "totalServ", label: "VENTA MEMBRESIAS", type: "money" },
+  { key: "cantServ", label: "CANTIDAD MEMBRESIAS", type: "int" },
+  { key: "ticketServ", label: "TICKET MEDIO MEMBRESIAS", type: "money" },
+  { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
+  { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
+  { key: "ticketProd", label: "TICKET MEDIO PRODUCTOS", type: "money" },
+];
+
 
   const perMonth = fechas.map((f) => ({
     label: String(f?.label || "").toUpperCase(),
@@ -253,179 +258,42 @@ return (
 
       <tbody>
         {rows.map((r) => (
-          <React.Fragment key={r.key}>
-            {/* Fila base */}
-            <tr>
-              <td
-                style={{
-                  ...sCellBold,
-                  background: "#c00000",
-                  color: "#fff",
-                  fontWeight: 800,
-                }}
-              >
-                {r.label}
-              </td>
+          <tr key={r.key}>
+            <td
+              style={{
+                ...sCellBold,
+                background: "#c00000",
+                color: "#fff",
+                fontWeight: 800,
+              }}
+            >
+              {r.label}
+            </td>
 
-              {perMonth.map((m, idx) => {
-                const val = m.metrics?.[r.key] ?? 0;
-                let txt = "";
-                if (r.type === "money") txt = fmtMoney(val);
-                else if (r.type === "float2") txt = fmtNum(val, 2);
-                else txt = fmtNum(val, 0);
+            {perMonth.map((m, idx) => {
+              const val = m.metrics?.[r.key] ?? 0;
+              let txt = "";
+              if (r.type === "money") txt = fmtMoney(val);
+              else if (r.type === "float2") txt = fmtNum(val, 2);
+              else txt = fmtNum(val, 0);
 
-                const isLast = idx === perMonth.length - 1;
-                return (
-                  <td
-                    key={idx}
-                    style={{
-                      ...sCell,
-                      background: isLast ? "#c00000" : sCell.background,
-                      color: isLast ? "#fff" : sCell.color,
-                      fontWeight: isLast ? 700 : "normal",
-                      fontSize: isLast ? 23 : sCell.fontSize,
-                    }}
-                  >
-                    {txt}
-                  </td>
-                );
-              })}
-            </tr>
-
-            {/* Debajo de CANTIDAD LEADS: Meta y TikTok */}
-            {r.key === "mkLeads" && (
-              <>
-                <tr>
-                  <td
-                    style={{
-                      ...sCellBold,
-                      background: "#c00000",
-                      color: "#fff",
-                      fontWeight: 800,
-                    }}
-                  >
-                    LEADS — META
-                  </td>
-                  {perMonth.map((m, idx) => {
-                    const isLast = idx === perMonth.length - 1;
-                    const val = m.metrics?.mkLeadsMeta ?? 0;
-                    return (
-                      <td
-                        key={`leads-meta-${idx}`}
-                        style={{
-                          ...sCell,
-                          background: isLast ? "#c00000" : sCell.background,
-                          color: isLast ? "#fff" : sCell.color,
-                          fontWeight: isLast ? 700 : "normal",
-                          fontSize: isLast ? 23 : sCell.fontSize,
-                        }}
-                      >
-                        {fmtNum(val, 0)}
-                      </td>
-                    );
-                  })}
-                </tr>
-
-                <tr>
-                  <td
-                    style={{
-                      ...sCellBold,
-                      background: "#c00000",
-                      color: "#fff",
-                      fontWeight: 800,
-                    }}
-                  >
-                    LEADS — TIKTOK
-                  </td>
-                  {perMonth.map((m, idx) => {
-                    const isLast = idx === perMonth.length - 1;
-                    const val = m.metrics?.mkLeadsTikTok ?? 0;
-                    return (
-                      <td
-                        key={`leads-tt-${idx}`}
-                        style={{
-                          ...sCell,
-                          background: isLast ? "#c00000" : sCell.background,
-                          color: isLast ? "#fff" : sCell.color,
-                          fontWeight: isLast ? 700 : "normal",
-                          fontSize: isLast ? 23 : sCell.fontSize,
-                        }}
-                      >
-                        {fmtNum(val, 0)}
-                      </td>
-                    );
-                  })}
-                </tr>
-              </>
-            )}
-
-            {/* Debajo de COSTO POR LEAD: CPL por Meta y TikTok */}
-            {r.key === "mkCpl" && (
-              <>
-                <tr>
-                  <td
-                    style={{
-                      ...sCellBold,
-                      background: "#c00000",
-                      color: "#fff",
-                      fontWeight: 800,
-                    }}
-                  >
-                    CPL — META
-                  </td>
-                  {perMonth.map((m, idx) => {
-                    const isLast = idx === perMonth.length - 1;
-                    const val = m.metrics?.mkCplMeta ?? 0;
-                    return (
-                      <td
-                        key={`cpl-meta-${idx}`}
-                        style={{
-                          ...sCell,
-                          background: isLast ? "#c00000" : sCell.background,
-                          color: isLast ? "#fff" : sCell.color,
-                          fontWeight: isLast ? 700 : "normal",
-                          fontSize: isLast ? 23 : sCell.fontSize,
-                        }}
-                      >
-                        {fmtNum(val, 2)}
-                      </td>
-                    );
-                  })}
-                </tr>
-
-                <tr>
-                  <td
-                    style={{
-                      ...sCellBold,
-                      background: "#c00000",
-                      color: "#fff",
-                      fontWeight: 800,
-                    }}
-                  >
-                    CPL — TIKTOK
-                  </td>
-                  {perMonth.map((m, idx) => {
-                    const isLast = idx === perMonth.length - 1;
-                    const val = m.metrics?.mkCplTikTok ?? 0;
-                    return (
-                      <td
-                        key={`cpl-tt-${idx}`}
-                        style={{
-                          ...sCell,
-                          background: isLast ? "#c00000" : sCell.background,
-                          color: isLast ? "#fff" : sCell.color,
-                          fontWeight: isLast ? 700 : "normal",
-                          fontSize: isLast ? 23 : sCell.fontSize,
-                        }}
-                      >
-                        {fmtNum(val, 2)}
-                      </td>
-                    );
-                  })}
-                </tr>
-              </>
-            )}
-          </React.Fragment>
+              const isLast = idx === perMonth.length - 1;
+              return (
+                <td
+                  key={idx}
+                  style={{
+                    ...sCell,
+                    background: isLast ? "#c00000" : sCell.background,
+                    color: isLast ? "#fff" : sCell.color,
+                    fontWeight: isLast ? 700 : "normal",
+                    fontSize: isLast ? 23 : sCell.fontSize,
+                  }}
+                >
+                  {txt}
+                </td>
+              );
+            })}
+          </tr>
         ))}
 
         {/* VENTA TOTAL AL cutDay */}
@@ -572,7 +440,7 @@ return (
               fontWeight: 800,
             }}
           >
-            Calculo Adquisición Cliente Digital
+            CÁLCULO ADQUISICIÓN CLIENTE DIGITAL
           </td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
@@ -646,7 +514,7 @@ return (
                 key={`footer-month-${idx}`}
                 style={{
                   ...sCellBold,
-                  background: isLast ? "#000" : "#000",
+                  background: "#000",
                   color: "#fff",
                   fontSize: isLast ? 23 : sCellBold.fontSize,
                   textAlign: "center",
@@ -661,4 +529,5 @@ return (
     </table>
   </div>
 );
+
 }
