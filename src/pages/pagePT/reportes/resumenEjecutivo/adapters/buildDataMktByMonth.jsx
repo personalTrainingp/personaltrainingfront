@@ -65,11 +65,27 @@ const getCanalId = (it) => {
     const key = String(k).trim().toLowerCase();
     obj[key] = (obj[key] || 0) + Number(v || 0);
   };
+// Para BUCKETS diarios "00:00:00 +00:00" que representan el día de LIMA
+const toLimaBucketDate = (iso) => {
+  if (!iso) return null;
+  try {
+    const clean = String(iso)
+      .trim()
+      .replace(" ", "T")
+      .replace(" +00:00", "Z")
+      .replace("+00:00", "Z");
+    const d = new Date(clean);
+    if (Number.isNaN(d.getTime())) return null;
+    return new Date(d.getTime() + 5 * 60 * 60 * 1000);
+  } catch {
+    return null;
+  }
+};
 
   const acc = Object.create(null);
 
   for (const it of (Array.isArray(dataMkt) ? dataMkt : [])) {
-    const d = toLimaDate(it?.fecha);
+    const d = toLimaBucketDate(it?.fecha);
     if (!d) continue;
 
     const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
@@ -112,4 +128,5 @@ const getCanalId = (it) => {
   }
 
   return acc;
+  
 }
