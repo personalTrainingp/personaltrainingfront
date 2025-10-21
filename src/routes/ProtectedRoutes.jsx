@@ -90,6 +90,8 @@ const TransferenciasArticulos = lazy(()=>import('../pages/pagePT/TransferenciaEm
 const ArticulosNuevos = lazy(()=>import('../pages/pagePT/GestArticulosChorrillos'))
 const ResumenEjecutivo = lazy(()=>import('../pages/pagePT/reportes/resumenEjecutivo/Index.jsx'))
 const GestionCentroDeArchivos = lazy(()=>import('../pages/pagePT/GestCentroArchivo'))
+const CvColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/cv'))
+const DniColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/dni'))
 /**
  * routes import
  */
@@ -128,6 +130,15 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad*/}
+					
+					{
+						sections.find(e=>e.url==='/colaboradores-cv')&&
+                        <Route path='colaboradores-cv' element={<CvColaboradores/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/colaboradores-dni')&&
+                        <Route path='colaboradores-dni' element={<DniColaboradores/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/resumen-ejecutivo')&&
                         <Route path='resumen-ejecutivo' element={<ResumenEjecutivo/>}/>
