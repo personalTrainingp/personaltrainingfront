@@ -115,7 +115,7 @@ export const useVentasStore = () => {
 	const [loadingMessage, setloadingMessage] = useState('');
 	const [dataContratos, setdataContratos] = useState([]);
 	const { base64ToFile } = helperFunctions();
-	const { obtenerTipoCambioPorFecha, dataTipoCambio } = useTipoCambioStore()
+	const { obtenerTipoCambioPorFecha, dataTipoCambio } = useTipoCambioStore();
 	const obtenerContratosDeClientes = async () => {
 		try {
 			dispatch(onSetDataView([]));
@@ -324,6 +324,8 @@ export const useVentasStore = () => {
 		try {
 			const { data } = await PTApi.get(`/venta/get-ventas/${id_empresa}`);
 			// console.log(data);
+			console.log({ data });
+
 			setDataVentas(data.ventas);
 		} catch (error) {
 			console.log(error);

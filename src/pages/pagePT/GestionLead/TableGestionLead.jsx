@@ -21,7 +21,7 @@ export const TableGestionLead = ({onClickCustomLead, onDeleteItemLead, id_empres
     <>
                     <Button label='AGREGAR LEAD' onClick={()=>onClickCustomLead(0, id_empresa, {})}/>
         <div className=' d-flex justify-content-center'>
-            <div  style={{width: '600px'}}>
+            <div >
                 <Table striped>
                     <thead className='bg-primary'>
                         <tr>

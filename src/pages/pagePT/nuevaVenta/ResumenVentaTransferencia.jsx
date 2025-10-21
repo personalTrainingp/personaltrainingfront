@@ -56,7 +56,7 @@ export const ResumenVentaTransferencia = ({ dataVenta, detalle_cli_modelo, dataP
           <br/>
           <i className="mdi mdi-calendar me-1"></i> CLIENTE ANTIGUO: {dataVenta[0].label_cliente_antiguo}
           <br/>
-          <i className="mdi mdi-calendar me-1"></i> MONTO: 0.00
+          <i className="mdi mdi-calendar me-1"></i> MONTO: {dataVenta[0].tarifa_monto}
           <br/>
           <div>
           </div>

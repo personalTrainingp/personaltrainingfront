@@ -30,8 +30,6 @@ export const TodoVentas=({id_empresa})=> {
   useEffect(() => {
       obtenerTablaVentas(id_empresa)
   }, [])
-  console.log(dataVentas);
-  
   const [customers, setCustomers] = useState(null);
   const [valueFilter, setvalueFilter] = useState([])
     const [filters, setFilters] = useState({
@@ -124,7 +122,8 @@ export const TodoVentas=({id_empresa})=> {
         const combinedArray = [
           ...rowData.detalle_ventaCitas,
           ...rowData.detalle_ventaMembresia,
-          ...rowData.detalle_ventaProductos
+          ...rowData.detalle_ventaProductos,
+          ...rowData?.venta_venta,
         ];
 
         // Calcular la suma total de tarifa_monto
