@@ -24,84 +24,133 @@ import { FilterMatchMode } from 'primereact/api';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { CustomersProv } from './CustomersProv';
 import { App } from './PagosProveedores/App';
+import { SelectButton } from 'primereact/selectbutton';
+
+const ESTADOS = [
+  { label: 'ACTIVOS', value: true },
+  { label: 'INACTIVOS', value: false },
+];
+
 export const DataProveedores = () => {
-	const [isModalOpenProv, setisModalOpenProv] = useState(false)
-	const modalProvClose = ()=>{
-		setisModalOpenProv(false)
-	}
-	const modalProvOpen = ()=>{
-		setisModalOpenProv(true)
-	}
-	
-	return (
-		<>
-			<PageBreadcrumb title="Gestion de proveedores" subName="E" />
-			<Row>
-				<Col xs={12}>
-					<Card>
-						<Card.Body>
-							<Row>
-								<Col sm={5}>
-									<Button label='Agregar proveedor' onClick={modalProvOpen}/>
-								</Col>
-								<Col sm={7}>
-								</Col>
-							</Row>
-							<TabView>
-								<TabPanel header={'PROVEEDORES'}>
-									<TabView>
-										<TabPanel header={'CHANGE'}>
-											<TabView>
-												<TabPanel header={'ACTIVOS'}>
-													<CustomersProv estado_prov={true} agente={true} id_empresa={598}/>
-												</TabPanel>
-												<TabPanel header={'INACTIVOS'}>
-													<CustomersProv estado_prov={false} agente={true} id_empresa={598}/>
-												</TabPanel>
-											</TabView>
-										</TabPanel>
-										<TabPanel header={'CIRCUS'}>
-											<TabView>
-												<TabPanel header={'ACTIVOS'}>
-											<CustomersProv estado_prov={true} agente={true} id_empresa={601}/>
-												</TabPanel>
-												<TabPanel header={'INACTIVOS'}>
-											<CustomersProv estado_prov={false} agente={true} id_empresa={601}/>
-												</TabPanel>
-											</TabView>
-										</TabPanel>
-										<TabPanel header={'REDUCTO'}>
-											<TabView>
-													<TabPanel header={'ACTIVOS'}>
-												<CustomersProv estado_prov={true} agente={true} id_empresa={599}/>
-													</TabPanel>
-													<TabPanel header={'INACTIVOS'}>
-												<CustomersProv estado_prov={false} agente={true} id_empresa={599}/>
-													</TabPanel>
-											</TabView>
-										</TabPanel>
-									</TabView>
-								</TabPanel>
-								<TabPanel header={'CONTRATOS POR PROVEEDOR'}>
-									<TabView>
-										<TabPanel header={'CHANGE'}>
-											<App id_empresa={598} bgEmpresa='bg-change' classNameTablePrincipal={'bg-change p-2'}/>
-										</TabPanel>
-										<TabPanel header={'CIRCUS'}>
-											<App id_empresa={601} bgEmpresa='bg-circus' classNameTablePrincipal={'bg-circus p-2'}/>
-										</TabPanel>
-										<TabPanel header={'REDUCTO'}>
-											<App id_empresa={599} bgEmpresa='bg-greenISESAC' classNameTablePrincipal={'bg-greenISESAC p-2'}/>
-										</TabPanel>
-									</TabView>
-								</TabPanel>
-							</TabView>
-						</Card.Body>
-					</Card>
-				</Col>
-			</Row>
-      
-				<ModalProveedor show={isModalOpenProv} onHide={modalProvClose}/>
-		</>
-	);
+  const [isModalOpenProv, setisModalOpenProv] = useState(false);
+  const [estado, setEstado] = useState(true); // true = ACTIVO, false = INACTIVO
+
+  const modalProvClose = () => setisModalOpenProv(false);
+  const modalProvOpen = () => setisModalOpenProv(true);
+
+  // plantilla visual para que cada botón sea bloque sólido
+  const estadoTemplate = (option) => (
+    <div className="estado-btn">{option.label}</div>
+  );
+
+  return (
+    <>
+      <PageBreadcrumb title="Gestion de proveedores" subName="E" />
+      <Row>
+        <Col xs={12}>
+          <Card>
+            <Card.Body>
+              <Row className="mb-3">
+                <Col sm={5}>
+                  <Button label="Agregar proveedor" onClick={modalProvOpen} />
+                </Col>
+              </Row>
+
+              <TabView>
+                <TabPanel header={'PROVEEDORES'}>
+                  <TabView>
+                    <TabPanel header={'CHANGE'}>
+                      {/* ⬇️ Botones ACTIVO/INACTIVO */}
+                      <div className={`estado-select ${estado ? 'activo' : 'inactivo'} mb-3`}>
+                        <SelectButton
+                          value={estado}
+                          onChange={(e) => setEstado(e.value)}
+                          options={ESTADOS}
+                          itemTemplate={estadoTemplate}
+                        />
+                      </div>
+
+                      {/* Render según botón */}
+                      {estado ? (
+                        <CustomersProv estado_prov={true}  agente={true} id_empresa={598} />
+                      ) : (
+                        <CustomersProv estado_prov={false} agente={true} id_empresa={598} />
+                      )}
+                    </TabPanel>
+
+                    <TabPanel header={'CIRCUS'}>
+                      <div className={`estado-select ${estado ? 'activo' : 'inactivo'} mb-3`}>
+                        <SelectButton
+                          value={estado}
+                          onChange={(e) => setEstado(e.value)}
+                          options={ESTADOS}
+                          itemTemplate={estadoTemplate}
+                        />
+                      </div>
+
+                      {estado ? (
+                        <CustomersProv estado_prov={true}  agente={true} id_empresa={601} />
+                      ) : (
+                        <CustomersProv estado_prov={false} agente={true} id_empresa={601} />
+                      )}
+                    </TabPanel>
+
+                    <TabPanel header={'REDUCTO'}>
+                      <div className={`estado-select ${estado ? 'activo' : 'inactivo'} mb-3`}>
+                        <SelectButton
+                          value={estado}
+                          onChange={(e) => setEstado(e.value)}
+                          options={ESTADOS}
+                          itemTemplate={estadoTemplate}
+                        />
+                      </div>
+
+                      {estado ? (
+                        <CustomersProv estado_prov={true}  agente={true} id_empresa={599} />
+                      ) : (
+                        <CustomersProv estado_prov={false} agente={true} id_empresa={599} />
+                      )}
+                    </TabPanel>
+                                        <TabPanel header={'RAL'}>
+                      <div className={`estado-select ${estado ? 'activo' : 'inactivo'} mb-3`}>
+                        <SelectButton
+                          value={estado}
+                          onChange={(e) => setEstado(e.value)}
+                          options={ESTADOS}
+                          itemTemplate={estadoTemplate}
+                        />
+                      </div>
+
+                      {estado ? (
+                        <CustomersProv estado_prov={true}  agente={true} id_empresa={0} />
+                      ) : (
+                        <CustomersProv estado_prov={false} agente={true} id_empresa={0} />
+                      )}
+                    </TabPanel>
+                  </TabView>
+                </TabPanel>
+                
+
+                <TabPanel header={'CONTRATOS POR PROVEEDOR'}>
+                  <TabView>
+                    <TabPanel header={'CHANGE'}>
+                      <App id_empresa={598} bgEmpresa='bg-change' classNameTablePrincipal='bg-change p-2' />
+                    </TabPanel>
+                    <TabPanel header={'CIRCUS'}>
+                      <App id_empresa={601} bgEmpresa='bg-circus' classNameTablePrincipal='bg-circus p-2' />
+                    </TabPanel>
+                    <TabPanel header={'REDUCTO'}>
+                      <App id_empresa={599} bgEmpresa='bg-greenISESAC' classNameTablePrincipal='bg-greenISESAC p-2' />
+                    </TabPanel>
+                  </TabView>
+                </TabPanel>
+              </TabView>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      <ModalProveedor show={isModalOpenProv} onHide={modalProvClose} />
+    </>
+  );
 };

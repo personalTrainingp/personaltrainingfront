@@ -156,9 +156,10 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
 
   return (
     <div>
-      <pre>
-        {JSON.stringify(dataProveedores, null, 2)}
-      </pre>
+      
+      {/* <pre>
+        {JSON.stringify(grupos, null, 2)}
+      </pre> */}
       {/* Tabla principal por proveedor (sin acordeón) */}
       <Table bordered responsive hover className="align-middle">
         <thead className={classNameTablePrincipal}>
@@ -181,7 +182,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
               <div className="text-white">MONTO <br /> CONTRATO</div>
             </th>
             <th className="text-center">
-              <div className="text-white">ADELANTO</div>
+              <div className="text-white">ABONOS</div>
             </th>
             <th className="text-center">
               <div className="text-white">SALDO</div>
@@ -190,6 +191,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
         </thead>
         <tbody>
           {grupos.map((grupo) => {
+            const grupoFiltro = grupo.items.filter(e=>new Date(e.fecha_fin)>new Date())
             const proveedor = (dataProveedores ?? []).find((p) => p.id === grupo.id_prov);
             const razon = proveedor?.razon_social_prov ? `${grupo.id_prov} / ${proveedor?.razon_social_prov}` : `Prov #${grupo.id_prov}`;
             const ruc = proveedor?.ruc_prov ?? `Prov #${grupo.id_prov}`;
@@ -206,7 +208,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                     onClick={() => handleOpenDialog(grupo)}
                     style={{ textDecoration: 'none' }}
                   >
-                    VER <br /> CONTRATOS
+                    VER <br /> CONTRATOS ({grupo.items.length})
                   </Btn>
                 </td>
                 <td className="fs-3">
@@ -215,7 +217,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                 <td className="fs-3">{ruc}</td>
                 <td className="text-end fs-3">
                   <div className='' style={{width: '50px'}}>
-                    {grupo.items.length}
+                    {grupoFiltro.length}
                   </div>
                 </td>
                 <td className="text-end fs-3">{fmt(montoContratos)}</td>
@@ -276,7 +278,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                     <div className="text-center">Monto <br /> contrato</div>
                   </th>
                   <th className="text-end text-white">
-                    <div className="text-center">Adelanto</div>
+                    <div className="text-center">ABONOS</div>
                   </th>
                   <th className="text-center text-white">PENALIDAD</th>
                   <th className="text-center text-white">Saldo <br /> A pagar</th>

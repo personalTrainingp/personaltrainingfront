@@ -6,6 +6,49 @@
   
   // font-size: 20% !important;
 }
+
+
+/* Botones sin bordes, bloque sólido */
+.estado-select .p-button {
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+.estado-select .p-selectbutton .p-button {
+  padding: 0.6rem 1.3rem !important;
+  font-weight: 800;
+  color: #fff !important;
+}
+
+/* color del NO seleccionado (gris plano) */
+.estado-select .p-button:not(.p-highlight) {
+  background: #cfcfcf !important;
+  color: #333 !important;
+}
+
+/* color del seleccionado según estado */
+.estado-select.activo   .p-button.p-highlight { background: #198754 !important; } /* verde */
+.estado-select.inactivo .p-button.p-highlight { background: #dc3545 !important; } /* rojo */
+
+/* bordes redondeados solo en extremos del par */
+.estado-select .p-button:first-child {
+  border-top-left-radius: 10px !important;
+  border-bottom-left-radius: 10px !important;
+}
+.estado-select .p-button:last-child {
+  border-top-right-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+}
+
+/* quitar focus ring */
+.estado-select .p-button:focus { box-shadow: none !important; outline: none !important; }
+
+/* contenido de cada botón (por si quieres padding interno adicional) */
+.estado-btn { text-align: center; }
+
+
 /* Supongamos que el componente Calendar tiene una clase específica */
 .my-calendar {
   font-size: 18px; /* Cambia el tamaño según lo necesites */
