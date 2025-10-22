@@ -16,35 +16,9 @@
       import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
       import config from '@/config';
       import axios from 'axios';
+      import { TopControls } from "./components/TopControls";
 
-      const RealTimeClock = () => {
-        const [currentTime, setCurrentTime] = useState(new Date());
-
-        useEffect(() => {
-          const timerId = setInterval(() => {
-            setCurrentTime(new Date());
-          }, 1000);
-          return () => clearInterval(timerId);
-        }, []);
-
-        const formattedTime = currentTime.toLocaleTimeString("es-PE", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        });
-
-        return (
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: "2em",
-              color: "black",
-            }}
-          >
-            Hora: {formattedTime}
-          </div>
-        );
-      };
+    
 
 export function limaFromISO(iso) {
   if (!iso) return null;
@@ -315,63 +289,7 @@ const advisorOriginByProg = useMemo(() => {
       return {};
     }
   }, [dataGroup, start, end, progNameById]);
-        const columns = useMemo(() => ([
-          { key: "marzo",  label: "MARZO",  currency: "S/." },
-          { key: "abril",  label: "ABRIL",  currency: "S/." },
-          { key: "mayo",   label: "MAYO",   currency: "S/." },
-          { key: "junio",  label: "JUNIO",  currency: "S/." },
-          { key: "julio",  label: "JULIO",  currency: "S/." },
-          { key: "agosto", label: "AGOSTO", currency: "S/." },
-          { key: "septiembre", label: "SEPTIEMBRE", currency: "S/." },
-        ]), []);
 
-        const marketing = {
-          inversion_redes: { marzo: 1098, abril: 3537, mayo: 4895, junio: 4622, julio: 4697, agosto: 5119, septiembre: 0 },
-          leads:           { marzo: 84,  abril: 214,  mayo: 408,  junio: 462,  julio: 320,  agosto: 417, septiembre: 0  },
-          cpl:             { marzo: 13.07,  abril: 16.53,   mayo: 12,   junio: 10,    julio: 14.68,   agosto: 12.28, septiembre: 0   },
-          cac:             { marzo: null,  abril: null,   mayo: null,   junio: null,   julio: null,   agosto: null, septiembre: 0   },
-        };
-
-   const daysInmonth = (y,m1to12)=>  new Date(y,m1to12,0).getDate();
-function handleMonthChange(newMonth) {
-  const today = new Date();
-  const currentMonth = today.getMonth() + 1;
-  const currentYear = today.getFullYear();
-
-  const lastDayTarget = daysInmonth(year, newMonth); 
-  let nextCutDay;
-
-  if (newMonth === currentMonth && year === currentYear) {
-    nextCutDay = Math.min(today.getDate(), lastDayTarget);
-  } else {
-    nextCutDay = Math.min(cutDay, lastDayTarget);
-  }
-
-  const nextInitDay = Math.min(initDay, nextCutDay);
-
-  setSelectedMonth(newMonth);
-  setCutDay(nextCutDay);
-  setInitDay(nextInitDay);
-}
-
-
-
-        const tableData = useMemo(() => ventasToExecutiveData({
-          ventas: dataVentas,
-          columns,
-          titleLeft: "CIRCUS",
-          titleRight: `RESUMEN EJECUTIVO HASTA EL ${cutDay} DE CADA MES`,
-          marketing,
-          cutDay,              
-          initDay,
-          footerFullMonth: true 
-        }), [dataVentas, columns, marketing, cutDay]);
-        const originMap = {
-          1454: "WALK-IN",
-          1455: "DIGITAL",
-          1456: "REFERIDO",
-          1457: "CARTERA",
-        };
         const dataMktByMonth = useMemo(
     () => buildDataMktByMonth(dataLead, initDay, cutDay, canalParams), 
     [dataLead, initDay, cutDay,canalParams]
@@ -480,7 +398,7 @@ const dataMkt = useMemo(
         { urlImage: "/change_negro.png", name_image: "CHANGE 45" },
         { urlImage: "/fs45_negro.png", name_image: "FS 45" },
         { urlImage: "/fisio_muscle_negro.png", name_image: "FISIO MUSCLE" },
-      { urlImage: "/vertikal_negro.png", name_image: "VERTIKAL CHANGE" }, // <--- imagen local
+      { urlImage: "/vertikal_negro.png", name_image: "VERTIKAL CHANGE" }, 
     ];  
 
       const rankingData = (TotalDeVentasxProdServ("total")?.asesores_pago || [])
@@ -545,9 +463,8 @@ const dataMkt = useMemo(
 
       const countDigitalClientsForMonth = (ventasList = [], anio, mesNombre, fromDay = 1, cut = {cutDay}) => {
         
-        const MESES_LOCAL = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
         const monthLower = String(mesNombre).toLowerCase();
-        const monthIdx = MESES_LOCAL.indexOf(monthLower === "septiembre" ? "septiembre" : monthLower);
+        const monthIdx = MESES.indexOf(monthLower === "septiembre" ? "septiembre" : monthLower);
         if (monthIdx < 0) return 0;
 
         let cnt = 0;
@@ -594,11 +511,7 @@ const dataMktWithCac = useMemo(() => {
   return base;
 }, [dataMktByMonth, dataVentas, mesesSeleccionados, initDay, cutDay]);
 
-  useEffect(() => {
-    const expected = mesesSeleccionados.map(f => 
-      `${f.anio}-${(f.mes === 'septiembre' ? 'setiembre' : f.mes)}`
-    );
-  }, [mesesSeleccionados]);
+;
 
   useEffect(() => {
   }, [dataMktByMonth]);
@@ -620,7 +533,10 @@ const norm = (s) =>
     .replace(/[\u0300-\u036f]/g, "")
     .toUpperCase();
 
-const AVATAR_BASE = config?.API_IMG?.AVATAR_EMPL || ""; 
+const handleSetUltimoDiaMes = () => {
+  const ultimoDia = new Date(year, selectedMonth, 0).getDate();
+  setCutDay(ultimoDia);
+};
 
 const avatarByAdvisor = useMemo(() => {
   const lista = repoVentasPorSeparado?.total?.empl_monto || [];
@@ -645,191 +561,121 @@ const avatarByAdvisor = useMemo(() => {
 
   return map;
 }, [repoVentasPorSeparado?.total?.empl_monto]);
-      return (
-          <>
-            <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
-            <Row className="mb-3">
-              <Col lg={12}>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"40px" }}>
-
-                
-        <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-          <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Mes:</label>
-         <select
-  value={selectedMonth}
-  onChange={e => {
-    const newMonth = parseInt(e.target.value, 10);
-    const currentMonth = new Date().getMonth() + 1;
-
-    if (newMonth > currentMonth) return;
-
-    handleMonthChange(newMonth);
-  }}
-  style={{ fontSize: '1.7em', fontWeight: "bold" }}
->
-  {[
-    "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
-    "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"
-  ].map((mes, idx) => {
-    const currentMonth = new Date().getMonth() + 1;
-    const disabled = idx + 1 > currentMonth; 
     return (
-      <option key={idx + 1} value={idx + 1} disabled={disabled}>
-        {mes}
-      </option>
-    );
-  })}
-</select>
+  <>
+    <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
+
+    {/* === CONTROLES SUPERIORES === */}
+    <Row className="mb-3">
+      <Col lg={12}>
+        <TopControls
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          initDay={initDay}
+          setInitDay={setInitDay}
+          cutDay={cutDay}
+          setCutDay={setCutDay}
+          year={year}
+          handleSetUltimoDiaMes={handleSetUltimoDiaMes}
+        />
+      </Col>
+    </Row>
+
+    {/* === CONTENIDO PRINCIPAL === */}
+    <Row className="mb-6">
+      <Col lg={12} className="pt-0">
+        <div style={{ marginBottom: "30px" }}>
+          <ExecutiveTable
+            ventas={dataVentas}
+            fechas={mesesSeleccionados}
+            dataMktByMonth={dataMktWithCac}
+            initialDay={initDay}
+            cutDay={cutDay}
+          />
         </div>
-      {/* Día de inicio */}
-  <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-    <label style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>Día de inicio:</label>
-    <select
-      value={initDay}
-      onChange={e => {
-        const val = parseInt(e.target.value, 10);
-        if (val <= cutDay) setInitDay(val); // 
-      }}
-      style={{ fontSize: '1.5em' }}
-    >
-      {Array.from({ length: 31 }, (_, i) => i + 1).map(n => (
-        <option key={n} value={n}>{n}</option>
-      ))}
-    </select>
-  </div>
 
-{/* Día de corte */}
-<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-  <label style={{ fontWeight: 600, fontSize: "2em", color: "black" }}>
-    Día de corte:
-  </label>
-  <select
-    value={cutDay}
-    onChange={(e) => {
-      const val = parseInt(e.target.value, 10);
-      const today = new Date();
-      const currentMonth = today.getMonth() + 1;
-      const currentDay = today.getDate();
-
-      const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
-      const lastDayTarget = daysInMonth(year, selectedMonth);
-
-      let next = Math.min(val, lastDayTarget);
-
-      if (selectedMonth === currentMonth) {
-        next = Math.min(next, currentDay);
-      }
-      setCutDay(next);
-
-      if (initDay > next) {
-        setInitDay(next);
-      }
-    }}
-    style={{ fontSize: "1.5em" }}
-  >
-    {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
-      <option key={n} value={n}>
-        {n}
-      </option>
-    ))}
-  </select>
-</div>
-        {/* Hora actual */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={{ fontWeight: 600, fontSize: '2em', color: 'black' }}>
-            Hora: {new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false })}
-          </span>
+        <div style={{ marginBottom: "32px", marginTop: "80px" }}>
+          <ClientesPorOrigen
+            ventas={dataVentas}
+            fechas={mesesSeleccionados}
+            initialDay={initDay}
+            cutDay={cutDay}
+            originMap={{
+              686: "Walking",
+              687: "Mail",
+              690: "REFERIDOS",
+              691: "CARTERA DE RENOVACION",
+              692: "Cartera de reinscripcion",
+              693: "Instagram",
+              694: "Facebook",
+              695: "TikTok",
+              696: "EX-PT reinscripcion",
+              689: "WSP organico",
+              1470: "CORPORATIVOS BBVA",
+            }}
+          />
         </div>
-      </div>
-              </Col>
-            </Row>
-            <Row className="mb-6">
-              <Col lg={12} className="pt-0">
-                <div style={{marginBottom: '30px'}}>
-                <ExecutiveTable
-        ventas={dataVentas}
-        fechas={mesesSeleccionados}
-        dataMktByMonth={dataMktWithCac }
-        initialDay={initDay}
-        cutDay={cutDay}
-      />
-                </div>
-                <div style={{marginBottom: '32px',marginTop:"80px"}}>
-                  <ClientesPorOrigen
-                    ventas={dataVentas}
-                    fechas={mesesSeleccionados}
-                    initialDay={initDay}
-                    cutDay={cutDay}
-                    originMap={{
-                      686: 'Walking',
-                      687: 'Mail',
-                      690: 'REFERIDOS',
-                      691: 'CARTERA DE RENOVACION',
-                      692: 'Cartera de reinscripcion',
-                      693: 'Instagram',
-                      694: 'Facebook',
-                      695: 'tiktok',
-                      696: 'EX-PT reinscripcion',
-                      689: 'WSP organico',
-                      1470: 'CORPORATIVOS BBVA',
-                    }}
-                  />
-                </div>
-              </Col>
-              <Col lg={12}>
-                <div style={{marginBottom: '32px',marginTop:"90px"}}>
-                  <ComparativoVsActual
-                  ventas={dataVentas}
-        fechas={mesesSeleccionados}
-        dataMktByMonth={dataMkt}
-        initialDay={initDay}
-        cutDay={cutDay}
-                  />
-                </div>
-                <div style={{marginBottom: '32px',marginTop:"90px"}}>
-                  <GraficoLinealInversionRedes
-                    data={dataLeadPorMesAnio}
-                    fechas={[new Date()]}
-                  />
-                </div>
-               <Col lg={12}>
-  <div style={{ marginTop: '15px' }}>
-   <TarjetasPago
-  tasks={
-    (TotalDeVentasxProdServ("total")?.asesores_pago || [])
-      .filter(item =>
-        item.monto > 0 &&
-        (item.tipo === "programa" ||
-         item.categoria === "PROGRAMAS" ||
-         item.id_programa !== null)
-      )
-      .map(item => ({
-        ...item,
-        nombre: item.nombre?.split(" ")[0] || item.nombre
-      }))
-  }
-  title={"Ranking Venta Membresías"}
-/>
+      </Col>
 
-  </div>
-</Col>
-       
-              </Col>
-    <Row>
+      {/* === COMPARATIVOS Y GRÁFICOS === */}
+      <Col lg={12}>
+        <div style={{ marginBottom: "32px", marginTop: "90px" }}>
+          <ComparativoVsActual
+            ventas={dataVentas}
+            fechas={mesesSeleccionados}
+            dataMktByMonth={dataMkt}
+            initialDay={initDay}
+            cutDay={cutDay}
+          />
+        </div>
+
+        <div style={{ marginBottom: "32px", marginTop: "90px" }}>
+          <GraficoLinealInversionRedes
+            data={dataLeadPorMesAnio}
+            fechas={[new Date()]}
+          />
+        </div>
+
+        {/* === TARJETAS DE PAGO === */}
+        <Col lg={12}>
+          <div style={{ marginTop: "15px" }}>
+            <TarjetasPago
+              tasks={
+                (TotalDeVentasxProdServ("total")?.asesores_pago || [])
+                  .filter(
+                    (item) =>
+                      item.monto > 0 &&
+                      (item.tipo === "programa" ||
+                        item.categoria === "PROGRAMAS" ||
+                        item.id_programa !== null)
+                  )
+                  .map((item) => ({
+                    ...item,
+                    nombre: item.nombre?.split(" ")[0] || item.nombre,
+                  }))
+              }
+              title={"Ranking Venta Membresías"}
+            />
+          </div>
+        </Col>
+      </Col>
+
+      {/* === SUMA DE SESIONES === */}
+      <Row>
         <Col lg={12}>
           <SumaDeSesiones
-  resumenArray={resumenFilas}
-  resumenTotales={resumenTotales}
-  avataresDeProgramas={avataresDeProgramas}
-  sociosOverride={sociosOverride}
-  originBreakdown={originBreakdown} 
-   advisorOriginByProg={advisorOriginByProg} 
-    avatarByAdvisor={avatarByAdvisor}
-/>
+            resumenArray={resumenFilas}
+            resumenTotales={resumenTotales}
+            avataresDeProgramas={avataresDeProgramas}
+            sociosOverride={sociosOverride}
+            originBreakdown={originBreakdown}
+            advisorOriginByProg={advisorOriginByProg}
+            avatarByAdvisor={avatarByAdvisor}
+          />
         </Col>
       </Row>
+    </Row>
+  </>
+);
 
-            </Row>
-          </>
-        );
       };
