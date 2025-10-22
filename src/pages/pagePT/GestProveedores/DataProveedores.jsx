@@ -111,7 +111,7 @@ export const DataProveedores = () => {
                         <CustomersProv estado_prov={false} agente={true} id_empresa={599} />
                       )}
                     </TabPanel>
-                                        <TabPanel header={'RAL'}>
+                                        <TabPanel header={'R'}>
                       <div className={`estado-select ${estado ? 'activo' : 'inactivo'} mb-3`}>
                         <SelectButton
                           value={estado}
