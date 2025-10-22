@@ -13,8 +13,6 @@ export const TarjetasPago = ({ tasks, title, dataSumaTotal }) => {
         total_ventas: producto.monto,
         avatar: producto.avatar
     })).sort((a, b) => b.total_ventas - a.total_ventas) || []
-    // console.log(task.avatar);
-    console.log(pagos);
     const series = [
         {
             name: 'TOTAL:',
