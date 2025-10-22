@@ -334,8 +334,8 @@ export default function ReservaMonkFitPage() {
             value={search}
             onChange={(e) => { setOffset(0); setSearch(e.target.value); }}
           />
-          <button className="btn btn-outline-secondary" onClick={load}>Buscar</button>
-          <button className="btn btn-primary" onClick={openCreate}>Nueva reserva</button>
+          <Button className="bg-secondary" onClick={load}>Buscar</Button>
+          <Button className="bg-primary"  onClick={openCreate}>Nueva reserva</Button>
         </div>
       </div>
 
