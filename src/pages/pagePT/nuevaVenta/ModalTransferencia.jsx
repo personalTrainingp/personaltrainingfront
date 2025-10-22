@@ -17,7 +17,7 @@ const registerTransferencia = {
 export const ModalTransferencia = ({show, onHide}) => {
     const dispatch = useDispatch()
   const { obtenerParametrosLogosProgramas, obtenerSemanasPorPrograma, obtenerTarifasPorSemanas, obtenerHorariosPorPrograma, DataHorarioPGM, DataSemanaPGM, DataTarifaSM } = useTerminoStore()
-    const { formState, tarifa_monto, fec_init_mem, id_horario, id_cli, onResetForm, onInputChangeReact, onInputChange } = useForm(registerTransferencia)
+    const { formState, tarifa, fec_init_mem, id_horario, id_cli, onResetForm, onInputChangeReact, onInputChange } = useForm(registerTransferencia)
     const { obtenerParametrosClientes, DataClientes } = useTerminoStore()
     const { obtenerUltimaMebresiaxCli, dataUltimaMembxCli } = useUsuarioStore()
     
@@ -94,18 +94,18 @@ export const ModalTransferencia = ({show, onHide}) => {
                     </Col>
                     <Col lg={12}>
                         <div className="mb-2">
-                            <label htmlFor="tarifa_monto" className="form-label">
+                            <label htmlFor="tarifa" className="form-label">
                                 TARIFAS
                             </label>
                             <Select
-                                onChange={(e) =>onInputChangeReact(e, "tarifa_monto")}
-                                name={'tarifa_monto'}
+                                onChange={(e) =>onInputChangeReact(e, "tarifa")}
+                                name={'tarifa'}
                                 placeholder={'Seleccionar la tarifa'}
                                 className="react-select"
                                 classNamePrefix="react-select"
                                 options={[{value: 400, label: 'TARIFA CON COSTO'}, {value: 0, label: 'TARIFA SIN COSTO'}]}
                                 value={DataHorarioPGM.find(
-                                    (option) => option.value === tarifa_monto
+                                    (option) => option.value === tarifa
                                 )}
                                 required
                             />

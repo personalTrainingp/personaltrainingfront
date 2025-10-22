@@ -156,6 +156,9 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
 
   return (
     <div>
+      <pre>
+        {JSON.stringify(dataProveedores, null, 2)}
+      </pre>
       {/* Tabla principal por proveedor (sin acordeón) */}
       <Table bordered responsive hover className="align-middle">
         <thead className={classNameTablePrincipal}>
