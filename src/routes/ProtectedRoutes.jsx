@@ -9,7 +9,7 @@ import Account from '@/pages/account';
 import { Home } from '@/pages/pagePT/Home';
 import { PerfilPrograma } from '@/pages/pagePT/GestProgramas/PerfilPrograma';
 import CrearCitasNutricion from '@/pages/pagePT/GestNutricion';
-import GestionMonkFit from "../pages/pagePT/GestionMonkFit/app.jsx";
+// import {ReservaMonkFitPage} from "../pages/pagePT/GestionMonkFit/app.jsx";
 
 
 
@@ -92,6 +92,7 @@ const ResumenEjecutivo = lazy(()=>import('../pages/pagePT/reportes/resumenEjecut
 const GestionCentroDeArchivos = lazy(()=>import('../pages/pagePT/GestCentroArchivo'))
 const CvColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/cv'))
 const DniColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/dni'))
+const ReservaMonkFitPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/App'))
 /**
  * routes import
  */
@@ -142,8 +143,10 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/resumen-ejecutivo')&&
                         <Route path='resumen-ejecutivo' element={<ResumenEjecutivo/>}/>
+					}{
+						sections.find(e=>e.url==='/gestion-monkfit')&&
+						<Route path="gestion-monkfit" element={<ReservaMonkFitPage />} />
 					}
-					<Route path="gestion-monkfit" element={<GestionMonkFit />} />
 
 					{
 						sections.find(e=>e.url==='/agregar-articulos-chorrillos')&&
