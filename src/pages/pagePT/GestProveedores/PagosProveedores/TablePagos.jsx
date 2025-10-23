@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
+import { FechaRange } from '@/components/RangeCalendars/FechaRange';
 
 // Descarga segura
 const safeDownload = (url, filename) => {
@@ -37,7 +38,7 @@ const switchApiImg = (key) => {
   }
 };
 
-export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, classNameTablePrincipal }) => {
+export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv, bgEmpresa, classNameTablePrincipal }) => {
   const { obtenerTrabajosPendientes, obtenerContratosPendientes, deleteContratoxId } = usePagoProveedoresStore();
   const { obtenerImages, images } = useImageStore();
   const { obtenerProveedores } = useProveedorStore();
@@ -156,7 +157,10 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
 
   return (
     <div>
-      
+      <pre>
+        {JSON.stringify(RANGE_DATE, null,2)}
+      </pre>
+                    <FechaRange rangoFechas={RANGE_DATE}/>
       {/* <pre>
         {JSON.stringify(grupos, null, 2)}
       </pre> */}

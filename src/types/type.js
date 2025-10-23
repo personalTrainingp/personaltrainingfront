@@ -34,6 +34,12 @@ export const arrayEmpresaFinan = [
 	{ value: 700, label: 'MANICURE' },
 	{ value: 800, label: 'RAL' },
 ];
+export const arrayEmpresaFinanAbrev = [
+	{ value: 598, label: 'CHA' },
+	{ value: 599, label: 'RED' },
+	{ value: 601, label: 'CIR' },
+	{ value: 0, label: 'RAL' },
+];
 
 export const arrayDepartamento = [
 	{ value: '01', label: 'Amazonas' },

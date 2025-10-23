@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 import { useTerminoStore } from './useTerminoStore';
-import { arrayEmpresaFinan } from '@/types/type';
+import { arrayEmpresaFinan, arrayEmpresaFinanAbrev } from '@/types/type';
 
 export const useProveedorStore = () => {
 	const dispatch = useDispatch();
@@ -111,7 +111,7 @@ export const useProveedorStore = () => {
 			const dataAlter = data.map((term) => {
 				return {
 					value: term.value,
-					label: `${term.label} | ${arrayEmpresaFinan?.find((f) => f?.value === term.id_empresa)?.label}`,
+					label: `${term.label} | ${arrayEmpresaFinanAbrev?.find((f) => f?.value === term.id_empresa)?.label}`,
 				};
 			});
 			// setDataProducProveedor(data);
