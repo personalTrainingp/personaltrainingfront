@@ -26,8 +26,7 @@ export const TarjetasPago = ({ tasks, title }) => {
 
   const totalVisible = pagos.reduce((acc, p) => acc + p.total_ventas, 0);
 
-  const formatCurrency = (value) =>
-    value.toLocaleString('es-PE', { style: 'currency', currency: 'PEN' });
+
 
   return (
     <Card className="ranking-card">

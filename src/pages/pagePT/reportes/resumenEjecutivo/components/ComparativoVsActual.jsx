@@ -103,7 +103,7 @@ export const ComparativoVsActual = ({
     } else {
       delta = {
         serv: refVals.serv - vals.serv,
-        prod: vals.prod - refVals.prod,
+        prod:  refVals.prod - vals.prod ,
         total: refVals.total - vals.total,
       };
       pct = {
@@ -123,7 +123,6 @@ export const ComparativoVsActual = ({
     };
   });
 
-  // ---------------------- Styles ----------------------
   const C = {
     black: "#000000",
     white: "#ffffff",
@@ -184,7 +183,7 @@ export const ComparativoVsActual = ({
           fontSize: isLast ? 22 : sCellBold.fontSize,
         }}
       >
-        {neg ? "-" : ""}
+        {neg ? "-" : "+"}
         {fmtMoney(absValue)}
       </td>
     );
@@ -237,7 +236,7 @@ export const ComparativoVsActual = ({
             <MonthHead
               key={c.key}
               col={c}
-              isLast={idx === columns.length - 1} // encabezado última columna en rojo/blanco
+              isLast={idx === columns.length - 1} 
             />
           ))}
         </tr>
@@ -255,7 +254,7 @@ export const ComparativoVsActual = ({
                   ? c.delta.prod
                   : c.delta.total
               }
-              isLast={idx === columns.length - 1} // celda última columna en rojo/blanco
+              isLast={idx === columns.length - 1} 
             />
           ))}
         </tr>
@@ -271,7 +270,7 @@ export const ComparativoVsActual = ({
                   ? c.pct.prod
                   : c.pct.total
               }
-              isLast={idx === columns.length - 1} // celda última columna en rojo/blanco
+              isLast={idx === columns.length - 1} 
             />
           ))}
         </tr>

@@ -1,10 +1,5 @@
 import React from "react";
 
-/**
- * ExecutiveSummaryTable
- * --------------------------------------------------------------
- * Tabla de "RESUMEN EJECUTIVO HASTA EL <cutDay> DE CADA MES".
- */
 export default function ExecutiveTable({
   ventas = [],
   fechas = [],
@@ -53,7 +48,7 @@ export default function ExecutiveTable({
       if (d.getFullYear() !== Number(anio)) continue;
       if (d.getMonth() !== monthIdx) continue;
 
-      // MES COMPLETO (1–31)
+    
       for (const s of getDetalleServicios(v)) {
         const cantidad = Number(s?.cantidad || 1);
         const linea = Number(s?.tarifa_monto || 0);
@@ -67,7 +62,6 @@ export default function ExecutiveTable({
         cantProdFull += cantidad;
       }
 
-      // HASTA cutDay
       const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
       const to = clamp(Number(cutDay || lastDay), from, lastDay);
       const dia = d.getDate();
@@ -103,13 +97,11 @@ const mkCpl = leads > 0 ? (mkInvAdjusted / leads) : 0;
     const clientesDigitales = Number(mk?.clientes_digitales ?? 0);
     const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
 
-    // ---- por canal (admite ids o nombres) ----
     const porRedRaw = mk?.por_red ?? mk?.inv_por_canal ?? {};
     const por_red = Object.fromEntries(
       Object.entries(porRedRaw).map(([k, v]) => [String(k).toLowerCase(), Number(v ?? 0) * FACTOR])
     );
 
-    // Nuevas métricas por fila: TikTok (1514) y Meta (1515)
     const mkInvTikTok = Number(
       por_red["1514"] ?? por_red["tiktok"] ?? por_red["tik tok"] ?? 0
     );
@@ -119,7 +111,6 @@ const mkCpl = leads > 0 ? (mkInvAdjusted / leads) : 0;
 
     const leads_por_red = mk?.leads_por_red ?? {};
     const cpl_por_red   = mk?.cpl_por_red ?? {};
-// === LEADS por red ===
 const mkLeadsTikTok = Number(
   leads_por_red["1514"] ?? leads_por_red["tiktok"] ?? leads_por_red["tik tok"] ?? 0
 );
@@ -127,7 +118,6 @@ const mkLeadsMeta = Number(
   leads_por_red["1515"] ?? leads_por_red["meta"] ?? leads_por_red["facebook"] ?? 0
 );
 
-// === INVERSIÓN ajustada por red (por_red ya * FACTOR) ===
 const invTikTokAdj = Number(
   (por_red["1514"] ?? por_red["tiktok"] ?? por_red["tik tok"] ?? 0)
 );
@@ -135,7 +125,6 @@ const invMetaAdj = Number(
   (por_red["1515"] ?? por_red["meta"] ?? 0)
 );
 
-// === CPL por red (con inversión ajustada) ===
 const mkCplTikTok = mkLeadsTikTok > 0 ? invTikTokAdj / mkLeadsTikTok : 0;
 const mkCplMeta   = mkLeadsMeta   > 0 ? invMetaAdj   / mkLeadsMeta   : 0;
     return {
@@ -175,19 +164,20 @@ const mkCplMeta   = mkLeadsMeta   > 0 ? invMetaAdj   / mkLeadsMeta   : 0;
 
 const rows = [
   { key: "mkInv", label: "INVERSIÓN REDES", type: "money" },
-  { key: "mkInvTikTok", label: " Inversion TikTok", type: "money" },
-    { key: "mkLeadsTikTok", label: "CANTIDAD LEADS — TIKTOK", type: "int" },
-  { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
   { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
-    { key: "mkLeadsMeta", label: "CANTIDAD LEADS — META", type: "int" },
+    { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
   { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
-  { key: "mkLeads", label: "TOTAL LEADS META+TIKTOK", type: "int" },
-  { key: "mkCpl", label: "COSTO POR LEAD", type: "float2" },
+    { key: "mkInvTikTok", label: " Inversion TikTok", type: "money" },
+    { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
+  { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
+  { key: "mkLeads", label: "TOTAL LEADS DE META Y TIKTOK", type: "int" },
+  { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META Y TIKTOK", type: "float2" },
   { key: "totalServ", label: "VENTA MEMBRESIAS", type: "money" },
   { key: "cantServ", label: "CANTIDAD MEMBRESIAS", type: "int" },
   { key: "ticketServ", label: "TICKET MEDIO MEMBRESIAS", type: "money" },
-    { key: "ticketServ", label: "TICKET MEDIO MONKEY FIT", type: "money" },
-      { key: "cantProd", label: "CANTIDAD DE RESERVAS MONKEYFIT", type: "int" },
+    { key: "", label: "VENTA MEMBRESIAS MONKEY FIT", type: "money" },
+  { key: "/", label: "CANTIDAD DE RESERVAS MONKEYFIT", type: "int" },
+  { key: "-", label: "TICKET MEDIO MONKEY FIT", type: "money" },
   { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
   { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
   { key: "ticketProd", label: "TICKET MEDIO PRODUCTOS", type: "money" },
@@ -442,7 +432,7 @@ return (
               fontWeight: 800,
             }}
           >
-            CÁLCULO ADQUISICIÓN CLIENTE DIGITAL
+            COSTO ADQUISICIÓN CLIENTE DIGITAL
           </td>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;
@@ -487,7 +477,7 @@ return (
                   ...sThMes,
                   background: isLast ? "#c00000" : "transparent",
                   color: "#fff",
-                  fontSize: isLast ? 24 : 24,
+                  fontSize:  24,
                 }}
               >
                 {fmtMoney(m.metrics?.totalMesFull || 0)}
@@ -518,7 +508,7 @@ return (
                   ...sCellBold,
                   background: "#000",
                   color: "#fff",
-                  fontSize: isLast ? 23 : sCellBold.fontSize,
+                  fontSize: 23,
                   textAlign: "center",
                 }}
               >
@@ -531,5 +521,4 @@ return (
     </table>
   </div>
 );
-
 }
