@@ -1,4 +1,3 @@
-// src/pages/totalVentas/TarjetasProductos.jsx
 import React, { useMemo } from "react";
 import { Card, Col, ProgressBar, Row, Table } from "react-bootstrap";
 import { CardTitle } from "@/components";
@@ -42,10 +41,7 @@ const getAvatarEmpleado = (emp) =>
   emp?.image ||
   "";
 
-/**
- * Agrega ventas de PRODUCTOS por ASESOR:
- * Retorna: [{ asesor, total_ventas, avatar }]
- */
+
 export const aggregateProductsByAdvisor = (ventas = [], start = null, end = null) => {
   const map = new Map();
 
@@ -79,16 +75,13 @@ export const aggregateProductsByAdvisor = (ventas = [], start = null, end = null
 
     const acc = map.get(key) || { asesor: nombre, total_ventas: 0, avatar: avatar || null };
     acc.total_ventas += ventaProductos;
-    if (!acc.avatar && avatar) acc.avatar = avatar; // mantener el primero válido
+    if (!acc.avatar && avatar) acc.avatar = avatar; 
     map.set(key, acc);
   }
 
   return Array.from(map.values()).sort((a, b) => (b.total_ventas || 0) - (a.total_ventas || 0));
 };
 
-/**
- * Hook para obtener el ranking ya filtrado por importe mínimo.
- */
 export const useProductosAgg = (ventas = [], rangeDate = [], { minImporte = 0 } = {}) => {
   const start = rangeDate?.[0] ? new Date(rangeDate[0]) : null;
   const end = rangeDate?.[1] ? new Date(rangeDate[1]) : null;
@@ -100,17 +93,13 @@ export const useProductosAgg = (ventas = [], rangeDate = [], { minImporte = 0 } 
   }, [ventas, start?.getTime?.(), end?.getTime?.(), minImporte]);
 };
 
-/**
- * Tabla de ranking de venta de productos por asesor.
- * Si no hay avatar en la venta, usa el prop avatarByAdvisor como fallback:
- *   avatarByAdvisor = { [NOMBRE-ASESOR-EN-MAYÚSCULAS-O-PRIMER-NOMBRE]: url }
- */
+
 export const TarjetasProductos = ({
   tasks = [],
   title = "Ranking Venta de Productos",
   topN = 5,
   minImporte = 0,
-  avatarByAdvisor = {}, // <-- NUEVO
+  avatarByAdvisor = {}, 
 }) => {
   const { top, totalVisible } = useMemo(() => {
     const list = (tasks || [])
