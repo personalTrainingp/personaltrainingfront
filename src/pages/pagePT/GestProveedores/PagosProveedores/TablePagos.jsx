@@ -224,7 +224,7 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                 {JSON.stringify(contratosConPagos, null, 2)}
               </pre> */}
         {/* FOOTER TABLA PRINCIPAL */}
-          <tr className="bg-primary fs-3 fw-semibold">
+          <tr className={`${classNameTablePrincipal} fs-3 fw-semibold`}>
             <td colSpan={5} className="text-end text-white fs-1">TOTALES:</td>
             <td className="text-center text-white">
               0
@@ -372,7 +372,7 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                                 </tbody>
                                 {/* FOOTER TABLA DE PAGOS (contrato) */}
                                 <tfoot>
-                                  <tr className="bg-primary text-white fw-semibold">
+                                  <tr className={`${classNameTablePrincipal} text-white fw-semibold`}>
                                     <td colSpan={4} className="text-end">TOTAL PAGOS:</td>
                                     <td className="text-end">{fmt(totalPagado)}</td>
                                   </tr>
@@ -391,7 +391,7 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                   const abonos = dialogProv.grupo.items.reduce((t, it) => t + (Number(it?.sumaPagos) || 0), 0);
                   const saldo = monto - abonos;
                   return (
-                    <tr className="bg-primary fw-semibold ">
+                    <tr className={`${classNameTablePrincipal} fw-semibold `}>
                       <td colSpan={5} className="text-end text-white fs-3">TOTALES:</td>
                       <td className="text-end text-white fs-3 p-1">{fmt(monto)}</td>
                       <td className="text-end text-white fs-3 p-1">{fmt(abonos)}</td>
