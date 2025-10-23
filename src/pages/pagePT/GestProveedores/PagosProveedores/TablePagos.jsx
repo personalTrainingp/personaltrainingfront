@@ -174,7 +174,7 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
       <Table bordered responsive hover className="align-middle">
         <thead className={classNameTablePrincipal}>
           <tr>
-            <th className="text-white"></th>
+            <th className="text-white" style={{width: '20px'}}></th>
             <th className="text-white" style={{ width: 44 }}>
               HISTORIAL DE <br /> CONTRATOS
             </th>
