@@ -123,7 +123,12 @@ export default function ProtectedRoutes() {
 		)
 	}
 	// console.log(sections.find(e=>e.url==='/reporte-admin/reporte-utilidad-programa'));
-	
+	function ExternalRedirect({ to }) {
+		useEffect(() => {
+			window.location.href = to;
+		}, [to]);
+		return null;
+		}
 	return (
 	<ReactRoutes>
 		{
@@ -131,7 +136,14 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad*/}
-					
+					{
+						sections.find(e=>e.url==='/modelo-contrato')&&
+                        <Route path='modelo-contrato' element={<ExternalRedirect to="https://docs.google.com/document/d/10bNd0lFSGYsg6JWQOOihHOqbhfilZFWK/edit" replace />}/>
+					}
+					{
+						sections.find(e=>e.url==='/declaracion-jurada')&&
+                        <Route path='declaracion-jurada' element={<ExternalRedirect to="https://docs.google.com/document/d/1bOxpIcwYxzeM9rjHgPDfCl2iJo12iwQP/edit" replace />}/>
+					}
 					{
 						sections.find(e=>e.url==='/colaboradores-cv')&&
                         <Route path='colaboradores-cv' element={<CvColaboradores/>}/>

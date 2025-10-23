@@ -169,11 +169,11 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
             </th>
             <th>
               <div className="text-white  text-center" style={{ width: '400px' }}>
-                Nombres y apellidos / Razon social
+                Razon social / Nombres y apellidos
               </div>
             </th>
             <th>
-              <div className="text-white text-center">RUC</div>
+              <div className="text-white text-center">RUC / DNI</div>
             </th>
             <th className="text-center">
               <div className="text-white">CONTRATOS <br /> PENDIENTES</div>
@@ -215,12 +215,16 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                   <div style={{ width: '400px' }}>{razon}</div>
                 </td>
                 <td className="fs-3" style={{width: '30px'}}>{ruc}</td>
-                <td className="text-end fs-3">
-                  <div className='' style={{width: '70px'}}>
+                <td className="text-center fs-3">
+                  <div>
                     {grupoFiltro.length}
                   </div>
                 </td>
-                <td className="text-end fs-3">{fmt(montoContratos)}</td>
+                <td className="text-end fs-3">
+                  <div>
+                    {fmt(montoContratos)}
+                  </div>
+                </td>
                 <td className="text-end fs-3">{fmt(sumarPagos)}</td>
                 <td className="text-end fs-3 fw-bold">{fmt(saldo)}</td>
               </tr>

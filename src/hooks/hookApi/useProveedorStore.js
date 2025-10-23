@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 import { useTerminoStore } from './useTerminoStore';
+import { arrayEmpresaFinan } from '@/types/type';
 
 export const useProveedorStore = () => {
 	const dispatch = useDispatch();
@@ -107,13 +108,19 @@ export const useProveedorStore = () => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
 			console.log({ data });
+			const dataAlter = data.map((term) => {
+				return {
+					value: term.value,
+					label: `${term.label} | ${arrayEmpresaFinan?.find((f) => f?.value === term.id_empresa)?.label}`,
+				};
+			});
 			// setDataProducProveedor(data);
 			// const dataAlter = data.map((term) => {
 			// 	return {
 			// 		label: `${dataOficios.find((oficio) => oficio?.value === term?.id_oficio)?.label ?? 'SIN ASIGNAR'} | ${term?.label}`,
 			// 	};
 			// });
-			dispatch(onSetProveedoresCOMBO(data));
+			dispatch(onSetProveedoresCOMBO(dataAlter));
 			// setIsLoading(false);
 		} catch (error) {
 			console.log(error);

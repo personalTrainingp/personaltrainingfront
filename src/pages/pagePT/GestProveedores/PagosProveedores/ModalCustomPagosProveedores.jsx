@@ -267,7 +267,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0 })
                 </div>
         <div className="mb-3">
                     <label htmlFor="monto_contrato" className="form-label">
-                        Monto*
+                        Mano de obra en soles*
                     </label>
                     <input
                         className="form-control"
@@ -280,21 +280,6 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0 })
                         required
                     />
                 </div>
-                <div className="mb-3">
-					<label htmlFor="mano_obra_soles" className="form-label">
-						MANO DE OBRA EN SOLES*
-					</label>
-					<input
-						className="form-control"
-						placeholder="mano de obra en soles"
-						value={mano_obra_soles}
-						name="mano_obra_soles"
-						id="mano_obra_soles"
-						type="text"
-						onChange={onInputChange}
-						required
-					/>
-				</div>
                 <div className="mb-3">
 					<label htmlFor="mano_obra_dolares" className="form-label">
 						MANO DE OBRA EN DOLARES*

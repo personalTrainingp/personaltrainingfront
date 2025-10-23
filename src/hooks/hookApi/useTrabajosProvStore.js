@@ -49,7 +49,6 @@ export const useTrabajosProvStore = () => {
 				`/parametros/get_params/producto/proveedor/${id_empresa}`
 			);
 			// setDataProducProveedor(data);
-			console.log(data);
 			dispatch(onSetProveedoresCOMBO(data));
 			// setIsLoading(false);
 		} catch (error) {
