@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Col, Row } from 'react-bootstrap';
 import { FormatRangoFecha } from '../componentesReutilizables/FormatRangoFecha';
 import { Button } from 'primereact/button';
+import { Button as Btn } from 'react-bootstrap';
 import { useForm } from '@/hooks/useForm';
 import { Calendar } from 'primereact/calendar';
 import { useDispatch } from 'react-redux';
@@ -131,7 +132,7 @@ export const FechaRangeMES = ({ rangoFechas, textColor }) => {
 };
 
 
-export const FechaRange = ({rangoFechas}) => {
+export const FechaRange = ({rangoFechas, showHasta=true, className}) => {
     // Your implementation here
     const dispatch = useDispatch()
     
@@ -153,20 +154,25 @@ export const FechaRange = ({rangoFechas}) => {
   return (
     <div className='d-flex flex-row aling-items-center z-4 w-100 bg-white p-1'>
         <Row className='d-flex align-items-end'>
-            <Col xxl={4}>
+            <Col xxl={showHasta?4:8}>
                 <label className='' style={{fontSize: '28px'}}>
-                    DESDE
+                    {showHasta?'DESDE':'hasta'}
                 </label>
-                <Calendar className='bg-primary'  value={dateRange.fec_desde} locale='es'  maxDate={dateRange.fec_hasta} name='fec_desde' onChange={(e)=>setdateRange({fec_desde: e.value, fec_hasta: dateRange.fec_hasta})} showIcon />
+                <Calendar className={`${2} `}  value={dateRange.fec_desde} locale='es'  maxDate={dateRange.fec_hasta} name='fec_desde' onChange={(e)=>setdateRange({fec_desde: e.value, fec_hasta: dateRange.fec_hasta})} />
             </Col>
-            <Col xxl={4}>
-                <label className='' style={{fontSize: '28px'}}>
-                    HASTA
-                </label>
-                <Calendar className='bg-primary' value={dateRange.fec_hasta} locale='es' minDate={dateRange.fec_desde} name='fec_hasta' onChange={(e)=>setdateRange({fec_desde: dateRange.fec_desde, fec_hasta: e.value})} showIcon />
-            </Col>
+            {
+              showHasta && (
+                <Col xxl={4}>
+                    <label className='' style={{fontSize: '28px'}}>
+                        HASTA
+                    </label>
+                    <Calendar className={`${className}`} value={dateRange.fec_hasta} locale='es' minDate={dateRange.fec_desde} name='fec_hasta' onChange={(e)=>setdateRange({fec_desde: dateRange.fec_desde, fec_hasta: e.value})} />
+                </Col>
+              )
+            }
             <Col xxl={4} className='' style={{fontSize: '25px'}}>
-            <Button onClick={onClickFechaRange} className='m-0 bg-primary'>actualizar</Button>
+            <Btn onClick={onClickFechaRange} className={`m-0 ${className} p-0 fs-2 outline-none border-none`}>actualizar</Btn>
+            {/* {className} */}
             </Col>
         </Row> 
         <br/>

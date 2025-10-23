@@ -12,6 +12,8 @@ import { confirmDialog } from 'primereact/confirmdialog';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { FechaRange } from '@/components/RangeCalendars/FechaRange';
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+dayjs.extend(isSameOrBefore);
 
 // Descarga segura
 const safeDownload = (url, filename) => {
@@ -78,13 +80,18 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
 
   // 1) Une contrato + pagos + sumaPagos
   const contratosConPagos = useMemo(() => {
-    const pagos = dataPagosProv ?? [];
+    const pagos = dataPagosProv
+      .filter(p => {
+        const fechaPago = new Date(p.fec_pago);
+        const fechaLimite = new Date(RANGE_DATE[0]);
+        return fechaPago < fechaLimite;
+      }) ?? [];
     return (dataContratoProv ?? []).map((contrato) => {
       const dataPagos = pagos.filter((g) => g?.id_contrato_prov === contrato?.id);
       const sumaPagos = dataPagos.reduce((t, it) => t + (Number(it?.monto) || 0), 0);
       return { ...contrato, dataPagos, sumaPagos };
     });
-  }, [dataContratoProv, dataPagosProv]);
+  }, [dataContratoProv, dataPagosProv, RANGE_DATE]);
 
   // 2) Agrupa por proveedor
   const grupos = useMemo(() => {
@@ -95,7 +102,14 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
       map.get(idp).push(c);
     }
     return Array.from(map.entries()).map(([id_prov, items]) => ({ id_prov, items }));
-  }, [contratosConPagos]);
+  }, [contratosConPagos, RANGE_DATE]);
+
+  // Totales tabla principal (footer)
+  const totalesPrincipal = useMemo(() => {
+    const monto = grupos.reduce((t, g) => t + g.items.reduce((tt, it) => tt + (Number(it?.monto_contrato) || 0), 0), 0);
+    const abonos = grupos.reduce((t, g) => t + g.items.reduce((tt, it) => tt + (Number(it?.sumaPagos) || 0), 0), 0);
+    return { monto, abonos, saldo: monto - abonos };
+  }, [grupos]);
 
   const fmt = (n) => <NumberFormatMoney amount={n} />;
 
@@ -125,9 +139,6 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         deleteContratoxId(id, id_empresa);
-      },
-      reject: () => {
-        // nothing
       }
     });
   };
@@ -157,17 +168,13 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
 
   return (
     <div>
-      <pre>
-        {JSON.stringify(RANGE_DATE, null,2)}
-      </pre>
-                    <FechaRange rangoFechas={RANGE_DATE}/>
-      {/* <pre>
-        {JSON.stringify(grupos, null, 2)}
-      </pre> */}
-      {/* Tabla principal por proveedor (sin acordeón) */}
+      <FechaRange className={classNameTablePrincipal} rangoFechas={RANGE_DATE} showHasta={false}/>
+      
+      {/* Tabla principal por proveedor */}
       <Table bordered responsive hover className="align-middle">
         <thead className={classNameTablePrincipal}>
           <tr>
+            <th className="text-white"></th>
             <th className="text-white" style={{ width: 44 }}>
               HISTORIAL DE <br /> CONTRATOS
             </th>
@@ -176,65 +183,56 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                 Razon social / Nombres y apellidos
               </div>
             </th>
-            <th>
-              <div className="text-white text-center">RUC / DNI</div>
-            </th>
-            <th className="text-center">
-              <div className="text-white">CONTRATOS <br /> PENDIENTES</div>
-            </th>
-            <th className="text-center">
-              <div className="text-white">MONTO <br /> CONTRATO</div>
-            </th>
-            <th className="text-center">
-              <div className="text-white">ABONOS</div>
-            </th>
-            <th className="text-center">
-              <div className="text-white">SALDO <br/> PENDIENTE</div>
-            </th>
+            <th><div className="text-white text-center">Oficio</div></th>
+            <th><div className="text-white text-center">RUC / DNI</div></th>
+            <th className="text-center"><div className="text-white">CONTRATOS <br /> PENDIENTES</div></th>
+            <th className="text-center"><div className="text-white">MONTO <br /> CONTRATO</div></th>
+            <th className="text-center"><div className="text-white">ABONOS</div></th>
+            <th className="text-center"><div className="text-white">SALDO <br/> PENDIENTE</div></th>
           </tr>
         </thead>
         <tbody>
-          {grupos.map((grupo) => {
-            const grupoFiltro = grupo.items.filter(e=>new Date(e.fecha_fin)>new Date())
+          {grupos.map((grupo, index) => {
+            const grupoFiltro = grupo.items.filter(e => new Date(e.fecha_fin) > new Date());
             const proveedor = (dataProveedores ?? []).find((p) => p.id === grupo.id_prov);
             const razon = proveedor?.razon_social_prov ? `${grupo.id_prov} / ${proveedor?.razon_social_prov}` : `Prov #${grupo.id_prov}`;
             const ruc = proveedor?.ruc_prov ?? `Prov #${grupo.id_prov}`;
             const montoContratos = grupo.items.reduce((t, it) => t + (Number(it?.monto_contrato) || 0), 0);
             const sumarPagos = grupo.items.reduce((t, it) => t + (Number(it?.sumaPagos) || 0), 0);
             const saldo = montoContratos - sumarPagos;
-
+            const oficioProv = proveedor?.parametro_oficio?.label_param ?? `Prov #${grupo.id_prov}`;
             return (
               <tr key={grupo.id_prov}>
+                <td>{index+1}</td>
                 <td className="text-center">
-                  <Btn
-                    variant="link"
-                    size="sm"
-                    onClick={() => handleOpenDialog(grupo)}
-                    style={{ textDecoration: 'none' }}
-                  >
+                  <Btn variant="link" size="sm" onClick={() => handleOpenDialog(grupo)} style={{ textDecoration: 'none' }}>
                     VER <br /> CONTRATOS <span className='fs-3'>({grupo.items.length})</span>
                   </Btn>
                 </td>
-                <td className="fs-3">
-                  <div style={{ width: '400px' }}>{razon}</div>
-                </td>
+                <td className="fs-3"><div style={{ width: '400px' }}>{razon}</div></td>
+                <td className="fs-3" style={{width: '30px'}}>{oficioProv}</td>
                 <td className="fs-3" style={{width: '30px'}}>{ruc}</td>
-                <td className="text-center fs-3">
-                  <div>
-                    {grupoFiltro.length}
-                  </div>
-                </td>
-                <td className="text-end fs-3">
-                  <div>
-                    {fmt(montoContratos)}
-                  </div>
-                </td>
+                <td className="text-center fs-3"><div>{grupoFiltro.length}</div></td>
+                <td className="text-end fs-3"><div>{fmt(montoContratos)}</div></td>
                 <td className="text-end fs-3">{fmt(sumarPagos)}</td>
                 <td className="text-end fs-3 fw-bold">{fmt(saldo)}</td>
               </tr>
             );
           })}
         </tbody>
+{/* <pre>
+                {JSON.stringify(contratosConPagos, null, 2)}
+              </pre> */}
+        {/* FOOTER TABLA PRINCIPAL */}
+          <tr className="bg-primary fs-3 fw-semibold">
+            <td colSpan={5} className="text-end text-white fs-1">TOTALES:</td>
+            <td className="text-center text-white">
+              0
+            </td>
+            <td className="text-end text-white">{fmt(totalesPrincipal.monto)}</td>
+            <td className="text-end text-white">{fmt(totalesPrincipal.abonos)}</td>
+            <td className="text-end text-white">{fmt(totalesPrincipal.saldo)}</td>
+          </tr>
       </Table>
 
       {/* Dialog: Tabla de contratos del proveedor */}
@@ -245,8 +243,7 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
               Contratos del proveedor {dialogProv?.proveedor?.razon_social_prov ? `#${dialogProv.grupo?.id_prov} / ${dialogProv.proveedor.razon_social_prov}` : `#${dialogProv.grupo?.id_prov}`}
             </span>
             <small className="text-muted">
-              Contratos: {dialogProv.resumen.contratos} · Monto: <b>{fmt(dialogProv.resumen.monto)}</b> · Pagado: <b>{fmt(dialogProv.resumen.pagado)}</b> · Saldo:{' '}
-              <b>{fmt(dialogProv.resumen.saldo)}</b>
+              Contratos: {dialogProv.resumen.contratos} · Monto: <b>{fmt(dialogProv.resumen.monto)}</b> · Pagado: <b>{fmt(dialogProv.resumen.pagado)}</b> · Saldo: <b>{fmt(dialogProv.resumen.saldo)}</b>
             </small>
           </div>
         }
@@ -261,11 +258,7 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
             <Table size="sm" bordered responsive className="mb-2">
               <thead className={`fs-3 ${classNameTablePrincipal}`}>
                 <tr>
-                  <th className="text-white bg-secondary">
-                    <div className="text-center">
-                      ID
-                    </div>
-                  </th>
+                  <th className="text-white bg-secondary"><div className="text-center">ID</div></th>
                   <th className="text-white text-center">
                     CONTRATO <br />
                     <div className="d-flex justify-content-center" style={{ position: 'sticky', top: '60px' }}>
@@ -273,21 +266,11 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                     </div>
                     <br /> PRESUPUESTO
                   </th>
-                  <th className="text-white text-center">
-                    <div className="text-center">Fecha inicio</div>
-                  </th>
-                  <th className="text-white">
-                    <div className="text-center">Fecha fin</div>
-                  </th>
-                  <th className="text-white">
-                    <div className="text-center">CONCEPTOS</div>
-                  </th>
-                  <th className="text-end text-white">
-                    <div className="text-center">Monto <br /> contrato</div>
-                  </th>
-                  <th className="text-end text-white">
-                    <div className="text-center">ABONOS</div>
-                  </th>
+                  <th className="text-white text-center"><div className="text-center">Fecha inicio</div></th>
+                  <th className="text-white"><div className="text-center">Fecha fin</div></th>
+                  <th className="text-white"><div className="text-center">CONCEPTOS</div></th>
+                  <th className="text-end text-white"><div className="text-center">Monto <br /> contrato</div></th>
+                  <th className="text-end text-white"><div className="text-center">ABONOS</div></th>
                   <th className="text-center text-white">PENALIDAD</th>
                   <th className="text-center text-white">Saldo <br /> A pagar</th>
                   <th className="text-white">
@@ -333,26 +316,11 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                               {dayjs.utc(c.fecha_fin, 'YYYY-MM-DD').format('dddd DD [DE] MMMM [DEL] YYYY')}
                             </div>
                           </td>
-                          <td>
-                            <div style={{ width: '600px' }}>{c?.observacion ?? '-'}</div>
-                          </td>
-                          <td className="text-end">
-                            {fmt(c?.monto_contrato)}</td>
-                          <td className="text-end">
-                            <div className='' style={{width: '110px'}}>
-                              {fmt(totalPagado)}
-                            </div>
-                          </td>
-                          <td className="text-end">
-                            <div style={{width: '110px'}}>
-                              {0}
-                            </div>
-                            </td>
-                          <td className="text-end fw-semibold">
-                            <div style={{width: '110px'}}>
-                              {fmt(saldoContrato)}
-                            </div>
-                          </td>
+                          <td><div style={{ width: '600px' }}>{c?.observacion ?? '-'}</div></td>
+                          <td className="text-end">{fmt(c?.monto_contrato)}</td>
+                          <td className="text-end"><div style={{width: '110px'}}>{fmt(totalPagado)}</div></td>
+                          <td className="text-end"><div style={{width: '110px'}}>{0}</div></td>
+                          <td className="text-end fw-semibold"><div style={{width: '110px'}}>{fmt(saldoContrato)}</div></td>
                           <td onClick={() => onClickOpenFileCompromisoPago(c?.uid_compromisoPago)}>
                             <div className="text-center">
                               <i className="pi pi-file-pdf bg-change p-1 rounded-3 text-white cursor-pointer" style={{ fontSize: '90px' }}></i>
@@ -360,14 +328,8 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                           </td>
                           <td className="text-end">
                             <div className="d-flex gap-4">
-                              <div>
-                                <Button icon="pi pi-trash" rounded outlined onClick={() => onDeleteContrato(c.id)}/>
-                                {/* <i className="pi pi-trash fs-2" onClick={() => onDeleteContrato(c.id)}></i> */}
-                              </div>
-                              <div>
-                                <Button icon="pi pi-pencil" rounded outlined onClick={() => onOpenModalCustomPagosProv(c.id, id_empresa)}/>
-                                {/* <i className="pi pi-pencil fs-2" onClick={() => onOpenModalCustomPagosProv(c.id, id_empresa)}></i> */}
-                              </div>
+                              <div><Button icon="pi pi-trash" rounded outlined onClick={() => onDeleteContrato(c.id)}/></div>
+                              <div><Button icon="pi pi-pencil" rounded outlined onClick={() => onOpenModalCustomPagosProv(c.id, id_empresa)}/></div>
                             </div>
                           </td>
                         </tr>
@@ -375,7 +337,7 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                         {/* Sub-acordeón: pagos del contrato (dentro del Dialog) */}
                         {isOpenContrato && totalPagos > 0 && (
                           <tr id={`pagos-${c.id}`}>
-                            <td colSpan={8}>
+                            <td colSpan={11}>
                               <div className="d-flex justify-content-between align-items-center mb-2">
                                 <div className="fw-semibold">Pagos del contrato (#{c.id}) — {totalPagos} registro(s)</div>
                                 <div className="text-end">
@@ -408,6 +370,13 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                                     </tr>
                                   ))}
                                 </tbody>
+                                {/* FOOTER TABLA DE PAGOS (contrato) */}
+                                <tfoot>
+                                  <tr className="bg-primary text-white fw-semibold">
+                                    <td colSpan={4} className="text-end">TOTAL PAGOS:</td>
+                                    <td className="text-end">{fmt(totalPagado)}</td>
+                                  </tr>
+                                </tfoot>
                               </Table>
                             </td>
                           </tr>
@@ -416,6 +385,22 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                     );
                   })}
               </tbody>
+
+                {(() => {
+                  const monto = dialogProv.grupo.items.reduce((t, it) => t + (Number(it?.monto_contrato) || 0), 0);
+                  const abonos = dialogProv.grupo.items.reduce((t, it) => t + (Number(it?.sumaPagos) || 0), 0);
+                  const saldo = monto - abonos;
+                  return (
+                    <tr className="bg-primary fw-semibold ">
+                      <td colSpan={5} className="text-end text-white fs-3">TOTALES:</td>
+                      <td className="text-end text-white fs-3 p-1">{fmt(monto)}</td>
+                      <td className="text-end text-white fs-3 p-1">{fmt(abonos)}</td>
+                      <td className="text-end text-white fs-3 p-1">0</td>
+                      <td className="text-end text-white fs-3 p-1">{fmt(saldo)}</td>
+                      <td colSpan={2}></td>
+                    </tr>
+                  );
+                })()}
             </Table>
           </div>
         )}
