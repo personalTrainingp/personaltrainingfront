@@ -163,7 +163,7 @@ const mkCplMeta   = mkLeadsMeta   > 0 ? invMetaAdj   / mkLeadsMeta   : 0;
   };
 
 const rows = [
-  { key: "mkInv", label: "INVERSIÓN REDES", type: "money" },
+  { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
   { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
     { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
   { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
