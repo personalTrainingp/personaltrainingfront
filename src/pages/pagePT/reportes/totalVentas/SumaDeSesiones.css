@@ -10,7 +10,6 @@
   box-sizing: border-box;
 }
 
-/* ================== Triptych (celdas y encabezado) ================== */
 .tabla-sesiones :is(th.triptych-head, td.triptych) {
   position: relative;
   overflow: visible;
@@ -26,12 +25,10 @@
   background: #fff;
 }
 
-/* El contenedor interno que tú dejaste en blanco, en negro también */
 .tabla-sesiones thead th.triptych-head > .tri-box-head {
   background: #c00000 !important;
 }
 
-/* Títulos "miniTitle" siempre blancos en el header */
 .tabla-sesiones thead th.triptych-head .miniTitle {
   color: #fff !important;
 }
@@ -42,9 +39,9 @@
 .miniTitle{ color:#fff; font-weight:800; font-size:15px; letter-spacing:.3px; margin:0; }
 
 /* subdivisiones internas del triptych */
-.tabla-sesiones :is(th.triptych-head, td.triptych)::before,
-.tabla-sesiones :is(th.triptych-head, td.triptych)::after {
-  content:""; position:absolute; top:-1px; bottom:-1px; width:1px; background:#c00000; pointer-events:none; z-index:5;
+.tabla-sesiones :is( td.triptych)::before,
+.tabla-sesiones :is( td.triptych)::after {
+  content:""; position:absolute; top:-1px; bottom:-1px; width:1px; background:#000; pointer-events:none; z-index:5;
 }
 .tabla-sesiones :is(th.triptych-head, td.triptych)::before { left: calc(33.3333% - .5px); }
 .tabla-sesiones :is(th.triptych-head, td.triptych)::after  { left: calc(66.6667% - .5px); }
@@ -80,15 +77,12 @@
 .tabla-sesiones .copa-champions{ position:absolute; top:5px; left:-10px; z-index:3; }
 .tabla-sesiones .copa-champions img{ width:70px; height:auto; filter:brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,.4)); mix-blend-mode:darken; }
 
-/* textos dentro de triptych */
 .tabla-sesiones td.triptych > .tri-box > div p{
   font-weight:400; font-size:17px; margin:0; padding:2px 0;
 }
 
-/* ================== Colores de totales y negritas ================== */
-/* pisa el color por defecto de Bootstrap en cualquier .fw-bold dentro de la tabla */
+
 .tabla-sesiones.table > :not(caption) > * > *.fw-bold{ color: var(--text-red) !important; }
-/* fila TOTAL: todas las celdas (menos la de nombre) en rojo y bold */
 .tabla-sesiones.table > tbody > tr.fila-total > td:not(.img-with-name){
   color: var(--text-red) !important; font-weight:800;
 }
@@ -101,30 +95,24 @@
   position:relative;
   box-shadow: inset 0 2px 0 var(--accent-red), inset 0 -2px 0 var(--accent-red);
 }
-.tabla-sesiones thead tr:first-child th:first-child {
-  background: #c00000 !important;
-  color: #fff !important;   /* texto en blanco para contraste */
-}
-.tabla-sesiones thead tr:nth-child(2) th:first-child {
-  background: #c00000 !important;
-  color: #fff !important;
-}
-/* Penúltima columna con borde rojo en ambos lados (thead + tbody) */
+
+
 .tabla-sesiones thead tr > th:nth-last-of-type(2),
 .tabla-sesiones tbody tr > td:nth-last-of-type(2) {
   border-left: 2px solid red !important;
   border-right: 2px solid red !important;
 }
-/* Fila 1 del thead: últimos 3 TH en rojo */
-.tabla-sesiones thead tr:first-child th:nth-last-child(-n+3) {
+.tabla-sesiones :is(thead tr > th:nth-child(1),
+                   
+                    thead tr > th:nth-child(6),
+                    thead tr > th:nth-child(7),
+                    thead tr > th:nth-child(8),
+                    ) {
   background: #c00000 !important;
   color: #fff !important;
 }
 
-.tabla-sesiones thead tr:nth-child(2) th:nth-last-child(-n+3) {
-  background: #c00000 !important;
-  color: #fff !important;
-}
+
 /*OTRA VISTA*/
 
 /* avatar-col: sin subdivisiones */

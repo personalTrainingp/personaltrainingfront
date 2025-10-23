@@ -263,7 +263,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
               className="table text-center tabla-sesiones"
               style={{ borderCollapse: "collapse", width: "100%" }}
             >
-<thead style={{ backgroundColor: "#C00000", color: "#fff" }}>
+<thead style={{ backgroundColor: "#fff", color: "#fff" }}>
                 {/* Fila 1: IMAGEN + Avatares */}
                 <tr>
                   <th style={{ width: 150, ...thName }}>ASESORES</th>
@@ -323,9 +323,9 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                     );
                   })}
 
-                  <th style={{ background: "#5c6670" }} />
-                  <th style={{ background: "#5c6670" }} />
-                  <th style={{ background: "#5c6670" }} />
+                  <th />
+                  <th  />
+                  <th  />
                 </tr>
               </thead>
 
