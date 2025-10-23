@@ -3,6 +3,7 @@ import { Button } from 'primereact/button'
 import React, { useState } from 'react'
 import { ModalCustomArchivo } from './ModalCustomArchivo'
 import { DataTable } from './DataTable'
+import { TabPanel, TabView } from 'primereact/tabview'
 
 export const App = () => {
     const [isOpenModalCustomArchivo, setisOpenModalCustomArchivo] = useState({isOpen: false})
@@ -15,9 +16,13 @@ export const App = () => {
   return (
     <>
     <PageBreadcrumb title={'dni colaboradores'} />
-    <Button label='Agregar archivo' onClick={onClickOpenModalCustomArchivo}/>
-    <DataTable />
-    <ModalCustomArchivo onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
+      <TabView>
+    <TabPanel header={'CHANGE'}>
+        <Button label='Agregar archivo' onClick={onClickOpenModalCustomArchivo}/>
+        <DataTable id_empresa={598}/>
+    </TabPanel>
+      </TabView>
+        <ModalCustomArchivo onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
     </>
   )
 }

@@ -176,7 +176,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
               <div className="text-white text-center">RUC</div>
             </th>
             <th className="text-center">
-              <div className="text-white">CONTRATO <br /> PENDIENTES</div>
+              <div className="text-white">CONTRATOS <br /> PENDIENTES</div>
             </th>
             <th className="text-center">
               <div className="text-white">MONTO <br /> CONTRATO</div>
@@ -185,7 +185,7 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
               <div className="text-white">ABONOS</div>
             </th>
             <th className="text-center">
-              <div className="text-white">SALDO</div>
+              <div className="text-white">SALDO <br/> PENDIENTE</div>
             </th>
           </tr>
         </thead>
@@ -208,15 +208,15 @@ export const TablePagos = ({ id_empresa, onOpenModalCustomPagosProv, bgEmpresa, 
                     onClick={() => handleOpenDialog(grupo)}
                     style={{ textDecoration: 'none' }}
                   >
-                    VER <br /> CONTRATOS ({grupo.items.length})
+                    VER <br /> CONTRATOS <span className='fs-3'>({grupo.items.length})</span>
                   </Btn>
                 </td>
                 <td className="fs-3">
                   <div style={{ width: '400px' }}>{razon}</div>
                 </td>
-                <td className="fs-3">{ruc}</td>
+                <td className="fs-3" style={{width: '30px'}}>{ruc}</td>
                 <td className="text-end fs-3">
-                  <div className='' style={{width: '50px'}}>
+                  <div className='' style={{width: '70px'}}>
                     {grupoFiltro.length}
                   </div>
                 </td>
