@@ -16,6 +16,7 @@
       import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
       import config from '@/config';
       import axios from 'axios';
+import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
       import { TopControls } from "./components/TopControls";
 
     
@@ -400,8 +401,51 @@ const dataMkt = useMemo(
         { urlImage: "/fisio_muscle_negro.png", name_image: "FISIO MUSCLE" },
       { urlImage: "/vertikal_negro.png", name_image: "VERTIKAL CHANGE" }, 
     ];  
+const buildProductosDesdeVentas = (ventas = []) => {
+  const map = new Map();
 
+  for (const v of ventas) {
+    const prods =
+      v?.detalle_ventaProductos ||
+      v?.detalle_ventaproductos ||
+      v?.detalle_venta_productos ||
+      [];
+
+    for (const it of prods) {
+      const nombre =
+        it?.tb_producto?.nombre_producto ||
+        it?.nombre_producto ||
+        it?.nombre ||
+        "—";
+
+      const cantidad = Number(it?.cantidad ?? 1) || 1;
+      const pUnit =
+        Number(it?.tarifa_monto) ||
+        Number(it?.precio_unitario) ||
+        Number(it?.tb_producto?.prec_venta) ||
+        0;
+
+      const venta = cantidad * pUnit;
+
+      const avatar =
+        it?.tb_producto?.tb_images?.[ (it?.tb_producto?.tb_images?.length || 0) - 1 ]?.name_image ||
+        it?.tb_producto?.image ||
+        null;
+
+      const acc = map.get(nombre) || { nombre_producto: nombre, total_ventas: 0, avatar };
+      acc.total_ventas += venta;
+      if (!acc.avatar && avatar) acc.avatar = avatar; 
+      map.set(nombre, acc);
+    }
+  }
+
+  return Array.from(map.values());
+};
+const ventasTotales = TotalDeVentasxProdServ("total")?.data || []; // <- ya lo tienes en gg.txt
+
+const productosAgg = useProductosAgg(dataVentas, RANGE_DATE);
       const rankingData = (TotalDeVentasxProdServ("total")?.asesores_pago || [])
+      
       .filter(item => item.monto && item.monto > 0)
       .map(item => {
         const nombre = item.tb_empleado?.nombres_apellidos_empl || item.nombre || "SIN NOMBRE";
@@ -561,6 +605,8 @@ const avatarByAdvisor = useMemo(() => {
 
   return map;
 }, [repoVentasPorSeparado?.total?.empl_monto]);
+const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte: 0 });
+
     return (
   <>
     <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
@@ -673,7 +719,19 @@ const avatarByAdvisor = useMemo(() => {
             avatarByAdvisor={avatarByAdvisor}
           />
         </Col>
+        
       </Row>
+      <Col lg={12}>
+  <div style={{ marginTop: "15px" }}>
+    <TarjetasProductos
+      tasks={productosPorAsesor}          // ← filas [{asesor, total_ventas, avatar}]
+      title="Ranking Venta de Productos"
+      topN={5}
+      minImporte={0}
+      avatarByAdvisor={avatarByAdvisor}   // ← fallback desde App
+    />
+  </div>
+</Col>
     </Row>
   </>
 );
