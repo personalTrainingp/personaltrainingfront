@@ -97,20 +97,9 @@ const mkCpl = leads > 0 ? (mkInvAdjusted / leads) : 0;
     const clientesDigitales = Number(mk?.clientes_digitales ?? 0);
     const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
 
-    const porRedRaw = mk?.por_red ?? mk?.inv_por_canal ?? {};
-    const por_red = Object.fromEntries(
-      Object.entries(porRedRaw).map(([k, v]) => [String(k).toLowerCase(), Number(v ?? 0) * FACTOR])
-    );
-
-    const mkInvTikTok = Number(
-      por_red["1514"] ?? por_red["tiktok"] ?? por_red["tik tok"] ?? 0
-    );
-    const mkInvMeta = Number(
-      por_red["1515"] ?? por_red["meta"] ?? 0
-    );
-
     const leads_por_red = mk?.leads_por_red ?? {};
     const cpl_por_red   = mk?.cpl_por_red ?? {};
+    const por_red = mk?.por_red || {};
 const mkLeadsTikTok = Number(
   leads_por_red["1514"] ?? leads_por_red["tiktok"] ?? leads_por_red["tik tok"] ?? 0
 );
@@ -118,21 +107,34 @@ const mkLeadsMeta = Number(
   leads_por_red["1515"] ?? leads_por_red["meta"] ?? leads_por_red["facebook"] ?? 0
 );
 
-const invTikTokAdj = Number(
-  (por_red["1514"] ?? por_red["tiktok"] ?? por_red["tik tok"] ?? 0)
-);
-const invMetaAdj = Number(
-  (por_red["1515"] ?? por_red["meta"] ?? 0)
-);
+const sumFrom = (obj, keys) => keys.reduce((a,k)=> a + Number(obj?.[k] ?? 0), 0);
+const mkCplTikTok = sumFrom(cpl_por_red, ["1514","tiktok","tik tok"]) * 3.7;
+const mkCplMeta   = sumFrom(cpl_por_red, ["1515","meta","facebook","instagram"]) * 3.7;
 
-const mkCplTikTok = mkLeadsTikTok > 0 ? invTikTokAdj / mkLeadsTikTok : 0;
-const mkCplMeta   = mkLeadsMeta   > 0 ? invMetaAdj   / mkLeadsMeta   : 0;
+
+const valInv = (k) => Number(por_red?.[k] ?? 0);
+
+const mkInvTikTokRaw = valInv("1514") + valInv("tiktok") + valInv("tik tok");
+const mkInvMetaRaw   = valInv("1515") + valInv("meta") + valInv("facebook") + valInv("instagram");
+
+const mkInvTikTok = mkInvTikTokRaw * 3.7;
+const mkInvMeta   = mkInvMetaRaw   * 3.7;
+
+let mkCacTikTok = 0, mkCacMeta = 0;
+const invDen = mkInvTikTok + mkInvMeta;
+
+if (mkCac > 0 && invDen > 0) {
+  mkCacMeta   = (mkInvMeta / invDen) * mkCac;   
+  mkCacTikTok = mkCac - mkCacMeta;              
+}
     return {
       mkInv: mkInvAdjusted,
       mkInvTikTok,      
       mkInvMeta,       
       mkLeads: leads,
       mkCac,
+      mkCacMeta,
+      mkCacTikTok,
   mkLeadsTikTok,
   mkLeadsMeta,
   mkCpl,
@@ -164,14 +166,17 @@ const mkCplMeta   = mkLeadsMeta   > 0 ? invMetaAdj   / mkLeadsMeta   : 0;
 
 const rows = [
   { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
+    { key: "mkCac",         label: "COSTO ADQUISICION DE CLIENTES",type: "float2"}, 
   { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
     { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
   { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
+    { key: "mkCacMeta",   label: "COSTO ADQ. CLIENTE  META",   type: "float2" },
     { key: "mkInvTikTok", label: " Inversion TikTok", type: "money" },
     { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
   { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
-  { key: "mkLeads", label: "TOTAL LEADS DE META Y TIKTOK", type: "int" },
-  { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META Y TIKTOK", type: "float2" },
+  { key: "mkCacTikTok", label: "COSTO ADQ. CLIENTE  TIKTOK", type: "float2" },
+  { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
+  { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META + TIKTOK", type: "float2" },
   { key: "totalServ", label: "VENTA MEMBRESIAS", type: "money" },
   { key: "cantServ", label: "CANTIDAD MEMBRESIAS", type: "int" },
   { key: "ticketServ", label: "TICKET MEDIO MEMBRESIAS", type: "money" },
@@ -423,34 +428,7 @@ return (
         </tr>
 
         {/* CAC */}
-        <tr>
-          <td
-            style={{
-              ...sCellBold,
-              background: "#c00000",
-              color: "#fff",
-              fontWeight: 800,
-            }}
-          >
-            COSTO ADQUISICIÓN CLIENTE DIGITAL
-          </td>
-          {perMonth.map((m, idx) => {
-            const isLast = idx === perMonth.length - 1;
-            return (
-              <td
-                key={idx}
-                style={{
-                  ...sCell,
-                  background: isLast ? "#c00000" : sCell.background,
-                  color: isLast ? "#fff" : sCell.color,
-                  fontSize: isLast ? 24 : sCell.fontSize,
-                }}
-              >
-                {fmtNum(m.metrics?.mkCac || 0, 2)}
-              </td>
-            );
-          })}
-        </tr>
+       
       </tbody>
     </table>
 
@@ -466,7 +444,7 @@ return (
               fontSize: 20,
             }}
           >
-            VENTA TOTAL <br /> ACUMULADA POR MES
+            VENTA TOTAL <br /> MES
           </th>
           {perMonth.map((m, idx) => {
             const isLast = idx === perMonth.length - 1;

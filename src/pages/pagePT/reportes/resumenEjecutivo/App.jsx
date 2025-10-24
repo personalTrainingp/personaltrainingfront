@@ -724,11 +724,11 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
       <Col lg={12}>
   <div style={{ marginTop: "15px" }}>
     <TarjetasProductos
-      tasks={productosPorAsesor}          // ← filas [{asesor, total_ventas, avatar}]
+      tasks={productosPorAsesor}          
       title="Ranking Venta de Productos"
       topN={5}
       minImporte={0}
-      avatarByAdvisor={avatarByAdvisor}   // ← fallback desde App
+      avatarByAdvisor={avatarByAdvisor}   
     />
   </div>
 </Col>
