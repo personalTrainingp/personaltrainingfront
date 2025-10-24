@@ -143,8 +143,8 @@ export const GraficoLinealInversionRedes = ({ data = [] }) => {
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          width: 44,
-          height: 44,
+          width: 54,
+          height: 54,
           borderRadius: "999px",
           border: `2px solid ${active ? color : "transparent"}`,
           background: "transparent",
@@ -158,8 +158,8 @@ export const GraficoLinealInversionRedes = ({ data = [] }) => {
           src={src}
           alt={label}
           style={{
-            width: 32,
-            height: 32,
+            width: 52,
+            height: 52,
             objectFit: "contain",
             transform: active ? "scale(1.05)" : "scale(1)",
           }}
