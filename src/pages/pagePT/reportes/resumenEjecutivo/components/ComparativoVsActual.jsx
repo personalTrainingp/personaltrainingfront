@@ -229,9 +229,9 @@ export const ComparativoVsActual = ({
 
   {["MEMBRESÍAS", "PRODUCTOS", "TOTAL"].map((tipo) => (
     <table key={tipo} style={{ ...sTable, marginTop: 12 }}>
-      <thead>
+      <thead >
         <tr>
-          <th style={sHeadLeft}>{tipo}</th>
+          <th  style={{...sHeadLeft,background:"white",color:C.red}}>{tipo}</th>
           {columns.map((c, idx) => (
             <MonthHead
               key={c.key}

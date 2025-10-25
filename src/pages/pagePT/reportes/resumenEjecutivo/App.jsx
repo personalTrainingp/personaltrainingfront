@@ -609,7 +609,7 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
 
     return (
   <>
-    <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
+    <PageBreadcrumb title="INFORME GERENCIAL" subName="Ventas" />
 
     {/* === CONTROLES SUPERIORES === */}
     <Row className="mb-3">
@@ -658,6 +658,7 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
               696: "EX-PT reinscripcion",
               689: "WSP organico",
               1470: "CORPORATIVOS BBVA",
+              1443:"CANJE"
             }}
           />
         </div>

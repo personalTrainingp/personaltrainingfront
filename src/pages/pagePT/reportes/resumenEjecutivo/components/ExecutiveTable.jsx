@@ -31,126 +31,159 @@ export default function ExecutiveTable({
   const getDetalleServicios = (v) => v?.detalle_ventaMembresia || v?.detalle_ventaMembresia || [];
   const getDetalleProductos = (v) =>
     v?.detalle_ventaProductos || v?.detalle_ventaproductos || v?.detalle_venta_productos || [];
+const computeMetricsForMonth = (anio, mesNombre) => {
+  const mesAlias = aliasMes(String(mesNombre).toLowerCase());
+  const monthIdx = MESES.indexOf(mesAlias);
+  if (monthIdx < 0) return null;
 
-  const computeMetricsForMonth = (anio, mesNombre) => {
-    const mesAlias = aliasMes(String(mesNombre).toLowerCase());
-    const monthIdx = MESES.indexOf(mesAlias);
-    if (monthIdx < 0) return null;
+  // -------- VENTAS (igual que tenías) --------
+  let totalServ = 0, cantServ = 0, totalProd = 0, cantProd = 0;
+  let totalServFull = 0, cantServFull = 0, totalProdFull = 0, cantProdFull = 0;
 
-    let totalServ = 0, cantServ = 0, totalProd = 0, cantProd = 0;
-    let totalServFull = 0, cantServFull = 0, totalProdFull = 0, cantProdFull = 0;
+  const from = clamp(Number(initialDay || 1), 1, 31);
 
-    const from = clamp(Number(initialDay || 1), 1, 31);
+  for (const v of ventas) {
+    const d = toLimaDate(v?.fecha_venta);
+    if (!d) continue;
+    if (d.getFullYear() !== Number(anio)) continue;
+    if (d.getMonth() !== monthIdx) continue;
 
-    for (const v of ventas) {
-      const d = toLimaDate(v?.fecha_venta);
-      if (!d) continue;
-      if (d.getFullYear() !== Number(anio)) continue;
-      if (d.getMonth() !== monthIdx) continue;
-
-      // MES COMPLETO
-      for (const s of getDetalleServicios(v)) {
-        const cantidad = Number(s?.cantidad || 1);
-        const linea = Number(s?.tarifa_monto || 0);
-        totalServFull += linea;
-        cantServFull += cantidad;
-      }
-      for (const p of getDetalleProductos(v)) {
-        const cantidad = Number(p?.cantidad || 1);
-        const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
-        totalProdFull += linea;
-        cantProdFull += cantidad;
-      }
-
-      // HASTA cutDay
-      const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-      const to = clamp(Number(cutDay || lastDay), from, lastDay);
-      const dia = d.getDate();
-      if (dia < from || dia > to) continue;
-
-      for (const s of getDetalleServicios(v)) {
-        const cantidad = Number(s?.cantidad || 1);
-        const linea = Number(s?.tarifa_monto || 0);
-        totalServ += linea;
-        cantServ += cantidad;
-      }
-      for (const p of getDetalleProductos(v)) {
-        const cantidad = Number(p?.cantidad || 1);
-        const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
-        totalProd += linea;
-        cantProd += cantidad;
-      }
+    // MES COMPLETO
+    for (const s of getDetalleServicios(v)) {
+      const cantidad = Number(s?.cantidad || 1);
+      const linea = Number(s?.tarifa_monto || 0);
+      totalServFull += linea;
+      cantServFull  += cantidad;
+    }
+    for (const p of getDetalleProductos(v)) {
+      const cantidad = Number(p?.cantidad || 1);
+      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
+      totalProdFull += linea;
+      cantProdFull  += cantidad;
     }
 
-    const ticketServ = cantServ ? totalServ / cantServ : 0;
-    const ticketProd = cantProd ? totalProd / cantProd : 0;
+    // HASTA cutDay
+    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    const to = clamp(Number(cutDay || lastDay), from, lastDay);
+    const dia = d.getDate();
+    if (dia < from || dia > to) continue;
 
-    const key = `${anio}-${aliasMes(String(mesNombre).toLowerCase())}`;
-    const mk = dataMktByMonth?.[key] ?? {};
-    const FACTOR = 3.7;
-
-    const invTotal = Number(mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0);
-    const mkInvAdjusted = invTotal * FACTOR;
-
-    const leads = Number(mk?.leads ?? 0);
-    const mkCpl = leads > 0 ? (mkInvAdjusted / leads) : 0;
-
-    const clientesDigitales = Number(mk?.clientes_digitales ?? 0);
-    const mkCac = clientesDigitales > 0 ? mkInvAdjusted / clientesDigitales : 0;
-
-    const leads_por_red = mk?.leads_por_red ?? {};
-    const cpl_por_red   = mk?.cpl_por_red ?? {};
-    const por_red       = mk?.por_red || {};
-
-    const sumFrom = (obj, keys) => keys.reduce((a,k)=> a + Number(obj?.[k] ?? 0), 0);
-    const mkLeadsTikTok = Number(leads_por_red["1514"] ?? leads_por_red["tiktok"] ?? leads_por_red["tik tok"] ?? 0);
-    const mkLeadsMeta   = Number(leads_por_red["1515"] ?? leads_por_red["meta"] ?? leads_por_red["facebook"] ?? 0);
-    const mkCplTikTok   = sumFrom(cpl_por_red, ["1514","tiktok","tik tok"]) * FACTOR;
-    const mkCplMeta     = sumFrom(cpl_por_red, ["1515","meta","facebook","instagram"]) * FACTOR;
-
-    const valInv = (k) => Number(por_red?.[k] ?? 0);
-    const mkInvTikTokRaw = valInv("1514") + valInv("tiktok") + valInv("tik tok");
-    const mkInvMetaRaw   = valInv("1515") + valInv("meta") + valInv("facebook") + valInv("instagram");
-    const mkInvTikTok    = mkInvTikTokRaw * FACTOR;
-    const mkInvMeta      = mkInvMetaRaw * FACTOR;
-
-    let mkCacTikTok = 0, mkCacMeta = 0;
-    const invDen = mkInvTikTok + mkInvMeta;
-    if (mkCac > 0 && invDen > 0) {
-      mkCacMeta   = (mkInvMeta / invDen) * mkCac;
-      mkCacTikTok = mkCac - mkCacMeta;
+    for (const s of getDetalleServicios(v)) {
+      const cantidad = Number(s?.cantidad || 1);
+      const linea = Number(s?.tarifa_monto || 0);
+      totalServ += linea;
+      cantServ  += cantidad;
     }
+    for (const p of getDetalleProductos(v)) {
+      const cantidad = Number(p?.cantidad || 1);
+      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
+      totalProd += linea;
+      cantProd  += cantidad;
+    }
+  }
 
-    return {
-      mkInv: mkInvAdjusted,
-      mkInvTikTok,
-      mkInvMeta,
-      mkLeads: leads,
-      mkCac,
-      mkCacMeta,
-      mkCacTikTok,
-      mkLeadsTikTok,
-      mkLeadsMeta,
-      mkCpl,
-      mkCplTikTok,
-      mkCplMeta,
-      por_red,
-      leads_por_red,
-      cpl_por_red,
+  const ticketServ = cantServ ? totalServ / cantServ : 0;
+  const ticketProd = cantProd ? totalProd / cantProd : 0;
 
-      totalServ, cantServ, ticketServ,
-      totalProd, cantProd, ticketProd,
-      totalMes: totalServ + totalProd,
+  const key = `${anio}-${mesAlias}`;
+  const mk  = dataMktByMonth?.[key] ?? {};
 
-      totalServFull, cantServFull, ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
-      totalProdFull, cantProdFull, ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
-      totalMesFull: totalServFull + totalProdFull,
-    };
+  const invTotalRaw = Number(mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0);
+  const clientesDigitales = Number(mk?.clientes_digitales ?? 0); 
+
+  const por_red = mk?.por_red ?? {};
+  const rawMeta   = Number(por_red["1515"] ?? por_red["meta"] ?? 0) + Number(por_red["facebook"] ?? 0) + Number(por_red["instagram"] ?? 0);
+  const rawTikTok = Number(por_red["1514"] ?? por_red["tiktok"] ?? por_red["tik tok"] ?? 0);
+
+  
+  let mkInv = 0, mkInvMeta = 0, mkInvTikTok = 0;
+
+  const sumRaw = rawMeta + rawTikTok;
+
+  if (invTotalRaw > 0 && sumRaw > 0) {
+    const shareMeta   = rawMeta   / sumRaw;
+    const shareTikTok = rawTikTok / sumRaw;
+    mkInv       = invTotalRaw;
+    mkInvMeta   = mkInv * shareMeta;
+    mkInvTikTok = mkInv - mkInvMeta; // evita redondeo acumulado
+  } else if (sumRaw > 0) {
+    mkInv       = sumRaw;
+    mkInvMeta   = rawMeta;
+    mkInvTikTok = rawTikTok;
+  } else {
+    mkInv       = invTotalRaw;
+    mkInvMeta   = 0;
+    mkInvTikTok = 0;
+  }
+
+  // CPL/CAC (si no hay clientes ⇒ 0, como pides)
+  const safeDiv0 = (n, d) => (Number(d) > 0 ? Number(n) / Number(d) : 0);
+
+  // Leads por red SOLO si vienen; el total de leads lo tomamos como clientes digitales del padre
+  // ...después de calcular mkInv, mkInvMeta, mkInvTikTok y definir safeDiv0...
+
+// --- LEADS ---
+const leads_por_red = mk?.leads_por_red ?? {};
+const mkLeadsMeta   = Number(
+  leads_por_red["1515"] ??
+  leads_por_red["meta"] ??
+  leads_por_red["facebook"] ??
+  leads_por_red["instagram"] ??
+  0
+);
+const mkLeadsTikTok = Number(
+  leads_por_red["1514"] ??
+  leads_por_red["tiktok"] ??
+  leads_por_red["tik tok"] ??
+  0
+);
+
+const mkLeadsFromRed = mkLeadsMeta + mkLeadsTikTok;
+const mkLeads = (mkLeadsFromRed > 0)
+  ? mkLeadsFromRed
+  : Number(mk?.leads ?? 0) || clientesDigitales;
+
+const mkCpl       = safeDiv0(mkInv, mkLeads);
+const mkCplMeta   = safeDiv0(mkInvMeta, mkLeadsMeta);
+const mkCplTikTok = safeDiv0(mkInvTikTok, mkLeadsTikTok);
+
+const mkCac = safeDiv0(mkInv, clientesDigitales);
+
+
+  let mkCacMeta = 0, mkCacTikTok = 0;
+  const den = mkInvMeta + mkInvTikTok;
+  if (mkCac > 0 && den > 0) {
+    mkCacMeta   = (mkInvMeta   / den) * mkCac;
+    mkCacTikTok = (mkInvTikTok / den) * mkCac;
+  }
+
+  return {
+    // marketing
+    mkInv, mkInvMeta, mkInvTikTok,
+    mkLeads, mkLeadsMeta, mkLeadsTikTok,
+    mkCpl, mkCplMeta, mkCplTikTok,
+    mkCac, mkCacMeta, mkCacTikTok,
+    por_red, leads_por_red,
+
+    // ventas
+    totalServ, cantServ, ticketServ,
+    totalProd, cantProd, ticketProd,
+    totalMes: totalServ + totalProd,
+    totalServFull, cantServFull,
+    ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
+    totalProdFull, cantProdFull,
+    ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
+    totalMesFull: totalServFull + totalProdFull,
   };
+};
+
+
 
   const allRows = [
     // --- tabla 1: marketing ---
     { key: "mkInv",         label: "INVERSIÓN TOTAL REDES",                    type: "money" },
+       { key: "mkLeads",       label: "TOTAL LEADS DE META + TIKTOK",             type: "int" },
+    { key: "mkCpl",         label: "COSTO TOTAL POR LEAD DE META + TIKTOK",    type: "float2" },
     { key: "mkCac",         label: "COSTO ADQUISICION DE CLIENTES",            type: "float2"},
     { key: "mkInvMeta",     label: "Inversion Meta",                           type: "money" },
     { key: "mkLeadsMeta",   label: "CANTIDAD LEADS  META",                     type: "int" },
@@ -160,8 +193,7 @@ export default function ExecutiveTable({
     { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK",                   type: "int" },
     { key: "mkCplTikTok",   label: "COSTO POR LEAD TIKTOK",                    type: "float2" },
     { key: "mkCacTikTok",   label: "COSTO ADQUISICION CLIENTES TIKTOK",        type: "float2" },
-    { key: "mkLeads",       label: "TOTAL LEADS DE META + TIKTOK",             type: "int" },
-    { key: "mkCpl",         label: "COSTO TOTAL POR LEAD DE META + TIKTOK",    type: "float2" },
+ 
 
     // --- tabla 2: ventas (desde aquí dividimos) ---
     { key: "totalServ",     label: "VENTA MEMBRESIAS",                         type: "money" },
@@ -288,7 +320,7 @@ export default function ExecutiveTable({
   return (
   <div style={sWrap}>
     {/* Título principal para la tabla de VENTAS */}
-    <div style={sHeader}>INFORME GERENCIAL AL {cutDay} DE CADA MES</div>
+    <div style={sHeader}>DETALLE DE VENTAS POR TIPO AL {cutDay} DE CADA MES</div>
 
     {/* === TABLA 1: VENTAS === */}
     <table style={sTable}>
@@ -346,33 +378,7 @@ export default function ExecutiveTable({
         </tr>
 
         {/* % RESTANTE PARA CUOTA */}
-        <tr>
-          <td style={{ ...sCellBold, background: "#c00000", color: "#fff", fontWeight: 800 }}>
-            % RESTANTE PARA CUOTA
-          </td>
-          {perMonth.map((m, idx) => {
-            const isLast = idx === perMonth.length - 1;
-            const meta = metasPorMes[m.mes] || 0;
-            const total = m.metrics?.totalMes || 0;
-            const porcentaje = meta > 0 ? 100 - (total / meta) * 100 : 0;
-            const restante = porcentaje < 0 ? 0 : porcentaje;
-            const color = total >= meta ? "#007b00" : "#c00000";
-            return (
-              <td
-                key={idx}
-                style={{
-                  ...sCell,
-                  fontWeight: 700,
-                  color: isLast ? "#fff" : color,
-                  background: isLast ? "#c00000" : sCell.background,
-                  fontSize: isLast ? 23 : sCell.fontSize,
-                }}
-              >
-                {fmtNum(restante, 2)} %
-              </td>
-            );
-          })}
-        </tr>
+       
 
         {/* % ALCANCE DE CUOTA */}
         <tr>
@@ -397,6 +403,33 @@ export default function ExecutiveTable({
                 }}
               >
                 {fmtNum(porcentaje, 2)} %
+              </td>
+            );
+          })}
+        </tr>
+         <tr>
+          <td style={{ ...sCellBold, background: "#c00000", color: "#fff", fontWeight: 800 }}>
+            % RESTANTE PARA CUOTA
+          </td>
+          {perMonth.map((m, idx) => {
+            const isLast = idx === perMonth.length - 1;
+            const meta = metasPorMes[m.mes] || 0;
+            const total = m.metrics?.totalMes || 0;
+            const porcentaje = meta > 0 ? 100 - (total / meta) * 100 : 0;
+            const restante = porcentaje < 0 ? 0 : porcentaje;
+            const color = total >= meta ? "#007b00" : "#c00000";
+            return (
+              <td
+                key={idx}
+                style={{
+                  ...sCell,
+                  fontWeight: 700,
+                  color: isLast ? "#fff" : color,
+                  background: isLast ? "#c00000" : sCell.background,
+                  fontSize: isLast ? 23 : sCell.fontSize,
+                }}
+              >
+                {fmtNum(restante, 2)} %
               </td>
             );
           })}
