@@ -1,4 +1,3 @@
-import { useEffect, useMemo } from 'react';
 import { Card, Col, ProgressBar, Row, Table } from 'react-bootstrap';
 import { CardTitle } from '@/components';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
@@ -7,68 +6,77 @@ import config from '@/config';
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import './SumaDeSesiones.css';
 
-export const TarjetasPago = ({ tasks = [], title }) => {
-  // LOG 1: entrada cruda
-  useEffect(() => {
-    console.groupCollapsed(`[TarjetasPago] ${title} › entrada`);
-    console.log('tasks (raw):', tasks);
-    console.log('tasks.length:', Array.isArray(tasks) ? tasks.length : 'no-array');
-    if (Array.isArray(tasks)) console.table(tasks.slice(0, 5));
-    console.groupEnd();
-  }, [tasks, title]);
+export const TarjetasPago = ({ tasks = [], title = 'RANKING VENTA MEMBRESÍAS' }) => {
+  // ---- Helpers para soportar datos "adaptados" o "crudos" ----
+  const isPrograma = (t) =>
+    t?.tipo === 'programa' ||
+    String(t?.categoria || '').toUpperCase() === 'PROGRAMAS' ||
+    t?.id_programa != null ||
+    (Array.isArray(t?.detalle_membresia) && t.detalle_membresia.length > 0);
 
-  // Asegúrate de que sea array
-  const list = Array.isArray(tasks) ? tasks : [];
+  const getNombre = (t) => {
+    const fromAdapter = t?.empl; // p.ej. "ALVARO SALAZAR GOMEZ"
+    const fromRaw = t?.tb_empleado?.nombres_apellidos_empl; // JSON crudo
+    const base = (fromAdapter ?? fromRaw ?? '').trim();
+    return base ? base.split(/\s+/)[0] : ''; // solo primer nombre
+  };
 
-  // LOG 2: pre-filtro
-  useEffect(() => {
-    console.groupCollapsed('[TarjetasPago] pre-filtro');
-    console.log('items recibidos:', list.length);
-    console.table(list.slice(0, 5));
-    console.groupEnd();
-  }, [list]);
+  const getTotal = (t) => {
+    // Prioriza campos ya adaptados
+    const byAdapter = Number(t?.monto ?? t?.total_ventas ?? 0);
+    if (byAdapter > 0) return byAdapter;
 
-  // ⚠️ Antes filtrabas por tipo/categoría/id_programa, pero tus items vienen de empl_monto y no traen esos campos.
-  // Si igual los tuvieran, re-activa el filtro de abajo.
-  const soloProgramas = list;
-  //   .filter(t =>
-  //     t.tipo === 'programa' ||
-  //     t.categoria === 'PROGRAMAS' ||
-  //     t.id_programa != null
-  //   );
+    // Suma membresías (ventas)
+    const sumMemb = (t?.detalle_membresia || []).reduce(
+      (acc, it) => acc + Number(it?.tarifa_monto || 0),
+      0
+    );
 
-  // LOG 3: post-filtro programas
-  useEffect(() => {
-    console.groupCollapsed('[TarjetasPago] post-filtro programas');
-    console.log('soloProgramas.length:', soloProgramas.length);
-    console.table(soloProgramas.slice(0, 5));
-    console.groupEnd();
-  }, [soloProgramas]);
+    // Como alternativa, suma pagos (si tu backend liquida por pagos)
+    const sumPagos = (t?.detalle_pago || []).reduce(
+      (acc, it) => acc + Number(it?.parcial_monto || 0),
+      0
+    );
 
-  const pagos = useMemo(() => {
-    const mapped = soloProgramas.map(programa => ({
-      nombre_producto: programa.empl?.split(' ')[0] || programa.empl || '—',
-      total_ventas: Number(programa.monto) || 0,
-      avatar: programa.avatar ?? null
-    }));
+    return Math.max(sumMemb, sumPagos);
+  };
 
-    // OJO: quité el “> 1000” por debug. Si quieres, vuelve a ponerlo tras verificar datos.
-    const filtrados = mapped.filter(p => p.total_ventas > 0);
+  const getAvatarFile = (t) => {
+    if (t?.avatar) return t.avatar; // nombre de archivo ya adaptado
 
-    const ordenados = filtrados.sort((a, b) => b.total_ventas - a.total_ventas);
+    const imgs = t?.tb_empleado?.tb_images || [];
+    const pick =
+      imgs.find(
+        (i) => i?.clasificacion_image === 'avatar-empleado' && (i?.flag === true || i?.flag === 1)
+      ) || imgs[0];
 
-    // LOG 4: resultado final que se renderiza
-    console.groupCollapsed('[TarjetasPago] resultado para UI');
-    console.table(ordenados.map(p => ({
-      asesor: p.nombre_producto,
-      total_ventas: p.total_ventas,
-      avatar: p.avatar
-    })));
-    console.groupEnd();
+    if (!pick) return null;
 
-    return ordenados.slice(0, 3);
-  }, [soloProgramas]);
+    // Tu API de imágenes usa generalmente name_image
+    if (pick.name_image) return pick.name_image;
 
+    // fallback: construir con uid y extensión
+    if (pick.uid) return `${pick.uid}${pick.extension_image || ''}`;
+
+    return null;
+  };
+
+  // ---- Filtrado, mapeo y top 3 ----
+  const soloProgramas = (tasks || []).filter(isPrograma);
+
+  const itemsOrdenados = soloProgramas
+    .map((t) => ({
+      nombre_producto: getNombre(t),
+      total_ventas: getTotal(t),
+      avatar: getAvatarFile(t),
+    }))
+    .filter((p) => p.total_ventas > 0)
+    .sort((a, b) => b.total_ventas - a.total_ventas);
+
+  // Mostramos top 3
+  const pagos = itemsOrdenados.slice(0, 3);
+
+  // El % es sobre lo visible (top 3). Si quieres que sea sobre el total, usa itemsOrdenados en lugar de pagos.
   const totalVisible = pagos.reduce((acc, p) => acc + p.total_ventas, 0);
 
   return (
@@ -79,13 +87,16 @@ export const TarjetasPago = ({ tasks = [], title }) => {
           title={<h2>{title}</h2>}
           menuItems={false}
         />
+
         <Row>
           <Col lg={12}>
             <Table className="table-centered mb-0 fs-4" hover responsive>
               <thead className="bg-primary">
                 <tr>
                   <th className="text-white p-1 fs-3">ID</th>
-                  <th className="text-white p-1 fs-3" style={{ width: 250 }}>IMAGEN</th>
+                  <th className="text-white p-1 fs-3" style={{ width: 250 }}>
+                    IMAGEN
+                  </th>
                   <th className="text-white p-1 fs-3">ASESORES</th>
                   <th className="text-white p-1">
                     <SymbolSoles numero="" isbottom={false} />
@@ -94,25 +105,27 @@ export const TarjetasPago = ({ tasks = [], title }) => {
                   <th className="text-white p-1 fs-3">%</th>
                 </tr>
               </thead>
+
               <tbody>
                 {pagos.length === 0 && (
                   <tr>
                     <td colSpan={6} className="text-center py-4">
-                      Sin datos para mostrar (revisa la consola).
+                      No hay ventas para mostrar.
                     </td>
                   </tr>
                 )}
-                {pagos.map((task, index) => {
-                  const avatarSrc =
-                    task.avatar ? `${config.API_IMG.AVATAR_EMPL}${task.avatar}` : sinAvatar;
 
-                  const porcentaje = totalVisible > 0
-                    ? (task.total_ventas / totalVisible) * 100
-                    : 0;
+                {pagos.map((task, index) => {
+                  const avatarSrc = task.avatar
+                    ? `${config.API_IMG.AVATAR_EMPL}${task.avatar}`
+                    : sinAvatar;
+
+                  const porcentaje = totalVisible > 0 ? (task.total_ventas / totalVisible) * 100 : 0;
 
                   return (
                     <tr key={task.nombre_producto + index}>
                       <td style={{ width: '25px' }}>{index + 1}</td>
+
                       <td className="rank-img-cell">
                         <div className="img-cap">
                           {index === 0 && (
@@ -123,16 +136,23 @@ export const TarjetasPago = ({ tasks = [], title }) => {
                           <img className="avatar" src={avatarSrc} alt={task.nombre_producto} />
                         </div>
                       </td>
-                      <td className="fw-bold w-25">{task.nombre_producto}</td>
+
+                      <td className="fw-bold w-25">{task.nombre_producto || '—'}</td>
+
                       <td style={{ width: '25px' }}>
                         <NumberFormatMoney amount={task.total_ventas} symbol="S/" />
                       </td>
+
                       <td>
                         <ProgressBar
                           animated
                           now={porcentaje}
                           className="progress-sm"
-                          style={{ backgroundColor: '#00000042', height: 15, width: '100%' }}
+                          style={{
+                            backgroundColor: '#00000042',
+                            height: '15px',
+                            width: '100%',
+                          }}
                           variant="orange"
                         />
                       </td>

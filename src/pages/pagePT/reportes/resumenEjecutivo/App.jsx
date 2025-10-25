@@ -682,31 +682,9 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
           />
         </div>
 
-        {/* === TARJETAS DE PAGO === */}
-        <Col lg={12}>
-          <div style={{ marginTop: "15px" }}>
-            <TarjetasPago
-              tasks={
-                (TotalDeVentasxProdServ("total")?.asesores_pago || [])
-                  .filter(
-                    (item) =>
-                      item.monto > 0 &&
-                      (item.tipo === "programa" ||
-                        item.categoria === "PROGRAMAS" ||
-                        item.id_programa !== null)
-                  )
-                  .map((item) => ({
-                    ...item,
-                    nombre: item.nombre?.split(" ")[0] || item.nombre,
-                  }))
-              }
-              title={"Ranking Venta Membresías"}
-            />
-          </div>
-        </Col>
+      
       </Col>
 
-      {/* === SUMA DE SESIONES === */}
       <Row>
         <Col lg={12}>
           <SumaDeSesiones
