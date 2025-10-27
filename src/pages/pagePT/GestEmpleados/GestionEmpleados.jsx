@@ -14,7 +14,7 @@ const ESTADOS = [
   { label: 'INACTIVOS', value: 0 },
 ];
 
-export const GestionEmpleados = () => {
+export const GestionEmpleados = ({id_activo}) => {
   const [empresa, setEmpresa] = useState(EMPRESAS[0]);
   const [estado, setEstado] = useState(1);
 
@@ -56,24 +56,9 @@ export const GestionEmpleados = () => {
                 </Col>
               </Row>
 
-              <Row>
-                {mostrarSelectorEstado && (
-                  <Col sm={12} md="auto">
-                    <SelectButton
-                      value={estado}
-                      onChange={(e) => setEstado(e.value)}
-                      options={ESTADOS}
-                      optionLabel="label"
-                      itemTemplate={estadoTemplate}
-                      className={`estado-select ${estado === 1 ? 'activo' : 'inactivo'}`}
-                    />
-                  </Col>
-                )}
-              </Row>
-
               <TableEmpleados
                 id_empresa={empresa.id}
-                id_estado={estado}
+                id_estado={id_activo}
                 isOpenButtonRegister={isOpenButtonRegister}
               />
             </Card.Body>

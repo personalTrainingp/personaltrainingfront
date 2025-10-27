@@ -93,6 +93,8 @@ const GestionCentroDeArchivos = lazy(()=>import('../pages/pagePT/GestCentroArchi
 const CvColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/cv'))
 const DniColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/dni'))
 const ReservaMonkFitPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/App'))
+const GestionAlertaUsuarios = lazy(()=>import('../pages/pagePT/GestionAlertasUsuarios'))
+const HorariosColaboradores = lazy(()=>import('../pages/pagePT/HorariosColaboradores'))
 /**
  * routes import
  */
@@ -136,6 +138,14 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad*/}
+					{
+						sections.find(e=>e.url==='/horarios-colaborador')&&
+                        <Route path='horarios-colaborador' element={<HorariosColaboradores/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/gestion-alerta-usuario')&&
+                        <Route path='gestion-alerta-usuario' element={<GestionAlertaUsuarios/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/modelo-contrato')&&
                         <Route path='modelo-contrato' element={<ExternalRedirect to="https://docs.google.com/document/d/10bNd0lFSGYsg6JWQOOihHOqbhfilZFWK/edit" replace />}/>
@@ -304,9 +314,16 @@ export default function ProtectedRoutes() {
                         <Route path='reporte/ventas-asesor' element={<VentasAsesor/>}/>
 					}
 					{
-						sections.find(e=>e.url==='/gestion-proveedores')&&
+						sections.find(e=>e.url==='/gestion-proveedores-activo')&&
 						<>
-							<Route path='gestion-proveedores' element={<GestionProveedores/>}/>
+							<Route path='gestion-proveedores-activo' element={<GestionProveedores id_estado={true}/>}/>
+							<Route path='perfil-proveedor/:uid' element={<PerfilProveedor/>}/>
+						</>
+					}
+					{
+						sections.find(e=>e.url==='/gestion-proveedores-inactivo')&&
+						<>
+							<Route path='gestion-proveedores-inactivo' element={<GestionProveedores id_estado={false}/>}/>
 							<Route path='perfil-proveedor/:uid' element={<PerfilProveedor/>}/>
 						</>
 					}
@@ -327,9 +344,16 @@ export default function ProtectedRoutes() {
                         <Route path='gestion-gastosF-gastosV' element={<GestionFyG/>}/>
 					}
 					{
-						sections.find(e=>e.url==='/gestion-empleados')&&
+						sections.find(e=>e.url==='/gestion-empleados-activo')&&
 						<>
-							<Route path='gestion-empleados' element={<GestionEmpleados/>}/>
+							<Route path='gestion-empleados-activo' element={<GestionEmpleados id_activo={1}/>}/>
+							<Route path='perfil-colaborador/:uid' element={<PerfilEmpleado/>}/>
+						</>
+					}
+					{
+						sections.find(e=>e.url==='/gestion-empleados-inactivo')&&
+						<>
+							<Route path='gestion-empleados-inactivo' element={<GestionEmpleados id_activo={0}/>}/>
 							<Route path='perfil-colaborador/:uid' element={<PerfilEmpleado/>}/>
 						</>
 					}

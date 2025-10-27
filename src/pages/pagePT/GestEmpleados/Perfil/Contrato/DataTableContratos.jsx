@@ -35,7 +35,7 @@ export const DataTableContratos = ({id_empleado}) => {
                           <th className='text-white'>SUELDO</th>
                           <th className='text-white'>FECHA DE INICIO</th>
                           <th className='text-white'>FECHA DE FIN</th>
-                          <th className='text-white'>MIS ASISTENCIAS</th>
+                          <th className='text-white'>DIAS LABORABLES</th>
                           <th className='text-white'>OBSERVACIONES</th>
                           <th className='text-white'></th>
                       </tr>
@@ -64,9 +64,6 @@ export const DataTableContratos = ({id_empleado}) => {
                           <th>
                             <div className='d-flex gap-2'>
                               <div>
-                                <i className='text-primary cursor-pointer'>EDITAR</i>
-                              </div>
-                              <div>
                                 <i className='text-primary cursor-pointer'>DELETE</i>
                               </div>
                             </div>
@@ -77,7 +74,6 @@ export const DataTableContratos = ({id_empleado}) => {
                         }
                   </tbody>
               </Table>
-              {JSON.stringify(isOpenModalVerAsistencia, null, 2)}
               <ModalCustomContrato id_empleado={id_empleado} show={isOpenModalCustomContrato.isOpen} onHide={()=>setisOpenModalCustomContrato({isOpen: false})}/>
               <ModalCustomJornada 
                     onHide={()=>setisOpenModalVerAsistencia({isOpenModal: false, fecha_fin: '', fecha_inicio: ''})}

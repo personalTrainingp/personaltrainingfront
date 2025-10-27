@@ -116,8 +116,10 @@ const ModalEspecial = ({ visible, onHide, onAdd }) => {
     const a = parseHM(inicio);
     const b = parseHM(fin);
     const mins = Math.max(0, minutesBetween(a, b));
-    onAdd?.({ inicio, fin, tipo, observacion: obs, minutos: mins });
-    onHide?.();
+    console.log({inicio, fin, tipo, observacion: obs, minutos: mins});
+    
+    // onAdd?.({ inicio, fin, tipo, observacion: obs, minutos: mins });
+    // onHide?.();
   };
 
   return (

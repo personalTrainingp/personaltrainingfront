@@ -229,9 +229,9 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
             <td className="text-center text-white">
               0
             </td>
-            <td className="text-end text-white">{fmt(totalesPrincipal.monto)}</td>
-            <td className="text-end text-white">{fmt(totalesPrincipal.abonos)}</td>
-            <td className="text-end text-white">{fmt(totalesPrincipal.saldo)}</td>
+            <td className="text-end text-white fs-2">{fmt(totalesPrincipal.monto)}</td>
+            <td className="text-end text-white fs-2">{fmt(totalesPrincipal.abonos)}</td>
+            <td className="text-end text-white fs-2">{fmt(totalesPrincipal.saldo)}</td>
           </tr>
       </Table>
 

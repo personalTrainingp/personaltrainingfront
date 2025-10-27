@@ -12,7 +12,8 @@ const customContrato = {
 export const ModalCustomContrato = ({show, onHide, id_empleado}) => {
   const { formState, fecha_inicio, fecha_fin, sueldo, observacion, onInputChange, onResetForm } = useForm(customContrato)
   const { postContratoColaborador } = useContratoColaboradorStore()
-  const onCancelCustomContrato = ()=>{
+  const onCancelCustomContrato = (e)=>{
+    e.preventDefault()
     onHide()
     onResetForm()
   }
@@ -65,7 +66,7 @@ export const ModalCustomContrato = ({show, onHide, id_empleado}) => {
         </div>
         <div className='mb-4'>
           <Button label='AGREGAR CONTRATO' type='submit' onClick={onClickCustomContrato}/>
-          <Button label='CANCELAR' text/>
+          <Button label='CANCELAR' onClick={onCancelCustomContrato} text/>
         </div>
       </form>
     </Dialog>

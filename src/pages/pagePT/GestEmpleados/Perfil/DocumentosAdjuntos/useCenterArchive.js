@@ -20,9 +20,7 @@ export const useCenterArchive = () => {
 	};
 	const obtenerArchivCenterxUidLocation = async (uid_location) => {
 		try {
-
 			const { data } = await PTApi.get(`/fils/interno/${uid_location}/1517`);
-			console.log({ data: data });
 
 			dispatch(onSetDataView(data.documentosInternos));
 		} catch (error) {

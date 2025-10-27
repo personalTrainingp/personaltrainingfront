@@ -28,10 +28,19 @@ export const useContratoColaboradorStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerDiasLaborablesxContrato = async (idContrato) => {
+		try {
+			const { data } = await PTApi.get(`/jornada/jornada/${idContrato}`);
+			
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	return {
 		postContratoColaborador,
 		obtenerContratosxColaborador,
 		postTipoContratoxDia,
+		obtenerDiasLaborablesxContrato,
 	};
 };

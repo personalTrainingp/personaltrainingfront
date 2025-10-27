@@ -31,7 +31,7 @@ const ESTADOS = [
   { label: 'INACTIVOS', value: false },
 ];
 
-export const DataProveedores = () => {
+export const DataProveedores = ({id_estado}) => {
   const [isModalOpenProv, setisModalOpenProv] = useState(false);
   const [estado, setEstado] = useState(true); // true = ACTIVO, false = INACTIVO
 
@@ -71,11 +71,11 @@ export const DataProveedores = () => {
                       </div>
 
                       {/* Render según botón */}
-                      {estado ? (
-                        <CustomersProv estado_prov={true}  agente={true} id_empresa={598} />
+                      {/* {estado ? (
+                        <CustomersProv estado_prov={id_estado}  agente={true} id_empresa={598} />
                       ) : (
-                        <CustomersProv estado_prov={false} agente={true} id_empresa={598} />
-                      )}
+                      )} */}
+                      <CustomersProv estado_prov={id_estado} agente={true} id_empresa={598} />
                     </TabPanel>
 
                     <TabPanel header={'CIRCUS'}>
@@ -88,11 +88,11 @@ export const DataProveedores = () => {
                         />
                       </div>
 
-                      {estado ? (
-                        <CustomersProv estado_prov={true}  agente={true} id_empresa={601} />
+                      {/* {estado ? (
+                        <CustomersProv estado_prov={id_estado}  agente={true} id_empresa={601} />
                       ) : (
-                        <CustomersProv estado_prov={false} agente={true} id_empresa={601} />
-                      )}
+                      )} */}
+                      <CustomersProv estado_prov={id_estado} agente={true} id_empresa={601} />
                     </TabPanel>
 
                     <TabPanel header={'REDUCTO'}>
@@ -105,11 +105,11 @@ export const DataProveedores = () => {
                         />
                       </div>
 
-                      {estado ? (
+                      {/* {estado ? (
                         <CustomersProv estado_prov={true}  agente={true} id_empresa={599} />
                       ) : (
-                        <CustomersProv estado_prov={false} agente={true} id_empresa={599} />
-                      )}
+                      )} */}
+                      <CustomersProv estado_prov={id_estado} agente={true} id_empresa={599} />
                     </TabPanel>
                                         <TabPanel header={'RAL'}>
                       <div className={`estado-select ${estado ? 'activo' : 'inactivo'} mb-3`}>
@@ -121,11 +121,11 @@ export const DataProveedores = () => {
                         />
                       </div>
 
-                      {estado ? (
+                      {/* {estado ? (
                         <CustomersProv estado_prov={true}  agente={true} id_empresa={0} />
                       ) : (
-                        <CustomersProv estado_prov={false} agente={true} id_empresa={0} />
-                      )}
+                      )} */}
+                      <CustomersProv estado_prov={id_estado} agente={true} id_empresa={0} />
                     </TabPanel>
                   </TabView>
                 </TabPanel>
