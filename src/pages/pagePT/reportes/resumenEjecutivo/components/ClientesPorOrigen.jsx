@@ -239,7 +239,6 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
           </tr>
         ))}
 
-        {/* 🧮 Fila TOTAL */}
         <tr>
           <td
             style={{

@@ -1,76 +1,154 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-export const TopControls = ({
+const boxStyleBase = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "8px",
+  border: "2px solid rgba(0,0,0,0.2)",
+  borderRadius: "8px",
+  padding: "6px 14px",
+  background: "rgba(255,255,255,0.6)",
+  fontWeight: 800,
+  fontSize: "1.5rem",
+  color: "black",
+  boxShadow: "0 2px 5px rgba(0,0,0,0.05)",
+  lineHeight: 1.2,
+  minWidth: "120px", // <- fuerza que todos tengan un ancho visual similar
+  height: "48px",    // <- altura consistente
+};
+
+// estilo específico para los <select> para que se vea como caja pero siga siendo select
+const selectStyle = {
+  ...boxStyleBase,
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
+  backgroundClip: "padding-box",
+  cursor: "pointer",
+  paddingRight: "32px", // espacio para la flechita del select
+};
+
+export function RealTimeClock() {
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const hhmm = now.toLocaleTimeString("es-PE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "America/Lima",
+  });
+
+  return (
+    <div style={boxStyleBase}>
+      <span role="img" aria-label="clock">🕒</span>
+      <span>{hhmm}</span>
+    </div>
+  );
+}
+
+export function TopControls({
   selectedMonth,
   setSelectedMonth,
   initDay,
   setInitDay,
   cutDay,
   setCutDay,
-  year,
-  handleSetUltimoDiaMes
-}) => {
-  const meses = [
-    "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
-    "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+  year = new Date().getFullYear(),
+  onUseLastDay,
+}) {
+  const MESES = [
+    "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
+    "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE",
   ];
+
+  const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
 
   const handleMonthChange = (newMonth) => {
     const today = new Date();
     const currentMonth = today.getMonth() + 1;
-    const currentYear = today.getFullYear();
-    const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
-
+    const currentYear  = today.getFullYear();
     const lastDayTarget = daysInMonth(year, newMonth);
-    let nextCutDay;
 
-    if (newMonth === currentMonth && year === currentYear) {
-      nextCutDay = Math.min(today.getDate(), lastDayTarget);
-    } else {
-      nextCutDay = Math.min(cutDay, lastDayTarget);
-    }
+    let nextCut =
+      newMonth === currentMonth && year === currentYear
+        ? Math.min(today.getDate(), lastDayTarget)
+        : Math.min(cutDay, lastDayTarget);
 
-    const nextInitDay = Math.min(initDay, nextCutDay);
-
+    const nextInit = Math.min(initDay, nextCut);
     setSelectedMonth(newMonth);
-    setCutDay(nextCutDay);
-    setInitDay(nextInitDay);
+    setCutDay(nextCut);
+    setInitDay(nextInit);
+  };
+
+  const fallbackUseLastDay = () => {
+    const today = new Date();
+    const isCurrentMonth =
+      year === today.getFullYear() && selectedMonth === today.getMonth() + 1;
+    const lastDay = daysInMonth(year, selectedMonth);
+    const nextCut = isCurrentMonth ? Math.min(lastDay, today.getDate()) : lastDay;
+    setCutDay(nextCut);
+    if (initDay > nextCut) setInitDay(nextCut);
+  };
+
+  const handleClickUseLastDay = () => {
+    if (typeof onUseLastDay === "function") {
+      onUseLastDay();
+    } else {
+      fallbackUseLastDay();
+    }
+  };
+
+  // estilos de cada bloque label + control
+  const fieldGroupStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    fontSize: "1.5rem",
+    fontWeight: 800,
+    color: "black",
   };
 
   return (
     <div
       style={{
-        backgroundColor: "#f5f8fc",
-        padding: "20px 0",
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
         justifyContent: "center",
-        flexWrap: "wrap",
-        gap: "40px",
+        gap: 28,
+        margin: "8px 0 24px",
+        width: "100%",
+        fontWeight: 800,
+        color: "black",
       }}
     >
       {/* MES */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <label style={{ fontWeight: 800, fontSize: "1.6em" }}>MES:</label>
+      <div style={fieldGroupStyle}>
+        <label style={{ textTransform: "uppercase" }}>Mes:</label>
         <select
           value={selectedMonth}
           onChange={(e) => {
-            const val = parseInt(e.target.value, 10);
+            const newMonth = parseInt(e.target.value, 10);
             const currentMonth = new Date().getMonth() + 1;
-            if (val > currentMonth) return;
-            handleMonthChange(val);
+            if (newMonth > currentMonth) return;
+            handleMonthChange(newMonth);
           }}
-          style={{
-            fontSize: "1.6em",
-            fontWeight: "bold",
-            padding: "4px 6px",
-          }}
+          style={selectStyle}
         >
-          {meses.map((mes, idx) => {
+          {MESES.map((mes, idx) => {
             const currentMonth = new Date().getMonth() + 1;
-            const disabled = idx + 1 > currentMonth;
             return (
-              <option key={idx + 1} value={idx + 1} disabled={disabled}>
+              <option
+                key={idx + 1}
+                value={idx + 1}
+                disabled={idx + 1 > currentMonth}
+              >
                 {mes}
               </option>
             );
@@ -78,31 +156,26 @@ export const TopControls = ({
         </select>
       </div>
 
-      {/* DÍA DE INICIO */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <label style={{ fontWeight: 800, fontSize: "1.6em" }}>DÍA DE INICIO:</label>
+      {/* DÍA INICIO */}
+      <div style={fieldGroupStyle}>
+        <label style={{ textTransform: "uppercase" }}>FECHA de inicio:</label>
         <select
           value={initDay}
           onChange={(e) => {
-            const val = parseInt(e.target.value, 10);
-            if (val <= cutDay) setInitDay(val);
+            const v = parseInt(e.target.value, 10);
+            if (v <= cutDay) setInitDay(v);
           }}
-          style={{
-            fontSize: "1.6em",
-            padding: "4px 6px",
-          }}
+          style={selectStyle}
         >
           {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
+            <option key={n} value={n}>{n}</option>
           ))}
         </select>
       </div>
 
-      {/* DÍA DE CORTE */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <label style={{ fontWeight: 800, fontSize: "1.6em" }}>DÍA DE CORTE:</label>
+      {/* DÍA CORTE */}
+      <div style={fieldGroupStyle}>
+        <label style={{ textTransform: "uppercase" }}>FECHA de corte:</label>
         <select
           value={cutDay}
           onChange={(e) => {
@@ -110,7 +183,6 @@ export const TopControls = ({
             const today = new Date();
             const currentMonth = today.getMonth() + 1;
             const currentDay = today.getDate();
-            const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
             const lastDayTarget = daysInMonth(year, selectedMonth);
 
             let next = Math.min(val, lastDayTarget);
@@ -119,46 +191,32 @@ export const TopControls = ({
             }
 
             setCutDay(next);
-            if (initDay > next) {
-              setInitDay(next);
-            }
+            if (initDay > next) setInitDay(next);
           }}
-          style={{
-            fontSize: "1.6em",
-            padding: "4px 6px",
-          }}
+          style={selectStyle}
         >
           {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
+            <option key={n} value={n}>{n}</option>
           ))}
         </select>
-
-        {/* Botón al mismo nivel */}
-        
       </div>
 
-      {/* HORA */}
-      <div style={{ fontWeight: 800, fontSize: "1.6em" }}>
-        HORA: {new Date().toLocaleTimeString("es-PE", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })}
-      </div>
-      <button
-          onClick={handleSetUltimoDiaMes}
-          className="btn btn-outline-danger"
+      {/* RELOJ + BOTÓN */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <RealTimeClock />
+        <button
+          onClick={handleClickUseLastDay}
+          className="btn btn-outline-warning"
           style={{
             fontWeight: 700,
-            fontSize: "1em",
-            marginLeft: "10px",
-            height: "48px",
+            borderWidth: "2px",
+            textTransform: "uppercase",
+            whiteSpace: "nowrap",
           }}
         >
-          USAR ÚLTIMO DÍA DEL MES
+          Usar último día del mes
         </button>
+      </div>
     </div>
   );
-};
+}

@@ -111,6 +111,44 @@
   background: #c00000 !important;
   color: #fff !important;
 }
+/* Fila secundaria compacta */
+.fila-secundaria.compact td,
+.fila-secundaria.compact td * {
+  font-size: 18px !important;
+  line-height: 1.1 !important;
+}
+
+.fila-secundaria.compact td {
+  padding: 14px 16px !important;
+}
+
+/* Título de la primera celda */
+.fila-secundaria.compact .img-with-name .img-cap {
+  padding: 0 !important;
+}
+.fila-secundaria.compact .img-with-name .cap {
+  font-size: 18px !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+
+/* Triptych más apretado */
+.fila-secundaria.compact .triptych {
+  padding: 0 !important;
+}
+.fila-secundaria.compact .tri-box {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 2px !important;
+}
+.fila-secundaria.compact .tri-box > div {
+  padding: 0 !important;
+}
+.fila-secundaria.compact .tri-box p {
+  margin: 0 !important;
+  font-size: 19px !important;
+  line-height: 1 !important;
+}
 
 
 /*OTRA VISTA*/

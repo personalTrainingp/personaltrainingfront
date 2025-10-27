@@ -6,27 +6,66 @@ import config from '@/config';
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import './SumaDeSesiones.css';
 
-export const TarjetasPago = ({ tasks, title }) => {
+export const TarjetasPago = ({ tasks = [], title = 'RANKING VENTA MEMBRESÍAS' }) => {
+  // helper: sumar SOLO membresías/programas (items con id_pgm)
+  const getTotalProgramas = (t) => {
+    if (!Array.isArray(t?.items)) return 0;
 
-  const soloProgramas = tasks.filter(t =>
-    t.tipo === 'programa' ||
-    t.categoria === 'PROGRAMAS' ||
-    t.id_programa !== null 
-  );
+    return t.items
+      .filter((it) => it && typeof it === 'object' && 'id_pgm' in it) // <- esto es membresía
+      .reduce((acc, it) => acc + Number(it.tarifa_monto || 0), 0);
+  };
 
-  const pagos = soloProgramas
-    .map(programa => ({
-      nombre_producto: programa.empl?.split(' ')[0] || programa.empl,
-      total_ventas: programa.monto,
-      avatar: programa.avatar
-    }))
-    .filter(p => p.total_ventas > 1000)
-    .sort((a, b) => b.total_ventas - a.total_ventas)
-    .slice(0, 3);
+  // normalizar cada asesor y quedarnos SOLO con venta de programas
+  const normalizados = (tasks || [])
+    .map((t) => {
+      // monto SOLO de programas
+      const totalProgramas = getTotalProgramas(t);
 
-  const totalVisible = pagos.reduce((acc, p) => acc + p.total_ventas, 0);
+      // nombre asesor
+      const nombreCompleto =
+        t?.empl ||
+        t?.tb_empleado?.nombres_apellidos_empl ||
+        '';
 
+      const primerNombre = nombreCompleto
+        ? nombreCompleto.trim().split(/\s+/)[0]
+        : '—';
 
+      // avatar
+      let avatarFile = t?.avatar;
+      if (!avatarFile) {
+        const imgs = t?.tb_empleado?.tb_images || [];
+        const pick =
+          imgs.find(
+            (i) =>
+              i?.clasificacion_image === 'avatar-empleado' &&
+              (i?.flag === true || i?.flag === 1)
+          ) || imgs[0];
+
+        if (pick?.name_image) {
+          avatarFile = pick.name_image;
+        } else if (pick?.uid) {
+          avatarFile = `${pick.uid}${pick.extension_image || ''}`;
+        }
+      }
+
+      return {
+        nombre: primerNombre,
+        total: totalProgramas, // <- OJO: ya no es t.monto, es SOLO PROGRAMAS
+        avatar: avatarFile,
+      };
+    })
+    // quitar asesores que no vendieron programas
+    .filter((p) => p.total > 0)
+    // ordenar desc por ventas de programas
+    .sort((a, b) => b.total - a.total);
+
+  // top 3
+  const pagos = normalizados.slice(0, 3);
+
+  // suma para %
+  const totalVisible = pagos.reduce((acc, p) => acc + p.total, 0);
 
   return (
     <Card className="ranking-card">
@@ -36,13 +75,16 @@ export const TarjetasPago = ({ tasks, title }) => {
           title={<h2>{title}</h2>}
           menuItems={false}
         />
+
         <Row>
           <Col lg={12}>
             <Table className="table-centered mb-0 fs-4" hover responsive>
               <thead className="bg-primary">
                 <tr>
                   <th className="text-white p-1 fs-3">ID</th>
-                  <th className="text-white p-1 fs-3" style={{ width: 250 }}>IMAGEN</th>
+                  <th className="text-white p-1 fs-3" style={{ width: 250 }}>
+                    IMAGEN
+                  </th>
                   <th className="text-white p-1 fs-3">ASESORES</th>
                   <th className="text-white p-1">
                     <SymbolSoles numero="" isbottom={false} />
@@ -51,40 +93,60 @@ export const TarjetasPago = ({ tasks, title }) => {
                   <th className="text-white p-1 fs-3">%</th>
                 </tr>
               </thead>
-              <tbody>
-                {(pagos || []).map((task, index) => {
-                  const avatarSrc =
-                    task.avatar === null
-                      ? sinAvatar
-                      : `${config.API_IMG.AVATAR_EMPL}${task.avatar}`;
 
-                  const porcentaje = totalVisible > 0
-                    ? (task.total_ventas / totalVisible) * 100
-                    : 0;
+              <tbody>
+                {pagos.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="text-center py-4">
+                      No hay ventas para mostrar.
+                    </td>
+                  </tr>
+                )}
+
+                {pagos.map((task, index) => {
+                  const avatarSrc = task.avatar
+                    ? `${config.API_IMG.AVATAR_EMPL}${task.avatar}`
+                    : sinAvatar;
+
+                  const porcentaje =
+                    totalVisible > 0
+                      ? (task.total / totalVisible) * 100
+                      : 0;
 
                   return (
-                    <tr key={task.nombre_producto + index}>
+                    <tr key={task.nombre + index}>
                       <td style={{ width: '25px' }}>{index + 1}</td>
 
                       <td className="rank-img-cell">
                         <div className="img-cap">
                           {index === 0 && (
-                            <div className="copa-champions" title="Primer lugar 🏆">
-                              <img src="/copa_1_lugar.jpg" alt="Copa Champions" />
+                            <div
+                              className="copa-champions"
+                              title="Primer lugar 🏆"
+                            >
+                              <img
+                                src="/copa_1_lugar.jpg"
+                                alt="Copa Champions"
+                              />
                             </div>
                           )}
                           <img
                             className="avatar"
                             src={avatarSrc}
-                            alt={task.nombre_producto}
+                            alt={task.nombre}
                           />
                         </div>
                       </td>
 
-                      <td className="fw-bold w-25">{task.nombre_producto}</td>
+                      <td className="fw-bold w-25">
+                        {task.nombre || '—'}
+                      </td>
 
                       <td style={{ width: '25px' }}>
-                        <NumberFormatMoney amount={task.total_ventas} symbol="S/" />
+                        <NumberFormatMoney
+                          amount={task.total}
+                          symbol="S/"
+                        />
                       </td>
 
                       <td>
@@ -100,6 +162,7 @@ export const TarjetasPago = ({ tasks, title }) => {
                           variant="orange"
                         />
                       </td>
+
                       <td>{porcentaje.toFixed(2)}</td>
                     </tr>
                   );

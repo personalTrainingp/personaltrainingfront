@@ -42,12 +42,19 @@ export const ComparativoVsActual = ({
       style: "currency",
       currency: "PEN",
     }).format(Number(n || 0));
-  const fmtPct = (n) =>
+const fmtPct = (n) => {
+  const num = Number(n || 0);
+  const sign = num > 0 ? "+" : num < 0 ? "−" : ""; 
+  return (
+    sign +
     new Intl.NumberFormat("es-PE", {
       maximumFractionDigits: 0,
-    }).format(Number(n || 0)) + "%";
+    }).format(Math.abs(num)) +
+    "%"
+  );
+};
 
-  // ---------------------- Helpers ----------------------
+
   const getDetalleServicios = (v) => v?.detalle_ventaMembresia || [];
   const getDetalleProductos = (v) =>
     v?.detalle_ventaProductos || v?.detalle_ventaproductos || v?.detalle_venta_productos || [];
@@ -83,7 +90,6 @@ export const ComparativoVsActual = ({
 
   const dataByMonth = sumByMonth();
 
-  // Mes de referencia
   const refKeyFromFechas = fechas.length
     ? keyOf(fechas[fechas.length - 1].anio, fechas[fechas.length - 1].mes)
     : null;
@@ -91,7 +97,6 @@ export const ComparativoVsActual = ({
   const refKey = refMonthKey || refKeyFromFechas;
   const refVals = (refKey && dataByMonth.get(refKey)) || { serv: 0, prod: 0, total: 0 };
 
-  // ---------------------- Columnas ----------------------
   const columns = fechas.map((f) => {
     const key = keyOf(f.anio, f.mes);
     const vals = dataByMonth.get(key) || { serv: 0, prod: 0, total: 0 };
@@ -190,23 +195,39 @@ export const ComparativoVsActual = ({
   };
 
   const PctCell = ({ value, isLast }) => {
-    const v = Number(value || 0);
-    const isNeg = v < 0;
-    const sign = v > 0 ? "" : "";
+  if (isLast) {
     return (
       <td
         style={{
           ...sCellBold,
-          background: isLast ? C.red : sCell.background,
-          color: isLast ? "#fff" : isNeg ? C.red : C.green,
-          fontSize: isLast ? 22 : sCellBold.fontSize,
+          background: C.red,
+          color: "#fff",
+          fontSize: 22,
         }}
       >
-        {sign}
-        {fmtPct(v)}
+        100%
       </td>
     );
-  };
+  }
+
+  const v = Number(value || 0);
+  const isNeg = v < 0;
+  const color = isNeg ? C.red : C.green;
+
+  return (
+    <td
+      style={{
+        ...sCellBold,
+        background: sCell.background,
+        color,
+        fontSize: sCellBold.fontSize,
+      }}
+    >
+      {fmtPct(v)}
+    </td>
+  );
+};
+
 
   const MonthHead = ({ col, isLast }) => (
     <th
@@ -229,9 +250,9 @@ export const ComparativoVsActual = ({
 
   {["MEMBRESÍAS", "PRODUCTOS", "TOTAL"].map((tipo) => (
     <table key={tipo} style={{ ...sTable, marginTop: 12 }}>
-      <thead>
+      <thead >
         <tr>
-          <th style={sHeadLeft}>{tipo}</th>
+          <th  style={{...sHeadLeft,background:"white",color:C.red}}>{tipo}</th>
           {columns.map((c, idx) => (
             <MonthHead
               key={c.key}

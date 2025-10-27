@@ -239,13 +239,13 @@ Object.keys(moneyByAdvisor).forEach((key) => {
 
           const visiblePrograms = allProg
           // arriba del return
-          const DashCell = ({ min = 90 }) => (
+          const DashCell = ({ min = 50 }) => (
             <td
               style={{
                 border: "1px solid #000",
                 minWidth: min,
                 textAlign: "center",
-                fontWeight: 700,
+                fontWeight: 400,
   color: "#c00000", // <- rojo si es bold
                 
               }}
@@ -392,45 +392,57 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                   );
                 })}
                 {/* SOCIOS POR CANAL */}
-                <tr className=" fila-secundaria" style={{ background: "#fff", fontSize: 29 }}>
-                  <td className="img-with-name">
-                    <div className="img-cap only-text">
-                      <div className="cap">SOCIOS POR CANAL <br/>DE VENTA</div>
-                    </div>
-                  </td>
+              <tr className="fila-secundaria compact" style={{ background: "#fff" }}>
+  <td className="img-with-name">
+    <div className="img-cap only-text">
+      <div className="cap">
+        SOCIOS POR CANAL <br /> DE VENTA
+      </div>
+    </div>
+  </td>
 
-                  {visiblePrograms.map(({ key: pk }, idx) => {
-                    const isLast = idx === visiblePrograms.length - 1;
-                    const s = totalByProgAndOrigin(pk);
-                    return (
-                      <td key={idx} className={`triptych program-start ${isLast ? "program-end" : ""}`}>
-                        <div className="tri-box">
-                        <div><p style={cellBoldIf(s.nuevos)}>{fmt(s.nuevos, true)}</p></div>
-    <div><p style={cellBoldIf(s.renovaciones)}>{fmt(s.renovaciones, true)}</p></div>
-    <div><p style={cellBoldIf(s.reinscripciones)}>{fmt(s.reinscripciones, true)}</p></div>
+  {visiblePrograms.map(({ key: pk }, idx) => {
+    const isLast = idx === visiblePrograms.length - 1;
+    const s = totalByProgAndOrigin(pk);
+    return (
+      <td
+        key={idx}
+        className={`triptych program-start ${isLast ? "program-end" : ""}`}
+      >
+        <div className="tri-box">
+          <div><p style={cellBoldIf(s.nuevos)}>{fmt(s.nuevos, true)}</p></div>
+          <div><p style={cellBoldIf(s.renovaciones)}>{fmt(s.renovaciones, true)}</p></div>
+          <div><p style={cellBoldIf(s.reinscripciones)}>{fmt(s.reinscripciones, true)}</p></div>
+        </div>
+      </td>
+    );
+  })}
 
-                        </div>
-                      </td>
-                    );
-                  })}
+  {/* TOTAL SOCIOS */}
+  {(() => {
+    const totalSociosTabla = visiblePrograms.reduce(
+      (acc, _prog, i) =>
+        acc + filas.reduce((a, f) => a + toNumber(f[i + 1]?.value), 0),
+      0
+    );
+    return (
+      <td className={tdBoldClassIf(totalSociosTabla)} style={{ minWidth: 80, width: 60 }}>
+        {fmt(totalSociosTabla, true)}
+      </td>
+    );
+  })()}
 
-              {(() => {
-   const totalSociosTabla = visiblePrograms.reduce(
-     (acc, _prog, i) => acc + filas.reduce((a, f) => a + toNumber(f[i + 1]?.value), 0),
-    0
-   );
-   return (
-    <td className={tdBoldClassIf(totalSociosTabla)} style={{ minWidth: 80, width: 60 }}>
-       {fmt(totalSociosTabla, true)}
-     </td>
-   );
- })()}
-                  <DashCell />
-                  <DashCell />
-                </tr>
+  <td className="money-cell" style={{ minWidth: 80, textAlign: "center" }}>
+    —
+  </td>
+
+  <td className="percent-cell" style={{ minWidth: 60, textAlign: "center" }}>
+    —
+  </td>
+</tr>
 
                 {/* TOTAL */}
-                <tr className="fw-bold fila-secundaria fila-total" style={{ background: "#fff", fontSize: 29 }}>
+                <tr className="fw-bold fila-secundaria fila-total" style={{ background: "#fff", fontSize: 32 }}>
                   <td className="img-with-name">
                     <div className="img-cap only-text">
                       <div className="cap">TOTAL</div>

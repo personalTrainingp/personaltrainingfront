@@ -543,19 +543,37 @@ const dataMktWithCac = useMemo(() => {
     const obj = { ...(base[key] || {}) };
     const inversion = Number(obj.inversiones_redes ?? obj.inversion_redes ?? 0);
 
-    const clientes = countDigitalClientsForMonth(
+    // --- Clientes globales (ya tenías esto)
+    const clientesTotales = countDigitalClientsForMonth(
       dataVentas || [], f.anio, f.mes, initDay, cutDay
     );
 
-    obj.clientes_digitales = clientes;
-    obj.cac = clientes > 0 ? +(inversion / clientes).toFixed(2) : 0;
+    // --- Clasificación por red (para CAC correcto)
+    let clientes_por_red = { tiktok: 0, meta: 0 };
+
+    for (const v of dataVentas || []) {
+      const iso = v?.fecha_venta || v?.fecha || v?.createdAt;
+      if (!iso) continue;
+      const d = limaFromISO(iso);
+      if (!d) continue;
+      if (d.getFullYear() !== Number(f.anio)) continue;
+      if (d.getMonth() !== MESES.indexOf(f.mes)) continue;
+
+      const origin = detectDigitalOrigin(v);
+      if (origin === "tiktok") clientes_por_red.tiktok++;
+      if (origin === "facebook" || origin === "instagram" || origin === "meta")
+        clientes_por_red.meta++;
+    }
+
+    obj.clientes_digitales = clientesTotales;
+    obj.clientes_por_red = clientes_por_red; // 👈 clave para el hijo
+    obj.cac = clientesTotales > 0 ? +(inversion / clientesTotales).toFixed(2) : 0;
 
     base[key] = obj;
   }
   return base;
 }, [dataMktByMonth, dataVentas, mesesSeleccionados, initDay, cutDay]);
 
-;
 
   useEffect(() => {
   }, [dataMktByMonth]);
@@ -609,7 +627,7 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
 
     return (
   <>
-    <PageBreadcrumb title="RESUMEN EJECUTIVO" subName="Ventas" />
+    <PageBreadcrumb title="INFORME GERENCIAL" subName="Ventas" />
 
     {/* === CONTROLES SUPERIORES === */}
     <Row className="mb-3">
@@ -658,6 +676,7 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
               696: "EX-PT reinscripcion",
               689: "WSP organico",
               1470: "CORPORATIVOS BBVA",
+              1443:"CANJE"
             }}
           />
         </div>
@@ -682,31 +701,9 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
           />
         </div>
 
-        {/* === TARJETAS DE PAGO === */}
-        <Col lg={12}>
-          <div style={{ marginTop: "15px" }}>
-            <TarjetasPago
-              tasks={
-                (TotalDeVentasxProdServ("total")?.asesores_pago || [])
-                  .filter(
-                    (item) =>
-                      item.monto > 0 &&
-                      (item.tipo === "programa" ||
-                        item.categoria === "PROGRAMAS" ||
-                        item.id_programa !== null)
-                  )
-                  .map((item) => ({
-                    ...item,
-                    nombre: item.nombre?.split(" ")[0] || item.nombre,
-                  }))
-              }
-              title={"Ranking Venta Membresías"}
-            />
-          </div>
-        </Col>
+      
       </Col>
 
-      {/* === SUMA DE SESIONES === */}
       <Row>
         <Col lg={12}>
           <SumaDeSesiones
@@ -724,11 +721,11 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
       <Col lg={12}>
   <div style={{ marginTop: "15px" }}>
     <TarjetasProductos
-      tasks={productosPorAsesor}          // ← filas [{asesor, total_ventas, avatar}]
+      tasks={productosPorAsesor}          
       title="Ranking Venta de Productos"
       topN={5}
       minImporte={0}
-      avatarByAdvisor={avatarByAdvisor}   // ← fallback desde App
+      avatarByAdvisor={avatarByAdvisor}   
     />
   </div>
 </Col>
