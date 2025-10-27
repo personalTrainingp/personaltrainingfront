@@ -114,12 +114,12 @@
 /* Fila secundaria compacta */
 .fila-secundaria.compact td,
 .fila-secundaria.compact td * {
-  font-size: 13px !important;
+  font-size: 18px !important;
   line-height: 1.1 !important;
 }
 
 .fila-secundaria.compact td {
-  padding: 4px 6px !important;
+  padding: 14px 16px !important;
 }
 
 /* Título de la primera celda */
@@ -127,8 +127,8 @@
   padding: 0 !important;
 }
 .fila-secundaria.compact .img-with-name .cap {
-  font-size: 12px !important;
-  line-height: 1.1 !important;
+  font-size: 18px !important;
+  line-height: 1.5 !important;
   margin: 0 !important;
 }
 
@@ -146,7 +146,7 @@
 }
 .fila-secundaria.compact .tri-box p {
   margin: 0 !important;
-  font-size: 12px !important;
+  font-size: 19px !important;
   line-height: 1 !important;
 }
 

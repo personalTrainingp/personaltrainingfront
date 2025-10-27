@@ -1,35 +1,51 @@
-// TopControls.jsx
 import React, { useEffect, useState } from "react";
+
+const boxStyleBase = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "8px",
+  border: "2px solid rgba(0,0,0,0.2)",
+  borderRadius: "8px",
+  padding: "6px 14px",
+  background: "rgba(255,255,255,0.6)",
+  fontWeight: 800,
+  fontSize: "1.5rem",
+  color: "black",
+  boxShadow: "0 2px 5px rgba(0,0,0,0.05)",
+  lineHeight: 1.2,
+  minWidth: "120px", // <- fuerza que todos tengan un ancho visual similar
+  height: "48px",    // <- altura consistente
+};
+
+// estilo específico para los <select> para que se vea como caja pero siga siendo select
+const selectStyle = {
+  ...boxStyleBase,
+  appearance: "none",
+  WebkitAppearance: "none",
+  MozAppearance: "none",
+  backgroundClip: "padding-box",
+  cursor: "pointer",
+  paddingRight: "32px", // espacio para la flechita del select
+};
 
 export function RealTimeClock() {
   const [now, setNow] = useState(new Date());
+
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
+
   const hhmm = now.toLocaleTimeString("es-PE", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
     timeZone: "America/Lima",
   });
+
   return (
-    <div
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "8px",
-        border: "2px solid rgba(0,0,0,0.2)",
-        borderRadius: "8px",
-        padding: "6px 14px",
-        background: "rgba(255,255,255,0.6)",
-        fontWeight: 800,
-        fontSize: "1.5rem",
-        color: "black",
-        boxShadow: "0 2px 5px rgba(0,0,0,0.05)",
-      }}
-    >
+    <div style={boxStyleBase}>
       <span role="img" aria-label="clock">🕒</span>
       <span>{hhmm}</span>
     </div>
@@ -44,12 +60,13 @@ export function TopControls({
   cutDay,
   setCutDay,
   year = new Date().getFullYear(),
-  onUseLastDay, // <-- NUEVO
+  onUseLastDay,
 }) {
   const MESES = [
     "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
     "JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE",
   ];
+
   const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
 
   const handleMonthChange = (newMonth) => {
@@ -69,7 +86,6 @@ export function TopControls({
     setInitDay(nextInit);
   };
 
-  // Fallback local (solo si no te pasan el callback oficial desde App)
   const fallbackUseLastDay = () => {
     const today = new Date();
     const isCurrentMonth =
@@ -82,10 +98,20 @@ export function TopControls({
 
   const handleClickUseLastDay = () => {
     if (typeof onUseLastDay === "function") {
-      onUseLastDay();          // <<-- llama la MISMA lógica de App
+      onUseLastDay();
     } else {
-      fallbackUseLastDay();    // <<-- por si no te pasan el callback
+      fallbackUseLastDay();
     }
+  };
+
+  // estilos de cada bloque label + control
+  const fieldGroupStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    fontSize: "1.5rem",
+    fontWeight: 800,
+    color: "black",
   };
 
   return (
@@ -103,8 +129,8 @@ export function TopControls({
       }}
     >
       {/* MES */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: "1.5rem" }}>
-        <label>Mes:</label>
+      <div style={fieldGroupStyle}>
+        <label style={{ textTransform: "uppercase" }}>Mes:</label>
         <select
           value={selectedMonth}
           onChange={(e) => {
@@ -113,12 +139,16 @@ export function TopControls({
             if (newMonth > currentMonth) return;
             handleMonthChange(newMonth);
           }}
-          style={{ fontSize: "1.5rem", fontWeight: 800 }}
+          style={selectStyle}
         >
           {MESES.map((mes, idx) => {
             const currentMonth = new Date().getMonth() + 1;
             return (
-              <option key={idx + 1} value={idx + 1} disabled={idx + 1 > currentMonth}>
+              <option
+                key={idx + 1}
+                value={idx + 1}
+                disabled={idx + 1 > currentMonth}
+              >
                 {mes}
               </option>
             );
@@ -127,15 +157,15 @@ export function TopControls({
       </div>
 
       {/* DÍA INICIO */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: "1.5rem" }}>
-        <label>FECHA de inicio:</label>
+      <div style={fieldGroupStyle}>
+        <label style={{ textTransform: "uppercase" }}>FECHA de inicio:</label>
         <select
           value={initDay}
           onChange={(e) => {
             const v = parseInt(e.target.value, 10);
             if (v <= cutDay) setInitDay(v);
           }}
-          style={{ fontSize: "1.5rem", fontWeight: 700 }}
+          style={selectStyle}
         >
           {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
             <option key={n} value={n}>{n}</option>
@@ -144,8 +174,8 @@ export function TopControls({
       </div>
 
       {/* DÍA CORTE */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: "1.5rem" }}>
-        <label>FECHA de corte:</label>
+      <div style={fieldGroupStyle}>
+        <label style={{ textTransform: "uppercase" }}>FECHA de corte:</label>
         <select
           value={cutDay}
           onChange={(e) => {
@@ -154,12 +184,16 @@ export function TopControls({
             const currentMonth = today.getMonth() + 1;
             const currentDay = today.getDate();
             const lastDayTarget = daysInMonth(year, selectedMonth);
+
             let next = Math.min(val, lastDayTarget);
-            if (selectedMonth === currentMonth) next = Math.min(next, currentDay);
+            if (selectedMonth === currentMonth) {
+              next = Math.min(next, currentDay);
+            }
+
             setCutDay(next);
             if (initDay > next) setInitDay(next);
           }}
-          style={{ fontSize: "1.5rem", fontWeight: 700 }}
+          style={selectStyle}
         >
           {Array.from({ length: 31 }, (_, i) => i + 1).map((n) => (
             <option key={n} value={n}>{n}</option>
@@ -167,10 +201,19 @@ export function TopControls({
         </select>
       </div>
 
-      {/* RELOJ + BOTÓN (alineado a la derecha) */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12}}>
+      {/* RELOJ + BOTÓN */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <RealTimeClock />
-        <button onClick={handleClickUseLastDay} className="btn btn-outline-primary">
+        <button
+          onClick={handleClickUseLastDay}
+          className="btn btn-outline-warning"
+          style={{
+            fontWeight: 700,
+            borderWidth: "2px",
+            textTransform: "uppercase",
+            whiteSpace: "nowrap",
+          }}
+        >
           Usar último día del mes
         </button>
       </div>

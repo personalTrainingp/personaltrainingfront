@@ -7,77 +7,65 @@ import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import './SumaDeSesiones.css';
 
 export const TarjetasPago = ({ tasks = [], title = 'RANKING VENTA MEMBRESÍAS' }) => {
-  // ---- Helpers para soportar datos "adaptados" o "crudos" ----
-  const isPrograma = (t) =>
-    t?.tipo === 'programa' ||
-    String(t?.categoria || '').toUpperCase() === 'PROGRAMAS' ||
-    t?.id_programa != null ||
-    (Array.isArray(t?.detalle_membresia) && t.detalle_membresia.length > 0);
+  // helper: sumar SOLO membresías/programas (items con id_pgm)
+  const getTotalProgramas = (t) => {
+    if (!Array.isArray(t?.items)) return 0;
 
-  const getNombre = (t) => {
-    const fromAdapter = t?.empl; // p.ej. "ALVARO SALAZAR GOMEZ"
-    const fromRaw = t?.tb_empleado?.nombres_apellidos_empl; // JSON crudo
-    const base = (fromAdapter ?? fromRaw ?? '').trim();
-    return base ? base.split(/\s+/)[0] : ''; // solo primer nombre
+    return t.items
+      .filter((it) => it && typeof it === 'object' && 'id_pgm' in it) // <- esto es membresía
+      .reduce((acc, it) => acc + Number(it.tarifa_monto || 0), 0);
   };
 
-  const getTotal = (t) => {
-    // Prioriza campos ya adaptados
-    const byAdapter = Number(t?.monto ?? t?.total_ventas ?? 0);
-    if (byAdapter > 0) return byAdapter;
+  // normalizar cada asesor y quedarnos SOLO con venta de programas
+  const normalizados = (tasks || [])
+    .map((t) => {
+      // monto SOLO de programas
+      const totalProgramas = getTotalProgramas(t);
 
-    // Suma membresías (ventas)
-    const sumMemb = (t?.detalle_membresia || []).reduce(
-      (acc, it) => acc + Number(it?.tarifa_monto || 0),
-      0
-    );
+      // nombre asesor
+      const nombreCompleto =
+        t?.empl ||
+        t?.tb_empleado?.nombres_apellidos_empl ||
+        '';
 
-    // Como alternativa, suma pagos (si tu backend liquida por pagos)
-    const sumPagos = (t?.detalle_pago || []).reduce(
-      (acc, it) => acc + Number(it?.parcial_monto || 0),
-      0
-    );
+      const primerNombre = nombreCompleto
+        ? nombreCompleto.trim().split(/\s+/)[0]
+        : '—';
 
-    return Math.max(sumMemb, sumPagos);
-  };
+      // avatar
+      let avatarFile = t?.avatar;
+      if (!avatarFile) {
+        const imgs = t?.tb_empleado?.tb_images || [];
+        const pick =
+          imgs.find(
+            (i) =>
+              i?.clasificacion_image === 'avatar-empleado' &&
+              (i?.flag === true || i?.flag === 1)
+          ) || imgs[0];
 
-  const getAvatarFile = (t) => {
-    if (t?.avatar) return t.avatar; // nombre de archivo ya adaptado
+        if (pick?.name_image) {
+          avatarFile = pick.name_image;
+        } else if (pick?.uid) {
+          avatarFile = `${pick.uid}${pick.extension_image || ''}`;
+        }
+      }
 
-    const imgs = t?.tb_empleado?.tb_images || [];
-    const pick =
-      imgs.find(
-        (i) => i?.clasificacion_image === 'avatar-empleado' && (i?.flag === true || i?.flag === 1)
-      ) || imgs[0];
+      return {
+        nombre: primerNombre,
+        total: totalProgramas, // <- OJO: ya no es t.monto, es SOLO PROGRAMAS
+        avatar: avatarFile,
+      };
+    })
+    // quitar asesores que no vendieron programas
+    .filter((p) => p.total > 0)
+    // ordenar desc por ventas de programas
+    .sort((a, b) => b.total - a.total);
 
-    if (!pick) return null;
+  // top 3
+  const pagos = normalizados.slice(0, 3);
 
-    // Tu API de imágenes usa generalmente name_image
-    if (pick.name_image) return pick.name_image;
-
-    // fallback: construir con uid y extensión
-    if (pick.uid) return `${pick.uid}${pick.extension_image || ''}`;
-
-    return null;
-  };
-
-  // ---- Filtrado, mapeo y top 3 ----
-  const soloProgramas = (tasks || []).filter(isPrograma);
-
-  const itemsOrdenados = soloProgramas
-    .map((t) => ({
-      nombre_producto: getNombre(t),
-      total_ventas: getTotal(t),
-      avatar: getAvatarFile(t),
-    }))
-    .filter((p) => p.total_ventas > 0)
-    .sort((a, b) => b.total_ventas - a.total_ventas);
-
-  // Mostramos top 3
-  const pagos = itemsOrdenados.slice(0, 3);
-
-  // El % es sobre lo visible (top 3). Si quieres que sea sobre el total, usa itemsOrdenados en lugar de pagos.
-  const totalVisible = pagos.reduce((acc, p) => acc + p.total_ventas, 0);
+  // suma para %
+  const totalVisible = pagos.reduce((acc, p) => acc + p.total, 0);
 
   return (
     <Card className="ranking-card">
@@ -120,27 +108,45 @@ export const TarjetasPago = ({ tasks = [], title = 'RANKING VENTA MEMBRESÍAS' }
                     ? `${config.API_IMG.AVATAR_EMPL}${task.avatar}`
                     : sinAvatar;
 
-                  const porcentaje = totalVisible > 0 ? (task.total_ventas / totalVisible) * 100 : 0;
+                  const porcentaje =
+                    totalVisible > 0
+                      ? (task.total / totalVisible) * 100
+                      : 0;
 
                   return (
-                    <tr key={task.nombre_producto + index}>
+                    <tr key={task.nombre + index}>
                       <td style={{ width: '25px' }}>{index + 1}</td>
 
                       <td className="rank-img-cell">
                         <div className="img-cap">
                           {index === 0 && (
-                            <div className="copa-champions" title="Primer lugar 🏆">
-                              <img src="/copa_1_lugar.jpg" alt="Copa Champions" />
+                            <div
+                              className="copa-champions"
+                              title="Primer lugar 🏆"
+                            >
+                              <img
+                                src="/copa_1_lugar.jpg"
+                                alt="Copa Champions"
+                              />
                             </div>
                           )}
-                          <img className="avatar" src={avatarSrc} alt={task.nombre_producto} />
+                          <img
+                            className="avatar"
+                            src={avatarSrc}
+                            alt={task.nombre}
+                          />
                         </div>
                       </td>
 
-                      <td className="fw-bold w-25">{task.nombre_producto || '—'}</td>
+                      <td className="fw-bold w-25">
+                        {task.nombre || '—'}
+                      </td>
 
                       <td style={{ width: '25px' }}>
-                        <NumberFormatMoney amount={task.total_ventas} symbol="S/" />
+                        <NumberFormatMoney
+                          amount={task.total}
+                          symbol="S/"
+                        />
                       </td>
 
                       <td>
@@ -156,6 +162,7 @@ export const TarjetasPago = ({ tasks = [], title = 'RANKING VENTA MEMBRESÍAS' }
                           variant="orange"
                         />
                       </td>
+
                       <td>{porcentaje.toFixed(2)}</td>
                     </tr>
                   );

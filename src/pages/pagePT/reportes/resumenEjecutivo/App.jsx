@@ -543,19 +543,37 @@ const dataMktWithCac = useMemo(() => {
     const obj = { ...(base[key] || {}) };
     const inversion = Number(obj.inversiones_redes ?? obj.inversion_redes ?? 0);
 
-    const clientes = countDigitalClientsForMonth(
+    // --- Clientes globales (ya tenías esto)
+    const clientesTotales = countDigitalClientsForMonth(
       dataVentas || [], f.anio, f.mes, initDay, cutDay
     );
 
-    obj.clientes_digitales = clientes;
-    obj.cac = clientes > 0 ? +(inversion / clientes).toFixed(2) : 0;
+    // --- Clasificación por red (para CAC correcto)
+    let clientes_por_red = { tiktok: 0, meta: 0 };
+
+    for (const v of dataVentas || []) {
+      const iso = v?.fecha_venta || v?.fecha || v?.createdAt;
+      if (!iso) continue;
+      const d = limaFromISO(iso);
+      if (!d) continue;
+      if (d.getFullYear() !== Number(f.anio)) continue;
+      if (d.getMonth() !== MESES.indexOf(f.mes)) continue;
+
+      const origin = detectDigitalOrigin(v);
+      if (origin === "tiktok") clientes_por_red.tiktok++;
+      if (origin === "facebook" || origin === "instagram" || origin === "meta")
+        clientes_por_red.meta++;
+    }
+
+    obj.clientes_digitales = clientesTotales;
+    obj.clientes_por_red = clientes_por_red; // 👈 clave para el hijo
+    obj.cac = clientesTotales > 0 ? +(inversion / clientesTotales).toFixed(2) : 0;
 
     base[key] = obj;
   }
   return base;
 }, [dataMktByMonth, dataVentas, mesesSeleccionados, initDay, cutDay]);
 
-;
 
   useEffect(() => {
   }, [dataMktByMonth]);
