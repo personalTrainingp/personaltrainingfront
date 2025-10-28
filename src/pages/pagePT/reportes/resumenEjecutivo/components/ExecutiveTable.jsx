@@ -6,6 +6,7 @@ export default function ExecutiveTable({
   dataMktByMonth = {},
   initialDay = 1,
   cutDay = 21,
+    reservasMF = [],
 }) {
   const MESES = [
     "enero","febrero","marzo","abril","mayo","junio",
@@ -108,8 +109,28 @@ export default function ExecutiveTable({
   // === MARKETING ===
   const key = `${anio}-${mesAlias}`;
   const mk = dataMktByMonth?.[key] ?? {};
+    // === MONKEY FIT ===
+let ventaMF = 0;
+let cantMF = 0;
 
-  // Total de inversión que te trae el backend (asumimos USD)
+for (const r of reservasMF) {
+  if (!r?.flag) continue;
+  const d = new Date(r.fecha);
+  if (d.getFullYear() !== Number(anio)) continue;
+  const mesReserva = d.getMonth(); // 0-11
+  const mesActual = MESES.indexOf(aliasMes(String(mesNombre).toLowerCase()));
+  if (mesReserva !== mesActual) continue;
+
+  // contar solo estados válidos
+  const estado = (r?.estado?.label_param || "").toLowerCase();
+  if (!["completada", "confirmada", "pagada", "no pagada"].some(e => estado.includes(e))) continue;
+
+  ventaMF += Number(r.monto_total || 0);
+  cantMF++;
+}
+
+const ticketMF = cantMF ? ventaMF / cantMF : 0;
+
   const invTotalRaw = Number(
     mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0
   );
@@ -150,7 +171,6 @@ export default function ExecutiveTable({
     mkInvMetaUSD = rawMeta;
     mkInvTikTokUSD = rawTikTok;
   } else {
-    // Solo tenemos el total bruto
     mkInvUSD = invTotalRaw;
     mkInvMetaUSD = 0;
     mkInvTikTokUSD = 0;
@@ -158,11 +178,10 @@ export default function ExecutiveTable({
 
   const FX = 3.39;
 
-  const mkInv = mkInvUSD * FX;                 // inversión total en PEN
-  const mkInvMeta = mkInvMetaUSD * FX;         // inversión Meta en PEN
-  const mkInvTikTok = mkInvTikTokUSD * FX;     // inversión TikTok en PEN
+  const mkInv = mkInvUSD * FX;                 
+  const mkInvMeta = mkInvMetaUSD * FX;         
+  const mkInvTikTok = mkInvTikTokUSD * FX;     
 
-  // Leads y clientes por red
   const leads_por_red = mk?.leads_por_red ?? {};
   const clientes_por_red = mk?.clientes_por_red ?? {};
 
@@ -183,7 +202,6 @@ export default function ExecutiveTable({
 
   const mkLeads = mkLeadsMeta + mkLeadsTikTok;
 
-  // Clientes cerrados por red (si no hay, fallback = leads)
   const clientesMeta =
     sumFrom(clientes_por_red, ["1515", "meta", "facebook", "instagram"]) ||
     mkLeadsMeta;
@@ -192,10 +210,8 @@ export default function ExecutiveTable({
     sumFrom(clientes_por_red, ["1514", "tiktok", "tik tok"]) ||
     mkLeadsTikTok;
 
-  // Helpers
   const safeDiv0 = (n, d) => (Number(d) > 0 ? Number(n) / Number(d) : 0);
 
-  // CPL y CAC ahora en SOLES porque mkInv*, mkInvMeta*, mkInvTikTok* ya están en PEN
   const mkCpl = safeDiv0(mkInv, mkLeads);
   const mkCplMeta = safeDiv0(mkInvMeta, mkLeadsMeta);
   const mkCplTikTok = safeDiv0(mkInvTikTok, mkLeadsTikTok);
@@ -205,21 +221,19 @@ export default function ExecutiveTable({
   const mkCacTikTokExact = safeDiv0(mkInvTikTok, clientesTikTok);
 
   return {
-    // --- marketing (YA EN SOLES) ---
-    mkInv,           // inversión total redes (S/)
-    mkInvMeta,       // inversión Meta (S/)
-    mkInvTikTok,     // inversión TikTok (S/)
-    mkLeads,         // leads totales
-    mkLeadsMeta,     // leads Meta
-    mkLeadsTikTok,   // leads TikTok
-    mkCpl,           // costo por lead total (S/)
-    mkCplMeta,       // CPL Meta (S/)
-    mkCplTikTok,     // CPL TikTok (S/)
-    mkCac,           // CAC total (S/)
-    mkCacMeta: mkCacMetaExact,         // CAC Meta (S/)
-    mkCacTikTok: mkCacTikTokExact,     // CAC TikTok (S/)
+    mkInv,           
+    mkInvMeta,      
+    mkInvTikTok,     
+    mkLeads,        
+    mkLeadsMeta,    
+    mkLeadsTikTok,   
+    mkCpl,          
+    mkCplMeta,       
+    mkCplTikTok,    
+    mkCac,          
+    mkCacMeta: mkCacMetaExact,         
+    mkCacTikTok: mkCacTikTokExact,    
 
-    // --- ventas ---
     totalServ,
     cantServ,
     ticketServ,
@@ -237,11 +251,13 @@ export default function ExecutiveTable({
     ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
 
     totalMesFull: totalServFull + totalProdFull,
+     venta_monkeyfit: ventaMF,
+  cantidad_reservas_monkeyfit: cantMF,
+  ticket_medio_monkeyfit: ticketMF,
   };
 };
 
   const allRows = [
-    // --- tabla MARKETING ---
     { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
     {
       key: "mkLeads",
@@ -315,17 +331,17 @@ export default function ExecutiveTable({
       type: "money",
     },
     {
-      key: "",
+      key: "venta_monkeyfit",
       label: "VENTA MEMBRESIAS MONKEY FIT",
       type: "money",
     },
     {
-      key: "/",
+      key: "cantidad_reservas_monkeyfit",
       label: "CANTIDAD DE RESERVAS MONKEYFIT",
       type: "int",
     },
     {
-      key: "-",
+      key: "ticket_medio_monkeyfit",
       label: "TICKET MEDIO MONKEY FIT",
       type: "money",
     },
@@ -425,7 +441,6 @@ export default function ExecutiveTable({
     fontWeight: 800,
   };
 
-  // metas de cuota por mes
   const metasPorMes = {
     enero: 50000,
     febrero: 50000,
@@ -441,10 +456,6 @@ export default function ExecutiveTable({
     noviembre: 85000,
     diciembre: 85000,
   };
-
-  // ================
-  // HELPERS DE RENDER
-  // ================
 
   const TableHead = () => (
     <thead>
@@ -516,7 +527,6 @@ export default function ExecutiveTable({
       </tr>
     ));
 
-  // tabla resumen cuota vs ventas
   const ResumenCuotaTable = () => (
     <table style={sTable}>
       <thead>
@@ -577,7 +587,6 @@ export default function ExecutiveTable({
           ))}
         </tr>
 
-        {/* CUOTA DEL MES (fondo blanco en las cifras, etiqueta roja a la izquierda) */}
         <tr>
           <td
             style={{

@@ -9,15 +9,15 @@
       import { buildDataMktByMonth } from "./adapters/buildDataMktByMonth";
       import { GraficoLinealInversionRedes } from "./components/GraficoLinealInversionRedes";
       import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
-      import { TarjetasPago } from '../totalVentas/TarjetasPago';
       import { useSelector, useDispatch } from 'react-redux';
       import { onSetRangeDate } from '@/store/data/dataSlice';
       import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
       import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
       import config from '@/config';
       import axios from 'axios';
-import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
+      import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
       import { TopControls } from "./components/TopControls";
+import { reservasApi } from "@/api/reservasApi";
 
     
 
@@ -26,7 +26,7 @@ export function limaFromISO(iso) {
   const d = new Date(iso);
   if (isNaN(d)) return null;
   const utc = d.getTime() + d.getTimezoneOffset() * 60000;
-  return new Date(utc - 5 * 60 * 60000); // UTC-5
+  return new Date(utc - 5 * 60 * 60000); 
 }
 
 export function limaStartOfDay(d) {
@@ -45,7 +45,68 @@ const parseBackendDate = (s) => {
 };
 const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= end);
 
-  
+  // === arriba de tu componente App ===
+const MESES_ES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","setiembre","octubre","noviembre","diciembre"];
+const aliasMes = (m) => (m === "septiembre" ? "setiembre" : m);
+const toLimaDate = (s) => {
+  if (!s) return null;
+  let d = new Date(String(s).replace(" ", "T"));
+  if (isNaN(d)) return null;
+  const utc = d.getTime() + d.getTimezoneOffset() * 60000;
+  return new Date(utc - 5 * 60 * 60000);
+};
+
+// Agrega este helper
+function buildMonkeyfitByMonth(reservas = [], initDay = 1, cutDay = 31) {
+  const out = {};
+  for (const r of reservas) {
+    if (Number(r?.flag) === 0) continue;
+
+    // Si viene el objeto estado, considera solo completadas/pagadas/confirmadas
+    const estado = (r?.estado?.label_param || "").toLowerCase();
+    const estadoOk =
+      !estado ||
+      /completada|pagada|confirmada|reprogramada/.test(estado);
+    if (!estadoOk) continue;
+
+    const d = toLimaDate(r?.fecha || r?.createdAt);
+    if (!d) continue;
+
+    const monthIdx = d.getMonth();
+    const anio = d.getFullYear();
+    const mes = MESES_ES[monthIdx];            // p.ej. "julio"
+    const key = `${anio}-${aliasMes(mes)}`;    // p.ej. "2025-julio"
+
+    // aplica el rango [initDay, cutDay] del mes
+    const lastDay = new Date(anio, monthIdx + 1, 0).getDate();
+    const from = Math.max(1, Math.min(Number(initDay || 1), lastDay));
+    const to   = Math.max(from, Math.min(Number(cutDay || lastDay), lastDay));
+    const dia  = d.getDate();
+    if (dia < from || dia > to) continue;
+
+    if (!out[key]) {
+      out[key] = {
+        venta_monkeyfit: 0,
+        cantidad_reservas_monkeyfit: 0,
+        ticket_medio_monkeyfit: 0,
+      };
+    }
+
+    out[key].venta_monkeyfit += Number(r?.monto_total || 0);
+    out[key].cantidad_reservas_monkeyfit += 1;
+  }
+
+  // Ticket medio
+  Object.values(out).forEach((o) => {
+    o.ticket_medio_monkeyfit =
+      o.cantidad_reservas_monkeyfit > 0
+        ? o.venta_monkeyfit / o.cantidad_reservas_monkeyfit
+        : 0;
+  });
+
+  return out;
+}
+
       export const App = ({ id_empresa }) => {
       const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
         const { obtenerVentas, repoVentasPorSeparado, loading } = useReporteStore();
@@ -133,6 +194,27 @@ useEffect(() => {
     }
   })();
 }, []);
+// === dentro de App ===
+const [reservasMF, setReservasMF] = useState([]);
+useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          "http://localhost:4000/api/reserva_monk_fit?limit=2000&onlyActive=true"
+        );
+        setReservasMF(Array.isArray(data?.rows) ? data.rows : []);
+        console.log("✅ reservasMF:", data.rows);
+      } catch (err) {
+        console.error("❌ Error obteniendo reservas MF:", err);
+      }
+    })();
+  }, []);
+
+const monkeyfitByMonth = useMemo(
+  () => buildMonkeyfitByMonth(reservasMF, initDay, cutDay),
+  [reservasMF, initDay, cutDay]
+);
+
   const { start, end } = useMemo(() => {
     const s = RANGE_DATE?.[0] ? new Date(RANGE_DATE[0]) : null;
     const e = RANGE_DATE?.[1] ? new Date(RANGE_DATE[1]) : null;
@@ -441,7 +523,7 @@ const buildProductosDesdeVentas = (ventas = []) => {
 
   return Array.from(map.values());
 };
-const ventasTotales = TotalDeVentasxProdServ("total")?.data || []; // <- ya lo tienes en gg.txt
+const ventasTotales = TotalDeVentasxProdServ("total")?.data || []; 
 
 const productosAgg = useProductosAgg(dataVentas, RANGE_DATE);
       const rankingData = (TotalDeVentasxProdServ("total")?.asesores_pago || [])
@@ -543,12 +625,10 @@ const dataMktWithCac = useMemo(() => {
     const obj = { ...(base[key] || {}) };
     const inversion = Number(obj.inversiones_redes ?? obj.inversion_redes ?? 0);
 
-    // --- Clientes globales (ya tenías esto)
     const clientesTotales = countDigitalClientsForMonth(
       dataVentas || [], f.anio, f.mes, initDay, cutDay
     );
 
-    // --- Clasificación por red (para CAC correcto)
     let clientes_por_red = { tiktok: 0, meta: 0 };
 
     for (const v of dataVentas || []) {
@@ -624,11 +704,9 @@ const avatarByAdvisor = useMemo(() => {
   return map;
 }, [repoVentasPorSeparado?.total?.empl_monto]);
 const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte: 0 });
-
     return (
   <>
     <PageBreadcrumb title="INFORME GERENCIAL" subName="Ventas" />
-
     {/* === CONTROLES SUPERIORES === */}
     <Row className="mb-3">
       <Col lg={12}>
@@ -644,7 +722,6 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
         />
       </Col>
     </Row>
-
     {/* === CONTENIDO PRINCIPAL === */}
     <Row className="mb-6">
       <Col lg={12} className="pt-0">
@@ -655,9 +732,9 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
             dataMktByMonth={dataMktWithCac}
             initialDay={initDay}
             cutDay={cutDay}
+      reservasMF={reservasMF}
           />
         </div>
-
         <div style={{ marginBottom: "32px", marginTop: "80px" }}>
           <ClientesPorOrigen
             ventas={dataVentas}
@@ -681,7 +758,6 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
           />
         </div>
       </Col>
-
       {/* === COMPARATIVOS Y GRÁFICOS === */}
       <Col lg={12}>
         <div style={{ marginBottom: "32px", marginTop: "90px" }}>
@@ -693,17 +769,13 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
             cutDay={cutDay}
           />
         </div>
-
         <div style={{ marginBottom: "32px", marginTop: "90px" }}>
           <GraficoLinealInversionRedes
             data={dataLeadPorMesAnio}
             fechas={[new Date()]}
           />
-        </div>
-
-      
+        </div>     
       </Col>
-
       <Row>
         <Col lg={12}>
           <SumaDeSesiones
@@ -715,8 +787,7 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
             advisorOriginByProg={advisorOriginByProg}
             avatarByAdvisor={avatarByAdvisor}
           />
-        </Col>
-        
+        </Col>       
       </Row>
       <Col lg={12}>
   <div style={{ marginTop: "15px" }}>
@@ -732,5 +803,4 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
     </Row>
   </>
 );
-
       };
