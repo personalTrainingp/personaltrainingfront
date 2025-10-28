@@ -94,7 +94,7 @@ const CvColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/cv'
 const DniColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/dni'))
 const ReservaMonkFitPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/App'))
 const GestionAlertaUsuarios = lazy(()=>import('../pages/pagePT/GestionAlertasUsuarios/Index.jsx'))
-const HorariosColaboradores = lazy(()=>import('../pages/pagePT/HorariosColaboradores'))
+const HorariosColaboradores = lazy(()=>import('../pages/pagePT/HorariosColaboradores/Index.jsx'))
 /**
  * routes import
  */
