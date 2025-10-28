@@ -39,13 +39,13 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
             <div className='m-1'>
                 <label>ESTADO</label>
                 <Select
-                    options={[{value: 0, label: 'Inactivo'}, {value: 0, label: 'Activo'} ]}
+                    options={[{value: 0, label: 'Inactivo'}, {value: 1, label: 'Activo'} ]}
                     placeholder={'Selecciona el estado'}
                     onChange={(e)=>onInputChangeReact(e, 'estado')}
                     className="react-select"
                     classNamePrefix="react-select"
-                    name='tipo_alerta'
-                    value={[{value: 0, label: 'Inactivo'}, {value: 0, label: 'Activo'} ].find((op)=>op.value===estado)}
+                    name='estado'
+                    value={[{value: 0, label: 'Inactivo'}, {value: 1, label: 'Activo'} ].find((op)=>op.value===estado)}
                     required
                 />
             </div>

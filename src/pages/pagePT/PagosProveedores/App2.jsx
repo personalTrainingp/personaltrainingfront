@@ -3,7 +3,8 @@ import { TablePagos } from './TablePagos';
 import { ModalCustomPagosProveedores } from './ModalCustomPagosProveedores';
 import { Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-export const App = ({id_empresa, bgEmpresa='', classNameTablePrincipal}) => {
+
+export const App2 = ({id_empresa, bgEmpresa='', classNameTablePrincipal}) => {
   const [modalCustomPagosProv, setmodalCustomPagosProv] = useState({isOpen: false, id_empresa: 0, id: 0})
   const onOpenModalCustomPagosProv = (id, id_empresa)=>{
     setmodalCustomPagosProv({isOpen: true, id, id_empresa})
@@ -16,8 +17,6 @@ export const App = ({id_empresa, bgEmpresa='', classNameTablePrincipal}) => {
   }, [RANGE_DATE])
   return (
     <div>
-      
-      {/* {bgEmpresa} */}
       <Button className={`${bgEmpresa} border-none outline-none mb-2 p-2 fs-3`} onClick={()=>onOpenModalCustomPagosProv(0, id_empresa)}>AGREGAR CONTRATO</Button>
       {/* <Button className={'bg-circus'} label='AGREGAR CONTRATO' onClick={()=>onOpenModalCustomPagosProv(0, id_empresa)}/> */}
       <br/>

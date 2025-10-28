@@ -95,6 +95,8 @@ const DniColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/dn
 const ReservaMonkFitPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/App'))
 const GestionAlertaUsuarios = lazy(()=>import('../pages/pagePT/GestionAlertasUsuarios/Index.jsx'))
 const HorariosColaboradores = lazy(()=>import('../pages/pagePT/HorariosColaboradores/Index.jsx'))
+const CuentasPorPagar = lazy(() => import('../pages/pagePT/PagosProveedores'));
+
 /**
  * routes import
  */
@@ -137,7 +139,11 @@ export default function ProtectedRoutes() {
 			status  === 'authenticated' ? (
 				<>
 				<Route path="/*" element={<Layout />}>
-				{/* /reporte-seguimiento  /facturacion-publicidad*/}
+				{/* /reporte-seguimiento  /facturacion-publicidad cuentas-pagar*/}
+					{
+						sections.find(e=>e.url==='/cuentas-pagar')&&
+						<Route path='cuentas-pagar' element={<CuentasPorPagar/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/horarios-colaborador')&&
                         <Route path='horarios-colaborador' element={<HorariosColaboradores/>}/>
