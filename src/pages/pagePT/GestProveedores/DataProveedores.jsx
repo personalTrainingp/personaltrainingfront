@@ -23,7 +23,6 @@ import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { CustomersProv } from './CustomersProv';
-import { App } from '../PagosProveedores/App2';
 import { SelectButton } from 'primereact/selectbutton';
 
 const ESTADOS = [
