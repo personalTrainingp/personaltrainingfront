@@ -47,189 +47,198 @@ export default function ExecutiveTable({
     [];
 
   const computeMetricsForMonth = (anio, mesNombre) => {
-    const mesAlias = aliasMes(String(mesNombre).toLowerCase());
-    const monthIdx = MESES.indexOf(mesAlias);
-    if (monthIdx < 0) return null;
+  const mesAlias = aliasMes(String(mesNombre).toLowerCase());
+  const monthIdx = MESES.indexOf(mesAlias);
+  if (monthIdx < 0) return null;
 
-    let totalServ = 0,
-      cantServ = 0,
-      totalProd = 0,
-      cantProd = 0;
-    let totalServFull = 0,
-      cantServFull = 0,
-      totalProdFull = 0,
-      cantProdFull = 0;
+  let totalServ = 0,
+    cantServ = 0,
+    totalProd = 0,
+    cantProd = 0;
+  let totalServFull = 0,
+    cantServFull = 0,
+    totalProdFull = 0,
+    cantProdFull = 0;
 
-    const from = clamp(Number(initialDay || 1), 1, 31);
+  const from = clamp(Number(initialDay || 1), 1, 31);
 
-    for (const v of ventas) {
-      const d = toLimaDate(v?.fecha_venta);
-      if (!d) continue;
-      if (d.getFullYear() !== Number(anio)) continue;
-      if (d.getMonth() !== monthIdx) continue;
+  for (const v of ventas) {
+    const d = toLimaDate(v?.fecha_venta);
+    if (!d) continue;
+    if (d.getFullYear() !== Number(anio)) continue;
+    if (d.getMonth() !== monthIdx) continue;
 
-      // MES COMPLETO
-      for (const s of getDetalleServicios(v)) {
-        const cantidad = Number(s?.cantidad || 1);
-        const linea = Number(s?.tarifa_monto || 0);
-        totalServFull += linea;
-        cantServFull += cantidad;
-      }
-      for (const p of getDetalleProductos(v)) {
-        const cantidad = Number(p?.cantidad || 1);
-        const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
-        totalProdFull += linea;
-        cantProdFull += cantidad;
-      }
-
-      // HASTA cutDay
-      const lastDay = new Date(
-        d.getFullYear(),
-        d.getMonth() + 1,
-        0
-      ).getDate();
-      const to = clamp(Number(cutDay || lastDay), from, lastDay);
-      const dia = d.getDate();
-      if (dia < from || dia > to) continue;
-
-      for (const s of getDetalleServicios(v)) {
-        const cantidad = Number(s?.cantidad || 1);
-        const linea = Number(s?.tarifa_monto || 0);
-        totalServ += linea;
-        cantServ += cantidad;
-      }
-      for (const p of getDetalleProductos(v)) {
-        const cantidad = Number(p?.cantidad || 1);
-        const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
-        totalProd += linea;
-        cantProd += cantidad;
-      }
+    // === MES COMPLETO ===
+    for (const s of getDetalleServicios(v)) {
+      const cantidad = Number(s?.cantidad || 1);
+      const linea = Number(s?.tarifa_monto || 0);
+      totalServFull += linea;
+      cantServFull += cantidad;
+    }
+    for (const p of getDetalleProductos(v)) {
+      const cantidad = Number(p?.cantidad || 1);
+      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
+      totalProdFull += linea;
+      cantProdFull += cantidad;
     }
 
-    const ticketServ = cantServ ? totalServ / cantServ : 0;
-    const ticketProd = cantProd ? totalProd / cantProd : 0;
+    // === HASTA cutDay ===
+    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    const to = clamp(Number(cutDay || lastDay), from, lastDay);
+    const dia = d.getDate();
+    if (dia < from || dia > to) continue;
 
-    // MARKETING
-    const key = `${anio}-${mesAlias}`;
-    const mk = dataMktByMonth?.[key] ?? {};
-
-    const invTotalRaw = Number(
-      mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0
-    );
-    const clientesDigitales = Number(mk?.clientes_digitales ?? 0);
-
-    const por_red = mk?.por_red ?? {};
-    const val = (obj, k) => Number(obj?.[k] ?? 0);
-
-    const rawMeta =
-      val(por_red, "1515") +
-      val(por_red, "meta") +
-      val(por_red, "facebook") +
-      val(por_red, "instagram");
-
-    const rawTikTok =
-      val(por_red, "1514") +
-      val(por_red, "tiktok") +
-      val(por_red, "tik tok");
-
-    let mkInv = 0,
-      mkInvMeta = 0,
-      mkInvTikTok = 0;
-    const sumRaw = rawMeta + rawTikTok;
-    if (invTotalRaw > 0 && sumRaw > 0) {
-      const shareMeta = rawMeta / sumRaw;
-      const shareTikTok = rawTikTok / sumRaw;
-      mkInv = invTotalRaw;
-      mkInvMeta = mkInv * shareMeta;
-      mkInvTikTok = mkInv - mkInvMeta;
-    } else if (sumRaw > 0) {
-      mkInv = sumRaw;
-      mkInvMeta = rawMeta;
-      mkInvTikTok = rawTikTok;
-    } else {
-      mkInv = invTotalRaw;
-      mkInvMeta = 0;
-      mkInvTikTok = 0;
+    for (const s of getDetalleServicios(v)) {
+      const cantidad = Number(s?.cantidad || 1);
+      const linea = Number(s?.tarifa_monto || 0);
+      totalServ += linea;
+      cantServ += cantidad;
     }
+    for (const p of getDetalleProductos(v)) {
+      const cantidad = Number(p?.cantidad || 1);
+      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
+      totalProd += linea;
+      cantProd += cantidad;
+    }
+  }
 
-    const leads_por_red = mk?.leads_por_red ?? {};
-    const clientes_por_red = mk?.clientes_por_red ?? {};
+  const ticketServ = cantServ ? totalServ / cantServ : 0;
+  const ticketProd = cantProd ? totalProd / cantProd : 0;
 
-    const sumFrom = (obj, keys) =>
-      keys.reduce((a, k) => a + Number(obj?.[k] ?? 0), 0);
+  // === MARKETING ===
+  const key = `${anio}-${mesAlias}`;
+  const mk = dataMktByMonth?.[key] ?? {};
 
-    const mkLeadsMeta = sumFrom(leads_por_red, [
-      "1515",
-      "meta",
-      "facebook",
-      "instagram",
-    ]);
-    const mkLeadsTikTok = sumFrom(leads_por_red, [
-      "1514",
-      "tiktok",
-      "tik tok",
-    ]);
+  // Total de inversión que te trae el backend (asumimos USD)
+  const invTotalRaw = Number(
+    mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0
+  );
 
-    const mkLeads = mkLeadsMeta + mkLeadsTikTok;
+  const clientesDigitales = Number(mk?.clientes_digitales ?? 0);
 
-    const clientesMeta =
-      sumFrom(clientes_por_red, [
-        "1515",
-        "meta",
-        "facebook",
-        "instagram",
-      ]) || mkLeadsMeta;
-    const clientesTikTok =
-      sumFrom(clientes_por_red, ["1514", "tiktok", "tik tok"]) ||
-      mkLeadsTikTok;
+  const por_red = mk?.por_red ?? {};
+  const val = (obj, k) => Number(obj?.[k] ?? 0);
 
-    const safeDiv0 = (n, d) =>
-      Number(d) > 0 ? Number(n) / Number(d) : 0;
+  const rawMeta =
+    val(por_red, "1515") +
+    val(por_red, "meta") +
+    val(por_red, "facebook") +
+    val(por_red, "instagram");
 
-    const mkCpl = safeDiv0(mkInv, mkLeads);
-    const mkCplMeta = safeDiv0(mkInvMeta, mkLeadsMeta);
-    const mkCplTikTok = safeDiv0(mkInvTikTok, mkLeadsTikTok);
+  const rawTikTok =
+    val(por_red, "1514") +
+    val(por_red, "tiktok") +
+    val(por_red, "tik tok");
 
-    const mkCac = safeDiv0(mkInv, clientesDigitales);
-    const mkCacMetaExact = safeDiv0(mkInvMeta, clientesMeta);
-    const mkCacTikTokExact = safeDiv0(mkInvTikTok, clientesTikTok);
+  // --- Distribución de la inversión por red (todavía en USD)
+  let mkInvUSD = 0,
+    mkInvMetaUSD = 0,
+    mkInvTikTokUSD = 0;
 
-    return {
-      // marketing
-      mkInv,
-      mkInvMeta,
-      mkInvTikTok,
-      mkLeads,
-      mkLeadsMeta,
-      mkLeadsTikTok,
-      mkCpl,
-      mkCplMeta,
-      mkCplTikTok,
-      mkCac,
-      mkCacMeta: mkCacMetaExact,
-      mkCacTikTok: mkCacTikTokExact,
+  const sumRaw = rawMeta + rawTikTok;
 
-      // ventas
-      totalServ,
-      cantServ,
-      ticketServ,
-      totalProd,
-      cantProd,
-      ticketProd,
-      totalMes: totalServ + totalProd,
-      totalServFull,
-      cantServFull,
-      ticketServFull: cantServFull
-        ? totalServFull / cantServFull
-        : 0,
-      totalProdFull,
-      cantProdFull,
-      ticketProdFull: cantProdFull
-        ? totalProdFull / cantProdFull
-        : 0,
-      totalMesFull: totalServFull + totalProdFull,
-    };
+  if (invTotalRaw > 0 && sumRaw > 0) {
+    // Tenemos un total y también el desglose bruto por red -> repartimos proporcionalmente
+    const shareMeta = rawMeta / sumRaw;
+    const shareTikTok = rawTikTok / sumRaw;
+    mkInvUSD = invTotalRaw;
+    mkInvMetaUSD = mkInvUSD * shareMeta;
+    mkInvTikTokUSD = mkInvUSD - mkInvMetaUSD;
+  } else if (sumRaw > 0) {
+    // No hay 'inversiones_redes' total, usamos el desglose por_red tal cual
+    mkInvUSD = sumRaw;
+    mkInvMetaUSD = rawMeta;
+    mkInvTikTokUSD = rawTikTok;
+  } else {
+    // Solo tenemos el total bruto
+    mkInvUSD = invTotalRaw;
+    mkInvMetaUSD = 0;
+    mkInvTikTokUSD = 0;
+  }
+
+  const FX = 3.39;
+
+  const mkInv = mkInvUSD * FX;                 // inversión total en PEN
+  const mkInvMeta = mkInvMetaUSD * FX;         // inversión Meta en PEN
+  const mkInvTikTok = mkInvTikTokUSD * FX;     // inversión TikTok en PEN
+
+  // Leads y clientes por red
+  const leads_por_red = mk?.leads_por_red ?? {};
+  const clientes_por_red = mk?.clientes_por_red ?? {};
+
+  const sumFrom = (obj, keys) =>
+    keys.reduce((a, k) => a + Number(obj?.[k] ?? 0), 0);
+
+  const mkLeadsMeta = sumFrom(leads_por_red, [
+    "1515",
+    "meta",
+    "facebook",
+    "instagram",
+  ]);
+  const mkLeadsTikTok = sumFrom(leads_por_red, [
+    "1514",
+    "tiktok",
+    "tik tok",
+  ]);
+
+  const mkLeads = mkLeadsMeta + mkLeadsTikTok;
+
+  // Clientes cerrados por red (si no hay, fallback = leads)
+  const clientesMeta =
+    sumFrom(clientes_por_red, ["1515", "meta", "facebook", "instagram"]) ||
+    mkLeadsMeta;
+
+  const clientesTikTok =
+    sumFrom(clientes_por_red, ["1514", "tiktok", "tik tok"]) ||
+    mkLeadsTikTok;
+
+  // Helpers
+  const safeDiv0 = (n, d) => (Number(d) > 0 ? Number(n) / Number(d) : 0);
+
+  // CPL y CAC ahora en SOLES porque mkInv*, mkInvMeta*, mkInvTikTok* ya están en PEN
+  const mkCpl = safeDiv0(mkInv, mkLeads);
+  const mkCplMeta = safeDiv0(mkInvMeta, mkLeadsMeta);
+  const mkCplTikTok = safeDiv0(mkInvTikTok, mkLeadsTikTok);
+
+  const mkCac = safeDiv0(mkInv, clientesDigitales);
+  const mkCacMetaExact = safeDiv0(mkInvMeta, clientesMeta);
+  const mkCacTikTokExact = safeDiv0(mkInvTikTok, clientesTikTok);
+
+  return {
+    // --- marketing (YA EN SOLES) ---
+    mkInv,           // inversión total redes (S/)
+    mkInvMeta,       // inversión Meta (S/)
+    mkInvTikTok,     // inversión TikTok (S/)
+    mkLeads,         // leads totales
+    mkLeadsMeta,     // leads Meta
+    mkLeadsTikTok,   // leads TikTok
+    mkCpl,           // costo por lead total (S/)
+    mkCplMeta,       // CPL Meta (S/)
+    mkCplTikTok,     // CPL TikTok (S/)
+    mkCac,           // CAC total (S/)
+    mkCacMeta: mkCacMetaExact,         // CAC Meta (S/)
+    mkCacTikTok: mkCacTikTokExact,     // CAC TikTok (S/)
+
+    // --- ventas ---
+    totalServ,
+    cantServ,
+    ticketServ,
+    totalProd,
+    cantProd,
+    ticketProd,
+    totalMes: totalServ + totalProd,
+
+    totalServFull,
+    cantServFull,
+    ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
+
+    totalProdFull,
+    cantProdFull,
+    ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
+
+    totalMesFull: totalServFull + totalProdFull,
   };
+};
 
   const allRows = [
     // --- tabla MARKETING ---
@@ -290,7 +299,6 @@ export default function ExecutiveTable({
       type: "float2",
     },
 
-    // --- tabla VENTAS DETALLADAS ---
     {
       key: "totalServ",
       label: "VENTA MEMBRESIAS",
@@ -360,7 +368,6 @@ export default function ExecutiveTable({
     metrics: computeMetricsForMonth(f?.anio, f?.mes),
   }));
 
-  // estilos reusados
   const cBlack = "#000000";
   const cWhite = "#ffffff";
   const cRed = "#c00000";
