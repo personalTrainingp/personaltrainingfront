@@ -107,11 +107,13 @@ export const useProveedorStore = () => {
 	const obtenerParametrosProveedor = async () => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
+			await obtenerOficios('proveedor', 'tipo_oficio')
 			console.log({ data });
 			const dataAlter = data.map((term) => {
+
 				return {
 					value: term.value,
-					label: `${term.label} | ${arrayEmpresaFinanAbrev?.find((f) => f?.value === term.id_empresa)?.label}`,
+					label: `${term.label.split('|')[0]} | ${dataOficios.find(o=>o.value==term.id_oficio)?.label||' | '} ${arrayEmpresaFinanAbrev?.find((f) => f?.value === term.id_empresa)?.label} |  ${term.label.split('|')[1]}`,
 				};
 			});
 			// setDataProducProveedor(data);
