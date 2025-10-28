@@ -154,12 +154,16 @@ export default function ProtectedRoutes() {
                         <Route path='gestion-alerta-usuario' element={<GestionAlertaUsuarios/>}/>
 					}
 					{
+						sections.find(e=>e.url==='/compromiso-pago') &&
+						<Route path='compromiso-pago' element={<ExternalRedirect to="https://docs.google.com/document/d/1GNys2K0_fseJSlp7uD_0qmuy9HHha-rh/edit?usp=sharing&ouid=107394656461672267890&rtpof=true&sd=true" replace />}/>
+					}
+					{
 						sections.find(e=>e.url==='/modelo-contrato')&&
-                        <Route path='modelo-contrato' element={<ExternalRedirect to="https://docs.google.com/document/d/10bNd0lFSGYsg6JWQOOihHOqbhfilZFWK/edit" replace />}/>
+                        <Route path='modelo-contrato' element={<ExternalRedirect to="https://docs.google.com/document/d/10bNd0lFSGYsg6JWQOOihHOqbhfilZFWK/edit" replace/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/declaracion-jurada')&&
-                        <Route path='declaracion-jurada' element={<ExternalRedirect to="https://docs.google.com/document/d/1bOxpIcwYxzeM9rjHgPDfCl2iJo12iwQP/edit" replace />}/>
+                        <Route path='declaracion-jurada' element={<ExternalRedirect to="https://docs.google.com/document/d/1bOxpIcwYxzeM9rjHgPDfCl2iJo12iwQP/edit" replace/>} />
 					}
 					{
 						sections.find(e=>e.url==='/colaboradores-cv')&&
