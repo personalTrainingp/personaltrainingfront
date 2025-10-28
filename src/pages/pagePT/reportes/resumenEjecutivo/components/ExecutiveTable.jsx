@@ -156,8 +156,7 @@ export default function ExecutiveTable({
     mkInvTikTokUSD = 0;
   }
 
-  // === AQUÍ LA MAGIA: convertimos TODO a soles ===
-  const FX = 3.7;
+  const FX = 3.39;
 
   const mkInv = mkInvUSD * FX;                 // inversión total en PEN
   const mkInvMeta = mkInvMetaUSD * FX;         // inversión Meta en PEN
@@ -240,7 +239,7 @@ export default function ExecutiveTable({
     totalMesFull: totalServFull + totalProdFull,
   };
 };
-sr
+
   const allRows = [
     // --- tabla MARKETING ---
     { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
@@ -300,7 +299,6 @@ sr
       type: "float2",
     },
 
-    // --- tabla VENTAS DETALLADAS ---
     {
       key: "totalServ",
       label: "VENTA MEMBRESIAS",
@@ -370,7 +368,6 @@ sr
     metrics: computeMetricsForMonth(f?.anio, f?.mes),
   }));
 
-  // estilos reusados
   const cBlack = "#000000";
   const cWhite = "#ffffff";
   const cRed = "#c00000";
