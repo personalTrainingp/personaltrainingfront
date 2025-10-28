@@ -392,7 +392,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                   );
                 })}
                 {/* SOCIOS POR CANAL */}
-              <tr className="fila-secundaria compact" style={{ background: "#fff" }}>
+              <tr className="fila-secundaria compact" style={{ background: "#fff",fontSize: 62 }}>
   <td className="img-with-name">
     <div className="img-cap only-text">
       <div className="cap">

@@ -1,6 +1,11 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
-const API_URL  = `${API_BASE}/reserva_monk_fit`; // tu router base
+const API_BASE = (
+  import.meta.env.VITE_API_URL 
+  || "http://localhost:4000/api" 
+).replace(/\/+$/, "");
+
+const API_URL  = `${API_BASE}/reserva_monk_fit`;
 const ESTADOS_PARAM_URL = `${API_BASE}/parametros/get_params/citas/estados-todos`;
+
 
 const toISO = (v) => {
   if (!v) return null;
@@ -49,30 +54,14 @@ export const reservasApi = {
   },
 
   async create(data) {
-    const payload = {
-      ...data,
-      fecha: toISO(data.fecha),
-      id_estado_param: data.id_estado_param ?? null,
-    };
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const payload = { ...data, fecha: toISO(data.fecha), id_estado_param: data.id_estado_param ?? null };
+    const res = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
     return json(res, "Error al crear reserva");
   },
 
   async update(id, data) {
-    const payload = {
-      ...data,
-      fecha: toISO(data.fecha),
-      id_estado_param: data.id_estado_param ?? null,
-    };
-    const res = await fetch(`${API_URL}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const payload = { ...data, fecha: toISO(data.fecha), id_estado_param: data.id_estado_param ?? null };
+    const res = await fetch(`${API_URL}/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
     return json(res, "Error al actualizar reserva");
   },
 

@@ -96,6 +96,7 @@ const ReservaMonkFitPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/App')
 const GestionAlertaUsuarios = lazy(()=>import('../pages/pagePT/GestionAlertasUsuarios/Index.jsx'))
 const HorariosColaboradores = lazy(()=>import('../pages/pagePT/HorariosColaboradores/Index.jsx'))
 const CuentasPorPagar = lazy(() => import('../pages/pagePT/PagosProveedores/Index.jsx'));
+const ClienteMFPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/ClienteMFPage'))
 
 /**
  * routes import
@@ -175,6 +176,12 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/gestion-monkfit')&&
 						<Route path="gestion-monkfit" element={<ReservaMonkFitPage />} />
 					}
+					
+	{
+						sections.find(e=>e.url==='/gestion-monkfit')&&
+						<Route path="gestion-monkeyfit" element={<ClienteMFPage />} />
+					}
+
 
 					{
 						sections.find(e=>e.url==='/agregar-articulos-chorrillos')&&

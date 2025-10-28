@@ -114,7 +114,7 @@
 /* Fila secundaria compacta */
 .fila-secundaria.compact td,
 .fila-secundaria.compact td * {
-  font-size: 18px !important;
+  font-size: 22px !important;
   line-height: 1.1 !important;
 }
 
@@ -127,7 +127,7 @@
   padding: 0 !important;
 }
 .fila-secundaria.compact .img-with-name .cap {
-  font-size: 18px !important;
+  font-size: 22px !important;
   line-height: 1.5 !important;
   margin: 0 !important;
 }
@@ -146,7 +146,7 @@
 }
 .fila-secundaria.compact .tri-box p {
   margin: 0 !important;
-  font-size: 19px !important;
+  font-size: 22px !important;
   line-height: 1 !important;
 }
 
