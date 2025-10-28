@@ -78,21 +78,6 @@ export const DataProveedores = ({id_estado}) => {
                     </TabPanel>
                   </TabView>
                 </TabPanel>
-                
-
-                <TabPanel header={'CONTRATOS POR PROVEEDOR'}>
-                  <TabView>
-                    <TabPanel header={<div className='fs-1'>CHANGE</div>}>
-                      <App id_empresa={598} bgEmpresa='bg-change' classNameTablePrincipal='bg-change p-2' />
-                    </TabPanel>
-                    <TabPanel header={<div className='fs-1 text-circus'>CIRCUS</div>}>
-                      <App id_empresa={601} bgEmpresa='bg-circus' classNameTablePrincipal='bg-circus p-2' />
-                    </TabPanel>
-                    <TabPanel header={<div className='fs-1 text-ISESAC'>REDUCTO</div>}>
-                      <App id_empresa={599} bgEmpresa='bg-greenISESAC' classNameTablePrincipal='bg-greenISESAC p-2' />
-                    </TabPanel>
-                  </TabView>
-                </TabPanel>
               </TabView>
             </Card.Body>
           </Card>

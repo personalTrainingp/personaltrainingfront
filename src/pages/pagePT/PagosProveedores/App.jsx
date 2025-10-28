@@ -1,27 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { TablePagos } from './TablePagos';
-import { ModalCustomPagosProveedores } from './ModalCustomPagosProveedores';
-import { Button } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { TabPanel, TabView } from 'primereact/tabview';
+import { App2 } from './App2';
+import { PageBreadcrumb } from '@/components';
 
 export const App = () => {
-  const [modalCustomPagosProv, setmodalCustomPagosProv] = useState({isOpen: false, id_empresa: 0, id: 0})
-  const onOpenModalCustomPagosProv = (id, id_empresa)=>{
-    setmodalCustomPagosProv({isOpen: true, id, id_empresa})
-  }
-  const { RANGE_DATE } = useSelector(e=>e.DATA)
-  
-  useEffect(() => {
-    if(RANGE_DATE[0]===null) return;
-    if(RANGE_DATE[1]===null) return;
-  }, [RANGE_DATE])
+
   return (
-    <div>
-      <Button className={`${bgEmpresa} border-none outline-none mb-2 p-2 fs-3`} onClick={()=>onOpenModalCustomPagosProv(0, id_empresa)}>AGREGAR CONTRATO</Button>
-      {/* <Button className={'bg-circus'} label='AGREGAR CONTRATO' onClick={()=>onOpenModalCustomPagosProv(0, id_empresa)}/> */}
-      <br/>
-      <TablePagos RANGE_DATE={RANGE_DATE} bgEmpresa={bgEmpresa} classNameTablePrincipal={classNameTablePrincipal} id_empresa={id_empresa} onOpenModalCustomPagosProv={onOpenModalCustomPagosProv}/>
-      <ModalCustomPagosProveedores id={modalCustomPagosProv.id} show={modalCustomPagosProv.isOpen}  id_empresa1={modalCustomPagosProv.id_empresa} onHide={()=>setmodalCustomPagosProv({isOpen: false, id_empresa: 0, id:0})}/>
-    </div> 
+    <>
+    <PageBreadcrumb title={'CUENTAS POR PAGAR'}/>
+    <TabView>
+      <TabPanel header={<div className='fs-1'>CHANGE</div>}>
+        <App2 id_empresa={598} bgEmpresa='bg-change' classNameTablePrincipal='bg-change p-2' />
+      </TabPanel>
+      <TabPanel header={<div className='fs-1 text-circus'>CIRCUS</div>}>
+        <App2 id_empresa={601} bgEmpresa='bg-circus' classNameTablePrincipal='bg-circus p-2' />
+      </TabPanel>
+      <TabPanel header={<div className='fs-1 text-ISESAC'>REDUCTO</div>}>
+        <App2 id_empresa={599} bgEmpresa='bg-greenISESAC' classNameTablePrincipal='bg-greenISESAC p-2' />
+      </TabPanel>
+    </TabView>
+    </>
   );
 };
