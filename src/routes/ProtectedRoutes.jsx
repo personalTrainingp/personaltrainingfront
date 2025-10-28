@@ -95,7 +95,7 @@ const DniColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/dn
 const ReservaMonkFitPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/App'))
 const GestionAlertaUsuarios = lazy(()=>import('../pages/pagePT/GestionAlertasUsuarios/Index.jsx'))
 const HorariosColaboradores = lazy(()=>import('../pages/pagePT/HorariosColaboradores/Index.jsx'))
-const CuentasPorPagar = lazy(() => import('../pages/pagePT/PagosProveedores'));
+const CuentasPorPagar = lazy(() => import('../pages/pagePT/PagosProveedores/Index.jsx'));
 
 /**
  * routes import
