@@ -166,7 +166,7 @@ export const FechaRange = ({rangoFechas, showHasta=true, className}) => {
                     <label className='' style={{fontSize: '28px'}}>
                         HASTA
                     </label>
-                    <Calendar className={`${className}`} value={dateRange.fec_hasta} locale='es' minDate={dateRange.fec_desde} name='fec_hasta' onChange={(e)=>setdateRange({fec_desde: dateRange.fec_desde, fec_hasta: e.value})} />
+                    <Calendar className={`${2}`} value={dateRange.fec_hasta} locale='es' minDate={dateRange.fec_desde} name='fec_hasta' onChange={(e)=>setdateRange({fec_desde: dateRange.fec_desde, fec_hasta: e.value})} />
                 </Col>
               )
             }

@@ -168,7 +168,7 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
 
   return (
     <div>
-      <FechaRange className={classNameTablePrincipal} rangoFechas={RANGE_DATE} showHasta={false}/>
+      <FechaRange className={classNameTablePrincipal} rangoFechas={RANGE_DATE}/>
       
       {/* Tabla principal por proveedor */}
       <Table bordered responsive hover className="align-middle">
