@@ -60,67 +60,16 @@ export const DataProveedores = ({id_estado}) => {
                 <TabPanel header={'PROVEEDORES'}>
                   <TabView>
                     <TabPanel header={'CHANGE'}>
-                      {/* ⬇️ Botones ACTIVO/INACTIVO */}
-                      <div className={`estado-select ${estado ? 'activo' : 'inactivo'} mb-3`}>
-                        <SelectButton
-                          value={estado}
-                          onChange={(e) => setEstado(e.value)}
-                          options={ESTADOS}
-                          itemTemplate={estadoTemplate}
-                        />
-                      </div>
-
-                      {/* Render según botón */}
-                      {/* {estado ? (
-                        <CustomersProv estado_prov={id_estado}  agente={true} id_empresa={598} />
-                      ) : (
-                      )} */}
                       <CustomersProv estado_prov={id_estado} agente={true} id_empresa={598} />
                     </TabPanel>
 
                     <TabPanel header={'CIRCUS'}>
-                      <div className={`estado-select ${estado ? 'activo' : 'inactivo'} mb-3`}>
-                        <SelectButton
-                          value={estado}
-                          onChange={(e) => setEstado(e.value)}
-                          options={ESTADOS}
-                          itemTemplate={estadoTemplate}
-                        />
-                      </div>
-
-                      {/* {estado ? (
-                        <CustomersProv estado_prov={id_estado}  agente={true} id_empresa={601} />
-                      ) : (
-                      )} */}
                       <CustomersProv estado_prov={id_estado} agente={true} id_empresa={601} />
                     </TabPanel>
-
                     <TabPanel header={'REDUCTO'}>
-                      <div className={`estado-select ${estado ? 'activo' : 'inactivo'} mb-3`}>
-                        <SelectButton
-                          value={estado}
-                          onChange={(e) => setEstado(e.value)}
-                          options={ESTADOS}
-                          itemTemplate={estadoTemplate}
-                        />
-                      </div>
-
-                      {/* {estado ? (
-                        <CustomersProv estado_prov={true}  agente={true} id_empresa={599} />
-                      ) : (
-                      )} */}
                       <CustomersProv estado_prov={id_estado} agente={true} id_empresa={599} />
                     </TabPanel>
                                         <TabPanel header={'RAL'}>
-                      <div className={`estado-select ${estado ? 'activo' : 'inactivo'} mb-3`}>
-                        <SelectButton
-                          value={estado}
-                          onChange={(e) => setEstado(e.value)}
-                          options={ESTADOS}
-                          itemTemplate={estadoTemplate}
-                        />
-                      </div>
-
                       {/* {estado ? (
                         <CustomersProv estado_prov={true}  agente={true} id_empresa={0} />
                       ) : (

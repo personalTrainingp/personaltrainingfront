@@ -29,6 +29,7 @@ const registerArticulo={
     costo_total_dolares: 0,
     costo_total_soles: 0,
     descripcion: 'de',
+    modelo: '',
     etiquetas_busquedas: []
 }
 const registerImgAvatar={
@@ -64,6 +65,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             descripcion,
             id_lugar,
             etiquetas_busquedas,
+            modelo,
             onInputChange,  
             onResetForm,
             onInputChangeReact
@@ -190,6 +192,22 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                             value={etiquetas_busquedas}
                                                             name="etiquetas_busquedas"
                                                         /> */}
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>    
+                                                    <div className="mb-4">
+                                                        <label htmlFor="modelo" className="form-label">
+                                                            MODELO
+                                                        </label>
+                                                        <input
+                                                                className="form-control"
+                                                                name="modelo"
+                                                                id="modelo"
+                                                                value={modelo}
+                                                                onChange={onInputChange}
+                                                                placeholder=""
+                                                                required
+                                                            />
                                                     </div>
                                                 </Col>
                                                 <Col lg={4}>    
