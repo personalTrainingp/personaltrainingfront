@@ -83,11 +83,18 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
     const pagos = dataPagosProv
       .filter(p => {
         const fechaPago = new Date(p.fec_pago);
-        const fechaLimite = new Date(RANGE_DATE[0]);
-        return fechaPago < fechaLimite;
+          const desde = new Date(RANGE_DATE[0]);
+          const hasta = new Date(RANGE_DATE[1]);
+        return fechaPago >= desde && fechaPago <= hasta;
       }) ?? [];
-    return (dataContratoProv ?? []).map((contrato) => {
-      const dataPagos = pagos.filter((g) => g?.id_contrato_prov === contrato?.id);
+      return (dataContratoProv ?? []).filter(p => {
+        const fechaPago = new Date(p.fecha_inicio);
+          const desde = new Date(RANGE_DATE[0]);
+          const hasta = new Date(RANGE_DATE[1]);
+        return fechaPago >= desde && fechaPago <= hasta;
+      }).map((contrato) => {
+        const dataPagos = pagos.filter((g) => g?.id_contrato_prov === contrato?.id);
+      
       const sumaPagos = dataPagos.reduce((t, it) => t + (Number(it?.monto) || 0), 0);
       return { ...contrato, dataPagos, sumaPagos };
     });
@@ -168,6 +175,11 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
 
   return (
     <div>
+      {/* <pre>
+          {
+            JSON.stringify(grupos, null, 2)
+          }
+      </pre> */}
       <FechaRange className={classNameTablePrincipal} rangoFechas={RANGE_DATE}/>
       
       {/* Tabla principal por proveedor */}

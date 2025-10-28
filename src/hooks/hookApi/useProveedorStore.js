@@ -116,12 +116,6 @@ export const useProveedorStore = () => {
 					label: `${term.label.split('|')[0]} | ${dataOficios.find(o=>o.value==term.id_oficio)?.label||' | '} ${arrayEmpresaFinanAbrev?.find((f) => f?.value === term.id_empresa)?.label} |  ${term.label.split('|')[1]}`,
 				};
 			});
-			// setDataProducProveedor(data);
-			// const dataAlter = data.map((term) => {
-			// 	return {
-			// 		label: `${dataOficios.find((oficio) => oficio?.value === term?.id_oficio)?.label ?? 'SIN ASIGNAR'} | ${term?.label}`,
-			// 	};
-			// });
 			dispatch(onSetProveedoresCOMBO(dataAlter));
 			// setIsLoading(false);
 		} catch (error) {
