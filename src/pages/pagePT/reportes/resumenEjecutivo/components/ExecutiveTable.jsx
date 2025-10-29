@@ -7,6 +7,7 @@ export default function ExecutiveTable({
   initialDay = 1,
   cutDay = 21,
     reservasMF = [],
+    originMap= {},
 }) {
   const MESES = [
     "enero","febrero","marzo","abril","mayo","junio",
@@ -47,6 +48,27 @@ export default function ExecutiveTable({
     v?.detalle_venta_productos ||
     [];
 
+   // IDs y alias (tolerante por si ves 1514 o 15144 en tu BD)
+// ids conocidos por red
+const ORIGEN_IDS = {
+  tiktok: new Set(["1514", "695", "tiktok", "tik tok"]),
+  meta:   new Set(["1515", "694", "693", "facebook", "instagram", "meta"]),
+};
+
+const labelOfOrigin = (id) => {
+  const k = String(id ?? "");               // "695" o "instagram"
+  const v = originMap?.[k] ?? originMap?.[Number(k)];
+  return String(v ?? k).toLowerCase();      // normaliza contra originMap si existe
+};
+
+const bucketFromOriginId = (id) => {
+  const lbl = labelOfOrigin(id);            // ej. "tiktok" | "facebook" | "instagram" | "meta"
+  if (ORIGEN_IDS.tiktok.has(lbl) || ORIGEN_IDS.tiktok.has(String(id))) return "tiktok";
+  if (ORIGEN_IDS.meta.has(lbl)   || ORIGEN_IDS.meta.has(String(id)))   return "meta";
+  return "otros";
+};
+
+
   const computeMetricsForMonth = (anio, mesNombre) => {
   const mesAlias = aliasMes(String(mesNombre).toLowerCase());
   const monthIdx = MESES.indexOf(mesAlias);
@@ -61,6 +83,18 @@ export default function ExecutiveTable({
     totalProdFull = 0,
     cantProdFull = 0;
 
+    // Parcial al cutDay
+const byOrigin = {
+  meta:   { total: 0, cant: 0 },
+  tiktok: { total: 0, cant: 0 },
+};
+// Mes completo
+const byOriginFull = {
+  meta:   { total: 0, cant: 0 },
+  tiktok: { total: 0, cant: 0 },
+};
+
+
   const from = clamp(Number(initialDay || 1), 1, 31);
 
   for (const v of ventas) {
@@ -69,12 +103,21 @@ export default function ExecutiveTable({
     if (d.getFullYear() !== Number(anio)) continue;
     if (d.getMonth() !== monthIdx) continue;
 
-    // === MES COMPLETO ===
+const bucket = bucketFromOriginId(
+  v?.id_origen ??
+  v?.parametro_origen?.id_param ??
+  v?.parametro_origen?.label_param
+);
     for (const s of getDetalleServicios(v)) {
       const cantidad = Number(s?.cantidad || 1);
       const linea = Number(s?.tarifa_monto || 0);
       totalServFull += linea;
       cantServFull += cantidad;
+
+      if (byOriginFull[bucket]) {
+        byOriginFull[bucket].total += linea;
+        byOriginFull[bucket].cant += cantidad;
+      }
     }
     for (const p of getDetalleProductos(v)) {
       const cantidad = Number(p?.cantidad || 1);
@@ -94,6 +137,11 @@ export default function ExecutiveTable({
       const linea = Number(s?.tarifa_monto || 0);
       totalServ += linea;
       cantServ += cantidad;
+
+      if (byOrigin[bucket]) {
+        byOrigin[bucket].total += linea;
+        byOrigin[bucket].cant += cantidad;
+      }
     }
     for (const p of getDetalleProductos(v)) {
       const cantidad = Number(p?.cantidad || 1);
@@ -109,25 +157,26 @@ export default function ExecutiveTable({
   // === MARKETING ===
   const key = `${anio}-${mesAlias}`;
   const mk = dataMktByMonth?.[key] ?? {};
-    // === MONKEY FIT ===
-let ventaMF = 0;
-let cantMF = 0;
+let ventaMF = 0, cantMF = 0;
+const lastDay = new Date(Number(anio), monthIdx + 1, 0).getDate();
+const to   = clamp(Number(cutDay || lastDay), from, lastDay);
 
 for (const r of reservasMF) {
   if (!r?.flag) continue;
   const d = new Date(r.fecha);
   if (d.getFullYear() !== Number(anio)) continue;
-  const mesReserva = d.getMonth(); // 0-11
-  const mesActual = MESES.indexOf(aliasMes(String(mesNombre).toLowerCase()));
-  if (mesReserva !== mesActual) continue;
+  if (d.getMonth() !== monthIdx) continue;
 
-  // contar solo estados válidos
-  const estado = (r?.estado?.label_param || "").toLowerCase();
-  if (!["completada", "confirmada", "pagada", "no pagada"].some(e => estado.includes(e))) continue;
+  const estado = String(r?.estado?.label_param || "").toLowerCase();
+  if (!["completada","confirmada","pagada","no pagada"].some(e => estado.includes(e))) continue;
+
+  const dia = d.getDate();
+  if (dia < from || dia > to) continue;  // <- respeta el corte
 
   ventaMF += Number(r.monto_total || 0);
   cantMF++;
 }
+
 
 const ticketMF = cantMF ? ventaMF / cantMF : 0;
 
@@ -220,6 +269,9 @@ const ticketMF = cantMF ? ventaMF / cantMF : 0;
   const mkCacMetaExact = safeDiv0(mkInvMeta, clientesMeta);
   const mkCacTikTokExact = safeDiv0(mkInvTikTok, clientesTikTok);
 
+  const ticketMeta = byOrigin.meta.cant ? byOrigin.meta.total / byOrigin.meta.cant : 0;
+  const ticketTikTok = byOrigin.tiktok.cant ? byOrigin.tiktok.total / byOrigin.tiktok.cant : 0;
+const share = (x) => (totalServ > 0 ? (x / totalServ) * 100 : 0);
   return {
     mkInv,           
     mkInvMeta,      
@@ -241,7 +293,19 @@ const ticketMF = cantMF ? ventaMF / cantMF : 0;
     cantProd,
     ticketProd,
     totalMes: totalServ + totalProd,
+totalServMeta:   byOrigin.meta.total,
+  cantServMeta:    byOrigin.meta.cant,
+  ticketServMeta:  ticketMeta,
+  pctServMeta:     share(byOrigin.meta.total),
 
+  totalServTikTok:  byOrigin.tiktok.total,
+  cantServTikTok:   byOrigin.tiktok.cant,
+  ticketServTikTok: ticketTikTok,
+  pctServTikTok:    share(byOrigin.tiktok.total),
+
+  // (opcional) mes completo
+  totalServMetaFull:   byOriginFull.meta.total,
+  totalServTikTokFull: byOriginFull.tiktok.total,
     totalServFull,
     cantServFull,
     ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
@@ -330,6 +394,15 @@ const ticketMF = cantMF ? ventaMF / cantMF : 0;
       label: "TICKET MEDIO MEMBRESIAS",
       type: "money",
     },
+     { key: "totalServMeta",   label: "VENTA MEMBRESIAS - META (FB+IG)", type: "money" },
+  { key: "cantServMeta",    label: "CANTIDAD MEMBRESIAS - META", type: "int" },
+  { key: "ticketServMeta",  label: "TICKET MEDIO - META", type: "money" },
+  { key: "pctServMeta",     label: "% PARTICIPACIÓN - META", type: "float2" },
+
+  { key: "totalServTikTok",  label: "VENTA MEMBRESIAS - TIKTOK", type: "money" },
+  { key: "cantServTikTok",   label: "CANTIDAD MEMBRESIAS - TIKTOK", type: "int" },
+  { key: "ticketServTikTok", label: "TICKET MEDIO - TIKTOK", type: "money" },
+  { key: "pctServTikTok",    label: "% PARTICIPACIÓN - TIKTOK", type: "float2" },
     {
       key: "venta_monkeyfit",
       label: "VENTA MEMBRESIAS MONKEY FIT",
