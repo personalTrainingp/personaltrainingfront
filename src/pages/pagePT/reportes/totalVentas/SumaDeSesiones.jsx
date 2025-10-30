@@ -457,11 +457,24 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                       </td>
                     );
                   })}
-                  <DashCell />
-                  <td className="fw-bold" style={{ minWidth: 150 }}>{fmt(grandMoney, true)}</td>
-                  <td className="fw-bold" style={{ minWidth: 80 }}>100%</td>
+                  {(() => {
+  // 🔹 Cálculo del total de socios por canal (lo mismo que muestra el 46)
+  const totalSociosCanal = visiblePrograms.reduce((acc, _prog, i) =>
+    acc + filas.reduce((a, f) => a + toNumber(f[i + 1]?.value), 0), 0
+  );
 
-
+  return (
+    <>
+      <td className="fw-bold" style={{ minWidth: 80, width: 60 }}>
+        {fmt(totalSociosCanal, true)}
+      </td>
+      <td className="fw-bold" style={{ minWidth: 150 }}>
+        {fmt(grandMoney, true)}
+      </td>
+      <td className="fw-bold" style={{ minWidth: 80 }}>100%</td>
+    </>
+  );
+})()}
                 </tr>
               </tbody>
             </table>

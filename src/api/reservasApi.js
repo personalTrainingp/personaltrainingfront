@@ -1,6 +1,6 @@
 const API_BASE = (
   import.meta.env.VITE_API_URL 
-  || "http://localhost:4000/api" 
+  || "http://localhost:4000/api" // fallback con /api incluido
 ).replace(/\/+$/, "");
 
 const API_URL  = `${API_BASE}/reserva_monk_fit`;
@@ -53,17 +53,24 @@ export const reservasApi = {
     return json(res, "Error al cargar estados");
   },
 
-  async create(data) {
-    const payload = { ...data, fecha: toISO(data.fecha), id_estado_param: data.id_estado_param ?? null };
-    const res = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-    return json(res, "Error al crear reserva");
-  },
+async create(data) {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return json(res, "Error al crear reserva");
+},
 
-  async update(id, data) {
-    const payload = { ...data, fecha: toISO(data.fecha), id_estado_param: data.id_estado_param ?? null };
-    const res = await fetch(`${API_URL}/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-    return json(res, "Error al actualizar reserva");
-  },
+async update(id, data) {
+  const res = await fetch(`${API_URL}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return json(res, "Error al actualizar reserva");
+},
+
 
   async remove(id) {
     const res = await fetch(`${API_URL}/delete/${id}`, { method: "PUT" });

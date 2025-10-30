@@ -704,6 +704,19 @@ const avatarByAdvisor = useMemo(() => {
   return map;
 }, [repoVentasPorSeparado?.total?.empl_monto]);
 const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte: 0 });
+const originMap = {
+  "1514": "tiktok",
+  "1515": "meta",
+  "695":  "tiktok",
+  "694":  "facebook",   // se agrupa luego en "meta"
+  "693":  "instagram",  // se agrupa luego en "meta"
+  // por si alguna venta trae string:
+  "tiktok": "tiktok",
+  "tik tok": "tiktok",
+  "facebook": "facebook",
+  "instagram": "instagram",
+  "meta": "meta",
+};
     return (
   <>
     <PageBreadcrumb title="INFORME GERENCIAL" subName="Ventas" />
@@ -733,6 +746,7 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
             initialDay={initDay}
             cutDay={cutDay}
       reservasMF={reservasMF}
+        originMap={originMap}  
           />
         </div>
         <div style={{ marginBottom: "32px", marginTop: "80px" }}>
