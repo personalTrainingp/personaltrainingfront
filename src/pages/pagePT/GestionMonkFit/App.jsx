@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Spinner } from "react-bootstrap";
 import { reservasApi } from "@/api/reservasApi";
 import { PTApi } from "@/common";
