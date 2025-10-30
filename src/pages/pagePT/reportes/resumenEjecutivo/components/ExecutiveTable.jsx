@@ -5,9 +5,9 @@ export default function ExecutiveTable({
   fechas = [],
   dataMktByMonth = {},
   initialDay = 1,
-  cutDay = 21,
-    reservasMF = [],
-    originMap= {},
+  cutDay = 30, // <-- ahora por defecto 30
+  reservasMF = [],
+  originMap = {},
 }) {
   const MESES = [
     "enero","febrero","marzo","abril","mayo","junio",
@@ -28,427 +28,312 @@ export default function ExecutiveTable({
 
   const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
   const fmtMoney = (n) =>
-    new Intl.NumberFormat("es-PE", {
-      style: "currency",
-      currency: "PEN",
-    }).format(Number(n || 0));
+    new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN" })
+      .format(Number(n || 0));
   const fmtNum = (n, d = 0) =>
-    new Intl.NumberFormat("es-PE", {
-      minimumFractionDigits: d,
-      maximumFractionDigits: d,
-    }).format(Number(n || 0));
+    new Intl.NumberFormat("es-PE", { minimumFractionDigits: d, maximumFractionDigits: d })
+      .format(Number(n || 0));
 
-  const getDetalleServicios = (v) =>
-    v?.detalle_ventaMembresia ||
-    v?.detalle_ventaMembresia ||
-    [];
   const getDetalleProductos = (v) =>
     v?.detalle_ventaProductos ||
     v?.detalle_ventaproductos ||
     v?.detalle_venta_productos ||
     [];
 
+  const getDetalleMembresias = (v) =>
+    v?.detalle_ventaMembresia ||
+    v?.detalle_venta_membresia ||
+    v?.detalle_ventamembresia ||
+    [];
 
-const ORIGEN_IDS = {
-  tiktok: new Set(["1514", "695", "tiktok", "tik tok"]),
-  meta:   new Set(["1515", "694", "693", "facebook", "instagram", "meta"]),
-};
+  const getDetalleOtrosServicios = (v) =>
+    v?.detalle_ventaservicios ||
+    v?.detalle_ventaServicios ||
+    v?.detalle_servicios ||
+    v?.detalle_venta_servicios ||
+    [];
+  const ORIGIN_SYNONYMS = {
+    tiktok:    new Set(["1514","695","tiktok","tik tok","tik-tok"]),
+    facebook:  new Set(["694","facebook","fb"]),
+    instagram: new Set(["693","instagram","ig"]),
+    meta:      new Set(["1515","meta"]),
+  };
 
-const labelOfOrigin = (id) => {
-  const k = String(id ?? "");              
-  const v = originMap?.[k] ?? originMap?.[Number(k)];
-  return String(v ?? k).toLowerCase();     
-};
+  const canonicalKeyFromRaw = (originMap, raw) => {
+    const rawStr = String(raw ?? "").trim();
+    const mapped = originMap?.[rawStr] ?? originMap?.[Number(rawStr)] ?? rawStr;
+    const low = String(mapped).trim().toLowerCase();
+    for (const [key, set] of Object.entries(ORIGIN_SYNONYMS)) {
+      if (set.has(low) || set.has(rawStr.toLowerCase()) || set.has(String(raw).toLowerCase())) {
+        return key;
+      }
+    }
+    return low.replace(/\s+/g, "_");
+  };
 
-const bucketFromOriginId = (id) => {
-  const lbl = labelOfOrigin(id);            
-  if (ORIGEN_IDS.tiktok.has(lbl) || ORIGEN_IDS.tiktok.has(String(id))) return "tiktok";
-  if (ORIGEN_IDS.meta.has(lbl)   || ORIGEN_IDS.meta.has(String(id)))   return "meta";
-  return "otros";
-};
-
+  const labelFromKey = (key) => {
+    if (key === "tiktok") return "TIKTOK";
+    if (key === "facebook") return "FACEBOOK";
+    if (key === "instagram") return "INSTAGRAM";
+    if (key === "meta") return "META (FB+IG)";
+    return String(key || "OTROS").replace(/_/g, " ").toUpperCase();
+  };
 
   const computeMetricsForMonth = (anio, mesNombre) => {
-  const mesAlias = aliasMes(String(mesNombre).toLowerCase());
-  const monthIdx = MESES.indexOf(mesAlias);
-  if (monthIdx < 0) return null;
+    const mesAlias  = aliasMes(String(mesNombre).toLowerCase());
+    const monthIdx  = MESES.indexOf(mesAlias);
+    if (monthIdx < 0) return null;
 
-  let totalServ = 0,
-    cantServ = 0,
-    totalProd = 0,
-    cantProd = 0;
-  let totalServFull = 0,
-    cantServFull = 0,
-    totalProdFull = 0,
-    cantProdFull = 0;
+    let totalServ = 0, cantServ = 0;
+    let totalProd = 0, cantProd = 0;
+    let totalOtros = 0, cantOtros = 0;
 
-    // Parcial al cutDay
-const byOrigin = {
-  meta:   { total: 0, cant: 0 },
-  tiktok: { total: 0, cant: 0 },
-};
-// Mes completo
-const byOriginFull = {
-  meta:   { total: 0, cant: 0 },
-  tiktok: { total: 0, cant: 0 },
-};
+    let totalServFull = 0, cantServFull = 0;
+    let totalProdFull = 0, cantProdFull = 0;
+    let totalOtrosFull = 0, cantOtrosFull = 0;
 
+    const byOrigin = {};
+    const byOriginFull = {};
+    const byGroup     = { meta:{label:"META",total:0,cant:0}, tiktok:{label:"TIKTOK",total:0,cant:0}, otros:{label:"OTROS",total:0,cant:0} };
+    const byGroupFull = { meta:{label:"META",total:0,cant:0}, tiktok:{label:"TIKTOK",total:0,cant:0}, otros:{label:"OTROS",total:0,cant:0} };
 
-  const from = clamp(Number(initialDay || 1), 1, 31);
+    let metaServTotalCut = 0,  metaServCantCut  = 0;
+    let metaServTotalFull = 0, metaServCantFull = 0;
 
-  for (const v of ventas) {
-    const d = toLimaDate(v?.fecha_venta);
-    if (!d) continue;
-    if (d.getFullYear() !== Number(anio)) continue;
-    if (d.getMonth() !== monthIdx) continue;
+    const addTo = (bucket, key, label, linea, cantidad) => {
+      if (!bucket[key]) bucket[key] = { label, total: 0, cant: 0 };
+      bucket[key].total += Number(linea || 0);
+      bucket[key].cant  += Number(cantidad || 0);
+    };
 
-const bucket = bucketFromOriginId(
-  v?.id_origen ??
-  v?.parametro_origen?.id_param ??
-  v?.parametro_origen?.label_param
-);
-    for (const s of getDetalleServicios(v)) {
-      const cantidad = Number(s?.cantidad || 1);
-      const linea = Number(s?.tarifa_monto || 0);
-      totalServFull += linea;
-      cantServFull += cantidad;
+    const from = clamp(Number(initialDay || 1), 1, 31);
+    const lastDayMonth = new Date(Number(anio), monthIdx + 1, 0).getDate();
+    const to = clamp(Number(cutDay || lastDayMonth), from, lastDayMonth);
 
-      if (byOriginFull[bucket]) {
-        byOriginFull[bucket].total += linea;
-        byOriginFull[bucket].cant += cantidad;
+    for (const v of ventas) {
+      const d = toLimaDate(v?.fecha_venta || v?.fecha || v?.createdAt);
+      if (!d) continue;
+      if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
+
+      const rawOrigin =
+        v?.id_origen ??
+        v?.parametro_origen?.id_param ??
+        v?.origen ?? v?.source ?? v?.canal ??
+        v?.parametro_origen?.label_param;
+
+      const oKey   = canonicalKeyFromRaw(originMap, rawOrigin);
+      const oLabel = labelFromKey(oKey);
+      const group  = (oKey === "tiktok")
+        ? "tiktok"
+        : (oKey === "facebook" || oKey === "instagram" || oKey === "meta")
+          ? "meta"
+          : "otros";
+
+      // === MES COMPLETO ===
+      for (const s of getDetalleMembresias(v)) {
+        const cantidad = Number(s?.cantidad || 1);
+        const linea    = Number(s?.tarifa_monto || 0);
+        totalServFull += linea;  cantServFull += cantidad;
+
+        if (oKey !== "meta") {
+          addTo(byOriginFull, oKey, oLabel, linea, cantidad);
+        } else {
+          metaServTotalFull += linea;
+          metaServCantFull  += cantidad;
+        }
+        addTo(byGroupFull, group, group.toUpperCase(), linea, cantidad);
+      }
+      for (const p of getDetalleProductos(v)) {
+        const cantidad = Number(p?.cantidad || 1);
+        const linea    = Number(p?.tarifa_monto || p?.precio_unitario || 0);
+        totalProdFull += linea;  cantProdFull += cantidad;
+      }
+      for (const o of getDetalleOtrosServicios(v)) {
+        const cantidad = Number(o?.cantidad || 1);
+        const linea    = Number(o?.tarifa_monto || o?.precio_unitario || 0);
+        totalOtrosFull += linea; cantOtrosFull += cantidad;
+      }
+
+      // === AL DÍA DE CORTE ===
+      const dia = d.getDate();
+      if (dia >= from && dia <= to) {
+        for (const s of getDetalleMembresias(v)) {
+          const cantidad = Number(s?.cantidad || 1);
+          const linea    = Number(s?.tarifa_monto || 0);
+          totalServ += linea;  cantServ += cantidad;
+
+          if (oKey !== "meta") {
+            addTo(byOrigin, oKey, oLabel, linea, cantidad);
+          } else {
+            metaServTotalCut += linea;
+            metaServCantCut  += cantidad;
+          }
+          addTo(byGroup, group, group.toUpperCase(), linea, cantidad);
+        }
+        for (const p of getDetalleProductos(v)) {
+          const cantidad = Number(p?.cantidad || 1);
+          const linea    = Number(p?.tarifa_monto || p?.precio_unitario || 0);
+          totalProd += linea;  cantProd += cantidad;
+        }
+        for (const o of getDetalleOtrosServicios(v)) {
+          const cantidad = Number(o?.cantidad || 1);
+          const linea    = Number(o?.tarifa_monto || o?.precio_unitario || 0);
+          totalOtros += linea; cantOtros += cantidad;
+        }
       }
     }
-    for (const p of getDetalleProductos(v)) {
-      const cantidad = Number(p?.cantidad || 1);
-      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
-      totalProdFull += linea;
-      cantProdFull += cantidad;
+
+    const ticketServ = cantServ ? totalServ / cantServ : 0;
+    const ticketProd = cantProd ? totalProd / cantProd : 0;
+    const ticketOtros = cantOtros ? totalOtros / cantOtros : 0;
+
+    const key = `${anio}-${mesAlias}`;
+    const mk = dataMktByMonth?.[key] ?? {};
+    const por_red = mk?.por_red ?? {};
+    const val = (obj, k) => Number(obj?.[k] ?? 0);
+
+    const rawFB = val(por_red, "facebook");
+    const rawIG = val(por_red, "instagram");
+
+    let fbShare = 0.5, igShare = 0.5;
+    if ((rawFB + rawIG) > 0) {
+      fbShare = rawFB / (rawFB + rawIG);
+      igShare = 1 - fbShare;
     }
 
-    // === HASTA cutDay ===
-    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-    const to = clamp(Number(cutDay || lastDay), from, lastDay);
-    const dia = d.getDate();
-    if (dia < from || dia > to) continue;
+    if (metaServTotalCut > 0) {
+      addTo(byOrigin, "facebook",  "FACEBOOK",  metaServTotalCut * fbShare,  metaServCantCut * fbShare);
+      addTo(byOrigin, "instagram", "INSTAGRAM", metaServTotalCut * igShare,  metaServCantCut * igShare);
+    }
+    if (metaServTotalFull > 0) {
+      addTo(byOriginFull, "facebook",  "FACEBOOK",  metaServTotalFull * fbShare,  metaServCantFull * fbShare);
+      addTo(byOriginFull, "instagram", "INSTAGRAM", metaServTotalFull * igShare,  metaServCantFull * igShare);
+    }
 
-    for (const s of getDetalleServicios(v)) {
-      const cantidad = Number(s?.cantidad || 1);
-      const linea = Number(s?.tarifa_monto || 0);
-      totalServ += linea;
-      cantServ += cantidad;
+    const rawMeta   = val(por_red, "1515") + val(por_red, "meta") + rawFB + rawIG;
+    const rawTikTok = val(por_red, "1514") + val(por_red, "tiktok") + val(por_red, "tik tok");
 
-      if (byOrigin[bucket]) {
-        byOrigin[bucket].total += linea;
-        byOrigin[bucket].cant += cantidad;
+    const invTotalRaw = Number(mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0);
+    let mkInvUSD = 0, mkInvMetaUSD = 0, mkInvTikTokUSD = 0;
+    const sumRaw = rawMeta + rawTikTok;
+
+    if (invTotalRaw > 0 && sumRaw > 0) {
+      const shareMeta   = rawMeta / sumRaw;
+      const shareTikTok = rawTikTok / sumRaw;
+      mkInvUSD       = invTotalRaw;
+      mkInvMetaUSD   = mkInvUSD * shareMeta;
+      mkInvTikTokUSD = mkInvUSD - mkInvMetaUSD;
+    } else if (sumRaw > 0) {
+      mkInvUSD       = sumRaw;
+      mkInvMetaUSD   = rawMeta;
+      mkInvTikTokUSD = rawTikTok;
+    } else {
+      mkInvUSD       = invTotalRaw;
+      mkInvMetaUSD   = 0;
+      mkInvTikTokUSD = 0;
+    }
+
+    const FX = 3.39;
+    const mkInv       = mkInvUSD * FX;
+    const mkInvMeta   = mkInvMetaUSD * FX;
+    const mkInvTikTok = mkInvTikTokUSD * FX;
+
+    const leads_por_red = mk?.leads_por_red ?? {};
+    const clientes_por_red = mk?.clientes_por_red ?? {};
+    const sumFrom = (obj, keys) => keys.reduce((a, k) => a + Number(obj?.[k] ?? 0), 0);
+
+    const mkLeadsMeta   = sumFrom(leads_por_red, ["1515","meta","facebook","instagram"]);
+    const mkLeadsTikTok = sumFrom(leads_por_red, ["1514","tiktok","tik tok"]);
+    const mkLeads       = mkLeadsMeta + mkLeadsTikTok;
+
+    const clientesMeta   = sumFrom(clientes_por_red, ["1515","meta","facebook","instagram"]) || mkLeadsMeta;
+    const clientesTikTok = sumFrom(clientes_por_red, ["1514","tiktok","tik tok"]) || mkLeadsTikTok;
+
+    const safeDiv0 = (n, d) => (Number(d) > 0 ? Number(n) / Number(d) : 0);
+    const mkCpl        = safeDiv0(mkInv, mkLeads);
+    const mkCplMeta    = safeDiv0(mkInvMeta, mkLeadsMeta);
+    const mkCplTikTok  = safeDiv0(mkInvTikTok, mkLeadsTikTok);
+    const clientesDigitales = Number(mk?.clientes_digitales ?? 0);
+    const mkCac            = safeDiv0(mkInv, clientesDigitales);
+    const mkCacMetaExact   = safeDiv0(mkInvMeta, clientesMeta);
+    const mkCacTikTokExact = safeDiv0(mkInvTikTok, clientesTikTok);
+
+    let ventaMF = 0, cantMF = 0;
+    let ventaMFFull = 0, cantMFFull = 0;
+
+    for (const r of reservasMF) {
+      if (!r?.flag) continue;
+      const d = toLimaDate(r?.fecha || r?.createdAt);
+      if (!d) continue;
+      if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
+
+      const estado = String(r?.estado?.label_param || "").toLowerCase();
+      const ok = ["completada","confirmada","pagada","no pagada","reprogramada"]
+        .some(e => estado.includes(e));
+      if (!ok) continue;
+
+      ventaMFFull += Number(r?.monto_total || 0);
+      cantMFFull++;
+
+      const dia = d.getDate();
+      if (dia >= from && dia <= to) {
+        ventaMF += Number(r?.monto_total || 0);
+        cantMF++;
       }
     }
-    for (const p of getDetalleProductos(v)) {
-      const cantidad = Number(p?.cantidad || 1);
-      const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
-      totalProd += linea;
-      cantProd += cantidad;
-    }
-  }
 
-  const ticketServ = cantServ ? totalServ / cantServ : 0;
-  const ticketProd = cantProd ? totalProd / cantProd : 0;
+    const ticketMF     = cantMF ? ventaMF / cantMF : 0;
+    const ticketMFFull = cantMFFull ? ventaMFFull / cantMFFull : 0;
 
-  // === MARKETING ===
-  const key = `${anio}-${mesAlias}`;
-  const mk = dataMktByMonth?.[key] ?? {};
-let ventaMF = 0, cantMF = 0;
-const lastDay = new Date(Number(anio), monthIdx + 1, 0).getDate();
-const to   = clamp(Number(cutDay || lastDay), from, lastDay);
+    const ticketMeta   = byGroup.meta.cant   ? byGroup.meta.total   / byGroup.meta.cant   : 0;
+    const ticketTikTok = byGroup.tiktok.cant ? byGroup.tiktok.total / byGroup.tiktok.cant : 0;
+    const sharePct = (x) => (totalServ > 0 ? (x / totalServ) * 100 : 0);
 
-for (const r of reservasMF) {
-  if (!r?.flag) continue;
-  const d = new Date(r.fecha);
-  if (d.getFullYear() !== Number(anio)) continue;
-  if (d.getMonth() !== monthIdx) continue;
+    return {
+      mkInv, mkInvMeta, mkInvTikTok,
+      mkLeads, mkLeadsMeta, mkLeadsTikTok,
+      mkCpl, mkCplMeta, mkCplTikTok,
+      mkCac, mkCacMeta: mkCacMetaExact, mkCacTikTok: mkCacTikTokExact,
 
-  const estado = String(r?.estado?.label_param || "").toLowerCase();
-  if (!["completada","confirmada","pagada","no pagada"].some(e => estado.includes(e))) continue;
+      totalServ, cantServ, ticketServ,
+      totalProd, cantProd, ticketProd,
+      totalOtros, cantOtros, ticketOtros,
+      totalMes: totalServ + totalProd + totalOtros + ventaMF,
 
-  const dia = d.getDate();
-  if (dia < from || dia > to) continue;  // <- respeta el corte
+      totalServMeta:   byGroup.meta.total,
+      cantServMeta:    byGroup.meta.cant,
+      ticketServMeta:  ticketMeta,
+      pctServMeta:     sharePct(byGroup.meta.total),
 
-  ventaMF += Number(r.monto_total || 0);
-  cantMF++;
-}
+      totalServTikTok:  byGroup.tiktok.total,
+      cantServTikTok:   byGroup.tiktok.cant,
+      ticketServTikTok: ticketTikTok,
+      pctServTikTok:    sharePct(byGroup.tiktok.total),
 
+      totalServFull,
+      cantServFull,
+      ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
+      totalProdFull,
+      cantProdFull,
+      ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
+      totalOtrosFull,
+      cantOtrosFull,
+      ticketOtrosFull: cantOtrosFull ? totalOtrosFull / cantOtrosFull : 0,
+      totalMesFull: totalServFull + totalProdFull + totalOtrosFull + ventaMFFull,
 
-const ticketMF = cantMF ? ventaMF / cantMF : 0;
+      // MonkeyFit
+      venta_monkeyfit: ventaMF,
+      cantidad_reservas_monkeyfit: cantMF,
+      ticket_medio_monkeyfit: ticketMF,
+      venta_monkeyfit_full: ventaMFFull,
+      cantidad_reservas_monkeyfit_full: cantMFFull,
+      ticket_medio_monkeyfit_full: ticketMFFull,
 
-  const invTotalRaw = Number(
-    mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0
-  );
-
-  const clientesDigitales = Number(mk?.clientes_digitales ?? 0);
-
-  const por_red = mk?.por_red ?? {};
-  const val = (obj, k) => Number(obj?.[k] ?? 0);
-
-  const rawMeta =
-    val(por_red, "1515") +
-    val(por_red, "meta") +
-    val(por_red, "facebook") +
-    val(por_red, "instagram");
-
-  const rawTikTok =
-    val(por_red, "1514") +
-    val(por_red, "tiktok") +
-    val(por_red, "tik tok");
-
-  // --- Distribución de la inversión por red (todavía en USD)
-  let mkInvUSD = 0,
-    mkInvMetaUSD = 0,
-    mkInvTikTokUSD = 0;
-
-  const sumRaw = rawMeta + rawTikTok;
-
-  if (invTotalRaw > 0 && sumRaw > 0) {
-    // Tenemos un total y también el desglose bruto por red -> repartimos proporcionalmente
-    const shareMeta = rawMeta / sumRaw;
-    const shareTikTok = rawTikTok / sumRaw;
-    mkInvUSD = invTotalRaw;
-    mkInvMetaUSD = mkInvUSD * shareMeta;
-    mkInvTikTokUSD = mkInvUSD - mkInvMetaUSD;
-  } else if (sumRaw > 0) {
-    // No hay 'inversiones_redes' total, usamos el desglose por_red tal cual
-    mkInvUSD = sumRaw;
-    mkInvMetaUSD = rawMeta;
-    mkInvTikTokUSD = rawTikTok;
-  } else {
-    mkInvUSD = invTotalRaw;
-    mkInvMetaUSD = 0;
-    mkInvTikTokUSD = 0;
-  }
-
-  const FX = 3.39;
-
-  const mkInv = mkInvUSD * FX;                 
-  const mkInvMeta = mkInvMetaUSD * FX;         
-  const mkInvTikTok = mkInvTikTokUSD * FX;     
-
-  const leads_por_red = mk?.leads_por_red ?? {};
-  const clientes_por_red = mk?.clientes_por_red ?? {};
-
-  const sumFrom = (obj, keys) =>
-    keys.reduce((a, k) => a + Number(obj?.[k] ?? 0), 0);
-
-  const mkLeadsMeta = sumFrom(leads_por_red, [
-    "1515",
-    "meta",
-    "facebook",
-    "instagram",
-  ]);
-  const mkLeadsTikTok = sumFrom(leads_por_red, [
-    "1514",
-    "tiktok",
-    "tik tok",
-  ]);
-
-  const mkLeads = mkLeadsMeta + mkLeadsTikTok;
-
-  const clientesMeta =
-    sumFrom(clientes_por_red, ["1515", "meta", "facebook", "instagram"]) ||
-    mkLeadsMeta;
-
-  const clientesTikTok =
-    sumFrom(clientes_por_red, ["1514", "tiktok", "tik tok"]) ||
-    mkLeadsTikTok;
-
-  const safeDiv0 = (n, d) => (Number(d) > 0 ? Number(n) / Number(d) : 0);
-
-  const mkCpl = safeDiv0(mkInv, mkLeads);
-  const mkCplMeta = safeDiv0(mkInvMeta, mkLeadsMeta);
-  const mkCplTikTok = safeDiv0(mkInvTikTok, mkLeadsTikTok);
-
-  const mkCac = safeDiv0(mkInv, clientesDigitales);
-  const mkCacMetaExact = safeDiv0(mkInvMeta, clientesMeta);
-  const mkCacTikTokExact = safeDiv0(mkInvTikTok, clientesTikTok);
-
-  const ticketMeta = byOrigin.meta.cant ? byOrigin.meta.total / byOrigin.meta.cant : 0;
-  const ticketTikTok = byOrigin.tiktok.cant ? byOrigin.tiktok.total / byOrigin.tiktok.cant : 0;
-const share = (x) => (totalServ > 0 ? (x / totalServ) * 100 : 0);
-  return {
-    mkInv,           
-    mkInvMeta,      
-    mkInvTikTok,     
-    mkLeads,        
-    mkLeadsMeta,    
-    mkLeadsTikTok,   
-    mkCpl,          
-    mkCplMeta,       
-    mkCplTikTok,    
-    mkCac,          
-    mkCacMeta: mkCacMetaExact,         
-    mkCacTikTok: mkCacTikTokExact,    
-
-    totalServ,
-    cantServ,
-    ticketServ,
-    totalProd,
-    cantProd,
-    ticketProd,
-    totalMes: totalServ + totalProd,
-totalServMeta:   byOrigin.meta.total,
-  cantServMeta:    byOrigin.meta.cant,
-  ticketServMeta:  ticketMeta,
-  pctServMeta:     share(byOrigin.meta.total),
-
-  totalServTikTok:  byOrigin.tiktok.total,
-  cantServTikTok:   byOrigin.tiktok.cant,
-  ticketServTikTok: ticketTikTok,
-  pctServTikTok:    share(byOrigin.tiktok.total),
-
-  // (opcional) mes completo
-  totalServMetaFull:   byOriginFull.meta.total,
-  totalServTikTokFull: byOriginFull.tiktok.total,
-    totalServFull,
-    cantServFull,
-    ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
-
-    totalProdFull,
-    cantProdFull,
-    ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
-
-    totalMesFull: totalServFull + totalProdFull,
-     venta_monkeyfit: ventaMF,
-  cantidad_reservas_monkeyfit: cantMF,
-  ticket_medio_monkeyfit: ticketMF,
+      byOrigin,
+      byOriginFull,
+    };
   };
-};
 
-  const allRows = [
-    { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
-    {
-      key: "mkLeads",
-      label: "TOTAL LEADS DE META + TIKTOK",
-      type: "int",
-    },
-    {
-      key: "mkCpl",
-      label: "COSTO TOTAL POR LEAD DE META + TIKTOK",
-      type: "float2",
-    },
-    {
-      key: "mkCac",
-      label: "COSTO ADQUISICION DE CLIENTES",
-      type: "float2",
-    },
-    {
-      key: "mkInvMeta",
-      label: "Inversion Meta",
-      type: "money",
-    },
-    {
-      key: "mkLeadsMeta",
-      label: "CANTIDAD LEADS  META",
-      type: "int",
-    },
-    {
-      key: "mkCplMeta",
-      label: "COSTO POR LEAD META",
-      type: "float2",
-    },
-    {
-      key: "mkCacMeta",
-      label: "COSTO ADQUISCION DE CLIENTES META",
-      type: "float2",
-    },
-    {
-      key: "mkInvTikTok",
-      label: " Inversion TikTok",
-      type: "money",
-    },
-    {
-      key: "mkLeadsTikTok",
-      label: "CANTIDAD LEADS  TIKTOK",
-      type: "int",
-    },
-    {
-      key: "mkCplTikTok",
-      label: "COSTO POR LEAD TIKTOK",
-      type: "float2",
-    },
-    {
-      key: "mkCacTikTok",
-      label: "COSTO ADQUISICION CLIENTES TIKTOK",
-      type: "float2",
-    },
-
-    {
-      key: "totalServ",
-      label: "VENTA MEMBRESIAS",
-      type: "money",
-    },
-    {
-      key: "cantServ",
-      label: "CANTIDAD MEMBRESIAS",
-      type: "int",
-    },
-    {
-      key: "ticketServ",
-      label: "TICKET MEDIO MEMBRESIAS",
-      type: "money",
-    },
-     { key: "totalServMeta",   label: "VENTA MEMBRESIAS - META (FB+IG)", type: "money" },
-  { key: "cantServMeta",    label: "CANTIDAD MEMBRESIAS - META", type: "int" },
-  { key: "ticketServMeta",  label: "TICKET MEDIO - META", type: "money" },
-  { key: "pctServMeta",     label: "% PARTICIPACIÓN - META", type: "float2" },
-
-  { key: "totalServTikTok",  label: "VENTA MEMBRESIAS - TIKTOK", type: "money" },
-  { key: "cantServTikTok",   label: "CANTIDAD MEMBRESIAS - TIKTOK", type: "int" },
-  { key: "ticketServTikTok", label: "TICKET MEDIO - TIKTOK", type: "money" },
-  { key: "pctServTikTok",    label: "% PARTICIPACIÓN - TIKTOK", type: "float2" },
-    {
-      key: "venta_monkeyfit",
-      label: "VENTA MEMBRESIAS MONKEY FIT",
-      type: "money",
-    },
-    {
-      key: "cantidad_reservas_monkeyfit",
-      label: "CANTIDAD DE RESERVAS MONKEYFIT",
-      type: "int",
-    },
-    {
-      key: "ticket_medio_monkeyfit",
-      label: "TICKET MEDIO MONKEY FIT",
-      type: "money",
-    },
-    {
-      key: "totalProd",
-      label: "VENTA PRODUCTOS",
-      type: "money",
-    },
-    {
-      key: "cantProd",
-      label: "CANTIDAD PRODUCTOS",
-      type: "int",
-    },
-    {
-      key: "ticketProd",
-      label: "TICKET MEDIO PRODUCTOS",
-      type: "money",
-    },
-  ];
-
-  const splitIdx =
-    allRows.findIndex(
-      (r) =>
-        r.key === "totalServ" ||
-        /VENTA\s+SERVICIOS|VENTA\s+MEMBRESIAS/i.test(r.label)
-    ) >= 0
-      ? allRows.findIndex(
-          (r) =>
-            r.key === "totalServ" ||
-            /VENTA\s+SERVICIOS|VENTA\s+MEMBRESIAS/i.test(r.label)
-        )
-      : allRows.length;
-
-  const rowsTop = allRows.slice(0, splitIdx); 
-  const rowsBottom = allRows.slice(splitIdx); 
   const perMonth = fechas.map((f) => ({
     label: String(f?.label || "").toUpperCase(),
     anio: f?.anio,
@@ -456,6 +341,97 @@ totalServMeta:   byOrigin.meta.total,
     metrics: computeMetricsForMonth(f?.anio, f?.mes),
   }));
 
+  const hasOtrosServicios = perMonth.some(
+    (m) => (m.metrics?.totalOtros ?? 0) > 0 || (m.metrics?.cantOtros ?? 0) > 0
+  );
+
+  // ======= filas base =======
+  const baseRowsTop = [
+    { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
+    { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
+    { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META + TIKTOK", type: "float2" },
+    { key: "mkCac", label: "COSTO ADQUISICION DE CLIENTES", type: "float2" },
+    { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
+    { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
+    { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
+    { key: "mkCacMeta", label: "COSTO ADQUISCION DE CLIENTES META", type: "float2" },
+    { key: "mkInvTikTok", label: " Inversion TikTok", type: "money" },
+    { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
+    { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
+    { key: "mkCacTikTok", label: "COSTO ADQUISICION CLIENTES TIKTOK", type: "float2" },
+  ];
+
+  const baseRowsBottom = [
+    { key: "totalServ", label: "VENTA TOTAL MEMBRESIAS", type: "money" },
+    { key: "cantServ", label: "CANTIDAD MEMBRESIAS", type: "int" },
+    { key: "ticketServ", label: "TICKET MEDIO MEMBRESIAS", type: "money" },
+
+    { key: "venta_monkeyfit", label: "VENTA MEMBRESIAS MONKEY FIT", type: "money" },
+    { key: "cantidad_reservas_monkeyfit", label: "CANTIDAD DE RESERVAS MONKEYFIT", type: "int" },
+    { key: "ticket_medio_monkeyfit", label: "TICKET MEDIO MONKEY FIT", type: "money" },
+
+    { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
+    { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
+    { key: "ticketProd", label: "TICKET MEDIO PRODUCTOS", type: "money" },
+  ];
+
+  const rowsOtros = hasOtrosServicios
+    ? [
+        { key: "totalOtros", label: "VENTA OTROS SERVICIOS", type: "money" },
+        { key: "cantOtros", label: "CANTIDAD OTROS SERVICIOS", type: "int" },
+        { key: "ticketOtros", label: "TICKET MEDIO OTROS SERVICIOS", type: "money" },
+      ]
+    : [];
+
+  // Orígenes dinámicos (membresías)
+  const originKeysAll = Array.from(
+    new Set(perMonth.flatMap(m => Object.keys(m.metrics?.byOrigin || {})))
+  )
+    .filter(k => k !== "meta")
+    .sort();
+
+  const rowsPerOrigin = originKeysAll.flatMap(okey => {
+    const anyLabel =
+      perMonth.find(m => m.metrics?.byOrigin?.[okey])?.metrics?.byOrigin?.[okey]?.label || okey;
+    const LABEL = String(anyLabel).toUpperCase();
+    return [
+      { key: `o:${okey}:total`,  label: `VENTA MEMBRESÍAS – ${LABEL}`, type: "money" },
+      { key: `o:${okey}:cant`,   label: `CANTIDAD MEMBRESÍAS – ${LABEL}`, type: "int" },
+      { key: `o:${okey}:ticket`, label: `TICKET MEDIO – ${LABEL}`, type: "money" },
+      { key: `o:${okey}:pct`,    label: `% PARTICIPACIÓN – ${LABEL}`, type: "float2" },
+    ];
+  });
+
+  // === NUEVO: separar en 3 bloques ===
+  const ORIGIN_KEYS_SOCIAL = ["facebook", "instagram", "tiktok"];
+
+  const splitRowsByOrigin = (rows) => {
+    const social = [];
+    const rest = [];
+    for (const r of rows) {
+      if (!r.key.startsWith("o:")) { rest.push(r); continue; }
+      const [, okey] = r.key.split(":");
+      if (ORIGIN_KEYS_SOCIAL.includes(okey)) social.push(r);
+      else rest.push(r);
+    }
+    return { social, rest };
+  };
+
+  const { social: rowsOrigenSocial } = splitRowsByOrigin(rowsPerOrigin);
+
+  const rowsProductos = [
+    { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
+    { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
+    { key: "ticketProd", label: "TICKET MEDIO PRODUCTOS", type: "money" },
+  ];
+
+  const baseSinProductos = baseRowsBottom.filter(
+    r => !["totalProd","cantProd","ticketProd"].includes(r.key)
+  );
+  const { rest: rowsOrigenResto } = splitRowsByOrigin(rowsPerOrigin);
+  const rowsResto = [...baseSinProductos, ...rowsOtros, ...rowsOrigenResto];
+
+  // ======= estilos =======
   const cBlack = "#000000";
   const cWhite = "#ffffff";
   const cRed = "#c00000";
@@ -514,28 +490,15 @@ totalServMeta:   byOrigin.meta.total,
   };
 
   const metasPorMes = {
-    enero: 50000,
-    febrero: 50000,
-    marzo: 50000,
-    abril: 55000,
-    mayo: 55000,
-    junio: 60000,
-    julio: 60000,
-    agosto: 70000,
-    setiembre: 75000,
-    septiembre: 75000,
-    octubre: 85000,
-    noviembre: 85000,
-    diciembre: 85000,
+    enero: 50000, febrero: 50000, marzo: 50000, abril: 55000, mayo: 55000, junio: 60000,
+    julio: 60000, agosto: 70000, setiembre: 75000, septiembre: 75000,
+    octubre: 85000, noviembre: 85000, diciembre: 85000,
   };
 
   const TableHead = () => (
     <thead>
       <tr>
-        <th
-          className="bg-black"
-          style={{ ...sThLeft, background: cBlack }}
-        ></th>
+        <th className="bg-black" style={{ ...sThLeft, background: cBlack }} />
         {perMonth.map((m, idx) => {
           const isLast = idx === perMonth.length - 1;
           return (
@@ -556,25 +519,39 @@ totalServMeta:   byOrigin.meta.total,
   );
 
   const renderRows = (rowsToRender, makeLastBold = true) =>
-    rowsToRender.map((r) => (
+    rowsToRender.map(r => (
       <tr key={r.key + r.label}>
-        <td
-          style={{
-            ...sCellBold,
-            background: "#c00000",
-            color: "#fff",
-            fontWeight: 800,
-          }}
-        >
+        <td style={{ ...sCellBold, background:"#c00000", color:"#fff", fontWeight:800 }}>
           {r.label}
         </td>
 
         {perMonth.map((m, idx) => {
-          const val = m.metrics?.[r.key] ?? 0;
-          let txt = "";
-          if (r.type === "money") txt = fmtMoney(val);
-          else if (r.type === "float2") txt = fmtNum(val, 2);
-          else txt = fmtNum(val, 0);
+          let val = 0;
+          let isPctCell = false;
+
+          if (r.key.startsWith("o:")) {
+            const [, okey, campo] = r.key.split(":");
+            const o = m.metrics?.byOrigin?.[okey];
+            if (campo === "total")      val = o?.total ?? 0;
+            else if (campo === "cant")  val = o?.cant ?? 0;
+            else if (campo === "ticket") val = o?.cant ? o.total/o.cant : 0;
+            else if (campo === "pct") {
+              const base = m.metrics?.totalServ || 0;
+              val = base > 0 ? ((o?.total ?? 0) / base) * 100 : 0;
+              isPctCell = true;
+            }
+          } else {
+            val = m.metrics?.[r.key] ?? 0;
+          }
+
+          let txt;
+          if (isPctCell) {
+            txt = `${fmtNum(val, 2)} %`;
+          } else {
+            txt = r.type === "money" ? fmtMoney(val)
+                : r.type === "float2" ? fmtNum(val, 2)
+                : fmtNum(val, 0);
+          }
 
           const isLast = idx === perMonth.length - 1;
           return (
@@ -583,12 +560,7 @@ totalServMeta:   byOrigin.meta.total,
               style={{
                 ...sCell,
                 ...(makeLastBold && isLast
-                  ? {
-                      background: "#c00000",
-                      color: "#fff",
-                      fontWeight: 700,
-                      fontSize: 23,
-                    }
+                  ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 23 }
                   : {}),
               }}
             >
@@ -611,19 +583,9 @@ totalServMeta:   byOrigin.meta.total,
               fontSize: 20,
               textTransform: "uppercase",
             }}
-          >
-            {/* celda vacía título izquierda */}
-          </th>
+          />
           {perMonth.map((m, idx) => (
-            <th
-              key={idx}
-              style={{
-                ...sThMes,
-                background: cBlack,
-                color: "#fff",
-                fontSize: 24,
-              }}
-            >
+            <th key={idx} style={{ ...sThMes, background: cBlack, color: "#fff", fontSize: 24 }}>
               {m.label}
             </th>
           ))}
@@ -631,58 +593,27 @@ totalServMeta:   byOrigin.meta.total,
       </thead>
 
       <tbody>
-        {/* Fila: VENTA TOTAL AL corte (fila negra completa) */}
+        {/* VENTA TOTAL al corte */}
         <tr style={sRowBlack}>
-          <td
-            style={{
-              ...sCellBold,
-              background: "transparent",
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 18,
-            }}
-          >
+          <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 18 }}>
             {`VENTA TOTAL AL ${cutDay}`}
           </td>
           {perMonth.map((m, idx) => (
-            <td
-              key={idx}
-              style={{
-                ...sCellBold,
-                background: "transparent",
-                color: "#fff",
-                fontSize: 21,
-              }}
-            >
+            <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontSize: 21 }}>
               {fmtMoney(m.metrics?.totalMes || 0)}
             </td>
           ))}
         </tr>
 
+        {/* CUOTA DEL MES */}
         <tr>
-          <td
-            style={{
-              ...sCellBold,
-              background: cRed,
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 20,
-            }}
-          >
+          <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
             CUOTA DEL MES
           </td>
           {perMonth.map((m, idx) => {
             const meta = metasPorMes[m.mes] || 0;
             return (
-              <td
-                key={idx}
-                style={{
-                  ...sCell,
-                  fontWeight: 700,
-                  color: "#000",
-                  fontSize: 22,
-                }}
-              >
+              <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000", fontSize: 22 }}>
                 {fmtMoney(meta)}
               </td>
             );
@@ -691,34 +622,17 @@ totalServMeta:   byOrigin.meta.total,
 
         {/* % ALCANCE DE CUOTA */}
         <tr>
-          <td
-            style={{
-              ...sCellBold,
-              background: cRed,
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 20,
-            }}
-          >
+          <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
             % ALCANCE DE CUOTA
           </td>
           {perMonth.map((m, idx) => {
             const meta = metasPorMes[m.mes] || 0;
             const total = m.metrics?.totalMes || 0;
-            const alcancePct =
-              meta > 0 ? (total / meta) * 100 : 0;
+            const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
             const supera = alcancePct >= 100;
-            const color = supera ? "#007b00" : cRed; // verde si cumple
+            const color = supera ? "#007b00" : cRed;
             return (
-              <td
-                key={idx}
-                style={{
-                  ...sCell,
-                  fontWeight: 700,
-                  color,
-                  fontsize: 22,
-                }}
-              >
+              <td key={idx} style={{ ...sCell, fontWeight: 700, color, fontsize: 22 }}>
                 {fmtNum(alcancePct, 2)} %
               </td>
             );
@@ -727,67 +641,30 @@ totalServMeta:   byOrigin.meta.total,
 
         {/* % RESTANTE PARA CUOTA */}
         <tr>
-          <td
-            style={{
-              ...sCellBold,
-              background: cRed,
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 19,
-            }}
-          >
+          <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 19 }}>
             % RESTANTE PARA CUOTA
           </td>
           {perMonth.map((m, idx) => {
             const meta = metasPorMes[m.mes] || 0;
             const total = m.metrics?.totalMes || 0;
-            const restantePct =
-              meta > 0
-                ? Math.max(0, 100 - (total / meta) * 100)
-                : 0;
+            const restantePct = meta > 0 ? Math.max(0, 100 - (total / meta) * 100) : 0;
             const cumple = total >= meta;
             const color = cumple ? "#007b00" : cRed;
             return (
-              <td
-                key={idx}
-                style={{
-                  ...sCell,
-                  fontWeight: 700,
-                  color,
-                  fontsize: 22,
-                }}
-              >
+              <td key={idx} style={{ ...sCell, fontWeight: 700, color, fontsize: 22 }}>
                 {fmtNum(restantePct, 2)} %
               </td>
             );
           })}
         </tr>
 
-        {/* VENTA TOTAL MES (banda roja completa con blanco) */}
+        {/* VENTA TOTAL MES (FULL) */}
         <tr style={sRowRed}>
-          <td
-            style={{
-              ...sCellBold,
-              background: "transparent",
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 18,
-              textTransform: "uppercase",
-            }}
-          >
+          <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 18, textTransform: "uppercase" }}>
             VENTA TOTAL MES
           </td>
           {perMonth.map((m, idx) => (
-            <td
-              key={idx}
-              style={{
-                ...sCellBold,
-                background: "transparent",
-                color: "#fff",
-                fontWeight: 800,
-                fontSize: 22,
-              }}
-            >
+            <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 22 }}>
               {fmtMoney(m.metrics?.totalMesFull || 0)}
             </td>
           ))}
@@ -796,37 +673,45 @@ totalServMeta:   byOrigin.meta.total,
     </table>
   );
 
-  // ===============
-  // RENDER FINAL
-  // ===============
   return (
     <div style={sWrap}>
-      {/* === TABLA DETALLE DE VENTAS POR TIPO === */}
+      {/* === TABLA 1: SOLO FB / IG / TIKTOK === */}
       <div style={sHeader}>
-        DETALLE DE VENTAS POR TIPO AL {cutDay} DE CADA MES
+        DETALLE DE VENTAS POR TIPO – RESTO AL {cutDay} DE CADA MES
       </div>
-
-      <table style={sTable}>
+         <table style={sTable}>
         <TableHead />
-        <tbody>
-          {renderRows(rowsBottom)}
-
-          {/* VENTA TOTAL AL cutDay */}
-         
-        </tbody>
+        <tbody>{renderRows(rowsResto)}</tbody>
       </table>
 
+      <div style={{ height: 24 }} />
+
+      {/* === TABLA 2: PRODUCTOS === */}
+      <div style={sHeader}>
+        DETALLE DE VENTAS POR TIPO – PRODUCTOS AL {cutDay} DE CADA MES
+      </div>
+      <table style={sTable}>
+        <TableHead />
+        <tbody>{renderRows(rowsProductos)}</tbody>
+      </table>
+
+      <div style={{ height: 24 }} />
+
+      {/* === TABLA 3: RESTO === */}
+      
+   <div style={sHeader}>
+        DETALLE DE VENTAS POR TIPO (FB / IG / TIKTOK) AL {cutDay} DE CADA MES
+      </div>
+       <table style={sTable}>
+        <TableHead />
+        <tbody>{renderRows(rowsOrigenSocial)}</tbody>
+      </table>
+
+      {/* Cinta VENTA TOTAL MES (full) */}
       <table style={sTable}>
         <thead>
           <tr style={sRowRed}>
-            <th
-              style={{
-                ...sThLeft,
-                background: "transparent",
-                color: cWhite,
-                fontSize: 20,
-              }}
-            >
+            <th style={{ ...sThLeft, background: "transparent", color: cWhite, fontSize: 20 }}>
               VENTA TOTAL <br /> MES
             </th>
             {perMonth.map((m, idx) => (
@@ -834,10 +719,7 @@ totalServMeta:   byOrigin.meta.total,
                 key={idx}
                 style={{
                   ...sThMes,
-                  background:
-                    idx === perMonth.length - 1
-                      ? "#c00000"
-                      : "transparent",
+                  background: idx === perMonth.length - 1 ? "#c00000" : "transparent",
                   color: "#fff",
                   fontSize: 24,
                 }}
@@ -847,27 +729,9 @@ totalServMeta:   byOrigin.meta.total,
             ))}
           </tr>
           <tr>
-            <td
-              style={{
-                ...sCellBold,
-                background: "#000",
-                color: "#fff",
-                textAlign: "center",
-                fontWeight: 800,
-                fontSize: 18,
-              }}
-            />
+            <td style={{ ...sCellBold, background: "#000", color: "#fff", textAlign: "center", fontWeight: 800, fontSize: 18 }} />
             {perMonth.map((m, idx) => (
-              <td
-                key={`footer-month-${idx}`}
-                style={{
-                  ...sCellBold,
-                  background: "#000",
-                  color: "#fff",
-                  fontSize: 25,
-                  textAlign: "center",
-                }}
-              >
+              <td key={`footer-month-${idx}`} style={{ ...sCellBold, background: "#000", color: "#fff", fontSize: 25, textAlign: "center" }}>
                 {m.label}
               </td>
             ))}
@@ -876,40 +740,20 @@ totalServMeta:   byOrigin.meta.total,
       </table>
 
       <div style={{ height: 32 }} />
-
-      {/* === NUEVA TABLA 3: RESUMEN CUOTA VS VENTAS === */}
-      <div
-        style={{
-          ...sHeader,
-          fontSize: 24,
-          padding: "12px 16px",
-          background: "#000",
-          textAlign: "center",
-        }}
-      >
+      {/* === RESUMEN CUOTA VS VENTAS === */}
+      <div style={{ ...sHeader, fontSize: 24, padding: "12px 16px", background: "#000", textAlign: "center" }}>
         RESUMEN DE CUOTA VS VENTAS
       </div>
-
       <ResumenCuotaTable />
 
       <div style={{ height: 32 }} />
-
-      {/* === TABLA 4: MARKETING === */}
-      <div
-        style={{
-          ...sHeader,
-          fontSize: 22,
-          padding: "12px 16px",
-          background: "#c00000",
-          textAlign: "center",
-        }}
-      >
+      {/* === MARKETING === */}
+      <div style={{ ...sHeader, fontSize: 22, padding: "12px 16px", background: "#c00000", textAlign: "center" }}>
         DETALLE DE INVERSIÓN EN REDES VS RESULTADOS EN LEADS
       </div>
-
       <table style={sTable}>
         <TableHead />
-        <tbody>{renderRows(rowsTop)}</tbody>
+        <tbody>{renderRows(baseRowsTop)}</tbody>
       </table>
     </div>
   );

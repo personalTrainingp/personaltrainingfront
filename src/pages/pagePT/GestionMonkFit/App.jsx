@@ -7,9 +7,10 @@ import { PageBreadcrumb } from "@/components";
 
 const fmtFechaLocal = (s) => {
   if (!s) return "—";
-  const d = new Date(s);
-  return isNaN(d) ? "—" : d.toLocaleString("es-PE");
+  let d = new Date(String(s).replace("T", " ").replace(/\.\d+Z?$/, ""));
+  return isNaN(d) ? "—" : d.toLocaleString("es-PE", { hour12: true });
 };
+
 
 export default function ReservaMonkFitPage() {
   const [rows, setRows] = useState([]);
@@ -23,7 +24,6 @@ export default function ReservaMonkFitPage() {
   const [toast, setToast] = useState("");
   const [programas, setProgramas] = useState([]);
 
-  // Cargar programas disponibles
   useEffect(() => {
     (async () => {
       try {
@@ -181,6 +181,33 @@ export default function ReservaMonkFitPage() {
                 )}
               </tbody>
             </table>
+            {/* ======= PAGINACIÓN ======= */}
+{!loading && count > limit && (
+  <div className="d-flex justify-content-between align-items-center p-3 border-top">
+    <div>
+      Mostrando {offset + 1}–{Math.min(offset + limit, count)} de {count} registros
+    </div>
+    <div className="d-flex gap-2">
+      <Button
+        variant="outline-secondary"
+        size="sm"
+        disabled={offset === 0}
+        onClick={() => setOffset(Math.max(0, offset - limit))}
+      >
+        ← Anterior
+      </Button>
+      <Button
+        variant="outline-secondary"
+        size="sm"
+        disabled={offset + limit >= count}
+        onClick={() => setOffset(offset + limit)}
+      >
+        Siguiente →
+      </Button>
+    </div>
+  </div>
+)}
+
           </div>
         </div>
       </div>
