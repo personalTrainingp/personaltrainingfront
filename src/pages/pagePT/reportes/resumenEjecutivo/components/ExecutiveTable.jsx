@@ -48,21 +48,20 @@ export default function ExecutiveTable({
     v?.detalle_venta_productos ||
     [];
 
-   // IDs y alias (tolerante por si ves 1514 o 15144 en tu BD)
-// ids conocidos por red
+
 const ORIGEN_IDS = {
   tiktok: new Set(["1514", "695", "tiktok", "tik tok"]),
   meta:   new Set(["1515", "694", "693", "facebook", "instagram", "meta"]),
 };
 
 const labelOfOrigin = (id) => {
-  const k = String(id ?? "");               // "695" o "instagram"
+  const k = String(id ?? "");              
   const v = originMap?.[k] ?? originMap?.[Number(k)];
-  return String(v ?? k).toLowerCase();      // normaliza contra originMap si existe
+  return String(v ?? k).toLowerCase();     
 };
 
 const bucketFromOriginId = (id) => {
-  const lbl = labelOfOrigin(id);            // ej. "tiktok" | "facebook" | "instagram" | "meta"
+  const lbl = labelOfOrigin(id);            
   if (ORIGEN_IDS.tiktok.has(lbl) || ORIGEN_IDS.tiktok.has(String(id))) return "tiktok";
   if (ORIGEN_IDS.meta.has(lbl)   || ORIGEN_IDS.meta.has(String(id)))   return "meta";
   return "otros";
