@@ -382,6 +382,18 @@ const scoreOrigin = (okey) => {
     { key: `o:${okey}:ticket`, label: `TICKET MEDIO `, type: "money" },
     { key: `o:${okey}:pct`,    label: `% PARTICIPACIÓN `, type: "float2" },
   ]);
+const rowsMonkeyFit = [
+  { key: "venta_monkeyfit", label: "VENTA MONKEYFIT", type: "money" },
+  { key: "cantidad_reservas_monkeyfit", label: "CANTIDAD RESERVAS MONKEYFIT", type: "int" },
+  { key: "ticket_medio_monkeyfit", label: "TICKET MEDIO MONKEYFIT", type: "money" },
+];
+
+// (opcional) versión FULL del mes completo:
+const rowsMonkeyFitFull = [
+  { key: "venta_monkeyfit_full", label: "VENTA MONKEYFIT (FULL)", type: "money" },
+  { key: "cantidad_reservas_monkeyfit_full", label: "CANTIDAD RESERVAS MONKEYFIT (FULL)", type: "int" },
+  { key: "ticket_medio_monkeyfit_full", label: "TICKET MEDIO MONKEYFIT (FULL)", type: "money" },
+];
 
   // ======= estilos =======
   const cBlack = "#000000";
@@ -616,6 +628,7 @@ const scoreOrigin = (okey) => {
             </td>
           ))}
         </tr>
+        
       </tbody>
     </table>
   );
@@ -646,6 +659,33 @@ const orderedOrigins = [...originKeysAll].sort((a, b) => {
                 <TableHead />
                 <tbody>{renderRows(rows)}</tbody>
               </table>
+              {/* === TABLA: MONKEYFIT === */}
+<div style={{ ...sHeader, fontSize: 27 }}>
+  DETALLE MONKEYFIT AL {cutDay} DE CADA MES
+</div>
+<table style={sTable}>
+  <TableHead />
+  <tbody>{renderRows(rowsMonkeyFit)}</tbody>
+</table>
+
+{/* (opcional) Tabla FULL */}
+<div style={{ height: 16 }} />
+<table style={sTable}>
+  <thead>
+    <tr>
+      <th style={{ ...sThLeft, background: "#c00000", color: "#fff", fontSize: 20 }}>
+        MONKEYFIT – MES COMPLETO
+      </th>
+      {perMonth.map((m, idx) => (
+        <th key={idx} style={{ ...sThMes, background: "#c00000", color: "#fff" }}>
+          {m.label}
+        </th>
+      ))}
+    </tr>
+  </thead>
+  <tbody>{renderRows(rowsMonkeyFitFull, false)}</tbody>
+</table>
+
             </div>
           );
         })
