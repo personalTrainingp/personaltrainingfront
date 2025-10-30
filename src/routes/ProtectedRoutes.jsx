@@ -127,7 +127,6 @@ export default function ProtectedRoutes() {
 			</div>
 		)
 	}
-	// console.log(sections.find(e=>e.url==='/reporte-admin/reporte-utilidad-programa'));
 	function ExternalRedirect({ to }) {
 		useEffect(() => {
 			window.location.href = to;

@@ -107,15 +107,20 @@ export const useProveedorStore = () => {
 	const obtenerParametrosProveedor = async () => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
-			await obtenerOficios('proveedor', 'tipo_oficio')
-			console.log({ data });
+			await obtenerOficios('proveedor', 'tipo_oficio');
 			const dataAlter = data.map((term) => {
-
+				const [firstPart = '', secondPart = ''] = term.label?.split('|') || [];
+				const oficioLabel =
+					dataOficios.find((o) => o.value === term?.id_oficio)?.label || '';
+				const empresaLabel =
+					arrayEmpresaFinanAbrev?.find((f) => f?.value === term?.id_empresa)?.label || '';
+of
 				return {
 					value: term.value,
-					label: `${term.label.split('|')[0]} | ${dataOficios.find(o=>o.value==term.id_oficio)?.label||' | '} ${arrayEmpresaFinanAbrev?.find((f) => f?.value === term.id_empresa)?.label} |  ${term.label.split('|')[1]}`,
+					label: `${firstPart.trim()} | ${oficioLabel} | ${empresaLabel} | ${secondPart.trim()}`,
 				};
 			});
+			console.log({ data, dataAlter, dataOficios });
 			dispatch(onSetProveedoresCOMBO(dataAlter));
 			// setIsLoading(false);
 		} catch (error) {
