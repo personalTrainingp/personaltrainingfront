@@ -35,7 +35,7 @@ export const PerfilProv = () => {
   return (
     <>  
         <div className='my-2 py-2 btn btn-primary'>
-            <Link  to={'/gestion-proveedores'} className='fs-5 text-white'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
+            <Link  to={'/gestion-proveedores-activo'} className='fs-5 text-white'><i className='mdi mdi-chevron-left'></i>Regresar</Link>
         </div>
         <Row>
             <Col xxl={3}>

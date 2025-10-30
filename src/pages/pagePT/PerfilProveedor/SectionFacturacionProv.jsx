@@ -1,7 +1,7 @@
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
-import { arrayDepartamento, arrayEstados, arrayTarjetasTemp } from '@/types/type'
+import { arrayDepartamento, arrayEmpresaFinan, arrayEstados, arrayTarjetasTemp } from '@/types/type'
 import { confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
@@ -23,7 +23,7 @@ const registerProvedor = {
     direc_prov: '', 
     estado_prov: true,
     titular_cci: '',
-
+    id_empresa: 0,
     ubigeo_distrito: '',
     id_departamento: 0,
 
@@ -56,6 +56,7 @@ export const SectionFacturacionProv = ({dataProv}) => {
         direc_prov, 
         ubigeo_distrito,
         id_departamento,
+        id_empresa,
         
         dni_vend_prov,
         nombre_vend_prov,
@@ -170,6 +171,25 @@ const ViewDataImg = (e) => {
                             </div>
                             </Col>
                             <Col lg={8}>
+                            </Col>
+                            <Col lg={12}>
+                            <div className="mb-4">
+                                <label htmlFor="id_empresa" className="form-label">
+                                    Empresa*
+                                </label>
+                                <Select
+                                        onChange={(e) => onInputChangeReact(e, 'id_empresa')}
+                                        name="id_empresa"
+                                        placeholder={'Seleccione la empresa'}
+                                        className="react-select"
+                                        classNamePrefix="react-select"
+                                        options={arrayEmpresaFinan}
+                                        value={arrayEmpresaFinan.find(
+                                            (option) => option.value === id_empresa
+                                        )}
+                                        required
+                                    />
+                            </div>
                             </Col>
                             <Col lg={3}>
                             <div className="mb-4">

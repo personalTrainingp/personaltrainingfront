@@ -193,7 +193,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0 })
                             <Select
                                 onChange={(e) => onInputChangeReact(e, 'id_zona')}
                                 name="id_zona"
-                                placeholder={'Seleccionar el zona'}
+                                placeholder={'Seleccionar la zona'}
                                 className="react-select"
                                 classNamePrefix="react-select"
                                 options={[{value: 0, label: 'EN BLANCO'}, ...dataZonas]}

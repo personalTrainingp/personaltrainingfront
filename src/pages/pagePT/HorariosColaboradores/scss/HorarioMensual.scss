@@ -1,0 +1,86 @@
+/* contenedor scroll */
+.horario-scroll-x {
+  overflow-x: auto;
+  max-width: 100%;
+  position: relative;
+}
+
+/* tabla */
+.horario-table {
+  min-width: max-content;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* todas las celdas con borde y fondo */
+.horario-table th,
+.horario-table td {
+  border: 1px solid #dee2e6 !important;
+  background: #fff;
+}
+
+/* ====== HEADER (fila azul) ====== */
+.horario-table thead th {
+  position: sticky;
+  top: 0;
+  background: #0f5c8f !important;   /* tu azul */
+  color: #fff !important;
+  z-index: 50;                      /* 👈 MÁS ALTO QUE TODO */
+  white-space: nowrap;
+}
+
+/* ====== COLUMNAS STICKY (header) ====== */
+.horario-table thead th.first-col {
+  left: 0;
+  z-index: 55;                      /* 👈 más que el resto del thead */
+}
+
+.horario-table thead th.second-col {
+  left: 140px;
+  z-index: 54;
+}
+
+.horario-table thead th.third-col {
+  left: 300px;
+  z-index: 53;
+}
+
+/* ====== COLUMNAS STICKY (body) ====== */
+.horario-table tbody td.sticky-col {
+  position: sticky;
+  background: #fff !important;
+  z-index: 30;                      /* 👈 por debajo del thead, pero encima del resto */
+}
+
+.horario-table tbody td.first-col {
+  left: 0;
+  width: 140px;
+}
+
+.horario-table tbody td.second-col {
+  left: 140px;
+  width: 160px;
+}
+
+.horario-table tbody td.third-col {
+  left: 300px;
+  width: 120px;
+}
+
+/* columnas de horario */
+.horario-header {
+  min-width: 70px;
+  text-align: center;
+}
+
+.horario-cell {
+  width: 70px;
+  height: 70px;
+  padding: 0;
+  background: #f4f6f7;
+}
+
+.horario-box {
+  width: 70px;
+  height: 70px;
+}

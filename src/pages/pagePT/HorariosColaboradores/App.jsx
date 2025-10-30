@@ -199,7 +199,7 @@ const dataRaw = [
         horario: "06:00:00.0000000",
         minutos: 360
       }, 
-            {
+      {
         id_tipo_horario: 0,
         fecha: "2025-10-27 05:00:00.0000000 +00:00", 
         horario: "06:00:00.0000000",
