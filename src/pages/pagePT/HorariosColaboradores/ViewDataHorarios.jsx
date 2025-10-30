@@ -1,5 +1,5 @@
 import { Table } from "react-bootstrap";
-import { agruparPorHorarioYMinutos, resumirConsecutivos } from "./middleware/resumirConsecutivos";
+import { agruparPorHorarioYMinutos, generarIntervalos, resumirConsecutivos } from "./middleware/resumirConsecutivos";
 
 export default function HorarioMensual({
   dataRaw,
@@ -16,26 +16,13 @@ export default function HorarioMensual({
             <th className="text-white">Cargo</th>
             <th className="text-white">Colaborador</th>
             <th className="text-white">Dia</th>
-            <th className="text-white">06:00</th>
-            <th className="text-white">06:30</th>
-            <th className="text-white">07:00</th>
-            <th className="text-white">07:30</th>
-            <th className="text-white">08:00</th>
-            <th className="text-white">08:30</th>
-            <th className="text-white">09:00</th>
-            <th className="text-white">09:30</th>
-            <th className="text-white">10:00</th>
-            <th className="text-white">11:00</th>
-            <th className="text-white">12:00</th>
-            <th className="text-white">13:00</th>
-            <th className="text-white">14:00</th>
-            <th className="text-white">15:00</th>
-            <th className="text-white">16:00</th>
-            <th className="text-white">17:00</th>
-            <th className="text-white">18:00</th>
-            <th className="text-white">19:00</th>
-            <th className="text-white">20:00</th>
-            <th className="text-white">20:00</th>
+            {
+              generarIntervalos('06:00', '22:00',30).map(hora=>{
+                return (
+                  <th className="text-white">{hora.label}</th>
+                )
+              })
+            }
           </tr>
         </thead>
         <tbody >

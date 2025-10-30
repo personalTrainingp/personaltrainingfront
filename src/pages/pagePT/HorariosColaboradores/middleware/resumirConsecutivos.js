@@ -28,6 +28,20 @@ export function resumirConsecutivos(data) {
 	);
 }
 
+export function generarIntervalosDesdeInicio(horaInicio, minutosTotales, intervalo) {
+  const [hIni, mIni] = horaInicio.split(':').map(Number);
+  const inicio = hIni * 60 + mIni;
+  const fin = inicio + minutosTotales;
+  const resultado = [];
+
+  for (let i = inicio; i <= fin; i += intervalo) {
+    const horas = Math.floor(i / 60).toString().padStart(2, '0');
+    const minutos = (i % 60).toString().padStart(2, '0');
+    resultado.push({ label: `${horas}:${minutos}` });
+  }
+
+  return resultado;
+}
 export const agruparPorHorarioYMinutos = (arr) => {
 	const grupos = {};
 
@@ -54,10 +68,35 @@ export const agruparPorHorarioYMinutos = (arr) => {
 				: labels[0];
 
 		return {
-			label: labelTexto==='LUNES, MARTES, MIÉRCOLES, JUEVES Y VIERNES'?'LUNES A VIERNES':labelTexto,
+			label:
+				labelTexto === 'LUNES, MARTES, MIÉRCOLES, JUEVES Y VIERNES'
+					? 'LUNES A VIERNES'
+					: labelTexto,
 			horario: grupo.horario,
 			minutos: grupo.minutos,
+            horarios: generarIntervalosDesdeInicio(grupo?.horario, grupo?.minutos, 30),
 			items: grupo.items,
 		};
 	});
 };
+
+export function generarIntervalos(horaInicio, horaFin, intervalo) {
+	const [hIni, mIni] = horaInicio.split(':').map(Number);
+	const [hFin, mFin] = horaFin.split(':').map(Number);
+
+	const inicio = hIni * 60 + mIni;
+	const fin = hFin * 60 + mFin;
+	const resultado = [];
+
+	for (let i = inicio; i <= fin; i += intervalo) {
+		const horas = Math.floor(i / 60)
+			.toString()
+			.padStart(2, '0');
+		const minutos = (i % 60).toString().padStart(2, '0');
+		const horaFormat = dayjs.utc(`${horas}:${minutos}`, 'hh:mm').format('hh:mm A');
+		resultado.push({ label: horaFormat });
+	}
+
+	return resultado;
+}
+
