@@ -5,7 +5,7 @@ export default function ExecutiveTable({
   fechas = [],
   dataMktByMonth = {},
   initialDay = 1,
-  cutDay = 30, // <-- ahora por defecto 30
+  cutDay = 21, 
   reservasMF = [],
   originMap = {},
 }) {
@@ -34,6 +34,7 @@ export default function ExecutiveTable({
     new Intl.NumberFormat("es-PE", { minimumFractionDigits: d, maximumFractionDigits: d })
       .format(Number(n || 0));
 
+  // === DETALLES ===
   const getDetalleProductos = (v) =>
     v?.detalle_ventaProductos ||
     v?.detalle_ventaproductos ||
@@ -52,6 +53,7 @@ export default function ExecutiveTable({
     v?.detalle_servicios ||
     v?.detalle_venta_servicios ||
     [];
+
   const ORIGIN_SYNONYMS = {
     tiktok:    new Set(["1514","695","tiktok","tik tok","tik-tok"]),
     facebook:  new Set(["694","facebook","fb"]),
@@ -79,15 +81,18 @@ export default function ExecutiveTable({
     return String(key || "OTROS").replace(/_/g, " ").toUpperCase();
   };
 
+  // ===================== CORE METRICS =====================
   const computeMetricsForMonth = (anio, mesNombre) => {
     const mesAlias  = aliasMes(String(mesNombre).toLowerCase());
     const monthIdx  = MESES.indexOf(mesAlias);
     if (monthIdx < 0) return null;
 
+    // — al corte —
     let totalServ = 0, cantServ = 0;
     let totalProd = 0, cantProd = 0;
     let totalOtros = 0, cantOtros = 0;
 
+    // — mes completo —
     let totalServFull = 0, cantServFull = 0;
     let totalProdFull = 0, cantProdFull = 0;
     let totalOtrosFull = 0, cantOtrosFull = 0;
@@ -132,7 +137,7 @@ export default function ExecutiveTable({
       // === MES COMPLETO ===
       for (const s of getDetalleMembresias(v)) {
         const cantidad = Number(s?.cantidad || 1);
-        const linea    = Number(s?.tarifa_monto || 0);
+         const linea    = Number(s?.tarifa_monto || 0);
         totalServFull += linea;  cantServFull += cantidad;
 
         if (oKey !== "meta") {
@@ -321,7 +326,6 @@ export default function ExecutiveTable({
       ticketOtrosFull: cantOtrosFull ? totalOtrosFull / cantOtrosFull : 0,
       totalMesFull: totalServFull + totalProdFull + totalOtrosFull + ventaMFFull,
 
-      // MonkeyFit
       venta_monkeyfit: ventaMF,
       cantidad_reservas_monkeyfit: cantMF,
       ticket_medio_monkeyfit: ticketMF,
@@ -341,95 +345,43 @@ export default function ExecutiveTable({
     metrics: computeMetricsForMonth(f?.anio, f?.mes),
   }));
 
-  const hasOtrosServicios = perMonth.some(
-    (m) => (m.metrics?.totalOtros ?? 0) > 0 || (m.metrics?.cantOtros ?? 0) > 0
+// % participación para un origen en un mes dado
+const participationForMonth = (m, okey) => {
+  const totalServ = Number(m.metrics?.totalServ || 0);
+  const oTotal    = Number(m.metrics?.byOrigin?.[okey]?.total || 0);
+  return totalServ > 0 ? (oTotal / totalServ) : 0;
+};
+
+// Score de orden para un origen: usa último mes; si no hay, usa acumulado
+const scoreOrigin = (okey) => {
+  const last = perMonth[perMonth.length - 1];
+  const lastScore = last ? participationForMonth(last, okey) : 0;
+
+  if (lastScore > 0) return lastScore;
+
+  // Fallback: participación acumulada
+  const sumOrigin = perMonth.reduce(
+    (acc, m) => acc + Number(m.metrics?.byOrigin?.[okey]?.total || 0), 0
   );
+  const sumBase = perMonth.reduce(
+    (acc, m) => acc + Number(m.metrics?.totalServ || 0), 0
+  );
+  return sumBase > 0 ? (sumOrigin / sumBase) : 0;
+};
 
-  // ======= filas base =======
-  const baseRowsTop = [
-    { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
-    { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
-    { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META + TIKTOK", type: "float2" },
-    { key: "mkCac", label: "COSTO ADQUISICION DE CLIENTES", type: "float2" },
-    { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
-    { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
-    { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
-    { key: "mkCacMeta", label: "COSTO ADQUISCION DE CLIENTES META", type: "float2" },
-    { key: "mkInvTikTok", label: " Inversion TikTok", type: "money" },
-    { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
-    { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
-    { key: "mkCacTikTok", label: "COSTO ADQUISICION CLIENTES TIKTOK", type: "float2" },
-  ];
 
-  const baseRowsBottom = [
-    { key: "totalServ", label: "VENTA TOTAL MEMBRESIAS", type: "money" },
-    { key: "cantServ", label: "CANTIDAD MEMBRESIAS", type: "int" },
-    { key: "ticketServ", label: "TICKET MEDIO MEMBRESIAS", type: "money" },
-
-    { key: "venta_monkeyfit", label: "VENTA MEMBRESIAS MONKEY FIT", type: "money" },
-    { key: "cantidad_reservas_monkeyfit", label: "CANTIDAD DE RESERVAS MONKEYFIT", type: "int" },
-    { key: "ticket_medio_monkeyfit", label: "TICKET MEDIO MONKEY FIT", type: "money" },
-
-    { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
-    { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
-    { key: "ticketProd", label: "TICKET MEDIO PRODUCTOS", type: "money" },
-  ];
-
-  const rowsOtros = hasOtrosServicios
-    ? [
-        { key: "totalOtros", label: "VENTA OTROS SERVICIOS", type: "money" },
-        { key: "cantOtros", label: "CANTIDAD OTROS SERVICIOS", type: "int" },
-        { key: "ticketOtros", label: "TICKET MEDIO OTROS SERVICIOS", type: "money" },
-      ]
-    : [];
-
-  // Orígenes dinámicos (membresías)
   const originKeysAll = Array.from(
     new Set(perMonth.flatMap(m => Object.keys(m.metrics?.byOrigin || {})))
   )
-    .filter(k => k !== "meta")
+    .filter(k => k !== "meta") 
     .sort();
 
-  const rowsPerOrigin = originKeysAll.flatMap(okey => {
-    const anyLabel =
-      perMonth.find(m => m.metrics?.byOrigin?.[okey])?.metrics?.byOrigin?.[okey]?.label || okey;
-    const LABEL = String(anyLabel).toUpperCase();
-    return [
-      { key: `o:${okey}:total`,  label: `VENTA MEMBRESÍAS – ${LABEL}`, type: "money" },
-      { key: `o:${okey}:cant`,   label: `CANTIDAD MEMBRESÍAS – ${LABEL}`, type: "int" },
-      { key: `o:${okey}:ticket`, label: `TICKET MEDIO – ${LABEL}`, type: "money" },
-      { key: `o:${okey}:pct`,    label: `% PARTICIPACIÓN – ${LABEL}`, type: "float2" },
-    ];
-  });
-
-  // === NUEVO: separar en 3 bloques ===
-  const ORIGIN_KEYS_SOCIAL = ["facebook", "instagram", "tiktok"];
-
-  const splitRowsByOrigin = (rows) => {
-    const social = [];
-    const rest = [];
-    for (const r of rows) {
-      if (!r.key.startsWith("o:")) { rest.push(r); continue; }
-      const [, okey] = r.key.split(":");
-      if (ORIGIN_KEYS_SOCIAL.includes(okey)) social.push(r);
-      else rest.push(r);
-    }
-    return { social, rest };
-  };
-
-  const { social: rowsOrigenSocial } = splitRowsByOrigin(rowsPerOrigin);
-
-  const rowsProductos = [
-    { key: "totalProd", label: "VENTA PRODUCTOS", type: "money" },
-    { key: "cantProd", label: "CANTIDAD PRODUCTOS", type: "int" },
-    { key: "ticketProd", label: "TICKET MEDIO PRODUCTOS", type: "money" },
-  ];
-
-  const baseSinProductos = baseRowsBottom.filter(
-    r => !["totalProd","cantProd","ticketProd"].includes(r.key)
-  );
-  const { rest: rowsOrigenResto } = splitRowsByOrigin(rowsPerOrigin);
-  const rowsResto = [...baseSinProductos, ...rowsOtros, ...rowsOrigenResto];
+  const rowsPerOrigin = (okey) => ([
+    { key: `o:${okey}:total`,  label: `VENTA MEMBRESÍAS `, type: "money" },
+    { key: `o:${okey}:cant`,   label: `CANTIDAD MEMBRESÍAS`, type: "int" },
+    { key: `o:${okey}:ticket`, label: `TICKET MEDIO `, type: "money" },
+    { key: `o:${okey}:pct`,    label: `% PARTICIPACIÓN `, type: "float2" },
+  ]);
 
   // ======= estilos =======
   const cBlack = "#000000";
@@ -446,10 +398,10 @@ export default function ExecutiveTable({
     background: cBlack,
     color: cWhite,
     textAlign: "center",
-    padding: "25px 12px",
+    padding: "16px 12px",
     fontWeight: 700,
     letterSpacing: 0.2,
-    fontSize: 25,
+    fontSize: 27, // TITULO 27px
   };
   const sTable = {
     width: "100%",
@@ -477,11 +429,6 @@ export default function ExecutiveTable({
     background: cWhite,
     fontWeight: 700,
     fontSize: 17,
-  };
-  const sRowBlack = {
-    background: cBlack,
-    color: cWhite,
-    fontWeight: 700,
   };
   const sRowRed = {
     background: cRed,
@@ -532,8 +479,8 @@ export default function ExecutiveTable({
           if (r.key.startsWith("o:")) {
             const [, okey, campo] = r.key.split(":");
             const o = m.metrics?.byOrigin?.[okey];
-            if (campo === "total")      val = o?.total ?? 0;
-            else if (campo === "cant")  val = o?.cant ?? 0;
+            if (campo === "total")       val = o?.total ?? 0;
+            else if (campo === "cant")   val = o?.cant ?? 0;
             else if (campo === "ticket") val = o?.cant ? o.total/o.cant : 0;
             else if (campo === "pct") {
               const base = m.metrics?.totalServ || 0;
@@ -594,7 +541,7 @@ export default function ExecutiveTable({
 
       <tbody>
         {/* VENTA TOTAL al corte */}
-        <tr style={sRowBlack}>
+        <tr style={{ background: "#000", color: "#fff", fontWeight: 700 }}>
           <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 18 }}>
             {`VENTA TOTAL AL ${cutDay}`}
           </td>
@@ -673,39 +620,36 @@ export default function ExecutiveTable({
     </table>
   );
 
+const orderedOrigins = [...originKeysAll].sort((a, b) => {
+  const diff = scoreOrigin(b) - scoreOrigin(a);
+  return Math.abs(diff) > 1e-9 ? diff : a.localeCompare(b);
+});
+
+
   return (
     <div style={sWrap}>
-      {/* === TABLA 1: SOLO FB / IG / TIKTOK === */}
-      <div style={sHeader}>
-        DETALLE DE VENTAS POR TIPO – RESTO AL {cutDay} DE CADA MES
-      </div>
-         <table style={sTable}>
-        <TableHead />
-        <tbody>{renderRows(rowsResto)}</tbody>
-      </table>
+      {/* === UNA TABLA POR CADA ORIGEN === */}
+      {orderedOrigins.length === 0 ? (
+        <div style={{ ...sHeader, background: "#444" }}>
+          NO HAY ORÍGENES CON DATOS PARA AL {cutDay} DE CADA MES
+        </div>
+      ) : (
+        orderedOrigins.map((okey) => {
+          const title = `DETALLE DE VENTAS POR ORIGEN – ${labelFromKey(okey)} AL ${cutDay} DE CADA MES`;
+          const LABEL = labelFromKey(okey);
+          const rows = rowsPerOrigin(okey, LABEL);
 
-      <div style={{ height: 24 }} />
-
-      {/* === TABLA 2: PRODUCTOS === */}
-      <div style={sHeader}>
-        DETALLE DE VENTAS POR TIPO – PRODUCTOS AL {cutDay} DE CADA MES
-      </div>
-      <table style={sTable}>
-        <TableHead />
-        <tbody>{renderRows(rowsProductos)}</tbody>
-      </table>
-
-      <div style={{ height: 24 }} />
-
-      {/* === TABLA 3: RESTO === */}
-      
-   <div style={sHeader}>
-        DETALLE DE VENTAS POR TIPO (FB / IG / TIKTOK) AL {cutDay} DE CADA MES
-      </div>
-       <table style={sTable}>
-        <TableHead />
-        <tbody>{renderRows(rowsOrigenSocial)}</tbody>
-      </table>
+          return (
+            <div key={okey} style={{ marginBottom: 24 }}>
+              <div style={sHeader}>{title}</div>
+              <table style={sTable}>
+                <TableHead />
+                <tbody>{renderRows(rows)}</tbody>
+              </table>
+            </div>
+          );
+        })
+      )}
 
       {/* Cinta VENTA TOTAL MES (full) */}
       <table style={sTable}>
@@ -740,20 +684,56 @@ export default function ExecutiveTable({
       </table>
 
       <div style={{ height: 32 }} />
-      {/* === RESUMEN CUOTA VS VENTAS === */}
+      {/* === RESUMEN CUOTA VS VENTAS (INTACTO) === */}
       <div style={{ ...sHeader, fontSize: 24, padding: "12px 16px", background: "#000", textAlign: "center" }}>
         RESUMEN DE CUOTA VS VENTAS
       </div>
       <ResumenCuotaTable />
 
       <div style={{ height: 32 }} />
-      {/* === MARKETING === */}
+      {/* === MARKETING (INTACTO) === */}
       <div style={{ ...sHeader, fontSize: 22, padding: "12px 16px", background: "#c00000", textAlign: "center" }}>
         DETALLE DE INVERSIÓN EN REDES VS RESULTADOS EN LEADS
       </div>
       <table style={sTable}>
         <TableHead />
-        <tbody>{renderRows(baseRowsTop)}</tbody>
+        <tbody>
+          {[
+            { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
+            { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
+            { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META + TIKTOK", type: "float2" },
+            { key: "mkCac", label: "COSTO ADQUISICION DE CLIENTES", type: "float2" },
+            { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
+            { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
+            { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
+            { key: "mkCacMeta", label: "COSTO ADQUISCION DE CLIENTES META", type: "float2" },
+            { key: "mkInvTikTok", label: " Inversion TikTok", type: "money" },
+            { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
+            { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
+            { key: "mkCacTikTok", label: "COSTO ADQUISICION CLIENTES TIKTOK", type: "float2" },
+          ].map(r => (
+            <tr key={r.key + r.label}>
+              <td style={{ ...sCellBold, background:"#c00000", color:"#fff", fontWeight:800 }}>
+                {r.label}
+              </td>
+              {perMonth.map((m, idx) => {
+                const val = m.metrics?.[r.key] ?? 0;
+                const txt = r.type === "money" ? fmtMoney(val)
+                          : r.type === "float2" ? fmtNum(val, 2)
+                          : fmtNum(val, 0);
+                const isLast = idx === perMonth.length - 1;
+                return (
+                  <td key={idx} style={{
+                    ...sCell,
+                    ...(isLast ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 23 } : {})
+                  }}>
+                    {txt}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
