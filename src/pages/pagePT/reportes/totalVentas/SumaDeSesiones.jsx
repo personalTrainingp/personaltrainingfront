@@ -427,7 +427,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
     );
     return (
       <td className={tdBoldClassIf(totalSociosTabla)} style={{ minWidth: 80, width: 60 }}>
-        {fmt(totalSociosTabla, true)}
+       -
       </td>
     );
   })()}
