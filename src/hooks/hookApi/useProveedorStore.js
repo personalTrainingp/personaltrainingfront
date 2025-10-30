@@ -114,7 +114,6 @@ export const useProveedorStore = () => {
 					dataOficios.find((o) => o.value === term?.id_oficio)?.label || '';
 				const empresaLabel =
 					arrayEmpresaFinanAbrev?.find((f) => f?.value === term?.id_empresa)?.label || '';
-of
 				return {
 					value: term.value,
 					label: `${firstPart.trim()} | ${oficioLabel} | ${empresaLabel} | ${secondPart.trim()}`,
