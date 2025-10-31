@@ -469,7 +469,8 @@ const rowsMonkeyFitFull = [
     padding: "8px 10px",
     background: cWhite,
     fontWeight: 700,
-    fontSize: 17,
+    fontSize: 22,
+    textAlign: "center",
   };
   const sRowRed = {
     background: cRed,
@@ -581,17 +582,7 @@ const ResumenCuotaTable = () => (
     </thead>
 
     <tbody>
-      {/* VENTA TOTAL al corte */}
-      <tr style={{ background: "#000", color: "#fff", fontWeight: 700 }}>
-        <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 18 }}>
-          {`VENTA TOTAL AL ${cutDay}`}
-        </td>
-        {perMonth.map((m, idx) => (
-          <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontSize: 21 }}>
-            {fmtMoney(m.metrics?.totalMes || 0)}
-          </td>
-        ))}
-      </tr>
+ 
 
       {/* CUOTA DEL MES */}
       <tr>
@@ -663,18 +654,29 @@ const ResumenCuotaTable = () => (
           );
         })}
       </tr>
-
+     {/* VENTA TOTAL al corte */}
+      <tr style={{ background: "#000", color: "#fff", fontWeight: 700 }}>
+        <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
+          {`VENTA TOTAL AL ${cutDay}`}
+        </td>
+        {perMonth.map((m, idx) => (
+          <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff" }}>
+            {fmtMoney(m.metrics?.totalMes || 0)}
+          </td>
+        ))}
+      </tr>
       {/* VENTA TOTAL MES (FULL) */}
       <tr style={sRowRed}>
-        <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 18, textTransform: "uppercase" }}>
+        <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800,  textTransform: "uppercase" }}>
           VENTA TOTAL MES
         </td>
         {perMonth.map((m, idx) => (
-          <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 22 }}>
+          <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
             {fmtMoney(m.metrics?.totalMesFull || 0)}
           </td>
         ))}
       </tr>
+      
     </tbody>
   </table>
 );
@@ -726,7 +728,7 @@ return (
         ...sHeader,
         fontSize: 24,
         padding: "12px 16px",
-        background: "#000",
+        background: cRed,
         textAlign: "center",
       }}
     >
@@ -824,7 +826,6 @@ return (
               color: "#fff",
               textAlign: "center",
               fontWeight: 800,
-              fontSize: 18,
             }}
           />
           {perMonth.map((m, idx) => (
@@ -834,7 +835,6 @@ return (
                 ...sCellBold,
                 background: "#000",
                 color: "#fff",
-                fontSize: 25,
                 textAlign: "center",
               }}
             >
