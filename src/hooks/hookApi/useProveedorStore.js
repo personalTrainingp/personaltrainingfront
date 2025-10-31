@@ -134,7 +134,7 @@ export const useProveedorStore = () => {
 			setstatus('success');
 			// console.log(data.proveedor);
 			dispatch(onDataPerfil(data.proveedor));
-			setProveedor({ proveedor: data.proveedor });
+			setProveedor(data.proveedor);
 		} catch (error) {
 			console.log(error);
 		}

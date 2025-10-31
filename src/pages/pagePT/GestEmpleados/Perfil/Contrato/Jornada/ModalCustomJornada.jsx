@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react'; 
 import { Dialog } from 'primereact/dialog';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Dropdown } from 'primereact/dropdown';
@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import { arrayTipoJornada } from '@/types/type';
 import { useContratoColaboradorStore } from '../useContratoColaboradorStore';
+import { useDiasLaborablesColaboradorStore } from './useDiasLaborablesColaboradorStore';
 
 dayjs.locale('es');
 
@@ -100,6 +101,7 @@ const getMonthsInRange = (from, to) => {
   }
   return months;
 };
+
 const ModalEspecial = ({ visible, onHide, onAdd }) => {
   const [inicio, setInicio] = useState('12:00');
   const [fin, setFin] = useState('13:00');
@@ -117,9 +119,8 @@ const ModalEspecial = ({ visible, onHide, onAdd }) => {
     const b = parseHM(fin);
     const mins = Math.max(0, minutesBetween(a, b));
     console.log({inicio, fin, tipo, observacion: obs, minutos: mins});
-    
-    // onAdd?.({ inicio, fin, tipo, observacion: obs, minutos: mins });
-    // onHide?.();
+    onAdd?.({ inicio, fin, tipo, observacion: obs, minutos: mins });
+    onHide?.();
   };
 
   return (
@@ -250,14 +251,12 @@ const PanelItems = ({ items, onToggleDetail, onDelete, id_contrato }) => {
   const { postTipoContratoxDia } = useContratoColaboradorStore()
   const onClickPostItems = (it)=>{
       console.log({it, df: dataFlatMapItems(it, id_contrato)});
-    postTipoContratoxDia(dataFlatMapItems(it, id_contrato))
+      // si mandas todo lo que hay en panel
+      postTipoContratoxDia(dataFlatMapItems(it, id_contrato))
   }
   return (
     <div style={{ borderLeft: '1px solid #eee', paddingLeft: 12 }}>
       <div style={{ fontWeight: 700, marginBottom: 8 }}>Items creados</div>
-      {/* <pre>
-        {JSON.stringify(items, null, 2)}
-      </pre> */}
       {items.length === 0 && <div style={{ opacity: .7 }}>Aún no hay items</div>}
       {items.map((it) => (
         <div key={it.id} style={{ border: '1px solid #eee', borderRadius: 8, padding: 10, marginBottom: 10, background: '#fff' }}>
@@ -293,11 +292,75 @@ const PanelItems = ({ items, onToggleDetail, onDelete, id_contrato }) => {
         </div>
       ))}
       <Button label='AGREGAR ' onClick={()=>onClickPostItems(items)}/>
-
-
     </div>
   );
 };
+
+// ========== 🔥 función nueva: convertir data (del backend) -> items (del panel) ==========
+function buildItemsFromData(data = []) {
+  if (!Array.isArray(data) || data.length === 0) return [];
+
+  // agrupamos por hora_inicio
+  const byHora = new Map();
+  data.forEach((r) => {
+    const key = r.hora_inicio;
+    if (!byHora.has(key)) byHora.set(key, []);
+    byHora.get(key).push(r);
+  });
+
+  const items = [];
+  let counter = 1;
+
+  for (const [hora_inicio, rows] of byHora.entries()) {
+    // normales: id_tipo_horario=0
+    const normales = rows.filter((r) => r.id_tipo_horario === 0);
+    // especiales: !=0
+    const especialesRaw = rows.filter((r) => r.id_tipo_horario !== 0);
+
+    // fechas: de todos (para que se pinten)
+    const fechas = Array.from(new Set(rows.map((r) => r.fecha)));
+
+    // minutos base: si hay normal, tomo el primero, si no, 0
+    const baseMinutos = normales.length > 0 ? (normales[0].minutos || 0) : 0;
+
+    // fin calculado: hora_inicio + baseMinutos
+    const finDate = dayjs().hour(Number(hora_inicio.split(':')[0]) || 0).minute(Number(hora_inicio.split(':')[1]) || 0).second(0);
+    const finCalc = finDate.add(baseMinutos, 'minute').format('hh:mm A');
+
+    // especiales en formato que usa tu UI
+    const especiales = especialesRaw.map((e) => {
+      const ini = e.hora_inicio; // en tu backend ya viene hh:mm
+      const base = dayjs().hour(Number(ini.split(':')[0]) || 0).minute(Number(ini.split(':')[1]) || 0);
+      const fin = base.add(e.minutos || 0, 'minute').format('HH:mm');
+      return {
+        inicio: ini,
+        fin,
+        tipo: e.id_tipo_horario,
+        observacion: e.observacion || '',
+        minutos: e.minutos || 0,
+      };
+    });
+
+    const total_minutos = baseMinutos + especiales.reduce((a, e) => a + (e.minutos || 0), 0);
+
+    items.push({
+      id: `loaded-${counter}`,
+      number: counter,
+      modo: 'dia', // cuando viene del backend no sabemos el modo original, ponemos uno neutro
+      horario_inicio: hora_inicio,
+      minutos: baseMinutos,
+      especiales,
+      horario_fin_jor: finCalc,
+      total_minutos,
+      fechas,
+      showDetail: false,
+    });
+
+    counter++;
+  }
+
+  return items;
+}
 
 // ---------- Componente principal ----------
 export const ModalCustomJornada = ({
@@ -306,25 +369,56 @@ export const ModalCustomJornada = ({
   arrayFecha = [new Date(), 'indefinido'],
   horarios = [{ horario: '12:00' }, { horario: '15:00' }, { horario: '18:00' }],
   uid_empl,
-  id_contrato
+  id_contrato,
+  // 🔥 nuevo:
+  data = []   // [{id_tipo_horario, fecha, hora_inicio, minutos, observacion}]
 }) => {
   const [from, to] = arrayFecha || [];
   const months = useMemo(() => getMonthsInRange(from, to), [from, to]);
   const isFullYear = months.length === 12;
   const columns = months.length === 1 ? 1 : (isFullYear ? 4 : Math.min(4, months.length));
-
+  const  { dataDiasLaborablesxIDcontrato, obtenerDiasLaborablesColaboradorxContrato } = useDiasLaborablesColaboradorStore()
   // Sidebar + modal jornada
   const [selectedHorario, setSelectedHorario] = useState(null);
   const [showJornada, setShowJornada] = useState(false);
+  useEffect(() => {
+    if(show && id_contrato!==0){
+      obtenerDiasLaborablesColaboradorxContrato(id_contrato)
+    }
+  }, [id_contrato, show])
+  console.log({dataDiasLaborablesxIDcontrato, id_contrato});
+  
+  // Modo pintado activo
+  const [painter, setPainter] = useState(null);
+  const [hoverSet, setHoverSet] = useState(new Set());
+  const [strongMap, setStrongMap] = useState(new Map());
 
-  // Modo pintado activo (tras aceptar jornada)
-  const [painter, setPainter] = useState(null); // { modo, horario_inicio, horario_fin_jor, total_minutos, especiales }
-  const [hoverSet, setHoverSet] = useState(new Set()); // fechas (YYYY-MM-DD) resaltadas claro
-  const [strongMap, setStrongMap] = useState(new Map()); // fecha -> { number, itemId }
-
-  // Lista de items creados
+  // Lista de items
   const [items, setItems] = useState([]);
   const [counter, setCounter] = useState(1);
+
+  // 🔥 cuando venga data, la colocamos
+  useEffect(() => {
+    if (Array.isArray(dataDiasLaborablesxIDcontrato) && dataDiasLaborablesxIDcontrato.length > 0) {
+      const loadedItems = buildItemsFromData(dataDiasLaborablesxIDcontrato);
+      setItems(loadedItems);
+      setCounter(loadedItems.length + 1);
+
+      // pintar en calendario
+      const newStrong = new Map();
+      loadedItems.forEach((it) => {
+        it.fechas.forEach((f) => {
+          newStrong.set(f, { number: it.number, itemId: it.id });
+        });
+      });
+      setStrongMap(newStrong);
+    } else {
+      // si no viene data, limpio
+      setItems([]);
+      setCounter(1);
+      setStrongMap(new Map());
+    }
+  }, [dataDiasLaborablesxIDcontrato]);
 
   // Abrir modal jornada al elegir horario
   const handlePickHorario = (h) => {
@@ -336,6 +430,7 @@ export const ModalCustomJornada = ({
   const handleAceptarJornada = (data) => {
     setPainter(data); // activar modo pintura
   };
+
   // Hover: calcular set según modo
   const computeHoverSet = useCallback((dateUnderCursor) => {
     if (!painter) return new Set();
@@ -355,7 +450,6 @@ export const ModalCustomJornada = ({
     } else if (painter.modo === 'dia') {
       set.add(d.format('YYYY-MM-DD'));
     } else if (painter.modo === 'intercalado') {
-      // 🔥 NUEVO: cada 14 días (quincenal)
       months.forEach((m) => {
         const startMonth = m.startOf('month');
         const endMonth = m.endOf('month');
@@ -417,7 +511,6 @@ export const ModalCustomJornada = ({
         setItems((arr) => [...arr, item]);
         setCounter((n) => n + 1);
 
-        // salir de modo pintor (si prefieres permanecer, comenta la siguiente línea)
         setPainter(null);
         setHoverSet(new Set());
       },
@@ -444,6 +537,7 @@ export const ModalCustomJornada = ({
   // Render
   return (
     <Dialog onHide={onHide} visible={show} header={`AGREGAR JORNADA ${id_contrato}`} style={{ width: '95vw', maxWidth: 1400 }}>
+      <ConfirmDialog />
       <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr 320px', gap: 12, minHeight: 500 }}>
         {/* Sidebar izquierda */}
         <div style={{ borderRight: '1px solid #eee', paddingRight: 12 }}>
@@ -497,31 +591,31 @@ export const ModalCustomJornada = ({
   );
 };
 
+// ---------- flatten para enviar ----------
 function dataFlatMapItems(dataFlat, id_contrato) {
   return dataFlat.flatMap((item) => {
-  // normales
-  const normales = item.fechas.map((fecha) => ({
-    id_tipo_horario: 0,
-    fecha,
-    hora_inicio: item.horario_inicio,
-    minutos: item.total_minutos,
-    observacion: "",
-    id_contrato,
-  }));
-
-  // especiales
-  const especiales = item.especiales.flatMap((esp) =>
-    item.fechas.map((fecha) => ({
-      id_tipo_horario: esp.tipo,
-      hora_inicio: esp.inicio,
-      minutos: esp.minutos,
+    // normales
+    const normales = item.fechas.map((fecha) => ({
+      id_tipo_horario: 0,
       fecha,
-      observacion: esp.observacion,
-      id_contrato
-    }))
-  );
+      hora_inicio: item.horario_inicio,
+      minutos: item.total_minutos,
+      observacion: "",
+      id_contrato,
+    }));
 
-  return [...normales, ...especiales];
-});
+    // especiales
+    const especiales = item.especiales.flatMap((esp) =>
+      item.fechas.map((fecha) => ({
+        id_tipo_horario: esp.tipo,
+        hora_inicio: esp.inicio,
+        minutos: esp.minutos,
+        fecha,
+        observacion: esp.observacion,
+        id_contrato
+      }))
+    );
+
+    return [...normales, ...especiales];
+  });
 }
-

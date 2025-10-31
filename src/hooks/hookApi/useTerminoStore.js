@@ -206,6 +206,7 @@ export const useTerminoStore = () => {
 					value: z.id,
 				};
 			});
+			console.log({ dataAlter, data });
 
 			setdataZonas(dataAlter);
 		} catch (error) {

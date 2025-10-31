@@ -32,11 +32,15 @@ const ESTADOS = [
 
 export const DataProveedores = ({id_estado}) => {
   const [isModalOpenProv, setisModalOpenProv] = useState(false);
+  const [idProv, setidProv] = useState(0);
   const [estado, setEstado] = useState(true); // true = ACTIVO, false = INACTIVO
 
   const modalProvClose = () => setisModalOpenProv(false);
   const modalProvOpen = () => setisModalOpenProv(true);
-
+  const onOpenModalProvOpen=(id)=>{
+    modalProvOpen()
+    setidProv(id)
+  }
   // plantilla visual para que cada botón sea bloque sólido
   const estadoTemplate = (option) => (
     <div className="estado-btn">{option.label}</div>
@@ -51,7 +55,7 @@ export const DataProveedores = ({id_estado}) => {
             <Card.Body>
               <Row className="mb-3">
                 <Col sm={5}>
-                  <Button label="Agregar proveedor" onClick={modalProvOpen} />
+                  <Button label="Agregar proveedor" onClick={()=>onOpenModalProvOpen(0)} />
                 </Col>
               </Row>
 
@@ -59,7 +63,7 @@ export const DataProveedores = ({id_estado}) => {
                 <TabPanel header={'PROVEEDORES'}>
                   <TabView>
                     <TabPanel header={'CHANGE'}>
-                      <CustomersProv estado_prov={id_estado} agente={true} id_empresa={598} />
+                      <CustomersProv onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={598} />
                     </TabPanel>
 
                     <TabPanel header={'CIRCUS'}>
@@ -83,7 +87,7 @@ export const DataProveedores = ({id_estado}) => {
         </Col>
       </Row>
 
-      <ModalProveedor show={isModalOpenProv} onHide={modalProvClose} />
+      <ModalProveedor show={isModalOpenProv} id={idProv} onHide={modalProvClose} />
     </>
   );
 };

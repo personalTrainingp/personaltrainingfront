@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
 import { Badge } from 'primereact/badge';
 
-const CustomersProv = ({estado_prov, agente, id_empresa}) => {
+const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) => {
 	const dispatch = useDispatch()
 	// const [modalProv, toggleModalProv] = useToggle();
     const [filters, setFilters] = useState({
@@ -93,9 +93,19 @@ const CustomersProv = ({estado_prov, agente, id_empresa}) => {
 	const HistorialProvBodyTemplate = (rowData)=>{
 		
 		return (
+			<>
             <Link to={`/perfil-proveedor/${rowData.uid}`} className="action-icon text-primary" style={{fontSize: '14px', color: 'blue', textDecoration: 'underline'}}>
                 Ver Perfil
             </Link>
+			</>
+		)
+	}
+	const CopiProvBodyTemplate = (rowData)=>{
+		
+		return (
+			<>
+			<Button label='copiar datos' text onClick={()=>onOpenModalProvOpen(rowData.id)}/>
+			</>
 		)
 	}
 	const EstadoProvBodyTemplate = (rowData)=>{
@@ -150,7 +160,7 @@ const CustomersProv = ({estado_prov, agente, id_empresa}) => {
 							// onSelectionChange={(e) => setselectedCustomers(e.value)}
 							filters={filters} 
 							filterDisplay="menu" 
-							globalFilterFields={['id', 'oficio', 'column_razon_social', 'nombre_contacto', 'oficio', 'razon_social_prov', 'ruc_prov', 'cel_prov', 'nombre_vend_prov', 'Estado']} 
+							globalFilterFields={['id', 'oficio', 'column_razon_social', 'nombre_contacto', 'oficio', 'razon_social_prov', 'ruc_prov', 'cel_prov', 'Estado']} 
 							emptyMessage="Egresos no encontrados."
 							showGridlines 
 							// loading={loading} 
@@ -165,8 +175,8 @@ const CustomersProv = ({estado_prov, agente, id_empresa}) => {
 								<Column header={'Razon social'} field='razon_social_prov' filterField="razon_social_prov" body={razonSocialBodyTemplate} sortable/>
 								{/* <Column header="Ruc del proveedor" field='ruc_prov' filterField="ruc_prov" sortable style={{ width: '3rem' }} filter/> */}
 								<Column header="Celular del contacto" field='cel_prov' filterField="cel_prov" style={{ minWidth: '10rem' }} body={telefonoBodyTemplate} sortable/>
-								{/* <Column header="Estado" field='Estado' filterField="Estado" sortable style={{ minWidth: '10rem' }} filter body={EstadoProvBodyTemplate} /> */}
 								<Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={HistorialProvBodyTemplate}/>
+								<Column header="" field='' filterField="" style={{ minWidth: '10rem' }} body={CopiProvBodyTemplate} />
 							</DataTable>
 				</Col>
 			</Row>

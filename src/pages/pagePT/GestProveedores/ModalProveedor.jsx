@@ -28,7 +28,8 @@ const registerProvedor = {
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalProveedor = ({status, dataProv, onHide, show}) => {
+export const ModalProveedor = ({status, dataProv, onHide, show, id}) => {
+    const { startRegisterProveedor, message, isLoading, actualizarProveedor, obtenerProveedor, proveedor } = useProveedorStore()
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const [selectedAvatar, setselectedAvatar] = useState(null)
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
@@ -50,8 +51,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
             id_empresa,
             id_oficio,
             es_agente,
-            formState, onResetForm, onInputChange, onInputChangeReact } = useForm(dataProv?dataProv:registerProvedor)
-            const { startRegisterProveedor, message, isLoading, actualizarProveedor } = useProveedorStore()
+            formState, onResetForm, onInputChange, onInputChangeReact } = useForm(id==0?registerProvedor:proveedor)
             const { comboOficio, obtenerOficios, obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
             const [visible, setVisible] = useState(false);
           
@@ -69,9 +69,17 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
             }, [visible, isLoading]);
             
             useEffect(() => {
-                obtenerOficios()
-                obtenerParametroPorEntidadyGrupo('formapago', 'banco')
-            }, [])
+                if(show){
+                    obtenerOficios()
+                    obtenerParametroPorEntidadyGrupo('formapago', 'banco')
+                }
+            }, [show])
+            useEffect(() => {
+                if (id!==0) {
+                    obtenerProveedor(id)
+                }
+            }, [id])
+            console.log({proveedor});
             
             
 
@@ -340,8 +348,8 @@ export const ModalProveedor = ({status, dataProv, onHide, show}) => {
                                             </label>
                                             
                                             <Select
-                                                    onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
-                                                    name="id_tarjeta"
+                                                    onChange={(e) => onInputChangeReact(e, 'id_oficio')}
+                                                    name="id_oficio"
                                                     placeholder={'Seleccione el banco'}
                                                     className="react-select"
                                                     classNamePrefix="react-select"
