@@ -55,11 +55,40 @@ export default function ExecutiveTable({
     [];
 
   const ORIGIN_SYNONYMS = {
-    tiktok:    new Set(["1514","695","tiktok","tik tok","tik-tok"]),
-    facebook:  new Set(["694","facebook","fb"]),
-    instagram: new Set(["693","instagram","ig"]),
-    meta:      new Set(["1515","meta"]),
-  };
+  tiktok:    new Set(["1514","695","tiktok","tik tok","tik-tok"]),
+  facebook:  new Set(["694","facebook","fb"]),
+  instagram: new Set(["693","instagram","ig"]),
+  meta:      new Set(["1515","meta"]),
+
+  // 🔽 NUEVOS
+  renovaciones: new Set([
+    "renovaciones",
+    "cartera de renovaciones",
+    "cartera_de_renovaciones",
+    "cartera renovaciones",
+    "cartera de renovación",
+    "cartera_de_renovación"
+  ]),
+  cartera_de_reinscripciones: new Set([
+    "cartera de reinscripcion",
+    "cartera_de_reinscripcion",
+    "cartera reinscripcion",
+    "cartera de reinscripción",
+    "cartera_de_reinscripción",
+    "cartera de reinscripciones",
+    "cartera_de_reinscripciones"
+  ]),
+  ex_pt: new Set([
+    "ex-pt",
+    "ex pt",
+    "expt",
+    "ex-pt reinscripcion",
+    "ex pt reinscripcion",
+    "ex-pt reinscripción",
+    "ex pt reinscripción"
+  ]),
+};
+
 
   const canonicalKeyFromRaw = (originMap, raw) => {
     const rawStr = String(raw ?? "").trim();
@@ -407,13 +436,13 @@ const rowsMonkeyFitFull = [
     color: cBlack,
   };
   const sHeader = {
-    background: cBlack,
+    background: cRed,
     color: cWhite,
     textAlign: "center",
     padding: "16px 12px",
     fontWeight: 700,
     letterSpacing: 0.2,
-    fontSize: 27, // TITULO 27px
+    fontSize: 40, // TITULO 27px
   };
   const sTable = {
     width: "100%",
@@ -530,108 +559,126 @@ const rowsMonkeyFitFull = [
       </tr>
     ));
 
-  const ResumenCuotaTable = () => (
-    <table style={sTable}>
-      <thead>
-        <tr>
-          <th
-            style={{
-              ...sThLeft,
-              background: cBlack,
-              color: "#fff",
-              fontSize: 20,
-              textTransform: "uppercase",
-            }}
-          />
-          {perMonth.map((m, idx) => (
-            <th key={idx} style={{ ...sThMes, background: cBlack, color: "#fff", fontSize: 24 }}>
-              {m.label}
-            </th>
-          ))}
-        </tr>
-      </thead>
+const ResumenCuotaTable = () => (
+  <table style={sTable}>
+    <thead>
+      <tr>
+        <th
+          style={{
+            ...sThLeft,
+            background: cBlack,
+            color: "#fff",
+            fontSize: 20,
+            textTransform: "uppercase",
+          }}
+        />
+        {perMonth.map((m, idx) => (
+          <th key={idx} style={{ ...sThMes, background: cBlack, color: "#fff", fontSize: 24 }}>
+            {m.label}
+          </th>
+        ))}
+      </tr>
+    </thead>
 
-      <tbody>
-        {/* VENTA TOTAL al corte */}
-        <tr style={{ background: "#000", color: "#fff", fontWeight: 700 }}>
-          <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 18 }}>
-            {`VENTA TOTAL AL ${cutDay}`}
+    <tbody>
+      {/* VENTA TOTAL al corte */}
+      <tr style={{ background: "#000", color: "#fff", fontWeight: 700 }}>
+        <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 18 }}>
+          {`VENTA TOTAL AL ${cutDay}`}
+        </td>
+        {perMonth.map((m, idx) => (
+          <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontSize: 21 }}>
+            {fmtMoney(m.metrics?.totalMes || 0)}
           </td>
-          {perMonth.map((m, idx) => (
-            <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontSize: 21 }}>
-              {fmtMoney(m.metrics?.totalMes || 0)}
+        ))}
+      </tr>
+
+      {/* CUOTA DEL MES */}
+      <tr>
+        <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
+          CUOTA DEL MES
+        </td>
+        {perMonth.map((m, idx) => {
+          const meta = metasPorMes[m.mes] || 0;
+          return (
+            <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000", fontSize: 22 }}>
+              {fmtMoney(meta)}
             </td>
-          ))}
-        </tr>
+          );
+        })}
+      </tr>
 
-        {/* CUOTA DEL MES */}
-        <tr>
-          <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
-            CUOTA DEL MES
-          </td>
-          {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
-            return (
-              <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000", fontSize: 22 }}>
-                {fmtMoney(meta)}
-              </td>
-            );
-          })}
-        </tr>
-
-        {/* % ALCANCE DE CUOTA */}
-        <tr>
-          <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
-            % ALCANCE DE CUOTA
-          </td>
-          {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
-            const total = m.metrics?.totalMes || 0;
-            const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
-            const supera = alcancePct >= 100;
-            const color = supera ? "#007b00" : cRed;
-            return (
-              <td key={idx} style={{ ...sCell, fontWeight: 700, color, fontsize: 22 }}>
-                {fmtNum(alcancePct, 2)} %
-              </td>
-            );
-          })}
-        </tr>
-
-        {/* % RESTANTE PARA CUOTA */}
-        <tr>
-          <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 19 }}>
-            % RESTANTE PARA CUOTA
-          </td>
-          {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
-            const total = m.metrics?.totalMes || 0;
-            const restantePct = meta > 0 ? Math.max(0, 100 - (total / meta) * 100) : 0;
-            const cumple = total >= meta;
-            const color = cumple ? "#007b00" : cRed;
-            return (
-              <td key={idx} style={{ ...sCell, fontWeight: 700, color, fontsize: 22 }}>
-                {fmtNum(restantePct, 2)} %
-              </td>
-            );
-          })}
-        </tr>
-
-        {/* VENTA TOTAL MES (FULL) */}
-        <tr style={sRowRed}>
-          <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 18, textTransform: "uppercase" }}>
-            VENTA TOTAL MES
-          </td>
-          {perMonth.map((m, idx) => (
-            <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 22 }}>
-              {fmtMoney(m.metrics?.totalMesFull || 0)}
+      {/* % ALCANCE DE CUOTA */}
+      <tr>
+        <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
+          % ALCANCE DE CUOTA
+        </td>
+        {perMonth.map((m, idx) => {
+          const meta = metasPorMes[m.mes] || 0;
+          const total = m.metrics?.totalMes || 0;
+          const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
+          const supera = alcancePct >= 100;
+          const color = supera ? "#007b00" : cRed;
+          return (
+            <td key={idx} style={{ ...sCell, fontWeight: 700, color, fontsize: 22 }}>
+              {fmtNum(alcancePct, 2)} %
             </td>
-          ))}
-        </tr>
-        
-      </tbody>
-    </table>
-  );
+          );
+        })}
+      </tr>
+
+      {/* % RESTANTE PARA CUOTA */}
+      <tr>
+        <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 19 }}>
+          % RESTANTE PARA CUOTA
+        </td>
+        {perMonth.map((m, idx) => {
+          const meta = metasPorMes[m.mes] || 0;
+          const total = m.metrics?.totalMes || 0;
+          const restantePct = meta > 0 ? Math.max(0, 100 - (total / meta) * 100) : 0;
+          const cumple = total >= meta;
+          const color = cumple ? "#007b00" : cRed;
+          return (
+            <td key={idx} style={{ ...sCell, fontWeight: 700, color, fontsize: 22 }}>
+              {fmtNum(restantePct, 2)} %
+            </td>
+          );
+        })}
+      </tr>
+
+      <tr>
+        <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 19 }}>
+          MONTO RESTANTE PARA CUOTA
+        </td>
+        {perMonth.map((m, idx) => {
+          const meta = metasPorMes[m.mes] || 0;
+          const total = m.metrics?.totalMes || 0;
+          const restante = Math.max(0, meta - total);
+          const cumple = total >= meta;
+          const color = cumple ? "#007b00" : cRed;
+          return (
+            <td key={idx} style={{ ...sCell, fontWeight: 700, color, fontSize: 22 }}>
+              {fmtMoney(restante)}
+            </td>
+          );
+        })}
+      </tr>
+
+      {/* VENTA TOTAL MES (FULL) */}
+      <tr style={sRowRed}>
+        <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 18, textTransform: "uppercase" }}>
+          VENTA TOTAL MES
+        </td>
+        {perMonth.map((m, idx) => (
+          <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 22 }}>
+            {fmtMoney(m.metrics?.totalMesFull || 0)}
+          </td>
+        ))}
+      </tr>
+    </tbody>
+  </table>
+);
+
 
 const orderedOrigins = [...originKeysAll].sort((a, b) => {
   const diff = scoreOrigin(b) - scoreOrigin(a);
@@ -647,9 +694,9 @@ return (
       </div>
     ) : (
       orderedOrigins.map((okey) => {
-        const title = `DETALLE DE VENTAS POR ORIGEN – ${labelFromKey(
+        const title = ` ${labelFromKey(
           okey
-        )} AL ${cutDay} DE CADA MES`;
+        )} `;
         const rows = rowsPerOrigin(okey);
 
         return (
@@ -664,9 +711,8 @@ return (
       })
     )}
 
-    {/* === MONKEYFIT: SOLO UNA VEZ === */}
-    <div style={{ ...sHeader, fontSize: 27 }}>
-      DETALLE MONKEYFIT AL {cutDay} DE CADA MES
+    <div style={{ ...sHeader }}>
+       MONKEYFIT
     </div>
     <table style={sTable}>
       <TableHead />
@@ -675,7 +721,6 @@ return (
 
     <div style={{ height: 32 }} />
 
-    {/* === RESUMEN CUOTA VS VENTAS === */}
     <div
       style={{
         ...sHeader,

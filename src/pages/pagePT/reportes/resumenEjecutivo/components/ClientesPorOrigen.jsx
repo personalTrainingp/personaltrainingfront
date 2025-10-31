@@ -1,19 +1,6 @@
 import React, { useState } from "react";
 
-/**
- * ClientsByOriginTable 
- * --------------------------------------------------------------
- * Tabla: "CLIENTES POR ORIGEN DEL 1 HASTA <cutDay>".
- * Agrupa por id_origen (mapeado con originMap). Cuenta clientes únicos por mes y origen.
- *
- * Props:
- *  - ventas: Array<{ fecha_venta: ISOString, id_cli: number|string, id_origen: number|string }>
- *  - fechas: Array<{ label: string; anio: string|number; mes: string }>
- *  - initialDay?: number  // default 1
- *  - cutDay?: number      // default 21
- *  - originMap?: Record<string|number, string>
- *  - uniqueByClient?: boolean // default true (si false, cuenta ventas)
- */
+
 export const ClientesPorOrigen=({
   ventas = [],
   fechas = [],
