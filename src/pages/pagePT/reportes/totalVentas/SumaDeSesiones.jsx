@@ -392,7 +392,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                   );
                 })}
                 {/* SOCIOS POR CANAL */}
-              <tr className="fila-secundaria compact" style={{ background: "#fff",fontSize: 62 }}>
+              <tr className="fila-secundaria compact" style={{ background: "#fff",fontSize: 70 }}>
   <td className="img-with-name">
     <div className="img-cap only-text">
       <div className="cap">
@@ -427,7 +427,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
     );
     return (
       <td className={tdBoldClassIf(totalSociosTabla)} style={{ minWidth: 80, width: 60 }}>
-        {fmt(totalSociosTabla, true)}
+       -
       </td>
     );
   })()}

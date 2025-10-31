@@ -705,17 +705,16 @@ const avatarByAdvisor = useMemo(() => {
 }, [repoVentasPorSeparado?.total?.empl_monto]);
 const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte: 0 });
 const originMap = {
-  "1514": "tiktok",
-  "1515": "meta",
-  "695":  "tiktok",
-  "694":  "facebook",   // se agrupa luego en "meta"
-  "693":  "instagram",  // se agrupa luego en "meta"
-  // por si alguna venta trae string:
-  "tiktok": "tiktok",
-  "tik tok": "tiktok",
-  "facebook": "facebook",
-  "instagram": "instagram",
-  "meta": "meta",
+  "693":"Instagram", "694":"Facebook", "695":"TikTok",
+  "690":"Referidos", "691":"Cartera de renovacion",
+  "692":"Cartera de reinscripcion", "696":"EX-PT reinscripcion",
+  "686":"Walking", "689":"WSP organico",
+  "1470":"Corporativos BBVA",
+  "instagram":"Instagram","facebook":"Facebook","tiktok":"TikTok","meta":"Meta",
+  "1514":"TikTok","1515":"Meta",
+  0: "OTROS",                   
+  "": "OTROS",               
+  null: "OTROS", undefined: "OTROS" 
 };
     return (
   <>
