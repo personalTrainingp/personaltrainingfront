@@ -385,7 +385,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
     </td>
 
     <td className={tdBoldClassIf(Number(moneyByAdvisor[norm(asesor)]?.pct || 0))} style={{ minWidth: 80 }}>
-      {`${Number(moneyByAdvisor[norm(asesor)]?.pct || 0).toFixed(0)}`}
+      {`${Number(moneyByAdvisor[norm(asesor)]?.pct || 0).toFixed(2)}`}
     </td>
 
                     </tr>
