@@ -168,7 +168,7 @@ const totalVisibleMoney = filas.reduce((acc, fila) => {
 
 Object.keys(moneyByAdvisor).forEach((key) => {
   const visible = filas.find((f) => norm(f[0]?.value) === key);
-  if (!visible) return; // si no está visible, no recalcular
+  if (!visible) return;
   const m = moneyByAdvisor[key]?.money || 0;
   moneyByAdvisor[key].pct = totalVisibleMoney > 0 ? (m * 100) / totalVisibleMoney : 0;
 });
@@ -469,7 +469,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
         {fmt(totalSociosCanal, true)}
       </td>
       <td className="fw-bold" style={{ minWidth: 150 }}>
-        {fmt(grandMoney, true)}
+        {fmt(totalVisibleMoney, true)}
       </td>
       <td className="fw-bold" style={{ minWidth: 80 }}>100%</td>
     </>

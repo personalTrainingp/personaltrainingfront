@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 
-/* ===== Zona horaria Lima (UTC-5) ===== */
 function limaFromISO(iso) {
   if (!iso) return null;
   const s = String(iso).replace(" ", "T").replace(" -", "-");
@@ -36,8 +35,6 @@ const getIdCliente = (v) =>
   v?.id_cli ?? v?.tb_ventum?.id_cli ?? v?.tb_cliente?.id_cli ??
   v?.venta?.id_cli ?? v?.tb_venta?.id_cli ?? null;
 
-const getItemsProductos = (v) => (v?.detalle_ventaProductos || v?.detalle_ventaproductos || v?.detalle_venta_productos || []);
-const getItemsServicios = (v) => (v?.detalle_ventaservicios || v?.detalle_ventaServicios || []);
 const getItemsMembresia = (v) => (v?.detalle_ventaMembresia || v?.detalle_ventaMembresium || []);
 
 const isProductItem = (it) => !!(it?.tb_producto || it?.id_producto || it?.nombre_producto);
@@ -81,7 +78,10 @@ export default function VentasDiarias({
   month,        
   initDay = 1,
   cutDay,        
-  asesores,     
+  asesores, 
+  showSocios = true,
+  sumMode = "programas",
+  avatarByAdvisor = {},    
 }) {
   const listaAsesores = useMemo(() => {
     if (Array.isArray(asesores) && asesores.length) return asesores;
@@ -156,8 +156,22 @@ export default function VentasDiarias({
 
     return (
       <tr key={`${a}-${tipo}`} style={{ background: "#fff" }}>
+       <td style={{ border:"1px solid #000", padding:"6px 10px", textAlign:"center" }}>
+             {(() => {
+            const url = avatarByAdvisor[norm(a)] || "";
+            return url 
+            ? (
+ <img
+  src={url} 
+  alt={a} 
+  style={{ width: 46, height: 64, objectFit: "cover", borderRadius: 8 }} 
+  />   
+          )
+          : "—";       
+          })()}
+            </td>
         <td style={{ border:"1px solid #000", padding:"6px 10px", fontWeight:800,fontSize:18 }}>
-          {a}  {isSocios ? "SOCIOS" : "TOTAL S/."}
+          {a}  {isSocios ? "SOCIOS" : "VENTAS"}
         </td>
 
         {days.map((d) => (
@@ -166,24 +180,24 @@ export default function VentasDiarias({
             style={{
               border:"1px solid #000",
               padding:"6px 8px",
-              textAlign:"CENTER",
+              textAlign:"center",
               fontSize:22,
               fontWeight: isMonto ? ((monMap[d] || 0) > 0 ? 800 : 400) : ((socMap[d]?.size || 0) > 0 ? 700 : 400),
               color: isMonto ? ((monMap[d] || 0) > 0 ? "#c00000" : "#000") : "#000",
             }}
           >
-            {isSocios ? (socMap[d]?.size || "") : ((monMap[d] || 0) ? fmtMoney(monMap[d]) : "")}
+            {isSocios ? (socMap[d]?.size ?? 0) : fmtMoney(monMap[d] ?? 0)}
           </td>
         ))}
 
         <td style={{ border:"1px solid #000", padding:"6px 10px", textAlign:"right", fontWeight:800, fontSize:25 }}>
-          {isSocios ? (totalSocios || "") : ""}
+          {isSocios ? (totalSocios ?? 0) : 0}
         </td>
         <td style={{ border:"1px solid #000", padding:"6px 10px", textAlign:"right", fontWeight:800 ,fontSize:25}}>
-          {isMonto ? fmtMoney(totalMonto) : ""}
+          {isMonto ? fmtMoney(totalMonto ?? 0) : 0}
         </td>
         <td style={{ border:"1px solid #000", padding:"6px 10px", textAlign:"center", fontWeight:800 , fontSize:25}}>
-          {isMonto ? `${pct}%` : ""}
+          {isMonto ? `${pct.toFixed(2)}%` : "%0"}
         </td>
       </tr>
     );
@@ -191,7 +205,6 @@ export default function VentasDiarias({
 
 const asesoresNorm = (Array.isArray(listaAsesores) ? listaAsesores : []).map(norm);
 
-// Mostrar solo asesores con data (>0 en monto o socios)
 const asesoresActivos = asesoresNorm.filter((a) => {
   const monMap = dataByAsesor[a]?.montoByDay  || {};
   const socMap = dataByAsesor[a]?.sociosByDay || {};
@@ -203,27 +216,35 @@ const asesoresActivos = asesoresNorm.filter((a) => {
       <table style={{ borderCollapse:"collapse", width:"100%", minWidth: 900, background:"#fff" }}>
         <thead>
           <tr style={{ background:"#c00000", color:"#fff" }}>
-            <th style={{ border:"1px solid #000", padding:"8px 10px", position:"sticky", left:0, background:"#c00000" ,fontSize:20}}>
+         
+            <th style={{ border:"1px solid #000", padding:"8px 10px" }} >
+              AVATAR
+            </th>
+               <th style={{ border:"1px solid #000", padding:"8px 10px", background:"#c00000" ,fontSize:20}}>
               ASESOR / CONCEPTO
             </th>
             {labels.map((lab, i) => (
-              <th key={i} style={{ border:"1px solid #000", padding:"8px 10px" ,fontSize:20}}>{lab}</th>
+              <th key={i} style={{ border:"1px solid #000", padding:"8px 10px" ,fontSize:20,textAlign:"center"}}>{lab}</th>
             ))}
-            <th style={{ border:"1px solid #000", padding:"8px 10px", fontSize:22 }}>TOTAL</th>
-            <th style={{ border:"1px solid #000", padding:"8px 10px" , fontSize:22 }}>S/.</th>
+            <th style={{ border:"1px solid #000", padding:"8px 10px", fontSize:22 }}>TOTAL SOCIOS</th>
+            <th style={{ border:"1px solid #000", padding:"8px 10px" , fontSize:22 }}>TOTAL VENTA</th>
             <th style={{ border:"1px solid #000", padding:"8px 10px", fontSize:22  }}>%</th>
           </tr>
         </thead>
 
         <tbody>
           {asesoresActivos.length === 0 && (
-            <tr><td colSpan={labels.length + 3} style={{ padding:12, textAlign:"center" }}>Sin datos</td></tr>
+            <tr><td colSpan={labels.length + 5} style={{ padding:12, textAlign:"center" }}>Sin datos</td></tr>
           )}
 
           {asesoresActivos.map((a) => (
             <React.Fragment key={a}>
-              {renderRow(a, "SOCIOS")}
               {renderRow(a, "MONTO")}
+            </React.Fragment>
+          ))}
+            {asesoresActivos.map((a) => (
+            <React.Fragment key={a}>
+              {renderRow(a, "SOCIOS")}
             </React.Fragment>
           ))}
 
@@ -239,12 +260,13 @@ const asesoresActivos = asesoresNorm.filter((a) => {
             }, 0);
             return (
               <tr style={{ background:"#fff", fontWeight:800 }}>
-                <td style={{ border:"1px solid #000", padding:"8px 10px",fontSize:22 }}>TOTAL</td>
+                       <td style={{ border:"1px solid #000", padding:"8px 10px", textAlign:"center" }}></td>
+                <td style={{ border:"1px solid #000", padding:"8px 10px",fontSize:22 }}>TOTAL <br/> </td>
                 {days.map((_, i) => <td key={i} style={{ border:"1px solid #000" }} />)}
-                <td style={{ border:"1px solid #000", padding:"8px 10px", textAlign:"right",fontSize:25 }}>
+                <td style={{ border:"1px solid #000", padding:"8px 10px", textAlign:"center",fontSize:25 }}>
                   {totalSociosMes ? totalSociosMes.toLocaleString("es-PE") : ""}
                 </td>
-                <td style={{ border:"1px solid #000", padding:"8px 10px", textAlign:"right",fontSize:25 }}>
+                <td style={{ border:"1px solid #000", padding:"8px 10px", textAlign:"center",fontSize:25 }}>
                   {fmtMoney(totalMonto)}
                 </td>
                 <td style={{ border:"1px solid #000", padding:"8px 10px", textAlign:"center",fontSize:25 }}>100%</td>

@@ -874,7 +874,8 @@ const originMap = {
     initDay={initDay}
     cutDay={cutDay}
     showSocios={true}
-     sumMode="programas"  // pon false si no quieres la columna "Socios"
+    sumMode="programas"
+    avatarByAdvisor={avatarByAdvisor}
   />
 </div>
     </Row>
