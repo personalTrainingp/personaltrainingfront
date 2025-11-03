@@ -154,6 +154,7 @@ export default function VentasDiarias({
     const totalMonto  = Object.values(monMap).reduce((acc, n) => acc + (n || 0), 0);
     const pct = totalMontoMes > 0 ? Math.round((totalMonto*100)/totalMontoMes) : 0;
 
+
     return (
       <tr key={`${a}-${tipo}`} style={{ background: "#fff" }}>
        <td style={{ border:"1px solid #000", padding:"6px 10px", textAlign:"center" }}>
@@ -210,11 +211,30 @@ const asesoresActivos = asesoresNorm.filter((a) => {
   const socMap = dataByAsesor[a]?.sociosByDay || {};
   return sumMonto(monMap) > 0 || sumSocios(socMap) > 0;
 });
-
+const tituloMes = `${new Date(year, month - 1)
+  .toLocaleString("es-PE", { month: "long" })
+  .toUpperCase()} ${year}`;
   return (
     <div style={{ overflowX:"auto" }}>
       <table style={{ borderCollapse:"collapse", width:"100%", minWidth: 900, background:"#fff" }}>
         <thead>
+<tr>
+          <th
+            colSpan={labels.length + 5}
+            style={{
+              background:"#c00000",
+              color:"#fff",
+              textAlign:"center",
+              padding:"12px",
+              fontSize:26,
+              fontWeight:900,
+              letterSpacing:.5
+            }}
+          >
+            {tituloMes}
+          </th>
+        </tr>
+
           <tr style={{ background:"#c00000", color:"#fff" }}>
          
             <th style={{ border:"1px solid #000", padding:"8px 10px" }} >

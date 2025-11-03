@@ -461,7 +461,7 @@ const rowsMonkeyFitFull = [
     border,
     padding: "8px 10px",
     background: cWhite,
-    fontSize: 22,
+    fontSize: 28,
     textAlign: "center",
   };
   const sCellBold = {
@@ -469,7 +469,7 @@ const rowsMonkeyFitFull = [
     padding: "8px 10px",
     background: cWhite,
     fontWeight: 700,
-    fontSize: 22,
+    fontSize: 28,
     textAlign: "center",
   };
   const sRowRed = {
@@ -549,7 +549,7 @@ const rowsMonkeyFitFull = [
               style={{
                 ...sCell,
                 ...(makeLastBold && isLast
-                  ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 23 }
+                  ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 28 }
                   : {}),
               }}
             >
@@ -648,7 +648,7 @@ const ResumenCuotaTable = () => (
           const cumple = total >= meta;
           const color = cumple ? "#007b00" : cRed;
           return (
-            <td key={idx} style={{ ...sCell, fontWeight: 700, color, fontSize: 22 }}>
+            <td key={idx} style={{ ...sCell, fontWeight: 700, color, fontSize: 28 }}>
               {fmtMoney(restante)}
             </td>
           );
@@ -726,7 +726,7 @@ return (
     <div
       style={{
         ...sHeader,
-        fontSize: 24,
+        fontSize: 28,
         padding: "12px 16px",
         background: cRed,
         textAlign: "center",
@@ -742,7 +742,7 @@ return (
     <div
       style={{
         ...sHeader,
-        fontSize: 22,
+        fontSize: 28,
         padding: "12px 16px",
         background: "#c00000",
         textAlign: "center",
@@ -786,7 +786,7 @@ return (
                   style={{
                     ...sCell,
                     ...(isLast
-                      ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 23 }
+                      ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 28 }
                       : {}),
                   }}
                 >
@@ -811,7 +811,7 @@ return (
                 ...sThMes,
                 background: idx === perMonth.length - 1 ? "#c00000" : "transparent",
                 color: "#fff",
-                fontSize: 24,
+                fontSize: 28,
               }}
             >
               {fmtMoney(m.metrics?.totalMesFull || 0)}

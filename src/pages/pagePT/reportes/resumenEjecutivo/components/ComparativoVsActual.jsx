@@ -144,7 +144,7 @@ const fmtPct = (n) => {
     padding: "25px 12px",
     fontWeight: 700,
     letterSpacing: 0.2,
-    fontSize: 25,
+    fontSize: 27,
   };
   const sTable = { width: "100%", borderCollapse: "collapse", tableLayout: "fixed" };
   const sHeadLeft = {
@@ -153,7 +153,7 @@ const fmtPct = (n) => {
     padding: "10px",
     border: C.cellBorder,
     textAlign: "left",
-    fontSize: 20,
+    fontSize: 27,
   };
   const sHead = {
     background: C.red,
@@ -161,17 +161,17 @@ const fmtPct = (n) => {
     padding: "10px",
     border: C.cellBorder,
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 27,
   };
   const sCell = {
     background: C.white,
     color: "#000",
     padding: "8px 10px",
     border: C.cellBorder,
-    fontSize: 13,
+    fontSize: 18,
     textAlign: "center",
   };
-  const sCellBold = { ...sCell, fontWeight: 700, fontSize: 19 };
+  const sCellBold = { ...sCell, fontWeight: 700, fontSize: 28 };
   const sRowShade = { background: C.greyRow };
 
   const MoneyCell = ({ value, isLast }) => {
@@ -185,7 +185,7 @@ const fmtPct = (n) => {
           ...sCellBold,
           background: isLast ? C.red : sCell.background,
           color: isLast ? "#fff" : neg ? C.red : C.green,
-          fontSize: isLast ? 22 : sCellBold.fontSize,
+          fontSize: isLast ? 28 : sCellBold.fontSize,
         }}
       >
         {neg ? "-" : "+"}
@@ -202,7 +202,7 @@ const fmtPct = (n) => {
           ...sCellBold,
           background: C.red,
           color: "#fff",
-          fontSize: 22,
+          fontSize: 28,
         }}
       >
         100%
@@ -235,7 +235,7 @@ const fmtPct = (n) => {
         ...sHead,
         background: isLast ? C.red : sHead.background,
         color: "#fff",
-        fontSize: isLast ? 22 : sHead.fontSize,
+        fontSize: isLast ? 28 : sHead.fontSize,
       }}
     >
       <div>{col.label}</div>

@@ -138,9 +138,9 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
 
   const sTable = { width: "100%", borderCollapse: "collapse", tableLayout: "fixed" };
   const sHeadLeft = { background: C.red, color: C.white, padding: "10px", border: C.border, textAlign: "left", width: 260 };
-  const sHead = { background: C.red, color: C.white, padding: "10px", border: C.border, textAlign: "center",fontSize:20 };
-  const sCell = { background: C.white, color: "#000", padding: "10px", border: C.border, fontSize: 19, textAlign: "center" };
-  const sCellLeft = { ...sCell, textAlign: "left", fontWeight: 700, fontSize: 17 };
+  const sHead = { background: C.red, color: C.white, padding: "10px", border: C.border, textAlign: "center",fontSize:27 };
+  const sCell = { background: C.white, color: "#000", padding: "10px", border: C.border, fontSize: 28, textAlign: "center" };
+  const sCellLeft = { ...sCell, textAlign: "left", fontWeight: 700, fontSize: 27 };
 
   const lastMonthKey = monthKeys[monthKeys.length - 1]?.key;
     const maxValueLastCol = Math.max(...orderedOrigins.map(o => getCount(lastMonthKey, o)));
@@ -173,7 +173,7 @@ if (!bucket.has(origin)) bucket.set(origin, uniqueByClient ? new Set() : 0);
                 style={{
                   ...sHead,
                   background: isLastCol ? "#c00000" : sHead.background,
-                  fontSize: isLastCol ? 22 : sHead.fontSize,
+                  fontSize: isLastCol ? 27 : sHead.fontSize,
                 }}
                 onClick={toggleHighlight}
               >
