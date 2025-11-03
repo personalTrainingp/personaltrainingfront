@@ -34,8 +34,10 @@ export function limaStartOfDay(d) {
 }
 
 export function limaEndOfDay(d) {
-  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + 1, 4, 59, 59, 999));
+  // Fuerza fin del día en horario Lima 23:59:59.999
+  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999));
 }
+
 
 const parseBackendDate = (s) => {
   if (!s) return null;
@@ -758,8 +760,8 @@ const avatarByAdvisor = useMemo(() => {
 const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte: 0 });
 const originMap = {
   "693":"Instagram", "694":"Facebook", "695":"TikTok",
-  "690":"Referidos", "691":"Cartera de renovacion",
-  "692":"Cartera de reinscripcion", "696":"EX-PT reinscripcion",
+  "690":"Referidos", "691":"RENOVACIONES",
+  "692":"REINSCRIPCIONES", "696":"EX-PT reinscripcion",
   "686":"Walking", "689":"WSP organico",
   "1470":"Corporativos BBVA",
   "instagram":"Instagram","facebook":"Facebook","tiktok":"TikTok","meta":"Meta",

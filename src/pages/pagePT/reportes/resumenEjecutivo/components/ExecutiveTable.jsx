@@ -592,7 +592,7 @@ const ResumenCuotaTable = () => (
         {perMonth.map((m, idx) => {
           const meta = metasPorMes[m.mes] || 0;
           return (
-            <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000", fontSize: 22 }}>
+            <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000"}}>
               {fmtMoney(meta)}
             </td>
           );
@@ -614,9 +614,42 @@ const ResumenCuotaTable = () => (
             <td key={idx} style={{ ...sCell, fontWeight: 700, color, fontsize: 22 }}>
               {fmtNum(alcancePct, 2)} %
             </td>
+            
           );
         })}
       </tr>
+{/* MONTO DE AVANCE DE CUOTA */}
+<tr>
+  <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
+    MONTO DE AVANCE DE CUOTA
+  </td>
+  {perMonth.map((m, idx) => {
+    const meta  = metasPorMes[m.mes] || 0;        // cuota del mes
+    const total = m.metrics?.totalMes || 0;       // venta al corte
+    const avanceSoles = Math.min(meta, total);    // equivalente en S/ del avance de cuota
+    return (
+      <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000", fontSize: 28 }}>
+        {fmtMoney(avanceSoles)}
+      </td>
+    );
+  })}
+</tr>
+{/* MONTO RESTANTE DE CUOTA */}
+<tr>
+  <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
+    MONTO RESTANTE DE CUOTA
+  </td>
+  {perMonth.map((m, idx) => {
+    const meta  = metasPorMes[m.mes] || 0;
+    const total = m.metrics?.totalMes || 0;
+    const restante = Math.max(meta - total, 0); // nunca negativo
+    return (
+      <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000", fontSize: 28 }}>
+        {fmtMoney(restante)}
+      </td>
+    );
+  })}
+</tr>
 
       {/* % RESTANTE PARA CUOTA */}
       <tr>
@@ -656,7 +689,7 @@ const ResumenCuotaTable = () => (
       </tr>
      {/* VENTA TOTAL al corte */}
       <tr style={{ background: "#000", color: "#fff", fontWeight: 700 }}>
-        <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
+        <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 20 }}>
           {`VENTA TOTAL AL ${cutDay}`}
         </td>
         {perMonth.map((m, idx) => (
@@ -667,7 +700,7 @@ const ResumenCuotaTable = () => (
       </tr>
       {/* VENTA TOTAL MES (FULL) */}
       <tr style={sRowRed}>
-        <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800,  textTransform: "uppercase" }}>
+        <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800, fontSize: 20 }}>
           VENTA TOTAL MES
         </td>
         {perMonth.map((m, idx) => (

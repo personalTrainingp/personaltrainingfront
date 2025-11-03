@@ -25,6 +25,7 @@ const toNum = (v) => {
 };
 const norm = (s) => String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
 
+
 const getVentaDate = (v) =>
   limaFromISO(
     v?.fecha_venta || v?.fecha || v?.createdAt ||
@@ -211,6 +212,30 @@ const asesoresActivos = asesoresNorm.filter((a) => {
   const socMap = dataByAsesor[a]?.sociosByDay || {};
   return sumMonto(monMap) > 0 || sumSocios(socMap) > 0;
 });
+const dayTotals = useMemo(() => {
+  const totMon = {};
+  const totSoc = {}; 
+
+  for (const d of days) {
+    let m = 0;
+    const unionSoc = new Set(); 
+
+    for (const a of asesoresActivos) {
+      m += (dataByAsesor[a]?.montoByDay?.[d] || 0);
+
+      const setSoc = dataByAsesor[a]?.sociosByDay?.[d] || new Set();
+      for (const id of setSoc) unionSoc.add(id);
+    }
+
+    totMon[d] = m;
+    totSoc[d] = unionSoc.size;
+  }
+
+  const sumaMonto   = Object.values(totMon).reduce((ac, n) => ac + (n || 0), 0);
+  const sumaSocios  = Object.values(totSoc).reduce((ac, n) => ac + (n || 0), 0);
+
+  return { totMon, totSoc, sumaMonto, sumaSocios };
+}, [days, asesoresActivos, dataByAsesor]);
 const tituloMes = `${new Date(year, month - 1)
   .toLocaleString("es-PE", { month: "long" })
   .toUpperCase()} ${year}`;
@@ -251,49 +276,150 @@ const tituloMes = `${new Date(year, month - 1)
             <th style={{ border:"1px solid #000", padding:"8px 10px", fontSize:22  }}>%</th>
           </tr>
         </thead>
+<tbody>
+  {asesoresActivos.length === 0 && (
+    <tr>
+      <td colSpan={labels.length + 5} style={{ padding: 12, textAlign: "center" }}>
+        Sin datos
+      </td>
+    </tr>
+  )}
 
-        <tbody>
-          {asesoresActivos.length === 0 && (
-            <tr><td colSpan={labels.length + 5} style={{ padding:12, textAlign:"center" }}>Sin datos</td></tr>
-          )}
+  {asesoresActivos.map((a) => (
+    <React.Fragment key={`${a}-monto`}>
+      {renderRow(a, "MONTO")}
+    </React.Fragment>
+  ))}
 
-          {asesoresActivos.map((a) => (
-            <React.Fragment key={a}>
-              {renderRow(a, "MONTO")}
-            </React.Fragment>
+  {asesoresActivos.map((a) => (
+    <React.Fragment key={`${a}-socios`}>
+      {renderRow(a, "SOCIOS")}
+    </React.Fragment>
+  ))}
+
+  {/* === TOTALES POR DÍA (VENTA) === */}
+  {asesoresActivos.length > 0 && (
+    <tr style={{ background: "#f6f6f6", fontWeight: 800 }}>
+      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
+      <td style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 20 }}>
+        TOTAL VENTA X DÍA
+      </td>
+
+      {days.map((d) => (
+        <td
+          key={`tot-mon-${d}`}
+          style={{
+            border: "1px solid #000",
+            padding: "6px 8px",
+            textAlign: "center",
+            fontSize: 20,
+            color: "#c00000",
+          }}
+        >
+          {fmtMoney(dayTotals.totMon[d] || 0)}
+        </td>
+      ))}
+
+      {/* columnas finales */}
+      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
+-      </td>
+      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
+        {fmtMoney(dayTotals.sumaMonto || 0)}
+      </td>
+      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
+        100%
+      </td>
+    </tr>
+  )}
+
+  {/* === TOTALES POR DÍA (SOCIOS) === */}
+  {asesoresActivos.length > 0 && (
+    <tr style={{ background: "#f6f6f6", fontWeight: 800 }}>
+      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
+      <td style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 20 }}>
+        TOTAL SOCIOS X DÍA
+      </td>
+
+      {days.map((d) => (
+        <td
+          key={`tot-soc-${d}`}
+          style={{
+            border: "1px solid #000",
+            padding: "6px 8px",
+            textAlign: "center",
+            fontSize: 20,
+          }}
+        >
+          {dayTotals.totSoc[d] || 0}
+        </td>
+      ))}
+
+      {/* columnas finales */}
+      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
+-      </td>
+      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
+-      </td>
+      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
+        %0
+      </td>
+    </tr>
+  )}
+
+  {/* === TOTAL MES === */}
+  {asesoresActivos.length > 0 &&
+    (() => {
+      const totalSociosMes = asesoresActivos.reduce((acc, a) => {
+        const map = dataByAsesor[a]?.sociosByDay || {};
+        return acc + Object.values(map).reduce((s, set) => s + (set?.size || 0), 0);
+      }, 0);
+      const totalMonto = asesoresActivos.reduce((acc, a) => {
+        const map = dataByAsesor[a]?.montoByDay || {};
+        return acc + Object.values(map).reduce((s, n) => s + (n || 0), 0);
+      }, 0);
+      return (
+        <tr style={{ background: "#fff", fontWeight: 800 }}>
+          <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
+          <td style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 22 }}>
+            TOTAL <br />
+          </td>
+          {days.map((_, i) => (
+            <td key={i} style={{ border: "1px solid #000" }} />
           ))}
-            {asesoresActivos.map((a) => (
-            <React.Fragment key={a}>
-              {renderRow(a, "SOCIOS")}
-            </React.Fragment>
-          ))}
+          <td
+            style={{
+              border: "1px solid #000",
+              padding: "8px 10px",
+              textAlign: "center",
+              fontSize: 25,
+            }}
+          >
+            {totalSociosMes ? totalSociosMes.toLocaleString("es-PE") : ""}
+          </td>
+          <td
+            style={{
+              border: "1px solid #000",
+              padding: "8px 10px",
+              textAlign: "center",
+              fontSize: 25,
+            }}
+          >
+            {fmtMoney(totalMonto)}
+          </td>
+          <td
+            style={{
+              border: "1px solid #000",
+              padding: "8px 10px",
+              textAlign: "center",
+              fontSize: 25,
+            }}
+          >
+            100%
+          </td>
+        </tr>
+      );
+    })()}
+</tbody>
 
-          {/* Fila TOTAL MES */}
-          {asesoresActivos.length > 0 && (() => {
-            const totalSociosMes = asesoresActivos.reduce((acc, a) => {
-              const map = dataByAsesor[a]?.sociosByDay || {};
-              return acc + Object.values(map).reduce((s, set)=> s + (set?.size || 0), 0);
-            }, 0);
-            const totalMonto = asesoresActivos.reduce((acc, a) => {
-              const map = dataByAsesor[a]?.montoByDay || {};
-              return acc + Object.values(map).reduce((s, n)=> s + (n || 0), 0);
-            }, 0);
-            return (
-              <tr style={{ background:"#fff", fontWeight:800 }}>
-                       <td style={{ border:"1px solid #000", padding:"8px 10px", textAlign:"center" }}></td>
-                <td style={{ border:"1px solid #000", padding:"8px 10px",fontSize:22 }}>TOTAL <br/> </td>
-                {days.map((_, i) => <td key={i} style={{ border:"1px solid #000" }} />)}
-                <td style={{ border:"1px solid #000", padding:"8px 10px", textAlign:"center",fontSize:25 }}>
-                  {totalSociosMes ? totalSociosMes.toLocaleString("es-PE") : ""}
-                </td>
-                <td style={{ border:"1px solid #000", padding:"8px 10px", textAlign:"center",fontSize:25 }}>
-                  {fmtMoney(totalMonto)}
-                </td>
-                <td style={{ border:"1px solid #000", padding:"8px 10px", textAlign:"center",fontSize:25 }}>100%</td>
-              </tr>
-            );
-          })()}
-        </tbody>
       </table>
 
       <div style={{ marginTop: 6, fontSize: 12, opacity: .7 }}>

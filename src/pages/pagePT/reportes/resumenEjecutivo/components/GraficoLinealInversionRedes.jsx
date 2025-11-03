@@ -168,7 +168,6 @@ export const GraficoLinealInversionRedes = ({ data = [] }) => {
 
   return (
     <div>
-      {/* Filtro de redes con ICONOS */}
       <div
         style={{
           display: "flex",
