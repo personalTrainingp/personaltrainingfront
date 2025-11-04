@@ -1,387 +1,224 @@
 import { PTApi } from '@/common';
-import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import dayjs, { utc } from 'dayjs';
 import { useState } from 'react';
 dayjs.extend(utc);
 
+// ───────────────── helpers ─────────────────
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
-	const base = dayjs.utc(date);
-
-	const formatted = isStart
-		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]')
-		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
-
-	return formatted;
+  const base = dayjs.utc(date);
+  return isStart
+    ? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]')
+    : base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
 }
 
-const agruparPorIdPgm = (data) => {
-	return data.reduce((resultado, item) => {
-		// Buscar si ya existe un grupo con el mismo id_pgm
-		let grupo = resultado.find((g) => g.id_pgm === item.id_pgm);
+const agruparPorIdPgm = (data = []) =>
+  data.reduce((resultado, item) => {
+    let grupo = resultado.find((g) => g.id_pgm === item.id_pgm);
+    if (!grupo) {
+      grupo = { id_pgm: item.id_pgm, items: [] };
+      resultado.push(grupo);
+    }
+    grupo.items.push(item);
+    return resultado;
+  }, []);
 
-		if (!grupo) {
-			// Si no existe, crear uno nuevo
-			grupo = { id_pgm: item.id_pgm, items: [] };
-			resultado.push(grupo);
-		}
-
-		// Agregar el objeto {venta_venta, id_pgm} al grupo
-		grupo.items.push({
-			venta_venta: item.venta_venta,
-			tb_ventum: { id: item.venta_venta[0].id },
-			tarifa_monto: 0,
-			id_pgm: item.id_pgm,
-		});
-
-		return resultado;
-	}, []);
-};
-const agruparPorIdPgmMarcacions = (data) => {
-	return data.reduce((resultado, item) => {
-		// Buscar si ya existe un grupo con el mismo id_pgm
-		let grupo = resultado.find((g) => g.id_pgm === item.id_pgm);
-
-		if (!grupo) {
-			// Si no existe, crear uno nuevo
-			grupo = { id_pgm: item.id_pgm, items: [] };
-			resultado.push(grupo);
-		}
-
-		// Agregar el objeto {venta_venta, id_pgm} al grupo
-		grupo.items.push(item);
-
-		return resultado;
-	}, []);
-};
-function agruparPorCliente(detalle_ventaMembresium) {
-	const clientes = new Set();
-
-	detalle_ventaMembresium.forEach((item) => {
-		if (item.tb_ventum.id_tipoFactura === 701) {
-			clientes.add([item]);
-		}
-	});
-
-	return Array.from(clientes);
+function agruparPorCliente(detalle_ventaMembresium = []) {
+  const ids = new Set();
+  for (const it of detalle_ventaMembresium) {
+    // usa un identificador real del cliente si existe
+    const idCli =
+      it?.tb_ventum?.id_cli ??
+      it?.tb_ventum?.tb_cliente?.id_cli ??
+      it?.tb_cliente?.id_cli ??
+      null;
+    if (idCli != null && it?.tb_ventum?.id_tipoFactura === 701) ids.add(idCli);
+  }
+  return Array.from(ids);
 }
 
+// ───────────────── hook ─────────────────
 export const useReporteResumenComparativoStore = () => {
-	const [dataGroup, setdataGroup] = useState([]);
-	const [dataClientesxMarcacion, setdataClientesxMarcacion] = useState([]);
-	const [dataMembresiaPorCliente, setdataMembresiaPorCliente] = useState([]);
-	const [dataIdPgmCero, setdataIdPgmCero] = useState({});
-	const [dataHorarios, sethorarios] = useState([]);
-	const [dataAsesoresFit, setdataAsesoresFit] = useState([]);
-	const [dataTarifas, settarifas] = useState([]);
-	const [dataGroupTRANSFERENCIAS, setdataGroupTRANSFERENCIAS] = useState([]);
-	const [loading, setloading] = useState(false);
-	const [dataEstadoGroup, setdataEstadoGroup] = useState([]);
-	const obtenerComparativoResumen = async (RANGE_DATE) => {
-		setloading(true);
-		const { data } = await PTApi.get('/venta/reporte/obtener-comparativo-resumen', {
-			params: {
-				arrayDate: [
-					formatDateToSQLServerWithDayjs(RANGE_DATE[0], true),
-					formatDateToSQLServerWithDayjs(RANGE_DATE[1], false),
-				],
-			},
-		});
+  const [dataGroup, setdataGroup] = useState([]);
+  const [dataClientesxMarcacion, setdataClientesxMarcacion] = useState([]);
+  const [dataMembresiaPorCliente, setdataMembresiaPorCliente] = useState([]);
+  const [dataIdPgmCero, setdataIdPgmCero] = useState({});
+  const [dataHorarios, sethorarios] = useState([]);
+  const [dataAsesoresFit, setdataAsesoresFit] = useState([]);
+  const [dataTarifas, settarifas] = useState([]);
+  const [dataGroupTRANSFERENCIAS, setdataGroupTRANSFERENCIAS] = useState([]);
+  const [loading, setloading] = useState(false);
+  const [dataEstadoGroup, setdataEstadoGroup] = useState([]);
 
-		const dataTransferencias = data.ventasTransferencias
-			.map((f) => {
-				return {
-					venta_venta: f.venta_venta,
-					id_pgm: f.venta_venta[0].venta_transferencia[0].detalle_ventaMembresia[0]
-						.id_pgm,
-					// id_tarifa: f.detalle_ventaMembresia
-				};
-			})
-			.flat();
-		const agruparxIdPgm = Object.values(
-			data.ventasProgramas.reduce((acc, item) => {
-				const { id_pgm, detalle_ventaMembresium, tb_image } = item;
+  const obtenerComparativoResumen = async (RANGE_DATE) => {
+    setloading(true);
+    try {
+      const start = formatDateToSQLServerWithDayjs(RANGE_DATE[0], true);
+      const end   = formatDateToSQLServerWithDayjs(RANGE_DATE[1], false);
 
-				// Inicializar el acumulador para el id_pgm si no existe
-				if (!acc[id_pgm]) {
-					acc[id_pgm] = {
-						id_pgm,
-						tarifa_total: 0,
-						sesiones_total: 0,
-						detalle_ventaMembresium: [],
-						tb_image: [],
-					};
-				}
+      // serializa como claves repetidas: arrayDate=a&arrayDate=b
+      const qs = new URLSearchParams();
+      qs.append('arrayDate', start);
+      qs.append('arrayDate', end);
 
-				// Validar que detalle_ventaMembresium sea un objeto y no esté vacío
-				if (detalle_ventaMembresium && Object.keys(detalle_ventaMembresium).length > 0) {
-					// Validar duplicados en detalle_ventaMembresium
-					if (
-						!acc[id_pgm].detalle_ventaMembresium.some(
-							(membresia) =>
-								membresia.horario === detalle_ventaMembresium.horario &&
-								membresia.fec_fin_mem === detalle_ventaMembresium.fec_fin_mem &&
-								membresia.fec_inicio_mem ===
-									detalle_ventaMembresium.fec_inicio_mem &&
-								membresia.tarifa_venta ===
-									detalle_ventaMembresium.tb_tarifa_venta &&
-								membresia.tarifa_monto === detalle_ventaMembresium.tarifa_monto &&
-								membresia.tb_ventum?.id === detalle_ventaMembresium.tb_ventum?.id
-						)
-					) {
-						acc[id_pgm].tarifa_total += detalle_ventaMembresium.tarifa_monto || 0;
-						acc[id_pgm].sesiones_total +=
-							detalle_ventaMembresium.tb_semana_training?.sesiones || 0;
+      const { data } = await PTApi.get(
+        `/venta/reporte/obtener-comparativo-resumen?${qs.toString()}`
+      );
 
-						acc[id_pgm].detalle_ventaMembresium.push({
-							horario: detalle_ventaMembresium.horario || null,
-							tarifa_monto: detalle_ventaMembresium.tarifa_monto || 0,
-							fec_fin_mem: detalle_ventaMembresium.fec_fin_mem,
-							fec_inicio_mem: detalle_ventaMembresium.fec_inicio_mem,
-							id_tarifa: detalle_ventaMembresium.id_tarifa || 0,
-							tb_semana_training: detalle_ventaMembresium.tb_semana_training || null,
-							tb_ventum: detalle_ventaMembresium.tb_ventum || null,
-							tarifa_venta: detalle_ventaMembresium.tarifa_venta || null,
-						});
-					}
-				} else {
-					// Asegurarse de que sea un array vacío si no hay detalle_ventaMembresium válido
-					acc[id_pgm].detalle_ventaMembresium = acc[id_pgm].detalle_ventaMembresium || [];
-				}
+      // ─── defensas ───
+      const ventasProgramas = Array.isArray(data?.ventasProgramas) ? data.ventasProgramas : [];
+      const ventasTransferencias = Array.isArray(data?.ventasTransferencias) ? data.ventasTransferencias : [];
 
-				// Validar que tb_image sea un objeto válido
-				if (tb_image && tb_image.name_image) {
-					// Evitar duplicados en tb_image
-					if (
-						!acc[id_pgm].tb_image.some(
-							(image) => image.name_image === tb_image.name_image
-						)
-					) {
-						acc[id_pgm].tb_image.push(tb_image);
-					}
-				} else {
-					// Asegurarse de que sea un array vacío si no hay tb_image válido
-					acc[id_pgm].tb_image = acc[id_pgm].tb_image || [];
-				}
+      // TRANSFERENCIAS ► id_pgm asociado
+      const dataTransferencias = ventasTransferencias.flatMap((f) => {
+        const detalle = f?.venta_venta?.[0]?.venta_transferencia?.[0]?.detalle_ventaMembresia?.[0];
+        const id_pgm = detalle?.id_pgm ?? null;
+        return id_pgm == null ? [] : [{ ...f, id_pgm }];
+      });
 
-				return acc;
-			}, {})
-		);
+      // AGRUPAR ventasProgramas por id_pgm con totales y detalle “normalizado”
+      const agruparxIdPgm = Object.values(
+        ventasProgramas.reduce((acc, item) => {
+          const { id_pgm, detalle_ventaMembresium, tb_image } = item || {};
+          if (id_pgm == null) return acc;
 
-		const ventasUnificadas = agruparxIdPgm.map((venta) => {
-			// Busca las transferencias asociadas al id_pgm
-			const transferencia = agruparPorIdPgm(dataTransferencias).find(
-				(transferencia) => transferencia.id_pgm === venta.id_pgm
-			);
-			// const marcacionesxMembresia = agruparPorIdPgmMarcacions(dataMarcaciones).find(
-			// 	(marcacion) => marcacion.id_pgm === venta.id_pgm
-			// );
-			// Agrega la propiedad ventas_transferencias al objeto venta
-			return {
-				...venta,
-				agrupadoPorIdCli: agruparPorCliente(venta.detalle_ventaMembresium),
-				ventas_transferencias: transferencia ? transferencia.items : [],
-				// marcacionesxMembresia: marcacionesxMembresia ? marcacionesxMembresia.items : [],
-			};
-		});
+          if (!acc[id_pgm]) {
+            acc[id_pgm] = {
+              id_pgm,
+              tarifa_total: 0,
+              sesiones_total: 0,
+              detalle_ventaMembresium: [],
+              tb_image: [],
+            };
+          }
 
-		// Crear el objeto id_pgm: 0 que suma todos los demás
-		const totalObject = ventasUnificadas?.reduce(
-			(total, current) => {
-				total.ventas_transferencias.push(...current.ventas_transferencias);
-				total.tarifa_total += current.tarifa_total;
-				total.sesiones_total += current.sesiones_total;
-				total.detalle_ventaMembresium.push(...current.detalle_ventaMembresium);
-				total.tb_image.push(...current.tb_image);
-				return total;
-			},
-			{
-				id_pgm: 0,
-				tarifa_total: 0,
-				sesiones_total: 0,
-				detalle_ventaMembresium: [],
-				ventas_transferencias: [],
-				tb_image: [],
-			}
-		);
-		console.log({
-			aqui: data,
-			RANGE_DATE: [
-				formatDateToSQLServerWithDayjs(RANGE_DATE[0], true),
-				formatDateToSQLServerWithDayjs(RANGE_DATE[1], false),
-			],
-		});
+          if (detalle_ventaMembresium && typeof detalle_ventaMembresium === 'object') {
+            const yaExiste = acc[id_pgm].detalle_ventaMembresium.some((m) =>
+              m?.horario === detalle_ventaMembresium?.horario &&
+              m?.fec_fin_mem === detalle_ventaMembresium?.fec_fin_mem &&
+              m?.fec_inicio_mem === detalle_ventaMembresium?.fec_inicio_mem &&
+              m?.tarifa_monto === detalle_ventaMembresium?.tarifa_monto &&
+              m?.tb_ventum?.id === detalle_ventaMembresium?.tb_ventum?.id
+            );
+            if (!yaExiste) {
+              acc[id_pgm].tarifa_total += Number(detalle_ventaMembresium?.tarifa_monto || 0);
+              acc[id_pgm].sesiones_total += Number(detalle_ventaMembresium?.tb_semana_training?.sesiones || 0);
+              acc[id_pgm].detalle_ventaMembresium.push({
+                horario: detalle_ventaMembresium?.horario ?? null,
+                tarifa_monto: Number(detalle_ventaMembresium?.tarifa_monto || 0),
+                fec_fin_mem: detalle_ventaMembresium?.fec_fin_mem,
+                fec_inicio_mem: detalle_ventaMembresium?.fec_inicio_mem,
+                id_tarifa: detalle_ventaMembresium?.id_tarifa || 0,
+                tb_semana_training: detalle_ventaMembresium?.tb_semana_training ?? null,
+                tb_ventum: detalle_ventaMembresium?.tb_ventum ?? null,
+                tarifa_venta: detalle_ventaMembresium?.tarifa_venta ?? null,
+              });
+            }
+          }
 
-		// console.log(
-		// 	agruparPorIdPgmMarcacions(dataMarcaciones),
-		// 	dataMarcaciones,
-		// 	agruparPrimeraMarcacionGlobal(dataMarcaciones),
-		// 	agruparMarcacionesPorSemana(dataMarcaciones)
-		// );
+          if (tb_image?.name_image) {
+            if (!acc[id_pgm].tb_image.some((img) => img.name_image === tb_image.name_image)) {
+              acc[id_pgm].tb_image.push(tb_image);
+            }
+          }
 
-		// console.log(agruparPorIdPgm(dataTransferencias), agruparxIdPgm, ventasUnificadas);
-		// console.log(agruparxIdPgm, '149');
-		setdataGroup(ventasUnificadas);
-		// setdataMarcacions(dataMarcaciones);
-		setdataGroupTRANSFERENCIAS(agruparPorIdPgm(dataTransferencias));
-		setdataIdPgmCero(totalObject);
-		setloading(false);
-		// setdataEstadoGroup(groupByIdOrigen(data.ventasProgramas));
-		// setdataAuditoria(data.audit);
-	};
-	const obtenerClientesConMarcacion = async () => {
-		try {
-			const { data } = await PTApi.get(`/usuario/get-marcacions/cliente`);
-			// await obtenerVentasPorFecha()
-			console.log('259 linea');
+          return acc;
+        }, {})
+      );
 
-			console.log({ dataMarcaciones: data });
-			setdataClientesxMarcacion(data);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const obtenerEstadosOrigenResumen = async (RANGE_DATE) => {
-		try {
-			const { data: dataTraspaso } = await PTApi.get(
-				`/venta/reporte/obtener-estado-cliente-resumen/traspaso`,
-				{
-					params: {
-						arrayDate: [
-							formatDateToSQLServerWithDayjs(RANGE_DATE[0]),
-							formatDateToSQLServerWithDayjs(RANGE_DATE[1]),
-						],
-						id_empresa: 598,
-					},
-				}
-			);
+      // Unificar con transferencias y agrupar por cliente
+      const ventasUnificadas = agruparxIdPgm.map((venta) => {
+        const transferencia = agruparPorIdPgm(dataTransferencias).find(
+          (t) => t.id_pgm === venta.id_pgm
+        );
+        return {
+          ...venta,
+          agrupadoPorIdCli: agruparPorCliente(venta.detalle_ventaMembresium),
+          ventas_transferencias: transferencia ? transferencia.items : [],
+        };
+      });
 
-			// const agruparxIdPgm = Object.values(
-			// 	data.ventasProgramasEstado.reduce((acc, item) => {
-			// 		const { id_pgm, detalle_ventaMembresium, tb_image } = item;
+      // Crear objeto TOTAL (id_pgm = 0)
+      const totalObject = ventasUnificadas.reduce(
+        (total, current) => {
+          total.ventas_transferencias.push(...(current.ventas_transferencias || []));
+          total.tarifa_total += Number(current.tarifa_total || 0);
+          total.sesiones_total += Number(current.sesiones_total || 0);
+          total.detalle_ventaMembresium.push(...(current.detalle_ventaMembresium || []));
+          total.tb_image.push(...(current.tb_image || []));
+          return total;
+        },
+        { id_pgm: 0, tarifa_total: 0, sesiones_total: 0, detalle_ventaMembresium: [], ventas_transferencias: [], tb_image: [] }
+      );
 
-			// 		if (!acc[id_pgm]) {
-			// 			acc[id_pgm] = {
-			// 				id_pgm,
-			// 				tarifa_total: 0,
-			// 				sesiones_total: 0,
-			// 				detalle_ventaMembresium: [],
-			// 				tb_image: [],
-			// 			};
-			// 		}
+      // set de estados
+      setdataGroup(ventasUnificadas);
+      setdataGroupTRANSFERENCIAS(agruparPorIdPgm(dataTransferencias));
+      setdataIdPgmCero(totalObject);
 
-			// 		// Validar duplicados en detalle_ventaMembresium
-			// 		if (
-			// 			!acc[id_pgm].detalle_ventaMembresium.some(
-			// 				(membresia) =>
-			// 					membresia.horario === detalle_ventaMembresium.horario &&
-			// 					membresia.tarifa_monto === detalle_ventaMembresium.tarifa_monto &&
-			// 					membresia.tb_ventum.id === detalle_ventaMembresium.tb_ventum.id
-			// 			)
-			// 		) {
-			// 			acc[id_pgm].tarifa_total += detalle_ventaMembresium.tarifa_monto;
-			// 			acc[id_pgm].sesiones_total +=
-			// 				detalle_ventaMembresium.tb_semana_training.sesiones;
-			// 			acc[id_pgm].detalle_ventaMembresium.push({
-			// 				horario: detalle_ventaMembresium.horario,
-			// 				tarifa_monto: detalle_ventaMembresium.tarifa_monto,
-			// 				tb_semana_training: detalle_ventaMembresium.tb_semana_training,
-			// 				tb_ventum: detalle_ventaMembresium.tb_ventum,
-			// 			});
-			// 		}
+      return ventasUnificadas;
+    } catch (err) {
+      console.error('[comparativo] fallo', {
+        status: err?.response?.status,
+        url: err?.config?.url,
+        payload: err?.response?.data,
+      });
+      setdataGroup([]);
+      return [];
+    } finally {
+      setloading(false);
+    }
+  };
 
-			// 		// Evitar duplicados en tb_image
-			// 		if (
-			// 			!acc[id_pgm].tb_image.some(
-			// 				(image) => image.name_image === tb_image.name_image
-			// 			)
-			// 		) {
-			// 			acc[id_pgm].tb_image.push(tb_image);
-			// 		}
+  const obtenerClientesConMarcacion = async () => {
+    try {
+      const { data } = await PTApi.get(`/usuario/get-marcacions/cliente`);
+      setdataClientesxMarcacion(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-			// 		return acc;
-			// 	}, {})
-			// );
-			// console.log(agruparxIdPgm);
-			setdataEstadoGroup(
-				agruparVentasConDetalles({
-					ventasProgramaNuevo: [],
-					ventasProgramaReinscritos: dataReinscritos.ventasProgramasEstado,
-					ventasProgramaRenovaciones: dataRenovacion.ventasProgramasEstado,
-					ventasProgramaTransferencias: [],
-					ventasProgramaTraspasos: dataTraspaso.ventasProgramasEstado,
-				})
-			);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const obtenerVentasxComprobantes = async (RANGE_DATE, id_factura) => {};
-	const obtenerHorariosPorPgm = async () => {
-		try {
-			const { data } = await PTApi.get('/programaTraining/horario/get-tb-pgm');
-			const dataAlter = data.map((e) => {
-				return {
-					id: e.id_horarioPgm,
-					...e,
-				};
-			});
-			// console.log(data);
-			sethorarios(dataAlter);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const obtenerTarifasPorPgm = async () => {
-		try {
-			const { data } = await PTApi.get('/programaTraining/tarifa/obtener-toda-tarifas');
-			// const dataAlter = data.map((e) => {
-			// 	return {
-			// 		id: e.id_horarioPgm,
-			// 		...e,
-			// 	};
-			// });
-			const dataAlter = data.map((d) => {
-				return {
-					value: d.id_tt,
-					label: d.nombreTarifa_tt,
-					// tarifaCash_tt
-					...d,
-				};
-			});
-			settarifas(dataAlter);
-			// sethorarios(dataAlter);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const obtenerAsesoresFit = async () => {
-		try {
-			const { data: asesoresFit } = await PTApi.get(`/parametros/get_params/empleados/2`);
-			setdataAsesoresFit(asesoresFit);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+  const obtenerHorariosPorPgm = async () => {
+    try {
+      const { data } = await PTApi.get('/programaTraining/horario/get-tb-pgm');
+    const dataAlter = data.map((e) => ({ id: e.id_horarioPgm, ...e }));
+      sethorarios(dataAlter);
+    } catch (error) { console.log(error); }
+  };
 
-	return {
-		obtenerComparativoResumen,
-		obtenerEstadosOrigenResumen,
-		obtenerHorariosPorPgm,
-		obtenerTarifasPorPgm,
-		obtenerAsesoresFit,
-		obtenerClientesConMarcacion,
-		dataClientesxMarcacion,
-		dataAsesoresFit,
-		// dataMarcacions,
-		dataIdPgmCero,
-		// dataEstadoGroup,
-		dataTarifas,
-		dataHorarios,
-		dataGroupTRANSFERENCIAS,
-		dataGroup,
-		loading,
-	};
+  const obtenerTarifasPorPgm = async () => {
+    try {
+      const { data } = await PTApi.get('/programaTraining/tarifa/obtener-toda-tarifas');
+      const dataAlter = data.map((d) => ({ value: d.id_tt, label: d.nombreTarifa_tt, ...d }));
+      settarifas(dataAlter);
+    } catch (error) { console.log(error); }
+  };
+
+  const obtenerAsesoresFit = async () => {
+    try {
+      const { data: asesoresFit } = await PTApi.get(`/parametros/get_params/empleados/2`);
+      setdataAsesoresFit(asesoresFit);
+    } catch (error) { console.log(error); }
+  };
+
+  // 👉 el return del hook AHORA sí está al final del cuerpo del hook (no al nivel superior)
+  return {
+    obtenerComparativoResumen,
+    obtenerHorariosPorPgm,
+    obtenerTarifasPorPgm,
+    obtenerAsesoresFit,
+    obtenerClientesConMarcacion,
+    dataClientesxMarcacion,
+    dataAsesoresFit,
+    dataIdPgmCero,
+    dataTarifas,
+    dataHorarios,
+    dataGroupTRANSFERENCIAS,
+    dataGroup,
+    loading,
+  };
 };
+
 
 function agruparMarcacionesPorSemana(data) {
 	return data.map((obj) => {

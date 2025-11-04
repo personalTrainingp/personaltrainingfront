@@ -1,7 +1,7 @@
       import React, { useEffect, useMemo, useState } from "react";
       import { Col, Row } from "react-bootstrap";
       import { useVentasStore } from "./useVentasStore";
-      import { ventasToExecutiveData } from "./adapters/ventasToExecutiveData";
+import VentasDiarias from '../totalVentas/components/VentasDiarias';
       import ExecutiveTable from "./components/ExecutiveTable";
       import { PageBreadcrumb } from "@/components";
       import { ClientesPorOrigen } from "./components/ClientesPorOrigen";
@@ -34,8 +34,10 @@ export function limaStartOfDay(d) {
 }
 
 export function limaEndOfDay(d) {
-  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + 1, 4, 59, 59, 999));
+  // Fuerza fin del día en horario Lima 23:59:59.999
+  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999));
 }
+
 
 const parseBackendDate = (s) => {
   if (!s) return null;
@@ -56,7 +58,27 @@ const toLimaDate = (s) => {
   return new Date(utc - 5 * 60 * 60000);
 };
 
-// Agrega este helper
+// Suma S/. de PROGRAMAS (membresías) por mes (respetando initDay/cutDay)
+function sumProgramRevenueForMonth(ventas = [], year, monthIdx, fromDay, toDay) {
+  let total = 0;
+  for (const v of ventas) {
+    const d = limaFromISO(v?.fecha_venta || v?.fecha || v?.createdAt);
+    if (!d || d.getFullYear() !== Number(year) || d.getMonth() !== monthIdx) continue;
+
+    const last = new Date(year, monthIdx + 1, 0).getDate();
+    const from = Math.max(1, Math.min(Number(fromDay || 1), last));
+    const to   = Math.max(from, Math.min(Number(toDay || last), last));
+    const dia  = d.getDate();
+    if (dia < from || dia > to) continue;
+
+    const mems = v?.detalle_ventaMembresia || v?.detalle_ventaMembresium || [];
+    for (const it of mems) {
+      const cant = Number(it?.cantidad ?? 1) || 1;
+      total += cant * (Number(it?.tarifa_monto) || 0);
+    }
+  }
+  return total;
+}
 function buildMonkeyfitByMonth(reservas = [], initDay = 1, cutDay = 31) {
   const out = {};
   for (const r of reservas) {
@@ -158,7 +180,9 @@ function buildMonkeyfitByMonth(reservas = [], initDay = 1, cutDay = 31) {
 
     useEffect(() => {
       if (RANGE_DATE?.[0] && RANGE_DATE?.[1]) {
-        obtenerComparativoResumen(RANGE_DATE);
+        obtenerComparativoResumen(RANGE_DATE).catch(err => {
+          console.error("[comparativo] fallo:", err?.response?.data || err.message); 
+      }  );
       }
     }, [RANGE_DATE]);
    
@@ -223,7 +247,7 @@ const monkeyfitByMonth = useMemo(
 const advisorOriginByProg = useMemo(() => {
   const outSets = {};
   const src = Array.isArray(dataGroup) ? dataGroup : [];
-
+console.log ("dataGroup",[dataGroup]);
   for (const pgm of src) {
     const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "").trim().toUpperCase();
     if (!progKey) continue;
@@ -523,9 +547,7 @@ const buildProductosDesdeVentas = (ventas = []) => {
 
   return Array.from(map.values());
 };
-const ventasTotales = TotalDeVentasxProdServ("total")?.data || []; 
 
-const productosAgg = useProductosAgg(dataVentas, RANGE_DATE);
       const rankingData = (TotalDeVentasxProdServ("total")?.asesores_pago || [])
       
       .filter(item => item.monto && item.monto > 0)
@@ -615,7 +637,39 @@ const productosAgg = useProductosAgg(dataVentas, RANGE_DATE);
         return cnt;
       };
 
-      const mesesSeleccionados = getLastNMonths(selectedMonth, year,8);
+      const mesesSeleccionados = useMemo(() => {
+  const slots = [];
+  let mIdx = selectedMonth - 1;
+  let y = year;
+  for (let i = 0; i < 12; i++) {
+    slots.push({ y, mIdx });
+    mIdx--; if (mIdx < 0) { mIdx = 11; y--; }
+  }
+
+  const actual = { y: year, mIdx: selectedMonth - 1 };
+  const keyActual = `${actual.y}-${actual.mIdx}`;
+
+  const scored = slots
+    .filter(p => `${p.y}-${p.mIdx}` !== keyActual) 
+    .map(p => ({
+      ...p,
+      score: sumProgramRevenueForMonth(dataVentas, p.y, p.mIdx, initDay, cutDay),
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3); // top 3
+
+  const toFechaObj = ({ y, mIdx }) => ({
+    label: MESES[mIdx].toUpperCase(),
+    anio: String(y),
+    mes: MESES[mIdx], 
+  });
+
+  const topOrdenados = [...scored]
+    .sort((a, b) => new Date(a.y, a.mIdx) - new Date(b.y, b.mIdx))
+    .map(toFechaObj);
+
+  return [...topOrdenados, toFechaObj(actual)];
+}, [dataVentas, selectedMonth, year, initDay, cutDay]);
 const dataMktWithCac = useMemo(() => {
   const base = { ...(dataMktByMonth || {}) };
 
@@ -706,8 +760,8 @@ const avatarByAdvisor = useMemo(() => {
 const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte: 0 });
 const originMap = {
   "693":"Instagram", "694":"Facebook", "695":"TikTok",
-  "690":"Referidos", "691":"Cartera de renovacion",
-  "692":"Cartera de reinscripcion", "696":"EX-PT reinscripcion",
+  "690":"Referidos", "691":"RENOVACIONES",
+  "692":"REINSCRIPCIONES", "696":"EX-PT reinscripcion",
   "686":"Walking", "689":"WSP organico",
   "1470":"Corporativos BBVA",
   "instagram":"Instagram","facebook":"Facebook","tiktok":"TikTok","meta":"Meta",
@@ -812,7 +866,20 @@ const originMap = {
       avatarByAdvisor={avatarByAdvisor}   
     />
   </div>
+  
 </Col>
+<div style={{ marginTop: 24 }}>
+  <VentasDiarias
+    ventas={dataVentas}
+    year={year}
+    month={selectedMonth}
+    initDay={initDay}
+    cutDay={cutDay}
+    showSocios={true}
+    sumMode="programas"
+    avatarByAdvisor={avatarByAdvisor}
+  />
+</div>
     </Row>
   </>
 );

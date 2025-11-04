@@ -7,10 +7,8 @@ dayjs.extend(utc);
 dayjs.locale("es");
 
 export const GraficoLinealInversionRedes = ({ data = [] }) => {
-  // 'ambos' | 'meta' | 'tiktok'
   const [red, setRed] = useState("ambos");
 
-  // ==== helpers para detectar red ====
   const norm = (s) =>
     String(s || "")
       .normalize("NFD")
@@ -113,7 +111,7 @@ export const GraficoLinealInversionRedes = ({ data = [] }) => {
         rotateAlways: true,
         hideOverlappingLabels: false,
         trim: false,
-        style: { fontSize: "10px" },
+        style: { fontSize: "15px" },
         offsetY: 8,
         minHeight: 80,
         maxHeight: 120,
@@ -170,7 +168,6 @@ export const GraficoLinealInversionRedes = ({ data = [] }) => {
 
   return (
     <div>
-      {/* Filtro de redes con ICONOS */}
       <div
         style={{
           display: "flex",
@@ -181,7 +178,7 @@ export const GraficoLinealInversionRedes = ({ data = [] }) => {
           flexWrap: "wrap",
         }}
       >
-        <span style={{ fontSize: 12, opacity: 0.8 }}>Fuente:</span>
+        <span style={{fontSize:20}}></span>
         <IconFilter keyName="ambos" />
         <IconFilter keyName="meta" />
         <IconFilter keyName="tiktok" />
