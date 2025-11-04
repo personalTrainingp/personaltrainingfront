@@ -366,6 +366,27 @@ export default function ExecutiveTable({
       byOriginFull,
     };
   };
+// === CONFIG ===
+const usePerOriginMonthOrder = true;   // activar orden por canal
+const rankMetric = 'cant';             // 'cant' (cantidad) o 'total' (venta)
+
+// Valor del mes para un canal/origen dado, según el métrico elegido
+const valueForOriginMonth = (okey, m) => {
+  const o = m?.metrics?.byOrigin?.[okey];
+  if (!o) return -1;                           // meses sin datos van al final
+  return rankMetric === 'total' ? Number(o.total || 0) : Number(o.cant || 0);
+};
+
+// Lista de meses ORDENADOS para un canal (mejor→peor)
+const monthOrderForOrigin = (okey) => {
+  if (!usePerOriginMonthOrder) return perMonth;
+  const list = perMonth.map((m, idx) => ({ m, idx, val: valueForOriginMonth(okey, m) }));
+  // si todos son 0, mantener orden original
+  const hasSignal = list.some(x => x.val > 0);
+  if (!hasSignal) return perMonth;
+  list.sort((a, b) => (b.val - a.val) || (a.idx - b.idx));
+  return list.map(x => x.m);
+};
 
   const perMonth = fechas.map((f) => ({
     label: String(f?.label || "").toUpperCase(),
@@ -483,6 +504,70 @@ const rowsMonkeyFitFull = [
     julio: 60000, agosto: 70000, setiembre: 75000, septiembre: 75000,
     octubre: 85000, noviembre: 85000, diciembre: 85000,
   };
+// Encabezado por canal (usa su propio orden de meses)
+const TableHeadFor = ({ okey }) => {
+  const months = monthOrderForOrigin(okey);
+  return (
+    <thead>
+      <tr>
+        <th style={{ ...sThLeft, background: cBlack }} />
+        {months.map((m, idx) => (
+          <th key={`${okey}-h-${idx}`} style={{ ...sThMes, background: cBlack }}>
+            <div>{m.label}</div>
+          </th>
+        ))}
+      </tr>
+    </thead>
+  );
+};
+
+// Filas por canal (resalta el MEJOR mes = primera columna)
+const renderRowsFor = (okey, rowsToRender) => {
+  const months = monthOrderForOrigin(okey);
+  return rowsToRender.map(r => (
+    <tr key={r.key + r.label}>
+      <td style={{ ...sCellBold, background: "#c00000", color: "#fff", fontWeight: 800 }}>
+        {r.label}
+      </td>
+      {months.map((m, idx) => {
+        let val = 0, isPct = false;
+        if (r.key.startsWith("o:")) {
+          const [, _ok, campo] = r.key.split(":");
+          const o = m.metrics?.byOrigin?.[_ok];
+          if (campo === "total")       val = o?.total ?? 0;
+          else if (campo === "cant")   val = o?.cant ?? 0;
+          else if (campo === "ticket") val = o?.cant ? o.total / o.cant : 0;
+          else if (campo === "pct") {
+            const base = m.metrics?.totalServ || 0;
+            val = base > 0 ? ((o?.total ?? 0) / base) * 100 : 0;
+            isPct = true;
+          }
+        } else {
+          val = m.metrics?.[r.key] ?? 0;
+        }
+
+        const txt = isPct
+          ? `${fmtNum(val, 2)} %`
+          : r.type === "money" ? fmtMoney(val)
+          : r.type === "float2" ? fmtNum(val, 2)
+          : fmtNum(val, 0);
+
+        const isBest = idx === 0; // mejor mes del canal
+        return (
+          <td
+            key={`${okey}-c-${r.key}-${idx}`}
+            style={{
+              ...sCell,
+              ...(isBest ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 28 } : {})
+            }}
+          >
+            {txt}
+          </td>
+        );
+      })}
+    </tr>
+  ));
+};
 
   const TableHead = () => (
     <thead>
@@ -634,7 +719,8 @@ const ResumenCuotaTable = () => (
           const total = m.metrics?.totalMes || 0;
           const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
           const supera = alcancePct >= 100;
-          const color = supera ? "#007b00" : cRed;
+          const color = supera  ? " #007b00" : "#000";
+          const prefix = supera ? "+" : "";
           return (
             <td
               key={idx}
@@ -644,6 +730,7 @@ const ResumenCuotaTable = () => (
                 color,
               }}
             >
+              {prefix}
               {fmtNum(alcancePct, 2)} %
             </td>
           );
@@ -809,10 +896,9 @@ const ResumenCuotaTable = () => (
         <td
           style={{
             ...sCellBold,
-            background: "#000",
+            background: "#c00000",
             color: "#fff",
             fontWeight: 800,
-            borderTop: "10px solid #000",
           }}
         >
           MESES
@@ -860,10 +946,11 @@ return (
         return (
           <div key={okey} style={{ marginBottom: 24 }}>
             <div style={sHeader}>{title}</div>
-            <table style={sTable}>
-              <TableHead />
-              <tbody>{renderRows(rows)}</tbody>
-            </table>
+           <table style={sTable}>
+  <TableHeadFor okey={okey} />
+  <tbody>{renderRowsFor(okey, rows)}</tbody>
+</table>
+
           </div>
         );
       })
@@ -900,7 +987,6 @@ return (
     ...sHeader,
     fontSize: 28,
     padding: "12px 16px",
-    background: "#c00000",
     textAlign: "center",
   }}
 >
@@ -981,7 +1067,6 @@ return (
           ...sThLeft,
           background: "transparent",
           color: cWhite,
-          fontSize: 20,
         }}
       >
         VENTA TOTAL <br /> MES
@@ -1006,11 +1091,10 @@ return (
       <td
         style={{
           ...sCellBold,
-          background: "#000",
+          background: "#c00000",
           color: "#fff",
           fontWeight: 800,
           fontSize: 24,
-          borderTop: "4px solid #000",
         }}
       >
         MESES
