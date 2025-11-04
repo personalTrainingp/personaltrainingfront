@@ -321,13 +321,12 @@ const tituloMes = `${new Date(year, month - 1)
       ))}
 
       {/* columnas finales */}
+      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>-
+     </td>
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
--      </td>
+-   </td>
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
-        {fmtMoney(dayTotals.sumaMonto || 0)}
-      </td>
-      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
-        100%
+        -
       </td>
     </tr>
   )}
@@ -356,68 +355,17 @@ const tituloMes = `${new Date(year, month - 1)
 
       {/* columnas finales */}
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
--      </td>
+        {dayTotals.sumaSocios}
+    </td>
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
--      </td>
+                {fmtMoney(dayTotals.sumaMonto || 0)}
+     </td>
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
-        %0
+        %100
       </td>
     </tr>
-  )}
 
-  {/* === TOTAL MES === */}
-  {asesoresActivos.length > 0 &&
-    (() => {
-      const totalSociosMes = asesoresActivos.reduce((acc, a) => {
-        const map = dataByAsesor[a]?.sociosByDay || {};
-        return acc + Object.values(map).reduce((s, set) => s + (set?.size || 0), 0);
-      }, 0);
-      const totalMonto = asesoresActivos.reduce((acc, a) => {
-        const map = dataByAsesor[a]?.montoByDay || {};
-        return acc + Object.values(map).reduce((s, n) => s + (n || 0), 0);
-      }, 0);
-      return (
-        <tr style={{ background: "#fff", fontWeight: 800 }}>
-          <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
-          <td style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 22 }}>
-            TOTAL <br />
-          </td>
-          {days.map((_, i) => (
-            <td key={i} style={{ border: "1px solid #000" }} />
-          ))}
-          <td
-            style={{
-              border: "1px solid #000",
-              padding: "8px 10px",
-              textAlign: "center",
-              fontSize: 25,
-            }}
-          >
-            {totalSociosMes ? totalSociosMes.toLocaleString("es-PE") : ""}
-          </td>
-          <td
-            style={{
-              border: "1px solid #000",
-              padding: "8px 10px",
-              textAlign: "center",
-              fontSize: 25,
-            }}
-          >
-            {fmtMoney(totalMonto)}
-          </td>
-          <td
-            style={{
-              border: "1px solid #000",
-              padding: "8px 10px",
-              textAlign: "center",
-              fontSize: 25,
-            }}
-          >
-            100%
-          </td>
-        </tr>
-      );
-    })()}
+    )}
 </tbody>
 
       </table>
