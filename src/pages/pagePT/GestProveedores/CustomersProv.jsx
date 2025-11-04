@@ -32,7 +32,7 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
 	}
 	useEffect(() => {
 		obtenerProveedores(estado_prov, agente, id_empresa)
-	}, [id_empresa])
+	}, [id_empresa, estado_prov])
 	useEffect(() => {
         const fetchData = () => {
             setCustomers(getCustomers(dataProveedores));
