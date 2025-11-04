@@ -51,10 +51,10 @@ export const DataTableContratos = ({id_empleado}) => {
                               <NumberFormatMoney amount={d.sueldo}/>
                             </div>
                           </th>
-                          <th>{dayjs.utc(d.fecha_inicio).format('dddd DD [DE] MMMM [DEL] YYYY')}</th>
+                          <th>{dayjs.utc(d.fecha_inicio).format('dddd DD [DE] MMMM [DEL] YYYY')} {dayjs.utc(d.fecha_inicio).format('YYYY-MM-DD')}</th>
                           <th>{dayjs.utc(d.fecha_fin).format('dddd DD [DE] MMMM [DEL] YYYY')}</th>
                           <th>
-                            <div className='' onClick={()=>onClickVerAsistencia({isOpenModal:true, fecha_fin:'2025-12-30', fecha_inicio: '2024-10-21'}, d?.id)}>
+                            <div className='' onClick={()=>onClickVerAsistencia({isOpenModal:true, fecha_fin:dayjs.utc(d.fecha_fin).format('YYYY-MM-DD'), fecha_inicio: dayjs.utc(d.fecha_inicio).format('YYYY-MM-DD')}, d?.id)}>
                               VER
                             </div>
                           </th>
@@ -80,14 +80,6 @@ export const DataTableContratos = ({id_empleado}) => {
                     show={isOpenModalVerAsistencia.isOpenModal}
                     id_contrato={isOpenModalVerAsistencia.id}
                     arrayFecha={[new Date(isOpenModalVerAsistencia.fecha_inicio), new Date(isOpenModalVerAsistencia.fecha_fin)]}
-                    horarios={
-                      [
-                        {horario:'09:00'}, 
-                        {horario:'11:00'}, 
-                        {horario:'10:00'}, 
-                        {horario:'07:00'}, {horario:'14:00'}, {horario:'06:00'}, {horario:'06:30'} , {horario:'08:00'}
-                      ]
-                    }
                     data={[
     { id_tipo_horario: 0, fecha: '2025-10-30', hora_inicio: '12:00', minutos: 60, observacion: '' },
     { id_tipo_horario: 1500, fecha: '2025-10-30', hora_inicio: '12:00', minutos: 30, observacion: 'refrigerio' },

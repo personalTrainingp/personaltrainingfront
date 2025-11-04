@@ -13,11 +13,9 @@ import { useDiasLaborablesColaboradorStore } from './useDiasLaborablesColaborado
 dayjs.locale('es');
 
 // ---------- Utils fecha ----------
-const pad2 = (n) => String(n).padStart(2, '0');
 const fmtTime = (d) => dayjs(d).format('hh:mm A');
 const minutesBetween = (a, b) => dayjs(b).diff(dayjs(a), 'minute');
 const addMin = (t, m) => dayjs(t).add(m, 'minute').toDate();
-const dateKey = (d) => dayjs(d).format('YYYY-MM-DD');
 
 // ---------- Mini calendario por mes ----------
 const MonthCard = ({
@@ -64,7 +62,11 @@ const MonthCard = ({
                 cursor: 'pointer',
                 border: isCurrentMonth ? '1px solid #eee' : '1px solid #f3f3f3',
                 color: isCurrentMonth ? '#111' : '#bbb',
-                background: strong ? '#FFE766' : (isHover ? '#FFF6B3' : (isCurrentMonth ? '#f7f7f7' : '#fafafa')),
+                // 👇 mantener el amarillo claro del hover
+                // y permitir que el amarillo fuerte sea el color elegido
+                background: strong
+                  ? (strong.color || '#FFE766')
+                  : (isHover ? '#FFF6B3' : (isCurrentMonth ? '#f7f7f7' : '#fafafa')),
                 transition: 'background 120ms ease',
                 minHeight: 32,
                 userSelect: 'none'
@@ -76,8 +78,8 @@ const MonthCard = ({
                 <span style={{
                   position: 'absolute', top: 1, right: 6, fontSize: 10, fontWeight: 700
                 }}>
-                    {strong.number}
-                    </span>
+                  {strong.number}
+                </span>
               )}
             </div>
           );
@@ -118,7 +120,6 @@ const ModalEspecial = ({ visible, onHide, onAdd }) => {
     const a = parseHM(inicio);
     const b = parseHM(fin);
     const mins = Math.max(0, minutesBetween(a, b));
-    console.log({inicio, fin, tipo, observacion: obs, minutos: mins});
     onAdd?.({ inicio, fin, tipo, observacion: obs, minutos: mins });
     onHide?.();
   };
@@ -161,24 +162,40 @@ const opcionesModo = [
 const ModalJornada = ({
   visible,
   onHide,
-  baseHorario = '12:00',
   onAceptar,
 }) => {
+  // principales
+  const [horaInicio, setHoraInicio] = useState('08:00');
+  const [horaFin, setHoraFin] = useState('17:00');
   const [modo, setModo] = useState('columna');
-  const [minutos, setMinutos] = useState(60);
+  const [color, setColor] = useState('#FFE766'); // amarillo fuerte por defecto
+  const [colorText, setColorText] = useState('#FFE766');
+
+  // especiales
   const [especiales, setEspeciales] = useState([]);
   const [showEspecial, setShowEspecial] = useState(false);
 
-  const totalEspeciales = useMemo(() => especiales.reduce((a, e) => a + (e.minutos || 0), 0), [especiales]);
-
   const parseHM = (s) => {
     const [hh, mm] = s.split(':').map(Number);
-    const base = dayjs().hour(hh || 0).minute(mm || 0).second(0).millisecond(0);
-    return base.toDate();
+    return dayjs().hour(hh || 0).minute(mm || 0).second(0).millisecond(0);
   };
 
-  const inicioDate = useMemo(() => parseHM(baseHorario), [baseHorario]);
-  const finDate = useMemo(() => addMin(inicioDate, (minutos || 0) + totalEspeciales), [inicioDate, minutos, totalEspeciales]);
+  // minutos de la jornada principal = fin - inicio
+  const minutosBase = useMemo(() => {
+    const ini = parseHM(horaInicio);
+    const fin = parseHM(horaFin);
+    const diff = fin.diff(ini, 'minute');
+    return diff > 0 ? diff : 0;
+  }, [horaInicio, horaFin]);
+
+  // suma de los especiales
+  const totalEspeciales = useMemo(
+    () => especiales.reduce((a, e) => a + (e.minutos || 0), 0),
+    [especiales]
+  );
+
+  // total que se guarda / pinta
+  const totalMinutos = minutosBase + totalEspeciales;
 
   const handleAddEspecial = (esp) => setEspeciales((arr) => [...arr, esp]);
   const handleRemoveEspecial = (idx) => setEspeciales((arr) => arr.filter((_, i) => i !== idx));
@@ -186,32 +203,97 @@ const ModalJornada = ({
   const aceptar = () => {
     onAceptar?.({
       modo,
-      horario_inicio: baseHorario,
-      minutos: minutos || 0,
+      horario_inicio: horaInicio,
+      horario_fin_jor: horaFin,
+      // 👇 minutos del principal vienen de la diferencia de horas
+      minutos: minutosBase,
       especiales,
-      horario_fin_jor: fmtTime(finDate),
-      total_minutos: (minutos || 0) + totalEspeciales,
+      // 👇 total = principal + especiales
+      total_minutos: totalMinutos,
+      color: colorText || color || '#FFE766',
     });
     onHide?.();
   };
 
+  // hora fin formateada solo para mostrar
+  const finManualDate = parseHM(horaFin);
+
   return (
     <>
-      <Dialog header={`Jornada para ${baseHorario}`} visible={visible} onHide={onHide} style={{ width: 600 }}>
+      <Dialog header="Horas del día laborable" visible={visible} onHide={onHide} style={{ width: 600 }}>
         <div className="p-fluid" style={{ display: 'grid', gap: 12 }}>
+          {/* horas */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div>
+              <label>Hora inicio</label>
+              <input
+                type="time"
+                value={horaInicio}
+                onChange={(e) => setHoraInicio(e.target.value)}
+                className="p-inputtext p-component"
+              />
+            </div>
+            <div>
+              <label>Hora fin</label>
+              <input
+                type="time"
+                value={horaFin}
+                onChange={(e) => setHoraFin(e.target.value)}
+                className="p-inputtext p-component"
+              />
+            </div>
+          </div>
+
+          {/* duración calculada */}
+          <div>
+            <label>Duración (minutos)</label>
+            <InputNumber
+              value={minutosBase}
+              disabled
+              // si quieres que se vea editable pero no se toque:
+              // readOnly
+            />
+            <small style={{ display: 'block', opacity: .7 }}>
+              Se calcula a partir de la hora inicio y la hora fin.
+            </small>
+          </div>
+
+          {/* modo de pintado */}
           <div>
             <label>Modo de pintado</label>
             <Dropdown options={opcionesModo} value={modo} onChange={(e) => setModo(e.value)} />
           </div>
-          <div>
-            <label>Duración (minutos)</label>
-            <InputNumber value={minutos} onValueChange={(e) => setMinutos(e.value ?? 0)} min={0} showButtons />
-          </div>
-          <div>
-            <b>Horario fin (auto):</b> {fmtTime(finDate)} &nbsp;
-            <small>({totalEspeciales} min especiales incluidos)</small>
+
+          {/* color */}
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div>
+              <label>Color (hex)</label>
+              <input
+                type="text"
+                value={colorText}
+                onChange={(e) => {
+                  setColorText(e.target.value);
+                  setColor(e.target.value);
+                }}
+                className="p-inputtext p-component"
+                placeholder="#FFE766"
+              />
+            </div>
+            <div>
+              <label>&nbsp;</label>
+              <input
+                type="color"
+                value={color}
+                onChange={(e) => {
+                  setColor(e.target.value);
+                  setColorText(e.target.value);
+                }}
+                style={{ width: 50, height: 36, border: 'none', background: 'transparent' }}
+              />
+            </div>
           </div>
 
+          {/* especiales */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
               <b>Horarios especiales</b>
@@ -228,6 +310,13 @@ const ModalJornada = ({
                 <Button icon="pi pi-trash" className="p-button-text p-button-sm" onClick={() => handleRemoveEspecial(i)} />
               </div>
             ))}
+          </div>
+
+          {/* totales */}
+          <div style={{ fontSize: 12 }}>
+            <b>Minutos jornada principal:</b> {minutosBase} min <br />
+            <b>Minutos especiales:</b> {totalEspeciales} min <br />
+            <b>Total a pintar:</b> {totalMinutos} min
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 8 }}>
@@ -250,8 +339,6 @@ const ModalJornada = ({
 const PanelItems = ({ items, onToggleDetail, onDelete, id_contrato }) => {
   const { postTipoContratoxDia } = useContratoColaboradorStore()
   const onClickPostItems = (it)=>{
-      console.log({it, df: dataFlatMapItems(it, id_contrato)});
-      // si mandas todo lo que hay en panel
       postTipoContratoxDia(dataFlatMapItems(it, id_contrato))
   }
   return (
@@ -264,6 +351,9 @@ const PanelItems = ({ items, onToggleDetail, onDelete, id_contrato }) => {
             <b>{it.number}.</b>
             <span>{it.horario_inicio} hasta {it.horario_fin_jor}</span>
             <span>• {it.especiales.length} horarios especiales</span>
+            {it.color && (
+              <span style={{ width: 16, height: 16, borderRadius: 3, background: it.color, border: '1px solid #ddd' }} />
+            )}
             <Button
               className="p-button-text p-button-sm"
               label={it.showDetail ? 'Ocultar detalle' : 'Ver detalle'}
@@ -312,24 +402,16 @@ function buildItemsFromData(data = []) {
   let counter = 1;
 
   for (const [hora_inicio, rows] of byHora.entries()) {
-    // normales: id_tipo_horario=0
     const normales = rows.filter((r) => r.id_tipo_horario === 0);
-    // especiales: !=0
     const especialesRaw = rows.filter((r) => r.id_tipo_horario !== 0);
-
-    // fechas: de todos (para que se pinten)
     const fechas = Array.from(new Set(rows.map((r) => r.fecha)));
-
-    // minutos base: si hay normal, tomo el primero, si no, 0
     const baseMinutos = normales.length > 0 ? (normales[0].minutos || 0) : 0;
 
-    // fin calculado: hora_inicio + baseMinutos
     const finDate = dayjs().hour(Number(hora_inicio.split(':')[0]) || 0).minute(Number(hora_inicio.split(':')[1]) || 0).second(0);
     const finCalc = finDate.add(baseMinutos, 'minute').format('hh:mm A');
 
-    // especiales en formato que usa tu UI
     const especiales = especialesRaw.map((e) => {
-      const ini = e.hora_inicio; // en tu backend ya viene hh:mm
+      const ini = e.hora_inicio;
       const base = dayjs().hour(Number(ini.split(':')[0]) || 0).minute(Number(ini.split(':')[1]) || 0);
       const fin = base.add(e.minutos || 0, 'minute').format('HH:mm');
       return {
@@ -346,7 +428,7 @@ function buildItemsFromData(data = []) {
     items.push({
       id: `loaded-${counter}`,
       number: counter,
-      modo: 'dia', // cuando viene del backend no sabemos el modo original, ponemos uno neutro
+      modo: 'dia',
       horario_inicio: hora_inicio,
       minutos: baseMinutos,
       especiales,
@@ -354,6 +436,8 @@ function buildItemsFromData(data = []) {
       total_minutos,
       fechas,
       showDetail: false,
+      // color por defecto: mismo amarillo fuerte
+      color: '#FFE766',
     });
 
     counter++;
@@ -367,27 +451,25 @@ export const ModalCustomJornada = ({
   show,
   onHide,
   arrayFecha = [new Date(), 'indefinido'],
-  horarios = [{ horario: '12:00' }, { horario: '15:00' }, { horario: '18:00' }],
   uid_empl,
   id_contrato,
-  // 🔥 nuevo:
-  data = []   // [{id_tipo_horario, fecha, hora_inicio, minutos, observacion}]
+  data = []
 }) => {
   const [from, to] = arrayFecha || [];
   const months = useMemo(() => getMonthsInRange(from, to), [from, to]);
   const isFullYear = months.length === 12;
   const columns = months.length === 1 ? 1 : (isFullYear ? 4 : Math.min(4, months.length));
   const  { dataDiasLaborablesxIDcontrato, obtenerDiasLaborablesColaboradorxContrato } = useDiasLaborablesColaboradorStore()
-  // Sidebar + modal jornada
-  const [selectedHorario, setSelectedHorario] = useState(null);
+
+  // modal jornada
   const [showJornada, setShowJornada] = useState(false);
+
   useEffect(() => {
     if(show && id_contrato!==0){
       obtenerDiasLaborablesColaboradorxContrato(id_contrato)
     }
   }, [id_contrato, show])
-  console.log({dataDiasLaborablesxIDcontrato, id_contrato});
-  
+
   // Modo pintado activo
   const [painter, setPainter] = useState(null);
   const [hoverSet, setHoverSet] = useState(new Set());
@@ -397,38 +479,29 @@ export const ModalCustomJornada = ({
   const [items, setItems] = useState([]);
   const [counter, setCounter] = useState(1);
 
-  // 🔥 cuando venga data, la colocamos
   useEffect(() => {
     if (Array.isArray(dataDiasLaborablesxIDcontrato) && dataDiasLaborablesxIDcontrato.length > 0) {
       const loadedItems = buildItemsFromData(dataDiasLaborablesxIDcontrato);
       setItems(loadedItems);
       setCounter(loadedItems.length + 1);
 
-      // pintar en calendario
       const newStrong = new Map();
       loadedItems.forEach((it) => {
         it.fechas.forEach((f) => {
-          newStrong.set(f, { number: it.number, itemId: it.id });
+          newStrong.set(f, { number: it.number, itemId: it.id, color: it.color || '#FFE766' });
         });
       });
       setStrongMap(newStrong);
     } else {
-      // si no viene data, limpio
       setItems([]);
       setCounter(1);
       setStrongMap(new Map());
     }
   }, [dataDiasLaborablesxIDcontrato]);
 
-  // Abrir modal jornada al elegir horario
-  const handlePickHorario = (h) => {
-    setSelectedHorario(h.horario);
-    setShowJornada(true);
-  };
-
-  // Tras aceptar jornada → activar pintado
-  const handleAceptarJornada = (data) => {
-    setPainter(data); // activar modo pintura
+  // aceptar jornada -> activa pintado
+  const handleAceptarJornada = (dataJornada) => {
+    setPainter(dataJornada);
   };
 
   // Hover: calcular set según modo
@@ -454,14 +527,12 @@ export const ModalCustomJornada = ({
         const startMonth = m.startOf('month');
         const endMonth = m.endOf('month');
 
-        // hacia adelante
         let c = d.clone();
         while (c.isBefore(endMonth) || c.isSame(endMonth, 'day')) {
           set.add(c.format('YYYY-MM-DD'));
-          c = c.add(14, 'day'); // salto de 14 días
+          c = c.add(14, 'day');
         }
 
-        // hacia atrás
         c = d.clone().subtract(14, 'day');
         while (c.isAfter(startMonth) || c.isSame(startMonth, 'day')) {
           set.add(c.format('YYYY-MM-DD'));
@@ -492,19 +563,16 @@ export const ModalCustomJornada = ({
         const itemId = crypto.randomUUID?.() || Math.random().toString(36).slice(2);
         const number = counter;
 
-        // aplicar amarillo fuerte y número
         setStrongMap((prev) => {
           const next = new Map(prev);
-          toPaint.forEach((k) => next.set(k, { number, itemId }));
+          toPaint.forEach((k) => next.set(k, { number, itemId, color: painter.color || '#FFE766' }));
           return next;
         });
 
-        // registrar item
         const item = {
           id: itemId,
           number,
           ...painter,
-          horario_fin_jor: painter.horario_fin_jor,
           fechas: Array.from(toPaint),
           showDetail: false,
         };
@@ -522,7 +590,6 @@ export const ModalCustomJornada = ({
   };
 
   const deleteItem = (id) => {
-    // quitar pintado
     setStrongMap((prev) => {
       const next = new Map(prev);
       Array.from(next.entries()).forEach(([k, v]) => {
@@ -530,50 +597,42 @@ export const ModalCustomJornada = ({
       });
       return next;
     });
-    // quitar item
     setItems((arr) => arr.filter((it) => it.id !== id));
   };
 
-  // Render
   return (
     <Dialog onHide={onHide} visible={show} header={`AGREGAR JORNADA ${id_contrato}`} style={{ width: '95vw', maxWidth: 1400 }}>
       <ConfirmDialog />
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr 320px', gap: 12, minHeight: 500 }}>
-        {/* Sidebar izquierda */}
-        <div style={{ borderRight: '1px solid #eee', paddingRight: 12 }}>
-          <div style={{ fontWeight: 700, marginBottom: 8 }}>Horarios</div>
-          <div style={{ display: 'grid', gap: 6 }}>
-            {horarios.map((h, idx) => (
-              <button
-                key={idx}
-                onClick={() => handlePickHorario(h)}
-                className="p-button p-component"
-                style={{ width: '100%', justifyContent: 'flex-start' }}
-              >
-                {h.horario}
-              </button>
+      {/* 👇 solo 2 secciones: calendario + panel derecho */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 12, minHeight: 500 }}>
+        {/* Sección principal (calendarios) */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* barra arriba para abrir el modal de jornada */}
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Button label="Configurar jornada" onClick={() => setShowJornada(true)} />
+            {painter ? (
+              <div style={{ fontSize: 12 }}>
+                Modo activo: <b>{painter.modo}</b> • Inicio: <b>{painter.horario_inicio}</b> • Fin: <b>{painter.horario_fin_jor}</b>
+                {painter.color && (
+                  <span style={{ display: 'inline-block', width: 16, height: 16, background: painter.color, border: '1px solid #ccc', marginLeft: 6 }} />
+                )}
+              </div>
+            ) : (
+              <div style={{ fontSize: 12, opacity: .8 }}>Define la jornada y luego haz clic en las fechas para pintar.</div>
+            )}
+          </div>
+          <div style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
+            {months.map((m) => (
+              <MonthCard
+                key={m.format('YYYY-MM')}
+                monthStart={m}
+                onCellEnter={onCellEnter}
+                onCellClick={onCellClick}
+                hoverSet={hoverSet}
+                strongMap={strongMap}
+              />
             ))}
           </div>
-
-          {/* Estado del pintor */}
-          <div style={{ marginTop: 16, fontSize: 12, opacity: .8 }}>
-            {painter
-              ? <>Modo activo: <b>{painter.modo}</b><br/>Inicio: <b>{painter.horario_inicio}</b><br/>Fin: <b>{painter.horario_fin_jor}</b></>
-              : <>Selecciona un horario para configurar la jornada.</>}
-          </div>
-        </div>
-        {/* Grid de meses */}
-        <div style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
-          {months.map((m) => (
-            <MonthCard
-              key={m.format('YYYY-MM')}
-              monthStart={m}
-              onCellEnter={onCellEnter}
-              onCellClick={onCellClick}
-              hoverSet={hoverSet}
-              strongMap={strongMap}
-            />
-          ))}
         </div>
 
         {/* Panel derecho items */}
@@ -584,7 +643,6 @@ export const ModalCustomJornada = ({
       <ModalJornada
         visible={showJornada}
         onHide={() => setShowJornada(false)}
-        baseHorario={selectedHorario || '12:00'}
         onAceptar={handleAceptarJornada}
       />
     </Dialog>
@@ -594,7 +652,6 @@ export const ModalCustomJornada = ({
 // ---------- flatten para enviar ----------
 function dataFlatMapItems(dataFlat, id_contrato) {
   return dataFlat.flatMap((item) => {
-    // normales
     const normales = item.fechas.map((fecha) => ({
       id_tipo_horario: 0,
       fecha,
@@ -604,7 +661,6 @@ function dataFlatMapItems(dataFlat, id_contrato) {
       id_contrato,
     }));
 
-    // especiales
     const especiales = item.especiales.flatMap((esp) =>
       item.fechas.map((fecha) => ({
         id_tipo_horario: esp.tipo,

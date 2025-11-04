@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { Dialog } from 'primereact/dialog'
 import React from 'react'
 import { Table } from 'react-bootstrap'
@@ -19,7 +20,7 @@ export const ModalVistaDias = ({data, show, onHide, header}) => {
                     data.map(d=>{
                         return (
                             <tr>
-                                <td>{d.fecha}</td>
+                                <td>{dayjs.utc(d.fecha).format('dddd DD [de] MMMM [DEL] YYYY')}</td>
                                 <td>{d?.asistenciaYcontrato?.contrato_empl?.hora_inicio}</td>
                                 <td>{d?.asistenciaYcontrato?.marcacion_empl?.hora_marca}</td>
                                 <td>{d?.asistenciaYcontrato?.minutosDiferencia}</td>

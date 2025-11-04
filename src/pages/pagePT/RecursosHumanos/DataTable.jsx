@@ -14,12 +14,10 @@ function generarRangoMeses(mesAnio) {
   const anio = Number(anioStr);
   if (!mes || !anio) throw new Error("Formato esperado: MM/YYYY");
 
-  const ultimoDia = new Date(anio, mes, 0).getDate();
+  const base = dayjs.utc(`${anio}-${String(mes).padStart(2, "0")}-01`);
+  const inicio = base.startOf("month").startOf("day"); // 00:00:00Z del 1er día
+  const fin    = base.endOf("month").endOf("day");     // 23:59:59.999Z del último día
 
-  const inicio = dayjs.utc(new Date(Date.UTC(anio, mes - 1, 1))).startOf("day");
-  const fin    = dayjs.utc(new Date(Date.UTC(anio, mes - 1, ultimoDia))).endOf("day");
-  console.log({inicio, fin});
-  
   return [inicio.toISOString(), fin.toISOString()];
 }
 
@@ -29,27 +27,6 @@ export const DataTable = () => {
     const [isOpenModalDetalleData, setisOpenModalDetalleData] = useState(false)
     const { obtenerMarcacionxFecha,obtenerContratosDeEmpleados, dataMarcacionxFecha, dataContratoxFecha } = useReportePlanillaStore()
     const [selectMes, setselectMes] = useState([])
-    // Simulando datos para la tabla
-  const data = [
-    {
-        mes: '08/2025',
-        items_colaboradores_activos: [
-            {cci: '', banco: 'bbva',cargo: 'contadora', nombre_apellidos: 'OFELIA VASQUEZ GARCIA', monto_pago: 2000, dias_tardanzas: 0, descuento: 0 }, 
-            {cci: '00219319363020306118', banco: 'bcp',cargo: 'administracion', nombre_apellidos: 'MIRTHA MARQUEZ LEVANO', monto_pago: 2000, dias_tardanzas: 0, descuento: 0 },
-            {cci: '0011-0814-0263629197-19', banco: 'bbva',cargo: 'venta', nombre_apellidos: 'ATENAS CORAL FIGUEROA', monto_pago: 1400, dias_tardanzas: 0, descuento: 0 },
-            {cci: '0011-0814-0262250437', banco: 'bbva',cargo: 'sistemas', nombre_apellidos: 'CARLOS ROSALES MORALES', monto_pago: 1300, dias_tardanzas: 0, descuento: 0 },
-            {cci: '0011-0814-0263567728', banco: 'bbva',cargo: 'supervision', nombre_apellidos: 'ALVARO SALAZAR GOMEZ', monto_pago: 2500, dias_tardanzas: 0, descuento: 0 },
-            {cci: '0011-0186-0200373041', banco: 'bbva',cargo: 'entrenador (a)', nombre_apellidos: 'JULIO CESAR TORRES ITURRIZAGA', monto_pago: 2000, dias_tardanzas: 0, descuento: 0 },
-            {cci: '0011-0186-0200506513', banco: 'bbva',cargo: 'entrenador (a)', nombre_apellidos: 'MILAGROS GALVAN DE LA CRUZ', monto_pago: 1550, dias_tardanzas: 0, descuento: 0 },
-            {cci: '0011-0814-0227529488', banco: 'bbva',cargo: 'entrenador (a)', nombre_apellidos: 'VERONICA ROCIO GUTIERREZ REYNA', monto_pago: 1900, dias_tardanzas: 0, descuento: 0 },
-            {cci: '0011-0814-0264721216', banco: 'bbva',cargo: 'entrenador (a)', nombre_apellidos: 'YASMIN JOSEFINA OLORTEGUI PEREZ', monto_pago: 1300, dias_tardanzas: 0, descuento: 0 },
-            {cci: '0011-0814-0267745574', banco: 'bbva',cargo: 'entrenador (a)', nombre_apellidos: 'JESICA ROMERO ALONSO', monto_pago: 1300, dias_tardanzas: 0, descuento: 0 },
-            {cci: '', banco: 'bbva',cargo: 'entrenador (a)', nombre_apellidos: 'CHRISTOPHER WILLY GARAY FIGUEROA', monto_pago: 1300, dias_tardanzas: 0, descuento: 0 },
-            {cci: '0011-0814-0264733613', banco: 'bbva',cargo: 'NUTRICIONISTA', nombre_apellidos: 'TERESA ISABEL CHUECA GARCIA PYE', monto_pago: 1300, dias_tardanzas: 0, descuento: 0 },
-            {cci: '0011-0135-0201264485', banco: 'bbva',cargo: 'MANTENIMIENTO', nombre_apellidos: 'CARLOS CHUQUILLANQUI', monto_pago: 1800, dias_tardanzas: 0, descuento: 0 },
-        ],
-    }
-  ]
   useEffect(() => {
     obtenerMarcacionxFecha(selectMes, 598)
     obtenerContratosDeEmpleados(selectMes)
@@ -88,30 +65,72 @@ export const DataTable = () => {
   )
 }
 
+// Helpers con dayjs
+const toDateStrUTC = (val) => {
+  const d = dayjs.utc(val);
+  return d.isValid() ? d.format("YYYY-MM-DD") : null;
+};
+
+const toTimeStrUTC = (val) => {
+  const d = dayjs.utc(val);
+  return d.isValid() ? d.format("HH:mm:ss") : null;
+};
+
+// Acepta: "YYYY-MM-DDTHH:mm:ssZ", "YYYY-MM-DD HH:mm:ss", etc. -> retorna ISO utc string
+const normalizeToUTC = (raw) => {
+  if (!raw) return null;
+  // Si ya parece ISO con 'T' y quizás 'Z', lo tomamos como UTC
+  if (typeof raw === "string" && raw.includes("T")) {
+    const d = dayjs.utc(raw);
+    return d.isValid() ? d.toISOString() : null;
+  }
+  // Formato tipo "YYYY-MM-DD HH:mm:ss"
+  if (typeof raw === "string" && raw.includes(" ")) {
+    const d = dayjs.utc(raw.replace(" ", "T"));
+    return d.isValid() ? d.toISOString() : null;
+  }
+  // Si viene numérico/Date-like, intentar parse directo a utc
+  const d = dayjs.utc(raw);
+  return d.isValid() ? d.toISOString() : null;
+};
+
+const extractOnlyTime = (val) => {
+  if (!val) return null;
+  // Si trae fecha (e.g., "1970-01-01T08:00:00Z"), formatear a HH:mm:ss
+  if (typeof val === "string" && val.includes("T")) {
+    const d = dayjs.utc(val);
+    return d.isValid() ? d.format("HH:mm:ss") : null;
+  }
+  // Si ya es "HH:mm:ss"
+  if (/^\d{2}:\d{2}:\d{2}$/.test(String(val))) return String(val);
+  // Último recurso: parsear y formatear
+  const d = dayjs.utc(val);
+  return d.isValid() ? d.format("HH:mm:ss") : null;
+};
+
+const timeToMinutes = (hhmmss) => {
+  if (!hhmmss) return null;
+  const [h, m, s] = hhmmss.split(":").map(Number);
+  return h * 60 + m + Math.floor((s || 0) / 60);
+};
+
+const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
 function unirAsistenciaYContrato(dataMarcacion = [], contrato_empl = [], sueldoMensual) {
-  const toDateStr = (iso) => {
-    const d = new Date(iso);
-    return isNaN(d) ? null : d.toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
-  };
-  const toTimeStr = (iso) => {
-    const d = new Date(iso);
-    return isNaN(d) ? null : d.toISOString().slice(11, 19); // HH:MM:SS
-  };
-  const timeToMinutes = (hhmmss) => {
-    if (!hhmmss) return null;
-    const [h, m, s] = hhmmss.split(":").map(Number);
-    return h * 60 + m + Math.floor((s || 0) / 60);
-  };
+  function valorDelDia(minutosContratadoDelDia, minutosAsistidosDelDia, sueldoDelDia) {
+  if (!minutosContratadoDelDia || minutosContratadoDelDia <= 0) return 0;
+  const asistidos = clamp(minutosAsistidosDelDia ?? 0, 0, minutosContratadoDelDia);
+  return (asistidos * sueldoDelDia) / minutosContratadoDelDia;
+}
 
-  // Index de marcación: quedarse con la más temprana por día
+  // 1) Tomar la marca más temprana por día (en UTC)
   const marcasByDate = new Map();
   for (const m of dataMarcacion) {
-    const raw = m.tiempo_marcacion_new ?? m.tiempo_marcacion;
-    if (!raw) continue;
-    const iso = raw.includes("T") ? raw : raw.replace(" ", "T") + ".000Z";
-    const fecha = toDateStr(iso);
-    const hora = toTimeStr(iso);
+    const iso = normalizeToUTC(m.tiempo_marcacion_new ?? m.tiempo_marcacion);
+    if (!iso) continue;
+
+    const fecha = toDateStrUTC(iso);       // "YYYY-MM-DD"
+    const hora  = toTimeStrUTC(iso);       // "HH:mm:ss"
     if (!fecha || !hora) continue;
 
     const curr = marcasByDate.get(fecha);
@@ -120,25 +139,50 @@ function unirAsistenciaYContrato(dataMarcacion = [], contrato_empl = [], sueldoM
     }
   }
 
-  // Armar resultado SOLO por días con contrato
+  // 2) Construir salida solo para días que tienen contrato
   const out = [];
   for (const c of contrato_empl) {
-    const fecha = toDateStr(c.fecha);
-    const hora_inicio = toTimeStr(c.hora_inicio); // viene con 1970, solo hora
+    const fecha = toDateStrUTC(c.fecha);
+    const hora_inicio = extractOnlyTime(c.hora_inicio); // puede venir con 1970 o solo hora
+
     if (!fecha || !hora_inicio) continue;
 
     const marca = marcasByDate.get(fecha) || { hora_marca: null };
 
     const minutosIni = timeToMinutes(hora_inicio);
     const minutosMarca = timeToMinutes(marca.hora_marca);
+
+    // Diferencia real (marca - inicio), si no hay marca, usar c.minutos como fallback (tu lógica previa)
     const minutosDiferencia =
       minutosIni != null && minutosMarca != null
         ? Number(minutosMarca - minutosIni)
-        : c.minutos;
-    const minutosContratadosDelDia = c.minutos ?? null
-    const minutosAsistidosDelDia = minutosContratadosDelDia-minutosDiferencia
+        : (c.minutos ?? null);
+
+    const minutosContratadosDelDia = c.minutos ?? null;
+
+    // Asistidos = contratados - diferencia (si llegó tarde, diferencia>0, si llegó antes, <0)
+    let minutosAsistidosDelDia = null;
+    if (minutosContratadosDelDia != null && minutosDiferencia != null) {
+      minutosAsistidosDelDia = minutosContratadosDelDia - minutosDiferencia;
+      // Evitar negativos o superar lo contratado
+      minutosAsistidosDelDia = clamp(
+        minutosAsistidosDelDia,
+        0,
+        minutosContratadosDelDia
+      );
+    }
+
+    // Sueldo diario prorrateado (31 como en tu código)
+    const sueldoDelDia = sueldoMensual / contrato_empl.filter(e=>e.id_tipo_horario===0).length;
+
+    const sueldoNeto =
+      minutosContratadosDelDia && minutosAsistidosDelDia != null
+        ? (minutosAsistidosDelDia * sueldoDelDia) / minutosContratadosDelDia
+        : 0;
+
     out.push({
       fecha,
+      dias: contrato_empl.filter(e=>e.id_tipo_horario===0).length,
       asistenciaYcontrato: {
         contrato_empl: {
           hora_inicio,
@@ -149,14 +193,20 @@ function unirAsistenciaYContrato(dataMarcacion = [], contrato_empl = [], sueldoM
         },
         minutosContratadosDelDia,
         minutosDiferencia,
-        minutosAsistidosDelDia: minutosDiferencia<=(-1)?minutosContratadosDelDia:minutosAsistidosDelDia,
-        sueldoNeto: valorDelDia(c.minutos ?? null, minutosDiferencia<=(-1)?minutosContratadosDelDia:minutosAsistidosDelDia, sueldoMensual/31)
+        minutosAsistidosDelDia,
+        // sueldoNeto,
+        sueldoDelDia,
+        valorDia: valorDelDia(minutosContratadosDelDia, minutosAsistidosDelDia, sueldoDelDia)
       },
     });
-  } 
+  }
 
-  // Orden por fecha asc !((c.minutos ?? null)-marca.hora_marca)?(minutosDiferencia>0?minutosDiferencia:0):minutosDiferencia
-  out.sort((a, b) => (a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0));
+  // 3) Ordenar por fecha asc usando dayjs
+  out.sort((a, b) =>
+    dayjs.utc(a.fecha).isBefore(dayjs.utc(b.fecha)) ? -1 :
+    dayjs.utc(a.fecha).isAfter(dayjs.utc(b.fecha))  ?  1 : 0
+  );
+
   return out;
 }
 
