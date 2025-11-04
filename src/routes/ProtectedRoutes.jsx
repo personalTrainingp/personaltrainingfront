@@ -97,7 +97,7 @@ const GestionAlertaUsuarios = lazy(()=>import('../pages/pagePT/GestionAlertasUsu
 const HorariosColaboradores = lazy(()=>import('../pages/pagePT/HorariosColaboradores/Index.jsx'))
 const CuentasPorPagar = lazy(() => import('../pages/pagePT/PagosProveedores/Index.jsx'));
 const ClienteMFPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/ClienteMFPage'))
-
+const GestionFeriados = lazy(()=>import('../pages/pagePT/GestionFeriados/index.jsx'))
 /**
  * routes import
  */
@@ -140,6 +140,10 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad cuentas-pagar*/}
+					{
+						sections.find(e=>e.url==='/gest-feriados') &&
+						<Route path='gest-feriados' element={<GestionFeriados/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/cuentas-pagar')&&
 						<Route path='cuentas-pagar' element={<CuentasPorPagar/>}/>

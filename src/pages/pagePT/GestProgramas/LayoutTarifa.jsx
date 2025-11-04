@@ -1,9 +1,9 @@
-import { Table } from "@/components";
+// import { Table } from "@/components";
 import { columns, sizePerPageList } from "./ColumnSetTarifa";
-import DataTable from "react-data-table-component";
 import { Button } from "react-bootstrap";
 import { ModalTarifa } from "./ModalTarifa";
 import { useState } from "react";
+import { DataTableCR } from "@/components/DataView/DataTableCR";
 
 export const LayoutTarifa = ({id_st, data}) => {
     console.log(data);
@@ -22,7 +22,7 @@ export const LayoutTarifa = ({id_st, data}) => {
             searchBoxClass="mt-2 mb-3"
         /> */}
         <Button onClick={()=>setIsModalTarifaOpen(true)}>Agregar tarifa</Button>
-        <DataTable
+        <DataTableCR
             columns={columns}
             customStyles={customStyles}
             data={data}

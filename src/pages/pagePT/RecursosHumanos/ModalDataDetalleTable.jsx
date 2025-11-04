@@ -40,7 +40,7 @@ export const ModalDataDetalleTable = ({mesAnio, show, onHide, data, dataContrato
               <th className='text-white'>SEGUN CONTRATO <SymbolSoles fontSizeS={'10px'}/></th>
               <th className='text-white'>DIAS LABORABLES SEGUN CONTRATO</th>
               <th className='text-white'>MINUTOS LABORABLES</th>
-              <th className='text-white'>MINUTOS CON TARDANZA</th>
+              <th className='text-white'>MINUTOS ASISTIDOS</th>
               <th className='text-white'>DESCUENTO</th>
               <th className='text-white'>MONTO A PAGAR <SymbolSoles fontSizeS={'10px'}/></th>
               {/* <th className='text-white'>BANCO</th>
