@@ -1,4 +1,4 @@
-import { PageBreadcrumb, Table } from '@/components';
+import { PageBreadcrumb } from '@/components';
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Dropdown, Row } from 'react-bootstrap';
 import { ModalMeta } from './ModalMeta';

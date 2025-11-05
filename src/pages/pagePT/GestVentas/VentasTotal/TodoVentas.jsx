@@ -1,4 +1,4 @@
-import { Table } from '@/components'
+
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
 import React, { useState, useEffect, useMemo } from 'react';
 import { classNames } from 'primereact/utils';

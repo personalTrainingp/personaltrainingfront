@@ -1,5 +1,5 @@
 import { Row, Col, Button, ButtonGroup, Modal } from 'react-bootstrap';
-import { FileInput, PageBreadcrumb, Table } from '@/components';
+import { FileInput, PageBreadcrumb } from '@/components';
 import ProjectCard from './ProjectCard';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';

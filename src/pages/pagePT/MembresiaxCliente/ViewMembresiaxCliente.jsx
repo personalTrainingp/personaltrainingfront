@@ -1,4 +1,4 @@
-import { PageBreadcrumb, Table } from '@/components'
+import { PageBreadcrumb } from '@/components'
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore'
 import React, { useState, useEffect } from 'react';
 import { classNames } from 'primereact/utils';
