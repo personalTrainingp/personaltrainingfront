@@ -74,7 +74,8 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, i
             return;
         }else{
             if(isCopy){
-            postContratoProv({...formState}, id_prov, file_presupuesto, file_contrato, file_compromisoPago)
+                const {id, ...value} = formState;
+            postContratoProv({...value}, id_prov, file_presupuesto, file_contrato, file_compromisoPago)
             onCancelModal();
             return;
             }else{
@@ -119,7 +120,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, i
         }
     })
     return (
-        <Dialog header={id==0?`Agregar Trabajos`:`EDITAR TRABAJO`} style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>
+        <Dialog header={id==0?`Agregar Trabajos`:`EDITAR TRABAJO ${isCopy}`} style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>
             {/* {id_empresa} */}
             <form onSubmit={onSubmitTrabajo}>
                 {
