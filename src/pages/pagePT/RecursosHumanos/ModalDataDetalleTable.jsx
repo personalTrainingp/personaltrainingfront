@@ -10,7 +10,7 @@ export const ModalDataDetalleTable = ({mesAnio, show, onHide, data, dataContrato
   const [dataVistaDias, setdataVistaDias] = useState([])
   const dataContratoConMarcacion = dataContratoxFecha.map(c =>{
     const dataMarcacions = dataMarcacionxFecha.filter(m=>m.dni===c.numDoc_empl)
-    const dataPlanilla = unirAsistenciaYContrato(dataMarcacions, c?._empl[0]?.contrato_empl?.filter(f=>f.id_tipo_horario===0), c.salario_empl)
+    const dataPlanilla = unirAsistenciaYContrato(dataMarcacions, c?._empl[0]?.contrato_empl?.filter(f=>f.id_tipo_horario===0), c?._empl[0]?.sueldo)
     return {
       // dataMarcacions,
       dataPlanilla,
@@ -39,7 +39,9 @@ export const ModalDataDetalleTable = ({mesAnio, show, onHide, data, dataContrato
               <th className='text-white'>COLABORADOR</th>
               <th className='text-white'>SEGUN CONTRATO <SymbolSoles fontSizeS={'10px'}/></th>
               <th className='text-white'>DIAS LABORABLES SEGUN CONTRATO</th>
+              <th className='text-white'>DIAS QUE FALTÓ</th>
               <th className='text-white'>MINUTOS LABORABLES</th>
+              <th className='text-white'>MINUTOS SIN LABORAR</th>
               <th className='text-white'>MINUTOS ASISTIDOS</th>
               <th className='text-white'>DESCUENTO</th>
               <th className='text-white'>MONTO A PAGAR <SymbolSoles fontSizeS={'10px'}/></th>
@@ -53,35 +55,48 @@ export const ModalDataDetalleTable = ({mesAnio, show, onHide, data, dataContrato
               const minutosTarde = item.dataPlanilla.filter(f=>f?.asistenciaYcontrato.minutosDiferencia>1).reduce((total, p) => total + (p?.asistenciaYcontrato?.minutosDiferencia || 0),0)
               const minutosAsistidos = minutosLaborables-minutosTarde
               const montoLaborable = item.dataPlanilla.reduce((total, p) => total + (p?.asistenciaYcontrato?.sueldoDelDia || 0),0)
-              const montoAsistidos = (minutosAsistidos*montoLaborable)/minutosLaborables
+              const montoAsistidos = item.dataPlanilla.reduce((total, p) => total + (p?.asistenciaYcontrato?.valorDia || 0),0)
+              const diasFalta = item.dataPlanilla.filter(f=>f?.asistenciaYcontrato.minutosAsistidosDelDia==0)
               return (
                 <tr key={index}>
                   {/* <td>{item.cargo}</td> */}
                   {/* <td>{item.nombre_empl}</td> */}
                   <td>{item.nombre_empl}</td>
-                  <td><NumberFormatMoney amount={item._empl[0].sueldo}/></td>
-                  <td>31</td>
+                  <td><NumberFormatMoney amount={item._empl[0]?.sueldo}/></td>
+                  <td>31
+                  </td>
+                  <td>
+                    <div>
+                      {diasFalta.length}
+                    </div>
+                  </td>
                   <td onClick={()=>onOpenModalVistaDias(item.dataPlanilla)}>
-                    <div className='bg-danger'>
+                    <div>
                       <NumberFormatter amount={minutosLaborables}/>
                     {/* {minutosLaborables} */}
                     </div>
                   </td>
                   <td onClick={()=>onOpenModalVistaDias(item.dataPlanilla)}>
-                    <div className='bg-danger'>
+                    <div >
+                      <NumberFormatter amount={minutosTarde}/>
+                    {/* {minutosAsistidos} */}
+                    </div>
+                  </td>
+                  <td onClick={()=>onOpenModalVistaDias(item.dataPlanilla)}>
+                    <div >
                       <NumberFormatter amount={minutosAsistidos}/>
                     {/* {minutosAsistidos} */}
                     </div>
                   </td>
                   {/* MONTO */}
                   <td onClick={()=>onOpenModalVistaDias(item.dataPlanilla)}>
-                    <div className='bg-danger'>
+                    <div>
                       <NumberFormatMoney amount={montoLaborable-montoAsistidos}/>
                     {/* {montoLaborable-montoAsistidos} */}
                     </div>
                   </td>
                   <td onClick={()=>onOpenModalVistaDias(item.dataPlanilla)}>
-                    <div className='bg-danger'>
+                    <div>
                       <NumberFormatMoney amount={montoAsistidos}/>
                     {/* {montoAsistidos} */}
                     </div>

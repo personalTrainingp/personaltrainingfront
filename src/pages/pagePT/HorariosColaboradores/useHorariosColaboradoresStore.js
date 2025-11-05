@@ -10,7 +10,10 @@ export const useHorariosColaboradoresStore = () => {
 		try {
 			console.log({
 				id_empresa,
-				arrayDate: [dayjs.utc(arrayDate[0]).format(''), dayjs.utc(arrayDate[1]).format('')],
+				arrayDate: [
+					dayjs.utc(arrayDate[0]).format('YYYY-MM-DD'),
+					dayjs.utc(arrayDate[1]).format('YYYY-MM-DD'),
+				],
 			});
 
 			const { data } = await PTApi.get(
@@ -18,8 +21,8 @@ export const useHorariosColaboradoresStore = () => {
 				{
 					params: {
 						arrayDate: [
-							dayjs.utc(arrayDate[0]).format(''),
-							dayjs.utc(arrayDate[1]).format(''),
+							dayjs.utc(arrayDate[0]).format('YYYY-MM-DD'),
+							dayjs.utc(arrayDate[1]).format('YYYY-MM-DD'),
 						],
 					},
 				}

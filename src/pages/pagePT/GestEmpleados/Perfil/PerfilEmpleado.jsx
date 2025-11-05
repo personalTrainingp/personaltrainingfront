@@ -105,8 +105,8 @@ export const PerfilEmpleado = () => {
                               <SectionComentario uid_comentario={userEmpleado.uid_comentario}/>
                             </TabPanel>
                             <TabPanel header={'RECURSOS HUMANOS'}>
-                                <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/>
-                                {/* <TabView>
+                                {/* <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/> */}
+                                <TabView>
                                   <TabPanel header={'CONTRATOS'}>
                                     <AppContratos id_empleado={userEmpleado.id_empl}/>
                                   </TabPanel>
@@ -122,7 +122,7 @@ export const PerfilEmpleado = () => {
                                   <TabPanel header={'SALIDAS TEMPRANAS'}>
                                     <PanelSalidasTempranas/>
                                   </TabPanel>
-                                </TabView> */}
+                                </TabView>
                             </TabPanel>
 
                         </TabView>

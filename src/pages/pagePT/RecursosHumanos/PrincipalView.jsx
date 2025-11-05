@@ -11,12 +11,8 @@ export const PrincipalView = () => {
         <br/>
         <Card>
             <Row>
-                <Col xxl={1}>
-                </Col>
-                <Col xxl={10}>
+                <Col xxl={12}>
                     <DataTable/>
-                </Col>
-                <Col xxl={1}>
                 </Col>
             </Row>
         </Card>
