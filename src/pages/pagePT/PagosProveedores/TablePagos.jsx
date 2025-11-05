@@ -341,7 +341,8 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
                           <td className="text-end">
                             <div className="d-flex gap-4">
                               <div><Button icon="pi pi-trash" rounded outlined onClick={() => onDeleteContrato(c.id)}/></div>
-                              <div><Button icon="pi pi-pencil" rounded outlined onClick={() => onOpenModalCustomPagosProv(c.id, id_empresa)}/></div>
+                              <div><Button icon="pi pi-copy" rounded outlined onClick={() => onOpenModalCustomPagosProv(c.id, id_empresa, true)}/></div>
+                              <div><Button icon="pi pi-pencil" rounded outlined onClick={() => onOpenModalCustomPagosProv(c.id, id_empresa, null)}/></div>
                             </div>
                           </td>
                         </tr>

@@ -351,7 +351,7 @@ const horarioColors = [
   { id_tipo_horario: 2, bg: "#f5b26a" } // por ejemplo
 ];
   const { obtenerHorariosColaboradores } = useHorariosColaboradoresStore()
-      const { RANGE_DATE } = useSelector(e=>e.DATA)
+      const { RANGE_DATE, dataView } = useSelector(e=>e.DATA)
   useEffect(() => {
     obtenerHorariosColaboradores(598, RANGE_DATE)
   }, [RANGE_DATE])
@@ -360,8 +360,11 @@ const horarioColors = [
     <>
         <PageBreadcrumb title={'Horarios colaboradores'}/>
         <FechaRange rangoFechas={RANGE_DATE}/>
+        {/* <pre>
+          {JSON.stringify(dataView, null, 2)}
+        </pre> */}
         <HorarioMensual 
-          dataRaw={dataRaw}
+          dataRaw={dataView}
           horarioColors={horarioColors}
           fechaInicio="2024-10-01"
           fechaFin="2024-10-31"

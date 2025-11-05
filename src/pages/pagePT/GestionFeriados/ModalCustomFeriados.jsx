@@ -21,7 +21,7 @@ export const ModalCustomFeriados = ({show, onHide, id}) => {
     onHide()
   }
   return (
-    <Dialog visible={show} onHide={onHide} style={{width: '40rem'}}>
+    <Dialog visible={show} onHide={onHide} header={`AGREGAR FERIADO`} style={{width: '40rem'}}>
       <form>
                 <Row>
                     <Col lg={12}>
@@ -31,7 +31,17 @@ export const ModalCustomFeriados = ({show, onHide, id}) => {
                     </Col>
                     <Col lg={12}>
                         <div className='mb-3'>
-                            <InputText label={'fecha'} nameInput={'fecha'} onChange={onInputChange} value={fecha} type={'date'} required />
+                            <InputText label={'fecha desde'} nameInput={'fecha'} onChange={onInputChange} value={fecha} type={'date'} required />
+                        </div>
+                    </Col>
+                    <Col lg={12}>
+                        <div className='mb-3'>
+                            <InputText label={'fecha hasta'} nameInput={'fecha'} onChange={onInputChange} value={fecha} type={'date'} required />
+                        </div>
+                    </Col>
+                    <Col lg={12}>
+                        <div className='mb-3'>
+                            <InputSelect label={'Seleccionar los Colaboradores'} nameInput={'tipo_feriado'} onChange={onInputChange} value={tipo_feriado} required />
                         </div>
                     </Col>
                     <Col lg={12}>

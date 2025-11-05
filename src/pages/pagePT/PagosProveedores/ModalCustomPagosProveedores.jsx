@@ -25,7 +25,7 @@ const registerTrabajo = {
     id_empresa: 0,
     id_zona: 0
 };
-export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0 }) => {
+export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, isCopy=false }) => {
     const [file_presupuesto, setfile_presupuesto] = useState(null);
     const [file_contrato, setfile_contrato] = useState(null);
     const [file_compromisoPago, setfile_compromisoPago] = useState(null);
@@ -73,8 +73,15 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0 })
             onCancelModal();
             return;
         }else{
-            updateContratoxId(id, {...formState}, id_empresa)
+            if(isCopy){
+            postContratoProv({...formState}, id_prov, file_presupuesto, file_contrato, file_compromisoPago)
             onCancelModal();
+            return;
+            }else{
+                updateContratoxId(id, {...formState}, id_empresa)
+                onCancelModal();
+                return;
+            }
         }
     };
     const onFileCompromisoPagoChange = (e)=>{

@@ -8,20 +8,20 @@ export default function HorarioMensual({
   fechaInicio,
   fechaFin
 }) {
-  const intervalos = generarIntervalos("06:00", "22:00", 30);
+  const intervalos = generarIntervalos("01:00", "22:00", 30);
 
   return (
     <div className="horario-wrapper">
       {/* contenedor scroll horizontal */}
       <div className="horario-scroll-x">
         <Table bordered className="horario-table">
-          <thead className="bg-change">
+          <thead >
             <tr>
               <th className="sticky-col first-col">Cargo</th>
               <th className="sticky-col second-col">Colaborador</th>
               <th className="sticky-col third-col">Día</th>
               {intervalos.map((hora) => (
-                <th key={hora.label} className="horario-header">
+                <th key={hora.label} className="horario-header p-0">
                   {hora.label}
                 </th>
               ))}
@@ -50,7 +50,7 @@ export default function HorarioMensual({
                           ? "bg-success"
                           : "bg-secondary";
                         return (
-                          <td key={h.label} className="horario-cell">
+                          <td key={h.label} className="horario-cell p-0">
                             <div className={`${is} horario-box`}></div>
                           </td>
                         );

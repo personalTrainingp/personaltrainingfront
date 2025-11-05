@@ -6,14 +6,14 @@ export function resumirConsecutivos(data) {
 
 	const grupos = {};
 
-	data.forEach((item) => {
+	data?.forEach((item) => {
 		const dia = dias[dayjs.utc(item.fecha).day()];
 		const key = `${dia}-${item.horario}-${item.minutos}`;
 
 		if (!grupos[key]) {
 			grupos[key] = {
 				label: dia,
-				horario: item.horario.split('.')[0],
+				horario: item.horario?.split('.')[0],
 				minutos: item.minutos,
 				data: [],
 			};

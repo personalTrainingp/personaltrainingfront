@@ -27,9 +27,22 @@ export const useHorariosColaboradoresStore = () => {
 					},
 				}
 			);
+			const dataAlter = data.diasLaborablesEnContrato.map((e) => {
+				return {
+					colaborador: e?.nombre_empl,
+					diasLaborables: e?._empl[0]?.contrato_empl.map((r) => {
+						return {
+							fecha: dayjs.utc(r.fecha).format('YYYY-MM-DD 05:00:00.0000000 +00:00'),
+							horario: dayjs.utc(r.hora_inicio).format('hh:mm:ss.0000000'),
+							id_tipo_horario: r.id_tipo_horario,
+							minutos: r.minutos
+						};
+					}),
+				};
+			});
 			console.log({ data });
 
-			dispatch(onSetDataView(data.diasLaborablesEnContrato));
+			dispatch(onSetDataView(dataAlter));
 		} catch (error) {
 			console.log(error);
 		}
