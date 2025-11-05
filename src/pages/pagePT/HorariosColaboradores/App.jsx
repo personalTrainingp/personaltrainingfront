@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import HorarioMensual from './ViewDataHorarios';
+import { useHorariosColaboradoresStore } from './useHorariosColaboradoresStore';
+import { PageBreadcrumb } from '@/components';
+import { FechaRange } from '@/components/RangeCalendars/FechaRange';
+import { useSelector } from 'react-redux';
 export const App = () => {
-
+  
 const dataRaw = [
   {
     colaborador: "Miguel Humberto La Torre Céspedes",
@@ -346,10 +350,16 @@ const horarioColors = [
   { id_tipo_horario: 1, bg: "orange" },
   { id_tipo_horario: 2, bg: "#f5b26a" } // por ejemplo
 ];
+  const { obtenerHorariosColaboradores } = useHorariosColaboradoresStore()
+      const { RANGE_DATE } = useSelector(e=>e.DATA)
+  useEffect(() => {
+    obtenerHorariosColaboradores(598, RANGE_DATE)
+  }, [RANGE_DATE])
 
   return (
     <>
-        
+        <PageBreadcrumb title={'Horarios colaboradores'}/>
+        <FechaRange rangoFechas={RANGE_DATE}/>
         <HorarioMensual 
           dataRaw={dataRaw}
           horarioColors={horarioColors}

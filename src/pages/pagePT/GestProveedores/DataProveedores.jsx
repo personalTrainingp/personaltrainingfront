@@ -1,5 +1,5 @@
 import { Row, Col, Card,  Modal } from 'react-bootstrap';
-import { Table, PageBreadcrumb } from '@/components';
+import { PageBreadcrumb } from '@/components';
 import { Proveedores } from '../data';
 import { columns, sizePerPageList } from './ColumnsSet';
 import { useToggle } from '@/hooks';

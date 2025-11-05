@@ -158,9 +158,6 @@ export const ReporteDemograficoMembresia = () => {
           ):(
             <>
             <div className='flex-auto mb-2'>
-          {/* <label htmlFor="buttondisplay" className="font-bold block mb-2">
-                          RANGO DE FECHAS
-          </label> */}
               <FechaRange rangoFechas={RANGE_DATE}/>
           {/* <Calendar value={rangoFechas} onChange={(e)=>setrangoFechas(e.value)} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection/> */}
         </div>
