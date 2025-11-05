@@ -10,7 +10,7 @@ export const useCenterArchive = () => {
 			console.log({ formState, id_moduloVisible, id_empresa, formFile });
 
 			const { data } = await PTApi.post(
-				`/fils/interno/center/${id_moduloVisible}/${id_empresa}`,
+				`/fils/interno/center/${3}/${id_empresa}`,
 				formState
 			);
 		} catch (error) {

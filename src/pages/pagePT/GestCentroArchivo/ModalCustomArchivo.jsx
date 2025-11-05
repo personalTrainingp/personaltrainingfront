@@ -140,7 +140,7 @@ export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
                                     (option) => option.value === id_tipo_doc
                                 )}
                                 options={datatipoDoc}
-                                required
+                                // required
                         ></Select>
                     </div>
                 </Col>

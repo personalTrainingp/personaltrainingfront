@@ -157,6 +157,10 @@ export default function ProtectedRoutes() {
                         <Route path='gestion-alerta-usuario' element={<GestionAlertaUsuarios/>}/>
 					}
 					{
+						sections.find(e=>e.url==='/proceso-solicitud-licencia-events') &&
+						<Route path='proceso-solicitud-licencia-events' element={<ExternalRedirect to="https://archivosluroga.blob.core.windows.net/docs-general/Proceso para solicitar Licencia para eventos final.pdf" replace />}/>
+					}
+					{
 						sections.find(e=>e.url==='/compromiso-pago') &&
 						<Route path='compromiso-pago' element={<ExternalRedirect to="https://docs.google.com/document/d/1GNys2K0_fseJSlp7uD_0qmuy9HHha-rh/edit?usp=sharing&ouid=107394656461672267890&rtpof=true&sd=true" replace />}/>
 					}
