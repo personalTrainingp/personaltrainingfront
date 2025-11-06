@@ -33,7 +33,7 @@ export const ModalTableSociosCanje = ({clickDataSocios, avatarProgramaSelect, cl
             edad: calcularDiferenciaFechas(d.tb_ventum.tb_cliente.fecha_nacimiento, d.tb_ventum.fecha_venta ),
             nombre_tarifa: '',
             observacion: d.tb_ventum.observacion,
-            fecha_venta: d.tb_ventum.fecha_venta,
+         // fecha_venta: d.tb_ventum.fecha_venta,
         }
     })
   return (

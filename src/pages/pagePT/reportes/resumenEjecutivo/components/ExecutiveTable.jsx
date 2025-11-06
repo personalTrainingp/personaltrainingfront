@@ -60,33 +60,7 @@ export default function ExecutiveTable({
   instagram: new Set(["693","instagram","ig"]),
   meta:      new Set(["1515","meta"]),
 
-  // 🔽 NUEVOS
-  renovaciones: new Set([
-    "renovaciones",
-    "cartera de renovaciones",
-    "cartera_de_renovaciones",
-    "cartera renovaciones",
-    "cartera de renovación",
-    "cartera_de_renovación"
-  ]),
-  cartera_de_reinscripciones: new Set([
-    "cartera de reinscripcion",
-    "cartera_de_reinscripcion",
-    "cartera reinscripcion",
-    "cartera de reinscripción",
-    "cartera_de_reinscripción",
-    "cartera de reinscripciones",
-    "cartera_de_reinscripciones"
-  ]),
-  ex_pt: new Set([
-    "ex-pt",
-    "ex pt",
-    "expt",
-    "ex-pt reinscripcion",
-    "ex pt reinscripcion",
-    "ex-pt reinscripción",
-    "ex pt reinscripción"
-  ]),
+
 };
 
 
@@ -366,25 +340,21 @@ export default function ExecutiveTable({
       byOriginFull,
     };
   };
-// === CONFIG ===
-const usePerOriginMonthOrder = true;   // activar orden por canal
-const rankMetric = 'cant';             // 'cant' (cantidad) o 'total' (venta)
+const usePerOriginMonthOrder = true;  
+const rankMetric = 'cant';            
 
-// Valor del mes para un canal/origen dado, según el métrico elegido
 const valueForOriginMonth = (okey, m) => {
   const o = m?.metrics?.byOrigin?.[okey];
-  if (!o) return -1;                           // meses sin datos van al final
+  if (!o) return -1;                           
   return rankMetric === 'total' ? Number(o.total || 0) : Number(o.cant || 0);
 };
 
-// Lista de meses ORDENADOS para un canal (mejor→peor)
 const monthOrderForOrigin = (okey) => {
   if (!usePerOriginMonthOrder) return perMonth;
   const list = perMonth.map((m, idx) => ({ m, idx, val: valueForOriginMonth(okey, m) }));
-  // si todos son 0, mantener orden original
   const hasSignal = list.some(x => x.val > 0);
   if (!hasSignal) return perMonth;
-  list.sort((a, b) => (b.val - a.val) || (a.idx - b.idx));
+  list.sort((a, b) => (a.val - b.val) || (a.idx - b.idx));
   return list.map(x => x.m);
 };
 
@@ -395,21 +365,18 @@ const monthOrderForOrigin = (okey) => {
     metrics: computeMetricsForMonth(f?.anio, f?.mes),
   }));
 
-// % participación para un origen en un mes dado
 const participationForMonth = (m, okey) => {
   const totalServ = Number(m.metrics?.totalServ || 0);
   const oTotal    = Number(m.metrics?.byOrigin?.[okey]?.total || 0);
   return totalServ > 0 ? (oTotal / totalServ) : 0;
 };
 
-// Score de orden para un origen: usa último mes; si no hay, usa acumulado
 const scoreOrigin = (okey) => {
   const last = perMonth[perMonth.length - 1];
   const lastScore = last ? participationForMonth(last, okey) : 0;
 
   if (lastScore > 0) return lastScore;
 
-  // Fallback: participación acumulada
   const sumOrigin = perMonth.reduce(
     (acc, m) => acc + Number(m.metrics?.byOrigin?.[okey]?.total || 0), 0
   );
@@ -438,14 +405,7 @@ const rowsMonkeyFit = [
   { key: "ticket_medio_monkeyfit", label: "TICKET MEDIO MONKEYFIT", type: "money" },
 ];
 
-// (opcional) versión FULL del mes completo:
-const rowsMonkeyFitFull = [
-  { key: "venta_monkeyfit_full", label: "VENTA MONKEYFIT (FULL)", type: "money" },
-  { key: "cantidad_reservas_monkeyfit_full", label: "CANTIDAD RESERVAS MONKEYFIT (FULL)", type: "int" },
-  { key: "ticket_medio_monkeyfit_full", label: "TICKET MEDIO MONKEYFIT (FULL)", type: "money" },
-];
 
-  // ======= estilos =======
   const cBlack = "#000000";
   const cWhite = "#ffffff";
   const cRed = "#c00000";
@@ -504,7 +464,6 @@ const rowsMonkeyFitFull = [
     julio: 60000, agosto: 70000, setiembre: 75000, septiembre: 75000,
     octubre: 85000, noviembre: 85000, diciembre: 85000,
   };
-// Encabezado por canal (usa su propio orden de meses)
 const TableHeadFor = ({ okey }) => {
   const months = monthOrderForOrigin(okey);
   return (
@@ -521,7 +480,6 @@ const TableHeadFor = ({ okey }) => {
   );
 };
 
-// Filas por canal (resalta el MEJOR mes = primera columna)
 const renderRowsFor = (okey, rowsToRender) => {
   const months = monthOrderForOrigin(okey);
   return rowsToRender.map(r => (
@@ -552,7 +510,7 @@ const renderRowsFor = (okey, rowsToRender) => {
           : r.type === "float2" ? fmtNum(val, 2)
           : fmtNum(val, 0);
 
-        const isBest = idx === 0; // mejor mes del canal
+        const isBest = idx === months.length - 1;
         return (
           <td
             key={`${okey}-c-${r.key}-${idx}`}
