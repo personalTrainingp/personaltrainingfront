@@ -16,6 +16,30 @@
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "")
                 .toUpperCase();
+// === Orígenes conocidos ===
+const ORIGEN = {
+  RENOV: 691,
+  REINSCRIP: [692, 696],
+  TRASPASO: 701,           // 👈 tu ID
+};
+
+// Clasifica una venta de membresía
+const clasificarVenta = (venta) => {
+  const origin = venta?.tb_ventum?.id_origen ?? venta?.id_origen ?? null;
+  const monto  = Number(venta?.tarifa_monto) || 0;
+
+  // 1) Si es traspaso por id_origen o por monto 0 → TRASPASO
+  if (origin === ORIGEN.TRASPASO || monto === 0) return "traspasos";
+
+  // 2) Renovación / Reinscripción por id_origen
+  if (origin === ORIGEN.RENOV) return "renovaciones";
+  if (ORIGEN.REINSCRIP.includes(origin)) return "reinscripciones";
+
+  // 3) Caso contrario → Nuevos
+  return "nuevos";
+};
+const UNMAPPED_PK = "__OTROS__";
+
 
             const getCells = (rowOrCells) => (Array.isArray(rowOrCells) ? rowOrCells : []);
           // Normaliza una URL de imagen a string limpio
@@ -40,38 +64,45 @@
               advisorOriginByProg = {},
                 avatarByAdvisor = {},   
             }) {
-       const filtrarAsesoresConProgramas = (filas, advisorOriginByProg) => {
+      const filtrarAsesoresConProgramas = (filas, advisorOriginByProg) => {
   return filas.filter((fila) => {
     const asesor = fila[0]?.value ?? "";
-    // recorrer todos los programas visibles
     for (const pk of Object.keys(advisorOriginByProg)) {
       const counts = advisorOriginByProg?.[pk]?.[asesor];
       if (counts && (
           Number(counts.nuevos) > 0 ||
           Number(counts.renovaciones) > 0 ||
-          Number(counts.reinscripciones) > 0
+          Number(counts.reinscripciones) > 0 ||
+          Number(counts.costoCero) > 0   
         )) {
-        return true; 
+        return true;
       }
     }
-    return false; 
+    return false;
   });
 };
+
        
               const progKeys = avataresDeProgramas.map(
                 (p) => String(p?.name_image ?? "").trim().toUpperCase()
               );
-              const asesores = useMemo(() => {
-                const fromResumen = Array.isArray(resumenArray)
-                  ? resumenArray
-                      .filter((f) => norm(f?.[0]?.value) !== "TOTAL")
-                      .map((f) => String(f?.[0]?.value ?? "").trim().toUpperCase())
-                  : [];
-                const fromOverride = Object.values(sociosOverride).flatMap((porProg) =>
-                  Object.keys(porProg || {})
-                );
-                return Array.from(new Set([...fromResumen, ...fromOverride])).filter(Boolean);
-              }, [resumenArray, sociosOverride]);
+            const asesores = useMemo(() => {
+  const fromResumen = Array.isArray(resumenArray)
+    ? resumenArray
+        .filter(f => norm(f?.[0]?.value) !== "TOTAL")
+        .map(f => String(f?.[0]?.value ?? "").trim().toUpperCase())
+    : [];
+
+  const fromOverride = Object.values(sociosOverride||{}).flatMap(p => Object.keys(p||{}));
+
+  // NUEVO: también desde advisorOriginByProg (todos los programas)
+  const fromAdvisor = Object.values(advisorOriginByProg || {})
+    .flatMap(p => Object.keys(p || {}))
+    .map(n => String(n).trim().toUpperCase());
+
+  return Array.from(new Set([...fromResumen, ...fromOverride, ...fromAdvisor])).filter(Boolean);
+}, [resumenArray, sociosOverride, advisorOriginByProg]);
+
 
               let filas = asesores.map((asesor) => {
                 const row = [{ header: "NOMBRE", value: asesor, isPropiedad: true }];
@@ -87,15 +118,13 @@
                 return totalRow > 0;
               });
               filas = filtrarAsesoresConProgramas(filas, advisorOriginByProg);
-              // totales por programa (desde filas)
               
               const colTotalByProg = {};
               progKeys.forEach((pk, i) => {
-                const colIdx = i + 1; // +1 por "NOMBRE"
+                const colIdx = i + 1; 
                 colTotalByProg[pk] = filas.reduce((acc, f) => acc + toNumber(f[colIdx]?.value), 0);
               });
 
-              // ───── imágenes por asesor (extraídas de la misma data) ─────
             const imageByAdvisor = useMemo(() => {
             const map = {};
             if (!Array.isArray(resumenArray)) return map;
@@ -200,37 +229,22 @@ Object.keys(moneyByAdvisor).forEach((key) => {
     });
     const tdBoldClassIf = (v) => (isZero(v) ? "" : "fw-bold");
 
-              const totalByProgAndOrigin = (pk) => {
-                const asesoresObj = advisorOriginByProg?.[pk] || {};
-                return Object.values(asesoresObj).reduce(
-                  (acc, c) => ({
-                    nuevos: acc.nuevos + Number(c?.nuevos || 0),
-                    renovaciones: acc.renovaciones + Number(c?.renovaciones || 0),
-                    reinscripciones: acc.reinscripciones + Number(c?.reinscripciones || 0),
-                  }),
-                  { nuevos: 0, renovaciones: 0, reinscripciones: 0 }
-                );
-              };
+const totalByProgAndOrigin = (pk) => {
+  const asesoresObj = advisorOriginByProg?.[pk] || {};
+  return Object.values(asesoresObj).reduce((acc, c) => ({
+    nuevos:         acc.nuevos         + Number(c?.nuevos || 0),
+    renovaciones:   acc.renovaciones   + Number(c?.renovaciones || 0),
+    reinscripciones:acc.reinscripciones+ Number(c?.reinscripciones || 0),
+    costoCero:      acc.costoCero      + Number(c?.costoCero || 0),
+  }), { nuevos:0, renovaciones:0, reinscripciones:0, costoCero:0 });
+};
 
-              const grandMoney = useMemo(() => {
-                const cellsFromResumenTotales = Array.isArray(resumenTotales) ? resumenTotales : null;
-                const cellsFromResumenArrayTotal = Array.isArray(resumenArray)
-                  ? getCells(resumenArray.find((fila) => norm(fila?.[0]?.value) === "TOTAL"))
-                  : null;
-                const resumen = cellsFromResumenTotales ?? cellsFromResumenArrayTotal ?? [];
-                const totalCell = getCells(resumen).find((c) => {
-                  const h = norm(c?.header);
-                  return h.includes("VENTA TOTAL") && h.includes("S/");
-                });
-                const fromResumen = toNumber(totalCell?.value);
-                if (fromResumen > 0) return fromResumen;
-                return Object.values(moneyByAdvisor).reduce((acc, o) => acc + (o?.money || 0), 0);
-              }, [resumenTotales, resumenArray, moneyByAdvisor]);
-          const totalOnlyByProg = (pk) => {
-            const t = totalByProgAndOrigin(pk); 
-            return (Number(t.nuevos||0) + Number(t.renovaciones||0) + Number(t.reinscripciones||0));
-            
-          };
+const totalOnlyByProg = (pk) => {
+  const t = totalByProgAndOrigin(pk);
+  return (t.nuevos||0)+(t.renovaciones||0)+(t.reinscripciones||0)+(t.costoCero||0);
+};
+
+
           // Filtrar solo programas con data (>0)
           const allProg = avataresDeProgramas.map((img, idx) => ({
             img,
@@ -253,16 +267,31 @@ Object.keys(moneyByAdvisor).forEach((key) => {
               -
             </td>
           );
-
+const totalSociosFila = (asesor) => {
+  let t = 0;
+  for (const { key: pk } of visiblePrograms) {
+    const c = advisorOriginByProg?.[pk]?.[asesor] || {};
+    t += Number(c.nuevos || 0)
+      + Number(c.renovaciones || 0)
+      + Number(c.reinscripciones || 0)
+      + Number(c.costoCero || 0);
+  }
+  return t;
+};
+// ¿Hay costo cero en algún programa/asesor?
+const showCostoCero = useMemo(() => {
+  return Object.values(advisorOriginByProg || {}).some(p =>
+    Object.values(p || {}).some(c => Number(c?.costoCero || 0) > 0)
+  );
+}, [advisorOriginByProg]);
 
         return (
       <Row>
         <Col lg={12}>
           <div style={{ margin: "32px 0" }}>
-            <table
-              className="table text-center tabla-sesiones"
-              style={{ borderCollapse: "collapse", width: "100%" }}
-            >
+  <table className="table text-center tabla-sesiones with-traspasos">
+
+
 <thead style={{ backgroundColor: "#fff", color: "#fff" }}>
                 {/* Fila 1: IMAGEN + Avatares */}
                 <tr>
@@ -318,6 +347,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                           <div><div className="miniTitle">NUEVOS</div></div>
                           <div><div className="miniTitle">RENOV.</div></div>
                           <div><div className="miniTitle">REINSC.</div></div>
+<div><div className="miniTitle">COSTO 0</div></div> 
                         </div>
                       </th>
                     );
@@ -332,8 +362,10 @@ Object.keys(moneyByAdvisor).forEach((key) => {
               <tbody>
                 {filas.map((fila, ridx) => {
                   const asesor = fila[0]?.value ?? "";
-                  const totalFila = fila.slice(1).reduce((acc, c) => acc + toNumber(c?.value), 0);
-                  const rank = rankByAdvisor[asesor] ?? 0;
+const totalFila = visiblePrograms.reduce((acc, { key: pk }) => {
+  const c = advisorOriginByProg?.[pk]?.[asesor] || {};
+  return acc + (c.nuevos||0) + (c.renovaciones||0) + (c.reinscripciones||0) + (c.costoCero||0);
+}, 0);                  const rank = rankByAdvisor[asesor] ?? 0;
                   const key = norm(asesor);
                   const imgUrl = normalizeImgUrl(avatarByAdvisor[key] || imageByAdvisor[key] || "");
                   return (
@@ -364,6 +396,7 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                           nuevos: 0,
                           renovaciones: 0,
                           reinscripciones: 0,
+                          costoCero: 0,
                         };
                         return (
                           <td key={cidx} className={`triptych program-start ${isLast ? "program-end" : ""}`}>
@@ -371,8 +404,8 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                         <div><p style={cellBoldIf(counts.nuevos)}>{fmt(counts.nuevos, true)}</p></div>
     <div><p style={cellBoldIf(counts.renovaciones)}>{fmt(counts.renovaciones, true)}</p></div>
     <div><p style={cellBoldIf(counts.reinscripciones)}>{fmt(counts.reinscripciones, true)}</p></div>
-
-                            </div>
+     <div><p style={cellBoldIf(counts.costoCero)}>{fmt(counts.costoCero, true)}</p></div> {/* SIEMPRE */}
+                      </div>
                           </td>
                         );
                       })}
@@ -413,24 +446,33 @@ Object.keys(moneyByAdvisor).forEach((key) => {
           <div><p style={cellBoldIf(s.nuevos)}>{fmt(s.nuevos, true)}</p></div>
           <div><p style={cellBoldIf(s.renovaciones)}>{fmt(s.renovaciones, true)}</p></div>
           <div><p style={cellBoldIf(s.reinscripciones)}>{fmt(s.reinscripciones, true)}</p></div>
+    <div><p style={cellBoldIf(s.costoCero)}>{fmt(s.costoCero, true)}</p></div> {/* SIEMPRE */}
+
         </div>
       </td>
     );
   })}
 
   {/* TOTAL SOCIOS */}
-  {(() => {
-    const totalSociosTabla = visiblePrograms.reduce(
-      (acc, _prog, i) =>
-        acc + filas.reduce((a, f) => a + toNumber(f[i + 1]?.value), 0),
-      0
-    );
+{/* TOTAL SOCIOS (fila SOCIOS POR CANAL) */}
+{(() => {
+  const totalSociosTabla = visiblePrograms.reduce((acc, { key: pk }) => {
+    const s = totalByProgAndOrigin(pk);
     return (
-      <td className={tdBoldClassIf(totalSociosTabla)} style={{ minWidth: 80, width: 60 }}>
-       -
-      </td>
+      acc +
+      Number(s.nuevos || 0) +
+      Number(s.renovaciones || 0) +
+      Number(s.reinscripciones || 0) +
+      Number(s.costoCero || 0)
     );
-  })()}
+  }, 0);
+
+  return (
+    <td className={tdBoldClassIf(totalSociosTabla)} style={{ minWidth: 80, width: 60 }}>
+-    </td>
+  );
+})()}
+
 
   <td className="money-cell" style={{ minWidth: 80, textAlign: "center" }}>
     —
@@ -457,24 +499,24 @@ Object.keys(moneyByAdvisor).forEach((key) => {
                       </td>
                     );
                   })}
-                  {(() => {
-  // 🔹 Cálculo del total de socios por canal (lo mismo que muestra el 46)
-  const totalSociosCanal = visiblePrograms.reduce((acc, _prog, i) =>
-    acc + filas.reduce((a, f) => a + toNumber(f[i + 1]?.value), 0), 0
-  );
+      {(() => {
+   // 🔹 Nuevo: total general usando los mismos buckets (incluye COSTO 0)
+   const totalSociosGeneral = visiblePrograms.reduce((acc, { key: pk }) => {
+     const t = totalByProgAndOrigin(pk); // ya lo tienes arriba
+     return acc + (t.nuevos || 0) + (t.renovaciones || 0) + (t.reinscripciones || 0) + (t.costoCero || 0);
+   }, 0);
 
-  return (
-    <>
+   return (
+     <>
       <td className="fw-bold" style={{ minWidth: 80, width: 60 }}>
-        {fmt(totalSociosCanal, true)}
-      </td>
-      <td className="fw-bold" style={{ minWidth: 150 }}>
-        {fmt(totalVisibleMoney, true)}
-      </td>
-      <td className="fw-bold" style={{ minWidth: 80 }}>100%</td>
-    </>
-  );
-})()}
+         {fmt(totalSociosGeneral, true)}
+       </td>
+       <td className="fw-bold" style={{ minWidth: 150 }}>
+         {fmt(totalVisibleMoney, true)}
+       </td>       <td className="fw-bold" style={{ minWidth: 80 }}>100%</td>
+     </>
+   );
+ })()}
                 </tr>
               </tbody>
             </table>

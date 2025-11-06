@@ -5,10 +5,8 @@ const MESES = [
   "julio","agosto","setiembre","octubre","noviembre","diciembre",
 ];
 
-
 const aliasMes = (m) => (m === "septiembre" ? "setiembre" : String(m || "").toLowerCase());
 const monthIdx = (mes) => MESES.indexOf(aliasMes(mes));
-
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
 const toLimaDate = (iso) => {
@@ -22,13 +20,18 @@ const toLimaDate = (iso) => {
     return null;
   }
 };
+const distPercentsTo100 = (counts = []) => {
+ const total = counts.reduce((a, b) => a + (Number(b) || 0), 0);
+  if (!total) return counts.map(() => 0);
+  return counts.map((c) => (c / total) * 100);
+};
 
 const labelOfOrigin = (id, originMap) => {
   const k = String(id ?? "0");
   return String(originMap?.[k] || originMap?.[Number(k)] || k).toUpperCase();
 };
 
-/* === acceso tolerante === */
+
 const getOriginId = (v) =>
   v?.id_origen ??
   v?.tb_ventum?.id_origen ??
@@ -88,12 +91,12 @@ export const ClientesPorOrigen = ({
 
   const base = useMemo(() => {
     const m = new Map();
-    monthKeys.forEach((k) => m.set(k.key, new Map())); 
+    monthKeys.forEach((k) => m.set(k.key, new Map()));
     return m;
   }, [monthKeys]);
 
   const uniqueTriples = useMemo(() => {
-    const seen = new Set();           
+    const seen = new Set();           // mk|originId|clientId
     const out = [];
     for (const v of ventas || []) {
       const d = toLimaDate(v?.fecha_venta || v?.fecha || v?.createdAt);
@@ -116,7 +119,7 @@ export const ClientesPorOrigen = ({
       if (originId == null || clientId == null || clientId === "") continue;
 
       const tuple = `${keyMes}|${originId}|${clientId}`;
-      if (seen.has(tuple)) continue;   
+      if (seen.has(tuple)) continue;   // evita inflar por joins
       seen.add(tuple);
 
       out.push({ keyMes, originId: String(originId), clientId: String(clientId) });
@@ -125,7 +128,7 @@ export const ClientesPorOrigen = ({
   }, [ventas, initialDay, cutDay, base]);
 
   const matrix = useMemo(() => {
-    const m = new Map(); 
+    const m = new Map(); // keyMes -> Map(originLabel -> Set<clientId>)
     for (const mk of base.keys()) m.set(mk, new Map());
 
     for (const r of uniqueTriples) {
@@ -161,10 +164,34 @@ export const ClientesPorOrigen = ({
   };
 
   const lastMonthKey = monthKeys[monthKeys.length - 1]?.key;
+  const lastMonthCounts = useMemo(() => {
+    const res = {};
+    if (!lastMonthKey) return res;
+    const origins = new Set();
+    for (const m of matrix.values()) for (const o of m.keys()) origins.add(o);
+    for (const origin of origins) {
+      res[origin] = getCount(lastMonthKey, origin);
+    }
+    return res;
+  }, [matrix, lastMonthKey]);
+
+  
+  const rowTotals = useMemo(() => {
+    const res = {};
+    const origins = new Set();
+    for (const m of matrix.values()) for (const o of m.keys()) origins.add(o);
+    for (const origin of origins) {
+      res[origin] = monthKeys.reduce((acc, mk) => acc + getCount(mk.key, origin), 0);
+    }
+    return res;
+  }, [matrix, monthKeys]);
+
+
+
   const sortedOrigins = useMemo(() => {
     const meta = orderedOrigins.map((label) => {
-      const last = lastMonthKey ? getCount(lastMonthKey, label) : 0;
-      const total = monthKeys.reduce((acc, m) => acc + getCount(m.key, label), 0);
+      const last = lastMonthKey ? (lastMonthCounts[label] || 0) : 0;
+      const total = rowTotals[label] || 0;
       return { label, last, total };
     });
     meta.sort((a, b) => {
@@ -173,7 +200,27 @@ export const ClientesPorOrigen = ({
       return a.label.localeCompare(b.label);
     });
     return meta.map((x) => x.label);
-  }, [orderedOrigins, monthKeys, lastMonthKey]);
+  }, [orderedOrigins, lastMonthKey, lastMonthCounts, rowTotals]);
+const pctColByOrigin = useMemo(() => {
+  const counts = sortedOrigins.map((o) => Number(lastMonthCounts[o] || 0));
+  const percs = distPercentsTo100(counts); // enteros suman 100
+  const out = {};
+  sortedOrigins.forEach((o, i) => (out[o] = percs[i]));
+  return out;
+}, [sortedOrigins, lastMonthCounts]);
+  // Totales globales para % del total (fila TOTAL)
+  const totalGlobal = useMemo(
+    () => sortedOrigins.reduce((acc, origin) => acc + (rowTotals[origin] || 0), 0),
+    [sortedOrigins, rowTotals]
+  );
+  const totalMesActualGlobal = useMemo(
+    () => (lastMonthKey ? sortedOrigins.reduce((acc, origin) => acc + (lastMonthCounts[origin] || 0), 0) : 0),
+    [sortedOrigins, lastMonthKey, lastMonthCounts]
+  );
+  const pctGlobal = useMemo(
+    () => (totalGlobal > 0 ? (totalMesActualGlobal / totalGlobal) * 100 : 0),
+    [totalGlobal, totalMesActualGlobal]
+  );
 
   /* === Estilos (igual a tu ra/fv) === */
   const C = { black: "#000", red: "#c00000", white: "#fff", border: "1px solid #333" };
@@ -211,36 +258,56 @@ export const ClientesPorOrigen = ({
                 </th>
               );
             })}
+            {/* NUEVA COLUMNA: % MES ACTUAL */}
+            <th key="col-pct" style={sHead} onClick={toggleHighlight}>
+              % MES ACTUAL
+            </th>
           </tr>
         </thead>
 
         <tbody>
-          {sortedOrigins.map((origin) => (
-            <tr key={origin}>
-              <td style={{ ...sCellLeft, background: C.red, color: C.white, fontWeight: 800 }}>{origin}</td>
+          {sortedOrigins.map((origin) => {
+            const totalOrigin = rowTotals[origin] || 0;
+            const valActual = lastMonthKey ? (lastMonthCounts[origin] || 0) : 0;
+            const pctActual = totalOrigin > 0 ? (valActual / totalOrigin) * 100 : 0;
 
-              {monthKeys.map((m, idx) => {
-                const value = getCount(m.key, origin);
-                const isLastCol = idx === monthKeys.length - 1;
-                const isMax = highlightMax && m.key === lastMonthKey && origin === highlightOrigin;
+            return (
+              <tr key={origin}>
+                <td style={{ ...sCellLeft, background: C.red, color: C.white, fontWeight: 800 }}>{origin}</td>
 
-                return (
-                  <td
-                    key={`${m.key}-${origin}`}
-                    style={{
-                      ...sCell,
-                      backgroundColor: isLastCol ? C.red : isMax ? "#ffff99" : sCell.background,
-                      color: isLastCol ? "#fff" : isMax ? C.red : sCell.color,
-                      fontWeight: 700,
-                      fontSize: isLastCol ? 25 : sCell.fontSize,
-                    }}
-                  >
-                    {value}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
+                {monthKeys.map((m, idx) => {
+                  const value = getCount(m.key, origin);
+                  const isLastCol = idx === monthKeys.length - 1;
+                  const isMax = highlightMax && m.key === lastMonthKey && origin === highlightOrigin;
+
+                  return (
+                    <td
+                      key={`${m.key}-${origin}`}
+                      style={{
+                        ...sCell,
+                        backgroundColor: isLastCol ? C.red : isMax ? "#ffff99" : sCell.background,
+                        color: isLastCol ? "#fff" : isMax ? C.red : sCell.color,
+                        fontWeight: 700,
+                        fontSize: isLastCol ? 25 : sCell.fontSize,
+                      }}
+                    >
+                      {value}
+                    </td>
+                  );
+                })}
+
+                {/* Celda de % por canal */}
+             <td
+  key={`${origin}-pct`}
+  style={{ ...sCell, fontWeight: 800 }}
+  title={`Mes actual: ${lastMonthCounts[origin] || 0} de un total mes actual ${sortedOrigins.reduce((a,o)=>a+(lastMonthCounts[o]||0),0)}`}
+>
+{`${(pctColByOrigin[origin] ?? 0).toFixed(2)} %`}
+</td>
+
+              </tr>
+            );
+          })}
 
           {/* === TOTAL === */}
           <tr>
@@ -266,6 +333,14 @@ export const ClientesPorOrigen = ({
                 </td>
               );
             })}
+            {/* % global: mes actual vs suma total */}
+         <td
+  key="total-pct"
+  style={{ ...sCell, background: C.red, color: "#fff", fontWeight: 800, textAlign: "center" }}
+>
+  { (lastMonthKey ? (sortedOrigins.some(o => lastMonthCounts[o] > 0) ? "100 %" : "0 %") : "0 %") }
+</td>
+
           </tr>
 
           {/* === FILA DE MESES === */}
@@ -288,6 +363,8 @@ export const ClientesPorOrigen = ({
                 {m.label}
               </td>
             ))}
+            {/* celda vacía para alinear nueva columna */}
+            <td key="mes-pct" style={{ background: C.red, color: "#fff" }} />
           </tr>
         </tbody>
       </table>

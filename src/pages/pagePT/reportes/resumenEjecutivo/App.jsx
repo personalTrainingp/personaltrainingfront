@@ -1,7 +1,8 @@
       import React, { useEffect, useMemo, useState } from "react";
+      import VentasDiarias from "../totalVentas/components/VentasDiarias";
+      import { GraficoLinealVentasDiarias } from "../totalVentas/components/GraficoLinealVentasDiarias";
       import { Col, Row } from "react-bootstrap";
       import { useVentasStore } from "./useVentasStore";
-import VentasDiarias from '../totalVentas/components/VentasDiarias';
       import ExecutiveTable from "./components/ExecutiveTable";
       import { PageBreadcrumb } from "@/components";
       import { ClientesPorOrigen } from "./components/ClientesPorOrigen";
@@ -17,8 +18,6 @@ import VentasDiarias from '../totalVentas/components/VentasDiarias';
       import axios from 'axios';
       import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
       import { TopControls } from "./components/TopControls";
-import { reservasApi } from "@/api/reservasApi";
-
     
 
 export function limaFromISO(iso) {
@@ -34,7 +33,6 @@ export function limaStartOfDay(d) {
 }
 
 export function limaEndOfDay(d) {
-  // Fuerza fin del día en horario Lima 23:59:59.999
   return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999));
 }
 
@@ -234,35 +232,32 @@ useEffect(() => {
     })();
   }, []);
 
-const monkeyfitByMonth = useMemo(
-  () => buildMonkeyfitByMonth(reservasMF, initDay, cutDay),
-  [reservasMF, initDay, cutDay]
-);
-
+// En el rango de fechas activo:
+const ZERO_IDS = new Set([1443, 701,690]); // los que ya cuentas
   const { start, end } = useMemo(() => {
     const s = RANGE_DATE?.[0] ? new Date(RANGE_DATE[0]) : null;
     const e = RANGE_DATE?.[1] ? new Date(RANGE_DATE[1]) : null;
     return { start: s, end: e };
   }, [RANGE_DATE]);
+  
 const advisorOriginByProg = useMemo(() => {
-  const outSets = {};
+  const outCounts = {};
   const src = Array.isArray(dataGroup) ? dataGroup : [];
-console.log ("dataGroup",[dataGroup]);
+
   for (const pgm of src) {
     const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "").trim().toUpperCase();
     if (!progKey) continue;
-    if (!outSets[progKey]) outSets[progKey] = {};
+    if (!outCounts[progKey]) outCounts[progKey] = {};
 
     const items = Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : [];
-  
-    const pagadas = items.filter(v => {
-      if (Number(v?.tarifa_monto) === 0) return false;
+
+    for (const v of items) {
+      // rango de fechas
       const iso = v?.tb_ventum?.fecha_venta || v?.tb_ventum?.createdAt || v?.fecha_venta || v?.createdAt;
       const d = parseBackendDate(iso);
-      return isBetween(d, start, end);
-    });
+      if (!isBetween(d, start, end)) continue;
 
-    for (const v of pagadas) {
+      // asesor
       const nombreFull =
         v?.tb_ventum?.tb_empleado?.nombre_empl ||
         v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
@@ -270,42 +265,27 @@ console.log ("dataGroup",[dataGroup]);
       const asesor = (nombreFull.split(" ")[0] || "").toUpperCase();
       if (!asesor) continue;
 
-      const idCliente =
-        v?.tb_ventum?.id_cli ??
-        v?.id_cli ??
-        v?.tb_cliente?.id_cli ??
-        v?.tb_ventum?.tb_cliente?.id_cli;
-      if (!idCliente) continue;
+      // clasificar
+      const idOrigen = v?.tb_ventum?.id_origen ?? v?.id_origen ?? null;
+      const esCero = Number(v?.tarifa_monto) === 0;
 
-      const o = v?.tb_ventum?.id_origen;
       let tipo = "nuevos";
-      if (o === 691) tipo = "renovaciones";
-      else if (o === 692 || o === 696) tipo = "reinscripciones";
+      if (esCero || ZERO_IDS.has(idOrigen)) tipo = "costoCero";
+      else if (idOrigen === 691) tipo = "renovaciones";
+      else if (idOrigen === 692 || idOrigen === 696) tipo = "reinscripciones";
 
-      if (!outSets[progKey][asesor]) {
-        outSets[progKey][asesor] = {
-          nuevos: new Set(),
-          renovaciones: new Set(),
-          reinscripciones: new Set(),
-        };
+      if (!outCounts[progKey][asesor]) {
+        outCounts[progKey][asesor] = { nuevos: 0, renovaciones: 0, reinscripciones: 0, costoCero: 0 };
       }
-      outSets[progKey][asesor][tipo].add(idCliente);
+      // 👇 contar eventos (no sets)
+      outCounts[progKey][asesor][tipo] += 1;
     }
   }
-  const outCounts = {};
-  Object.entries(outSets).forEach(([progKey, asesoresObj]) => {
-    outCounts[progKey] = {};
-    Object.entries(asesoresObj).forEach(([asesor, byTipo]) => {
-      outCounts[progKey][asesor] = {
-        nuevos: byTipo.nuevos.size,
-        renovaciones: byTipo.renovaciones.size,
-        reinscripciones: byTipo.reinscripciones.size,
-      };
-    });
-  });
 
   return outCounts;
-}, [dataGroup, start, end, progNameById]);
+}, [dataGroup, start, end, progNameById, ZERO_IDS]);
+
+
 
   const originBreakdown = useMemo(() => {
     const out = {};
@@ -787,8 +767,7 @@ const originMap = {
           handleSetUltimoDiaMes={handleSetUltimoDiaMes}
         />
       </Col>
-    </Row>
-    {/* === CONTENIDO PRINCIPAL === */}
+    </Row>  
     <Row className="mb-6">
       <Col lg={12} className="pt-0">
         <div style={{ marginBottom: "30px" }}>
@@ -846,6 +825,8 @@ const originMap = {
       <Row>
         <Col lg={12}>
           <SumaDeSesiones
+          ventas={dataVentas}
+          year={year}
             resumenArray={resumenFilas}
             resumenTotales={resumenTotales}
             avataresDeProgramas={avataresDeProgramas}
@@ -879,6 +860,14 @@ const originMap = {
     sumMode="programas"
     avatarByAdvisor={avatarByAdvisor}
   />
+  <GraficoLinealVentasDiarias
+  ventas={dataVentas}
+  year={year}
+  month={selectedMonth}
+  initDay={initDay}
+  cutDay={cutDay}
+  //asesores={listaAsesoresOpcional}
+/>
 </div>
     </Row>
   </>
