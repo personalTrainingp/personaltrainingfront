@@ -1,216 +1,289 @@
-/* ================= VARIABLES BASE ================= */
-.tabla-sesiones{
-  --accent-red: red;
-  --text-red: #c00000;
-  --tri-cols: 4;
-  border-collapse: collapse;
-  
-}
-.tabla-sesiones.with-traspasos{ --tri-cols: 4; }
 
-/* ================= BORDES Y CELDAS BASE ================= */
+.tabla-sesiones {
+  --color-borde-principal: #000;
+  --color-borde-rojo: red;
+  --color-fondo-header: #c00000;
+  --color-texto-header: #fff;
+  --color-texto-rojo: #c00000;
+  --columnas-programa: 4; /* NUEVOS, RENOV, REINSC, CANJE */
+
+  border-collapse: collapse;
+}
+
+/* ================== 2. BORDES GLOBALES ================== */
 .tabla-sesiones th,
-.tabla-sesiones td{
-  border: 1px solid #000 !important;
+.tabla-sesiones td {
+  border: 1px solid var(--color-borde-principal) !important;
   box-sizing: border-box;
 }
 
-.tabla-sesiones :is(th.triptych-head, td.triptych){
+/* ================== 3. HEADER (THEAD) ================== */
+
+/* --- Fila 1 del THEAD (Logos y Títulos) --- */
+.tabla-sesiones thead tr:first-child th:first-child,
+.tabla-sesiones thead tr:first-child th:nth-last-child(1),
+.tabla-sesiones thead tr:first-child th:nth-last-child(2),
+.tabla-sesiones thead tr:first-child th:nth-last-child(3) {
+  background: var(--color-fondo-header) !important;
+  color: var(--color-texto-header) !important;
+}
+.tabla-sesiones thead tr:first-child th.triptych-head {
+  background: #fff !important;
+}
+
+/* --- Fila 2 del THEAD (Subtítulos y Celdas Vacías) --- */
+.tabla-sesiones thead tr:nth-child(2) th.triptych-head {
+  background: var(--color-fondo-header) !important;
+  color: var(--color-texto-header) !important;
+}
+.tabla-sesiones thead tr:nth-child(2) th:first-child,
+.tabla-sesiones thead tr:nth-child(2) th:nth-last-child(1),
+.tabla-sesiones thead tr:nth-child(2) th:nth-last-child(2),
+.tabla-sesiones thead tr:nth-child(2) th:nth-last-child(3) {
+  background: var(--color-fondo-header) !important;
+  border: none !important;
+}
+
+/* --- Limpieza de bordes del THEAD (para eliminar la línea negra) --- */
+.tabla-sesiones thead tr:first-child th {
+  border-bottom: none !important;
+}
+.tabla-sesiones thead tr:nth-child(2) th {
+  border-top: none !important;
+}
+
+/* Texto de sub-cabeceras (NUEVOS, RENOV...) */
+.miniTitle {
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  margin: 0;
+  color: var(--color-texto-header) !important;
+}
+
+/* ================== 4. CELDAS DE PROGRAMAS (TRIPTYCH) ================== */
+.tabla-sesiones :is(th.triptych-head, td.triptych) {
   position: relative;
-  overflow: visible;
-  width: 90px; min-width: 90px; max-width: 100px;
+  width: 90px;
+  min-width: 90px;
+  max-width: 100px;
   padding: 0;
 }
-.tabla-sesiones th.triptych-head{ height: 45px; }
 
-/* Grids internos (4 columnas) */
+/*
+ * ================== CAMBIO CLAVE 1 ==================
+ * El grid interno (caja de 4 columnas).
+ * Debe tener position: relative y un z-index ALTO
+ * para que el texto/logos se sienten ENCIMA de las líneas.
+*/
 .tabla-sesiones th.triptych-head > .tri-box-head,
-.tabla-sesiones td.triptych > .tri-box{
-  position: relative;           /* necesario para el ::before */
+.tabla-sesiones td.triptych > .tri-box {
+  position: relative; /* <--- AÑADIDO */
+  z-index: 2; /* <--- AÑADIDO (Pone el contenido arriba) */
   display: grid;
-  grid-template-columns: repeat(var(--tri-cols), 1fr);
+  grid-template-columns: repeat(var(--columnas-programa), 1fr);
   height: 100%;
-  background: #fff;             /* mantenemos el fondo */
 }
 
-/* ================= THEAD (bg rojo restaurado) ================= */
-.tabla-sesiones thead th.triptych-head{ background: #c00000 !important; }
-.tabla-sesiones thead th.triptych-head > .tri-box-head{ background: #c00000 !important; }
-.tabla-sesiones thead th.triptych-head .miniTitle{ color:#fff !important; }
-
-/* Tus columnas específicas con fondo rojo en THEAD */
-.tabla-sesiones :is(
-  thead tr > th:nth-child(1),
-  thead tr > th:nth-child(6),
-  thead tr > th:nth-child(7),
-  thead tr > th:nth-child(8)
-){
-  background: #c00000 !important;
-  color: #fff !important;
+.tabla-sesiones tbody td.triptych > .tri-box {
+  background: #fff;
+}
+.tabla-sesiones th.triptych-head > .tri-box-head > div,
+.tabla-sesiones td.triptych > .tri-box > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1; /* z-index relativo al .tri-box */
 }
 
-.tabla-sesiones th.triptych-head > .tri-box-head > div{
-  display:flex; align-items:center; justify-content:center;
-}
-.miniTitle{ font-weight:800; font-size:15px; letter-spacing:.3px; margin:0; }
-
-/* Quitar pseudo-divisores antiguos */
-.tabla-sesiones :is(td.triptych)::before,
-.tabla-sesiones :is(td.triptych)::after,
-.tabla-sesiones :is(th.triptych-head, td.triptych)::before,
-.tabla-sesiones :is(th.triptych-head, td.triptych)::after{
-  content:none !important;
-}
-
-/* ================= SUBCELDAS (NUEVOS/RENOV/REINSC/COSTO0) ================= */
-.tri-box-head > div,
-.tri-box > div{
-  display:flex; align-items:center; justify-content:center;
-}
-
-/* Bordes rojos internos para cada número */
-.tri-box > div{ border-left: 2px solid var(--accent-red); }
-.tri-box > div:first-child{ border-left: 0; }
-
-
-.tabla-sesiones td.img-with-name .img-cap{
-  position:relative; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:.5rem; padding:.25rem 0;
-}
-.tabla-sesiones td.img-with-name .img-cap img{
-  width:80px; height:100px; border-radius:10px; object-fit:cover; background:#f3f3f3;
-}
-.tabla-sesiones td.img-with-name .cap{ font-weight:800; font-size:20px; text-align:center; }
-.tabla-sesiones td.img-with-name.only-text .cap{
-  font-size:22px; line-height:3.1; padding:8px 4px;
-  white-space:normal!important; word-break:break-word!important; text-align:center; font-weight:800;
-}
-
-/* ================= TROFEO ================= */
-.tabla-sesiones .copa-champions{ position:absolute; top:5px; left:-10px; z-index:3; }
-.tabla-sesiones .copa-champions img{
-  width:70px; filter:brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0,0,0,.4));
-}
-
-/* ================= TEXTO INTERNO ================= */
-.tabla-sesiones td.triptych > .tri-box > div p{
-  margin:0; padding:2px 0; font-size:17px; font-weight:400;
-}
-
-/* ================= ESTILOS DE TOTAL/SECUNDARIA ================= */
-.tabla-sesiones.table > :not(caption) > * > *.fw-bold{ color: var(--text-red) !important; }
-.tabla-sesiones.table > tbody > tr.fila-total > td:not(.img-with-name){
-  color: var(--text-red) !important; font-weight:800;
-}
-
-/* Fila secundaria: primera celda invertida */
-.tabla-sesiones tbody tr.fila-secundaria td.img-with-name{
-  background:#c00000 !important; color:#fff !important;
-}
-
-/* Banda roja superior/inf. de TOTAL */
-.tabla-sesiones tbody tr.fila-total{
-  position:relative;
-  box-shadow: inset 0 2px 0 var(--accent-red), inset 0 -2px 0 var(--accent-red);
-}
-
-/* ================= MODO COMPACTO (SOCIOS POR CANAL) ================= */
-.fila-secundaria.compact td,
-.fila-secundaria.compact td *{
-  font-size:29px !important; line-height:1.1 !important;
-}
-.fila-secundaria.compact td{ padding:14px 16px !important; }
-.fila-secundaria.compact .img-with-name .cap{
-  font-size:22px !important; line-height:1.5 !important; margin:0 !important;
-}
-
-/* 4 columnas siempre y bordes rojos internos también aquí */
-.fila-secundaria.compact .triptych{ padding:0 !important; }
-.fila-secundaria.compact .tri-box{
-  display:grid !important; grid-template-columns:repeat(var(--tri-cols),1fr) !important; gap:2px !important;
-}
-.fila-secundaria.compact .tri-box > div{
-  padding:0 !important; border-left:2px solid var(--accent-red);
-}
-.fila-secundaria.compact .tri-box > div:first-child{ border-left:0; }
-/* Borde rojo continuo en cada columna de programa */
-.tabla-sesiones td.program-start,
-.tabla-sesiones th.program-start {
-  border-left: 2px solid var(--accent-red) !important;
-}
-
-.tabla-sesiones td.program-end,
-.tabla-sesiones th.program-end {
-  border-right: 2px solid var(--accent-red) !important;
-}
-.tabla-sesiones :is(th.triptych-head, td.triptych){
-  --step: calc(100% / var(--tri-cols)); /* con --tri-cols:4 */
-  background-image:
-    linear-gradient(to right,
-      transparent calc(var(--step) - 1px),
-      var(--accent-red) calc(var(--step) - 1px),
-      var(--accent-red) calc(var(--step) + 1px),
-      transparent calc(var(--step) + 1px),
-
-      transparent calc(calc(var(--step) * 2) - 1px),
-      var(--accent-red) calc(calc(var(--step) * 2) - 1px),
-      var(--accent-red) calc(calc(var(--step) * 2) + 1px),
-      transparent calc(calc(var(--step) * 2) + 1px),
-
-      transparent calc(calc(var(--step) * 3) - 1px),
-      var(--accent-red) calc(calc(var(--step) * 3) - 1px),
-      var(--accent-red) calc(calc(var(--step) * 3) + 1px),
-      transparent calc(calc(var(--step) * 3) + 1px)
-    );
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-}
-
-/* Mantén el grid de 4, pero sin bordes internos para no duplicar líneas */
-.tri-box-head > div,
-.tri-box > div{
-  display:flex; align-items:center; justify-content:center;
-}
-
-.tri-box > div{ border-left: 0 !important; }
-.fila-secundaria.compact .tri-box > div{ border-left: 0 !important; }
-
-/* Borde rojo perimetral de cada columna-programa (de arriba a abajo) */
-.tabla-sesiones :is(td.program-start, th.program-start){
-  border-left: 2px solid var(--accent-red) !important;
-}
-.tabla-sesiones :is(td.program-end, th.program-end){
-  border-right: 2px solid var(--accent-red) !important;
-}
-.tabla-sesiones :is(.tri-box, .tri-box-head)::before{
+/*
+ * ================== CAMBIO CLAVE 2 ==================
+ * BORDES ROJOS INTERNOS (El hack del linear-gradient)
+ * El ::before ahora tiene z-index: 1.
+ * Esto lo pone ENCIMA del background de la celda (z-index: 0)
+ * pero DEBAJO del contenido del .tri-box (z-index: 2).
+*/
+.tabla-sesiones :is(th.triptych-head, td.triptych)::before {
   content: "";
   position: absolute;
-  inset: 0;                     /* cubre todo el alto y ancho */
+  inset: 0;
   pointer-events: none;
-  --step: calc(100% / var(--tri-cols)); /* con --tri-cols:4 */
-  background-image:
-    linear-gradient(to right,
-      transparent calc(var(--step) - 1px),
-      var(--accent-red) calc(var(--step) - 1px),
-      var(--accent-red) calc(var(--step) + 1px),
-      transparent calc(var(--step) + 1px),
+  z-index: 1; /* <--- CAMBIADO (Pone las líneas encima del fondo) */
 
-      transparent calc(2*var(--step) - 1px),
-      var(--accent-red) calc(2*var(--step) - 1px),
-      var(--accent-red) calc(2*var(--step) + 1px),
-      transparent calc(2*var(--step) + 1px),
+  --ancho-linea: 2px;
+  --pos-linea-1: calc(100% / var(--columnas-programa));
+  --pos-linea-2: calc(2 * (100% / var(--columnas-programa)));
+  --pos-linea-3: calc(3 * (100% / var(--columnas-programa)));
 
-      transparent calc(3*var(--step) - 1px),
-      var(--accent-red) calc(3*var(--step) - 1px),
-      var(--accent-red) calc(3*var(--step) + 1px),
-      transparent calc(3*var(--step) + 1px)
-    );
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  z-index: 0;                   /* por debajo del contenido */
+  background-image: linear-gradient(
+    to right,
+    transparent calc(var(--pos-linea-1) - var(--ancho-linea) / 2),
+    var(--color-borde-rojo) calc(var(--pos-linea-1) - var(--ancho-linea) / 2),
+    var(--color-borde-rojo) calc(var(--pos-linea-1) + var(--ancho-linea) / 2),
+    transparent calc(var(--pos-linea-1) + var(--ancho-linea) / 2),
+    transparent calc(var(--pos-linea-2) - var(--ancho-linea) / 2),
+    var(--color-borde-rojo) calc(var(--pos-linea-2) - var(--ancho-linea) / 2),
+    var(--color-borde-rojo) calc(var(--pos-linea-2) + var(--ancho-linea) / 2),
+    transparent calc(var(--pos-linea-2) + var(--ancho-linea) / 2),
+    transparent calc(var(--pos-linea-3) - var(--ancho-linea) / 2),
+    var(--color-borde-rojo) calc(var(--pos-linea-3) - var(--ancho-linea) / 2),
+    var(--color-borde-rojo) calc(var(--pos-linea-3) + var(--ancho-linea) / 2),
+    transparent calc(var(--pos-linea-3) + var(--ancho-linea) / 2)
+  );
 }
 
+/*
+ * ================== CAMBIO CLAVE 3 ==================
+ * Conectar las líneas entre las filas del header.
+ * Hacemos que el ::before de la fila 1 "sangre" 1px hacia abajo.
+ * Hacemos que el ::before de la fila 2 "sangre" 1px hacia arriba.
+ * Esto hace que las líneas se superpongan y parezcan una sola.
+*/
+.tabla-sesiones thead tr:first-child th.triptych-head::before {
+  bottom: -1px; /* Sangra 1px hacia abajo */
+}
+.tabla-sesiones thead tr:nth-child(2) th.triptych-head::before {
+  top: -1px; /* Sangra 1px hacia arriba */
+}
 
+/* ================== 5. BORDES ROJOS EXTERNOS ================== */
+
+/* Borde rojo GRUESO a la IZQUIERDA de CADA bloque de programa */
+.tabla-sesiones :is(th, td).program-start {
+  border-left: 2px solid var(--color-borde-rojo) !important;
+}
+
+/* Borde rojo GRUESO a la DERECHA del ÚLTIMO bloque de programa */
+.tabla-sesiones :is(th, td).program-end {
+  border-right: 2px solid var(--color-borde-rojo) !important;
+}
+
+/* Borde rojo GRUESO a la IZQUIERDA de las 3 columnas de totales */
+.tabla-sesiones :is(th, td):nth-last-child(1), /* % */
+.tabla-sesiones :is(th, td):nth-last-child(2), /* s/. */
+.tabla-sesiones :is(th, td):nth-last-child(3)  /* TOTAL SOCIOS */ {
+  border-left: 2px solid var(--color-borde-rojo) !important;
+}
+
+/* ================== 6. ESTILOS DE CELDAS (ASESOR, TROFEO, ETC.) ================== */
+
+.tabla-sesiones td.img-with-name .img-cap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+.tabla-sesiones td.img-with-name .img-cap img {
+  width: 80px;
+  height: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #f3f3f3;
+}
+.tabla-sesiones td.img-with-name .cap {
+  font-weight: 800;
+  font-size: 20px;
+  text-align: center;
+}
+
+.tabla-sesiones .copa-champions {
+  position: absolute;
+  top: 5px;
+  left: -10px;
+  z-index: 3;
+}
+.tabla-sesiones .copa-champions img {
+  width: 70px;
+  filter: brightness(1.1) contrast(1.3) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
+
+.tabla-sesiones td.triptych > .tri-box > div p {
+  margin: 0;
+  padding: 2px 0;
+  font-size: 17px;
+  font-weight: 400;
+}
+
+/* ================== 7. FILAS SECUNDARIAS (SOCIOS Y TOTAL) ================== */
+
+/* Texto rojo para todas las filas con .fw-bold */
+.tabla-sesiones.table > :not(caption) > * > *.fw-bold {
+  color: var(--color-texto-rojo) !important;
+}
+
+/* FIX para la fila TOTAL (los números no estaban rojos) */
+.tabla-sesiones tbody tr.fila-total td {
+  color: var(--color-texto-rojo) !important;
+  font-weight: 800 !important;
+}
+
+/* Fila "SOCIOS POR CANAL DE VENTA" */
+.tabla-sesiones tbody tr.fila-secundaria td.img-with-name {
+  background: var(--color-fondo-header) !important;
+  color: var(--color-texto-header) !important;
+}
+.tabla-sesiones td.img-with-name.only-text .cap {
+  font-size: 22px;
+  line-height: 1.5;
+  padding: 8px 4px;
+  white-space: normal !important;
+  word-break: break-word !important;
+  text-align: center;
+  font-weight: 800;
+}
+
+/* Fila "TOTAL" con bordes rojos superior/inferior */
+.tabla-sesiones tbody tr.fila-total {
+  position: relative;
+  box-shadow: inset 0 2px 0 var(--color-borde-rojo),
+    inset 0 -2px 0 var(--color-borde-rojo);
+}
+
+/* Estilos para la fila "SOCIOS POR CANAL" */
+.fila-secundaria.compact td,
+.fila-secundaria.compact td * {
+  font-size: 29px !important;
+  line-height: 1.1 !important;
+}
+.fila-secundaria.compact td {
+  padding: 14px 16px !important;
+}
+.fila-secundaria.compact .img-with-name .cap {
+  font-size: 22px !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+.fila-secundaria.compact .triptych {
+  padding: 0 !important;
+}
+.fila-secundaria.compact .tri-box {
+  display: grid !important;
+  grid-template-columns: repeat(var(--columnas-programa), 1fr) !important;
+  gap: 2px !important;
+}
+/* El fondo blanco va en la celda */
+.tabla-sesiones tbody td.triptych {
+  background: #fff;
+}
+
+/* El contenedor interno transparente,
+   así no tapa las líneas */
+.tabla-sesiones tbody td.triptych > .tri-box {
+  background: transparent; /* antes era #fff */
+}
+
+/* Mantén esto: la línea entre fondo y contenido */
+.tabla-sesiones :is(th.triptych-head, td.triptych)::before {
+  z-index: 1;
+}
+.tabla-sesiones th.triptych-head > .tri-box-head,
+.tabla-sesiones td.triptych > .tri-box {
+  z-index: 2;
+}
 
 /*OTRA VISTA*/
 

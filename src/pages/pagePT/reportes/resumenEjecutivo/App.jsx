@@ -239,53 +239,149 @@ const ZERO_IDS = new Set([1443, 701,690]); // los que ya cuentas
     const e = RANGE_DATE?.[1] ? new Date(RANGE_DATE[1]) : null;
     return { start: s, end: e };
   }, [RANGE_DATE]);
-  
-const advisorOriginByProg = useMemo(() => {
-  const outCounts = {};
-  const src = Array.isArray(dataGroup) ? dataGroup : [];
 
-  for (const pgm of src) {
-    const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "").trim().toUpperCase();
-    if (!progKey) continue;
-    if (!outCounts[progKey]) outCounts[progKey] = {};
-
-    const items = Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : [];
-
-    for (const v of items) {
-      // rango de fechas
-      const iso = v?.tb_ventum?.fecha_venta || v?.tb_ventum?.createdAt || v?.fecha_venta || v?.createdAt;
-      const d = parseBackendDate(iso);
-      if (!isBetween(d, start, end)) continue;
-
-      // asesor
-      const nombreFull =
-        v?.tb_ventum?.tb_empleado?.nombre_empl ||
-        v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
-        v?.tb_ventum?.tb_empleado?.nombres_apellidos || "";
-      const asesor = (nombreFull.split(" ")[0] || "").toUpperCase();
-      if (!asesor) continue;
-
-      // clasificar
-      const idOrigen = v?.tb_ventum?.id_origen ?? v?.id_origen ?? null;
-      const esCero = Number(v?.tarifa_monto) === 0;
-
-      let tipo = "nuevos";
-      if (esCero || ZERO_IDS.has(idOrigen)) tipo = "costoCero";
-      else if (idOrigen === 691) tipo = "renovaciones";
-      else if (idOrigen === 692 || idOrigen === 696) tipo = "reinscripciones";
-
-      if (!outCounts[progKey][asesor]) {
-        outCounts[progKey][asesor] = { nuevos: 0, renovaciones: 0, reinscripciones: 0, costoCero: 0 };
+function agruparPorVenta(data) {
+    if (!Array.isArray(data)) {
+        console.error("La variable 'data' no es un array válido."); 
+        return [];
       }
-      // 👇 contar eventos (no sets)
-      outCounts[progKey][asesor][tipo] += 1;
+    
+      const resultado = data?.reduce((acc, item) => {
+        const idVenta = item?.tb_ventum?.id; 
+        if (!acc.has(idVenta)) {
+          acc.set(idVenta, item);
+        }
+       
+        return acc;
+      }, new Map());
+
+    return Array.from(resultado?.values()); 
+}  
+const advisorOriginByProg = useMemo(() => {
+ 
+    const outSets = {};
+    const src = Array.isArray(dataGroup) ? dataGroup : [];
+    console.log("dataGroup (para advisorOriginByProg)", [dataGroup]);
+
+    for (const pgm of src) {
+        const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "").trim().toUpperCase();
+        if (!progKey) continue;
+        if (!outSets[progKey]) outSets[progKey] = {};
+
+        const allItems = Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : [];
+
+        const ventasUnicas = agruparPorVenta(allItems);
+
+        const ventasSinCeros = ventasUnicas.filter(f => Number(f?.tarifa_monto) !== 0);
+        const ventasEnCeros = ventasUnicas.filter(f => Number(f?.tarifa_monto) === 0);     
+        const transferencias = Array.isArray(pgm?.ventas_transferencias) ? pgm.ventas_transferencias : [];
+        const getAsesor = (v) => {
+            const nombreFull =
+                v?.tb_ventum?.tb_empleado?.nombre_empl ||
+                v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
+                v?.tb_ventum?.tb_empleado?.nombres_apellidos || "";
+            return (nombreFull.split(" ")[0] || "").toUpperCase();
+        };
+
+        const allSalesForAdvisors = [...ventasSinCeros, ...ventasEnCeros, ...transferencias];
+        for (const v of allSalesForAdvisors) {
+            const asesor = getAsesor(v);
+            if (!asesor) continue; 
+            if (!outSets[progKey][asesor]) {
+                outSets[progKey][asesor] = {
+                    nuevos: [],
+                    renovaciones: [],
+                    reinscripciones: [],
+                    canjes: [],
+                    transferencias: [],
+                    traspasos: []
+                };
+            }
+        }
+
+        for (const v of ventasSinCeros) {
+            const asesor = getAsesor(v);
+            if (!asesor) continue;
+
+            const o = v?.tb_ventum?.id_origen;
+            if (o === 691) { // Renovados 
+                outSets[progKey][asesor].renovaciones.push(v);
+            } else if (o === 692 || o === 696) { // Reinscritos [cite: 87, 140]
+                outSets[progKey][asesor].reinscripciones.push(v);
+            } else { // Nuevos (todos los demás origenes) 
+                outSets[progKey][asesor].nuevos.push(v);
+            }
+        }
+
+        // 5. Procesar ventasEnCeros (Canjes, Traspasos) 
+        for (const v of ventasEnCeros) {
+            const asesor = getAsesor(v);
+            if (!asesor) continue;
+
+            const tipoFactura = v?.tb_ventum?.id_tipoFactura;
+            if (tipoFactura === 701) { // Traspasos 
+                outSets[progKey][asesor].traspasos.push(v);
+            } else if (tipoFactura === 703) { // Canjes 
+                outSets[progKey][asesor].canjes.push(v);
+            }
+        }
+        
+        // 6. Procesar Transferencias 
+        for (const v of transferencias) {
+            const asesor = getAsesor(v);
+            if (!asesor) continue;
+            outSets[progKey][asesor].transferencias.push(v);
+        }
     }
-  }
 
-  return outCounts;
-}, [dataGroup, start, end, progNameById, ZERO_IDS]);
+    // --- Contar los resultados ---
+    const outCounts = {};
+    Object.entries(outSets).forEach(([progKey, asesoresObj]) => {
+        outCounts[progKey] = {};
+        Object.entries(asesoresObj).forEach(([asesor, byTipo]) => {
+            
+           
+            const otros = byTipo.canjes.length + byTipo.transferencias.length;
 
+            outCounts[progKey][asesor] = {
+                nuevos: byTipo.nuevos.length,
+                renovaciones: byTipo.renovaciones.length,
+                reinscripciones: byTipo.reinscripciones.length,
+                o: otros, 
+            
+                canjes: byTipo.canjes.length,
+                transferencias: byTipo.transferencias.length,
+                traspasos: byTipo.traspasos.length,
+            };
+        });
+    });
 
+    return outCounts;
+
+}, [dataGroup, progNameById]);
+
+// ... después del useMemo de advisorOriginByProg
+
+  // NUEVO: Crear una fuente de datos unificada desde dataGroup
+  const allVentasFromDataGroup = useMemo(() => {
+    if (!Array.isArray(dataGroup)) return [];
+    
+    // dataGroup es un array de *programas*.
+    // Cada programa tiene 'detalle_ventaMembresium'.
+    const allMembresias = dataGroup.flatMap(pgm => 
+      Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : []
+    );
+    
+    // También incluimos las transferencias, que están en un array separado
+    const allTransferencias = dataGroup.flatMap(pgm =>
+      Array.isArray(pgm?.ventas_transferencias) ? pgm.ventas_transferencias : []
+    );
+
+    // Unimos todo en un solo array de ventas
+    return [...allMembresias, ...allTransferencias];
+  }, [dataGroup]);
+
+  // ... el resto de tus hooks
 
   const originBreakdown = useMemo(() => {
     const out = {};
@@ -782,26 +878,31 @@ const originMap = {
           />
         </div>
         <div style={{ marginBottom: "32px", marginTop: "80px" }}>
-          <ClientesPorOrigen
-            ventas={dataVentas}
-            fechas={mesesSeleccionados}
-            initialDay={initDay}
-            cutDay={cutDay}
-            originMap={{
-              686: "Walking",
-              687: "Mail",
-              690: "REFERIDOS",
-              691: "CARTERA DE RENOVACION",
-              692: "Cartera de reinscripcion",
-              693: "Instagram",
-              694: "Facebook",
-              695: "TikTok",
-              696: "EX-PT reinscripcion",
-              689: "WSP organico",
-              1470: "CORPORATIVOS BBVA",
-              1443:"CANJE"
-            }}
-          />
+         <ClientesPorOrigen
+          ventas={dataVentas} 
+          fechas={mesesSeleccionados}
+          initialDay={initDay}
+          cutDay={cutDay}
+          originMap={{
+          
+            703: "CANJE",   
+            701: "TRASPASO",
+
+           
+            1443: "CANJE",  
+            686: "Walking",
+            687: "Mail",
+            690: "REFERIDOS",
+            691: "CARTERA DE RENOVACION",
+            692: "Cartera de reinscripcion",
+            693: "Instagram",
+            694: "Facebook",
+            695: "TikTok",
+            696: "EX-PT reinscripcion",
+            689: "WSP organico",
+            1470: "CORPORATIVOS BBVA",
+          }}
+        />
         </div>
       </Col>
       {/* === COMPARATIVOS Y GRÁFICOS === */}

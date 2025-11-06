@@ -32,14 +32,22 @@ const labelOfOrigin = (id, originMap) => {
 };
 
 
-const getOriginId = (v) =>
-  v?.id_origen ??
-  v?.tb_ventum?.id_origen ??
-  v?.origen ??
-  v?.source ??
-  v?.parametro_origen?.id_param ??
-  v?.id_origen_param ??
-  null;
+const getOriginId = (v) => {
+  const tipoFactura = v?.id_tipoFactura ?? v?.tb_ventum?.id_tipoFactura;
+  
+  // Si es Canje o Traspaso (basado en factura), usa ese ID primero.
+  if (tipoFactura === 703) return 703; // Canje
+  if (tipoFactura === 701) return 701; // Traspaso
+
+  // Si no, usa la lógica de "origen" normal.
+  return v?.id_origen ??
+    v?.tb_ventum?.id_origen ??
+    v?.origen ??
+    v?.source ??
+    v?.parametro_origen?.id_param ??
+    v?.id_origen_param ??
+    null;
+}
 
 const getClientId = (v) =>
   v?.id_cli ??
@@ -61,7 +69,7 @@ const getMembershipItems = (v) => {
 
 const hasPaidMembership = (v) =>
   getMembershipItems(v).some(
-    (it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total) > 0
+    (it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total)
   );
 
 export const ClientesPorOrigen = ({
@@ -240,7 +248,7 @@ const pctColByOrigin = useMemo(() => {
   /* === Render === */
   return (
     <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
-      <div style={sTitle}>CLIENTES POR ORIGEN AL {cutDay}</div>
+      <div style={sTitle}>CLIENTES POR ORIGEN POR VENTAS DE MEMBRESIAS {cutDay}</div>
 
       <table style={sTable}>
         <thead>
