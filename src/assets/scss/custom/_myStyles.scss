@@ -6,7 +6,31 @@
   
   // font-size: 20% !important;
 }
+/* Línea de selección amarilla para el TabView */
+.p-tabview-nav li.p-highlight .p-tabview-nav-link:has(.link-circus) {
+  border-color: #FFD700 !important; /* Amarillo */
+  color: #FFD700 !important;
+}
+/* Línea de selección amarilla para el TabView */
+.p-tabview-nav li.p-highlight .p-tabview-nav-link:has(.link-isesac) {
+  border-color: #17A700 !important; /* Amarillo */
+  color: #17A700 !important;
+}
 
+/* Línea de selección amarilla para el TabView */
+.p-tabview-nav li.p-highlight .p-tabview-nav-link:has(.link-change) {
+  border-color: #D41115 !important; /* Amarillo */
+  color: #D41115 !important;
+}
+
+/* Línea de selección amarilla para el TabView */
+.p-tabview-nav li.p-highlight .p-tabview-nav-link:has(.link-manicure) {
+  border-color: #ff3ef2 !important; /* Amarillo */
+  color: #ff3ef2 !important;
+}
+.text-manicure{
+  color: #ff3ef2 !important;
+}
 
 /* Botones sin bordes, bloque sólido */
 .estado-select .p-button {

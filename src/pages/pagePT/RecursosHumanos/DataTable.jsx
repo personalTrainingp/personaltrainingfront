@@ -151,20 +151,19 @@ function unirAsistenciaYContrato(dataMarcacion = [], contrato_empl = [], sueldoM
 
     const minutosIni = timeToMinutes(hora_inicio);
     const minutosMarca = timeToMinutes(marca.hora_marca);
-
+    const minutosContratadosDelDia = 540;
     // Diferencia real (marca - inicio), si no hay marca, usar c.minutos como fallback (tu lógica previa)
     const minutosDiferencia =
-      minutosIni != null && minutosMarca != null
+      minutosMarca !== null
         ? Number(minutosMarca - minutosIni)
-        : (c.minutos ?? null);
+        : minutosContratadosDelDia;
 
-    const minutosContratadosDelDia = c.minutos ?? null;
 
     // Asistidos = contratados - diferencia (si llegó tarde, diferencia>0, si llegó antes, <0)
     let minutosAsistidosDelDia = null;
     if (minutosContratadosDelDia != null && minutosDiferencia != null) {
       minutosAsistidosDelDia = minutosContratadosDelDia - minutosDiferencia;
-      // Evitar negativos o superar lo contratado
+      // // Evitar negativos o superar lo contratado
       minutosAsistidosDelDia = clamp(
         minutosAsistidosDelDia,
         0,
@@ -173,12 +172,7 @@ function unirAsistenciaYContrato(dataMarcacion = [], contrato_empl = [], sueldoM
     }
 
     // Sueldo diario prorrateado (31 como en tu código)
-    const sueldoDelDia = sueldoMensual / contrato_empl.filter(e=>e.id_tipo_horario===0).length;
-
-    const sueldoNeto =
-      minutosContratadosDelDia && minutosAsistidosDelDia != null
-        ? (minutosAsistidosDelDia * sueldoDelDia) / minutosContratadosDelDia
-        : 0;
+    const sueldoDelDia = sueldoMensual / 31;
 
     out.push({
       fecha,
@@ -208,10 +202,4 @@ function unirAsistenciaYContrato(dataMarcacion = [], contrato_empl = [], sueldoM
   );
 
   return out;
-}
-
-function valorDelDia(minutosContratadoDelDia, minutosAsistidosDelDia, sueldoDelDia) {
-
-  const valorDia = (minutosAsistidosDelDia*sueldoDelDia)/minutosContratadoDelDia
-  return valorDia;
 }

@@ -24,6 +24,7 @@ import { FilterMatchMode } from 'primereact/api';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { CustomersProv } from './CustomersProv';
 import { SelectButton } from 'primereact/selectbutton';
+import { ColorEmpresa } from '@/components/ColorEmpresa';
 
 const ESTADOS = [
   { label: 'ACTIVOS', value: true },
@@ -58,30 +59,20 @@ export const DataProveedores = ({id_estado}) => {
                   <Button label="Agregar proveedor" onClick={()=>onOpenModalProvOpen(0)} />
                 </Col>
               </Row>
-
-              <TabView>
-                <TabPanel header={'PROVEEDORES'}>
-                  <TabView>
-                    <TabPanel header={'CHANGE'}>
+              <ColorEmpresa
+                childrenChange={
                       <CustomersProv onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={598} />
-                    </TabPanel>
-
-                    <TabPanel header={'CIRCUS'}>
-                      <CustomersProv estado_prov={id_estado} agente={true} id_empresa={601} />
-                    </TabPanel>
-                    <TabPanel header={'REDUCTO'}>
+                }
+                childrenReducto={
                       <CustomersProv estado_prov={id_estado} agente={true} id_empresa={599} />
-                    </TabPanel>
-                                        <TabPanel header={'RAL'}>
-                      {/* {estado ? (
-                        <CustomersProv estado_prov={true}  agente={true} id_empresa={0} />
-                      ) : (
-                      )} */}
+                }
+                childrenCircus={
+                      <CustomersProv estado_prov={id_estado} agente={true} id_empresa={601} />
+                }
+                childrenRal={
                       <CustomersProv estado_prov={id_estado} agente={true} id_empresa={0} />
-                    </TabPanel>
-                  </TabView>
-                </TabPanel>
-              </TabView>
+                }
+              />
             </Card.Body>
           </Card>
         </Col>

@@ -35,8 +35,8 @@ const GestionProspectos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionExtensionMembresia = lazy(()=> import('../pages/pagePT/GestExtensionMembresia'))
 const GestionAuditoria = lazy(()=> import('../pages/pagePT/Auditoria'))
 const GestionComision = lazy(()=> import('../pages/pagePT/GestComision'))
-const ServFitology = lazy(()=> import('../pages/pagePT/ServFitology'))
-const ServNutricion = lazy(()=> import('../pages/pagePT/ServNutricion'))
+// const ServFitology = lazy(()=> import('../pages/pagePT/ServFitology'))
+// const ServNutricion = lazy(()=> import('../pages/pagePT/ServNutricion'))
 const ReportePorProgramas = lazy(()=>import('../pages/pagePT/reportes/ventasPrograma'))
 const ReporteTotalVentas = lazy(()=>import('../pages/pagePT/reportes/totalVentas'))
 const ReporteVentasAsesor = lazy(()=>import('../pages/pagePT/reportes/ventasAsesor'))
@@ -46,14 +46,14 @@ const Terminologias = lazy(()=>import('../pages/pagePT/Terminologias'))
 const ReporteEgresos = lazy(()=>import('../pages/pagePT/reportes/reporteEgresos'))
 const ReporteGerenciales = lazy(()=>import('../pages/pagePT/reportes/reporteGerenciales'))
 const ReporteMetas = lazy(()=>import('../pages/pagePT/reportes/reporteMetas'))
-const MarketingAgenda = lazy(()=>import('../pages/pagePT/GestMkt'))
+// const MarketingAgenda = lazy(()=>import('../pages/pagePT/GestMkt'))
 const HistorialCitasNutricionista = lazy(()=>import('../pages/pagePT/HistorialCitasNutricionista'))
 const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
 const GestContratosClientes = lazy(()=>import('../pages/pagePT/GestContratosCliente'))
-const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
+// const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
 const ReporteComparativaDeVentasxDia = lazy(()=>import('../pages/pagePT/ReporteComparativoxDia'))
 const ReporteFlujoCaja = lazy(()=>import('../pages/pagePT/FlujoCaja'))
-const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilidadPrograma'))
+// const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilidadPrograma'))
 const GestProvAgente = lazy(()=>import('../pages/pagePT/GestProvAgentes'))
 const PerfilProveedor = lazy(()=>import('../pages/pagePT/PerfilProveedor'))
 const GestionInventario = lazy(()=>import('../pages/pagePT/GestInventario'))
@@ -64,11 +64,11 @@ const SalidaInventario = lazy(()=>import('../pages/pagePT/SalidaInventario'))
 const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
 const PuntoEquilibrio = lazy(()=> import('../pages/pagePT/reportes/puntoEquilibrio'))
 const ReporteSeguimiento = lazy(()=>import('../pages/pagePT/reportes/reporteSeguimiento'))
-const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
+// const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
 const ReporteSesionesxMem = lazy(()=>import('../pages/pagePT/reportes/reporteSesionesxMem'))
 const ResultadoChange = lazy(()=>import('../pages/pagePT/reportes/resultadoChange'))
 const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
-const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
+// const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
 const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
 const ResumenComparativo = lazy(()=>import('../pages/pagePT/reportes/resumenComparativo'))
 // const ReporteDemograficoCliente = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoCliente'))
@@ -251,10 +251,10 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/reporte/comparativo-resumen-x-mes')&& //asdf
                         <Route path='reporte/comparativo-resumen-x-mes' element={<ResumenComparativoAnual/>}/>
 					}
-					{
+					{/* {
                         sections.find(e=>e.url==='/reporte/gestion-comercial') && 
                         <Route path='reporte/gestion-comercial' element={<ReporteDeGestionComercial/>}/>
-                    }
+                    } */}
 					{
                         sections.find(e=>e.url==='/gest-jornada') && 
                         <Route path='gest-jornada' element={<GestionJornada/>}/>
@@ -275,10 +275,10 @@ export default function ProtectedRoutes() {
                         sections.find(e=>e.url==='/reporte-admin/asistenciaReporte') && 
                         <Route path='reporte-admin/asistenciaReporte' element={<ReporteDeAsistenciaRH/>}/>
                     }
-					{
+					{/* {
                         sections.find(e=>e.url==='/gestion-comercial') && 
                         <Route path='gestion-comercial' element={<GestionComercial/>}/>
-                    }
+                    } */}
 					{
                         sections.find(e=>e.url==='/gestion-cambio-programa') && 
                         <Route path='gestion-cambio-programa' element={<GestionCambioPrograma/>}/>
@@ -429,14 +429,14 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/gestion-comisional') &&
 						<Route path='gestion-comisional' element={<GestionComision/>}/>
 					}
-					{
+					{/* {
 						sections.find(e=>e.url==='/serv-fitology') &&
 						<Route path='serv-fitology' element={<ServNutricion tipo_serv={'FITOL'}/>}/>
-					}
-					{
+					} */}
+					{/* {
 						sections.find(e=>e.url==='/serv-nutricion') &&
 						<Route path='serv-nutricion' element={<ServNutricion tipo_serv={'NUTRI'}/>}/>
-					}
+					} */}
 					{
 						sections.find(e=>e.url==='/reporte') && 
 						<Route path='reporte/reporte-programa' element={<ReportePorProgramas/>}/>
@@ -482,10 +482,10 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/reporte-admin/reporte-utilidad-programa')&&
 						<Route path="reporte-admin/reporte-utilidad-programa" element={<ReporteUtilidadProgramas />} />
 					}
-					{
+					{/* {
 						sections.find(e=>e.url==='/trabajo-marketing') &&
 						<Route path='trabajo-marketing' element={<MarketingAgenda/>}/>
-					}
+					} */}
 					{
 						sections.find(e=>e.url==='/reporte-admin/reporte-gerencial') &&
 						<Route path='reporte-admin/reporte-gerencial' element={<ReporteGerenciales/>}/>

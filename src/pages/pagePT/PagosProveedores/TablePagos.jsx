@@ -197,10 +197,10 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
             </th>
             <th style={{width: '140px'}}><div className="text-white text-center">Oficio</div></th>
             <th style={{width: '140px'}}><div className="text-white text-center">RUC / DNI</div></th>
-            <th style={{width: '40px'}} className="text-center"><div className="text-white">CONTRATOS <br /> PENDIENTES</div></th>
-            <th style={{width: '40px'}} className="text-center"><div className="text-white">MONTO <br /> CONTRATO</div></th>
-            <th style={{width: '40px'}} className="text-center"><div className="text-white">ABONOS</div></th>
-            <th style={{width: '40px'}} className="text-center"><div className="text-white">SALDO <br/> PENDIENTE</div></th>
+            <th className="text-center"><div className="text-white" style={{width: '150px'}}>CONTRATOS <br /> PENDIENTES</div></th>
+            <th className="text-center"><div className="text-white" style={{width: '150px'}}>MONTO <br /> CONTRATO</div></th>
+            <th className="text-center"><div className="text-white" style={{width: '150px'}}>ABONOS</div></th>
+            <th className="text-center"><div className="text-white" style={{width: '150px'}}>SALDO <br/> PENDIENTE</div></th>
           </tr>
         </thead>
         <tbody>

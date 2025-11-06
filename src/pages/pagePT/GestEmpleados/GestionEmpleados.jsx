@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
 import { SelectButton } from 'primereact/selectbutton';
 import { TableEmpleados } from './TableEmpleados';
+import { ColorEmpresa } from '@/components/ColorEmpresa';
 const EMPRESAS = [
   { label: 'CIRCUS', id: 599 },
   { label: 'CHANGE', id: 598 },
@@ -44,7 +45,30 @@ export const GestionEmpleados = ({id_activo}) => {
         <Col xs={12}>
           <Card>
             <Card.Body>
-              <Row className="mb-3 g-2 align-items-center">
+              <ColorEmpresa
+                childrenChange={
+                  <TableEmpleados
+                    id_empresa={598}
+                    id_estado={id_activo}
+                    isOpenButtonRegister={isOpenButtonRegister}
+                  />
+                }
+                childrenCircus={
+                  <TableEmpleados
+                    id_empresa={599}
+                    id_estado={id_activo}
+                    isOpenButtonRegister={isOpenButtonRegister}
+                  />
+                }
+                // childrenCircus={
+                //   <TableEmpleados
+                //     id_empresa={599}
+                //     id_estado={id_activo}
+                //     isOpenButtonRegister={isOpenButtonRegister}
+                //   />
+                // }
+              />
+              {/* <Row className="mb-3 g-2 align-items-center">
                 <Col sm={12} md="auto">
                   <SelectButton
                     value={empresa}
@@ -54,13 +78,9 @@ export const GestionEmpleados = ({id_activo}) => {
                     multiple={false}
                   />
                 </Col>
-              </Row>
+              </Row> */}
 
-              <TableEmpleados
-                id_empresa={empresa.id}
-                id_estado={id_activo}
-                isOpenButtonRegister={isOpenButtonRegister}
-              />
+              
             </Card.Body>
           </Card>
         </Col>

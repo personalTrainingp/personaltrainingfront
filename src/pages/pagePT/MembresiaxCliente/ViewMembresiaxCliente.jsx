@@ -182,7 +182,7 @@ const removeVentaBodyTemplate = (rowData)=>{
               <Button className='m-0' onClick={()=>onClickPdfComprobante(rowData.id)} icon={'pi pi-trash fs-3'}> </Button>
             </Col>): (
               <div className='text-white fs-3'>
-              ELIMINADO
+              
               </div>
             )
             }
