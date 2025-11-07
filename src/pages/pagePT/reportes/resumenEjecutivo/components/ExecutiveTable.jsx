@@ -768,7 +768,7 @@ export default function ExecutiveTable({
           })}
         </tr>
 
-        {/* % ALCANCE DE CUOTA */}
+    
         <tr>
           <td
             style={{
@@ -776,26 +776,25 @@ export default function ExecutiveTable({
               background: cRed,
               color: "#fff",
               fontWeight: 800,
-              fontSize: 20,
+              fontSize: 19,
             }}
           >
-            % ALCANCE DE CUOTA
+            % RESTANTE PARA CUOTA
           </td>
           {perMonth.map((m, idx) => {
             const meta = metasPorMes[m.mes] || 0;
             const total = m.metrics?.totalMes || 0;
-            const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
-            const supera = alcancePct >= 100;
-            const color = supera ? " #007b00" : "#000";
-            const prefix = supera ? "+" : "";
+            const restantePct = meta > 0 ? Math.max(0, 100 - (total / meta) * 100) : 0;
+            const cumple = total >= meta;
+            const color = cumple ? "#007b00" : cRed;
+            const prefix = !cumple && restantePct > 0 ? "-" : "";
             return (
               <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
-                {prefix}{fmtNum(alcancePct, 2)} %
+              {prefix}  {fmtNum(restantePct, 2)} %
               </td>
             );
           })}
         </tr>
-
         {/* MONTO DE AVANCE DE CUOTA */}
         <tr>
           <td
@@ -846,7 +845,7 @@ export default function ExecutiveTable({
           })}
         </tr>
 
-        {/* % RESTANTE PARA CUOTA */}
+           {/* % ALCANCE DE CUOTA */}
         <tr>
           <td
             style={{
@@ -854,21 +853,21 @@ export default function ExecutiveTable({
               background: cRed,
               color: "#fff",
               fontWeight: 800,
-              fontSize: 19,
+              fontSize: 20,
             }}
           >
-            % RESTANTE PARA CUOTA
+            % ALCANCE DE CUOTA
           </td>
           {perMonth.map((m, idx) => {
             const meta = metasPorMes[m.mes] || 0;
             const total = m.metrics?.totalMes || 0;
-            const restantePct = meta > 0 ? Math.max(0, 100 - (total / meta) * 100) : 0;
-            const cumple = total >= meta;
-            const color = cumple ? "#007b00" : cRed;
-            const prefix = !cumple && restantePct > 0 ? "-" : "";
+            const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
+            const supera = alcancePct >= 100;
+            const color = supera ? " #007b00" : "#000";
+            const prefix = supera ? "+" : "";
             return (
               <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
-              {prefix}  {fmtNum(restantePct, 2)} %
+                {prefix}{fmtNum(alcancePct, 2)} %
               </td>
             );
           })}
