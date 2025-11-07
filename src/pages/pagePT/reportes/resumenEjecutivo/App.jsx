@@ -15,17 +15,11 @@
       import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
       import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
       import config from '@/config';
-      import axios from 'axios';
-      import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
+import PTApi from '@/common/PTApi';     
+ import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
       import { TopControls } from "./components/TopControls";
     
-const PTApi = axios.create({
-  baseURL:
-    config?.API_URL ||             
-    process.env.NEXT_PUBLIC_API_URL || 
-    process.env.REACT_APP_API_URL || 
-    'http://localhost:4000',         
-});
+
 
 export function limaFromISO(iso) {
   if (!iso) return null;
@@ -170,7 +164,7 @@ function buildMonkeyfitByMonth(reservas = [], initDay = 1, cutDay = 31) {
       useEffect(() => {
         const fetchProgramas = async () => {
           try {
-    const { data } = await PTApi.get('/api/programaTraining/get_tb_pgm');
+    const { data } = await PTApi.get('/programaTraining/get_tb_pgm');
             console.log("Programas desde backend:", data);
             setProgramas(data || []);
           } catch (err) {
@@ -203,7 +197,7 @@ useEffect(() => {
   (async () => {
     try {
       const { data } = await PTApi.get(
-        '/api/parametros/get_params/inversion/redes'
+        '/parametros/get_params/inversion/redes'
       );
       const mapped = (Array.isArray(data) ? data : []).map(d => ({
         id_param: d.value,
@@ -228,7 +222,7 @@ const [reservasMF, setReservasMF] = useState([]);
 useEffect(() => {
   (async () => {
     try {
-      const { data } = await PTApi.get('/api/reserva_monk_fit', {
+      const { data } = await PTApi.get('/reserva_monk_fit', {
         params: {
           limit: 2000,
           onlyActive: true,
