@@ -15,10 +15,11 @@
       import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
       import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
       import config from '@/config';
-      import axios from 'axios';
+      import PTApi from '@/common/api/PTApi';
       import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
       import { TopControls } from "./components/TopControls";
     
+
 
 export function limaFromISO(iso) {
   if (!iso) return null;
@@ -56,7 +57,6 @@ const toLimaDate = (s) => {
   return new Date(utc - 5 * 60 * 60000);
 };
 
-// Suma S/. de PROGRAMAS (membresías) por mes (respetando initDay/cutDay)
 function sumProgramRevenueForMonth(ventas = [], year, monthIdx, fromDay, toDay) {
   let total = 0;
   for (const v of ventas) {
@@ -82,7 +82,6 @@ function buildMonkeyfitByMonth(reservas = [], initDay = 1, cutDay = 31) {
   for (const r of reservas) {
     if (Number(r?.flag) === 0) continue;
 
-    // Si viene el objeto estado, considera solo completadas/pagadas/confirmadas
     const estado = (r?.estado?.label_param || "").toLowerCase();
     const estadoOk =
       !estado ||
@@ -162,18 +161,25 @@ function buildMonkeyfitByMonth(reservas = [], initDay = 1, cutDay = 31) {
 
         const [programas, setProgramas] = useState([]);
 
-      useEffect(() => {
-        const fetchProgramas = async () => {
-          try {
-            const { data } = await axios.get("http://localhost:4000/api/programaTraining/get_tb_pgm");
-            console.log("Programas desde backend:", data);
-            setProgramas(data || []);
-          } catch (err) {
-            console.error("Error obteniendo programas:", err);
-          }
-        };
-        fetchProgramas();
-      }, []);
+     useEffect(() => {
+  const fetchProgramas = async () => {
+    try {
+      // ✅ Debug aquí
+      console.log('URL programas =>',
+        PTApi.get({ url: '/programaTraining/get_tb_pgm' })
+      );
+
+      const { data } = await PTApi.get('/programaTraining/get_tb_pgm');
+
+      console.log("Programas desde backend:", data);
+      setProgramas(data || []);
+    } catch (err) {
+      console.error("Error obteniendo programas:", err);
+    }
+  };
+  fetchProgramas();
+}, []);
+
     const { obtenerComparativoResumen, dataGroup } = useReporteResumenComparativoStore();
 
     useEffect(() => {
@@ -197,40 +203,46 @@ const [canalParams, setCanalParams] = useState([
 useEffect(() => {
   (async () => {
     try {
-      const { data } = await axios.get(
-        "http://localhost:4000/api/parametros/get_params/inversion/redes"
+      const { data } = await PTApi.get(
+        '/parametros/get_params/inversion/redes'
       );
       const mapped = (Array.isArray(data) ? data : []).map(d => ({
-        id_param: (d.value),
-        label_param: (d.label),
-
+        id_param: d.value,
+        label_param: d.label,
       }));
-
       setCanalParams(mapped);
     } catch (e) {
-      console.warn("No se pudieron cargar canalParams, uso fallback 1514/1515:", e?.message);
+      console.warn(
+        'No se pudieron cargar canalParams, uso fallback 1514/1515:',
+        e?.message
+      );
       setCanalParams([
-        { id_param: "1514", label_param: "TIKTOK ADS" },
-        { id_param: "1515", label_param: "META ADS"  },
+        { id_param: '1514', label_param: 'TIKTOK ADS' },
+        { id_param: '1515', label_param: 'META ADS' },
       ]);
     }
   })();
 }, []);
+
 // === dentro de App ===
 const [reservasMF, setReservasMF] = useState([]);
 useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get(
-          "http://localhost:4000/api/reserva_monk_fit?limit=2000&onlyActive=true"
-        );
-        setReservasMF(Array.isArray(data?.rows) ? data.rows : []);
-        console.log("✅ reservasMF:", data.rows);
-      } catch (err) {
-        console.error("❌ Error obteniendo reservas MF:", err);
-      }
-    })();
-  }, []);
+  (async () => {
+    try {
+      const { data } = await PTApi.get('/reserva_monk_fit', {
+        params: {
+          limit: 2000,
+          onlyActive: true,
+        },
+      });
+      setReservasMF(Array.isArray(data?.rows) ? data.rows : []);
+      console.log('✅ reservasMF:', data.rows);
+    } catch (err) {
+      console.error('❌ Error obteniendo reservas MF:', err);
+    }
+  })();
+}, []);
+
 
 // En el rango de fechas activo:
 const ZERO_IDS = new Set([1443, 701,690]); // los que ya cuentas
@@ -878,31 +890,29 @@ const originMap = {
           />
         </div>
         <div style={{ marginBottom: "32px", marginTop: "80px" }}>
-         <ClientesPorOrigen
-          ventas={dataVentas} 
-          fechas={mesesSeleccionados}
-          initialDay={initDay}
-          cutDay={cutDay}
-          originMap={{
-          
-            703: "CANJE",   
-            701: "TRASPASO",
-
-           
-            1443: "CANJE",  
-            686: "Walking",
-            687: "Mail",
-            690: "REFERIDOS",
-            691: "CARTERA DE RENOVACION",
-            692: "Cartera de reinscripcion",
-            693: "Instagram",
-            694: "Facebook",
-            695: "TikTok",
-            696: "EX-PT reinscripcion",
-            689: "WSP organico",
-            1470: "CORPORATIVOS BBVA",
-          }}
-        />
+        <ClientesPorOrigen
+  ventas={dataVentas}
+  fechas={mesesSeleccionados}
+  initialDay={initDay}
+  cutDay={cutDay}
+  uniqueByClient={false}   // suma movimientos, no único por cliente
+  originMap={{
+    703: "CANJE",
+    701: "TRASPASO",
+    1443: "CANJE",
+    686: "Walking",
+    687: "Mail",
+    690: "REFERIDOS",
+    691: "CARTERA DE RENOVACION",
+    692: "Cartera de reinscripcion",
+    693: "Instagram",
+    694: "Facebook",
+    695: "TikTok",
+    696: "EX-PT reinscripcion",
+    689: "WSP organico",
+    1470: "CORPORATIVOS BBVA",
+  }}
+/>
         </div>
       </Col>
       {/* === COMPARATIVOS Y GRÁFICOS === */}

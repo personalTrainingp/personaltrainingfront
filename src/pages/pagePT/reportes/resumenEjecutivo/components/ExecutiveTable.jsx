@@ -865,9 +865,10 @@ export default function ExecutiveTable({
             const restantePct = meta > 0 ? Math.max(0, 100 - (total / meta) * 100) : 0;
             const cumple = total >= meta;
             const color = cumple ? "#007b00" : cRed;
+            const prefix = !cumple && restantePct > 0 ? "-" : "";
             return (
               <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
-                {fmtNum(restantePct, 2)} %
+              {prefix}  {fmtNum(restantePct, 2)} %
               </td>
             );
           })}

@@ -69,7 +69,7 @@ const getMembershipItems = (v) => {
 
 const hasPaidMembership = (v) =>
   getMembershipItems(v).some(
-    (it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total)
+    (it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total) > 0
   );
 
 export const ClientesPorOrigen = ({
@@ -120,7 +120,7 @@ export const ClientesPorOrigen = ({
       const keyMes = `${d.getFullYear()}-${mes}`;
       if (!base.has(keyMes)) continue;
 
-      if (!hasPaidMembership(v)) continue;
+      //if (!hasPaidMembership(v)) continue;
 
       const originId = getOriginId(v);
       const clientId = getClientId(v);
@@ -216,21 +216,6 @@ const pctColByOrigin = useMemo(() => {
   sortedOrigins.forEach((o, i) => (out[o] = percs[i]));
   return out;
 }, [sortedOrigins, lastMonthCounts]);
-  // Totales globales para % del total (fila TOTAL)
-  const totalGlobal = useMemo(
-    () => sortedOrigins.reduce((acc, origin) => acc + (rowTotals[origin] || 0), 0),
-    [sortedOrigins, rowTotals]
-  );
-  const totalMesActualGlobal = useMemo(
-    () => (lastMonthKey ? sortedOrigins.reduce((acc, origin) => acc + (lastMonthCounts[origin] || 0), 0) : 0),
-    [sortedOrigins, lastMonthKey, lastMonthCounts]
-  );
-  const pctGlobal = useMemo(
-    () => (totalGlobal > 0 ? (totalMesActualGlobal / totalGlobal) * 100 : 0),
-    [totalGlobal, totalMesActualGlobal]
-  );
-
-  /* === Estilos (igual a tu ra/fv) === */
   const C = { black: "#000", red: "#c00000", white: "#fff", border: "1px solid #333" };
   const sTitle = { background: C.black, color: C.white, textAlign: "center", padding: "25px 12px", fontWeight: 700, fontSize: 25 };
   const sTable = { width: "100%", borderCollapse: "collapse", tableLayout: "fixed" };
