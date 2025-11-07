@@ -164,7 +164,6 @@ function buildMonkeyfitByMonth(reservas = [], initDay = 1, cutDay = 31) {
      useEffect(() => {
   const fetchProgramas = async () => {
     try {
-      // ✅ Debug aquí
       console.log('URL programas =>',
         PTApi.get({ url: '/programaTraining/get_tb_pgm' })
       );
