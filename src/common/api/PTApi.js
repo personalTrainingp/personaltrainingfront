@@ -7,7 +7,7 @@ const PTApi = axios.create({
 	baseURL: API_URL,
 });
 console.log('api para usarse', API_URL);
-// Todo: configurar interceptores
+console.log('PTApi baseURL =>', PTApi.defaults.baseURL);
 PTApi.interceptors.request.use((config) => {
 	config.headers = {
 		...config.headers,

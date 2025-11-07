@@ -15,7 +15,7 @@
       import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
       import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
       import config from '@/config';
-import PTApi from '@/common/PTApi';     
+import PTApi from '@/common/api/PTApi';
  import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
       import { TopControls } from "./components/TopControls";
     
@@ -161,18 +161,25 @@ function buildMonkeyfitByMonth(reservas = [], initDay = 1, cutDay = 31) {
 
         const [programas, setProgramas] = useState([]);
 
-      useEffect(() => {
-        const fetchProgramas = async () => {
-          try {
-    const { data } = await PTApi.get('/programaTraining/get_tb_pgm');
-            console.log("Programas desde backend:", data);
-            setProgramas(data || []);
-          } catch (err) {
-            console.error("Error obteniendo programas:", err);
-          }
-        };
-        fetchProgramas();
-      }, []);
+     useEffect(() => {
+  const fetchProgramas = async () => {
+    try {
+      // ✅ Debug aquí
+      console.log('URL programas =>',
+        PTApi.get({ url: '/programaTraining/get_tb_pgm' })
+      );
+
+      const { data } = await PTApi.get('/programaTraining/get_tb_pgm');
+
+      console.log("Programas desde backend:", data);
+      setProgramas(data || []);
+    } catch (err) {
+      console.error("Error obteniendo programas:", err);
+    }
+  };
+  fetchProgramas();
+}, []);
+
     const { obtenerComparativoResumen, dataGroup } = useReporteResumenComparativoStore();
 
     useEffect(() => {
