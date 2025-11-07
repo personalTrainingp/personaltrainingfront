@@ -15,8 +15,8 @@
       import {SumaDeSesiones} from '../totalVentas/SumaDeSesiones';
       import { useReporteResumenComparativoStore } from "../resumenComparativo/useReporteResumenComparativoStore";
       import config from '@/config';
-import PTApi from '@/common/api/PTApi';
- import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
+      import PTApi from '@/common/api/PTApi';
+      import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
       import { TopControls } from "./components/TopControls";
     
 
@@ -890,31 +890,29 @@ const originMap = {
           />
         </div>
         <div style={{ marginBottom: "32px", marginTop: "80px" }}>
-         <ClientesPorOrigen
-          ventas={dataVentas} 
-          fechas={mesesSeleccionados}
-          initialDay={initDay}
-          cutDay={cutDay}
-          originMap={{
-          
-            703: "CANJE",   
-            701: "TRASPASO",
-
-           
-            1443: "CANJE",  
-            686: "Walking",
-            687: "Mail",
-            690: "REFERIDOS",
-            691: "CARTERA DE RENOVACION",
-            692: "Cartera de reinscripcion",
-            693: "Instagram",
-            694: "Facebook",
-            695: "TikTok",
-            696: "EX-PT reinscripcion",
-            689: "WSP organico",
-            1470: "CORPORATIVOS BBVA",
-          }}
-        />
+        <ClientesPorOrigen
+  ventas={dataVentas}
+  fechas={mesesSeleccionados}
+  initialDay={initDay}
+  cutDay={cutDay}
+  uniqueByClient={false}   // suma movimientos, no único por cliente
+  originMap={{
+    703: "CANJE",
+    701: "TRASPASO",
+    1443: "CANJE",
+    686: "Walking",
+    687: "Mail",
+    690: "REFERIDOS",
+    691: "CARTERA DE RENOVACION",
+    692: "Cartera de reinscripcion",
+    693: "Instagram",
+    694: "Facebook",
+    695: "TikTok",
+    696: "EX-PT reinscripcion",
+    689: "WSP organico",
+    1470: "CORPORATIVOS BBVA",
+  }}
+/>
         </div>
       </Col>
       {/* === COMPARATIVOS Y GRÁFICOS === */}
