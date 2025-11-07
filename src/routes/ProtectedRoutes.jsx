@@ -98,6 +98,10 @@ const HorariosColaboradores = lazy(()=>import('../pages/pagePT/HorariosColaborad
 const CuentasPorPagar = lazy(() => import('../pages/pagePT/PagosProveedores/Index.jsx'));
 const ClienteMFPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/ClienteMFPage'))
 const GestionFeriados = lazy(()=>import('../pages/pagePT/GestionFeriados/index.jsx'))
+const GestionPermisos = lazy(()=>import('../pages/pagePT/GestionPermisos/index.jsx'))
+const GestionTardanzas = lazy(()=>import('../pages/pagePT/GestionTardanzas/index.jsx'))
+const GestionHorasExtras = lazy(()=>import('../pages/pagePT/GestionHorasExtras/index.jsx'))
+const GestionSalidasTempranas = lazy(()=>import('../pages/pagePT/GestionSalidasTempranas/index.jsx'))
 /**
  * routes import
  */
@@ -140,6 +144,26 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad cuentas-pagar*/}
+					{
+						sections.find(e=>e.url==='/salidas-tempranas') &&
+						<Route path='salidas-tempranas' element={<GestionSalidasTempranas/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/horas-extras') &&
+						<Route path='horas-extras' element={<GestionHorasExtras/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/gestion-tardanzas') &&
+						<Route path='gestion-tardanzas' element={<GestionTardanzas/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/gestion-permisos') &&
+						<Route path='gestion-permisos' element={<GestionPermisos/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/gestion-asistencia') &&
+						<Route path='gestion-asistencia' element={<GestionFeriados/>}/>
+					}
 					{
 						sections.find(e=>e.url==='/gest-feriados') &&
 						<Route path='gest-feriados' element={<GestionFeriados/>}/>
