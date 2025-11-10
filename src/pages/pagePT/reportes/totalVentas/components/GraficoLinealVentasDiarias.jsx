@@ -114,7 +114,6 @@ const getAsesor = (v) => {
   return norm((full.split(/\s+/)[0] || "").trim());
 };
 
-/* ===== Componente: gráfico lineal basado en VentasDiarias ===== */
 
 export const GraficoLinealVentasDiarias = ({
   ventas = [],
@@ -266,7 +265,7 @@ export const GraficoLinealVentasDiarias = ({
           rotateAlways: true,
           hideOverlappingLabels: false,
           trim: false,
-          style: { fontSize: "11px" },
+          style: { fontSize: "19px" },
           offsetY: 6,
           minHeight: 70,
           maxHeight: 90,
@@ -286,7 +285,7 @@ export const GraficoLinealVentasDiarias = ({
       legend: {
         position: "top",
         horizontalAlign: "center",
-        fontSize: "11px",
+        fontSize: "19px",
       },
       tooltip: {
         shared: true,
@@ -348,7 +347,7 @@ export const GraficoLinealVentasDiarias = ({
           justifyContent: "center",
           marginBottom: 6,
           flexWrap: "wrap",
-          fontSize: 13,
+          fontSize: 19,
         }}
       >
         <button
@@ -386,7 +385,7 @@ export const GraficoLinealVentasDiarias = ({
       <div
         style={{
           marginTop: 4,
-          fontSize: 10,
+          fontSize: 20,
           textAlign: "center",
           opacity: 0.7,
         }}
