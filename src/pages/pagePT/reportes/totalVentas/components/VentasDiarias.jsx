@@ -173,7 +173,8 @@ export default function VentasDiarias({
           })()}
             </td>
         <td style={{ border:"1px solid #000", padding:"6px 10px", fontWeight:800,fontSize:18 }}>
-          {a}  {isSocios ? "SOCIOS" : "VENTAS"}
+          {a}  <br />
+  {isSocios ? "SOCIOS" : "VENTAS"}
         </td>
 
         {days.map((d) => (
@@ -266,8 +267,7 @@ const tituloMes = `${new Date(year, month - 1)
               AVATAR
             </th>
                <th style={{ border:"1px solid #000", padding:"8px 10px", background:"#c00000" ,fontSize:20}}>
-              ASESOR / CONCEPTO
-            </th>
+ASESOR            </th>
             {labels.map((lab, i) => (
               <th key={i} style={{ border:"1px solid #000", padding:"8px 10px" ,fontSize:20,textAlign:"center"}}>{lab}</th>
             ))}
@@ -302,7 +302,7 @@ const tituloMes = `${new Date(year, month - 1)
     <tr style={{ background: "#f6f6f6", fontWeight: 800 }}>
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
       <td style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 20 }}>
-        TOTAL VENTA X DÍA
+         VENTA X DÍA
       </td>
 
       {days.map((d) => (
@@ -316,6 +316,7 @@ const tituloMes = `${new Date(year, month - 1)
             color: "#c00000",
           }}
         >
+          
           {fmtMoney(dayTotals.totMon[d] || 0)}
         </td>
       ))}
@@ -336,7 +337,7 @@ const tituloMes = `${new Date(year, month - 1)
     <tr style={{ background: "#f6f6f6", fontWeight: 800 }}>
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
       <td style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 20 }}>
-        TOTAL SOCIOS X DÍA
+         SOCIOS X DÍA
       </td>
 
       {days.map((d) => (

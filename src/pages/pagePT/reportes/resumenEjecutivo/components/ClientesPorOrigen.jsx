@@ -20,8 +20,9 @@ const toLimaDate = (iso) => {
     return null;
   }
 };
+
 const distPercentsTo100 = (counts = []) => {
- const total = counts.reduce((a, b) => a + (Number(b) || 0), 0);
+  const total = counts.reduce((a, b) => a + (Number(b) || 0), 0);
   if (!total) return counts.map(() => 0);
   return counts.map((c) => (c / total) * 100);
 };
@@ -30,24 +31,6 @@ const labelOfOrigin = (id, originMap) => {
   const k = String(id ?? "0");
   return String(originMap?.[k] || originMap?.[Number(k)] || k).toUpperCase();
 };
-
-
-const getOriginId = (v) => {
-  const tipoFactura = v?.id_tipoFactura ?? v?.tb_ventum?.id_tipoFactura;
-  
-  // Si es Canje o Traspaso (basado en factura), usa ese ID primero.
-  if (tipoFactura === 703) return 703; // Canje
-  if (tipoFactura === 701) return 701; // Traspaso
-
-  // Si no, usa la lógica de "origen" normal.
-  return v?.id_origen ??
-    v?.tb_ventum?.id_origen ??
-    v?.origen ??
-    v?.source ??
-    v?.parametro_origen?.id_param ??
-    v?.id_origen_param ??
-    null;
-}
 
 const getClientId = (v) =>
   v?.id_cli ??
@@ -71,6 +54,30 @@ const hasPaidMembership = (v) =>
   getMembershipItems(v).some(
     (it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total) > 0
   );
+
+// --- LÓGICA DE ORIGEN MODIFICADA ---
+const getOriginId = (v) => {
+  const tipoFactura = v?.id_tipoFactura ?? v?.tb_ventum?.id_tipoFactura;
+  
+  // 1. Si es Canje o Traspaso (basado en factura), usa ese ID primero.
+  if (tipoFactura === 703) return 703; // Canje
+  if (tipoFactura === 701) return 701; // Traspaso
+
+  // 2. NUEVO: Si no tiene pago (monto 0), forzarlo a Canje (ID 703).
+  if (!hasPaidMembership(v)) {
+    return 703; // Forzar a Canje
+  }
+
+  // 3. Si no, usa la lógica de "origen" normal.
+  return v?.id_origen ??
+    v?.tb_ventum?.id_origen ??
+    v?.origen ??
+    v?.source ??
+    v?.parametro_origen?.id_param ??
+    v?.id_origen_param ??
+    null;
+}
+
 
 export const ClientesPorOrigen = ({
   ventas = [],
@@ -104,7 +111,7 @@ export const ClientesPorOrigen = ({
   }, [monthKeys]);
 
   const uniqueTriples = useMemo(() => {
-    const seen = new Set();           // mk|originId|clientId
+    const seen = new Set(); // mk|originId|clientId
     const out = [];
     for (const v of ventas || []) {
       const d = toLimaDate(v?.fecha_venta || v?.fecha || v?.createdAt);
@@ -120,14 +127,16 @@ export const ClientesPorOrigen = ({
       const keyMes = `${d.getFullYear()}-${mes}`;
       if (!base.has(keyMes)) continue;
 
-      //if (!hasPaidMembership(v)) continue;
+      // --- FILTRO ELIMINADO ---
+      // Ya no descartamos ventas con monto 0, ahora las reclasificamos en getOriginId
+      // if (!hasPaidMembership(v)) continue; 
 
-      const originId = getOriginId(v);
+      const originId = getOriginId(v); // getOriginId ahora maneja el monto 0
       const clientId = getClientId(v);
       if (originId == null || clientId == null || clientId === "") continue;
 
       const tuple = `${keyMes}|${originId}|${clientId}`;
-      if (seen.has(tuple)) continue;   // evita inflar por joins
+      if (seen.has(tuple)) continue; // evita inflar por joins
       seen.add(tuple);
 
       out.push({ keyMes, originId: String(originId), clientId: String(clientId) });
@@ -152,7 +161,12 @@ export const ClientesPorOrigen = ({
     const all = new Set();
     for (const m of matrix.values()) for (const o of m.keys()) all.add(o);
     Object.values(originMap || {}).forEach((name) => all.add(String(name).toUpperCase()));
-    const arr = Array.from(all);
+    
+    // FILTRO 1: Excluir "CORPORATIVOS BBVA"
+    const arr = Array.from(all).filter(
+      (label) => label !== "CORPORATIVOS BBVA"
+    );
+
     const prefer = Object.values(originMap || {}).map((n) => String(n).toUpperCase());
     arr.sort((a, b) => {
       const ia = prefer.indexOf(a), ib = prefer.indexOf(b);
@@ -195,13 +209,16 @@ export const ClientesPorOrigen = ({
   }, [matrix, monthKeys]);
 
 
-
   const sortedOrigins = useMemo(() => {
-    const meta = orderedOrigins.map((label) => {
-      const last = lastMonthKey ? (lastMonthCounts[label] || 0) : 0;
-      const total = rowTotals[label] || 0;
-      return { label, last, total };
-    });
+    // FILTRO 2: Excluir filas donde el total sea 0
+    const meta = orderedOrigins
+      .map((label) => {
+        const last = lastMonthKey ? (lastMonthCounts[label] || 0) : 0;
+        const total = rowTotals[label] || 0;
+        return { label, last, total };
+      })
+      .filter((item) => item.total > 0); // <-- FILTRO AÑADIDO
+
     meta.sort((a, b) => {
       if (b.last !== a.last) return b.last - a.last;
       if (b.total !== a.total) return b.total - a.total;
@@ -209,13 +226,15 @@ export const ClientesPorOrigen = ({
     });
     return meta.map((x) => x.label);
   }, [orderedOrigins, lastMonthKey, lastMonthCounts, rowTotals]);
-const pctColByOrigin = useMemo(() => {
-  const counts = sortedOrigins.map((o) => Number(lastMonthCounts[o] || 0));
-  const percs = distPercentsTo100(counts); // enteros suman 100
-  const out = {};
-  sortedOrigins.forEach((o, i) => (out[o] = percs[i]));
-  return out;
-}, [sortedOrigins, lastMonthCounts]);
+
+  const pctColByOrigin = useMemo(() => {
+    const counts = sortedOrigins.map((o) => Number(lastMonthCounts[o] || 0));
+    const percs = distPercentsTo100(counts); // enteros suman 100
+    const out = {};
+    sortedOrigins.forEach((o, i) => (out[o] = percs[i]));
+    return out;
+  }, [sortedOrigins, lastMonthCounts]);
+
   const C = { black: "#000", red: "#c00000", white: "#fff", border: "1px solid #333" };
   const sTitle = { background: C.black, color: C.white, textAlign: "center", padding: "25px 12px", fontWeight: 700, fontSize: 25 };
   const sTable = { width: "100%", borderCollapse: "collapse", tableLayout: "fixed" };
@@ -290,14 +309,13 @@ const pctColByOrigin = useMemo(() => {
                 })}
 
                 {/* Celda de % por canal */}
-             <td
-  key={`${origin}-pct`}
-  style={{ ...sCell, fontWeight: 800 }}
-  title={`Mes actual: ${lastMonthCounts[origin] || 0} de un total mes actual ${sortedOrigins.reduce((a,o)=>a+(lastMonthCounts[o]||0),0)}`}
->
-{`${(pctColByOrigin[origin] ?? 0).toFixed(2)} %`}
-</td>
-
+                <td
+                  key={`${origin}-pct`}
+                  style={{ ...sCell, fontWeight: 800 }}
+                  title={`Mes actual: ${lastMonthCounts[origin] || 0} de un total mes actual ${sortedOrigins.reduce((a,o)=>a+(lastMonthCounts[o]||0),0)}`}
+                >
+                  {`${(pctColByOrigin[origin] ?? 0).toFixed(2)} %`}
+                </td>
               </tr>
             );
           })}
@@ -327,13 +345,12 @@ const pctColByOrigin = useMemo(() => {
               );
             })}
             {/* % global: mes actual vs suma total */}
-         <td
-  key="total-pct"
-  style={{ ...sCell, background: C.red, color: "#fff", fontWeight: 800, textAlign: "center" }}
->
-  { (lastMonthKey ? (sortedOrigins.some(o => lastMonthCounts[o] > 0) ? "100 %" : "0 %") : "0 %") }
-</td>
-
+            <td
+              key="total-pct"
+              style={{ ...sCell, background: C.red, color: "#fff", fontWeight: 800, textAlign: "center" }}
+            >
+              { (lastMonthKey ? (sortedOrigins.some(o => lastMonthCounts[o] > 0) ? "100 %" : "0 %") : "0 %") }
+            </td>
           </tr>
 
           {/* === FILA DE MESES === */}
@@ -363,4 +380,4 @@ const pctColByOrigin = useMemo(() => {
       </table>
     </div>
   );
-};
+}

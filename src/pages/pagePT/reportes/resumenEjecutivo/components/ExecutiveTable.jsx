@@ -1,13 +1,10 @@
 import React from "react";
 
-
-
 const MESES = [
   "enero", "febrero", "marzo", "abril", "mayo", "junio",
   "julio", "agosto", "setiembre", "octubre", "noviembre", "diciembre",
 ];
 const aliasMes = (m) => (m === "septiembre" ? "setiembre" : m);
-
 const toLimaDate = (iso) => {
   if (!iso) return null;
   try {
@@ -18,7 +15,6 @@ const toLimaDate = (iso) => {
     return null;
   }
 };
-
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const fmtMoney = (n) =>
   new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN" })
@@ -26,37 +22,33 @@ const fmtMoney = (n) =>
 const fmtNum = (n, d = 0) =>
   new Intl.NumberFormat("es-PE", { minimumFractionDigits: d, maximumFractionDigits: d })
     .format(Number(n || 0));
-
 // === DETALLES ===
 const getDetalleProductos = (v) =>
   v?.detalle_ventaProductos ||
   v?.detalle_ventaproductos ||
   v?.detalle_venta_productos ||
   [];
-
 const getDetalleMembresias = (v) =>
   v?.detalle_ventaMembresia ||
   v?.detalle_venta_membresia ||
   v?.detalle_ventamembresia ||
   [];
-
 const getDetalleOtrosServicios = (v) =>
   v?.detalle_ventaservicios ||
   v?.detalle_ventaServicios ||
   v?.detalle_servicios ||
   v?.detalle_venta_servicios ||
   [];
-
 const ORIGIN_SYNONYMS = {
   tiktok: new Set(["1514", "695", "tiktok", "tik tok", "tik-tok"]),
   facebook: new Set(["694", "facebook", "fb"]),
   instagram: new Set(["693", "instagram", "ig"]),
   meta: new Set(["1515", "meta"]),
 };
-
 const canonicalKeyFromRaw = (originMap, raw) => {
   const rawStr = String(raw ?? "").trim();
-  const mapped = originMap?.[rawStr] ?? originMap?.[Number(rawStr)] ?? rawStr;
+  const mapped = originMap?.[rawStr] ??
+    originMap?.[Number(rawStr)] ?? rawStr;
   const low = String(mapped).trim().toLowerCase();
   for (const [key, set] of Object.entries(ORIGIN_SYNONYMS)) {
     if (set.has(low) || set.has(rawStr.toLowerCase()) || set.has(String(raw).toLowerCase())) {
@@ -94,12 +86,10 @@ export default function ExecutiveTable({
     const mesAlias = aliasMes(String(mesNombre).toLowerCase());
     const monthIdx = MESES.indexOf(mesAlias);
     if (monthIdx < 0) return null;
-
     // — al corte —
     let totalServ = 0, cantServ = 0;
     let totalProd = 0, cantProd = 0;
     let totalOtros = 0, cantOtros = 0;
-
     // — mes completo —
     let totalServFull = 0, cantServFull = 0;
     let totalProdFull = 0, cantProdFull = 0;
@@ -109,10 +99,8 @@ export default function ExecutiveTable({
     const byOriginFull = {};
     const byGroup = { meta: { label: "META", total: 0, cant: 0 }, tiktok: { label: "TIKTOK", total: 0, cant: 0 }, otros: { label: "OTROS", total: 0, cant: 0 } };
     const byGroupFull = { meta: { label: "META", total: 0, cant: 0 }, tiktok: { label: "TIKTOK", total: 0, cant: 0 }, otros: { label: "OTROS", total: 0, cant: 0 } };
-
     let metaServTotalCut = 0, metaServCantCut = 0;
     let metaServTotalFull = 0, metaServCantFull = 0;
-
     const addTo = (bucket, key, label, linea, cantidad) => {
       if (!bucket[key]) bucket[key] = { label, total: 0, cant: 0 };
       bucket[key].total += Number(linea || 0);
@@ -122,12 +110,10 @@ export default function ExecutiveTable({
     const from = clamp(Number(initialDay || 1), 1, 31);
     const lastDayMonth = new Date(Number(anio), monthIdx + 1, 0).getDate();
     const to = clamp(Number(cutDay || lastDayMonth), from, lastDayMonth);
-
     for (const v of ventas) {
       const d = toLimaDate(v?.fecha_venta || v?.fecha || v?.createdAt);
       if (!d) continue;
       if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
-
       const rawOrigin =
         v?.id_origen ??
         v?.parametro_origen?.id_param ??
@@ -137,17 +123,17 @@ export default function ExecutiveTable({
       const oKey = canonicalKeyFromRaw(originMap, rawOrigin);
       const oLabel = labelFromKey(oKey);
       const group = (oKey === "tiktok")
-        ? "tiktok"
+        ?
+        "tiktok"
         : (oKey === "facebook" || oKey === "instagram" || oKey === "meta")
-          ? "meta"
+          ?
+          "meta"
           : "otros";
-
       // === MES COMPLETO ===
       for (const s of getDetalleMembresias(v)) {
         const cantidad = Number(s?.cantidad || 1);
         const linea = Number(s?.tarifa_monto || 0);
         totalServFull += linea; cantServFull += cantidad;
-
         if (oKey !== "meta") {
           addTo(byOriginFull, oKey, oLabel, linea, cantidad);
         } else {
@@ -174,7 +160,6 @@ export default function ExecutiveTable({
           const cantidad = Number(s?.cantidad || 1);
           const linea = Number(s?.tarifa_monto || 0);
           totalServ += linea; cantServ += cantidad;
-
           if (oKey !== "meta") {
             addTo(byOrigin, oKey, oLabel, linea, cantidad);
           } else {
@@ -196,18 +181,20 @@ export default function ExecutiveTable({
       }
     }
 
-    const ticketServ = cantServ ? totalServ / cantServ : 0;
+    const ticketServ = cantServ ?
+      totalServ / cantServ : 0;
     const ticketProd = cantProd ? totalProd / cantProd : 0;
-    const ticketOtros = cantOtros ? totalOtros / cantOtros : 0;
+    const ticketOtros = cantOtros ?
+      totalOtros / cantOtros : 0;
 
     const key = `${anio}-${mesAlias}`;
     const mk = dataMktByMonth?.[key] ?? {};
-    const por_red = mk?.por_red ?? {};
+    const por_red = mk?.por_red ??
+    {};
     const val = (obj, k) => Number(obj?.[k] ?? 0);
 
     const rawFB = val(por_red, "facebook");
     const rawIG = val(por_red, "instagram");
-
     let fbShare = 0.5, igShare = 0.5;
     if ((rawFB + rawIG) > 0) {
       fbShare = rawFB / (rawFB + rawIG);
@@ -220,12 +207,11 @@ export default function ExecutiveTable({
     }
     if (metaServTotalFull > 0) {
       addTo(byOriginFull, "facebook", "FACEBOOK", metaServTotalFull * fbShare, metaServCantFull * fbShare);
-      addTo(byOriginFull, "instagram", "INSTAGRAM", metaServTotalFull * igShare, metaServCantFull * fbShare);
+      addTo(byOriginFull, "instagram", "INSTAGRAM", metaServTotalFull * igShare, metaServCantFull * igShare);
     }
 
     const rawMeta = val(por_red, "1515") + val(por_red, "meta") + rawFB + rawIG;
     const rawTikTok = val(por_red, "1514") + val(por_red, "tiktok") + val(por_red, "tik tok");
-
     const invTotalRaw = Number(mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0);
     let mkInvUSD = 0, mkInvMetaUSD = 0, mkInvTikTokUSD = 0;
     const sumRaw = rawMeta + rawTikTok;
@@ -254,14 +240,12 @@ export default function ExecutiveTable({
     const leads_por_red = mk?.leads_por_red ?? {};
     const clientes_por_red = mk?.clientes_por_red ?? {};
     const sumFrom = (obj, keys) => keys.reduce((a, k) => a + Number(obj?.[k] ?? 0), 0);
-
     const mkLeadsMeta = sumFrom(leads_por_red, ["1515", "meta", "facebook", "instagram"]);
     const mkLeadsTikTok = sumFrom(leads_por_red, ["1514", "tiktok", "tik tok"]);
     const mkLeads = mkLeadsMeta + mkLeadsTikTok;
 
     const clientesMeta = sumFrom(clientes_por_red, ["1515", "meta", "facebook", "instagram"]) || mkLeadsMeta;
     const clientesTikTok = sumFrom(clientes_por_red, ["1514", "tiktok", "tik tok"]) || mkLeadsTikTok;
-
     const safeDiv0 = (n, d) => (Number(d) > 0 ? Number(n) / Number(d) : 0);
     const mkCpl = safeDiv0(mkInv, mkLeads);
     const mkCplMeta = safeDiv0(mkInvMeta, mkLeadsMeta);
@@ -270,12 +254,10 @@ export default function ExecutiveTable({
     const mkCac = safeDiv0(mkInv, clientesDigitales);
     const mkCacMetaExact = safeDiv0(mkInvMeta, clientesMeta);
     const mkCacTikTokExact = safeDiv0(mkInvTikTok, clientesTikTok);
-
     // === MONKEYFIT (TOTAL y POR PROGRAMA) ===
     let ventaMF = 0, cantMF = 0;
     let ventaMFFull = 0, cantMFFull = 0;
     const mfByProg = {};
-
     for (const r of reservasMF) {
       if (!r?.flag) continue;
 
@@ -290,7 +272,6 @@ export default function ExecutiveTable({
 
       const monto = Number(r?.monto_total || 0);
       const pgmId = String(r?.id_pgm || "SIN_PGM");
-
       if (!mfByProg[pgmId]) {
         mfByProg[pgmId] = { venta: 0, cant: 0, ventaFull: 0, cantFull: 0 };
       }
@@ -311,13 +292,14 @@ export default function ExecutiveTable({
       }
     }
 
-    const ticketMF = cantMF ? ventaMF / cantMF : 0;
+    const ticketMF = cantMF ?
+      ventaMF / cantMF : 0;
     const ticketMFFull = cantMFFull ? ventaMFFull / cantMFFull : 0;
 
-    const ticketMeta = byGroup.meta.cant ? byGroup.meta.total / byGroup.meta.cant : 0;
+    const ticketMeta = byGroup.meta.cant ?
+      byGroup.meta.total / byGroup.meta.cant : 0;
     const ticketTikTok = byGroup.tiktok.cant ? byGroup.tiktok.total / byGroup.tiktok.cant : 0;
     const sharePct = (x) => (totalServ > 0 ? (x / totalServ) * 100 : 0);
-
     return {
       mkInv, mkInvMeta, mkInvTikTok,
       mkLeads, mkLeadsMeta, mkLeadsTikTok,
@@ -332,7 +314,8 @@ export default function ExecutiveTable({
       totalServMeta: byGroup.meta.total,
       cantServMeta: byGroup.meta.cant,
       ticketServMeta: ticketMeta,
-      pctServMeta: sharePct(byGroup.meta.total),
+      pctServMeta:
+        sharePct(byGroup.meta.total),
 
       totalServTikTok: byGroup.tiktok.total,
       cantServTikTok: byGroup.tiktok.cant,
@@ -341,13 +324,16 @@ export default function ExecutiveTable({
 
       totalServFull,
       cantServFull,
-      ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
+      ticketServFull: cantServFull ?
+        totalServFull / cantServFull : 0,
       totalProdFull,
       cantProdFull,
-      ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
+      ticketProdFull: cantProdFull ?
+        totalProdFull / cantProdFull : 0,
       totalOtrosFull,
       cantOtrosFull,
-      ticketOtrosFull: cantOtrosFull ? totalOtrosFull / cantOtrosFull : 0,
+      ticketOtrosFull: cantOtrosFull ?
+        totalOtrosFull / cantOtrosFull : 0,
       totalMesFull: totalServFull + totalProdFull + totalOtrosFull + ventaMFFull,
 
       // Monkeyfit (total)
@@ -368,7 +354,7 @@ export default function ExecutiveTable({
 
   // === Config de orden ===
   const usePerOriginMonthOrder = true;
-  const rankMetric = "cant"; // 'cant' o 'total'
+  // const rankMetric = "cant"; // Ya no se usa
 
   const perMonth = fechas.map((f) => ({
     label: String(f?.label || "").toUpperCase(),
@@ -377,16 +363,11 @@ export default function ExecutiveTable({
     metrics: computeMetricsForMonth(f?.anio, f?.mes),
   }));
 
-  // =================================================================
-  // ¡CAMBIO 1!
-  // Esta función ahora sabe cómo leer la data de "monkeyfit" y "pgmId"
-  // =================================================================
   const valueForOriginMonth = (okey, m) => {
     // 1. Si la clave es "monkeyfit" (TOTAL), busca en métricas principales
     if (okey === "monkeyfit") {
-      const val = (rankMetric === 'total')
-        ? m?.metrics?.venta_monkeyfit
-        : m?.metrics?.cantidad_reservas_monkeyfit; // <-- Usará "cantidad" para ordenar
+      // Usa 'cant' como métrica principal para ordenar columnas
+      const val = m?.metrics?.cantidad_reservas_monkeyfit; 
       return Number(val || 0);
     }
 
@@ -394,61 +375,52 @@ export default function ExecutiveTable({
     if (!isNaN(Number(okey))) {
       const mf = m.metrics?.mfByProg?.[okey];
       if (!mf) return -1;
-      const val = (rankMetric === 'total')
-        ? mf.venta
-        : mf.cant; // <-- Usará "cantidad" para ordenar
+      const val = mf.cant; // Usa 'cant'
       return Number(val || 0);
     }
     
     // 3. Si no, es un origen normal (ej. "tiktok")
     const o = m?.metrics?.byOrigin?.[okey];
-    if (!o) return -1;  
-    return rankMetric === 'total' ? Number(o.total || 0) : Number(o.cant || 0);
+    if (!o) return -1;  
+    return Number(o.cant || 0); // Usa 'cant'
   };
-
-
+  
   const monthOrderForOrigin = (okey) => {
     if (!usePerOriginMonthOrder) return perMonth;
-    const list = perMonth.map((m, idx) => ({ m, idx, val: valueForOriginMonth(okey, m) }));
-    const hasSignal = list.some(x => x.val > 0);
-    if (!hasSignal) return perMonth;
+
+    // 1. Separar el mes actual (el último) de los meses anteriores.
+    if (perMonth.length === 0) return [];
+    const lastMonth = perMonth[perMonth.length - 1];
+    const otherMonths = perMonth.slice(0, perMonth.length - 1);
+
+    // 2. Crear la lista de meses anteriores con su valor para ordenar
+    const list = otherMonths.map((m, idx) => ({ m, idx, val: valueForOriginMonth(okey, m) }));
+    
+    // 3. Comprobar si hay datos para ordenar
+    const hasSignal = list.some(x => x.val > 0) || valueForOriginMonth(okey, lastMonth) > 0;
+    if (!hasSignal) return perMonth; // Si no hay datos, devolver el orden original
+
+    // 4. Ordenar los meses anteriores de MENOR A MAYOR (a.val - b.val)
     list.sort((a, b) => (a.val - b.val) || (a.idx - b.idx));
-    return list.map(x => x.m);
+
+    // 5. Devolver los meses anteriores ordenados + el mes actual al final
+    return [...list.map(x => x.m), lastMonth];
   };
 
-  const participationForMonth = (m, okey) => {
-    const totalServ = Number(m.metrics?.totalServ || 0);
-    const oTotal = Number(m.metrics?.byOrigin?.[okey]?.total || 0);
-    return totalServ > 0 ? (oTotal / totalServ) : 0;
-  };
-
-  const scoreOrigin = (okey) => {
-    const last = perMonth[perMonth.length - 1];
-    const lastScore = last ? participationForMonth(last, okey) : 0;
-    if (lastScore > 0) return lastScore;
-
-    const sumOrigin = perMonth.reduce(
-      (acc, m) => acc + Number(m.metrics?.byOrigin?.[okey]?.total || 0), 0
-    );
-    const sumBase = perMonth.reduce(
-      (acc, m) => acc + Number(m.metrics?.totalServ || 0), 0
-    );
-    return sumBase > 0 ? (sumOrigin / sumBase) : 0;
-  };
+  // Esta función ya no se usa, la lógica está en .sort()
+  // const scoreOrigin = (okey) => { ... };
 
   const originKeysAll = Array.from(
     new Set(perMonth.flatMap(m => Object.keys(m.metrics?.byOrigin || {})))
   )
     .filter(k => k !== "meta")
     .sort();
-
   const rowsPerOrigin = (okey) => ([
     { key: `o:${okey}:total`, label: `VENTA MEMBRESÍAS `, type: "money" },
     { key: `o:${okey}:cant`, label: `CANTIDAD MEMBRESÍAS`, type: "int" },
     { key: `o:${okey}:ticket`, label: `TICKET MEDIO `, type: "money" },
     { key: `o:${okey}:pct`, label: `% PARTICIPACIÓN `, type: "float2" },
   ]);
-
   // === MONKEYFIT POR PROGRAMA ===
   const PGM_LABEL = {
     2: "CHANGE 45",
@@ -461,40 +433,19 @@ export default function ExecutiveTable({
   const mfProgramKeys = Array.from(
     new Set(perMonth.flatMap(m => Object.keys(m.metrics?.mfByProg || {})))
   ).sort();
-
   const rowsMFByProg = (pgmId) => ([
-    { key: `mf:${pgmId}:venta`, label: "VENTA MONKEYFIT", type: "money" },
-    { key: `mf:${pgmId}:cant`, label: "CANTIDAD RESERVAS", type: "int" },
+    { key: `mf:${pgmId}:venta`, label: "VENTA ", type: "money" },
+    { key: `mf:${pgmId}:cant`, label: " RESERVAS", type: "int" },
     { key: `mf:${pgmId}:ticket`, label: "TICKET MEDIO", type: "money" },
-    { key: `mf:${pgmId}:ventaF`, label: "VENTA MONKEYFIT MES COMPLETO", type: "money" },
-    { key: `mf:${pgmId}:cantF`, label: "CANTIDAD RESERVAS MES COMPLETO", type: "int" },
+    { key: `mf:${pgmId}:ventaF`, label: "VENTA  MES COMPLETO", type: "money" },
+    { key: `mf:${pgmId}:cantF`, label: " RESERVAS MES COMPLETO", type: "int" },
     { key: `mf:${pgmId}:ticketF`, label: "TICKET MEDIO MES COMPLETO", type: "money" },
   ]);
-
-  const scoreMFProg = (pgmId) => {
-    const last = perMonth[perMonth.length - 1];
-    const lastVal = last
-      ? (rankMetric === "total"
-        ? Number(last.metrics?.mfByProg?.[pgmId]?.venta || 0)
-        : Number(last.metrics?.mfByProg?.[pgmId]?.cant || 0))
-      : 0;
-    if (lastVal > 0) return lastVal;
-
-    return perMonth.reduce((acc, m) => {
-      const mf = m.metrics?.mfByProg?.[pgmId];
-      const v = rankMetric === "total" ? Number(mf?.venta || 0) : Number(mf?.cant || 0);
-      return acc + v;
-    }, 0);
-  };
-
-  const orderedMFPrograms = [...mfProgramKeys].sort((a, b) => scoreMFProg(b) - scoreMFProg(a));
-
   // === estilos ===
   const cBlack = "#000000";
   const cWhite = "#ffffff";
   const cRed = "#c00000";
   const border = "1px solid #333";
-
   const sWrap = {
     fontFamily:
       "Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif",
@@ -542,13 +493,11 @@ export default function ExecutiveTable({
     color: cWhite,
     fontWeight: 800,
   };
-
   const metasPorMes = {
     enero: 50000, febrero: 50000, marzo: 50000, abril: 55000, mayo: 55000, junio: 60000,
     julio: 60000, agosto: 70000, setiembre: 75000, septiembre: 75000,
-    octubre: 85000, noviembre: 85000, diciembre: 85000,
+    octubre: 85000, noviembre: 90000, diciembre: 85000,
   };
-
   const TableHeadFor = ({ okey }) => {
     const months = monthOrderForOrigin(okey);
     return (
@@ -560,11 +509,11 @@ export default function ExecutiveTable({
               <div>{m.label}</div>
             </th>
           ))}
+  
         </tr>
       </thead>
     );
   };
-
   const renderRowsFor = (okey, rowsToRender) => {
     const months = monthOrderForOrigin(okey);
     return rowsToRender.map(r => (
@@ -576,6 +525,7 @@ export default function ExecutiveTable({
           let val = 0, isPct = false;
 
           if (okey === "monkeyfit") {
+            
             val = m.metrics?.[r.key] ?? 0;
 
           } else if (!isNaN(Number(okey))) {
@@ -583,43 +533,53 @@ export default function ExecutiveTable({
             const mf = m.metrics?.mfByProg?.[pgmId] || {};
             if (campo === "venta") val = mf.venta ?? 0;
             else if (campo === "cant") val = mf.cant ?? 0;
+      
             else if (campo === "ticket") val = mf.cant ? mf.venta / mf.cant : 0;
             else if (campo === "ventaF") val = mf.ventaFull ?? 0;
             else if (campo === "cantF") val = mf.cantFull ?? 0;
             else if (campo === "ticketF") val = mf.cantFull ? mf.ventaFull / mf.cantFull : 0;
 
           } else {
-            // 3. Clave es Origen (ej. "tiktok")
+  
+            // 3. Clave es Origen (ej.
+            // "tiktok")
             if (r.key.startsWith("o:")) {
               const [, _ok, campo] = r.key.split(":");
               const o = m.metrics?.byOrigin?.[_ok];
               if (campo === "total") val = o?.total ?? 0;
               else if (campo === "cant") val = o?.cant ?? 0;
-              else if (campo === "ticket") val = o?.cant ? o.total / o.cant : 0;
+              else if (campo === "ticket") val = o?.cant ?
+                o.total / o.cant : 0;
               else if (campo === "pct") {
-                const base = m.metrics?.totalServ || 0;
+                const base = m.metrics?.totalServ ||
+                  0;
                 val = base > 0 ? ((o?.total ?? 0) / base) * 100 : 0;
                 isPct = true;
               }
             } else {
-              val = m.metrics?.[r.key] ?? 0;
+              val = m.metrics?.[r.key] ??
+                0;
             }
           }
           // FIN DE LA MODIFICACIÓN
 
           const txt = isPct
-            ? `${fmtNum(val, 2)} %`
-            : r.type === "money" ? fmtMoney(val)
-              : r.type === "float2" ? fmtNum(val, 2)
+            ?
+            `${fmtNum(val, 2)} %`
+            : r.type === "money" ?
+              fmtMoney(val)
+              : r.type === "float2" ?
+                fmtNum(val, 2)
                 : fmtNum(val, 0);
-
-          const isBest = idx === months.length - 1;
+          const isBest = idx === months.length - 1; // El último mes ahora es el "seleccionado"
           return (
             <td
               key={`${okey}-c-${r.key}-${idx}`}
               style={{
                 ...sCell,
+                // Aplica estilo rojo a la última columna (mes seleccionado)
                 ...(isBest ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 28 } : {})
+      
               }}
             >
               {txt}
@@ -629,7 +589,6 @@ export default function ExecutiveTable({
       </tr>
     ));
   };
-
   // Esta función (renderRows) la usa la tabla de Marketing
   // La extendemos para que también entienda "mf:"
   const renderRows = (rowsToRender, makeLastBold = true) =>
@@ -640,7 +599,8 @@ export default function ExecutiveTable({
         </td>
 
         {perMonth.map((m, idx) => {
-          let val = 0;
+          let val 
+            = 0;
           let isPctCell = false;
 
           if (r.key.startsWith("o:")) {
@@ -648,10 +608,12 @@ export default function ExecutiveTable({
             const o = m.metrics?.byOrigin?.[okey];
             if (campo === "total") val = o?.total ?? 0;
             else if (campo === "cant") val = o?.cant ?? 0;
+ 
             else if (campo === "ticket") val = o?.cant ? o.total / o.cant : 0;
             else if (campo === "pct") {
               const base = m.metrics?.totalServ || 0;
               val = base > 0 ? ((o?.total ?? 0) / base) * 100 : 0;
+            
               isPctCell = true;
             }
           } else if (r.key.startsWith("mf:")) { // <-- AÑADIDO
@@ -659,20 +621,25 @@ export default function ExecutiveTable({
             const mf = m.metrics?.mfByProg?.[pgmId] || {};
             if (campo === "venta") val = mf.venta ?? 0;
             else if (campo === "cant") val = mf.cant ?? 0;
-            else if (campo === "ticket") val = mf.cant ? mf.venta / mf.cant : 0;
+            else if (campo === "ticket") val = mf.cant ?
+              mf.venta / mf.cant : 0;
             else if (campo === "ventaF") val = mf.ventaFull ?? 0;
             else if (campo === "cantF") val = mf.cantFull ?? 0;
-            else if (campo === "ticketF") val = mf.cantFull ? mf.ventaFull / mf.cantFull : 0;
+            else if (campo === "ticketF") val = mf.cantFull ?
+              mf.ventaFull / mf.cantFull : 0;
           } else {
-            val = m.metrics?.[r.key] ?? 0;
+            val = m.metrics?.[r.key] ??
+              0;
           }
 
           const txt = isPctCell
-            ? `${fmtNum(val, 2)} %`
-            : r.type === "money" ? fmtMoney(val)
-              : r.type === "float2" ? fmtNum(val, 2)
+            ?
+            `${fmtNum(val, 2)} %`
+            : r.type === "money" ?
+              fmtMoney(val)
+              : r.type === "float2" ?
+                fmtNum(val, 2)
                 : fmtNum(val, 0);
-
           const isLast = idx === perMonth.length - 1;
           return (
             <td
@@ -680,6 +647,7 @@ export default function ExecutiveTable({
               style={{
                 ...sCell,
                 ...(makeLastBold && isLast
+                 
                   ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 28 }
                   : {}),
               }}
@@ -690,7 +658,6 @@ export default function ExecutiveTable({
         })}
       </tr>
     ));
-  
   const TableHead = () => (
     <thead>
       <tr>
@@ -700,21 +667,21 @@ export default function ExecutiveTable({
           return (
             <th
               key={idx}
+     
               style={{
                 ...sThMes,
-                background: isLast ? "#000" : cBlack,
+                background: isLast ? "#000" : cBlack, // Mantenemos el fondo negro para el header
                 fontSize: isLast ? 23 : sThMes.fontSize,
               }}
             >
-              <div>{m.label}</div>
+       
+               <div>{m.label}</div>
             </th>
           );
         })}
       </tr>
     </thead>
   );
-
-
   const ResumenCuotaTable = () => (
     <table style={sTable}>
       <thead>
@@ -724,6 +691,7 @@ export default function ExecutiveTable({
               ...sThLeft,
               background: cBlack,
               color: "#fff",
+          
               fontSize: 20,
               textTransform: "uppercase",
             }}
@@ -732,201 +700,181 @@ export default function ExecutiveTable({
             <th
               key={idx}
               style={{
+     
                 ...sThMes,
                 background: cBlack,
                 color: "#fff",
                 fontSize: 24,
               }}
             >
+            
               {m.label}
             </th>
           ))}
         </tr>
       </thead>
 
-      <tbody>
-        {/* CUOTA DEL MES */}
-        <tr>
-          <td
-            style={{
-              ...sCellBold,
-              background: cRed,
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 20,
-            }}
-          >
-            CUOTA DEL MES
-          </td>
-          {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
-            return (
-              <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000" }}>
-                {fmtMoney(meta)}
-              </td>
-            );
-          })}
-        </tr>
+    <tbody>
+  {/* === 3. CUOTA DEL MES === */}
+  <tr>
+    <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
+      CUOTA DEL MES
+    </td>
+    {perMonth.map((m, idx) => {
+      const meta = metasPorMes[m.mes] || 0;
+      return (
+        <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000" }}>
+          {fmtMoney(meta)}
+        </td>
+      );
+    })}
+  </tr>
+<tr>
+    <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
+      MONTO RESTANTE DE CUOTA
+    </td>
+    {perMonth.map((m, idx) => {
+      const meta = metasPorMes[m.mes] || 0;
+      const total = m.metrics?.totalMes || 0;
+      const restante = meta - total; // positivo = déficit, negativo = superávit
+      const esSurplus = restante < 0;
+      const color = esSurplus ? "#007b00" : "#c00000";
+      const prefix = esSurplus ? "+" : "-";
+      const moneyStr = fmtNum(Math.abs(restante), 2);
+      return (
+        <td key={idx} style={{ ...sCellBold, fontWeight: 700, color }}>
+          {prefix} S/ {moneyStr}
+        </td>
+      );
+    })}
+  </tr>
+ <tr>
+    <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
+      % RESTANTE PARA CUOTA
+    </td>
+    {perMonth.map((m, idx) => {
+      const meta = metasPorMes[m.mes] || 0;
+      const total = m.metrics?.totalMes || 0;
+      const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
+      const restantePct = 100 - alcancePct;
+      const cumple = restantePct <= 0; // 0 o negativo = cumplido
+      const color = cumple ? "#007b00" : "#c00000";
+      const prefix = cumple ? "+" : "-";
+      const valAbs = Math.abs(restantePct);
+      return (
+        <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
+          {prefix} {fmtNum(valAbs, 2)} %
+        </td>
+      );
+    })}
+  </tr>
+  {/* === 4. MONTO DE AVANCE DE CUOTA === */}
+  <tr>
+    <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
+      MONTO DE AVANCE DE CUOTA
+    </td>
+    {perMonth.map((m, idx) => {
+      const meta = metasPorMes[m.mes] || 0;
+      const total = m.metrics?.totalMes || 0;
+      const avanceSoles = Math.min(meta, total);
+      return (
+        <td key={idx} style={{ ...sCellBold, fontWeight: 700 }}>
+           {fmtMoney(avanceSoles)}
+        </td>
+      );
+    })}
+  </tr>
+  
+<tr>
+    <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
+      % ALCANCE DE CUOTA
+    </td>
+    {perMonth.map((m, idx) => {
+      const meta = metasPorMes[m.mes] || 0;
+      const total = m.metrics?.totalMes || 0;
+      const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
+      const supera = alcancePct >= 100;
+      const color = supera ? "#007b00" : "#c00000";
+      const prefix = supera ? "+" : "-";
+      return (
+        <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
+          {prefix} {fmtNum(Math.abs(alcancePct), 2)} %
+        </td>
+      );
+    })}
+  </tr>
 
-        {/* % ALCANCE DE CUOTA */}
-        <tr>
-          <td
-            style={{
-              ...sCellBold,
-              background: cRed,
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 20,
-            }}
-          >
-            % ALCANCE DE CUOTA
-          </td>
-          {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
-            const total = m.metrics?.totalMes || 0;
-            const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
-            const supera = alcancePct >= 100;
-            const color = supera ? " #007b00" : "#000";
-            const prefix = supera ? "+" : "";
-            return (
-              <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
-                {prefix}{fmtNum(alcancePct, 2)} %
-              </td>
-            );
-          })}
-        </tr>
+  {/* === 7. % RESTANTE PARA CUOTA === */}
+ 
+<tr style={{ background: "#000", color: "#fff", fontWeight: 700 }}>
+    <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
+      {`VENTA TOTAL AL ${cutDay}`}
+    </td>
+    {perMonth.map((m, idx) => (
+      <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff" }}>
+        {fmtMoney(m.metrics?.totalMes || 0)}
+      </td>
+    ))}
+  </tr>
+   {/* === 2. VENTA TOTAL MES (FULL) === */}
+  <tr style={sRowRed}>
+    <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
+      VENTA TOTAL MES
+    </td>
+    {perMonth.map((m, idx) => (
+      <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
+        {fmtMoney(m.metrics?.totalMesFull || 0)}
+      </td>
+    ))}
+  </tr>
+</tbody>
 
-        {/* MONTO DE AVANCE DE CUOTA */}
-        <tr>
-          <td
-            style={{
-              ...sCellBold,
-              background: cRed,
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 20,
-            }}
-          >
-            MONTO DE AVANCE DE CUOTA
-          </td>
-          {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
-            const total = m.metrics?.totalMes || 0;
-            const avanceSoles = Math.min(meta, total);
-            return (
-              <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000", fontSize: 28 }}>
-                {fmtMoney(avanceSoles)}
-              </td>
-            );
-          })}
-        </tr>
-
-        {/* MONTO RESTANTE DE CUOTA */}
-        <tr>
-          <td
-            style={{
-              ...sCellBold,
-              background: cRed,
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 20,
-            }}
-          >
-            MONTO RESTANTE DE CUOTA
-          </td>
-          {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
-            const total = m.metrics?.totalMes || 0;
-            const restante = Math.max(meta - total, 0);
-            return (
-              <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000", fontSize: 28 }}>
-                {fmtMoney(restante)}
-              </td>
-            );
-          })}
-        </tr>
-
-        {/* % RESTANTE PARA CUOTA */}
-        <tr>
-          <td
-            style={{
-              ...sCellBold,
-              background: cRed,
-              color: "#fff",
-              fontWeight: 800,
-              fontSize: 19,
-            }}
-          >
-            % RESTANTE PARA CUOTA
-          </td>
-          {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
-            const total = m.metrics?.totalMes || 0;
-            const restantePct = meta > 0 ? Math.max(0, 100 - (total / meta) * 100) : 0;
-            const cumple = total >= meta;
-            const color = cumple ? "#007b00" : cRed;
-            const prefix = !cumple && restantePct > 0 ? "-" : "";
-            return (
-              <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
-              {prefix}  {fmtNum(restantePct, 2)} %
-              </td>
-            );
-          })}
-        </tr>
-
-        {/* VENTA TOTAL AL CORTE */}
-        <tr style={{ background: "#000", color: "#fff", fontWeight: 700 }}>
-          <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
-            {`VENTA TOTAL AL ${cutDay}`}
-          </td>
-          {perMonth.map((m, idx) => (
-            <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff" }}>
-              {fmtMoney(m.metrics?.totalMes || 0)}
-            </td>
-          ))}
-        </tr>
-
-        {/* VENTA TOTAL MES (FULL) */}
-        <tr style={sRowRed}>
-          <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
-            VENTA TOTAL MES
-          </td>
-          {perMonth.map((m, idx) => (
-            <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
-              {fmtMoney(m.metrics?.totalMesFull || 0)}
-            </td>
-          ))}
-        </tr>
-
-        {/* === FILA DE MESES AL FINAL === */}
-        <tr>
-          <td style={{ ...sCellBold, background: "#c00000", color: "#fff", fontWeight: 800 }}>
-            MESES
-          </td>
-          {perMonth.map((m, idx) => (
-            <td
-              key={`mes-${m.label}`}
-              style={{
-                background: "#c00000",
-                color: "#fff",
-                fontWeight: 800,
-                fontSize: 25,
-                textAlign: "center",
-                textTransform: "uppercase",
-              }}
-            >
-              {m.label}
-            </td>
-          ))}
-        </tr>
-      </tbody>
     </table>
   );
+  
+  const otherMonths = perMonth.slice(0, perMonth.length - 1);
+  const lastMonth = perMonth.length > 0 ? perMonth[perMonth.length - 1] : null;
 
   const orderedOrigins = [...originKeysAll].sort((a, b) => {
-    const diff = scoreOrigin(b) - scoreOrigin(a);
-    return Math.abs(diff) > 1e-9 ? diff : a.localeCompare(b);
+    const lastA = Number(lastMonth?.metrics?.byOrigin?.[a]?.cant || 0);
+    const lastB = Number(lastMonth?.metrics?.byOrigin?.[b]?.cant || 0);
+
+    if (lastA > lastB) return -1;
+    if (lastA < lastB) return 1;
+
+    const fallbackA = otherMonths.reduce((acc, m) => acc + Number(m.metrics?.byOrigin?.[a]?.cant || 0), 0);
+    const fallbackB = otherMonths.reduce((acc, m) => acc + Number(m.metrics?.byOrigin?.[b]?.cant || 0), 0);
+    
+    if (fallbackA > fallbackB) return -1;
+    if (fallbackA < fallbackB) return 1;
+
+    // 4. Desempate final: alfabético
+    return a.localeCompare(b);
   });
+  
+  const orderedMFPrograms = [...mfProgramKeys].sort((a, b) => {
+    // 1. Obtener puntaje del último mes (Cantidad)
+    const lastValA = lastMonth?.metrics?.mfByProg?.[a];
+    const lastValB = lastMonth?.metrics?.mfByProg?.[b];
+    const lastA = Number(lastValA?.cant || 0);
+    const lastB = Number(lastValB?.cant || 0);
+
+    // 2. Criterio principal: Ordenar por puntaje del último mes (descendente)
+    if (lastA > lastB) return -1;
+    if (lastA < lastB) return 1;
+
+    // 3. Criterio de desempate: Usar suma de meses anteriores (descendente)
+    const fallbackA = otherMonths.reduce((acc, m) => acc + Number(m.metrics?.mfByProg?.[a]?.cant || 0), 0);
+    const fallbackB = otherMonths.reduce((acc, m) => acc + Number(m.metrics?.mfByProg?.[b]?.cant || 0), 0);
+
+    if (fallbackA > fallbackB) return -1;
+    if (fallbackA < fallbackB) return 1;
+    
+    // 4. Desempate final: alfabético
+    return a.localeCompare(b);
+  });
+  // === FIN DEL CAMBIO ===
+
 
   return (
     <div style={sWrap}>
@@ -937,13 +885,15 @@ export default function ExecutiveTable({
         </div>
       ) : (
         orderedOrigins.map((okey) => {
-          const title = ` ${labelFromKey(okey)} `;
+          const 
+            title = ` ${labelFromKey(okey)} `;
           const rows = rowsPerOrigin(okey);
           return (
             <div key={okey} style={{ marginBottom: 24 }}>
               <div style={sHeader}>{title}</div>
               <table style={sTable}>
                 <TableHeadFor okey={okey} />
+       
                 <tbody>{renderRowsFor(okey, rows)}</tbody>
               </table>
             </div>
@@ -952,17 +902,19 @@ export default function ExecutiveTable({
       )}
 
       {/* === MONKEYFIT POR PROGRAMA === */}
-      <div style={{ ...sHeader }}>MONKEYFIT POR PROGRAMA</div>
+      <div className="bg-black" style={{ ...sHeader }}>MONKEYFIT POR PROGRAMA</div>
       {orderedMFPrograms.length === 0 ? (
+       
         <div style={{ ...sHeader, background: "#444" }}>
           SIN RESERVAS MONKEYFIT EN EL PERIODO
         </div>
       ) : (
         orderedMFPrograms.map((pgmId) => (
           <div key={`mf-${pgmId}`} style={{ marginBottom: 24 }}>
-            <div style={sHeader}>{`MONKEYFIT - ${labelPgm(pgmId)}`}</div>
+            <div style={sHeader}>{` ${labelPgm(pgmId)}`}</div>
             <table style={sTable}>
 
+          
               <TableHeadFor okey={pgmId} />
               <tbody>{renderRowsFor(pgmId, rowsMFByProg(pgmId))}</tbody>
             </table>
@@ -974,13 +926,14 @@ export default function ExecutiveTable({
       <table style={sTable}>
         <TableHeadFor okey="monkeyfit" />
         <tbody>
+        
           {renderRowsFor("monkeyfit", [
-            { key: "venta_monkeyfit", label: "VENTA MONKEYFIT AL CORTE", type: "money" },
-            { key: "cantidad_reservas_monkeyfit", label: "CANTIDAD RESERVAS MONKEYFIT AL CORTE", type: "int" },
-            { key: "ticket_medio_monkeyfit", label: "TICKET MEDIO MONKEYFIT AL CORTE", type: "money" },
-            { key: "venta_monkeyfit_full", label: "VENTA MONKEYFIT MES COMPLETO", type: "money" },
-            { key: "cantidad_reservas_monkeyfit_full", label: "CANTIDAD RESERVAS MONKEYFIT MES COMPLETO", type: "int" },
-            { key: "ticket_medio_monkeyfit_full", label: "TICKET MEDIO MONKEYFIT MES COMPLETO", type: "money" },
+            { key: "venta_monkeyfit", label: "VENTA  AL CORTE", type: "money" },
+            { key: "cantidad_reservas_monkeyfit", label: "CANTIDAD RESERVAS  AL CORTE", type: "int" },
+            { key: "ticket_medio_monkeyfit", label: "TICKET MEDIO  AL CORTE", type: "money" },
+            { key: "venta_monkeyfit_full", label: "VENTA  MES COMPLETO", type: "money" },       
+            { key: "cantidad_reservas_monkeyfit_full", label: "CANTIDAD RESERVAS  MES COMPLETO", type: "int" },
+            { key: "ticket_medio_monkeyfit_full", label: "TICKET MEDIO  MES COMPLETO", type: "money" },
           ])}
         </tbody>
       </table>
@@ -1014,34 +967,40 @@ export default function ExecutiveTable({
         DETALLE DE INVERSIÓN EN REDES VS RESULTADOS EN LEADS
       </div>
 
+   
       <table style={sTable}>
         <TableHead />
         <tbody>
           {[
             { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
             { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
-            { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META + TIKTOK", type: "float2" },
+            { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META + TIKTOK", 
+              type: "float2" },
             { key: "mkCac", label: "COSTO ADQUISICION DE CLIENTES", type: "float2" },
             { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
             { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
             { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
+            
             { key: "mkCacMeta", label: "COSTO ADQUISICION DE CLIENTES META", type: "float2" },
             { key: "mkInvTikTok", label: "Inversion TikTok", type: "money" },
             { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
             { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
             { key: "mkCacTikTok", label: "COSTO ADQUISICION CLIENTES TIKTOK", type: "float2" },
+   
           ].map((r, i) => (
             <tr
               key={r.key + r.label}
               style={{
                 borderBottom:
-                  (i + 1) % 4 === 0 ? "8px solid #000" : "1px solid #000",
+                  (i + 1) % 4 === 0 ?
+                    "8px solid #000" : "1px solid #000",
               }}
             >
               <td
                 style={{
                   ...sCellBold,
                   background: "#c00000",
+ 
                   color: "#fff",
                   fontWeight: 800,
                 }}
@@ -1049,29 +1008,35 @@ export default function ExecutiveTable({
                 {r.label}
               </td>
 
+   
               {perMonth.map((m, idx) => {
                 const val = m.metrics?.[r.key] ?? 0;
                 const txt =
                   r.type === "money"
                     ? fmtMoney(val)
+      
                     : r.type === "float2"
                       ? fmtNum(val, 2)
                       : fmtNum(val, 0);
                 const isLast = idx === perMonth.length - 1;
 
+            
                 return (
                   <td
                     key={idx}
                     style={{
                       ...sCell,
+               
                       ...(isLast
                         ? {
                           background: "#c00000",
                           color: "#fff",
+              
                           fontWeight: 700,
                           fontSize: 28,
                         }
                         : {}),
+           
                     }}
                   >
                     {txt}
@@ -1086,6 +1051,7 @@ export default function ExecutiveTable({
             <th
               style={{
                 ...sThLeft,
+         
                 background: "transparent",
                 color: cWhite,
               }}
@@ -1093,11 +1059,13 @@ export default function ExecutiveTable({
               VENTA TOTAL <br /> MES
             </th>
             {perMonth.map((m, idx) => (
+    
               <th
                 key={idx}
                 style={{
                   ...sThMes,
                   background: idx === perMonth.length - 1 ? "#c00000" : "transparent",
+             
                   color: "#fff",
                   fontSize: 28,
                 }}
@@ -1105,6 +1073,7 @@ export default function ExecutiveTable({
                 {fmtMoney(m.metrics?.totalMesFull || 0)}
               </th>
             ))}
+ 
           </tr>
 
           {/* === FILA DE MESES === */}
@@ -1113,6 +1082,7 @@ export default function ExecutiveTable({
               style={{
                 ...sCellBold,
                 background: "#c00000",
+      
                 color: "#fff",
                 fontWeight: 800,
                 fontSize: 24,
@@ -1121,17 +1091,20 @@ export default function ExecutiveTable({
               MESES
             </td>
 
+   
             {perMonth.map((m, idx) => (
               <td
                 key={`mes-${m.label}`}
                 style={{
                   background: "#c00000",
                   color: "#fff",
+    
                   fontWeight: 800,
                   fontSize: 25,
                   textAlign: "center",
                   textTransform: "uppercase",
                 }}
+            
               >
                 {m.label}
               </td>

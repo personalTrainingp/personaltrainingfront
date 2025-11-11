@@ -7,6 +7,9 @@
       import { PageBreadcrumb } from "@/components";
       import { ClientesPorOrigen } from "./components/ClientesPorOrigen";
       import { ComparativoVsActual } from "./components/ComparativoVsActual";
+      import RenovacionesPorVencer from "./components/RenovacionesPorVencer";
+      import RenovacionesPanel from "./components/RenovacionesPanel";
+      import VigentesTable from "./components/VigentesTable";
       import { buildDataMktByMonth } from "./adapters/buildDataMktByMonth";
       import { GraficoLinealInversionRedes } from "./components/GraficoLinealInversionRedes";
       import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
@@ -44,6 +47,25 @@ const parseBackendDate = (s) => {
   const d = new Date(normalized);
   return Number.isNaN(d.getTime()) ? null : d;
 };
+const parseDateOnly = (s) => {
+  if (!s) return null;
+  const m = String(s).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+}
+
+
+// helper ya que lo usas en varios lados
+function getFechaFin(m) {
+  return (
+    parseDateOnly(m?.fec_fin_mem) ||
+    parseDateOnly(m?.fec_fin_mem_oftime) ||
+    parseDateOnly(m?.fec_fin_mem_viejo) ||
+    null
+  );
+}
+
+
 const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= end);
 
   // === arriba de tu componente App ===
@@ -164,11 +186,7 @@ function buildMonkeyfitByMonth(reservas = [], initDay = 1, cutDay = 31) {
      useEffect(() => {
   const fetchProgramas = async () => {
     try {
-      // ✅ Debug aquí
-      console.log('URL programas =>',
-        PTApi.get({ url: '/programaTraining/get_tb_pgm' })
-      );
-
+    
       const { data } = await PTApi.get('/programaTraining/get_tb_pgm');
 
       console.log("Programas desde backend:", data);
@@ -243,14 +261,79 @@ useEffect(() => {
   })();
 }, []);
 
+const allMembresias = useMemo(() => {
+if (!Array.isArray(dataGroup)) return [];
+return dataGroup.flatMap(pgm =>
+  Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : []);
+}, [dataGroup]);
+const vigentesCount = useMemo(() => {
+  const today= new Date(); today.setHours(0,0,0,0);
+  let cnt =0 ;
+  for (const m of allMembresias) {
+    if(Number(m?.flag) !==1)continue;
+    const monto = Number(m?.tarifa_monto) || 0;
+    if(monto <=0)continue;
+    const fin =
+    parseDateOnly(m?.fec_fin_mem) ||
+    parseDateOnly(m?.fec_fin_mem_oftime) ||  
+    parseDateOnly(m?.fec_fin_mem_viejo);
+    if(fin && fin.getTime() >= today.getTime()) cnt++;
+  }
+  return cnt;
+}, [allMembresias]);
+const pgmNameById = useMemo(() => {
+  const map = {};
+  (Array.isArray(dataGroup) ? dataGroup : []).forEach(p => {
+    const id = p?.id_pgm;
+    const name =
+      p?.name_pgm ||
+      p?.tb_programa_training?.name_pgm ||
+      p?.tb_programa?.name_pgm ||
+      null;
+    if (id && name) map[id] = name;
+  });
+  return map;
+}, [dataGroup]);
+const renewalsLocal = useMemo(() => {
+  const today = new Date(); today.setHours(0,0,0,0);
+  return (allMembresias || []).map((m, idx) => {
+    const fin = getFechaFin(m);
+    const diff = fin ? Math.round((fin - today) / 86400000) : null;
 
-// En el rango de fechas activo:
-const ZERO_IDS = new Set([1443, 701,690]); // los que ya cuentas
-  const { start, end } = useMemo(() => {
-    const s = RANGE_DATE?.[0] ? new Date(RANGE_DATE[0]) : null;
-    const e = RANGE_DATE?.[1] ? new Date(RANGE_DATE[1]) : null;
-    return { start: s, end: e };
-  }, [RANGE_DATE]);
+    // intenta extraer cliente y ejecutivo desde los includes comunes
+    const cli =
+      m?.tb_ventum?.tb_cliente?.nombres_apellidos ||
+      [m?.tb_ventum?.tb_cliente?.nombres, m?.tb_ventum?.tb_cliente?.apellidos].filter(Boolean).join(' ') ||
+      m?.tb_cliente?.nombres_apellidos ||
+      "SIN NOMBRE";
+
+    const ejecutivo =
+      m?.tb_ventum?.tb_empleado?.nombre_empl ||
+      m?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
+      m?.tb_ventum?.tb_empleado?.nombres_apellidos ||
+      "-";
+
+    const plan =
+      m?.tb_programa_training?.name_pgm ||   
+      m?.tb_programa?.name_pgm ||           
+      m?.tb_programaTraining?.name_pgm ||   
+      m?.name_pgm ||                         
+      pgmNameById?.[m?.id_pgm] ||           
+      (m?.id_pgm ? `PGM ${m.id_pgm}` : "-"); 
+
+    return {
+      id: m?.id || `m-${idx}`,
+       id_pgm: m?.id_pgm ?? null,
+      cliente: cli,
+      plan,
+      fechaFin: fin ? fin.toISOString().slice(0,10) : null,
+      dias_restantes: diff,
+      monto: Number(m?.tarifa_monto ?? 0),
+      ejecutivo,
+      notas: "", // si tienes notas, mapea aquí
+    };
+  });
+}, [allMembresias, pgmNameById]);
 
 function agruparPorVenta(data) {
     if (!Array.isArray(data)) {
@@ -372,28 +455,25 @@ const advisorOriginByProg = useMemo(() => {
 
 }, [dataGroup, progNameById]);
 
-// ... después del useMemo de advisorOriginByProg
-
-  // NUEVO: Crear una fuente de datos unificada desde dataGroup
   const allVentasFromDataGroup = useMemo(() => {
     if (!Array.isArray(dataGroup)) return [];
     
-    // dataGroup es un array de *programas*.
-    // Cada programa tiene 'detalle_ventaMembresium'.
+   
     const allMembresias = dataGroup.flatMap(pgm => 
       Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : []
     );
     
-    // También incluimos las transferencias, que están en un array separado
     const allTransferencias = dataGroup.flatMap(pgm =>
       Array.isArray(pgm?.ventas_transferencias) ? pgm.ventas_transferencias : []
     );
 
-    // Unimos todo en un solo array de ventas
     return [...allMembresias, ...allTransferencias];
   }, [dataGroup]);
+const [start, end] = useMemo(() => {
+  if (!Array.isArray(RANGE_DATE) || !RANGE_DATE[0] || !RANGE_DATE[1]) return [null, null];
+  return [new Date(RANGE_DATE[0]), new Date(RANGE_DATE[1])];
+}, [RANGE_DATE]);
 
-  // ... el resto de tus hooks
 
   const originBreakdown = useMemo(() => {
     const out = {};
@@ -845,13 +925,50 @@ const avatarByAdvisor = useMemo(() => {
 
   return map;
 }, [repoVentasPorSeparado?.total?.empl_monto]);
+const [vigResumen, setVigResumen] = useState({ vigentes:0, hoy:0, porVencer:0, vencidos:0 });
+const [renewalsApi, setRenewalsApi] = useState([]);
+
+// efectos
+useEffect(() => {
+  (async () => {
+const { data } = await PTApi.get(
+  '/parametros/membresias/vigentes/resumen',
+  { params: { empresa: id_empresa || 598, dias: 15 } }
+);    setVigResumen({ vigentes: +data.vigentes||0, hoy:+data.hoy||0, porVencer:+data.porVencer||0, vencidos:+data.vencidos||0 });
+  })();
+}, [id_empresa]);
+
+useEffect(() => {
+  (async () => {
+    const { data } = await PTApi.get('/parametros/renovaciones/por-vencer', { params: { empresa: id_empresa || 598, dias: 15 }});
+    setRenewalsApi(Array.isArray(data?.renewals) ? data.renewals : []);
+  })();
+}, [id_empresa]);
+const [vigentesRows, setVigentesRows] = useState([]);
+const [vigentesTotal, setVigentesTotal] = useState(0);
+
+useEffect(() => {
+  (async () => {
+    try {
+      const { data } = await PTApi.get('/parametros/membresias/vigentes/lista', {
+        params: { empresa: id_empresa || 598 }
+      });
+      setVigentesRows(Array.isArray(data?.vigentes) ? data.vigentes : []);
+      setVigentesTotal(Number(data?.total || 0));
+    } catch (e) {
+      console.error("vigentes/lista error:", e?.message);
+      setVigentesRows([]); setVigentesTotal(0);
+    }
+  })();
+}, [id_empresa]);
+
 const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte: 0 });
 const originMap = {
   "693":"Instagram", "694":"Facebook", "695":"TikTok",
   "690":"Referidos", "691":"RENOVACIONES",
   "692":"REINSCRIPCIONES", "696":"EX-PT reinscripcion",
   "686":"Walking", "689":"WSP organico",
-  "1470":"Corporativos BBVA",
+  //"1470":"Corporativos BBVA",
   "instagram":"Instagram","facebook":"Facebook","tiktok":"TikTok","meta":"Meta",
   "1514":"TikTok","1515":"Meta",
   0: "OTROS",                   
@@ -872,10 +989,24 @@ const originMap = {
           cutDay={cutDay}
           setCutDay={setCutDay}
           year={year}
-          handleSetUltimoDiaMes={handleSetUltimoDiaMes}
+          onUseLastDay={handleSetUltimoDiaMes}
+  vigentesCount={vigResumen.vigentes}
         />
       </Col>
     </Row>  
+    <Row className="mb-3">
+  <Col lg={12}>
+   <RenovacionesPorVencer
+  renewals={renewalsApi.length ? renewalsApi : renewalsLocal}
+  daysThreshold={15}
+  title="Renovaciones próximas a vencer (≤ 15 días)"
+  excludeZeroAmount
+  showSummary
+  pgmNameById={pgmNameById} 
+/>
+  </Col>
+</Row>
+
     <Row className="mb-6">
       <Col lg={12} className="pt-0">
         <div style={{ marginBottom: "30px" }}>
@@ -889,6 +1020,18 @@ const originMap = {
         originMap={originMap}  
           />
         </div>
+        <Row className="mb-3">
+  <Col lg={12}>
+    <RenovacionesPanel
+      id_empresa={id_empresa}
+      baseDate={new Date(year, selectedMonth - 1, 1)} 
+      months={8}             
+      beforeDays={0}       
+      afterDays={91}        
+      title="RENOVACIONES - RESUMEN"
+    />
+  </Col>
+</Row>
         <div style={{ marginBottom: "32px", marginTop: "80px" }}>
         <ClientesPorOrigen
   ventas={dataVentas}
@@ -903,12 +1046,12 @@ const originMap = {
     686: "Walking",
     687: "Mail",
     690: "REFERIDOS",
-    691: "CARTERA DE RENOVACION",
-    692: "Cartera de reinscripcion",
+    691: "RENOVACIONES",
+    692: "REINSCRIPCIONES",
     693: "Instagram",
     694: "Facebook",
     695: "TikTok",
-    696: "EX-PT reinscripcion",
+    696: "EX-PT",
     689: "WSP organico",
     1470: "CORPORATIVOS BBVA",
   }}
@@ -933,7 +1076,7 @@ const originMap = {
           />
         </div>     
       </Col>
-      <Row>
+      <Row className="mb-6">
         <Col lg={12}>
           <SumaDeSesiones
           ventas={dataVentas}
@@ -960,7 +1103,7 @@ const originMap = {
   </div>
   
 </Col>
-<div style={{ marginTop: 24 }}>
+<div style={{ marginBottom: 44 }}>
   <VentasDiarias
     ventas={dataVentas}
     year={year}
@@ -979,6 +1122,14 @@ const originMap = {
   cutDay={cutDay}
   //asesores={listaAsesoresOpcional}
 />
+<Row className="mb-6 mt-5">
+  <Col lg={12}>
+    <VigentesTable
+      items={vigentesRows}
+      title={`SOCIOS VIGENTES (${vigentesTotal})`}
+    />
+  </Col>
+</Row>
 </div>
     </Row>
   </>

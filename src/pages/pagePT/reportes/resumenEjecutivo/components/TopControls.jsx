@@ -14,11 +14,10 @@ const boxStyleBase = {
   color: "black",
   boxShadow: "0 2px 5px rgba(0,0,0,0.05)",
   lineHeight: 1.2,
-  minWidth: "120px", // <- fuerza que todos tengan un ancho visual similar
-  height: "48px",    // <- altura consistente
+  minWidth: "120px",
+  height: "48px",    
 };
 
-// estilo específico para los <select> para que se vea como caja pero siga siendo select
 const selectStyle = {
   ...boxStyleBase,
   appearance: "none",
@@ -26,7 +25,7 @@ const selectStyle = {
   MozAppearance: "none",
   backgroundClip: "padding-box",
   cursor: "pointer",
-  paddingRight: "32px", // espacio para la flechita del select
+  paddingRight: "32px", 
 };
 
 export function RealTimeClock() {
@@ -61,6 +60,7 @@ export function TopControls({
   setCutDay,
   year = new Date().getFullYear(),
   onUseLastDay,
+  vigentesCount=0,
 }) {
   const MESES = [
     "ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO",
@@ -204,6 +204,20 @@ export function TopControls({
       {/* RELOJ + BOTÓN */}
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <RealTimeClock />
+        <div
+        style={{
+          ...boxStyleBase,
+          minWidth: 0,
+          padding: "6px 12px",
+          display: "inline-flex",
+          gap: 8,
+        }}
+        title="Membresias"
+        >
+          <span role="img" aria-label="memberships">🧑‍🤝‍🧑</span>
+          <span>VIGENTES:</span>
+          <span style={{fontVariantNumeric:"tabular-nums"}}>{vigentesCount}</span>
+        </div>
         <button
           onClick={handleClickUseLastDay}
           className="btn btn-outline-warning"
@@ -214,9 +228,12 @@ export function TopControls({
             whiteSpace: "nowrap",
           }}
         >
-          Usar último día del mes
+
+          Cierre
         </button>
+
       </div>
+      
     </div>
   );
 }
