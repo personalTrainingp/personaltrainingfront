@@ -99,54 +99,11 @@ function sumProgramRevenueForMonth(ventas = [], year, monthIdx, fromDay, toDay) 
   }
   return total;
 }
-function buildMonkeyfitByMonth(reservas = [], initDay = 1, cutDay = 31) {
-  const out = {};
-  for (const r of reservas) {
-    if (Number(r?.flag) === 0) continue;
-
-    const estado = (r?.estado?.label_param || "").toLowerCase();
-    const estadoOk =
-      !estado ||
-      /completada|pagada|confirmada|reprogramada/.test(estado);
-    if (!estadoOk) continue;
-
-    const d = toLimaDate(r?.fecha || r?.createdAt);
-    if (!d) continue;
-
-    const monthIdx = d.getMonth();
-    const anio = d.getFullYear();
-    const mes = MESES_ES[monthIdx];            // p.ej. "julio"
-    const key = `${anio}-${aliasMes(mes)}`;    // p.ej. "2025-julio"
-
-    // aplica el rango [initDay, cutDay] del mes
-    const lastDay = new Date(anio, monthIdx + 1, 0).getDate();
-    const from = Math.max(1, Math.min(Number(initDay || 1), lastDay));
-    const to   = Math.max(from, Math.min(Number(cutDay || lastDay), lastDay));
-    const dia  = d.getDate();
-    if (dia < from || dia > to) continue;
-
-    if (!out[key]) {
-      out[key] = {
-        venta_monkeyfit: 0,
-        cantidad_reservas_monkeyfit: 0,
-        ticket_medio_monkeyfit: 0,
-      };
-    }
-
-    out[key].venta_monkeyfit += Number(r?.monto_total || 0);
-    out[key].cantidad_reservas_monkeyfit += 1;
-  }
-
-  // Ticket medio
-  Object.values(out).forEach((o) => {
-    o.ticket_medio_monkeyfit =
-      o.cantidad_reservas_monkeyfit > 0
-        ? o.venta_monkeyfit / o.cantidad_reservas_monkeyfit
-        : 0;
-  });
-
-  return out;
-}
+const buildSnapshot = (year, month1to12, day) => {
+  const d = new Date(year, month1to12 - 1, day);
+  d.setHours(0,0,0,0);
+  return d;
+};
 
       export const App = ({ id_empresa }) => {
       const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
@@ -266,21 +223,42 @@ if (!Array.isArray(dataGroup)) return [];
 return dataGroup.flatMap(pgm =>
   Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : []);
 }, [dataGroup]);
-const vigentesCount = useMemo(() => {
-  const today= new Date(); today.setHours(0,0,0,0);
-  let cnt =0 ;
-  for (const m of allMembresias) {
-    if(Number(m?.flag) !==1)continue;
-    const monto = Number(m?.tarifa_monto) || 0;
-    if(monto <=0)continue;
-    const fin =
-    parseDateOnly(m?.fec_fin_mem) ||
-    parseDateOnly(m?.fec_fin_mem_oftime) ||  
-    parseDateOnly(m?.fec_fin_mem_viejo);
-    if(fin && fin.getTime() >= today.getTime()) cnt++;
-  }
-  return cnt;
-}, [allMembresias]);
+
+const [vigResumen, setVigResumen] = useState({
+  snapshot: null,
+  vigentes: 0,
+  hoy: 0,
+  porVencer: 0,
+  vencidos: 0,
+});
+
+useEffect(() => {
+  let cancel = false;
+  (async () => {
+    try {
+      const { data } = await PTApi.get(
+        '/parametros/membresias/vigentes/resumen',
+        {
+          params: {
+            empresa: id_empresa || 598,
+            year,                 // p.ej. 2025
+            selectedMonth,        // 1..12
+            cutDay,               // día de corte elegido en TopControls
+            // opcional: dias para "porVencer" (default 15)
+            // dias: 15,
+          },
+        }
+      );
+      if (!cancel) setVigResumen(data);
+    } catch (e) {
+      console.error('❌ vigentes/resumen', e);
+      if (!cancel) setVigResumen((s) => ({ ...s, vigentes: 0 }));
+    }
+  })();
+  return () => { cancel = true; };
+}, [id_empresa, year, selectedMonth, cutDay]);
+
+
 const pgmNameById = useMemo(() => {
   const map = {};
   (Array.isArray(dataGroup) ? dataGroup : []).forEach(p => {
@@ -925,16 +903,14 @@ const avatarByAdvisor = useMemo(() => {
 
   return map;
 }, [repoVentasPorSeparado?.total?.empl_monto]);
-const [vigResumen, setVigResumen] = useState({ vigentes:0, hoy:0, porVencer:0, vencidos:0 });
 const [renewalsApi, setRenewalsApi] = useState([]);
 
-// efectos
 useEffect(() => {
   (async () => {
 const { data } = await PTApi.get(
   '/parametros/membresias/vigentes/resumen',
   { params: { empresa: id_empresa || 598, dias: 15 } }
-);    setVigResumen({ vigentes: +data.vigentes||0, hoy:+data.hoy||0, porVencer:+data.porVencer||0, vencidos:+data.vencidos||0 });
+);    
   })();
 }, [id_empresa]);
 
