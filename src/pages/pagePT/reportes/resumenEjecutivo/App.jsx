@@ -994,6 +994,7 @@ const originMap = {
             cutDay={cutDay}
       reservasMF={reservasMF}
         originMap={originMap}  
+        selectedMonth={selectedMonth}
           />
         </div>
         <Row className="mb-3">

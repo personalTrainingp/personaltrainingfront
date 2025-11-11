@@ -66,9 +66,6 @@ const labelFromKey = (key) => {
   return String(key || "OTROS").replace(/_/g, " ").toUpperCase();
 };
 
-// =================================================================
-// FIN: Funciones de ayuda (Helpers)
-// =================================================================
 
 
 export default function ExecutiveTable({
@@ -79,10 +76,10 @@ export default function ExecutiveTable({
   cutDay = 21,
   reservasMF = [],
   originMap = {},
+  selectedMonth,
 }) {
 
-  // ===================== CORE METRICS =====================
-  const computeMetricsForMonth = (anio, mesNombre) => {
+const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();  const computeMetricsForMonth = (anio, mesNombre) => {
     const mesAlias = aliasMes(String(mesNombre).toLowerCase());
     const monthIdx = MESES.indexOf(mesAlias);
     if (monthIdx < 0) return null;
@@ -363,41 +360,47 @@ export default function ExecutiveTable({
     metrics: computeMetricsForMonth(f?.anio, f?.mes),
   }));
 
-  const valueForOriginMonth = (okey, m) => {
+ const valueForOriginMonth = (okey, m) => {
+  // 1. Monkeyfit (TOTAL): usamos venta (no reservas), para ser consistente con "venta membresías"
   if (okey === "monkeyfit") {
     const val = m?.metrics?.venta_monkeyfit;
     return Number(val || 0);
   }
 
+  // 2. Programas MF (pgmId numérico): usamos venta del programa
   if (!isNaN(Number(okey))) {
     const mf = m.metrics?.mfByProg?.[okey];
     if (!mf) return -1;
-    const val = mf.venta; 
+    const val = mf.venta; // venta del programa
     return Number(val || 0);
   }
 
+  // 3. Origen normal: usar VENTA MEMBRESÍAS (total)
   const o = m?.metrics?.byOrigin?.[okey];
   if (!o) return -1;
-  return Number(o.total || 0); 
+  return Number(o.total || 0); // 👈 ahora usamos venta membresías
+};
+// Ordena los meses (columnas) de MENOR a MAYOR según VENTA MEMBRESÍAS del origen `okey`
+const monthOrderForOrigin = (okey) => {
+  if (!usePerOriginMonthOrder) return perMonth;
+  if (perMonth.length === 0) return [];
+
+  const list = perMonth.map((m, idx) => ({
+    m,
+    idx,
+    val: valueForOriginMonth(okey, m)  // VENTA MEMBRESÍAS
+  }));
+
+  const hasSignal = list.some(x => Number(x.val) > 0);
+  if (!hasSignal) return perMonth;
+
+  // 👇 ASCENDENTE (menor → mayor). Empate: respeta el orden original.
+  list.sort((a, b) => (Number(a.val) - Number(b.val)) || (a.idx - b.idx));
+
+  return list.map(x => x.m);
 };
 
-  
-  const monthOrderForOrigin = (okey) => {
-    if (!usePerOriginMonthOrder) return perMonth;
 
-    if (perMonth.length === 0) return [];
-    const lastMonth = perMonth[perMonth.length - 1];
-    const otherMonths = perMonth.slice(0, perMonth.length - 1);
-
-    const list = otherMonths.map((m, idx) => ({ m, idx, val: valueForOriginMonth(okey, m) }));
-    
-    const hasSignal = list.some(x => x.val > 0) || valueForOriginMonth(okey, lastMonth) > 0;
-    if (!hasSignal) return perMonth; 
-
-    list.sort((a, b) => (a.val - b.val) || (a.idx - b.idx));
-
-    return [...list.map(x => x.m), lastMonth];
-  };
 const ORIGINS_EXCLUIR = new Set(["1470", "corporativos_bbva", "CORPORATIVOS BBVA"]);
 
 const originKeysAll = Array.from(
@@ -489,190 +492,104 @@ const originKeysAll = Array.from(
     julio: 60000, agosto: 70000, setiembre: 75000, septiembre: 75000,
     octubre: 85000, noviembre: 90000, diciembre: 85000,
   };
-  const TableHeadFor = ({ okey }) => {
-    const months = monthOrderForOrigin(okey);
-    return (
-      <thead>
-        <tr>
-          <th style={{ ...sThLeft, background: cBlack }} />
-          {months.map((m, idx) => (
-            <th key={`${okey}-h-${idx}`} style={{ ...sThMes, background: cBlack }}>
-              <div>{m.label}</div>
-            </th>
-          ))}
-  
-        </tr>
-      </thead>
-    );
-  };
-  const renderRowsFor = (okey, rowsToRender) => {
-    const months = monthOrderForOrigin(okey);
-    return rowsToRender.map(r => (
-      <tr key={r.key + r.label}>
-        <td style={{ ...sCellBold, background: "#c00000", color: "#fff", fontWeight: 800 }}>
-          {r.label}
-        </td>
-        {months.map((m, idx) => {
-          let val = 0, isPct = false;
-
-          if (okey === "monkeyfit") {
-            
-            val = m.metrics?.[r.key] ?? 0;
-
-          } else if (!isNaN(Number(okey))) {
-            const [, pgmId, campo] = r.key.split(":"); 
-            const mf = m.metrics?.mfByProg?.[pgmId] || {};
-            if (campo === "venta") val = mf.venta ?? 0;
-            else if (campo === "cant") val = mf.cant ?? 0;
-      
-            else if (campo === "ticket") val = mf.cant ? mf.venta / mf.cant : 0;
-            else if (campo === "ventaF") val = mf.ventaFull ?? 0;
-            else if (campo === "cantF") val = mf.cantFull ?? 0;
-            else if (campo === "ticketF") val = mf.cantFull ? mf.ventaFull / mf.cantFull : 0;
-
-          } else {
-  
-            // 3. Clave es Origen (ej.
-            // "tiktok")
-            if (r.key.startsWith("o:")) {
-              const [, _ok, campo] = r.key.split(":");
-              const o = m.metrics?.byOrigin?.[_ok];
-              if (campo === "total") val = o?.total ?? 0;
-              else if (campo === "cant") val = o?.cant ?? 0;
-              else if (campo === "ticket") val = o?.cant ?
-                o.total / o.cant : 0;
-              else if (campo === "pct") {
-                const base = m.metrics?.totalServ ||
-                  0;
-                val = base > 0 ? ((o?.total ?? 0) / base) * 100 : 0;
-                isPct = true;
-              }
-            } else {
-              val = m.metrics?.[r.key] ??
-                0;
-            }
-          }
-          // FIN DE LA MODIFICACIÓN
-
-          const txt = isPct
-            ?
-            `${fmtNum(val, 2)} %`
-            : r.type === "money" ?
-              fmtMoney(val)
-              : r.type === "float2" ?
-                fmtNum(val, 2)
-                : fmtNum(val, 0);
-          const isBest = idx === months.length - 1; // El último mes ahora es el "seleccionado"
-          return (
-            <td
-              key={`${okey}-c-${r.key}-${idx}`}
-              style={{
-                ...sCell,
-                // Aplica estilo rojo a la última columna (mes seleccionado)
-                ...(isBest ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 28 } : {})
-      
-              }}
-            >
-              {txt}
-            </td>
-          );
-        })}
-      </tr>
-    ));
-  };
-  // Esta función (renderRows) la usa la tabla de Marketing
-  // La extendemos para que también entienda "mf:"
-  const renderRows = (rowsToRender, makeLastBold = true) =>
-    rowsToRender.map(r => (
-      <tr key={r.key + r.label}>
-        <td style={{ ...sCellBold, background: "#c00000", color: "#fff", fontWeight: 800 }}>
-          {r.label}
-        </td>
-
-        {perMonth.map((m, idx) => {
-          let val 
-            = 0;
-          let isPctCell = false;
-
-          if (r.key.startsWith("o:")) {
-            const [, okey, campo] = r.key.split(":");
-            const o = m.metrics?.byOrigin?.[okey];
-            if (campo === "total") val = o?.total ?? 0;
-            else if (campo === "cant") val = o?.cant ?? 0;
- 
-            else if (campo === "ticket") val = o?.cant ? o.total / o.cant : 0;
-            else if (campo === "pct") {
-              const base = m.metrics?.totalServ || 0;
-              val = base > 0 ? ((o?.total ?? 0) / base) * 100 : 0;
-            
-              isPctCell = true;
-            }
-          } else if (r.key.startsWith("mf:")) { // <-- AÑADIDO
-            const [, pgmId, campo] = r.key.split(":");
-            const mf = m.metrics?.mfByProg?.[pgmId] || {};
-            if (campo === "venta") val = mf.venta ?? 0;
-            else if (campo === "cant") val = mf.cant ?? 0;
-            else if (campo === "ticket") val = mf.cant ?
-              mf.venta / mf.cant : 0;
-            else if (campo === "ventaF") val = mf.ventaFull ?? 0;
-            else if (campo === "cantF") val = mf.cantFull ?? 0;
-            else if (campo === "ticketF") val = mf.cantFull ?
-              mf.ventaFull / mf.cantFull : 0;
-          } else {
-            val = m.metrics?.[r.key] ??
-              0;
-          }
-
-          const txt = isPctCell
-            ?
-            `${fmtNum(val, 2)} %`
-            : r.type === "money" ?
-              fmtMoney(val)
-              : r.type === "float2" ?
-                fmtNum(val, 2)
-                : fmtNum(val, 0);
-          const isLast = idx === perMonth.length - 1;
-          return (
-            <td
-              key={idx}
-              style={{
-                ...sCell,
-                ...(makeLastBold && isLast
-                 
-                  ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 28 }
-                  : {}),
-              }}
-            >
-              {txt}
-            </td>
-          );
-        })}
-      </tr>
-    ));
-  const TableHead = () => (
+ const TableHeadFor = ({ okey }) => {
+  const months = monthOrderForOrigin(okey);
+  return (
     <thead>
       <tr>
-        <th className="bg-black" style={{ ...sThLeft, background: cBlack }} />
-        {perMonth.map((m, idx) => {
-          const isLast = idx === perMonth.length - 1;
-          return (
-            <th
-              key={idx}
-     
-              style={{
-                ...sThMes,
-                background: isLast ? "#000" : cBlack, // Mantenemos el fondo negro para el header
-                fontSize: isLast ? 23 : sThMes.fontSize,
-              }}
-            >
-       
-               <div>{m.label}</div>
-            </th>
-          );
-        })}
+        <th style={{ ...sThLeft, background: cBlack }} />
+        {months.map((m, idx) => (
+          <th key={`${okey}-h-${idx}`} style={{ ...sThMes, background: cBlack }}>
+            <div>{m.label}</div>
+          </th>
+        ))}
       </tr>
     </thead>
   );
+};
+
+ const renderRowsFor = (okey, rowsToRender) => {
+  const months = monthOrderForOrigin(okey);
+
+  return rowsToRender.map(r => (
+    <tr key={r.key + r.label}>
+      <td style={{ ...sCellBold, background: "#c00000", color: "#fff", fontWeight: 800 }}>
+        {r.label}
+      </td>
+
+      {months.map((m, idx) => {
+        let val = 0, isPct = false;
+
+        if (okey === "monkeyfit") {
+          val = m.metrics?.[r.key] ?? 0;
+        } else if (!isNaN(Number(okey))) {
+          const [, pgmId, campo] = r.key.split(":");
+          const mf = m.metrics?.mfByProg?.[pgmId] || {};
+          if (campo === "venta") val = mf.venta ?? 0;
+          else if (campo === "cant") val = mf.cant ?? 0;
+          else if (campo === "ticket") val = mf.cant ? mf.venta / mf.cant : 0;
+          else if (campo === "ventaF") val = mf.ventaFull ?? 0;
+          else if (campo === "cantF") val = mf.cantFull ?? 0;
+          else if (campo === "ticketF") val = mf.cantFull ? mf.ventaFull / mf.cantFull : 0;
+        } else {
+          if (r.key.startsWith("o:")) {
+            const [, _ok, campo] = r.key.split(":");
+            const o = m.metrics?.byOrigin?.[_ok];
+            if (campo === "total") val = o?.total ?? 0;
+            else if (campo === "cant") val = o?.cant ?? 0;
+            else if (campo === "ticket") val = o?.cant ? (o.total / o.cant) : 0;
+            else if (campo === "pct") {
+              const base = m.metrics?.totalServ || 0;
+              val = base > 0 ? ((o?.total ?? 0) / base) * 100 : 0;
+              isPct = true;
+            }
+          } else {
+            val = m.metrics?.[r.key] ?? 0;
+          }
+        }
+
+        const txt = isPct
+          ? `${fmtNum(val, 2)} %`
+          : r.type === "money"
+            ? fmtMoney(val)
+            : r.type === "float2"
+              ? fmtNum(val, 2)
+              : fmtNum(val, 0);
+
+const isSelectedCol = m.label === selectedMonthName;        return (
+          <td
+            key={`${okey}-c-${r.key}-${idx}`}
+            style={{
+              ...sCell,
+              ...(isSelectedCol ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 28 } : {})
+            }}
+          >
+            {txt}
+          </td>
+        );
+      })}
+    </tr>
+  ));
+};
+
+  
+  
+ const TableHead = () => (
+  <thead>
+    <tr>
+      <th className="bg-black" style={{ ...sThLeft, background: cBlack }} />
+      {perMonth.map((m, idx) => (
+        <th
+          key={idx}
+          style={{ ...sThMes, background: cBlack }}
+        >
+          <div>{m.label}</div>
+        </th>
+      ))}
+    </tr>
+  </thead>
+);
+
   const ResumenCuotaTable = () => (
     <table style={sTable}>
       <thead>
@@ -827,13 +744,16 @@ const originKeysAll = Array.from(
   const lastMonth = perMonth.length > 0 ? perMonth[perMonth.length - 1] : null;
 
   const orderedOrigins = [...originKeysAll].sort((a, b) => {
+  // Venta membresías en el último mes
   const lastA = Number(lastMonth?.metrics?.byOrigin?.[a]?.total || 0);
   const lastB = Number(lastMonth?.metrics?.byOrigin?.[b]?.total || 0);
 
+  // 👇 DESCENDENTE
   if (lastA !== lastB) {
-    return  lastB-lastA; 
+    return lastB - lastA;
   }
 
+  // Empate → usar meses anteriores
   const fallbackA = otherMonths.reduce(
     (acc, m) => acc + Number(m.metrics?.byOrigin?.[a]?.total || 0),
     0
@@ -843,12 +763,16 @@ const originKeysAll = Array.from(
     0
   );
 
+  // 👇 DESCENDENTE también
   if (fallbackA !== fallbackB) {
-    return fallbackB-fallbackA; 
+    return fallbackB - fallbackA;
   }
 
+  // Último: alfabético
   return a.localeCompare(b);
 });
+
+
 
   
   const orderedMFPrograms = [...mfProgramKeys].sort((a, b) => {
