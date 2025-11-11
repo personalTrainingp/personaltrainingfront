@@ -250,7 +250,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         : sinImage;
         return (
             <div className="flex align-items-center gap-2">
-                        <Image src={rowData.tb_images.length===0?sinImage:`${imageUrl}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
+                        <Image src={rowData.tb_images.length===0?sinImage:`${imageUrl}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="270" />
             </div>
         );
     }
@@ -357,7 +357,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             <>
                 <div className=''>MODELO</div>
                 <div className="d-flex font-24 w-100 " >
-                    <div className='text-left w-100 fw-bold text-right'>
+                    <div className=' w-100 fw-bold '>
                         {rowData.modelo}
                     </div>
                 </div>
@@ -366,7 +366,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     }  
     const IdBodyTemplate = (rowData, { rowIndex })=>{
         return (
-            <div className="flex align-items-center gap-2">
+            <div className="flex align-items-center gap-2 fs-4">
                 <span>{highlightText(`${rowIndex+1}`, globalFilterValue)}</span>
             </div>
         )
@@ -518,8 +518,8 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                             scrollable
                                             onValueChange={valueFiltered}
                                             >
-                                    <Column header={<span className={'font-24'}>Id</span>} field='id' filterField="id" sortable style={{ width: '1rem' }} filter body={IdBodyTemplate}/>
-                                    <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '3rem' }} body={imagenBodyTemplate}/>
+                                    <Column header={<span className={'font-24'}>Id</span>} field='id' style={{ width: '1rem' }} body={IdBodyTemplate}/>
+                                    <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '10rem' }} body={imagenBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>MODELO</span>} field='modelo' filterField="modelo" sortable style={{ width: '3rem' }} body={modeloBodyTemplate} filter/>

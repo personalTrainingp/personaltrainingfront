@@ -12,7 +12,7 @@ export const GestionInventario = () => {
     <>
     
     <PageBreadcrumb title={'GESTION DE INVENTARIO'} subName={'T'}/>
-    <Card className='p-4 m-2'>
+    <Card className=''>
       <TabView>
             <TabPanel header='REAL'>
                   <TabView>
