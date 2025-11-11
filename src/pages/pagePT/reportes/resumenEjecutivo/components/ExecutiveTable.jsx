@@ -216,14 +216,14 @@ export default function ExecutiveTable({
     let mkInvUSD = 0, mkInvMetaUSD = 0, mkInvTikTokUSD = 0;
     const sumRaw = rawMeta + rawTikTok;
 
-    if (invTotalRaw > 0 && sumRaw > 0) {
-      const shareMeta = rawMeta / sumRaw;
-      const shareTikTok = rawTikTok / sumRaw;
-      mkInvUSD = invTotalRaw;
-      mkInvMetaUSD = mkInvUSD * shareMeta;
-      mkInvTikTokUSD = mkInvUSD - mkInvMetaUSD;
-    } else if (sumRaw > 0) {
-      mkInvUSD = sumRaw;
+   if (sumRaw > 0) { 
+  const shareMeta = rawMeta / sumRaw;
+  const shareTikTok = rawTikTok / sumRaw;
+  mkInvUSD = sumRaw; 
+  mkInvMetaUSD = mkInvUSD * shareMeta;
+  mkInvTikTokUSD = mkInvUSD - mkInvMetaUSD;
+} else if (invTotalRaw > 0) {
+  mkInvUSD = invTotalRaw;
       mkInvMetaUSD = rawMeta;
       mkInvTikTokUSD = rawTikTok;
     } else {
@@ -232,7 +232,7 @@ export default function ExecutiveTable({
       mkInvTikTokUSD = 0;
     }
 
-    const FX = 3.39;
+    const FX = 3.35;
     const mkInv = mkInvUSD * FX;
     const mkInvMeta = mkInvMetaUSD * FX;
     const mkInvTikTok = mkInvTikTokUSD * FX;
@@ -364,64 +364,55 @@ export default function ExecutiveTable({
   }));
 
   const valueForOriginMonth = (okey, m) => {
-    // 1. Si la clave es "monkeyfit" (TOTAL), busca en métricas principales
-    if (okey === "monkeyfit") {
-      // Usa 'cant' como métrica principal para ordenar columnas
-      const val = m?.metrics?.cantidad_reservas_monkeyfit; 
-      return Number(val || 0);
-    }
+  if (okey === "monkeyfit") {
+    const val = m?.metrics?.venta_monkeyfit;
+    return Number(val || 0);
+  }
 
-    // 2. Si la clave es un número (es un pgmId), busca en mfByProg
-    if (!isNaN(Number(okey))) {
-      const mf = m.metrics?.mfByProg?.[okey];
-      if (!mf) return -1;
-      const val = mf.cant; // Usa 'cant'
-      return Number(val || 0);
-    }
-    
-    // 3. Si no, es un origen normal (ej. "tiktok")
-    const o = m?.metrics?.byOrigin?.[okey];
-    if (!o) return -1;  
-    return Number(o.cant || 0); // Usa 'cant'
-  };
+  if (!isNaN(Number(okey))) {
+    const mf = m.metrics?.mfByProg?.[okey];
+    if (!mf) return -1;
+    const val = mf.venta; 
+    return Number(val || 0);
+  }
+
+  const o = m?.metrics?.byOrigin?.[okey];
+  if (!o) return -1;
+  return Number(o.total || 0); 
+};
+
   
   const monthOrderForOrigin = (okey) => {
     if (!usePerOriginMonthOrder) return perMonth;
 
-    // 1. Separar el mes actual (el último) de los meses anteriores.
     if (perMonth.length === 0) return [];
     const lastMonth = perMonth[perMonth.length - 1];
     const otherMonths = perMonth.slice(0, perMonth.length - 1);
 
-    // 2. Crear la lista de meses anteriores con su valor para ordenar
     const list = otherMonths.map((m, idx) => ({ m, idx, val: valueForOriginMonth(okey, m) }));
     
-    // 3. Comprobar si hay datos para ordenar
     const hasSignal = list.some(x => x.val > 0) || valueForOriginMonth(okey, lastMonth) > 0;
-    if (!hasSignal) return perMonth; // Si no hay datos, devolver el orden original
+    if (!hasSignal) return perMonth; 
 
-    // 4. Ordenar los meses anteriores de MENOR A MAYOR (a.val - b.val)
     list.sort((a, b) => (a.val - b.val) || (a.idx - b.idx));
 
-    // 5. Devolver los meses anteriores ordenados + el mes actual al final
     return [...list.map(x => x.m), lastMonth];
   };
+const ORIGINS_EXCLUIR = new Set(["1470", "corporativos_bbva", "CORPORATIVOS BBVA"]);
 
-  // Esta función ya no se usa, la lógica está en .sort()
-  // const scoreOrigin = (okey) => { ... };
+const originKeysAll = Array.from(
+  new Set(perMonth.flatMap(m => Object.keys(m.metrics?.byOrigin || {})))
+)
+  .filter(k => k !== "meta")
+  .filter(k => !ORIGINS_EXCLUIR.has(String(k).toLowerCase().trim()))
+  .sort();
 
-  const originKeysAll = Array.from(
-    new Set(perMonth.flatMap(m => Object.keys(m.metrics?.byOrigin || {})))
-  )
-    .filter(k => k !== "meta")
-    .sort();
   const rowsPerOrigin = (okey) => ([
     { key: `o:${okey}:total`, label: `VENTA MEMBRESÍAS `, type: "money" },
     { key: `o:${okey}:cant`, label: `CANTIDAD MEMBRESÍAS`, type: "int" },
     { key: `o:${okey}:ticket`, label: `TICKET MEDIO `, type: "money" },
     { key: `o:${okey}:pct`, label: `% PARTICIPACIÓN `, type: "float2" },
   ]);
-  // === MONKEYFIT POR PROGRAMA ===
   const PGM_LABEL = {
     2: "CHANGE 45",
     3: "FS 45",
@@ -836,44 +827,47 @@ export default function ExecutiveTable({
   const lastMonth = perMonth.length > 0 ? perMonth[perMonth.length - 1] : null;
 
   const orderedOrigins = [...originKeysAll].sort((a, b) => {
-    const lastA = Number(lastMonth?.metrics?.byOrigin?.[a]?.cant || 0);
-    const lastB = Number(lastMonth?.metrics?.byOrigin?.[b]?.cant || 0);
+  const lastA = Number(lastMonth?.metrics?.byOrigin?.[a]?.total || 0);
+  const lastB = Number(lastMonth?.metrics?.byOrigin?.[b]?.total || 0);
 
-    if (lastA > lastB) return -1;
-    if (lastA < lastB) return 1;
+  if (lastA !== lastB) {
+    return  lastB-lastA; 
+  }
 
-    const fallbackA = otherMonths.reduce((acc, m) => acc + Number(m.metrics?.byOrigin?.[a]?.cant || 0), 0);
-    const fallbackB = otherMonths.reduce((acc, m) => acc + Number(m.metrics?.byOrigin?.[b]?.cant || 0), 0);
-    
-    if (fallbackA > fallbackB) return -1;
-    if (fallbackA < fallbackB) return 1;
+  const fallbackA = otherMonths.reduce(
+    (acc, m) => acc + Number(m.metrics?.byOrigin?.[a]?.total || 0),
+    0
+  );
+  const fallbackB = otherMonths.reduce(
+    (acc, m) => acc + Number(m.metrics?.byOrigin?.[b]?.total || 0),
+    0
+  );
 
-    // 4. Desempate final: alfabético
-    return a.localeCompare(b);
-  });
+  if (fallbackA !== fallbackB) {
+    return fallbackB-fallbackA; 
+  }
+
+  return a.localeCompare(b);
+});
+
   
   const orderedMFPrograms = [...mfProgramKeys].sort((a, b) => {
-    // 1. Obtener puntaje del último mes (Cantidad)
     const lastValA = lastMonth?.metrics?.mfByProg?.[a];
     const lastValB = lastMonth?.metrics?.mfByProg?.[b];
     const lastA = Number(lastValA?.cant || 0);
     const lastB = Number(lastValB?.cant || 0);
 
-    // 2. Criterio principal: Ordenar por puntaje del último mes (descendente)
     if (lastA > lastB) return -1;
     if (lastA < lastB) return 1;
 
-    // 3. Criterio de desempate: Usar suma de meses anteriores (descendente)
     const fallbackA = otherMonths.reduce((acc, m) => acc + Number(m.metrics?.mfByProg?.[a]?.cant || 0), 0);
     const fallbackB = otherMonths.reduce((acc, m) => acc + Number(m.metrics?.mfByProg?.[b]?.cant || 0), 0);
 
     if (fallbackA > fallbackB) return -1;
     if (fallbackA < fallbackB) return 1;
     
-    // 4. Desempate final: alfabético
     return a.localeCompare(b);
   });
-  // === FIN DEL CAMBIO ===
 
 
   return (

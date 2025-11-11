@@ -966,7 +966,7 @@ const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte:
 const originMap = {
   "693":"Instagram", "694":"Facebook", "695":"TikTok",
   "690":"Referidos", "691":"RENOVACIONES",
-  "692":"REINSCRIPCIONES", "696":"EX-PT reinscripcion",
+  "692":"REINSCRIPCIONES", "696":"EX-PT ",
   "686":"Walking", "689":"WSP organico",
   //"1470":"Corporativos BBVA",
   "instagram":"Instagram","facebook":"Facebook","tiktok":"TikTok","meta":"Meta",
@@ -1053,7 +1053,7 @@ const originMap = {
     695: "TikTok",
     696: "EX-PT",
     689: "WSP organico",
-    1470: "CORPORATIVOS BBVA",
+  //  1470: "CORPORATIVOS BBVA",
   }}
 />
         </div>

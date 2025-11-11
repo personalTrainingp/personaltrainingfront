@@ -131,7 +131,9 @@ export const ClientesPorOrigen = ({
       // Ya no descartamos ventas con monto 0, ahora las reclasificamos en getOriginId
       // if (!hasPaidMembership(v)) continue; 
 
-      const originId = getOriginId(v); // getOriginId ahora maneja el monto 0
+      const originId = getOriginId(v);
+      if (String(originId) === "1470") continue;
+ // getOriginId ahora maneja el monto 0
       const clientId = getClientId(v);
       if (originId == null || clientId == null || clientId === "") continue;
 

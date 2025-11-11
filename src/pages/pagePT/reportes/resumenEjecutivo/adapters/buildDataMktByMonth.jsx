@@ -18,7 +18,6 @@ export function buildDataMktByMonth(
     } catch { return null; }
   };
 
-  // ---- 1) Mapa id -> slug (OBJETO, no array) ----
   const idToSlug = {};
   for (const p of (Array.isArray(canalParams) ? canalParams : [])) {
     const id = String(p?.id_param ?? p?.id ?? p?.value ?? "").trim();
@@ -29,9 +28,7 @@ export function buildDataMktByMonth(
                                                idToSlug[id] = "meta";
   }
 
-  // Por si tu API no siempre envia la misma llave
 const getCanalId = (it) => {
-  // cubre todas las variantes posibles
   return (
     it?.id_red ??
     it?.idRed ??
@@ -111,9 +108,14 @@ const toLimaBucketDate = (iso) => {
     acc[key].inversiones_redes += inv;
     acc[key].leads             += leads;
 
-    if (id)   { add(acc[key].por_red, id, inv);        add(acc[key].leads_por_red, id, leads); }
-    if (slug) { add(acc[key].por_red, slug, inv);      add(acc[key].leads_por_red, slug, leads); }
-  }
+  if (id) {
+  add(acc[key].por_red, id, inv);
+  add(acc[key].leads_por_red, id, leads);
+} else if (slug) { // <--- Añade un "else"
+  add(acc[key].por_red, slug, inv);
+  add(acc[key].leads_por_red, slug, leads);
+}
+}
 
   for (const k of Object.keys(acc)) {
     const { inversiones_redes, leads, por_red, leads_por_red } = acc[k];
