@@ -4,7 +4,6 @@ import { useHorariosColaboradoresStore } from './useHorariosColaboradoresStore';
 import { PageBreadcrumb } from '@/components';
 import { FechaRange } from '@/components/RangeCalendars/FechaRange';
 import { useSelector } from 'react-redux';
-import DiagramaGantHorario from './DiagramaGantHorario';
 export const App = () => {
   
 const dataRaw = [
@@ -364,15 +363,11 @@ const horarioColors = [
         {/* <pre>
           {JSON.stringify(dataView, null, 2)}
         </pre> */}
-        <DiagramaGantHorario 
-          dataRaw={dataRaw}
-          slotMinutes={30}     // duración de cada bloque de horario (default 30 min)
-          slotWidth={28}       // ancho visual de cada bloque
-          gapSize={6}          // tamaño del espacio entre huecos
-          colorOn="#16a34a"    // color de los horarios activos
-          colorOffBg="#f8fafc" // color del fondo
-          textColor="#fff"     // color del texto dentro de las barras
-          labelWidth={260}     // ancho de la columna de labels
+        <HorarioMensual 
+          dataRaw={dataView}
+          horarioColors={horarioColors}
+          fechaInicio="2024-10-01"
+          fechaFin="2024-10-31"
         />
     </>
   )

@@ -6,13 +6,13 @@ import {
   resumirConsecutivos
 } from "./middleware/resumirConsecutivos";
 
-export default function HorarioMensual({ dataRaw, horarioColors, fechaInicio, fechaFin }) {
+export default function HorarioMensual({ dataRaw=[], horarioColors, fechaInicio, fechaFin }) {
   const todosIntervalos = useMemo(() => generarIntervalos("01:00", "22:00", 30), []);
 
   // 1️⃣ recolectar horas usadas globalmente
   const horasUsadas = useMemo(() => {
     const set = new Set();
-    dataRaw.forEach(row => {
+    dataRaw?.forEach(row => {
       row.diasLaborables?.forEach(d => {
         d.horarios?.forEach(h => set.add(h.label));
       });
@@ -30,9 +30,9 @@ export default function HorarioMensual({ dataRaw, horarioColors, fechaInicio, fe
       // si hay salto entre este y el siguiente con no uso total,
       // metemos un “espacio” visual mínimo
       const next = todosIntervalos[i + 1];
-      if (next && !horasUsadas.has(next.label) && !used) {
-        arr.push({ label: `gap-${i}`, isGap: true });
-      }
+      // if (next && !horasUsadas.has(next.label) && !used) {
+      //   arr.push({ label: `gap-${i}`, isGap: true });
+      // }
     }
     return arr;
   }, [todosIntervalos, horasUsadas]);
@@ -78,7 +78,7 @@ export default function HorarioMensual({ dataRaw, horarioColors, fechaInicio, fe
                       </>
                     )}
                     <td className="sticky-col third-col">{dia.label}</td>
-                    {intervalosFiltrados.map((h) => {
+                    {/* {intervalosFiltrados.map((h) => {
                       if (h.isGap) {
                         return <td key={h.label} className="horario-cell gap"></td>;
                       }
@@ -91,7 +91,7 @@ export default function HorarioMensual({ dataRaw, horarioColors, fechaInicio, fe
                           <div className={`${color} horario-box`} />
                         </td>
                       );
-                    })}
+                    })} */}
                   </tr>
                 );
               });

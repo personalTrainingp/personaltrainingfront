@@ -11,14 +11,14 @@ const customAlertaUsuario ={
   tipo_alerta: 0,
   id_user: 0,     // se usará solo como “placeholder”; realmente enviaremos 1 por iteración
   fecha: '',      // idem; enviaremos la fecha de la iteración
-  estado: 0
+  id_estado: 0
 }
 
 export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
   const { dataUsuarios, obtenerUsuarios, onPostAlertaUsuario } = useAlertasUsuarios()
   const { DataGeneral:dataTipoAlerta, obtenerParametroPorEntidadyGrupo:obtenerTiposAlerta } = useTerminoStore()
 
-  const { formState, mensaje, tipo_alerta, estado, onInputChange, onInputChangeReact, onResetForm } = useForm(customAlertaUsuario)
+  const { formState, mensaje, tipo_alerta, id_estado, onInputChange, onInputChangeReact, onResetForm } = useForm(customAlertaUsuario)
 
   // -------- local state para múltiple fecha y usuarios ----------
   const [fechaInput, setFechaInput] = useState('')
@@ -76,7 +76,7 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
             id_user: u.value,
             fecha: f,
             tipo_alerta,
-            estado,
+            id_estado,
             mensaje: mensaje?.trim()
           })
         }
@@ -99,11 +99,11 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
           <Select
             options={[{value: 0, label: 'Inactivo'}, {value: 1, label: 'Activo'} ]}
             placeholder='Selecciona el estado'
-            onChange={(e)=>onInputChangeReact(e, 'estado')}
+            onChange={(e)=>onInputChangeReact(e, 'id_estado')}
             className="react-select"
             classNamePrefix="react-select"
-            name='estado'
-            value={[{value: 0, label: 'Inactivo'}, {value: 1, label: 'Activo'} ].find(op=>op.value===estado)}
+            name='id_estado'
+            value={[{value: 0, label: 'Inactivo'}, {value: 1, label: 'Activo'} ].find(op=>op.value===id_estado)}
             required
           />
         </div>
