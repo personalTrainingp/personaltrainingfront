@@ -23,7 +23,8 @@ const registerTrabajo = {
     mano_obra_soles: 0,
     mano_obra_dolares: 0,
     id_empresa: 0,
-    id_zona: 0
+    id_zona: 0,
+    hora_fin: '12:00'
 };
 export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, isCopy=false }) => {
     const [file_presupuesto, setfile_presupuesto] = useState(null);

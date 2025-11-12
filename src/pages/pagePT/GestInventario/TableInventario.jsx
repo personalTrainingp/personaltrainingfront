@@ -518,7 +518,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                             scrollable
                                             onValueChange={valueFiltered}
                                             >
-                                    <Column header={<span className={'font-24'}>Id</span>} field='id' style={{ width: '1rem' }} body={IdBodyTemplate}/>
+                                    <Column header={<span className={'font-24'}>Id</span>} field='id' style={{ width: '15px' }} body={IdBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '10rem' }} body={imagenBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
