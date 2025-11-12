@@ -150,7 +150,7 @@ const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();  const
         totalOtrosFull += linea; cantOtrosFull += cantidad;
       }
 
-      // === AL DÍA DE CORTE ===
+
       const dia = d.getDate();
       if (dia >= from && dia <= to) {
         for (const s of getDetalleMembresias(v)) {
@@ -492,6 +492,26 @@ const originKeysAll = Array.from(
     julio: 60000, agosto: 70000, setiembre: 75000, septiembre: 75000,
     octubre: 85000, noviembre: 90000, diciembre: 85000,
   };
+  const sHeaderWrap = { textAlign: "center", margin: "8px 0" };
+
+const sHeaderChip = {
+  display: "inline-block",
+  background: cRed,
+  color: cWhite,
+  padding: "10px 24px",
+  fontWeight: 800,
+  fontSize: 40,
+  letterSpacing: 0.2,
+  lineHeight: 1.1,
+  borderRadius: 6,     // si lo quieres cuadrado, quita esta línea
+};
+
+const TitleChip = ({ children, style }) => (
+  <div style={sHeaderWrap}>
+    <span style={{ ...sHeaderChip, ...style }}>{children}</span>
+  </div>
+);
+
  const TableHeadFor = ({ okey }) => {
   const months = monthOrderForOrigin(okey);
   return (
@@ -808,7 +828,7 @@ const isSelectedCol = m.label === selectedMonthName;        return (
           const rows = rowsPerOrigin(okey);
           return (
             <div key={okey} style={{ marginBottom: 24 }}>
-              <div style={sHeader}>{title}</div>
+<TitleChip>{title}</TitleChip>
               <table style={sTable}>
                 <TableHeadFor okey={okey} />
        
@@ -820,7 +840,7 @@ const isSelectedCol = m.label === selectedMonthName;        return (
       )}
 
       {/* === MONKEYFIT POR PROGRAMA === */}
-      <div className="bg-black" style={{ ...sHeader }}>MONKEYFIT POR PROGRAMA</div>
+      <div className="bg-black mt-8" style={{ ...sHeader }}>MONKEYFIT POR PROGRAMA</div>
       {orderedMFPrograms.length === 0 ? (
        
         <div style={{ ...sHeader, background: "#444" }}>
@@ -856,7 +876,7 @@ const isSelectedCol = m.label === selectedMonthName;        return (
         </tbody>
       </table>
 
-      <div style={{ height: 32 }} />
+      <div style={{ height: 32,marginTop:50 }} />
 
       <div
         style={{

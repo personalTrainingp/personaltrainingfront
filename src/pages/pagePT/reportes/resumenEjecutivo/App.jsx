@@ -99,11 +99,7 @@ function sumProgramRevenueForMonth(ventas = [], year, monthIdx, fromDay, toDay) 
   }
   return total;
 }
-const buildSnapshot = (year, month1to12, day) => {
-  const d = new Date(year, month1to12 - 1, day);
-  d.setHours(0,0,0,0);
-  return d;
-};
+
 
       export const App = ({ id_empresa }) => {
       const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
@@ -117,6 +113,16 @@ const buildSnapshot = (year, month1to12, day) => {
   
       const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
       const year = new Date().getFullYear();
+const snapshotDate = useMemo(() => {
+  const d = new Date(year, selectedMonth - 1, cutDay);
+  d.setHours(0,0,0,0);
+  return d;
+}, [year, selectedMonth, cutDay]);
+const todayLimaStart = useMemo(() => limaStartOfDay(new Date()), []);
+const isHistorical = useMemo(
+  () => snapshotDate.getTime() < todayLimaStart.getTime(),
+  [snapshotDate, todayLimaStart]
+);
 
      useEffect(() => {
   const y = new Date().getFullYear();
@@ -225,11 +231,7 @@ return dataGroup.flatMap(pgm =>
 }, [dataGroup]);
 
 const [vigResumen, setVigResumen] = useState({
-  snapshot: null,
-  vigentes: 0,
-  hoy: 0,
-  porVencer: 0,
-  vencidos: 0,
+  snapshot: null, vigentes: 0, hoy: 0, porVencer: 0, vencidos: 0,
 });
 
 useEffect(() => {
@@ -238,25 +240,17 @@ useEffect(() => {
     try {
       const { data } = await PTApi.get(
         '/parametros/membresias/vigentes/resumen',
-        {
-          params: {
-            empresa: id_empresa || 598,
-            year,                 // p.ej. 2025
-            selectedMonth,        // 1..12
-            cutDay,               // día de corte elegido en TopControls
-            // opcional: dias para "porVencer" (default 15)
-            // dias: 15,
-          },
-        }
+        { params: { empresa: id_empresa || 598, year, selectedMonth, cutDay } }
       );
       if (!cancel) setVigResumen(data);
     } catch (e) {
       console.error('❌ vigentes/resumen', e);
-      if (!cancel) setVigResumen((s) => ({ ...s, vigentes: 0 }));
+      if (!cancel) setVigResumen(s => ({ ...s, vigentes: 0 }));
     }
   })();
   return () => { cancel = true; };
 }, [id_empresa, year, selectedMonth, cutDay]);
+
 
 
 const pgmNameById = useMemo(() => {
@@ -272,6 +266,7 @@ const pgmNameById = useMemo(() => {
   });
   return map;
 }, [dataGroup]);
+
 const renewalsLocal = useMemo(() => {
   const today = new Date(); today.setHours(0,0,0,0);
   return (allMembresias || []).map((m, idx) => {
@@ -755,7 +750,7 @@ const buildProductosDesdeVentas = (ventas = []) => {
         return null;
       };
 
-      const countDigitalClientsForMonth = (ventasList = [], anio, mesNombre, fromDay = 1, cut = {cutDay}) => {
+      const countDigitalClientsForMonth = (ventasList = [], anio, mesNombre, fromDay = 1, cut = cutDay) => {
         
         const monthLower = String(mesNombre).toLowerCase();
         const monthIdx = MESES.indexOf(monthLower === "septiembre" ? "septiembre" : monthLower);
@@ -924,19 +919,73 @@ const [vigentesRows, setVigentesRows] = useState([]);
 const [vigentesTotal, setVigentesTotal] = useState(0);
 
 useEffect(() => {
-  (async () => {
-    try {
-      const { data } = await PTApi.get('/parametros/membresias/vigentes/lista', {
-        params: { empresa: id_empresa || 598 }
-      });
-      setVigentesRows(Array.isArray(data?.vigentes) ? data.vigentes : []);
-      setVigentesTotal(Number(data?.total || 0));
-    } catch (e) {
-      console.error("vigentes/lista error:", e?.message);
-      setVigentesRows([]); setVigentesTotal(0);
-    }
-  })();
-}, [id_empresa]);
+  (async () => {
+    try {
+      const { data } = await PTApi.get('/parametros/membresias/vigentes/lista', {
+        params: { 
+          empresa: id_empresa || 598,
+          // --- 👇 CAMBIO 1: AÑADIR ESTOS PARÁMETROS 👇 ---
+          year,
+          selectedMonth,
+          cutDay
+        }
+      });
+      setVigentesRows(Array.isArray(data?.vigentes) ? data.vigentes : []);
+      setVigentesTotal(Number(data?.total || 0));
+    } catch (e) {
+      console.error("vigentes/lista error:", e?.message);
+      setVigentesRows([]); setVigentesTotal(0);
+    }
+  })();
+}, [id_empresa, year, selectedMonth, cutDay]);
+const getProgName = (row, pgmNameById = {}) =>
+  pgmNameById?.[row?.id_pgm] ||
+  row?.plan ||
+  row?.tb_programa_training?.name_pgm ||
+  row?.tb_programa?.name_pgm ||
+  row?.tb_programaTraining?.name_pgm ||
+  "SIN PROGRAMA";
+
+const parseFinAny = (x) =>
+  parseDateOnly(x?.fechaFin) ||
+  parseDateOnly(x?.fec_fin_mem) ||
+  parseDateOnly(x?.fec_fin_mem_oftime) ||
+  parseDateOnly(x?.fec_fin_mem_viejo) ||
+  null;
+
+const mergeById = (a = [], b = []) => {
+  const map = new Map();
+  [...a, ...b].forEach((x, i) => {
+    const id = x?.id ?? x?.id_membresia ?? `tmp-${i}`;
+    if (!map.has(id)) map.set(id, x);
+  });
+  return Array.from(map.values());
+};
+
+const baseVigentes = useMemo(() => {
+  return mergeById(vigentesRows, allMembresias); 
+}, [vigentesRows, allMembresias]);
+
+const vigentesRowsSnapshot = useMemo(() => {
+  const out = [];
+  for (const r of baseVigentes) {
+    const fin = parseFinAny(r);
+    if (fin && fin.getTime() >= snapshotDate.getTime()) out.push(r);
+  }
+  return out;
+}, [baseVigentes, snapshotDate]);
+
+// Top-3 por programa (igual que ya tenías)
+const vigentesBreakdown = useMemo(() => {
+  const counter = new Map();
+  for (const r of vigentesRowsSnapshot) {
+    const name = getProgName(r, pgmNameById);
+    const key = norm(name);
+    if (!counter.has(key)) counter.set(key, { label: name, count: 0 });
+    counter.get(key).count += 1;
+  }
+  return Array.from(counter.values()).sort((a,b)=>b.count-a.count).slice(0,3);
+}, [vigentesRowsSnapshot, pgmNameById]);
 
 const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte: 0 });
 const originMap = {
@@ -957,17 +1006,21 @@ const originMap = {
     {/* === CONTROLES SUPERIORES === */}
     <Row className="mb-3">
       <Col lg={12}>
-        <TopControls
-          selectedMonth={selectedMonth}
-          setSelectedMonth={setSelectedMonth}
-          initDay={initDay}
-          setInitDay={setInitDay}
-          cutDay={cutDay}
-          setCutDay={setCutDay}
-          year={year}
-          onUseLastDay={handleSetUltimoDiaMes}
+     <TopControls
+  key={`tc-${year}-${selectedMonth}-${cutDay}-${vigResumen.vigentes}-${vigentesRowsSnapshot.length}`}
+  selectedMonth={selectedMonth}
+  setSelectedMonth={setSelectedMonth}
+  initDay={initDay}
+  setInitDay={setInitDay}
+  cutDay={cutDay}
+  setCutDay={setCutDay}
+  year={year}
+  onUseLastDay={handleSetUltimoDiaMes}
   vigentesCount={vigResumen.vigentes}
-        />
+  vigentesBreakdown={vigentesBreakdown}
+  avataresDeProgramas={avataresDeProgramas}
+  useAvatars={true}
+/>
       </Col>
     </Row>  
     <Row className="mb-3">
@@ -1002,10 +1055,10 @@ const originMap = {
     <RenovacionesPanel
       id_empresa={id_empresa}
       baseDate={new Date(year, selectedMonth - 1, 1)} 
-      months={8}             
+      months={12}             
       beforeDays={0}       
       afterDays={91}        
-      title="RENOVACIONES - RESUMEN"
+      title="RENOVACIONES - 2025 "
     />
   </Col>
 </Row>
@@ -1015,7 +1068,7 @@ const originMap = {
   fechas={mesesSeleccionados}
   initialDay={initDay}
   cutDay={cutDay}
-  uniqueByClient={false}   // suma movimientos, no único por cliente
+  uniqueByClient={false}   
   originMap={{
     703: "CANJE",
     701: "TRASPASO",
