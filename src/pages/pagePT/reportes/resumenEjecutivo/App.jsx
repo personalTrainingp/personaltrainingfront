@@ -1122,8 +1122,8 @@ const originMap = {
         </Col>       
       </Row>
       <Col lg={12}>
-  <div style={{ marginTop: "15px" }}>
-    <TarjetasProductos
+  <div style={{ marginTop: "15px", textAlign:"center" }}>
+    <TarjetasProductos 
       tasks={productosPorAsesor}          
       title="Ranking Venta de Productos"
       topN={5}

@@ -251,7 +251,6 @@ const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();  const
     const mkCac = safeDiv0(mkInv, clientesDigitales);
     const mkCacMetaExact = safeDiv0(mkInvMeta, clientesMeta);
     const mkCacTikTokExact = safeDiv0(mkInvTikTok, clientesTikTok);
-    // === MONKEYFIT (TOTAL y POR PROGRAMA) ===
     let ventaMF = 0, cantMF = 0;
     let ventaMFFull = 0, cantMFFull = 0;
     const mfByProg = {};
@@ -333,7 +332,6 @@ const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();  const
         totalOtrosFull / cantOtrosFull : 0,
       totalMesFull: totalServFull + totalProdFull + totalOtrosFull + ventaMFFull,
 
-      // Monkeyfit (total)
       venta_monkeyfit: ventaMF,
       cantidad_reservas_monkeyfit: cantMF,
       ticket_medio_monkeyfit: ticketMF,
@@ -344,7 +342,6 @@ const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();  const
       byOrigin,
       byOriginFull,
 
-      // Monkeyfit por programa
       mfByProg,
     };
   };
@@ -361,26 +358,22 @@ const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();  const
   }));
 
  const valueForOriginMonth = (okey, m) => {
-  // 1. Monkeyfit (TOTAL): usamos venta (no reservas), para ser consistente con "venta membresías"
   if (okey === "monkeyfit") {
     const val = m?.metrics?.venta_monkeyfit;
     return Number(val || 0);
   }
 
-  // 2. Programas MF (pgmId numérico): usamos venta del programa
   if (!isNaN(Number(okey))) {
     const mf = m.metrics?.mfByProg?.[okey];
     if (!mf) return -1;
-    const val = mf.venta; // venta del programa
+    const val = mf.venta; 
     return Number(val || 0);
   }
 
-  // 3. Origen normal: usar VENTA MEMBRESÍAS (total)
   const o = m?.metrics?.byOrigin?.[okey];
   if (!o) return -1;
-  return Number(o.total || 0); // 👈 ahora usamos venta membresías
+  return Number(o.total || 0); 
 };
-// Ordena los meses (columnas) de MENOR a MAYOR según VENTA MEMBRESÍAS del origen `okey`
 const monthOrderForOrigin = (okey) => {
   if (!usePerOriginMonthOrder) return perMonth;
   if (perMonth.length === 0) return [];
@@ -517,9 +510,9 @@ const TitleChip = ({ children, style }) => (
   return (
     <thead>
       <tr>
-        <th style={{ ...sThLeft, background: cBlack }} />
+        <th style={{ ...sThLeft, background: cRed }} />
         {months.map((m, idx) => (
-          <th key={`${okey}-h-${idx}`} style={{ ...sThMes, background: cBlack }}>
+          <th key={`${okey}-h-${idx}`} style={{ ...sThMes, background: cRed }}>
             <div>{m.label}</div>
           </th>
         ))}
@@ -840,12 +833,12 @@ const isSelectedCol = m.label === selectedMonthName;        return (
       )}
 
       {/* === MONKEYFIT POR PROGRAMA === */}
-      <div className="bg-black mt-8" style={{ ...sHeader }}>MONKEYFIT POR PROGRAMA</div>
+<TitleChip style={{ marginTop: 32 ,background:"black"}}>MONKEYFIT</TitleChip>
       {orderedMFPrograms.length === 0 ? (
        
-        <div style={{ ...sHeader, background: "#444" }}>
-          SIN RESERVAS MONKEYFIT EN EL PERIODO
-        </div>
+          <TitleChip style={{ background: "#444", fontSize: 28, padding: "8px 18px" }}>
+    SIN RESERVAS MONKEYFIT EN EL PERIODO
+  </TitleChip>
       ) : (
         orderedMFPrograms.map((pgmId) => (
           <div key={`mf-${pgmId}`} style={{ marginBottom: 24 }}>
@@ -860,7 +853,7 @@ const isSelectedCol = m.label === selectedMonthName;        return (
         ))
       )}
 
-      <div style={{ ...sHeader }}>MONKEYFIT (TOTAL)</div>
+<TitleChip>MONKEYFIT (TOTAL)</TitleChip>
       <table style={sTable}>
         <TableHeadFor okey="monkeyfit" />
         <tbody>
@@ -878,32 +871,17 @@ const isSelectedCol = m.label === selectedMonthName;        return (
 
       <div style={{ height: 32,marginTop:50 }} />
 
-      <div
-        style={{
-          ...sHeader,
-          fontSize: 28,
-          padding: "12px 16px",
-          background: cRed,
-          textAlign: "center",
-        }}
-      >
-        RESUMEN DE CUOTA VS VENTAS
-      </div>
+      <TitleChip style={{ fontSize: 28, padding: "8px 18px" }}>
+  RESUMEN DE CUOTA VS VENTAS
+</TitleChip>
       <ResumenCuotaTable />
 
       <div style={{ height: 32 }} />
 
       {/* === MARKETING === */}
-      <div
-        style={{
-          ...sHeader,
-          fontSize: 28,
-          padding: "12px 16px",
-          textAlign: "center",
-        }}
-      >
-        DETALLE DE INVERSIÓN EN REDES VS RESULTADOS EN LEADS
-      </div>
+      <TitleChip style={{ fontSize: 28, padding: "8px 18px" }}>
+  DETALLE DE INVERSIÓN EN REDES VS RESULTADOS EN LEADS
+</TitleChip>
 
    
       <table style={sTable}>

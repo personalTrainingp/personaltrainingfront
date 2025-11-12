@@ -229,7 +229,7 @@ export function TopControls({
         <RealTimeClock />
 
         <div style={{ ...boxStyleBase, minWidth: 160, padding: "6px 12px", gap: 8 }} title="Membresías vigentes">
-          <span>VIGENTES:&nbsp;</span>
+          <span>SOCIOS TOTAL:&nbsp;</span>
           <span style={{ fontVariantNumeric:"tabular-nums" }}>{vigentesCount}</span>
         </div>
 
