@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import Chart from "react-apexcharts";
 
-/* ===== Helpers copiados / compatibles con VentasDiarias ===== */
 
 function limaFromISO(iso) {
   if (!iso) return null;
@@ -337,7 +336,7 @@ export const GraficoLinealVentasDiarias = ({
           color: "#c00000",
         }}
       >
-        EVOLUCIÓN DIARIA POR ASESOR - {tituloMes}
+        GRAFICO DE VENTAS DIARIAS POR ASESOR - {tituloMes}
       </div>
 
       <div

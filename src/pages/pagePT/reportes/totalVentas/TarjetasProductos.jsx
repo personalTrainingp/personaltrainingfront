@@ -115,12 +115,10 @@ export const TarjetasProductos = ({
 
   return (
     <Card className="ranking-card">
-      <Card.Body>
-        <CardTitle
-          containerClass="d-flex align-items-center justify-content-between mb-3"
-          title={<h2>{title}</h2>}
-          menuItems={false}
-        />
+  <Card.Body>
+    <h2 className="ranking-title mb-3">
+      {title}
+    </h2>
 
         <Row>
           <Col lg={12}>

@@ -303,3 +303,14 @@
 
 /* util */
 .tabla-sesiones .is-bold{ font-weight:800; }
+/* ====== FIX: centrar título del ranking sí o sí ====== */
+.ranking-card .card-body {
+  display: block !important;
+}
+
+.ranking-card .ranking-title {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 0 1rem 0 !important;
+  text-align: center !important;
+}

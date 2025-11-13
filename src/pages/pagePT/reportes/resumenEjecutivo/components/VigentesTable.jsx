@@ -5,7 +5,7 @@ export default function VigentesTable({
   title = "Socios vigentes",
   emptyMessage = "No hay socios vigentes para mostrar.",
   onRowClick,
-  startCollapsed = true, // 👈 controla si inicia cerrado
+  startCollapsed = true, 
 }) {
   const [isOpen, setIsOpen] = useState(!startCollapsed);
 

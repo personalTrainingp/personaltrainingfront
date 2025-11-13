@@ -56,9 +56,7 @@ export const TarjetasPago = ({ tasks = [], title = 'RANKING VENTA MEMBRESÍAS' }
         avatar: avatarFile,
       };
     })
-    // quitar asesores que no vendieron programas
     .filter((p) => p.total > 0)
-    // ordenar desc por ventas de programas
     .sort((a, b) => b.total - a.total);
 
   // top 3
@@ -69,12 +67,13 @@ export const TarjetasPago = ({ tasks = [], title = 'RANKING VENTA MEMBRESÍAS' }
 
   return (
     <Card className="ranking-card">
-      <Card.Body>
-        <CardTitle
-          containerClass="d-flex align-items-center justify-content-between mb-3"
-          title={<h2>{title}</h2>}
-          menuItems={false}
-        />
+     <Card.Body>
+  <div className="w-100 d-flex justify-content-center mb-3">
+    <h2 className="m-0 text-center">
+      {title}
+    </h2>
+  </div>
+
 
         <Row>
           <Col lg={12}>

@@ -186,7 +186,7 @@ export default function VentasDiarias({
               textAlign:"center",
               fontSize:22,
               fontWeight: isMonto ? ((monMap[d] || 0) > 0 ? 800 : 400) : ((socMap[d]?.size || 0) > 0 ? 700 : 400),
-              color: isMonto ? ((monMap[d] || 0) > 0 ? "#c00000" : "#000") : "#000",
+              color: isMonto ? ((monMap[d] || 0) > 0 ? "#2e7d32" : "#000") : "#000",
             }}
           >
             {isSocios ? (socMap[d]?.size ?? 0) : fmtMoney(monMap[d] ?? 0)}
@@ -257,7 +257,7 @@ const tituloMes = `${new Date(year, month - 1)
               letterSpacing:.5
             }}
           >
-            {tituloMes}
+           EVOLUCION DIARIA POR ASESOR
           </th>
         </tr>
 
@@ -285,12 +285,14 @@ ASESOR            </th>
     </tr>
   )}
 
+  {/* Este bloque de "MONTO" no cambia */}
   {asesoresActivos.map((a) => (
     <React.Fragment key={`${a}-monto`}>
       {renderRow(a, "MONTO")}
     </React.Fragment>
   ))}
 
+  {/* Este bloque de "SOCIOS" no cambia (y ya no tiene el borde 3px) */}
   {asesoresActivos.map((a) => (
     <React.Fragment key={`${a}-socios`}>
       {renderRow(a, "SOCIOS")}
@@ -298,11 +300,12 @@ ASESOR            </th>
   ))}
 
   {/* === TOTALES POR DÍA (VENTA) === */}
+  {/* Aquí aplicamos tu lógica */}
   {asesoresActivos.length > 0 && (
     <tr style={{ background: "#f6f6f6", fontWeight: 800 }}>
-      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
-      <td style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 20 }}>
-         VENTA X DÍA
+      <td style={{ border: "1px solid #000", borderTop: "4px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
+      <td style={{ border: "1px solid #000", borderTop: "4px solid #000", padding: "8px 10px", fontSize: 20 }}>
+          VENTA X DÍA
       </td>
 
       {days.map((d) => (
@@ -310,10 +313,10 @@ ASESOR            </th>
           key={`tot-mon-${d}`}
           style={{
             border: "1px solid #000",
+            borderTop: "4px solid #000", // <-- AÑADIDO
             padding: "6px 8px",
             textAlign: "center",
             fontSize: 20,
-            color: "#c00000",
           }}
         >
           
@@ -322,17 +325,18 @@ ASESOR            </th>
       ))}
 
       {/* columnas finales */}
-      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>-
+      <td style={{ border: "1px solid #000", borderTop: "3px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>-
      </td>
-      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
--   </td>
-      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
+      <td style={{ border: "1px solid #000", borderTop: "3px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 25 }}>
+                       {fmtMoney(dayTotals.sumaMonto || 0)}   </td>
+      <td style={{ border: "1px solid #000", borderTop: "3px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
         -
       </td>
     </tr>
   )}
 
   {/* === TOTALES POR DÍA (SOCIOS) === */}
+  {/* Esta fila no necesita el borde superior grueso */}
   {asesoresActivos.length > 0 && (
     <tr style={{ background: "#f6f6f6", fontWeight: 800 }}>
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
@@ -355,11 +359,11 @@ ASESOR            </th>
       ))}
 
       {/* columnas finales */}
-      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
+      <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 25 }}>
         {dayTotals.sumaSocios}
     </td>
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
-                {fmtMoney(dayTotals.sumaMonto || 0)}
+        -
      </td>
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>
         %100

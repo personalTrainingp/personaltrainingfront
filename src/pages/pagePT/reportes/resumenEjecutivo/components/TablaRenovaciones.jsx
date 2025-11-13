@@ -58,7 +58,7 @@ const sCell = {
   color: "#000",
   padding: "10px",
   border: C.border,
-  fontSize: 22, // Ajustado
+  fontSize: 22,
   textAlign: "center",
   fontWeight: 500,
 };
@@ -66,9 +66,8 @@ const sCellLeft = {
   ...sCell,
   textAlign: "left",
   fontWeight: 700,
-  fontSize: 19, // Ajustado
+  fontSize: 19, 
 };
-// --- Fin de constantes de estilo ---
 
 export default function TablaRenovaciones({
   items = [],
@@ -77,7 +76,7 @@ export default function TablaRenovaciones({
   title = "Renovaciones y Vencimientos",
 }) {
   const monthKeys = getMonthKeys(base, months);
-  const DEFAULT_TARGET = 0.3; // 30% si no hay histórico
+  const DEFAULT_TARGET = 0.3;
 
   const statsByMonth = React.useMemo(() => {
     const stats = new Map();
@@ -86,10 +85,8 @@ export default function TablaRenovaciones({
       stats.set(key, { vencimientos: 0, renovaciones: 0 });
     });
 
-    // Llenar stats
     for (const item of items) {
       if (!item.fechaFin) continue;
-      // Forzamos mediodía UTC para evitar desfaces horarios
       const finDate = new Date(item.fechaFin + "T12:00:00Z");
       const key = formatMonthYear(finDate);
       if (!stats.has(key)) continue;
@@ -111,14 +108,12 @@ export default function TablaRenovaciones({
       recuperacion: { label: " Recuperación sugerida", values: [] },
     };
 
-    // Construimos arrays alineados a las columnas (mismo orden que monthKeys)
     const headers = monthKeys.map(formatMonthYear);
     const vencs = headers.map((h) => statsByMonth.get(h)?.vencimientos ?? 0);
     const renos = headers.map((h) => statsByMonth.get(h)?.renovaciones ?? 0);
     const pendientes = vencs.map((v, i) => Math.max(v - renos[i], 0));
     const tasaMes = vencs.map((v, i) => (v > 0 ? renos[i] / v : null));
 
-    // Promedio móvil de los "3 meses anteriores" (en este arreglo, los anteriores están a la derecha: i+1..i+3)
     const recSugerida = vencs.map((_, i) => {
       const prev = [];
       for (let j = i + 1; j <= i + 3 && j < tasaMes.length; j++) {
@@ -146,8 +141,27 @@ export default function TablaRenovaciones({
   };
 
   const tableRows = getTableRows();
-  const tableHeaders = monthKeys.map(formatMonthYear);
+const tableHeaders = monthKeys.map(formatMonthYear);
 
+  const currentYear = base.getFullYear();
+  const currentYearStr = String(currentYear); // p.ej. "2025"
+
+  const formatHeaderForDisplay = (fullHeaderKey) => {
+   
+    const parts = fullHeaderKey
+        .replace(".", "")      
+        .split(" ")           
+        .filter(Boolean);     
+
+    const month = parts[0] || "";
+    const year = parts[1] || "";
+
+    if (year === currentYearStr) {
+      return month.toUpperCase();
+    }
+    return fullHeaderKey.replace(".", "").toUpperCase();
+  };
+  
   return (
     <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
       <h2 style={sTitle}>{title}</h2>
@@ -158,12 +172,12 @@ export default function TablaRenovaciones({
               <th style={sHeadLeft}>
                 Métrica
               </th>
-              {tableHeaders.map((header) => (
+              {tableHeaders.map((headerKey) => (
                 <th
-                  key={header}
+                  key={headerKey}
                   style={sHead}
                 >
-                  {header}
+{formatHeaderForDisplay(headerKey)}
                 </th>
               ))}
             </tr>
