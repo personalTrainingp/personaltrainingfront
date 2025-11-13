@@ -108,7 +108,7 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
           />
         </div>
 
-        <div className='m-1'>
+        {/* <div className='m-1'>
           <label>TIPO DE ALERTA</label>
           <Select
             options={dataTipoAlerta}
@@ -120,7 +120,7 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
             value={dataTipoAlerta.find(op=>op.value===tipo_alerta)}
             required
           />
-        </div>
+        </div> */}
 
         <div className='m-1'>
           <label>USUARIOS</label>

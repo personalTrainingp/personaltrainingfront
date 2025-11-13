@@ -602,7 +602,6 @@ export const ModalCustomJornada = ({
 
   return (
     <Dialog onHide={onHide} visible={show} header={`AGREGAR JORNADA ${id_contrato}`} style={{ width: '95vw', maxWidth: 1400 }}>
-      <ConfirmDialog />
       {/* 👇 solo 2 secciones: calendario + panel derecho */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 12, minHeight: 500 }}>
         {/* Sección principal (calendarios) */}

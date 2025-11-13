@@ -2,6 +2,12 @@
 import React, { useState } from 'react'
 import { Button, FormCheck } from 'react-bootstrap'
 import Select from 'react-select'
+import "dayjs/locale/es";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import dayjs from 'dayjs';
+
+dayjs.extend(customParseFormat);
+dayjs.locale("es");
 
 export const InputText = ({label, onChange, value, nameInput, required=false, ...props}) => {
   return (
@@ -22,15 +28,48 @@ export const InputText = ({label, onChange, value, nameInput, required=false, ..
   )
 }
 
+export const InputDate = ({label, onChange, value, nameInput, required=false, ...props}) => {
+  const formattedValue = value
+    ? dayjs(value).format("dddd DD [de] MMMM [del] YYYY")
+    : "";
 
-export const InputTextArea = (props) => {
   return (
-    <textarea
-        className='form-control'
-        {
-            ...props
-        }
-    />
+    <>
+      <label className="form-label" htmlFor={nameInput}>
+        {label} {required && <span className="text-danger">*</span>} {formattedValue}
+      </label>
+      
+      <input
+        className="form-control"
+        value={value}
+        name={nameInput}
+        id={nameInput}
+        onChange={onChange}
+        required={required}
+        type='text'
+        {...props}
+      />
+    </>
+  );
+}
+
+
+export const InputTextArea = ({label, onChange, value, nameInput, required=false, ...props}) => {
+  return (
+    <>
+      <label className='form-label' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
+      <textarea
+          className='form-control'
+          value={value}
+          name={nameInput}
+          id={nameInput}
+          onChange={onChange}
+          required={required}
+          {
+              ...props
+          }
+      />
+    </>
   )
 }
 
@@ -73,7 +112,8 @@ export const InputSelect = ({label, value='', onChange, nameInput, required, opt
   const handleChange = (e)=>{
     const target = {
       name: nameInput,
-      value: e?.value
+      value: e?.value,
+      optionSelect: options.find(m=>m.value===e?.value)
     }
     onChange?.({target})
   }

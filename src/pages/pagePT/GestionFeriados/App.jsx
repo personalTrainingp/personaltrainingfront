@@ -1,23 +1,19 @@
 import { Button } from 'primereact/button'
-import React, { useState } from 'react'
-import { DataTableFeriados } from './DataTableFeriados'
-import { ModalCustomFeriados } from './ModalCustomFeriados'
-import { PageBreadcrumb } from '@/components'
+import React, { useEffect, useState } from 'react'
+import { ColorEmpresa } from '@/components/ColorEmpresa'
+import { App2 } from './App2'
 
 export const App = () => {
-  const [isOpenModalCustomFeriados, setisOpenModalCustomFeriados] = useState({isOpen: false, id: 0})
-  const onOpenModalCustomFeriados = (id)=>{
-    setisOpenModalCustomFeriados({isOpen: true, id})
-  }
-  const onCloseModalCustomFeriados = ()=>{
-    setisOpenModalCustomFeriados({isOpen: false, id: 0})
-  }
   return (
     <div>
-      <PageBreadcrumb title={'Gestion de feriados'}/>
-      <Button label='Agregar Feriados' onClick={()=>onOpenModalCustomFeriados(0)}/>
-      <DataTableFeriados list={[]}/>
-      <ModalCustomFeriados show={isOpenModalCustomFeriados.isOpen} onHide={onCloseModalCustomFeriados}/>
+      <ColorEmpresa
+        childrenChange={
+          <App2 id_empresa={598}/>
+        }
+        childrenCircus={
+          <App2 id_empresa={599}/>
+        }
+      />
     </div>
   )
 }

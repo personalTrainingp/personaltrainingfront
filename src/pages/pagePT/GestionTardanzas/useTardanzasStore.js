@@ -14,10 +14,13 @@ export const useTardanzasStore = () => {
 					id_estado: true,
 				},
 			});
+			console.log({data});
+			
 			const dataAlter = data.empleados.map((e) => {
 				return {
 					label: e.nombre_empl,
 					value: e.id_empl,
+					id_empresa: e.id_empresa,
 				};
 			});
 			setdataEmpleados(dataAlter);

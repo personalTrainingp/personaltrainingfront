@@ -27,12 +27,13 @@ export const useHorariosColaboradoresStore = () => {
 							fecha: dayjs.utc(r.fecha).format('YYYY-MM-DD 05:00:00.0000000 +00:00'),
 							horario: dayjs.utc(r.hora_inicio).format('hh:mm:ss.0000000'),
 							id_tipo_horario: r.id_tipo_horario,
-							minutos: r.minutos
+							minutos: r.minutos,
+							hi: r.hora_inicio,
 						};
 					}),
 				};
 			});
-			console.log({ data });
+			console.log({ dataAlter1: dataAlter });
 
 			dispatch(onSetDataView(dataAlter));
 		} catch (error) {

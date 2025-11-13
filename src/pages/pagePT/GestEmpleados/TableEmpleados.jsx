@@ -143,6 +143,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
     const NombresApellidosEmplBodyTemplate = (rowData) => {
         return (
             <div className="">
+                {cargoBodyTemplate(rowData)}
                 <span className='text-primary fs-2 fw-bold'>{highlightText(`${rowData.nombre_empl.split(' ')[0]} `, globalFilterValue)} </span>
                 {
                     rowData.nombre_empl.split(' ')[1] && (<br/>)
@@ -181,11 +182,21 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
             </div>
         );
     }
+    const contratoBodyTemplate = (rowData)=>{
+        const dataDocsInternos = dataDocumentosInternosEmpl.filter(e=>e.uid_location===rowData.tb_images[0]?.uid_location)
+        const cvs =dataDocsInternos.filter(doc=>doc.id_tipo_doc===1540)
+        return (
+            <div style={{fontSize: '20px'}} className={`flex align-items-center gap-2 ml-7  fw-bold ${cvs.length>0?'text-ISESAC':'text-change'}`}>
+                {cvs.length>0?'SI':'NO'}
+
+            </div>
+        );
+    }
     const dniBodyTemplate = (rowData)=>{
         const dataDocsInternos = dataDocumentosInternosEmpl.filter(e=>e.uid_location===rowData.tb_images[0]?.uid_location)
         const dnis =dataDocsInternos.filter(doc=>doc.id_tipo_doc===1518)
         return (
-            <div style={{fontSize: '20px'}} className={`flex align-items-center gap-2 ml-7  fw-bold ${dnis.length>0?'text-ISESAC':'text-change'}`}>
+            <div style={{fontSize: '20px'}} className={`flex align-items-center gap-2 ml-6  fw-bold ${dnis.length>0?'text-ISESAC':'text-change'}`}>
                 {dnis.length>0?'SI':'NO'}
 
             </div>
@@ -206,34 +217,23 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
         const urlMailCorp =`mailto:${rowData.email_corporativo}`
         // window.location.href = urlMail;
         return (
-            <div className="align-items-center flex-column ml-4">
-                <span>
-                <span>EMAIL PERSONAL: </span>
-                <br/>
-                <a href={toMailto(urlMail)}>
-                <strong>
-                    {highlightText(rowData.email_empl.split('@')[0], globalFilterValue)}
-                </strong>
-                <br/>
-                <strong>
-                    @{highlightText(rowData.email_empl.split('@')[1], globalFilterValue)}
-                </strong>
+            <div>
+                <a href={toMailto(urlMail)} style={{fontSize: '20px'}} className={`flex align-items-center gap-2 ml-7  fw-bold ${rowData.email_empl.length===0?'text-change':'text-ISESAC'}`}>
+                    {rowData.email_empl.length===0?'NO':'SI'}
                 </a>
-                <br/>
-                </span>
-                {rowData?.email_corporativo&&(
-                    <span>
-                        <span>EMAIL CORPORATIVO: </span>
-                <br/>
-                <a href={urlMailCorp}>
-                    <strong className=''>
-                        {highlightText(rowData?.email_corporativo, globalFilterValue)}
-                    </strong>
-
+            </div>
+        );
+    }
+    
+    const emailCorpBodyTemplate = (rowData) => {
+        const urlMail =`mailto:${rowData.email_empl}`
+        const urlMailCorp =`mailto:${rowData?.email_corporativo}`
+        // window.location.href = urlMail;
+        return (
+            <div>
+                <a href={toMailto(urlMailCorp)} style={{fontSize: '20px'}} className={`flex align-items-center gap-2 ml-2  fw-bold ${rowData.email_corporativo?.length===0?'text-change':'text-ISESAC'}`}>
+                    {rowData.email_corporativo?.length===0?'NO':'SI'}
                 </a>
-                <br/>
-
-                    </span>)}
             </div>
         );
     }
@@ -310,15 +310,17 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                         globalFilterFields={["id_cli", "nombres_apellidos_empl", "email_cli", "tel_cli", "distrito", "cargo_empl"]} 
                         header={header}
                         emptyMessage="SOCIOS NO ENCONTRADOS.">
-                <Column header="ID" style={{ minWidth: '2rem' }} body={idBodyTemplate}/>
-                <Column header={<div style={{fontSize: '20px'}}>FOTO</div>} filterField="id_cli" style={{ minWidth: '10rem' }} body={imagenBodyTemplate} />
-                <Column header={<div style={{fontSize: '20px'}}>CARGO</div>} style={{ minWidth: '2rem' }} body={cargoBodyTemplate}/>
-                <Column header={<div style={{fontSize: '20px'}}>NOMBRES <br/> APELLIDOS</div>} filterField="nombres_apellidos_empl" style={{ minWidth: 'auto' }} body={NombresApellidosEmplBodyTemplate}/>
-                <Column header={<div style={{fontSize: '20px'}}>CELULAR</div>} filterField={`tel_cli`} style={{ minWidth: '10rem' }} body={telefonoBodyTemplate} />
-                <Column header={<div style={{fontSize: '20px'}} className='ml-6'>EMAIL</div>} filterField={`email_cli`} style={{ minWidth: '10rem' }} body={emailBodyTemplate}/>
-                <Column header={<div style={{fontSize: '20px'}} className='ml-1'>CONTACTO <br/> EMERGENCIA</div>} style={{ minWidth: '10rem' }} body={ContactoEmergenciaBodyTemplate}/>
-                <Column header={<div style={{fontSize: '20px'}} className='ml-7'>DNI</div>} style={{ minWidth: '10rem' }} body={dniBodyTemplate}/>
-                <Column header={<div style={{fontSize: '20px'}} className='ml-7'>CV</div>} style={{ minWidth: '10rem' }} body={cvBodyTemplate}/>
+                <Column header={<div style={{fontSize: '15px'}}>ID</div>}  style={{ minWidth: '2rem' }} body={idBodyTemplate}/>
+                <Column header={<div style={{fontSize: '15px'}}>FOTO</div>} filterField="id_cli" style={{ minWidth: '8rem' }} body={imagenBodyTemplate} />
+                {/* <Column header={<div style={{fontSize: '15px'}}>CARGO</div>} style={{ minWidth: '2rem' }} body={cargoBodyTemplate}/> */}
+                <Column header={<div style={{fontSize: '15px'}}>NOMBRES <br/> APELLIDOS</div>} filterField="nombres_apellidos_empl" style={{ minWidth: 'auto' }} body={NombresApellidosEmplBodyTemplate}/>
+                <Column header={<div style={{fontSize: '15px'}}>CELULAR</div>} filterField={`tel_cli`} style={{ minWidth: '10rem' }} body={telefonoBodyTemplate} />
+                <Column header={<div style={{fontSize: '15px'}} className='ml-6'>EMAIL</div>} filterField={`email_cli`} style={{ minWidth: '5rem' }} body={emailBodyTemplate}/>
+                <Column header={<div style={{fontSize: '15px'}} className='ml-0'>CORP.</div>} filterField={`email_cli`} style={{ minWidth: '5rem' }} body={emailCorpBodyTemplate}/>
+                <Column header={<div style={{fontSize: '15px'}} className='ml-4'>CONTACTO <br/> EMERGENCIA</div>} style={{ minWidth: '3rem' }} body={ContactoEmergenciaBodyTemplate}/>
+                <Column header={<div style={{fontSize: '15px'}} className='ml-6'>DNI</div>} style={{ minWidth: '2rem' }} body={dniBodyTemplate}/>
+                <Column header={<div style={{fontSize: '15px'}} className='ml-7'>CV</div>} style={{ minWidth: '5rem' }} body={cvBodyTemplate}/>
+                <Column header={<div style={{fontSize: '15px'}} className='ml-7'>CONTRATO</div>} style={{ minWidth: '5rem' }} body={contratoBodyTemplate}/>
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
             </div>

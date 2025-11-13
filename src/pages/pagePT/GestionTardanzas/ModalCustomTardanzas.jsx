@@ -34,6 +34,7 @@ export const ModalCustomTardanzas = ({show, onHide, id, id_empresa}) => {
   }
   return (
     <Dialog visible={show} onHide={onHide} header={`AGREGAR TARDANZAS`} style={{width: '40rem'}}>
+        {JSON.stringify(id_colaborador, null, 2)}
       <form>
                 <Row>
                     <Col lg={12}>

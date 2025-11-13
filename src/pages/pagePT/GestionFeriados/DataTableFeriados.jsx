@@ -6,10 +6,7 @@ export const DataTableFeriados = ({list, onOpenModalCustomProducto, onOpenModalO
   const columns = [
     { id: 'id', header: 'ID', accessor: 'id', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
     { id: 'nombre', header: 'Nombre', accessor: 'nombre', width: 100, headerAlign: 'right', cellAlign: 'left' },
-    { id: 'fecha', header: 'Fecha', accessor: 'fecha', width: 100, headerAlign: 'right', cellAlign: 'left' },
-    { id: 'descripcion', header: 'Descripcion', accessor: 'descripcion', sortable: true, width: 70, headerAlign: 'right', cellAlign: 'right' },
-    { id: 'Tipo de feriado', header: 'tipo_feriado', accessor: 'tipo_feriado', sortable: true, width: 70, headerAlign: 'right', cellAlign: 'right' },
-    { id: 'stock', header: 'Cantidad', accessor: 'stock', sortable: true, width: 70, headerAlign: 'right', cellAlign: 'right' },
+    { id: 'fecha', header: 'Fecha', accessor: 'fechaDesde', width: 100, headerAlign: 'right', cellAlign: 'left' },
   ];
   return (
     <div>
