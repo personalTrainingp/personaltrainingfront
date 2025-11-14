@@ -59,6 +59,8 @@ export function TopControls({
   vigentesBreakdown = [],
   avataresDeProgramas = [],
   useAvatars = true,
+  tasaCambio=3.37,
+    onChangeTasa, 
 }) {
   const MESES = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
   const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
@@ -243,8 +245,30 @@ export function TopControls({
         <div style={{ ...boxStyleBase, minWidth: 160, padding: "6px 12px", gap: 8 }} title="Membresías vigentes">
           <span>SOCIOS TOTAL:&nbsp;</span>
           <span style={{ fontVariantNumeric:"tabular-nums" }}>{vigentesCount}</span>
+          
         </div>
-      </div>
+         <div style={{ ...boxStyleBase, minWidth: 160, padding: "6px 12px", gap: 8 }}>
+        <span style={{ marginLeft: 12 }}>TASA:&nbsp;</span>
+  <input
+    type="number"
+    step="0.01"
+    value={tasaCambio}
+    onChange={(e) =>
+      onChangeTasa && onChangeTasa(parseFloat(e.target.value) || 0)
+    }
+    style={{
+      width: 70,
+      border: "1px solid rgba(0,0,0,0.2)",
+      borderRadius: 4,
+      padding: "2px 6px",
+      fontWeight: 800,
+      fontSize: "1.1rem",
+      textAlign: "right",
+    }}
+  />
+</div>
+        </div>
+
     </div>
   );
 }

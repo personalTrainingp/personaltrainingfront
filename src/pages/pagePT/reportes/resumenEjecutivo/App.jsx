@@ -222,7 +222,7 @@ const pgmNameById = useMemo(() => {
   });
   return map;
 }, [dataGroup]);
-
+const [tasaCambio, setTasaCambio] = React.useState(3.37);
 const renewalsLocal = useMemo(() => {
   const today = new Date(); today.setHours(0,0,0,0);
   return (allMembresias || []).map((m, idx) => {
@@ -851,11 +851,12 @@ const originMap = {
   setCutDay={setCutDay}
   year={year}
   onUseLastDay={handleSetUltimoDiaMes}
-  // 👇 AHORA USA EL MISMO TOTAL QUE LA TABLA
   vigentesCount={vigentesTotal}
   vigentesBreakdown={vigentesBreakdown}
   avataresDeProgramas={avataresDeProgramas}
   useAvatars={true}
+   onChangeTasa={setTasaCambio}
+     tasaCambio={tasaCambio}  
 />
 
       </Col>
@@ -885,7 +886,7 @@ const originMap = {
       reservasMF={reservasMF}
         originMap={originMap}  
         selectedMonth={selectedMonth}
-          />
+  tasaCambio={tasaCambio}            />
         </div>
         <Row className="mb-3">
   <Col lg={12}>

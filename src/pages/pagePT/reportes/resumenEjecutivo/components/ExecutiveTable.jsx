@@ -45,6 +45,12 @@ const ORIGIN_SYNONYMS = {
   instagram: new Set(["693", "instagram", "ig"]),
   meta: new Set(["1515", "meta"]),
 };
+const fmtUsd = (n) =>
+  new Intl.NumberFormat("es-US", {
+    style: "currency",
+    currency: "USD"
+  }).format(Number(n || 0));
+
 const canonicalKeyFromRaw = (originMap, raw) => {
   const rawStr = String(raw ?? "").trim();
   const mapped = originMap?.[rawStr] ??
@@ -65,9 +71,6 @@ const labelFromKey = (key) => {
   if (key === "meta") return "META (FB+IG)";
   return String(key || "OTROS").replace(/_/g, " ").toUpperCase();
 };
-
-
-
 export default function ExecutiveTable({
   ventas = [],
   fechas = [],
@@ -77,17 +80,16 @@ export default function ExecutiveTable({
   reservasMF = [],
   originMap = {},
   selectedMonth,
+   tasaCambio = 3.37,
 }) {
-
-const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();  const computeMetricsForMonth = (anio, mesNombre) => {
+const selectedMonthName 
+= (MESES[selectedMonth - 1] || "").toUpperCase();  const computeMetricsForMonth = (anio, mesNombre) => {
     const mesAlias = aliasMes(String(mesNombre).toLowerCase());
     const monthIdx = MESES.indexOf(mesAlias);
     if (monthIdx < 0) return null;
-    // — al corte —
     let totalServ = 0, cantServ = 0;
     let totalProd = 0, cantProd = 0;
     let totalOtros = 0, cantOtros = 0;
-    // — mes completo —
     let totalServFull = 0, cantServFull = 0;
     let totalProdFull = 0, cantProdFull = 0;
     let totalOtrosFull = 0, cantOtrosFull = 0;
@@ -126,7 +128,6 @@ const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();  const
           ?
           "meta"
           : "otros";
-      // === MES COMPLETO ===
       for (const s of getDetalleMembresias(v)) {
         const cantidad = Number(s?.cantidad || 1);
         const linea = Number(s?.tarifa_monto || 0);
@@ -229,10 +230,9 @@ const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();  const
       mkInvTikTokUSD = 0;
     }
 
-    const FX = 3.35;
-    const mkInv = mkInvUSD * FX;
-    const mkInvMeta = mkInvMetaUSD * FX;
-    const mkInvTikTok = mkInvTikTokUSD * FX;
+    const mkInv = mkInvUSD
+    const mkInvMeta = mkInvMetaUSD
+    const mkInvTikTok = mkInvTikTokUSD * tasaCambio;
 
     const leads_por_red = mk?.leads_por_red ?? {};
     const clientes_por_red = mk?.clientes_por_red ?? {};
@@ -346,9 +346,7 @@ const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();  const
     };
   };
 
-  // === Config de orden ===
   const usePerOriginMonthOrder = true;
-  // const rankMetric = "cant"; // Ya no se usa
 
   const perMonth = fechas.map((f) => ({
     label: String(f?.label || "").toUpperCase(),
@@ -485,7 +483,6 @@ const originKeysAll = Array.from(
     octubre: 85000, noviembre: 90000, diciembre: 85000,
   };
   const sHeaderWrap = { textAlign: "center", margin: "8px 0" };
-
 const sHeaderChip = {
   display: "inline-block",
   background: cRed,
@@ -495,9 +492,8 @@ const sHeaderChip = {
   fontSize: 40,
   letterSpacing: 0.2,
   lineHeight: 1.1,
-  borderRadius: 6,     // si lo quieres cuadrado, quita esta línea
+  borderRadius: 6,     
 };
-
 const TitleChip = ({ children, style }) => (
   <div style={sHeaderWrap}>
     <span style={{ ...sHeaderChip, ...style }}>{children}</span>
@@ -583,9 +579,6 @@ const isSelectedCol = m.label === selectedMonthName;        return (
     </tr>
   ));
 };
-
-  
-  
  const TableHead = () => (
   <thead>
     <tr>
@@ -610,8 +603,7 @@ const isSelectedCol = m.label === selectedMonthName;        return (
             style={{
               ...sThLeft,
               background: cRed,
-              color: "#fff",
-          
+              color: "#fff",   
               fontSize: 20,
               textTransform: "uppercase",
             }}
@@ -704,7 +696,6 @@ const isSelectedCol = m.label === selectedMonthName;        return (
       );
     })}
   </tr>
-  
 <tr>
     <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
       % ALCANCE DE CUOTA
@@ -713,19 +704,15 @@ const isSelectedCol = m.label === selectedMonthName;        return (
       const meta = metasPorMes[m.mes] || 0;
       const total = m.metrics?.totalMes || 0;
       const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
-      const supera = alcancePct >= 100;
-      const color = supera ? "#007b00" : "#c00000";
-      const prefix = supera ? "+" : "-";
+      const color = "#007b00";
       return (
         <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
-          {prefix} {fmtNum(Math.abs(alcancePct), 2)} %
+         + {fmtNum(Math.abs(alcancePct), 2)} %
         </td>
       );
     })}
   </tr>
-
   {/* === 7. % RESTANTE PARA CUOTA === */}
- 
 <tr style={{ background: "#000", color: "#fff", fontWeight: 700 }}>
     <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
       {`VENTA TOTAL AL ${cutDay}`}
@@ -748,24 +735,16 @@ const isSelectedCol = m.label === selectedMonthName;        return (
     ))}
   </tr>
 </tbody>
-
     </table>
   );
-  
   const otherMonths = perMonth.slice(0, perMonth.length - 1);
   const lastMonth = perMonth.length > 0 ? perMonth[perMonth.length - 1] : null;
-
   const orderedOrigins = [...originKeysAll].sort((a, b) => {
-  // Venta membresías en el último mes
   const lastA = Number(lastMonth?.metrics?.byOrigin?.[a]?.total || 0);
   const lastB = Number(lastMonth?.metrics?.byOrigin?.[b]?.total || 0);
-
-  // 👇 DESCENDENTE
   if (lastA !== lastB) {
     return lastB - lastA;
   }
-
-  // Empate → usar meses anteriores
   const fallbackA = otherMonths.reduce(
     (acc, m) => acc + Number(m.metrics?.byOrigin?.[a]?.total || 0),
     0
@@ -774,38 +753,24 @@ const isSelectedCol = m.label === selectedMonthName;        return (
     (acc, m) => acc + Number(m.metrics?.byOrigin?.[b]?.total || 0),
     0
   );
-
-  // 👇 DESCENDENTE también
   if (fallbackA !== fallbackB) {
     return fallbackB - fallbackA;
   }
-
-  // Último: alfabético
   return a.localeCompare(b);
 });
-
-
-
-  
   const orderedMFPrograms = [...mfProgramKeys].sort((a, b) => {
     const lastValA = lastMonth?.metrics?.mfByProg?.[a];
     const lastValB = lastMonth?.metrics?.mfByProg?.[b];
     const lastA = Number(lastValA?.cant || 0);
     const lastB = Number(lastValB?.cant || 0);
-
     if (lastA > lastB) return -1;
     if (lastA < lastB) return 1;
-
     const fallbackA = otherMonths.reduce((acc, m) => acc + Number(m.metrics?.mfByProg?.[a]?.cant || 0), 0);
     const fallbackB = otherMonths.reduce((acc, m) => acc + Number(m.metrics?.mfByProg?.[b]?.cant || 0), 0);
-
     if (fallbackA > fallbackB) return -1;
     if (fallbackA < fallbackB) return 1;
-    
     return a.localeCompare(b);
   });
-
-
   return (
     <div style={sWrap}>
       {/* === UNA TABLA POR CADA ORIGEN === */}
@@ -823,18 +788,15 @@ const isSelectedCol = m.label === selectedMonthName;        return (
 <TitleChip>{title}</TitleChip>
               <table style={sTable}>
                 <TableHeadFor okey={okey} />
-       
                 <tbody>{renderRowsFor(okey, rows)}</tbody>
               </table>
             </div>
           );
         })
       )}
-
       {/* === MONKEYFIT POR PROGRAMA === */}
 <TitleChip style={{ marginTop: 32 ,background:"black"}}>MONKEYFIT</TitleChip>
       {orderedMFPrograms.length === 0 ? (
-       
           <TitleChip style={{ background: "#444", fontSize: 28, padding: "8px 18px" }}>
     SIN RESERVAS MONKEYFIT EN EL PERIODO
   </TitleChip>
@@ -842,21 +804,17 @@ const isSelectedCol = m.label === selectedMonthName;        return (
         orderedMFPrograms.map((pgmId) => (
           <div key={`mf-${pgmId}`} style={{ marginBottom: 24 }}>
             <div style={sHeader}>{` ${labelPgm(pgmId)}`}</div>
-            <table style={sTable}>
-
-          
+            <table style={sTable}>  
                <TableHeadFor okey={pgmId} />
               <tbody>{renderRowsFor(pgmId, rowsMFByProg(pgmId))}</tbody>
             </table>
           </div>
         ))
       )}
-
 <TitleChip>MONKEYFIT (TOTAL)</TitleChip>
       <table style={sTable}>
         <TableHeadFor okey="monkeyfit" />
         <tbody>
-        
           {renderRowsFor("monkeyfit", [
             { key: "venta_monkeyfit", label: "VENTA  AL CORTE", type: "money" },
             { key: "cantidad_reservas_monkeyfit", label: "CANTIDAD RESERVAS  AL CORTE", type: "int" },
@@ -867,41 +825,32 @@ const isSelectedCol = m.label === selectedMonthName;        return (
           ])}
         </tbody>
       </table>
-
       <div style={{ height: 32,marginTop:50 }} />
-
       <TitleChip style={{ fontSize: 28, padding: "8px 18px" }}>
   RESUMEN DE CUOTA VS VENTAS
 </TitleChip>
       <ResumenCuotaTable />
-
       <div style={{ height: 32 }} />
-
       {/* === MARKETING === */}
       <TitleChip style={{ fontSize: 28, padding: "8px 18px" }}>
   DETALLE DE INVERSIÓN EN REDES VS RESULTADOS EN LEADS
 </TitleChip>
-
-   
       <table style={sTable}>
         <TableHead />
         <tbody>
           {[
             { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
             { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
-            { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META + TIKTOK", 
-              type: "float2" },
+            { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META + TIKTOK", type: "float2" },
             { key: "mkCac", label: "COSTO ADQUISICION DE CLIENTES", type: "float2" },
             { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
             { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
             { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
-            
             { key: "mkCacMeta", label: "COSTO ADQUISICION DE CLIENTES META", type: "float2" },
             { key: "mkInvTikTok", label: "Inversion TikTok", type: "money" },
             { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
             { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
             { key: "mkCacTikTok", label: "COSTO ADQUISICION CLIENTES TIKTOK", type: "float2" },
-   
           ].map((r, i) => (
             <tr
               key={r.key + r.label}
@@ -921,36 +870,34 @@ const isSelectedCol = m.label === selectedMonthName;        return (
               >
                 {r.label}
               </td>
-
-   
               {perMonth.map((m, idx) => {
                 const val = m.metrics?.[r.key] ?? 0;
-                const txt =
-                  r.type === "money"
-                    ? fmtMoney(val)
-      
-                    : r.type === "float2"
-                      ? fmtNum(val, 2)
-                      : fmtNum(val, 0);
-                const isLast = idx === perMonth.length - 1;
+               const txt =
+  r.type === "money"
+    ? (
+        r.key === "mkInv" ||
+        r.key === "mkInvMeta"
+      )
+        ? fmtUsd(val)        
+        : fmtMoney(val)     
+    : r.type === "float2"
+      ? fmtNum(val, 2)
+      : fmtNum(val, 0);
 
-            
+                const isLast = idx === perMonth.length - 1;
                 return (
                   <td
                     key={idx}
                     style={{
                       ...sCell,
-               
                       ...(isLast
                         ? {
                           background: "#c00000",
                           color: "#fff",
-              
                           fontWeight: 700,
                           fontSize: 28,
                         }
                         : {}),
-           
                     }}
                   >
                     {txt}
@@ -959,13 +906,11 @@ const isSelectedCol = m.label === selectedMonthName;        return (
               })}
             </tr>
           ))}
-
           {/* === FILA TOTAL MES === */}
           <tr style={sRowRed}>
             <th
               style={{
                 ...sThLeft,
-         
                 background: "transparent",
                 color: cWhite,
               }}
@@ -973,13 +918,11 @@ const isSelectedCol = m.label === selectedMonthName;        return (
               VENTA TOTAL <br /> MES
             </th>
             {perMonth.map((m, idx) => (
-    
               <th
                 key={idx}
                 style={{
                   ...sThMes,
                   background: idx === perMonth.length - 1 ? "#c00000" : "transparent",
-             
                   color: "#fff",
                   fontSize: 28,
                 }}
@@ -987,16 +930,13 @@ const isSelectedCol = m.label === selectedMonthName;        return (
                 {fmtMoney(m.metrics?.totalMesFull || 0)}
               </th>
             ))}
- 
           </tr>
-
           {/* === FILA DE MESES === */}
           <tr>
             <td
               style={{
                 ...sCellBold,
                 background: "#c00000",
-      
                 color: "#fff",
                 fontWeight: 800,
                 fontSize: 24,
@@ -1004,8 +944,6 @@ const isSelectedCol = m.label === selectedMonthName;        return (
             >
               MESES
             </td>
-
-   
             {perMonth.map((m, idx) => (
               <td
                 key={`mes-${m.label}`}
@@ -1017,7 +955,6 @@ const isSelectedCol = m.label === selectedMonthName;        return (
                   textAlign: "center",
                   textTransform: "uppercase",
                 }}
-            
               >
                 {m.label}
               </td>
@@ -1025,7 +962,6 @@ const isSelectedCol = m.label === selectedMonthName;        return (
           </tr>
         </tbody>
       </table>
-
     </div>
   );
 }

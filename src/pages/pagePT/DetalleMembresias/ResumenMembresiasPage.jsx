@@ -1,6 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState, useMemo } from "react";
 import ResumenMembresias from "./index.jsx";
+      import PTApi from '@/common/api/PTApi';
 
 import { TopControls } from "@/pages/pagePT/reportes/resumenEjecutivo/components/TopControls.jsx";
 
@@ -31,54 +31,81 @@ export default function ResumenMembresiasPage() {
   }, [currentYear, currentMonth]);
 
   // === Cargar ventas desde tu API ===
-  useEffect(() => {
-    axios
-      .get("http://localhost:4000/api/venta/get-ventas/598")
-      .then((r) => {
-        const data = Array.isArray(r.data)
-          ? r.data
-          : Array.isArray(r.data?.ventas)
-          ? r.data.ventas
-          : [];
-        setVentas(data);
-      })
-      .catch((err) => console.error("Error cargando ventas:", err));
-  }, []);
+ 
+useEffect(() => {
+  let cancel = false;
 
-  return (
-    <div className="container mt-3">
-      {/* Controles de mes / initDay / cutDay */}
-      <TopControls
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-        initDay={initDay}
-        setInitDay={setInitDay}
-        cutDay={cutDay}
-        setCutDay={setCutDay}
-        year={currentYear}
-      />
+  (async () => {
+    try {
+      const { data } = await PTApi.get('/venta/get-ventas/598'); 
+      const ventas = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.ventas)
+        ? data.ventas
+        : [];
 
-      <hr />
+      if (!cancel) setVentas(ventas);
+    } catch (err) {
+      console.error('Error cargando ventas:', err);
+    }
+  })();
 
-      {/* Render de los últimos 8 meses */}
-      {meses8.map(({ year, month }) => (
-        <div key={`${year}-${month}`} style={{ marginBottom: 50 }}>
-          <h2 style={{ textAlign: "center", marginBottom: 20 }}>
-            {new Date(year, month - 1)
-              .toLocaleString("es-PE", { month: "long" })
-              .toUpperCase()}{" "}
-            {year}
-          </h2>
+  return () => {
+    cancel = true;
+  };
+}, []); 
 
-          <ResumenMembresias
-            ventas={ventas}   // ← TODAS LAS VENTAS, SIN FILTROS
-            year={year}
-            month={month}
-            initDay={initDay}
-            cutDay={cutDay}
-          />
-        </div>
-      ))}
-    </div>
-  );
+ return (
+    <div className="container-fluid mt-3"> {/* Usa container-fluid para más espacio */}
+      {/* Controles de mes / initDay / cutDay 
+      <TopControls
+        selectedMonth={selectedMonth}
+        setSelectedMonth={setSelectedMonth}
+        initDay={initDay}
+        setInitDay={setInitDay}
+        cutDay={cutDay}
+        setCutDay={setCutDay}
+        year={currentYear}
+      />
+
+      <hr />
+
+      {/* 1. Contenedor Flex con Scroll Horizontal */}
+      <div 
+        style={{ 
+          display: 'flex', 
+          flexDirection: 'row', 
+          overflowX: 'auto',
+          gap: '30px', // Espacio entre tablas
+          padding: '10px 0' 
+        }}
+      >
+        {/* Render de los últimos 8 meses */}
+        {meses8.map(({ year, month }) => (
+          <div 
+            key={`${year}-${month}`} 
+            // 2. Estilo de cada tabla individual
+            style={{ 
+              flex: '0 0 450px' // No crece, no se encoge, ancho base 450px
+            }}
+          >
+            <h2 style={{ textAlign: "center", marginBottom: 20 }}>
+              {new Date(year, month - 1)
+                .toLocaleString("es-PE", { month: "long" })
+                .toUpperCase()}{" "}
+              {year}
+            </h2>
+
+            <ResumenMembresias
+              ventas={ventas} 
+              year={year}
+              month={month}
+              initDay={initDay}
+              cutDay={cutDay}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
