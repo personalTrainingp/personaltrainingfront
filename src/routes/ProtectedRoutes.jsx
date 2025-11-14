@@ -13,6 +13,11 @@ import CrearCitasNutricion from '@/pages/pagePT/GestNutricion';
 
 
 
+const ResumenMembresiasPage = lazy(() =>
+  import('../pages/pagePT/DetalleMembresias/ResumenMembresiasPage.jsx')
+);
+
+
 const NuevaVenta = lazy(() => import('../pages/pagePT/nuevaVenta'));
 const Seguimiento = lazy(() => import('../pages/pagePT/seguimiento'));
 const TotaldeVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'));
@@ -493,6 +498,11 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/aporte-ingresos') &&
 						<Route path='aporte-ingresos' element={<AportesIngresos/>}/>
 					}
+					{
+              sections.find(e => e.url === '/resumen-membresias') &&
+               <Route path='resumen-membresias' element={<ResumenMembresiasPage  />} />
+                      }
+
 					{
 						sections.find(e=>e.url==='/configuracion-terminos') &&
 						<Route path='configuracion-terminos' element={<Terminologias/>}/>

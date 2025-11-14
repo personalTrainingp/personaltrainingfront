@@ -387,7 +387,6 @@ const monthOrderForOrigin = (okey) => {
   const hasSignal = list.some(x => Number(x.val) > 0);
   if (!hasSignal) return perMonth;
 
-  // 👇 ASCENDENTE (menor → mayor). Empate: respeta el orden original.
   list.sort((a, b) => (Number(a.val) - Number(b.val)) || (a.idx - b.idx));
 
   return list.map(x => x.m);
@@ -590,11 +589,11 @@ const isSelectedCol = m.label === selectedMonthName;        return (
  const TableHead = () => (
   <thead>
     <tr>
-      <th className="bg-black" style={{ ...sThLeft, background: cBlack }} />
+      <th  style={{ ...sThLeft, background: cRed }} />
       {perMonth.map((m, idx) => (
         <th
           key={idx}
-          style={{ ...sThMes, background: cBlack }}
+          style={{ ...sThMes, background: cRed }}
         >
           <div>{m.label}</div>
         </th>
@@ -610,7 +609,7 @@ const isSelectedCol = m.label === selectedMonthName;        return (
           <th
             style={{
               ...sThLeft,
-              background: cBlack,
+              background: cRed,
               color: "#fff",
           
               fontSize: 20,
@@ -623,7 +622,7 @@ const isSelectedCol = m.label === selectedMonthName;        return (
               style={{
      
                 ...sThMes,
-                background: cBlack,
+                background: cRed,
                 color: "#fff",
                 fontSize: 24,
               }}
@@ -846,7 +845,7 @@ const isSelectedCol = m.label === selectedMonthName;        return (
             <table style={sTable}>
 
           
-              <TableHeadFor okey={pgmId} />
+               <TableHeadFor okey={pgmId} />
               <tbody>{renderRowsFor(pgmId, rowsMFByProg(pgmId))}</tbody>
             </table>
           </div>
@@ -916,7 +915,6 @@ const isSelectedCol = m.label === selectedMonthName;        return (
                 style={{
                   ...sCellBold,
                   background: "#c00000",
- 
                   color: "#fff",
                   fontWeight: 800,
                 }}
@@ -1013,8 +1011,7 @@ const isSelectedCol = m.label === selectedMonthName;        return (
                 key={`mes-${m.label}`}
                 style={{
                   background: "#c00000",
-                  color: "#fff",
-    
+                  color: "#fff",   
                   fontWeight: 800,
                   fontSize: 25,
                   textAlign: "center",

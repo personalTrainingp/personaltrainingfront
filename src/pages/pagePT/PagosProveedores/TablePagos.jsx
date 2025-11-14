@@ -274,7 +274,6 @@ const [filtroTexto, setFiltroTexto] = useState('');
           })}
         </tbody>
 {/* <pre>
-                {JSON.stringify(contratosConPagos, null, 2)}
               </pre> */}
         {/* FOOTER TABLA PRINCIPAL */}
           <tr className={`${classNameTablePrincipal} fs-3 fw-semibold`}>

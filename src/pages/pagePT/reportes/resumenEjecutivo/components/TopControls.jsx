@@ -227,12 +227,6 @@ export function TopControls({
 
         {/* Reloj + VIGENTES + CIERRE */}
         <RealTimeClock />
-
-        <div style={{ ...boxStyleBase, minWidth: 160, padding: "6px 12px", gap: 8 }} title="Membresías vigentes">
-          <span>SOCIOS TOTAL:&nbsp;</span>
-          <span style={{ fontVariantNumeric:"tabular-nums" }}>{vigentesCount}</span>
-        </div>
-
         <button
           onClick={handleClickUseLastDay}
           className="btn btn-outline-warning"
@@ -246,6 +240,10 @@ export function TopControls({
         {(vigentesBreakdown || []).map((it, idx) => (
           <AvatarMiniBox key={idx} item={it} />
         ))}
+        <div style={{ ...boxStyleBase, minWidth: 160, padding: "6px 12px", gap: 8 }} title="Membresías vigentes">
+          <span>SOCIOS TOTAL:&nbsp;</span>
+          <span style={{ fontVariantNumeric:"tabular-nums" }}>{vigentesCount}</span>
+        </div>
       </div>
     </div>
   );
