@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Table, Button as Btn } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { Table, Button as Btn, Form, InputGroup } from 'react-bootstrap';import { useSelector } from 'react-redux';
 import { usePagoProveedoresStore } from './usePagoProveedoresStore';
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
@@ -63,7 +62,7 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
 
   // Subacordeón: abrir pagos por contrato
   const [openContrato, setOpenContrato] = useState({}); // { [id_contrato]: boolean }
-
+const [filtroTexto, setFiltroTexto] = useState('');
   useEffect(() => {
     if (!pending || !Array.isArray(images) || images.length === 0) return;
     const file = images[0];
@@ -111,12 +110,45 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
     return Array.from(map.entries()).map(([id_prov, items]) => ({ id_prov, items }));
   }, [contratosConPagos, RANGE_DATE]);
 
-  // Totales tabla principal (footer)
-  const totalesPrincipal = useMemo(() => {
-    const monto = grupos.reduce((t, g) => t + g.items.reduce((tt, it) => tt + (Number(it?.monto_contrato) || 0), 0), 0);
-    const abonos = grupos.reduce((t, g) => t + g.items.reduce((tt, it) => tt + (Number(it?.sumaPagos) || 0), 0), 0);
-    return { monto, abonos, saldo: monto - abonos };
-  }, [grupos]);
+  {/* ================== AÑADIR ESTO ================== */}
+  // 3) Filtra los grupos basados en el texto de búsqueda
+  const gruposFiltrados = useMemo(() => {
+    if (!filtroTexto) {
+      return grupos; // Sin filtro, devuelve todo
+    }
+
+    const textoBusqueda = filtroTexto.toLowerCase();
+
+    return grupos.filter(grupo => {
+      // Necesitamos los datos del proveedor para buscar
+      const proveedor = (dataProveedores ?? []).find((p) => p.id === grupo.id_prov);
+      if (!proveedor) return false;
+
+      // Define los campos por los que quieres buscar
+      const id = grupo.id_prov.toString();
+      const razon = proveedor?.razon_social_prov?.toLowerCase() || '';
+      const ruc = proveedor?.ruc_prov?.toLowerCase() || '';
+      const oficio = proveedor?.parametro_oficio?.label_param?.toLowerCase() || '';
+
+      // Retorna true si CUALQUIERA de los campos incluye el texto de búsqueda
+      return (
+        id.includes(textoBusqueda) ||
+        razon.includes(textoBusqueda) ||
+        ruc.includes(textoBusqueda) ||
+        oficio.includes(textoBusqueda)
+      );
+    });
+  }, [grupos, filtroTexto, dataProveedores]); // Dependencias
+  {/* =================================================== */}
+
+
+  // Totales tabla principal (footer)
+  const totalesPrincipal = useMemo(() => {
+    // CAMBIAR: 'grupos' por 'gruposFiltrados'
+    const monto = gruposFiltrados.reduce((t, g) => t + g.items.reduce((tt, it) => tt + (Number(it?.monto_contrato) || 0), 0), 0);
+    const abonos = gruposFiltrados.reduce((t, g) => t + g.items.reduce((tt, it) => tt + (Number(it?.sumaPagos) || 0), 0), 0);
+    return { monto, abonos, saldo: monto - abonos };
+  }, [gruposFiltrados]);
 
   const fmt = (n) => <NumberFormatMoney amount={n} />;
 
@@ -181,7 +213,16 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
           }
       </pre> */}
       <FechaRange className={classNameTablePrincipal} rangoFechas={RANGE_DATE}/>
-      
+      <InputGroup className="my-3 mx-auto" style={{ maxWidth: '500px' }}>
+        <InputGroup.Text>
+          <i className="pi pi-search"></i>
+        </InputGroup.Text>
+        <Form.Control
+          placeholder="Buscar por ID, Razón Social, RUC u Oficio..."
+          value={filtroTexto}
+          onChange={(e) => setFiltroTexto(e.target.value)}
+        />
+      </InputGroup>
       {/* Tabla principal por proveedor */}
       <Table bordered responsive hover className="align-middle">
         <thead className={classNameTablePrincipal}>
@@ -204,7 +245,7 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
           </tr>
         </thead>
         <tbody>
-          {grupos.map((grupo, index) => {
+          {gruposFiltrados.map((grupo, index) => {
             const grupoFiltro = grupo.items.filter(e => new Date(e.fecha_fin) > new Date());
             const proveedor = (dataProveedores ?? []).find((p) => p.id === grupo.id_prov);
             const razon = proveedor?.razon_social_prov ? `${grupo.id_prov} / ${proveedor?.razon_social_prov}` : `Prov #${grupo.id_prov}`;
@@ -233,7 +274,6 @@ export const TablePagos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosProv,
           })}
         </tbody>
 {/* <pre>
-                {JSON.stringify(contratosConPagos, null, 2)}
               </pre> */}
         {/* FOOTER TABLA PRINCIPAL */}
           <tr className={`${classNameTablePrincipal} fs-3 fw-semibold`}>

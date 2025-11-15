@@ -53,9 +53,6 @@ const parseDateOnly = (s) => {
   if (!m) return null;
   return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
 }
-
-
-// helper ya que lo usas en varios lados
 function getFechaFin(m) {
   return (
     parseDateOnly(m?.fec_fin_mem) ||
@@ -67,18 +64,6 @@ function getFechaFin(m) {
 
 
 const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= end);
-
-  // === arriba de tu componente App ===
-const MESES_ES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","setiembre","octubre","noviembre","diciembre"];
-const aliasMes = (m) => (m === "septiembre" ? "setiembre" : m);
-const toLimaDate = (s) => {
-  if (!s) return null;
-  let d = new Date(String(s).replace(" ", "T"));
-  if (isNaN(d)) return null;
-  const utc = d.getTime() + d.getTimezoneOffset() * 60000;
-  return new Date(utc - 5 * 60 * 60000);
-};
-
 function sumProgramRevenueForMonth(ventas = [], year, monthIdx, fromDay, toDay) {
   let total = 0;
   for (const v of ventas) {
@@ -99,18 +84,13 @@ function sumProgramRevenueForMonth(ventas = [], year, monthIdx, fromDay, toDay) 
   }
   return total;
 }
-
-
       export const App = ({ id_empresa }) => {
       const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
         const { obtenerVentas, repoVentasPorSeparado, loading } = useReporteStore();
-        const [clickServProd, setclickServProd] = useState("total");
         const { RANGE_DATE } = useSelector(e => e.DATA);
         const dispatch = useDispatch();
         const [cutDay, setCutDay] = useState(new Date().getDate()); 
         const [initDay, setInitDay] = useState(1);
-  
-  
       const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
       const year = new Date().getFullYear();
 const snapshotDate = useMemo(() => {
@@ -217,9 +197,9 @@ useEffect(() => {
         },
       });
       setReservasMF(Array.isArray(data?.rows) ? data.rows : []);
-      console.log('✅ reservasMF:', data.rows);
+      console.log(' reservasMF:', data.rows);
     } catch (err) {
-      console.error('❌ Error obteniendo reservas MF:', err);
+      console.error('Error obteniendo reservas MF:', err);
     }
   })();
 }, []);
@@ -229,30 +209,6 @@ if (!Array.isArray(dataGroup)) return [];
 return dataGroup.flatMap(pgm =>
   Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : []);
 }, [dataGroup]);
-
-const [vigResumen, setVigResumen] = useState({
-  snapshot: null, vigentes: 0, hoy: 0, porVencer: 0, vencidos: 0,
-});
-
-useEffect(() => {
-  let cancel = false;
-  (async () => {
-    try {
-      const { data } = await PTApi.get(
-        '/parametros/membresias/vigentes/resumen',
-        { params: { empresa: id_empresa || 598, year, selectedMonth, cutDay } }
-      );
-      if (!cancel) setVigResumen(data);
-    } catch (e) {
-      console.error('❌ vigentes/resumen', e);
-      if (!cancel) setVigResumen(s => ({ ...s, vigentes: 0 }));
-    }
-  })();
-  return () => { cancel = true; };
-}, [id_empresa, year, selectedMonth, cutDay]);
-
-
-
 const pgmNameById = useMemo(() => {
   const map = {};
   (Array.isArray(dataGroup) ? dataGroup : []).forEach(p => {
@@ -266,14 +222,13 @@ const pgmNameById = useMemo(() => {
   });
   return map;
 }, [dataGroup]);
-
+const [tasaCambio, setTasaCambio] = React.useState(3.37);
 const renewalsLocal = useMemo(() => {
   const today = new Date(); today.setHours(0,0,0,0);
   return (allMembresias || []).map((m, idx) => {
     const fin = getFechaFin(m);
     const diff = fin ? Math.round((fin - today) / 86400000) : null;
 
-    // intenta extraer cliente y ejecutivo desde los includes comunes
     const cli =
       m?.tb_ventum?.tb_cliente?.nombres_apellidos ||
       [m?.tb_ventum?.tb_cliente?.nombres, m?.tb_ventum?.tb_cliente?.apellidos].filter(Boolean).join(' ') ||
@@ -394,23 +349,17 @@ const advisorOriginByProg = useMemo(() => {
             }
         }
         
-        // 6. Procesar Transferencias 
         for (const v of transferencias) {
             const asesor = getAsesor(v);
             if (!asesor) continue;
             outSets[progKey][asesor].transferencias.push(v);
         }
     }
-
-    // --- Contar los resultados ---
     const outCounts = {};
     Object.entries(outSets).forEach(([progKey, asesoresObj]) => {
         outCounts[progKey] = {};
-        Object.entries(asesoresObj).forEach(([asesor, byTipo]) => {
-            
-           
+        Object.entries(asesoresObj).forEach(([asesor, byTipo]) => {      
             const otros = byTipo.canjes.length + byTipo.transferencias.length;
-
             outCounts[progKey][asesor] = {
                 nuevos: byTipo.nuevos.length,
                 renovaciones: byTipo.renovaciones.length,
@@ -427,27 +376,10 @@ const advisorOriginByProg = useMemo(() => {
     return outCounts;
 
 }, [dataGroup, progNameById]);
-
-  const allVentasFromDataGroup = useMemo(() => {
-    if (!Array.isArray(dataGroup)) return [];
-    
-   
-    const allMembresias = dataGroup.flatMap(pgm => 
-      Array.isArray(pgm?.detalle_ventaMembresium) ? pgm.detalle_ventaMembresium : []
-    );
-    
-    const allTransferencias = dataGroup.flatMap(pgm =>
-      Array.isArray(pgm?.ventas_transferencias) ? pgm.ventas_transferencias : []
-    );
-
-    return [...allMembresias, ...allTransferencias];
-  }, [dataGroup]);
 const [start, end] = useMemo(() => {
   if (!Array.isArray(RANGE_DATE) || !RANGE_DATE[0] || !RANGE_DATE[1]) return [null, null];
   return [new Date(RANGE_DATE[0]), new Date(RANGE_DATE[1])];
 }, [RANGE_DATE]);
-
-
   const originBreakdown = useMemo(() => {
     const out = {};
     const src = Array.isArray(dataGroup) ? dataGroup : [];
@@ -562,27 +494,6 @@ const dataMkt = useMemo(
         "enero","febrero","marzo","abril","mayo","junio",
         "julio","agosto","septiembre","octubre","noviembre","diciembre"
       ];
-
-      function getLastNMonths(selectedMonth, year, n = 8) {
-        const result = [];
-        let monthIdx = selectedMonth - 1; 
-        let currentYear = year;
-
-        for (let i = 0; i < n; i++) {
-          const mesNombre = MESES[monthIdx];
-          result.push({ 
-            label: mesNombre.toUpperCase(), 
-            anio: currentYear.toString(), 
-            mes: mesNombre 
-          });
-          monthIdx--;
-          if (monthIdx < 0) {
-            monthIdx = 11; 
-            currentYear--; 
-          }
-        }
-        return result.reverse(); 
-      }
       function generarResumenRanking(array) {
         const sumaMontoTotal = array.reduce((acc, row) => acc + (row?.monto || 0), 0);
         const sumaTotalSocios = array.reduce((acc, row) => acc + (row.socios || 0), 0);
@@ -648,47 +559,6 @@ const dataMkt = useMemo(
         { urlImage: "/fisio_muscle_negro.png", name_image: "FISIO MUSCLE" },
       { urlImage: "/vertikal_negro.png", name_image: "VERTIKAL CHANGE" }, 
     ];  
-const buildProductosDesdeVentas = (ventas = []) => {
-  const map = new Map();
-
-  for (const v of ventas) {
-    const prods =
-      v?.detalle_ventaProductos ||
-      v?.detalle_ventaproductos ||
-      v?.detalle_venta_productos ||
-      [];
-
-    for (const it of prods) {
-      const nombre =
-        it?.tb_producto?.nombre_producto ||
-        it?.nombre_producto ||
-        it?.nombre ||
-        "—";
-
-      const cantidad = Number(it?.cantidad ?? 1) || 1;
-      const pUnit =
-        Number(it?.tarifa_monto) ||
-        Number(it?.precio_unitario) ||
-        Number(it?.tb_producto?.prec_venta) ||
-        0;
-
-      const venta = cantidad * pUnit;
-
-      const avatar =
-        it?.tb_producto?.tb_images?.[ (it?.tb_producto?.tb_images?.length || 0) - 1 ]?.name_image ||
-        it?.tb_producto?.image ||
-        null;
-
-      const acc = map.get(nombre) || { nombre_producto: nombre, total_ventas: 0, avatar };
-      acc.total_ventas += venta;
-      if (!acc.avatar && avatar) acc.avatar = avatar; 
-      map.set(nombre, acc);
-    }
-  }
-
-  return Array.from(map.values());
-};
-
       const rankingData = (TotalDeVentasxProdServ("total")?.asesores_pago || [])
       
       .filter(item => item.monto && item.monto > 0)
@@ -899,16 +769,6 @@ const avatarByAdvisor = useMemo(() => {
   return map;
 }, [repoVentasPorSeparado?.total?.empl_monto]);
 const [renewalsApi, setRenewalsApi] = useState([]);
-
-useEffect(() => {
-  (async () => {
-const { data } = await PTApi.get(
-  '/parametros/membresias/vigentes/resumen',
-  { params: { empresa: id_empresa || 598, dias: 15 } }
-);    
-  })();
-}, [id_empresa]);
-
 useEffect(() => {
   (async () => {
     const { data } = await PTApi.get('/parametros/renovaciones/por-vencer', { params: { empresa: id_empresa || 598, dias: 15 }});
@@ -924,7 +784,6 @@ useEffect(() => {
       const { data } = await PTApi.get('/parametros/membresias/vigentes/lista', {
         params: { 
           empresa: id_empresa || 598,
-          // --- 👇 CAMBIO 1: AÑADIR ESTOS PARÁMETROS 👇 ---
           year,
           selectedMonth,
           cutDay
@@ -938,54 +797,30 @@ useEffect(() => {
     }
   })();
 }, [id_empresa, year, selectedMonth, cutDay]);
-const getProgName = (row, pgmNameById = {}) =>
-  pgmNameById?.[row?.id_pgm] ||
-  row?.plan ||
-  row?.tb_programa_training?.name_pgm ||
-  row?.tb_programa?.name_pgm ||
-  row?.tb_programaTraining?.name_pgm ||
-  "SIN PROGRAMA";
 
-const parseFinAny = (x) =>
-  parseDateOnly(x?.fechaFin) ||
-  parseDateOnly(x?.fec_fin_mem) ||
-  parseDateOnly(x?.fec_fin_mem_oftime) ||
-  parseDateOnly(x?.fec_fin_mem_viejo) ||
-  null;
-
-const mergeById = (a = [], b = []) => {
-  const map = new Map();
-  [...a, ...b].forEach((x, i) => {
-    const id = x?.id ?? x?.id_membresia ?? `tmp-${i}`;
-    if (!map.has(id)) map.set(id, x);
-  });
-  return Array.from(map.values());
-};
-
-const baseVigentes = useMemo(() => {
-  return mergeById(vigentesRows, allMembresias); 
-}, [vigentesRows, allMembresias]);
-
-const vigentesRowsSnapshot = useMemo(() => {
-  const out = [];
-  for (const r of baseVigentes) {
-    const fin = parseFinAny(r);
-    if (fin && fin.getTime() >= snapshotDate.getTime()) out.push(r);
-  }
-  return out;
-}, [baseVigentes, snapshotDate]);
-
-// Top-3 por programa (igual que ya tenías)
 const vigentesBreakdown = useMemo(() => {
   const counter = new Map();
-  for (const r of vigentesRowsSnapshot) {
-    const name = getProgName(r, pgmNameById);
+
+  for (const r of vigentesRows) {
+    // El backend ya manda "plan" (CHANGE 45, FS 45, etc.)
+    const name =
+      r?.plan ||
+      pgmNameById?.[r?.id_pgm] ||
+      r?.tb_programa_training?.name_pgm ||
+      r?.tb_programa?.name_pgm ||
+      r?.tb_programaTraining?.name_pgm ||
+      "SIN PROGRAMA";
+
     const key = norm(name);
     if (!counter.has(key)) counter.set(key, { label: name, count: 0 });
     counter.get(key).count += 1;
   }
-  return Array.from(counter.values()).sort((a,b)=>b.count-a.count).slice(0,3);
-}, [vigentesRowsSnapshot, pgmNameById]);
+
+  return Array.from(counter.values())
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
+}, [vigentesRows, pgmNameById]);
+
 
 const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte: 0 });
 const originMap = {
@@ -1006,8 +841,8 @@ const originMap = {
     {/* === CONTROLES SUPERIORES === */}
     <Row className="mb-3">
       <Col lg={12}>
-     <TopControls
-  key={`tc-${year}-${selectedMonth}-${cutDay}-${vigResumen.vigentes}-${vigentesRowsSnapshot.length}`}
+    <TopControls
+  key={`tc-${year}-${selectedMonth}-${cutDay}-${vigentesTotal}`}
   selectedMonth={selectedMonth}
   setSelectedMonth={setSelectedMonth}
   initDay={initDay}
@@ -1016,11 +851,14 @@ const originMap = {
   setCutDay={setCutDay}
   year={year}
   onUseLastDay={handleSetUltimoDiaMes}
-  vigentesCount={vigResumen.vigentes}
+  vigentesCount={vigentesTotal}
   vigentesBreakdown={vigentesBreakdown}
   avataresDeProgramas={avataresDeProgramas}
   useAvatars={true}
+   onChangeTasa={setTasaCambio}
+     tasaCambio={tasaCambio}  
 />
+
       </Col>
     </Row>  
     <Row className="mb-3">
@@ -1048,7 +886,7 @@ const originMap = {
       reservasMF={reservasMF}
         originMap={originMap}  
         selectedMonth={selectedMonth}
-          />
+  tasaCambio={tasaCambio}            />
         </div>
         <Row className="mb-3">
   <Col lg={12}>

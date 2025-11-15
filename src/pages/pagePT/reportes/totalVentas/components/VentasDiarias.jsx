@@ -284,46 +284,36 @@ ASESOR            </th>
       </td>
     </tr>
   )}
-
-  {/* Este bloque de "MONTO" no cambia */}
   {asesoresActivos.map((a) => (
     <React.Fragment key={`${a}-monto`}>
       {renderRow(a, "MONTO")}
     </React.Fragment>
   ))}
-
-  {/* Este bloque de "SOCIOS" no cambia (y ya no tiene el borde 3px) */}
   {asesoresActivos.map((a) => (
     <React.Fragment key={`${a}-socios`}>
       {renderRow(a, "SOCIOS")}
     </React.Fragment>
   ))}
-
-  {/* === TOTALES POR DÍA (VENTA) === */}
-  {/* Aquí aplicamos tu lógica */}
   {asesoresActivos.length > 0 && (
     <tr style={{ background: "#f6f6f6", fontWeight: 800 }}>
       <td style={{ border: "1px solid #000", borderTop: "4px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
       <td style={{ border: "1px solid #000", borderTop: "4px solid #000", padding: "8px 10px", fontSize: 20 }}>
           VENTA X DÍA
       </td>
-
       {days.map((d) => (
         <td
           key={`tot-mon-${d}`}
           style={{
             border: "1px solid #000",
-            borderTop: "4px solid #000", // <-- AÑADIDO
+            borderTop: "4px solid #000", 
             padding: "6px 8px",
             textAlign: "center",
             fontSize: 20,
           }}
         >
-          
           {fmtMoney(dayTotals.totMon[d] || 0)}
         </td>
       ))}
-
       {/* columnas finales */}
       <td style={{ border: "1px solid #000", borderTop: "3px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 22 }}>-
      </td>
@@ -334,16 +324,12 @@ ASESOR            </th>
       </td>
     </tr>
   )}
-
-  {/* === TOTALES POR DÍA (SOCIOS) === */}
-  {/* Esta fila no necesita el borde superior grueso */}
   {asesoresActivos.length > 0 && (
     <tr style={{ background: "#f6f6f6", fontWeight: 800 }}>
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
       <td style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 20 }}>
          SOCIOS X DÍA
       </td>
-
       {days.map((d) => (
         <td
           key={`tot-soc-${d}`}
@@ -357,8 +343,6 @@ ASESOR            </th>
           {dayTotals.totSoc[d] || 0}
         </td>
       ))}
-
-      {/* columnas finales */}
       <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center", fontSize: 25 }}>
         {dayTotals.sumaSocios}
     </td>
@@ -372,9 +356,7 @@ ASESOR            </th>
 
     )}
 </tbody>
-
       </table>
-
       <div style={{ marginTop: 6, fontSize: 12, opacity: .7 }}>
         Rango aplicado: {from}–{to} / {new Date(year, month-1).toLocaleString("es-PE", { month:"long" }).toUpperCase()} {year}
       </div>
