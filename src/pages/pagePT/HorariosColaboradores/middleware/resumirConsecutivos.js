@@ -13,9 +13,11 @@ export function resumirConsecutivos(data) {
 		if (!grupos[key]) {
 			grupos[key] = {
 				label: dia,
-				horario: item.horario?.split('.')[0],
+				horario: item.horario,
 				minutos: item.minutos,
 				data: [],
+				id_tipo_horario: item.id_tipo_horario,
+				hex: item.hex,
 			};
 		}
 
@@ -54,6 +56,8 @@ export const agruparPorHorarioYMinutos = (arr) => {
 			grupos[key] = {
 				horario: item.horario,
 				minutos: item.minutos,
+				id_tipo_horario: item.id_tipo_horario,
+				hex: item.hex,
 				labels: [],
 				items: [],
 			};
@@ -76,6 +80,8 @@ export const agruparPorHorarioYMinutos = (arr) => {
 					? 'LUNES A VIERNES'
 					: labelTexto,
 			horario: grupo.horario,
+			id_tipo_horario: grupo.id_tipo_horario,
+			hex: grupo.hex,
 			minutos: grupo.minutos,
 			horarios: generarIntervalosDesdeInicio(grupo?.horario, grupo?.minutos, 30),
 			items: grupo.items,

@@ -107,6 +107,8 @@ const getMonthsInRange = (from, to) => {
 const ModalEspecial = ({ visible, onHide, onAdd }) => {
   const [inicio, setInicio] = useState('12:00');
   const [fin, setFin] = useState('13:00');
+  const [hexTipo, sethexTipo] = useState('#');
+  const [colorhexTipo, setColorhexTipo] = useState('#');
   const [tipo, setTipo] = useState(1500);
   const [obs, setObs] = useState('');
 
@@ -135,6 +137,34 @@ const ModalEspecial = ({ visible, onHide, onAdd }) => {
           <label>Fin (HH:mm)</label>
           <input value={fin} onChange={(e) => setFin(e.target.value)} placeholder="13:00" className="p-inputtext p-component" />
         </div>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div>
+              <label>Color (hex)</label>
+              <input
+                type="text"
+                value={hexTipo}
+                onChange={(e) => {
+                  setColorhexTipo(e.target.value);
+                  sethexTipo(e.target.value);
+                }}
+                className="p-inputtext p-component"
+                placeholder="#FFE766"
+              />
+            </div>
+            <div>
+              <label>&nbsp;</label>
+              <input
+                type="color"
+                value={colorhexTipo}
+                onChange={(e) => {
+                  sethexTipo(e.target.value);
+                  setColorhexTipo(e.target.value);
+                }}
+                style={{ width: 50, height: 36, border: 'none', background: 'transparent' }}
+              />
+            </div>
+          </div>
+
         <div>
           <label>Tipo</label>
           <Dropdown options={arrayTipoJornada} value={tipo} onChange={(e) => setTipo(e.value)} />
@@ -243,7 +273,6 @@ const ModalJornada = ({
               />
             </div>
           </div>
-
           {/* duración calculada */}
           <div>
             <label>Duración (minutos)</label>

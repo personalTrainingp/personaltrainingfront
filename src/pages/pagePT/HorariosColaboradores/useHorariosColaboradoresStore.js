@@ -3,6 +3,7 @@ import { onSetDataView } from '@/store/data/dataSlice';
 import dayjs from 'dayjs';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { agruparPorHorarioYMinutos, resumirConsecutivos } from './middleware/resumirConsecutivos';
 
 export const useHorariosColaboradoresStore = () => {
 	const dispatch = useDispatch();
@@ -19,21 +20,33 @@ export const useHorariosColaboradoresStore = () => {
 					},
 				}
 			);
-			const dataAlter = data.diasLaborablesEnContrato.map((e) => {
-				return {
-					colaborador: e?.nombre_empl,
-					diasLaborables: e?._empl[0]?.contrato_empl.map((r) => {
+			const dataAlter = data.diasLaborablesEnContrato
+				.map((e) => {
+					const diasLaborables = e?._empl[0]?.contrato_empl.map((r) => {
 						return {
 							fecha: dayjs.utc(r.fecha).format('YYYY-MM-DD 05:00:00.0000000 +00:00'),
-							horario: dayjs.utc(r.hora_inicio).format('hh:mm:ss.0000000'),
+							horario: dayjs.utc(r.hora_inicio).format('HH:mm:ss.0000000'),
 							id_tipo_horario: r.id_tipo_horario,
 							minutos: r.minutos,
 							hi: r.hora_inicio,
+							hex: r.hex,
 						};
-					}),
-				};
-			});
-			console.log({ dataAlter1: dataAlter });
+					});
+					return {
+						colaborador: e?.nombre_empl,
+						diasLaborables: diasLaborables,
+					};
+				})
+				.map((m) => {
+					return {
+						...m,
+						diasLaborables: agruparPorHorarioYMinutos(
+							resumirConsecutivos(m.diasLaborables)
+						),
+					};
+				});
+
+			console.log({ dataAlter1: dataAlter, data });
 
 			dispatch(onSetDataView(dataAlter));
 		} catch (error) {

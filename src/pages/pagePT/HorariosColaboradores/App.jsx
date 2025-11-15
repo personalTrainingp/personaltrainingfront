@@ -360,9 +360,6 @@ const horarioColors = [
     <>
         <PageBreadcrumb title={'Horarios colaboradores'}/>
         <FechaRange rangoFechas={RANGE_DATE}/>
-        {/* <pre>
-          {JSON.stringify(dataView, null, 2)}
-        </pre> */}
         <HorarioMensual 
           dataRaw={dataView}
           horarioColors={horarioColors}
