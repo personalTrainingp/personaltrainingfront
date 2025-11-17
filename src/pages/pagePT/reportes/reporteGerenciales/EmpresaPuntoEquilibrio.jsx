@@ -100,7 +100,7 @@ const TableGastos = ({ data, background, textEmpresa, onOpen, totalPEN, totalUSD
               <></>
             ): (
           <tr key={i}>
-            <td colSpan={2} className="bg-porsiaca text-center fw-bolder">
+            <td colSpan={2} className="bg-porsiaca text-center fw-bolder" onClick={() => onOpen(g)}>
               <div className={`${textEmpresa} bg-porsiaca text-left`}>
                 {i + 1}. {g.grupo}
               </div>

@@ -12,6 +12,7 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { FechaRange } from '@/components/RangeCalendars/FechaRange';
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import { TabPanel, TabView } from 'primereact/tabview';
 dayjs.extend(isSameOrBefore);
 
 // Descarga segura
@@ -391,46 +392,54 @@ const [filtroTexto, setFiltroTexto] = useState('');
                         {isOpenContrato && totalPagos > 0 && (
                           <tr id={`pagos-${c.id}`}>
                             <td colSpan={11}>
-                              <div className="d-flex justify-content-between align-items-center mb-2">
-                                <div className="fw-semibold">Pagos del contrato (#{c.id}) — {totalPagos} registro(s)</div>
-                                <div className="text-end">
-                                  <small>Total pagado: <strong>{fmt(totalPagado)}</strong></small>
-                                </div>
-                              </div>
-                              <div className="d-flex justify-content-between align-items-center mb-2">
-                                <div className="fw-semibold">
-                                  <Btn onClick={() => onClickOpenModalCustomDescuentos(c?.observacion, c.id)}>AGREGAR PENALIDAD</Btn>
-                                </div>
-                              </div>
-                              <Table size="sm" bordered responsive>
-                                <thead>
-                                  <tr>
-                                    <th>ID Pago</th>
-                                    <th>Fecha Pago</th>
-                                    <th>Descripción</th>
-                                    <th>Moneda</th>
-                                    <th className="text-end">Monto</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {c.dataPagos.map((pago) => (
-                                    <tr key={pago.id}>
-                                      <td>{pago.id}</td>
-                                      <td>{pago?.fec_pago ?? '-'}</td>
-                                      <td>{pago?.descripcion ?? '-'}</td>
-                                      <td>{pago?.moneda ?? '-'}</td>
-                                      <td className="text-end">{fmt(pago?.monto)}</td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                                {/* FOOTER TABLA DE PAGOS (contrato) */}
-                                <tfoot>
-                                  <tr className={`${classNameTablePrincipal} text-white fw-semibold`}>
-                                    <td colSpan={4} className="text-end">TOTAL PAGOS:</td>
-                                    <td className="text-end">{fmt(totalPagado)}</td>
-                                  </tr>
-                                </tfoot>
-                              </Table>
+                              <TabView>
+                                <TabPanel header='PAGOS'>
+                                  <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <div className="fw-semibold">Pagos del contrato (#{c.id}) — {totalPagos} registro(s)</div>
+                                    <div className="text-end">
+                                      <small>Total pagado: <strong>{fmt(totalPagado)}</strong></small>
+                                    </div>
+                                  </div>
+                                  <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <div className="fw-semibold">
+                                      <Btn onClick={() => onClickOpenModalCustomDescuentos(c?.observacion, c.id)}>AGREGAR PENALIDAD</Btn>
+                                    </div>
+                                  </div>
+                                  <Table size="sm" bordered responsive>
+                                    <thead>
+                                      <tr>
+                                        <th>ID Pago</th>
+                                        <th>Fecha Pago</th>
+                                        <th>Descripción</th>
+                                        <th>Moneda</th>
+                                        <th className="text-end">Monto</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {c.dataPagos.map((pago) => (
+                                        <tr key={pago.id}>
+                                          <td>{pago.id}</td>
+                                          <td>{pago?.fec_pago ?? '-'}</td>
+                                          <td>{pago?.descripcion ?? '-'}</td>
+                                          <td>{pago?.moneda ?? '-'}</td>
+                                          <td className="text-end">{fmt(pago?.monto)}</td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                    {/* FOOTER TABLA DE PAGOS (contrato) */}
+                                    <tfoot>
+                                      <tr className={`${classNameTablePrincipal} text-white fw-semibold`}>
+                                        <td colSpan={4} className="text-end">TOTAL PAGOS:</td>
+                                        <td className="text-end">{fmt(totalPagado)}</td>
+                                      </tr>
+                                    </tfoot>
+                                  </Table>
+
+                                </TabPanel>
+                                <TabPanel header={'PENALIDAD'}>
+
+                                </TabPanel>
+                              </TabView>
                             </td>
                           </tr>
                         )}

@@ -64,12 +64,6 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 			[name]: value,
 		});
 	};
-	const onInputChangePrimeReact = (value, name) => {
-		setFormState({
-			...formState,
-			[name]: value.value,
-		});
-	};
 	const onFileChange = (event) => {
 		const file = event.target.files[0];
 		const name = event.target.name;
@@ -116,7 +110,6 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 			[name]: value,
 		});
 	};
-	const onInputChangeRange = (e) => {};
 	const createValidators = () => {
 		const formCheckedValues = {};
 
@@ -139,7 +132,6 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 		onInputChangeFlaticon,
 		onInputChangeButton,
 		onInputChangeFunction,
-		onInputChangeRange,
 		onInputChangeMonto,
 		valueMonto,
 		onInputChangeReactSelect,

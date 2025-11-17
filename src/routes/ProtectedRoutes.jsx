@@ -46,7 +46,6 @@ const ReportePorProgramas = lazy(()=>import('../pages/pagePT/reportes/ventasProg
 const ReporteTotalVentas = lazy(()=>import('../pages/pagePT/reportes/totalVentas'))
 const ReporteVentasAsesor = lazy(()=>import('../pages/pagePT/reportes/ventasAsesor'))
 const ReporteVentasporSemana = lazy(()=>import('../pages/pagePT/reportes/ventaPorSemana'))
-const AportesIngresos = lazy(()=>import('../pages/pagePT/GestAportesIngresos'))
 const Terminologias = lazy(()=>import('../pages/pagePT/Terminologias'))
 const ReporteEgresos = lazy(()=>import('../pages/pagePT/reportes/reporteEgresos'))
 const ReporteGerenciales = lazy(()=>import('../pages/pagePT/reportes/reporteGerenciales'))
@@ -493,10 +492,6 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/reporte') &&
 						<Route path='reporte/venta-semana' element={<ReporteVentasporSemana/>}/>
-					}
-					{
-						sections.find(e=>e.url==='/aporte-ingresos') &&
-						<Route path='aporte-ingresos' element={<AportesIngresos/>}/>
 					}
 					{
               sections.find(e => e.url === '/resumen-membresias') &&
