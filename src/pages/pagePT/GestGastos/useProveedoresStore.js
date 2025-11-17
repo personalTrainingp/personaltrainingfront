@@ -10,7 +10,7 @@ export const useProveedoresStore = () => {
 			const dataAlter = data?.contratos?.map((contrato) => {
 				return {
 					value: contrato.id,
-					label: contrato.observacion,
+					label: `${contrato.id} | ${contrato.observacion}`,
 				};
 			});
 			setdataTrabajosProv(dataAlter);
