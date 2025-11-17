@@ -5,6 +5,7 @@
       import { useVentasStore } from "./useVentasStore";
       import ExecutiveTable from "./components/ExecutiveTable";
       import { PageBreadcrumb } from "@/components";
+      import ExecutiveTable2 from "./components/executibletable2";
       import { ClientesPorOrigen } from "./components/ClientesPorOrigen";
       import { ComparativoVsActual } from "./components/ComparativoVsActual";
       import RenovacionesPorVencer from "./components/RenovacionesPorVencer";
@@ -888,20 +889,7 @@ const originMap = {
         selectedMonth={selectedMonth}
   tasaCambio={tasaCambio}            />
         </div>
-        <Row className="mb-3">
-  <Col lg={12}>
-    <RenovacionesPanel
-      id_empresa={id_empresa}
-      baseDate={new Date(year, selectedMonth - 1, 1)} 
-      months={12}             
-      beforeDays={0}       
-      afterDays={91}        
-      title="RENOVACIONES - 2025 "
-    />
-  </Col>
-</Row>
-        <div style={{ marginBottom: "32px", marginTop: "80px" }}>
-        <ClientesPorOrigen
+         <ClientesPorOrigen
   ventas={dataVentas}
   fechas={mesesSeleccionados}
   initialDay={initDay}
@@ -924,6 +912,32 @@ const originMap = {
   //  1470: "CORPORATIVOS BBVA",
   }}
 />
+        <Row className="mb-3">
+  <Col lg={12}>
+    <RenovacionesPanel
+      id_empresa={id_empresa}
+      baseDate={new Date(year, selectedMonth - 1, 1)} 
+      months={12}             
+      beforeDays={0}       
+      afterDays={91}        
+      title="RENOVACIONES - 2025 "
+      items={dataVentas}
+    />
+  </Col>
+</Row>
+<ExecutiveTable2
+  ventas={dataVentas}
+  fechas={mesesSeleccionados}
+  dataMktByMonth={dataMktByMonth}
+  initialDay={initDay}
+  cutDay={cutDay}
+  reservasMF={reservasMF}
+  originMap={originMap}
+  selectedMonth={selectedMonth}
+  tasaCambio={tasaCambio}
+/>
+        <div style={{ marginBottom: "32px", marginTop: "80px" }}>
+       
         </div>
       </Col>
       {/* === COMPARATIVOS Y GRÁFICOS === */}

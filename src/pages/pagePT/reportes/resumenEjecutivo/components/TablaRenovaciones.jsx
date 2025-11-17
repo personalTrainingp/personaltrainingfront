@@ -3,7 +3,6 @@ import React from "react";
 const formatMonthYear = (date) =>
   date.toLocaleDateString("es-ES", { month: "short", year: "numeric" });
 
-/** Genera fechas (primer día) para los últimos 'months' meses, desde base hacia atrás */
 const getMonthKeys = (baseDate, months) => {
   const keys = [];
   const base = new Date(baseDate);
@@ -11,12 +10,48 @@ const getMonthKeys = (baseDate, months) => {
   for (let i = 0; i < months; i++) {
     const monthDate = new Date(base);
     monthDate.setMonth(base.getMonth() - i);
-    keys.push(monthDate); // OJO: orden = más reciente -> más antiguo
+    keys.push(monthDate); 
   }
   return keys.reverse();
 };
+const toLimaDate = (iso) => {
+  if (!iso) return null;
+  try {
+    const d = new Date(String(iso).replace(" ", "T"));
+    if (isNaN(d)) return null;
+    const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
+    return new Date(utcMs - 5 * 60 * 60000);
+  } catch {
+    return null;
+  }
+};
 
-// --- Constantes de estilo (del archivo ClientesPorOrigen) ---
+const getMembershipItems = (v) => {
+  const items =
+    v?.detalle_ventaMembresia ??
+    v?.detalle_ventaMembresium ??
+    v?.detalle_ventamembresia ??
+    v?.detalle_venta_membresia ??
+    [];
+  return Array.isArray(items) ? items : [];
+};
+
+const hasPaidMembership = (v) =>
+  getMembershipItems(v).some(
+    (it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total) > 0
+  );
+
+const getOriginId = (v) => {
+  const tipoFactura = v?.id_tipoFactura ?? v?.tb_ventum?.id_tipoFactura;
+  if (tipoFactura === 703) return 703; // Canje
+  if (tipoFactura === 701) return 701; // Traspaso
+  if (!hasPaidMembership(v)) {
+    return 703; // Forzar a Canje si es gratis
+  }
+  return v?.id_origen ??
+    v?.tb_ventum?.id_origen ??
+    null; // Solo nos importa el id_origen
+};
 const C = {
   black: "#000",
   red: "#c00000",
@@ -70,34 +105,44 @@ const sCellLeft = {
 };
 
 export default function TablaRenovaciones({
-  items = [],
+items={items},
   base = new Date(),
   months = 8,
   title = "Renovaciones y Vencimientos",
+  
 }) {
   const monthKeys = getMonthKeys(base, months);
   const DEFAULT_TARGET = 0.3;
 
-  const statsByMonth = React.useMemo(() => {
-    const stats = new Map();
-    monthKeys.forEach((m) => {
-      const key = formatMonthYear(m);
-      stats.set(key, { vencimientos: 0, renovaciones: 0 });
-    });
+  const statsByMonth = React.useMemo(() => {
+    const stats = new Map();
+    monthKeys.forEach((m) => {
+      const key = formatMonthYear(m);
+      stats.set(key, { vencimientos: 0, renovaciones: 0 });
+    });
 
-    for (const item of items) {
-      if (!item.fechaFin) continue;
-      const finDate = new Date(item.fechaFin + "T12:00:00Z");
-      const key = formatMonthYear(finDate);
-      if (!stats.has(key)) continue;
+    for (const venta of items) {
+      const d = toLimaDate(venta?.fecha_venta);
+      if (!d) continue;
 
-      const monthStats = stats.get(key);
-      monthStats.vencimientos += 1;
-      if (item.fechaRenovacion) monthStats.renovaciones += 1;
-    }
+      const key = formatMonthYear(d);
+      if (!stats.has(key)) continue; 
 
-    return stats;
-  }, [items, monthKeys]);
+      const monthStats = stats.get(key);
+      const originId = getOriginId(venta); 
+
+      
+         if (originId !== 691 && originId !== 701 && originId !== 703) {
+         monthStats.vencimientos += 1;
+         } 
+      else if (originId === 691) {
+        monthStats.renovaciones += 1;
+      }
+    }
+
+     return stats;
+}, [items, monthKeys]);
+
 
   const getTableRows = () => {
     const rows = {
@@ -105,28 +150,17 @@ export default function TablaRenovaciones({
       porcentaje: { label: "Renovaciones %", values: [] },
       vencimientos: { label: " Vencimientos por Mes", values: [] },
       pendientes: { label: " Pendiente de Renovaciones", values: [] },
-      recuperacion: { label: " Recuperación sugerida", values: [] },
+      recuperacion: {label:"Recuperación Cartera",values:[]},
     };
 
     const headers = monthKeys.map(formatMonthYear);
-    const vencs = headers.map((h) => statsByMonth.get(h)?.vencimientos ?? 0);
+    const vencsRaws=headers.map((h) =>statsByMonth.get(h)?.vencimientos ?? 0);
+   const vencs = headers.map((h) => statsByMonth.get(h)?.vencimientos ?? 0);
     const renos = headers.map((h) => statsByMonth.get(h)?.renovaciones ?? 0);
     const pendientes = vencs.map((v, i) => Math.max(v - renos[i], 0));
-    const tasaMes = vencs.map((v, i) => (v > 0 ? renos[i] / v : null));
+const firstIdx = pendientes.findIndex((v)=> v >0);
+let acumulada=0;
 
-    const recSugerida = vencs.map((_, i) => {
-      const prev = [];
-      for (let j = i + 1; j <= i + 3 && j < tasaMes.length; j++) {
-        if (tasaMes[j] != null) prev.push(tasaMes[j]);
-      }
-      const avg = prev.length
-        ? prev.reduce((a, b) => a + b, 0) / prev.length
-        : DEFAULT_TARGET;
-      // Redondear la recuperación sugerida
-      return Math.round(pendientes[i] * avg);
-    });
-
-    // Llenamos filas
     for (let i = 0; i < headers.length; i++) {
       const porcentaje = vencs[i] > 0 ? (renos[i] / vencs[i]) * 100 : 0;
 
@@ -134,20 +168,31 @@ export default function TablaRenovaciones({
       rows.porcentaje.values.push(`${porcentaje.toFixed(1)}%`);
       rows.vencimientos.values.push(vencs[i]);
       rows.pendientes.values.push(pendientes[i]);
-      rows.recuperacion.values.push(recSugerida[i]);
-    }
 
-    return Object.values(rows);
+      if(firstIdx ===-1 || i < firstIdx){
+        rows.recuperacion.values.push(0);
+      }else{
+        if(i ===firstIdx){
+          acumulada=pendientes[i]
+        }else{
+          acumulada+=pendientes[i]
+        }
+rows.recuperacion.values.push(acumulada)
+      }
+    
+}
+            return Object.values(rows);
+
   };
 
   const tableRows = getTableRows();
 const tableHeaders = monthKeys.map(formatMonthYear);
 
   const currentYear = base.getFullYear();
-  const currentYearStr = String(currentYear); // p.ej. "2025"
+  const currentYearStr = String(currentYear);
 
   const formatHeaderForDisplay = (fullHeaderKey) => {
-   
+
     const parts = fullHeaderKey
         .replace(".", "")      
         .split(" ")           
@@ -156,7 +201,7 @@ const tableHeaders = monthKeys.map(formatMonthYear);
     const month = parts[0] || "";
     const year = parts[1] || "";
 
-    if (year === currentYearStr) {
+ if (year === currentYearStr) {
       return month.toUpperCase();
     }
     return fullHeaderKey.replace(".", "").toUpperCase();
@@ -201,11 +246,6 @@ const tableHeaders = monthKeys.map(formatMonthYear);
           </tbody>
         </table>
       </div>
-
-      <p style={{ marginTop: '1rem', padding: '0 0.5rem', fontSize: '0.75rem', color: '#333', fontStyle: 'italic' }}>
-        * Recuperación sugerida = Pendientes × promedio de tasa de renovación de los
-        3 meses anteriores (si no hay histórico, se usa 30%).
-      </p>
     </div>
   );
 }

@@ -771,7 +771,7 @@ const isSelectedCol = m.label === selectedMonthName;        return (
     if (fallbackA < fallbackB) return 1;
     return a.localeCompare(b);
   });
-  return (
+   return (
     <div style={sWrap}>
       {/* === UNA TABLA POR CADA ORIGEN === */}
       {orderedOrigins.length === 0 ? (
@@ -780,12 +780,11 @@ const isSelectedCol = m.label === selectedMonthName;        return (
         </div>
       ) : (
         orderedOrigins.map((okey) => {
-          const 
-            title = ` ${labelFromKey(okey)} `;
+          const title = ` ${labelFromKey(okey)} `;
           const rows = rowsPerOrigin(okey);
           return (
             <div key={okey} style={{ marginBottom: 24 }}>
-<TitleChip>{title}</TitleChip>
+              <TitleChip>{title}</TitleChip>
               <table style={sTable}>
                 <TableHeadFor okey={okey} />
                 <tbody>{renderRowsFor(okey, rows)}</tbody>
@@ -794,174 +793,6 @@ const isSelectedCol = m.label === selectedMonthName;        return (
           );
         })
       )}
-      {/* === MONKEYFIT POR PROGRAMA === */}
-<TitleChip style={{ marginTop: 32 ,background:"black"}}>MONKEYFIT</TitleChip>
-      {orderedMFPrograms.length === 0 ? (
-          <TitleChip style={{ background: "#444", fontSize: 28, padding: "8px 18px" }}>
-    SIN RESERVAS MONKEYFIT EN EL PERIODO
-  </TitleChip>
-      ) : (
-        orderedMFPrograms.map((pgmId) => (
-          <div key={`mf-${pgmId}`} style={{ marginBottom: 24 }}>
-            <div style={sHeader}>{` ${labelPgm(pgmId)}`}</div>
-            <table style={sTable}>  
-               <TableHeadFor okey={pgmId} />
-              <tbody>{renderRowsFor(pgmId, rowsMFByProg(pgmId))}</tbody>
-            </table>
-          </div>
-        ))
-      )}
-<TitleChip>MONKEYFIT (TOTAL)</TitleChip>
-      <table style={sTable}>
-        <TableHeadFor okey="monkeyfit" />
-        <tbody>
-          {renderRowsFor("monkeyfit", [
-            { key: "venta_monkeyfit", label: "VENTA  AL CORTE", type: "money" },
-            { key: "cantidad_reservas_monkeyfit", label: "CANTIDAD RESERVAS  AL CORTE", type: "int" },
-            { key: "ticket_medio_monkeyfit", label: "TICKET MEDIO  AL CORTE", type: "money" },
-            { key: "venta_monkeyfit_full", label: "VENTA  MES COMPLETO", type: "money" },       
-            { key: "cantidad_reservas_monkeyfit_full", label: "CANTIDAD RESERVAS  MES COMPLETO", type: "int" },
-            { key: "ticket_medio_monkeyfit_full", label: "TICKET MEDIO  MES COMPLETO", type: "money" },
-          ])}
-        </tbody>
-      </table>
-      <div style={{ height: 32,marginTop:50 }} />
-      <TitleChip style={{ fontSize: 28, padding: "8px 18px" }}>
-  RESUMEN DE CUOTA VS VENTAS
-</TitleChip>
-      <ResumenCuotaTable />
-      <div style={{ height: 32 }} />
-      {/* === MARKETING === */}
-      <TitleChip style={{ fontSize: 28, padding: "8px 18px" }}>
-  DETALLE DE INVERSIÓN EN REDES VS RESULTADOS EN LEADS
-</TitleChip>
-      <table style={sTable}>
-        <TableHead />
-        <tbody>
-          {[
-            { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
-            { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
-            { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META + TIKTOK", type: "float2" },
-            { key: "mkCac", label: "COSTO ADQUISICION DE CLIENTES", type: "float2" },
-            { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
-            { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
-            { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
-            { key: "mkCacMeta", label: "COSTO ADQUISICION DE CLIENTES META", type: "float2" },
-            { key: "mkInvTikTok", label: "Inversion TikTok", type: "money" },
-            { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
-            { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
-            { key: "mkCacTikTok", label: "COSTO ADQUISICION CLIENTES TIKTOK", type: "float2" },
-          ].map((r, i) => (
-            <tr
-              key={r.key + r.label}
-              style={{
-                borderBottom:
-                  (i + 1) % 4 === 0 ?
-                    "8px solid #000" : "1px solid #000",
-              }}
-            >
-              <td
-                style={{
-                  ...sCellBold,
-                  background: "#c00000",
-                  color: "#fff",
-                  fontWeight: 800,
-                }}
-              >
-                {r.label}
-              </td>
-              {perMonth.map((m, idx) => {
-                const val = m.metrics?.[r.key] ?? 0;
-               const txt =
-  r.type === "money"
-    ? (
-        r.key === "mkInv" ||
-        r.key === "mkInvMeta"
-      )
-        ? fmtUsd(val)        
-        : fmtMoney(val)     
-    : r.type === "float2"
-      ? fmtNum(val, 2)
-      : fmtNum(val, 0);
-
-                const isLast = idx === perMonth.length - 1;
-                return (
-                  <td
-                    key={idx}
-                    style={{
-                      ...sCell,
-                      ...(isLast
-                        ? {
-                          background: "#c00000",
-                          color: "#fff",
-                          fontWeight: 700,
-                          fontSize: 28,
-                        }
-                        : {}),
-                    }}
-                  >
-                    {txt}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-          {/* === FILA TOTAL MES === */}
-          <tr style={sRowRed}>
-            <th
-              style={{
-                ...sThLeft,
-                background: "transparent",
-                color: cWhite,
-              }}
-            >
-              VENTA TOTAL <br /> MES
-            </th>
-            {perMonth.map((m, idx) => (
-              <th
-                key={idx}
-                style={{
-                  ...sThMes,
-                  background: idx === perMonth.length - 1 ? "#c00000" : "transparent",
-                  color: "#fff",
-                  fontSize: 28,
-                }}
-              >
-                {fmtMoney(m.metrics?.totalMesFull || 0)}
-              </th>
-            ))}
-          </tr>
-          {/* === FILA DE MESES === */}
-          <tr>
-            <td
-              style={{
-                ...sCellBold,
-                background: "#c00000",
-                color: "#fff",
-                fontWeight: 800,
-                fontSize: 24,
-              }}
-            >
-              MESES
-            </td>
-            {perMonth.map((m, idx) => (
-              <td
-                key={`mes-${m.label}`}
-                style={{
-                  background: "#c00000",
-                  color: "#fff",   
-                  fontWeight: 800,
-                  fontSize: 25,
-                  textAlign: "center",
-                  textTransform: "uppercase",
-                }}
-              >
-                {m.label}
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
     </div>
   );
 }

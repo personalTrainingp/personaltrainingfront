@@ -115,7 +115,6 @@ export function TopControls({
     error: null,
   });
 
-  // === FETCH TIPO DE CAMBIO USD->PEN ===
   useEffect(() => {
     let ignore = false;
 
@@ -170,7 +169,6 @@ export function TopControls({
   const usingFallback = usdPenRate.value == null;
   const updatedLabel = formatLimaDate(usdPenRate.updatedAt);
 
-  // Avisar al padre cuando cambia el valor efectivo que se usa
   useEffect(() => {
     if (typeof onChangeTasaCambio === "function") {
       onChangeTasaCambio(displayRate);
