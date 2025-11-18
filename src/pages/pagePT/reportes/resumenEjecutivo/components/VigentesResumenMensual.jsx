@@ -29,7 +29,7 @@ const styles = {
     padding: "16px 20px",
     fontWeight: 800,
     textTransform: "uppercase",
-    fontSize: 25,
+    fontSize: 30,
   },
   table: { 
     width: "100%", 
@@ -39,7 +39,7 @@ const styles = {
     background: "#c00000",
     color: "#ffffff",
     textTransform: "uppercase", 
-    fontSize: 19 
+    fontSize: 25 
   },
   th: {
     padding: "10px 14px",
@@ -52,7 +52,7 @@ const styles = {
   td: {
     padding: "8px 14px",
     border: "1px solid #000", 
-    fontSize: 19,
+    fontSize: 25,
     textAlign: "center",
     verticalAlign: "middle",
   },
@@ -64,11 +64,11 @@ const styles = {
   footerRow: {
     background: "#f9fafb",
     fontWeight: 700,
-    height: "55px",
+    height: "65px",
     verticalAlign: "middle",
   },
   programLogo: {
-    height: "35px", 
+    height: "65px", 
     width: "auto",
     objectFit: "contain",
     display: "block"
