@@ -1020,6 +1020,7 @@ const originMap = {
       year={year}
       selectedMonth={selectedMonth}
       pgmNameById={pgmNameById}
+      avataresDeProgramas={avataresDeProgramas}
     />
   </Col>
 </Row>

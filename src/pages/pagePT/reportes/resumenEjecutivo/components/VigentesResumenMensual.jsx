@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PTApi from "@/common/api/PTApi";
 
-// Igual que en App:
 const norm = (s) =>
   String(s ?? "")
     .normalize("NFD")
@@ -15,11 +14,11 @@ const MONTH_LABELS = [
 
 const styles = {
   wrapper: {
-    border: "1px solid #dce1eb",
+    border: "1px solid #000",
     borderRadius: 12,
     overflow: "hidden",
     background: "#fff",
-    textAlign:"center",
+    textAlign: "center",
     boxShadow: "0 8px 22px rgba(15,23,42,.08)",
     marginTop: 32,
   },
@@ -31,35 +30,49 @@ const styles = {
     textTransform: "uppercase",
     fontSize: 25,
   },
-  table: { width: "100%", borderCollapse: "collapse" },
-  thead: { background: "#f3f4f6", textTransform: "uppercase", fontSize: 19 },
+  table: { 
+    width: "100%", 
+    borderCollapse: "collapse" // Importante para que los bordes no se dupliquen
+  },
+  thead: { 
+    background: "#fff", 
+    textTransform: "uppercase", 
+    fontSize: 19 
+  },
   th: {
     padding: "10px 14px",
-    borderBottom: "1px solid #e5e7eb",
+    border: "1px solid #000", // ANTES: borderBottom. AHORA: border completo
     fontWeight: 700,
     textAlign: "center",
     whiteSpace: "nowrap",
   },
   td: {
     padding: "8px 14px",
-    borderBottom: "1px solid #eef2f7",
+    border: "1px solid #000", // ANTES: borderBottom. AHORA: border completo
     fontSize: 19,
     textAlign: "center",
+    verticalAlign: "middle",
   },
   firstCol: {
     textAlign: "left",
     fontWeight: 600,
+    borderRight: "1px solid #000", // Opcional: Borde más grueso a la derecha de la 1ra columna para separar
   },
   footerRow: {
     background: "#f9fafb",
     fontWeight: 700,
   },
+  programLogo: {
+    height: "65px", 
+    width: "auto",
+    objectFit: "contain",
+    display: "block"
+  }
 };
 
 function getLastDayOfMonth(year, month1Based) {
-  return new Date(year, month1Based, 0).getDate(); // JS: month es 1..12
+  return new Date(year, month1Based, 0).getDate();
 }
-
 
 function buildColumnsConfig(year, selectedMonth) {
   const prevYear = year - 1;
@@ -96,15 +109,14 @@ function buildTableData(cols, progMatrix) {
     return {
       key,
       label: obj.label,
+      avatar: obj.avatar, // Pasamos el avatar al row
       perMonth,
       total: rowTotal,
     };
   });
 
-  // eliminar programas que quedan en 0 en esa tabla
   const filteredRows = rows.filter((r) => r.total > 0);
 
-  // totales por columna y total general
   const footer = {
     perMonth: {},
     total: 0,
@@ -126,9 +138,10 @@ export function VigentesResumenMensual({
   year,
   selectedMonth,
   pgmNameById,
+  avataresDeProgramas = [] // Recibimos los avatares aquí
 }) {
   const [loading, setLoading] = useState(false);
-  const [progMatrix, setProgMatrix] = useState({}); 
+  const [progMatrix, setProgMatrix] = useState({});
 
   const { lastYearCols, currentYearCols } = useMemo(
     () => buildColumnsConfig(year, selectedMonth),
@@ -171,6 +184,7 @@ export function VigentesResumenMensual({
 
         if (isCancelled) return;
         const nextMatrix = {};
+        
         for (const { colId, rows } of results) {
           for (const r of rows) {
             const rawName =
@@ -182,14 +196,21 @@ export function VigentesResumenMensual({
               "SIN PROGRAMA";
 
             const key = norm(rawName);
+
+            const foundAvatar = avataresDeProgramas.find(
+                (item) => item.name_image === rawName
+            );
+            const avatarUrl = foundAvatar?.urlImage || null;
+
             if (!nextMatrix[key]) {
               nextMatrix[key] = {
                 label: rawName,
+                avatar: avatarUrl, 
                 counts: {},
               };
             }
             nextMatrix[key].counts[colId] =
-              (nextMatrix[key].counts[colId] || 0) + 1; // 1 socio = 1 fila
+              (nextMatrix[key].counts[colId] || 0) + 1;
           }
         }
 
@@ -204,7 +225,7 @@ export function VigentesResumenMensual({
     return () => {
       isCancelled = true;
     };
-  }, [id_empresa, year, selectedMonth, lastYearCols, currentYearCols, pgmNameById]);
+  }, [id_empresa, year, selectedMonth, lastYearCols, currentYearCols, pgmNameById, avataresDeProgramas]);
 
   const lastYearTable = useMemo(
     () => buildTableData(lastYearCols, progMatrix),
@@ -214,8 +235,26 @@ export function VigentesResumenMensual({
     () => buildTableData(currentYearCols, progMatrix),
     [currentYearCols, progMatrix]
   );
+
+  // Función auxiliar para renderizar la celda del nombre/avatar
+  const renderNameCell = (row) => (
+      <td style={{ ...styles.td, ...styles.firstCol }}>
+        {row.avatar ? (
+           <img 
+             src={row.avatar} 
+             alt={row.label} 
+             style={styles.programLogo} 
+             title={row.label} // Tooltip con el nombre al pasar el mouse
+           />
+        ) : (
+           row.label
+        )}
+      </td>
+  );
+
   return (
     <>
+      {/* TABLA AÑO ANTERIOR */}
       <div style={styles.wrapper}>
         <div style={styles.header}>SOCIOS VIGENTES - ÚLTIMOS 4 MESES AÑO ANTERIOR</div>
         {loading && (
@@ -242,9 +281,9 @@ export function VigentesResumenMensual({
             <tbody>
               {lastYearTable.rows.map((row) => (
                 <tr key={row.key}>
-                  <td style={{ ...styles.td, ...styles.firstCol }}>
-                    {row.label}
-                  </td>
+                  {/* USAMOS LA NUEVA LÓGICA DE RENDERIZADO */}
+                  {renderNameCell(row)} 
+                  
                   {lastYearCols.map((c) => (
                     <td key={c.id} style={styles.td}>
                       {row.perMonth[c.id] || 0}
@@ -273,6 +312,7 @@ export function VigentesResumenMensual({
 
       <div style={{ height: 32 }} />
 
+      {/* TABLA AÑO ACTUAL */}
       <div style={styles.wrapper}>
         <div style={styles.header}>
           SOCIOS VIGENTES - AÑO ACTUAL ({year})
@@ -301,9 +341,9 @@ export function VigentesResumenMensual({
             <tbody>
               {currentYearTable.rows.map((row) => (
                 <tr key={row.key}>
-                  <td style={{ ...styles.td, ...styles.firstCol }}>
-                    {row.label}
-                  </td>
+                   {/* USAMOS LA NUEVA LÓGICA DE RENDERIZADO */}
+                   {renderNameCell(row)}
+
                   {currentYearCols.map((c) => (
                     <td key={c.id} style={styles.td}>
                       {row.perMonth[c.id] || 0}
