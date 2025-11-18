@@ -1,4 +1,3 @@
-// resources/js/components/TopControls.jsx
 import React, { useEffect, useState } from "react";
 
 const FALLBACK_USD_PEN_RATE = 3.37;

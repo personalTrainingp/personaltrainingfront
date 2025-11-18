@@ -345,29 +345,24 @@ const selectedMonthName
       mfByProg,
     };
   };
-
   const usePerOriginMonthOrder = true;
-
   const perMonth = fechas.map((f) => ({
     label: String(f?.label || "").toUpperCase(),
     anio: f?.anio,
     mes: String(f?.mes || "").toLowerCase(),
     metrics: computeMetricsForMonth(f?.anio, f?.mes),
   }));
-
  const valueForOriginMonth = (okey, m) => {
   if (okey === "monkeyfit") {
     const val = m?.metrics?.venta_monkeyfit;
     return Number(val || 0);
   }
-
   if (!isNaN(Number(okey))) {
     const mf = m.metrics?.mfByProg?.[okey];
     if (!mf) return -1;
     const val = mf.venta; 
     return Number(val || 0);
   }
-
   const o = m?.metrics?.byOrigin?.[okey];
   if (!o) return -1;
   return Number(o.total || 0); 
@@ -375,24 +370,17 @@ const selectedMonthName
 const monthOrderForOrigin = (okey) => {
   if (!usePerOriginMonthOrder) return perMonth;
   if (perMonth.length === 0) return [];
-
   const list = perMonth.map((m, idx) => ({
     m,
     idx,
-    val: valueForOriginMonth(okey, m)  // VENTA MEMBRESÍAS
+    val: valueForOriginMonth(okey, m) 
   }));
-
   const hasSignal = list.some(x => Number(x.val) > 0);
   if (!hasSignal) return perMonth;
-
   list.sort((a, b) => (Number(a.val) - Number(b.val)) || (a.idx - b.idx));
-
   return list.map(x => x.m);
 };
-
-
 const ORIGINS_EXCLUIR = new Set(["1470", "corporativos_bbva", "CORPORATIVOS BBVA"]);
-
 const originKeysAll = Array.from(
   new Set(perMonth.flatMap(m => Object.keys(m.metrics?.byOrigin || {})))
 )
@@ -406,25 +394,12 @@ const originKeysAll = Array.from(
     { key: `o:${okey}:ticket`, label: `TICKET MEDIO `, type: "money" },
     { key: `o:${okey}:pct`, label: `% PARTICIPACIÓN `, type: "float2" },
   ]);
-  const PGM_LABEL = {
-    2: "CHANGE 45",
-    3: "FS 45",
-    4: "FISIO MUSCLE",
-    5: "VERTIKAL CHANGE",
-  };
-  const labelPgm = (id) => PGM_LABEL[id] || `PGM ${id}`;
+
 
   const mfProgramKeys = Array.from(
     new Set(perMonth.flatMap(m => Object.keys(m.metrics?.mfByProg || {})))
   ).sort();
-  const rowsMFByProg = (pgmId) => ([
-    { key: `mf:${pgmId}:venta`, label: "VENTA ", type: "money" },
-    { key: `mf:${pgmId}:cant`, label: " RESERVAS", type: "int" },
-    { key: `mf:${pgmId}:ticket`, label: "TICKET MEDIO", type: "money" },
-    { key: `mf:${pgmId}:ventaF`, label: "VENTA  MES COMPLETO", type: "money" },
-    { key: `mf:${pgmId}:cantF`, label: " RESERVAS MES COMPLETO", type: "int" },
-    { key: `mf:${pgmId}:ticketF`, label: "TICKET MEDIO MES COMPLETO", type: "money" },
-  ]);
+
   // === estilos ===
   const cBlack = "#000000";
   const cWhite = "#ffffff";
@@ -472,17 +447,7 @@ const originKeysAll = Array.from(
     fontSize: 28,
     textAlign: "center",
   };
-  const sRowRed = {
-    background: cRed,
-    color: cWhite,
-    fontWeight: 800,
-  };
-  const metasPorMes = {
-    enero: 50000, febrero: 50000, marzo: 50000, abril: 55000, mayo: 55000, junio: 60000,
-    julio: 60000, agosto: 70000, setiembre: 75000, septiembre: 75000,
-    octubre: 85000, noviembre: 90000, diciembre: 85000,
-  };
-  const sHeaderWrap = { textAlign: "center", margin: "8px 0" };
+const sHeaderWrap = { textAlign: "center", margin: "8px 0" };
 const sHeaderChip = {
   display: "inline-block",
   background: cRed,
@@ -517,7 +482,7 @@ const TitleChip = ({ children, style }) => (
 };
 
  const renderRowsFor = (okey, rowsToRender) => {
-  const months = monthOrderForOrigin(okey);
+ const months = monthOrderForOrigin(okey);
 
   return rowsToRender.map(r => (
     <tr key={r.key + r.label}>
@@ -579,164 +544,6 @@ const isSelectedCol = m.label === selectedMonthName;        return (
     </tr>
   ));
 };
- const TableHead = () => (
-  <thead>
-    <tr>
-      <th  style={{ ...sThLeft, background: cRed }} />
-      {perMonth.map((m, idx) => (
-        <th
-          key={idx}
-          style={{ ...sThMes, background: cRed }}
-        >
-          <div>{m.label}</div>
-        </th>
-      ))}
-    </tr>
-  </thead>
-);
-
-  const ResumenCuotaTable = () => (
-    <table style={sTable}>
-      <thead>
-        <tr>
-          <th
-            style={{
-              ...sThLeft,
-              background: cRed,
-              color: "#fff",   
-              fontSize: 20,
-              textTransform: "uppercase",
-            }}
-          />
-          {perMonth.map((m, idx) => (
-            <th
-              key={idx}
-              style={{
-     
-                ...sThMes,
-                background: cRed,
-                color: "#fff",
-                fontSize: 24,
-              }}
-            >
-            
-              {m.label}
-            </th>
-          ))}
-        </tr>
-      </thead>
-
-    <tbody>
-  {/* === 3. CUOTA DEL MES === */}
-  <tr>
-    <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
-      CUOTA DEL MES
-    </td>
-    {perMonth.map((m, idx) => {
-      const meta = metasPorMes[m.mes] || 0;
-      return (
-        <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000" }}>
-          {fmtMoney(meta)}
-        </td>
-      );
-    })}
-  </tr>
-<tr>
-    <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
-      MONTO RESTANTE DE CUOTA
-    </td>
-    {perMonth.map((m, idx) => {
-      const meta = metasPorMes[m.mes] || 0;
-      const total = m.metrics?.totalMes || 0;
-      const restante = meta - total; // positivo = déficit, negativo = superávit
-      const esSurplus = restante < 0;
-      const color = esSurplus ? "#007b00" : "#c00000";
-      const prefix = esSurplus ? "+" : "-";
-      const moneyStr = fmtNum(Math.abs(restante), 2);
-      return (
-        <td key={idx} style={{ ...sCellBold, fontWeight: 700, color }}>
-          {prefix} S/ {moneyStr}
-        </td>
-      );
-    })}
-  </tr>
- <tr>
-    <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
-      % RESTANTE PARA CUOTA
-    </td>
-    {perMonth.map((m, idx) => {
-      const meta = metasPorMes[m.mes] || 0;
-      const total = m.metrics?.totalMes || 0;
-      const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
-      const restantePct = 100 - alcancePct;
-      const cumple = restantePct <= 0; // 0 o negativo = cumplido
-      const color = cumple ? "#007b00" : "#c00000";
-      const prefix = cumple ? "+" : "-";
-      const valAbs = Math.abs(restantePct);
-      return (
-        <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
-          {prefix} {fmtNum(valAbs, 2)} %
-        </td>
-      );
-    })}
-  </tr>
-  {/* === 4. MONTO DE AVANCE DE CUOTA === */}
-  <tr>
-    <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
-      MONTO DE AVANCE DE CUOTA
-    </td>
-    {perMonth.map((m, idx) => {
-      const meta = metasPorMes[m.mes] || 0;
-      const total = m.metrics?.totalMes || 0;
-      const avanceSoles = Math.min(meta, total);
-      return (
-        <td key={idx} style={{ ...sCellBold, fontWeight: 700 }}>
-           {fmtMoney(avanceSoles)}
-        </td>
-      );
-    })}
-  </tr>
-<tr>
-    <td style={{ ...sCellBold, background: cRed, color: "#fff", fontWeight: 800, fontSize: 20 }}>
-      % ALCANCE DE CUOTA
-    </td>
-    {perMonth.map((m, idx) => {
-      const meta = metasPorMes[m.mes] || 0;
-      const total = m.metrics?.totalMes || 0;
-      const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
-      const color = "#007b00";
-      return (
-        <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
-         + {fmtNum(Math.abs(alcancePct), 2)} %
-        </td>
-      );
-    })}
-  </tr>
-  {/* === 7. % RESTANTE PARA CUOTA === */}
-<tr style={{ background: "#000", color: "#fff", fontWeight: 700 }}>
-    <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
-      {`VENTA TOTAL AL ${cutDay}`}
-    </td>
-    {perMonth.map((m, idx) => (
-      <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff" }}>
-        {fmtMoney(m.metrics?.totalMes || 0)}
-      </td>
-    ))}
-  </tr>
-   {/* === 2. VENTA TOTAL MES (FULL) === */}
-  <tr style={sRowRed}>
-    <td style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
-      VENTA TOTAL MES
-    </td>
-    {perMonth.map((m, idx) => (
-      <td key={idx} style={{ ...sCellBold, background: "transparent", color: "#fff", fontWeight: 800 }}>
-        {fmtMoney(m.metrics?.totalMesFull || 0)}
-      </td>
-    ))}
-  </tr>
-</tbody>
-    </table>
-  );
   const otherMonths = perMonth.slice(0, perMonth.length - 1);
   const lastMonth = perMonth.length > 0 ? perMonth[perMonth.length - 1] : null;
   const orderedOrigins = [...originKeysAll].sort((a, b) => {

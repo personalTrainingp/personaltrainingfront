@@ -1,4 +1,3 @@
-// executibletable2.jsx
 import React from "react";
 
 const MESES = [
@@ -7,7 +6,6 @@ const MESES = [
 ];
 
 const aliasMes = (m) => (m === "septiembre" ? "setiembre" : m);
-
 const toLimaDate = (iso) => {
   if (!iso) return null;
   try {
@@ -285,7 +283,7 @@ export default function ExecutiveTable2({
       mkInvTikTokUSD = 0;
     }
 
-    const mkInv = mkInvUSD;
+    const mkInv = mkInvUSD * tasaCambio;
     const mkInvMeta = mkInvMetaUSD;
     const mkInvTikTok = mkInvTikTokUSD * tasaCambio;
 
@@ -351,41 +349,32 @@ export default function ExecutiveTable2({
         mfByProg[pgmId].cant++;
       }
     }
-
     const ticketMF = cantMF ? ventaMF / cantMF : 0;
     const ticketMFFull = cantMFFull ? ventaMFFull / cantMFFull : 0;
-
     const ticketMeta = byGroup.meta.cant
       ? byGroup.meta.total / byGroup.meta.cant
       : 0;
-
     const ticketTikTok = byGroup.tiktok.cant
       ? byGroup.tiktok.total / byGroup.tiktok.cant
       : 0;
-
     const sharePct = (x) => (totalServ > 0 ? (x / totalServ) * 100 : 0);
-
     return {
       mkInv, mkInvMeta, mkInvTikTok,
       mkLeads, mkLeadsMeta, mkLeadsTikTok,
       mkCpl, mkCplMeta, mkCplTikTok,
       mkCac, mkCacMeta: mkCacMetaExact, mkCacTikTok: mkCacTikTokExact,
-
       totalServ, cantServ, ticketServ,
       totalProd, cantProd, ticketProd,
       totalOtros, cantOtros, ticketOtros,
       totalMes: totalServ + totalProd + totalOtros + ventaMF,
-
       totalServMeta: byGroup.meta.total,
       cantServMeta: byGroup.meta.cant,
       ticketServMeta: ticketMeta,
       pctServMeta: sharePct(byGroup.meta.total),
-
       totalServTikTok: byGroup.tiktok.total,
       cantServTikTok: byGroup.tiktok.cant,
       ticketServTikTok: ticketTikTok,
       pctServTikTok: sharePct(byGroup.tiktok.total),
-
       totalServFull,
       cantServFull,
       ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
@@ -396,23 +385,18 @@ export default function ExecutiveTable2({
       cantOtrosFull,
       ticketOtrosFull: cantOtrosFull ? totalOtrosFull / cantOtrosFull : 0,
       totalMesFull: totalServFull + totalProdFull + totalOtrosFull + ventaMFFull,
-
       venta_monkeyfit: ventaMF,
       cantidad_reservas_monkeyfit: cantMF,
       ticket_medio_monkeyfit: ticketMF,
       venta_monkeyfit_full: ventaMFFull,
       cantidad_reservas_monkeyfit_full: cantMFFull,
       ticket_medio_monkeyfit_full: ticketMFFull,
-
       byOrigin,
       byOriginFull,
-
       mfByProg,
     };
   };
-
   const usePerOriginMonthOrder = true;
-
   const perMonth = fechas.map((f) => ({
     label: String(f?.label || "").toUpperCase(),
     anio: f?.anio,
@@ -994,7 +978,7 @@ export default function ExecutiveTable2({
                 const val = m.metrics?.[r.key] ?? 0;
                 const txt =
                   r.type === "money"
-                    ? r.key === "mkInv" || r.key === "mkInvMeta"
+                    ?  r.key === "mkInvMeta"
                       ? fmtUsd(val)
                       : fmtMoney(val)
                     : r.type === "float2"
