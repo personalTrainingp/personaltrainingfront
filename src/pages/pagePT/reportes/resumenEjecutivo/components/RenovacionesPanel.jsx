@@ -10,11 +10,8 @@ export default function RenovacionesPanel({
   initDay,
   cutDay,
 }) {
-
-
   return (
-    <div>
-    
+    <div>    
       <TablaRenovaciones 
         items={items} 
         months={months} 
@@ -22,6 +19,7 @@ export default function RenovacionesPanel({
         title={title} 
         initDay={initDay}
         cutDay={cutDay}
+        carteraHistoricaInicial={0}
       />
     </div>
   );

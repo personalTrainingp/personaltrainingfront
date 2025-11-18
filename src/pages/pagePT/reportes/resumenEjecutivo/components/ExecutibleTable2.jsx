@@ -1,446 +1,26 @@
 import React from "react";
-
-const MESES = [
-  "enero", "febrero", "marzo", "abril", "mayo", "junio",
-  "julio", "agosto", "setiembre", "octubre", "noviembre", "diciembre",
-];
-
-const aliasMes = (m) => (m === "septiembre" ? "setiembre" : m);
-const toLimaDate = (iso) => {
-  if (!iso) return null;
-  try {
-    const d = new Date(iso);
-    const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-    return new Date(utcMs - 5 * 60 * 60000);
-  } catch {
-    return null;
-  }
-};
-
-const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-
-const fmtMoney = (n) =>
-  new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN" })
-    .format(Number(n || 0));
-
-const fmtNum = (n, d = 0) =>
-  new Intl.NumberFormat("es-PE", {
-    minimumFractionDigits: d,
-    maximumFractionDigits: d,
-  }).format(Number(n || 0));
-
-const getDetalleProductos = (v) =>
-  v?.detalle_ventaProductos ||
-  v?.detalle_ventaproductos ||
-  v?.detalle_venta_productos ||
-  [];
-
-const getDetalleMembresias = (v) =>
-  v?.detalle_ventaMembresia ||
-  v?.detalle_venta_membresia ||
-  v?.detalle_ventamembresia ||
-  [];
-
-const getDetalleOtrosServicios = (v) =>
-  v?.detalle_ventaservicios ||
-  v?.detalle_ventaServicios ||
-  v?.detalle_servicios ||
-  v?.detalle_venta_servicios ||
-  [];
-
-const ORIGIN_SYNONYMS = {
-  tiktok: new Set(["1514", "695", "tiktok", "tik tok", "tik-tok"]),
-  facebook: new Set(["694", "facebook", "fb"]),
-  instagram: new Set(["693", "instagram", "ig"]),
-  meta: new Set(["1515", "meta"]),
-};
-
-const fmtUsd = (n) =>
-  new Intl.NumberFormat("es-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(Number(n || 0));
-
-const canonicalKeyFromRaw = (originMap, raw) => {
-  const rawStr = String(raw ?? "").trim();
-  const mapped =
-    originMap?.[rawStr] ??
-    originMap?.[Number(rawStr)] ??
-    rawStr;
-
-  const low = String(mapped).trim().toLowerCase();
-
-  for (const [key, set] of Object.entries(ORIGIN_SYNONYMS)) {
-    if (
-      set.has(low) ||
-      set.has(rawStr.toLowerCase()) ||
-      set.has(String(raw).toLowerCase())
-    ) {
-      return key;
-    }
-  }
-  return low.replace(/\s+/g, "_");
-};
-
-const labelFromKey = (key) => {
-  if (key === "tiktok") return "TIKTOK";
-  if (key === "facebook") return "FACEBOOK";
-  if (key === "instagram") return "INSTAGRAM";
-  if (key === "meta") return "META (FB+IG)";
-  return String(key || "OTROS").replace(/_/g, " ").toUpperCase();
-};
-
-export default function ExecutiveTable2({
-  ventas = [],
-  fechas = [],
-  dataMktByMonth = {},
-  initialDay = 1,
-  cutDay = 21,
-  reservasMF = [],
-  originMap = {},
-  selectedMonth,
-  tasaCambio = 3.37,
-}) {
-  const selectedMonthName =
-    (MESES[selectedMonth - 1] || "").toUpperCase();
-
-  const computeMetricsForMonth = (anio, mesNombre) => {
-    const mesAlias = aliasMes(String(mesNombre).toLowerCase());
-    const monthIdx = MESES.indexOf(mesAlias);
-    if (monthIdx < 0) return null;
-
-    let totalServ = 0, cantServ = 0;
-    let totalProd = 0, cantProd = 0;
-    let totalOtros = 0, cantOtros = 0;
-
-    let totalServFull = 0, cantServFull = 0;
-    let totalProdFull = 0, cantProdFull = 0;
-    let totalOtrosFull = 0, cantOtrosFull = 0;
-
-    const byOrigin = {};
-    const byOriginFull = {};
-    const byGroup = {
-      meta: { label: "META", total: 0, cant: 0 },
-      tiktok: { label: "TIKTOK", total: 0, cant: 0 },
-      otros: { label: "OTROS", total: 0, cant: 0 },
-    };
-    const byGroupFull = {
-      meta: { label: "META", total: 0, cant: 0 },
-      tiktok: { label: "TIKTOK", total: 0, cant: 0 },
-      otros: { label: "OTROS", total: 0, cant: 0 },
-    };
-
-    let metaServTotalCut = 0, metaServCantCut = 0;
-    let metaServTotalFull = 0, metaServCantFull = 0;
-
-    const addTo = (bucket, key, label, linea, cantidad) => {
-      if (!bucket[key]) bucket[key] = { label, total: 0, cant: 0 };
-      bucket[key].total += Number(linea || 0);
-      bucket[key].cant += Number(cantidad || 0);
-    };
-
-    const from = clamp(Number(initialDay || 1), 1, 31);
-    const lastDayMonth = new Date(Number(anio), monthIdx + 1, 0).getDate();
-    const to = clamp(Number(cutDay || lastDayMonth), from, lastDayMonth);
-
-    for (const v of ventas) {
-      const d = toLimaDate(v?.fecha_venta || v?.fecha || v?.createdAt);
-      if (!d) continue;
-      if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
-
-      const rawOrigin =
-        v?.id_origen ??
-        v?.parametro_origen?.id_param ??
-        v?.origen ??
-        v?.source ??
-        v?.canal ??
-        v?.parametro_origen?.label_param;
-
-      const oKey = canonicalKeyFromRaw(originMap, rawOrigin);
-      const oLabel = labelFromKey(oKey);
-
-      const group =
-        oKey === "tiktok"
-          ? "tiktok"
-          : (oKey === "facebook" || oKey === "instagram" || oKey === "meta")
-          ? "meta"
-          : "otros";
-
-      // MES COMPLETO
-      for (const s of getDetalleMembresias(v)) {
-        const cantidad = Number(s?.cantidad || 1);
-        const linea = Number(s?.tarifa_monto || 0);
-        totalServFull += linea;
-        cantServFull += cantidad;
-
-        if (oKey !== "meta") {
-          addTo(byOriginFull, oKey, oLabel, linea, cantidad);
-        } else {
-          metaServTotalFull += linea;
-          metaServCantFull += cantidad;
-        }
-
-        addTo(byGroupFull, group, group.toUpperCase(), linea, cantidad);
-      }
-
-      for (const p of getDetalleProductos(v)) {
-        const cantidad = Number(p?.cantidad || 1);
-        const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
-        totalProdFull += linea;
-        cantProdFull += cantidad;
-      }
-
-      for (const o of getDetalleOtrosServicios(v)) {
-        const cantidad = Number(o?.cantidad || 1);
-        const linea = Number(o?.tarifa_monto || o?.precio_unitario || 0);
-        totalOtrosFull += linea;
-        cantOtrosFull += cantidad;
-      }
-
-      // AL CORTE
-      const dia = d.getDate();
-      if (dia >= from && dia <= to) {
-        for (const s of getDetalleMembresias(v)) {
-          const cantidad = Number(s?.cantidad || 1);
-          const linea = Number(s?.tarifa_monto || 0);
-          totalServ += linea;
-          cantServ += cantidad;
-
-          if (oKey !== "meta") {
-            addTo(byOrigin, oKey, oLabel, linea, cantidad);
-          } else {
-            metaServTotalCut += linea;
-            metaServCantCut += cantidad;
-          }
-
-          addTo(byGroup, group, group.toUpperCase(), linea, cantidad);
-        }
-
-        for (const p of getDetalleProductos(v)) {
-          const cantidad = Number(p?.cantidad || 1);
-          const linea = Number(p?.tarifa_monto || p?.precio_unitario || 0);
-          totalProd += linea;
-          cantProd += cantidad;
-        }
-
-        for (const o of getDetalleOtrosServicios(v)) {
-          const cantidad = Number(o?.cantidad || 1);
-          const linea = Number(o?.tarifa_monto || o?.precio_unitario || 0);
-          totalOtros += linea;
-          cantOtros += cantidad;
-        }
-      }
-    }
-
-    const ticketServ = cantServ ? totalServ / cantServ : 0;
-    const ticketProd = cantProd ? totalProd / cantProd : 0;
-    const ticketOtros = cantOtros ? totalOtros / cantOtros : 0;
-
-    const key = `${anio}-${mesAlias}`;
-    const mk = dataMktByMonth?.[key] ?? {};
-    const por_red = mk?.por_red ?? {};
-
-    const val = (obj, k) => Number(obj?.[k] ?? 0);
-
-    const rawFB = val(por_red, "facebook");
-    const rawIG = val(por_red, "instagram");
-
-    let fbShare = 0.5, igShare = 0.5;
-    if ((rawFB + rawIG) > 0) {
-      fbShare = rawFB / (rawFB + rawIG);
-      igShare = 1 - fbShare;
-    }
-
-    if (metaServTotalCut > 0) {
-      addTo(byOrigin, "facebook", "FACEBOOK", metaServTotalCut * fbShare, metaServCantCut * fbShare);
-      addTo(byOrigin, "instagram", "INSTAGRAM", metaServTotalCut * igShare, metaServCantCut * igShare);
-    }
-    if (metaServTotalFull > 0) {
-      addTo(byOriginFull, "facebook", "FACEBOOK", metaServTotalFull * fbShare, metaServCantFull * fbShare);
-      addTo(byOriginFull, "instagram", "INSTAGRAM", metaServTotalFull * igShare, metaServCantFull * igShare);
-    }
-
-    const rawMeta = val(por_red, "1515") + val(por_red, "meta") + rawFB + rawIG;
-    const rawTikTok = val(por_red, "1514") + val(por_red, "tiktok") + val(por_red, "tik tok");
-    const invTotalRaw = Number(mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0);
-
-    let mkInvUSD = 0, mkInvMetaUSD = 0, mkInvTikTokUSD = 0;
-    const sumRaw = rawMeta + rawTikTok;
-
-    if (sumRaw > 0) {
-      const shareMeta = rawMeta / sumRaw;
-      const shareTikTok = rawTikTok / sumRaw;
-      mkInvUSD = sumRaw;
-      mkInvMetaUSD = mkInvUSD * shareMeta;
-      mkInvTikTokUSD = mkInvUSD * shareTikTok;
-    } else if (invTotalRaw > 0) {
-      mkInvUSD = invTotalRaw;
-      mkInvMetaUSD = rawMeta;
-      mkInvTikTokUSD = rawTikTok;
-    } else {
-      mkInvUSD = invTotalRaw;
-      mkInvMetaUSD = 0;
-      mkInvTikTokUSD = 0;
-    }
-
-    const mkInv = mkInvUSD * tasaCambio;
-    const mkInvMeta = mkInvMetaUSD;
-    const mkInvTikTok = mkInvTikTokUSD * tasaCambio;
-
-    const leads_por_red = mk?.leads_por_red ?? {};
-    const clientes_por_red = mk?.clientes_por_red ?? {};
-
-    const sumFrom = (obj, keys) =>
-      keys.reduce((a, k) => a + Number(obj?.[k] ?? 0), 0);
-
-    const mkLeadsMeta = sumFrom(leads_por_red, ["1515", "meta", "facebook", "instagram"]);
-    const mkLeadsTikTok = sumFrom(leads_por_red, ["1514", "tiktok", "tik tok"]);
-    const mkLeads = mkLeadsMeta + mkLeadsTikTok;
-
-    const clientesMeta = sumFrom(clientes_por_red, ["1515", "meta", "facebook", "instagram"]) || mkLeadsMeta;
-    const clientesTikTok = sumFrom(clientes_por_red, ["1514", "tiktok", "tik tok"]) || mkLeadsTikTok;
-
-    const safeDiv0 = (n, d) => (Number(d) > 0 ? Number(n) / Number(d) : 0);
-
-    const mkCpl = safeDiv0(mkInv, mkLeads);
-    const mkCplMeta = safeDiv0(mkInvMeta, mkLeadsMeta);
-    const mkCplTikTok = safeDiv0(mkInvTikTok, mkLeadsTikTok);
-
-    const clientesDigitales = Number(mk?.clientes_digitales ?? 0);
-    const mkCac = safeDiv0(mkInv, clientesDigitales);
-    const mkCacMetaExact = safeDiv0(mkInvMeta, clientesMeta);
-    const mkCacTikTokExact = safeDiv0(mkInvTikTok, clientesTikTok);
-
-    let ventaMF = 0, cantMF = 0;
-    let ventaMFFull = 0, cantMFFull = 0;
-
-    const mfByProg = {};
-
-    for (const r of reservasMF) {
-      if (!r?.flag) continue;
-
-      const d = toLimaDate(r?.fecha || r?.createdAt);
-      if (!d) continue;
-      if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
-
-      const estado = String(r?.estado?.label_param || "").toLowerCase();
-      const ok = ["completada", "confirmada", "pagada", "no pagada", "reprogramada"]
-        .some(e => estado.includes(e));
-      if (!ok) continue;
-
-      const monto = Number(r?.monto_total || 0);
-      const pgmId = String(r?.id_pgm || "SIN_PGM");
-      if (!mfByProg[pgmId]) {
-        mfByProg[pgmId] = { venta: 0, cant: 0, ventaFull: 0, cantFull: 0 };
-      }
-
-      // MES COMPLETO
-      ventaMFFull += monto;
-      cantMFFull++;
-      mfByProg[pgmId].ventaFull += monto;
-      mfByProg[pgmId].cantFull++;
-
-      // AL CORTE
-      const dia = d.getDate();
-      if (dia >= from && dia <= to) {
-        ventaMF += monto;
-        cantMF++;
-        mfByProg[pgmId].venta += monto;
-        mfByProg[pgmId].cant++;
-      }
-    }
-    const ticketMF = cantMF ? ventaMF / cantMF : 0;
-    const ticketMFFull = cantMFFull ? ventaMFFull / cantMFFull : 0;
-    const ticketMeta = byGroup.meta.cant
-      ? byGroup.meta.total / byGroup.meta.cant
-      : 0;
-    const ticketTikTok = byGroup.tiktok.cant
-      ? byGroup.tiktok.total / byGroup.tiktok.cant
-      : 0;
-    const sharePct = (x) => (totalServ > 0 ? (x / totalServ) * 100 : 0);
-    return {
-      mkInv, mkInvMeta, mkInvTikTok,
-      mkLeads, mkLeadsMeta, mkLeadsTikTok,
-      mkCpl, mkCplMeta, mkCplTikTok,
-      mkCac, mkCacMeta: mkCacMetaExact, mkCacTikTok: mkCacTikTokExact,
-      totalServ, cantServ, ticketServ,
-      totalProd, cantProd, ticketProd,
-      totalOtros, cantOtros, ticketOtros,
-      totalMes: totalServ + totalProd + totalOtros + ventaMF,
-      totalServMeta: byGroup.meta.total,
-      cantServMeta: byGroup.meta.cant,
-      ticketServMeta: ticketMeta,
-      pctServMeta: sharePct(byGroup.meta.total),
-      totalServTikTok: byGroup.tiktok.total,
-      cantServTikTok: byGroup.tiktok.cant,
-      ticketServTikTok: ticketTikTok,
-      pctServTikTok: sharePct(byGroup.tiktok.total),
-      totalServFull,
-      cantServFull,
-      ticketServFull: cantServFull ? totalServFull / cantServFull : 0,
-      totalProdFull,
-      cantProdFull,
-      ticketProdFull: cantProdFull ? totalProdFull / cantProdFull : 0,
-      totalOtrosFull,
-      cantOtrosFull,
-      ticketOtrosFull: cantOtrosFull ? totalOtrosFull / cantOtrosFull : 0,
-      totalMesFull: totalServFull + totalProdFull + totalOtrosFull + ventaMFFull,
-      venta_monkeyfit: ventaMF,
-      cantidad_reservas_monkeyfit: cantMF,
-      ticket_medio_monkeyfit: ticketMF,
-      venta_monkeyfit_full: ventaMFFull,
-      cantidad_reservas_monkeyfit_full: cantMFFull,
-      ticket_medio_monkeyfit_full: ticketMFFull,
-      byOrigin,
-      byOriginFull,
-      mfByProg,
-    };
-  };
-  const usePerOriginMonthOrder = true;
-  const perMonth = fechas.map((f) => ({
-    label: String(f?.label || "").toUpperCase(),
-    anio: f?.anio,
-    mes: String(f?.mes || "").toLowerCase(),
-    metrics: computeMetricsForMonth(f?.anio, f?.mes),
-  }));
-
-  const valueForOriginMonth = (okey, m) => {
-    if (okey === "monkeyfit") {
-      const val = m?.metrics?.venta_monkeyfit;
-      return Number(val || 0);
-    }
-
-    if (!isNaN(Number(okey))) {
-      const mf = m.metrics?.mfByProg?.[okey];
-      if (!mf) return -1;
-      const val = mf.venta;
-      return Number(val || 0);
-    }
-
-    const o = m?.metrics?.byOrigin?.[okey];
-    if (!o) return -1;
-    return Number(o.total || 0);
-  };
-
-  const monthOrderForOrigin = (okey) => {
-    if (!usePerOriginMonthOrder) return perMonth;
-    if (perMonth.length === 0) return [];
-
-    const list = perMonth.map((m, idx) => ({
-      m,
-      idx,
-      val: valueForOriginMonth(okey, m),
-    }));
-
-    const hasSignal = list.some((x) => Number(x.val) > 0);
-    if (!hasSignal) return perMonth;
-
-    list.sort(
-      (a, b) => Number(a.val) - Number(b.val) || a.idx - b.idx
-    );
-
-    return list.map((x) => x.m);
-  };
+import {
+  buildExecutiveTableData,
+  fmtMoney,
+  fmtNum,
+} from "../adapters/executibleLogic";
+
+export default function ExecutiveTable2(props) {
+  const {
+    selectedMonthName,
+    perMonth,
+    monthOrderForOrigin,
+    orderedMFPrograms,
+  } = buildExecutiveTableData(props);
+
+  const { cutDay } = props;
+
+  // --- helpers SOLO de vista ---
+  const fmtUsd = (n) =>
+    new Intl.NumberFormat("es-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(Number(n || 0));
 
   // === estilos ===
   const cBlack = "#000000";
@@ -503,12 +83,6 @@ export default function ExecutiveTable2({
     fontWeight: 800,
   };
 
-  const metasPorMes = {
-    enero: 50000, febrero: 50000, marzo: 50000, abril: 55000, mayo: 55000, junio: 60000,
-    julio: 60000, agosto: 70000, setiembre: 75000, septiembre: 75000,
-    octubre: 85000, noviembre: 90000, diciembre: 85000,
-  };
-
   const sHeaderWrap = { textAlign: "center", margin: "8px 0" };
 
   const sHeaderChip = {
@@ -528,6 +102,23 @@ export default function ExecutiveTable2({
       <span style={{ ...sHeaderChip, ...style }}>{children}</span>
     </div>
   );
+
+  // metas por mes (solo vista)
+  const metasPorMes = {
+    enero: 50000,
+    febrero: 50000,
+    marzo: 50000,
+    abril: 55000,
+    mayo: 55000,
+    junio: 60000,
+    julio: 60000,
+    agosto: 70000,
+    setiembre: 75000,
+    septiembre: 75000,
+    octubre: 85000,
+    noviembre: 90000,
+    diciembre: 85000,
+  };
 
   const TableHeadFor = ({ okey }) => {
     const months = monthOrderForOrigin(okey);
@@ -550,7 +141,14 @@ export default function ExecutiveTable2({
 
     return rowsToRender.map((r) => (
       <tr key={r.key + r.label}>
-        <td style={{ ...sCellBold, background: "#c00000", color: "#fff", fontWeight: 800 }}>
+        <td
+          style={{
+            ...sCellBold,
+            background: "#c00000",
+            color: "#fff",
+            fontWeight: 800,
+          }}
+        >
           {r.label}
         </td>
 
@@ -559,31 +157,36 @@ export default function ExecutiveTable2({
           let isPct = false;
 
           if (okey === "monkeyfit") {
+            // campos directos del metrics: venta_monkeyfit, ticket_medio_monkeyfit, etc.
             val = m.metrics?.[r.key] ?? 0;
           } else if (!isNaN(Number(okey))) {
+            // por programa MF
             const [, pgmId, campo] = r.key.split(":");
             const mf = m.metrics?.mfByProg?.[pgmId] || {};
             if (campo === "venta") val = mf.venta ?? 0;
             else if (campo === "cant") val = mf.cant ?? 0;
-            else if (campo === "ticket") val = mf.cant ? mf.venta / mf.cant : 0;
+            else if (campo === "ticket")
+              val = mf.cant ? mf.venta / mf.cant : 0;
             else if (campo === "ventaF") val = mf.ventaFull ?? 0;
             else if (campo === "cantF") val = mf.cantFull ?? 0;
-            else if (campo === "ticketF") val = mf.cantFull ? mf.ventaFull / mf.cantFull : 0;
-          } else {
-            if (r.key.startsWith("o:")) {
-              const [, _ok, campo] = r.key.split(":");
-              const o = m.metrics?.byOrigin?.[_ok];
-              if (campo === "total") val = o?.total ?? 0;
-              else if (campo === "cant") val = o?.cant ?? 0;
-              else if (campo === "ticket") val = o?.cant ? (o.total / o.cant) : 0;
-              else if (campo === "pct") {
-                const base = m.metrics?.totalServ || 0;
-                val = base > 0 ? ((o?.total ?? 0) / base) * 100 : 0;
-                isPct = true;
-              }
-            } else {
-              val = m.metrics?.[r.key] ?? 0;
+            else if (campo === "ticketF")
+              val = mf.cantFull ? mf.ventaFull / mf.cantFull : 0;
+          } else if (r.key.startsWith("o:")) {
+            // (si algún día usas orígenes aquí)
+            const [, _ok, campo] = r.key.split(":");
+            const o = m.metrics?.byOrigin?.[_ok];
+            if (campo === "total") val = o?.total ?? 0;
+            else if (campo === "cant") val = o?.cant ?? 0;
+            else if (campo === "ticket")
+              val = o?.cant ? o.total / o.cant : 0;
+            else if (campo === "pct") {
+              const base = m.metrics?.totalServ || 0;
+              val = base > 0 ? ((o?.total ?? 0) / base) * 100 : 0;
+              isPct = true;
             }
+          } else {
+            // cualquier otro campo directo en metrics
+            val = m.metrics?.[r.key] ?? 0;
           }
 
           const txt = isPct
@@ -602,7 +205,12 @@ export default function ExecutiveTable2({
               style={{
                 ...sCell,
                 ...(isSelectedCol
-                  ? { background: "#c00000", color: "#fff", fontWeight: 700, fontSize: 28 }
+                  ? {
+                      background: "#c00000",
+                      color: "#fff",
+                      fontWeight: 700,
+                      fontSize: 28,
+                    }
                   : {}),
               }}
             >
@@ -646,7 +254,11 @@ export default function ExecutiveTable2({
     { key: `mf:${pgmId}:ticket`, label: "TICKET MEDIO", type: "money" },
     { key: `mf:${pgmId}:ventaF`, label: "VENTA  MES COMPLETO", type: "money" },
     { key: `mf:${pgmId}:cantF`, label: " RESERVAS MES COMPLETO", type: "int" },
-    { key: `mf:${pgmId}:ticketF`, label: "TICKET MEDIO MES COMPLETO", type: "money" },
+    {
+      key: `mf:${pgmId}:ticketF`,
+      label: "TICKET MEDIO MES COMPLETO",
+      type: "money",
+    },
   ];
 
   const ResumenCuotaTable = () => (
@@ -803,9 +415,15 @@ export default function ExecutiveTable2({
             const meta = metasPorMes[m.mes] || 0;
             const total = m.metrics?.totalMes || 0;
             const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
-            const color = "#007b00";
             return (
-              <td key={idx} style={{ ...sCell, fontWeight: 700, color }}>
+              <td
+                key={idx}
+                style={{
+                  ...sCell,
+                  fontWeight: 700,
+                  color: "#007b00",
+                }}
+              >
                 + {fmtNum(Math.abs(alcancePct), 2)} %
               </td>
             );
@@ -867,7 +485,8 @@ export default function ExecutiveTable2({
   const otherMonths = perMonth.slice(0, perMonth.length - 1);
   const lastMonth = perMonth.length > 0 ? perMonth[perMonth.length - 1] : null;
 
-  const orderedMFPrograms = [...mfProgramKeys].sort((a, b) => {
+  // ya tienes orderedMFPrograms desde la lógica, pero por si quieres recalcular aquí:
+  const orderedMF = orderedMFPrograms.length ? orderedMFPrograms : [...mfProgramKeys].sort((a, b) => {
     const lastValA = lastMonth?.metrics?.mfByProg?.[a];
     const lastValB = lastMonth?.metrics?.mfByProg?.[b];
     const lastA = Number(lastValA?.cant || 0);
@@ -889,17 +508,17 @@ export default function ExecutiveTable2({
 
   return (
     <div style={sWrap}>
-      {/* MONKEYFIT POR PROGRAMA */}
+      {/* === MONKEYFIT POR PROGRAMA === */}
       <TitleChip style={{ marginTop: 32, background: "black" }}>
         MONKEYFIT
       </TitleChip>
 
-      {orderedMFPrograms.length === 0 ? (
+      {orderedMF.length === 0 ? (
         <TitleChip style={{ background: "#444", fontSize: 28, padding: "8px 18px" }}>
           SIN RESERVAS MONKEYFIT EN EL PERIODO
         </TitleChip>
       ) : (
-        orderedMFPrograms.map((pgmId) => (
+        orderedMF.map((pgmId) => (
           <div key={`mf-${pgmId}`} style={{ marginBottom: 24 }}>
             <div style={sHeader}>{` ${labelPgm(pgmId)}`}</div>
             <table style={sTable}>
@@ -910,25 +529,45 @@ export default function ExecutiveTable2({
         ))
       )}
 
-      {/* MONKEYFIT TOTAL */}
+      {/* === MONKEYFIT TOTAL === */}
       <TitleChip>MONKEYFIT (TOTAL)</TitleChip>
       <table style={sTable}>
         <TableHeadFor okey="monkeyfit" />
         <tbody>
           {renderRowsFor("monkeyfit", [
             { key: "venta_monkeyfit", label: "VENTA  AL CORTE", type: "money" },
-            { key: "cantidad_reservas_monkeyfit", label: "CANTIDAD RESERVAS  AL CORTE", type: "int" },
-            { key: "ticket_medio_monkeyfit", label: "TICKET MEDIO  AL CORTE", type: "money" },
-            { key: "venta_monkeyfit_full", label: "VENTA  MES COMPLETO", type: "money" },
-            { key: "cantidad_reservas_monkeyfit_full", label: "CANTIDAD RESERVAS  MES COMPLETO", type: "int" },
-            { key: "ticket_medio_monkeyfit_full", label: "TICKET MEDIO  MES COMPLETO", type: "money" },
+            {
+              key: "cantidad_reservas_monkeyfit",
+              label: "CANTIDAD RESERVAS  AL CORTE",
+              type: "int",
+            },
+            {
+              key: "ticket_medio_monkeyfit",
+              label: "TICKET MEDIO  AL CORTE",
+              type: "money",
+            },
+            {
+              key: "venta_monkeyfit_full",
+              label: "VENTA  MES COMPLETO",
+              type: "money",
+            },
+            {
+              key: "cantidad_reservas_monkeyfit_full",
+              label: "CANTIDAD RESERVAS  MES COMPLETO",
+              type: "int",
+            },
+            {
+              key: "ticket_medio_monkeyfit_full",
+              label: "TICKET MEDIO  MES COMPLETO",
+              type: "money",
+            },
           ])}
         </tbody>
       </table>
 
       <div style={{ height: 32, marginTop: 50 }} />
 
-      {/* RESUMEN CUOTA VS VENTAS */}
+      {/* === RESUMEN CUOTA VS VENTAS === */}
       <TitleChip style={{ fontSize: 28, padding: "8px 18px" }}>
         RESUMEN DE CUOTA VS VENTAS
       </TitleChip>
@@ -936,7 +575,7 @@ export default function ExecutiveTable2({
 
       <div style={{ height: 32 }} />
 
-      {/* MARKETING: INVERSIÓN VS LEADS */}
+      {/* === MARKETING: INVERSIÓN VS LEADS === */}
       <TitleChip style={{ fontSize: 28, padding: "8px 18px" }}>
         DETALLE DE INVERSIÓN EN REDES VS RESULTADOS EN LEADS
       </TitleChip>
@@ -947,16 +586,36 @@ export default function ExecutiveTable2({
           {[
             { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
             { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
-            { key: "mkCpl", label: "COSTO TOTAL POR LEAD DE META + TIKTOK", type: "float2" },
-            { key: "mkCac", label: "COSTO ADQUISICION DE CLIENTES", type: "float2" },
+            {
+              key: "mkCpl",
+              label: "COSTO TOTAL POR LEAD DE META + TIKTOK",
+              type: "float2",
+            },
+            {
+              key: "mkCac",
+              label: "COSTO ADQUISICION DE CLIENTES",
+              type: "float2",
+            },
             { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
             { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
             { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
-            { key: "mkCacMeta", label: "COSTO ADQUISICION DE CLIENTES META", type: "float2" },
+            {
+              key: "mkCacMeta",
+              label: "COSTO ADQUISICION DE CLIENTES META",
+              type: "float2",
+            },
             { key: "mkInvTikTok", label: "Inversion TikTok", type: "money" },
             { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
-            { key: "mkCplTikTok", label: "COSTO POR LEAD TIKTOK", type: "float2" },
-            { key: "mkCacTikTok", label: "COSTO ADQUISICION CLIENTES TIKTOK", type: "float2" },
+            {
+              key: "mkCplTikTok",
+              label: "COSTO POR LEAD TIKTOK",
+              type: "float2",
+            },
+            {
+              key: "mkCacTikTok",
+              label: "COSTO ADQUISICION CLIENTES TIKTOK",
+              type: "float2",
+            },
           ].map((r, i) => (
             <tr
               key={r.key + r.label}
@@ -978,7 +637,7 @@ export default function ExecutiveTable2({
                 const val = m.metrics?.[r.key] ?? 0;
                 const txt =
                   r.type === "money"
-                    ?  r.key === "mkInvMeta"
+                    ? r.key === "mkInvMeta"
                       ? fmtUsd(val)
                       : fmtMoney(val)
                     : r.type === "float2"
@@ -1009,7 +668,7 @@ export default function ExecutiveTable2({
             </tr>
           ))}
 
-          {/* FILA TOTAL MES (FULL) */}
+          {/* TOTAL MES FULL EN LA PARTE DE MARKETING */}
           <tr style={sRowRed}>
             <th
               style={{

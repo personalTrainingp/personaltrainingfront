@@ -12,6 +12,7 @@
       import RenovacionesPanel from "./components/RenovacionesPanel";
       import VigentesTable from "./components/VigentesTable";
       import { buildDataMktByMonth } from "./adapters/buildDataMktByMonth";
+      import { VigentesResumenMensual } from "./components/VigentesResumenMensual";
       import { GraficoLinealInversionRedes } from "./components/GraficoLinealInversionRedes";
       import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
       import { useSelector, useDispatch } from 'react-redux';
@@ -922,6 +923,7 @@ const originMap = {
       afterDays={91}        
       title="RENOVACIONES - 2025 "
       items={dataVentas}
+      carteraHistoricaInicial={0}
     />
   </Col>
 </Row>
@@ -983,8 +985,7 @@ const originMap = {
       avatarByAdvisor={avatarByAdvisor}   
     />
   </div>
-  
-</Col>
+  </Col>
 <div style={{ marginBottom: 44 }}>
   <VentasDiarias
     ventas={dataVentas}
@@ -1009,6 +1010,16 @@ const originMap = {
     <VigentesTable
       items={vigentesRows}
       title={`SOCIOS VIGENTES (${vigentesTotal})`}
+    />
+  </Col>
+</Row>
+<Row className="mb-6 mt-5">
+  <Col lg={12}>
+    <VigentesResumenMensual
+      id_empresa={id_empresa}
+      year={year}
+      selectedMonth={selectedMonth}
+      pgmNameById={pgmNameById}
     />
   </Col>
 </Row>
