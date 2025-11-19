@@ -17,12 +17,4 @@ export const dataPenalidadSlice = createSlice({
 		},
 	},
 });
-export const {
-	onUpdateDataRes,
-	onSetMultiDate,
-	onSetDataView,
-	onSetBase64Firma,
-	onViewSection,
-	onSetRangeDate,
-	onDataFail,
-} = dataSlice.actions;
+export const { onSetDataView } = dataPenalidadSlice.actions;

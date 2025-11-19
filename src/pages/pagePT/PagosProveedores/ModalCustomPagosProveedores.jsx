@@ -107,11 +107,11 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, i
         // reader.readAsDataURL(file);
     }
     useEffect(() => {
-        if(show || id_empresa){
-            obtenerParametrosProveedor(id_empresa)
+        if( id_empresa){
+            obtenerParametrosProveedor(id_empresa1??id_empresa)
             obtenerZonas(id_empresa)
         }
-    }, [show, id_empresa])
+    }, [show, id_empresa, id_empresa1])
     
     const proveedores = dataProveedores.map(prov=>{
         return {
@@ -121,6 +121,12 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, i
     })
     return (
         <Dialog header={id==0?`Agregar Trabajos`:`EDITAR TRABAJO ${id}`} style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>
+            {/* <pre>
+                {
+                    JSON.stringify(dataZonas, null, 2)
+                }
+
+            </pre> */}
             <form onSubmit={onSubmitTrabajo}>
                 {
                     id==0?(

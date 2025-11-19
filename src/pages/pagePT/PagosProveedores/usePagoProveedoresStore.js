@@ -1,6 +1,10 @@
 import { PTApi } from '@/common';
 import { useImageStore } from '@/hooks/hookApi/useImageStore';
-import { onSetDataPagosProv, onViewContratoxProv } from '@/store/dataProveedor/proveedorSlice';
+import {
+	onSetDataPagosProv,
+	onSetPenalidades,
+	onViewContratoxProv,
+} from '@/store/dataProveedor/proveedorSlice';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -60,9 +64,12 @@ export const usePagoProveedoresStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerPenalidades = async (id_empresa) => {
+	const obtenerPenalidades = async () => {
 		try {
-			const { data } = await PTApi.get(`/proveedor/penalidad/${id_empresa}`);
+			const { data } = await PTApi.get(`/penalidad/`);
+			console.log({ d: data.penalidad });
+
+			dispatch(onSetPenalidades(data.penalidad));
 		} catch (error) {
 			console.log(error);
 		}
@@ -76,6 +83,7 @@ export const usePagoProveedoresStore = () => {
 		}
 	};
 	return {
+		obtenerPenalidades,
 		obtenerTrabajosPendientes,
 		obtenerContratoxId,
 		dataPagosContratos,

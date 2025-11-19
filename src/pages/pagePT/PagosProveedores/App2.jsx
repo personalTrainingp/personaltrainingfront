@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { TablePagos } from './TablePagos';
 import { ModalCustomPagosProveedores } from './ModalCustomPagosProveedores';
 import { Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
+import { TableContratos } from './TableContratos';
 
 export const App2 = ({id_empresa, bgEmpresa='', classNameTablePrincipal}) => {
   const [modalCustomPagosProv, setmodalCustomPagosProv] = useState({isOpen: false, id_empresa: 0, id: 0, isCopy: false})
@@ -20,7 +20,7 @@ export const App2 = ({id_empresa, bgEmpresa='', classNameTablePrincipal}) => {
       <Button className={`${bgEmpresa} border-none outline-none mb-2 p-2 fs-3`} onClick={()=>onOpenModalCustomPagosProv(0, id_empresa, false)}>AGREGAR CONTRATO</Button>
       {/* <Button className={'bg-circus'} label='AGREGAR CONTRATO' onClick={()=>onOpenModalCustomPagosProv(0, id_empresa)}/> */}
       <br/>
-      <TablePagos RANGE_DATE={RANGE_DATE} bgEmpresa={bgEmpresa} classNameTablePrincipal={classNameTablePrincipal} id_empresa={id_empresa} onOpenModalCustomPagosProv={onOpenModalCustomPagosProv}/>
+      <TableContratos RANGE_DATE={RANGE_DATE} bgEmpresa={bgEmpresa} classNameTablePrincipal={classNameTablePrincipal} id_empresa={id_empresa} onOpenModalCustomPagosProv={onOpenModalCustomPagosProv}/>
       <ModalCustomPagosProveedores isCopy={modalCustomPagosProv.isCopy} id={modalCustomPagosProv.id} show={modalCustomPagosProv.isOpen}  id_empresa1={modalCustomPagosProv.id_empresa} onHide={()=>setmodalCustomPagosProv({isOpen: false, id_empresa: 0, id:0})}/>
     </div> 
   );

@@ -5,7 +5,7 @@ import { ModalCustomPenalidad } from './ModalCustomPenalidad'
 import { usePenalidadStore } from './usePenalidadStore'
 import { useSelector } from 'react-redux'
 
-export const App2 = ({idContrato}) => {
+export const App2 = ({idContrato, totalPenalidades, classNameTablePrincipal, fmt}) => {
     const [isOpenCustomPenalidad, setisOpenCustomPenalidad] = useState({isOpen: false, id: 0})
     const { obtenerPenalidadesxIDCONTRATO } = usePenalidadStore()
     const { dataView } = useSelector(e=>e.PENALIDAD)
@@ -22,7 +22,7 @@ export const App2 = ({idContrato}) => {
   return (
     <>
         <Button onClick={()=>onOpenModalCustomPenalidad(0)}>Agregar penalidad</Button>
-        <DataTablePenalidad />
+        <DataTablePenalidad fmt={fmt} dataView={dataView?.filter(e=>e.id_contrato===idContrato)} classNameTablePrincipal={classNameTablePrincipal} totalPenalidades={totalPenalidades}/>
         <ModalCustomPenalidad idContrato={idContrato} show={isOpenCustomPenalidad.isOpen} id={isOpenCustomPenalidad.id} onHide={onCloseModalCustomPenalidad}/>
     </>
   )

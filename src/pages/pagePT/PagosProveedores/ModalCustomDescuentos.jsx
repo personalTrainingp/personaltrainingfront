@@ -82,3 +82,4 @@ export const ModalCustomDescuentos = ({show, onHide, data, trabajo, idContrato})
     </Dialog>
   )
 }
+

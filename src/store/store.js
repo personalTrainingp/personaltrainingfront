@@ -22,7 +22,7 @@ import { comentarioSlice } from './dataComentario/comentarioSlice';
 import { serviciosSlice } from './Servicios/serviciosSlice';
 import { dataSlice } from './data/dataSlice';
 import { terminologiaSlice } from './dataTerminologia/terminologiaSlice';
-import { dataPenalidadSlice } from './data/PenalidadSlice';
+import { dataPenalidadSlice } from '@/pages/pagePT/PagosProveedores/GestionPenalidad/PenalidadSlice';
 
 export const store = configureStore({
 	reducer: {

@@ -1,40 +1,14 @@
 import { Row, Col, Card,  Modal } from 'react-bootstrap';
 import { PageBreadcrumb } from '@/components';
-import { Proveedores } from '../data';
-import { columns, sizePerPageList } from './ColumnsSet';
-import { useToggle } from '@/hooks';
-import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { use } from 'i18next';
-import { useForm } from '@/hooks/useForm';
-import { useDispatch } from 'react-redux';
-import { helperFunctions } from '@/common/helpers/helperFunctions';
-import { useOptionsStore } from '@/hooks/useOptionsStore';
-import Select from 'react-select';
 import { ModalProveedor } from './ModalProveedor';
 import { Button } from 'primereact/button';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
-import { InputText } from 'primereact/inputtext';
-import { Link } from 'react-router-dom';
-import { FilterMatchMode } from 'primereact/api';
-import { TabPanel, TabView } from 'primereact/tabview';
 import { CustomersProv } from './CustomersProv';
-import { SelectButton } from 'primereact/selectbutton';
 import { ColorEmpresa } from '@/components/ColorEmpresa';
-
-const ESTADOS = [
-  { label: 'ACTIVOS', value: true },
-  { label: 'INACTIVOS', value: false },
-];
 
 export const DataProveedores = ({id_estado}) => {
   const [isModalOpenProv, setisModalOpenProv] = useState(false);
   const [idProv, setidProv] = useState(0);
-  const [estado, setEstado] = useState(true); // true = ACTIVO, false = INACTIVO
 
   const modalProvClose = () => setisModalOpenProv(false);
   const modalProvOpen = () => setisModalOpenProv(true);
@@ -42,10 +16,6 @@ export const DataProveedores = ({id_estado}) => {
     modalProvOpen()
     setidProv(id)
   }
-  // plantilla visual para que cada botón sea bloque sólido
-  const estadoTemplate = (option) => (
-    <div className="estado-btn">{option.label}</div>
-  );
 
   return (
     <>

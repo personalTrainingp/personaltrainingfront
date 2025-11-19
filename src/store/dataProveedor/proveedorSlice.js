@@ -39,6 +39,7 @@ export const proveedorSlice = createSlice({
 			monto_contrato: 0,
 			observaciones: '',
 		},
+		dataPenalidades: [],
 		dataContratoProv: [],
 		dataProveedores: [],
 		dataPagosProv: [],
@@ -49,6 +50,9 @@ export const proveedorSlice = createSlice({
 	reducers: {
 		onSetDataPagosProv: (state, { payload }) => {
 			state.dataPagosProv = payload;
+		},
+		onSetPenalidades: (state, { payload }) => {
+			state.dataPenalidades = payload;
 		},
 		onSetProveedores: (state, { payload }) => {
 			state.dataProveedores = payload;
@@ -82,4 +86,5 @@ export const {
 	onRegisterProveedor,
 	onViewContratoxProv,
 	onDataPerfil,
+	onSetPenalidades,
 } = proveedorSlice.actions;

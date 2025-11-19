@@ -573,6 +573,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                     </div>
                                 </Col>
                                 <Col lg={4}>
+                                            
                                     <div className="mb-4">
                                         <label htmlFor="id_contrato_prov" className="form-label">
                                             TRABAJOS DE PROVEEDORES
