@@ -1,6 +1,7 @@
 import { PTApi } from '@/common';
 import { useImageStore } from '@/hooks/hookApi/useImageStore';
 import { onSetDataPagosProv, onViewContratoxProv } from '@/store/dataProveedor/proveedorSlice';
+import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -25,6 +26,7 @@ export const usePagoProveedoresStore = () => {
 			const { data } = await PTApi.get(
 				`/proveedor/obtener-trabajos-proveedores/${id_empresa}`
 			);
+
 			dispatch(onViewContratoxProv(data.dataContratos));
 			setdataContratosPendientes(data.dataContratos);
 		} catch (error) {
@@ -41,8 +43,11 @@ export const usePagoProveedoresStore = () => {
 	const obtenerContratoxId = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/proveedor/contrato/${id}`);
-
-			setdataContrato(data.contratoProv);
+			const dataAlter = {
+				...data.contratoProv,
+				hora_fin: dayjs.utc(data.contratoProv?.hora_fin).format('HH:mm'),
+			};
+			setdataContrato(dataAlter);
 		} catch (error) {
 			console.log(error);
 		}

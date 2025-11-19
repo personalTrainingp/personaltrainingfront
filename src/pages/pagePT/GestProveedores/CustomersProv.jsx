@@ -104,7 +104,7 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
 		
 		return (
 			<>
-			<Button label='copiar datos' text onClick={()=>onOpenModalProvOpen(rowData.id)}/>
+			<Button  icon={'pi pi-copy'} onClick={()=>onOpenModalProvOpen(rowData.id)}/>
 			</>
 		)
 	}

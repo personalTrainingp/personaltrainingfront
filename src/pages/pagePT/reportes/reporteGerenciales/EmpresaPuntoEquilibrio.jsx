@@ -17,9 +17,9 @@ export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bg
     obtenerGastosxFecha(RANGE_DATE, id_empresa)
     obtenerVentasPorFecha(RANGE_DATE, id_empresa_ventas)
   }, [id_empresa, RANGE_DATE])
-  const [dataProp, setdataProp] = useState({ isView: false, data: [] })
-  const openModal = data => setdataProp({ isView: true, data: data.conceptos })
-  const closeModal = () => setdataProp({ isView: false, data: [] })
+  const [dataProp, setdataProp] = useState({ isView: false, data: [], header: '' })
+  const openModal = data => setdataProp({ isView: true, data: data.conceptos, header: data.grupo })
+  const closeModal = () => setdataProp({ isView: false, data: [], header: '' })
   const totalMontopen = useMemo(() => dataGastos.reduce((sum, g) => sum + (g.montoTotalEnSoles || 0), 0), [dataGastos])
   const totalMontousd = useMemo(() => dataGastos.reduce((sum, g) => sum + (g.montousd || 0), 0), [dataGastos])
   const productos = dataVentaxFecha.productos || []
@@ -66,7 +66,7 @@ const totalPorPagar = dataPorPagar.reduce(
           <TableResumen totalIngresos={ventasPartidas.total} totalEgresosPEN={totalMontopen} totalEgresosUSD={totalMontousd} id_empresa={id_empresa} textEmpresa={textEmpresa} background={background} />
         </Col>
       </Row>
-      <ModalConceptos background={background} textEmpresa={textEmpresa} onHide={closeModal} show={dataProp.isView} dataProp={dataProp.data} />
+      <ModalConceptos background={background} header={dataProp.header} textEmpresa={textEmpresa} onHide={closeModal} show={dataProp.isView} dataProp={dataProp.data} />
     </div>
   )
 

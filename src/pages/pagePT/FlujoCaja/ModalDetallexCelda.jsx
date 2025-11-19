@@ -87,8 +87,8 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
             </div>
           )
         }
-        <div className='d-flex justify-content-around'>
-          <div>
+        <div className='d-flex justify-content-around '>
+          <div className=''>
             <span className='text-white bg-primary fs-1'>GASTOS PROVEEDORES</span>
             {
               agruparPorProveedor(data?.items).map((m, i)=>{
@@ -99,6 +99,8 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                 )
               })
             }
+          </div>
+          <div className='mx-3 bg-change' style={{width: '3px'}}>
           </div>
           <div className=''>
             <span className='text-white bg-primary fs-1'>FORMA DE PAGO:</span>

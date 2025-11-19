@@ -55,8 +55,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, i
     const { obtenerZonas, dataZonas } =  useTerminoStore()
   const { dataProveedores, dataProvCOMBO } = useSelector((s) => s.prov);
   useEffect(() => {
-    if(show || id!==0){
-        
+    if(id!==0){
         obtenerContratoxId(id)
     }
   }, [id, show])
@@ -121,8 +120,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, i
         }
     })
     return (
-        <Dialog header={id==0?`Agregar Trabajos`:`EDITAR TRABAJO ${isCopy}`} style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>
-            {/* {id_empresa} */}
+        <Dialog header={id==0?`Agregar Trabajos`:`EDITAR TRABAJO ${id}`} style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>
             <form onSubmit={onSubmitTrabajo}>
                 {
                     id==0?(

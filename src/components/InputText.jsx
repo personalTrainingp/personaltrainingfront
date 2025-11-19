@@ -46,7 +46,7 @@ export const InputDate = ({label, onChange, value, nameInput, required=false, ..
         id={nameInput}
         onChange={onChange}
         required={required}
-        type='text'
+        type='date'
         {...props}
       />
     </>

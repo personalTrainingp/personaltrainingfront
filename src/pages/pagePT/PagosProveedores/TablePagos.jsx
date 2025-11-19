@@ -13,6 +13,7 @@ import { Button } from 'primereact/button';
 import { FechaRange } from '@/components/RangeCalendars/FechaRange';
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { TabPanel, TabView } from 'primereact/tabview';
+import {App2} from './GestionPenalidad/App2'
 dayjs.extend(isSameOrBefore);
 
 // Descarga segura
@@ -434,10 +435,9 @@ const [filtroTexto, setFiltroTexto] = useState('');
                                       </tr>
                                     </tfoot>
                                   </Table>
-
                                 </TabPanel>
                                 <TabPanel header={'PENALIDAD'}>
-
+                                      <App2 idContrato={c.id} />
                                 </TabPanel>
                               </TabView>
                             </td>
