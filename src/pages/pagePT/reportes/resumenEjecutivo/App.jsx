@@ -5,7 +5,6 @@
       import { useVentasStore } from "./useVentasStore";
       import ExecutiveTable from "./components/ExecutiveTable";
       import { PageBreadcrumb } from "@/components";
-      import ExecutiveTable2 from "./components/executibletable2";
       import { ClientesPorOrigen } from "./components/ClientesPorOrigen";
       import { ComparativoVsActual } from "./components/ComparativoVsActual";
       import RenovacionesPorVencer from "./components/RenovacionesPorVencer";
@@ -23,8 +22,7 @@
       import PTApi from '@/common/api/PTApi';
       import { TarjetasProductos, useProductosAgg } from '../totalVentas/TarjetasProductos';
       import { TopControls } from "./components/TopControls";
-    
-
+import { ExecutiveTable2 } from "./components/ExecutibleTable2";
 
 export function limaFromISO(iso) {
   if (!iso) return null;

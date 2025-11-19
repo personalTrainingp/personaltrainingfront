@@ -4,8 +4,8 @@ import {
   fmtMoney,
   fmtNum,
 } from "../adapters/executibleLogic";
-
-export default function ExecutiveTable2(props) {
+import React from 'react'
+export const ExecutiveTable2=(props)=>{
   const {
     selectedMonthName,
     perMonth,
