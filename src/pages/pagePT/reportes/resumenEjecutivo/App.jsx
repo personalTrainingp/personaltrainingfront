@@ -5,12 +5,14 @@
       import { useVentasStore } from "./useVentasStore";
       import ExecutiveTable from "./components/ExecutiveTable";
       import { PageBreadcrumb } from "@/components";
+      import ExecutiveTable2 from "./components/executibletable2";
       import { ClientesPorOrigen } from "./components/ClientesPorOrigen";
       import { ComparativoVsActual } from "./components/ComparativoVsActual";
       import RenovacionesPorVencer from "./components/RenovacionesPorVencer";
       import RenovacionesPanel from "./components/RenovacionesPanel";
       import VigentesTable from "./components/VigentesTable";
       import { buildDataMktByMonth } from "./adapters/buildDataMktByMonth";
+      import { VigentesResumenMensual } from "./components/VigentesResumenMensual";
       import { GraficoLinealInversionRedes } from "./components/GraficoLinealInversionRedes";
       import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
       import { useSelector, useDispatch } from 'react-redux';
@@ -888,20 +890,7 @@ const originMap = {
         selectedMonth={selectedMonth}
   tasaCambio={tasaCambio}            />
         </div>
-        <Row className="mb-3">
-  <Col lg={12}>
-    <RenovacionesPanel
-      id_empresa={id_empresa}
-      baseDate={new Date(year, selectedMonth - 1, 1)} 
-      months={12}             
-      beforeDays={0}       
-      afterDays={91}        
-      title="RENOVACIONES - 2025 "
-    />
-  </Col>
-</Row>
-        <div style={{ marginBottom: "32px", marginTop: "80px" }}>
-        <ClientesPorOrigen
+         <ClientesPorOrigen
   ventas={dataVentas}
   fechas={mesesSeleccionados}
   initialDay={initDay}
@@ -924,6 +913,33 @@ const originMap = {
   //  1470: "CORPORATIVOS BBVA",
   }}
 />
+        <Row className="mb-3">
+  <Col lg={12}>
+    <RenovacionesPanel
+      id_empresa={id_empresa}
+      baseDate={new Date(year, selectedMonth - 1, 1)} 
+      months={12}             
+      beforeDays={0}       
+      afterDays={91}        
+      title="RENOVACIONES - 2025 "
+      items={dataVentas}
+      carteraHistoricaInicial={0}
+    />
+  </Col>
+</Row>
+<ExecutiveTable2
+  ventas={dataVentas}
+  fechas={mesesSeleccionados}
+  dataMktByMonth={dataMktByMonth}
+  initialDay={initDay}
+  cutDay={cutDay}
+  reservasMF={reservasMF}
+  originMap={originMap}
+  selectedMonth={selectedMonth}
+  tasaCambio={tasaCambio}
+/>
+        <div style={{ marginBottom: "32px", marginTop: "80px" }}>
+       
         </div>
       </Col>
       {/* === COMPARATIVOS Y GRÁFICOS === */}
@@ -969,8 +985,7 @@ const originMap = {
       avatarByAdvisor={avatarByAdvisor}   
     />
   </div>
-  
-</Col>
+  </Col>
 <div style={{ marginBottom: 44 }}>
   <VentasDiarias
     ventas={dataVentas}
@@ -995,6 +1010,17 @@ const originMap = {
     <VigentesTable
       items={vigentesRows}
       title={`SOCIOS VIGENTES (${vigentesTotal})`}
+    />
+  </Col>
+</Row>
+<Row className="mb-6 mt-5">
+  <Col lg={12}>
+    <VigentesResumenMensual
+      id_empresa={id_empresa}
+      year={year}
+      selectedMonth={selectedMonth}
+      pgmNameById={pgmNameById}
+      avataresDeProgramas={avataresDeProgramas}
     />
   </Col>
 </Row>

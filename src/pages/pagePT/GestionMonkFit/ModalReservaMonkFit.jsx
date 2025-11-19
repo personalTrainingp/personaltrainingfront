@@ -29,7 +29,7 @@ export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas 
     monto_total: "",
   });
 
-  // Estados
+  
   useEffect(() => {
     (async () => {
       try {
@@ -45,8 +45,7 @@ export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas 
       }
     })();
   }, []);
-
-  // Programas
+  
   useEffect(() => {
     if (programas?.length) {
       setPgmOpts(programas);
@@ -68,7 +67,6 @@ export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas 
     })();
   }, [programas]);
 
-  // Cargar/editar
   useEffect(() => {
     const toLocalInput = (iso) => (iso ? new Date(iso).toISOString().slice(0, 16) : "");
     if (initial) {
@@ -122,11 +120,8 @@ const toMssqlLocal = (v) => {
     e.preventDefault();
     setSaving(true);
     try {
-     const id_cli  = Number(clienteSel?.value);
-const id_pgm  = Number(form.id_pgm);
-const fechaOk = new Date(form.fecha).toLocaleString("sv-SE").replace("T"," ")+":00.000"; 
-
-
+      const id_cli  = Number(clienteSel?.value);
+      const id_pgm  = Number(form.id_pgm);
       const payload = {
         id_cli,
         id_pgm,
@@ -138,15 +133,13 @@ const fechaOk = new Date(form.fecha).toLocaleString("sv-SE").replace("T"," ")+":
       };
       console.log("[POST] /reserva_monk_fit payload ->", payload);
 
-      if (!id_cli || !id_pgm || !payload.fecha) {
+      if (!id_cli || !id_pgm || !payload.fecha || !payload.monto_total ) {
         alert("Cliente, programa y fecha son obligatorios.");
         setSaving(false);
         return;
       }
-
       if (initial?.id) await reservasApi.update(initial.id, payload);
       else await reservasApi.create(payload);
-
       onSaved(initial ? "Reserva actualizada" : "Reserva creada");
       onHide();
     } catch (err) {
@@ -237,13 +230,12 @@ const fechaOk = new Date(form.fecha).toLocaleString("sv-SE").replace("T"," ")+":
                 type="number"
                 min="0"
                 step="0.01"
-                placeholder="19.00"
+                placeholder=""
                 value={form.monto_total}
                 onChange={(e) => setForm((f) => ({ ...f, monto_total: e.target.value }))}
               />
             </Col>
           </Row>
-
           <div className="mt-3 d-flex gap-2 justify-content-end">
             <Button type="submit" disabled={saving}>
               {saving ? (

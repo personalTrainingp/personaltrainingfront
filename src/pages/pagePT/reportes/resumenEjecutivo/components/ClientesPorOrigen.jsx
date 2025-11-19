@@ -127,18 +127,15 @@ export const ClientesPorOrigen = ({
       const keyMes = `${d.getFullYear()}-${mes}`;
       if (!base.has(keyMes)) continue;
 
-      // --- FILTRO ELIMINADO ---
-      // Ya no descartamos ventas con monto 0, ahora las reclasificamos en getOriginId
-      // if (!hasPaidMembership(v)) continue; 
+    
 
       const originId = getOriginId(v);
       if (String(originId) === "1470") continue;
- // getOriginId ahora maneja el monto 0
       const clientId = getClientId(v);
       if (originId == null || clientId == null || clientId === "") continue;
 
       const tuple = `${keyMes}|${originId}|${clientId}`;
-      if (seen.has(tuple)) continue; // evita inflar por joins
+      if (seen.has(tuple)) continue;
       seen.add(tuple);
 
       out.push({ keyMes, originId: String(originId), clientId: String(clientId) });
