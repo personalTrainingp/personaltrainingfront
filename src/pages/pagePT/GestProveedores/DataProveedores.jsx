@@ -64,13 +64,13 @@ export const DataProveedores = ({id_estado}) => {
                       <CustomersProv onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={598} />
                 }
                 childrenReducto={
-                      <CustomersProv estado_prov={id_estado} agente={true} id_empresa={599} />
+                      <CustomersProv onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={599} />
                 }
                 childrenCircus={
-                      <CustomersProv estado_prov={id_estado} agente={true} id_empresa={601} />
+                      <CustomersProv onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={601} />
                 }
                 childrenRal={
-                      <CustomersProv estado_prov={id_estado} agente={true} id_empresa={0} />
+                      <CustomersProv onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={0} />
                 }
               />
             </Card.Body>
