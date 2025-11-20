@@ -424,7 +424,31 @@ function computeMetricsForMonth({
     mfByProg,
   };
 }
+ export function getAvailableMonthsFromVentas(ventas){
+ const map = new Map();
 
+ ventas.forEach((v) => {
+  const d = toLimaDate(v?.fecha_venta || v?.fecha )
+  if(!d) return;
+  const anio= d.getFullYear();
+  const mesIdx = d.getMonth();
+  const mesNombre= MESES[mesIdx];
+const label = `${mesNombre.toUpperCase()} ${anio}`; // Ej: ENERO 2024
+  const key = `${anio}-${mesNombre}`; // Identificador único
+  if (!map.has(key)){
+    map.set(key, {
+      key,
+      label,
+      anio,
+      mes:mesNombre,
+      dateObj:d
+    })
+  }
+
+
+ });
+ return Array.from(map.values()).sort((a, b) => b.dateObj - a.dateObj);
+  }
 // === FUNCIÓN PRINCIPAL PARA LA VISTA ===
 export function buildExecutiveTableData({
   ventas = [],
@@ -554,6 +578,7 @@ export function buildExecutiveTableData({
     if (fallbackA < fallbackB) return 1;
     return a.localeCompare(b);
   });
+ 
 
   return {
     selectedMonthName,

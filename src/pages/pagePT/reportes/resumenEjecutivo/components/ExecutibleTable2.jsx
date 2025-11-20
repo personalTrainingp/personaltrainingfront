@@ -14,7 +14,6 @@ export const ExecutiveTable2=(props)=>{
 
   const { cutDay } = props;
 
-  // --- helpers SOLO de vista ---
   const fmtUsd = (n) =>
     new Intl.NumberFormat("es-US", {
       style: "currency",

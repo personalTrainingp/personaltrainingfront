@@ -1,5 +1,6 @@
 import { Row, Col, Card, CardTitle } from 'react-bootstrap';
-import { Table, PageBreadcrumb } from '@/components';
+//import { Table, PageBreadcrumb } from '@/components';
+import { PageBreadcrumb } from '@/components'; 
 
 import { columns, sizePerPageList } from './ColumnsSet';
 import { StatisticSeguimiento } from './StatisticSeguimiento';
