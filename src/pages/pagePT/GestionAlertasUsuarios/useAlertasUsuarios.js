@@ -6,6 +6,17 @@ import { useDispatch } from 'react-redux';
 export const useAlertasUsuarios = () => {
 	const [dataUsuarios, setdataUsuarios] = useState([]);
 	const dispatch = useDispatch();
+	const updateMensajeAlertas = async (mensaje, mensajeAnterior) => {
+		try {
+			const { data } = await PTApi.put(`/alerta-usuario/edit-mensaje`, {
+				mensaje,
+				mensajeAnterior,
+			});
+			await obtenerAlertasUsuarios();
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerUsuarios = async () => {
 		try {
 			const { data } = await PTApi.get('/usuario/get-tb-usuarios');
@@ -50,5 +61,6 @@ export const useAlertasUsuarios = () => {
 		onPostAlertaUsuario,
 		onDeleteAlertaUsuario,
 		obtenerAlertasUsuarios,
+		updateMensajeAlertas,
 	};
 };

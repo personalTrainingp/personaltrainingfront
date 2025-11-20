@@ -9,6 +9,7 @@ import { Col, Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import Select from 'react-select';
 import { usePagoProveedoresStore } from './usePagoProveedoresStore';
+import { NumberFormatMoney } from '@/components/CurrencyMask';
 const registerTrabajo = {
     id_prov: 0,
     cod_trabajo: '',
@@ -121,12 +122,6 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, i
     })
     return (
         <Dialog header={id==0?`Agregar Trabajos`:`EDITAR TRABAJO ${id}`} style={{ width: '50vw' }} position='top' onHide={onHide} visible={show}>
-            {/* <pre>
-                {
-                    JSON.stringify(dataZonas, null, 2)
-                }
-
-            </pre> */}
             <form onSubmit={onSubmitTrabajo}>
                 {
                     id==0?(

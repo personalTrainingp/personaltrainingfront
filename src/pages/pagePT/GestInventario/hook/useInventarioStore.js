@@ -9,6 +9,7 @@ export const useInventarioStore = () => {
 	const dispatch = useDispatch();
 	const [statusData, setstatus] = useState('');
 	const [message, setmessage] = useState({ msg: '', ok: false });
+	const [dataHistorialCambiosxIDArticulo, setdataHistorialCambiosxIDArticulo] = useState([{}]);
 	const {
 		postEtiquetaxEntidadxGrupo,
 		getEtiquetasxIdEntidadGrupo,
@@ -18,7 +19,7 @@ export const useInventarioStore = () => {
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [dataFechas, setdataFechas] = useState([]);
-	const [articulos, setarticulos] = useState([])
+	const [articulos, setarticulos] = useState([]);
 	const [articulo, setArticulo] = useState({
 		// id: 0,
 		// producto: '',
@@ -209,7 +210,19 @@ export const useInventarioStore = () => {
 			});
 		}
 	};
+	const obtenerInventarioHistorialCambiosxIDARTICULO = async (idArticulo) => {
+		try {
+			const { data } = await PTApi.get(`/inventario/hist-cam-id/${idArticulo}`);
+			console.log({ data });
+
+			setdataHistorialCambiosxIDArticulo(data.hisCamArticuloxID);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
+		dataHistorialCambiosxIDArticulo,
+		obtenerInventarioHistorialCambiosxIDARTICULO,
 		dataFechas,
 		obtenerInventarioKardexxFechas,
 		obtenerFechasInventario,

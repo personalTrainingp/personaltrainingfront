@@ -115,10 +115,10 @@ export const arrayTarjetasTemp = [
 ];
 
 export const typesCRUD = [
-	{ method: 'CREAR', id: 1 },
-	{ method: 'ACTUALIZAR', id: 2 },
+	{ method: 'CREADO', id: 1 },
+	{ method: 'ACTUALIZADO', id: 2 },
 	{ method: 'OBTENER', id: 3 },
-	{ method: 'ELIMINAR', id: 4 },
+	{ method: 'ELIMINADO', id: 4 },
 	{ method: 'PATCH?', id: 5 },
 ];
 

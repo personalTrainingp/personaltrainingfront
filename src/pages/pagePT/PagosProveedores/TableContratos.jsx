@@ -54,7 +54,6 @@ export const TableContratos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosP
     nombreTrabajo: null,
     idContrato: 0
   });
-
   // Dialog de contratos por proveedor
   const [dialogProv, setDialogProv] = useState({
     visible: false,
@@ -62,7 +61,6 @@ export const TableContratos = ({ id_empresa, RANGE_DATE, onOpenModalCustomPagosP
     proveedor: null,       // proveedor completo
     resumen: { contratos: 0, monto: 0, pagado: 0, saldo: 0 }
   });
-
   // Subacordeón: abrir pagos por contrato
   const [openContrato, setOpenContrato] = useState({}); // { [id_contrato]: boolean }
 const [filtroTexto, setFiltroTexto] = useState('');
@@ -73,14 +71,12 @@ const [filtroTexto, setFiltroTexto] = useState('');
     safeDownload(`${base}${encodeURIComponent(file.name_image)}`, file.name_image);
     setPending(null);
   }, [images, pending]);
-
   useEffect(() => {
     obtenerContratosPendientes(id_empresa);
     obtenerTrabajosPendientes(id_empresa);
     obtenerPenalidades()
     obtenerProveedores(true, true, id_empresa);
   }, [id_empresa]);
-
   // 1) Une contrato + pagos + sumaPagos
   const contratosConPagos = useMemo(() => {
     const pagos = dataPagosProv
@@ -103,7 +99,6 @@ const [filtroTexto, setFiltroTexto] = useState('');
       return { ...contrato, dataPagos, sumaPagos, sumaPenalidades, dataPenalidades1 };
     });
   }, [dataContratoProv, dataPagosProv, dataPenalidades, RANGE_DATE]);
-
   // 2) Agrupa por proveedor
   const grupos = useMemo(() => {
     const map = new Map();
@@ -172,10 +167,6 @@ const [filtroTexto, setFiltroTexto] = useState('');
     if (!uid) return;
     setPending({ tipo: 'compromisoPago' });
     await obtenerImages(uid);
-  };
-
-  const onClickOpenModalCustomDescuentos = async (nombreTrabajo, idContrato) => {
-    setisOpenModalCustomDescuentos({ isOpen: true, nombreTrabajo: nombreTrabajo, idContrato });
   };
 
   const onDeleteContrato = (id) => {
@@ -275,9 +266,6 @@ const [filtroTexto, setFiltroTexto] = useState('');
             );
           })}
         </tbody>
-{/* <pre>
-              </pre> */}
-        {/* FOOTER TABLA PRINCIPAL */}
           <tr className={`${classNameTablePrincipal} fs-3 fw-semibold`}>
             <td colSpan={5} className="text-end text-white fs-1">TOTALES:</td>
             <td className="text-center text-white">

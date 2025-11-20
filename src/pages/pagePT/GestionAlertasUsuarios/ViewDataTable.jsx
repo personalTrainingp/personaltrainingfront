@@ -15,6 +15,7 @@ import { useAlertasUsuarios } from "./useAlertasUsuarios";
 import { useTerminoStore } from "@/hooks/hookApi/useTerminoStore";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { ModalEditarMensajeAlerta } from "./ModalEditarMensajeAlerta";
 dayjs.extend(utc);
 
 const PAGE_SIZE = 10; // filas / grupos por página
@@ -34,7 +35,7 @@ export const ViewDataTable = () => {
     DataGeneral: dataTipoAlerta = [],
     obtenerParametroPorEntidadyGrupo: obtenerTipoAlerta,
   } = useTerminoStore();
-
+  const [isOpenModalEditarMensaje, setisOpenModalEditarMensaje] = useState({isOpen: false, mensaje: ''})
   // estado UI local
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0); // página actual
@@ -82,7 +83,15 @@ export const ViewDataTable = () => {
       },
     });
   };
-
+  // confirm dialog eliminar
+  const onConfirmDialogEditarMensaje = (msg) => {
+    setisOpenModalEditarMensaje({isOpen: true, mensaje: msg})
+  };
+  
+  // confirm dialog eliminar
+  const onCancelDialogEditarMensaje = () => {
+    setisOpenModalEditarMensaje({isOpen: false, mensaje: ''})
+  };
   // ---- FILTRO GLOBAL ----
   const dataFiltrada = useMemo(() => {
     if (!search.trim()) return dataView;
@@ -223,10 +232,10 @@ export const ViewDataTable = () => {
             </td>
             <td>{getEstadoBadge(d?.id_estado)}</td>
             <td>
-              <i
+              {/* <i
                 className="pi pi-trash cursor-pointer"
-                onClick={() => onConfirmDialogDelete(d.id)}
-              />
+                onClick={() => onConfirmDialogEditarMensaje(d.id)}
+              /> */}
             </td>
           </tr>
         ))}
@@ -285,13 +294,19 @@ export const ViewDataTable = () => {
                   <div className="fw-semibold text-start">
                     {grp.groupKey || "(sin valor)"}
                   </div>
-                  <Badge bg="dark">{grp.rows.length}</Badge>
+                  <div className="d-flex flex-row">
+                    <Badge bg="dark">{grp.rows.length}</Badge>
+                  </div>
                 </div>
               </Accordion.Header>
 
               {/* mostramos body sólo si este panel está abierto en nuestro estado */}
               {activeKeys.includes(eventKey) && (
                 <Accordion.Body className="bg-white">
+                    <div>
+                      <Button onClick={()=>{onConfirmDialogEditarMensaje( grp.rows[0]?.mensaje)}}>EDITAR MENSAJE</Button>
+                    </div>
+                    {grp.rows[0].mensaje}
                   <Table bordered size="sm" responsive>
                     <thead>
                       <tr className="table-light">
@@ -353,7 +368,7 @@ export const ViewDataTable = () => {
       {/* TABS */}
       <TabView activeIndex={activeIndex} onTabChange={handleTabChange}>
         {/* TAB 0: NORMAL */}
-        <TabPanel header="Normal">
+        {/* <TabPanel header="Normal">
           {renderPagination(totalPagesNormal, pageFixedNormal)}
 
           <Table bordered size="sm" responsive>
@@ -377,7 +392,7 @@ export const ViewDataTable = () => {
           </Table>
 
           {renderPagination(totalPagesNormal, pageFixedNormal)}
-        </TabPanel>
+        </TabPanel> */}
 
         {/* TAB 1: AGRUPADO POR MENSAJE */}
         <TabPanel header="Agrupado por mensaje">
@@ -415,6 +430,7 @@ export const ViewDataTable = () => {
           {renderPagination(pagUsuario.totalPages, pagUsuario.pageFixed)}
         </TabPanel>
       </TabView>
+      <ModalEditarMensajeAlerta data={{mensaje: isOpenModalEditarMensaje.mensaje}} onHide={onCancelDialogEditarMensaje} show={isOpenModalEditarMensaje.isOpen}/>
     </div>
   );
 };

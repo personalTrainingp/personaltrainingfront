@@ -19,6 +19,8 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { ModalAgrupadoxEtiquetas } from './ModalAgrupadoxEtiquetas';
 import { useInventarioStore } from './hook/useInventarioStore';
 import { ModalMovimientoItem } from './ModalMovimientoItem';
+import { ModalHistorialCambiosxArticulo } from './ModalHistorialCambiosxArticulo';
+
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
     locale('es')
@@ -29,6 +31,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const [loading, setLoading] = useState(false);
     const [selectedCustomers, setselectedCustomers] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [isOpenModalHistorialCambio, setisOpenModalHistorialCambio] = useState({isOpen: false, id: 0})
     const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [valueFilter, setvalueFilter] = useState([])
@@ -145,6 +148,9 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             setshowLoading(false)
             showToast('success', 'Eliminar gasto', 'Gasto Eliminado correctamente', 'success')
         }
+        const onOpenModalHistCambioxID = ()=>{
+            setisOpenModalHistorialCambio({isOpen: true, id: rowData.id})
+        }
         const onAcceptUpd602 = async()=>{
             setshowLoading(true)
             await RestaurarArticulo(rowData.id, id_enterprice, 602)
@@ -165,6 +171,9 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         }
         return (
             <React.Fragment>
+                <Button icon="pi pi-history" rounded outlined severity="danger" 
+                onClick={onOpenModalHistCambioxID} 
+                />
                 <Button icon="pi pi-box" rounded outlined className="mr-2" 
                 onClick={onClickCubeModalEgresos} 
                 />
@@ -541,6 +550,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                     </TabView>
             <ModalInventario id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             {/* <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/> */}
+            <ModalHistorialCambiosxArticulo id={isOpenModalHistorialCambio.id} show={isOpenModalHistorialCambio.isOpen} onHide={()=>setisOpenModalHistorialCambio({isOpen: false, id: 0})}/>
             <ModalMovimientoItem id_enterprice={id_enterprice} idArticulo={articulo?articulo.id:0} show={isOpenModalCube} onHide={onCloseModalCube}/>
             <ModalAgrupadoxEtiquetas show={isOpenModalAgruparxEtiquetas} onHide={onCloseModalAgrupadoxEtiquetas} data={dataAgrupadoEtiquetas}/>
             </>
