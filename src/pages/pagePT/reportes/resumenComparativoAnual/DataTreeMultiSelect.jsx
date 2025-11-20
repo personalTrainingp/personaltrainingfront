@@ -129,7 +129,6 @@ export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactS
         traspasos: 0,
         venta_total: 0,
         ticket_medio: 0,
-        total_socios: 0
       },
       {
         fecha_desde: '01/10/2024',
@@ -141,7 +140,6 @@ export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactS
         traspasos: 0,
         venta_total: 0,
         ticket_medio: 0,
-        total_socios: 0
       },
       {
         fecha_desde: '01/11/2024',
@@ -153,7 +151,6 @@ export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactS
         traspasos: 0,
         venta_total: 0,
         ticket_medio: 0,
-        total_socios: 0
       },
       {
         fecha_desde: '01/12/2024',
@@ -165,7 +162,6 @@ export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactS
         traspasos: 0,
         venta_total: 0,
         ticket_medio: 0,
-        total_socios: 0
       },
       {
         fecha_desde: '01/01/2025',
@@ -177,7 +173,6 @@ export default function DataTreeMultiSelect({defaultOptions, onInputChangeReactS
         traspasos: 0,
         venta_total: 0,
         ticket_medio: 0,
-        total_socios: 0
       },
     ]
     return (

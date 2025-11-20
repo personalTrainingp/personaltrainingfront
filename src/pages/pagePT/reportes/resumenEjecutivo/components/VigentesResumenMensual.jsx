@@ -17,11 +17,14 @@ const styles = {
   wrapper: {
     border: "1px solid #000",
     borderRadius: 12,
-    overflow: "hidden",
     background: "#fff",
-    textAlign: "center",
     boxShadow: "0 8px 22px rgba(15,23,42,.08)",
     marginTop: 32,
+    display: "flex",
+    flexDirection: "column",
+  },
+  titulos:{
+    textAlign:"center"
   },
   header: {
     background: "#c00000",
@@ -30,16 +33,34 @@ const styles = {
     fontWeight: 800,
     textTransform: "uppercase",
     fontSize: 30,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    cursor: "pointer",
+    userSelect: "none",
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
-  table: { 
-    width: "100%", 
-    borderCollapse: "collapse" 
+  headerTitle: {
+    flex: 1,           // ocupa todo el ancho disponible
+    textAlign: "center",
   },
-  thead: { 
+  tableContainer: {
+    width: "100%",
+    overflowX: "auto",
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    minWidth: "1000px", // Fuerza el scroll en pantallas pequeñas
+  },
+  thead: {
     background: "#c00000",
     color: "#ffffff",
-    textTransform: "uppercase", 
-    fontSize: 25 
+    textTransform: "uppercase",
+    fontSize: 25,
   },
   th: {
     padding: "10px 14px",
@@ -51,7 +72,7 @@ const styles = {
   },
   td: {
     padding: "8px 14px",
-    border: "1px solid #000", 
+    border: "1px solid #000",
     fontSize: 25,
     textAlign: "center",
     verticalAlign: "middle",
@@ -59,7 +80,11 @@ const styles = {
   firstCol: {
     textAlign: "left",
     fontWeight: 600,
-    borderRight: "1px solid #000", 
+    borderRight: "1px solid #000",
+    position: "sticky",
+    left: 0,
+    background: "#fff",
+    zIndex: 10,
   },
   footerRow: {
     background: "#f9fafb",
@@ -68,11 +93,18 @@ const styles = {
     verticalAlign: "middle",
   },
   programLogo: {
-    height: "65px", 
+    height: "65px",
     width: "auto",
     objectFit: "contain",
-    display: "block"
-  }
+    display: "block",
+  },
+  emptyMsg: {
+    padding: 24,
+    textAlign: "center",
+    color: "#6b7280",
+    fontStyle: "italic",
+    fontSize: 18,
+  },
 };
 
 function getLastDayOfMonth(year, month1Based) {
@@ -102,6 +134,26 @@ function buildColumnsConfig(year, selectedMonth) {
   return { lastYearCols, currentYearCols };
 }
 
+// Helpers para la variación
+function renderVariationCell(value) {
+  if (value == null || isNaN(value)) return "-";
+  const pos = value > 0;
+  const neg = value < 0;
+  const color = pos ? "#16a34a" : neg ? "#dc2626" : "#6b7280";
+  const icon = pos ? "+" : neg ? "-" : "■";
+  const pct = Math.abs(value).toFixed(1) + "%";
+  return (
+    <span style={{ color, fontWeight: 700 }}>
+      {icon} {pct}
+    </span>
+  );
+}
+
+const calcPct = (curr, prev) => {
+  if (!prev || prev === 0) return null;
+  return ((curr - prev) / prev) * 100;
+};
+
 function buildTableData(cols, progMatrix) {
   const rows = Object.entries(progMatrix).map(([key, obj]) => {
     let rowTotal = 0;
@@ -117,6 +169,7 @@ function buildTableData(cols, progMatrix) {
       avatar: obj.avatar,
       perMonth,
       total: rowTotal,
+      allCounts: obj.counts || {}, // Agregado para poder calcular variación vs meses pasados
     };
   });
 
@@ -143,16 +196,35 @@ export function VigentesResumenMensual({
   year,
   selectedMonth,
   pgmNameById,
-  avataresDeProgramas = []
+  avataresDeProgramas = [],
 }) {
   const [loading, setLoading] = useState(false);
   const [progMatrix, setProgMatrix] = useState({});
+
+  // Estados para Acordeón
+  const [isOpenLast, setIsOpenLast] = useState(false);
+  const [isOpenCurr, setIsOpenCurr] = useState(true);
 
   const { lastYearCols, currentYearCols } = useMemo(
     () => buildColumnsConfig(year, selectedMonth),
     [year, selectedMonth]
   );
 
+  // Mapa para calcular mes anterior rápidamente
+  const allCols = useMemo(
+    () => [...lastYearCols, ...currentYearCols],
+    [lastYearCols, currentYearCols]
+  );
+
+  const prevColById = useMemo(() => {
+    const map = {};
+    for (let i = 1; i < allCols.length; i++) {
+      map[allCols[i].id] = allCols[i - 1].id;
+    }
+    return map;
+  }, [allCols]);
+
+  // --- TU LÓGICA DE FETCHING ORIGINAL ---
   useEffect(() => {
     let isCancelled = false;
 
@@ -189,7 +261,7 @@ export function VigentesResumenMensual({
 
         if (isCancelled) return;
         const nextMatrix = {};
-        
+
         for (const { colId, rows } of results) {
           for (const r of rows) {
             const rawName =
@@ -203,7 +275,7 @@ export function VigentesResumenMensual({
             const key = norm(rawName);
 
             const foundAvatar = avataresDeProgramas.find(
-                (item) => item.name_image === rawName
+              (item) => item.name_image === rawName
             );
             const avatarUrl = foundAvatar?.urlImage || null;
 
@@ -230,7 +302,16 @@ export function VigentesResumenMensual({
     return () => {
       isCancelled = true;
     };
-  }, [id_empresa, year, selectedMonth, lastYearCols, currentYearCols, pgmNameById, avataresDeProgramas]);
+  }, [
+    id_empresa,
+    year,
+    selectedMonth,
+    lastYearCols,
+    currentYearCols,
+    pgmNameById,
+    avataresDeProgramas,
+  ]);
+  // --------------------------------------
 
   const lastYearTable = useMemo(
     () => buildTableData(lastYearCols, progMatrix),
@@ -242,132 +323,247 @@ export function VigentesResumenMensual({
   );
 
   const renderNameCell = (row) => (
-      <td style={{ ...styles.td, ...styles.firstCol }}>
-        {row.avatar ? (
-           <img 
-             src={row.avatar} 
-             alt={row.label} 
-             style={styles.programLogo} 
-             title={row.label} 
-           />
-        ) : (
-           row.label
-        )}
-      </td>
+    <td style={{ ...styles.td, ...styles.firstCol }}>
+      {row.avatar ? (
+        <img
+          src={row.avatar}
+          alt={row.label}
+          style={styles.programLogo}
+          title={row.label}
+        />
+      ) : (
+        row.label
+      )}
+    </td>
   );
 
   return (
     <>
-      {/* TABLA AÑO ANTERIOR */}
-      <div style={styles.wrapper}>
-        <div style={styles.header}>SOCIOS VIGENTES - ÚLTIMOS 4 MESES AÑO ANTERIOR</div>
-        {loading && (
-          <div style={{ padding: 16, textAlign: "center" }}>Cargando...</div>
-        )}
-        {!loading && lastYearTable.rows.length === 0 && (
-          <div style={{ padding: 16, textAlign: "center" }}>
-            No hay datos de socios vigentes para mostrar.
-          </div>
-        )}
-        {!loading && lastYearTable.rows.length > 0 && (
-          <table style={styles.table}>
-            <thead style={styles.thead}>
-              <tr>
-                <th style={{ ...styles.th, textAlign: "left" }}>Programa</th>
-                {lastYearCols.map((c) => (
-                  <th key={c.id} style={styles.th}>
-                    {c.label}
+ 
+<div style={styles.wrapper}>
+  <div style={styles.header} onClick={() => setIsOpenLast(!isOpenLast)}>
+    <span style={styles.headerTitle} > SOCIOS VIGENTES - ÚLTIMOS 4 MESES AÑO ANTERIOR</span>
+    <span style={{ fontSize: 24 }}>{isOpenLast ? "▲" : "▼"}</span>
+  </div>
+
+  {isOpenLast && (
+    <div style={styles.tableContainer}>
+      {loading && <div style={styles.emptyMsg}>Cargando...</div>}
+
+      {!loading && lastYearTable.rows.length === 0 && (
+        <div style={styles.emptyMsg}>
+          No hay datos de socios vigentes para mostrar.
+        </div>
+      )}
+
+      {!loading && lastYearTable.rows.length > 0 && (
+        <table style={styles.table}>
+          <thead style={styles.thead}>
+            <tr>
+              <th style={{ ...styles.th}}>Programa</th>
+
+              {lastYearCols.map((c) => (
+                <React.Fragment key={c.id}>
+                  <th style={styles.th}>{c.label}</th>
+                  <th
+                    style={{
+                      ...styles.th,
+                      background: "#a30000",
+                      fontSize: 16,
+                    }}
+                  >
+                    % 
                   </th>
-                ))}
-                <th style={styles.th}>TOTAL</th>
-              </tr>
-            </thead>
-            <tbody>
-              {lastYearTable.rows.map((row) => (
-                <tr key={row.key}>
-                  {renderNameCell(row)} 
-                  {lastYearCols.map((c) => (
-                    <td key={c.id} style={styles.td}>
-                      {row.perMonth[c.id] || 0}
-                    </td>
-                  ))}
-                  <td style={{ ...styles.td, fontWeight: 700 }}>
-                    {row.total}
-                  </td>
-                </tr>
+                </React.Fragment>
               ))}
-              <tr style={styles.footerRow}>
-                <td style={{ ...styles.td, ...styles.firstCol }}>
-                  TOTAL
+
+              <th style={styles.th}>TOTAL</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {lastYearTable.rows.map((row) => (
+              <tr key={row.key}>
+                {renderNameCell(row)}
+
+                {lastYearCols.map((c) => {
+                  const curr = row.perMonth[c.id] || 0;
+                  const prevId = prevColById[c.id];
+                  const prev = prevId ? row.allCounts?.[prevId] || 0 : 0;
+                  const variation = calcPct(curr, prev);
+
+                  return (
+                    <React.Fragment key={c.id}>
+                      <td style={styles.td}>{curr}</td>
+                      <td
+                        style={{
+                          ...styles.td,
+                          background: "#fafafa",
+                          fontSize: 20,
+                        }}
+                      >
+                        {renderVariationCell(variation)}
+                      </td>
+                    </React.Fragment>
+                  );
+                })}
+
+                <td
+                  style={{ ...styles.td, fontWeight: 700, fontSize: 28 }}
+                >
+                  {row.total}
                 </td>
-                {lastYearCols.map((c) => (
-                  <td key={c.id} style={styles.td}>
-                    {lastYearTable.footer.perMonth[c.id] || 0}
-                  </td>
-                ))}
-                <td style={styles.td}>{lastYearTable.footer.total}</td>
               </tr>
-            </tbody>
-          </table>
-        )}
-      </div>
+            ))}
+
+            {/* FOOTER TOTAL */}
+            <tr style={styles.footerRow}>
+              <td style={{ ...styles.td, ...styles.firstCol }}>TOTAL</td>
+
+              {lastYearCols.map((c) => {
+                const currTotal =
+                  lastYearTable.footer.perMonth[c.id] || 0;
+
+                const prevId = prevColById[c.id];
+                const prevTotal = prevId
+                  ? lastYearTable.footer.perMonth[prevId] || 0
+                  : 0;
+
+                const variation = calcPct(currTotal, prevTotal);
+
+                return (
+                  <React.Fragment key={c.id}>
+                    <td style={styles.td}>{currTotal}</td>
+                    <td
+                      style={{
+                        ...styles.td,
+                        fontWeight: 800,
+                        fontSize: 20,
+                      }}
+                    >
+                      {renderVariationCell(variation)}
+                    </td>
+                  </React.Fragment>
+                );
+              })}
+
+              <td style={styles.td}>{lastYearTable.footer.total}</td>
+            </tr>
+          </tbody>
+        </table>
+      )}
+    </div>
+  )}
+</div>
+
 
       <div style={{ height: 32 }} />
 
-      {/* TABLA AÑO ACTUAL */}
+      {/* TABLA AÑO ACTUAL (Acordeón + Scroll + Doble Columna) */}
       <div style={styles.wrapper}>
-        <div style={styles.header}>
-          SOCIOS VIGENTES - AÑO ACTUAL ({year})
+        <div style={styles.header} onClick={() => setIsOpenCurr(!isOpenCurr)}>
+          <span style={styles.headerTitle}>SOCIOS VIGENTES - AÑO ACTUAL ({year})</span>
+          <span style={{ fontSize: 24 }}>{isOpenCurr ? "▲" : "▼"}</span>
         </div>
-        {loading && (
-          <div style={{ padding: 16, textAlign: "center" }}>Cargando...</div>
-        )}
-        {!loading && currentYearTable.rows.length === 0 && (
-          <div style={{ padding: 16, textAlign: "center" }}>
-            No hay datos de socios vigentes para mostrar.
-          </div>
-        )}
-        {!loading && currentYearTable.rows.length > 0 && (
-          <table style={styles.table}>
-            <thead style={styles.thead}>
-              <tr>
-                <th style={{ ...styles.th, textAlign: "left" }}>Programa</th>
-                {currentYearCols.map((c) => (
-                  <th key={c.id} style={styles.th}>
-                    {c.label}
-                  </th>
-                ))}
-                <th style={styles.th}>TOTAL</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentYearTable.rows.map((row) => (
-                <tr key={row.key}>
-                   {renderNameCell(row)}
 
-                  {currentYearCols.map((c) => (
-                    <td key={c.id} style={styles.td}>
-                      {row.perMonth[c.id] || 0}
-                    </td>
+        {isOpenCurr && (
+          <div style={styles.tableContainer}>
+            {loading && (
+              <div style={styles.emptyMsg}>Cargando...</div>
+            )}
+            {!loading && currentYearTable.rows.length === 0 && (
+              <div style={styles.emptyMsg}>
+                No hay datos de socios vigentes para mostrar.
+              </div>
+            )}
+            {!loading && currentYearTable.rows.length > 0 && (
+              <table style={styles.table}>
+                <thead style={styles.thead}>
+                  <tr>
+                    <th style={{ ...styles.th}}>Programa</th>
+                    {currentYearCols.map((c) => (
+                      <React.Fragment key={c.id}>
+                        <th style={styles.th}>{c.label}</th>
+                        <th
+                          style={{
+                            ...styles.th,
+                            background: "#a30000",
+                            fontSize: 16,
+                          }}
+                        >
+                          % 
+                        </th>
+                      </React.Fragment>
+                    ))}
+                    <th style={styles.th}>TOTAL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentYearTable.rows.map((row) => (
+                    <tr key={row.key}>
+                      {renderNameCell(row)}
+                      {currentYearCols.map((c) => {
+                        const curr = row.perMonth[c.id] || 0;
+                        const prevId = prevColById[c.id];
+                        const prev = prevId ? row.allCounts?.[prevId] || 0 : 0;
+                        const variation = calcPct(curr, prev);
+
+                        return (
+                          <React.Fragment key={c.id}>
+                            <td style={styles.td}>{curr}</td>
+                            <td
+                              style={{
+                                ...styles.td,
+                                background: "#fafafa",
+                                fontSize: 20,
+                              }}
+                            >
+                              {renderVariationCell(variation)}
+                            </td>
+                          </React.Fragment>
+                        );
+                      })}
+                      <td style={{ ...styles.td, fontWeight: 700, fontSize: 28 }}>
+                        {row.total}
+                      </td>
+                    </tr>
                   ))}
-                  <td style={{ ...styles.td, fontWeight: 700 }}>
-                    {row.total}
-                  </td>
-                </tr>
-              ))}
-              <tr style={styles.footerRow}>
-                <td style={{ ...styles.td, ...styles.firstCol }}>
-                  TOTAL
-                </td>
-                {currentYearCols.map((c) => (
-                  <td key={c.id} style={styles.td}>
-                    {currentYearTable.footer.perMonth[c.id] || 0}
-                  </td>
-                ))}
-                <td style={styles.td}>{currentYearTable.footer.total}</td>
-              </tr>
-            </tbody>
-          </table>
+                  <tr style={styles.footerRow}>
+                    <td style={{ ...styles.td, ...styles.firstCol }}>TOTAL</td>
+                    {currentYearCols.map((c) => {
+                      const currTotal = currentYearTable.footer.perMonth[c.id] || 0;
+                      const prevId = prevColById[c.id];
+                      let prevTotal = 0;
+                      if (prevId) {
+                        // Buscamos en el footer actual o en el del año pasado si es Enero
+                        prevTotal =
+                          currentYearTable.footer.perMonth[prevId] ??
+                          lastYearTable.footer.perMonth[prevId] ??
+                          0;
+                      }
+                      const variation = calcPct(currTotal, prevTotal);
+
+                      return (
+                        <React.Fragment key={c.id}>
+                          <td style={styles.td}>{currTotal}</td>
+                          <td
+                            style={{
+                              ...styles.td,
+                              fontWeight: 800,
+                              fontSize: 20,
+                            }}
+                          >
+                            {renderVariationCell(variation)}
+                          </td>
+                        </React.Fragment>
+                      );
+                    })}
+                    <td style={styles.td}>{currentYearTable.footer.total}</td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
+          </div>
         )}
       </div>
     </>
