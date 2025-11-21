@@ -947,6 +947,7 @@ const originMap = {
             ventas={dataVentas}
             fechas={mesesSeleccionados}
             dataMktByMonth={dataMkt}
+              reservasMF={reservasMF}
             initialDay={initDay}
             cutDay={cutDay}
           />
