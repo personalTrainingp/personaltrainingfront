@@ -40,7 +40,6 @@ function buildColumnsConfig(year, selectedMonth) {
   return { lastYearCols, currentYearCols };
 }
 
-// Updated to calculate growth to next month: (Next - Current) / Current
 const calcPctForward = (curr, next) => {
   if (curr == null || curr === 0) return 0;
   if (next == null) return 0; 
@@ -52,7 +51,10 @@ function renderVariationCell(value) {
 
   const pos = value > 0;
   const neg = value < 0;
-  const pct = Math.abs(value).toFixed(1) + "%";
+  
+  const sign = pos ? "+" : neg ? "-" : "";
+  
+  const pct = sign + Math.abs(value).toFixed(1) + "%";
 
   const color = pos ? "#16a34a" : neg ? "#dc2626" : "#6b7280";
 
