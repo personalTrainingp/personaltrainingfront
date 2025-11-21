@@ -57,7 +57,7 @@ useEffect(() => {
 
  return (
     <div className="container-fluid mt-3"> {/* Usa container-fluid para más espacio */}
-      {/* Controles de mes / initDay / cutDay 
+       
       <TopControls
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
