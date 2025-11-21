@@ -40,11 +40,11 @@ function buildColumnsConfig(year, selectedMonth) {
   return { lastYearCols, currentYearCols };
 }
 
-const calcPct = (curr, prev, isFirstCol) => {
-  if (isFirstCol) return 0;
-  if (prev == null || isNaN(prev)) return null;
-  if (prev === 0) return 0;
-  return ((curr - prev) / prev) * 100;
+// Updated to calculate growth to next month: (Next - Current) / Current
+const calcPctForward = (curr, next) => {
+  if (curr == null || curr === 0) return 0;
+  if (next == null) return 0; 
+  return ((next - curr) / curr) * 100;
 };
 
 function renderVariationCell(value) {
@@ -123,13 +123,26 @@ export function VigentesResumenMensual({
     [lastYearCols, currentYearCols]
   );
 
-  const prevColById = useMemo(() => {
+  // Map current column ID to NEXT column ID for forward calculation
+  const nextColById = useMemo(() => {
     const map = {};
-    for (let i = 1; i < allCols.length; i++) {
-      map[allCols[i].id] = allCols[i - 1].id;
+    for (let i = 0; i < allCols.length - 1; i++) {
+      map[allCols[i].id] = allCols[i + 1].id;
     }
     return map;
   }, [allCols]);
+
+  // Calculate totals for ALL columns to enable footer pct calculation across tables
+  const allColumnTotals = useMemo(() => {
+    const totals = {};
+    allCols.forEach((c) => (totals[c.id] = 0));
+    Object.values(progMatrix).forEach((row) => {
+      allCols.forEach((c) => {
+        totals[c.id] += row.counts[c.id] || 0;
+      });
+    });
+    return totals;
+  }, [progMatrix, allCols]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -270,12 +283,16 @@ export function VigentesResumenMensual({
                   <tr>
                     <th className={styles.th}>Programa</th>
 
-                    {lastYearCols.map((c) => (
-                      <React.Fragment key={c.id}>
-                        <th className={styles.th}>{c.label}</th>
-                        <th className={styles.th}>%</th>
-                      </React.Fragment>
-                    ))}
+                    {lastYearCols.map((c, idx) => {
+                      const hasNext = !!nextColById[c.id];
+                      // MODIFICADO: Ahora mostramos % siempre que haya un mes siguiente (incluyendo Dic -> Ene)
+                      return (
+                        <React.Fragment key={c.id}>
+                          <th className={styles.th}>{c.label}</th>
+                          {hasNext && <th className={styles.th}>%</th>}
+                        </React.Fragment>
+                      );
+                    })}
 
                     <th className={styles.th}>TOTAL</th>
                   </tr>
@@ -286,20 +303,23 @@ export function VigentesResumenMensual({
                     <tr key={row.key}>
                       {renderNameCell(row)}
 
-                      {lastYearCols.map((c) => {
+                      {lastYearCols.map((c, idx) => {
                         const curr = row.perMonth[c.id] || 0;
-                        const prevId = prevColById[c.id];
-                        const prev = prevId ? row.allCounts?.[prevId] || 0 : 0;
+                        const nextId = nextColById[c.id];
+                        const hasNext = !!nextId;
 
-                        const isFirstCol = !prevId;
-                        const variation = calcPct(curr, prev, isFirstCol);
+                        // Look ahead to next month for variation
+                        const next = nextId ? row.allCounts?.[nextId] || 0 : 0;
+                        const variation = calcPctForward(curr, next);
 
                         return (
                           <React.Fragment key={c.id}>
                             <td className={styles.td}>{curr}</td>
-                            <td className={styles.td}>
-                              {renderVariationCell(variation)}
-                            </td>
+                            {hasNext && (
+                              <td className={styles.td}>
+                                {renderVariationCell(variation)}
+                              </td>
+                            )}
                           </React.Fragment>
                         );
                       })}
@@ -311,22 +331,22 @@ export function VigentesResumenMensual({
                   <tr className={styles.footerRow}>
                     <td className={`${styles.td} ${styles.firstCol}`}>TOTAL</td>
 
-                    {lastYearCols.map((c) => {
-                      const currTotal = lastYearTable.footer.perMonth[c.id] || 0;
-                      const prevId = prevColById[c.id];
-                      const prevTotal = prevId
-                        ? lastYearTable.footer.perMonth[prevId] || 0
-                        : 0;
+                    {lastYearCols.map((c, idx) => {
+                      const currTotal = allColumnTotals[c.id] || 0;
+                      const nextId = nextColById[c.id];
+                      const hasNext = !!nextId;
 
-                      const isFirstCol = !prevId;
-                      const variation = calcPct(currTotal, prevTotal, isFirstCol);
+                      const nextTotal = nextId ? allColumnTotals[nextId] || 0 : 0;
+                      const variation = calcPctForward(currTotal, nextTotal);
 
                       return (
                         <React.Fragment key={c.id}>
                           <td className={styles.td}>{currTotal}</td>
-                          <td className={styles.td}>
-                            {renderVariationCell(variation)}
-                          </td>
+                          {hasNext && (
+                            <td className={styles.td}>
+                              {renderVariationCell(variation)}
+                            </td>
+                          )}
                         </React.Fragment>
                       );
                     })}
@@ -367,12 +387,15 @@ export function VigentesResumenMensual({
                   <tr>
                     <th className={styles.th}>Programa</th>
 
-                    {currentYearCols.map((c) => (
-                      <React.Fragment key={c.id}>
-                        <th className={styles.th}>{c.label}</th>
-                        <th className={styles.th}>%</th>
-                      </React.Fragment>
-                    ))}
+                    {currentYearCols.map((c) => {
+                      const hasNext = !!nextColById[c.id];
+                      return (
+                        <React.Fragment key={c.id}>
+                          <th className={styles.th}>{c.label}</th>
+                          {hasNext && <th className={styles.th}>%</th>}
+                        </React.Fragment>
+                      );
+                    })}
 
                     <th className={styles.th}>TOTAL</th>
                   </tr>
@@ -385,25 +408,20 @@ export function VigentesResumenMensual({
 
                       {currentYearCols.map((c) => {
                         const curr = row.perMonth[c.id] || 0;
-                        const prevId = prevColById[c.id];
+                        const nextId = nextColById[c.id];
+                        const hasNext = !!nextId;
 
-                        let prev = 0;
-                        if (prevId) {
-                          prev =
-                            row.allCounts?.[prevId] ??
-                            lastYearTable.footer.perMonth[prevId] ??
-                            0;
-                        }
-
-                        const isFirstCol = !prevId;
-                        const variation = calcPct(curr, prev, isFirstCol);
+                        const next = nextId ? row.allCounts?.[nextId] || 0 : 0;
+                        const variation = calcPctForward(curr, next);
 
                         return (
                           <React.Fragment key={c.id}>
                             <td className={styles.td}>{curr}</td>
-                            <td className={styles.td}>
-                              {renderVariationCell(variation)}
-                            </td>
+                            {hasNext && (
+                              <td className={styles.td}>
+                                {renderVariationCell(variation)}
+                              </td>
+                            )}
                           </React.Fragment>
                         );
                       })}
@@ -416,28 +434,21 @@ export function VigentesResumenMensual({
                     <td className={`${styles.td} ${styles.firstCol}`}>TOTAL</td>
 
                     {currentYearCols.map((c) => {
-                      const currTotal =
-                        currentYearTable.footer.perMonth[c.id] || 0;
+                      const currTotal = allColumnTotals[c.id] || 0;
+                      const nextId = nextColById[c.id];
+                      const hasNext = !!nextId;
 
-                      const prevId = prevColById[c.id];
-                      let prevTotal = 0;
-
-                      if (prevId) {
-                        prevTotal =
-                          currentYearTable.footer.perMonth[prevId] ??
-                          lastYearTable.footer.perMonth[prevId] ??
-                          0;
-                      }
-
-                      const isFirstCol = !prevId;
-                      const variation = calcPct(currTotal, prevTotal, isFirstCol);
+                      const nextTotal = nextId ? allColumnTotals[nextId] || 0 : 0;
+                      const variation = calcPctForward(currTotal, nextTotal);
 
                       return (
                         <React.Fragment key={c.id}>
                           <td className={styles.td}>{currTotal}</td>
-                          <td className={styles.td}>
-                            {renderVariationCell(variation)}
-                          </td>
+                          {hasNext && (
+                            <td className={styles.td}>
+                              {renderVariationCell(variation)}
+                            </td>
+                          )}
                         </React.Fragment>
                       );
                     })}
