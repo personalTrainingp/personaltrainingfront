@@ -28,7 +28,26 @@ export const InputText = ({label, onChange, value, nameInput, required=false, ..
   )
 }
 
-export const InputDate = ({label, onChange, value, nameInput, required=false, ...props}) => {
+export const InputFile = ({label, onChange, value, nameInput, required=false, ...props}) => {
+  return (
+    <>
+      <label className='form-label' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
+      <input
+          className='form-control'
+          name={nameInput}
+          id={nameInput}
+          onChange={onChange}
+          required={required}
+          type='file'
+          {
+              ...props
+          }
+      />
+    </>
+  )
+}
+
+export const InputDate = ({label, onChange, value, nameInput, required=false, type='date', ...props}) => {
   const formattedValue = value
     ? dayjs(value).format("dddd DD [de] MMMM [del] YYYY")
     : "";
@@ -46,13 +65,12 @@ export const InputDate = ({label, onChange, value, nameInput, required=false, ..
         id={nameInput}
         onChange={onChange}
         required={required}
-        type='date'
+        type={type}
         {...props}
       />
     </>
   );
 }
-
 
 export const InputTextArea = ({label, onChange, value, nameInput, required=false, ...props}) => {
   return (
@@ -73,36 +91,20 @@ export const InputTextArea = ({label, onChange, value, nameInput, required=false
   )
 }
 
-export const InputNumber = ({ label, value = "", onChange, nameInput, required, ...props }) => {
-  const [displayValue, setDisplayValue] = useState(formatNumber(value))
-
-  function formatNumber(val) {
-    if (val === "" || val === null || val === undefined) return ""
-    const parts = val.toString().replace(/,/g, "").split(".")
-    const integerPart = parts[0]
-    const decimalPart = parts[1]
-    const formattedInt = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    return decimalPart !== undefined ? `${formattedInt}.${decimalPart}` : formattedInt
-  }
-
-  const handleChange = (e) => {
-    const raw = e.target.value.replace(/,/g, "")
-    if (!/^\d*\.?\d*$/.test(raw)) return // solo números y punto
-    setDisplayValue(formatNumber(raw))
-    onChange?.(raw) // 🔹 ahora devuelve el valor limpio directamente
-  }
-
+export const InputNumber = ({label, onChange, value, nameInput, required=false, ...props}) => {
   return (
     <>
-      <label className="form-label">{label} {required && (<span className='text-danger'>*</span>)}</label>
+      <label className='form-label' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
       <input
-        type="text"
-        className="form-control"
-        value={displayValue}
-        name={nameInput}
-        onChange={handleChange}
-        required={required}
-        {...props}
+          className='form-control'
+          value={value}
+          name={nameInput}
+          id={nameInput}
+          onChange={onChange}
+          required={required}
+          {
+              ...props
+          }
       />
     </>
   )
@@ -133,6 +135,7 @@ export const InputSelect = ({label, value='', onChange, nameInput, required, opt
     </>
   )
 }
+
 export const InputSwitch = ({label, value=false, onChange, nameInput, required, options=[], ...props})=>{
     const handleChange = (e) => {
     // FormCheck usa checked, no value
@@ -160,6 +163,23 @@ export const InputButton = ({label, variant, className, onClick, ...props})=>{
   return (
     <>
       <Button className={`${className}`} onClick={onClick} variant={variant} {...props}>{label}</Button>
+    </>
+  )
+}
+
+export const InputMoney = ({ label, value = "", onChange, nameInput, required, ...props })=>{
+  return (
+    <>
+      <label className="form-label">{label} {required && (<span className='text-danger'>*</span>)}</label>
+      <input
+        type="text"
+        className="form-control"
+        value={displayValue}
+        name={nameInput}
+        onChange={handleChange}
+        required={required}
+        {...props}
+      />
     </>
   )
 }

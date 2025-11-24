@@ -151,6 +151,7 @@ export const arrayEstadoContrato = [
 	{ label: 'Cancelado', value: 501, severity: 'danger' },
 	{ label: 'Retencion', value: 506, severity: 'secondary' },
 ];
+
 export const arrayRoles = [
 	{ label: 'Ventas', value: 1 },
 	{ label: 'Administracion', value: 2 },

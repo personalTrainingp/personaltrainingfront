@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Table, Form, Pagination, Row, Col, Button } from 'react-bootstrap';
+import { Table, Form, Pagination, Row, Col } from 'react-bootstrap';
 
 export const DataTableCR = ({
   columns = [],
@@ -32,16 +32,13 @@ export const DataTableCR = ({
   // --- Responsivo NUEVOS ---
   stackOnSmall = true,
   responsiveStackBelow = 768,
-  componentsLeft
+  componentsLeft,
 }) => {
-
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(defaultPageSize);
   const [sort, setSort] = useState(initialSort); // {id, direction}
   const [selected, setSelected] = useState(() => new Set());
-
-  // [NEW] colWidths ahora solo se inicializa para columnas personalizables
   const [colWidths, setColWidths] = useState(() => {
     const w = {};
     for (const c of columns) {
@@ -55,11 +52,29 @@ export const DataTableCR = ({
     }
     return w;
   });
-
   const [initialWidths, setInitialWidths] = useState({});
 
   const tableRef = useRef(null);
   const resizingRef = useRef({ active: false, colId: null, startX: 0, startW: 0 });
+
+  // --- RESPONSIVE STACK (cards en móvil) ---
+  const [isStacked, setIsStacked] = useState(false);
+
+  useEffect(() => {
+    if (!stackOnSmall) {
+      setIsStacked(false);
+      return;
+    }
+
+    const update = () => {
+      if (typeof window === 'undefined') return;
+      setIsStacked(window.innerWidth < responsiveStackBelow);
+    };
+
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [stackOnSmall, responsiveStackBelow]);
 
   // ---------------- URL sync ----------------
   useEffect(() => {
@@ -97,7 +112,8 @@ export const DataTableCR = ({
         const params = new URLSearchParams(window.location.search);
         const p = parseInt(params.get(pageParam) || '', 10);
         const ps = parseInt(params.get(pageSizeParam) || '', 10);
-        if (Number.isFinite(ps) && pageSizeOptions.includes(ps) && ps !== pageSize) setPageSize(ps);
+        if (Number.isFinite(ps) && pageSizeOptions.includes(ps) && ps !== pageSize)
+          setPageSize(ps);
         if (Number.isFinite(p) && p > 0 && p !== page) setPage(p);
       } catch {}
     };
@@ -119,7 +135,7 @@ export const DataTableCR = ({
     return map;
   }, [columns]);
 
-  // [NEW] Guardar anchos iniciales SOLO para columnas personalizables
+  // Guardar anchos iniciales solo para columnas personalizables
   useEffect(() => {
     if (!resizableColumns) return;
 
@@ -130,9 +146,8 @@ export const DataTableCR = ({
     ths.forEach((th) => {
       const id = th.getAttribute('data-col-id');
       if (!id) return;
-      const col = columns.find(c => c.id === id);
-      if (!col) return;
-      if (!col.isWidthPersonalize) return; // <- clave
+      const col = columns.find((c) => c.id === id);
+      if (!col || !col.isWidthPersonalize) return;
 
       const rect = th.getBoundingClientRect();
       next[id] = Math.max(80, Math.round(rect.width));
@@ -142,7 +157,7 @@ export const DataTableCR = ({
     setInitialWidths(next);
   }, [columns, resizableColumns]);
 
-  // medir columnas que faltan ancho inicial
+  // Medir columnas que falten ancho inicial
   useEffect(() => {
     if (!resizableColumns) return;
     const missing = columns.some(
@@ -157,7 +172,7 @@ export const DataTableCR = ({
     ths.forEach((th) => {
       const id = th.getAttribute('data-col-id');
       if (!id) return;
-      const col = columns.find(c => c.id === id);
+      const col = columns.find((c) => c.id === id);
       if (!col?.isWidthPersonalize) return;
 
       if (next[id] == null) {
@@ -189,7 +204,7 @@ export const DataTableCR = ({
     if (!col) return filtered;
     const dir = sort.direction === 'desc' ? -1 : 1;
     const arr = [...filtered];
-    const acc = col.accessor ?? ((r) => undefined);
+    const acc = col.accessor ?? (() => undefined);
 
     arr.sort((a, b) => {
       const va = typeof acc === 'function' ? acc(a) : getByPath(a, acc);
@@ -211,34 +226,41 @@ export const DataTableCR = ({
   const pageCount = Math.max(1, Math.ceil(sorted.length / pageSize));
   const currentPage = Math.min(page, pageCount);
   const startIdx = (currentPage - 1) * pageSize;
+
   const pageRows = useMemo(
     () => sorted.slice(startIdx, startIdx + pageSize),
     [sorted, startIdx, pageSize]
   );
+
   useEffect(() => setPage(1), [search, pageSize, data.length]);
 
   // ---------------- selection ----------------
   const hasSelection = selectableRows === true;
+
   const getRowKey = (row, idxOnPage) => {
     if (!hasSelection) return null;
     if (!rowKey) {
-      console.warn('[DataTableRB] rowKey is requerido cuando selectableRows=true');
+      console.warn('[DataTableCR] rowKey es requerido cuando selectableRows=true');
       return `${startIdx + idxOnPage}`;
     }
     return typeof rowKey === 'function' ? rowKey(row) : row?.[rowKey];
   };
 
-  const [selectedSet, setSelectedSet] = [selected, setSelected]; 
+  const [selectedSet, setSelectedSet] = [selected, setSelected];
+
   const toggleRow = (row, idxOnPage) => {
     const key = getRowKey(row, idxOnPage);
     if (key == null) return;
     const next = new Set(selectedSet);
-    if (next.has(key)) next.delete(key); else next.add(key);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
     setSelected(next);
   };
 
   const togglePageAll = () => {
-    const keysOnPage = pageRows.map((r, i) => getRowKey(r, i)).filter((k) => k != null);
+    const keysOnPage = pageRows
+      .map((r, i) => getRowKey(r, i))
+      .filter((k) => k != null);
     if (keysOnPage.every((k) => selectedSet.has(k))) {
       const next = new Set(selectedSet);
       keysOnPage.forEach((k) => next.delete(k));
@@ -252,7 +274,9 @@ export const DataTableCR = ({
 
   const pageAllChecked = useMemo(() => {
     if (!hasSelection) return false;
-    const keysOnPage = pageRows.map((r, i) => getRowKey(r, i)).filter((k) => k != null);
+    const keysOnPage = pageRows
+      .map((r, i) => getRowKey(r, i))
+      .filter((k) => k != null);
     return keysOnPage.length > 0 && keysOnPage.every((k) => selectedSet.has(k));
   }, [pageRows, selectedSet, hasSelection]);
 
@@ -261,7 +285,8 @@ export const DataTableCR = ({
     const rows = [];
     const keys = [];
     const keyToRow = new Map();
-    const mk = (row, idx) => (typeof rowKey === 'function' ? rowKey(row) : row?.[rowKey] ?? `${idx}`);
+    const mk = (row, idx) =>
+      typeof rowKey === 'function' ? rowKey(row) : row?.[rowKey] ?? `${idx}`;
     data.forEach((r, i) => keyToRow.set(mk(r, i), r));
     for (const k of selectedSet) {
       if (keyToRow.has(k)) {
@@ -288,8 +313,7 @@ export const DataTableCR = ({
   const startResize = (colId, e) => {
     if (!resizableColumns) return;
 
-    // [NEW] si la columna NO es personalizable, no hacemos nada
-    const colMeta = columns.find(c => c.id === colId);
+    const colMeta = columns.find((c) => c.id === colId);
     if (!colMeta?.isWidthPersonalize) return;
 
     e.preventDefault();
@@ -300,9 +324,10 @@ export const DataTableCR = ({
     const startX = e.clientX;
     const startW =
       colWidths[colId] ??
-      (tableRef.current
+      tableRef.current
         ?.querySelector(`th[data-col-id="${colId}"]`)
-        ?.getBoundingClientRect().width ?? 120);
+        ?.getBoundingClientRect().width ??
+      120;
 
     resizingRef.current = { active: true, colId, startX, startW };
 
@@ -328,8 +353,6 @@ export const DataTableCR = ({
   useEffect(() => {
     return () => {
       document.body.classList.remove('dtrb-noselect');
-      document.removeEventListener('mousemove', () => {});
-      document.removeEventListener('mouseup', () => {});
     };
   }, []);
 
@@ -340,7 +363,12 @@ export const DataTableCR = ({
     const items = [];
     const add = (p, label = p, disabled = false, active = false) =>
       items.push(
-        <Pagination.Item key={label + '_' + p} disabled={disabled} active={active} onClick={() => changePage(p)}>
+        <Pagination.Item
+          key={label + '_' + p}
+          disabled={disabled}
+          active={active}
+          onClick={() => changePage(p)}
+        >
           {label}
         </Pagination.Item>
       );
@@ -350,8 +378,20 @@ export const DataTableCR = ({
     const end = Math.min(pc, start + windowSize - 1);
     const adjStart = Math.max(1, end - windowSize + 1);
 
-    items.push(<Pagination.First key="first" disabled={currentPage === 1} onClick={() => changePage(1)} />);
-    items.push(<Pagination.Prev key="prev" disabled={currentPage === 1} onClick={() => changePage(currentPage - 1)} />);
+    items.push(
+      <Pagination.First
+        key="first"
+        disabled={currentPage === 1}
+        onClick={() => changePage(1)}
+      />
+    );
+    items.push(
+      <Pagination.Prev
+        key="prev"
+        disabled={currentPage === 1}
+        onClick={() => changePage(currentPage - 1)}
+      />
+    );
 
     if (adjStart > 1) add(1);
     if (adjStart > 2) items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
@@ -361,36 +401,54 @@ export const DataTableCR = ({
     if (end < pc - 1) items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
     if (end < pc) add(pc);
 
-    items.push(<Pagination.Next key="next" disabled={currentPage === pc} onClick={() => changePage(currentPage + 1)} />);
-    items.push(<Pagination.Last key="last" disabled={currentPage === pc} onClick={() => changePage(pc)} />);
+    items.push(
+      <Pagination.Next
+        key="next"
+        disabled={currentPage === pc}
+        onClick={() => changePage(currentPage + 1)}
+      />
+    );
+    items.push(
+      <Pagination.Last
+        key="last"
+        disabled={currentPage === pc}
+        onClick={() => changePage(pc)}
+      />
+    );
 
     return <Pagination className="mb-0">{items}</Pagination>;
   };
 
   // ---------------- render helpers ----------------
-  // [NEW] función para decidir ancho aplicado en TH/TD
   const getAppliedWidth = (col) => {
     if (col.isWidthPersonalize) {
-      // si es personalizable usamos controlado (colWidths)
       if (colWidths[col.id] != null) return `${colWidths[col.id]}px`;
-      return col.width; // fallback inicial si aún no medimos
+      return col.width;
     }
-    // si NO es personalizable, usamos su width "fija" si pasó una
     return col.width;
   };
 
+  // --- VISTA TABLA ---
   const table = (
     <Table
-      ref={tableRef}
+            ref={tableRef}
       striped={striped}
       bordered={bordered}
       hover={hover}
       size={small ? 'sm' : undefined}
-      responsive={responsive}
+      // responsive lo maneja el wrapper, aquí lo dejamos sin tocar
       className={`mb-0 fs-4 ${verticalBorders ? 'dtrb-vertical-borders' : ''}`}
-      style={{ tableLayout: 'fixed' }}
+      style={{
+        // clave: aseguramos que la tabla SEA más ancha que el contenedor
+        minWidth: `${Math.max(columns.length * 140, 600)}px`,
+        tableLayout: 'auto', // permite que respete mejor el contenido
+      }}
     >
-      <thead style={{ backgroundColor: stickyHeader ? 'var(--dtrb-header-bg, #fff)' : '#E9ECF1' }}>
+      <thead
+        style={{
+          backgroundColor: stickyHeader ? 'var(--dtrb-header-bg, #fff)' : '#E9ECF1',
+        }}
+      >
         <tr>
           {selectableRows && (
             <th
@@ -405,7 +463,11 @@ export const DataTableCR = ({
                 boxShadow: stickyHeader ? '0 1px 0 rgba(0,0,0,.08)' : undefined,
               }}
             >
-              <Form.Check type="checkbox" checked={pageAllChecked} onChange={togglePageAll} />
+              <Form.Check
+                type="checkbox"
+                checked={pageAllChecked}
+                onChange={togglePageAll}
+              />
             </th>
           )}
 
@@ -427,15 +489,17 @@ export const DataTableCR = ({
                   zIndex: stickyHeader ? 1021 : undefined,
                   textAlign: col.headerAlign ?? 'left',
                   boxShadow: stickyHeader ? '0 1px 0 rgba(0,0,0,.08)' : undefined,
-                  paddingRight: showGrip ? 10 : undefined, // espacio grip
+                  paddingRight: showGrip ? 10 : undefined,
                 }}
                 title={col.sortable ? 'Click para ordenar' : undefined}
               >
-                <div className="d-flex align-items-center gap-1 position-relative fs-4 ">
+                <div className="d-flex align-items-center gap-1 position-relative fs-4">
                   <span className="text-truncate">{col.header}</span>
 
                   {sort?.id === col.id && (
-                    <small aria-label="sort-indicator">{sort.direction === 'asc' ? '▲' : '▼'}</small>
+                    <small aria-label="sort-indicator">
+                      {sort.direction === 'asc' ? '▲' : '▼'}
+                    </small>
                   )}
 
                   {showGrip && (
@@ -501,7 +565,7 @@ export const DataTableCR = ({
                   key={col.id}
                   style={{
                     textAlign: col.cellAlign ?? 'left',
-                    width: appliedWidth
+                    width: appliedWidth,
                   }}
                 >
                   {col.render
@@ -520,20 +584,110 @@ export const DataTableCR = ({
     </Table>
   );
 
+    const tableWrapped = stickyHeader ? (
+    // Cuando stickyHeader = true -> controlamos ambos scrolls
+    <div
+      style={{
+        maxHeight: stickyHeight,
+        overflowY: 'auto',
+        overflowX: responsive ? 'auto' : 'hidden', // <-- scroll horizontal AQUÍ
+        position: 'relative',
+        backgroundColor: 'var(--bs-body-bg, #fff)',
+      }}
+    >
+      {table}
+    </div>
+  ) : (
+    // Cuando stickyHeader = false -> igual forzamos overflowX aquí
+    <div
+      style={{
+        overflowX: responsive ? 'auto' : 'hidden', // <-- scroll horizontal AQUÍ
+        width: '100%',
+      }}
+    >
+      {table}
+    </div>
+  );
+
+  // --- VISTA STACK (cards en móvil) ---
+  const stackedView = (
+    <div className="d-flex flex-column gap-2">
+      {pageRows.length === 0 && (
+        <div className="text-center text-muted py-4">{emptyMessage}</div>
+      )}
+
+      {pageRows.map((row, ri) => {
+        const key = (selectableRows ? getRowKey(row, ri) : undefined) ?? ri;
+        const checked = selectableRows ? selectedSet.has(getRowKey(row, ri)) : false;
+
+        const handleCardClick = () => {
+          onRowClick?.(row, startIdx + ri);
+        };
+
+        return (
+          <div
+            key={key}
+            className="border rounded p-2 bg-white shadow-sm"
+            style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+            onClick={handleCardClick}
+          >
+            <div className="d-flex align-items-center mb-2">
+              {selectableRows && (
+                <Form.Check
+                  className="me-2"
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => toggleRow(row, ri)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              )}
+              {/* Título opcional: primera columna como título */}
+              {columns[0] && (
+                <strong className="text-truncate">
+                  {columns[0].render
+                    ? columns[0].render(row, startIdx + ri)
+                    : String(
+                        typeof columns[0].accessor === 'function'
+                          ? columns[0].accessor(row)
+                          : getByPath(row, columns[0].accessor)
+                      )}
+                </strong>
+              )}
+            </div>
+
+            <div className="row g-1">
+              {columns.map((col, ci) => {
+                // Ya se mostró como título arriba (opcional)
+                if (ci === 0) return null;
+
+                const value = col.render
+                  ? col.render(row, startIdx + ri)
+                  : getByPath(row, col.accessor);
+
+                return (
+                  <div key={col.id} className="col-12">
+                    <div className="d-flex flex-column">
+                      <small className="text-muted fw-semibold">{col.header}</small>
+                      <span className="text-break">
+                        {value != null ? String(value) : ''}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const mainContent = isStacked ? stackedView : tableWrapped;
+
   return (
     <div className="d-flex flex-column gap-2 roboto-sans-serif">
-      {/* <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => setColWidths(initialWidths)}
-      >
-        Restaurar tamaños
-      </Button> */}
-
       <Row className="g-2 align-items-center">
-        <Col xs="auto">
-          {componentsLeft}
-        </Col>
+        <Col xs="auto">{componentsLeft}</Col>
 
         <Col xs="12" md="auto" className="ms-auto">
           {searchable && (
@@ -561,25 +715,13 @@ export const DataTableCR = ({
         </Col>
       </Row>
 
-      {stickyHeader ? (
-        <div
-          style={{
-            maxHeight: stickyHeight,
-            overflow: 'auto',
-            position: 'relative',
-            backgroundColor: 'var(--bs-body-bg, #fff)'
-          }}
-        >
-          {table}
-        </div>
-      ) : (
-        table
-      )}
+      {mainContent}
 
       <Row className="g-2 align-items-center">
         <Col className="text-muted">
           <small>
-            Mostrando {sorted.length === 0 ? 0 : startIdx + 1}–{Math.min(startIdx + pageSize, sorted.length)} de {sorted.length}
+            Mostrando {sorted.length === 0 ? 0 : startIdx + 1}–
+            {Math.min(startIdx + pageSize, sorted.length)} de {sorted.length}
           </small>
         </Col>
         <Col xs="auto">{renderPagination()}</Col>

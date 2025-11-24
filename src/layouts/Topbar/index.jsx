@@ -142,7 +142,6 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 				<ul className=" d-flex align-items-center gap-3">
 					<li>
 						<Dropdown>
-							{/* El Toggle muestra siempre la imagen actualmente seleccionada */}
 							<Dropdown.Toggle
 								as="div"
 								style={{ cursor: 'pointer' }}
@@ -151,7 +150,6 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 								<img
 								src={selectedLogo.src}
 								alt="logo seleccionado"
-								//width={selectedLogo.w} inversiones san expedito=>250px
 								style={{ height: selectedLogo.h, width: selectedLogo.w}}
 								/>
 							</Dropdown.Toggle>

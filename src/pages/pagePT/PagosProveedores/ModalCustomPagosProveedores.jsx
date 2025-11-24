@@ -49,7 +49,7 @@ export const ModalCustomPagosProveedores = ({ show, onHide, id_empresa1, id=0, i
         mano_obra_soles,
         mano_obra_dolares,
         id_zona,
-        onInputChange,
+        onInputChange,  
         onInputChangeReact,
         onResetForm,
     } = useForm(id==0?registerTrabajo:dataContrato);

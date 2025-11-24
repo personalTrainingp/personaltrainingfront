@@ -16,9 +16,7 @@ export const  App = () => {
     <div>
       <PageBreadcrumb title={'Gestion de alertas de usuario'}/>
         <Button label='Agregar nuevo' onClick={()=>onOpenModalCustomAlertaUsuario(0)}/>
-          <ViewDataTable
-          
-          />
+          <ViewDataTable/>
             <ModalCustomAlertasUsuarios onHide={onCloseModalCustomAlertaUsuario} id={isOpenCustomAlertaUsuario.id} show={isOpenCustomAlertaUsuario.isOpen}/>
     </div>
   )

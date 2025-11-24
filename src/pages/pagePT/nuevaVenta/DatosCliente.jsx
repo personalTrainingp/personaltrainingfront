@@ -12,8 +12,6 @@ import { MultiOpcionSelect } from '../GestInventario/components/ComponentSelect'
 const DatosCliente = ({dataCliente}) => {
 	const dispatch = useDispatch()
 	const {obtenerParametrosClientes, DataClientes, obtenerParametrosVendedores, DataVendedores} = useTerminoStore()
-	const { DataGeneral:dataEtiquetasBusqueda, obtenerParametroPorEntidadyGrupo:obtenerEtiquetasBusqueda } = useTerminoStore()
-	const [MsgValidation, setMsgValidation] = useState('')
 	const [clienteSelect, setClienteSelect] = useState({})
 	const [EmpleadoSelect, setEmpleadoSelect] = useState({})
 	const [TipoTransacSelect, setTipoTransacSelect] = useState({})
@@ -23,13 +21,11 @@ const DatosCliente = ({dataCliente}) => {
 		id_tipo_transaccion, 
 		numero_transac, 
 		id_origen, 
-		etiquetas_busquedas,
 		observacion,
 		onInputChangeReact, onInputChange } = useForm(dataCliente)
 	useEffect(() => {
 		obtenerParametrosClientes()
 		obtenerParametrosVendedores()
-		obtenerEtiquetasBusqueda('articulo', 'etiqueta_busqueda')
 	}, [])
 	useEffect(() => {
 		dispatch(onSetDetalleCli({
@@ -40,10 +36,6 @@ const DatosCliente = ({dataCliente}) => {
             numero_transac: numero_transac, 
             id_origen: id_origen, 
             observacion: observacion,
-			// email_cli: clienteSelect?.email_cli, 
-			// label_cli: clienteSelect?.label, 
-			// label_empl: EmpleadoSelect?.label, 
-			// label_tipo_transac: TipoTransacSelect?.label
 		}))
 	}, [id_cli, id_empl, id_tipo_transaccion, numero_transac, id_origen, observacion])
 	
@@ -69,7 +61,6 @@ const DatosCliente = ({dataCliente}) => {
 		const dataCli = DataClientes.find(
             (option) => option.label === e.value
         )
-		console.log(dataCli, "cliente change");
 		onInputChangeReact(e, 'id_cli')
 	}
 	console.log(DataClientes);
@@ -110,7 +101,7 @@ const DatosCliente = ({dataCliente}) => {
 												options={DataClientes}
 												value={DataClientes.find(
 													(option) => option.value === id_cli
-												)|| 0}
+												)}
 												required
 											/>
 											</div>

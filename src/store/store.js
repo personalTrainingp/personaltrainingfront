@@ -23,6 +23,7 @@ import { serviciosSlice } from './Servicios/serviciosSlice';
 import { dataSlice } from './data/dataSlice';
 import { terminologiaSlice } from './dataTerminologia/terminologiaSlice';
 import { dataPenalidadSlice } from '@/pages/pagePT/PagosProveedores/GestionPenalidad/PenalidadSlice';
+import { ContratoProvSlice } from '@/pages/pagePT/ContratosProveedores/ContratoProvSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -50,6 +51,7 @@ export const store = configureStore({
 		DATA: dataSlice.reducer,
 		terminologia: terminologiaSlice.reducer,
 		PENALIDAD: dataPenalidadSlice.reducer,
+		CONTRATOPROV: ContratoProvSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

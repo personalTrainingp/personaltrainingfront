@@ -99,7 +99,9 @@ const DniColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/dn
 const ReservaMonkFitPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/App'))
 const GestionAlertaUsuarios = lazy(()=>import('../pages/pagePT/GestionAlertasUsuarios/Index.jsx'))
 const HorariosColaboradores = lazy(()=>import('../pages/pagePT/HorariosColaboradores/Index.jsx'))
-const CuentasPorPagar = lazy(() => import('../pages/pagePT/PagosProveedores/Index.jsx'));
+const ContratosProveedores = lazy(() => import('../pages/pagePT/ContratosProveedores/Index.jsx'));
+const ReporteCuentasPagar = lazy(() => import('../pages/pagePT/PagosProveedores/Index.jsx'));
+const ReporteDeudasProveedores = lazy(() => import('../pages/pagePT/DeudasProveedores/Index.jsx'));
 const ClienteMFPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/ClienteMFPage'))
 const GestionFeriados = lazy(()=>import('../pages/pagePT/GestionFeriados/index.jsx'))
 const GestionPermisos = lazy(()=>import('../pages/pagePT/GestionPermisos/index.jsx'))
@@ -173,8 +175,16 @@ export default function ProtectedRoutes() {
 						<Route path='gest-feriados' element={<GestionFeriados/>}/>
 					}
 					{
-						sections.find(e=>e.url==='/cuentas-pagar')&&
-						<Route path='cuentas-pagar' element={<CuentasPorPagar/>}/>
+						sections.find(e=>e.url==='/reporte-cuentas-pagar-prov')&&
+						<Route path='reporte-cuentas-pagar-prov' element={<ReporteCuentasPagar/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/deudas-proveedores')&&
+						<Route path='deudas-proveedores' element={<ReporteDeudasProveedores/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/contratos-prov')&&
+						<Route path='contratos-prov' element={<ContratosProveedores/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/horarios-colaborador')&&

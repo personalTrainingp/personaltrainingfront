@@ -18,7 +18,7 @@ export const ModalHistorialCambiosxArticulo = ({show, onHide, id}) => {
       return row.id_hc
     } },
     { id: 'fecha', header: 'fecha', accessor: 'createdAt', width: 100, headerAlign: 'right', cellAlign: 'left', render:(row)=>{
-      return dayjs.utc(row.createdAt).format('dddd DD [DEL] MMMM [DE] YYYY')
+      return dayjs.utc(row.updatedAt).format('dddd DD [DEL] MMMM [DE] YYYY [A LAS] HH:mm A')
     } },
     // { id: 'nombre', header: 'campos actualizados', accessor: 'nombre', width: 100, headerAlign: 'right', cellAlign: 'left' },
     { id: 'usuario', header: 'Usuario', accessor: 'id_usuario', width: 100, headerAlign: 'right', cellAlign: 'left', render:(row)=>{
