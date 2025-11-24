@@ -14,9 +14,6 @@ const customContratosProveedores={
     hora_fin: '', 
     monto_contrato: 0.00, 
     estado_contrato: 0, 
-    uid_presupuesto: '', 
-    uid_contrato: '', 
-    uid_compromisoPago: '', 
     id_empresa: 0, 
     mano_obra_soles: 0.00, 
     mano_obra_dolares: 0.00, 
@@ -34,7 +31,7 @@ export const ModalCustomProveedores = ({show=false, onHide, id=0, id_empresa1}) 
             hora_fin, 
             observacion, 
             estado_contrato, 
-            uid_presupuesto, uid_contrato, uid_compromisoPago, id_empresa, monto_contrato, mano_obra_dolares, id_zona, onInputChange,onResetForm  } = useForm(dataContratoProveedor)
+            uid_contrato, uid_compromisoPago, id_empresa, monto_contrato, mano_obra_dolares, id_zona, onInputChange, onResetForm  } = useForm(dataContratoProveedor)
     const { dataEmpresas, dataZonasxEmpresa, obtenerZonasxEmpresa, dataEstadoContrato } = TerminosOnShow(show)
         const { obtenerParametrosProveedor } = useProveedorStore()
   const { dataProvCOMBO } = useSelector((s) => s.prov);

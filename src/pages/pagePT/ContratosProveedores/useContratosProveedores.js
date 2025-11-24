@@ -12,9 +12,6 @@ export const useContratosProveedores = () => {
 		hora_fin: '',
 		monto_contrato: 0.0,
 		estado_contrato: 0,
-		uid_presupuesto: '',
-		uid_contrato: '',
-		uid_compromisoPago: '',
 		id_empresa: 0,
 		mano_obra_soles: 0.0,
 		mano_obra_dolares: 0.0,
@@ -38,7 +35,6 @@ export const useContratosProveedores = () => {
 	) => {
 		try {
 			const { data } = await PTApi.post(`/contrato-prov/`, formState);
-			console.log({ data });
 
 			if (file_compromisoPago) {
 				await PTApi.post(

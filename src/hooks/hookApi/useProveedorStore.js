@@ -1,6 +1,11 @@
 import { PTApi } from '@/common/api/';
 import { onSetDataView } from '@/store/data/dataSlice';
-import {onDataPerfil,onSetProveedores,onSetProveedoresCOMBO,onViewContratoxProv} from '@/store/dataProveedor/proveedorSlice';
+import {
+	onDataPerfil,
+	onSetProveedores,
+	onSetProveedoresCOMBO,
+	onViewContratoxProv,
+} from '@/store/dataProveedor/proveedorSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -112,6 +117,7 @@ export const useProveedorStore = () => {
 				return {
 					value: term.value,
 					label: `${firstPart.trim()} | ${oficioLabel} | ${empresaLabel} | ${secondPart.trim()}`,
+					id_oficio: term.id_oficio,
 				};
 			});
 			console.log({ data, dataAlter, dataOficios });

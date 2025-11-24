@@ -28,7 +28,7 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
             </div>
         )
     } },
-    { id: 'observacion', header: 'Observacion', render: (row)=>{
+    { id: 'observacion', header: 'Observacion', accessor: 'observacion', render: (row)=>{
         return (
             <div style={{width: '400px'}}>
                 {recortarTexto(row.observacion, 25, '...')}
@@ -73,7 +73,7 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
             </>
         )
     } },
-    { id: 'estado_contrato', header: 'ESTADO', render: (row)=>{
+    { id: 'estado_contrato', header: 'ESTADO', accessor: 'estado_contrato', render: (row)=>{
         return (
             <>
             <Badge bg={dataEstadoContrato.find(e=>e.value===row.estado_contrato)?.severity}>{dataEstadoContrato.find(e=>e.value===row.estado_contrato)?.label}</Badge>
@@ -118,7 +118,7 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
             </>
         )
     } },
-    { id: 'razon_social', header: 'razon social',  render: (row)=>{
+    { id: 'razon_social', header: 'razon social', accessor: 'row?.prov?.razon_social_prov',  render: (row)=>{
         return (
             <>
             {row?.prov?.id} | {row?.prov?.razon_social_prov}
@@ -127,7 +127,7 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
     } },
     
     {
-        id: 'zona', header: 'zona', render: (row)=>{
+        id: 'zona', header: 'zona', accessor: 'zona', render: (row)=>{
         return (
             <>
             <div className='' style={{width: '100px'}}>

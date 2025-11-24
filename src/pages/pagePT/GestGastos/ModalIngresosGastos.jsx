@@ -43,11 +43,10 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         setisCopyHide()
     }
     const { DataGeneral:dataOficios, obtenerParametroPorEntidadyGrupo:obtenerOficios } = useTerminoStore()
+    const [dataProveedoresFiltrados, setdataProveedoresFiltrados] = useState([])
     const [grupoGasto, setgrupoGasto] = useState([])
     const [openModalProv, setopenModalProv] = useState(false)
     const [gastoxGrupo, setgastoxGrupo] = useState([])
-    const [loadingRegister, setloadingRegister] = useState(false)
-        const [isAddGrupo, setisAddGrupo] = useState(false)
     const { obtenerParametrosGastosFinanzas, registrarParametrosGastosFinanzas, isLoadingParametros } = useGf_GvStore()
     const { dataTrabajosProv, obtenerTrabajosxProv } = useProveedoresStore()
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
@@ -90,6 +89,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
             onInputChangeMonto,
             onInputChangeFunction
         } = useForm(data?data:registerIvsG)
+        
         useEffect(() => {
             setid_empresa(id_enterprice)
         }, [id_enterprice])
@@ -119,10 +119,10 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
             setgastoxGrupo(conceptos)
         }, [grupo, id_tipoGasto, id_empresa])
         useEffect(() => {
-            if(id_prov>0){
+            if(id_prov!==0 && id_prov){
                 obtenerTrabajosxProv(id_prov)
             }
-        }, [id_prov])
+        }, [id_prov, show])
         useEffect(() => {
             if(show){
                 obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
@@ -175,43 +175,18 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
             setopenModalProv(false)
             onShow()
         }
-        const onClickAgregarGrupo = (valueSelect)=>{
-            // console.log({id_empresa, valueSelect, id_tipoGasto}, formState);
-            setisAddGrupo(false)
-            registrarParametrosGastosFinanzas({id_empresa, grupo: valueSelect, id_tipoGasto})
-            setisAddGrupo(true)
-        }
-        const onClickSaveAndNew=async(e)=>{
-            e.preventDefault()
-            if(data){
-                // console.log("con");
-                
-                setshowLoading(true)
-                await startActualizarGastos(formState, data.id, id_enterprice)
-                setshowLoading(false)
-                // console.log("sin ");
-                // showToast('success', 'Editar gasto', 'Gasto editado correctamente', 'success')
-                onClickCancelModal()
-                return;
-            }
-            setshowLoading(true)
-            await startRegistrarGastos(formState, id_enterprice)
-            setshowLoading(false)
-        }
-        const onViewSelectionNotResult = (nameSelect, valueSelect)=>{
-            if(nameSelect==='grupo'){
-                if(id_tipoGasto!==0 && id_empresa!==0){
-                    return <button className='' onClick={()=>onClickAgregarGrupo(valueSelect)}>Agregar rubro</button>
-                }
-            }
-        }
         const onChangeProveedores = (e)=>{
             onInputChangeReact(e, 'id_prov')
-            obtenerTrabajosxProv(e.value)
+            // obtenerTrabajosxProv(e.value)
         }
         const onChangeOficioProvs = (e)=>{
             setid_oficio(e.value)
         }
+        useEffect(() => {
+            setdataProveedoresFiltrados(dataProvCOMBO.filter(e=>e.id_oficio===id_oficio))
+        }, [id_oficio])
+
+        
   return (
     <>
     {(showLoading)?(
@@ -237,7 +212,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                 <Modal.Body>
                     {(isLoading||loadingParametros) ? (
                         <>
-
                         {loadingParametros&& 'Cargando Parametros'}
                         {isLoading && 'Cargando Datos'}
                         </>
@@ -293,7 +267,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                             placeholder={'Seleccionar el grupo'}
                                             className="react-select"
                                             classNamePrefix="react-select"
-                                            noOptionsMessage={(e) => onViewSelectionNotResult('grupo', e.inputValue)}
                                             options={grupoGasto||[]}
                                             value={grupoGasto.find(
                                                 (option)=>option.value==grupo
@@ -536,16 +509,10 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                                     placeholder={'Seleccionar el proveedor'}
                                                     className="react-select"
                                                     classNamePrefix="react-select"
-                                                    options={dataProvCOMBO.filter(prov=>{
-                                                        if(id_oficio!==0){
-                                                            return prov.id_oficio===id_oficio
-                                                        }else{
-                                                            return true;
-                                                        }
-                                                    })}
-                                                    value={dataProvCOMBO.find(
+                                                    options={dataProveedoresFiltrados}
+                                                    value={dataProveedoresFiltrados.find(
                                                         (option)=>option.value === id_prov
-                                                    )||0}
+                                                    )}
                                                 />
                                             </Col>
                                             <Col xxl={1}>
