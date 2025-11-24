@@ -678,24 +678,29 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerReporteSeguimientoTODO = async (id_empresa, isClienteActive) => {
-		try {
-			setloadinData(true);
-			const { data: dataactivo } = await PTApi.get(
-				`/reporte/reporte-seguimiento-membresia/${id_empresa}`,
-				{
-					params: { isClienteActive: isClienteActive },
-				}
-			);
-			setreporteSeguimiento(dataactivo.newMembresias);
-			setviewSeguimiento(dataactivo.newMembresias);
-			// dispatch(onSetDataView(dataactivo.newMembresias));
-			setloadinData(false);
-			setagrupado_programas(agruparPorPrograma(dataactivo.newMembresias));
-		} catch (error) {
-			console.log(error);
-		}
-	};
+const obtenerReporteSeguimientoTODO = async (
+  id_empresa,
+  isClienteActive,
+  year,
+  selectedMonth,
+  cutDay
+) => {
+  const params = { isClienteActive };
+
+  if (year) params.year = year;
+  if (selectedMonth) params.selectedMonth = selectedMonth;
+  if (cutDay) params.cutDay = cutDay;
+
+  const { data } = await PTApi.get(
+    `/reporte/reporte-seguimiento-membresia/${id_empresa}`,
+    { params }
+  );
+
+  setreporteSeguimiento(data.newMembresias);
+  setviewSeguimiento(data.newMembresias);
+  setagrupado_programas(agruparPorPrograma(data.newMembresias));
+};
+
 	const obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO = async (id_programa, rangoDate) => {
 		try {
 			const { data } = await PTApi.get(

@@ -28,7 +28,6 @@ export const fmtNum = (n, d = 0) =>
   new Intl.NumberFormat("es-PE", { minimumFractionDigits: d, maximumFractionDigits: d })
     .format(Number(n || 0));
 
-// === DETALLES ===
 const getDetalleProductos = (v) =>
   v?.detalle_ventaProductos ||
   v?.detalle_ventaproductos ||
@@ -277,7 +276,7 @@ function computeMetricsForMonth({
   }
 
   const rawMeta = val(por_red, "1515") + val(por_red, "meta") + rawFB + rawIG;
-  const rawTikTok = val(por_red, "1514") + val(por_red, "tiktok") + val(por_red, "tik tok");
+const rawTikTok = val(por_red, "1514") + val(por_red, "tiktok") + val(por_red, "tik tok") + val(por_red, "tik-tok") + val(por_red, "695");
   const invTotalRaw = Number(mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0);
 
   let mkInvUSD = 0, mkInvMetaUSD = 0, mkInvTikTokUSD = 0;
@@ -299,10 +298,9 @@ function computeMetricsForMonth({
     mkInvTikTokUSD = 0;
   }
 
-  const mkInv = mkInvUSD;
   const mkInvMeta = mkInvMetaUSD;
-  const mkInvTikTok = mkInvTikTokUSD * tasaCambio;
-
+  const mkInvTikTok = mkInvTikTokUSD*1.18;
+const mkInv = (mkInvMeta * Number(tasaCambio || 3.37)) + mkInvTikTok;
   const leads_por_red = mk?.leads_por_red ?? {};
   const clientes_por_red = mk?.clientes_por_red ?? {};
 

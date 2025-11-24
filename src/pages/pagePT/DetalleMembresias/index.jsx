@@ -30,9 +30,7 @@ const getVentaDate = (v) =>
   limaFromISO(
     v?.fecha_venta ||
       v?.fecha ||
-      v?.createdAt ||
-      v?.tb_ventum?.fecha_venta ||
-      v?.tb_ventum?.createdAt
+      v?.tb_ventum?.fecha_venta 
   );
 
 const getItemsMembresia = (v) =>
