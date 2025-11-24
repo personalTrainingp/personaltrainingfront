@@ -129,25 +129,27 @@ export const ComparativoVsActual = ({
     : null;
 
   const refKey = refMonthKey || refKeyFromFechas;
-  const refVals = (refKey && dataByMonth.get(refKey)) || { serv: 0, prod: 0, total: 0 };
+  const refVals = (refKey && dataByMonth.get(refKey)) || { serv: 0, prod: 0, mf:0,total: 0 };
 
   const columns = fechas.map((f) => {
     const key = keyOf(f.anio, f.mes);
-    const vals = dataByMonth.get(key) || { serv: 0, prod: 0, total: 0 };
+    const vals = dataByMonth.get(key) || { serv: 0, prod: 0,mf:0, total: 0 };
 
     let delta, pct;
     if (key === refKey) {
-      delta = { serv: vals.serv, prod: vals.prod, total: vals.total };
-      pct = { serv: 100, prod: 100, total: 100 };
+      delta = { serv: vals.serv, prod: vals.prod, mf:vals.mf, total: vals.total };
+      pct = { serv: 100, prod: 100,mf:100, total: 100 };
     } else {
       delta = {
         serv: refVals.serv - vals.serv,
         prod: refVals.prod - vals.prod,
+        mf: refVals.mf - vals.mf,
         total: refVals.total - vals.total,
       };
       pct = {
         serv: refVals.serv ? (delta.serv / refVals.serv) * 100 : 0,
         prod: refVals.prod ? (delta.prod / refVals.prod) * 100 : 0,
+        mf: refVals.mf ?(delta.mf /refVals.mf)*100:0,
         total: refVals.total ? (delta.total / refVals.total) * 100 : 0,
       };
     }
@@ -208,7 +210,7 @@ export const ComparativoVsActual = ({
       <Card.Body style={{ padding: "0" }}>
         <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
           <div style={sTitle}>COMPARATIVO MENSUAL VS MES ACTUAL</div>
-          {["MEMBRESÍAS", "PRODUCTOS", "TOTAL"].map((tipo) => (
+          {["MEMBRESÍAS", "PRODUCTOS","MONKEY FIT", "TOTAL"].map((tipo) => (
             <table key={tipo} style={{ ...sTable, marginTop: 12 }}>
               <thead>
                 <tr>
@@ -227,6 +229,7 @@ export const ComparativoVsActual = ({
                       value={
                         tipo === "MEMBRESÍAS" ? c.delta.serv
                         : tipo === "PRODUCTOS" ? c.delta.prod
+                        : tipo == "MONKEY FIT" ? c.delta.mf
                         : c.delta.total // AQUI AHORA SI ESTA INCLUIDO MF Y OTROS
                       }
                       isLast={idx === columns.length - 1}
@@ -241,6 +244,7 @@ export const ComparativoVsActual = ({
                       value={
                         tipo === "MEMBRESÍAS" ? c.pct.serv
                         : tipo === "PRODUCTOS" ? c.pct.prod
+                        : tipo === "MONKEY FIT"? c.pct.mf
                         : c.pct.total
                       }
                       isLast={idx === columns.length - 1}
