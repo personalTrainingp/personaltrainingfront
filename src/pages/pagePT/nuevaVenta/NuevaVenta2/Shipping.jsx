@@ -137,10 +137,10 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 										<ItemProdServ Inombre={"PRODUCTOS"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
-									<Col className="mb-3" xxl={2} onClick={onOpenModalSupl}>
+									{/* <Col className="mb-3" xxl={2} onClick={onOpenModalSupl}>
 										<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
-									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/>
+									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/> */}
 									<Col className="mb-3" xxl={2} onClick={onOpenModalNut}>
 									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>

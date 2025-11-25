@@ -110,7 +110,7 @@ export const InputNumber = ({label, onChange, value, nameInput, required=false, 
   )
 };
 
-export const InputSelect = ({label, value='', onChange, nameInput, required, options=[], ...props})=>{
+export const InputSelect = ({label, value='', placeholder='', onChange, nameInput, required, options=[], ...props})=>{
   const handleChange = (e)=>{
     const target = {
       name: nameInput,
@@ -130,6 +130,7 @@ export const InputSelect = ({label, value='', onChange, nameInput, required, opt
         onChange={(e)=>handleChange(e)}
         name={nameInput}
         required={required}
+        placeholder={placeholder}
         {...props}
       />
     </>

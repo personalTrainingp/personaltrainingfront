@@ -11,6 +11,7 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { DateMask, DateMaskString, FormatoDateMask, FormatoTimeMask } from '@/components/CurrencyMask';
 import { onSetDetallePrograma } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useDispatch } from 'react-redux';
+import { InputSelect } from '@/components/InputText';
 // Establecer el idioma local globalmente
 
 function ordenarPorIdPgm(data) {
@@ -36,9 +37,8 @@ export const ModalPrograma = ({show, hide}) => {
   const [dataTarifa, setdataTarifa] = useState(null)
   const [dataHorario, setdataHorario] = useState(null)
   const [dataPrograma, setDataPrograma] = useState(null)
-  const [ordenLogos, setordenLogos] = useState([])
   const { sumarSemanas } = helperFunctions()
-  const { formState: formStateVentaPrograma, 
+  const { formState, 
           id,
           id_pgm, 
           id_st, 
@@ -47,28 +47,33 @@ export const ModalPrograma = ({show, hide}) => {
           fechaInicio_programa, 
           onInputChangeReact, 
           onInputChange, 
-          onInputChangeFlaticon, 
           onInputChangeFunction, 
           onResetForm } = useForm(registroVentaPgm)
     useEffect(() => {
       obtenerParametrosLogosProgramas()
       // setordenLogos(ordenarPorIdPgm(datapgmPT))
     }, [])
-    
     useEffect(() => {
-      onInputChangeFunction("id_pgm", 0)
-      obtenerSemanasPorPrograma(id_pgm)
+      if (id_pgm!==0) {
+        onInputChangeFunction("id_pgm", 0)
+        obtenerSemanasPorPrograma(id_pgm)
+      }
     }, [id_pgm])
     useEffect(() => {
-      onInputChangeFunction("id_horarioPgm", 0)
-      obtenerHorariosPorPrograma(id_pgm)
+      if(id_pgm!==0){
+        onInputChangeFunction("id_horarioPgm", 0)
+        obtenerHorariosPorPrograma(id_pgm)
+      }
     }, [id_pgm])
     useEffect(() => {
-      onInputChangeFunction("id_tt", 0)
-      obtenerTarifasPorSemanas(id_st)
+      if(id_st!==0){
+        onInputChangeFunction("id_tt", 0)
+        obtenerTarifasPorSemanas(id_st)
+      }
     }, [id_st])
 
     useEffect(() => {
+
       const semanaInfo = DataSemanaPGM.find(e=>e.value===id_st) || null
       setdataSemana(semanaInfo)
     }, [id_st, id_pgm])
@@ -149,49 +154,16 @@ export const ModalPrograma = ({show, hide}) => {
                   }
                 </div>
               <form onSubmit={onSubmitRegisterPrograma} className='mt-3'>
-                          <input 
-                            type='text' 
-                            className='form-control'
-                            id='id'
-                            name='id'
-                            placeholder='id'
-                            value={id}
-                            hidden={true}
-                            onChange={onInputChange}
-                            disabled
-                            required
-                          />
                     <Row>
                     <Col xl={12}>
                       <div className='mb-2'>
-                        <label>Sesiones:</label>
-                        <Select
-                          onChange={(e) => {
-                            return onInputChangeReact(e, 'id_st')
-                          }}
-                          name={'id_st'}
-                          placeholder={'Seleccionar el numero de semanas'}
-                          className="react-select"
-                          options={DataSemanaPGM}
-                          value={DataSemanaPGM.find(e=>e.value===id_st) || 0}
-                          classNamePrefix="react-select"
-                          required
-                        ></Select>
+                        <label>Semanas:</label>
+                        <InputSelect label={'Semanas'} placeholder='SEMANAS | SESIONES | CONGELAMIENTO | NUTRICION' nameInput={'id_st'} onChange={onInputChange} options={DataSemanaPGM} value={id_st} />
                       </div>
                     </Col>
                     <Col xl={12}>
                       <div className='mb-2'>
-                        <label>Horario:</label>
-                        <Select
-                          onChange={(e) => onInputChangeReact(e, 'id_horarioPgm')}
-                          name={'id_horarioPgm'}
-                          placeholder={'Seleccionar el horario de entrenamiento'}
-                          className="react-select"
-                          classNamePrefix="react-select"
-                          options={DataHorarioPGM}
-                          value={DataHorarioPGM.find(o => o.value === id_horarioPgm)|| 0}
-                          required
-                        ></Select>
+                        <InputSelect label={'Horario'} placeholder='Seleccionar el horario de entrenamiento' nameInput={'id_horarioPgm'} onChange={onInputChange} options={DataHorarioPGM} value={id_horarioPgm} />
                       </div>
                     </Col>
                     <Col xl={12}>
@@ -211,17 +183,7 @@ export const ModalPrograma = ({show, hide}) => {
                     </Col>
                     <Col xl={12}>
                       <div className='mb-2'>
-                        <label>Tarifa:</label>
-                        <Select
-                          onChange={(e) => onInputChangeReact(e, 'id_tt')}
-                          name={'id_tt'}
-                          placeholder={'Seleccionar la tarifa'}
-                          className="react-select"
-                          classNamePrefix="react-select"
-                          options={DataTarifaSM}
-                          value={DataTarifaSM.find(e=>e.value===id_tt) || 0}
-                          required
-                        ></Select>
+                        <InputSelect label={'Tarifa'} placeholder='Seleccionar la tarifa' nameInput={'id_tt'} onChange={onInputChange} options={DataTarifaSM} value={id_tt} />
                       </div>
                     </Col>
                       <Button type='submit'>Registrar compra</Button>
