@@ -87,8 +87,8 @@ export const TerminosOnShow = (show) => {
 		{ label: 'CIRCUS', value: 601 },
 	];
 	const dataEstadoContrato = [
-		{ label: 'Pendiente', value: 505, severity: 'warning' },
-		{ label: 'Confirmado', value: 500, severity: 'success' },
+		{ label: 'Por Aprobar', value: 505, severity: 'warning' },
+		{ label: 'Aprobado', value: 500, severity: 'success' },
 		{ label: 'Cancelado', value: 501, severity: 'danger' },
 		{ label: 'Retencion', value: 506, severity: 'secondary' },
 	];

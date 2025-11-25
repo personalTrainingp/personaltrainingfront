@@ -1,5 +1,5 @@
 import React from 'react'
-import Shipping from '../Shipping'
+import Shipping from './Shipping'
 import { Card, CardTitle } from 'react-bootstrap'
 
 export const CardVenta = ({dataVenta, datos_pagos, detalle_cli_modelo, funToast}) => {

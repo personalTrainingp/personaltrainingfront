@@ -28,14 +28,35 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
             </div>
         )
     } },
-    { id: 'observacion', header: 'Observacion', accessor: 'observacion', render: (row)=>{
+    
+    { id: 'pdfContrato', header: 'contrato', sortable: true, width: 70,  render: (row)=>{
+        return (
+            <>
+            {
+                row.contratoProv && (
+                    <a href={`${config.API_IMG.FILES_CONTRATO_PROV}${row.contratoProv?.name_image}`}>
+                        <i className='pi pi-file-pdf' style={{ fontSize: '80px' }}></i>
+                    </a>
+                )
+            }
+            </>
+        )
+    } },
+    { id: 'razon_social', header: 'razon social', accessor: 'row?.prov?.razon_social_prov',  render: (row)=>{
+        return (
+            <>
+            {row?.prov?.id} | {row?.prov?.razon_social_prov}
+            </>
+        )
+    } },
+    { id: 'observacion', header: 'Conceptos', accessor: 'observacion', render: (row)=>{
         return (
             <div style={{width: '400px'}}>
                 {recortarTexto(row.observacion, 25, '...')}
             </div>
         )
     } },
-    { id: 'fecha_inicio', header: 'FECHA DE INICIO', render: (row)=>{
+    { id: 'fecha_inicio', header: 'FECHA INICIO', render: (row)=>{
         return (
             <>
             {
@@ -44,7 +65,7 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
             </>
         )
     } },
-    { id: 'fecha_fin', header: 'FECHA DE FIN', render: (row)=>{
+    { id: 'fecha_fin', header: 'FECHA FIN', render: (row)=>{
         return (
             <>
             {
@@ -53,7 +74,17 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
             </>
         )
     }  },
-    { id: 'monto_contrato', header: <div className='text-center'>MANO DE OBRA <br/> soles</div>, sortable: true, accessor: 'monto_contrato',  render: (row)=>{
+    { id: 'compra_activos', header: <div className='text-center'>COMPRA <br/> ACTIVOS</div>, sortable: true, accessor: 'compra_activos',  render: (row)=>{
+        return (
+            <>
+            <NumberFormatMoney
+                amount=
+                {row?.mano_obra_soles}
+            />
+            </>
+        )
+    }},
+    { id: 'monto_contrato', header: <div className='text-center'>MANO OBRA <br/> soles</div>, sortable: true, accessor: 'monto_contrato',  render: (row)=>{
         return (
             <>
             <NumberFormatMoney
@@ -63,7 +94,7 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
             </>
         )
     }},
-    { id: 'mano_obra_dolares', header: <div className='text-center'>MANO DE OBRA <br/> DOLARES</div>, render: (row)=>{
+    { id: 'mano_obra_dolares', header: <div className='text-center'>MANO OBRA <br/> DOLARES</div>, render: (row)=>{
         return (
             <>
             <NumberFormatMoney
@@ -80,21 +111,8 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
             </>
         )
     } },
-    { id: 'pdfContrato', header: 'contrato', sortable: true, width: 70,  render: (row)=>{
-        return (
-            <>
-            {
-                row.contratoProv && (
-                    <a href={`${config.API_IMG.FILES_CONTRATO_PROV}${row.contratoProv?.name_image}`}>
-                        <i className='pi pi-file-pdf' style={{ fontSize: '80px' }}></i>
-                    </a>
-                )
-            }
-            </>
-        )
-    } },
     
-    { id: 'pdfCompromiso', header: 'compromiso pago', sortable: true, width: 70,  render: (row)=>{
+    { id: 'pdfCompromiso', header: <>COMPROMISO <br/> pago / LETRA</>, sortable: true, width: 70,  render: (row)=>{
         return (
             <>
             {
@@ -108,20 +126,13 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
         )
     } },
 
-    { id: 'penalidad', header: 'MONTO PENALIDAD', sortable: true, width: 70, headerAlign: 'right', cellAlign: 'right', render: (row)=>{
+    { id: 'penalidad', header: 'PENALIDAD', sortable: true, width: 70, headerAlign: 'right', cellAlign: 'right', render: (row)=>{
         return (
             <>
             <NumberFormatMoney
                 amount=
                 {row?.provPenalidad?.reduce((total, item) => total + (item?.monto || 0), 0)}
             />
-            </>
-        )
-    } },
-    { id: 'razon_social', header: 'razon social', accessor: 'row?.prov?.razon_social_prov',  render: (row)=>{
-        return (
-            <>
-            {row?.prov?.id} | {row?.prov?.razon_social_prov}
             </>
         )
     } },

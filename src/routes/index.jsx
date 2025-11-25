@@ -1,5 +1,6 @@
 import { Route, Routes as ReactRoutes } from 'react-router-dom';
 import ProtectedRoutes from './ProtectedRoutes';
+import { lazy } from 'react';
 
 export default function AppRoutes() {
 	return (

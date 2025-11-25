@@ -6,6 +6,18 @@
   font-weight: bold !important;
   // font-size: 20% !important;
 }
+.bg-success{
+  background: #17A700 !important;
+}
+.bg-warning{
+  background: #FFD700 !important;
+}
+.bg-secondary{
+  background: #ff00bb !important;
+}
+.bg-danger{
+  background: #dc3545 !important;
+}
 /* Línea de selección amarilla para el TabView */
 .p-tabview-nav li.p-highlight .p-tabview-nav-link:has(.link-circus) {
   border-color: #FFD700 !important; /* Amarillo */

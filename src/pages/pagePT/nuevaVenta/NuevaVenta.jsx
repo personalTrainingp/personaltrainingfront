@@ -2,7 +2,7 @@ import { PageBreadcrumb } from '@/components';
 import React, { useEffect } from 'react'
 import { Card, Col, Nav, Row, Tab, Button } from 'react-bootstrap';
 import DatosCliente from './DatosCliente';
-import Shipping from './Shipping';
+import Shipping from './NuevaVenta2/Shipping';
 import Payment from './Payment';
 import Summary from './Summary';
 import { useCheckout } from './hooks';

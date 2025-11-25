@@ -1,6 +1,31 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Table, Form, Pagination, Row, Col } from 'react-bootstrap';
+// Extrae todos los valores primitivos de un objeto (incluye anidados)
+const collectValues = (value, acc) => {
+  if (value == null) return;
 
+  const t = typeof value;
+
+  if (t === 'string' || t === 'number' || t === 'boolean') {
+    acc.push(String(value));
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((v) => collectValues(v, acc));
+    return;
+  }
+
+  if (t === 'object') {
+    Object.values(value).forEach((v) => collectValues(v, acc));
+  }
+};
+
+const buildSearchText = (row) => {
+  const values = [];
+  collectValues(row, values);
+  return values.join(' ').toLowerCase();
+};
 export const DataTableCR = ({
   columns = [],
   data = [],
@@ -185,17 +210,15 @@ export const DataTableCR = ({
   }, [columns, resizableColumns]);
 
   // ---------------- filtering ----------------
-  const filtered = useMemo(() => {
-    if (!search?.trim()) return data;
-    const q = search.toLowerCase();
-    return data.filter((row) => {
-      for (const col of columns) {
-        const val = col.render ? '' + col.render(row) : getByPath(row, col.accessor);
-        if (val != null && String(val).toLowerCase().includes(q)) return true;
-      }
-      return false;
-    });
-  }, [data, search, columns]);
+const filtered = useMemo(() => {
+  if (!search?.trim()) return data;
+  const q = search.toLowerCase();
+
+  return data.filter((row) => {
+    const text = buildSearchText(row);
+    return text.includes(q);
+  });
+}, [data, search]);
 
   // ---------------- sorting ----------------
   const sorted = useMemo(() => {

@@ -31,7 +31,7 @@ export const ModalCustomProveedores = ({show=false, onHide, id=0, id_empresa1}) 
             hora_fin, 
             observacion, 
             estado_contrato, 
-            uid_contrato, uid_compromisoPago, id_empresa, monto_contrato, mano_obra_dolares, id_zona, onInputChange, onResetForm  } = useForm(dataContratoProveedor)
+            uid_contrato, uid_compromisoPago, mano_obra_soles, id_empresa, monto_contrato, mano_obra_dolares, id_zona, onInputChange, onResetForm  } = useForm(dataContratoProveedor)
     const { dataEmpresas, dataZonasxEmpresa, obtenerZonasxEmpresa, dataEstadoContrato } = TerminosOnShow(show)
         const { obtenerParametrosProveedor } = useProveedorStore()
   const { dataProvCOMBO } = useSelector((s) => s.prov);
@@ -131,6 +131,9 @@ export const ModalCustomProveedores = ({show=false, onHide, id=0, id_empresa1}) 
             </div>
             <div className='mb-3'>
                 <InputTextArea label={'OBSERVACION'} nameInput={'observacion'} onChange={onInputChange} value={observacion} />
+            </div>
+            <div className='mb-3'>
+                <InputNumber label={'Monto de compra de activos'} nameInput={'mano_obra_soles'} onChange={onInputChange} value={mano_obra_soles} />
             </div>
             <div className='mb-3'>
                 <InputNumber label={'MANO DE OBRA EN SOLES'} nameInput={'monto_contrato'} onChange={onInputChange} value={monto_contrato} />

@@ -227,7 +227,7 @@ function TableHeader({ syncRef, dataDias }) {
         borderBottom: "1px solid #e5e7eb",
       }}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "180px 1fr" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "220px 1fr" }}>
         <div
           style={{
             position: "sticky",
@@ -261,7 +261,7 @@ function Row({ colaborador, cargo, sublabel, segments }) {
         display: "grid",
         gridTemplateColumns: "180px 1fr",
         borderBottom: "1px solid #f3f4f6",
-        height: 56,
+        height: 96,
       }}
     >
       <div
@@ -269,6 +269,7 @@ function Row({ colaborador, cargo, sublabel, segments }) {
           position: "sticky",
           left: 0,
           zIndex: 4,
+          // height: '250px',
           background: "#fff",
           borderRight: "1px solid #f3f4f6",
           padding: "0 12px",
@@ -281,11 +282,6 @@ function Row({ colaborador, cargo, sublabel, segments }) {
       >
         {sublabel && (
           <span
-            style={{
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-              overflow: "hidden",
-            }}
             className="fs-4 fw-bold"
           >
             {sublabel}
@@ -559,13 +555,114 @@ export default function ViewDataHorarios({ dataRaw }) {
           hex: "#FF0000",
         },
       ]
+    },
+    {
+      colaborador: 'OFELIA',
+      diasLaborables: [
+        {
+          id_tipo_horario: 0,
+          label: "lunes, miercoles y viernes",
+          horarios: [],
+          items: [],
+          horario: "06:00:00.0000000",
+          minutos: 600,
+          hex: "#0000ff",
+        },
+        {
+          id_tipo_horario: 2,
+          label: "lunes, miercoles y viernes",
+          horarios: [],
+          items: [],
+          horario: "13:00:00.0000000",
+          minutos: 60,
+          hex: "#FF0000",
+        },
+      ]
+    },
+    {
+      colaborador: 'MIRTHA',
+      diasLaborables: [
+        {
+          id_tipo_horario: 0,
+          label: "lunes a viernes",
+          horarios: [],
+          items: [],
+          horario: "07:00:00.0000000",
+          minutos: 630,
+          hex: "#0000ff",
+        },
+        {
+          id_tipo_horario: 2,
+          label: "lunes a viernes",
+          horarios: [],
+          items: [],
+          horario: "13:00:00.0000000",
+          minutos: 60,
+          hex: "#FF0000",
+        },
+      ]
+    },
+    {
+      colaborador: 'CARLOS',
+      diasLaborables: [
+        {
+          id_tipo_horario: 0,
+          label: "lunes a viernes",
+          horarios: [],
+          items: [],
+          horario: "06:30:00.0000000",
+          minutos: 540,
+          hex: "#0000ff",
+        },
+        {
+          id_tipo_horario: 2,
+          label: "lunes a viernes",
+          horarios: [],
+          items: [],
+          horario: "13:00:00.0000000",
+          minutos: 60,
+          hex: "#FF0000",
+        },
+        {
+          id_tipo_horario: 0,
+          label: "sabado",
+          horarios: [],
+          items: [],
+          horario: "07:30:00.0000000",
+          minutos: 300,
+          hex: "#0000ff",
+        },
+      ]
+    },
+    {
+      colaborador: 'MARINA',
+      diasLaborables: [
+        {
+          id_tipo_horario: 0,
+          label: "lunes a viernes",
+          horarios: [],
+          items: [],
+          horario: "08:30:00.0000000",
+          minutos: 450,
+          hex: "#0000ff",
+        },
+        {
+          id_tipo_horario: 2,
+          label: "lunes a viernes",
+          horarios: [],
+          items: [],
+          horario: "13:00:00.0000000",
+          minutos: 60,
+          hex: "#FF0000",
+        },
+      ]
     }
   ];
   console.log({dataRaw});
   
   return (
     <div style={{ padding: 16, background: "#f9fafb", minHeight: "60vh" }}>
-      <ScheduleTable data={dataRaw} />
+      <ScheduleTable data={dataTest} />
     </div>
   );
 }

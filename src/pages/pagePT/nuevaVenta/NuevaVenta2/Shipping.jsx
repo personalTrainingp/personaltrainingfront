@@ -1,19 +1,19 @@
 import { Row, Col, Card, Button, Table} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useRef, useState } from 'react';
-import { ModalAccesorio } from './ModalAccesorio';
+import { ModalAccesorio } from '../ModalAccesorio';
 import { useSelector } from 'react-redux';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
-import ModalPrograma from './ventaPrograma';
-import { ModalSuplementos } from './ModalSuplementos';
-import { ResumenVentaMembresia } from './ResumenVentaMembresia';
-import { ModalTransferencia } from './ModalTransferencia';
-import { ResumenVentaProductos } from './ResumenVentaProductos';
-import { ModalVentaFitology } from './ModalVentaFitology';
-import { ResumenVentaProductosSuplemento } from './ResumenVentaProductosSuplemento';
-import { ResumenVentaFitology } from './ResumenVentaFitology';
-import { ModalVentaNutricion } from './ModalVentaNutricion';
-import { ResumenVentaNutricion } from './ResumenVentaNutricion';
+import ModalPrograma from '../ventaPrograma';
+import { ModalSuplementos } from '../ModalSuplementos';
+import { ResumenVentaMembresia } from '../ResumenVentaMembresia';
+import { ModalTransferencia } from '../ModalTransferencia';
+import { ResumenVentaProductos } from '../ResumenVentaProductos';
+import { ModalVentaFitology } from '../ModalVentaFitology';
+import { ResumenVentaProductosSuplemento } from '../ResumenVentaProductosSuplemento';
+import { ResumenVentaFitology } from '../ResumenVentaFitology';
+import { ModalVentaNutricion } from '../ModalVentaNutricion';
+import { ResumenVentaNutricion } from '../ResumenVentaNutricion';
 import { useDispatch } from 'react-redux';
 import { RESET_STATE_VENTA } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
@@ -26,10 +26,10 @@ import icoEst from '@/assets/images/PT-images/iconos/estetica.png'
 import icoSupl from '@/assets/images/PT-images/iconos/supl.png'
 import icoNut from '@/assets/images/PT-images/iconos/nutri.png'
 import icoTransf from '@/assets/images/PT-images/iconos/transf.png'
-import { ItemProdServ } from '../reportes/totalVentas/ItemProdServ';
-import { ModalTraspaso } from './ModalTraspaso';
-import { ResumenTraspaso } from './ResumenTraspaso';
-import { ResumenVentaTransferencia } from './ResumenVentaTransferencia';
+import { ItemProdServ } from './ItemProdServ';
+import { ModalTraspaso } from '../ModalTraspaso';
+import { ResumenTraspaso } from '../ResumenTraspaso';
+import { ResumenVentaTransferencia } from '../ResumenVentaTransferencia';
 
 
 export const sumarTarifas = (venta) =>{
@@ -80,9 +80,6 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const clickCloseModalTransfMemb = () =>{
 		setmodalTransMem(false)
 	}
-	const onOpenModalSupl = ()=>{
-		setModalSupl(true)
-	}
 	const onCloseModalSupl = ()=>{
 		setModalSupl(false)
 	}
@@ -121,10 +118,6 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 		await startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo}, funToast)
 		dispatch(RESET_STATE_VENTA())
 	}
-	const onSubmitFormVenta = async()=>{
-		startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo})
-		// onSubmitFormVentaANDnew()   
-	}
 	return (
 		<>
 		<Row>
@@ -136,31 +129,31 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 							<Col lg={12}>
 							<div className='container-fluid'>
 								<Row>
-									<Col className="mb-3" xxl={3} onClick={ClickOpenModalProgramas}>
+									<Col className="mb-3" xxl={2} onClick={ClickOpenModalProgramas}>
 										<ItemProdServ Inombre={"MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
-									<Col className="mb-3" xxl={3} onClick={ClickOpenModalAcc}>
-										<ItemProdServ Inombre={"ACCESORIOS"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+									<Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
+										<ItemProdServ Inombre={"PRODUCTOS"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
-									<Col className="mb-3" xxl={3} onClick={onOpenModalSupl}>
+									<Col className="mb-3" xxl={2} onClick={onOpenModalSupl}>
 										<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/>
-									<Col className="mb-3" xxl={3} onClick={onOpenModalNut}>
+									<Col className="mb-3" xxl={2} onClick={onOpenModalNut}>
 									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
-									<Col className="mb-3" xxl={3} onClick={ClickOpenModalFitology}>
+									<Col className="mb-3" xxl={2} onClick={ClickOpenModalFitology}>
 									<ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
-									<Col className="mb-3" xxl={3} onClick={ClickOpenModalTransfMemb}>
+									<Col className="mb-3" xxl={2} onClick={ClickOpenModalTransfMemb}>
 									<ItemProdServ Inombre={"TRANSFERENCIAS DE MEMBRESIAS"} icono={icoTransf} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/>
-									<Col className="mb-3" xxl={3} onClick={onOpenModalTraspaso}>
+									<Col className="mb-3" xxl={2} onClick={onOpenModalTraspaso}>
 									<ItemProdServ Inombre={"TRASPASO PT A CHANGE"} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTraspaso show={modalTraspaso} onHide={onCloseModalTraspaso}/>
