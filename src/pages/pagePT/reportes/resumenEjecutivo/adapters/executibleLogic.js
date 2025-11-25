@@ -462,22 +462,31 @@ export function buildExecutiveTableData({
   const selectedMonthName =
     (MESES[selectedMonth - 1] || "").toUpperCase();
 
-  const perMonth = fechas.map((f) => ({
-    label: String(f?.label || "").toUpperCase(),
-    anio: f?.anio,
-    mes: String(f?.mes || "").toLowerCase(),
-    metrics: computeMetricsForMonth({
-      ventas,
-      reservasMF,
-      dataMktByMonth,
-      originMap,
-      initialDay,
-      cutDay,
-      tasaCambio,
-      anio: f?.anio,
-      mesNombre: f?.mes,
-    }),
-  }));
+  // 🔹 Normalizamos el mes: "septiembre" → "setiembre"
+  const perMonth = fechas.map((f) => {
+    const rawMes = String(f?.mes || "").toLowerCase();
+    const mesAlias = aliasMes(rawMes); // usa tu aliasMes
+    const anio = f?.anio;
+    const labelBase =
+      f?.label || `${mesAlias.toUpperCase()} ${anio ?? ""}`;
+
+    return {
+      label: String(labelBase).toUpperCase(),
+      anio,
+      mes: mesAlias, // siempre "setiembre"
+      metrics: computeMetricsForMonth({
+        ventas,
+        reservasMF,
+        dataMktByMonth,
+        originMap,
+        initialDay,
+        cutDay,
+        tasaCambio,
+        anio,
+        mesNombre: mesAlias,
+      }),
+    };
+  });
 
   const usePerOriginMonthOrder = true;
 
@@ -506,7 +515,9 @@ export function buildExecutiveTableData({
     }));
     const hasSignal = list.some((x) => Number(x.val) > 0);
     if (!hasSignal) return perMonth;
-    list.sort((a, b) => (Number(a.val) - Number(b.val)) || (a.idx - b.idx));
+    list.sort(
+      (a, b) => Number(a.val) - Number(b.val) || a.idx - b.idx
+    );
     return list.map((x) => x.m);
   };
 
@@ -521,11 +532,12 @@ export function buildExecutiveTableData({
   )
     .filter((k) => k !== "meta")
     .filter(
-      (k) => !ORIGINS_EXCLUIR.has(String(k).toLowerCase().trim())
+      (k) =>
+        !ORIGINS_EXCLUIR.has(String(k).toLowerCase().trim())
     )
     .sort();
 
-  const rowsPerOrigin = (okey) => ([
+   const rowsPerOrigin = (okey) => ([
     { key: `o:${okey}:total`, label: `VENTA MEMBRESÍAS`, type: "money" },
     { key: `o:${okey}:cant`, label: `CANTIDAD MEMBRESÍAS`, type: "int" },
     { key: `o:${okey}:ticket`, label: `TICKET MEDIO`, type: "money" },
@@ -533,27 +545,101 @@ export function buildExecutiveTableData({
   ]);
 
   const mfProgramKeys = Array.from(
-    new Set(perMonth.flatMap((m) => Object.keys(m.metrics?.mfByProg || {})))
+    new Set(
+      perMonth.flatMap((m) =>
+        Object.keys(m.metrics?.mfByProg || {})
+      )
+    )
   ).sort();
 
   const otherMonths = perMonth.slice(0, perMonth.length - 1);
   const lastMonth =
     perMonth.length > 0 ? perMonth[perMonth.length - 1] : null;
 
+  // 🔹 ORDEN DINÁMICO DE ORÍGENES SEGÚN EL MES SELECCIONADO
+  const selectedMonthIndex =
+    typeof selectedMonth === "number" && selectedMonth > 0
+      ? selectedMonth - 1
+      : null;
+
+  const refMonth =
+    selectedMonthIndex != null
+      ? perMonth.find(
+          (m) => MESES.indexOf(m.mes) === selectedMonthIndex
+        )
+      : null;
+
+  const hasRefSignal =
+    !!refMonth &&
+    originKeysAll.some(
+      (k) =>
+        Number(refMonth.metrics?.byOrigin?.[k]?.cant || 0) > 0
+    );
+
   const orderedOrigins = [...originKeysAll].sort((a, b) => {
-    const lastA = Number(lastMonth?.metrics?.byOrigin?.[a]?.total || 0);
-    const lastB = Number(lastMonth?.metrics?.byOrigin?.[b]?.total || 0);
+    if (refMonth) {
+      const cantARef = Number(
+        refMonth.metrics?.byOrigin?.[a]?.total || 0
+      );
+      const cantBRef = Number(
+        refMonth.metrics?.byOrigin?.[b]?.total || 0
+      );
+
+      // 1) Si hay datos en el mes seleccionado → ordenar por CANTIDAD desc.
+      if (hasRefSignal && cantARef !== cantBRef) {
+        return cantBRef - cantARef; // DESCENDENTE
+      }
+
+      // 2) Si todo está en 0 o empate → ordenar por SUMA DE CANTIDAD EN TODOS LOS MESES (desc).
+      const cantASum = perMonth.reduce(
+        (acc, m) =>
+          acc + Number(m.metrics?.byOrigin?.[a]?.cant || 0),
+        0
+      );
+      const cantBSum = perMonth.reduce(
+        (acc, m) =>
+          acc + Number(m.metrics?.byOrigin?.[b]?.cant || 0),
+        0
+      );
+      if (cantASum !== cantBSum) return cantBSum - cantASum;
+
+      // 3) Empate: usar sumatoria de venta total (desc).
+      const totalASum = perMonth.reduce(
+        (acc, m) =>
+          acc + Number(m.metrics?.byOrigin?.[a]?.total || 0),
+        0
+      );
+      const totalBSum = perMonth.reduce(
+        (acc, m) =>
+          acc + Number(m.metrics?.byOrigin?.[b]?.total || 0),
+        0
+      );
+      if (totalASum !== totalBSum) return totalBSum - totalASum;
+
+      return a.localeCompare(b);
+    }
+
+    // 4) Fallback si no hay mes seleccionado → lógica antigua
+    const lastA = Number(
+      lastMonth?.metrics?.byOrigin?.[a]?.total || 0
+    );
+    const lastB = Number(
+      lastMonth?.metrics?.byOrigin?.[b]?.total || 0
+    );
     if (lastA !== lastB) return lastB - lastA;
 
     const fallbackA = otherMonths.reduce(
-      (acc, m) => acc + Number(m.metrics?.byOrigin?.[a]?.total || 0),
+      (acc, m) =>
+        acc + Number(m.metrics?.byOrigin?.[a]?.total || 0),
       0
     );
     const fallbackB = otherMonths.reduce(
-      (acc, m) => acc + Number(m.metrics?.byOrigin?.[b]?.total || 0),
+      (acc, m) =>
+        acc + Number(m.metrics?.byOrigin?.[b]?.total || 0),
       0
     );
     if (fallbackA !== fallbackB) return fallbackB - fallbackA;
+
     return a.localeCompare(b);
   });
 
@@ -565,18 +651,19 @@ export function buildExecutiveTableData({
     if (lastA > lastB) return -1;
     if (lastA < lastB) return 1;
     const fallbackA = otherMonths.reduce(
-      (acc, m) => acc + Number(m.metrics?.mfByProg?.[a]?.cant || 0),
+      (acc, m) =>
+        acc + Number(m.metrics?.mfByProg?.[a]?.cant || 0),
       0
     );
     const fallbackB = otherMonths.reduce(
-      (acc, m) => acc + Number(m.metrics?.mfByProg?.[b]?.cant || 0),
+      (acc, m) =>
+        acc + Number(m.metrics?.mfByProg?.[b]?.cant || 0),
       0
     );
     if (fallbackA > fallbackB) return -1;
     if (fallbackA < fallbackB) return 1;
     return a.localeCompare(b);
   });
- 
 
   return {
     selectedMonthName,

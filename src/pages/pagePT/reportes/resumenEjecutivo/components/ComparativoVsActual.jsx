@@ -143,8 +143,6 @@ export const ComparativoVsActual = ({
         total: refVals.total - vals.total,
       };
 
-      // 🔥 CORRECCIÓN AQUÍ: Función auxiliar para calcular porcentaje
-      // Si el valor de referencia es 0, pero el delta es negativo (hubo caída), retornamos -100%
       const calcPct = (ref, d) => {
         if (ref !== 0) return (d / ref) * 100;
         return d < 0 ? -100 : 0; 
@@ -190,7 +188,7 @@ export const ComparativoVsActual = ({
     const absValue = Math.abs(v);
     return (
       <td style={{ ...sCellBold, background: isLast ? C.red : sCell.background, color: isLast ? "#fff" : neg ? C.red : C.green, fontSize: isLast ? 28 : sCellBold.fontSize }}>
-        {neg ? "-" : "+"} {fmtMoney(absValue)}
+        {isLast ? fmtMoney(absValue) : `${neg ? "-" : "+"} ${fmtMoney(absValue)}`}
       </td>
     );
   };

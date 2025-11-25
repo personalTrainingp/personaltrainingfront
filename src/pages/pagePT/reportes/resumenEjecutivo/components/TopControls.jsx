@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-
 const FALLBACK_USD_PEN_RATE = 3.37;
-
 const boxStyleBase = {
   display: "inline-flex",
   alignItems: "center",
@@ -19,7 +17,6 @@ const boxStyleBase = {
   minWidth: 120,
   height: 48,
 };
-
 const selectBase = {
   ...boxStyleBase,
   appearance: "none",
@@ -30,10 +27,8 @@ const selectBase = {
   paddingRight: 24,
   minWidth: 120,
 };
-
 const norm = (s) =>
   String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-
 function findProgAvatar(label, avataresDeProgramas = []) {
   const key = norm(label);
   return (avataresDeProgramas || []).find((p) => norm(p?.name_image) === key);
@@ -318,7 +313,6 @@ export function TopControls({
       </div>
     );
   };
-
   return (
     <div style={wrapperStyle}>
       {/* FILA SUPERIOR CENTRADA */}
@@ -412,9 +406,7 @@ export function TopControls({
           Cierre
         </button>
       </div>
-
       <div style={dividerStyle} />
-
       {/* FILA INFERIOR */}
       <div style={bottomRowStyle}>
         {(vigentesBreakdown || []).map((it, idx) => (
@@ -436,7 +428,6 @@ export function TopControls({
             {vigentesCount}
           </span>
         </div>
-
         {/* TIPO DE CAMBIO */}
         <div style={rateBoxStyle} title="Tipo de cambio USD a PEN">
           <div
@@ -448,7 +439,7 @@ export function TopControls({
               gap: 12,
             }}
           >
-            <span style={{ fontSize: "1rem", fontWeight: 700 }}>USD</span>
+            <span style={{ fontSize: "1rem", fontWeight: 700 }}>TC</span>
             <span
               style={{
                 fontVariantNumeric: "tabular-nums",
@@ -459,17 +450,7 @@ export function TopControls({
               {formattedRate}
             </span>
           </div>
-          <span style={miniTextStyle}>
-            {usdPenRate.loading && !usdPenRate.error
-              ? "Actualizando tipo de cambio…"
-              : usdPenRate.error
-              ? `Sin conexión, usando referencia S/ ${FALLBACK_USD_PEN_RATE.toFixed(
-                  3
-                )}`
-              : updatedLabel
-              ? ` ${updatedLabel}`
-              : "Dato obtenido"}
-          </span>
+          
           {usingFallback ? (
             <span style={miniTextStyle}>
               Valor de referencia manual {`S/ ${FALLBACK_USD_PEN_RATE.toFixed(3)}`}
