@@ -3,15 +3,15 @@ import { Card } from "react-bootstrap";
 
 export const ComparativoVsActual = ({
   ventas = [],
-  reservasMF = [], // 1. RECIBIMOS LAS RESERVAS
+  reservasMF = [],
   fechas = [],
   initialDay = 1,
   cutDay = 21,
   refMonthKey,
 }) => {
   const MESES = [
-    "enero","febrero","marzo","abril","mayo","junio",
-    "julio","agosto","setiembre","octubre","noviembre","diciembre",
+    "enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "setiembre", "octubre", "noviembre", "diciembre",
   ];
   const aliasMes = (m) => (m === "septiembre" ? "setiembre" : m);
   const keyOf = (anio, mes) => `${anio}-${aliasMes(String(mes).toLowerCase())}`;
@@ -62,7 +62,6 @@ export const ComparativoVsActual = ({
       const d = toLimaDate(v?.fecha_venta);
       if (!d) continue;
       
-      // Lógica de corte
       const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
       const from = clamp(Number(initialDay || 1), 1, lastDay);
       const to = clamp(Number(cutDay || lastDay), from, lastDay);
@@ -84,12 +83,10 @@ export const ComparativoVsActual = ({
       for (const o of getDetalleOtrosServicios(v)){
         bucket.otros += Number(o?.tarifa_monto || o?.precio_unitario || 0);
       }
-      // No sumamos total aun, falta MF
     }
 
     // 2. SUMAR MONKEYFIT (RESERVAS)
     for (const r of reservasMF) {
-        // Filtros básicos de MF (flag y estado)
         if (!r?.flag) continue; 
         const estado = String(r?.estado?.label_param || "").toLowerCase();
         const ok = ["completada", "confirmada", "pagada", "no pagada", "reprogramada"].some(e => estado.includes(e));
@@ -98,7 +95,6 @@ export const ComparativoVsActual = ({
         const d = toLimaDate(r?.fecha || r?.createdAt);
         if (!d) continue;
 
-        // Lógica de corte (misma que arriba)
         const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
         const from = clamp(Number(initialDay || 1), 1, lastDay);
         const to = clamp(Number(cutDay || lastDay), from, lastDay);
@@ -129,16 +125,16 @@ export const ComparativoVsActual = ({
     : null;
 
   const refKey = refMonthKey || refKeyFromFechas;
-  const refVals = (refKey && dataByMonth.get(refKey)) || { serv: 0, prod: 0, mf:0,total: 0 };
+  const refVals = (refKey && dataByMonth.get(refKey)) || { serv: 0, prod: 0, mf:0, total: 0 };
 
   const columns = fechas.map((f) => {
     const key = keyOf(f.anio, f.mes);
-    const vals = dataByMonth.get(key) || { serv: 0, prod: 0,mf:0, total: 0 };
+    const vals = dataByMonth.get(key) || { serv: 0, prod: 0, mf:0, total: 0 };
 
     let delta, pct;
     if (key === refKey) {
       delta = { serv: vals.serv, prod: vals.prod, mf:vals.mf, total: vals.total };
-      pct = { serv: 100, prod: 100,mf:100, total: 100 };
+      pct = { serv: 100, prod: 100, mf:100, total: 100 };
     } else {
       delta = {
         serv: refVals.serv - vals.serv,
@@ -146,11 +142,19 @@ export const ComparativoVsActual = ({
         mf: refVals.mf - vals.mf,
         total: refVals.total - vals.total,
       };
+
+      // 🔥 CORRECCIÓN AQUÍ: Función auxiliar para calcular porcentaje
+      // Si el valor de referencia es 0, pero el delta es negativo (hubo caída), retornamos -100%
+      const calcPct = (ref, d) => {
+        if (ref !== 0) return (d / ref) * 100;
+        return d < 0 ? -100 : 0; 
+      };
+
       pct = {
-        serv: refVals.serv ? (delta.serv / refVals.serv) * 100 : 0,
-        prod: refVals.prod ? (delta.prod / refVals.prod) * 100 : 0,
-        mf: refVals.mf ?(delta.mf /refVals.mf)*100:0,
-        total: refVals.total ? (delta.total / refVals.total) * 100 : 0,
+        serv: calcPct(refVals.serv, delta.serv),
+        prod: calcPct(refVals.prod, delta.prod),
+        mf: calcPct(refVals.mf, delta.mf),
+        total: calcPct(refVals.total, delta.total),
       };
     }
 
@@ -164,7 +168,6 @@ export const ComparativoVsActual = ({
     };
   });
 
-  // ... (El resto de tus estilos y renderizado se mantiene igual)
   const C = {
     black: "#000000",
     white: "#ffffff",
@@ -229,8 +232,8 @@ export const ComparativoVsActual = ({
                       value={
                         tipo === "MEMBRESÍAS" ? c.delta.serv
                         : tipo === "PRODUCTOS" ? c.delta.prod
-                        : tipo == "MONKEY FIT" ? c.delta.mf
-                        : c.delta.total // AQUI AHORA SI ESTA INCLUIDO MF Y OTROS
+                        : tipo === "MONKEY FIT" ? c.delta.mf
+                        : c.delta.total 
                       }
                       isLast={idx === columns.length - 1}
                     />
