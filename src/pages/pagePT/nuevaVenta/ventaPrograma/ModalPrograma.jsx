@@ -39,7 +39,6 @@ export const ModalPrograma = ({show, hide}) => {
   const [dataPrograma, setDataPrograma] = useState(null)
   const { sumarSemanas } = helperFunctions()
   const { formState, 
-          id,
           id_pgm, 
           id_st, 
           id_horarioPgm, 
@@ -94,12 +93,12 @@ export const ModalPrograma = ({show, hide}) => {
   const onSubmitRegisterPrograma = (e)=>{
     e.preventDefault()
     const fechaFinal = sumarSemanas(fechaInicio_programa, dataSemana?.semanas)
+    
     const { value: id_st, semanas, nutric, cong, label:label_dataSemana } = dataSemana;
     const { value: id_tt, label:label_tarifa, tarifa } = dataTarifa;
     const { value: id_horarioPgm, label:label_dataHorario, aforo: aforo_h, horario: time_h } = dataHorario;
     const { id_pgm, name_pgm, tb_image } = dataPrograma;
-    
-    // const { } = dataHorario;
+    console.log({dataSemana, dataTarifa, dataHorario, dataPrograma});
     dispatch(onSetDetallePrograma({
       id_st, semanas, nutric, cong, label_dataSemana,
       id_tt, tarifa, label_tarifa,
@@ -109,7 +108,16 @@ export const ModalPrograma = ({show, hide}) => {
       fechaInicio_programa, 
       fechaFinal
     }))
-    onModalClose()
+    // dispatch(onSetDetallePrograma({
+    //   id_st, semanas, nutric, cong, label_dataSemana,
+    //   id_tt, tarifa, label_tarifa,
+    //   id_horarioPgm, label_dataHorario, time_h,
+    //   id_pgm, name_pgm,
+    //   url_image: tb_image.name_image,
+    //   fechaInicio_programa, 
+    //   fechaFinal
+    // }))
+    // onModalClose()
   }
   
   const onModalClose=()=>{
@@ -157,7 +165,6 @@ export const ModalPrograma = ({show, hide}) => {
                     <Row>
                     <Col xl={12}>
                       <div className='mb-2'>
-                        <label>Semanas:</label>
                         <InputSelect label={'Semanas'} placeholder='SEMANAS | SESIONES | CONGELAMIENTO | NUTRICION' nameInput={'id_st'} onChange={onInputChange} options={DataSemanaPGM} value={id_st} />
                       </div>
                     </Col>

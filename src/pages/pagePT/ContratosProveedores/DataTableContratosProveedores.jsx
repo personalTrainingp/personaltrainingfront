@@ -10,16 +10,27 @@ import { Badge } from 'react-bootstrap';
 import { TerminosOnShow } from '@/hooks/usePropiedadesStore';
 import { recortarTexto } from '@/helper/recortarTexto';
 import dayjs from 'dayjs';
+import { ButtonCopy } from './ButtonCopy';
 
 export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomContratosProv}) => {
     const [isOpenModalIframe, setisOpenModalIframe] = useState({isOpen: false, url: ''})
     const { dataEstadoContrato } = TerminosOnShow(true)
+      const [isCopiadoObservacion, setisCopiadoObservacion] = useState({isCopy: true, texto: ''});
     const onOpenModalIframe = (url)=>{
         setisOpenModalIframe({url, isOpen: true})
     }
     const onCloseModalIframe = ()=>{
         setisOpenModalIframe({isOpen: false, url: ''})
+    }  
+    const handleCopiar = async (texto, setCopiado) => {
+    try {
+      await navigator.clipboard.writeText(texto);
+      setCopiado({isCopy: true});
+      setTimeout(() => setCopiado({isCopy: false}), 1500);
+    } catch (error) {
+      console.error("Error al copiar:", error);
     }
+  };
         const columns = [
     { id: 'id', header: 'ID', accessor: 'id', sortable: true, render: (row)=>{
         return (
@@ -52,7 +63,7 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
     { id: 'observacion', header: 'Conceptos', accessor: 'observacion', render: (row)=>{
         return (
             <div style={{width: '400px'}}>
-                {recortarTexto(row.observacion, 25, '...')}
+                {recortarTexto(row.observacion, 25, '...')}<ButtonCopy text={row.observacion}/>
             </div>
         )
     } },
