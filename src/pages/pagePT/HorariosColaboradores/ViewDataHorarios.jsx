@@ -227,7 +227,7 @@ function TableHeader({ syncRef, dataDias }) {
         borderBottom: "1px solid #e5e7eb",
       }}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "220px 1fr" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "180px 1fr" }}>
         <div
           style={{
             position: "sticky",
@@ -565,7 +565,7 @@ export default function ViewDataHorarios({ dataRaw }) {
           horarios: [],
           items: [],
           horario: "06:00:00.0000000",
-          minutos: 600,
+          minutos: 720,
           hex: "#0000ff",
         },
         {
@@ -587,8 +587,8 @@ export default function ViewDataHorarios({ dataRaw }) {
           label: "lunes a viernes",
           horarios: [],
           items: [],
-          horario: "07:00:00.0000000",
-          minutos: 630,
+          horario: "06:00:00.0000000",
+          minutos: 720,
           hex: "#0000ff",
         },
         {

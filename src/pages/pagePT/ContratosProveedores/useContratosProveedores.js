@@ -9,7 +9,7 @@ export const useContratosProveedores = () => {
 		id_prov: 0,
 		fecha_inicio: '',
 		fecha_fin: '',
-		hora_fin: '',
+		hora_fin: '12:00',
 		monto_contrato: 0.0,
 		estado_contrato: 0,
 		id_empresa: 0,
