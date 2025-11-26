@@ -667,31 +667,7 @@ export const ExecutiveTable2=(props)=>{
             </tr>
           ))}
 
-          {/* TOTAL MES FULL EN LA PARTE DE MARKETING */}
-          <tr style={sRowRed}>
-            <th
-              style={{
-                ...sThLeft,
-                background: "transparent",
-                color: cWhite,
-              }}
-            >
-              VENTA TOTAL <br /> MES
-            </th>
-            {perMonth.map((m, idx) => (
-              <th
-                key={idx}
-                style={{
-                  ...sThMes,
-                  background: idx === perMonth.length - 1 ? "#c00000" : "transparent",
-                  color: "#fff",
-                  fontSize: 28,
-                }}
-              >
-                {fmtMoney(m.metrics?.totalMesFull || 0)}
-              </th>
-            ))}
-          </tr>
+         
 
           {/* FILA DE MESES */}
           <tr>
