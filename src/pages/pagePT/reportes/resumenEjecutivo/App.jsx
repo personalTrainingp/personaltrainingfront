@@ -827,7 +827,7 @@ const originMap = {
   "693":"Instagram", "694":"Facebook", "695":"TikTok",
   "690":"Referidos", "691":"RENOVACIONES",
   "692":"REINSCRIPCIONES", "696":"EX-PT ",
-  "686":"Walking", "689":"WSP organico",
+  "686":"Walking",// "689":"WSP organico",
   //"1470":"Corporativos BBVA",
   "instagram":"Instagram","facebook":"Facebook","tiktok":"TikTok","meta":"Meta",
   "1514":"TikTok","1515":"Meta",

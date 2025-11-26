@@ -260,8 +260,8 @@ export function TopControls({
     alignItems: "flex-start",
     justifyContent: "flex-start",
     height: "auto",
-    minWidth: 200,
-    padding: "8px 12px",
+    minWidth: 150,
+    padding: "6px 10px",
     gap: 4,
   };
 
@@ -393,6 +393,35 @@ export function TopControls({
 
         {/* Reloj + Cierre */}
         <RealTimeClock />
+          <div style={rateBoxStyle} title="Tipo de cambio USD a PEN">
+          <div
+            style={{
+              display: "flex",      
+              alignItems: "center",
+              width: "50%",
+              gap: 12,
+            }}
+          >
+            <span style={{ fontSize: "1.35rem", fontWeight: 600 }}>TC</span>
+            <span
+              style={{
+                fontVariantNumeric: "tabular-nums",
+                fontSize: "1.35rem",
+                fontWeight: 500,
+              }}
+            >
+              {formattedRate}
+            </span>
+          </div>
+          
+          {usingFallback ? (
+            <span style={miniTextStyle}>
+              Valor de referencia manual {`S/ ${FALLBACK_USD_PEN_RATE.toFixed(3)}`}
+            </span>
+          ) : (
+            <span style={miniTextStyle}></span>
+          )}
+        </div>
         <button
           onClick={handleClickUseLastDay}
           className="btn btn-outline-warning"
@@ -405,6 +434,7 @@ export function TopControls({
         >
           Cierre
         </button>
+        
       </div>
       <div style={dividerStyle} />
       {/* FILA INFERIOR */}
@@ -428,37 +458,7 @@ export function TopControls({
             {vigentesCount}
           </span>
         </div>
-        {/* TIPO DE CAMBIO */}
-        <div style={rateBoxStyle} title="Tipo de cambio USD a PEN">
-          <div
-            style={{
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-              width: "100%",
-              gap: 12,
-            }}
-          >
-            <span style={{ fontSize: "1rem", fontWeight: 700 }}>TC</span>
-            <span
-              style={{
-                fontVariantNumeric: "tabular-nums",
-                fontSize: "1.35rem",
-                fontWeight: 800,
-              }}
-            >
-              {formattedRate}
-            </span>
-          </div>
-          
-          {usingFallback ? (
-            <span style={miniTextStyle}>
-              Valor de referencia manual {`S/ ${FALLBACK_USD_PEN_RATE.toFixed(3)}`}
-            </span>
-          ) : (
-            <span style={miniTextStyle}></span>
-          )}
-        </div>
+      
       </div>
     </div>
   );

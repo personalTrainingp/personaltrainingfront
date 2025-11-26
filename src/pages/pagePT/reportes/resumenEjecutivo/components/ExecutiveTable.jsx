@@ -218,13 +218,6 @@ export default function ExecutiveTable(props) {
 
       filtered.push(m);
     }
-
-    // opcional: orden cronológico ascendente
-    filtered.sort((a, b) => {
-      if (a.anio !== b.anio) return  b.anio - a.anio;
-      return getMesIndex(b.mes) - getMesIndex(a.mes);
-    });
-
     return filtered;
   };
 
