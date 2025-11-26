@@ -938,7 +938,7 @@ const originMap = {
 <ExecutiveTable2
   ventas={dataVentas}
   fechas={mesesSeleccionados}
-            dataMktByMonth={dataMktWithCac}
+  dataMktByMonth={dataMktWithCac}
   initialDay={initDay}
   cutDay={cutDay}
   reservasMF={reservasMF}
