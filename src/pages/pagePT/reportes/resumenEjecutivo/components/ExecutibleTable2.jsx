@@ -666,9 +666,6 @@ export const ExecutiveTable2=(props)=>{
               })}
             </tr>
           ))}
-
-         
-
           {/* FILA DE MESES */}
           <tr>
             <td

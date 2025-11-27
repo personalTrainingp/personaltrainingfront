@@ -519,8 +519,10 @@ export function buildExecutiveTableData({
   const ORIGINS_EXCLUIR = new Set([
     "1470",
     "689",
+    "687",
     "corporativos_bbva",
     "corporativos bbva",
+     "WSP organico",
   ]);
 
   const originKeysAll = Array.from(
