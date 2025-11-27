@@ -1,13 +1,8 @@
-// =========================================================
-// ARCHIVO DE LÓGICA (executiveLogic.js)
-// =========================================================
-
 const MESES = [
   "enero", "febrero", "marzo", "abril", "mayo", "junio",
   "julio", "agosto", "setiembre", "octubre", "noviembre", "diciembre",
 ];
 
-// Normaliza cualquier variante a la forma canónica "setiembre"
 export const aliasMes = (m) => {
   const mes = String(m || "").toLowerCase().trim();
   return mes === "septiembre" ? "setiembre" : mes;
@@ -498,13 +493,10 @@ export function buildExecutiveTableData({
   tasaCambio = 3.37,
 }) {
   const selectedMonthName = (MESES[selectedMonth - 1] || "").toUpperCase();
-
-  // clave canónica para buscar el mes seleccionado en perMonth
   const selectedMonthKey = aliasMes(MESES[selectedMonth - 1] || "");
 
   const perMonth = fechas.map((f) => {
-    const mesNorm = aliasMes(f?.mes); // "septiembre" o "setiembre" -> "setiembre"
-
+    const mesNorm = aliasMes(f?.mes);
     return {
       label: String(f?.label || "").toUpperCase(),
       anio: f?.anio,
@@ -523,42 +515,57 @@ export function buildExecutiveTableData({
     };
   });
 
-  const usePerOriginMonthOrder = true;
+  // ------------------ ORDEN POR MES ------------------ //
 
+  // Qué valor usamos para rankear los meses de un origen
+  // 👉 Para orígenes (instagram, facebook, tiktok, etc.) usamos VENTA MEMBRESÍAS
+  //    es decir: metrics.byOrigin[okey].total
   const valueForOriginMonth = (okey, m) => {
+    if (!m || !m.metrics) return -1;
+
+    // MONKEYFIT TOTAL (si alguna vez usas okey === "monkeyfit")
     if (okey === "monkeyfit") {
-      const val = m?.metrics?.venta_monkeyfit;
-      return Number(val || 0);
+      return Number(m.metrics.venta_monkeyfit ?? 0);
     }
-    if (!isNaN(Number(okey))) {
-      const mf = m.metrics?.mfByProg?.[okey];
+
+    // MONKEYFIT POR PROGRAMA (okey numérico)
+    if (!Number.isNaN(Number(okey))) {
+      const mf = m.metrics.mfByProg?.[okey];
       if (!mf) return -1;
-      return Number(mf.venta || 0);
+      // aquí sí tiene sentido usar venta del programa
+      return Number(mf.venta ?? 0);
     }
-    const o = m?.metrics?.byOrigin?.[okey];
+
+    // ORÍGENES DE MARKETING (instagram, facebook, tiktok, etc.)
+    const o = m.metrics.byOrigin?.[okey];
     if (!o) return -1;
+
+    // 👇 CLAVE: ORDENAR POR VENTA MEMBRESÍAS (total), igual que la fila "VENTA MEMBRESÍAS"
     return Number(o.total || 0);
   };
 
+  // Ordena los meses de un origen de MAYOR a MENOR por VENTA MEMBRESÍAS
+  const monthOrderForOrigin = (okey) => {
+    if (perMonth.length === 0) return [];
 
-const monthOrderForOrigin = (okey) => {
-  if (perMonth.length === 0) return [];
-  
-  // Mapeamos los meses con su valor para ese origen
-  const list = perMonth.map((m, idx) => ({ 
-    m, 
-    idx, 
-    val: valueForOriginMonth(okey, m) 
-  }));
+    const list = perMonth.map((m, idx) => ({
+      m,
+      idx,
+      val: valueForOriginMonth(okey, m),
+    }));
 
-  // Si no hay ventas en ningún mes, devolvemos el orden por defecto
-  if (!list.some((x) => Number(x.val) > 0)) return perMonth;
+    const hasSignal = list.some((x) => Number(x.val) > 0);
+    if (!hasSignal) return perMonth;
 
-  // CORRECCIÓN CLAVE: Orden Descendente (b.val - a.val)
-  list.sort((a, b) => Number(b.val) - Number(a.val) || a.idx - b.idx);
-  
-  return list.map((x) => x.m);
-};
+    list.sort((a, b) => {
+      const diff = Number(b.val) - Number(a.val); // DESC
+      if (diff !== 0) return diff;
+      return a.idx - b.idx; // empate → respeta orden original
+    });
+
+    return list.map((x) => x.m);
+  };
+
 
   const ORIGINS_EXCLUIR = new Set([
     "1470",
