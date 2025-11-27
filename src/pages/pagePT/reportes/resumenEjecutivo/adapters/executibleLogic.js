@@ -558,9 +558,9 @@ export function buildExecutiveTableData({
     if (!hasSignal) return perMonth;
 
     list.sort((a, b) => {
-      const diff = Number(b.val) - Number(a.val); // DESC
+      const diff =  Number(a.val)-Number(b.val) ; // DESC
       if (diff !== 0) return diff;
-      return a.idx - b.idx; // empate → respeta orden original
+      return  b.idx; // empate → respeta orden original
     });
 
     return list.map((x) => x.m);

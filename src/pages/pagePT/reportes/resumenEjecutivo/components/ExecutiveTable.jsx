@@ -200,19 +200,33 @@ export default function ExecutiveTable(props) {
     return new Set(list.slice(1).map((f) => keyFromYM(f.anio, f.mes)));
   }, [processedProps.fechas]);
 
-  // Selector del MES BASE
+   // usamos TODOS los meses que están en la tabla (incluyendo el base)
+  const usedKeys = useMemo(() => {
+    const list = processedProps.fechas || [];
+    return new Set(list.map((f) => keyFromYM(f.anio, f.mes)));
+  }, [processedProps.fechas]);
+
   const MonthSelector = ({ currentVal }) => {
+    // el valor actual del mes base
+    const baseKey = currentVal;
+
+    // opciones: todos los meses que NO están en la tabla
     const availableOptions = allMonthOptions.filter(
-      (opt) => !otherColumnsKeys.has(opt.key)
+      (opt) => !usedKeys.has(opt.key)
     );
 
     return (
       <select
         style={sSelect}
-        value={overrideKey || currentVal}
+        value={overrideKey || baseKey}
         onChange={(e) => setOverrideKey(e.target.value)}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* mostramos el mes base actual como opción deshabilitada */}
+        <option value={baseKey} disabled>
+          {allMonthOptions.find((o) => o.key === baseKey)?.label || "MES BASE"}
+        </option>
+
         {availableOptions.map((opt) => (
           <option key={opt.key} value={opt.key} style={{ color: "#000" }}>
             {opt.label}
@@ -222,28 +236,10 @@ export default function ExecutiveTable(props) {
     );
   };
 
+
   // Helper para ordenar columnas (poniendo el Mes Base en la primera columna)
-  const getOrderedMonthsForOrigin = (okey) => {
-    const raw = monthOrderForOrigin(okey) || [];
-    if (!processedProps.fechas.length) return raw;
-
-    const baseFechaObj = processedProps.fechas[0];
-    const baseKeyString = keyFromYM(baseFechaObj.anio, baseFechaObj.mes);
-
-    const baseMonthData = raw.find(
-      (m) =>
-        String(m.anio) === String(baseFechaObj.anio) &&
-        normMes(m.mes) === normMes(baseFechaObj.mes)
-    );
-
-    if (!baseMonthData) return raw;
-
-    const others = raw.filter((m) => {
-      const mKey = keyFromYM(m.anio, m.mes);
-      return mKey !== baseKeyString;
-    });
-
-    return [baseMonthData, ...others];
+   const getOrderedMonthsForOrigin = (okey) => {
+    return monthOrderForOrigin(okey) || [];
   };
 
   const TableHeadFor = ({ okey }) => {
