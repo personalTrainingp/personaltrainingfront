@@ -1,92 +1,90 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   buildExecutiveTableData,
   fmtMoney,
   fmtNum,
   labelFromKey,
-  aliasMes, // lo exportas en tu archivo de lógica
-} from "../adapters/executibleLogic"; // ajusta la ruta si es necesario
+  aliasMes,
+  getAvailableMonthsFromVentas,
+} from "../adapters/executibleLogic";
 
-// CONFIGURACIÓN VISUAL
+// Meses sólo para la UI
 const MESES_DISPLAY = [
-  "enero", "febrero", "marzo", "abril", "mayo", "junio",
-  "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+  "enero",
+  "febrero",
+  "marzo",
+  "abril",
+  "mayo",
+  "junio",
+  "julio",
+  "agosto",
+  "septiembre",
+  "octubre",
+  "noviembre",
+  "diciembre",
 ];
-
-// Normalizador (septiembre -> setiembre)
-const normMes = (m) => {
-  const s = String(m || "").toLowerCase().trim();
-  return s === "septiembre" ? "setiembre" : s;
-};
-
-// Generador de Keys
-const keyFromYM = (anio, mes) => `${anio}-${normMes(mes)}`;
 
 export default function ExecutiveTable(props) {
   const {
     ventas = [],
-    fechas = [],
     dataMktByMonth = {},
     initialDay = 1,
     cutDay = 21,
     reservasMF = [],
     originMap = {},
-    selectedMonth = new Date().getMonth() + 1, // 0 = TOTAL (sin resalte), 1-12 mes seleccionado
+    selectedMonth = new Date().getMonth() + 1,
     year: propYear,
     tasaCambio = 3.37,
   } = props;
 
   const baseYear = propYear ?? new Date().getFullYear();
 
-  // 1. GENERAMOS TODAS LAS OPCIONES POSIBLES (12 meses atrás desde la fecha actual/seleccionada)
-  const allMonthOptions = useMemo(() => {
-    const out = [];
-    let y = baseYear;
-    let mIdx = selectedMonth > 0 ? selectedMonth - 1 : new Date().getMonth(); // si selectedMonth=0, usamos el mes actual
+  // ==== UNIVERSE DE MESES (todos los meses donde hay ventas) ====
+  const monthsUniverse = useMemo(
+    () => getAvailableMonthsFromVentas(ventas || []),
+    [ventas]
+  );
 
-    for (let i = 0; i < 12; i++) {
-      const mesDisplay = MESES_DISPLAY[mIdx];
-      const mesLogic = normMes(mesDisplay);
-
-      out.push({
-        key: keyFromYM(y, mesLogic),
-        label: `${mesDisplay.toUpperCase()} ${y}`,
-        anio: String(y),
-        mes: mesLogic,
-      });
-
-      mIdx--;
-      if (mIdx < 0) {
-        mIdx = 11;
-        y -= 1;
-      }
+  // ==== MES BASE (key "YYYY-mes") ====
+  const [baseKey, setBaseKey] = useState(() => {
+    if (monthsUniverse.length) {
+      const wantedAlias = aliasMes(MESES_DISPLAY[selectedMonth - 1]);
+      const found =
+        monthsUniverse.find((m) => aliasMes(m.mes) === wantedAlias) ||
+        monthsUniverse[0];
+      return found.key;
     }
-    return out;
-  }, [baseYear, selectedMonth]);
+    const mesLogic = aliasMes(MESES_DISPLAY[selectedMonth - 1]);
+    return `${baseYear}-${mesLogic}`;
+  });
 
-  // 2. ESTADO SIMPLE PARA EL SELECTOR (MES BASE)
-  const [overrideKey, setOverrideKey] = useState(null);
+  // Si cambia el universo o el mes seleccionado y aún no teníamos baseKey, lo fijamos
+  useEffect(() => {
+    if (!monthsUniverse.length) return;
+    const wantedAlias = aliasMes(MESES_DISPLAY[selectedMonth - 1]);
+    const found =
+      monthsUniverse.find((m) => aliasMes(m.mes) === wantedAlias) ||
+      monthsUniverse[0];
 
-  // 3. CONSTRUCCIÓN DE LAS FECHAS FINALES (Lógica de "Sustitución" del mes base)
-  const processedProps = useMemo(() => {
-    let computedFechas = [...(fechas || [])];
+    setBaseKey((prev) => prev || found.key);
+  }, [monthsUniverse, selectedMonth]);
 
-    if (overrideKey && computedFechas.length > 0) {
-      const selectedOption = allMonthOptions.find((o) => o.key === overrideKey);
-
-      if (selectedOption) {
-        computedFechas[0] = {
-          anio: selectedOption.anio,
-          mes: selectedOption.mes, // Ya va como "setiembre"
-          label: selectedOption.label,
-          key: selectedOption.key,
-        };
-      }
-    }
-
-    return {
+  // ==== Cálculo de métricas (ahora le pasamos baseKey) ====
+  const { monthOrderForOrigin, rowsPerOrigin, orderedOrigins } = useMemo(
+    () =>
+      buildExecutiveTableData({
+        ventas,
+        dataMktByMonth,
+        initialDay,
+        cutDay,
+        reservasMF,
+        originMap,
+        selectedMonth,
+        tasaCambio,
+        baseKey,
+      }),
+    [
       ventas,
-      fechas: computedFechas,
       dataMktByMonth,
       initialDay,
       cutDay,
@@ -94,38 +92,18 @@ export default function ExecutiveTable(props) {
       originMap,
       selectedMonth,
       tasaCambio,
-    };
-  }, [
-    ventas,
-    fechas,
-    dataMktByMonth,
-    initialDay,
-    cutDay,
-    reservasMF,
-    originMap,
-    selectedMonth,
-    tasaCambio,
-    overrideKey,
-    allMonthOptions,
-  ]);
+      baseKey,
+    ]
+  );
 
-  // 4. LLAMADA AL ADAPTADOR
-  const {
-    monthOrderForOrigin,
-    rowsPerOrigin,
-    orderedOrigins,
-  } = buildExecutiveTableData(processedProps);
-
-  const { cutDay: cutDayFromProps = cutDay } = props;
-
-
+  // Para resaltar la columna del mes base
   const highlightMonthAlias = useMemo(() => {
-    if (!selectedMonth || selectedMonth < 1 || selectedMonth > 12) return null;
-    const uiName = MESES_DISPLAY[selectedMonth - 1]; // "septiembre"
-    return aliasMes(uiName); // "setiembre"
-  }, [selectedMonth]);
+    if (!baseKey) return null;
+    const [, mesStr] = String(baseKey).split("-");
+    return aliasMes(mesStr);
+  }, [baseKey]);
 
-  // === ESTILOS (tus estilos rojos) ===
+  // === ESTILOS ===
   const cBlack = "#000000";
   const cWhite = "#ffffff";
   const cRed = "#c00000";
@@ -192,43 +170,26 @@ export default function ExecutiveTable(props) {
     </div>
   );
 
-  // === HELPERS DE VISTA ===
-
-  // Para no permitir en el select meses que ya están en otras columnas (evitar duplicados)
-  const otherColumnsKeys = useMemo(() => {
-    const list = processedProps.fechas || [];
-    return new Set(list.slice(1).map((f) => keyFromYM(f.anio, f.mes)));
-  }, [processedProps.fechas]);
-
-   // usamos TODOS los meses que están en la tabla (incluyendo el base)
-  const usedKeys = useMemo(() => {
-    const list = processedProps.fechas || [];
-    return new Set(list.map((f) => keyFromYM(f.anio, f.mes)));
-  }, [processedProps.fechas]);
-
-  const MonthSelector = ({ currentVal }) => {
-    // el valor actual del mes base
-    const baseKey = currentVal;
-
-    // opciones: todos los meses que NO están en la tabla
-    const availableOptions = allMonthOptions.filter(
-      (opt) => !usedKeys.has(opt.key)
-    );
-
+  // === SELECTOR DE MES BASE ===
+  const MonthSelector = () => {
+    if (!monthsUniverse.length) {
+      return (
+        <span style={{ fontSize: 14, opacity: 0.7 }}>SIN DATOS</span>
+      );
+    }
     return (
       <select
         style={sSelect}
-        value={overrideKey || baseKey}
-        onChange={(e) => setOverrideKey(e.target.value)}
+        value={baseKey}
+        onChange={(e) => setBaseKey(e.target.value)}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* mostramos el mes base actual como opción deshabilitada */}
-        <option value={baseKey} disabled>
-          {allMonthOptions.find((o) => o.key === baseKey)?.label || "MES BASE"}
-        </option>
-
-        {availableOptions.map((opt) => (
-          <option key={opt.key} value={opt.key} style={{ color: "#000" }}>
+        {monthsUniverse.map((opt) => (
+          <option
+            key={opt.key}
+            value={opt.key}
+            style={{ color: "#000" }}
+          >
             {opt.label}
           </option>
         ))}
@@ -236,11 +197,8 @@ export default function ExecutiveTable(props) {
     );
   };
 
-
-  // Helper para ordenar columnas (poniendo el Mes Base en la primera columna)
-   const getOrderedMonthsForOrigin = (okey) => {
-    return monthOrderForOrigin(okey) || [];
-  };
+  const getOrderedMonthsForOrigin = (okey) =>
+    monthOrderForOrigin(okey) || [];
 
   const TableHeadFor = ({ okey }) => {
     const months = getOrderedMonthsForOrigin(okey);
@@ -248,29 +206,30 @@ export default function ExecutiveTable(props) {
       <thead>
         <tr>
           <th style={{ ...sThLeft, background: cRed }} />
-          {months.map((m, idx) => {
-            const thisKey = keyFromYM(m.anio, m.mes);
-
-            return (
-              <th key={`${okey}-h-${idx}`} style={{ ...sThMes, background: cRed }}>
-                {idx === 0 ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 4,
-                    }}
-                  >
-                    <span style={{ fontSize: 14, opacity: 0.8 }}>MES BASE</span>
-                    <MonthSelector currentVal={thisKey} />
-                  </div>
-                ) : (
-                  <div>{m.label}</div>
-                )}
-              </th>
-            );
-          })}
+          {months.map((m, idx) => (
+            <th
+              key={`${okey}-h-${idx}`}
+              style={{ ...sThMes, background: cRed }}
+            >
+              {idx === 0 ? (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  <span style={{ fontSize: 14, opacity: 0.8 }}>
+                    MES BASE
+                  </span>
+                  <MonthSelector />
+                </div>
+              ) : (
+                <div>{m.label}</div>
+              )}
+            </th>
+          ))}
         </tr>
       </thead>
     );
@@ -298,6 +257,7 @@ export default function ExecutiveTable(props) {
           if (okey === "monkeyfit") {
             val = m.metrics?.[r.key] ?? 0;
           } else if (!isNaN(Number(okey))) {
+            // MONKEYFIT por programa (id numérico)
             const [, pgmId, campo] = r.key.split(":");
             const mf = m.metrics?.mfByProg?.[pgmId] || {};
             if (campo === "venta") val = mf.venta ?? 0;
@@ -309,6 +269,7 @@ export default function ExecutiveTable(props) {
             else if (campo === "ticketF")
               val = mf.cantFull ? mf.ventaFull / mf.cantFull : 0;
           } else if (r.key.startsWith("o:")) {
+            // Orígenes (Instagram, TikTok, etc.)
             const [, _ok, campo] = r.key.split(":");
             const o = m.metrics?.byOrigin?.[_ok];
             if (campo === "total") val = o?.total ?? 0;
@@ -332,7 +293,6 @@ export default function ExecutiveTable(props) {
             ? fmtNum(val, 2)
             : fmtNum(val, 0);
 
-          // 🔴 Aquí definimos si esta columna es el MES SELECCIONADO
           const isHighlightCol =
             !!highlightMonthAlias &&
             aliasMes(m.mes) === highlightMonthAlias;
@@ -364,7 +324,7 @@ export default function ExecutiveTable(props) {
     <div style={sWrap}>
       {orderedOrigins.length === 0 ? (
         <div style={{ ...sHeader, background: "#444" }}>
-          NO HAY ORÍGENES CON DATOS PARA AL {cutDayFromProps} DE CADA MES
+          NO HAY ORÍGENES CON DATOS PARA EL PERÍODO
         </div>
       ) : (
         orderedOrigins.map((okey) => {

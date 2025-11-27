@@ -66,24 +66,51 @@ function getFechaFin(m) {
 const isBetween = (d, start, end) => !!(d && start && end && d >= start && d <= end);
 function sumProgramRevenueForMonth(ventas = [], year, monthIdx, fromDay, toDay) {
   let total = 0;
+
   for (const v of ventas) {
+    // Fecha de la venta (Lima)
     const d = limaFromISO(v?.fecha_venta || v?.fecha || v?.createdAt);
     if (!d || d.getFullYear() !== Number(year) || d.getMonth() !== monthIdx) continue;
 
+    // Rango de días dentro del mes
     const last = new Date(year, monthIdx + 1, 0).getDate();
     const from = Math.max(1, Math.min(Number(fromDay || 1), last));
     const to   = Math.max(from, Math.min(Number(toDay || last), last));
     const dia  = d.getDate();
     if (dia < from || dia > to) continue;
 
-    const mems = v?.detalle_ventaMembresia || v?.detalle_ventaMembresium || [];
+    // Detalle de membresías (mismas variantes que en la lógica del hijo)
+    const mems =
+      v?.detalle_ventaMembresia ||
+      v?.detalle_venta_membresia ||
+      v?.detalle_ventamembresia ||
+      v?.detalle_ventaMembresium ||
+      [];
+
+    // Origen a nivel de venta (por si viene así)
+    const origenVenta =
+      v?.id_origen ??
+      v?.tb_ventum?.id_origen ??
+      null;
+
+    // 👉 SOLO contamos líneas cuya venta/origen sea RENOVACIONES (691)
     for (const it of mems) {
-      const cant = Number(it?.cantidad ?? 1) || 1;
-      total += cant * (Number(it?.tarifa_monto) || 0);
+      const origenItem =
+        it?.tb_ventum?.id_origen ??
+        it?.id_origen ??
+        origenVenta;
+
+      if (Number(origenItem) !== 691) continue; // solo renovaciones
+
+      const linea = Number(it?.tarifa_monto) || 0;
+      total += linea;        // sumamos el monto de la membresía
     }
   }
+
   return total;
 }
+
+
       export const App = ({ id_empresa }) => {
       const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
         const { obtenerVentas, repoVentasPorSeparado, loading } = useReporteStore();
@@ -647,40 +674,104 @@ const dataMkt = useMemo(
         }
         return cnt;
       };
+// === HELPER: obtiene las líneas de membresía igual que en ExecutiveTable.logic ===
+const getMembresiasFromVenta = (v) =>
+  v?.detalle_ventaMembresia ||
+  v?.detalle_venta_membresia ||
+  v?.detalle_ventamembresia ||
+  [];
 
-      const mesesSeleccionados = useMemo(() => {
-  const slots = [];
-  let mIdx = selectedMonth - 1;
-  let y = year;
-  for (let i = 0; i < 12; i++) {
-    slots.push({ y, mIdx });
-    mIdx--; if (mIdx < 0) { mIdx = 11; y--; }
+// === HELPER: mapa { "anio-mIdx" -> total venta membresías en ese mes } ===
+function buildMonthRevenueMap(ventas = [], initDay = 1, cutDay = 31) {
+  const map = new Map();
+
+  for (const v of ventas || []) {
+    const d = limaFromISO(v?.fecha_venta || v?.fecha || v?.createdAt);
+    if (!d) continue;
+
+    const year  = d.getFullYear();
+    const mIdx  = d.getMonth(); // 0-11
+    const last  = new Date(year, mIdx + 1, 0).getDate();
+    const from  = Math.max(1, Math.min(Number(initDay || 1), last));
+    const to    = Math.max(from, Math.min(Number(cutDay || last), last));
+    const dia   = d.getDate();
+    if (dia < from || dia > to) continue;
+
+    const key = `${year}-${mIdx}`;
+    if (!map.has(key)) {
+      map.set(key, { year, mIdx, total: 0 });
+    }
+    const bucket = map.get(key);
+
+    // IMPORTANTE: solo sumamos tarifa_monto (igual que totalServ)
+    for (const s of getMembresiasFromVenta(v)) {
+      const linea = Number(s?.tarifa_monto || 0);
+      bucket.total += linea;
+    }
   }
 
-  const actual = { y: year, mIdx: selectedMonth - 1 };
-  const keyActual = `${actual.y}-${actual.mIdx}`;
+  return map;
+}
 
+ const mesesSeleccionados = useMemo(() => {
+  // 1) Construimos el mapa de totales por (año, mes)
+  const monthMap = buildMonthRevenueMap(dataVentas || [], initDay, cutDay);
+
+  // 2) Ventana de 12 meses hacia atrás desde el mes base
+  const slots = [];
+  let mIdx = selectedMonth - 1;  // 0-11
+  let y    = year;
+
+  for (let i = 0; i < 12; i++) {
+    slots.push({ y, mIdx });
+    mIdx--;
+    if (mIdx < 0) { mIdx = 11; y--; }
+  }
+
+  const base = { y: year, mIdx: selectedMonth - 1 };
+  const baseKey = `${base.y}-${base.mIdx}`;
+
+  // 3) Puntaje = total venta de membresías de ese mes
   const scored = slots
-    .filter(p => `${p.y}-${p.mIdx}` !== keyActual) 
-    .map(p => ({
-      ...p,
-      score: sumProgramRevenueForMonth(dataVentas, p.y, p.mIdx, initDay, cutDay),
-    }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 3); // top 3
+    .filter(p => `${p.y}-${p.mIdx}` !== baseKey)  // excluimos el mes base
+    .map(p => {
+      const key = `${p.y}-${p.mIdx}`;
+      const bucket = monthMap.get(key);
+      return {
+        ...p,
+        score: bucket ? bucket.total : 0, // si no hay data, 0
+      };
+    })
+    .sort((a, b) => b.score - a.score)   // de mayor a menor venta
+    .slice(0, 3);                        // TOP 3
 
   const toFechaObj = ({ y, mIdx }) => ({
-    label: MESES[mIdx].toUpperCase(),
+    label: `${MESES[mIdx].toUpperCase()} ${y}`,
     anio: String(y),
-    mes: MESES[mIdx], 
+    mes: MESES[mIdx],
   });
 
+  // 4) Ordenamos esos 3 meses cronológicamente para pintar bonito
   const topOrdenados = [...scored]
     .sort((a, b) => new Date(a.y, a.mIdx) - new Date(b.y, b.mIdx))
     .map(toFechaObj);
 
-  return [...topOrdenados, toFechaObj(actual)];
-}, [dataVentas, selectedMonth, year, initDay, cutDay]);
+  const baseObj = toFechaObj(base);
+
+  // DEBUG opcional, puedes dejarlo un rato:
+  console.log('[RENOVACIONES] mesesSeleccionados:', {
+    base: baseObj,
+    scored: scored.map(s => ({
+      key: `${s.y}-${MESES[s.mIdx]}`,
+      label: `${MESES[s.mIdx].toUpperCase()} ${s.y}`,
+      score: s.score,
+    })),
+  });
+
+  // 3 columnas de comparación + 1 columna MES BASE
+  return [...topOrdenados, baseObj];
+}, [dataVentas, initDay, cutDay, selectedMonth, year]);
+
 const dataMktWithCac = useMemo(() => {
   const base = { ...(dataMktByMonth || {}) };
 
