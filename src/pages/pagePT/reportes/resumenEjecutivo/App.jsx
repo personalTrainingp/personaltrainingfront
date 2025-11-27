@@ -858,7 +858,6 @@ const originMap = {
    onChangeTasa={setTasaCambio}
      tasaCambio={tasaCambio}  
 />
-
       </Col>
     </Row>  
     <Row className="mb-3">
@@ -883,6 +882,7 @@ const originMap = {
             dataMktByMonth={dataMktWithCac}
             initialDay={initDay}
             cutDay={cutDay}
+            
       reservasMF={reservasMF}
         originMap={originMap}  
         selectedMonth={selectedMonth}
