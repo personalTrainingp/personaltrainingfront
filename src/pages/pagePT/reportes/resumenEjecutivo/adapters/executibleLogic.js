@@ -1,11 +1,12 @@
-// adapters/executibleLogic.js
-
 const MESES = [
-  "enero","febrero","marzo","abril","mayo","junio",
-  "julio","agosto","setiembre","octubre","noviembre","diciembre",
+  "enero", "febrero", "marzo", "abril", "mayo", "junio",
+  "julio", "agosto", "setiembre", "octubre", "noviembre", "diciembre",
 ];
 
-const aliasMes = (m) => (m === "septiembre" ? "setiembre" : m);
+export const aliasMes = (m) => {
+  const mes = String(m || "").toLowerCase().trim();
+  return mes === "septiembre" ? "setiembre" : mes;
+};
 
 const toLimaDate = (iso) => {
   if (!iso) return null;
@@ -18,6 +19,8 @@ const toLimaDate = (iso) => {
   }
 };
 
+export const getMonthIndex = (m) => MESES.indexOf(aliasMes(m));
+
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
 export const fmtMoney = (n) =>
@@ -25,8 +28,10 @@ export const fmtMoney = (n) =>
     .format(Number(n || 0));
 
 export const fmtNum = (n, d = 0) =>
-  new Intl.NumberFormat("es-PE", { minimumFractionDigits: d, maximumFractionDigits: d })
-    .format(Number(n || 0));
+  new Intl.NumberFormat("es-PE", {
+    minimumFractionDigits: d,
+    maximumFractionDigits: d,
+  }).format(Number(n || 0));
 
 const getDetalleProductos = (v) =>
   v?.detalle_ventaProductos ||
@@ -82,7 +87,7 @@ export const labelFromKey = (key) => {
   return String(key || "OTROS").replace(/_/g, " ").toUpperCase();
 };
 
-function computeMetricsForMonth({
+export function computeMetricsForMonth({
   ventas,
   reservasMF,
   dataMktByMonth,
@@ -93,7 +98,8 @@ function computeMetricsForMonth({
   anio,
   mesNombre,
 }) {
-  const mesAlias = aliasMes(String(mesNombre).toLowerCase());
+  // Normalizamos siempre el nombre del mes
+  const mesAlias = aliasMes(mesNombre);
   const monthIdx = MESES.indexOf(mesAlias);
   if (monthIdx < 0) return null;
 
@@ -132,6 +138,7 @@ function computeMetricsForMonth({
   const lastDayMonth = new Date(Number(anio), monthIdx + 1, 0).getDate();
   const to = clamp(Number(cutDay || lastDayMonth), from, lastDayMonth);
 
+  // ================== RECORRER VENTAS ==================
   for (const v of ventas) {
     const d = toLimaDate(v?.fecha_venta || v?.fecha || v?.createdAt);
     if (!d) continue;
@@ -155,7 +162,7 @@ function computeMetricsForMonth({
         ? "meta"
         : "otros";
 
-    // MES COMPLETO
+    // ---- MES COMPLETO ----
     for (const s of getDetalleMembresias(v)) {
       const cantidad = Number(s?.cantidad || 1);
       const linea = Number(s?.tarifa_monto || 0);
@@ -185,7 +192,7 @@ function computeMetricsForMonth({
       cantOtrosFull += cantidad;
     }
 
-    // AL CORTE
+    // ---- AL CORTE ----
     const dia = d.getDate();
     if (dia >= from && dia <= to) {
       for (const s of getDetalleMembresias(v)) {
@@ -223,8 +230,13 @@ function computeMetricsForMonth({
   const ticketProd = cantProd ? totalProd / cantProd : 0;
   const ticketOtros = cantOtros ? totalOtros / cantOtros : 0;
 
-  const key = `${anio}-${mesAlias}`;
-  const mk = dataMktByMonth?.[key] ?? {};
+  // ================== MARKETING (dataMktByMonth) ==================
+  const keyBase = `${anio}-${mesAlias}`;              // 2025-setiembre
+  const keyAlt = mesAlias === "setiembre"
+    ? `${anio}-septiembre`                            // por si tu JSON viene así
+    : keyBase;
+
+  const mk = dataMktByMonth?.[keyBase] ?? dataMktByMonth?.[keyAlt] ?? {};
   const por_red = mk?.por_red ?? {};
   const val = (obj, k) => Number(obj?.[k] ?? 0);
 
@@ -237,6 +249,7 @@ function computeMetricsForMonth({
     igShare = 1 - fbShare;
   }
 
+  // Reparto META -> FB/IG (corte)
   if (metaServTotalCut > 0) {
     const linea = metaServTotalCut;
     const cant = metaServCantCut;
@@ -256,6 +269,7 @@ function computeMetricsForMonth({
     byOrigin["instagram"].cant += igCant;
   }
 
+  // Reparto META -> FB/IG (mes completo)
   if (metaServTotalFull > 0) {
     const linea = metaServTotalFull;
     const cant = metaServCantFull;
@@ -275,9 +289,22 @@ function computeMetricsForMonth({
     byOriginFull["instagram"].cant += igCant;
   }
 
-  const rawMeta = val(por_red, "1515") + val(por_red, "meta") + rawFB + rawIG;
-const rawTikTok = val(por_red, "1514") + val(por_red, "tiktok") + val(por_red, "tik tok") + val(por_red, "tik-tok") + val(por_red, "695");
-  const invTotalRaw = Number(mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0);
+  const rawMeta =
+    val(por_red, "1515") +
+    val(por_red, "meta") +
+    rawFB +
+    rawIG;
+
+  const rawTikTok =
+    val(por_red, "1514") +
+    val(por_red, "tiktok") +
+    val(por_red, "tik tok") +
+    val(por_red, "tik-tok") +
+    val(por_red, "695");
+
+  const invTotalRaw = Number(
+    mk?.inversiones_redes ?? mk?.inversion_redes ?? mk?.inv ?? 0
+  );
 
   let mkInvUSD = 0, mkInvMetaUSD = 0, mkInvTikTokUSD = 0;
   const sumRaw = rawMeta + rawTikTok;
@@ -299,8 +326,9 @@ const rawTikTok = val(por_red, "1514") + val(por_red, "tiktok") + val(por_red, "
   }
 
   const mkInvMeta = mkInvMetaUSD;
-  const mkInvTikTok = mkInvTikTokUSD*1.18;
-const mkInv = (mkInvMeta * Number(tasaCambio || 3.37)) + mkInvTikTok;
+  const mkInvTikTok = mkInvTikTokUSD * 1.18;
+  const mkInv = (mkInvMeta * Number(tasaCambio || 3.37)) + mkInvTikTok;
+
   const leads_por_red = mk?.leads_por_red ?? {};
   const clientes_por_red = mk?.clientes_por_red ?? {};
 
@@ -327,7 +355,7 @@ const mkInv = (mkInvMeta * Number(tasaCambio || 3.37)) + mkInvTikTok;
   const mkCacMetaExact = safeDiv0(mkInvMeta, clientesMeta);
   const mkCacTikTokExact = safeDiv0(mkInvTikTok, clientesTikTok);
 
-  // MONKEYFIT
+  // ============ MONKEYFIT ============
   let ventaMF = 0, cantMF = 0;
   let ventaMFFull = 0, cantMFFull = 0;
   const mfByProg = {};
@@ -422,31 +450,47 @@ const mkInv = (mkInvMeta * Number(tasaCambio || 3.37)) + mkInvTikTok;
     mfByProg,
   };
 }
- export function getAvailableMonthsFromVentas(ventas){
- const map = new Map();
 
- ventas.forEach((v) => {
-  const d = toLimaDate(v?.fecha_venta || v?.fecha )
-  if(!d) return;
-  const anio= d.getFullYear();
-  const mesIdx = d.getMonth();
-  const mesNombre= MESES[mesIdx];
-const label = `${mesNombre.toUpperCase()} ${anio}`; // Ej: ENERO 2024
-  const key = `${anio}-${mesNombre}`; // Identificador único
-  if (!map.has(key)){
-    map.set(key, {
-      key,
-      label,
-      anio,
-      mes:mesNombre,
-      dateObj:d
-    })
-  }
+// Orígenes que no queremos mostrar en la tabla de orígenes
+const ORIGINS_EXCLUIR = new Set([
+  "1470",
+  "689",
+  "687",
+  "corporativos_bbva",
+  "corporativos bbva",
+  "wsp organico",
+]);
 
+// ================== MESES DISPONIBLES ==================
+export function getAvailableMonthsFromVentas(ventas) {
+  const map = new Map();
 
- });
- return Array.from(map.values()).sort((a, b) => b.dateObj - a.dateObj);
-  }
+  ventas.forEach((v) => {
+    const d = toLimaDate(v?.fecha_venta || v?.fecha);
+    if (!d) return;
+    const anio = d.getFullYear();
+    const mesIdx = d.getMonth(); // 0-11
+    const mesNombre = MESES[mesIdx]; // minúsculas
+    const mesNorm = aliasMes(mesNombre); // por si acaso
+
+    const label = `${mesNorm.toUpperCase()} ${anio}`; // Ej: SETIEMBRE 2025
+    const key = `${anio}-${mesNorm}`; // Identificador único
+
+    if (!map.has(key)) {
+      map.set(key, {
+        key,
+        label,
+        anio,
+        mes: mesNorm,
+        dateObj: d,
+      });
+    }
+  });
+
+  // Ordenamos de más reciente a más antiguo
+  return Array.from(map.values()).sort((a, b) => b.dateObj - a.dateObj);
+}
+
 // === FUNCIÓN PRINCIPAL PARA LA VISTA ===
 export function buildExecutiveTableData({
   ventas = [],
@@ -456,66 +500,91 @@ export function buildExecutiveTableData({
   cutDay = 21,
   reservasMF = [],
   originMap = {},
-  selectedMonth,
+  selectedMonth, // Entero 1-12 (modo viejo)
   tasaCambio = 3.37,
+  baseKey = null, // "2025-setiembre" cuando queremos modo TOP por origen
 }) {
-  const selectedMonthName =
-    (MESES[selectedMonth - 1] || "").toUpperCase();
+  // 1) Determinar MES BASE
+  let selectedMonthKey = null; // "setiembre"
+  let selectedMonthName = "";
+  let selectedYear = null;
 
-  const perMonth = fechas.map((f) => ({
-    label: String(f?.label || "").toUpperCase(),
-    anio: f?.anio,
-    mes: String(f?.mes || "").toLowerCase(),
-    metrics: computeMetricsForMonth({
-      ventas,
-      reservasMF,
-      dataMktByMonth,
-      originMap,
-      initialDay,
-      cutDay,
-      tasaCambio,
-      anio: f?.anio,
-      mesNombre: f?.mes,
-    }),
-  }));
+  if (baseKey) {
+    // Modo nuevo: el mes base viene como "YYYY-mes"
+    const [yStr, mesStr] = String(baseKey).split("-");
+    selectedYear = yStr ? Number(yStr) : null;
+    const mesNorm = aliasMes(mesStr);
+    selectedMonthKey = mesNorm;
+    selectedMonthName = [mesNorm.toUpperCase(), yStr].filter(Boolean).join(" ");
+  } else if (
+    typeof selectedMonth === "number" &&
+    selectedMonth >= 1 &&
+    selectedMonth <= 12
+  ) {
+    // Modo anterior: sólo mes (sin año)
+    const uiName = MESES[selectedMonth - 1];
+    selectedMonthKey = aliasMes(uiName);
+    selectedMonthName = uiName.toUpperCase();
+  }
 
-  const usePerOriginMonthOrder = true;
-
-  const valueForOriginMonth = (okey, m) => {
-    if (okey === "monkeyfit") {
-      const val = m?.metrics?.venta_monkeyfit;
-      return Number(val || 0);
-    }
-    if (!isNaN(Number(okey))) {
-      const mf = m.metrics?.mfByProg?.[okey];
-      if (!mf) return -1;
-      return Number(mf.venta || 0);
-    }
-    const o = m?.metrics?.byOrigin?.[okey];
-    if (!o) return -1;
-    return Number(o.total || 0);
-  };
-
-  const monthOrderForOrigin = (okey) => {
-    if (!usePerOriginMonthOrder) return perMonth;
-    if (perMonth.length === 0) return [];
-    const list = perMonth.map((m, idx) => ({
-      m,
-      idx,
-      val: valueForOriginMonth(okey, m),
+  // 2) Universo de meses que vamos a procesar
+  let monthDescriptors;
+  if (baseKey) {
+    // NUEVO: usamos todos los meses detectados en ventas
+    monthDescriptors = getAvailableMonthsFromVentas(ventas);
+  } else if (Array.isArray(fechas) && fechas.length > 0) {
+    // COMPATIBILIDAD: si no hay baseKey, respetamos lo que viene en "fechas"
+    monthDescriptors = fechas.map((f) => ({
+      key: `${f.anio}-${aliasMes(f.mes)}`,
+      label: String(f.label || "").toUpperCase(),
+      anio: f.anio,
+      mes: aliasMes(f.mes),
+      dateObj: new Date(
+        Number(f.anio),
+        MESES.indexOf(aliasMes(f.mes)),
+        1
+      ),
     }));
-    const hasSignal = list.some((x) => Number(x.val) > 0);
-    if (!hasSignal) return perMonth;
-    list.sort((a, b) => (Number(a.val) - Number(b.val)) || (a.idx - b.idx));
-    return list.map((x) => x.m);
-  };
+  } else {
+    // Si no hay fechas, caemos a todos los meses disponibles
+    monthDescriptors = getAvailableMonthsFromVentas(ventas);
+  }
 
-  const ORIGINS_EXCLUIR = new Set([
-    "1470",
-    "corporativos_bbva",
-    "corporativos bbva",
-  ]);
+  // 3) Calculamos métricas por mes
+  const perMonth = monthDescriptors.map((f) => {
+    const mesNorm = aliasMes(f.mes);
+    return {
+      label: String(f.label || `${mesNorm.toUpperCase()} ${f.anio}`),
+      anio: f.anio,
+      mes: mesNorm,
+      metrics: computeMetricsForMonth({
+        ventas,
+        reservasMF,
+        dataMktByMonth,
+        originMap,
+        initialDay,
+        cutDay,
+        tasaCambio,
+        anio: f.anio,
+        mesNombre: mesNorm,
+      }),
+    };
+  });
 
+  const monthKey = (m) => `${m.anio}-${m.mes}`;
+
+  // 4) Mes base real dentro de perMonth
+  let baseMonth = null;
+  if (baseKey) {
+    baseMonth = perMonth.find((m) => monthKey(m) === baseKey) || null;
+  }
+  if (!baseMonth && selectedMonthKey) {
+    // Tomamos el primer (más reciente) que coincide en mes
+    baseMonth =
+      perMonth.find((m) => aliasMes(m.mes) === selectedMonthKey) || null;
+  }
+
+  // 5) Orígenes y MF programs
   const originKeysAll = Array.from(
     new Set(perMonth.flatMap((m) => Object.keys(m.metrics?.byOrigin || {})))
   )
@@ -525,58 +594,123 @@ export function buildExecutiveTableData({
     )
     .sort();
 
-  const rowsPerOrigin = (okey) => ([
+  const rowsPerOrigin = (okey) => [
     { key: `o:${okey}:total`, label: `VENTA MEMBRESÍAS`, type: "money" },
     { key: `o:${okey}:cant`, label: `CANTIDAD MEMBRESÍAS`, type: "int" },
     { key: `o:${okey}:ticket`, label: `TICKET MEDIO`, type: "money" },
     { key: `o:${okey}:pct`, label: `% PARTICIPACIÓN`, type: "float2" },
-  ]);
+  ];
 
   const mfProgramKeys = Array.from(
     new Set(perMonth.flatMap((m) => Object.keys(m.metrics?.mfByProg || {})))
   ).sort();
 
-  const otherMonths = perMonth.slice(0, perMonth.length - 1);
-  const lastMonth =
-    perMonth.length > 0 ? perMonth[perMonth.length - 1] : null;
+  const valueForOriginMonth = (okey, m) => {
+    if (!m || !m.metrics) return -1;
 
+    if (okey === "monkeyfit") {
+      return Number(m.metrics.venta_monkeyfit ?? 0);
+    }
+
+    if (!Number.isNaN(Number(okey))) {
+      const mf = m.metrics.mfByProg?.[okey];
+      if (!mf) return -1;
+      return Number(mf.venta ?? 0);
+    }
+
+    const o = m.metrics.byOrigin?.[okey];
+    if (!o) return -1;
+
+    return Number(o.total || 0);
+  };
+
+  // 6) Meses que verá cada ORIGEN
+  const monthOrderForOrigin = (okey) => {
+    if (perMonth.length === 0) return [];
+
+    // NUEVO: si tenemos baseKey, devolvemos MES BASE + TOP 3 meses del origen
+    if (baseKey && baseMonth) {
+      const baseK = monthKey(baseMonth);
+
+      const scored = perMonth
+        .filter((m) => monthKey(m) !== baseK)
+        .map((m) => ({ m, val: valueForOriginMonth(okey, m) }))
+        .filter((x) => x.val > 0)
+        .sort((a, b) => Number(b.val) - Number(a.val)); // mayor → menor
+
+      const top3 = scored.slice(0, 3).map((x) => x.m);
+
+      const result = [baseMonth];
+      top3.forEach((m) => {
+        if (monthKey(m) !== baseK) result.push(m);
+      });
+
+      return result;
+    }
+
+    // MODO ANTERIOR (sin baseKey): sólo ordenamos lo que viene en fechas
+    const list = perMonth
+      .map((m, idx) => ({
+        m,
+        idx,
+        val: valueForOriginMonth(okey, m),
+      }))
+      .sort((a, b) => {
+        const diff = Number(b.val) - Number(a.val); // mayor → menor
+        if (diff !== 0) return diff;
+        return a.idx - b.idx;
+      });
+
+    return list.map((x) => x.m);
+  };
+
+  // 7) Orden general de orígenes (primero los fuertes en el mes base)
   const orderedOrigins = [...originKeysAll].sort((a, b) => {
-    const lastA = Number(lastMonth?.metrics?.byOrigin?.[a]?.total || 0);
-    const lastB = Number(lastMonth?.metrics?.byOrigin?.[b]?.total || 0);
-    if (lastA !== lastB) return lastB - lastA;
+    const mObj = baseMonth;
+    const valA = Number(mObj?.metrics?.byOrigin?.[a]?.total || 0);
+    const valB = Number(mObj?.metrics?.byOrigin?.[b]?.total || 0);
 
-    const fallbackA = otherMonths.reduce(
+    if (valA !== valB) {
+      return valB - valA;
+    }
+
+    const totalA = perMonth.reduce(
       (acc, m) => acc + Number(m.metrics?.byOrigin?.[a]?.total || 0),
       0
     );
-    const fallbackB = otherMonths.reduce(
+    const totalB = perMonth.reduce(
       (acc, m) => acc + Number(m.metrics?.byOrigin?.[b]?.total || 0),
       0
     );
-    if (fallbackA !== fallbackB) return fallbackB - fallbackA;
-    return a.localeCompare(b);
+
+    if (totalA !== totalB) {
+      return totalB - totalA;
+    }
+
+    return String(a).localeCompare(String(b));
   });
 
+  // 8) Orden de programas MONKEYFIT
   const orderedMFPrograms = [...mfProgramKeys].sort((a, b) => {
-    const lastValA = lastMonth?.metrics?.mfByProg?.[a];
-    const lastValB = lastMonth?.metrics?.mfByProg?.[b];
-    const lastA = Number(lastValA?.cant || 0);
-    const lastB = Number(lastValB?.cant || 0);
-    if (lastA > lastB) return -1;
-    if (lastA < lastB) return 1;
-    const fallbackA = otherMonths.reduce(
+    const mObj = baseMonth;
+
+    const valA = Number(mObj?.metrics?.mfByProg?.[a]?.cant || 0);
+    const valB = Number(mObj?.metrics?.mfByProg?.[b]?.cant || 0);
+
+    if (valA !== valB) return valB - valA;
+
+    const totalA = perMonth.reduce(
       (acc, m) => acc + Number(m.metrics?.mfByProg?.[a]?.cant || 0),
       0
     );
-    const fallbackB = otherMonths.reduce(
+    const totalB = perMonth.reduce(
       (acc, m) => acc + Number(m.metrics?.mfByProg?.[b]?.cant || 0),
       0
     );
-    if (fallbackA > fallbackB) return -1;
-    if (fallbackA < fallbackB) return 1;
-    return a.localeCompare(b);
+
+    if (totalA !== totalB) return totalB - totalA;
+    return String(a).localeCompare(String(b));
   });
- 
 
   return {
     selectedMonthName,

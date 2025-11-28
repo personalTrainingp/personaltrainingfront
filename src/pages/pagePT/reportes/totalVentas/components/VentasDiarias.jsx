@@ -104,6 +104,8 @@ export default function VentasDiarias({
     const from = Math.max(1, Math.min(Number(initDay||1), lastDay));
     const to   = Math.max(from, Math.min(Number(cutDay||lastDay), lastDay));
     const days = Array.from({length: to-from+1}, (_,i)=> from + i);
+    
+    // ... (labels y preparación de dataByAsesor igual que antes) ...
     const labels = days.map(d => {
       const dow = DAY_ES[new Date(Number(year), mIdx, d).getDay()];
       return ` \n${dow.toUpperCase()} ${d}`; 
@@ -118,14 +120,21 @@ export default function VentasDiarias({
       };
     }
 
+    // === AQUÍ AGREGAMOS LA LISTA NEGRA DE IDs ===
+    const EXCLUDED_IDS = [3562]; 
+    // ============================================
+
     for (const v of Array.isArray(ventas) ? ventas : []) {
+      // 1. FILTRO DE EXCLUSIÓN POR ID DE EMPLEADO
+      if (EXCLUDED_IDS.includes(v?.id_empl)) continue; 
+
       const d = getVentaDate(v);
       if (!d || d.getFullYear()!==Number(year) || d.getMonth()!==mIdx) continue;
       const day = d.getDate();
       if (day < from || day > to) continue;
 
       const a = getAsesor(v);
-      if (!dataByAsesor[a]) continue; // ignorar otros asesores
+      if (!dataByAsesor[a]) continue; 
 
       const monto = getImporteProgramas(v);
       if (monto > 0) dataByAsesor[a].montoByDay[day] += monto;
@@ -136,6 +145,7 @@ export default function VentasDiarias({
       }
     }
 
+    // ... (cálculo de totalMontoMes igual que antes) ...
     let totalMontoMes = 0;
     for (const a of Object.keys(dataByAsesor)) {
       for (const d of days) totalMontoMes += dataByAsesor[a].montoByDay[d];

@@ -296,7 +296,6 @@ export function VigentesResumenMensual({
                       );
                     })}
 
-                    <th className={styles.th}>TOTAL</th>
                   </tr>
                 </thead>
 
@@ -326,7 +325,6 @@ export function VigentesResumenMensual({
                         );
                       })}
 
-                      <td className={styles.td}>{row.total}</td>
                     </tr>
                   ))}
 
@@ -353,7 +351,6 @@ export function VigentesResumenMensual({
                       );
                     })}
 
-                    <td className={styles.td}>{lastYearTable.footer.total}</td>
                   </tr>
                 </tbody>
               </table>
@@ -399,7 +396,6 @@ export function VigentesResumenMensual({
                       );
                     })}
 
-                    <th className={styles.th}>TOTAL</th>
                   </tr>
                 </thead>
 
@@ -428,7 +424,6 @@ export function VigentesResumenMensual({
                         );
                       })}
 
-                      <td className={styles.td}>{row.total}</td>
                     </tr>
                   ))}
 
@@ -455,7 +450,6 @@ export function VigentesResumenMensual({
                       );
                     })}
 
-                    <td className={styles.td}>{currentYearTable.footer.total}</td>
                   </tr>
                 </tbody>
               </table>

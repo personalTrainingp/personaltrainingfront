@@ -582,18 +582,7 @@ export const ExecutiveTable2=(props)=>{
         <TableHead />
         <tbody>
           {[
-            { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
-            { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
-            {
-              key: "mkCpl",
-              label: "COSTO TOTAL POR LEAD DE META + TIKTOK",
-              type: "float2",
-            },
-            {
-              key: "mkCac",
-              label: "COSTO ADQUISICION DE CLIENTES",
-              type: "float2",
-            },
+          
             { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
             { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
             { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
@@ -612,6 +601,18 @@ export const ExecutiveTable2=(props)=>{
             {
               key: "mkCacTikTok",
               label: "COSTO ADQUISICION CLIENTES TIKTOK",
+              type: "float2",
+            },
+              { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
+            { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
+            {
+              key: "mkCpl",
+              label: "COSTO TOTAL POR LEAD DE META + TIKTOK",
+              type: "float2",
+            },
+            {
+              key: "mkCac",
+              label: "COSTO ADQUISICION DE CLIENTES",
               type: "float2",
             },
           ].map((r, i) => (
@@ -665,33 +666,6 @@ export const ExecutiveTable2=(props)=>{
               })}
             </tr>
           ))}
-
-          {/* TOTAL MES FULL EN LA PARTE DE MARKETING */}
-          <tr style={sRowRed}>
-            <th
-              style={{
-                ...sThLeft,
-                background: "transparent",
-                color: cWhite,
-              }}
-            >
-              VENTA TOTAL <br /> MES
-            </th>
-            {perMonth.map((m, idx) => (
-              <th
-                key={idx}
-                style={{
-                  ...sThMes,
-                  background: idx === perMonth.length - 1 ? "#c00000" : "transparent",
-                  color: "#fff",
-                  fontSize: 28,
-                }}
-              >
-                {fmtMoney(m.metrics?.totalMesFull || 0)}
-              </th>
-            ))}
-          </tr>
-
           {/* FILA DE MESES */}
           <tr>
             <td

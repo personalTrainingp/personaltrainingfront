@@ -163,8 +163,8 @@ export const ClientesPorOrigen = ({
     
     // FILTRO 1: Excluir "CORPORATIVOS BBVA"
     const arr = Array.from(all).filter(
-      (label) => label !== "CORPORATIVOS BBVA"
-    );
+      (label) => label !== "CORPORATIVOS BBVA"||"WSP organico","689"
+    )
 
     const prefer = Object.values(originMap || {}).map((n) => String(n).toUpperCase());
     arr.sort((a, b) => {
