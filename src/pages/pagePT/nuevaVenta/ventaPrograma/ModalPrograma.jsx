@@ -104,7 +104,8 @@ export const ModalPrograma = ({show, hide}) => {
       dataHorario,
       dataPrograma,
       fecha_inicio: fechaInicio_programa,
-      fecha_fin: fechaFinal
+      fecha_fin: fechaFinal,
+      tarifa: dataTarifa?.tarifa
     }))
     // dispatch(onSetDetallePrograma({
     //   id_st, semanas, nutric, cong, label_dataSemana,
