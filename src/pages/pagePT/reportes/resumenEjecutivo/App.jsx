@@ -979,7 +979,16 @@ const originMap = {
         selectedMonth={selectedMonth}
   tasaCambio={tasaCambio}            />
         </div>
-        
+   <div style={{ marginBottom: "32px", marginTop: "90px" }}>
+          <ComparativoVsActual
+            ventas={dataVentas}
+            fechas={mesesSeleccionados}
+            dataMktByMonth={dataMkt}
+              reservasMF={reservasMF}
+            initialDay={initDay}
+            cutDay={cutDay}
+          />
+        </div>      
          <ClientesPorOrigen
   ventas={dataVentas}
   fechas={mesesSeleccionados}
@@ -1028,16 +1037,6 @@ const originMap = {
   selectedMonth={selectedMonth}
   tasaCambio={tasaCambio}
 />
-  <div style={{ marginBottom: "32px", marginTop: "90px" }}>
-          <ComparativoVsActual
-            ventas={dataVentas}
-            fechas={mesesSeleccionados}
-            dataMktByMonth={dataMkt}
-              reservasMF={reservasMF}
-            initialDay={initDay}
-            cutDay={cutDay}
-          />
-        </div>
         <div style={{ marginBottom: "32px", marginTop: "80px" }}>
        
         </div>
