@@ -200,43 +200,99 @@ export default function ExecutiveTable(props) {
   const getOrderedMonthsForOrigin = (okey) =>
     monthOrderForOrigin(okey) || [];
 
+  const ymKey = (m) => `${m.anio}-${m.mes}`;
+
+  const getMontoOrigen = (m, okey) => {
+    const byOrigin = m?.metrics?.byOrigin;
+    if (!byOrigin) return 0;
+    const o = byOrigin[okey];
+    if (!o) return 0;
+    return Number(o.total ?? 0);
+  };
+
+  // =========================================================
+  // MODIFICACIÓN: Lógica de ordenamiento para fijar Mes Base al final
+  // =========================================================
+  const sortMonthsForOrigin = (months, okey) => {
+    if (!Array.isArray(months)) return [];
+    
+    // Si no es un origen de marketing (ej. monkeyfit), devolvemos tal cual
+    if (okey === "monkeyfit" || !isNaN(Number(okey))) {
+      return months;
+    }
+
+    // 1. Crear copia para no mutar original
+    const copy = [...months];
+
+    // 2. Extraer el Mes Base de la lista si existe
+    let baseMonthItem = null;
+    const baseIndex = copy.findIndex(m => ymKey(m) === baseKey);
+    
+    if (baseIndex !== -1) {
+        baseMonthItem = copy[baseIndex];
+        copy.splice(baseIndex, 1); // Lo quitamos temporalmente
+    }
+
+    // 3. Ordenar el RESTO de meses por monto (Ascendente según tu lógica original a - b)
+    copy.sort(
+      (a, b) => getMontoOrigen(a, okey) - getMontoOrigen(b, okey)
+    );
+
+    // 4. Insertar el Mes Base AL FINAL (última columna)
+    if (baseMonthItem) {
+        copy.push(baseMonthItem);
+    }
+
+    return copy;
+  };
+
   const TableHeadFor = ({ okey }) => {
-    const months = getOrderedMonthsForOrigin(okey);
+    const monthsRaw = getOrderedMonthsForOrigin(okey);
+    const months = sortMonthsForOrigin(monthsRaw, okey);
+
     return (
       <thead>
         <tr>
           <th style={{ ...sThLeft, background: cRed }} />
-          {months.map((m, idx) => (
-            <th
-              key={`${okey}-h-${idx}`}
-              style={{ ...sThMes, background: cRed }}
-            >
-              {idx === 0 ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 4,
-                  }}
-                >
-                  <span style={{ fontSize: 14, opacity: 0.8 }}>
-                    MES BASE
-                  </span>
-                  <MonthSelector />
-                </div>
-              ) : (
-                <div>{m.label}</div>
-              )}
-            </th>
-          ))}
+          {months.map((m, idx) => {
+            const thisKey = ymKey(m);
+            const isBase = baseKey && thisKey === baseKey;
+
+            return (
+              <th
+                key={`${okey}-h-${idx}`}
+                style={{ ...sThMes, background: cRed }}
+              >
+                {isBase ? (
+                  // 👉 Esta es la columna del MES BASE (en el índice que le toque por ventas)
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <span style={{ fontSize: 14, opacity: 0.8 }}>
+                      MES BASE
+                    </span>
+                    <MonthSelector />
+                  </div>
+                ) : (
+                  // 👉 Columnas normales
+                  <div>{m.label}</div>
+                )}
+              </th>
+            );
+          })}
         </tr>
       </thead>
     );
   };
 
   const renderRowsFor = (okey, rowsToRender) => {
-    const months = getOrderedMonthsForOrigin(okey);
+    const monthsRaw = getOrderedMonthsForOrigin(okey);
+    const months = sortMonthsForOrigin(monthsRaw, okey);
 
     return rowsToRender.map((r) => (
       <tr key={r.key + r.label}>
