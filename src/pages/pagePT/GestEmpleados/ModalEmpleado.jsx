@@ -83,7 +83,7 @@ export const ModalEmpleado = ({ show, onHide, id_empresa, id_Estado }) => {
     
     const formData = new FormData();
     formData.append('avatar', formStateAvatar.imgAvatar_BASE64);
-        startRegisterUsuarioEmpleado({...usuarioEmpleado, dataContactsEmerg: dataContactsEmerg, comentarios}, formData, id_empresa, id_Estado)
+    startRegisterUsuarioEmpleado({...usuarioEmpleado, dataContactsEmerg: dataContactsEmerg, comentarios}, formData, id_empresa, id_Estado)
     btnCancelModal()
 }
   const btnCancelModal = ()=>{
@@ -306,106 +306,6 @@ const ViewDataImg = (e) => {
                                         />
                                     </div>
                                 </Col>
-                                {/* <Col xl={4}>
-                                    <div className="mb-2">
-                                        <label htmlFor="fecContrato_empl" className="form-label">
-                                            Fecha de contrato*
-                                        </label>
-                                        <input
-                                            className="form-control"
-                                            name="fecContrato_empl"
-                                            id="fecContrato_empl"
-                                            type='date'
-                                            value={fecContrato_empl}
-                                            onChange={onInputChange}
-                                        />
-                                    </div>
-                                </Col> */}
-                                {/* <Col xl={4}>
-                                    <div className="mb-2">
-                                        <label htmlFor="horario_empl" className="form-label">
-                                            Horario de trabajo*
-                                        </label>
-                                        <input
-                                            className="form-control"
-                                            name="horario_empl"
-                                            id="horario_empl"
-                                            type='time'
-                                            value={horario_empl}
-                                            onChange={onInputChange}
-                                        />
-                                    </div>
-                                </Col> */}
-                                {/* <Col xl={4}>
-                                    <div className="mb-2">
-                                        <label htmlFor="cargo_empl" className="form-label">
-                                            Cargo*
-                                        </label>
-										<Select
-											onChange={(e) => onInputChangeReact(e, 'cargo_empl')}
-											name="cargo_empl"
-											placeholder={'Seleccione el cargo'}
-											className="react-select"
-											classNamePrefix="react-select"
-											options={arrayCargoEmpl}
-											value={arrayCargoEmpl.find(
-												(option) => option.value === cargo_empl
-											)}
-										/>
-                                    </div>
-                                </Col> */}
-                                {/* <Col xl={4}>
-                                    <div className="mb-2">
-                                        <label htmlFor="departamento_empl" className="form-label">
-                                            Departamento*
-                                        </label>
-										<Select
-											onChange={(e) => onInputChangeReact(e, 'departamento_empl')}
-											name="departamento_empl"
-											placeholder={'Seleccione el departamento'}
-											className="react-select"
-											classNamePrefix="react-select"
-											options={arrayDepartamentoEmpl}
-											value={arrayDepartamentoEmpl.find(
-												(option) => option.value === departamento_empl
-											)}
-											required
-										/>
-                                    </div>
-                                </Col> */}
-                                {/* <Col xl={4}>
-                                    <div className="mb-2">
-                                        <label htmlFor="salario_empl" className="form-label">
-                                            Salario*
-                                        </label>
-                                        <input
-                                            className="form-control"
-                                            name="salario_empl"
-                                            id="salario_empl"
-                                            placeholder="Stock"
-                                            value={salario_empl}
-                                            onChange={onInputChange}
-                                        />
-                                    </div>
-                                </Col> */}
-                                {/* <Col xl={4}>
-                                    <div className="mb-2">
-                                        <label htmlFor="salario_empl" className="form-label">
-                                            Jornada laboral*
-                                        </label>
-										<Select
-											onChange={(e) => onInputChangeReact(e, 'tipoContrato_empl')}
-											name="tipoContrato_empl"
-											placeholder={'Seleccione la jornada'}
-											className="react-select"
-											classNamePrefix="react-select"
-											options={arrayTipoJornadaEmpl}
-											value={arrayTipoJornadaEmpl.find(
-												(option) => option.value === tipoContrato_empl
-											)}
-										/>
-                                    </div>
-                                </Col> */}
                                 <Col xl={4}>
                                     <div className="mb-2">
                                         <label htmlFor="email_empl" className="form-label">

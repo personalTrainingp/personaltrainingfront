@@ -249,8 +249,6 @@ export const useVentasStore = () => {
 	const startRegisterVenta = async (formState, funToast) => {
 		try {
 			setloadingVenta(true);
-			console.log(formState);
-
 			const { data } = await PTApi.post('/venta/post-ventas/598', formState);
 
 			if (formState.dataVenta.detalle_venta_programa[0]?.firmaCli) {
@@ -333,10 +331,6 @@ export const useVentasStore = () => {
 	};
 	const obtenerPDFCONTRATOgenerado = async (formState) => {
 		try {
-			// Convertir formState a cadena JSON
-			const formData = JSON.stringify(formState);
-			console.log(formState);
-
 			const response = await PTApi.post('/venta/invoice-PDFcontrato', formState, {
 				responseType: 'blob', // Establecer el tipo de respuesta como blob (archivo binario)
 			});
@@ -348,7 +342,6 @@ export const useVentasStore = () => {
 			link.setAttribute('download', 'CONTRATO-CLIENTE.pdf');
 			document.body.appendChild(link);
 			link.click();
-
 			// Liberar el objeto URL
 			window.URL.revokeObjectURL(url);
 		} catch (error) {

@@ -10,14 +10,11 @@ export const TableDeudasProveedores = ({id_empresa}) => {
     
   return (
     <div>
-      {/* <pre>
-        {JSON.stringify(dataContratosProv, null, 2)}
-      </pre> */}
       <Table>
         <thead>
           <tr>
             <th>PROVEEDOR</th>
-            <th>MANO DE OBRA SOLES</th>
+            <th>MONTO TOTAL</th>
             {/* <th>MANO DE OBRA DOLARES</th> */}
           </tr>
         </thead>
@@ -26,7 +23,7 @@ export const TableDeudasProveedores = ({id_empresa}) => {
             dataContratosProv.map(e=>{
               return (
                 <tr>
-                  <td>{e.ruc}</td>
+                  <td>{e.items[0]?.prov?.razon_social_prov}</td>
                   <td>{e.monto_contratos_total-e.gastos_monto_soles}</td>
                   {/* <td>{e.mano_obra_dolares_total}</td> */}
                 </tr>

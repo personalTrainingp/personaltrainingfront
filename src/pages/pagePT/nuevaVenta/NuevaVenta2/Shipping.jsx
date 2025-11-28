@@ -154,7 +154,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 									</Col>
 									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/>
 									<Col className="mb-3" xxl={2} onClick={onOpenModalTraspaso}>
-									<ItemProdServ Inombre={"TRASPASO PT A CHANGE"} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+									<ItemProdServ Inombre={"EX-PT"} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTraspaso show={modalTraspaso} onHide={onCloseModalTraspaso}/>
 								</Row>

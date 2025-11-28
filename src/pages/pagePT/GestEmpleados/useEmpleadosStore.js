@@ -22,6 +22,9 @@ export const useEmpleadosStore = () => {
 			console.log(error);
 		}
 	};
+	const postAlertaUsuario = async()=>{
+		
+	}
 	return {
 		obtenerParientesEmpleados,
 		obtenerDocumentosDeEmpleados,

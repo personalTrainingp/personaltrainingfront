@@ -17,12 +17,6 @@ export const DataTable = () => {
     
   return (
     <div>
-{/*         
-        <pre>
-            {
-                JSON.stringify(dataView, null, 2)
-            }
-        </pre> */}
         <table className='table'>
             <thead>
                 <tr>

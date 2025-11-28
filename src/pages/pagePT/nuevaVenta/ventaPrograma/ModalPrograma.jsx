@@ -93,20 +93,18 @@ export const ModalPrograma = ({show, hide}) => {
   const onSubmitRegisterPrograma = (e)=>{
     e.preventDefault()
     const fechaFinal = sumarSemanas(fechaInicio_programa, dataSemana?.semanas)
-    
-    const { value: id_st, semanas, nutric, cong, label:label_dataSemana } = dataSemana;
-    const { value: id_tt, label:label_tarifa, tarifa } = dataTarifa;
-    const { value: id_horarioPgm, label:label_dataHorario, aforo: aforo_h, horario: time_h } = dataHorario;
-    const { id_pgm, name_pgm, tb_image } = dataPrograma;
-    console.log({dataSemana, dataTarifa, dataHorario, dataPrograma});
+    // const { value: id_st, semanas, nutric, cong, label:label_dataSemana } = dataSemana;
+    // const { value: id_tt, label:label_tarifa, tarifa } = dataTarifa;
+    // const { value: id_horarioPgm, label:label_dataHorario, aforo: aforo_h, horario: time_h } = dataHorario;
+    // const { id_pgm, name_pgm, tb_image } = dataPrograma;
+    // console.log({dataSemana, dataTarifa, dataHorario, dataPrograma});
     dispatch(onSetDetallePrograma({
-      id_st, semanas, nutric, cong, label_dataSemana,
-      id_tt, tarifa, label_tarifa,
-      id_horarioPgm, label_dataHorario, time_h,
-      id_pgm, name_pgm,
-      url_image: tb_image.name_image,
-      fechaInicio_programa, 
-      fechaFinal
+      dataSemana,
+      dataTarifa,
+      dataHorario,
+      dataPrograma,
+      fecha_inicio: fechaInicio_programa,
+      fecha_fin: fechaFinal
     }))
     // dispatch(onSetDetallePrograma({
     //   id_st, semanas, nutric, cong, label_dataSemana,
@@ -117,7 +115,7 @@ export const ModalPrograma = ({show, hide}) => {
     //   fechaInicio_programa, 
     //   fechaFinal
     // }))
-    // onModalClose()
+    onModalClose()
   }
   
   const onModalClose=()=>{
@@ -128,9 +126,6 @@ export const ModalPrograma = ({show, hide}) => {
     onInputChangeFunction("id_st", 0)
     onInputChangeFunction(o.target.name, e.id_pgm)
   }
-
-  
-  // console.log(fechaInicio_programa);
   return (
     <>
     <Modal size='xl' show={show} onHide={onModalClose} backdrop={'static'}>

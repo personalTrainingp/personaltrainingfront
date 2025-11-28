@@ -4,8 +4,6 @@ import React from 'react'
 import { MovimientoItems } from './MovimientoItems'
 
 export const ModalMovimientoItem = ({show, onHide, idArticulo, id_enterprice}) => {
-  console.log(idArticulo);
-  
   return (
     <Dialog onHide={onHide} visible={show} header={`MOVIMIENTOS`} style={{width: '80rem'}}>
         <TabView>

@@ -23,10 +23,6 @@ export const NuevaVenta2 = () => {
       life: life
     });
   }
-  // Convertir la fecha a una cadena usando toLocaleDateString() con configuración regional y opciones
-    const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
-    // const fechaFormateada = fecha.toLocaleDateString('es-PE', opciones);
-  // console.log(new Date("2030-02-06T00:00:00.000Z"));
   return (
     <>
 		<Toast ref={refToast}/>

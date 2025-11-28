@@ -35,19 +35,23 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 	const descargarPDFgenerado = () => {
 		obtenerPDFCONTRATOgenerado({ dataVenta, detalle_cli_modelo, dataPagos });
 	};
+	console.log({dataVenta});
+	
 	return (
 		<div className="container">
-			<div className="row">
-				<h5 className="mb-0">
-					<a
-						href="#"
-						className="d-flex flex-column align-items-start text-primary d-inline-block align-middle p-2 mb-2 font-22 rounded rounded-4 shadow shadow-8"
-					>
-						<img width={220} src={`${config.API_IMG.LOGO}${dataVenta.url_image}`} />
-						{dataVenta.semanas} Semanas = {dataVenta.semanas * 5} sesiones
-					</a>
+			{/* <pre>
+				{
+					JSON.stringify(dataVenta, null, 2)
+				}
+			</pre> */}
+			<div className="row card">
+				<h5 className="mb-0 d-flex align-items-center justify-content-center">
+						<img width={220} src={`${config.API_IMG.LOGO}${dataVenta.dataPrograma.tb_image.name_image}`} />
+						<span className='fs-2'>
+							| {dataVenta.dataSemana.semanas} Semanas 
+						</span>
 				</h5>
-				<div className="col-lg-12 bg-white rounded shadow-sm mb-5">
+				<div className="col-lg-12 bg-white rounded">
 					<div className="table-responsive">
 						<table className="table">
 							<thead>
@@ -75,26 +79,20 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 								<tr>
 									<th scope="row" className="border-0 p-0">
 										<div className="p-0">
-											<img
-												src="https://bootstrapious.com/i/snippets/sn-cart/product-1.jpg"
-												alt=""
-												width="70"
-												className="img-fluid rounded shadow-sm"
-											/>
 											<div className="ml-3 d-inline-block align-middle">
 												<span className="text-muted font-weight-normal font-italic d-block">
-													Hora de Inicio: {dataVenta.time_h}{' '}
+													Hora de Inicio: {dataVenta.dataHorario.horario}{' '}
 												</span>
 												<span className="text-muted font-weight-normal font-italic d-block">
 													Hora de término:{' '}
-													{dayjs(dataVenta.time_h, 'hh:mm A')
+													{dayjs(dataVenta.dataHorario.horario, 'hh:mm A')
 														.add(45, 'minute')
 														.format('hh:mm A')}
 												</span>
 												<span className="text-muted font-weight-normal font-italic d-block">
 													Fecha de Inicio:{' '}
 													{FormatoDateMask(
-														dataVenta.fechaInicio_programa,
+														dataVenta.fecha_inicio,
 														'dddd D [de] MMMM [del] YYYY'
 													)}{' '}
 												</span>
@@ -110,7 +108,7 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 									</th>
 									<td className="border-0 align-middle">
 										<strong>
-											{<MoneyFormatter amount={dataVenta.tarifa} />}
+											{<MoneyFormatter amount={dataVenta.dataTarifa.tarifa} />}
 										</strong>
 									</td>
 									<td className="border-0 align-middle">
