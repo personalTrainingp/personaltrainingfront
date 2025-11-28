@@ -28,6 +28,14 @@ export const obtenerClientesxEmpresaOnShow = (show, id_empresa) => {
 
 	return dataClientes;
 };
+export const obtenerTermMovimientoxEmpresaOnShow = (show, id_empresa) => {
+	const { obtenerClientesxEmpresa, dataClientes } = useTerminosStore();
+	useEffect(() => {
+		if (show) obtenerClientesxEmpresa(id_empresa);
+	}, [id_empresa]);
+
+	return dataClientes;
+};
 export const obtenerEmpleadosxEmpresaOnShow = (show, id_empresa) => {
 	const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore();
 	useEffect(() => {
@@ -78,6 +86,7 @@ export const TerminosOnShow = (show) => {
 		useTerminosStore();
 	const dataClientesChange = obtenerClientesxEmpresaOnShow(show, 598);
 	const dataRolUsuario = useFetchTerminosOnShow(show, 'usuario', 'rol');
+	const dataKardexMovimiento = useFetchTerminosOnShow(show, 'kardex');
 	const dataSubOrigen = useFetchTerminosOnShow(show, 'venta', 'sub-origen');
 	const dataVendedores = useFetchTerminosOnShow(show, 'empleados-departamento', 'vendedores');
 	const dataEstadosBoleanos = [{ value: 1, label: 'Activo' }];
@@ -114,8 +123,8 @@ export const TerminosOnShow = (show) => {
 		// { value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
 		//{ value: 1470, label: 'CORPORATIVOS BBVA' },
 	];
-
 	return {
+		dataKardexMovimiento,
 		dataClientesChange,
 		dataEstadoContrato,
 		obtenerZonasxEmpresa,

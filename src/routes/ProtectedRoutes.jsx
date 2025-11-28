@@ -152,6 +152,10 @@ export default function ProtectedRoutes() {
 				<Route path="/*" element={<Layout />}>
 				{/* /reporte-seguimiento  /facturacion-publicidad cuentas-pagar*/}
 					{
+						sections.find(e=>e.url==='/mof-mantenimiento') &&
+						<Route path='mof-mantenimiento' element={<ExternalRedirect to="https://drive.google.com/drive/folders/1_Q_l0GkljHKUU988JudFnbSreGq_b9Lu" replace />}/>
+					}
+					{
 						sections.find(e=>e.url==='/centro-multimedia') &&
 						<Route path='centro-multimedia' element={<ExternalRedirect to="https://drive.google.com/drive/folders/1_Q_l0GkljHKUU988JudFnbSreGq_b9Lu" replace />}/>
 					}

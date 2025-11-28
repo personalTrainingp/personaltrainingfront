@@ -92,15 +92,15 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     };
     // const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
     const { obtenerArticulo, articulo, setArticulo } = useInventarioStore()
+    const [isOpenDataMovimientos, setisOpenDataMovimientos] = useState({isOpen: true, id: 0})
     const [showLoading, setshowLoading] = useState(false)
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
             onOpenModalIvsG()
             obtenerArticulo(rowData.id)
         }
-        const onClickCubeModalEgresos = ()=>{
-            onOpenModalCube()
-            obtenerArticulo(rowData.id)
+        const onClickCubeModalEgresos = (id)=>{
+            setisOpenDataMovimientos({id, isOpen: true})
         }
         const onClickInfrCircu = ()=>{
             confirmDialog({
@@ -175,7 +175,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                 onClick={onOpenModalHistCambioxID} 
                 />
                 <Button icon="pi pi-box" rounded outlined className="mr-2" 
-                onClick={onClickCubeModalEgresos} 
+                onClick={()=>onClickCubeModalEgresos(rowData?.id)} 
                 />
                 <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
                 onClick={onClickEditModalEgresos} 
@@ -503,7 +503,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                 return (
                                     <TabPanel header={g.lugar}>
                                         <Button label='POR ETIQUETAS' text onClick={()=>onOpenModalAgrupadoxEtiquetas(agruparXetiquetas(g.items))}/>
-                                            
                                         <DataTable  
                                             className='dataTable-verticals-lines dataTable-inventario'
                                             first={first}
@@ -551,7 +550,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             <ModalInventario id_enterprice={id_enterprice} id_zona={id_zona} show={isOpenModalEgresos} onShow={onOpenModalIvsG} onHide={onCloseModalIvsG} data={articulo} showToast={showToast} isLoading={isLoading}/>
             {/* <ModalImportadorData onHide={onCloseModalImportadorData} onShow={showModalImportadorData}/> */}
             <ModalHistorialCambiosxArticulo id={isOpenModalHistorialCambio.id} show={isOpenModalHistorialCambio.isOpen} onHide={()=>setisOpenModalHistorialCambio({isOpen: false, id: 0})}/>
-            <ModalMovimientoItem id_enterprice={id_enterprice} idArticulo={articulo?articulo.id:0} show={isOpenModalCube} onHide={onCloseModalCube}/>
+            <ModalMovimientoItem id_enterprice={id_enterprice} idArticulo={isOpenDataMovimientos.id} show={isOpenDataMovimientos.isOpen} onHide={()=>setisOpenDataMovimientos({id: 0, isOpen: false})}/>
             <ModalAgrupadoxEtiquetas show={isOpenModalAgruparxEtiquetas} onHide={onCloseModalAgrupadoxEtiquetas} data={dataAgrupadoEtiquetas}/>
             </>
     );
