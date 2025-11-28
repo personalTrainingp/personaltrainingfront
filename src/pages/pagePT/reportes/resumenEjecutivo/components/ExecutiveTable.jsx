@@ -210,21 +210,43 @@ export default function ExecutiveTable(props) {
     return Number(o.total ?? 0);
   };
 
+  // =========================================================
+  // MODIFICACIÓN: Lógica de ordenamiento para fijar Mes Base al final
+  // =========================================================
   const sortMonthsForOrigin = (months, okey) => {
     if (!Array.isArray(months)) return [];
+    
+    // Si no es un origen de marketing (ej. monkeyfit), devolvemos tal cual
     if (okey === "monkeyfit" || !isNaN(Number(okey))) {
       return months;
     }
+
+    // 1. Crear copia para no mutar original
     const copy = [...months];
+
+    // 2. Extraer el Mes Base de la lista si existe
+    let baseMonthItem = null;
+    const baseIndex = copy.findIndex(m => ymKey(m) === baseKey);
+    
+    if (baseIndex !== -1) {
+        baseMonthItem = copy[baseIndex];
+        copy.splice(baseIndex, 1); // Lo quitamos temporalmente
+    }
+
+    // 3. Ordenar el RESTO de meses por monto (Ascendente según tu lógica original a - b)
     copy.sort(
       (a, b) => getMontoOrigen(a, okey) - getMontoOrigen(b, okey)
     );
+
+    // 4. Insertar el Mes Base AL FINAL (última columna)
+    if (baseMonthItem) {
+        copy.push(baseMonthItem);
+    }
+
     return copy;
   };
-  // ===================================================================
 
   const TableHeadFor = ({ okey }) => {
-    // primero obtenemos los meses del adapter y luego los reordenamos por monto
     const monthsRaw = getOrderedMonthsForOrigin(okey);
     const months = sortMonthsForOrigin(monthsRaw, okey);
 

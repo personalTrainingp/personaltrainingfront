@@ -623,16 +623,12 @@ export function buildExecutiveTableData({
         .filter((m) => monthKey(m) !== baseK)
         .map((m) => ({ m, val: valueForOriginMonth(okey, m) }))
         .filter((x) => x.val > 0);
-
       const top3Items = scored
           .sort((a, b) => Number(b.val) - Number(a.val))
-          .slice(0, 3);
-
+          .slice(0, 4);
       top3Items.sort((a, b) => Number(a.val) - Number(b.val));
-
       const result = [baseMonth];
       top3Items.forEach((x) => result.push(x.m));
-
       return result;
     }
     const list = perMonth
@@ -650,16 +646,13 @@ export function buildExecutiveTableData({
 
     return list.map((x) => x.m);
   };
-
   const orderedOrigins = [...originKeysAll].sort((a, b) => {
     const mObj = baseMonth;
     const valA = Number(mObj?.metrics?.byOrigin?.[a]?.total || 0);
     const valB = Number(mObj?.metrics?.byOrigin?.[b]?.total || 0);
-
     if (valA !== valB) {
       return valB - valA;
     }
-
     const totalA = perMonth.reduce(
       (acc, m) => acc + Number(m.metrics?.byOrigin?.[a]?.total || 0),
       0
@@ -668,21 +661,16 @@ export function buildExecutiveTableData({
       (acc, m) => acc + Number(m.metrics?.byOrigin?.[b]?.total || 0),
       0
     );
-
     if (totalA !== totalB) {
       return totalB - totalA;
     }
-
     return String(a).localeCompare(String(b));
   });
-
   const orderedMFPrograms = [...mfProgramKeys].sort((a, b) => {
     const mObj = baseMonth;
     const valA = Number(mObj?.metrics?.mfByProg?.[a]?.cant || 0);
     const valB = Number(mObj?.metrics?.mfByProg?.[b]?.cant || 0);
-
     if (valA !== valB) return valB - valA;
-
     const totalA = perMonth.reduce(
       (acc, m) => acc + Number(m.metrics?.mfByProg?.[a]?.cant || 0),
       0
