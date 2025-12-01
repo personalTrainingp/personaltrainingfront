@@ -157,6 +157,7 @@ export const useReporteStore = () => {
 					],
 				},
 			});
+			console.log({ data });
 
 			const dataTotal = data.reporte.map((e) => {
 				// Filtrar productos con id_categoria igual a 17
@@ -185,7 +186,15 @@ export const useReporteStore = () => {
 					tb_cliente: e.tb_cliente,
 				};
 			});
-			// console.log(data.reporte);
+			const dataTransferencia = data.reporte
+				.map((e) => {
+					return {
+						id: e.id,
+						fecha_venta: e.fecha_venta,
+						detalle_transferencias: e.venta_venta,
+					};
+				})
+				.filter((e) => e.detalle_transferencias.length > 0);
 			const dataProgramas = data.reporte
 				.map((e) => {
 					return {
@@ -264,10 +273,10 @@ export const useReporteStore = () => {
 			// console.log(data.reporte, sumarDatos(data.reporte));
 			setrepoVentasPorSeparado({
 				dataProgramas: {
-					data: dataProgramas,
-					SumaMonto: sumarMontosDeVentas(dataProgramas),
-					forma_pago_monto: agruparPorFormaPago(dataProgramas),
-					empl_monto: agruparYSumarMontos(dataProgramas),
+					data: dataTransferencia,
+					SumaMonto: sumarMontosDeVentas(dataTransferencia),
+					forma_pago_monto: agruparPorFormaPago(dataTransferencia),
+					empl_monto: agruparYSumarMontos(dataTransferencia),
 				},
 				dataAccesorio: {
 					data: dataAccesorio,
@@ -308,7 +317,7 @@ export const useReporteStore = () => {
 			const ordenarPorTotalVentas = (data) => {
 				return data.sort((a, b) => b.total_ventas - a.total_ventas);
 			};
-			console.log(dataProgramas);
+			console.log(dataTransferencia);
 
 			setreporteVentas(sumarTotalDetalle(sumarDatos(data.reporte)));
 			setreporteDeDetalle(sumarDatos_y_cantidades(data.reporte));
@@ -678,28 +687,27 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	};
-const obtenerReporteSeguimientoTODO = async (
-  id_empresa,
-  isClienteActive,
-  year,
-  selectedMonth,
-  cutDay
-) => {
-  const params = { isClienteActive };
+	const obtenerReporteSeguimientoTODO = async (
+		id_empresa,
+		isClienteActive,
+		year,
+		selectedMonth,
+		cutDay
+	) => {
+		const params = { isClienteActive };
 
-  if (year) params.year = year;
-  if (selectedMonth) params.selectedMonth = selectedMonth;
-  if (cutDay) params.cutDay = cutDay;
+		if (year) params.year = year;
+		if (selectedMonth) params.selectedMonth = selectedMonth;
+		if (cutDay) params.cutDay = cutDay;
 
-  const { data } = await PTApi.get(
-    `/reporte/reporte-seguimiento-membresia/${id_empresa}`,
-    { params }
-  );
+		const { data } = await PTApi.get(`/reporte/reporte-seguimiento-membresia/${id_empresa}`, {
+			params,
+		});
 
-  setreporteSeguimiento(data.newMembresias);
-  setviewSeguimiento(data.newMembresias);
-  setagrupado_programas(agruparPorPrograma(data.newMembresias));
-};
+		setreporteSeguimiento(data.newMembresias);
+		setviewSeguimiento(data.newMembresias);
+		setagrupado_programas(agruparPorPrograma(data.newMembresias));
+	};
 
 	const obtenerReporteVentasPrograma_COMPARATIVACONMEJORANIO = async (id_programa, rangoDate) => {
 		try {
@@ -1001,37 +1009,47 @@ function sumarMontosDeVentas(ventas) {
 	}, 0);
 }
 function agruparYSumarMontos(ventas) {
-  return ventas.reduce((acumulador, venta) => {
-    const nombres_apellidos_empl = venta?.tb_empleado?.nombres_apellidos_empl;
-    const tb_images = venta?.tb_empleado?.tb_images;
+	return ventas.reduce((acumulador, venta) => {
+		const nombres_apellidos_empl = venta?.tb_empleado?.nombres_apellidos_empl;
+		const tb_images = venta?.tb_empleado?.tb_images;
 
-    // Obtener la última imagen, si existe
-    const ultimaImagen = tb_images?.[tb_images.length - 1]?.name_image || null;
+		// Obtener la última imagen, si existe
+		const ultimaImagen = tb_images?.[tb_images.length - 1]?.name_image || null;
 
-    // ---- Montos por tipo de producto/servicio ----
-    const montoCitaTrat =
-      venta.detalle_cita_tratest?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
-    const montoCitasNut =
-      venta.detalle_cita_nut?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
-    const montoMembresia =
-      venta.detalle_membresia?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
-    const montoProdAccesorio =
-      venta.detalle_prodAccesorios?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
-    const montoProdSuplementos =
-      venta.detalle_prodSuplemento?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+		// ---- Montos por tipo de producto/servicio ----
+		const montoCitaTrat =
+			venta.detalle_cita_tratest?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) ||
+			0;
+		const montoCitasNut =
+			venta.detalle_cita_nut?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+		const montoMembresia =
+			venta.detalle_membresia?.reduce((sum, item) => sum + (item.tarifa_monto || 0), 0) || 0;
+		const montoProdAccesorio =
+			venta.detalle_prodAccesorios?.reduce(
+				(sum, item) => sum + (item.tarifa_monto || 0),
+				0
+			) || 0;
+		const montoProdSuplementos =
+			venta.detalle_prodSuplemento?.reduce(
+				(sum, item) => sum + (item.tarifa_monto || 0),
+				0
+			) || 0;
 
-    const montoTotal =
-      montoCitaTrat + montoCitasNut + montoMembresia + montoProdAccesorio + montoProdSuplementos;
+		const montoTotal =
+			montoCitaTrat +
+			montoCitasNut +
+			montoMembresia +
+			montoProdAccesorio +
+			montoProdSuplementos;
 
-    // ---- Todos los items asociados a esta venta (para contar SOCIOS y SESIONES) ----
-    const itemsVenta = [
-      ...(venta.detalle_cita_tratest || []),
-      ...(venta.detalle_cita_nut || []),
-      ...(venta.detalle_membresia || []),
-      ...(venta.detalle_prodAccesorios || []),
-      ...(venta.detalle_prodSuplemento || []),
-    ];
-
+		// ---- Todos los items asociados a esta venta (para contar SOCIOS y SESIONES) ----
+		const itemsVenta = [
+			...(venta.detalle_cita_tratest || []),
+			...(venta.detalle_cita_nut || []),
+			...(venta.detalle_membresia || []),
+			...(venta.detalle_prodAccesorios || []),
+			...(venta.detalle_prodSuplemento || []),
+		];
 
 		const empleadoExistente = acumulador.find((item) => item.empl === nombres_apellidos_empl);
 
@@ -1043,12 +1061,12 @@ function agruparYSumarMontos(ventas) {
 				empl: nombres_apellidos_empl,
 				monto: montoTotal,
 				avatar: ultimaImagen, // última imagen como avatar
-				items: itemsVenta,    // 👈 guardamos los contratos aquí
+				items: itemsVenta, // 👈 guardamos los contratos aquí
 			});
 		}
 
-    return acumulador;
-  }, []);
+		return acumulador;
+	}, []);
 }
 function agruparPorFormaPago(data) {
 	// Crear un objeto para acumular los montos por forma de pago

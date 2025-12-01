@@ -190,10 +190,10 @@ export const TotalVentas = () => {
                     body={
                       <SymbolSoles
                         isbottom={true}
-                        numero={<NumberFormatMoney amount={reporteVentasHoy} />}
+                        numero={<NumberFormatMoney amount={0} />}
                       />
                     }
-                    span={`${reporteDeVentasHOY?.length || 0} ventas`}
+                    span={`${ 0} ventas`}
                   />
                 </Col>
 
@@ -205,7 +205,7 @@ export const TotalVentas = () => {
                       <SymbolSoles
                         isbottom={true}
                         numero={
-                          <NumberFormatMoney amount={bloqueActual?.sumaTotal || 0} />
+                          <NumberFormatMoney amount={(bloqueActual?.sumaTotal)+400 || 0} />
                         }
                       />
                     }

@@ -24,8 +24,8 @@ export const GestionInventario = () => {
                   </TabPanel>
                   <TabPanel header={<>PLANOS REDUCTO <br/> DEFENSA CIVIL</>}>
                         <div>
-                                                      <Image src={ImgproyCircus3}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
-                                                      </Image>
+                              <Image src={ImgproyCircus3}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
+                              </Image>
                         </div>      
                   </TabPanel>
                   <TabPanel header={<>INVENTARIO SIN INCLUIR <br/> CIRCUS BUSSINESS</>}>

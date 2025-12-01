@@ -262,9 +262,13 @@ export const useVentasStore = () => {
 					`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
 					formData
 				);
+				console.log({blobFirma});
+				
 				const { data: dataMail } = await PTApi.post(`/venta/invoice-mail/${data.idVenta}`, {
 					firma_base64: formState.dataVenta.detalle_venta_programa[0].firmaCli,
 				});
+				console.log({dataMail});
+				
 				const file_contratoPDF = base64ToFile(
 					dataMail.base64_contratoPDF,
 					`contrato_${formState.detalle_cli_modelo.id_cli}.pdf`

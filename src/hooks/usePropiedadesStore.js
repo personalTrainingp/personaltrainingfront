@@ -94,6 +94,7 @@ export const TerminosOnShow = (show) => {
 		{ label: 'CHANGE', value: 598 },
 		{ label: 'REDUCTO', value: 599 },
 		{ label: 'CIRCUS', value: 601 },
+		{ label: 'CHORRILLOS', value: 605 },
 	];
 	const dataEstadoContrato = [
 		{ label: 'Por Aprobar', value: 505, severity: 'warning' },

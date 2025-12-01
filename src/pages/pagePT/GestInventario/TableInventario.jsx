@@ -92,7 +92,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     };
     // const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
     const { obtenerArticulo, articulo, setArticulo } = useInventarioStore()
-    const [isOpenDataMovimientos, setisOpenDataMovimientos] = useState({isOpen: true, id: 0})
+    const [isOpenDataMovimientos, setisOpenDataMovimientos] = useState({isOpen: false, id: 0})
     const [showLoading, setshowLoading] = useState(false)
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{

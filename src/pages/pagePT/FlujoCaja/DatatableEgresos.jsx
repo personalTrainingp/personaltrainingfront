@@ -241,6 +241,7 @@ useEffect(() => {
 							whiteSpace: 'normal',
 							lineHeight: '1.2',
 							}}
+							
 							lang="es" // Importante para la división correcta de palabras
 						>
 							{grp.grupo === 'ATENCIÓN AL CLIENTE' ? (
