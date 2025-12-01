@@ -58,6 +58,7 @@ export const DataTableCR = ({
   stackOnSmall = true,
   responsiveStackBelow = 768,
   componentsLeft,
+  backgroundHead='bg-danger'
 }) => {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);

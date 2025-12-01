@@ -109,6 +109,7 @@ const GestionTardanzas = lazy(()=>import('../pages/pagePT/GestionTardanzas/index
 const GestionHorasExtras = lazy(()=>import('../pages/pagePT/GestionHorasExtras/index.jsx'))
 const GestionSalidasTempranas = lazy(()=>import('../pages/pagePT/GestionSalidasTempranas/index.jsx'))
 const ContratoProv = lazy(()=>import('../pages/pagePT/ContratoProv/Index.jsx'))
+const ReporteUtilidadxMes = lazy(()=>import('../pages/pagePT/ReporteUtilidadxMes/Index.jsx'))
 /**
  * routes import
  */
@@ -150,7 +151,14 @@ export default function ProtectedRoutes() {
 			status  === 'authenticated' ? (
 				<>
 				<Route path="/*" element={<Layout />}>
-				{/* /reporte-seguimiento  /facturacion-publicidad cuentas-pagar*/}
+					{
+						sections.find(e=>e.url==='/dni-tramitadores-municipalidad') &&
+						<Route path='dni-tramitadores-municipalidad'  element={<ExternalRedirect to="https://drive.google.com/drive/folders/1VAWttja2ENN8l5ONa5_VwV-yldzDrZVp" replace />}/>
+					}
+					{
+						sections.find(e=>e.url==='/mof-tramite-municipal-karaoke') &&
+						<Route path='mof-tramite-municipal-karaoke' element={<ExternalRedirect to="https://drive.google.com/file/d/1zwSChkksM2ItYshYh9P7WTyjdL90fe6J/view" replace />}/>
+					}
 					{
 						sections.find(e=>e.url==='/mof-mantenimiento') &&
 						<Route path='mof-mantenimiento' element={<ExternalRedirect to="https://drive.google.com/drive/folders/1_Q_l0GkljHKUU988JudFnbSreGq_b9Lu" replace />}/>
@@ -530,10 +538,6 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/reporte-admin/reporte-utilidad-programa')&&
 						<Route path="reporte-admin/reporte-utilidad-programa" element={<ReporteUtilidadProgramas />} />
 					}
-					{/* {
-						sections.find(e=>e.url==='/trabajo-marketing') &&
-						<Route path='trabajo-marketing' element={<MarketingAgenda/>}/>
-					} */}
 					{
 						sections.find(e=>e.url==='/reporte-admin/reporte-gerencial') &&
 						<Route path='reporte-admin/reporte-gerencial' element={<ReporteGerenciales/>}/>

@@ -233,6 +233,7 @@ const [filtroTexto, setFiltroTexto] = useState('');
             <th style={{width: '140px'}}><div className="text-white text-center">RUC / DNI</div></th>
             <th className="text-center"><div className="text-white" style={{width: '150px'}}>CONTRATOS <br /> PENDIENTES</div></th>
             <th className="text-center"><div className="text-white" style={{width: '150px'}}>MONTO <br /> CONTRATO</div></th>
+            <th className="text-center"><div className="text-white" style={{width: '150px'}}>MANO OBRA SOLES <br /> CONTRATO</div></th>
             <th className="text-center"><div className="text-white" style={{width: '150px'}}>ABONOS</div></th>
             <th className="text-center"><div className="text-white" style={{width: '150px'}}>SALDO <br/> PENDIENTE</div></th>
           </tr>
@@ -244,8 +245,9 @@ const [filtroTexto, setFiltroTexto] = useState('');
             const razon = proveedor?.razon_social_prov ? `${grupo.id_prov} / ${proveedor?.razon_social_prov}` : `Prov #${grupo.id_prov}`;
             const ruc = proveedor?.ruc_prov ?? `Prov #${grupo.id_prov}`;
             const montoContratos = grupo.items.reduce((t, it) => t + (Number(it?.monto_contrato) || 0), 0);
+            const manoObraContratosSoles = grupo.items.reduce((t, it) => t + (Number(it?.mano_obra_soles) || 0), 0);
             const sumarPagos = grupo.items.reduce((t, it) => t + (Number(it?.sumaPagos) || 0), 0);
-            const saldo = montoContratos - sumarPagos;
+            const saldo = (montoContratos + manoObraContratosSoles) - sumarPagos;
             const oficioProv = proveedor?.parametro_oficio?.label_param ?? `Prov #${grupo.id_prov}`;
             return (
               <tr key={grupo.id_prov}>
@@ -260,6 +262,7 @@ const [filtroTexto, setFiltroTexto] = useState('');
                 <td className="fs-3" style={{width: '30px'}}>{ruc}</td>
                 <td className="text-center fs-3"><div>{grupoFiltro.length}</div></td>
                 <td className="text-end fs-3"><div>{fmt(montoContratos)}</div></td>
+                <td className="text-end fs-3"><div>{fmt(manoObraContratosSoles)}</div></td>
                 <td className="text-end fs-3">{fmt(sumarPagos)}</td>
                 <td className="text-end fs-3 fw-bold">{fmt(saldo)}</td>
               </tr>
@@ -312,6 +315,7 @@ const [filtroTexto, setFiltroTexto] = useState('');
                   <th className="text-white"><div className="text-center">Fecha fin</div></th>
                   <th className="text-white"><div className="text-center">CONCEPTOS</div></th>
                   <th className="text-end text-white"><div className="text-center">Monto <br /> contrato</div></th>
+                  <th className="text-end text-white"><div className="text-center">MANO OBRA <br /> SOLES</div></th>
                   <th className="text-end text-white"><div className="text-center">ABONOS</div></th>
                   <th className="text-center text-white">PENALIDAD</th>
                   <th className="text-center text-white">Saldo <br /> A pagar</th>
@@ -361,6 +365,7 @@ const [filtroTexto, setFiltroTexto] = useState('');
                           </td>
                           <td><div style={{ width: '600px' }}>{c?.observacion ?? '-'}</div></td>
                           <td className="text-end">{fmt(c?.monto_contrato)}</td>
+                          <td className="text-end">{fmt(c?.mano_obra_soles)}</td>
                           <td className="text-end"><div style={{width: '110px'}}>{fmt(totalPagado)}</div></td>
                           <td className="text-end"><div style={{width: '110px'}}>{fmt(totalPenlidad)}</div></td>
                           <td className="text-end fw-semibold"><div style={{width: '110px'}}>{fmt(saldoContrato)}</div></td>

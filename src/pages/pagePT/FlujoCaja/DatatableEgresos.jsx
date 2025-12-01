@@ -169,7 +169,6 @@ useEffect(() => {
 	
 	// const cuentasPorPagar = [0, 0, 0, 0, 1500, 13000, 0, 0, 0, 0, 0, 0]; // tu array fijo
 	const prestamosPorPagar = [0, 0, 6700, 2000, 4100, 2000, 0, 0, 0, 0, 0, 0]; // tu array fijo
-	const RalprestamosPorPagar = [0, 0, 6700, 2000, 4100, 2000, 0, 0, 0, 0, 0, 0]; // tu array fijo
 	return (
 		<>{/* === MULTI‐SELECT PARA ELEGIR MESES === */}
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
@@ -277,9 +276,10 @@ useEffect(() => {
               </thead>
 
               <tbody>
-                {grp.conceptos.map((c, idx) => {
-					console.log({c});
-					
+                {grp.conceptos.filter(e=>e.items.reduce(
+                    (sum, it) => sum + (it.monto_total || 0),
+                    0
+                  )!==0).map((c, idx) => {
                   const totalConcepto = c.items.reduce(
                     (sum, it) => sum + (it.monto_total || 0),
                     0
@@ -287,9 +287,8 @@ useEffect(() => {
                   const pctConcepto = grp.totalAnual > 0
                     ? ((totalConcepto / grp.totalAnual) * 100).toFixed(2)
                     : '0.00';
-
                   return (
-                    <tr key={c.concepto}>
+                    <tr key={c.concepto} className={dataColor(c.concepto)}>
                       <td className="fw-bold fs-2">
                         {idx + 1}. {c.concepto}
                       </td>
@@ -791,6 +790,25 @@ useEffect(() => {
 		</>
 	);
 };
+
+function dataColor(concepto) {
+	switch (concepto) {
+		case 'BREVO-MAILS MASIVOS':
+			return 'bg-circus'
+		case 'ULTRAMSG ENVIOS MASIVOS WSP':
+			return 'bg-circus'
+		case 'YOUTUBE PREMIUM FAMILY':
+			return 'bg-circus'
+		case 'CTS':
+			return 'bg-circus'
+		case 'SENTINEL':
+			return 'bg-circus'
+		case 'GAS / ESTACIONAMIENTO':
+			return 'bg-circus'
+		default:
+			break;
+	}
+}
 
 
 function unirPorMes(data) {
