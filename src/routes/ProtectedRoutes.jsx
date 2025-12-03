@@ -540,7 +540,7 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/reporte-admin/reporte-gerencial') &&
-						<Route path='reporte-admin/reporte-gerencial' element={<ReporteGerenciales/>}/>
+						<Route path='reporte-admin/reporte-gerencial' element={<ReporteUtilidadxMes/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/history-citas-nutricion') &&

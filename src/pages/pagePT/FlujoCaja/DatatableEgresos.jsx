@@ -290,7 +290,7 @@ useEffect(() => {
                   return (
                     <tr key={c.concepto} className={dataColor(c.concepto)}>
                       <td className="fw-bold fs-2 sticky-td">
-						<div className="bg-white">
+						<div className="bg-white text-change">
 						{idx + 1}. {c.concepto}
 						</div>
 					</td>

@@ -41,6 +41,7 @@
   // /* opcional si usas border-collapse */
   // background-clip: padding-box;
 }
+
 .bg-yellow{
   background-color: #ffeb37 !important;
 }
@@ -1139,4 +1140,27 @@ button{
 .estado-select .p-button:last-child {
   border-top-right-radius: 6px !important;
   border-bottom-right-radius: 6px !important;
+}
+
+
+.vertical-table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+}
+
+.vertical-table th,
+.vertical-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.vertical-header {
+  height: 150px;               /* Altura para que el texto pueda rotar */
+  width: 40px;
+  writing-mode: vertical-rl;   /* Texto vertical */
+  transform: rotate(180deg);   /* Girarlo para que se lea normal */
+  white-space: nowrap;
+  font-weight: bold;
+  background: #f3f3f3;
 }
