@@ -192,6 +192,16 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
             </div>
         );
     }
+    
+    const mofBodyTemplate = (rowData)=>{
+        const dataDocsInternos = dataDocumentosInternosEmpl.filter(e=>e.uid_location===rowData.tb_images[0]?.uid_location)
+        const cvs =dataDocsInternos.filter(doc=>doc.id_tipo_doc===1562)
+        return (
+            <div style={{fontSize: '20px'}} className={`flex align-items-center gap-2 ml-7  fw-bold ${cvs.length>0?'text-ISESAC':'text-change'}`}>
+                {cvs.length>0?'SI':'NO'}
+            </div>
+        );
+    }
     const dniBodyTemplate = (rowData)=>{
         const dataDocsInternos = dataDocumentosInternosEmpl.filter(e=>e.uid_location===rowData.tb_images[0]?.uid_location)
         const dnis =dataDocsInternos.filter(doc=>doc.id_tipo_doc===1518)
@@ -321,6 +331,7 @@ export const TableEmpleados = ({isOpenButtonRegister, id_empresa, id_estado}) =>
                 <Column header={<div style={{fontSize: '15px'}} className='ml-6'>DNI</div>} style={{ minWidth: '2rem' }} body={dniBodyTemplate}/>
                 <Column header={<div style={{fontSize: '15px'}} className='ml-7'>CV</div>} style={{ minWidth: '5rem' }} body={cvBodyTemplate}/>
                 <Column header={<div style={{fontSize: '15px'}} className='ml-7'>CONTRATO</div>} style={{ minWidth: '5rem' }} body={contratoBodyTemplate}/>
+                <Column header={<div style={{fontSize: '15px'}} className='ml-7'>MOF</div>} style={{ minWidth: '5rem' }} body={mofBodyTemplate}/>
                 <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={verHistoryBodyTemplate}/>
             </DataTable>
             </div>
