@@ -64,7 +64,7 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
     if(!mensaje?.trim()) return
     if(!tipo_alerta && tipo_alerta!==0) return
     if(!usuariosSel?.length) return
-    if(!fechas?.length) return
+    // if(!fechas?.length) return
 
     try{
       setSaving(true)
@@ -97,18 +97,18 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
         <div className='m-1'>
           <label>ESTADO</label>
           <Select
-            options={[{value: 0, label: 'Inactivo'}, {value: 1, label: 'Activo'} ]}
+            options={[{value: 1, label: 'Activo'}, {value: 0, label: 'Inactivo'} ]}
             placeholder='Selecciona el estado'
             onChange={(e)=>onInputChangeReact(e, 'id_estado')}
             className="react-select"
             classNamePrefix="react-select"
             name='id_estado'
-            value={[{value: 0, label: 'Inactivo'}, {value: 1, label: 'Activo'} ].find(op=>op.value===id_estado)}
+            value={[{value: 1, label: 'Activo'}, {value: 0, label: 'Inactivo'}].find(op=>op.value===id_estado)}
             required
           />
-        </div>
-
-        {/* <div className='m-1'>
+        </div> 
+        
+        <div className='m-1'>
           <label>TIPO DE ALERTA</label>
           <Select
             options={dataTipoAlerta}
@@ -120,7 +120,7 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
             value={dataTipoAlerta.find(op=>op.value===tipo_alerta)}
             required
           />
-        </div> */}
+        </div>
 
         <div className='m-1'>
           <label>USUARIOS</label>
@@ -136,33 +136,35 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
             isMulti
           />
         </div>
+        {
+          tipo_alerta!==1564 && (
+                <div className='m-1'>
+                  <label>FECHAS</label>
+                  <div className='d-flex gap-2'>
+                    <input
+                      type='date'
+                      name='fecha'
+                      onChange={(e)=>setFechaInput(e.target.value)}
+                      className='form-control'
+                      value={fechaInput}
+                    />
+                    <Button type="button" icon="pi pi-plus" onClick={addFecha} outlined />
+                  </div>
 
-        <div className='m-1'>
-          <label>FECHAS</label>
-          <div className='d-flex gap-2'>
-            <input
-              type='date'
-              name='fecha'
-              onChange={(e)=>setFechaInput(e.target.value)}
-              className='form-control'
-              value={fechaInput}
-            />
-            <Button type="button" icon="pi pi-plus" onClick={addFecha} outlined />
-          </div>
-
-          {/* listado de fechas agregadas */}
-          {!!fechas.length && (
-            <div className='mt-2 d-flex flex-wrap gap-2'>
-              {fechas.map(f=>(
-                <span key={f} className="badge bg-primary d-inline-flex align-items-center gap-2" style={{fontSize: '0.9rem'}}>
-                  {f}
-                  <Button type="button" icon="pi pi-times" text rounded onClick={()=>removeFecha(f)} />
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
+                  {/* listado de fechas agregadas */}
+                  {!!fechas.length && (
+                    <div className='mt-2 d-flex flex-wrap gap-2'>
+                      {fechas.map(f=>(
+                        <span key={f} className="badge bg-primary d-inline-flex align-items-center gap-2" style={{fontSize: '0.9rem'}}>
+                          {f}
+                          <Button type="button" icon="pi pi-times" text rounded onClick={()=>removeFecha(f)} />
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+          )
+        }
         <div className='m-1'>
           <label>MENSAJE</label>
           <textarea

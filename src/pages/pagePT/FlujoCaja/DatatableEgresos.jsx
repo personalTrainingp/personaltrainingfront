@@ -229,9 +229,9 @@ useEffect(() => {
               {/* Encabezado del grupo */}
               <thead className={background}>
                 <tr>
-					<th className="text-black fs-1">
+					<th className=" fs-1">
 						<div
-							className={`p-1 rounded rounded-3 ${background}`}
+							className={`p-1 rounded rounded-3 ${bgTotal}`}
 							style={{
 							width: 450,
 							hyphens: 'auto',
@@ -266,7 +266,7 @@ useEffect(() => {
                     </th>
                   ))}
 
-                  <th className={`${bgTotal} text-white text-center p-1 fs-1`}>
+                  <th className={`${bgTotal} text-center p-1 fs-1`}>
                     TOTAL
                   </th>
                   <th className="text-white text-center p-1 fs-1">
@@ -284,14 +284,24 @@ useEffect(() => {
                     (sum, it) => sum + (it.monto_total || 0),
                     0
                   );
+				  
+                  const cantidadMovimiento = c.items.reduce(
+                    (sum, it) => sum + (it.lenthItems || 0),
+                    0
+                  );
                   const pctConcepto = grp.totalAnual > 0
                     ? ((totalConcepto / grp.totalAnual) * 100).toFixed(2)
                     : '0.00';
+				  
                   return (
                     <tr key={c.concepto} className={dataColor(c.concepto)}>
-                      <td className="fw-bold fs-2 sticky-td">
-						<div className="bg-white text-change">
+                      <td className="fw-bold fs-2 sticky-td" style={{color: `${bgMultiValue}`}}>
+						<div className="bg-white py-3">
 						{idx + 1}. {c.concepto}
+						<br/>
+						<div >
+							({cantidadMovimiento})
+						</div>
 						</div>
 					</td>
                       {mesesSeleccionadosNums.map(mesNum => {
@@ -340,82 +350,75 @@ useEffect(() => {
                   );
                 })}
 
-                <tr className={`${bgTotal}`}>
+                <tr className={`${bgTotal}`} style={{fontSize: '31px'}}>
                   <td className={`fw-bolder fs-1 ${bgTotal}`}>
-					<div className={`${bgTotal}`}>
+					<div className={`${bgTotal}`} style={{fontSize: '31px'}}>
 						TOTAL
+						<br/>
+						% REPRESENTACION
 					</div>
 				  </td>
                   {mesesSeleccionadosNums.map(mesNum => {
 						const montoMes = grp.mesesSuma[mesNum - 1];
-												const baseMes = totalPorMes[mesNum - 1] || 0;
-												const pctMesGrupo =
+						const baseMes = totalPorMes[mesNum - 1] || 0;
+						const pctMesGrupo =
 													baseMes > 0
 														? ((montoMes / baseMes) * 100).toFixed(2)
 														: '0.00';
-					  return(
-																			<td
-														key={mesNum}
-														className="text-center fw-bolder fs-1"
-													>
-														<div style={{ width: 150 }} className='bg-porsiaca text-right'>
-															<NumberFormatMoney amount={montoMes} />
-														</div>
-													</td>
-					  )
+						return(
+							<td
+								key={mesNum}
+								className="text-center fw-bolder"
+								
+							>
+								<div style={{ width: 150 }} className='bg-porsiaca text-white text-right'>
+									<NumberFormatMoney amount={montoMes} />
+									<br/>
+									{pctMesGrupo}%
+								</div>
+							</td>
+						)
 				  }
 				  )}
                   <td className="text-center fw-bolder">
-					<div className='bg-porsiaca text-right' style={{fontSize: '40px'}}>
+					<div className='bg-porsiaca text-right text-white' style={{fontSize: '40px'}}>
                     	<NumberFormatMoney amount={grp.totalAnual} />
 					</div>
                   </td>
-                  <td className="text-center fw-bolder fs-1">
-					<div className='bg-porsiaca text-right'>
-				  		100
+                  <td className="text-center fw-bolder" style={{fontSize: '40px'}}>
+					<div className='bg-porsiaca text-right text-white'>
+				  		100.00
 					</div>
 				  </td>
                 </tr>
 
                 <tr>
-                  <td className="fw-bolder fs-2" >
+                  {/* <td className="fw-bolder fs-2" >
                     <div className={`fs-1 mr-3 bg-white`}>%</div> POR MES {grp.grupo}
-                  </td>
-				  {mesesSeleccionadosNums.map((mesNum) => {
-												const montoMes = grp.mesesSuma[mesNum - 1];
-												const baseMes = totalPorMes[mesNum - 1] || 0;
-												const pctMesGrupo =
-													baseMes > 0
-														? ((montoMes / baseMes) * 100).toFixed(2)
-														: '0.00';
-												return (
-													<td
-														key={mesNum}
-														className="text-center fw-bolder fs-1"
-													>
-														<div style={{ width: 150 }} className='text-right'>
-															{pctMesGrupo}%
-														</div>
-													</td>
-												);
-											})}
-                  <td className="fw-bolder fs-2" >
-                  </td>
-                  <td className="fw-bolder fs-1" >
+                  </td> */}
+				  
+                  {/* <td className="fw-bolder fs-2" >
+                  </td> */}
+                  {/* <td className="fw-bolder fs-1" >
 					<div className='bg-porsiaca text-right'>
 					</div>
-                  </td>
+                  </td> */}
                 </tr>
                 <tr className={`${bgTotal}`}>
-					<td className="fw-bolder fs-1" colSpan={selectedMonths.length}>
-						<span className='fs-1 mr-3'>%</span> PROMEDIO DE REPRESENTACIÓN ACUMULADA VS. TODOS LOS RUBROS
-                  	</td>
-					<td className="fw-bolder">
-						<div className='text-right' style={{ width: 150, fontSize: '45px' }}>
+					<td className="fw-bolder fs-1 text-white"  colSpan={selectedMonths.length}>
+						<div>
+							<span style={{fontSize: '31px'}}>
+								PROMEDIO DE REPRESENTACIÓN ACUMULADA VS. TODOS LOS RUBROS
+							</span>
+						<span className='text-right ml-5' style={{ fontSize: '45px' }}>
 							{sumaTotalAnualGrupos > 0
-                        ? ((grp.totalAnual / sumaTotalAnualGrupos) * 100).toFixed(2)
-                        : '0.00'}%
+						? ((grp.totalAnual / sumaTotalAnualGrupos) * 100).toFixed(2)
+						: '0.00'}%
+						</span>
 						</div>
+                  	</td>
+					<td className="fw-bolder text-white">
+						
                   	</td>
 					<td className="fw-bolder fs-1">
                   	</td>
@@ -423,20 +426,22 @@ useEffect(() => {
 					</td>
                 </tr>
                 <tr>
-					<td className="fw-bolder fs-2" colSpan={selectedMonths.length+1}>
-						<div>
-							NOTA: TODOS LOS PAGOS QUE FIGURAN AQUI, ESTAN HECHOS EN BASE A LA FECHA DE PROVISION
-						</div>
-					</td>
+					<div></div>
+					<div></div>
                 </tr>
               </tbody>
             </React.Fragment>
           );
         })}
+		{/* <pre>
+		{
+			JSON.stringify(gruposSinPrestamos, null, 2)
+		}
+		</pre> */}
 		{/* TOTALES */}
         <thead className={background}>
           <tr>
-            <th className="text-black fs-2">MES</th>
+            <th className="text-white fs-2">MES</th>
             {mesesSeleccionadosNums.map(mesNum => (
               <th key={mesNum} className="text-white text-center p-1 fs-2">
                 {mesesNombres[mesNum - 1]}
@@ -447,31 +452,35 @@ useEffect(() => {
           </tr>
         </thead>
         <tbody>
-          <tr className={`${bgTotal}`}>
-            <td className="fw-bold fs-2">TOTAL ACTIVOS</td>
+          <tr>
+            <td className={`fw-bold fs-2 `} style={{color: `${bgMultiValue}`}}>TOTAL ACTIVOS</td>
             {mesesSeleccionadosNums.map(mesNum => (
-              <td key={mesNum} className="text-center fs-1 fw-bold">
-				<div className='bg-porsiaca text-right' onClick={()=>onViewMoved(dataGastosxANIO, mesNum, 'TOTALES', '')}>
-                	<NumberFormatMoney amount={totalPorMes[mesNum - 1]-prestamosGroup.mesesSuma[mesNum - 1]} />
+              <td key={mesNum} className="text-center fs-2 fw-bold">
+				<div className={`bg-porsiaca text-right px-2 `} onClick={()=>onViewMoved(dataGastosxANIO, mesNum, 'TOTALES', '')}>
+                	<NumberFormatMoney amount={gruposSinPrestamos.find(e=>e.grupo==='COMPRA PRODUCTOS/ACTIVOS')?.mesesSuma[mesNum - 1]} />
 				</div>
               </td>
             ))}
             <td className="text-center fw-bolder fs-1">
-				<div className='bg-porsiaca text-right'>
+				<div className='bg-porsiaca text-right text-white'>
               		<NumberFormatMoney amount={0} />
 				</div>
             </td>
             <td className="text-center fw-bolder fs-1">
-				<div className='bg-porsiaca text-right'>
+				<div className='bg-porsiaca text-right text-white'>
 					100
 				</div>
 			</td>
           </tr>
-          <tr className={`${bgTotal}`}>
-            <td className="fw-bold fs-2">TOTAL EGRESOS</td>
+          <tr>
+            <td className={`fw-bold fs-2`}>
+				<div style={{color: `${bgMultiValue}`}}>
+					TOTAL EGRESOS
+				</div>
+			</td>
             {mesesSeleccionadosNums.map(mesNum => (
-              <td key={mesNum} className="text-center fs-1 fw-bold">
-				<div className='bg-porsiaca text-right' onClick={()=>onViewMoved(dataGastosxANIO, mesNum, 'TOTALES', '')}>
+              <td key={mesNum} className="text-center fs-2 fw-bold">
+				<div className={`bg-porsiaca text-right px-2`} onClick={()=>onViewMoved(dataGastosxANIO, mesNum, 'TOTALES', '')}>
                 	<NumberFormatMoney amount={totalPorMes[mesNum - 1]-prestamosGroup.mesesSuma[mesNum - 1]} />
 				</div>
               </td>
@@ -487,15 +496,15 @@ useEffect(() => {
 				</div>
 			</td>
           </tr>
-          <tr className={`bg-white text-change`}>
+          <tr className={`bg-white`} style={{color: `${bgMultiValue}`}}>
             <td className="fw-bold fs-2 text-change">
 				<div className='text-change'>
 					CUENTAS POR PAGAR
 				</div>
 			</td>
             {mesesSeleccionadosNums.map(mesNum => (
-              <td key={mesNum} className="text-center fs-1 fw-bold">
-				<div className='bg-porsiaca text-right text-change' onClick={()=>onViewMoved(dataNoPagos, mesNum, 'CUENTAS POR PAGAR', '')}>
+              <td key={mesNum} className="text-center fs-2 fw-bold">
+				<div className='bg-porsiaca text-right px-2 text-change' onClick={()=>onViewMoved(dataNoPagos, mesNum, 'CUENTAS POR PAGAR', '')}>
                 	<NumberFormatMoney amount={totalesNpagos[mesNum - 1] || 0} />
 				</div>
               </td>
@@ -519,8 +528,8 @@ useEffect(() => {
 					</div>
 				</td>
 				{mesesSeleccionadosNums.map((mesNum) => (
-				<td key={mesNum} className="text-center fs-1 fw-bold">
-					<div className='bg-porsiaca text-right text-black' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
+				<td key={mesNum} className="text-center fs-2 fw-bold">
+					<div className='bg-porsiaca text-right px-2 text-black' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
 						<NumberFormatMoney amount={prestamosGroup.mesesSuma[mesNum - 1]} />
 					</div>
 				</td>
@@ -546,8 +555,8 @@ useEffect(() => {
 					</div>
 				</td>
 				{mesesSeleccionadosNums.map((mesNum) => (
-				<td key={mesNum} className="text-center fs-1 fw-bold">
-					<div className='bg-porsiaca text-right text-black' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
+				<td key={mesNum} className="text-center fs-2 fw-bold">
+					<div className='bg-porsiaca text-right px-2 text-black' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
 						<NumberFormatMoney amount={prestamosPorPagar[mesNum - 1] || 0} />
 					</div>
 				</td>
@@ -573,8 +582,8 @@ useEffect(() => {
 					</div>
 				</td>
 				{mesesSeleccionadosNums.map((mesNum) => (
-				<td key={mesNum} className="text-center fs-1 fw-bold">
-					<div className='bg-porsiaca text-right text-change' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
+				<td key={mesNum} className="text-center fs-2 fw-bold">
+					<div className='bg-porsiaca text-right px-2 text-change' onClick={()=>onViewMoved(prestamosGroup, mesNum)}>
 						<NumberFormatMoney amount={prestamosPorPagar[mesNum - 1] || 0} />
 					</div>
 				</td>

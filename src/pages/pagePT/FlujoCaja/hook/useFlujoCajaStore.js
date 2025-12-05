@@ -347,6 +347,7 @@ function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 					mes,
 					monto_total,
 					items: itemsMes,
+					lenthItems: itemsMes.length,
 				};
 			});
 

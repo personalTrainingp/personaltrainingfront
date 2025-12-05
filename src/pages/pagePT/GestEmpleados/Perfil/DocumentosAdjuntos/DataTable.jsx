@@ -42,6 +42,9 @@ export const DataTable = ({uid_location}) => {
                     <td>
                       {datatipoDoc.find(e=>e.value===d.id_tipo_doc)?.label}
                     </td>
+                    <td>
+                      {d.observacion}
+                    </td>
                   </tr>
                 )
               })
