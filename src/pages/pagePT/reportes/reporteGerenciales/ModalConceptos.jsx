@@ -42,7 +42,7 @@ export const ModalConceptos = ({dataProp, show, onHide, textEmpresa, background,
                               </div>
                             </td>
                             <td className={`text-center ${0===0?'fw-light':'fw-bold'} fs-1`}>
-                              <div className={`bg-porsiaca text-right  ${0!==0&&'text-ISESAC'}`}>
+                              <div className={`bg-porsiaca pl-4 text-right  ${0!==0&&'text-ISESAC'}`}>
                                 <NumberFormatMoney amount={p.montousd}/>
                               </div>
                             </td>

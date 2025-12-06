@@ -94,7 +94,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
               agruparPorProveedor(data?.items).map((m, i)=>{
                 return (
                   <>
-                  <div className='fs-2'><span className='text-primary fw-bold'>{i+1}. </span>{m.nombre_fp}: {FUNMoneyFormatter(m.monto_total)}</div>
+                  <div className='fs-2'><span className='text-primary fw-bold'>{i+1}. {m.nombre_fp.split(' ').length>=4 || m.nombre_fp.split(' ').length==3?<>{m.nombre_fp.split(' ')[0]} {m.nombre_fp.split(' ')[1]}<br/>{m.nombre_fp.split(' ')[2]} {m.nombre_fp.split(' ')[3]}</>:<>{m.nombre_fp}</>}:</span> {FUNMoneyFormatter(m.monto_total)}</div>
                   </>
                 )
               })

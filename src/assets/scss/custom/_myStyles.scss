@@ -27,9 +27,9 @@
   background: #ffffff;
 }
 /* El td no controla el sticky, solo sirve de contenedor */
-td {
-  padding: 0 !important;                 /* dejamos que el div interno maneje el padding */
-}
+// td {
+//   padding: 0 !important;                 /* dejamos que el div interno maneje el padding */
+// }
 
 /* Este div es el que se pega y pinta el fondo completo */
 .sticky-td-inner {

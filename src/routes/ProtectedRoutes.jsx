@@ -238,7 +238,7 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/resumen-ejecutivo')&&
-                        <Route path='resumen-ejecutivo' element={<ResumenGerencialPorOrigen/>}/>
+                        <Route path='resumen-ejecutivo' element={<ResumenEjecutivo/>}/>
 					}{
 						sections.find(e=>e.url==='/gestion-monkfit')&&
 						<Route path="gestion-monkfit" element={<ReservaMonkFitPage />} />
