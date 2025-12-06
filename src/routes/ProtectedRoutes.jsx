@@ -110,6 +110,7 @@ const GestionHorasExtras = lazy(()=>import('../pages/pagePT/GestionHorasExtras/i
 const GestionSalidasTempranas = lazy(()=>import('../pages/pagePT/GestionSalidasTempranas/index.jsx'))
 const ContratoProv = lazy(()=>import('../pages/pagePT/ContratoProv/Index.jsx'))
 const ReporteUtilidadxMes = lazy(()=>import('../pages/pagePT/ReporteUtilidadxMes/Index.jsx'))
+const ResumenGerencialPorOrigen= lazy(()=>import('../pages/pagePT/ResumenGerencialPorOrigen/Index.jsx'))
 /**
  * routes import
  */
@@ -237,7 +238,7 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/resumen-ejecutivo')&&
-                        <Route path='resumen-ejecutivo' element={<ResumenEjecutivo/>}/>
+                        <Route path='resumen-ejecutivo' element={<ResumenGerencialPorOrigen/>}/>
 					}{
 						sections.find(e=>e.url==='/gestion-monkfit')&&
 						<Route path="gestion-monkfit" element={<ReservaMonkFitPage />} />
@@ -540,7 +541,7 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/reporte-admin/reporte-gerencial') &&
-						<Route path='reporte-admin/reporte-gerencial' element={<ReporteUtilidadxMes/>}/>
+						<Route path='reporte-admin/reporte-gerencial' element={<ReporteGerenciales/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/history-citas-nutricion') &&

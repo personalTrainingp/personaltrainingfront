@@ -88,7 +88,7 @@ const agruparPorMes = (arr) => {
 	);
 };
 
-export const useVentasStore = () => {
+export const useResumenEjecutivoStore = () => {
 	const dispatch = useDispatch();
 	const [dataVentas, setDataVentas] = useState([]);
 	const [dataLead, setDataLead] = useState([]);
@@ -129,19 +129,9 @@ export const useVentasStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerVentasxComprobantes = async (id_comprobante) => {
-		try {
-			const { data } = await PTApi.get(
-				`/venta/obtener-ventas-x-comprobante/${id_comprobante}/599`
-			);
-			setdataComprobante(data.ventas);
-		} catch (error) {
-			console.log(error);
-		}
-	};
 	const obtenerVentasPorFecha = async (arrayDate) => {
 		try {
-			const { data } = await PTApi.get('/venta/get-ventas-x-fecha/599', {
+			const { data } = await PTApi.get('/venta/get-ventas-x-fecha/598', {
 				params: {
 					arrayDate: [
 						formatDateToSQLServerWithDayjs(arrayDate[0], true),
@@ -151,16 +141,6 @@ export const useVentasStore = () => {
 			});
 			// setIngresosSeparados_x_Fecha(resultado);
 			setdataVentaxFecha(desestructurarVentas(data.ventas));
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const obtenerVentaporId = async (id) => {
-		try {
-			setisLoading(true);
-			const { data } = await PTApi.get(`/venta/get-id-ventas/${id}`);
-			setisLoading(false);
-			setdataVentaxID(data.venta);
 		} catch (error) {
 			console.log(error);
 		}
@@ -187,7 +167,6 @@ export const useVentasStore = () => {
 		obtenerTablaVentas,
 		obtenerVentaporId,
 		obtenerVentasPorFecha,
-		obtenerVentasxComprobantes,
 		dataLeadPorMesAnio,
 		dataLead,
 		dataComprobante,

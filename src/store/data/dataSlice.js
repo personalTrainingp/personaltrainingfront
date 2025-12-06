@@ -13,6 +13,10 @@ export const dataSlice = createSlice({
 			new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
 		],
 		MULTI_DATE: [],
+		corte: {
+			inicio: 0,
+			corte: 31,
+		},
 	},
 	reducers: {
 		onDataFail: (state, { payload }) => {
@@ -44,6 +48,12 @@ export const dataSlice = createSlice({
 		onSetRangeDate: (state, { payload }) => {
 			state.RANGE_DATE = payload;
 		},
+		onSetCorte: (state, { corte, inicio }) => {
+			state.corte = {
+				corte,
+				inicio,
+			};
+		},
 		onSetMultiDate: (state, { payload }) => {
 			state.MULTI_DATE = payload;
 		},
@@ -56,5 +66,6 @@ export const {
 	onSetBase64Firma,
 	onViewSection,
 	onSetRangeDate,
+	onSetCorte,
 	onDataFail,
 } = dataSlice.actions;

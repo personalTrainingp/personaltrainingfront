@@ -290,7 +290,7 @@ export default function DataOrdenCompra({showToast, id_enterprice}) {
     return (
         <>
             <div className='h1 text-primary'>
-                IGV COMPRA TOTAL: <NumberFormatMoney amount={igvCompra}/>
+                IGV ACUMULADO POR COMPRAS: <NumberFormatMoney amount={igvCompra}/>
             </div>
             {
                 showLoading&&

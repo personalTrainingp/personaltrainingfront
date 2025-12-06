@@ -386,7 +386,7 @@ useEffect(() => {
 					</div>
                   </td>
                   <td className="text-center fw-bolder" style={{fontSize: '40px'}}>
-					<div className='bg-porsiaca text-right text-white'>
+					<div className='bg-porsiaca text-right text-white ml-3'>
 				  		100.00
 					</div>
 				  </td>

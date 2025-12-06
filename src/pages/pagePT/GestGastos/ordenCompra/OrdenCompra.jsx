@@ -13,7 +13,7 @@ export const OrdenCompra = () => {
   return (
     <>
         <Toast ref={toast}/>
-    <PageBreadcrumb title={'REGISTRO DE COMPRA'} subName={'T'}/>
+    <PageBreadcrumb title={'REGISTRO DE COMPRAS'} subName={'T'}/>
     <Card className='p-4 m-2'>
       <TabView>
         <TabPanel header="CIRCUS">

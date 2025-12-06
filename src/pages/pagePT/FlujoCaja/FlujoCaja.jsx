@@ -21,7 +21,7 @@ export const FlujoCaja = () => {
 	const {viewSubTitle} = useSelector(e=>e.ui)
 	return (
 		<>
-			<PageBreadcrumb subName={'T'} title={`Flujo de Caja ${viewSubTitle}`} />
+			<PageBreadcrumb subName={'T'} title={`Flujo de Caja anual`} />
             <TabView>
                 <TabPanel style={{alignItems: 'flex-end', display: 'flex'}}  header={<TabIcon width={220} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/>}>
                     <TabView>
