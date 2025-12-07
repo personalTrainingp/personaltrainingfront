@@ -326,8 +326,8 @@ export function computeMetricsForMonth({
   }
 
   const mkInvMeta = mkInvMetaUSD;
-  const mkInvTikTok = mkInvTikTokUSD * 1.18;
-  const mkInv = (mkInvMeta * Number(tasaCambio || 3.37)) + mkInvTikTok;
+  const mkInvTikTok = mkInvTikTokUSD;
+  const mkInv = (mkInvMeta * Number(tasaCambio || 3.37)) ;
 
   const leads_por_red = mk?.leads_por_red ?? {};
   const clientes_por_red = mk?.clientes_por_red ?? {};
@@ -457,6 +457,7 @@ const ORIGINS_EXCLUIR = new Set([
   "689",
   "687",
   "697",
+  "698",
   "corporativos_bbva",
   "corporativos bbva",
   "wsp organico",
@@ -622,7 +623,6 @@ export function buildExecutiveTableData({
       const scored = perMonth
         .filter((m) => monthKey(m) !== baseK)
         .map((m) => ({ m, val: valueForOriginMonth(okey, m) }))
-        .filter((x) => x.val > 0);
       const top3Items = scored
           .sort((a, b) => Number(b.val) - Number(a.val))
           .slice(0, 4);

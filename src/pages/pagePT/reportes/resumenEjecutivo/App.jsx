@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import VentasDiarias from "../totalVentas/components/VentasDiarias";
 import { GraficoLinealVentasDiarias } from "../totalVentas/components/GraficoLinealVentasDiarias";
 import { Col, Row } from "react-bootstrap";
-import { useVentasStore } from "./useResumenEjecutivoStore";
+import { useResumenEjecutivoStore } from "./useResumenEjecutivoStore";
+import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import ExecutiveTable from "./components/ExecutiveTable";
 import { PageBreadcrumb } from "@/components";
 import { ClientesPorOrigen } from "./components/ClientesPorOrigen";
@@ -112,7 +113,10 @@ function sumProgramRevenueForMonth(ventas = [], year, monthIdx, fromDay, toDay) 
 
 
       export const App = ({ id_empresa }) => {
-      const { obtenerTablaVentas, dataVentas, obtenerLeads, dataLead, dataLeadPorMesAnio } = useVentasStore();
+      const resumenHook = useResumenEjecutivoStore();
+      const ventasHook = useVentasStore();
+      const { obtenerTablaVentas, dataVentas } = ventasHook;
+      const { obtenerLeads, dataLead, dataLeadPorMesAnio } = resumenHook;
         const { obtenerVentas, repoVentasPorSeparado, loading } = useReporteStore();
         const { RANGE_DATE } = useSelector(e => e.DATA);
         const dispatch = useDispatch();
