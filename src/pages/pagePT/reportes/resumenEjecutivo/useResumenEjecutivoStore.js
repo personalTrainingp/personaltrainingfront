@@ -16,12 +16,29 @@ function formatDateToSQLServerWithDayjs(date, isStart = true) {
 
 export const useResumenEjecutivoStore = () => {
 	const [dataLead, setDataLead] = useState([]);
+	const [dataLeadPorMesAnio, setdataLeadPorMesAnio] = useState([]);
 	const [dataVentaxFecha, setdataVentaxFecha] = useState([]);
 
 	const obtenerLeads = async (id_empresa) => {
 		try {
 			const { data } = await PTApi.get(`/lead/leads/${id_empresa}`);
 			setDataLead(data.leads);
+			// Agrupar leads por mes/año en la forma esperada por los gráficos
+			try {
+				const agruparPorMes = (arr = []) => {
+					return Object.values(
+						(arr || []).reduce((acc, item) => {
+							const key = dayjs.utc(item.fecha).format('YYYY-MMMM');
+							if (!acc[key]) acc[key] = { fecha: key, items: [] };
+							acc[key].items.push(item);
+							return acc;
+						}, {})
+					);
+				};
+				setdataLeadPorMesAnio(agruparPorMes(data.leads));
+			} catch (e) {
+				console.warn('No se pudo agrupar leads por mes:', e?.message || e);
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -44,6 +61,7 @@ export const useResumenEjecutivoStore = () => {
 	};
 	return {
 		obtenerLeads,
+		dataLeadPorMesAnio,
 		obtenerVentasPorFecha,
 		dataLead,
 		dataVentaxFecha,

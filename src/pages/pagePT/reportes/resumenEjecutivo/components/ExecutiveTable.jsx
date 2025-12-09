@@ -66,8 +66,9 @@ export default function ExecutiveTable(props) {
       monthsUniverse.find((m) => aliasMes(m.mes) === wantedAlias) ||
       monthsUniverse[0];
 
-    setBaseKey((prev) => prev || found.key);
-  }, [monthsUniverse, selectedMonth]);
+if (found) {
+      setBaseKey(found.key);
+    }  }, [monthsUniverse, selectedMonth]);
 
   // ==== Cálculo de métricas (ahora le pasamos baseKey) ====
   const { monthOrderForOrigin, rowsPerOrigin, orderedOrigins } = useMemo(
