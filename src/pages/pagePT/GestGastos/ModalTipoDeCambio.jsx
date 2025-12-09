@@ -65,6 +65,9 @@ export const ModalTipoDeCambio = ({ show, onHide, onShow }) => {
                     {e?.fecha ? DateMaskString(dayjs.utc(e.fecha), 'DD/MM/YYYY') : '-'}
                   </td>
                   <td className="fs-2 text-black">
+                    {e?.fecha ? DateMaskString(dayjs.utc(e.fecha), 'DD/MM/YYYY') : '-'}
+                  </td>
+                  <td className="fs-2 text-black">
                     {termino ? <DateMask date={dayjs.utc(termino)} format="DD/MM/YYYY" /> : 'INDEFINIDO'}
                   </td>
                   <td className="fs-2 text-black"><NumberFormatMoney amount={e?.precio_compra ?? 0} /></td>

@@ -1,3 +1,5 @@
+import { PTApi } from "@/common";
+
 export async function urlToBlob(url) {
 	try {
 		const response = await fetch(url);
@@ -14,6 +16,13 @@ export async function urlToBlob(url) {
 export async function urlToFile(url, filename = 'imagen.jpg') {
 	const blob = await urlToBlob(url);
 	if (!blob) return null;
-  
+
 	return new File([blob], filename, { type: blob.type });
-  }
+}
+export const postImagesContainer = async (uidImage, formData, container) => {
+	try {
+		await PTApi.post(`/storage/blob/create/${uidImage}?container=${container}`, formData);
+	} catch (error) {
+		console.log(error);
+	}
+};

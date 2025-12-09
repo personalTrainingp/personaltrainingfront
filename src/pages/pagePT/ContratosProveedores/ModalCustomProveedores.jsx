@@ -20,7 +20,7 @@ const customContratosProveedores={
     id_zona: 0,
     observacion: ''
 }
-export const ModalCustomProveedores = ({show=false, onHide, id=0, id_empresa1}) => {
+export const ModalCustomProveedores = ({show=false, onHide, id=0, id_empresa1, isCopy=false}) => {
     const [file_contrato, setfile_contrato] = useState(null);
     const [file_compromisoPago, setfile_compromisoPago] = useState(null);
     const { onPostContratosProveedores, obtenerContratosProveedoresxID, dataContratoProveedor, onUpdateContratosProveedoresxID } = useContratosProveedores()
@@ -47,7 +47,7 @@ export const ModalCustomProveedores = ({show=false, onHide, id=0, id_empresa1}) 
         }
     }, [id_empresa])
     const onSubmitCustomProveedores = ()=>{
-        if(id==0){
+        if(id==0 || isCopy){
             onPostContratosProveedores(formState, id_empresa1, file_compromisoPago, file_contrato)
             cancelarModal()
             return;

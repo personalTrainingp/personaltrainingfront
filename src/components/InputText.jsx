@@ -168,18 +168,20 @@ export const InputButton = ({label, variant, className, onClick, ...props})=>{
   )
 }
 
-export const InputMoney = ({ label, value = "", onChange, nameInput, required, ...props })=>{
+export const InputMoney = ({label, onChange, value, nameInput, required=false, ...props})=>{
   return (
     <>
-      <label className="form-label">{label} {required && (<span className='text-danger'>*</span>)}</label>
+      <label className='form-label' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
       <input
-        type="text"
-        className="form-control"
-        value={displayValue}
-        name={nameInput}
-        onChange={handleChange}
-        required={required}
-        {...props}
+          className='form-control'
+          value={value}
+          name={nameInput}
+          id={nameInput}
+          onChange={onChange}
+          required={required}
+          {
+              ...props
+          }
       />
     </>
   )

@@ -306,6 +306,7 @@ useEffect(() => {
 					</td>
                       {mesesSeleccionadosNums.map(mesNum => {
                         const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
+						console.log({itemMes});
                         return (
                           <td key={mesNum} className="text-center fs-1">
                             <div
@@ -496,7 +497,7 @@ useEffect(() => {
 				</div>
 			</td>
           </tr>
-          <tr className={`bg-white`} style={{color: `${bgMultiValue}`}}>
+          {/* <tr className={`bg-white`} style={{color: `${bgMultiValue}`}}>
             <td className="fw-bold fs-2 text-change">
 				<div className='text-change'>
 					CUENTAS POR PAGAR
@@ -519,9 +520,9 @@ useEffect(() => {
 					100
 				</div>
 			</td>
-          </tr>
+          </tr> */}
 			{/* NUEVA fila de TOTAL PRESTAMOS */}
-			<tr className={`bg-celeste`}>
+			{/* <tr className={`bg-celeste`}>
 				<td className="fw-bold fs-2">
 					<div className='text-black'>
 						PRESTAMOS RAL
@@ -546,9 +547,9 @@ useEffect(() => {
 							: '0.00'}
 					</div>
 				</td>
-			</tr>
+			</tr> */}
 			{/* NUEVA fila de TOTAL PRESTAMOS */}
-			<tr className={`bg-verdeclaro`}>
+			{/* <tr className={`bg-verdeclaro`}>
 				<td className="fw-bold fs-2">
 					<div className='text-black'>
 						DEVOLUCION PRESTAMOS A RAL
@@ -573,9 +574,9 @@ useEffect(() => {
 							: '0.00'}
 					</div>
 				</td>
-			</tr>
+			</tr> */}
 			{/* NUEVA fila de TOTAL PRESTAMOS */}
-			<tr className={`bg-celeste`}>
+			{/* <tr className={`bg-celeste`}>
 				<td className="fw-bold fs-2">
 					<div className='text-change'>
 						SALDO DEUDA A RAL
@@ -600,7 +601,7 @@ useEffect(() => {
 							: '0.00'}
 					</div>
 				</td>
-			</tr>
+			</tr> */}
         </tbody>
       				</Table>
 				</div>
@@ -623,7 +624,7 @@ function dataColor(concepto) {
 	switch (concepto) {
 		case 'BREVO-MAILS MASIVOS':
 			return 'bg-yellow'
-		case 'ULTRAMSG ENVIOS MASIVOS WSP':
+		case 'LEGAL':
 			return 'bg-yellow'
 		case 'YOUTUBE PREMIUM FAMILY':
 			return 'bg-yellow'
@@ -631,13 +632,9 @@ function dataColor(concepto) {
 			return 'bg-yellow'
 		case 'SENTINEL':
 			return 'bg-yellow'
-		case 'GAS / ESTACIONAMIENTO':
-			return 'bg-yellow'
 		case 'TIK TOK':
 			return 'bg-yellow'
 		case 'PUBLICIDAD DIGITAL':
-			return 'bg-yellow'
-		case 'IZIPAY COMISION (DINERS)':
 			return 'bg-yellow'
 		default:
 			break;

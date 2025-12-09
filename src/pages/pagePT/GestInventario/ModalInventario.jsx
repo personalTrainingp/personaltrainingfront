@@ -9,7 +9,6 @@ import { NumberFormatMoney } from '@/components/CurrencyMask';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ImagenUploader } from '@/components/ImagenUploader';
 import config from '@/config';
-import { urlToBlob } from '@/helper/urlToBlob';
 import { useKardexStore } from './hook/useKardexStore';
 import { useInventarioStore } from './hook/useInventarioStore';
 import { KardexxArticulo } from './KardexxArticulo';
@@ -28,7 +27,7 @@ const registerArticulo={
     nivel: 0,
     costo_total_dolares: 0,
     costo_total_soles: 0,
-    descripcion: 'de',
+    descripcion: '',
     modelo: '',
     etiquetas_busquedas: []
 }
@@ -36,7 +35,6 @@ const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
 export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToast, id_enterprice, id_zona}) => {
-    // const blobImage = urlToBlob(`${config.API_IMG.AVATAR_ARTICULO}${data?.dataImg?.name_image}`)
     // console.log(`${config.API_IMG.AVATAR_ARTICULO}${data.dataImg?.name_image}`);
     // const [imagen, setImagen] = useState(`${config.API_IMG.AVATAR_ARTICULO}${data?.dataImg?.name_image}`); // base64
 	const [selectedFile, setSelectedFile] = useState(null);

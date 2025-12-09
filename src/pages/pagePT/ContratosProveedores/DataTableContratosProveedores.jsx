@@ -161,6 +161,7 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
         return (
             <>
             <i className='pi pi-pencil p-2 border border-2 border-black my-2 '  onClick={()=>onClickEditContratoProv(row?.id)}></i>
+            <i className='pi pi-copy p-2 border border-2 border-black my-2' onClick={()=>onClickCopyContratoProv(row?.id)}></i>
             <i className='pi pi-trash p-2 border border-2 border-black my-2' onClick={()=>onClickDeleteContratoProv(row?.id)}></i>
             </>
         )
@@ -178,6 +179,9 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
                 onDeleteContratosProveedoresxID(id, id_empresa)
             }
         })
+    }
+    const onClickCopyContratoProv = (id)=>{
+        onOpenModalCustomContratosProv(id, true)
     }
     const onClickEditContratoProv = (id)=>{
         onOpenModalCustomContratosProv(id)
