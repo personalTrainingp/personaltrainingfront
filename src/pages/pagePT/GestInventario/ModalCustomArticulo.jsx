@@ -10,7 +10,7 @@ import { useArticuloStore } from './hook/useArticuloStore'
 const customArticulo = {
     modelo: '',
     producto: '',
-    id_marca: '',
+    id_marca: 0,
     costo_unitario_soles: 0.00,
     costo_unitario_dolares: 0.00,
     mano_obra_dolares: 0.00,
@@ -18,21 +18,31 @@ const customArticulo = {
     descripcion: ''
 }
 export const ModalCustomArticulo = ({show, onHide, id}) => {
-    const { formState, modelo, producto, id_marca, costo_unitario_soles, costo_unitario_dolares, mano_obra_soles, mano_obra_dolares, descripcion, onInputChange, onResetForm,  } = useForm(customArticulo)
-    const { onPostArticulo, onUpdateArticulo } = useArticuloStore()
+    const { formState, modelo, producto, id_marca, costo_unitario_soles, costo_unitario_dolares, mano_obra_soles, mano_obra_dolares, descripcion, onInputChange, onResetForm } = useForm(customArticulo)
+    const { onPostArticulo, onUpdateArticuloxID, onObtenerArticuloxID } = useArticuloStore()
     const onSubmitCustomArticulo=()=>{
         if (id==0) {
-            
+            onPostArticulo(formState)
+            onCancelar()
+            return;
         }else{
-            
+            onUpdateArticuloxID(formState, id)
+            onCancelar()
         }
     }
+    const onCancelar = ()=>{
+        onResetForm()
+        onHide()
+
+    }
     useEffect(() => {
-        
-    }, [])
+        if(id!==0){
+            onObtenerArticuloxID(id)
+        }
+    }, [id, show])
     
   return (
-    <Dialog visible={show} onHide={onHide} header={`${id!==0?'EDITAR ARTICULO':'AGREGAR ARTICULO'}`} style={{width: '80rem'}}>
+    <Dialog visible={show} onHide={onCancelar} header={`${id!==0?'EDITAR ARTICULO':'AGREGAR ARTICULO'}`} style={{width: '80rem'}}>
         <form>
             <Row>
                 <Col lg={3}>
@@ -91,6 +101,7 @@ export const ModalCustomArticulo = ({show, onHide, id}) => {
                         <Col lg={12}>
                             <div className='mb-2'>
                                 <InputButton label={'Guardar'} onClick={onSubmitCustomArticulo}/>
+                                <InputButton label={'Cancelar'} onClick={onCancelar}/>
                             </div>
                         </Col>
                     </Row>

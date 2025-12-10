@@ -1,7 +1,7 @@
 import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React from 'react'
 
-export const DataTableArticulos = () => {
+export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimientos, onDeleteArticulo}) => {
 
 
 
@@ -18,16 +18,25 @@ export const DataTableArticulos = () => {
     { id: 'costo_mano_obra_dolares', header: <div className='text-center'>costo <br/> MANO OBRA $</div>, width: 70, headerAlign: 'right', cellAlign: 'right' },
     { id: 'costo_total_soles', header: <div className='text-center'>costo <br/> TOTAL S/.</div>, width: 70, headerAlign: 'right', cellAlign: 'right' },
     { id: 'costo_total_dolares', header: <div className='text-center'>costo <br/> TOTAL $</div>, width: 70, headerAlign: 'right', cellAlign: 'right' },
-    { id: 'action', header: '', width: 70, headerAlign: 'right', cellAlign: 'right', render: ()=>{
+    { id: 'action', header: '', width: 70, headerAlign: 'right', cellAlign: 'right', render: (row)=>{
         return (
             <>
-            <i className='pi pi-pencil p-2 border border-2 border-black my-2'></i>
-            <i className='pi pi-box p-2 border border-2 border-black my-2'></i>
+            <i className='pi pi-pencil p-2 border border-2 border-black my-2' onClick={()=>onClickEditar(row.id)}></i>
+            <i className='pi pi-box p-2 border border-2 border-black my-2' onClick={()=>onClickBox(row.id)}></i>
+            <i className='pi pi-trash p-2 border border-2 border-black my-2' onClick={()=>onClickEliminar(row.id)}></i>
             </>
         )
     } },
   ];
-
+  const onClickEditar = (id)=>{
+    onOpenModalCustomArticulo(id)
+  }
+  const onClickEliminar = (id)=>{
+    onDeleteArticulo(id)
+  }
+  const onClickBox = (id)=>{
+    onOpenModalMovimientos(id)
+  }
 
   return (
     <>

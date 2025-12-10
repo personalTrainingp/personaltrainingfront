@@ -16,7 +16,7 @@ export const App = () => {
     <>
     <PageBreadcrumb title={'GESTION DE INVENTARIO'} subName={'T'}/>
     <Button className='' onClick={()=>onOpenModalCustomArticulo(0)}>AGREGAR ARTICULO</Button>
-    <DataTableArticulos/>
+    <DataTableArticulos onOpenModalCustomArticulo={onOpenModalCustomArticulo}/>
     <ModalCustomArticulo id={isOpenModalCustomArticulo.id} onHide={onCloseModalCustomArticulo} show={isOpenModalCustomArticulo.isOpen}/>
     </>
   )

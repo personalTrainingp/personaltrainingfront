@@ -99,7 +99,7 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 												<span className="text-muted font-weight-normal font-italic d-block">
 													Fecha de termino:{' '}
 													{FormatoDateMask(
-														dataVenta.fechaFinal,
+														dataVenta.fecha_fin,
 														'dddd D [de] MMMM [del] YYYY'
 													)}
 												</span>

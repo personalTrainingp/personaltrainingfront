@@ -1,1 +1,1 @@
-export { GestionInventario as default } from './GestionInventario'
+export { App as default } from './App'
