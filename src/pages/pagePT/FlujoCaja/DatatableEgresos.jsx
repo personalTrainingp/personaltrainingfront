@@ -206,7 +206,7 @@ useEffect(() => {
 						}}
 					/>
 				</div>
-			<TableVentas background={background} bgTotal={bgTotal} mesesNombres={mesesNombres} mesesSeleccionadosNums={mesesSeleccionadosNums}/>
+			<TableVentas dataVentasxMes={dataVentasxMes} background={background} bgTotal={bgTotal} mesesNombres={mesesNombres} mesesSeleccionadosNums={mesesSeleccionadosNums}/>
 			<div>
 				<div className="table-responsive" style={{ width: '95vw' }}>
 				<Table className="tabla-egresos">
@@ -306,7 +306,6 @@ useEffect(() => {
 							</td>
 								{mesesSeleccionadosNums.map(mesNum => {
 								const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
-								console.log({itemMes});
 								return (
 									<td key={mesNum} className="text-center fs-1">
 									<div

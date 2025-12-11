@@ -1,8 +1,15 @@
+import { NumberFormatMoney } from '@/components/CurrencyMask'
 import React from 'react'
 import { Table } from 'react-bootstrap'
 
-export const TableVentas = ({data, background, bgTotal, mesesSeleccionadosNums, mesesNombres}) => {
+export const TableVentas = ({dataVentasxMes=[], background, bgTotal, mesesSeleccionadosNums, mesesNombres}) => {
+	  // Total de membresías
+  const totalMembresias = dataVentasxMes.reduce(
+    (acc, item) => acc + (Number(item?.detalletotal_membresia) || 0),
+    0
+  )
   return (
+    <>
     <Table>
         <thead className={background}>
 						<tr>
@@ -23,7 +30,6 @@ export const TableVentas = ({data, background, bgTotal, mesesSeleccionadosNums, 
                                     VENTAS
 								</div>
 								</th>
-
 							{mesesSeleccionadosNums.map(mesNum => (
 							<th
 								key={mesNum}
@@ -43,9 +49,36 @@ export const TableVentas = ({data, background, bgTotal, mesesSeleccionadosNums, 
 						</thead>
                         <tbody>
                             <tr>
-                                
+                                <td className="fw-bold fs-2 sticky-td">
+                                    <div className="bg-white py-3">
+                                        MEMBRESIAS
+                                    </div>
+                                </td>
+                                {
+                                    mesesSeleccionadosNums.map(mesNum=>{
+                                        const montoVenta = dataVentasxMes.find(e=>Number(e.mesNumero)===mesNum)
+                                        return (
+                                            <td className="fw-bold fs-2 sticky-td">
+                                                <div className="bg-white py-3">
+                                                    <NumberFormatMoney amount={montoVenta?.detalletotal_membresia}/>
+                                                </div>
+                                            </td>
+                                        )
+                                    })
+                                }
+								<td>
+									<div >
+										<td className="fw-bold fs-2 sticky-td">
+                                                <div className="bg-white py-3">
+                                                    <NumberFormatMoney amount={totalMembresias}/>
+                                                </div>
+                                            </td>
+									</div>
+								</td>
                             </tr>
+                            
                         </tbody>
     </Table>
+    </>
   )
 }

@@ -1,6 +1,11 @@
+import { DateMask, DateMaskString } from '@/components/CurrencyMask';
+import dayjs, { utc } from 'dayjs';
+dayjs.extend(utc);
+
 export const agruparVentasPorMes = (ventas = []) => {
 	const mapa = ventas.reduce((acc, venta) => {
-		const mes = new Date(venta.fecha_venta).toISOString().slice(0, 7); // YYYY-MM
+		// Obtener mes con dayjs → "YYYY-MM"
+		const mes = DateMaskString(venta.fecha_venta, 'YYYY-M');
 
 		if (!acc[mes]) acc[mes] = [];
 		acc[mes].push(venta);
@@ -9,13 +14,13 @@ export const agruparVentasPorMes = (ventas = []) => {
 	}, {});
 
 	return Object.entries(mapa).map(([fecha, items]) => {
-		// totales de TODAS las ventas de ese mes
 		const totalesMes = agruparDetallesVentas(items);
 
 		return {
 			fecha,
-			items, // sigues teniendo todas las ventas del mes
-			...totalesMes, // se añaden: detalletotal_membresia, detalletotal_citas, detalletotal_productos
+			mesNumero: fecha.split('-')[1],
+			...totalesMes,
+			// items, // si quieres ver todas las ventas del mes
 		};
 	});
 };

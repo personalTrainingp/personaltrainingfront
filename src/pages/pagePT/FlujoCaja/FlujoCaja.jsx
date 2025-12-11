@@ -26,7 +26,7 @@ export const FlujoCaja = () => {
                 <TabPanel style={{alignItems: 'flex-end', display: 'flex'}}  header={<TabIcon width={220} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/>}>
                     <TabView>
                         <TabPanel header={<div className=' text-change' style={{fontSize: '60px'}}>2025</div>}>
-                            <DatatableEgresos bgTotal={'bg-change text-white'} bgMultiValue={'#CD1014'}  arrayRangeDate={[new Date(2024, 8, 15), new Date()]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2025}/>
+                            <DatatableEgresos bgTotal={'bg-change text-white'} bgMultiValue={'#CD1014'}  arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2025}/>
                         </TabPanel>
                         <TabPanel header={<div className='text-change' style={{fontSize: '60px'}}>2024</div>}>
                             <DatatableEgresos bgTotal={'bg-change text-white'} bgMultiValue={'#CD1014'}  arrayRangeDate={[new Date(2025, 1, 1), new Date()]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2024}/>

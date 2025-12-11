@@ -1,15 +1,14 @@
 import { PTApi } from '@/common';
-import dayjs from 'dayjs';
+import dayjs, { utc } from 'dayjs';
 import { useState } from 'react';
 import { agruparVentasPorMes } from '../helpers/agruparVentasPorFecha';
+
+dayjs.extend(utc);
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
 	const base = dayjs.utc(date);
-
-	const formatted = isStart
+	return isStart
 		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]')
 		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
-
-	return formatted;
 }
 export const useVentasStore = () => {
 	const [dataVentasxMes, setdataVentasxMes] = useState([{}]);

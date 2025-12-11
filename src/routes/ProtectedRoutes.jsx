@@ -165,8 +165,8 @@ export default function ProtectedRoutes() {
 						<Route path='mof-mantenimiento' element={<ExternalRedirect to="https://drive.google.com/drive/folders/1_Q_l0GkljHKUU988JudFnbSreGq_b9Lu" replace />}/>
 					}
 					{
-						sections.find(e=>e.url==='/centro-multimedia') &&
-						<Route path='centro-multimedia' element={<ExternalRedirect to="https://drive.google.com/drive/folders/1_Q_l0GkljHKUU988JudFnbSreGq_b9Lu" replace />}/>
+						sections.find(e=>e.url==='/videos-infraestructura') &&
+						<Route path='videos-infraestructura' element={<ExternalRedirect to="https://drive.google.com/drive/folders/1_Q_l0GkljHKUU988JudFnbSreGq_b9Lu" replace />}/>
 					}
 					{
 						sections.find(e=>e.url==='/salidas-tempranas') &&
