@@ -251,12 +251,6 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 					</React.Fragment>
 					);
 				})}
-
-<pre>
-			{
-				JSON.stringify(dataVentasxMes, null, 2)
-			}
-		</pre>
         <thead className={bgTotal}>
           <tr>
             <th className="text-white fs-2">MES</th>

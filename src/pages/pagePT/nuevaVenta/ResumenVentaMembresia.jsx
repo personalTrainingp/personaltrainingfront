@@ -39,11 +39,6 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 	
 	return (
 		<div className="container">
-			{/* <pre>
-				{
-					JSON.stringify(dataVenta, null, 2)
-				}
-			</pre> */}
 			<div className="row card">
 				<h5 className="mb-0 d-flex align-items-center justify-content-center">
 						<img width={220} src={`${config.API_IMG.LOGO}${dataVenta.dataPrograma.tb_image.name_image}`} />
