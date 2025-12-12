@@ -1,9 +1,10 @@
 import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React from 'react'
+import { useArticuloStore } from './hook/useArticuloStore';
 
 export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimientos, onDeleteArticulo}) => {
 
-
+  const { dataArticuloxID,  } = useArticuloStore()
 
   const columns = [
     { id: 'id', header: 'ID', accessor: 'id', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },

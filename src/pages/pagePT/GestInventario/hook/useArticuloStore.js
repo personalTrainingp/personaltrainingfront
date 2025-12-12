@@ -1,12 +1,19 @@
 import { PTApi } from '@/common';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export const useArticuloStore = () => {
 	const [dataArticuloxID, setdataArticuloxID] = useState({});
+	const dispatch = useDispatch()
 	const onPostArticulo = async () => {};
-	const onObtenerArticulos = async(idEmpresa)=>{
-
-	}
+	const obtenerArticulosxEmpresa = async (idEmpresa) => {
+		try {
+			const { data } = await PTApi.get(`/articulo/${idEmpresa}`);
+			dispatch()
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const onObtenerArticuloxID = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/articulo/id/${id}`);
@@ -30,6 +37,7 @@ export const useArticuloStore = () => {
 		}
 	};
 	return {
+		obtenerArticulosxEmpresa,
 		dataArticuloxID,
 		onPostArticulo,
 		onObtenerArticuloxID,

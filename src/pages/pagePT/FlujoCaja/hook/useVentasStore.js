@@ -14,15 +14,6 @@ export const useVentasStore = () => {
 	const [dataVentasxMes, setdataVentasxMes] = useState([{}]);
 	const obtenerVentasxFechaxEmpresa = async (arrayDate, idEmpresa) => {
 		try {
-			console.log({
-				arrayDate,
-				idEmpresa,
-				arrayDate: [
-					formatDateToSQLServerWithDayjs(arrayDate[0], true),
-					formatDateToSQLServerWithDayjs(arrayDate[1], false),
-				],
-			});
-
 			const { data } = await PTApi.get(`/venta/get-ventas-x-fecha/${idEmpresa}`, {
 				params: {
 					arrayDate: [
