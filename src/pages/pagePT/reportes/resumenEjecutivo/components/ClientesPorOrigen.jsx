@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 
 const MESES = [
-  "enero","febrero","marzo","abril","mayo","junio",
-  "julio","agosto","setiembre","octubre","noviembre","diciembre",
+  "enero", "febrero", "marzo", "abril", "mayo", "junio",
+  "julio", "agosto", "setiembre", "octubre", "noviembre", "diciembre",
 ];
 
 const aliasMes = (m) => (m === "septiembre" ? "setiembre" : String(m || "").toLowerCase());
@@ -58,7 +58,7 @@ const hasPaidMembership = (v) =>
 // --- LÓGICA DE ORIGEN MODIFICADA ---
 const getOriginId = (v) => {
   const tipoFactura = v?.id_tipoFactura ?? v?.tb_ventum?.id_tipoFactura;
-  
+
   // 1. Si es Canje o Traspaso (basado en factura), usa ese ID primero.
   if (tipoFactura === 703) return 703; // Canje
   if (tipoFactura === 701) return 701; // Traspaso
@@ -127,7 +127,7 @@ export const ClientesPorOrigen = ({
       const keyMes = `${d.getFullYear()}-${mes}`;
       if (!base.has(keyMes)) continue;
 
-    
+
 
       const originId = getOriginId(v);
       if (String(originId) === "1470") continue;
@@ -160,11 +160,11 @@ export const ClientesPorOrigen = ({
     const all = new Set();
     for (const m of matrix.values()) for (const o of m.keys()) all.add(o);
     Object.values(originMap || {}).forEach((name) => all.add(String(name).toUpperCase()));
-    
-    // FILTRO 1: Excluir "CORPORATIVOS BBVA"
+
+    const EXCLUDED = new Set(["CORPORATIVOS BBVA", "WSP ORGANICO", "689", "703", "701"]);
     const arr = Array.from(all).filter(
-      (label) => label !== "CORPORATIVOS BBVA"||"WSP organico","689"
-    )
+      (label) => !EXCLUDED.has(String(label).toUpperCase())
+    );
 
     const prefer = Object.values(originMap || {}).map((n) => String(n).toUpperCase());
     arr.sort((a, b) => {
@@ -196,7 +196,7 @@ export const ClientesPorOrigen = ({
     return res;
   }, [matrix, lastMonthKey]);
 
-  
+
   const rowTotals = useMemo(() => {
     const res = {};
     const origins = new Set();
@@ -311,7 +311,7 @@ export const ClientesPorOrigen = ({
                 <td
                   key={`${origin}-pct`}
                   style={{ ...sCell, fontWeight: 800 }}
-                  title={`Mes actual: ${lastMonthCounts[origin] || 0} de un total mes actual ${sortedOrigins.reduce((a,o)=>a+(lastMonthCounts[o]||0),0)}`}
+                  title={`Mes actual: ${lastMonthCounts[origin] || 0} de un total mes actual ${sortedOrigins.reduce((a, o) => a + (lastMonthCounts[o] || 0), 0)}`}
                 >
                   {`${(pctColByOrigin[origin] ?? 0).toFixed(2)} %`}
                 </td>
@@ -348,13 +348,13 @@ export const ClientesPorOrigen = ({
               key="total-pct"
               style={{ ...sCell, background: C.red, color: "#fff", fontWeight: 800, textAlign: "center" }}
             >
-              { (lastMonthKey ? (sortedOrigins.some(o => lastMonthCounts[o] > 0) ? "100 %" : "0 %") : "0 %") }
+              {(lastMonthKey ? (sortedOrigins.some(o => lastMonthCounts[o] > 0) ? "100 %" : "0 %") : "0 %")}
             </td>
           </tr>
 
           {/* === FILA DE MESES === */}
           <tr>
-            <td style={{ ...sCellLeft, background : C.red, color: "#fff", fontSize: 25, fontWeight: 800 }}>
+            <td style={{ ...sCellLeft, background: C.red, color: "#fff", fontSize: 25, fontWeight: 800 }}>
               MESES
             </td>
             {monthKeys.map((m) => (

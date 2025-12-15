@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 export const usePuntoEquilibrioStore = () => {
 	const [dataIngresos_FC, setdataIngresos_FC] = useState([]);
 	const [dataGastosxANIO, setdataGastosxANIO] = useState([]);
+	const [dataGastos, setDataGastos] = useState([]); // Raw expenses for list view
 	const [isLoading, setisLoading] = useState(false);
 	const [dataCreditoFiscal, setdataCreditoFiscal] = useState({
 		msg: '',
@@ -29,19 +30,14 @@ export const usePuntoEquilibrioStore = () => {
 	};
 	const obtenerGastosxEmpresa = async (id_enterprice) => {
 		try {
+			setisLoading(true);
 			const { data } = await PTApi.get(`/egreso/get-egresos/${id_enterprice}`);
-			// const { data } = await PTApi.get(`/flujo-caja/get-gasto-x-grupo/${enterprice}/${anio}`);
 			console.log({ gas: data.gastos });
-
-			// const { data: dataParametrosGastos } = await PTApi.get(
-			// 	`/terminologia/terminologiaxEmpresa/${enterprice}`
-			// );
-
-			// setdataGastosxANIO(
-			// 	agruparPorGrupoYConcepto(data.gastos, dataParametrosGastos.termGastos)
-			// );
+			setDataGastos(data.gastos || []);
+			setisLoading(false);
 		} catch (error) {
 			console.log(error);
+			setisLoading(false);
 		}
 	};
 	const obtenerCreditoFiscalxANIO = async (anio, enterprice) => {
@@ -65,6 +61,8 @@ export const usePuntoEquilibrioStore = () => {
 		dataIngresos_FC,
 		dataCreditoFiscal,
 		dataGastosxANIO,
+		dataGastos,
+		isLoading
 	};
 };
 

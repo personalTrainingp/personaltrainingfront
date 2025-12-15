@@ -159,8 +159,8 @@ export function computeMetricsForMonth({
       oKey === "tiktok"
         ? "tiktok"
         : (oKey === "facebook" || oKey === "instagram" || oKey === "meta")
-        ? "meta"
-        : "otros";
+          ? "meta"
+          : "otros";
 
     // ---- MES COMPLETO ----
     for (const s of getDetalleMembresias(v)) {
@@ -327,7 +327,7 @@ export function computeMetricsForMonth({
 
   const mkInvMeta = mkInvMetaUSD;
   const mkInvTikTok = mkInvTikTokUSD;
-  const mkInv = (mkInvMeta * Number(tasaCambio || 3.37)) ;
+  const mkInv = (mkInvMeta * Number(tasaCambio || 3.37));
 
   const leads_por_red = mk?.leads_por_red ?? {};
   const clientes_por_red = mk?.clientes_por_red ?? {};
@@ -451,11 +451,11 @@ export function computeMetricsForMonth({
   };
 }
 
-// Orígenes que no queremos mostrar en la tabla de orígenes
 const ORIGINS_EXCLUIR = new Set([
   "1470",
   "689",
   "687",
+  "688",
   "697",
   "698",
   "corporativos_bbva",
@@ -463,7 +463,6 @@ const ORIGINS_EXCLUIR = new Set([
   "wsp organico",
 ]);
 
-// ================== MESES DISPONIBLES ==================
 export function getAvailableMonthsFromVentas(ventas) {
   const map = new Map();
 
@@ -624,27 +623,38 @@ export function buildExecutiveTableData({
         .filter((m) => monthKey(m) !== baseK)
         .map((m) => ({ m, val: valueForOriginMonth(okey, m) }))
       const top3Items = scored
-          .sort((a, b) => Number(b.val) - Number(a.val))
-          .slice(0, 4);
+        .sort((a, b) => Number(b.val) - Number(a.val))
+        .slice(0, 4);
       top3Items.sort((a, b) => Number(a.val) - Number(b.val));
       const result = [baseMonth];
       top3Items.forEach((x) => result.push(x.m));
       return result;
     }
-    const list = perMonth
-      .map((m, idx) => ({
-        m,
-        idx,
-        val: valueForOriginMonth(okey, m),
-      }))
-      .filter(x => x.val > 0)
+    const isMonkeyFit = String(okey) === "monkeyfit" || !Number.isNaN(Number(okey));
+
+    const list = perMonth.map((m, idx) => ({
+      m,
+      idx,
+      val: valueForOriginMonth(okey, m),
+    }));
+
+    if (isMonkeyFit) {
+      list.sort((a, b) => {
+        const diff = Number(b.val) - Number(a.val);
+        if (diff !== 0) return diff;
+        return b.idx - a.idx;
+      });
+      return list.slice(0, 3).map(x => x.m);
+    }
+
+    return list
+      .filter((x) => x.val > 0)
       .sort((a, b) => {
         const diff = Number(b.val) - Number(a.val);
         if (diff !== 0) return diff;
         return a.idx - b.idx;
-      });
-
-    return list.map((x) => x.m);
+      })
+      .map((x) => x.m);
   };
   const orderedOrigins = [...originKeysAll].sort((a, b) => {
     const mObj = baseMonth;
@@ -670,7 +680,7 @@ export function buildExecutiveTableData({
     const mObj = baseMonth;
     const valA = Number(mObj?.metrics?.mfByProg?.[a]?.cant || 0);
     const valB = Number(mObj?.metrics?.mfByProg?.[b]?.cant || 0);
-    if (valA !== valB) return valB - valA;
+    if (valA !== valB) return valA - valB;
     const totalA = perMonth.reduce(
       (acc, m) => acc + Number(m.metrics?.mfByProg?.[a]?.cant || 0),
       0
@@ -680,7 +690,7 @@ export function buildExecutiveTableData({
       0
     );
 
-    if (totalA !== totalB) return totalB - totalA;
+    if (totalA !== totalB) return totalA - totalB;
     return String(a).localeCompare(String(b));
   });
 
@@ -693,3 +703,27 @@ export function buildExecutiveTableData({
     orderedMFPrograms,
   };
 }
+
+// ================== LOGICA DE METAS ==================
+const METAS_2025 = {
+  enero: 50000,
+  febrero: 50000,
+  marzo: 50000,
+  abril: 55000,
+  mayo: 55000,
+  junio: 60000,
+  julio: 60000,
+  agosto: 70000,
+  setiembre: 75000,
+  septiembre: 75000,
+  octubre: 85000,
+  noviembre: 90000,
+  diciembre: 100000,
+};
+
+export const getMetaPorMes = (mes, anio) => {
+  if (Number(anio) === 2026) return 100000;
+  // Default (2025 u otros)
+  const norm = aliasMes(mes);
+  return METAS_2025[norm] || 100000;
+};

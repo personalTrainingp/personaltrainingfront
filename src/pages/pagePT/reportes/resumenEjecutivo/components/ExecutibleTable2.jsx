@@ -3,8 +3,9 @@ import {
   buildExecutiveTableData,
   fmtMoney,
   fmtNum,
+  getMetaPorMes
 } from "../adapters/executibleLogic";
-export const ExecutiveTable2=(props)=>{
+export const ExecutiveTable2 = (props) => {
   const {
     selectedMonthName,
     perMonth,
@@ -101,22 +102,6 @@ export const ExecutiveTable2=(props)=>{
     </div>
   );
 
-  // metas por mes (solo vista)
-  const metasPorMes = {
-    enero: 50000,
-    febrero: 50000,
-    marzo: 50000,
-    abril: 55000,
-    mayo: 55000,
-    junio: 60000,
-    julio: 60000,
-    agosto: 70000,
-    setiembre: 75000,
-    septiembre: 75000,
-    octubre: 85000,
-    noviembre: 90000,
-    diciembre: 90000,
-  };
 
   const TableHeadFor = ({ okey }) => {
     const months = monthOrderForOrigin(okey);
@@ -155,10 +140,8 @@ export const ExecutiveTable2=(props)=>{
           let isPct = false;
 
           if (okey === "monkeyfit") {
-            // campos directos del metrics: venta_monkeyfit, ticket_medio_monkeyfit, etc.
             val = m.metrics?.[r.key] ?? 0;
           } else if (!isNaN(Number(okey))) {
-            // por programa MF
             const [, pgmId, campo] = r.key.split(":");
             const mf = m.metrics?.mfByProg?.[pgmId] || {};
             if (campo === "venta") val = mf.venta ?? 0;
@@ -190,10 +173,10 @@ export const ExecutiveTable2=(props)=>{
           const txt = isPct
             ? `${fmtNum(val, 2)} %`
             : r.type === "money"
-            ? fmtMoney(val)
-            : r.type === "float2"
-            ? fmtNum(val, 2)
-            : fmtNum(val, 0);
+              ? fmtMoney(val)
+              : r.type === "float2"
+                ? fmtNum(val, 2)
+                : fmtNum(val, 0);
 
           const isSelectedCol = m.label === selectedMonthName;
 
@@ -204,11 +187,11 @@ export const ExecutiveTable2=(props)=>{
                 ...sCell,
                 ...(isSelectedCol
                   ? {
-                      background: "#c00000",
-                      color: "#fff",
-                      fontWeight: 700,
-                      fontSize: 28,
-                    }
+                    background: "#c00000",
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: 28,
+                  }
                   : {}),
               }}
             >
@@ -303,7 +286,7 @@ export const ExecutiveTable2=(props)=>{
             CUOTA DEL MES
           </td>
           {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
+            const meta = getMetaPorMes(m.mes, m.anio);
             return (
               <td key={idx} style={{ ...sCell, fontWeight: 700, color: "#000" }}>
                 {fmtMoney(meta)}
@@ -326,7 +309,7 @@ export const ExecutiveTable2=(props)=>{
             MONTO RESTANTE DE CUOTA
           </td>
           {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
+            const meta = getMetaPorMes(m.mes, m.anio);
             const total = m.metrics?.totalMes || 0;
             const restante = meta - total;
             const esSurplus = restante < 0;
@@ -355,7 +338,7 @@ export const ExecutiveTable2=(props)=>{
             % RESTANTE PARA CUOTA
           </td>
           {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
+            const meta = getMetaPorMes(m.mes, m.anio);
             const total = m.metrics?.totalMes || 0;
             const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
             const restantePct = 100 - alcancePct;
@@ -385,7 +368,7 @@ export const ExecutiveTable2=(props)=>{
             MONTO DE AVANCE DE CUOTA
           </td>
           {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
+            const meta = getMetaPorMes(m.mes, m.anio);
             const total = m.metrics?.totalMes || 0;
             const avanceSoles = Math.min(meta, total);
             return (
@@ -410,7 +393,7 @@ export const ExecutiveTable2=(props)=>{
             % ALCANCE DE CUOTA
           </td>
           {perMonth.map((m, idx) => {
-            const meta = metasPorMes[m.mes] || 0;
+            const meta = getMetaPorMes(m.mes, m.anio);
             const total = m.metrics?.totalMes || 0;
             const alcancePct = meta > 0 ? (total / meta) * 100 : 0;
             return (
@@ -582,7 +565,7 @@ export const ExecutiveTable2=(props)=>{
         <TableHead />
         <tbody>
           {[
-          
+
             { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
             { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
             { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
@@ -603,7 +586,7 @@ export const ExecutiveTable2=(props)=>{
               label: "COSTO ADQUISICION CLIENTES TIKTOK",
               type: "float2",
             },
-              { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
+            { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
             { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
             {
               key: "mkCpl",
@@ -640,8 +623,8 @@ export const ExecutiveTable2=(props)=>{
                       ? fmtUsd(val)
                       : fmtMoney(val)
                     : r.type === "float2"
-                    ? fmtNum(val, 2)
-                    : fmtNum(val, 0);
+                      ? fmtNum(val, 2)
+                      : fmtNum(val, 0);
 
                 const isLast = idx === perMonth.length - 1;
 
@@ -652,11 +635,11 @@ export const ExecutiveTable2=(props)=>{
                       ...sCell,
                       ...(isLast
                         ? {
-                            background: "#c00000",
-                            color: "#fff",
-                            fontWeight: 700,
-                            fontSize: 28,
-                          }
+                          background: "#c00000",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: 28,
+                        }
                         : {}),
                     }}
                   >

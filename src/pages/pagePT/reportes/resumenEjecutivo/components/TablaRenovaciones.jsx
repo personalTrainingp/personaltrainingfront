@@ -13,13 +13,13 @@ const getSortableKey = (date) => {
 const getMonthKeys = (baseDate, months) => {
   const keys = [];
   const base = new Date(baseDate);
-  base.setDate(1); 
+  base.setDate(1);
   for (let i = 0; i < months; i++) {
     const monthDate = new Date(base);
     monthDate.setMonth(base.getMonth() - i);
-    keys.push(monthDate); 
+    keys.push(monthDate);
   }
-  return keys.reverse(); // Orden cronológico visual
+  return keys.reverse();
 };
 
 const toLimaDate = (iso) => {
@@ -51,9 +51,9 @@ const hasPaidMembership = (v) =>
 
 const getOriginId = (v) => {
   const tipoFactura = v?.id_tipoFactura ?? v?.tb_ventum?.id_tipoFactura;
-  if (tipoFactura === 703) return 703; 
-  if (tipoFactura === 701) return 701; 
-  if (!hasPaidMembership(v)) return 703; 
+  if (tipoFactura === 703) return 703;
+  if (tipoFactura === 701) return 701;
+  if (!hasPaidMembership(v)) return 703;
   return v?.id_origen ?? v?.tb_ventum?.id_origen ?? null;
 };
 
@@ -71,23 +71,38 @@ export default function TablaRenovaciones({
   base = new Date(),
   months = 8,
   title = "Renovaciones y Vencimientos",
-  carteraHistoricaInicial = 0, 
+  carteraHistoricaInicial = 0,
+  datosVencimientos = {},
 }) {
-  // 1. Definimos las columnas VISIBLES que quiere el usuario
   const visibleMonthDates = getMonthKeys(base, months);
-  const visibleKeysSet = new Set(visibleMonthDates.map(d => getSortableKey(d)));
 
-  // 2. Procesamos TODOS los datos (incluso los anteriores a la tabla visible)
   const fullHistoryStats = React.useMemo(() => {
     const statsMap = new Map();
 
-    // Barrido de todos los items para llenar el mapa por mes (YYYY-MM)
+    const mapSeguro = {};
+
+    if (Array.isArray(datosVencimientos)) {
+      datosVencimientos.forEach(row => {
+        if (row.Mes) {
+          mapSeguro[row.Mes] = row["Vencimientos (Fec Fin)"] || row.cantidad || 0;
+        }
+      });
+    } else if (typeof datosVencimientos === 'object' && datosVencimientos !== null) {
+      Object.keys(datosVencimientos).forEach(key => {
+        const val = datosVencimientos[key];
+        const num = (typeof val === 'object')
+          ? (val["Vencimientos (Fec Fin)"] || val.vencimientos || 0)
+          : val;
+        mapSeguro[key] = num;
+      });
+    }
+
     for (const venta of items) {
       const d = toLimaDate(venta?.fecha_venta);
       if (!d) continue;
 
-      const key = getSortableKey(d); // "2024-09", "2024-10", etc.
-      
+      const key = getSortableKey(d);
+
       if (!statsMap.has(key)) {
         statsMap.set(key, { vencimientos: 0, renovaciones: 0, pendiente: 0, acumulado: 0 });
       }
@@ -95,46 +110,44 @@ export default function TablaRenovaciones({
       const monthStats = statsMap.get(key);
       const originId = getOriginId(venta);
 
-      if (originId !== 691 && originId !== 701 && originId !== 703) {
-        monthStats.vencimientos += 1;
-      } else if (originId === 691) {
+      if (originId === 691) {
         monthStats.renovaciones += 1;
       }
     }
 
-    // 3. Ordenamos TODA la historia cronológicamente
-    // Esto asegura que si hay datos en Sept, Oct, Nov, se procesen antes de Dic
-    const sortedKeys = Array.from(statsMap.keys()).sort();
-    
-    // Si queremos asegurarnos de incluir los meses visibles aunque no tengan datos
-    visibleMonthDates.forEach(d => {
-       const key = getSortableKey(d);
-       if(!statsMap.has(key)) sortedKeys.push(key);
+    Object.keys(mapSeguro).forEach((key) => {
+      if (!statsMap.has(key)) {
+        statsMap.set(key, { vencimientos: 0, renovaciones: 0, pendiente: 0, acumulado: 0 });
+      }
+      statsMap.get(key).vencimientos = Number(mapSeguro[key] || 0);
     });
-    // Re-ordenar con los meses vacíos incluidos si es necesario
+
+    const sortedKeys = Array.from(statsMap.keys()).sort();
+    visibleMonthDates.forEach(d => {
+      const key = getSortableKey(d);
+      if (!statsMap.has(key)) sortedKeys.push(key);
+    });
+
     const uniqueSortedKeys = [...new Set(sortedKeys)].sort();
 
-    // 4. Calculamos la suma acumulada corrida
     let runningTotal = carteraHistoricaInicial;
 
     uniqueSortedKeys.forEach(key => {
-        if (!statsMap.has(key)) {
-            statsMap.set(key, { vencimientos: 0, renovaciones: 0, pendiente: 0, acumulado: 0 });
-        }
-        const data = statsMap.get(key);
-        
-        // Calculamos pendiente del mes
-        data.pendiente = Math.max(data.vencimientos - data.renovaciones, 0);
-        
-        // Sumamos al acumulado histórico
-        runningTotal += data.pendiente;
-        data.acumulado = runningTotal;
+      if (!statsMap.has(key)) {
+        statsMap.set(key, { vencimientos: 0, renovaciones: 0, pendiente: 0, acumulado: 0 });
+      }
+      const data = statsMap.get(key);
+
+      const diff = data.vencimientos - data.renovaciones;
+      data.pendiente = Math.max(diff, 0);
+
+      runningTotal += data.pendiente;
+      data.acumulado = runningTotal;
     });
 
     return statsMap;
-  }, [items, carteraHistoricaInicial, visibleMonthDates]); // Dependencias limpias
+  }, [items, carteraHistoricaInicial, visibleMonthDates, datosVencimientos]);
 
-  // 5. Construimos solo las filas VISIBLES consultando el mapa histórico
   const getTableRows = () => {
     const rows = {
       renovaciones: { label: " Renovaciones del Mes", values: [] },
@@ -144,25 +157,19 @@ export default function TablaRenovaciones({
       recuperacion: { label: "Acumulado Cartera", values: [] },
     };
 
-    // Iteramos solo por las columnas que se van a pintar
     visibleMonthDates.forEach(dateObj => {
-        const key = getSortableKey(dateObj);
-        // Recuperamos el dato ya calculado (que trae la carga histórica)
-        // Si no existe datos para ese mes (futuro?), defaults a 0
-        const stat = fullHistoryStats.get(key) || { vencimientos: 0, renovaciones: 0, pendiente: 0, acumulado: 0 };
+      const key = getSortableKey(dateObj);
+      const stat = fullHistoryStats.get(key) || { vencimientos: 0, renovaciones: 0, pendiente: 0, acumulado: 0 };
 
-        const porcentaje = stat.vencimientos > 0 
-            ? (stat.renovaciones / stat.vencimientos) * 100 
-            : 0;
+      const porcentaje = stat.vencimientos > 0
+        ? (stat.renovaciones / stat.vencimientos) * 100
+        : 0;
 
-        rows.renovaciones.values.push(stat.renovaciones);
-        rows.porcentaje.values.push(`${porcentaje.toFixed(1)}%`);
-        rows.vencimientos.values.push(stat.vencimientos);
-        rows.pendientes.values.push(stat.pendiente);
-        
-        // Aquí está la magia: 'stat.acumulado' ya incluye la suma de Sept+Oct+Nov...
-        // aunque esos meses no se estén pintando en este loop.
-        rows.recuperacion.values.push(stat.acumulado);
+      rows.renovaciones.values.push(stat.renovaciones);
+      rows.porcentaje.values.push(`${porcentaje.toFixed(1)}%`);
+      rows.vencimientos.values.push(stat.vencimientos);
+      rows.pendientes.values.push(stat.pendiente);
+      rows.recuperacion.values.push(stat.acumulado);
     });
 
     return Object.values(rows);
@@ -173,12 +180,12 @@ export default function TablaRenovaciones({
   const currentYearStr = String(currentYear);
 
   const formatHeaderForDisplay = (dateObj) => {
-     const mShort = dateObj.toLocaleDateString("es-ES", { month: "short" }).toUpperCase();
-     const y = dateObj.getFullYear();
-     if (String(y) === currentYearStr) return mShort;
-     return `${mShort} ${y}`;
+    const mShort = dateObj.toLocaleDateString("es-ES", { month: "short" }).toUpperCase();
+    const y = dateObj.getFullYear();
+    if (String(y) === currentYearStr) return mShort;
+    return `${mShort} ${y}`;
   };
-  
+
   return (
     <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
       <h2 style={sTitle}>{title}</h2>
