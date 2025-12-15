@@ -23,8 +23,16 @@ export const useImageStore = () => {
 			console.log(error);
 		}
 	};
+	const postImagexUIDIMAGE = async (uid_image, formData, container) => {
+		try {
+			await PTApi.post(`/storage/blob/create/${uid_image}?container=${container}`, formData);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerImages,
+		postImagexUIDIMAGE,
 		images,
 	};
 };

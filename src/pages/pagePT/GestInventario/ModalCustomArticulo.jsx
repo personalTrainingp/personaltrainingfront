@@ -6,6 +6,7 @@ import { Dialog } from 'primereact/dialog'
 import React, { useEffect } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { useArticuloStore } from './hook/useArticuloStore'
+import { useImageStore } from '@/hooks/hookApi/useImageStore'
 
 const customArticulo = {
     modelo: '',
@@ -15,46 +16,51 @@ const customArticulo = {
     costo_unitario_dolares: 0.00,
     mano_obra_dolares: 0.00,
     mano_obra_soles: 0.00,
-    descripcion: ''
+    descripcion: '',
+    nameavatar_articulo: ''
 }
-export const ModalCustomArticulo = ({show, onHide, id}) => {
-    const { formState, modelo, producto, id_marca, costo_unitario_soles, costo_unitario_dolares, mano_obra_soles, mano_obra_dolares, descripcion, onInputChange, onResetForm } = useForm(customArticulo)
-    const { onPostArticulo, onUpdateArticuloxID, onObtenerArticuloxID } = useArticuloStore()
+export const ModalCustomArticulo = ({show, onHide, id, idEmpresa}) => {
+    const { onPostArticulo, onUpdateArticuloxID, onObtenerArticuloxID, dataArticuloxID } = useArticuloStore()
+    const { formState, modelo, producto, id_marca, costo_unitario_soles, costo_unitario_dolares, mano_obra_soles, mano_obra_dolares, descripcion, nameavatar_articulo, onInputChange, onResetForm } = useForm(id==0?customArticulo:dataArticuloxID)
     const onSubmitCustomArticulo=()=>{
         if (id==0) {
-            onPostArticulo(formState)
+            if(nameavatar_articulo){
+                const formData = new FormData()
+                formData.append('file', nameavatar_articulo)
+                onPostArticulo(formState, formData, idEmpresa)
+            }
             onCancelar()
             return;
         }else{
-            onUpdateArticuloxID(formState, id)
+            const formData = new FormData()
+            formData.append('file', nameavatar_articulo)
+            console.log(nameavatar_articulo);
+            onUpdateArticuloxID(formState, id, idEmpresa, formData)
             onCancelar()
         }
     }
     const onCancelar = ()=>{
         onResetForm()
         onHide()
-
     }
     useEffect(() => {
         if(id!==0){
             onObtenerArticuloxID(id)
         }
     }, [id, show])
+    console.log(formState);
     
   return (
     <Dialog visible={show} onHide={onCancelar} header={`${id!==0?'EDITAR ARTICULO':'AGREGAR ARTICULO'}`} style={{width: '80rem'}}>
         <form>
             <Row>
                 <Col lg={3}>
-                <ImagenUploader
-                    name="imgAvatar_BASE64"
-                    value={`${config.API_IMG.AVATAR_ARTICULO}`}
-                    height='300px'
-                    // onChange={(e)=>{
-                    //     onRegisterFileChange(e)
-                    //     ViewDataImg(e)
-                    // }}
-                    />
+                    <ImagenUploader
+                        name="nameavatar_articulo"
+                        height='300px'
+                        onChange={onInputChange}
+                        value={`${config.API_IMG.AVATAR_ARTICULO}${nameavatar_articulo}`}
+                        />
                 </Col>
                 <Col lg={9}>
                     <Row>
@@ -101,7 +107,7 @@ export const ModalCustomArticulo = ({show, onHide, id}) => {
                         <Col lg={12}>
                             <div className='mb-2'>
                                 <InputButton label={'Guardar'} onClick={onSubmitCustomArticulo}/>
-                                <InputButton label={'Cancelar'} onClick={onCancelar}/>
+                                <InputButton label={'Cancelar'} onClick={onCancelar} variant={'link'}/>
                             </div>
                         </Col>
                     </Row>

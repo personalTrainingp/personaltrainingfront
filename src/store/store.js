@@ -55,7 +55,7 @@ export const store = configureStore({
 		PENALIDAD: dataPenalidadSlice.reducer,
 		CONTRATOPROV: ContratoProvSlice.reducer,
 		MOVIMIENTO: MovimientosSlice.reducer,
-		ARTICULOS: ArticuloSlice.reducer,
+		ARTICULO: ArticuloSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

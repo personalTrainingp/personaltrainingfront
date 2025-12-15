@@ -9,7 +9,6 @@ export const DataTableMovimientoArticulo = ({accion, idArticulo, onOpenModalCust
   const { obtenerMovimientoArticuloxIdArticulo, deleteMovimientoArticulo } = useMovimientoArticulosStore()
 	const { dataView } = useSelector((e) => e.MOVIMIENTO);
   useEffect(() => {
-    
     obtenerMovimientoArticuloxIdArticulo(accion, idArticulo)
   }, [accion, idArticulo])
 

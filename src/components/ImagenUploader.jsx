@@ -18,7 +18,8 @@ export const ImagenUploader = ({ accept = 'image/*', height='100%', onChange, na
       setPreview(null);
     }
   }, [value]);
-
+  console.log({value});
+  
   const triggerFileSelect = () => {
     inputRef.current?.click();
   };
@@ -32,7 +33,11 @@ export const ImagenUploader = ({ accept = 'image/*', height='100%', onChange, na
       };
       reader.readAsDataURL(file);
     }
-    onChange && onChange(e);
+    const target = {
+      name: name,
+      value: file
+    }
+    onChange && onChange({target});
   };
 
   const handlePaste = (e) => {

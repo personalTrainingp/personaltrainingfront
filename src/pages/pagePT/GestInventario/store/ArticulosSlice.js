@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 export const ArticuloSlice = createSlice({
-	name: 'ARTICULOS',
+	name: 'ARTICULO',
 	initialState: {
 		dataView: [
 			{
@@ -16,6 +16,9 @@ export const ArticuloSlice = createSlice({
 				mano_obra_dolares: 0,
 				modelo: '',
 				fecha_entrada: '',
+				parametro_lugar_encuentro: {
+					label_param: '',
+				},
 			},
 		],
 	},

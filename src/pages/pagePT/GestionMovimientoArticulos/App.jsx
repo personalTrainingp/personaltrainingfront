@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap'
 import { DataTableMovimientoArticulo } from './DataTableMovimientoArticulo'
 import { ModalCustomMovimientosArticulo } from './ModalCustomMovimientosArticulo'
 
-export const App = ({movimiento, idArticulo}) => {
+export const App = ({movimiento, idArticulo, idEmpresa}) => {
   const [isOpenCustomMovimientoArticulo, setisOpenCustomMovimientoArticulo] = useState({isOpen: false, id: 0, idArticulo, movimiento})
   const onOpenModalMovimientoArticulo = (id,  movimiento, idArticulo)=>{
     console.log({id,  movimiento, idArticulo});
@@ -17,7 +17,7 @@ export const App = ({movimiento, idArticulo}) => {
     <div>
         <Button onClick={()=>onOpenModalMovimientoArticulo(0, movimiento, idArticulo)}>Agregar</Button>
         <DataTableMovimientoArticulo idArticulo={isOpenCustomMovimientoArticulo.idArticulo} accion={isOpenCustomMovimientoArticulo.movimiento} onOpenModalCustomMovimientoArticulo={onOpenModalMovimientoArticulo}/>
-        <ModalCustomMovimientosArticulo idArticulo={isOpenCustomMovimientoArticulo.idArticulo} show={isOpenCustomMovimientoArticulo.isOpen} id={isOpenCustomMovimientoArticulo.id} movimiento={isOpenCustomMovimientoArticulo.movimiento} onHide={onCloseModalMovimientoArticulo}/>
+        <ModalCustomMovimientosArticulo idEmpresa={idEmpresa} idArticulo={isOpenCustomMovimientoArticulo.idArticulo} show={isOpenCustomMovimientoArticulo.isOpen} id={isOpenCustomMovimientoArticulo.id} movimiento={isOpenCustomMovimientoArticulo.movimiento} onHide={onCloseModalMovimientoArticulo}/>
     </div>
   )
 }

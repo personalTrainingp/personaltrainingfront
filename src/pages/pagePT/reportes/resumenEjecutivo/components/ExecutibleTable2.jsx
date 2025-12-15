@@ -115,7 +115,7 @@ export const ExecutiveTable2=(props)=>{
     septiembre: 75000,
     octubre: 85000,
     noviembre: 90000,
-    diciembre: 85000,
+    diciembre: 90000,
   };
 
   const TableHeadFor = ({ okey }) => {

@@ -28,6 +28,14 @@ export const obtenerClientesxEmpresaOnShow = (show, id_empresa) => {
 
 	return dataClientes;
 };
+export const obtenerLugarOnShow = (show, id_empresa) => {
+	const { lugar } = useTerminosStore();
+	useEffect(() => {
+		if (show) obtenerClientesxEmpresa(id_empresa);
+	}, [id_empresa]);
+
+	return dataClientes;
+};
 export const obtenerTermMovimientoxEmpresaOnShow = (show, id_empresa) => {
 	const { obtenerClientesxEmpresa, dataClientes } = useTerminosStore();
 	useEffect(() => {
@@ -89,6 +97,7 @@ export const TerminosOnShow = (show) => {
 	const dataKardexMovimiento = useFetchTerminosOnShow(show, 'kardex');
 	const dataSubOrigen = useFetchTerminosOnShow(show, 'venta', 'sub-origen');
 	const dataVendedores = useFetchTerminosOnShow(show, 'empleados-departamento', 'vendedores');
+	
 	const dataEstadosBoleanos = [{ value: 1, label: 'Activo' }];
 	const dataEmpresas = [
 		{ label: 'CHANGE', value: 598 },
