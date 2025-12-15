@@ -36,6 +36,7 @@ const DatosCliente = ({dataCliente}) => {
             numero_transac: numero_transac, 
             id_origen: id_origen, 
             observacion: observacion,
+			telefono_cli: clienteSelect?.tel_cli
 		}))
 	}, [id_cli, id_empl, id_tipo_transaccion, numero_transac, id_origen, observacion])
 	

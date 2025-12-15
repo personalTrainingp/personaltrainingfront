@@ -22,11 +22,17 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
             : '';
       return (
         <>
-                                <Image src={row.tb_images?.length===0?sinImage:`${imageUrl}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="270" />
+                                <Image src={row.tb_images?.length===0?'':`${imageUrl}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="270" />
         </>
       )
     } },
-    { id: 'nombre', header: 'Nombre', accessor: 'producto', width: 100, headerAlign: 'right', cellAlign: 'left' },
+    { id: 'nombre', header: 'Nombre', render: (row)=>{
+      return (
+        <div className='' style={{width: '90px'}}>
+        {row?.producto}
+        </div>
+      )
+    } },
     { id: 'modelo', header: 'Modelo', accessor: 'modelo', width: 100, headerAlign: 'right', cellAlign: 'left' },
     { id: 'descripcion', header: 'Descripcion', accessor: 'descripcion', width: 70 },
     { id: 'ubicacion', header: 'ubicacion',  width: 70, render: (row)=>{
@@ -36,16 +42,22 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
         </>
       )
     } },
-    { id: 'cantidad', header: 'cantidad', accessor: 'cantidad', width: 70, headerAlign: 'right', cellAlign: 'right' },
-    { id: 'costo_unitario_soles', header: <div className='text-center'>costo <br/> unit. S/.</div>, accessor: 'costo_unitario_soles', width: 70, headerAlign: 'right', cellAlign: 'right' },
-    { id: 'costo_unitario_dolares', header: <div className='text-center'>costo <br/> unit. $</div>, accessor: 'costo_unitario_dolares', width: 70, headerAlign: 'right', cellAlign: 'right' },
-    { id: 'costo_mano_obra_soles', header: <div className='text-center'>costo <br/> MANO OBRA S/.</div>, accessor: 'mano_obra_soles', width: 30, headerAlign: 'right', cellAlign: 'right' },
-    { id: 'costo_mano_obra_dolares', header: <div className='text-center'>costo <br/> MANO OBRA $</div>, accessor: 'mano_obra_dolares', width: 30, headerAlign: 'right', cellAlign: 'right' },
-    { id: 'costo_total_soles', header: <div className='text-center'>costo <br/> TOTAL S/.</div>, width: 70, },
+    { id: 'cantidad', header: 'cantidad', accessor: 'cantidad'},
+    { id: 'costo_unitario_soles', header: <div className='text-center'>costo <br/> unit. S/.</div>, accessor: 'costo_unitario_soles' },
+    { id: 'costo_unitario_dolares', header: <div className='text-center'>costo <br/> unit. $</div>, accessor: 'costo_unitario_dolares' },
+    { id: 'costo_mano_obra_soles', header: <div className='text-center'>costo <br/> MANO OBRA S/.</div>, accessor: 'mano_obra_soles' },
+    { id: 'costo_mano_obra_dolares', header: <div className='text-center'>costo <br/> MANO OBRA $</div>, accessor: 'mano_obra_dolares' },
+    { id: 'costo_total_soles', header: <div className='text-center'>costo <br/> TOTAL S/.</div>, width: 70, render:(row)=>{
+      return (
+        <>
+        {(row?.costo_unitario_soles*row?.cantidad)+row?.mano_obra_soles}
+        </>
+      )
+    } },
     { id: 'costo_total_dolares', header: <div className='text-center'>costo <br/> TOTAL $</div>, width: 70,  render: (row)=>{
       return (
         <>
-        {row?.parametro_lugar_encuentro?.label_param}
+        {(row?.costo_unitario_dolares*row?.cantidad)+row?.mano_obra_dolares}
         </>
       )
     }},
