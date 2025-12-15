@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 import { useTipoCambioStore } from './useTipoCambioStore';
+import { useImageStore } from './useImageStore';
+import config from '@/config';
 dayjs.extend(utc);
 
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
@@ -116,6 +118,7 @@ export const useVentasStore = () => {
 	const [dataContratos, setdataContratos] = useState([]);
 	const { base64ToFile } = helperFunctions();
 	const { obtenerTipoCambioPorFecha, dataTipoCambio } = useTipoCambioStore();
+	const { obtenerImages, images } = useImageStore();
 	const obtenerContratosDeClientes = async () => {
 		try {
 			dispatch(onSetDataView([]));
@@ -249,6 +252,8 @@ export const useVentasStore = () => {
 	const startRegisterVenta = async (formState, funToast) => {
 		try {
 			setloadingVenta(true);
+			console.log({ formState });
+
 			const { data } = await PTApi.post('/venta/post-ventas/598', formState);
 
 			if (formState.dataVenta.detalle_venta_programa[0]?.firmaCli) {
@@ -262,13 +267,13 @@ export const useVentasStore = () => {
 					`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
 					formData
 				);
-				console.log({blobFirma});
-				
+				console.log({ blobFirma });
+
 				const { data: dataMail } = await PTApi.post(`/venta/invoice-mail/${data.idVenta}`, {
 					firma_base64: formState.dataVenta.detalle_venta_programa[0].firmaCli,
 				});
-				console.log({dataMail});
-				
+				console.log({ dataMail });
+
 				const file_contratoPDF = base64ToFile(
 					dataMail.base64_contratoPDF,
 					`contrato_${formState.detalle_cli_modelo.id_cli}.pdf`
@@ -281,6 +286,11 @@ export const useVentasStore = () => {
 					`/storage/blob/create/${data.uid_contrato}?container=contratos-cli`,
 					formData_contratoPDF
 				);
+				const { data: MsgWsp } = await PTApi.post('/wsp/doc', {
+					telefono: formState.detalle_cli_modelo?.telefono_cli,
+					httpDoc: `${config.API_IMG.FILE_CONTRATOS_CLI}${blobContrato.img.name_image}`,
+				});
+				console.log({ blobContrato, MsgWsp });
 			}
 			setloadingVenta(false);
 

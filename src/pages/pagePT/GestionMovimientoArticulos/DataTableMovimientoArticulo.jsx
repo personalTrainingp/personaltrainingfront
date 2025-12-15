@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 import { confirmDialog } from 'primereact/confirmdialog'
 
-export const DataTableMovimientoArticulo = ({accion, idArticulo, onOpenModalCustomMovimientoArticulo}) => {
+export const DataTableMovimientoArticulo = ({accion, idArticulo, onOpenModalCustomMovimientoArticulo, idEmpresa}) => {
   const { obtenerMovimientoArticuloxIdArticulo, deleteMovimientoArticulo } = useMovimientoArticulosStore()
 	const { dataView } = useSelector((e) => e.MOVIMIENTO);
   useEffect(() => {
@@ -88,7 +88,7 @@ export const DataTableMovimientoArticulo = ({accion, idArticulo, onOpenModalCust
             message: '¿Está seguro de eliminar este movimiento?',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                deleteMovimientoArticulo(id, accion, idArticulo)
+                deleteMovimientoArticulo(id, accion, idArticulo, idEmpresa)
             },
             reject: () => {
                 // nothing to do

@@ -42,18 +42,20 @@ export const useMovimientoArticulosStore = () => {
 			console.log(error);
 		}
 	};
-	const updateMovimientoArticulo = async (id, formState, movimiento, idArticulo) => {
+	const updateMovimientoArticulo = async (id, formState, movimiento, idArticulo, idEmpresa) => {
 		try {
 			const { data } = await PTApi.put(`/movimiento-articulo/${id}`, formState);
 			await obtenerMovimientoArticuloxIdArticulo(movimiento, idArticulo);
+			await obtenerArticulosxEmpresa(idEmpresa)
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const deleteMovimientoArticulo = async (id, movimiento, idArticulo) => {
+	const deleteMovimientoArticulo = async (id, movimiento, idArticulo, idEmpresa) => {
 		try {
 			const { data } = await PTApi.put(`/movimiento-articulo/delete/${id}`);
 			await obtenerMovimientoArticuloxIdArticulo(movimiento, idArticulo);
+			await obtenerArticulosxEmpresa(idEmpresa)
 		} catch (error) {
 			console.log(error);
 		}

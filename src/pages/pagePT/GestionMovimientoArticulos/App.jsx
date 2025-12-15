@@ -16,7 +16,7 @@ export const App = ({movimiento, idArticulo, idEmpresa}) => {
   return (
     <div>
         <Button onClick={()=>onOpenModalMovimientoArticulo(0, movimiento, idArticulo)}>Agregar</Button>
-        <DataTableMovimientoArticulo idArticulo={isOpenCustomMovimientoArticulo.idArticulo} accion={isOpenCustomMovimientoArticulo.movimiento} onOpenModalCustomMovimientoArticulo={onOpenModalMovimientoArticulo}/>
+        <DataTableMovimientoArticulo idEmpresa={idEmpresa} idArticulo={isOpenCustomMovimientoArticulo.idArticulo} accion={isOpenCustomMovimientoArticulo.movimiento} onOpenModalCustomMovimientoArticulo={onOpenModalMovimientoArticulo}/>
         <ModalCustomMovimientosArticulo idEmpresa={idEmpresa} idArticulo={isOpenCustomMovimientoArticulo.idArticulo} show={isOpenCustomMovimientoArticulo.isOpen} id={isOpenCustomMovimientoArticulo.id} movimiento={isOpenCustomMovimientoArticulo.movimiento} onHide={onCloseModalMovimientoArticulo}/>
     </div>
   )
