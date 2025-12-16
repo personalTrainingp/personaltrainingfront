@@ -161,7 +161,7 @@ export const ClientesPorOrigen = ({
     for (const m of matrix.values()) for (const o of m.keys()) all.add(o);
     Object.values(originMap || {}).forEach((name) => all.add(String(name).toUpperCase()));
 
-    const EXCLUDED = new Set(["CORPORATIVOS BBVA", "WSP ORGANICO", "689", "703", "701"]);
+    const EXCLUDED = new Set(["CORPORATIVOS BBVA", "WSP ORGANICO", "687", "689", "703", "701"]);
     const arr = Array.from(all).filter(
       (label) => !EXCLUDED.has(String(label).toUpperCase())
     );

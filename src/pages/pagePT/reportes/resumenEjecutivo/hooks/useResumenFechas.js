@@ -23,7 +23,6 @@ export const useResumenFechas = () => {
         return [new Date(RANGE_DATE[0]), new Date(RANGE_DATE[1])];
     }, [RANGE_DATE]);
 
-    // Actualizar Redux cuando cambian los controles locales
     useEffect(() => {
         const y = new Date().getFullYear();
         const startLocal = new Date(y, selectedMonth - 1, initDay);

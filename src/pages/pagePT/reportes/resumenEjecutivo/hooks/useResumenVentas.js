@@ -6,7 +6,7 @@ import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
 import { useReporteResumenComparativoStore } from "../../resumenComparativo/useReporteResumenComparativoStore";
 import { useProductosAgg } from '../../totalVentas/TarjetasProductos';
 import {
-    norm, agruparPorVenta, parseBackendDate, isBetween,
+    norm, parseBackendDate, isBetween,
     limaFromISO, MESES
 } from './useResumenUtils';
 
@@ -54,7 +54,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
         const buildMonthRevenueMap = (ventas) => {
             const map = new Map();
             for (const v of ventas || []) {
-                const d = limaFromISO(v?.fecha_venta || v?.createdAt);
+                const d = limaFromISO(v?.fecha_venta || v?.fecha || v?.createdAt);
                 if (!d || d.getDate() < initDay || d.getDate() > cutDay) continue;
                 const key = `${d.getFullYear()}-${d.getMonth()}`;
                 if (!map.has(key)) map.set(key, { year: d.getFullYear(), mIdx: d.getMonth(), total: 0 });
@@ -81,62 +81,76 @@ export const useResumenVentas = (id_empresa, fechas) => {
 
     const advisorOriginByProg = useMemo(() => {
         const outSets = {};
-        const src = Array.isArray(dataGroup) ? dataGroup : [];
-        for (const pgm of src) {
-            const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "").trim().toUpperCase();
-            if (!progKey) continue;
-            if (!outSets[progKey]) outSets[progKey] = {};
+        const ventas = Array.isArray(dataVentas) ? dataVentas : [];
+        const EXCLUDED_IDS = [3562];
 
-            const process = (list, cb) => list.forEach(v => {
-                const nombreFull = v?.tb_ventum?.tb_empleado?.nombre_empl || v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl || v?.tb_ventum?.tb_empleado?.nombres_apellidos || "";
-                const asesor = (nombreFull.split(" ")[0] || "").toUpperCase();
-                if (!asesor) return;
-                if (!outSets[progKey][asesor]) outSets[progKey][asesor] = { nuevos: [], renovaciones: [], reinscripciones: [], canjes: [], transferencias: [], traspasos: [] };
-                cb(outSets[progKey][asesor], v);
-            });
+        for (const v of ventas) {
+            if (EXCLUDED_IDS.includes(v?.id_empl)) continue;
 
-            const allItems = pgm?.detalle_ventaMembresium || [];
-            const unicas = agruparPorVenta(allItems);
+            const d = limaFromISO(v?.fecha_venta || v?.createdAt);
+            if (!d) continue;
+            if (d.getFullYear() !== Number(year)) continue;
+            if (d.getMonth() !== (selectedMonth - 1)) continue;
+            const dia = d.getDate();
+            if (dia < Number(initDay) || dia > Number(cutDay)) continue;
 
-            process(unicas.filter(f => Number(f?.tarifa_monto) !== 0), (b, v) => {
-                const o = v?.tb_ventum?.id_origen;
-                if (o === 691) b.renovaciones.push(v);
-                else if (o === 692 || o === 696) b.reinscripciones.push(v);
-                else b.nuevos.push(v);
-            });
-            process(unicas.filter(f => Number(f?.tarifa_monto) === 0), (b, v) => {
-                const tf = v?.tb_ventum?.id_tipoFactura;
-                if (tf === 701) b.traspasos.push(v); else if (tf === 703) b.canjes.push(v);
-            });
-            process(pgm?.ventas_transferencias || [], (b, v) => b.transferencias.push(v));
+            const nombreFull = v?.tb_ventum?.tb_empleado?.nombres_apellidos ||
+                v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
+                v?.tb_empleado?.nombres_apellidos_empl ||
+                v?.empleado || "";
+            const asesor = (nombreFull.split(" ")[0] || "").toUpperCase();
+            if (!asesor) continue;
+
+            const details = v?.detalle_ventaMembresia || v?.detalle_venta_membresia || [];
+
+            if (details.length > 0) {
+                details.forEach(item => {
+                    const pgmId = item?.id_pgm;
+                    const pgmName = pgmNameByIdDynamic[pgmId] || item?.tb_programa_training?.name_pgm;
+                    const progKey = (progNameById[pgmId] || pgmName || "").trim().toUpperCase();
+                    if (!progKey) return;
+
+                    if (!outSets[progKey]) outSets[progKey] = {};
+                    if (!outSets[progKey][asesor]) outSets[progKey][asesor] = { nuevos: 0, renovaciones: 0, reinscripciones: 0, o: 0 };
+
+                    const monto = Number(item?.tarifa_monto || 0);
+                    const o = v?.id_origen;
+
+                    if (monto === 0) {
+                        outSets[progKey][asesor].o++;
+                    } else {
+                        if (o === 691) outSets[progKey][asesor].renovaciones++;
+                        else if (o === 692 || o === 696) outSets[progKey][asesor].reinscripciones++;
+                        else outSets[progKey][asesor].nuevos++;
+                    }
+                });
+            }
         }
-
-        const outCounts = {};
-        Object.entries(outSets).forEach(([pk, asesores]) => {
-            outCounts[pk] = {};
-            Object.entries(asesores).forEach(([asesor, t]) => {
-                outCounts[pk][asesor] = {
-                    nuevos: t.nuevos.length, renovaciones: t.renovaciones.length,
-                    reinscripciones: t.reinscripciones.length, o: t.canjes.length + t.transferencias.length,
-                    canjes: t.canjes.length, transferencias: t.transferencias.length, traspasos: t.traspasos.length
-                };
-            });
-        });
-        return outCounts;
-    }, [dataGroup, progNameById]);
+        return outSets;
+    }, [dataVentas, year, selectedMonth, initDay, cutDay, progNameById, pgmNameByIdDynamic]);
 
     const originBreakdown = useMemo(() => {
         const out = {};
-        (Array.isArray(dataGroup) ? dataGroup : []).forEach(pgm => {
-            const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "").trim().toUpperCase();
-            if (!progKey) return;
-            const items = (pgm?.detalle_ventaMembresium || []).filter(v => Number(v?.tarifa_monto) !== 0 && isBetween(parseBackendDate(v?.tb_ventum?.fecha_venta || v?.createdAt), start, end));
-            const ren = items.filter(v => v?.tb_ventum?.id_origen === 691).length;
-            const rein = items.filter(v => v?.tb_ventum?.id_origen === 692 || v?.tb_ventum?.id_origen === 696).length;
-            out[progKey] = { nuevos: items.length - ren - rein, renovaciones: ren, reinscripciones: rein };
+        const ventas = Array.isArray(dataVentas) ? dataVentas : [];
+        ventas.forEach(v => {
+            const d = limaFromISO(v?.fecha_venta || v?.createdAt);
+            if (!isBetween(d, start, end)) return;
+
+            (v?.detalle_ventaMembresia || []).forEach(item => {
+                if (Number(item?.tarifa_monto) === 0) return;
+                const pName = pgmNameByIdDynamic[item.id_pgm] || progNameById[item.id_pgm];
+                const key = (pName || "").trim().toUpperCase();
+                if (!key) return;
+                if (!out[key]) out[key] = { nuevos: 0, renovaciones: 0, reinscripciones: 0 };
+
+                const o = v.id_origen;
+                if (o === 691) out[key].renovaciones++;
+                else if (o === 692 || o === 696) out[key].reinscripciones++;
+                else out[key].nuevos++;
+            });
         });
         return out;
-    }, [dataGroup, start, end, progNameById]);
+    }, [dataVentas, start, end, progNameById, pgmNameByIdDynamic]);
 
     const rankingData = useMemo(() => {
         return (repoVentasPorSeparado.total?.empl_monto || []).filter(i => i.monto > 0).map(i => {
@@ -172,25 +186,75 @@ export const useResumenVentas = (id_empresa, fechas) => {
     const sociosOverride = useMemo(() => {
         try {
             const res = {};
-            (Array.isArray(dataGroup) ? dataGroup : []).forEach(pgm => {
-                const progKey = (progNameById[pgm?.id_pgm] || pgm?.name_pgm || "").trim().toUpperCase();
-                if (!progKey) return;
-                if (!res[progKey]) res[progKey] = {};
-                (pgm?.detalle_ventaMembresium || []).forEach(v => {
-                    if (Number(v?.tarifa_monto) === 0 || !isBetween(parseBackendDate(v?.tb_ventum?.fecha_venta || v?.createdAt), start, end)) return;
-                    const nombreFull = v?.tb_ventum?.tb_empleado?.nombre_empl || v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl || v?.tb_ventum?.tb_empleado?.nombres_apellidos || "";
+            const ventas = Array.isArray(dataVentas) ? dataVentas : [];
+            const EXCLUDED_IDS = [3562];
+
+            for (const v of ventas) {
+                if (EXCLUDED_IDS.includes(v?.id_empl)) continue;
+
+                const d = limaFromISO(v?.fecha_venta || v?.createdAt);
+                if (!d || d.getFullYear() !== Number(year) || d.getMonth() !== (selectedMonth - 1)) continue;
+                if (d.getDate() < Number(initDay) || d.getDate() > Number(cutDay)) continue;
+
+                (v?.detalle_ventaMembresia || []).forEach(vDet => {
+                    if (Number(vDet?.tarifa_monto) === 0) return;
+                    const pName = pgmNameByIdDynamic[vDet.id_pgm] || progNameById[vDet.id_pgm];
+                    const progKey = (pName || "").trim().toUpperCase();
+                    if (!progKey) return;
+
+                    if (!res[progKey]) res[progKey] = {};
+                    const nombreFull = v?.tb_ventum?.tb_empleado?.nombres_apellidos || v?.tb_empleado?.nombres_apellidos_empl || "";
                     const asesor = (nombreFull.split(" ")[0] || "").toUpperCase();
-                    const idCli = v?.tb_ventum?.id_cli ?? v?.id_cli;
-                    if (asesor && idCli) {
+
+                    if (asesor) {
                         if (!res[progKey][asesor]) res[progKey][asesor] = new Set();
-                        res[progKey][asesor].add(idCli);
+                        res[progKey][asesor].add(v.id);
                     }
                 });
-                Object.keys(res[progKey]).forEach(k => res[progKey][k] = res[progKey][k].size);
+            }
+            Object.keys(res).forEach(pk => {
+                Object.keys(res[pk]).forEach(asesor => res[pk][asesor] = res[pk][asesor].size);
             });
             return res;
         } catch { return {}; }
-    }, [dataGroup, start, end, progNameById]);
+    }, [dataVentas, year, selectedMonth, initDay, cutDay, progNameById, pgmNameByIdDynamic]);
+
+    const totalUniqueTicketsByAdvisor = useMemo(() => {
+        const counts = {};
+        const ventas = Array.isArray(dataVentas) ? dataVentas : [];
+        const EXCLUDED_IDS = [3562];
+        const mIdx = selectedMonth - 1;
+
+        for (const v of ventas) {
+            if (EXCLUDED_IDS.includes(v?.id_empl)) continue;
+            const d = limaFromISO(v?.fecha_venta || v?.createdAt);
+            if (!d || d.getFullYear() !== Number(year) || d.getMonth() !== mIdx) continue;
+            const dia = d.getDate();
+            if (dia < Number(initDay) || dia > Number(cutDay)) continue;
+
+            const nombreFull = v?.tb_ventum?.tb_empleado?.nombres_apellidos || v?.tb_empleado?.nombres_apellidos_empl || v?.tb_empleado?.nombres_apellidos || "";
+            const asesor = (nombreFull.split(" ")[0] || "").trim().toUpperCase();
+
+            const hasMembershipItem = (v?.detalle_ventaMembresia || []).some(
+                it => (Number(it?.tarifa_monto) > 0 || Number(it?.monto) > 0)
+                    && (pgmNameByIdDynamic[it.id_pgm] || progNameById[it.id_pgm])
+            );
+            const hasZeroAmountProgram = (v?.detalle_ventaMembresia || []).some(it => {
+                const p = (pgmNameByIdDynamic[it.id_pgm] || progNameById[it.id_pgm]);
+                return p && Number(it?.tarifa_monto) === 0;
+            });
+
+            if (asesor && (hasMembershipItem || hasZeroAmountProgram)) {
+                if (!counts[asesor]) counts[asesor] = new Set();
+                counts[asesor].add(v.id);
+            }
+        }
+
+        const finalMap = {};
+        Object.keys(counts).forEach(k => finalMap[k] = counts[k].size);
+        return finalMap;
+    }, [dataVentas, year, selectedMonth, initDay, cutDay, progNameById, pgmNameByIdDynamic]);
+
 
     const avatarByAdvisor = useMemo(() => {
         const map = {};
@@ -209,6 +273,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
         rankingData, resumenFilas, resumenTotales,
         advisorOriginByProg, originBreakdown, sociosOverride,
         avatarByAdvisor, productosPorAsesor,
-        mesesSeleccionados, pgmNameById: progNameById, pgmNameByIdDynamic, dataGroup
+        mesesSeleccionados, pgmNameById: progNameById, pgmNameByIdDynamic, dataGroup,
+        totalUniqueTicketsByAdvisor // <--- EXPORTADO
     };
 };

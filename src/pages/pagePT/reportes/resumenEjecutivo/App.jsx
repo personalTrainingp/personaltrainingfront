@@ -117,8 +117,8 @@ export const App = ({ id_empresa }) => {
         <Row className="mb-6">
           <Col lg={12}>
             <SumaDeSesiones
-              ventas={dataVentas} year={year}
-              resumenArray={resumenFilas} resumenTotales={resumenTotales}
+              ventas={dataVentas} year={year} month={selectedMonth}
+              initDay={initDay} cutDay={cutDay} resumenArray={resumenFilas} resumenTotales={resumenTotales}
               avataresDeProgramas={avataresDeProgramas} sociosOverride={sociosOverride}
               originBreakdown={originBreakdown} advisorOriginByProg={advisorOriginByProg}
               avatarByAdvisor={avatarByAdvisor}
