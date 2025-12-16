@@ -32,14 +32,13 @@ const GestionEmpleados = lazy(() => import('../pages/pagePT/GestEmpleados'));
 const GestionUsuario = lazy(() => import('../pages/pagePT/GestAuthUser'));
 const PerfilCliente = lazy(() => import('../pages/pagePT/PerfilCliente'));
 const GestionClientes = lazy(()=> import('../pages/pagePT/GestClientes'))
-const GestionMeta = lazy(()=> import('../pages/pagePT/GestBonosyMetas'))
 const GestionDescuentos= lazy(()=> import('../pages/pagePT/GestDescuentos'))
 const PerfilEmpleado = lazy(()=> import('../pages/pagePT/GestEmpleados/Perfil'))
 const GestionVenta = lazy(() => import('../pages/pagePT/GestVentas'));
 const GestionProspectos = lazy(()=> import('../pages/pagePT/GestProspectos'))
 const GestionExtensionMembresia = lazy(()=> import('../pages/pagePT/GestExtensionMembresia'))
 const GestionAuditoria = lazy(()=> import('../pages/pagePT/Auditoria'))
-const GestionComision = lazy(()=> import('../pages/pagePT/GestComision'))
+// const GestionComision = lazy(()=> import('../pages/pagePT/GestComision'))
 // const ServFitology = lazy(()=> import('../pages/pagePT/ServFitology'))
 // const ServNutricion = lazy(()=> import('../pages/pagePT/ServNutricion'))
 const ReportePorProgramas = lazy(()=>import('../pages/pagePT/reportes/ventasPrograma'))
@@ -49,13 +48,13 @@ const ReporteVentasporSemana = lazy(()=>import('../pages/pagePT/reportes/ventaPo
 const Terminologias = lazy(()=>import('../pages/pagePT/Terminologias'))
 const ReporteEgresos = lazy(()=>import('../pages/pagePT/reportes/reporteEgresos'))
 const ReporteGerenciales = lazy(()=>import('../pages/pagePT/reportes/reporteGerenciales'))
-const ReporteMetas = lazy(()=>import('../pages/pagePT/reportes/reporteMetas'))
+// const ReporteMetas = lazy(()=>import('../pages/pagePT/reportes/reporteMetas'))
 // const MarketingAgenda = lazy(()=>import('../pages/pagePT/GestMkt'))
 const HistorialCitasNutricionista = lazy(()=>import('../pages/pagePT/HistorialCitasNutricionista'))
 const GestionTipoCambio = lazy(()=>import('../pages/pagePT/GestTipoCambio'))
 const GestContratosClientes = lazy(()=>import('../pages/pagePT/GestContratosCliente'))
 // const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
-const ReporteComparativaDeVentasxDia = lazy(()=>import('../pages/pagePT/ReporteComparativoxDia'))
+// const ReporteComparativaDeVentasxDia = lazy(()=>import('../pages/pagePT/ReporteComparativoxDia'))
 const ReporteFlujoCaja = lazy(()=>import('../pages/pagePT/FlujoCaja'))
 // const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilidadPrograma'))
 const GestProvAgente = lazy(()=>import('../pages/pagePT/GestProvAgentes'))
@@ -63,21 +62,21 @@ const PerfilProveedor = lazy(()=>import('../pages/pagePT/PerfilProveedor'))
 const GestionInventario = lazy(()=>import('../pages/pagePT/GestInventario'))
 const GestionInventarioProy = lazy(()=>import('../pages/pagePT/GestInventarioProy'))
 const InventarioTotalizado = lazy(()=>import('../pages/pagePT/InventarioReporte'))
-const EntradaInventario = lazy(()=>import('../pages/pagePT/EntradaInventario'))
-const SalidaInventario = lazy(()=>import('../pages/pagePT/SalidaInventario'))
-const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
+// const EntradaInventario = lazy(()=>import('../pages/pagePT/EntradaInventario'))
+// const SalidaInventario = lazy(()=>import('../pages/pagePT/SalidaInventario'))
+// const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
 const PuntoEquilibrio = lazy(()=> import('../pages/pagePT/reportes/puntoEquilibrio'))
 const ReporteSeguimiento = lazy(()=>import('../pages/pagePT/reportes/reporteSeguimiento'))
 // const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
-const ReporteSesionesxMem = lazy(()=>import('../pages/pagePT/reportes/reporteSesionesxMem'))
+// const ReporteSesionesxMem = lazy(()=>import('../pages/pagePT/reportes/reporteSesionesxMem'))
 const ResultadoChange = lazy(()=>import('../pages/pagePT/reportes/resultadoChange'))
 const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
 // const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
 const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
 const ResumenComparativo = lazy(()=>import('../pages/pagePT/reportes/resumenComparativo'))
 // const ReporteDemograficoCliente = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoCliente'))
-const ReporteDemograficoxMembresia = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoxMembresia'))
-const VentasTransferencias = lazy(()=>import('../pages/pagePT/VentasTransferencias'))
+// const ReporteDemograficoxMembresia = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoxMembresia'))
+// const VentasTransferencias = lazy(()=>import('../pages/pagePT/VentasTransferencias'))
 const ClientesxVentasDeMembresia = lazy(()=>import('../pages/pagePT/MembresiaxCliente'))
 const GestionCambioPrograma = lazy(()=>import('../pages/pagePT/GestionCambioPrograma'))
 const ResumenComparativoAnual = lazy(()=>import('../pages/pagePT/reportes/resumenComparativoAnual'))
@@ -89,8 +88,6 @@ const ViewRenovacion = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/renova
 const ViewReinscripcion = lazy(()=>import('../pages/pagePT/reportes/lineaMkt/reinscripcion'))
 const CitasxNutricionista = lazy(()=>import('../pages/pagePT/reportes/citasxEstados'))
 const GeneradorFechas = lazy(()=>import('../pages/pagePT/generadorFechas/GeneradorFechasInventario'))
-const EntradaArticulosForm = lazy(()=>import('../pages/pagePT/EntradaInventarioForm'))
-const TransferenciasArticulos = lazy(()=>import('../pages/pagePT/TransferenciaEmpresaInventario'))
 const ArticulosNuevos = lazy(()=>import('../pages/pagePT/GestArticulosChorrillos'))
 const ResumenEjecutivo = lazy(()=>import('../pages/pagePT/reportes/resumenEjecutivo/Index.jsx'))
 const GestionCentroDeArchivos = lazy(()=>import('../pages/pagePT/GestCentroArchivo'))
@@ -255,14 +252,14 @@ export default function ProtectedRoutes() {
                         <Route path='agregar-articulos-chorrillos' element={<ArticulosNuevos/>}/>
 					}
 					
-					{
+					{/* {
 						sections.find(e=>e.url==='/transferencia-inventario')&&
                         <Route path='transferencia-inventario' element={<TransferenciasArticulos/>}/>
-					}
-					{
+					} */}
+					{/* {
 						sections.find(e=>e.url==='/generador-fechas-inventario')&&
                         <Route path='generador-fechas-inventario' element={<EntradaArticulosForm/>}/>
-					}
+					} */}
 					{
 						sections.find(e=>e.url==='/citas-x-nutricionista')&&
                         <Route path='citas-x-nutricionista' element={<CitasxNutricionista/>}/>
@@ -283,10 +280,10 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/resultados-change')&&
                         <Route path='resultados-change' element={<ResultadoChange/>}/>
 					}
-					{
+					{/* {
 						sections.find(e=>e.url==='/facturacion-publicidad')&&
                         <Route path='facturacion-publicidad' element={<ReporteSesionesxMem/>}/>
-					}
+					} */}
 					{
 						sections.find(e=>e.url==='/reporte/seguimiento-x-mes')&&
                         <Route path='reporte/seguimiento-x-mes' element={<SeguimientoxMesView/>}/>
@@ -319,14 +316,14 @@ export default function ProtectedRoutes() {
                         sections.find(e=>e.url==='/totalizado-inventario') && 
                         <Route path='totalizado-inventario' element={<InventarioTotalizado/>}/>
                     }
-					{
+					{/* {
                         sections.find(e=>e.url==='/entrada-inventario') && 
                         <Route path='entrada-inventario' element={<EntradaInventario/>}/>
                     }
 					{
                         sections.find(e=>e.url==='/salida-inventario') && 
                         <Route path='salida-inventario' element={<SalidaInventario/>}/>
-                    }
+                    } */}
 					{
                         sections.find(e=>e.url==='/reporte-admin/asistenciaReporte') && 
                         <Route path='reporte-admin/asistenciaReporte' element={<ReporteDeAsistenciaRH/>}/>
@@ -360,10 +357,10 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/reporte-admin/flujo-caja') && 
 						<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja/>}/>
 					}
-					{
+					{/* {
 						sections.find(e=>e.url==='/reporte-admin/comparativa-dia') && 
 						<Route path='reporte-admin/comparativa-dia' element={<ReporteComparativaDeVentasxDia/>}/>
-					}
+					} */}
 					{sections.find(e=>e.url==='/nueva-venta')&&
 						<Route path="nueva-venta" element={<NuevaVenta />} />
 					}
@@ -466,9 +463,9 @@ export default function ProtectedRoutes() {
 					{sections.find(e=>e.url==='/centro-archivos')&&
 					<Route path='centro-archivos' element={<GestionCentroDeArchivos/>}/>
 					}
-					{sections.find(e=>e.url==='/metas')&&
+					{/* {sections.find(e=>e.url==='/metas')&&
 					<Route path='metas' element={<GestionMeta/>}/>
-					}
+					} */}
 					{
 						sections.find(e=>e.url==='/gestion-prospecto') &&
 						<Route path='gestion-prospecto' element={<GestionProspectos/>}/>
@@ -481,10 +478,10 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/auditoria') &&
 						<Route path='auditoria' element={<GestionAuditoria/>}/>
 					}
-					{
+					{/* {
 						sections.find(e=>e.url==='/gestion-comisional') &&
 						<Route path='gestion-comisional' element={<GestionComision/>}/>
-					}
+					} */}
 					{/* {
 						sections.find(e=>e.url==='/serv-fitology') &&
 						<Route path='serv-fitology' element={<ServNutricion tipo_serv={'FITOL'}/>}/>
@@ -497,10 +494,10 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/reporte') && 
 						<Route path='reporte/reporte-programa' element={<ReportePorProgramas/>}/>
 					}
-					{
+					{/* {
 						sections.find(e=>e.url==='/reporte') && 
 						<Route path='reporte/reporte-metas' element={<ReporteMetas/>}/>
-					}
+					} */}
 					{
 						sections.find(e=>e.url==='/reporte') && 
 						<Route path='reporte/total-ventas' element={<ReporteTotalVentas/>}/>
@@ -552,9 +549,9 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/tipo-cambio') &&
 						<Route path='tipo-cambio' element={<GestionTipoCambio/>}/>
 					}
-					{sections.find(e=>e.url==='/reporte-admin/RecursosHumanoReportes')&&
+					{/* {sections.find(e=>e.url==='/reporte-admin/RecursosHumanoReportes')&&
 						<Route path="reporte-admin/RecursosHumanoReportes" element={<RecursosHumanoReportes />} />
-					}
+					} */}
 					{sections.find(e=>e.url==='/reporte-admin/gestion-lead')&&
 						<Route path="reporte-admin/gestion-lead" element={<PuntoEquilibrio />} />
 					}

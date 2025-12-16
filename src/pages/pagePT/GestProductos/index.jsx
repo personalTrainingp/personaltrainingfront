@@ -1,1 +1,1 @@
-export {GestionProductos as default} from './GestionProductos'
+export {App as default} from './App'

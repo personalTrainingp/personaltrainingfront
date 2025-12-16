@@ -54,7 +54,7 @@ export const ModalCustomMovimientosArticulo = ({show=true, onHide, id=0, movimie
                   <InputSelect label={'Empresa'} nameInput={'id_empresa'} onChange={onInputChange} value={id_empresa} required options={dataEmpresas}/>
                 </div>
                 <div className='mb-2'>
-                  <InputSelect label={'Lugar de destino'} nameInput={'id_motivo'} onChange={onInputChange} value={id_lugar_destino} required options={dataZonas}/>
+                  <InputSelect label={'Lugar de destino'} nameInput={'id_lugar_destino'} onChange={onInputChange} value={id_lugar_destino} required options={dataZonas}/>
                 </div>
               </>
             )

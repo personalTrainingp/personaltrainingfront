@@ -4,7 +4,7 @@ import { Button, Card, Col, Modal, Row } from 'react-bootstrap'
 import { columns, sizePerPageList } from './ColumnsSet'
 import { useProductoStore } from '@/hooks/hookApi/useProductoStore'
 import { useDispatch } from 'react-redux'
-import { ModalProducto } from './ModalProducto'
+import { ModalProducto } from './ModalCustomProducto'
 import { useSelector } from 'react-redux'
 
 const registerProducto = {

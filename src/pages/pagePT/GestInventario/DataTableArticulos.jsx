@@ -10,8 +10,14 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
   const { obtenerArticulosxEmpresa, dataView, onDeleteArticuloxID } = useArticuloStore()
 
   const columns = [
-    { id: 'id', header: 'ID', accessor: 'id', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
-    { id: 'foto', header: 'FOTO', sortable: true, width: 20, render:(row)=>{
+    { id: 'id', header: <div className='text-center'>ID</div>, accessor: 'id', sortable: true, width: 20, render: (row)=>{
+      return (
+        <div className='fs-4' style={{width: '80px'}}>
+        {row?.id}
+        </div>
+      )
+    } },
+    { id: 'foto', header: <div className='text-center'>FOTO</div>, sortable: true, width: 20, render:(row)=>{
       
         const images = [...(row.tb_images || [])];
         // Ordenamos por ID descendente
@@ -22,46 +28,88 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
             : '';
       return (
         <>
-                                <Image src={row.tb_images?.length===0?'':`${imageUrl}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="270" />
+                                <Image src={row.tb_images?.length===0?'':`${imageUrl}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="150" />
         </>
       )
     } },
-    { id: 'nombre', header: 'Nombre', render: (row)=>{
+    { id: 'nombre', header: <div className='text-center'>NOMBRE</div>, render: (row)=>{
       return (
-        <div className='' style={{width: '90px'}}>
+        <div className='fs-4' style={{width: '200px'}}>
         {row?.producto}
         </div>
       )
     } },
-    { id: 'modelo', header: 'Modelo', accessor: 'modelo', width: 100, headerAlign: 'right', cellAlign: 'left' },
-    { id: 'descripcion', header: 'Descripcion', accessor: 'descripcion', width: 70 },
-    { id: 'ubicacion', header: 'ubicacion',  width: 70, render: (row)=>{
+    { id: 'modelo', header: <div className='text-center'>MODELO</div>,  width: 100, render: (row)=>{
       return (
-        <>
-        {row?.parametro_lugar_encuentro?.label_param}
-        </>
+        <div className='fs-4' style={{width: '200px'}}>
+        {row?.modelo}
+        </div>
+      )
+    }  },
+    { id: 'descripcion', header: <div className='text-center'>DESCRIPCION</div>, width: 70,render: (row)=>{
+      return (
+        <div className='fs-4' style={{width: '200px'}}>
+        {row?.descripcion}
+        </div>
       )
     } },
-    { id: 'cantidad', header: 'cantidad', accessor: 'cantidad'},
-    { id: 'costo_unitario_soles', header: <div className='text-center'>costo <br/> unit. S/.</div>, accessor: 'costo_unitario_soles' },
-    { id: 'costo_unitario_dolares', header: <div className='text-center'>costo <br/> unit. $</div>, accessor: 'costo_unitario_dolares' },
-    { id: 'costo_mano_obra_soles', header: <div className='text-center'>costo <br/> MANO OBRA S/.</div>, accessor: 'mano_obra_soles' },
-    { id: 'costo_mano_obra_dolares', header: <div className='text-center'>costo <br/> MANO OBRA $</div>, accessor: 'mano_obra_dolares' },
+    { id: 'ubicacion', header: <div className='text-center'>UBICACION</div>,  width: 70, render: (row)=>{
+      return (
+        <div className='fs-4' style={{width: '200px'}}>
+        {row?.parametro_lugar_encuentro?.label_param}
+        </div>
+      )
+    } },
+    { id: 'cantidad', header: <div className='text-center'>CANT.</div>, render: (row)=>{
+      return (
+        <div className='fs-4' style={{width: '10px'}}>
+        {row?.cantidad}
+        </div>
+      )
+    } },
+    { id: 'costo_unitario_soles', header: <div className='text-center'>costo <br/> unit. S/.</div>, render:(row)=>{
+      return (
+        <div className='fs-4' style={{width: '100px'}}>
+        {(row?.costo_unitario_soles)}
+        </div>
+      )
+    }},
+    { id: 'costo_unitario_dolares', header: <div className='text-center'>costo <br/> unit. $</div>, render:(row)=>{
+      return (
+        <div className='fs-4'>
+        {(row?.costo_unitario_dolares)}
+        </div>
+      )
+    } },
+    { id: 'costo_mano_obra_soles', header: <div className='text-center'>costo <br/> MANO OBRA S/.</div>, render:(row)=>{
+      return (
+        <div className='fs-4'>
+        {(row?.mano_obra_soles)}
+        </div>
+      )
+    } },
+    { id: 'costo_mano_obra_dolares', header: <div className='text-center'>costo <br/> MANO OBRA $</div>, render:(row)=>{
+      return (
+        <div className='fs-4'>
+        {(row?.mano_obra_dolares)}
+        </div>
+      )
+    } },
     { id: 'costo_total_soles', header: <div className='text-center'>costo <br/> TOTAL S/.</div>, width: 70, render:(row)=>{
       return (
-        <>
+        <div className='fs-4'>
         {(row?.costo_unitario_soles*row?.cantidad)+row?.mano_obra_soles}
-        </>
+        </div>
       )
     } },
     { id: 'costo_total_dolares', header: <div className='text-center'>costo <br/> TOTAL $</div>, width: 70,  render: (row)=>{
       return (
-        <>
+        <div className='fs-4'>
         {(row?.costo_unitario_dolares*row?.cantidad)+row?.mano_obra_dolares}
-        </>
+        </div>
       )
     }},
-    { id: 'action', header: '', width: 70, headerAlign: 'right', cellAlign: 'right', render: (row)=>{
+    { id: 'action', header: '', width: 70, render: (row)=>{
         return (
             <>
             <i className='pi pi-pencil p-2 border border-2 border-black my-2' onClick={()=>onClickEditar(row.id)}></i>
