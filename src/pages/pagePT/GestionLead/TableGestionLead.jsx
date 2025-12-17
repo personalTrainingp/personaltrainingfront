@@ -9,27 +9,60 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 
 export const TableGestionLead = ({ onClickCustomLead, onDeleteItemLead, id_empresa = 598 }) => {
     const { obtenerLeads } = useGestionLeadStore()
-    const { DataGeneral: dataRedesInvertidas, obtenerParametroPorEntidadyGrupo: obtenerRedesInvertidas } = useTerminoStore()
+    const {
+        DataGeneral: dataRedesInvertidas,
+        obtenerParametroPorEntidadyGrupo: obtenerRedesInvertidas,
+        obtenerTipoCambio: fetchTC,
+        usdPenRate: rateState,
+        FALLBACK_USD_PEN_RATE: fallbackRate,
+        calcularTotalesLeads
+    } = useTerminoStore();
     const { dataView } = useSelector(e => e.DATA)
 
     useEffect(() => {
         obtenerLeads(id_empresa)
         obtenerRedesInvertidas('inversion', 'redes')
+        fetchTC();
     }, [])
 
-    const totalMonto = dataView?.reduce((acc, m) => acc + m.monto, 0) || 0;
-    const totalBase = totalMonto / 1.18;
-    const totalIGV = totalMonto - totalBase;
+    const {
+        igvMetaUSD,
+        igvTikTokPEN,
+        totalIGVSoles,
+        totalMontoSoles,
+        totalBaseSoles,
+        TASA_CAMBIO
+    } = calcularTotalesLeads(dataView, rateState, fallbackRate);
 
     return (
         <>
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <Button label='AGREGAR LEAD' onClick={() => onClickCustomLead(0, id_empresa, {})} />
-                <div className="p-3 bg-light rounded shadow-sm">
-                    <span className="fw-bold mr-2">TOTAL IGV:</span>
-                    <span className="text-danger fw-bold" style={{ fontSize: '1.2em' }}>
-                        <NumberFormatMoney amount={totalIGV} />
-                    </span>
+                <div className="p-3 bg-light rounded shadow-sm d-flex flex-column" style={{ minWidth: '200px' }}>
+                    <div className="d-flex justify-content-between mb-1">
+                        <span className="fw-bold mr-3 text-muted" style={{ fontSize: '0.9rem' }}>TIKTOK (IGV):</span>
+                        <span className="fw-bold">
+                            <span className="mr-1">S/.</span>
+                            <NumberFormatMoney amount={igvTikTokPEN} />
+                        </span>
+                    </div>
+                    <div className="d-flex justify-content-between mb-1">
+                        <span className="fw-bold mr-3 text-muted" style={{ fontSize: '0.9rem' }}>META (IGV):</span>
+                        <span className="fw-bold">
+                            <span className="mr-1">$</span>
+                            <NumberFormatMoney amount={igvMetaUSD} />
+                        </span>
+                    </div>
+                    <div className="d-flex justify-content-between border-top pt-2 mt-1">
+                        <div className="d-flex align-items-center">
+                            <span className="fw-bold mr-2">TOTAL IGV:</span>
+                            <span className="badge badge-light text-muted font-weight-normal" style={{ fontSize: '0.7em' }}>TC: {TASA_CAMBIO.toFixed(3)}</span>
+                        </div>
+                        <span className="text-danger fw-bold" style={{ fontSize: '1.2em' }}>
+                            <span className="mr-1">S/.</span>
+                            <NumberFormatMoney amount={totalIGVSoles} />
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -127,12 +160,12 @@ export const TableGestionLead = ({ onClickCustomLead, onDeleteItemLead, id_empre
                         </tbody>
                         <tfoot className="fw-bold bg-light">
                             <tr>
-                                <td colSpan={3} className="text-right">TOTALES:</td>
+                                <td colSpan={3} className="text-right">TOTALES (S/.):</td>
                                 <td></td>
                                 <td></td>
-                                <td><NumberFormatMoney amount={totalBase} /></td>
-                                <td><NumberFormatMoney amount={totalMonto} /></td>
-                                <td className="text-danger"><NumberFormatMoney amount={totalIGV} /></td>
+                                <td><NumberFormatMoney amount={totalBaseSoles} /></td>
+                                <td><NumberFormatMoney amount={totalMontoSoles} /></td>
+                                <td className="text-danger"><NumberFormatMoney amount={totalIGVSoles} /></td>
                                 <td></td>
                             </tr>
                         </tfoot>

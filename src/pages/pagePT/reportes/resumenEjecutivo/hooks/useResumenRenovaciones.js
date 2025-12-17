@@ -20,8 +20,36 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
         try {
             const { data } = await PTApi.get('/venta/vencimientos-mes', { params: { year, id_empresa: id_empresa || 598 } });
             if (data.ok && Array.isArray(data.data)) {
+
+                const monthParamMap = {
+                    "ENE": "01", "FEB": "02", "MAR": "03", "ABR": "04", "MAY": "05", "JUN": "06",
+                    "JUL": "07", "AGO": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DIC": "12",
+                    "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04", "MAY": "05", "JUN": "06",
+                    "JUL": "07", "AUG": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12"
+                };
+
                 const map = {};
-                data.data.forEach(row => map[row.Mes] = { vencimientos: row['Vencimientos (Fec Fin)'], renovacionesBackend: row['Renovaciones (Pagadas)'], pendienteBackend: row['Pendiente Real'] });
+                data.data.forEach(row => {
+                    let monthNum = row.Mes;
+                    if (monthParamMap[String(row.Mes).toUpperCase()]) {
+                        monthNum = monthParamMap[String(row.Mes).toUpperCase()];
+                    } else if (!isNaN(row.Mes) && String(row.Mes).length === 1) {
+                        monthNum = `0${row.Mes}`;
+                    } else if (!isNaN(row.Mes) && String(row.Mes).length === 2) {
+                        monthNum = String(row.Mes);
+                    }
+
+                    const monthKey = `${year}-${monthNum}`;
+                    map[monthKey] = {
+                        renovaciones: row["RENOVACIONES DEL MES"],
+                        porcentaje: (typeof row["RENOVACIONES %"] === 'number')
+                            ? `${row["RENOVACIONES %"].toFixed(1)}%`
+                            : row["RENOVACIONES %"],
+                        vencimientos: row["VENCIMIENTOS POR MES"],
+                        pendiente: row["PENDIENTE DE RENOVACIONES"],
+                        acumulado: row["ACUMULADO CARTERA"]
+                    };
+                });
                 setMapaVencimientos(map);
             }
         } catch (err) { console.error(err); }

@@ -133,6 +133,85 @@ export const useTerminoStore = () => {
 	const [comboOficio, setcomboOficio] = useState([]);
 	const [dataDistritos, setdataDistritos] = useState([]);
 	const [dataZonas, setdataZonas] = useState([]);
+	const [usdPenRate, setUsdPenRate] = useState({
+		value: null,
+		updatedAt: null,
+		loading: true,
+		error: null,
+	});
+	const FALLBACK_USD_PEN_RATE = 3.37;
+
+	const obtenerTipoCambio = async () => {
+		try {
+			setUsdPenRate((prev) => ({ ...prev, loading: true, error: null }));
+			const response = await fetch("https://open.er-api.com/v6/latest/USD");
+			if (!response.ok) {
+				throw new Error(`Estado ${response.status}`);
+			}
+			const payload = await response.json();
+			const value =
+				typeof payload?.rates?.PEN === "number" ? payload.rates.PEN : null;
+			const updatedAt =
+				payload?.time_last_update_utc ?? payload?.time_last_update ?? null;
+
+			setUsdPenRate({
+				value,
+				updatedAt,
+				loading: false,
+				error: value == null ? "Sin datos" : null,
+			});
+		} catch (error) {
+			setUsdPenRate((prev) => ({
+				...prev,
+				loading: false,
+				error: error?.message || "No se pudo obtener el tipo de cambio",
+			}));
+		}
+	};
+
+	const calcularTotalesLeads = (dataView) => {
+		const rate = (usdPenRate.value && Number.isFinite(usdPenRate.value))
+			? usdPenRate.value
+			: FALLBACK_USD_PEN_RATE;
+
+		let igvMetaUSD = 0;
+		let igvTikTokPEN = 0;
+		let montoMetaUSD = 0;
+		let montoTikTokPEN = 0;
+		let baseMetaUSD = 0;
+		let baseTikTokPEN = 0;
+
+		(dataView || []).forEach(m => {
+			// DataGeneral holds the redes inverted param data
+			const nombreRed = DataGeneral.find(d => d.value === m.id_red)?.label || '';
+			const monto = m.monto || 0;
+			const base = monto / 1.18;
+			const igv = monto - base;
+
+			if (nombreRed === 'META ADS') {
+				igvMetaUSD += igv;
+				montoMetaUSD += monto;
+				baseMetaUSD += base;
+			} else {
+				igvTikTokPEN += igv;
+				montoTikTokPEN += monto;
+				baseTikTokPEN += base;
+			}
+		});
+
+		const totalIGVSoles = igvTikTokPEN + (igvMetaUSD * rate);
+		const totalMontoSoles = montoTikTokPEN + (montoMetaUSD * rate);
+		const totalBaseSoles = baseTikTokPEN + (baseMetaUSD * rate);
+
+		return {
+			igvMetaUSD,
+			igvTikTokPEN,
+			totalIGVSoles,
+			totalMontoSoles,
+			totalBaseSoles,
+			TASA_CAMBIO: rate
+		};
+	};
 
 	const getEtiquetasxEntidadGrupo = async (entidad, grupo) => {
 		try {
@@ -638,5 +717,9 @@ export const useTerminoStore = () => {
 		DataHorarioPGM,
 		isLoading,
 		DataGeneral,
+		obtenerTipoCambio,
+		usdPenRate,
+		FALLBACK_USD_PEN_RATE,
+		calcularTotalesLeads,
 	};
 };
