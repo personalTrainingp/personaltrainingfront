@@ -25,7 +25,7 @@ import { dataPenalidadSlice } from '@/pages/pagePT/PagosProveedores/GestionPenal
 import { ContratoProvSlice } from '@/pages/pagePT/ContratosProveedores/ContratoProvSlice';
 import { MovimientosSlice } from '@/pages/pagePT/GestionMovimientoArticulos/MovimientosSlice';
 import { ArticuloSlice } from '@/pages/pagePT/GestInventario/store/ArticulosSlice';
-import { ProductoSlice } from '@/pages/pagePT/GestProductos/store/productoSlice';
+import { ProductoSlice } from '@/pages/pagePT/GestProductos/store/ProductoSlice';
 
 export const store = configureStore({
 	reducer: {
