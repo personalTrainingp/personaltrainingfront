@@ -3,7 +3,6 @@ import { authSlice } from './auth/authSlice';
 import { uiSlice } from './ui/uiSlice';
 import { selectSlice } from './dataSelects/selectSlice';
 import { proveedorSlice } from './dataProveedor/proveedorSlice';
-import { productoSlice } from './dataProducto/productoSlice';
 import { gfGvSlice } from './gfGv/gfGvSlice';
 import { programaPTSlice } from './ventaProgramaPT/programaPTSlice';
 import { tablehorarioSlice } from './tableHorario/tablehorarioSlice';
@@ -26,6 +25,7 @@ import { dataPenalidadSlice } from '@/pages/pagePT/PagosProveedores/GestionPenal
 import { ContratoProvSlice } from '@/pages/pagePT/ContratosProveedores/ContratoProvSlice';
 import { MovimientosSlice } from '@/pages/pagePT/GestionMovimientoArticulos/MovimientosSlice';
 import { ArticuloSlice } from '@/pages/pagePT/GestInventario/store/ArticulosSlice';
+import { ProductoSlice } from '@/pages/pagePT/GestProductos/store/productoSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -33,7 +33,6 @@ export const store = configureStore({
 		ui: uiSlice.reducer,
 		eSelect: selectSlice.reducer,
 		prov: proveedorSlice.reducer,
-		prod: productoSlice.reducer,
 		gf_gv: gfGvSlice.reducer,
 		programaPT: programaPTSlice.reducer,
 		hrpgm: tablehorarioSlice.reducer,
@@ -56,6 +55,7 @@ export const store = configureStore({
 		CONTRATOPROV: ContratoProvSlice.reducer,
 		MOVIMIENTO: MovimientosSlice.reducer,
 		ARTICULO: ArticuloSlice.reducer,
+		PRODUCTO: ProductoSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
