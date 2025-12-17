@@ -1,7 +1,7 @@
 import { PTApi } from '@/common';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { onSetDataViewProducto } from '../store/productoSlice';
+import { onSetDataViewProducto } from '../store/ProductoSlice';
 
 export const useProductoStore = () => {
 	const dispatch = useDispatch();
