@@ -10,6 +10,7 @@ export default function RenovacionesPanel({
   initDay,
   cutDay,
   vencimientosMap = {},
+  vencimientosFiltrados = null,
 }) {
   return (
     <div>
@@ -22,6 +23,7 @@ export default function RenovacionesPanel({
         initDay={initDay}
         cutDay={cutDay}
         carteraHistoricaInicial={0}
+        vencimientosFiltrados={vencimientosFiltrados}
       />
     </div>
   );

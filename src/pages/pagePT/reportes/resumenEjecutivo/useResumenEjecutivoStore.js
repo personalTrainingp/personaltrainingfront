@@ -24,6 +24,7 @@ export const useResumenEjecutivoStore = (id_empresa) => {
 		dataMkt: marketing.dataMktByMonth,
 		dataMktWithCac: marketing.dataMktWithCac,
 		originMap,
+		vencimientosFiltrados: renovaciones.vencimientosFiltrados,
 		avataresDeProgramas
 	};
 };

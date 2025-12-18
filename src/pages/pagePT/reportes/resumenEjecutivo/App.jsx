@@ -30,7 +30,7 @@ export const App = ({ id_empresa }) => {
     reservasMF, originMap, mapaVencimientos, dataLeadPorMesAnio,
     resumenFilas, resumenTotales, avataresDeProgramas,
     sociosOverride, originBreakdown, advisorOriginByProg,
-    avatarByAdvisor, productosPorAsesor
+    avatarByAdvisor, productosPorAsesor, vencimientosFiltrados
   } = store;
 
   return (
@@ -95,6 +95,7 @@ export const App = ({ id_empresa }) => {
                 months={12} beforeDays={0} afterDays={91}
                 title="RENOVACIONES - 2025" items={dataVentas}
                 vencimientosMap={mapaVencimientos} carteraHistoricaInicial={0}
+                vencimientosFiltrados={vencimientosFiltrados}
               />
             </Col>
           </Row>

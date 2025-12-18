@@ -73,6 +73,7 @@ export default function TablaRenovaciones({
   title = "Renovaciones y Vencimientos",
   carteraHistoricaInicial = 0,
   datosVencimientos = {},
+  vencimientosFiltrados = null,
 }) {
   const visibleMonthDates = getMonthKeys(base, months);
 
@@ -115,11 +116,20 @@ export default function TablaRenovaciones({
       }
     }
 
+    // 3. Fill 'vencimientos' from mapSeguro OR override with 'vencimientosFiltrados'
+    const currentMonthKey = getSortableKey(base);
+
     Object.keys(mapSeguro).forEach((key) => {
       if (!statsMap.has(key)) {
         statsMap.set(key, { vencimientos: 0, renovaciones: 0, pendiente: 0, acumulado: 0 });
       }
-      statsMap.get(key).vencimientos = Number(mapSeguro[key] || 0);
+
+      // Override for current month if we have a filtered value
+      if (key === currentMonthKey && vencimientosFiltrados !== null) {
+        statsMap.get(key).vencimientos = Number(vencimientosFiltrados);
+      } else {
+        statsMap.get(key).vencimientos = Number(mapSeguro[key] || 0);
+      }
     });
 
     const sortedKeys = Array.from(statsMap.keys()).sort();
@@ -146,7 +156,7 @@ export default function TablaRenovaciones({
     });
 
     return statsMap;
-  }, [items, carteraHistoricaInicial, visibleMonthDates, datosVencimientos]);
+  }, [items, carteraHistoricaInicial, visibleMonthDates, datosVencimientos, vencimientosFiltrados]);
 
   const getTableRows = () => {
     const rows = {
