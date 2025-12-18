@@ -105,7 +105,7 @@ const GestionPermisos = lazy(()=>import('../pages/pagePT/GestionPermisos/index.j
 const GestionTardanzas = lazy(()=>import('../pages/pagePT/GestionTardanzas/index.jsx'))
 const GestionHorasExtras = lazy(()=>import('../pages/pagePT/GestionHorasExtras/index.jsx'))
 const GestionSalidasTempranas = lazy(()=>import('../pages/pagePT/GestionSalidasTempranas/index.jsx'))
-const ContratoProv = lazy(()=>import('../pages/pagePT/ContratoProv/Index.jsx'))
+// const ContratoProv = lazy(()=>import('../pages/pagePT/ContratoProv/Index.jsx'))
 const ReporteUtilidadxMes = lazy(()=>import('../pages/pagePT/ReporteUtilidadxMes/Index.jsx'))
 const ResumenGerencialPorOrigen= lazy(()=>import('../pages/pagePT/ResumenGerencialPorOrigen/Index.jsx'))
 /**
@@ -565,7 +565,7 @@ export default function ProtectedRoutes() {
 		)
 		: (
 			<>
-			<Route path='/contrato-prov' element={<ContratoProv/>}/>
+			{/* <Route path='/contrato-prov' element={<ContratoProv/>}/> */}
 			<Route path="account/*" element={<Account />} />
 			<Route path='/*' element={<Navigate to={"/account/login"}/>}/>
 			</>
