@@ -450,7 +450,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     }
     const groupedData = Object.values(
         customers?.reduce((acc, item) => {
-          const key = `${item.parametro_lugar_encuentro.label_param}${item.parametro_lugar_encuentro.nivel?` - NIVEL ${item.parametro_lugar_encuentro.nivel}`:''}`;
+          const key = `${item.parametro_lugar_encuentro?.label_param}${item.parametro_lugar_encuentro.nivel?` - NIVEL ${item.parametro_lugar_encuentro.nivel}`:''}`;
           if (!acc[key]) {
             acc[key] = { lugar: key, orden_param: item.parametro_lugar_encuentro.orden_param, items: [] };
           }

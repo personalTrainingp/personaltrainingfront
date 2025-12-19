@@ -24,7 +24,7 @@ const customAporte = {
 }
 export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
   const { onPostGestionAporte } = useGestionAportes()
-  const { dataOrigen } = TerminosOnShow(show)
+  const { dataBancos, dataFormaPago, dataTarjetas, dataConceptosAportes, dataTipoMoneda, dataComprobantesGastos } = TerminosOnShow(show)
   const { formState, onInputChange, onResetForm, id_concepto, n_comprobante, n_operacion, id_prov, id_estado, descripcion, id_tipo_moneda, monto, id_comprobante, fecha_comprobante, fecha_pago, id_forma_pago, id_banco, id_tarjeta } = useForm(customAporte)
   const onSubmit = ()=>{
     if(id===0){
@@ -39,17 +39,17 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
     onResetForm()
   }
   return (
-    <Dialog onHide={onCancelCustomAporte} visible={show} header={`${id===0?'AGREGAR APORTE':'ACTUALIZAR APORTE'}`} style={{width: '70rem'}} position='top'>
+    <Dialog onHide={onCancelCustomAporte} visible={show} header={`${id===0?'AGREGAR INGRESOS':'ACTUALIZAR INGRESOS'}`} style={{width: '70rem'}} position='top'>
         <form>
           <Row>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Concepto'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={[]}/>
+                <InputSelect label={'Concepto'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={dataConceptosAportes}/>
               </div>
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Tipo de moneda'} value={id_tipo_moneda} nameInput={'id_tipo_moneda'} onChange={onInputChange} options={[]}/>
+                <InputSelect label={'Tipo de moneda'} value={id_tipo_moneda} nameInput={'id_tipo_moneda'} onChange={onInputChange} options={dataTipoMoneda}/>
               </div>
             </Col>
             <Col lg={4}>
@@ -59,7 +59,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Tipo de comprobante'} value={id_comprobante} nameInput={'id_comprobante'} onChange={onInputChange} options={[]}/>
+                <InputSelect label={'Tipo de comprobante'} value={id_comprobante} nameInput={'id_comprobante'} onChange={onInputChange} options={dataComprobantesGastos}/>
               </div>
             </Col>
             <Col lg={4}>
@@ -84,17 +84,17 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Forma pago'} value={id_forma_pago} nameInput={'id_forma_pago'} onChange={onInputChange} options={[]}/>
+                <InputSelect label={'Forma pago'} value={id_forma_pago} nameInput={'id_forma_pago'} onChange={onInputChange} options={dataFormaPago}/>
               </div>
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Banco'} value={id_banco} nameInput={'id_banco'} onChange={onInputChange} options={[]}/>
+                <InputSelect label={'Banco'} value={id_banco} nameInput={'id_banco'} onChange={onInputChange} options={dataBancos}/>
               </div>
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Tarjeta'} value={id_tarjeta} nameInput={'id_tarjeta'} onChange={onInputChange} options={[]}/>
+                <InputSelect label={'Tarjeta'} value={id_tarjeta} nameInput={'id_tarjeta'} onChange={onInputChange} options={dataTarjetas}/>
               </div>
             </Col>
             <Col lg={4}>

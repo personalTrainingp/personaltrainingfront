@@ -97,6 +97,12 @@ export const TerminosOnShow = (show) => {
 	const dataKardexMovimiento = useFetchTerminosOnShow(show, 'kardex');
 	const dataSubOrigen = useFetchTerminosOnShow(show, 'venta', 'sub-origen');
 	const dataVendedores = useFetchTerminosOnShow(show, 'empleados-departamento', 'vendedores');
+	const dataFormaPago = useFetchTerminosOnShow(show, 'formapago', 'formapago');
+	const dataBancos = useFetchTerminosOnShow(show, 'formapago', 'banco');
+	const dataTarjetas = useFetchTerminosOnShow(show, 'formapago', 'tarjeta');
+	const dataConceptosAportes = useFetchTerminosOnShow(show, 'aporte', 'concepto');
+	const dataTipoMoneda = useFetchTerminosOnShow(show, 'moneda', 'tipo');
+	const dataComprobantesGastos = useFetchTerminosOnShow(show, 'finanzas', 'tipo_comprabante');
 
 	const dataEstadosBoleanos = [{ value: 1, label: 'Activo' }];
 	const dataEmpresas = [
@@ -133,22 +139,14 @@ export const TerminosOnShow = (show) => {
 		// { value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
 		//{ value: 1470, label: 'CORPORATIVOS BBVA' },
 	];
-	console.log(
-		dataKardexMovimiento,
-		dataClientesChange,
-		dataEstadoContrato,
-		obtenerZonasxEmpresa,
-		obtenerClientesxEmpresa,
-		dataZonasxEmpresa,
-		dataRolUsuario,
-		dataEstadosBoleanos,
-		dataEmpresas,
-		dataOrigen,
-		dataSubOrigen,
-		dataVendedores
-	);
 
 	return {
+		dataComprobantesGastos,
+		dataTipoMoneda,
+		dataConceptosAportes,
+		dataFormaPago,
+		dataBancos,
+		dataTarjetas,
 		dataKardexMovimiento,
 		dataClientesChange,
 		dataEstadoContrato,

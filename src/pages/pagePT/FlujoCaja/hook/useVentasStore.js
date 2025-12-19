@@ -28,8 +28,25 @@ export const useVentasStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerIngresosxFechaxEmpresa = async (arrayDate, idEmpresa) => {
+		try {
+			const { data } = await PTApi.get(`/venta/get-ventas-x-fecha/${idEmpresa}`, {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+			setdataVentasxMes(agruparVentasPorMes(data.ventas));
+			// console.log({ data: agruparVentasPorMes(data.ventas) });
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerVentasxFechaxEmpresa,
+		obtenerIngresosxFechaxEmpresa,
 		dataVentasxMes,
 	};
 };

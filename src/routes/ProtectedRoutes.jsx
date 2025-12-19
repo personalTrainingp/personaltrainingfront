@@ -422,8 +422,8 @@ export default function ProtectedRoutes() {
                         <Route path='gestion-egresos' element={<GestionFyG/>}/>
 					}
 					{
-						sections.find(e=>e.url==='/gestion-aporte')&&
-                        <Route path='gestion-aporte' element={<GestionAporte/>}/>
+						sections.find(e=>e.url==='/gestion-ingresos')&&
+                        <Route path='gestion-ingresos' element={<GestionAporte/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/gestion-empleados-activo')&&
