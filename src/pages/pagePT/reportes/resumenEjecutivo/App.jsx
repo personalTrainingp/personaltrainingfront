@@ -17,6 +17,7 @@ import VigentesTable from "./components/VigentesTable";
 import { VigentesResumenMensual } from "./components/VigentesResumenMensual";
 import { ProductosResumenMensual } from "./components/ProductosResumenMensual";
 import { useResumenEjecutivoStore } from "./useResumenEjecutivoStore";
+import { MESES } from './hooks/useResumenUtils';
 
 export const App = ({ id_empresa }) => {
   const store = useResumenEjecutivoStore(id_empresa);
@@ -56,8 +57,9 @@ export const App = ({ id_empresa }) => {
       <Row className="mb-3">
         <Col lg={12}>
           <RenovacionesPorVencer
-            renewals={renewals} daysThreshold={15}
-            title="Renovaciones próximas a vencer (≤ 15 días)"
+            renewals={renewals}
+            daysThreshold={9999}
+            title={`Renovaciones próximas a vencer: ${String(MESES[selectedMonth - 1] || "").toUpperCase()} (1 - ${cutDay})`}
             excludeZeroAmount showSummary pgmNameById={pgmNameById}
           />
         </Col>

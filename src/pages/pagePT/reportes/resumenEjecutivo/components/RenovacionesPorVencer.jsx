@@ -1,18 +1,18 @@
-import React, { useMemo,useState } from "react";
+import React, { useMemo, useState } from "react";
 
 export default function RenovacionesPorVencer({
   renewals = [],
   daysThreshold = 15,
   title = "Renovaciones próximas a vencer",
-  maxRows = 50,
+  maxRows = 100,
   emptyMessage = "No se encontraron renovaciones dentro del rango seleccionado.",
   excludeZeroAmount = true,
   showSummary = true,
   onRowClick,
-   pgmNameById = {},
-   startCollapsed=true
+  pgmNameById = {},
+  startCollapsed = true
 }) {
-  const [isOpen,setIsOpen]=useState(!startCollapsed)
+  const [isOpen, setIsOpen] = useState(!startCollapsed)
 
   const parseDateOnly = (v) => {
     if (!v) return null;
@@ -41,10 +41,10 @@ export default function RenovacionesPorVencer({
   const formatDate = (date) =>
     date
       ? new Intl.DateTimeFormat("es-PE", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }).format(date)
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }).format(date)
       : "-";
 
   const formatMoney = (value) =>
@@ -54,7 +54,6 @@ export default function RenovacionesPorVencer({
       minimumFractionDigits: 2,
     }).format(Number(value || 0));
 
-  /* ======================== Normalización ======================== */
 
   const normalized = useMemo(() => {
     return (renewals || []).map((item, idx) => {
@@ -68,7 +67,6 @@ export default function RenovacionesPorVencer({
           ? Math.round(item.dias_restantes)
           : daysBetweenToday(expiration);
 
-      // 👇 intenta resolver el nombre del programa por varias rutas
       const id_pgm = item?.id_pgm ?? item?.idPgm ?? item?.programaId ?? null;
 
       const planResolved =
@@ -79,7 +77,7 @@ export default function RenovacionesPorVencer({
         item?.tb_programa_training?.name_pgm ||
         item?.tb_programa?.name_pgm ||
         item?.tb_programaTraining?.name_pgm ||
-        (id_pgm && pgmNameById?.[id_pgm]) ||     // 👈 fallback por id_pgm
+        (id_pgm && pgmNameById?.[id_pgm]) ||
         (id_pgm ? `PGM ${id_pgm}` : "-");
 
       return {
@@ -90,7 +88,7 @@ export default function RenovacionesPorVencer({
           item?.nombre_cliente ||
           "SIN NOMBRE"
         ),
-        plan: planResolved,                        
+        plan: planResolved,
         expiration,
         remainingDays: remaining,
         amount: Number(item?.monto ?? item?.monto_renovacion ?? item?.montoPendiente ?? 0),
@@ -98,7 +96,7 @@ export default function RenovacionesPorVencer({
         notes: item?.notas || item?.comentarios || "",
       };
     });
-  }, [renewals, pgmNameById]); 
+  }, [renewals, pgmNameById]);
 
   const hasThreshold = Number.isFinite(Number(daysThreshold));
   const effectiveThreshold = hasThreshold ? Number(daysThreshold) : Infinity;
@@ -152,8 +150,8 @@ export default function RenovacionesPorVencer({
       fontSize: 25,
       fontWeight: 800,
       letterSpacing: 0.4,
-textAlign: "center",
-   },
+      textAlign: "center",
+    },
     bar: {
       display: "flex",
       flexWrap: "wrap",
@@ -278,7 +276,7 @@ textAlign: "center",
                 <span>🟠 Vence hoy:</span> <strong>{summary.hoy}</strong>
               </span>
               <span style={styles.chip}>
-                <span>🟡 ≤ {daysThreshold} días:</span> <strong>{summary.proximos}</strong>
+                <span>🟡 ≤  días:</span> <strong>{summary.proximos}</strong>
               </span>
               <span style={styles.chip}>
                 <span>Total listado:</span> <strong>{summary.total}</strong>
