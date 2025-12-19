@@ -27,6 +27,7 @@ const GestionProveedores = lazy(() => import('../pages/pagePT/GestProveedores'))
 const GestionProductos = lazy(() => import('../pages/pagePT/GestProductos'));
 const GestionProgramas = lazy(() => import('../pages/pagePT/GestProgramas'));
 const GestionFyG = lazy(() => import('../pages/pagePT/GestGastos'));
+const GestionAporte = lazy(() => import('../pages/pagePT/GestionAportes'));
 const OrdenCompra = lazy(() => import('../pages/pagePT/GestGastos/ordenCompra'));
 const GestionEmpleados = lazy(() => import('../pages/pagePT/GestEmpleados'));
 const GestionUsuario = lazy(() => import('../pages/pagePT/GestAuthUser'));
@@ -417,8 +418,12 @@ export default function ProtectedRoutes() {
                         <Route path='orden-compra' element={<OrdenCompra/>}/>
 					}
 					{
-						sections.find(e=>e.url==='/gestion-gastosF-gastosV')&&
-                        <Route path='gestion-gastosF-gastosV' element={<GestionFyG/>}/>
+						sections.find(e=>e.url==='/gestion-egresos')&&
+                        <Route path='gestion-egresos' element={<GestionFyG/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/gestion-aporte')&&
+                        <Route path='gestion-aporte' element={<GestionAporte/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/gestion-empleados-activo')&&

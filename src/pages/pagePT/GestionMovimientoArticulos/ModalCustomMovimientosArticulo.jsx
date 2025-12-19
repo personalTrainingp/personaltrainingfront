@@ -21,7 +21,9 @@ export const ModalCustomMovimientosArticulo = ({show=true, onHide, id=0, movimie
     const { dataZonas, obtenerZonas } = useTerminoStore()   
     const onSubmitMovimientoArticulo= ()=>{
       if(id==0){
-        postMovimientoArticulo({...formState, id_articulo: idArticulo}, idArticulo, movimiento, idEmpresa)
+        console.log({...formState}, idArticulo, movimiento, idEmpresa);
+        
+        postMovimientoArticulo({...formState}, idArticulo, movimiento, idEmpresa)
       }
       else{
         updateMovimientoArticulo(id, {...formState, id_articulo: idArticulo}, movimiento, idArticulo, idEmpresa)

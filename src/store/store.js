@@ -26,6 +26,7 @@ import { ContratoProvSlice } from '@/pages/pagePT/ContratosProveedores/ContratoP
 import { MovimientosSlice } from '@/pages/pagePT/GestionMovimientoArticulos/MovimientosSlice';
 import { ArticuloSlice } from '@/pages/pagePT/GestInventario/store/ArticulosSlice';
 import { ProductoSlice } from '@/pages/pagePT/GestProductos/store/ProductoSlice';
+import { AporteSlice } from '@/pages/pagePT/GestionAportes/Store/AporteSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -56,6 +57,7 @@ export const store = configureStore({
 		MOVIMIENTO: MovimientosSlice.reducer,
 		ARTICULO: ArticuloSlice.reducer,
 		PRODUCTO: ProductoSlice.reducer,
+		APORTE: AporteSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

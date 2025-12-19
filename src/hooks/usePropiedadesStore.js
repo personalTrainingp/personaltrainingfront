@@ -97,7 +97,7 @@ export const TerminosOnShow = (show) => {
 	const dataKardexMovimiento = useFetchTerminosOnShow(show, 'kardex');
 	const dataSubOrigen = useFetchTerminosOnShow(show, 'venta', 'sub-origen');
 	const dataVendedores = useFetchTerminosOnShow(show, 'empleados-departamento', 'vendedores');
-	
+
 	const dataEstadosBoleanos = [{ value: 1, label: 'Activo' }];
 	const dataEmpresas = [
 		{ label: 'CHANGE', value: 598 },
@@ -133,6 +133,21 @@ export const TerminosOnShow = (show) => {
 		// { value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
 		//{ value: 1470, label: 'CORPORATIVOS BBVA' },
 	];
+	console.log(
+		dataKardexMovimiento,
+		dataClientesChange,
+		dataEstadoContrato,
+		obtenerZonasxEmpresa,
+		obtenerClientesxEmpresa,
+		dataZonasxEmpresa,
+		dataRolUsuario,
+		dataEstadosBoleanos,
+		dataEmpresas,
+		dataOrigen,
+		dataSubOrigen,
+		dataVendedores
+	);
+
 	return {
 		dataKardexMovimiento,
 		dataClientesChange,
