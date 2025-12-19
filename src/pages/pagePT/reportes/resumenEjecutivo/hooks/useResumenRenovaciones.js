@@ -1,6 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import PTApi from '@/common/api/PTApi';
 import { getFechaFin, norm } from './useResumenUtils';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByIdDynamic) => {
     const { year, selectedMonth, cutDay } = fechas;
@@ -9,16 +12,93 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
     const [renewalsApi, setRenewalsApi] = useState([]);
     const [vigentesRows, setVigentesRows] = useState([]);
     const [vigentesTotal, setVigentesTotal] = useState(0);
+    const [vencimientosFiltrados, setVencimientosFiltrados] = useState(null);
 
     useEffect(() => {
         fetchVencimientos();
         fetchRenewalsApi();
         fetchVigentes();
+        fetchVencimientosFiltrados();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id_empresa, year, selectedMonth, cutDay]);
+
+    const fetchVencimientosFiltrados = async () => {
+        try {
+            // 1. Determinar el último día real del mes seleccionado
+            const lastDayOfMonth = new Date(year, selectedMonth, 0).getDate();
+
+            // LOGICA CLAVE: Si el slider está al final del mes, NO filtramos.
+            // Devolvemos NULL para que la Tabla use el valor del Mapa (54)
+            if (parseInt(cutDay) >= lastDayOfMonth) {
+                console.log("Slider al final del mes: Usando valor del resumen general.");
+                setVencimientosFiltrados(null);
+                return;
+            }
+
+            // Si el slider no está al final, pedimos la lista para filtrar
+            const { data } = await PTApi.get(`/reporte/reporte-seguimiento-membresia/${id_empresa || 598}`, {
+                params: {
+                    year,
+                    selectedMonth,
+                    cutDay: lastDayOfMonth, // Pedimos TODO el mes al backend
+                    isClienteActive: false
+                }
+            });
+
+            if (data?.newMembresias && Array.isArray(data.newMembresias)) {
+
+                // Agrupar por cliente (Última fecha)
+                const clientMap = new Map();
+                data.newMembresias.forEach(item => {
+                    const clientId = item.id_cli || item.tb_ventum?.id_cli || item.tb_ventum?.tb_cliente?.id_cli;
+                    const key = clientId || `unk_${Math.random()}`;
+                    const dateStr = item.fecha_fin_new || item.fec_fin_mem;
+                    if (!dateStr) return;
+                    const d = dayjs(dateStr);
+                    if (!d.isValid()) return;
+
+                    if (!clientMap.has(key)) {
+                        clientMap.set(key, d);
+                    } else {
+                        const existing = clientMap.get(key);
+                        if (d.isAfter(existing)) clientMap.set(key, d);
+                    }
+                });
+
+                // Contar según el slider
+                let count = 0;
+                clientMap.forEach((maxDate) => {
+                    const mYear = maxDate.year();
+                    const mMonth = maxDate.month() + 1; // dayjs month es 0-index
+                    const mDay = maxDate.date();
+
+                    if (mYear === parseInt(year) &&
+                        mMonth === parseInt(selectedMonth) &&
+                        mDay <= parseInt(cutDay)) {
+                        count++;
+                    }
+                });
+
+                setVencimientosFiltrados(count);
+
+            } else {
+                setVencimientosFiltrados(0);
+            }
+        } catch (error) {
+            console.error(error);
+            setVencimientosFiltrados(null); // En error, fallback al mapa
+        }
+    };
 
     const fetchVencimientos = async () => {
         try {
-            const { data } = await PTApi.get('/venta/vencimientos-mes', { params: { year, id_empresa: id_empresa || 598 } });
+            // Este endpoint es el que trae el 54 correcto
+            const { data } = await PTApi.get('/venta/vencimientos-mes', {
+                params: {
+                    year,
+                    id_empresa: id_empresa || 598
+                }
+            });
             if (data.ok && Array.isArray(data.data)) {
 
                 const monthParamMap = {
@@ -45,7 +125,7 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
                         porcentaje: (typeof row["RENOVACIONES %"] === 'number')
                             ? `${row["RENOVACIONES %"].toFixed(1)}%`
                             : row["RENOVACIONES %"],
-                        vencimientos: row["VENCIMIENTOS POR MES"],
+                        vencimientos: row["VENCIMIENTOS POR MES"], // AQUÍ VIENE EL 54
                         pendiente: row["PENDIENTE DE RENOVACIONES"],
                         acumulado: row["ACUMULADO CARTERA"]
                     };
@@ -101,6 +181,7 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
     return {
         mapaVencimientos,
         renewals: renewalsApi.length ? renewalsApi : renewalsLocal,
-        vigentesRows, vigentesTotal, vigentesBreakdown
+        vigentesRows, vigentesTotal, vigentesBreakdown,
+        vencimientosFiltrados
     };
 };

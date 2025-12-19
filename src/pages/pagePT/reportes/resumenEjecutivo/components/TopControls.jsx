@@ -174,10 +174,10 @@ export function TopControls({
     const currentMonth = today.getMonth() + 1;
     const currentYear = today.getFullYear();
     const lastDayTarget = daysInMonth(year, newMonth);
-    let nextCut =
-      newMonth === currentMonth && year === currentYear
-        ? Math.min(today.getDate(), lastDayTarget)
-        : Math.min(cutDay, lastDayTarget);
+    let nextCut = Math.min(cutDay, lastDayTarget);
+    // newMonth === currentMonth && year === currentYear
+    //   ? Math.min(today.getDate(), lastDayTarget)
+    //   : Math.min(cutDay, lastDayTarget);
     const nextInit = Math.min(initDay, nextCut);
     setSelectedMonth(newMonth);
     setCutDay(nextCut);
@@ -376,8 +376,8 @@ export function TopControls({
               const currentDay = today.getDate();
               const lastDayTarget = daysInMonth(year, selectedMonth);
               let next = Math.min(val, lastDayTarget);
-              if (selectedMonth === currentMonth)
-                next = Math.min(next, currentDay);
+              // if (selectedMonth === currentMonth)
+              //   next = Math.min(next, currentDay);
               setCutDay(next);
               if (initDay > next) setInitDay(next);
             }}
@@ -393,10 +393,10 @@ export function TopControls({
 
         {/* Reloj + Cierre */}
         <RealTimeClock />
-          <div style={rateBoxStyle} title="Tipo de cambio USD a PEN">
+        <div style={rateBoxStyle} title="Tipo de cambio USD a PEN">
           <div
             style={{
-              display: "flex",      
+              display: "flex",
               alignItems: "center",
               width: "50%",
               gap: 12,
@@ -413,7 +413,7 @@ export function TopControls({
               {formattedRate}
             </span>
           </div>
-          
+
           {usingFallback ? (
             <span style={miniTextStyle}>
               Valor de referencia manual {`S/ ${FALLBACK_USD_PEN_RATE.toFixed(3)}`}
@@ -434,7 +434,7 @@ export function TopControls({
         >
           Cierre
         </button>
-        
+
       </div>
       <div style={dividerStyle} />
       {/* FILA INFERIOR */}
@@ -458,7 +458,7 @@ export function TopControls({
             {vigentesCount}
           </span>
         </div>
-      
+
       </div>
     </div>
   );
