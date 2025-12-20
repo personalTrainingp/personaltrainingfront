@@ -8,6 +8,7 @@ import { useVentasStore } from './hook/useVentasStore';
 import { TableVentas } from './TableVentas';
 import { TableGasto } from './TableGasto';
 import { TableFinal } from './TableFinal';
+import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo';
 
 export const DatatableEgresos = ({
 	id_enterprice,
@@ -21,11 +22,12 @@ export const DatatableEgresos = ({
 	const [dataModal, setDataModal] = useState(null);
 	const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false);
 	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos } = useFlujoCajaStore();
-	const { obtenerVentasxFechaxEmpresa, dataVentasxMes } = useVentasStore()
+	const { obtenerVentasxFechaxEmpresa, dataVentasxMes, obtenerIngresosxFechaxEmpresa } = useVentasStore()
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if(id_enterprice || arrayRangeDate){
-			obtenerVentasxFechaxEmpresa(arrayRangeDate, id_enterprice)
+			// obtenerVentasxFechaxEmpresa(arrayRangeDate, id_enterprice)
+			obtenerIngresosxFechaxEmpresa(arrayRangeDate, id_enterprice)
 		}
 	}, [id_enterprice, arrayRangeDate])
 	
@@ -88,33 +90,9 @@ useEffect(() => {
 		// dispatch(onSetRangeDate(arrayRangeDate));
 	}, [nombre_empresa]);
 
-	// 6) Calcular totales por grupo (sumando cada sub-item en vez de usar monto_total)
-	const totalesPorGrupo = useMemo(() => {
-		return dataGastosxANIO.map((g) => {
-			// inicializamos un array de 12 meses en cero
-			const mesesSuma = Array.from({ length: 12 }, () => 0);
-
-			g.conceptos.forEach((concepto) => {
-				concepto.items.forEach(({ mes, items }) => {
-					// items aquí es el array de gastos de ese mes; sumamos cada gasto[i].monto (o el campo que corresponda)
-					const sumaDelMes = items.reduce((acc, gasto) => {
-						return acc + (gasto.monto*gasto.tc || 0);
-					}, 0);
-					mesesSuma[mes - 1] += sumaDelMes;
-				});
-			});
-
-			const totalAnual = mesesSuma.reduce((sum, m) => sum + m, 0);
-			return {
-				grupo: g.grupo,
-				mesesSuma,
-				totalAnual,
-				conceptos: g.conceptos,
-			};
-		});
-	}, [dataGastosxANIO]);
-
-	
+	const totalesPorGrupo = useMemo(()=>{
+		return TotalesPorGrupo(dataGastosxANIO).dataTotal
+	}, [dataGastosxANIO])
 	
 	// justo después de tu useMemo que calcula totalPorMes y totalGeneral
 		const prestamosGroup = totalesPorGrupo.find(
@@ -126,23 +104,11 @@ useEffect(() => {
 	);
 	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
 	const { totalPorMes, totalGeneral } = useMemo(() => {
-		// otro array de 12 meses en cero
-		const totales = Array.from({ length: 12 }, () => 0);
-
-		dataGastosxANIO.forEach((grupo) => {
-			grupo.conceptos.forEach((concepto) => {
-				concepto.items.forEach(({ mes, items }) => {
-					// sumamos aquí cada gasto.monto dentro de items
-					const sumaDelMes = items.reduce((acc, gasto) => {
-						return acc + (gasto.monto || 0);
-					}, 0);
-					totales[mes - 1] += sumaDelMes;
-				});
-			});
-		});
-
-		const sumaAnual = totales.reduce((acc, v) => acc + v, 0);
-		return { totalPorMes: totales, totalGeneral: sumaAnual };
+		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataGastosxANIO)
+		return {
+			totalGeneral,
+			totalPorMes
+		}
 	}, [dataGastosxANIO]);
 	
 	// 8) Funciones para abrir/cerrar el modal
@@ -227,74 +193,3 @@ useEffect(() => {
 	);
 };
 
-
-function unirPorMes(data) {
-  const resultado = [];
-
-  data.forEach(({ items }) => {
-    items.forEach(({ mes, monto_total, items: subitems }) => {
-      let existente = resultado.find(r => r.mes === mes);
-      if (!existente) {
-        existente = { mes, monto_total: 0, items: [] };
-        resultado.push(existente);
-      }
-      existente.monto_total += monto_total;
-      existente.items.push(...subitems);
-    });
-  });
-
-  return resultado;
-}
-function totalesGrupo(dataGastoXgrpxconcepto) {
-	return useMemo(() => {
-		return dataGastoXgrpxconcepto.map((g) => {
-			// inicializamos un array de 12 meses en cero
-			const mesesSuma = Array.from({ length: 12 }, () => 0);
-
-			g.conceptos.forEach((concepto) => {
-				concepto.items.forEach(({ mes, items }) => {
-					// items aquí es el array de gastos de ese mes; sumamos cada gasto[i].monto (o el campo que corresponda)
-					const sumaDelMes = items.reduce((acc, gasto) => {
-						return acc + (gasto.monto*gasto.tc || 0);
-					}, 0);
-					mesesSuma[mes - 1] += sumaDelMes;
-				});
-			});
-
-			const totalAnual = mesesSuma.reduce((sum, m) => sum + m, 0);
-			return {
-				grupo: g.grupo,
-				mesesSuma,
-				totalAnual,
-				conceptos: g.conceptos,
-			};
-		});
-	}, [dataGastoXgrpxconcepto]);
-	
-}
-
-function totalGeneralYsumaTotal(dataGasto) {
-		const { totalPorMes, totalGeneral } = useMemo(() => {
-		// otro array de 12 meses en cero
-		const totales = Array.from({ length: 12 }, () => 0);
-
-		dataGasto.forEach((grupo) => {
-			grupo.conceptos.forEach((concepto) => {
-				concepto.items.forEach(({ mes, items }) => {
-					// sumamos aquí cada gasto.monto dentro de items
-					const sumaDelMes = items.reduce((acc, gasto) => {
-						return acc + (gasto.monto || 0);
-					}, 0);
-					totales[mes - 1] += sumaDelMes;
-				});
-			});
-		});
-
-		const sumaAnual = totales.reduce((acc, v) => acc + v, 0);
-		return { totalPorMes: totales, totalGeneral: sumaAnual };
-	}, [dataGasto]);
-	return {
-		totalPorMes,
-		totalGeneral
-	}
-}

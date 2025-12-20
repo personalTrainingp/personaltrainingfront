@@ -19,7 +19,7 @@ export const TableVentas = ({dataVentasxMes=[], background, bgTotal, mesesSelecc
   )
   const totalProductos18 = dataVentasxMes.reduce(
     (acc, item) => acc + (Number(item?.detalle_total_productos_18) || 0),
-    0
+    0W
   )
   const totalSuma = totalMembresias + totalProductos17+totalProductos18 + totalIngresoExtraord
   const ingExtraCHANGE = [
