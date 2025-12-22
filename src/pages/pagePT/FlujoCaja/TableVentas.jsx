@@ -1,74 +1,68 @@
 import { NumberFormatMoney } from '@/components/CurrencyMask'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Table } from 'react-bootstrap'
+import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo'
 
-export const TableVentas = ({dataVentasxMes=[], background, bgTotal, mesesSeleccionadosNums, mesesNombres}) => {
-	  // Total de membresías
-  
-  const totalIngresoExtraord = dataVentasxMes.reduce(
-    (acc, item) => acc + (Number(item?.detalle_total_ingextraordCHANGE) || 0),
-    0
-  )
-	  const totalMembresias = dataVentasxMes.reduce(
-    (acc, item) => acc + (Number(item?.detalletotal_membresia) || 0),
-    0
-  )
-  const totalProductos17 = dataVentasxMes.reduce(
-    (acc, item) => acc + (Number(item?.detalle_total_productos_17) || 0),
-    0
-  )
-  const totalProductos18 = dataVentasxMes.reduce(
-    (acc, item) => acc + (Number(item?.detalle_total_productos_18) || 0),
-    0W
-  )
-  const totalSuma = totalMembresias + totalProductos17+totalProductos18 + totalIngresoExtraord
-  const ingExtraCHANGE = [
-	{ monto_tarifa: 0, mes: '2025-01', mesNumero: 1 },
-	{ monto_tarifa: 0, mes: '2025-02', mesNumero: 2 },
-	{ monto_tarifa: 0, mes: '2025-03', mesNumero: 3 },
-	{ monto_tarifa: 0, mes: '2025-04',mesNumero: 4 },
-	{ monto_tarifa: 0, mes: '2025-05', mesNumero: 5 },
-	{ monto_tarifa: 6206.67, mes: '2025-06', mesNumero: 6 },
-	{ monto_tarifa: 2941.74, mes: '2025-07', mesNumero: 7 },
-	{ monto_tarifa: 7735.49, mes: '2025-08', mesNumero: 8 },
-	{ monto_tarifa: 4464.22, mes: '2025-09', mesNumero: 9 },
-	{ monto_tarifa: 6781.26, mes: '2025-10', mesNumero: 10 },
-	{ monto_tarifa: 10513.91, mes: '2025-11', mesNumero: 11 },
-	{ monto_tarifa: 0, mes: '2025-12', mesNumero: 12 }
-  ]
-  const dataIngresos = mesesSeleccionadosNums.map(e=>{
-	const mesIngExt = ingExtraCHANGE.find(ex=>ex.mesNumero===e)
-	return {
-		mes: mesIngExt.mes,
-		mesNumero: mesIngExt.mesNumero,
-		montoIngresoExtraord: mesIngExt?.monto_tarifa
-	}
-  })
-  console.log(dataVentasxMes);
+export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSeleccionadosNums, mesesNombres}) => {
+	const totalesPorGrupo = useMemo(()=>{
+		return TotalesPorGrupo(dataIngresosxMes).dataTotal
+	}, [dataIngresosxMes])
+	const { totalPorMes, totalGeneral } = useMemo(() => {
+		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataIngresosxMes)
+		return {
+			totalGeneral,
+			totalPorMes
+		}
+	}, [dataIngresosxMes]);
+		
+  console.log({totalesPorGrupo, totalPorMes, totalGeneral});
   
   return (
     <>
 	<div  className="table-responsive" style={{ width: '95vw' }}>
 		<Table className="tabla-egresos">
-			<thead className={background}>
-							<tr>
-								<th className=" fs-1">
-									<div
-										className={`p-1 rounded rounded-3 ${bgTotal}`}
-										style={{
-										width: 450,
-										hyphens: 'auto',
-										wordBreak: 'break-word',
-										overflowWrap: 'break-word',
-										whiteSpace: 'normal',
-										lineHeight: '1.2',
-										}}
-										
-										lang="es" // Importante para la división correcta de palabras
-									>
-										VENTAS
-									</div>
-									</th>
+			<colgroup>
+					<col style={{ width: 350 }} />
+					{mesesSeleccionadosNums.map(mesNum => (
+					<col key={mesNum} style={{ width: 150 }} />
+					))}
+					<col className={`${bgTotal}`} style={{ width: 150 }} />
+					<col className={`${bgTotal}`} style={{ width: 150 }} />
+				</colgroup>
+				{
+					totalesPorGrupo.map((grp, i, arr)=>{
+						const sumaTotalAnualGrupos = totalesPorGrupo.reduce(
+						(acc, g) => acc + g.totalAnual,
+						0
+						);
+						console.log({grp});
+						
+						return (
+							<React.Fragment key={grp.grupo}>
+													<thead className={bgTotal}>
+						<tr>
+							<th className=" fs-1">
+								<div
+									className={`p-1 rounded rounded-3 ${bgTotal}`}
+									style={{
+									width: 450,
+									hyphens: 'auto',
+									wordBreak: 'break-word',
+									overflowWrap: 'break-word',
+									whiteSpace: 'normal',
+									lineHeight: '1.2',
+									}}
+									
+									lang="es" // Importante para la división correcta de palabras
+								>
+									{(
+									<>
+										{i + 1}. {grp.grupo}
+									</>
+									)}
+								</div>
+								</th>
+
 								{mesesSeleccionadosNums.map(mesNum => (
 								<th
 									key={mesNum}
@@ -87,164 +81,57 @@ export const TableVentas = ({dataVentasxMes=[], background, bgTotal, mesesSelecc
 							</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td className="fw-bold fs-2 sticky-td">
-										<div className="bg-white py-3">
-											MEMBRESIAS
-										</div>
-									</td>
-									{
-										mesesSeleccionadosNums.map(mesNum=>{
-											const montoVenta = dataVentasxMes.find(e=>Number(e.mesNumero)===mesNum)
-											return (
-												<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={montoVenta?.detalletotal_membresia}/>
-													</div>
-												</td>
-											)
-										})
-									}
-											<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={totalMembresias}/>
-													</div>
-												</td>
-											<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={(totalMembresias/totalSuma)*100}/>
-													</div>
-												</td>
-								</tr>
-
-								
-								<tr>
-									<td className="fw-bold fs-2 sticky-td">
-										<div className="bg-white py-3">
-											SUPLEMENTOS
-										</div>
-									</td>
-									{
-										mesesSeleccionadosNums.map(mesNum=>{
-											const montoVenta = dataVentasxMes.find(e=>Number(e.mesNumero)===mesNum)
-											return (
-												<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={montoVenta?.detalle_total_productos_17}/>
-													</div>
-												</td>
-											)
-										})
-									}
-											<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={(totalProductos17)}/>
-													</div>
-												</td>
-											<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={(totalProductos17/totalSuma)*100}/>
-													</div>
-												</td>
-								</tr>
-
-								
-								<tr>
-									<td className="fw-bold fs-2 sticky-td">
-										<div className="bg-white py-3">
-											ACCESORIOS
-										</div>
-									</td>
-									{
-										mesesSeleccionadosNums.map(mesNum=>{
-											const montoVenta = dataVentasxMes.find(e=>Number(e.mesNumero)===mesNum)
-											return (
-												<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={montoVenta?.detalle_total_productos_18}/>
-													</div>
-												</td>
-											)
-										})
-									}
-											<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={totalProductos18}/>
-													</div>
-												</td>
-											<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={(totalProductos18/totalSuma)*100}/>
-													</div>
-												</td>
-								</tr>
-								
-								<tr>
-									<td className="fw-bold fs-2 sticky-td">
-										<div className="bg-white py-3">
-											ING. EXTRAORD.
-										</div>
-									</td>
-									{
-										mesesSeleccionadosNums.map(mesNum=>{
-											const montoVenta = dataVentasxMes.find(e=>Number(e.mesNumero)===mesNum)
-											return (
-												<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={montoVenta?.detalle_total_ingextraordCHANGE}/>
-													</div>
-												</td>
-											)
-										})
-									}
-											<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={(totalIngresoExtraord)}/>
-													</div>
-												</td>
-											<td className="fw-bold fs-2 sticky-td">
-													<div className="bg-white py-3 text-right">
-														<NumberFormatMoney amount={(totalIngresoExtraord/totalSuma)*100}/>
-													</div>
-												</td>
-								</tr>
-								<tr style={{fontSize: '31px'}}>
-									<td className={`fw-bolder fs-1 ${bgTotal}`}>
-									<div className={`${bgTotal}`} style={{fontSize: '31px'}}>
-										TOTAL
-										{/* <br/>
-										% REPRESENTACION */}
-									</div>
-									</td>
-									{mesesSeleccionadosNums.map(mesNum => {
-										const montoMes = dataVentasxMes.find(e=>Number(e.mesNumero)===mesNum)
-										return(
-											<td
-												key={mesNum}
-												className="text-center fw-bolder"
-												
-											>
-												<div style={{ width: 150 }} className='bg-porsiaca text-white text-right'>
-													<NumberFormatMoney amount={montoMes?.detalle_total_productos_18+montoMes?.detalle_total_productos_17+montoMes?.detalletotal_membresia} />
-													{/* <br/>
-													{pctMesGrupo}% */}
+								{grp.conceptos?.filter(e=>e.items.reduce(
+															(sum, it) => sum + (it.lenthItems || 0),
+															0
+									)!==0).map((c, idx) => {
+									const totalConcepto = c.items.reduce(
+									(sum, it) => sum + (it.monto_total || 0),
+									0
+									);
+									
+									const cantidadMovimiento = c.items.reduce(
+									(sum, it) => sum + (it.lenthItems || 0),
+									0
+									);
+									const pctConcepto = grp.totalAnual > 0
+									? ((totalConcepto / grp.totalAnual) * 100).toFixed(2)
+									: '0.00';
+									console.log({mesesSeleccionadosNums});
+									
+									return (
+									<tr key={c.concepto}>
+										<td className="fw-bold fs-2 sticky-td" style={{color: `${bgTotal}`}}>
+											<div className="bg-white py-3">
+											{idx + 1}. {c.concepto}
+											<br/>
+											<div >
+												({cantidadMovimiento})
+											</div>
+											</div>
+										</td>
+										{mesesSeleccionadosNums.map(mesNum => {
+										const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
+										return (
+											<td key={mesNum} className="text-center fs-1">
+												<div
+													className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
+													style={{ width: 150 }}
+												>
+													<NumberFormatMoney amount={itemMes.monto_total} />
 												</div>
 											</td>
-										)
-									}
-									)}
-									<td className="text-center fw-bolder">
-									<div className='bg-porsiaca text-right text-white' style={{fontSize: '40px'}}>
-										<NumberFormatMoney amount={totalMembresias+totalProductos17+totalProductos18 + totalIngresoExtraord} />
-									</div>
-									</td>
-									<td className="text-center fw-bolder" style={{fontSize: '40px'}}>
-									<div className='bg-porsiaca text-right text-white ml-3'>
-										100.00
-									</div>
-									</td>
-								</tr>
+										);
+										})}
+									</tr>
+									);
+								})}
 							</tbody>
+
+							</React.Fragment>
+						)
+					})
+				}
 		</Table>
 	</div>
     </>

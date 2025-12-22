@@ -34,6 +34,8 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
     (acc, item) => acc + (Number(item?.detalle_total_ingextraordCHANGE) || 0),
     0
   )
+  console.log({gruposSinPrestamos});
+  
   return (
     <div className="table-responsive" style={{ width: '95vw' }}>
 		
@@ -306,13 +308,15 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
             {mesesSeleccionadosNums.map(mesNum => (
               <td key={mesNum} className="text-center fs-2 fw-bold">
 				<div className={`bg-porsiaca text-right px-2`} onClick={()=>onViewMoved(dataGastosxANIO, mesNum, 'TOTALES', '')}>
-                	<NumberFormatMoney amount={totalPorMes[mesNum - 1]-prestamosGroup.mesesSuma[mesNum - 1]-gruposSinPrestamos.find(e=>e.grupo==='COMPRA PRODUCTOS/ACTIVOS')?.mesesSuma[mesNum - 1]} />
+                	{/* <NumberFormatMoney amount={totalPorMes[mesNum - 1]-prestamosGroup.mesesSuma[mesNum - 1]-gruposSinPrestamos.find(e=>e.grupo==='COMPRA PRODUCTOS/ACTIVOS')?.mesesSuma[mesNum - 1]} /> */}
+                	<NumberFormatMoney amount={totalPorMes[mesNum - 1]-gruposSinPrestamos.find(e=>e.grupo==='COMPRA PRODUCTOS/ACTIVOS')?.mesesSuma[mesNum - 1]} />
 				</div>
               </td>
             ))}
             <td className="text-center fw-bolder fs-1">
 				<div className='bg-porsiaca text-right text-white'>
-              		<NumberFormatMoney amount={totalGeneral-prestamosGroup.totalAnual-117406.70} />
+              		<NumberFormatMoney amount={totalGeneral-117406.70} />
+              		{/* <NumberFormatMoney amount={totalGeneral-prestamosGroup.totalAnual-117406.70} /> */}
 				</div>
             </td>
             <td className="text-center fw-bolder fs-1">
@@ -352,7 +356,8 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 			</td>
             {mesesSeleccionadosNums.map(mesNum => {
 				const montoMes = dataVentasxMes.find(e=>Number(e.mesNumero)===mesNum)
-				const Utilidad = utilidad( montoMes?.detalle_total_productos_18+montoMes?.detalle_total_productos_17+montoMes?.detalletotal_membresia+montoMes?.detalle_total_ingextraordCHANGE, totalPorMes[mesNum - 1]-prestamosGroup.mesesSuma[mesNum - 1])
+				const Utilidad = utilidad( montoMes?.detalle_total_productos_18+montoMes?.detalle_total_productos_17+montoMes?.detalletotal_membresia+montoMes?.detalle_total_ingextraordCHANGE, totalPorMes[mesNum - 1])
+				// const Utilidad = utilidad( montoMes?.detalle_total_productos_18+montoMes?.detalle_total_productos_17+montoMes?.detalletotal_membresia+montoMes?.detalle_total_ingextraordCHANGE, totalPorMes[mesNum - 1]-prestamosGroup.mesesSuma[mesNum - 1])
 				return (
 				  <td key={mesNum} className="text-center fs-2 fw-bold">
 					<div className={`bg-porsiaca text-right  px-2 ${Utilidad.espositivo?'text-ISESAC':'text-change'}`} onClick={()=>onViewMoved(dataGastosxANIO, mesNum, 'TOTALES', '')}>
@@ -368,14 +373,14 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 				<div className={`bg-porsiaca text-right ${utilidad( totalMembresias+
 						totalProductos17+
 						totalProductos18+
-						totalIngresoExtraord,totalGeneral-prestamosGroup.totalAnual).espositivo?'text-ISESAC':'text-white'}`}>
+						totalIngresoExtraord,totalGeneral-prestamosGroup?.totalAnual).espositivo?'text-ISESAC':'text-white'}`}>
               		{utilidad( totalMembresias+
 						totalProductos17+
 						totalProductos18+
-						totalIngresoExtraord,totalGeneral-prestamosGroup.totalAnual).espositivo?'+':''}<NumberFormatMoney amount={utilidad( totalMembresias+
+						totalIngresoExtraord,totalGeneral-prestamosGroup?.totalAnual).espositivo?'+':''}<NumberFormatMoney amount={utilidad( totalMembresias+
 						totalProductos17+
 						totalProductos18+
-						totalIngresoExtraord,totalGeneral-prestamosGroup.totalAnual).utilidad} />
+						totalIngresoExtraord,totalGeneral-prestamosGroup?.totalAnual).utilidad} />
 				</div>
             </td>
             <td className="text-center fw-bolder fs-1">

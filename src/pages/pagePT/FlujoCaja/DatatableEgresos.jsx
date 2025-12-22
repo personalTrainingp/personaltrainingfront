@@ -13,7 +13,6 @@ import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo';
 export const DatatableEgresos = ({
 	id_enterprice,
 	anio,
-	nombre_empresa,
 	background,
 	arrayRangeDate,
 	bgMultiValue,
@@ -22,7 +21,7 @@ export const DatatableEgresos = ({
 	const [dataModal, setDataModal] = useState(null);
 	const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false);
 	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos } = useFlujoCajaStore();
-	const { obtenerVentasxFechaxEmpresa, dataVentasxMes, obtenerIngresosxFechaxEmpresa } = useVentasStore()
+	const { obtenerVentasxFechaxEmpresa, dataIngresosxMes, obtenerIngresosxFechaxEmpresa } = useVentasStore()
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if(id_enterprice || arrayRangeDate){
@@ -51,8 +50,7 @@ export const DatatableEgresos = ({
 	);
 
 	// 2) Crear opciones para react-select (value=1..12, label=“ENERO” etc)
-	const monthOptions = useMemo(
-		() =>
+	const monthOptions = useMemo(() =>
 			mesesNombres.map((nombre, idx) => ({
 				value: idx + 1,
 				label: nombre,
@@ -62,42 +60,29 @@ export const DatatableEgresos = ({
 
 	// 3) Estado local para los meses seleccionados (inicialmente, todos)
 	const [selectedMonths, setSelectedMonths] = useState(() => {
-  // intenta leer un array de valores [1,2,3...]
-  const stored = localStorage.getItem('selectedMonths')
-  if (stored) {
-    const vals = JSON.parse(stored)
-    // reconstruye el array de opciones a partir de los valores guardados
-    return monthOptions.filter(opt => vals.includes(opt.value))
-  }
-  // si no hay nada en storage, selecciona todos por defecto
-  return monthOptions
-});
+		// intenta leer un array de valores [1,2,3...]
+		const stored = localStorage.getItem('selectedMonths')
+		if (stored) {
+			const vals = JSON.parse(stored)
+			// reconstruye el array de opciones a partir de los valores guardados
+			return monthOptions.filter(opt => vals.includes(opt.value))
+		}
+		// si no hay nada en storage, selecciona todos por defecto
+		return monthOptions
+	});
 // 4) Persiste en localStorage cada vez que cambie la selección
-useEffect(() => {
-  const vals = selectedMonths.map(opt => opt.value)
-  localStorage.setItem('selectedMonths', JSON.stringify(vals))
-}, [selectedMonths])
+	useEffect(() => {
+		const vals = selectedMonths.map(opt => opt.value)
+		localStorage.setItem('selectedMonths', JSON.stringify(vals))
+	}, [selectedMonths])
 	// 4) Cada vez que cambia empresa o año, recargar datos
 	useEffect(() => {
 		obtenerGastosxANIO(anio, id_enterprice);
-		// obtenerVentasxANIO(anio, id_enterprice)
 	}, [anio, id_enterprice]);
-
-	// 5) Al cambiar nombre_empresa, actualizar subtítulo y rango de fechas
-	useEffect(() => {
-		dispatch(onSetViewSubTitle(nombre_empresa));
-		dispatch(onSetColorView(bgMultiValue));
-		// dispatch(onSetRangeDate(arrayRangeDate));
-	}, [nombre_empresa]);
 
 	const totalesPorGrupo = useMemo(()=>{
 		return TotalesPorGrupo(dataGastosxANIO).dataTotal
 	}, [dataGastosxANIO])
-	
-	// justo después de tu useMemo que calcula totalPorMes y totalGeneral
-		const prestamosGroup = totalesPorGrupo.find(
-		(g) => g.grupo.toUpperCase() === 'PRESTAMOS'
-		) || { mesesSuma: Array(12).fill(0), totalAnual: 0 };
 	// 1) Prepara el array sin “PRESTAMOS”
 	const gruposSinPrestamos = totalesPorGrupo.filter(
 	(g) => g.grupo.toUpperCase() !== 'PRESTAMOS'
@@ -124,7 +109,7 @@ useEffect(() => {
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
 	);
-	const backgroundMultiValue = bgMultiValue;
+	
 	return (
 		<>
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
@@ -149,7 +134,7 @@ useEffect(() => {
 							// Contenedor de las etiquetas seleccionadas ("pills")
 							multiValue: (provided) => ({
 								...provided,
-								backgroundColor: backgroundMultiValue, // fondo rojo para cada etiqueta
+								backgroundColor: bgMultiValue, // fondo rojo para cada etiqueta
 								color: 'white',
 							}),
 							// Texto dentro de cada pill
@@ -162,21 +147,24 @@ useEffect(() => {
 					/>
 				</div>
 				<div className="table-responsive" style={{ width: '95vw' }}>
-					<TableVentas dataVentasxMes={dataVentasxMes} background={background} bgTotal={bgTotal} mesesNombres={mesesNombres} mesesSeleccionadosNums={mesesSeleccionadosNums}/>
+					<p className='text-center' style={{fontSize: '60px'}}>INGRESOS</p>
+					<TableVentas dataIngresosxMes={dataIngresosxMes} background={background} bgTotal={bgTotal} mesesNombres={mesesNombres} mesesSeleccionadosNums={mesesSeleccionadosNums}/>
 					<div>
+					<div>
+					<p className='text-center' style={{fontSize: '60px'}}>EGRESOS</p>
 						<TableGasto 
 							bgMultiValue={bgMultiValue} 
 							bgTotal={bgTotal}  
 							gruposSinPrestamos={gruposSinPrestamos} 
 							mesesNombres={mesesNombres} 
-							mesesSeleccionadosNums={mesesSeleccionadosNums} onOpenModalDetallexCelda={onOpenModalDetallexCelda}
+							mesesSeleccionadosNums={mesesSeleccionadosNums} 
+							onOpenModalDetallexCelda={onOpenModalDetallexCelda}
 							totalPorMes={totalPorMes}
-							prestamosGroup ={prestamosGroup}
 							totalGeneral ={totalGeneral }
 							selectedMonths ={selectedMonths }
-							dataVentasxMes={dataVentasxMes}
+							dataIngresosxMes={dataIngresosxMes}
 							/>
-							{/* <TableFinal bgMultiValue={bgMultiValue} bgTotal={bgTotal} gruposSinPrestamos={gruposSinPrestamos} mesesNombres={mesesNombres} mesesSeleccionadosNums={mesesSeleccionadosNums} prestamosGroup={prestamosGroup} totalGeneral={totalGeneral} totalPorMes={totalPorMes}/> */}
+					</div>
 					</div>
 				</div>
 

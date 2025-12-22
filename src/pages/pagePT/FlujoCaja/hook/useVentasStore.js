@@ -2,6 +2,7 @@ import { PTApi } from '@/common';
 import dayjs, { utc } from 'dayjs';
 import { useState } from 'react';
 import { agruparVentasPorMes } from '../helpers/agruparIngresosPorFecha';
+import { agruparPorGrupoYConcepto } from '../helpers/agrupamientos';
 
 dayjs.extend(utc);
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
@@ -12,6 +13,7 @@ function formatDateToSQLServerWithDayjs(date, isStart = true) {
 }
 export const useVentasStore = () => {
 	const [dataVentasxMes, setdataVentasxMes] = useState([{}]);
+	const [dataIngresosxMes, setdataIngresosxMes] = useState([{}]);
 	const obtenerVentasxFechaxEmpresa = async (arrayDate, idEmpresa) => {
 		try {
 			const { data } = await PTApi.get(`/venta/get-ventas-x-fecha/${idEmpresa}`, {
@@ -38,10 +40,29 @@ export const useVentasStore = () => {
 					],
 				},
 			});
-			console.log({ data });
+			const { data: dataParametrosGastos } = await PTApi.get(
+				`/terminologia/terminologiaxEmpresa/${idEmpresa}/1574`
+			);
+			console.log({ dataParametrosGastos });
 
-			// setdataVentasxMes(agruparVentasPorMes(data.ventas));
-			console.log({ data: agruparVentasPorMes(data.aportes) });
+			const { data: dataTC } = await PTApi.get('/tipoCambio/');
+			const dataTCs = dataTC.tipoCambios.map((e, i, arr) => {
+				const posteriores = arr
+					.filter((item) => new Date(item.fecha) > new Date(e.fecha))
+					.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+				const termino = posteriores.length ? posteriores[0].fecha : null;
+				return {
+					moneda: e.monedaDestino,
+					multiplicador: e.precio_compra,
+					// monedaOrigen: e.monedaOrigen,
+					fecha_inicio_tc: e.fecha,
+					fecha_fin_tc: termino, // null si no hay próximo cambio
+				};
+			});
+			setdataIngresosxMes(
+				agruparPorGrupoYConcepto(data.aportes, dataParametrosGastos.termGastos)
+			);
 		} catch (error) {
 			console.log(error);
 		}
@@ -50,5 +71,6 @@ export const useVentasStore = () => {
 		obtenerVentasxFechaxEmpresa,
 		obtenerIngresosxFechaxEmpresa,
 		dataVentasxMes,
+		dataIngresosxMes,
 	};
 };

@@ -1,7 +1,7 @@
 import { InputButton, InputDate, InputSelect, InputText, InputTextArea } from '@/components/InputText'
 import { useForm } from '@/hooks/useForm'
 import { Dialog } from 'primereact/dialog'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { useGestionAportes } from './hook/useGestionAportes'
 import { TerminosOnShow } from '@/hooks/usePropiedadesStore'
@@ -24,8 +24,8 @@ const customAporte = {
 }
 export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
   const { onPostGestionAporte } = useGestionAportes()
-  const { dataBancos, dataFormaPago, dataTarjetas, dataConceptosAportes, dataTipoMoneda, dataComprobantesGastos } = TerminosOnShow(show)
-  const { formState, onInputChange, onResetForm, id_concepto, n_comprobante, n_operacion, id_prov, id_estado, descripcion, id_tipo_moneda, monto, id_comprobante, fecha_comprobante, fecha_pago, id_forma_pago, id_banco, id_tarjeta } = useForm(customAporte)
+  const { dataBancos, dataFormaPago, dataTarjetas, dataConceptosAportes, dataTipoMoneda, dataComprobantesGastos, dataEmpresas } = TerminosOnShow(show)
+  const { formState, onInputChange, onResetForm, onInputChangeFunction, id_concepto, n_comprobante, n_operacion, id_prov, id_estado, descripcion, id_tipo_moneda, monto, id_comprobante, fecha_comprobante, fecha_pago, id_forma_pago, id_banco, id_tarjeta } = useForm(customAporte)
   const onSubmit = ()=>{
     if(id===0){
       onPostGestionAporte(formState, idEmpresa)
@@ -38,10 +38,32 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
     onHide()
     onResetForm()
   }
+  useEffect(() => {
+            if(!id){
+                onInputChangeFunction("grupo", 0)
+            }
+  }, [idEmpresa, id])
+  useEffect(() => {
+    if(!id){
+        onInputChangeFunction("id_gasto", 0)
+    }
+  }, [id, idEmpresa])
+
+  
   return (
     <Dialog onHide={onCancelCustomAporte} visible={show} header={`${id===0?'AGREGAR INGRESOS':'ACTUALIZAR INGRESOS'}`} style={{width: '70rem'}} position='top'>
         <form>
           <Row>
+            <Col lg={4}>
+              <div className='mb-2'>
+                <InputSelect label={'Empresa'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={dataEmpresas}/>
+              </div>
+            </Col>
+            <Col lg={4}>
+              <div className='mb-2'>
+                <InputSelect label={'Rubro'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={dataConceptosAportes}/>
+              </div>
+            </Col>
             <Col lg={4}>
               <div className='mb-2'>
                 <InputSelect label={'Concepto'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={dataConceptosAportes}/>

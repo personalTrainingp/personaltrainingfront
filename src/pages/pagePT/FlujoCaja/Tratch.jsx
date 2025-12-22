@@ -69,3 +69,42 @@ function totalGeneralYsumaTotal(dataGasto) {
 		totalGeneral
 	}
 }
+
+const a=()=>{
+	return (
+		<>
+		
+										{mesesSeleccionadosNums.map(mesNum => {
+										const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
+										return (
+											<td key={mesNum} className="text-center fs-1">
+												<div
+													className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
+													style={{ width: 150 }}
+													// onClick={() => onOpenModalDetallexCelda({
+													// ...itemMes,
+													// concepto: c.concepto,
+													// grupo: grp.grupo,
+													// })}
+												>
+													<NumberFormatMoney amount={itemMes.monto_total} />
+												</div>
+											</td>
+										);
+										})}
+										<td
+										className={`${bgTotal} text-center fw-bold`}
+										>
+										<div className='bg-porsiaca text-right' style={{fontSize: '40px'}}>
+											<NumberFormatMoney amount={totalConcepto} />
+										</div>
+										</td>
+										<td className={`${bgTotal} text-center fw-bold fs-1`}
+										>
+											<div className='bg-porsiaca text-right'>
+												{pctConcepto}
+											</div>
+										</td>
+		</>
+	)
+}
