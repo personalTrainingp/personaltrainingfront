@@ -48,7 +48,7 @@ export const GestionInventario = () => {
                               <DataInventario id_enterprice={1598} id_zona={598}/>
                         </TabPanel>
                         <TabPanel header={<>REDUCTO<br/>INVENTARIO TOTAL</>}>
-                              <DataInventario id_enterprice={1599} id_zona={599}/>
+                              <DataInventario id_enterprice={599} id_zona={599}/>
                         </TabPanel>
                         <TabPanel header={<>PLANOS REDUCTO <br/> DEFENSA CIVIL</>}>
                               <div>

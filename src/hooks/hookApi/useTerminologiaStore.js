@@ -26,9 +26,11 @@ export const useTerminologiaStore = () => {
 		}
 	};
 
-	const terminologiaPorEntidad = async (id_empresa) => {
+	const terminologiaPorEntidad = async (id_empresa, id_tipo) => {
 		try {
-			const { data } = await PTApi.get(`/terminologia/terminologiaxEmpresa/${id_empresa}`);
+			const { data } = await PTApi.get(
+				`/terminologia/terminologiaxEmpresa/${id_empresa}/${id_tipo}`
+			);
 
 			const terminologiaGastos = data.termGastos.map((d) => {
 				return {

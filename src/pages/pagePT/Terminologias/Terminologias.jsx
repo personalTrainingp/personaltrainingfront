@@ -1,10 +1,6 @@
 import { PageBreadcrumb } from '@/components'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { Card, Col, Row } from 'react-bootstrap'
-import GestGastosFvsV from './ParamsTermGastos'
-import { Button } from 'primereact/button';
-import { useTerminologiaStore } from '@/hooks/hookApi/useTerminologiaStore'
-import { DataTerminologia } from './DataTerminologia'
 import { ModalTerminologia } from './modalTerminologia'
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
