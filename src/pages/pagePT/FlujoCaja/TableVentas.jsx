@@ -81,10 +81,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 							</tr>
 							</thead>
 							<tbody>
-								{grp.conceptos?.filter(e=>e.items.reduce(
-															(sum, it) => sum + (it.lenthItems || 0),
-															0
-									)!==0).map((c, idx) => {
+								{grp.conceptos?.map((c, idx) => {
 									const totalConcepto = c.items.reduce(
 									(sum, it) => sum + (it.monto_total || 0),
 									0
@@ -97,7 +94,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 									const pctConcepto = grp.totalAnual > 0
 									? ((totalConcepto / grp.totalAnual) * 100).toFixed(2)
 									: '0.00';
-									console.log({mesesSeleccionadosNums});
+									console.log({grp});
 									
 									return (
 									<tr key={c.concepto}>

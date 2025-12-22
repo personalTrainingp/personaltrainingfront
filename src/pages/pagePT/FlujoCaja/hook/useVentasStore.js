@@ -2,7 +2,7 @@ import { PTApi } from '@/common';
 import dayjs, { utc } from 'dayjs';
 import { useState } from 'react';
 import { agruparVentasPorMes } from '../helpers/agruparIngresosPorFecha';
-import { agruparPorGrupoYConcepto } from '../helpers/agrupamientos';
+import { agruparPorGrupoYConcepto, aplicarTipoDeCambio } from '../helpers/agrupamientos';
 
 dayjs.extend(utc);
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
@@ -60,8 +60,13 @@ export const useVentasStore = () => {
 					fecha_fin_tc: termino, // null si no hay próximo cambio
 				};
 			});
+			console.log({ daa: data.ingresos, idEmpresa });
+
 			setdataIngresosxMes(
-				agruparPorGrupoYConcepto(data.aportes, dataParametrosGastos.termGastos)
+				agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTCs, data.ingresos),
+					dataParametrosGastos.termGastos
+				)
 			);
 		} catch (error) {
 			console.log(error);

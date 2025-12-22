@@ -2,6 +2,8 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import React, { useEffect } from 'react'
 import { useGestionAportes } from './hook/useGestionAportes'
 import { useSelector } from 'react-redux'
+import { DateMask, NumberFormatMoney } from '@/components/CurrencyMask'
+import { Button } from 'primereact/button'
 
 export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
   const { obtenerGestionAporte } = useGestionAportes()
@@ -20,50 +22,61 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
         </>
       )
     }},
-    { id: 'proveedor', header: 'Institucion o Aportante', width: 100, headerAlign: 'right', cellAlign: 'left' },
+    { id: 'proveedor', header: 'Institucion o Aportante', width: 100, render:(row)=>{
+      return (
+        <>
+        {row.tb_Proveedor?.razon_social_prov}
+        </>
+      )
+    } },
     // { id: 'tipo_comprobante', header: 'Tipo de comprobante', width: 100, headerAlign: 'right', cellAlign: 'left' },
     { id: 'monto', header: 'Monto', render:(row)=>{
       return(
         <>
-          {row.monto}
+        <NumberFormatMoney amount={row.monto}/>
         </>
       )
     } },
     { id: 'fechaAporte', header: 'Fecha comprobante', render:(row)=>{
       return (
         <>
-          {row.fecha_comprobante}
-        </>
-      )
-    } },
-    { id: 'formaPago', header: 'Forma Pago', render:(row)=>{
-      return (
-        <>
-          {row.fecha_comprobante}
+        <DateMask date={row.fec_comprobante} format={'dddd DD [ DE ]  MMMM [DEL] YYYY'}/>
         </>
       )
     } },
     { id: 'fechaPago', header: 'Fecha Pago', render:(row)=>{
       return (
         <>
-          {row.fecha_pago}
+        <DateMask date={row.fec_pago} format={'dddd DD [ DE ]  MMMM [DEL] YYYY'}/>
         </>
       )
     } },
     { id: 'nOperacion', header: 'N° Operacion', accessor: 'n_operacion' },
-    { id: 'nComprobante', header: 'N° comprobante', accessor: 'n_comprobante' },
+    { id: 'nComprobante', header: 'N° comprobante', accessor: 'n_comprabante' },
     { id: 'descripcion', header: 'Descripcion', accessor: 'descripcion' },
-    { id: '', header: '', render:()=>{
+    { id: '', header: '', render:(row)=>{
         return (
             <>
-            <i className='pi pi-trash'></i>
-            <i className='pi pi-box'></i>
+            <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
+            onClick={()=>onClickOpenModalCustomIngresos(row.id)} 
+            />
+            <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
+            onClick={confirmDeleteIngresosxID} 
+            />
+            {/* <Button icon="pi pi-copy" rounded outlined severity="danger" 
+            onClick={onClickCopyModalIngresos} 
+            /> */}
             </>
         )
     } },
   ];
-  const onClickOpenModalCustomAportes = ()=>{
-    // onOpenModalCustomAporte()
+  const onClickOpenModalCustomIngresos = (id)=>{
+    onOpenModalCustomAporte(id)
+  }
+  const confirmDeleteIngresosxID = ()=>{
+  }
+  const onClickCopyModalIngresos=()=>{
+
   }
   return (
     <div>

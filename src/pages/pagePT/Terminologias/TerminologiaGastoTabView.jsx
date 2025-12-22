@@ -9,7 +9,7 @@ import { ModalTerminologiaGasto } from './modalTerminologiaGasto';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 
-export const TerminologiaGastoTabView = ({ dataTerminologiaPorEntidad, id_empresa, parametro }) => {
+export const TerminologiaGastoTabView = ({ dataTerminologiaPorEntidad, id_empresa, parametro, tipo }) => {
 
     const { terminologiaPorEntidad } = useTerminologiaStore();
     const [isModalOpenTerminologia, setisModalOpenTerminologia] = useState(false);
@@ -17,7 +17,7 @@ export const TerminologiaGastoTabView = ({ dataTerminologiaPorEntidad, id_empres
     // CONSuseSelector(e=>e.DATA)
     const dispatch = useDispatch();
     useEffect(() => {
-        terminologiaPorEntidad(id_empresa);
+        terminologiaPorEntidad(id_empresa, tipo);
     }, [id_empresa]);
 
     const { dataView } = useSelector(e => e.DATA)

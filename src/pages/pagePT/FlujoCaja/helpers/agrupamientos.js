@@ -83,7 +83,9 @@ function agruparPorMes(data) {
 }
 
 export function aplicarTipoDeCambio(dataTC, dataGastos) {
-	return dataGastos.map((gasto) => {
+	console.log({ dataGastos });
+
+	return dataGastos?.map((gasto) => {
 		const fechaGasto = new Date(gasto.fec_pago);
 
 		const tcMatch = dataTC.find((tc) => {
@@ -140,7 +142,7 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 		});
 
 		const conceptos = conceptosUnicosPorNombre.map((nombreConcepto) => {
-			const itemsDelConcepto = dataGastos.filter((g) => {
+			const itemsDelConcepto = dataGastos?.filter((g) => {
 				const pg = g.tb_parametros_gasto || {};
 				const grupoGasto = pg.grupo?.trim()?.toUpperCase();
 				const nombreGasto = pg.nombre_gasto?.trim()?.toUpperCase();
@@ -148,10 +150,11 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 			});
 
 			const itemsPorMes = meses.map((mes) => {
-				const itemsMes = itemsDelConcepto.filter(
-					(item) => dayjs(item.fec_comprobante).month() + 1 === mes
-				);
-				const monto_total = itemsMes.reduce((sum, g) => sum + (g.monto * g.tc || 0), 0);
+				const itemsMes =
+					itemsDelConcepto?.filter(
+						(item) => dayjs(item.fec_comprobante).month() + 1 === mes
+					) || [];
+				const monto_total = itemsMes?.reduce((sum, g) => sum + (g.monto * g.tc || 0), 0);
 				return {
 					mes,
 					monto_total,

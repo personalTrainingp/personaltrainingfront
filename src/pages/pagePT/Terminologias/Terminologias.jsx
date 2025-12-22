@@ -57,22 +57,43 @@ export const Terminologias = () => {
                                     <Col sm={12}>
                                         <TabView>
                                             <TabPanel header='HISTORICO'>
-                                                <TerminologiaGastoTabView id_empresa={0}/>
+                                                <TerminologiaGastoTabView id_empresa={0} tipo={1573}/>
                                             </TabPanel>
                                             <TabPanel header='RAL'>
-                                                <TerminologiaGastoTabView id_empresa={800}/>
+                                                <TerminologiaGastoTabView id_empresa={800} tipo={1573}/>
                                             </TabPanel>
                                             <TabPanel header='CHANGE'>
-                                                <TerminologiaGastoTabView id_empresa={598}/>
+                                                <TerminologiaGastoTabView id_empresa={598} tipo={1573}/>
                                             </TabPanel>
                                             <TabPanel header='REDUCTO'>
-                                                <TerminologiaGastoTabView id_empresa={599}/>
+                                                <TerminologiaGastoTabView id_empresa={599} tipo={1573}/>
                                             </TabPanel>
                                             <TabPanel header='CIRCUS'>
-                                                <TerminologiaGastoTabView id_empresa={601}/>
+                                                <TerminologiaGastoTabView id_empresa={601} tipo={1573}/>
                                             </TabPanel>
                                             <TabPanel header='MANICURE'>
-                                                <TerminologiaGastoTabView id_empresa={700}/>
+                                                <TerminologiaGastoTabView id_empresa={700} tipo={1573}/>
+                                            </TabPanel>
+                                        </TabView>
+                                    </Col>
+                                </TabPanel>
+                                <TabPanel header={"Terminologia de ingresos"}>
+                                    <Col sm={12}>
+                                        <TabView>
+                                            <TabPanel header='RAL'>
+                                                <TerminologiaGastoTabView id_empresa={800} tipo={1574}/>
+                                            </TabPanel>
+                                            <TabPanel header='CHANGE'>
+                                                <TerminologiaGastoTabView id_empresa={598} tipo={1574}/>
+                                            </TabPanel>
+                                            <TabPanel header='REDUCTO'>
+                                                <TerminologiaGastoTabView id_empresa={599} tipo={1574}/>
+                                            </TabPanel>
+                                            <TabPanel header='CIRCUS'>
+                                                <TerminologiaGastoTabView id_empresa={601} tipo={1574}/>
+                                            </TabPanel>
+                                            <TabPanel header='MANICURE'>
+                                                <TerminologiaGastoTabView id_empresa={700} tipo={1574}/>
                                             </TabPanel>
                                         </TabView>
                                     </Col>

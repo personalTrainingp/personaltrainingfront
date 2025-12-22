@@ -1,13 +1,16 @@
 import { InputButton, InputDate, InputSelect, InputText, InputTextArea } from '@/components/InputText'
 import { useForm } from '@/hooks/useForm'
 import { Dialog } from 'primereact/dialog'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { useGestionAportes } from './hook/useGestionAportes'
 import { TerminosOnShow } from '@/hooks/usePropiedadesStore'
+import { useSelector } from 'react-redux'
+import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
+import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 
 const customAporte = {
-  id_concepto: 0,
+  id_gasto: 0,
   n_comprobante: '',
   n_operacion: '',
   id_prov: 0,
@@ -15,58 +18,83 @@ const customAporte = {
   descripcion: '',
   monto: 0.00,
   id_comprobante: 0,
-  fecha_comprobante: '',
-  fecha_pago: '',
+  fec_comprobante: '',
+  fec_pago: '',
   id_forma_pago: 0,
   id_tipo_moneda: 0,
   id_banco: 0,
   id_tarjeta: 0
 }
 export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
-  const { onPostGestionAporte } = useGestionAportes()
+  const { onPostGestionAporte, obtenerParametrosGastosFinanzas } = useGestionAportes()
+  const { obtenerIngresoxID, dataIngreso } = useGestionAportes()
+      const {obtenerParametrosProveedor} = useProveedorStore()
+        const { dataProvCOMBO } = useSelector(e=>e.prov)
+    const {dataParametrosGastos} = useSelector(e=>e.finanzas)
   const { dataBancos, dataFormaPago, dataTarjetas, dataConceptosAportes, dataTipoMoneda, dataComprobantesGastos, dataEmpresas } = TerminosOnShow(show)
-  const { formState, onInputChange, onResetForm, onInputChangeFunction, id_concepto, n_comprobante, n_operacion, id_prov, id_estado, descripcion, id_tipo_moneda, monto, id_comprobante, fecha_comprobante, fecha_pago, id_forma_pago, id_banco, id_tarjeta } = useForm(customAporte)
+  const { formState, onInputChange, onResetForm, onInputChangeFunction, id_empresa, grupo, id_gasto, n_comprobante, n_operacion, id_prov, id_estado, descripcion, id_tipo_moneda, monto, id_comprobante, fec_comprobante, fec_pago, id_forma_pago, id_banco, id_tarjeta } = useForm(id==0?customAporte:dataIngreso)
+  const [grupoGasto, setgrupoGasto] = useState([])
+      // const [id_empresa, setid_empresa] = useState(0)
+      const [gastoxGrupo, setgastoxGrupo] = useState([])
   const onSubmit = ()=>{
     if(id===0){
       onPostGestionAporte(formState, idEmpresa)
     }else{
 
     }
-    console.log({formState});
   }
   const onCancelCustomAporte = ()=>{
     onHide()
     onResetForm()
   }
+  console.log({dataIngreso});
+  
   useEffect(() => {
-            if(!id){
-                onInputChangeFunction("grupo", 0)
-            }
-  }, [idEmpresa, id])
+      if(show){
+          obtenerParametrosGastosFinanzas()
+                obtenerParametrosProveedor(idEmpresa)
+                obtenerIngresoxID(id)
+      }
+  }, [show])
+  useEffect(() => {
+      onInputChangeFunction('id_empresa', idEmpresa)
+  }, [idEmpresa])
+  useEffect(() => {
+    onInputChangeFunction("grupo", 0)
+  }, [id_empresa])
   useEffect(() => {
     if(!id){
         onInputChangeFunction("id_gasto", 0)
     }
-  }, [id, idEmpresa])
-
+  }, [grupo, id_empresa])
   
-  return (
+          useEffect(() => {
+              const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto.find(e=>e.id_tipoGasto===260).grupos||[]
+              setgrupoGasto(grupos)
+          }, [id_empresa])
+          useEffect(() => {
+              const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto.find(e=>e.id_tipoGasto===260).grupos.find(g=>g.value==grupo)?.conceptos||[]
+              setgastoxGrupo(conceptos)
+          }, [grupo, idEmpresa])
+  console.log({grupoGasto, dataParametrosGastos, grupo, gastoxGrupo, id_empresa});
+  
+  return (  
     <Dialog onHide={onCancelCustomAporte} visible={show} header={`${id===0?'AGREGAR INGRESOS':'ACTUALIZAR INGRESOS'}`} style={{width: '70rem'}} position='top'>
         <form>
           <Row>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Empresa'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={dataEmpresas}/>
+                <InputSelect label={'Empresa'} value={id_empresa} nameInput={'id_empresa'} onChange={onInputChange} options={dataEmpresas}/>
               </div>
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Rubro'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={dataConceptosAportes}/>
+                <InputSelect label={'Rubro'} value={grupo} nameInput={'grupo'} onChange={onInputChange} options={grupoGasto}/>
               </div>
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Concepto'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={dataConceptosAportes}/>
+                <InputSelect label={'Concepto'} value={id_gasto} nameInput={'id_gasto'} onChange={onInputChange} options={gastoxGrupo}/>
               </div>
             </Col>
             <Col lg={4}>
@@ -91,7 +119,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputDate label={'Fecha comprobante'} nameInput={'fecha_comprobante'} onChange={onInputChange} value={fecha_comprobante}/>
+                <InputDate label={'Fecha comprobante'} nameInput={'fec_comprobante'} onChange={onInputChange} value={fec_comprobante}/>
               </div>
             </Col>
             <Col lg={4}>
@@ -101,7 +129,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputDate label={'Fecha Pago'} nameInput={'fecha_pago'} onChange={onInputChange} value={fecha_pago}/>
+                <InputDate label={'Fecha Pago'} nameInput={'fec_pago'} onChange={onInputChange} value={fec_pago}/>
               </div>
             </Col>
             <Col lg={4}>
@@ -121,7 +149,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Empresa/Persona'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={[]}/>
+                <InputSelect label={'Empresa/Persona'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProvCOMBO}/>
               </div>
             </Col>
             <Col lg={4}>
