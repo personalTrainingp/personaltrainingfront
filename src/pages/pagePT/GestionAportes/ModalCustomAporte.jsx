@@ -121,7 +121,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Proveedor'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={[]}/>
+                <InputSelect label={'Empresa/Persona'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={[]}/>
               </div>
             </Col>
             <Col lg={4}>

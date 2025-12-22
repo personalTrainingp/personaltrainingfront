@@ -7,7 +7,7 @@ export const TotalesPorGrupo = (data) => {
 			concepto.items.forEach(({ mes, items }) => {
 				// items aquí es el array de gastos de ese mes; sumamos cada gasto[i].monto (o el campo que corresponda)
 				const sumaDelMes = items.reduce((acc, gasto) => {
-					return acc + (gasto.monto * 1 || 0);
+					return acc + (gasto.monto * gasto.tc || 0);
 				}, 0);
 				mesesSuma[mes - 1] += sumaDelMes;
 			});

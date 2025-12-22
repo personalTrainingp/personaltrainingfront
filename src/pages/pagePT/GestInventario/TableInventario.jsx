@@ -502,7 +502,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                 );
                                 return (
                                     <TabPanel header={g.lugar}>
-                                        <Button label='POR ETIQUETAS' text onClick={()=>onOpenModalAgrupadoxEtiquetas(agruparXetiquetas(g.items))}/>
+                                        {/* <Button label='POR ETIQUETAS' text onClick={()=>onOpenModalAgrupadoxEtiquetas(agruparXetiquetas(g.items))}/> */}
                                         <DataTable  
                                             className='dataTable-verticals-lines dataTable-inventario'
                                             first={first}

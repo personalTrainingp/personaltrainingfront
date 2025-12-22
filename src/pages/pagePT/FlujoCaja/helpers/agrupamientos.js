@@ -151,7 +151,7 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 				const itemsMes = itemsDelConcepto.filter(
 					(item) => dayjs(item.fec_comprobante).month() + 1 === mes
 				);
-				const monto_total = itemsMes.reduce((sum, g) => sum + (g.monto * 1 || 0), 0);
+				const monto_total = itemsMes.reduce((sum, g) => sum + (g.monto * g.tc || 0), 0);
 				return {
 					mes,
 					monto_total,
