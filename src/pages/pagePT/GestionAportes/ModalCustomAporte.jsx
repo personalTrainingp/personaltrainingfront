@@ -8,6 +8,7 @@ import { TerminosOnShow } from '@/hooks/usePropiedadesStore'
 import { useSelector } from 'react-redux'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
+import { arrayEmpresaFinan } from '@/types/type'
 
 const customAporte = {
   id_gasto: 0,
@@ -84,7 +85,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
           <Row>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Empresa'} value={id_empresa} nameInput={'id_empresa'} onChange={onInputChange} options={dataEmpresas}/>
+                <InputSelect label={'Empresa'} value={id_empresa} nameInput={'id_empresa'} onChange={onInputChange} options={arrayEmpresaFinan}/>
               </div>
             </Col>
             <Col lg={4}>
