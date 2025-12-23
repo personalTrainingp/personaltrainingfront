@@ -40,7 +40,7 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
     { id: 'grupo', header: 'TIPO DE INGRESO', render:(row)=>{
       return (
         <>
-          {arrayFinanzas.find(e=>e.value===row?.tb_parametros_gasto?.id_tipoGasto).label}
+          {arrayFinanzas.find(e=>e.value===row?.tb_parametros_gasto?.id_tipoGasto)?.label}
         </>
       )
     }},
@@ -64,7 +64,7 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
     { id: 'monto', header: 'Monto', render:(row)=>{
       return(
         <>
-        <NumberFormatMoney amount={row.monto}/>
+        <NumberFormatMoney amount={row?.monto}/>
         </>
       )
     } },
