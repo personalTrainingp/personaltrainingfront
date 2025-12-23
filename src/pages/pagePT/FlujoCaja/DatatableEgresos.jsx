@@ -148,7 +148,9 @@ export const DatatableEgresos = ({
 				</div>
 				<div className="table-responsive" style={{ width: '95vw' }}>
 					<p className='text-center' style={{fontSize: '60px'}}>INGRESOS</p>
-					<TableVentas dataIngresosxMes={dataIngresosxMes} background={background} bgTotal={bgTotal} mesesNombres={mesesNombres} mesesSeleccionadosNums={mesesSeleccionadosNums}/>
+					<TableVentas 
+							onOpenModalDetallexCelda={onOpenModalDetallexCelda}
+					dataIngresosxMes={dataIngresosxMes} background={background} bgTotal={bgTotal} mesesNombres={mesesNombres} mesesSeleccionadosNums={mesesSeleccionadosNums}/>
 					<div>
 					<div>
 					<p className='text-center' style={{fontSize: '60px'}}>EGRESOS</p>

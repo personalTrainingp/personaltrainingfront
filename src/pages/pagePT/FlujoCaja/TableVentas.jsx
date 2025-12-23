@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { Table } from 'react-bootstrap'
 import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo'
 
-export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSeleccionadosNums, mesesNombres}) => {
+export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSeleccionadosNums, mesesNombres, onOpenModalDetallexCelda}) => {
 	const totalesPorGrupo = useMemo(()=>{
 		return TotalesPorGrupo(dataIngresosxMes).dataTotal
 	}, [dataIngresosxMes])
@@ -114,7 +114,13 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 												<div
 													className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
 													style={{ width: 150 }}
+													onClick={() => onOpenModalDetallexCelda({
+													...itemMes,
+													concepto: c.concepto,
+													grupo: grp.grupo,
+													})}
 												>
+													
 													<NumberFormatMoney amount={itemMes.monto_total} />
 												</div>
 											</td>

@@ -26,7 +26,7 @@ const customAporte = {
   id_banco: 0,
   id_tarjeta: 0
 }
-export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
+export const ModalCustomAporte = ({id, onHide, show, idEmpresa, isCopy}) => {
   const { onPostGestionAporte, obtenerParametrosGastosFinanzas } = useGestionAportes()
   const { obtenerIngresoxID, dataIngreso, dataProveedores, obtenerParametrosProveedor, onUpdateIngresos } = useGestionAportes()
         const { dataProvCOMBO } = useSelector(e=>e.prov)
@@ -79,8 +79,6 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
               const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto.find(e=>e.id_tipoGasto===id_tipoIngreso)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
               setgastoxGrupo(conceptos)
           }, [grupo, idEmpresa])
-  console.log({grupoGasto, dataParametrosGastos, grupo, gastoxGrupo, id_empresa});
-  
   return (  
     <Dialog onHide={onCancelCustomAporte} visible={show} header={`${id===0?'AGREGAR INGRESOS':'ACTUALIZAR INGRESOS'}`} style={{width: '70rem'}} position='top'>
         <form>

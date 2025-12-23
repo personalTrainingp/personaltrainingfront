@@ -25,7 +25,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
   
   return (
     <>
-    <Dialog visible={show} style={{width: '120rem'}} onHide={onHide} header={`EGRESOS POR DETALLE - ${data?.grupo} - ${data?.concepto}`}>
+    <Dialog visible={show} style={{width: '120rem'}} onHide={onHide} header={`DETALLE - ${data?.grupo} - ${data?.concepto}`}>
         <Table  responsive hover striped>
           <thead >
               <tr className={`${bgEmpresa} bg-primary`}>
