@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { onSetDataViewAportes } from '../Store/AporteSlice';
 import { onSetParametrosGastos } from '@/store/dataGastos/gastosSlice';
 import { arrayEmpresaFinanAbrev } from '@/types/type';
+import { DateMaskString, MaskDate } from '@/components/CurrencyMask';
 
 export const useGestionAportes = () => {
 	const dispatch = useDispatch();
@@ -22,9 +23,13 @@ export const useGestionAportes = () => {
 			const { data } = await PTApi.get(`/ingreso/id/${id}`);
 			const dataAlter = {
 				...data.ingreso,
+				fec_comprobante: MaskDate(data.ingreso.fec_comprobante, 'YYYY-MM-DD'),
+				fec_pago: MaskDate(data.ingreso.fec_pago, 'YYYY-MM-DD'),
 				id_tipoIngreso: data.ingreso.tb_parametros_gasto?.id_tipoGasto,
 				grupo: data.ingreso.tb_parametros_gasto?.parametro_grupo?.param_label,
 			};
+			console.log();
+
 			setdataIngreso(dataAlter);
 		} catch (error) {
 			console.log(error);

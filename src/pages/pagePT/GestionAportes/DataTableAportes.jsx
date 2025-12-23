@@ -2,7 +2,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import React, { useEffect } from 'react'
 import { useGestionAportes } from './hook/useGestionAportes'
 import { useSelector } from 'react-redux'
-import { DateMask, NumberFormatMoney } from '@/components/CurrencyMask'
+import { DateMask, DateMaskString, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
@@ -41,14 +41,18 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
     { id: 'fechaAporte', header: 'Fecha comprobante', render:(row)=>{
       return (
         <>
-        <DateMask date={row.fec_comprobante} format={'dddd DD [ DE ]  MMMM [DEL] YYYY'}/>
+        {
+          MaskDate(row.fec_comprobante, 'dddd DD [ DE ]  MMMM [DEL] YYYY')
+        }
         </>
       )
     } },
     { id: 'fechaPago', header: 'Fecha Pago', render:(row)=>{
       return (
         <>
-        <DateMask date={row.fec_pago} format={'dddd DD [ DE ]  MMMM [DEL] YYYY'}/>
+        {
+          MaskDate(row.fec_pago, 'dddd DD [ DE ]  MMMM [DEL] YYYY')
+        }
         </>
       )
     } },

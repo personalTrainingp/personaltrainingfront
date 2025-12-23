@@ -60,7 +60,14 @@ export const useVentasStore = () => {
 					fecha_fin_tc: termino, // null si no hay próximo cambio
 				};
 			});
-			console.log({ daa: data.ingresos, idEmpresa });
+			console.log({
+				daa: data.ingresos,
+				idEmpresa,
+				daa2: agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTCs, data.ingresos),
+					dataParametrosGastos.termGastos
+				),
+			});
 
 			setdataIngresosxMes(
 				agruparPorGrupoYConcepto(

@@ -86,6 +86,10 @@ export const DateMaskString = (date, format) => {
   return dayjs.utc(date).subtract(5, "hour").locale("es").format(format)
 }
 
+export const MaskDate = (date, format) => {
+  //'D [de] MMMM [del] YYYY'
+  return dayjs.utc(date).locale("es").format(format)
+}
 export const FormatoDateMask = (date, format)=>{
   return (
     <span className='text-uppercase'>
