@@ -8,17 +8,17 @@ import { TerminosOnShow } from '@/hooks/usePropiedadesStore'
 import { useSelector } from 'react-redux'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
-import { arrayEmpresaFinan } from '@/types/type'
+import { arrayEmpresaFinan, arrayFinanzas, arrayMonedas } from '@/types/type'
 
 const customAporte = {
   id_gasto: 0,
-  n_comprobante: '',
+  n_comprabante: '',
   n_operacion: '',
   id_prov: 0,
   id_estado: 0,
   descripcion: '',
   monto: 0.00,
-  id_comprobante: 0,
+  id_tipo_comprobante: 0,
   fec_comprobante: '',
   fec_pago: '',
   id_forma_pago: 0,
@@ -28,13 +28,13 @@ const customAporte = {
 }
 export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
   const { onPostGestionAporte, obtenerParametrosGastosFinanzas } = useGestionAportes()
-  const { obtenerIngresoxID, dataIngreso } = useGestionAportes()
-      const {obtenerParametrosProveedor} = useProveedorStore()
+  const { obtenerIngresoxID, dataIngreso, dataProveedores, obtenerParametrosProveedor } = useGestionAportes()
         const { dataProvCOMBO } = useSelector(e=>e.prov)
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
   const { dataBancos, dataFormaPago, dataTarjetas, dataConceptosAportes, dataTipoMoneda, dataComprobantesGastos, dataEmpresas } = TerminosOnShow(show)
-  const { formState, onInputChange, onResetForm, onInputChangeFunction, id_empresa, grupo, id_gasto, n_comprobante, n_operacion, id_prov, id_estado, descripcion, id_tipo_moneda, monto, id_comprobante, fec_comprobante, fec_pago, id_forma_pago, id_banco, id_tarjeta } = useForm(id==0?customAporte:dataIngreso)
+  const { formState, onInputChange, onResetForm, onInputChangeFunction, id_tipoIngreso, id_empresa, grupo, id_gasto, n_comprabante, n_operacion, id_prov, id_estado, descripcion, id_tipo_moneda, monto, id_tipo_comprobante, fec_comprobante, fec_pago, id_forma_pago, id_banco, id_tarjeta } = useForm(id==0?customAporte:dataIngreso)
   const [grupoGasto, setgrupoGasto] = useState([])
+  const [tipoIngreso, settipoIngreso] = useState([])
       // const [id_empresa, setid_empresa] = useState(0)
       const [gastoxGrupo, setgastoxGrupo] = useState([])
   const onSubmit = ()=>{
@@ -53,7 +53,6 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
   useEffect(() => {
       if(show){
           obtenerParametrosGastosFinanzas()
-                obtenerParametrosProveedor(idEmpresa)
                 obtenerIngresoxID(id)
       }
   }, [show])
@@ -62,19 +61,21 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
   }, [idEmpresa])
   useEffect(() => {
     onInputChangeFunction("grupo", 0)
+      obtenerParametrosProveedor(id_empresa)
   }, [id_empresa])
   useEffect(() => {
     if(!id){
         onInputChangeFunction("id_gasto", 0)
     }
   }, [grupo, id_empresa])
+  console.log({dataProveedores});
   
           useEffect(() => {
-              const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto.find(e=>e.id_tipoGasto===260).grupos||[]
+              const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto.find(e=>e.id_tipoGasto===id_tipoIngreso)?.grupos||[]
               setgrupoGasto(grupos)
-          }, [id_empresa])
+          }, [id_empresa, id_tipoIngreso])
           useEffect(() => {
-              const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto.find(e=>e.id_tipoGasto===260).grupos.find(g=>g.value==grupo)?.conceptos||[]
+              const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto.find(e=>e.id_tipoGasto===id_tipoIngreso).grupos.find(g=>g.value==grupo)?.conceptos||[]
               setgastoxGrupo(conceptos)
           }, [grupo, idEmpresa])
   console.log({grupoGasto, dataParametrosGastos, grupo, gastoxGrupo, id_empresa});
@@ -90,6 +91,11 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
+                <InputSelect label={'Tipo de ingreso'} value={id_tipoIngreso} nameInput={'id_tipoIngreso'} onChange={onInputChange} options={arrayFinanzas}/>
+              </div>
+            </Col>
+            <Col lg={4}>
+              <div className='mb-2'>
                 <InputSelect label={'Rubro'} value={grupo} nameInput={'grupo'} onChange={onInputChange} options={grupoGasto}/>
               </div>
             </Col>
@@ -100,7 +106,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Tipo de moneda'} value={id_tipo_moneda} nameInput={'id_tipo_moneda'} onChange={onInputChange} options={dataTipoMoneda}/>
+                <InputSelect label={'Tipo de moneda'} value={id_tipo_moneda} nameInput={'id_tipo_moneda'} onChange={onInputChange} options={arrayMonedas}/>
               </div>
             </Col>
             <Col lg={4}>
@@ -110,12 +116,12 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Tipo de comprobante'} value={id_comprobante} nameInput={'id_comprobante'} onChange={onInputChange} options={dataComprobantesGastos}/>
+                <InputSelect label={'Tipo de comprobante'} value={id_tipo_comprobante} nameInput={'id_tipo_comprobante'} onChange={onInputChange} options={dataComprobantesGastos}/>
               </div>
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputText label={'N° de comprobante'} nameInput={'n_comprobante'} onChange={onInputChange} value={n_comprobante}/>
+                <InputText label={'N° de comprobante'} nameInput={'n_comprabante'} onChange={onInputChange} value={n_comprabante}/>
               </div>
             </Col>
             <Col lg={4}>
@@ -150,12 +156,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Empresa/Persona'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProvCOMBO}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Estados'} value={id_estado} nameInput={'id_estado'} onChange={onInputChange} options={[]}/>
+                <InputSelect label={'Empresa/Persona'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedores}/>
               </div>
             </Col>
             <Col lg={12}>

@@ -468,7 +468,7 @@ export const useTerminoStore = () => {
 	const obtenerParametrosProductoProveedor = async () => {
 		try {
 			setIsLoading(true);
-			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor`);
+			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor/1573`);
 			setDataProducProveedor(data);
 			setIsLoading(false);
 		} catch (error) {

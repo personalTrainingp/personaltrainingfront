@@ -3,9 +3,11 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewAportes } from '../Store/AporteSlice';
 import { onSetParametrosGastos } from '@/store/dataGastos/gastosSlice';
+import { arrayEmpresaFinanAbrev } from '@/types/type';
 
 export const useGestionAportes = () => {
 	const dispatch = useDispatch();
+	const [dataProveedores, setdataProveedores] = useState([]);
 	const [dataIngreso, setdataIngreso] = useState([]);
 	const obtenerGestionAporte = async (id_empresa) => {
 		try {
@@ -29,6 +31,31 @@ export const useGestionAportes = () => {
 			console.log({ formState });
 
 			await obtenerGestionAporte(id_empresa);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const obtenerParametrosProveedor = async (idEmpresa) => {
+		try {
+			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor/1574`);
+			console.log({ datame: data, idEmpresa });
+
+			const dataAlter = data
+				.filter((f) => f?.id_empresa === idEmpresa)
+				.map((term) => {
+					const [firstPart = '', secondPart = ''] = term.label?.split('|') || [];
+					const empresaLabel =
+						arrayEmpresaFinanAbrev?.find((f) => f?.value === term?.id_empresa)?.label ||
+						'';
+					return {
+						value: term.value,
+						label: `${firstPart.trim()} | ${empresaLabel} | ${secondPart.trim()}`,
+						id_oficio: term.id_oficio,
+					};
+				});
+			setdataProveedores(dataAlter);
+			// setIsLoading(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -78,6 +105,8 @@ export const useGestionAportes = () => {
 		}
 	};
 	return {
+		dataProveedores,
+		obtenerParametrosProveedor,
 		dataIngreso,
 		obtenerIngresoxID,
 		onPostGestionAporte,
