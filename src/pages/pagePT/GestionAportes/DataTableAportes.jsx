@@ -18,7 +18,7 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
     { id: 'fechaRegistro', header: 'Concepto', render:(row)=>{
       return (
         <>
-          {row?.concepto?.label_param}
+          {row?.tb_parametros_gasto?.nombre_gasto}
         </>
       )
     }},

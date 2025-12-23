@@ -75,7 +75,7 @@ const [filtroTexto, setFiltroTexto] = useState('');
     obtenerContratosPendientes(id_empresa);
     obtenerTrabajosPendientes(id_empresa);
     obtenerPenalidades()
-    obtenerProveedores(true, true, id_empresa);
+    obtenerProveedores(true, true, id_empresa, 1573);
   }, [id_empresa]);
   // 1) Une contrato + pagos + sumaPagos
   const contratosConPagos = useMemo(() => {

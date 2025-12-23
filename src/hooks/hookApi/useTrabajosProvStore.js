@@ -36,7 +36,7 @@ export const useTrabajosProvStore = () => {
 	};
 	const obtenerProveedores = async () => {
 		try {
-			const { data } = await PTApi.get('/proveedor/obtener-proveedores');
+			const { data } = await PTApi.get('/proveedor/obtener-proveedores/1573');
 			dispatch(onSetProveedores(data.proveedores));
 		} catch (error) {
 			console.log(error);

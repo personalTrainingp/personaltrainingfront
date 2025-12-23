@@ -383,6 +383,14 @@ export const arrayFinanzas = [
 	// { label: '370 | inversion activos', value: 370 },
 ];
 
+export const arrayTipoIngresos = [
+	{ label: '250 | Fijos', value: 250 },
+	{ label: '260 | VARIABLES', value: 260 },
+	// { label: '330 | Caja chica[INGRESOS]', value: 330 },
+	// { label: '340 | exepcionales[INGRESOS]', value: 340 },
+	// { label: '370 | inversion activos', value: 370 },
+];
+
 export const arrayNacionalidad = [
 	{ value: 0, label: 'Otro' },
 	{ value: 1, label: 'ARGENTINA' },

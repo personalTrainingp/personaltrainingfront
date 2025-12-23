@@ -31,7 +31,7 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
 		setisModalOpenProv(true)
 	}
 	useEffect(() => {
-		obtenerProveedores(estado_prov, agente, id_empresa, 1573)
+		obtenerProveedores(estado_prov, agente, id_empresa, 1574)
 	}, [id_empresa, estado_prov])
 	useEffect(() => {
         const fetchData = () => {

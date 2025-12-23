@@ -8,7 +8,7 @@ import { TerminosOnShow } from '@/hooks/usePropiedadesStore'
 import { useSelector } from 'react-redux'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
-import { arrayEmpresaFinan, arrayFinanzas, arrayMonedas } from '@/types/type'
+import { arrayEmpresaFinan, arrayFinanzas, arrayMonedas, arrayTipoIngresos } from '@/types/type'
 
 const customAporte = {
   id_gasto: 0,
@@ -22,7 +22,7 @@ const customAporte = {
   fec_comprobante: '',
   fec_pago: '',
   id_forma_pago: 0,
-  id_tipo_moneda: 0,
+  moneda: '',
   id_banco: 0,
   id_tarjeta: 0
 }
@@ -32,7 +32,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
         const { dataProvCOMBO } = useSelector(e=>e.prov)
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
   const { dataBancos, dataFormaPago, dataTarjetas, dataConceptosAportes, dataTipoMoneda, dataComprobantesGastos, dataEmpresas } = TerminosOnShow(show)
-  const { formState, onInputChange, onResetForm, onInputChangeFunction, id_tipoIngreso, id_empresa, grupo, id_gasto, n_comprabante, n_operacion, id_prov, id_estado, descripcion, id_tipo_moneda, monto, id_tipo_comprobante, fec_comprobante, fec_pago, id_forma_pago, id_banco, id_tarjeta } = useForm(id==0?customAporte:dataIngreso)
+  const { formState, onInputChange, onResetForm, onInputChangeFunction, id_tipoIngreso, id_empresa, grupo, id_gasto, n_comprabante, n_operacion, id_prov, id_estado, descripcion, moneda, monto, id_tipo_comprobante, fec_comprobante, fec_pago, id_forma_pago, id_banco, id_tarjeta } = useForm(id==0?customAporte:dataIngreso)
   const [grupoGasto, setgrupoGasto] = useState([])
   const [tipoIngreso, settipoIngreso] = useState([])
       // const [id_empresa, setid_empresa] = useState(0)
@@ -86,12 +86,12 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
           <Row>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Empresa'} value={id_empresa} nameInput={'id_empresa'} onChange={onInputChange} options={arrayEmpresaFinan}/>
+                <InputSelect label={'Marca'} value={id_empresa} nameInput={'id_empresa'} onChange={onInputChange} options={arrayEmpresaFinan}/>
               </div>
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Tipo de ingreso'} value={id_tipoIngreso} nameInput={'id_tipoIngreso'} onChange={onInputChange} options={arrayFinanzas}/>
+                <InputSelect label={'Tipo de ingreso'} value={id_tipoIngreso} nameInput={'id_tipoIngreso'} onChange={onInputChange} options={arrayTipoIngresos}/>
               </div>
             </Col>
             <Col lg={4}>
@@ -106,7 +106,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
             </Col>
             <Col lg={4}>
               <div className='mb-2'>
-                <InputSelect label={'Tipo de moneda'} value={id_tipo_moneda} nameInput={'id_tipo_moneda'} onChange={onInputChange} options={arrayMonedas}/>
+                <InputSelect label={'Tipo de moneda'} value={moneda} nameInput={'moneda'} onChange={onInputChange} options={arrayMonedas}/>
               </div>
             </Col>
             <Col lg={4}>

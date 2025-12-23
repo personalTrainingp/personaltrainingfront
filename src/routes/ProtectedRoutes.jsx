@@ -24,6 +24,7 @@ const TotaldeVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'))
 const VentasPrograma = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'));
 const VentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'));
 const GestionProveedores = lazy(() => import('../pages/pagePT/GestProveedores'));
+const GestionIngresantes = lazy(() => import('../pages/pagePT/GestIngresantes'));
 const GestionProductos = lazy(() => import('../pages/pagePT/GestProductos'));
 const GestionProgramas = lazy(() => import('../pages/pagePT/GestProgramas'));
 const GestionFyG = lazy(() => import('../pages/pagePT/GestGastos'));
@@ -165,6 +166,10 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/videos-infraestructura') &&
 						<Route path='videos-infraestructura' element={<ExternalRedirect to="https://drive.google.com/drive/folders/1_Q_l0GkljHKUU988JudFnbSreGq_b9Lu" replace />}/>
+					}
+					{
+						sections.find(e=>e.url==='/gestion-ingresantes-activo') &&
+						<Route path='gestion-ingresantes-activo' element={<GestionIngresantes id_estado={true} tipo={1574}/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/salidas-tempranas') &&

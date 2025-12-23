@@ -73,9 +73,9 @@ export const useProveedorStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerProveedores = async (estado_prov, agente, id_empresa) => {
+	const obtenerProveedores = async (estado_prov, agente, id_empresa, tipo) => {
 		try {
-			const { data } = await PTApi.get('/proveedor/obtener-proveedores', {
+			const { data } = await PTApi.get(`/proveedor/obtener-proveedores/${tipo}`, {
 				params: {
 					estado_prov: estado_prov,
 					id_empresa: id_empresa,

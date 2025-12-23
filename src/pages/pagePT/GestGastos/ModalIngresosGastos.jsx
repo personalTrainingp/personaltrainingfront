@@ -221,7 +221,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="id_tipoGasto" className="form-label">
-                                            EMPRESA*
+                                            MARCA*
                                         </label>
                                         <Select
                                             onChange={(e) => setid_empresa(e.value)}

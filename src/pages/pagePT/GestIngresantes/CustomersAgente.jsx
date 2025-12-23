@@ -1,8 +1,18 @@
 import { Row, Col, Card,  Modal } from 'react-bootstrap';
+import { Table, PageBreadcrumb } from '@/components';
+import { Proveedores } from '../data';
+import { columns, sizePerPageList } from './ColumnsSet';
+import { useToggle } from '@/hooks';
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { use } from 'i18next';
+import { useForm } from '@/hooks/useForm';
 import { useDispatch } from 'react-redux';
+import { helperFunctions } from '@/common/helpers/helperFunctions';
+import { useOptionsStore } from '@/hooks/useOptionsStore';
+import Select from 'react-select';
+import { ModalProveedor } from './ModalProveedor';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -13,7 +23,7 @@ import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
 import { Badge } from 'primereact/badge';
 
-const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) => {
+const CustomersAgente = ({estado_prov, agente}) => {
 	const dispatch = useDispatch()
 	// const [modalProv, toggleModalProv] = useToggle();
     const [filters, setFilters] = useState({
@@ -22,7 +32,7 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
     const [globalFilterValue, setGlobalFilterValue] = useState('');
 	const [isModalOpenProv, setisModalOpenProv] = useState(false)
 	const [Customers, setCustomers] = useState(null);
-	const { obtenerProveedores }= useProveedorStore()
+	const { obtenerAgentes }= useProveedorStore()
 	const { dataProveedores } = useSelector(e=>e.prov)
 	const modalProvClose = ()=>{
 		setisModalOpenProv(false)
@@ -31,8 +41,8 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
 		setisModalOpenProv(true)
 	}
 	useEffect(() => {
-		obtenerProveedores(estado_prov, agente, id_empresa, 1573)
-	}, [id_empresa, estado_prov])
+		obtenerAgentes()
+	}, [])
 	useEffect(() => {
         const fetchData = () => {
             setCustomers(getCustomers(dataProveedores));
@@ -93,19 +103,9 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
 	const HistorialProvBodyTemplate = (rowData)=>{
 		
 		return (
-			<>
             <Link to={`/perfil-proveedor/${rowData.uid}`} className="action-icon text-primary" style={{fontSize: '14px', color: 'blue', textDecoration: 'underline'}}>
                 Ver Perfil
             </Link>
-			</>
-		)
-	}
-	const CopiProvBodyTemplate = (rowData)=>{
-		
-		return (
-			<>
-			<Button  icon={'pi pi-copy'} onClick={()=>onOpenModalProvOpen(rowData.id)}/>
-			</>
 		)
 	}
 	const EstadoProvBodyTemplate = (rowData)=>{
@@ -128,11 +128,10 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
 		)
 	}
 	const telefonoBodyTemplate = (rowData)=>{
-		const waMe = `https://wa.me/${rowData.cel_prov}`
 		return(
-			<a href={waMe} target='_blank' className=''>
-			    <span className='fw-bold'><p className='mb-0 pb-0'><span className=''>{rowData.cel_prov&&rowData.cel_prov.match(/.{1,3}/g).join(' ')}</span></p></span>
-			</a>
+			<>
+			    <span className='fw-bold'><p className='mb-0 pb-0'><span className=''>{rowData.cel_prov&&rowData.cel_prov.match(/.{1,3}/g).join('-')}</span></p></span>
+			</>
 		)
 	}
 	const nombreContactoBodyTemplate = (rowData)=>{
@@ -160,7 +159,7 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
 							// onSelectionChange={(e) => setselectedCustomers(e.value)}
 							filters={filters} 
 							filterDisplay="menu" 
-							globalFilterFields={['id', 'oficio', 'column_razon_social', 'nombre_contacto', 'oficio', 'razon_social_prov', 'ruc_prov', 'cel_prov', 'Estado']} 
+							globalFilterFields={['id', 'oficio', 'column_razon_social', 'nombre_contacto', 'oficio', 'razon_social_prov', 'ruc_prov', 'cel_prov', 'nombre_vend_prov', 'Estado']} 
 							emptyMessage="Egresos no encontrados."
 							showGridlines 
 							// loading={loading} 
@@ -175,8 +174,8 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
 								<Column header={'Razon social'} field='razon_social_prov' filterField="razon_social_prov" body={razonSocialBodyTemplate} sortable/>
 								{/* <Column header="Ruc del proveedor" field='ruc_prov' filterField="ruc_prov" sortable style={{ width: '3rem' }} filter/> */}
 								<Column header="Celular del contacto" field='cel_prov' filterField="cel_prov" style={{ minWidth: '10rem' }} body={telefonoBodyTemplate} sortable/>
+								{/* <Column header="Estado" field='Estado' filterField="Estado" sortable style={{ minWidth: '10rem' }} filter body={EstadoProvBodyTemplate} /> */}
 								<Column header="Action" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={HistorialProvBodyTemplate}/>
-								<Column header="" field='' filterField="" style={{ minWidth: '10rem' }} body={CopiProvBodyTemplate} />
 							</DataTable>
 				</Col>
 			</Row>
@@ -184,4 +183,4 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
 	);
 };
 
-export { CustomersProv };
+export { CustomersAgente };
