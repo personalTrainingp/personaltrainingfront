@@ -68,7 +68,13 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
         </>
       )
     } },
-    { id: 'descripcion', header: 'Descripcion', accessor: 'descripcion' },
+    { id: 'descripcion', header: 'Descripcion', render:(row)=>{
+      return (
+        <div className='' style={{width: '450px'}}>
+        {row.descripcion}
+        </div>
+      )
+    }  },
     { id: 'proveedor', header: 'Institucion', width: 100, render:(row)=>{
       return (
         <>
