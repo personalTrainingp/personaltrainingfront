@@ -20,7 +20,12 @@ export const useGestionAportes = () => {
 	const obtenerIngresoxID = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/ingreso/id/${id}`);
-			setdataIngreso(data.ingreso);
+			const dataAlter = {
+				...data.ingreso,
+				id_tipoIngreso: data.ingreso.tb_parametros_gasto?.id_tipoGasto,
+				grupo: data.ingreso.tb_parametros_gasto?.parametro_grupo?.param_label,
+			};
+			setdataIngreso(dataAlter);
 		} catch (error) {
 			console.log(error);
 		}
@@ -30,6 +35,24 @@ export const useGestionAportes = () => {
 			const { data } = await PTApi.post('/ingreso/', formState);
 			console.log({ formState });
 
+			await obtenerGestionAporte(id_empresa);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const onUpdateIngresos = async (formState, id, id_empresa) => {
+		try {
+			const { data } = await PTApi.put(`/ingreso/id/${id}`, formState);
+			console.log({ formState, data });
+			await obtenerGestionAporte(id_empresa);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const onDeleteIngresos = async (id, id_empresa) => {
+		try {
+			const { data } = await PTApi.put(`/ingreso/delete/id/${id}`);
 			await obtenerGestionAporte(id_empresa);
 		} catch (error) {
 			console.log(error);
@@ -105,6 +128,7 @@ export const useGestionAportes = () => {
 		}
 	};
 	return {
+		onDeleteIngresos,
 		dataProveedores,
 		obtenerParametrosProveedor,
 		dataIngreso,
@@ -112,5 +136,6 @@ export const useGestionAportes = () => {
 		onPostGestionAporte,
 		obtenerGestionAporte,
 		obtenerParametrosGastosFinanzas,
+		onUpdateIngresos,
 	};
 };

@@ -4,9 +4,10 @@ import { useGestionAportes } from './hook/useGestionAportes'
 import { useSelector } from 'react-redux'
 import { DateMask, NumberFormatMoney } from '@/components/CurrencyMask'
 import { Button } from 'primereact/button'
+import { confirmDialog } from 'primereact/confirmdialog'
 
 export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
-  const { obtenerGestionAporte } = useGestionAportes()
+  const { obtenerGestionAporte, onDeleteIngresos } = useGestionAportes()
   const {dataView} = useSelector(e=>e.APORTE)
   useEffect(() => {
     obtenerGestionAporte(idEmpresa)
@@ -61,7 +62,7 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
             onClick={()=>onClickOpenModalCustomIngresos(row.id)} 
             />
             <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
-            onClick={confirmDeleteIngresosxID} 
+            onClick={()=>confirmDeleteIngresosxID(row.id)} 
             />
             {/* <Button icon="pi pi-copy" rounded outlined severity="danger" 
             onClick={onClickCopyModalIngresos} 
@@ -73,7 +74,13 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
   const onClickOpenModalCustomIngresos = (id)=>{
     onOpenModalCustomAporte(id)
   }
-  const confirmDeleteIngresosxID = ()=>{
+  const confirmDeleteIngresosxID = (id)=>{
+    confirmDialog({
+      message: '¿Estas seguro de eliminar esto?',
+      accept: ()=>{
+        onDeleteIngresos(id, idEmpresa)
+      }
+    })
   }
   const onClickCopyModalIngresos=()=>{
 

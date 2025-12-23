@@ -28,7 +28,7 @@ const customAporte = {
 }
 export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
   const { onPostGestionAporte, obtenerParametrosGastosFinanzas } = useGestionAportes()
-  const { obtenerIngresoxID, dataIngreso, dataProveedores, obtenerParametrosProveedor } = useGestionAportes()
+  const { obtenerIngresoxID, dataIngreso, dataProveedores, obtenerParametrosProveedor, onUpdateIngresos } = useGestionAportes()
         const { dataProvCOMBO } = useSelector(e=>e.prov)
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
   const { dataBancos, dataFormaPago, dataTarjetas, dataConceptosAportes, dataTipoMoneda, dataComprobantesGastos, dataEmpresas } = TerminosOnShow(show)
@@ -41,8 +41,9 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
     if(id===0){
       onPostGestionAporte(formState, idEmpresa)
     }else{
-
+      onUpdateIngresos(formState, id, id_empresa)
     }
+    onCancelCustomAporte()
   }
   const onCancelCustomAporte = ()=>{
     onHide()
@@ -58,7 +59,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
   }, [show])
   useEffect(() => {
       onInputChangeFunction('id_empresa', idEmpresa)
-  }, [idEmpresa])
+  }, [idEmpresa, id])
   useEffect(() => {
     onInputChangeFunction("grupo", 0)
       obtenerParametrosProveedor(id_empresa)
@@ -68,14 +69,14 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa}) => {
         onInputChangeFunction("id_gasto", 0)
     }
   }, [grupo, id_empresa])
-  console.log({dataProveedores});
+  console.log({dataIngreso});
   
           useEffect(() => {
               const grupos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto.find(e=>e.id_tipoGasto===id_tipoIngreso)?.grupos||[]
               setgrupoGasto(grupos)
-          }, [id_empresa, id_tipoIngreso])
+          }, [id_empresa, id_tipoIngreso, id])
           useEffect(() => {
-              const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto.find(e=>e.id_tipoGasto===id_tipoIngreso).grupos.find(g=>g.value==grupo)?.conceptos||[]
+              const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_empresa)?.tipo_gasto.find(e=>e.id_tipoGasto===id_tipoIngreso)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
               setgastoxGrupo(conceptos)
           }, [grupo, idEmpresa])
   console.log({grupoGasto, dataParametrosGastos, grupo, gastoxGrupo, id_empresa});
