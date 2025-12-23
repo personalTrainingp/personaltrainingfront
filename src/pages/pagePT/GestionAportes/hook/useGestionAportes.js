@@ -36,7 +36,7 @@ export const useGestionAportes = () => {
 
 	const obtenerParametrosGastosFinanzas = async (tipo) => {
 		try {
-			let { data } = await PTApi.get(`/parametros/get_params/params-tb-finanzas/1573`);
+			let { data } = await PTApi.get(`/parametros/get_params/params-tb-finanzas/1574`);
 			data = data.reduce((acc, curr) => {
 				let empresa = acc.find((e) => e.id_empresa === curr.id_empresa);
 				if (!empresa) {

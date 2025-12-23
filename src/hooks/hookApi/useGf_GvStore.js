@@ -135,7 +135,7 @@ export const useGf_GvStore = () => {
 
 	const obtenerParametrosGastosFinanzas = async () => {
 		try {
-			let { data } = await PTApi.get(`/parametros/get_params/params-tb-finanzas/1574`);
+			let { data } = await PTApi.get(`/parametros/get_params/params-tb-finanzas/1573`);
 			dispatch(onSetDataView(data));
 			data = data.reduce((acc, curr) => {
 				let empresa = acc.find((e) => e.id_empresa === curr.id_empresa);
