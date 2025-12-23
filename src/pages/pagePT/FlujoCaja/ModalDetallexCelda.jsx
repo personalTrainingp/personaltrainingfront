@@ -21,8 +21,6 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
     // onShow()
     obtenerGastosxANIO(anio, id_enterprice)
   }
-  console.log({data: data});
-  
   return (
     <>
     <Dialog visible={show} style={{width: '120rem'}} onHide={onHide} header={`DETALLE - ${data?.grupo} - ${data?.concepto}`}>

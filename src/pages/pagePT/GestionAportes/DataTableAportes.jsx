@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { DateMask, DateMaskString, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
+import { arrayFinanzas } from '@/types/type'
 
 export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
   const { obtenerGestionAporte, onDeleteIngresos } = useGestionAportes()
@@ -16,25 +17,14 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
   
   const columns = [
     { id: 'id', header: 'ID', accessor: 'id', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
-    { id: 'fechaRegistro', header: 'Concepto', render:(row)=>{
+    { id: 'nComprobante', header: 'N° comprobante', accessor: 'n_comprabante' },
+    { id: 'nOperacion', header: 'N° Operacion', accessor: 'n_operacion' },
+    { id: 'fechaPago', header: 'Fecha Pago', render:(row)=>{
       return (
         <>
-          {row?.tb_parametros_gasto?.nombre_gasto}
-        </>
-      )
-    }},
-    { id: 'proveedor', header: 'Institucion o Aportante', width: 100, render:(row)=>{
-      return (
-        <>
-        {row.tb_Proveedor?.razon_social_prov}
-        </>
-      )
-    } },
-    // { id: 'tipo_comprobante', header: 'Tipo de comprobante', width: 100, headerAlign: 'right', cellAlign: 'left' },
-    { id: 'monto', header: 'Monto', render:(row)=>{
-      return(
-        <>
-        <NumberFormatMoney amount={row.monto}/>
+        {
+          MaskDate(row.fec_pago, 'dddd DD [ DE ]  MMMM [DEL] YYYY')
+        }
         </>
       )
     } },
@@ -47,18 +37,46 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
         </>
       )
     } },
-    { id: 'fechaPago', header: 'Fecha Pago', render:(row)=>{
+    { id: 'grupo', header: 'TIPO DE INGRESO', render:(row)=>{
       return (
         <>
-        {
-          MaskDate(row.fec_pago, 'dddd DD [ DE ]  MMMM [DEL] YYYY')
-        }
+          {arrayFinanzas.find(e=>e.value===row?.tb_parametros_gasto?.id_tipoGasto).label}
+        </>
+      )
+    }},
+    { id: 'grupo', header: 'RUBRO', render:(row)=>{
+      return (
+        <>
+          {row?.tb_parametros_gasto?.parametro_grupo?.param_label}
+        </>
+      )
+    }},
+    { id: 'concepto', header: 'Concepto', render:(row)=>{
+      return (
+        <>
+          {row?.tb_parametros_gasto?.nombre_gasto}
+        </>
+      )
+    }},
+    // TIPO DE GASTO
+    // RUBRO
+    // GASTO
+    { id: 'monto', header: 'Monto', render:(row)=>{
+      return(
+        <>
+        <NumberFormatMoney amount={row.monto}/>
         </>
       )
     } },
-    { id: 'nOperacion', header: 'N° Operacion', accessor: 'n_operacion' },
-    { id: 'nComprobante', header: 'N° comprobante', accessor: 'n_comprabante' },
     { id: 'descripcion', header: 'Descripcion', accessor: 'descripcion' },
+    { id: 'proveedor', header: 'Institucion', width: 100, render:(row)=>{
+      return (
+        <>
+        {row.tb_Proveedor?.razon_social_prov}
+        </>
+      )
+    } },
+    // { id: 'tipo_comprobante', header: 'Tipo de comprobante', width: 100, headerAlign: 'right', cellAlign: 'left' },
     { id: '', header: '', render:(row)=>{
         return (
             <>
