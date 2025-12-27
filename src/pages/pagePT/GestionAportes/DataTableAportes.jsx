@@ -16,10 +16,22 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
   console.log({dataView});
   
   const columns = [
-    { id: 'id', header: 'ID', accessor: 'id', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
-    { id: 'nComprobante', header: 'N° comprobante', accessor: 'n_comprabante' },
+    { id: 'id', header: <div className=''>ID</div>, accessor: 'id', sortable: true, render:(row)=>{
+      return (
+        <div style={{width: '30px'}}>
+        {row.id}
+        </div>
+      )
+    }},
+    { id: 'nComprobante', header: <div className=''>N° COMPR.</div>,  render:(row)=>{
+      return (
+        <div style={{width: '50px'}}>
+        {row.n_comprabante}
+        </div>
+      )
+    } },
     { id: 'nOperacion', header: 'N° Operacion', accessor: 'n_operacion' },
-    { id: 'fechaPago', header: 'Fecha Pago', render:(row)=>{
+    { id: 'fechaPago', header: 'Fecha Pago', sortable: true, accessor: row => new Date(row.fec_pago).getTime(), render:(row)=>{
       return (
         <>
         {
@@ -63,14 +75,14 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
     // GASTO
     { id: 'monto', header: 'Monto', render:(row)=>{
       return(
-        <>
+        <div style={{width: '150px'}}>
         <NumberFormatMoney amount={row?.monto}/>
-        </>
+        </div>
       )
     } },
     { id: 'descripcion', header: 'Descripcion', render:(row)=>{
       return (
-        <div className='' style={{width: '450px'}}>
+        <div className='' style={{width: '350px'}}>
         {row.descripcion}
         </div>
       )

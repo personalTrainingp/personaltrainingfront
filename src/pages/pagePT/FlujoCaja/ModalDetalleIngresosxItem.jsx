@@ -6,20 +6,19 @@ import React, { useState } from 'react'
 import { Table } from 'react-bootstrap'
 import { ModalIngresosGastos } from '../GestGastos/ModalIngresosGastos'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
+import { ModalCustomAporte } from '../GestionAportes/ModalCustomAporte'
 
-export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
-  const [isModalDetalleGasto, setisModalDetalleGasto] = useState(false)
+export const ModalDetalleIngresosxItem = ({id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
+  const [isModalDetalleGasto, setisModalDetalleGasto] = useState({isOpen: false, id: 0})
   const [ModalDetalleGasto, setModalDetalleGasto] = useState({})
   const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
   const onOpenModalDetalleGasto = (idGasto)=>{
-    setisModalDetalleGasto(true);
+    setisModalDetalleGasto({isOpen: true, id: idGasto});
     onHide()
     obtenerGastoxID(idGasto)
   }
   const onCloseModalDetalleGasto = ()=>{
-    setisModalDetalleGasto(false);
-    // onShow()
-    obtenerGastosxANIO(anio, id_enterprice)
+    setisModalDetalleGasto({isOpen: false, id: 0});
   }
   return (
     <>
@@ -30,7 +29,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'></div></th>
                   <th className='text-white p-1 fs-3'>
                     <div className='bg-porsiaca' style={{width: '350px'}}>
-                      PROVEEDOR/<br/> COLABORADOR
+                      INSTITUTO/<br/> COLABORADOR
                     </div>
                     </th>
                   <th className='text-white p-1 fs-3'>
@@ -115,7 +114,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
           </div>
         </div>
     </Dialog>
-    <ModalIngresosGastos onHide={onCloseModalDetalleGasto} data={gastoxID} isLoading={isLoading} id_enterprice={id_enterprice} onShow={()=>setisModalDetalleGasto(true)} show={isModalDetalleGasto}   />
+    <ModalCustomAporte onHide={onCloseModalDetalleGasto} id={isModalDetalleGasto?.id} idEmpresa={id_enterprice} show={isModalDetalleGasto?.isOpen}/>
     </>
   )
 }

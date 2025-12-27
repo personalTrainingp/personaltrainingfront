@@ -30,13 +30,14 @@ export const TotalesPorGrupo = (data) => {
 export const TotalesGeneralesxMes = (data = []) => {
 	// otro array de 12 meses en cero
 	const totales = Array.from({ length: 12 }, () => 0);
+	console.log({ data, totales }, '33');
 
 	data?.forEach((grupo) => {
 		grupo?.conceptos?.forEach((concepto) => {
 			concepto.items.forEach(({ mes, items }) => {
 				// sumamos aquí cada gasto.monto dentro de items
 				const sumaDelMes = items.reduce((acc, gasto) => {
-					return acc + (gasto.monto || 0);
+					return acc + (gasto.monto * gasto.tc || 0);
 				}, 0);
 				totales[mes - 1] += sumaDelMes;
 			});

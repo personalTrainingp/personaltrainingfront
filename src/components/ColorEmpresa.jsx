@@ -9,7 +9,7 @@ export const ColorEmpresa = (props) => {
     { key: 'childrenCircus', label: 'CIRCUS', color: 'color-circus-all', text: 'text-circus link-circus', BackgroundHeretary: 'link-circus' },
     { key: 'childrenReducto', label: 'REDUCTO', color: 'color-reducto-all', text: 'text-ISESAC link-isesac', BackgroundHeretary: 'link-isesac' },
     { key: 'childrenOtrosRal', label: 'OTROS RAL', color: 'color-otros-ral-all', text: 'link-change', BackgroundHeretary: 'link-change' },
-    { key: 'childrenRal', label: 'RAL', color: 'color-ral-all', text: 'link-change', BackgroundHeretary: 'link-change' },
+    { key: 'childrenRal', label: 'RAL', color: 'color-ral-all', text: 'link-ral', BackgroundHeretary: 'link-ral' },
     { key: 'childrenOtros', label: 'OTROS', color: 'color-otros-all', text: 'link-change', BackgroundHeretary: 'link-change' },
     { key: 'childenBUSSINESS', label: 'Circus Bussiness', color: 'color-otros-all', text: 'link-change', BackgroundHeretary: 'link-change' },
     { key: 'childrenInventarioSinIncluirCircusBussiness', label: 'Inventario sin incluir circus bussiness', color: 'color-otros-all', text: 'link-change', BackgroundHeretary: 'link-change' },
