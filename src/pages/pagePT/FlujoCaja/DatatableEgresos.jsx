@@ -186,7 +186,11 @@ export const DatatableEgresos = ({
 						<p className='text-center' style={{fontSize: '60px'}}>INGRESOS</p>
 						<TableVentas 
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-						dataIngresosxMes={dataIngresosxMes} background={background} bgTotal={bgTotal} mesesNombres={mesesNombres} mesesSeleccionadosNums={mesesSeleccionadosNums}/>
+								dataIngresosxMes={dataIngresosxMes} 
+								background={background} 
+								bgTotal={bgTotal} 
+								mesesNombres={mesesNombres} 
+								mesesSeleccionadosNums={mesesSeleccionadosNums}/>
 					</div>
 					<div>
 					<p className='text-center' style={{fontSize: '60px'}}>EGRESOS</p>

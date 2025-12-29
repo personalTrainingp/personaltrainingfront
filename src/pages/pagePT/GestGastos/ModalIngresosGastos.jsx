@@ -499,7 +499,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                 <Col lg={4}>
                                     <div className="mb-4">
                                         <label htmlFor="id_prov" className="form-label">
-                                            Proveedor*
+                                            Proveedor
                                         </label>
                                         <Row>
                                             <Col xxl={10}>
@@ -553,6 +553,25 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                             classNamePrefix="react-select"
                                             options={dataTrabajosProv}
                                             value={dataTrabajosProv.find(
+                                                (option) => option.value === id_contrato_prov
+                                            )||0}
+                                        />
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                            
+                                    <div className="mb-4">
+                                        <label htmlFor="prestamos" className="form-label">
+                                            PRESTAMOS
+                                        </label>
+                                        <Select
+                                            onChange={(e) => onInputChangeReact(e, 'id_prestamos')}
+                                            name="id_prestamos"
+                                            placeholder={'Seleccione el prestamo'}
+                                            className="react-select"
+                                            classNamePrefix="react-select"
+                                            options={[{value: 2, label: 'PRESTAMOS RAL'}]}
+                                            value={[{value: 2, label: 'PRESTAMOS RAL'}].find(
                                                 (option) => option.value === id_contrato_prov
                                             )||0}
                                         />

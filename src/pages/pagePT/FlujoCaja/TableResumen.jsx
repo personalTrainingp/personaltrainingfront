@@ -84,11 +84,10 @@ export const TableResumen = ({dataGastos, dataIngresos, mesesSeleccionadosNums, 
                         </div>
                     </td>
                 </tr>
-                
                 <tr>
                     <td className="fw-bold fs-2 sticky-td">
-                        <div className="bg-white py-3 text-black">
-                            PASIVO
+                        <div className="bg-white py-3 text-change">
+                            PASIVOS
                         </div>
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
@@ -98,7 +97,7 @@ export const TableResumen = ({dataGastos, dataIngresos, mesesSeleccionadosNums, 
                                 className="text-center fs-2 fw-bold"
                                 
                             >
-                                <div  className={`bg-porsiaca text-right px-2 text-black`}>
+                                <div  className={`bg-porsiaca text-right px-2 text-change`}>
                                     <NumberFormatMoney amount={0} />
                                 </div>
                             </td>
@@ -106,7 +105,7 @@ export const TableResumen = ({dataGastos, dataIngresos, mesesSeleccionadosNums, 
                     }
                     )}
                     <td className="text-center fw-bolder fs-1">
-                        <div className='bg-porsiaca text-right text-black'>
+                        <div className='bg-porsiaca text-right text-change'>
                             <NumberFormatMoney amount={0} />
                         </div>
                     </td>

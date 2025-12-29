@@ -4,6 +4,7 @@ import { useProductoStore } from '@/hooks/hookApi/useProductoStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayEstados } from '@/types/type'
+import { Dialog } from 'primereact/dialog'
 import React, { useEffect } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
 const customProducto = {
@@ -64,11 +65,7 @@ export const ModalCustomProducto = ({onHide, show, id=0}) => {
         onResetForm()
     }
   return (
-    <Modal show={show} onHide={CloseModalProducto} size='lg' backdrop={'static'}>
-        <Modal.Header>
-            <Modal.Title>Agregar producto</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+    <Dialog visible={show} onHide={CloseModalProducto} header={'AGREGAR PRODUCTO'} style={{width: '70rem'}}>
             <form onSubmit={submitProducto}>
                 <Row>
                     <Col lg={4}>
@@ -87,17 +84,17 @@ export const ModalCustomProducto = ({onHide, show, id=0}) => {
                         </div>
                     </Col>
                     <Col lg={4}>
-                        <div>
+                        <div className="mb-4">
                             <InputText label={'codigo lote'} nameInput={'codigo_lote'} onChange={onInputChange} value={codigo_lote} required/>
                         </div>
                     </Col>
                     <Col lg={4}>
-                        <div>
+                        <div className="mb-4">
                             <InputText label={'codigo producto'} nameInput={'codigo_producto'} onChange={onInputChange} value={codigo_producto} required/>
                         </div>
                     </Col>
                     <Col lg={4}>
-                        <div>
+                        <div className="mb-4">
                             <InputText label={'codigo contable'} nameInput={'codigo_contable'} onChange={onInputChange} value={codigo_contable} required/>
                         </div>
                     </Col>
@@ -152,7 +149,6 @@ export const ModalCustomProducto = ({onHide, show, id=0}) => {
                     </Col>
                 </Row>
             </form>
-        </Modal.Body>
-    </Modal>
+    </Dialog>
   )
 }

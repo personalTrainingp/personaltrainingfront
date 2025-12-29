@@ -297,8 +297,6 @@ export const useVentasStore = () => {
 			if (data.ok == false) {
 				return Swal.fire('Error', 'Error, el socio es nuevo', 'error');
 			}
-			// console.log(data, blobFirma);
-			// console.log(blobFirma);
 			funToast('success', 'Venta', 'Venta agregada con exitos', 'success', 5000);
 		} catch (error) {
 			console.log(error);
