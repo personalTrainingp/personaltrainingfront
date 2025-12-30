@@ -42,6 +42,13 @@ export const App = () => {
             </TabPanel>
         </TabView>
       </TabPanel>
+      <TabPanel header='BACKUP SOTO'>
+        <TabView>
+            <TabPanel header={<h2 className='card p-4 mb-0'>REDUCTO</h2>}>
+                <InventarioTotalizado id_empresa={5991} label_empresa={'REDUCTO'}/>
+            </TabPanel>
+        </TabView>
+      </TabPanel>
     </TabView>
     </>
   )
