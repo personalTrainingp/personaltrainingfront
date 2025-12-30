@@ -69,13 +69,15 @@ export const DataView = ({id_empresa, dvi, label_empresa, dataContratoProv, isRe
     <Button label={<span className='fs-2'>RESUMEN VALORIZADO</span>} onClick={onOpenModalResumenValorizado} text/>
         <Row>
             {groupedData.map(g=>{
+              console.log(agruparDataxLugar(g.items));
+              
                     return(
                     <>
                     <h1>
                         {g.nivel!=null && <>NIVEL {g.nivel}</>}
                     </h1>
                     {
-                        agruparDataxLugar(g.items).map(f=>{
+                        agruparDataxLugar(g.items).fiter(lugar=>lugar).map(f=>{
                             const nivel = f.items[0].parametro_lugar_encuentro.label_nivel
                             const id_lugar = f.items[0].id_lugar
                             const contratosxLugar = dataContratoProv.filter(f=>f.id_zona===id_lugar)
