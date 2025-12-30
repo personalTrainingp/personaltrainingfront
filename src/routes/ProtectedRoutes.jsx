@@ -152,6 +152,10 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 					{
+						sections.find(e=>e.url==='/pasos-entrega-local-arrendado') &&
+						<Route path='pasos-entrega-local-arrendado'  element={<ExternalRedirect to="https://docs.google.com/document/d/12mQrw_C99pz4y-c4mIZUUXJTUKn-b-cT8FN4_oiIxO0/edit?usp=sharing" replace />}/>
+					}
+					{
 						sections.find(e=>e.url==='/dni-tramitadores-municipalidad') &&
 						<Route path='dni-tramitadores-municipalidad'  element={<ExternalRedirect to="https://drive.google.com/drive/folders/1VAWttja2ENN8l5ONa5_VwV-yldzDrZVp" replace />}/>
 					}

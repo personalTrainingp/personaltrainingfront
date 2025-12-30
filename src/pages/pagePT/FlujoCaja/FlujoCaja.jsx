@@ -81,7 +81,7 @@ export const FlujoCaja = () => {
                             <DatatableEgresos bgTotal={'bg-ral  text-white'} bgMultiValue={'#2c10cdff'} arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} background={'bg-ral'} id_enterprice={800} anio={2025} nombre_empresa={'PERSONALES'}/>
                         </TabPanel>
                         <TabPanel header={<div className=' text-black' style={{fontSize: '60px'}}>2024</div>}>
-                            <DatatableEgresos bgTotal={'bg-ral  text-white'} bgMultiValue={'#3610cdff'} arrayRangeDate={[new Date(2024, 1, 15), new Date()]} background={'bg-ral'} id_enterprice={800} anio={2024} nombre_empresa={'PERSONALES'}/>
+                            <DatatableEgresos bgTotal={'bg-ral  text-white'} bgMultiValue={'#3610cdff'} arrayRangeDate={[new Date(2024, 1, 15), new Date(2024,11,31)]} background={'bg-ral'} id_enterprice={800} anio={2024} nombre_empresa={'PERSONALES'}/>
                         </TabPanel>
                     </TabView>
                 </TabPanel>
