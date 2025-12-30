@@ -87,7 +87,7 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
         </div>
       )
     }  },
-    { id: 'proveedor', header: 'Institucion', width: 100, render:(row)=>{
+    { id: 'proveedor', header: <>EMPRESA / PERSONA</>, width: 100, render:(row)=>{
       return (
         <>
         {row.tb_Proveedor?.razon_social_prov}

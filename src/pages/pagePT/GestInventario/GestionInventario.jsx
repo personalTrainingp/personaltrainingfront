@@ -61,7 +61,7 @@ export const GestionInventario = () => {
             <TabPanel header='BACKUP SOTO'>
                   <TabView>
                         <TabPanel header={<>REDUCTO<br/>INVENTARIO TOTAL</>}>
-                              <DataInventario id_enterprice={5991} id_zona={599}/>
+                              <DataInventario id_enterprice={5992} id_zona={599}/>
                         </TabPanel>
                   </TabView>
             </TabPanel>
