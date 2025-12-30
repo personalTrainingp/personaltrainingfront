@@ -77,7 +77,7 @@ export const DataView = ({id_empresa, dvi, label_empresa, dataContratoProv, isRe
                         {g.nivel!=null && <>NIVEL {g.nivel}</>}
                     </h1>
                     {
-                        agruparDataxLugar(g.items).fiter(lugar=>lugar).map(f=>{
+                        agruparDataxLugar(g.items).map(f=>{
                             const nivel = f.items[0].parametro_lugar_encuentro.label_nivel
                             const id_lugar = f.items[0].id_lugar
                             const contratosxLugar = dataContratoProv.filter(f=>f.id_zona===id_lugar)
