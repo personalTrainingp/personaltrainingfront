@@ -178,7 +178,11 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/cuentas-pagar') &&
-						<Route path='cuentas-pagar' element={<CuentasBalances/>}/>
+						<Route path='cuentas-pagar' element={<CuentasBalances tipo={'PorPagar'}/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/cuentas-cobrar') &&
+						<Route path='cuentas-cobrar' element={<CuentasBalances tipo={'PorCobrar'}/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/salidas-tempranas') &&

@@ -42,16 +42,13 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id}) 
     }
     
     useEffect(() => {
-        if(show){
+        if(show, id_empresa){
             obtenerDataConcepto('cuentasPorPagar', 'concepto')
             obtenerDataBanco('formapago','banco')
-        }
-    }, [show])
-    useEffect(() => {
-        if(show){
             obtenerParametrosProveedor(id_empresa)
         }
-    }, [id_empresa])
+    }, [show, id_empresa])
+    console.log({dataProveedores});
     
   return (
     <Dialog visible={show} onHide={onCancelarModal} header={'Agregar Cuentas '} style={{width: '80rem'}}>
