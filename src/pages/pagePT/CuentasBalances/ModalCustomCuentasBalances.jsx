@@ -43,7 +43,7 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id}) 
     
     useEffect(() => {
         if(show){
-            obtenerDataConcepto('cuentasPorPagar', 'concepto')
+            obtenerDataConcepto(tipo, 'concepto')
             obtenerDataBanco('formapago','banco')
         }
     }, [show])
