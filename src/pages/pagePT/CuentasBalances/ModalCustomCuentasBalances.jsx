@@ -1,0 +1,110 @@
+import { InputButton, InputDate, InputSelect, InputText, InputTextArea } from '@/components/InputText'
+import { useForm } from '@/hooks/useForm'
+import { arrayEmpresaFinan, arrayMonedas } from '@/types/type'
+import { Dialog } from 'primereact/dialog'
+import React, { useEffect } from 'react'
+import { Col, Row } from 'react-bootstrap'
+import { useCuentasBalances } from './hook/useCuentasBalances'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
+const customCustomBalance = {
+    id_concepto: 0, 
+    monto:0, 
+    moneda:'PEN', 
+    fecha_comprobante:'', 
+    id_prov:0, 
+    descripcion:'',
+    id_empresa: 0,
+    id_banco: 0,
+    n_operacion: ''
+}
+export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id}) => {
+    const { postCuentasBalancesxIdEmpresaxTipo, obtenerCuentaBalancexID, dataCuentaBalance, putCuentaBalancexID, dataProveedores, obtenerParametrosProveedor } = useCuentasBalances()
+    const { DataGeneral:dataConcepto, obtenerParametroPorEntidadyGrupo:obtenerDataConcepto }  = useTerminoStore()
+    const { DataGeneral:dataBanco, obtenerParametroPorEntidadyGrupo:obtenerDataBanco }  = useTerminoStore()
+    useEffect(() => {
+        if(show){
+            obtenerCuentaBalancexID(id)
+        }
+    }, [show])
+    
+    const { formState, id_concepto, monto, moneda, fecha_comprobante, id_prov, descripcion, id_empresa, id_banco, n_operacion, onInputChange, onResetForm } = useForm(id===0?customCustomBalance:dataCuentaBalance)
+    const onSubmitCuentasBalancexIdEmpresaxTipo=()=>{
+        if(id===0){
+            postCuentasBalancesxIdEmpresaxTipo(formState, id_empresa, tipo)
+        }else{
+            putCuentaBalancexID(id, idEmpresa, tipo, formState)
+        }
+        onCancelarModal()
+    }
+    const onCancelarModal = ()=>{
+        onHide()
+        onResetForm()
+    }
+    
+    useEffect(() => {
+        if(show, id_empresa){
+            obtenerDataConcepto('cuentasPorPagar', 'concepto')
+            obtenerDataBanco('formapago','banco')
+            obtenerParametrosProveedor(id_empresa)
+        }
+    }, [show, id_empresa])
+    console.log({dataProveedores});
+    
+  return (
+    <Dialog visible={show} onHide={onCancelarModal} header={'Agregar Cuentas '} style={{width: '80rem'}}>
+        <form>
+            <Row>
+                <Col lg={4}>
+                    <div className='mb-2'>
+                    <InputSelect label={'Empresa'} value={id_empresa} nameInput={'id_empresa'} onChange={onInputChange} options={arrayEmpresaFinan}/>
+                    </div>
+                </Col>
+                <Col lg={4}>
+                    <div className='mb-2'>
+                    <InputSelect label={'Concepto'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={dataConcepto}/>
+                    </div>
+                </Col>
+                <Col lg={4}>
+                    <div className='mb-2'>
+                    <InputSelect label={'Moneda'} value={moneda} nameInput={'moneda'} onChange={onInputChange} options={arrayMonedas}/>
+                    </div>
+                </Col>
+                <Col lg={4}>
+                    <div className='mb-2'>
+                        <InputText label={'Monto'} nameInput={'monto'} onChange={onInputChange} value={monto}/>
+                    </div>
+                </Col>
+                <Col lg={4}>
+                    <div className='mb-2'>
+                        <InputDate label={'Fecha de comprobante'} nameInput={'fecha_comprobante'} onChange={onInputChange} value={fecha_comprobante}/>
+                    </div>
+                </Col>
+                <Col lg={4}>
+                    <div className='mb-2'>
+                    <InputSelect label={'Proveedor'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedores}/>
+                    </div>
+                </Col>
+                <Col lg={4}>
+                    <div className='mb-2'>
+                    <InputSelect label={'Banco'} value={id_banco} nameInput={'id_banco'} onChange={onInputChange} options={dataBanco}/>
+                    </div>
+                </Col>
+                <Col lg={4}>
+                    <div className='mb-2'>
+                        <InputText label={'N° OPERACION'} nameInput={'n_operacion'} onChange={onInputChange} value={n_operacion}/>
+                    </div>
+                </Col>
+                <Col lg={12}>
+                    <div className='mb-2'>
+                        <InputTextArea label={'Descripcion'} nameInput={'descripcion'} onChange={onInputChange} value={descripcion} />
+                    </div>
+                </Col>
+                <Col lg={4}>
+                    <InputButton label={'Guardar'} onClick={onSubmitCuentasBalancexIdEmpresaxTipo}/>
+                    <InputButton label={'Cancelar'} onClick={onCancelarModal} variant={'link'}/>
+                </Col>
+            </Row>
+        </form>
+    </Dialog>
+  )
+}

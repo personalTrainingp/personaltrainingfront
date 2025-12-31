@@ -103,7 +103,7 @@ export const DataView = ({id_empresa, dvi, label_empresa, dataContratoProv, isRe
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>inversión total <SymbolDolar fontSizeS={'20px'}/> </span><span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={(f.valor_total_sumado_dolares)}/></span></li>
                                         <br/>
                                     </ul>
-                                    
+                                      
                                     <div style={{width: '100%', height: 'auto'}} className='border border-gray-300'>
                                             <ImagesGrids images={f.tb_images}/>
                                           </div>

@@ -27,6 +27,7 @@ import { MovimientosSlice } from '@/pages/pagePT/GestionMovimientoArticulos/Movi
 import { ArticuloSlice } from '@/pages/pagePT/GestInventario/store/ArticulosSlice';
 import { ProductoSlice } from '@/pages/pagePT/GestProductos/store/ProductoSlice';
 import { AporteSlice } from '@/pages/pagePT/GestionAportes/Store/AporteSlice';
+import { cuentasBalancesSlice } from '@/pages/pagePT/CuentasBalances/Store/cuentasBalancesSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -58,6 +59,7 @@ export const store = configureStore({
 		ARTICULO: ArticuloSlice.reducer,
 		PRODUCTO: ProductoSlice.reducer,
 		APORTE: AporteSlice.reducer,
+		CUENTASBALANCES: cuentasBalancesSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

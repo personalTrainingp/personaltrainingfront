@@ -33,7 +33,8 @@ const registerIvsG={
     id_contrato_prov: 0,
     id_prov: 0,
     esCompra: false,
-    id_estado_gasto: 0
+    id_estado_gasto: 0,
+    id_porCobrar: 0
 }
 export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
     const onClickCancelModal = ()=>{
@@ -81,6 +82,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
             n_operacion, 
             id_prov, 
             id_contrato_prov,
+            id_porCobrar,
             descripcion, 
             esCompra,
             onInputChange, 
@@ -561,18 +563,18 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                 <Col lg={4}>
                                             
                                     <div className="mb-4">
-                                        <label htmlFor="prestamos" className="form-label">
-                                            PRESTAMOS
+                                        <label htmlFor="id_porCobrar" className="form-label">
+                                            COBRAR
                                         </label>
                                         <Select
-                                            onChange={(e) => onInputChangeReact(e, 'id_prestamos')}
-                                            name="id_prestamos"
-                                            placeholder={'Seleccione el prestamo'}
+                                            onChange={(e) => onInputChangeReact(e, 'id_porCobrar')}
+                                            name="id_porCobrar"
+                                            placeholder={'Seleccione las cuentas por cobrar'}
                                             className="react-select"
                                             classNamePrefix="react-select"
                                             options={[{value: 2, label: 'PRESTAMOS RAL'}]}
                                             value={[{value: 2, label: 'PRESTAMOS RAL'}].find(
-                                                (option) => option.value === id_contrato_prov
+                                                (option) => option.value === id_porCobrar
                                             )||0}
                                         />
                                     </div>

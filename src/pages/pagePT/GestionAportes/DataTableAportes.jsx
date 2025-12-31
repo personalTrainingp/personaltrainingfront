@@ -104,9 +104,6 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
             <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
             onClick={()=>confirmDeleteIngresosxID(row.id)} 
             />
-            {/* <Button icon="pi pi-copy" rounded outlined severity="danger" 
-            onClick={onClickCopyModalIngresos} 
-            /> */}
             </>
         )
     } },

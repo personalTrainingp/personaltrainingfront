@@ -110,6 +110,7 @@ const GestionSalidasTempranas = lazy(()=>import('../pages/pagePT/GestionSalidasT
 // const ContratoProv = lazy(()=>import('../pages/pagePT/ContratoProv/Index.jsx'))
 const ReporteUtilidadxMes = lazy(()=>import('../pages/pagePT/ReporteUtilidadxMes/Index.jsx'))
 const ResumenGerencialPorOrigen= lazy(()=>import('../pages/pagePT/ResumenGerencialPorOrigen/Index.jsx'))
+const CuentasBalances = lazy(()=>import('../pages/pagePT/CuentasBalances/Index.jsx'))
 /**
  * routes import
  */
@@ -174,6 +175,10 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/gestion-ingresantes-activo') &&
 						<Route path='gestion-ingresantes-activo' element={<GestionIngresantes id_estado={true} tipo={1574}/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/cuentas-pagar') &&
+						<Route path='cuentas-pagar' element={<CuentasBalances/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/salidas-tempranas') &&
