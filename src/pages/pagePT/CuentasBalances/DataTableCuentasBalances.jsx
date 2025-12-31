@@ -36,7 +36,15 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
                     </>
                 )
             } },
-            { id: 'id_prov', header: 'proveedor', accessor: 'id_prov', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
+            { id: 'id_prov', header: 'Empresa', accessor: 'id_prov', sortable: true, render:(row)=>{
+                return (
+                    <>
+                    {
+                        row?.tb_Proveedor?.razon_social_prov
+                    }
+                    </>
+                )
+            }  },
             { id: 'descripcion', header: 'descripcion', accessor: 'descripcion', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
             { id: 'accion', header: '',  sortable: true, render:(row)=>{
                 return (
