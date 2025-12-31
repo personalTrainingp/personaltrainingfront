@@ -187,7 +187,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         useEffect(() => {
             setdataProveedoresFiltrados(id_oficio === 0 ? dataProvCOMBO : dataProvCOMBO.filter(e => e.id_oficio === id_oficio))
         }, [id_oficio])
-
         
   return (
     <>
