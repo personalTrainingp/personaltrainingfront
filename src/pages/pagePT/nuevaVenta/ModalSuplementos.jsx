@@ -57,7 +57,7 @@ export const ModalSuplementos = ({show, hide, data, id}) => {
 								<Row>
 									<Col lg={12}>
 										<div className='mb-3'>
-											<InputSelect label={'producto'} nameInput={'id_producto'} placeholder='Seleccionar el producto' onChange={onInputChange} options={dataProductosActivos} required/>
+											<InputSelect label={'producto'} nameInput={'id_producto'} placeholder='Seleccionar el producto' onChange={onInputChange} options={dataProductosActivos.filter(e=>e.id_cat===17)} required/>
 										</div>
 									</Col>
 									<Col lg={12}>

@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import Select from 'react-select'
+import { useNuevaVentaStore } from './hooks/useNuevaVentaStore'
 const registerAccesorio= {
     id_producto: 0,
     prec_acces: 0.00,
@@ -16,10 +17,11 @@ export const ModalAccesorio = ({show, hide, data}) => {
 	const dispatch = useDispatch()
     const { id_producto, cantidad, formState, onInputChange, onInputChangeReact, onInputChangeFunction, onResetForm } = useForm(data?data:registerAccesorio)
 	const { obtenerParametrosProductosCategoriaAccesorios, DataProductosAccesorios } = useTerminoStore()
+	const { dataProductosActivos, obtenerProductosActivos } = useNuevaVentaStore()
 	const [accesorioSelect, setaccesorioSelect] = useState(undefined)
 	const {randomFunction} = helperFunctions()
 	useEffect(() => {
-		obtenerParametrosProductosCategoriaAccesorios()
+		obtenerProductosActivos()
 	}, [])
 	const onCancelModal = () =>{
 		onResetForm()
@@ -40,7 +42,7 @@ export const ModalAccesorio = ({show, hide, data}) => {
 		onInputChangeReact(e, 'id_producto')
 	}
 	useEffect(() => {
-		const oneAccesorio = DataProductosAccesorios.find(
+		const oneAccesorio = dataProductosActivos.filter(e=>e.id_Cat===18).find(
 			(option) => option.value === id_producto
 		)
 		setaccesorioSelect(oneAccesorio)
@@ -68,7 +70,7 @@ export const ModalAccesorio = ({show, hide, data}) => {
 											className="react-select"
 											classNamePrefix="react-select"
 											options={DataProductosAccesorios}
-											value={DataProductosAccesorios.find(
+											value={DataProductosAccesorios.filter(e=>e.id_Cat===18).find(
 												(option) => option.value === id_producto
 											)}
 											required
