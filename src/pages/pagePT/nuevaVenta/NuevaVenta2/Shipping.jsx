@@ -133,15 +133,15 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 										<ItemProdServ Inombre={"MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
-									<Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
+									{/* <Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
 										<ItemProdServ Inombre={"PRODUCTOS"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
-									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
-									{/* <Col className="mb-3" xxl={2} onClick={onOpenModalSupl}>
-										<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/> */}
+									<Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
+										<ItemProdServ Inombre={"PRODUCTOS"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
-									<ModalSuplementos show={modalSupl} hide={onCloseModalSupl}/> */}
-									<Col className="mb-3" xxl={2} onClick={onOpenModalNut}>
+									<ModalSuplementos show={modalAcc} hide={onCloseModalSupl}/>
+									<Col className="mb-3" xxl={2} onClick={()=>setModalAcc(false)}>
 									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>

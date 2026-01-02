@@ -1,5 +1,5 @@
 import { CurrencyMask } from '@/components/CurrencyMask'
-import { InputButton, InputDate, InputMoney, InputSelect, InputText } from '@/components/InputText'
+import { InputButton, InputDate, InputMoney, InputSelect, InputText, InputTextArea } from '@/components/InputText'
 import { useProductoStore } from '@/hooks/hookApi/useProductoStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
@@ -22,8 +22,9 @@ const customProducto = {
 			stock_minimo: '',
 			stock_producto: '',
 			ubicacion_producto: '',
-			fec_vencimiento: '',
+			fec_vencimiento: null,
 			estado_product: true,
+            descripcion: ''
 }
 export const ModalCustomProducto = ({onHide, show, idEmpresa, id=0}) => {
             const { startRegisterProducto, startUpdateProductoxIdProducto, dataProducto, obtenerProductoxIdProducto } = useProductosStore()
@@ -44,6 +45,7 @@ export const ModalCustomProducto = ({onHide, show, idEmpresa, id=0}) => {
         ubicacion_producto,
         fec_vencimiento,
         estado_product,
+        descripcion,
         onResetForm,
     onInputChange } = useForm(id==0?customProducto:dataProducto)
     const { obtenerParametrosProductoMarcas, DataProducMarca, 
@@ -65,7 +67,7 @@ export const ModalCustomProducto = ({onHide, show, idEmpresa, id=0}) => {
     const submitProducto = (e)=>{
         e.preventDefault()
         if(id===0){
-            startRegisterProducto(formState)
+            startRegisterProducto(formState, idEmpresa)
         }else{
             startUpdateProductoxIdProducto(formState, idEmpresa, id)
         }
@@ -152,6 +154,11 @@ export const ModalCustomProducto = ({onHide, show, idEmpresa, id=0}) => {
                     <Col lg={4}>
                         <div className="mb-4">
                             <InputSelect label={'Estado'} nameInput={'estado_product'} onChange={onInputChange} options={arrayEstados} placeholder='Estado' value={estado_product} required/>
+                        </div>
+                    </Col>
+                    <Col lg={12}>
+                        <div className="mb-4">
+                            <InputTextArea label={'Descripcion'} nameInput={'descripcion'} onChange={onInputChange} value={descripcion} required/>
                         </div>
                     </Col>
                     <Col lg={12}>

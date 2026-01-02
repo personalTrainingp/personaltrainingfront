@@ -39,7 +39,6 @@ export const ItemProdServ = ({Icantidad, Itotal, Inombre, Iabrev, icono, icowid,
                                                               className="mt-1 mb-0 d-block fs-3 text-primary font-bolder">
                                                                 {Inombre}
                                                             </h4>
-
                                                         </span>
                             {/* <h4 className="font-15 mt-1 mb-0 d-block">{Inombre}</h4> */}
                           </Link>

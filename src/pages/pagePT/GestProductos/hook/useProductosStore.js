@@ -26,7 +26,7 @@ export const useProductosStore = () => {
 	};
 	const startRegisterProducto = async (formState, idEmpresa) => {
 		try {
-			const { data } = await PTApi.post('/producto/', formState);
+			const { data } = await PTApi.post(`/producto/${idEmpresa}`, formState);
 			await obtenerProductosxEmpresa(idEmpresa);
 		} catch (error) {
 			console.log(error);

@@ -4,22 +4,24 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import { onAddDetalleProductoSuplementos } from '@/store/uiNuevaVenta/uiNuevaVenta'
 import React, { useEffect, useState } from 'react'
-import { Button, Modal } from 'react-bootstrap'
+import { Button, Col, Modal, Row } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import Select from 'react-select'
+import { useNuevaVentaStore } from './hooks/useNuevaVentaStore'
+import { InputSelect, InputText } from '@/components/InputText'
 const registerAccesorio= {
     id_producto: 0,
     prec_supl: 0.00,
     cantidad: 1
 }
-export const ModalSuplementos = ({show, hide, data}) => {
+export const ModalSuplementos = ({show, hide, data, id}) => {
     const dispatch = useDispatch()
     const { id_producto, cantidad, formState, onInputChange, onInputChangeReact, onResetForm } = useForm(data?data:registerAccesorio)
-	const { obtenerParametrosProductosCategoriaSuplementos, DataProductosSuplementos } = useTerminoStore()
+	const { dataProductosActivos, obtenerProductosActivos } = useNuevaVentaStore()
 	const [suplementoSelect, setSuplementoSelect] = useState(undefined)
 	const {randomFunction} = helperFunctions()
 	useEffect(() => {
-		obtenerParametrosProductosCategoriaSuplementos()
+		obtenerProductosActivos(598)
 	}, [])
 	const onCancelModal = () =>{
         hide();
@@ -37,7 +39,7 @@ export const ModalSuplementos = ({show, hide, data}) => {
         onCancelModal()
     }
 	useEffect(() => {
-		const onSuplemento = DataProductosSuplementos.find(
+		const onSuplemento = dataProductosActivos.find(
 			(option) => option.value === id_producto
 		)
 		setSuplementoSelect(onSuplemento)
@@ -48,45 +50,22 @@ export const ModalSuplementos = ({show, hide, data}) => {
     
     <Modal size='xxl' show={show} onHide={onCancelModal}>
 						<Modal.Header>
-							<Modal.Title>Venta de suplementos</Modal.Title>
+							<Modal.Title>Venta de SUPLEMENTOS</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
 							<form onSubmit={submitSuplementos}>
-								<div className='mb-3'>
-									    <label htmlFor="id_producto" className="form-label">
-                                            Suplementos*
-										</label>
-										<Select
-											onChange={(e) =>
-												onInputChangeReact(e, 'id_producto')
-											}
-											name={'id_producto'}
-											placeholder={'Seleccione un suplemento'}
-											className="react-select"
-											classNamePrefix="react-select"
-											options={DataProductosSuplementos}
-											value={DataProductosSuplementos.find(
-												(option) => option.value === id_producto
-											)}
-											required
-										></Select>
-								</div>
-                                <div className="mb-3">
-                                    <label htmlFor="cantidad" className="form-label">
-                                        Cantidad*
-                                    </label>
-                                    <input
-                                        className="form-control"
-                                        placeholder="cantidad"
-                                        value={cantidad}
-                                        // max={suplementoSelect?.stock?suplementoSelect.stock:1}
-                                        type='number'
-                                        name="cantidad"
-                                        id="cantidad"
-                                        onChange={onInputChange}
-                                        required
-                                    />
-                                </div>
+								<Row>
+									<Col lg={12}>
+										<div className='mb-3'>
+											<InputSelect label={'producto'} nameInput={'id_producto'} placeholder='Seleccionar el producto' onChange={onInputChange} options={dataProductosActivos} required/>
+										</div>
+									</Col>
+									<Col lg={12}>
+										<div className='mb-3'>
+											<InputText label={'Cantidad'} nameInput={'cantidad'} onChange={onInputChange} value={cantidad} required/>
+										</div>
+									</Col>
+								</Row>
 								<div className='info-producto mb-2'>
 									<table>
 										<tbody>
