@@ -1,4 +1,5 @@
 import { PTApi } from '@/common';
+import { FUNMoneyFormatter, NumberFormatter } from '@/components/CurrencyMask';
 import { useState } from 'react';
 
 export const useNuevaVentaStore = () => {
@@ -6,7 +7,15 @@ export const useNuevaVentaStore = () => {
 	const obtenerProductosActivos = async (idEmpresa) => {
 		try {
 			const { data } = await PTApi.get(`/producto/combo-activos/${idEmpresa}`);
-			setdataProductosActivos(data.productos);
+			const Alter = data.productos.map((e) => {
+				return {
+					...e,
+					label: `${e.label} | ${FUNMoneyFormatter(e.prec_venta, '')}`,
+					nombre_producto: e.label,
+					venta: e.prec_venta,
+				};
+			});
+			setdataProductosActivos(Alter);
 		} catch (error) {
 			console.log(error);
 		}

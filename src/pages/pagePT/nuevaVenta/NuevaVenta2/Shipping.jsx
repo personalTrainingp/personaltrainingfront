@@ -62,6 +62,9 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const onCloseModalTraspaso = ()=>{
         setmodalTraspaso(false)
     }
+	const ClickOpenModalSupl = ()=>{
+		setModalSupl(true)
+	}
 	const ClickOpenModalAcc = ()=>{
 		setModalAcc(true)
 	}
@@ -133,15 +136,17 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 										<ItemProdServ Inombre={"MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
-									{/* <Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
+									<Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
 										<ItemProdServ Inombre={"PRODUCTOS"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
-									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/> */}
-									<Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
-										<ItemProdServ Inombre={"PRODUCTOS"} Iabrev={"acc"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
-									</Col>
-									<ModalSuplementos show={modalAcc} hide={onCloseModalSupl}/>
-									<Col className="mb-3" xxl={2} onClick={()=>setModalAcc(false)}>
+									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
+										<Col className="mb-3" xxl={2} onClick={ClickOpenModalSupl}>
+											<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"supL"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+										</Col>
+										<ModalSuplementos show={modalSupl} hide={()=>setModalSupl(false)}/>
+									{/* 
+									*/}
+									<Col className="mb-3" xxl={2}>
 									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>

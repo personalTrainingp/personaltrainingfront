@@ -53,6 +53,9 @@ export const ModalAccesorio = ({show, hide, data}) => {
 							<Modal.Title>Venta de accesorios</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
+							<pre>
+								{JSON.stringify(DataProductosAccesorios, null, 2)}
+							</pre>
 							<form onSubmit={submitAccesorio}>
 								<div className='mb-3'>
 									    <label htmlFor="id_producto" className="form-label">
