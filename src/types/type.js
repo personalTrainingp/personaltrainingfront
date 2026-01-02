@@ -101,8 +101,8 @@ export const arrayTipoAporte = [
 	{ label: 'Prestamos de terceros', value: 2 },
 ];
 export const arrayEstados = [
-	{ label: 'Activo', value: true },
-	{ label: 'Inactivo', value: false },
+	{ label: 'Activo', value: true, severity: 'success' },
+	{ label: 'Inactivo', value: false, severity: 'danger' },
 ];
 export const arrayTarjetasTemp = [
 	{ label: 'VISA', value: 54 },

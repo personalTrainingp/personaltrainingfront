@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { ModalCustomProducto } from './ModalCustomProducto'
 import { DataTableProductos } from './DataTableProductos'
 import { InputButton } from '@/components/InputText'
+import { PageBreadcrumb } from '@/components'
 
 export const App2 = ({idEmpresa}) => {
     const [isOpenModalCustomProductos, setisOpenModalCustomProductos] = useState({isOpen: false, id: 0})
@@ -13,8 +14,9 @@ export const App2 = ({idEmpresa}) => {
     }
     return (
     <div>
+        <PageBreadcrumb title={'GESTION DE PRODUCTOS'}/>
         <InputButton label={'AGREGAR PRODUCTO'} onClick={()=>onOpenModalCustomProducto(0)} />
-        <DataTableProductos idEmpresa={idEmpresa} />
+        <DataTableProductos idEmpresa={idEmpresa} onOpenModalCustomProducto={onOpenModalCustomProducto}/>
         <ModalCustomProducto idEmpresa={idEmpresa} show={isOpenModalCustomProductos.isOpen} onHide={onCloseModalCustomProducto} id={isOpenModalCustomProductos.id}/>
     </div>
   )

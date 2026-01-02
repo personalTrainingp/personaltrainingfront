@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+
 const FALLBACK_USD_PEN_RATE = 3.37;
+
 const boxStyleBase = {
   display: "inline-flex",
   alignItems: "center",
@@ -17,6 +19,7 @@ const boxStyleBase = {
   minWidth: 120,
   height: 48,
 };
+
 const selectBase = {
   ...boxStyleBase,
   appearance: "none",
@@ -27,8 +30,13 @@ const selectBase = {
   paddingRight: 24,
   minWidth: 120,
 };
+
 const norm = (s) =>
-  String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+  String(s ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase();
+
 function findProgAvatar(label, avataresDeProgramas = []) {
   const key = norm(label);
   return (avataresDeProgramas || []).find((p) => norm(p?.name_image) === key);
@@ -51,16 +59,19 @@ function formatLimaDate(value) {
 
 export function RealTimeClock() {
   const [now, setNow] = useState(new Date());
+
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
+
   const hhmm = now.toLocaleTimeString("es-PE", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
     timeZone: "America/Lima",
   });
+
   return (
     <div style={boxStyleBase}>
       <span role="img" aria-label="clock">
@@ -78,13 +89,17 @@ export function TopControls({
   setInitDay,
   cutDay,
   setCutDay,
+
+  // ✅ NUEVO: año + setter
   year = new Date().getFullYear(),
+  setYear,
+
   onUseLastDay,
   vigentesCount = 0,
   vigentesBreakdown = [],
   avataresDeProgramas = [],
   useAvatars = true,
-  onChangeTasaCambio, // <<< callback para avisar al padre
+  onChangeTasaCambio, // callback para avisar al padre
 }) {
   const MESES = [
     "ENERO",
@@ -100,7 +115,12 @@ export function TopControls({
     "NOVIEMBRE",
     "DICIEMBRE",
   ];
+
   const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
+
+  // ✅ NUEVO: lista de años (ajusta el rango si quieres)
+  const CURRENT_YEAR = new Date().getFullYear();
+  const YEARS = Array.from({ length: 7 }, (_, i) => CURRENT_YEAR - i);
 
   const [usdPenRate, setUsdPenRate] = useState({
     value: null,
@@ -159,6 +179,7 @@ export function TopControls({
     typeof usdPenRate.value === "number" && Number.isFinite(usdPenRate.value)
       ? usdPenRate.value
       : FALLBACK_USD_PEN_RATE;
+
   const formattedRate = `S/ ${displayRate.toFixed(3)}`;
   const usingFallback = usdPenRate.value == null;
   const updatedLabel = formatLimaDate(usdPenRate.updatedAt);
@@ -173,13 +194,44 @@ export function TopControls({
     const today = new Date();
     const currentMonth = today.getMonth() + 1;
     const currentYear = today.getFullYear();
+
+    // ✅ si es el año actual, no permitir mes futuro
+    if (year === currentYear && newMonth > currentMonth) return;
+
     const lastDayTarget = daysInMonth(year, newMonth);
     let nextCut = Math.min(cutDay, lastDayTarget);
-    // newMonth === currentMonth && year === currentYear
-    //   ? Math.min(today.getDate(), lastDayTarget)
-    //   : Math.min(cutDay, lastDayTarget);
     const nextInit = Math.min(initDay, nextCut);
+
     setSelectedMonth(newMonth);
+    setCutDay(nextCut);
+    setInitDay(nextInit);
+  };
+
+  // ✅ NUEVO: handleYearChange
+  const handleYearChange = (newYear) => {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1;
+
+    // si no mandan setYear desde el padre, no hacemos nada
+    if (typeof setYear !== "function") return;
+
+    // si cambia al año actual y el mes está en futuro, lo bajamos
+    if (newYear === currentYear && selectedMonth > currentMonth) {
+      setSelectedMonth(currentMonth);
+    }
+
+    // recalcular días válidos en el mes actual (o mes ajustado)
+    const effectiveMonth =
+      newYear === currentYear
+        ? Math.min(selectedMonth, currentMonth)
+        : selectedMonth;
+
+    const lastDayTarget = daysInMonth(newYear, effectiveMonth);
+    const nextCut = Math.min(cutDay, lastDayTarget);
+    const nextInit = Math.min(initDay, nextCut);
+
+    setYear(newYear);
     setCutDay(nextCut);
     setInitDay(nextInit);
   };
@@ -188,13 +240,14 @@ export function TopControls({
     const today = new Date();
     const isCurrentMonth =
       year === today.getFullYear() && selectedMonth === today.getMonth() + 1;
+
     const lastDay = daysInMonth(year, selectedMonth);
-    const nextCut = isCurrentMonth
-      ? Math.min(lastDay, today.getDate())
-      : lastDay;
+    const nextCut = isCurrentMonth ? Math.min(lastDay, today.getDate()) : lastDay;
+
     setCutDay(nextCut);
     if (initDay > nextCut) setInitDay(nextCut);
   };
+
   const handleClickUseLastDay = () =>
     typeof onUseLastDay === "function" ? onUseLastDay() : fallbackUseLastDay();
 
@@ -238,6 +291,8 @@ export function TopControls({
   const labelStyle = { textTransform: "uppercase", marginRight: 6 };
   const selectMonthStyle = { ...selectBase, minWidth: 180, padding: "6px 12px" };
   const selectDayStyle = { ...selectBase, minWidth: 80, padding: "6px 10px" };
+  const selectYearStyle = { ...selectBase, minWidth: 120, padding: "6px 12px" };
+
   const fieldGroupStyle = {
     display: "inline-flex",
     alignItems: "center",
@@ -276,7 +331,9 @@ export function TopControls({
     const av = useAvatars
       ? findProgAvatar(item?.label, avataresDeProgramas)
       : null;
+
     const scale = Number(av?.scale ?? 1);
+
     return (
       <div style={miniBox} title={item?.label ?? ""}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -307,16 +364,39 @@ export function TopControls({
             <span>{(item?.label ?? "").toUpperCase()}</span>
           )}
         </div>
+
         <span style={{ fontVariantNumeric: "tabular-nums" }}>
           {item?.count ?? 0}
         </span>
       </div>
     );
   };
+
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1;
+
   return (
     <div style={wrapperStyle}>
       {/* FILA SUPERIOR CENTRADA */}
       <div style={topRowStyle}>
+        {/* ✅ AÑO */}
+        <div style={fieldGroupStyle}>
+          <label style={labelStyle}>Año:</label>
+          <select
+            value={year}
+            onChange={(e) => handleYearChange(parseInt(e.target.value, 10))}
+            style={selectYearStyle}
+            title="Filtrar por año"
+          >
+            {YEARS.map((y) => (
+              <option key={y} value={y}>
+                {y}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* MES */}
         <div style={fieldGroupStyle}>
           <label style={labelStyle}>Mes:</label>
@@ -324,24 +404,19 @@ export function TopControls({
             value={selectedMonth}
             onChange={(e) => {
               const newMonth = parseInt(e.target.value, 10);
-              const currentMonth = new Date().getMonth() + 1;
-              if (newMonth > currentMonth) return;
               handleMonthChange(newMonth);
             }}
             style={selectMonthStyle}
           >
-            {MESES.map((mes, idx) => {
-              const currentMonth = new Date().getMonth() + 1;
-              return (
-                <option
-                  key={idx + 1}
-                  value={idx + 1}
-                  disabled={idx + 1 > currentMonth}
-                >
-                  {mes}
-                </option>
-              );
-            })}
+            {MESES.map((mes, idx) => (
+              <option
+                key={idx + 1}
+                value={idx + 1}
+                disabled={year === currentYear && idx + 1 > currentMonth}
+              >
+                {mes}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -371,13 +446,9 @@ export function TopControls({
             value={cutDay}
             onChange={(e) => {
               const val = parseInt(e.target.value, 10);
-              const today = new Date();
-              const currentMonth = today.getMonth() + 1;
-              const currentDay = today.getDate();
               const lastDayTarget = daysInMonth(year, selectedMonth);
               let next = Math.min(val, lastDayTarget);
-              // if (selectedMonth === currentMonth)
-              //   next = Math.min(next, currentDay);
+
               setCutDay(next);
               if (initDay > next) setInitDay(next);
             }}
@@ -391,8 +462,9 @@ export function TopControls({
           </select>
         </div>
 
-        {/* Reloj + Cierre */}
+        {/* Reloj + TC */}
         <RealTimeClock />
+
         <div style={rateBoxStyle} title="Tipo de cambio USD a PEN">
           <div
             style={{
@@ -416,12 +488,16 @@ export function TopControls({
 
           {usingFallback ? (
             <span style={miniTextStyle}>
-              Valor de referencia manual {`S/ ${FALLBACK_USD_PEN_RATE.toFixed(3)}`}
+              Valor de referencia manual{" "}
+              {`S/ ${FALLBACK_USD_PEN_RATE.toFixed(3)}`}
             </span>
           ) : (
-            <span style={miniTextStyle}></span>
+            <span style={miniTextStyle}>
+              {updatedLabel ? `Actualizado: ${updatedLabel}` : ""}
+            </span>
           )}
         </div>
+
         <button
           onClick={handleClickUseLastDay}
           className="btn btn-outline-warning"
@@ -434,9 +510,10 @@ export function TopControls({
         >
           Cierre
         </button>
-
       </div>
+
       <div style={dividerStyle} />
+
       {/* FILA INFERIOR */}
       <div style={bottomRowStyle}>
         {(vigentesBreakdown || []).map((it, idx) => (
@@ -458,7 +535,6 @@ export function TopControls({
             {vigentesCount}
           </span>
         </div>
-
       </div>
     </div>
   );

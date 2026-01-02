@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { PageBreadcrumb } from "@/components";
 import { TopControls } from "./components/TopControls";
@@ -20,10 +20,8 @@ import { useResumenEjecutivoStore } from "./useResumenEjecutivoStore";
 import { MESES } from './hooks/useResumenUtils';
 
 export const App = ({ id_empresa }) => {
-  const store = useResumenEjecutivoStore(id_empresa);
-
   const {
-    year, selectedMonth, initDay, cutDay, tasaCambio,
+    selectedMonth, initDay, cutDay, tasaCambio,
     setSelectedMonth, setInitDay, setCutDay, handleSetUltimoDiaMes, setTasaCambio,
     vigentesTotal, vigentesBreakdown, vigentesRows,
     renewals, pgmNameById,
@@ -32,7 +30,8 @@ export const App = ({ id_empresa }) => {
     resumenFilas, resumenTotales, avataresDeProgramas,
     sociosOverride, originBreakdown, advisorOriginByProg,
     avatarByAdvisor, productosPorAsesor, vencimientosFiltrados
-  } = store;
+  } = useResumenEjecutivoStore(id_empresa);
+const [year, setYear] = useState(new Date().getFullYear());
 
   return (
     <>
@@ -50,6 +49,7 @@ export const App = ({ id_empresa }) => {
             vigentesCount={vigentesTotal} vigentesBreakdown={vigentesBreakdown}
             avataresDeProgramas={avataresDeProgramas} useAvatars={true}
             onChangeTasa={setTasaCambio} tasaCambio={tasaCambio}
+            setYear={setYear}
           />
         </Col>
       </Row>

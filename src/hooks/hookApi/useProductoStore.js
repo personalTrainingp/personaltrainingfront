@@ -5,18 +5,18 @@ import { useDispatch } from 'react-redux';
 
 export const useProductoStore = () => {
 	const dispatch = useDispatch();
-	const obtenerProductos = async () => {
+	const obtenerProductos = async (idEmpresa) => {
 		try {
-			const { data } = await PTApi.get('/producto/get-tb-productos');
+			const { data } = await PTApi.get(`/producto/empresa/${idEmpresa}`);
 			dispatch(onGetProductos(data.producto));
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const startRegisterProducto = async (formState) => {
+	const startRegisterProducto = async (formState, idEmpresa) => {
 		try {
-			const { data } = await PTApi.post('/producto/post-producto', formState);
-			obtenerProductos();
+			const { data } = await PTApi.post('/producto/', formState);
+			obtenerProductos(idEmpresa);
 		} catch (error) {
 			console.log(error);
 		}

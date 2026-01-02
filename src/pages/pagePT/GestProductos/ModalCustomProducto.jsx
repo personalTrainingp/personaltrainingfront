@@ -7,6 +7,7 @@ import { arrayEstados } from '@/types/type'
 import { Dialog } from 'primereact/dialog'
 import React, { useEffect } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
+import { useProductosStore } from './hook/useProductosStore'
 const customProducto = {
 			id_marca: 0,
 			id_categoria: 0,
@@ -24,7 +25,8 @@ const customProducto = {
 			fec_vencimiento: '',
 			estado_product: true,
 }
-export const ModalCustomProducto = ({onHide, show, id=0}) => {
+export const ModalCustomProducto = ({onHide, show, idEmpresa, id=0}) => {
+            const { startRegisterProducto, startUpdateProductoxIdProducto, dataProducto, obtenerProductoxIdProducto } = useProductosStore()
     const { 
         formState,
         id_marca,
@@ -43,21 +45,30 @@ export const ModalCustomProducto = ({onHide, show, id=0}) => {
         fec_vencimiento,
         estado_product,
         onResetForm,
-    onInputChange } = useForm(id==0?customProducto:customProducto)
+    onInputChange } = useForm(id==0?customProducto:dataProducto)
     const { obtenerParametrosProductoMarcas, DataProducMarca, 
             obtenerParametrosProductoCategorias, DataProducCategoria, 
             obtenerParametrosProductoPresentacion, DataProducPresentacion, 
             obtenerParametrosProductoProveedor, DataProducProveedor } = useTerminoStore()
-            const { startRegisterProducto } = useProductoStore()
     useEffect(() => {
         obtenerParametrosProductoMarcas()
         obtenerParametrosProductoCategorias()
         obtenerParametrosProductoPresentacion()
         obtenerParametrosProductoProveedor()
     }, [])
+    useEffect(() => {
+        if(id!==0){
+            obtenerProductoxIdProducto(id)
+        }
+    }, [id, show])
+    
     const submitProducto = (e)=>{
         e.preventDefault()
-        startRegisterProducto(formState)
+        if(id===0){
+            startRegisterProducto(formState)
+        }else{
+            startUpdateProductoxIdProducto(formState, idEmpresa, id)
+        }
         CloseModalProducto()
     }
     const CloseModalProducto = ()=>{

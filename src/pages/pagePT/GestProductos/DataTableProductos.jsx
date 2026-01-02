@@ -1,11 +1,15 @@
 import { DataTableCR } from '@/components/DataView/DataTableCR'
-import { useProductoStore } from './hook/useProductosStore'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
+import { useProductosStore } from './hook/useProductosStore'
+import { Button } from 'primereact/button'
+import { confirmDialog } from 'primereact/confirmdialog'
+import { arrayEstados } from '@/types/type'
+import { Badge } from 'react-bootstrap'
 
-export const DataTableProductos = ({idEmpresa}) => {
-  const { obtenerProductos } = useProductoStore()
+export const DataTableProductos = ({idEmpresa, onOpenModalCustomProducto}) => {
+  const { obtenerProductosxEmpresa, startDeleteProductoxIdProducto } = useProductosStore()
   const { dataView } = useSelector(e=>e.PRODUCTO)
   const columns = [
     { id: 'id', header: 'ID', accessor: 'id', sortable: true, width: 50 },
@@ -16,9 +20,21 @@ export const DataTableProductos = ({idEmpresa}) => {
         </div>
       )
     }  },
-    { id: 'categoria', header: 'Categoria', sortable: true, width: 50 },
-    { id: 'proveedor', header: 'Proveedor', sortable: true, width: 50 },
-    { id: 'stock', header: <div >stock</div>, accessor: 'fechaDesde', render: (row)=>{
+    { id: 'categoria', header: 'Categoria', render: (row)=>{
+      return (
+        <div className='' style={{width: '150px'}}>
+        {row.objCategoria?.label_param}
+        </div>
+      )
+    } },
+    { id: 'proveedor', header: 'Proveedor', sortable: true, render: (row)=>{
+      return (
+        <div className='' style={{width: '30px'}}>
+        {row.objProveedor?.razon_social_prov}
+        </div>
+      )
+    } },
+    { id: 'stock', header: <div >stock</div>, sortable: true, accessor: 'stock_producto', render: (row)=>{
       return (
         <div className='' style={{width: '30px'}}>
         {row.stock_producto}
@@ -32,14 +48,14 @@ export const DataTableProductos = ({idEmpresa}) => {
         </div>
       )
     } },
-    { id: 'prec_compra', header: 'Precio de compra', render: (row)=>{
+    { id: 'prec_compra', header: 'Precio de compra', sortable: true, accessor: 'prec_compra', render: (row)=>{
       return (
         <>
         <NumberFormatMoney amount={row.prec_compra}/>
         </>
       )
     } },
-    { id: 'prec_venta', header: 'Precio de venta', accessor: 'prec_venta',render: (row)=>{
+    { id: 'prec_venta', header: 'Precio de venta', sortable: true, accessor: 'prec_venta',render: (row)=>{
       return (
         <>
         <NumberFormatMoney amount={row.prec_venta}/>
@@ -49,22 +65,37 @@ export const DataTableProductos = ({idEmpresa}) => {
     { id: 'estado', header: 'estado', render: (row)=>{
       return (
         <>
-        {row.estado_product}
+            <Badge bg={arrayEstados.find(e=>e.value===row.estado_product)?.severity}>{arrayEstados.find(e=>e.value===row.estado_product)?.label}</Badge>
         </>
       )
     } },
-    { id: 'action', header: '', render:()=>{
+    { id: 'action', header: '', render:(row)=>{
       return (
         <>
-        
+        <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
+          onClick={()=>onClickOpenModalCustomProducto(row.id)} 
+          />
+        <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
+        onClick={()=>confirmDeleteProductoxID(row.id)} 
+          />
         </>
       )
     } },
   ];
+  const onClickOpenModalCustomProducto = (id)=>{
+    onOpenModalCustomProducto(id)
+  }
+  const confirmDeleteProductoxID = (id)=>{
+    confirmDialog({
+      message: '¿Quieres eliminar este producto?',
+      accept: ()=>{
+        startDeleteProductoxIdProducto(id)
+      }
+    })
+  }
   useEffect(() => {
-    obtenerProductos(idEmpresa)
+    obtenerProductosxEmpresa(idEmpresa)
   }, [idEmpresa])
-  
   return (
     <div>
         <DataTableCR
