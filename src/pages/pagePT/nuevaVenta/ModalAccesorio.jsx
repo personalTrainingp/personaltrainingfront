@@ -21,7 +21,7 @@ export const ModalAccesorio = ({show, hide, data}) => {
 	const [accesorioSelect, setaccesorioSelect] = useState(undefined)
 	const {randomFunction} = helperFunctions()
 	useEffect(() => {
-		obtenerProductosActivos()
+		obtenerProductosActivos(598)
 	}, [])
 	const onCancelModal = () =>{
 		onResetForm()
@@ -42,7 +42,7 @@ export const ModalAccesorio = ({show, hide, data}) => {
 		onInputChangeReact(e, 'id_producto')
 	}
 	useEffect(() => {
-		const oneAccesorio = dataProductosActivos.filter(e=>e.id_Cat===18).find(
+		const oneAccesorio = dataProductosActivos.filter(e=>e.id_cat===18).find(
 			(option) => option.value === id_producto
 		)
 		setaccesorioSelect(oneAccesorio)
@@ -69,8 +69,8 @@ export const ModalAccesorio = ({show, hide, data}) => {
 											placeholder={'Seleccione un accesorio'}
 											className="react-select"
 											classNamePrefix="react-select"
-											options={DataProductosAccesorios}
-											value={DataProductosAccesorios.filter(e=>e.id_Cat===18).find(
+											options={dataProductosActivos.filter(e=>e.id_cat===18)}
+											value={dataProductosActivos.filter(e=>e.id_cat===18).find(
 												(option) => option.value === id_producto
 											)}
 											required
