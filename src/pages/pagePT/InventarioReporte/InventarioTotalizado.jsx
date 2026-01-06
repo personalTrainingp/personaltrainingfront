@@ -25,15 +25,7 @@ export const InventarioTotalizado = ({id_empresa, label_empresa}) => {
         // obtenerArticulos(598)
         // obtenerProveedoresUnicos()
         obtenerInventarioKardexxFechas(id_empresa)
-    }, [])
-    const onOpenModalInventario = (items, ubicacion)=>{
-        setisOpenModalInventarioFiltered(true)
-        setdataFilter(items)
-        setubicacion(ubicacion)
-    }
-    const onCloseModalInventario = ()=>{
-        setisOpenModalInventarioFiltered(false)
-    }
+    }, [id_empresa])
     const { obtenerContratosPendientes } = inventarioReporteStore()
     const dispatch = useDispatch()
     useEffect(() => {
@@ -43,43 +35,11 @@ export const InventarioTotalizado = ({id_empresa, label_empresa}) => {
     const { dataContratoProv } = useSelector(e=>e.prov)
   return (
     <>
-    <TabView>
-    {
-              dataFechas?.map(m=>{
-                return (
+                      <DataView dvi={dataFechas} dataContratoProv={dataContratoProv} isResumenxZonaLoc id_empresa={id_empresa} label_empresa={label_empresa}/>
+    {/* <TabView>
                   <TabPanel header={<></>}>
-                      <DataView dvi={m.articulos_directos} dataContratoProv={dataContratoProv} kardexEntrada={m.totalKardexEntrada} kardexSalida={m.totalKardexSalida} isResumenxZonaLoc id_empresa={id_empresa} label_empresa={label_empresa}/>
                   </TabPanel>
-                )
-              })
-            }
-    </TabView>
+    </TabView> */}
     </>
   )
-}
-
-function agruparDataxLugar(dataV) {
-    
-    const groupedData = Object.values(dataV.reduce((acc, item) => {
-        const label = item.parametro_lugar_encuentro?.label_param;
-      
-        // Si no existe el grupo, lo inicializamos con el formato deseado y la suma en 0
-        if (!acc[label]) {
-          acc[label] = { ubicacion: label, valor_total_sumado: 0, items: [] };
-        }
-        
-        // Sumamos el valor_total del item actual al grupo correspondiente
-        acc[label].valor_total_sumado += item.valor_total;
-        
-        // Añadimos el item al array `items` del grupo correspondiente
-        acc[label].items.push(item);
-        
-        return acc;
-      }, {}));
-      
-      // Convertimos valor_total_sumado a cadena con dos decimales
-      groupedData.forEach(group => {
-        group.valor_total_sumado = group.valor_total_sumado.toFixed(2);
-      });
-      return groupedData;
 }

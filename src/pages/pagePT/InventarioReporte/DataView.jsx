@@ -31,7 +31,8 @@ export const DataView = ({id_empresa, dvi, label_empresa, dataContratoProv, isRe
     const onCloseModalInventario = ()=>{
         setisOpenModalInventarioFiltered(false)
     }
-    const groupedData = Object.values(dvi.reduce((acc, item) => {
+    
+    const groupedData = Object.values(dvi?.reduce((acc, item) => {
         const label = item.parametro_nivel?.label_param;
         console.log({item});
         
@@ -69,8 +70,6 @@ export const DataView = ({id_empresa, dvi, label_empresa, dataContratoProv, isRe
     <Button label={<span className='fs-2'>RESUMEN VALORIZADO</span>} onClick={onOpenModalResumenValorizado} text/>
         <Row>
             {groupedData.map(g=>{
-              console.log(agruparDataxLugar(g.items));
-              
                     return(
                     <>
                     <h1>

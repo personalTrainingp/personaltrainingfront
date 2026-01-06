@@ -51,6 +51,8 @@ export const ModalResumenInventarioValorizado = ({show, onHide, data, label_empr
         return acc
     }, {}));
     groupedData = groupedData.sort((a, b) => b.valor_total_sumado_soles-a.valor_total_sumado_soles);
+    console.log({groupedData});
+    
   return (
         <Row>
             <Col xs={12}>

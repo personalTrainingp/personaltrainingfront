@@ -193,6 +193,16 @@ export const DatatableEgresos = ({
 								mesesSeleccionadosNums={mesesSeleccionadosNums}/>
 					</div>
 					<div>
+						<p className='text-center' style={{fontSize: '60px'}}>CUENTAS POR PAGAR</p>
+						<TableVentas 
+								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
+								dataIngresosxMes={dataIngresosxMes} 
+								background={background} 
+								bgTotal={bgTotal} 
+								mesesNombres={mesesNombres} 
+								mesesSeleccionadosNums={mesesSeleccionadosNums}/>
+					</div>
+					<div>
 					<p className='text-center' style={{fontSize: '60px'}}>EGRESOS</p>
 						<TableGasto 
 							bgMultiValue={bgMultiValue} 

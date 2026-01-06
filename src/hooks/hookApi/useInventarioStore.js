@@ -38,7 +38,7 @@ export const useInventarioStore = () => {
 			// );
 
 			// setdataFechas(data.inventario_x_fechas);
-			
+
 			const { data } = await PTApi.get(
 				`/inventario/obtener-inventario-y-kardex-x-fechas/${id_empresa}`
 			);

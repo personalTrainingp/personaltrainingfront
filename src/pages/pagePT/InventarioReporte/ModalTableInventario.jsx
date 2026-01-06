@@ -96,16 +96,17 @@ export const ModalTableInventario = ({show, onHide, data, ubicacion}) => {
     const numeradorBodyTemplate = (rowData, { rowIndex })=>{
         return(
             <div className="flex align-items-center gap-2 fs-2">
-                <span>{rowIndex + 1}</span>
+                <span>{rowData?.id}</span>
             </div>
         )
     }
     const imagenArtBodyTemplate = (rowData, { rowIndex }) => {
+        console.log({rowData});
         
         return (
             <>
             <div className="flex align-items-center">
-            <Image src={rowData.tb_images.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
+            <Image src={rowData.tb_images.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[0]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" />
                         {/* <Image src={rowData.tb_images?.length===0?sinImage:`${config.API_IMG.AVATAR_ARTICULO}${rowData.tb_images[rowData.tb_images.length-1]?.name_image}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170" /> */}
             </div>
             </>
