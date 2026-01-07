@@ -6,7 +6,7 @@ import { MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
-export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuentasBalances}) => {
+export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuentasBalances, headerTipo}) => {
     const { obtenerCuentasBalancesxIdEmpresaxTipo, deleteCuentaBalancexID } = useCuentasBalances()
     useEffect(() => {
         obtenerCuentasBalancesxIdEmpresaxTipo(idEmpresa, tipo)
@@ -70,8 +70,6 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
                   }
                 })
         }
-        console.log({dataView});
-        
   return (
     <div>
         <DataTableCR

@@ -154,7 +154,7 @@ export const TodoVentas=({id_empresa})=> {
   const fechaDeComprobanteBodyTemplate = (rowData)=>{
     return (
       <div className={`flex align-items-center gap-2 ${rowExtensionColor(rowData, 'text-primary')}`}>
-          <span className={`text-primary ${rowExtensionColor(rowData, 'text-primary')} fw-bold`}>{FormatoDateMask(rowData.fecha_venta_v, 'dddd D [de] MMMM ')}
+          <span className={`text-primary ${rowExtensionColor(rowData, 'text-primary')} fw-bold`}>{FormatoDateMask(rowData.fecha_venta_v, 'dddd D [de] MMMM [A LAS] YYYY')}
           {/* <span className='text-black'></span> */}
           </span>
           {FormatoDateMask(rowData.fecha_venta_v, '[del] YYYY [a las] h:mm A')}

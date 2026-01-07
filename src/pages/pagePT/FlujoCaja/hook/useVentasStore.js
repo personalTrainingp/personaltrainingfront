@@ -63,6 +63,7 @@ export const useVentasStore = () => {
 			console.log({
 				daa: data.ingresos,
 				idEmpresa,
+				ter: dataParametrosGastos.termGastos,
 				daa2: agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTCs, data.ingresos),
 					dataParametrosGastos.termGastos

@@ -17,7 +17,7 @@ const customCustomBalance = {
     id_banco: 0,
     n_operacion: ''
 }
-export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id}) => {
+export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, headerTipo}) => {
     const { postCuentasBalancesxIdEmpresaxTipo, obtenerCuentaBalancexID, dataCuentaBalance, putCuentaBalancexID, dataProveedores, obtenerParametrosProveedor } = useCuentasBalances()
     const { DataGeneral:dataConcepto, obtenerParametroPorEntidadyGrupo:obtenerDataConcepto }  = useTerminoStore()
     const { DataGeneral:dataBanco, obtenerParametroPorEntidadyGrupo:obtenerDataBanco }  = useTerminoStore()
@@ -54,7 +54,7 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id}) 
     }, [id_empresa])
     
   return (
-    <Dialog visible={show} onHide={onCancelarModal} header={'Agregar Cuentas '} style={{width: '80rem'}}>
+    <Dialog visible={show} onHide={onCancelarModal} header={`Agregar Cuentas ${headerTipo}`} style={{width: '80rem'}}>
         <form>
             <Row>
                 <Col lg={4}>

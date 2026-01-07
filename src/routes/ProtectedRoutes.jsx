@@ -178,11 +178,11 @@ export default function ProtectedRoutes() {
 					}
 					{
 						sections.find(e=>e.url==='/cuentas-pagar') &&
-						<Route path='cuentas-pagar' element={<CuentasBalances tipo={'PorPagar'}/>}/>
+						<Route path='cuentas-pagar' element={<CuentasBalances tipo={'PorPagar'} headerTipo={'PAGAR'} />}/>
 					}
 					{
 						sections.find(e=>e.url==='/cuentas-cobrar') &&
-						<Route path='cuentas-cobrar' element={<CuentasBalances tipo={'PorCobrar'}/>}/>
+						<Route path='cuentas-cobrar' element={<CuentasBalances tipo={'PorCobrar'} headerTipo={'COBRAR'}/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/detalle-renovaciones') &&

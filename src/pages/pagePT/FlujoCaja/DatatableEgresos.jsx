@@ -11,6 +11,7 @@ import { TableFinal } from './TableFinal';
 import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo';
 import { ModalDetalleIngresosxItem } from './ModalDetalleIngresosxItem';
 import { TableResumen } from './TableResumen';
+import { TableCuentas } from './TableCuentas';
 
 export const DatatableEgresos = ({
 	id_enterprice,
@@ -193,14 +194,19 @@ export const DatatableEgresos = ({
 								mesesSeleccionadosNums={mesesSeleccionadosNums}/>
 					</div>
 					<div>
-						<p className='text-center' style={{fontSize: '60px'}}>CUENTAS POR PAGAR</p>
-						<TableVentas 
+						{/* <p className='text-center' style={{fontSize: '60px'}}>CUENTAS POR COBRAR</p> */}
+						<TableCuentas 
+						tipoCuenta={'PorCobrar'}
+						header={'CUENTAS POR COBRAR'}
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
 								dataIngresosxMes={dataIngresosxMes} 
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 
-								mesesSeleccionadosNums={mesesSeleccionadosNums}/>
+								mesesSeleccionadosNums={mesesSeleccionadosNums}
+								idEmpresa={id_enterprice}
+
+								/>
 					</div>
 					<div>
 					<p className='text-center' style={{fontSize: '60px'}}>EGRESOS</p>
@@ -216,6 +222,21 @@ export const DatatableEgresos = ({
 							selectedMonths ={selectedMonths }
 							dataIngresosxMes={dataIngresosxMes}
 							/>
+					</div>
+					
+					<div>
+						<TableCuentas 
+						tipoCuenta={'PorPagar'}
+						header={'CUENTAS POR PAGAR'}
+								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
+								dataIngresosxMes={dataIngresosxMes} 
+								background={background} 
+								bgTotal={bgTotal} 
+								mesesNombres={mesesNombres} 
+								mesesSeleccionadosNums={mesesSeleccionadosNums}
+								idEmpresa={id_enterprice}
+
+								/>
 					</div>
 					<div>
 						<TableResumen

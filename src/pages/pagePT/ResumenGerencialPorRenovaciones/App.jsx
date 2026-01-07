@@ -11,11 +11,10 @@ export const App = () => {
     obtenerSeguimientos()
     obtenerVentas()
   }, [])
-  console.log({ums: unirPorMesAnio(dataSeguimientosConReno, dataVentasMembresia)});
   const analisisRenovaciones = [{mes: 9, anio: 2024, ar1: [], ar2: [], ar3:[]}, ...unirPorMesAnio(dataSeguimientosConReno, dataVentasMembresia)].reduce((acc, f, idx) => {
   const vencimiento = (f.ar1?.length || 0);
-  const renovaciones = (f.ar3?.length || 0);
-  const pendientes = vencimiento - renovaciones;
+  const renovaciones = (f.ar2?.length || 0);
+  const pendientes = renovaciones - vencimiento;
 
   const pendientes_acum = idx === 0
     ? pendientes
@@ -24,8 +23,8 @@ export const App = () => {
   acc.push({
     mes: f.mes,
     anio: f.anio,
-    renovaciones: f.ar1,
-    vencimiento: f.ar3,
+    renovaciones: f.ar2,
+    vencimiento: f.ar1,
     pendientes,
     pendientes_acum,
   });

@@ -12,6 +12,7 @@ export const useCuentasBalances = () => {
 	const obtenerCuentasBalancesxIdEmpresaxTipo = async (idEmpresa, tipo) => {
 		try {
 			const { data } = await PTApi.get(`/cuenta-balance/${idEmpresa}/${tipo}`);
+
 			dispatch(onSetDataViewCuentasBalances(data.cuentasBalances));
 		} catch (error) {
 			console.log(error);
@@ -56,7 +57,7 @@ export const useCuentasBalances = () => {
 
 	const obtenerParametrosProveedor = async (idEmpresa) => {
 		try {
-			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor/1573`);
+			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor/1574`);
 			console.log({ datame: data, idEmpresa });
 
 			const dataAlter = data
