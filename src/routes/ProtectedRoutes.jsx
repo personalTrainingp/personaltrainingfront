@@ -109,7 +109,7 @@ const GestionHorasExtras = lazy(()=>import('../pages/pagePT/GestionHorasExtras/i
 const GestionSalidasTempranas = lazy(()=>import('../pages/pagePT/GestionSalidasTempranas/index.jsx'))
 // const ContratoProv = lazy(()=>import('../pages/pagePT/ContratoProv/Index.jsx'))
 const ReporteUtilidadxMes = lazy(()=>import('../pages/pagePT/ReporteUtilidadxMes/Index.jsx'))
-const ResumenGerencialPorRenovaciones= lazy(()=>import('../pages/pagePT/ResumenGerencialPorRenovaciones/App.jsx'))
+const ResumenGerencialPorRenovaciones= lazy(()=>import('../pages/pagePT/ResumenGerencialPorRenovaciones/Index.jsx'))
 const CuentasBalances = lazy(()=>import('../pages/pagePT/CuentasBalances/Index.jsx'))
 /**
  * routes import
