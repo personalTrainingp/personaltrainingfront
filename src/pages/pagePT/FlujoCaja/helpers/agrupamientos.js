@@ -110,8 +110,9 @@ export function aplicarTipoDeCambio(dataTC, dataGastos) {
 	});
 }
 
-export function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
+export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 	const meses = Array.from({ length: 12 }, (_, i) => i + 1);
+	console.log({ dataGrupos, epsi });
 
 	const gruposMapTemp = {};
 	dataGrupos.forEach((entry) => {
@@ -140,7 +141,6 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos) {
 				conceptosUnicosPorNombre.push(nombreConcepto);
 			}
 		});
-
 		const conceptos = conceptosUnicosPorNombre.map((nombreConcepto) => {
 			const itemsDelConcepto = dataGastos?.filter((g) => {
 				const pg = g.tb_parametros_gasto || {};

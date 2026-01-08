@@ -7,7 +7,7 @@ export const ComparativoVsActual = ({
   fechas = [],
   initialDay = 1,
   cutDay = 21,
-  refMonthKey,
+  refMonthKey,  
 }) => {
   const MESES = [
     "enero", "febrero", "marzo", "abril", "mayo", "junio",

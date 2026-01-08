@@ -12,6 +12,7 @@ import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo';
 import { ModalDetalleIngresosxItem } from './ModalDetalleIngresosxItem';
 import { TableResumen } from './TableResumen';
 import { TableCuentas } from './TableCuentas';
+import { useCuentasStore } from './hook/useCuentasStore';
 
 export const DatatableEgresos = ({
 	id_enterprice,
@@ -27,11 +28,15 @@ export const DatatableEgresos = ({
 	const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false);
 	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos } = useFlujoCajaStore();
 	const { obtenerVentasxFechaxEmpresa, dataIngresosxMes, obtenerIngresosxFechaxEmpresa } = useVentasStore()
+	const { dataCuentasBalance:dataCuentasBalancePorCobrar, obtenerCuentasBalance:obtenerCuentasBalancePorCobrar } = useCuentasStore()
+	const { dataCuentasBalance:dataCuentasBalancePorPagar, obtenerCuentasBalance:obtenerCuentasBalancePorPagar } = useCuentasStore()
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if(id_enterprice || arrayRangeDate){
 			// obtenerVentasxFechaxEmpresa(arrayRangeDate, id_enterprice)
 			obtenerIngresosxFechaxEmpresa(arrayRangeDate, id_enterprice)
+			obtenerCuentasBalancePorCobrar(id_enterprice, 'PorCobrar')
+			obtenerCuentasBalancePorPagar(id_enterprice, 'PorPagar')
 		}
 	}, [id_enterprice, arrayRangeDate])
 	
@@ -85,6 +90,10 @@ export const DatatableEgresos = ({
 		obtenerGastosxANIO(anio, id_enterprice);
 	}, [anio, id_enterprice]);
 
+	const totalesPorGrupoPorPagar = useMemo(()=>{
+		return TotalesPorGrupo(dataCuentasBalancePorCobrar).dataTotal
+	}, [dataGastosxANIO])
+
 	const totalesPorGrupo = useMemo(()=>{
 		return TotalesPorGrupo(dataGastosxANIO).dataTotal
 	}, [dataGastosxANIO])
@@ -120,6 +129,14 @@ export const DatatableEgresos = ({
 			totalPorMes
 		}
 	}, [dataGastosxANIO]);
+	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
+	const { totalPorMes:totalPorMesPorPagar, totalGeneral:totalGeneralPorPagar } = useMemo(() => {
+		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataCuentasBalancePorCobrar)
+		return {
+			totalGeneral,
+			totalPorMes
+		}
+	}, [dataCuentasBalancePorCobrar]);
 	console.log({ totalPorMesIngresos, totalGeneralIngresos, totalPorMes, totalGeneral });
 	
 	// 8) Funciones para abrir/cerrar el modal
@@ -191,7 +208,8 @@ export const DatatableEgresos = ({
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 
-								mesesSeleccionadosNums={mesesSeleccionadosNums}/>
+								mesesSeleccionadosNums={mesesSeleccionadosNums}
+								/>
 					</div>
 					<div>
 						{/* <p className='text-center' style={{fontSize: '60px'}}>CUENTAS POR COBRAR</p> */}
@@ -199,7 +217,7 @@ export const DatatableEgresos = ({
 						tipoCuenta={'PorCobrar'}
 						header={'CUENTAS POR COBRAR'}
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-								dataIngresosxMes={dataIngresosxMes} 
+								dataIngresosxMes={dataCuentasBalancePorCobrar} 
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 
@@ -229,13 +247,12 @@ export const DatatableEgresos = ({
 						tipoCuenta={'PorPagar'}
 						header={'CUENTAS POR PAGAR'}
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-								dataIngresosxMes={dataIngresosxMes} 
+								dataIngresosxMes={dataCuentasBalancePorPagar} 
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 
 								mesesSeleccionadosNums={mesesSeleccionadosNums}
 								idEmpresa={id_enterprice}
-
 								/>
 					</div>
 					<div>

@@ -14,7 +14,7 @@ export const App = () => {
   const analisisRenovaciones = [{mes: 9, anio: 2024, ar1: [], ar2: [], ar3:[]}, ...unirPorMesAnio(dataSeguimientosConReno, dataVentasMembresia)].reduce((acc, f, idx) => {
   const vencimiento = (f.ar1?.length || 0);
   const renovaciones = (f.ar2?.length || 0);
-  const pendientes = renovaciones - vencimiento;
+  const pendientes =  vencimiento-renovaciones;
 
   const pendientes_acum = idx === 0
     ? pendientes

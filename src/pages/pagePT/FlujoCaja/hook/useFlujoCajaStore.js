@@ -54,12 +54,11 @@ export const useFlujoCajaStore = () => {
 					anio,
 				},
 			});
-			console.log(data.data);
 
 			setdataIngresos_FC(data.data);
 		} catch (error) {
 			console.log(error);
-		}
+		}	
 	};
 	const obtenerGastosxANIO = async (anio, enterprice) => {
 		try {

@@ -32,10 +32,10 @@ export const DataTableOrigen = ({renovaciones, vencimientos, mes, anio, pendient
           <th className='fs-3'>PENDIENTES EN RENOVAR</th>
           <td className='fs-3'>{vencimientos?.length-renovaciones?.length }</td>
         </tr>
-        {/* <tr>
+        <tr>
           <th className='fs-3'>ACUMULADO CARTERA</th>
           <td className='fs-3'>{pendientes_acum }</td>
-        </tr> */}
+        </tr>
       </tbody>
     </Table>
     </>
