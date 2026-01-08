@@ -87,7 +87,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
         }
         <div className='d-flex justify-content-around '>
           <div className=''>
-            <span className='text-white bg-primary fs-1'>GASTOS PROVEEDORES</span>
+            <span className={`text-white ${bgEmpresa} fs-1`}>GASTOS PROVEEDORES</span>
             {
               agruparPorProveedor(data?.items).map((m, i)=>{
                 return (
@@ -98,10 +98,10 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
               })
             }
           </div>
-          <div className='mx-3 bg-change' style={{width: '3px'}}>
+          <div className={`mx-3 ${bgEmpresa}`} style={{width: '3px'}}>
           </div>
           <div className=''>
-            <span className='text-white bg-primary fs-1'>FORMA DE PAGO:</span>
+            <span className={`text-white ${bgEmpresa} fs-1`}>FORMA DE PAGO:</span>
             {
               agruparPorComprobante(data?.items).map((m, i)=>{
                 const formasPago = agruparPorFormaPago(m?.items).map(item => `${item.nombre_fp}: ${FUNMoneyFormatter(item.monto_total)}`).join(', ');

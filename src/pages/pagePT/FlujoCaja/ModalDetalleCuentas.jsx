@@ -7,12 +7,14 @@ import { Table } from 'react-bootstrap'
 import { ModalIngresosGastos } from '../GestGastos/ModalIngresosGastos'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import { ModalCustomAporte } from '../GestionAportes/ModalCustomAporte'
+import { ModalCustomCuentasBalances } from '../CuentasBalances/ModalCustomCuentasBalances'
 
-export const ModalDetalleIngresosxItem = ({id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
-  const [isModalDetalleGasto, setisModalDetalleGasto] = useState({isOpen: false, id: 0})
+export const ModalDetalleCuentas = ({tipo, id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
+  const [isModalDetalleGasto, setisModalDetalleGasto] = useState({isOpen: false, id: 0, tipo: 'PorCobrar'})
+  const [ModalDetalleGasto, setModalDetalleGasto] = useState({})
   const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
-  const onOpenModalDetalleGasto = (idGasto)=>{
-    setisModalDetalleGasto({isOpen: true, id: idGasto});
+  const onOpenModalDetalleGasto = (idGasto, tipo)=>{
+    setisModalDetalleGasto({isOpen: true, id: idGasto, tipo});
     onHide()
     obtenerGastoxID(idGasto)
   }
@@ -21,7 +23,7 @@ export const ModalDetalleIngresosxItem = ({id_enterprice, anio, show, onShow, on
   }
   return (
     <>
-    <Dialog visible={show} style={{width: '120rem'}} onHide={onHide} header={`DETALLE - ${data?.grupo} - ${data?.concepto}`}>
+    <Dialog visible={show} style={{width: '120rem'}} onHide={onHide} header={`DETALLE - ${data?.grupo}`}>
         <Table  responsive hover striped>
           <thead >
               <tr className={`${bgEmpresa}`}>
@@ -49,9 +51,11 @@ export const ModalDetalleIngresosxItem = ({id_enterprice, anio, show, onShow, on
                 {
                   data?.items?.map(f=>{
                     const isSinDoc = f.parametro_comprobante?.label_param==='SIN DOCUMENTO'
+                    console.log({f, asdfas: 'aaa'});
+                    
                     return (
                       <tr>
-                          <td className='fs-2' onClick={()=>onOpenModalDetalleGasto(f.id)}><span className={isSinDoc?'text-primary':'text-black'}><i className='pi pi-pencil fw-bold text-primary cursor-pointer p-1 fs-2'/></span></td>
+                          <td className='fs-2' onClick={()=>onOpenModalDetalleGasto(f.id, f.tipo)}><span className={isSinDoc?'text-primary':'text-black'}><i className='pi pi-pencil fw-bold text-primary cursor-pointer p-1 fs-2'/></span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.tb_Proveedor?.razon_social_prov}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.descripcion}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{dayjs(f.fec_comprobante).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>
@@ -113,7 +117,7 @@ export const ModalDetalleIngresosxItem = ({id_enterprice, anio, show, onShow, on
           </div>
         </div>
     </Dialog>
-    <ModalCustomAporte onHide={onCloseModalDetalleGasto} id={isModalDetalleGasto?.id} idEmpresa={id_enterprice} show={isModalDetalleGasto?.isOpen}/>
+    <ModalCustomCuentasBalances tipo={isModalDetalleGasto.tipo} onHide={onCloseModalDetalleGasto} id={isModalDetalleGasto?.id} idEmpresa={id_enterprice} show={isModalDetalleGasto?.isOpen}/>
     </>
   )
 }

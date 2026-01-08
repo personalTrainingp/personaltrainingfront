@@ -7,7 +7,7 @@ export const App = () => {
 
   return (
     <div>
-        <PageBreadcrumb title={''}/>
+        <PageBreadcrumb title={'Historial de cambios de articulos'}/>
         <ColorEmpresa
             childrenChange={
                 <App2 idEmpresa={598} tipo={'Porcobrar'}/>

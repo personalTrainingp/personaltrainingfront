@@ -13,6 +13,7 @@ import { ModalDetalleIngresosxItem } from './ModalDetalleIngresosxItem';
 import { TableResumen } from './TableResumen';
 import { TableCuentas } from './TableCuentas';
 import { useCuentasStore } from './hook/useCuentasStore';
+import { ModalDetalleCuentas } from './ModalDetalleCuentas';
 
 export const DatatableEgresos = ({
 	id_enterprice,
@@ -24,8 +25,10 @@ export const DatatableEgresos = ({
 }) => {
 	const [dataModal, setDataModal] = useState(null);
 	const [dataModal1, setDataModal1] = useState(null);
+	const [dataModal2, setDataModal2] = useState(null);
 	const [isOpenModalDetallexCelda1, setIsOpenModalDetallexCelda1] = useState(false);
 	const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false);
+	const [isOpenModalDetallexCelda2, setIsOpenModalDetallexCelda2] = useState(false);
 	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos } = useFlujoCajaStore();
 	const { obtenerVentasxFechaxEmpresa, dataIngresosxMes, obtenerIngresosxFechaxEmpresa } = useVentasStore()
 	const { dataCuentasBalance:dataCuentasBalancePorCobrar, obtenerCuentasBalance:obtenerCuentasBalancePorCobrar } = useCuentasStore()
@@ -138,6 +141,15 @@ export const DatatableEgresos = ({
 		}
 	}, [dataCuentasBalancePorCobrar]);
 	console.log({ totalPorMesIngresos, totalGeneralIngresos, totalPorMes, totalGeneral });
+	// 8) Funciones para abrir/cerrar el modal
+	const onCloseModalDetallexCelda2 = () => {
+		setIsOpenModalDetallexCelda2(false);
+		setDataModal2(null);
+	};
+	const onOpenModalDetallexCelda2 = (itemDetail) => {
+		setDataModal2(itemDetail);
+		setIsOpenModalDetallexCelda2(true);
+	};
 	
 	// 8) Funciones para abrir/cerrar el modal
 	const onCloseModalDetallexCelda = () => {
@@ -216,7 +228,7 @@ export const DatatableEgresos = ({
 						<TableCuentas 
 						tipoCuenta={'PorCobrar'}
 						header={'CUENTAS POR COBRAR'}
-								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
+								onOpenModalDetallexCelda={onOpenModalDetallexCelda2}
 								dataIngresosxMes={dataCuentasBalancePorCobrar} 
 								background={background} 
 								bgTotal={bgTotal} 
@@ -246,7 +258,7 @@ export const DatatableEgresos = ({
 						<TableCuentas 
 						tipoCuenta={'PorPagar'}
 						header={'CUENTAS POR PAGAR'}
-								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
+								onOpenModalDetallexCelda={onOpenModalDetallexCelda2}
 								dataIngresosxMes={dataCuentasBalancePorPagar} 
 								background={background} 
 								bgTotal={bgTotal} 
@@ -276,7 +288,7 @@ export const DatatableEgresos = ({
 				show={isOpenModalDetallexCelda}
 				id_enterprice={id_enterprice}
 				anio={anio}
-				bgEmpresa={background}
+				bgEmpresa={bgTotal}
 			/>
 			<ModalDetalleIngresosxItem
 				data={dataModal1}
@@ -284,7 +296,15 @@ export const DatatableEgresos = ({
 				show={isOpenModalDetallexCelda1}
 				id_enterprice={id_enterprice}
 				anio={anio}
-				bgEmpresa={background}
+				bgEmpresa={bgTotal}
+			/>
+			<ModalDetalleCuentas
+				data={dataModal2}
+				onHide={onCloseModalDetallexCelda2}
+				show={isOpenModalDetallexCelda2}
+				id_enterprice={id_enterprice}
+				anio={anio}
+				bgEmpresa={bgTotal}
 			/>
 		</>
 	);
