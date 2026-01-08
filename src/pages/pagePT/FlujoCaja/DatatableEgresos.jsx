@@ -288,6 +288,7 @@ export const DatatableEgresos = ({
 				show={isOpenModalDetallexCelda}
 				id_enterprice={id_enterprice}
 				anio={anio}
+				bgMultiValue={bgMultiValue}
 				bgEmpresa={bgTotal}
 			/>
 			<ModalDetalleIngresosxItem
@@ -296,6 +297,7 @@ export const DatatableEgresos = ({
 				show={isOpenModalDetallexCelda1}
 				id_enterprice={id_enterprice}
 				anio={anio}
+				bgMultiValue={bgMultiValue}
 				bgEmpresa={bgTotal}
 			/>
 			<ModalDetalleCuentas
@@ -304,6 +306,7 @@ export const DatatableEgresos = ({
 				show={isOpenModalDetallexCelda2}
 				id_enterprice={id_enterprice}
 				anio={anio}
+				bgMultiValue={bgMultiValue}
 				bgEmpresa={bgTotal}
 			/>
 		</>

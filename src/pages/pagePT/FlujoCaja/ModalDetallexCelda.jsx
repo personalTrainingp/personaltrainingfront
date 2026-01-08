@@ -7,7 +7,7 @@ import { Table } from 'react-bootstrap'
 import { ModalIngresosGastos } from '../GestGastos/ModalIngresosGastos'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 
-export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
+export const ModalDetallexCelda = ({bgMultiValue, id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
   const [isModalDetalleGasto, setisModalDetalleGasto] = useState(false)
   const [ModalDetalleGasto, setModalDetalleGasto] = useState({})
   const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
@@ -92,7 +92,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
               agruparPorProveedor(data?.items).map((m, i)=>{
                 return (
                   <>
-                  <div className='fs-2'><span className='text-primary fw-bold'>{i+1}. {m.nombre_fp.split(' ').length>=4 || m.nombre_fp.split(' ').length==3?<>{m.nombre_fp.split(' ')[0]} {m.nombre_fp.split(' ')[1]}<br/>{m.nombre_fp.split(' ')[2]} {m.nombre_fp.split(' ')[3]}</>:<>{m.nombre_fp}</>}:</span> {FUNMoneyFormatter(m.monto_total)}({m.items.length})</div>
+                  <div className='fs-2'><span className='fw-bold' style={{color: `${bgMultiValue}`}}>{i+1}. {m.nombre_fp.split(' ').length>=4 || m.nombre_fp.split(' ').length==3?<>{m.nombre_fp.split(' ')[0]} {m.nombre_fp.split(' ')[1]}<br/>{m.nombre_fp.split(' ')[2]} {m.nombre_fp.split(' ')[3]}</>:<>{m.nombre_fp}</>}:</span> {FUNMoneyFormatter(m.monto_total)}({m.items.length})</div>
                   </>
                 )
               })
@@ -107,7 +107,7 @@ export const ModalDetallexCelda = ({id_enterprice, anio, show, onShow, onHide, d
                 const formasPago = agruparPorFormaPago(m?.items).map(item => `${item.nombre_fp}: ${FUNMoneyFormatter(item.monto_total)}`).join(', ');
                 return (
                   <>
-                  <div className='fs-2'><span className='text-primary fw-bold'>{i+1}. {m.nombre_com} ({m.items?.length})</span>: <SymbolSoles isbottom={'12'} numero={<NumberFormatMoney amount={m.monto_total}/>}/>  ({formasPago})</div>
+                  <div className='fs-2'><span className='fw-bold' style={{color: `${bgMultiValue}`}}>{i+1}. {m.nombre_com} ({m.items?.length})</span>: <SymbolSoles isbottom={'12'} numero={<NumberFormatMoney amount={m.monto_total}/>}/>  ({formasPago})</div>
                   </>
                 )
               })

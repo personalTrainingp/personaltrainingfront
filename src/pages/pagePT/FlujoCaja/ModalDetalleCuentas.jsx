@@ -9,7 +9,7 @@ import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import { ModalCustomAporte } from '../GestionAportes/ModalCustomAporte'
 import { ModalCustomCuentasBalances } from '../CuentasBalances/ModalCustomCuentasBalances'
 
-export const ModalDetalleCuentas = ({tipo, id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
+export const ModalDetalleCuentas = ({bgMultiValue, id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
   const [isModalDetalleGasto, setisModalDetalleGasto] = useState({isOpen: false, id: 0, tipo: 'PorCobrar'})
   const [ModalDetalleGasto, setModalDetalleGasto] = useState({})
   const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
@@ -94,7 +94,7 @@ export const ModalDetalleCuentas = ({tipo, id_enterprice, anio, show, onShow, on
               agruparPorProveedor(data?.items).map((m, i)=>{
                 return (
                   <>
-                  <div className='fs-2'><span className='text-primary fw-bold'>{i+1}. {m.nombre_fp.split(' ').length>=4 || m.nombre_fp.split(' ').length==3?<>{m.nombre_fp.split(' ')[0]} {m.nombre_fp.split(' ')[1]}<br/>{m.nombre_fp.split(' ')[2]} {m.nombre_fp.split(' ')[3]}</>:<>{m.nombre_fp}</>}:</span> {FUNMoneyFormatter(m.monto_total)}({m.items.length})</div>
+                  <div className='fs-2'><span className='fw-bold' style={{color: `${bgMultiValue}`}}>{i+1}. {m.nombre_fp.split(' ').length>=4 || m.nombre_fp.split(' ').length==3?<>{m.nombre_fp.split(' ')[0]} {m.nombre_fp.split(' ')[1]}<br/>{m.nombre_fp.split(' ')[2]} {m.nombre_fp.split(' ')[3]}</>:<>{m.nombre_fp}</>}:</span> {FUNMoneyFormatter(m.monto_total)}({m.items.length})</div>
                   </>
                 )
               })
@@ -109,7 +109,7 @@ export const ModalDetalleCuentas = ({tipo, id_enterprice, anio, show, onShow, on
                 const formasPago = agruparPorFormaPago(m?.items).map(item => `${item.nombre_fp}: ${FUNMoneyFormatter(item.monto_total)}`).join(', ');
                 return (
                   <>
-                  <div className='fs-2'><span className='text-primary fw-bold'>{i+1}. {m.nombre_com} ({m.items?.length})</span>: <SymbolSoles isbottom={'12'} numero={<NumberFormatMoney amount={m.monto_total}/>}/>  ({formasPago})</div>
+                  <div className='fs-2'><span style={{color: `${bgMultiValue}`}} className=' fw-bold'>{i+1}. {m.nombre_com} ({m.items?.length})</span>: <SymbolSoles isbottom={'12'} numero={<NumberFormatMoney amount={m.monto_total}/>}/>  ({formasPago})</div>
                   </>
                 )
               })
