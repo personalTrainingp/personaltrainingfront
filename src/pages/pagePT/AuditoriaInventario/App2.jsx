@@ -12,7 +12,6 @@ export const App2 = ({idEmpresa}) => {
     }
   return (
     <div>
-        <InputButton label={'Agregar cuenta'} onClick={()=>onOpenModalCustom(0)}/>
         <DataTableCuentasBalances idEmpresa={idEmpresa} onOpenModalCustom={onOpenModalCustom}/>
     </div>
   )

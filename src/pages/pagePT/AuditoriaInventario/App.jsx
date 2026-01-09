@@ -10,16 +10,16 @@ export const App = () => {
         <PageBreadcrumb title={'Historial de cambios de articulos'}/>
         <ColorEmpresa
             childrenChange={
-                <App2 idEmpresa={598} tipo={'Porcobrar'}/>
+                <App2 idEmpresa={598}/>
             }
             childrenCircus={
-                <App2 idEmpresa={599} tipo={'Porcobrar'}/>
+                <App2 idEmpresa={599}/>
             }
             childrenReducto={
-                <App2 idEmpresa={601} tipo={'Porcobrar'}/>
+                <App2 idEmpresa={601}/>
             }
             childrenRal={
-                <App2 idEmpresa={800} tipo={'Porcobrar'}/>
+                <App2 idEmpresa={800}/>
             }
         />
     </div>
