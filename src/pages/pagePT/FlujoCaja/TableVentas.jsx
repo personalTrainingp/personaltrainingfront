@@ -26,7 +26,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 					{mesesSeleccionadosNums.map(mesNum => (
 					<col key={mesNum} style={{ width: 150 }} />
 					))}
-					<col style={{ width: 150 }} />
+					<col className={`${bgTotal}`} style={{ width: 150 }} />
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
 				</colgroup>
 				{
@@ -91,7 +91,6 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 									const pctConcepto = grp.totalAnual > 0
 									? ((totalConcepto / grp.totalAnual) * 100).toFixed(2)
 									: '0.00';
-									console.log({c, ff: 'asdf'});
 									
 									return (
 									<tr key={c.concepto}>
@@ -122,9 +121,14 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 											</td>
 										);
 										})}
-										<td className='fs-2'>
-											<div className='text-right'>
+										<td>
+											<div className='text-right  text-white'  style={{fontSize: '40px'}}>
 													<NumberFormatMoney amount={totalConcepto} />
+											</div>
+										</td>
+										<td className='fs-2'>
+											<div className='text-right  text-white'>
+													<NumberFormatMoney amount={0} />
 											</div>
 										</td>
 									</tr>

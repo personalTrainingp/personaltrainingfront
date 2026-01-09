@@ -27,8 +27,8 @@ export const TableCuentas = ({dataIngresosxMes=[], header, background, bgTotal, 
                     {mesesSeleccionadosNums.map(mesNum => (
                     <col key={mesNum} style={{ width: 150 }} />
                     ))}
-					<col style={{ width: 150 }} />
-					<col style={{ width: 150 }} />
+					<col className={`${bgTotal}`} style={{ width: 150 }} />
+					<col className={`${bgTotal}`} style={{ width: 150 }} />
                 </colgroup>
                 {
                     totalesPorGrupo.map((grp, i, arr)=>{
@@ -127,9 +127,14 @@ export const TableCuentas = ({dataIngresosxMes=[], header, background, bgTotal, 
                                             </td>
                                         );
                                         })}
-                                                                                <td className='fs-2'>
-                                                                                    <div className='text-right'>
+                                                                                <td>
+                                                                                    <div className='text-right text-white'  style={{fontSize: '40px'}}>
                                                                                             <NumberFormatMoney amount={totalConcepto} />
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td className='fs-2' >
+                                                                                    <div className='text-right text-white'  style={{fontSize: '40px'}}>
+                                                                                            <NumberFormatMoney amount={0} />
                                                                                     </div>
                                                                                 </td>
                                     </tr>
