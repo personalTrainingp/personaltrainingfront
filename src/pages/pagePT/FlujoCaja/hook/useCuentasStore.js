@@ -1,12 +1,28 @@
 import { PTApi } from '@/common';
 import React, { useState } from 'react';
 import { agruparPorGrupoYConcepto, aplicarTipoDeCambio } from '../helpers/agrupamientos';
+import dayjs, { utc } from 'dayjs';
+
+dayjs.extend(utc);
+function formatDateToSQLServerWithDayjs(date, isStart = true) {
+	const base = dayjs.utc(date);
+	return isStart
+		? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]')
+		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
+}
 
 export const useCuentasStore = () => {
 	const [dataCuentasBalance, setdataCuentasBalance] = useState([]);
-	const obtenerCuentasBalance = async (idEmpresa, tipo) => {
+	const obtenerCuentasBalance = async (arrayDate, idEmpresa, tipo) => {
 		try {
-			const { data } = await PTApi.get(`/cuenta-balance/${idEmpresa}/${tipo}`);
+			const { data } = await PTApi.get(`/cuenta-balance/fecha-comprobante/${idEmpresa}/${tipo}`, {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
 			/*
 				createdAt: "2025-12-23T21:39:13.909Z",
 				descripcion: "MES DE MARZO", 

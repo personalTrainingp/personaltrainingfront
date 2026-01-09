@@ -27,8 +27,6 @@ export const TableCuentas = ({dataIngresosxMes=[], header, background, bgTotal, 
                     {mesesSeleccionadosNums.map(mesNum => (
                     <col key={mesNum} style={{ width: 150 }} />
                     ))}
-                    <col className={`${bgTotal}`} style={{ width: 150 }} />
-                    <col className={`${bgTotal}`} style={{ width: 150 }} />
                 </colgroup>
                 {
                     totalesPorGrupo.map((grp, i, arr)=>{
@@ -127,6 +125,11 @@ export const TableCuentas = ({dataIngresosxMes=[], header, background, bgTotal, 
                                             </td>
                                         );
                                         })}
+                                                                                <td className='fs-2'>
+                                                                                    <div className='text-right'>
+                                                                                            <NumberFormatMoney amount={totalConcepto} />
+                                                                                    </div>
+                                                                                </td>
                                     </tr>
                                     );
                                 })}

@@ -38,8 +38,8 @@ export const DatatableEgresos = ({
 		if(id_enterprice || arrayRangeDate){
 			// obtenerVentasxFechaxEmpresa(arrayRangeDate, id_enterprice)
 			obtenerIngresosxFechaxEmpresa(arrayRangeDate, id_enterprice)
-			obtenerCuentasBalancePorCobrar(id_enterprice, 'PorCobrar')
-			obtenerCuentasBalancePorPagar(id_enterprice, 'PorPagar')
+			obtenerCuentasBalancePorCobrar(arrayRangeDate, id_enterprice, 'PorCobrar')
+			obtenerCuentasBalancePorPagar(arrayRangeDate, id_enterprice, 'PorPagar')
 		}
 	}, [id_enterprice, arrayRangeDate])
 	
@@ -235,7 +235,6 @@ export const DatatableEgresos = ({
 								mesesNombres={mesesNombres} 
 								mesesSeleccionadosNums={mesesSeleccionadosNums}
 								idEmpresa={id_enterprice}
-
 								/>
 					</div>
 					<div>

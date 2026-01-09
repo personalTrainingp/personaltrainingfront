@@ -15,6 +15,7 @@ export const ColorEmpresa = (props) => {
     { key: 'childrenInventarioSinIncluirCircusBussiness', label: 'Inventario sin incluir circus bussiness', color: 'color-otros-all', text: 'link-change', BackgroundHeretary: 'link-change' },
     { key: 'childrenChorrillos', label: 'Chorrillos Almacen', color: 'color-otros-all', text: 'link-change', BackgroundHeretary: 'link-change' },
     { key: 'childrenmpTarata', label: 'MP TARATA', color: 'color-otros-all', text: 'link-change', BackgroundHeretary: 'link-change' },
+    { key: 'childrenSoto', label: 'SOTO', color: 'color-otros-all', text: 'link-change', BackgroundHeretary: 'link-change' },
   ]
   
   return (

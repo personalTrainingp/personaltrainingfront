@@ -26,7 +26,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 					{mesesSeleccionadosNums.map(mesNum => (
 					<col key={mesNum} style={{ width: 150 }} />
 					))}
-					<col className={`${bgTotal}`} style={{ width: 150 }} />
+					<col style={{ width: 150 }} />
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
 				</colgroup>
 				{
@@ -35,8 +35,6 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 						(acc, g) => acc + g.totalAnual,
 						0
 						);
-						console.log({grp});
-						
 						return (
 							<React.Fragment key={grp.grupo}>
 													<thead className={bgTotal}>
@@ -86,7 +84,6 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 									(sum, it) => sum + (it.monto_total || 0),
 									0
 									);
-									
 									const cantidadMovimiento = c.items.reduce(
 									(sum, it) => sum + (it.lenthItems || 0),
 									0
@@ -94,7 +91,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 									const pctConcepto = grp.totalAnual > 0
 									? ((totalConcepto / grp.totalAnual) * 100).toFixed(2)
 									: '0.00';
-									console.log({grp});
+									console.log({c, ff: 'asdf'});
 									
 									return (
 									<tr key={c.concepto}>
@@ -120,17 +117,20 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 													grupo: grp.grupo,
 													})}
 												>
-													
 													<NumberFormatMoney amount={itemMes.monto_total} />
 												</div>
 											</td>
 										);
 										})}
+										<td className='fs-2'>
+											<div className='text-right'>
+													<NumberFormatMoney amount={totalConcepto} />
+											</div>
+										</td>
 									</tr>
 									);
 								})}
 							</tbody>
-
 							</React.Fragment>
 						)
 					})
