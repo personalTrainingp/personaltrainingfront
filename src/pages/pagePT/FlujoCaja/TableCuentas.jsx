@@ -19,7 +19,7 @@ export const TableCuentas = ({dataIngresosxMes=[], header, background, bgTotal, 
   
   return (
     <>
-    <p className='fs-1'>{header}</p>
+    <p className='text-center' style={{fontSize: '60px'}}>{header}</p>
     <div  className="table-responsive" style={{ width: '95vw' }}>
         <Table className="tabla-egresos">
             <colgroup>
@@ -27,6 +27,8 @@ export const TableCuentas = ({dataIngresosxMes=[], header, background, bgTotal, 
                     {mesesSeleccionadosNums.map(mesNum => (
                     <col key={mesNum} style={{ width: 150 }} />
                     ))}
+					<col style={{ width: 150 }} />
+					<col style={{ width: 150 }} />
                 </colgroup>
                 {
                     totalesPorGrupo.map((grp, i, arr)=>{
