@@ -1,3 +1,4 @@
+import { DateMask, DateMaskString } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
 
 export function generarVentasOrdenadas(gruposData, anioFiltro) {
@@ -37,7 +38,7 @@ function agruparPorMes(data) {
 	const agrupado = {};
 
 	data.forEach((item) => {
-		const fecha = new Date(item.fecha);
+		const fecha = DateMaskString(item.fecha);
 		const anio = fecha.getUTCFullYear();
 		const mes = fecha.getUTCMonth() + 1;
 
@@ -56,7 +57,9 @@ function agruparPorMes(data) {
 	});
 
 	// Obtener todos los años presentes
-	const añosUnicos = [...new Set(data.map((item) => new Date(item.fecha).getUTCFullYear()))];
+	const añosUnicos = [
+		...new Set(data.map((item) => DateMaskString(item.fecha).getUTCFullYear())),
+	];
 
 	// Generar los 12 meses para cada año
 	const resultado = [];
@@ -83,21 +86,19 @@ function agruparPorMes(data) {
 }
 
 export function aplicarTipoDeCambio(dataTC, dataGastos) {
-	console.log({ dataGastos });
-
 	return dataGastos?.map((gasto) => {
-		const fechaGasto = new Date(gasto.fec_pago);
+		const fechaGasto = DateMaskString(gasto.fec_pago);
 
 		const tcMatch = dataTC.find((tc) => {
 			if (tc.moneda === gasto.moneda) return false;
 
-			const inicio = new Date(tc.fecha_inicio_tc);
+			const inicio = DateMaskString(tc.fecha_inicio_tc);
 			// Debe ser posterior o igual al inicio
 			if (fechaGasto < inicio) return false;
 
 			// Si hay fecha_fin_tc, también debe ser ≤ fin
 			if (tc.fecha_fin_tc) {
-				const fin = new Date(tc.fecha_fin_tc);
+				const fin = DateMaskString(tc.fecha_fin_tc);
 				if (fechaGasto > fin) return false;
 			}
 			// Si fecha_fin_tc es null, este tramo sigue abierto
@@ -112,8 +113,6 @@ export function aplicarTipoDeCambio(dataTC, dataGastos) {
 
 export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 	const meses = Array.from({ length: 12 }, (_, i) => i + 1);
-	console.log({ dataGrupos, epsi });
-
 	const gruposMapTemp = {};
 	dataGrupos.forEach((entry) => {
 		const nombreGrupo = entry.grupo?.trim()?.toUpperCase() || 'SIN GRUPO';
@@ -152,7 +151,7 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 			const itemsPorMes = meses.map((mes) => {
 				const itemsMes =
 					itemsDelConcepto?.filter(
-						(item) => dayjs(item.fec_comprobante).month() + 1 === mes
+						(item) => dayjs.utc(item.fec_comprobante).month() + 1 === mes
 					) || [];
 				const monto_total = itemsMes?.reduce((sum, g) => sum + (g.monto * g.tc || 0), 0);
 				return {
@@ -162,7 +161,6 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 					lenthItems: itemsMes.length,
 				};
 			});
-
 			return {
 				concepto: nombreConcepto,
 				items: itemsPorMes,
