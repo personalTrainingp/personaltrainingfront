@@ -2,12 +2,16 @@ import { PTApi } from '@/common';
 import { useState } from 'react';
 
 export const useRenovacionesStore = () => {
-	const [dataSeguimientosSinReno, setdataSeguimientosSinReno] = useState([]);
+	const [dataMembresias, setdataMembresias] = useState([]);
+	const [dataSeguimientos, setdataSeguimientos] = useState([]);
 	const [dataSeguimientosConReno, setdataSeguimientosConReno] = useState([]);
-	const [dataVentasMembresia, setdataVentasMembresia] = useState([]);
+	const [dataVentasMembresiaReno, setdataVentasMembresiaReno] = useState([]);
+	const [dataVentasMembresiaRei, setdataVentasMembresiaRei] = useState([]);
 	const obtenerSeguimientos = async () => {
 		try {
 			const { data } = await PTApi.get('/seguimiento/');
+			// console.log({ds: data.seguimiento});
+
 			const dataSeguimientoRenovados = data.seguimiento.map((d) => {
 				const {
 					id_cambio,
@@ -24,6 +28,7 @@ export const useRenovacionesStore = () => {
 					id_cli: valor.venta.tb_ventum.id_cli,
 				};
 			});
+			setdataSeguimientos(data.seguimiento);
 			setdataSeguimientosConReno(agruparPorMesFechaVencimiento(dataSeguimientoRenovados));
 		} catch (error) {
 			console.log(error);
@@ -40,14 +45,49 @@ export const useRenovacionesStore = () => {
 						id_origen: m.id_origen,
 						id_venta: m.id,
 						fecha_venta: m.fecha_venta,
-						// membresia_monto: m.detalle_ventaMembresia[0].tarifa_monto,
+						membresia_monto: m.detalle_ventaMembresia[0].tarifa_monto,
 						id_membresia: m.detalle_ventaMembresia[0].id,
 						fecha_inicio: m.detalle_ventaMembresia[0].fecha_inicio,
+						id_membresia_anterior: m.detalle_ventaMembresia[0]?.id_membresia_anterior,
 					};
-				});
-			console.log({ data: data.ventas });
+				})
+				.filter((me) => me.membresia_monto !== 0);
 
-			setdataVentasMembresia(agruparPorMesFechaVenta(dataVentasMembresiasMap));
+			const dataVentasMembresiasRei = data.ventas
+				.filter((e) => e.detalle_ventaMembresia.length !== 0 && e.id_origen === 692)
+				.map((m) => {
+					return {
+						id_cli: m.id_cli,
+						id_origen: m.id_origen,
+						id_venta: m.id,
+						fecha_venta: m.fecha_venta,
+						membresia_monto: m.detalle_ventaMembresia[0].tarifa_monto,
+						id_membresia: m.detalle_ventaMembresia[0].id,
+						fecha_inicio: m.detalle_ventaMembresia[0].fecha_inicio,
+						id_membresia_anterior: m.detalle_ventaMembresia[0]?.id_membresia_anterior,
+					};
+				})
+				.filter((me) => me.membresia_monto !== 0);
+
+			setdataMembresias(
+				data.ventas
+					.filter((e) => e.detalle_ventaMembresia.length !== 0)
+					.map((m) => {
+						return {
+							id_cli: m.id_cli,
+							id_origen: m.id_origen,
+							id_venta: m.id,
+							fecha_venta: m.fecha_venta,
+							// membresia_monto: m.detalle_ventaMembresia[0].tarifa_monto,
+							id_membresia: m.detalle_ventaMembresia[0].id,
+							fecha_inicio: m.detalle_ventaMembresia[0].fecha_inicio,
+							id_membresia_anterior:
+								m.detalle_ventaMembresia[0]?.id_membresia_anterior,
+						};
+					})
+			);
+			setdataVentasMembresiaReno(agruparPorMesFechaVenta(dataVentasMembresiasMap));
+			setdataVentasMembresiaRei(agruparPorMesFechaVenta(dataVentasMembresiasRei));
 		} catch (error) {
 			console.log(error);
 		}
@@ -55,9 +95,11 @@ export const useRenovacionesStore = () => {
 	return {
 		obtenerVentas,
 		obtenerSeguimientos,
-		dataSeguimientosSinReno,
+		dataVentasMembresiaRei,
+		dataMembresias,
 		dataSeguimientosConReno,
-		dataVentasMembresia,
+		dataVentasMembresiaReno,
+		dataSeguimientos,
 	};
 };
 

@@ -4,38 +4,51 @@ import dayjs from 'dayjs'
 import React from 'react'
 import { Table } from 'react-bootstrap'
 
-export const DataTableOrigen = ({renovaciones, vencimientos, mes, anio, pendientes_acum}) => {
+export const DataTableOrigen = ({renovaciones, dataRenovacionesAnteriores, vencimientos, mes, anio, pendientes_acum}) => {
   return (
     <>
-    <Table>
-      <tbody>
-        <tr className={`${colorxAnio(anio)}`}>
+    <Table striped>
+      
+        <tr className={`${colorxAnio(anio).bgHeader}`}>
           <th className='text-white fs-3' colSpan={2}> 
             <div className={`text-center fs-1 `}>
               {dayjs(`${anio}-${mes}-01`).format(' YYYY - MMMM')}
             </div>
           </th>
         </tr>
+      <tbody>
         <tr>
-          <th className='fs-3'>RENOVACIONES DEL MES</th>
-          <td className='fs-3'>{renovaciones?.length}</td>
+          <th className='fs-2'>VENCIMIENTOS <br/> {dayjs(`${anio}-${mes}-01`).format('MMMM')}</th>
+          <td className='fs-2 text-right'>{vencimientos?.length}</td>
         </tr>
         <tr>
-          <th className='fs-3'>RENOVACIONES %</th>
-          <td className='fs-3'><NumberFormatMoney amount={(renovaciones?.length/vencimientos?.length)*100}/></td>
+          <th className='fs-2'>RENOVACIONES <br/> REALIZADAS</th>
+          <td className='fs-2 text-right'>{renovaciones?.length}</td>
+        </tr>
+        {/* <tr>
+          <th className='fs-2'>RENOVACIONES <br/> {dayjs(`${anio}-${mes-1}-01`).format('MMMM')} </th>
+          <td className='fs-2 text-right'>{renovaciones?.length}</td>
+        </tr> */}
+        <tr>
+          <th className='fs-3'>% RENOVACIONES</th>
+          <td className='fs-3 text-right'><NumberFormatMoney amount={(renovaciones?.length/vencimientos?.length)*100}/>%</td>
         </tr>
         <tr>
-          <th className='fs-3'>VENCIMIENTOS FUTURO</th>
-          <td className='fs-3'>{vencimientos?.length}</td>
+          <th className='fs-3'>RENOVACIONES <br/> PENDIENTES</th>
+          <td className='fs-3 text-right'>{vencimientos?.length-renovaciones?.length }</td>
         </tr>
         <tr>
-          <th className='fs-3'>PENDIENTES EN RENOVAR</th>
-          <td className='fs-3'>{vencimientos?.length-renovaciones?.length }</td>
+          <th className='fs-3'>renovaciones <br/>({dayjs(`${anio}-${mes===1?mes-2:mes-2}-01`).format('MMMM')} - {dayjs(`${anio}-${mes-1}-01`).format('MMMM')})</th>
+          <td className='fs-3 text-right'>{dataRenovacionesAnteriores?.reduce((acc, item)=>acc+item.items?.length, 0)}</td>
         </tr>
-        <tr>
+        {/* <tr className={`${colorxAnio(anio).bgRei}`} style={{background: ''}}>
+          <th className='fs-3'>reinscripciones </th>
+          <td className='fs-3 text-right'>FD</td>
+        </tr> */}
+        {/* <tr>
           <th className='fs-3'>ACUMULADO CARTERA</th>
           <td className='fs-3'>{pendientes_acum }</td>
-        </tr>
+        </tr> */}
       </tbody>
     </Table>
     </>
@@ -44,15 +57,27 @@ export const DataTableOrigen = ({renovaciones, vencimientos, mes, anio, pendient
 
 function colorxAnio(anio) {
   if(anio===2024){
-    return 'bg-circus'
+    return {
+      bgHeader: 'bg-circus',
+      bgRei: 'bg-circus-pastel'
+    }
   }
   if(anio===2025){
-    return 'bg-change'
+    return {
+      bgHeader: 'bg-change',
+      bgRei: 'bg-change-pastel'
+    }
   }
   if(anio==2026){
-    return 'bg-morado'
+    return {
+      bgHeader: 'bg-morado',
+      bgRei: 'bg-morado-pastel'
+    }
   }
   if(anio==2027){
-    return 'bg-greenISESAC'
+    return {
+      bgHeader: 'bg-greenISESAC',
+      bgRei: 'bg-greenISESAC-pastel'
+    }
   }
 }

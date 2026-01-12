@@ -1,7 +1,7 @@
 import { PageBreadcrumb } from '@/components'
 import React, { useState } from 'react'
-import { ModalCustomArchivo } from './ModalCustomArchivo'
-import { DataTable } from './DataTable'
+import { ModalCustomArchivo } from './ModalCustom'
+import { DataTable } from './DataTableCentroArchivo'
 import { Button } from 'react-bootstrap'
 
 export const App = () => {

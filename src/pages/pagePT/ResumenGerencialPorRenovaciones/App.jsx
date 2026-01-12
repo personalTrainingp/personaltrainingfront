@@ -6,16 +6,29 @@ import { useRenovacionesStore } from './hook/useRenovacionesStore'
 import { Col, Row } from 'react-bootstrap'
 
 export const App = () => {
-  const { dataSeguimientosConReno, dataSeguimientosSinReno, obtenerSeguimientos, obtenerVentas, dataVentasMembresia } = useRenovacionesStore()
+  const { dataSeguimientosConReno, dataSeguimientosSinReno, obtenerSeguimientos, obtenerVentas, dataVentasMembresiaReno, dataMembresias, dataSeguimientos, dataVentasMembresiaRei } = useRenovacionesStore()
   useEffect(() => {
     obtenerSeguimientos()
     obtenerVentas()
   }, [])
-  const analisisRenovaciones = [{mes: 9, anio: 2024, ar1: [], ar2: [], ar3:[]}, ...unirPorMesAnio(dataSeguimientosConReno, dataVentasMembresia)].reduce((acc, f, idx) => {
+  console.log({dataVentasMembresiaRei});
+  
+  const analisisRenovaciones = [{mes: 9, anio: 2024, ar1: [], ar2: [], ar3:[]}, ...unirPorMesAnio(dataSeguimientosConReno, dataVentasMembresiaReno)].reduce((acc, f, idx) => {
   const vencimiento = (f.ar1?.length || 0);
   const renovaciones = (f.ar2?.length || 0);
   const pendientes =  vencimiento-renovaciones;
-
+  // const reiLen = dataVentasMembresiaRei
+  const renovacionesConMembresiaAnterior = f.ar2.map(a=>{
+    const objMembresiaAnterior = dataSeguimientos.find(m=>m.id_membresia===a.id_membresia_anterior)
+    return {
+      ...a,
+      mes: f.mes,
+      anio: f.anio,
+      objMembresiaAnterior
+    }
+  })
+  // console.log({ renovacionesConMembresiaAnterior, renoConMemAnterior: agruparPorFechaVencimiento(renovacionesConMembresiaAnterior) });
+  
   const pendientes_acum = idx === 0
     ? pendientes
     : acc[idx - 1].pendientes_acum + pendientes;
@@ -27,10 +40,13 @@ export const App = () => {
     vencimiento: f.ar1,
     pendientes,
     pendientes_acum,
+    dataRenovaciones: agruparPorFechaVencimiento(renovacionesConMembresiaAnterior).filter(re => esMesPosterior(re, f))
   });
 
   return acc;
 }, []);
+console.log({analisisRenovaciones});
+
   return (
     <div>
       <PageBreadcrumb title={'DETALLE RENOVACIONES'}/>
@@ -39,7 +55,7 @@ export const App = () => {
             analisisRenovaciones.map(d=>{
               return (
                 <Col lg={3}>
-                  <DataTableOrigen  pendientes_acum={d.pendientes_acum} anio={d.anio} mes={d.mes} vencimientos={d.vencimiento} renovaciones={d.renovaciones}/>
+                  <DataTableOrigen dataRenovacionesAnteriores={d.dataRenovaciones} pendientes_acum={d.pendientes_acum} anio={d.anio} mes={d.mes} vencimientos={d.vencimiento} renovaciones={d.renovaciones}/>
                 </Col>
               )
             })
@@ -48,6 +64,31 @@ export const App = () => {
     </div>
   )
 }
+const esMesPosterior = (a, b) =>
+  a.anio * 100 + a.mes < b.anio * 100 + b.mes;
+const agruparPorFechaVencimiento = (data = []) => {
+  const map = {};
+
+  data.forEach(item => {
+    const fecha = item?.objMembresiaAnterior?.fecha_vencimiento;
+    if (!fecha) return;
+
+    const d = new Date(fecha);
+    const anio = d.getUTCFullYear();
+    const mes = d.getUTCMonth() + 1; // 1–12
+    const dia = d.getUTCDate();
+
+    const key = `${anio}-${mes}`;
+
+    if (!map[key]) {
+      map[key] = { anio, mes, items: [] };
+    }
+
+    map[key].items.push(item);
+  });
+
+  return Object.values(map);
+};
 
 
 const unirPorMesAnio = (ar1 = [], ar2 = []) => {
@@ -82,18 +123,3 @@ const unirPorMesAnio = (ar1 = [], ar2 = []) => {
     return a.mes - b.mes;
   });
 };
-
-const calcularAr3 = (data = []) =>
-  data.map((item, index, arr) => {
-    if (index === 0) {
-      return {
-        ...item,
-        ar3: item.ar1,
-      };
-    }
-
-    return {
-      ...item,
-      ar3: arr[index - 1].ar1 + item.ar2,
-    };
-  });

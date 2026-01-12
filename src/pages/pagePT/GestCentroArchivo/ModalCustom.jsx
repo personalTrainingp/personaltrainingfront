@@ -8,7 +8,7 @@ import Select from 'react-select'
 import { Button } from 'primereact/button'
 import { useFilesStore } from '@/hooks/hookApi/useFilesStore'
 import Swal from 'sweetalert2'
-import { useCenterArchive } from './useCenterArchive'
+import { useCenterArchive } from './hook/useCenterArchive'
 import { arrayEmpresaFinan } from '@/types/type'
 const registerFile = {
   id_tipo_doc: 0,
@@ -19,7 +19,7 @@ const registerFile = {
 const registerArchivo={
     imgAvatar_BASE64: ''
 }
-export const ModalCustomArchivo = ({uid_file, show, onHide}) => {
+export const ModalCustom = ({uid_file, show, onHide}) => {
   const [file, setfile] = useState(null)
   const { formState, id_tipo_doc, id_empresa, id_seccionVisible, titulo, observacion, onInputChangeReact, onInputChange, onResetForm } = useForm(registerFile)
   const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()

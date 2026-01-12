@@ -4,10 +4,11 @@ import { Button } from 'primereact/button';
 import { Button as Btn } from 'react-bootstrap';
 import { Calendar } from 'primereact/calendar';
 import { useDispatch } from 'react-redux';
-import { onSetRangeDate } from '@/store/data/dataSlice';
+import { onSetCorte, onSetRangeDate } from '@/store/data/dataSlice';
 import dayjs from 'dayjs';
-import { InputSelect } from '../InputText';
-
+import { InputButton, InputSelect } from '../InputText';
+import Select from 'react-select'
+import { useForm } from '@/hooks/useForm';
 export const FechaRangeMES = ({ rangoFechas, textColor }) => {
   const dispatch = useDispatch();
 
@@ -173,20 +174,33 @@ export const FechaRange = ({rangoFechas, showHasta=true, className}) => {
     </div>
   )
 }
-
-export const FechaCorte = ({corte, inicio, showHasta=true, className})=>{
+const customFecha={
+  inicio: 1,
+  corte: 31
+}
+export const FechaCorte = ({corte1, inicio1, showHasta=true, className})=>{
   const fechas = del0al31()
+const { formState, inicio, corte, onInputChange } = useForm(customFecha)
+const dispatch = useDispatch()
+const onSaveCorte = ()=>{
+  dispatch(onSetCorte(formState))
+}
   return (
     <>
     <Row>
       <Col lg={1}>
         <div className='mb-3'>
-          <InputSelect label={'INICIO'} options={fechas} value={inicio}/>
+          <InputSelect label={'INICIO'} options={fechas} value={inicio} nameInput={'inicio'} onChange={onInputChange}/>
         </div>
       </Col>
       <Col lg={1}>
         <div className='mb-3'>
-          <InputSelect label={'TERMINO'} options={fechas} value={corte}/>
+          <InputSelect label={'CORTE'} options={fechas} value={corte} nameInput={'corte'} onChange={onInputChange}/>
+        </div>
+      </Col>
+      <Col lg={1}>
+        <div className='mt-3'>
+          <InputButton label={'AGREGAR'} className={'fs-3'} onClick={onSaveCorte}/>
         </div>
       </Col>
     </Row>
@@ -195,7 +209,7 @@ export const FechaCorte = ({corte, inicio, showHasta=true, className})=>{
 }
 function del0al31() {
     let fecha=[];
-  for (let index = 0; index < 31; index++) {
+  for (let index = 1; index < 31; index++) {
     fecha.push({value: index, label: `${index}`})
   }
   return fecha;

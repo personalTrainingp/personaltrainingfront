@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
-import { useCenterArchive } from './useCenterArchive'
+import { useCenterArchive } from './hook/useCenterArchive'
 import { useSelector } from 'react-redux'
 import config from '@/config'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 
-export const DataTable = () => {
+export const DataTableCentroArchivo = () => {
     const { obtenerArchivosCenter } = useCenterArchive()
     const { dataView } = useSelector(e=>e.DATA)
       const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()

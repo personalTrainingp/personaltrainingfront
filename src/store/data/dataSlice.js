@@ -14,8 +14,9 @@ export const dataSlice = createSlice({
 		],
 		MULTI_DATE: [],
 		corte: {
-			inicio: 0,
+			inicio: 1,
 			corte: 31,
+			dia: [1, 31],
 		},
 	},
 	reducers: {
@@ -48,11 +49,12 @@ export const dataSlice = createSlice({
 		onSetRangeDate: (state, { payload }) => {
 			state.RANGE_DATE = payload;
 		},
-		onSetCorte: (state, { corte, inicio }) => {
-			state.corte = {
-				corte,
-				inicio,
-			};
+		onSetCorte: (state, { payload }) => {
+			state.corte = payload;
+			state.corte.dia = Array.from(
+				{ length: payload.corte - payload.inicio + 1 },
+				(_, i) => payload.inicio + i
+			);
 		},
 		onSetMultiDate: (state, { payload }) => {
 			state.MULTI_DATE = payload;

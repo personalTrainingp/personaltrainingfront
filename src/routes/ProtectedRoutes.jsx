@@ -112,6 +112,8 @@ const ReporteUtilidadxMes = lazy(()=>import('../pages/pagePT/ReporteUtilidadxMes
 const ResumenGerencialPorRenovaciones= lazy(()=>import('../pages/pagePT/ResumenGerencialPorRenovaciones/Index.jsx'))
 const CuentasBalances = lazy(()=>import('../pages/pagePT/CuentasBalances/Index.jsx'))
 const AuditoriaInventario = lazy(()=>import('../pages/pagePT/AuditoriaInventario/Index.jsx'))
+const DetalleRenovacionesxDia = lazy(()=>import('../pages/pagePT/ResumenGerencialxRenovacionesxDia/Index.jsx'))
+const ResumenGerencialPorRenovacionesReal = lazy(()=>import('../pages/pagePT/ResumenGerencialPorRenovacionesReal/Index.jsx'))
 /**
  * routes import
  */
@@ -153,7 +155,11 @@ export default function ProtectedRoutes() {
 			status  === 'authenticated' ? (
 				<>
 				<Route path="/*" element={<Layout />}>
-				{/* auditoria-inventario */}
+				{/* /detalle-renovaciones-x-dia */}
+					{
+						sections.find(e=>e.url==='/detalle-renovaciones-x-dia') &&
+						<Route path='detalle-renovaciones-x-dia'  element={<ResumenGerencialPorRenovacionesReal />}/>
+					}
 					{
 						sections.find(e=>e.url==='/auditoria-inventario') &&
 						<Route path='auditoria-inventario'  element={<AuditoriaInventario />}/>
