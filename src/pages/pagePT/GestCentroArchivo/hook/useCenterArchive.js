@@ -14,9 +14,10 @@ export const useCenterArchive = () => {
 				formState
 			);
 			await PTApi.post(
-				`/storage/blob/create/${data.uid_file}?container=files-adjuntos-clientes`,
+				`/storage/blob/create/${data.uid_file}?container=docs-general`,
 				formFile
 			);
+			await obtenerArchivosCenter();
 		} catch (error) {
 			console.log(error);
 		}
@@ -29,8 +30,17 @@ export const useCenterArchive = () => {
 			console.log(error);
 		}
 	};
+	const onDeleteArchivo = async (id) => {
+		try {
+			const { data } = await PTApi.put(`/fils/interno/center/delete/id/${id}`);
+			await obtenerArchivosCenter();
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		onPostArchivCenter,
 		obtenerArchivosCenter,
+		onDeleteArchivo,
 	};
 };

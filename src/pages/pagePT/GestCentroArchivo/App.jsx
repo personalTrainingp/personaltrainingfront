@@ -11,7 +11,7 @@ export const App = () => {
     }
     const onClickCloseModalCustomArchivo =()=>{
         setisOpenModalCustomArchivo({isOpen: false})
-    }
+    }   
   return (
     <>
     <PageBreadcrumb title={'CENTRO DE ARCHIVO'} />

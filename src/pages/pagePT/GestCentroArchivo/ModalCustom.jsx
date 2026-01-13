@@ -10,6 +10,7 @@ import { useFilesStore } from '@/hooks/hookApi/useFilesStore'
 import Swal from 'sweetalert2'
 import { useCenterArchive } from './hook/useCenterArchive'
 import { arrayEmpresaFinan } from '@/types/type'
+import { InputSelect } from '@/components/InputText'
 const registerFile = {
   id_tipo_doc: 0,
   observacion: '',
@@ -27,9 +28,9 @@ export const ModalCustom = ({uid_file, show, onHide}) => {
   const { postFiles } = useFilesStore()
   const { onPostArchivCenter } = useCenterArchive()
   useEffect(() => {
-    obtenerParametroPorEntidadyGrupo('files', 'tipo_doc')
+    obtenerParametroPorEntidadyGrupo('centro-archivo', 'categoria')
     obtenerTipoDoc('centro-archivo','tipo-archivo')
-  }, [])
+  }, [show])
     
     const onSubmitFile = (e)=>{
         e.preventDefault()
@@ -47,7 +48,7 @@ export const ModalCustom = ({uid_file, show, onHide}) => {
         console.log({formData, file});
         onPostArchivCenter(formState, id_seccionVisible, id_empresa, formData)
         // postFiles(uid_file, formState, formData)
-        // cancelModal()
+        cancelModal()
     }
     const cancelModal = ()=>{
         setfile(null)
@@ -87,6 +88,11 @@ export const ModalCustom = ({uid_file, show, onHide}) => {
                     <p className="message">{file ? `${file?.name}, ${file?.size} bytes` : "SIN ARCHIVOS SELECCIONADO"}</p>
                 </div>
                 </Col>
+                {/* <Col xxl={12}>
+                    <InputSelect label={'Tipo de registro'} options={[{value: 1582, label: 'DOC'},{value: 1581, label: 'URL'}]}/>
+                </Col>
+                <Col xxl={}>
+                </Col> */}
                 <Col xxl={12}>
                     <div className="mb-2">
                         <label htmlFor="id_empresa" className="form-label">
@@ -108,19 +114,19 @@ export const ModalCustom = ({uid_file, show, onHide}) => {
                 </Col>
                 <Col xxl={12}>
                     <div className="mb-2">
-                        <label htmlFor="id_seccionVisible" className="form-label">
-                            Seccion:
+                        <label htmlFor="id_tipo_doc" className="form-label">
+                            Tipo:
                         </label>
                         <Select
-                                onChange={(e)=>onInputChangeReact(e, "id_seccionVisible")}
-                                name={"id_seccionVisible"}
-                                placeholder={'Seleccione la seccion'}
+                                onChange={(e)=>onInputChangeReact(e, "id_tipo_doc")}
+                                name={"id_tipo_doc"}
+                                placeholder={'Seleccione la tipo'}
                                 className="react-select"
                                 classNamePrefix="react-select"
                                 value={DataGeneral.find(
-                                    (option) => option.value === id_seccionVisible
+                                    (option) => option.value === id_tipo_doc
                                 )}
-                                options={[{value: 0, label: 'M.O.F. MARKETING'}, {value: 1, label: 'M.O.F. ADMINISTRACION'}, {value: 2, label: 'M.O.F. DISEÑO'}]}
+                                options={DataGeneral}
                                 required
                         ></Select>
                     </div>
