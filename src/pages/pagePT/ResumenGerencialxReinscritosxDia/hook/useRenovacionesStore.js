@@ -12,7 +12,7 @@ export const useRenovacionesStore = () => {
 			console.log({ data });
 
 			const dataVentasMembresiasMap = data.ventas
-				.filter((e) => e.detalle_ventaMembresia.length !== 0 && e.id_origen === 691)
+				.filter((e) => e.detalle_ventaMembresia.length !== 0 && e.id_origen === 692)
 				.map((m) => {
 					return {
 						id_cli: m.id_cli,

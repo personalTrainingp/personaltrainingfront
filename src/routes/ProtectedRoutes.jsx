@@ -110,11 +110,11 @@ const GestionSalidasTempranas = lazy(()=>import('../pages/pagePT/GestionSalidasT
 // const ContratoProv = lazy(()=>import('../pages/pagePT/ContratoProv/Index.jsx'))
 const ReporteUtilidadxMes = lazy(()=>import('../pages/pagePT/ReporteUtilidadxMes/Index.jsx'))
 const ResumenGerencialPorRenovaciones= lazy(()=>import('../pages/pagePT/ResumenGerencialPorRenovaciones/Index.jsx'))
-const ResumenGerencialPorReinscripciones= lazy(()=>import('../pages/pagePT/ResumenGerencialxReinscritosxDia/Index.jsx'))
 const CuentasBalances = lazy(()=>import('../pages/pagePT/CuentasBalances/Index.jsx'))
 const AuditoriaInventario = lazy(()=>import('../pages/pagePT/AuditoriaInventario/Index.jsx'))
 const DetalleRenovacionesxDia = lazy(()=>import('../pages/pagePT/ResumenGerencialxRenovacionesxDia/Index.jsx'))
 const ResumenGerencialPorRenovacionesReal = lazy(()=>import('../pages/pagePT/ResumenGerencialPorRenovacionesReal/Index.jsx'))
+const ResumenGerencialPorReinscripcionesxDia= lazy(()=>import('../pages/pagePT/ResumenGerencialxReinscritosxDia/Index.jsx'))
 /**
  * routes import
  */
@@ -157,6 +157,10 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /detalle-renovaciones-x-dia */}
+					{
+						sections.find(e=>e.url==='/detalle-reinscripcion-x-dia') &&
+						<Route path='detalle-reinscripcion-x-dia'  element={<ResumenGerencialPorReinscripcionesxDia />}/>
+					}
 					{
 						sections.find(e=>e.url==='/detalle-renovaciones-x-dia') &&
 						<Route path='detalle-renovaciones-x-dia'  element={<ResumenGerencialPorRenovacionesReal />}/>

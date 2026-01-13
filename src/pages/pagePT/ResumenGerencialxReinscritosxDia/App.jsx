@@ -24,7 +24,7 @@ export const App = () => {
       
   return (
     <div>
-      <PageBreadcrumb title={'DETALLE RENOVACIONES X DIA'}/>
+      <PageBreadcrumb title={'DETALLE REINSCRIPCIONES X DIA'}/>
       <FechaCorte corte={corte.corte} inicio={corte.inicio}/>
       <App2 dataVentasMembresia={ventasMembresiaxCorteDeDia}/>
     </div>
