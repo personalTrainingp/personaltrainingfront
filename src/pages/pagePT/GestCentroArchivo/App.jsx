@@ -1,8 +1,8 @@
 import { PageBreadcrumb } from '@/components'
 import React, { useState } from 'react'
-import { ModalCustomArchivo } from './ModalCustom'
-import { DataTable } from './DataTableCentroArchivo'
 import { Button } from 'react-bootstrap'
+import { DataTableCentroArchivo } from './DataTableCentroArchivo'
+import { ModalCustom } from './ModalCustom'
 
 export const App = () => {
     const [isOpenModalCustomArchivo, setisOpenModalCustomArchivo] = useState({isOpen: false})
@@ -16,8 +16,8 @@ export const App = () => {
     <>
     <PageBreadcrumb title={'CENTRO DE ARCHIVO'} />
     <Button onClick={onClickOpenModalCustomArchivo}>AGREGAR ARCHIVO</Button>
-    <DataTable />
-    <ModalCustomArchivo onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
+    <DataTableCentroArchivo />
+    <ModalCustom onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
     </>
   )
 }

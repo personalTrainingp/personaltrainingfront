@@ -3,6 +3,7 @@ import { useCenterArchive } from './hook/useCenterArchive'
 import { useSelector } from 'react-redux'
 import config from '@/config'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
+import { DataTableCR } from '@/components/DataView/DataTableCR'
 
 export const DataTableCentroArchivo = () => {
     const { obtenerArchivosCenter } = useCenterArchive()
@@ -14,44 +15,14 @@ export const DataTableCentroArchivo = () => {
         obtenerTipoDoc('centro-archivo','tipo-archivo')
         obtenerArchivosCenter()
     }, [])
-    
+    const columns = [
+        {id: '', accessor: '', header: 'Id'}
+    ]
   return (
     <div>
-{/*         
-        <pre>
-            {
-                JSON.stringify(dataView, null, 2)
-            }
-        </pre> */}
-        <table className='table'>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Tipo De archivo</th>
-                    <th>TITULO</th>
-                    <th>DESCRIPCION</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    dataView.map(d=>{
-                        return (
-                            <tr>
-                                <td> 
-                                    <a href={`${config.API_IMG.FILES_COLABORADORES}${d?.tb_image?.name_image}`}>
-                                        <i className='pi pi-file-pdf fs-2 cursor-pointer'></i>
-                                    </a>
-                                </td>
-                                <td>{datatipoDoc.find(e=>e.value===d.id_tipo_doc)?.label}</td>
-                                <td> {d.titulo} </td>
-                                <td> {d.observacion} </td>
-                            </tr>
-                        )
-                    })
-                }
-            </tbody>
-        </table>
+        <DataTableCR
+            columns={columns}
+        />
     </div>
   )
 }

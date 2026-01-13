@@ -1,1 +1,1 @@
-export { Seguimiento2 as default } from './Seguimiento2';
+export { Seguimiento as default } from './Seguimiento';

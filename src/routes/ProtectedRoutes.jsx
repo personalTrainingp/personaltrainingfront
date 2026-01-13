@@ -92,7 +92,7 @@ const CitasxNutricionista = lazy(()=>import('../pages/pagePT/reportes/citasxEsta
 const GeneradorFechas = lazy(()=>import('../pages/pagePT/generadorFechas/GeneradorFechasInventario'))
 const ArticulosNuevos = lazy(()=>import('../pages/pagePT/GestArticulosChorrillos'))
 const ResumenEjecutivo = lazy(()=>import('../pages/pagePT/reportes/resumenEjecutivo/Index.jsx'))
-// const GestionCentroDeArchivos = lazy(()=>import('../pages/pagePT/GestCentroArchivo'))
+const GestionCentroDeArchivos = lazy(()=>import('../pages/pagePT/GestCentroArchivo/Index.jsx'))
 const CvColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/cv'))
 const DniColaboradores= lazy(()=>import('../pages/pagePT/GestEmpleados/Perfil/dni'))
 const ReservaMonkFitPage = lazy(()=>import('../pages/pagePT/GestionMonkFit/App'))
@@ -157,6 +157,10 @@ export default function ProtectedRoutes() {
 				<>
 				<Route path="/*" element={<Layout />}>
 				{/* /detalle-renovaciones-x-dia */}
+					{
+						sections.find(e=>e.url==='/centro-archivos') &&
+						<Route path='centro-archivos'  element={<GestionCentroDeArchivos />}/>
+					}
 					{
 						sections.find(e=>e.url==='/detalle-reinscripcion-x-dia') &&
 						<Route path='detalle-reinscripcion-x-dia'  element={<ResumenGerencialPorReinscripcionesxDia />}/>

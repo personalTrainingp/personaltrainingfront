@@ -5,7 +5,6 @@ import React from 'react'
 import { Table } from 'react-bootstrap'
 
 export const DataTableOrigen = ({renovaciones, mes, anio}) => {
-  console.log({renovaciones});
   
   return (
     <>
@@ -19,7 +18,7 @@ export const DataTableOrigen = ({renovaciones, mes, anio}) => {
           </th>
         </tr>
         <tr>
-          <th className='fs-3'>RENOVACIONES DEL MES</th>
+          <th className='fs-3'>REINSCRIPCIONES DEL MES</th>
           <td className='fs-3'>{renovaciones?.length}</td>
           <td className='fs-3'><NumberFormatMoney amount={renovaciones?.reduce((acc, curr) => acc + curr.monto, 0)}/></td>
         </tr>

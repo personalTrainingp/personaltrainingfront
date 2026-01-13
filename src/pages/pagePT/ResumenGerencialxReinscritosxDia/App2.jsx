@@ -11,9 +11,9 @@ export const App2 = ({dataVentasMembresia}) => {
     <div>
       <Row>
         {
-          dataVentasMembresia.map(membresia=>{
+          dataVentasMembresia.map((membresia, i)=>{
             return (
-              <Col lg={4}>
+              <Col lg={4} key={i}>
                 <DataTableOrigen anio={membresia.anio} mes={membresia.mes} renovaciones={membresia.items}/>
               </Col>
             )
