@@ -110,6 +110,7 @@ const GestionSalidasTempranas = lazy(()=>import('../pages/pagePT/GestionSalidasT
 // const ContratoProv = lazy(()=>import('../pages/pagePT/ContratoProv/Index.jsx'))
 const ReporteUtilidadxMes = lazy(()=>import('../pages/pagePT/ReporteUtilidadxMes/Index.jsx'))
 const ResumenGerencialPorRenovaciones= lazy(()=>import('../pages/pagePT/ResumenGerencialPorRenovaciones/Index.jsx'))
+const ResumenGerencialPorReinscripciones= lazy(()=>import('../pages/pagePT/ResumenGerencialxReinscritosxDia/Index.jsx'))
 const CuentasBalances = lazy(()=>import('../pages/pagePT/CuentasBalances/Index.jsx'))
 const AuditoriaInventario = lazy(()=>import('../pages/pagePT/AuditoriaInventario/Index.jsx'))
 const DetalleRenovacionesxDia = lazy(()=>import('../pages/pagePT/ResumenGerencialxRenovacionesxDia/Index.jsx'))
@@ -195,6 +196,10 @@ export default function ProtectedRoutes() {
 					{
 						sections.find(e=>e.url==='/cuentas-cobrar') &&
 						<Route path='cuentas-cobrar' element={<CuentasBalances tipo={'PorCobrar'} headerTipo={'COBRAR'}/>}/>
+					}
+					{
+						sections.find(e=>e.url==='/detalle-reinscripciones') &&
+						<Route path='detalle-reinscripciones' element={<ResumenGerencialPorReinscripciones/>}/>
 					}
 					{
 						sections.find(e=>e.url==='/detalle-renovaciones') &&

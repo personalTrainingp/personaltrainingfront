@@ -1,12 +1,8 @@
 import React, { useEffect } from 'react'
-import { useSeguimientoStore } from './useSeguimientoStore'
+import { useSeguimientoStore } from './hook/useSeguimientoStore'
 
 export const Seguimiento2 = () => {
-    const { obtenerTodoSeguimiento } = useSeguimientoStore()
-    useEffect(() => {
-        obtenerTodoSeguimiento(598)
-    }, [])
-    
+  const { obtenerSeguimiento } = useSeguimientoStore()
   return (
     <div>Seguimiento2</div>
   )
