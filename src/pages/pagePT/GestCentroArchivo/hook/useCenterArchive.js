@@ -5,7 +5,13 @@ import { useDispatch } from 'react-redux';
 
 export const useCenterArchive = () => {
 	const dispatch = useDispatch();
-	const onPostArchivCenter = async (formState, id_moduloVisible, id_empresa, formFile) => {
+	const onPostArchivCenter = async (
+		formState,
+		id_moduloVisible,
+		id_empresa,
+		formFile,
+		idEmpresa
+	) => {
 		try {
 			console.log({ formState, id_moduloVisible, id_empresa, formFile });
 
@@ -17,23 +23,25 @@ export const useCenterArchive = () => {
 				`/storage/blob/create/${data.uid_file}?container=docs-general`,
 				formFile
 			);
-			await obtenerArchivosCenter();
+			await obtenerArchivosCenter(idEmpresa);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const obtenerArchivosCenter = async () => {
+	const obtenerArchivosCenter = async (idEmpresa) => {
 		try {
-			const { data } = await PTApi.get('/fils/interno/center');
+			console.log({ idEmpresa });
+
+			const { data } = await PTApi.get(`/fils/interno/center/${idEmpresa}`);
 			dispatch(onSetDataView(data.documentosInternos));
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const onDeleteArchivo = async (id) => {
+	const onDeleteArchivo = async (id, idEmpresa) => {
 		try {
 			const { data } = await PTApi.put(`/fils/interno/center/delete/id/${id}`);
-			await obtenerArchivosCenter();
+			await obtenerArchivosCenter(idEmpresa);
 		} catch (error) {
 			console.log(error);
 		}

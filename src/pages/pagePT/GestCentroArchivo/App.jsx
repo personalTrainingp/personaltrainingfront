@@ -1,23 +1,15 @@
-import { PageBreadcrumb } from '@/components'
 import React, { useState } from 'react'
-import { Button } from 'react-bootstrap'
-import { DataTableCentroArchivo } from './DataTableCentroArchivo'
-import { ModalCustom } from './ModalCustom'
+import { ColorEmpresa } from '@/components/ColorEmpresa'
+import { App2 } from './App2'
 
-export const App = () => {
-    const [isOpenModalCustomArchivo, setisOpenModalCustomArchivo] = useState({isOpen: false})
-    const onClickOpenModalCustomArchivo=()=>{
-        setisOpenModalCustomArchivo({isOpen: true})
-    }
-    const onClickCloseModalCustomArchivo =()=>{
-        setisOpenModalCustomArchivo({isOpen: false})
-    }   
+export const App = () => {   
   return (
     <>
-    <PageBreadcrumb title={'CENTRO DE ARCHIVO'} />
-    <Button onClick={onClickOpenModalCustomArchivo}>AGREGAR ARCHIVO</Button>
-    <DataTableCentroArchivo />
-    <ModalCustom onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
+    <ColorEmpresa
+      childrenChange={<App2 idEmpresa={598}/>}
+      childrenCircus={<App2 idEmpresa={599}/>}
+      childrenRal={<App2 idEmpresa={800}/>}
+    />
     </>
   )
 }

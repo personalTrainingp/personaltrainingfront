@@ -6,12 +6,12 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
-export const DataTableCentroArchivo = () => {
+export const DataTableCentroArchivo = ({idEmpresa}) => {
     const { obtenerArchivosCenter, onDeleteArchivo } = useCenterArchive()
     const { dataView } = useSelector(e=>e.DATA)
     useEffect(() => {
-      obtenerArchivosCenter()
-    }, [])
+      obtenerArchivosCenter(idEmpresa)
+    }, [idEmpresa])
     
     const columns = [
         {id: 'id', accessor: 'id', header: 'Id'},
