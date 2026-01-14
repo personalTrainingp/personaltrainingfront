@@ -156,6 +156,12 @@ updatedAt: "2026-01-07T22:02:43.765Z"
 							orden: 4,
 							parametro_grupo: { label_param: 'OTROS', orden: 4 },
 						},
+						{
+							id: 1579,
+							grupo: 'OTROS',
+							orden: 4,
+							parametro_grupo: { label_param: 'LUIS ALBERTO ROY GAGLIUFFI', orden: 5 },
+						},
 					],
 					tipo
 				),
