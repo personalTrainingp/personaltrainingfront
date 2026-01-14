@@ -24,7 +24,73 @@ export const useVentasStore = () => {
 					],
 				},
 			});
-			// setdataVentasxMes(agruparVentasPorMes(data.ventas));
+			const { data: dataParametrosGastos } = await PTApi.get(
+				`/terminologia/terminologiaxEmpresa/${idEmpresa}/1574`
+			);
+			const ventasMembresiaMap = data.ventas
+				.filter((f) => f.detalle_ventaMembresia.length > 0)
+				.map((e) => {
+					return {
+						fec_comprobante: e.fecha_venta,
+						fec_pago: e.fecha_venta,
+						flag: 1,
+						id_empresa: e.id_empresa,
+						id_forma_pago: 0,
+						id_gasto: 1148,
+						id_prov: 0,
+						id_tarjeta: 0,
+						id_banco: 0,
+						id_tipo_comprobante: e.id_tipoFactura,
+						moneda: 'PEN',
+						monto: e.detalle_ventaMembresia[0]?.tarifa_monto,
+						n_comprabante: e.numero_transac,
+						n_operacion: 0,
+						tb_parametros_gasto: {
+							id_empresa: e.id_empresa,
+							nombre_gasto: 'MEMBRESIAS',
+							grupo: 'INGRESOS',
+							id_tipoGasto: 0,
+							parametro_grupo: { id: 1148, param_label: 'INGRESOS', orden: 1 },
+						},
+						tc: 1,
+						descripcion: `${e.detalle_ventaMembresia[0].tb_ProgramaTraining.name_pgm} | ${e.detalle_ventaMembresia[0].tb_semana_training.semanas_st} SEMANAS`,
+					};
+				});
+
+			const ventasProdMap = data.ventas
+				.filter((f) => f.detalle_ventaProductos.length > 0)
+				.map((e) => {
+					return {
+						fec_comprobante: e.fecha_venta,
+						fec_pago: e.fecha_venta,
+						flag: 1,
+						id_empresa: e.id_empresa,
+						id_forma_pago: 0,
+						id_gasto: 1148,
+						id_prov: 0,
+						id_tarjeta: 0,
+						id_banco: 0,
+						id_tipo_comprobante: e.id_tipoFactura,
+						moneda: 'PEN',
+						monto: e.detalle_ventaProductos[0]?.tarifa_monto,
+						n_comprabante: e.numero_transac,
+						n_operacion: 0,
+						tc: 1,
+						descripcion: `${e.detalle_ventaMembresia[0].tb_ProgramaTraining.name_pgm} | ${e.detalle_ventaMembresia[0].tb_semana_training.semanas_st} SEMANAS`,
+					};
+				});
+			console.log({
+				ventasMembresiaMap,
+				dVenta: data.ventas,
+			});
+
+			setdataVentasxMes(
+				agruparPorGrupoYConcepto(
+					ventasMembresiaMap,
+					dataParametrosGastos.termGastos,
+					'ingreso'
+				)
+			);
 			// console.log({ data: agruparVentasPorMes(data.ventas) });
 		} catch (error) {
 			console.log(error);

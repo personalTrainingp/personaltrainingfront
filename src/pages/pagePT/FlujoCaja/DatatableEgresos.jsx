@@ -30,13 +30,13 @@ export const DatatableEgresos = ({
 	const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false);
 	const [isOpenModalDetallexCelda2, setIsOpenModalDetallexCelda2] = useState(false);
 	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos } = useFlujoCajaStore();
-	const { obtenerVentasxFechaxEmpresa, dataIngresosxMes, obtenerIngresosxFechaxEmpresa } = useVentasStore()
+	const { obtenerVentasxFechaxEmpresa, dataVentasxMes, dataIngresosxMes, obtenerIngresosxFechaxEmpresa } = useVentasStore()
 	const { dataCuentasBalance:dataCuentasBalancePorCobrar, obtenerCuentasBalance:obtenerCuentasBalancePorCobrar } = useCuentasStore()
 	const { dataCuentasBalance:dataCuentasBalancePorPagar, obtenerCuentasBalance:obtenerCuentasBalancePorPagar } = useCuentasStore()
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if(id_enterprice || arrayRangeDate){
-			// obtenerVentasxFechaxEmpresa(arrayRangeDate, id_enterprice)
+			obtenerVentasxFechaxEmpresa(arrayRangeDate, id_enterprice)
 			obtenerIngresosxFechaxEmpresa(arrayRangeDate, id_enterprice)
 			obtenerCuentasBalancePorCobrar(arrayRangeDate, id_enterprice, 'PorCobrar')
 			obtenerCuentasBalancePorPagar(arrayRangeDate, id_enterprice, 'PorPagar')
@@ -140,7 +140,7 @@ export const DatatableEgresos = ({
 			totalPorMes
 		}
 	}, [dataCuentasBalancePorCobrar]);
-	console.log({ totalPorMesIngresos, totalGeneralIngresos, totalPorMes, totalGeneral });
+	console.log({ dataVentasxMes, dataIngresosxMes });
 	// 8) Funciones para abrir/cerrar el modal
 	const onCloseModalDetallexCelda2 = () => {
 		setIsOpenModalDetallexCelda2(false);
@@ -174,7 +174,6 @@ export const DatatableEgresos = ({
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
 	);
-	
 	return (
 		<>
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
@@ -216,7 +215,7 @@ export const DatatableEgresos = ({
 						<p className='text-center' style={{fontSize: '60px'}}>INGRESOS</p>
 						<TableVentas 
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-								dataIngresosxMes={dataIngresosxMes} 
+								dataIngresosxMes={[...dataIngresosxMes.filter(ing=>ing.grupo!=='INGRESOS'), ...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]} 
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 

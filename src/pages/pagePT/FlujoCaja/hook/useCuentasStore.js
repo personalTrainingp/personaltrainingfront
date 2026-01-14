@@ -156,15 +156,9 @@ updatedAt: "2026-01-07T22:02:43.765Z"
 						{
 							id: 1579,
 							grupo: 'OTROS',
-							orden: 4,
-							parametro_grupo: { label_param: 'OTROS', orden: 4 },
-						},
-						{
-							id: 1576,
-							grupo: 'PRESTAMOS',
 							nombre_gasto: 'LUIS ALBERTO ROY GAGLIUFFI',
 							orden: 4,
-							parametro_grupo: { label_param: 'PRESTAMOS', orden: 6 },
+							parametro_grupo: { label_param: 'OTROS', orden: 4 },
 						},
 					],
 					tipo
@@ -228,6 +222,7 @@ updatedAt: "2026-01-07T22:02:43.765Z"
 							grupo: 'OTROS',
 							tipo: 'PorPagar',
 							orden: 4,
+							nombre_gasto: 'LUIS ALBERTO ROY GAGLIUFFI',
 							parametro_grupo: { label_param: 'OTROS', orden: 4 },
 						},
 					].filter((e) => e.tipo === tipo),
