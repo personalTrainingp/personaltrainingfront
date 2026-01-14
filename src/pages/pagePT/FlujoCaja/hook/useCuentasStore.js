@@ -208,7 +208,7 @@ updatedAt: "2026-01-07T22:02:43.765Z"
 							nombre_gasto: 'INVERSIONES LUROGA SAC.',
 							orden: 3,
 							parametro_grupo: { label_param: 'TARJETA DE CREDITO', orden: 3 },
-						},	
+						},
 						{
 							id: 1578,
 							grupo: 'TARJETA DE CREDITO',
@@ -224,6 +224,14 @@ updatedAt: "2026-01-07T22:02:43.765Z"
 							orden: 4,
 							nombre_gasto: 'LUIS ALBERTO ROY GAGLIUFFI',
 							parametro_grupo: { label_param: 'OTROS', orden: 4 },
+						},
+						{
+							id: 1576,
+							grupo: 'PRESTAMOS',
+							tipo: 'PorPagar',
+							orden: 4,
+							nombre_gasto: 'INVERSIONES LUROGA SAC.',
+							parametro_grupo: { label_param: 'OTROS', orden: 5 },
 						},
 					].filter((e) => e.tipo === tipo),
 					tipo
