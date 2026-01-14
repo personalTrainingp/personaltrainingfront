@@ -76,7 +76,7 @@ export const useVentasStore = () => {
 						n_comprabante: e.numero_transac,
 						n_operacion: 0,
 						tc: 1,
-						descripcion: `${e.detalle_ventaMembresia[0].tb_ProgramaTraining.name_pgm} | ${e.detalle_ventaMembresia[0].tb_semana_training.semanas_st} SEMANAS`,
+						descripcion: ``,
 					};
 				});
 			console.log({
