@@ -15,14 +15,17 @@ export const useCuentasStore = () => {
 	const [dataCuentasBalance, setdataCuentasBalance] = useState([]);
 	const obtenerCuentasBalance = async (arrayDate, idEmpresa, tipo) => {
 		try {
-			const { data } = await PTApi.get(`/cuenta-balance/fecha-comprobante/${idEmpresa}/${tipo}`, {
-				params: {
-					arrayDate: [
-						formatDateToSQLServerWithDayjs(arrayDate[0], true),
-						formatDateToSQLServerWithDayjs(arrayDate[1], false),
-					],
-				},
-			});
+			const { data } = await PTApi.get(
+				`/cuenta-balance/fecha-comprobante/${idEmpresa}/${tipo}`,
+				{
+					params: {
+						arrayDate: [
+							formatDateToSQLServerWithDayjs(arrayDate[0], true),
+							formatDateToSQLServerWithDayjs(arrayDate[1], false),
+						],
+					},
+				}
+			);
 			/*
 				createdAt: "2025-12-23T21:39:13.909Z",
 				descripcion: "MES DE MARZO", 
@@ -158,9 +161,10 @@ updatedAt: "2026-01-07T22:02:43.765Z"
 						},
 						{
 							id: 1579,
-							grupo: 'OTROS',
+							grupo: 'PRESTAMOS',
+							nombre_gasto: 'LUIS ALBERTO ROY GAGLIUFFI',
 							orden: 4,
-							parametro_grupo: { label_param: 'LUIS ALBERTO ROY GAGLIUFFI', orden: 5 },
+							parametro_grupo: { label_param: 'PRESTAMOS', orden: 4 },
 						},
 					],
 					tipo
