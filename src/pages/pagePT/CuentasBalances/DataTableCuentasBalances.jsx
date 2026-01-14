@@ -2,7 +2,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import React, { useEffect } from 'react'
 import { useCuentasBalances } from './hook/useCuentasBalances'
 import { useSelector } from 'react-redux'
-import { MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
+import { DateMaskString, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
@@ -31,7 +31,7 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
             { id: 'fecha_comprobante', header: 'fecha de comprobante', accessor: 'fecha_comprobante', sortable: true, render:(row)=>{
                 return (
                     <>
-                    {          MaskDate(row?.fecha_comprobante, 'dddd DD [ DE ]  MMMM [DEL] YYYY')
+                    {          DateMaskString(row?.fecha_comprobante, 'dddd DD [ DE ]  MMMM [DEL] YYYY')
                     }
                     </>
                 )

@@ -208,7 +208,7 @@ updatedAt: "2026-01-07T22:02:43.765Z"
 							nombre_gasto: 'INVERSIONES LUROGA SAC.',
 							orden: 3,
 							parametro_grupo: { label_param: 'TARJETA DE CREDITO', orden: 3 },
-						},
+						},	
 						{
 							id: 1578,
 							grupo: 'TARJETA DE CREDITO',
