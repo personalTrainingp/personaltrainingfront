@@ -57,36 +57,94 @@ export const useVentasStore = () => {
 					};
 				});
 
-			const ventasProdMap = data.ventas
+			const ventasProdSuplMap = data.ventas
 				.filter((f) => f.detalle_ventaProductos.length > 0)
 				.map((e) => {
-					return {
-						fec_comprobante: e.fecha_venta,
-						fec_pago: e.fecha_venta,
-						flag: 1,
-						id_empresa: e.id_empresa,
-						id_forma_pago: 0,
-						id_gasto: 1148,
-						id_prov: 0,
-						id_tarjeta: 0,
-						id_banco: 0,
-						id_tipo_comprobante: e.id_tipoFactura,
-						moneda: 'PEN',
-						monto: e.detalle_ventaProductos[0]?.tarifa_monto,
-						n_comprabante: e.numero_transac,
-						n_operacion: 0,
-						tc: 1,
-						descripcion: ``,
-					};
-				});
-			console.log({
-				ventasMembresiaMap,
-				dVenta: data.ventas,
-			});
+					const suplementos = e.detalle_ventaProductos
+						.filter((e) => e.tb_producto.id_categoria === 17)
+						.map((su) => {
+							return {
+								fec_comprobante: e.fecha_venta,
+								fec_pago: e.fecha_venta,
+								flag: 1,
+								id_empresa: e.id_empresa,
+								id_forma_pago: 0,
+								id_gasto: 1148,
+								id_prov: 0,
+								id_tarjeta: 0,
+								id_banco: 0,
+								id_tipo_comprobante: e.id_tipoFactura,
+								moneda: 'PEN',
+								monto: su?.tarifa_monto,
+								n_comprabante: e.numero_transac,
+								n_operacion: 0,
+								tc: 1,
+								tb_parametros_gasto: {
+									id_empresa: e.id_empresa,
+									nombre_gasto: 'SUPLEMENTOS',
+									grupo: 'INGRESOS',
+									id_tipoGasto: 0,
+									parametro_grupo: {
+										id: 1149,
+										param_label: 'INGRESOS',
+										orden: 1,
+									},
+								},
+								descripcion: `${su.tb_producto.nombre_producto}`,
+							};
+						});
+					return suplementos;
+				})
+				.flat();
+
+			const ventasProdAccMap = data.ventas
+				.filter((f) => f.detalle_ventaProductos.length > 0)
+				.map((e) => {
+					const suplementos = e.detalle_ventaProductos
+						.filter((e) => e.tb_producto.id_categoria === 18)
+						.map((su) => {
+							return {
+								fec_comprobante: e.fecha_venta,
+								fec_pago: e.fecha_venta,
+								flag: 1,
+								id_empresa: e.id_empresa,
+								id_forma_pago: 0,
+								id_gasto: 1148,
+								id_prov: 0,
+								id_tarjeta: 0,
+								id_banco: 0,
+								id_tipo_comprobante: e.id_tipoFactura,
+								moneda: 'PEN',
+								monto: su?.tarifa_monto,
+								n_comprabante: e.numero_transac,
+								n_operacion: 0,
+								tc: 1,
+								tb_parametros_gasto: {
+									id_empresa: e.id_empresa,
+									nombre_gasto: 'ACCESORIOS',
+									grupo: 'INGRESOS',
+									id_tipoGasto: 0,
+									parametro_grupo: {
+										id: 1150,
+										param_label: 'INGRESOS',
+										orden: 1,
+									},
+								},
+								descripcion: `${su.tb_producto.nombre_producto}`,
+							};
+						});
+					return suplementos;
+				})
+				.flat();
+			console.log({ ventasProdSuplMap });
+			// console.log({
+			// 	ventasMembresiaMap,
+			// 	dVenta: data.ventas,
+			// });
 
 			setdataVentasxMes(
 				agruparPorGrupoYConcepto(
-					ventasMembresiaMap,
+					[...ventasMembresiaMap, ...ventasProdSuplMap, ...ventasProdAccMap],
 					dataParametrosGastos.termGastos,
 					'ingreso'
 				)

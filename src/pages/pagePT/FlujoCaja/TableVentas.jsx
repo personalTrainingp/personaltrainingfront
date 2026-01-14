@@ -23,14 +23,14 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 		<Table className="tabla-egresos">
 			<colgroup>
 					<col style={{ width: 350 }} />
-					{mesesSeleccionadosNums.map(mesNum => (
+					{mesesSeleccionadosNums?.map(mesNum => (
 					<col key={mesNum} style={{ width: 150 }} />
 					))}
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
 				</colgroup>
 				{
-					totalesPorGrupo.map((grp, i, arr)=>{
+					totalesPorGrupo?.map((grp, i, arr)=>{
 						const sumaTotalAnualGrupos = totalesPorGrupo.reduce(
 						(acc, g) => acc + g.totalAnual,
 						0
@@ -61,7 +61,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 								</div>
 								</th>
 
-								{mesesSeleccionadosNums.map(mesNum => (
+								{mesesSeleccionadosNums?.map(mesNum => (
 								<th
 									key={mesNum}
 									className="text-white text-center p-1 fs-2"
@@ -103,7 +103,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 											</div>
 											</div>
 										</td>
-										{mesesSeleccionadosNums.map(mesNum => {
+										{mesesSeleccionadosNums?.map(mesNum => {
 										const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
 										return (
 											<td key={mesNum} className="text-center fs-1">
