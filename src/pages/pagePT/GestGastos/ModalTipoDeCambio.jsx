@@ -5,7 +5,7 @@ import { Table } from 'react-bootstrap';
 import { CustomTc } from './CustomTc';
 import { useTcStore } from './hooks/useTcStore';
 import { useSelector } from 'react-redux';
-import { DateMask, DateMaskString, NumberFormatMoney } from '@/components/CurrencyMask';
+import { DateMask, DateMaskString, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
@@ -48,8 +48,8 @@ export const ModalTipoDeCambio = ({ show, onHide, onShow }) => {
         <Table responsive hover striped>
           <thead className="bg-primary">
             <tr>
-              <th className="text-white fs-4"><div className="d-flex justify-content-center">FECHA INICIO</div></th>
-              <th className="text-white fs-4"><div className="d-flex justify-content-center">FECHA TERMINO</div></th>
+              {/* <th className="text-white fs-4"><div className="d-flex justify-content-center">FECHA INICIO</div></th> */}
+              <th className="text-white fs-4"><div className="d-flex justify-content-center">FECHA</div></th>
               <th className="text-white fs-4"><div className="d-flex justify-content-center">COMPRA</div></th>
               <th className="text-white fs-4"><div className="d-flex justify-content-center">VENTA</div></th>
               <th className="text-white fs-4"><div className="d-flex justify-content-center">DESTINO</div></th>
@@ -61,14 +61,11 @@ export const ModalTipoDeCambio = ({ show, onHide, onShow }) => {
               const termino = sorted[idx + 1]?.fecha ?? null; // siguiente fecha ya ordenada
               return (
                 <tr key={e.id ?? `${e.fecha}-${idx}`}>
+                  {/* <td className="fs-2 text-black">
+                    {e?.fecha ? MaskDate((e.fecha), 'DD/MM/YYYY') : '-'}
+                  </td> */}
                   <td className="fs-2 text-black">
-                    {e?.fecha ? DateMaskString(dayjs.utc(e.fecha), 'DD/MM/YYYY') : '-'}
-                  </td>
-                  <td className="fs-2 text-black">
-                    {e?.fecha ? DateMaskString(dayjs.utc(e.fecha), 'DD/MM/YYYY') : '-'}
-                  </td>
-                  <td className="fs-2 text-black">
-                    {termino ? <DateMask date={dayjs.utc(termino)} format="DD/MM/YYYY" /> : 'INDEFINIDO'}
+                    {termino ? MaskDate((termino), 'DD/MM/YYYY') : 'INDEFINIDO'}
                   </td>
                   <td className="fs-2 text-black"><NumberFormatMoney amount={e?.precio_compra ?? 0} /></td>
                   <td className="fs-2 text-black"><NumberFormatMoney amount={e?.precio_venta ?? 0} /></td>
