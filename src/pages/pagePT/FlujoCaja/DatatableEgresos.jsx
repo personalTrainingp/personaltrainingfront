@@ -54,9 +54,9 @@ export const DatatableEgresos = ({
 			'JUNIO',
 			'JULIO',
 			'AGOSTO',
-			'SEPTIEMB.',
+			'SEPTIEMBRE',
 			'OCTUBRE',
-			'NOVIEMB.',
+			'NOVIEMBRE',
 			'DICIEMBRE',
 		],
 		[]

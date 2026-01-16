@@ -642,7 +642,7 @@ export const ExecutiveTable2 = (props) => {
                         : {}),
                     }}
                   >
-                    {txt}sss
+                    {txt}
                   </td>
                 );
               })}
@@ -659,7 +659,7 @@ export const ExecutiveTable2 = (props) => {
                 fontSize: 24,
               }}
             >
-              MESESs
+              MESES
             </td>
             {perMonth.map((m) => (
               <td
