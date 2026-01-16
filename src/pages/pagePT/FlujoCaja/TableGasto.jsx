@@ -24,7 +24,7 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 				<Table className="tabla-egresos"  bordered style={{border: '4px solid black'}}>
 				<colgroup>
 					<col className={`${bgTotal} text-white`} style={{ width: 350 }}/>
-					<col style={{ width: 100 }} />
+					<col style={{ width: 140 }} />
 					{mesesSeleccionadosNums.map(mesNum => (
 					<col key={mesNum} style={{ width: 150 }} />
 					))}
@@ -80,6 +80,7 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 								<div
 									className={`${bgTotal} text-center`}
 									style={{
+									width: 140,
 									hyphens: 'auto',
 									wordBreak: 'break-word',
 									overflowWrap: 'break-word',
@@ -96,7 +97,7 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 								style={{width: 190}}
 							>
 								<div 
-									className="text-white text-center fs-2 ">
+									className="text-white text-center fs-2">
 									{mesesNombres[mesNum - 1]}
 								</div>
 							</th>
