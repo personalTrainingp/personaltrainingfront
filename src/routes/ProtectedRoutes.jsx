@@ -33,7 +33,7 @@ const OrdenCompra = lazy(() => import('../pages/pagePT/GestGastos/ordenCompra'))
 const GestionEmpleados = lazy(() => import('../pages/pagePT/GestEmpleados'));
 const GestionUsuario = lazy(() => import('../pages/pagePT/GestAuthUser'));
 const PerfilCliente = lazy(() => import('../pages/pagePT/PerfilCliente'));
-const GestionClientes = lazy(()=> import('../pages/pagePT/GestClientes'))
+const GestionClientes = lazy(()=> import('../pages/pagePT/GestClientes/Index.jsx'))
 const GestionDescuentos= lazy(()=> import('../pages/pagePT/GestDescuentos'))
 const PerfilEmpleado = lazy(()=> import('../pages/pagePT/GestEmpleados/Perfil'))
 const GestionVenta = lazy(() => import('../pages/pagePT/GestVentas'));
@@ -72,9 +72,9 @@ const ReporteSeguimiento = lazy(()=>import('../pages/pagePT/reportes/reporteSegu
 // const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
 // const ReporteSesionesxMem = lazy(()=>import('../pages/pagePT/reportes/reporteSesionesxMem'))
 const ResultadoChange = lazy(()=>import('../pages/pagePT/reportes/resultadoChange'))
-const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
+// const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
 // const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
-const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
+// const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
 const ResumenComparativo = lazy(()=>import('../pages/pagePT/reportes/resumenComparativo'))
 // const ReporteDemograficoCliente = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoCliente'))
 // const ReporteDemograficoxMembresia = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoxMembresia'))
@@ -357,10 +357,6 @@ export default function ProtectedRoutes() {
                         <Route path='reporte/gestion-comercial' element={<ReporteDeGestionComercial/>}/>
                     } */}
 					{
-                        sections.find(e=>e.url==='/gest-jornada') && 
-                        <Route path='gest-jornada' element={<GestionJornada/>}/>
-                    }
-					{
                         sections.find(e=>e.url==='/totalizado-inventario') && 
                         <Route path='totalizado-inventario' element={<InventarioTotalizado/>}/>
                     }
@@ -372,10 +368,6 @@ export default function ProtectedRoutes() {
                         sections.find(e=>e.url==='/salida-inventario') && 
                         <Route path='salida-inventario' element={<SalidaInventario/>}/>
                     } */}
-					{
-                        sections.find(e=>e.url==='/reporte-admin/asistenciaReporte') && 
-                        <Route path='reporte-admin/asistenciaReporte' element={<ReporteDeAsistenciaRH/>}/>
-                    }
 					{/* {
                         sections.find(e=>e.url==='/gestion-comercial') && 
                         <Route path='gestion-comercial' element={<GestionComercial/>}/>

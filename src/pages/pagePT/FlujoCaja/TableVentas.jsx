@@ -23,6 +23,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 		<Table className="tabla-egresos">
 			<colgroup>
 					<col style={{ width: 350 }} />
+					<col style={{ width: 350 }} />
 					{mesesSeleccionadosNums?.map(mesNum => (
 					<col key={mesNum} style={{ width: 150 }} />
 					))}
@@ -43,7 +44,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 								<div
 									className={`p-1 rounded rounded-3 ${bgTotal}`}
 									style={{
-									width: 450,
+									width: 260,
 									hyphens: 'auto',
 									wordBreak: 'break-word',
 									overflowWrap: 'break-word',
@@ -60,11 +61,27 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 									)}
 								</div>
 								</th>
-
+							<th className=" fs-1">
+								<div
+									className={`p-1 rounded rounded-3 ${bgTotal} text-center`}
+									style={{
+									width: 400,
+									hyphens: 'auto',
+									wordBreak: 'break-word',
+									overflowWrap: 'break-word',
+									whiteSpace: 'normal',
+									lineHeight: '1.2',
+									}}
+									
+									lang="es" // Importante para la división correcta de palabras
+								>
+									Nº <br/> MOVIMIENTOS
+								</div>
+								</th>
 								{mesesSeleccionadosNums?.map(mesNum => (
 								<th
 									key={mesNum}
-									className="text-white text-center p-1 fs-2"
+									className="text-white text-center px-4 fs-2"
 								>
 									{mesesNombres[mesNum - 1]}
 								</th>
@@ -97,9 +114,12 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 										<td className="fw-bold fs-2 sticky-td" style={{color: `${bgTotal}`}}>
 											<div className="bg-white py-3">
 											{idx + 1}. {c.concepto}
-											<br/>
+											</div>
+										</td>
+										<td className="fw-bold fs-2 sticky-td" style={{color: `${bgTotal}`}}>
+											<div className="bg-white py-3 text-center">
 											<div >
-												({cantidadMovimiento})
+												{cantidadMovimiento}
 											</div>
 											</div>
 										</td>
@@ -109,7 +129,6 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 											<td key={mesNum} className="text-center fs-1">
 												<div
 													className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
-													style={{ width: 150 }}
 													onClick={() => onOpenModalDetallexCelda({
 													...itemMes,
 													concepto: c.concepto,

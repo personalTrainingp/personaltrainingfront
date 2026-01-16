@@ -1,10 +1,6 @@
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import config from '@/config'
-import dayjs, { utc } from 'dayjs'
 import React from 'react'
-import { Table } from 'react-bootstrap';
-
-dayjs.extend(utc);
 export const ItemMembresia = ({item}) => {
   return (
     <div className='m-4 border border-2 rounded-5 p-3 d-flex justify-content-between'>

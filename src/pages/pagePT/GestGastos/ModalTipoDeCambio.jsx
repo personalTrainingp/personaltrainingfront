@@ -65,7 +65,7 @@ export const ModalTipoDeCambio = ({ show, onHide, onShow }) => {
                     {e?.fecha ? MaskDate((e.fecha), 'DD/MM/YYYY') : '-'}
                   </td> */}
                   <td className="fs-2 text-black">
-                    {termino ? MaskDate((termino), 'DD/MM/YYYY') : 'INDEFINIDO'}
+                    {termino ? MaskDate((termino), 'dddd DD [de] MMMM [DEL] YYYY') : MaskDate((e.fecha), 'dddd DD [de] MMMM [DEL] YYYY')}
                   </td>
                   <td className="fs-2 text-black"><NumberFormatMoney amount={e?.precio_compra ?? 0} /></td>
                   <td className="fs-2 text-black"><NumberFormatMoney amount={e?.precio_venta ?? 0} /></td>

@@ -31,7 +31,6 @@ export const PerfilCliente = () => {
   const [isOpenModalCongelamiento, setisOpenModalCongelamiento] = useState(false)
   
   const [dataVentas, setdataVentas] = useState([])
-  // const [isOpenModalRegalos, setisOpenModal] = useState(false)
   const { status, userCliente } = useSelector(e=>e.authClient)
   
   useEffect(() => {

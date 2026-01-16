@@ -726,7 +726,7 @@ const METAS_2025 = {
 };
 
 export const getMetaPorMes = (mes, anio) => {
-	if (Number(anio) === 2026) return 100000;
+	if (Number(anio) === 2026) return 110000;
 	// Default (2025 u otros)
 	const norm = aliasMes(mes);
 	return METAS_2025[norm] || 100000;

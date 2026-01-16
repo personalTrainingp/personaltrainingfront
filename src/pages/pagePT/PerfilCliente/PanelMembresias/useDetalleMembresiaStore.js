@@ -1,14 +1,19 @@
-const { PTApi } = require('@/common');
+import { PTApi } from '@/common';
+import { useState } from 'react';
 
 export const useDetalleMembresiaStore = () => {
-	const obtenerDetalleMembresiaxIDVENTA = async (id_venta) => {
+	const [dataSeguimientos, setdataSeguimientos] = useState([]);
+	const obtenerSeguimientosxIdCli = async (id_cli) => {
 		try {
-			const { data } = await PTApi.get('');
+			const { data } = await PTApi.get(`/seguimiento/id_cli/${id_cli}`);
+			console.log({ data });
+			setdataSeguimientos(data.seguimientos);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	return {
-		obtenerDetalleMembresiaxIDVENTA,
+		dataSeguimientos,
+		obtenerSeguimientosxIdCli,
 	};
 };

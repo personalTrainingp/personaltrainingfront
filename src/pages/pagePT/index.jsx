@@ -16,7 +16,7 @@ const GestionEmpleados = lazy(() => import('./GestEmpleados'));
 const CrearCitasNutricionales = lazy(() => import('./GestNutricion'));
 const GestionUsuario = lazy(() => import('./GestAuthUser'));
 const PerfilCliente = lazy(() => import('./PerfilCliente'));
-const GestionClientes = lazy(()=> import('./GestClientes'))
+const GestionClientes = lazy(()=> import('./GestClientes/Index'))
 const GestionMeta = lazy(()=> import('./GestBonosyMetas'))
 const GestionDescuentos= lazy(()=> import('./GestDescuentos'))
 export default function Ventas() {
