@@ -33,7 +33,7 @@ const OrdenCompra = lazy(() => import('../pages/pagePT/GestGastos/ordenCompra'))
 const GestionEmpleados = lazy(() => import('../pages/pagePT/GestEmpleados'));
 const GestionUsuario = lazy(() => import('../pages/pagePT/GestAuthUser'));
 const PerfilCliente = lazy(() => import('../pages/pagePT/PerfilCliente'));
-const GestionClientes = lazy(()=> import('../pages/pagePT/GestClientes/Index.jsx'))
+const GestionClientes = lazy(()=> import('../pages/pagePT/GestClientes/index.jsx'))
 const GestionDescuentos= lazy(()=> import('../pages/pagePT/GestDescuentos'))
 const PerfilEmpleado = lazy(()=> import('../pages/pagePT/GestEmpleados/Perfil'))
 const GestionVenta = lazy(() => import('../pages/pagePT/GestVentas'));
