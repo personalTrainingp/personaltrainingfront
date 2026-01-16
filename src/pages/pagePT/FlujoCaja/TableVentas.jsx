@@ -14,9 +14,6 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 			totalPorMes
 		}
 	}, [dataIngresosxMes]);
-		
-  console.log({totalesPorGrupo, totalPorMes, totalGeneral});
-  
   return (
     <>
 	<div  className="table-responsive" style={{ width: '95vw' }}>
@@ -42,8 +39,6 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 									(sum, it) => sum + (it.lenthItems || 0),
 									0
 									))
-									console.log({sumaCantidadMov});
-									
 						return (
 							<React.Fragment key={grp.grupo}>
 													<thead className={bgTotal}>
@@ -153,13 +148,13 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 													<NumberFormatMoney amount={totalConcepto} />
 											</div>
 										</td>
-										<td className='fs-2'>
-											<div className='text-right  text-white'>
+										<td>
+											<div className='text-right  text-white' style={{fontSize: '40px'}}>
 													<NumberFormatMoney amount={(totalConcepto/totalGeneral)*100} />
 											</div>
 										</td>
-										<td className='fs-2'>
-											<div className='text-right  text-white'>
+										<td>
+											<div className='text-right  text-white' style={{fontSize: '40px'}}>
 													<NumberFormatMoney amount={totalConcepto/12} />
 											</div>
 										</td>
@@ -189,8 +184,8 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 										})
 									}
 									<td className="text-white text-right"  style={{fontSize: '40px'}}><NumberFormatMoney amount={mesesSumaxGrupo.reduce((a, b)=>a+b, 0)}/></td>
-									<td  className="text-white text-right fs-2" ><NumberFormatMoney amount={100}/></td>
-									<td className="text-white text-right fs-2"><NumberFormatMoney amount={mesesSumaxGrupo.reduce((a, b)=>a+b, 0)/12}/></td>
+									<td  className="text-white text-right" style={{fontSize: '40px'}}><NumberFormatMoney amount={100}/></td>
+									<td className="text-white text-right" style={{fontSize: '40px'}}><NumberFormatMoney amount={mesesSumaxGrupo.reduce((a, b)=>a+b, 0)/12}/></td>
 								</tr>
 							</tbody>
 							</React.Fragment>

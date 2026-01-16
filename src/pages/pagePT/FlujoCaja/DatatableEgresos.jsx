@@ -223,20 +223,6 @@ export const DatatableEgresos = ({
 								/>
 					</div>
 					<div>
-						{/* <p className='text-center' style={{fontSize: '60px'}}>CUENTAS POR COBRAR</p> */}
-						<TableCuentas 
-						tipoCuenta={'PorCobrar'}
-						header={'CUENTAS POR COBRAR'}
-								onOpenModalDetallexCelda={onOpenModalDetallexCelda2}
-								dataIngresosxMes={dataCuentasBalancePorCobrar} 
-								background={background} 
-								bgTotal={bgTotal} 
-								mesesNombres={mesesNombres} 
-								mesesSeleccionadosNums={mesesSeleccionadosNums}
-								idEmpresa={id_enterprice}
-								/>
-					</div>
-					<div>
 					<p className='text-center' style={{fontSize: '60px'}}>EGRESOS</p>
 						<TableGasto 
 							bgMultiValue={bgMultiValue} 
@@ -251,7 +237,20 @@ export const DatatableEgresos = ({
 							dataIngresosxMes={dataIngresosxMes}
 							/>
 					</div>
-					
+					<div>
+						{/* <p className='text-center' style={{fontSize: '60px'}}>CUENTAS POR COBRAR</p> */}
+						<TableCuentas 
+						tipoCuenta={'PorCobrar'}
+						header={'CUENTAS POR COBRAR'}
+								onOpenModalDetallexCelda={onOpenModalDetallexCelda2}
+								dataIngresosxMes={dataCuentasBalancePorCobrar} 
+								background={background} 
+								bgTotal={bgTotal} 
+								mesesNombres={mesesNombres} 
+								mesesSeleccionadosNums={mesesSeleccionadosNums}
+								idEmpresa={id_enterprice}
+								/>
+					</div>
 					<div>
 						<TableCuentas 
 						tipoCuenta={'PorPagar'}
