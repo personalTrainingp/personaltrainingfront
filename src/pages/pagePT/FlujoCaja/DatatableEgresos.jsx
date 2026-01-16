@@ -215,7 +215,7 @@ export const DatatableEgresos = ({
 						<p className='text-center' style={{fontSize: '60px'}}>INGRESOS</p>
 						<TableVentas 
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-								dataIngresosxMes={[...dataIngresosxMes.filter(ing=>ing.grupo!=='INGRESOS'), ...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]} 
+								dataIngresosxMes={[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]} 
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 

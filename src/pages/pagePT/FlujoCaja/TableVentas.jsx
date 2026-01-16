@@ -71,7 +71,6 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 								<div
 									className={`${bgTotal} text-center`}
 									style={{
-									width: 100,
 									hyphens: 'auto',
 									wordBreak: 'break-word',
 									overflowWrap: 'break-word',
@@ -85,13 +84,12 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 								{mesesSeleccionadosNums?.map(mesNum => (
 								<th
 									key={mesNum}
+										style={{width: 190}}
 									>
 									<div 
-									className="text-white text-center bg-danger fs-2 "
-									style={{width: '150px'}}
+									className="text-white text-center fs-2 "
 									>
 									{mesesNombres[mesNum - 1]}
-
 									</div>
 								</th>
 								))}
@@ -99,12 +97,12 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 								TOTAL
 								</th>
 								<th className="text-white p-1 fs-1">
-									<div className='text-center mr-4'>
+									<div className='text-center'>
 										%
 									</div>
 								</th>
 								<th className="text-white p-1 fs-1">
-									<div className='text-right'>
+									<div className='text-center'>
 										PROMEDIO <br/> ANUAL
 									</div>
 								</th>
@@ -138,7 +136,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 											<td key={mesNum} className="fs-1">
 												<div
 													className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
-													// style={{width: '150px'}}
+													style={{width: '180px'}}
 													onClick={() => onOpenModalDetallexCelda({
 													...itemMes,
 													concepto: c.concepto,
@@ -182,7 +180,11 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 									{
 										mesesSumaxGrupo?.map(m=>{
 											return (
-												<td className="text-white fs-2 text-right"><NumberFormatMoney amount={m}/></td>
+												<td >
+													<div className="text-white fs-2 bg-porsiaca text-right" style={{width: '180px'}}>
+													<NumberFormatMoney amount={m}/>
+													</div>
+												</td>
 											)
 										})
 									}
