@@ -22,7 +22,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 	<div  className="table-responsive" style={{ width: '95vw' }}>
 		<Table className="tabla-egresos" bordered style={{border: '4px solid black'}}>
 			<colgroup>
-					<col style={{ width: 350 }} />
+					<col className={`${bgTotal} text-white`} style={{ width: 350 }} />
 					<col style={{ width: 100 }} />
 					{mesesSeleccionadosNums?.map(mesNum => (
 					<col key={mesNum} style={{ width: 150 }} />
@@ -85,16 +85,21 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 								{mesesSeleccionadosNums?.map(mesNum => (
 								<th
 									key={mesNum}
-									className="text-white text-center px-4 fs-2"
-								>
+									>
+									<div 
+									className="text-white text-center bg-danger fs-2 "
+									style={{width: '150px'}}
+									>
 									{mesesNombres[mesNum - 1]}
+
+									</div>
 								</th>
 								))}
 								<th className={`${bgTotal} text-center p-1 fs-1`}>
 								TOTAL
 								</th>
 								<th className="text-white p-1 fs-1">
-									<div className='text-right mr-4'>
+									<div className='text-center mr-4'>
 										%
 									</div>
 								</th>
@@ -107,22 +112,22 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 							</thead>
 							<tbody>
 								{grp.conceptos?.map((c, idx) => {
-									const totalConcepto = c.items.reduce(
+									const totalConcepto = c.items?.reduce(
 									(sum, it) => sum + (it.monto_total || 0),
 									0
 									);
-									const cantidadMovimiento = c.items.reduce(
+									const cantidadMovimiento = c.items?.reduce(
 									(sum, it) => sum + (it.lenthItems || 0),
 									0
 									);
 									return (
 									<tr key={c.concepto}>
-										<td className="fw-bold fs-2 sticky-td" style={{color: `${bgTotal}`}}>
-											<div className="bg-white py-3">
+										<td className={`fw-bold fs-2 sticky-td`} >
+											<div className={`py-3 text-white`}>
 											{idx + 1}. {c.concepto}
 											</div>
 										</td>
-										<td className="fw-bold fs-2" style={{color: `${bgTotal}`}}>
+										<td className="fw-bold fs-2" >
 											<div className="bg-white text-right" style={{marginRight: '40px'}}>
 												{cantidadMovimiento}
 											</div>
@@ -130,9 +135,10 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 										{mesesSeleccionadosNums?.map(mesNum => {
 										const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
 										return (
-											<td key={mesNum} className="text-center fs-1">
+											<td key={mesNum} className="fs-1">
 												<div
 													className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
+													// style={{width: '150px'}}
 													onClick={() => onOpenModalDetallexCelda({
 													...itemMes,
 													concepto: c.concepto,
@@ -162,11 +168,15 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 									</tr>
 									);
 								})}
-								<tr className='bg-change'>
-									<td></td>
+								<tr className={`${bgTotal}`}>
+									<td className="text-white fs-2">
+										<div>
+											TOTAL
+										</div>
+									</td>
 									<td className="text-white text-right fs-2" > 
 										<div style={{marginRight: '40px'}}>
-											{sumaCantidadMov.reduce((a, b)=>a+b, 0)}
+											{sumaCantidadMov?.reduce((a, b)=>a+b, 0)}
 										</div>
 									</td>
 									{
