@@ -565,7 +565,6 @@ export const ExecutiveTable2 = (props) => {
         <TableHead />
         <tbody>
           {[
-
             { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
             { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
             { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
@@ -643,7 +642,7 @@ export const ExecutiveTable2 = (props) => {
                         : {}),
                     }}
                   >
-                    {txt}
+                    {txt}sss
                   </td>
                 );
               })}
@@ -660,7 +659,7 @@ export const ExecutiveTable2 = (props) => {
                 fontSize: 24,
               }}
             >
-              MESES
+              MESESs
             </td>
             {perMonth.map((m) => (
               <td

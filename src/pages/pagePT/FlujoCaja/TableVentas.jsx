@@ -29,6 +29,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 					))}
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
+					<col className={`${bgTotal}`} style={{ width: 150 }} />
 				</colgroup>
 				{
 					totalesPorGrupo?.map((grp, i, arr)=>{
@@ -90,8 +91,15 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 								<th className={`${bgTotal} text-center p-1 fs-1`}>
 								TOTAL
 								</th>
-								<th className="text-white text-center p-1 fs-1">
-								%
+								<th className="text-white p-1 fs-1">
+									<div className='text-right mr-4'>
+										%
+									</div>
+								</th>
+								<th className="text-white p-1 fs-1">
+									<div className='text-right'>
+										PROMEDIO <br/> ANUAL
+									</div>
 								</th>
 							</tr>
 							</thead>
@@ -147,7 +155,12 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 										</td>
 										<td className='fs-2'>
 											<div className='text-right  text-white'>
-													<NumberFormatMoney amount={0} />
+													<NumberFormatMoney amount={(totalConcepto/totalGeneral)*100} />
+											</div>
+										</td>
+										<td className='fs-2'>
+											<div className='text-right  text-white'>
+													<NumberFormatMoney amount={totalConcepto/12} />
 											</div>
 										</td>
 									</tr>
