@@ -247,7 +247,7 @@ totalGeneralIngresos});
 						{id_enterprice}
 						<TableVentas 
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-								dataIngresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes} 
+								dataIngresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:[...dataIngresosxMes.filter(ing=>ing.grupo!=='INGRESOS EXTRAORDINARIOS')]} 
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 
