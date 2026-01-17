@@ -97,7 +97,7 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 								style={{width: 190}}
 							>
 								<div 
-									className="text-white text-center fs-2">
+									className="text-white text-center fs-1 m-0 p-0">
 									{mesesNombres[mesNum - 1]}
 								</div>
 							</th>

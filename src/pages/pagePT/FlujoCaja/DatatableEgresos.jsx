@@ -92,6 +92,9 @@ export const DatatableEgresos = ({
 	useEffect(() => {
 		obtenerGastosxANIO(anio, id_enterprice);
 	}, [anio, id_enterprice]);
+	const totalesPorGrupoVentas = useMemo(()=>{
+		return TotalesPorGrupo([...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]).dataTotal
+	}, [dataVentasxMes])
 
 	const totalesPorGrupoPorPagar = useMemo(()=>{
 		return TotalesPorGrupo(dataCuentasBalancePorCobrar).dataTotal
@@ -109,6 +112,23 @@ export const DatatableEgresos = ({
 	(g) => g.grupo.toUpperCase() !== 'PRESTAMOS'
 	);
 	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
+	const { totalPorMes: totalPorMesVenta, totalGeneral: totalGeneralVenta } = useMemo(() => {
+		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes([...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')])
+		return {
+			totalGeneral,
+			totalPorMes
+		}
+	}, [dataVentasxMes]);
+	
+	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
+	const { totalPorMes: totalPorMesIngExc, totalGeneral: totalGeneralIngExc } = useMemo(() => {
+		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes([...dataIngresosxMes.filter(ing=>ing.grupo==='INGRESOS EXTRAORDINARIOS')])
+		return {
+			totalGeneral,
+			totalPorMes
+		}
+	}, [dataVentasxMes]);
+	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
 	const { totalPorMes, totalGeneral } = useMemo(() => {
 		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataGastosxANIO)
 		return {
@@ -116,6 +136,14 @@ export const DatatableEgresos = ({
 			totalPorMes
 		}
 	}, [dataGastosxANIO]);
+	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
+	const { totalPorMes:totalPorMesIngresos1, totalGeneral:totalGeneralIngresos1 } = useMemo(() => {
+		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataIngresosxMes)
+		return {
+			totalGeneral,
+			totalPorMes
+		}
+	}, [dataIngresosxMes]);
 	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
 	const { totalPorMes:totalPorMesIngresos, totalGeneral:totalGeneralIngresos } = useMemo(() => {
 		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataIngresosxMes)
@@ -140,7 +168,7 @@ export const DatatableEgresos = ({
 			totalPorMes
 		}
 	}, [dataCuentasBalancePorCobrar]);
-	console.log({ dataVentasxMes, dataIngresosxMes });
+	console.log({ totalPorMesVenta, totalGeneralVenta });
 	// 8) Funciones para abrir/cerrar el modal
 	const onCloseModalDetallexCelda2 = () => {
 		setIsOpenModalDetallexCelda2(false);
@@ -174,6 +202,9 @@ export const DatatableEgresos = ({
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
 	);
+	console.log({totalPorMesIngresos,
+totalGeneralIngresos});
+	
 	return (
 		<>
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
@@ -213,9 +244,10 @@ export const DatatableEgresos = ({
 				<div className="table-responsive" style={{ width: '95vw' }}>
 					<div>
 						<p className='text-center' style={{fontSize: '60px'}}>INGRESOS</p>
+						{id_enterprice}
 						<TableVentas 
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-								dataIngresosxMes={[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]} 
+								dataIngresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes} 
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 
@@ -236,6 +268,20 @@ export const DatatableEgresos = ({
 							selectedMonths ={selectedMonths }
 							dataIngresosxMes={dataIngresosxMes}
 							/>
+					</div>
+					
+					<div>
+						<TableResumen
+							bgMultiValue={bgMultiValue}
+							bgTotal={bgTotal}
+							mesesNombres={mesesNombres}
+							mesesSeleccionadosNums={mesesSeleccionadosNums}
+							dataIngresos={totalesPorGrupoIngreso}
+							dataGastos={gruposSinPrestamos}
+							totalPorMesEgresos={totalPorMesEgresos}
+							totalPorMesIngresos={totalPorMesVenta}
+							totalPorMesIngExc={totalPorMesIngExc}
+						/>
 					</div>
 					<div>
 						{/* <p className='text-center' style={{fontSize: '60px'}}>CUENTAS POR COBRAR</p> */}
@@ -264,20 +310,7 @@ export const DatatableEgresos = ({
 								idEmpresa={id_enterprice}
 								/>
 					</div>
-					<div>
-						<TableResumen
-							bgMultiValue={bgMultiValue}
-							bgTotal={bgTotal}
-							mesesNombres={mesesNombres}
-							mesesSeleccionadosNums={mesesSeleccionadosNums}
-							dataIngresos={totalesPorGrupoIngreso}
-							dataGastos={gruposSinPrestamos}
-							totalPorMesEgresos={totalPorMesEgresos}
-							totalPorMesIngresos={totalPorMesIngresos}
-						/>
-					</div>
 				</div>
-
 			<ModalDetallexCelda
 				data={dataModal}
 				onHide={onCloseModalDetallexCelda}

@@ -66,6 +66,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 								<div
 									className={`${bgTotal} text-center`}
 									style={{
+										width: 100,
 									hyphens: 'auto',
 									wordBreak: 'break-word',
 									overflowWrap: 'break-word',
@@ -82,7 +83,7 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 										style={{width: 190}}
 									>
 									<div 
-									className="text-white text-center fs-2 "
+									className="text-white text-center fs-1 m-0 p-0"
 									>
 									{mesesNombres[mesNum - 1]}
 									</div>
