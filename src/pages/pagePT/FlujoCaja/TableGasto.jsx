@@ -21,7 +21,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 
   return (
     <div className="table-responsive" style={{ width: '95vw' }}>
-				<Table className="tabla-egresos"  bordered style={{border: '4px solid black'}}>
+				<Table className="tabla-egresos"  bordered >
 				<colgroup>
 					<col className={`${bgTotal} text-white`} style={{ width: 350 }}/>
 					<col style={{ width: 140 }} />
@@ -125,10 +125,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 							(sum, it) => sum + (it.lenthItems || 0),
 							0
 							);
-							const pctConcepto = grp.totalAnual > 0
-							? ((totalConcepto / grp.totalAnual) * 100).toFixed(2)
-							: '0.00';
-							
+									const mesesSinCero = c.items.filter(i=>i.items.length!==0)
 							return (
 							<tr key={c.concepto} className={dataColor(c.concepto)}>
 								<td   className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white`}>
@@ -169,7 +166,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 								</td>
 								<td>
 									<div className='text-right  text-white' style={{fontSize: '40px'}}>
-											<NumberFormatMoney amount={totalConcepto/12} />
+											<NumberFormatMoney amount={totalConcepto/mesesSinCero.length} />
 									</div>
 								</td>
 							</tr>
@@ -197,9 +194,12 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 										)
 									})
 								}
-								<td className="text-white text-right"  style={{fontSize: '40px'}}><NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)}/></td>
+								<td className="text-white text-right"  style={{fontSize: '40px'}}>
+									<NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)}/></td>
 								<td  className="text-white text-right" style={{fontSize: '40px'}}><NumberFormatMoney amount={100}/></td>
-								<td className="text-white text-right" style={{fontSize: '40px'}}><NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/12}/></td>
+								<td className="text-white text-right" style={{fontSize: '40px'}}>
+									<NumberFormatMoney amount={mesesSumaxGrupo?.filter(m=>m!=0)?.reduce((a, b)=>a+b, 0)/12}/>
+									</td>
 							</tr>
 							<tr className='bg-white'>
 								<div></div>

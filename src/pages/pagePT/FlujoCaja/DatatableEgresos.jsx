@@ -246,6 +246,7 @@ totalGeneralIngresos});
 						<p className='text-center' style={{fontSize: '60px'}}>INGRESOS</p>
 						{id_enterprice}
 						<TableVentas 
+								id_empresa={id_enterprice}
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
 								dataIngresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes} 
 								background={background} 
@@ -273,6 +274,7 @@ totalGeneralIngresos});
 					
 					<div>
 						<TableResumen
+							id_empresa={id_enterprice}
 							bgMultiValue={bgMultiValue}
 							bgTotal={bgTotal}
 							mesesNombres={mesesNombres}

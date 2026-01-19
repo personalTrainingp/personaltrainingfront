@@ -2,17 +2,17 @@ import { NumberFormatMoney } from '@/components/CurrencyMask';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const TableResumen = ({dataGastos, dataIngresos, mesesSeleccionadosNums, bgMultiValue, bgTotal, mesesNombres, totalPorMesIngresos, totalPorMesEgresos, totalPorMesIngExc}) => {
+export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSeleccionadosNums, bgMultiValue, bgTotal, mesesNombres, totalPorMesIngresos, totalPorMesEgresos, totalPorMesIngExc}) => {
     const totalIngresos = totalPorMesIngresos.reduce((a,b)=>a+b)
     const totalEgresos = totalPorMesEgresos.reduce((a,b)=>a+b)
     const totalIngExc = totalPorMesIngExc.reduce((a,b)=>a+b)
     console.log({dataGastos, dataIngresos, totalPorMesIngresos, totalPorMesEgresos, totalPorMesIngExc}, 'tresu');
   return (
     <div className="table-responsive" style={{ width: '95vw' }}>
-        <Table>
+        <Table className="tabla-egresos" bordered>
         <thead className={bgTotal}>
           <tr>
-            <th className="text-white fs-2">MES</th>
+            <th className={`fw-bold fs-2  sticky-td-${id_empresa}`}>MES</th>
             {mesesSeleccionadosNums.map(mesNum => (
               <th key={mesNum} className="text-white text-center p-1 fs-2">
                 {mesesNombres[mesNum - 1]}
@@ -24,10 +24,8 @@ export const TableResumen = ({dataGastos, dataIngresos, mesesSeleccionadosNums, 
         </thead>
           <tbody>
                 <tr>
-                    <td className="fw-bold fs-2 sticky-td">
-                        <div className="bg-white py-3 text-black">
+                    <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
                             INGRESOS
-                        </div>
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
                         return(
@@ -50,10 +48,8 @@ export const TableResumen = ({dataGastos, dataIngresos, mesesSeleccionadosNums, 
                     </td>
                 </tr>
                 <tr>
-                    <td className={`fw-bold fs-2`}>
-                        <div className='text-change' style={{ width: 150 }}>
-                            EGRESOS
-                        </div>
+                    <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
+                        EGRESOS
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
                         return(
@@ -76,10 +72,8 @@ export const TableResumen = ({dataGastos, dataIngresos, mesesSeleccionadosNums, 
                     </td>
                 </tr>
                 <tr>
-                    <td className="fw-bold fs-2 sticky-td">
-                        <div className="bg-white py-3">
+                    <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
                             UTILIDAD BRUTA
-                        </div>
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
                         return(
@@ -107,10 +101,8 @@ export const TableResumen = ({dataGastos, dataIngresos, mesesSeleccionadosNums, 
                     </td>
                 </tr>
                 <tr>
-                    <td className="fw-bold fs-2 sticky-td">
-                        <div className="bg-white py-3 text-black">
+                    <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
                             ING. EXCEPCIONALES
-                        </div>
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
                         return(
@@ -133,10 +125,8 @@ export const TableResumen = ({dataGastos, dataIngresos, mesesSeleccionadosNums, 
                     </td>
                 </tr>
                 <tr>
-                    <td className="fw-bold fs-2 sticky-td">
-                        <div className="bg-white py-3 text-black">
+                    <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
                             UTILIDAD NETA
-                        </div>
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
                         return(

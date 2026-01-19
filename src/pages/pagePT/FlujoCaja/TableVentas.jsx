@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { Table } from 'react-bootstrap'
 import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo'
 
-export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSeleccionadosNums, mesesNombres, onOpenModalDetallexCelda}) => {
+export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTotal, mesesSeleccionadosNums, mesesNombres, onOpenModalDetallexCelda}) => {
 	const totalesPorGrupo = useMemo(()=>{
 		return TotalesPorGrupo(dataIngresosxMes).dataTotal
 	}, [dataIngresosxMes])
@@ -17,10 +17,10 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
   return (
     <>
 	<div  className="table-responsive" style={{ width: '95vw' }}>
-		<Table className="tabla-egresos" bordered style={{border: '4px solid black'}}>
+		<Table className="tabla-egresos" bordered>
 			<colgroup>
 					<col className={`${bgTotal} text-white`} style={{ width: 350 }} />
-					<col style={{ width: 100 }} />
+					<col style={{ width: 140 }} />
 					{mesesSeleccionadosNums?.map(mesNum => (
 					<col key={mesNum} style={{ width: 150 }} />
 					))}
@@ -43,23 +43,21 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 							<React.Fragment key={grp.grupo}>
 													<thead className={bgTotal}>
 						<tr>
-							<th className=" fs-1">
+							<th className={`sticky-td-${id_empresa} text-white fs-1`}>
 								<div>
 									{i + 1}. {grp.grupo}
 								</div>
 								</th>
 							<th className=" fs-1">
-								<div
-									className={`${bgTotal} text-center`}
-									style={{
-										width: 100,
+								<div className={`${bgTotal} text-center`}
+								style={{
+									width: 140,
 									hyphens: 'auto',
 									wordBreak: 'break-word',
 									overflowWrap: 'break-word',
 									whiteSpace: 'normal',
 									lineHeight: '1.2',
-									}}
-								>
+									}}>
 									Nº <br/> MOV.
 								</div>
 								</th>
@@ -100,13 +98,12 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 									(sum, it) => sum + (it.lenthItems || 0),
 									0
 									);
-									return (
+									const mesesSinCero = c.items.filter(i=>i.items.length!==0)
+									return (	
 									<tr key={c.concepto}>
-										<td className={`fw-bold fs-2 sticky-td`} >
-											<div className={`py-3 text-white`}>
+										<td   className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white`}>
 											{idx + 1}. {c.concepto}
-											</div>
-										</td>
+							    		</td>
 										<td className="fw-bold fs-2" >
 											<div className="bg-white text-right" style={{marginRight: '40px'}}>
 												{cantidadMovimiento}
@@ -142,17 +139,15 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 										</td>
 										<td>
 											<div className='text-right  text-white' style={{fontSize: '40px'}}>
-													<NumberFormatMoney amount={totalConcepto/12} />
+													<NumberFormatMoney amount={totalConcepto/mesesSinCero.length} />
 											</div>
 										</td>
 									</tr>
 									);
 								})}
 								<tr className={`${bgTotal}`}>
-									<td className="text-white fs-2">
-										<div>
-											TOTAL
-										</div>
+									<td className={`text-white fs-2 sticky-td-${id_empresa}`} >
+										TOTAL MES
 									</td>
 									<td className="text-white text-right fs-2" > 
 										<div style={{marginRight: '40px'}}>
@@ -172,8 +167,15 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 									}
 									<td className="text-white text-right"  style={{fontSize: '40px'}}><NumberFormatMoney amount={mesesSumaxGrupo.reduce((a, b)=>a+b, 0)}/></td>
 									<td  className="text-white text-right" style={{fontSize: '40px'}}><NumberFormatMoney amount={100}/></td>
-									<td className="text-white text-right" style={{fontSize: '40px'}}><NumberFormatMoney amount={mesesSumaxGrupo.reduce((a, b)=>a+b, 0)/12}/></td>
+									<td className="text-white text-right" style={{fontSize: '40px'}}><NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/mesesSumaxGrupo.filter(m=>m!=0).length}/>
+									</td>
 								</tr>
+								
+							<tr className='bg-white'>
+								<div></div>
+								<div></div>
+								<div></div>
+							</tr>
 							</tbody>
 							</React.Fragment>
 						)
