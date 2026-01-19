@@ -46,18 +46,18 @@ export const DatatableEgresos = ({
 	// 1) Nombres de los meses (índices 0–11)
 	const mesesNombres = useMemo(
 		() => [
-			'ENERO',
-			'FEBRERO',
-			'MARZO',
-			'ABRIL',
-			'MAYO',
-			'JUNIO',
-			'JULIO',
-			'AGOSTO',
-			'SEPTIEMBRE',
-			'OCTUBRE',
-			'NOVIEMBRE',
-			'DICIEMBRE',
+			'ENE.',
+			'FEB.',
+			'MAR.',
+			'ABR.',
+			'MAY.',
+			'JUN.',
+			'JUL.',
+			'AGO.',
+			'SEPT.',
+			'OCT.',
+			'NOV.',
+			'DIC.',
 		],
 		[]
 	);
