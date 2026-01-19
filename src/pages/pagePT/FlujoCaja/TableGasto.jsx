@@ -139,8 +139,17 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 							
 							return (
 							<tr key={c.concepto} className={dataColor(c.concepto)}>
-								<td className="fw-bold fs-2 sticky-td">
-                                    <div className=" py-3"  style={{color: `#fff`}}>
+								<td className="fw-bold fs-2 sticky-td p-0" >
+                                    <div className={`p-1 rounded rounded-3 ${bgTotal}`}
+									style={{
+									width: 360,
+									height: '100%',
+									hyphens: 'auto',
+									wordBreak: 'break-word',
+									overflowWrap: 'break-word',
+									whiteSpace: 'normal',
+									lineHeight: '1.2',
+									}}>
                                     {idx + 1}. {c.concepto}
                                     </div>
 							    </td>
@@ -218,74 +227,6 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 								<div></div>
 								<div></div>
 							</tr>
-						{/* <tr className={`${bgTotal}`} style={{fontSize: '31px'}}>
-							<td className={`fw-bolder fs-1 ${bgTotal}`}>
-							<div className={`${bgTotal}`} style={{fontSize: '31px'}}>
-								TOTAL
-								<br/>
-								% REPRESENTACION
-							</div>
-							</td>
-							{mesesSeleccionadosNums.map(mesNum => {
-								const montoMes = grp.mesesSuma[mesNum - 1];
-								const baseMes = totalPorMes[mesNum - 1] || 0;
-								const pctMesGrupo =
-															baseMes > 0
-																? ((montoMes / baseMes) * 100).toFixed(2)
-																: '0.00';
-								return(
-									<td
-										key={mesNum}
-										className="text-center fw-bolder"
-										
-									>
-										<div style={{ width: 150 }} className='bg-porsiaca text-white text-right'>
-											<NumberFormatMoney amount={montoMes} />
-											<br/>
-											{pctMesGrupo}%
-										</div>
-									</td>
-								)
-							}
-							)}
-							<td className="text-center fw-bolder">
-							<div className='bg-porsiaca text-right text-white' style={{fontSize: '40px'}}>
-								<NumberFormatMoney amount={grp.totalAnual} />
-							</div>
-							</td>
-							<td className="text-center fw-bolder" style={{fontSize: '40px'}}>
-							<div className='bg-porsiaca text-right text-white ml-3'>
-								100.00
-							</div>
-							</td>
-						</tr>
-						<tr>
-						</tr>
-						<tr className={`${bgTotal}`}>
-							<td className="fw-bolder fs-1 text-white"  colSpan={selectedMonths.length}>
-								<div>
-									<span style={{fontSize: '31px'}}>
-										PROMEDIO DE REPRESENTACIÓN ACUMULADA VS. TODOS LOS RUBROS
-									</span>
-								<span className='text-right ml-5' style={{ fontSize: '45px' }}>
-									{sumaTotalAnualGrupos > 0
-								? ((grp.totalAnual / sumaTotalAnualGrupos) * 100).toFixed(2)
-								: '0.00'}%
-								</span>
-								</div>
-							</td>
-							<td className="fw-bolder text-white">
-								
-							</td>
-							<td className="fw-bolder fs-1">
-							</td>
-							<td>
-							</td>
-						</tr>
-						<tr>
-							<div></div>
-							<div></div>
-						</tr> */}
 						</tbody>
 					</React.Fragment>
 					);
