@@ -247,7 +247,7 @@ totalGeneralIngresos});
 						{id_enterprice}
 						<TableVentas 
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-								dataIngresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:[...dataIngresosxMes.filter(ing=>ing.grupo!=='INGRESOS EXTRAORDINARIOS')]} 
+								dataIngresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes} 
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 
@@ -279,7 +279,7 @@ totalGeneralIngresos});
 							dataIngresos={totalesPorGrupoIngreso}
 							dataGastos={gruposSinPrestamos}
 							totalPorMesEgresos={totalPorMesEgresos}
-							totalPorMesIngresos={totalPorMesVenta}
+							totalPorMesIngresos={id_enterprice!==800?totalPorMesVenta:totalPorMesIngresos}
 							totalPorMesIngExc={totalPorMesIngExc}
 						/>
 					</div>
