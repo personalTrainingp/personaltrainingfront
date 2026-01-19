@@ -17,7 +17,7 @@ function dataColor(concepto) {
 	}
 }
 
-export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposSinPrestamos, mesesNombres, bgMultiValue, onOpenModalDetallexCelda, totalPorMes, prestamosGroup, totalGeneral, selectedMonths, dataVentasxMes=[]  }) => {
+export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposSinPrestamos, mesesNombres, bgMultiValue, onOpenModalDetallexCelda, totalPorMes, prestamosGroup, totalGeneral }) => {
 
   return (
     <div className="table-responsive" style={{ width: '95vw' }}>
@@ -25,8 +25,11 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 				<colgroup>
 					<col className={`${bgTotal} text-white`} style={{ width: 350 }}/>
 					<col style={{ width: 140 }} />
-					{mesesSeleccionadosNums.map(mesNum => (
-					<col key={mesNum} style={{ width: 150 }} />
+					{mesesSeleccionadosNums.map((mesNum, i) => (
+						<React.Fragment key={i}>
+							<col key={mesNum} style={{ width: 150 }} />
+							<col key={mesNum} style={{ width: 150 }} />
+						</React.Fragment>
 					))}
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
@@ -34,17 +37,17 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 				</colgroup>
 				
 				{gruposSinPrestamos.map((grp, i, arr) => {
-					const sumaTotalAnualGrupos = gruposSinPrestamos.reduce(
-					(acc, g) => acc + g.totalAnual,
-					0
-					);
-
 						const mesesSumaxGrupo = grp.mesesSuma
-					
 									const sumaCantidadMov = grp.conceptos?.map((c, idx) =>c.items.reduce(
 									(sum, it) => sum + (it.lenthItems || 0),
 									0
 									))
+									
+									const arrayCantidadMov = grp.conceptos?.map((c, idx) =>c.items.reduce(
+									(sum, it) => sum + (it.items.length || 0),
+									0
+									))
+					console.log({arrayCantidadMov});
 					
 					return (
 					<React.Fragment key={grp.grupo}>
@@ -83,16 +86,29 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 									MOV.
 								</div>
 								</th>
-							{mesesSeleccionadosNums.map(mesNum => (
-							<th
-								key={mesNum}
-								style={{width: 190}}
-							>
-								<div 
-									className="text-white text-center fs-1 m-0 p-0">
-									{mesesNombres[mesNum - 1]}
-								</div>
-							</th>
+							{mesesSeleccionadosNums.map((mesNum, i) => (
+								<React.Fragment key={mesNum}>
+									<th
+										key={mesNum}
+										style={{width: 190}}
+										colSpan={1}
+									>
+										<div 
+											className="text-white text-center fs-1 m-0 p-0">
+											{mesesNombres[mesNum - 1]}
+										</div>
+									</th>
+									<th
+										key={mesNum}
+										style={{width: 190}}
+										colSpan={1}
+									>
+										<div 
+											className="text-white text-center fs-1 m-0 p-0">
+												MOV
+										</div>
+									</th>
+								</React.Fragment>
 							))}
 
 							<th className={`${bgTotal} text-center p-1 fs-1`}>
@@ -126,9 +142,10 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 							0
 							);
 									const mesesSinCero = c.items.filter(i=>i.items.length!==0)
+									
 							return (
 							<tr key={c.concepto} className={dataColor(c.concepto)}>
-								<td   className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white`}>
+								<td  className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white`}>
 											{idx + 1}. {c.concepto}
 							    </td>
 								<td className="fw-bold fs-2" >
@@ -139,6 +156,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 								{mesesSeleccionadosNums.map(mesNum => {
 								const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
 								return (
+									<>
 									<td key={mesNum} className="fs-1">
 										<div
 											className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
@@ -151,8 +169,21 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 										>
 											<NumberFormatMoney amount={itemMes.monto_total} />
 										</div>
-										<div className='text-center fs-2 text-gray-400'>MOV.: {itemMes.items.length} </div>
 									</td>
+									<td key={mesNum} className="fs-1">
+										<div
+											className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
+											style={{width: '180px'}}
+											onClick={() => onOpenModalDetallexCelda({
+											...itemMes,
+											concepto: c.concepto,
+											grupo: grp.grupo,
+											})}
+										>
+											{itemMes.items.length}
+										</div>
+									</td>
+									</>
 								);
 								})}
 								<td>
@@ -187,11 +218,18 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 								{
 									mesesSumaxGrupo?.map(m=>{
 										return (
+											<React.Fragment key={m}>
 											<td >
 												<div className="text-white fs-2 bg-porsiaca text-right" style={{width: '180px'}}>
 												<NumberFormatMoney amount={m}/>
 												</div>
 											</td>
+											<td >
+												<div className="text-white fs-2 bg-porsiaca text-right" style={{width: '180px'}}>
+												{/* <NumberFormatMoney amount={m}/> */}
+												</div>
+											</td>
+											</React.Fragment>
 										)
 									})
 								}
