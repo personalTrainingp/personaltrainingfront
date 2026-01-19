@@ -72,7 +72,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 								<div
 									className={`${bgTotal} text-center`}
 									style={{
-									width: 140,
+									width: 110,
 									hyphens: 'auto',
 									wordBreak: 'break-word',
 									overflowWrap: 'break-word',
@@ -80,7 +80,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 									lineHeight: '1.2',
 									}}
 								>
-									Nº <br/> MOV.
+									MOV.
 								</div>
 								</th>
 							{mesesSeleccionadosNums.map(mesNum => (
@@ -151,6 +151,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 										>
 											<NumberFormatMoney amount={itemMes.monto_total} />
 										</div>
+										<div className='text-center fs-2 text-gray-400'>MOV.: {itemMes.items.length} </div>
 									</td>
 								);
 								})}
