@@ -6,40 +6,20 @@
   font-weight: bold !important;
   // font-size: 20% !important;
 }
-/* El contenedor ya tiene overflow-x por .table-responsive, así que sticky usará ese scroll */
 
-.tabla-egresos th:first-child,
-.tabla-egresos td:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 5;           /* por encima de las otras celdas */
-  background: #ffffff;  /* o el color de fondo que uses */
+.table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
 }
 
-/* Si el thead tiene otro color de fondo, puedes reforzarlo */
-.tabla-egresos thead th:first-child {
-  z-index: 6;           /* un poquito más que los td */
+.table {
+  border-collapse: collapse;
+  width: max-content;
 }
-.sticky-concepto {
-  position: sticky;
-  left: 0;
-  z-index: 5;
-  background: #ffffff;
-}
-/* El td no controla el sticky, solo sirve de contenedor */
-// td {
-//   padding: 0 !important;                 /* dejamos que el div interno maneje el padding */
-// }
 
-/* Este div es el que se pega y pinta el fondo completo */
-.sticky-td-inner {
-  // position: sticky;
-  // left: 0;
-  // z-index: 10;                /* encima de las demás celdas */
-  // background-color: #ffffff;  /* o el color del fondo de la tabla */
-  // white-space: nowrap;        /* o normal si quieres salto de línea */
-  // /* opcional si usas border-collapse */
-  // background-clip: padding-box;
+/* colgroup solo define ancho */
+.col-sticky {
+  width: 220px;
 }
 
 .bg-yellow{

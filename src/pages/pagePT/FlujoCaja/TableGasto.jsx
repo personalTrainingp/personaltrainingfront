@@ -17,7 +17,7 @@ function dataColor(concepto) {
 	}
 }
 
-export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos, mesesNombres, bgMultiValue, onOpenModalDetallexCelda, totalPorMes, prestamosGroup, totalGeneral, selectedMonths, dataVentasxMes=[]  }) => {
+export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposSinPrestamos, mesesNombres, bgMultiValue, onOpenModalDetallexCelda, totalPorMes, prestamosGroup, totalGeneral, selectedMonths, dataVentasxMes=[]  }) => {
 
   return (
     <div className="table-responsive" style={{ width: '95vw' }}>
@@ -51,17 +51,9 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 						{/* Encabezado del grupo */}
 						<thead className={bgTotal}>
 						<tr>
-							<th className=" fs-1">
+							<th className={`sticky-td-${id_empresa} text-white fs-1`}>
 								<div
-									className={`p-1 rounded rounded-3 ${bgTotal}`}
-									style={{
-									width: 360,
-									hyphens: 'auto',
-									wordBreak: 'break-word',
-									overflowWrap: 'break-word',
-									whiteSpace: 'normal',
-									lineHeight: '1.2',
-									}}
+									
 								>
 									{grp.grupo === 'ATENCIÓN AL CLIENTE' ? (
 									<>
@@ -139,19 +131,8 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 							
 							return (
 							<tr key={c.concepto} className={dataColor(c.concepto)}>
-								<td className="fw-bold fs-2 sticky-td p-0" >
-                                    <div className={`p-1 rounded rounded-3 ${bgTotal}`}
-									style={{
-									width: 360,
-									height: '100%',
-									hyphens: 'auto',
-									wordBreak: 'break-word',
-									overflowWrap: 'break-word',
-									whiteSpace: 'normal',
-									lineHeight: '1.2',
-									}}>
-                                    {idx + 1}. {c.concepto}
-                                    </div>
+								<td   className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white`}>
+											{idx + 1}. {c.concepto}
 							    </td>
 								<td className="fw-bold fs-2" >
 									<div className="bg-white text-right" style={{marginRight: '40px'}}>
@@ -195,12 +176,10 @@ export const TableGasto = ({mesesSeleccionadosNums, bgTotal, gruposSinPrestamos,
 							);
 						})}
 							<tr className={`${bgTotal} `}>
-								<td className="text-white fs-2" >
-									<div>
-										TOTAL
+								<td className={`text-white fs-2 sticky-td-${id_empresa}`}  >
+										TOTAL MES
 										<br/>
 										% REPRESENTACION
-									</div>
 								</td>
 								<td className="text-white text-right fs-2" > 
 									<div style={{marginRight: '40px'}}>

@@ -44,22 +44,8 @@ export const TableVentas = ({dataIngresosxMes=[], background, bgTotal, mesesSele
 													<thead className={bgTotal}>
 						<tr>
 							<th className=" fs-1">
-								<div
-									className={`p-1 rounded rounded-3 ${bgTotal}`}
-									style={{
-									width: 360,
-									hyphens: 'auto',
-									wordBreak: 'break-word',
-									overflowWrap: 'break-word',
-									whiteSpace: 'normal',
-									lineHeight: '1.2',
-									}}
-								>
-									{(
-									<>
-										{i + 1}. {grp.grupo}
-									</>
-									)}
+								<div>
+									{i + 1}. {grp.grupo}
 								</div>
 								</th>
 							<th className=" fs-1">

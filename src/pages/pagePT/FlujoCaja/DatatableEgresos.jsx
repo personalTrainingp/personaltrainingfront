@@ -259,6 +259,7 @@ totalGeneralIngresos});
 						<TableGasto 
 							bgMultiValue={bgMultiValue} 
 							bgTotal={bgTotal}  
+							id_empresa={id_enterprice}
 							gruposSinPrestamos={gruposSinPrestamos} 
 							mesesNombres={mesesNombres} 
 							mesesSeleccionadosNums={mesesSeleccionadosNums} 
