@@ -697,6 +697,7 @@ export const ResumenComparativo = () => {
           return [
             { header: "TURNO", isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
             { header: "SOCIOS", isSummary: true, value: grupo.cuposOcupado, items: grupo.items, tFood: sumaTotal },
+            { header: "% SOCIO", isSummary: true, value: ((grupo.cuposOcupado/sumaTotal)*100).toFixed(2), items: grupo.items, tFood: 100 },
           ];
         });
         console.log({agrupadoPorHorarioDeVenta: agruparPorHorariosDeVenta(ventasSinCeros)
@@ -815,8 +816,8 @@ export const ResumenComparativo = () => {
             )
         const sumaDeSesiones = ventasSinCeros?.reduce((total, item) => total + (item?.tb_semana_training.sesiones || 0), 0)
         const sumaDeVentasEnSoles = ventasSinCeros?.reduce((total, item) => total + (item?.tarifa_monto || 0), 0)
+
         const agrupadoPorSesiones = agruparPorSesiones(ventasSinCeros).map((grupo, index, array) => {
-            
             return [
                 ...generarResumen(array, grupo, 'SEMANAS(SESIONES)', index)
                 ]
@@ -876,8 +877,6 @@ export const ResumenComparativo = () => {
                 ]
             }
             )
-            // console.log(d, agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)), agruparPorCliente(agruparPorVenta(d.detalle_ventaMembresium)), agruparPorVenta(d.detalle_ventaMembresium), "aroga");
-            
         const agrupadoPorSociosCanjes = agruparPorProcedenciaEnCero(clientesCanjes)
         const agrupadoxDistritoxPrograma = []
         const arTest = agruparPorDistrito(ventasSinCeros).map(d=>{
@@ -1054,7 +1053,7 @@ export const ResumenComparativo = () => {
                                         return(
                                             <div>
                                                 <img className='m-4' src={`${config.API_IMG.LOGO}${d.name_image}`} height={d.height} width={d.width}/>
-                                                <span style={{fontSize: '50px'}}>{index===2?'':'+'}</span>
+                                                <span style={{fontSize: '50px'}}>{index===3?'':'+'}</span>
                                             </div>
                                         )
                                     }
@@ -1307,74 +1306,54 @@ export const ResumenComparativo = () => {
             }
             )
         },
-        {
-            isComparative: true,
-            title: 'comparativo distritos por venta por semana por programa',
-            id: 'comparativodistritosporventaporsemanaporprograma',
-            HTML: dataAlter.map(d=>{
-                return (
-                    <Col>
-                        <Row>
-                            {
-                                d.arTest.map(g=>{
-                                    return (
-                                            <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={12}>
-                                                asdf
-                                                <ItemCardPgm titleRecurrent={<div className='fs-1'>{g.propiedad}</div>} avatarPrograma={d.avatarPrograma} isSesion={true} arrayEstadistico={g.agrupadoPorSesiones} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
-                                            </Col>
-                                    )
-                                })
-                            }
-                        </Row>
-                    </Col>
-            )
-            }
-            )
-        },
-        {
-            isComparative: true,
-            title: 'comparativo distritos por venta por semana por programa',
-            id: 'comparativodistritosporventaporsemanaporprograma',
-            HTML: dataAlter.map(d=>{
-                return (
-                    <Col>
-                        <Row>
-                            {
-                                d.arTest.map(g=>{
-                                    return (
-                                            <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={12}>
-                                                asdf
-                                                <ItemCardPgm titleRecurrent={<div className='fs-1'>{g.propiedad}</div>} avatarPrograma={d.avatarPrograma} isSesion={true} arrayEstadistico={g.agrupadoPorSesiones} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
-                                            </Col>
-                                    )
-                                })
-                            }
-                        </Row>
-                    </Col>
-            )
-            }
-            )
-        },
         // {
+        //     isComparative: true,
         //     title: 'comparativo distritos por venta por semana por programa',
         //     id: 'comparativodistritosporventaporsemanaporprograma',
-        //     HTML: dataAlterIdPgmCero.map(d=>{
+        //     HTML: dataAlter.map(d=>{
         //         return (
-        //         <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-        //             {
-        //                 d.arTest.map(t=>{
-        //                     return (
-        //                         <>
-        //                         <TableTotal data={t.agrupadoPorSesiones} titleH1={<span style={{fontSize: '50px'}}>{t.propiedad}</span>} avataresDeProgramas={d.avataresDeProgramas} labelTotal={'SESIONES'} tbImage={d.avataresDeProgramas} onOpenModalSOCIOS={onOpenModalSOCIOS} arrayEstadistico={t.agrupadoPorSesiones}/>
-        //                         </>
-        //                     )
-        //                 })
-        //             }
-        //         </Col>
+        //             <Col>
+        //                 <Row>
+        //                     {
+        //                         d.arTest.map(g=>{
+        //                             return (
+        //                                     <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={12}>
+        //                                         asdf
+        //                                         <ItemCardPgm titleRecurrent={<div className='fs-1'>{g.propiedad}</div>} avatarPrograma={d.avatarPrograma} isSesion={true} arrayEstadistico={g.agrupadoPorSesiones} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
+        //                                     </Col>
+        //                             )
+        //                         })
+        //                     }
+        //                 </Row>
+        //             </Col>
         //     )
         //     }
         //     )
         // },
+        {
+            isComparative: true,
+            title: 'comparativo distritos por venta por semana por programa',
+            id: 'comparativodistritosporventaporsemanaporprograma',
+            HTML: dataAlter.map(d=>{
+                return (
+                    <Col>
+                        <Row>
+                            {
+                                d.arTest.map(g=>{
+                                    return (
+                                            <Col style={{paddingBottom: '1px !important', marginTop: '100px'}} xxl={12}>
+                                                asdf
+                                                <ItemCardPgm titleRecurrent={<div className='fs-1'>{g.propiedad}</div>} avatarPrograma={d.avatarPrograma} isSesion={true} arrayEstadistico={g.agrupadoPorSesiones} onOpenModalSOCIOS={onOpenModalSOCIOS} isViewSesiones={true} labelParam={'SESION'}/>
+                                            </Col>
+                                    )
+                                })
+                            }
+                        </Row>
+                    </Col>
+            )
+            }
+            )
+        },
         
         {
             isComparative: true,

@@ -118,7 +118,7 @@ export const TableTotal = ({data, agruparPorSocios, IsVentaCero, isCanje, isTime
                     <div className='d-flex justify-content-center align-items-center'>
                         <img className='mx-4' src={`${config.API_IMG.LOGO}${d.name_image}`} height={d.height} width={d.width}/>
                         <span className='mb-2' style={{fontSize: '50px'}}>
-                            {index===2?'':'+'}
+                            {index===3?'':'+'}
                         </span>
                     </div>
                 )

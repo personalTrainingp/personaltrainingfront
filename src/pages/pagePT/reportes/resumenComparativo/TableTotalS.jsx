@@ -14,18 +14,18 @@ export const TableTotalS = ({grafPie, grafPieGeneral, agruparPorSocios, IsVentaC
         const arrayGeneral = arrayEstadistico.map(f=>f.items).flat()
         const cantidad = d.items?.length
         const cantidadEstadisticas =  arrayEstadistico?.reduce((acc, item)=>acc+item.items?.length, 0)
-        const sumaMontoTotal =  arrayGeneral.reduce((acc, item)=>acc+item?.tarifa_monto, 0)
-        const monto_total =  d.items?.reduce((acc, item)=>acc+item?.tarifa_monto, 0)
+        const sumaMontoTotal =  arrayGeneral.reduce((acc, item) => acc + (item?.tarifa_monto ?? 0), 0)
+        const monto_total =  d.items?.reduce((acc, item)=>acc+(item?.tarifa_monto??0), 0)
         const ticketMedio = (monto_total/cantidad)||0
         const porcentajeCantidad = (cantidad/cantidadEstadisticas)*100
-        const porcentajeMonto = (monto_total/sumaMontoTotal)*100
+        const porcentajeMonto =(monto_total/sumaMontoTotal)*100
         const agrupadoPorSexo = agruparPorSexo(d.items)
-        // console.log(agrupadoPorSexo);
         return {
             header: d.header,
             transferenciaCero: d.transferenciaCero,
             pFem: agrupadoPorSexo[0].items,
             pMasc: agrupadoPorSexo[1].items,
+            sumaMontoTotal,
             cantidad,
             monto_total,
             ticketMedio,
@@ -61,7 +61,7 @@ export const TableTotalS = ({grafPie, grafPieGeneral, agruparPorSocios, IsVentaC
                     <div className='d-flex justify-content-center align-items-center'>
                         <img className='mx-4' src={`${config.API_IMG.LOGO}${d.name_image}`} height={d.height} width={d.width}/>
                         <span className='mb-2' style={{fontSize: '50px'}}>
-                            {index===2?'':'+'}
+                            {index===3?'':'+'}
                         </span>
                     </div>
                 )
@@ -72,7 +72,6 @@ export const TableTotalS = ({grafPie, grafPieGeneral, agruparPorSocios, IsVentaC
         <Card.Body className='d-flex justify-content-center' style={{paddingBottom: '1px !important'}}>
             <br/>
             <div  style={{width: '2000px'}}>
-                
             <Table
                                             // style={{tableLayout: 'fixed'}}
                                             className="table-centered mb-0"
@@ -166,7 +165,7 @@ export const TableTotalS = ({grafPie, grafPieGeneral, agruparPorSocios, IsVentaC
                                                 {
                                                     !IsVentaCero && 
                                                     <td>
-                                                        <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}><NumberFormatMoney amount={estadisticas.reduce((acc, item)=>acc+item.monto_total,0)}/></span></li>
+                                                        <li className=' text-center list-unstyled p-2'><span className='fw-bold text-white' style={{fontSize: '40px'}}><NumberFormatMoney amount={estadisticas[0].sumaMontoTotal}/></span></li>
                                                     </td>
                                                 }
                                                 <td> 

@@ -12,6 +12,8 @@ export const ItemCardPgm = ({grafPie, titleRecurrent, avatarPrograma, isSesion, 
       label: firstObj?.value || '' // Si 'value' no existe, devuelve cadena vacía
     };
   });
+  console.log({arrayEstadistico, labelParam});
+  
   return (
     <Card>
                         <Card.Header className='d-flex align-items-center align-self-center'>

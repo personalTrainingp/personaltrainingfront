@@ -29,7 +29,6 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 			totalPorMes
 		}
 	}, [dataEgresosxMes]);
-	console.log({dataEgresosxMes, totalesPorGrupo});
   return (
     <div className="table-responsive" style={{ width: '95vw' }}>
 				<Table className="tabla-egresos"  bordered >
@@ -48,11 +47,6 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 				</colgroup>
 
 				{totalesPorGrupo.map((grp, i, arr) => {
-					const sumaTotalAnualGrupos = totalesPorGrupo.reduce(
-					(acc, g) => acc + g.totalAnual,
-					0
-					);
-
 						const mesesSumaxGrupo = grp.mesesSuma
 						const totalesGeneralesGrupo = grp.totalMes
 									const sumaCantidadMov = grp.conceptos?.map((c, idx) =>c.items.reduce(
