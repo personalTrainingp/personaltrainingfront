@@ -10,7 +10,7 @@ import { DataTerminologiaGasto } from './DataTerminologiaGasto';
 import { TerminologiaGastoTabView } from './TerminologiaGastoTabView';
 import { TerminologiasInventarioLugar } from './TerminologiasInventarioLugar';
 import { TerminologiaSistemas } from './TerminologiaSistemas';
-
+// import { AppTerm } from './TerminologiasGastos'
 export const Terminologias = () => {
     const [isModalOpenTerminologia, setisModalOpenTerminologia] = useState(false);
     const [isModalOpenTerminologiaGasto, setisModalOpenTerminologiaGasto] = useState(false);
@@ -45,7 +45,8 @@ export const Terminologias = () => {
     return (
         <>
             <PageBreadcrumb title={`Terminologias`} subName="E" />
-            <Row>
+            
+            {/* <Row>
                 <Col xxl={1}>
                 </Col>
                 <Col xs={10}>
@@ -111,7 +112,7 @@ export const Terminologias = () => {
                     </Card>
                 </Col>
             </Row>
-            <ModalTerminologia show={isModalOpenTerminologia} onHide={modalTerminologiaClose} boleanActualizar={false} ></ModalTerminologia>
+            <ModalTerminologia show={isModalOpenTerminologia} onHide={modalTerminologiaClose} boleanActualizar={false} ></ModalTerminologia> */}
         </>
     )
 }

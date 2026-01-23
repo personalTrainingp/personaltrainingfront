@@ -1,6 +1,7 @@
 import { NumberFormatMoney } from '@/components/CurrencyMask';
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Table } from 'react-bootstrap';
+import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo';
 
 function dataColor(concepto) {
 	switch (concepto) {
@@ -17,38 +18,49 @@ function dataColor(concepto) {
 	}
 }
 
-export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposSinPrestamos, mesesNombres, bgMultiValue, onOpenModalDetallexCelda, totalPorMes, prestamosGroup, totalGeneral }) => {
-
+export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgresosxMes, mesesNombres, bgMultiValue, onOpenModalDetallexCelda, prestamosGroup, selectedMonths, dataVentasxMes=[]  }) => {
+	const totalesPorGrupo = useMemo(()=>{
+		return TotalesPorGrupo(dataEgresosxMes).dataTotal
+	}, [dataEgresosxMes])
+	const { totalPorMes, totalGeneral } = useMemo(() => {
+		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataEgresosxMes)
+		return {
+			totalGeneral,
+			totalPorMes
+		}
+	}, [dataEgresosxMes]);
+	console.log({dataEgresosxMes, totalesPorGrupo});
   return (
     <div className="table-responsive" style={{ width: '95vw' }}>
 				<Table className="tabla-egresos"  bordered >
 				<colgroup>
 					<col className={`${bgTotal} text-white`} style={{ width: 350 }}/>
-					<col style={{ width: 140 }} />
-					{mesesSeleccionadosNums.map((mesNum, i) => (
-						<React.Fragment key={i}>
-							<col key={mesNum} style={{ width: 150 }} />
-							<col key={mesNum} style={{ width: 150 }} />
+					{mesesSeleccionadosNums.map(mesNum => (
+						<React.Fragment key={mesNum}>
+						<col style={{ width: 150 }} />
+						<col style={{ width: 150 }} />
 						</React.Fragment>
 					))}
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
+					<col className={`${bgTotal}`} style={{ width: 100 }} />
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
 				</colgroup>
-				
-				{gruposSinPrestamos.map((grp, i, arr) => {
+
+				{totalesPorGrupo.map((grp, i, arr) => {
+					const sumaTotalAnualGrupos = totalesPorGrupo.reduce(
+					(acc, g) => acc + g.totalAnual,
+					0
+					);
+
 						const mesesSumaxGrupo = grp.mesesSuma
+						const totalesGeneralesGrupo = grp.totalMes
 									const sumaCantidadMov = grp.conceptos?.map((c, idx) =>c.items.reduce(
 									(sum, it) => sum + (it.lenthItems || 0),
 									0
 									))
+									console.log({gg: grp});
 									
-									const arrayCantidadMov = grp.conceptos?.map((c, idx) =>c.items.reduce(
-									(sum, it) => sum + (it.items.length || 0),
-									0
-									))
-					console.log({arrayCantidadMov});
-					
 					return (
 					<React.Fragment key={grp.grupo}>
 						{/* Encabezado del grupo */}
@@ -56,7 +68,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 						<tr>
 							<th className={`sticky-td-${id_empresa} text-white fs-1`}>
 								<div
-									
+
 								>
 									{grp.grupo === 'ATENCIÓN AL CLIENTE' ? (
 									<>
@@ -71,27 +83,10 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 									)}
 								</div>
 								</th>
-							<th className=" fs-1">
-								<div
-									className={`${bgTotal} text-center`}
-									style={{
-									width: 110,
-									hyphens: 'auto',
-									wordBreak: 'break-word',
-									overflowWrap: 'break-word',
-									whiteSpace: 'normal',
-									lineHeight: '1.2',
-									}}
-								>
-									MOV.
-								</div>
-								</th>
-							{mesesSeleccionadosNums.map((mesNum, i) => (
+							{mesesSeleccionadosNums.map(mesNum => (
 								<React.Fragment key={mesNum}>
 									<th
-										key={mesNum}
-										style={{width: 190}}
-										colSpan={1}
+										style={{width: 130}}
 									>
 										<div 
 											className="text-white text-center fs-1 m-0 p-0">
@@ -99,29 +94,42 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 										</div>
 									</th>
 									<th
-										key={mesNum}
-										style={{width: 190}}
-										colSpan={1}
+										style={{width: 90}}
 									>
 										<div 
 											className="text-white text-center fs-1 m-0 p-0">
-												MOV
+											MOV.
 										</div>
 									</th>
 								</React.Fragment>
 							))}
 
-							<th className={`${bgTotal} text-center p-1 fs-1`}>
-							TOTAL
+							<th className={`bg-white-1 text-center p-1 fs-1 border-left-10 border-top-10`}>
+							TOTAL <br/> ANUAL
 							</th>
-								<th className="text-white p-1 fs-1">
+							<th className="bg-white-1 fs-1 border-top-10">
+								<div
+									className={` text-center`}
+									style={{
+									width: 130,
+									hyphens: 'auto',
+									wordBreak: 'break-word',
+									overflowWrap: 'break-word',
+									whiteSpace: 'normal',
+									lineHeight: '1.2',
+									}}
+								>
+									MOV. ANUAL
+								</div>
+								</th>
+								<th className="bg-white-1 p-1 fs-1 border-top-10">
 									<div className='text-center'>
-										%
+										% <br/> PART. <br/> ANUAL
 									</div>
 								</th>
-								<th className="text-white p-1 fs-1">
+								<th className="bg-white-1 p-1 fs-1 border-top-10 border-right-10">
 									<div className='text-center'>
-										PROMEDIO <br/> ANUAL
+										PROMEDIO <br/> MENSUAL
 									</div>
 								</th>
 						</tr>
@@ -136,109 +144,145 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, gruposS
 							(sum, it) => sum + (it.monto_total || 0),
 							0
 							);
-							
+
 							const cantidadMovimiento = c.items.reduce(
 							(sum, it) => sum + (it.lenthItems || 0),
 							0
 							);
+							const pctConcepto = grp.totalAnual > 0
+							? ((totalConcepto / grp.totalAnual) * 100).toFixed(2)
+							: '0.00';
+							
 									const mesesSinCero = c.items.filter(i=>i.items.length!==0)
-									
 							return (
 							<tr key={c.concepto} className={dataColor(c.concepto)}>
-								<td  className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white`}>
+								<td   className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white`}>
 											{idx + 1}. {c.concepto}
 							    </td>
-								<td className="fw-bold fs-2" >
-									<div className="bg-white text-right" style={{marginRight: '40px'}}>
-										{cantidadMovimiento}
-									</div>
-								</td>
 								{mesesSeleccionadosNums.map(mesNum => {
 								const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
 								return (
-									<>
-									<td key={mesNum} className="fs-1">
-										<div
-											className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
-											style={{width: '180px'}}
-											onClick={() => onOpenModalDetallexCelda({
-											...itemMes,
-											concepto: c.concepto,
-											grupo: grp.grupo,
-											})}
-										>
-											<NumberFormatMoney amount={itemMes.monto_total} />
-										</div>
-									</td>
-									<td key={mesNum} className="fs-1">
-										<div
-											className={`cursor-text-primary fs-2 bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
-											style={{width: '180px'}}
-											onClick={() => onOpenModalDetallexCelda({
-											...itemMes,
-											concepto: c.concepto,
-											grupo: grp.grupo,
-											})}
-										>
-											{itemMes.items.length}
-										</div>
-									</td>
-									</>
+									<React.Fragment key={mesNum}>
+										<td style={{fontSize: '35px'}}>
+											<div
+												className={`cursor-text-primary bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
+												// style={{width: '180px'}}
+												onClick={() => onOpenModalDetallexCelda({
+												...itemMes,
+												concepto: c.concepto,
+												grupo: grp.grupo,
+												})}
+											>
+												<NumberFormatMoney amount={itemMes.monto_total} />
+											</div>
+										</td>
+										<td style={{fontSize: '35px'}}>
+											<div
+												className={`cursor-text-primary bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
+												// style={{width: '100px'}}
+												onClick={() => onOpenModalDetallexCelda({
+												...itemMes,
+												concepto: c.concepto,
+												grupo: grp.grupo,
+												})}
+											>
+												{itemMes.items.length}
+											</div>
+										</td>
+									</React.Fragment>
 								);
 								})}
-								<td>
-									<div className='text-right  text-white'  style={{fontSize: '40px'}}>
+								
+								<td className='border-left-10'>
+									<div className='text-right text-white'  style={{fontSize: '40px'}}>
 											<NumberFormatMoney amount={totalConcepto} />
 									</div>
 								</td>
-								<td>
-									<div className='text-right  text-white' style={{fontSize: '40px'}}>
-											<NumberFormatMoney amount={(totalConcepto/totalGeneral)*100} />
+								<td className="fw-bold" >
+									<div className="text-white text-right" style={{fontSize: '40px', width: '90px'}}>
+										{cantidadMovimiento}
 									</div>
 								</td>
 								<td>
+									<div className='text-center  text-white' style={{fontSize: '40px'}}>
+											<NumberFormatMoney amount={(totalConcepto/totalGeneral)*100} />
+									</div>
+								</td>
+								<td className='border-right-10'>
 									<div className='text-right  text-white' style={{fontSize: '40px'}}>
-											<NumberFormatMoney amount={totalConcepto/mesesSinCero.length} />
+											<NumberFormatMoney amount={totalConcepto/12} />
 									</div>
 								</td>
 							</tr>
 							);
 						})}
-							<tr className={`${bgTotal} `}>
-								<td className={`text-white fs-2 sticky-td-${id_empresa}`}  >
-										TOTAL MES
-										<br/>
-										% REPRESENTACION
-								</td>
-								<td className="text-white text-right fs-2" > 
-									<div style={{marginRight: '40px'}}>
-										{sumaCantidadMov?.reduce((a, b)=>a+b, 0)}
-									</div>
+							<tr className={`${bgTotal} `} style={{fontSize: '35px'}}>
+								<td className={`text-white text-center sticky-td-${id_empresa}`}  >
+										TOTAL
 								</td>
 								{
-									mesesSumaxGrupo?.map(m=>{
+									totalesGeneralesGrupo?.map((m, i)=>{
 										return (
-											<React.Fragment key={m}>
-											<td >
-												<div className="text-white fs-2 bg-porsiaca text-right" style={{width: '180px'}}>
+											<td  style={{fontSize: '35px'}}>
+												<div className="text-white bg-porsiaca text-right">
+												{(i+1)%2==0?m:(
 												<NumberFormatMoney amount={m}/>
+												)}
 												</div>
 											</td>
-											<td >
-												<div className="text-white fs-2 bg-porsiaca text-right" style={{width: '180px'}}>
-												{/* <NumberFormatMoney amount={m}/> */}
-												</div>
-											</td>
-											</React.Fragment>
 										)
 									})
 								}
-								<td className="text-white text-right"  style={{fontSize: '40px'}}>
-									<NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)}/></td>
-								<td  className="text-white text-right" style={{fontSize: '40px'}}><NumberFormatMoney amount={100}/></td>
-								<td className="text-white text-right" style={{fontSize: '40px'}}>
-									<NumberFormatMoney amount={mesesSumaxGrupo?.filter(m=>m!=0)?.reduce((a, b)=>a+b, 0)/12}/>
-									</td>
+								<td className="text-center bg-white-1 border-left-10 border-right-10" colSpan={4}  style={{fontSize: '40px'}}>
+									TOTAL ANUAL
+									{/* <NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)}/> */}
+								</td>
+								{/* <td className="bg-white-1 text-right" > 
+									<div style={{marginRight: '40px', fontSize: '40px'}}>
+										{sumaCantidadMov?.reduce((a, b)=>a+b, 0)}
+									</div>
+								</td>
+								<td  className="bg-white-1 text-center" style={{fontSize: '40px'}}><NumberFormatMoney amount={(mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/totalGeneral)*100}/>%</td>
+								<td className="bg-white-1 text-right" style={{fontSize: '40px'}}>									<NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/12}/>
+</td> */}
+							</tr>
+							<tr className={`${bgTotal} `} style={{fontSize: '35px'}}>
+								<td className={`text-white sticky-td-${id_empresa}`}  >
+										PARTICIPACION
+								</td>
+								{
+									totalesGeneralesGrupo?.map((m, i)=>{
+										return (
+											<td style={{fontSize: '35px'}}>
+												<div className="text-white bg-porsiaca text-right">
+												{(i+1)%2==0?(
+													<>
+													{
+														((m/sumaCantidadMov?.reduce((a, b)=>a+b, 0))*100).toFixed(2)
+													}
+													</>
+												):(
+													<>
+													<NumberFormatMoney amount={(m/mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)*100).toFixed(2)}/>
+													</>
+												)}
+												<span className='mx-2'>%</span>
+												</div>
+											</td>
+										)
+									})
+								}
+								
+								<td className="text-right bg-white-1 border-left-10 border-bottom-10"  style={{fontSize: '40px'}}>
+									<NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)}/>
+								</td><td className="bg-white-1 text-right border-bottom-10" > 
+									<div style={{marginRight: '40px', fontSize: '40px'}}>
+										{sumaCantidadMov?.reduce((a, b)=>a+b, 0)}
+									</div>
+								</td>
+								<td  className="bg-white-1 text-center border-bottom-10" style={{fontSize: '40px'}}><NumberFormatMoney amount={(mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/totalGeneral)*100}/>%</td>
+								<td className="bg-white-1 text-right border-right-10 border-bottom-10" style={{fontSize: '40px'}}>									<NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/12}/>
+</td> 
 							</tr>
 							<tr className='bg-white'>
 								<div></div>

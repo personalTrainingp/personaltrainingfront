@@ -19,6 +19,7 @@ export const TotalesPorGrupo = (data) => {
 			mesesSuma,
 			totalAnual,
 			conceptos: g.conceptos,
+			...g,
 		};
 	});
 	console.log({ dataTotal });

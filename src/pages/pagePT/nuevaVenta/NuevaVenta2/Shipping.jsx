@@ -38,13 +38,13 @@ export const sumarTarifas = (venta) =>{
 	.map(objeto => objeto.tarifa) // Obtenemos un array con todas las tarifas
 	.filter(tarifa => typeof tarifa === 'number') // Filtramos solo los valores que son números
 	.reduce((total, tarifa) => total + tarifa, 0); // Sumamos todas las tarifas
-	return sumaTarifas
+	return sumaTarifas.toFixed(2)
 }
 
 export const sumarPagos = (dataPagos)=>{
 	const sumaPagos = Object.values(dataPagos).flatMap(array=>array).map(obj=>obj.monto_pago)
 	.reduce((total, tarifa) => total + tarifa, 0); // Sumamos todas las tarifas
-	return sumaPagos;
+	return sumaPagos.toFixed(2);
 }
 const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 	const [modalAcc, setModalAcc] = useState(false)
@@ -105,7 +105,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 		if(sumarPagos(datos_pagos)!==sumarTarifas(dataVenta)){
 			return Swal.fire({
 				icon: 'error',
-				title: 'EL PAGO DEBE DE SER IGUAL AL SALDO PENDIENTE',
+				title: `EL PAGO DEBE DE SER IGUAL AL SALDO PENDIENTE ${sumarPagos(datos_pagos)} NO ES LO MISMO QUE ${sumarTarifas(dataVenta)}`,
 				showConfirmButton: false,
 				timer: 2000,
 			});

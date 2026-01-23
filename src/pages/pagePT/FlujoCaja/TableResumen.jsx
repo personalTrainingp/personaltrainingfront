@@ -12,20 +12,25 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
         <Table className="tabla-egresos" bordered>
         <thead className={bgTotal}>
           <tr>
-            <th className={`fw-bold fs-2  sticky-td-${id_empresa}`}>MES</th>
+            <th className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
+                <div className='text-white'>
+                    RESULTADO ANUAL
+                </div>
+            </th>
             {mesesSeleccionadosNums.map(mesNum => (
               <th key={mesNum} className="text-white text-center p-1 fs-2">
                 {mesesNombres[mesNum - 1]}
               </th>
             ))}
             <th className={`${bgTotal} text-white text-center p-1 fs-1`}>TOTAL</th>
-            <th className="text-white text-center p-1 fs-1">%</th>
           </tr>
         </thead>
           <tbody>
                 <tr>
                     <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
+                        <div className='text-white'>
                             INGRESOS
+                        </div>
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
                         return(
@@ -49,7 +54,9 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
                 </tr>
                 <tr>
                     <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
-                        EGRESOS
+                        <div className='text-white'>
+                            EGRESOS
+                        </div>
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
                         return(
@@ -72,8 +79,10 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
                     </td>
                 </tr>
                 <tr>
-                    <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
+                    <td className={`fw-bold fs-2 sticky-td-${id_empresa}`}>
+                        <div className='text-white'>
                             UTILIDAD BRUTA
+                        </div>
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
                         return(
@@ -94,15 +103,12 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
                             {utilidad(totalIngresos, totalEgresos).espositivo?'+':''}<NumberFormatMoney amount={totalIngresos-totalEgresos} />
                         </div>
                     </td>
-                    <td className="text-center fw-bolder fs-1">
-                        <div className='bg-porsiaca text-right text-white'>
-                            100
-                        </div>
-                    </td>
                 </tr>
                 <tr>
                     <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
+                        <div className='text-white'>
                             ING. EXCEPCIONALES
+                        </div>
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
                         return(
@@ -126,7 +132,9 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
                 </tr>
                 <tr>
                     <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
+                        <div className='text-white'>
                             UTILIDAD NETA
+                        </div>
                     </td>
                     {mesesSeleccionadosNums.map(mesNum => {
                         return(

@@ -117,8 +117,8 @@ export const DataView = ({id_empresa, dvi, label_empresa, dataContratoProv, isRe
                                 
                 )})
             }
-          <ModalResumenInventarioValorizado label_empresa={label_empresa} data={dvi} show={isOpenModalResumenValorizado} onHide={onCloseModalResumenValorizado}/>
         </Row>
+          <ModalResumenInventarioValorizado label_empresa={label_empresa} data={dvi} show={isOpenModalResumenValorizado} onHide={onCloseModalResumenValorizado}/>
         <ModalTableInventario ubicacion={ubicacion} show={isOpenModalInventarioFiltered} onHide={onCloseModalInventario} data={dataFilter}/>
     </>
   )

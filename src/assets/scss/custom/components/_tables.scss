@@ -32,7 +32,7 @@
     }
 
     > :not(caption)>*>* {
-        background-color: var(--#{$prefix}table-bg) !important;
+        background-color: var(--#{$prefix}table-bg);
     }
 
     &.table-bordered {

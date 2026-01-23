@@ -81,7 +81,7 @@ export const TableCuentas = ({dataIngresosxMes=[], header, background, bgTotal, 
 									lineHeight: '1.2',
 									}}
 								>
-									Nº <br/> MOV.
+									MOV.
 								</div>
                                 </th>
 

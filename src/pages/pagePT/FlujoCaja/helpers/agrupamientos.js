@@ -114,15 +114,13 @@ export function aplicarTipoDeCambio(dataTC, dataGastos) {
 export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 	const meses = Array.from({ length: 12 }, (_, i) => i + 1);
 	const gruposMapTemp = {};
+
 	dataGrupos.forEach((entry) => {
 		const nombreGrupo = entry.grupo?.trim()?.toUpperCase() || 'SIN GRUPO';
-		if (!gruposMapTemp[nombreGrupo]) {
-			gruposMapTemp[nombreGrupo] = [];
-		}
+		if (!gruposMapTemp[nombreGrupo]) gruposMapTemp[nombreGrupo] = [];
 		gruposMapTemp[nombreGrupo].push(entry);
 	});
 
-	// Ordenar los grupos, undefined orden al final
 	const gruposOrdenados = Object.entries(gruposMapTemp).sort(([, entradasA], [, entradasB]) => {
 		const ordenA = entradasA[0].parametro_grupo?.orden;
 		const ordenB = entradasB[0].parametro_grupo?.orden;
@@ -130,7 +128,6 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 	});
 
 	const resultado = gruposOrdenados.map(([grupoNombre, entradasDeGrupo]) => {
-		// Ordenar conceptos dentro del grupo, undefined orden al final
 		entradasDeGrupo.sort((a, b) => (a.orden ?? Infinity) - (b.orden ?? Infinity));
 
 		const conceptosUnicosPorNombre = [];
@@ -140,6 +137,7 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 				conceptosUnicosPorNombre.push(nombreConcepto);
 			}
 		});
+
 		const conceptos = conceptosUnicosPorNombre.map((nombreConcepto) => {
 			const itemsDelConcepto = dataGastos?.filter((g) => {
 				const pg = g.tb_parametros_gasto || {};
@@ -153,7 +151,8 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 					itemsDelConcepto?.filter(
 						(item) => dayjs.utc(item.fec_comprobante).month() + 1 === mes
 					) || [];
-				const monto_total = itemsMes?.reduce((sum, g) => sum + (g.monto * g.tc || 0), 0);
+				const monto_total = itemsMes.reduce((sum, g) => sum + (g.monto * g.tc || 0), 0);
+
 				return {
 					mes,
 					monto_total,
@@ -161,14 +160,33 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 					lenthItems: itemsMes.length,
 				};
 			});
+
 			return {
 				concepto: nombreConcepto,
 				items: itemsPorMes,
 			};
 		});
 
+		// ✅ Totales por grupo (sumando todos los conceptos mes a mes)
+		const totalMontoxMes = meses.map((mes) =>
+			conceptos.reduce((sum, c) => {
+				const mesObj = c.items.find((x) => x.mes === mes);
+				return sum + (mesObj?.monto_total || 0);
+			}, 0)
+		);
+
+		const totalCantxMes = meses.map((mes) =>
+			conceptos.reduce((sum, c) => {
+				const mesObj = c.items.find((x) => x.mes === mes);
+				return sum + (mesObj?.lenthItems || 0);
+			}, 0)
+		);
+
 		return {
 			grupo: grupoNombre,
+			totalMontoxMes,
+			totalCantxMes,
+			totalMes: totalMontoxMes.flatMap((v, i) => [v, totalCantxMes[i]]),
 			conceptos,
 		};
 	});

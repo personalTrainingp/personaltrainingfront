@@ -268,7 +268,7 @@ totalGeneralIngresos});
 							totalPorMes={totalPorMes}
 							totalGeneral ={totalGeneral }
 							selectedMonths ={selectedMonths }
-							dataIngresosxMes={dataIngresosxMes}
+							dataEgresosxMes={dataGastosxANIO}
 							/>
 					</div>
 					
@@ -345,4 +345,3 @@ totalGeneralIngresos});
 		</>
 	);
 };
-

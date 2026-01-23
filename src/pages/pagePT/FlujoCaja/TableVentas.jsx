@@ -58,7 +58,7 @@ export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTota
 									whiteSpace: 'normal',
 									lineHeight: '1.2',
 									}}>
-									Nº <br/> MOV.
+									MOV.
 								</div>
 								</th>
 								{mesesSeleccionadosNums?.map(mesNum => (
