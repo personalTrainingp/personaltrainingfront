@@ -42,7 +42,8 @@ export const useInformeEjecutivoStore = () => {
 						montoTotal: v.detalle_membresias[0]?.tarifa_monto,
 						cantidadTotal: 1,
 					};
-				});
+				})
+				.filter((f) => f.montoTotal !== 0);
 			const dataProductos17 = dataVentasMap
 				.map((v) => {
 					const detalleFiltrado = v.detalle_productos.filter(
@@ -128,10 +129,10 @@ export const useInformeEjecutivoStore = () => {
 				dataPenAusd: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataPenAusd)),
 				dataLeadMap,
 				// leadsRed1514: sumarMontoTotal(agruparPorMesDiaFechaVenta(leadsRed1514)).map((d) => {
-				// 	const TCfecha = 
+				// 	const TCfecha =
 				// 	return {
 				// 		montoUSD: d.montoTOTAL,
-				// 		montoPEN: 
+				// 		montoPEN:
 				// 	};
 				// }),
 				leadsRed1515: sumarMontoTotal(agruparPorMesDiaFechaVenta(leadsRed1515)),

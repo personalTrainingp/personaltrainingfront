@@ -159,7 +159,7 @@ export const DataCalendario = ({  data = [],
 
                       {/* Si quieres mostrar algo del primer item */}
                       {count > 0 && (
-                        <div style={{ marginTop: 6, fontSize: 12, color: "#333" }}>
+                        <div style={{ marginTop: 6, fontSize: 20, color: "#333" }}>
                           {/* ejemplo: mostrar campo "titulo" si existe */}
                           {cell.items[0]?.titulo ? (
                             <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>

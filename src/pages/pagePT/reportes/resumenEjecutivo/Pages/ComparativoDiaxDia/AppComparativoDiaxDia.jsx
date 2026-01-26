@@ -10,8 +10,6 @@ export const AppComparativoDiaxDia = () => {
     useEffect(() => {
         obtenerVentas(['2025-01-02 15:45:47.6640000 +00:00','2025-12-04 20:42:20.4490000 +00:00'])
     }, [])
-    console.log({dataVentas});
-    
   return (
     <div>
         <DataCalendario data={dataVentas.dataMembresias}/>

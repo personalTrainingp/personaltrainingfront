@@ -219,6 +219,7 @@ export const arrayOrigenDeCliente = [
 	{ value: 695, label: 'tiktok', order: 3 }, //994
 	{ value: 696, label: 'EX-PT reinscripcion', order: 8 }, //TODO LOS TRASPASOS SON EX-PT //999
 	{ value: 689, label: 'Wsp organico', order: 11 }, //1001
+	{ value: 1593, label: 'CORPORATIVO INDIGO', order: 15 }, //1001
 	// { value: 690, label: 'EX-PT Cartera de reinscripcion', order: 5 }, //996
 	// { value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
 	// { value: 691, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
