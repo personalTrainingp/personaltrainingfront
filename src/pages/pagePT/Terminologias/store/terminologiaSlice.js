@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 export const terminologiasSlice = createSlice({
-	name: 'TERMINOLOGIAS',
+	name: 'TERM',
 	initialState: {
 		dataViewTerm: [],
 		dataViewTerm2: [

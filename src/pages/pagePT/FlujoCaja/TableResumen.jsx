@@ -10,15 +10,15 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
   return (
     <div className="table-responsive" style={{ width: '95vw' }}>
         <Table className="tabla-egresos" bordered>
-        <thead className={bgTotal}>
+        <thead >
           <tr>
-            <th className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
-                <div className='text-white'>
+            <th className={`fw-bold fs-2 bg-white-1 border-top-10 border-bottom-10 border-left-10 border-right-10`}>
+                <div className='text-black'>
                     RESULTADO ANUAL
                 </div>
             </th>
             {mesesSeleccionadosNums.map(mesNum => (
-              <th key={mesNum} className="text-white text-center p-1 fs-2">
+              <th key={mesNum} className={`text-white text-center p-1 fs-2 ${bgTotal}`}>
                 {mesesNombres[mesNum - 1]}
               </th>
             ))}
@@ -27,7 +27,7 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
         </thead>
           <tbody>
                 <tr>
-                    <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
+                    <td className={`fw-bold fs-2  sticky-td-${id_empresa} border-left-10 border-right-10`}>
                         <div className='text-white'>
                             INGRESOS
                         </div>
@@ -53,7 +53,7 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
                     </td>
                 </tr>
                 <tr>
-                    <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
+                    <td className={`fw-bold fs-2  sticky-td-${id_empresa} border-left-10 border-right-10`}>
                         <div className='text-white'>
                             EGRESOS
                         </div>
@@ -79,7 +79,7 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
                     </td>
                 </tr>
                 <tr>
-                    <td className={`fw-bold fs-2 sticky-td-${id_empresa}`}>
+                    <td className={`fw-bold fs-2 sticky-td-${id_empresa} border-left-10 border-right-10`}>
                         <div className='text-white'>
                             UTILIDAD BRUTA
                         </div>
@@ -105,7 +105,7 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
                     </td>
                 </tr>
                 <tr>
-                    <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
+                    <td className={`fw-bold fs-2  sticky-td-${id_empresa} border-left-10 border-right-10`}>
                         <div className='text-white'>
                             ING. EXCEPCIONALES
                         </div>
@@ -131,7 +131,7 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
                     </td>
                 </tr>
                 <tr>
-                    <td className={`fw-bold fs-2  sticky-td-${id_empresa}`}>
+                    <td className={`fw-bold fs-2  sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10`}>
                         <div className='text-white'>
                             UTILIDAD NETA
                         </div>

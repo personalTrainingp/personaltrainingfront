@@ -4,6 +4,7 @@ import { arrayFinanzas } from '@/types/type'
 import React, { useEffect } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTerminologias } from '../hook/useTerminologias'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 const customTermGasto={
 id_tipoGasto: 0, 
 nombre_gasto: '', 
@@ -11,14 +12,22 @@ orden: 0,
 id_grupo: 0
 }
 export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
-    const { postTerm2, updateTerm2xID, obtenerTerm2 } = useTerminologias()
+    const { postTerm2, updateTerm2xID, obtenerTerm2, dataTerm2 } = useTerminologias()
+        const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
+        useEffect(() => {
+            if(show){
+                obtenerParametroPorEntidadyGrupo('grupos-gastos', id_empresa)
+            }
+        }, [id_empresa, show])
+        
     useEffect(() => {
-        if(id!==0){
+        if(show){
             obtenerTerm2(id)
         }
-    }, [id])
+    }, [show])
+    console.log({id_empresa, DataGeneral, dataTerm2, id});
     
-    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, onInputChange, onResetForm } = useForm(customTermGasto)
+    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
     const cancelar = ()=>{
         onHide()
         onResetForm()
@@ -44,7 +53,12 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
                     <InputSelect label={'Tipo de gasto'} nameInput={'id_tipoGasto'} onChange={onInputChange} value={id_tipoGasto} options={arrayFinanzas} required/>
                 </div>
                 <div className='mb-2'>
-                    <InputSelect label={'Grupo'} nameInput={'id_grupo'} onChange={onInputChange} value={id_grupo} options={arrayFinanzas} required/>
+                    <InputSelect label={'Grupo'} nameInput={'id_grupo'} onChange={onInputChange} value={id_grupo} options={DataGeneral.map(d=>{
+                        return {
+                            value: d.id,
+                            label: d.param_label
+                        }
+                    })} required/>
                 </div>
                 <div className='mb-2'>
                     <InputText label={'Concepto'} nameInput={'nombre_gasto'} onChange={onInputChange} value={nombre_gasto} required/>

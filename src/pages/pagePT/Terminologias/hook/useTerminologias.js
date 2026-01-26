@@ -16,8 +16,10 @@ export const useTerminologias = () => {
 	};
 	const obtenerTerm2 = async (id) => {
 		try {
-			const { data } = await PTApi.get(`/terminologia/term2/${id}`);
-			setdataTerm2(data.term2);
+			const { data } = await PTApi.get(`/terminologia/term2/id/${id}`);
+			console.log({ t2: id });
+
+			setdataTerm2(data.terminologia2);
 		} catch (error) {
 			console.log(error);
 		}
@@ -83,6 +85,7 @@ export const useTerminologias = () => {
 		}
 	};
 	return {
+		dataTerm2,
 		obtenerTerm2,
 		postTerm2,
 		updateTerm2xID,

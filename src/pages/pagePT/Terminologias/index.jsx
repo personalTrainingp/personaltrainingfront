@@ -1,1 +1,1 @@
-export { Terminologias as default } from './Terminologias'
+export { AppTerminologias as default } from './AppTerminologias'

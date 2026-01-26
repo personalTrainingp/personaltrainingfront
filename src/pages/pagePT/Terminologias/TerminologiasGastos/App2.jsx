@@ -14,7 +14,7 @@ export const App2 = ({id_empresa, tipo}) => {
   return (
     <div>
         <InputButton onClick={()=>onOpenModalCustomTermGastos(0)} label={'Agregar terminologia'}/>
-        <DataTableTermGastos/>
+        <DataTableTermGastos id_empresa={id_empresa} tipo={tipo} onOpenModalCustomTermGastos={onOpenModalCustomTermGastos}/>
         <ModalCustomTermGastos id_empresa={id_empresa} tipo={tipo} id={isOpenModalCustomTermGastos.id} show={isOpenModalCustomTermGastos.isOpen} onHide={onCloseModalCustomTermGastos}/>
     </div>
   )
