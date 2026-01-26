@@ -2,7 +2,7 @@ export const agruparPorMesDiaFechaVenta = (data) => {
 	const map = {};
 
 	data.forEach((item) => {
-		const fecha = new Date(item.fecha_venta);
+		const fecha = new Date(item.fechaP);
 		const anio = fecha.getUTCFullYear();
 		const mes = fecha.getUTCMonth() + 1;
 		const dia = fecha.getUTCDate();

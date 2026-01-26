@@ -18,7 +18,7 @@ function dataColor(concepto) {
 	}
 }
 
-export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgresosxMes, mesesNombres, bgMultiValue, onOpenModalDetallexCelda, prestamosGroup, selectedMonths, dataVentasxMes=[]  }) => {
+export const TableGasto = ({id_empresa, bgPastel, mesesSeleccionadosNums, bgTotal, dataEgresosxMes, mesesNombres, bgMultiValue, onOpenModalDetallexCelda, prestamosGroup, selectedMonths, dataVentasxMes=[]  }) => {
 	const totalesPorGrupo = useMemo(()=>{
 		return TotalesPorGrupo(dataEgresosxMes).dataTotal
 	}, [dataEgresosxMes])
@@ -37,7 +37,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 					{mesesSeleccionadosNums.map(mesNum => (
 						<React.Fragment key={mesNum}>
 						<col style={{ width: 150 }} />
-						<col style={{ width: 150 }} />
+						<col style={{ width: 150 }} className={`${bgPastel}`}/>
 						</React.Fragment>
 					))}
 					<col className={`${bgTotal}`} style={{ width: 150 }} />
@@ -53,14 +53,12 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 									(sum, it) => sum + (it.lenthItems || 0),
 									0
 									))
-									console.log({gg: grp});
-									
 					return (
 					<React.Fragment key={grp.grupo}>
 						{/* Encabezado del grupo */}
-						<thead className={bgTotal}>
+						<thead >
 						<tr>
-							<th className={`sticky-td-${id_empresa} text-white fs-1`}>
+							<th className={`text-black bg-white-1 fs-1 border-left-10 border-right-10 border-top-10 border-bottom-10`}>
 								<div
 
 								>
@@ -68,8 +66,6 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 									<>
 										{i + 1}. ATENCIÓN AL CLIENTE
 									</>
-									) : grp.grupo === 'PRESTAMOS' ? (
-									<span className="text-danger">PRESTAMOS</span>
 									) : (
 									<>
 										{i + 1}. {grp.grupo}
@@ -81,6 +77,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 								<React.Fragment key={mesNum}>
 									<th
 										style={{width: 130}}
+										className={`bg-change `}
 									>
 										<div 
 											className="text-white text-center fs-1 m-0 p-0">
@@ -89,9 +86,10 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 									</th>
 									<th
 										style={{width: 90}}
+										className='bgPastel'
 									>
 										<div 
-											className="text-white text-center fs-1 m-0 p-0">
+											className="bgPastel text-white text-center fs-1 m-0 p-0">
 											MOV.
 										</div>
 									</th>
@@ -123,7 +121,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 								</th>
 								<th className="bg-white-1 p-1 fs-1 border-top-10 border-right-10">
 									<div className='text-center'>
-										PROMEDIO <br/> MENSUAL
+										PROMEDIO <br/> MENSUAL <br/> ANUAL
 									</div>
 								</th>
 						</tr>
@@ -150,7 +148,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 									const mesesSinCero = c.items.filter(i=>i.items.length!==0)
 							return (
 							<tr key={c.concepto} className={dataColor(c.concepto)}>
-								<td   className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white`}>
+								<td   className={`fw-bold fs-2 sticky-td-${id_empresa} border-left-10 border-right-10 p-1 ${bgTotal} text-white`}>
 											{idx + 1}. {c.concepto}
 							    </td>
 								{mesesSeleccionadosNums.map(mesNum => {
@@ -170,7 +168,7 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 												<NumberFormatMoney amount={itemMes.monto_total} />
 											</div>
 										</td>
-										<td style={{fontSize: '35px'}}>
+										<td style={{fontSize: '35px'}} className='bg-white-1'>
 											<div
 												className={`cursor-text-primary bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
 												// style={{width: '100px'}}
@@ -211,13 +209,13 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 							);
 						})}
 							<tr className={`${bgTotal} `} style={{fontSize: '35px'}}>
-								<td className={`text-white text-center sticky-td-${id_empresa}`}  >
+								<td className={`border-left-10 border-right-10 text-white text-center sticky-td-${id_empresa}`}  >
 										TOTAL
 								</td>
 								{
 									totalesGeneralesGrupo?.map((m, i)=>{
 										return (
-											<td  style={{fontSize: '35px'}}>
+											<td  style={{fontSize: '35px'}} className={`${(i+1)%2==0?'bg-change-pastel':'bg-change'}`}>
 												<div className="text-white bg-porsiaca text-right">
 												{(i+1)%2==0?m:(
 												<NumberFormatMoney amount={m}/>
@@ -241,18 +239,18 @@ export const TableGasto = ({id_empresa, mesesSeleccionadosNums, bgTotal, dataEgr
 </td> */}
 							</tr>
 							<tr className={`${bgTotal} `} style={{fontSize: '35px'}}>
-								<td className={`text-white sticky-td-${id_empresa}`}  >
+								<td className={`border-left-10 border-right-10 border-bottom-10 text-white sticky-td-${id_empresa}`}  >
 										PARTICIPACION
 								</td>
 								{
 									totalesGeneralesGrupo?.map((m, i)=>{
 										return (
-											<td style={{fontSize: '35px'}}>
+											<td style={{fontSize: '35px'}} className={`${(i+1)%2==0?'bg-change-pastel':'bg-change'}`}>
 												<div className="text-white bg-porsiaca text-right">
 												{(i+1)%2==0?(
 													<>
 													{
-														((m/sumaCantidadMov?.reduce((a, b)=>a+b, 0))*100).toFixed(2)
+													<NumberFormatMoney amount={(m/sumaCantidadMov?.reduce((a, b)=>a+b, 0))*100}/>
 													}
 													</>
 												):(

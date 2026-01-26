@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { Table } from 'react-bootstrap'
 import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo'
 
-export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTotal, mesesSeleccionadosNums, mesesNombres, onOpenModalDetallexCelda}) => {
+export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, background, bgTotal, mesesSeleccionadosNums, mesesNombres, onOpenModalDetallexCelda}) => {
 	const totalesPorGrupo = useMemo(()=>{
 		return TotalesPorGrupo(dataIngresosxMes).dataTotal
 	}, [dataIngresosxMes])
@@ -23,7 +23,7 @@ export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTota
 								{mesesSeleccionadosNums.map(mesNum => (
 									<React.Fragment key={mesNum}>
 									<col style={{ width: 150 }} />
-									<col style={{ width: 150 }} />
+									<col style={{ width: 150 }} className={`${bgPastel}`}/>
 									</React.Fragment>
 								))}
 								<col className={`${bgTotal}`} style={{ width: 150 }} />
@@ -43,9 +43,9 @@ export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTota
 									
 						return (
 							<React.Fragment key={grp.grupo}>
-													<thead className={bgTotal}>
+													<thead>
 																			<tr>
-																				<th className={`sticky-td-${id_empresa} text-white fs-1`}>
+																				<th className={`text-black bg-white-1 fs-1 border-left-10 border-right-10 border-top-10 border-bottom-10`}>
 																					<div
 													
 																					>
@@ -66,6 +66,7 @@ export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTota
 																					<React.Fragment key={mesNum}>
 																						<th
 																							style={{width: 130}}
+																							className={`bg-change `}
 																						>
 																							<div 
 																								className="text-white text-center fs-1 m-0 p-0">
@@ -74,9 +75,10 @@ export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTota
 																						</th>
 																						<th
 																							style={{width: 90}}
+																							className='bgPastel'
 																						>
 																							<div 
-																								className="text-white text-center fs-1 m-0 p-0">
+																								className="text-white text-center fs-1 m-0 p-0 bgPastel">
 																								MOV.
 																							</div>
 																						</th>
@@ -134,14 +136,14 @@ export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTota
 																const mesesSinCero = c.items.filter(i=>i.items.length!==0)
 														return (
 														<tr key={c.concepto}>
-															<td   className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white`}>
+															<td   className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white border-left-10 border-right-10`}>
 																		{idx + 1}. {c.concepto}
 															</td>
 															{mesesSeleccionadosNums.map(mesNum => {
 															const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
 															return (
 																<React.Fragment key={mesNum}>
-																	<td style={{fontSize: '35px'}}>
+																	<td style={{fontSize: '35px'}} className='bg-white-1 '>
 																		<div
 																			className={`cursor-text-primary bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
 																			// style={{width: '180px'}}
@@ -154,7 +156,7 @@ export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTota
 																			<NumberFormatMoney amount={itemMes.monto_total} />
 																		</div>
 																	</td>
-																	<td style={{fontSize: '35px'}}>
+																	<td style={{fontSize: '35px'}} className='bg-white-1'>
 																		<div
 																			className={`cursor-text-primary bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
 																			// style={{width: '100px'}}
@@ -195,13 +197,13 @@ export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTota
 														);
 													})}
 														<tr className={`${bgTotal} `} style={{fontSize: '35px'}}>
-															<td className={`text-white text-center sticky-td-${id_empresa}`}  >
+															<td className={`text-white text-center sticky-td-${id_empresa} border-left-10 border-right-10`}  >
 																	TOTAL
 															</td>
 															{
 																totalesGeneralesGrupo?.map((m, i)=>{
 																	return (
-																		<td  style={{fontSize: '35px'}}>
+																		<td  style={{fontSize: '35px'}} className={`${(i+1)%2==0?'bg-change-pastel':'bg-change'}`}>
 																			<div className="text-white bg-porsiaca text-right">
 																			{(i+1)%2==0?m:(
 																			<NumberFormatMoney amount={m}/>
@@ -225,13 +227,13 @@ export const TableVentas = ({dataIngresosxMes=[], id_empresa, background, bgTota
 							</td> */}
 														</tr>
 														<tr className={`${bgTotal} `} style={{fontSize: '35px'}}>
-															<td className={`text-white sticky-td-${id_empresa}`}  >
+															<td className={`text-white sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10`}  >
 																	PARTICIPACION
 															</td>
 															{
 																totalesGeneralesGrupo?.map((m, i)=>{
 																	return (
-																		<td style={{fontSize: '35px'}}>
+																		<td style={{fontSize: '35px'}} className={`${(i+1)%2==0?'bg-change-pastel':'bg-change'}`}>
 																			<div className="text-white bg-porsiaca text-right">
 																			{(i+1)%2==0?(
 																				<>

@@ -86,6 +86,11 @@ export const DateMaskString = (date, format) => {
   return dayjs.utc(date).subtract(5, "hour").format(format)
 }
 
+export const DateMaskStr = (date) => {
+  //'D [de] MMMM [del] YYYY'
+  return dayjs.utc(date).subtract(5, "hour")
+}
+
 export const MaskDate = (date, format) => {
   //'D [de] MMMM [del] YYYY'
   return dayjs.utc(date).subtract(5, "hour").locale("es").format(format)

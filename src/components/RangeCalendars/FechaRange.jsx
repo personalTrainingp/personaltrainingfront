@@ -209,7 +209,7 @@ const onSaveCorte = ()=>{
 }
 function del0al31() {
     let fecha=[];
-  for (let index = 1; index < 31; index++) {
+  for (let index = 1; index < 32; index++) {
     fecha.push({value: index, label: `${index}`})
   }
   return fecha;

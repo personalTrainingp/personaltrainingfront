@@ -66,7 +66,7 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
                                 
                             >
                                 <div  className={`bg-porsiaca text-right px-2 text-change`}>
-                                    <NumberFormatMoney amount={totalPorMesEgresos[mesNum - 1]} />
+                                    -<NumberFormatMoney amount={totalPorMesEgresos[mesNum - 1]} />
                                 </div>
                             </td>
                         )
@@ -74,7 +74,7 @@ export const TableResumen = ({dataGastos, dataIngresos, id_empresa, mesesSelecci
                     )}
                     <td className="text-center fw-bolder "  style={{fontSize: '35px'}}>
                         <div className='bg-porsiaca text-right text-change'>
-                            <NumberFormatMoney amount={totalEgresos} />
+                            -<NumberFormatMoney amount={totalEgresos} />
                         </div>
                     </td>
                 </tr>

@@ -21,6 +21,7 @@ export const DatatableEgresos = ({
 	background,
 	arrayRangeDate,
 	bgMultiValue,
+	bgPastel,
 	bgTotal
 }) => {
 	const [dataModal, setDataModal] = useState(null);
@@ -246,6 +247,7 @@ totalGeneralIngresos});
 						<p className='text-center' style={{fontSize: '60px'}}>INGRESOS</p>
 						{id_enterprice}
 						<TableVentas 
+								bgPastel={bgPastel}
 								id_empresa={id_enterprice}
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
 								dataIngresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes} 
@@ -259,6 +261,7 @@ totalGeneralIngresos});
 					<p className='text-center' style={{fontSize: '60px'}}>EGRESOS</p>
 						<TableGasto 
 							bgMultiValue={bgMultiValue} 
+							bgPastel={bgPastel}
 							bgTotal={bgTotal}  
 							id_empresa={id_enterprice}
 							gruposSinPrestamos={gruposSinPrestamos} 
@@ -286,8 +289,7 @@ totalGeneralIngresos});
 							totalPorMesIngExc={totalPorMesIngExc}
 						/>
 					</div>
-					<div>
-						{/* <p className='text-center' style={{fontSize: '60px'}}>CUENTAS POR COBRAR</p> */}
+					{/* <div>
 						<TableCuentas 
 						tipoCuenta={'PorCobrar'}
 						header={'CUENTAS POR COBRAR'}
@@ -312,7 +314,7 @@ totalGeneralIngresos});
 								mesesSeleccionadosNums={mesesSeleccionadosNums}
 								idEmpresa={id_enterprice}
 								/>
-					</div>
+					</div> */}
 				</div>
 			<ModalDetallexCelda
 				data={dataModal}

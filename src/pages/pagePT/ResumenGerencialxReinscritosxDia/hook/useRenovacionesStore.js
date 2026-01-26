@@ -18,7 +18,7 @@ export const useRenovacionesStore = () => {
 						id_cli: m.id_cli,
 						id_origen: m.id_origen,
 						id_venta: m.id,
-						fecha_venta: m.fecha_venta,
+						fechaP: m.fecha_venta,
 						empl: m.tb_empleado.nombres_apellidos_empl,
 						monto: m.detalle_ventaMembresia[0]?.tarifa_monto,
 						// membresia_monto: m.detalle_ventaMembresia[0].tarifa_monto,
