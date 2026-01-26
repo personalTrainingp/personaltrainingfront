@@ -43,7 +43,7 @@ export const DataTable1 = ({data, arrayFechas=[], nombreCategoriaVenta}) => {
                              ?objFechaSeleccionada.montoTotal:
                              objFechaSeleccionada.montoTotal-d.montoTotal
                             return (
-                                <td className='fs-3 text-center' style={{width: '100px'}}><NumberFormatMoney amount={restarConFechaSeleccionada}/></td>
+                                <td className='fs-3 text-center' style={{width: '100px'}}><NumberFormatMoney amount={d.montoTotal}/></td>
                             )
                         })
                     }
