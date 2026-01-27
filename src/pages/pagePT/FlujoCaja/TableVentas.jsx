@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { Table } from 'react-bootstrap'
 import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo'
 
-export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, background, bgTotal, mesesSeleccionadosNums, mesesNombres, onOpenModalDetallexCelda}) => {
+export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, background, bgTotal, mesesSeleccionadosNums, mesesNombres, onOpenModalDetallexCelda, anio}) => {
 	const totalesPorGrupo = useMemo(()=>{
 		return TotalesPorGrupo(dataIngresosxMes).dataTotal
 	}, [dataIngresosxMes])
@@ -110,7 +110,7 @@ export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, backgrou
 																					</th>
 																					<th className="bg-white-1 p-1 fs-1 border-top-10 border-right-10">
 																						<div className='text-center'>
-																							PROMEDIO <br/> MENSUAL
+																							PROMEDIO <br/> MENSUAL <br/> ANUAL
 																						</div>
 																					</th>
 																			</tr>
@@ -125,6 +125,8 @@ export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, backgrou
 														(sum, it) => sum + (it.monto_total || 0),
 														0
 														);
+														console.log({rrr: c.items.map(i=>i.monto_total)});
+														
 							
 														const cantidadMovimiento = c.items.reduce(
 														(sum, it) => sum + (it.lenthItems || 0),
@@ -134,6 +136,8 @@ export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, backgrou
 														? ((totalConcepto / grp.totalAnual) * 100).toFixed(2)
 														: '0.00';
 																const mesesSinCero = c.items.filter(i=>i.items.length!==0)
+																console.log({dt: dataTotalFormular(2024, c.items.map(i=>i.monto_total))});
+																
 														return (
 														<tr key={c.concepto}>
 															<td   className={`fw-bold fs-2 sticky-td-${id_empresa} p-1 ${bgTotal} text-white border-left-10 border-right-10`}>
@@ -190,7 +194,7 @@ export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, backgrou
 															</td>
 															<td className='border-right-10'>
 																<div className='text-right  text-white' style={{fontSize: '40px'}}>
-																		<NumberFormatMoney amount={totalConcepto/12} />
+																		<NumberFormatMoney amount={totalConcepto/dataTotalFormular(2024, c.items.map(i=>i.monto_total)).length} />
 																</div>
 															</td>
 														</tr>
@@ -215,16 +219,7 @@ export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, backgrou
 															}
 															<td className="text-center bg-white-1 border-left-10 border-right-10" colSpan={4}  style={{fontSize: '40px'}}>
 																TOTAL ANUAL
-																{/* <NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)}/> */}
 															</td>
-															{/* <td className="bg-white-1 text-right" > 
-																<div style={{marginRight: '40px', fontSize: '40px'}}>
-																	{sumaCantidadMov?.reduce((a, b)=>a+b, 0)}
-																</div>
-															</td>
-															<td  className="bg-white-1 text-center" style={{fontSize: '40px'}}><NumberFormatMoney amount={(mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/totalGeneral)*100}/>%</td>
-															<td className="bg-white-1 text-right" style={{fontSize: '40px'}}>									<NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/12}/>
-							</td> */}
 														</tr>
 														<tr className={`${bgTotal} `} style={{fontSize: '35px'}}>
 															<td className={`text-white sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10`}  >
@@ -261,7 +256,7 @@ export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, backgrou
 																</div>
 															</td>
 															<td  className="bg-white-1 text-center border-bottom-10" style={{fontSize: '40px'}}><NumberFormatMoney amount={(mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/totalGeneral)*100}/>%</td>
-															<td className="bg-white-1 text-right border-right-10 border-bottom-10" style={{fontSize: '40px'}}>									<NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/12}/>
+															<td className="bg-white-1 text-right border-right-10 border-bottom-10" style={{fontSize: '40px'}}>									<NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/dataTotalFormular(anio, mesesSumaxGrupo).length}/>
 							</td> 
 														</tr>
 														<tr className='bg-white'>
@@ -278,4 +273,9 @@ export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, backgrou
 	</div>
     </>
   )
+}
+
+
+function dataTotalFormular(anio=2024, data=[]) {
+	return anio===2024?data.slice(data.findIndex(n => n !== 0)):data
 }

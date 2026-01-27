@@ -41,6 +41,9 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa, isCopy}) => {
     if(id===0){
       onPostGestionAporte(formState, idEmpresa)
     }else{
+      if(isCopy){
+        onPostGestionAporte(formState, idEmpresa)
+      }
       onUpdateIngresos(formState, id, id_empresa)
     }
     onCancelCustomAporte()
@@ -80,7 +83,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa, isCopy}) => {
               setgastoxGrupo(conceptos)
           }, [grupo, idEmpresa])
   return (  
-    <Dialog onHide={onCancelCustomAporte} visible={show} header={`${id===0?'AGREGAR INGRESOS':'ACTUALIZAR INGRESOS'}`} style={{width: '70rem'}} position='top'>
+    <Dialog onHide={onCancelCustomAporte} visible={show} header={`${id===0?'AGREGAR INGRESOS':`${isCopy?'AGREGAR INGRESOS COPIADOS':'ACTUALIZAR INGRESOS'}`}`} style={{width: '70rem'}} position='top'>
         <form>
           <Row>
             <Col lg={4}>

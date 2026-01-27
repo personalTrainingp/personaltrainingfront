@@ -255,6 +255,7 @@ totalGeneralIngresos});
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 
 								mesesSeleccionadosNums={mesesSeleccionadosNums}
+								anio={anio}
 								/>
 					</div>
 					<div>
@@ -272,6 +273,7 @@ totalGeneralIngresos});
 							totalGeneral ={totalGeneral }
 							selectedMonths ={selectedMonths }
 							dataEgresosxMes={dataGastosxANIO}
+								anio={anio}
 							/>
 					</div>
 					

@@ -23,17 +23,19 @@ export const useInformeEjecutivoStore = () => {
 					cantidadTotal: 1,
 				};
 			});
-			const dataVentasMap = data.ventas.map((m) => {
-				return {
-					id_cli: m.id_cli,
-					id_origen: m.id_origen,
-					id_venta: m.id,
-					fechaP: m.fecha_venta,
-					empl: m.tb_empleado.nombres_apellidos_empl,
-					detalle_membresias: m.detalle_ventaMembresia,
-					detalle_productos: m.detalle_ventaProductos,
-				};
-			});
+			const dataVentasMap = data.ventas
+				.map((m) => {
+					return {
+						id_cli: m.id_cli,
+						id_origen: m.id_origen,
+						id_venta: m.id,
+						fechaP: m.fecha_venta,
+						empl: m.tb_empleado.nombres_apellidos_empl,
+						detalle_membresias: m.detalle_ventaMembresia,
+						detalle_productos: m.detalle_ventaProductos,
+					};
+				})
+				.filter((d) => d.id_origen === 691);
 			const dataMembresias = dataVentasMap
 				.filter((dventa) => dventa.detalle_membresias.length !== 0)
 				.map((v) => {
@@ -91,6 +93,8 @@ export const useInformeEjecutivoStore = () => {
 					};
 				})
 				.filter((v) => v.detalle_productos.length !== 0);
+			console.log({ dataVentasMap });
+
 			setdataVentas({
 				dataMembresias: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataMembresias)),
 				dataProductos17: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataProductos17)),

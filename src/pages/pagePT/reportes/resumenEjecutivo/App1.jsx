@@ -7,7 +7,7 @@ export const App1 = () => {
         <>
         <AppComparativoConMes/>
         {/* <AppDetalleLeads/> */}
-        <AppComparativoDiaxDia/>
+        {/* <AppComparativoDiaxDia/> */}
         </>
     )
 }

@@ -98,6 +98,9 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
     { id: '', header: '', render:(row)=>{
         return (
             <>
+            <Button icon="pi pi-copy" rounded outlined severity="danger"  className='mr-2'
+            onClick={()=>onClickCopyModalCustomIngresos(row.id)} 
+            />
             <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
             onClick={()=>onClickOpenModalCustomIngresos(row.id)} 
             />
@@ -109,7 +112,7 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
     } },
   ];
   const onClickOpenModalCustomIngresos = (id)=>{
-    onOpenModalCustomAporte(id)
+    onOpenModalCustomAporte(id, false)
   }
   const confirmDeleteIngresosxID = (id)=>{
     confirmDialog({
@@ -119,8 +122,8 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
       }
     })
   }
-  const onClickCopyModalIngresos=()=>{
-
+  const onClickCopyModalCustomIngresos = (id)=>{
+    onOpenModalCustomAporte(id, true)
   }
   return (
     <div>
