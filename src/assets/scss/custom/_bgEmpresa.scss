@@ -77,3 +77,19 @@
 .border-bottom-10{
   border-bottom: 10px solid #000 !important;
 }
+
+
+
+
+.year-header {
+  font-size: 60px;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 20;
+}
+
+.tab-scroll-container {
+  height: calc(100vh - 400px); /* ajusta */
+  overflow-y: auto;
+}

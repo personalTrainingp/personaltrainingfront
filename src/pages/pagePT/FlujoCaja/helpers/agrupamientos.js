@@ -186,6 +186,7 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 			grupo: grupoNombre,
 			totalMontoxMes,
 			totalCantxMes,
+			movimientosTotalDeConceptos: totalCantxMes.reduce((total, item) => total + item, 0),
 			totalMes: totalMontoxMes.flatMap((v, i) => [v, totalCantxMes[i]]),
 			conceptos,
 		};

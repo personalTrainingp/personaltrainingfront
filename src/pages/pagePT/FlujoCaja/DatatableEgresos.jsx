@@ -30,17 +30,15 @@ export const DatatableEgresos = ({
 	const [isOpenModalDetallexCelda1, setIsOpenModalDetallexCelda1] = useState(false);
 	const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false);
 	const [isOpenModalDetallexCelda2, setIsOpenModalDetallexCelda2] = useState(false);
-	const { obtenerGastosxANIO, dataGastosxANIO, dataNoPagos } = useFlujoCajaStore();
+	const { obtenerGastosxANIO, dataGastosxANIO } = useFlujoCajaStore();
 	const { obtenerVentasxFechaxEmpresa, dataVentasxMes, dataIngresosxMes, obtenerIngresosxFechaxEmpresa } = useVentasStore()
-	const { dataCuentasBalance:dataCuentasBalancePorCobrar, obtenerCuentasBalance:obtenerCuentasBalancePorCobrar } = useCuentasStore()
-	const { dataCuentasBalance:dataCuentasBalancePorPagar, obtenerCuentasBalance:obtenerCuentasBalancePorPagar } = useCuentasStore()
+	// const { dataCuentasBalance:dataCuentasBalancePorCobrar, obtenerCuentasBalance:obtenerCuentasBalancePorCobrar } = useCuentasStore()
+	// const { dataCuentasBalance:dataCuentasBalancePorPagar, obtenerCuentasBalance:obtenerCuentasBalancePorPagar } = useCuentasStore()
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if(id_enterprice || arrayRangeDate){
 			obtenerVentasxFechaxEmpresa(arrayRangeDate, id_enterprice)
 			obtenerIngresosxFechaxEmpresa(arrayRangeDate, id_enterprice)
-			obtenerCuentasBalancePorCobrar(arrayRangeDate, id_enterprice, 'PorCobrar')
-			obtenerCuentasBalancePorPagar(arrayRangeDate, id_enterprice, 'PorPagar')
 		}
 	}, [id_enterprice, arrayRangeDate])
 	
@@ -93,26 +91,9 @@ export const DatatableEgresos = ({
 	useEffect(() => {
 		obtenerGastosxANIO(anio, id_enterprice);
 	}, [anio, id_enterprice]);
-	const totalesPorGrupoVentas = useMemo(()=>{
-		return TotalesPorGrupo([...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]).dataTotal
-	}, [dataVentasxMes])
-
-	const totalesPorGrupoPorPagar = useMemo(()=>{
-		return TotalesPorGrupo(dataCuentasBalancePorCobrar).dataTotal
-	}, [dataGastosxANIO])
-
-	const totalesPorGrupo = useMemo(()=>{
-		return TotalesPorGrupo(dataGastosxANIO).dataTotal
-	}, [dataGastosxANIO])
-	
 	const totalesPorGrupoIngreso = useMemo(()=>{
 		return TotalesPorGrupo(dataIngresosxMes).dataTotal
 	}, [dataIngresosxMes])
-	// 1) Prepara el array sin “PRESTAMOS”
-	const gruposSinPrestamos = totalesPorGrupo.filter(
-	(g) => g.grupo.toUpperCase() !== 'PRESTAMOS'
-	);
-	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
 	const { totalPorMes: totalPorMesVenta, totalGeneral: totalGeneralVenta } = useMemo(() => {
 		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes([...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')])
 		return {
@@ -138,14 +119,6 @@ export const DatatableEgresos = ({
 		}
 	}, [dataGastosxANIO]);
 	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
-	const { totalPorMes:totalPorMesIngresos1, totalGeneral:totalGeneralIngresos1 } = useMemo(() => {
-		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataIngresosxMes)
-		return {
-			totalGeneral,
-			totalPorMes
-		}
-	}, [dataIngresosxMes]);
-	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
 	const { totalPorMes:totalPorMesIngresos, totalGeneral:totalGeneralIngresos } = useMemo(() => {
 		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataIngresosxMes)
 		return {
@@ -155,21 +128,12 @@ export const DatatableEgresos = ({
 	}, [dataIngresosxMes]);
 	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
 	const { totalPorMes:totalPorMesEgresos, totalGeneral:totalGeneralEgresos } = useMemo(() => {
-		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataGastosxANIO)
+		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataGastosxANIO.filter(ing=>ing.grupo!=='PRESTAMOS'))
 		return {
 			totalGeneral,
 			totalPorMes
 		}
 	}, [dataGastosxANIO]);
-	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
-	const { totalPorMes:totalPorMesPorPagar, totalGeneral:totalGeneralPorPagar } = useMemo(() => {
-		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataCuentasBalancePorCobrar)
-		return {
-			totalGeneral,
-			totalPorMes
-		}
-	}, [dataCuentasBalancePorCobrar]);
-	console.log({ totalPorMesVenta, totalGeneralVenta });
 	// 8) Funciones para abrir/cerrar el modal
 	const onCloseModalDetallexCelda2 = () => {
 		setIsOpenModalDetallexCelda2(false);
@@ -203,9 +167,6 @@ export const DatatableEgresos = ({
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
 	);
-	console.log({totalPorMesIngresos,
-totalGeneralIngresos});
-	
 	return (
 		<>
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
@@ -265,15 +226,14 @@ totalGeneralIngresos});
 							bgPastel={bgPastel}
 							bgTotal={bgTotal}  
 							id_empresa={id_enterprice}
-							gruposSinPrestamos={gruposSinPrestamos} 
 							mesesNombres={mesesNombres} 
 							mesesSeleccionadosNums={mesesSeleccionadosNums} 
 							onOpenModalDetallexCelda={onOpenModalDetallexCelda}
 							totalPorMes={totalPorMes}
 							totalGeneral ={totalGeneral }
 							selectedMonths ={selectedMonths }
-							dataEgresosxMes={dataGastosxANIO}
-								anio={anio}
+							dataEgresosxMes={dataGastosxANIO.filter(ing=>ing.grupo!=='PRESTAMOS')}
+							anio={anio}
 							/>
 					</div>
 					
@@ -284,39 +244,13 @@ totalGeneralIngresos});
 							bgTotal={bgTotal}
 							mesesNombres={mesesNombres}
 							mesesSeleccionadosNums={mesesSeleccionadosNums}
-							dataIngresos={totalesPorGrupoIngreso}
-							dataGastos={gruposSinPrestamos}
 							totalPorMesEgresos={totalPorMesEgresos}
 							totalPorMesIngresos={id_enterprice!==800?totalPorMesVenta:totalPorMesIngresos}
 							totalPorMesIngExc={totalPorMesIngExc}
+							dataGastos={dataGastosxANIO.filter(ing=>ing.grupo!=='PRESTAMOS')}
+							dataIngresos={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes}
 						/>
 					</div>
-					{/* <div>
-						<TableCuentas 
-						tipoCuenta={'PorCobrar'}
-						header={'CUENTAS POR COBRAR'}
-								onOpenModalDetallexCelda={onOpenModalDetallexCelda2}
-								dataIngresosxMes={dataCuentasBalancePorCobrar} 
-								background={background} 
-								bgTotal={bgTotal} 
-								mesesNombres={mesesNombres} 
-								mesesSeleccionadosNums={mesesSeleccionadosNums}
-								idEmpresa={id_enterprice}
-								/>
-					</div>
-					<div>
-						<TableCuentas 
-						tipoCuenta={'PorPagar'}
-						header={'CUENTAS POR PAGAR'}
-								onOpenModalDetallexCelda={onOpenModalDetallexCelda2}
-								dataIngresosxMes={dataCuentasBalancePorPagar} 
-								background={background} 
-								bgTotal={bgTotal} 
-								mesesNombres={mesesNombres} 
-								mesesSeleccionadosNums={mesesSeleccionadosNums}
-								idEmpresa={id_enterprice}
-								/>
-					</div> */}
 				</div>
 			<ModalDetallexCelda
 				data={dataModal}

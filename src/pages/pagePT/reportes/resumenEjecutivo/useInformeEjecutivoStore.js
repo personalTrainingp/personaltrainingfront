@@ -23,19 +23,17 @@ export const useInformeEjecutivoStore = () => {
 					cantidadTotal: 1,
 				};
 			});
-			const dataVentasMap = data.ventas
-				.map((m) => {
-					return {
-						id_cli: m.id_cli,
-						id_origen: m.id_origen,
-						id_venta: m.id,
-						fechaP: m.fecha_venta,
-						empl: m.tb_empleado.nombres_apellidos_empl,
-						detalle_membresias: m.detalle_ventaMembresia,
-						detalle_productos: m.detalle_ventaProductos,
-					};
-				})
-				.filter((d) => d.id_origen === 691);
+			const dataVentasMap = data.ventas.map((m) => {
+				return {
+					id_cli: m.id_cli,
+					id_origen: m.id_origen,
+					id_venta: m.id,
+					fechaP: m.fecha_venta,
+					empl: m.tb_empleado.nombres_apellidos_empl,
+					detalle_membresias: m.detalle_ventaMembresia,
+					detalle_productos: m.detalle_ventaProductos,
+				};
+			});
 			const dataMembresias = dataVentasMap
 				.filter((dventa) => dventa.detalle_membresias.length !== 0)
 				.map((v) => {

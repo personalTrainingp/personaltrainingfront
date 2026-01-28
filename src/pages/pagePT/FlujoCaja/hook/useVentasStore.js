@@ -167,8 +167,6 @@ export const useVentasStore = () => {
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/terminologiaxEmpresa/${idEmpresa}/1574`
 			);
-			// console.log({ dataParametrosGastos });
-			console.log({ inggg: data });
 			const { data: dataTC } = await PTApi.get('/tipoCambio/');
 			const dataTCs = dataTC.tipoCambios.map((e, i, arr) => {
 				const posteriores = arr

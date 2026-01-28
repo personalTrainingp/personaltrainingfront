@@ -14,23 +14,6 @@ function formatDateToSQLServerWithDayjs(date, isStart = true) {
 
 	return formatted;
 }
-function agruparPorProducto(data) {
-	const resultado = [];
-
-	data.forEach((item) => {
-		const existente = resultado.find((r) => r.concepto === item.concepto);
-		if (existente) {
-			existente.items.push(item);
-		} else {
-			resultado.push({
-				concepto: item.concepto,
-				items: [item],
-			});
-		}
-	});
-
-	return resultado;
-}
 export const useFlujoCajaStore = () => {
 	const { obtenerVentasPorFecha, dataVentaxFecha } = useVentasStore();
 	const [dataIngresos_FC, setdataIngresos_FC] = useState([]);
