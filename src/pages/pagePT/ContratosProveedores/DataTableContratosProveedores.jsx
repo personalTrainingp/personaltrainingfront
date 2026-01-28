@@ -11,6 +11,7 @@ import { TerminosOnShow } from '@/hooks/usePropiedadesStore';
 import { recortarTexto } from '@/helper/recortarTexto';
 import dayjs from 'dayjs';
 import { ButtonCopy } from './ButtonCopy';
+import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 
 export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomContratosProv}) => {
     const [isOpenModalIframe, setisOpenModalIframe] = useState({isOpen: false, url: ''})
@@ -74,12 +75,13 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
     }  },
     { id: 'compra_activos', header: <div className='text-center'>COMPRA <br/> ACTIVOS</div>, sortable: true, accessor: 'compra_activos',  render: (row)=>{
         return (
-            <>
+            <div className={row?.tipo_moneda === 'PEN'?'':'text-ISESAC fw-bold'}>
+                                    {row?.tipo_moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
             <NumberFormatMoney
                 amount=
                 {row?.mano_obra_soles}
             />
-            </>
+            </div>
         )
     }},
     { id: 'monto_contrato', header: <div className='text-center'>MANO OBRA <br/> soles</div>, sortable: true, accessor: 'monto_contrato',  render: (row)=>{

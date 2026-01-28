@@ -1,7 +1,7 @@
 import { InputButton, InputDate, InputFile, InputNumber, InputSelect, InputText, InputTextArea } from '@/components/InputText'
 import { useForm } from '@/hooks/useForm'
 import { TerminosOnShow } from '@/hooks/usePropiedadesStore'
-import { arrayEmpresaFinan } from '@/types/type'
+import { arrayEmpresaFinan, arrayMonedas } from '@/types/type'
 import { Dialog } from 'primereact/dialog'
 import React, { useEffect, useState } from 'react'
 import { useContratosProveedores } from './useContratosProveedores'
@@ -17,6 +17,7 @@ const customContratosProveedores={
     id_empresa: 0, 
     mano_obra_soles: 0.00, 
     mano_obra_dolares: 0.00, 
+    tipo_moneda: 'PEN',
     id_zona: 0,
     observacion: ''
 }
@@ -31,6 +32,7 @@ export const ModalCustomProveedores = ({show=false, onHide, id=0, id_empresa1, i
             hora_fin, 
             observacion, 
             estado_contrato, 
+            tipo_moneda,
             uid_contrato, uid_compromisoPago, mano_obra_soles, id_empresa, monto_contrato, mano_obra_dolares, id_zona, onInputChange, onResetForm  } = useForm(dataContratoProveedor)
     const { dataEmpresas, dataZonasxEmpresa, obtenerZonasxEmpresa, dataEstadoContrato } = TerminosOnShow(show)
         const { obtenerParametrosProveedor } = useProveedorStore()
@@ -134,6 +136,9 @@ export const ModalCustomProveedores = ({show=false, onHide, id=0, id_empresa1, i
             </div>
             <div className='mb-3'>
                 <InputNumber label={'Monto de compra de activos'} nameInput={'mano_obra_soles'} onChange={onInputChange} value={mano_obra_soles} />
+            </div>
+            <div className='mb-3'>
+                <InputSelect label={'TIPO DE MONEDA'} nameInput={'tipo_moneda'} options={arrayMonedas} onChange={onInputChange} value={tipo_moneda}  />
             </div>
             <div className='mb-3'>
                 <InputNumber label={'MANO DE OBRA EN SOLES'} nameInput={'monto_contrato'} onChange={onInputChange} value={monto_contrato} />
