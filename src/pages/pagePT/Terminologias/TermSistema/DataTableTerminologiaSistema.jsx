@@ -2,65 +2,76 @@ import React, { useEffect, useState } from 'react'
 import { Table } from 'react-bootstrap'
 import { ModalCustomTermSistema } from './ModalCustomTermSistema'
 import { useTerminoSistema } from './useTerminoSistema'
-import { Button } from 'primereact/button'
 import { useSelector } from 'react-redux'
+import { DataTableCR } from '@/components/DataView/DataTableCR'
+import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
-export const DataTableTerminologiaSistema = ({dataTerm, entidad, grupo}) => {
-  const [isOpenModalCustomTermSistema, setisOpenModalCustomTermSistema] = useState({isOpen: false, id: 0, label: ''})
-  const { obtenerTerminologiaSistema, deleteTerminologia } = useTerminoSistema()
-  const {dataView} = useSelector(e=>e.DATA)
-  const onOpenModalCustomTermSistema = (id, label)=>{
-    setisOpenModalCustomTermSistema({isOpen: true, id, label})
-  }
-  const onCloseModalCustomTermSistema = ()=>{
-    setisOpenModalCustomTermSistema({isOpen: false, id: 0, label: ''})
-  }
+export const DataTableTerminologiaSistema = ({onOpenModalTermSis}) => {
+  const { obtenerTerminologiaSistema,  deleteTerminologia } = useTerminoSistema()
+  const { dataViewTerm } = useSelector(e=>e.TERM)
   useEffect(() => {
-    obtenerTerminologiaSistema(entidad, grupo)
-  }, [entidad])
-  const onDeleteTermSis = (idTer)=>{
+    obtenerTerminologiaSistema()
+  }, [])
+  const columns = [
+    {id: 0, header: 'ID', accesor: 'id_param', render:(row)=>{
+      return (
+        <>
+        {row.id_param}
+        </>
+      )
+    }},
+    {id: 1, header: 'ENTIDAD', accesor: 'entidad_param', render:(row)=>{
+      return (
+        <>
+        {row.entidad_param}
+        </>
+      )
+    }},
+    {id: 2, header: 'GRUPO', accesor: 'grupo_param', render:(row)=>{
+      return (
+        <>
+        {row.grupo_param}
+        </>
+      )
+    }},
+    {id: 3, header: 'VALOR', accesor: 'label_param', render:(row)=>{
+      return (
+        <>
+        {row.label_param}
+        </>
+      )
+    }},
+    {id: 4, header: '', render:(row)=>{
+      return (
+        <>
+            <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
+            onClick={()=>onClickOpenModalCustomTermSis(row.id_param)} 
+            />
+            <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
+            onClick={()=>confirmDeleteTSxID(row.id_param)} 
+            />
+        </>
+      )
+    }},
+  ]
+  const onClickOpenModalCustomTermSis=(id)=>{
+    onOpenModalTermSis(id)
+  }
+  const confirmDeleteTSxID=(id)=>{
     confirmDialog({
-        message: `Seguro que quieres eliminar la terminologia?`,
-        header: `eliminar terminologia`,
-        icon: 'pi pi-info-circle',
-        defaultFocus: 'reject',
-        acceptClassName: 'p-button-danger',
-        accept:  ()=>{
-          deleteTerminologia(idTer, entidad, grupo)
-        },
-    });
+      message: '¿QUIERES ELIMINAR ESTE CONCEPTO?',
+      accept: ()=>{
+        deleteTerminologia(id);
+      }
+    })
   }
   return (
     <div>
-      <Button label='AGREGAR' onClick={()=>onOpenModalCustomTermSistema(0, '')}/>
-      <Table>
-        <thead>
-          <tr>
-            <th>id</th>
-            <th>Valor</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            dataView?.map(d=>{
-              return (
-                <tr>
-                  <td>{d?.value}</td>
-                  <td>{d?.label}</td>
-                  <td>
-                    <i onClick={()=>onOpenModalCustomTermSistema(d?.value, d?.label)} className='pi pi-pencil mx-4'></i>
-                    <i onClick={()=>onDeleteTermSis(d.value)} className='pi pi-trash  '></i>
-                  </td>
-                </tr>
-              )
-            })
-
-          }
-        </tbody>
-      </Table>
-      <ModalCustomTermSistema label={isOpenModalCustomTermSistema.label} id={isOpenModalCustomTermSistema.id} entidad={entidad} grupo={grupo} show={isOpenModalCustomTermSistema.isOpen} onHide={onCloseModalCustomTermSistema}/>
+      <DataTableCR
+        data={dataViewTerm}
+        columns={columns}
+      />
     </div>
   )
 }

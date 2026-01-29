@@ -1,61 +1,71 @@
-import { Dialog } from 'primereact/dialog';
-import React, { useEffect, useState } from 'react';
-import { Button } from 'primereact/button';
-import { useTerminologiaStore } from '../useTerminologiaStore';
-
+import { InputButton, InputSelect, InputText } from "@/components/InputText";
+import { useForm } from "@/hooks/useForm";
+import { Modal } from "react-bootstrap";
+import { useTerminoSistema } from "./useTerminoSistema";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+const customTS = {
+  label_param: '',
+  entidad_param: '',
+  grupo_param: '',
+  estado_param: 1
+}
 export const ModalCustomTermSistema = ({ show, onHide, entidad, grupo, id = 0, label = '' }) => {
-  const [labelParam, setLabelParam] = useState(label?.trim() ?? '');
-  const { registrarTerminologiaxEntidadyGrupo 
-    , actualizarTerminologia
-  } = useTerminologiaStore();
-
-  // Sincroniza el input al abrir/cambiar label
-  useEffect(() => {
-    if (show) setLabelParam(label?.trim() ?? '');
-  }, [show, label]);
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const value = labelParam.trim();
-    if (!value) return; // opcional: mostrar toast/feedback
-
-    if (id === 0) {
-      // Crear
-      registrarTerminologiaxEntidadyGrupo({ label_param: value }, entidad, grupo);
-    } else {
-      // Editar (ajusta según tu store):
-      actualizarTerminologia( {label_param: value }, id, entidad, grupo);
+  const { obtenerTerminologiaSistemaxID, dataTerminoxID, registrarTerminologiaxEntidadyGrupo, actualizarTerminologia } = useTerminoSistema()
+  const { formState, onInputChange, label_param, entidad_param, grupo_param, estado_param, onResetForm } = useForm(id!==0?dataTerminoxID:customTS)
+  const { dataViewTerm } = useSelector(e=>e.TERM)
+  const optionsDataEntidades = dataViewTerm?.map(dv=>{
+    return {
+      label: dv.entidad_param,
+      value: dv.entidad_param,
     }
-    onHide?.();
-  };
-
+  })
+  const optionsDataGrupos = dataViewTerm?.map(dv=>{
+    return {
+      label: dv.grupo_param,
+      value: dv.grupo_param,
+    }
+  })
+  useEffect(() => {
+    if (id!==0) {
+      obtenerTerminologiaSistemaxID(id)
+    }
+  }, [id])
+  const onSubmitTerminologia = ()=>{
+    if(id!==0){
+      actualizarTerminologia(formState, id)
+    }else{
+      registrarTerminologiaxEntidadyGrupo(formState, entidad_param, grupo_param)
+    }
+    cancelarTerminologia()
+  }
+  const cancelarTerminologia = ()=>{
+    onResetForm();
+    onHide();
+  }
   return (
-    <Dialog
-      header={id === 0 ? 'AGREGAR TÉRMINO' : 'EDITAR TÉRMINO'}
-      visible={show}
-      onHide={onHide}
-      style={{ width: '32rem', maxWidth: '95vw' }}
-      draggable={false}
-    >
-      <form onSubmit={onSubmit}>
-        <input
-          className="form-control mb-3"
-          name="label_param"
-          value={labelParam}
-          onChange={(e) => setLabelParam(e.target.value)}
-          type="text"
-          placeholder="Ingrese el término"
-          autoFocus
-        />
-        <div className="flex gap-2 justify-end">
-          <Button type="button" label="Cancelar" severity="secondary" onClick={onHide} />
-          <Button
-            type="submit"
-            label={id === 0 ? 'Agregar' : 'Guardar'}
-            disabled={!labelParam.trim()}
-          />
-        </div>
-      </form>
-    </Dialog>
+    <Modal show={show} onHide={cancelarTerminologia} >
+      <Modal.Header>
+        {id!==0?'ACTUALIZAR TERMINOLOGIA':'AGREGAR TERMINOLOGIA'}
+      </Modal.Header>
+      <Modal.Body>
+        <form>
+          <div className="my-2">
+            <InputSelect label={'ENTIDADES'} nameInput={'entidad_param'} onChange={onInputChange} options={optionsDataEntidades} value={entidad_param}  required/>
+          </div>
+          <div className="my-2">
+            <InputSelect label={'GRUPOS'} nameInput={'grupo_param'} onChange={onInputChange} options={optionsDataGrupos} value={grupo_param}  required/>
+          </div>
+          <div className="my-2">
+            <InputText label={'VALOR'} nameInput={'label_param'} onChange={onInputChange} value={label_param} required/>
+          </div>
+          <div>
+            <InputButton label={'AGREGAR'} onClick={onSubmitTerminologia}/>
+            <InputButton label={'SALIR'} variant={'_link'} onClick={cancelarTerminologia}/>
+          </div>
+        </form>
+
+      </Modal.Body>
+    </Modal>
   );
 };

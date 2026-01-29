@@ -16,7 +16,7 @@ import { useCuentasStore } from './hook/useCuentasStore';
 import { ModalDetalleCuentas } from './ModalDetalleCuentas';
 import { onSetRangeDate, onViewSection } from '@/store/data/dataSlice';
 
-export const DatatableEgresos = ({
+export const DatatableEgresos2 = ({
 	id_enterprice,
 	anio,
 	background,
@@ -37,11 +37,10 @@ export const DatatableEgresos = ({
 	// const { dataCuentasBalance:dataCuentasBalancePorPagar, obtenerCuentasBalance:obtenerCuentasBalancePorPagar } = useCuentasStore()
 	const dispatch = useDispatch();
 	useEffect(() => {
-		if(id_enterprice || arrayRangeDate){
-			obtenerVentasxFechaxEmpresa(arrayRangeDate, id_enterprice)
-			obtenerIngresosxFechaxEmpresa(arrayRangeDate, id_enterprice)
-		}
-	}, [id_enterprice, arrayRangeDate])
+		obtenerVentasxFechaxEmpresa(arrayRangeDate, id_enterprice)
+		obtenerIngresosxFechaxEmpresa(arrayRangeDate, id_enterprice)
+		obtenerGastosxANIO(arrayRangeDate, id_enterprice);
+	}, [id_enterprice])
 	useEffect(() => {
 			dispatch(onSetRangeDate(['AL', `${anio}`]))
 	}, [])
@@ -92,12 +91,6 @@ export const DatatableEgresos = ({
 		localStorage.setItem('selectedMonths', JSON.stringify(vals))
 	}, [selectedMonths])
 	// 4) Cada vez que cambia empresa o año, recargar datos
-	useEffect(() => {
-		obtenerGastosxANIO(anio, id_enterprice);
-	}, [anio, id_enterprice]);
-	const totalesPorGrupoIngreso = useMemo(()=>{
-		return TotalesPorGrupo(dataIngresosxMes).dataTotal
-	}, [dataIngresosxMes])
 	const { totalPorMes: totalPorMesVenta, totalGeneral: totalGeneralVenta } = useMemo(() => {
 		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes([...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')])
 		return {
@@ -115,14 +108,6 @@ export const DatatableEgresos = ({
 		}
 	}, [dataVentasxMes]);
 	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
-	const { totalPorMes, totalGeneral } = useMemo(() => {
-		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataGastosxANIO)
-		return {
-			totalGeneral,
-			totalPorMes
-		}
-	}, [dataGastosxANIO]);
-	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
 	const { totalPorMes:totalPorMesIngresos, totalGeneral:totalGeneralIngresos } = useMemo(() => {
 		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataIngresosxMes)
 		return {
@@ -138,35 +123,6 @@ export const DatatableEgresos = ({
 			totalPorMes
 		}
 	}, [dataGastosxANIO]);
-	// 8) Funciones para abrir/cerrar el modal
-	const onCloseModalDetallexCelda2 = () => {
-		setIsOpenModalDetallexCelda2(false);
-		setDataModal2(null);
-	};
-	const onOpenModalDetallexCelda2 = (itemDetail) => {
-		setDataModal2(itemDetail);
-		setIsOpenModalDetallexCelda2(true);
-	};
-	
-	// 8) Funciones para abrir/cerrar el modal
-	const onCloseModalDetallexCelda = () => {
-		setIsOpenModalDetallexCelda(false);
-		setDataModal(null);
-	};
-	const onOpenModalDetallexCelda = (itemDetail) => {
-		setDataModal(itemDetail);
-		setIsOpenModalDetallexCelda(true);
-	};
-	
-	// 8) Funciones para abrir/cerrar el modal
-	const onCloseModalDetallexCelda1 = () => {
-		setIsOpenModalDetallexCelda1(false);
-		setDataModal1(null);
-	};
-	const onOpenModalDetallexCelda1 = (itemDetail) => {
-		setDataModal1(itemDetail);
-		setIsOpenModalDetallexCelda1(true);
-	};
 	const mesesSeleccionadosNums = useMemo(
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
@@ -174,74 +130,7 @@ export const DatatableEgresos = ({
 
 	return (
 		<>
-				<div style={{ marginBottom: '1rem', width: '95vw' }}>
-					<Select
-						options={monthOptions}
-						isMulti
-						closeMenuOnSelect={false}
-						hideSelectedOptions={false}
-						value={selectedMonths}
-						onChange={setSelectedMonths}
-						placeholder="Selecciona uno o varios meses..."
-						styles={{
-							control: (provided) => ({
-								...provided,
-								fontSize: '1.9rem',
-								color: 'white',
-							}),
-							menuList: (provided, state) => ({
-								...provided,
-								padding: '12px 16px', // Espaciado interno para que cada opción sea más “alta”
-							}),
-							// Contenedor de las etiquetas seleccionadas ("pills")
-							multiValue: (provided) => ({
-								...provided,
-								backgroundColor: bgMultiValue, // fondo rojo para cada etiqueta
-								color: 'white',
-							}),
-							// Texto dentro de cada pill
-							multiValueLabel: (provided) => ({
-								...provided,
-								color: 'white', // texto blanco sobre rojo
-								fontSize: '1.45vw',
-							}),
-						}}
-					/>
-				</div>
 				<div className="table-responsive" style={{ width: '95vw' }}>
-					<div>
-						<p className='text-center' style={{fontSize: '60px'}}>INGRESOS</p>
-						{id_enterprice}
-						<TableVentas 
-								bgPastel={bgPastel}
-								id_empresa={id_enterprice}
-								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-								dataIngresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes} 
-								background={background} 
-								bgTotal={bgTotal} 
-								mesesNombres={mesesNombres} 
-								mesesSeleccionadosNums={mesesSeleccionadosNums}
-								anio={anio}
-								/>
-					</div>
-					<div>
-					<p className='text-center' style={{fontSize: '60px'}}>EGRESOS</p>
-						<TableGasto 
-							bgMultiValue={bgMultiValue} 
-							bgPastel={bgPastel}
-							bgTotal={bgTotal}  
-							id_empresa={id_enterprice}
-							mesesNombres={mesesNombres} 
-							mesesSeleccionadosNums={mesesSeleccionadosNums} 
-							onOpenModalDetallexCelda={onOpenModalDetallexCelda}
-							totalPorMes={totalPorMes}
-							totalGeneral ={totalGeneral }
-							selectedMonths ={selectedMonths }
-							dataEgresosxMes={dataGastosxANIO.filter(ing=>ing.grupo!=='PRESTAMOS')}
-							anio={anio}
-							/>
-					</div>
-					
 					<div>
 						<TableResumen
 							id_empresa={id_enterprice}
@@ -254,37 +143,10 @@ export const DatatableEgresos = ({
 							totalPorMesIngExc={totalPorMesIngExc}
 							dataGastos={dataGastosxANIO.filter(ing=>ing.grupo!=='PRESTAMOS')}
 							dataIngresos={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes}
+							anio={anio}
 						/>
 					</div>
 				</div>
-			<ModalDetallexCelda
-				data={dataModal}
-				onHide={onCloseModalDetallexCelda}
-				obtenerGastosxANIO={obtenerGastosxANIO}
-				show={isOpenModalDetallexCelda}
-				id_enterprice={id_enterprice}
-				anio={anio}
-				bgMultiValue={bgMultiValue}
-				bgEmpresa={bgTotal}
-			/>
-			<ModalDetalleIngresosxItem
-				data={dataModal1}
-				onHide={onCloseModalDetallexCelda1}
-				show={isOpenModalDetallexCelda1}
-				id_enterprice={id_enterprice}
-				anio={anio}
-				bgMultiValue={bgMultiValue}
-				bgEmpresa={bgTotal}
-			/>
-			<ModalDetalleCuentas
-				data={dataModal2}
-				onHide={onCloseModalDetallexCelda2}
-				show={isOpenModalDetallexCelda2}
-				id_enterprice={id_enterprice}
-				anio={anio}
-				bgMultiValue={bgMultiValue}
-				bgEmpresa={bgTotal}
-			/>
 		</>
 	);
 };

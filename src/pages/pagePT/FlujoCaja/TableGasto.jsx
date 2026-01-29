@@ -275,8 +275,10 @@ export const TableGasto = ({id_empresa, bgPastel, mesesSeleccionadosNums, anio, 
 									</div>
 								</td>
 								<td  className="bg-white-1 text-center border-bottom-10" style={{fontSize: '40px'}}><NumberFormatMoney amount={(mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/totalGeneral)*100}/>%</td>
-								<td className="bg-white-1 text-right border-right-10 border-bottom-10" style={{fontSize: '40px'}}>									<NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/dataTotalFormular(anio, mesesSumaxGrupo).length}/>
-</td> 
+								<td className="bg-white-1 text-right border-right-10 border-bottom-10" style={{fontSize: '40px'}}>									
+									<NumberFormatMoney amount={mesesSumaxGrupo?.reduce((a, b)=>a+b, 0)/dataTotalFormular(anio, mesesSumaxGrupo).length}/>
+								
+								</td> 					
 							</tr>
 							<tr className='bg-white'>
 								<div></div>

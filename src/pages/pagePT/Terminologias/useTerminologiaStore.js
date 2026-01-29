@@ -13,7 +13,6 @@ export const useTerminologiaStore = () => {
 		try {
 			const { data } = await PTApi.get(`/inventario/parametros-lugares`);
 			console.log(data);
-
 			setdataT(data);
 		} catch (error) {
 			console.log(error);

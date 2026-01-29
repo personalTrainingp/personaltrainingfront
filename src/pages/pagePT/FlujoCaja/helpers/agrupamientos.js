@@ -194,3 +194,7 @@ export function agruparPorGrupoYConcepto(dataGastos, dataGrupos, epsi = '') {
 
 	return resultado;
 }
+
+export function agruparPor(params) {
+	
+}

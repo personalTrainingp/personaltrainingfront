@@ -6,6 +6,8 @@ import { DatatableEgresos } from './DatatableEgresos';
 import { useSelector } from 'react-redux';
 import { DataTableGastos } from './DataTableGastos';
 import SimpleBar from 'simplebar-react';
+import { ViewResumenTotal } from './ViewResumenTotal';
+import { DatatableEgresos2 } from './DatatableEgresos2';
 
 // Componente reutilizable para iconos en los tabs
 const TabIcon = ({ src, alt, width }) => (
@@ -22,26 +24,53 @@ export const FlujoCaja = () => {
 	const {viewSubTitle} = useSelector(e=>e.ui)
 	return (
 		<>
-			<PageBreadcrumb subName={'T'} title={`Flujo de Caja anual`} />
+			<PageBreadcrumb subName={'T'} title={`Flujo de Caja anual`}  />
             <TabView>
                 <TabPanel style={{alignItems: 'flex-end', display: 'flex'}}  header={<TabIcon width={220} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/>}>
                     <TabView>
                         <TabPanel header={<div className=' text-black year-header' style={{fontSize: '60px'}}>2026</div>}>
-                        <div className="tab-scroll-container">
-                        <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2026, 0, 1), new Date(2026, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2026}/>
-                        </div>
-                        <TabView>
-                        </TabView>
+                            <div className="tab-scroll-container">
+                            <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2026, 0, 1), new Date(2026, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2026}/>
+                            </div>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2025</div>}>
-                        <div className="tab-scroll-container">
-                            <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2025}/>
-                        </div>
+                            <div className="tab-scroll-container">
+                                <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2025}/>
+                            </div>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2024</div>}>
-                        <div className="tab-scroll-container">
-                            <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2024, 0, 1), new Date(2024, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2024}/>
-                        </div>
+                            <div className="tab-scroll-container">
+                                <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2024, 0, 1), new Date(2024, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2024}/>
+                            </div>
+                        </TabPanel>
+                        <TabPanel header={<div className=' text-black year-header' style={{fontSize: '60px'}}>RESUMEN TOTAL</div>}>
+                            <div className="tab-scroll-container">
+                                
+                                <div>
+                                    <div className='text-center' style={{fontSize: '100px'}}>
+                                        TOTAL
+                                    </div>
+                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2024, 0, 1), new Date(2026, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={false}/>
+                                </div>
+                                <div>
+                                    <div className='text-center' style={{fontSize: '100px'}}>
+                                        2026
+                                    </div>
+                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2026, 0, 1), new Date(2026, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2026}/>
+                                </div>
+                                <div>
+                                    <div className='text-center' style={{fontSize: '100px'}}>
+                                        2025
+                                    </div>
+                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2025}/>
+                                </div>
+                                <div>
+                                    <div className='text-center' style={{fontSize: '100px'}}>
+                                        2024
+                                    </div>
+                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2024, 0, 1), new Date(2024, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2024}/>
+                                </div>
+                            </div>
                         </TabPanel>
                     </TabView>
                 </TabPanel>

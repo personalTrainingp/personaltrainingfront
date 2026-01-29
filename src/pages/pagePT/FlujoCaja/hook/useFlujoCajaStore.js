@@ -1,10 +1,10 @@
 import { PTApi } from '@/common';
 import { useState } from 'react';
-import dayjs from 'dayjs';
+import dayjs, { utc } from 'dayjs';
 import { DateMaskString } from '@/components/CurrencyMask';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import { agruparPorGrupoYConcepto, aplicarTipoDeCambio } from '../helpers/agrupamientos';
-
+dayjs.extend(utc);
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
 	const base = dayjs(date);
 
@@ -41,11 +41,18 @@ export const useFlujoCajaStore = () => {
 			setdataIngresos_FC(data.data);
 		} catch (error) {
 			console.log(error);
-		}	
+		}
 	};
-	const obtenerGastosxANIO = async (anio, enterprice) => {
+	const obtenerGastosxANIO = async (arrayDate, enterprice) => {
 		try {
-			const { data } = await PTApi.get(`/flujo-caja/get-gasto-x-grupo/${enterprice}/${anio}`);
+			const { data } = await PTApi.get(`/egreso/fecha-pago/${enterprice}`, {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
 
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/terminologiaxEmpresa/${enterprice}/1573`

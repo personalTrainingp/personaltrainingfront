@@ -84,13 +84,6 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	/**
 	 * Toggle Dark Mode
 	 */
-	const toggleDarkMode = () => {
-		if (settings.theme === 'dark') {
-			updateSettings({ theme: ThemeSettings.theme.light });
-		} else {
-			updateSettings({ theme: ThemeSettings.theme.dark });
-		}
-	};
 	const { RANGE_DATE } = useSelector(e=>e.DATA)
 	/**
 	 * Toggles the right sidebar
@@ -130,14 +123,16 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 						modulo
 					</strong>
 						<ModuloDropdown colorEmpresa={colorEmpresa}/>
-						{section_item && (
 						<h3 style={{color: colorEmpresa}} className="text-uppercase fw-bolder d-flex justify-content-center align-items-center">
 							<span className='fs-1'> / </span>
 							<div className='mx-2'> {section_item==='d1'?<>RESUMEN COMPARATIVO MENSUAL <span className='text-primary fs-1'>POR ASESOR</span> Y CATEGORIA</>:section_item} </div>
 							<span className='fs-1'> / </span>
-							<div className='mx-2'> {RANGE_DATE[0] instanceof Date?dayjs(RANGE_DATE[0]).format('dddd DD [DE] MMMM [DEL] YYYY'):RANGE_DATE[0]} <br/> {dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM YYYY')}</div> 
+							<div className='mx-2'> 
+								{RANGE_DATE[0] instanceof Date?dayjs(RANGE_DATE[0]).format('dddd DD [DE] MMMM [DEL] YYYY'):RANGE_DATE[0]} 
+								<br/> 
+								{RANGE_DATE[1] instanceof Date?dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM [DEL] YYYY'):RANGE_DATE[1]}
+							</div> 
 						</h3>
-						)}
 				</div>	
 				<ul className=" d-flex align-items-center gap-3">
 					<li>
