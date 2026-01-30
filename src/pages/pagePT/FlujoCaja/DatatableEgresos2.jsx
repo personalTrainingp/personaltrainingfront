@@ -25,12 +25,6 @@ export const DatatableEgresos2 = ({
 	bgPastel,
 	bgTotal
 }) => {
-	const [dataModal, setDataModal] = useState(null);
-	const [dataModal1, setDataModal1] = useState(null);
-	const [dataModal2, setDataModal2] = useState(null);
-	const [isOpenModalDetallexCelda1, setIsOpenModalDetallexCelda1] = useState(false);
-	const [isOpenModalDetallexCelda, setIsOpenModalDetallexCelda] = useState(false);
-	const [isOpenModalDetallexCelda2, setIsOpenModalDetallexCelda2] = useState(false);
 	const { obtenerGastosxANIO, dataGastosxANIO } = useFlujoCajaStore();
 	const { obtenerVentasxFechaxEmpresa, dataVentasxMes, dataIngresosxMes, obtenerIngresosxFechaxEmpresa } = useVentasStore()
 	// const { dataCuentasBalance:dataCuentasBalancePorCobrar, obtenerCuentasBalance:obtenerCuentasBalancePorCobrar } = useCuentasStore()

@@ -40,6 +40,7 @@ export const DatatableEgresos = ({
 		if(id_enterprice || arrayRangeDate){
 			obtenerVentasxFechaxEmpresa(arrayRangeDate, id_enterprice)
 			obtenerIngresosxFechaxEmpresa(arrayRangeDate, id_enterprice)
+			obtenerGastosxANIO(arrayRangeDate, id_enterprice);
 		}
 	}, [id_enterprice, arrayRangeDate])
 	useEffect(() => {
@@ -91,10 +92,6 @@ export const DatatableEgresos = ({
 		const vals = selectedMonths.map(opt => opt.value)
 		localStorage.setItem('selectedMonths', JSON.stringify(vals))
 	}, [selectedMonths])
-	// 4) Cada vez que cambia empresa o año, recargar datos
-	useEffect(() => {
-		obtenerGastosxANIO(anio, id_enterprice);
-	}, [anio, id_enterprice]);
 	const totalesPorGrupoIngreso = useMemo(()=>{
 		return TotalesPorGrupo(dataIngresosxMes).dataTotal
 	}, [dataIngresosxMes])
@@ -171,7 +168,8 @@ export const DatatableEgresos = ({
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
 	);
-
+	console.log({dataGastosxANIO});
+	
 	return (
 		<>
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
@@ -243,6 +241,7 @@ export const DatatableEgresos = ({
 					</div>
 					
 					<div>
+
 						<TableResumen
 							id_empresa={id_enterprice}
 							bgMultiValue={bgMultiValue}
@@ -252,7 +251,7 @@ export const DatatableEgresos = ({
 							totalPorMesEgresos={totalPorMesEgresos}
 							totalPorMesIngresos={id_enterprice!==800?totalPorMesVenta:totalPorMesIngresos}
 							totalPorMesIngExc={totalPorMesIngExc}
-							dataGastos={dataGastosxANIO.filter(ing=>ing.grupo!=='PRESTAMOS')}
+							dataGastos={dataGastosxANIO.filter(ing=>ing.grupo!=='PRESTAMOS' && ing.grupo!=='COMPRA PRODUCTOS/ACTIVOS')}
 							dataIngresos={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes}
 						/>
 					</div>
