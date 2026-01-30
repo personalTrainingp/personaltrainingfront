@@ -18,7 +18,7 @@ export const AppComparativoConMes = ({titulo}) => {
         <div className='fs-1'>
           {titulo}
         </div>
-        <FechaCorte corte={corte.corte} inicio={corte.inicio}/>
+        {/* <FechaCorte corte={corte.corte} inicio={corte.inicio}/> */}
         <DataTable1 nombreCategoriaVenta={'MEMBRESIAS'} data={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia))} arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')}/>
         <DataTable1 nombreCategoriaVenta={'SUPLEMENTOS'} data={dataVentas.dataProductos17?.filter((el) => corte.dia.includes(el.dia))} arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')}/>
         <DataTable1 nombreCategoriaVenta={'ACCESORIOS'} data={dataVentas.dataProductos18?.filter((el) => corte.dia.includes(el.dia))} arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')}/>
