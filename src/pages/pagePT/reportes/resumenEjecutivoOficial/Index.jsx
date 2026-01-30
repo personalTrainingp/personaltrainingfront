@@ -1,0 +1,1 @@
+export { App1 as default } from './App1';

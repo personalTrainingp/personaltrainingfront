@@ -7,7 +7,7 @@ export const AppTerminologias = () => {
   return (
     <div>
         <TabView>
-            <TabPanel header={'TERMINOLOGIA DE GASTOS'}>
+            <TabPanel header={<div style={{fontSize: '25px'}}>TERMINOLOGIA DE GASTOS</div>}>
               <TabView>
                 <TabPanel header={'CHANGE'}>
                   <AppTermGastos id_empresa={598} tipo={1573}/>
@@ -24,7 +24,7 @@ export const AppTerminologias = () => {
               </TabView>
             </TabPanel>
             
-            <TabPanel header={'TERMINOLOGIA DE INGRESOS'}>
+            <TabPanel header={<div style={{fontSize: '25px'}}>TERMINOLOGIA DE INGRESOS</div>}>
               <TabView>
                 <TabPanel header={'CHANGE'}>
                   <AppTermGastos id_empresa={598} tipo={1574}/>
@@ -41,7 +41,7 @@ export const AppTerminologias = () => {
               </TabView>
             </TabPanel>
             
-            <TabPanel header={'TERMINOLOGIA DE SISTEMAS'}>
+            <TabPanel header={<div style={{fontSize: '25px'}}>TERMINOLOGIA DE SISTEMAS</div>}>
                   <AppTermSistemas />
             </TabPanel>
         </TabView>

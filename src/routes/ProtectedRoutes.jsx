@@ -115,6 +115,7 @@ const AuditoriaInventario = lazy(()=>import('../pages/pagePT/AuditoriaInventario
 const DetalleRenovacionesxDia = lazy(()=>import('../pages/pagePT/ResumenGerencialxRenovacionesxDia/Index.jsx'))
 const ResumenGerencialPorRenovacionesReal = lazy(()=>import('../pages/pagePT/ResumenGerencialPorRenovacionesReal/Index.jsx'))
 const ResumenGerencialPorReinscripcionesxDia= lazy(()=>import('../pages/pagePT/ResumenGerencialxReinscritosxDia/Index.jsx'))
+const InformeEjecutivoOficial= lazy(()=>import('../pages/pagePT/reportes/resumenEjecutivoOficial/Index.jsx'))
 /**
  * routes import
  */
@@ -156,7 +157,12 @@ export default function ProtectedRoutes() {
 			status  === 'authenticated' ? (
 				<>
 				<Route path="/*" element={<Layout />}>
-				{/* /detalle-renovaciones-x-dia */}
+				{/* /detalle-renovaciones-x-dia comparativo-x-fecha-corte*/}
+					
+					{
+						sections.find(e=>e.url==='/informe-gerencia-oficial') &&
+						<Route path='informe-gerencia-oficial'  element={<InformeEjecutivoOficial />}/>
+					}
 					{
 						sections.find(e=>e.url==='/centro-archivos') &&
 						<Route path='centro-archivos'  element={<GestionCentroDeArchivos />}/>
@@ -205,10 +211,10 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/cuentas-cobrar') &&
 						<Route path='cuentas-cobrar' element={<CuentasBalances tipo={'PorCobrar'} headerTipo={'COBRAR'}/>}/>
 					}
-					{
+					{/* {
 						sections.find(e=>e.url==='/detalle-reinscripciones') &&
 						<Route path='detalle-reinscripciones' element={<ResumenGerencialPorReinscripciones/>}/>
-					}
+					} */}
 					{
 						sections.find(e=>e.url==='/detalle-renovaciones') &&
 						<Route path='detalle-renovaciones' element={<ResumenGerencialPorRenovaciones/>}/>
