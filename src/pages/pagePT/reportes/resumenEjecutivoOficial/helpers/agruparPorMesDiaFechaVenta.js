@@ -1,5 +1,4 @@
 import { DateMaskStr, DateMaskString } from '@/components/CurrencyMask';
-import dayjs from 'dayjs';
 
 export const agruparPorMesDiaFechaVenta = (data) => {
 	const map = {};

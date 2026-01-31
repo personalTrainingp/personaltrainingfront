@@ -1,23 +1,28 @@
-import { InputButton } from '@/components/InputText'
 import React, { useState } from 'react'
-import { DataTableTerminologiaSistema } from './DataTableTerminologiaSistema'
 import { PageBreadcrumb } from '@/components'
-import { ModalCustomTermSistema } from './ModalCustomTermSistema'
+import { ViewTerminos } from './View/ViewTerminos'
+import { TabPanel, TabView } from 'primereact/tabview'
 
 export const AppTermSistemas = () => {
-  const [isOpenModalTermSis, setisOpenModalTermSis] = useState({isOpen: false, id: 0})
-  const onOpenModalTermSis = (id)=>{
-    setisOpenModalTermSis({isOpen: true, id})
-  }
-  const onCloseModalTermSis = ()=>{
-    setisOpenModalTermSis({isOpen: false, id:0})
-  }
   return (
     <div>
-      <PageBreadcrumb title={'TERM. SISTEMAS'}/>
-        <InputButton label={'AGREGAR TERMINOLOGIA'} onClick={()=>onOpenModalTermSis(0)}/>
-        <DataTableTerminologiaSistema onOpenModalTermSis={onOpenModalTermSis}/>
-        <ModalCustomTermSistema show={isOpenModalTermSis.isOpen} onHide={onCloseModalTermSis} id={isOpenModalTermSis.id} />
+            <PageBreadcrumb title={'TERM. SISTEMAS'}/>
+            <TabView>
+              <TabPanel header={'PROVEEDOR'}>
+                <TabView>
+                  <TabPanel header={'OFICIOS'}>
+                    <ViewTerminos titulo={'OFICIOS'} grupo={'tipo_oficio'} entidad={'proveedor'}/>
+                  </TabPanel>
+                </TabView>
+              </TabPanel>
+              <TabPanel header={'INVENTARIO'}>
+                <TabView>
+                  <TabPanel header={'MARCA'}>
+                    <ViewTerminos titulo={'MARCA'} grupo={'marca'} entidad={'articulo'}/>
+                  </TabPanel>
+                </TabView>
+              </TabPanel>
+            </TabView>
     </div>
   )
 }

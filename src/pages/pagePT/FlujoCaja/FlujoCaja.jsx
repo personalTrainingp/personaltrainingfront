@@ -1,12 +1,7 @@
 import { PageBreadcrumb } from '@/components';
 import { TabPanel, TabView } from 'primereact/tabview';
 import React, { useEffect, useState } from 'react';
-import { DataFlujoCaja } from './DataFlujoCaja';
 import { DatatableEgresos } from './DatatableEgresos';
-import { useSelector } from 'react-redux';
-import { DataTableGastos } from './DataTableGastos';
-import SimpleBar from 'simplebar-react';
-import { ViewResumenTotal } from './ViewResumenTotal';
 import { DatatableEgresos2 } from './DatatableEgresos2';
 
 // Componente reutilizable para iconos en los tabs
@@ -21,7 +16,6 @@ const TabIcon = ({ src, alt, width }) => (
     </div>
 );
 export const FlujoCaja = () => {
-	const {viewSubTitle} = useSelector(e=>e.ui)
 	return (
 		<>
 			<PageBreadcrumb subName={'T'} title={`Flujo de Caja anual`}  />

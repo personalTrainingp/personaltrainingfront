@@ -11,7 +11,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
     
   return (
     <div>
-        <TableResumen/>
+        <TableResumen />
         <pre>
             {JSON.stringify(generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1])), null, 2)}
         </pre>

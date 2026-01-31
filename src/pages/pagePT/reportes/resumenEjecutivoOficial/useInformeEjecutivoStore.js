@@ -9,6 +9,7 @@ export const useInformeEjecutivoStore = () => {
 		dataProductos17: [],
 		dataVentasMap: [],
 		dataMFMap: [],
+		dataMembresiasRenovaciones: [],
 	});
 	const [dataLeads, setdataLeads] = useState([]);
 	const obtenerVentas = async () => {
@@ -19,7 +20,7 @@ export const useInformeEjecutivoStore = () => {
 				return {
 					...mf,
 					montoTotal: mf.monto_total,
-					fecha_venta: mf.fecha,
+					fechaP: mf.fecha,
 					cantidadTotal: 1,
 				};
 			});
@@ -44,6 +45,18 @@ export const useInformeEjecutivoStore = () => {
 					};
 				})
 				.filter((f) => f.montoTotal !== 0);
+
+			const dataMembresiasRenovaciones = dataVentasMap
+				.filter((dventa) => dventa.detalle_membresias.length !== 0)
+				.map((v) => {
+					return {
+						...v,
+						montoTotal: v.detalle_membresias[0]?.tarifa_monto,
+						cantidadTotal: 1,
+					};
+				})
+				.filter((f) => f.montoTotal !== 0)
+				.filter((d) => d.id_origen === 691);
 			const dataProductos17 = dataVentasMap
 				.map((v) => {
 					const detalleFiltrado = v.detalle_productos.filter(
@@ -91,7 +104,10 @@ export const useInformeEjecutivoStore = () => {
 					};
 				})
 				.filter((v) => v.detalle_productos.length !== 0);
-			console.log({ dataVentasMap });
+			console.log(
+				{ dataVentasMap },
+				sumarMontoTotal(agruparPorMesDiaFechaVenta(dataVentasMap))
+			);
 
 			setdataVentas({
 				dataMembresias: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataMembresias)),
@@ -99,6 +115,9 @@ export const useInformeEjecutivoStore = () => {
 				dataProductos18: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataProductos18)),
 				dataVentasMap: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataVentasMap)),
 				dataMFMap: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataMFMap)),
+				dataMembresiasRenovaciones: sumarMontoTotal(
+					agruparPorMesDiaFechaVenta(dataMembresiasRenovaciones)
+				),
 			});
 		} catch (error) {
 			console.log(error);

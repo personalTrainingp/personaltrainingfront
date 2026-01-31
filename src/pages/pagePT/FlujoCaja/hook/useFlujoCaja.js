@@ -1,7 +1,7 @@
 import { PTApi } from '@/common';
 import dayjs from 'dayjs';
-import { agruparPorGrupoYConcepto, aplicarTipoDeCambio } from '../helpers/agrupamientos';
 import { useState } from 'react';
+import { agruparPorGrupoYConcepto, aplicarTipoDeCambio } from '../helpers/agrupamientosOficiales';
 
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
 	const base = dayjs(date);
@@ -27,16 +27,24 @@ export const useFlujoCaja = () => {
 				},
 			});
 			const dataGastos = data.gastos.map((g) => {
-				const monedaOriginal = g.moneda;
 				return {
-					monto: g.monto,
-					monedaOriginal,
-					tc: 1,
+					fecha_primaria: g.fecha_pago,
+					...g,
 				};
 			});
 			const { data: dataTC } = await PTApi.get('/tipoCambio/');
-			console.log({ dataTC });
-
+			console.log({ tcs: generarRangosTipoCambio(dataTC.tipoCambios) });
+			console.log({
+				data,
+				dataGastos,
+				aplicarTipoDeCambio: aplicarTipoDeCambio(
+					generarRangosTipoCambio(dataTC.tipoCambios),
+					dataGastos
+				),
+				agg: agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(generarRangosTipoCambio(dataTC.tipoCambios), dataGastos)
+				),
+			});
 			setdataGastosxFecha();
 		} catch (error) {
 			console.log(error);
@@ -63,3 +71,20 @@ export const useFlujoCaja = () => {
 		obtenerIngresosxFecha,
 	};
 };
+
+function generarRangosTipoCambio(tipoCambios) {
+	return tipoCambios.map((e, i, arr) => {
+		const posteriores = arr
+			.filter((item) => new Date(item.fecha) > new Date(e.fecha))
+			.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+		const termino = posteriores.length ? posteriores[0].fecha : null;
+
+		return {
+			moneda: e.monedaDestino,
+			multiplicador: e.precio_compra,
+			fecha_inicio_tc: e.fecha,
+			fecha_fin_tc: termino,
+		};
+	});
+}

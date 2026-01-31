@@ -34,11 +34,11 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
     }
     const guardar = ()=>{
         if (id!==0) {
-            updateTerm2xID(id, id_empresa, tipo, formState)
+            updateTerm2xID(id, id_empresa, tipo, {...formState, grupo: DataGeneral.find(d=>d.id===id_grupo).param_label})
         }else{
-            postTerm2(id_empresa, tipo, formState)
+            postTerm2(id_empresa, tipo, {...formState, grupo: DataGeneral.find(d=>d.id===id_grupo).param_label})
         }
-        cancelar()
+        cancelar()  
     }
   return (
     <Modal show={show} onHide={cancelar}>

@@ -6,13 +6,11 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 const customTS = {
   label_param: '',
-  entidad_param: '',
-  grupo_param: '',
   estado_param: 1
 }
 export const ModalCustomTermSistema = ({ show, onHide, entidad, grupo, id = 0, label = '' }) => {
   const { obtenerTerminologiaSistemaxID, dataTerminoxID, registrarTerminologiaxEntidadyGrupo, actualizarTerminologia } = useTerminoSistema()
-  const { formState, onInputChange, label_param, entidad_param, grupo_param, estado_param, onResetForm } = useForm(id!==0?dataTerminoxID:customTS)
+  const { formState, onInputChange, label_param, estado_param, onResetForm } = useForm(id!==0?dataTerminoxID:customTS)
   const { dataViewTerm } = useSelector(e=>e.TERM)
   const optionsDataEntidades = dataViewTerm?.map(dv=>{
     return {
@@ -33,9 +31,9 @@ export const ModalCustomTermSistema = ({ show, onHide, entidad, grupo, id = 0, l
   }, [id])
   const onSubmitTerminologia = ()=>{
     if(id!==0){
-      actualizarTerminologia(formState, id)
+      actualizarTerminologia(formState, id, entidad, grupo)
     }else{
-      registrarTerminologiaxEntidadyGrupo(formState, entidad_param, grupo_param)
+      registrarTerminologiaxEntidadyGrupo(formState, entidad, grupo)
     }
     cancelarTerminologia()
   }
@@ -50,12 +48,6 @@ export const ModalCustomTermSistema = ({ show, onHide, entidad, grupo, id = 0, l
       </Modal.Header>
       <Modal.Body>
         <form>
-          <div className="my-2">
-            <InputSelect label={'ENTIDADES'} nameInput={'entidad_param'} onChange={onInputChange} options={optionsDataEntidades} value={entidad_param}  required/>
-          </div>
-          <div className="my-2">
-            <InputSelect label={'GRUPOS'} nameInput={'grupo_param'} onChange={onInputChange} options={optionsDataGrupos} value={grupo_param}  required/>
-          </div>
           <div className="my-2">
             <InputText label={'VALOR'} nameInput={'label_param'} onChange={onInputChange} value={label_param} required/>
           </div>

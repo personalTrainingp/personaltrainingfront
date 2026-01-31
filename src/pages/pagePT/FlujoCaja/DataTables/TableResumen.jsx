@@ -12,6 +12,9 @@ export const TableResumen = () => {
                             RESULTADO ANUAL
                         </div>
                     </th>
+                    {
+                        
+                    }
                 </tr>
             </thead>
         </Table>

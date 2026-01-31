@@ -7,12 +7,12 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
-export const DataTableTerminologiaSistema = ({onOpenModalTermSis}) => {
+export const DataTableTerminologiaSistema = ({onOpenModalTermSis, grupo, entidad, titulo}) => {
   const { obtenerTerminologiaSistema,  deleteTerminologia } = useTerminoSistema()
   const { dataViewTerm } = useSelector(e=>e.TERM)
   useEffect(() => {
-    obtenerTerminologiaSistema()
-  }, [])
+    obtenerTerminologiaSistema(entidad, grupo)
+  }, [grupo, entidad])
   const columns = [
     {id: 0, header: 'ID', accesor: 'id_param', render:(row)=>{
       return (
@@ -21,21 +21,7 @@ export const DataTableTerminologiaSistema = ({onOpenModalTermSis}) => {
         </>
       )
     }},
-    {id: 1, header: 'ENTIDAD', accesor: 'entidad_param', render:(row)=>{
-      return (
-        <>
-        {row.entidad_param}
-        </>
-      )
-    }},
-    {id: 2, header: 'GRUPO', accesor: 'grupo_param', render:(row)=>{
-      return (
-        <>
-        {row.grupo_param}
-        </>
-      )
-    }},
-    {id: 3, header: 'VALOR', accesor: 'label_param', render:(row)=>{
+    {id: 3, header: `${titulo}`, accesor: 'label_param', render:(row)=>{
       return (
         <>
         {row.label_param}
@@ -62,7 +48,7 @@ export const DataTableTerminologiaSistema = ({onOpenModalTermSis}) => {
     confirmDialog({
       message: '¿QUIERES ELIMINAR ESTE CONCEPTO?',
       accept: ()=>{
-        deleteTerminologia(id);
+        deleteTerminologia(id, entidad, grupo);
       }
     })
   }

@@ -33,8 +33,6 @@ export const DatatableEgresos = ({
 	const [isOpenModalDetallexCelda2, setIsOpenModalDetallexCelda2] = useState(false);
 	const { obtenerGastosxANIO, dataGastosxANIO } = useFlujoCajaStore();
 	const { obtenerVentasxFechaxEmpresa, dataVentasxMes, dataIngresosxMes, obtenerIngresosxFechaxEmpresa } = useVentasStore()
-	// const { dataCuentasBalance:dataCuentasBalancePorCobrar, obtenerCuentasBalance:obtenerCuentasBalancePorCobrar } = useCuentasStore()
-	// const { dataCuentasBalance:dataCuentasBalancePorPagar, obtenerCuentasBalance:obtenerCuentasBalancePorPagar } = useCuentasStore()
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if(id_enterprice || arrayRangeDate){
@@ -168,8 +166,6 @@ export const DatatableEgresos = ({
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
 	);
-	console.log({dataGastosxANIO});
-	
 	return (
 		<>
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>

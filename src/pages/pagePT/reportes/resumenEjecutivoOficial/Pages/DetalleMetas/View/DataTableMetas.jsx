@@ -3,22 +3,31 @@ import { Table } from 'react-bootstrap'
 import {  NumberFormatMoney } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
 
-export const DataTable1 = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuotaMetaDelMes=[]}) => {
+export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuotaMetaDelMes=[]}) => {
     const fechaSeleccionada = '2026-1'
     const dataConMes = arrayFechas.map(arr=>{
         const dataFiltradaMes =  data?.filter((f)=>f.mes===arr.mes && f.anio===arr.anio)
+        const dataMetaFiltradaMes =  dataCuotaMetaDelMes?.filter((f)=>f.mes===arr.mes && f.anio===arr.anio)
+        const montoTotal = dataFiltradaMes?.reduce((total, item) => total + (item?.montoTotal || 0), 0)
+        const montoMeta = dataMetaFiltradaMes?.reduce((total, item) => total + (item?.meta || 0), 0)
+        const porcentajeDeAvance = montoMeta
+  ? (montoTotal / montoMeta) * 100
+  : 0;
         return {
             ...arr,
             items: dataFiltradaMes,
-            montoTotal: dataFiltradaMes?.reduce((total, item) => total + (item?.montoTotal || 0), 0),
+            montoTotal,
+            montoMeta,
+            porcentajeDeAvance
         }
     })
-    const objFechaSeleccionada = dataConMes.find(f=>f.fecha===fechaSeleccionada);
+    console.log({dataCuotaMetaDelMes});
+    
   return (
         <Table className="tabla-egresos" style={{width: '100%'}}  bordered>
             <thead>
                 <tr className='bg-change'>
-                    <th className='bg-white-1 fs-2' style={{width: '250px'}}>
+                    <th className='fs-2' style={{width: '350px'}}>
                         <div className='text-change'>
                             {nombreCategoriaVenta}
                         </div>
@@ -34,13 +43,19 @@ export const DataTable1 = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuot
             </thead>
             <tbody>
                 <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>VENTAS</td>
+                    <td className='sticky-td-598 fs-3 text-white'>META</td>
                     {
                         dataConMes.map((d, i)=>{
-                            const restarConFechaSeleccionada=
-                             objFechaSeleccionada.montoTotal===d.montoTotal
-                             ?objFechaSeleccionada.montoTotal:
-                             objFechaSeleccionada.montoTotal-d.montoTotal
+                            return (
+                                <td className={`fs-3 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} ><NumberFormatMoney amount={d.montoMeta}/></td>
+                            )
+                        })
+                    }
+                </tr>
+                <tr>
+                    <td className='sticky-td-598 fs-3 text-white'>MONTO VENTA</td>
+                    {
+                        dataConMes.map((d, i)=>{
                             return (
                                 <td className={`fs-3 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} ><NumberFormatMoney amount={d.montoTotal}/></td>
                             )
@@ -48,23 +63,11 @@ export const DataTable1 = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuot
                     }
                 </tr>
                 <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>%</td>
+                    <td className='sticky-td-598 fs-3 text-white'>% AVANCE</td>
                     {
                         dataConMes.map((d, i)=>{
-                            const restarConFechaSeleccionada=
-                             objFechaSeleccionada.montoTotal===d.montoTotal
-                             ?objFechaSeleccionada.montoTotal:
-                             objFechaSeleccionada.montoTotal-d.montoTotal
-
-                             const porcentaje = objFechaSeleccionada.montoTotal === 0
-                                ? 0
-                                : (restarConFechaSeleccionada /
-                                    Math.max(restarConFechaSeleccionada, objFechaSeleccionada.montoTotal)) * 100;
                             return (
-
-                                <td className={`text-center fs-3 ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`}>
-                                    <NumberFormatMoney amount={0}/>
-                                </td>
+                                <td className={`fs-3 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} ><NumberFormatMoney amount={d.porcentajeDeAvance}/></td>
                             )
                         })
                     }
