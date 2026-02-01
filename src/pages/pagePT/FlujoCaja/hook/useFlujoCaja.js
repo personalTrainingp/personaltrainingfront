@@ -33,7 +33,6 @@ export const useFlujoCaja = () => {
 				};
 			});
 			const { data: dataTC } = await PTApi.get('/tipoCambio/');
-			console.log({ tcs: generarRangosTipoCambio(dataTC.tipoCambios) });
 			console.log({
 				data,
 				dataGastos,
@@ -45,7 +44,11 @@ export const useFlujoCaja = () => {
 					aplicarTipoDeCambio(generarRangosTipoCambio(dataTC.tipoCambios), dataGastos)
 				),
 			});
-			setdataGastosxFecha();
+			setdataGastosxFecha(
+				agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(generarRangosTipoCambio(dataTC.tipoCambios), dataGastos)
+				)
+			);
 		} catch (error) {
 			console.log(error);
 		}

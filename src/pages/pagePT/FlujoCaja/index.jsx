@@ -1,1 +1,1 @@
-export {AppFlujoCaja as default} from './AppFlujoCaja'
+export {FlujoCaja as default} from './FlujoCaja'

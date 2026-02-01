@@ -1,4 +1,4 @@
-import { DateMaskString } from '@/components/CurrencyMask';
+import { DateMaskStr, DateMaskString } from '@/components/CurrencyMask';
 
 export function aplicarTipoDeCambio(dataTC, data) {
 	return data?.map((item) => {
@@ -36,21 +36,65 @@ export const agruparPorGrupoYConcepto = (data = []) => {
 			item?.grupo ??
 			'SIN GRUPO';
 
+		if (!map.has(grupo)) {
+			map.set(grupo, []);
+		}
+
+		map.get(grupo).push(item);
+	}
+
+	return Array.from(map.entries()).map(([grupo, items]) => ({
+		grupo,
+		conceptos: agruparPorConcepto(items),
+	}));
+};
+
+// 1. Agrupa solo por concepto
+export const agruparPorConcepto = (data = []) => {
+	const map = new Map();
+
+	for (const item of data) {
 		const concepto =
 			item?.tb_parametros_gasto?.nombre_gasto ?? item?.nombre_gasto ?? 'SIN CONCEPTO';
 
-		if (!map.has(grupo)) map.set(grupo, new Map());
-		const mapConceptos = map.get(grupo);
-
-		if (!mapConceptos.has(concepto)) {
-			mapConceptos.set(concepto, { concepto, items: [] });
+		if (!map.has(concepto)) {
+			map.set(concepto, { concepto, items: [] });
 		}
 
-		mapConceptos.get(concepto).items.push(item);
+		map.get(concepto).items.push(item);
 	}
-
-	return Array.from(map.entries()).map(([grupo, mapConceptos]) => ({
-		grupo,
-		conceptos: Array.from(mapConceptos.values()),
-	}));
+	return Array.from(map.values()).map((ar) => {
+		return {
+			...ar,
+			items: agruparPorDia(ar.items),
+		};
+	});
 };
+
+function agruparPorDia(data) {
+	const map = {};
+
+	data.forEach((item) => {
+		// const fecha = dayjs.utc(item.fecha_venta);
+		const fecha = DateMaskStr(item.fecha_primaria);
+
+		const anio = fecha.year();
+		const mes = fecha.month() + 1; // 0–11 → 1–12
+		// const dia = fecha.date();
+
+		const key = fecha.format('YYYY-MM');
+
+		if (!map[key]) {
+			map[key] = {
+				anio,
+				mes,
+				// dia,
+				items: [],
+			};
+		}
+
+		map[key].items.push(item);
+	});
+
+	return Object.values(map);
+}
