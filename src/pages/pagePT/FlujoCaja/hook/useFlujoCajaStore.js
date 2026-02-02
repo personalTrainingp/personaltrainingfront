@@ -101,6 +101,15 @@ export const useFlujoCajaStore = () => {
 				],
 				enterprice
 			);
+			const { data: dataMF } = await PTApi.get('/reserva_monk_fit/g');
+			const dataMFMap = dataMF.reservasMF.map((mf) => {
+				return {
+					...mf,
+					montoTotal: mf.monto_total,
+					fecha: mf.fecha,
+					cantidadTotal: 1,
+				};
+			});
 			const claseMembresia = dataVentaxFecha.membresias?.map((membresia) => {
 				return {
 					concepto: membresia?.membresia?.tb_ProgramaTraining?.name_pgm || '',
@@ -122,31 +131,12 @@ export const useFlujoCajaStore = () => {
 					fecha: producto?.fecha_venta || '',
 				};
 			});
-			// console.log(
-			// 	agruparPorMes(claseMembresia),
-			// 	dataVentaxFecha,
-			// 	agruparPorProducto(claseMembresia).map((membresia) => {
-			// 		return { ...membresia, items: agruparPorMes(membresia.items) };
-			// 	}),
-			// 	agruparPorProducto(claseProductos).map((membresia) => {
-			// 		return { ...membresia, items: agruparPorMes(membresia.items) };
-			// 	}),
-			// 	'aqui ventas?',
-			// 	ventasOrdenadas
-			// );
-			// console.log({
-			// 	dataVentaxFecha,
-			// 	aniorange: [
-			// 		formatDateToSQLServerWithDayjs(obtenerRangoAnual(anio)[0], true),
-			// 		formatDateToSQLServerWithDayjs(obtenerRangoAnual(anio)[1], false),
-			// 	],
-			// 	anio,
-			// });
 			setdataVentas(
 				generarVentasOrdenadas(
 					[
 						{ grupo: 'MEMBRESIAS', data: claseMembresia },
 						{ grupo: 'PRODUCTOS', data: claseProductos },
+						// { grupo: 'MONKEY FIT', data: [] },
 					],
 					anio
 				)

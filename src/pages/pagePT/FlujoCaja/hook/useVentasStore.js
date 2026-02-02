@@ -27,6 +27,42 @@ export const useVentasStore = () => {
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/terminologiaxEmpresa/${idEmpresa}/1574`
 			);
+			const { data: dataMF } = await PTApi.get('/reserva_monk_fit/fecha', {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+
+			const dataMFMap = dataMF.reservasMF.map((mf) => {
+				return {
+					fec_comprobante: mf.fecha,
+					fec_pago: mf.fecha,
+					flag: 1,
+					id_empresa: 598,
+					id_forma_pago: 0,
+					id_gasto: 1210,
+					id_prov: 0,
+					id_tarjeta: 0,
+					id_banco: 0,
+					id_tipo_comprobante: 0,
+					moneda: 'PEN',
+					monto: mf.monto_total,
+					n_comprabante: 'F',
+					n_operacion: 0,
+					tb_parametros_gasto: {
+						id_empresa: 598,
+						nombre_gasto: 'MONKEY FIT',
+						grupo: 'INGRESOS',
+						id_tipoGasto: 0,
+						parametro_grupo: { id: 1210, param_label: 'INGRESOS', orden: 1 },
+					},
+					tc: 1,
+					descripcion: `MONKEY FIT - 19 SOLES ${mf.codigo_reserva}`,
+				};
+			});
 			const ventasMembresiaMap = data.ventas
 				.filter((f) => f.detalle_ventaMembresia.length > 0)
 				.map((e) => {
@@ -144,7 +180,12 @@ export const useVentasStore = () => {
 
 			setdataVentasxMes(
 				agruparPorGrupoYConcepto(
-					[...ventasMembresiaMap, ...ventasProdSuplMap, ...ventasProdAccMap],
+					[
+						...ventasMembresiaMap,
+						...ventasProdSuplMap,
+						...ventasProdAccMap,
+						...dataMFMap,
+					],
 					dataParametrosGastos.termGastos,
 					'ingreso'
 				)
