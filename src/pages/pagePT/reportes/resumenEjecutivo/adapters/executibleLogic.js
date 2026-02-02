@@ -57,6 +57,21 @@ const getDetalleOtrosServicios = (v) =>
 	v?.detalle_venta_servicios ||
 	[];
 
+
+const hasPaidMembership = (v) =>
+	getDetalleMembresias(v).some(
+		(it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total) > 0
+	);
+
+const getOriginId = (v) => {
+	const tipoFactura = v?.id_tipoFactura ?? v?.tb_ventum?.id_tipoFactura;
+
+	if (tipoFactura === 703) return 703;
+	if (tipoFactura === 701) return 701;
+	if (!hasPaidMembership(v)) return 703;
+	return v?.id_origen ?? v?.tb_ventum?.id_origen ?? null;
+};
+
 const ORIGIN_SYNONYMS = {
 	tiktok: new Set(['1514', '695', 'tiktok', 'tik tok', 'tik-tok']),
 	facebook: new Set(['694', 'facebook', 'fb']),
@@ -152,6 +167,10 @@ export function computeMetricsForMonth({
 		if (!d) continue;
 		if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
 
+		// --- BLOQUEO OCTUBRE 2024 ---
+		if (d.getFullYear() === 2024 && d.getMonth() === 9) { // 9 = Octubre
+			continue;
+		}
 		const rawOrigin =
 			v?.id_origen ??
 			v?.parametro_origen?.id_param ??
@@ -475,6 +494,7 @@ const ORIGINS_EXCLUIR = new Set([
 	'688',
 	'697',
 	'698',
+	'1593',
 	'corporativos_bbva',
 	'corporativos bbva',
 	'wsp organico',

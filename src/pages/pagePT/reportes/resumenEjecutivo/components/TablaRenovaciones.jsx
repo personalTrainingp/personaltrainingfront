@@ -1,10 +1,8 @@
 import React from "react";
 
-// Formato visual para la cabecera (ej: "DIC 2024")
 const formatMonthYear = (date) =>
   date.toLocaleDateString("es-ES", { month: "short", year: "numeric" });
 
-// Formato interno ordenable para lógica (ej: "2024-12")
 const getSortableKey = (date) => {
   const m = date.getMonth() + 1;
   return `${date.getFullYear()}-${String(m).padStart(2, '0')}`;
@@ -51,10 +49,12 @@ const hasPaidMembership = (v) =>
 
 const getOriginId = (v) => {
   const tipoFactura = v?.id_tipoFactura ?? v?.tb_ventum?.id_tipoFactura;
+  const origen = v?.id_origen ?? v?.tb_ventum?.id_origen;
+  if (origen === 691) return 691;
   if (tipoFactura === 703) return 703;
   if (tipoFactura === 701) return 701;
   if (!hasPaidMembership(v)) return 703;
-  return v?.id_origen ?? v?.tb_ventum?.id_origen ?? null;
+  return origen ?? null;
 };
 
 // Estilos
@@ -149,7 +149,7 @@ export default function TablaRenovaciones({
       const data = statsMap.get(key);
 
       const diff = data.vencimientos - data.renovaciones;
-      data.pendiente = Math.max(diff, 0);
+      data.pendiente = diff;
 
       runningTotal += data.pendiente;
       data.acumulado = runningTotal;
