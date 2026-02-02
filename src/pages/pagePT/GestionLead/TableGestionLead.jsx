@@ -112,16 +112,16 @@ export const TableGestionLead = ({ onClickCustomLead, onDeleteItemLead, id_empre
                 <div className="table-responsive">
                     <Table hover className="align-middle mb-0" style={{ minWidth: '1000px' }}>
                         <thead className="bg-primary">
-                            <tr>
-                                <th className="text-white text-uppercase small border-0 py-3 pl-4 ">Fecha</th>
-                                <th className="text-white text-uppercase small border-0 py-3">Red</th>
-                                <th className="text-white text-uppercase small border-0 py-3 text-center">Cantidad</th>
-                                <th className="text-white text-uppercase small border-0 py-3 text-right">Costo Lead<br /><small>(Sin IGV)</small></th>
-                                <th className="text-white text-uppercase small border-0 py-3 text-right">Costo Lead<br /><small>(Con IGV)</small></th>
-                                <th className="text-white text-uppercase small border-0 py-3 text-right">Invertido<br /><small>(Sin IGV)</small></th>
-                                <th className="text-white text-uppercase small border-0 py-3 text-right">Invertido<br /><small>(Con IGV)</small></th>
-                                <th className="text-white text-uppercase small border-0 py-3 text-right">IGV (18%)</th>
-                                <th className="text-white text-uppercase small border-0 py-3 text-center" style={{ width: '100px' }}>Acciones</th>
+                            <tr style={{ fontSize: '1rem' }}>
+                                <th className="text-white text-uppercase  border-0 py-3 pl-4 ">Fecha</th>
+                                <th className="text-white text-uppercase  border-0 py-3">Red</th>
+                                <th className="text-white text-uppercase  border-0 py-3 text-center">Cantidad</th>
+                                <th className="text-white text-uppercase  border-0 py-3 text-right">Costo Lead<br /><small>(Sin IGV)</small></th>
+                                <th className="text-white text-uppercase  border-0 py-3 text-right">Costo Lead<br /><small>(Con IGV)</small></th>
+                                <th className="text-white text-uppercase  border-0 py-3 text-right">Invertido<br /><small>(Sin IGV)</small></th>
+                                <th className="text-white text-uppercase  border-0 py-3 text-right">Invertido<br /><small>(Con IGV)</small></th>
+                                <th className="text-white text-uppercase  border-0 py-3 text-right">IGV (18%)</th>
+                                <th className="text-white text-uppercase  border-0 py-3 text-center" style={{ width: '100px' }}>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
