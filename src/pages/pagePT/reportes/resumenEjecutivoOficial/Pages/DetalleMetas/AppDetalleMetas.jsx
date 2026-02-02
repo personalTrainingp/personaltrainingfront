@@ -3,6 +3,7 @@ import { DataTableMetas } from './View/DataTableMetas'
 import { useInformeEjecutivoStore } from '../../useInformeEjecutivoStore';
 import { useSelector } from 'react-redux';
 import { generarMesYanio } from '../../helpers/generarMesYanio';
+import { FechaCorte } from '@/components/RangeCalendars/FechaRange';
 
 export const AppDetalleMetas = () => {
         const { obtenerVentas, dataVentas } = useInformeEjecutivoStore()
@@ -32,18 +33,19 @@ export const AppDetalleMetas = () => {
         ]
   return (
     <div>
+                <FechaCorte corte={corte.corte} inicio={corte.inicio}/>
         <div className='text-center fs-1'>CUOTAS DEL MES</div>
         <div className='text-center fs-1'>
             MEMBRESIAS
         </div>
         <div  className="table-responsive" style={{ width: '100%' }}>
-            <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresias}  dataCuotaMetaDelMes={dataMetasCuotasMembresias}/>
+            <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataMetasCuotasMembresias}/>
         </div>
         <div className='text-center fs-1'>
             RENOVACIONES
         </div>
         <div  className="table-responsive" style={{ width: '100%' }}>
-            <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresiasRenovaciones}  dataCuotaMetaDelMes={dataMetasCuotasMembresiaRenovaciones}/>
+            <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresiasRenovaciones?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataMetasCuotasMembresiaRenovaciones}/>
         </div>
     </div>
   )

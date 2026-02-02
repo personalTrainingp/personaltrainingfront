@@ -46,6 +46,8 @@ export const agruparPorGrupoYConcepto = (data = []) => {
 	return Array.from(map.entries()).map(([grupo, items]) => ({
 		grupo,
 		conceptos: agruparPorConcepto(items),
+		itemsxDias: agruparPorDia(items),
+		data: items
 	}));
 };
 

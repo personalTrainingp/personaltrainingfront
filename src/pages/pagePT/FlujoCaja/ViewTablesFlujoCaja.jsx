@@ -17,7 +17,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
             {
                 dataGastosxFecha.map(data=>{
                     return (
-                        <DataTablePrincipal nombreGrupo={data.grupo} conceptos={data.conceptos} data={dataGastosxFecha} fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}/>
+                        <DataTablePrincipal itemsxDias={data?.itemsxDias}  nombreGrupo={data.grupo} conceptos={data.conceptos} data={dataGastosxFecha} fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}/>
                     )
                 })
             }
