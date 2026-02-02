@@ -475,6 +475,7 @@ const ORIGINS_EXCLUIR = new Set([
 	'688',
 	'697',
 	'698',
+	'1593',
 	'corporativos_bbva',
 	'corporativos bbva',
 	'wsp organico',
