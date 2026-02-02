@@ -54,48 +54,58 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
 
     const fetchVencimientos = async () => {
         try {
-            const { data } = await PTApi.get('/venta/vencimientos-mes', {
-                params: {
-                    year,
-                    id_empresa: id_empresa || 598
-                }
-            });
-            if (data.ok && Array.isArray(data.data)) {
-
-                const map = {};
-                data.data.forEach(row => {
-                    let monthKey = "";
-                    if (row.Mes && row.Mes.includes("-")) {
-                        monthKey = row.Mes;
-                    } else {
-                        const monthParamMap = {
-                            "ENE": "01", "FEB": "02", "MAR": "03", "ABR": "04", "MAY": "05", "JUN": "06",
-                            "JUL": "07", "AGO": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DIC": "12"
-                        };
-                        let monthNum = row.Mes;
-                        if (monthParamMap[String(row.Mes).toUpperCase()]) {
-                            monthNum = monthParamMap[String(row.Mes).toUpperCase()];
-                        } else if (!isNaN(row.Mes) && String(row.Mes).length === 1) {
-                            monthNum = `0${row.Mes}`;
-                        }
-                        monthKey = `${year}-${monthNum}`;
+            const fetchYearData = async (y) => {
+                const { data } = await PTApi.get('/venta/vencimientos-mes', {
+                    params: {
+                        year: y,
+                        id_empresa: id_empresa || 598
                     }
-
-                    const vTotal = row["Vencimientos (Fec Fin)"] ?? row["VENCIMIENTOS POR MES"] ?? 0;
-                    const rTotal = row["Renovaciones (Pagadas)"] ?? row["RENOVACIONES DEL MES"] ?? 0;
-                    const pReal = row["Pendiente Real"] ?? row["PENDIENTE DE RENOVACIONES"] ?? 0;
-                    const acumulado = row["ACUMULADO CARTERA"] ?? 0;
-
-                    map[monthKey] = {
-                        renovaciones: rTotal,
-                        porcentaje: vTotal > 0 ? `${((rTotal / vTotal) * 100).toFixed(1)}%` : "0.0%",
-                        vencimientos: vTotal,
-                        pendiente: pReal,
-                        acumulado: acumulado
-                    };
                 });
-                setMapaVencimientos(map);
-            }
+                if (data.ok && Array.isArray(data.data)) {
+                    const map = {};
+                    data.data.forEach(row => {
+                        let monthKey = "";
+                        if (row.Mes && typeof row.Mes === "string" && row.Mes.includes("-")) {
+                            monthKey = row.Mes;
+                        } else {
+                            const monthParamMap = {
+                                "ENE": "01", "FEB": "02", "MAR": "03", "ABR": "04", "MAY": "05", "JUN": "06",
+                                "JUL": "07", "AGO": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DIC": "12"
+                            };
+                            let monthNum = row.Mes;
+                            if (monthParamMap[String(row.Mes).toUpperCase()]) {
+                                monthNum = monthParamMap[String(row.Mes).toUpperCase()];
+                            } else if (!isNaN(row.Mes)) {
+                                monthNum = String(row.Mes).padStart(2, '0');
+                            }
+                            monthKey = `${y}-${monthNum}`;
+                        }
+
+                        const vTotal = row["Vencimientos (Fec Fin)"] ?? row["VENCIMIENTOS POR MES"] ?? 0;
+                        const rTotal = row["Renovaciones (Pagadas)"] ?? row["RENOVACIONES DEL MES"] ?? 0;
+                        const pReal = row["Pendiente Real"] ?? row["PENDIENTE DE RENOVACIONES"] ?? 0;
+                        const acumulado = row["ACUMULADO CARTERA"] ?? 0;
+
+                        map[monthKey] = {
+                            renovaciones: rTotal,
+                            porcentaje: vTotal > 0 ? `${((rTotal / vTotal) * 100).toFixed(1)}%` : "0.0%",
+                            vencimientos: vTotal,
+                            pendiente: pReal,
+                            acumulado: acumulado
+                        };
+                    });
+                    return map;
+                }
+                return {};
+            };
+
+            const [mapCurrent, mapPrev] = await Promise.all([
+                fetchYearData(year),
+                fetchYearData(year - 1)
+            ]);
+
+            setMapaVencimientos({ ...mapPrev, ...mapCurrent });
+
         } catch (err) { console.error(err); }
     };
 
