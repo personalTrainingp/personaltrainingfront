@@ -58,10 +58,16 @@ export const GestionInventario = () => {
                         </TabPanel>
                   </TabView>
             </TabPanel>
-            <TabPanel header='BACKUP SOTO'>
+            <TabPanel header='BACKUPS'>
                   <TabView>
                         <TabPanel header={<>REDUCTO<br/>INVENTARIO TOTAL</>}>
                               <DataInventario id_enterprice={5992} id_zona={599}/>
+                        </TabPanel>
+                        <TabPanel header={<>PROYECTO 4</>}>
+                              <DataInventario id_enterprice={5993} id_zona={599}/>
+                        </TabPanel>
+                        <TabPanel header={<>PROYECTO 2</>}>
+                              <DataInventario id_enterprice={5994} id_zona={599}/>
                         </TabPanel>
                   </TabView>
             </TabPanel>
