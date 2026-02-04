@@ -130,7 +130,7 @@ export const TableGasto = ({id_empresa, bgPastel, mesesSeleccionadosNums, anio, 
 						</thead>
 
 						<tbody>
-						{grp.conceptos.map((c, idx) => {
+						{grp?.conceptos?.map((c, idx) => {
 							const totalConcepto = c.items.reduce(
 							(sum, it) => sum + (it.monto_total || 0),
 							0
