@@ -147,14 +147,14 @@ export const TableGasto = ({id_empresa, bgPastel, mesesSeleccionadosNums, anio, 
 									const mesesSinCero = c.items.filter(i=>i.items.length!==0)
 							return (
 							<tr key={c.concepto} className={dataColor(c.concepto)}>
-								<td   className={`fw-bold fs-2 sticky-td-${id_empresa} border-left-10 border-right-10 p-1 ${bgTotal} text-white`}>
+								<td   className={`fw-bold fs-2 sticky-td-${id_empresa} ${c.concepto==='MEMBRESIAS' && 'border-bottom-10'} border-left-10 border-right-10 p-1 ${bgTotal} text-white`}>
 											{idx + 1}. {c.concepto}
 							    </td>
 								{mesesSeleccionadosNums.map(mesNum => {
 								const itemMes = c.items.find(it => it.mes === mesNum) || { monto_total: 0, mes: mesNum };
 								return (
 									<React.Fragment key={mesNum}>
-										<td style={{fontSize: '35px'}}>
+										<td style={{fontSize: '35px'}} className={`${c.concepto==='MEMBRESIAS' && 'border-bottom-10'}`}>
 											<div
 												className={`cursor-text-primary bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
 												onClick={() => onOpenModalDetallexCelda({
@@ -166,7 +166,7 @@ export const TableGasto = ({id_empresa, bgPastel, mesesSeleccionadosNums, anio, 
 												<NumberFormatMoney amount={itemMes.monto_total} />
 											</div>
 										</td>
-										<td style={{fontSize: '35px'}} className='bg-white-1'>
+										<td style={{fontSize: '35px'}} className={`bg-white-1 ${c.concepto==='MEMBRESIAS' && 'border-bottom-10'}`}>
 											<div
 												className={`cursor-text-primary bg-porsiaca text-right ${itemMes.monto_total<=0?'':'fw-bold'}`}
 												// style={{width: '100px'}}
@@ -183,22 +183,22 @@ export const TableGasto = ({id_empresa, bgPastel, mesesSeleccionadosNums, anio, 
 								);
 								})}
 								
-								<td className='border-left-10'>
+								<td className={`border-left-10 ${c.concepto==='MEMBRESIAS' && 'border-bottom-10'}`}>
 									<div className='text-right text-white'  style={{fontSize: '40px'}}>
 											<NumberFormatMoney amount={totalConcepto} />
 									</div>
 								</td>
-								<td className="fw-bold" >
+								<td className={`fw-bold ${c.concepto==='MEMBRESIAS' && 'border-bottom-10'}`} >
 									<div className="text-white text-right" style={{fontSize: '40px', width: '90px'}}>
 										{cantidadMovimiento}
 									</div>
 								</td>
-								<td>
+								<td className={`${c.concepto==='MEMBRESIAS' && 'border-bottom-10'}`}>
 									<div className='text-center  text-white' style={{fontSize: '40px'}}>
 											<NumberFormatMoney amount={(totalConcepto/totalGeneral)*100} />
 									</div>
 								</td>
-								<td className='border-right-10'>
+								<td className={`border-right-10 ${c.concepto==='MEMBRESIAS' && 'border-bottom-10'}`}>
 									<div className='text-right  text-white' style={{fontSize: '40px'}}>
 											<NumberFormatMoney amount={totalConcepto/dataTotalFormular(anio, c.items.map(i=>i.monto_total)).length} />
 									</div>

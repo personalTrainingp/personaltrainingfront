@@ -44,11 +44,17 @@ export const App = () => {
       </TabPanel>
       <TabPanel header='BACKUPS'>
         <TabView>
-            <TabPanel header={<h2 className='card p-4 mb-0'>REDUCTO</h2>}>
-                <InventarioTotalizado id_empresa={5992} label_empresa={'REDUCTO'}/>
+            <TabPanel header={<h2 className='card p-4 mb-0'>PROYECTO 1</h2>}>
+                <InventarioTotalizado id_empresa={5992} label_empresa={'PROYECTO 1'}/>
             </TabPanel>
-            <TabPanel header={<h2 className='card p-4 mb-0'>REDUCTO</h2>}>
-                <InventarioTotalizado id_empresa={5992} label_empresa={'REDUCTO'}/>
+            <TabPanel header={<h2 className='card p-4 mb-0'>PROYECTO 2</h2>}>
+                <InventarioTotalizado id_empresa={5994} label_empresa={'PROYECTO 2'}/>
+            </TabPanel>
+            <TabPanel header={<h2 className='card p-4 mb-0'>PROYECTO 4</h2>}>
+                <InventarioTotalizado id_empresa={5993} label_empresa={'PROYECTO 4'}/>
+            </TabPanel>
+            <TabPanel header={<h2 className='card p-4 mb-0'>AREAS COMUNES</h2>}>
+                <InventarioTotalizado id_empresa={5998} label_empresa={'AREAS COMUNES'}/>
             </TabPanel>
         </TabView>
       </TabPanel>
