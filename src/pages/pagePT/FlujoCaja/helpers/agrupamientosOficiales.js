@@ -47,7 +47,7 @@ export const agruparPorGrupoYConcepto = (data = []) => {
 		grupo,
 		conceptos: agruparPorConcepto(items),
 		itemsxDias: agruparPorDia(items),
-		data: items
+		data: items,
 	}));
 };
 
@@ -69,6 +69,7 @@ export const agruparPorConcepto = (data = []) => {
 		return {
 			...ar,
 			items: agruparPorDia(ar.items),
+			data: ar.items,
 		};
 	});
 };
@@ -78,7 +79,7 @@ function agruparPorDia(data) {
 
 	data.forEach((item) => {
 		// const fecha = dayjs.utc(item.fecha_venta);
-		const fecha = DateMaskStr(item.fecha_primaria);
+		const fecha = DateMaskStr(item?.fecha_primaria);
 
 		const anio = fecha.year();
 		const mes = fecha.month() + 1; // 0–11 → 1–12
@@ -98,5 +99,5 @@ function agruparPorDia(data) {
 		map[key].items.push(item);
 	});
 
-	return Object.values(map);
+	return Object.values(map).sort((a, b) => a?.mes - b?.mes);
 }

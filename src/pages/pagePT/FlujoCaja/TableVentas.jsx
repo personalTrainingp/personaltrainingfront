@@ -19,7 +19,7 @@ export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, backgrou
 	<div  className="table-responsive" style={{ width: '95vw' }}>
 		<Table className="tabla-egresos" bordered>
 			<colgroup>
-								<col className={`${bgTotal} text-white`} style={{ width: 350 }}/>
+								<col className={`${bgTotal} text-white`} style={{ width: 500 }}/>
 								{mesesSeleccionadosNums.map(mesNum => (
 									<React.Fragment key={mesNum}>
 									<col style={{ width: 150 }} />
@@ -117,10 +117,7 @@ export const TableVentas = ({dataIngresosxMes=[], bgPastel, id_empresa, backgrou
 																			</thead>
 							
 													<tbody>
-													{grp.conceptos?.filter(e=>e.items.reduce(
-														(sum, it) => sum + (it.monto_total || 0),
-														0
-														)!==0).map((c, idx) => {
+													{grp.conceptos?.map((c, idx) => {
 														const totalConcepto = c.items.reduce(
 														(sum, it) => sum + (it.monto_total || 0),
 														0

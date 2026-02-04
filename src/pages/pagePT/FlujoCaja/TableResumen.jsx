@@ -16,9 +16,19 @@ export const TableResumen = ({dataIngresos, dataGastos, anio, id_empresa, mesesS
   return (
     <div className="table-responsive">
         <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
+            <colgroup>
+                <col className={` text-white`} style={{ width: 500 }}/>
+                {mesesSeleccionadosNums.map(mesNum => (
+                    <col style={{ width: 380 }} />
+                ))}
+                <col style={{ width: 300 }} />
+                <col style={{ width: 200 }} />
+                <col style={{ width: 250 }} />
+                <col style={{ width: 150 }} />
+            </colgroup>
         <thead >
           <tr>
-            <th className={`fw-bold fs-2 bg-white-1 border-top-10 border-bottom-10 border-left-10 border-right-10`} style={{width: '280px'}}>
+            <th className={`fw-bold fs-2 bg-white-1 border-top-10 border-bottom-10 border-left-10 border-right-10`}>
                 <div className='text-black'>
                     RESULTADO ANUAL
                 </div>

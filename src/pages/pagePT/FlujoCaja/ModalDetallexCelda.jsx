@@ -7,7 +7,7 @@ import { Table } from 'react-bootstrap'
 import { ModalIngresosGastos } from '../GestGastos/ModalIngresosGastos'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 
-export const ModalDetallexCelda = ({bgMultiValue, id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
+export const ModalDetallexCelda = ({arrayRangeDate, bgMultiValue, id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
   const [isModalDetalleGasto, setisModalDetalleGasto] = useState(false)
   const [ModalDetalleGasto, setModalDetalleGasto] = useState({})
   const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
@@ -19,7 +19,7 @@ export const ModalDetallexCelda = ({bgMultiValue, id_enterprice, anio, show, onS
   const onCloseModalDetalleGasto = ()=>{
     setisModalDetalleGasto(false);
     // onShow()
-    obtenerGastosxANIO(anio, id_enterprice)
+    obtenerGastosxANIO(arrayRangeDate, id_enterprice)
   }
   return (
     <>

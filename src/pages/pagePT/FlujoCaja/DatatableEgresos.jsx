@@ -3,16 +3,11 @@ import Select from 'react-select'; // <-- importar react-select
 import { useFlujoCajaStore } from './hook/useFlujoCajaStore';
 import { ModalDetallexCelda } from './ModalDetallexCelda';
 import { useDispatch } from 'react-redux';
-import { onSetColorView, onSetViewSubTitle } from '@/store';
 import { useVentasStore } from './hook/useVentasStore';
-import { TableVentas } from './TableVentas';
 import { TableGasto } from './TableGasto';
-import { TableFinal } from './TableFinal';
 import { TotalesGeneralesxMes, TotalesPorGrupo } from './helpers/totalesxGrupo';
 import { ModalDetalleIngresosxItem } from './ModalDetalleIngresosxItem';
 import { TableResumen } from './TableResumen';
-import { TableCuentas } from './TableCuentas';
-import { useCuentasStore } from './hook/useCuentasStore';
 import { ModalDetalleCuentas } from './ModalDetalleCuentas';
 import { onSetRangeDate, onViewSection } from '@/store/data/dataSlice';
 
@@ -127,7 +122,7 @@ export const DatatableEgresos = ({
 	}, [dataIngresosxMes]);
 	// 7) Calcular totales generales por mes para la última fila (sumando cada gasto en items)
 	const { totalPorMes:totalPorMesEgresos, totalGeneral:totalGeneralEgresos } = useMemo(() => {
-		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataGastosxANIO.filter(ing=>ing.grupo!=='PRESTAMOS'))
+		const { totalGeneral, totalPorMes } = TotalesGeneralesxMes(dataGastosxANIO.filter(ing=>ing.grupo!=='COMPRA PRODUCTOS/ACTIVOS'))
 		return {
 			totalGeneral,
 			totalPorMes
@@ -206,16 +201,19 @@ export const DatatableEgresos = ({
 					<div>
 						<p className='text-center' style={{fontSize: '60px'}}>INGRESOS</p>
 						{id_enterprice}
-						<TableVentas 
+						<TableGasto 
 								bgPastel={bgPastel}
 								id_empresa={id_enterprice}
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-								dataIngresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes} 
+								dataEgresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes} 
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 
 								mesesSeleccionadosNums={mesesSeleccionadosNums}
 								anio={anio}
+								bgMultiValue={bgMultiValue} 
+								totalPorMes={totalPorMes}
+								totalGeneral ={totalGeneral }
 								/>
 					</div>
 					<div>
@@ -231,7 +229,7 @@ export const DatatableEgresos = ({
 							totalPorMes={totalPorMes}
 							totalGeneral ={totalGeneral }
 							selectedMonths ={selectedMonths }
-							dataEgresosxMes={dataGastosxANIO.filter(ing=>ing.grupo!=='PRESTAMOS')}
+							dataEgresosxMes={dataGastosxANIO.filter(ing=>ing.grupo!=='COMPRA PRODUCTOS/ACTIVOS' )}
 							anio={anio}
 							/>
 					</div>
@@ -247,7 +245,7 @@ export const DatatableEgresos = ({
 							totalPorMesEgresos={totalPorMesEgresos}
 							totalPorMesIngresos={id_enterprice!==800?totalPorMesVenta:totalPorMesIngresos}
 							totalPorMesIngExc={totalPorMesIngExc}
-							dataGastos={dataGastosxANIO.filter(ing=>ing.grupo!=='PRESTAMOS' && ing.grupo!=='COMPRA PRODUCTOS/ACTIVOS')}
+							dataGastos={dataGastosxANIO.filter(ing=>ing.grupo!=='COMPRA PRODUCTOS/ACTIVOS')}
 							dataIngresos={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes}
 						/>
 					</div>
@@ -259,6 +257,7 @@ export const DatatableEgresos = ({
 				show={isOpenModalDetallexCelda}
 				id_enterprice={id_enterprice}
 				anio={anio}
+				arrayRangeDate={arrayRangeDate}
 				bgMultiValue={bgMultiValue}
 				bgEmpresa={bgTotal}
 			/>
