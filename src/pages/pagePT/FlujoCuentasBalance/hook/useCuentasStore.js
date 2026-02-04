@@ -166,14 +166,6 @@ export const useCuentasStore = () => {
 							orden: 3,
 							parametro_grupo: { label_param: 'TARJETA DE CREDITO', orden: 3 },
 						},
-						// {
-						// 	id: 1579,
-						// 	grupo: 'OTROS',
-						// 	tipo: 'PorPagar',
-						// 	orden: 4,
-						// 	nombre_gasto: 'LUIS ALBERTO ROY GAGLIUFFI',
-						// 	parametro_grupo: { label_param: 'OTROS', orden: 4 },
-						// },
 						{
 							id: 1576,
 							grupo: 'PRESTAMOS',
@@ -189,6 +181,14 @@ export const useCuentasStore = () => {
 							orden: 4,
 							nombre_gasto: 'RAL',
 							parametro_grupo: { label_param: 'TARJETA DE CREDITO', orden: 7 },
+						},
+						{
+							id: 1576,
+							grupo: 'PRESTAMOS',
+							tipo: 'PorCobrar',
+							orden: 4,
+							nombre_gasto: 'RAL',
+							parametro_grupo: { label_param: 'PRESTAMOS', orden: 7 },
 						},
 					].filter((e) => e.tipo === tipo),
 					tipo
