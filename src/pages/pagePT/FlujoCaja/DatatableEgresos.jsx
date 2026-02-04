@@ -257,6 +257,7 @@ export const DatatableEgresos = ({
 				show={isOpenModalDetallexCelda}
 				id_enterprice={id_enterprice}
 				anio={anio}
+				arrayRangeDate={arrayRangeDate}
 				bgMultiValue={bgMultiValue}
 				bgEmpresa={bgTotal}
 			/>
