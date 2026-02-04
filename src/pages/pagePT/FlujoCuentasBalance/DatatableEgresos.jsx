@@ -36,7 +36,7 @@ export const DatatableEgresos = ({
 	useEffect(() => {
 		if(id_enterprice || arrayRangeDate){
 			obtenerCuentasBalance(arrayRangeDate, id_enterprice, 'PorPagar')
-			obtenerCuentasPorCobrar(arrayRangeDate, id_enterprice, 'PorPagar')
+			obtenerCuentasPorCobrar(arrayRangeDate, id_enterprice, 'PorCobrar')
 		}
 	}, [id_enterprice, arrayRangeDate])
 	useEffect(() => {
