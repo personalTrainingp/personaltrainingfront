@@ -15,8 +15,10 @@ import { useAlertasUsuarios } from "./useAlertasUsuarios";
 import { useTerminoStore } from "@/hooks/hookApi/useTerminoStore";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import { ModalEditarMensajeAlerta } from "./ModalEditarMensajeAlerta";
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const PAGE_SIZE = 10; // filas / grupos por página
 
@@ -35,7 +37,7 @@ export const ViewDataTable = () => {
     DataGeneral: dataTipoAlerta = [],
     obtenerParametroPorEntidadyGrupo: obtenerTipoAlerta,
   } = useTerminoStore();
-  const [isOpenModalEditarMensaje, setisOpenModalEditarMensaje] = useState({isOpen: false, mensaje: ''})
+  const [isOpenModalEditarMensaje, setisOpenModalEditarMensaje] = useState({ isOpen: false, mensaje: '' })
   // estado UI local
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0); // página actual
@@ -85,12 +87,12 @@ export const ViewDataTable = () => {
   };
   // confirm dialog eliminar
   const onConfirmDialogEditarMensaje = (msg) => {
-    setisOpenModalEditarMensaje({isOpen: true, mensaje: msg})
+    setisOpenModalEditarMensaje({ isOpen: true, mensaje: msg })
   };
-  
+
   // confirm dialog eliminar
   const onCancelDialogEditarMensaje = () => {
-    setisOpenModalEditarMensaje({isOpen: false, mensaje: ''})
+    setisOpenModalEditarMensaje({ isOpen: false, mensaje: '' })
   };
   // ---- FILTRO GLOBAL ----
   const dataFiltrada = useMemo(() => {
@@ -140,6 +142,7 @@ export const ViewDataTable = () => {
       .map(([fecha, items]) => ({
         groupKey: dayjs
           .utc(fecha)
+          .tz("America/Lima")
           .format("dddd DD [DE] MMMM [DEL] YYYY [a las] HH:mm"),
         rows: items,
       }));
@@ -225,6 +228,7 @@ export const ViewDataTable = () => {
             <td>
               {dayjs
                 .utc(d?.fecha)
+                .tz("America/Lima")
                 .format("dddd DD [DE] MMMM [DEL] YYYY [a las] HH:mm")}
             </td>
             <td style={{ maxWidth: 300, whiteSpace: "pre-wrap" }}>
@@ -232,10 +236,10 @@ export const ViewDataTable = () => {
             </td>
             <td>{getEstadoBadge(d?.id_estado)}</td>
             <td>
-              {/* <i
-                className="pi pi-trash cursor-pointer"
-                onClick={() => onConfirmDialogEditarMensaje(d.id)}
-              /> */}
+              <i
+                className="pi pi-trash cursor-pointer text-danger"
+                onClick={() => onConfirmDialogDelete(d.id)}
+              />
             </td>
           </tr>
         ))}
@@ -303,10 +307,10 @@ export const ViewDataTable = () => {
               {/* mostramos body sólo si este panel está abierto en nuestro estado */}
               {activeKeys.includes(eventKey) && (
                 <Accordion.Body className="bg-white">
-                    <div>
-                      <Button onClick={()=>{onConfirmDialogEditarMensaje( grp.rows[0]?.mensaje)}}>EDITAR MENSAJE</Button>
-                    </div>
-                    {grp.rows[0].mensaje}
+                  <div>
+                    <Button onClick={() => { onConfirmDialogEditarMensaje(grp.rows[0]?.mensaje) }}>EDITAR MENSAJE</Button>
+                  </div>
+                  {grp.rows[0].mensaje}
                   <Table bordered size="sm" responsive>
                     <thead>
                       <tr className="table-light">
@@ -357,10 +361,10 @@ export const ViewDataTable = () => {
             {activeIndex === 0
               ? dataFiltrada.length
               : activeIndex === 1
-              ? dataPorMensaje.length
-              : activeIndex === 2
-              ? dataPorFecha.length
-              : dataPorUsuario.length}
+                ? dataPorMensaje.length
+                : activeIndex === 2
+                  ? dataPorFecha.length
+                  : dataPorUsuario.length}
           </div>
         </Col>
       </Row>
@@ -430,7 +434,7 @@ export const ViewDataTable = () => {
           {renderPagination(pagUsuario.totalPages, pagUsuario.pageFixed)}
         </TabPanel>
       </TabView>
-      <ModalEditarMensajeAlerta data={{mensaje: isOpenModalEditarMensaje.mensaje}} onHide={onCancelDialogEditarMensaje} show={isOpenModalEditarMensaje.isOpen}/>
+      <ModalEditarMensajeAlerta data={{ mensaje: isOpenModalEditarMensaje.mensaje }} onHide={onCancelDialogEditarMensaje} show={isOpenModalEditarMensaje.isOpen} />
     </div>
   );
 };
