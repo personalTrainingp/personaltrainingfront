@@ -203,22 +203,22 @@ export const DatatableEgresos = ({
 						<TableCuentas
 							background={bgTotal}
 							bgTotal={bgTotal}
-							header={'CUENTAS POR PAGAR'}
+							header={'CUENTAS POR COBRAR'}
 							mesesNombres={mesesNombres}
 							mesesSeleccionadosNums={mesesSeleccionadosNums}
 							onOpenModalDetallexCelda={onOpenModalDetallexCelda2}
-							dataIngresosxMes={dataCuentasBalance}
+							dataIngresosxMes={cuentasPorCobrar}
 								/>
 					</div>
 					<div>
 						<TableCuentas
 							background={bgTotal}
 							bgTotal={bgTotal}
-							header={'CUENTAS POR COBRAR'}
+							header={'CUENTAS POR PAGAR'}
 							mesesNombres={mesesNombres}
 							mesesSeleccionadosNums={mesesSeleccionadosNums}
 							onOpenModalDetallexCelda={onOpenModalDetallexCelda2}
-							dataIngresosxMes={cuentasPorCobrar}
+							dataIngresosxMes={dataCuentasBalance}
 								/>
 					</div>
 				</div>
