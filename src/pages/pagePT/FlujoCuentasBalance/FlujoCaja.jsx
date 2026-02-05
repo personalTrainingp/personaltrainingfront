@@ -18,7 +18,7 @@ const TabIcon = ({ src, alt, width }) => (
 export const FlujoCaja = () => {
 	return (
 		<>
-			<PageBreadcrumb subName={'T'} title={`Flujo de Caja anual`}  />
+			<PageBreadcrumb subName={'T'} title={`Flujo Cuentas Balance`}  />
             <TabView>
                 <TabPanel style={{alignItems: 'flex-end', display: 'flex'}}  header={<TabIcon width={220} src='https://change-the-slim-studio-sigma.vercel.app/assets/mem_logo-be75730a.png'/>}>
                     <TabView>

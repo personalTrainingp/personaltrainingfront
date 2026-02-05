@@ -8,6 +8,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
 import Select from 'react-select'
 import { SelectOficio } from './SelectOficio';
+import { ModalAgregarTermino } from './ModalAgregarTermino';
+import { useSelector } from 'react-redux';
+import { useTerminologiaStore } from './useTerminologiaStore';
 const registerProvedor = {
     ruc_prov: '', 
 	razon_social_prov: '', 
@@ -28,11 +31,13 @@ const registerProvedor = {
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalProveedor = ({status, dataProv, onHide, show, id}) => {
+export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow}) => {
+    const { dataViewTerm } = useSelector(e=>e.TERM)
     const { startRegisterProveedor, message, isLoading, actualizarProveedor, obtenerProveedor, proveedor } = useProveedorStore()
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const [selectedAvatar, setselectedAvatar] = useState(null)
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
+    const [isOpenModalTerminoOficio, setisOpenModalTerminoOficio] = useState({isOpen: false, id: 0})
     const { ruc_prov, 
             razon_social_prov, 
             tel_prov,
@@ -52,7 +57,8 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id}) => {
             id_oficio,
             es_agente,
             formState, onResetForm, onInputChange, onInputChangeReact } = useForm(id==0?registerProvedor:proveedor)
-            const { comboOficio, obtenerOficios, obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
+            const { comboOficio, obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
+            const { obtenerTerminologiaSistema } = useTerminologiaStore()
             const [visible, setVisible] = useState(false);
           
             const toastBC = useRef(null);
@@ -70,7 +76,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id}) => {
             
             useEffect(() => {
                 if(show){
-                    obtenerOficios()
+                    obtenerTerminologiaSistema('proveedor', 'tipo_oficio')
                     obtenerParametroPorEntidadyGrupo('formapago', 'banco')
                 }
             }, [show])
@@ -79,8 +85,6 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id}) => {
                     obtenerProveedor(id)
                 }
             }, [id])
-            console.log({proveedor});
-            
             
 
 
@@ -109,7 +113,11 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id}) => {
                 onResetForm()
             }
             const onClickOpenModalCustomOficios = ()=>{
-
+                setisOpenModalTerminoOficio({isOpen: true, id: 0})
+                onHide()
+            }
+            const onClickCloseModalCustomOficios = ()=>{
+                setisOpenModalTerminoOficio({isOpen: false, id: 0})
             }
             
             const ViewDataImg = (e) => {
@@ -124,6 +132,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id}) => {
   return (
     <>
         <Toast ref={toastBC} onRemove={clear} />
+    <ModalAgregarTermino onShowProveedores={()=>onShow(0)} show={isOpenModalTerminoOficio.isOpen} onHide={onClickCloseModalCustomOficios} terminoAgregar={'OFICIO'} entidad={'proveedor'} grupo={'tipo_oficio'} titulo={'Oficio'}/>
     <Modal onHide={onCancelForm} show={show} size='lg' backdrop={'static'}>
         
         {status=='loading'?'Cargando....':(
@@ -350,21 +359,21 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id}) => {
                                             <Select
                                                     onChange={(e) => onInputChangeReact(e, 'id_oficio')}
                                                     name="id_oficio"
-                                                    placeholder={'Seleccione el banco'}
+                                                    placeholder={'Seleccione el oficio'}
                                                     className="react-select"
                                                     classNamePrefix="react-select"
-                                                    options={comboOficio}
-                                                    value={comboOficio.find(
+                                                    options={dataViewTerm.map(e=>{return {label: e.entidad_param, value: e.id_param}})}
+                                                    value={dataViewTerm.map(e=>{return {label: e.entidad_param, value: e.id_param}}).find(
                                                         (option) => option.value === id_oficio
                                                     )}
                                                 />
                                         </div>
                                     </Col>
-                                    {/* <Col lg={2}>
+                                    <Col lg={2}>
                                         <div className='h-100 text-center d-flex align-items-center'>
-                                            <Button onClick={()=>onClickOpenModalCustomOficios()}>+</Button>
+                                            <Button onClick={()=>onClickOpenModalCustomOficios(0)}>+</Button>
                                         </div>
-                                    </Col> */}
+                                    </Col>
                                 </Row>
                             </Col>
                             <Col lg={12}>

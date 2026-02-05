@@ -161,6 +161,8 @@ export const DatatableEgresos = ({
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
 	);
+	console.log({dataIngresosxMes});
+	
 	return (
 		<>
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
@@ -205,7 +207,7 @@ export const DatatableEgresos = ({
 								bgPastel={bgPastel}
 								id_empresa={id_enterprice}
 								onOpenModalDetallexCelda={onOpenModalDetallexCelda1}
-								dataEgresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes} 
+								dataEgresosxMes={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes.filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS')} 
 								background={background} 
 								bgTotal={bgTotal} 
 								mesesNombres={mesesNombres} 
@@ -246,7 +248,7 @@ export const DatatableEgresos = ({
 							totalPorMesIngresos={id_enterprice!==800?totalPorMesVenta:totalPorMesIngresos}
 							totalPorMesIngExc={totalPorMesIngExc}
 							dataGastos={dataGastosxANIO.filter(ing=>ing.grupo!=='COMPRA PRODUCTOS/ACTIVOS')}
-							dataIngresos={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes}
+							dataIngresos={id_enterprice!==800?[...dataVentasxMes.filter(ing=>ing.grupo==='INGRESOS')]:dataIngresosxMes.filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS')}
 						/>
 					</div>
 				</div>

@@ -1,1 +1,1 @@
-export { ReporteGerenciales as default } from './ReporteGerenciales'
+export { AppPuntoEquilibrio as default } from './AppPuntoEquilibrio'

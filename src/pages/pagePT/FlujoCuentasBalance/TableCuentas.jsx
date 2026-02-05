@@ -203,8 +203,14 @@ export const TableCuentas = ({dataIngresosxMes=[], header, background, bgTotal, 
                                                                     <td  className="text-white text-right" style={{fontSize: '40px'}}><NumberFormatMoney amount={100}/></td>
                                                                     <td className="text-white text-right" style={{fontSize: '40px'}}><NumberFormatMoney amount={mesesSumaxGrupo.reduce((a, b)=>a+b, 0)/12}/></td>
                                                                 </tr>
+                                                                
+							<tr className='bg-white'>
+								<div></div>
+								<div></div>
+								<div></div>
+							</tr>
                             </tbody>
-
+                            
                             </React.Fragment>
                         )
                     })

@@ -48,7 +48,7 @@ export const DataProveedores = ({id_estado}) => {
         </Col>
       </Row>
 
-      <ModalProveedor show={isModalOpenProv} id={idProv} onHide={modalProvClose} />
+      <ModalProveedor show={isModalOpenProv} onShow={onOpenModalProvOpen} id={idProv} onHide={modalProvClose} />
     </>
   );
 };

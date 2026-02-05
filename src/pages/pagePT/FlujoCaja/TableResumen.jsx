@@ -169,83 +169,89 @@ export const TableResumen = ({dataIngresos, dataGastos, anio, id_empresa, mesesS
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td className={`fw-bold fs-2  sticky-td-${id_empresa} border-left-10 border-right-10`}>
-                        <div className='text-white'>
-                            ING. EXCEPCIONALES
-                        </div>
-                    </td>
-                    {mesesSeleccionadosNums.map(mesNum => {
-                        return(
-                            <td
-                                key={mesNum}
-                                className="text-center fw-bold"
-                                style={{fontSize: '28px'}}
-                                
-                            >
-                                <div  className={`bg-porsiaca text-right px-2 text-black`}>
-                                    <NumberFormatMoney amount={totalPorMesIngExc[mesNum - 1]} />
-                                </div>
-                            </td>
-                        )
-                    }
-                    )}
-                    <td className="text-center fw-bolder border-left-10" style={{fontSize: '28px'}}>
-                        <div className='bg-porsiaca text-right text-black'>
-                            <NumberFormatMoney amount={totalIngExc} />
-                        </div>
-                    </td>
-                    <td className="text-center fw-bolder"  style={{fontSize: '28px'}}>
-                        <div className='bg-porsiaca text-right'>
-                            <NumberFormatMoney amount={100} />
-                        </div>
-                    </td>
-                    <td className="text-center fw-bolder border-right-10"  style={{fontSize: '28px'}}>
-                        <div className='bg-porsiaca text-right'>
-                            <NumberFormatMoney amount={totalIngExc/12} />
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td className={`fw-bold fs-2  sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10`}>
-                        <div className='text-white'>
-                            UTILIDAD NETA
-                        </div>
-                    </td>
-                    {mesesSeleccionadosNums.map(mesNum => {
-                        return(
-                            <td
-                                key={mesNum}
-                                className="text-center fw-bold "
-                                style={{fontSize: '28px'}}
-                            >
-                                <div  className={`bg-porsiaca text-right px-2 ${utilidad(totalPorMesIngresos[mesNum - 1]+ totalPorMesIngExc[mesNum - 1], totalPorMesEgresos[mesNum - 1]).espositivo?'text-ISESAC':'text-change'}`}>
-                                    {/* <NumberFormatMoney amount={totalPorMesIngExc[mesNum - 1]} /> */}
-                                    {utilidad(totalPorMesIngresos[mesNum - 1] + totalPorMesIngExc[mesNum - 1], totalPorMesEgresos[mesNum - 1]).espositivo?'+':''}<NumberFormatMoney amount={totalPorMesIngresos[mesNum - 1] + totalPorMesIngExc[mesNum - 1] - totalPorMesEgresos[mesNum - 1]} />
+                {
+                    id_empresa!==800 && (
+                        <>
+                            <tr>
+                                <td className={`fw-bold fs-2  sticky-td-${id_empresa} border-left-10 border-right-10`}>
+                                    <div className='text-white'>
+                                        ING. EXCEPCIONALES
+                                    </div>
+                                </td>
+                                {mesesSeleccionadosNums.map(mesNum => {
+                                    return(
+                                        <td
+                                            key={mesNum}
+                                            className="text-center fw-bold"
+                                            style={{fontSize: '28px'}}
+                                            
+                                        >
+                                            <div  className={`bg-porsiaca text-right px-2 text-black`}>
+                                                <NumberFormatMoney amount={totalPorMesIngExc[mesNum - 1]} />
+                                            </div>
+                                        </td>
+                                    )
+                                }
+                                )}
+                                <td className="text-center fw-bolder border-left-10" style={{fontSize: '28px'}}>
+                                    <div className='bg-porsiaca text-right text-black'>
+                                        <NumberFormatMoney amount={totalIngExc} />
+                                    </div>
+                                </td>
+                                <td className="text-center fw-bolder"  style={{fontSize: '28px'}}>
+                                    <div className='bg-porsiaca text-right'>
+                                        <NumberFormatMoney amount={100} />
+                                    </div>
+                                </td>
+                                <td className="text-center fw-bolder border-right-10"  style={{fontSize: '28px'}}>
+                                    <div className='bg-porsiaca text-right'>
+                                        <NumberFormatMoney amount={totalIngExc/12} />
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className={`fw-bold fs-2  sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10`}>
+                                    <div className='text-white'>
+                                        UTILIDAD NETA
+                                    </div>
+                                </td>
+                                {mesesSeleccionadosNums.map(mesNum => {
+                                    return(
+                                        <td
+                                            key={mesNum}
+                                            className="text-center fw-bold "
+                                            style={{fontSize: '28px'}}
+                                        >
+                                            <div  className={`bg-porsiaca text-right px-2 ${utilidad(totalPorMesIngresos[mesNum - 1]+ totalPorMesIngExc[mesNum - 1], totalPorMesEgresos[mesNum - 1]).espositivo?'text-ISESAC':'text-change'}`}>
+                                                {/* <NumberFormatMoney amount={totalPorMesIngExc[mesNum - 1]} /> */}
+                                                {utilidad(totalPorMesIngresos[mesNum - 1] + totalPorMesIngExc[mesNum - 1], totalPorMesEgresos[mesNum - 1]).espositivo?'+':''}<NumberFormatMoney amount={totalPorMesIngresos[mesNum - 1] + totalPorMesIngExc[mesNum - 1] - totalPorMesEgresos[mesNum - 1]} />
 
-                                </div>
-                            </td>
-                        )
-                    }
-                    )}
-                    <td className="text-center fw-bolder border-left-10 border-bottom-10" style={{fontSize: '28px'}}>
-                        <div className={`bg-porsiaca text-right ${utilidad(totalIngresos + totalIngExc, totalEgresos).espositivo?'text-ISESAC':'text-change'}`}>
-                            {utilidad(totalIngresos+totalIngExc, totalEgresos).espositivo?'+':''}<NumberFormatMoney amount={(totalIngresos + totalIngExc)-totalEgresos} />
-                        </div>
-                    </td>
-                    <td className="text-center fw-bolder border-bottom-10" style={{fontSize: '28px'}}>
-                        <div className='bg-porsiaca text-right'>
-                            {/* <NumberFormatMoney amount={100} /> */}
-                            <NumberFormatMoney amount={(totalIngresos + totalIngExc)/((totalIngresos + totalIngExc)-totalEgresos)}/>
-                            {/* <NumberFormatMoney amount={0}/> */}
-                        </div>
-                    </td>
-                    <td className="text-center fw-bolder border-right-10 border-bottom-10" style={{fontSize: '28px'}}>
-                        <div className={`bg-porsiaca text-right ${utilidad(totalIngresos + totalIngExc, totalEgresos).espositivo?'text-ISESAC':'text-change'}`}>
-                            {utilidad(totalIngresos+totalIngExc, totalEgresos).espositivo?'+':''}<NumberFormatMoney amount={((totalIngresos + totalIngExc)-totalEgresos)/12} />
-                        </div>
-                    </td>
-                </tr>
+                                            </div>
+                                        </td>
+                                    )
+                                }
+                                )}
+                                <td className="text-center fw-bolder border-left-10 border-bottom-10" style={{fontSize: '28px'}}>
+                                    <div className={`bg-porsiaca text-right ${utilidad(totalIngresos + totalIngExc, totalEgresos).espositivo?'text-ISESAC':'text-change'}`}>
+                                        {utilidad(totalIngresos+totalIngExc, totalEgresos).espositivo?'+':''}<NumberFormatMoney amount={(totalIngresos + totalIngExc)-totalEgresos} />
+                                    </div>
+                                </td>
+                                <td className="text-center fw-bolder border-bottom-10" style={{fontSize: '28px'}}>
+                                    <div className='bg-porsiaca text-right'>
+                                        {/* <NumberFormatMoney amount={100} /> */}
+                                        <NumberFormatMoney amount={(totalIngresos + totalIngExc)/((totalIngresos + totalIngExc)-totalEgresos)}/>
+                                        {/* <NumberFormatMoney amount={0}/> */}
+                                    </div>
+                                </td>
+                                <td className="text-center fw-bolder border-right-10 border-bottom-10" style={{fontSize: '28px'}}>
+                                    <div className={`bg-porsiaca text-right ${utilidad(totalIngresos + totalIngExc, totalEgresos).espositivo?'text-ISESAC':'text-change'}`}>
+                                        {utilidad(totalIngresos+totalIngExc, totalEgresos).espositivo?'+':''}<NumberFormatMoney amount={((totalIngresos + totalIngExc)-totalEgresos)/12} />
+                                    </div>
+                                </td>
+                            </tr>
+                        </>
+                    )
+                }
           </tbody>
         </Table>
     </div>

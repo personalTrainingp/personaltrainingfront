@@ -61,59 +61,6 @@ export const useCuentasStore = () => {
 					},
 				};
 			});
-			console.log({
-				dataAlter1: aplicarTipoDeCambio(dataTCs, dataAlter3),
-				idEmpresa,
-				tipo,
-				dataAlter: agruparPorGrupoYConcepto(
-					aplicarTipoDeCambio(dataTCs, dataAlter3),
-					[
-						{
-							id: 1576,
-							grupo: 'PRESTAMOS',
-							orden: 1,
-							nombre_gasto: 'INVERSIONES LUROGA SAC.',
-							parametro_grupo: { label_param: 'PRESTAMOS', orden: 1 },
-						},
-						{
-							id: 1576,
-							grupo: 'PRESTAMOS',
-							orden: 1,
-							nombre_gasto: 'INVERSIONES SAN EXPEDITO',
-							parametro_grupo: { label_param: 'PRESTAMOS', orden: 1 },
-						},
-						{
-							id: 1577,
-							grupo: 'SUELDO',
-							orden: 2,
-							nombre_gasto: 'INVERSIONES SAN EXPEDITO',
-							parametro_grupo: { label_param: 'SUELDO', orden: 2 },
-						},
-						{
-							id: 1577,
-							grupo: 'SUELDO',
-							orden: 2,
-							nombre_gasto: 'INVERSIONES LUROGA SAC.',
-							parametro_grupo: { label_param: 'SUELDO', orden: 2 },
-						},
-						{
-							id: 1578,
-							grupo: 'TARJETA DE CREDITO',
-							orden: 3,
-							parametro_grupo: { label_param: 'TARJETA DE CREDITO', orden: 3 },
-						},
-						{
-							id: 1579,
-							grupo: 'OTROS',
-							nombre_gasto: 'RAL',
-							orden: 4,
-							parametro_grupo: { label_param: 'OTROS', orden: 4 },
-						},
-					],
-					tipo
-				),
-			});
-
 			setdataCuentasBalance(
 				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTCs, dataAlter3),
