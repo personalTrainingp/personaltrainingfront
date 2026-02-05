@@ -5,6 +5,8 @@ import { PTApi } from "@/common";
 import { ModalReservaMonkFit } from "./ModalReservaMonkFit";
 import { PageBreadcrumb } from "@/components";
 
+import dayjs from "dayjs";
+
 const fmtFechaLocal = (s) => {
   if (!s) return "—";
   let d = new Date(String(s).replace("T", " ").replace(/\.\d+Z?$/, ""));
@@ -23,6 +25,8 @@ export default function ReservaMonkFitPage() {
   const [editing, setEditing] = useState(null);
   const [toast, setToast] = useState("");
   const [programas, setProgramas] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [totalMonto, setTotalMonto] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -44,17 +48,29 @@ export default function ReservaMonkFitPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await reservasApi.list({ limit, offset, search });
+      let from = null;
+      let to = null;
+      // Solo aplicamos filtro de fecha SI NO hay búsqueda
+      if (!search && selectedMonth) {
+        const d = dayjs(selectedMonth);
+        from = d.startOf('month').format('YYYY-MM-DD');
+        to = d.endOf('month').format('YYYY-MM-DD');
+      }
+
+      // Si hay search, from y to van nulos => Trae todo el historial
+      const data = await reservasApi.list({ limit, offset, search, from, to });
       setRows(Array.isArray(data?.rows) ? data.rows : []);
       setCount(Number(data?.count ?? 0));
+      setTotalMonto(Number(data?.totalMonto ?? 0));
     } catch (e) {
       console.error("❌ Error cargando reservas:", e);
       setRows([]);
       setCount(0);
+      setTotalMonto(0);
     } finally {
       setLoading(false);
     }
-  }, [limit, offset, search]);
+  }, [limit, offset, search, selectedMonth]);
 
   useEffect(() => {
     load();
@@ -93,23 +109,58 @@ export default function ReservaMonkFitPage() {
 
   return (
     <div className="container py-4">
-      <PageBreadcrumb title={'Reservas MonkFit'}/>
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <PageBreadcrumb title={'Reservas MonkFit'} />
+      <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
         <h4 className="m-0">Reservas MonkFit</h4>
-        <div className="d-flex gap-2">
+        <div className="d-flex gap-2 align-items-center flex-wrap">
+          <select
+            className="form-select"
+            style={{ width: 'auto', minWidth: '150px' }}
+            value={(() => {
+              // Helper para el valor del select
+              if (!selectedMonth) return "";
+              return dayjs(selectedMonth).format("YYYY-MM");
+            })()}
+            onChange={(e) => {
+              const val = e.target.value; // "2025-02"
+              if (!val) {
+                setSelectedMonth(null);
+                return;
+              }
+              // Fijamos el día 1 para evitar problemas
+              const d = dayjs(`${val}-01`).toDate();
+              setSelectedMonth(d);
+              setOffset(0); // Reset paginación al cambiar filtro
+            }}
+          >
+            {/* Generamos opciones dinámicas anteriores y futuras */}
+            {(() => {
+              const opts = [];
+              // 24 meses atrás + actual + 12 meses adelante
+              const start = dayjs().subtract(13, 'month');
+              for (let i = 0; i <= 36; i++) {
+                const m = start.add(i, 'month');
+                opts.push(
+                  <option key={m.format('YYYY-MM')} value={m.format('YYYY-MM')}>
+                    {m.format('MMMM YYYY').toUpperCase()}
+                  </option>
+                );
+              }
+              return opts;
+            })()}
+          </select>
+
           <input
             className="form-control"
-            placeholder="Buscar (#id, id_cli, código)"
-            style={{ minWidth: 260 }}
+            placeholder="Buscar (Nombre, #id, id_cli, código)"
+            style={{ width: 220 }}
             value={search}
             onChange={(e) => {
               setOffset(0);
               setSearch(e.target.value);
             }}
           />
-          <Button variant="secondary" onClick={load}>
-            Buscar
-          </Button>
+
           <Button onClick={openCreate}>Nueva reserva</Button>
         </div>
       </div>
@@ -143,7 +194,11 @@ export default function ReservaMonkFitPage() {
                   rows.map((r) => (
                     <tr key={r.id}>
                       <td>#{r.id}</td>
-                      <td>{r.id_cli ?? "—"}</td>
+                      <td>
+                        {r.cliente
+                          ? `${r.cliente.nombre_cli} ${r.cliente.apPaterno_cli}`
+                          : (r.id_cli ?? "—")}
+                      </td>
                       <td>{pgmById[Number(r.id_pgm)] || "—"}</td>
                       <td>{r?.estado?.label_param || "—"}</td>
                       <td>{fmtFechaLocal(r.fecha)}</td>
@@ -179,60 +234,74 @@ export default function ReservaMonkFitPage() {
                     </td>
                   </tr>
                 )}
+
               </tbody>
+              <tfoot className="table-light">
+                <tr>
+                  <td colSpan={6} className="text-end fw-bold">TOTAL:</td>
+                  <td className="text-end fw-bold">
+                    {totalMonto ? totalMonto.toFixed(2) : "0.00"}
+                  </td>
+                  <td></td>
+                </tr>
+              </tfoot>
             </table>
             {/* ======= PAGINACIÓN ======= */}
-{!loading && count > limit && (
-  <div className="d-flex justify-content-between align-items-center p-3 border-top">
-    <div>
-      Mostrando {offset + 1}–{Math.min(offset + limit, count)} de {count} registros
-    </div>
-    <div className="d-flex gap-2">
-      <Button
-        variant="outline-secondary"
-        size="sm"
-        disabled={offset === 0}
-        onClick={() => setOffset(Math.max(0, offset - limit))}
-      >
-        ← Anterior
-      </Button>
-      <Button
-        variant="outline-secondary"
-        size="sm"
-        disabled={offset + limit >= count}
-        onClick={() => setOffset(offset + limit)}
-      >
-        Siguiente →
-      </Button>
-    </div>
-  </div>
-)}
+            {!loading && count > limit && (
+              <div className="d-flex justify-content-between align-items-center p-3 border-top">
+                <div>
+                  Mostrando {offset + 1}–{Math.min(offset + limit, count)} de {count} registros
+                </div>
+                <div className="d-flex gap-2">
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    disabled={offset === 0}
+                    onClick={() => setOffset(Math.max(0, offset - limit))}
+                  >
+                    ← Anterior
+                  </Button>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    disabled={offset + limit >= count}
+                    onClick={() => setOffset(offset + limit)}
+                  >
+                    Siguiente →
+                  </Button>
+                </div>
+              </div>
+            )}
 
           </div>
         </div>
       </div>
 
-      {modalOpen && (
-        <ModalReservaMonkFit
-          show={modalOpen}
-          onHide={() => setModalOpen(false)}
-          initial={editing}
-          onSaved={onSaved}
-          programas={programas}
-        />
-      )}
+      {
+        modalOpen && (
+          <ModalReservaMonkFit
+            show={modalOpen}
+            onHide={() => setModalOpen(false)}
+            initial={editing}
+            onSaved={onSaved}
+            programas={programas}
+          />
+        )
+      }
 
-      {toast && (
-        <div className="toast show position-fixed bottom-0 end-0 m-3 text-bg-dark">
-          <div className="d-flex">
-            <div className="toast-body">{toast}</div>
-            <button
-              className="btn-close btn-close-white me-2 m-auto"
-              onClick={() => setToast("")}
-            ></button>
+      {
+        toast && (
+          <div className="toast show position-fixed bottom-0 end-0 m-3 text-bg-dark">
+            <div className="d-flex">
+              <div className="toast-body">{toast}</div>
+              <button
+                className="btn-close btn-close-white me-2 m-auto"
+                onClick={() => setToast("")}
+              ></button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 }
