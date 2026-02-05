@@ -362,8 +362,8 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow}) => 
                                                     placeholder={'Seleccione el oficio'}
                                                     className="react-select"
                                                     classNamePrefix="react-select"
-                                                    options={dataViewTerm.map(e=>{return {label: e.entidad_param, value: e.id_param}})}
-                                                    value={dataViewTerm.map(e=>{return {label: e.entidad_param, value: e.id_param}}).find(
+                                                    options={dataViewTerm.map(e=>{return {label: e.label_param, value: e.id_param}})}
+                                                    value={dataViewTerm.map(e=>{return {label: e.label_param, value: e.id_param}}).find(
                                                         (option) => option.value === id_oficio
                                                     )}
                                                 />
