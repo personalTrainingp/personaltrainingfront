@@ -251,7 +251,7 @@ export const ClientesPorOrigen = ({
   /* === Render === */
   return (
     <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
-      <div style={sTitle}>CLIENTES POR ORIGEN POR VENTAS DE MEMBRESIAS {cutDay}</div>
+      <div style={sTitle}>CLIENTES POR ORIGEN POR VENTAS DE MEMBRESIAS HASTA EL {cutDay}</div>
 
       <table style={sTable}>
         <thead>
