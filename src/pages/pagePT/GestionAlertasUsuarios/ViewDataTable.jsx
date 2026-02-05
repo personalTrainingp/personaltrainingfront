@@ -31,6 +31,7 @@ export const ViewDataTable = () => {
     obtenerUsuarios,
     dataUsuarios = [],
     onDeleteAlertaUsuario,
+    onConfirmarPago,
   } = useAlertasUsuarios();
 
   const {
@@ -82,6 +83,20 @@ export const ViewDataTable = () => {
       acceptClassName: "p-button-danger",
       accept: () => {
         onDeleteAlertaUsuario(id);
+      },
+    });
+  };
+
+  // confirm dialog confirmar pago
+  const onConfirmDialogConfirmarPago = (id) => {
+    confirmDialog({
+      message: "¿Confirmar que el cliente ya realizó el pago? Esto cancelará las alertas mensuales pendientes de este mes.",
+      header: "Confirmar Pago",
+      icon: "pi pi-check-circle",
+      defaultFocus: "accept",
+      acceptClassName: "p-button-success",
+      accept: () => {
+        onConfirmarPago(id);
       },
     });
   };
@@ -236,6 +251,13 @@ export const ViewDataTable = () => {
             </td>
             <td>{getEstadoBadge(d?.id_estado)}</td>
             <td>
+              {d.id_estado === 1 && (
+                <i
+                  className="pi pi-check-circle cursor-pointer text-success me-3"
+                  title="Confirmar Pago"
+                  onClick={() => onConfirmDialogConfirmarPago(d.id)}
+                />
+              )}
               <i
                 className="pi pi-trash cursor-pointer text-danger"
                 onClick={() => onConfirmDialogDelete(d.id)}

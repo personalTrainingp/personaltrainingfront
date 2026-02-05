@@ -29,13 +29,31 @@ export const App = ({ id_empresa }) => {
     reservasMF, originMap, mapaVencimientos, dataLeadPorMesAnio,
     resumenFilas, resumenTotales, avataresDeProgramas,
     sociosOverride, originBreakdown, advisorOriginByProg,
-    avatarByAdvisor, productosPorAsesor, vencimientosFiltrados
+    avatarByAdvisor, productosPorAsesor, vencimientosFiltrados,
+    isLoading
   } = useResumenEjecutivoStore(id_empresa);
-const [year, setYear] = useState(new Date().getFullYear());
+  const [year, setYear] = useState(new Date().getFullYear());
 
   return (
     <>
       <PageBreadcrumb title="INFORME GERENCIAL" subName="Ventas" />
+
+      {isLoading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 9999
+        }}>
+          <span className="loader"></span>
+        </div>
+      )}
 
       {/* === CONTROLES === */}
       <Row className="mb-3">
