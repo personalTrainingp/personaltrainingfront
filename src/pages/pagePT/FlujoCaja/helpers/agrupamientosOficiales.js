@@ -47,6 +47,8 @@ export const agruparPorGrupoYConcepto = (data = []) => {
 		grupo,
 		conceptos: agruparPorConcepto(items),
 		itemsxDias: agruparPorDia(items),
+		montoTotal: items?.reduce((total, item) => total + item.monto, 0),
+		cantidadTotal: items?.length,
 		data: items,
 	}));
 };

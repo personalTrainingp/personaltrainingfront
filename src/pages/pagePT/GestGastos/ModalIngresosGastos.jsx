@@ -43,6 +43,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         setid_empresa(id_enterprice)
         setisCopyHide()
     }
+    const [isOpenModalProveedor, setisOpenModalProveedor] = useState({id: 0, isOpen: false})
     const { DataGeneral:dataOficios, obtenerParametroPorEntidadyGrupo:obtenerOficios } = useTerminoStore()
     const [dataProveedoresFiltrados, setdataProveedoresFiltrados] = useState([])
     const [grupoGasto, setgrupoGasto] = useState([])
@@ -169,12 +170,14 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
             // showToast(objetoToast);
             onClickCancelModal()
         }
-        const onOpenModalProveedor = ()=>{
+        const onOpenModalProveedor = (id)=>{
             setopenModalProv(true)
+            setisOpenModalProveedor({id, isOpen: true})
             onHide()
         }
         const onCloseModalProveedor=()=>{
             setopenModalProv(false)
+            setisOpenModalProveedor({id: 0, isOpen: false})
             onShow()
         }
         const onChangeProveedores = (e)=>{
@@ -204,6 +207,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         </Modal> 
     ):(
         <>
+                    <ModalProveedor id={isOpenModalProveedor.id} onShow={onOpenModalProveedor} show={isOpenModalProveedor.isOpen} onHide={onCloseModalProveedor} />
             <Modal size='xl' onHide={onClickCancelModal} show={show}>
                 <Modal.Header>
                     <Modal.Title>
@@ -628,11 +632,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                     }
                 </Modal.Body>
             </Modal>
-            {
-                openModalProv&&(
-                    <ModalProveedor show={openModalProv} onHide={onCloseModalProveedor}/>
-                )
-            }
         </>
     ) 
 

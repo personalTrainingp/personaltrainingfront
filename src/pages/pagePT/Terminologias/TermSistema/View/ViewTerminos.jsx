@@ -15,7 +15,7 @@ export const ViewTerminos = ({grupo, entidad, titulo}) => {
     <div>
         <InputButton label={`AGREGAR ${titulo}`} onClick={()=>onOpenModalTermSis(0)}/>
         <DataTableTerminologiaSistema titulo={titulo} grupo={grupo} entidad={entidad} onOpenModalTermSis={onOpenModalTermSis}/>
-        <ModalCustomTermSistema show={isOpenModalTermSis.isOpen} onHide={onCloseModalTermSis} id={isOpenModalTermSis.id} />
+        <ModalCustomTermSistema show={isOpenModalTermSis.isOpen} onHide={onCloseModalTermSis} id={isOpenModalTermSis.id} entidad={entidad} grupo={grupo} />
     </div>
   )
 }

@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas=[], nombreGrupo=''}) => {
+export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', bgTotal, bgPastel}) => {
   const dataAlter = fechas.map((f, index, array)=>{
       const dataTotal = itemsxDias.find(i=>i.mes===f.mes && i.anio===f.anio)??{}
       
@@ -11,26 +11,26 @@ export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas
         ...f,
         // items: conceptos.flatMap(grupo => grupo.items).filter(i=>i.mes===f.mes && i.anio===f.anio),
         mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
-        dataTotal: dataTotal.items,
-        montoTotal: dataTotal.items?.reduce((total, item)=>total+item?.monto, 0),
-        cantidadTotal: dataTotal.items?.length,
+        dataTotal: dataTotal.items||[],
+        montoTotal: dataTotal.items?.reduce((total, item)=>total+item?.monto, 0)||0,
+        cantidadTotal: dataTotal.items?.length ||0,
     }
   })
   const montoAcumuladoDeMontoTotal = dataAlter.reduce((total, item)=>total+item?.montoTotal, 0)
   const montoAcumuladoDecantidadTotal = dataAlter.reduce((total, item)=>total+item?.cantidadTotal, 0)
-  console.log({d10: data, fechas, dataAlter, conceptos, nombreGrupo, montoAcumuladoDeMontoTotal});
+  console.log({d10: data, fechas, dataAlter, conceptos, nombreGrupo, montoAcumuladoDeMontoTotal, montoAcumuladoDecantidadTotal, itemsxDias});
   
   return (
-    <Table  className="tabla-egresos" style={{ width: '100%' }} bordered>
+    <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
       <thead>
         <tr>
-          <th style={{width: '190px'}}>{nombreGrupo}</th>
+          <th style={{width: '190px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{nombreGrupo}</th>
           {
             dataAlter.map(f=>{
               return (
                 <>
-                <th className='text-center' style={{width: '120px'}}>{f.mesStr}</th>
-                <th className='text-center' style={{width: '120px'}}>MOV.</th>
+                <th className={`text-center ${bgTotal}`} style={{width: '120px'}}>{f.mesStr}</th>
+                <th className={`text-center ${bgPastel}`} style={{width: '120px'}}>MOV.</th>
                 </>
               )
             })
@@ -45,7 +45,7 @@ export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas
         { conceptos.map(c=>{
           return (
             <tr>
-              <td>{c.concepto}</td>
+              <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>{c.concepto}</td>
               {
                   dataAlter.map(f=>{
                   const itemsDelMesFiltrado= c.items?.find(m=>m.mes===f.mes && m.anio===f.anio)
@@ -69,31 +69,35 @@ export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas
         })
         }
         <tr>
-          <td>TOTAL</td>
+          <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>TOTAL</td>
           {
             dataAlter.map(f=>{
               return (
                 <>
-                <td className='text-center' style={{width: '120px'}}><NumberFormatMoney amount={f.montoTotal}/></td>
-                <td className='text-center' style={{width: '120px'}}>{f.cantidadTotal}</td>
+                <td className={`text-center ${bgTotal}`} style={{width: '120px'}}><NumberFormatMoney amount={f.montoTotal}/></td>
+                <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>{f.cantidadTotal}</td>
                 </>
               )
             })
           }
+          <td colSpan={4}>TOTAL ANUAL</td>
         </tr>
         <tr>
-          <td>PARTICIPACION</td>
+          <td className={`sticky-td border-left-10 border-right-10 border-bottom-10 ${bgTotal}`}>PARTICIPACION</td>
           {
             dataAlter.map(f=>{
-              
               return (
                 <>
-                <td className='text-center' style={{width: '120px'}}><NumberFormatMoney amount={(f.montoTotal/montoAcumuladoDeMontoTotal)*100}/></td>
-                <td className='text-center' style={{width: '120px'}}>{((f.cantidadTotal/montoAcumuladoDecantidadTotal)*100).toFixed(2)}</td>
+                <td className={`text-center ${bgTotal}`} style={{width: '120px'}}><NumberFormatMoney amount={(f.montoTotal/montoAcumuladoDeMontoTotal)*100}/></td>
+                <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>{((f.cantidadTotal/montoAcumuladoDecantidadTotal)*100).toFixed(2)}</td>
                 </>
               )
             })
           }
+          <td><NumberFormatMoney amount={montoAcumuladoDeMontoTotal}/></td>
+          <td><NumberFormatMoney amount={montoAcumuladoDecantidadTotal}/></td>
+          <td></td>
+          <td></td>
         </tr>
       </tbody>
     </Table>

@@ -34,6 +34,7 @@ export const useTerminoSistema = () => {
 	};
 	const obtenerTerminologiaSistema = async (entidad, grupo) => {
 		try {
+			console.log({ entidad, grupo });
 			const { data } = await PTApi.get(`/terminologia/term1/${entidad}/${grupo}`);
 			dispatch(onSetDataViewTerm(data.terminologia));
 		} catch (error) {
@@ -42,24 +43,28 @@ export const useTerminoSistema = () => {
 	};
 	const registrarTerminologiaxEntidadyGrupo = async (formState, entidad, grupo) => {
 		try {
-			const response = await PTApi.post(`/terminologia/term1`, formState);
-			await obtenerTerminologiaSistema( entidad, grupo);
+			const response = await PTApi.post(`/terminologia/term1`, {
+				...formState,
+				entidad_param: entidad,
+				grupo_param: grupo,
+			});
+			await obtenerTerminologiaSistema(entidad, grupo);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const actualizarTerminologia = async (formState, idTerm,  entidad, grupo) => {
+	const actualizarTerminologia = async (formState, idTerm, entidad, grupo) => {
 		try {
 			const response = await PTApi.put(`/terminologia/term1/id/${idTerm}`, formState);
-			await obtenerTerminologiaSistema( entidad, grupo);
+			await obtenerTerminologiaSistema(entidad, grupo);
 		} catch (error) {
 			console.log(error.message);
 		}
 	};
-	const deleteTerminologia = async (idTerm,  entidad, grupo) => {
+	const deleteTerminologia = async (idTerm, entidad, grupo) => {
 		try {
 			const response = await PTApi.put(`/terminologia/term1/delete/id/${idTerm}`);
-			await obtenerTerminologiaSistema( entidad, grupo);
+			await obtenerTerminologiaSistema(entidad, grupo);
 		} catch (error) {
 			console.log(error.message);
 		}

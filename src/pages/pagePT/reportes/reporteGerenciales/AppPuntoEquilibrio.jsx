@@ -16,7 +16,7 @@ export const AppPuntoEquilibrio = () => {
                 <ViewPuntoEquilibrio rangeDate={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} bgTotal={'bg-circus text-white'} id_empresa={600}/>
             </TabPanel>
             <TabPanel header={'RAL'}>
-                <ViewPuntoEquilibrio rangeDate={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} bgTotal={'bg-ral text-white'} id_empresa={600}/>
+                <ViewPuntoEquilibrio rangeDate={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} bgTotal={'bg-ral text-white'} id_empresa={800}/>
             </TabPanel>
         </TabView>
     </div>

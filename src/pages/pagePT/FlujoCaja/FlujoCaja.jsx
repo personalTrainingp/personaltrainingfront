@@ -24,17 +24,17 @@ export const FlujoCaja = () => {
                     <TabView>
                         <TabPanel header={<div className=' text-black year-header' style={{fontSize: '60px'}}>2026</div>}>
                             <div className="tab-scroll-container">
-                            <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2026, 0, 1), new Date(2026, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2026}/>
+                            <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2026, 0, 1, 5, 59,5), new Date(2026, 11, 31,5, 59,5)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2026}/>
                             </div>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2025</div>}>
                             <div className="tab-scroll-container">
-                                <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2025}/>
+                                <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2025, 0, 1,5, 59,5), new Date(2025, 11, 31, 5, 59,5)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2025}/>
                             </div>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2024</div>}>
                             <div className="tab-scroll-container">
-                                <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2024, 0, 1), new Date(2024, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2024}/>
+                                <DatatableEgresos bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2024, 0, 1, 5, 59,5), new Date(2024, 11, 31, 5, 59,5)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2024}/>
                             </div>
                         </TabPanel>
                         <TabPanel header={<div className=' text-black year-header' style={{fontSize: '60px'}}>BALANCE</div>}>
@@ -44,25 +44,25 @@ export const FlujoCaja = () => {
                                     <div className='text-center' style={{fontSize: '100px'}}>
                                         TOTAL
                                     </div>
-                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2024, 0, 1), new Date(2026, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={false}/>
+                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2024, 0, 1,5, 59,5), new Date(2026, 11, 31,5, 59,5)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={false}/>
                                 </div>
                                 <div>
                                     <div className='text-center' style={{fontSize: '100px'}}>
                                         2026
                                     </div>
-                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2026, 0, 1), new Date(2026, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2026}/>
+                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2026, 0, 1,5, 59,5), new Date(2026, 11, 31,5, 59,5)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2026}/>
                                 </div>
                                 <div>
                                     <div className='text-center' style={{fontSize: '100px'}}>
                                         2025
                                     </div>
-                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2025}/>
+                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2025, 0, 1,5, 59,5), new Date(2025, 11, 31,5, 59,5)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2025}/>
                                 </div>
                                 <div>
                                     <div className='text-center' style={{fontSize: '100px'}}>
                                         2024
                                     </div>
-                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2024, 0, 1), new Date(2024, 11, 31)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2024}/>
+                                    <DatatableEgresos2 bgTotal={'bg-change text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#be5e5f'}  arrayRangeDate={[new Date(2024, 0, 1,5, 59,5), new Date(2024, 11, 31,5, 59,5)]} nombre_empresa={'CHANGE'} id_enterprice={598} background={'bg-primary'} anio={2024}/>
                                 </div>
                             </div>
                         </TabPanel>
@@ -72,39 +72,39 @@ export const FlujoCaja = () => {
                     <TabView>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2026</div>}>
                         <div className="tab-scroll-container">
-                            <DatatableEgresos bgTotal={'bg-circus  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#EEBE00'}  arrayRangeDate={[new Date(2026, 0, 1), new Date(2026, 11, 31)]} nombre_empresa={'CIRCUS'} background={'bg-circus'} id_enterprice={601} anio={2026}/>
+                            <DatatableEgresos bgTotal={'bg-circus  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#EEBE00'}  arrayRangeDate={[new Date(2026, 0, 1,5, 59,5), new Date(2026, 11, 31,5, 59,5)]} nombre_empresa={'CIRCUS'} background={'bg-circus'} id_enterprice={601} anio={2026}/>
                         </div>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2025</div>}>
                         <div className="tab-scroll-container">
-                            <DatatableEgresos bgTotal={'bg-circus  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#EEBE00'}  arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} nombre_empresa={'CIRCUS'} background={'bg-circus'} id_enterprice={601} anio={2025}/>
+                            <DatatableEgresos bgTotal={'bg-circus  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#EEBE00'}  arrayRangeDate={[new Date(2025, 0, 1,5, 59,5), new Date(2025, 11, 31,5, 59,5)]} nombre_empresa={'CIRCUS'} background={'bg-circus'} id_enterprice={601} anio={2025}/>
                         </div>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2024</div>}>
-                            <DatatableEgresos bgTotal={'bg-circus  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#EEBE00'}   arrayRangeDate={[new Date(2024, 0, 1), new Date(2024, 11, 31)]} nombre_empresa={'CIRCUS'} background={'bg-circus'} id_enterprice={601} anio={2024}/>
+                            <DatatableEgresos bgTotal={'bg-circus  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#EEBE00'}   arrayRangeDate={[new Date(2024, 0, 1,5, 59,5), new Date(2024, 11, 31,5, 59,5)]} nombre_empresa={'CIRCUS'} background={'bg-circus'} id_enterprice={601} anio={2024}/>
                         </TabPanel>
                     </TabView>
                 </TabPanel>
                 <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mb-2' headerClassName="mi-tab-verde" header={<div style={{fontSize: '40px', color: '#17a700'}} className=' fw-medium'>REDUCTO</div>}>
                     <TabView>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2026</div>} >
-                            <DatatableEgresos bgTotal={'bg-greenISESAC  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#17a700'} arrayRangeDate={[new Date(2026, 0, 1), new Date(2026, 11, 31)]} background={'bg-greenISESAC'} id_enterprice={599} anio={2026} nombre_empresa={'REDUCTO'}/>
+                            <DatatableEgresos bgTotal={'bg-greenISESAC  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#17a700'} arrayRangeDate={[new Date(2026, 0, 1,5, 59,5), new Date(2026, 11, 31,5, 59,5)]} background={'bg-greenISESAC'} id_enterprice={599} anio={2026} nombre_empresa={'REDUCTO'}/>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2025</div>}>
-                            <DatatableEgresos bgTotal={'bg-greenISESAC  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#17a700'} arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} background={'bg-greenISESAC'} id_enterprice={599} anio={2025} nombre_empresa={'REDUCTO'}/>
+                            <DatatableEgresos bgTotal={'bg-greenISESAC  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#17a700'} arrayRangeDate={[new Date(2025, 0, 1,5, 59,5), new Date(2025, 11, 31,5, 59,5)]} background={'bg-greenISESAC'} id_enterprice={599} anio={2025} nombre_empresa={'REDUCTO'}/>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2024</div>}>
-                            <DatatableEgresos bgTotal={'bg-greenISESAC  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#17a700'}  arrayRangeDate={[new Date(2024, 0, 1), new Date(2024, 11, 31)]} background={'bg-greenISESAC'} id_enterprice={599} anio={2024} nombre_empresa={'REDUCTO'}/>
+                            <DatatableEgresos bgTotal={'bg-greenISESAC  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#17a700'}  arrayRangeDate={[new Date(2024, 0, 1,5, 59,5), new Date(2024, 11, 31,5, 59,5)]} background={'bg-greenISESAC'} id_enterprice={599} anio={2024} nombre_empresa={'REDUCTO'}/>
                         </TabPanel>
                     </TabView>
                 </TabPanel>
                 <TabPanel style={{alignItems: 'flex-end', display: 'flex'}} className='mb-2'  header={<div style={{fontSize: '40px', color: '#ff3ef2'}} className=' fw-medium'>MANICURE</div>}>
                     <TabView>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2026</div>}>
-                            <DatatableEgresos bgTotal={'bg-manicure  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#ff3ef2'} arrayRangeDate={[new Date(2026, 0, 1), new Date(2026, 11, 31)]} background={'bg-manicure'} id_enterprice={700} anio={2026} nombre_empresa={'MANICURE'}/>
+                            <DatatableEgresos bgTotal={'bg-manicure  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#ff3ef2'} arrayRangeDate={[new Date(2026, 0, 1,5, 59,5), new Date(2026, 11, 31,5, 59,5)]} background={'bg-manicure'} id_enterprice={700} anio={2026} nombre_empresa={'MANICURE'}/>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2025</div>}>
-                            <DatatableEgresos bgTotal={'bg-manicure  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#ff3ef2'} arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} background={'bg-manicure'} id_enterprice={700} anio={2025} nombre_empresa={'MANICURE'}/>
+                            <DatatableEgresos bgTotal={'bg-manicure  text-white'} bgPastel={'bg-change-pastel'} bgMultiValue={'#ff3ef2'} arrayRangeDate={[new Date(2025, 0, 1,5, 59,5), new Date(2025, 11, 31,5, 59,5)]} background={'bg-manicure'} id_enterprice={700} anio={2025} nombre_empresa={'MANICURE'}/>
                         </TabPanel>
                     </TabView>
                 </TabPanel>
@@ -112,17 +112,17 @@ export const FlujoCaja = () => {
                     <TabView>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2026</div>}>
                         <div className="tab-scroll-container">
-                            <DatatableEgresos bgTotal={'bg-ral  text-white'} bgPastel={'bg-ral-pastel'} bgMultiValue={'#2c10cdff'} arrayRangeDate={[new Date(2026, 0, 1), new Date(2026, 11, 31)]} background={'bg-ral'} id_enterprice={800} anio={2026} nombre_empresa={'PERSONALES'}/>
+                            <DatatableEgresos bgTotal={'bg-ral  text-white'} bgPastel={'bg-ral-pastel'} bgMultiValue={'#2c10cdff'} arrayRangeDate={[new Date(2026, 0, 1,8, 59,5), new Date(2026, 11, 31,5, 59,5)]} background={'bg-ral'} id_enterprice={800} anio={2026} nombre_empresa={'PERSONALES'}/>
                         </div>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2025</div>}>
                         <div className="tab-scroll-container">
-                            <DatatableEgresos bgTotal={'bg-ral  text-white'} bgPastel={'bg-ral-pastel'} bgMultiValue={'#2c10cdff'} arrayRangeDate={[new Date(2025, 0, 1), new Date(2025, 11, 31)]} background={'bg-ral'} id_enterprice={800} anio={2025} nombre_empresa={'PERSONALES'}/>
+                            <DatatableEgresos bgTotal={'bg-ral  text-white'} bgPastel={'bg-ral-pastel'} bgMultiValue={'#2c10cdff'} arrayRangeDate={[new Date(2025, 0, 1,5, 59,5), new Date(2025, 11, 31,5, 59,5)]} background={'bg-ral'} id_enterprice={800} anio={2025} nombre_empresa={'PERSONALES'}/>
                         </div>
                         </TabPanel>
                         <TabPanel header={<div className='year-header text-black' style={{fontSize: '60px'}}>2024</div>}>
                         <div className="tab-scroll-container">
-                            <DatatableEgresos bgTotal={'bg-ral  text-white'} bgPastel={'bg-ral-pastel'} bgMultiValue={'#3610cdff'} arrayRangeDate={[new Date(2024, 1, 15), new Date(2024,11,31)]} background={'bg-ral'} id_enterprice={800} anio={2024} nombre_empresa={'PERSONALES'}/>
+                            <DatatableEgresos bgTotal={'bg-ral  text-white'} bgPastel={'bg-ral-pastel'} bgMultiValue={'#3610cdff'} arrayRangeDate={[new Date(2024, 1, 15,5, 59,5), new Date(2024,11,31,5, 59,5)]} background={'bg-ral'} id_enterprice={800} anio={2024} nombre_empresa={'PERSONALES'}/>
                         </div>
                         </TabPanel>
                     </TabView>
