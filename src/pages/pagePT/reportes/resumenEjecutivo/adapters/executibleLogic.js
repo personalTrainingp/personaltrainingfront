@@ -351,7 +351,7 @@ export function computeMetricsForMonth({
 
 	const mkInvMeta = mkInvMetaUSD;
 	const mkInvTikTok = mkInvTikTokUSD;
-	const mkInv = mkInvMeta * Number(tasaCambio || 3.37);
+	const mkInv = mkInvMeta * Number(tasaCambio || 3.37) + mkInvTikTok;
 
 	const leads_por_red = mk?.leads_por_red ?? {};
 	const clientes_por_red = mk?.clientes_por_red ?? {};
@@ -494,7 +494,6 @@ const ORIGINS_EXCLUIR = new Set([
 	'688',
 	'697',
 	'698',
-	'1593',
 	'corporativos_bbva',
 	'corporativos bbva',
 	'wsp organico',

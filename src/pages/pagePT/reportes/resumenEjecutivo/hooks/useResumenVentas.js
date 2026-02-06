@@ -19,15 +19,30 @@ export const useResumenVentas = (id_empresa, fechas) => {
 
     const [programas, setProgramas] = useState([]);
     const [reservasMF, setReservasMF] = useState([]);
+    const [isLoadingVentas, setIsLoadingVentas] = useState(false);
 
     useEffect(() => {
-        if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
-            obtenerVentas(RANGE_DATE);
-            obtenerComparativoResumen(RANGE_DATE).catch(console.error);
-        }
-        obtenerTablaVentas(id_empresa || 598);
-        obtenerProgramas();
-        obtenerReservasMF();
+        const fetchData = async () => {
+            setIsLoadingVentas(true);
+            try {
+                const promises = [];
+                if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
+                    promises.push(obtenerVentas(RANGE_DATE));
+                    promises.push(obtenerComparativoResumen(RANGE_DATE).catch(console.error));
+                }
+                promises.push(obtenerTablaVentas(id_empresa || 598));
+                promises.push(obtenerProgramas());
+                promises.push(obtenerReservasMF());
+
+                await Promise.all(promises);
+            } catch (error) {
+                console.error("Error fetching data ventas:", error);
+            } finally {
+                setIsLoadingVentas(false);
+            }
+        };
+
+        fetchData();
     }, [id_empresa, RANGE_DATE]);
 
     const obtenerProgramas = async () => {
@@ -274,6 +289,6 @@ export const useResumenVentas = (id_empresa, fechas) => {
         advisorOriginByProg, originBreakdown, sociosOverride,
         avatarByAdvisor, productosPorAsesor,
         mesesSeleccionados, pgmNameById: progNameById, pgmNameByIdDynamic, dataGroup,
-        totalUniqueTicketsByAdvisor // <--- EXPORTADO
+        totalUniqueTicketsByAdvisor, isLoadingVentas // <--- EXPORTADO
     };
 };

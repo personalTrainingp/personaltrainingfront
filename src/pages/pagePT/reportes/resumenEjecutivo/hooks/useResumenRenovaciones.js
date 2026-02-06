@@ -13,11 +13,24 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
     const [vigentesRows, setVigentesRows] = useState([]);
     const [vigentesTotal, setVigentesTotal] = useState(0);
     const [vencimientosFiltrados, setVencimientosFiltrados] = useState(null);
+    const [isLoadingRenovaciones, setIsLoadingRenovaciones] = useState(false);
 
     useEffect(() => {
-        fetchVencimientos();
-        fetchRenewalsApi();
-        fetchVigentes();
+        const fetchData = async () => {
+            setIsLoadingRenovaciones(true);
+            try {
+                await Promise.all([
+                    fetchVencimientos(),
+                    fetchRenewalsApi(),
+                    fetchVigentes()
+                ]);
+            } catch (error) {
+                console.error("Error fetching renovaciones:", error);
+            } finally {
+                setIsLoadingRenovaciones(false);
+            }
+        };
+        fetchData();
     }, [id_empresa, year, selectedMonth, cutDay]);
 
     const fetchRenewalsApi = async () => {
@@ -132,6 +145,7 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
         mapaVencimientos,
         renewals: renewalsFromApi,
         vigentesRows, vigentesTotal, vigentesBreakdown,
-        vencimientosFiltrados
+        vencimientosFiltrados,
+        isLoadingRenovaciones
     };
 };

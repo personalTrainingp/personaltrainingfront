@@ -47,6 +47,14 @@ export const useAlertasUsuarios = () => {
 			console.log(error);
 		}
 	};
+	const onConfirmarPago = async (id) => {
+		try {
+			await PTApi.put(`/alerta-usuario/confirmar-pago/${id}`);
+			await obtenerAlertasUsuarios();
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerAlertasUsuarios = async () => {
 		try {
 			const { data } = await PTApi.get('/alerta-usuario/get-alertas');
@@ -62,5 +70,6 @@ export const useAlertasUsuarios = () => {
 		onDeleteAlertaUsuario,
 		obtenerAlertasUsuarios,
 		updateMensajeAlertas,
+		onConfirmarPago,
 	};
 };

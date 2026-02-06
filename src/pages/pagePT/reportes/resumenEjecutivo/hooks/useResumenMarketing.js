@@ -10,10 +10,23 @@ export const useResumenMarketing = (id_empresa, fechas, dataVentas, mesesSelecci
     const [dataLead, setDataLead] = useState([]);
     const [dataLeadPorMesAnio, setdataLeadPorMesAnio] = useState([]);
     const [canalParams, setCanalParams] = useState([]);
+    const [isLoadingMarketing, setIsLoadingMarketing] = useState(false);
 
     useEffect(() => {
-        obtenerLeads(id_empresa || 598);
-        obtenerCanalParams();
+        const fetchData = async () => {
+            setIsLoadingMarketing(true);
+            try {
+                await Promise.all([
+                    obtenerLeads(id_empresa || 598),
+                    obtenerCanalParams()
+                ]);
+            } catch (error) {
+                console.error("Error fetching marketing data:", error);
+            } finally {
+                setIsLoadingMarketing(false);
+            }
+        };
+        fetchData();
     }, [id_empresa]);
 
     const obtenerLeads = async (empresaId) => {
@@ -81,5 +94,5 @@ export const useResumenMarketing = (id_empresa, fechas, dataVentas, mesesSelecci
         return base;
     }, [dataMktByMonth, dataVentas, mesesSeleccionados, initDay, cutDay]);
 
-    return { dataLead, dataLeadPorMesAnio, dataMktByMonth, dataMktWithCac };
+    return { dataLead, dataLeadPorMesAnio, dataMktByMonth, dataMktWithCac, isLoadingMarketing };
 };

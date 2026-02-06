@@ -20,7 +20,7 @@ export const avataresDeProgramas = [
 export const originMap = {
     "693": "Instagram", "694": "Facebook", "695": "TikTok", "690": "Referidos", "691": "RENOVACIONES",
     "692": "REINSCRIPCIONES", "696": "EX-PT ", "686": "Walking", "instagram": "Instagram",
-    "facebook": "Facebook", "tiktok": "TikTok", "meta": "Meta", "1514": "TikTok", "1515": "Meta",
+    "facebook": "Facebook", "tiktok": "TikTok", "1593": "INDIGO", "meta": "Meta", "1514": "TikTok", "1515": "Meta",
     0: "OTROS", "": "OTROS", null: "OTROS", undefined: "OTROS"
 };
 
