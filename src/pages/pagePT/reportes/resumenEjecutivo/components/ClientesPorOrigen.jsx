@@ -217,7 +217,7 @@ export const ClientesPorOrigen = ({
         const total = rowTotals[label] || 0;
         return { label, last, total };
       })
-      .filter((item) => item.total > 0 || item.label === "INDIGO"); // <-- FILTRO AÑADIDO (INDIGO forzado)
+      .filter((item) => item.total > 0);
 
     meta.sort((a, b) => {
       if (b.last !== a.last) return b.last - a.last;

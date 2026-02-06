@@ -1,5 +1,7 @@
 import React from "react";
 
+const ALLOWED_ORIGINS = [691, 692, 690, 693, 694, 695, 1514, 1515, 696, 686, 1593];
+
 const formatMonthYear = (date) =>
   date.toLocaleDateString("es-ES", { month: "short", year: "numeric" });
 
@@ -49,12 +51,11 @@ const hasPaidMembership = (v) =>
 
 const getOriginId = (v) => {
   const tipoFactura = v?.id_tipoFactura ?? v?.tb_ventum?.id_tipoFactura;
-  const origen = v?.id_origen ?? v?.tb_ventum?.id_origen;
-  if (origen === 691) return 691;
+
   if (tipoFactura === 703) return 703;
   if (tipoFactura === 701) return 701;
   if (!hasPaidMembership(v)) return 703;
-  return origen ?? null;
+  return v?.id_origen ?? v?.tb_ventum?.id_origen ?? null;
 };
 
 // Estilos
