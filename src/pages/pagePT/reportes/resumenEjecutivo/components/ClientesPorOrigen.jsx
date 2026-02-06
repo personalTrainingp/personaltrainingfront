@@ -89,6 +89,7 @@ export const ClientesPorOrigen = ({
     1455: "DIGITAL",
     1456: "REFERIDO",
     1457: "CARTERA",
+    1593: "INDIGO",
   },
   uniqueByClient = true,
 }) => {
@@ -216,7 +217,7 @@ export const ClientesPorOrigen = ({
         const total = rowTotals[label] || 0;
         return { label, last, total };
       })
-      .filter((item) => item.total > 0); // <-- FILTRO AÑADIDO
+      .filter((item) => item.total > 0 || item.label === "INDIGO"); // <-- FILTRO AÑADIDO (INDIGO forzado)
 
     meta.sort((a, b) => {
       if (b.last !== a.last) return b.last - a.last;
