@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { ModalEditarMensajeAlerta } from "./ModalEditarMensajeAlerta";
+import { ModalBlacklist } from "./ModalBlacklist";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -32,6 +33,11 @@ export const ViewDataTable = () => {
     dataUsuarios = [],
     onDeleteAlertaUsuario,
     onConfirmarPago,
+    // blacklist
+    blacklist,
+    obtenerBlacklist,
+    addToBlacklist,
+    removeFromBlacklist
   } = useAlertasUsuarios();
 
   const {
@@ -39,6 +45,7 @@ export const ViewDataTable = () => {
     obtenerParametroPorEntidadyGrupo: obtenerTipoAlerta,
   } = useTerminoStore();
   const [isOpenModalEditarMensaje, setisOpenModalEditarMensaje] = useState({ isOpen: false, mensaje: '' })
+  const [showBlacklist, setShowBlacklist] = useState(false);
   // estado UI local
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0); // página actual
@@ -58,6 +65,7 @@ export const ViewDataTable = () => {
     obtenerAlertasUsuarios();
     obtenerUsuarios();
     obtenerTipoAlerta("alertas-wsp", "usuarios");
+    obtenerBlacklist();
   }, []);
 
   // helpers de lookup
@@ -108,6 +116,19 @@ export const ViewDataTable = () => {
   // confirm dialog eliminar
   const onCancelDialogEditarMensaje = () => {
     setisOpenModalEditarMensaje({ isOpen: false, mensaje: '' })
+    setisOpenModalEditarMensaje({ isOpen: false, mensaje: '' })
+  };
+
+  const onConfirmBlockMessage = (msg) => {
+    confirmDialog({
+      message: `¿Estás seguro de desactivar este mensaje? "${msg}"\nNo se enviarán más alertas con este texto.`,
+      header: "Desactivar mensaje",
+      icon: "pi pi-ban",
+      acceptClassName: "p-button-danger",
+      accept: () => {
+        addToBlacklist(msg);
+      }
+    });
   };
   // ---- FILTRO GLOBAL ----
   const dataFiltrada = useMemo(() => {
@@ -329,8 +350,9 @@ export const ViewDataTable = () => {
               {/* mostramos body sólo si este panel está abierto en nuestro estado */}
               {activeKeys.includes(eventKey) && (
                 <Accordion.Body className="bg-white">
-                  <div>
-                    <Button onClick={() => { onConfirmDialogEditarMensaje(grp.rows[0]?.mensaje) }}>EDITAR MENSAJE</Button>
+                  <div className="d-flex gap-2 mb-2">
+                    <Button size="sm" onClick={() => { onConfirmDialogEditarMensaje(grp.rows[0]?.mensaje) }}>EDITAR MENSAJE</Button>
+                    <Button size="sm" variant="danger" onClick={() => { onConfirmBlockMessage(grp.rows[0]?.mensaje) }}>BLOQUEAR MENSAJE (Desactivar)</Button>
                   </div>
                   {grp.rows[0].mensaje}
                   <Table bordered size="sm" responsive>
@@ -388,6 +410,16 @@ export const ViewDataTable = () => {
                   ? dataPorFecha.length
                   : dataPorUsuario.length}
           </div>
+
+          <Button
+            variant="outline-danger"
+            size="sm"
+            className="ms-3"
+            onClick={() => setShowBlacklist(true)}
+          >
+            <i className="pi pi-ban me-1" />
+            Mensajes Desactivados ({blacklist.length})
+          </Button>
         </Col>
       </Row>
 
@@ -457,6 +489,13 @@ export const ViewDataTable = () => {
         </TabPanel>
       </TabView>
       <ModalEditarMensajeAlerta data={{ mensaje: isOpenModalEditarMensaje.mensaje }} onHide={onCancelDialogEditarMensaje} show={isOpenModalEditarMensaje.isOpen} />
-    </div>
+
+      <ModalBlacklist
+        show={showBlacklist}
+        onHide={() => setShowBlacklist(false)}
+        blacklist={blacklist}
+        onRemove={removeFromBlacklist}
+      />
+    </div >
   );
 };
