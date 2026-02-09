@@ -9,6 +9,7 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
         const dataFiltradaMes =  data?.filter((f)=>f.mes===arr.mes && f.anio===arr.anio)
         const dataMetaFiltradaMes =  dataCuotaMetaDelMes?.filter((f)=>f.mes===arr.mes && f.anio===arr.anio)
         const montoTotal = dataFiltradaMes?.reduce((total, item) => total + (item?.montoTotal || 0), 0)
+        const cantTotal = dataFiltradaMes?.reduce((total, item) => total + (item?.cantidadTotal || 0), 0)
         const montoMeta = dataMetaFiltradaMes?.reduce((total, item) => total + (item?.meta || 0), 0)
         const porcentajeDeAvance = montoMeta
   ? (montoTotal / montoMeta) * 100
@@ -18,10 +19,11 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
             items: dataFiltradaMes,
             montoTotal,
             montoMeta,
+            cantTotal: dataFiltradaMes.length,
             porcentajeDeAvance
         }
     })
-    console.log({dataCuotaMetaDelMes});
+    console.log({dataCuotaMetaDelMes, dataConMes});
     
   return (
         <Table className="tabla-egresos" style={{width: '100%'}}  bordered>
@@ -58,6 +60,16 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
                         dataConMes.map((d, i)=>{
                             return (
                                 <td className={`fs-3 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} ><NumberFormatMoney amount={d.montoTotal}/></td>
+                            )
+                        })
+                    }
+                </tr>
+                <tr>
+                    <td className='sticky-td-598 fs-3 text-white'>SOCIOS</td>
+                    {
+                        dataConMes.map((d, i)=>{
+                            return (
+                                <td className={`fs-3 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} >{d.cantTotal}</td>
                             )
                         })
                     }

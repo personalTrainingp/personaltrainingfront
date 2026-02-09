@@ -69,7 +69,7 @@ export const useInformeEjecutivoStore = () => {
 					};
 				})
 				.filter((f) => f.montoTotal !== 0)
-				.filter((d) => d.id_origen === 691);
+				.filter((d) => d.id_origen === 692);
 			const dataProductos17 = dataVentasMap
 				.map((v) => {
 					const detalleFiltrado = v.detalle_productos.filter(
