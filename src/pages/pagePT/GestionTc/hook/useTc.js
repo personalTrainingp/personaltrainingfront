@@ -45,7 +45,7 @@ export const useTc = () => {
 			console.log({ data });
 			const dataAlter = {
 				...data.dataTC,
-				fecha: MaskDate(data.dataTC?.fecha, 'YYYY-MM-DD'),
+				fecha: DateMaskStr(data.dataTC?.fecha, 'YYYY-MM-DD'),
 			};
 			setdataTC(dataAlter);
 		} catch (error) {

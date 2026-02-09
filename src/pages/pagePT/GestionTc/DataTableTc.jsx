@@ -4,7 +4,7 @@ import { useTc } from './hook/useTc'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 import { useSelector } from 'react-redux'
-import { DateMaskString } from '@/components/CurrencyMask'
+import { DateMaskStr, DateMaskString } from '@/components/CurrencyMask'
 
 export const DataTableTc = ({onOpenModalTC}) => {
   const { deleteTCxID, obtenerTC } = useTc()
@@ -24,7 +24,7 @@ export const DataTableTc = ({onOpenModalTC}) => {
     {id: 2, header: 'FECHA', render: (row)=>{
       return (
         <>
-          {DateMaskString(row.fecha, 'dddd DD [de] MMMM [del] YYYY')}
+          {DateMaskStr(row.fecha, 'dddd DD [de] MMMM [del] YYYY')}
         </>
       )
     }},
