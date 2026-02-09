@@ -192,6 +192,14 @@ export default function AdvancedFilterDemo({showToast, id_enterprice, bgEmpresa}
             </div>
         );
     };
+    
+    const formaPagoBodyTemplate = (rowData) => {
+        return (
+            <div className="flex align-items-center gap-2">
+                <span>{highlightText(rowData?.parametro_forma_pago?.label_param, globalFilterValue)}</span>
+            </div>
+        );
+    };
     const fecRegistroBodyTemplate = (rowData)=>{
         return (
             <div className="flex align-items-center gap-2 ">
@@ -376,6 +384,7 @@ const filterData = customers?.filter((item) => {
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="RUBRO" field='tb_parametros_gasto.grupo' filterField="tb_parametros_gasto.grupo" style={{ minWidth: '10rem' }} sortable body={grupoBodyTemplate} filter/>
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Gasto" field='tb_parametros_gasto.nombre_gasto' filterField="tb_parametros_gasto.nombre_gasto" sortable style={{ minWidth: '10rem' }} body={tipoGastoBodyTemplate} filter />
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header={<>MONTO</>} field='monto' filterField="monto" style={{ minWidth: '10rem' }} sortable body={montoBodyTemplate} filter/>
+                                <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="FORMA PAGO" style={{ minWidth: '10rem' }} sortable body={formaPagoBodyTemplate} filter/>
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="descripcion" field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                                 <Column headerClassName={`${bgEmpresa} text-white`} headerStyle={{ color: '#fff' }}  header="Proveedor" field='tb_Proveedor.razon_social_prov' filterField="tb_Proveedor.razon_social_prov" style={{ minWidth: '10rem' }} sortable showFilterMatchModes={false} filterMenuStyle={{ width: '14rem' }}  
                                 body={proveedorBodyTemplate} filter />
