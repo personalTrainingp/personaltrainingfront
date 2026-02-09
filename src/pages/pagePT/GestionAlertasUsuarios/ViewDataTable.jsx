@@ -75,11 +75,21 @@ export const ViewDataTable = () => {
   const getLabelUsuario = (idUser) =>
     dataUsuarios.find((f) => f.value == idUser)?.label || "-";
 
-  const getEstadoBadge = (estado) => (
-    <Badge className="fs-6" bg={estado == 1 ? "success" : "danger"}>
-      {estado == 1 ? "ACTIVO" : "INACTIVO"}
-    </Badge>
-  );
+  const getEstadoBadge = (estado, mensaje) => {
+    const isBlacklisted = blacklist.includes(mensaje);
+    if (isBlacklisted) {
+      return (
+        <Badge className="fs-6" bg="danger">
+          INACTIVO (Bloqueado)
+        </Badge>
+      );
+    }
+    return (
+      <Badge className="fs-6" bg={estado == 1 ? "success" : "danger"}>
+        {estado == 1 ? "ACTIVO" : "INACTIVO"}
+      </Badge>
+    );
+  };
 
   // confirm dialog eliminar
   const onConfirmDialogDelete = (id) => {
@@ -270,7 +280,7 @@ export const ViewDataTable = () => {
             <td style={{ maxWidth: 300, whiteSpace: "pre-wrap" }}>
               {d?.mensaje}
             </td>
-            <td>{getEstadoBadge(d?.id_estado)}</td>
+            <td>{getEstadoBadge(d?.id_estado, d?.mensaje)}</td>
             <td>
               {d.id_estado === 1 && (
                 <i
