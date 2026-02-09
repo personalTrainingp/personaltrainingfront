@@ -3,6 +3,7 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTerminologiaStore } from './useTerminologiaStore'
 import { useForm } from '@/hooks/useForm'
+import { Dialog } from 'primereact/dialog'
 const customTerm={
     label_param: '',
 }
@@ -11,15 +12,14 @@ export const ModalAgregarTermino = ({show, onHide, onShowProveedores, onShowGast
     const { formState, label_param, onInputChange } = useForm(customTerm)
     const salirModal = ()=>{
         onHide()
-        onShowProveedores()
-        onShowGastos()
+        // onShowProveedores()
     }
     const onSubmit = ()=>{
         registrarTerminologiaxEntidadyGrupo({entidad_param: entidad, grupo_param: grupo, label_param}, entidad, grupo)
         salirModal()
     }
   return (
-    <Modal show={show} onHide={onHide}>
+    <Dialog visible={show} onHide={onHide} position='left'>
         <Modal.Header>
             <Modal.Title>AGREGAR </Modal.Title>
         </Modal.Header>
@@ -30,9 +30,10 @@ export const ModalAgregarTermino = ({show, onHide, onShowProveedores, onShowGast
                 </div>
                 <div className='m-2'>
                     <InputButton label={'Agregar'} onClick={()=>onSubmit()}/>
+                    <InputButton label={'Cancelar'} onClick={()=>salirModal()} variant={'link'}/>
                 </div>
             </form>
         </Modal.Body>
-    </Modal>
+    </Dialog>
   )
 }

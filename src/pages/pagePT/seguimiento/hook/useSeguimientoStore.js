@@ -5,7 +5,7 @@ export const useSeguimientoStore = () => {
 	const [dataSeguimientos, setdataSeguimientos] = useState([]);
 	const obtenerSeguimiento = async () => {
 		try {
-            const { } = PTApi.get('/')
+			const {data} = PTApi.get('/seguimiento/rango-fecha-vencimiento');
 		} catch (error) {
 			console.log(error);
 		}
