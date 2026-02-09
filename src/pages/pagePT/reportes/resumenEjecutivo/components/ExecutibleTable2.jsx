@@ -567,14 +567,18 @@ export const ExecutiveTable2 = (props) => {
           {[
             { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
             { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
+
             { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
             {
               key: "mkCacMeta",
               label: "COSTO ADQUISICION DE CLIENTES META",
               type: "float2",
             },
+            { key: "clientesMeta", label: "CANTIDAD CLIENTES META", type: "int" },
+            { key: "convMeta", label: "% CONVERSION META", type: "float2" },
             { key: "mkInvTikTok", label: "Inversion TikTok", type: "money" },
             { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
+
             {
               key: "mkCplTikTok",
               label: "COSTO POR LEAD TIKTOK",
@@ -585,8 +589,11 @@ export const ExecutiveTable2 = (props) => {
               label: "COSTO ADQUISICION CLIENTES TIKTOK",
               type: "float2",
             },
+            { key: "clientesTikTok", label: "CANTIDAD CLIENTES TIKTOK", type: "int" }, // NEW
+            { key: "convTikTok", label: "% CONVERSION TIKTOK", type: "float2" }, // NEW
             { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
             { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
+
             {
               key: "mkCpl",
               label: "COSTO TOTAL POR LEAD DE META + TIKTOK",
@@ -597,11 +604,13 @@ export const ExecutiveTable2 = (props) => {
               label: "COSTO ADQUISICION DE CLIENTES",
               type: "float2",
             },
+            { key: "clientesTotal", label: "TOTAL CLIENTES DE META + TIKTOK", type: "int" }, // NEW
+            { key: "convTotal", label: "% CONVERSION TOTAL", type: "float2" }, // NEW
           ].map((r, i) => (
             <tr
               key={r.key + r.label}
               style={{
-                borderBottom: (i + 1) % 4 === 0 ? "8px solid #000" : "1px solid #000",
+                borderBottom: (i + 1) % 6 === 0 ? "8px solid #000" : "1px solid #000",
               }}
             >
               <td
