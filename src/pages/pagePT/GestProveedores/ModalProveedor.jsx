@@ -31,7 +31,7 @@ const registerProvedor = {
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow}) => {
+export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onShowGastos}) => {
     const { dataViewTerm } = useSelector(e=>e.TERM)
     const { startRegisterProveedor, message, isLoading, actualizarProveedor, obtenerProveedor, proveedor } = useProveedorStore()
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
@@ -111,6 +111,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow}) => 
             const onCancelForm = ()=>{
                 onHide()
                 onResetForm()
+                onShowGastos()
             }
             const onClickOpenModalCustomOficios = ()=>{
                 setisOpenModalTerminoOficio({isOpen: true, id: 0})
@@ -132,7 +133,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow}) => 
   return (
     <>
         <Toast ref={toastBC} onRemove={clear} />
-    <ModalAgregarTermino onShowProveedores={()=>onShow(0)} show={isOpenModalTerminoOficio.isOpen} onHide={onClickCloseModalCustomOficios} terminoAgregar={'OFICIO'} entidad={'proveedor'} grupo={'tipo_oficio'} titulo={'Oficio'}/>
+    <ModalAgregarTermino onShowGastos={onShowGastos} onShowProveedores={()=>onShow(0)} show={isOpenModalTerminoOficio.isOpen} onHide={onClickCloseModalCustomOficios} terminoAgregar={'OFICIO'} entidad={'proveedor'} grupo={'tipo_oficio'} titulo={'Oficio'}/>
     <Modal onHide={onCancelForm} show={show} size='lg' backdrop={'static'}>
         
         {status=='loading'?'Cargando....':(

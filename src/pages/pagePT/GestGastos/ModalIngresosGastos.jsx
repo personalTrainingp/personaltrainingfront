@@ -178,7 +178,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         const onCloseModalProveedor=()=>{
             setopenModalProv(false)
             setisOpenModalProveedor({id: 0, isOpen: false})
-            onShow()
         }
         const onChangeProveedores = (e)=>{
             onInputChangeReact(e, 'id_prov')
@@ -207,7 +206,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         </Modal> 
     ):(
         <>
-                    <ModalProveedor id={isOpenModalProveedor.id} onShow={onOpenModalProveedor} show={isOpenModalProveedor.isOpen} onHide={onCloseModalProveedor} />
+                    <ModalProveedor id={isOpenModalProveedor.id} onShow={onOpenModalProveedor} show={isOpenModalProveedor.isOpen} onHide={onCloseModalProveedor} onShowGastos={onShow} />
             <Modal size='xl' onHide={onClickCancelModal} show={show}>
                 <Modal.Header>
                     <Modal.Title>

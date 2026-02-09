@@ -6,12 +6,13 @@ import { useForm } from '@/hooks/useForm'
 const customTerm={
     label_param: '',
 }
-export const ModalAgregarTermino = ({show, onHide, onShowProveedores, titulo, terminoAgregar, entidad, grupo}) => {
+export const ModalAgregarTermino = ({show, onHide, onShowProveedores, onShowGastos, titulo, terminoAgregar, entidad, grupo}) => {
     const { registrarTerminologiaxEntidadyGrupo } = useTerminologiaStore()
     const { formState, label_param, onInputChange } = useForm(customTerm)
     const salirModal = ()=>{
         onHide()
         onShowProveedores()
+        onShowGastos()
     }
     const onSubmit = ()=>{
         registrarTerminologiaxEntidadyGrupo({entidad_param: entidad, grupo_param: grupo, label_param}, entidad, grupo)

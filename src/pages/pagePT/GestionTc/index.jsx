@@ -1,0 +1,1 @@
+export { AppTc as default } from './AppTc'

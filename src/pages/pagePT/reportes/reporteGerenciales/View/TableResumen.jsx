@@ -1,7 +1,32 @@
+import { NumberFormatMoney } from '@/components/CurrencyMask';
 import React from 'react'
+import { Table } from 'react-bootstrap';
 
-export const TableResumen = () => {
+export const TableResumen = ({withHeaderVertical, dataEgresos, dataIngresos, bgTotal}) => {
+  console.log({dataEgresos, dataIngresos});
+  
   return (
-    <div>TableResumen</div>
+    <Table style={{width: '90%'}}>
+    <thead className={`${bgTotal}`}>
+            <tr>
+              <th className='text-white' colSpan={2}> <div style={{width: `${withHeaderVertical}px`}}>UTILIDAD</div></th>
+              <th className='text-white'>S/.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colSpan={2}>INGRESOS</td>
+              <td><NumberFormatMoney amount={dataIngresos.reduce((total, item)=>total+item.montoTotal, 0)}/></td>
+            </tr>
+            <tr>
+              <td colSpan={2}>EGRESOS</td>
+              <td><NumberFormatMoney amount={dataEgresos.reduce((total, item)=>total+item.montoTotal, 0)}/></td>
+            </tr>
+            <tr>
+              <td colSpan={2}>TOTAL</td>
+              <td><NumberFormatMoney amount={dataIngresos.reduce((total, item)=>total+item.montoTotal, 0)-dataEgresos.reduce((total, item)=>total+item.montoTotal, 0)}/></td>
+            </tr>
+          </tbody>
+    </Table>
   )
 }

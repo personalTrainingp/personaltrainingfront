@@ -117,6 +117,7 @@ const ResumenGerencialPorRenovacionesReal = lazy(()=>import('../pages/pagePT/Res
 const ResumenGerencialPorReinscripcionesxDia= lazy(()=>import('../pages/pagePT/ResumenGerencialxReinscritosxDia/Index.jsx'))
 const InformeEjecutivoOficial= lazy(()=>import('../pages/pagePT/reportes/resumenEjecutivoOficial/Index.jsx'))
 const FlujoCajaBalanceCuentas = lazy(()=>import('../pages/pagePT/FlujoCuentasBalance'))
+const GestionTc = lazy(()=>import('../pages/pagePT/GestionTc'))
 /**
  * routes import
  */
@@ -160,6 +161,10 @@ export default function ProtectedRoutes() {
 				<Route path="/*" element={<Layout />}>
 				{/* /detalle-renovaciones-x-dia comparativo-x-fecha-corte*/}
 					
+					{
+						sections.find(e=>e.url==='/gestion-tc') &&
+						<Route path='gestion-tc'  element={<GestionTc />}/>
+					}
 					{
 						sections.find(e=>e.url==='/reporte-cuentas-balance') &&
 						<Route path='reporte-cuentas-balance'  element={<FlujoCajaBalanceCuentas />}/>

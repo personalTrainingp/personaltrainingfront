@@ -18,7 +18,7 @@ export const TableEgresos = ({bgTotal, data=[]}) => {
           <tr>
             <th className='text-white'>EGRESOS</th>
             <th className='text-white'>CANCELADO</th>
-            <th className='text-white'>PAGO <br/> PENDIENTE</th>
+            {/* <th className='text-white'>PAGO <br/> PENDIENTE</th> */}
           </tr>
         </thead>
         <tbody>
@@ -28,7 +28,7 @@ export const TableEgresos = ({bgTotal, data=[]}) => {
                 <tr>
                   <td>{g?.grupo}</td>
                   <td><NumberFormatMoney amount={g?.montoData}/></td>
-                  <td><NumberFormatMoney amount={g?.montoDataPagosPendientes}/></td>
+                  {/* <td><NumberFormatMoney amount={g?.montoDataPagosPendientes}/></td> */}
                 </tr>
               )
             })

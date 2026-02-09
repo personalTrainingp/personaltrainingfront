@@ -46,8 +46,11 @@ export const agruparPorGrupo = (data = []) => {
 	return Array.from(map.entries()).map(([grupo, items]) => ({
 		grupo,
 		itemsxDias: agruparPorDia(items),
-        data: items.filter(d=>d.id_estado_gasto===1423),
-        dataPagosPendientes: items.filter(d=>d.id_estado_gasto===1424)
+		data: items.filter((d) => d.id_estado_gasto === 1423),
+		montoTotal: items
+			.filter((d) => d.id_estado_gasto === 1423)
+			.reduce((total, item) => total + item.monto, 0),
+		dataPagosPendientes: items.filter((d) => d.id_estado_gasto === 1424),
 	}));
 };
 function agruparPorDia(data) {
