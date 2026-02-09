@@ -58,17 +58,22 @@ export default function ExecutiveTable(props) {
     return `${baseYear}-${mesLogic}`;
   });
 
-  // Si cambia el universo o el mes seleccionado y aún no teníamos baseKey, lo fijamos
   useEffect(() => {
-    if (!monthsUniverse.length) return;
     const wantedAlias = aliasMes(MESES_DISPLAY[selectedMonth - 1]);
-    const found =
-      monthsUniverse.find((m) => aliasMes(m.mes) === wantedAlias) ||
-      monthsUniverse[0];
 
-if (found) {
+    const found = monthsUniverse.find(
+      (m) => aliasMes(m.mes) === wantedAlias && Number(m.anio) === Number(baseYear)
+    );
+
+    if (found) {
       setBaseKey(found.key);
-    }  }, [monthsUniverse, selectedMonth]);
+    } else {
+      // Fallback: si no hay data, forzamos la key con el año/mes seleccionados
+      // para que la UI no se quede pegada en el año anterior/actual.
+      const mesLogic = aliasMes(MESES_DISPLAY[selectedMonth - 1]);
+      setBaseKey(`${baseYear}-${mesLogic}`);
+    }
+  }, [monthsUniverse, selectedMonth, baseYear]);
 
   // ==== Cálculo de métricas (ahora le pasamos baseKey) ====
   const { monthOrderForOrigin, rowsPerOrigin, orderedOrigins } = useMemo(
@@ -216,7 +221,7 @@ if (found) {
   // =========================================================
   const sortMonthsForOrigin = (months, okey) => {
     if (!Array.isArray(months)) return [];
-    
+
     // Si no es un origen de marketing (ej. monkeyfit), devolvemos tal cual
     if (okey === "monkeyfit" || !isNaN(Number(okey))) {
       return months;
@@ -228,10 +233,10 @@ if (found) {
     // 2. Extraer el Mes Base de la lista si existe
     let baseMonthItem = null;
     const baseIndex = copy.findIndex(m => ymKey(m) === baseKey);
-    
+
     if (baseIndex !== -1) {
-        baseMonthItem = copy[baseIndex];
-        copy.splice(baseIndex, 1); // Lo quitamos temporalmente
+      baseMonthItem = copy[baseIndex];
+      copy.splice(baseIndex, 1); // Lo quitamos temporalmente
     }
 
     // 3. Ordenar el RESTO de meses por monto (Ascendente según tu lógica original a - b)
@@ -241,7 +246,7 @@ if (found) {
 
     // 4. Insertar el Mes Base AL FINAL (última columna)
     if (baseMonthItem) {
-        copy.push(baseMonthItem);
+      copy.push(baseMonthItem);
     }
 
     return copy;
@@ -345,10 +350,10 @@ if (found) {
           const txt = isPct
             ? `${fmtNum(val, 2)} %`
             : r.type === "money"
-            ? fmtMoney(val)
-            : r.type === "float2"
-            ? fmtNum(val, 2)
-            : fmtNum(val, 0);
+              ? fmtMoney(val)
+              : r.type === "float2"
+                ? fmtNum(val, 2)
+                : fmtNum(val, 0);
 
           const isHighlightCol =
             !!highlightMonthAlias &&
@@ -361,11 +366,11 @@ if (found) {
                 ...sCell,
                 ...(isHighlightCol
                   ? {
-                      background: "#c00000",
-                      color: "#fff",
-                      fontWeight: 700,
-                      fontSize: 28,
-                    }
+                    background: "#c00000",
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: 28,
+                  }
                   : {}),
               }}
             >

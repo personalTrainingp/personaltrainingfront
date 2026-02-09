@@ -10,11 +10,8 @@ export const useResumenFechas = () => {
 	const [cutDay, setCutDay] = useState(new Date().getDate());
 	const [initDay, setInitDay] = useState(1);
 	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+	const [year, setYear] = useState(new Date().getFullYear());
 	const [tasaCambio, setTasaCambio] = useState(3.37);
-	const ayer = new Date();
-	ayer.setDate(ayer.getDate() - 1);
-
-	const year = new Date(new Date().setDate(new Date().getDate() - 4)).getFullYear();
 
 	const handleSetUltimoDiaMes = () => {
 		const ultimoDia = new Date(year, selectedMonth, 0).getDate();
@@ -27,11 +24,11 @@ export const useResumenFechas = () => {
 	}, [RANGE_DATE]);
 
 	useEffect(() => {
-		const y = new Date().getFullYear();
-		const startLocal = new Date(y, selectedMonth - 1, initDay);
-		const endLocal = new Date(y, selectedMonth - 1, cutDay);
+		// AL CORREGIR: Usamos 'year' del estado, no el año actual hardcodeado
+		const startLocal = new Date(year, selectedMonth - 1, initDay);
+		const endLocal = new Date(year, selectedMonth - 1, cutDay);
 		dispatch(onSetRangeDate([limaStartOfDay(startLocal), limaEndOfDay(endLocal)]));
-	}, [selectedMonth, initDay, cutDay, dispatch]);
+	}, [selectedMonth, initDay, cutDay, year, dispatch]);
 
 	return {
 		cutDay,
@@ -43,6 +40,7 @@ export const useResumenFechas = () => {
 		tasaCambio,
 		setTasaCambio,
 		year,
+		setYear,
 		handleSetUltimoDiaMes,
 		start,
 		end,

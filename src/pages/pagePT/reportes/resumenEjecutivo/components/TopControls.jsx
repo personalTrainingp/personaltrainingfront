@@ -137,6 +137,7 @@ export function TopControls({
         if (!ignore) {
           setUsdPenRate((prev) => ({ ...prev, loading: true, error: null }));
         }
+        //tambien se puede usar esta api, pero si se usa muchos tokens empezara a cobrar https://api.apis.net.pe/v1/tipo-cambio-sunat
         const response = await fetch("https://open.er-api.com/v6/latest/USD");
         if (!response.ok) {
           throw new Error(`Estado ${response.status}`);
@@ -167,7 +168,7 @@ export function TopControls({
     };
 
     fetchUsdPen();
-    const intervalId = setInterval(fetchUsdPen, 1000 * 60 * 10); // cada 10 minutos
+    const intervalId = setInterval(fetchUsdPen, 1000 * 60 * 10);
 
     return () => {
       ignore = true;
