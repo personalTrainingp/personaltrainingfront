@@ -442,6 +442,14 @@ export function computeMetricsForMonth({
 		mkCacMeta: mkCacMetaExact,
 		mkCacTikTok: mkCacTikTokExact,
 
+		clientesMeta,
+		clientesTikTok,
+		clientesTotal: clientesMeta + clientesTikTok,
+
+		convMeta: safeDiv0(clientesMeta, mkLeadsMeta) * 100,
+		convTikTok: safeDiv0(clientesTikTok, mkLeadsTikTok) * 100,
+		convTotal: safeDiv0(clientesMeta + clientesTikTok, mkLeads) * 100,
+
 		totalServ,
 		cantServ,
 		ticketServ,
