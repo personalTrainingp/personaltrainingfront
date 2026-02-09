@@ -1,5 +1,5 @@
 import { InputButton, InputDate, InputText } from '@/components/InputText'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTc } from './hook/useTc'
 import { useForm } from '@/hooks/useForm'
@@ -10,8 +10,12 @@ const customTC = {
 
 }
 export const ModalTc = ({show, onHide, id}) => {
-    const { postTC, updateTCxID } = useTc()
-    const { formState, precio_compra, precio_venta, fecha, onInputChange, onResetForm } = useForm(id!==0?{}:customTC)
+    const { postTC, updateTCxID, dataTC, obtenerTCxID } = useTc()
+    useEffect(() => {
+        obtenerTCxID(id)
+    }, [id])
+    
+    const { formState, precio_compra, precio_venta, fecha, onInputChange, onResetForm } = useForm(id!==0?dataTC:customTC)
     const submitTC = ()=>{
         if(id!==0){
             updateTCxID({...formState, monedaOrigen: 'USD', monedaDestino: 'PEN'}, id)

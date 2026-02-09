@@ -11,7 +11,7 @@ export const DataTableTc = ({onOpenModalTC}) => {
   const { dataView } = useSelector(e=>e.TC)
   useEffect(() => {
     obtenerTC()
-  }, [])
+  }, [1])
   
   const columns = [
     {id: 1, header: 'ID', render: (row)=>{
@@ -46,7 +46,7 @@ export const DataTableTc = ({onOpenModalTC}) => {
       return (
         <>
         <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2' onClick={()=>confirmDeleteItem(row.id)}/>
-        <Button icon="pi pi-pencil" rounded outlined severity="danger"  className='mr-2' onClick={()=>onOpenModalTC(row.id)}/>
+        <Button icon="pi pi-pencil" rounded outlined severity="danger"  className='mr-2' onClick={()=>onOpenModalEditarItem(row.id)}/>
         </>
       )
     }},
@@ -54,8 +54,13 @@ export const DataTableTc = ({onOpenModalTC}) => {
   const confirmDeleteItem = (id)=>{
     confirmDialog({
       message: 'Quieres eliminar este TC',
-      accept: ()=>deleteTCxID(id)
+      accept: ()=>{
+        deleteTCxID(id)
+      }
     })
+  }
+  const onOpenModalEditarItem=(id)=>{
+    onOpenModalTC(id)
   }
   return (
     <div>

@@ -2,6 +2,7 @@ import { PTApi } from '@/common';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewTc } from '../store/tcSlice';
+import { DateMaskStr, DateMaskString, MaskDate } from '@/components/CurrencyMask';
 
 export const useTc = () => {
 	const dispatch = useDispatch();
@@ -24,7 +25,7 @@ export const useTc = () => {
 	};
 	const updateTCxID = async (formState, id) => {
 		try {
-			const data = await PTApi.put(`/tipocambio/${id}`, formState);
+			const data = await PTApi.put(`/tipocambio/id/${id}`, formState);
 			await obtenerTC();
 		} catch (error) {
 			console.log(error);
@@ -33,7 +34,6 @@ export const useTc = () => {
 	const deleteTCxID = async (id) => {
 		try {
 			const data = await PTApi.put(`/tipocambio/delete/${id}`);
-			console.log({ data });
 			await obtenerTC();
 		} catch (error) {
 			console.log(error);
@@ -42,7 +42,12 @@ export const useTc = () => {
 	const obtenerTCxID = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/tipocambio/id/${id}`);
-			setdataTC(data.tc);
+			console.log({ data });
+			const dataAlter = {
+				...data.dataTC,
+				fecha: MaskDate(data.dataTC?.fecha, 'YYYY-MM-DD'),
+			};
+			setdataTC(dataAlter);
 		} catch (error) {
 			console.log(error);
 		}
