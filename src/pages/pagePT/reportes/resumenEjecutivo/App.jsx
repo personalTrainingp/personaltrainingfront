@@ -30,9 +30,9 @@ export const App = ({ id_empresa }) => {
     resumenFilas, resumenTotales, avataresDeProgramas,
     sociosOverride, originBreakdown, advisorOriginByProg,
     avatarByAdvisor, productosPorAsesor, vencimientosFiltrados,
-    isLoading
+    isLoading,
+    year, setYear
   } = useResumenEjecutivoStore(id_empresa);
-  const [year, setYear] = useState(new Date().getFullYear());
 
   return (
     <>
@@ -91,6 +91,7 @@ export const App = ({ id_empresa }) => {
               dataMktByMonth={dataMktWithCac} initialDay={initDay} cutDay={cutDay}
               reservasMF={reservasMF} originMap={originMap}
               selectedMonth={selectedMonth} tasaCambio={tasaCambio}
+              year={year}
             />
           </div>
 
@@ -99,6 +100,7 @@ export const App = ({ id_empresa }) => {
               ventas={dataVentas} fechas={mesesSeleccionados}
               dataMktByMonth={dataMkt} reservasMF={reservasMF}
               initialDay={initDay} cutDay={cutDay}
+              year={year}
             />
           </div>
 
@@ -113,7 +115,7 @@ export const App = ({ id_empresa }) => {
               <RenovacionesPanel
                 id_empresa={id_empresa} baseDate={new Date(year, selectedMonth - 1, 1)}
                 months={12} beforeDays={0} afterDays={91}
-                title="RENOVACIONES - 2025" items={dataVentas}
+                title={`RENOVACIONES - ${year}`} items={dataVentas}
                 vencimientosMap={mapaVencimientos} carteraHistoricaInicial={0}
                 vencimientosFiltrados={vencimientosFiltrados}
               />
@@ -125,6 +127,7 @@ export const App = ({ id_empresa }) => {
             dataMktByMonth={dataMktWithCac} initialDay={initDay} cutDay={cutDay}
             reservasMF={reservasMF} originMap={originMap}
             selectedMonth={selectedMonth} tasaCambio={tasaCambio}
+            year={year}
           />
         </Col>
 
