@@ -10,6 +10,7 @@ export const useInformeEjecutivoStore = () => {
 		dataVentasMap: [],
 		dataMFMap: [],
 		dataMembresiasRenovaciones: [],
+		dataMembresiasReinscripciones: [],
 	});
 	const [dataLeads, setdataLeads] = useState([]);
 	const obtenerVentas = async () => {
@@ -47,6 +48,18 @@ export const useInformeEjecutivoStore = () => {
 				.filter((f) => f.montoTotal !== 0);
 
 			const dataMembresiasRenovaciones = dataVentasMap
+				.filter((dventa) => dventa.detalle_membresias.length !== 0)
+				.map((v) => {
+					return {
+						...v,
+						montoTotal: v.detalle_membresias[0]?.tarifa_monto,
+						cantidadTotal: 1,
+					};
+				})
+				.filter((f) => f.montoTotal !== 0)
+				.filter((d) => d.id_origen === 691);
+
+			const dataMembresiasReinscripciones = dataVentasMap
 				.filter((dventa) => dventa.detalle_membresias.length !== 0)
 				.map((v) => {
 					return {
@@ -117,6 +130,9 @@ export const useInformeEjecutivoStore = () => {
 				dataMFMap: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataMFMap)),
 				dataMembresiasRenovaciones: sumarMontoTotal(
 					agruparPorMesDiaFechaVenta(dataMembresiasRenovaciones)
+				),
+				dataMembresiasReinscripciones: sumarMontoTotal(
+					agruparPorMesDiaFechaVenta(dataMembresiasReinscripciones)
 				),
 			});
 		} catch (error) {
