@@ -1,0 +1,85 @@
+import { MESES } from '../resumenEjecutivo/hooks/useResumenUtils';
+import { Form, Row, Col, Card } from 'react-bootstrap';
+import { useResumenEjecutivoStore } from '../resumenEjecutivo/useResumenEjecutivoStore';
+import { ComparativoMensualTable } from './ComparativoMensualTable';
+import { PageBreadcrumb } from '@/components';
+
+const ComparativoMensualPage = () => {
+    const {
+        dataVentas,
+        loading,
+        year, setYear,
+        selectedMonth, setSelectedMonth, // Usamos el estado global del store
+        cutDay
+    } = useResumenEjecutivoStore();
+
+    // Generamos lista de años (ej: actual -1 a actual +3)
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 5 }, (_, i) => currentYear - 1 + i);
+
+    return (
+        <>
+            <PageBreadcrumb title={'Reportes'} subName={'Comparativo Mensual'} />
+            <Row>
+                <Col xs={12}>
+                    <Card>
+                        <Card.Body>
+                            <Row className="mb-4">
+                                {/* Columna contenedora de controles */}
+                                <Col md={5} lg={4}>
+                                    <div className="d-flex gap-3 align-items-end">
+
+                                        {/* 1. SELECTOR AÑO (Reducido a la mitad aprox) */}
+                                        <Form.Group style={{ width: '110px' }}>
+                                            <Form.Label className="fw-bold text-muted small">AÑO</Form.Label>
+                                            <Form.Select
+                                                value={year}
+                                                onChange={(e) => setYear(Number(e.target.value))}
+                                                style={{ fontWeight: 'bold' }}
+                                            >
+                                                {years.map(y => (
+                                                    <option key={y} value={y}>{y}</option>
+                                                ))}
+                                            </Form.Select>
+                                        </Form.Group>
+
+                                        {/* 2. SELECTOR MES (Ocupa el resto) */}
+                                        <Form.Group className="flex-grow-1">
+                                            <Form.Label className="fw-bold text-muted small">INICIAR DESDE</Form.Label>
+                                            <Form.Select
+                                                value={selectedMonth}
+                                                onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                                                style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
+                                            >
+                                                {MESES.map((mes, idx) => (
+                                                    <option key={idx} value={idx + 1}>{mes.toUpperCase()}</option>
+                                                ))}
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            {loading ? (
+                                <div className="text-center p-5">
+                                    <div className="spinner-border text-danger" role="status">
+                                        <span className="visually-hidden">Cargando...</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <ComparativoMensualTable
+                                    ventas={dataVentas}
+                                    year={year}
+                                    startMonth={selectedMonth - 1} // Pasamos el mes seleccionado convertido a índice 0-11
+                                    cutDay={cutDay}
+                                />
+                            )}
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </>
+    );
+};
+
+export default ComparativoMensualPage;
