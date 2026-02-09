@@ -118,6 +118,7 @@ const ResumenGerencialPorReinscripcionesxDia= lazy(()=>import('../pages/pagePT/R
 const InformeEjecutivoOficial= lazy(()=>import('../pages/pagePT/reportes/resumenEjecutivoOficial/Index.jsx'))
 const FlujoCajaBalanceCuentas = lazy(()=>import('../pages/pagePT/FlujoCuentasBalance'))
 const GestionTc = lazy(()=>import('../pages/pagePT/GestionTc'))
+const SeguimientoOficial = lazy(()=>import('../pages/pagePT/SeguimientoOficial/Index.jsx'))
 /**
  * routes import
  */
@@ -428,7 +429,7 @@ export default function ProtectedRoutes() {
 						<Route path="mkt-actas-reunion" element={<GestActasDeReunion />} />
 					}
 					{sections.find(e=>e.url==='/seguimiento')&&
-						<Route path="seguimiento" element={<Seguimiento />} />
+						<Route path="seguimiento" element={<SeguimientoOficial />} />
 					}
 					{
 						sections.find(e=>e.url==='/contrato-clientes')&&

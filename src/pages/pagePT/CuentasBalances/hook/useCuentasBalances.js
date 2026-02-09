@@ -2,7 +2,7 @@ import { PTApi } from '@/common';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewCuentasBalances } from '../Store/cuentasBalancesSlice';
-import { DateMaskString, MaskDate } from '@/components/CurrencyMask';
+import { DateMaskStr, DateMaskString, MaskDate } from '@/components/CurrencyMask';
 import { arrayEmpresaFinanAbrev } from '@/types/type';
 
 export const useCuentasBalances = () => {
@@ -31,7 +31,7 @@ export const useCuentasBalances = () => {
 			const { data } = await PTApi.get(`/cuenta-balance/id/${id}`);
 			const dataAlter = {
 				...data?.cuenta,
-				fecha_comprobante: DateMaskString(data.cuenta?.fecha_comprobante, 'YYYY-MM-DD'),
+				fecha_comprobante: DateMaskStr(data.cuenta?.fecha_comprobante, 'YYYY-MM-DD'),
 			};
 			setdataCuentaBalance(dataAlter);
 		} catch (error) {

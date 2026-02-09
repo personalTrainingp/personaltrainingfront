@@ -12,8 +12,8 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
         const cantTotal = dataFiltradaMes?.reduce((total, item) => total + (item?.cantidadTotal || 0), 0)
         const montoMeta = dataMetaFiltradaMes?.reduce((total, item) => total + (item?.meta || 0), 0)
         const porcentajeDeAvance = montoMeta
-  ? (montoTotal / montoMeta) * 100
-  : 0;
+            ? (montoTotal / montoMeta) * 100
+            : 0;
         return {
             ...arr,
             items: dataFiltradaMes,
@@ -23,8 +23,6 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
             porcentajeDeAvance
         }
     })
-    console.log({dataCuotaMetaDelMes, dataConMes});
-    
   return (
         <Table className="tabla-egresos" style={{width: '100%'}}  bordered>
             <thead>

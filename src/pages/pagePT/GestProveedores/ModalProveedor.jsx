@@ -86,9 +86,6 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onSh
                 }
             }, [id])
             
-
-
-
             const clear = () => {
                 toastBC.current.clear();
                 setVisible(false);
@@ -110,7 +107,11 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onSh
             
             const onCancelForm = ()=>{
                 onHide()
+                onShowGastos()
                 onResetForm()
+            }
+            const onHideAndShowGastos=()=>{
+                onHide()
                 onShowGastos()
             }
             const onClickOpenModalCustomOficios = ()=>{

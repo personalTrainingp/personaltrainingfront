@@ -1,0 +1,1 @@
+export { AppSeguimiento as default } from './AppSeguimiento'

@@ -63,7 +63,6 @@ export const Seguimiento = () => {
 											autoHide={false}
 											forceVisible="x"           // fuerza siempre visible el scrollbar X
 										  >
-											{/* Row de Bootstrap como flex, pero sin wrap */}
 											<Row
 											  style={{
 												display: 'flex',
@@ -86,16 +85,6 @@ export const Seguimiento = () => {
 												</Col>
 											</Row>
 										  </SimpleBar>
-									{/* <Row>
-										<Col lg={6} className='border-right-2 border-primary'>
-											<h3 className='text-primary'>SOCIOS ACTIVOS</h3>
-											<TableSeguimientoTODO classNameFechaVenc={'text-primary fw-bold fs-3'} id_empresa={598} labelFechaVenc={''} labelSesiones={'sesiones'} labelSesionesPendientes={'Sesiones pendientes'} isClienteActive={true}/>
-										</Col>
-										<Col lg={6} className='border-left-2 border-primary'>
-											<h3 className='text-primary'>SOCIOS INACTIVOS</h3>
-											<TableSeguimientoTODO classNameFechaVenc={'t'} id_empresa={598} labelFechaVenc={'Fecha de vencimiento'} labelSesiones={'dias'} labelSesionesPendientes={'Dias vencidos'} isClienteActive={false}/>
-										</Col>
-									</Row> */}
 								</TabPanel>
 								<TabPanel header="HISTORICO">
 									<Row>

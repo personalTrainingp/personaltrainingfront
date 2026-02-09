@@ -31,14 +31,14 @@ export const DataTableTc = ({onOpenModalTC}) => {
     {id: 3, header: 'COMPRA', render: (row)=>{
       return (
         <>
-          {row.precio_compra}
+          {row.precio_compra.toFixed(3)}
         </>
       )
     }},
     {id: 4, header: 'VENTA', render: (row)=>{
       return (
         <>
-          {row.precio_venta}
+          {row.precio_venta.toFixed(3)}
         </>
       )
     }},
