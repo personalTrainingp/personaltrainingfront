@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { fmtMoney, fmtNum } from '../resumenEjecutivo/adapters/executibleLogic';
-import { useComparativoMensualLogic } from './useComparativoMensualLogic';
+import { fmtMoney, fmtNum } from '../../resumenEjecutivo/adapters/executibleLogic';
+import { useComparativoMensualLogic } from '../hooks/useComparativoMensualLogic';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
 export const ComparativoMensualTable = ({
     ventas = [],
     year,
-    startMonth = 0, // AHORA RECIBE EL MES COMO PROP
-    cutDay = 21
+    startMonth = 0,
+    cutDay = 21,
+    title = "",
+    showFortnightly = false // NUEVO PROP para mostrar columnas quincenales al final
 }) => {
     // Ya no usamos useState para el mes aquí adentro.
     const [viewMode, setViewMode] = useState('none');
@@ -42,7 +44,9 @@ export const ComparativoMensualTable = ({
         if (isPct) style = { ...style, textAlign: 'center', color: '#666', fontSize: '18px' };
 
         const val = row[field];
-        const valPct = row[`pct${field.charAt(0).toUpperCase() + field.slice(1)}`];
+        // Dynamic key access for percentage
+        const pctKey = `pct${field.charAt(0).toUpperCase() + field.slice(1)}`;
+        const valPct = row[pctKey];
 
         return (
             <>
@@ -53,7 +57,24 @@ export const ComparativoMensualTable = ({
     };
 
     return (
-        <div>
+        <div style={{ marginBottom: '40px' }}>
+            {/* Título de la tabla */}
+            {title && (
+                <h3 style={{
+                    background: '#000',
+                    color: '#fff',
+                    padding: '10px 20px',
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    marginBottom: '10px',
+                    borderRadius: '4px',
+                    display: 'inline-block',
+                    textTransform: 'uppercase'
+                }}>
+                    {title}
+                </h3>
+            )}
+
             {/* Solo dejamos los botones de filtro aquí, los selectores están arriba en la Page */}
             <div style={styles.headerActions}>
                 <ButtonGroup style={{ boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
@@ -92,13 +113,20 @@ export const ComparativoMensualTable = ({
                             <th style={styles.th} colSpan={2}>SEM 3 (15-21)</th>
                             <th style={styles.th} colSpan={2}>SEM 4 (22-28)</th>
                             <th style={styles.th} colSpan={2}>SEM 5 (29-31)</th>
+                            {/* COLUMNAS EXTRAS SI SE SOLICITAN */}
+                            {showFortnightly && (
+                                <>
+                                    <th style={{ ...styles.th, background: '#222' }} colSpan={2}>DIA 1 AL 15</th>
+                                    <th style={{ ...styles.th, background: '#222' }} colSpan={2}>DIA 16 A FIN</th>
+                                </>
+                            )}
                         </tr>
                     </thead>
                     <tbody>
                         {monthsData.map((row, idx) => (
                             <tr key={row.key} style={{ background: idx % 2 === 0 ? '#fff' : '#fcfcfc' }}>
                                 <td style={{ ...styles.td, ...styles.tdLabel }}>
-                                    {row.label} <span style={{ fontSize: '11px', color: '#fff', fontWeight: 'normal' }}>{row.year}</span>
+                                    {row.label} <span style={{ fontSize: '11px', color: '#999', fontWeight: 'normal' }}>{row.year}</span>
                                 </td>
                                 <td style={{ ...styles.td, fontWeight: '700', color: '#000', background: 'rgba(0,0,0,0.02)' }}>{fmtMoney(row.total)}</td>
                                 <td style={{ ...styles.td, color: '#555' }}>{fmtMoney(row.quota)}</td>
@@ -107,11 +135,19 @@ export const ComparativoMensualTable = ({
                                 {renderCell(row, 'w3', true)}
                                 {renderCell(row, 'w4', true)}
                                 {renderCell(row, 'w5', true)}
+
+                                {showFortnightly && (
+                                    <>
+                                        {renderCell(row, 'r1_15', true)}
+                                        {renderCell(row, 'r16_end', true)}
+                                    </>
+                                )}
                             </tr>
                         ))}
                         {viewMode !== 'none' && (() => {
                             const data = viewMode === 'top3' ? top3Averages : last6Averages;
                             const label = viewMode === 'top3' ? "PROMEDIO (TOP 3)" : "PROMEDIO (ÚLT. 6 MESES)";
+
                             return (
                                 <tr style={styles.footerRow}>
                                     <td style={{ ...styles.td, ...styles.tdLabel, background: '#f8f9fa', color: '#c00000' }}>{label}</td>
@@ -127,6 +163,15 @@ export const ComparativoMensualTable = ({
                                     <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
                                     <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.w5)}</td>
                                     <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
+
+                                    {showFortnightly && (
+                                        <>
+                                            <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.r1_15)}</td>
+                                            <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
+                                            <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.r16_end)}</td>
+                                            <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
+                                        </>
+                                    )}
                                 </tr>
                             );
                         })()}

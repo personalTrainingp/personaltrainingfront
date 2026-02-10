@@ -1,10 +1,10 @@
 import { MESES } from '../resumenEjecutivo/hooks/useResumenUtils';
 import { Form, Row, Col, Card } from 'react-bootstrap';
 import { useResumenEjecutivoStore } from '../resumenEjecutivo/useResumenEjecutivoStore';
-import { ComparativoMensualTable } from './ComparativoMensualTable';
+import { ComparativoMensualTable } from './components/ComparativoMensualTable';
 import { PageBreadcrumb } from '@/components';
 
-const ComparativoMensualPage = () => {
+const App = () => {
     const {
         dataVentas,
         loading,
@@ -44,7 +44,7 @@ const ComparativoMensualPage = () => {
                                         </Form.Group>
 
                                         {/* 2. SELECTOR MES (Ocupa el resto) */}
-                                        <Form.Group className="flex-grow-1">
+                                        <Form.Group style={{ width: '150px', fontSize: '25px' }}>
                                             <Form.Label className="fw-bold text-muted small">INICIAR DESDE</Form.Label>
                                             <Form.Select
                                                 value={selectedMonth}
@@ -67,12 +67,26 @@ const ComparativoMensualPage = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <ComparativoMensualTable
-                                    ventas={dataVentas}
-                                    year={year}
-                                    startMonth={selectedMonth - 1} // Pasamos el mes seleccionado convertido a índice 0-11
-                                    cutDay={cutDay}
-                                />
+                                <>
+                                    <ComparativoMensualTable
+                                        ventas={dataVentas}
+                                        year={year}
+                                        startMonth={selectedMonth - 1}
+                                        cutDay={cutDay}
+                                        title="TOTAL VENTAS"
+                                    />
+
+                                    <hr className="my-5" />
+
+                                    <ComparativoMensualTable
+                                        ventas={dataVentas.filter(v => v.id_origen === 691)}
+                                        year={year}
+                                        startMonth={selectedMonth - 1}
+                                        cutDay={cutDay}
+                                        title="RENOVACIONES"
+                                        showFortnightly={true}
+                                    />
+                                </>
                             )}
                         </Card.Body>
                     </Card>
@@ -82,4 +96,4 @@ const ComparativoMensualPage = () => {
     );
 };
 
-export default ComparativoMensualPage;
+export default App;

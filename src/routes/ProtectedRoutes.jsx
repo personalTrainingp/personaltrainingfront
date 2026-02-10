@@ -401,7 +401,6 @@ export default function ProtectedRoutes() {
 						sections.find(e=>e.url==='/proveedores/prov-agentes') && 
 						<Route path='proveedores/prov-agentes' element={<GestProvAgente/>}/>
 					}
-					
 					{
 						sections.find(e=>e.url==='/gest-inventario-circus') && 
 						<Route path='gest-inventario-circus' element={<GestionInventarioProy/>}/>

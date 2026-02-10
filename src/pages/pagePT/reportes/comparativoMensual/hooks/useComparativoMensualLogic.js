@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { getMetaPorMes } from '../resumenEjecutivo/adapters/executibleLogic';
-import { MESES } from '../resumenEjecutivo/hooks/useResumenUtils';
+import { getMetaPorMes } from '../../resumenEjecutivo/adapters/executibleLogic';
+import { MESES } from '../../resumenEjecutivo/hooks/useResumenUtils';
 
 export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, cutDay = 21 }) => {
 
@@ -59,7 +59,11 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
             const day = d.getDate();
 
             if (!dataMap.has(vKey)) {
-                dataMap.set(vKey, { cut: 0, rest: 0, total: 0, w1: 0, w2: 0, w3: 0, w4: 0, w5: 0 });
+                dataMap.set(vKey, {
+                    cut: 0, rest: 0, total: 0,
+                    w1: 0, w2: 0, w3: 0, w4: 0, w5: 0,
+                    r1_15: 0, r16_end: 0
+                });
             }
 
             const entry = dataMap.get(vKey);
@@ -72,11 +76,19 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
             else if (day >= 15 && day <= 21) entry.w3 += amount;
             else if (day >= 22 && day <= 28) entry.w4 += amount;
             else entry.w5 += amount;
+
+            // New Breakdown: 1-15 vs 16-End
+            if (day <= 15) entry.r1_15 += amount;
+            else entry.r16_end += amount;
         });
 
         // 3. MERGE DATOS CON LA LISTA
         return list.map(m => {
-            const data = dataMap.get(m.key) || { cut: 0, rest: 0, total: 0, w1: 0, w2: 0, w3: 0, w4: 0, w5: 0 };
+            const data = dataMap.get(m.key) || {
+                cut: 0, rest: 0, total: 0,
+                w1: 0, w2: 0, w3: 0, w4: 0, w5: 0,
+                r1_15: 0, r16_end: 0
+            };
             // Obtenemos la meta correspondiente al año real de ese mes
             const quota = getMetaPorMes(m.label, m.year);
 
@@ -86,14 +98,21 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
             const pctW4 = data.total > 0 ? (data.w4 / data.total) * 100 : 0;
             const pctW5 = data.total > 0 ? (data.w5 / data.total) * 100 : 0;
 
-            return { ...m, ...data, quota, pctW1, pctW2, pctW3, pctW4, pctW5 };
+            const pctR1_15 = data.total > 0 ? (data.r1_15 / data.total) * 100 : 0;
+            const pctR16_end = data.total > 0 ? (data.r16_end / data.total) * 100 : 0;
+
+            return {
+                ...m, ...data, quota,
+                pctW1, pctW2, pctW3, pctW4, pctW5,
+                pctR1_15, pctR16_end
+            };
         });
 
     }, [ventas, year, startMonth, cutDay]);
 
     // LÓGICA DE PROMEDIOS (Igual que antes)
     const { top3Map, top3Averages, last6Averages } = useMemo(() => {
-        const fields = ['total', 'w1', 'w2', 'w3', 'w4', 'w5'];
+        const fields = ['total', 'w1', 'w2', 'w3', 'w4', 'w5', 'r1_15', 'r16_end'];
         const indicesMap = {};
         const averagesTop3 = {};
 

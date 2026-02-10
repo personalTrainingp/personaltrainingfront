@@ -1,1 +1,1 @@
-export { default } from './ComparativoMensualPage';
+export { default } from './App';
