@@ -1,11 +1,11 @@
-import { DateMaskStr, DateMaskString } from '@/components/CurrencyMask';
+import { DateMaskStr, DateMaskStr1, DateMaskString } from '@/components/CurrencyMask';
 
 export const agruparPorMesDiaFechaVenta = (data) => {
 	const map = {};
 
 	data.forEach((item) => {
 		// const fecha = dayjs.utc(item.fecha_venta);
-		const fecha = DateMaskStr(item.fechaP);
+		const fecha = DateMaskStr1(item.fechaP);
 
 		const anio = fecha.year();
 		const mes = fecha.month() + 1; // 0–11 → 1–12
