@@ -429,7 +429,7 @@ export default function ProtectedRoutes() {
 						<Route path="mkt-actas-reunion" element={<GestActasDeReunion />} />
 					}
 					{sections.find(e=>e.url==='/seguimiento')&&
-						<Route path="seguimiento" element={<SeguimientoOficial />} />
+						<Route path="seguimiento" element={<Seguimiento />} />
 					}
 					{
 						sections.find(e=>e.url==='/contrato-clientes')&&
