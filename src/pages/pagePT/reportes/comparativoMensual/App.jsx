@@ -1,7 +1,9 @@
 import { MESES } from '../resumenEjecutivo/hooks/useResumenUtils';
-import { Form, Row, Col, Card } from 'react-bootstrap';
+import { useState } from 'react';
+import { Form, Row, Col, Card, Button } from 'react-bootstrap';
 import { useResumenEjecutivoStore } from '../resumenEjecutivo/useResumenEjecutivoStore';
 import { ComparativoMensualTable } from './components/ComparativoMensualTable';
+import { MetaAlcanceTable } from './components/MetaAlcanceTable';
 import { PageBreadcrumb } from '@/components';
 
 const App = () => {
@@ -12,6 +14,8 @@ const App = () => {
         selectedMonth, setSelectedMonth, // Usamos el estado global del store
         cutDay
     } = useResumenEjecutivoStore();
+
+    const [showGoalView, setShowGoalView] = useState(false);
 
     // Generamos lista de años (ej: actual -1 a actual +3)
     const currentYear = new Date().getFullYear();
@@ -24,7 +28,7 @@ const App = () => {
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
-                            <Row className="mb-4">
+                            <Row className="mb-4 align-items-end">
                                 {/* Columna contenedora de controles */}
                                 <Col md={5} lg={4}>
                                     <div className="d-flex gap-3 align-items-end">
@@ -58,6 +62,14 @@ const App = () => {
                                         </Form.Group>
                                     </div>
                                 </Col>
+                                <Col className="text-end">
+                                    <Button
+                                        variant={showGoalView ? "outline-primary" : "primary"}
+                                        onClick={() => setShowGoalView(!showGoalView)}
+                                    >
+                                        {showGoalView ? "VER TABLAS DETALLADAS" : "VER COMPARATIVO METAS"}
+                                    </Button>
+                                </Col>
                             </Row>
 
                             {loading ? (
@@ -68,24 +80,36 @@ const App = () => {
                                 </div>
                             ) : (
                                 <>
-                                    <ComparativoMensualTable
-                                        ventas={dataVentas}
-                                        year={year}
-                                        startMonth={selectedMonth - 1}
-                                        cutDay={cutDay}
-                                        title="TOTAL VENTAS"
-                                    />
+                                    {showGoalView ? (
+                                        <MetaAlcanceTable
+                                            ventas={dataVentas}
+                                            year={year}
+                                            startMonth={selectedMonth - 1}
+                                            cutDay={cutDay}
+                                        />
+                                    ) : (
+                                        <>
+                                            <ComparativoMensualTable
+                                                ventas={dataVentas}
+                                                year={year}
+                                                startMonth={selectedMonth - 1}
+                                                cutDay={cutDay}
+                                                title="TOTAL VENTAS"
+                                            />
 
-                                    <hr className="my-5" />
+                                            <hr className="my-5" />
 
-                                    <ComparativoMensualTable
-                                        ventas={dataVentas.filter(v => v.id_origen === 691)}
-                                        year={year}
-                                        startMonth={selectedMonth - 1}
-                                        cutDay={cutDay}
-                                        title="RENOVACIONES"
-                                        showFortnightly={true}
-                                    />
+                                            <ComparativoMensualTable
+                                                ventas={dataVentas.filter(v => v.id_origen === 691)}
+                                                year={year}
+                                                startMonth={selectedMonth - 1}
+                                                cutDay={cutDay}
+                                                title="RENOVACIONES"
+                                                showFortnightly={true}
+                                                variant="renovations"
+                                            />
+                                        </>
+                                    )}
                                 </>
                             )}
                         </Card.Body>

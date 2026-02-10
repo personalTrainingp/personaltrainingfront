@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { getMetaPorMes } from '../../resumenEjecutivo/adapters/executibleLogic';
 import { MESES } from '../../resumenEjecutivo/hooks/useResumenUtils';
 
 export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, cutDay = 21 }) => {
@@ -11,6 +10,29 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
             const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
             return new Date(utcMs - 5 * 60 * 60000);
         } catch { return null; }
+    };
+
+    // LÓGICA DE METAS (Hardcoded según requerimiento)
+    const getQuotaForMonth = (monthIndex, year) => {
+        const y = Number(year);
+        // Enero 2026 en adelante: 110k
+        if (y >= 2026) return 110000;
+
+        if (y === 2025) {
+            // Enero (0) a Julio (6): 60k
+            if (monthIndex <= 6) return 60000;
+            // Agosto (7): 70k
+            if (monthIndex === 7) return 70000;
+            // Septiembre (8): 75k
+            if (monthIndex === 8) return 75000;
+            // Octubre (9): 85k
+            if (monthIndex === 9) return 85000;
+            // Noviembre (10) y Diciembre (11): 90k
+            if (monthIndex >= 10) return 90000;
+        }
+
+        // Fallback para años anteriores o no definidos (ej: 2024 o default)
+        return 60000;
     };
 
     const monthsData = useMemo(() => {
@@ -89,8 +111,9 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
                 w1: 0, w2: 0, w3: 0, w4: 0, w5: 0,
                 r1_15: 0, r16_end: 0
             };
-            // Obtenemos la meta correspondiente al año real de ese mes
-            const quota = getMetaPorMes(m.label, m.year);
+
+            // Usamos la nueva función local para obtener la cuota
+            const quota = getQuotaForMonth(m.monthIdx, m.year);
 
             const pctW1 = data.total > 0 ? (data.w1 / data.total) * 100 : 0;
             const pctW2 = data.total > 0 ? (data.w2 / data.total) * 100 : 0;
