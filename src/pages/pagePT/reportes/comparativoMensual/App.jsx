@@ -34,12 +34,16 @@ const App = () => {
                                     <div className="d-flex gap-3 align-items-end">
 
                                         {/* 1. SELECTOR AÑO (Reducido a la mitad aprox) */}
-                                        <Form.Group style={{ width: '110px' }}>
-                                            <Form.Label className="fw-bold text-muted small">AÑO</Form.Label>
+                                        <Form.Group style={{ width: '200px' }}>
+                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '16px', marginBottom: '5px' }}>AÑO</Form.Label>
                                             <Form.Select
                                                 value={year}
                                                 onChange={(e) => setYear(Number(e.target.value))}
-                                                style={{ fontWeight: 'bold' }}
+                                                style={{
+                                                    fontWeight: 'bold',
+                                                    textTransform: 'uppercase',
+                                                    fontSize: '25px'
+                                                }}
                                             >
                                                 {years.map(y => (
                                                     <option key={y} value={y}>{y}</option>
@@ -48,12 +52,12 @@ const App = () => {
                                         </Form.Group>
 
                                         {/* 2. SELECTOR MES (Ocupa el resto) */}
-                                        <Form.Group style={{ width: '150px', fontSize: '25px' }}>
-                                            <Form.Label className="fw-bold text-muted small">INICIAR DESDE</Form.Label>
+                                        <Form.Group style={{ width: '250px', fontSize: '20px' }}>
+                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '16px', marginBottom: '5px' }}>INICIAR DESDE</Form.Label>
                                             <Form.Select
                                                 value={selectedMonth}
                                                 onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                                                style={{ fontWeight: 'bold', textTransform: 'uppercase' }}
+                                                style={{ fontWeight: 'bold', textTransform: 'uppercase', fontSize: '25px' }}
                                             >
                                                 {MESES.map((mes, idx) => (
                                                     <option key={idx} value={idx + 1}>{mes.toUpperCase()}</option>
