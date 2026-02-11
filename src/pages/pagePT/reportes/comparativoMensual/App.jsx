@@ -1,9 +1,10 @@
 import { MESES } from '../resumenEjecutivo/hooks/useResumenUtils';
 import { useState } from 'react';
-import { Form, Row, Col, Card, Button } from 'react-bootstrap';
+import { Form, Row, Col, Card, Button, ButtonGroup } from 'react-bootstrap';
 import { useResumenEjecutivoStore } from '../resumenEjecutivo/useResumenEjecutivoStore';
 import { ComparativoMensualTable } from './components/ComparativoMensualTable';
 import { MetaAlcanceTable } from './components/MetaAlcanceTable';
+import { ComisionesTable } from './components/ComisionesTable';
 import { PageBreadcrumb } from '@/components';
 
 const App = () => {
@@ -15,7 +16,8 @@ const App = () => {
         cutDay
     } = useResumenEjecutivoStore();
 
-    const [showGoalView, setShowGoalView] = useState(false);
+    // 'standard', 'goals', 'commissions'
+    const [viewMode, setViewMode] = useState('standard');
 
     // Generamos lista de años (ej: actual -1 a actual +3)
     const currentYear = new Date().getFullYear();
@@ -67,12 +69,26 @@ const App = () => {
                                     </div>
                                 </Col>
                                 <Col className="text-end">
-                                    <Button
-                                        variant={showGoalView ? "outline-primary" : "primary"}
-                                        onClick={() => setShowGoalView(!showGoalView)}
-                                    >
-                                        {showGoalView ? "VER TABLAS DETALLADAS" : "VER COMPARATIVO METAS"}
-                                    </Button>
+                                    <ButtonGroup>
+                                        <Button
+                                            variant={viewMode === 'standard' ? "primary" : "outline-primary"}
+                                            onClick={() => setViewMode('standard')}
+                                        >
+                                            VER TABLAS
+                                        </Button>
+                                        <Button
+                                            variant={viewMode === 'goals' ? "primary" : "outline-primary"}
+                                            onClick={() => setViewMode('goals')}
+                                        >
+                                            VER METAS
+                                        </Button>
+                                        <Button
+                                            variant={viewMode === 'commissions' ? "primary" : "outline-primary"}
+                                            onClick={() => setViewMode('commissions')}
+                                        >
+                                            COMISIONES
+                                        </Button>
+                                    </ButtonGroup>
                                 </Col>
                             </Row>
 
@@ -84,14 +100,24 @@ const App = () => {
                                 </div>
                             ) : (
                                 <>
-                                    {showGoalView ? (
+                                    {viewMode === 'goals' && (
                                         <MetaAlcanceTable
                                             ventas={dataVentas}
                                             year={year}
                                             startMonth={selectedMonth - 1}
                                             cutDay={cutDay}
                                         />
-                                    ) : (
+                                    )}
+
+                                    {viewMode === 'commissions' && (
+                                        <ComisionesTable
+                                            ventas={dataVentas}
+                                            year={year}
+                                            month={selectedMonth}
+                                        />
+                                    )}
+
+                                    {viewMode === 'standard' && (
                                         <>
                                             <ComparativoMensualTable
                                                 ventas={dataVentas}
