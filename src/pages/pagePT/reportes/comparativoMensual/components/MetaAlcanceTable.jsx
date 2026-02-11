@@ -3,6 +3,7 @@ import { fmtMoney } from '../../resumenEjecutivo/adapters/executibleLogic';
 import { useComparativoMensualLogic } from '../hooks/useComparativoMensualLogic';
 import { RenovationsBreakdownTable } from './RenovationsBreakdownTable';
 import { ClosingAnalysisTable } from './ClosingAnalysisTable';
+import { GeneralSalesBreakdownTable } from './GeneralSalesBreakdownTable';
 
 export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 21 }) => {
     const { monthsData } = useComparativoMensualLogic({
@@ -84,6 +85,10 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
             </table>
 
             <h5 className="mt-4 mb-2 fw-bold text-muted">DETALLE RENOVACIONES POR VENDEDOR</h5>
+            <GeneralSalesBreakdownTable
+                ventas={ventas}
+                monthsData={monthsData}
+            />
             <RenovationsBreakdownTable
                 ventas={ventas}
                 monthsData={monthsData}
@@ -94,6 +99,8 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
                 ventas={ventas}
                 monthsData={monthsData}
             />
+
+
         </div>
     );
 };

@@ -17,7 +17,7 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [] }) => {
             padding: '15px'
         },
         title: {
-            fontSize: '18px',
+            fontSize: '25px',
             fontWeight: '800',
             color: '#1a1a1a',
             borderLeft: '5px solid #c00000',
@@ -28,7 +28,7 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [] }) => {
         table: {
             width: '100%',
             borderCollapse: 'collapse',
-            fontSize: '18px',
+            fontSize: '20px',
             fontFamily: "'Inter', sans-serif",
             whiteSpace: 'nowrap',
             border: '1px solid #ccc'
@@ -37,8 +37,8 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [] }) => {
             border: '1px solid #999',
             padding: '8px 10px',
             textAlign: 'center',
-            background: '#e9ecef',
-            color: '#333',
+            background: '#c00000',
+            color: '#fff',
             fontWeight: '700',
             fontSize: '20px',
             textTransform: 'uppercase'
@@ -57,15 +57,15 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [] }) => {
             textTransform: 'capitalize'
         },
         totalRow: {
-            background: '#333',
-            color: '#fff',
+            background: '#d9d9d9',
+            color: '#000',
             fontWeight: 'bold'
         },
         totalCell: {
-            border: '1px solid #555',
+            border: '1px solid #000',
             padding: '6px 10px',
             textAlign: 'center',
-            color: '#fff'
+            color: '#000'
         }
     };
 
@@ -91,12 +91,12 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [] }) => {
                     <tr>
                         {monthsData.map(m => (
                             <React.Fragment key={m.key + '-sub'}>
-                                <th style={{ ...styles.th, background: '#f8f9fa', fontSize: '16px' }}>CANT.</th>
-                                <th style={{ ...styles.th, background: '#f8f9fa', fontSize: '16px' }}>IMPORTE</th>
+                                <th style={{ ...styles.th }}>CANTIDAD</th>
+                                <th style={{ ...styles.th }}>IMPORTE</th>
                             </React.Fragment>
                         ))}
-                        <th style={{ ...styles.th, background: '#f8f9fa', fontSize: '16px' }}>CANT.</th>
-                        <th style={{ ...styles.th, background: '#f8f9fa', fontSize: '16px' }}>IMPORTE</th>
+                        <th style={{ ...styles.th }}>CANTIDAD</th>
+                        <th style={{ ...styles.th }}>IMPORTE</th>
                     </tr>
                 </thead>
                 <tbody>
