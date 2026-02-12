@@ -4,8 +4,11 @@ import { useComparativoMensualLogic } from '../hooks/useComparativoMensualLogic'
 import { RenovationsBreakdownTable } from './RenovationsBreakdownTable';
 import { ClosingAnalysisTable } from './ClosingAnalysisTable';
 import { GeneralSalesBreakdownTable } from './GeneralSalesBreakdownTable';
+import { ClosingAnalysisTable2 } from './ClosingAnalysisTable2';
 import { ReentryBreakdownTable } from './ReentryBreakdownTable';
 import { NewMembersBreakdownTable } from './NewMembersBreakdownTable';
+import { BonusAnalysisTable } from './BonusAnalysisTable';
+import { RenovationAnalysisTable } from './RenovationAnalysisTable';
 
 export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 21 }) => {
 
@@ -173,6 +176,22 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
             />
 
             <ClosingAnalysisTable
+                ventas={ventas}
+                monthsData={monthsData}
+            />
+
+            {/* TABLA NUEVA SOLICITADA (CORTE 24 DÍAS) */}
+            <ClosingAnalysisTable2
+                ventas={ventas}
+                monthsData={monthsData}
+            />
+
+            <BonusAnalysisTable
+                ventas={ventas}
+                monthsData={monthsData}
+            />
+
+            <RenovationAnalysisTable
                 ventas={ventas}
                 monthsData={monthsData}
             />

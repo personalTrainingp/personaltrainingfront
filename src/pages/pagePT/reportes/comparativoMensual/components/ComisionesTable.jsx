@@ -44,13 +44,19 @@ export const ComisionesTable = ({ ventas = [], year, month }) => {
             <h5 style={styles.headerTitle}>CUOTA MES DE {month}/{year}</h5>
 
             <div style={{ background: '#ffffcc', padding: '15px', marginBottom: '20px' }}>
-                <Row className="align-items-center">
+                <Row className="align-items-center mb-2">
                     <Col xs="auto"><Form.Label className="fw-bold mb-0 text-danger">CUOTA SUGERIDA TOTAL:</Form.Label></Col>
                     <Col xs="auto">
                         <Form.Control type="number" value={cuotaSugerida} onChange={(e) => setCuotaSugerida(Number(e.target.value))} style={{ fontWeight: 'bold', textAlign: 'right' }} />
                     </Col>
-                    <Col><strong>(Individual: {fmtMoney(cuotaSugerida / 2)})</strong></Col>
                 </Row>
+                <div style={{ display: 'flex', gap: '20px' }}>
+                    {commissionData.map((adv, idx) => (
+                        <div key={idx}>
+                            <strong>{adv.advisor}: {fmtMoney(cuotaSugerida / 2)}</strong>
+                        </div>
+                    ))}
+                </div>
             </div>
 
             {/* --- TABLA 1: REFERENCIA (EDITABLE) --- */}
@@ -61,7 +67,7 @@ export const ComisionesTable = ({ ventas = [], year, month }) => {
                     {refRows.map((row, idx) => {
                         if (row.pct < 95) return null;
                         return (
-                            <tr key={idx} style={{ background: row.pct === 100 ? '#ffffcc' : 'transparent' }}>
+                            <tr key={idx} style={{ background: row.pct === 100 ? '#f7f744ff' : 'transparent' }}>
                                 <td style={styles.tdCenter}>{row.scale}</td>
                                 <td style={styles.tdCenter}><strong>{row.pct}%</strong></td>
                                 <td style={styles.td}><strong>{fmtMoney(row.data.venta)}</strong></td>
@@ -71,10 +77,10 @@ export const ComisionesTable = ({ ventas = [], year, month }) => {
                                 <td style={styles.td}>{fmtMoney(row.data.openPay)}</td>
                                 <td style={styles.td}><strong>{fmtMoney(row.data.ventasNetas)}</strong></td>
                                 <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
-                                    <input type="number" step="0.1" value={row.com} onChange={(e) => updateScaleCommission(idx, e.target.value)} style={styles.inputCom} /> %
+                                    <input type="number" step="0.1" value={row.com} onChange={(e) => updateScaleCommission(row.index, e.target.value)} style={styles.inputCom} /> %
                                 </td>
-                                <td style={{ ...styles.td, background: '#ffffcc', fontWeight: 'bold' }}>{fmtMoney(row.data.importeComision)}</td>
-                                <td style={{ ...styles.td, background: '#ffffcc', fontWeight: 'bold' }}>{fmtMoney(row.data.totalComision)}</td>
+                                <td style={{ ...styles.td, background: '#f7f744ff', fontWeight: 'bold' }}>{fmtMoney(row.data.importeComision)}</td>
+                                <td style={{ ...styles.td, background: '#f7f744ff', fontWeight: 'bold' }}>{fmtMoney(row.data.totalComision)}</td>
                             </tr>
                         );
                     })}
@@ -95,7 +101,7 @@ export const ComisionesTable = ({ ventas = [], year, month }) => {
                         {renderHeaders()}
                         <tbody>
                             {adv.projections.map((row, idx) => (
-                                <tr key={idx} style={{ background: row.pct === 100 ? '#ffffcc' : (idx % 2 === 0 ? '#fff' : '#f9f9f9') }}>
+                                <tr key={idx} style={{ background: row.pct === 100 ? '#f7f744ff' : (idx % 2 === 0 ? '#fff' : '#f9f9f9') }}>
                                     <td style={styles.tdCenter}>{row.scale}</td>
                                     <td style={styles.tdCenter}><strong>{row.pct}%</strong></td>
                                     <td style={{ ...styles.td, background: '#ccc' }}><strong>{fmtMoney(row.venta)}</strong></td>
@@ -104,9 +110,18 @@ export const ComisionesTable = ({ ventas = [], year, month }) => {
                                     <td style={{ ...styles.td, color: '#c00000' }}>{fmtMoney(row.renta)}</td>
                                     <td style={{ ...styles.td, color: '#c00000' }}>{fmtMoney(row.openPay)}</td>
                                     <td style={styles.td}><strong>{fmtMoney(row.ventasNetas)}</strong></td>
-                                    <td style={styles.tdCenter}>{row.com.toFixed(2)}%</td>
+                                    {/* INPUT EDITABLE TAMBIÉN AQUÍ (Vinculado al state global) */}
+                                    <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
+                                        <input
+                                            type="number"
+                                            step="0.1"
+                                            value={row.com}
+                                            onChange={(e) => updateScaleCommission(row.index, e.target.value)}
+                                            style={styles.inputCom}
+                                        /> %
+                                    </td>
                                     <td style={styles.td}>{fmtMoney(row.importeComision)}</td>
-                                    <td style={{ ...styles.td, background: '#ffffcc', fontWeight: 'bold', border: '2px solid #000' }}>{fmtMoney(row.totalComision)}</td>
+                                    <td style={{ ...styles.td, background: '#f7f744ff', fontWeight: 'bold', border: '2px solid #000' }}>{fmtMoney(row.totalComision)}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -118,7 +133,7 @@ export const ComisionesTable = ({ ventas = [], year, month }) => {
                         {renderHeaders()}
                         <tbody>
                             {adv.quincenaData.map((row, idx) => (
-                                <tr key={idx} style={{ background: row.pct === 100 ? '#ffffcc' : (idx % 2 === 0 ? '#fff' : '#f9f9f9') }}>
+                                <tr key={idx} style={{ background: row.pct === 100 ? '#f7f744ff' : (idx % 2 === 0 ? '#fff' : '#f9f9f9') }}>
                                     <td style={{ ...styles.tdCenter, fontWeight: 'bold' }}>{row.scale}</td>
                                     <td style={{ ...styles.tdCenter, fontWeight: 'bold' }}>{row.alcance}</td>
                                     <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(row.venta)}</td>
@@ -127,7 +142,16 @@ export const ComisionesTable = ({ ventas = [], year, month }) => {
                                     <td style={{ ...styles.td, color: '#c00000' }}>{fmtMoney(row.renta)}</td>
                                     <td style={{ ...styles.td, color: '#c00000' }}>{fmtMoney(row.openPay)}</td>
                                     <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(row.ventasNetas)}</td>
-                                    <td style={{ ...styles.td, fontWeight: 'bold' }}>{row.com.toFixed(2)}%</td>
+                                    {/* INPUT EDITABLE QUINCENA (Vinculado) */}
+                                    <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
+                                        <input
+                                            type="number"
+                                            step="0.1"
+                                            value={row.com}
+                                            onChange={(e) => updateScaleCommission(row.index, e.target.value)}
+                                            style={styles.inputCom}
+                                        /> %
+                                    </td>
                                     <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(row.importeComision)}</td>
                                     <td style={{ ...styles.td, fontWeight: 'bold', border: '2px solid #000' }}>{fmtMoney(row.totalComision)}</td>
                                 </tr>

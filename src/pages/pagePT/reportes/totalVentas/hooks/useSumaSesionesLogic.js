@@ -135,8 +135,14 @@ export const useSumaSesionesLogic = ({
                 if (counts && (Number(counts.nuevos) > 0 || Number(counts.renovaciones) > 0 || Number(counts.reinscripciones) > 0 || Number(counts.o) > 0)) return true;
             }
             return false;
+        }).sort((a, b) => {
+            const nameA = a[0]?.value ?? "";
+            const nameB = b[0]?.value ?? "";
+            const moneyA = moneyByAdvisor[norm(nameA)]?.money || 0;
+            const moneyB = moneyByAdvisor[norm(nameB)]?.money || 0;
+            return moneyB - moneyA;
         });
-    }, [asesores, progKeys, sociosOverride, uniqueTicketsByAdvisor, advisorOriginByProg]);
+    }, [asesores, progKeys, sociosOverride, uniqueTicketsByAdvisor, advisorOriginByProg, moneyByAdvisor]);
 
     const totalItemsByAdvisor = useMemo(() => {
         const map = {};
