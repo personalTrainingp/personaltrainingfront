@@ -6,23 +6,15 @@ export const useComisionesLogic = (ventas, year, month) => {
     const [cuotaSugerida, setCuotaSugerida] = useState(100000);
     const [openPayParam, setOpenPayParam] = useState(4.5);
 
-    // ESCALAS DE REFERENCIA (TABLA SUPERIOR)
+    // ESCALAS UNIFICADAS (Estado único para todas las tablas)
     const [scales, setScales] = useState([
-        { scale: 1, pct: 95, com: 1.40 },
-        { scale: 2, pct: 100, com: 2.00 },
-        { scale: 3, pct: 105, com: 2.50 },
-        { scale: 4, pct: 110, com: 3.00 },
-    ]);
-
-    // ESCALAS PARA PROYECCIÓN MENSUAL (TABLA INFERIOR 1)
-    const PROJECTION_STEPS = [
         { scale: 1, pct: 86, com: 1.10 },
         { scale: 2, pct: 90, com: 1.25 },
         { scale: 3, pct: 95, com: 1.40 },
         { scale: 4, pct: 100, com: 2.00 },
         { scale: 5, pct: 105, com: 2.50 },
         { scale: 6, pct: 110, com: 3.00 },
-    ];
+    ]);
 
     // --- FUNCIÓN ÚNICA DE CÁLCULO FINANCIERO ---
     const calculateRow = (ventaTotal, pctComision) => {
@@ -56,23 +48,25 @@ export const useComisionesLogic = (ventas, year, month) => {
 
     const updateScaleCommission = (index, val) => {
         const newScales = [...scales];
-        newScales[index].com = parseFloat(val) || 0;
-        setScales(newScales);
+        if (newScales[index]) {
+            newScales[index].com = parseFloat(val) || 0;
+            setScales(newScales);
+        }
     };
 
-    // 1. TABLA DE REFERENCIA (SUPERIOR)
+    // 1. TABLA DE REFERENCIA (SUPERIOR) - Filtra >= 95%
     const refRows = useMemo(() => {
-        const cuotaInd = cuotaSugerida / 2; // Referencia sobre cuota individual
-        return scales.map(s => {
-            const ventaTarget = cuotaInd * (s.pct / 100); // 95% de 60k
-            return { ...s, data: calculateRow(ventaTarget, s.com) };
+        const cuotaInd = cuotaSugerida / 2;
+        return scales.map((s, idx) => {
+            const ventaTarget = cuotaInd * (s.pct / 100);
+            return { ...s, index: idx, data: calculateRow(ventaTarget, s.com) }; // Pass index for editing
         });
     }, [cuotaSugerida, openPayParam, scales]);
 
     // 2. DATOS POR VENDEDOR
     const commissionData = useMemo(() => {
-        const cuotaInd = cuotaSugerida / 2; // 60,000
-        const metaQuincena = cuotaInd * 0.40; // 24,000 (40%)
+        const cuotaInd = cuotaSugerida / 2;
+        const metaQuincena = cuotaInd * 0.40;
 
         return ADVISORS.map(adv => {
             // A. FILTRAR VENTAS REALES
@@ -93,33 +87,33 @@ export const useComisionesLogic = (ventas, year, month) => {
                 ...calculateRow(ventaRealTotal, scaleReal.com)
             };
 
-            // C. TABLA PROYECCIONES MENSUAL (6 FILAS)
-            const projections = PROJECTION_STEPS.map(step => {
+            // C. TABLA PROYECCIONES MENSUAL (Usa scales state)
+            const projections = scales.map((step, idx) => {
                 const ventaSim = cuotaInd * (step.pct / 100);
                 return {
                     ...step,
+                    index: idx, // Important for editing
                     ...calculateRow(ventaSim, step.com)
                 };
             });
 
-            // D. TABLA QUINCENA (NUEVA - 2 FILAS: 100% y 110% de la meta quincenal)
-            // Según imagen, 100% de la meta quincenal paga 2.50% (Scale 5 aprox) o 2.00%
-            // Usaremos la lógica de escalas:
-            // 100% cumplimiento quincena -> Venta = 24,000. 
-            // 110% cumplimiento quincena -> Venta = 26,400.
+            // D. TABLA QUINCENA (100% = Scale 4, 110% = Scale 6)
+            // Indices in unified scales: Scale 4 => index 3, Scale 6 => index 5
             const quincenaSteps = [
-                { pctMeta: 100, label: '100%', com: 2.00, scaleLabel: '4' }, // Asumiendo Escala 4
-                { pctMeta: 110, label: '110%', com: 3.00, scaleLabel: '5' }  // Asumiendo Escala 5
+                { pctMeta: 100, label: '100%', scaleIndex: 3, scaleLabel: '4' },
+                { pctMeta: 110, label: '110%', scaleIndex: 5, scaleLabel: '6' }
             ];
 
             const quincenaData = quincenaSteps.map(step => {
                 const ventaQ = metaQuincena * (step.pctMeta / 100);
+                const currentScale = scales[step.scaleIndex]; // Get current state
                 return {
                     scale: step.scaleLabel,
-                    alcance: step.label, // "100%"
-                    pct: step.pctMeta,   // numérico
-                    com: step.com,
-                    ...calculateRow(ventaQ, step.com)
+                    alcance: step.label,
+                    pct: step.pctMeta,
+                    com: currentScale ? currentScale.com : 0, // Use global state
+                    index: step.scaleIndex, // For editing
+                    ...calculateRow(ventaQ, currentScale ? currentScale.com : 0)
                 };
             });
 

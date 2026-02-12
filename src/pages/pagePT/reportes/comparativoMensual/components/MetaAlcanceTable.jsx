@@ -6,6 +6,8 @@ import { ClosingAnalysisTable } from './ClosingAnalysisTable';
 import { GeneralSalesBreakdownTable } from './GeneralSalesBreakdownTable';
 import { ReentryBreakdownTable } from './ReentryBreakdownTable';
 import { NewMembersBreakdownTable } from './NewMembersBreakdownTable';
+import { BonusAnalysisTable } from './BonusAnalysisTable';
+import { RenovationAnalysisTable } from './RenovationAnalysisTable';
 
 export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 21 }) => {
 
@@ -173,6 +175,16 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
             />
 
             <ClosingAnalysisTable
+                ventas={ventas}
+                monthsData={monthsData}
+            />
+
+            <BonusAnalysisTable
+                ventas={ventas}
+                monthsData={monthsData}
+            />
+
+            <RenovationAnalysisTable
                 ventas={ventas}
                 monthsData={monthsData}
             />
