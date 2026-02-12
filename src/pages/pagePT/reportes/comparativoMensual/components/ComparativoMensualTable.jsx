@@ -9,12 +9,11 @@ export const ComparativoMensualTable = ({
     startMonth = 0,
     cutDay = 21,
     title = "",
-    showFortnightly = false // NUEVO PROP para mostrar columnas quincenales al final
+    showFortnightly = false
 }) => {
-    // Ya no usamos useState para el mes aquí adentro.
     const [viewMode, setViewMode] = useState('none');
 
-    // Pasamos el startMonth que viene de props al hook
+    // Nota: Asegúrate de que tu hook useComparativoMensualLogic tenga el bucle en 13
     const { monthsData, top3Indices, top3Averages, last6Averages } = useComparativoMensualLogic({
         ventas,
         year,
@@ -23,12 +22,24 @@ export const ComparativoMensualTable = ({
     });
 
     const styles = {
-        // ... (Mismos estilos de antes, quitando el marginTop extra si lo deseas)
         tableWrapper: { overflowX: 'auto', borderRadius: '8px', border: '1px solid #eaeaea', marginTop: '10px' },
-        table: { width: '100%', borderCollapse: 'collapse', fontSize: '18px', whiteSpace: 'nowrap' },
-        th: { background: '#c00000', color: '#fff', fontWeight: '600', padding: '12px 10px', textAlign: 'center', fontSize: '18px', borderRight: '1px solid rgba(255,255,255,0.2)' },
+        table: { width: '100%', borderCollapse: 'collapse', fontSize: '20px', whiteSpace: 'nowrap' },
+        th: { background: '#c00000', color: '#fff', fontWeight: '600', padding: '12px 10px', textAlign: 'center', fontSize: '24px', borderRight: '1px solid rgba(255,255,255,0.2)' },
         td: { padding: '10px 12px', borderBottom: '1px solid #eee', textAlign: 'right', color: '#444' },
-        tdLabel: { textAlign: 'left', fontWeight: '600', color: '#222', textTransform: 'capitalize', position: 'sticky', left: 0, background: '#fff', zIndex: 1, borderRight: '2px solid #f0f0f0' },
+
+        // MODIFICADO: Ajustamos tdLabel para asegurar alineación vertical
+        tdLabel: {
+            textAlign: 'left',
+            fontWeight: '600',
+            color: '#222',
+            textTransform: 'capitalize',
+            position: 'sticky',
+            left: 0,
+            background: '#fff',
+            zIndex: 1,
+            borderRight: '2px solid #f0f0f0',
+            verticalAlign: 'middle' // Para centrar verticalmente si la altura cambia
+        },
         footerRow: { background: '#f8f9fa', borderTop: '2px solid #dee2e6' },
         highlightCell: { background: '#f7e312ff', color: '#c00000', fontWeight: '700' },
         headerActions: { display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }
@@ -44,7 +55,6 @@ export const ComparativoMensualTable = ({
         if (isPct) style = { ...style, textAlign: 'center', color: '#666', fontSize: '18px' };
 
         const val = row[field];
-        // Dynamic key access for percentage
         const pctKey = `pct${field.charAt(0).toUpperCase() + field.slice(1)}`;
         const valPct = row[pctKey];
 
@@ -58,13 +68,12 @@ export const ComparativoMensualTable = ({
 
     return (
         <div style={{ marginBottom: '40px' }}>
-            {/* Título de la tabla */}
             {title && (
                 <h3 style={{
                     background: '#000',
                     color: '#fff',
                     padding: '10px 20px',
-                    fontSize: '18px',
+                    fontSize: '19px',
                     fontWeight: 'bold',
                     marginBottom: '10px',
                     borderRadius: '4px',
@@ -75,7 +84,6 @@ export const ComparativoMensualTable = ({
                 </h3>
             )}
 
-            {/* Solo dejamos los botones de filtro aquí, los selectores están arriba en la Page */}
             <div style={styles.headerActions}>
                 <ButtonGroup style={{ boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
                     <Button
@@ -105,15 +113,14 @@ export const ComparativoMensualTable = ({
                 <table style={styles.table}>
                     <thead>
                         <tr>
-                            <th style={{ ...styles.th, width: '140px', position: 'sticky', left: 0, zIndex: 2 }}>MES / AÑO</th>
-                            <th style={{ ...styles.th, background: '#a00000' }}>TOTAL VENTA</th>
+                            <th style={{ ...styles.th, width: '90px', position: 'sticky', left: 0, zIndex: 2 }}>MES <br /> AÑO</th>
+                            <th style={{ ...styles.th, background: '#a00000' }}>TOTAL<br /> VENTA</th>
                             <th style={{ ...styles.th, background: '#a00000' }}>CUOTA</th>
-                            <th style={styles.th} colSpan={2}>SEM 1 (1-7)</th>
-                            <th style={styles.th} colSpan={2}>SEM 2 (8-14)</th>
-                            <th style={styles.th} colSpan={2}>SEM 3 (15-21)</th>
-                            <th style={styles.th} colSpan={2}>SEM 4 (22-28)</th>
-                            <th style={styles.th} colSpan={2}>SEM 5 (29-31)</th>
-                            {/* COLUMNAS EXTRAS SI SE SOLICITAN */}
+                            <th style={styles.th} colSpan={2}>SEMANA 1<br /> (1-7)</th>
+                            <th style={styles.th} colSpan={2}>SEMANA 2<br /> (8-14)</th>
+                            <th style={styles.th} colSpan={2}>SEMANA 3<br /> (15-21)</th>
+                            <th style={styles.th} colSpan={2}>SEMANA 4<br /> (22-28)</th>
+                            <th style={styles.th} colSpan={2}>SEMANA 5<br /> (29-31)</th>
                             {showFortnightly && (
                                 <>
                                     <th style={{ ...styles.th, background: '#222' }} colSpan={2}>DIA 1 AL 15</th>
@@ -125,9 +132,22 @@ export const ComparativoMensualTable = ({
                     <tbody>
                         {monthsData.map((row, idx) => (
                             <tr key={row.key} style={{ background: idx % 2 === 0 ? '#fff' : '#fcfcfc' }}>
+
+                                {/* --- CAMBIO AQUÍ PARA SALTO DE LÍNEA --- */}
                                 <td style={{ ...styles.td, ...styles.tdLabel }}>
-                                    {row.label} <span style={{ fontSize: '11px', color: '#999', fontWeight: 'normal' }}>{row.year}</span>
+                                    <span style={{ display: 'block', lineHeight: '1.2' }}>{row.label}</span>
+                                    <span style={{
+                                        display: 'block',
+                                        fontSize: '13px',
+                                        color: '#888',
+                                        fontWeight: 'normal',
+                                        marginTop: '4px'
+                                    }}>
+                                        {row.year}
+                                    </span>
                                 </td>
+                                {/* --------------------------------------- */}
+
                                 <td style={{ ...styles.td, fontWeight: '700', color: '#000', background: 'rgba(0,0,0,0.02)' }}>{fmtMoney(row.total)}</td>
                                 <td style={{ ...styles.td, color: '#555' }}>{fmtMoney(row.quota)}</td>
                                 {renderCell(row, 'w1', true)}
