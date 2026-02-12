@@ -31,7 +31,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 				[name]: checked,
 			});
 		}
-		console.log(target);
+		console.log({ name, value });
 
 		setFormState({
 			...formState,

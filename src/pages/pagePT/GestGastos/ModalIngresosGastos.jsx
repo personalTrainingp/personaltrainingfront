@@ -39,7 +39,7 @@ const registerIvsG={
 export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, isLoading, onShow, showToast, id_enterprice}) => {
     const onClickCancelModal = ()=>{
         onHide()
-        onResetForm()
+        // onResetForm()
         setid_empresa(id_enterprice)
         setisCopyHide()
     }
@@ -149,8 +149,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                 if(isCopy){
                     setshowLoading(true)
                     const {  id, ...valores } = formState;
-                    console.log("valores repetidos", valores);
-                    
                     await startRegistrarGastos(valores, id_enterprice)
                     setshowLoading(false)
                     onClickCancelModal()
@@ -189,6 +187,7 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
         useEffect(() => {
             setdataProveedoresFiltrados(id_oficio === 0 ? dataProvCOMBO : dataProvCOMBO.filter(e => e.id_oficio === id_oficio))
         }, [id_oficio])
+        console.log({formState});
         
   return (
     <>

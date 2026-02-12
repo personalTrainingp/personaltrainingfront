@@ -15,6 +15,7 @@ export const GestionGastos = () => {
       //             window.open(mdu, '_blank');
       //       }
       // }
+
   return (
     <>
     

@@ -463,6 +463,7 @@ const filtered = useMemo(() => {
       // responsive lo maneja el wrapper, aquí lo dejamos sin tocar
       className={`mb-0 fs-4 ${verticalBorders ? 'dtrb-vertical-borders' : ''}`}
       style={{
+        width: '100%',
         // clave: aseguramos que la tabla SEA más ancha que el contenedor
         minWidth: `${Math.max(columns.length * 140, 600)}px`,
         tableLayout: 'auto', // permite que respete mejor el contenido
