@@ -74,17 +74,28 @@ export const BonusAnalysisTable = ({ ventas = [], monthsData }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((row, idx) => {
-                        const pct = row.meta > 0 ? (row.accumulated / row.meta) * 100 : 0;
-                        return (
-                            <tr key={idx} style={{ background: '#fff' }}>
-                                <td style={styles.tdMonth}>{row.label}</td>
-                                <td style={styles.tdNumber}>{fmtMoney(row.accumulated)}</td>
-                                <td style={styles.tdNumber}>{fmtMoney(row.meta)}</td>
-                                <td style={styles.tdPercent}>{pct.toFixed(2)}%</td>
-                            </tr>
-                        );
-                    })}
+                    {(() => {
+                        // Calcular Top 3 basado en porcentaje
+                        const withPct = data.map(r => ({ ...r, pct: r.meta > 0 ? (r.accumulated / r.meta) : 0 }));
+                        const sorted = [...withPct].sort((a, b) => b.pct - a.pct);
+                        // Usamos index o label si no hay key, pero useBonusAnalysis generalmente preserva keys de monthsData
+                        // data viene de monthsData asi que debe tener key.
+                        const top3Keys = sorted.slice(0, 3).map(x => x.key);
+
+                        return data.map((row, idx) => {
+                            const pct = row.meta > 0 ? (row.accumulated / row.meta) * 100 : 0;
+                            const isTop3 = row.key && top3Keys.includes(row.key);
+
+                            return (
+                                <tr key={idx} style={{ background: isTop3 ? '#ffffcc' : '#fff' }}>
+                                    <td style={styles.tdMonth}>{row.label}</td>
+                                    <td style={styles.tdNumber}>{fmtMoney(row.accumulated)}</td>
+                                    <td style={styles.tdNumber}>{fmtMoney(row.meta)}</td>
+                                    <td style={styles.tdPercent}>{pct.toFixed(2)}%</td>
+                                </tr>
+                            );
+                        });
+                    })()}
                 </tbody>
             </table>
         </div>
