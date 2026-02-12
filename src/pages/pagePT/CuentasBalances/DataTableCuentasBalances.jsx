@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { DateMaskStr, DateMaskString, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
+import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 
 export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuentasBalances, headerTipo}) => {
     const { obtenerCuentasBalancesxIdEmpresaxTipo, deleteCuentaBalancexID } = useCuentasBalances()
@@ -24,7 +25,10 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
             { id: 'monto', header: 'Monto', accessor: 'monto', sortable: true, render:(row)=>{
                 return (
                     <>
-                    <NumberFormatMoney amount={row.monto}/>
+                    <div className={row.moneda === 'PEN'?'':'text-success fw-bold'}>
+                                            {row.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
+                                            <NumberFormatMoney amount={row.monto}/>
+                                    </div>
                     </>
                 )
             } },
