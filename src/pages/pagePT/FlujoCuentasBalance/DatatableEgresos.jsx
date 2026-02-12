@@ -161,6 +161,8 @@ export const DatatableEgresos = ({
 		() => selectedMonths.map((opt) => opt.value),
 		[selectedMonths]
 	);
+	console.log({cuentasPorCobrar});
+	
 	return (
 		<>
 				<div style={{ marginBottom: '1rem', width: '95vw' }}>
@@ -207,7 +209,7 @@ export const DatatableEgresos = ({
 							mesesNombres={mesesNombres}
 							mesesSeleccionadosNums={mesesSeleccionadosNums}
 							onOpenModalDetallexCelda={onOpenModalDetallexCelda2}
-							dataIngresosxMes={cuentasPorCobrar}
+							dataIngresosxMes={id_enterprice===800?cuentasPorCobrar: cuentasPorCobrar.filter(e=>e.grupo!=='SUELDO')}
 								/>
 					</div>
 					<div>
@@ -218,7 +220,7 @@ export const DatatableEgresos = ({
 							mesesNombres={mesesNombres}
 							mesesSeleccionadosNums={mesesSeleccionadosNums}
 							onOpenModalDetallexCelda={onOpenModalDetallexCelda2}
-							dataIngresosxMes={dataCuentasBalance}
+							dataIngresosxMes={id_enterprice===800?dataCuentasBalance: dataCuentasBalance.filter(e=>e.grupo!=='SUELDO')}
 								/>
 					</div>
 				</div>

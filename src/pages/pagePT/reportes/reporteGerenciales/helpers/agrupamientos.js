@@ -1,19 +1,19 @@
-import { DateMaskStr, DateMaskString } from '@/components/CurrencyMask';
+import { DateMaskStr, DateMaskStr1, DateMaskStr2, DateMaskString } from '@/components/CurrencyMask';
 
 export function aplicarTipoDeCambio(dataTC, data) {
 	return data?.map((item) => {
-		const fechaGasto = DateMaskString(item.fecha_primaria);
+		const fechaGasto = DateMaskStr2(item.fecha_primaria);
 
 		const tcMatch = dataTC.find((tc) => {
 			if (tc.moneda === item.moneda) return false;
 
-			const inicio = DateMaskString(tc.fecha_inicio_tc);
+			const inicio = DateMaskStr2(tc.fecha_inicio_tc);
 			// Debe ser posterior o igual al inicio
 			if (fechaGasto < inicio) return false;
 
 			// Si hay fecha_fin_tc, también debe ser ≤ fin
 			if (tc.fecha_fin_tc) {
-				const fin = DateMaskString(tc.fecha_fin_tc);
+				const fin = DateMaskStr2(tc.fecha_fin_tc);
 				if (fechaGasto > fin) return false;
 			}
 			// Si fecha_fin_tc es null, este tramo sigue abierto
@@ -46,7 +46,15 @@ export const agruparPorGrupo = (data = []) => {
 	return Array.from(map.entries()).map(([grupo, items]) => ({
 		grupo,
 		itemsxDias: agruparPorDia(items),
-		data: items.filter((d) => d.id_estado_gasto === 1423),
+		data: items
+			.filter((d) => d.id_estado_gasto === 1423)
+			.map((m) => {
+				return {
+					...m,
+					montoAntiguo: m.monto,
+					monto: m.monto * m.tc,
+				};
+			}),
 		montoTotal: items
 			.filter((d) => d.id_estado_gasto === 1423)
 			.reduce((total, item) => total + item.monto, 0),
@@ -58,7 +66,8 @@ function agruparPorDia(data) {
 
 	data.forEach((item) => {
 		// const fecha = dayjs.utc(item.fecha_venta);
-		const fecha = DateMaskStr(item?.fecha_primaria);
+		const fecha = DateMaskStr2(item?.fecha_primaria);
+		console.log({ fecha, it: item?.fecha_primaria, ik: 1 });
 
 		const anio = fecha.year();
 		const mes = fecha.month() + 1; // 0–11 → 1–12

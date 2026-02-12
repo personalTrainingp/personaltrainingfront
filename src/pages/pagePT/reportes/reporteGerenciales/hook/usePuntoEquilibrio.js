@@ -1,7 +1,8 @@
 import { PTApi } from '@/common';
 import dayjs, { utc } from 'dayjs';
 import React, { useState } from 'react';
-import { agruparPorGrupo, aplicarTipoDeCambio } from '../helpers/agrupamientos';
+import { agruparPorGrupo } from '../helpers/agrupamientos';
+import { aplicarTipoDeCambio } from '@/helper/aplicarTipoDeCambio';
 
 dayjs.extend(utc);
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
@@ -138,6 +139,12 @@ export const usePuntoEquilibrio = () => {
 				`/terminologia/terminologiaxEmpresa/${idEmpresa}/1573`
 			);
 			const { data: dataTC } = await PTApi.get('/tipoCambio/');
+			const gastosMap = data.gastos.map((g) => {
+				return {
+					...g,
+					fecha_primaria: g.fecha_pago,
+				};
+			});
 			const dataTCs = dataTC.tipoCambios.map((e, i, arr) => {
 				const posteriores = arr
 					.filter((item) => new Date(item.fecha) > new Date(e.fecha))
@@ -154,16 +161,16 @@ export const usePuntoEquilibrio = () => {
 			});
 			setdataEgresos(
 				agruparPorGrupo(
-					aplicarTipoDeCambio(dataTCs, data.gastos),
+					aplicarTipoDeCambio(dataTCs, gastosMap),
 					dataParametrosGastos.termGastos
 				)
 			);
-			console.log(
-				agruparPorGrupo(
-					aplicarTipoDeCambio(dataTCs, data.gastos),
+			console.log({
+				asss: agruparPorGrupo(
+					aplicarTipoDeCambio(dataTCs, gastosMap),
 					dataParametrosGastos.termGastos
-				)
-			);
+				),
+			});
 		} catch (error) {
 			console.log(error);
 		}

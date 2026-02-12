@@ -4,6 +4,7 @@ import { Col, Row } from 'react-bootstrap'
 import { TableIngresos } from './TableIngresos'
 import { usePuntoEquilibrio } from '../hook/usePuntoEquilibrio'
 import { TableResumen } from './TableResumen'
+import { FechaRange } from '@/components/RangeCalendars/FechaRange'
 
 export const ViewPuntoEquilibrio = ({id_empresa, bgTotal, rangeDate}) => {
     const { obtenerEgresos, obtenerVentas, dataEgresos, dataVentas } = usePuntoEquilibrio()
@@ -11,7 +12,6 @@ export const ViewPuntoEquilibrio = ({id_empresa, bgTotal, rangeDate}) => {
         obtenerEgresos(rangeDate, id_empresa)
         obtenerVentas(rangeDate, id_empresa)
     }, [])
-    console.log({dataVentas});
     const withHeaderVertical=240
   return (
     <div>
@@ -21,7 +21,7 @@ export const ViewPuntoEquilibrio = ({id_empresa, bgTotal, rangeDate}) => {
             </Col>
             <Col lg={5}>
                 <TableIngresos withHeaderVertical={withHeaderVertical} bgTotal={bgTotal} dataMF={dataVentas.dataMFMap} dataNuevos={dataVentas.dataNuevos} dataReinscripciones={dataVentas.dataReinscripcion}  dataRenovaciones={dataVentas.dataRenovaciones} dataProductos17={dataVentas.dataProductos17} dataProductos18={dataVentas.dataProductos18}/>
-                <TableResumen withHeaderVertical={withHeaderVertical} bgTotal={bgTotal} dataEgresos={dataEgresos} dataIngresos={[...dataVentas.dataNuevos, ...dataVentas.dataProductos17, ...dataVentas.dataProductos18, ...dataVentas.dataReinscripcion, ...dataVentas.dataRenovaciones, ...dataVentas.dataMFMap]}/>
+                <TableResumen withHeaderVertical={withHeaderVertical} bgTotal={bgTotal} dataEgresos={dataEgresos} dataIngresos={[...dataVentas.dataNuevos, ...dataVentas.dataProductos17, ...dataVentas.dataProductos18, ...dataVentas.dataReinscripcion, ...dataVentas.dataRenovaciones]}/>
             </Col>
         </Row>
     </div>

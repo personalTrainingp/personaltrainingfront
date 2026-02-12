@@ -40,7 +40,7 @@ export const TableIngresos = ({bgTotal,  dataNuevos, dataReinscripciones,  dataR
             </tr>
           </thead>
       </Table>
-      <Table style={{width: '90%'}}>
+      {/* <Table style={{width: '90%'}}>
           <thead className={`${bgTotal}`}>
             <tr>
               <th className='text-white'>MONKEY FIT</th>
@@ -48,7 +48,7 @@ export const TableIngresos = ({bgTotal,  dataNuevos, dataReinscripciones,  dataR
               <th className='text-white'><NumberFormatMoney amount={dataMF.reduce((total, item)=>total+item.montoTotal, 0)}/></th>
             </tr>
           </thead>
-      </Table>
+      </Table> */}
       <Table style={{width: '90%'}}>
           <thead className={`${bgTotal}`}>
             <tr>
