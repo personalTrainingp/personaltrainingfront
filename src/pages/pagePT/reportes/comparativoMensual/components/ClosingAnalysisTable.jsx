@@ -86,7 +86,7 @@ export const ClosingAnalysisTable = ({ ventas = [], monthsData = [] }) => {
     return (
         <div style={styles.card}>
             <div style={styles.headerContainer}>
-                <h4 style={styles.title}>Análisis de Cierre (Corte día 25)</h4>
+                <h4 style={styles.title}>Análisis de Renovaciones(Corte día 25)</h4>
                 <small style={{ color: '#888', paddingLeft: '20px', display: 'block', marginTop: '5px' }}>
                     Comparativa de rendimiento final de mes
                 </small>

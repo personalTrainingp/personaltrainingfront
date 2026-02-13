@@ -37,14 +37,14 @@ const App = () => {
 
                                         {/* 1. SELECTOR AÑO (Reducido a la mitad aprox) */}
                                         <Form.Group style={{ width: '200px' }}>
-                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '16px', marginBottom: '5px' }}>AÑO</Form.Label>
+                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '18px', marginBottom: '5px' }}>AÑO</Form.Label>
                                             <Form.Select
                                                 value={year}
                                                 onChange={(e) => setYear(Number(e.target.value))}
                                                 style={{
                                                     fontWeight: 'bold',
                                                     textTransform: 'uppercase',
-                                                    fontSize: '25px'
+                                                    fontSize: '28px'
                                                 }}
                                             >
                                                 {years.map(y => (
@@ -55,11 +55,11 @@ const App = () => {
 
                                         {/* 2. SELECTOR MES (Ocupa el resto) */}
                                         <Form.Group style={{ width: '250px', fontSize: '20px' }}>
-                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '16px', marginBottom: '5px' }}>INICIAR DESDE</Form.Label>
+                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '18px', marginBottom: '5px' }}>INICIAR DESDE</Form.Label>
                                             <Form.Select
                                                 value={selectedMonth}
                                                 onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                                                style={{ fontWeight: 'bold', textTransform: 'uppercase', fontSize: '25px' }}
+                                                style={{ fontWeight: 'bold', textTransform: 'uppercase', fontSize: '28px' }}
                                             >
                                                 {MESES.map((mes, idx) => (
                                                     <option key={idx} value={idx + 1}>{mes.toUpperCase()}</option>

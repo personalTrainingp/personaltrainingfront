@@ -52,7 +52,7 @@ export const ComparativoMensualTable = ({
         const isHighlighted = isTop3(row.key, field);
         let style = { ...styles.td };
         if (isHighlighted) style = { ...style, ...styles.highlightCell };
-        if (isPct) style = { ...style, textAlign: 'center', color: '#666', fontSize: '18px' };
+        if (isPct) style = { ...style, textAlign: 'center', color: '#666' };
 
         const val = row[field];
         const pctKey = `pct${field.charAt(0).toUpperCase() + field.slice(1)}`;
@@ -73,7 +73,6 @@ export const ComparativoMensualTable = ({
                     background: '#000',
                     color: '#fff',
                     padding: '10px 20px',
-                    fontSize: '19px',
                     fontWeight: 'bold',
                     marginBottom: '10px',
                     borderRadius: '4px',
@@ -90,7 +89,7 @@ export const ComparativoMensualTable = ({
                         variant={viewMode === 'top3' ? "light" : "light"}
                         onClick={() => handleToggle('top3')}
                         style={{
-                            fontWeight: '600', border: '1px solid #ddd', fontSize: '18px',
+                            fontWeight: '600', border: '1px solid #ddd',
                             background: viewMode === 'top3' ? '#fff8b1' : '#fff', color: '#333'
                         }}
                     >
@@ -100,7 +99,7 @@ export const ComparativoMensualTable = ({
                         variant={viewMode === 'last6' ? "light" : "light"}
                         onClick={() => handleToggle('last6')}
                         style={{
-                            fontWeight: '600', border: '1px solid #ddd', fontSize: '18px',
+                            fontWeight: '600', border: '1px solid #ddd',
                             background: viewMode === 'last6' ? '#e2e3e5' : '#fff', color: '#333'
                         }}
                     >

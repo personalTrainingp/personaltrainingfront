@@ -77,7 +77,7 @@ export const ClosingAnalysisTable2 = ({ ventas = [], monthsData = [] }) => {
     return (
         <div style={styles.card}>
             <div style={styles.headerContainer}>
-                <h4 style={styles.title}>ANÁLISIS DE CIERRE (CORTE DÍA 24)</h4>
+                <h4 style={styles.title}>ANÁLISIS DE SOCIOS NUEVOS (CORTE DÍA 24)</h4>
             </div>
 
             <div style={styles.tableWrapper}>
@@ -96,7 +96,7 @@ export const ClosingAnalysisTable2 = ({ ventas = [], monthsData = [] }) => {
                         {reportData.map((row, idx) => {
                             const isTop3 = top3Keys.includes(row.key);
                             return (
-                                <tr key={row.key} style={{ background: isTop3 ? '#ffffcc' : '#fff' }}>
+                                <tr key={row.key} style={{ background: isTop3 ? '#efef4cff' : '#fff' }}>
                                     <td style={{ ...styles.td, ...styles.tdLabel }}>
                                         {row.label}
                                     </td>
