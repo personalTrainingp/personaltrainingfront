@@ -18,6 +18,7 @@ import { VigentesResumenMensual } from "./components/VigentesResumenMensual";
 import { ProductosResumenMensual } from "./components/ProductosResumenMensual";
 import { useResumenEjecutivoStore } from "./useResumenEjecutivoStore";
 import { MESES } from './hooks/useResumenUtils';
+import { OverlappingMembershipsTable } from "./components/OverlappingMembershipsTable";
 
 export const App = ({ id_empresa }) => {
   const {
@@ -31,7 +32,8 @@ export const App = ({ id_empresa }) => {
     sociosOverride, originBreakdown, advisorOriginByProg,
     avatarByAdvisor, productosPorAsesor, vencimientosFiltrados,
     isLoading,
-    year, setYear
+    year, setYear,
+    historicalVentas
   } = useResumenEjecutivoStore(id_empresa);
 
   return (
@@ -135,6 +137,10 @@ export const App = ({ id_empresa }) => {
         <Col lg={12}>
           <div style={{ marginBottom: "32px", marginTop: "90px" }}>
             <GraficoLinealInversionRedes data={dataLeadPorMesAnio} fechas={[new Date()]} />
+          </div>
+
+          <div style={{ marginBottom: "32px" }}>
+            <OverlappingMembershipsTable ventas={historicalVentas || dataVentas} />
           </div>
         </Col>
 
