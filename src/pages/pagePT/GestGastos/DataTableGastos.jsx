@@ -8,7 +8,7 @@ import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
 export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
-    const { obtenerGastos, deleteGastoxID } = useGastosStore()
+    const { obtenerGastos, deleteGastoxID, loading } = useGastosStore()
     const { dataView } = useSelector(e=>e.EGRESOS)
     useEffect(() => {
         obtenerGastos(id_empresa)
@@ -135,7 +135,7 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
     <DataTableCR
         columns={columns}
         data={dataView}
-        loading={true}
+        loading={loading}
         responsive
     />
     </>

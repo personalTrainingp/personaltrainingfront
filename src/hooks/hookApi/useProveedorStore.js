@@ -68,14 +68,14 @@ export const useProveedorStore = () => {
 			setIsLoading(false);
 			setmessage({ msg: data.msg, ok: data.ok });
 			// obtenerParametrosProveedor();
-			await obtenerProveedores(estado_prov, agente);
+			await obtenerProveedores(estado_prov, agente, id_empresa);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const obtenerProveedores = async (estado_prov, agente, id_empresa, tipo) => {
 		try {
-			const { data } = await PTApi.get(`/proveedor/obtener-proveedores/${tipo}`, {
+			const { data } = await PTApi.get(`/proveedor/obtener-proveedores/${1573}`, {
 				params: {
 					estado_prov: estado_prov,
 					id_empresa: id_empresa,
