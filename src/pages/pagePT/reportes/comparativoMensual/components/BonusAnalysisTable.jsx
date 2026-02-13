@@ -2,10 +2,10 @@ import React from 'react';
 import { useBonusAnalysis } from '../hooks/useBonusAnalysis';
 import { fmtMoney } from '../../resumenEjecutivo/adapters/executibleLogic';
 
-export const BonusAnalysisTable = ({ ventas = [], monthsData }) => {
+export const BonusAnalysisTable = ({ ventas = [], monthsData, customStartDay = 1, customEndDay = 1 }) => {
 
     // We reuse monthsData to know which months to display
-    const data = useBonusAnalysis(ventas, monthsData);
+    const data = useBonusAnalysis(ventas, monthsData, customStartDay, customEndDay);
 
     const styles = {
         container: {
@@ -63,12 +63,15 @@ export const BonusAnalysisTable = ({ ventas = [], monthsData }) => {
 
     return (
         <div style={styles.container}>
-            <h5 style={styles.title}>ANÁLISIS BONIFICACIÓN POR AVANCE HASTA EL 15</h5>
+            <h5 style={styles.title}>ANÁLISIS BONIFICACIÓN POR AVANCE (Corte Estándar 15)</h5>
             <table style={styles.table}>
                 <thead>
                     <tr>
                         <th style={{ ...styles.th, textAlign: 'left' }}>Mes</th>
                         <th style={styles.th}>Avance 1-15</th>
+                        <th style={{ ...styles.th, background: '#efef4cff', color: '#000', border: '1px solid #000' }}>
+                            Avance ({customStartDay}-{customEndDay})
+                        </th>
                         <th style={styles.th}>Meta</th>
                         <th style={styles.th}>Porcentaje</th>
                     </tr>
@@ -89,6 +92,9 @@ export const BonusAnalysisTable = ({ ventas = [], monthsData }) => {
                                 <tr key={idx} style={{ background: isTop3 ? '#efef4cff' : '#fff' }}>
                                     <td style={styles.tdMonth}>{row.label}</td>
                                     <td style={styles.tdNumber}>{fmtMoney(row.accumulated)}</td>
+                                    <td style={{ ...styles.td, background: '#efef4cff', fontWeight: 'bold', textAlign: 'right' }}>
+                                        {fmtMoney(row.customRange)}
+                                    </td>
                                     <td style={styles.tdNumber}>{fmtMoney(row.meta)}</td>
                                     <td style={styles.tdPercent}>{pct.toFixed(2)}%</td>
                                 </tr>

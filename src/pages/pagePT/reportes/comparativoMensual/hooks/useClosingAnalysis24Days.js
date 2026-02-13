@@ -1,14 +1,16 @@
 import { useMemo } from 'react';
 
-export const useClosingAnalysis24Days = (ventas, monthsData) => {
+export const useClosingAnalysis24Days = (ventas, monthsData, customStartDay = 1, customEndDay = 1) => {
     return useMemo(() => {
         const data = {};
+        const CUT_DAY = 24; // Standard cut-off
 
         // Inicializar datos
         monthsData.forEach(m => {
             data[m.key] = {
                 firstPart: 0, // Días 1-24
                 lastPart: 0,  // Días 25-Fin
+                customRange: 0, // Nuevo rango
                 total: 0
             };
         });
@@ -45,11 +47,18 @@ export const useClosingAnalysis24Days = (ventas, monthsData) => {
 
             const day = d.getDate();
 
-            if (day <= 24) {
+            // Lógica Estándar (1-24)
+            if (day <= CUT_DAY) {
                 data[vKey].firstPart += amount;
             } else {
                 data[vKey].lastPart += amount;
             }
+
+            // Lógica Custom Range
+            if (day >= customStartDay && day <= customEndDay) {
+                data[vKey].customRange += amount;
+            }
+
             data[vKey].total += amount;
         });
 
@@ -63,5 +72,5 @@ export const useClosingAnalysis24Days = (ventas, monthsData) => {
                 ratio
             };
         });
-    }, [ventas, monthsData]);
+    }, [ventas, monthsData, customStartDay, customEndDay]);
 };

@@ -2,9 +2,9 @@ import React from 'react';
 import { useClosingAnalysis } from '../hooks/useClosingAnalysis';
 import { fmtMoney, fmtNum } from '../../resumenEjecutivo/adapters/executibleLogic'; // Asumo que fmtNum existe, si no, usa toFixed
 
-export const ClosingAnalysisTable = ({ ventas = [], monthsData = [] }) => {
+export const ClosingAnalysisTable = ({ ventas = [], monthsData = [], customStartDay = 1, customEndDay = 1 }) => {
 
-    const reportData = useClosingAnalysis(ventas, monthsData);
+    const reportData = useClosingAnalysis(ventas, monthsData, customStartDay, customEndDay);
 
     const styles = {
         card: {
@@ -86,7 +86,7 @@ export const ClosingAnalysisTable = ({ ventas = [], monthsData = [] }) => {
     return (
         <div style={styles.card}>
             <div style={styles.headerContainer}>
-                <h4 style={styles.title}>Análisis de Renovaciones(Corte día 25)</h4>
+                <h4 style={styles.title}>Análisis de Renovaciones (Corte Estándar día 25)</h4>
                 <small style={{ color: '#888', paddingLeft: '20px', display: 'block', marginTop: '5px' }}>
                     Comparativa de rendimiento final de mes
                 </small>
@@ -98,6 +98,9 @@ export const ClosingAnalysisTable = ({ ventas = [], monthsData = [] }) => {
                         <tr>
                             <th style={{ ...styles.th, textAlign: 'left', paddingLeft: '20px' }}>Mes</th>
                             <th style={styles.th}>Venta (Días 1-25)</th>
+                            <th style={{ ...styles.th, background: '#efef4cff', color: '#000', border: '1px solid #000' }}>
+                                RANGO ({customStartDay}-{customEndDay})
+                            </th>
                             <th style={styles.th}>Cierre (Día 26-Fin)</th>
                             <th style={styles.th}>% Cierre</th>
                             <th style={styles.th}>Total Mes</th>
@@ -111,6 +114,10 @@ export const ClosingAnalysisTable = ({ ventas = [], monthsData = [] }) => {
                                 </td>
 
                                 <td style={styles.td}>{fmtMoney(row.firstPart)}</td>
+
+                                <td style={{ ...styles.td, background: '#efef4cff', fontWeight: 'bold' }}>
+                                    {fmtMoney(row.customRange)}
+                                </td>
 
                                 <td style={{ ...styles.td, color: '#c00000', fontWeight: '600' }}>
                                     {fmtMoney(row.lastPart)}

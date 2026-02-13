@@ -10,7 +10,7 @@ import { NewMembersBreakdownTable } from './NewMembersBreakdownTable';
 import { BonusAnalysisTable } from './BonusAnalysisTable';
 import { RenovationAnalysisTable } from './RenovationAnalysisTable';
 
-export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 21 }) => {
+export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 21, customStartDay = 1, customEndDay = 15 }) => {
 
     const { monthsData } = useComparativoMensualLogic({
         ventas,
@@ -100,7 +100,7 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
                     <table style={styles.table}>
                         <thead>
                             <tr>
-                                <th style={{ ...styles.thHead, background: '#fff', color: '#333', borderRight: 'none' }}></th> {/* Espacio vacío esq superior */}
+                                <th style={{ ...styles.thHead, background: '#fff', color: '#333', borderRight: 'none' }}></th>
                                 {monthsData.map((m) => (
                                     <th key={m.key} style={styles.thHead}>
                                         {m.label} <span style={{ fontSize: '11px', fontWeight: '400', opacity: 0.8 }}>{m.year}</span>
@@ -109,7 +109,6 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
                             </tr>
                         </thead>
                         <tbody>
-                            {/* Fila: CUOTA */}
                             <tr>
                                 <td style={styles.thRowLabel}>META (CUOTA)</td>
                                 {monthsData.map((m) => (
@@ -119,7 +118,6 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
                                 ))}
                             </tr>
 
-                            {/* Fila: ALCANCE REAL */}
                             <tr>
                                 <td style={styles.thRowLabel}>ALCANCE REAL</td>
                                 {monthsData.map((m) => (
@@ -129,7 +127,6 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
                                 ))}
                             </tr>
 
-                            {/* Fila: % CUMPLIMIENTO */}
                             <tr>
                                 <td style={styles.thRowLabel}>% CUMPLIMIENTO</td>
                                 {monthsData.map((m) => {
@@ -178,17 +175,23 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
             <ClosingAnalysisTable
                 ventas={ventas}
                 monthsData={monthsData}
+                customStartDay={customStartDay}
+                customEndDay={customEndDay}
             />
 
-            {/* TABLA NUEVA SOLICITADA (CORTE 24 DÍAS) */}
+            {/* TABLA NUEVA SOLICITADA (CORTE DINÁMICO) */}
             <ClosingAnalysisTable2
                 ventas={ventas}
                 monthsData={monthsData}
+                customStartDay={customStartDay}
+                customEndDay={customEndDay}
             />
 
             <BonusAnalysisTable
                 ventas={ventas}
                 monthsData={monthsData}
+                customStartDay={customStartDay}
+                customEndDay={customEndDay}
             />
 
             <RenovationAnalysisTable

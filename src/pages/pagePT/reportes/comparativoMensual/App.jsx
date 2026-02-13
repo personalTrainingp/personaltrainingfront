@@ -19,6 +19,10 @@ const App = () => {
     // 'standard', 'goals', 'commissions'
     const [viewMode, setViewMode] = useState('standard');
 
+    // Custom Range State
+    const [customStartDay, setCustomStartDay] = useState(1);
+    const [customEndDay, setCustomEndDay] = useState(15);
+
     // Generamos lista de años (ej: actual -1 a actual +3)
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 5 }, (_, i) => currentYear - 1 + i);
@@ -68,6 +72,37 @@ const App = () => {
                                         </Form.Group>
                                     </div>
                                 </Col>
+
+                                {/* 3. SELECTORES DE RANGO PERSONALIZADO (NUEVO) */}
+                                <Col md={4} lg={4}>
+                                    <div className="d-flex gap-2 align-items-end justify-content-center">
+                                        <Form.Group style={{ width: '100px', fontSize: '20px' }}>
+                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '18px', marginBottom: '5px' }}>DIA INICIO</Form.Label>
+                                            <Form.Select
+                                                value={customStartDay}
+                                                onChange={(e) => setCustomStartDay(Number(e.target.value))}
+                                                style={{ fontWeight: 'bold', fontSize: '25px' }}
+                                            >
+                                                {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                                                    <option key={d} value={d}>{d}</option>
+                                                ))}
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <span style={{ fontSize: '24px', fontWeight: 'bold', paddingBottom: '5px' }}>-</span>
+                                        <Form.Group style={{ width: '100px', fontSize: '25px' }}>
+                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '18px', marginBottom: '5px' }}>DIA CORTE</Form.Label>
+                                            <Form.Select
+                                                value={customEndDay}
+                                                onChange={(e) => setCustomEndDay(Number(e.target.value))}
+                                                style={{ fontWeight: 'bold', fontSize: '25px' }}
+                                            >
+                                                {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                                                    <option key={d} value={d}>{d}</option>
+                                                ))}
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </div>
+                                </Col>
                                 <Col className="text-end">
                                     <ButtonGroup>
                                         <Button
@@ -106,6 +141,8 @@ const App = () => {
                                             year={year}
                                             startMonth={selectedMonth - 1}
                                             cutDay={cutDay}
+                                            customStartDay={customStartDay}
+                                            customEndDay={customEndDay}
                                         />
                                     )}
 
@@ -125,6 +162,8 @@ const App = () => {
                                                 startMonth={selectedMonth - 1}
                                                 cutDay={cutDay}
                                                 title="TOTAL VENTAS"
+                                                customStartDay={customStartDay}
+                                                customEndDay={customEndDay}
                                             />
 
                                             <hr className="my-5" />
@@ -137,6 +176,8 @@ const App = () => {
                                                 title="RENOVACIONES"
                                                 showFortnightly={true}
                                                 variant="renovations"
+                                                customStartDay={customStartDay}
+                                                customEndDay={customEndDay}
                                             />
                                         </>
                                     )}

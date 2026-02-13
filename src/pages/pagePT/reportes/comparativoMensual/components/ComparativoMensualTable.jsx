@@ -9,7 +9,9 @@ export const ComparativoMensualTable = ({
     startMonth = 0,
     cutDay = 21,
     title = "",
-    showFortnightly = false
+    showFortnightly = false,
+    customStartDay = 1,
+    customEndDay = 1
 }) => {
     const [viewMode, setViewMode] = useState('none');
 
@@ -18,7 +20,9 @@ export const ComparativoMensualTable = ({
         ventas,
         year,
         startMonth,
-        cutDay
+        cutDay,
+        customStartDay,
+        customEndDay
     });
 
     const styles = {
@@ -115,6 +119,15 @@ export const ComparativoMensualTable = ({
                             <th style={{ ...styles.th, width: '90px', position: 'sticky', left: 0, zIndex: 2 }}>MES <br /> AÑO</th>
                             <th style={{ ...styles.th, background: '#a00000' }}>TOTAL<br /> VENTA</th>
                             <th style={{ ...styles.th, background: '#a00000' }}>CUOTA</th>
+
+                            {/* CUSTOM RANGE COLUMN */}
+                            <th style={{ ...styles.th, background: '#d4af37', color: '#000' }}>
+                                RANGO<br />({customStartDay}-{customEndDay})
+                            </th>
+                            <th style={{ ...styles.th, background: '#d4af37', color: '#000', fontSize: '16px' }}>
+                                %
+                            </th>
+
                             <th style={styles.th} colSpan={2}>SEMANA 1<br /> (1-7)</th>
                             <th style={styles.th} colSpan={2}>SEMANA 2<br /> (8-14)</th>
                             <th style={styles.th} colSpan={2}>SEMANA 3<br /> (15-21)</th>
@@ -149,6 +162,29 @@ export const ComparativoMensualTable = ({
 
                                 <td style={{ ...styles.td, fontWeight: '700', color: '#000', background: 'rgba(0,0,0,0.02)' }}>{fmtMoney(row.total)}</td>
                                 <td style={{ ...styles.td, color: '#555' }}>{fmtMoney(row.quota)}</td>
+
+                                {/* Custom Range Data */}
+                                {(() => {
+                                    const field = 'customRangeTotal';
+                                    const isHighlighted = isTop3(row.key, field);
+                                    // Color solicitado por usuario
+                                    const baseBg = '#efef4cff';
+                                    const bg = isHighlighted ? styles.highlightCell.background : baseBg;
+                                    const color = isHighlighted ? styles.highlightCell.color : '#444';
+                                    const weight = isHighlighted ? styles.highlightCell.fontWeight : '400';
+
+                                    return (
+                                        <>
+                                            <td style={{ ...styles.td, background: bg, color: color, fontWeight: weight }}>
+                                                {fmtMoney(row[field])}
+                                            </td>
+                                            <td style={{ ...styles.td, background: bg, textAlign: 'center', color: color, fontWeight: weight }}>
+                                                {fmtNum(row.pctCustomRangeTotal, 1)}%
+                                            </td>
+                                        </>
+                                    );
+                                })()}
+
                                 {renderCell(row, 'w1', true)}
                                 {renderCell(row, 'w2', true)}
                                 {renderCell(row, 'w3', true)}
@@ -172,6 +208,11 @@ export const ComparativoMensualTable = ({
                                     <td style={{ ...styles.td, ...styles.tdLabel, background: '#f8f9fa', color: '#c00000' }}>{label}</td>
                                     <td style={{ ...styles.td, fontWeight: '800', color: '#c00000' }}>{fmtMoney(data.total)}</td>
                                     <td style={{ ...styles.td, textAlign: 'center', fontWeight: 'bold' }}>-</td>
+
+                                    {/* Custom Range Average */}
+                                    <td style={{ ...styles.td, fontWeight: '800', color: '#d4af37' }}>{fmtMoney(data.customRangeTotal)}</td>
+                                    <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
+
                                     <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.w1)}</td>
                                     <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
                                     <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.w2)}</td>
