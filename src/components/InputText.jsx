@@ -120,7 +120,7 @@ export const InputSelect = ({label, value='', placeholder='', onChange, nameInpu
     onChange?.({target})
   }
   return (
-    <>
+    <div className='w-100'>
       <label className='form-label'>{label} {required && (<span className='text-danger'>*</span>)} </label>
       <Select
         className="react-select"
@@ -133,7 +133,7 @@ export const InputSelect = ({label, value='', placeholder='', onChange, nameInpu
         placeholder={placeholder}
         {...props}
       />
-    </>
+    </div>
   )
 }
 

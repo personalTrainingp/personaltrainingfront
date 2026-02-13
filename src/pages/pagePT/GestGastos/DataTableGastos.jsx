@@ -5,9 +5,10 @@ import { useSelector } from 'react-redux'
 import { DateMask, DateMaskStr, DateMaskStr1, NumberFormatMoney } from '@/components/CurrencyMask'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { Button } from 'primereact/button'
+import { confirmDialog } from 'primereact/confirmdialog'
 
-export const DataTableGastos = ({id_empresa}) => {
-    const { obtenerGastos } = useGastosStore()
+export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
+    const { obtenerGastos, deleteGastoxID } = useGastosStore()
     const { dataView } = useSelector(e=>e.EGRESOS)
     useEffect(() => {
         obtenerGastos(id_empresa)
@@ -103,32 +104,38 @@ export const DataTableGastos = ({id_empresa}) => {
             return (
                 <>
                 <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
-                                onClick={onClickEditModalEgresos} 
+                                onClick={()=>onClickEditModalEgresos(row.id)} 
                                 />
                                 <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
-                                onClick={confirmDeleteGastoxID} 
+                                onClick={()=>confirmDeleteGastoxID(row.id)} 
                                 />
                                 <Button icon="pi pi-copy" rounded outlined severity="danger" 
-                                onClick={onClickCopyModalEgresos} 
+                                onClick={()=>onClickCopyModalEgresos(row.id)} 
                                 />
                 </>
             )
         }},
     ]
-    const onClickEditModalEgresos=()=>{
-
+    const onClickEditModalEgresos=(id)=>{
+        onOpenModalGasto(id, false)
     }
-    const confirmDeleteGastoxID=()=>{
-
+    const confirmDeleteGastoxID=(id)=>{
+        confirmDialog({
+            message: `Quieres eliminar el item ${id}`,
+            accept: ()=>{
+                deleteGastoxID(id, id_empresa)
+            }
+        })
     }
-    const onClickCopyModalEgresos=()=>{
-
+    const onClickCopyModalEgresos=(id)=>{
+        onOpenModalGasto(id, true)
     }
   return (
     <>
     <DataTableCR
         columns={columns}
         data={dataView}
+        loading={true}
         responsive
     />
     </>

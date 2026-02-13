@@ -6,14 +6,10 @@ import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
-import Select from 'react-select'
-import { SelectOficio } from './SelectOficio';
 import { ModalAgregarTermino } from './ModalAgregarTermino';
 import { useSelector } from 'react-redux';
 import { useTerminologiaStore } from './useTerminologiaStore';
 import { InputSelect, InputText } from '@/components/InputText';
-import { useDispatch } from 'react-redux';
-import { registroProveedor } from '@/store/data/dataSlice';
 const registerProvedor = {
     ruc_prov: '', 
 	razon_social_prov: '', 
@@ -34,9 +30,8 @@ const registerProvedor = {
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onShowGastos}) => {
+export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onCloseModalProveedor}) => {
     const { dataViewTerm } = useSelector(e=>e.TERM)
-    const { modalProveedor } = useSelector(e=>e.DATA)
     const { startRegisterProveedor, message, isLoading, actualizarProveedor, obtenerProveedor, proveedor } = useProveedorStore()
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
     const [selectedAvatar, setselectedAvatar] = useState(null)
@@ -60,7 +55,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onSh
             id_empresa,
             id_oficio,
             es_agente,
-            formState, onResetForm, onInputChange, onInputChangeReact } = useForm((id==0?modalProveedor:proveedor))
+            formState, onResetForm, onInputChange, onInputChangeReact } = useForm((id==0?registerProvedor:proveedor))
             const { comboOficio, obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
             const { obtenerTerminologiaSistema } = useTerminologiaStore()
             const [visible, setVisible] = useState(false);
@@ -113,13 +108,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onSh
             }
             
             const onCancelForm = ()=>{
-                onHide()
-                onShowGastos()
-                // onResetForm()
-            }
-            const onHideAndShowGastos=()=>{
-                onHide()
-                onShowGastos()
+                onCloseModalProveedor()
             }
             const onClickOpenModalCustomOficios = ()=>{
                 setisOpenModalTerminoOficio({isOpen: true, id: 0})
@@ -127,6 +116,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onSh
             }
             const onClickCloseModalCustomOficios = ()=>{
                 setisOpenModalTerminoOficio({isOpen: false, id: 0})
+                onShow()
             }
             
             const ViewDataImg = (e) => {
@@ -138,17 +128,13 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onSh
                 reader.readAsDataURL(file);
                 setselectedAvatar(file)
             };
-            const dispatch = useDispatch()
             const onInputChangeProv = (e)=>{
                 onInputChange(e)
             }
-            useEffect(() => {
-                dispatch(registroProveedor(formState))
-            }, [formState])
   return (
     <>
         <Toast ref={toastBC} onRemove={clear} />
-    <ModalAgregarTermino onShowGastos={onShowGastos} onShowProveedores={()=>onShow(0)} show={isOpenModalTerminoOficio.isOpen} onHide={onClickCloseModalCustomOficios} terminoAgregar={'OFICIO'} entidad={'proveedor'} grupo={'tipo_oficio'} titulo={'Oficio'}/>
+    <ModalAgregarTermino show={isOpenModalTerminoOficio.isOpen} onHide={onClickCloseModalCustomOficios} terminoAgregar={'OFICIO'} entidad={'proveedor'} grupo={'tipo_oficio'} titulo={'Oficio'}/>
     <Modal onHide={onCancelForm} show={show} size='lg' backdrop={'static'}>
         {status=='loading'?'Cargando....':(
             <>

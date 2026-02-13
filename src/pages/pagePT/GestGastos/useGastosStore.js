@@ -8,6 +8,8 @@ export const useGastosStore = () => {
 	const [dataGasto, setdataGasto] = useState({});
 	const dispatch = useDispatch();
 	const obtenerGastos = async (id_empresa) => {
+		console.log({ id_empresa }, 1);
+
 		try {
 			const { data } = await PTApi.get(`/egreso/empresa/${id_empresa}`);
 			console.log({ data });
@@ -31,13 +33,30 @@ export const useGastosStore = () => {
 	const obtenerGastoxID = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/egreso/id/${id}`);
-			setdataGasto(data.gasto);
+
+			const dataGasto = {
+				...data.gasto,
+				id_empresa: data.gasto?.tb_parametros_gasto?.id_empresa,
+				id_tipoGasto: data.gasto?.tb_parametros_gasto?.id_tipoGasto,
+				grupo: data.gasto?.tb_parametros_gasto?.grupo,
+			};
+			setdataGasto(dataGasto);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const postGasto = async (formState, id_empresa) => {
+		try {
+			console.log({ id_empresa }, 2);
+			await PTApi.post(`/egreso/`, formState);
+			await obtenerGastos(id_empresa);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const updateGastoxID = async (id, formState, id_empresa) => {
 		try {
+			console.log({ id_empresa }, 3);
 			await PTApi.put(`/egreso/id/${id}`, formState);
 			await obtenerGastos(id_empresa);
 		} catch (error) {
@@ -46,7 +65,8 @@ export const useGastosStore = () => {
 	};
 	const deleteGastoxID = async (id, id_empresa) => {
 		try {
-			await PTApi.put(`/egreso/delete/id/${id}`, formState);
+			console.log({ id_empresa }, 4);
+			await PTApi.put(`/egreso/delete/id/${id}`);
 			await obtenerGastos(id_empresa);
 		} catch (error) {
 			console.log(error);
@@ -57,6 +77,7 @@ export const useGastosStore = () => {
 		updateGastoxID,
 		deleteGastoxID,
 		obtenerGastoxID,
+		postGasto,
 		dataGasto,
 	};
 };

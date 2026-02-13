@@ -7,12 +7,11 @@ import { Modal } from 'react-bootstrap'
 const customTerm={
     label_param: '',
 }
-export const ModalAgregarTermino = ({show, onHide, onShowProveedores, onShowGastos, titulo, terminoAgregar, entidad, grupo}) => {
+export const ModalAgregarTermino = ({show, onHide, titulo, terminoAgregar, entidad, grupo}) => {
     const { registrarTerminologiaxEntidadyGrupo } = useTerminologiaStore()
     const { formState, label_param, onInputChange } = useForm(customTerm)
     const salirModal = ()=>{
         onHide()
-        onShowProveedores()
     }
     const onSubmit = ()=>{
         registrarTerminologiaxEntidadyGrupo({entidad_param: entidad, grupo_param: grupo, label_param}, entidad, grupo)

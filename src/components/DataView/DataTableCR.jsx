@@ -211,13 +211,25 @@ export const DataTableCR = ({
   }, [columns, resizableColumns]);
 
   // ---------------- filtering ----------------
+const tokenize = (s) =>
+  (s ?? "")
+    .toLowerCase()
+    .trim()
+    .split(/\s+/)          // separa por uno o más espacios
+    .filter(Boolean);      // evita tokens vacíos
+
 const filtered = useMemo(() => {
-  if (!search?.trim()) return data;
-  const q = search.toLowerCase();
+  const tokens = tokenize(search);
+  if (tokens.length === 0) return data;
 
   return data.filter((row) => {
     const text = buildSearchText(row);
-    return text.includes(q);
+
+    // AND: todas las palabras deben existir en la fila
+    return tokens.every((t) => text.includes(t));
+
+    // OR: al menos una palabra debe existir
+    // return tokens.some((t) => text.includes(t));
   });
 }, [data, search]);
 
