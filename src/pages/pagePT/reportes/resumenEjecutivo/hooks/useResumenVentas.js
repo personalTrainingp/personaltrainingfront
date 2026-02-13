@@ -4,6 +4,7 @@ import config from '@/config';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
 import { useReporteResumenComparativoStore } from "../../resumenComparativo/useReporteResumenComparativoStore";
+import { useProgramaTrainingStore } from '@/hooks/hookApi/useProgramaTrainingStore';
 import { useProductosAgg } from '../../totalVentas/TarjetasProductos';
 import {
     norm, parseBackendDate, isBetween,
@@ -17,8 +18,9 @@ export const useResumenVentas = (id_empresa, fechas) => {
     const { obtenerVentas, repoVentasPorSeparado } = useReporteStore();
     const { obtenerComparativoResumen, dataGroup } = useReporteResumenComparativoStore();
 
-    const [programas, setProgramas] = useState([]);
+    const { startObtenerTBProgramaPT, programas } = useProgramaTrainingStore();
     const [reservasMF, setReservasMF] = useState([]);
+    const [historicalVentas, setHistoricalVentas] = useState([]);
     const [isLoadingVentas, setIsLoadingVentas] = useState(false);
 
     useEffect(() => {
@@ -29,9 +31,29 @@ export const useResumenVentas = (id_empresa, fechas) => {
                 if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
                     promises.push(obtenerVentas(RANGE_DATE));
                     promises.push(obtenerComparativoResumen(RANGE_DATE).catch(console.error));
+
+                    const startHistory = new Date(year - 1, 0, 1);
+                    const endHistory = new Date(year, 11, 31);
+
+                    promises.push(
+                        PTApi.get('/parametros/renovaciones/por-rango-fechas', {
+                            params: {
+                                empresa: id_empresa || 598,
+                                year,
+                                selectedMonth,
+                                initDay,
+                                cutDay
+                            }
+                        })
+                            .then(res => {
+                                const cruces = res.data?.cruces || [];
+                                setHistoricalVentas(cruces);
+                            })
+                            .catch(err => { console.error("Error fetching overlaps:", err); setHistoricalVentas([]); })
+                    );
                 }
                 promises.push(obtenerTablaVentas(id_empresa || 598));
-                promises.push(obtenerProgramas());
+                promises.push(startObtenerTBProgramaPT());
                 promises.push(obtenerReservasMF());
 
                 await Promise.all(promises);
@@ -45,10 +67,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
         fetchData();
     }, [id_empresa, RANGE_DATE]);
 
-    const obtenerProgramas = async () => {
-        try { const { data } = await PTApi.get('/programaTraining/get_tb_pgm'); setProgramas(data || []); }
-        catch (err) { console.error(err); }
-    };
+
     const obtenerReservasMF = async () => {
         try { const { data } = await PTApi.get('/reserva_monk_fit', { params: { limit: 2000, onlyActive: true } }); setReservasMF(data?.rows || []); }
         catch (err) { console.error(err); }
@@ -73,7 +92,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
                 if (!d || d.getDate() < initDay || d.getDate() > cutDay) continue;
                 const key = `${d.getFullYear()}-${d.getMonth()}`;
                 if (!map.has(key)) map.set(key, { year: d.getFullYear(), mIdx: d.getMonth(), total: 0 });
-                (v?.detalle_ventaMembresia || []).forEach(s => map.get(key).total += Number(s?.tarifa_monto || 0));
+                (Array.isArray(v?.detalle_ventaMembresia) ? v.detalle_ventaMembresia : []).forEach(s => map.get(key).total += Number(s?.tarifa_monto || 0));
             }
             return map;
         };
@@ -116,7 +135,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
             const asesor = (nombreFull.split(" ")[0] || "").toUpperCase();
             if (!asesor) continue;
 
-            const details = v?.detalle_ventaMembresia || v?.detalle_venta_membresia || [];
+            const details = Array.isArray(v?.detalle_ventaMembresia) ? v.detalle_ventaMembresia : (Array.isArray(v?.detalle_venta_membresia) ? v.detalle_venta_membresia : []);
 
             if (details.length > 0) {
                 details.forEach(item => {
@@ -151,7 +170,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
             const d = limaFromISO(v?.fecha_venta || v?.createdAt);
             if (!isBetween(d, start, end)) return;
 
-            (v?.detalle_ventaMembresia || []).forEach(item => {
+            (Array.isArray(v?.detalle_ventaMembresia) ? v.detalle_ventaMembresia : []).forEach(item => {
                 if (Number(item?.tarifa_monto) === 0) return;
                 const pName = pgmNameByIdDynamic[item.id_pgm] || progNameById[item.id_pgm];
                 const key = (pName || "").trim().toUpperCase();
@@ -211,7 +230,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
                 if (!d || d.getFullYear() !== Number(year) || d.getMonth() !== (selectedMonth - 1)) continue;
                 if (d.getDate() < Number(initDay) || d.getDate() > Number(cutDay)) continue;
 
-                (v?.detalle_ventaMembresia || []).forEach(vDet => {
+                (Array.isArray(v?.detalle_ventaMembresia) ? v.detalle_ventaMembresia : []).forEach(vDet => {
                     if (Number(vDet?.tarifa_monto) === 0) return;
                     const pName = pgmNameByIdDynamic[vDet.id_pgm] || progNameById[vDet.id_pgm];
                     const progKey = (pName || "").trim().toUpperCase();
@@ -250,11 +269,11 @@ export const useResumenVentas = (id_empresa, fechas) => {
             const nombreFull = v?.tb_ventum?.tb_empleado?.nombres_apellidos || v?.tb_empleado?.nombres_apellidos_empl || v?.tb_empleado?.nombres_apellidos || "";
             const asesor = (nombreFull.split(" ")[0] || "").trim().toUpperCase();
 
-            const hasMembershipItem = (v?.detalle_ventaMembresia || []).some(
+            const hasMembershipItem = (Array.isArray(v?.detalle_ventaMembresia) ? v.detalle_ventaMembresia : []).some(
                 it => (Number(it?.tarifa_monto) > 0 || Number(it?.monto) > 0)
                     && (pgmNameByIdDynamic[it.id_pgm] || progNameById[it.id_pgm])
             );
-            const hasZeroAmountProgram = (v?.detalle_ventaMembresia || []).some(it => {
+            const hasZeroAmountProgram = (Array.isArray(v?.detalle_ventaMembresia) ? v.detalle_ventaMembresia : []).some(it => {
                 const p = (pgmNameByIdDynamic[it.id_pgm] || progNameById[it.id_pgm]);
                 return p && Number(it?.tarifa_monto) === 0;
             });
@@ -289,6 +308,6 @@ export const useResumenVentas = (id_empresa, fechas) => {
         advisorOriginByProg, originBreakdown, sociosOverride,
         avatarByAdvisor, productosPorAsesor,
         mesesSeleccionados, pgmNameById: progNameById, pgmNameByIdDynamic, dataGroup,
-        totalUniqueTicketsByAdvisor, isLoadingVentas // <--- EXPORTADO
+        totalUniqueTicketsByAdvisor, isLoadingVentas, historicalVentas // <--- EXPORTADO
     };
 };

@@ -2,9 +2,9 @@ import React from 'react';
 import { useClosingAnalysis24Days } from '../hooks/useClosingAnalysis24Days';
 import { fmtMoney } from '../../resumenEjecutivo/adapters/executibleLogic';
 
-export const ClosingAnalysisTable2 = ({ ventas = [], monthsData = [] }) => {
+export const ClosingAnalysisTable2 = ({ ventas = [], monthsData = [], customStartDay = 1, customEndDay = 1 }) => {
 
-    const reportData = useClosingAnalysis24Days(ventas, monthsData);
+    const reportData = useClosingAnalysis24Days(ventas, monthsData, customStartDay, customEndDay);
 
     // Calcular Top 3 basado en ratio (% ultimos 6 dias)
     const sorted = [...reportData].sort((a, b) => b.ratio - a.ratio);
@@ -77,7 +77,7 @@ export const ClosingAnalysisTable2 = ({ ventas = [], monthsData = [] }) => {
     return (
         <div style={styles.card}>
             <div style={styles.headerContainer}>
-                <h4 style={styles.title}>ANÁLISIS DE CIERRE (CORTE DÍA 24)</h4>
+                <h4 style={styles.title}>ANÁLISIS DE SOCIOS NUEVOS (CORTE ESTÁNDAR DÍA 24)</h4>
             </div>
 
             <div style={styles.tableWrapper}>
@@ -86,8 +86,11 @@ export const ClosingAnalysisTable2 = ({ ventas = [], monthsData = [] }) => {
                         <tr>
                             <th style={{ ...styles.th, textAlign: 'center' }}>Mes</th>
                             <th style={styles.th}>Venta 24 dias</th>
-                            <th style={styles.th}>Ultimos 6 dias</th>
-                            <th style={styles.th}>% ultimos 6 dias</th>
+                            <th style={{ ...styles.th, background: '#efef4cff', color: '#000', border: '1px solid #000' }}>
+                                RANGO ({customStartDay}-{customEndDay})
+                            </th>
+                            <th style={styles.th}>Cierre (Día 25-Fin)</th>
+                            <th style={styles.th}>% Cierre</th>
                             <th style={styles.th}>Total</th>
                             <th style={styles.th}>Cuotas</th>
                         </tr>
@@ -96,12 +99,16 @@ export const ClosingAnalysisTable2 = ({ ventas = [], monthsData = [] }) => {
                         {reportData.map((row, idx) => {
                             const isTop3 = top3Keys.includes(row.key);
                             return (
-                                <tr key={row.key} style={{ background: isTop3 ? '#ffffcc' : '#fff' }}>
+                                <tr key={row.key} style={{ background: isTop3 ? '#efef4cff' : '#fff' }}>
                                     <td style={{ ...styles.td, ...styles.tdLabel }}>
                                         {row.label}
                                     </td>
 
                                     <td style={styles.td}>{fmtMoney(row.firstPart)}</td>
+
+                                    <td style={{ ...styles.td, background: '#efef4cff', fontWeight: 'bold' }}>
+                                        {fmtMoney(row.customRange)}
+                                    </td>
 
                                     <td style={styles.td}>{fmtMoney(row.lastPart)}</td>
 
@@ -118,8 +125,7 @@ export const ClosingAnalysisTable2 = ({ ventas = [], monthsData = [] }) => {
                                     </td>
                                 </tr>
                             );
-                        })
-                        }
+                        })}
                     </tbody>
                 </table>
             </div>

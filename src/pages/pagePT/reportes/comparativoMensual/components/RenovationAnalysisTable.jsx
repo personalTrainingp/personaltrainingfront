@@ -13,7 +13,7 @@ export const RenovationAnalysisTable = ({ ventas = [], monthsData }) => {
             fontFamily: "'Segoe UI', sans-serif"
         },
         title: {
-            fontSize: '24px',
+            fontSize: '25px',
             fontWeight: 'bold',
             marginBottom: '15px',
             textTransform: 'uppercase',
@@ -25,7 +25,7 @@ export const RenovationAnalysisTable = ({ ventas = [], monthsData }) => {
             width: '100%',
             maxWidth: '800px',
             borderCollapse: 'collapse',
-            fontSize: '20px',
+            fontSize: '21px',
             border: '2px solid #000'
         },
         th: {
@@ -67,23 +67,30 @@ export const RenovationAnalysisTable = ({ ventas = [], monthsData }) => {
                 <thead>
                     <tr>
                         <th style={{ ...styles.th, textAlign: 'left' }}>Mes</th>
-                        <th style={styles.th}>N° ventas total</th>
-                        <th style={styles.th}>Renovacion total x mes</th>
+                        <th style={styles.th}>Cantidad<br /> Ventas</th>
+                        <th style={styles.th}>Cantidad<br />renovaciones</th>
                         <th style={styles.th}>Porcentaje</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((row, idx) => {
-                        const pct = row.totalCount > 0 ? (row.renovationCount / row.totalCount) * 100 : 0;
-                        return (
-                            <tr key={idx} style={{ background: '#fff' }}>
-                                <td style={styles.tdMonth}>{row.label}</td>
-                                <td style={styles.tdNumber}>{row.totalCount}</td>
-                                <td style={styles.tdNumber}>{row.renovationCount}</td>
-                                <td style={styles.tdPercent}>{pct.toFixed(2)}%</td>
-                            </tr>
-                        );
-                    })}
+                    {(() => {
+                        const withPct = data.map(r => ({ ...r, pct: r.totalCount > 0 ? (r.renovationCount / r.totalCount) : 0 }));
+                        const sorted = [...withPct].sort((a, b) => b.pct - a.pct);
+                        const top3Keys = sorted.slice(0, 3).map(x => x.key);
+
+                        return data.map((row, idx) => {
+                            const pct = row.totalCount > 0 ? (row.renovationCount / row.totalCount) * 100 : 0;
+                            const isTop3 = row.key && top3Keys.includes(row.key);
+                            return (
+                                <tr key={idx} style={{ background: isTop3 ? '#efef4cff' : '#fff' }}>
+                                    <td style={styles.tdMonth}>{row.label}</td>
+                                    <td style={styles.tdNumber}>{row.totalCount}</td>
+                                    <td style={styles.tdNumber}>{row.renovationCount}</td>
+                                    <td style={styles.tdPercent}>{pct.toFixed(2)}%</td>
+                                </tr>
+                            );
+                        });
+                    })()}
                 </tbody>
             </table>
         </div>
