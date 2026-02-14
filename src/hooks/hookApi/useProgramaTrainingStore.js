@@ -5,18 +5,19 @@ import {
 	setProgramaPT,
 } from '@/store/ventaProgramaPT/programaPTSlice';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const useProgramaTrainingStore = () => {
 	const dispatch = useDispatch();
-	const [programas, setprogramas] = useState([]);
+	const { datapgmPT } = useSelector((state) => state.programaPT);
 
 	const [load, setLoad] = useState('empty');
 
 	const startObtenerTBProgramaPT = async () => {
 		try {
+			if (datapgmPT.length > 0) return; // Avoid re-fetching if we already have data
 			let { data } = await PTApi.get('/programaTraining/get_tb_pgm');
-			
+
 			data = data.sort((a, b) => {
 				const order = [2, 4, 3, 5];
 				return order.indexOf(a.id_pgm) - order.indexOf(b.id_pgm);
@@ -239,6 +240,6 @@ export const useProgramaTrainingStore = () => {
 		startDeleteTarifaPgm,
 		obtenerSemanasxID,
 		load,
-		programas,
+		programas: datapgmPT,
 	};
 };
