@@ -20,6 +20,8 @@ import { useResumenEjecutivoStore } from "./useResumenEjecutivoStore";
 import { MESES } from './hooks/useResumenUtils';
 import { OverlappingMembershipsTable } from "./components/OverlappingMembershipsTable";
 
+import { SeguimientoRenovaciones } from "./components/SeguimientoRenovaciones";
+
 export const App = ({ id_empresa }) => {
   const {
     selectedMonth, initDay, cutDay, tasaCambio,
@@ -120,6 +122,17 @@ export const App = ({ id_empresa }) => {
                 title={`RENOVACIONES - ${year}`} items={dataVentas}
                 vencimientosMap={mapaVencimientos} carteraHistoricaInicial={0}
                 vencimientosFiltrados={vencimientosFiltrados}
+              />
+            </Col>
+          </Row>
+
+          <Row className="mb-3">
+            <Col lg={12}>
+              <SeguimientoRenovaciones
+                dataVentas={dataVentas}
+                mapaVencimientos={mapaVencimientos}
+                year={year}
+                id_empresa={id_empresa}
               />
             </Col>
           </Row>
