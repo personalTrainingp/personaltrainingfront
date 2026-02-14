@@ -30,7 +30,7 @@ export const EmpresaPuntoEquilibrio = ({ id_empresa, background, textEmpresa, bg
     acc.total += item.tarifa_monto
     return acc
   }, { cantidad: 0, total: 0 })
-  console.log({dataGastos});
+  console.log({dataGastos});  
   
   const rei = getMembresiaData(m => m.id_origen === 692)
   const reno = getMembresiaData(m => m.id_origen === 691)

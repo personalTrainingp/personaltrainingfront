@@ -98,7 +98,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
             // ALTERAR GRUPO, CUANDO LA EMPRESA O EL TIPO DE GASTO SE CAMBIE
             setdataGrupoxTipoGasto(dataTerm2EmpresaxGrupo.filter(e=>e.id_tipoGasto===id_tipoGasto))
         }
-    }, [id_empresa, id_tipoGasto, id])
+    }, [id_empresa, show, id_tipoGasto, id])
     useEffect(() => {
         onInputChangeFunction('id_tipoGasto', id_tipoGasto)
     }, [id_empresa])

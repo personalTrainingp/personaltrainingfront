@@ -12,14 +12,9 @@ function formatDateToSQLServerWithDayjs(date, isStart = true) {
 		: base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
 }
 export const usePuntoEquilibrio = () => {
-	const [dataVentas, setdataVentas] = useState({
-		dataRenovaciones: [],
-		dataProductos17: [],
-		dataProductos18: [],
-		dataReinscripcion: [],
-		dataNuevos: [],
-		dataMFMap: [],
-	});
+	const [dataVentas, setdataVentas] = useState([]);
+	const [dataMF, setdataMF] = useState([]);
+	const [dataIngresos, setdataIngresos] = useState([]);
 	const [dataEgresos, setdataEgresos] = useState([]);
 	const obtenerVentas = async (arrayDate, idEmpresa) => {
 		try {
@@ -31,15 +26,42 @@ export const usePuntoEquilibrio = () => {
 					],
 				},
 			});
-			const { data: dataMF } = await PTApi.get('/reserva_monk_fit/g');
-			const dataMFMap = dataMF.reservasMF.map((mf) => {
+			const { data: dataMF } = await PTApi.get('/reserva_monk_fit/fecha', {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+			const { data: dataIngresos } = await PTApi.get(`/ingreso/fecha/${idEmpresa}`, {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+			const dataIngresosMAP = dataIngresos.ingresos?.map((i) => {
 				return {
-					...mf,
-					montoTotal: mf.monto_total,
-					fechaP: mf.fecha,
+					...i,
+					concepto: i.tb_parametros_gasto?.grupo,
 					cantidadTotal: 1,
+					fecha_comprobante: i.fec_comprobante,
+					fechaP: i.fec_pago,
+					montoTotal: i.monto,
 				};
 			});
+			console.log({ dataIngresosMAP });
+
+			const dataMFMAP = dataMF.reservasMF?.map((mf) => {
+				return {
+					...mf,
+					concepto: 'MONKEY FIT',
+				};
+			});
+			console.log({ dataIngresos, mff: 'aa' });
+
 			const dataVentasMap = data.ventas.map((m) => {
 				return {
 					id_cli: m.id_cli,
@@ -58,6 +80,7 @@ export const usePuntoEquilibrio = () => {
 						...v,
 						montoTotal: v.detalle_membresias[0]?.tarifa_monto,
 						cantidadTotal: 1,
+						modelo: 'MEMBRESIAS',
 					};
 				})
 				.filter((f) => f.montoTotal !== 0);
@@ -81,6 +104,7 @@ export const usePuntoEquilibrio = () => {
 						detalle_productos: detalleFiltrado,
 						cantidadTotal,
 						montoTotal,
+						concepto: 'PRODUCTO17',
 					};
 				})
 				.filter((v) => v.detalle_productos.length !== 0);
@@ -105,22 +129,88 @@ export const usePuntoEquilibrio = () => {
 						detalle_productos: detalleFiltrado,
 						cantidadTotal,
 						montoTotal,
+						concepto: 'PRODUCTO18',
 					};
 				})
 				.filter((v) => v.detalle_productos.length !== 0);
-			const dataRenovaciones = dataMembresias.filter((f) => f.id_origen === 691);
-			const dataReinscripcion = dataMembresias.filter((f) => f.id_origen === 692);
-			const dataNuevos = dataMembresias.filter(
-				(f) => f.id_origen !== 692 && f.id_origen !== 691
+			const dataRenovaciones = dataMembresias
+				.map((m) => {
+					return {
+						...m,
+						concepto: 'RENOVACIONES',
+					};
+				})
+				.filter((f) => f.id_origen === 691);
+			const dataReinscripcion = dataMembresias
+				.map((m) => {
+					return {
+						...m,
+						concepto: 'REINSCRIPCIONES',
+					};
+				})
+				.filter((f) => f.id_origen === 692);
+			const dataNuevos = dataMembresias
+				.map((m) => {
+					return {
+						...m,
+						concepto: 'NUEVOS',
+					};
+				})
+				.filter((f) => f.id_origen !== 692 && f.id_origen !== 691);
+			console.log(
+				[
+					...dataNuevos,
+					...dataProductos18,
+					...dataProductos17,
+					...dataReinscripcion,
+					...dataRenovaciones,
+					...dataMFMAP,
+					...dataIngresosMAP,
+				],
+				'hola123'
 			);
-			setdataVentas({
-				dataNuevos,
-				dataProductos18,
-				dataProductos17,
-				dataReinscripcion,
-				dataRenovaciones,
-				dataMFMap,
+
+			setdataVentas([
+				...dataNuevos,
+				...dataProductos18,
+				...dataProductos17,
+				...dataReinscripcion,
+				...dataRenovaciones,
+				...dataMFMAP,
+				...dataIngresosMAP,
+			]);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerVentasMonkFit = async (arrayDate) => {
+		try {
+			const { data } = await PTApi.get('/reserva_monk_fit/fecha', {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
 			});
+			setdataMF(data.reservasMF);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerIngresos = async (arrayDate) => {
+		try {
+			const { data } = await PTApi.get('/ingreso/fecha/800', {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+			console.log({ df: data.ingresos });
+
+			setdataIngresos(data.ingresos);
 		} catch (error) {
 			console.log(error);
 		}
@@ -176,8 +266,12 @@ export const usePuntoEquilibrio = () => {
 		}
 	};
 	return {
+		obtenerVentasMonkFit,
 		obtenerVentas,
 		obtenerEgresos,
+		obtenerIngresos,
+		dataIngresos,
+		dataMF,
 		dataEgresos,
 		dataVentas,
 	};

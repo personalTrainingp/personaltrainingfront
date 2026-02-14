@@ -771,7 +771,6 @@ const filtered = useMemo(() => {
               const appliedWidth = getAppliedWidth(col);
               return (
                 <td
-                  className="text-break"
                   key={col.id}
                   style={{
                     textAlign: col.cellAlign ?? 'left',

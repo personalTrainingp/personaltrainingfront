@@ -92,14 +92,14 @@ export const useCuentasStore = () => {
 						{
 							id: 1578,
 							tipo: 'PorPagar',
-							grupo: 'SUELDOS/TERCEROS',
+							grupo: 'TARJETA DE CREDITO',
 							nombre_gasto: 'INVERSIONES LUROGA SAC.',
 							orden: 3,
 							parametro_grupo: { label_param: 'TARJETA DE CREDITO', orden: 3 },
 						},
 						{
 							id: 1578,
-							grupo: 'SUELDOS/TERCEROS',
+							grupo: 'TARJETA DE CREDITO',
 							tipo: 'PorPagar',
 							nombre_gasto: 'INVERSIONES SAN EXPEDITO',
 							orden: 3,
