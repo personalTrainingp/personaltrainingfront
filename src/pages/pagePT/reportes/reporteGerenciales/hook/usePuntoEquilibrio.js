@@ -105,6 +105,7 @@ export const usePuntoEquilibrio = () => {
 						cantidadTotal,
 						montoTotal,
 						concepto: 'PRODUCTO17',
+						modelo: 'producto',
 					};
 				})
 				.filter((v) => v.detalle_productos.length !== 0);
@@ -130,6 +131,7 @@ export const usePuntoEquilibrio = () => {
 						cantidadTotal,
 						montoTotal,
 						concepto: 'PRODUCTO18',
+						modelo: 'producto',
 					};
 				})
 				.filter((v) => v.detalle_productos.length !== 0);
