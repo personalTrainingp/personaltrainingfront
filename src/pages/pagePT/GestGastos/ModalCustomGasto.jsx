@@ -69,6 +69,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     const { dataTerminologia2EmpresaxTipo, obtenerTermino2xEmpresaxTipo, dataTerm2EmpresaxConcepto, dataTerm2EmpresaxGrupo } = useTerminos2Store()
     const [dataConceptosxGrupo, setdataConceptosxGrupo] = useState([])
     const [dataGrupoxTipoGasto, setdataGrupoxTipoGasto] = useState([])
+        const [dataProveedoresFiltradosxOficio, setdataProveedoresFiltradosxOficio] = useState([])
     const [isOpenModalProveedor, setOpenModalProveedor] = useState({isOpen: false, id: 0})
     const { postGasto, updateGastoxID } = useGastosStore()
     const [id_empresa, setid_empresa] = useState(id_enterprice)
@@ -259,7 +260,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'trabajos de proveedores'} nameInput={'id_contrato_prov'} onChange={onInputChange} options={dataContratosProv.map(con=>{return {label: `${con.cod_trabajo}. ${con.observacion}`, value: con.id}})} value={id_contrato_prov} />
+                            <InputSelect label={'trabajos de proveedores'} nameInput={'id_contrato_prov'} onChange={onInputChange} options={dataContratosProv.map(con=>{return {label: `${con.id}. ${con.observacion}`, value: con.id}})} value={id_contrato_prov} />
                         </div>
                     </Col>
                     <Col lg={4}>
