@@ -107,7 +107,9 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
     { id: 'estado_contrato', header: 'ESTADO', accessor: 'estado_contrato', render: (row)=>{
         return (
             <>
-            <Badge bg={dataEstadoContrato.find(e=>e.value===row.estado_contrato)?.severity}>{dataEstadoContrato.find(e=>e.value===row.estado_contrato)?.label}</Badge>
+            <div className={`${dataEstadoContrato.find(e=>e.value===row.estado_contrato)?.bg} d-flex justify-content-center align-items-center text-white p-1 fs-2`}>
+                {dataEstadoContrato.find(e=>e.value===row.estado_contrato)?.label}
+            </div>
             </>
         )
     } },

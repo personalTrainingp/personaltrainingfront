@@ -23,7 +23,7 @@ export const ModalDetalleCuentas = ({bgMultiValue, id_enterprice, anio, show, on
   }
   return (
     <>
-    <Dialog visible={show} style={{width: '120rem'}} onHide={onHide} header={`DETALLE - ${data?.grupo}`}>
+    <Dialog visible={show} style={{width: '100%'}} onHide={onHide} header={`DETALLE - ${data?.grupo}`}>
         <Table  responsive hover striped>
           <thead >
               <tr className={`${bgEmpresa}`}>

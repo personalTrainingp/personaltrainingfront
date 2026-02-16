@@ -112,10 +112,10 @@ export const TerminosOnShow = (show) => {
 		{ label: 'CHORRILLOS', value: 605 },
 	];
 	const dataEstadoContrato = [
-		{ label: 'Por Aprobar', value: 505, severity: 'warning' },
-		{ label: 'Aprobado', value: 500, severity: 'success' },
-		{ label: 'Cancelado', value: 501, severity: 'danger' },
-		{ label: 'Retencion', value: 506, severity: 'secondary' },
+		{ label: 'Por Aprobar', value: 505, severity: 'warning', bg: 'bg-circus' },
+		{ label: 'Aprobado', value: 500, severity: 'success', bg: 'bg-greenISESAC' },
+		{ label: 'Pagado', value: 501, severity: 'danger', bg: 'bg-ral' },
+		{ label: 'Retencion', value: 506, severity: 'secondary', bg: 'bg-change' },
 	];
 	const dataOrigen = [
 		{ value: 686, label: 'Walking', order: 7 }, //998
