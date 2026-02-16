@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
 import { DataTableMetas } from './View/DataTableMetas'
-import { useInformeEjecutivoStore } from '../../useInformeEjecutivoStore';
+import { sumarMontoTotal, useInformeEjecutivoStore } from '../../useInformeEjecutivoStore';
 import { useSelector } from 'react-redux';
 import { generarMesYanio } from '../../helpers/generarMesYanio';
 import { FechaCorte } from '@/components/RangeCalendars/FechaRange';
+import { agruparPorMesDiaFechaVenta } from '../../helpers/agruparPorMesDiaFechaVenta';
 
 export const AppDetalleMetas = () => {
-        const { obtenerVentas, dataVentas } = useInformeEjecutivoStore()
+        const { obtenerVentas, dataVentas,  } = useInformeEjecutivoStore()
         const { corte } = useSelector((e) => e.DATA);
     
         useEffect(() => {
@@ -53,6 +54,19 @@ export const AppDetalleMetas = () => {
         <div  className="table-responsive" style={{ width: '100%' }}>
             <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresiasReinscripciones?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={[]}/>
         </div>
+        <div className='text-center text-change' style={{fontSize: '80px'}}>
+            RENOVACIONES
+        </div>
+        {
+            dataVentas.renovacionesxEmpl.map(d=>{
+                return (
+                    <div  className="table-responsive" style={{ width: '100%' }}>
+                        <p className='text-center fs-1'>{d.nombre_empl}</p>
+                        <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={sumarMontoTotal(agruparPorMesDiaFechaVenta((d.items)))?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={[]}/>
+                    </div>
+                )
+            })
+        }
     </div>
   )
 }

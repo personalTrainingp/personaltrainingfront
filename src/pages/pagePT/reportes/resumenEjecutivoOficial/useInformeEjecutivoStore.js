@@ -2,6 +2,7 @@ import { PTApi } from '@/common';
 import { useState } from 'react';
 import { agruparPorMesDiaFechaVenta } from './helpers/agruparPorMesDiaFechaVenta';
 import { useSelector } from 'react-redux';
+import { agruparPorEmpleado } from './Pages/ComparativoDiaxDia/helpers/agruparDiasEnMes';
 export const useInformeEjecutivoStore = () => {
 	const [dataVentas, setdataVentas] = useState({
 		dataMembresias: [],
@@ -11,6 +12,7 @@ export const useInformeEjecutivoStore = () => {
 		dataMFMap: [],
 		dataMembresiasRenovaciones: [],
 		dataMembresiasReinscripciones: [],
+		renovacionesxEmpl: [],
 	});
 	const [dataLeads, setdataLeads] = useState([]);
 	const obtenerVentas = async () => {
@@ -121,7 +123,8 @@ export const useInformeEjecutivoStore = () => {
 				{ dataVentasMap },
 				sumarMontoTotal(agruparPorMesDiaFechaVenta(dataVentasMap))
 			);
-
+			const renovacionesxEmpl = agruparPorEmpleado(dataMembresiasRenovaciones);
+			console.log({ dataMembresiasRenovaciones, renovacionesxEmpl });
 			setdataVentas({
 				dataMembresias: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataMembresias)),
 				dataProductos17: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataProductos17)),
@@ -134,6 +137,7 @@ export const useInformeEjecutivoStore = () => {
 				dataMembresiasReinscripciones: sumarMontoTotal(
 					agruparPorMesDiaFechaVenta(dataMembresiasReinscripciones)
 				),
+				renovacionesxEmpl,
 			});
 		} catch (error) {
 			console.log(error);
@@ -188,7 +192,7 @@ export const useInformeEjecutivoStore = () => {
 	};
 };
 
-function sumarMontoTotal(data) {
+export function sumarMontoTotal(data) {
 	return data.map((g) => {
 		return {
 			...g,

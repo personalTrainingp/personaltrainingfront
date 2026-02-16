@@ -27,3 +27,28 @@ export const agruparPorMesDiaFechaVenta = (data) => {
 
 	return Object.values(map);
 };
+
+const agruparPorEmpleado = (data = []) => {
+	const map = new Map();
+
+	data.forEach((item) => {
+		const key = item.empl || 'SIN EMPLEADO';
+
+		if (!map.has(key)) {
+			map.set(key, {
+				empl: key,
+				montoTotal: 0,
+				cantidadTotal: 0,
+				items: [],
+			});
+		}
+
+		const grupo = map.get(key);
+
+		grupo.montoTotal += Number(item.montoTotal || 0);
+		grupo.cantidadTotal += Number(item.cantidadTotal || 0);
+		grupo.items.push(item);
+	});
+
+	return Array.from(map.values());
+};
