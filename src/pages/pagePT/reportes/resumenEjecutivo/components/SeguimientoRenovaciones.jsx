@@ -9,6 +9,8 @@ import {
     Legend,
     PointElement,
     LineElement,
+    BarController,  // <-- ¡AGREGADO AQUÍ!
+    LineController
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { Card, Table, Spinner, Badge } from "react-bootstrap";
@@ -21,7 +23,9 @@ ChartJS.register(
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    BarController,
+    LineController
 );
 
 
