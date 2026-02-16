@@ -1,7 +1,7 @@
 import { InputButton, InputDate, InputSelect, InputSwitch, InputText, InputTextArea } from '@/components/InputText'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
-import { arrayEmpresaFinan, arrayMonedas, arrayTipoIngresos } from '@/types/type'
+import { arrayEmpresaFinan, arrayFinanzas, arrayMonedas, arrayTipoIngresos } from '@/types/type'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
 import { useProveedoresStore } from './useProveedoresStore'
@@ -16,7 +16,7 @@ const customGasto = {
     moneda: '', 
     monto: 0, 
     id_tipo_comprobante: 0, 
-    id_estado_gasto: 0,
+    id_estado_gasto: 1423,
     n_comprabante: '', 
     impuesto_igv: false,
     impuesto_renta: false,
@@ -81,30 +81,28 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         }
     }, [id, show])
     useEffect(() => {
-        if(show){
-            if(id_empresa){
-                obtenerTermino2xEmpresaxTipo(id_empresa, 1573)
-                obtenerProveedorxTipoxEmpresa(id_empresa, 1573)
-                obtenerOficios('proveedor','tipo_oficio')
-                obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
-                obtenerParametroEstadoGasto('egresos', 'estado-gasto')
-                obtenerParametrosFormaPago('formapago', 'formapago')
-                obtenerParametrosBancos('formapago', 'banco')
-            }
-        }
-    }, [show, id_empresa])
-    useEffect(() => {
-        if(show){
-            // ALTERAR GRUPO, CUANDO LA EMPRESA O EL TIPO DE GASTO SE CAMBIE
-            setdataGrupoxTipoGasto(dataTerm2EmpresaxGrupo.filter(e=>e.id_tipoGasto===id_tipoGasto))
-        }
-    }, [id_empresa, show, id_tipoGasto, id])
+        obtenerTermino2xEmpresaxTipo(id_empresa, 1573)
+        obtenerProveedorxTipoxEmpresa(id_empresa, 1573)
+        obtenerOficios('proveedor','tipo_oficio')
+        obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
+        obtenerParametroEstadoGasto('egresos', 'estado-gasto')
+        obtenerParametrosFormaPago('formapago', 'formapago')
+        obtenerParametrosBancos('formapago', 'banco')
+    }, [id_empresa])
     useEffect(() => {
         onInputChangeFunction('id_tipoGasto', id_tipoGasto)
     }, [id_empresa])
     useEffect(() => {
-        onInputChangeFunction('grupo', grupo)
-    }, [id_tipoGasto])
+        onInputChangeFunction('grupo', 0)
+    }, [id_tipoGasto, id_empresa])
+    useEffect(() => {
+        // ALTERAR GRUPO, CUANDO LA EMPRESA O EL TIPO DE GASTO SE CAMBIE
+        setdataGrupoxTipoGasto(dataTerm2EmpresaxGrupo.filter(e=>e.id_tipoGasto===id_tipoGasto))
+        console.log({dataTerm2EmpresaxGrupo});
+        // if(show){
+            
+        // }
+    }, [id_empresa, id_tipoGasto])
     useEffect(() => {
         if(show){
             setdataConceptosxGrupo(dataTerm2EmpresaxConcepto.filter(e=>e.grupo===grupo))
@@ -162,7 +160,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'TIPO DE GASTO'} nameInput={'id_tipoGasto'} onChange={onInputChange} options={arrayTipoIngresos} value={id_tipoGasto} />
+                            <InputSelect label={'TIPO DE GASTO'} nameInput={'id_tipoGasto'} onChange={onInputChange} options={arrayFinanzas} value={id_tipoGasto} />
                         </div>
                     </Col>
                     <Col lg={4}>
@@ -249,7 +247,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'estados'} nameInput={'id_estado_gasto'} onChange={onInputChange} options={[]} value={id_estado_gasto} />
+                            <InputSelect label={'estados'} nameInput={'id_estado_gasto'} onChange={onInputChange} options={DataEstadosGasto} value={id_estado_gasto} />
                         </div>
                     </Col>
                     <Col lg={4}>
@@ -269,7 +267,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={12}>
                         <InputButton label={'GUARDAR'} onClick={onSubmit}/>
-                        <InputButton label={'CANCELAR'} onClick={oncancel} variant={'link'}/>
+                        <InputButton label={'CANCELAR'} onClick={()=>cancelarGasto()} variant={'link'}/>
                     </Col>
                 </Row>
             </form>

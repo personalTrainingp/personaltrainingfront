@@ -41,6 +41,16 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
       }
     },
     {
+      id: 'tipogasto', header: 'TIPO GASTO', render:(row)=>{
+        return (
+          <>
+          
+          {row.id_tipoGasto}
+          </>
+        )
+      }
+    },
+    {
       id: 'ACTION', header: '', render:(row)=>{
         return (
           <>

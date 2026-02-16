@@ -1,4 +1,4 @@
-import { DateMaskStr, DateMaskStr1, DateMaskStr2, DateMaskString } from '@/components/CurrencyMask';
+import { DateMaskStr2 } from '@/components/CurrencyMask';
 
 export function aplicarTipoDeCambio(dataTC, data) {
 	return data?.map((item) => {

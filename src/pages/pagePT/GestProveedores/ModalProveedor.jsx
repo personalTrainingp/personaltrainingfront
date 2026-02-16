@@ -134,7 +134,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onCl
   return (
     <>
         <Toast ref={toastBC} onRemove={clear} />
-    <ModalAgregarTermino show={isOpenModalTerminoOficio.isOpen} onHide={onClickCloseModalCustomOficios} terminoAgregar={'OFICIO'} entidad={'proveedor'} grupo={'tipo_oficio'} titulo={'Oficio'}/>
+    <ModalAgregarTermino show={isOpenModalTerminoOficio.isOpen} onHide={onClickCloseModalCustomOficios} terminoAgregar={'Servicio y/o producto'} entidad={'proveedor'} grupo={'tipo_oficio'} titulo={'Oficio'}/>
     <Modal onHide={onCancelForm} show={show} size='lg' backdrop={'static'}>
         {status=='loading'?'Cargando....':(
             <>

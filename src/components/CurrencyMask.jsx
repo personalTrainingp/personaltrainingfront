@@ -96,6 +96,7 @@ export const DateMaskStr1 = (date) => {
 }
 export const DateMaskStr2 = (date) => {
   //'D [de] MMMM [del] YYYY'
+  //TODO: NO TOCAR
   return dayjs.utc(date).subtract(5, 'hour')
 }
 

@@ -2,7 +2,7 @@ import { PTApi } from '@/common';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewEgresos } from './egresosSlice';
-import { arrayTipoIngresos } from '@/types/type';
+import { arrayFinanzas, arrayTipoIngresos } from '@/types/type';
 
 export const useGastosStore = () => {
 	const [dataGasto, setdataGasto] = useState({});
@@ -18,7 +18,7 @@ export const useGastosStore = () => {
 			const dataGastoMap = data.gastos.map((g) => {
 				return {
 					...g,
-					tipo_gasto: arrayTipoIngresos.find(
+					tipo_gasto: arrayFinanzas.find(
 						(e) => e.value === g.tb_parametros_gasto?.id_tipoGasto
 					)?.label,
 					rubro: g.tb_parametros_gasto?.grupo,

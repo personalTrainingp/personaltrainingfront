@@ -27,6 +27,7 @@ export const useTerminos2Store = () => {
 					value: t.id,
 				};
 			});
+
 			setdataTerm2EmpresaxGrupo(uniqueBy(dataGrupos, 'value'));
 			setdataTerm2EmpresaxConcepto(dataConcepto);
 			setdataTerminologia2EmpresaxTipo({
