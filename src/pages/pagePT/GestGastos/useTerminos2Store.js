@@ -12,6 +12,7 @@ export const useTerminos2Store = () => {
 	const obtenerTermino2xEmpresaxTipo = async (id_empresa, tipo) => {
 		try {
 			const { data } = await PTApi.get(`/terminologia/term2/${id_empresa}/${tipo}`);
+
 			const dataGrupos = data.terminologia2.map((t) => {
 				return {
 					id_empresa: t.parametro_grupo.id_empresa,
@@ -21,6 +22,7 @@ export const useTerminos2Store = () => {
 					id: t.parametro_grupo.id,
 				};
 			});
+			console.log({ dataGrupos });
 			const dataConcepto = data.terminologia2.map((t) => {
 				return {
 					label: t.nombre_gasto,
@@ -30,7 +32,7 @@ export const useTerminos2Store = () => {
 				};
 			});
 
-			setdataTerm2EmpresaxGrupo(uniqueBy(dataGrupos, 'value'));
+			setdataTerm2EmpresaxGrupo(uniqueBy(dataGrupos, ['value', 'id_tipoGasto']));
 			setdataTerm2EmpresaxConcepto(dataConcepto);
 			setdataTerminologia2EmpresaxTipo({
 				dataConcepto,

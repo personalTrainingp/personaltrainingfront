@@ -103,15 +103,15 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         // ALTERAR GRUPO, CUANDO LA EMPRESA O EL TIPO DE GASTO SE CAMBIE
         if (show) {
             setdataGrupoxTipoGasto(dataTerm2EmpresaxGrupo.filter(e=>e.id_tipoGasto===id_tipoGasto))
-            console.log({dataTerm2EmpresaxGrupo: dataTerm2EmpresaxGrupo.filter(e=>e.id_tipoGasto===id_tipoGasto)});
+            console.log({dataTerm2EmpresaxGrupo: dataTerm2EmpresaxGrupo, f: 1});
         }
     }, [id_tipoGasto, id_empresa])
     useEffect(() => {
         if(show){
             setdataConceptosxGrupo(dataTerm2EmpresaxConcepto.filter(e=>e.grupo===grupo && e.id_tipoGasto===id_tipoGasto))
-            console.log({dataTerm2EmpresaxConcepto: dataTerm2EmpresaxConcepto});
+            console.log({dataTerm2EmpresaxConcepto: dataTerm2EmpresaxConcepto.filter(e=>e.grupo===grupo && e.id_tipoGasto===id_tipoGasto),f: 1});
         }
-    }, [grupo, id_tipoGasto, id_empresa])
+    }, [grupo])
     
     useEffect(() => {
         setid_empresa(id_enterprice)
