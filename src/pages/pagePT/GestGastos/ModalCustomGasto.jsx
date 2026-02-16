@@ -90,28 +90,28 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         obtenerParametrosBancos('formapago', 'banco')
     }, [id_empresa])
     useEffect(() => {
-        onInputChangeFunction('id_tipoGasto', id_tipoGasto)
-    }, [id_empresa])
+        onInputChangeFunction('id_gasto', 0)
+    }, [id_tipoGasto, grupo, id_empresa])
     useEffect(() => {
         onInputChangeFunction('grupo', 0)
     }, [id_tipoGasto, id_empresa])
     useEffect(() => {
         // ALTERAR GRUPO, CUANDO LA EMPRESA O EL TIPO DE GASTO SE CAMBIE
-        setdataGrupoxTipoGasto(dataTerm2EmpresaxGrupo.filter(e=>e.id_tipoGasto===id_tipoGasto))
-        console.log({dataTerm2EmpresaxGrupo});
-        // if(show){
-            
-        // }
-    }, [id_empresa, id_tipoGasto])
+        if (show) {
+            setdataGrupoxTipoGasto(dataTerm2EmpresaxGrupo.filter(e=>e.id_tipoGasto===id_tipoGasto))
+            console.log({dataTerm2EmpresaxGrupo: dataTerm2EmpresaxGrupo.filter(e=>e.id_tipoGasto===id_tipoGasto)});
+        }
+    }, [id_tipoGasto, id_empresa])
     useEffect(() => {
         if(show){
-            setdataConceptosxGrupo(dataTerm2EmpresaxConcepto.filter(e=>e.grupo===grupo))
+            setdataConceptosxGrupo(dataTerm2EmpresaxConcepto.filter(e=>e.grupo===grupo && e.id_tipoGasto===id_tipoGasto))
+            console.log({dataTerm2EmpresaxConcepto: dataTerm2EmpresaxConcepto});
         }
-    }, [id_empresa, grupo, id])
+    }, [grupo, id_tipoGasto, id_empresa])
     
     useEffect(() => {
-        onInputChangeFunction('id_empresa', id_empresa)
-    }, [id_empresa, id_enterprice])
+        setid_empresa(id_enterprice)
+    }, [id_enterprice])
     const onSubmit = ()=>{
         if(isCopy){
             const {  id, ...valores } = formState;
@@ -138,7 +138,6 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         onOpenModalGasto(id, isCopy)
     }
     const onInputChangeEmpresa = (e)=>{
-        onInputChange(e)
         setid_empresa(e.value)
     }
   return (

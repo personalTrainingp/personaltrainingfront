@@ -16,7 +16,7 @@ export const ModalAgregarTermino = ({show, onHide, titulo, terminoAgregar, entid
     const onSubmit = ()=>{
         registrarTerminologiaxEntidadyGrupo({entidad_param: entidad, grupo_param: grupo, label_param}, entidad, grupo)
         salirModal()
-    }
+    }   
   return (
     <Modal show={show} onHide={onHide} header={'AGREGAR'}>
             <form>

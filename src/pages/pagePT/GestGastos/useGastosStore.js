@@ -9,7 +9,6 @@ export const useGastosStore = () => {
 	const [loading, setloading] = useState(false);
 	const dispatch = useDispatch();
 	const obtenerGastos = async (id_empresa) => {
-		console.log({});
 
 		try {
 			setloading(true);
@@ -25,6 +24,7 @@ export const useGastosStore = () => {
 					concepto: g.tb_parametros_gasto?.nombre_gasto,
 					nombre_proveedor: g.tb_Proveedor?.razon_social_prov,
 					forma_pago: g.parametro_forma_pago?.label_param,
+					id: g.id,
 				};
 			});
 			setloading(false);

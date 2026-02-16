@@ -5,13 +5,19 @@ import { onSetDataViewTerm2 } from './store/terminologiaSlice';
 
 export const useTerminosStore = () => {
 	const [dataTerm2, setdataTerm2] = useState({});
+	const [isLoading, setisLoading] = useState(false);
 	const dispatch = useDispatch();
 	const obtenerTerms2xEmpresaxTipo = async (id_empresa, tipo) => {
 		try {
+			setisLoading(true);
 			const { data } = await PTApi.get(`/terminologia/term2/${id_empresa}/${tipo}`);
 			dispatch(onSetDataViewTerm2(data.terminologia2));
+			setisLoading(false);
 		} catch (error) {
 			console.log(error);
+			setisLoading(false);
+		} finally {
+			setisLoading(false);
 		}
 	};
 	const obtenerTerms2xID = async (id) => {
@@ -51,6 +57,7 @@ export const useTerminosStore = () => {
 		}
 	};
 	return {
+		isLoading,
 		dataTerm2,
 		updateTerm2xID,
 		postTerm2xEmpresaxTipo,

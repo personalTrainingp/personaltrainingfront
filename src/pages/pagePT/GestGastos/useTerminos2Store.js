@@ -18,6 +18,7 @@ export const useTerminos2Store = () => {
 					id_tipoGasto: t.id_tipoGasto,
 					label: t.parametro_grupo.param_label,
 					value: t.parametro_grupo.param_label,
+					id: t.parametro_grupo.id,
 				};
 			});
 			const dataConcepto = data.terminologia2.map((t) => {
@@ -25,6 +26,7 @@ export const useTerminos2Store = () => {
 					label: t.nombre_gasto,
 					grupo: t.parametro_grupo.param_label,
 					value: t.id,
+					id_tipoGasto: t.id_tipoGasto,
 				};
 			});
 

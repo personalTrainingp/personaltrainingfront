@@ -6,7 +6,7 @@ import { confirmDialog } from 'primereact/confirmdialog'
 import { useSelector } from 'react-redux'
 
 export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGastos}) => {
-  const { obtenerTerms2xEmpresaxTipo, deleteTerm2xID } = useTerminosStore()
+  const { obtenerTerms2xEmpresaxTipo, deleteTerm2xID, isLoading } = useTerminosStore()
   const {dataViewTerm2} = useSelector(e=>e.TERM)
   console.log({dataViewTerm2});
   
@@ -15,6 +15,13 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
   }, [id_empresa, tipo])
   
   const columns = [
+    {id: 'id', header: 'ID', render: (row)=>{
+      return (
+        <>
+        {row.id}
+        </>
+      )
+    }},
     {id: 'grupo', header: 'GRUPO', render: (row)=>{
       return (
         <>
@@ -41,7 +48,7 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
       }
     },
     {
-      id: 'tipogasto', header: 'TIPO GASTO', render:(row)=>{
+      id: 'tipogasto', accessor: 'id_tipoGasto', header: 'TIPO GASTO', render:(row)=>{
         return (
           <>
           
@@ -83,6 +90,7 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
       <DataTableCR
         columns={columns}
         data={dataViewTerm2}
+        loading={isLoading}
       />
     </div>
   )
