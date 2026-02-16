@@ -576,6 +576,7 @@ export const ExecutiveTable2 = (props) => {
             },
             { key: "clientesMeta", label: "CANTIDAD CLIENTES META", type: "int" },
             { key: "convMeta", label: "% CONVERSION META", type: "float2" },
+            { key: "roasMeta", label: "ROAS META", type: "float2" }, // NEW
             { key: "mkInvTikTok", label: "Inversion TikTok", type: "money" },
             { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
 
@@ -591,6 +592,7 @@ export const ExecutiveTable2 = (props) => {
             },
             { key: "clientesTikTok", label: "CANTIDAD CLIENTES TIKTOK", type: "int" }, // NEW
             { key: "convTikTok", label: "% CONVERSION TIKTOK", type: "float2" }, // NEW
+            { key: "roasTikTok", label: "ROAS TIKTOK", type: "float2" }, // NEW
             { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
             { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
 
@@ -606,17 +608,19 @@ export const ExecutiveTable2 = (props) => {
             },
             { key: "clientesTotal", label: "TOTAL CLIENTES DE META + TIKTOK", type: "int" }, // NEW
             { key: "convTotal", label: "% CONVERSION TOTAL", type: "float2" }, // NEW
+            { key: "roas", label: "ROAS (RETORNO DE INVERSIÓN)", type: "float2" }, // NEW
           ].map((r, i) => (
             <tr
               key={r.key + r.label}
               style={{
                 borderBottom: (i + 1) % 6 === 0 ? "8px solid #000" : "1px solid #000",
+                background: ["roas", "roasMeta", "roasTikTok"].includes(r.key) ? "#e3f2fd" : "transparent", // Highlight ROAS rows
               }}
             >
               <td
                 style={{
                   ...sCellBold,
-                  background: "#c00000",
+                  background: ["roas", "roasMeta", "roasTikTok"].includes(r.key) ? "#2196f3" : "#c00000", // Blue background for ROAS header
                   color: "#fff",
                   fontWeight: 800,
                 }}
@@ -641,9 +645,13 @@ export const ExecutiveTable2 = (props) => {
                     key={idx}
                     style={{
                       ...sCell,
+                      background: isLast
+                        ? "#c00000"
+                        : ["roas", "roasMeta", "roasTikTok"].includes(r.key)
+                          ? "#e3f2fd"
+                          : "#ffffff",
                       ...(isLast
                         ? {
-                          background: "#c00000",
                           color: "#fff",
                           fontWeight: 700,
                           fontSize: 28,
