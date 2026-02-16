@@ -9,7 +9,6 @@ import { OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { ModalFirma } from './ModalFirma';
 import { useSelector } from 'react-redux';
-import { PDFDownloadLink } from '@react-pdf/renderer';
 import { PdfContrato } from '../pdfs/PdfContrato';
 import { useDispatch } from 'react-redux';
 import { onDeleteAllPrograma } from '@/store/uiNuevaVenta/uiNuevaVenta';

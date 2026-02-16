@@ -21,14 +21,16 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
         {row.id}
         </>
       )
-    }},
+    },  exportHeader: 'id',
+  exportValue: (row) => row.id},
     {id: 'grupo', header: 'GRUPO', render: (row)=>{
       return (
         <>
         {row?.parametro_grupo?.param_label}
         </>
       )
-    }},
+    },  exportHeader: 'grupo',
+  exportValue: (row) => row.parametro_grupo?.param_label},
     {
       id: 'concepto', header: 'CONCEPTO', render:(row)=>{
         return (
@@ -36,7 +38,8 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
           {row.nombre_gasto}
           </>
         )
-      }
+      },  exportHeader: 'CONCEPTO',
+  exportValue: (row) => row.nombre_gasto
     },
     {
       id: 'orden', header: 'ORDEN', render:(row)=>{
@@ -45,7 +48,8 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
           {row.orden}
           </>
         )
-      }
+      },  exportHeader: 'orden',
+  exportValue: (row) => row.orden
     },
     {
       id: 'tipogasto', accessor: 'id_tipoGasto', header: 'TIPO GASTO', render:(row)=>{
@@ -55,7 +59,8 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
           {row.id_tipoGasto}
           </>
         )
-      }
+      },  exportHeader: 'id_tipoGasto',
+  exportValue: (row) => row.id_tipoGasto
     },
     {
       id: 'ACTION', header: '', render:(row)=>{

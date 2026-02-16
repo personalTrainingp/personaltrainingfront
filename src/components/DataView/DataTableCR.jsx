@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Table, Form, Pagination, Row, Col } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+
 // Extrae todos los valores primitivos de un objeto (incluye anidados)
 const collectValues = (value, acc) => {
   if (value == null) return;
@@ -60,7 +64,11 @@ export const DataTableCR = ({
   componentsLeft,
     loading = false,
   skeletonRows = 8,
-  backgroundHead='bg-danger'
+  backgroundHead='bg-danger',
+    exportable = true,
+  exportFileName = 'reporte',
+  exportLabel = 'Descargar Excel',
+  exportAllRaw = false
 }) => {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -155,6 +163,120 @@ export const DataTableCR = ({
     if (typeof path === 'function') return path(obj);
     if (typeof path !== 'string') return undefined;
     return path.split('.').reduce((acc, k) => (acc == null ? undefined : acc[k]), obj);
+  };
+  const toCellValue = (v) => {
+    if (v == null) return '';
+    if (v instanceof Date) return v;
+    const t = typeof v;
+    if (t === 'string' || t === 'number' || t === 'boolean') return v;
+
+    // Arrays/objetos -> texto (Excel no soporta objetos directo)
+    try {
+      if (Array.isArray(v)) {
+        // si son primitivos, únelos; si no, JSON
+        const allPrimitive = v.every((x) => x == null || ['string','number','boolean'].includes(typeof x));
+        return allPrimitive ? v.filter((x) => x != null).join(', ') : JSON.stringify(v);
+      }
+      return JSON.stringify(v);
+    } catch {
+      return String(v);
+    }
+  };
+  const extractTextFromReact = (node) => {
+    if (node == null) return '';
+    if (typeof node === 'string' || typeof node === 'number' || typeof node === 'boolean')
+      return String(node);
+
+    // React element
+    if (React.isValidElement(node)) {
+      return extractTextFromReact(node.props?.children);
+    }
+
+    // Array de children
+    if (Array.isArray(node)) {
+      return node.map(extractTextFromReact).filter(Boolean).join(' ');
+    }
+
+    // DOM element (por si te llega algo raro)
+    if (typeof node === 'object' && node?.nodeType === 1) {
+      return node.textContent ?? '';
+    }
+
+    return '';
+  };
+
+  const safeStringify = (obj) => {
+    const seen = new WeakSet();
+    try {
+      return JSON.stringify(obj, (k, v) => {
+        if (typeof v === 'object' && v !== null) {
+          if (seen.has(v)) return '[Circular]';
+          seen.add(v);
+        }
+        if (typeof v === 'function') return '[Function]';
+        return v;
+      });
+    } catch {
+      return '';
+    }
+  };
+
+  const toPlain = (v) => {
+    if (v == null) return '';
+    if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') return v;
+    if (v instanceof Date) return v;
+
+    // React JSX
+    if (React.isValidElement(v) || Array.isArray(v)) {
+      return extractTextFromReact(v);
+    }
+
+    // DOM node
+    if (typeof v === 'object' && v?.nodeType === 1) {
+      return v.textContent ?? '';
+    }
+
+    // Objeto normal -> JSON seguro
+    if (typeof v === 'object') return safeStringify(v);
+
+    return String(v);
+  };
+
+  const exportToExcel = async () => {
+    const rowsToExport = exportAllRaw ? data : sorted;
+
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('Data');
+
+    ws.columns = columns.map((c) => ({
+      header: toPlain(c.exportHeader ?? c.header ?? c.id) || c.id, // <- CLAVE
+      key: c.id,
+      width: Math.max(12, Math.round(((colWidths?.[c.id] ?? 140) / 8))),
+    }));
+
+    rowsToExport.forEach((row, i) => {
+      const record = {};
+      columns.forEach((c) => {
+        const raw =
+          typeof c.exportValue === 'function'
+            ? c.exportValue(row, i)
+            : typeof c.accessor === 'function'
+              ? c.accessor(row, i)
+              : getByPath(row, c.accessor);
+
+        record[c.id] = toPlain(raw); // <- CLAVE
+      });
+      ws.addRow(record);
+    });
+
+    ws.getRow(1).font = { bold: true };
+    ws.views = [{ state: 'frozen', ySplit: 1 }];
+
+    const buffer = await wb.xlsx.writeBuffer();
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      `${exportFileName}.xlsx`
+    );
   };
 
   const colById = useMemo(() => {
@@ -898,7 +1020,13 @@ const filtered = useMemo(() => {
     <div className="d-flex flex-column gap-2 roboto-sans-serif">
       <Row className="g-2 align-items-center">
         <Col xs="auto">{componentsLeft}</Col>
-
+        {exportable && (
+          <Col xs="auto">
+            <Button variant="success" onClick={exportToExcel}>
+              {exportLabel}
+            </Button>
+          </Col>
+        )}
         <Col xs="12" md="auto" className="ms-auto">
           {searchable && (
             <Form.Control
