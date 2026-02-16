@@ -20,6 +20,9 @@ import { useResumenEjecutivoStore } from "./useResumenEjecutivoStore";
 import { MESES } from './hooks/useResumenUtils';
 import { OverlappingMembershipsTable } from "./components/OverlappingMembershipsTable";
 
+import { SeguimientoRenovaciones } from "./components/SeguimientoRenovaciones";
+import { ModalConflictsHistory } from "./components/ModalConflictsHistory";
+
 export const App = ({ id_empresa }) => {
   const {
     selectedMonth, initDay, cutDay, tasaCambio,
@@ -35,6 +38,8 @@ export const App = ({ id_empresa }) => {
     year, setYear,
     historicalVentas
   } = useResumenEjecutivoStore(id_empresa);
+
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
 
   return (
     <>
@@ -124,6 +129,18 @@ export const App = ({ id_empresa }) => {
             </Col>
           </Row>
 
+          <Row className="mb-3">
+            <Col lg={12}>
+              <SeguimientoRenovaciones
+                dataVentas={dataVentas}
+                mapaVencimientos={mapaVencimientos}
+                year={year}
+                id_empresa={id_empresa}
+              />
+            </Col>
+
+          </Row>
+
           <ExecutiveTable2
             ventas={dataVentas} fechas={mesesSeleccionados}
             dataMktByMonth={dataMktWithCac} initialDay={initDay} cutDay={cutDay}
@@ -140,7 +157,10 @@ export const App = ({ id_empresa }) => {
           </div>
 
           <div style={{ marginBottom: "32px" }}>
-            <OverlappingMembershipsTable ventas={historicalVentas || dataVentas} />
+            <OverlappingMembershipsTable
+              ventas={historicalVentas || dataVentas}
+              onViewAll={() => setShowHistoryModal(true)}
+            />
           </div>
         </Col>
 
@@ -203,6 +223,12 @@ export const App = ({ id_empresa }) => {
           </Row>
         </div>
       </Row>
+
+      <ModalConflictsHistory
+        show={showHistoryModal}
+        onHide={() => setShowHistoryModal(false)}
+        id_empresa={id_empresa}
+      />
     </>
   );
 };

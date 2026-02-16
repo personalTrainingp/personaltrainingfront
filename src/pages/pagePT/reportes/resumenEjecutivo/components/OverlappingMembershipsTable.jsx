@@ -5,7 +5,7 @@ import React, { useState } from 'react';
  * <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
  */
 
-export const OverlappingMembershipsTable = ({ ventas = [] }) => {
+export const OverlappingMembershipsTable = ({ ventas = [], onViewAll }) => {
     const [isOpen, setIsOpen] = useState(false);
     const overlaps = Array.isArray(ventas) ? ventas : [];
 
@@ -13,6 +13,22 @@ export const OverlappingMembershipsTable = ({ ventas = [] }) => {
         if (!dateStr) return '-';
         const [y, m, d] = dateStr.split(' ')[0].split('-');
         return `${d}/${m}/${y}`;
+    };
+
+    // Función para dar color dinámico al cuadro de conflicto
+    const getConflictStyle = (dias) => {
+        const isWarning = dias === 1; // 1 día es advertencia (transición), más de 1 es error grave
+        return {
+            color: isWarning ? "#b8860b" : "#dc3545", // Dorado oscuro vs Rojo
+            fontWeight: "700",
+            background: isWarning ? "#fff8e5" : "#fff5f5",
+            padding: "8px",
+            borderRadius: "6px",
+            border: `1px solid ${isWarning ? "#ffe69c" : "#ffe3e3"}`,
+            textAlign: "center",
+            display: "inline-block",
+            minWidth: "80px"
+        };
     };
 
     const styles = {
@@ -26,7 +42,7 @@ export const OverlappingMembershipsTable = ({ ventas = [] }) => {
             fontFamily: "'Segoe UI', Roboto, sans-serif"
         },
         header: {
-            background: isOpen ? "#0d6efd" : "#f8f9fa", // Azul primario si está abierto
+            background: isOpen ? "#0d6efd" : "#f8f9fa",
             color: isOpen ? "#fff" : "#212529",
             padding: "1rem 1.5rem",
             fontWeight: "700",
@@ -35,6 +51,21 @@ export const OverlappingMembershipsTable = ({ ventas = [] }) => {
             alignItems: "center",
             cursor: "pointer",
             transition: "all 0.3s ease",
+        },
+        button: {
+            // Estilos del nuevo botón
+            background: isOpen ? "rgba(255,255,255,0.2)" : "#0d6efd",
+            color: isOpen ? "#fff" : "#fff",
+            border: "none",
+            padding: "6px 16px",
+            borderRadius: "6px",
+            fontWeight: "600",
+            fontSize: "1.1rem",
+            cursor: "pointer",
+            transition: "all 0.2s",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px"
         },
         table: { width: "100%", borderCollapse: "collapse" },
         th: {
@@ -68,15 +99,6 @@ export const OverlappingMembershipsTable = ({ ventas = [] }) => {
             color: "#0d6efd",
             display: "inline-block",
             marginBottom: "5px"
-        },
-        conflict: {
-            color: "#dc3545",
-            fontWeight: "700",
-            background: "#fff5f5",
-            padding: "8px",
-            borderRadius: "6px",
-            border: "1px solid #ffe3e3",
-            textAlign: "center"
         }
     };
 
@@ -87,7 +109,25 @@ export const OverlappingMembershipsTable = ({ ventas = [] }) => {
                     <i className={`bi ${isOpen ? 'bi-folder2-open' : 'bi-folder-symlink-fill'}`}></i>
                     <span>SOCIOS CON MEMBRESÍAS EN CONFLICTO ({overlaps.length})</span>
                 </div>
-                <i className={`bi ${isOpen ? 'bi-chevron-up' : 'bi-chevron-down'}`} style={{ fontSize: '1.2rem' }}></i>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    {/* NUEVO BOTÓN AGREGADO AQUÍ */}
+                    <button
+                        style={styles.button}
+                        onClick={(e) => {
+                            e.stopPropagation(); // Evita que se cierre/abra el acordeón al hacer clic en el botón
+                            if (onViewAll) {
+                                onViewAll(); // Llama a la función que pases por props para abrir un modal o redirigir
+                            } else {
+                                setIsOpen(true); // Comportamiento por defecto: asegura que se abra la tabla
+                            }
+                        }}
+                    >
+                        <i className="bi bi-list-ul"></i> Ver todos
+                    </button>
+
+                    <i className={`bi ${isOpen ? 'bi-chevron-up' : 'bi-chevron-down'}`} style={{ fontSize: '1.2rem' }}></i>
+                </div>
             </div>
 
             {isOpen && (
@@ -160,7 +200,8 @@ export const OverlappingMembershipsTable = ({ ventas = [] }) => {
                                             </div>
                                         </td>
                                         <td style={styles.td}>
-                                            <div style={styles.conflict}>
+                                            {/* AQUÍ APLICAMOS EL ESTILO DINÁMICO */}
+                                            <div style={getConflictStyle(row.dias_solapados)}>
                                                 <i className="bi bi-exclamation-triangle-fill d-block mb-1"></i>
                                                 {row.dias_solapados} Días
                                             </div>
