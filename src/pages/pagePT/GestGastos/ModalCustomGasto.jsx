@@ -65,7 +65,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     const { obtenerParametroPorEntidadyGrupo: obtenerParametrosFormaPago, DataGeneral: DataFormaPago } = useTerminoStore()
     const { obtenerParametroPorEntidadyGrupo: obtenerParametrosBancos, DataGeneral: DataBancos } = useTerminoStore()
     const { DataGeneral:dataOficios, obtenerParametroPorEntidadyGrupo:obtenerOficios } = useTerminoStore()
-    const { dataProveedorxTipoxEmpresa, obtenerProveedorxTipoxEmpresa } = useProveedoresStore()
+    const { dataProveedorxTipoxEmpresa, obtenerProveedorxTipoxEmpresa, obtenerContratosxProveedor, dataContratosProv } = useProveedoresStore()
     const { dataTerminologia2EmpresaxTipo, obtenerTermino2xEmpresaxTipo, dataTerm2EmpresaxConcepto, dataTerm2EmpresaxGrupo } = useTerminos2Store()
     const [dataConceptosxGrupo, setdataConceptosxGrupo] = useState([])
     const [dataGrupoxTipoGasto, setdataGrupoxTipoGasto] = useState([])
@@ -80,6 +80,10 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
             }
         }
     }, [id, show])
+    useEffect(() => {
+        obtenerContratosxProveedor(id_prov)
+    }, [id_prov])
+    
     useEffect(() => {
         obtenerTermino2xEmpresaxTipo(id_empresa, 1573)
         obtenerProveedorxTipoxEmpresa(id_empresa, 1573)
@@ -255,7 +259,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'trabajos de proveedores'} nameInput={'id_contrato_prov'} onChange={onInputChange} options={[]} value={id_contrato_prov} />
+                            <InputSelect label={'trabajos de proveedores'} nameInput={'id_contrato_prov'} onChange={onInputChange} options={dataContratosProv.map(con=>{return {label: `${con.cod_trabajo}. ${con.observacion}`, value: con.id}})} value={id_contrato_prov} />
                         </div>
                     </Col>
                     <Col lg={4}>

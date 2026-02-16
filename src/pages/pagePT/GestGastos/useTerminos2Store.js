@@ -22,7 +22,6 @@ export const useTerminos2Store = () => {
 					id: t.parametro_grupo.id,
 				};
 			});
-			console.log({ dataGrupos });
 			const dataConcepto = data.terminologia2.map((t) => {
 				return {
 					label: t.nombre_gasto,

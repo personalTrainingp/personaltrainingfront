@@ -14,7 +14,7 @@ export const TableEgresos = ({bgTotal, data=[]}) => {
   })
   const onClickData = async(g)=>{
     console.log({g});
-    
+      
   }
   return (
     <Table style={{width: '90%'}}>

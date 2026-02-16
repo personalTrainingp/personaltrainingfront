@@ -4,6 +4,7 @@ import { useState } from 'react';
 export const useProveedoresStore = () => {
 	const [dataTrabajosProv, setdataTrabajosProv] = useState([]);
 	const [dataProveedorxTipoxEmpresa, setdataProveedorxTipoxEmpresa] = useState([]);
+	const [dataContratosProv, setdataContratosProv] = useState([]);
 	const obtenerTrabajosxProv = async (id_prov) => {
 		try {
 			const { data } = await PTApi.get(`/contrato-prov/combo-id-prov/${id_prov}`);
@@ -25,8 +26,18 @@ export const useProveedoresStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerContratosxProveedor = async (id_prov) => {
+		try {
+			const { data } = await PTApi.get(`/proveedor/obtener-contratos/${id_prov}`);
+			setdataContratosProv(data.contratosxProv);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
+		obtenerContratosxProveedor,
 		dataProveedorxTipoxEmpresa,
+		dataContratosProv,
 		dataTrabajosProv,
 		obtenerTrabajosxProv,
 		obtenerProveedorxTipoxEmpresa,
