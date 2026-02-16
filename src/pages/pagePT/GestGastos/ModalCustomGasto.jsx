@@ -90,10 +90,14 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         obtenerParametrosBancos('formapago', 'banco')
     }, [id_empresa])
     useEffect(() => {
-        onInputChangeFunction('id_gasto', 0)
+        if(id==0){
+            onInputChangeFunction('id_gasto', 0)
+        }
     }, [id_tipoGasto, grupo, id_empresa])
     useEffect(() => {
-        onInputChangeFunction('grupo', 0)
+        if(id===0){
+            onInputChangeFunction('grupo', 0)
+        }
     }, [id_tipoGasto, id_empresa])
     useEffect(() => {
         // ALTERAR GRUPO, CUANDO LA EMPRESA O EL TIPO DE GASTO SE CAMBIE
