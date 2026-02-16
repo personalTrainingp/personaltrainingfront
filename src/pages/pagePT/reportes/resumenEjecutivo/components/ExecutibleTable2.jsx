@@ -613,7 +613,7 @@ export const ExecutiveTable2 = (props) => {
             <tr
               key={r.key + r.label}
               style={{
-                borderBottom: (i + 1) % 6 === 0 ? "8px solid #000" : "1px solid #000",
+                borderBottom: (i + 1) % 7 === 0 ? "8px solid #000" : "1px solid #000",
                 background: ["roas", "roasMeta", "roasTikTok"].includes(r.key) ? "#e3f2fd" : "transparent", // Highlight ROAS rows
               }}
             >
