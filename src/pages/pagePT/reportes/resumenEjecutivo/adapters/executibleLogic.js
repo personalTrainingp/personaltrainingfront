@@ -492,9 +492,10 @@ export function computeMetricsForMonth({
 		cantidad_reservas_monkeyfit_full: cantMFFull,
 		ticket_medio_monkeyfit_full: ticketMFFull,
 
-		roas: mkInv > 0 ? (totalServ + totalProd + totalOtros + ventaMF) / mkInv : 0,
-		roasMeta: mkInvMeta > 0 ? byGroup.meta.total / mkInvMeta : 0,
-		roasTikTok: mkInvTikTok > 0 ? byGroup.tiktok.total / mkInvTikTok : 0,
+
+		roas: ((mkInvMeta + mkInvTikTok) * Number(tasaCambio || 3.37)) > 0 ? (totalServ + totalProd + totalOtros + ventaMF) / ((mkInvMeta + mkInvTikTok) * Number(tasaCambio || 3.37)) : 0,
+		roasMeta: (mkInvMeta * Number(tasaCambio || 3.37)) > 0 ? byGroup.meta.total / (mkInvMeta * Number(tasaCambio || 3.37)) : 0,
+		roasTikTok: (mkInvTikTok * Number(tasaCambio || 3.37)) > 0 ? byGroup.tiktok.total / (mkInvTikTok * Number(tasaCambio || 3.37)) : 0,
 
 		byOrigin,
 		byOriginFull,
@@ -760,8 +761,12 @@ const METAS_2025 = {
 };
 
 export const getMetaPorMes = (mes, anio) => {
-	if (Number(anio) === 2026) return 110000;
-	// Default (2025 u otros)
 	const norm = aliasMes(mes);
+
+	if (Number(anio) === 2026) {
+		if (norm === 'enero') return 110000;
+		return 100000;
+	}
+	// Default (2025 u otros)
 	return METAS_2025[norm] || 100000;
 };
