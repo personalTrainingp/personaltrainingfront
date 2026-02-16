@@ -12,6 +12,10 @@ export const TableEgresos = ({bgTotal, data=[]}) => {
       montoData
     }
   })
+  const onClickData = async(g)=>{
+    console.log({g});
+    
+  }
   return (
     <Table style={{width: '90%'}}>
         <thead className={`${bgTotal}`}>
@@ -25,7 +29,7 @@ export const TableEgresos = ({bgTotal, data=[]}) => {
           {
             dataAlter?.map(g=>{
               return (
-                <tr>
+                <tr onClick={()=>onClickData(g)}>
                   <td>{g?.grupo}</td>
                   <td><NumberFormatMoney amount={g?.montoData}/></td>
                   {/* <td><NumberFormatMoney amount={g?.montoDataPagosPendientes}/></td> */}

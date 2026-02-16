@@ -23,8 +23,8 @@ export const ModalDetallexCelda = ({arrayRangeDate, bgMultiValue, id_enterprice,
   }
   return (
     <>
-    <Dialog visible={show} style={{width: '120rem'}} onHide={onHide} header={`DETALLE - ${data?.grupo} - ${data?.concepto}`}>
-        <Table  responsive hover striped>
+    <Dialog visible={show} style={{width: '150rem'}} onHide={onHide} header={`DETALLE - ${data?.grupo} - ${data?.concepto}`}>
+        <Table  responsive hover striped style={{width: '100%'}}>
           <thead >
               <tr className={`${bgEmpresa} bg-primary`}>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'></div></th>

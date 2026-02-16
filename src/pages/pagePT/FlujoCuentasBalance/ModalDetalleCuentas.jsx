@@ -23,8 +23,8 @@ export const ModalDetalleCuentas = ({bgMultiValue, id_enterprice, anio, show, on
   }
   return (
     <>
-    <Dialog visible={show} style={{width: '120rem'}} onHide={onHide} header={`DETALLE - ${data?.grupo}`}>
-        <Table  responsive hover striped>
+    <Dialog visible={show} style={{width: '150rem'}} onHide={onHide} header={`DETALLE - ${data?.grupo}`}>
+        <Table  responsive hover striped style={{width: '100%'}}>
           <thead >
               <tr className={`${bgEmpresa}`}>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'></div></th>
@@ -41,9 +41,9 @@ export const ModalDetalleCuentas = ({bgMultiValue, id_enterprice, anio, show, on
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de comprobante</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de pago</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>monto</div></th>
-                  <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>DOCUMENTO</div></th>
+                  {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>DOCUMENTO</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>FORMA DE PAGO</div></th>
-                  <th className='text-white p-1 fs-3'>N° DE COMPROBANTE </th>
+                  <th className='text-white p-1 fs-3'>N° DE COMPROBANTE </th> */}
                   <th className='text-white p-1 fs-3'>N° OPERACION </th>
               </tr>
           </thead>
@@ -70,9 +70,9 @@ export const ModalDetalleCuentas = ({bgMultiValue, id_enterprice, anio, show, on
                                   {f.moneda ==='PEN' &&<SymbolSoles numero={<NumberFormatMoney amount={f.monto}/>}/>}
                             </div>
                           </span></td>
-                          <td className='fs-2 text-primary'><span className={'text-primary fw-bold'}>{f.parametro_comprobante?.label_param}</span></td>
+                          {/* <td className='fs-2 text-primary'><span className={'text-primary fw-bold'}>{f.parametro_comprobante?.label_param}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.parametro_forma_pago?.label_param}</span></td>
-                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_comprabante}</span></td>
+                          <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_comprabante}</span></td> */}
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.n_operacion===''?'EFECTIVO':f.n_operacion}</span></td>
                       </tr>
                     )
