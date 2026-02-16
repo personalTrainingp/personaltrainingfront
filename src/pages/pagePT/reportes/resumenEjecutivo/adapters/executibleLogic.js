@@ -489,6 +489,13 @@ export function computeMetricsForMonth({
 		cantidad_reservas_monkeyfit_full: cantMFFull,
 		ticket_medio_monkeyfit_full: ticketMFFull,
 
+		cantidad_reservas_monkeyfit_full: cantMFFull,
+		ticket_medio_monkeyfit_full: ticketMFFull,
+
+		roas: mkInv > 0 ? (totalServ + totalProd + totalOtros + ventaMF) / mkInv : 0,
+		roasMeta: mkInvMeta > 0 ? byGroup.meta.total / mkInvMeta : 0,
+		roasTikTok: mkInvTikTok > 0 ? byGroup.tiktok.total / mkInvTikTok : 0,
+
 		byOrigin,
 		byOriginFull,
 		mfByProg,
