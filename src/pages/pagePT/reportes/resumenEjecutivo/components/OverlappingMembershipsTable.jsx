@@ -163,8 +163,8 @@ export const OverlappingMembershipsTable = ({ ventas = [], onViewAll }) => {
                                                     <span><i className="bi bi-person-check me-1"></i> {row.asesor_A}</span>
                                                 ) : (
                                                     <>
-                                                        <small>A: {row.asesor_A}</small>
-                                                        <small>B: {row.asesor_B}</small>
+                                                        <p>A: {row.asesor_A}</p>
+                                                        <p>B: {row.asesor_B}</p>
                                                     </>
                                                 )}
                                             </div>
@@ -176,7 +176,7 @@ export const OverlappingMembershipsTable = ({ ventas = [], onViewAll }) => {
                                                     <i className="bi bi-calendar3 me-2 text-primary"></i>
                                                     {formatDate(row.inicio_A)} - {formatDate(row.fin_A)}
                                                 </div>
-                                                <div className="text-muted" style={{ fontSize: '1rem' }}>Ticket: {row.venta_A}</div>
+                                                <small className="text-muted" >Ticket: {row.venta_A}</small>
                                                 {row.observacion_A && (
                                                     <div style={{ marginTop: '5px', fontSize: '1rem', fontStyle: 'italic' }}>
                                                         <i className="bi bi-info-circle me-1"></i> {row.observacion_A}
@@ -191,7 +191,7 @@ export const OverlappingMembershipsTable = ({ ventas = [], onViewAll }) => {
                                                     <i className="bi bi-calendar3 me-2 text-primary"></i>
                                                     {formatDate(row.inicio_B)} - {formatDate(row.fin_B)}
                                                 </div>
-                                                <div className="text-muted" style={{ fontSize: '1rem' }}>Ticket: {row.venta_B}</div>
+                                                <small className="text-muted" >Ticket: {row.venta_B}</small>
                                                 {row.observacion_B && (
                                                     <div style={{ marginTop: '5px', fontSize: '1rem', fontStyle: 'italic' }}>
                                                         <i className="bi bi-info-circle me-1"></i> {row.observacion_B}
