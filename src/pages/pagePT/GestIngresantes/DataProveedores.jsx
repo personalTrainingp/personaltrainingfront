@@ -1,4 +1,4 @@
-import { Row, Col, Card,  Modal } from 'react-bootstrap';
+import { Row, Col, Card, Modal } from 'react-bootstrap';
 import { PageBreadcrumb } from '@/components';
 import { useEffect, useState } from 'react';
 import { ModalProveedor } from './ModalProveedor';
@@ -6,13 +6,13 @@ import { Button } from 'primereact/button';
 import { CustomersProv } from './CustomersProv';
 import { ColorEmpresa } from '@/components/ColorEmpresa';
 
-export const DataProveedores = ({id_estado, tipo}) => {
+export const DataProveedores = ({ id_estado, tipo }) => {
   const [isModalOpenProv, setisModalOpenProv] = useState(false);
   const [idProv, setidProv] = useState(0);
 
   const modalProvClose = () => setisModalOpenProv(false);
   const modalProvOpen = () => setisModalOpenProv(true);
-  const onOpenModalProvOpen=(id)=>{
+  const onOpenModalProvOpen = (id) => {
     modalProvOpen()
     setidProv(id)
   }
@@ -26,21 +26,21 @@ export const DataProveedores = ({id_estado, tipo}) => {
             <Card.Body>
               <Row className="mb-3">
                 <Col sm={5}>
-                  <Button label="Agregar ingresantes" onClick={()=>onOpenModalProvOpen(0)} />
+                  <Button label="Agregar ingresantes" onClick={() => onOpenModalProvOpen(0)} />
                 </Col>
               </Row>
               <ColorEmpresa
                 childrenChange={
-                      <CustomersProv tipo={tipo} onOpenModalProvOpen={onOpenModalProvOpen}  estado_prov={id_estado} agente={true} id_empresa={598} />
+                  <CustomersProv tipo={tipo} onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={598} />
                 }
                 childrenReducto={
-                      <CustomersProv tipo={tipo} onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={599} />
+                  <CustomersProv tipo={tipo} onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={599} />
                 }
                 childrenCircus={
-                      <CustomersProv tipo={tipo} onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={601} />
+                  <CustomersProv tipo={tipo} onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={601} />
                 }
                 childrenRal={
-                      <CustomersProv tipo={tipo} onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={800} />
+                  <CustomersProv tipo={tipo} onOpenModalProvOpen={onOpenModalProvOpen} estado_prov={id_estado} agente={true} id_empresa={800} />
                 }
               />
             </Card.Body>
@@ -52,3 +52,5 @@ export const DataProveedores = ({id_estado, tipo}) => {
     </>
   );
 };
+
+export default DataProveedores;

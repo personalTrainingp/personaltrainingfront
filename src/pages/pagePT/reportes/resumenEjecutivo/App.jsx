@@ -21,6 +21,7 @@ import { MESES } from './hooks/useResumenUtils';
 import { OverlappingMembershipsTable } from "./components/OverlappingMembershipsTable";
 
 import { SeguimientoRenovaciones } from "./components/SeguimientoRenovaciones";
+import { CrecimientoNeto } from "./components/CrecimientoNeto";
 import { ModalConflictsHistory } from "./components/ModalConflictsHistory";
 
 export const App = ({ id_empresa }) => {
@@ -138,7 +139,17 @@ export const App = ({ id_empresa }) => {
                 id_empresa={id_empresa}
               />
             </Col>
+          </Row>
 
+          <Row className="mb-3">
+            <Col lg={12}>
+              <CrecimientoNeto
+                dataVentas={dataVentas}
+                mapaVencimientos={mapaVencimientos}
+                year={year}
+                id_empresa={id_empresa}
+              />
+            </Col>
           </Row>
 
           <ExecutiveTable2
