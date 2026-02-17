@@ -69,10 +69,9 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     const { dataTerminologia2EmpresaxTipo, obtenerTermino2xEmpresaxTipo, dataTerm2EmpresaxConcepto, dataTerm2EmpresaxGrupo } = useTerminos2Store()
     const [dataConceptosxGrupo, setdataConceptosxGrupo] = useState([])
     const [dataGrupoxTipoGasto, setdataGrupoxTipoGasto] = useState([])
-        const [dataProveedoresFiltradosxOficio, setdataProveedoresFiltradosxOficio] = useState([])
     const [isOpenModalProveedor, setOpenModalProveedor] = useState({isOpen: false, id: 0})
     const { postGasto, updateGastoxID } = useGastosStore()
-    const [id_empresa, setid_empresa] = useState(id_enterprice)
+    const [id_empresa, setid_empresa] = useState(0)
     
     useEffect(() => {
         if(show){
@@ -116,11 +115,11 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
             setdataConceptosxGrupo(dataTerm2EmpresaxConcepto.filter(e=>e.grupo===grupo && e.id_tipoGasto===id_tipoGasto))
             console.log({dataTerm2EmpresaxConcepto: dataTerm2EmpresaxConcepto.filter(e=>e.grupo===grupo && e.id_tipoGasto===id_tipoGasto),f: 1});
         }
-    }, [grupo])
+    }, [grupo, id_tipoGasto, id_empresa])
     
     useEffect(() => {
-        setid_empresa(id_empresa)
-    }, [id_enterprice, id_empresa])
+        setid_empresa(id_enterprice)
+    }, [id_enterprice])
     const onSubmit = ()=>{
         if(isCopy){
             const {  id, ...valores } = formState;
@@ -147,7 +146,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         onOpenModalGasto(id, isCopy)
     }
     const onInputChangeEmpresa = (e)=>{
-        setid_empresa(e.value)
+        setid_empresa(e.target.value)
     }
   return (
     <>
