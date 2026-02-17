@@ -18,7 +18,7 @@ import { ItemVentaMembresia } from '@/components/ItemsResumenVenta/ItemVentaMemb
 import { ItemVentaTransferenciaMembresia } from '@/components/ItemsResumenVenta/ItemVentaTransferenciaMembresia';
 import Select from 'react-select'
 import { useGestVentasStore } from './useGestVentasStore';
-export const ModalViewObservacion = ({onHide, show, data, id}) => {
+export const ModalViewObservacion = ({onHide, show, id}) => {
     // console.log(data);
     const closeModal = ()=>{
         onHide();
