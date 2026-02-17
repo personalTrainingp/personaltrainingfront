@@ -43,7 +43,7 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
             </thead>
             <tbody>
                 <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>META</td>
+                    <td className='sticky-td-598 fs-3 text-white'>TOTAL</td>
                     {
                         dataConMes.map((d, i)=>{
                             return (
