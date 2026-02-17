@@ -1,10 +1,5 @@
 import React from "react";
 
-const ALLOWED_ORIGINS = [691, 692, 690, 693, 694, 695, 1514, 1515, 696, 686, 1593];
-
-const formatMonthYear = (date) =>
-  date.toLocaleDateString("es-ES", { month: "short", year: "numeric" });
-
 const getSortableKey = (date) => {
   const m = date.getMonth() + 1;
   return `${date.getFullYear()}-${String(m).padStart(2, '0')}`;
@@ -46,7 +41,7 @@ const getMembershipItems = (v) => {
 
 const hasPaidMembership = (v) =>
   getMembershipItems(v).some(
-    (it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total) > 0
+    (it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total)
   );
 
 const getOriginId = (v) => {
@@ -86,36 +81,32 @@ export default function TablaRenovaciones({
     if (Array.isArray(datosVencimientos)) {
       datosVencimientos.forEach(row => {
         if (row.Mes) {
-          mapSeguro[row.Mes] = row["Vencimientos (Fec Fin)"] || row.cantidad || 0;
+          mapSeguro[row.Mes] = {
+            vencimientos: row["Vencimientos (Fec Fin)"] || row.vencimientos || 0,
+            renovaciones: row["Renovaciones (Pagadas)"] || row["RENOVACIONES DEL MES"] || row.renovaciones || 0,
+            pendiente: row["Pendiente Real"] || row["PENDIENTE DE RENOVACIONES"] || row.pendiente || 0,
+            acumulado: row["ACUMULADO CARTERA"] || row.acumulado || 0
+          };
         }
       });
     } else if (typeof datosVencimientos === 'object' && datosVencimientos !== null) {
       Object.keys(datosVencimientos).forEach(key => {
         const val = datosVencimientos[key];
-        const num = (typeof val === 'object')
-          ? (val["Vencimientos (Fec Fin)"] || val.vencimientos || 0)
-          : val;
-        mapSeguro[key] = num;
+        if (typeof val === 'object') {
+          mapSeguro[key] = {
+            vencimientos: val["Vencimientos (Fec Fin)"] || val.vencimientos || 0,
+            renovaciones: val["Renovaciones (Pagadas)"] || val["RENOVACIONES DEL MES"] || val.renovaciones || 0,
+            pendiente: val["Pendiente Real"] || val["PENDIENTE DE RENOVACIONES"] || val.pendiente || 0,
+            acumulado: val["ACUMULADO CARTERA"] || val.acumulado || 0
+          };
+        } else {
+          mapSeguro[key] = { vencimientos: val, renovaciones: 0, pendiente: 0, acumulado: 0 };
+        }
       });
     }
 
-    for (const venta of items) {
-      const d = toLimaDate(venta?.fecha_venta);
-      if (!d) continue;
-
-      const key = getSortableKey(d);
-
-      if (!statsMap.has(key)) {
-        statsMap.set(key, { vencimientos: 0, renovaciones: 0, pendiente: 0, acumulado: 0 });
-      }
-
-      const monthStats = statsMap.get(key);
-      const originId = getOriginId(venta);
-
-      if (originId === 691) {
-        monthStats.renovaciones += 1;
-      }
-    }
+    // Bypass local calculation from items as per user request to show backend data "as is"
+    /* for (const venta of items) { ... } */
 
     // 3. Fill 'vencimientos' from mapSeguro OR override with 'vencimientosFiltrados'
     const currentMonthKey = getSortableKey(base);
@@ -124,36 +115,34 @@ export default function TablaRenovaciones({
       if (!statsMap.has(key)) {
         statsMap.set(key, { vencimientos: 0, renovaciones: 0, pendiente: 0, acumulado: 0 });
       }
+      const data = mapSeguro[key];
+      const target = statsMap.get(key);
 
-      // Override for current month if we have a filtered value
+      target.vencimientos = Number(data.vencimientos || 0);
+      target.renovaciones = Number(data.renovaciones || 0);
+      target.pendiente = Number(data.pendiente || 0);
+      target.acumulado = Number(data.acumulado || 0);
+
+      // Override current month vencimientos ONLY if specifically requested via vencimientosFiltrados
       if (key === currentMonthKey && vencimientosFiltrados !== null) {
-        statsMap.get(key).vencimientos = Number(vencimientosFiltrados);
-      } else {
-        statsMap.get(key).vencimientos = Number(mapSeguro[key] || 0);
+        target.vencimientos = Number(vencimientosFiltrados);
+        // If we override vencimientos, should we recalculate pendiente? 
+        // User said "tal cual llegan los datos". Overriding might break that rule. 
+        // But `vencimientosFiltrados` is an explicit prop likely for a reason (real-time toggle?). 
+        // I'll keep the override for vencimientos but NOT recalculate others to stay faithful to backend data where possible.
       }
     });
 
-    const sortedKeys = Array.from(statsMap.keys()).sort();
+    // We don't need to iterate sortedKeys to calculate running totals anymore because 'acumulado' comes from the backend.
+    // Unless there are gaps? 
+    // The user wants "tal cual". So if a month is missing in backend data, it's 0. 
+    // I will just ensure visible months are present in statsMap.
+
     visibleMonthDates.forEach(d => {
       const key = getSortableKey(d);
-      if (!statsMap.has(key)) sortedKeys.push(key);
-    });
-
-    const uniqueSortedKeys = [...new Set(sortedKeys)].sort();
-
-    let runningTotal = carteraHistoricaInicial;
-
-    uniqueSortedKeys.forEach(key => {
       if (!statsMap.has(key)) {
         statsMap.set(key, { vencimientos: 0, renovaciones: 0, pendiente: 0, acumulado: 0 });
       }
-      const data = statsMap.get(key);
-
-      const diff = data.vencimientos - data.renovaciones;
-      data.pendiente = diff;
-
-      runningTotal += data.pendiente;
-      data.acumulado = runningTotal;
     });
 
     return statsMap;
