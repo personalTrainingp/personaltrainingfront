@@ -67,10 +67,10 @@ export const ModalViewObservacion = ({onHide, show, id}) => {
                         <span>Asesor: </span>
                         <span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>{dataVentaxID[0]?.tb_empleado?.nombres_apellidos_empl}</span>
                     </li>
-                    <li className='mb-4'>
+                    {/* <li className='mb-4'>
                         <span>Socio: </span>
                         <span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>{dataVentaxID[0]?.tb_cliente?.nombres_apellidos_cli}</span>
-                    </li>
+                    </li> */}
                     <li className='mb-4'>
                         <span>Procedencia: </span>
                         <span className='d-flex align-items-center' style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>

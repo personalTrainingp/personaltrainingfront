@@ -45,7 +45,7 @@ export const TableResumen = ({withHeaderVertical, dataEgresos, dataIngresos, bgT
                 <tbody>
                   <tr>
                     <td colSpan={2}>INGRESOS</td>
-                    <td><NumberFormatMoney amount={dataIngresos.reduce((total, item)=>total+item.montoTotal, 0)*3.6}/></td>
+                    <td><NumberFormatMoney amount={dataIngresos.reduce((total, item)=>total+item.montoTotal, 0)*3.36}/></td>
                   </tr>
                   <tr>
                     <td colSpan={2}>EGRESOS</td>
@@ -53,7 +53,7 @@ export const TableResumen = ({withHeaderVertical, dataEgresos, dataIngresos, bgT
                   </tr>
                   <tr>
                     <td colSpan={2}>TOTAL</td>
-                    <td><NumberFormatMoney amount={dataIngresos.reduce((total, item)=>total+item.montoTotal, 0)*3.6-dataEgresos.reduce((total, item)=>total+item.montoTotal, 0)}/></td>
+                    <td><NumberFormatMoney amount={dataIngresos.reduce((total, item)=>total+item.montoTotal, 0)*3.36-dataEgresos.reduce((total, item)=>total+item.montoTotal, 0)}/></td>
                   </tr>
                 </tbody>
           </Table></>

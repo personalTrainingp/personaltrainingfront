@@ -5,11 +5,33 @@ import { onSetDataViewEgresos } from './egresosSlice';
 import { arrayFinanzas, arrayTipoIngresos } from '@/types/type';
 
 export const useGastosStore = () => {
-	const [dataGasto, setdataGasto] = useState({});
+	const [dataGasto, setdataGasto] = useState({
+		id_tipoGasto: 0,
+		id_oficio: 0,
+		id_gasto: 0,
+		grupo: '',
+		moneda: '',
+		monto: 0,
+		id_tipo_comprobante: 0,
+		id_estado_gasto: 1423,
+		n_comprabante: '',
+		impuesto_igv: false,
+		impuesto_renta: false,
+		fec_pago: '',
+		fec_comprobante: '',
+		id_forma_pago: 0,
+		id_banco_pago: 0,
+		n_operacion: '',
+		id_prov: 0,
+		id_contrato_prov: 0,
+		id_porCobrar: 0,
+		descripcion: '',
+		esCompra: 0,
+		id_empresa: 0,
+	});
 	const [loading, setloading] = useState(false);
 	const dispatch = useDispatch();
 	const obtenerGastos = async (id_empresa) => {
-
 		try {
 			setloading(true);
 			const { data } = await PTApi.get(`/egreso/empresa/${id_empresa}`);

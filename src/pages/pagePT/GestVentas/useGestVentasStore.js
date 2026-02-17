@@ -43,6 +43,7 @@ export const useGestVentasStore = () => {
 						v.fecha_venta,
 						'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'
 					),
+					id_cli: v.id_cli,
 					tb_cliente: {
 						nombres_cliente: v.tb_cliente.nombres_apellidos_cli,
 						urlAvatar:

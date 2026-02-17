@@ -376,9 +376,9 @@ export const arrayServiciosNutricionalesTest = [
 // ];
 
 export const arrayFinanzas = [
-	{ label: '250 | Fijos', value: 250 },
-	{ label: '260 | VARIABLES', value: 260 },
-	{ label: '270 | ACTIVOS', value: 270 },
+	{ label: 'FIJOS', value: 250 },
+	{ label: 'VARIABLES', value: 260 },
+	{ label: 'ACTIVOS', value: 270 },
 	// { label: '330 | Caja chica[INGRESOS]', value: 330 },
 	// { label: '340 | exepcionales[INGRESOS]', value: 340 },
 	// { label: '370 | inversion activos', value: 370 },
