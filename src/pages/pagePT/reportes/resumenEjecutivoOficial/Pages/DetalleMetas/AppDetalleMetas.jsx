@@ -32,6 +32,8 @@ export const AppDetalleMetas = () => {
             {mes: 1, anio: 2026, meta: 40000},
             {mes: 12, anio: 2025, meta: 40000},
         ]
+        console.log({dme: dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia))});
+        
   return (
     <div>
                 <FechaCorte corte={corte.corte} inicio={corte.inicio}/>
@@ -52,7 +54,7 @@ export const AppDetalleMetas = () => {
             REINSCRIPCIONES
         </div>
         <div  className="table-responsive" style={{ width: '100%' }}>
-            <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresiasReinscripciones?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={[]}/>
+            <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresiasReinscripciones?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia)).map(d=>{return {...d,meta: d.montoTotal}})}/>
         </div>
         <div className='text-center text-change' style={{fontSize: '80px'}}>
             RENOVACIONES
