@@ -64,7 +64,7 @@ export const AppDetalleMetas = () => {
                 return (
                     <div  className="table-responsive" style={{ width: '100%' }}>
                         <p className='text-center fs-1'>{d.nombre_empl}</p>
-                        <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={sumarMontoTotal(agruparPorMesDiaFechaVenta((d.items)))?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={[]}/>
+                        <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={sumarMontoTotal(agruparPorMesDiaFechaVenta((d.items)))?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia)).map(d=>{return {...d,meta: d.montoTotal}})}/>
                     </div>
                 )
             })
