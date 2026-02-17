@@ -29,7 +29,7 @@ export function SumaDeSesiones(props) {
     <Row>
       <Col lg={12}>
         <div style={{ margin: "32px 0" }}>
-          <table className="table text-center tabla-sesiones with-traspasos">
+          <table className="table text-center tabla-sesiones with-traspasos" style={{ width: "100%" }}>
             <thead style={{ backgroundColor: "#fff", color: "#fff" }}>
               <tr>
                 <th style={{ width: 150, fontSize: 25, color: "#fff", verticalAlign: "middle" }}>ASESORES</th>
