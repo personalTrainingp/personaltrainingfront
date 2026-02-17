@@ -119,8 +119,8 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     }, [grupo])
     
     useEffect(() => {
-        setid_empresa(id_enterprice)
-    }, [id_enterprice])
+        setid_empresa(id_empresa)
+    }, [id_enterprice, id_empresa])
     const onSubmit = ()=>{
         if(isCopy){
             const {  id, ...valores } = formState;
