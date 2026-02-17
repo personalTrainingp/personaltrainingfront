@@ -50,7 +50,6 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         id_forma_pago, 
         id_banco_pago,
         n_operacion, 
-        id_oficio,
         id_prov, 
         id_contrato_prov,
         id_porCobrar,
@@ -69,10 +68,11 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     const { dataTerminologia2EmpresaxTipo, obtenerTermino2xEmpresaxTipo, dataTerm2EmpresaxConcepto, dataTerm2EmpresaxGrupo } = useTerminos2Store()
     const [dataConceptosxGrupo, setdataConceptosxGrupo] = useState([])
     const [dataGrupoxTipoGasto, setdataGrupoxTipoGasto] = useState([])
+    const [dataProveedoresFiltrados, setdataProveedoresFiltrados] = useState([])
     const [isOpenModalProveedor, setOpenModalProveedor] = useState({isOpen: false, id: 0})
     const { postGasto, updateGastoxID } = useGastosStore()
     const [id_empresa, setid_empresa] = useState(0)
-    
+        const [id_oficio, setid_oficio] = useState(0)
     useEffect(() => {
         if(show){
             if(id!==0){
@@ -81,18 +81,22 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         }
     }, [id, show])
     useEffect(() => {
-        obtenerContratosxProveedor(id_prov)
-    }, [id_prov])
+        if (show) {
+            obtenerContratosxProveedor(id_prov)
+        }
+    }, [id_prov, show])
     
     useEffect(() => {
-        obtenerTermino2xEmpresaxTipo(id_empresa, 1573)
-        obtenerProveedorxTipoxEmpresa(id_empresa, 1573)
-        obtenerOficios('proveedor','tipo_oficio')
-        obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
-        obtenerParametroEstadoGasto('egresos', 'estado-gasto')
-        obtenerParametrosFormaPago('formapago', 'formapago')
-        obtenerParametrosBancos('formapago', 'banco')
-    }, [id_empresa])
+        if(show){
+            obtenerTermino2xEmpresaxTipo(id_empresa, 1573)
+            obtenerProveedorxTipoxEmpresa(id_empresa, 1573)
+            obtenerOficios('proveedor','tipo_oficio')
+            obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
+            obtenerParametroEstadoGasto('egresos', 'estado-gasto')
+            obtenerParametrosFormaPago('formapago', 'formapago')
+            obtenerParametrosBancos('formapago', 'banco')
+        }
+    }, [id_empresa, show])
     useEffect(() => {
         if(id==0){
             onInputChangeFunction('id_gasto', 0)
@@ -107,13 +111,11 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         // ALTERAR GRUPO, CUANDO LA EMPRESA O EL TIPO DE GASTO SE CAMBIE
         if (show) {
             setdataGrupoxTipoGasto(dataTerm2EmpresaxGrupo.filter(e=>e.id_tipoGasto===id_tipoGasto))
-            console.log({dataTerm2EmpresaxGrupo: dataTerm2EmpresaxGrupo, f: 1});
         }
     }, [id_tipoGasto, id_empresa])
     useEffect(() => {
         if(show){
             setdataConceptosxGrupo(dataTerm2EmpresaxConcepto.filter(e=>e.grupo===grupo && e.id_tipoGasto===id_tipoGasto))
-            console.log({dataTerm2EmpresaxConcepto: dataTerm2EmpresaxConcepto.filter(e=>e.grupo===grupo && e.id_tipoGasto===id_tipoGasto),f: 1});
         }
     }, [grupo, id_tipoGasto, id_empresa])
     
@@ -148,6 +150,17 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     const onInputChangeEmpresa = (e)=>{
         setid_empresa(e.target.value)
     }
+    const onInputChangeOficios = (e)=>{
+        onInputChange(e)
+        setid_oficio(e.target.value)
+    }
+    useEffect(() => {
+        if(show){
+            setdataProveedoresFiltrados(id_oficio===0?dataProveedorxTipoxEmpresa:dataProveedorxTipoxEmpresa.filter(e => e.id_oficio === id_oficio))
+        }
+    }, [id_oficio, show])
+    console.log({dataProveedorxTipoxEmpresa});
+    
   return (
     <>
     <ModalProveedor id={isOpenModalProveedor.id} onCloseModalProveedor={onCloseModalProveedor} onHide={()=>setOpenModalProveedor({isOpen: false, id:0})} onShow={onOpenModalProveedor} show={isOpenModalProveedor.isOpen}  />
@@ -241,12 +254,12 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'oficios'} nameInput={'id_oficio'} options={dataOficios} onChange={onInputChange} value={id_oficio} />
+                            <InputSelect label={'oficios'} nameInput={'id_oficio'} options={[...dataOficios, {value: 0, label: 'TODOS'}]} onChange={onInputChangeOficios} value={id_oficio} />
                         </div>
                     </Col>
                     <Col lg={4}>
                         <div className='m-2 d-flex align-items-end'>
-                            <InputSelect label={'proveedor'} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedorxTipoxEmpresa} value={id_prov} />
+                            <InputSelect label={'proveedor'} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedoresFiltrados} value={id_prov} />
                             <div>
                                 <Button className='' onClick={onOpenModalProveedor}>+</Button>
                             </div>
