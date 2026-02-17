@@ -45,7 +45,7 @@ export const ComparativoMensualTable = ({
             verticalAlign: 'middle' // Para centrar verticalmente si la altura cambia
         },
         footerRow: { background: '#f8f9fa', borderTop: '2px solid #dee2e6' },
-        highlightCell: { background: '#f7e312ff', color: '#c00000', fontWeight: '700' },
+        highlightCell: { background: '#dc3545', color: '#fff', fontWeight: '700' },
         headerActions: { display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }
     };
 
@@ -121,10 +121,10 @@ export const ComparativoMensualTable = ({
                             <th style={{ ...styles.th, background: '#a00000' }}>CUOTA</th>
 
                             {/* CUSTOM RANGE COLUMN */}
-                            <th style={{ ...styles.th, background: '#d4af37', color: '#000' }}>
+                            <th style={{ ...styles.th, background: '#c00000', color: '#fff' }}>
                                 RANGO<br />({customStartDay}-{customEndDay})
                             </th>
-                            <th style={{ ...styles.th, background: '#d4af37', color: '#000', fontSize: '16px' }}>
+                            <th style={{ ...styles.th, background: '#c00000', color: '#fff', fontSize: '16px' }}>
                                 %
                             </th>
 
@@ -168,9 +168,9 @@ export const ComparativoMensualTable = ({
                                     const field = 'customRangeTotal';
                                     const isHighlighted = isTop3(row.key, field);
                                     // Color solicitado por usuario
-                                    const baseBg = '#efef4cff';
+                                    const baseBg = '#c00000';
                                     const bg = isHighlighted ? styles.highlightCell.background : baseBg;
-                                    const color = isHighlighted ? styles.highlightCell.color : '#444';
+                                    const color = isHighlighted ? styles.highlightCell.color : '#fff';
                                     const weight = isHighlighted ? styles.highlightCell.fontWeight : '400';
 
                                     return (
