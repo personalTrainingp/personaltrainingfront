@@ -2,7 +2,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import React, { useEffect } from 'react'
 import { useGastosStore } from './useGastosStore'
 import { useSelector } from 'react-redux'
-import { DateMask, DateMaskStr, NumberFormatMoney } from '@/components/CurrencyMask'
+import { DateMask, DateMaskStr, DateMaskStr2, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
@@ -31,21 +31,24 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
                 <DateMask date={row.fec_registro} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/>
                 </>
             )
-        }},
+        },  exportHeader: 'fecha de registro',
+  exportValue: (row) => MaskDate(row.fec_registro, 'DD-MM-YYYY')},
         {id: 5, header: <>FECHA <br/> PAGO</>, width: '200px', render:(row)=>{
             return (
                 <>
                 <DateMask date={row.fecha_pago} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/>
                 </>
             )
-        }},
+        },  exportHeader: 'fecha de pago',
+  exportValue: (row) => MaskDate(row.fecha_pago, 'DD-MM-YYYY')},
         {id: 6, header: <>FECHA DE <br/> COMPROBANTE</>, width: '200px',  render:(row)=>{
             return (
                 <>
                 <DateMask date={row.fecha_comprobante} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/>
                 </>
             )
-        }},
+        },  exportHeader: 'fecha de comprobante',
+  exportValue: (row) => MaskDate(row.fecha_comprobante, 'DD-MM-YYYY')},
         {id: 7, header: <>TIPO DE <br/> GASTO</>, width: '200px', accessor: 'tipo_gasto', render: (row)=>{
             return (
                 <>
@@ -78,7 +81,8 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
                                 </div>
                 </>
             )
-        }},
+        },  exportHeader: 'Monto',
+  exportValue: (row) => `${row.moneda} ${row.monto}`},
         {id: 11, header: <>FORMA <br/> PAGO</>, accessor: 'forma_pago', width: '200px', render: (row)=>{
             return (
                 <>
