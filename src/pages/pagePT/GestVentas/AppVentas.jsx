@@ -4,7 +4,7 @@ import React from 'react'
 import { Card } from 'react-bootstrap'
 import { DataTableVentas } from './DataTableVentas'
 
-export const AppVentas = () => {
+export const AppVentas = ({vistaCliente=true}) => {
   return (
     <>
       <PageBreadcrumb title="DETALLE DE COMPRAS-CANJES-VENTAS POR SOCIO" subName="Ventas" />
@@ -12,7 +12,7 @@ export const AppVentas = () => {
         <Card.Body>
           <TabView>
             <TabPanel header={'CHANGE'}>
-              <DataTableVentas id_empresa={598}/>
+              <DataTableVentas id_empresa={598} vistaCliente={vistaCliente}/>
             </TabPanel>
             <TabPanel header={'HISTORICO'}>
               

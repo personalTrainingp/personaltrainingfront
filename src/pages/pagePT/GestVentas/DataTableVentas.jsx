@@ -5,7 +5,7 @@ import { Button, Col, Row } from 'react-bootstrap'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { ModalViewObservacion } from './ModalViewObservacion'
 
-export const DataTableVentas = ({id_empresa}) => {
+export const DataTableVentas = ({id_empresa, vistaCliente}) => {
     const { obtenerVentasxEmpresa, dataVentasxEmpresa } = useGestVentasStore()
     const [dataVentaxID, setdataVentaxID] = useState({isOpen: false, id: 0})
       useEffect(() => {
@@ -23,6 +23,9 @@ export const DataTableVentas = ({id_empresa}) => {
         }},
         {id: 3, header: 'SOCIO', render:(row)=>{
             return (
+                <>
+                    {
+                        vistaCliente?(
                 <Row className='m-0'>
                     <Col xxl={12}>
                         <div className='d-flex justify-content-between align-items-center'>
@@ -31,6 +34,13 @@ export const DataTableVentas = ({id_empresa}) => {
                         </div>
                     </Col>
                 </Row>
+                        ): (
+                            <>
+                                CLIENTE DE ID {row.id_cli}
+                            </>
+                        )
+                    }
+                </>
             )
         }},
         {
