@@ -32,7 +32,6 @@ export const TableEgresos = ({bgTotal, data=[]}) => {
                 <tr onClick={()=>onClickData(g)}>
                   <td>{g?.grupo}</td>
                   <td><NumberFormatMoney amount={g?.montoData}/></td>
-                  {/* <td><NumberFormatMoney amount={g?.montoDataPagosPendientes}/></td> */}
                 </tr>
               )
             })

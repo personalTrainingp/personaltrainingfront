@@ -64,6 +64,48 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
                 )
             }},
         ]
+        const columnsExports = [
+            {
+                id: 'ID',
+                exportHeader: 'ID',
+                exportValue: (row) => row.id,
+            },
+            {
+                id: 'ID_CONCEPTO',
+                exportHeader: 'CONCEPTO',
+                exportValue: (row)=>row.concepto?.label_param
+            },
+            {
+                id: 'MONEDA',
+                exportHeader: 'MONEDA',
+                exportValue: (row)=>row.moneda
+            },
+            {
+                id: 'MONTO',
+                exportHeader: 'MONTO',
+                exportValue: (row)=>row.monto
+            },
+            {
+                id: 'fecha_comprobante',
+                exportHeader: 'FECHA COMPROBANTE',
+                exportValue: (row)=>row.fecha_comprobante
+            },
+            {
+                id: 'empresa',
+                exportHeader: 'EMPRESA',
+                exportValue: (row)=>row.tb_Proveedor?.razon_social_prov
+            },
+            {
+                id: 'descripcion',
+                exportHeader: 'DESCRIPCION',
+                exportValue: (row)=>row.descripcion
+            },
+            {
+                id: 'noperacion',
+                exportHeader: 'N° DE OPERACION',
+                exportValue: (row)=>row.n_operacion
+            },
+        ]
         const onClickOpenModalCustomCuentasBalances = (id)=>{
             onOpenModalCustomCuentasBalances(id)
         }
@@ -80,6 +122,7 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
         <DataTableCR
             columns={columns}
             data={dataView}
+            exportExtraColumns={columnsExports}
         />
     </div>
   )

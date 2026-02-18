@@ -34,7 +34,6 @@ const customGasto = {
 }
 export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpenModalGasto}) => {
     const { obtenerGastoxID, dataGasto } = useGastosStore()
-    console.log({dataGasto});
     
     const {
         formState, 
@@ -68,7 +67,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     const { obtenerParametroPorEntidadyGrupo: obtenerParametrosBancos, DataGeneral: DataBancos } = useTerminoStore()
     const { DataGeneral:dataOficios, obtenerParametroPorEntidadyGrupo:obtenerOficios } = useTerminoStore()
     const { dataProveedorxTipoxEmpresa, obtenerProveedorxTipoxEmpresa, obtenerContratosxProveedor, dataContratosProv } = useProveedoresStore()
-    const { dataTerminologia2EmpresaxTipo, obtenerTermino2xEmpresaxTipo, dataTerm2EmpresaxConcepto, dataTerm2EmpresaxGrupo, isLoading:isLoadingConceptos } = useTerminos2Store()
+    const { dataTerminologia2EmpresaxTipo, obtenerTermino2xEmpresaxTipo, dataTerm2EmpresaxConcepto, dataTerm2EmpresaxGrupo, isLoading:isLoadingConceptos,  } = useTerminos2Store()
     const [dataConceptosxGrupo, setdataConceptosxGrupo] = useState([])
     const [dataGrupoxTipoGasto, setdataGrupoxTipoGasto] = useState([])
     const [dataProveedoresFiltrados, setdataProveedoresFiltrados] = useState(dataProveedorxTipoxEmpresa)
@@ -92,7 +91,6 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     
     useEffect(() => {
         if(show){
-            obtenerTermino2xEmpresaxTipo(id_empresa, 1573)
             obtenerProveedorxTipoxEmpresa(id_empresa, 1573)
             obtenerOficios('proveedor','tipo_oficio')
             obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
@@ -102,15 +100,19 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         }
     }, [id_empresa, show])
     useEffect(() => {
-        if(id===0){
-            onInputChangeFunction('id_gasto', 0)
-        }
-    }, [id_tipoGasto, grupo, id_empresa])
+            obtenerTermino2xEmpresaxTipo(id_empresa, 1573)
+    }, [id_empresa, id_tipoGasto])
+    
     useEffect(() => {
         if(id===0){
             onInputChangeFunction('grupo', '')
         }
     }, [id_empresa, id_tipoGasto])
+    useEffect(() => {
+        if(id===0){
+            onInputChangeFunction('id_gasto', 0)
+        }
+    }, [id_tipoGasto, grupo, id_empresa])
     useEffect(() => {
         // ALTERAR GRUPO, CUANDO LA EMPRESA O EL TIPO DE GASTO SE CAMBIE
         if (show) {

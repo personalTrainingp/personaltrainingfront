@@ -10,7 +10,7 @@ export const useTerminos2Store = () => {
 	const [dataTerm2EmpresaxGrupo, setdataTerm2EmpresaxGrupo] = useState([]);
 	const [dataTerm2EmpresaxConcepto, setdataTerm2EmpresaxConcepto] = useState([]);
 	const [isLoading, setisLoading] = useState(false);
-	const obtenerTermino2xEmpresaxTipo = async (id_empresa, tipo) => {
+	const obtenerTermino2xEmpresaxTipo = async (id_empresa, tipo, id_tipogasto) => {
 		try {
 			setisLoading(true);
 			const { data } = await PTApi.get(`/terminologia/term2/${id_empresa}/${tipo}`);

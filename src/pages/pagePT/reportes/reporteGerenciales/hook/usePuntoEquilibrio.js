@@ -60,8 +60,6 @@ export const usePuntoEquilibrio = () => {
 					concepto: 'MONKEY FIT',
 				};
 			});
-			console.log({ dataIngresos, mff: 'aa' });
-
 			const dataVentasMap = data.ventas.map((m) => {
 				return {
 					id_cli: m.id_cli,
@@ -159,19 +157,6 @@ export const usePuntoEquilibrio = () => {
 					};
 				})
 				.filter((f) => f.id_origen !== 692 && f.id_origen !== 691);
-			console.log(
-				[
-					...dataNuevos,
-					...dataProductos18,
-					...dataProductos17,
-					...dataReinscripcion,
-					...dataRenovaciones,
-					...dataMFMAP,
-					...dataIngresosMAP,
-				],
-				'hola123'
-			);
-
 			setdataVentas([
 				...dataNuevos,
 				...dataProductos18,

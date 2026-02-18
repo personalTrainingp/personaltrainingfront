@@ -13,8 +13,6 @@ export const AppGestionGastos = ({id_empresa}) => {
   }
   return (
     <div>
-      {id_empresa}
-      <br/>
       <InputButton label={'AGREGAR GASTO'} onClick={()=>onOpenModalGasto(0, false)}/>
       <DataTableGastos id_empresa={id_empresa} onOpenModalGasto={onOpenModalGasto}/>
       <ModalCustomGasto onOpenModalGasto={onOpenModalGasto} id_enterprice={id_empresa} id={isOpenModalGasto.id} isCopy={isOpenModalGasto.isCopy} onHide={onCloseModalGasto} show={isOpenModalGasto.isOpen}/>
