@@ -35,7 +35,7 @@ export const useGastosStore = () => {
 		try {
 			setloading(true);
 			const { data } = await PTApi.get(`/egreso/empresa/${id_empresa}`);
-			console.log({ data });
+			console.log({ data, id_empresa });
 			const dataGastoMap = data.gastos.map((g) => {
 				return {
 					...g,

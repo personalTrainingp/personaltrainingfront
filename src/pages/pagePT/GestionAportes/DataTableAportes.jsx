@@ -1,5 +1,5 @@
 import { DataTableCR } from '@/components/DataView/DataTableCR'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useGestionAportes } from './hook/useGestionAportes'
 import { useSelector } from 'react-redux'
 import { DateMask, DateMaskString, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
@@ -10,8 +10,11 @@ import { arrayFinanzas } from '@/types/type'
 export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
   const { obtenerGestionAporte, onDeleteIngresos } = useGestionAportes()
   const {dataView} = useSelector(e=>e.APORTE)
-  useEffect(() => {
-    obtenerGestionAporte(idEmpresa)
+  const [isLoading, setisLoading] = useState(false)
+  useEffect(async() => {
+    setisLoading(true)
+    await obtenerGestionAporte(idEmpresa)
+    setisLoading(false)
   }, [idEmpresa])
   console.log({dataView});
   
@@ -116,7 +119,7 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
               },
               {
                 id: 'nComprobante',
-                exportHeader: 'N° COMPR',
+                exportHeader: 'N° COMPR.',
                 exportValue: (row) => row.n_comprabante,
               },
               {
@@ -127,12 +130,12 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
               {
                 id: 'fechaPago',
                 exportHeader: 'FECHA DE PAGO',
-                exportValue: (row) => MaskDate(row.fec_pago, 'dddd DD [ DE ]  MMMM [DEL] YYYY'),
+                exportValue: (row) => MaskDate(row.fec_pago, 'YYYY-MM-DD'),
               },
               {
                 id: 'fechaAporte',
                 exportHeader: 'FECHA COMPROBANTE',
-                exportValue: (row) => MaskDate(row.fec_comprobante, 'dddd DD [ DE ]  MMMM [DEL] YYYY'),
+                exportValue: (row) => MaskDate(row.fec_comprobante, 'YYYY-MM-DD'),
               },
               {
                 id: 'tipo-ingreso',
@@ -146,8 +149,13 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
               },
               {
                 id: 'concepto',
-                exportHeader: 'RUBRO',
-                exportValue: (row) => row?.tb_parametros_gasto?.parametro_grupo?.param_label,
+                exportHeader: 'CONCEPTO',
+                exportValue: (row) => row?.tb_parametros_gasto?.nombre_gasto,
+              },
+              {
+                id: 'monto',
+                exportHeader: 'MONTO',
+                exportValue: (row) => row?.monto,
               },
   ]
   const onClickOpenModalCustomIngresos = (id)=>{
@@ -170,6 +178,7 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
             columns={columns}
             data={dataView}
             exportExtraColumns={columnsExports}
+            loading={isLoading}
         />
     </div>
   )

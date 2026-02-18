@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
 import { arrayEmpresaFinan, arrayFinanzas, arrayMonedas, arrayTipoIngresos } from '@/types/type'
+import { Loading } from '@/components/Loading'
 
 const customAporte = {
   id_gasto: 0,
@@ -37,16 +38,23 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa, isCopy}) => {
   const [tipoIngreso, settipoIngreso] = useState([])
       // const [id_empresa, setid_empresa] = useState(0)
       const [gastoxGrupo, setgastoxGrupo] = useState([])
-  const onSubmit = ()=>{
+      const [isLoading, setisLoading] = useState(false)
+  const onSubmit = async()=>{
+    onCancelCustomAporte()
     if(id===0){
-      onPostGestionAporte(formState, idEmpresa)
+      setisLoading(true)
+      await onPostGestionAporte(formState, idEmpresa)
+      setisLoading(false)
     }else{
       if(isCopy){
-        onPostGestionAporte(formState, idEmpresa)
+        setisLoading(true)
+        await onPostGestionAporte(formState, idEmpresa)
+        setisLoading(false)
       }
-      onUpdateIngresos(formState, id, id_empresa)
+      setisLoading(true)
+      await onUpdateIngresos(formState, id, id_empresa)
+      setisLoading(false)
     }
-    onCancelCustomAporte()
   }
   const onCancelCustomAporte = ()=>{
     onHide()
@@ -83,97 +91,100 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa, isCopy}) => {
               setgastoxGrupo(conceptos)
           }, [grupo, idEmpresa])
   return (  
-    <Dialog onHide={onCancelCustomAporte} visible={show} header={`${id===0?'AGREGAR INGRESOS':`${isCopy?'AGREGAR INGRESOS COPIADOS':'ACTUALIZAR INGRESOS'}`}`} style={{width: '70rem'}} position='top'>
-        <form>
-          <Row>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Marca'} value={id_empresa} nameInput={'id_empresa'} onChange={onInputChange} options={arrayEmpresaFinan}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Tipo de ingreso'} value={id_tipoIngreso} nameInput={'id_tipoIngreso'} onChange={onInputChange} options={arrayTipoIngresos}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Rubro'} value={grupo} nameInput={'grupo'} onChange={onInputChange} options={grupoGasto}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Concepto'} value={id_gasto} nameInput={'id_gasto'} onChange={onInputChange} options={gastoxGrupo}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Tipo de moneda'} value={moneda} nameInput={'moneda'} onChange={onInputChange} options={arrayMonedas}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputText label={'Monto'} nameInput={'monto'} onChange={onInputChange} value={monto}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Tipo de comprobante'} value={id_tipo_comprobante} nameInput={'id_tipo_comprobante'} onChange={onInputChange} options={dataComprobantesGastos}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputText label={'N° de comprobante'} nameInput={'n_comprabante'} onChange={onInputChange} value={n_comprabante}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputDate label={'Fecha comprobante'} nameInput={'fec_comprobante'} onChange={onInputChange} value={fec_comprobante}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputText label={'N° de operacion'} nameInput={'n_operacion'} onChange={onInputChange} value={n_operacion}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputDate label={'Fecha Pago'} nameInput={'fec_pago'} onChange={onInputChange} value={fec_pago}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Forma pago'} value={id_forma_pago} nameInput={'id_forma_pago'} onChange={onInputChange} options={dataFormaPago}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Banco'} value={id_banco} nameInput={'id_banco'} onChange={onInputChange} options={dataBancos}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Tarjeta'} value={id_tarjeta} nameInput={'id_tarjeta'} onChange={onInputChange} options={dataTarjetas}/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='mb-2'>
-                <InputSelect label={'Empresa/Persona'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedores}/>
-              </div>
-            </Col>
-            <Col lg={12}>
-              <div className='mb-2'>
-                <InputTextArea label={'descripcion'} nameInput={'descripcion'} onChange={onInputChange} value={descripcion}/>
-              </div>
-            </Col>
-            <Col lg={12}>
-              <div className='mb-2'>
-                <InputButton label={'Agregar'} onClick={onSubmit}/>
-                <InputButton label={'Cancelar'} variant={'link'} onClick={onCancelCustomAporte}/>
-              </div>
-            </Col>
-          </Row>
-        </form>
-    </Dialog>
+    <>
+    <Loading show={isLoading}/>
+      <Dialog onHide={onCancelCustomAporte} visible={show} header={`${id===0?'AGREGAR INGRESOS':`${isCopy?'AGREGAR INGRESOS COPIADOS':'ACTUALIZAR INGRESOS'}`}`} style={{width: '70rem'}} position='top'>
+          <form>
+            <Row>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Marca'} value={id_empresa} nameInput={'id_empresa'} onChange={onInputChange} options={arrayEmpresaFinan}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Tipo de ingreso'} value={id_tipoIngreso} nameInput={'id_tipoIngreso'} onChange={onInputChange} options={arrayTipoIngresos}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Rubro'} value={grupo} nameInput={'grupo'} onChange={onInputChange} options={grupoGasto}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Concepto'} value={id_gasto} nameInput={'id_gasto'} onChange={onInputChange} options={gastoxGrupo}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Tipo de moneda'} value={moneda} nameInput={'moneda'} onChange={onInputChange} options={arrayMonedas}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputText label={'Monto'} nameInput={'monto'} onChange={onInputChange} value={monto}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Tipo de comprobante'} value={id_tipo_comprobante} nameInput={'id_tipo_comprobante'} onChange={onInputChange} options={dataComprobantesGastos}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputText label={'N° de comprobante'} nameInput={'n_comprabante'} onChange={onInputChange} value={n_comprabante}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputDate label={'Fecha comprobante'} nameInput={'fec_comprobante'} onChange={onInputChange} value={fec_comprobante}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputText label={'N° de operacion'} nameInput={'n_operacion'} onChange={onInputChange} value={n_operacion}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputDate label={'Fecha Pago'} nameInput={'fec_pago'} onChange={onInputChange} value={fec_pago}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Forma pago'} value={id_forma_pago} nameInput={'id_forma_pago'} onChange={onInputChange} options={dataFormaPago}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Banco'} value={id_banco} nameInput={'id_banco'} onChange={onInputChange} options={dataBancos}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Tarjeta'} value={id_tarjeta} nameInput={'id_tarjeta'} onChange={onInputChange} options={dataTarjetas}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Empresa/Persona'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedores}/>
+                </div>
+              </Col>
+              <Col lg={12}>
+                <div className='mb-2'>
+                  <InputTextArea label={'descripcion'} nameInput={'descripcion'} onChange={onInputChange} value={descripcion}/>
+                </div>
+              </Col>
+              <Col lg={12}>
+                <div className='mb-2'>
+                  <InputButton label={'Agregar'} onClick={onSubmit}/>
+                  <InputButton label={'Cancelar'} variant={'link'} onClick={onCancelCustomAporte}/>
+                </div>
+              </Col>
+            </Row>
+          </form>
+      </Dialog>
+    </>
   )
 }

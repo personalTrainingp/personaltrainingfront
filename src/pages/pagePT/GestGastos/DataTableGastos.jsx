@@ -2,7 +2,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import React, { useEffect } from 'react'
 import { useGastosStore } from './useGastosStore'
 import { useSelector } from 'react-redux'
-import { DateMask, DateMaskStr, DateMaskStr2, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
+import { DateMask, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
@@ -120,6 +120,75 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
             )
         }},
     ]
+
+  const columnsExports = [
+		{
+			id: 'id',
+			exportHeader: 'ID',
+			exportValue: (row) => row.id,
+		},
+		{
+			id: 'nComprobante',
+			exportHeader: 'N° COMPR',
+			exportValue: (row) => row.n_comprabante,
+		},
+		{
+			id: 'nOperacion',
+			exportHeader: 'N° Operacion',
+			exportValue: (row) => row.n_operacion,
+		},
+		{
+			id: 'fechaPago',
+			exportHeader: 'FECHA DE PAGO',
+			exportValue: (row) => MaskDate(row.fecha_pago, 'YYYY-MM-DD'),
+		},
+		{
+			id: 'fechaAporte',
+			exportHeader: 'FECHA COMPROBANTE',
+			exportValue: (row) =>
+				MaskDate(row.fecha_comprobante, 'YYYY-MM-DD'),
+		},
+		{
+			id: 'tipo-ingreso',
+			exportHeader: 'TIPO DE INGRESO',
+			exportValue: (row) => row.tipo_gasto,
+		},
+		{
+			id: 'rubro',
+			exportHeader: 'RUBRO',
+			exportValue: (row) => row?.rubro,
+		},
+		{
+			id: 'concepto',
+			exportHeader: 'CONCEPTO',
+			exportValue: (row) => row?.concepto,
+		},
+		{
+			id: 'MONEDA',
+			exportHeader: 'MONEDA',
+			exportValue: (row) => row.moneda,
+		},
+		{
+			id: 'MONTO',
+			exportHeader: 'MONTO',
+			exportValue: (row) => row.monto,
+		},
+        {
+            id: 'FORMA_DE_PAGO',
+            exportHeader: 'FORMA DE PAGO',
+            exportValue: (row)=>row.forma_pago
+        },
+        {
+            id: 'DESCRIPCION',
+            exportHeader: 'DESCRIPCION',
+            exportValue: (row)=>row.descripcion
+        },
+        {
+            id: 'proveedor',
+            exportHeader: 'PROVEEDOR',
+            exportValue: (row)=>row.nombre_proveedor
+        },
+  ];
     const onClickEditModalEgresos=(id)=>{
         onOpenModalGasto(id, false)
     }
@@ -140,6 +209,7 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
         columns={columns}
         data={dataView}
         loading={loading}
+        exportExtraColumns={columnsExports}
         responsive
     />
     </>
