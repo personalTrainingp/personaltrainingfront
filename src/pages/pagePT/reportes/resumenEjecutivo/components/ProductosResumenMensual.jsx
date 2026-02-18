@@ -168,7 +168,7 @@ export function ProductosResumenMensual({
                 const { data } = await PTApi.get(
                     `/venta/get-ventas-x-fecha/${id_empresa || 598}`,
                     {
-                        params: { arrayDate },
+                        params: { arrayDate, mode: 'products_only' },
                     }
                 );
 

@@ -11,7 +11,7 @@ import {
     limaFromISO, MESES
 } from './useResumenUtils';
 
-import { globalCache } from '../../resumenCache';
+import { globalCache, fetchParametrosRenovacionesCached } from '../../resumenCache';
 
 // GLOBAL CACHE to prevent double-fetching in StrictMode or rapid remounts
 /*
@@ -133,16 +133,13 @@ export const useResumenVentas = (id_empresa, fechas) => {
                     const reservasPromise = fetchReservasMFInner();
                     const extensionPromise = fetchProgramasInner();
 
-                    const histPromise = PTApi.get('/parametros/renovaciones/por-rango-fechas', {
-                        params: {
-                            empresa: id_empresa || 598,
-                            year,
-                            selectedMonth,
-                            initDay,
-                            cutDay
-                        }
-                    }).then(res => res.data?.cruces || [])
-                        .catch(err => { console.error("Error fetching overlaps:", err); return []; });
+                    const histPromise = fetchParametrosRenovacionesCached({
+                        empresa: id_empresa || 598,
+                        year,
+                        selectedMonth,
+                        initDay,
+                        cutDay
+                    });
 
                     // Wait for all
                     const [reservasMF, historicalVentas, programasData] = await Promise.all([
@@ -190,6 +187,16 @@ export const useResumenVentas = (id_empresa, fechas) => {
     }, [dataGroup]);
 
     const mesesSeleccionados = useMemo(() => {
+        // Return all 12 months for the selected year for CAC/LTV calculations
+        return Array.from({ length: 12 }, (_, i) => ({
+            label: `${MESES[i].toUpperCase()} ${year}`,
+            anio: String(year),
+            mes: MESES[i],
+            mIdx: i
+        }));
+    }, [year]);
+
+    const mesesTop4 = useMemo(() => {
         const buildMonthRevenueMap = (ventas) => {
             const map = new Map();
             for (const v of ventas || []) {
@@ -412,7 +419,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
         rankingData, resumenFilas, resumenTotales,
         advisorOriginByProg, originBreakdown, sociosOverride,
         avatarByAdvisor, productosPorAsesor,
-        mesesSeleccionados, pgmNameById: progNameById, pgmNameByIdDynamic, dataGroup,
+        mesesSeleccionados, mesesTop4, pgmNameById: progNameById, pgmNameByIdDynamic, dataGroup,
         totalUniqueTicketsByAdvisor, isLoadingVentas, historicalVentas // <--- EXPORTADO
     };
 };

@@ -164,3 +164,39 @@ export function fetchTablaVentasCached(id_empresa, filterDate = []) {
     return tablaVentasCache[cacheKey];
 }
 
+// Cache for renovaciones-por-rango-fechas
+const renovacionesRangeCache = {};
+
+/**
+ * Fetches renovaciones/por-rango-fechas data, deduplicating concurrent requests.
+ * @param {Object} params - { empresa, year, selectedMonth, initDay, cutDay }
+ * @returns {Promise<Array>} The cruces array
+ */
+export function fetchParametrosRenovacionesCached({ empresa, year, selectedMonth, initDay, cutDay }) {
+    const id = empresa || 598;
+    const cacheKey = `renovrange-${id}-${year}-${selectedMonth}-${initDay}-${cutDay}`;
+
+    if (renovacionesRangeCache[cacheKey]) {
+        console.log(`[resumenCache] CACHE HIT renovRange: ${cacheKey}`);
+        return renovacionesRangeCache[cacheKey];
+    }
+
+    console.log(`[resumenCache] CACHE MISS renovRange, fetching: ${cacheKey}`);
+    renovacionesRangeCache[cacheKey] = PTApi.get('/parametros/renovaciones/por-rango-fechas', {
+        params: {
+            empresa: id,
+            year,
+            selectedMonth,
+            initDay,
+            cutDay
+        }
+    })
+        .then(res => res.data?.cruces || [])
+        .catch(err => {
+            console.error("Error fetching overlaps:", err);
+            delete renovacionesRangeCache[cacheKey];
+            throw err;
+        });
+
+    return renovacionesRangeCache[cacheKey];
+}

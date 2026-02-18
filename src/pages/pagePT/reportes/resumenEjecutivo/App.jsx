@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 import { PageBreadcrumb } from "@/components";
 import { TopControls } from "./components/TopControls";
@@ -31,7 +31,7 @@ export const App = ({ id_empresa }) => {
     setSelectedMonth, setInitDay, setCutDay, handleSetUltimoDiaMes, setTasaCambio,
     vigentesTotal, vigentesBreakdown, vigentesRows,
     renewals, pgmNameById,
-    dataVentas, mesesSeleccionados, dataMktWithCac, dataMkt,
+    dataVentas, mesesSeleccionados, mesesTop4, dataMktWithCac, dataMkt,
     reservasMF, originMap, mapaVencimientos, dataLeadPorMesAnio,
     resumenFilas, resumenTotales, avataresDeProgramas,
     sociosOverride, originBreakdown, advisorOriginByProg,
@@ -43,28 +43,38 @@ export const App = ({ id_empresa }) => {
 
   const [showHistoryModal, setShowHistoryModal] = useState(false);
 
+  // 🔥 ESTADOS PARA CARGA DIFERIDA
+  const [cargarFase2, setCargarFase2] = useState(false);
+  const [cargarFase3, setCargarFase3] = useState(false);
+
+  useEffect(() => {
+    // Retrasos estratégicos: Rompen la avalancha de red y CPU
+    const timer1 = setTimeout(() => setCargarFase2(true), 800);
+    const timer2 = setTimeout(() => setCargarFase3(true), 1800);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+
   return (
     <>
       <PageBreadcrumb title="INFORME GERENCIAL" subName="Ventas" />
 
       {isLoading && (
         <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 9999
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+          backgroundColor: 'rgba(255, 255, 255, 0.8)', display: 'flex',
+          justifyContent: 'center', alignItems: 'center', zIndex: 9999
         }}>
           <span className="loader"></span>
         </div>
       )}
 
-      {/* === CONTROLES === */}
+      {/* =======================================
+          🔥 FASE 1: CARGA INMEDIATA (Lo que el usuario ve primero)
+          ======================================= */}
       <Row className="mb-3">
         <Col lg={12}>
           <TopControls
@@ -84,8 +94,7 @@ export const App = ({ id_empresa }) => {
       <Row className="mb-3">
         <Col lg={12}>
           <RenovacionesPorVencer
-            renewals={renewals}
-            daysThreshold={9999}
+            renewals={renewals} daysThreshold={9999}
             title={`Renovaciones próximas a vencer: ${String(MESES[selectedMonth - 1] || "").toUpperCase()} (1 - ${cutDay})`}
             excludeZeroAmount showSummary pgmNameById={pgmNameById}
           />
@@ -96,162 +105,163 @@ export const App = ({ id_empresa }) => {
         <Col lg={12} className="pt-0">
           <div style={{ marginBottom: "30px" }}>
             <ExecutiveTable
-              ventas={dataVentas} fechas={mesesSeleccionados}
+              ventas={dataVentas} fechas={mesesTop4}
               dataMktByMonth={dataMktWithCac} initialDay={initDay} cutDay={cutDay}
               reservasMF={reservasMF} originMap={originMap}
-              selectedMonth={selectedMonth} tasaCambio={tasaCambio}
-              year={year}
+              selectedMonth={selectedMonth} tasaCambio={tasaCambio} year={year}
             />
           </div>
 
-          <div style={{ marginBottom: "32px", marginTop: "90px" }}>
-            <ComparativoVsActual
-              ventas={dataVentas} fechas={mesesSeleccionados}
-              dataMktByMonth={dataMkt} reservasMF={reservasMF}
-              initialDay={initDay} cutDay={cutDay}
-              year={year}
-            />
-          </div>
+          {/* =======================================
+              🚀 FASE 2: CARGA A LOS 800ms
+              ======================================= */}
+          {cargarFase2 && (
+            <>
+              <div style={{ marginBottom: "32px", marginTop: "90px" }}>
+                <ComparativoVsActual
+                  ventas={dataVentas} fechas={mesesTop4}
+                  dataMktByMonth={dataMkt} reservasMF={reservasMF}
+                  initialDay={initDay} cutDay={cutDay} year={year}
+                />
+              </div>
 
-          <ClientesPorOrigen
-            ventas={dataVentas} fechas={mesesSeleccionados}
-            initialDay={initDay} cutDay={cutDay} uniqueByClient={false}
-            originMap={originMap}
-          />
-
-          <Row className="mb-3">
-            <Col lg={12}>
-              <RenovacionesPanel
-                id_empresa={id_empresa} baseDate={new Date(year, selectedMonth - 1, 1)}
-                months={12} beforeDays={0} afterDays={91}
-                title={`RENOVACIONES - ${year}`} items={dataVentas}
-                vencimientosMap={mapaVencimientos} carteraHistoricaInicial={0}
-                vencimientosFiltrados={vencimientosFiltrados}
+              <ClientesPorOrigen
+                ventas={dataVentas} fechas={mesesTop4}
+                initialDay={initDay} cutDay={cutDay} uniqueByClient={false}
+                originMap={originMap}
               />
-            </Col>
-          </Row>
 
-          <Row className="mb-3">
-            <Col lg={12}>
-              <SeguimientoRenovaciones
-                dataVentas={dataVentas}
-                mapaVencimientos={mapaVencimientos}
-                year={year}
-                id_empresa={id_empresa}
+              <Row className="mb-3">
+                <Col lg={12}>
+                  <RenovacionesPanel
+                    id_empresa={id_empresa} baseDate={new Date(year, selectedMonth - 1, 1)}
+                    months={12} beforeDays={0} afterDays={91}
+                    title={`RENOVACIONES - ${year}`} items={dataVentas}
+                    vencimientosMap={mapaVencimientos} carteraHistoricaInicial={0}
+                    vencimientosFiltrados={vencimientosFiltrados}
+                  />
+                </Col>
+              </Row>
+
+              <Row className="mb-3">
+                <Col lg={12}>
+                  <SeguimientoRenovaciones
+                    dataVentas={dataVentas} mapaVencimientos={mapaVencimientos}
+                    year={year} id_empresa={id_empresa}
+                  />
+                </Col>
+              </Row>
+            </>
+          )}
+
+          {/* =======================================
+              🛸 FASE 3: CARGA A LOS 1800ms (Gráficos pesados)
+              ======================================= */}
+          {cargarFase3 && (
+            <>
+              <Row className="mb-3">
+                <Col lg={12}>
+                  <CrecimientoNeto
+                    dataVentas={dataVentas} mapaVencimientos={mapaVencimientos}
+                    year={year} id_empresa={id_empresa}
+                  />
+                </Col>
+              </Row>
+
+              <Row className="mb-3">
+                <Col lg={12}>
+                  <LtvCacChart
+                    dataVentas={dataVentas} mapaVencimientos={mapaVencimientos}
+                    dataMktByMonth={dataMktWithCac} year={year} id_empresa={id_empresa}
+                  />
+                </Col>
+              </Row>
+
+              <ExecutiveTable2
+                ventas={dataVentas} fechas={mesesTop4}
+                dataMktByMonth={dataMktWithCac} initialDay={initDay} cutDay={cutDay}
+                reservasMF={reservasMF} originMap={originMap}
+                selectedMonth={selectedMonth} tasaCambio={tasaCambio} year={year}
               />
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col lg={12}>
-              <CrecimientoNeto
-                dataVentas={dataVentas}
-                mapaVencimientos={mapaVencimientos}
-                year={year}
-                id_empresa={id_empresa}
-              />
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col lg={12}>
-              <LtvCacChart
-                dataVentas={dataVentas}
-                mapaVencimientos={mapaVencimientos}
-                dataMktByMonth={dataMktWithCac}
-                year={year}
-                id_empresa={id_empresa}
-              />
-            </Col>
-          </Row>
-
-          <ExecutiveTable2
-            ventas={dataVentas} fechas={mesesSeleccionados}
-            dataMktByMonth={dataMktWithCac} initialDay={initDay} cutDay={cutDay}
-            reservasMF={reservasMF} originMap={originMap}
-            selectedMonth={selectedMonth} tasaCambio={tasaCambio}
-            year={year}
-          />
+            </>
+          )}
         </Col>
 
-        {/* === GRÁFICOS === */}
-        <Col lg={12}>
-          <div style={{ marginBottom: "32px", marginTop: "90px" }}>
-            <GraficoLinealInversionRedes data={dataLeadPorMesAnio} fechas={[new Date()]} />
-          </div>
-
-          <div style={{ marginBottom: "32px" }}>
-            <OverlappingMembershipsTable
-              ventas={historicalVentas || dataVentas}
-              onViewAll={() => setShowHistoryModal(true)}
-            />
-          </div>
-        </Col>
-
-        <Row className="mb-6">
+        {cargarFase3 && (
           <Col lg={12}>
-            <SumaDeSesiones
-              ventas={dataVentas} year={year} month={selectedMonth}
-              initDay={initDay} cutDay={cutDay} resumenArray={resumenFilas} resumenTotales={resumenTotales}
-              avataresDeProgramas={avataresDeProgramas} sociosOverride={sociosOverride}
-              originBreakdown={originBreakdown} advisorOriginByProg={advisorOriginByProg}
-              avatarByAdvisor={avatarByAdvisor}
-            />
+            <div style={{ marginBottom: "32px", marginTop: "90px" }}>
+              <GraficoLinealInversionRedes data={dataLeadPorMesAnio} fechas={[new Date()]} />
+            </div>
+
+            <div style={{ marginBottom: "32px" }}>
+              <OverlappingMembershipsTable
+                ventas={historicalVentas || dataVentas}
+                onViewAll={() => setShowHistoryModal(true)}
+              />
+            </div>
+
+            <Row className="mb-6">
+              <Col lg={12}>
+                <SumaDeSesiones
+                  ventas={dataVentas} year={year} month={selectedMonth}
+                  initDay={initDay} cutDay={cutDay} resumenArray={resumenFilas} resumenTotales={resumenTotales}
+                  avataresDeProgramas={avataresDeProgramas} sociosOverride={sociosOverride}
+                  originBreakdown={originBreakdown} advisorOriginByProg={advisorOriginByProg}
+                  avatarByAdvisor={avatarByAdvisor}
+                />
+              </Col>
+            </Row>
+
+            <Col lg={12}>
+              <div style={{ marginTop: "15px", textAlign: "center" }}>
+                <TarjetasProductos
+                  tasks={productosPorAsesor} title="Ranking Venta de Productos"
+                  topN={5} minImporte={0} avatarByAdvisor={avatarByAdvisor}
+                />
+              </div>
+            </Col>
+
+            <div style={{ marginBottom: 44 }}>
+              <VentasDiarias
+                ventas={dataVentas} year={year} month={selectedMonth}
+                initDay={initDay} cutDay={cutDay}
+                showSocios={true} sumMode="programas" avatarByAdvisor={avatarByAdvisor}
+              />
+              <GraficoLinealVentasDiarias
+                ventas={dataVentas} year={year} month={selectedMonth}
+                initDay={initDay} cutDay={cutDay}
+              />
+
+              <Row className="mb-6 mt-5">
+                <Col lg={12}>
+                  <VigentesTable items={vigentesRows} title={`SOCIOS VIGENTES (${vigentesTotal})`} />
+                </Col>
+              </Row>
+
+              <Row className="mb-6 mt-5">
+                <Col lg={12}>
+                  <VigentesResumenMensual
+                    id_empresa={id_empresa} year={year}
+                    selectedMonth={selectedMonth} pgmNameById={pgmNameById}
+                    avataresDeProgramas={avataresDeProgramas}
+                  />
+                </Col>
+              </Row>
+
+              <Row className="mb-6 mt-5">
+                <Col lg={12}>
+                  <ProductosResumenMensual
+                    id_empresa={id_empresa} year={year} selectedMonth={selectedMonth}
+                  />
+                </Col>
+              </Row>
+            </div>
           </Col>
-        </Row>
-
-        <Col lg={12}>
-          <div style={{ marginTop: "15px", textAlign: "center" }}>
-            <TarjetasProductos
-              tasks={productosPorAsesor} title="Ranking Venta de Productos"
-              topN={5} minImporte={0} avatarByAdvisor={avatarByAdvisor}
-            />
-          </div>
-        </Col>
-
-        <div style={{ marginBottom: 44 }}>
-          <VentasDiarias
-            ventas={dataVentas} year={year} month={selectedMonth}
-            initDay={initDay} cutDay={cutDay}
-            showSocios={true} sumMode="programas" avatarByAdvisor={avatarByAdvisor}
-          />
-          <GraficoLinealVentasDiarias
-            ventas={dataVentas} year={year} month={selectedMonth}
-            initDay={initDay} cutDay={cutDay}
-          />
-
-          <Row className="mb-6 mt-5">
-            <Col lg={12}>
-              <VigentesTable items={vigentesRows} title={`SOCIOS VIGENTES (${vigentesTotal})`} />
-            </Col>
-          </Row>
-
-          <Row className="mb-6 mt-5">
-            <Col lg={12}>
-              <VigentesResumenMensual
-                id_empresa={id_empresa} year={year}
-                selectedMonth={selectedMonth} pgmNameById={pgmNameById}
-                avataresDeProgramas={avataresDeProgramas}
-              />
-            </Col>
-          </Row>
-
-          <Row className="mb-6 mt-5">
-            <Col lg={12}>
-              <ProductosResumenMensual
-                id_empresa={id_empresa}
-                year={year}
-                selectedMonth={selectedMonth}
-              />
-            </Col>
-          </Row>
-        </div>
+        )}
       </Row>
 
       <ModalConflictsHistory
-        show={showHistoryModal}
-        onHide={() => setShowHistoryModal(false)}
-        id_empresa={id_empresa}
+        show={showHistoryModal} onHide={() => setShowHistoryModal(false)} id_empresa={id_empresa}
       />
     </>
   );
