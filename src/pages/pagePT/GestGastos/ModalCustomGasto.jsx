@@ -126,20 +126,24 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     useEffect(() => {
         setid_empresa(id_enterprice)
     }, [id_enterprice])
-    const onSubmit = ()=>{
-        setisLoading(true)
+    const onSubmit = async()=>{
+        cancelarGasto()
         if(isCopy){
+            setisLoading(true)
             const {  id, ...valores } = formState;
-            postGasto(valores, id_empresa)
+            await postGasto(valores, id_empresa)
+            setisLoading(false)
         }else{
             if(id===0){
-                postGasto(formState, id_empresa)
+                setisLoading(true)
+                await postGasto(formState, id_empresa)
+                setisLoading(false)
             }else{
-                updateGastoxID(id, formState, id_empresa)
+                setisLoading(true)
+                await updateGastoxID(id, formState, id_empresa)
+                setisLoading(false)
             }
         }
-        setisLoading(false)
-        cancelarGasto()
     }
     const cancelarGasto = ()=>{
         onHide()
@@ -165,7 +169,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
             setdataProveedoresFiltrados(id_oficio===0?dataProveedorxTipoxEmpresa:dataProveedorxTipoxEmpresa.filter(e => e.id_oficio === id_oficio))
         }
     }, [show, id_oficio, id_prov])
-    console.log({dataProveedorxTipoxEmpresa});
+    console.log({isLoading});
     
   return (
     <>

@@ -29,8 +29,8 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
         {row.n_comprabante}
         </div>
       )
-    } },
-    { id: 'nOperacion', header: 'N° Operacion', accessor: 'n_operacion' },
+    }},
+    { id: 'nOperacion', header: 'N° Operacion', accessor: 'n_operacion'},
     { id: 'fechaPago', header: 'Fecha Pago', sortable: true, accessor: row => new Date(row.fec_pago).getTime(), render:(row)=>{
       return (
         <>
@@ -49,30 +49,27 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
         </>
       )
     } },
-    { id: 'grupo', header: 'TIPO DE INGRESO', render:(row)=>{
+    { id: 'tipo-ingreso', header: 'TIPO DE INGRESO', render:(row)=>{
       return (
         <>
           {arrayFinanzas.find(e=>e.value===row?.tb_parametros_gasto?.id_tipoGasto)?.label}
         </>
       )
     }},
-    { id: 'grupo', header: 'RUBRO', render:(row)=>{
+    { id: 'rubro', header: 'RUBRO', render:(row)=>{
       return (
         <>
           {row?.tb_parametros_gasto?.parametro_grupo?.param_label}
         </>
       )
     }},
-    { id: 'concepto', header: 'Concepto', render:(row)=>{
+    { id: 'concepto', header: 'CONCEPTO', render:(row)=>{
       return (
         <>
           {row?.tb_parametros_gasto?.nombre_gasto}
         </>
       )
     }},
-    // TIPO DE GASTO
-    // RUBRO
-    // GASTO
     { id: 'monto', header: 'Monto', render:(row)=>{
       return(
         <div style={{width: '150px'}}>
@@ -111,6 +108,48 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
         )
     } },
   ];
+  const columnsExports=[
+{
+                id: 'id',
+                exportHeader: 'ID',
+                exportValue: (row) => row.id,
+              },
+              {
+                id: 'nComprobante',
+                exportHeader: 'N° COMPR',
+                exportValue: (row) => row.n_comprabante,
+              },
+              {
+                id: 'nOperacion',
+                exportHeader: 'N° Operacion',
+                exportValue: (row) => row.n_operacion,
+              },
+              {
+                id: 'fechaPago',
+                exportHeader: 'FECHA DE PAGO',
+                exportValue: (row) => MaskDate(row.fec_pago, 'dddd DD [ DE ]  MMMM [DEL] YYYY'),
+              },
+              {
+                id: 'fechaAporte',
+                exportHeader: 'FECHA COMPROBANTE',
+                exportValue: (row) => MaskDate(row.fec_comprobante, 'dddd DD [ DE ]  MMMM [DEL] YYYY'),
+              },
+              {
+                id: 'tipo-ingreso',
+                exportHeader: 'TIPO DE INGRESO',
+                exportValue: (row) => arrayFinanzas.find(e=>e.value===row?.tb_parametros_gasto?.id_tipoGasto)?.label,
+              },
+              {
+                id: 'rubro',
+                exportHeader: 'RUBRO',
+                exportValue: (row) => row?.tb_parametros_gasto?.parametro_grupo?.param_label,
+              },
+              {
+                id: 'concepto',
+                exportHeader: 'RUBRO',
+                exportValue: (row) => row?.tb_parametros_gasto?.parametro_grupo?.param_label,
+              },
+  ]
   const onClickOpenModalCustomIngresos = (id)=>{
     onOpenModalCustomAporte(id, false)
   }
@@ -130,6 +169,7 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
         <DataTableCR
             columns={columns}
             data={dataView}
+            exportExtraColumns={columnsExports}
         />
     </div>
   )

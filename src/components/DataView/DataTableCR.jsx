@@ -68,6 +68,7 @@ export const DataTableCR = ({
     exportable = true,
   exportFileName = 'reporte',
   exportLabel = 'Descargar Excel',
+  exportExtraColumns =[],
   exportAllRaw = false
 }) => {
   const [search, setSearch] = useState('');
@@ -242,42 +243,49 @@ export const DataTableCR = ({
     return String(v);
   };
 
-  const exportToExcel = async () => {
-    const rowsToExport = exportAllRaw ? data : sorted;
+const exportToExcel = async () => {
+  if (!exportExtraColumns?.length) return;
 
-    const wb = new ExcelJS.Workbook();
-    const ws = wb.addWorksheet('Data');
+  const rowsToExport = exportAllRaw ? data : sorted;
 
-    ws.columns = columns.map((c) => ({
-      header: toPlain(c.exportHeader ?? c.header ?? c.id) || c.id, // <- CLAVE
-      key: c.id,
-      width: Math.max(12, Math.round(((colWidths?.[c.id] ?? 140) / 8))),
-    }));
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet('Data');
 
-    rowsToExport.forEach((row, i) => {
-      const record = {};
-      columns.forEach((c) => {
-        const raw =
-          typeof c.exportValue === 'function'
-            ? c.exportValue(row, i)
-            : typeof c.accessor === 'function'
-              ? c.accessor(row, i)
-              : getByPath(row, c.accessor);
+  // SOLO columnas extra
+  ws.columns = exportExtraColumns.map((c) => ({
+    header: toPlain(c.exportHeader ?? c.id),
+    key: c.id,
+    width: c.width ?? 20,
+  }));
 
-        record[c.id] = toPlain(raw); // <- CLAVE
-      });
-      ws.addRow(record);
+  rowsToExport.forEach((row, i) => {
+    const record = {};
+
+    exportExtraColumns.forEach((c) => {
+      const value =
+        typeof c.exportValue === 'function'
+          ? c.exportValue(row, i)
+          : getByPath(row, c.accessor);
+
+      record[c.id] = toPlain(value);
     });
 
-    ws.getRow(1).font = { bold: true };
-    ws.views = [{ state: 'frozen', ySplit: 1 }];
+    ws.addRow(record);
+  });
 
-    const buffer = await wb.xlsx.writeBuffer();
-    saveAs(
-      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-      `${exportFileName}.xlsx`
-    );
-  };
+  ws.getRow(1).font = { bold: true };
+  ws.views = [{ state: 'frozen', ySplit: 1 }];
+
+  const buffer = await wb.xlsx.writeBuffer();
+
+  saveAs(
+    new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    }),
+    `${exportFileName}.xlsx`
+  );
+};
+
 
   const colById = useMemo(() => {
     const map = new Map();
