@@ -22,6 +22,7 @@ import { OverlappingMembershipsTable } from "./components/OverlappingMemberships
 
 import { SeguimientoRenovaciones } from "./components/SeguimientoRenovaciones";
 import { CrecimientoNeto } from "./components/CrecimientoNeto";
+import { LtvCacChart } from "./components/LtvCacChart";
 import { ModalConflictsHistory } from "./components/ModalConflictsHistory";
 
 export const App = ({ id_empresa }) => {
@@ -146,6 +147,18 @@ export const App = ({ id_empresa }) => {
               <CrecimientoNeto
                 dataVentas={dataVentas}
                 mapaVencimientos={mapaVencimientos}
+                year={year}
+                id_empresa={id_empresa}
+              />
+            </Col>
+          </Row>
+
+          <Row className="mb-3">
+            <Col lg={12}>
+              <LtvCacChart
+                dataVentas={dataVentas}
+                mapaVencimientos={mapaVencimientos}
+                dataMktByMonth={dataMktWithCac}
                 year={year}
                 id_empresa={id_empresa}
               />
