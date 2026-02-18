@@ -59,47 +59,47 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, h
             <Row>
                 <Col lg={4}>
                     <div className='mb-2'>
-                    <InputSelect label={'Empresa'} value={id_empresa} nameInput={'id_empresa'} onChange={onInputChange} options={arrayEmpresaFinan}/>
+                    <InputSelect label={'Empresa'} value={id_empresa} nameInput={'id_empresa'} onChange={onInputChange} options={arrayEmpresaFinan} required/>
                     </div>
                 </Col>
                 <Col lg={4}>
                     <div className='mb-2'>
-                    <InputSelect label={'Concepto'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={dataConcepto}/>
+                    <InputSelect label={'Concepto'} value={id_concepto} nameInput={'id_concepto'} onChange={onInputChange} options={dataConcepto} required/>
                     </div>
                 </Col>
                 <Col lg={4}>
                     <div className='mb-2'>
-                    <InputSelect label={'Moneda'} value={moneda} nameInput={'moneda'} onChange={onInputChange} options={arrayMonedas}/>
+                    <InputSelect label={'Moneda'} value={moneda} nameInput={'moneda'} onChange={onInputChange} options={arrayMonedas} required/>
                     </div>
                 </Col>
                 <Col lg={4}>
                     <div className='mb-2'>
-                        <InputText label={'Monto'} nameInput={'monto'} onChange={onInputChange} value={monto}/>
+                        <InputText label={'Monto'} nameInput={'monto'} onChange={onInputChange} value={monto} required/>
                     </div>
                 </Col>
                 <Col lg={4}>
                     <div className='mb-2'>
-                        <InputDate label={'Fecha de comprobante'} nameInput={'fecha_comprobante'} onChange={onInputChange} value={fecha_comprobante}/>
+                        <InputDate label={'Fecha de comprobante'} nameInput={'fecha_comprobante'} onChange={onInputChange} value={fecha_comprobante} required/>
                     </div>
                 </Col>
                 <Col lg={4}>
                     <div className='mb-2'>
-                    <InputSelect label={'Empresa'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedores}/>
+                    <InputSelect label={'Empresa'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedores} required/>
                     </div>
                 </Col>
                 <Col lg={4}>
                     <div className='mb-2'>
-                    <InputSelect label={'Banco'} value={id_banco} nameInput={'id_banco'} onChange={onInputChange} options={dataBanco}/>
+                    <InputSelect label={'Banco'} value={id_banco} nameInput={'id_banco'} onChange={onInputChange} options={dataBanco} required/>
                     </div>
                 </Col>
                 <Col lg={4}>
                     <div className='mb-2'>
-                        <InputText label={'N° OPERACION'} nameInput={'n_operacion'} onChange={onInputChange} value={n_operacion}/>
+                        <InputText label={'N° OPERACION'} nameInput={'n_operacion'} onChange={onInputChange} value={n_operacion} required/>
                     </div>
                 </Col>
                 <Col lg={12}>
                     <div className='mb-2'>
-                        <InputTextArea label={'Descripcion'} nameInput={'descripcion'} onChange={onInputChange} value={descripcion} />
+                        <InputTextArea label={'Descripcion'} nameInput={'descripcion'} onChange={onInputChange} value={descripcion} required />
                     </div>
                 </Col>
                 <Col lg={4}>

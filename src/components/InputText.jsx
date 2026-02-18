@@ -49,7 +49,7 @@ export const InputFile = ({label, onChange, value, nameInput, required=false, ..
 
 export const InputDate = ({label, onChange, value, nameInput, required=false, type='date', ...props}) => {
   const formattedValue = value
-    ? dayjs(value).format("dddd DD [de] MMMM [del] YYYY")
+    ? dayjs.utc(value).format("dddd DD [de] MMMM [del] YYYY")
     : "";
 
   return (

@@ -68,7 +68,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     const { obtenerParametroPorEntidadyGrupo: obtenerParametrosBancos, DataGeneral: DataBancos } = useTerminoStore()
     const { DataGeneral:dataOficios, obtenerParametroPorEntidadyGrupo:obtenerOficios } = useTerminoStore()
     const { dataProveedorxTipoxEmpresa, obtenerProveedorxTipoxEmpresa, obtenerContratosxProveedor, dataContratosProv } = useProveedoresStore()
-    const { dataTerminologia2EmpresaxTipo, obtenerTermino2xEmpresaxTipo, dataTerm2EmpresaxConcepto, dataTerm2EmpresaxGrupo } = useTerminos2Store()
+    const { dataTerminologia2EmpresaxTipo, obtenerTermino2xEmpresaxTipo, dataTerm2EmpresaxConcepto, dataTerm2EmpresaxGrupo, isLoading:isLoadingConceptos } = useTerminos2Store()
     const [dataConceptosxGrupo, setdataConceptosxGrupo] = useState([])
     const [dataGrupoxTipoGasto, setdataGrupoxTipoGasto] = useState([])
     const [dataProveedoresFiltrados, setdataProveedoresFiltrados] = useState(dataProveedorxTipoxEmpresa)
@@ -108,9 +108,9 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     }, [id_tipoGasto, grupo, id_empresa])
     useEffect(() => {
         if(id===0){
-            onInputChangeFunction('grupo', 0)
+            onInputChangeFunction('grupo', '')
         }
-    }, [id_tipoGasto, id_empresa])
+    }, [id_empresa, id_tipoGasto])
     useEffect(() => {
         // ALTERAR GRUPO, CUANDO LA EMPRESA O EL TIPO DE GASTO SE CAMBIE
         if (show) {
@@ -124,21 +124,23 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     }, [grupo, id_empresa, id_tipoGasto])
     
     const onSubmit = async()=>{
-        cancelarGasto()
         if(isCopy){
             setisLoading(true)
             const {  id, ...valores } = formState;
             await postGasto(valores, id_enterprice)
             setisLoading(false)
+            cancelarGasto()
         }else{
             if(id===0){
                 setisLoading(true)
                 await postGasto(formState, id_enterprice)
                 setisLoading(false)
+                cancelarGasto()
             }else{
                 setisLoading(true)
-                await updateGastoxID(id, formState, id_enterprice)
+                await updateGastoxID(id, {...formState}, id_enterprice)
                 setisLoading(false)
+                cancelarGasto()
             }
         }
     }
@@ -166,7 +168,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
             setdataProveedoresFiltrados(id_oficio===0?dataProveedorxTipoxEmpresa:dataProveedorxTipoxEmpresa.filter(e => e.id_oficio === id_oficio))
         }
     }, [show, id_oficio, id_prov])
-    console.log({id_gasto});
+    console.log({formState});
     
   return (
     <>

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewEgresos } from './egresosSlice';
 import { arrayFinanzas, arrayTipoIngresos } from '@/types/type';
+import Swal from 'sweetalert2';
 
 export const useGastosStore = () => {
 	const [dataGasto, setdataGasto] = useState({
@@ -53,6 +54,12 @@ export const useGastosStore = () => {
 			dispatch(onSetDataViewEgresos(dataGastoMap));
 		} catch (error) {
 			console.log(error);
+			Swal.fire({
+				icon: 'danger',
+				title: 'PROBLEMA',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		} finally {
 			setloading(false);
 		}
@@ -70,6 +77,12 @@ export const useGastosStore = () => {
 			setdataGasto(dataGasto);
 		} catch (error) {
 			console.log(error);
+			Swal.fire({
+				icon: 'danger',
+				title: 'PROBLEMA',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		}
 	};
 	const postGasto = async (formState, id_empresa) => {
@@ -77,8 +90,20 @@ export const useGastosStore = () => {
 			console.log({ id_empresa }, 2);
 			await PTApi.post(`/egreso/`, formState);
 			await obtenerGastos(id_empresa);
+			Swal.fire({
+				icon: 'success',
+				title: 'GASTO REGISTRADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		} catch (error) {
 			console.log(error);
+			Swal.fire({
+				icon: 'danger',
+				title: 'PROBLEMA',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		}
 	};
 	const updateGastoxID = async (id, formState, id_empresa) => {
@@ -86,8 +111,20 @@ export const useGastosStore = () => {
 			console.log({ id_empresa }, 3);
 			await PTApi.put(`/egreso/id/${id}`, formState);
 			await obtenerGastos(id_empresa);
+			Swal.fire({
+				icon: 'success',
+				title: 'GASTO ACTUALIZADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		} catch (error) {
 			console.log(error);
+			Swal.fire({
+				icon: 'danger',
+				title: 'PROBLEMA',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		}
 	};
 	const deleteGastoxID = async (id, id_empresa) => {
@@ -95,8 +132,20 @@ export const useGastosStore = () => {
 			console.log({ id_empresa }, 4);
 			await PTApi.put(`/egreso/delete/id/${id}`);
 			await obtenerGastos(id_empresa);
+			Swal.fire({
+				icon: 'success',
+				title: 'GASTO ELIMINADO CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		} catch (error) {
 			console.log(error);
+			Swal.fire({
+				icon: 'danger',
+				title: 'PROBLEMA',
+				showConfirmButton: false,
+				timer: 2500,
+			});
 		}
 	};
 	return {

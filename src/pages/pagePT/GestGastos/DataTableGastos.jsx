@@ -2,7 +2,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import React, { useEffect } from 'react'
 import { useGastosStore } from './useGastosStore'
 import { useSelector } from 'react-redux'
-import { DateMask, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
+import { DateMask, DateMaskStr, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
@@ -28,7 +28,8 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
         {id: 4, header: <>FECHA <br/> REGISTRO</>, accessor: '', width: '200px', render:(row)=>{
             return (
                 <>
-                <DateMask date={row.fec_registro} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/>
+                {DateMaskStr(row.fec_registro, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
+                {/* <DateMask date={row.fec_registro} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/> */}
                 </>
             )
         },  exportHeader: 'FECHA DE REGISTRO',
@@ -36,7 +37,8 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
         {id: 5, header: <>FECHA <br/> PAGO</>, width: '200px', render:(row)=>{
             return (
                 <>
-                <DateMask date={row.fecha_pago} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/>
+                {DateMaskStr(row.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
+                {/* <DateMask date={row.fecha_pago} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/> */}
                 </>
             )
         },  exportHeader: 'FECHA DE REGISTRO',
@@ -44,7 +46,8 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
         {id: 6, header: <>FECHA DE <br/> COMPROBANTE</>, width: '200px',  render:(row)=>{
             return (
                 <>
-                <DateMask date={row.fecha_comprobante} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/>
+                {DateMaskStr(row.fecha_comprobante, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
+                {/* <DateMask date={row.fecha_comprobante} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/> */}
                 </>
             )
         },  exportHeader: 'FECHA DE COMPROBANTE',

@@ -9,8 +9,10 @@ export const useTerminos2Store = () => {
 	});
 	const [dataTerm2EmpresaxGrupo, setdataTerm2EmpresaxGrupo] = useState([]);
 	const [dataTerm2EmpresaxConcepto, setdataTerm2EmpresaxConcepto] = useState([]);
+	const [isLoading, setisLoading] = useState(false);
 	const obtenerTermino2xEmpresaxTipo = async (id_empresa, tipo) => {
 		try {
+			setisLoading(true);
 			const { data } = await PTApi.get(`/terminologia/term2/${id_empresa}/${tipo}`);
 
 			const dataGrupos = data.terminologia2.map((t) => {
@@ -37,6 +39,7 @@ export const useTerminos2Store = () => {
 				dataConcepto,
 				dataGrupos: uniqueBy(dataGrupos, 'value'),
 			});
+			setisLoading(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -46,5 +49,6 @@ export const useTerminos2Store = () => {
 		dataTerminologia2EmpresaxTipo,
 		dataTerm2EmpresaxGrupo,
 		dataTerm2EmpresaxConcepto,
+		isLoading,
 	};
 };
