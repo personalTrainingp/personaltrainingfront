@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { useTipoCambioStore } from './useTipoCambioStore';
 import { useImageStore } from './useImageStore';
 import config from '@/config';
+import { fetchTablaVentasCached } from '@/pages/pagePT/reportes/resumenCache';
 dayjs.extend(utc);
 
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
@@ -144,14 +145,14 @@ export const useVentasStore = () => {
 				formData
 			);
 			setloadingMessage('FIRMA AGREGADA');
-			setTimeout(() => {}, 3000);
+			setTimeout(() => { }, 3000);
 			setloadingMessage('ENVIANDO A SU CORREO');
 
 			const { data: dataMail } = await PTApi.post(`/venta/invoice-mail/${idVenta}`, {
 				firma_base64: lector.result,
 			});
 			setloadingMessage('CORREO ENVIADO');
-			setTimeout(() => {}, 3000);
+			setTimeout(() => { }, 3000);
 			setloadingMessage('GUARDANDO CONTRATO');
 			const file_contratoPDF = base64ToFile(
 				dataMail.base64_contratoPDF,
@@ -330,12 +331,10 @@ export const useVentasStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerTablaVentas = async (id_empresa) => {
+	const obtenerTablaVentas = async (id_empresa, filterDate = []) => {
 		try {
-			const { data } = await PTApi.get(`/venta/get-ventas/${id_empresa}`);
-			// console.log(data);
-			console.log({ data });
-
+			// Use centralized cache to avoid duplicate HTTP requests from concurrent hooks
+			const data = await fetchTablaVentasCached(id_empresa, filterDate);
 			setDataVentas(data.ventas);
 		} catch (error) {
 			console.log(error);

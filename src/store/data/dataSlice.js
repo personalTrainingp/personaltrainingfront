@@ -10,7 +10,7 @@ export const dataSlice = createSlice({
 		section_item: null,
 		RANGE_DATE: [
 			new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-			new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+			new Date(), // today, matching what useResumenFechas computes (cutDay = today)
 		],
 		MULTI_DATE: [],
 		corte: {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import PTApi from '@/common/api/PTApi';
 import config from '@/config';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
@@ -11,6 +11,18 @@ import {
     limaFromISO, MESES
 } from './useResumenUtils';
 
+import { globalCache } from '../../resumenCache';
+
+// GLOBAL CACHE to prevent double-fetching in StrictMode or rapid remounts
+/*
+const globalCache = {
+    rangeKey: null,
+    promise: null,
+    monkFitPromise: null,
+    monkFitData: null
+};
+*/
+
 export const useResumenVentas = (id_empresa, fechas) => {
     const { initDay, cutDay, selectedMonth, year, start, end, RANGE_DATE } = fechas;
 
@@ -18,60 +30,153 @@ export const useResumenVentas = (id_empresa, fechas) => {
     const { obtenerVentas, repoVentasPorSeparado } = useReporteStore();
     const { obtenerComparativoResumen, dataGroup } = useReporteResumenComparativoStore();
 
-    const { startObtenerTBProgramaPT, programas } = useProgramaTrainingStore();
+    // const { startObtenerTBProgramaPT, programas } = useProgramaTrainingStore(); // Removed to avoid duplicates
+    const [programas, setProgramas] = useState([]);
     const [reservasMF, setReservasMF] = useState([]);
     const [historicalVentas, setHistoricalVentas] = useState([]);
     const [isLoadingVentas, setIsLoadingVentas] = useState(false);
 
+    // Ref to track if THIS component instance has already requested this key
+    const initiatedRef = useRef(null);
+
+    // Helper to fetch but RETURN data (not set state directly)
+    const fetchReservasMFInner = async () => {
+        if (globalCache.monkFitPromise) return globalCache.monkFitPromise;
+
+        globalCache.monkFitPromise = PTApi.get('/reserva_monk_fit', { params: { limit: 2000, onlyActive: true } })
+            .then(res => res.data?.rows || [])
+            .catch(err => {
+                console.error(err);
+                globalCache.monkFitPromise = null; // Clear on error so retry is possible
+                return [];
+            });
+
+        return globalCache.monkFitPromise;
+    };
+
+    const fetchProgramasInner = async () => {
+        if (globalCache.programasPromise) return globalCache.programasPromise;
+
+        globalCache.programasPromise = PTApi.get('/programaTraining/get_tb_pgm')
+            .then(res => {
+                const data = res.data || [];
+                return data.sort((a, b) => {
+                    const order = [2, 4, 3, 5];
+                    return order.indexOf(a.id_pgm) - order.indexOf(b.id_pgm);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                globalCache.programasPromise = null;
+                return [];
+            });
+
+        return globalCache.programasPromise;
+    };
+
     useEffect(() => {
         const fetchData = async () => {
+            if (isLoadingVentas) return;
+
+            // Generate a primitive key for the current request
+            const rangeKey = RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]
+                ? `${RANGE_DATE[0]}-${RANGE_DATE[1]}-${id_empresa || 598}-${year}-${selectedMonth}`
+                : null;
+
+            if (!rangeKey) return;
+
+            console.log(`[useResumenVentas] Generated rangeKey: ${rangeKey}`);
+
             setIsLoadingVentas(true);
-            try {
-                const promises = [];
-                if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
-                    promises.push(obtenerVentas(RANGE_DATE));
-                    promises.push(obtenerComparativoResumen(RANGE_DATE).catch(console.error));
 
-                    const startHistory = new Date(year - 1, 0, 1);
-                    const endHistory = new Date(year, 11, 31);
+            // FUNCTION TO HANDLE RESULTS
+            const applyResults = (results) => {
+                if (!results) return;
+                // Update local state, regardless of who fetched it
+                if (results.historicalVentas) setHistoricalVentas(results.historicalVentas);
+                if (results.reservasMF) setReservasMF(results.reservasMF);
+                if (results.programasData) setProgramas(results.programasData);
+            };
 
-                    promises.push(
-                        PTApi.get('/parametros/renovaciones/por-rango-fechas', {
-                            params: {
-                                empresa: id_empresa || 598,
-                                year,
-                                selectedMonth,
-                                initDay,
-                                cutDay
-                            }
-                        })
-                            .then(res => {
-                                const cruces = res.data?.cruces || [];
-                                setHistoricalVentas(cruces);
-                            })
-                            .catch(err => { console.error("Error fetching overlaps:", err); setHistoricalVentas([]); })
-                    );
+            // DEDUPLICATION: Check if this exact range is already being fetched globally
+            if (globalCache.promise && globalCache.rangeKey === rangeKey) {
+                console.log(`[useResumenVentas] CACHE HIT for rangeKey: ${rangeKey}`);
+                try {
+                    const data = await globalCache.promise;
+                    applyResults(data);
+                } catch (e) {
+                    // ignore
+                } finally {
+                    setIsLoadingVentas(false);
                 }
-                promises.push(obtenerTablaVentas(id_empresa || 598));
-                promises.push(startObtenerTBProgramaPT());
-                promises.push(obtenerReservasMF());
+                return;
+            }
 
-                await Promise.all(promises);
-            } catch (error) {
-                console.error("Error fetching data ventas:", error);
+            // DEDUPLICATION: Check if THIS component instance already requested this key.
+            if (initiatedRef.current === rangeKey) return;
+            initiatedRef.current = rangeKey;
+
+            // Start a new global fetch
+            console.log(`[useResumenVentas] STARTING NEW FETCH for rangeKey: ${rangeKey}`);
+            globalCache.rangeKey = rangeKey;
+
+            const fetchPromise = (async () => {
+                try {
+                    const promisesMap = {};
+
+                    // Fire these off (stores update themselves via these hooks usually)
+                    promisesMap.ventas = obtenerVentas(RANGE_DATE);
+                    promisesMap.comparativo = obtenerComparativoResumen(RANGE_DATE).catch(console.error);
+                    promisesMap.tabla = obtenerTablaVentas(id_empresa || 598, RANGE_DATE);
+
+                    // Items that return data we need to Capture
+                    const reservasPromise = fetchReservasMFInner();
+                    const extensionPromise = fetchProgramasInner();
+
+                    const histPromise = PTApi.get('/parametros/renovaciones/por-rango-fechas', {
+                        params: {
+                            empresa: id_empresa || 598,
+                            year,
+                            selectedMonth,
+                            initDay,
+                            cutDay
+                        }
+                    }).then(res => res.data?.cruces || [])
+                        .catch(err => { console.error("Error fetching overlaps:", err); return []; });
+
+                    // Wait for all
+                    const [reservasMF, historicalVentas, programasData] = await Promise.all([
+                        reservasPromise,
+                        histPromise,
+                        extensionPromise,
+                        promisesMap.ventas,
+                        promisesMap.comparativo,
+                        promisesMap.tabla
+                    ]);
+
+                    return { reservasMF, historicalVentas, programasData };
+
+                } catch (error) {
+                    console.error("Error fetching data ventas:", error);
+                    throw error;
+                }
+            })();
+
+            globalCache.promise = fetchPromise;
+
+            try {
+                const results = await fetchPromise;
+                applyResults(results);
             } finally {
                 setIsLoadingVentas(false);
             }
         };
 
-        fetchData();
-    }, [id_empresa, RANGE_DATE]);
+        if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
+            fetchData();
+        }
 
-
-    const obtenerReservasMF = async () => {
-        try { const { data } = await PTApi.get('/reserva_monk_fit', { params: { limit: 2000, onlyActive: true } }); setReservasMF(data?.rows || []); }
-        catch (err) { console.error(err); }
-    };
+    }, [id_empresa, year, selectedMonth, RANGE_DATE?.[0], RANGE_DATE?.[1]]);
 
     const progNameById = useMemo(() => ({ 2: "CHANGE 45", 3: "FS 45", 4: "FISIO MUSCLE", 5: "VERTIKAL CHANGE" }), []);
 

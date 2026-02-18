@@ -10,6 +10,8 @@ import {
     limaFromISO, MESES
 } from './useResumenUtils';
 
+import { globalCache, fetchVentasCached, fetchComparativoCached } from '../../resumenCache';
+
 export const useResumenVentas = (id_empresa, fechas) => {
     const { initDay, cutDay, selectedMonth, year, start, end, RANGE_DATE } = fechas;
 
@@ -22,21 +24,56 @@ export const useResumenVentas = (id_empresa, fechas) => {
 
     useEffect(() => {
         if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
+            console.log('[useResumenVentas OFICIAL] useEffect fired, RANGE_DATE:', RANGE_DATE[0], RANGE_DATE[1]);
+            console.log('[useResumenVentas OFICIAL] cache state:', {
+                ventasKey: globalCache.ventasKey,
+                ventasPromise: !!globalCache.ventasPromise,
+                comparativoKey: globalCache.comparativoKey,
+                comparativoPromise: !!globalCache.comparativoPromise,
+            });
             obtenerVentas(RANGE_DATE);
             obtenerComparativoResumen(RANGE_DATE).catch(console.error);
         }
-        obtenerTablaVentas(id_empresa || 598);
+        obtenerTablaVentas(id_empresa || 598, RANGE_DATE);
         obtenerProgramas();
         obtenerReservasMF();
     }, [id_empresa, RANGE_DATE]);
 
     const obtenerProgramas = async () => {
-        try { const { data } = await PTApi.get('/programaTraining/get_tb_pgm'); setProgramas(data || []); }
-        catch (err) { console.error(err); }
+        if (!globalCache.programasPromise) {
+            globalCache.programasPromise = PTApi.get('/programaTraining/get_tb_pgm')
+                .then(res => {
+                    const data = res.data || [];
+                    return data.sort((a, b) => {
+                        const order = [2, 4, 3, 5];
+                        return order.indexOf(a.id_pgm) - order.indexOf(b.id_pgm);
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    globalCache.programasPromise = null;
+                    return [];
+                });
+        }
+        try {
+            const data = await globalCache.programasPromise;
+            setProgramas(data);
+        } catch (err) { console.error(err); }
     };
     const obtenerReservasMF = async () => {
-        try { const { data } = await PTApi.get('/reserva_monk_fit', { params: { limit: 2000, onlyActive: true } }); setReservasMF(data?.rows || []); }
-        catch (err) { console.error(err); }
+        if (!globalCache.monkFitPromise) {
+            globalCache.monkFitPromise = PTApi.get('/reserva_monk_fit', { params: { limit: 2000, onlyActive: true } })
+                .then(res => res.data?.rows || [])
+                .catch(err => {
+                    console.error(err);
+                    globalCache.monkFitPromise = null;
+                    return [];
+                });
+        }
+        try {
+            const rows = await globalCache.monkFitPromise;
+            setReservasMF(rows);
+        } catch (err) { console.error(err); }
     };
 
     const progNameById = useMemo(() => ({ 2: "CHANGE 45", 3: "FS 45", 4: "FISIO MUSCLE", 5: "VERTIKAL CHANGE" }), []);

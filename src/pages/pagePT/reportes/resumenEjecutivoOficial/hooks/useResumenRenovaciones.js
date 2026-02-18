@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import PTApi from '@/common/api/PTApi';
+import { fetchVencimientosCached } from '../../resumenCache';
 import { getFechaFin, norm } from './useResumenUtils';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -54,12 +55,8 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
 
     const fetchVencimientos = async () => {
         try {
-            const { data } = await PTApi.get('/venta/vencimientos-mes', {
-                params: {
-                    year,
-                    id_empresa: id_empresa || 598
-                }
-            });
+            // Use centralized cache to avoid duplicate HTTP requests
+            const data = await fetchVencimientosCached(year, id_empresa);
             if (data.ok && Array.isArray(data.data)) {
 
                 const map = {};

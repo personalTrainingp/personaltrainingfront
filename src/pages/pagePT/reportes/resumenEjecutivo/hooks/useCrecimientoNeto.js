@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import PTApi from '@/common/api/PTApi';
+import { useEffect, useMemo } from 'react';
+import { useVigentesHistoricoStore } from './useVigentesHistoricoStore';
 
 const MESES = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -7,52 +7,37 @@ const MESES = [
 ];
 
 export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empresa) => {
-    const [activosPorMes, setActivosPorMes] = useState({});
-    const [loadingActivos, setLoadingActivos] = useState(false);
+    // ❌ BORRADO: const [activosPorMes, setActivosPorMes] = useState({});
 
-    // 0. Fetch Activos (Vigentes) por Mes - Reused logic for independence
+    // Obtenemos del store
+    const { fetchVigentesHistorico, data, loading } = useVigentesHistoricoStore();
+
+    // 0. Fetch Activos (Vigentes) por Mes - USANDO STORE
     useEffect(() => {
-        const fetchActivos = async () => {
-            setLoadingActivos(true);
-            const results = {};
-
-            const promises = MESES.map(async (_, index) => {
-                const month = index + 1;
-                const lastDay = new Date(year, month, 0).getDate();
-
-                try {
-                    const { data } = await PTApi.get("/parametros/membresias/vigentes/lista", {
-                        params: {
-                            empresa: id_empresa || 598,
-                            year,
-                            selectedMonth: month,
-                            cutDay: lastDay,
-                        },
-                    });
-                    return { month: index, total: Number(data?.total || 0) };
-                } catch (error) {
-                    console.error(`Error fetching vigentes for ${month}/${year}`, error);
-                    return { month: index, total: 0 };
-                }
-            });
-
-            try {
-                const responses = await Promise.all(promises);
-                responses.forEach(r => {
-                    results[r.month] = r.total;
-                });
-                setActivosPorMes(results);
-            } catch (err) {
-                console.error("Error fetching vigentes batch", err);
-            } finally {
-                setLoadingActivos(false);
-            }
-        };
-
         if (year) {
-            fetchActivos();
+            fetchVigentesHistorico(id_empresa, year);
         }
-    }, [year, id_empresa]);
+    }, [year, id_empresa, fetchVigentesHistorico]);
+
+    // 🔥 LA SOLUCIÓN: Calcular al vuelo sin causar re-renders
+    const activosPorMes = useMemo(() => {
+        const key = `${id_empresa || 598}-${year}`;
+        const rows = data[key] || [];
+        const results = {};
+
+        rows.forEach(({ colId, rows: montRows }) => {
+            const [y, m] = colId.split('-');
+            if (Number(y) === year) {
+                const monthIndex = Number(m) - 1;
+                // For this hook we only need the total count
+                results[monthIndex] = montRows ? montRows.length : 0;
+            }
+        });
+
+        return results;
+    }, [data, year, id_empresa]);
+
+    const loadingActivos = loading[`${id_empresa || 598}-${year}`] || false;
 
     // 1. Calcular Inscritos (Nuevas Ventas)
     const inscritosPorMes = useMemo(() => {
@@ -104,7 +89,6 @@ export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empres
             net[i] = inscritosPorMes[i] - churn[i];
 
             // Churn Rate % = (Bajas / Total Activos) * 100
-            // Nota: Usamos activosPorMes[i] que es el total al final del mes.
             const activosTotal = activosPorMes[i] || 0;
             if (activosTotal > 0) {
                 churnRate[i] = ((churn[i] / activosTotal) * 100).toFixed(1);
@@ -122,7 +106,7 @@ export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empres
         churnPorMes: stats.churn,
         netGrowthPorMes: stats.net,
         churnRatePorMes: stats.churnRate,
-        activosPorMes, // Exportamos también
+        activosPorMes,
         loadingActivos,
         MESES
     };

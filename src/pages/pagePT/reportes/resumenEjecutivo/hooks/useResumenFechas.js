@@ -27,8 +27,23 @@ export const useResumenFechas = () => {
 		// AL CORREGIR: Usamos 'year' del estado, no el año actual hardcodeado
 		const startLocal = new Date(year, selectedMonth - 1, initDay);
 		const endLocal = new Date(year, selectedMonth - 1, cutDay);
-		dispatch(onSetRangeDate([limaStartOfDay(startLocal), limaEndOfDay(endLocal)]));
-	}, [selectedMonth, initDay, cutDay, year, dispatch]);
+
+		const newStart = limaStartOfDay(startLocal);
+		const newEnd = limaEndOfDay(endLocal);
+
+		// Check if current RANGE_DATE matches calculated dates to avoid redundant dispatch
+		if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) {
+			const currentStart = new Date(RANGE_DATE[0]);
+			const currentEnd = new Date(RANGE_DATE[1]);
+
+			if (currentStart.getTime() === newStart.getTime() &&
+				currentEnd.getTime() === newEnd.getTime()) {
+				return;
+			}
+		}
+
+		dispatch(onSetRangeDate([newStart, newEnd]));
+	}, [selectedMonth, initDay, cutDay, year, dispatch, RANGE_DATE]);
 
 	return {
 		cutDay,

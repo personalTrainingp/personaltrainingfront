@@ -145,70 +145,94 @@ export function ProductosResumenMensual({
             setLoading(true);
 
             try {
-                const results = await Promise.all(
-                    [...lastYearCols, ...currentYearCols].map(async (c) => {
-                        const lastDay = getLastDayOfMonth(c.year, c.month);
+                // 1. Calculate the full date range
+                // Start: September 1st of (year - 1)
+                const startYear = year - 1;
+                const dStart = new Date(startYear, 8, 1); // Month is 0-indexed (8 = Sept)
 
-                        const dStart = new Date(c.year, c.month - 1, 1);
-                        const dEnd = new Date(c.year, c.month - 1, lastDay);
+                // End: Last day of selectedMonth of (year)
+                const lastDay = getLastDayOfMonth(year, selectedMonth);
+                const dEnd = new Date(year, selectedMonth - 1, lastDay);
 
-                        const fmt = (d, isEnd) => {
-                            const Y = d.getFullYear();
-                            const M = String(d.getMonth() + 1).padStart(2, '0');
-                            const D = String(d.getDate()).padStart(2, '0');
-                            const time = isEnd ? "23:59:59.999" : "00:00:00.000";
-                            return `${Y}-${M}-${D} ${time} -05:00`;
-                        };
+                const fmt = (d, isEnd) => {
+                    const Y = d.getFullYear();
+                    const M = String(d.getMonth() + 1).padStart(2, "0");
+                    const D = String(d.getDate()).padStart(2, "0");
+                    const time = isEnd ? "23:59:59.999" : "00:00:00.000";
+                    return `${Y}-${M}-${D} ${time} -05:00`;
+                };
 
-                        const arrayDate = [fmt(dStart, false), fmt(dEnd, true)];
+                const arrayDate = [fmt(dStart, false), fmt(dEnd, true)];
 
-                        try {
-                            const { data } = await PTApi.get(`/venta/get-ventas-x-fecha/${id_empresa || 598}`, {
-                                params: { arrayDate }
-                            });
-
-                            return {
-                                colId: c.id,
-                                ventas: Array.isArray(data?.ventas) ? data.ventas : [],
-                            };
-                        } catch (err) {
-                            console.error(err);
-                            return { colId: c.id, ventas: [] };
-                        }
-                    })
+                // 2. Single API Call
+                const { data } = await PTApi.get(
+                    `/venta/get-ventas-x-fecha/${id_empresa || 598}`,
+                    {
+                        params: { arrayDate },
+                    }
                 );
+
+                const allVentas = Array.isArray(data?.ventas) ? data.ventas : [];
 
                 if (isCancelled) return;
 
                 const nextMatrix = {};
 
-                for (const { colId, ventas } of results) {
-                    for (const v of ventas) {
-                        const items = v.detalle_ventaProductos || [];
-                        for (const item of items) {
-                            const prodName = item.tb_producto?.nombre_producto || item.nombre_producto || "DESCONOCIDO";
-                            const catId = item.tb_producto?.id_categoria;
+                // Helper set for fast lookup of valid columns
+                const validColIds = new Set(
+                    [...lastYearCols, ...currentYearCols].map((c) => c.id)
+                );
 
-                            const key = norm(prodName);
-                            if (!nextMatrix[key]) {
-                                nextMatrix[key] = {
-                                    label: prodName,
-                                    image: item.tb_producto?.avatar ? `https://api.personaltraining.com.pe/api/v1/storage/blob/${item.tb_producto.avatar}` : null,
-                                    counts: {},
-                                    amounts: {}
-                                };
-                            }
-                            // Sum quantity
-                            const qty = Number(item.cantidad || 1);
-                            const monto = Number(item.tarifa_monto || 0);
+                // 3. Process all ventas and bucket them by month
+                for (const v of allVentas) {
+                    // Identify which month/colId this sale belongs to
+                    const d = new Date(v.fecha_venta);
+                    // Adjust for timezone if necessary or trust string parsing. 
+                    // Assuming backend returns UTC or offset string, new Date() parses correctly locally or use substring if format is YYYY-MM-DD
+                    // Safer to use UTC methods or string manipulation if we want to be strict, but usually local date is fine if consistent.
+                    // Let's use getFullYear/getMonth which uses local time. 
+                    // Ideally rely on the string format "YYYY-MM-DD..."
+                    const y = d.getFullYear();
+                    const m = d.getMonth() + 1;
+                    const colId = `${y}-${String(m).padStart(2, "0")}`;
 
-                            nextMatrix[key].counts[colId] = (nextMatrix[key].counts[colId] || 0) + qty;
-                            nextMatrix[key].amounts[colId] = (nextMatrix[key].amounts[colId] || 0) + monto;
+                    if (!validColIds.has(colId)) continue;
+
+                    const items = v.detalle_ventaProductos || [];
+                    for (const item of items) {
+                        const prodName =
+                            item.tb_producto?.nombre_producto ||
+                            item.nombre_producto ||
+                            "DESCONOCIDO";
+
+                        // Normalize key
+                        const key = norm(prodName);
+
+                        if (!nextMatrix[key]) {
+                            nextMatrix[key] = {
+                                label: prodName,
+                                image: item.tb_producto?.avatar
+                                    ? `https://api.personaltraining.com.pe/api/v1/storage/blob/${item.tb_producto.avatar}`
+                                    : null,
+                                counts: {},
+                                amounts: {},
+                            };
                         }
+
+                        // Sum quantity and amount
+                        const qty = Number(item.cantidad || 1);
+                        const monto = Number(item.tarifa_monto || 0);
+
+                        nextMatrix[key].counts[colId] =
+                            (nextMatrix[key].counts[colId] || 0) + qty;
+                        nextMatrix[key].amounts[colId] =
+                            (nextMatrix[key].amounts[colId] || 0) + monto;
                     }
                 }
 
                 setProductMatrix(nextMatrix);
+            } catch (err) {
+                console.error("Error fetching historical products:", err);
             } finally {
                 if (!isCancelled) setLoading(false);
             }
