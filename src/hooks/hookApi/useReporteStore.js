@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import utc from 'dayjs/plugin/utc';
 import 'dayjs/locale/es';
+import { fetchVentasCached } from '../../pages/pagePT/reportes/resumenCache'; // Centralized cache
+
 dayjs.extend(utc);
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
 	const base = dayjs.utc(date);
@@ -141,23 +143,10 @@ export const useReporteStore = () => {
 	};
 	const obtenerVentas = async (arrayDate) => {
 		try {
-			setloading(true);
-			console.log(
-				[
-					formatDateToSQLServerWithDayjs(arrayDate[0], true),
-					formatDateToSQLServerWithDayjs(arrayDate[1], false),
-				],
-				'en 136'
-			);
-			const { data } = await PTApi.get('/reporte/reporte-obtener-ventas', {
-				params: {
-					arrayDate: [
-						formatDateToSQLServerWithDayjs(arrayDate[0], true),
-						formatDateToSQLServerWithDayjs(arrayDate[1], false),
-					],
-				},
-			});
-			console.log({ data });
+			// Use centralized cache to avoid race conditions between concurrent hook instances
+			const data = await fetchVentasCached(arrayDate);
+
+			//console.log({ data });
 
 			const dataTotal = data.reporte.map((e) => {
 				// Filtrar productos con id_categoria igual a 17
@@ -317,7 +306,7 @@ export const useReporteStore = () => {
 			const ordenarPorTotalVentas = (data) => {
 				return data.sort((a, b) => b.total_ventas - a.total_ventas);
 			};
-			console.log(dataTransferencia);
+			//console.log(dataTransferencia);
 
 			setreporteVentas(sumarTotalDetalle(sumarDatos(data.reporte)));
 			setreporteDeDetalle(sumarDatos_y_cantidades(data.reporte));
@@ -769,7 +758,7 @@ export const useReporteStore = () => {
 			console.log(error);
 		}
 	};
-	const obtener_ReporteVentasPorAsesor_Profile = async (id_empl, rangoDate) => {};
+	const obtener_ReporteVentasPorAsesor_Profile = async (id_empl, rangoDate) => { };
 	const obtenerReporteVentasDeProgramasPorSemanas = async (id_programa, rangoDate) => {
 		try {
 			const { data } = await PTApi.get('/reporte/reporte-programa-x-semanas', {

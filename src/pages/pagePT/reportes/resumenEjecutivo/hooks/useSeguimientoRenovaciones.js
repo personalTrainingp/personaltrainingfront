@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect } from 'react';
-import PTApi from '@/common/api/PTApi';
+import { useState, useEffect, useMemo } from 'react';
+import { useVigentesHistoricoStore } from './useVigentesHistoricoStore';
 
 const MESES = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -7,8 +7,9 @@ const MESES = [
 ];
 
 export const useSeguimientoRenovaciones = (dataVentas, mapaVencimientos, year, id_empresa) => {
-    const [activosPorMes, setActivosPorMes] = useState({});
-    const [loadingActivos, setLoadingActivos] = useState(false);
+
+    // Obtenemos del store
+    const { fetchVigentesHistorico, data, loading } = useVigentesHistoricoStore();
 
     // 1. Calcular Inscritos (Nuevas Ventas)
     const inscritosPorMes = useMemo(() => {
@@ -45,49 +46,32 @@ export const useSeguimientoRenovaciones = (dataVentas, mapaVencimientos, year, i
         return counts;
     }, [mapaVencimientos, year]);
 
-    // 3. Fetch Activos (Vigentes) por Mes
+    // 🔥 3. Fetch Activos (Vigentes) por Mes - USANDO STORE
     useEffect(() => {
-        const fetchActivos = async () => {
-            setLoadingActivos(true);
-            const results = {};
-
-            const promises = MESES.map(async (_, index) => {
-                const month = index + 1;
-                const lastDay = new Date(year, month, 0).getDate();
-
-                try {
-                    const { data } = await PTApi.get("/parametros/membresias/vigentes/lista", {
-                        params: {
-                            empresa: id_empresa || 598,
-                            year,
-                            selectedMonth: month,
-                            cutDay: lastDay,
-                        },
-                    });
-                    return { month: index, total: Number(data?.total || 0) };
-                } catch (error) {
-                    console.error(`Error fetching vigentes for ${month}/${year}`, error);
-                    return { month: index, total: 0 };
-                }
-            });
-
-            try {
-                const responses = await Promise.all(promises);
-                responses.forEach(r => {
-                    results[r.month] = r.total;
-                });
-                setActivosPorMes(results);
-            } catch (err) {
-                console.error("Error fetching vigentes batch", err);
-            } finally {
-                setLoadingActivos(false);
-            }
-        };
-
         if (year) {
-            fetchActivos();
+            fetchVigentesHistorico(id_empresa, year);
         }
-    }, [year, id_empresa]);
+    }, [year, id_empresa, fetchVigentesHistorico]);
+
+    // 🔥 LA SOLUCIÓN: Reemplazamos el useState y el useEffect por un useMemo puro.
+    // Esto calcula los resultados al vuelo (síncronamente) y evita el re-render extra.
+    const activosPorMes = useMemo(() => {
+        const key = `${id_empresa || 598}-${year}`;
+        const rows = data[key] || [];
+        const results = {};
+
+        rows.forEach(({ colId, rows: montRows }) => {
+            const [y, m] = colId.split('-');
+            if (Number(y) === year) {
+                const monthIndex = Number(m) - 1;
+                results[monthIndex] = montRows ? montRows.length : 0;
+            }
+        });
+
+        return results;
+    }, [data, year, id_empresa]);
+
+    const loadingActivos = loading[`${id_empresa || 598}-${year}`] || false;
 
     return {
         inscritosPorMes,

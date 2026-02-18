@@ -27,11 +27,15 @@ export const useResumenFechas = () => {
 	}, [RANGE_DATE]);
 
 	useEffect(() => {
+		// Only dispatch if RANGE_DATE is not already set by another hook (e.g. dev hook)
+		// This prevents a race condition where both hooks dispatch different date ranges
+		if (RANGE_DATE && RANGE_DATE[0] && RANGE_DATE[1]) return;
+
 		const y = new Date().getFullYear();
 		const startLocal = new Date(y, selectedMonth - 1, initDay);
 		const endLocal = new Date(y, selectedMonth - 1, cutDay);
 		dispatch(onSetRangeDate([limaStartOfDay(startLocal), limaEndOfDay(endLocal)]));
-	}, [selectedMonth, initDay, cutDay, dispatch]);
+	}, [selectedMonth, initDay, cutDay, dispatch, RANGE_DATE]);
 
 	return {
 		cutDay,
