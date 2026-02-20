@@ -21,7 +21,7 @@ const App = () => {
 
     // Custom Range State
     const [customStartDay, setCustomStartDay] = useState(1);
-    const [customEndDay, setCustomEndDay] = useState(15);
+    const [customEndDay, setCustomEndDay] = useState(new Date().getDate());
 
     // Generamos lista de años empezando desde 2024
     const currentYear = new Date().getFullYear();

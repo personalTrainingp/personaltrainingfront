@@ -93,7 +93,7 @@ export const ComparativoMensualTable = ({
                         variant={viewMode === 'top3' ? "light" : "light"}
                         onClick={() => handleToggle('top3')}
                         style={{
-                            fontWeight: '600', border: '1px solid #ddd',
+                            fontWeight: '800', border: '1px solid #ddd',
                             background: viewMode === 'top3' ? '#fff8b1' : '#fff', color: '#333'
                         }}
                     >
@@ -103,7 +103,7 @@ export const ComparativoMensualTable = ({
                         variant={viewMode === 'last6' ? "light" : "light"}
                         onClick={() => handleToggle('last6')}
                         style={{
-                            fontWeight: '600', border: '1px solid #ddd',
+                            fontWeight: '80 0', border: '1px solid #ddd',
                             background: viewMode === 'last6' ? '#e2e3e5' : '#fff', color: '#333'
                         }}
                     >

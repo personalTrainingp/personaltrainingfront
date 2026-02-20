@@ -87,83 +87,43 @@ export const useResumenVentas = (id_empresa, fechas) => {
 
             console.log(`[useResumenVentas] Generated rangeKey: ${rangeKey}`);
 
-            setIsLoadingVentas(true);
-
-            // FUNCTION TO HANDLE RESULTS
-            const applyResults = (results) => {
-                if (!results) return;
-                // Update local state, regardless of who fetched it
-                if (results.historicalVentas) setHistoricalVentas(results.historicalVentas);
-                if (results.reservasMF) setReservasMF(results.reservasMF);
-                if (results.programasData) setProgramas(results.programasData);
-            };
-
-            // DEDUPLICATION: Check if this exact range is already being fetched globally
-            if (globalCache.promise && globalCache.rangeKey === rangeKey) {
-                console.log(`[useResumenVentas] CACHE HIT for rangeKey: ${rangeKey}`);
-                try {
-                    const data = await globalCache.promise;
-                    applyResults(data);
-                } catch (e) {
-                    // ignore
-                } finally {
-                    setIsLoadingVentas(false);
-                }
-                return;
-            }
-
-            // DEDUPLICATION: Check if THIS component instance already requested this key.
             if (initiatedRef.current === rangeKey) return;
             initiatedRef.current = rangeKey;
 
-            // Start a new global fetch
-            console.log(`[useResumenVentas] STARTING NEW FETCH for rangeKey: ${rangeKey}`);
-            globalCache.rangeKey = rangeKey;
-
-            const fetchPromise = (async () => {
-                try {
-                    const promisesMap = {};
-
-                    // Fire these off (stores update themselves via these hooks usually)
-                    promisesMap.ventas = obtenerVentas(RANGE_DATE);
-                    promisesMap.comparativo = obtenerComparativoResumen(RANGE_DATE).catch(console.error);
-                    promisesMap.tabla = obtenerTablaVentas(id_empresa || 598, RANGE_DATE);
-
-                    // Items that return data we need to Capture
-                    const reservasPromise = fetchReservasMFInner();
-                    const extensionPromise = fetchProgramasInner();
-
-                    const histPromise = fetchParametrosRenovacionesCached({
-                        empresa: id_empresa || 598,
-                        year,
-                        selectedMonth,
-                        initDay,
-                        cutDay
-                    });
-
-                    // Wait for all
-                    const [reservasMF, historicalVentas, programasData] = await Promise.all([
-                        reservasPromise,
-                        histPromise,
-                        extensionPromise,
-                        promisesMap.ventas,
-                        promisesMap.comparativo,
-                        promisesMap.tabla
-                    ]);
-
-                    return { reservasMF, historicalVentas, programasData };
-
-                } catch (error) {
-                    console.error("Error fetching data ventas:", error);
-                    throw error;
-                }
-            })();
-
-            globalCache.promise = fetchPromise;
+            setIsLoadingVentas(true);
 
             try {
-                const results = await fetchPromise;
-                applyResults(results);
+                const promiseVentas = obtenerVentas(RANGE_DATE);
+                const promiseComparativo = obtenerComparativoResumen(RANGE_DATE).catch(console.error);
+                const promiseTabla = obtenerTablaVentas(id_empresa || 598, RANGE_DATE);
+
+                const reservasPromise = fetchReservasMFInner();
+                const extensionPromise = fetchProgramasInner();
+
+                const histPromise = fetchParametrosRenovacionesCached({
+                    empresa: id_empresa || 598,
+                    year,
+                    selectedMonth,
+                    initDay,
+                    cutDay
+                });
+
+                // Wait for all
+                const [reservasMF, historicalVentas, programasData] = await Promise.all([
+                    reservasPromise,
+                    histPromise,
+                    extensionPromise,
+                    promiseVentas,
+                    promiseComparativo,
+                    promiseTabla
+                ]);
+
+                if (historicalVentas) setHistoricalVentas(historicalVentas);
+                if (reservasMF) setReservasMF(reservasMF);
+                if (programasData) setProgramas(programasData);
+
+            } catch (error) {
+                console.error("Error fetching data ventas:", error);
             } finally {
                 setIsLoadingVentas(false);
             }

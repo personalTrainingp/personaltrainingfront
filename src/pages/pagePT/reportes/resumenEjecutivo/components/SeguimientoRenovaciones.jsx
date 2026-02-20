@@ -150,13 +150,13 @@ export const SeguimientoRenovaciones = ({
                 <div className="table-responsive rounded border">
                     {/* MEJORA UI: Tabla más limpia, textos alineados donde corresponden */}
                     <Table hover responsive className="m-0 align-middle">
-                        <thead className="bg-light text-secondary" style={{ fontSize: "1rem", textTransform: "uppercase" }}>
-                            <tr>
-                                <th className="py-3 ps-3">Mes</th>
-                                <th className="py-3 text-end">Inscritos Nuevos</th>
-                                <th className="py-3 text-end">Activos (Fin de Mes)</th>
-                                <th className="py-3 text-end">Renovaciones</th>
-                                <th className="py-3 text-end pe-3">Ratio Renovación</th>
+                        <thead className="bg-light text-primary" style={{ fontSize: "1rem", textTransform: "uppercase" }}>
+                            <tr className="bg-primary">
+                                <th className="py-3 ps-3 text-white">Mes</th>
+                                <th className="py-3 text-start text-white">Inscritos<br /> Nuevos</th>
+                                <th className="py-3 text-start text-white">Activos<br /> (Fin de Mes)</th>
+                                <th className="py-3 text-start text-white">Renovaciones</th>
+                                <th className="py-3 text-start pe-3 text-white">Ratio<br /> Renovación</th>
                             </tr>
                         </thead>
                         <tbody style={{ borderTop: "none", fontSize: "1.2rem" }}>

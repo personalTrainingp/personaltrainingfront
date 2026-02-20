@@ -19,7 +19,7 @@ import { ProductosResumenMensual } from "./components/ProductosResumenMensual";
 import { useResumenEjecutivoStore } from "./useResumenEjecutivoStore";
 import { MESES } from './hooks/useResumenUtils';
 import { OverlappingMembershipsTable } from "./components/OverlappingMembershipsTable";
-
+import SociosInactivosMarketing from "./components/SociosInactivosMarketing";
 import { SeguimientoRenovaciones } from "./components/SeguimientoRenovaciones";
 import { CrecimientoNeto } from "./components/CrecimientoNeto";
 import { LtvCacChart } from "./components/LtvCacChart";
@@ -153,7 +153,7 @@ export const App = ({ id_empresa }) => {
               </Row>
             </>
           )}
-
+          <SociosInactivosMarketing empresa={598} />
           {/* =======================================
               🛸 FASE 3: CARGA A LOS 1800ms (Gráficos pesados)
               ======================================= */}
