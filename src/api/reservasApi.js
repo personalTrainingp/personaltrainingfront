@@ -1,9 +1,9 @@
 const API_BASE = (
-  import.meta.env.VITE_API_URL 
+  import.meta.env.VITE_API_URL
   || "http://localhost:4000/api" // fallback con /api incluido
 ).replace(/\/+$/, "");
 
-const API_URL  = `${API_BASE}/reserva_monk_fit`;
+const API_URL = `${API_BASE}/reserva_monk_fit`;
 const ESTADOS_PARAM_URL = `${API_BASE}/parametros/get_params/citas/estados-todos`;
 
 
@@ -31,19 +31,21 @@ const json = async (res, fallbackMessage) => {
     try {
       const j = await res.json();
       if (j?.message) msg = j.message;
-    } catch {}
+    } catch { }
     throw new Error(msg);
   }
   return res.json();
 };
 
 export const reservasApi = {
-  async list({ limit = 10, offset = 0, page, search = "" } = {}) {
+  async list({ limit = 10, offset = 0, page, search = "", from, to } = {}) {
     const currentPage = page ?? (limit > 0 ? Math.floor(offset / limit) + 1 : 1);
     const url = new URL(API_URL);
     url.searchParams.set("limit", String(limit));
     url.searchParams.set("page", String(currentPage));
     if (search) url.searchParams.set("search", search);
+    if (from) url.searchParams.set("from", from);
+    if (to) url.searchParams.set("to", to);
     const res = await fetch(url.toString());
     return json(res, "Error al obtener reservas");
   },
@@ -53,23 +55,23 @@ export const reservasApi = {
     return json(res, "Error al cargar estados");
   },
 
-async create(data) {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  return json(res, "Error al crear reserva");
-},
+  async create(data) {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return json(res, "Error al crear reserva");
+  },
 
-async update(id, data) {
-  const res = await fetch(`${API_URL}/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  return json(res, "Error al actualizar reserva");
-},
+  async update(id, data) {
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return json(res, "Error al actualizar reserva");
+  },
 
 
   async remove(id) {

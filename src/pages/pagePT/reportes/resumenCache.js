@@ -6,8 +6,8 @@ dayjs.extend(utc);
 function formatDate(date, isStart = true) {
     const base = dayjs.utc(date);
     return isStart
-        ? base.startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]')
-        : base.endOf('day').format('YYYY-MM-DD HH:mm:ss.SSS [-05:00]');
+        ? base.startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS[-05:00]')
+        : base.endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS[-05:00]');
 }
 
 // GLOBAL CACHE to prevent double-fetching in StrictMode or rapid remounts
