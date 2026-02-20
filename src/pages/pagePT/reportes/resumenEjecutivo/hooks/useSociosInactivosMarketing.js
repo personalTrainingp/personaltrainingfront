@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { PTApi } from "@/common";
 
 export const useSociosInactivosMarketing = (empresa = 598, pageSize = 20) => {
@@ -17,8 +17,11 @@ export const useSociosInactivosMarketing = (empresa = 598, pageSize = 20) => {
     // Días de inactividad (corte configurable)
     const [dias, setDias] = useState(91);
 
-    // Colapsar
-    const [isOpen, setIsOpen] = useState(true);
+    // Colapsar — empieza cerrado para lazy-load
+    const [isOpen, setIsOpen] = useState(false);
+
+    // Controla si ya se hizo el primer fetch
+    const hasFetched = useRef(false);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -41,8 +44,11 @@ export const useSociosInactivosMarketing = (empresa = 598, pageSize = 20) => {
     }, [empresa, dias]);
 
     useEffect(() => {
+        // Solo fetch la primera vez que se abre, o cuando cambia 'dias'
+        if (!isOpen) return;
         fetchData();
-    }, [fetchData]);
+        hasFetched.current = true;
+    }, [fetchData, isOpen]);
 
     // Filtrado + ordenamiento
     const processed = useMemo(() => {

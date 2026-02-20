@@ -129,7 +129,7 @@ export default function SociosInactivosMarketing({ empresa = 598 }) {
         <div style={styles.wrapper}>
             <div style={styles.header} onClick={() => setIsOpen(!isOpen)}>
                 <span>
-                    Campañas de Retargeting - Inactivos +{dias} días ({loading ? "..." : processed.length})
+                    Campañas de Reinscripción - Inactivos +{dias} días ({loading ? "..." : processed.length})
                 </span>
                 <span style={{ fontSize: 18 }}>{isOpen ? "▲" : "▼"}</span>
             </div>
