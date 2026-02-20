@@ -23,9 +23,12 @@ const App = () => {
     const [customStartDay, setCustomStartDay] = useState(1);
     const [customEndDay, setCustomEndDay] = useState(15);
 
-    // Generamos lista de años (ej: actual -1 a actual +3)
+    // Generamos lista de años empezando desde 2024
     const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: 5 }, (_, i) => currentYear - 1 + i);
+    const years = [];
+    for (let y = 2024; y <= currentYear + 1; y++) {
+        years.push(y);
+    }
 
     return (
         <>
