@@ -16,7 +16,7 @@ export function useVigentesResumenMensual({
     avataresDeProgramas = [],
 }) {
     const [isOpenLast, setIsOpenLast] = useState(false);
-    const [isOpenCurr, setIsOpenCurr] = useState(true);
+    const [isOpenCurr, setIsOpenCurr] = useState(false);
 
     // Store hook
     const { fetchVigentesHistorico, data, loading } = useVigentesHistoricoStore();
@@ -24,10 +24,12 @@ export function useVigentesResumenMensual({
     // Loading state specific to this component's data key
     const isLoading = loading[`${id_empresa || 598}-${year}`] || false;
 
-    // 1. Trigger fetch on mount/change
+    // 1. Trigger fetch on expand/change
     useEffect(() => {
-        fetchVigentesHistorico(id_empresa, year);
-    }, [id_empresa, year, fetchVigentesHistorico]);
+        if (isOpenLast || isOpenCurr) {
+            fetchVigentesHistorico(id_empresa, year);
+        }
+    }, [id_empresa, year, isOpenLast, isOpenCurr, fetchVigentesHistorico]);
 
     const { lastYearCols, currentYearCols } = useMemo(
         () => buildColumnsConfig(year, selectedMonth),
