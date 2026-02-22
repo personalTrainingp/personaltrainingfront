@@ -72,7 +72,7 @@ const ActionColumn = ({row}) => {
       <Link to="" onClick={confirmDeleteProveedor} className="action-icon">
         <i className="mdi mdi-delete"></i>
       </Link>
-      <ModalProveedor dataProv={proveedor} status={statusData} show={isModalOpenProv} onHide={onCloseModalProv}/>
+      {/* <ModalProveedor dataProv={proveedor} status={statusData} show={isModalOpenProv} onHide={onCloseModalProv}/> */}
     </>
   );
 };

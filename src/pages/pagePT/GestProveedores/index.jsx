@@ -1,1 +1,1 @@
-export { DataProveedores as default } from './DataProveedores'
+export { App as default } from './App'

@@ -1,19 +1,19 @@
-import { DateMaskStr2, DateMaskString } from '@/components/CurrencyMask';
+import { DateMaskStr1, DateMaskStr2, DateMaskString } from '@/components/CurrencyMask';
 
 export function aplicarTipoDeCambio(dataTC = [], data = []) {
 	return data?.map((item) => {
-		const fechaGasto = DateMaskString(item.fecha_primaria);
+		const fechaGasto = DateMaskStr1(item.fecha_primaria);
 
 		const tcMatch = dataTC.find((tc) => {
 			if (tc.moneda === item.moneda) return false;
 
-			const inicio = DateMaskString(tc.fecha_inicio_tc);
+			const inicio = DateMaskStr1(tc.fecha_inicio_tc);
 			// Debe ser posterior o igual al inicio
 			if (fechaGasto < inicio) return false;
 
 			// Si hay fecha_fin_tc, también debe ser ≤ fin
 			if (tc.fecha_fin_tc) {
-				const fin = DateMaskString(tc.fecha_fin_tc);
+				const fin = DateMaskStr1(tc.fecha_fin_tc);
 				if (fechaGasto > fin) return false;
 			}
 			// Si fecha_fin_tc es null, este tramo sigue abierto

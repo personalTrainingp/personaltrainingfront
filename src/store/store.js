@@ -68,6 +68,7 @@ export const store = configureStore({
 		TERM: terminologiasSlice.reducer,
 		TC: TcSlice.reducer,
 		EGRESOS: EgresosSlice.reducer,
+		PROV: proveedorSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

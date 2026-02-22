@@ -12,7 +12,6 @@ import { useDispatch } from 'react-redux';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useOptionsStore } from '@/hooks/useOptionsStore';
 import Select from 'react-select';
-import { ModalProveedor } from './ModalProveedor';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';

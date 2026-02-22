@@ -3,7 +3,6 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayEmpresaFinan, arrayEstados, arrayTarjetasTemp } from '@/types/type'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
-import { Toast } from 'primereact/toast'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, Modal, Row } from 'react-bootstrap'
 import { ModalAgregarTermino } from './ModalAgregarTermino';
@@ -30,7 +29,7 @@ const registerProvedor = {
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onCloseModalProveedor}) => {
+export const ModalProveedor = ({status, onHide, show, id, onShow, isCopy=false, onCloseModalProveedor}) => {
     const { dataViewTerm } = useSelector(e=>e.TERM)
     const { startRegisterProveedor, message, isLoading, actualizarProveedor, obtenerProveedor, proveedor } = useProveedorStore()
 	const [selectedFile, setSelectedFile] = useState(sinAvatar);
@@ -58,21 +57,6 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onCl
             formState, onResetForm, onInputChange, onInputChangeReact } = useForm((id==0?registerProvedor:proveedor))
             const { comboOficio, obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
             const { obtenerTerminologiaSistema } = useTerminologiaStore()
-            const [visible, setVisible] = useState(false);
-          
-            const toastBC = useRef(null);
-            useEffect(() => {
-              if (visible && !isLoading) {
-                toastBC.current?.show({
-                  severity: `${message.ok?'success':'danger'}`,
-                  summary: message.msg,
-                  life: 1500,  // Duración del toast en milisegundos (3 segundos)
-                //   sticky: true,
-                  position: 'top-right'
-                });
-              }
-            }, [visible, isLoading]);
-            
             useEffect(() => {
                 if(show){
                     obtenerTerminologiaSistema('proveedor', 'tipo_oficio')
@@ -84,31 +68,21 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onCl
                     obtenerProveedor(id)
                 }
             }, [id])
-            
-
-
-
-            const clear = () => {
-                toastBC.current.clear();
-                setVisible(false);
-            };
-            
             const submitProveedor = async(e)=>{
                 e.preventDefault()
-                if(dataProv){
-                    // console.log("actualizaro");
-                    actualizarProveedor(formState, dataProv.id)
-                    setVisible(true);
+                // if(isCopy)
+                if(id){
+                    actualizarProveedor(formState, id)
                     onCancelForm()
                     return;
                 }
-                setVisible(true);
                 onCancelForm()
                 await startRegisterProveedor(formState, estado_prov, es_agente, selectedAvatar, id_empresa)
             }
             
             const onCancelForm = ()=>{
-                onCloseModalProveedor()
+                onHide()
+                onResetForm()
             }
             const onClickOpenModalCustomOficios = ()=>{
                 setisOpenModalTerminoOficio({isOpen: true, id: 0})
@@ -133,14 +107,13 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onCl
             }
   return (
     <>
-        <Toast ref={toastBC} onRemove={clear} />
     <ModalAgregarTermino show={isOpenModalTerminoOficio.isOpen} onHide={onClickCloseModalCustomOficios} terminoAgregar={'Servicio y/o producto'} entidad={'proveedor'} grupo={'tipo_oficio'} titulo={'Oficio'}/>
     <Modal onHide={onCancelForm} show={show} size='lg' backdrop={'static'}>
         {status=='loading'?'Cargando....':(
             <>
                 <Modal.Header>
                     <Modal.Title>
-                        {dataProv?'Actualizar proveedor':'Registrar proveedor'}
+                        {id?'Actualizar proveedor':'Registrar proveedor'}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -287,7 +260,7 @@ export const ModalProveedor = ({status, dataProv, onHide, show, id, onShow, onCl
                             </Col>
                             <Col lg={12}>
                                 <Button type='submit'>
-                                {dataProv?'Actualizar':'Registrar'}
+                                {id?'Actualizar':'Registrar'}
                                 </Button>
                                 <a className='m-3 text-danger' onClick={onCancelForm} style={{cursor: 'pointer'}}>Cancelar</a>
                             </Col>

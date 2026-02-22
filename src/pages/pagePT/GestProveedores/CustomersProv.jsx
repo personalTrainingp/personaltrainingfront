@@ -12,24 +12,17 @@ import { InputText } from 'primereact/inputtext';
 import { Link } from 'react-router-dom';
 import { FilterMatchMode } from 'primereact/api';
 import { Badge } from 'primereact/badge';
+import { DataTableCR } from '@/components/DataView/DataTableCR';
 
 const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) => {
-	const dispatch = useDispatch()
 	// const [modalProv, toggleModalProv] = useToggle();
     const [filters, setFilters] = useState({
 		global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 	});
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-	const [isModalOpenProv, setisModalOpenProv] = useState(false)
 	const [Customers, setCustomers] = useState(null);
 	const { obtenerProveedores }= useProveedorStore()
 	const { dataProveedores } = useSelector(e=>e.prov)
-	const modalProvClose = ()=>{
-		setisModalOpenProv(false)
-	}
-	const modalProvOpen = ()=>{
-		setisModalOpenProv(true)
-	}
 	useEffect(() => {
 		obtenerProveedores(estado_prov, agente, id_empresa, 1573)
 	}, [id_empresa, estado_prov])
@@ -146,7 +139,9 @@ const CustomersProv = ({onOpenModalProvOpen, estado_prov, agente, id_empresa}) =
 		<>
 			<Row>
 				<Col xs={12}>
+							{/* <DataTableCR
 							
+							/> */}
 							<DataTable 
 							size='small' 
 							value={Customers} 
