@@ -106,7 +106,8 @@ export function ProductosResumenMensual({
     const [productMatrix, setProductMatrix] = useState({});
 
     const [isOpenLast, setIsOpenLast] = useState(false);
-    const [isOpenCurr, setIsOpenCurr] = useState(true);
+    const [isOpenCurr, setIsOpenCurr] = useState(false);
+    const [hasFetched, setHasFetched] = useState(false);
 
     const { lastYearCols, currentYearCols } = useMemo(
         () => buildColumnsConfig(year, selectedMonth),
@@ -138,11 +139,21 @@ export function ProductosResumenMensual({
         return totals;
     }, [productMatrix, allCols]);
 
+    // Reset fetch state if parameters change
+    useEffect(() => {
+        setHasFetched(false);
+        setProductMatrix({});
+    }, [id_empresa, year, selectedMonth]);
+
     useEffect(() => {
         let isCancelled = false;
 
         const fetchAll = async () => {
+            if (!isOpenLast && !isOpenCurr) return;
+            if (hasFetched) return;
+
             setLoading(true);
+            setHasFetched(true);
 
             try {
                 // 1. Calculate the full date range
@@ -159,7 +170,7 @@ export function ProductosResumenMensual({
                     const M = String(d.getMonth() + 1).padStart(2, "0");
                     const D = String(d.getDate()).padStart(2, "0");
                     const time = isEnd ? "23:59:59.999" : "00:00:00.000";
-                    return `${Y}-${M}-${D} ${time} -05:00`;
+                    return `${Y}-${M}-${D}T${time}-05:00`;
                 };
 
                 const arrayDate = [fmt(dStart, false), fmt(dEnd, true)];
@@ -242,7 +253,7 @@ export function ProductosResumenMensual({
         return () => {
             isCancelled = true;
         };
-    }, [id_empresa, year, selectedMonth, lastYearCols, currentYearCols]);
+    }, [id_empresa, year, selectedMonth, lastYearCols, currentYearCols, isOpenLast, isOpenCurr]);
 
     const lastYearTable = useMemo(
         () => buildTableData(lastYearCols, productMatrix),

@@ -214,18 +214,18 @@ export const LtvCacChart = ({
 
                 <div className="table-responsive rounded-3 border border-light">
                     <Table hover className="m-0 align-middle">
-                        <thead className="bg-light">
+                        <thead className="bg-primary">
                             <tr className="text-secondary text-uppercase fw-bold" style={{ fontSize: '0.9rem' }}>
-                                <th className="py-3 ps-4">Mes</th>
-                                <th className="py-3 text-end">Ticket Prom.</th>
-                                <th className="py-3 text-end">Churn Rate</th>
-                                <th className="py-3 text-end text-success">LTV (S/.)</th>
-                                <th className="py-3 text-end text-danger">CAC (S/.)</th>
-                                <th className="py-3 text-center">Ratio</th>
-                                <th className="py-3 text-center">Estado</th>
+                                <th className="py-3 ps-4 text-white">Mes</th>
+                                <th className="py-3 text-start text-white">Ticket<br /> Promedio</th>
+                                <th className="py-3 text-start text-white">Churn<br /> Rate</th>
+                                <th className="py-3 text-end text-success text-white">LTV (S/.)</th>
+                                <th className="py-3 text-end text-danger text-white">CAC (S/.)</th>
+                                <th className="py-3 text-center text-white">Ratio</th>
+                                <th className="py-3 text-center text-white">Estado</th>
                             </tr>
                         </thead>
-                        <tbody style={{ fontSize: '1.1rem' }}>
+                        <tbody style={{ fontSize: '1.3rem' }}>
                             {MESES.map((mes, i) => {
                                 const ltv = metrics.ltvData[i];
                                 const cac = metrics.cacData[i];

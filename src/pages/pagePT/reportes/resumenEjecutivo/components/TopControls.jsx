@@ -1,7 +1,35 @@
+
 import React, { useEffect, useState } from "react";
+import { ModalMultiplesContratos } from "./ModalMultiplesContratos";
+import { useTopControls, findProgAvatar } from "../hooks/useTopControls";
 
-const FALLBACK_USD_PEN_RATE = 3.37;
+// --- Sub-componente simple para el reloj ---
+export function RealTimeClock() {
+  const [now, setNow] = useState(new Date());
 
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const hhmm = now.toLocaleTimeString("es-PE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "America/Lima",
+  });
+
+  return (
+    <div style={boxStyleBase}>
+      <span role="img" aria-label="clock">
+        🕒
+      </span>
+      <span>{hhmm}</span>
+    </div>
+  );
+}
+
+// --- Styles ---
 const boxStyleBase = {
   display: "inline-flex",
   alignItems: "center",
@@ -31,56 +59,80 @@ const selectBase = {
   minWidth: 120,
 };
 
-const norm = (s) =>
-  String(s ?? "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toUpperCase();
+const wrapperStyle = {
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+};
 
-function findProgAvatar(label, avataresDeProgramas = []) {
-  const key = norm(label);
-  return (avataresDeProgramas || []).find((p) => norm(p?.name_image) === key);
-}
+const topRowStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: 12,
+  flexWrap: "nowrap",
+  overflowX: "auto",
+  padding: "8px 0",
+  width: "100%",
+  whiteSpace: "nowrap",
+  justifyContent: "center",
+};
 
-function formatLimaDate(value) {
-  if (!value) return null;
-  try {
-    const parsed = new Date(value);
-    if (Number.isNaN(parsed.getTime())) return null;
-    return parsed.toLocaleString("es-PE", {
-      timeZone: "America/Lima",
-      hour12: false,
-    });
-  } catch (error) {
-    console.error("No se pudo formatear la fecha de actualización", error);
-    return null;
-  }
-}
+const bottomRowStyle = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: 12,
+  flexWrap: "wrap",
+  width: "100%",
+  marginTop: 10,
+};
 
-export function RealTimeClock() {
-  const [now, setNow] = useState(new Date());
+const dividerStyle = {
+  width: "100%",
+  height: 0,
+  borderTop: "2px solid rgba(0,0,0,0.12)",
+  margin: "6px 0 2px",
+};
 
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
+const labelStyle = { textTransform: "uppercase", marginRight: 6 };
+const selectMonthStyle = { ...selectBase, minWidth: 180, padding: "6px 12px" };
+const selectDayStyle = { ...selectBase, minWidth: 80, padding: "6px 10px" };
+const selectYearStyle = { ...selectBase, minWidth: 120, padding: "6px 12px" };
 
-  const hhmm = now.toLocaleTimeString("es-PE", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "America/Lima",
-  });
+const fieldGroupStyle = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6,
+  fontSize: "1.5rem",
+  fontWeight: 800,
+  color: "black",
+};
 
-  return (
-    <div style={boxStyleBase}>
-      <span role="img" aria-label="clock">
-        🕒
-      </span>
-      <span>{hhmm}</span>
-    </div>
-  );
-}
+const miniBox = {
+  ...boxStyleBase,
+  minWidth: 140,
+  padding: "6px 10px",
+  justifyContent: "space-between",
+};
+
+const rateBoxStyle = {
+  ...boxStyleBase,
+  flexDirection: "column",
+  alignItems: "flex-start",
+  justifyContent: "flex-start",
+  height: "auto",
+  minWidth: 150,
+  padding: "6px 10px",
+  gap: 4,
+};
+
+const miniTextStyle = {
+  fontSize: "0.75rem",
+  fontWeight: 500,
+  color: "rgba(0,0,0,0.6)",
+  lineHeight: 1.2,
+};
 
 export function TopControls({
   selectedMonth,
@@ -90,7 +142,6 @@ export function TopControls({
   cutDay,
   setCutDay,
 
-  // ✅ NUEVO: año + setter
   year = new Date().getFullYear(),
   setYear,
 
@@ -99,234 +150,35 @@ export function TopControls({
   vigentesBreakdown = [],
   avataresDeProgramas = [],
   useAvatars = true,
-  onChangeTasaCambio, // callback para avisar al padre
+  onChangeTasaCambio,
 }) {
-  const MESES = [
-    "ENERO",
-    "FEBRERO",
-    "MARZO",
-    "ABRIL",
-    "MAYO",
-    "JUNIO",
-    "JULIO",
-    "AGOSTO",
-    "SEPTIEMBRE",
-    "OCTUBRE",
-    "NOVIEMBRE",
-    "DICIEMBRE",
-  ];
-
-  const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
-
-  // ✅ NUEVO: lista de años (ajusta el rango si quieres)
-  const CURRENT_YEAR = new Date().getFullYear();
-  const YEARS = Array.from({ length: 7 }, (_, i) => CURRENT_YEAR - i);
-
-  const [usdPenRate, setUsdPenRate] = useState({
-    value: null,
-    updatedAt: null,
-    loading: true,
-    error: null,
+  const {
+    MESES,
+    YEARS,
+    CURRENT_YEAR,
+    handleClickUseLastDay,
+    handleMonthChange,
+    handleYearChange,
+    formattedRate,
+    usingFallback,
+    updatedLabel,
+    FALLBACK_USD_PEN_RATE,
+    showMultiContratosModal,
+    setShowMultiContratosModal,
+  } = useTopControls({
+    selectedMonth,
+    setSelectedMonth,
+    initDay,
+    setInitDay,
+    cutDay,
+    setCutDay,
+    year,
+    setYear,
+    onUseLastDay,
+    onChangeTasaCambio,
   });
 
-  useEffect(() => {
-    let ignore = false;
-
-    const fetchUsdPen = async () => {
-      try {
-        if (!ignore) {
-          setUsdPenRate((prev) => ({ ...prev, loading: true, error: null }));
-        }
-        //tambien se puede usar esta api, pero si se usa muchos tokens empezara a cobrar https://api.apis.net.pe/v1/tipo-cambio-sunat
-        const response = await fetch("https://open.er-api.com/v6/latest/USD");
-        if (!response.ok) {
-          throw new Error(`Estado ${response.status}`);
-        }
-        const payload = await response.json();
-        const value =
-          typeof payload?.rates?.PEN === "number" ? payload.rates.PEN : null;
-        const updatedAt =
-          payload?.time_last_update_utc ?? payload?.time_last_update ?? null;
-
-        if (!ignore) {
-          setUsdPenRate({
-            value,
-            updatedAt,
-            loading: false,
-            error: value == null ? "Sin datos" : null,
-          });
-        }
-      } catch (error) {
-        if (!ignore) {
-          setUsdPenRate((prev) => ({
-            ...prev,
-            loading: false,
-            error: error?.message || "No se pudo obtener el tipo de cambio",
-          }));
-        }
-      }
-    };
-
-    fetchUsdPen();
-    const intervalId = setInterval(fetchUsdPen, 1000 * 60 * 10);
-
-    return () => {
-      ignore = true;
-      clearInterval(intervalId);
-    };
-  }, []);
-
-  const displayRate =
-    typeof usdPenRate.value === "number" && Number.isFinite(usdPenRate.value)
-      ? usdPenRate.value
-      : FALLBACK_USD_PEN_RATE;
-
-  const formattedRate = `S/ ${displayRate.toFixed(3)}`;
-  const usingFallback = usdPenRate.value == null;
-  const updatedLabel = formatLimaDate(usdPenRate.updatedAt);
-
-  useEffect(() => {
-    if (typeof onChangeTasaCambio === "function") {
-      onChangeTasaCambio(displayRate);
-    }
-  }, [displayRate, onChangeTasaCambio]);
-
-  const handleMonthChange = (newMonth) => {
-    const today = new Date();
-    const currentMonth = today.getMonth() + 1;
-    const currentYear = today.getFullYear();
-
-    // ✅ si es el año actual, no permitir mes futuro
-    if (year === currentYear && newMonth > currentMonth) return;
-
-    const lastDayTarget = daysInMonth(year, newMonth);
-    let nextCut = Math.min(cutDay, lastDayTarget);
-    const nextInit = Math.min(initDay, nextCut);
-
-    setSelectedMonth(newMonth);
-    setCutDay(nextCut);
-    setInitDay(nextInit);
-  };
-
-  // ✅ NUEVO: handleYearChange
-  const handleYearChange = (newYear) => {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1;
-
-    // si no mandan setYear desde el padre, no hacemos nada
-    if (typeof setYear !== "function") return;
-
-    // si cambia al año actual y el mes está en futuro, lo bajamos
-    if (newYear === currentYear && selectedMonth > currentMonth) {
-      setSelectedMonth(currentMonth);
-    }
-
-    // recalcular días válidos en el mes actual (o mes ajustado)
-    const effectiveMonth =
-      newYear === currentYear
-        ? Math.min(selectedMonth, currentMonth)
-        : selectedMonth;
-
-    const lastDayTarget = daysInMonth(newYear, effectiveMonth);
-    const nextCut = Math.min(cutDay, lastDayTarget);
-    const nextInit = Math.min(initDay, nextCut);
-
-    setYear(newYear);
-    setCutDay(nextCut);
-    setInitDay(nextInit);
-  };
-
-  const fallbackUseLastDay = () => {
-    const today = new Date();
-    const isCurrentMonth =
-      year === today.getFullYear() && selectedMonth === today.getMonth() + 1;
-
-    const lastDay = daysInMonth(year, selectedMonth);
-    const nextCut = isCurrentMonth ? Math.min(lastDay, today.getDate()) : lastDay;
-
-    setCutDay(nextCut);
-    if (initDay > nextCut) setInitDay(nextCut);
-  };
-
-  const handleClickUseLastDay = () =>
-    typeof onUseLastDay === "function" ? onUseLastDay() : fallbackUseLastDay();
-
-  // ======= LAYOUT CENTRADO =======
-  const wrapperStyle = {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  };
-
-  const topRowStyle = {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    flexWrap: "nowrap",
-    overflowX: "auto",
-    padding: "8px 0",
-    width: "100%",
-    whiteSpace: "nowrap",
-    justifyContent: "center",
-  };
-
-  const bottomRowStyle = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 12,
-    flexWrap: "wrap",
-    width: "100%",
-    marginTop: 10,
-  };
-
-  const dividerStyle = {
-    width: "100%",
-    height: 0,
-    borderTop: "2px solid rgba(0,0,0,0.12)",
-    margin: "6px 0 2px",
-  };
-
-  const labelStyle = { textTransform: "uppercase", marginRight: 6 };
-  const selectMonthStyle = { ...selectBase, minWidth: 180, padding: "6px 12px" };
-  const selectDayStyle = { ...selectBase, minWidth: 80, padding: "6px 10px" };
-  const selectYearStyle = { ...selectBase, minWidth: 120, padding: "6px 12px" };
-
-  const fieldGroupStyle = {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 6,
-    fontSize: "1.5rem",
-    fontWeight: 800,
-    color: "black",
-  };
-
-  const miniBox = {
-    ...boxStyleBase,
-    minWidth: 140,
-    padding: "6px 10px",
-    justifyContent: "space-between",
-  };
-
-  const rateBoxStyle = {
-    ...boxStyleBase,
-    flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
-    height: "auto",
-    minWidth: 150,
-    padding: "6px 10px",
-    gap: 4,
-  };
-
-  const miniTextStyle = {
-    fontSize: "0.75rem",
-    fontWeight: 500,
-    color: "rgba(0,0,0,0.6)",
-    lineHeight: 1.2,
-  };
+  const currentMonth = new Date().getMonth() + 1;
 
   const AvatarMiniBox = ({ item }) => {
     const av = useAvatars
@@ -373,10 +225,6 @@ export function TopControls({
     );
   };
 
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth() + 1;
-
   return (
     <div style={wrapperStyle}>
       {/* FILA SUPERIOR CENTRADA */}
@@ -413,7 +261,7 @@ export function TopControls({
               <option
                 key={idx + 1}
                 value={idx + 1}
-                disabled={year === currentYear && idx + 1 > currentMonth}
+                disabled={year === CURRENT_YEAR && idx + 1 > currentMonth}
               >
                 {mes}
               </option>
@@ -447,11 +295,6 @@ export function TopControls({
             value={cutDay}
             onChange={(e) => {
               const val = parseInt(e.target.value, 10);
-              const lastDayTarget = daysInMonth(year, selectedMonth);
-              let next = Math.min(val, lastDayTarget);
-
-              setCutDay(next);
-              if (initDay > next) setInitDay(next);
             }}
             style={selectDayStyle}
           >
@@ -536,6 +379,30 @@ export function TopControls({
             {vigentesCount}
           </span>
         </div>
+
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => setShowMultiContratosModal(true)}
+          style={{
+            fontWeight: 700,
+            borderWidth: 2,
+            textTransform: "uppercase",
+            whiteSpace: "nowrap",
+            height: 48,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+          title="Ver socios con múltiples contratos"
+        >
+          <i className="pi pi-users" />
+          Multi-Contratos
+        </button>
+
+        <ModalMultiplesContratos
+          show={showMultiContratosModal}
+          onHide={() => setShowMultiContratosModal(false)}
+        />
       </div>
     </div>
   );

@@ -123,20 +123,11 @@ export default function TablaRenovaciones({
       target.pendiente = Number(data.pendiente || 0);
       target.acumulado = Number(data.acumulado || 0);
 
-      // Override current month vencimientos ONLY if specifically requested via vencimientosFiltrados
       if (key === currentMonthKey && vencimientosFiltrados !== null) {
         target.vencimientos = Number(vencimientosFiltrados);
-        // If we override vencimientos, should we recalculate pendiente? 
-        // User said "tal cual llegan los datos". Overriding might break that rule. 
-        // But `vencimientosFiltrados` is an explicit prop likely for a reason (real-time toggle?). 
-        // I'll keep the override for vencimientos but NOT recalculate others to stay faithful to backend data where possible.
+
       }
     });
-
-    // We don't need to iterate sortedKeys to calculate running totals anymore because 'acumulado' comes from the backend.
-    // Unless there are gaps? 
-    // The user wants "tal cual". So if a month is missing in backend data, it's 0. 
-    // I will just ensure visible months are present in statsMap.
 
     visibleMonthDates.forEach(d => {
       const key = getSortableKey(d);

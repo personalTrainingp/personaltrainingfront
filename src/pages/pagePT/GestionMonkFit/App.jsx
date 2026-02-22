@@ -111,7 +111,7 @@ export default function ReservaMonkFitPage() {
     <div className="container py-4">
       <PageBreadcrumb title={'Reservas MonkFit'} />
       <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-        <h4 className="m-0">Reservas MonkFit</h4>
+        <h4 className="m-0">Reservas MonkeyFit</h4>
         <div className="d-flex gap-2 align-items-center flex-wrap">
           <select
             className="form-select"
@@ -133,18 +133,19 @@ export default function ReservaMonkFitPage() {
               setOffset(0); // Reset paginación al cambiar filtro
             }}
           >
-            {/* Generamos opciones dinámicas anteriores y futuras */}
+            {/* Desde enero 2025 hasta el mes actual */}
             {(() => {
               const opts = [];
-              // 24 meses atrás + actual + 12 meses adelante
-              const start = dayjs().subtract(13, 'month');
-              for (let i = 0; i <= 36; i++) {
-                const m = start.add(i, 'month');
+              const start = dayjs('2025-01-01');
+              const now = dayjs();
+              let m = start;
+              while (m.isBefore(now, 'month') || m.isSame(now, 'month')) {
                 opts.push(
                   <option key={m.format('YYYY-MM')} value={m.format('YYYY-MM')}>
                     {m.format('MMMM YYYY').toUpperCase()}
                   </option>
                 );
+                m = m.add(1, 'month');
               }
               return opts;
             })()}
