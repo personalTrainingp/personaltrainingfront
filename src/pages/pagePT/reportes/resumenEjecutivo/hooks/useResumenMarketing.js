@@ -66,18 +66,20 @@ export const useResumenMarketing = (id_empresa, fechas, dataVentas, mesesSelecci
             return null;
         };
 
-        for (const f of mesesSeleccionados) {
-            const mesKey = f.mes === 'septiembre' ? 'setiembre' : f.mes;
-            const key = `${f.anio}-${mesKey}`;
+        // Instead of mesesSeleccionados, iterate over all months available in dataMktByMonth
+        for (const key of Object.keys(base)) {
             const obj = { ...(base[key] || {}) };
             const inversion = Number(obj.inversiones_redes ?? 0);
+            const [yearStr, monthStr] = key.split('-');
+            const anio = Number(yearStr);
+            const mesIdx = MESES.indexOf(monthStr === 'setiembre' ? 'septiembre' : monthStr);
 
             let clientesTotales = 0;
             let clientes_por_red = { tiktok: 0, meta: 0 };
 
             for (const v of dataVentas || []) {
                 const d = limaFromISO(v?.fecha_venta || v?.createdAt);
-                if (!d || d.getFullYear() !== Number(f.anio) || d.getMonth() !== MESES.indexOf(f.mes)) continue;
+                if (!d || d.getFullYear() !== anio || d.getMonth() !== mesIdx) continue;
                 if (d.getDate() < initDay || d.getDate() > cutDay) continue;
 
                 const origin = detectOrigin(v);
@@ -92,7 +94,7 @@ export const useResumenMarketing = (id_empresa, fechas, dataVentas, mesesSelecci
             base[key] = obj;
         }
         return base;
-    }, [dataMktByMonth, dataVentas, mesesSeleccionados, initDay, cutDay]);
+    }, [dataMktByMonth, dataVentas, initDay, cutDay]);
 
     return { dataLead, dataLeadPorMesAnio, dataMktByMonth, dataMktWithCac, isLoadingMarketing };
 };

@@ -363,9 +363,9 @@ export function computeMetricsForMonth({
 	const mkLeads = mkLeadsMeta + mkLeadsTikTok;
 
 	const clientesMeta =
-		sumFrom(clientes_por_red, ['1515', 'meta', 'facebook', 'instagram']) || mkLeadsMeta;
+		sumFrom(clientes_por_red, ['1515', 'meta', 'facebook', 'instagram']);
 	const clientesTikTok =
-		sumFrom(clientes_por_red, ['1514', 'tiktok', 'tik tok']) || mkLeadsTikTok;
+		sumFrom(clientes_por_red, ['1514', 'tiktok', 'tik tok']);
 
 	const safeDiv0 = (n, d) => (Number(d) > 0 ? Number(n) / Number(d) : 0);
 
