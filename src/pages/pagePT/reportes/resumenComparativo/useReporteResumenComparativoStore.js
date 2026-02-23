@@ -42,7 +42,7 @@ export const useReporteResumenComparativoStore = () => {
   const [dataGroup, setdataGroup] = useState([]);
   const [dataClientesxMarcacion, setdataClientesxMarcacion] = useState([]);
   const [dataMembresiaPorCliente, setdataMembresiaPorCliente] = useState([]);
-  const [dataIdPgmCero, setdataIdPgmCero] = useState({});
+  const [dataIdPgmCero, setdataIdPgmCero] = useState({ detalle_ventaMembresium: [], ventas_transferencias: [], tb_image: [] });
   const [dataHorarios, sethorarios] = useState([]);
   const [dataAsesoresFit, setdataAsesoresFit] = useState([]);
   const [dataTarifas, settarifas] = useState([]);
@@ -69,8 +69,8 @@ export const useReporteResumenComparativoStore = () => {
 
       // AGRUPAR ventasProgramas por id_pgm con totales y detalle “normalizado”
       const agruparxIdPgm = Object.values(
-        ventasProgramas.reduce((acc, item) => {
-          const { id_pgm, detalle_ventaMembresium, tb_image } = item || {};
+        ventasProgramas.reduce((acc, group) => {
+          const { id_pgm, detalle_ventaMembresium, tb_image } = group || {};
           if (id_pgm == null) return acc;
 
           if (!acc[id_pgm]) {
@@ -83,29 +83,34 @@ export const useReporteResumenComparativoStore = () => {
             };
           }
 
-          if (detalle_ventaMembresium && typeof detalle_ventaMembresium === 'object') {
-            const yaExiste = acc[id_pgm].detalle_ventaMembresium.some((m) =>
-              m?.horario === detalle_ventaMembresium?.horario &&
-              m?.fec_fin_mem === detalle_ventaMembresium?.fec_fin_mem &&
-              m?.fec_inicio_mem === detalle_ventaMembresium?.fec_inicio_mem &&
-              m?.tarifa_monto === detalle_ventaMembresium?.tarifa_monto &&
-              m?.tb_ventum?.id === detalle_ventaMembresium?.tb_ventum?.id
-            );
-            if (!yaExiste) {
-              acc[id_pgm].tarifa_total += Number(detalle_ventaMembresium?.tarifa_monto || 0);
-              acc[id_pgm].sesiones_total += Number(detalle_ventaMembresium?.tb_semana_training?.sesiones || 0);
-              acc[id_pgm].detalle_ventaMembresium.push({
-                horario: detalle_ventaMembresium?.horario ?? null,
-                tarifa_monto: Number(detalle_ventaMembresium?.tarifa_monto || 0),
-                fec_fin_mem: detalle_ventaMembresium?.fec_fin_mem,
-                fec_inicio_mem: detalle_ventaMembresium?.fec_inicio_mem,
-                id_tarifa: detalle_ventaMembresium?.id_tarifa || 0,
-                tb_semana_training: detalle_ventaMembresium?.tb_semana_training ?? null,
-                tb_ventum: detalle_ventaMembresium?.tb_ventum ?? null,
-                tarifa_venta: detalle_ventaMembresium?.tarifa_venta ?? null,
-              });
+          const items = Array.isArray(detalle_ventaMembresium) ? detalle_ventaMembresium : [detalle_ventaMembresium];
+
+          items.forEach((detalle, index) => {
+            if (index === 0) console.log("DEBUG: First detalle item structure:", detalle);
+            if (detalle && typeof detalle === 'object') {
+              const yaExiste = acc[id_pgm].detalle_ventaMembresium.some((m) =>
+                m?.horario === detalle?.horario &&
+                m?.fec_fin_mem === detalle?.fec_fin_mem &&
+                m?.fec_inicio_mem === detalle?.fec_inicio_mem &&
+                m?.tarifa_monto === detalle?.tarifa_monto &&
+                m?.tb_ventum?.id === detalle?.tb_ventum?.id
+              );
+              if (!yaExiste) {
+                acc[id_pgm].tarifa_total += Number(detalle?.tarifa_monto || 0);
+                acc[id_pgm].sesiones_total += Number(detalle?.tb_semana_training?.sesiones || 0);
+                acc[id_pgm].detalle_ventaMembresium.push({
+                  horario: detalle?.horario ?? null,
+                  tarifa_monto: Number(detalle?.tarifa_monto || 0),
+                  fec_fin_mem: detalle?.fec_fin_mem,
+                  fec_inicio_mem: detalle?.fec_inicio_mem,
+                  id_tarifa: detalle?.id_tarifa || 0,
+                  tb_semana_training: detalle?.tb_semana_training ?? null,
+                  tb_ventum: detalle?.tb_ventum ?? null,
+                  tarifa_venta: detalle?.tarifa_venta ?? null,
+                });
+              }
             }
-          }
+          });
 
           if (tb_image?.name_image) {
             if (!acc[id_pgm].tb_image.some((img) => img.name_image === tb_image.name_image)) {

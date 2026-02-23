@@ -566,6 +566,8 @@ export const ExecutiveTable2 = (props) => {
         <tbody>
           {[
             { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
+            { key: "totalServMeta", label: "VENTA MEMBRESIAS META", type: "money" }, // NEW
+            { key: "roasMeta", label: "ROAS META", type: "float2" }, // NEW
             { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
 
             { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
@@ -576,7 +578,6 @@ export const ExecutiveTable2 = (props) => {
             },
             { key: "clientesMeta", label: "CANTIDAD CLIENTES META", type: "int" },
             { key: "convMeta", label: "% CONVERSION META", type: "float2" },
-            { key: "roasMeta", label: "ROAS META", type: "float2" }, // NEW
             { key: "mkInvTikTok", label: "Inversion TikTok", type: "money" },
             { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
 
@@ -592,6 +593,7 @@ export const ExecutiveTable2 = (props) => {
             },
             { key: "clientesTikTok", label: "CANTIDAD CLIENTES TIKTOK", type: "int" }, // NEW
             { key: "convTikTok", label: "% CONVERSION TIKTOK", type: "float2" }, // NEW
+            { key: "totalServTikTok", label: "VENTA MEMBRESIAS TIKTOK", type: "money" }, // NEW
             { key: "roasTikTok", label: "ROAS TIKTOK", type: "float2" }, // NEW
             { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
             { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
@@ -608,12 +610,13 @@ export const ExecutiveTable2 = (props) => {
             },
             { key: "clientesTotal", label: "TOTAL CLIENTES DE META + TIKTOK", type: "int" }, // NEW
             { key: "convTotal", label: "% CONVERSION TOTAL", type: "float2" }, // NEW
+            { key: "totalMes", label: "VENTA TOTAL (TODOS LOS ORIGENES)", type: "money" }, // NEW
             { key: "roas", label: "ROAS (RETORNO DE INVERSIÓN)", type: "float2" }, // NEW
           ].map((r, i) => (
             <tr
               key={r.key + r.label}
               style={{
-                borderBottom: (i + 1) % 7 === 0 ? "8px solid #000" : "1px solid #000",
+                borderBottom: (i + 1) % 8 === 0 ? "8px solid #000" : "1px solid #000",
                 background: ["roas", "roasMeta", "roasTikTok"].includes(r.key) ? "#e3f2fd" : "transparent", // Highlight ROAS rows
               }}
             >

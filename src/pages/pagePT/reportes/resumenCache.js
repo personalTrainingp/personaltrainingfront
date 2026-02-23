@@ -73,14 +73,14 @@ export function fetchComparativoCached(arrayDate) {
         return globalCache.comparativoPromise;
     }
 
-    const qs = new URLSearchParams();
-    qs.append('arrayDate', startStr);
-    qs.append('arrayDate', endStr);
-
     console.log(`[resumenCache] CACHE MISS comparativo, fetching: ${cacheKey}`);
     globalCache.comparativoKey = cacheKey;
     globalCache.comparativoPromise = PTApi.get(
-        `/venta/reporte/obtener-comparativo-resumen?${qs.toString()}`
+        `/venta/reporte/obtener-comparativo-resumen`, {
+        params: {
+            arrayDate: [startStr, endStr]
+        }
+    }
     )
         .then(res => res.data)
         .catch(err => {
