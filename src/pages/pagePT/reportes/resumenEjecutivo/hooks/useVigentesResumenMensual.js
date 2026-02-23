@@ -52,6 +52,8 @@ export function useVigentesResumenMensual({
 
     // Derived state: Matrix of current year data
     const progMatrix = useMemo(() => {
+        if (!isOpenLast && !isOpenCurr) return {}; // Lazy execution
+
         const dataKey = `${id_empresa || 598}-${year}`;
         const results = data[dataKey] || [];
         const nextMatrix = {};
@@ -87,10 +89,12 @@ export function useVigentesResumenMensual({
         }
 
         return nextMatrix;
-    }, [data, id_empresa, year, pgmNameById, avataresDeProgramas]);
+    }, [data, id_empresa, year, pgmNameById, avataresDeProgramas, isOpenLast, isOpenCurr]);
 
     // Calculate totals for ALL columns
     const allColumnTotals = useMemo(() => {
+        if (!isOpenLast && !isOpenCurr) return {}; // Lazy execution
+
         const totals = {};
         allCols.forEach((c) => (totals[c.id] = 0));
         Object.values(progMatrix).forEach((row) => {
@@ -99,17 +103,17 @@ export function useVigentesResumenMensual({
             });
         });
         return totals;
-    }, [progMatrix, allCols]);
+    }, [progMatrix, allCols, isOpenLast, isOpenCurr]);
 
-    const lastYearTable = useMemo(
-        () => buildTableData(lastYearCols, progMatrix),
-        [lastYearCols, progMatrix]
-    );
+    const lastYearTable = useMemo(() => {
+        if (!isOpenLast) return { rows: [], footer: { perMonth: {}, total: 0 } };
+        return buildTableData(lastYearCols, progMatrix);
+    }, [lastYearCols, progMatrix, isOpenLast]);
 
-    const currentYearTable = useMemo(
-        () => buildTableData(currentYearCols, progMatrix),
-        [currentYearCols, progMatrix]
-    );
+    const currentYearTable = useMemo(() => {
+        if (!isOpenCurr) return { rows: [], footer: { perMonth: {}, total: 0 } };
+        return buildTableData(currentYearCols, progMatrix);
+    }, [currentYearCols, progMatrix, isOpenCurr]);
 
     return {
         isOpenLast,

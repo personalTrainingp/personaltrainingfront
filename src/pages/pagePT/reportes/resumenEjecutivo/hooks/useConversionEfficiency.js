@@ -25,8 +25,7 @@ export const useConversionEfficiency = ({
             Meta: { leads: leadsPorRed['meta'] || 0, originKeys: ['Meta', 'Facebook', 'Instagram'], ventas: 0, revenue: 0, inversion: inversionPorRed['meta'] || 0 },
             TikTok: { leads: leadsPorRed['tiktok'] || 0, originKeys: ['TikTok'], ventas: 0, revenue: 0, inversion: inversionPorRed['tiktok'] || 0 },
             Referidos: { leads: 0, originKeys: ['Referidos'], ventas: 0, revenue: 0, inversion: 0 },
-            WalkIn: { leads: 0, originKeys: ['Walking'], ventas: 0, revenue: 0, inversion: 0 },
-            Otros: { leads: 0, originKeys: ['OTROS', 'RENOVACIONES', 'REINSCRIPCIONES', 'EX-PT', 'INDIGO'], ventas: 0, revenue: 0, inversion: 0 }
+            WalkIn: { leads: 0, originKeys: ['Walking', 'Walk In', 'WalkIn'], ventas: 0, revenue: 0, inversion: 0 },
         };
 
         // Process sales
@@ -37,14 +36,26 @@ export const useConversionEfficiency = ({
 
             const importe = Number(v?.tarifa_monto || 0);
             const rawOriginId = v?.id_origen ?? v?.origen ?? "";
-            const originLabel = originMap[rawOriginId] || originMap[String(rawOriginId).toLowerCase()] || "OTROS";
+            let originLabel = originMap[rawOriginId] || originMap[String(rawOriginId).toLowerCase()] || "OTROS";
+
+            originLabel = String(originLabel).trim();
 
             // Find matching stat category
-            let matchedCategory = 'Otros';
+            let matchedCategory = null;
             for (const [catName, catData] of Object.entries(stats)) {
-                if (catData.originKeys.some(ok => String(originLabel).toUpperCase().includes(String(ok).toUpperCase()))) {
+                if (catData.originKeys && catData.originKeys.some(ok => originLabel.toUpperCase().includes(String(ok).toUpperCase()))) {
                     matchedCategory = catName;
                     break;
+                }
+            }
+
+            if (!matchedCategory) {
+                // Formatting name
+                matchedCategory = originLabel.charAt(0).toUpperCase() + originLabel.slice(1).toLowerCase();
+                if (matchedCategory.toUpperCase() === 'OTROS') matchedCategory = 'Otros';
+
+                if (!stats[matchedCategory]) {
+                    stats[matchedCategory] = { leads: 0, originKeys: [originLabel], ventas: 0, revenue: 0, inversion: 0 };
                 }
             }
 
@@ -79,15 +90,27 @@ export const useConversionEfficiency = ({
                 if (d.getDate() < initDay || d.getDate() > cutDay) return;
 
                 const originVal = lead?.id_red ?? lead?.idRed ?? lead?.tb_parametro?.id_param ?? lead?.parametro_red?.id_param ?? "";
-                const originLabel = originMap[originVal] || originMap[String(originVal).toLowerCase()] || lead?.tb_parametro?.descripcion || "OTROS";
+                let originLabel = originMap[originVal] || originMap[String(originVal).toLowerCase()] || lead?.tb_parametro?.descripcion || "OTROS";
 
-                let matchedCategory = 'Otros';
+                originLabel = String(originLabel).trim();
+
+                let matchedCategory = null;
                 for (const [catName, catData] of Object.entries(stats)) {
-                    if (catData.originKeys.some(ok => String(originLabel).toUpperCase().includes(String(ok).toUpperCase()))) {
+                    if (catData.originKeys && catData.originKeys.some(ok => originLabel.toUpperCase().includes(String(ok).toUpperCase()))) {
                         matchedCategory = catName;
                         break;
                     }
                 }
+
+                if (!matchedCategory) {
+                    matchedCategory = originLabel.charAt(0).toUpperCase() + originLabel.slice(1).toLowerCase();
+                    if (matchedCategory.toUpperCase() === 'OTROS') matchedCategory = 'Otros';
+
+                    if (!stats[matchedCategory]) {
+                        stats[matchedCategory] = { leads: 0, originKeys: [originLabel], ventas: 0, revenue: 0, inversion: 0 };
+                    }
+                }
+
                 stats[matchedCategory].leads += 1;
             });
         }
@@ -95,7 +118,7 @@ export const useConversionEfficiency = ({
         // Convert to array
         const result = Object.entries(stats).map(([origen, data]) => {
             let currentLeads = data.leads;
-            if (currentLeads === 0 && (origen === 'Referidos' || origen === 'WalkIn' || origen === 'Otros')) {
+            if (currentLeads === 0 && origen !== 'Meta' && origen !== 'TikTok') {
                 // Appropriate organic fallback if strictly 0
                 currentLeads = Math.max(currentLeads, Math.round(data.ventas * 1.5));
             }
