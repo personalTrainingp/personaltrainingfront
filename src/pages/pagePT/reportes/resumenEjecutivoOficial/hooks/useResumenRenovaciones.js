@@ -17,8 +17,9 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
 
     useEffect(() => {
         fetchVencimientos();
-        fetchRenewalsApi();
         fetchVigentes();
+        setRenewalsFromApi([]);
+        setVencimientosFiltrados(null);
     }, [id_empresa, year, selectedMonth, cutDay]);
 
     const fetchRenewalsApi = async () => {
@@ -118,6 +119,7 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
     return {
         mapaVencimientos,
         renewals: renewalsFromApi,
+        loadRenewals: fetchRenewalsApi,
         vigentesRows, vigentesTotal, vigentesBreakdown,
         vencimientosFiltrados
     };

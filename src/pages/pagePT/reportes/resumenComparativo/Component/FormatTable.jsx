@@ -1,4 +1,4 @@
-import React,{ useState } from 'react'
+import React, { useState } from 'react'
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 function sumarValoresPorHeader(array, isSummary) {
@@ -7,13 +7,13 @@ function sumarValoresPorHeader(array, isSummary) {
     return item ? total + item.value : total;
   }, 0);
 }
-export const FormatTable = ({ data=[] }) => {
+export const FormatTable = ({ data = [] }) => {
   const [sortedData, setSortedData] = useState(data);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "desc" });
 
   const handleSort = (header) => {
-    console.log(header);
-    
+    // console.log(header);
+
     const isDescending = sortConfig.key === header && sortConfig.direction === "desc";
     const direction = isDescending ? "asc" : "desc";
 
@@ -30,8 +30,8 @@ export const FormatTable = ({ data=[] }) => {
     setSortedData(sorted);
     setSortConfig({ key: header, direction });
   };
-  console.log({sortedData, data});
-  
+  // console.log({ sortedData, data });
+
   // Obtener encabezados desde la primera fila de datos
   const headers = data[0]?.map((col) => col.header);
 
@@ -43,7 +43,7 @@ export const FormatTable = ({ data=[] }) => {
             const isSortable = data[0][index]?.isSortable;
             return (
               <th className={`text-white fs-3`} key={index} onClick={() => isSortable && handleSort(header)} style={{ cursor: isSortable ? "pointer" : "default" }}>
-                {header===''?'SIN DATA':header} {isSortable && (sortConfig.key === header ? (sortConfig.direction === "asc" ? "↑" : "↓") : "↕")}
+                {header === '' ? 'SIN DATA' : header} {isSortable && (sortConfig.key === header ? (sortConfig.direction === "asc" ? "↑" : "↓") : "↕")}
               </th>
             );
           })}
@@ -54,12 +54,12 @@ export const FormatTable = ({ data=[] }) => {
           <tr key={rowIndex}>
             {row?.map((col, colIndex) => (
               <td key={colIndex} onClick={col.onClick}>
-              <li className={`d-flex flex-row justify-content-between p-2 ${(`${col.value}`.split(' ')[1]==='PM'?'bg-primary text-white':`${col.isPropiedad?'text-primary':'text-black'}`)}`}>
-                
-                                    <span style={{fontSize: '25px'}} className={`fw-bold ml-4`}><span className='mr-0 text-black'></span>{col.HTML ?? (col.value==undefined?'SIN DATA':col.value)}</span>
-                {/* {col.isPropiedad && <div className='pi pi-external-link m-0 cursor-pointer' />} */}
-              </li>
-            </td>
+                <li className={`d-flex flex-row justify-content-between p-2 ${(`${col.value}`.split(' ')[1] === 'PM' ? 'bg-primary text-white' : `${col.isPropiedad ? 'text-primary' : 'text-black'}`)}`}>
+
+                  <span style={{ fontSize: '25px' }} className={`fw-bold ml-4`}><span className='mr-0 text-black'></span>{col.HTML ?? (col.value == undefined ? 'SIN DATA' : col.value)}</span>
+                  {/* {col.isPropiedad && <div className='pi pi-external-link m-0 cursor-pointer' />} */}
+                </li>
+              </td>
               // <td key={colIndex}>{col.HTML ?? col.value}</td>
             ))}
           </tr>
@@ -69,8 +69,8 @@ export const FormatTable = ({ data=[] }) => {
         <tr className='bg-primary'>
           {data[0]?.map((col, index) => (
             <td key={index}>
-            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '30px'}}>{col.tFood}</span></li>
-        </td>
+              <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{ fontSize: '30px' }}>{col.tFood}</span></li>
+            </td>
             // <td key={index}>{col.tFood}</td>
           ))}
         </tr>
@@ -115,68 +115,68 @@ export const FormatTable = ({ data=[] }) => {
 
 
 export const FormatTableS = ({ data, tFood }) => {
-    const [tableData, setTableData] = useState(data);
-    const [sortOrder, setSortOrder] = useState('asc');
-    const [sortKey, setSortKey] = useState('');
-  
-    const handleSort = (key) => {
-      const sortedData = tableData.map((row) => 
-        row.slice().sort((a, b) => {
-          if (a[key] < b[key]) return sortOrder === 'asc' ? -1 : 1;
-          if (a[key] > b[key]) return sortOrder === 'asc' ? 1 : -1;
-          return 0;
-        })
-      );
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-      setSortKey(key);
-      setTableData(sortedData);
-    };
-    console.log({data});
-    
-    return (
-      <Table className="table-centered mb-0"
+  const [tableData, setTableData] = useState(data);
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortKey, setSortKey] = useState('');
+
+  const handleSort = (key) => {
+    const sortedData = tableData.map((row) =>
+      row.slice().sort((a, b) => {
+        if (a[key] < b[key]) return sortOrder === 'asc' ? -1 : 1;
+        if (a[key] > b[key]) return sortOrder === 'asc' ? 1 : -1;
+        return 0;
+      })
+    );
+    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    setSortKey(key);
+    setTableData(sortedData);
+  };
+  console.log({ data });
+
+  return (
+    <Table className="table-centered mb-0"
       striped
       responsive>
-        <thead className='bg-primary fs-2'>
-          <tr>
-            {data[0].map((col) => (
-              <th className={`text-white`} key={col.header}>
-                {col.header}{' '}
-                {/* <Button
+      <thead className='bg-primary fs-2'>
+        <tr>
+          {data[0].map((col) => (
+            <th className={`text-white`} key={col.header}>
+              {col.header}{' '}
+              {/* <Button
                   size="sm"
                   variant={sortKey === col.header ? 'primary' : 'secondary'}
                   onClick={() => handleSort(col.header)}
                 >
                   {sortOrder === 'asc' && sortKey === col.header ? '↓' : '↑'}
                 </Button> */}
-              </th>
-              
+            </th>
+
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {tableData.map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            {row.map((col, colIndex) => (
+              <td key={colIndex}>
+                <li className={`d-flex flex-row justify-content-between p-2 ${(`${col.value}`.split(' ')[1] === 'PM' ? 'bg-primary text-white' : `${col.isPropiedad ? 'text-primary' : 'text-black'}`)}`}>
+
+                  <span style={{ fontSize: '32px' }} className={`fw-bold ml-3`}>{col.value}</span>
+                  {/* {col.isPropiedad && <div className='pi pi-external-link m-0 cursor-pointer' />} */}
+                </li>
+              </td>
             ))}
           </tr>
-        </thead>
-        <tbody>
-          {tableData.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((col, colIndex) => (
-                <td key={colIndex}>
-                  <li className={`d-flex flex-row justify-content-between p-2 ${(`${col.value}`.split(' ')[1]==='PM'?'bg-primary text-white':`${col.isPropiedad?'text-primary':'text-black'}`)}`}>
-                    
-                                        <span style={{fontSize: '32px'}} className={`fw-bold ml-3`}>{col.value}</span>
-                    {/* {col.isPropiedad && <div className='pi pi-external-link m-0 cursor-pointer' />} */}
-                  </li>
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-        <tr className='bg-primary'>
+        ))}
+      </tbody>
+      <tr className='bg-primary'>
         {data[0].map((col) => (
           <td>
-          <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{fontSize: '40px'}}>{col.tFood}</span></li>
-      </td>
-              
-            ))}
-                                                    </tr>
-      </Table>
-    );
+            <li className='d-flex flex-row justify-content-between p-2'><span className='fw-bold text-white ml-4' style={{ fontSize: '40px' }}>{col.tFood}</span></li>
+          </td>
+
+        ))}
+      </tr>
+    </Table>
+  );
 }

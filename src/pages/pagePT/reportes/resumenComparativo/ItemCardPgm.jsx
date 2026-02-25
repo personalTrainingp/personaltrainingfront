@@ -4,41 +4,41 @@ import { ItemTablePgm } from './ItemTablePgm';
 import { FormatTable } from './Component/FormatTable';
 import { GrafPie } from './GrafPie';
 
-export const ItemCardPgm = ({grafPie, titleRecurrent, avatarPrograma, isSesion, aforo, aforoTurno, isViewGenere, arrayEstadistico, labelParam, onOpenModalSOCIOS, isViewSesiones, isTarifaCash}) => {
+export const ItemCardPgm = ({ grafPie, titleRecurrent, avatarPrograma, isSesion, aforo, aforoTurno, isViewGenere, arrayEstadistico, labelParam, onOpenModalSOCIOS, isViewSesiones, isTarifaCash }) => {
   const result = arrayEstadistico?.map(subArray => {
-    const firstObj = subArray[0]||[]; // Tomar solo el primer objeto de cada subarray
+    const firstObj = subArray[0] || []; // Tomar solo el primer objeto de cada subarray
     return {
       val: firstObj?.items?.length || 0, // Si 'items' no existe, devuelve 0
       label: firstObj?.value || '' // Si 'value' no existe, devuelve cadena vacía
     };
   });
-  console.log({arrayEstadistico, labelParam});
-  
+  //console.log({arrayEstadistico, labelParam});
+
   return (
     <Card>
-                        <Card.Header className='d-flex align-items-center align-self-center'>
-                            <img src={avatarPrograma.urlImage} height={avatarPrograma.height} width={avatarPrograma.width}/>
-                          <div className='mx-7 '>
-                            {titleRecurrent}
-                          </div>
-                            
-                        </Card.Header>
-                        <Card.Body>
-                          {
-                            aforo && (
-                              <>
-                                <h1 className='text-center'>AFORO POR TURNO {aforo}</h1>
-                                <h1 className='text-center'>AFORO POR HORA { aforoTurno}</h1>
-                              </>
-                            )
-                          }
-                            <br/>
-                            <FormatTable isSesion={isSesion} data={arrayEstadistico}/>
-                            
-                        </Card.Body>
-                        <div className=''>
-                            <GrafPie height={700} width={1000} data={result}/>
-                        </div>
-                    </Card>
+      <Card.Header className='d-flex align-items-center align-self-center'>
+        <img src={avatarPrograma.urlImage} height={avatarPrograma.height} width={avatarPrograma.width} />
+        <div className='mx-7 '>
+          {titleRecurrent}
+        </div>
+
+      </Card.Header>
+      <Card.Body>
+        {
+          aforo && (
+            <>
+              <h1 className='text-center'>AFORO POR TURNO {aforo}</h1>
+              <h1 className='text-center'>AFORO POR HORA {aforoTurno}</h1>
+            </>
+          )
+        }
+        <br />
+        <FormatTable isSesion={isSesion} data={arrayEstadistico} />
+
+      </Card.Body>
+      <div className=''>
+        <GrafPie height={700} width={1000} data={result} />
+      </div>
+    </Card>
   )
 }

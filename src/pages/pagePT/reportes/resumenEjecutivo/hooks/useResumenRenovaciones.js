@@ -22,7 +22,6 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
             try {
                 await Promise.all([
                     fetchVencimientos(),
-                    fetchRenewalsApi(),
                     fetchVigentes()
                 ]);
             } catch (error) {
@@ -31,6 +30,8 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
                 setIsLoadingRenovaciones(false);
             }
         };
+        setRenewalsFromApi([]); // Clear previously loaded renewals when date changes
+        setVencimientosFiltrados(null);
         fetchData();
     }, [id_empresa, year, selectedMonth, cutDay]);
 
@@ -150,6 +151,7 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
     return {
         mapaVencimientos,
         renewals: renewalsFromApi,
+        loadRenewals: fetchRenewalsApi,
         vigentesRows, vigentesTotal, vigentesBreakdown,
         vencimientosFiltrados,
         isLoadingRenovaciones

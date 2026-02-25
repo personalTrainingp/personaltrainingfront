@@ -31,7 +31,7 @@ export const App = ({ id_empresa }) => {
     selectedMonth, initDay, cutDay, tasaCambio,
     setSelectedMonth, setInitDay, setCutDay, handleSetUltimoDiaMes, setTasaCambio,
     vigentesTotal, vigentesBreakdown, vigentesRows,
-    renewals, pgmNameById,
+    renewals, loadRenewals, isLoadingRenovaciones, pgmNameById,
     dataVentas, mesesSeleccionados, mesesTop4, dataMktWithCac, dataMkt, dataLead,
     reservasMF, originMap, mapaVencimientos, dataLeadPorMesAnio,
     resumenFilas, resumenTotales, avataresDeProgramas,
@@ -98,6 +98,7 @@ export const App = ({ id_empresa }) => {
             renewals={renewals} daysThreshold={9999}
             title={`Renovaciones próximas a vencer: ${String(MESES[selectedMonth - 1] || "").toUpperCase()} (1 - ${cutDay})`}
             excludeZeroAmount showSummary pgmNameById={pgmNameById}
+            onOpen={loadRenewals} isLoading={isLoadingRenovaciones}
           />
         </Col>
       </Row>

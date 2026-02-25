@@ -10,9 +10,19 @@ export default function RenovacionesPorVencer({
   showSummary = true,
   onRowClick,
   pgmNameById = {},
-  startCollapsed = true
+  startCollapsed = true,
+  onOpen,
+  isLoading
 }) {
-  const [isOpen, setIsOpen] = useState(!startCollapsed)
+  const [isOpen, setIsOpen] = useState(!startCollapsed);
+
+  const handleToggle = () => {
+    const nextState = !isOpen;
+    setIsOpen(nextState);
+    if (nextState && onOpen && (!renewals || renewals.length === 0)) {
+      onOpen();
+    }
+  };
 
   const parseDateOnly = (v) => {
     if (!v) return null;
@@ -258,9 +268,11 @@ export default function RenovacionesPorVencer({
           alignItems: "center",
           cursor: "pointer",
         }}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
       >
-        <span>{title}</span>
+        <span>
+          {title} {isLoading && <span style={{ fontSize: "14px", marginLeft: "10px", fontStyle: "italic", color: "#ccc" }}>(Cargando...)</span>}
+        </span>
         <span style={{ fontSize: 22 }}>{isOpen ? "▲" : "▼"}</span>
       </div>
 

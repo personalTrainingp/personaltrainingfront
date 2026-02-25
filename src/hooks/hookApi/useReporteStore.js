@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import utc from 'dayjs/plugin/utc';
 import 'dayjs/locale/es';
-import { fetchVentasCached } from '../../pages/pagePT/reportes/resumenCache'; // Centralized cache
+import { fetchVentasCached, fetchVentasResumenCached } from '../../pages/pagePT/reportes/resumenCache'; // Centralized cache
 
 dayjs.extend(utc);
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
@@ -315,6 +315,57 @@ export const useReporteStore = () => {
 			);
 			setreporteDeVentas(data.reporte);
 			// setventasHoy(data.reporte);
+			setloading(false);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerVentasResumen = async (arrayDate) => {
+		try {
+			const data = await fetchVentasResumenCached(arrayDate);
+			const dataTotal = data.reporte.map((e) => {
+				const productosFiltradosAcc = (e.detalle_ventaProductos || []).filter(
+					(item) => item.tb_producto?.id_categoria === 17
+				);
+				const productosFiltradosSup = (e.detalle_ventaProductos || []).filter(
+					(item) => item.tb_producto?.id_categoria === 18
+				);
+				return {
+					detalle_membresia: e.detalle_ventaMembresia || [],
+					detalle_prodAccesorios: productosFiltradosAcc,
+					detalle_prodSuplementos: productosFiltradosSup,
+					detalle_cita_tratest: [],
+					fecha_venta: e.fecha_venta,
+					detalle_cita_nut: [],
+					detalle_pago: e.detalleVenta_pagoVenta || [],
+					tb_empleado: e.tb_empleado,
+					tb_cliente: e.tb_cliente,
+				};
+			});
+			const dataTransferencia = data.reporte
+				.map((e) => ({
+					id: e.id,
+					fecha_venta: e.fecha_venta,
+					detalle_transferencias: e.venta_venta || [],
+				}))
+				.filter((e) => e.detalle_transferencias.length > 0);
+
+			setrepoVentasPorSeparado({
+				dataProgramas: {
+					data: dataTransferencia,
+					SumaMonto: sumarMontosDeVentas(dataTransferencia),
+					forma_pago_monto: agruparPorFormaPago(dataTransferencia),
+					empl_monto: agruparYSumarMontos(dataTransferencia),
+				},
+				total: {
+					data: dataTotal,
+					SumaMonto: sumarMontosDeVentas(dataTotal),
+					forma_pago_monto: agruparPorFormaPago(dataTotal),
+					empl_monto: agruparYSumarMontos(dataTotal),
+				},
+			});
+
+			setreporteDeVentas(data.reporte);
 			setloading(false);
 		} catch (error) {
 			console.log(error);
@@ -930,6 +981,7 @@ export const useReporteStore = () => {
 		obtenerReporteDeResumenUTILIDAD,
 		obtenerReporteDeTotalDeVentas_PorTipoCliente_PorVendedor,
 		obtenerVentas,
+		obtenerVentasResumen,
 		obtenerReporteDeFormasDePagos,
 		obtenerReporteSeguimientoTODO,
 		obtenerReporteDeTotalDeVentasActuales,
