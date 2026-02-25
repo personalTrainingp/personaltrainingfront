@@ -146,13 +146,13 @@ export const CrecimientoNeto = ({ dataVentas, mapaVencimientos = {}, year, id_em
                                         <td className="text-end fw-bold text-dark">
                                             {loadingActivos ? '...' : (activosPorMes[i] || '-')}
                                         </td>
-                                        <td className="text-end fw-semibold">{inscritosPorMes[i] || '-'}</td>
-                                        <td className="text-end fw-semibold text-success">{renovacionesPorMes[i] || '-'}</td>
-                                        <td className="text-end fw-semibold text-danger">{churnPorMes[i] || '-'}</td>
+                                        <td className="text-end fw-semibold">{inscritosPorMes[i] === 0 ? '0' : (inscritosPorMes[i] || '-')}</td>
+                                        <td className="text-end fw-semibold text-success">{renovacionesPorMes[i] === 0 ? '0' : (renovacionesPorMes[i] || '-')}</td>
+                                        <td className="text-end fw-semibold text-danger">{churnPorMes[i] === 0 ? '0' : (churnPorMes[i] || '-')}</td>
 
                                         {/* NUEVA CELDA CHURN RATE */}
                                         <td className={`text-end ${rateColor}`}>
-                                            {rate > 0 ? `${rate}%` : '-'}
+                                            {rate === 0 && churnPorMes[i] === 0 ? '0%' : (rate > 0 ? `${rate}%` : '-')}
                                         </td>
 
                                         <td className="text-center">
