@@ -579,6 +579,10 @@ export const ExecutiveTable2 = (props) => {
             { key: "clientesMeta", label: "CANTIDAD CLIENTES META", type: "int" },
             { key: "convMeta", label: "% CONVERSION META", type: "float2" },
             { key: "mkInvTikTok", label: "Inversion TikTok", type: "money" },
+            { key: "totalServTikTok", label: "VENTA MEMBRESIAS TIKTOK", type: "money" }, // NEW
+
+            { key: "roasTikTok", label: "ROAS TIKTOK", type: "float2" }, // NEW
+
             { key: "mkLeadsTikTok", label: "CANTIDAD LEADS  TIKTOK", type: "int" },
 
             {
@@ -593,9 +597,11 @@ export const ExecutiveTable2 = (props) => {
             },
             { key: "clientesTikTok", label: "CANTIDAD CLIENTES TIKTOK", type: "int" }, // NEW
             { key: "convTikTok", label: "% CONVERSION TIKTOK", type: "float2" }, // NEW
-            { key: "totalServTikTok", label: "VENTA MEMBRESIAS TIKTOK", type: "money" }, // NEW
-            { key: "roasTikTok", label: "ROAS TIKTOK", type: "float2" }, // NEW
             { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
+            { key: "totalMes", label: "VENTA TOTAL (META + TIKTOK)", type: "money", compute: (m) => (m.metrics?.totalServMeta ?? 0) + (m.metrics?.totalServTikTok ?? 0) }, // suma meta+tiktok
+
+            { key: "roas", label: "ROAS (RETORNO DE INVERSIÓN)", type: "float2" }, // NEW
+
             { key: "mkLeads", label: "TOTAL LEADS DE META + TIKTOK", type: "int" },
 
             {
@@ -610,8 +616,6 @@ export const ExecutiveTable2 = (props) => {
             },
             { key: "clientesTotal", label: "TOTAL CLIENTES DE META + TIKTOK", type: "int" }, // NEW
             { key: "convTotal", label: "% CONVERSION TOTAL", type: "float2" }, // NEW
-            { key: "totalMes", label: "VENTA TOTAL (TODOS LOS ORIGENES)", type: "money" }, // NEW
-            { key: "roas", label: "ROAS (RETORNO DE INVERSIÓN)", type: "float2" }, // NEW
           ].map((r, i) => (
             <tr
               key={r.key + r.label}
@@ -631,7 +635,7 @@ export const ExecutiveTable2 = (props) => {
                 {r.label}
               </td>
               {perMonth.map((m, idx) => {
-                const val = m.metrics?.[r.key] ?? 0;
+                const val = r.compute ? r.compute(m) : (m.metrics?.[r.key] ?? 0);
                 const txt =
                   r.type === "money"
                     ? r.key === "mkInvMeta"

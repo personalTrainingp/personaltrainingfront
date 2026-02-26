@@ -8,26 +8,31 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
         return iso ? new Date(iso) : null;
     };
 
-    // LÓGICA DE METAS (Hardcoded según requerimiento)
+    // LÓGICA DE METAS (Actualizada para Febrero 2026)
     const getQuotaForMonth = (monthIndex, year) => {
         const y = Number(year);
-        // Enero 2026 en adelante: 110k
+        const m = Number(monthIndex);
+
+        // Caso específico: Febrero (1) de 2026
+        if (y === 2026 && m === 1) return 100000;
+
+        // Resto de 2026 en adelante: 110k
         if (y >= 2026) return 110000;
 
         if (y === 2025) {
             // Enero (0) a Julio (6): 60k
-            if (monthIndex <= 6) return 60000;
+            if (m <= 6) return 60000;
             // Agosto (7): 70k
-            if (monthIndex === 7) return 70000;
+            if (m === 7) return 70000;
             // Septiembre (8): 75k
-            if (monthIndex === 8) return 75000;
+            if (m === 8) return 75000;
             // Octubre (9): 85k
-            if (monthIndex === 9) return 85000;
+            if (m === 9) return 85000;
             // Noviembre (10) y Diciembre (11): 90k
-            if (monthIndex >= 10) return 90000;
+            if (m >= 10) return 90000;
         }
 
-        // Fallback para años anteriores o no definidos (ej: 2024 o default)
+        // Fallback para años anteriores (ej: 2024)
         return 60000;
     };
 
@@ -39,7 +44,7 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
         const list = [];
         const validKeys = new Set();
 
-        for (let i = 0; i < 13; i++) {
+        for (let i = 0; i < 12; i++) {
             // Calculamos el índice real (0-11) y el año correspondiente
             const absoluteIndex = Number(startMonth) + i;
             const currentMonthIdx = absoluteIndex % 12;
@@ -122,7 +127,7 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
             const pctW5 = data.total > 0 ? (data.w5 / data.total) * 100 : 0;
             const pctR1_15 = data.total > 0 ? (data.r1_15 / data.total) * 100 : 0;
             const pctR16_end = data.total > 0 ? (data.r16_end / data.total) * 100 : 0;
-            const pctCustom = data.total > 0 ? (data.customRangeTotal / data.total) * 100 : 0;
+            const pctCustom = quota > 0 ? (data.customRangeTotal / quota) * 100 : 0;
 
             return {
                 ...m, ...data, quota,

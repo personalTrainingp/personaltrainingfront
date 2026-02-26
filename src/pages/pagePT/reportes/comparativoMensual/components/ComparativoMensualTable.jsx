@@ -27,8 +27,8 @@ export const ComparativoMensualTable = ({
 
     const styles = {
         tableWrapper: { overflowX: 'auto', borderRadius: '8px', border: '1px solid #eaeaea', marginTop: '10px' },
-        table: { width: '100%', borderCollapse: 'collapse', fontSize: '20px', whiteSpace: 'nowrap' },
-        th: { background: '#c00000', color: '#fff', fontWeight: '600', padding: '12px 10px', textAlign: 'center', fontSize: '24px', borderRight: '1px solid rgba(255,255,255,0.2)' },
+        table: { width: '100%', borderCollapse: 'collapse', fontSize: '22px', whiteSpace: 'nowrap' },
+        th: { background: '#c00000', color: '#fff', fontWeight: '600', padding: '12px 10px', textAlign: 'center', fontSize: '25px', borderRight: '1px solid rgba(255,255,255,0.2)' },
         td: { padding: '10px 12px', borderBottom: '1px solid #eee', textAlign: 'right', color: '#444' },
 
         // MODIFICADO: Ajustamos tdLabel para asegurar alineación vertical
@@ -50,12 +50,20 @@ export const ComparativoMensualTable = ({
     };
 
     const handleToggle = (mode) => setViewMode(viewMode === mode ? 'none' : mode);
-    const isTop3 = (key, field) => viewMode === 'top3' && top3Indices[field]?.includes(key);
+
+    // Calcular filas visibles según el modo activo
+    const visibleRows = (() => {
+        if (viewMode === 'top3') {
+            return [...monthsData].sort((a, b) => b.total - a.total).slice(0, 3);
+        }
+        if (viewMode === 'last6') {
+            return monthsData.slice(-6);
+        }
+        return monthsData;
+    })();
 
     const renderCell = (row, field, isPct = false) => {
-        const isHighlighted = isTop3(row.key, field);
         let style = { ...styles.td };
-        if (isHighlighted) style = { ...style, ...styles.highlightCell };
         if (isPct) style = { ...style, textAlign: 'center', color: '#666' };
 
         const val = row[field];
@@ -64,7 +72,7 @@ export const ComparativoMensualTable = ({
 
         return (
             <>
-                <td style={style}>{fmtMoney(val)}</td>
+                <td style={style}>{fmtNum(val, 0)}</td>
                 <td style={{ ...style, textAlign: 'center' }}>{isPct ? `${fmtNum(valPct, 1)}%` : ''}</td>
             </>
         );
@@ -116,23 +124,23 @@ export const ComparativoMensualTable = ({
                 <table style={styles.table}>
                     <thead>
                         <tr>
-                            <th style={{ ...styles.th, width: '90px', position: 'sticky', left: 0, zIndex: 2 }}>MES <br /> AÑO</th>
-                            <th style={{ ...styles.th, background: '#a00000' }}>TOTAL<br /> VENTA</th>
-                            <th style={{ ...styles.th, background: '#a00000' }}>CUOTA</th>
+                            <th style={{ ...styles.th, width: '90px', position: 'sticky', left: 0, zIndex: 2 }}>MES </th>
+                            <th style={{ ...styles.th, background: '#a00000' }}>TOTAL<br /> VENTA<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
+                            <th style={{ ...styles.th, background: '#a00000' }}>CUOTA<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
 
                             {/* CUSTOM RANGE COLUMN */}
                             <th style={{ ...styles.th, background: '#c00000', color: '#fff' }}>
-                                RANGO<br />({customStartDay}-{customEndDay})
+                                RANGO<br />({customStartDay}-{customEndDay})<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span>
                             </th>
                             <th style={{ ...styles.th, background: '#c00000', color: '#fff', fontSize: '16px' }}>
-                                %
+                                PORCENTAJE  <br />ALCANCE DE  <br /> <span>CUOTA</span>
                             </th>
 
-                            <th style={styles.th} colSpan={2}>SEMANA 1<br /> (1-7)</th>
-                            <th style={styles.th} colSpan={2}>SEMANA 2<br /> (8-14)</th>
-                            <th style={styles.th} colSpan={2}>SEMANA 3<br /> (15-21)</th>
-                            <th style={styles.th} colSpan={2}>SEMANA 4<br /> (22-28)</th>
-                            <th style={styles.th} colSpan={2}>SEMANA 5<br /> (29-31)</th>
+                            <th style={styles.th} colSpan={2}>SEMANA 1<br /> (1-7)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
+                            <th style={styles.th} colSpan={2}>SEMANA 2<br /> (8-14)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
+                            <th style={styles.th} colSpan={2}>SEMANA 3<br /> (15-21)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
+                            <th style={styles.th} colSpan={2}>SEMANA 4<br /> (22-28)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
+                            <th style={styles.th} colSpan={2}>SEMANA 5<br /> (29-31)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
                             {showFortnightly && (
                                 <>
                                     <th style={{ ...styles.th, background: '#222' }} colSpan={2}>DIA 1 AL 15</th>
@@ -142,48 +150,25 @@ export const ComparativoMensualTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {monthsData.map((row, idx) => (
+                        {visibleRows.map((row, idx) => (
                             <tr key={row.key} style={{ background: idx % 2 === 0 ? '#fff' : '#fcfcfc' }}>
 
                                 {/* --- CAMBIO AQUÍ PARA SALTO DE LÍNEA --- */}
                                 <td style={{ ...styles.td, ...styles.tdLabel }}>
                                     <span style={{ display: 'block', lineHeight: '1.2' }}>{row.label}</span>
-                                    <span style={{
-                                        display: 'block',
-                                        fontSize: '13px',
-                                        color: '#888',
-                                        fontWeight: 'normal',
-                                        marginTop: '4px'
-                                    }}>
-                                        {row.year}
-                                    </span>
                                 </td>
                                 {/* --------------------------------------- */}
 
-                                <td style={{ ...styles.td, fontWeight: '700', color: '#000', background: 'rgba(0,0,0,0.02)' }}>{fmtMoney(row.total)}</td>
-                                <td style={{ ...styles.td, color: '#555' }}>{fmtMoney(row.quota)}</td>
+                                <td style={{ ...styles.td, fontWeight: '700', color: '#000', background: 'rgba(0,0,0,0.02)' }}>{fmtNum(row.total, 0)}</td>
+                                <td style={{ ...styles.td, color: '#555' }}>{fmtNum(row.quota, 0)}</td>
 
                                 {/* Custom Range Data */}
-                                {(() => {
-                                    const field = 'customRangeTotal';
-                                    const isHighlighted = isTop3(row.key, field);
-                                    // Color solicitado por usuario
-                                    const baseBg = '#c00000';
-                                    const bg = isHighlighted ? styles.highlightCell.background : baseBg;
-                                    const color = isHighlighted ? styles.highlightCell.color : '#fff';
-                                    const weight = isHighlighted ? styles.highlightCell.fontWeight : '400';
-
-                                    return (
-                                        <>
-                                            <td style={{ ...styles.td, background: bg, color: color, fontWeight: weight }}>
-                                                {fmtMoney(row[field])}
-                                            </td>
-                                            <td style={{ ...styles.td, background: bg, textAlign: 'center', color: color, fontWeight: weight }}>
-                                                {fmtNum(row.pctCustomRangeTotal, 1)}%
-                                            </td>
-                                        </>
-                                    );
-                                })()}
+                                <td style={{ ...styles.td, background: '#c00000', color: '#fff', fontWeight: '400' }}>
+                                    {fmtNum(row.customRangeTotal, 0)}
+                                </td>
+                                <td style={{ ...styles.td, background: '#c00000', textAlign: 'center', color: '#fff', fontWeight: '400' }}>
+                                    {fmtNum(row.pctCustomRangeTotal, 1)}%
+                                </td>
 
                                 {renderCell(row, 'w1', true)}
                                 {renderCell(row, 'w2', true)}
@@ -199,42 +184,6 @@ export const ComparativoMensualTable = ({
                                 )}
                             </tr>
                         ))}
-                        {viewMode !== 'none' && (() => {
-                            const data = viewMode === 'top3' ? top3Averages : last6Averages;
-                            const label = viewMode === 'top3' ? "PROMEDIO (TOP 3)" : "PROMEDIO (ÚLT. 6 MESES)";
-
-                            return (
-                                <tr style={styles.footerRow}>
-                                    <td style={{ ...styles.td, ...styles.tdLabel, background: '#f8f9fa', color: '#c00000' }}>{label}</td>
-                                    <td style={{ ...styles.td, fontWeight: '800', color: '#c00000' }}>{fmtMoney(data.total)}</td>
-                                    <td style={{ ...styles.td, textAlign: 'center', fontWeight: 'bold' }}>-</td>
-
-                                    {/* Custom Range Average */}
-                                    <td style={{ ...styles.td, fontWeight: '800', color: '#d4af37' }}>{fmtMoney(data.customRangeTotal)}</td>
-                                    <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
-
-                                    <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.w1)}</td>
-                                    <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
-                                    <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.w2)}</td>
-                                    <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
-                                    <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.w3)}</td>
-                                    <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
-                                    <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.w4)}</td>
-                                    <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
-                                    <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.w5)}</td>
-                                    <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
-
-                                    {showFortnightly && (
-                                        <>
-                                            <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.r1_15)}</td>
-                                            <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
-                                            <td style={{ ...styles.td, fontWeight: '600' }}>{fmtMoney(data.r16_end)}</td>
-                                            <td style={{ ...styles.td, textAlign: 'center' }}>-</td>
-                                        </>
-                                    )}
-                                </tr>
-                            );
-                        })()}
                     </tbody>
                 </table>
             </div>

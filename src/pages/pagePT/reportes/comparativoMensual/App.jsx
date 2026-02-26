@@ -12,16 +12,25 @@ const App = () => {
         dataVentas,
         loading,
         year, setYear,
-        selectedMonth, setSelectedMonth, // Usamos el estado global del store
-        cutDay
+        selectedMonth, setSelectedMonth,
+        cutDay, setCutDay, setInitDay
     } = useResumenEjecutivoStore();
 
-    // 'standard', 'goals', 'commissions'
     const [viewMode, setViewMode] = useState('standard');
 
-    // Custom Range State
+    // Custom Range State (synced with the global store so Topbar updates)
     const [customStartDay, setCustomStartDay] = useState(1);
     const [customEndDay, setCustomEndDay] = useState(new Date().getDate());
+
+    const handleStartDayChange = (val) => {
+        setCustomStartDay(val);
+        setInitDay(val);
+    };
+
+    const handleEndDayChange = (val) => {
+        setCustomEndDay(val);
+        setCutDay(val);
+    };
 
     // Generamos lista de años empezando desde 2024
     const currentYear = new Date().getFullYear();
@@ -80,10 +89,10 @@ const App = () => {
                                 <Col md={4} lg={4}>
                                     <div className="d-flex gap-2 align-items-end justify-content-center">
                                         <Form.Group style={{ width: '100px', fontSize: '20px' }}>
-                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '18px', marginBottom: '5px' }}>DIA INICIO</Form.Label>
+                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '18px', marginBottom: '5px' }}> INICIO</Form.Label>
                                             <Form.Select
                                                 value={customStartDay}
-                                                onChange={(e) => setCustomStartDay(Number(e.target.value))}
+                                                onChange={(e) => handleStartDayChange(Number(e.target.value))}
                                                 style={{ fontWeight: 'bold', fontSize: '25px' }}
                                             >
                                                 {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
@@ -91,12 +100,12 @@ const App = () => {
                                                 ))}
                                             </Form.Select>
                                         </Form.Group>
-                                        <span style={{ fontSize: '24px', fontWeight: 'bold', paddingBottom: '5px' }}>-</span>
+                                        <span style={{ fontSize: '24px', fontWeight: 'bold', paddingBottom: '5px' }}></span>
                                         <Form.Group style={{ width: '100px', fontSize: '25px' }}>
-                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '18px', marginBottom: '5px' }}>DIA CORTE</Form.Label>
+                                            <Form.Label className="fw-bold text-muted" style={{ fontSize: '18px', marginBottom: '5px' }}> CORTE</Form.Label>
                                             <Form.Select
                                                 value={customEndDay}
-                                                onChange={(e) => setCustomEndDay(Number(e.target.value))}
+                                                onChange={(e) => handleEndDayChange(Number(e.target.value))}
                                                 style={{ fontWeight: 'bold', fontSize: '25px' }}
                                             >
                                                 {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
@@ -164,7 +173,7 @@ const App = () => {
                                                 year={year}
                                                 startMonth={selectedMonth - 1}
                                                 cutDay={cutDay}
-                                                title="TOTAL VENTAS"
+                                                title="TOTAL VENTAS MEMBRESIAS"
                                                 customStartDay={customStartDay}
                                                 customEndDay={customEndDay}
                                             />
