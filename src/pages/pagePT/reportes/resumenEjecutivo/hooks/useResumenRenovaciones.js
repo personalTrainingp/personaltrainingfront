@@ -22,7 +22,6 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
             try {
                 await Promise.all([
                     fetchVencimientos(),
-                    fetchRenewalsApi(),
                     fetchVigentes()
                 ]);
             } catch (error) {
@@ -31,6 +30,8 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
                 setIsLoadingRenovaciones(false);
             }
         };
+        setRenewalsFromApi([]); // Clear previously loaded renewals when date changes
+        setVencimientosFiltrados(null);
         fetchData();
     }, [id_empresa, year, selectedMonth, cutDay]);
 
@@ -80,7 +81,7 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
                         } else {
                             const monthParamMap = {
                                 "ENE": "01", "FEB": "02", "MAR": "03", "ABR": "04", "MAY": "05", "JUN": "06",
-                                "JUL": "07", "AGO": "08", "SEP": "09", "SET": "09", "OCT": "10", "NOV": "11", "DIC": "12",
+                                "JUL": "07", "AGO": "08", "SEP": "09", "SEPT": "09", "SET": "09", "OCT": "10", "NOV": "11", "DIC": "12",
                                 "ENERO": "01", "FEBRERO": "02", "MARZO": "03", "ABRIL": "04", "MAYO": "05", "JUNIO": "06",
                                 "JULIO": "07", "AGOSTO": "08", "SEPTIE": "09", "SETIEM": "09", "SEPTIEMBRE": "09", "SETIEMBRE": "09", "OCTUBRE": "10", "NOVIEMBRE": "11", "DICIEMBRE": "12"
                             };
@@ -150,6 +151,7 @@ export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByI
     return {
         mapaVencimientos,
         renewals: renewalsFromApi,
+        loadRenewals: fetchRenewalsApi,
         vigentesRows, vigentesTotal, vigentesBreakdown,
         vencimientosFiltrados,
         isLoadingRenovaciones

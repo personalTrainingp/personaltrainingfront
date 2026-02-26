@@ -1,129 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import Chart from "react-apexcharts";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import "dayjs/locale/es";
-dayjs.extend(utc);
-dayjs.locale("es");
+import { useGraficoLinealInversionRedes } from "../hooks/useGraficoLinealInversionRedes";
 
 export const GraficoLinealInversionRedes = ({ data = [] }) => {
-  const [red, setRed] = useState("ambos");
-
-  const norm = (s) =>
-    String(s || "")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
-
-  const getId = (it) =>
-    Number(
-      it?.id_param ??
-        it?.idRed ??
-        it?.id_red ??
-        it?.id_canal ??
-        it?.canal_id ??
-        it?.origen_id ??
-        it?.id
-    );
-
-  const labelFrom = (it) =>
-    it?.parametro?.label_param ??
-    it?.label_param ??
-    it?.nombre_param ??
-    it?.canal ??
-    it?.red ??
-    it?.origen ??
-    it?.origen_label ??
-    it?.label ??
-    "";
-
-  const detectNetwork = (it) => {
-    const id = getId(it);
-    if (id === 1515) return "meta";
-    if (id === 1514) return "tiktok";
-
-    const L = norm(labelFrom(it));
-    if (/(meta|facebook|instagram)/.test(L)) return "meta";
-    if (/tiktok/.test(L)) return "tiktok";
-    return "desconocido";
-  };
-
-  const keepByFilter = (it) => {
-    if (red === "ambos") return true;
-    return detectNetwork(it) === red;
-  };
-
-  const lastFour = (Array.isArray(data) ? data : []).slice(0, 4).reverse();
-
-  const series = useMemo(() => {
-    return lastFour.map((m, idx) => {
-      const items = Array.isArray(m?.items) ? m.items.filter(keepByFilter) : [];
-      const base = items[0] ? dayjs.utc(items[0].fecha) : dayjs();
-      const daysInMonth = base.daysInMonth();
-      const buckets = Array(daysInMonth).fill(0);
-
-      for (const it of items) {
-        const d = dayjs.utc(it?.fecha);
-        if (!d.isValid()) continue;
-        if (d.month() !== base.month() || d.year() !== base.year()) continue;
-
-        const day = d.date();
-        const raw =
-          typeof it?.cantidad === "string" ? it.cantidad.trim() : it?.cantidad;
-        const val = Number(raw);
-        buckets[day - 1] += Number.isFinite(val) ? val : 0;
-      }
-
-      return {
-        name: m?.fecha ?? `Serie ${idx + 1}`,
-        data: buckets,
-      };
-    });
-  }, [lastFour, red]);
-
-  const baseMonthForAxis = useMemo(() => {
-    const withItems = lastFour.find(
-      (m) => Array.isArray(m?.items) && m.items.length > 0
-    );
-    const ref = withItems?.items?.[0]?.fecha;
-    return ref ? dayjs(ref) : dayjs();
-  }, [lastFour, red]);
-
-  const daysInMonth = baseMonthForAxis.daysInMonth();
-  const categories = useMemo(
-    () =>
-      Array.from({ length: daysInMonth }, (_, i) => {
-        const d = baseMonthForAxis.date(i + 1);
-        return `${d.format("dddd")} ${i + 1}`.toUpperCase();
-      }),
-    [baseMonthForAxis, daysInMonth]
-  );
-
-  const options = {
-    chart: { type: "line", toolbar: { show: false }, parentHeightOffset: 0 },
-    stroke: { curve: "smooth", width: 3 },
-    markers: { size: 4 },
-    grid: { padding: { bottom: 90, left: 8, right: 8 } },
-    xaxis: {
-      categories,
-      labels: {
-        rotate: -90,
-        rotateAlways: true,
-        hideOverlappingLabels: false,
-        trim: false,
-        style: { fontSize: "15px" },
-        offsetY: 8,
-        minHeight: 80,
-        maxHeight: 120,
-      },
-    },
-    yaxis: { title: { text: "Cantidad" } },
-    legend: { position: "top", floating: true, offsetY: 8 },
-    tooltip: { x: { show: true }, y: { formatter: (val) => `${val}` } },
-  };
+  const { red, setRed, series, options } = useGraficoLinealInversionRedes(data);
 
   const ICONS = {
-    ambos: { src: "/Positivo-transparente.png", label: "Ambos" },
+    ambos: { src: "/Positivo-transparente.png", color: "#6366f1", label: "Ambos" },
     meta: { src: "/meta.jpg", color: "#0d6efd", label: "Meta" },
     tiktok: { src: "/tiktok.png", color: "#000000", label: "TikTok" },
   };
@@ -138,53 +21,96 @@ export const GraficoLinealInversionRedes = ({ data = [] }) => {
         aria-label={label}
         title={label}
         style={{
-          display: "inline-flex",
+          display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          width: 54,
-          height: 54,
+          gap: "12px",
+          padding: "10px 28px",
           borderRadius: "999px",
-          border: `2px solid ${active ? color : "transparent"}`,
-          background: "transparent",
-          padding: 4,
+          border: "none",
+          backgroundColor: active ? color : "transparent",
+          color: active ? "#fff" : "#475569",
+          fontWeight: "bold",
           cursor: "pointer",
-          transition: "all .15s ease",
-          boxShadow: active ? `0 0 0 2px ${color}22` : "none",
+          transition: "all 0.2s ease",
+          boxShadow: active ? `0 6px 16px ${color}40` : "none",
+        }}
+        onMouseOver={(e) => {
+          if (!active) e.currentTarget.style.backgroundColor = "#f1f5f9";
+        }}
+        onMouseOut={(e) => {
+          if (!active) e.currentTarget.style.backgroundColor = "transparent";
         }}
       >
-        <img
-          src={src}
-          alt={label}
-          style={{
-            width: 52,
-            height: 52,
-            objectFit: "contain",
-            transform: active ? "scale(1.05)" : "scale(1)",
-          }}
-        />
+        <div style={{
+          width: 32,
+          height: 32,
+          borderRadius: "50%",
+          overflow: "hidden",
+          backgroundColor: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0
+        }}>
+          <img
+            src={src}
+            alt={label}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        </div>
+        <span style={{ fontSize: "18px", textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</span>
       </button>
     );
   };
 
   return (
-    <div>
-      <div
-        style={{
+    <div style={{
+      backgroundColor: "#ffffff",
+      borderRadius: "16px",
+      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.05)",
+      padding: "24px",
+      fontFamily: "system-ui, -apple-system, sans-serif",
+      width: "100%",
+      boxSizing: "border-box"
+    }}>
+      {/* Contenedor de Encabezado Centrado */}
+      <div style={{
+        display: "flex",
+        flexDirection: "column", // Apila el título sobre los filtros
+        alignItems: "center",    // Centra todo horizontalmente
+        gap: "20px",             // Espacio entre título y botones
+        marginBottom: "30px"
+      }}>
+        <h3 style={{
+          margin: 0,
+          fontSize: "20px",
+          color: "#1e293b",
+          fontWeight: "600",
+          textAlign: "center"
+        }}>
+          LEADS
+        </h3>
+
+        {/* El "Pill" o cápsula de filtros ahora está centrada por el padre */}
+        <div style={{
           display: "flex",
-          gap: 14,
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 10,
-          flexWrap: "wrap",
-        }}
-      >
-        <span style={{fontSize:20}}></span>
-        <IconFilter keyName="ambos" />
-        <IconFilter keyName="meta" />
-        <IconFilter keyName="tiktok" />
+          backgroundColor: "#f8fafc",
+          padding: "6px",         // Un poco más de aire interno
+          borderRadius: "999px",
+          border: "1px solid #e2e8f0",
+          boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)", // Sombra interna sutil
+          width: "fit-content"    // Asegura que no se estire
+        }}>
+          <IconFilter keyName="ambos" />
+          <IconFilter keyName="meta" />
+          <IconFilter keyName="tiktok" />
+        </div>
       </div>
 
-      <Chart options={options} series={series} type="line" height={450} />
+      {/* Gráfico */}
+      <div style={{ marginTop: "10px" }}>
+        <Chart options={options} series={series} type="line" height={420} />
+      </div>
     </div>
   );
 };

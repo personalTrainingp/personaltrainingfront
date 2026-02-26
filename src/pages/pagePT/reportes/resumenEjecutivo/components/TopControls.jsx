@@ -295,6 +295,7 @@ export function TopControls({
             value={cutDay}
             onChange={(e) => {
               const val = parseInt(e.target.value, 10);
+              setCutDay(val);
             }}
             style={selectDayStyle}
           >

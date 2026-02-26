@@ -29,10 +29,10 @@ const getEmpleadoDeVenta = (v) => v?.tb_ventum?.tb_empleado || v?.tb_empleado ||
 const getNombreEmpleado = (emp) =>
   norm(
     emp?.nombres_apellidos_empl ||
-      emp?.nombres_apellidos ||
-      emp?.nombre_empl ||
-      emp?.nombre ||
-      ""
+    emp?.nombres_apellidos ||
+    emp?.nombre_empl ||
+    emp?.nombre ||
+    ""
   );
 
 const getAvatarEmpleado = (emp) =>
@@ -75,7 +75,7 @@ export const aggregateProductsByAdvisor = (ventas = [], start = null, end = null
 
     const acc = map.get(key) || { asesor: nombre, total_ventas: 0, avatar: avatar || null };
     acc.total_ventas += ventaProductos;
-    if (!acc.avatar && avatar) acc.avatar = avatar; 
+    if (!acc.avatar && avatar) acc.avatar = avatar;
     map.set(key, acc);
   }
 
@@ -99,7 +99,7 @@ export const TarjetasProductos = ({
   title = "Ranking Venta de Productos",
   topN = 5,
   minImporte = 0,
-  avatarByAdvisor = {}, 
+  avatarByAdvisor = {},
 }) => {
   const { top, totalVisible } = useMemo(() => {
     const list = (tasks || [])
@@ -115,10 +115,10 @@ export const TarjetasProductos = ({
 
   return (
     <Card className="ranking-card">
-  <Card.Body>
-    <h2 className="ranking-title mb-3">
-      {title}
-    </h2>
+      <Card.Body>
+        <h2 className="ranking-title mb-3">
+          {title}
+        </h2>
 
         <Row>
           <Col lg={12}>
@@ -141,7 +141,9 @@ export const TarjetasProductos = ({
               <tbody>
                 {top.map((p, idx) => {
                   const keyFirst = firstToken(p.asesor);
-                  const raw = p?.avatar || avatarByAdvisor?.[keyFirst] || "";
+                  let raw = p?.avatar || avatarByAdvisor?.[keyFirst] || "";
+                  if (raw === "null" || raw === "undefined") raw = "";
+
                   const avatarSrc = raw
                     ? /^https?:\/\//i.test(raw)
                       ? raw

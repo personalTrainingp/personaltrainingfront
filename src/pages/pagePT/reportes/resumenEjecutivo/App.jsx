@@ -24,14 +24,15 @@ import { SeguimientoRenovaciones } from "./components/SeguimientoRenovaciones";
 import { CrecimientoNeto } from "./components/CrecimientoNeto";
 import { LtvCacChart } from "./components/LtvCacChart";
 import { ModalConflictsHistory } from "./components/ModalConflictsHistory";
+import { ConversionEfficiencyTable } from "./components/ConversionEfficiencyTable";
 
 export const App = ({ id_empresa }) => {
   const {
     selectedMonth, initDay, cutDay, tasaCambio,
     setSelectedMonth, setInitDay, setCutDay, handleSetUltimoDiaMes, setTasaCambio,
     vigentesTotal, vigentesBreakdown, vigentesRows,
-    renewals, pgmNameById,
-    dataVentas, mesesSeleccionados, mesesTop4, dataMktWithCac, dataMkt,
+    renewals, loadRenewals, isLoadingRenovaciones, pgmNameById,
+    dataVentas, mesesSeleccionados, mesesTop4, dataMktWithCac, dataMkt, dataLead,
     reservasMF, originMap, mapaVencimientos, dataLeadPorMesAnio,
     resumenFilas, resumenTotales, avataresDeProgramas,
     sociosOverride, originBreakdown, advisorOriginByProg,
@@ -97,6 +98,7 @@ export const App = ({ id_empresa }) => {
             renewals={renewals} daysThreshold={9999}
             title={`Renovaciones próximas a vencer: ${String(MESES[selectedMonth - 1] || "").toUpperCase()} (1 - ${cutDay})`}
             excludeZeroAmount showSummary pgmNameById={pgmNameById}
+            onOpen={loadRenewals} isLoading={isLoadingRenovaciones}
           />
         </Col>
       </Row>
@@ -122,6 +124,18 @@ export const App = ({ id_empresa }) => {
                   ventas={dataVentas} fechas={mesesTop4}
                   dataMktByMonth={dataMkt} reservasMF={reservasMF}
                   initialDay={initDay} cutDay={cutDay} year={year}
+                />
+              </div>
+
+              <div style={{ marginBottom: "32px" }}>
+                <ConversionEfficiencyTable
+                  ventas={dataVentas}
+                  dataMktWithCac={dataMktWithCac}
+                  dataLead={dataLead}
+                  selectedMonth={selectedMonth}
+                  year={year}
+                  initDay={initDay}
+                  cutDay={cutDay}
                 />
               </div>
 

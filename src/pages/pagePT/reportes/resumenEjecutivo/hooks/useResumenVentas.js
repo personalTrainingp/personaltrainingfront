@@ -27,7 +27,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
     const { initDay, cutDay, selectedMonth, year, start, end, RANGE_DATE } = fechas;
 
     const { obtenerTablaVentas, dataVentas } = useVentasStore();
-    const { obtenerVentas, repoVentasPorSeparado } = useReporteStore();
+    const { obtenerVentasResumen, repoVentasPorSeparado } = useReporteStore();
     const { obtenerComparativoResumen, dataGroup } = useReporteResumenComparativoStore();
 
     // const { startObtenerTBProgramaPT, programas } = useProgramaTrainingStore(); // Removed to avoid duplicates
@@ -43,7 +43,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
     const fetchReservasMFInner = async () => {
         if (globalCache.monkFitPromise) return globalCache.monkFitPromise;
 
-        globalCache.monkFitPromise = PTApi.get('/reserva_monk_fit', { params: { limit: 2000, onlyActive: true } })
+        globalCache.monkFitPromise = PTApi.get('/reserva_monk_fit/resumen', { params: { onlyActive: true } })
             .then(res => res.data?.rows || [])
             .catch(err => {
                 console.error(err);
@@ -93,7 +93,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
             setIsLoadingVentas(true);
 
             try {
-                const promiseVentas = obtenerVentas(RANGE_DATE);
+                const promiseVentas = obtenerVentasResumen(RANGE_DATE);
                 const promiseComparativo = obtenerComparativoResumen(RANGE_DATE).catch(console.error);
                 const promiseTabla = obtenerTablaVentas(id_empresa || 598, RANGE_DATE);
 
@@ -364,13 +364,35 @@ export const useResumenVentas = (id_empresa, fechas) => {
 
     const avatarByAdvisor = useMemo(() => {
         const map = {};
+
+        // 1. Try to get avatars from the full dataVentas detail
+        const ventas = Array.isArray(dataVentas) ? dataVentas : [];
+        ventas.forEach(v => {
+            const emp = v?.tb_ventum?.tb_empleado || v?.tb_empleado || v?.empleado;
+            if (!emp) return;
+            const nombreFull = emp?.nombres_apellidos || emp?.nombres_apellidos_empl || emp?.nombre_empl || "";
+            const key = norm((nombreFull.split(" ")[0] || "").trim());
+            const tbImages = emp?.tb_images || [];
+            const lastImage = tbImages[tbImages.length - 1]?.name_image || "";
+            const raw = emp?.avatar || lastImage || emp?.image || "";
+            if (key && raw && !map[key]) {
+                map[key] = /^https?:\/\//i.test(raw) ? raw : `${config.API_IMG.AVATAR_EMPL}${raw}`;
+            }
+        });
+
+        // 2. Fallback to repoVentasPorSeparado
         (repoVentasPorSeparado?.total?.empl_monto || []).forEach(it => {
             const key = norm(((it?.empl || it?.tb_empleado?.nombres_apellidos_empl || "").split(" ")[0] || "").trim());
-            const raw = it?.avatar || it?.tb_empleado?.avatar || "";
-            if (key && raw) map[key] = /^https?:\/\//i.test(raw) ? raw : `${config.API_IMG.AVATAR_EMPL}${raw}`;
+            const emp = it?.tb_empleado;
+            const tbImages = emp?.tb_images || [];
+            const lastImage = tbImages[tbImages.length - 1]?.name_image || "";
+            const raw = it?.avatar || emp?.avatar || lastImage || emp?.image || "";
+            if (key && raw && !map[key]) {
+                map[key] = /^https?:\/\//i.test(raw) ? raw : `${config.API_IMG.AVATAR_EMPL}${raw}`;
+            }
         });
         return map;
-    }, [repoVentasPorSeparado]);
+    }, [dataVentas, repoVentasPorSeparado]);
 
     const productosPorAsesor = useProductosAgg(dataVentas, RANGE_DATE, { minImporte: 0 });
 
