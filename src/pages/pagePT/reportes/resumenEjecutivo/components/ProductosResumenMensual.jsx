@@ -105,8 +105,8 @@ export function ProductosResumenMensual({
     const [loading, setLoading] = useState(false);
     const [productMatrix, setProductMatrix] = useState({});
 
-    const [isOpenLast, setIsOpenLast] = useState(false);
-    const [isOpenCurr, setIsOpenCurr] = useState(false);
+    const [isOpenLast, setIsOpenLast] = useState(true);
+    const [isOpenCurr, setIsOpenCurr] = useState(true);
     const [hasFetched, setHasFetched] = useState(false);
 
     const { lastYearCols, currentYearCols } = useMemo(
@@ -177,9 +177,9 @@ export function ProductosResumenMensual({
 
                 // 2. Single API Call
                 const { data } = await PTApi.get(
-                    `/venta/get-ventas-x-fecha/${id_empresa || 598}`,
+                    `/reporte/reporte-obtener-productos-resumen/${id_empresa || 598}`,
                     {
-                        params: { arrayDate, mode: 'products_only' },
+                        params: { arrayDate },
                     }
                 );
 

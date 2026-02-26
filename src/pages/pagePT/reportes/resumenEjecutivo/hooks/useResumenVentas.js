@@ -43,7 +43,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
     const fetchReservasMFInner = async () => {
         if (globalCache.monkFitPromise) return globalCache.monkFitPromise;
 
-        globalCache.monkFitPromise = PTApi.get('/reserva_monk_fit', { params: { onlyActive: true } })
+        globalCache.monkFitPromise = PTApi.get('/reserva_monk_fit/resumen', { params: { onlyActive: true } })
             .then(res => res.data?.rows || [])
             .catch(err => {
                 console.error(err);
