@@ -47,7 +47,7 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
         for (let i = 0; i < 12; i++) {
             // Calculamos el índice real (0-11) y el año correspondiente
             const absoluteIndex = Number(startMonth) + i;
-            const currentMonthIdx = absoluteIndex % 12;
+            const currentMonthIdx = ((absoluteIndex % 12) + 12) % 12;
             const yearOffset = Math.floor(absoluteIndex / 12);
             const currentYear = Number(year) + yearOffset;
 

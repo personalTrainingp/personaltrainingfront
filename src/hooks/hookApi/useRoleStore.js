@@ -9,16 +9,17 @@ export const useRoleStore = () => {
 		try {
 			const uid = localStorage.getItem('uid-user');
 			const { data } = await PTApi.get(`/rol/get-module-x-rol/${uid}`);
-			console.log(data);
-			
+			//	console.log(data);
+
 			dispatch(onSetModulos(data.MODULOS_ITEMS));
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const obtenerSeccions = async (modulo) => {
+		if (!modulo || !modulo.key) return;
 		try {
-			const { data } = await PTApi.get(`/rol/get-section-x-module/${modulo?.key}`);
+			const { data } = await PTApi.get(`/rol/get-section-x-module/${modulo.key}`);
 			dispatch(onSetSections(data.MENU_ITEMS));
 		} catch (error) {
 			console.log(error);
