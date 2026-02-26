@@ -11,7 +11,6 @@ export const DataTableVentas = ({id_empresa, vistaCliente}) => {
       useEffect(() => {
         obtenerVentasxEmpresa(id_empresa)
       }, [id_empresa])
-      console.log({dataVentasxEmpresa});
       const columns = [
         {id: 1, header: 'ID', accessor: 'id'},
         {id: 2, header: 'FECHA', render: (row)=>{
