@@ -7,6 +7,7 @@ import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { arrayEmpresaFinan, arrayEstados } from '@/types/type';
 import { Button } from 'primereact/button';
+import { ModalAgregarTermino } from './ModalAgregarTermino';
 
 const registerProvedor = {
     ruc_prov: '', 
@@ -28,13 +29,14 @@ const registerProvedor = {
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalCustomProveedores = ({show, onHide, id=0, isCopy=false, id_enterprice, tipo, estado}) => {
+export const ModalCustomProveedores = ({onShow, show, onHide, id=0, isCopy=false, id_enterprice, tipo, estado, onCloseModalProvPst}) => {
         const [selectedFile, setSelectedFile] = useState(sinAvatar);
         const [selectedAvatar, setselectedAvatar] = useState(null)
         const { obtenerProveedorxID, dataProveedor, postProveedor } = useGestionProveedoresStore()
         const { obtenerParametroPorEntidadyGrupo:obtenerFormaPago, DataGeneral:dataFormaPago } = useTerminoStore()
         const { obtenerParametroPorEntidadyGrupo:obtenerTipoOficio, DataGeneral:dataTipoOficio } = useTerminoStore()
         const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
+            const [isOpenModalTerminoOficio, setisOpenModalTerminoOficio] = useState({isOpen: false, id: 0})
         const { ruc_prov, 
                 razon_social_prov, 
                 tel_prov,
@@ -71,6 +73,7 @@ export const ModalCustomProveedores = ({show, onHide, id=0, isCopy=false, id_ent
         }
         const cancelar = ()=>{
             onHide()
+            onCloseModalProvPst()
             onResetForm()
         }
         
@@ -90,7 +93,17 @@ export const ModalCustomProveedores = ({show, onHide, id=0, isCopy=false, id_ent
         const onInputChangeProv = (e)=>{
             onInputChange(e)
         }
+        const onClickOpenModalCustomOficios = ()=>{
+            setisOpenModalTerminoOficio({isOpen: true, id: 0})
+            onHide()
+        }
+        const onClickCloseModalCustomOficios = ()=>{
+            setisOpenModalTerminoOficio({isOpen: false, id: 0})
+            onShow()
+        }
   return (
+    <>
+        <ModalAgregarTermino show={isOpenModalTerminoOficio.isOpen} onHide={onClickCloseModalCustomOficios} terminoAgregar={'Servicio y/o producto'} entidad={'proveedor'} grupo={'tipo_oficio'} titulo={'Oficio'}/>
     <Modal show={show} onHide={onHide} size='xl'>
         <Modal.Header>
             AGREGAR PROVEEDOR
@@ -104,19 +117,19 @@ export const ModalCustomProveedores = ({show, onHide, id=0, isCopy=false, id_ent
                             </p>
                         </Col>
                         <Col lg={12}>
-                        <div className="d-flex justify-content-center">
-                            <img src={selectedFile} width={180} height={180} />
-                        </div>
-                        <input 
-                            type="file" 
-                            className="m-2 fs-6"
-                            accept="image/png, image/jpeg, image/jpg"
-                            name="imgAvatar_BASE64"
-                            onChange={(e)=>{
-                                onRegisterFileChange(e)
-                                ViewDataImg(e)
-                            }} 
-                            />
+                            <div className="d-flex justify-content-center">
+                                <img src={selectedFile} width={180} height={180} />
+                            </div>
+                            <input 
+                                type="file" 
+                                className="m-2 fs-6"
+                                accept="image/png, image/jpeg, image/jpg"
+                                name="imgAvatar_BASE64"
+                                onChange={(e)=>{
+                                    onRegisterFileChange(e)
+                                    ViewDataImg(e)
+                                }} 
+                                />
                         </Col>
                         <Col lg={12}>
                             <div className='m-4'>
@@ -247,5 +260,6 @@ export const ModalCustomProveedores = ({show, onHide, id=0, isCopy=false, id_ent
             </form> 
         </Modal.Body>
     </Modal>
+    </>
   )
 }

@@ -94,7 +94,7 @@ export default function VentasDiarias(props) {
                 letterSpacing: .5
               }}
             >
-              EVOLUCION DIARIA POR ASESOR
+              CALENDARIO DE VENTAS POR DIA
             </th>
           </tr>
 

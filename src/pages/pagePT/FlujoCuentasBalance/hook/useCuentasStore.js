@@ -51,7 +51,7 @@ export const useCuentasStore = () => {
 					tb_parametros_gasto: {
 						grupo: cu.concepto.label_param,
 						id_empresa: cu.id_empresa,
-						nombre_gasto: cu.tb_Proveedor.razon_social_prov,
+						nombre_gasto: cu.tb_Proveedor?.razon_social_prov,
 						id_tipoGasto: 250,
 						parametro_grupo: {
 							id: cu.concepto.id_param,

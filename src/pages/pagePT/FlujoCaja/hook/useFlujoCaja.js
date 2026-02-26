@@ -1,17 +1,11 @@
 import { PTApi } from '@/common';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { agruparPorGrupoYConcepto, aplicarTipoDeCambio } from '../helpers/agrupamientosOficiales';
-
-function formatDateToSQLServerWithDayjs(date, isStart = true) {
-	const base = dayjs(date);
-
-	const formatted = isStart
-		? base.startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS[-05:00]')
-		: base.endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS[-05:00]');
-
-	return formatted;
-}
+import { agruparPorGrupoYConcepto } from '../helpers/agrupamientosOficiales';
+import { dataIngresosOrden } from '@/helper/dataIngresosOrden';
+import { formatDateToSQLServerWithDayjs } from '@/helper/formatDateToSQLServerWithDayjs';
+import { obtenerTipoDeCambio } from '@/middleware/obtenerTipoDeCambio';
+import { aplicarTipoDeCambio } from '@/helper/aplicarTipoCambio';
 
 export const useFlujoCaja = () => {
 	const [dataGastosxFecha, setdataGastosxFecha] = useState([]);
@@ -29,20 +23,26 @@ export const useFlujoCaja = () => {
 			const dataGastos = data.gastos.map((g) => {
 				return {
 					fecha_primaria: g.fecha_pago,
-					montoAntiguo: g.monto,
 					...g,
-					monto: g.moneda === 'PEN' ? g.monto : Number(`${g.monto * g.tcPEN}`),
 				};
 			});
-			// const { data: dataTC } = await PTApi.get('/tipoCambio/');
-			setdataGastosxFecha(agruparPorGrupoYConcepto(dataGastos));
+			const { data: dataParametrosGastos } = await PTApi.get(
+				`/terminologia/terminologiaxEmpresa/${enterprice}/1573`
+			);
+			const dataTipoTC = await obtenerTipoDeCambio();
+			setdataGastosxFecha(
+				agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTipoTC, dataGastos),
+					dataParametrosGastos.termGastos
+				)
+			);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const obtenerIngresosxFecha = async (enterprice, arrayDate) => {
 		try {
-			const { data } = await PTApi.get(`/venta/get-ventas-x-fecha/${enterprice}`, {
+			const { data } = await PTApi.get(`/venta/fecha-venta/id_empresa/${enterprice}`, {
 				params: {
 					arrayDate: [
 						formatDateToSQLServerWithDayjs(arrayDate[0], true),
@@ -50,116 +50,58 @@ export const useFlujoCaja = () => {
 					],
 				},
 			});
-			console.log({ data, vista: 0 });
-			const dataVentasMap = data.ventas.map((m) => {
+			const { data: dataIngresos } = await PTApi.get(`/ingreso/fecha/${enterprice}`, {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+			const { data: dataMF } = await PTApi.get(`/reserva_monk_fit/fecha`, {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+			const { data: dataParametrosGastos } = await PTApi.get(
+				`/terminologia/terminologiaxEmpresa/${enterprice}/1574`
+			);
+			const reservasMFMAP = dataMF.reservasMF?.map((m) => {
 				return {
-					id_cli: m.id_cli,
-					id_origen: m.id_origen,
-					id_venta: m.id,
-					fecha_primaria: m.fecha_venta,
-					empl: m.tb_empleado.nombres_apellidos_empl,
-					detalle_membresias: m.detalle_ventaMembresia,
-					detalle_productos: m.detalle_ventaProductos,
+					moneda: 'PEN',
+					monto: m.monto_total,
+					cantidadTotal: 1,
+					n_comprabante: '',
+					fecha_primaria: m.fechaP,
+					concepto: 'MONKEY-FIT',
+					tb_parametros_gasto: {
+						grupo: 'INGRESOS',
+						id_empresa: 598,
+						nombre_gasto: 'MONKEY-FIT',
+						parametro_grupo: {
+							param_label: 'INGRESOS',
+							id_empresa: 598,
+						},
+					},
 				};
 			});
-			console.log({ dataVentasMap, vista: 1 });
-			const dataMembresias = dataVentasMap
-				.filter((dventa) => dventa.detalle_membresias.length !== 0)
-				.map((v) => {
-					return {
-						...v,
-						monto: v.detalle_membresias[0]?.tarifa_monto,
-						cantidadTotal: 1,
-						concepto: 'MEMBRESIA' || '',
-						tb_parametros_gasto: {
-							grupo: 'INGRESOS',
-							id_empresa: 598,
-							nombre_gasto: 'MEMBRESIA',
-							parametro_grupos: {
-								param_label: 'INGRESOS',
-								id_empresa: 598,
-							},
-						},
-					};
-				})
-				.filter((f) => f.montoTotal !== 0);
-			console.log({ dataMembresias, vista: 2 });
+			const dataV = dataIngresosOrden([...data.ventas]);
+			console.log({ dataMF: dataMF.reservasMF, reservasMFMAP, dataV });
 
-			const dataProductos17 = dataVentasMap
-				.map((v) => {
-					const detalleFiltrado = v.detalle_productos.filter(
-						(p) => p.tb_producto?.id_categoria === 17
-					);
-
-					const { cantidadTotal, montoTotal } = detalleFiltrado.reduce(
-						(acc, p) => {
-							acc.cantidadTotal += Number(p.cantidad || 0);
-							acc.montoTotal += Number(p.tarifa_monto || 0);
-							return acc;
-						},
-						{ cantidadTotal: 0, montoTotal: 0 }
-					);
-
-					return {
-						...v,
-						detalle_productos: detalleFiltrado,
-						cantidadTotal,
-						monto: montoTotal,
-						concepto: 'PRODUCTO 17',
-						tb_parametros_gasto: {
-							grupo: 'INGRESOS',
-							id_empresa: 598,
-							nombre_gasto: 'ACCESORIOS',
-							parametro_grupos: {
-								param_label: 'INGRESOS',
-								id_empresa: 598,
-							},
-						},
-					};
-				})
-				.filter((v) => v.detalle_productos.length !== 0);
-			console.log({ dataProductos17, vista: 3 });
-			const dataProductos18 = dataVentasMap
-				.map((v) => {
-					const detalleFiltrado = v.detalle_productos.filter(
-						(p) => p.tb_producto?.id_categoria === 18
-					);
-
-					const { cantidadTotal, montoTotal } = detalleFiltrado.reduce(
-						(acc, p) => {
-							acc.cantidadTotal += Number(p.cantidad || 0);
-							acc.montoTotal += Number(p.tarifa_monto || 0);
-							return acc;
-						},
-						{ cantidadTotal: 0, montoTotal: 0 }
-					);
-
-					return {
-						...v,
-						detalle_productos: detalleFiltrado,
-						cantidadTotal,
-						monto: montoTotal,
-						concepto: 'PRODUCTO 18',
-
-						tb_parametros_gasto: {
-							grupo: 'INGRESOS',
-							id_empresa: 598,
-							nombre_gasto: 'SUPLEMENTOS',
-							parametro_grupos: {
-								param_label: 'INGRESOS',
-								id_empresa: 598,
-							},
-						},
-					};
-				})
-				.filter((v) => v.detalle_productos.length !== 0);
-			console.log({ dataProductos18, vista: 4 });
 			setdataIngresosxFecha(
-				agruparPorGrupoYConcepto([
-					...dataMembresias,
-					...dataProductos17,
-					...dataProductos18,
-				])
+				agruparPorGrupoYConcepto(
+					[
+						...dataV.dataMembresias,
+						...dataV.dataProductos17,
+						...dataV.dataProductos18,
+						...dataIngresos.ingresos,
+						...reservasMFMAP,
+					],
+					dataParametrosGastos.termGastos
+				)
 			);
 		} catch (error) {
 			console.log(error);

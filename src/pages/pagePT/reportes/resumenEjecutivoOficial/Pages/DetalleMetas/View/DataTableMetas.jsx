@@ -1,9 +1,9 @@
 import React from 'react'
-import { Table } from 'react-bootstrap'
+import { Button, Table } from 'react-bootstrap'
 import {  NumberFormatMoney } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
 
-export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuotaMetaDelMes=[]}) => {
+export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuotaMetaDelMes=[], nombreDeComparativo='VENTA TOTAL AL CORTE', labelMontoVenta='MONTO VENTA ALCANZADA'}) => {
     const fechaSeleccionada = '2026-1'
     const dataConMes = arrayFechas.map(arr=>{
         const dataFiltradaMes =  data?.filter((f)=>f.mes===arr.mes && f.anio===arr.anio)
@@ -43,7 +43,7 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
             </thead>
             <tbody>
                 <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>TOTAL</td>
+                    <td className='sticky-td-598 fs-3 text-white'>{nombreDeComparativo}</td>
                     {
                         dataConMes.map((d, i)=>{
                             return (
@@ -53,7 +53,12 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
                     }
                 </tr>
                 <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>MONTO VENTA</td>
+                    <td className='sticky-td-598 fs-3 text-white'>
+                        <div className='d-flex justify-content-center align-items-center'>
+                            {labelMontoVenta}
+                            <Button className='bg-ral'>ORDENAR</Button>
+                        </div>
+                    </td>
                     {
                         dataConMes.map((d, i)=>{
                             return (
@@ -73,7 +78,7 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
                     }
                 </tr>
                 <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>% AVANCE</td>
+                    <td className='sticky-td-598 fs-3 text-white'>% ALCANCE</td>
                     {
                         dataConMes.map((d, i)=>{
                             return (

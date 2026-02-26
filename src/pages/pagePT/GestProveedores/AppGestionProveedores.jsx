@@ -16,7 +16,8 @@ export const AppGestionProveedores = ({idEmpresa, tipo, estado}) => {
       <InputButton label={'AGREGAR PROVEEDOR'} onClick={()=>onOpenModalCustomProv(0, false)}/>
       <DataTableGestionProveedores onOpenModalCustomProv={onOpenModalCustomProv} estado={estado} id_empresa={idEmpresa} tipo={tipo}/>
       <ModalCustomProveedores 
-          isCopy={isOpenModalCustomProveedores.isCopy} 
+          isCopy={isOpenModalCustomProveedores.isCopy}
+          onShow={onOpenModalCustomProv}
           estado={estado} 
           id_enterprice={idEmpresa} 
           tipo={tipo} 

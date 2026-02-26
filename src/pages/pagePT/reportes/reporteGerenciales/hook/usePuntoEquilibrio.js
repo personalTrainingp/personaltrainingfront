@@ -2,7 +2,8 @@ import { PTApi } from '@/common';
 import dayjs, { utc } from 'dayjs';
 import React, { useState } from 'react';
 import { agruparPorGrupo } from '../helpers/agrupamientos';
-import { aplicarTipoDeCambio } from '@/helper/aplicarTipoDeCambio';
+import { agruparPorGrupoYConcepto, aplicarTipoDeCambio } from '@/helper/aplicarTipoDeCambio';
+import { obtenerTipoDeCambio } from '@/middleware/obtenerTipoDeCambio';
 
 dayjs.extend(utc);
 function formatDateToSQLServerWithDayjs(date, isStart = true) {
@@ -212,42 +213,22 @@ export const usePuntoEquilibrio = () => {
 					],
 				},
 			});
+			const dataGastos = data.gastos.map((g) => {
+				return {
+					fecha_primaria: g.fecha_comprobante,
+					...g,
+				};
+			});
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/terminologiaxEmpresa/${idEmpresa}/1573`
 			);
-			const { data: dataTC } = await PTApi.get('/tipoCambio/');
-			const gastosMap = data.gastos.map((g) => {
-				return {
-					...g,
-					fecha_primaria: g.fecha_pago,
-				};
-			});
-			const dataTCs = dataTC.tipoCambios.map((e, i, arr) => {
-				const posteriores = arr
-					.filter((item) => new Date(item.fecha) > new Date(e.fecha))
-					.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-
-				const termino = posteriores.length ? posteriores[0].fecha : null;
-				return {
-					moneda: e.monedaDestino,
-					multiplicador: e.precio_compra,
-					// monedaOrigen: e.monedaOrigen,
-					fecha_inicio_tc: e.fecha,
-					fecha_fin_tc: termino, // null si no hay próximo cambio
-				};
-			});
+			const dataTipoTC = await obtenerTipoDeCambio();
 			setdataEgresos(
-				agruparPorGrupo(
-					aplicarTipoDeCambio(dataTCs, gastosMap),
+				agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTipoTC, dataGastos),
 					dataParametrosGastos.termGastos
 				)
 			);
-			console.log({
-				asss: agruparPorGrupo(
-					aplicarTipoDeCambio(dataTCs, gastosMap),
-					dataParametrosGastos.termGastos
-				),
-			});
 		} catch (error) {
 			console.log(error);
 		}

@@ -1,19 +1,19 @@
-import { DateMaskStr, DateMaskString } from '@/components/CurrencyMask';
+import { DateMaskStr1 } from '@/components/CurrencyMask';
 
 export function aplicarTipoDeCambio(dataTC, data) {
 	return data?.map((item) => {
-		const fechaGasto = DateMaskString(item.fecha_primaria);
+		const fechaGasto = DateMaskStr1(item.fecha_primaria);
 
 		const tcMatch = dataTC.find((tc) => {
 			if (tc.moneda === item.moneda) return false;
 
-			const inicio = DateMaskString(tc.fecha_inicio_tc);
+			const inicio = DateMaskStr1(tc.fecha_inicio_tc);
 			// Debe ser posterior o igual al inicio
 			if (fechaGasto < inicio) return false;
 
 			// Si hay fecha_fin_tc, también debe ser ≤ fin
 			if (tc.fecha_fin_tc) {
-				const fin = DateMaskString(tc.fecha_fin_tc);
+				const fin = DateMaskStr1(tc.fecha_fin_tc);
 				if (fechaGasto > fin) return false;
 			}
 			// Si fecha_fin_tc es null, este tramo sigue abierto
@@ -26,31 +26,42 @@ export function aplicarTipoDeCambio(dataTC, data) {
 	});
 }
 
-export const agruparPorGrupoYConcepto = (data = []) => {
-	const map = new Map();
+export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = []) => {
+	// 🔹 Agrupar dataGrupos por grupo
+	const gruposMapTemp = {};
+	dataGrupos.forEach((entry) => {
+		const nombreGrupo = entry?.parametro_grupo?.param_label || 'SIN GRUPO';
+		if (!gruposMapTemp[nombreGrupo]) gruposMapTemp[nombreGrupo] = [];
+		gruposMapTemp[nombreGrupo].push(entry);
+	});
+	const gruposOrdenados = Object.entries(gruposMapTemp).sort(([, a], [, b]) => {
+		const ordenA = a?.[0]?.parametro_grupo?.orden;
+		const ordenB = b?.[0]?.parametro_grupo?.orden;
+		return (ordenA ?? Infinity) - (ordenB ?? Infinity);
+	});
+	// 🔹 Construcción final
+	const resultado = gruposOrdenados.map(([grupoNombre, entradasDeGrupo]) => {
+		entradasDeGrupo.sort((a, b) => (a?.orden ?? Infinity) - (b?.orden ?? Infinity));
 
-	for (const item of data) {
-		const grupo =
-			item?.tb_parametros_gasto?.tb_parametro_grupo?.param_label ??
-			item?.tb_parametros_gasto?.grupo ??
-			item?.grupo ??
-			'SIN GRUPO';
+		// 🔹 Data del grupo
+		const dataGrupo = dataGastos.filter((g) => {
+			const pg = g?.tb_parametros_gasto.parametro_grupo?.param_label || 'SIN GRUPO';
+			const grupoGasto = pg;
+			return grupoGasto === grupoNombre;
+		});
 
-		if (!map.has(grupo)) {
-			map.set(grupo, []);
-		}
+		const itemsGrupo = agruparPorDia(dataGrupo);
 
-		map.get(grupo).push(item);
-	}
+		return {
+			grupo: grupoNombre,
+			data: dataGrupo,
+			items: itemsGrupo,
+			conceptos: agruparPorConcepto(dataGrupo),
+		};
+	});
+	console.log({ resultado });
 
-	return Array.from(map.entries()).map(([grupo, items]) => ({
-		grupo,
-		conceptos: agruparPorConcepto(items),
-		itemsxDias: agruparPorDia(items),
-		montoTotal: items?.reduce((total, item) => total + item.monto, 0),
-		cantidadTotal: items?.length,
-		data: items,
-	}));
+	return resultado;
 };
 
 // 1. Agrupa solo por concepto
@@ -81,7 +92,7 @@ function agruparPorDia(data) {
 
 	data.forEach((item) => {
 		// const fecha = dayjs.utc(item.fecha_venta);
-		const fecha = DateMaskStr(item?.fecha_primaria);
+		const fecha = DateMaskStr1(item?.fecha_primaria);
 
 		const anio = fecha.year();
 		const mes = fecha.month() + 1; // 0–11 → 1–12

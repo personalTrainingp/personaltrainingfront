@@ -37,24 +37,24 @@ export const AppDetalleMetas = () => {
   return (
     <div>
                 <FechaCorte corte={corte.corte} inicio={corte.inicio}/>
-        <div className='text-center fs-1'>CUOTAS DEL MES</div>
+        {/* <div className='text-center fs-1'>CUOTAS DEL MES</div> */}
         <div className='text-center fs-1'>
             MEMBRESIAS
         </div>
         <div  className="table-responsive" style={{ width: '100%' }}>
-            <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataMetasCuotasMembresias}/>
+            <DataTableMetas labelMontoVenta={'MONTO DE VENTA ALCANZA AL CORTE'} nombreDeComparativo='CUOTA DEL MES' arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataMetasCuotasMembresias}/>
         </div>
         <div className='text-center fs-1'>
             RENOVACIONES
         </div>
         <div  className="table-responsive" style={{ width: '100%' }}>
-            <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresiasRenovaciones?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia)).map(d=>{return {...d,meta: d.montoTotal}})}/>
+            <DataTableMetas labelMontoVenta={'MONTO DE VENTA POR RENOVACIONES'} arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresiasRenovaciones?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia)).map(d=>{return {...d,meta: d.montoTotal}})}/>
         </div>
         <div className='text-center fs-1'>
             REINSCRIPCIONES
         </div>
         <div  className="table-responsive" style={{ width: '100%' }}>
-            <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresiasReinscripciones?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia)).map(d=>{return {...d,meta: d.montoTotal}})}/>
+            <DataTableMetas labelMontoVenta={'MONTO DE VENTA POR REINSCRIPCIONES'} arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresiasReinscripciones?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia)).map(d=>{return {...d,meta: d.montoTotal}})}/>
         </div>
         <div className='text-center text-change' style={{fontSize: '80px'}}>
             RENOVACIONES
@@ -64,7 +64,7 @@ export const AppDetalleMetas = () => {
                 return (
                     <div  className="table-responsive" style={{ width: '100%' }}>
                         <p className='text-center fs-1'>{d.nombre_empl}</p>
-                        <DataTableMetas arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={sumarMontoTotal(agruparPorMesDiaFechaVenta((d.items)))?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia)).map(d=>{return {...d,meta: d.montoTotal}})}/>
+                        <DataTableMetas labelMontoVenta={'MONTO DE VENTA POR RENOVACIONES'} arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={sumarMontoTotal(agruparPorMesDiaFechaVenta((d.items)))?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia)).map(d=>{return {...d,meta: d.montoTotal}})}/>
                     </div>
                 )
             })

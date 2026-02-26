@@ -9,6 +9,7 @@ import { useTerminos2Store } from './useTerminos2Store'
 import { useGastosStore } from './useGastosStore'
 import { ModalProveedor } from '../GestProveedores/ModalProveedor'
 import { Loading } from '@/components/Loading'
+import { ModalCustomProveedores } from '../GestProveedores/ModalCustomProveedores'
 const customGasto = {
     id_tipoGasto: 0, 
     id_oficio: 0,
@@ -32,7 +33,7 @@ const customGasto = {
     descripcion: '', 
     esCompra: 0,
 }
-export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpenModalGasto}) => {
+export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpenModalGasto, onOpenModalProveedor}) => {
     const { obtenerGastoxID, dataGasto } = useGastosStore()
     
     const {
@@ -71,7 +72,6 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     const [dataConceptosxGrupo, setdataConceptosxGrupo] = useState([])
     const [dataGrupoxTipoGasto, setdataGrupoxTipoGasto] = useState([])
     const [dataProveedoresFiltrados, setdataProveedoresFiltrados] = useState(dataProveedorxTipoxEmpresa)
-    const [isOpenModalProveedor, setOpenModalProveedor] = useState({isOpen: false, id: 0})
     const [isLoading, setisLoading] = useState(false)
     const { postGasto, updateGastoxID } = useGastosStore()
     const [id_empresa, setid_empresa] = useState(id_enterprice)
@@ -92,7 +92,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     useEffect(() => {
         if(show){
             obtenerProveedorxTipoxEmpresa(id_empresa, 1573)
-            obtenerOficios('proveedor','tipo_oficio')
+            obtenerOficios('proveedor','tipo_oficio')   
             obtenerParametroTipoComprobante('finanzas', 'tipo_comprabante')
             obtenerParametroEstadoGasto('egresos', 'estado-gasto')
             obtenerParametrosFormaPago('formapago', 'formapago')
@@ -150,14 +150,6 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         onHide()
         onResetForm()
     }
-    const onOpenModalProveedor = ()=>{
-        setOpenModalProveedor({isOpen: true, id:0})
-        onHide()
-    }
-    const onCloseModalProveedor = ()=>{
-        setOpenModalProveedor({isOpen: false, id:0})
-        onOpenModalGasto(id, isCopy)
-    }
     const onInputChangeEmpresa = (e)=>{
         setid_empresa(e.target.value)
     }
@@ -175,7 +167,6 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
   return (
     <>
     <Loading show={isLoading}/>
-    <ModalProveedor id={isOpenModalProveedor.id} onCloseModalProveedor={onCloseModalProveedor} onHide={()=>setOpenModalProveedor({isOpen: false, id:0})} onShow={onOpenModalProveedor} show={isOpenModalProveedor.isOpen}  />
     <Modal show={show} onHide={cancelarGasto} size='xl'>
         <Modal.Header>
             <Modal.Title>

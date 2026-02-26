@@ -4,11 +4,11 @@ import { Table } from 'react-bootstrap'
 
 export const TableEgresos = ({bgTotal, data=[]}) => {
   const dataAlter = data.map(d=>{
-    const montoDataPagosPendientes = d.dataPagosPendientes.reduce((total, item)=>total+item.monto,0)
+    // const montoDataPagosPendientes = d.data?.reduce((total, item)=>total+item.monto,0)
     const montoData = d.data?.reduce((total, item)=>total+item?.monto,0)
     return {
       ...d,
-      montoDataPagosPendientes,
+      // montoDataPagosPendientes,
       montoData
     }
   })

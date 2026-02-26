@@ -15,6 +15,7 @@ const customCustomBalance = {
     descripcion:'',
     id_empresa: 0,
     id_banco: 0,
+    id_prov__: 0,
     n_operacion: ''
 }
 export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, headerTipo}) => {
@@ -27,7 +28,7 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, h
         }
     }, [show])
     
-    const { formState, id_concepto, monto, moneda, fecha_comprobante, id_prov, descripcion, id_empresa, id_banco, n_operacion, onInputChange, onResetForm } = useForm(id===0?customCustomBalance:dataCuentaBalance)
+    const { formState, id_concepto, id_prov__, monto, moneda, fecha_comprobante, id_prov, descripcion, id_empresa, id_banco, n_operacion, onInputChange, onResetForm } = useForm(id===0?customCustomBalance:dataCuentaBalance)
     const onSubmitCuentasBalancexIdEmpresaxTipo=()=>{
         if(id===0){
             postCuentasBalancesxIdEmpresaxTipo(formState, id_empresa, tipo)
@@ -85,6 +86,11 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, h
                 <Col lg={4}>
                     <div className='mb-2'>
                     <InputSelect label={'Empresa'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedores} required/>
+                    </div>
+                </Col>
+                <Col lg={4}>
+                    <div className='mb-2'>
+                    <InputSelect label={'Proveedor'} value={id_prov__} nameInput={'id_prov__'} onChange={onInputChange} options={dataProveedores} required/>
                     </div>
                 </Col>
                 <Col lg={4}>

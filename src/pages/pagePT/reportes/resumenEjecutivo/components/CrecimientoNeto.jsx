@@ -107,7 +107,7 @@ export const CrecimientoNeto = ({ dataVentas, mapaVencimientos = {}, year, id_em
     return (
         <Card className="shadow-sm border-0 rounded-4 mb-5">
             <Card.Header className="bg-white pt-4 px-4 border-0">
-                <h5 className="fw-bold m-0 text-dark">ANÁLISIS DE CRECIMIENTO NETO DE MIEMBROS</h5>
+                <h5 className="fw-bold m-0 text-dark">ANÁLISIS DE CRECIMIENTO NETO DE SOCIOS</h5>
                 <small className="text-muted">Balance mensual entre adquisición y Churn (fuga) - {year}</small>
             </Card.Header>
             <Card.Body className="px-4 pb-4">
@@ -120,13 +120,13 @@ export const CrecimientoNeto = ({ dataVentas, mapaVencimientos = {}, year, id_em
                         <thead className="bg-light">
                             <tr className="text-secondary text-uppercase fw-bold" style={{ fontSize: '1rem' }}>
                                 <th className="py-3 ps-4">Mes</th>
-                                <th className="py-3 text-end text-dark">Activos (Fin de Mes)</th>
-                                <th className="py-3 text-end text-primary">Nuevos (+)</th>
-                                <th className="py-3 text-end text-success">Renovaciones (+)</th>
-                                <th className="py-3 text-end text-danger">Churn (-)</th>
+                                <th className="py-3 text-end text-dark text-center">SOCIOS <br/> Activos <br/> (Fin de Mes)</th>
+                                <th className="py-3 text-end text-ral text-center"><span className="text-ral">SOCIOS <br/> Nuevos <br/> (+)</span></th>
+                                <th className="py-3 text-end text-success text-center">SOCIOS <br/> Renovaciones <br/> (+)</th>
+                                <th className="py-3 text-end text-danger text-center">SOCIOS <br/> Churn <br/> (-)</th>
                                 {/* NUEVA COLUMNA */}
-                                <th className="py-3 text-end text-danger">Churn Rate %</th>
-                                <th className="py-3 text-center" style={{ backgroundColor: '#fff9c4' }}>CRECIMIENTO NETO</th>
+                                <th className="py-3 text-end text-danger text-center">SOCIOS <br/> Churn Rate <br/> %</th>
+                                <th className="py-3 text-center" style={{ backgroundColor: '#fff9c4' }}>CRECIMIENTO <br/> NETO</th>
                             </tr>
                         </thead>
                         <tbody style={{ fontSize: '1.3rem' }}>
@@ -143,15 +143,19 @@ export const CrecimientoNeto = ({ dataVentas, mapaVencimientos = {}, year, id_em
                                 return (
                                     <tr key={mes} className="border-bottom border-light">
                                         <td className="ps-4 fw-bold text-secondary text-uppercase ">{mes}</td>
-                                        <td className="text-end fw-bold text-dark">
+                                        <td className="text-center fw-bold text-dark">
                                             {loadingActivos ? '...' : (activosPorMes[i] || '-')}
                                         </td>
-                                        <td className="text-end fw-semibold">{inscritosPorMes[i] || '-'}</td>
-                                        <td className="text-end fw-semibold text-success">{renovacionesPorMes[i] || '-'}</td>
-                                        <td className="text-end fw-semibold text-danger">{churnPorMes[i] || '-'}</td>
+                                        <td className="text-center fw-semibold">
+                                            <span className="text-ral">
+                                                {inscritosPorMes[i] || '-'}
+                                            </span>
+                                        </td>
+                                        <td className="text-center fw-semibold text-success">{renovacionesPorMes[i] || '-'}</td>
+                                        <td className="text-center fw-semibold text-danger">{churnPorMes[i] || '-'}</td>
 
                                         {/* NUEVA CELDA CHURN RATE */}
-                                        <td className={`text-end ${rateColor}`}>
+                                        <td className={`text-center ${rateColor}`}>
                                             {rate > 0 ? `${rate}%` : '-'}
                                         </td>
 
