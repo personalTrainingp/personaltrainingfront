@@ -1,6 +1,6 @@
 import { InputButton, InputSelect, InputText } from '@/components/InputText'
 import { useForm } from '@/hooks/useForm'
-import { arrayFinanzas } from '@/types/type'
+import { arrayAnioVisible, arrayFinanzas } from '@/types/type'
 import React, { useEffect } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTerminologias } from '../hook/useTerminologias'
@@ -9,7 +9,8 @@ const customTermGasto={
 id_tipoGasto: 0, 
 nombre_gasto: '', 
 orden: 0, 
-id_grupo: 0
+id_grupo: 0,
+isAnualizado: 0
 }
 export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
     const { postTerm2, updateTerm2xID, obtenerTerm2, dataTerm2 } = useTerminologias()
@@ -25,9 +26,7 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
             obtenerTerm2(id)
         }
     }, [show])
-    console.log({id_empresa, DataGeneral, dataTerm2, id});
-    
-    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
+    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, isAnualizado, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
     const cancelar = ()=>{
         onHide()
         onResetForm()
@@ -49,6 +48,9 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
         </Modal.Header>
         <Modal.Body>
             <form>
+                <div className='mb-2'>
+                    <InputSelect label={'VISIBLE EN'} nameInput={'isAnualizado'} onChange={onInputChange} value={isAnualizado} options={arrayAnioVisible} required/>
+                </div>
                 <div className='mb-2'>
                     <InputSelect label={'Tipo de gasto'} nameInput={'id_tipoGasto'} onChange={onInputChange} value={id_tipoGasto} options={arrayFinanzas} required/>
                 </div>
