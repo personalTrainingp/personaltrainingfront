@@ -129,7 +129,7 @@ export const NewMembersBreakdownTable = ({ ventas = [], monthsData = [] }) => {
 
     return (
         <div style={styles.card}>
-            <h5 style={styles.headerTitle}>Detalle Nuevos Socios por Vendedor</h5>
+            <h5 style={styles.headerTitle}>Detalle Nuevos Socios por Asesor</h5>
 
             <div style={styles.tableWrapper}>
                 <table style={styles.table}>

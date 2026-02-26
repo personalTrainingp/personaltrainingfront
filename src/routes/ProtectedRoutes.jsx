@@ -44,6 +44,9 @@ const GestionAuditoria = lazy(() => import('../pages/pagePT/Auditoria'))
 // const ServFitology = lazy(()=> import('../pages/pagePT/ServFitology'))
 // const ServNutricion = lazy(()=> import('../pages/pagePT/ServNutricion'))
 const ReportePorProgramas = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'))
+const ComisionesPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/ComisionesPage'));
+const ComparativoPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/ComparativoPage'));
+const RenovacionesMesPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/RenovacionesMesPage'));
 const ReporteTotalVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'))
 const ReporteVentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'))
 const ComparativoMensualPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual'));
@@ -70,11 +73,11 @@ const InventarioTotalizado = lazy(() => import('../pages/pagePT/InventarioReport
 // const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
 const PuntoEquilibrio = lazy(() => import('../pages/pagePT/reportes/puntoEquilibrio'))
 const ReporteSeguimiento = lazy(() => import('../pages/pagePT/reportes/reporteSeguimiento'))
-// const GestionComercial = lazy(()=>import('../pages/pagePT/GestComercial'))
+const GestionComercial = lazy(() => import('../pages/pagePT/GestComercial'))
 // const ReporteSesionesxMem = lazy(()=>import('../pages/pagePT/reportes/reporteSesionesxMem'))
 const ResultadoChange = lazy(() => import('../pages/pagePT/reportes/resultadoChange'))
 // const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
-// const ReporteDeGestionComercial = lazy(()=>import('../pages/pagePT/reportes/reporteGestionComercial'))
+const ReporteDeGestionComercial = lazy(() => import('../pages/pagePT/reportes/reporteGestionComercial'))
 // const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
 const ResumenComparativo = lazy(() => import('../pages/pagePT/reportes/resumenComparativo'))
 // const ReporteDemograficoCliente = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoCliente'))
@@ -138,6 +141,9 @@ export default function ProtectedRoutes() {
 	const { status, checkAuthToken } = useAuthStore()
 	// const {obtenerModulos} = useRoleStore()
 	const { sections } = useSelector(e => e.rutas)
+	// Busca una URL tanto en items raíz como dentro de sus children (para items con submenu)
+	const findSectionDeep = (url) =>
+		sections.some(s => s.url === url || (s.children || []).some(c => c.url === url));
 	// useEffect(() => {
 	// 	obtenerModulos()
 	// }, [])
@@ -370,10 +376,10 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/reporte/comparativo-resumen-x-mes') && //asdf
 								<Route path='reporte/comparativo-resumen-x-mes' element={<ResumenComparativoAnual />} />
 							}
-							{/* {
-                        sections.find(e=>e.url==='/reporte/gestion-comercial') && 
-                        <Route path='reporte/gestion-comercial' element={<ReporteDeGestionComercial/>}/>
-                    } */}
+							{
+								sections.find(e => e.url === '/reporte/gestion-comercial') &&
+								<Route path='reporte/gestion-comercial' element={<ReporteDeGestionComercial />} />
+							}
 							{
 								sections.find(e => e.url === '/totalizado-inventario') &&
 								<Route path='totalizado-inventario' element={<InventarioTotalizado />} />
@@ -386,10 +392,10 @@ export default function ProtectedRoutes() {
                         sections.find(e=>e.url==='/salida-inventario') && 
                         <Route path='salida-inventario' element={<SalidaInventario/>}/>
                     } */}
-							{/* {
-                        sections.find(e=>e.url==='/gestion-comercial') && 
-                        <Route path='gestion-comercial' element={<GestionComercial/>}/>
-                    } */}
+							{
+								sections.find(e => e.url === '/gestion-comercial') &&
+								<Route path='gestion-comercial' element={<GestionComercial />} />
+							}
 							{
 								sections.find(e => e.url === '/gestion-cambio-programa') &&
 								<Route path='gestion-cambio-programa' element={<GestionCambioPrograma />} />
@@ -445,7 +451,15 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/reporte/ventas-asesor') &&
-								<Route path='reporte/ventas-asesor' element={<VentasAsesor />} />
+								<Route path='reporte/ventas-asesor' element={<ComparativoPage />} />
+							}
+							{
+								findSectionDeep('/reporte/comparativo-mensual') &&
+								<Route path='reporte/comparativo-mensual' element={<ComparativoMensualPage />} />
+							}
+							{
+								findSectionDeep('/reporte/renovaciones-por-mes') &&
+								<Route path='reporte/renovaciones-por-mes' element={<RenovacionesMesPage />} />
 							}
 							{
 								sections.find(e => e.url === '/gestion-proveedores-activo') &&
@@ -516,7 +530,10 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/gestion-ventas') &&
-								<Route path='gestion-ventas' element={<GestionVenta />} />
+								<>
+									<Route path='gestion-ventas' element={<GestionVenta />} />
+									<Route path='venta' element={<GestionVenta />} />
+								</>
 							}
 							{sections.find(e => e.url === '/gestion-auth-usuario') &&
 								<Route path='gestion-auth-usuario' element={<GestionUsuario />} />
@@ -582,6 +599,10 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/reporte/comparativo-mensual') &&
 								<Route path='reporte/comparativo-mensual' element={<ComparativoMensualPage />} />
+							}
+							{
+								sections.find(e => e.url === '/reporte/comisiones') &&
+								<Route path='reporte/comisiones' element={<ComisionesPage />} />
 							}
 							{
 								sections.find(e => e.url === '/resumen-membresias') &&

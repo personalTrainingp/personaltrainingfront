@@ -96,22 +96,22 @@ const MenuItem = ({ item, className, linkClassName }) => {
       <MenuItemLink item={item} className={linkClassName} />
     </li>
   );
-  
+
 };
 const MenuItemLink = ({ item, className }) => {
-  
+
   return (
     <Link
       to={item.url}
       target={item.target}
       className={`side-nav-link-ref ${className}`}
-      style={{display: 'flex', alignItems: 'center'}}
+      style={{ display: 'flex', alignItems: 'center' }}
       data-menu-key={item.key}
     >
       {item.icon ? (
         <>
           <i className={item.icon}></i>
-          <div className='' style={{whiteSpace: 'normal'}}>&nbsp;{item.label}</div>
+          <div className='' style={{ whiteSpace: 'normal' }}>&nbsp;{item.label}</div>
         </>
       ) : (
         item.label
@@ -191,7 +191,7 @@ const AppMenu = ({ menuItems }) => {
           return (
             <React.Fragment key={index.toString()}>
               {item.isTitle ? (
-                <li className="side-nav-title">{item.label}</li>
+                <li className="side-nav-title" dangerouslySetInnerHTML={{ __html: item.label }} />
               ) : (
                 <React.Fragment>
                   {item.children ? (

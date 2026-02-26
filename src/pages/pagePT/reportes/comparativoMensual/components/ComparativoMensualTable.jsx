@@ -11,11 +11,12 @@ export const ComparativoMensualTable = ({
     title = "",
     showFortnightly = false,
     customStartDay = 1,
-    customEndDay = 1
+    customEndDay = 1,
+    displayYear = null,
+    displayStartMonth = null
 }) => {
     const [viewMode, setViewMode] = useState('none');
 
-    // Nota: Asegúrate de que tu hook useComparativoMensualLogic tenga el bucle en 13
     const { monthsData, top3Indices, top3Averages, last6Averages } = useComparativoMensualLogic({
         ventas,
         year,
@@ -30,8 +31,6 @@ export const ComparativoMensualTable = ({
         table: { width: '100%', borderCollapse: 'collapse', fontSize: '22px', whiteSpace: 'nowrap' },
         th: { background: '#c00000', color: '#fff', fontWeight: '600', padding: '12px 10px', textAlign: 'center', fontSize: '25px', borderRight: '1px solid rgba(255,255,255,0.2)' },
         td: { padding: '10px 12px', borderBottom: '1px solid #eee', textAlign: 'right', color: '#444' },
-
-        // MODIFICADO: Ajustamos tdLabel para asegurar alineación vertical
         tdLabel: {
             textAlign: 'left',
             fontWeight: '600',
@@ -42,7 +41,7 @@ export const ComparativoMensualTable = ({
             background: '#fff',
             zIndex: 1,
             borderRight: '2px solid #f0f0f0',
-            verticalAlign: 'middle' // Para centrar verticalmente si la altura cambia
+            verticalAlign: 'middle'
         },
         footerRow: { background: '#f8f9fa', borderTop: '2px solid #dee2e6' },
         highlightCell: { background: '#dc3545', color: '#fff', fontWeight: '700' },
@@ -57,7 +56,25 @@ export const ComparativoMensualTable = ({
             return [...monthsData].sort((a, b) => b.total - a.total).slice(0, 3);
         }
         if (viewMode === 'last6') {
-            return monthsData.slice(-6);
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+
+            const pastMonths = monthsData.filter(row => {
+                const rowYear = Number(row.year ?? year);
+                const rowMonth = Number(row.monthIdx);
+                return rowYear < currentYear || (rowYear === currentYear && rowMonth <= currentMonth);
+            });
+
+            return pastMonths.slice(-6);
+        }
+        // Vista estándar: mostrar desde el mes seleccionado por el usuario
+        if (displayYear !== null && displayStartMonth !== null) {
+            const fromAbs = Number(displayYear) * 12 + Number(displayStartMonth);
+            return monthsData.filter(row => {
+                const rowAbs = Number(row.year) * 12 + Number(row.monthIdx);
+                return rowAbs >= fromAbs;
+            });
         }
         return monthsData;
     })();
