@@ -384,6 +384,11 @@ export const arrayFinanzas = [
 	// { label: '370 | inversion activos', value: 370 },
 ];
 
+export const arrayAnioVisible = [
+	{ label: 'ANUALIZADO', value: 0 },
+	{ label: 'MOMENTANEO', value: 1 },
+];
+
 export const arrayTipoIngresos = [
 	{ label: '250 | Fijos', value: 250 },
 	{ label: '260 | VARIABLES', value: 260 },
