@@ -25,7 +25,7 @@ export const AppFlujoCaja = () => {
           </TabView>
         }
         childrenCircus={
-          <TabView>
+          <TabView> 
             <TabPanel header={'2026'}>
               <ViewTablesFlujoCaja arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-ral text-white'} bgPastel={'bg-ral-pastel text-white'} id_empresa={601}/>
             </TabPanel>

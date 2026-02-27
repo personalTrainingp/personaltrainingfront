@@ -10,7 +10,7 @@ import { aplicarTipoDeCambio } from '@/helper/aplicarTipoCambio';
 export const useFlujoCaja = () => {
 	const [dataGastosxFecha, setdataGastosxFecha] = useState([]);
 	const [dataIngresosxFecha, setdataIngresosxFecha] = useState([]);
-	const obtenerEgresosxFecha = async (enterprice, arrayDate) => {
+	const obtenerEgresosxFecha = async (enterprice, arrayDate, tt) => {
 		try {
 			const { data } = await PTApi.get(`/egreso/fecha-comprobante/${enterprice}`, {
 				params: {
@@ -20,6 +20,15 @@ export const useFlujoCaja = () => {
 					],
 				},
 			});
+			console.log({
+				tt,
+				arrayDate: [
+					formatDateToSQLServerWithDayjs(arrayDate[0], true),
+					formatDateToSQLServerWithDayjs(arrayDate[1], false),
+				],
+				data: data.gastos.sort((a, b) => a.fecha_comprobante - b.fecha_comprobante),
+			});
+
 			const dataGastos = data.gastos.map((g) => {
 				return {
 					fecha_primaria: g.fecha_comprobante,
@@ -98,17 +107,21 @@ export const useFlujoCaja = () => {
 				};
 			});
 			const dataV = dataIngresosOrden([...data.ventas]);
+			const arrayTotalIngresos = [
+				...dataV.dataMembresias,
+				...dataV.dataProductos17,
+				...dataV.dataProductos18,
+				...ingresosMAP,
+				...reservasMFMAP,
+			];
+			const totalIngresos = arrayTotalIngresos.map((f) => {
+				return {
+					...f,
+					id_estado_gasto: 1423,
+				};
+			});
 			setdataIngresosxFecha(
-				agruparPorGrupoYConcepto(
-					[
-						...dataV.dataMembresias,
-						...dataV.dataProductos17,
-						...dataV.dataProductos18,
-						...ingresosMAP,
-						...reservasMFMAP,
-					],
-					dataParametrosGastos.termGastos
-				)
+				agruparPorGrupoYConcepto(totalIngresos, dataParametrosGastos.termGastos)
 			);
 			console.log({});
 		} catch (error) {
@@ -122,20 +135,3 @@ export const useFlujoCaja = () => {
 		dataIngresosxFecha,
 	};
 };
-
-function generarRangosTipoCambio(tipoCambios) {
-	return tipoCambios.map((e, i, arr) => {
-		const posteriores = arr
-			.filter((item) => new Date(item.fecha) > new Date(e.fecha))
-			.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-
-		const termino = posteriores.length ? posteriores[0].fecha : null;
-
-		return {
-			moneda: e.monedaDestino,
-			multiplicador: e.precio_compra,
-			fecha_inicio_tc: e.fecha,
-			fecha_fin_tc: termino,
-		};
-	});
-}

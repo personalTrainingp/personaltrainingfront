@@ -7,10 +7,10 @@ import { NumberFormatMoney } from '@/components/CurrencyMask';
 export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio, onOpenModalTableItems}) => {
     const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
     useEffect(() => {
-        obtenerEgresosxFecha(id_enterprice, anio)
+        obtenerEgresosxFecha(id_enterprice, anio, 'tenet')
     }, [id_enterprice])
     useEffect(() => {
-        obtenerIngresosxFecha(id_enterprice, anio)
+        obtenerIngresosxFecha(id_enterprice, anio, 'tenet')
     }, [])
     console.log({dataGastosxFecha, dataIngresosxFecha});
     
@@ -40,90 +40,90 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
         }
       })
-      console.log({dataAlter});
-      
       return (
-    <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
-      <thead>
-        <tr>
-          <td style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{'RESULTADO ANUAL'}</td>
-          {
-            dataAlter.map(f=>{
-              return (
-                <React.Fragment key={`${f.mesStr}`}>
-                <th className={`text-center ${bgTotal}`} style={{width: '240px'}}>{f.mesStr}</th>
-                </React.Fragment>
-              )
-            })
-          }
-          <th className='text-center' style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
-          <th className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
-          <th className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
-          <th className='text-center' style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>INGRESOS</td>
-        {
-          dataAlter.map(e=>{
-            return (
-              <React.Fragment>
-                <td className={``}> <NumberFormatMoney amount={e.sumaIngresos}/></td>
-              </React.Fragment>
-              )
-            })
-          }
-        </tr>
-        <tr>
-          <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>EGRESOS</td>
-        {
-          dataAlter.map(e=>{
-            return (
-              <React.Fragment>
-                <td className={`text-change`}> <div className='text-change' onClick={()=>onOpenModalTableItems(e.dataGasto)}><NumberFormatMoney amount={-e.sumaGastos}/></div></td>
-              </React.Fragment>
-              )
-            })
-          }
-        </tr>
-        <tr>
-          <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>UTILIDAD BRUTA</td>
-        {
-          dataAlter.map(e=>{
-            return (
-              <React.Fragment>
-                <td className={``}> <div className={`${e.utilidadBruta>0?'text-color-dolar':'text-change'} `} ><NumberFormatMoney amount={e.utilidadBruta}/></div> </td>
-              </React.Fragment>
-              )
-            })
-          }
-        </tr>
-        <tr>
-          <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>ING. EXCEPCIONALES</td>
-        {
-          dataAlter.map(e=>{
-            return (
-              <React.Fragment>
-                <td className={``}> <NumberFormatMoney amount={e.sumaIngresosExcepcional}/></td>
-              </React.Fragment>
-              )
-            })
-          }
-        </tr>
-        <tr>
-          <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>UTILIDAD NETA</td>
-        {
-          dataAlter.map(e=>{
-            return (
-              <React.Fragment>
-                <td className={`${e.utilidadNeta>0?'text-color-dolar':'text-change'} `}> <NumberFormatMoney amount={e.utilidadNeta}/></td>
-              </React.Fragment>
-              )
-            })
-          }
-        </tr> 
-      </tbody>
-    </Table>
+        <>
+          <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
+            <thead>
+              <tr>
+                <td style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{'RESULTADO ANUAL'}</td>
+                {
+                  dataAlter.map(f=>{
+                    return (
+                      <React.Fragment key={`${f.mesStr}`}>
+                      <th className={`text-center ${bgTotal}`} style={{width: '240px'}}>{f.mesStr}</th>
+                      </React.Fragment>
+                    )
+                  })
+                }
+                <th className='text-center' style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
+                <th className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
+                <th className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
+                <th className='text-center' style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>INGRESOS</td>
+              {
+                dataAlter.map(e=>{
+                  return (
+                    <React.Fragment>
+                      <td className={``}> <NumberFormatMoney amount={e.sumaIngresos}/></td>
+                    </React.Fragment>
+                    )
+                  })
+                }
+              </tr>
+              <tr>
+                <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>EGRESOS</td>
+              {
+                dataAlter.map(e=>{
+                  return (
+                    <React.Fragment>
+                      <td className={`text-change`}> <div className='text-change' onClick={()=>onOpenModalTableItems(e.dataGasto)}><NumberFormatMoney amount={-e.sumaGastos}/></div></td>
+                    </React.Fragment>
+                    )
+                  })
+                }
+              </tr>
+              <tr>
+                <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>UTILIDAD BRUTA</td>
+              {
+                dataAlter.map(e=>{
+                  return (
+                    <React.Fragment>
+                      <td className={``}> <div className={`${e.utilidadBruta>0?'text-color-dolar':'text-change'} `} ><NumberFormatMoney amount={e.utilidadBruta}/></div> </td>
+                    </React.Fragment>
+                    )
+                  })
+                }
+              </tr>
+              <tr>
+                <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>ING. EXCEPCIONALES</td>
+              {
+                dataAlter.map(e=>{
+                  return (
+                    <React.Fragment>
+                      <td className={``}> <NumberFormatMoney amount={e.sumaIngresosExcepcional}/></td>
+                    </React.Fragment>
+                    )
+                  })
+                }
+              </tr>
+              <tr>
+                <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>UTILIDAD NETA</td>
+              {
+                dataAlter.map(e=>{
+                  return (
+                    <React.Fragment>
+                      <td className={`${e.utilidadNeta>0?'text-color-dolar':'text-change'} `}> <NumberFormatMoney amount={e.utilidadNeta}/></td>
+                    </React.Fragment>
+                    )
+                  })
+                }
+              </tr> 
+            </tbody>
+          </Table>
+        </>
   )
 }

@@ -15,9 +15,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
         obtenerEgresosxFecha(id_empresa, arrayFecha)
         obtenerIngresosxFecha(id_empresa, arrayFecha)
     }, [])
-    console.log({dataIngresosxFecha, dataGastosxFecha});
     const onOpenModalTableItems = (data)=>{
-        console.log({data, dm: 'ass'});
         
         setdata({isOpen: true, items: data, header: ''})
     }
