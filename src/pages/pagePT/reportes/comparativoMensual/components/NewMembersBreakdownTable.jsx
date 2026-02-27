@@ -137,7 +137,7 @@ export const NewMembersBreakdownTable = ({ ventas = [], monthsData = [] }) => {
                         {/* 1. FILA SUPERIOR */}
                         <tr>
                             <th style={styles.thStickyLeft} rowSpan={2}>
-                                VENDEDOR
+                                ASESOR
                             </th>
                             {monthsData.map(m => (
                                 <th key={m.key} colSpan={2} style={styles.thGroup}>

@@ -79,7 +79,7 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [] }) => {
                 <thead>
                     <tr>
                         <th style={{ ...styles.th, verticalAlign: 'middle', width: '150px' }} rowSpan={2}>
-                            VENDEDOR
+                            ASESOR
                         </th>
                         {monthsData.map(m => (
                             <th key={m.key} style={styles.th} colSpan={2}>

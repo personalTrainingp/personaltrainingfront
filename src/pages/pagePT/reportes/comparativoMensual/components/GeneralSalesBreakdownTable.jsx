@@ -138,7 +138,7 @@ export const GeneralSalesBreakdownTable = ({ ventas = [], monthsData = [] }) => 
                         <tr>
                             {/* --- CAMBIO AQUÍ: rowSpan={2} y se elimina el th de abajo --- */}
                             <th style={styles.thStickyLeft} rowSpan={2}>
-                                VENDEDOR
+                                ASESOR
                             </th>
                             {monthsData.map(m => (
                                 <th key={m.key} colSpan={2} style={styles.thGroup}>
