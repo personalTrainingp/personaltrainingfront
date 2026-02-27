@@ -21,7 +21,7 @@ export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas
     <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
       <thead>
         <tr>
-          <th style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{index}. {nombreGrupo}</th>
+          <th style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10`}>{index}. {nombreGrupo}</th>
           {
             dataAlter.map(f=>{
               return (

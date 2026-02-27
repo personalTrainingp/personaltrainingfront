@@ -69,6 +69,14 @@ export const useFlujoCaja = () => {
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/terminologiaxEmpresa/${enterprice}/1574`
 			);
+			const ingresosMAP = dataIngresos.ingresos.map((i) => {
+				return {
+					...i,
+					fecha_comprobante: i.fec_comprobante,
+					fecha_pago: i.fec_pago,
+					fecha_primaria: i.fec_pago,
+				};
+			});
 			const reservasMFMAP = dataMF.reservasMF?.map((m) => {
 				return {
 					moneda: 'PEN',
@@ -95,12 +103,13 @@ export const useFlujoCaja = () => {
 						...dataV.dataMembresias,
 						...dataV.dataProductos17,
 						...dataV.dataProductos18,
-						...dataIngresos.ingresos,
+						...ingresosMAP,
 						...reservasMFMAP,
 					],
 					dataParametrosGastos.termGastos
 				)
 			);
+			console.log({});
 		} catch (error) {
 			console.log(error);
 		}
