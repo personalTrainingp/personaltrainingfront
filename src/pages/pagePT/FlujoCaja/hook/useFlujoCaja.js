@@ -75,6 +75,7 @@ export const useFlujoCaja = () => {
 					fecha_comprobante: i.fec_comprobante,
 					fecha_pago: i.fec_pago,
 					fecha_primaria: i.fec_pago,
+					monto: i.monto,
 				};
 			});
 			const reservasMFMAP = dataMF.reservasMF?.map((m) => {

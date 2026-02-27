@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems}) => {
+export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems}) => {
   const dataAlter = fechas.map((f, index, array)=>{
       const dataTotal = itemsxDias.find(i=>i.mes===f.mes && i.anio===f.anio)??{}
     return {
@@ -21,7 +21,7 @@ export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas
     <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
       <thead>
         <tr>
-          <th style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10`}>{index}. {nombreGrupo}</th>
+          <th style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 sticky-td-${id_empresa} bg-white`}>{index}. {nombreGrupo}</th>
           {
             dataAlter.map(f=>{
               return (
@@ -42,7 +42,7 @@ export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas
         { conceptos.map((c, i)=>{
           return (
             <tr key={`${i}-${c.concepto}`}>
-              <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>{i+1}. {c.concepto}</td>
+              <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>{i+1}. {c.concepto}</td>
               {
                   dataAlter.map((f, i)=>{
                   const itemsDelMesFiltrado= c.items?.find(m=>m.mes===f.mes && m.anio===f.anio)
@@ -66,7 +66,7 @@ export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas
         })
         }
         <tr>
-          <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>TOTAL</td>
+          <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>TOTAL</td>
           {
             dataAlter.map((f, i)=>{
               return (
@@ -80,7 +80,7 @@ export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas
           <td colSpan={4} className='text-center'>TOTAL ANUAL</td>
         </tr>
         <tr>
-          <td className={`sticky-td border-left-10 border-right-10 border-bottom-10 ${bgTotal}`}>PARTICIPACION</td>
+          <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10 ${bgTotal}`}>PARTICIPACION</td>
           {
             dataAlter.map((f, i)=>{
               return (

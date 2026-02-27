@@ -20,7 +20,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
         const cantidadIngresos = dataIngresos.length;
-        const sumaIngresosExcepcional = dataIngresosExcepcionales.reduce((item, total)=>item.monto+total, 0);
+        const sumaIngresosExcepcional = dataIngresosExcepcionales.reduce((total, item)=>item.monto+total, 0);
         const cantidadIngresosExcepcional = dataIngresosExcepcionales.length;
         const sumaGastos = dataGasto.reduce((total, item)=>item.monto+total, 0)
         const cantidadGastos = dataGasto.length;
@@ -40,11 +40,13 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
         }
       })
+      console.log({dataAlter});
+      
       return (
     <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
       <thead>
         <tr>
-          <th style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{'RESULTADO ANUAL'}</th>
+          <td style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{'RESULTADO ANUAL'}</td>
           {
             dataAlter.map(f=>{
               return (
