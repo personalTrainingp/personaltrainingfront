@@ -60,6 +60,9 @@ export const GestionInventario = () => {
             </TabPanel>
             <TabPanel header='BACKUPS'>
                   <TabView>
+                        <TabPanel header={<>CHANGE<br/> INVENTARIO TOTAL FEBRERO 2026</>}>
+                              <DataInventario id_enterprice={2598} id_zona={598}/>
+                        </TabPanel>
                         <TabPanel header={<>PROYECTO 1</>}>
                               <DataInventario id_enterprice={5992} id_zona={599}/>
                         </TabPanel>
