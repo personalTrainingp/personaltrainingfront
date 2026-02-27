@@ -129,7 +129,7 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
 
     return (
         <div style={styles.card}>
-            <h5 style={styles.headerTitle}>Detalle Reinscripciones por Vendedor</h5>
+            <h5 style={styles.headerTitle}> Reinscripciones por Asesor</h5>
 
             <div style={styles.tableWrapper}>
                 <table style={styles.table}>

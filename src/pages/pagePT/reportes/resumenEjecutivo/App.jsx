@@ -161,7 +161,7 @@ export const App = ({ id_empresa }) => {
                 <Col lg={12}>
                   <SeguimientoRenovaciones
                     dataVentas={dataVentas} mapaVencimientos={mapaVencimientos}
-                    year={year} id_empresa={id_empresa}
+                    year={year} id_empresa={id_empresa} cutDay={cutDay} cutMonth={selectedMonth}
                   />
                 </Col>
               </Row>
@@ -177,7 +177,7 @@ export const App = ({ id_empresa }) => {
                 <Col lg={12}>
                   <CrecimientoNeto
                     dataVentas={dataVentas} mapaVencimientos={mapaVencimientos}
-                    year={year} id_empresa={id_empresa}
+                    year={year} id_empresa={id_empresa} cutDay={cutDay} cutMonth={selectedMonth}
                   />
                 </Col>
               </Row>
@@ -187,6 +187,7 @@ export const App = ({ id_empresa }) => {
                   <LtvCacChart
                     dataVentas={dataVentas} mapaVencimientos={mapaVencimientos}
                     dataMktByMonth={dataMktWithCac} year={year} id_empresa={id_empresa}
+                    cutDay={cutDay} cutMonth={selectedMonth}
                   />
                 </Col>
               </Row>
@@ -256,7 +257,8 @@ export const App = ({ id_empresa }) => {
                 <Col lg={12}>
                   <VigentesResumenMensual
                     id_empresa={id_empresa} year={year}
-                    selectedMonth={selectedMonth} pgmNameById={pgmNameById}
+                    selectedMonth={selectedMonth} cutDay={cutDay} cutMonth={selectedMonth}
+                    pgmNameById={pgmNameById}
                     avataresDeProgramas={avataresDeProgramas}
                   />
                 </Col>

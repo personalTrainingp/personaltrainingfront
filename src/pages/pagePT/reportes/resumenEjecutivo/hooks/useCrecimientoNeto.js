@@ -6,7 +6,7 @@ const MESES = [
     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
 ];
 
-export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empresa) => {
+export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empresa, cutDay = null, cutMonth = null) => {
     // ❌ BORRADO: const [activosPorMes, setActivosPorMes] = useState({});
 
     // Obtenemos del store
@@ -15,13 +15,13 @@ export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empres
     // 0. Fetch Activos (Vigentes) por Mes - USANDO STORE
     useEffect(() => {
         if (year) {
-            fetchVigentesHistorico(id_empresa, year);
+            fetchVigentesHistorico(id_empresa, year, cutDay, cutMonth);
         }
-    }, [year, id_empresa, fetchVigentesHistorico]);
+    }, [year, id_empresa, cutDay, cutMonth, fetchVigentesHistorico]);
 
     // 🔥 LA SOLUCIÓN: Calcular al vuelo sin causar re-renders
     const activosPorMes = useMemo(() => {
-        const key = `${id_empresa || 598}-${year}`;
+        const key = `${id_empresa || 598}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`;
         const rows = data[key] || [];
         const results = {};
 
@@ -37,7 +37,7 @@ export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empres
         return results;
     }, [data, year, id_empresa]);
 
-    const loadingActivos = loading[`${id_empresa || 598}-${year}`] || false;
+    const loadingActivos = loading[`${id_empresa || 598}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`] || false;
 
     // 1. Calcular Inscritos (Nuevas Ventas)
     const inscritosPorMes = useMemo(() => {

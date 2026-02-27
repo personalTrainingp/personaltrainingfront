@@ -21,7 +21,7 @@ ChartJS.register(
     LineElement, Title, Tooltip, Legend, BarController, LineController
 );
 
-export const CrecimientoNeto = ({ dataVentas, mapaVencimientos = {}, year, id_empresa }) => {
+export const CrecimientoNeto = ({ dataVentas, mapaVencimientos = {}, year, id_empresa, cutDay = null, cutMonth = null }) => {
     const {
         inscritosPorMes,
         renovacionesPorMes,
@@ -31,7 +31,7 @@ export const CrecimientoNeto = ({ dataVentas, mapaVencimientos = {}, year, id_em
         activosPorMes,
         loadingActivos,
         MESES
-    } = useCrecimientoNeto(dataVentas, mapaVencimientos, year, id_empresa);
+    } = useCrecimientoNeto(dataVentas, mapaVencimientos, year, id_empresa, cutDay, cutMonth);
 
     const dataChart = {
         labels: MESES,
@@ -120,13 +120,13 @@ export const CrecimientoNeto = ({ dataVentas, mapaVencimientos = {}, year, id_em
                         <thead className="bg-light">
                             <tr className="text-secondary text-uppercase fw-bold" style={{ fontSize: '1rem' }}>
                                 <th className="py-3 ps-4">Mes</th>
-                                <th className="py-3 text-end text-dark text-center">SOCIOS <br/> Activos <br/> (Fin de Mes)</th>
-                                <th className="py-3 text-end text-ral text-center"><span className="text-ral">SOCIOS <br/> Nuevos <br/> (+)</span></th>
-                                <th className="py-3 text-end text-success text-center">SOCIOS <br/> Renovaciones <br/> (+)</th>
-                                <th className="py-3 text-end text-danger text-center">SOCIOS <br/> Churn <br/> (-)</th>
+                                <th className="py-3 text-end text-dark text-center">SOCIOS <br /> Activos <br /> (Fin de Mes)</th>
+                                <th className="py-3 text-end text-ral text-center"><span className="text-ral">SOCIOS <br /> Nuevos <br /> (+)</span></th>
+                                <th className="py-3 text-end text-success text-center">SOCIOS <br /> Renovaciones <br /> (+)</th>
+                                <th className="py-3 text-end text-danger text-center">SOCIOS <br /> Churn <br /> (-)</th>
                                 {/* NUEVA COLUMNA */}
-                                <th className="py-3 text-end text-danger text-center">SOCIOS <br/> Churn Rate <br/> %</th>
-                                <th className="py-3 text-center" style={{ backgroundColor: '#fff9c4' }}>CRECIMIENTO <br/> NETO</th>
+                                <th className="py-3 text-end text-danger text-center">SOCIOS <br /> Churn Rate <br /> %</th>
+                                <th className="py-3 text-center" style={{ backgroundColor: '#fff9c4' }}>CRECIMIENTO <br /> NETO</th>
                             </tr>
                         </thead>
                         <tbody style={{ fontSize: '1.3rem' }}>
@@ -153,9 +153,6 @@ export const CrecimientoNeto = ({ dataVentas, mapaVencimientos = {}, year, id_em
                                         </td>
                                         <td className="text-center fw-semibold text-success">{renovacionesPorMes[i] || '-'}</td>
                                         <td className="text-center fw-semibold text-danger">{churnPorMes[i] || '-'}</td>
-                                        <td className="text-end fw-semibold">{inscritosPorMes[i] === 0 ? '0' : (inscritosPorMes[i] || '-')}</td>
-                                        <td className="text-end fw-semibold text-success">{renovacionesPorMes[i] === 0 ? '0' : (renovacionesPorMes[i] || '-')}</td>
-                                        <td className="text-end fw-semibold text-danger">{churnPorMes[i] === 0 ? '0' : (churnPorMes[i] || '-')}</td>
 
                                         {/* NUEVA CELDA CHURN RATE */}
                                         <td className={`text-end ${rateColor}`}>
