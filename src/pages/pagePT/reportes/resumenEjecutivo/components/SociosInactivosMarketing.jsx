@@ -30,7 +30,7 @@ export default function SociosInactivosMarketing({ empresa = 598 }) {
 
     const styles = {
         wrapper: {
-            border: "1px solid #dce1eb",
+            border: "3px solid #000",
             borderRadius: 12,
             overflow: "hidden",
             background: "#fff",
@@ -87,7 +87,7 @@ export default function SociosInactivosMarketing({ empresa = 598 }) {
         thead: { background: "#f3f4f6", textTransform: "uppercase", fontSize: 13 },
         th: {
             padding: "12px 16px",
-            borderBottom: "1px solid #e5e7eb",
+            borderBottom: "3px solid #000",
             fontWeight: 800,
             cursor: "pointer",
             userSelect: "none",

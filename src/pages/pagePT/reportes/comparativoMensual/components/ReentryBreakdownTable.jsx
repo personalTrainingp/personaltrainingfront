@@ -21,14 +21,13 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
             fontWeight: '800',
             color: '#1a1a1a',
             marginBottom: '15px',
-            borderLeft: '5px solid #fff',
             paddingLeft: '15px',
             textTransform: 'uppercase'
         },
         tableWrapper: {
             overflowX: 'auto',
             borderRadius: '8px',
-            border: '1px solid #fff'
+            border: '3px solid #000'
         },
         table: {
             width: '100%',
@@ -42,10 +41,10 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
             color: '#fff',
             padding: '10px 15px',
             textAlign: 'center',
-            borderBottom: '1px solid #eee',
-            borderleft: '1px solid #eee',
+            borderBottom: '1px solid #000',
+            borderleft: '1px solid #000',
             fontWeight: '600',
-            borderRight: '1px solid rgba(255,255,255,0.2)'
+            borderRight: '1px solid #000'
         },
         thSub: {
             background: '#c00000',
@@ -54,8 +53,8 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
             textAlign: 'center',
             fontSize: '16px',
             fontWeight: '700',
-            borderBottom: '2px solid #ddd',
-            borderRight: '1px solid #eee'
+            borderBottom: '1px solid #000',
+            borderRight: '1px solid #000'
         },
         // Sticky Columns
         thStickyLeft: {
@@ -67,8 +66,8 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
             padding: '12px',
             textAlign: 'left',
             fontWeight: '800',
-            borderBottom: '2px solid #ddd',
-            borderRight: '2px solid #ddd',
+            borderBottom: '2px solid #000',
+            borderRight: '2px solid #000',
             minWidth: '200px',
             verticalAlign: 'middle' // Centrado verticalmente al unir filas
         },
@@ -76,19 +75,17 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
             position: 'sticky',
             left: 0,
             zIndex: 2,
-            background: '#fff',
-            borderRight: '2px solid #f0f0f0',
-            borderBottom: '1px solid #f0f0f0',
+            color: '#fff',
+            borderRight: '2px solid #000',
+            borderBottom: '1px solid #000',
             padding: '10px 12px',
             fontWeight: '600',
-            color: '#333'
         },
         td: {
             padding: '10px 12px',
-            borderBottom: '1px solid #f0f0f0',
+            borderBottom: '1px solid #000',
             textAlign: 'right',
-            color: '#444',
-            borderRight: '1px solid #fafafa'
+            borderRight: '1px solid #000'
         },
         // Columnas de Total (Vertical)
         tdTotalRow: {
@@ -97,31 +94,37 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
             color: '#333',
             textAlign: 'right',
             padding: '10px 12px',
-            borderBottom: '1px solid #f0f0f0'
+            borderBottom: '1px solid #000',
+            borderRight: '1px solid #000'
         },
         // Footer (Total General)
         grandTotalRow: {
-            background: '#d9d9d9',
-            color: '#000',
+            background: '#c00000',
+            color: '#fff',
             fontWeight: 'bold',
+            borderBottom: '2px solid #000',
+            borderRight: '1px solid #000'
         },
         tdGrandTotalLabel: {
             padding: '12px',
             textAlign: 'center',
-            color: '#000',
+            color: '#fff',
             fontWeight: '800',
-            background: '#d9d9d9',
+            background: '#c00000',
             position: 'sticky',
             left: 0,
             zIndex: 2,
-            borderTop: '2px solid #999'
+            borderTop: '2px solid #000',
+            borderBottom: '2px solid #000',
+            borderRight: '1px solid #000'
         },
         tdGrandTotalValue: {
             padding: '12px',
             textAlign: 'right',
-            color: '#000',
-            borderTop: '2px solid #999',
-            borderRight: '1px solid #ccc'
+            color: '#fff',
+            borderTop: '2px solid #000',
+            borderRight: '1px solid #000',
+            borderBottom: '1px solid #000'
         }
     };
 
@@ -137,14 +140,14 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
                         {/* 1. FILA SUPERIOR */}
                         <tr>
                             <th style={styles.thStickyLeft} rowSpan={2}>
-                                VENDEDOR
+                                ASESOR
                             </th>
                             {monthsData.map(m => (
                                 <th key={m.key} colSpan={2} style={styles.thGroup}>
                                     {m.label.toUpperCase()}
                                 </th>
                             ))}
-                            <th colSpan={2} style={{ ...styles.thGroup, background: '#333' }}>
+                            <th colSpan={2} style={{ ...styles.thGroup }}>
                                 TOTAL ACUMULADO
                             </th>
                         </tr>
@@ -158,8 +161,8 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
                                 </React.Fragment>
                             ))}
 
-                            <th style={{ ...styles.thSub, background: '#e9ecef', color: '#000' }}>CANTIDAD</th>
-                            <th style={{ ...styles.thSub, background: '#e9ecef', color: '#000' }}>IMPORTE</th>
+                            <th style={{ ...styles.thSub }}>CANTIDAD</th>
+                            <th style={{ ...styles.thSub }}>IMPORTE</th>
                         </tr>
                     </thead>
 
@@ -180,7 +183,7 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
 
                             return (
                                 <tr key={repName} style={{ background: idx % 2 === 0 ? '#fff' : '#fcfcfc' }}>
-                                    <td style={styles.tdStickyLeft}>{repName}</td>
+                                    <td style={{ ...styles.tdStickyLeft, background: '#c00000' }}>{repName}</td>
                                     {cells.map((data, i) => (
                                         <React.Fragment key={i}>
                                             <td style={styles.td}>
@@ -221,10 +224,10 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
                                 );
                             })}
 
-                            <td style={{ ...styles.tdGrandTotalValue, background: '#ccc' }}>
+                            <td style={{ ...styles.tdGrandTotalValue }}>
                                 {grandTotal?.count > 0 ? grandTotal.count : '-'}
                             </td>
-                            <td style={{ ...styles.tdGrandTotalValue, background: '#ccc', color: '#000' }}>
+                            <td style={{ ...styles.tdGrandTotalValue }}>
                                 {grandTotal?.amount > 0 ? fmtMoney(grandTotal.amount) : '-'}
                             </td>
                         </tr>

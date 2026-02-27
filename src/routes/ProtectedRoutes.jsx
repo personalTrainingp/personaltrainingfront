@@ -50,6 +50,7 @@ const RenovacionesMesPage = lazy(() => import('../pages/pagePT/reportes/comparat
 const ReporteTotalVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'))
 const ReporteVentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'))
 const ComparativoMensualPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual'));
+const InscripcionesPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/inscripcionestable'));
 const ReporteVentasporSemana = lazy(() => import('../pages/pagePT/reportes/ventaPorSemana'))
 const Terminologias = lazy(() => import('../pages/pagePT/Terminologias'))
 const ReporteEgresos = lazy(() => import('../pages/pagePT/reportes/reporteEgresos'))
@@ -460,6 +461,10 @@ export default function ProtectedRoutes() {
 							{
 								findSectionDeep('/reporte/renovaciones-por-mes') &&
 								<Route path='reporte/renovaciones-por-mes' element={<RenovacionesMesPage />} />
+							}
+							{
+								findSectionDeep('/reporte/vigentes-historico') &&
+								<Route path='reporte/vigentes-historico' element={<InscripcionesPage />} />
 							}
 							{
 								sections.find(e => e.url === '/gestion-proveedores-activo') &&
