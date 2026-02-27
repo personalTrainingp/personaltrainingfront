@@ -25,6 +25,8 @@ export function VigentesResumenMensual({
   id_empresa,
   year,
   selectedMonth,
+  cutDay = null,
+  cutMonth = null,
   pgmNameById,
   avataresDeProgramas = [],
 }) {
@@ -44,6 +46,8 @@ export function VigentesResumenMensual({
     id_empresa,
     year,
     selectedMonth,
+    cutDay,
+    cutMonth,
     pgmNameById,
     avataresDeProgramas,
   });

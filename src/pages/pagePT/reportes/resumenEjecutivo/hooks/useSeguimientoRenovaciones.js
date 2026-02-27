@@ -6,7 +6,7 @@ const MESES = [
     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
 ];
 
-export const useSeguimientoRenovaciones = (dataVentas, mapaVencimientos, year, id_empresa) => {
+export const useSeguimientoRenovaciones = (dataVentas, mapaVencimientos, year, id_empresa, cutDay = null, cutMonth = null) => {
 
     // Obtenemos del store
     const { fetchVigentesHistorico, data, loading } = useVigentesHistoricoStore();
@@ -49,14 +49,14 @@ export const useSeguimientoRenovaciones = (dataVentas, mapaVencimientos, year, i
     // 🔥 3. Fetch Activos (Vigentes) por Mes - USANDO STORE
     useEffect(() => {
         if (year) {
-            fetchVigentesHistorico(id_empresa, year);
+            fetchVigentesHistorico(id_empresa, year, cutDay, cutMonth);
         }
-    }, [year, id_empresa, fetchVigentesHistorico]);
+    }, [year, id_empresa, cutDay, cutMonth, fetchVigentesHistorico]);
 
     // 🔥 LA SOLUCIÓN: Reemplazamos el useState y el useEffect por un useMemo puro.
     // Esto calcula los resultados al vuelo (síncronamente) y evita el re-render extra.
     const activosPorMes = useMemo(() => {
-        const key = `${id_empresa || 598}-${year}`;
+        const key = `${id_empresa || 598}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`;
         const rows = data[key] || [];
         const results = {};
 
@@ -71,7 +71,7 @@ export const useSeguimientoRenovaciones = (dataVentas, mapaVencimientos, year, i
         return results;
     }, [data, year, id_empresa]);
 
-    const loadingActivos = loading[`${id_empresa || 598}-${year}`] || false;
+    const loadingActivos = loading[`${id_empresa || 598}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`] || false;
 
     return {
         inscritosPorMes,

@@ -5,6 +5,7 @@ export const useConversionEfficiency = ({
     ventas = [],
     dataMktWithCac = {},
     dataLead = [],
+    mapaVencimientos = {},
     selectedMonth,
     year,
     initDay,
@@ -17,13 +18,24 @@ export const useConversionEfficiency = ({
         const key = `${year}-${mesKey}`;
 
         const mktData = dataMktWithCac[key] || {};
-        const leadsPorRed = mktData.leads_por_red || {};
+        const leads_por_red = mktData.leads_por_red || {};
         const inversionPorRed = mktData.por_red || {};
+
+        // Renovaciones logic: use 'pendiente' from mapaVencimientos as 'leads'
+        const monthKey = `${year}-${String(selectedMonth).padStart(2, '0')}`;
+        const pendienteCount = mapaVencimientos[monthKey]?.pendiente || 0;
+
+        // Helper to sum by keys (same logic as ExecutibleTable2)
+        const sumFrom = (obj, keys) => keys.reduce((a, k) => a + Number(obj?.[k] ?? 0), 0);
+
+        const mkLeadsMeta = sumFrom(leads_por_red, ['1515', 'meta', 'facebook', 'instagram']);
+        const mkLeadsTikTok = sumFrom(leads_por_red, ['1514', 'tiktok', 'tik tok']);
 
         // Define base categories we want to track
         const stats = {
-            Meta: { leads: leadsPorRed['meta'] || 0, originKeys: ['Meta', 'Facebook', 'Instagram'], ventas: 0, revenue: 0, inversion: inversionPorRed['meta'] || 0 },
-            TikTok: { leads: leadsPorRed['tiktok'] || 0, originKeys: ['TikTok'], ventas: 0, revenue: 0, inversion: inversionPorRed['tiktok'] || 0 },
+            Meta: { leads: mkLeadsMeta, originKeys: ['Meta', 'Facebook', 'Instagram'], ventas: 0, revenue: 0, inversion: inversionPorRed['meta'] || 0 },
+            TikTok: { leads: mkLeadsTikTok, originKeys: ['TikTok'], ventas: 0, revenue: 0, inversion: inversionPorRed['tiktok'] || 0 },
+            Renovaciones: { leads: pendienteCount, originKeys: ['RENOVACIONES'], ventas: 0, revenue: 0, inversion: 0 },
             Referidos: { leads: 0, originKeys: ['Referidos'], ventas: 0, revenue: 0, inversion: 0 },
             WalkIn: { leads: 0, originKeys: ['Walking', 'Walk In', 'WalkIn'], ventas: 0, revenue: 0, inversion: 0 },
         };
@@ -83,6 +95,9 @@ export const useConversionEfficiency = ({
         });
 
         // Process leads directly from dataLead if available
+        // Note: We skip Meta and TikTok here if they were already processed via leads_por_red
+        // to avoid double counting, or use this as the primary source if it's more accurate.
+        // For now, mirroring ExecutibleTable2 which uses leads_por_red (bulk data).
         if (dataLead && dataLead.length > 0) {
             dataLead.forEach(lead => {
                 const d = limaFromISO(lead?.fecha);
@@ -111,9 +126,13 @@ export const useConversionEfficiency = ({
                     }
                 }
 
-                stats[matchedCategory].leads += 1;
+                // If it's Meta/TikTok, we already got the bulk count from leads_por_red
+                if (matchedCategory !== 'Meta' && matchedCategory !== 'TikTok') {
+                    stats[matchedCategory].leads += Number(lead?.cantidad ?? 1);
+                }
             });
         }
+
 
         // Convert to array
         const result = Object.entries(stats).map(([origen, data]) => {
@@ -151,5 +170,5 @@ export const useConversionEfficiency = ({
 
         return result;
 
-    }, [ventas, dataMktWithCac, dataLead, selectedMonth, year, initDay, cutDay]);
+    }, [ventas, dataMktWithCac, dataLead, mapaVencimientos, selectedMonth, year, initDay, cutDay]);
 };

@@ -36,7 +36,9 @@ export const SeguimientoRenovaciones = ({
     dataVentas,
     mapaVencimientos = {},
     year,
-    id_empresa
+    id_empresa,
+    cutDay = null,
+    cutMonth = null,
 }) => {
     const {
         inscritosPorMes,
@@ -44,7 +46,7 @@ export const SeguimientoRenovaciones = ({
         activosPorMes,
         loadingActivos,
         MESES
-    } = useSeguimientoRenovaciones(dataVentas, mapaVencimientos, year, id_empresa);
+    } = useSeguimientoRenovaciones(dataVentas, mapaVencimientos, year, id_empresa, cutDay, cutMonth);
 
     // MEJORA UI: Paleta de colores moderna y bordes redondeados
     const dataChart = {

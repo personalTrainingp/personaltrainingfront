@@ -36,10 +36,12 @@ export const LtvCacChart = ({
     mapaVencimientos,
     dataMktByMonth,
     year,
-    id_empresa
+    id_empresa,
+    cutDay = null,
+    cutMonth = null,
 }) => {
     // 1. Obtener Churn Rate mensual usando el hook existente
-    const { churnRatePorMes } = useCrecimientoNeto(dataVentas, mapaVencimientos, year, id_empresa);
+    const { churnRatePorMes } = useCrecimientoNeto(dataVentas, mapaVencimientos, year, id_empresa, cutDay, cutMonth);
 
     const metrics = useMemo(() => {
         const cacData = Array(12).fill(0);

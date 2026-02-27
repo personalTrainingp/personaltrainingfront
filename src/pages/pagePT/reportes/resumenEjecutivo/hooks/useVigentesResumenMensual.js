@@ -12,6 +12,8 @@ export function useVigentesResumenMensual({
     id_empresa,
     year,
     selectedMonth,
+    cutDay = null,
+    cutMonth = null,
     pgmNameById,
     avataresDeProgramas = [],
 }) {
@@ -22,14 +24,14 @@ export function useVigentesResumenMensual({
     const { fetchVigentesHistorico, data, loading } = useVigentesHistoricoStore();
 
     // Loading state specific to this component's data key
-    const isLoading = loading[`${id_empresa || 598}-${year}`] || false;
+    const isLoading = loading[`${id_empresa || 598}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`] || false;
 
     // 1. Trigger fetch on expand/change
     useEffect(() => {
         if (isOpenLast || isOpenCurr) {
-            fetchVigentesHistorico(id_empresa, year);
+            fetchVigentesHistorico(id_empresa, year, cutDay, cutMonth);
         }
-    }, [id_empresa, year, isOpenLast, isOpenCurr, fetchVigentesHistorico]);
+    }, [id_empresa, year, cutDay, cutMonth, isOpenLast, isOpenCurr, fetchVigentesHistorico]);
 
     const { lastYearCols, currentYearCols } = useMemo(
         () => buildColumnsConfig(year, selectedMonth),
@@ -54,7 +56,7 @@ export function useVigentesResumenMensual({
     const progMatrix = useMemo(() => {
         if (!isOpenLast && !isOpenCurr) return {}; // Lazy execution
 
-        const dataKey = `${id_empresa || 598}-${year}`;
+        const dataKey = `${id_empresa || 598}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`;
         const results = data[dataKey] || [];
         const nextMatrix = {};
 

@@ -6,7 +6,7 @@ const MESES = [
     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
 ];
 
-export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empresa) => {
+export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empresa, cutDay = null, cutMonth = null) => {
     // ❌ BORRADO: const [activosPorMes, setActivosPorMes] = useState({});
 
     // Obtenemos del store
@@ -15,29 +15,34 @@ export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empres
     // 0. Fetch Activos (Vigentes) por Mes - USANDO STORE
     useEffect(() => {
         if (year) {
-            fetchVigentesHistorico(id_empresa, year);
+            fetchVigentesHistorico(id_empresa, year, cutDay, cutMonth);
         }
-    }, [year, id_empresa, fetchVigentesHistorico]);
+    }, [year, id_empresa, cutDay, cutMonth, fetchVigentesHistorico]);
 
     // 🔥 LA SOLUCIÓN: Calcular al vuelo sin causar re-renders
     const activosPorMes = useMemo(() => {
-        const key = `${id_empresa || 598}-${year}`;
+        const key = `${id_empresa || 598}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`;
         const rows = data[key] || [];
         const results = {};
 
         rows.forEach(({ colId, rows: montRows }) => {
-            const [y, m] = colId.split('-');
-            if (Number(y) === year) {
-                const monthIndex = Number(m) - 1;
-                // For this hook we only need the total count
-                results[monthIndex] = montRows ? montRows.length : 0;
+            if (!colId) return;
+            const parts = colId.split('-');
+            const y = Number(parts[0]);
+            const m = Number(parts[1]);
+
+            if (y === year) {
+                if (cutMonth && m > cutMonth) return; // Filtro de meses futuros
+
+                const monthIndex = m - 1;
+                results[monthIndex] = Array.isArray(montRows) ? montRows.length : 0;
             }
         });
 
         return results;
-    }, [data, year, id_empresa]);
+    }, [data, year, id_empresa, cutDay, cutMonth]);
 
-    const loadingActivos = loading[`${id_empresa || 598}-${year}`] || false;
+    const loadingActivos = loading[`${id_empresa || 598}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`] || false;
 
     // 1. Calcular Inscritos (Nuevas Ventas)
     const inscritosPorMes = useMemo(() => {
@@ -48,13 +53,17 @@ export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empres
             const fecha = new Date(venta.fecha_venta || venta.createdAt);
             if (fecha.getFullYear() !== year) return;
 
+            const mVal = fecha.getMonth() + 1;
+            if (mVal > (cutMonth || 12)) return;
+            if (mVal === cutMonth && fecha.getDate() > (cutDay || 31)) return;
+
             const isRenovacion = venta.id_origen === 691;
             if (!isRenovacion) {
                 counts[fecha.getMonth()]++;
             }
         });
         return counts;
-    }, [dataVentas, year]);
+    }, [dataVentas, year, cutDay, cutMonth]);
 
     // 2. Extraer Renovaciones, Churn y calcular Churn Rate %
     const stats = useMemo(() => {
