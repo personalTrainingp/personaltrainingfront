@@ -7,6 +7,7 @@ export const TopControlsVentas = ({
     customStartDay, handleStartDayChange,
     customEndDay, handleEndDayChange,
     viewMode, setViewMode,
+    showViewButtons = true
 }) => {
     const currentYear = new Date().getFullYear();
     const years = [];
@@ -82,22 +83,24 @@ export const TopControlsVentas = ({
             </Col>
 
             {/* 4. BOTONES DE VISTA */}
-            <Col className="text-end">
-                <ButtonGroup>
-                    <Button
-                        variant={viewMode === 'standard' ? "primary" : "outline-primary"}
-                        onClick={() => setViewMode('standard')}
-                    >
-                        VER TABLAS
-                    </Button>
-                    <Button
-                        variant={viewMode === 'goals' ? "primary" : "outline-primary"}
-                        onClick={() => setViewMode('goals')}
-                    >
-                        VER METAS
-                    </Button>
-                </ButtonGroup>
-            </Col>
+            {showViewButtons && (
+                <Col className="text-end">
+                    <ButtonGroup>
+                        <Button
+                            variant={viewMode === 'standard' ? "primary" : "outline-primary"}
+                            onClick={() => setViewMode('standard')}
+                        >
+                            VER TABLAS
+                        </Button>
+                        <Button
+                            variant={viewMode === 'goals' ? "primary" : "outline-primary"}
+                            onClick={() => setViewMode('goals')}
+                        >
+                            VER METAS
+                        </Button>
+                    </ButtonGroup>
+                </Col>
+            )}
         </Row>
     );
 };
