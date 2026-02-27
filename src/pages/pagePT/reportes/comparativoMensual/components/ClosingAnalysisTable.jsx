@@ -33,7 +33,7 @@ export const ClosingAnalysisTable = ({ ventas = [], monthsData = [], customStart
         tableWrapper: {
             overflowX: 'auto',
             borderRadius: '8px',
-            border: '1px solid #eaeaea'
+            border: '3px solid #000'
         },
         table: {
             width: '100%',

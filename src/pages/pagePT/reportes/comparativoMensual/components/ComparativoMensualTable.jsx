@@ -27,7 +27,7 @@ export const ComparativoMensualTable = ({
     });
 
     const styles = {
-        tableWrapper: { overflowX: 'auto', borderRadius: '8px', border: '2px solid #000', marginTop: '10px' },
+        tableWrapper: { overflowX: 'auto', borderRadius: '8px', border: '3px solid #000', marginTop: '10px' },
         table: { width: '100%', borderCollapse: 'collapse', fontSize: '22px', whiteSpace: 'nowrap' },
         th: { background: '#c00000', color: '#fff', fontWeight: '600', padding: '12px 10px', textAlign: 'center', fontSize: '25px', borderRight: '1px solid #000', borderBottom: '1px solid #000' },
         td: { padding: '10px 12px', borderBottom: '1px solid #000', borderRight: '1px solid #000', textAlign: 'right', color: '#444' },

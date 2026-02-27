@@ -45,7 +45,8 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
         },
         tableWrapper: {
             overflowX: 'auto',
-            borderRadius: '8px'
+            borderRadius: '8px',
+            border: '3px solid #000'
         },
         table: {
             width: '100%',

@@ -12,7 +12,7 @@ export const ComisionesTable = ({ ventas = [], year, month }) => {
     const styles = {
         card: { background: '#fff', padding: '25px', marginTop: '30px', fontFamily: "'Segoe UI', sans-serif" },
         headerTitle: { fontSize: '25px', fontWeight: '800', borderBottom: '3px solid #000', marginBottom: '20px', textTransform: 'uppercase' },
-        tableBase: { width: '100%', borderCollapse: 'collapse', fontSize: '20px', border: '1px solid #000', marginBottom: '5px' },
+        tableBase: { width: '100%', borderCollapse: 'collapse', fontSize: '20px', border: '3px solid #000', marginBottom: '5px' },
         thGreen: { background: '#c00000', color: '#fff', padding: '6px', border: '1px solid #000', textAlign: 'center', fontWeight: 'bold' },
         thYellow: { background: '#c00000', color: '#fff', padding: '6px', border: '1px solid #000', textAlign: 'center', fontWeight: 'bold' },
         td: { border: '1px solid #000', padding: '5px', textAlign: 'right', color: '#000' },

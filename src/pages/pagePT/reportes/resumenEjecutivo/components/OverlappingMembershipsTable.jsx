@@ -34,7 +34,7 @@ export const OverlappingMembershipsTable = ({ ventas = [], onViewAll }) => {
     const styles = {
         wrapper: {
             marginTop: '2rem',
-            border: "1px solid #dee2e6",
+            border: "3px solid #000",
             borderRadius: "12px",
             overflow: "hidden",
             background: "#fff",

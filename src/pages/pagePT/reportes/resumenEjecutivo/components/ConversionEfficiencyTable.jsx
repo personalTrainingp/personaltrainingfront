@@ -39,7 +39,7 @@ export const ConversionEfficiencyTable = ({
     };
 
     return (
-        <Card className="shadow-sm mb-4" style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
+        <Card className="shadow-sm mb-4" style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "3px solid #000" }}>
 
             {/* HEADER */}
             <Card.Header className="pt-4 pb-3" style={{ backgroundColor: "#000000", borderBottom: "1px solid #f1f5f9" }}>

@@ -27,7 +27,7 @@ export const BonusAnalysisTable = ({ ventas = [], monthsData, customStartDay = 1
             maxWidth: '800px',
             borderCollapse: 'collapse',
             fontSize: '20px',
-            border: '2px solid #000'
+            border: '3px solid #000'
         },
         th: {
             background: '#c00000', // Yellow as in image

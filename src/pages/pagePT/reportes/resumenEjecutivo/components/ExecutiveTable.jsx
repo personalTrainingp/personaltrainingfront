@@ -113,7 +113,7 @@ export default function ExecutiveTable(props) {
   const cBlack = "#000000";
   const cWhite = "#ffffff";
   const cRed = "#c00000";
-  const border = "1px solid #333";
+  const border = "2px solid #000";
 
   const sWrap = { fontFamily: "Inter, sans-serif", color: cBlack };
   const sHeader = {
