@@ -5,6 +5,7 @@ export const useConversionEfficiency = ({
     ventas = [],
     dataMktWithCac = {},
     dataLead = [],
+    mapaVencimientos = {},
     selectedMonth,
     year,
     initDay,
@@ -20,6 +21,10 @@ export const useConversionEfficiency = ({
         const leads_por_red = mktData.leads_por_red || {};
         const inversionPorRed = mktData.por_red || {};
 
+        // Renovaciones logic: use 'pendiente' from mapaVencimientos as 'leads'
+        const monthKey = `${year}-${String(selectedMonth).padStart(2, '0')}`;
+        const pendienteCount = mapaVencimientos[monthKey]?.pendiente || 0;
+
         // Helper to sum by keys (same logic as ExecutibleTable2)
         const sumFrom = (obj, keys) => keys.reduce((a, k) => a + Number(obj?.[k] ?? 0), 0);
 
@@ -30,6 +35,7 @@ export const useConversionEfficiency = ({
         const stats = {
             Meta: { leads: mkLeadsMeta, originKeys: ['Meta', 'Facebook', 'Instagram'], ventas: 0, revenue: 0, inversion: inversionPorRed['meta'] || 0 },
             TikTok: { leads: mkLeadsTikTok, originKeys: ['TikTok'], ventas: 0, revenue: 0, inversion: inversionPorRed['tiktok'] || 0 },
+            Renovaciones: { leads: pendienteCount, originKeys: ['RENOVACIONES'], ventas: 0, revenue: 0, inversion: 0 },
             Referidos: { leads: 0, originKeys: ['Referidos'], ventas: 0, revenue: 0, inversion: 0 },
             WalkIn: { leads: 0, originKeys: ['Walking', 'Walk In', 'WalkIn'], ventas: 0, revenue: 0, inversion: 0 },
         };
@@ -164,5 +170,5 @@ export const useConversionEfficiency = ({
 
         return result;
 
-    }, [ventas, dataMktWithCac, dataLead, selectedMonth, year, initDay, cutDay]);
+    }, [ventas, dataMktWithCac, dataLead, mapaVencimientos, selectedMonth, year, initDay, cutDay]);
 };

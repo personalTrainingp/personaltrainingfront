@@ -24,9 +24,18 @@ export const useVigentesHistoricoStore = () => {
         };
     }, []);
 
-    const fetchVigentesHistorico = async (id_empresa, year) => {
+    /**
+     * Fetches the historical vigentes data for the given empresa and year.
+     * @param {number} id_empresa
+     * @param {number} year
+     * @param {number|null} cutDay  - Day of the month to use as the cut-off snapshot (from the user's UI control)
+     * @param {number|null} cutMonth - Month number for which cutDay applies. Defaults to selectedMonth.
+     *   The store always requests selectedMonth=12 to get all 12 months, but the backend must know
+     *   which specific month the cutDay refers to (e.g. January when user is viewing Jan 2025).
+     */
+    const fetchVigentesHistorico = async (id_empresa, year, cutDay = null, cutMonth = null) => {
         const empresa = id_empresa || 598;
-        const key = `${empresa}-${year}`;
+        const key = `${empresa}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`;
 
         // Evitar peticiones duplicadas si ya está cargando o ya tiene datos
         if (store.loading[key] || store.data[key]) {
@@ -38,14 +47,21 @@ export const useVigentesHistoricoStore = () => {
         store.notify();
 
         try {
-            // Request for the full year (selectedMonth=12) to ensure we get all months
-            const { data } = await PTApi.get("/parametros/membresias/vigentes/historico", {
-                params: {
-                    empresa,
-                    year,
-                    selectedMonth: 12,
-                },
-            });
+            // Always request selectedMonth=12 to get all 12 months of the year.
+            // cutMonth + cutDay tell the backend which specific month uses the cut-off day.
+            const params = {
+                empresa,
+                year,
+                selectedMonth: 12,
+            };
+            if (cutDay != null) {
+                params.cutDay = cutDay;
+            }
+            if (cutMonth != null) {
+                params.cutMonth = cutMonth;
+            }
+
+            const { data } = await PTApi.get("/parametros/membresias/vigentes/historico", { params });
 
             store.data[key] = Array.isArray(data) ? data : [];
             store.loading[key] = false;

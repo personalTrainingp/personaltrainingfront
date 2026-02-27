@@ -121,8 +121,8 @@ export const useGraficoLinealInversionRedes = (data = []) => {
     const categories = useMemo(
         () =>
             Array.from({ length: maxDays }, (_, i) => {
-                const d = baseMonthForAxis.date(i + 1);
-                return `${d.format("dddd")} ${i + 1}`.toUpperCase();
+                // Eliminamos d.format("dddd") para dejar solo el número
+                return `${i + 1}`;
             }),
         [baseMonthForAxis, maxDays]
     );

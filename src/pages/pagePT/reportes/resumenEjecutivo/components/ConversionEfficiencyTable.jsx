@@ -7,13 +7,14 @@ export const ConversionEfficiencyTable = ({
     ventas = [],
     dataMktWithCac = {},
     dataLead = [],
+    mapaVencimientos = {},
     selectedMonth,
     year,
     initDay,
     cutDay
 }) => {
     const dataTable = useConversionEfficiency({
-        ventas, dataMktWithCac, dataLead, selectedMonth, year, initDay, cutDay
+        ventas, dataMktWithCac, dataLead, mapaVencimientos, selectedMonth, year, initDay, cutDay
     });
 
     const filteredData = dataTable.filter(row => row.ventas > 0 || row.leads > 0);

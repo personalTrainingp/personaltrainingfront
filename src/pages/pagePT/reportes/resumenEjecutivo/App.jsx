@@ -132,6 +132,7 @@ export const App = ({ id_empresa }) => {
                   ventas={dataVentas}
                   dataMktWithCac={dataMktWithCac}
                   dataLead={dataLead}
+                  mapaVencimientos={mapaVencimientos}
                   selectedMonth={selectedMonth}
                   year={year}
                   initDay={initDay}
