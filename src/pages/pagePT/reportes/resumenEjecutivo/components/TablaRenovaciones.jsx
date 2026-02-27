@@ -173,7 +173,6 @@ export default function TablaRenovaciones({
   const formatHeaderForDisplay = (dateObj) => {
     const mShort = dateObj.toLocaleDateString("es-ES", { month: "short" }).toUpperCase();
     const y = dateObj.getFullYear();
-    if (String(y) === currentYearStr) return mShort;
     return `${mShort} ${y}`;
   };
 
