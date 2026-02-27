@@ -493,7 +493,7 @@ export function computeMetricsForMonth({
 		ticket_medio_monkeyfit_full: ticketMFFull,
 
 
-		roas: mkInv > 0 ? (totalServ + totalProd + totalOtros + ventaMF) / mkInv : 0,
+		roas: mkInv > 0 ? (byGroup.meta.total + byGroup.tiktok.total) / mkInv : 0,
 		roasMeta: (mkInvMeta * Number(tasaCambio || 3.37)) > 0 ? byGroup.meta.total / (mkInvMeta * Number(tasaCambio || 3.37)) : 0,
 		roasTikTok: mkInvTikTok > 0 ? byGroup.tiktok.total / mkInvTikTok : 0,
 
