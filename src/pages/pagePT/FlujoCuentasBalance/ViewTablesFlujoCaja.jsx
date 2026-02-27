@@ -9,15 +9,14 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
     useEffect(() => {
         obtenerEgresosxFecha(598, arrayFecha)
     }, [])
-    console.log({dataGastosxFecha});
     
   return (
     <div>
         <div className="tab-scroll-container">
             {
-                dataGastosxFecha.map(data=>{
+                dataGastosxFecha.map((data, i)=>{
                     return (
-                        <DataTablePrincipal itemsxDias={data?.itemsxDias}  nombreGrupo={data.grupo} conceptos={data.conceptos} data={dataGastosxFecha} fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}/>
+                        <DataTablePrincipal index={i} itemsxDias={data?.itemsxDias}  nombreGrupo={data.grupo} conceptos={data.conceptos} data={dataGastosxFecha} fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}/>
                     )
                 })
             }

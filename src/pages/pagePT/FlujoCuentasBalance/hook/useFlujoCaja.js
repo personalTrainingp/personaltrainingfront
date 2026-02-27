@@ -18,7 +18,7 @@ export const useFlujoCaja = () => {
 	const [dataIngresosxFecha, setdataIngresosxFecha] = useState([]);
 	const obtenerEgresosxFecha = async (enterprice, arrayDate) => {
 		try {
-			const { data } = await PTApi.get(`/egreso/fecha-pago/${enterprice}`, {
+			const { data } = await PTApi.get(`/egreso/fecha-comprobante/${enterprice}`, {
 				params: {
 					arrayDate: [
 						formatDateToSQLServerWithDayjs(arrayDate[0], true),
@@ -28,22 +28,11 @@ export const useFlujoCaja = () => {
 			});
 			const dataGastos = data.gastos.map((g) => {
 				return {
-					fecha_primaria: g.fecha_pago,
+					fecha_primaria: g.fecha_comprobante,
 					...g,
 				};
 			});
 			const { data: dataTC } = await PTApi.get('/tipoCambio/');
-			console.log({
-				data,
-				dataGastos,
-				aplicarTipoDeCambio: aplicarTipoDeCambio(
-					generarRangosTipoCambio(dataTC.tipoCambios),
-					dataGastos
-				),
-				agg: agruparPorGrupoYConcepto(
-					aplicarTipoDeCambio(generarRangosTipoCambio(dataTC.tipoCambios), dataGastos)
-				),
-			});
 			setdataGastosxFecha(
 				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(generarRangosTipoCambio(dataTC.tipoCambios), dataGastos)

@@ -44,7 +44,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
       <thead>
         <tr>
-          <th style={{width: '190px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{'RESULTADO ANUAL'}</th>
+          <th style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{'RESULTADO ANUAL'}</th>
           {
             dataAlter.map(f=>{
               return (

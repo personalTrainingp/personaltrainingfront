@@ -35,9 +35,10 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
             <div className='fs-1 text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
             {
-                dataIngresosxFecha?.map(data=>{
+                dataIngresosxFecha?.map((data, i)=>{
                     return (
                         <DataTablePrincipal 
+                            index={i+1}
                             onOpenModalTableItems={onOpenModalTableItems} 
                             key={`${data.grupo}`} 
                             bgPastel={bgPastel} 
@@ -54,9 +55,10 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
             <div className='fs-1 text-center'>EGRESOS</div>
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS").map(data=>{
+                dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS").map((data,i)=>{
                     return (
                         <DataTablePrincipal 
+                            index={i+1}
                             onOpenModalTableItems={onOpenModalTableItems} 
                             key={`${data.grupo}`} 
                             bgPastel={bgPastel} 

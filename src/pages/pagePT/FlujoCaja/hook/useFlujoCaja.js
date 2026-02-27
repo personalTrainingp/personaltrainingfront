@@ -89,8 +89,6 @@ export const useFlujoCaja = () => {
 				};
 			});
 			const dataV = dataIngresosOrden([...data.ventas]);
-			console.log({ dataMF: dataMF.reservasMF, reservasMFMAP, dataV });
-
 			setdataIngresosxFecha(
 				agruparPorGrupoYConcepto(
 					[
