@@ -1,4 +1,4 @@
-import { NumberFormatMoney } from '@/components/CurrencyMask';
+import { FUNMoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
@@ -13,10 +13,10 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
         // items: conceptos.flatMap(grupo => grupo.items).filter(i=>i.mes===f.mes && i.anio===f.anio),
         mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
         dataTotalPagadas: dataPagadas||[],
-        montoTotalPagadas: dataPagadas?.reduce((total, item)=>total+item?.monto, 0)||0,
+        montoTotalPagadas: ( dataPagadas?.reduce((total, item)=>total+item?.monto, 0)||0),
         cantidadTotalPagadas: dataPagadas?.length ||0,
         dataTotalNoPagadas: dataNoPagadas||[],
-        montoTotalNoPagadas: dataNoPagadas?.reduce((total, item)=>total+item?.monto, 0)||0,
+        montoTotalNoPagadas: (dataNoPagadas?.reduce((total, item)=>total+item?.monto, 0)||0),
         cantidadTotalNoPagadas: dataNoPagadas?.length ||0,
     }
   })
@@ -54,30 +54,42 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                   dataAlter.map((f, i)=>{
                   const itemsDelMesFiltrado1423= c.items?.find(m=>m.mes===f.mes && m.anio===f.anio)?.items?.filter(e=>e.id_estado_gasto===1423)
                   const itemsDelMesFiltrado1424= c.items?.find(m=>m.mes===f.mes && m.anio===f.anio)?.items?.filter(e=>e.id_estado_gasto===1424)
-                  const sumaMontoMensual = itemsDelMesFiltrado1423?.reduce((total, im)=>total+im?.monto, 0)
+                  const sumaMontoMensual = FUNMoneyFormatter(itemsDelMesFiltrado1423?.reduce((total, im)=>total+im?.monto, 0))
                   const sumaCantidadMensual = itemsDelMesFiltrado1423?.length
-                  const sumaMontoMensual1424 = itemsDelMesFiltrado1424?.reduce((total, im)=>total+im?.monto, 0)
+                  const sumaMontoMensual1424 = FUNMoneyFormatter(itemsDelMesFiltrado1424?.reduce((total, im)=>total+im?.monto, 0))
                   const sumaCantidadMensual1424 = itemsDelMesFiltrado1424?.length
                   
                   return (
                     <React.Fragment key={`${i}`}>
                     <td className='text-center' >
                       <div onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1423)}>
-                        <NumberFormatMoney amount={sumaMontoMensual}/>
-                        <br/>
+                        {
+                          (sumaMontoMensual!=='0.00' || sumaMontoMensual1424==='0.00') && (
+                            <>
+                            {sumaMontoMensual}
+                              <br/> 
+                            </>
+                          )
+                        }
                         <div className='text-orange'>
-                          {sumaMontoMensual1424!==0&&(<><NumberFormatMoney amount={sumaMontoMensual1424}/></>)}
                           
-                          
+                          {sumaMontoMensual1424!=='0.00'&&sumaMontoMensual1424}
                         </div>
                       </div>
                     </td>
                     <td className='text-center'>
-                      <div>
-                        {sumaCantidadMensual||0}
-                        <br/>
+                      <div onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1423)}>
+                        {
+                          (sumaCantidadMensual!==0 || sumaCantidadMensual1424===0) && (
+                            <>
+                            {sumaCantidadMensual}
+                              <br/> 
+                            </>
+                          )
+                        }
                         <div className='text-orange'>
-                          {sumaCantidadMensual1424!==0 && sumaCantidadMensual1424}
+                          
+                          {sumaMontoMensual1424!=='0.00'&&sumaCantidadMensual1424}
                         </div>
                       </div>
                     </td>
@@ -100,21 +112,10 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
               return (
                 <React.Fragment key={i}>
                 <td className={`text-center ${bgTotal}`} style={{width: '120px'}}>
-                  <NumberFormatMoney amount={f.montoTotalPagadas}/>
-                  <br/>
-                  {
-                    f.montoTotalNoPagadas!==0 && (
-                      <NumberFormatMoney amount={f.montoTotalNoPagadas}/>
-                    )
-                  }
-
+                  <NumberFormatMoney amount={f.montoTotalPagadas +f.montoTotalNoPagadas}/>
                 </td>
                 <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>
-                  {f.cantidadTotalPagadas}
-                  <br/>
-                  <div className='text-orange'>
-                  {f.cantidadTotalNoPagadas!==0 && f.cantidadTotalNoPagadas}
-                  </div>
+                  {f.cantidadTotalPagadas+f.cantidadTotalNoPagadas}
 
                 </td>
                 </React.Fragment>
