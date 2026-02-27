@@ -61,19 +61,6 @@ export const usePuntoEquilibrio = () => {
 				};
 			});
 			const dataV = dataIngresosOrden([...data.ventas]);
-			console.log({
-				ag: agruparPorGrupoYConcepto(
-					[
-						...dataV.dataMembresias,
-						...dataV.dataProductos17,
-						...dataV.dataProductos18,
-						...dataIngresos.ingresos,
-						...reservasMFMAP,
-					],
-					dataParametrosGastos.termGastos
-				),
-			});
-
 			setdataIngresosxFecha(
 				agruparPorGrupoYConcepto(
 					[
@@ -92,7 +79,7 @@ export const usePuntoEquilibrio = () => {
 	};
 	const obtenerEgresos = async (arrayDate, idEmpresa) => {
 		try {
-			const { data } = await PTApi.get(`/egreso/fecha-pago/${idEmpresa}`, {
+			const { data } = await PTApi.get(`/egreso/fecha-comprobante/${idEmpresa}`, {
 				params: {
 					arrayDate: [
 						formatDateToSQLServerWithDayjs(arrayDate[0], true),
@@ -102,7 +89,7 @@ export const usePuntoEquilibrio = () => {
 			});
 			const dataGastos = data.gastos.map((g) => {
 				return {
-					fecha_primaria: g.fecha_pago,
+					fecha_primaria: g.fecha_comprobante,
 					...g,
 				};
 			});
@@ -110,6 +97,13 @@ export const usePuntoEquilibrio = () => {
 				`/terminologia/terminologiaxEmpresa/${idEmpresa}/1573`
 			);
 			const dataTipoTC = await obtenerTipoDeCambio();
+			console.log({
+				gf: agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTipoTC, dataGastos),
+					dataParametrosGastos.termGastos
+				),
+			});
+
 			setdataGastosxFecha(
 				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTipoTC, dataGastos),

@@ -108,7 +108,6 @@ export const useGastosStore = () => {
 	};
 	const updateGastoxID = async (id, formState, id_empresa) => {
 		try {
-			console.log({ id_empresa }, 3);
 			await PTApi.put(`/egreso/id/${id}`, formState);
 			obtenerGastos(id_empresa);
 			Swal.fire({
