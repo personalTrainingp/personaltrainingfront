@@ -5,7 +5,7 @@ export default function VigentesTable({
   title = "Socios vigentes",
   emptyMessage = "No hay socios vigentes para mostrar.",
   onRowClick,
-  startCollapsed = true, 
+  startCollapsed = true,
 }) {
   const [isOpen, setIsOpen] = useState(!startCollapsed);
 
@@ -45,10 +45,10 @@ export default function VigentesTable({
   const formatDate = (date) =>
     date
       ? new Intl.DateTimeFormat("es-PE", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }).format(date)
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }).format(date)
       : "-";
   const formatMoney = (v) =>
     new Intl.NumberFormat("es-PE", {
@@ -59,7 +59,7 @@ export default function VigentesTable({
 
   const styles = {
     wrapper: {
-      border: "1px solid #dce1eb",
+      border: "3px solid #000",
       borderRadius: 12,
       overflow: "hidden",
       background: "#fff",
@@ -81,7 +81,7 @@ export default function VigentesTable({
     thead: { background: "#f3f4f6", textTransform: "uppercase", fontSize: 18 },
     th: {
       padding: "12px 16px",
-      borderBottom: "1px solid #e5e7eb",
+      borderBottom: "3px solid #000",
       fontWeight: 800,
     },
     td: {

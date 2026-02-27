@@ -132,7 +132,7 @@ export const GeneralSalesBreakdownTable = ({ ventas = [], monthsData = [] }) => 
 
     return (
         <div style={styles.card}>
-            <h5 style={styles.headerTitle}>Detalle General de Ventas por ASESOR</h5>
+            <h5 style={styles.headerTitle}>  Ventas por ASESOR</h5>
 
             <div style={styles.tableWrapper}>
                 <table style={styles.table}>
