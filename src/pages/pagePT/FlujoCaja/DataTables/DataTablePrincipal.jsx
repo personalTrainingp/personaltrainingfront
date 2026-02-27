@@ -21,13 +21,13 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
     <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
       <thead>
         <tr>
-          <th style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 sticky-td-${id_empresa} bg-white`}>{index}. {nombreGrupo}</th>
+          <th style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black`}>{index}. {nombreGrupo}</th>
           {
             dataAlter.map(f=>{
               return (
                 <React.Fragment key={`${f.mesStr}`}>
-                <td className={`text-center ${bgTotal}`} style={{width: '120px'}}>{f.mesStr}</td>
-                <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>MOV.</td>
+                <th className={`text-center ${bgTotal}`} style={{width: '120px'}}>{f.mesStr}</th>
+                <th className={`text-center ${bgPastel}`} style={{width: '120px'}}>MOV.</th>
                 </React.Fragment>
               )
             })

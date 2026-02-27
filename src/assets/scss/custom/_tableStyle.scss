@@ -28,12 +28,20 @@
   content: "";
   position: absolute;
   inset: 0;
-  // background: #CD1014; /* o el color que quieras */
+  background: #CD1014; /* o el color que quieras */
   z-index: -1;
   box-shadow: 2px 0 0 rgba(0,0,0,.12);
 }
 /* columna fija */
 .tabla-egresos .sticky-td-598{
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: transparent !important; /* el fondo real lo pone ::before */
+}
+
+/* columna fija */
+.tabla-egresos .sticky-td-598-white{
   position: sticky;
   left: 0;
   z-index: 20;
@@ -46,6 +54,15 @@
   position: absolute;
   inset: 0;
   background: #CD1014; /* o el color que quieras */
+  z-index: -1;
+  box-shadow: 2px 0 0 rgba(0,0,0,.12);
+}
+/* “panel” que hace que TODA la celda se vea fija */
+.tabla-egresos .sticky-td-598-white::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #ffffff; /* o el color que quieras */
   z-index: -1;
   box-shadow: 2px 0 0 rgba(0,0,0,.12);
 }
