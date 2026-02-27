@@ -27,10 +27,10 @@ export const ComparativoMensualTable = ({
     });
 
     const styles = {
-        tableWrapper: { overflowX: 'auto', borderRadius: '8px', border: '1px solid #eaeaea', marginTop: '10px' },
+        tableWrapper: { overflowX: 'auto', borderRadius: '8px', border: '2px solid #000', marginTop: '10px' },
         table: { width: '100%', borderCollapse: 'collapse', fontSize: '22px', whiteSpace: 'nowrap' },
-        th: { background: '#c00000', color: '#fff', fontWeight: '600', padding: '12px 10px', textAlign: 'center', fontSize: '25px', borderRight: '1px solid rgba(255,255,255,0.2)' },
-        td: { padding: '10px 12px', borderBottom: '1px solid #eee', textAlign: 'right', color: '#444' },
+        th: { background: '#c00000', color: '#fff', fontWeight: '600', padding: '12px 10px', textAlign: 'center', fontSize: '25px', borderRight: '1px solid #000', borderBottom: '1px solid #000' },
+        td: { padding: '10px 12px', borderBottom: '1px solid #000', borderRight: '1px solid #000', textAlign: 'right', color: '#444' },
         tdLabel: {
             textAlign: 'left',
             fontWeight: '600',
@@ -40,7 +40,7 @@ export const ComparativoMensualTable = ({
             left: 0,
             background: '#fff',
             zIndex: 1,
-            borderRight: '2px solid #f0f0f0',
+            borderRight: '2px solid #000',
             verticalAlign: 'middle'
         },
         footerRow: { background: '#f8f9fa', borderTop: '2px solid #dee2e6' },
@@ -143,14 +143,14 @@ export const ComparativoMensualTable = ({
                         <tr>
                             <th style={{ ...styles.th, width: '90px', position: 'sticky', left: 0, zIndex: 2 }}>MES </th>
                             <th style={{ ...styles.th, background: '#a00000' }}>TOTAL<br /> VENTA<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
-                            <th style={{ ...styles.th, background: '#a00000' }}>CUOTA<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
+                            <th style={{ ...styles.th, background: '#a00000' }}>ALCANCE<br />CUOTA<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
 
                             {/* CUSTOM RANGE COLUMN */}
                             <th style={{ ...styles.th, background: '#c00000', color: '#fff' }}>
                                 RANGO<br />({customStartDay}-{customEndDay})<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span>
                             </th>
                             <th style={{ ...styles.th, background: '#c00000', color: '#fff', fontSize: '16px' }}>
-                                PORCENTAJE  <br />ALCANCE DE  <br /> <span>CUOTA</span>
+                                ALCANCE DE    <br />CUOTA  <br /> <span>  %  </span>
                             </th>
 
                             <th style={styles.th} colSpan={2}>SEMANA 1<br /> (1-7)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
