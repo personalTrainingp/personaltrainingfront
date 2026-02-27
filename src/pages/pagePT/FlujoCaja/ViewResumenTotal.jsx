@@ -64,15 +64,18 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             <tbody>
               <tr>
                 <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>INGRESOS</td>
-              {
-                dataAlter.map(e=>{
-                  return (
-                    <React.Fragment>
-                      <td className={``}> <NumberFormatMoney amount={e.sumaIngresos}/></td>
-                    </React.Fragment>
+                {
+                  dataAlter.map(e=>{
+                    return (
+                      <React.Fragment>
+                        <td className={``}> <NumberFormatMoney amount={e.sumaIngresos}/></td>
+                      </React.Fragment>
                     )
                   })
                 }
+                <td>ss</td>
+                <td>ss</td>
+                <td>ss</td>
               </tr>
               <tr>
                 <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>EGRESOS</td>

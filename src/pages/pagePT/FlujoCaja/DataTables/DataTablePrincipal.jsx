@@ -62,32 +62,32 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                   return (
                     <React.Fragment key={`${i}`}>
                     <td className='text-center' >
-                      <div onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1423)}>
+                      <div >
                         {
                           (sumaMontoMensual!=='0.00' || sumaMontoMensual1424==='0.00') && (
-                            <>
+                            <div onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1423)}>
                             {sumaMontoMensual}
                               <br/> 
-                            </>
+                            </div>
                           )
                         }
-                        <div className='text-orange'>
+                        <div className='text-orange' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
                           
                           {sumaMontoMensual1424!=='0.00'&&sumaMontoMensual1424}
                         </div>
                       </div>
                     </td>
                     <td className='text-center'>
-                      <div onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1423)}>
+                      <div>
                         {
                           (sumaCantidadMensual!==0 || sumaCantidadMensual1424===0) && (
                             <>
-                            {sumaCantidadMensual}
+                            {sumaCantidadMensual||0}
                               <br/> 
                             </>
                           )
                         }
-                        <div className='text-orange'>
+                        <div className='text-orange' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
                           
                           {sumaMontoMensual1424!=='0.00'&&sumaCantidadMensual1424}
                         </div>

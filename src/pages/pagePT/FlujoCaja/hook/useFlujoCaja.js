@@ -12,7 +12,7 @@ export const useFlujoCaja = () => {
 	const [dataIngresosxFecha, setdataIngresosxFecha] = useState([]);
 	const obtenerEgresosxFecha = async (enterprice, arrayDate, tt) => {
 		try {
-			const { data } = await PTApi.get(`/egreso/fecha-comprobante/${enterprice}`, {
+			const { data } = await PTApi.get(`/egreso/fecha-pago/${enterprice}`, {
 				params: {
 					arrayDate: [
 						formatDateToSQLServerWithDayjs(arrayDate[0], true),
@@ -26,12 +26,12 @@ export const useFlujoCaja = () => {
 					formatDateToSQLServerWithDayjs(arrayDate[0], true),
 					formatDateToSQLServerWithDayjs(arrayDate[1], false),
 				],
-				data: data.gastos.sort((a, b) => a.fecha_comprobante - b.fecha_comprobante),
+				data: data.gastos.sort((a, b) => a.fecha_pago - b.fecha_pago),
 			});
 
 			const dataGastos = data.gastos.map((g) => {
 				return {
-					fecha_primaria: g.fecha_comprobante,
+					fecha_primaria: g.fecha_pago,
 					...g,
 				};
 			});

@@ -79,7 +79,7 @@ export const usePuntoEquilibrio = () => {
 	};
 	const obtenerEgresos = async (arrayDate, idEmpresa) => {
 		try {
-			const { data } = await PTApi.get(`/egreso/fecha-comprobante/${idEmpresa}`, {
+			const { data } = await PTApi.get(`/egreso/fecha-pago/${idEmpresa}`, {
 				params: {
 					arrayDate: [
 						formatDateToSQLServerWithDayjs(arrayDate[0], true),
@@ -89,7 +89,7 @@ export const usePuntoEquilibrio = () => {
 			});
 			const dataGastos = data.gastos.map((g) => {
 				return {
-					fecha_primaria: g.fecha_comprobante,
+					fecha_primaria: g.fecha_pago,
 					...g,
 				};
 			});
