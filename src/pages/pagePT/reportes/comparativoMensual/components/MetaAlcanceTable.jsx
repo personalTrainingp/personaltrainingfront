@@ -61,16 +61,16 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
             textAlign: 'center',
             fontWeight: '600',
             textTransform: 'uppercase',
-            borderRight: '1px solid rgba(255,255,255,0.1)'
+            borderRight: '1px solid #000'
         },
         thRowLabel: {
-            background: '#f8f9fa',
+            background: '#c00000',
             padding: '12px 15px',
             textAlign: 'left',
             fontWeight: '800',
-            color: '#444',
-            borderBottom: '1px solid #e9ecef',
-            borderRight: '2px solid #ddd',
+            color: '#fff',
+            borderBottom: '1px solid #000',
+            borderRight: '1px solid #000',
             minWidth: '150px',
             position: 'sticky',
             left: 0,
@@ -79,8 +79,8 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
         td: {
             padding: '12px 15px',
             textAlign: 'right',
-            borderBottom: '1px solid #f0f0f0',
-            borderRight: '1px solid #f9f9f9',
+            borderBottom: '1px solid #000',
+            borderRight: '1px solid #000',
             color: '#333'
         },
         // Variantes de texto
@@ -111,7 +111,7 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
                         </thead>
                         <tbody>
                             <tr>
-                                <td style={styles.thRowLabel}>META (CUOTA)</td>
+                                <td style={styles.thRowLabel}> CUOTA</td>
                                 {monthsData.map((m) => (
                                     <td key={m.key} style={styles.td}>
                                         <span style={styles.textQuota}>{fmtMoney(m.quota)}</span>
@@ -120,7 +120,7 @@ export const MetaAlcanceTable = ({ ventas = [], year, startMonth = 0, cutDay = 2
                             </tr>
 
                             <tr>
-                                <td style={styles.thRowLabel}>ALCANCE REAL</td>
+                                <td style={styles.thRowLabel}>ALCANCE</td>
                                 {monthsData.map((m) => (
                                     <td key={m.key} style={{ ...styles.td, background: '#fcfcfc' }}>
                                         <span style={styles.textReach}>{fmtMoney(m.total)}</span>

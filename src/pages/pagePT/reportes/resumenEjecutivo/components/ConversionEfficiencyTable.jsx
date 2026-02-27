@@ -73,9 +73,8 @@ export const ConversionEfficiencyTable = ({
                                 <th className="text-uppercase text-white text-center py-3" style={{ fontSize: '1rem', fontWeight: '700', letterSpacing: '0.5px' }}>Leads </th>
                                 <th className="text-uppercase text-white text-center py-3" style={{ fontSize: '1rem', fontWeight: '700', letterSpacing: '0.5px' }}>Contactabilidad</th>
                                 <th className="text-uppercase text-white text-center py-3" style={{ fontSize: '1rem', fontWeight: '700', letterSpacing: '0.5px' }}>Cantidad <br /> Ventas</th>
-                                <th className="text-uppercase text-white text-start py-3" style={{ fontSize: '1rem', fontWeight: '700', letterSpacing: '0.5px', width: '200px' }}>Tasa <br /> Conversión</th>
-                                <th className="text-uppercase text-white text-start py-3" style={{ fontSize: '1rem', fontWeight: '700', letterSpacing: '0.5px' }}>Ticket <br /> Promedio</th>
-                                <th className="text-uppercase text-white text-start py-3 pe-4" style={{ fontSize: '1rem', fontWeight: '700', letterSpacing: '0.5px' }}>ROI <br /> Inversión</th>
+                                <th className="text-uppercase text-white text-center py-3" style={{ fontSize: '1rem', fontWeight: '700', letterSpacing: '0.5px', width: '200px' }}>Tasa <br /> Conversión</th>
+                                <th className="text-uppercase text-white text-center py-3" style={{ fontSize: '1rem', fontWeight: '700', letterSpacing: '0.5px' }}>Ticket <br /> Promedio</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,36 +135,12 @@ export const ConversionEfficiencyTable = ({
                                             S/ {row.avgTicket.toFixed(2)}
                                         </td>
 
-                                        {/* COLUMNA: ROI E INVERSIÓN */}
-                                        <td className="text-end py-3 pe-4">
-                                            {isDigital && row.inversion > 0 ? (
-                                                <div className="d-flex flex-column align-items-end">
-                                                    <span style={{
-                                                        backgroundColor: roiStats.bg, color: roiStats.color,
-                                                        padding: '4px 10px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '700'
-                                                    }}>
-                                                        ROI: {row.roi.toFixed(1)}X
-                                                    </span>
-                                                    <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px', fontWeight: '600' }}>
-                                                        Inv: S/ {row.inversion.toFixed(0)}
-                                                    </span>
-                                                </div>
-                                            ) : (
-                                                <span className="text-muted fst-italic" style={{ fontSize: '0.85rem' }}>
-                                                    {row.revenue > 0 ? 'Venta Orgánica' : '-'}
-                                                </span>
-                                            )}
-                                        </td>
+
                                     </tr>
                                 );
                             }) : (
                                 <tr>
-                                    <td colSpan="7" className="text-center py-5">
-                                        <div className="text-muted">
-                                            <i className="bi bi-inbox fs-1 mb-3 d-block text-secondary"></i>
-                                            <h6 className="fw-normal">No hay datos suficientes para el periodo seleccionado</h6>
-                                        </div>
-                                    </td>
+
                                 </tr>
                             )}
                         </tbody>
