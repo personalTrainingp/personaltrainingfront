@@ -12,7 +12,7 @@ dayjs.extend(utc);
 export const usePuntoEquilibrio = () => {
 	const [dataIngresosxFecha, setdataIngresosxFecha] = useState([]);
 	const [dataGastosxFecha, setdataGastosxFecha] = useState([]);
-	const obtenerIngresos = async (arrayDate) => {
+	const obtenerIngresos = async (arrayDate, enterprice) => {
 		try {
 			const { data } = await PTApi.get(`/venta/fecha-venta/id_empresa/${enterprice}`, {
 				params: {
