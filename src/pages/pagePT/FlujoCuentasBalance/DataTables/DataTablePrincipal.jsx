@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas=[], nombreGrupo=''}) => {
+export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas=[], index='', nombreGrupo=''}) => {
   const dataAlter = fechas.map((f, index, array)=>{
       const dataTotal = itemsxDias.find(i=>i.mes===f.mes && i.anio===f.anio)??{}
       
@@ -24,7 +24,7 @@ export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas
     <Table  className="tabla-egresos" style={{ width: '100%' }} bordered>
       <thead>
         <tr>
-          <th style={{width: '190px'}}>{nombreGrupo}</th>
+          <th style={{width: '190px'}}>{index}{nombreGrupo}</th>
           {
             dataAlter.map(f=>{
               return (

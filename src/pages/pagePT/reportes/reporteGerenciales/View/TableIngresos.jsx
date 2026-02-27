@@ -2,9 +2,7 @@ import { NumberFormatMoney } from '@/components/CurrencyMask';
 import React from 'react'
 import { Table } from 'react-bootstrap'
 
-export const TableIngresos = ({bgTotal, dataVentas, id_empresa,  dataNuevos, dataReinscripciones,  dataRenovaciones, dataProductos17, dataProductos18, dataMF}) => {
-  console.log({dataNuevos, dataReinscripciones,  dataRenovaciones, dataProductos17, dataProductos18, dataMF, dataVentas});
-  
+export const TableIngresos = ({bgTotal, dataIngresos, id_empresa}) => {
   return (
     <>
     {
@@ -22,25 +20,25 @@ export const TableIngresos = ({bgTotal, dataVentas, id_empresa,  dataNuevos, dat
           <tbody>
               <tr>
                 <td>NUEVOS</td>
-                <td>{dataVentas.filter(e=>e.concepto==='NUEVOS').length}</td>
-                <td><NumberFormatMoney amount={dataVentas.filter(e=>e.concepto==='NUEVOS').reduce((total,item)=>total+item.detalle_membresias[0].tarifa_monto,0)}/></td>
+                <td>{dataIngresos.filter(e=>e.concepto==='NUEVOS').length}</td>
+                <td><NumberFormatMoney amount={dataIngresos.filter(e=>e.concepto==='NUEVOS').reduce((total,item)=>total+item.detalle_membresias[0].tarifa_monto,0)}/></td>
               </tr>
               <tr>
                 <td>RENOVACIONES</td>
-                <td>{dataVentas.filter(e=>e.concepto==='RENOVACIONES').length}</td>
-                <td><NumberFormatMoney amount={dataVentas.filter(e=>e.concepto==='RENOVACIONES').reduce((total,item)=>total+item.detalle_membresias[0].tarifa_monto,0)}/></td>
+                <td>{dataIngresos.filter(e=>e.concepto==='RENOVACIONES').length}</td>
+                <td><NumberFormatMoney amount={dataIngresos.filter(e=>e.concepto==='RENOVACIONES').reduce((total,item)=>total+item.detalle_membresias[0].tarifa_monto,0)}/></td>
               </tr>
               <tr>
                 <td>REINSCRIPCIONES</td>
-                <td>{dataVentas.filter(e=>e.concepto==='REINSCRIPCIONES').length}</td>
-                <td><NumberFormatMoney amount={dataVentas.filter(e=>e.concepto==='REINSCRIPCIONES').reduce((total,item)=>total+item.detalle_membresias[0].tarifa_monto,0)}/></td>
+                <td>{dataIngresos.filter(e=>e.concepto==='REINSCRIPCIONES').length}</td>
+                <td><NumberFormatMoney amount={dataIngresos.filter(e=>e.concepto==='REINSCRIPCIONES').reduce((total,item)=>total+item.detalle_membresias[0].tarifa_monto,0)}/></td>
               </tr>
           </tbody>
           <thead className={`${bgTotal}`}>
             <tr>
               <th className='text-white'>TOTAL</th>
-              <th className='text-white'>{dataVentas.filter(e=>e.modelo==='MEMBRESIAS').length}</th>
-              <th className='text-white'><NumberFormatMoney amount={dataVentas.filter(e=>e.modelo==='MEMBRESIAS').reduce((total,item)=>total+item.detalle_membresias[0].tarifa_monto,0)}/></th>
+              <th className='text-white'>{dataIngresos.filter(e=>e.modelo==='MEMBRESIAS').length}</th>
+              <th className='text-white'><NumberFormatMoney amount={dataIngresos.filter(e=>e.modelo==='MEMBRESIAS').reduce((total,item)=>total+item.detalle_membresias[0].tarifa_monto,0)}/></th>
             </tr>
           </thead>
       </Table>
@@ -56,20 +54,20 @@ export const TableIngresos = ({bgTotal, dataVentas, id_empresa,  dataNuevos, dat
           <tbody>
               <tr>
                 <td>SUPLEMENTOS</td>
-                <td>{dataVentas.filter(e=>e.concepto==='PRODUCTO17').reduce((total, item)=>total+item.cantidadTotal, 0)}</td>
-                <td><NumberFormatMoney amount={dataVentas.filter(e=>e.concepto==='PRODUCTO17').reduce((total, item)=>total+item.montoTotal, 0)}/></td>
+                <td>{dataIngresos.filter(e=>e.concepto==='PRODUCTO17').reduce((total, item)=>total+item.cantidadTotal, 0)}</td>
+                <td><NumberFormatMoney amount={dataIngresos.filter(e=>e.concepto==='PRODUCTO17').reduce((total, item)=>total+item.montoTotal, 0)}/></td>
               </tr>
               <tr>
                 <td>ACCESORIOS</td>
-                <td>{dataVentas.filter(e=>e.concepto==='PRODUCTO18').reduce((total, item)=>total+item.cantidadTotal, 0)}</td>
-                <td><NumberFormatMoney amount={dataVentas.filter(e=>e.concepto==='PRODUCTO18').reduce((total, item)=>total+item.montoTotal, 0)}/></td>
+                <td>{dataIngresos.filter(e=>e.concepto==='PRODUCTO18').reduce((total, item)=>total+item.cantidadTotal, 0)}</td>
+                <td><NumberFormatMoney amount={dataIngresos.filter(e=>e.concepto==='PRODUCTO18').reduce((total, item)=>total+item.montoTotal, 0)}/></td>
               </tr>
           </tbody>
           <thead className={`${bgTotal}`}>
             <tr>
               <th className='text-white'>TOTAL</th>
-              <th className='text-white'>{dataVentas.filter(e=>e.modelo==='producto').length}</th>
-              <th className='text-white'><NumberFormatMoney amount={dataVentas.filter(e=>e.modelo==='producto').reduce((total,item)=>total+item.montoTotal,0)}/></th>
+              <th className='text-white'>{dataIngresos.filter(e=>e.modelo==='producto').length}</th>
+              <th className='text-white'><NumberFormatMoney amount={dataIngresos.filter(e=>e.modelo==='producto').reduce((total,item)=>total+item.montoTotal,0)}/></th>
             </tr>
           </thead>
       </Table>
@@ -87,25 +85,25 @@ export const TableIngresos = ({bgTotal, dataVentas, id_empresa,  dataNuevos, dat
           <tbody>
               <tr>
                 <td>ARRENDAMIENTO</td>
-                <td>{dataVentas.filter(e=>e.concepto==='ARRENDAMIENTO').reduce((total, item)=>total+item.cantidadTotal, 0)}</td>
-                <td><NumberFormatMoney amount={dataVentas.filter(e=>e.concepto==='ARRENDAMIENTO').reduce((total, item)=>total+item.montoTotal, 0)*3.36}/></td>
+                <td>{dataIngresos.filter(e=>e.concepto==='ARRENDAMIENTO').reduce((total, item)=>total+item.cantidadTotal, 0)}</td>
+                <td><NumberFormatMoney amount={dataIngresos.filter(e=>e.concepto==='ARRENDAMIENTO').reduce((total, item)=>total+item.montoTotal, 0)*3.36}/></td>
               </tr>
               <tr>
                 <td>INGRESOS EXTRAORDINARIOS</td>
-                <td>{dataVentas.filter(e=>e.concepto==='INGRESOS EXTRAORDINARIOS').reduce((total, item)=>total+item.cantidadTotal, 0)}</td>
-                <td><NumberFormatMoney amount={dataVentas.filter(e=>e.concepto==='INGRESOS EXTRAORDINARIOS').reduce((total, item)=>total+item.montoTotal, 0)*3.36}/></td>
+                <td>{dataIngresos.filter(e=>e.concepto==='INGRESOS EXTRAORDINARIOS').reduce((total, item)=>total+item.cantidadTotal, 0)}</td>
+                <td><NumberFormatMoney amount={dataIngresos.filter(e=>e.concepto==='INGRESOS EXTRAORDINARIOS').reduce((total, item)=>total+item.montoTotal, 0)*3.36}/></td>
               </tr>
               <tr>
                 <td>SUELDOS/PRESTAMOS</td>
-                <td>{dataVentas.filter(e=>e.concepto==='SUELDOS/PRESTAMOS').reduce((total, item)=>total+item.cantidadTotal, 0)}</td>
-                <td><NumberFormatMoney amount={dataVentas.filter(e=>e.concepto==='SUELDOS/PRESTAMOS').reduce((total, item)=>total+item.montoTotal, 0)*3.36}/></td>
+                <td>{dataIngresos.filter(e=>e.concepto==='SUELDOS/PRESTAMOS').reduce((total, item)=>total+item.cantidadTotal, 0)}</td>
+                <td><NumberFormatMoney amount={dataIngresos.filter(e=>e.concepto==='SUELDOS/PRESTAMOS').reduce((total, item)=>total+item.montoTotal, 0)*3.36}/></td>
               </tr>
           </tbody>
           <thead className={`${bgTotal}`}>
             <tr>
               <th className='text-white'>TOTAL</th>
-              <th className='text-white'>{dataVentas.filter(e=>e.concepto==='ARRENDAMIENTO').reduce((total, item)=>total+item.cantidadTotal, 0)+dataVentas.filter(e=>e.concepto==='INGRESOS EXTRAORDINARIOS').reduce((total, item)=>total+item.cantidadTotal, 0)+dataVentas.filter(e=>e.concepto==='SUELDOS/PRESTAMOS').reduce((total, item)=>total+item.cantidadTotal, 0)}</th>
-              <th className='text-white'><NumberFormatMoney amount={(dataVentas.filter(e=>e.concepto==='ARRENDAMIENTO').reduce((total, item)=>total+item.montoTotal, 0)+dataVentas.filter(e=>e.concepto==='INGRESOS EXTRAORDINARIOS').reduce((total, item)=>total+item.montoTotal, 0)+dataVentas.filter(e=>e.concepto==='SUELDOS/PRESTAMOS').reduce((total, item)=>total+item.montoTotal, 0))*3.36}/></th>
+              <th className='text-white'>{dataIngresos.filter(e=>e.concepto==='ARRENDAMIENTO').reduce((total, item)=>total+item.cantidadTotal, 0)+dataIngresos.filter(e=>e.concepto==='INGRESOS EXTRAORDINARIOS').reduce((total, item)=>total+item.cantidadTotal, 0)+dataIngresos.filter(e=>e.concepto==='SUELDOS/PRESTAMOS').reduce((total, item)=>total+item.cantidadTotal, 0)}</th>
+              <th className='text-white'><NumberFormatMoney amount={(dataIngresos.filter(e=>e.concepto==='ARRENDAMIENTO').reduce((total, item)=>total+item.montoTotal, 0)+dataIngresos.filter(e=>e.concepto==='INGRESOS EXTRAORDINARIOS').reduce((total, item)=>total+item.montoTotal, 0)+dataIngresos.filter(e=>e.concepto==='SUELDOS/PRESTAMOS').reduce((total, item)=>total+item.montoTotal, 0))*3.36}/></th>
             </tr>
           </thead>
       </Table>

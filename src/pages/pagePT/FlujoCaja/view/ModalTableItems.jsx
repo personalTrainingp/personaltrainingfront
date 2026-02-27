@@ -1,3 +1,4 @@
+import { DateMaskStr } from '@/components/CurrencyMask';
 import React from 'react'
 import { Modal, Table } from 'react-bootstrap'
 
@@ -6,15 +7,15 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom})
     
   return (
     <Modal show={show} onHide={onHide} size='xl'>
-        <Modal.Header closeButton>
+        <Modal.Header closeButton >
             <Modal.Title></Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body >
             <div className='tab-scroll-container'>
                 <Table>
                     <thead>
                         <tr className={`bg-change text-white text-center text-uppercase fs-4`}>
-                            <th className='p-2 text-white'>Acciones</th>
+                            <th className='p-2 text-white'></th>
                             <th className='p-2 text-white'>Instituto / Colaborador</th>
                             <th className='p-2 text-white'>Descripción / Eventos</th>
                             <th className='p-2 text-white'>Fecha<br /> Comprobante</th>
@@ -36,8 +37,8 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom})
                                         </td>
                                         <td>{f.tb_Proveedor?.razon_social_prov}</td>
                                         <td>{f.descripcion}</td>
-                                        <td>{f.fecha_comprobante}</td>
-                                        <td>{f.fecha_pago}</td>
+                                        <td>{DateMaskStr(f.fecha_comprobante, 'dddd DD [DE] MMMM [DEL] YYYY')}</td>
+                                        <td>{DateMaskStr(f.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY')}</td>
                                         <td>{f.monto}</td>
                                         <td>{f.parametro_comprobante?.label_param}</td>
                                         <td>{f.parametro_forma_pago?.label_param}</td>
