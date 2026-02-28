@@ -66,6 +66,11 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                         <th style={styles.thGreen}>ASESOR</th>
                         <th style={styles.thYellow}>CUOTA INDIVIDUAL</th>
                         <th style={styles.thYellow}>VENTA REAL</th>
+                        <th style={styles.thYellow}>IGV</th>
+                        <th style={styles.thYellow}>BASE</th>
+                        <th style={styles.thYellow}>RENTA (3%)</th>
+                        <th style={styles.thYellow}>OPENPAY ({openPayParam}%)</th>
+                        <th style={styles.thYellow}>VENTAS NETAS</th>
                         <th style={styles.thYellow}>ALCANCE (%)</th>
                         <th style={styles.thYellow}>% COMISION</th>
                         <th style={styles.thYellow}>COMISIÓN</th>
@@ -77,6 +82,11 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                             <td style={{ ...styles.td, textAlign: 'center', fontWeight: 'bold', background: '#c00000', color: '#fff' }}>{adv.advisor}</td>
                             <td style={styles.td}>{fmtMoney(cuotaSugerida / 2)}</td>
                             <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(adv.realData.venta)}</td>
+                            <td style={styles.td}>{fmtMoney(adv.realData.igv)}</td>
+                            <td style={styles.td}>{fmtMoney(adv.realData.base)}</td>
+                            <td style={styles.td}>{fmtMoney(adv.realData.renta)}</td>
+                            <td style={styles.td}>{fmtMoney(adv.realData.openPay)}</td>
+                            <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(adv.realData.ventasNetas)}</td>
                             <td style={{ ...styles.td, textAlign: 'center' }}><strong>{adv.realData.alcance.toFixed(2)}%</strong></td>
                             <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
                                 <input
@@ -88,13 +98,18 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                                     style={styles.inputCom}
                                 /> %
                             </td>
-                            <td style={{ ...styles.td, background: '#f7f744ff', fontWeight: 'bold' }}>{fmtMoney(adv.realData.totalComision)}</td>
+                            <td style={{ ...styles.td, background: '#c00000', fontWeight: 'bold', color: '#fff' }}>{fmtMoney(adv.realData.totalComision)}</td>
                         </tr>
                     ))}
                     <tr style={{ background: '#eee', fontWeight: 'bold' }}>
                         <td style={{ ...styles.td, textAlign: 'center' }}>TOTAL</td>
                         <td style={styles.td}>{fmtMoney(cuotaSugerida)}</td>
                         <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.venta, 0))}</td>
+                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.igv, 0))}</td>
+                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.base, 0))}</td>
+                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.renta, 0))}</td>
+                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.openPay, 0))}</td>
+                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.ventasNetas, 0))}</td>
                         <td style={styles.td}>-</td>
                         <td style={styles.td}>-</td>
                         <td style={{ ...styles.td, fontSize: '22px' }}>
