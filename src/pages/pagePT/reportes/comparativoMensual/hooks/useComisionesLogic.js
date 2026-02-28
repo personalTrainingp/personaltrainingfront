@@ -1,13 +1,20 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { getQuotaForMonth } from '../utils/quotaUtils';
 
 const ADVISORS = ['ALVARO', 'ALEJANDRO'];
 
-export const useComisionesLogic = (ventas, year, month) => {
-    const [cuotaSugerida, setCuotaSugerida] = useState(100000);
+export const useComisionesLogic = (ventas, year, month, initDay = 1, cutDay = 31) => {
+    const initialQuota = useMemo(() => getQuotaForMonth(Number(month) - 1, year), [year, month]);
+    const [cuotaSugerida, setCuotaSugerida] = useState(initialQuota);
     const [openPayParam, setOpenPayParam] = useState(4.5);
+
+    useEffect(() => {
+        setCuotaSugerida(getQuotaForMonth(Number(month) - 1, year));
+    }, [year, month]);
 
     // ESCALAS UNIFICADAS (Estado único para todas las tablas)
     const [scales, setScales] = useState([
+        { scale: 0, pct: 0, com: 2.00 },
         { scale: 1, pct: 86, com: 1.10 },
         { scale: 2, pct: 90, com: 1.25 },
         { scale: 3, pct: 95, com: 1.40 },
@@ -63,6 +70,28 @@ export const useComisionesLogic = (ventas, year, month) => {
         });
     }, [cuotaSugerida, openPayParam, scales]);
 
+    const norm = (s) => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+
+    const limaFromISO = (iso) => {
+        if (!iso) return null;
+        const s = String(iso).replace(" ", "T").replace(" -", "-");
+        const d = new Date(s);
+        if (Number.isNaN(d.getTime())) return null;
+        const utc = d.getTime() + d.getTimezoneOffset() * 60000;
+        return new Date(utc - 5 * 60 * 60000);
+    };
+
+    const getItemsMembresia = (v) => (v?.detalle_ventaMembresia || v?.detalle_ventaMembresium || []);
+
+    const getImporteCorrecto = (v) => {
+        if (Number(v?.tarifa_monto) > 0) return Number(v.tarifa_monto);
+        const items = getItemsMembresia(v);
+        if (items.length > 0) {
+            return items.reduce((acc, item) => acc + Number(item.tarifa_monto || 0), 0);
+        }
+        return Number(v?.monto_total || v?.tb_ventum?.monto_total || v?.monto || 0);
+    };
+
     // 2. DATOS POR VENDEDOR
     const commissionData = useMemo(() => {
         const cuotaInd = cuotaSugerida / 2;
@@ -71,20 +100,35 @@ export const useComisionesLogic = (ventas, year, month) => {
         return ADVISORS.map(adv => {
             // A. FILTRAR VENTAS REALES
             const advSales = ventas ? ventas.filter(v => {
-                const name = (v.tb_empleado?.nombres_apellidos_empl || v.usu_venta_nombre || '').toUpperCase();
-                const d = new Date(v.fecha_venta || v.fecha || v.createdAt);
-                return name.includes(adv) && (d.getMonth() + 1) === Number(month) && d.getFullYear() === Number(year);
+                const nombreFull = v?.tb_ventum?.tb_empleado?.nombres_apellidos ||
+                    v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
+                    v?.tb_empleado?.nombres_apellidos_empl ||
+                    v?.empleado || v?.usu_venta_nombre || "";
+                const name = norm(nombreFull);
+                const d = limaFromISO(v.fecha_venta || v.fecha || v.createdAt);
+
+                if (!d) return false;
+
+                const sameMonthYear = (d.getMonth() + 1) === Number(month) && d.getFullYear() === Number(year);
+                const withinDays = d.getDate() >= Number(initDay) && d.getDate() <= Number(cutDay);
+
+                return name.includes(adv) && sameMonthYear && withinDays;
             }) : [];
 
-            const ventaRealTotal = advSales.reduce((sum, v) => sum + (v.detalle_ventaMembresia || []).reduce((s, d) => s + Number(d.tarifa_monto || 0), 0), 0);
+            const ventaRealTotal = advSales.reduce((sum, v) => sum + getImporteCorrecto(v), 0);
 
             // B. SITUACIÓN ACTUAL (REAL)
             const alcanceReal = cuotaInd > 0 ? (ventaRealTotal / cuotaInd) * 100 : 0;
-            const scaleReal = [...scales].reverse().find(s => alcanceReal >= s.pct) || { scale: '-', com: 0 };
+            const matchedScale = [...scales]
+                .map((s, idx) => ({ ...s, originalIndex: idx }))
+                .reverse()
+                .find(s => alcanceReal >= s.pct) || { scale: '-', com: 0, originalIndex: -1 };
+
             const realData = {
-                ...scaleReal,
+                ...matchedScale,
+                index: matchedScale.originalIndex,
                 alcance: alcanceReal,
-                ...calculateRow(ventaRealTotal, scaleReal.com)
+                ...calculateRow(ventaRealTotal, matchedScale.com)
             };
 
             // C. TABLA PROYECCIONES MENSUAL (Usa scales state)
@@ -95,13 +139,13 @@ export const useComisionesLogic = (ventas, year, month) => {
                     index: idx, // Important for editing
                     ...calculateRow(ventaSim, step.com)
                 };
-            });
+            }).filter(p => p.pct > 0);
 
             // D. TABLA QUINCENA (100% = Scale 4, 110% = Scale 6)
-            // Indices in unified scales: Scale 4 => index 3, Scale 6 => index 5
+            // Indices in unified scales: Scale 4 => index 4, Scale 6 => index 6
             const quincenaSteps = [
-                { pctMeta: 100, label: '100%', scaleIndex: 3, scaleLabel: '4' },
-                { pctMeta: 110, label: '110%', scaleIndex: 5, scaleLabel: '6' }
+                { pctMeta: 100, label: '100%', scaleIndex: 4, scaleLabel: '4' },
+                { pctMeta: 110, label: '110%', scaleIndex: 6, scaleLabel: '6' }
             ];
 
             const quincenaData = quincenaSteps.map(step => {
@@ -119,7 +163,7 @@ export const useComisionesLogic = (ventas, year, month) => {
 
             return { advisor: adv, realData, projections, quincenaData };
         });
-    }, [ventas, year, month, cuotaSugerida, openPayParam, scales]);
+    }, [ventas, year, month, initDay, cutDay, cuotaSugerida, openPayParam, scales]);
 
     return {
         cuotaSugerida, setCuotaSugerida, openPayParam,

@@ -1,5 +1,5 @@
-import { MESES } from '../resumenEjecutivo/hooks/useResumenUtils';
-import { useState } from 'react';
+import { MESES, getDaysInMonth } from '../resumenEjecutivo/hooks/useResumenUtils';
+import { useState, useEffect } from 'react';
 import { Form, Row, Col, Card, Button } from 'react-bootstrap';
 import { useResumenEjecutivoStore } from '../resumenEjecutivo/useResumenEjecutivoStore';
 import { ComisionesTable } from './components/ComisionesTable';
@@ -17,6 +17,15 @@ const ComisionesPage = () => {
     // Custom Range State
     const [customStartDay, setCustomStartDay] = useState(1);
     const [customEndDay, setCustomEndDay] = useState(new Date().getDate());
+
+    // Auto-adjust day range when month/year changes
+    useEffect(() => {
+        const max = getDaysInMonth(selectedMonth, year);
+        if (customStartDay > max) handleStartDayChange(max);
+        if (customEndDay > max) handleEndDayChange(max);
+    }, [selectedMonth, year]);
+
+    const maxDays = getDaysInMonth(selectedMonth, year);
 
     const handleStartDayChange = (val) => {
         setCustomStartDay(val);
@@ -81,7 +90,7 @@ const ComisionesPage = () => {
                                                 onChange={(e) => handleStartDayChange(Number(e.target.value))}
                                                 style={{ fontWeight: 'bold', fontSize: '25px' }}
                                             >
-                                                {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                                                {Array.from({ length: maxDays }, (_, i) => i + 1).map(d => (
                                                     <option key={d} value={d}>{d}</option>
                                                 ))}
                                             </Form.Select>
@@ -93,7 +102,7 @@ const ComisionesPage = () => {
                                                 onChange={(e) => handleEndDayChange(Number(e.target.value))}
                                                 style={{ fontWeight: 'bold', fontSize: '25px' }}
                                             >
-                                                {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                                                {Array.from({ length: maxDays }, (_, i) => i + 1).map(d => (
                                                     <option key={d} value={d}>{d}</option>
                                                 ))}
                                             </Form.Select>
@@ -113,6 +122,8 @@ const ComisionesPage = () => {
                                     ventas={dataVentas}
                                     year={year}
                                     month={selectedMonth}
+                                    initDay={customStartDay}
+                                    cutDay={customEndDay}
                                 />
                             )}
                         </Card.Body>

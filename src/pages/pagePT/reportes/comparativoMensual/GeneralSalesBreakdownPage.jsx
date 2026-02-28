@@ -1,11 +1,12 @@
 import { Row, Col, Card } from 'react-bootstrap';
 import { useResumenEjecutivoStore } from '../resumenEjecutivo/useResumenEjecutivoStore';
 import { getDaysInMonth } from '../resumenEjecutivo/hooks/useResumenUtils';
-import { ComparativoMensualTable } from './components/ComparativoMensualTable';
+import { GeneralSalesBreakdownTable } from './components/GeneralSalesBreakdownTable';
+import { useComparativoMensualLogic } from './hooks/useComparativoMensualLogic';
 import { TopControlsVentas } from './components/TopControlsVentas';
 import { PageBreadcrumb } from '@/components';
 
-const ComparativoMensualVentasPage = () => {
+const GeneralSalesBreakdownPage = () => {
     const {
         dataVentas,
         loading,
@@ -14,7 +15,6 @@ const ComparativoMensualVentasPage = () => {
         cutDay, setCutDay, setInitDay
     } = useResumenEjecutivoStore();
 
-    // El estado viewMode aquí es manejado para los controles, pero solo usaremos la vista estándar o goals si se desea
     const [viewMode, setViewMode] = useState('standard');
     const [customStartDay, setCustomStartDay] = useState(1);
     const [customEndDay, setCustomEndDay] = useState(new Date().getDate());
@@ -36,6 +36,15 @@ const ComparativoMensualVentasPage = () => {
         setCutDay(val);
     };
 
+    const { monthsData } = useComparativoMensualLogic({
+        ventas: dataVentas,
+        year: Number(year),
+        startMonth: Number(selectedMonth) - 1,
+        cutDay,
+        customStartDay,
+        customEndDay,
+    });
+
     return (
         <>
             <PageBreadcrumb title={'Reportes'} subName={'Comparativo Mensual Ventas'} />
@@ -43,7 +52,6 @@ const ComparativoMensualVentasPage = () => {
                 <Col xs={12}>
                     <Card>
                         <Card.Body>
-                            {/* Reutilizamos los controles estándar para consistencia */}
                             <TopControlsVentas
                                 year={year} setYear={setYear}
                                 selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth}
@@ -60,32 +68,10 @@ const ComparativoMensualVentasPage = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <>
-                                    {/* Tabla 1: Total Ventas */}
-                                    <ComparativoMensualTable
-                                        ventas={dataVentas}
-                                        year={year}
-                                        startMonth={selectedMonth - 1}
-                                        cutDay={cutDay}
-                                        title="TOTAL VENTAS MEMBRESIAS"
-                                        customStartDay={customStartDay}
-                                        customEndDay={customEndDay}
-                                    />
-
-                                    <hr className="my-5" />
-
-                                    {/* Tabla 2: Renovaciones */}
-                                    <ComparativoMensualTable
-                                        ventas={dataVentas.filter(v => v.id_origen === 691)}
-                                        year={year}
-                                        startMonth={selectedMonth - 1}
-                                        cutDay={cutDay}
-                                        title="RENOVACIONES"
-                                        showFortnightly={true}
-                                        customStartDay={customStartDay}
-                                        customEndDay={customEndDay}
-                                    />
-                                </>
+                                <GeneralSalesBreakdownTable
+                                    ventas={dataVentas}
+                                    monthsData={monthsData}
+                                />
                             )}
                         </Card.Body>
                     </Card>
@@ -95,4 +81,4 @@ const ComparativoMensualVentasPage = () => {
     );
 };
 
-export default ComparativoMensualVentasPage;
+export default GeneralSalesBreakdownPage;

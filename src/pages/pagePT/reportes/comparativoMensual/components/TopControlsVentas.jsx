@@ -1,4 +1,4 @@
-import { MESES } from '../../resumenEjecutivo/hooks/useResumenUtils';
+import { MESES, getDaysInMonth } from '../../resumenEjecutivo/hooks/useResumenUtils';
 import { Form, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
 
 export const TopControlsVentas = ({
@@ -14,6 +14,8 @@ export const TopControlsVentas = ({
     for (let y = 2024; y <= currentYear + 1; y++) {
         years.push(y);
     }
+
+    const maxDays = getDaysInMonth(selectedMonth, year);
 
     return (
         <Row className="mb-4 align-items-end">
@@ -61,7 +63,7 @@ export const TopControlsVentas = ({
                             onChange={(e) => handleStartDayChange(Number(e.target.value))}
                             style={{ fontWeight: 'bold', fontSize: '25px' }}
                         >
-                            {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                            {Array.from({ length: maxDays }, (_, i) => i + 1).map(d => (
                                 <option key={d} value={d}>{d}</option>
                             ))}
                         </Form.Select>
@@ -74,7 +76,7 @@ export const TopControlsVentas = ({
                             onChange={(e) => handleEndDayChange(Number(e.target.value))}
                             style={{ fontWeight: 'bold', fontSize: '25px' }}
                         >
-                            {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                            {Array.from({ length: maxDays }, (_, i) => i + 1).map(d => (
                                 <option key={d} value={d}>{d}</option>
                             ))}
                         </Form.Select>

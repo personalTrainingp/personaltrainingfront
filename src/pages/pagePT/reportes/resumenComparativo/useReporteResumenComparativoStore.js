@@ -86,7 +86,7 @@ export const useReporteResumenComparativoStore = () => {
           const items = Array.isArray(detalle_ventaMembresium) ? detalle_ventaMembresium : [detalle_ventaMembresium];
 
           items.forEach((detalle, index) => {
-            if (index === 0) console.log("DEBUG: First detalle item structure:", detalle);
+            // if (index === 0) console.log("DEBUG: First detalle item structure:", detalle);
             if (detalle && typeof detalle === 'object') {
               const yaExiste = acc[id_pgm].detalle_ventaMembresium.some((m) =>
                 m?.horario === detalle?.horario &&
