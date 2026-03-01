@@ -9,6 +9,24 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
         refRows, commissionData, addScaleRow, updateScaleCommission
     } = useComisionesLogic(ventas, year, month, initDay, cutDay);
 
+    const [inputCuota, setInputCuota] = React.useState(fmtNum(cuotaSugerida));
+
+    React.useEffect(() => {
+        setInputCuota(fmtNum(cuotaSugerida));
+    }, [cuotaSugerida]);
+
+    const handleCuotaChange = (e) => {
+        const val = e.target.value.replace(/,/g, '');
+        if (/^\d*$/.test(val)) {
+            setInputCuota(e.target.value);
+            setCuotaSugerida(Number(val));
+        }
+    };
+
+    const handleCuotaBlur = () => {
+        setInputCuota(fmtNum(cuotaSugerida));
+    };
+
     const styles = {
         card: { background: '#fff', padding: '25px', marginTop: '30px', fontFamily: "'Segoe UI', sans-serif" },
         headerTitle: { fontSize: '25px', fontWeight: '800', borderBottom: '3px solid #000', marginBottom: '20px', textTransform: 'uppercase' },
@@ -25,15 +43,15 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
         <thead>
             <tr>
                 <th style={styles.thYellow}>ALCANCE</th>
-                <th style={styles.thYellow}> <br /> VENTA <br /> (S/)</th>
-                <th style={styles.thYellow}> <br /> IGV <br /> (S/)</th>
-                <th style={styles.thYellow}> <br /> BASE <br /> (S/)</th>
-                <th style={styles.thYellow}>RENTA <br /> (3%) <br /> (S/)</th>
-                <th style={styles.thYellow}>OPENPAY <br /> ({openPayParam}%) <br /> (S/)</th>
-                <th style={styles.thYellow}>VENTA <br /> NETA <br /> (S/)</th>
+                <th style={styles.thYellow}> <br /> VENTA <br /> S/</th>
+                <th style={styles.thYellow}> <br /> IGV <br /> S/</th>
+                <th style={styles.thYellow}> <br /> BASE <br /> S/</th>
+                <th style={styles.thYellow}>RENTA <br /> (3%) <br /> S/</th>
+                <th style={styles.thYellow}>OPENPAY <br /> ({openPayParam}%) <br /> S/</th>
+                <th style={styles.thYellow}>VENTA <br /> NETA <br /> S/</th>
                 <th style={styles.thYellow}> <br /> % <br />COMISIÓN</th>
-                <th style={styles.thYellow}> <br /> IMPORTE <br /> (S/)</th>
-                <th style={styles.thYellow}> <br />TOTAL <br /> (S/)</th>
+                <th style={styles.thYellow}> <br /> IMPORTE <br /> S/</th>
+                <th style={styles.thYellow}> <br />TOTAL <br /> S/</th>
             </tr>
         </thead>
     );
@@ -52,16 +70,17 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
             }}>
                 <Row className="align-items-center mb-3">
                     <Col xs="auto">
-                        <Form.Label className="fw-bold mb-0" style={{ color: '#333', fontSize: '18px' }}>
+                        <Form.Label className="fw-bold mb-0" style={{ color: '#333', fontSize: '22px' }}>
                             CUOTA :
                         </Form.Label>
                     </Col>
                     <Col xs="auto">
                         <Form.Control
-                            type="number"
-                            value={cuotaSugerida}
-                            onChange={(e) => setCuotaSugerida(Number(e.target.value))}
-                            style={{ fontWeight: 'bold', textAlign: 'right', fontSize: '18px', width: '180px' }}
+                            type="text"
+                            value={inputCuota}
+                            onChange={handleCuotaChange}
+                            onBlur={handleCuotaBlur}
+                            style={{ fontWeight: 'bold', textAlign: 'right', fontSize: '22px', width: '180px' }}
                         />
                     </Col>
                 </Row>
@@ -69,7 +88,7 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                 <div style={{
                     display: 'flex',
                     gap: '20px',
-                    fontSize: '16px',
+                    fontSize: '20px',
                     borderTop: '1px solid #dee2e6',
                     paddingTop: '15px',
                     flexWrap: 'wrap'
@@ -83,7 +102,7 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                             minWidth: '220px',
                             flex: '1 1 auto'
                         }}>
-                            <div style={{ color: '#333', fontWeight: '800', marginBottom: '8px', fontSize: '17px', textTransform: 'uppercase' }}>
+                            <div style={{ color: '#333', fontWeight: '800', marginBottom: '8px', fontSize: '21px', textTransform: 'uppercase' }}>
                                 {adv.advisor}
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
@@ -106,16 +125,16 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                 <thead>
                     <tr>
                         <th style={styles.thGreen}>ASESOR</th>
-                        <th style={styles.thYellow}>CUOTA <br />MENSUAL<br /> (S/)</th>
-                        <th style={styles.thYellow}>CUOTA <br />ALCANZADA<br /> (S/)</th>
-                        <th style={styles.thYellow}> <br /> IGV<br /> (S/)</th>
-                        <th style={styles.thYellow}> Venta<br /> BASE <br /> (S/)</th>
-                        <th style={styles.thYellow}>RENTA <br /> (3%) <br /> (S/)</th>
-                        <th style={styles.thYellow}>OPENPAY <br /> ({openPayParam}%) <br /> (S/)</th>
-                        <th style={styles.thYellow}>VENTA <br /> NETA <br /> (S/)</th>
+                        <th style={styles.thYellow}>CUOTA <br />MENSUAL<br /> S/</th>
+                        <th style={styles.thYellow}>CUOTA <br />ALCANZADA<br /> S/</th>
+                        <th style={styles.thYellow}> <br /> IGV<br /> S/</th>
+                        <th style={styles.thYellow}> Venta<br /> BASE <br /> S/</th>
+                        <th style={styles.thYellow}>RENTA <br /> (3%) <br /> S/</th>
+                        <th style={styles.thYellow}>OPENPAY <br /> ({openPayParam}%) <br /> S/</th>
+                        <th style={styles.thYellow}>VENTA <br /> NETA <br /> S/</th>
                         <th style={styles.thYellow}> <br />ALCANCE <br /> (%)</th>
                         <th style={styles.thYellow}> <br /> % <br />COMISION</th>
-                        <th style={styles.thYellow}> <br />COMISIÓN <br /> (S/)</th>
+                        <th style={styles.thYellow}> <br />COMISIÓN <br /> S/</th>
                     </tr>
                 </thead>
                 <tbody>
