@@ -70,7 +70,7 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
             }}>
                 <Row className="align-items-center mb-3">
                     <Col xs="auto">
-                        <Form.Label className="fw-bold mb-0" style={{ color: '#333', fontSize: '25px' }}>
+                        <Form.Label className="fw-bold mb-0" style={{ color: '#333', fontSize: '30px' }}>
                             CUOTA :
                         </Form.Label>
                     </Col>
@@ -80,7 +80,14 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                             value={inputCuota}
                             onChange={handleCuotaChange}
                             onBlur={handleCuotaBlur}
-                            style={{ fontWeight: 'bold', textAlign: 'right', fontSize: '25px', width: '180px' }}
+                            style={{
+                                fontWeight: 'bold',
+                                textAlign: 'right',
+                                fontSize: '30px',
+                                width: '250px',
+                                height: '60px',
+                                padding: '10px 15px'
+                            }}
                         />
                     </Col>
                 </Row>
