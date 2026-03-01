@@ -70,7 +70,13 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
             }}>
                 <Row className="align-items-center mb-3">
                     <Col xs="auto">
-                        <Form.Label className="fw-bold mb-0" style={{ color: '#333', fontSize: '30px' }}>
+                        <Form.Label className="fw-bold mb-0" style={{
+                            color: '#333',
+                            fontSize: '28px',
+                            lineHeight: '1',
+                            display: 'flex',
+                            alignItems: 'center'
+                        }}>
                             CUOTA :
                         </Form.Label>
                     </Col>
@@ -80,13 +86,18 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                             value={inputCuota}
                             onChange={handleCuotaChange}
                             onBlur={handleCuotaBlur}
+                            size="lg"              // <-- 1. Le dice a Bootstrap que es un input grande
+                            className="fs-2"       // <-- 2. Fuerza el tamaño de fuente (fs-1 es más grande, fs-3 más chico)
                             style={{
                                 fontWeight: 'bold',
                                 textAlign: 'right',
-                                fontSize: '30px',
-                                width: '250px',
-                                height: '60px',
-                                padding: '10px 15px'
+                                width: '300px',
+                                height: '70px',
+                                padding: '0 20px',
+                                border: '2px solid #dee2e6',
+                                borderRadius: '8px',
+                                backgroundColor: '#fff'
+                                // Puedes quitar el fontSize de aquí
                             }}
                         />
                     </Col>
@@ -127,7 +138,7 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
             </div>
 
             {/* --- TABLA RESUMEN REAL --- */}
-            <h6 className="fw-bold text-uppercase" style={{ color: '#c00000', marginTop: '30px' }}>RESUMEN DE COMISIONES REALES (BASADO EN VENTA ACTUAL)</h6>
+            <h6 className="fw-bold text-uppercase" style={{ color: '#c00000', marginTop: '25px' }}>RESUMEN DE COMISIONES REALES (BASADO EN VENTA ACTUAL)</h6>
             <table style={styles.tableBase}>
                 <thead>
                     <tr>
