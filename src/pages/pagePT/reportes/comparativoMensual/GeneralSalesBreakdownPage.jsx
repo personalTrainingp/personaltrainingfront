@@ -4,6 +4,7 @@ import { getDaysInMonth } from '../resumenEjecutivo/hooks/useResumenUtils';
 import { GeneralSalesBreakdownTable } from './components/GeneralSalesBreakdownTable';
 import { useComparativoMensualLogic } from './hooks/useComparativoMensualLogic';
 import { TopControlsVentas } from './components/TopControlsVentas';
+import { useState, useEffect } from 'react';
 import { PageBreadcrumb } from '@/components';
 
 const GeneralSalesBreakdownPage = () => {

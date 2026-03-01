@@ -25,15 +25,15 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
         <thead>
             <tr>
                 <th style={styles.thYellow}>ALCANCE</th>
-                <th style={styles.thYellow}>VENTA</th>
-                <th style={styles.thYellow}>IGV</th>
-                <th style={styles.thYellow}>BASE</th>
-                <th style={styles.thYellow}>RENTA (3%)</th>
-                <th style={styles.thYellow}>OPENPAY ({openPayParam}%)</th>
-                <th style={styles.thYellow}>VENTAS NETAS</th>
-                <th style={styles.thYellow}>% COMISION</th>
-                <th style={styles.thYellow}>IMPORTE</th>
-                <th style={styles.thYellow}>TOTAL</th>
+                <th style={styles.thYellow}> <br /> VENTA <br /> (S/)</th>
+                <th style={styles.thYellow}> <br /> IGV <br /> (S/)</th>
+                <th style={styles.thYellow}> <br /> BASE <br /> (S/)</th>
+                <th style={styles.thYellow}>RENTA <br /> (3%) <br /> (S/)</th>
+                <th style={styles.thYellow}>OPENPAY <br /> ({openPayParam}%) <br /> (S/)</th>
+                <th style={styles.thYellow}>VENTA <br /> NETA <br /> (S/)</th>
+                <th style={styles.thYellow}> <br /> % <br />COMISIÓN</th>
+                <th style={styles.thYellow}> <br /> IMPORTE <br /> (S/)</th>
+                <th style={styles.thYellow}> <br />TOTAL <br /> (S/)</th>
             </tr>
         </thead>
     );
@@ -42,17 +42,59 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
         <div style={styles.card}>
             <h5 style={styles.headerTitle}>CUOTA MES DE {month}/{year}</h5>
 
-            <div style={{ background: '#ffffcc', padding: '15px', marginBottom: '20px' }}>
-                <Row className="align-items-center mb-2">
-                    <Col xs="auto"><Form.Label className="fw-bold mb-0 text-danger">CUOTA SUGERIDA TOTAL:</Form.Label></Col>
+            <div style={{
+                background: '#f8f9fa',
+                padding: '20px',
+                marginBottom: '25px',
+                borderRadius: '8px',
+                border: '1px solid #e0e0e0',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+            }}>
+                <Row className="align-items-center mb-3">
                     <Col xs="auto">
-                        <Form.Control type="number" value={cuotaSugerida} onChange={(e) => setCuotaSugerida(Number(e.target.value))} style={{ fontWeight: 'bold', textAlign: 'right' }} />
+                        <Form.Label className="fw-bold mb-0" style={{ color: '#333', fontSize: '18px' }}>
+                            CUOTA :
+                        </Form.Label>
+                    </Col>
+                    <Col xs="auto">
+                        <Form.Control
+                            type="number"
+                            value={cuotaSugerida}
+                            onChange={(e) => setCuotaSugerida(Number(e.target.value))}
+                            style={{ fontWeight: 'bold', textAlign: 'right', fontSize: '18px', width: '180px' }}
+                        />
                     </Col>
                 </Row>
-                <div style={{ display: 'flex', gap: '20px', fontSize: '18px' }}>
+
+                <div style={{
+                    display: 'flex',
+                    gap: '20px',
+                    fontSize: '16px',
+                    borderTop: '1px solid #dee2e6',
+                    paddingTop: '15px',
+                    flexWrap: 'wrap'
+                }}>
                     {commissionData.map((adv, idx) => (
-                        <div key={idx}>
-                            <strong>{adv.advisor}: Meta {fmtMoney(cuotaSugerida / 2)} <br /> Real: <span className="text-danger">{fmtMoney(adv.realData.venta)}</span></strong>
+                        <div key={idx} style={{
+                            background: '#fff',
+                            padding: '12px 18px',
+                            borderRadius: '6px',
+                            border: '1px solid #ddd',
+                            minWidth: '220px',
+                            flex: '1 1 auto'
+                        }}>
+                            <div style={{ color: '#333', fontWeight: '800', marginBottom: '8px', fontSize: '17px', textTransform: 'uppercase' }}>
+                                {adv.advisor}
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                <span style={{ color: '#666' }}>Meta :</span>
+                                <strong>{fmtMoney(cuotaSugerida / 2)}</strong>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <span style={{ color: '#666' }}>CUOTA:</span>
+                                {/* Usamos un color azul oscuro/corporativo para el dato real en lugar de rojo */}
+                                <strong style={{ color: '#0056b3' }}>{fmtMoney(adv.realData.venta)}</strong>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -64,29 +106,29 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                 <thead>
                     <tr>
                         <th style={styles.thGreen}>ASESOR</th>
-                        <th style={styles.thYellow}>CUOTA INDIVIDUAL</th>
-                        <th style={styles.thYellow}>VENTA REAL</th>
-                        <th style={styles.thYellow}>IGV</th>
-                        <th style={styles.thYellow}>BASE</th>
-                        <th style={styles.thYellow}>RENTA (3%)</th>
-                        <th style={styles.thYellow}>OPENPAY ({openPayParam}%)</th>
-                        <th style={styles.thYellow}>VENTAS NETAS</th>
-                        <th style={styles.thYellow}>ALCANCE (%)</th>
-                        <th style={styles.thYellow}>% COMISION</th>
-                        <th style={styles.thYellow}>COMISIÓN</th>
+                        <th style={styles.thYellow}>CUOTA <br />MENSUAL<br /> (S/)</th>
+                        <th style={styles.thYellow}>CUOTA <br />ALCANZADA<br /> (S/)</th>
+                        <th style={styles.thYellow}> <br /> IGV<br /> (S/)</th>
+                        <th style={styles.thYellow}> Venta<br /> BASE <br /> (S/)</th>
+                        <th style={styles.thYellow}>RENTA <br /> (3%) <br /> (S/)</th>
+                        <th style={styles.thYellow}>OPENPAY <br /> ({openPayParam}%) <br /> (S/)</th>
+                        <th style={styles.thYellow}>VENTA <br /> NETA <br /> (S/)</th>
+                        <th style={styles.thYellow}> <br />ALCANCE <br /> (%)</th>
+                        <th style={styles.thYellow}> <br /> % <br />COMISION</th>
+                        <th style={styles.thYellow}> <br />COMISIÓN <br /> (S/)</th>
                     </tr>
                 </thead>
                 <tbody>
                     {commissionData.map((adv, idx) => (
                         <tr key={idx}>
                             <td style={{ ...styles.td, textAlign: 'center', fontWeight: 'bold', background: '#c00000', color: '#fff' }}>{adv.advisor}</td>
-                            <td style={styles.td}>{fmtMoney(cuotaSugerida / 2)}</td>
-                            <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(adv.realData.venta)}</td>
-                            <td style={styles.td}>{fmtMoney(adv.realData.igv)}</td>
-                            <td style={styles.td}>{fmtMoney(adv.realData.base)}</td>
-                            <td style={styles.td}>{fmtMoney(adv.realData.renta)}</td>
-                            <td style={styles.td}>{fmtMoney(adv.realData.openPay)}</td>
-                            <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(adv.realData.ventasNetas)}</td>
+                            <td style={styles.td}>{fmtNum(cuotaSugerida / 2)}</td>
+                            <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(adv.realData.venta)}</td>
+                            <td style={styles.td}>{fmtNum(adv.realData.igv)}</td>
+                            <td style={styles.td}>{fmtNum(adv.realData.base)}</td>
+                            <td style={styles.td}>{fmtNum(adv.realData.renta)}</td>
+                            <td style={styles.td}>{fmtNum(adv.realData.openPay)}</td>
+                            <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(adv.realData.ventasNetas)}</td>
                             <td style={{ ...styles.td, textAlign: 'center' }}><strong>{adv.realData.alcance.toFixed(2)}%</strong></td>
                             <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
                                 <input
@@ -98,22 +140,22 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                                     style={styles.inputCom}
                                 /> %
                             </td>
-                            <td style={{ ...styles.td, background: '#c00000', fontWeight: 'bold', color: '#fff' }}>{fmtMoney(adv.realData.totalComision)}</td>
+                            <td style={{ ...styles.td, background: '#c00000', fontWeight: 'bold', color: '#fff' }}>{fmtNum(adv.realData.totalComision)}</td>
                         </tr>
                     ))}
-                    <tr style={{ background: '#eee', fontWeight: 'bold' }}>
-                        <td style={{ ...styles.td, textAlign: 'center' }}>TOTAL</td>
-                        <td style={styles.td}>{fmtMoney(cuotaSugerida)}</td>
-                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.venta, 0))}</td>
-                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.igv, 0))}</td>
-                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.base, 0))}</td>
-                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.renta, 0))}</td>
-                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.openPay, 0))}</td>
-                        <td style={styles.td}>{fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.ventasNetas, 0))}</td>
-                        <td style={styles.td}>-</td>
-                        <td style={styles.td}>-</td>
-                        <td style={{ ...styles.td, fontSize: '22px' }}>
-                            {fmtMoney(commissionData.reduce((acc, a) => acc + a.realData.totalComision, 0))}
+                    <tr style={{ background: '#c00000', fontWeight: 'bold', color: '#fff' }}>
+                        <td style={{ ...styles.td, textAlign: 'center', color: '#fff' }}>TOTAL</td>
+                        <td style={{ ...styles.td, color: '#fff' }}>{fmtNum(cuotaSugerida)}</td>
+                        <td style={{ ...styles.td, color: '#fff' }}>{fmtNum(commissionData.reduce((acc, a) => acc + a.realData.venta, 0))}</td>
+                        <td style={{ ...styles.td, color: '#fff' }}>{fmtNum(commissionData.reduce((acc, a) => acc + a.realData.igv, 0))}</td>
+                        <td style={{ ...styles.td, color: '#fff' }}>{fmtNum(commissionData.reduce((acc, a) => acc + a.realData.base, 0))}</td>
+                        <td style={{ ...styles.td, color: '#fff' }}>{fmtNum(commissionData.reduce((acc, a) => acc + a.realData.renta, 0))}</td>
+                        <td style={{ ...styles.td, color: '#fff' }}>{fmtNum(commissionData.reduce((acc, a) => acc + a.realData.openPay, 0))}</td>
+                        <td style={{ ...styles.td, color: '#fff' }}>{fmtNum(commissionData.reduce((acc, a) => acc + a.realData.ventasNetas, 0))}</td>
+                        <td style={{ ...styles.td, color: '#fff' }}>-</td>
+                        <td style={{ ...styles.td, color: '#fff' }}>-</td>
+                        <td className='text-white' style={{ ...styles.td, fontSize: '22px', color: '#fff' }}>
+                            {fmtNum(commissionData.reduce((acc, a) => acc + a.realData.totalComision, 0))}
                         </td>
                     </tr>
                 </tbody>
@@ -129,17 +171,17 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                         return (
                             <tr key={idx} style={{ background: row.pct === 100 ? '#e0e0e0' : '#fff' }}>
                                 <td style={styles.tdCenter}><strong>{row.pct}%</strong></td>
-                                <td style={styles.td}><strong>{fmtMoney(row.data.venta)}</strong></td>
-                                <td style={{ ...styles.td, color: '#666' }}>{fmtMoney(row.data.igv)}</td>
-                                <td style={styles.td}>{fmtMoney(row.data.base)}</td>
-                                <td style={styles.td}>{fmtMoney(row.data.renta)}</td>
-                                <td style={styles.td}>{fmtMoney(row.data.openPay)}</td>
-                                <td style={styles.td}><strong>{fmtMoney(row.data.ventasNetas)}</strong></td>
+                                <td style={styles.td}><strong>{fmtNum(row.data.venta)}</strong></td>
+                                <td style={{ ...styles.td, color: '#666' }}>{fmtNum(row.data.igv)}</td>
+                                <td style={styles.td}>{fmtNum(row.data.base)}</td>
+                                <td style={styles.td}>{fmtNum(row.data.renta)}</td>
+                                <td style={styles.td}>{fmtNum(row.data.openPay)}</td>
+                                <td style={styles.td}><strong>{fmtNum(row.data.ventasNetas)}</strong></td>
                                 <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
                                     <input type="number" step="0.1" value={row.com} onChange={(e) => updateScaleCommission(row.index, e.target.value)} style={styles.inputCom} /> %
                                 </td>
-                                <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(row.data.importeComision)}</td>
-                                <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(row.data.totalComision)}</td>
+                                <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(row.data.importeComision)}</td>
+                                <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(row.data.totalComision)}</td>
                             </tr>
                         );
                     })}
@@ -148,75 +190,77 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
             <Button variant="success" size="sm" className="mb-4" onClick={addScaleRow}>+ Escala</Button>
 
             {/* --- SECCIÓN POR VENDEDOR --- */}
-            {commissionData.map(adv => (
-                <div key={adv.advisor} className="mb-5">
-                    <div style={{ background: '#eee', padding: '8px', borderLeft: '5px solid #000', marginBottom: '10px' }}>
-                        <h5 className="fw-bold m-0" style={{ fontSize: '23px' }}>{adv.advisor}</h5>
+            {
+                commissionData.map(adv => (
+                    <div key={adv.advisor} className="mb-5">
+                        <div style={{ background: '#eee', padding: '8px', borderLeft: '5px solid #000', marginBottom: '10px' }}>
+                            <h5 className="fw-bold m-0" style={{ fontSize: '23px' }}>{adv.advisor}</h5>
+                        </div>
+
+                        {/* A. TABLA PROYECCIÓN MENSUAL (6 FILAS) */}
+                        <div style={styles.sectionTitle}>(PORCENTAJE DEL TOTAL)</div>
+                        <table style={styles.tableBase}>
+                            {renderHeaders()}
+                            <tbody>
+                                {adv.projections.map((row, idx) => (
+                                    <tr key={idx} style={{ background: row.pct === 100 ? '#e0e0e0' : (idx % 2 === 0 ? '#fff' : '#f9f9f9') }}>
+                                        <td style={styles.tdCenter}><strong>{row.pct}%</strong></td>
+                                        <td style={{ ...styles.td, background: '#ccc' }}><strong>{fmtNum(row.venta)}</strong></td>
+                                        <td style={styles.td}>{fmtNum(row.igv)}</td>
+                                        <td style={styles.td}>{fmtNum(row.base)}</td>
+                                        <td style={styles.td}>{fmtNum(row.renta)}</td>
+                                        <td style={styles.td}>{fmtNum(row.openPay)}</td>
+                                        <td style={styles.td}><strong>{fmtNum(row.ventasNetas)}</strong></td>
+                                        {/* INPUT EDITABLE TAMBIÉN AQUÍ (Vinculado al state global) */}
+                                        <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
+                                            <input
+                                                type="number"
+                                                step="0.1"
+                                                value={row.com}
+                                                onChange={(e) => updateScaleCommission(row.index, e.target.value)}
+                                                style={styles.inputCom}
+                                            /> %
+                                        </td>
+                                        <td style={styles.td}>{fmtNum(row.importeComision)}</td>
+                                        <td style={{ ...styles.td, fontWeight: 'bold', border: '2px solid #000' }}>{fmtNum(row.totalComision)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                        {/* B. TABLA QUINCENA (NUEVA - 2 FILAS) */}
+                        <div style={styles.sectionTitle}>(AVANCE AL 40% HASTA QUINCENA)</div>
+                        <table style={styles.tableBase}>
+                            {renderHeaders()}
+                            <tbody>
+                                {adv.quincenaData.map((row, idx) => (
+                                    <tr key={idx} style={{ background: row.pct === 100 ? '#e0e0e0' : (idx % 2 === 0 ? '#fff' : '#fff') }}>
+                                        <td style={{ ...styles.tdCenter, fontWeight: 'bold' }}>{row.alcance}</td>
+                                        <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(row.venta)}</td>
+                                        <td style={styles.td}>{fmtNum(row.igv)}</td>
+                                        <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(row.base)}</td>
+                                        <td style={styles.td}>{fmtNum(row.renta)}</td>
+                                        <td style={styles.td}>{fmtNum(row.openPay)}</td>
+                                        <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(row.ventasNetas)}</td>
+                                        {/* INPUT EDITABLE QUINCENA (Vinculado) */}
+                                        <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
+                                            <input
+                                                type="number"
+                                                step="0.1"
+                                                value={row.com}
+                                                onChange={(e) => updateScaleCommission(row.index, e.target.value)}
+                                                style={styles.inputCom}
+                                            /> %
+                                        </td>
+                                        <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(row.importeComision)}</td>
+                                        <td style={{ ...styles.td, fontWeight: 'bold', border: '2px solid #000' }}>{fmtNum(row.totalComision)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-
-                    {/* A. TABLA PROYECCIÓN MENSUAL (6 FILAS) */}
-                    <div style={styles.sectionTitle}>(PORCENTAJE DEL TOTAL)</div>
-                    <table style={styles.tableBase}>
-                        {renderHeaders()}
-                        <tbody>
-                            {adv.projections.map((row, idx) => (
-                                <tr key={idx} style={{ background: row.pct === 100 ? '#e0e0e0' : (idx % 2 === 0 ? '#fff' : '#f9f9f9') }}>
-                                    <td style={styles.tdCenter}><strong>{row.pct}%</strong></td>
-                                    <td style={{ ...styles.td, background: '#ccc' }}><strong>{fmtMoney(row.venta)}</strong></td>
-                                    <td style={styles.td}>{fmtMoney(row.igv)}</td>
-                                    <td style={styles.td}>{fmtMoney(row.base)}</td>
-                                    <td style={styles.td}>{fmtMoney(row.renta)}</td>
-                                    <td style={styles.td}>{fmtMoney(row.openPay)}</td>
-                                    <td style={styles.td}><strong>{fmtMoney(row.ventasNetas)}</strong></td>
-                                    {/* INPUT EDITABLE TAMBIÉN AQUÍ (Vinculado al state global) */}
-                                    <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
-                                        <input
-                                            type="number"
-                                            step="0.1"
-                                            value={row.com}
-                                            onChange={(e) => updateScaleCommission(row.index, e.target.value)}
-                                            style={styles.inputCom}
-                                        /> %
-                                    </td>
-                                    <td style={styles.td}>{fmtMoney(row.importeComision)}</td>
-                                    <td style={{ ...styles.td, fontWeight: 'bold', border: '2px solid #000' }}>{fmtMoney(row.totalComision)}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-
-                    {/* B. TABLA QUINCENA (NUEVA - 2 FILAS) */}
-                    <div style={styles.sectionTitle}>(AVANCE AL 40% HASTA QUINCENA)</div>
-                    <table style={styles.tableBase}>
-                        {renderHeaders()}
-                        <tbody>
-                            {adv.quincenaData.map((row, idx) => (
-                                <tr key={idx} style={{ background: row.pct === 100 ? '#e0e0e0' : (idx % 2 === 0 ? '#fff' : '#fff') }}>
-                                    <td style={{ ...styles.tdCenter, fontWeight: 'bold' }}>{row.alcance}</td>
-                                    <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(row.venta)}</td>
-                                    <td style={styles.td}>{fmtMoney(row.igv)}</td>
-                                    <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(row.base)}</td>
-                                    <td style={styles.td}>{fmtMoney(row.renta)}</td>
-                                    <td style={styles.td}>{fmtMoney(row.openPay)}</td>
-                                    <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(row.ventasNetas)}</td>
-                                    {/* INPUT EDITABLE QUINCENA (Vinculado) */}
-                                    <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
-                                        <input
-                                            type="number"
-                                            step="0.1"
-                                            value={row.com}
-                                            onChange={(e) => updateScaleCommission(row.index, e.target.value)}
-                                            style={styles.inputCom}
-                                        /> %
-                                    </td>
-                                    <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtMoney(row.importeComision)}</td>
-                                    <td style={{ ...styles.td, fontWeight: 'bold', border: '2px solid #000' }}>{fmtMoney(row.totalComision)}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            ))}
-        </div>
+                ))
+            }
+        </div >
     );
 };

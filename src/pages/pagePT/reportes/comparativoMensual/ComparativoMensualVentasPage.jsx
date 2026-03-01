@@ -3,6 +3,7 @@ import { useResumenEjecutivoStore } from '../resumenEjecutivo/useResumenEjecutiv
 import { getDaysInMonth } from '../resumenEjecutivo/hooks/useResumenUtils';
 import { ComparativoMensualTable } from './components/ComparativoMensualTable';
 import { TopControlsVentas } from './components/TopControlsVentas';
+import { useState, useEffect } from 'react';
 import { PageBreadcrumb } from '@/components';
 
 const ComparativoMensualVentasPage = () => {
