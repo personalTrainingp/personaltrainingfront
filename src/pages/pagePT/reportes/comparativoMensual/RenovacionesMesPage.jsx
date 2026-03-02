@@ -1,5 +1,5 @@
-import { MESES } from '../resumenEjecutivo/hooks/useResumenUtils';
-import { useState } from 'react';
+import { MESES, getDaysInMonth } from '../resumenEjecutivo/hooks/useResumenUtils';
+import { useState, useEffect } from 'react';
 import { Form, Row, Col, Card } from 'react-bootstrap';
 import { useResumenEjecutivoStore } from '../resumenEjecutivo/useResumenEjecutivoStore';
 import { useComparativoMensualLogic } from './hooks/useComparativoMensualLogic';
@@ -17,6 +17,15 @@ const RenovacionesMesPage = () => {
 
     const [customStartDay, setCustomStartDay] = useState(1);
     const [customEndDay, setCustomEndDay] = useState(new Date().getDate());
+
+    // Auto-adjust day range when month/year changes
+    useEffect(() => {
+        const max = getDaysInMonth(selectedMonth, year);
+        if (customStartDay > max) handleStartDayChange(max);
+        if (customEndDay > max) handleEndDayChange(max);
+    }, [selectedMonth, year]);
+
+    const maxDays = getDaysInMonth(selectedMonth, year);
 
     const handleStartDayChange = (val) => { setCustomStartDay(val); setInitDay(val); };
     const handleEndDayChange = (val) => { setCustomEndDay(val); setCutDay(val); };
@@ -37,7 +46,7 @@ const RenovacionesMesPage = () => {
 
     return (
         <>
-            <PageBreadcrumb title={'Cantidad de Socios y Montos'} subName={'Renovaciones por Mes'} />
+            <PageBreadcrumb title={'Reporte Renovaciones'} subName={'Renovaciones por Mes'} />
             <Row>
                 <Col xs={12}>
                     <Card>
@@ -76,13 +85,13 @@ const RenovacionesMesPage = () => {
                                         <Form.Group style={{ width: '100px' }}>
                                             <Form.Label className="fw-bold text-muted" style={{ fontSize: '18px', marginBottom: '5px' }}>INICIO</Form.Label>
                                             <Form.Select value={customStartDay} onChange={(e) => handleStartDayChange(Number(e.target.value))} style={{ fontWeight: 'bold', fontSize: '25px' }}>
-                                                {Array.from({ length: 31 }, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}</option>)}
+                                                {Array.from({ length: maxDays }, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}</option>)}
                                             </Form.Select>
                                         </Form.Group>
                                         <Form.Group style={{ width: '100px' }}>
                                             <Form.Label className="fw-bold text-muted" style={{ fontSize: '18px', marginBottom: '5px' }}>CORTE</Form.Label>
                                             <Form.Select value={customEndDay} onChange={(e) => handleEndDayChange(Number(e.target.value))} style={{ fontWeight: 'bold', fontSize: '25px' }}>
-                                                {Array.from({ length: 31 }, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}</option>)}
+                                                {Array.from({ length: maxDays }, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}</option>)}
                                             </Form.Select>
                                         </Form.Group>
                                     </div>

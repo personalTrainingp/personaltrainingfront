@@ -36,7 +36,7 @@ const InscripcionesTable = () => {
 
     return (
         <>
-            <PageBreadcrumb title={'Cantidad de Socios y Montos'} subName={'Reinscripciones por Mes'} />
+            <PageBreadcrumb title={'Reporte Inscripciones'} subName={'Reinscripciones por Mes'} />
             <Row>
                 <Col xs={12}>
                     <Card>

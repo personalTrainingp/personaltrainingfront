@@ -10,6 +10,10 @@ export const MESES = [
     "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
 ];
 
+export const getDaysInMonth = (month, year) => {
+    return new Date(year, month, 0).getDate();
+};
+
 export const avataresDeProgramas = [
     { urlImage: "/change_negro.png", name_image: "CHANGE 45" },
     { urlImage: "/fs45_negro.png", name_image: "FS 45" },

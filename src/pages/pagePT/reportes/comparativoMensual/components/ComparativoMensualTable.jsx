@@ -30,15 +30,15 @@ export const ComparativoMensualTable = ({
         tableWrapper: { overflowX: 'auto', borderRadius: '8px', border: '3px solid #000', marginTop: '10px' },
         table: { width: '100%', borderCollapse: 'collapse', fontSize: '22px', whiteSpace: 'nowrap' },
         th: { background: '#c00000', color: '#fff', fontWeight: '600', padding: '12px 10px', textAlign: 'center', fontSize: '25px', borderRight: '1px solid #000', borderBottom: '1px solid #000' },
-        td: { padding: '10px 12px', borderBottom: '1px solid #000', borderRight: '1px solid #000', textAlign: 'right', color: '#444' },
+        td: { padding: '10px 12px', borderBottom: '1px solid #000', borderRight: '1px solid #000', textAlign: 'right', color: '#fff' },
         tdLabel: {
             textAlign: 'left',
             fontWeight: '600',
-            color: '#222',
+            color: '#fff',
             textTransform: 'capitalize',
             position: 'sticky',
             left: 0,
-            background: '#fff',
+            background: '#C00000',
             zIndex: 1,
             borderRight: '2px solid #000',
             verticalAlign: 'middle'
@@ -81,7 +81,7 @@ export const ComparativoMensualTable = ({
 
     const renderCell = (row, field, isPct = false) => {
         let style = { ...styles.td };
-        if (isPct) style = { ...style, textAlign: 'center', color: '#666' };
+        if (isPct) style = { ...style, textAlign: 'center', color: '#000000' };
 
         const val = row[field];
         const pctKey = `pct${field.charAt(0).toUpperCase() + field.slice(1)}`;
@@ -142,22 +142,22 @@ export const ComparativoMensualTable = ({
                     <thead>
                         <tr>
                             <th style={{ ...styles.th, width: '90px', position: 'sticky', left: 0, zIndex: 2 }}>MES </th>
-                            <th style={{ ...styles.th, background: '#a00000' }}>TOTAL<br /> VENTA<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
-                            <th style={{ ...styles.th, background: '#a00000' }}>ALCANCE<br />CUOTA<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
+                            <th style={{ ...styles.th }}>TOTAL<br /> VENTA<br /><span style={{ color: '#fff' }}>S/</span></th>
+                            <th style={{ ...styles.th }}>ALCANCE<br />CUOTA<br /><span style={{ color: '#fff' }}>S/</span></th>
 
                             {/* CUSTOM RANGE COLUMN */}
                             <th style={{ ...styles.th, background: '#c00000', color: '#fff' }}>
-                                RANGO<br />({customStartDay}-{customEndDay})<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span>
+                                RANGO<br />({customStartDay}-{customEndDay})<br /><span style={{ color: '#fff' }}>S/</span>
                             </th>
-                            <th style={{ ...styles.th, background: '#c00000', color: '#fff', fontSize: '16px' }}>
+                            <th style={{ ...styles.th, background: '#c00000', color: '#fff' }}>
                                 ALCANCE DE    <br />CUOTA  <br /> <span>  %  </span>
                             </th>
 
-                            <th style={styles.th} colSpan={2}>SEMANA 1<br /> (1-7)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
-                            <th style={styles.th} colSpan={2}>SEMANA 2<br /> (8-14)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
-                            <th style={styles.th} colSpan={2}>SEMANA 3<br /> (15-21)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
-                            <th style={styles.th} colSpan={2}>SEMANA 4<br /> (22-28)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
-                            <th style={styles.th} colSpan={2}>SEMANA 5<br /> (29-31)<br /><span style={{ fontSize: '16px', color: '#fff' }}>S/</span></th>
+                            <th style={styles.th} colSpan={2}>SEMANA 1<br /> (1-7)<br /><span style={{ color: '#fff' }}>S/</span></th>
+                            <th style={styles.th} colSpan={2}>SEMANA 2<br /> (8-14)<br /><span style={{ color: '#fff' }}>S/</span></th>
+                            <th style={styles.th} colSpan={2}>SEMANA 3<br /> (15-21)<br /><span style={{ color: '#fff' }}>S/</span></th>
+                            <th style={styles.th} colSpan={2}>SEMANA 4<br /> (22-28)<br /><span style={{ color: '#fff' }}>S/</span></th>
+                            <th style={styles.th} colSpan={2}>SEMANA 5<br /> (29-31)<br /><span style={{ color: '#fff' }}>S/</span></th>
                             {showFortnightly && (
                                 <>
                                     <th style={{ ...styles.th, background: '#222' }} colSpan={2}>DIA 1 AL 15</th>
@@ -177,13 +177,13 @@ export const ComparativoMensualTable = ({
                                 {/* --------------------------------------- */}
 
                                 <td style={{ ...styles.td, fontWeight: '700', color: '#000', background: 'rgba(0,0,0,0.02)' }}>{fmtNum(row.total, 0)}</td>
-                                <td style={{ ...styles.td, color: '#555' }}>{fmtNum(row.quota, 0)}</td>
+                                <td style={{ ...styles.td, color: '#000000' }}>{fmtNum(row.quota, 0)}</td>
 
                                 {/* Custom Range Data */}
-                                <td style={{ ...styles.td, background: '#c00000', color: '#fff', fontWeight: '400' }}>
+                                <td style={{ ...styles.td, background: '#c00000', fontWeight: '400' }}>
                                     {fmtNum(row.customRangeTotal, 0)}
                                 </td>
-                                <td style={{ ...styles.td, background: '#c00000', textAlign: 'center', color: '#fff', fontWeight: '400' }}>
+                                <td style={{ ...styles.td, background: '#c00000', textAlign: 'center', fontWeight: '400' }}>
                                     {fmtNum(row.pctCustomRangeTotal, 1)}%
                                 </td>
 

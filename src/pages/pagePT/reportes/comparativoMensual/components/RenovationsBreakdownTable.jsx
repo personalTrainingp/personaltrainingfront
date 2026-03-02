@@ -132,7 +132,7 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [] }) => {
 
     return (
         <div style={styles.card}>
-            <h5 style={styles.headerTitle}>Desglose de Renovaciones por Asesor</h5>
+            <h5 style={styles.headerTitle}>Renovaciones por Asesor</h5>
 
             <div style={styles.tableWrapper}>
                 <table style={styles.table}>
@@ -156,12 +156,12 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [] }) => {
                         <tr>
                             {monthsData.map(m => (
                                 <React.Fragment key={m.key + '-sub'}>
-                                    <th style={styles.thSub}>CANTIDAD</th>
-                                    <th style={styles.thSub}>IMPORTE</th>
+                                    <th style={styles.thSub}>SOCIOS</th>
+                                    <th style={styles.thSub}>VENTAS</th>
                                 </React.Fragment>
                             ))}
-                            <th style={styles.thSub}>CANTIDAD</th>
-                            <th style={styles.thSub}>IMPORTE</th>
+                            <th style={styles.thSub}>SOCIOS</th>
+                            <th style={styles.thSub}>VENTAS</th>
                         </tr>
                     </thead>
                     <tbody>
