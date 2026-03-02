@@ -1,0 +1,1 @@
+export {AppGestionComercial as default} from './AppGestionComercial'

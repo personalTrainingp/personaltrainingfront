@@ -15,11 +15,11 @@ const apellidos = [
 ];
 
 const servicios = [
-'Membresía 12 semanas',
-'Membresía 24 semanas',
-'Entrenamiento personalizado',
-'Plan nutricional',
-'Entrenamiento grupal'
+'Dual',
+'Trial',
+'Bellalis kid',
+'Trial plus',
+'Brasilero'
 ];
 
 

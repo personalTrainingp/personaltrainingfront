@@ -32,6 +32,7 @@ import { histCamInventarioSlice } from '@/pages/pagePT/AuditoriaInventario/Store
 import { terminologiasSlice } from '@/pages/pagePT/Terminologias/store/terminologiaSlice';
 import { TcSlice } from '@/pages/pagePT/GestionTc/store/tcSlice';
 import { EgresosSlice } from '@/pages/pagePT/GestGastos/egresosSlice';
+import { ComercialSlice } from '@/pages/pagePT/GestionComercial/dataComercialSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -69,6 +70,7 @@ export const store = configureStore({
 		TC: TcSlice.reducer,
 		EGRESOS: EgresosSlice.reducer,
 		PROV: proveedorSlice.reducer,
+		COMERCIAL: ComercialSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

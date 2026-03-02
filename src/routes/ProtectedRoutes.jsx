@@ -75,7 +75,7 @@ const InventarioTotalizado = lazy(() => import('../pages/pagePT/InventarioReport
 // const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
 const PuntoEquilibrio = lazy(() => import('../pages/pagePT/reportes/puntoEquilibrio'))
 const ReporteSeguimiento = lazy(() => import('../pages/pagePT/reportes/reporteSeguimiento'))
-const GestionComercial = lazy(() => import('../pages/pagePT/GestComercial'))
+const GestionComercial = lazy(() => import('../pages/pagePT/GestionComercial'))
 // const ReporteSesionesxMem = lazy(()=>import('../pages/pagePT/reportes/reporteSesionesxMem'))
 const ResultadoChange = lazy(() => import('../pages/pagePT/reportes/resultadoChange'))
 // const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));

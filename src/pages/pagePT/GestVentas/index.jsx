@@ -1,1 +1,1 @@
-export { AppVentas as default } from './AppVentas'
+export { DataTableVentasPresentacion as default } from './DataTableVentasPresentacion'
