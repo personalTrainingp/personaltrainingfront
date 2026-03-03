@@ -1,102 +1,159 @@
-import { NumberFormatMoney } from '@/components/CurrencyMask';
+import { FUNMoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas=[], index='', nombreGrupo=''}) => {
+export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems}) => {
   const dataAlter = fechas.map((f, index, array)=>{
       const dataTotal = itemsxDias.find(i=>i.mes===f.mes && i.anio===f.anio)??{}
-      
+      const dataPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1423) || [];
+      const dataNoPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1424) || [];
+      const data =   dataTotal.items || []
     return {
         ...f,
         // items: conceptos.flatMap(grupo => grupo.items).filter(i=>i.mes===f.mes && i.anio===f.anio),
         mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
-        dataTotal: dataTotal.items,
-        montoTotal: dataTotal.items?.reduce((total, item)=>total+item?.monto, 0),
-        cantidadTotal: dataTotal.items?.length,
+        dataTotalPagadas: dataPagadas||[],
+        montoTotalPagadas: ( dataPagadas?.reduce((total, item)=>total+item?.monto, 0)||0),
+        data: data,
+        dataSumaMontos: data.reduce((total, item)=>total+item?.monto, 0)||0,
+        dataSumaCantidad : data.length,
+        cantidadTotalPagadas: dataPagadas?.length ||0,
+        dataTotalNoPagadas: dataNoPagadas||[],
+        montoTotalNoPagadas: (dataNoPagadas?.reduce((total, item)=>total+item?.monto, 0)||0),
+        cantidadTotalNoPagadas: dataNoPagadas?.length ||0,
     }
   })
-  const montoAcumuladoDeMontoTotal = dataAlter.reduce((total, item)=>total+item?.montoTotal, 0)
-  const montoAcumuladoDecantidadTotal = dataAlter.reduce((total, item)=>total+item?.cantidadTotal, 0)
-  console.log({d10: data, fechas, dataAlter, conceptos, nombreGrupo, montoAcumuladoDeMontoTotal});
   
+  const montoAcumuladoDeMontoTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaMontos, 0)
+  const montoAcumuladoDecantidadTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaCantidad, 0)
+  const dataFilter = dataAlter.filter(f=>f.data?.length !== 0).length
   return (
-    <Table  className="tabla-egresos" style={{ width: '100%' }} bordered>
-      <thead>
-        <tr>
-          <th style={{width: '190px'}}>{index}{nombreGrupo}</th>
-          {
-            dataAlter.map(f=>{
-              return (
-                <>
-                <th className='text-center' style={{width: '120px'}}>{f.mesStr}</th>
-                <th className='text-center' style={{width: '120px'}}>MOV.</th>
-                </>
-              )
-            })
+    <>
+      <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
+        <thead>
+          <tr>
+            <th style={{width: '280px'}} className={`fs-3 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black`}>{index}. {nombreGrupo}</th>
+            {
+              dataAlter.map(f=>{
+                return (
+                  <React.Fragment key={`${f.mesStr}`}>
+                  <th className={`text-center ${bgTotal}`} style={{width: '120px'}}>{f.mesStr}</th>
+                  <th className={`text-center ${bgPastel}`} style={{width: '120px'}}>MOV.</th>
+                  </React.Fragment>
+                )
+              })
+            }
+            <th className='text-center' style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
+            <th className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
+            <th className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
+            <th className='text-center' style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          { conceptos.map((c, i)=>{
+            return (
+              <tr key={`${i}-${c.concepto}`}>
+                <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>{i+1}. {c.concepto}</td>
+                {
+                    dataAlter.map((f, i)=>{
+                      
+                      const itemsDelMesFiltrado1423= c.items?.find(m=>m.mes===f.mes && m.anio===f.anio)?.items?.filter(e=>e.id_estado_gasto===1423)
+                      const itemsDelMesFiltrado1424= c.items?.find(m=>m.mes===f.mes && m.anio===f.anio)?.items?.filter(e=>e.id_estado_gasto===1424)
+                      const sumaMontoMensual = FUNMoneyFormatter(itemsDelMesFiltrado1423?.reduce((total, im)=>total+im?.monto, 0))
+                      const sumaCantidadMensual = itemsDelMesFiltrado1423?.length
+                      const sumaMontoMensual1424 = FUNMoneyFormatter(itemsDelMesFiltrado1424?.reduce((total, im)=>total+im?.monto, 0))
+                      const sumaCantidadMensual1424 = itemsDelMesFiltrado1424?.length
+                      console.log({f, itemsDelMesFiltrado1423, itemsDelMesFiltrado1424, tt: 123});
+                    
+                    return (
+                      <React.Fragment key={`${i}`}>
+                      <td className='text-center' >
+                        <div >
+                          {
+                            (sumaMontoMensual!=='0.00' || sumaMontoMensual1424==='0.00') && (
+                              <div onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1423)}>
+                              {sumaMontoMensual}
+                                <br/> 
+                              </div>
+                            )
+                          }
+                          <div className='text-orange' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
+                            
+                            {sumaMontoMensual1424!=='0.00'&&sumaMontoMensual1424}
+                          </div>
+                        </div>
+                      </td>
+                      <td className='text-center'>
+                        <div>
+                          {
+                            (sumaCantidadMensual!==0 || sumaCantidadMensual1424===0) && (
+                              <>
+                              {sumaCantidadMensual||0}
+                                <br/> 
+                              </>
+                            )
+                          }
+                          <div className='text-orange' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
+                            
+                            {sumaMontoMensual1424!=='0.00'&&sumaCantidadMensual1424}
+                          </div>
+                        </div>
+                      </td>
+                      </React.Fragment>
+                    )
+                  })
+                }
+                <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)}/></td>
+                <td>{c.data.length}</td>
+                <td>{(((c.data?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
+                <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(2026, dataAlter)}/></td>
+              </tr>
+            )
+          })
           }
-          <th className='text-center' style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
-          <th className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
-          <th className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
-          <th className='text-center' style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
-        </tr>
-      </thead>
-      <tbody>
-        { conceptos.map(c=>{
-          return (
-            <tr>
-              <td>{c.concepto}</td>
-              {
-                  dataAlter.map(f=>{
-                  const itemsDelMesFiltrado= c.items?.find(m=>m.mes===f.mes && m.anio===f.anio)
-                  const sumaMontoMensual = itemsDelMesFiltrado?.items?.reduce((total, im)=>total+im?.monto, 0)
-                  
-                  const sumaCantidadMensual = itemsDelMesFiltrado?.items?.length
-                  return (
-                    <>
-                    <td className='text-center'><NumberFormatMoney amount={sumaMontoMensual}/></td>
-                    <td className='text-center'>{sumaCantidadMensual}</td>
-                    </>
-                  )
-                })
-              }
-              <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)}/></td>
-              <td>{c.data.length}</td>
-              <td><NumberFormatMoney amount={(c.data?.reduce((total, im)=>total+im?.monto, 0)/c.data.length)*100}/></td>
-              <td></td>
-            </tr>
-          )
-        })
-        }
-        <tr>
-          <td>TOTAL</td>
-          {
-            dataAlter.map(f=>{
-              return (
-                <>
-                <td className='text-center' style={{width: '120px'}}><NumberFormatMoney amount={f.montoTotal}/></td>
-                <td className='text-center' style={{width: '120px'}}>{f.cantidadTotal}</td>
-                </>
-              )
-            })
-          }
-        </tr>
-        <tr>
-          <td>PARTICIPACION</td>
-          {
-            dataAlter.map(f=>{
+          <tr>
+            <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>TOTAL</td>
+            {
+              dataAlter.map((f, i)=>{
+                return (
+                  <React.Fragment key={i}>
+                  <td className={`text-center ${bgTotal}`} style={{width: '120px'}}>
+                    <NumberFormatMoney amount={f.montoTotalPagadas +f.montoTotalNoPagadas}/>
+                  </td>
+                  <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>
+                    {f.dataSumaCantidad}
+
+                  </td>
+                  </React.Fragment>
+                )
+              })
+            }
+            <td colSpan={4} className='text-center'>TOTAL ANUAL</td>
+          </tr>
+          <tr>
+            <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10 ${bgTotal}`}>PARTICIPACION</td>
+            {
+              dataAlter.map((f, i)=>{
+                return (
+                  <React.Fragment key={i}>
+                  <td className={`text-center ${bgTotal}`} style={{width: '120px'}}><NumberFormatMoney amount={(f.montoTotalPagadas/montoAcumuladoDeMontoTotal)*100}/></td>
+                  <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>{((f.cantidadTotalPagadas/montoAcumuladoDecantidadTotal)*100).toFixed(2)}</td>
+                  </React.Fragment>
+                )
+              })
+            }
+            <td>
+              <NumberFormatMoney amount={montoAcumuladoDeMontoTotal}/>
               
-              return (
-                <>
-                <td className='text-center' style={{width: '120px'}}><NumberFormatMoney amount={(f.montoTotal/montoAcumuladoDeMontoTotal)*100}/></td>
-                <td className='text-center' style={{width: '120px'}}>{((f.cantidadTotal/montoAcumuladoDecantidadTotal)*100).toFixed(2)}</td>
-                </>
-              )
-            })
-          }
-        </tr>
-      </tbody>
-    </Table>
+            </td>
+            <td>{montoAcumuladoDecantidadTotal}</td>
+            <td>{''}</td>
+            <td><NumberFormatMoney amount={montoAcumuladoDeMontoTotal/montoAcumuladoDecantidadTotal}/></td>
+          </tr>
+        </tbody>
+      </Table>
+    </>
   )
 }
 
@@ -104,5 +161,5 @@ export const DataTablePrincipal = ({data=[], itemsxDias=[], conceptos=[], fechas
 
 
 function dataTotalFormular(anio=2024, data=[]) {
-	return anio===2024?data.slice(data.findIndex(n => n !== 0)):data
+	return anio===2024?data.filter(f=>f.data?.length !== 0).length:12
 }

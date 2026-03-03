@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { generarMesYanio } from './helpers/generarMesYanio'
 import { TableResumen } from './DataTables/TableResumen'
-import { useFlujoCaja } from './hook/useFlujoCaja'
+import { useFlujoCaja } from './hook/useFlujoCajaStore'
 import { DataTablePrincipal } from './DataTables/DataTablePrincipal'
 import { ModalTableItems } from './view/ModalTableItems'
 import { ModalCustomGasto } from '../GestGastos/ModalCustomGasto'
@@ -30,7 +30,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
     }
   return (
     <div>
-            <div className='fs-1 text-center'>INGRESOS</div>
+        <div className='fs-1 text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
             {
                 dataIngresosxFecha?.map((data, i)=>{

@@ -562,7 +562,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                     </div>
                                 </Col>
                                 <Col lg={4}>
-                                            
                                     <div className="mb-4">
                                         <label htmlFor="id_porCobrar" className="form-label">
                                             COBRAR
@@ -580,21 +579,6 @@ export const ModalIngresosGastos = ({isCopy, setisCopyHide, onHide, show, data, 
                                         />
                                     </div>
                                 </Col>
-                                {/* <Col lg={4}>
-                                    <div className="mb-4">
-                                        <label htmlFor="cod_trabajo" className="form-label">
-                                            Codigo de trabajo
-                                        </label>
-                                        <input
-                                                className="form-control"
-                                                name="cod_trabajo"
-                                                id="cod_trabajo"
-                                                value={cod_trabajo}
-                                                onChange={onInputChange}
-                                                placeholder="EJ. DE1234"
-                                            />
-                                    </div>
-                                </Col>                                                                           */}
                                 <Col lg={12}>
                                 <div className='mb-4'>
                                     <div className="form-check">

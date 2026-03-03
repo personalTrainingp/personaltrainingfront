@@ -44,13 +44,13 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
                 return (
                     <>
                     {
-                        row?.tb_Proveedor?.razon_social_prov
+                        row?.proveedor_empresa?.razon_social_prov
                     }
                     </>
                 )
             }  },
             { id: 'descripcion', header: 'descripcion', accessor: 'descripcion', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
-            { id: 'n_operacion', header: 'n_operacion', accessor: 'n_operacion', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
+            { id: 'n operacion', header: 'n_operacion', accessor: 'n_operacion', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
             { id: 'accion', header: '',  sortable: true, render:(row)=>{
                 return (
                     <>

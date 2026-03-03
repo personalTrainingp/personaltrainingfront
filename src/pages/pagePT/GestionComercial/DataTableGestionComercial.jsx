@@ -3,6 +3,7 @@ import { useGestionComercialStore } from './useGestionComercialStore'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { useSelector } from 'react-redux'
 import { Button } from 'primereact/button'
+import { arrayEstadoComercial } from '@/types/type'
 
 export const DataTableGestionComercial = ({onOpenModalComentario}) => {
   const { obtenerGestionComercial } = useGestionComercialStore()
@@ -77,6 +78,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario}) => {
       id: 12, header: 'MEDIO DE COMUNICACION', render: (row)=>{
         return (
           <>
+
           {row.parametro_medio_comunicacion?.label_param}
           </>
         )
@@ -94,7 +96,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario}) => {
       id: 9, header: 'ESTATUS', render: (row)=>{
         return (
           <>
-            {row.parametro_estado?.label_param}
+          <Button className={`${arrayEstadoComercial.find(e=>e.value===row.parametro_estado?.id_param)?.color} border-none`} label={row.parametro_estado?.label_param}/>
           </>
         )
       }

@@ -14,6 +14,14 @@ export const clasesVentasSeparadas = (tipo) => {
 			return '';
 	}
 };
+export const arrayEstadoComercial = [
+	{ value: 1678, color: 'bg-spam' },
+	{ value: 1677, color: 'bg-sin-contacto' },
+	{ value: 1676, color: 'bg-no' },
+	{ value: 1675, color: 'bg-contactado' },
+	{ value: 1674, color: 'bg-interesado' },
+	{ value: 1673, color: 'bg-venta' },
+];
 export const arrayTipoJornada = [
 	{ value: 1501, label: 'DESCANSO' },
 	{ value: 1500, label: 'REFRIGERIO' },

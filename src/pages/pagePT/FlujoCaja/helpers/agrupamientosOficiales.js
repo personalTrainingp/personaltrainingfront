@@ -29,6 +29,8 @@ export function aplicarTipoDeCambio(dataTC, data) {
 export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = []) => {
 	// 🔹 Agrupar dataGrupos por grupo
 	const gruposMapTemp = {};
+	console.log({ dataGrupos, dataGastos });
+
 	dataGrupos.forEach((entry) => {
 		const nombreGrupo = entry?.parametro_grupo?.param_label || 'SIN GRUPO';
 		if (!gruposMapTemp[nombreGrupo]) gruposMapTemp[nombreGrupo] = [];

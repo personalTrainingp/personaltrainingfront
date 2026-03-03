@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useFlujoCaja } from './hook/useFlujoCaja';
+import { useFlujoCaja } from './hook/useFlujoCajaStore';
 import { Table } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
