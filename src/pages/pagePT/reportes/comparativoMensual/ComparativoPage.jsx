@@ -12,7 +12,7 @@ const ComparativoPage = () => {
         year, setYear,
         selectedMonth, setSelectedMonth,
         cutDay, setCutDay, setInitDay
-    } = useResumenEjecutivoStore();
+    } = useResumenEjecutivoStore(null, { initialMonth: 1 });
 
     const [customStartDay, setCustomStartDay] = useState(1);
     const [customEndDay, setCustomEndDay] = useState(new Date().getDate());
@@ -111,7 +111,7 @@ const ComparativoPage = () => {
                                     year={hookYear}
                                     startMonth={hookStartMonth}
                                     cutDay={cutDay}
-                                    title="TOTAL VENTAS MEMBRESIAS"
+                                    title="VENTAS MEMBRESIAS"
                                     customStartDay={customStartDay}
                                     customEndDay={customEndDay}
                                     displayYear={Number(year)}

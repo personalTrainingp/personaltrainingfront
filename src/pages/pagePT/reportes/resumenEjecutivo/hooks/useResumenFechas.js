@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { onSetRangeDate } from '@/store/data/dataSlice';
 import { limaStartOfDay, limaEndOfDay } from './useResumenUtils';
 
-export const useResumenFechas = () => {
+export const useResumenFechas = (initialMonth = new Date().getMonth() + 1) => {
 	const dispatch = useDispatch();
 	const { RANGE_DATE } = useSelector((e) => e.DATA);
 
 	const [cutDay, setCutDay] = useState(new Date().getDate());
 	const [initDay, setInitDay] = useState(1);
-	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+	const [selectedMonth, setSelectedMonth] = useState(initialMonth);
 	const [year, setYear] = useState(new Date().getFullYear());
 	const [tasaCambio, setTasaCambio] = useState(3.37);
 

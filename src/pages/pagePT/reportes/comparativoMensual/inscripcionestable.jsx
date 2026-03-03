@@ -13,7 +13,7 @@ const InscripcionesTable = () => {
         year, setYear,
         selectedMonth, setSelectedMonth,
         cutDay, setCutDay, setInitDay
-    } = useResumenEjecutivoStore();
+    } = useResumenEjecutivoStore(null, { initialMonth: 1 });
 
     const [customStartDay, setCustomStartDay] = useState(1);
     const [customEndDay, setCustomEndDay] = useState(new Date().getDate());
@@ -36,7 +36,7 @@ const InscripcionesTable = () => {
 
     return (
         <>
-            <PageBreadcrumb title={'Reporte Inscripciones'} subName={'Reinscripciones por Mes'} />
+            <PageBreadcrumb title={'Inscripciones por mes'} />
             <Row>
                 <Col xs={12}>
                     <Card>

@@ -13,7 +13,7 @@ const ComparativoMensualVentasPage = () => {
         year, setYear,
         selectedMonth, setSelectedMonth,
         cutDay, setCutDay, setInitDay
-    } = useResumenEjecutivoStore();
+    } = useResumenEjecutivoStore(null, { initialMonth: 1 });
 
     // El estado viewMode aquí es manejado para los controles, pero solo usaremos la vista estándar o goals si se desea
     const [viewMode, setViewMode] = useState('standard');
@@ -68,7 +68,7 @@ const ComparativoMensualVentasPage = () => {
                                         year={year}
                                         startMonth={selectedMonth - 1}
                                         cutDay={cutDay}
-                                        title="TOTAL VENTAS MEMBRESIAS"
+                                        title="VENTAS MEMBRESIAS"
                                         customStartDay={customStartDay}
                                         customEndDay={customEndDay}
                                     />

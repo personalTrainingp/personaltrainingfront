@@ -14,7 +14,7 @@ const GeneralSalesBreakdownPage = () => {
         year, setYear,
         selectedMonth, setSelectedMonth,
         cutDay, setCutDay, setInitDay
-    } = useResumenEjecutivoStore();
+    } = useResumenEjecutivoStore(null, { initialMonth: 1 });
 
     const [viewMode, setViewMode] = useState('standard');
     const [customStartDay, setCustomStartDay] = useState(1);
@@ -48,7 +48,7 @@ const GeneralSalesBreakdownPage = () => {
 
     return (
         <>
-            <PageBreadcrumb title={'Reportes'} subName={'Comparativo Mensual Ventas'} />
+            <PageBreadcrumb title={'Ventas Comparativos por asesor'} />
             <Row>
                 <Col xs={12}>
                     <Card>

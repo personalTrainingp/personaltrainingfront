@@ -13,7 +13,7 @@ const App = () => {
         year, setYear,
         selectedMonth, setSelectedMonth,
         cutDay, setCutDay, setInitDay
-    } = useResumenEjecutivoStore();
+    } = useResumenEjecutivoStore(null, { initialMonth: 1 });
 
     const [viewMode, setViewMode] = useState('standard');
     const [customStartDay, setCustomStartDay] = useState(1);
@@ -31,7 +31,7 @@ const App = () => {
 
     return (
         <>
-            <PageBreadcrumb title={'Reportes'} subName={'Comparativo Mensual'} />
+            <PageBreadcrumb title={'Comparativo Mensual'} />
             <Row>
                 <Col xs={12}>
                     <Card>
@@ -70,7 +70,7 @@ const App = () => {
                                                 year={year}
                                                 startMonth={selectedMonth - 1}
                                                 cutDay={cutDay}
-                                                title="TOTAL VENTAS MEMBRESIAS"
+                                                title="VENTAS MEMBRESIAS"
                                                 customStartDay={customStartDay}
                                                 customEndDay={customEndDay}
                                             />
