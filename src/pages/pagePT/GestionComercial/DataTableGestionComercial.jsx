@@ -106,6 +106,8 @@ export const DataTableGestionComercial = ({onOpenModalComentario}) => {
         return (
           <>
             <Button icon="pi pi-comment" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
+            <Button icon="pi pi-history" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
+            <Button icon="pi pi-eye" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
           </>
         )
       }
@@ -114,6 +116,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario}) => {
   const onOpenComentario = (uid)=>{
     onOpenModalComentario(uid)
   }
+  
   return (
     <div>
       <DataTableCR

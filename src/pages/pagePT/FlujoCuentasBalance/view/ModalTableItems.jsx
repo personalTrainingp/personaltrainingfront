@@ -35,8 +35,8 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom})
                                         <td onClick={() => onOpenModalCustom(f.id)}>
                                             <i className='pi pi-pencil fw-bold text-primary cursor-pointer p-2 rounded hover-bg-light' title="Editar" />
                                         </td>
-                                        <td>{f.tb_Proveedor?.razon_social_prov}</td>
-                                        <td>{f.descripcion}</td>
+                                        <td>{f.descripcion.split(':')[0]}</td>
+                                        <td>{f.descripcion.split(':')[1]}</td>
                                         <td>{DateMaskStr(f.fecha_comprobante, 'dddd DD [DE] MMMM [DEL] YYYY')}</td>
                                         <td>{DateMaskStr(f.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY')}</td>
                                         <td>{f.monto}</td>

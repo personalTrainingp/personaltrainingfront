@@ -1,4 +1,4 @@
-import { InputButton, InputSelect, InputText } from '@/components/InputText'
+import { InputButton, InputDate, InputSelect, InputText } from '@/components/InputText'
 import { useForm } from '@/hooks/useForm'
 import React, { useEffect } from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
@@ -12,10 +12,11 @@ const customComercial = {
   id_medio_comunicacion: 0,
   id_pgm: 0,
   id_estado: 0,
-  id_empl: 0
+  id_empl: 0,
+  fecha_ingreso: ''
 }
 export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
-  const { formState, onInputChange, onResetForm, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado } = useForm(customComercial)
+  const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado } = useForm(customComercial)
   const { dataEmpleados, obtenerEmpleadosVendedores, dataCanales, dataMedioComunicacion, obtenerCanales, obtenerMedioComunicacion, obtenerEstadosComerciales, dataEstadoComercial,postGestionComercial, obtenerDistritosDeLima, dataDistritos } = useGestionComercialStore()
   useEffect(() => {
     if(show){
@@ -44,6 +45,11 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
       <Modal.Body>
         <form>
           <Row>
+            <Col lg={12}>
+              <div className='m-1'>
+                <InputDate label={'FECHA DE INGRESO'} nameInput={'fecha_ingreso'} onChange={onInputChange} value={fecha_ingreso} required/>
+              </div>
+            </Col>
             <Col lg={4}>
               <div className='m-1'>
                 <InputText label={'CELULAR'} nameInput={'celular'} onChange={onInputChange} value={celular} required/>
