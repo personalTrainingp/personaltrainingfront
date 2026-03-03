@@ -11,7 +11,7 @@ const customCustomBalance = {
     monto:0, 
     moneda:'PEN', 
     fecha_comprobante:'', 
-    id_proveedor_empresa:0, 
+    id_prov:0, 
     descripcion:'',
     id_empresa: 0,
     id_banco: 0,
@@ -28,7 +28,7 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, h
         }
     }, [show])
     
-    const { formState, id_concepto, id_prov__, monto, moneda, fecha_comprobante, id_proveedor_empresa, descripcion, id_empresa, id_banco, n_operacion, onInputChange, onResetForm } = useForm(id===0?customCustomBalance:dataCuentaBalance)
+    const { formState, id_concepto, id_prov__, monto, moneda, fecha_comprobante, id_prov, descripcion, id_empresa, id_banco, n_operacion, onInputChange, onResetForm } = useForm(id===0?customCustomBalance:dataCuentaBalance)
     const onSubmitCuentasBalancexIdEmpresaxTipo=()=>{
         if(id===0){
             postCuentasBalancesxIdEmpresaxTipo(formState, id_empresa, tipo)
@@ -53,6 +53,7 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, h
             obtenerParametrosProveedor(id_empresa)
         }
     }, [id_empresa])
+    console.log({id_prov, dataProveedores});
     
   return (
     <Dialog visible={show} onHide={onCancelarModal} header={`Agregar Cuentas ${headerTipo}`} style={{width: '80rem'}}>
@@ -85,12 +86,7 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, h
                 </Col>
                 <Col lg={4}>
                     <div className='mb-2'>
-                    <InputSelect label={'Empresa'} value={id_proveedor_empresa} nameInput={'id_proveedor_empresa'} onChange={onInputChange} options={dataProveedores} required/>
-                    </div>
-                </Col>
-                <Col lg={4}>
-                    <div className='mb-2'>
-                    <InputSelect label={'Proveedor'} value={id_prov__} nameInput={'id_prov__'} onChange={onInputChange} options={dataProveedores} required/>
+                    <InputSelect label={'Empresa'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedores} required/>
                     </div>
                 </Col>
                 <Col lg={4}>
