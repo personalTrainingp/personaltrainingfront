@@ -6,12 +6,13 @@ import { DataTablePrincipal } from './DataTables/DataTablePrincipal'
 import { ModalTableItems } from './view/ModalTableItems'
 import { ModalCustomGasto } from '../GestGastos/ModalCustomGasto'
 import { ViewResumenTotal } from './ViewResumenTotal'
+import { ModalCustomCuentasBalances } from '../CuentasBalances/ModalCustomCuentasBalances'
 
 export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameEmpresa, bgPastel}) => {
     const { dataCuentasBalancexFecha:dataPorPagarxFecha, obtenerCuentasBalancexFecha: obtenerPorPagarxFecha } = useFlujoCaja()
     const { dataCuentasBalancexFecha: dataPorCobrarxFecha, obtenerCuentasBalancexFecha: obtenerPorCobrarxFecha } = useFlujoCaja()
     const [data, setdata] = useState({isOpen: false, items: [], header: ''})
-    const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
+    const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0, headerTipo: ''})
     useEffect(() => {
         obtenerPorPagarxFecha(id_empresa, arrayFecha, 'PorPagar')
         obtenerPorCobrarxFecha(id_empresa, arrayFecha, 'PorCobrar')
@@ -23,11 +24,11 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
     const onCloseModalTableItems = ()=>{
         setdata({isOpen: false, items: [], header: ''})
     }
-    const onOpenModalCustomGasto = (id)=>{
-        setisOpenModalCustomGasto({isOpen: true, id: id})
+    const onOpenModalCustomGasto = (id, headerTipo)=>{
+        setisOpenModalCustomGasto({isOpen: true, id: id, headerTipo})
     }
     const onCloseModalCustomGasto = ()=>{
-        setisOpenModalCustomGasto({isOpen: false, id: 0})
+        setisOpenModalCustomGasto({isOpen: false, id: 0, headerTipo: ''})
     }
   return (
     <div>
@@ -86,7 +87,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
                 fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))} />
         </div> */}
             <ModalTableItems show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} onOpenModalCustom={onOpenModalCustomGasto}/>
-            <ModalCustomGasto id={isOpenModalCustomGasto.id} id_enterprice={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
+            <ModalCustomCuentasBalances headerTipo={isOpenModalCustomGasto.headerTipo} id={isOpenModalCustomGasto.id} idEmpresa={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
     </div>
   )
 }

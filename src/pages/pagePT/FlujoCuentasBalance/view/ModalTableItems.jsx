@@ -32,7 +32,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom})
                             items?.map(f=>{
                                 return (
                                     <tr key={f.id}>
-                                        <td onClick={() => onOpenModalCustom(f.id)}>
+                                        <td onClick={() => onOpenModalCustom(f.id, f?.tipo)}>
                                             <i className='pi pi-pencil fw-bold text-primary cursor-pointer p-2 rounded hover-bg-light' title="Editar" />
                                         </td>
                                         <td>{f.descripcion.split(':')[0]}</td>

@@ -18,7 +18,7 @@ const customCustomBalance = {
     id_prov__: 0,
     n_operacion: ''
 }
-export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, headerTipo}) => {
+export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, headerTipo=''}) => {
     const { postCuentasBalancesxIdEmpresaxTipo, obtenerCuentaBalancexID, dataCuentaBalance, putCuentaBalancexID, dataProveedores, obtenerParametrosProveedor } = useCuentasBalances()
     const { DataGeneral:dataConcepto, obtenerParametroPorEntidadyGrupo:obtenerDataConcepto }  = useTerminoStore()
     const { DataGeneral:dataBanco, obtenerParametroPorEntidadyGrupo:obtenerDataBanco }  = useTerminoStore()
