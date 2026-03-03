@@ -15,7 +15,6 @@ export const ItemDayEvent = ({data, getEstado}) => {
     status_cita,
     fecha_final,
     fecha_init } = data?data:dataProv;
-  console.log({data});
   
   return (
           <Card className='rounded-5'>

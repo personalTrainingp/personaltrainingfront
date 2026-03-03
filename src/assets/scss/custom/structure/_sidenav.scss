@@ -297,7 +297,7 @@ html[data-sidenav-user="true"] {
 
 .side-nav-second-level {
     margin-top: calc($menu-item-padding-y * -0.5);
-    padding-left: calc($leftbar-width-sm - calc($menu-item-padding-x * 2));
+    // padding-left: calc($leftbar-width-sm - calc($menu-item-padding-x * 2));
 }
 
 .side-nav-third-level {

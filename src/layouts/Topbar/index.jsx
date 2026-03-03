@@ -119,14 +119,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 					<button className="button-toggle-menu" onClick={handleLeftMenuCallBack}>
 						<i className="mdi mdi-menu" />
 					</button>
-					<strong>
-						modulo
-					</strong>
-						<ModuloDropdown colorEmpresa={colorEmpresa}/>
 						<h3 style={{color: colorEmpresa}} className="text-uppercase fw-bolder d-flex justify-content-center align-items-center">
-							<span className='fs-1'> / </span>
-							<div className='mx-2'> {section_item==='d1'?<>RESUMEN COMPARATIVO MENSUAL <span className='text-primary fs-1'>POR ASESOR</span> Y CATEGORIA</>:section_item} </div>
-							<span className='fs-1'> / </span>
 							<div className='mx-2'> 
 								{RANGE_DATE[0] instanceof Date?dayjs(RANGE_DATE[0]).format('dddd DD [DE] MMMM [DEL] YYYY'):RANGE_DATE[0]} 
 								<br/> 

@@ -7,6 +7,8 @@ import { ThemeSettings, useThemeContext } from '@/common';
 import { findAllParent, findMenuItem } from './utils/menu';
 import { useDispatch } from 'react-redux';
 import { onSetDataView } from '@/store/data/dataSlice';
+import ModuloDropdown from './Topbar/moduloDropdown';
+import { useSelector } from 'react-redux';
 
 const MenuItemWithChildren = ({
   item,
@@ -42,14 +44,7 @@ const MenuItemWithChildren = ({
         className={linkClassName}
       >
         {item.icon && <i className={item.icon}></i>}
-        {!item.badge ? (
-          <span className="menu-arrow"></span>
-        ) : (
-          <span className={`badge bg-${item.badge.variant} float-end`}>
-            {item.badge.text}
-          </span>
-        )}
-        <span> {item.label} </span>
+        <span className='fs-4 ml-3'> {item.label} </span>
       </Link>
       <Collapse in={open}>
         <div className={collapseClass ? 'collapse' : ''}>
@@ -111,28 +106,12 @@ const MenuItemLink = ({ item, className }) => {
       {item.icon ? (
         <>
           <i className={item.icon}></i>
-          <div className='' style={{ whiteSpace: 'normal' }}>&nbsp;{item.label}</div>
+          <div className='ml-3' style={{ whiteSpace: 'normal' }}>&nbsp;&nbsp;{item.label}</div>
         </>
       ) : (
-        item.label
-      )}
-      {item.badge && (
-        <span
-          className={classNames(
-            'badge',
-            'bg-' + item.badge.variant,
-            'rounded',
-            'font-10',
-            'float-end',
-            {
-              'text-dark': item.badge.variant === 'light',
-              'text-light':
-                item.badge.variant === 'dark' || item.badge.variant === 'secondary',
-            }
-          )}
-        >
-          {item.badge.text}
-        </span>
+        <>
+          {item.label}
+        </>
       )}
     </Link>
   );
@@ -184,14 +163,23 @@ const AppMenu = ({ menuItems }) => {
     activeMenu();
   }, [activeMenu]);
 
+	const { colorEmpresa } = useSelector(e=>e.ui)
   return (
     <>
+      <div className='d-flex justify-content-center flex-column text-center align-items-center'>
+        <strong>
+          modulo
+        </strong>
+        <ModuloDropdown colorEmpresa={colorEmpresa}/>
+      </div>
       <ul className="side-nav" ref={menuRef} id="main-side-menu">
         {(menuItems || []).map((item, index) => {
           return (
             <React.Fragment key={index.toString()}>
               {item.isTitle ? (
-                <li className="side-nav-title" dangerouslySetInnerHTML={{ __html: item.label }} />
+                <li className="side-nav-title">
+                  {item.label}
+                </li>
               ) : (
                 <React.Fragment>
                   {item.children ? (
@@ -215,21 +203,6 @@ const AppMenu = ({ menuItems }) => {
           );
         })}
 
-        {/* <div className="help-box text-white text-center">
-          <Link to="" className="float-end close-btn text-white">
-            <i className="mdi mdi-close" />
-          </Link>
-          <img src={helpBoxImage} height="90" alt="Helper Icon Image" />
-          <h5 className="mt-3">Unlimited Access</h5>
-          <p className="mb-3">Upgrade to plan to get access to unlimited reports</p>
-          <Link
-            to="https://themes.getbootstrap.com/product/hyper-react-admin-dashboard-template"
-            className="btn btn-secondary btn-sm"
-            target="_blank"
-          >
-            Upgrade
-          </Link>
-        </div> */}
       </ul>
     </>
   );

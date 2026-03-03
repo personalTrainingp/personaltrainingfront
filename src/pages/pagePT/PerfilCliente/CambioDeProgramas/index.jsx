@@ -1,0 +1,1 @@
+export { ViewTableGestionCambioPrograma as default } from './ViewTableGestionCambioPrograma'

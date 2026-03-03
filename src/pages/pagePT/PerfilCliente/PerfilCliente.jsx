@@ -22,6 +22,7 @@ import { SectionFiles } from './SectionFiles';
 import { Image } from 'primereact/image';
 import { PanelMembresias } from './PanelMembresias/PanelMembresias';
 import { Button } from 'primereact/button';
+import { AppCambioProgramas } from './CambioDeProgramas/AppCambioProgramas';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
@@ -148,6 +149,11 @@ export const PerfilCliente = () => {
                 <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                   {/* <ReportesxCliente uid={uid} dataVenta={userCliente.tb_venta}/> */}
                   <ScreenNutricionista id_cli={userCliente?.id_cli} dataCli={userCliente}/>
+                </ScrollPanel>
+                </TabPanel>
+                <TabPanel header='Cambio de programa'>
+                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
+                  <AppCambioProgramas/>
                 </ScrollPanel>
                 </TabPanel>
               </TabView>
