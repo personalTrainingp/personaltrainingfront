@@ -13,7 +13,7 @@ const RenovacionesMesPage = () => {
         year, setYear,
         selectedMonth, setSelectedMonth,
         cutDay, setCutDay, setInitDay
-    } = useResumenEjecutivoStore();
+    } = useResumenEjecutivoStore(null, { initialMonth: 1 });
 
     const [customStartDay, setCustomStartDay] = useState(1);
     const [customEndDay, setCustomEndDay] = useState(new Date().getDate());
@@ -46,7 +46,7 @@ const RenovacionesMesPage = () => {
 
     return (
         <>
-            <PageBreadcrumb title={'Reporte Renovaciones'} subName={'Renovaciones por Mes'} />
+            <PageBreadcrumb title={'Renovaciones por mes'} />
             <Row>
                 <Col xs={12}>
                     <Card>
