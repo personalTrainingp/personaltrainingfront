@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 import React from 'react'
 import { Button, Card } from 'react-bootstrap'
-import styled from 'styled-components'
 const dataProv = {
   nombre_empleado: '',
   nombres_cliente: '',
@@ -42,28 +41,3 @@ export const ItemDayEvent = ({data, getEstado}) => {
           </Card>
   )
 }
-
-const ContainerItemDayEvent = styled.li`
-
-.bt-calendar .calendar-sidebar .calendar-present-day-events .calendar-event {
-  padding: 0 10px;
-}
-
-.bt-calendar .calendar-sidebar .calendar-present-day-events .calendar-event span {
-  display: block;
-}
-
-.bt-calendar .calendar-sidebar .calendar-present-day-events .calendar-event .event-time,
-.bt-calendar .calendar-sidebar .calendar-present-day-events .calendar-event .event-recurrence {
-  font-size: 12px;
-}
-
-.bt-calendar .calendar-sidebar .calendar-present-day-events .calendar-event .event-time {
-  padding: 5px 0;
-}
-
-.bt-calendar .calendar-sidebar .calendar-present-day-events .calendar-event .event-title {
-  font-size: 15px;
-  font-weight: bold;
-}
-`

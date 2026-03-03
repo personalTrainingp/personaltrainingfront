@@ -27,7 +27,6 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, h
             obtenerCuentaBalancexID(id)
         }
     }, [show])
-    
     const { formState, id_concepto, id_prov__, monto, moneda, fecha_comprobante, id_prov, descripcion, id_empresa, id_banco, n_operacion, onInputChange, onResetForm } = useForm(id===0?customCustomBalance:dataCuentaBalance)
     const onSubmitCuentasBalancexIdEmpresaxTipo=()=>{
         if(id===0){
@@ -53,8 +52,6 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, h
             obtenerParametrosProveedor(id_empresa)
         }
     }, [id_empresa])
-    console.log({id_prov, dataProveedores});
-    
   return (
     <Dialog visible={show} onHide={onCancelarModal} header={`Agregar Cuentas ${headerTipo}`} style={{width: '80rem'}}>
         <form>

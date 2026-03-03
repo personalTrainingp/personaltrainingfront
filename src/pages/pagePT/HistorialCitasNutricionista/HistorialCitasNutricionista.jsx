@@ -12,6 +12,7 @@ import { useHistorialNutricionStore } from './useHistorialNutricionStore'
 import { Button } from 'primereact/button'
 import { FechaRange } from '@/components/RangeCalendars/FechaRange'
 import { useForm } from '@/hooks/useForm'
+import PrincipalView from './citasxEstados'
 
 const getEstado = (status) => {
     
@@ -64,6 +65,7 @@ export const HistorialCitasNutricionista = () => {
   return (
     <>
     <PageBreadcrumb title={'Historial de citas nutricionista'} subName={'citas nut'}/>
+    <PrincipalView/>
         {
             !loading && (
                 
