@@ -389,13 +389,19 @@ export default function ExecutiveTable(props) {
           NO HAY ORÍGENES CON DATOS PARA EL PERÍODO
         </div>
       ) : (
-        orderedOrigins.map((okey) => {
-          const title = ` ${labelFromKey(okey)} `;
+        orderedOrigins.map((okey, idx) => {
+          const title = `${idx + 1}. ${labelFromKey(okey)} `;
           const rows = rowsPerOrigin(okey);
           return (
             <div key={okey} style={{ marginBottom: 24 }}>
-              <TitleChip>{title}</TitleChip>
               <table style={sTable}>
+                <thead>
+                  <tr>
+                    <td colSpan={getOrderedMonthsForOrigin(okey).length + 1} style={{ textAlign: "center", padding: "20px 0" }}>
+                      <span style={sHeaderChip}>{title}</span>
+                    </td>
+                  </tr>
+                </thead>
                 <TableHeadFor okey={okey} />
                 <tbody>{renderRowsFor(okey, rows)}</tbody>
               </table>
