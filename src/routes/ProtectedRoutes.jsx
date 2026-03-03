@@ -461,8 +461,8 @@ export default function ProtectedRoutes() {
 								<Route path='reporte/comparativo-mensual' element={<ComparativoMensualPage />} />
 							}
 							{
-								findSectionDeep('/reporte/ranking-por-asesor') &&
-								<Route path='reporte/ranking-por-asesor' element={<RankingAsesorPage />} />
+								findSectionDeep('/reporte/comparativo-por-asesor') &&
+								<Route path='reporte/comparativo-por-asesor' element={<RankingAsesorPage />} />
 							}
 							{
 								findSectionDeep('/reporte/vigentes-historico') &&

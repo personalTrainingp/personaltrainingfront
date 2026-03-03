@@ -89,7 +89,7 @@ export const ClientesPorOrigen = ({
     1455: "DIGITAL",
     1456: "REFERIDO",
     1457: "CARTERA",
-    1593: "INDIGO",
+    1593: "OTROS",
   },
   uniqueByClient = true,
 }) => {

@@ -2,9 +2,9 @@ import React from 'react';
 import { useReentryBreakdown } from '../hooks/useReentryBreakdown';
 import { fmtMoney } from '../../resumenEjecutivo/adapters/executibleLogic';
 
-export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
+export const ReentryBreakdownTable = ({ ventas = [], monthsData = [], customStartDay = 1, customEndDay = 31 }) => {
 
-    const { repData, totals, grandTotal } = useReentryBreakdown(ventas, monthsData);
+    const { repData, totals, grandTotal } = useReentryBreakdown(ventas, monthsData, customStartDay, customEndDay);
 
     // --- ESTILOS (Copiados de GeneralSalesBreakdownTable) ---
     const styles = {
@@ -156,12 +156,12 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [] }) => {
                         <tr>
                             {monthsData.map(m => (
                                 <React.Fragment key={m.key}>
-                                    <th style={styles.thSub}>CANTIDAD</th>
+                                    <th style={styles.thSub}>SOCIOS</th>
                                     <th style={styles.thSub}>IMPORTE</th>
                                 </React.Fragment>
                             ))}
 
-                            <th style={{ ...styles.thSub }}>CANTIDAD</th>
+                            <th style={{ ...styles.thSub }}>SOCIOS</th>
                             <th style={{ ...styles.thSub }}>IMPORTE</th>
                         </tr>
                     </thead>

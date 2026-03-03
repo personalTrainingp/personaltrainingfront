@@ -50,7 +50,7 @@ const RankingAsesorPage = () => {
 
     return (
         <>
-            <PageBreadcrumb title={'Ranking por asesor'} />
+            <PageBreadcrumb title={'Comparativo por asesor'} />
             <Row>
                 <Col xs={12}>
                     <Card>
@@ -77,6 +77,8 @@ const RankingAsesorPage = () => {
                                         <RenovationsBreakdownTable
                                             ventas={dataVentas}
                                             monthsData={monthsData}
+                                            customStartDay={customStartDay}
+                                            customEndDay={customEndDay}
                                         />
                                     </div>
 
@@ -85,6 +87,8 @@ const RankingAsesorPage = () => {
                                         <ReentryBreakdownTable
                                             ventas={dataVentas}
                                             monthsData={monthsData}
+                                            customStartDay={customStartDay}
+                                            customEndDay={customEndDay}
                                         />
                                     </div>
 
@@ -93,6 +97,8 @@ const RankingAsesorPage = () => {
                                         <GeneralSalesBreakdownTable
                                             ventas={dataVentas}
                                             monthsData={monthsData}
+                                            customStartDay={customStartDay}
+                                            customEndDay={customEndDay}
                                         />
                                     </div>
                                 </div>

@@ -97,13 +97,13 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
             const quota = getQuotaForMonth(m.monthIdx, m.year);
 
             // Definir variables de porcentaje (estaban omitidas)
-            const pctW1 = data.total > 0 ? (data.w1 / data.total) * 100 : 0;
-            const pctW2 = data.total > 0 ? (data.w2 / data.total) * 100 : 0;
-            const pctW3 = data.total > 0 ? (data.w3 / data.total) * 100 : 0;
-            const pctW4 = data.total > 0 ? (data.w4 / data.total) * 100 : 0;
-            const pctW5 = data.total > 0 ? (data.w5 / data.total) * 100 : 0;
-            const pctR1_15 = data.total > 0 ? (data.r1_15 / data.total) * 100 : 0;
-            const pctR16_end = data.total > 0 ? (data.r16_end / data.total) * 100 : 0;
+            const pctW1 = quota > 0 ? (data.w1 / quota) * 100 : 0;
+            const pctW2 = quota > 0 ? (data.w2 / quota) * 100 : 0;
+            const pctW3 = quota > 0 ? (data.w3 / quota) * 100 : 0;
+            const pctW4 = quota > 0 ? (data.w4 / quota) * 100 : 0;
+            const pctW5 = quota > 0 ? (data.w5 / quota) * 100 : 0;
+            const pctR1_15 = quota > 0 ? (data.r1_15 / quota) * 100 : 0;
+            const pctR16_end = quota > 0 ? (data.r16_end / quota) * 100 : 0;
             const pctCustom = quota > 0 ? (data.customRangeTotal / quota) * 100 : 0;
 
             return {
@@ -150,5 +150,43 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
         return { top3Map: indicesMap, top3Averages: averagesTop3, last6Averages: averagesLast6 };
     }, [monthsData]);
 
-    return { monthsData, top3Indices: top3Map, top3Averages, last6Averages };
+    const getWeightedAverages = (rows) => {
+        if (!rows || rows.length === 0) return null;
+        const count = rows.length;
+
+        const sumFields = [
+            'total', 'quota', 'customRangeTotal',
+            'w1', 'w2', 'w3', 'w4', 'w5',
+            'r1_15', 'r16_end'
+        ];
+
+        const sums = sumFields.reduce((acc, field) => {
+            acc[field] = rows.reduce((s, row) => s + (row[field] || 0), 0);
+            return acc;
+        }, {});
+
+        const avgRow = {
+            key: 'promedios-ponderados',
+            label: 'PROMEDIOS',
+        };
+
+        sumFields.forEach(field => {
+            avgRow[field] = sums[field] / count;
+        });
+
+        // Calcular porcentajes en base al promedio de cuota
+        const avgQuota = avgRow.quota;
+        avgRow.pctCustomRangeTotal = avgQuota > 0 ? (avgRow.customRangeTotal / avgQuota) * 100 : 0;
+        avgRow.pctW1 = avgQuota > 0 ? (avgRow.w1 / avgQuota) * 100 : 0;
+        avgRow.pctW2 = avgQuota > 0 ? (avgRow.w2 / avgQuota) * 100 : 0;
+        avgRow.pctW3 = avgQuota > 0 ? (avgRow.w3 / avgQuota) * 100 : 0;
+        avgRow.pctW4 = avgQuota > 0 ? (avgRow.w4 / avgQuota) * 100 : 0;
+        avgRow.pctW5 = avgQuota > 0 ? (avgRow.w5 / avgQuota) * 100 : 0;
+        avgRow.pctR1_15 = avgQuota > 0 ? (avgRow.r1_15 / avgQuota) * 100 : 0;
+        avgRow.pctR16_end = avgQuota > 0 ? (avgRow.r16_end / avgQuota) * 100 : 0;
+
+        return avgRow;
+    };
+
+    return { monthsData, top3Indices: top3Map, top3Averages, last6Averages, getWeightedAverages };
 }; // --- CORRECCIÓN 3: Cierre de la función del hook ---

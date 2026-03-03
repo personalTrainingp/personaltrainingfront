@@ -2,9 +2,9 @@ import React from 'react';
 import { useRenovationsBreakdown } from '../hooks/useRenovationsBreakdown';
 import { fmtMoney } from '../../resumenEjecutivo/adapters/executibleLogic';
 
-export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [] }) => {
+export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [], customStartDay = 1, customEndDay = 31 }) => {
 
-    const { repData, totals, grandTotal } = useRenovationsBreakdown(ventas, monthsData);
+    const { repData, totals, grandTotal } = useRenovationsBreakdown(ventas, monthsData, customStartDay, customEndDay);
 
     // --- ESTILOS (Copiados de ReentryBreakdownTable) ---
     const styles = {

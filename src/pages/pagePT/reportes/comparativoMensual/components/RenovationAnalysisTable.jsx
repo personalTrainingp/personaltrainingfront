@@ -82,7 +82,7 @@ export const RenovationAnalysisTable = ({ ventas = [], monthsData }) => {
                             const pct = row.totalCount > 0 ? (row.renovationCount / row.totalCount) * 100 : 0;
                             const isTop3 = row.key && top3Keys.includes(row.key);
                             return (
-                                <tr key={idx} style={{ background: isTop3 ? '#efef4cff' : '#fff' }}>
+                                <tr key={idx} style={{ background: isTop3 ? '#c00000' : '#fff' }}>
                                     <td style={styles.tdMonth}>{row.label}</td>
                                     <td style={styles.tdNumber}>{row.totalCount}</td>
                                     <td style={styles.tdNumber}>{row.renovationCount}</td>

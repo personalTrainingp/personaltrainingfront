@@ -156,12 +156,12 @@ export const NewMembersBreakdownTable = ({ ventas = [], monthsData = [] }) => {
                         <tr>
                             {monthsData.map(m => (
                                 <React.Fragment key={m.key}>
-                                    <th style={styles.thSub}>CANTIDAD</th>
+                                    <th style={styles.thSub}>SOCIOS</th>
                                     <th style={styles.thSub}>IMPORTE</th>
                                 </React.Fragment>
                             ))}
 
-                            <th style={styles.thSub}>CANTIDAD</th>
+                            <th style={styles.thSub}>SOCIOS</th>
                             <th style={styles.thSub}>IMPORTE</th>
                         </tr>
                     </thead>
