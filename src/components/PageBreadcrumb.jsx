@@ -7,9 +7,9 @@ import { useDispatch } from 'react-redux';
 const PageBreadcrumb = ({ subName, title, children, topTitle, btnBack }) => {
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(onViewSection(topTitle?topTitle:title))
-    }, [title, topTitle])
-  
+    dispatch(onViewSection(topTitle ? topTitle : title))
+  }, [title, topTitle])
+
   return (
     <>
       <Helmet>
@@ -29,7 +29,7 @@ const PageBreadcrumb = ({ subName, title, children, topTitle, btnBack }) => {
                 </Breadcrumb>
               </div>
               {btnBack && (
-                <a className='mdi mdi-chevron-left fw-bold' style={{cursor: 'pointer'}} href={btnBack}>Regresar</a>
+                <a className='mdi mdi-chevron-left fw-bold' style={{ cursor: 'pointer' }} href={btnBack}>Regresar</a>
               )
               }
               {/* <h3 className="text-uppercase fw-bolder text-primary" style={{fontSize: 25}}>

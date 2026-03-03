@@ -26,33 +26,33 @@ import logoSE from '@/assets/images/isesac.png';
 import dayjs from 'dayjs';
 const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	const { settings, updateSettings, updateSidebar } = useThemeContext();
-	const { user } = useSelector(e=>e.auth)
+	const { user } = useSelector(e => e.auth)
 	const { sideBarType } = useThemeCustomizer();
 	const { obtenerUser, usuarioObtenido } = useAuthStore()
-	const { section_item } = useSelector(f=>f.DATA)
+	const { section_item } = useSelector(f => f.DATA)
 	const { width } = useViewport();
 	/**
 	 * Toggle the leftmenu when having mobile screen
 	 */
 	// const uid_user = localStorage.getItem('uid-user')
 	const handleLeftMenuCallBack = () => {
-		if(width< 768){
-			if(sideBarType === 'full'){
+		if (width < 768) {
+			if (sideBarType === 'full') {
 				showLeftSideBarBackdrop();
 				document.getElementsByTagName('html')[0].classList.add('sidebar-enable');
 			}
 		}
-		else if(width < 1140){
-			if(sideBarType === 'full'){
+		else if (width < 1140) {
+			if (sideBarType === 'full') {
 				showLeftSideBarBackdrop();
 				document.getElementsByTagName('html')[0].classList.add('sidebar-enable');
 			}
 		}
-		else if(width>= 1140){
-			if(sideBarType==='default'){
+		else if (width >= 1140) {
+			if (sideBarType === 'default') {
 				updateSidebar({ size: ThemeSettings.sidebar.size.fullscreen });
 			}
-			else if(sideBarType==='fullscreen'){
+			else if (sideBarType === 'fullscreen') {
 				updateSidebar({ size: ThemeSettings.sidebar.size.default });
 			}
 		}
@@ -84,11 +84,11 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	/**
 	 * Toggle Dark Mode
 	 */
-	const { RANGE_DATE } = useSelector(e=>e.DATA)
+	const { RANGE_DATE } = useSelector(e => e.DATA)
 	/**
 	 * Toggles the right sidebar
 	 */
-	
+
 	const handleRightSideBar = () => {
 		updateSettings({ rightSidebar: ThemeSettings.rightSidebar.show });
 	};
@@ -97,23 +97,23 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 		console.log("usuario presente");
 	}, [])
 	const options = [
-	{ src: logoDark, url: 'https://localhost:5174/reporte-admin/flujo-caja', w: '280px', h: 'auto' },
-	{ src: logoCircus, url: 'https://change-the-slim-studio-sigma.vercel.app/reporte-admin/flujo-caja', w: '180px', h: '150px' },
-	{ src: logoSE, url: 'https://localhost:5173/reporte-admin/flujo-caja', w: '250px', h: 'auto' },
+		{ src: logoDark, url: 'https://localhost:5174/reporte-admin/flujo-caja', w: '280px', h: 'auto' },
+		{ src: logoCircus, url: 'https://change-the-slim-studio-sigma.vercel.app/reporte-admin/flujo-caja', w: '180px', h: '150px' },
+		{ src: logoSE, url: 'https://localhost:5173/reporte-admin/flujo-caja', w: '250px', h: 'auto' },
 	];
-	  // Estado para llevar el logo seleccionado; por defecto, logoDark
-  const [selectedLogo, setSelectedLogo] = useState(options[0]);
+	// Estado para llevar el logo seleccionado; por defecto, logoDark
+	const [selectedLogo, setSelectedLogo] = useState(options[0]);
 
 	// Función que maneja el cambio de logo cuando el usuario hace clic en un item
 	const handleSelect = (opt) => {
 		// window.location.href = opt.url;
 		setSelectedLogo(opt);
-			
+
 	};
-	const { colorEmpresa } = useSelector(e=>e.ui)
+	const { colorEmpresa } = useSelector(e => e.ui)
 
 	return (
-		<div className={'navbar-custom d-flex'} style={{height: '8rem'}}>
+		<div className={'navbar-custom d-flex'} style={{ height: '8rem' }}>
 			<div className="topbar container-fluid">
 				<div className="d-flex align-items-center gap-lg-2 gap-1">
 					<button className="button-toggle-menu" onClick={handleLeftMenuCallBack}>
@@ -122,18 +122,18 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 					<strong>
 						modulo
 					</strong>
-						<ModuloDropdown colorEmpresa={colorEmpresa}/>
-						<h3 style={{color: colorEmpresa}} className="text-uppercase fw-bolder d-flex justify-content-center align-items-center">
-							<span className='fs-1'> / </span>
-							<div className='mx-2'> {section_item==='d1'?<>RESUMEN COMPARATIVO MENSUAL <span className='text-primary fs-1'>POR ASESOR</span> Y CATEGORIA</>:section_item} </div>
-							<span className='fs-1'> / </span>
-							<div className='mx-2'> 
-								{RANGE_DATE[0] instanceof Date?dayjs(RANGE_DATE[0]).format('dddd DD [DE] MMMM [DEL] YYYY'):RANGE_DATE[0]} 
-								<br/> 
-								{RANGE_DATE[1] instanceof Date?dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM [DEL] YYYY'):RANGE_DATE[1]}
-							</div> 
-						</h3>
-				</div>	
+					<ModuloDropdown colorEmpresa={colorEmpresa} />
+					<h3 style={{ color: colorEmpresa }} className="text-uppercase fw-bolder d-flex justify-content-center align-items-center">
+						<span className='fs-1'> / </span>
+						<div className='mx-2'> {section_item === 'd1' ? <>RESUMEN COMPARATIVO MENSUAL <span className='text-primary fs-1'>POR ASESOR</span> Y CATEGORIA</> : section_item} </div>
+						<span className='fs-1'> / </span>
+						<div className='mx-2'>
+							{RANGE_DATE[0] instanceof Date ? dayjs(RANGE_DATE[0]).format('dddd DD [DE] MMMM [DEL] YYYY') : RANGE_DATE[0]}
+							<br />
+							{RANGE_DATE[1] instanceof Date ? dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM [DEL] YYYY') : RANGE_DATE[1]}
+						</div>
+					</h3>
+				</div>
 				<ul className=" d-flex align-items-center gap-3">
 					<li>
 						<Dropdown>
@@ -143,35 +143,35 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 								id="dropdown-logo"
 							>
 								<img
-								src={selectedLogo.src}
-								alt="logo seleccionado"
-								style={{ height: selectedLogo.h, width: selectedLogo.w}}
+									src={selectedLogo.src}
+									alt="logo seleccionado"
+									style={{ height: selectedLogo.h, width: selectedLogo.w }}
 								/>
 							</Dropdown.Toggle>
-								<Dropdown.Menu>
-									{options.map((opt, idx) => (
+							<Dropdown.Menu>
+								{options.map((opt, idx) => (
 									<Dropdown.Item
 										key={idx}
 										onClick={() => handleSelect(opt)}
 									>
 										<img
-										src={opt.src}
-										alt={`logo opción ${idx}`}
-										width={150}
-										style={{ height: 'auto' }}
+											src={opt.src}
+											alt={`logo opción ${idx}`}
+											width={150}
+											style={{ height: 'auto' }}
 										/>
 									</Dropdown.Item>
-									))}
-								</Dropdown.Menu>
-							</Dropdown>
+								))}
+							</Dropdown.Menu>
+						</Dropdown>
 					</li>
-					
+
 					<li className="dropdown">
 						<ProfileDropdown
 							userImage={userImage}
 							menuItems={profileMenus}
-							username={usuarioObtenido.usuario_user?usuarioObtenido.usuario_user:'unnamed'}
-							userTitle={`Rol: ${usuarioObtenido.rol_user?arrayRoles.find(e=>e.value===usuarioObtenido.rol_user).label:'SIN ROLE'}`}
+							username={usuarioObtenido.usuario_user ? usuarioObtenido.usuario_user : 'unnamed'}
+							userTitle={`Rol: ${usuarioObtenido.rol_user ? arrayRoles.find(e => e.value === usuarioObtenido.rol_user).label : 'SIN ROLE'}`}
 						/>
 					</li>
 				</ul>

@@ -49,7 +49,7 @@ const MenuItemWithChildren = ({
             {item.badge.text}
           </span>
         )}
-        <span> {item.label} </span>
+        <span dangerouslySetInnerHTML={{ __html: item.label }} />
       </Link>
       <Collapse in={open}>
         <div className={collapseClass ? 'collapse' : ''}>
@@ -111,10 +111,10 @@ const MenuItemLink = ({ item, className }) => {
       {item.icon ? (
         <>
           <i className={item.icon}></i>
-          <div className='' style={{ whiteSpace: 'normal' }}>&nbsp;{item.label}</div>
+          <div className='' style={{ whiteSpace: 'normal' }} dangerouslySetInnerHTML={{ __html: `&nbsp;${item.label}` }} />
         </>
       ) : (
-        item.label
+        <span dangerouslySetInnerHTML={{ __html: item.label }} />
       )}
       {item.badge && (
         <span
