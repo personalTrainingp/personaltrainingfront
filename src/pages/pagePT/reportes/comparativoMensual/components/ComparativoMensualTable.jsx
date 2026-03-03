@@ -17,7 +17,7 @@ export const ComparativoMensualTable = ({
 }) => {
     const [viewMode, setViewMode] = useState('none');
 
-    const { monthsData, top3Indices, top3Averages, last6Averages } = useComparativoMensualLogic({
+    const { monthsData, top3Indices, top3Averages, last6Averages, getWeightedAverages } = useComparativoMensualLogic({
         ventas,
         year,
         startMonth,
@@ -48,7 +48,7 @@ export const ComparativoMensualTable = ({
         headerActions: { display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }
     };
 
-    const handleToggle = (mode) => setViewMode(viewMode === mode ? 'none' : mode);
+    const handleToggle = (mode) => setViewMode(mode === viewMode ? 'none' : mode);
 
     // Calcular filas visibles según el modo activo
     const visibleRows = (() => {
@@ -79,8 +79,8 @@ export const ComparativoMensualTable = ({
         return monthsData;
     })();
 
-    const renderCell = (row, field, isPct = false) => {
-        let style = { ...styles.td };
+    const renderCell = (row, field, isPct = false, customStyle = {}) => {
+        let style = { ...styles.td, ...customStyle };
         if (isPct) style = { ...style, textAlign: 'center', color: '#000000' };
 
         const val = row[field];
@@ -88,12 +88,14 @@ export const ComparativoMensualTable = ({
         const valPct = row[pctKey];
 
         return (
-            <>
+            <React.Fragment key={`cell-${row.key || 'avg'}-${field}`}>
                 <td style={style}>{fmtNum(val, 0)}</td>
                 <td style={{ ...style, textAlign: 'center' }}>{isPct ? `${fmtNum(valPct, 1)}%` : ''}</td>
-            </>
+            </React.Fragment>
         );
     };
+
+    const avgRow = getWeightedAverages(visibleRows);
 
     return (
         <div style={{ marginBottom: '40px' }}>
@@ -169,30 +171,22 @@ export const ComparativoMensualTable = ({
                     <tbody>
                         {visibleRows.map((row, idx) => (
                             <tr key={row.key} style={{ background: idx % 2 === 0 ? '#fff' : '#fcfcfc' }}>
-
-                                {/* --- CAMBIO AQUÍ PARA SALTO DE LÍNEA --- */}
                                 <td style={{ ...styles.td, ...styles.tdLabel }}>
                                     <span style={{ display: 'block', lineHeight: '1.2' }}>{row.label}</span>
                                 </td>
-                                {/* --------------------------------------- */}
-
                                 <td style={{ ...styles.td, fontWeight: '700', color: '#000', background: 'rgba(0,0,0,0.02)' }}>{fmtNum(row.total, 0)}</td>
                                 <td style={{ ...styles.td, color: '#000000' }}>{fmtNum(row.quota, 0)}</td>
-
-                                {/* Custom Range Data */}
                                 <td style={{ ...styles.td, background: '#c00000', fontWeight: '400' }}>
                                     {fmtNum(row.customRangeTotal, 0)}
                                 </td>
                                 <td style={{ ...styles.td, background: '#c00000', textAlign: 'center', fontWeight: '400' }}>
                                     {fmtNum(row.pctCustomRangeTotal, 1)}%
                                 </td>
-
                                 {renderCell(row, 'w1', true)}
                                 {renderCell(row, 'w2', true)}
                                 {renderCell(row, 'w3', true)}
                                 {renderCell(row, 'w4', true)}
                                 {renderCell(row, 'w5', true)}
-
                                 {showFortnightly && (
                                     <>
                                         {renderCell(row, 'r1_15', true)}
@@ -201,6 +195,34 @@ export const ComparativoMensualTable = ({
                                 )}
                             </tr>
                         ))}
+
+                        {/* --- ADD PROMEDIOS ROW HERE --- */}
+                        {avgRow && (
+                            <tr key={avgRow.key} style={{ background: '#ffebcd', borderTop: '3px solid #c00000' }}>
+                                <td style={{ ...styles.td, ...styles.tdLabel, background: '#a00000', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' }}>
+                                    <span style={{ display: 'block', lineHeight: '1.2' }}>{avgRow.label}</span>
+                                </td>
+                                <td style={{ ...styles.td, fontWeight: '800', color: '#000', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' }}>{fmtNum(avgRow.total, 0)}</td>
+                                <td style={{ ...styles.td, color: '#000', fontWeight: '800', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' }}>{fmtNum(avgRow.quota, 0)}</td>
+                                <td style={{ ...styles.td, background: '#a00000', fontWeight: '800', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' }}>
+                                    {fmtNum(avgRow.customRangeTotal, 0)}
+                                </td>
+                                <td style={{ ...styles.td, background: '#a00000', textAlign: 'center', fontWeight: '800', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' }}>
+                                    {fmtNum(avgRow.pctCustomRangeTotal, 1)}%
+                                </td>
+                                {renderCell(avgRow, 'w1', true, { padding: '13px 12px', fontSize: '26px' })}
+                                {renderCell(avgRow, 'w2', true, { padding: '13px 12px', fontSize: '26px' })}
+                                {renderCell(avgRow, 'w3', true, { padding: '13px 12px', fontSize: '26px' })}
+                                {renderCell(avgRow, 'w4', true, { padding: '13px 12px', fontSize: '26px' })}
+                                {renderCell(avgRow, 'w5', true, { padding: '13px 12px', fontSize: '26px' })}
+                                {showFortnightly && (
+                                    <>
+                                        {renderCell(avgRow, 'r1_15', true, { padding: '13px 12px', fontSize: '26px' })}
+                                        {renderCell(avgRow, 'r16_end', true, { padding: '13px 12px', fontSize: '26px' })}
+                                    </>
+                                )}
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>

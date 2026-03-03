@@ -97,13 +97,13 @@ export const ClosingAnalysisTable = ({ ventas = [], monthsData = [], customStart
                     <thead>
                         <tr>
                             <th style={{ ...styles.th, textAlign: 'left', paddingLeft: '20px' }}>Mes</th>
-                            <th style={styles.th}>Venta (Días 1-25)</th>
-                            <th style={{ ...styles.th, background: '#efef4cff', color: '#000', border: '1px solid #000' }}>
-                                RANGO ({customStartDay}-{customEndDay})
+                            <th style={styles.th}>Venta<br /> (Días 1-25)</th>
+                            <th style={{ ...styles.th, background: '#c00000', color: '#fff', border: '1px solid #000' }}>
+                                RANGO<br /> ({customStartDay}-{customEndDay})
                             </th>
-                            <th style={styles.th}>Cierre (Día 26-Fin)</th>
-                            <th style={styles.th}>% Cierre</th>
-                            <th style={styles.th}>Total Mes</th>
+                            <th style={styles.th}>Cierre<br /> (Día 26-Fin)</th>
+                            <th style={styles.th}>% <br />Cierre</th>
+                            <th style={styles.th}>Total<br /> Mes</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,7 +115,7 @@ export const ClosingAnalysisTable = ({ ventas = [], monthsData = [], customStart
 
                                 <td style={styles.td}>{fmtMoney(row.firstPart)}</td>
 
-                                <td style={{ ...styles.td, background: '#efef4cff', fontWeight: 'bold' }}>
+                                <td style={{ ...styles.td, background: '#c00000', color: '#fff', fontWeight: 'bold' }}>
                                     {fmtMoney(row.customRange)}
                                 </td>
 

@@ -32,7 +32,7 @@ export const App = ({ id_empresa }) => {
     setSelectedMonth, setInitDay, setCutDay, handleSetUltimoDiaMes, setTasaCambio,
     vigentesTotal, vigentesBreakdown, vigentesRows,
     renewals, loadRenewals, isLoadingRenovaciones, pgmNameById,
-    dataVentas, mesesSeleccionados, mesesTop4, dataMktWithCac, dataMkt, dataLead,
+    dataVentas, mesesSeleccionados, mesesTop5, dataMktWithCac, dataMkt, dataLead,
     reservasMF, originMap, mapaVencimientos, dataLeadPorMesAnio,
     resumenFilas, resumenTotales, avataresDeProgramas,
     sociosOverride, originBreakdown, advisorOriginByProg,
@@ -107,7 +107,7 @@ export const App = ({ id_empresa }) => {
         <Col lg={12} className="pt-0">
           <div style={{ marginBottom: "30px" }}>
             <ExecutiveTable
-              ventas={dataVentas} fechas={mesesTop4}
+              ventas={dataVentas} fechas={mesesTop5}
               dataMktByMonth={dataMktWithCac} initialDay={initDay} cutDay={cutDay}
               reservasMF={reservasMF} originMap={originMap}
               selectedMonth={selectedMonth} tasaCambio={tasaCambio} year={year}
@@ -121,7 +121,7 @@ export const App = ({ id_empresa }) => {
             <>
               <div style={{ marginBottom: "32px", marginTop: "90px" }}>
                 <ComparativoVsActual
-                  ventas={dataVentas} fechas={mesesTop4}
+                  ventas={dataVentas} fechas={mesesTop5}
                   dataMktByMonth={dataMkt} reservasMF={reservasMF}
                   initialDay={initDay} cutDay={cutDay} year={year}
                 />
@@ -141,7 +141,7 @@ export const App = ({ id_empresa }) => {
               </div>
 
               <ClientesPorOrigen
-                ventas={dataVentas} fechas={mesesTop4}
+                ventas={dataVentas} fechas={mesesTop5}
                 initialDay={initDay} cutDay={cutDay} uniqueByClient={false}
                 originMap={originMap}
               />
@@ -194,7 +194,7 @@ export const App = ({ id_empresa }) => {
               </Row>
 
               <ExecutiveTable2
-                ventas={dataVentas} fechas={mesesTop4}
+                ventas={dataVentas} fechas={mesesTop5}
                 dataMktByMonth={dataMktWithCac} initialDay={initDay} cutDay={cutDay}
                 reservasMF={reservasMF} originMap={originMap}
                 selectedMonth={selectedMonth} tasaCambio={tasaCambio} year={year}

@@ -69,7 +69,7 @@ export const BonusAnalysisTable = ({ ventas = [], monthsData, customStartDay = 1
                     <tr>
                         <th style={{ ...styles.th, textAlign: 'left' }}>Mes</th>
                         <th style={styles.th}>Avance 1-15</th>
-                        <th style={{ ...styles.th, background: '#efef4cff', color: '#000', border: '1px solid #000' }}>
+                        <th style={{ ...styles.th, background: '#c00000', color: '#fff', border: '1px solid #000' }}>
                             Avance ({customStartDay}-{customEndDay})
                         </th>
                         <th style={styles.th}>Meta</th>
@@ -89,10 +89,10 @@ export const BonusAnalysisTable = ({ ventas = [], monthsData, customStartDay = 1
                             const isTop3 = row.key && top3Keys.includes(row.key);
 
                             return (
-                                <tr key={idx} style={{ background: isTop3 ? '#efef4cff' : '#fff' }}>
+                                <tr key={idx} style={{ background: isTop3 ? '#c00000' : '#fff' }}>
                                     <td style={styles.tdMonth}>{row.label}</td>
                                     <td style={styles.tdNumber}>{fmtMoney(row.accumulated)}</td>
-                                    <td style={{ ...styles.td, background: '#efef4cff', fontWeight: 'bold', textAlign: 'right' }}>
+                                    <td style={{ ...styles.td, background: '#c00000', fontWeight: 'bold', textAlign: 'right' }}>
                                         {fmtMoney(row.customRange)}
                                     </td>
                                     <td style={styles.tdNumber}>{fmtMoney(row.meta)}</td>

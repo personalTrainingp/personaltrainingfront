@@ -46,13 +46,13 @@ const GestionAuditoria = lazy(() => import('../pages/pagePT/Auditoria'))
 const ReportePorProgramas = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'))
 const ComisionesPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/ComisionesPage'));
 const ComparativoPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/ComparativoPage'));
-const RenovacionesMesPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/RenovacionesMesPage'));
+const RankingAsesorPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/RankingAsesorPage'));
 const ReporteTotalVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'))
 const ReporteVentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'))
 const ComparativoMensualPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual'));
 const InscripcionesPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/inscripcionestable'));
 const ComparativoMensualVentasPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/ComparativoMensualVentasPage'));
-const GeneralSalesBreakdownPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/GeneralSalesBreakdownPage'));
+
 const ReporteVentasporSemana = lazy(() => import('../pages/pagePT/reportes/ventaPorSemana'))
 const Terminologias = lazy(() => import('../pages/pagePT/Terminologias'))
 const ReporteEgresos = lazy(() => import('../pages/pagePT/reportes/reporteEgresos'))
@@ -461,8 +461,8 @@ export default function ProtectedRoutes() {
 								<Route path='reporte/comparativo-mensual' element={<ComparativoMensualPage />} />
 							}
 							{
-								findSectionDeep('/reporte/renovaciones-por-mes') &&
-								<Route path='reporte/renovaciones-por-mes' element={<RenovacionesMesPage />} />
+								findSectionDeep('/reporte/comparativo-por-asesor') &&
+								<Route path='reporte/comparativo-por-asesor' element={<RankingAsesorPage />} />
 							}
 							{
 								findSectionDeep('/reporte/vigentes-historico') &&
@@ -472,7 +472,6 @@ export default function ProtectedRoutes() {
 								findSectionDeep('/reporte/comparativo-mensual-ventas') &&
 								<>
 									<Route path='reporte/comparativo-mensual-ventas' element={<ComparativoMensualVentasPage />} />
-									<Route path='reporte/comparativo-ventas' element={<GeneralSalesBreakdownPage />} />
 								</>
 							}
 							{

@@ -156,7 +156,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
         }));
     }, [year]);
 
-    const mesesTop4 = useMemo(() => {
+    const mesesTop5 = useMemo(() => {
         const buildMonthRevenueMap = (ventas) => {
             const map = new Map();
             for (const v of ventas || []) {
@@ -179,7 +179,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
         const baseKey = `${year}-${selectedMonth - 1}`;
         const scored = slots.filter(p => `${p.y}-${p.mIdx}` !== baseKey)
             .map(p => ({ ...p, score: monthMap.get(`${p.y}-${p.mIdx}`)?.total || 0 }))
-            .sort((a, b) => b.score - a.score).slice(0, 3);
+            .sort((a, b) => b.score - a.score).slice(0, 4);
 
         const toFechaObj = ({ y, mIdx }) => ({ label: `${MESES[mIdx].toUpperCase()} ${y}`, anio: String(y), mes: MESES[mIdx] });
         return [...scored.sort((a, b) => new Date(a.y, a.mIdx) - new Date(b.y, b.mIdx)).map(toFechaObj), toFechaObj({ y: year, mIdx: selectedMonth - 1 })];
@@ -401,7 +401,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
         rankingData, resumenFilas, resumenTotales,
         advisorOriginByProg, originBreakdown, sociosOverride,
         avatarByAdvisor, productosPorAsesor,
-        mesesSeleccionados, mesesTop4, pgmNameById: progNameById, pgmNameByIdDynamic, dataGroup,
+        mesesSeleccionados, mesesTop5, pgmNameById: progNameById, pgmNameByIdDynamic, dataGroup,
         totalUniqueTicketsByAdvisor, isLoadingVentas, historicalVentas // <--- EXPORTADO
     };
 };

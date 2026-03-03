@@ -86,7 +86,7 @@ export const ClosingAnalysisTable2 = ({ ventas = [], monthsData = [], customStar
                         <tr>
                             <th style={{ ...styles.th, textAlign: 'center' }}>Mes</th>
                             <th style={styles.th}>Venta 24 dias</th>
-                            <th style={{ ...styles.th, background: '#efef4cff', color: '#000', border: '1px solid #000' }}>
+                            <th style={{ ...styles.th, background: '#c00000', color: '#ffff', border: '1px solid #000' }}>
                                 RANGO ({customStartDay}-{customEndDay})
                             </th>
                             <th style={styles.th}>Cierre (Día 25-Fin)</th>
@@ -99,14 +99,14 @@ export const ClosingAnalysisTable2 = ({ ventas = [], monthsData = [], customStar
                         {reportData.map((row, idx) => {
                             const isTop3 = top3Keys.includes(row.key);
                             return (
-                                <tr key={row.key} style={{ background: isTop3 ? '#efef4cff' : '#fff' }}>
+                                <tr key={row.key} style={{ background: isTop3 ? '#c00000' : '#fff' }}>
                                     <td style={{ ...styles.td, ...styles.tdLabel }}>
                                         {row.label}
                                     </td>
 
                                     <td style={styles.td}>{fmtMoney(row.firstPart)}</td>
 
-                                    <td style={{ ...styles.td, background: '#efef4cff', fontWeight: 'bold' }}>
+                                    <td style={{ ...styles.td, background: '#c00000', color: '#fff', fontWeight: 'bold' }}>
                                         {fmtMoney(row.customRange)}
                                     </td>
 
