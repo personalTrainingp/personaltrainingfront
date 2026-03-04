@@ -541,7 +541,10 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/reportes-asesores') &&
-								<Route path='reporte/comparativo-mensual' element={<ComparativoMensualPage />} />
+								<>
+									<Route path='reporte/ranking-por-asesor' element={<RankingAsesorPage />} />
+									<Route path='reporte/comparativo-mensual' element={<ComparativoMensualPage />} />
+								</>
 							}
 							{
 								sections.find(e => e.url === '/reportes-asesores') &&
