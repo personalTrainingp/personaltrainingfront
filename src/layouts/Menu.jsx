@@ -165,9 +165,9 @@ const AppMenu = ({ menuItems }) => {
     <>
       <div className='d-flex justify-content-center flex-column text-center align-items-center'>
         <strong>
-          modulo
+          módulo
         </strong>
-        <ModuloDropdown colorEmpresa={colorEmpresa}/>
+          <ModuloDropdown colorEmpresa={colorEmpresa}/>
       </div>
       <ul className="side-nav" ref={menuRef} id="main-side-menu">
         {(menuItems || []).map((item, index) => {
