@@ -432,14 +432,14 @@ export default function ProtectedRoutes() {
 								</>
 							}
 							{
-								sections.find(e => e.url === '/gestion-proveedores-activo') &&
+								sections.find(e => e.url === '/prov') &&
 								<>
 									<Route path='gestion-proveedores-activo' element={<GestionProveedores id_estado={true} />} />
 									<Route path='perfil-proveedor/:uid' element={<PerfilProveedor />} />
 								</>
 							}
 							{
-								sections.find(e => e.url === '/gestion-proveedores-inactivo') &&
+								sections.find(e => e.url === '/prov') &&
 								<>
 									<Route path='gestion-proveedores-inactivo' element={<GestionProveedores id_estado={false} />} />
 									<Route path='perfil-proveedor/:uid' element={<PerfilProveedor />} />
