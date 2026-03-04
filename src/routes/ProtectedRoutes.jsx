@@ -487,7 +487,7 @@ export default function ProtectedRoutes() {
 								<Route path='crear-citas-fitology' element={<CrearCitasNutricion tipo_serv={'FITOL'} />} />
 							}
 							{
-								sections.find(e => e.url === '/gestion-clientes') &&
+								sections.find(e => e.url === '/socio') &&
 								<>
 									<Route path='gestion-clientes' element={<GestionClientes />} />
 									<Route path='historial-cliente/:uid' element={<PerfilCliente />} />
