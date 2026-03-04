@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import helpBoxImage from '@/assets/images/svg/help-icon.svg';
 import classNames from 'classnames';
 import { Collapse } from 'react-bootstrap';
 import { ThemeSettings, useThemeContext } from '@/common';
@@ -37,7 +36,7 @@ const MenuItemWithChildren = ({
   return (
     <li className={classNames('side-nav-item', { 'menuitem-active': open })}>
       <Link
-        to=""
+        to="#"
         onClick={toggleMenuItem}
         data-menu-key={item.key}
         aria-expanded={open}
@@ -51,7 +50,7 @@ const MenuItemWithChildren = ({
           <ul className={classNames(subMenuClassNames)} id="sidebarDashboards">
             {(item.children || []).map((child, index) => {
               return (
-                <React.Fragment key={index.toString()}>
+                <React.Fragment key={child.key}>
                   {child.children ? (
                     <MenuItemWithChildren
                       item={child}
@@ -94,19 +93,17 @@ const MenuItem = ({ item, className, linkClassName }) => {
 
 };
 const MenuItemLink = ({ item, className }) => {
-
   return (
     <Link
       to={item.url}
       target={item.target}
       className={`side-nav-link-ref ${className}`}
       style={{ display: 'flex', alignItems: 'center' }}
-      data-menu-key={item.key}
     >
       {item.icon ? (
         <>
           <i className={item.icon}></i>
-          <div className='ml-3' style={{ whiteSpace: 'normal' }}>&nbsp;&nbsp;{item.label}</div>
+          <div className='ml-3' style={{ whiteSpace: 'normal' }}>&nbsp; {item.label}</div>
         </>
       ) : (
         <>
@@ -176,11 +173,8 @@ const AppMenu = ({ menuItems }) => {
         {(menuItems || []).map((item, index) => {
           return (
             <React.Fragment key={index.toString()}>
-              {item.isTitle ? (
-                <li className="side-nav-title">
-                  {item.label}
-                </li>
-              ) : (
+              {
+              (
                 <React.Fragment>
                   {item.children ? (
                     <MenuItemWithChildren

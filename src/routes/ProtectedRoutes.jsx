@@ -147,9 +147,6 @@ export default function ProtectedRoutes() {
 	// Busca una URL tanto en items raíz como dentro de sus children (para items con submenu)
 	const findSectionDeep = (url) =>
 		sections.some(s => s.url === url || (s.children || []).some(c => c.url === url));
-	// useEffect(() => {
-	// 	obtenerModulos()
-	// }, [])
 	useEffect(() => { checkAuthToken() }, [])
 	if (status === 'checking') {
 		return (
@@ -170,8 +167,6 @@ export default function ProtectedRoutes() {
 				status === 'authenticated' ? (
 					<>
 						<Route path="/*" element={<Layout />}>
-							{/* /detalle-renovaciones-x-dia comparativo-x-fecha-corte*/}
-
 							{
 								sections.find(e => e.url === '/gestion-tc') &&
 								<Route path='gestion-tc' element={<GestionTc />} />
@@ -232,10 +227,6 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/cuentas-cobrar') &&
 								<Route path='cuentas-cobrar' element={<CuentasBalances tipo={'PorCobrar'} headerTipo={'COBRAR'} />} />
 							}
-							{/* {
-						sections.find(e=>e.url==='/detalle-reinscripciones') &&
-						<Route path='detalle-reinscripciones' element={<ResumenGerencialPorReinscripciones/>}/>
-					} */}
 							{
 								sections.find(e => e.url === '/detalle-renovaciones') &&
 								<Route path='detalle-renovaciones' element={<ResumenGerencialPorRenovaciones />} />
@@ -311,30 +302,19 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/resumen-ejecutivo') &&
 								<Route path='resumen-ejecutivo' element={<ResumenEjecutivo />} />
-							}{
-								sections.find(e => e.url === '/gestion-monkfit') &&
+							}
+							{
+								sections.find(e => e.url === '/ventas') &&
 								<Route path="gestion-monkfit" element={<ReservaMonkFitPage />} />
 							}
-
 							{
 								sections.find(e => e.url === '/gestion-monkfit') &&
 								<Route path="gestion-monkeyfit" element={<ClienteMFPage />} />
 							}
-
-
 							{
 								sections.find(e => e.url === '/agregar-articulos-chorrillos') &&
 								<Route path='agregar-articulos-chorrillos' element={<ArticulosNuevos />} />
 							}
-
-							{/* {
-						sections.find(e=>e.url==='/transferencia-inventario')&&
-                        <Route path='transferencia-inventario' element={<TransferenciasArticulos/>}/>
-					} */}
-							{/* {
-						sections.find(e=>e.url==='/generador-fechas-inventario')&&
-                        <Route path='generador-fechas-inventario' element={<EntradaArticulosForm/>}/>
-					} */}
 							{
 								sections.find(e => e.url === '/citas-x-nutricionista') &&
 								<Route path='citas-x-nutricionista' element={<CitasxNutricionista />} />
@@ -355,28 +335,20 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/resultados-change') &&
 								<Route path='resultados-change' element={<ResultadoChange />} />
 							}
-							{/* {
-						sections.find(e=>e.url==='/facturacion-publicidad')&&
-                        <Route path='facturacion-publicidad' element={<ReporteSesionesxMem/>}/>
-					} */}
 							{
-								sections.find(e => e.url === '/reporte/seguimiento-x-mes') &&
+								sections.find(e => e.url === '/ventas') &&
 								<Route path='reporte/seguimiento-x-mes' element={<SeguimientoxMesView />} />
 							}
 							{
-								sections.find(e => e.url === '/ventas-transferencias') &&
+								sections.find(e => e.url === '/venta') &&
 								<Route path='ventas-transferencias' element={<ResumenComparativoAnual />} />
 							}
 							{
 								sections.find(e => e.url === '/reporte') &&
 								<Route path='reporte/reporte-demografico-membresia' element={<ResumenDemograficoxPrograma />} />
 							}
-							{/* {
-						sections.find(e=>e.url==='/reporte')&&
-                        <Route path='reporte/reporte-demografico' element={<ReporteDemograficoCliente/>}/>
-					} */}
 							{
-								sections.find(e => e.url === '/reporte/comparativo-resumen-x-mes') && //asdf
+								sections.find(e => e.url === '/reporte') && //asdf
 								<Route path='reporte/comparativo-resumen-x-mes' element={<ResumenComparativoAnual />} />
 							}
 							{
@@ -387,14 +359,6 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/totalizado-inventario') &&
 								<Route path='totalizado-inventario' element={<InventarioTotalizado />} />
 							}
-							{/* {
-                        sections.find(e=>e.url==='/entrada-inventario') && 
-                        <Route path='entrada-inventario' element={<EntradaInventario/>}/>
-                    }
-					{
-                        sections.find(e=>e.url==='/salida-inventario') && 
-                        <Route path='salida-inventario' element={<SalidaInventario/>}/>
-                    } */}
 							{
 								sections.find(e => e.url === '/gestion-comercial') &&
 								<Route path='gestion-comercial' element={<GestionComercial />} />
@@ -404,7 +368,7 @@ export default function ProtectedRoutes() {
 								<Route path='gestion-cambio-programa' element={<GestionCambioPrograma />} />
 							}
 							{
-								sections.find(e => e.url === '/reporte/reporte-seguimiento') &&
+								sections.find(e => e.url === '/ventas') &&
 								<Route path='reporte/reporte-seguimiento' element={<ReporteSeguimiento />} />
 							}
 							{
@@ -423,11 +387,7 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/reporte-admin/flujo-caja') &&
 								<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja />} />
 							}
-							{/* {
-						sections.find(e=>e.url==='/reporte-admin/comparativa-dia') && 
-						<Route path='reporte-admin/comparativa-dia' element={<ReporteComparativaDeVentasxDia/>}/>
-					} */}
-							{sections.find(e => e.url === '/nueva-venta') &&
+							{sections.find(e => e.url === '/ventas') &&
 								<Route path="nueva-venta" element={<NuevaVenta />} />
 							}
 							{
@@ -437,7 +397,7 @@ export default function ProtectedRoutes() {
 							{sections.find(e => e.url === '/mkt-actas-reunion') &&
 								<Route path="mkt-actas-reunion" element={<GestActasDeReunion />} />
 							}
-							{sections.find(e => e.url === '/seguimiento') &&
+							{sections.find(e => e.url === '/ventas') &&
 								<Route path="seguimiento" element={<Seguimiento />} />
 							}
 							{
@@ -455,10 +415,6 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/reporte/ventas-asesor') &&
 								<Route path='reporte/ventas-asesor' element={<ComparativoPage />} />
-							}
-							{
-								findSectionDeep('/reporte/comparativo-mensual') &&
-								<Route path='reporte/comparativo-mensual' element={<ComparativoMensualPage />} />
 							}
 							{
 								findSectionDeep('/reporte/comparativo-por-asesor') &&
@@ -542,7 +498,7 @@ export default function ProtectedRoutes() {
 								<Route path='reporte-clientes-membresia' element={<ClientesxVentasDeMembresia />} />
 							}
 							{
-								sections.find(e => e.url === '/gestion-ventas') &&
+								sections.find(e => e.url === '/ventas') &&
 								<>
 									<Route path='gestion-ventas' element={<GestionVenta />} />
 									<Route path='venta' element={<GestionVenta />} />
@@ -551,12 +507,6 @@ export default function ProtectedRoutes() {
 							{sections.find(e => e.url === '/gestion-auth-usuario') &&
 								<Route path='gestion-auth-usuario' element={<GestionUsuario />} />
 							}
-							{/* {sections.find(e=>e.url==='/centro-archivos')&&
-					<Route path='centro-archivos' element={<GestionCentroDeArchivos/>}/>
-					} */}
-							{/* {sections.find(e=>e.url==='/metas')&&
-					<Route path='metas' element={<GestionMeta/>}/>
-					} */}
 							{
 								sections.find(e => e.url === '/gestion-prospecto') &&
 								<Route path='gestion-prospecto' element={<GestionProspectos />} />
@@ -569,29 +519,9 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/auditoria') &&
 								<Route path='auditoria' element={<GestionAuditoria />} />
 							}
-							{/* {
-						sections.find(e=>e.url==='/gestion-comisional') &&
-						<Route path='gestion-comisional' element={<GestionComision/>}/>
-					} */}
-							{/* {
-						sections.find(e=>e.url==='/serv-fitology') &&
-						<Route path='serv-fitology' element={<ServNutricion tipo_serv={'FITOL'}/>}/>
-					} */}
-							{/* {
-						sections.find(e=>e.url==='/serv-nutricion') &&
-						<Route path='serv-nutricion' element={<ServNutricion tipo_serv={'NUTRI'}/>}/>
-					} */}
 							{
 								sections.find(e => e.url === '/reporte') &&
 								<Route path='reporte/reporte-programa' element={<ReportePorProgramas />} />
-							}
-							{/* {
-						sections.find(e=>e.url==='/reporte') && 
-						<Route path='reporte/reporte-metas' element={<ReporteMetas/>}/>
-					} */}
-							{
-								sections.find(e => e.url === '/reporte') &&
-								<Route path='reporte/total-ventas' element={<ReporteTotalVentas />} />
 							}
 							{
 								sections.find(e => e.url === '/reporte') &&
@@ -610,18 +540,17 @@ export default function ProtectedRoutes() {
 								<Route path='reporte/venta-semana' element={<ReporteVentasporSemana />} />
 							}
 							{
-								sections.find(e => e.url === '/reporte/comparativo-mensual') &&
+								sections.find(e => e.url === '/reportes-asesores') &&
 								<Route path='reporte/comparativo-mensual' element={<ComparativoMensualPage />} />
 							}
 							{
-								sections.find(e => e.url === '/reporte/comisiones') &&
+								sections.find(e => e.url === '/reportes-asesores') &&
 								<Route path='reporte/comisiones' element={<ComisionesPage />} />
 							}
 							{
 								sections.find(e => e.url === '/resumen-membresias') &&
 								<Route path='resumen-membresias' element={<ResumenMembresiasPage />} />
 							}
-
 							{
 								sections.find(e => e.url === '/configuracion-terminos') &&
 								<Route path='configuracion-terminos' element={<Terminologias />} />
@@ -630,7 +559,6 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/reporte-admin/reporte-egresos') &&
 								<Route path='reporte-admin/reporte-egresos' element={<ReporteEgresos />} />
 							}
-
 							{
 								sections.find(e => e.url === '/reporte-admin/reporte-utilidad-programa') &&
 								<Route path="reporte-admin/reporte-utilidad-programa" element={<ReporteUtilidadProgramas />} />
@@ -644,13 +572,9 @@ export default function ProtectedRoutes() {
 								<Route path='history-citas-nutricion' element={<HistorialCitasNutricionista />} />
 							}
 							{
-
 								sections.find(e => e.url === '/tipo-cambio') &&
 								<Route path='tipo-cambio' element={<GestionTipoCambio />} />
 							}
-							{/* {sections.find(e=>e.url==='/reporte-admin/RecursosHumanoReportes')&&
-						<Route path="reporte-admin/RecursosHumanoReportes" element={<RecursosHumanoReportes />} />
-					} */}
 							{sections.find(e => e.url === '/reporte-admin/gestion-lead') &&
 								<Route path="reporte-admin/gestion-lead" element={<PuntoEquilibrio />} />
 							}
