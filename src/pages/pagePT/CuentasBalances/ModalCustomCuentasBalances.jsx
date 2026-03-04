@@ -18,7 +18,7 @@ const customCustomBalance = {
     id_prov__: 0,
     n_operacion: ''
 }
-export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, headerTipo=''}) => {
+export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, headerTipo='', isCopy=false}) => {
     const { postCuentasBalancesxIdEmpresaxTipo, obtenerCuentaBalancexID, dataCuentaBalance, putCuentaBalancexID, dataProveedores, obtenerParametrosProveedor } = useCuentasBalances()
     const { DataGeneral:dataConcepto, obtenerParametroPorEntidadyGrupo:obtenerDataConcepto }  = useTerminoStore()
     const { DataGeneral:dataBanco, obtenerParametroPorEntidadyGrupo:obtenerDataBanco }  = useTerminoStore()
@@ -29,10 +29,15 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, h
     }, [show])
     const { formState, id_concepto, id_prov__, monto, moneda, fecha_comprobante, id_prov, descripcion, id_empresa, id_banco, n_operacion, onInputChange, onResetForm } = useForm(id===0?customCustomBalance:dataCuentaBalance)
     const onSubmitCuentasBalancexIdEmpresaxTipo=()=>{
+        const {id:id_, ...valueFormState} = formState;
         if(id===0){
             postCuentasBalancesxIdEmpresaxTipo(formState, id_empresa, tipo)
         }else{
-            putCuentaBalancexID(id, idEmpresa, tipo, formState)
+            if(isCopy){
+                postCuentasBalancesxIdEmpresaxTipo(valueFormState, id_empresa, tipo)
+            }else{
+                putCuentaBalancexID(id, idEmpresa, tipo, formState)
+            }
         }
         onCancelarModal()
     }

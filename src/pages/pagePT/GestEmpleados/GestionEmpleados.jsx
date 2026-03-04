@@ -22,21 +22,10 @@ export const GestionEmpleados = ({id_activo}) => {
   useEffect(() => {
     if (empresa.id === 0) setEstado(0);
   }, [empresa]);
-
-  const mostrarSelectorEstado = empresa.id !== 0;
-
   const isOpenButtonRegister = useMemo(
     () => estado === 1 && empresa.id !== 0,
     [estado, empresa.id]
   );
-
-  const estadoTemplate = (option) => {
-    return (
-      <div className="estado-btn">
-        {option.label}
-      </div>
-    );
-  };
 
   return (
     <>
@@ -60,27 +49,7 @@ export const GestionEmpleados = ({id_activo}) => {
                     isOpenButtonRegister={isOpenButtonRegister}
                   />
                 }
-                // childrenCircus={
-                //   <TableEmpleados
-                //     id_empresa={599}
-                //     id_estado={id_activo}
-                //     isOpenButtonRegister={isOpenButtonRegister}
-                //   />
-                // }
               />
-              {/* <Row className="mb-3 g-2 align-items-center">
-                <Col sm={12} md="auto">
-                  <SelectButton
-                    value={empresa}
-                    onChange={(e) => setEmpresa(e.value)}
-                    options={EMPRESAS}
-                    optionLabel="label"
-                    multiple={false}
-                  />
-                </Col>
-              </Row> */}
-
-              
             </Card.Body>
           </Card>
         </Col>

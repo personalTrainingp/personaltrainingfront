@@ -35,6 +35,7 @@ const customGasto = {
 }
 export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpenModalGasto, onOpenModalProveedor}) => {
     const { obtenerGastoxID, dataGasto } = useGastosStore()
+      const [isOpenModalCustomProv, setisOpenModalCustomProv] = useState({id: 0, isOpen: false})
     
     const {
         formState, 
@@ -162,11 +163,25 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
             setdataProveedoresFiltrados(id_oficio===0?dataProveedorxTipoxEmpresa:dataProveedorxTipoxEmpresa.filter(e => e.id_oficio === id_oficio))
         }
     }, [show, id_oficio, id_prov])
-    console.log({formState});
-    
+    const onCloseModalCustomProv = (id)=>{
+        setisOpenModalCustomProv({id: 0, isOpen: false})
+        onOpenModalGasto(id, false)
+    }
+    const onOpenModalCustomProv =  (id)=>{
+        setisOpenModalCustomProv({id, isOpen: true})
+        onHide()
+    }
   return (
     <>
     <Loading show={isLoading}/>
+        <ModalCustomProveedores 
+            onCloseModalProvPst={()=>setisOpenModalCustomProv({id, isOpen: true})} 
+            onHide={()=>onCloseModalCustomProv(id)} 
+            show={isOpenModalCustomProv.isOpen} 
+            estado={true} 
+            id_enterprice={id_empresa} 
+            onShow={()=>onOpenModalCustomProv(id)} 
+            tipo={1573} id={0}  />
     <Modal show={show} onHide={cancelarGasto} size='xl'>
         <Modal.Header>
             <Modal.Title>
@@ -264,7 +279,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                         <div className='m-2 d-flex align-items-end'>
                             <InputSelect label={'proveedor'} nameInput={'id_prov'} onChange={onInputChange} options={id_oficio===null?dataProveedorxTipoxEmpresa:dataProveedorxTipoxEmpresa.filter(e => e.id_oficio === id_oficio)} value={id_prov} />
                             <div>
-                                <Button className='' onClick={onOpenModalProveedor}>+</Button>
+                                <Button className='' onClick={onOpenModalCustomProv}>+</Button>
                             </div>
                         </div>
                     </Col>
