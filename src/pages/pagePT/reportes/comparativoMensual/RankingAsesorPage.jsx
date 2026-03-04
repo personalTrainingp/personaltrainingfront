@@ -73,6 +73,15 @@ const RankingAsesorPage = () => {
                             ) : (
                                 <div className="d-flex flex-column gap-5">
                                     <div>
+                                        <h4 className="mb-3 text-uppercase fw-bold text-muted">Ventas Generales</h4>
+                                        <GeneralSalesBreakdownTable
+                                            ventas={dataVentas}
+                                            monthsData={monthsData}
+                                            customStartDay={customStartDay}
+                                            customEndDay={customEndDay}
+                                        />
+                                    </div>
+                                    <div>
                                         <h4 className="mb-3 text-uppercase fw-bold text-muted">Renovaciones</h4>
                                         <RenovationsBreakdownTable
                                             ventas={dataVentas}
@@ -92,15 +101,6 @@ const RankingAsesorPage = () => {
                                         />
                                     </div>
 
-                                    <div>
-                                        <h4 className="mb-3 text-uppercase fw-bold text-muted">Ventas Generales</h4>
-                                        <GeneralSalesBreakdownTable
-                                            ventas={dataVentas}
-                                            monthsData={monthsData}
-                                            customStartDay={customStartDay}
-                                            customEndDay={customEndDay}
-                                        />
-                                    </div>
                                 </div>
                             )}
                         </Card.Body>

@@ -47,6 +47,7 @@ const ReportePorProgramas = lazy(() => import('../pages/pagePT/reportes/ventasPr
 const ComisionesPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/ComisionesPage'));
 const ComparativoPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/ComparativoPage'));
 const RankingAsesorPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/RankingAsesorPage'));
+const RankingAsesorDiariaPage = lazy(() => import('../pages/pagePT/reportes/RankingAsesorDiariaPage'));
 const ReporteTotalVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'))
 const ReporteVentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'))
 const ComparativoMensualPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual'));
@@ -300,7 +301,7 @@ export default function ProtectedRoutes() {
 								<Route path='colaboradores-dni' element={<DniColaboradores />} />
 							}
 							{
-								sections.find(e => e.url === '/resumen-ejecutivo') &&
+								findSectionDeep('/resumen-ejecutivo') &&
 								<Route path='resumen-ejecutivo' element={<ResumenEjecutivo />} />
 							}
 							{
@@ -541,7 +542,11 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/reportes-asesores') &&
-								<Route path='reporte/comparativo-mensual' element={<ComparativoMensualPage />} />
+								<>
+									<Route path='reporte/ranking-por-asesor' element={<RankingAsesorPage />} />
+									<Route path='reporte/ranking-asesor-diaria' element={<RankingAsesorDiariaPage />} />
+									<Route path='reporte/comparativo-mensual' element={<ComparativoMensualPage />} />
+								</>
 							}
 							{
 								sections.find(e => e.url === '/reportes-asesores') &&
