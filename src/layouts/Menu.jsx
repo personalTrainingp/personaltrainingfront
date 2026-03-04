@@ -163,11 +163,13 @@ const AppMenu = ({ menuItems }) => {
 	const { colorEmpresa } = useSelector(e=>e.ui)
   return (
     <>
-      <div className='d-flex justify-content-center flex-column text-center align-items-center'>
-        <strong>
+      <div className='d-flex justify-content-center flex-column ml-3 mb-3'>
+        <strong className='mb-1'>
           módulo
         </strong>
+        <div>
           <ModuloDropdown colorEmpresa={colorEmpresa}/>
+        </div>
       </div>
       <ul className="side-nav" ref={menuRef} id="main-side-menu">
         {(menuItems || []).map((item, index) => {

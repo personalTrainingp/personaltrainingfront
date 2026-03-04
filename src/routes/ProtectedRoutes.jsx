@@ -168,11 +168,11 @@ export default function ProtectedRoutes() {
 					<>
 						<Route path="/*" element={<Layout />}>
 							{
-								sections.find(e => e.url === '/gestion-tc') &&
+								sections.find(e => e.url === '/config') &&
 								<Route path='gestion-tc' element={<GestionTc />} />
 							}
 							{
-								sections.find(e => e.url === '/reporte-cuentas-balance') &&
+								sections.find(e => e.url === '/cuentas-balances') &&
 								<Route path='reporte-cuentas-balance' element={<FlujoCajaBalanceCuentas />} />
 							}
 							{
@@ -180,7 +180,7 @@ export default function ProtectedRoutes() {
 								<Route path='informe-gerencia-oficial' element={<InformeEjecutivoOficial />} />
 							}
 							{
-								sections.find(e => e.url === '/centro-archivos') &&
+								sections.find(e => e.url === '/config') &&
 								<Route path='centro-archivos' element={<GestionCentroDeArchivos />} />
 							}
 							{
@@ -220,11 +220,11 @@ export default function ProtectedRoutes() {
 								<Route path='gestion-ingresantes-activo' element={<GestionIngresantes id_estado={true} tipo={1574} />} />
 							}
 							{
-								sections.find(e => e.url === '/cuentas-pagar') &&
+								sections.find(e => e.url === '/cuentas-balances') &&
 								<Route path='cuentas-pagar' element={<CuentasBalances tipo={'PorPagar'} headerTipo={'PAGAR'} />} />
 							}
 							{
-								sections.find(e => e.url === '/cuentas-cobrar') &&
+								sections.find(e => e.url === '/cuentas-balances') &&
 								<Route path='cuentas-cobrar' element={<CuentasBalances tipo={'PorCobrar'} headerTipo={'COBRAR'} />} />
 							}
 							{
@@ -272,7 +272,7 @@ export default function ProtectedRoutes() {
 								<Route path='horarios-colaborador' element={<HorariosColaboradores />} />
 							}
 							{
-								sections.find(e => e.url === '/gestion-alerta-usuario') &&
+								sections.find(e => e.url === '/config') &&
 								<Route path='gestion-alerta-usuario' element={<GestionAlertaUsuarios />} />
 							}
 							{
@@ -380,11 +380,11 @@ export default function ProtectedRoutes() {
 								<Route path='gest-inventario-circus' element={<GestionInventarioProy />} />
 							}
 							{
-								sections.find(e => e.url === '/gest-inventario') &&
-								<Route path='gest-inventario' element={<GestionInventario />} />
+								sections.find(e => e.url === '/inventario') &&
+								<Route path='gestion-inventario' element={<GestionInventario />} />
 							}
 							{
-								sections.find(e => e.url === '/reporte-admin/flujo-caja') &&
+								sections.find(e => e.url === '/reportes-admin') &&
 								<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja />} />
 							}
 							{sections.find(e => e.url === '/ventas') &&
@@ -445,23 +445,23 @@ export default function ProtectedRoutes() {
 								</>
 							}
 							{
-								sections.find(e => e.url === '/gestion-productos') &&
+								sections.find(e => e.url === '/gestion-servicios') &&
 								<Route path='gestion-productos' element={<GestionProductos />} />
 							}
 							{
-								sections.find(e => e.url === '/gestion-programas') &&
+								sections.find(e => e.url === '/gestion-servicios') &&
 								<Route path='gestion-programas' element={<GestionProgramas />} />
 							}
 							{
-								sections.find(e => e.url === '/orden-compra') &&
+								sections.find(e => e.url === '/movimiento') &&
 								<Route path='orden-compra' element={<OrdenCompra />} />
 							}
 							{
-								sections.find(e => e.url === '/gestion-egresos') &&
+								sections.find(e => e.url === '/movimiento') &&
 								<Route path='gestion-egresos' element={<GestionFyG />} />
 							}
 							{
-								sections.find(e => e.url === '/gestion-ingresos') &&
+								sections.find(e => e.url === '/movimiento') &&
 								<Route path='gestion-ingresos' element={<GestionAporte />} />
 							}
 							{
@@ -504,7 +504,7 @@ export default function ProtectedRoutes() {
 									<Route path='venta' element={<GestionVenta />} />
 								</>
 							}
-							{sections.find(e => e.url === '/gestion-auth-usuario') &&
+							{sections.find(e => e.url === '/config') &&
 								<Route path='gestion-auth-usuario' element={<GestionUsuario />} />
 							}
 							{
@@ -516,7 +516,7 @@ export default function ProtectedRoutes() {
 								<Route path='extension-membresia' element={<GestionExtensionMembresia />} />
 							}
 							{
-								sections.find(e => e.url === '/auditoria') &&
+								sections.find(e => e.url === '/config') &&
 								<Route path='auditoria' element={<GestionAuditoria />} />
 							}
 							{
@@ -552,7 +552,7 @@ export default function ProtectedRoutes() {
 								<Route path='resumen-membresias' element={<ResumenMembresiasPage />} />
 							}
 							{
-								sections.find(e => e.url === '/configuracion-terminos') &&
+								sections.find(e => e.url === '/config') &&
 								<Route path='configuracion-terminos' element={<Terminologias />} />
 							}
 							{

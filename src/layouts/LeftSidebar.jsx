@@ -28,7 +28,6 @@ import { getMenuItems } from './utils/menu';
 const SideBarContent = () => {
 	return (
 		<>
-			{/* <UserBox /> */}
 			<AppMenu menuItems={getMenuItems()} />
 			<div className="clearfix" />
 		</>
