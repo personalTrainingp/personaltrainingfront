@@ -48,7 +48,7 @@ export const useContratosProveedores = () => {
 					file_contrato
 				);
 			}
-			await obtenerContratosProveedores(id_empresa);
+			obtenerContratosProveedores(id_empresa);
 		} catch (error) {
 			console.log(error);
 		}
@@ -89,7 +89,7 @@ export const useContratosProveedores = () => {
 					file_contrato
 				);
 			}
-			await obtenerContratosProveedores(id_empresa);
+			obtenerContratosProveedores(id_empresa);
 		} catch (error) {
 			console.log(error);
 		}
@@ -97,7 +97,7 @@ export const useContratosProveedores = () => {
 	const onDeleteContratosProveedoresxID = async (id, id_empresa) => {
 		try {
 			const { data } = await PTApi.put(`/contrato-prov/delete/${id}`);
-			await obtenerContratosProveedores(id_empresa);
+			obtenerContratosProveedores(id_empresa);
 		} catch (error) {
 			console.log(error);
 		}

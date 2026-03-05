@@ -53,51 +53,34 @@ const ReporteVentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAs
 const ComparativoMensualPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual'));
 const InscripcionesPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/inscripcionestable'));
 const ComparativoMensualVentasPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/ComparativoMensualVentasPage'));
-
 const ReporteVentasporSemana = lazy(() => import('../pages/pagePT/reportes/ventaPorSemana'))
 const Terminologias = lazy(() => import('../pages/pagePT/Terminologias'))
 const ReporteEgresos = lazy(() => import('../pages/pagePT/reportes/reporteEgresos'))
 const ReporteGerenciales = lazy(() => import('../pages/pagePT/reportes/reporteGerenciales'))
-// const ReporteMetas = lazy(()=>import('../pages/pagePT/reportes/reporteMetas'))
-// const MarketingAgenda = lazy(()=>import('../pages/pagePT/GestMkt'))
 const HistorialCitasNutricionista = lazy(() => import('../pages/pagePT/HistorialCitasNutricionista'))
 const GestionTipoCambio = lazy(() => import('../pages/pagePT/GestTipoCambio'))
 const GestContratosClientes = lazy(() => import('../pages/pagePT/GestContratosCliente'))
-// const GestActasDeReunion = lazy(()=>import('../pages/pagePT/GestActasReunion'))
-// const ReporteComparativaDeVentasxDia = lazy(()=>import('../pages/pagePT/ReporteComparativoxDia'))
 const ReporteFlujoCaja = lazy(() => import('../pages/pagePT/FlujoCaja'))
-// const ReporteUtilidadProgramas = lazy(()=>import('../pages/pagePT/ReporteUtilidadPrograma'))
 const GestProvAgente = lazy(() => import('../pages/pagePT/GestProvAgentes'))
 const PerfilProveedor = lazy(() => import('../pages/pagePT/PerfilProveedor'))
 const GestionInventario = lazy(() => import('../pages/pagePT/GestInventario'))
 const GestionInventarioProy = lazy(() => import('../pages/pagePT/GestInventarioProy'))
 const InventarioTotalizado = lazy(() => import('../pages/pagePT/InventarioReporte'))
-// const EntradaInventario = lazy(()=>import('../pages/pagePT/EntradaInventario'))
-// const SalidaInventario = lazy(()=>import('../pages/pagePT/SalidaInventario'))
-// const RecursosHumanoReportes = lazy(()=>import('../pages/pagePT/RecursosHumanos'))
 const PuntoEquilibrio = lazy(() => import('../pages/pagePT/reportes/puntoEquilibrio'))
 const ReporteSeguimiento = lazy(() => import('../pages/pagePT/reportes/reporteSeguimiento'))
 const GestionComercial = lazy(() => import('../pages/pagePT/GestionComercial/Index.jsx'))
-// const ReporteSesionesxMem = lazy(()=>import('../pages/pagePT/reportes/reporteSesionesxMem'))
 const ResultadoChange = lazy(() => import('../pages/pagePT/reportes/resultadoChange'))
-// const ReporteDeAsistenciaRH = lazy(()=> import('../pages/pagePT/reportes/reporteAsistenciaRH'));
 const ReporteDeGestionComercial = lazy(() => import('../pages/pagePT/reportes/reporteGestionComercial'))
-// const GestionJornada = lazy(()=>import('../pages/pagePT/GestJornada'))
 const ResumenComparativo = lazy(() => import('../pages/pagePT/reportes/resumenComparativo'))
-// const ReporteDemograficoCliente = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoCliente'))
-// const ReporteDemograficoxMembresia = lazy(()=>import('../pages/pagePT/reportes/reporteDemograficoxMembresia'))
-// const VentasTransferencias = lazy(()=>import('../pages/pagePT/VentasTransferencias'))
 const ClientesxVentasDeMembresia = lazy(() => import('../pages/pagePT/MembresiaxCliente'))
 const GestionCambioPrograma = lazy(() => import('../pages/pagePT/GestionCambioPrograma'))
 const ResumenComparativoAnual = lazy(() => import('../pages/pagePT/reportes/resumenComparativoAnual'))
 const SeguimientoxMesView = lazy(() => import('../pages/pagePT/reportes/SeguimientoxMes'))
-const FacturacionPublicidad = lazy(() => import('../pages/pagePT/FacturacionPublicidad'))
 const ResumenDemograficoxPrograma = lazy(() => import('../pages/pagePT/reportes/resumenDemograficoComparativo'))
 const ViewAdquision = lazy(() => import('../pages/pagePT/reportes/lineaMkt/adquision'))
 const ViewRenovacion = lazy(() => import('../pages/pagePT/reportes/lineaMkt/renovacion'))
 const ViewReinscripcion = lazy(() => import('../pages/pagePT/reportes/lineaMkt/reinscripcion'))
 const CitasxNutricionista = lazy(() => import('../pages/pagePT/reportes/citasxEstados'))
-const GeneradorFechas = lazy(() => import('../pages/pagePT/generadorFechas/GeneradorFechasInventario'))
 const ArticulosNuevos = lazy(() => import('../pages/pagePT/GestArticulosChorrillos'))
 const ResumenEjecutivo = lazy(() => import('../pages/pagePT/reportes/resumenEjecutivo/Index.jsx'))
 const GestionCentroDeArchivos = lazy(() => import('../pages/pagePT/GestCentroArchivo/Index.jsx'))
@@ -115,12 +98,9 @@ const GestionPermisos = lazy(() => import('../pages/pagePT/GestionPermisos/index
 const GestionTardanzas = lazy(() => import('../pages/pagePT/GestionTardanzas/index.jsx'))
 const GestionHorasExtras = lazy(() => import('../pages/pagePT/GestionHorasExtras/index.jsx'))
 const GestionSalidasTempranas = lazy(() => import('../pages/pagePT/GestionSalidasTempranas/index.jsx'))
-// const ContratoProv = lazy(()=>import('../pages/pagePT/ContratoProv/Index.jsx'))
-const ReporteUtilidadxMes = lazy(() => import('../pages/pagePT/ReporteUtilidadxMes/Index.jsx'))
 const ResumenGerencialPorRenovaciones = lazy(() => import('../pages/pagePT/ResumenGerencialPorRenovaciones/Index.jsx'))
 const CuentasBalances = lazy(() => import('../pages/pagePT/CuentasBalances/Index.jsx'))
 const AuditoriaInventario = lazy(() => import('../pages/pagePT/AuditoriaInventario/Index.jsx'))
-const DetalleRenovacionesxDia = lazy(() => import('../pages/pagePT/ResumenGerencialxRenovacionesxDia/Index.jsx'))
 const ResumenGerencialPorRenovacionesReal = lazy(() => import('../pages/pagePT/ResumenGerencialPorRenovacionesReal/Index.jsx'))
 const ResumenGerencialPorReinscripcionesxDia = lazy(() => import('../pages/pagePT/ResumenGerencialxReinscritosxDia/Index.jsx'))
 const InformeEjecutivoOficial = lazy(() => import('../pages/pagePT/reportes/resumenEjecutivoOficial/Index.jsx'))
@@ -217,9 +197,16 @@ export default function ProtectedRoutes() {
 								<Route path='videos-infraestructura' element={<ExternalRedirect to="https://drive.google.com/drive/folders/1_Q_l0GkljHKUU988JudFnbSreGq_b9Lu" replace />} />
 							}
 							{
-								sections.find(e => e.url === '/gestion-ingresantes-activo') &&
+								sections.find(e => e.url === '/prov') &&
 								<Route path='gestion-ingresantes-activo' element={<GestionIngresantes id_estado={true} tipo={1574} />} />
 							}
+							{/* {
+								sections.find(e => e.url === '/prov') &&
+								<>
+									<Route path='gestion-proveedores-activo' element={<GestionProveedores estado={true} tipo={1573} />} />
+									<Route path='perfil-proveedor/:uid' element={<PerfilProveedor />} />
+								</>
+							} */}
 							{
 								sections.find(e => e.url === '/cuentas-balances') &&
 								<Route path='cuentas-pagar' element={<CuentasBalances tipo={'PorPagar'} headerTipo={'PAGAR'} />} />
@@ -257,15 +244,15 @@ export default function ProtectedRoutes() {
 								<Route path='gest-feriados' element={<GestionFeriados />} />
 							}
 							{
-								sections.find(e => e.url === '/reporte-cuentas-pagar-prov') &&
+								sections.find(e => e.url === '/prov') &&
 								<Route path='reporte-cuentas-pagar-prov' element={<ReporteCuentasPagar />} />
 							}
 							{
-								sections.find(e => e.url === '/deudas-proveedores') &&
+								sections.find(e => e.url === '/prov') &&
 								<Route path='deudas-proveedores' element={<ReporteDeudasProveedores />} />
 							}
 							{
-								sections.find(e => e.url === '/contratos-prov') &&
+								sections.find(e => e.url === '/prov') &&
 								<Route path='contratos-prov' element={<ContratosProveedores />} />
 							}
 							{
@@ -434,14 +421,14 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/prov') &&
 								<>
-									<Route path='gestion-proveedores-activo' element={<GestionProveedores id_estado={true} />} />
+									<Route path='gestion-proveedores-activo' element={<GestionProveedores estado={true} tipo={1573} />} />
 									<Route path='perfil-proveedor/:uid' element={<PerfilProveedor />} />
 								</>
 							}
 							{
 								sections.find(e => e.url === '/prov') &&
 								<>
-									<Route path='gestion-proveedores-inactivo' element={<GestionProveedores id_estado={false} />} />
+									<Route path='gestion-proveedores-inactivo' element={<GestionProveedores estado={false} tipo={1573} />} />
 									<Route path='perfil-proveedor/:uid' element={<PerfilProveedor />} />
 								</>
 							}
@@ -569,7 +556,7 @@ export default function ProtectedRoutes() {
 								<Route path="reporte-admin/reporte-utilidad-programa" element={<ReporteUtilidadProgramas />} />
 							}
 							{
-								sections.find(e => e.url === '/reporte-admin/reporte-gerencial') &&
+								sections.find(e => e.url === '/reportes-admin') &&
 								<Route path='reporte-admin/reporte-gerencial' element={<ReporteGerenciales />} />
 							}
 							{

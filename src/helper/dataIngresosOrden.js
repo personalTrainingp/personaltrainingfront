@@ -19,6 +19,7 @@ export function dataIngresosOrden(dataVentas) {
 			return {
 				...v,
 				monto: v?.detalle_membresias[0]?.tarifa_monto,
+				subConcepto: v?.detalle_membresias[0]?.tb_ProgramaTraining.name_pgm,
 				cantidadTotal: 1,
 				concepto: 'MEMBRESIA' || '',
 				tb_parametros_gasto: {
@@ -54,6 +55,7 @@ export function dataIngresosOrden(dataVentas) {
 				detalle_productos: detalleFiltrado,
 				cantidadTotal,
 				monto: montoTotal,
+				subConcepto: detalleFiltrado[0]?.tb_producto.nombre_producto,
 				concepto: 'ACCESORIOS',
 				tb_parametros_gasto: {
 					grupo: 'INGRESOS',
@@ -87,8 +89,8 @@ export function dataIngresosOrden(dataVentas) {
 				detalle_productos: detalleFiltrado,
 				cantidadTotal,
 				monto: montoTotal,
+				subConcepto: detalleFiltrado[0]?.tb_producto.nombre_producto,
 				concepto: 'SUPLEMENTOS',
-
 				tb_parametros_gasto: {
 					grupo: 'INGRESOS',
 					id_empresa: 598,
@@ -108,3 +110,6 @@ export function dataIngresosOrden(dataVentas) {
 		dataMembresias,
 	};
 }
+
+
+

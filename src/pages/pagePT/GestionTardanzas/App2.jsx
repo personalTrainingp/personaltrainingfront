@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 
 export const App2 = ({id_empresa}) => {
-  const [isOpenModalCustomTardanzas, setisOpenModalCustomTardanzas] = useState({isOpen: false, id: 0})
+  const [isOpenModalCustomTardanzas, setisOpenModalCustomTardanzas] = useState({isOpen: false, id: 0, isCopy: false})
   const { obtenerTardanzas } = useTardanzasStore()
   const {dataView} = useSelector(e=>e.DATA)
       const { DataGeneral:dataTipoTardanzas, obtenerParametroPorEntidadyGrupo:obtenerTipoTardanzas } = useTerminoStore()
@@ -26,11 +26,6 @@ export const App2 = ({id_empresa}) => {
   }
   return (
     <div>
-      {/* <pre>
-        {
-          JSON.stringify(dataView, null, 2)
-        }
-      </pre> */}
       <PageBreadcrumb title={'Gestion de tardanzas'}/>
       <Button label='Agregar Tardanza' onClick={()=>onOpenModalCustomTardanzas(0)}/>
       <DataTableTardanzas list={dataView} dataTipoTardanzas={dataTipoTardanzas}/>

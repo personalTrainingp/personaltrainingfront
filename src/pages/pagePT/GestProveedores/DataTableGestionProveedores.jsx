@@ -11,7 +11,7 @@ export const DataTableGestionProveedores = ({id_empresa, tipo, estado, onOpenMod
     const { obtenerProveedoresxEmpresaxTipoxEstado } = useGestionProveedoresStore()
     useEffect(() => {
       obtenerProveedoresxEmpresaxTipoxEstado(id_empresa, tipo, estado)
-    }, [])
+    }, [id_empresa, tipo, estado])
     
     const columns = [
         {id: 0, header: 'ID', accessor: 'id'},
