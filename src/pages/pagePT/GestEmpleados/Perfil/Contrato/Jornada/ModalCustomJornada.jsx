@@ -368,7 +368,9 @@ const ModalJornada = ({
 const PanelItems = ({ items, onToggleDetail, onDelete, id_contrato }) => {
   const { postTipoContratoxDia } = useContratoColaboradorStore()
   const onClickPostItems = (it)=>{
-      postTipoContratoxDia(dataFlatMapItems(it, id_contrato))
+    console.log({it});
+    
+      // postTipoContratoxDia(dataFlatMapItems(it, id_contrato))
   }
   return (
     <div style={{ borderLeft: '1px solid #eee', paddingLeft: 12 }}>
@@ -385,9 +387,9 @@ const PanelItems = ({ items, onToggleDetail, onDelete, id_contrato }) => {
             )}
             <Button
               className="p-button-text p-button-sm"
-              label={it.showDetail ? 'Ocultar detalle' : 'Ver detalle'}
+              label={it.showDetail ? 'Ocultar detalle' : 'Ver detalle'} 
               onClick={() => onToggleDetail(it.id)}
-            />
+            />  
             <Button className="p-button-text p-button-danger p-button-sm" icon="pi pi-trash" onClick={() => onDelete(it.id)} style={{ marginLeft: 'auto' }} />
           </div>
           {it.showDetail && (

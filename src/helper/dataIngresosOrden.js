@@ -13,6 +13,7 @@ export function dataIngresosOrden(dataVentas) {
 			moneda: 'PEN',
 		};
 	});
+
 	const dataMembresias = dataVentasMap
 		.filter((dventa) => dventa.detalle_membresias?.length !== 0)
 		.map((v) => {
@@ -33,7 +34,7 @@ export function dataIngresosOrden(dataVentas) {
 				},
 			};
 		})
-		.filter((f) => f.montoTotal !== 0);
+		.filter((f) => f.montoTotal !== 0)
 
 	const dataProductos17 = dataVentasMap
 		.map((v) => {
@@ -69,6 +70,7 @@ export function dataIngresosOrden(dataVentas) {
 			};
 		})
 		.filter((v) => v.detalle_productos?.length !== 0);
+
 	const dataProductos18 = dataVentasMap
 		.map((v) => {
 			const detalleFiltrado = v.detalle_productos.filter(
@@ -110,6 +112,3 @@ export function dataIngresosOrden(dataVentas) {
 		dataMembresias,
 	};
 }
-
-
-

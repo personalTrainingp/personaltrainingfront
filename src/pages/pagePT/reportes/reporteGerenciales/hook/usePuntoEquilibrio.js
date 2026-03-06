@@ -68,7 +68,6 @@ export const usePuntoEquilibrio = () => {
 				};
 			});
 			const dataV = dataIngresosOrden([...data.ventas]);
-			console.log({ d11: dataV.dataProductos18 });
 			// const dataMembresiasxOrigen =
 			const arrayTotalIngresos = [
 				...dataV.dataMembresias,

@@ -34,7 +34,7 @@ export const ModalConceptos = ({dataConceptos, headerGrupo, show, onHide}) => {
                                       <tr onClick={()=>onClickData(g.conceptos, g.grupo)}>
                                         <td>{g?.concepto}</td>
                                         <td><NumberFormatMoney amount={g?.montoData}/></td>
-                                        <td>{g?.data.length}</td>
+                                        <td>{g?.data?.length}</td>
                                       </tr>
                                     )
                                   })

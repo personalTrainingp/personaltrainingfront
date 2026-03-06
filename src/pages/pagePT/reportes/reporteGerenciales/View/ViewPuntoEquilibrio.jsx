@@ -32,32 +32,21 @@ export const ViewPuntoEquilibrio = ({id_empresa, bgTotal, rangeDate}) => {
     const dataMembresias = [
         {
             grupo: 'NUEVO', data: membresiasNuevas, items: [], 
-            conceptos: [
-                {concepto: 'CHANGE', data: [], items: []}, 
-                {concepto: 'FISIO MUSCLE', data: [], items: []}, 
-                {concepto: 'FS 45', data: [], items: []}
-            ]
+            conceptos: agrupar(membresiasNuevas)
         },
         {
             grupo: 'REINSCRIPCIONES', data: membresiasReinscripciones, items: [], 
-            conceptos: [
-                {concepto: 'CHANGE', data: [], items: []}, 
-                {concepto: 'FISIO MUSCLE', data: [], items: []}, 
-                {concepto: 'FS 45', data: [], items: []}
-            ]
+            conceptos: agrupar(membresiasReinscripciones)
         },
         {
             grupo: 'RENOVACIONES', data: membresiasRenovaciones, items: [], 
-            conceptos: [
-                {concepto: 'CHANGE', data: [], items: []}, 
-                {concepto: 'FISIO MUSCLE', data: [], items: []}, 
-                {concepto: 'FS 45', data: [], items: []}
-            ]
+            conceptos: agrupar(membresiasRenovaciones)
         },
     ]
-    const productosMAP  = dataIngresosProductos?.map(m=>{
+    const productosMAP  = dataIngresosProductos?.map(p=>{
         return {
-            grupo: m?.detalle_productos || ''
+            grupo: p?.concepto || '',
+            concepto: agrupar(p.items)
         }
     })
     console.log({dataIngresosMembresias, dataIngresosProductos, productosMAP, dataMembresias, membresiasNuevas, dif: dataIngresosxFecha.find(f=>f.grupo==='INGRESOS')});
@@ -90,7 +79,7 @@ export const ViewPuntoEquilibrio = ({id_empresa, bgTotal, rangeDate}) => {
                     withHeaderVertical={withHeaderVertical} 
                     bgTotal={bgTotal} 
                     nombreHeader='PRODUCTOS'
-                    data={dataMembresias}
+                    data={productosMAP}
                 />
                 <TableResumen 
                     id_empresa={id_empresa} 
@@ -110,3 +99,21 @@ export const ViewPuntoEquilibrio = ({id_empresa, bgTotal, rangeDate}) => {
     </div>
   )
 }
+
+
+const agrupar = (data) => {
+  const map = {};
+
+  data?.forEach(item => {
+    const concepto = item['subConcepto'];
+
+    if (!map[concepto]) {
+      map[concepto] = { concepto, items: [], data:[] };
+    }
+
+    map[concepto].items.push(item);
+    map[concepto].data.push(item);
+  });
+
+  return Object.values(map);
+};
