@@ -17,7 +17,7 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
 
     const handleCuotaChange = (e) => {
         const val = e.target.value.replace(/,/g, '');
-        if (/^\d*$/.test(val)) {
+        if (/^\d*\.?\d*$/.test(val)) {
             setInputCuota(e.target.value);
             setCuotaSugerida(Number(val));
         }
