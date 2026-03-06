@@ -6,7 +6,10 @@ import { Form, Row, Col, Button } from 'react-bootstrap';
 export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay = 31 }) => {
     const {
         cuotaSugerida, setCuotaSugerida, openPayParam,
-        refRows, commissionData, addScaleRow, updateScaleCommission
+        refRows, commissionData, addScaleRow, updateScaleCommission,
+        renovacionConfig, updateRenovacionConfig,
+        totalMetaConfig, updateTotalMetaConfig,
+        globalRenovacionesData, globalTotalMetaData
     } = useComisionesLogic(ventas, year, month, initDay, cutDay);
 
     const [inputCuota, setInputCuota] = React.useState(fmtNum(cuotaSugerida));
@@ -265,39 +268,88 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                             </tbody>
                         </table>
 
-                        {/* B. TABLA QUINCENA (NUEVA - 2 FILAS) */}
-                        <div style={styles.sectionTitle}>(AVANCE AL 40% HASTA QUINCENA)</div>
-                        <table style={styles.tableBase}>
-                            {renderHeaders()}
-                            <tbody>
-                                {adv.quincenaData.map((row, idx) => (
-                                    <tr key={idx} style={{ background: row.pct === 100 ? '#e0e0e0' : (idx % 2 === 0 ? '#fff' : '#fff') }}>
-                                        <td style={{ ...styles.tdCenter, fontWeight: 'bold' }}>{row.alcance}</td>
-                                        <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(row.venta)}</td>
-                                        <td style={styles.td}>{fmtNum(row.igv)}</td>
-                                        <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(row.base)}</td>
-                                        <td style={styles.td}>{fmtNum(row.renta)}</td>
-                                        <td style={styles.td}>{fmtNum(row.openPay)}</td>
-                                        <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(row.ventasNetas)}</td>
-                                        {/* INPUT EDITABLE QUINCENA (Vinculado) */}
-                                        <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
-                                            <input
-                                                type="number"
-                                                step="0.1"
-                                                value={row.com}
-                                                onChange={(e) => updateScaleCommission(row.index, e.target.value)}
-                                                style={styles.inputCom}
-                                            /> %
-                                        </td>
-                                        <td style={{ ...styles.td, fontWeight: 'bold' }}>{fmtNum(row.importeComision)}</td>
-                                        <td style={{ ...styles.td, fontWeight: 'bold', border: '2px solid #000' }}>{fmtNum(row.totalComision)}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
                     </div>
                 ))
             }
+
+            {/* B. TABLA RENOVACIONES GLOBAL */}
+            <div style={styles.sectionTitle}>(RENOVACIONES - META GLOBAL)</div>
+            <table style={styles.tableBase}>
+                <thead>
+                    <tr>
+                        <th style={styles.thYellow}>PERIODO</th>
+                        <th style={styles.thYellow}>META<br />S/</th>
+                        <th style={styles.thYellow}>LOGRADO<br />S/</th>
+                        <th style={styles.thYellow}>COMISIÓN<br />S/</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {globalRenovacionesData.map((row, idx) => (
+                        <tr key={idx} style={{ background: '#fff' }}>
+                            <td style={{ ...styles.tdCenter, fontWeight: 'bold' }}>{row.label}</td>
+                            <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
+                                <input
+                                    type="number"
+                                    value={row.meta}
+                                    onChange={(e) => updateRenovacionConfig(row.index, 'meta', e.target.value)}
+                                    style={{ ...styles.inputCom, width: '100px' }}
+                                />
+                            </td>
+                            <td style={{ ...styles.td, fontWeight: 'bold', color: row.logrado >= row.meta ? 'green' : 'black' }}>
+                                {fmtNum(row.logrado)}
+                            </td>
+                            <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
+                                <input
+                                    type="number"
+                                    value={row.comision}
+                                    onChange={(e) => updateRenovacionConfig(row.index, 'comision', e.target.value)}
+                                    style={{ ...styles.inputCom, width: '100px' }}
+                                />
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            {/* C. TABLA META TOTAL GLOBAL */}
+            <div style={styles.sectionTitle}>(META GLOBAL - TOTAL VENTAS EQUIPO)</div>
+            <table style={styles.tableBase}>
+                <thead>
+                    <tr>
+                        <th style={styles.thYellow}>PERIODO</th>
+                        <th style={styles.thYellow}>META<br />S/</th>
+                        <th style={styles.thYellow}>LOGRADO<br />S/</th>
+                        <th style={styles.thYellow}>COMISIÓN<br />S/</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {globalTotalMetaData.map((row, idx) => (
+                        <tr key={idx} style={{ background: '#fff' }}>
+                            <td style={{ ...styles.tdCenter, fontWeight: 'bold' }}>{row.label}</td>
+                            <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
+                                <input
+                                    type="number"
+                                    value={row.meta}
+                                    onChange={(e) => updateTotalMetaConfig(row.index, 'meta', e.target.value)}
+                                    style={{ ...styles.inputCom, width: '100px' }}
+                                />
+                            </td>
+                            <td style={{ ...styles.td, fontWeight: 'bold', color: row.logrado >= row.meta ? 'green' : 'black' }}>
+                                {fmtNum(row.logrado)}
+                            </td>
+                            <td style={{ ...styles.td, background: '#e8f5e9', textAlign: 'center' }}>
+                                <input
+                                    type="number"
+                                    value={row.comision}
+                                    onChange={(e) => updateTotalMetaConfig(row.index, 'comision', e.target.value)}
+                                    style={{ ...styles.inputCom, width: '100px' }}
+                                />
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
         </div >
     );
 };

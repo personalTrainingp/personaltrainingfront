@@ -1,5 +1,4 @@
 import { Button, Card, Col, Row } from 'react-bootstrap'
-import { PageBreadcrumb, Table } from '@/components'
 import { columns, sizePerPageList } from './ColumnsSet';
 import { asesores } from './data';
 import Select from 'react-select'
@@ -14,77 +13,78 @@ import { ComparativaporVentas } from './ComparativaporVentas';
 import { FidelizacionClientes } from './FidelizacionClientes';
 import { MetasDeVendedores } from './MetasDeVendedores';
 import { members } from './dataM'
+import { PageBreadcrumb } from '@/components';
 
 const rangoFechas = {
-	rangoDate:[new Date(new Date().getFullYear(), 0, 1), new Date()],
+	rangoDate: [new Date(new Date().getFullYear(), 0, 1), new Date()],
 	id_empl: 0
-  }
+}
 const VentasAsesor = () => {
 	const { formState, rangoDate, id_empl, onInputChange, onInputChangeReact, onResetForm } = useForm(rangoFechas)
-	const {  } = useReporteStore()
+	const { } = useReporteStore()
 	const { obtenerVendedores_vendieron, dataVendedoresVendieron } = useTerminoStore()
 	useEffect(() => {
 		obtenerVendedores_vendieron()
 	}, [])
-	
+
 	useEffect(() => {
 
 	}, [id_empl, rangoDate])
-	
-  return (
-    <>
-    <PageBreadcrumb title={'Ventas por asesor'} subName={'*'} />
-	<Row>
-		<Col xxl={3} md={4} xs={6}>
-		<div className="mb-3">
-			<label htmlFor="id_empl" className="form-label">
-			Asesor*
-			</label>
-			<Select
-				onChange={(e)=>onInputChangeReact(e, "id_empl")}
-				name={"id_empl"}
-				placeholder={'Seleccione el empleado'}
-				className="react-select"
-				classNamePrefix="react-select"
-				options={dataVendedoresVendieron}
-				value={dataVendedoresVendieron.find(
-				(option) => option.value === id_empl
-				)}
-				required
-			></Select>
-		</div>
-		</Col>
-		<Col xxl={3} md={4} xs={6}>
-        <div className="flex-auto">
-          <label htmlFor="buttondisplay" className="font-bold block mb-2">
-              Rango de fecha
-          </label>
-          <Calendar id="buttondisplay" value={rangoDate} name='rangoDate' onChange={onInputChange} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection />
-        </div>
-      </Col>
-	</Row>
+
+	return (
+		<>
+			<PageBreadcrumb title={'Ventas por asesor'} subName={'*'} />
 			<Row>
-				<Col xs={4}>
-					<ProfileCard/>
+				<Col xxl={3} md={4} xs={6}>
+					<div className="mb-3">
+						<label htmlFor="id_empl" className="form-label">
+							Asesor*
+						</label>
+						<Select
+							onChange={(e) => onInputChangeReact(e, "id_empl")}
+							name={"id_empl"}
+							placeholder={'Seleccione el empleado'}
+							className="react-select"
+							classNamePrefix="react-select"
+							options={dataVendedoresVendieron}
+							value={dataVendedoresVendieron.find(
+								(option) => option.value === id_empl
+							)}
+							required
+						></Select>
+					</div>
 				</Col>
-				<Col xs={8}>
-					<VentasVendieron/>
-				</Col>
-				<Col xs={6}>
-					<ComparativaporVentas/>
-				</Col>
-				<Col xs={3}>
-					<FidelizacionClientes members={members}/>
-				</Col>
-				<Col xs={3}>
-					<MetasDeVendedores/>
+				<Col xxl={3} md={4} xs={6}>
+					<div className="flex-auto">
+						<label htmlFor="buttondisplay" className="font-bold block mb-2">
+							Rango de fecha
+						</label>
+						<Calendar id="buttondisplay" value={rangoDate} name='rangoDate' onChange={onInputChange} showIcon selectionMode="range" readOnlyInput hideOnRangeSelection />
+					</div>
 				</Col>
 			</Row>
-    </>
-  )
+			<Row>
+				<Col xs={4}>
+					<ProfileCard />
+				</Col>
+				<Col xs={8}>
+					<VentasVendieron />
+				</Col>
+				<Col xs={6}>
+					<ComparativaporVentas />
+				</Col>
+				<Col xs={3}>
+					<FidelizacionClientes members={members} />
+				</Col>
+				<Col xs={3}>
+					<MetasDeVendedores />
+				</Col>
+			</Row>
+		</>
+	)
 }
 
-export {VentasAsesor}
+export { VentasAsesor }
 
 {/* <Table
 								columns={columns}

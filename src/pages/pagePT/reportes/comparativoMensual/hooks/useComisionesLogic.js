@@ -92,6 +92,27 @@ export const useComisionesLogic = (ventas, year, month, initDay = 1, cutDay = 31
         return Number(v?.monto_total || v?.tb_ventum?.monto_total || v?.monto || 0);
     };
 
+    const [renovacionConfig, setRenovacionConfig] = useState([
+        { id: 'quincena', label: 'HASTA 15', meta: 20000, comision: 500, minDay: 1, maxDay: 15 },
+        { id: 'finMes', label: 'FIN DE MES', meta: 30000, comision: 600, minDay: 16, maxDay: 31 }
+    ]);
+
+    const updateRenovacionConfig = (index, field, val) => {
+        const newConfig = [...renovacionConfig];
+        newConfig[index][field] = parseFloat(val) || 0;
+        setRenovacionConfig(newConfig);
+    };
+
+    const [totalMetaConfig, setTotalMetaConfig] = useState([
+        { id: 'totalMeta', label: 'META TOTAL', meta: 50000, comision: 600 }
+    ]);
+
+    const updateTotalMetaConfig = (index, field, val) => {
+        const newConfig = [...totalMetaConfig];
+        newConfig[index][field] = parseFloat(val) || 0;
+        setTotalMetaConfig(newConfig);
+    };
+
     // 2. DATOS POR VENDEDOR
     const commissionData = useMemo(() => {
         const cuotaInd = cuotaSugerida / 2;
@@ -141,32 +162,95 @@ export const useComisionesLogic = (ventas, year, month, initDay = 1, cutDay = 31
                 };
             }).filter(p => p.pct > 0);
 
-            // D. TABLA QUINCENA (100% = Scale 4, 110% = Scale 6)
-            // Indices in unified scales: Scale 4 => index 4, Scale 6 => index 6
-            const quincenaSteps = [
-                { pctMeta: 100, label: '100%', scaleIndex: 4, scaleLabel: '4' },
-                { pctMeta: 110, label: '110%', scaleIndex: 6, scaleLabel: '6' }
-            ];
+            // D. TABLA RENOVACIONES
+            const renovacionesData = renovacionConfig.map((conf, idx) => {
+                const advSalesRenov = ventas ? ventas.filter(v => {
+                    const nombreFull = v?.tb_ventum?.tb_empleado?.nombres_apellidos ||
+                        v?.tb_ventum?.tb_empleado?.nombres_apellidos_empl ||
+                        v?.tb_empleado?.nombres_apellidos_empl ||
+                        v?.empleado || v?.usu_venta_nombre || "";
+                    const name = norm(nombreFull);
+                    const d = limaFromISO(v.fecha_venta || v.fecha || v.createdAt);
 
-            const quincenaData = quincenaSteps.map(step => {
-                const ventaQ = metaQuincena * (step.pctMeta / 100);
-                const currentScale = scales[step.scaleIndex]; // Get current state
+                    if (!d) return false;
+
+                    const sameMonthYear = (d.getMonth() + 1) === Number(month) && d.getFullYear() === Number(year);
+                    const isRenovacion = Number(v.id_origen) === 691;
+
+                    // Aseguramos que solo conte del conf.minDay al conf.maxDay
+                    const diaDeVenta = d.getDate();
+
+                    const isFinMes = conf.id === 'finMes' || idx === 1;
+                    const activeMinDay = conf.minDay !== undefined ? conf.minDay : (isFinMes ? 16 : 1);
+                    const activeMaxDay = conf.maxDay !== undefined ? conf.maxDay : (isFinMes ? 31 : 15);
+
+                    const evalMinDay = Math.max(Number(initDay), activeMinDay);
+                    const evalMaxDay = Math.min(Number(cutDay), activeMaxDay);
+
+                    const withinSpecificDays = diaDeVenta >= evalMinDay && diaDeVenta <= evalMaxDay;
+
+                    return name.includes(adv) && sameMonthYear && withinSpecificDays && isRenovacion;
+                }) : [];
+
+                const logrado = advSalesRenov.reduce((sum, v) => sum + getImporteCorrecto(v), 0);
+
                 return {
-                    scale: step.scaleLabel,
-                    alcance: step.label,
-                    pct: step.pctMeta,
-                    com: currentScale ? currentScale.com : 0, // Use global state
-                    index: step.scaleIndex, // For editing
-                    ...calculateRow(ventaQ, currentScale ? currentScale.com : 0)
+                    label: conf.label,
+                    meta: conf.meta,
+                    logrado: logrado,
+                    comision: conf.comision,
+                    index: idx
                 };
             });
 
-            return { advisor: adv, realData, projections, quincenaData };
+            // E. TABLA META TOTAL (todas las ventas)
+            const totalMetaData = totalMetaConfig.map((conf, idx) => {
+                const logrado = ventaRealTotal; // Venta Bruta / Cuota alcanzada
+                return {
+                    label: conf.label,
+                    meta: conf.meta,
+                    logrado: logrado,
+                    comision: conf.comision,
+                    index: idx
+                };
+            });
+
+            return { advisor: adv, realData, projections, renovacionesData, totalMetaData };
         });
-    }, [ventas, year, month, initDay, cutDay, cuotaSugerida, openPayParam, scales]);
+    }, [ventas, year, month, initDay, cutDay, cuotaSugerida, openPayParam, scales, renovacionConfig, totalMetaConfig]);
+
+    // F. DATOS GLOBALES CONJUNTOS (Renovaciones y Meta Total sumandos)
+    const globalRenovacionesData = useMemo(() => {
+        return renovacionConfig.map((conf, idx) => {
+            const logradoGlobal = commissionData.reduce((sum, adv) => sum + adv.renovacionesData[idx].logrado, 0);
+            return {
+                label: conf.label,
+                meta: conf.meta,
+                logrado: logradoGlobal,
+                comision: conf.comision,
+                index: idx
+            };
+        });
+    }, [renovacionConfig, commissionData]);
+
+    const globalTotalMetaData = useMemo(() => {
+        return totalMetaConfig.map((conf, idx) => {
+            const logradoGlobal = commissionData.reduce((sum, adv) => sum + adv.totalMetaData[idx].logrado, 0);
+            return {
+                label: conf.label,
+                meta: conf.meta,
+                logrado: logradoGlobal,
+                comision: conf.comision,
+                index: idx
+            };
+        });
+    }, [totalMetaConfig, commissionData]);
 
     return {
         cuotaSugerida, setCuotaSugerida, openPayParam,
-        refRows, commissionData, addScaleRow, updateScaleCommission
+        refRows, commissionData, addScaleRow, updateScaleCommission,
+        renovacionConfig, updateRenovacionConfig,
+        totalMetaConfig, updateTotalMetaConfig,
+        globalRenovacionesData, globalTotalMetaData
     };
 };
