@@ -38,7 +38,7 @@ const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 export const fmtMoney = (n) =>
 	new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(Number(n || 0));
 
-export const fmtNum = (n, d = 0) =>
+export const fmtNum = (n, d = 2) =>
 	new Intl.NumberFormat('es-PE', {
 		minimumFractionDigits: d,
 		maximumFractionDigits: d,
