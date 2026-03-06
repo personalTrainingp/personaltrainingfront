@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-export const useReentryBreakdown = (ventas, monthsData) => {
+export const useReentryBreakdown = (ventas, monthsData, customStartDay = 1, customEndDay = 31) => {
     return useMemo(() => {
         // 1. Filtrar Reinscripciones (ID 692 o 696)
         const reinscripciones = ventas.filter(v => Number(v.id_origen) === 692);
@@ -25,9 +25,13 @@ export const useReentryBreakdown = (ventas, monthsData) => {
             if (!d) return;
 
             const vKey = `${d.getFullYear()}-${d.getMonth()}`;
+            const day = d.getDate();
 
             // Solo procesar si el mes está en el rango seleccionado
             if (!monthsData.some(m => m.key === vKey)) return;
+
+            // Filtrar por rango de días
+            if (day < customStartDay || day > customEndDay) return;
 
             // Obtener nombre del vendedor
             const fullName = v.tb_empleado?.nombres_apellidos_empl || v.usu_venta_nombre || 'Sin Asignar';
@@ -76,5 +80,5 @@ export const useReentryBreakdown = (ventas, monthsData) => {
             totals: monthlyTotals,
             grandTotal
         };
-    }, [ventas, monthsData]);
+    }, [ventas, monthsData, customStartDay, customEndDay]);
 };

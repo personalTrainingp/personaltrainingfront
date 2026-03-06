@@ -266,7 +266,12 @@ export const ClientesPorOrigen = ({
                   style={{ ...sHead, background: isLastCol ? C.red : sHead.background, fontSize: isLastCol ? 27 : sHead.fontSize }}
                   onClick={toggleHighlight}
                 >
-                  {m.label}
+                  {m.label.replace(/-/g, ' ').split(' ').map((part, i, arr) => (
+                    <React.Fragment key={i}>
+                      {part}
+                      {i < arr.length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
                 </th>
               );
             })}
@@ -370,7 +375,12 @@ export const ClientesPorOrigen = ({
                   textTransform: "uppercase",
                 }}
               >
-                {m.label}
+                {m.label.replace(/-/g, ' ').split(' ').map((part, i, arr) => (
+                  <React.Fragment key={i}>
+                    {part}
+                    {i < arr.length - 1 && <br />}
+                  </React.Fragment>
+                ))}
               </td>
             ))}
             {/* celda vacía para alinear nueva columna */}

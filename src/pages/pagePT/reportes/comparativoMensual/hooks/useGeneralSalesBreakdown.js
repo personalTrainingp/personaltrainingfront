@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-export const useGeneralSalesBreakdown = (ventas, monthsData) => {
+export const useGeneralSalesBreakdown = (ventas, monthsData, customStartDay = 1, customEndDay = 31) => {
     return useMemo(() => {
         const allSales = ventas;
 
@@ -24,9 +24,13 @@ export const useGeneralSalesBreakdown = (ventas, monthsData) => {
             if (!d) return;
 
             const vKey = `${d.getFullYear()}-${d.getMonth()}`;
+            const day = d.getDate();
 
             // Solo procesar si el mes está en el rango seleccionado
             if (!monthsData.some(m => m.key === vKey)) return;
+
+            // Filtrar por rango de días
+            if (day < customStartDay || day > customEndDay) return;
 
             // Obtener nombre del vendedor
             const fullName = v.tb_empleado?.nombres_apellidos_empl || v.usu_venta_nombre || 'Sin Asignar';
@@ -77,5 +81,5 @@ export const useGeneralSalesBreakdown = (ventas, monthsData) => {
             totals: monthlyTotals,
             grandTotal
         };
-    }, [ventas, monthsData]);
+    }, [ventas, monthsData, customStartDay, customEndDay]);
 };

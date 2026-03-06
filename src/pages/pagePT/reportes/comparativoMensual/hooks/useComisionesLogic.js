@@ -63,9 +63,9 @@ export const useComisionesLogic = (ventas, year, month, initDay = 1, cutDay = 31
 
     // 1. TABLA DE REFERENCIA (SUPERIOR) - Filtra >= 95%
     const refRows = useMemo(() => {
-        const cuotaInd = cuotaSugerida / 2;
+        const cuotaTotal = cuotaSugerida;
         return scales.map((s, idx) => {
-            const ventaTarget = cuotaInd * (s.pct / 100);
+            const ventaTarget = cuotaTotal * (s.pct / 100);
             return { ...s, index: idx, data: calculateRow(ventaTarget, s.com) }; // Pass index for editing
         });
     }, [cuotaSugerida, openPayParam, scales]);

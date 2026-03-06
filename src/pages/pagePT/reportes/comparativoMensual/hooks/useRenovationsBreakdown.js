@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-export const useRenovationsBreakdown = (ventas, monthsData) => {
+export const useRenovationsBreakdown = (ventas, monthsData, customStartDay = 1, customEndDay = 31) => {
     return useMemo(() => {
         // 1. Filtrar solo renovaciones (ID 691)
         const renovaciones = ventas.filter(v => Number(v.id_origen) === 691);
@@ -25,9 +25,13 @@ export const useRenovationsBreakdown = (ventas, monthsData) => {
             if (!d) return;
 
             const vKey = `${d.getFullYear()}-${d.getMonth()}`;
+            const day = d.getDate();
 
             // Solo procesar si el mes está en el rango seleccionado
             if (!monthsData.some(m => m.key === vKey)) return;
+
+            // Filtrar por rango de días
+            if (day < customStartDay || day > customEndDay) return;
 
             // --- CAMBIO AQUÍ: OBTENER SOLO EL PRIMER NOMBRE ---
             const fullName = v.tb_empleado?.nombres_apellidos_empl || v.usu_venta_nombre || 'Sin Asignar';
@@ -74,5 +78,5 @@ export const useRenovationsBreakdown = (ventas, monthsData) => {
             totals: monthlyTotals,
             grandTotal
         };
-    }, [ventas, monthsData]);
+    }, [ventas, monthsData, customStartDay, customEndDay]);
 };
