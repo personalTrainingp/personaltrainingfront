@@ -1,24 +1,5 @@
-const MESES = [
-	'enero',
-	'febrero',
-	'marzo',
-	'abril',
-	'mayo',
-	'junio',
-	'julio',
-	'agosto',
-	'setiembre',
-	'octubre',
-	'noviembre',
-	'diciembre',
-];
-
-export const aliasMes = (m) => {
-	const mes = String(m || '')
-		.toLowerCase()
-		.trim();
-	return mes === 'septiembre' ? 'setiembre' : mes;
-};
+import { MESES, aliasMes, norm } from '../hooks/useResumenUtils';
+export { MESES, aliasMes, norm };
 
 const toLimaDate = (iso) => {
 	if (!iso) return null;
@@ -72,24 +53,33 @@ const getOriginId = (v) => {
 	return v?.id_origen ?? v?.tb_ventum?.id_origen ?? null;
 };
 
-const ORIGIN_SYNONYMS = {
-	tiktok: new Set(['1514', '695', 'tiktok', 'tik tok', 'tik-tok']),
-	facebook: new Set(['694', 'facebook', 'fb']),
-	instagram: new Set(['693', 'instagram', 'ig']),
-	meta: new Set(['1515', 'meta']),
-};
+const extractOriginInfo = (v, originMap) => {
+	const rawOrigin =
+		v?.parametro_origen?.label_param ??
+		v?.tb_ventum?.parametro_origen?.label_param ??
+		v?.origen ??
+		v?.source ??
+		v?.canal ??
+		v?.id_origen ??
+		v?.tb_ventum?.id_origen ??
+		v?.parametro_origen?.id_param ??
+		'OTROS';
 
-const canonicalKeyFromRaw = (originMap, raw) => {
-	const rawStr = String(raw ?? '').trim();
-	const mapped = originMap?.[rawStr] ?? originMap?.[Number(rawStr)] ?? rawStr;
+	const strMapped = originMap?.[String(rawOrigin)] ?? originMap?.[Number(rawOrigin)] ?? String(rawOrigin);
+	const low = String(strMapped).trim().toLowerCase();
 
-	const low = String(mapped).trim().toLowerCase();
-	for (const [key, set] of Object.entries(ORIGIN_SYNONYMS)) {
-		if (set.has(low) || set.has(rawStr.toLowerCase()) || set.has(String(raw).toLowerCase())) {
-			return key;
-		}
+	let oKey = low.replace(/\s+/g, '_');
+	if (low.includes('tik')) oKey = 'tiktok';
+	else if (low.includes('face') || low === 'fb') oKey = 'facebook';
+	else if (low.includes('insta') || low === 'ig') oKey = 'instagram';
+	else if (low.includes('meta')) oKey = 'meta';
+
+	let oLabel = labelFromKey(oKey);
+	if (oLabel === 'OTROS' && low !== 'otros') {
+		oLabel = String(strMapped).trim().toUpperCase();
 	}
-	return low.replace(/\s+/g, '_');
+
+	return { oKey, oLabel };
 };
 
 export const labelFromKey = (key) => {
@@ -171,16 +161,8 @@ export function computeMetricsForMonth({
 		if (d.getFullYear() === 2024 && d.getMonth() === 9) { // 9 = Octubre
 			continue;
 		}
-		const rawOrigin =
-			v?.id_origen ??
-			v?.parametro_origen?.id_param ??
-			v?.origen ??
-			v?.source ??
-			v?.canal ??
-			v?.parametro_origen?.label_param;
 
-		const oKey = canonicalKeyFromRaw(originMap, rawOrigin);
-		const oLabel = labelFromKey(oKey);
+		const { oKey, oLabel } = extractOriginInfo(v, originMap);
 
 		const group =
 			oKey === 'tiktok'

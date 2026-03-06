@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 
-export const useResumenRenovaciones = (id_empresa, fechas, dataGroup, pgmNameByIdDynamic) => {
+export const useResumenRenovaciones = (id_empresa, fechas, pgmNameByIdDynamic) => {
     const { year, selectedMonth, cutDay } = fechas;
 
     const [mapaVencimientos, setMapaVencimientos] = useState({});

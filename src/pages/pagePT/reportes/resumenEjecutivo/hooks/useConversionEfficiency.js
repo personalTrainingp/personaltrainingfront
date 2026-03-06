@@ -1,6 +1,5 @@
+import { limaFromISO, originMap, MESES, aliasMes } from '../hooks/useResumenUtils';
 import { useMemo } from 'react';
-import { limaFromISO, originMap, MESES } from '../hooks/useResumenUtils';
-
 export const useConversionEfficiency = ({
     ventas = [],
     dataMktWithCac = {},
@@ -14,24 +13,21 @@ export const useConversionEfficiency = ({
     return useMemo(() => {
         const monthIndex = selectedMonth - 1;
         const targetMonthName = MESES[monthIndex];
-        const mesKey = targetMonthName === 'septiembre' ? 'setiembre' : targetMonthName;
+        const mesKey = aliasMes(targetMonthName);
         const key = `${year}-${mesKey}`;
 
         const mktData = dataMktWithCac[key] || {};
         const leads_por_red = mktData.leads_por_red || {};
         const inversionPorRed = mktData.por_red || {};
 
-        // Renovaciones logic: use 'vencimientos' from mapaVencimientos as 'leads'
         const monthKey = `${year}-${String(selectedMonth).padStart(2, '0')}`;
         const vMontoCount = mapaVencimientos[monthKey]?.vencimientos || 0;
 
-        // Helper to sum by keys (same logic as ExecutibleTable2)
         const sumFrom = (obj, keys) => keys.reduce((a, k) => a + Number(obj?.[k] ?? 0), 0);
 
         const mkLeadsMeta = sumFrom(leads_por_red, ['1515', 'meta', 'facebook', 'instagram']);
         const mkLeadsTikTok = sumFrom(leads_por_red, ['1514', 'tiktok', 'tik tok']);
 
-        // Define base categories we want to track
         const stats = {
             Meta: { leads: mkLeadsMeta, originKeys: ['Meta', 'Facebook', 'Instagram'], ventas: 0, revenue: 0, inversion: inversionPorRed['meta'] || 0 },
             TikTok: { leads: mkLeadsTikTok, originKeys: ['TikTok'], ventas: 0, revenue: 0, inversion: inversionPorRed['tiktok'] || 0 },
@@ -40,7 +36,6 @@ export const useConversionEfficiency = ({
             WalkIn: { leads: 0, originKeys: ['Walking', 'Walk In', 'WalkIn'], ventas: 0, revenue: 0, inversion: 0 },
         };
 
-        // Process sales
         ventas.forEach(v => {
             const d = limaFromISO(v?.fecha_venta || v?.createdAt);
             if (!d || d.getFullYear() !== Number(year) || d.getMonth() !== monthIndex) return;
@@ -52,7 +47,6 @@ export const useConversionEfficiency = ({
 
             originLabel = String(originLabel).trim();
 
-            // Find matching stat category
             let matchedCategory = null;
             for (const [catName, catData] of Object.entries(stats)) {
                 if (catData.originKeys && catData.originKeys.some(ok => originLabel.toUpperCase().includes(String(ok).toUpperCase()))) {
@@ -94,10 +88,7 @@ export const useConversionEfficiency = ({
             stats[matchedCategory].revenue += totalLineas;
         });
 
-        // Process leads directly from dataLead if available
-        // Note: We skip Meta and TikTok here if they were already processed via leads_por_red
-        // to avoid double counting, or use this as the primary source if it's more accurate.
-        // For now, mirroring ExecutibleTable2 which uses leads_por_red (bulk data).
+
         if (dataLead && dataLead.length > 0) {
             dataLead.forEach(lead => {
                 const d = limaFromISO(lead?.fecha);
@@ -165,7 +156,6 @@ export const useConversionEfficiency = ({
             };
         });
 
-        // Sort by ventas descending
         result.sort((a, b) => b.ventas - a.ventas);
 
         return result;

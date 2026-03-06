@@ -6,13 +6,10 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Lima'); // todo se interpreta en Lima (-05:00)
 
-const MONTHS = [
-  'enero','febrero','marzo','abril','mayo','junio',
-  'julio','agosto','setiembre','octubre','noviembre','diciembre'
-];
+import { MESES, aliasMes } from '../hooks/useResumenUtils';
 
 // Helpers de fecha en Lima
-const monthKey = (iso) => MONTHS[ dayjs(iso).tz().month() ];   // 0..11
+const monthKey = (iso) => aliasMes(MESES[dayjs(iso).tz().month()]);   // 0..11
 const dayOfMonth = (iso) => dayjs(iso).tz().date();            // 1..31
 const inWindowByDay = (iso, initDay, cutDay) => {
   const d = dayOfMonth(iso);
@@ -66,22 +63,22 @@ export function ventasToExecutiveData({
     // Mes completo
     for (const d of serv) {
       monthAggAll[mk].servMonto += montoServicio(d);
-      monthAggAll[mk].servCant  += Number(d?.cantidad ?? 1) || 1;
+      monthAggAll[mk].servCant += Number(d?.cantidad ?? 1) || 1;
     }
     for (const d of prod) {
       monthAggAll[mk].prodMonto += montoProducto(d);
-      monthAggAll[mk].prodCant  += Number(d?.cantidad ?? 1) || 1;
+      monthAggAll[mk].prodCant += Number(d?.cantidad ?? 1) || 1;
     }
 
     // Ventana (initDay..cutDay) si aplica
     if (inWindowByDay(v?.fecha_venta, initDay, cutDay)) {
       for (const d of serv) {
         monthAggWin[mk].servMonto += montoServicio(d);
-        monthAggWin[mk].servCant  += Number(d?.cantidad ?? 1) || 1;
+        monthAggWin[mk].servCant += Number(d?.cantidad ?? 1) || 1;
       }
       for (const d of prod) {
         monthAggWin[mk].prodMonto += montoProducto(d);
-        monthAggWin[mk].prodCant  += Number(d?.cantidad ?? 1) || 1;
+        monthAggWin[mk].prodCant += Number(d?.cantidad ?? 1) || 1;
       }
     }
   });
@@ -91,13 +88,13 @@ export function ventasToExecutiveData({
   const valuesOf = (selector) =>
     keys.reduce((acc, k) => {
       const src = srcForRows[k] || baseAgg;
-      if (selector === 'servMonto')   acc[k] = src.servMonto;
-      if (selector === 'prodMonto')   acc[k] = src.prodMonto;
-      if (selector === 'servTicket')  acc[k] = src.servCant ? src.servMonto / src.servCant : 0;
-      if (selector === 'prodTicket')  acc[k] = src.prodCant ? src.prodMonto / src.prodCant : 0;
-      if (selector === 'total')       acc[k] = src.servMonto + src.prodMonto;
-      if (selector === 'prodCant')    acc[k] = src.prodCant;
-      if (selector === 'servCant')    acc[k] = src.servCant;
+      if (selector === 'servMonto') acc[k] = src.servMonto;
+      if (selector === 'prodMonto') acc[k] = src.prodMonto;
+      if (selector === 'servTicket') acc[k] = src.servCant ? src.servMonto / src.servCant : 0;
+      if (selector === 'prodTicket') acc[k] = src.prodCant ? src.prodMonto / src.prodCant : 0;
+      if (selector === 'total') acc[k] = src.servMonto + src.prodMonto;
+      if (selector === 'prodCant') acc[k] = src.prodCant;
+      if (selector === 'servCant') acc[k] = src.servCant;
       return acc;
     }, {});
 
@@ -116,13 +113,13 @@ export function ventasToExecutiveData({
     mkRow('LEADS', 'leads', 'number'),
     mkRow('CPL', 'cpl', 'number'),
 
-    { label: 'VENTA SERVICIOS',         key: 'venta_servicios',   type: 'currency', values: valuesOf('servMonto') },
-    { label: 'TICKET PROMEDIO SERV.',   key: 'ticket_prom_serv',  type: 'currency', values: valuesOf('servTicket') },
-    { label: 'VENTA PRODUCTOS',         key: 'venta_productos',   type: 'currency', values: valuesOf('prodMonto') },
-    { label: 'CANTIDAD PRODUCTOS',      key: 'cantidad_productos',                    values: valuesOf('prodCant') },
-    { label: 'CANTIDAD SERVICIOS',      key: 'cantidad_servicios',                    values: valuesOf('servCant') },
-    { label: 'TICKET PROMEDIO PROD.',   key: 'ticket_prom_prod', type: 'currency',   values: valuesOf('prodTicket') },
-    { label: 'VENTA TOTAL SERV. + PROD.', key: 'venta_total',     type: 'currency',  values: valuesOf('total'), emphasis: 'dark' },
+    { label: 'VENTA SERVICIOS', key: 'venta_servicios', type: 'currency', values: valuesOf('servMonto') },
+    { label: 'TICKET PROMEDIO SERV.', key: 'ticket_prom_serv', type: 'currency', values: valuesOf('servTicket') },
+    { label: 'VENTA PRODUCTOS', key: 'venta_productos', type: 'currency', values: valuesOf('prodMonto') },
+    { label: 'CANTIDAD PRODUCTOS', key: 'cantidad_productos', values: valuesOf('prodCant') },
+    { label: 'CANTIDAD SERVICIOS', key: 'cantidad_servicios', values: valuesOf('servCant') },
+    { label: 'TICKET PROMEDIO PROD.', key: 'ticket_prom_prod', type: 'currency', values: valuesOf('prodTicket') },
+    { label: 'VENTA TOTAL SERV. + PROD.', key: 'venta_total', type: 'currency', values: valuesOf('total'), emphasis: 'dark' },
 
     mkRow('CAC (S/)', 'cac', 'number'),
   ];

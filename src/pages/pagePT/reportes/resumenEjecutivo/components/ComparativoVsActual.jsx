@@ -1,5 +1,6 @@
 import React from "react";
 import { Card } from "react-bootstrap";
+import { MESES, aliasMes } from "../hooks/useResumenUtils";
 
 export const ComparativoVsActual = ({
   ventas = [],
@@ -7,13 +8,8 @@ export const ComparativoVsActual = ({
   fechas = [],
   initialDay = 1,
   cutDay = 21,
-  refMonthKey,  
+  refMonthKey,
 }) => {
-  const MESES = [
-    "enero", "febrero", "marzo", "abril", "mayo", "junio",
-    "julio", "agosto", "setiembre", "octubre", "noviembre", "diciembre",
-  ];
-  const aliasMes = (m) => (m === "septiembre" ? "setiembre" : m);
   const keyOf = (anio, mes) => `${anio}-${aliasMes(String(mes).toLowerCase())}`;
 
   const toLimaDate = (iso) => {
@@ -50,7 +46,7 @@ export const ComparativoVsActual = ({
     v?.detalle_ventaservicios || v?.detalle_ventaServicios || v?.detalle_servicios || [];
 
   const getDetalleServicios = (v) => v?.detalle_ventaMembresia || [];
-  
+
   const getDetalleProductos = (v) =>
     v?.detalle_ventaProductos || v?.detalle_ventaproductos || v?.detalle_venta_productos || [];
 
@@ -61,7 +57,7 @@ export const ComparativoVsActual = ({
     for (const v of ventas) {
       const d = toLimaDate(v?.fecha_venta);
       if (!d) continue;
-      
+
       const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
       const from = clamp(Number(initialDay || 1), 1, lastDay);
       const to = clamp(Number(cutDay || lastDay), from, lastDay);
@@ -80,39 +76,39 @@ export const ComparativoVsActual = ({
       for (const p of getDetalleProductos(v)) {
         bucket.prod += Number(p?.tarifa_monto || p?.precio_unitario || 0);
       }
-      for (const o of getDetalleOtrosServicios(v)){
+      for (const o of getDetalleOtrosServicios(v)) {
         bucket.otros += Number(o?.tarifa_monto || o?.precio_unitario || 0);
       }
     }
 
     // 2. SUMAR MONKEYFIT (RESERVAS)
     for (const r of reservasMF) {
-        if (!r?.flag) continue; 
-        const estado = String(r?.estado?.label_param || "").toLowerCase();
-        const ok = ["completada", "confirmada", "pagada", "no pagada", "reprogramada"].some(e => estado.includes(e));
-        if (!ok) continue;
+      if (!r?.flag) continue;
+      const estado = String(r?.estado?.label_param || "").toLowerCase();
+      const ok = ["completada", "confirmada", "pagada", "no pagada", "reprogramada"].some(e => estado.includes(e));
+      if (!ok) continue;
 
-        const d = toLimaDate(r?.fecha || r?.createdAt);
-        if (!d) continue;
+      const d = toLimaDate(r?.fecha || r?.createdAt);
+      if (!d) continue;
 
-        const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-        const from = clamp(Number(initialDay || 1), 1, lastDay);
-        const to = clamp(Number(cutDay || lastDay), from, lastDay);
-        const dia = d.getDate();
-        if (dia < from || dia > to) continue;
+      const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+      const from = clamp(Number(initialDay || 1), 1, lastDay);
+      const to = clamp(Number(cutDay || lastDay), from, lastDay);
+      const dia = d.getDate();
+      if (dia < from || dia > to) continue;
 
-        const mAlias = MESES[d.getMonth()];
-        const key = keyOf(d.getFullYear(), mAlias);
+      const mAlias = MESES[d.getMonth()];
+      const key = keyOf(d.getFullYear(), mAlias);
 
-        if (!map.has(key)) map.set(key, { serv: 0, prod: 0, otros: 0, mf: 0, total: 0 });
-        const bucket = map.get(key);
+      if (!map.has(key)) map.set(key, { serv: 0, prod: 0, otros: 0, mf: 0, total: 0 });
+      const bucket = map.get(key);
 
-        bucket.mf += Number(r?.monto_total || 0);
+      bucket.mf += Number(r?.monto_total || 0);
     }
 
     // 3. CALCULAR TOTALES FINALES
     map.forEach(bucket => {
-        bucket.total = bucket.serv + bucket.prod + bucket.otros + bucket.mf;
+      bucket.total = bucket.serv + bucket.prod + bucket.otros + bucket.mf;
     });
 
     return map;
@@ -125,16 +121,16 @@ export const ComparativoVsActual = ({
     : null;
 
   const refKey = refMonthKey || refKeyFromFechas;
-  const refVals = (refKey && dataByMonth.get(refKey)) || { serv: 0, prod: 0, mf:0, total: 0 };
+  const refVals = (refKey && dataByMonth.get(refKey)) || { serv: 0, prod: 0, mf: 0, total: 0 };
 
   const columns = fechas.map((f) => {
     const key = keyOf(f.anio, f.mes);
-    const vals = dataByMonth.get(key) || { serv: 0, prod: 0, mf:0, total: 0 };
+    const vals = dataByMonth.get(key) || { serv: 0, prod: 0, mf: 0, total: 0 };
 
     let delta, pct;
     if (key === refKey) {
-      delta = { serv: vals.serv, prod: vals.prod, mf:vals.mf, total: vals.total };
-      pct = { serv: 100, prod: 100, mf:100, total: 100 };
+      delta = { serv: vals.serv, prod: vals.prod, mf: vals.mf, total: vals.total };
+      pct = { serv: 100, prod: 100, mf: 100, total: 100 };
     } else {
       delta = {
         serv: refVals.serv - vals.serv,
@@ -145,7 +141,7 @@ export const ComparativoVsActual = ({
 
       const calcPct = (ref, d) => {
         if (ref !== 0) return (d / ref) * 100;
-        return d < 0 ? -100 : 0; 
+        return d < 0 ? -100 : 0;
       };
 
       pct = {
@@ -211,7 +207,7 @@ export const ComparativoVsActual = ({
       <Card.Body style={{ padding: "0" }}>
         <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
           <div style={sTitle}>COMPARATIVO MENSUAL VS MES ACTUAL</div>
-          {["MEMBRESÍAS", "PRODUCTOS","MONKEY FIT", "TOTAL"].map((tipo) => (
+          {["MEMBRESÍAS", "PRODUCTOS", "MONKEY FIT", "TOTAL"].map((tipo) => (
             <table key={tipo} style={{ ...sTable, marginTop: 12 }}>
               <thead>
                 <tr>
@@ -229,9 +225,9 @@ export const ComparativoVsActual = ({
                       key={c.key}
                       value={
                         tipo === "MEMBRESÍAS" ? c.delta.serv
-                        : tipo === "PRODUCTOS" ? c.delta.prod
-                        : tipo === "MONKEY FIT" ? c.delta.mf
-                        : c.delta.total 
+                          : tipo === "PRODUCTOS" ? c.delta.prod
+                            : tipo === "MONKEY FIT" ? c.delta.mf
+                              : c.delta.total
                       }
                       isLast={idx === columns.length - 1}
                     />
@@ -244,9 +240,9 @@ export const ComparativoVsActual = ({
                       key={c.key}
                       value={
                         tipo === "MEMBRESÍAS" ? c.pct.serv
-                        : tipo === "PRODUCTOS" ? c.pct.prod
-                        : tipo === "MONKEY FIT"? c.pct.mf
-                        : c.pct.total
+                          : tipo === "PRODUCTOS" ? c.pct.prod
+                            : tipo === "MONKEY FIT" ? c.pct.mf
+                              : c.pct.total
                       }
                       isLast={idx === columns.length - 1}
                     />

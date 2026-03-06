@@ -1,11 +1,7 @@
 import React, { useMemo, useState } from "react";
 
-const MESES = [
-  "enero", "febrero", "marzo", "abril", "mayo", "junio",
-  "julio", "agosto", "setiembre", "octubre", "noviembre", "diciembre",
-];
+import { MESES, aliasMes } from "../hooks/useResumenUtils";
 
-const aliasMes = (m) => (m === "septiembre" ? "setiembre" : String(m || "").toLowerCase());
 const monthIdx = (mes) => MESES.indexOf(aliasMes(mes));
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
@@ -25,11 +21,6 @@ const distPercentsTo100 = (counts = []) => {
   const total = counts.reduce((a, b) => a + (Number(b) || 0), 0);
   if (!total) return counts.map(() => 0);
   return counts.map((c) => (c / total) * 100);
-};
-
-const labelOfOrigin = (id, originMap) => {
-  const k = String(id ?? "0");
-  return String(originMap?.[k] || originMap?.[Number(k)] || k).toUpperCase();
 };
 
 const getClientId = (v) =>
@@ -55,28 +46,35 @@ const hasPaidMembership = (v) =>
     (it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total) > 0
   );
 
-// --- LÓGICA DE ORIGEN MODIFICADA ---
-const getOriginId = (v) => {
+const getOriginLabel = (v, originMap) => {
   const tipoFactura = v?.id_tipoFactura ?? v?.tb_ventum?.id_tipoFactura;
+  if (tipoFactura === 703 || !hasPaidMembership(v)) return "CANJE";
+  if (tipoFactura === 701) return "TRASPASO";
 
-  // 1. Si es Canje o Traspaso (basado en factura), usa ese ID primero.
-  if (tipoFactura === 703) return 703; // Canje
-  if (tipoFactura === 701) return 701; // Traspaso
-
-  // 2. NUEVO: Si no tiene pago (monto 0), forzarlo a Canje (ID 703).
-  if (!hasPaidMembership(v)) {
-    return 703; // Forzar a Canje
-  }
-
-  // 3. Si no, usa la lógica de "origen" normal.
-  return v?.id_origen ??
-    v?.tb_ventum?.id_origen ??
+  let label = v?.parametro_origen?.label_param ??
+    v?.tb_ventum?.parametro_origen?.label_param ??
     v?.origen ??
     v?.source ??
-    v?.parametro_origen?.id_param ??
-    v?.id_origen_param ??
-    null;
-}
+    v?.canal;
+
+  if (!label) {
+    const id = v?.id_origen ?? v?.tb_ventum?.id_origen ?? v?.parametro_origen?.id_param;
+    if (id !== null && id !== undefined) {
+      label = originMap?.[String(id)] ?? originMap?.[Number(id)] ?? String(id);
+    } else {
+      label = "OTROS";
+    }
+  }
+
+  const low = String(label).trim().toLowerCase();
+
+  if (low.includes('tik')) return 'TIKTOK';
+  if (low.includes('face') || low === 'fb') return 'FACEBOOK';
+  if (low.includes('insta') || low === 'ig') return 'INSTAGRAM';
+  if (low.includes('meta')) return 'META';
+
+  return String(label).trim().toUpperCase();
+};
 
 
 export const ClientesPorOrigen = ({
@@ -130,26 +128,26 @@ export const ClientesPorOrigen = ({
 
 
 
-      const originId = getOriginId(v);
-      if (String(originId) === "1470") continue;
+      const originLabel = getOriginLabel(v, originMap);
+      if (originLabel === "1470") continue;
       const clientId = getClientId(v);
-      if (originId == null || clientId == null || clientId === "") continue;
+      if (!originLabel || clientId == null || clientId === "") continue;
 
-      const tuple = `${keyMes}|${originId}|${clientId}`;
+      const tuple = `${keyMes}|${originLabel}|${clientId}`;
       if (seen.has(tuple)) continue;
       seen.add(tuple);
 
-      out.push({ keyMes, originId: String(originId), clientId: String(clientId) });
+      out.push({ keyMes, originLabel, clientId: String(clientId) });
     }
     return out;
-  }, [ventas, initialDay, cutDay, base]);
+  }, [ventas, initialDay, cutDay, base, originMap]);
 
   const matrix = useMemo(() => {
     const m = new Map(); // keyMes -> Map(originLabel -> Set<clientId>)
     for (const mk of base.keys()) m.set(mk, new Map());
 
     for (const r of uniqueTriples) {
-      const label = labelOfOrigin(r.originId, originMap);
+      const label = r.originLabel;
       const byOrigin = m.get(r.keyMes);
       if (!byOrigin.has(label)) byOrigin.set(label, new Set());
       byOrigin.get(label).add(r.clientId);

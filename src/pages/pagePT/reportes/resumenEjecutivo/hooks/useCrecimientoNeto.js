@@ -1,25 +1,18 @@
 import { useEffect, useMemo } from 'react';
 import { useVigentesHistoricoStore } from './useVigentesHistoricoStore';
+import { MESES_CAP } from './useResumenUtils';
 
-const MESES = [
-    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
-];
 
 export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empresa, cutDay = null, cutMonth = null) => {
-    // ❌ BORRADO: const [activosPorMes, setActivosPorMes] = useState({});
 
-    // Obtenemos del store
     const { fetchVigentesHistorico, data, loading } = useVigentesHistoricoStore();
 
-    // 0. Fetch Activos (Vigentes) por Mes - USANDO STORE
     useEffect(() => {
         if (year) {
             fetchVigentesHistorico(id_empresa, year, cutDay, cutMonth);
         }
     }, [year, id_empresa, cutDay, cutMonth, fetchVigentesHistorico]);
 
-    // 🔥 LA SOLUCIÓN: Calcular al vuelo sin causar re-renders
     const activosPorMes = useMemo(() => {
         const key = `${id_empresa || 598}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`;
         const rows = data[key] || [];
@@ -117,6 +110,6 @@ export const useCrecimientoNeto = (dataVentas, mapaVencimientos, year, id_empres
         churnRatePorMes: stats.churnRate,
         activosPorMes,
         loadingActivos,
-        MESES
+        MESES: MESES_CAP
     };
 };

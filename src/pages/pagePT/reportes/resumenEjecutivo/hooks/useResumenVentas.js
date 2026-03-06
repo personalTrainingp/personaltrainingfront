@@ -4,24 +4,13 @@ import config from '@/config';
 import { useVentasStore } from '@/hooks/hookApi/useVentasStore';
 import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
 import { useReporteResumenComparativoStore } from "../../resumenComparativo/useReporteResumenComparativoStore";
-import { useProgramaTrainingStore } from '@/hooks/hookApi/useProgramaTrainingStore';
 import { useProductosAgg } from '../../totalVentas/TarjetasProductos';
 import {
     norm, parseBackendDate, isBetween,
-    limaFromISO, MESES
+    limaFromISO, MESES, MESES_UPPER
 } from './useResumenUtils';
 
 import { globalCache, fetchParametrosRenovacionesCached } from '../../resumenCache';
-
-// GLOBAL CACHE to prevent double-fetching in StrictMode or rapid remounts
-/*
-const globalCache = {
-    rangeKey: null,
-    promise: null,
-    monkFitPromise: null,
-    monkFitData: null
-};
-*/
 
 export const useResumenVentas = (id_empresa, fechas) => {
     const { initDay, cutDay, selectedMonth, year, start, end, RANGE_DATE } = fechas;
@@ -149,7 +138,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
     const mesesSeleccionados = useMemo(() => {
         // Return all 12 months for the selected year for CAC/LTV calculations
         return Array.from({ length: 12 }, (_, i) => ({
-            label: `${MESES[i].toUpperCase()} ${year}`,
+            label: `${MESES_UPPER[i]} ${year}`,
             anio: String(year),
             mes: MESES[i],
             mIdx: i
@@ -181,7 +170,7 @@ export const useResumenVentas = (id_empresa, fechas) => {
             .map(p => ({ ...p, score: monthMap.get(`${p.y}-${p.mIdx}`)?.total || 0 }))
             .sort((a, b) => b.score - a.score).slice(0, 4);
 
-        const toFechaObj = ({ y, mIdx }) => ({ label: `${MESES[mIdx].toUpperCase()} ${y}`, anio: String(y), mes: MESES[mIdx] });
+        const toFechaObj = ({ y, mIdx }) => ({ label: `${MESES_UPPER[mIdx]} ${y}`, anio: String(y), mes: MESES[mIdx] });
         return [...scored.sort((a, b) => new Date(a.y, a.mIdx) - new Date(b.y, b.mIdx)).map(toFechaObj), toFechaObj({ y: year, mIdx: selectedMonth - 1 })];
     }, [dataVentas, initDay, cutDay, selectedMonth, year]);
 
