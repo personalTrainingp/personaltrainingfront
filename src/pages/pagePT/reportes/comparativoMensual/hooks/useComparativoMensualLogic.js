@@ -1,17 +1,10 @@
 import { useMemo } from 'react';
-import { MESES } from '../../resumenEjecutivo/hooks/useResumenUtils';
+import { MESES, limaFromISO } from '../../resumenEjecutivo/hooks/useResumenUtils';
 import { getQuotaForMonth } from '../utils/quotaUtils';
 
 export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, cutDay = 21, customStartDay = 1, customEndDay = 1 }) => {
 
-    const toLimaDate = (iso) => {
-        if (!iso) return null;
-        try {
-            const d = new Date(iso);
-            const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-            return new Date(utcMs - 5 * 60 * 60000);
-        } catch { return null; }
-    };
+    const toLimaDate = limaFromISO;
 
     // --- CORRECCIÓN 1: Abrir el useMemo y asignar a monthsData ---
     const monthsData = useMemo(() => {

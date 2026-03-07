@@ -8,16 +8,6 @@ export function buildDataMktByMonth(
 ) {
   const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
-  const toLimaDate = (iso) => {
-    if (!iso) return null;
-    try {
-      const clean = String(iso).trim().replace(" ", "T").replace(" +00:00", "Z").replace("+00:00", "Z");
-      const d = new Date(clean);
-      if (Number.isNaN(d.getTime())) return null;
-      return new Date(d.getTime() - 5 * 60 * 60000);
-    } catch { return null; }
-  };
-
   const idToSlug = {};
   for (const p of (Array.isArray(canalParams) ? canalParams : [])) {
     const id = String(p?.id_param ?? p?.id ?? p?.value ?? "").trim();

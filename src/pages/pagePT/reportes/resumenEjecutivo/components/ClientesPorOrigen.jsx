@@ -1,21 +1,9 @@
 import React, { useMemo, useState } from "react";
 
-import { MESES, aliasMes } from "../hooks/useResumenUtils";
+import { MESES, aliasMes, limaFromISO } from "../hooks/useResumenUtils";
 
 const monthIdx = (mes) => MESES.indexOf(aliasMes(mes));
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-
-const toLimaDate = (iso) => {
-  if (!iso) return null;
-  try {
-    const d = new Date(String(iso).replace(" ", "T"));
-    if (isNaN(d)) return null;
-    const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-    return new Date(utcMs - 5 * 60 * 60000);
-  } catch {
-    return null;
-  }
-};
 
 const distPercentsTo100 = (counts = []) => {
   const total = counts.reduce((a, b) => a + (Number(b) || 0), 0);
@@ -113,7 +101,7 @@ export const ClientesPorOrigen = ({
     const seen = new Set(); // mk|originId|clientId
     const out = [];
     for (const v of ventas || []) {
-      const d = toLimaDate(v?.fecha_venta || v?.fecha || v?.createdAt);
+      const d = limaFromISO(v?.fecha_venta || v?.fecha || v?.createdAt);
       if (!d) continue;
 
       const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();

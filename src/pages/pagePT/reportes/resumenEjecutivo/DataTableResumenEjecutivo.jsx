@@ -11,26 +11,22 @@ import React, { useMemo, useState, useEffect } from "react";
  */
 
 /*****************************  Helpers  *****************************/
-import { MESES, aliasMes } from "./hooks/useResumenUtils";
+import { MESES, aliasMes, limaFromISO } from "./hooks/useResumenUtils";
 
 // Convierte ISO a fecha YYYY-MM-DD en la zona horaria de Lima (-05:00)
 function toLimaDateStr(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-  const limaMs = utcMs - 5 * 60 * 60000; // -05:00
-  const tzd = new Date(limaMs);
-  const y = tzd.getFullYear();
-  const m = String(tzd.getMonth() + 1).padStart(2, "0");
-  const day = String(tzd.getDate()).padStart(2, "0");
+  const d = limaFromISO(iso);
+  if (!d) return "";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 }
 
 function getMonthKey(iso) {
-  const d = new Date(iso);
-  const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-  const lima = new Date(utcMs - 5 * 60 * 60000);
-  return aliasMes(MESES[lima.getMonth()]); // "marzo", "agosto", etc.
+  const d = limaFromISO(iso);
+  if (!d) return "";
+  return aliasMes(MESES[d.getMonth()]);
 }
 
 const fmtCurrency = (n) => {

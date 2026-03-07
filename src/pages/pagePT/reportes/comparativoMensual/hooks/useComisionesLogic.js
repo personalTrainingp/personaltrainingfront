@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { getQuotaForMonth } from '../utils/quotaUtils';
+import { limaFromISO } from '../../resumenEjecutivo/hooks/useResumenUtils';
 
 const ADVISORS = ['ALVARO', 'ALEJANDRO'];
 
@@ -71,15 +72,6 @@ export const useComisionesLogic = (ventas, year, month, initDay = 1, cutDay = 31
     }, [cuotaSugerida, openPayParam, scales]);
 
     const norm = (s) => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-
-    const limaFromISO = (iso) => {
-        if (!iso) return null;
-        const s = String(iso).replace(" ", "T").replace(" -", "-");
-        const d = new Date(s);
-        if (Number.isNaN(d.getTime())) return null;
-        const utc = d.getTime() + d.getTimezoneOffset() * 60000;
-        return new Date(utc - 5 * 60 * 60000);
-    };
 
     const getItemsMembresia = (v) => (v?.detalle_ventaMembresia || v?.detalle_ventaMembresium || []);
 

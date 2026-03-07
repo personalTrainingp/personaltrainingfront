@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "react-bootstrap";
-import { MESES, aliasMes } from "../hooks/useResumenUtils";
+import { MESES, aliasMes, limaFromISO } from "../hooks/useResumenUtils";
 
 export const ComparativoVsActual = ({
   ventas = [],
@@ -11,17 +11,6 @@ export const ComparativoVsActual = ({
   refMonthKey,
 }) => {
   const keyOf = (anio, mes) => `${anio}-${aliasMes(String(mes).toLowerCase())}`;
-
-  const toLimaDate = (iso) => {
-    if (!iso) return null;
-    try {
-      const d = new Date(iso);
-      const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-      return new Date(utcMs - 5 * 60 * 60000);
-    } catch (_) {
-      return null;
-    }
-  };
   const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
   const fmtMoney = (n) =>
@@ -55,7 +44,7 @@ export const ComparativoVsActual = ({
 
     // 1. SUMAR VENTAS (Membresias, Productos, Otros)
     for (const v of ventas) {
-      const d = toLimaDate(v?.fecha_venta);
+      const d = limaFromISO(v?.fecha_venta);
       if (!d) continue;
 
       const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
@@ -88,7 +77,7 @@ export const ComparativoVsActual = ({
       const ok = ["completada", "confirmada", "pagada", "no pagada", "reprogramada"].some(e => estado.includes(e));
       if (!ok) continue;
 
-      const d = toLimaDate(r?.fecha || r?.createdAt);
+      const d = limaFromISO(r?.fecha || r?.createdAt);
       if (!d) continue;
 
       const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();

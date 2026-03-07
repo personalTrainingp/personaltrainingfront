@@ -1,15 +1,6 @@
 import React, { useMemo, useState } from "react";
 import Chart from "react-apexcharts";
-
-
-function limaFromISO(iso) {
-  if (!iso) return null;
-  const s = String(iso).replace(" ", "T").replace(" -", "-");
-  const d = new Date(s);
-  if (Number.isNaN(d.getTime())) return null;
-  const utc = d.getTime() + d.getTimezoneOffset() * 60000;
-  return new Date(utc - 5 * 60 * 60000);
-}
+import { limaFromISO } from "../../resumenEjecutivo/hooks/useResumenUtils";
 
 const DAY_ES = [
   "domingo",
@@ -41,10 +32,10 @@ const toNum = (v) => {
 const getVentaDate = (v) =>
   limaFromISO(
     v?.fecha_venta ||
-      v?.fecha ||
-      v?.createdAt ||
-      v?.tb_ventum?.fecha_venta ||
-      v?.tb_ventum?.createdAt
+    v?.fecha ||
+    v?.createdAt ||
+    v?.tb_ventum?.fecha_venta ||
+    v?.tb_ventum?.createdAt
   );
 
 const getIdCliente = (v) =>
@@ -233,9 +224,9 @@ export const GraficoLinealVentasDiarias = ({
       const data =
         mode === "monto"
           ? days.map((d) => {
-              const val = entry.montoByDay?.[d] || 0;
-              return Number(val.toFixed(2));
-            })
+            const val = entry.montoByDay?.[d] || 0;
+            return Number(val.toFixed(2));
+          })
           : days.map((d) => entry.sociosByDay?.[d]?.size || 0);
 
       return {

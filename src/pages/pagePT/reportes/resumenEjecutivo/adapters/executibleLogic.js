@@ -1,16 +1,5 @@
-import { MESES, aliasMes, norm } from '../hooks/useResumenUtils';
+import { MESES, aliasMes, norm, limaFromISO } from '../hooks/useResumenUtils';
 export { MESES, aliasMes, norm };
-
-const toLimaDate = (iso) => {
-	if (!iso) return null;
-	try {
-		const d = new Date(iso);
-		const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-		return new Date(utcMs - 5 * 60 * 60000);
-	} catch {
-		return null;
-	}
-};
 
 export const getMonthIndex = (m) => MESES.indexOf(aliasMes(m));
 
@@ -153,7 +142,7 @@ export function computeMetricsForMonth({
 
 	// ================== RECORRER VENTAS ==================
 	for (const v of ventas) {
-		const d = toLimaDate(v?.fecha_venta || v?.fecha || v?.createdAt);
+		const d = limaFromISO(v?.fecha_venta || v?.fecha || v?.createdAt);
 		if (!d) continue;
 		if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
 
@@ -370,7 +359,7 @@ export function computeMetricsForMonth({
 	for (const r of reservasMF) {
 		if (!r?.flag) continue;
 
-		const d = toLimaDate(r?.fecha || r?.createdAt);
+		const d = limaFromISO(r?.fecha || r?.createdAt);
 		if (!d) continue;
 		if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
 
@@ -501,7 +490,7 @@ export function getAvailableMonthsFromVentas(ventas) {
 	const map = new Map();
 
 	ventas.forEach((v) => {
-		const d = toLimaDate(v?.fecha_venta || v?.fecha);
+		const d = limaFromISO(v?.fecha_venta || v?.fecha);
 		if (!d) return;
 		const anio = d.getFullYear();
 		const mesIdx = d.getMonth(); // 0-11
