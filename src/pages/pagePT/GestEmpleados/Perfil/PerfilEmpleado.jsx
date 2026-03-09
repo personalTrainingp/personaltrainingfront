@@ -19,7 +19,7 @@ import { PanelTardanzasJustificadas } from './PanelTardanzasJustificadas';
 import { PanelSalidasTempranas } from './PanelSalidasTempranas';
 import { App as AppParientes } from './Parientes/App';
 import { App as AppDocumentosAdjuntos } from './DocumentosAdjuntos/App';
-import { App as AppContratos } from './Contrato/App';
+import { App as AppContratos } from './Contrato/AppContrato';
 import { SectionComentario } from '@/components/Comentario/SectionComentario';
 
 export const PerfilEmpleado = () => {

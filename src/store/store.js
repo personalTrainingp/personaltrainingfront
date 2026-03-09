@@ -33,6 +33,7 @@ import { terminologiasSlice } from '@/pages/pagePT/Terminologias/store/terminolo
 import { TcSlice } from '@/pages/pagePT/GestionTc/store/tcSlice';
 import { EgresosSlice } from '@/pages/pagePT/GestGastos/egresosSlice';
 import { ComercialSlice } from '@/pages/pagePT/GestionComercial/dataComercialSlice';
+import { ColaboradoresSlice } from '@/pages/pagePT/GestEmpleados/store/colaboradoresSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -71,6 +72,7 @@ export const store = configureStore({
 		EGRESOS: EgresosSlice.reducer,
 		PROV: proveedorSlice.reducer,
 		COMERCIAL: ComercialSlice.reducer,
+		COLABORADORES: ColaboradoresSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

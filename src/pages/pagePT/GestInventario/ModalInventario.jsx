@@ -116,13 +116,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             onResetForm()
             onHide()
         }
-        const handleCrearEtiquetaBusqueda = (input) => {
-            const nuevaOpcion = {
-                label: input,
-                value: Date.now(), // o algún id temporal, si aún no se guarda en BD
-            };
-            onInputChangeReact([...etiquetas_busquedas, nuevaOpcion], 'etiquetas_busquedas');
-        };
         console.log({dataEtiquetasBusqueda});
   return (
     <>

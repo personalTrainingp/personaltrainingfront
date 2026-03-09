@@ -103,7 +103,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
               </tr>
               <tr>
                 <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>ING. EXTRAORDINARIOS</td>
-              {
+                {
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>

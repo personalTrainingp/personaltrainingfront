@@ -1,1 +1,1 @@
-export {GestionEmpleados as default} from './GestionEmpleados'
+export {AppGestionEmpleados as default} from './AppGestionEmpleados'
