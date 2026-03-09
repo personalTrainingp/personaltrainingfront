@@ -560,7 +560,7 @@ export default function ProtectedRoutes() {
 								<Route path='reporte-admin/reporte-gerencial' element={<ReporteGerenciales />} />
 							}
 							{
-								sections.find(e => e.url === '/history-citas-nutricion') &&
+								sections.find(e => e.url === '/citas') &&
 								<Route path='history-citas-nutricion' element={<HistorialCitasNutricionista />} />
 							}
 							{
