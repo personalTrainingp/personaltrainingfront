@@ -389,7 +389,7 @@ export default function ProtectedRoutes() {
 								<Route path="seguimiento" element={<Seguimiento />} />
 							}
 							{
-								sections.find(e => e.url === '/contrato-clientes') &&
+								sections.find(e => e.url === '/socio') &&
 								<Route path="contrato-clientes" element={<GestContratosClientes />} />
 							}
 							{
