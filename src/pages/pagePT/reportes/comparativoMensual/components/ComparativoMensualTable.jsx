@@ -159,6 +159,7 @@ export const ComparativoMensualTable = ({
                             <th style={styles.th} colSpan={2}>SEMANA 2<br /> (8-14)<br /><span style={{ color: '#fff' }}>S/</span></th>
                             <th style={styles.th} colSpan={2}>SEMANA 3<br /> (15-21)<br /><span style={{ color: '#fff' }}>S/</span></th>
                             <th style={styles.th} colSpan={2}>SEMANA 4<br /> (22-28)<br /><span style={{ color: '#fff' }}>S/</span></th>
+                            <th style={styles.th} colSpan={2}>SEMANA 5<br /> (29-FIN)<br /><span style={{ color: '#fff' }}>S/</span></th>
                             <th style={styles.th}>PORCENTAJE<br />TOTAL<br /><span style={{ color: '#fff' }}>%</span></th>
                             {showFortnightly && (
                                 <>
@@ -186,6 +187,7 @@ export const ComparativoMensualTable = ({
                                 {renderCell(row, 'w2', true)}
                                 {renderCell(row, 'w3', true)}
                                 {renderCell(row, 'w4', true)}
+                                {renderCell(row, 'w5', true)}
                                 <td style={{ ...styles.td, textAlign: 'center', color: '#000000', fontWeight: '700' }}>
                                     {row.quota > 0 ? `${fmtNum((row.total / row.quota) * 100, 1)}%` : '0.0%'}
                                 </td>
@@ -216,6 +218,7 @@ export const ComparativoMensualTable = ({
                                 {renderCell(avgRow, 'w2', true, { padding: '13px 12px', fontSize: '26px' })}
                                 {renderCell(avgRow, 'w3', true, { padding: '13px 12px', fontSize: '26px' })}
                                 {renderCell(avgRow, 'w4', true, { padding: '13px 12px', fontSize: '26px' })}
+                                {renderCell(avgRow, 'w5', true, { padding: '13px 12px', fontSize: '26px' })}
                                 <td style={{ ...styles.td, textAlign: 'center', color: '#000000', fontWeight: '800', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' }}>
                                     {avgRow.quota > 0 ? `${fmtNum((avgRow.total / avgRow.quota) * 100, 1)}%` : '0.0%'}
                                 </td>
