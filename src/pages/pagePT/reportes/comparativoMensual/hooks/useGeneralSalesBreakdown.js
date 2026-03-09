@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
+import { limaFromISO } from '../../resumenEjecutivo/hooks/useResumenUtils';
 
-export const useGeneralSalesBreakdown = (ventas, monthsData) => {
+export const useGeneralSalesBreakdown = (ventas, monthsData, customStartDay = 1, customEndDay = 31) => {
     return useMemo(() => {
         const allSales = ventas;
 
@@ -10,23 +11,20 @@ export const useGeneralSalesBreakdown = (ventas, monthsData) => {
         // Inicializar totales por mes
         monthsData.forEach(m => monthlyTotals[m.key] = { count: 0, amount: 0 });
 
-        const toLimaDate = (iso) => {
-            if (!iso) return null;
-            try {
-                const d = new Date(iso);
-                const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-                return new Date(utcMs - 5 * 60 * 60000);
-            } catch { return null; }
-        };
+        const toLimaDate = limaFromISO;
 
         allSales.forEach(v => {
             const d = toLimaDate(v.fecha_venta || v.fecha || v.createdAt);
             if (!d) return;
 
             const vKey = `${d.getFullYear()}-${d.getMonth()}`;
+            const day = d.getDate();
 
             // Solo procesar si el mes está en el rango seleccionado
             if (!monthsData.some(m => m.key === vKey)) return;
+
+            // Filtrar por rango de días
+            if (day < customStartDay || day > customEndDay) return;
 
             // Obtener nombre del vendedor
             const fullName = v.tb_empleado?.nombres_apellidos_empl || v.usu_venta_nombre || 'Sin Asignar';
@@ -77,5 +75,5 @@ export const useGeneralSalesBreakdown = (ventas, monthsData) => {
             totals: monthlyTotals,
             grandTotal
         };
-    }, [ventas, monthsData]);
+    }, [ventas, monthsData, customStartDay, customEndDay]);
 };

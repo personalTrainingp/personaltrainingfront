@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
+import { limaFromISO } from '../../resumenEjecutivo/hooks/useResumenUtils';
 
-export const useRenovationsBreakdown = (ventas, monthsData) => {
+export const useRenovationsBreakdown = (ventas, monthsData, customStartDay = 1, customEndDay = 31) => {
     return useMemo(() => {
         // 1. Filtrar solo renovaciones (ID 691)
         const renovaciones = ventas.filter(v => Number(v.id_origen) === 691);
@@ -11,23 +12,20 @@ export const useRenovationsBreakdown = (ventas, monthsData) => {
         // Inicializar totales por mes
         monthsData.forEach(m => monthlyTotals[m.key] = { count: 0, amount: 0 });
 
-        const toLimaDate = (iso) => {
-            if (!iso) return null;
-            try {
-                const d = new Date(iso);
-                const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-                return new Date(utcMs - 5 * 60 * 60000);
-            } catch { return null; }
-        };
+        const toLimaDate = limaFromISO;
 
         renovaciones.forEach(v => {
             const d = toLimaDate(v.fecha_venta || v.fecha || v.createdAt);
             if (!d) return;
 
             const vKey = `${d.getFullYear()}-${d.getMonth()}`;
+            const day = d.getDate();
 
             // Solo procesar si el mes está en el rango seleccionado
             if (!monthsData.some(m => m.key === vKey)) return;
+
+            // Filtrar por rango de días
+            if (day < customStartDay || day > customEndDay) return;
 
             // --- CAMBIO AQUÍ: OBTENER SOLO EL PRIMER NOMBRE ---
             const fullName = v.tb_empleado?.nombres_apellidos_empl || v.usu_venta_nombre || 'Sin Asignar';
@@ -74,5 +72,5 @@ export const useRenovationsBreakdown = (ventas, monthsData) => {
             totals: monthlyTotals,
             grandTotal
         };
-    }, [ventas, monthsData]);
+    }, [ventas, monthsData, customStartDay, customEndDay]);
 };

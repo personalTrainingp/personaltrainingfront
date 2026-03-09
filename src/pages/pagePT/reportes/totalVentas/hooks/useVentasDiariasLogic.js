@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { limaFromISO } from "../../resumenEjecutivo/hooks/useResumenUtils";
 
 const DAY_ES = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
 
@@ -7,14 +8,7 @@ export const sumMonto = (map = {}) => Object.values(map).reduce((a, n) => a + (n
 export const sumSocios = (map = {}) => Object.values(map).reduce((a, s) => a + (s || 0), 0);
 export const norm = (s) => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
 
-function limaFromISO(iso) {
-    if (!iso) return null;
-    const s = String(iso).replace(" ", "T").replace(" -", "-");
-    const d = new Date(s);
-    if (Number.isNaN(d.getTime())) return null;
-    const utc = d.getTime() + d.getTimezoneOffset() * 60000;
-    return new Date(utc - 5 * 60 * 60000);
-}
+
 
 const getVentaDate = (v) =>
     limaFromISO(

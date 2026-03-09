@@ -11,9 +11,9 @@ export const useResumenEjecutivoStore = (id_empresa, configs = {}) => {
 
 	const ventas = useResumenVentas(id_empresa, fechas);
 
-	const renovaciones = useResumenRenovaciones(id_empresa, fechas, ventas.dataGroup, ventas.pgmNameByIdDynamic);
+	const renovaciones = useResumenRenovaciones(id_empresa, fechas, ventas.pgmNameByIdDynamic);
 
-	const marketing = useResumenMarketing(id_empresa, fechas, ventas.dataVentas, ventas.mesesSeleccionados);
+	const marketing = useResumenMarketing(id_empresa, fechas, ventas.dataVentas, ventas.mesesSeleccionados, originMap);
 
 	return {
 		...fechas,

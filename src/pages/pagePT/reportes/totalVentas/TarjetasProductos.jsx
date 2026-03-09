@@ -5,15 +5,10 @@ import { NumberFormatMoney } from "@/components/CurrencyMask";
 import sinAvatar from "@/assets/images/sinPhoto.jpg";
 import config from "@/config";
 import { SymbolSoles } from "@/components/componentesReutilizables/SymbolSoles";
+import { limaFromISO } from "../resumenEjecutivo/hooks/useResumenUtils";
 import "./SumaDeSesiones.css";
 
-const limaFromISO = (iso) => {
-  if (!iso) return null;
-  const d = new Date(iso);
-  if (isNaN(d)) return null;
-  const utc = d.getTime() + d.getTimezoneOffset() * 60000;
-  return new Date(utc - 5 * 60 * 60000);
-};
+
 const inRange = (d, start, end) => !!(d && (!start || d >= start) && (!end || d <= end));
 
 const norm = (s) =>

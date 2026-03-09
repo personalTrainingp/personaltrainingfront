@@ -55,35 +55,6 @@ export const useAlertasUsuarios = () => {
 			console.log(error);
 		}
 	};
-	// === BLACKLIST ===
-	const [blacklist, setBlacklist] = useState([]);
-
-	const obtenerBlacklist = async () => {
-		try {
-			const { data } = await PTApi.get('/blacklist');
-			setBlacklist(data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	const addToBlacklist = async (mensaje) => {
-		try {
-			await PTApi.post('/blacklist/add', { message: mensaje });
-			await obtenerBlacklist();
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	const removeFromBlacklist = async (mensaje) => {
-		try {
-			await PTApi.post('/blacklist/remove', { message: mensaje });
-			await obtenerBlacklist();
-		} catch (error) {
-			console.error(error);
-		}
-	};
 	const obtenerAlertasUsuarios = async () => {
 		try {
 			const { data } = await PTApi.get('/alerta-usuario/get-alertas');
@@ -100,10 +71,5 @@ export const useAlertasUsuarios = () => {
 		obtenerAlertasUsuarios,
 		updateMensajeAlertas,
 		onConfirmarPago,
-		// Blacklist
-		blacklist,
-		obtenerBlacklist,
-		addToBlacklist,
-		removeFromBlacklist
 	};
 };

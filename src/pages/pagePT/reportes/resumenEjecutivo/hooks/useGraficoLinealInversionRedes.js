@@ -121,13 +121,10 @@ export const useGraficoLinealInversionRedes = (data = []) => {
     const categories = useMemo(
         () =>
             Array.from({ length: maxDays }, (_, i) => {
-                // Eliminamos d.format("dddd") para dejar solo el número
                 return `${i + 1}`;
             }),
         [baseMonthForAxis, maxDays]
     );
-
-    // Opciones del gráfico
     const options = {
         chart: {
             type: "line",

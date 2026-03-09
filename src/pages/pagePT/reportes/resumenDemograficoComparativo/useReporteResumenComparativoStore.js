@@ -152,9 +152,9 @@ export const useReporteResumenComparativoStore = () => {
 								membresia.horario === detalle_ventaMembresium.horario &&
 								membresia.fec_fin_mem === detalle_ventaMembresium.fec_fin_mem &&
 								membresia.fec_inicio_mem ===
-									detalle_ventaMembresium.fec_inicio_mem &&
+								detalle_ventaMembresium.fec_inicio_mem &&
 								membresia.tarifa_venta ===
-									detalle_ventaMembresium.tb_tarifa_venta &&
+								detalle_ventaMembresium.tb_tarifa_venta &&
 								membresia.tarifa_monto === detalle_ventaMembresium.tarifa_monto &&
 								membresia.tb_ventum?.id === detalle_ventaMembresium.tb_ventum?.id
 						)
@@ -212,7 +212,7 @@ export const useReporteResumenComparativoStore = () => {
 				detalle_ventaMembresium: venta.detalle_ventaMembresium.filter(
 					({ fec_inicio_mem, fec_fin_mem, tb_ventum }) => {
 						const fecha_inicio_mem = dayjs.utc(fec_inicio_mem).format('YYYY-MM-DD');
-						console.log(fecha_inicio_mem, fec_inicio_mem, tb_ventum.id);
+						console.log(fecha_inicio_mem, fec_inicio_mem, tb_ventum?.id);
 
 						// Crear fechas de inicio (fijo) y fin (última fecha de membresía)
 						const fechaInicio = dayjs(fecha_inicio_mem);
@@ -349,7 +349,7 @@ export const useReporteResumenComparativoStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerVentasxComprobantes = async (RANGE_DATE, id_factura) => {};
+	const obtenerVentasxComprobantes = async (RANGE_DATE, id_factura) => { };
 	const obtenerHorariosPorPgm = async () => {
 		try {
 			const { data } = await PTApi.get('/programaTraining/horario/get-tb-pgm');

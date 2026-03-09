@@ -374,10 +374,7 @@ export const ResumenComparativo = () => {
         return resultado.sort((a, b) => b.items.length - a.items.length);
     }
     function agruparPorVenta(data) {
-        if (!Array.isArray(data)) {
-            console.error("La variable 'data' no es un array válido.");
-            return [];
-        }
+        if (!Array.isArray(data)) return [];
 
         const resultado = data?.reduce((acc, item) => {
             const idVenta = item?.tb_ventum?.id; // Usar el operador de encadenamiento opcional
@@ -574,8 +571,8 @@ export const ResumenComparativo = () => {
         const aforo = d.id_pgm === 2 ? 18 : d.id_pgm === 3 ? 10 : d.id_pgm === 4 ? 14 : ''
         const aforo_turno = d.id_pgm === 2 ? 36 : d.id_pgm === 3 ? 10 : d.id_pgm === 4 ? 14 : ''
 
-        const ventasEnCeros = agruparPorVenta(d.detalle_ventaMembresium).filter(f => f.tarifa_monto === 0)
-        const ventasSinCeros = agruparPorVenta(d.detalle_ventaMembresium).filter(f => f.tarifa_monto !== 0)
+        const ventasEnCeros = agruparPorVenta(d?.detalle_ventaMembresium || []).filter(f => f.tarifa_monto === 0)
+        const ventasSinCeros = agruparPorVenta(d?.detalle_ventaMembresium || []).filter(f => f.tarifa_monto !== 0)
         const TransferenciasEnCeros = d.ventas_transferencias
 
         const TraspasosEnCero = ventasEnCeros.filter(f => f.tb_ventum.id_tipoFactura === 701)

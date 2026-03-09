@@ -11,39 +11,22 @@ import React, { useMemo, useState, useEffect } from "react";
  */
 
 /*****************************  Helpers  *****************************/
-const SPANISH_MONTHS = [
-  "enero",
-  "febrero",
-  "marzo",
-  "abril",
-  "mayo",
-  "junio",
-  "julio",
-  "agosto",
-  "setiembre",
-  "octubre",
-  "noviembre",
-  "diciembre",
-];
+import { MESES, aliasMes, limaFromISO } from "./hooks/useResumenUtils";
 
 // Convierte ISO a fecha YYYY-MM-DD en la zona horaria de Lima (-05:00)
 function toLimaDateStr(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-  const limaMs = utcMs - 5 * 60 * 60000; // -05:00
-  const tzd = new Date(limaMs);
-  const y = tzd.getFullYear();
-  const m = String(tzd.getMonth() + 1).padStart(2, "0");
-  const day = String(tzd.getDate()).padStart(2, "0");
+  const d = limaFromISO(iso);
+  if (!d) return "";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 }
 
 function getMonthKey(iso) {
-  const d = new Date(iso);
-  const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-  const lima = new Date(utcMs - 5 * 60 * 60000);
-  return SPANISH_MONTHS[lima.getMonth()]; // "marzo", "agosto", etc.
+  const d = limaFromISO(iso);
+  if (!d) return "";
+  return aliasMes(MESES[d.getMonth()]);
 }
 
 const fmtCurrency = (n) => {
@@ -127,10 +110,10 @@ function BodyRows({ rows, columns }) {
         const baseRow = isDark
           ? "bg-black text-white"
           : isLight
-          ? "bg-neutral-100"
-          : idx % 2 === 1
-          ? "bg-neutral-50"
-          : "bg-white";
+            ? "bg-neutral-100"
+            : idx % 2 === 1
+              ? "bg-neutral-50"
+              : "bg-white";
         return (
           <tr key={r.key} className={`${baseRow}`}>
             <td className={`border border-black font-semibold ${isDark ? "text-white" : "text-black"} px-3 py-2`}>{r.label}</td>
@@ -288,129 +271,129 @@ function buildExecutiveDataCut({ ventas = [], cutDay = 21, marketing = {}, title
     footer,
   };
 }
-  // Fallback si no hay ventas
-  const columns = (monthOrder.length ? monthOrder : ["marzo", "abril", "mayo", "junio", "julio", "agosto"]).map((mk) => ({
-    key: mk,
-    label: mk.toUpperCase(),
-  }));
+// Fallback si no hay ventas
+const columns = (monthOrder.length ? monthOrder : ["marzo", "abril", "mayo", "junio", "julio", "agosto"]).map((mk) => ({
+  key: mk,
+  label: mk.toUpperCase(),
+}));
 
-  const zeroValues = columns.reduce((acc, c) => ((acc[c.key] = 0), acc), {});
-  const blankValues = columns.reduce((acc, c) => ((acc[c.key] = ""), acc), {});
+const zeroValues = columns.reduce((acc, c) => ((acc[c.key] = 0), acc), {});
+const blankValues = columns.reduce((acc, c) => ((acc[c.key] = ""), acc), {});
 
-  // Agregados por mes (Mes COMPLETO) -> para el FOOTER y para cuando se quiera ver todo
-  const monthAggAll = {};
-  columns.forEach((c) => (monthAggAll[c.key] = { servMonto: 0, servCant: 0, prodMonto: 0, prodCant: 0 }));
+// Agregados por mes (Mes COMPLETO) -> para el FOOTER y para cuando se quiera ver todo
+const monthAggAll = {};
+columns.forEach((c) => (monthAggAll[c.key] = { servMonto: 0, servCant: 0, prodMonto: 0, prodCant: 0 }));
 
-  ventas.forEach((v) => {
-    const mk = getMonthKey(v?.fecha_venta);
-    if (!mk || !monthAggAll[mk]) return;
-    const serv = Array.isArray(v?.detalle_ventaMembresia) ? v.detalle_ventaMembresia : [];
-    const prod = Array.isArray(v?.detalle_ventaproductos) ? v.detalle_ventaproductos : [];
+ventas.forEach((v) => {
+  const mk = getMonthKey(v?.fecha_venta);
+  if (!mk || !monthAggAll[mk]) return;
+  const serv = Array.isArray(v?.detalle_ventaMembresia) ? v.detalle_ventaMembresia : [];
+  const prod = Array.isArray(v?.detalle_ventaproductos) ? v.detalle_ventaproductos : [];
 
-    serv.forEach((d) => {
-      monthAggAll[mk].servMonto += montoLineaServicio(d);
-      monthAggAll[mk].servCant += Number(d?.cantidad ?? 1) || 1;
-    });
-
-    prod.forEach((d) => {
-      monthAggAll[mk].prodMonto += montoLineaProducto(d);
-      monthAggAll[mk].prodCant += Number(d?.cantidad ?? 1) || 1;
-    });
+  serv.forEach((d) => {
+    monthAggAll[mk].servMonto += montoLineaServicio(d);
+    monthAggAll[mk].servCant += Number(d?.cantidad ?? 1) || 1;
   });
 
-  // Agregados por mes SOLO del DÍA SELECCIONADO -> para las filas de ventas
-  const monthAggDay = {};
-  columns.forEach((c) => (monthAggDay[c.key] = { servMonto: 0, servCant: 0, prodMonto: 0, prodCant: 0 }));
+  prod.forEach((d) => {
+    monthAggAll[mk].prodMonto += montoLineaProducto(d);
+    monthAggAll[mk].prodCant += Number(d?.cantidad ?? 1) || 1;
+  });
+});
 
-  const selectedStr = selectedDate ? String(selectedDate) : null; // formato YYYY-MM-DD
+// Agregados por mes SOLO del DÍA SELECCIONADO -> para las filas de ventas
+const monthAggDay = {};
+columns.forEach((c) => (monthAggDay[c.key] = { servMonto: 0, servCant: 0, prodMonto: 0, prodCant: 0 }));
 
-  ventas.forEach((v) => {
-    if (!selectedStr) return; // si no hay día, no llenamos (veremos todo más abajo)
-    const vDateStr = toLimaDateStr(v?.fecha_venta);
-    if (vDateStr !== selectedStr) return;
-    const mk = getMonthKey(v?.fecha_venta);
-    if (!mk || !monthAggDay[mk]) return;
+const selectedStr = selectedDate ? String(selectedDate) : null; // formato YYYY-MM-DD
 
-    const serv = Array.isArray(v?.detalle_ventaMembresia) ? v.detalle_ventaMembresia : [];
-    const prod = Array.isArray(v?.detalle_ventaproductos) ? v.detalle_ventaproductos : [];
+ventas.forEach((v) => {
+  if (!selectedStr) return; // si no hay día, no llenamos (veremos todo más abajo)
+  const vDateStr = toLimaDateStr(v?.fecha_venta);
+  if (vDateStr !== selectedStr) return;
+  const mk = getMonthKey(v?.fecha_venta);
+  if (!mk || !monthAggDay[mk]) return;
 
-    serv.forEach((d) => {
-      monthAggDay[mk].servMonto += montoLineaServicio(d);
-      monthAggDay[mk].servCant += Number(d?.cantidad ?? 1) || 1;
-    });
+  const serv = Array.isArray(v?.detalle_ventaMembresia) ? v.detalle_ventaMembresia : [];
+  const prod = Array.isArray(v?.detalle_ventaproductos) ? v.detalle_ventaproductos : [];
 
-    prod.forEach((d) => {
-      monthAggDay[mk].prodMonto += montoLineaProducto(d);
-      monthAggDay[mk].prodCant += Number(d?.cantidad ?? 1) || 1;
-    });
+  serv.forEach((d) => {
+    monthAggDay[mk].servMonto += montoLineaServicio(d);
+    monthAggDay[mk].servCant += Number(d?.cantidad ?? 1) || 1;
   });
 
-  // Decidir de dónde salen los valores de las filas de ventas
-  const useDay = Boolean(selectedStr);
-  const getValues = (selector) => {
-    const values = columns.reduce((acc, c) => ((acc[c.key] = 0), acc), {});
-    columns.forEach((c) => {
-      const src = useDay ? monthAggDay[c.key] : monthAggAll[c.key];
-      if (!src) return;
-      if (selector === "servMonto") values[c.key] = src.servMonto;
-      if (selector === "prodMonto") values[c.key] = src.prodMonto;
-      if (selector === "servTicket") values[c.key] = src.servCant ? src.servMonto / src.servCant : "";
-      if (selector === "prodTicket") values[c.key] = src.prodCant ? src.prodMonto / src.prodCant : "";
-      if (selector === "total") values[c.key] = src.servMonto + src.prodMonto;
-    });
-    return values;
-  };
-
-  // Marketing (si lo mandas) SIEMPRE es por mes completo
-  const mkt = marketing || {};
-  const marketingRow = (label, key, type) => ({
-    label,
-    key,
-    type,
-    values: columns.reduce((acc, c) => {
-      const byMonth = mkt[key] || {}; // { marzo: 738, ... }
-      acc[c.key] = byMonth[c.key] ?? (type === "currency" || type === "number" ? "" : "");
-      return acc;
-    }, {}),
+  prod.forEach((d) => {
+    monthAggDay[mk].prodMonto += montoLineaProducto(d);
+    monthAggDay[mk].prodCant += Number(d?.cantidad ?? 1) || 1;
   });
+});
 
-  const rows = [
-    marketingRow("INVERSIÓN REDES", "inversion_redes", "currency"),
-    marketingRow("LEADS", "leads", "number"),
-    marketingRow("CPL", "cpl", "number"),
+// Decidir de dónde salen los valores de las filas de ventas
+const useDay = Boolean(selectedStr);
+const getValues = (selector) => {
+  const values = columns.reduce((acc, c) => ((acc[c.key] = 0), acc), {});
+  columns.forEach((c) => {
+    const src = useDay ? monthAggDay[c.key] : monthAggAll[c.key];
+    if (!src) return;
+    if (selector === "servMonto") values[c.key] = src.servMonto;
+    if (selector === "prodMonto") values[c.key] = src.prodMonto;
+    if (selector === "servTicket") values[c.key] = src.servCant ? src.servMonto / src.servCant : "";
+    if (selector === "prodTicket") values[c.key] = src.prodCant ? src.prodMonto / src.prodCant : "";
+    if (selector === "total") values[c.key] = src.servMonto + src.prodMonto;
+  });
+  return values;
+};
 
-    { label: "VENTA SERVICIOS", key: "venta_servicios", type: "currency", values: getValues("servMonto") },
-    { label: "TICKET PROMEDIO SERV.", key: "ticket_prom_serv", type: "currency", values: getValues("servTicket") },
-    { label: "VENTA PRODUCTOS", key: "venta_productos", type: "currency", values: getValues("prodMonto") },
-    { label: "TICKET PROMEDIO PROD.", key: "ticket_prom_prod", type: "currency", values: getValues("prodTicket") },
-    {
-      label: "VENTA TOTAL SERV. + PROD.",
-      key: "venta_total",
-      type: "currency",
-      values: getValues("total"),
-      emphasis: "dark",
-    },
-    marketingRow("CAC (S/)", "cac", "number"),
-  ];
+// Marketing (si lo mandas) SIEMPRE es por mes completo
+const mkt = marketing || {};
+const marketingRow = (label, key, type) => ({
+  label,
+  key,
+  type,
+  values: columns.reduce((acc, c) => {
+    const byMonth = mkt[key] || {}; // { marzo: 738, ... }
+    acc[c.key] = byMonth[c.key] ?? (type === "currency" || type === "number" ? "" : "");
+    return acc;
+  }, {}),
+});
 
-  // Footer: Venta total acumulada por mes (mes completo SIEMPRE)
-  const footer = {
-    label: "VENTA TOTAL ACUMULADA POR MES",
+const rows = [
+  marketingRow("INVERSIÓN REDES", "inversion_redes", "currency"),
+  marketingRow("LEADS", "leads", "number"),
+  marketingRow("CPL", "cpl", "number"),
+
+  { label: "VENTA SERVICIOS", key: "venta_servicios", type: "currency", values: getValues("servMonto") },
+  { label: "TICKET PROMEDIO SERV.", key: "ticket_prom_serv", type: "currency", values: getValues("servTicket") },
+  { label: "VENTA PRODUCTOS", key: "venta_productos", type: "currency", values: getValues("prodMonto") },
+  { label: "TICKET PROMEDIO PROD.", key: "ticket_prom_prod", type: "currency", values: getValues("prodTicket") },
+  {
+    label: "VENTA TOTAL SERV. + PROD.",
+    key: "venta_total",
     type: "currency",
-    values: columns.reduce((acc, c) => {
-      const src = monthAggAll[c.key];
-      acc[c.key] = src ? src.servMonto + src.prodMonto : 0;
-      return acc;
-    }, {}),
-  };
+    values: getValues("total"),
+    emphasis: "dark",
+  },
+  marketingRow("CAC (S/)", "cac", "number"),
+];
 
-  return {
-    titleLeft: "CIRCUS",
-    titleRight: titleRight || "RESUMEN EJECUTIVO",
-    columns,
-    rows,
-    footer,
-  };
+// Footer: Venta total acumulada por mes (mes completo SIEMPRE)
+const footer = {
+  label: "VENTA TOTAL ACUMULADA POR MES",
+  type: "currency",
+  values: columns.reduce((acc, c) => {
+    const src = monthAggAll[c.key];
+    acc[c.key] = src ? src.servMonto + src.prodMonto : 0;
+    return acc;
+  }, {}),
+};
+
+return {
+  titleLeft: "CIRCUS",
+  titleRight: titleRight || "RESUMEN EJECUTIVO",
+  columns,
+  rows,
+  footer,
+};
 
 
 /*************************  Contenedor con selector de fecha  *************************/
@@ -420,7 +403,7 @@ export default function ExecutiveSummaryFromVentas({ ventas = [], marketing = {}
 
   // Columnas fijas estilo tu primer cuadro (marzo..agosto)
   const columns = useMemo(() => (
-    ["marzo","abril","mayo","junio","julio","agosto"].map(mk => ({ key: mk, label: mk.toUpperCase() }))
+    ["marzo", "abril", "mayo", "junio", "julio", "agosto"].map(mk => ({ key: mk, label: mk.toUpperCase() }))
   ), []);
 
   // Builder con día de corte

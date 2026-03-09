@@ -1,12 +1,8 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useVigentesHistoricoStore } from "./useVigentesHistoricoStore";
-import { norm } from "./useResumenUtils";
+import { norm, MONTH_LABELS } from "./useResumenUtils";
 
-const MONTH_LABELS = [
-    "ENE", "FEB", "MAR", "ABR", "MAY", "JUN",
-    "JUL", "AGO", "SEP", "OCT", "NOV", "DIC",
-];
 
 export function useVigentesResumenMensual({
     id_empresa,

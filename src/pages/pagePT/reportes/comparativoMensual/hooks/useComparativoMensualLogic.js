@@ -1,27 +1,21 @@
 import { useMemo } from 'react';
-import { MESES } from '../../resumenEjecutivo/hooks/useResumenUtils';
+import { MESES, limaFromISO } from '../../resumenEjecutivo/hooks/useResumenUtils';
 import { getQuotaForMonth } from '../utils/quotaUtils';
 
 export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, cutDay = 21, customStartDay = 1, customEndDay = 1 }) => {
 
-    const toLimaDate = (iso) => {
-        if (!iso) return null;
-        try {
-            const d = new Date(iso);
-            const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-            return new Date(utcMs - 5 * 60 * 60000);
-        } catch { return null; }
-    };
+    const toLimaDate = limaFromISO;
 
     // --- CORRECCIÓN 1: Abrir el useMemo y asignar a monthsData ---
     const monthsData = useMemo(() => {
         const dataMap = new Map();
 
-        // 1. GENERAR EL RANGO DE 12 MESES DINÁMICAMENTE
+        // 1. GENERAR EL RANGO DESDE EL MES SELECCIONADO HASTA DICIEMBRE
         const list = [];
         const validKeys = new Set();
+        const maxMonths = 12 - Number(startMonth);
 
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < maxMonths; i++) {
             // Calculamos el índice real (0-11) y el año correspondiente
             const absoluteIndex = Number(startMonth) + i;
             const currentMonthIdx = ((absoluteIndex % 12) + 12) % 12;
@@ -152,8 +146,21 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
 
     const getWeightedAverages = (rows) => {
         if (!rows || rows.length === 0) return null;
-        const count = rows.length;
 
+        const now = new Date();
+        const currentMonthIdx = now.getMonth();
+        const currentYear = now.getFullYear();
+
+        // Filtrar filas: solo meses pasados (año menor o año igual y mes menor estricto)
+        const pastRows = rows.filter(row => {
+            const rowYear = Number(row.year);
+            const rowMonth = Number(row.monthIdx);
+            return rowYear < currentYear || (rowYear === currentYear && rowMonth < currentMonthIdx);
+        });
+
+        if (pastRows.length === 0) return null;
+
+        const count = pastRows.length;
         const sumFields = [
             'total', 'quota', 'customRangeTotal',
             'w1', 'w2', 'w3', 'w4', 'w5',
@@ -161,7 +168,7 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
         ];
 
         const sums = sumFields.reduce((acc, field) => {
-            acc[field] = rows.reduce((s, row) => s + (row[field] || 0), 0);
+            acc[field] = pastRows.reduce((s, row) => s + (row[field] || 0), 0);
             return acc;
         }, {});
 

@@ -2,9 +2,9 @@ import { useState, useEffect, useMemo } from 'react';
 import PTApi from '@/common/api/PTApi';
 import dayjs from 'dayjs';
 import { buildDataMktByMonth } from "../adapters/buildDataMktByMonth";
-import { limaFromISO, MESES } from './useResumenUtils';
+import { limaFromISO, MESES, aliasMes } from './useResumenUtils';
 
-export const useResumenMarketing = (id_empresa, fechas, dataVentas, mesesSeleccionados) => {
+export const useResumenMarketing = (id_empresa, fechas, dataVentas, mesesSeleccionados, originMap) => {
     const { initDay, cutDay } = fechas;
 
     const [dataLead, setDataLead] = useState([]);
@@ -58,11 +58,17 @@ export const useResumenMarketing = (id_empresa, fechas, dataVentas, mesesSelecci
         const base = { ...(dataMktByMonth || {}) };
 
         const detectOrigin = (v) => {
-            const raw = v?.id_origen ?? v?.origen ?? "";
-            const s = String(raw).toLowerCase();
-            if (raw === 693 || s.includes("insta")) return "instagram";
-            if (raw === 695 || s.includes("tiktok")) return "tiktok";
-            if (raw === 694 || s.includes("face")) return "facebook";
+            const id = v?.id_origen ?? v?.tb_ventum?.id_origen ?? v?.parametro_origen?.id_param ?? "";
+            const labelStr = v?.parametro_origen?.label_param ?? v?.tb_ventum?.parametro_origen?.label_param ?? v?.origen ?? v?.source ?? v?.canal ?? "";
+
+            // Resolve label if only ID present
+            const resolvedLabel = labelStr || (id ? (originMap?.[String(id)] ?? originMap?.[Number(id)] ?? "") : "");
+            const s = String(resolvedLabel).toLowerCase();
+
+            if (s.includes("insta") || Number(id) === 693 || Number(id) === 1440) return "instagram";
+            if (s.includes("tiktok") || s.includes("tik") || Number(id) === 695) return "tiktok";
+            if (s.includes("face") || s.includes("fb") || Number(id) === 694) return "facebook";
+
             return null;
         };
 
@@ -72,7 +78,7 @@ export const useResumenMarketing = (id_empresa, fechas, dataVentas, mesesSelecci
             const inversion = Number(obj.inversiones_redes ?? 0);
             const [yearStr, monthStr] = key.split('-');
             const anio = Number(yearStr);
-            const mesIdx = MESES.indexOf(monthStr === 'setiembre' ? 'septiembre' : monthStr);
+            const mesIdx = MESES.indexOf(aliasMes(monthStr));
 
             let clientesTotales = 0;
             let clientes_por_red = { tiktok: 0, meta: 0 };
@@ -94,7 +100,7 @@ export const useResumenMarketing = (id_empresa, fechas, dataVentas, mesesSelecci
             base[key] = obj;
         }
         return base;
-    }, [dataMktByMonth, dataVentas, initDay, cutDay]);
+    }, [dataMktByMonth, dataVentas, initDay, cutDay, originMap]);
 
     return { dataLead, dataLeadPorMesAnio, dataMktByMonth, dataMktWithCac, isLoadingMarketing };
 };

@@ -1,35 +1,5 @@
-const MESES = [
-	'enero',
-	'febrero',
-	'marzo',
-	'abril',
-	'mayo',
-	'junio',
-	'julio',
-	'agosto',
-	'setiembre',
-	'octubre',
-	'noviembre',
-	'diciembre',
-];
-
-export const aliasMes = (m) => {
-	const mes = String(m || '')
-		.toLowerCase()
-		.trim();
-	return mes === 'septiembre' ? 'setiembre' : mes;
-};
-
-const toLimaDate = (iso) => {
-	if (!iso) return null;
-	try {
-		const d = new Date(iso);
-		const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-		return new Date(utcMs - 5 * 60 * 60000);
-	} catch {
-		return null;
-	}
-};
+import { MESES, aliasMes, norm, limaFromISO } from '../hooks/useResumenUtils';
+export { MESES, aliasMes, norm };
 
 export const getMonthIndex = (m) => MESES.indexOf(aliasMes(m));
 
@@ -38,7 +8,7 @@ const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 export const fmtMoney = (n) =>
 	new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(Number(n || 0));
 
-export const fmtNum = (n, d = 0) =>
+export const fmtNum = (n, d = 2) =>
 	new Intl.NumberFormat('es-PE', {
 		minimumFractionDigits: d,
 		maximumFractionDigits: d,
@@ -72,24 +42,33 @@ const getOriginId = (v) => {
 	return v?.id_origen ?? v?.tb_ventum?.id_origen ?? null;
 };
 
-const ORIGIN_SYNONYMS = {
-	tiktok: new Set(['1514', '695', 'tiktok', 'tik tok', 'tik-tok']),
-	facebook: new Set(['694', 'facebook', 'fb']),
-	instagram: new Set(['693', 'instagram', 'ig']),
-	meta: new Set(['1515', 'meta']),
-};
+const extractOriginInfo = (v, originMap) => {
+	const rawOrigin =
+		v?.parametro_origen?.label_param ??
+		v?.tb_ventum?.parametro_origen?.label_param ??
+		v?.origen ??
+		v?.source ??
+		v?.canal ??
+		v?.id_origen ??
+		v?.tb_ventum?.id_origen ??
+		v?.parametro_origen?.id_param ??
+		'OTROS';
 
-const canonicalKeyFromRaw = (originMap, raw) => {
-	const rawStr = String(raw ?? '').trim();
-	const mapped = originMap?.[rawStr] ?? originMap?.[Number(rawStr)] ?? rawStr;
+	const strMapped = originMap?.[String(rawOrigin)] ?? originMap?.[Number(rawOrigin)] ?? String(rawOrigin);
+	const low = String(strMapped).trim().toLowerCase();
 
-	const low = String(mapped).trim().toLowerCase();
-	for (const [key, set] of Object.entries(ORIGIN_SYNONYMS)) {
-		if (set.has(low) || set.has(rawStr.toLowerCase()) || set.has(String(raw).toLowerCase())) {
-			return key;
-		}
+	let oKey = low.replace(/\s+/g, '_');
+	if (low.includes('tik')) oKey = 'tiktok';
+	else if (low.includes('face') || low === 'fb') oKey = 'facebook';
+	else if (low.includes('insta') || low === 'ig') oKey = 'instagram';
+	else if (low.includes('meta')) oKey = 'meta';
+
+	let oLabel = labelFromKey(oKey);
+	if (oLabel === 'OTROS' && low !== 'otros') {
+		oLabel = String(strMapped).trim().toUpperCase();
 	}
-	return low.replace(/\s+/g, '_');
+
+	return { oKey, oLabel };
 };
 
 export const labelFromKey = (key) => {
@@ -163,7 +142,7 @@ export function computeMetricsForMonth({
 
 	// ================== RECORRER VENTAS ==================
 	for (const v of ventas) {
-		const d = toLimaDate(v?.fecha_venta || v?.fecha || v?.createdAt);
+		const d = limaFromISO(v?.fecha_venta || v?.fecha || v?.createdAt);
 		if (!d) continue;
 		if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
 
@@ -171,16 +150,8 @@ export function computeMetricsForMonth({
 		if (d.getFullYear() === 2024 && d.getMonth() === 9) { // 9 = Octubre
 			continue;
 		}
-		const rawOrigin =
-			v?.id_origen ??
-			v?.parametro_origen?.id_param ??
-			v?.origen ??
-			v?.source ??
-			v?.canal ??
-			v?.parametro_origen?.label_param;
 
-		const oKey = canonicalKeyFromRaw(originMap, rawOrigin);
-		const oLabel = labelFromKey(oKey);
+		const { oKey, oLabel } = extractOriginInfo(v, originMap);
 
 		const group =
 			oKey === 'tiktok'
@@ -388,7 +359,7 @@ export function computeMetricsForMonth({
 	for (const r of reservasMF) {
 		if (!r?.flag) continue;
 
-		const d = toLimaDate(r?.fecha || r?.createdAt);
+		const d = limaFromISO(r?.fecha || r?.createdAt);
 		if (!d) continue;
 		if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
 
@@ -519,7 +490,7 @@ export function getAvailableMonthsFromVentas(ventas) {
 	const map = new Map();
 
 	ventas.forEach((v) => {
-		const d = toLimaDate(v?.fecha_venta || v?.fecha);
+		const d = limaFromISO(v?.fecha_venta || v?.fecha);
 		if (!d) return;
 		const anio = d.getFullYear();
 		const mesIdx = d.getMonth(); // 0-11

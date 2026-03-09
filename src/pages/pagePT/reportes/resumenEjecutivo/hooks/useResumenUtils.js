@@ -10,6 +10,22 @@ export const MESES = [
     "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
 ];
 
+export const MESES_UPPER = MESES.map(m => m.toUpperCase());
+
+export const MESES_CAP = MESES.map(m => m.charAt(0).toUpperCase() + m.slice(1));
+
+export const MONTH_LABELS = [
+    "ENE", "FEB", "MAR", "ABR", "MAY", "JUN",
+    "JUL", "AGO", "SEP", "OCT", "NOV", "DIC",
+];
+
+export const aliasMes = (m) => {
+    const mes = String(m || '').toLowerCase().trim();
+    if (mes === 'setiembre' || mes === 'set') return 'septiembre';
+    return mes;
+};
+
+
 export const getDaysInMonth = (month, year) => {
     return new Date(year, month, 0).getDate();
 };
@@ -31,10 +47,11 @@ export const originMap = {
 // === FECHAS ===
 export function limaFromISO(iso) {
     if (!iso) return null;
-    const d = new Date(iso);
-    if (isNaN(d)) return null;
-    const utcTime = d.getTime() + d.getTimezoneOffset() * 60000;
-    return new Date(utcTime - 5 * 60 * 60000);
+    const s = String(iso).replace(" ", "T").replace(" -", "-");
+    const d = new Date(s);
+    if (Number.isNaN(d.getTime())) return null;
+    const utc = d.getTime() + d.getTimezoneOffset() * 60000;
+    return new Date(utc - 5 * 60 * 60000);
 }
 
 export function limaStartOfDay(d) {

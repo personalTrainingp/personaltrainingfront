@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { MESES_UPPER } from "./useResumenUtils";
 
 const FALLBACK_USD_PEN_RATE = 3.37;
 
@@ -43,21 +44,6 @@ export const useTopControls = ({
     onUseLastDay,
     onChangeTasaCambio,
 }) => {
-    const MESES = [
-        "ENERO",
-        "FEBRERO",
-        "MARZO",
-        "ABRIL",
-        "MAYO",
-        "JUNIO",
-        "JULIO",
-        "AGOSTO",
-        "SEPTIEMBRE",
-        "OCTUBRE",
-        "NOVIEMBRE",
-        "DICIEMBRE",
-    ];
-
     const daysInMonth = (y, m1to12) => new Date(y, m1to12, 0).getDate();
     const CURRENT_YEAR = new Date().getFullYear();
     const YEARS = Array.from({ length: 7 }, (_, i) => CURRENT_YEAR - i);
@@ -194,7 +180,7 @@ export const useTopControls = ({
         typeof onUseLastDay === "function" ? onUseLastDay() : fallbackUseLastDay();
 
     return {
-        MESES,
+        MESES: MESES_UPPER,
         YEARS,
         CURRENT_YEAR,
         fallbackUseLastDay,

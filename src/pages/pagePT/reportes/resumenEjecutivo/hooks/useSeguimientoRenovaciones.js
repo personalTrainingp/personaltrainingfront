@@ -1,17 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useVigentesHistoricoStore } from './useVigentesHistoricoStore';
+import { MESES_CAP } from './useResumenUtils';
 
-const MESES = [
-    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
-];
 
 export const useSeguimientoRenovaciones = (dataVentas, mapaVencimientos, year, id_empresa, cutDay = null, cutMonth = null) => {
 
-    // Obtenemos del store
     const { fetchVigentesHistorico, data, loading } = useVigentesHistoricoStore();
 
-    // 1. Calcular Inscritos (Nuevas Ventas)
     const inscritosPorMes = useMemo(() => {
         const counts = Array(12).fill(0);
         if (!dataVentas) return counts;
@@ -32,7 +27,6 @@ export const useSeguimientoRenovaciones = (dataVentas, mapaVencimientos, year, i
         return counts;
     }, [dataVentas, year, cutDay, cutMonth]);
 
-    // 2. Extraer Renovaciones del Mapa
     const renovacionesPorMes = useMemo(() => {
         const counts = Array(12).fill(0);
 
@@ -50,15 +44,12 @@ export const useSeguimientoRenovaciones = (dataVentas, mapaVencimientos, year, i
         return counts;
     }, [mapaVencimientos, year]);
 
-    // 🔥 3. Fetch Activos (Vigentes) por Mes - USANDO STORE
     useEffect(() => {
         if (year) {
             fetchVigentesHistorico(id_empresa, year, cutDay, cutMonth);
         }
     }, [year, id_empresa, cutDay, cutMonth, fetchVigentesHistorico]);
 
-    // 🔥 LA SOLUCIÓN: Reemplazamos el useState y el useEffect por un useMemo puro.
-    // Esto calcula los resultados al vuelo (síncronamente) y evita el re-render extra.
     const activosPorMes = useMemo(() => {
         const key = `${id_empresa || 598}-${year}-${cutMonth ?? 'x'}-${cutDay ?? 'last'}`;
         const rows = data[key] || [];
@@ -88,6 +79,6 @@ export const useSeguimientoRenovaciones = (dataVentas, mapaVencimientos, year, i
         renovacionesPorMes,
         activosPorMes,
         loadingActivos,
-        MESES
+        MESES: MESES_CAP
     };
 };

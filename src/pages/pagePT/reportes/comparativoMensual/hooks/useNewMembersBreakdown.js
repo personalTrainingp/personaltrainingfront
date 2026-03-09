@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { limaFromISO } from '../../resumenEjecutivo/hooks/useResumenUtils';
 
 export const useNewMembersBreakdown = (ventas, monthsData) => {
     return useMemo(() => {
@@ -14,14 +15,7 @@ export const useNewMembersBreakdown = (ventas, monthsData) => {
         // Inicializar totales por mes
         monthsData.forEach(m => monthlyTotals[m.key] = { count: 0, amount: 0 });
 
-        const toLimaDate = (iso) => {
-            if (!iso) return null;
-            try {
-                const d = new Date(iso);
-                const utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
-                return new Date(utcMs - 5 * 60 * 60000);
-            } catch { return null; }
-        };
+        const toLimaDate = limaFromISO;
 
         nuevos.forEach(v => {
             const d = toLimaDate(v.fecha_venta || v.fecha || v.createdAt);

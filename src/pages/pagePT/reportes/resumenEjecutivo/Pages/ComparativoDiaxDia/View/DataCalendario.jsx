@@ -2,10 +2,7 @@ import { NumberFormatMoney } from "@/components/CurrencyMask";
 import React, { useMemo, useState } from "react";
 import { agruparPorEmpleado } from "../helpers/agruparDiasEnMes";
 
-const MESES = [
-  "Enero","Febrero","Marzo","Abril","Mayo","Junio",
-  "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
-];
+import { MESES_CAP } from "../../../hooks/useResumenUtils";
 
 function daysInMonth(anio, mes) {
   return new Date(anio, mes, 0).getDate(); // mes 1..12
@@ -21,10 +18,10 @@ function keyDate(anio, mes, dia) {
   return `${anio}-${String(mes).padStart(2, "0")}-${String(dia).padStart(2, "0")}`;
 }
 
-export const DataCalendario = ({  data = [],
+export const DataCalendario = ({ data = [],
   initialYear = 2026,
   initialMonth = 1,
-  onDayClick}) => {
+  onDayClick }) => {
   const [{ anio, mes }, setYM] = useState({ anio: initialYear, mes: initialMonth });
 
   // Agrupar data por día (YYYY-MM-DD) -> [items...]
@@ -77,7 +74,7 @@ export const DataCalendario = ({  data = [],
       <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10 }}>
         <button onClick={goPrev}>◀</button>
         <div style={{ fontWeight: 800 }}>
-          {MESES[mes - 1]} {anio}
+          {MESES_CAP[mes - 1]} {anio}
         </div>
         <button onClick={goNext}>▶</button>
 
@@ -93,7 +90,7 @@ export const DataCalendario = ({  data = [],
         <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 560 }}>
           <thead>
             <tr>
-              {["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(d => (
+              {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map(d => (
                 <th key={d} style={{ border: "1px solid #ddd", padding: 8, background: "#f5f5f5" }}>
                   {d}
                 </th>
@@ -131,16 +128,16 @@ export const DataCalendario = ({  data = [],
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         {/* <span style={{ fontWeight: 800 }}>{cell.dia}</span> */}
                         <span
-                            style={{
-                              fontSize: 20,
-                              padding: "2px 8px",
-                              borderRadius: 999,
-                              background: "#111",
-                              color: "#fff"
-                            }}
-                          >
-                            {cell.dia}
-                          </span>
+                          style={{
+                            fontSize: 20,
+                            padding: "2px 8px",
+                            borderRadius: 999,
+                            background: "#111",
+                            color: "#fff"
+                          }}
+                        >
+                          {cell.dia}
+                        </span>
                         {/* Badge cantidad (solo si hay data) */}
                         {/* {count > 0 && (
                           <span
@@ -164,29 +161,29 @@ export const DataCalendario = ({  data = [],
                           {cell.items[0]?.titulo ? (
                             <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                               {cell.items[0].titulo}
-                              
+
                             </div>
                           ) : (
                             <div style={{ color: "#666" }}>
-                                CANTIDAD: {cell.items[0].items.length}
-                                <br/>
-                                TOTAL: <NumberFormatMoney amount={cell.items[0].items.reduce((total, item) => total + (item?.montoTotal || 0), 0)}/> 
-                                    <br/>
-                                    {
-                                        agruparPorEmpleado(cell.items[0].items).map(emp=>{
-                                            return (
-                                                <>
-                                                <br/>
-                                                ASESOR: {emp.nombre_empl.split(' ')[0]}
-                                                <br/>
-                                                VENTAS: <NumberFormatMoney amount={emp.items.reduce((total, item) => total + (item?.montoTotal || 0), 0)}/>
-                                                <br/>
-                                                CANTIDAD: {emp.items.length}
-                                                <br/>
-                                                </>
-                                            )
-                                        })
-                                    }
+                              CANTIDAD: {cell.items[0].items.length}
+                              <br />
+                              TOTAL: <NumberFormatMoney amount={cell.items[0].items.reduce((total, item) => total + (item?.montoTotal || 0), 0)} />
+                              <br />
+                              {
+                                agruparPorEmpleado(cell.items[0].items).map(emp => {
+                                  return (
+                                    <>
+                                      <br />
+                                      ASESOR: {emp.nombre_empl.split(' ')[0]}
+                                      <br />
+                                      VENTAS: <NumberFormatMoney amount={emp.items.reduce((total, item) => total + (item?.montoTotal || 0), 0)} />
+                                      <br />
+                                      CANTIDAD: {emp.items.length}
+                                      <br />
+                                    </>
+                                  )
+                                })
+                              }
                             </div>
                           )}
                         </div>
