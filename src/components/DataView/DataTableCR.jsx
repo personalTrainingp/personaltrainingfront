@@ -3,6 +3,7 @@ import { Table, Form, Pagination, Row, Col } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import { InputButton } from '../InputText';
 
 // Extrae todos los valores primitivos de un objeto (incluye anidados)
 const collectValues = (value, acc) => {
@@ -1027,15 +1028,14 @@ const filtered = useMemo(() => {
   return (
     <div className="d-flex flex-column gap-2 roboto-sans-serif">
       <Row className="g-2 align-items-center">
-        <Col xs="auto">{componentsLeft}</Col>
-        {exportable && (
-          <Col xs="auto">
-            <Button variant="success" onClick={exportToExcel}>
-              {exportLabel}
-            </Button>
-          </Col>
-        )}
-        <Col xs="12" md="auto" className="ms-auto">
+        <Col xs="auto">
+        {componentsLeft}
+        
+        </Col>
+        <Col xs="12" md="auto" className="ms-auto d-flex justify-content-center align-content-center">
+            {exportable && (
+              <InputButton label={exportLabel} onClick={exportToExcel} className={'bg-greenISESAC border-none mx-2 w-100'}/>
+          )}
           {searchable && (
             <Form.Control
               value={search}
@@ -1045,7 +1045,7 @@ const filtered = useMemo(() => {
             />
           )}
         </Col>
-
+        
         <Col xs="auto">
           <Form.Select
             aria-label="Tamaño de página"
@@ -1058,6 +1058,7 @@ const filtered = useMemo(() => {
               </option>
             ))}
           </Form.Select>
+          
         </Col>
       </Row>
 
