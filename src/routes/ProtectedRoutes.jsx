@@ -455,14 +455,14 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/colaborador') &&
 								<>
-									<Route path='gestion-empleados-activo' element={<GestionEmpleados id_activo={1} />} />
+									<Route path='gestion-empleados-activo' element={<GestionEmpleados idEstado={1} />} />
 									<Route path='perfil-colaborador/:uid' element={<PerfilEmpleado />} />
 								</>
 							}
 							{
 								sections.find(e => e.url === '/colaborador') &&
 								<>
-									<Route path='gestion-empleados-inactivo' element={<GestionEmpleados id_activo={0} />} />
+									<Route path='gestion-empleados-inactivo' element={<GestionEmpleados idEstado={0} />} />
 									<Route path='perfil-colaborador/:uid' element={<PerfilEmpleado />} />
 								</>
 							}

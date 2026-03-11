@@ -78,7 +78,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom})
         }},
     ]
   return (
-    <Modal show={show} onHide={onHide} size='xl'>
+    <Modal show={show} onHide={onHide} fullscreen>
         <Modal.Header closeButton >
             <Modal.Title></Modal.Title>
         </Modal.Header>
