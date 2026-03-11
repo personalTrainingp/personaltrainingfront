@@ -129,7 +129,7 @@ export const InputSelect = ({label, value='', placeholder='', onChange, nameInpu
         )
       }
       <Select
-        className="react-select"
+        className="react-select text-black"
         classNamePrefix="react-select"
         options={options}
         value={options.find((opt) => opt.value === value)}

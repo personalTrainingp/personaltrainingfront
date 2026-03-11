@@ -194,20 +194,20 @@ const onSaveCorte = ()=>{
             INICIO: 
           </div>
           <div>
-            <InputSelect className={'fs-2'} options={fechas} value={inicio} nameInput={'inicio'} onChange={onInputChange}/>
+            <InputSelect className={'fs-2 mx-2 text-black'} options={fechas} value={inicio} nameInput={'inicio'} onChange={onInputChange}/>
           </div>
           <div className='fs-2 ml-4'>
             FIN:
           </div>
           <div>
-            <InputSelect className={'fs-2'} options={fechas} value={corte} nameInput={'corte'} onChange={onInputChange}/>
+            <InputSelect className={'fs-2 mx-2 text-black'} options={fechas} value={corte} nameInput={'corte'} onChange={onInputChange}/>
+          </div>
+          <div className='mx-3'>
+            <InputButton label={'AGREGAR'} className={'fs-3'} onClick={onSaveCorte}/>
           </div>
         </div>
       </Col>
       <Col lg={1}>
-        <div className='mt-3'>
-          <InputButton label={'AGREGAR'} className={'fs-3'} onClick={onSaveCorte}/>
-        </div>
       </Col>
     </Row>
     </>
