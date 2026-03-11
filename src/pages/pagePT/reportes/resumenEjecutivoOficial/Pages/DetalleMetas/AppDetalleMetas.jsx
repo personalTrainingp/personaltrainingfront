@@ -14,6 +14,8 @@ export const AppDetalleMetas = () => {
             obtenerVentas(['2025-01-02 15:45:47.6640000 +00:00','2025-12-04 20:42:20.4490000 +00:00'])
         }, [])
         const dataMetasCuotasMembresias=[
+            {mes: 3, anio: 2026, meta: 100000},
+            {mes: 2, anio: 2026, meta: 100000},
             {mes: 1, anio: 2026, meta: 110000},
             {mes: 12, anio: 2025, meta: 90000},
             {mes: 11, anio: 2025, meta: 90000},

@@ -95,7 +95,15 @@ function obtenerOffsetPrimerDia(anio,mes){
 
   return day-1
 }
-
+const diaConId = [
+  {label: 'DOMINGO', value: 1692},
+  {label: 'SABADO', value: 1691},
+  {label: 'VIERNES', value: 1690},
+  {label: 'JUEVES', value: 1689},
+  {label: 'MIERCOLES', value: 1688},
+  {label: 'MARTES', value: 1687},
+  {label: 'LUNES', value: 1686},
+]
 /* ---------- COMPONENTE ---------- */
 
 export default function CalendariosContrato({
@@ -115,11 +123,16 @@ export default function CalendariosContrato({
     {dia: 'SABADO', id_estabilidad: 1, hora_inicio: '07:00:00', hora_fin: '13:00:00'},
   ]
 }) {
-
+  const dataJornadaPorSemanaMAP = dataJornadaPorSemana.map(g=>{
+    return {
+      ...g,
+      dia: diaConId.find(dia=>dia.value===g.id_dia)?.label
+    }
+  })
   const calendario = generarCalendario(
     new Date(fechaInicio),
     new Date(fechaFin),
-    dataJornadaPorSemana,
+    dataJornadaPorSemanaMAP,
     estabilidades
   )
 

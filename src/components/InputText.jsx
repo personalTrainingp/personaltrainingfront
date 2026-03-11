@@ -121,7 +121,13 @@ export const InputSelect = ({label, value='', placeholder='', onChange, nameInpu
   }
   return (
     <div className='w-100'>
-      <label className='form-label'>{label} {required && (<span className='text-danger'>*</span>)} </label>
+      {
+        label=== '' ? (
+          <label className='form-label'>{label} {required && (<span className='text-danger'>*</span>)} </label>
+        ): (
+          <></>
+        )
+      }
       <Select
         className="react-select"
         classNamePrefix="react-select"

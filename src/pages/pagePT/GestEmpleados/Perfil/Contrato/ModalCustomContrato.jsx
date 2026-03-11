@@ -5,26 +5,21 @@ import { Col, Modal, Row } from 'react-bootstrap'
 import { InputButton, InputDate, InputSelect, InputText } from '@/components/InputText'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import CalendariosContrato from './CalendariosContrato'
+import { TabPanel, TabView } from 'primereact/tabview'
 const customContrato = {
   fecha_inicio: null,
   fecha_fin: null,
   sueldo: 0.00,
   observacion: ''
 }
-const customJornadaxDia = {
-
-}
 export const ModalCustomContrato = ({show, onHide, id_empleado}) => {
   const { formState, fecha_inicio, fecha_fin, sueldo, observacion, onInputChange, onResetForm } = useForm(customContrato)
-  const { obtenerParametroPorEntidadyGrupo:obtenerNombreDias, DataGeneral:dataNombreDias } = useTerminoStore()
-  const { obtenerParametroPorEntidadyGrupo:obtenerEstabilidadxDia, DataGeneral:dataEstabilidadxDia } = useTerminoStore()
-  const { obtenerParametroPorEntidadyGrupo:obtenerConceptosJornada, DataGeneral:dataConceptosJornada } = useTerminoStore()
   const { postContratoColaborador } = useContratoColaboradorStore()
-  useEffect(() => {
-    obtenerNombreDias('dia', 'nombre')
-    obtenerEstabilidadxDia('estabilidad-dia', 'empleado')
-    obtenerConceptosJornada('concepto', 'jornada')
-  }, [show])
+  // useEffect(() => {
+  //   obtenerNombreDias('dia', 'nombre')
+  //   obtenerEstabilidadxDia('estabilidad-dia', 'empleado')
+  //   obtenerConceptosJornada('concepto', 'jornada')
+  // }, [show])
   
   const onCancelCustomContrato = ()=>{
     onHide()

@@ -187,15 +187,21 @@ const onSaveCorte = ()=>{
 }
   return (
     <>
-    <Row>
-      <Col lg={1}>
-        <div className='mb-3'>
-          <InputSelect label={'INICIO'} options={fechas} value={inicio} nameInput={'inicio'} onChange={onInputChange}/>
-        </div>
-      </Col>
-      <Col lg={1}>
-        <div className='mb-3'>
-          <InputSelect label={'CORTE'} options={fechas} value={corte} nameInput={'corte'} onChange={onInputChange}/>
+    <Row className='mt-4'>
+      <Col lg={12}>
+        <div className='d-flex align-items-center align-content-center'>
+          <div className='fs-2'>
+            INICIO: 
+          </div>
+          <div>
+            <InputSelect className={'fs-2'} options={fechas} value={inicio} nameInput={'inicio'} onChange={onInputChange}/>
+          </div>
+          <div className='fs-2 ml-4'>
+            FIN:
+          </div>
+          <div>
+            <InputSelect className={'fs-2'} options={fechas} value={corte} nameInput={'corte'} onChange={onInputChange}/>
+          </div>
         </div>
       </Col>
       <Col lg={1}>

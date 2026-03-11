@@ -1,17 +1,15 @@
 import { PTApi } from '@/common';
-import { onSetDataView } from '@/store/data/dataSlice';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { onSetDataView } from './contratoEmpSlice';
 
 export const useContratoColaboradorStore = () => {
 	const dispatch = useDispatch();
 	const [dataDiasLaborablesxContrato, setdataDiasLaborablesxContrato] = useState([]);
-	const postContratoColaborador = async (formState, uid_empleado) => {
+	const postContratoColaborador = async (formState, id_empl) => {
 		try {
-			const { data } = await PTApi.post(
-				`/contrato-empleado/id_empl/${uid_empleado}`,
-				formState
-			);
+			const { data } = await PTApi.post(`/contrato-empleado/id_empl/${id_empl}`, formState);
+			obtenerContratosxColaborador(id_empl);
 		} catch (error) {
 			console.log(error);
 		}
