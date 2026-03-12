@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 
 export const TableResumen = ({withHeaderVertical, dataEgresos=[], dataIngresos=[], bgTotal, id_empresa}) => {
   const dataIngresosMAP = dataIngresos.flatMap(e=>e.data)
-  console.log({dataEgresos, dataIngresos, dataIngresosMAP});
+  console.log({dataEgresos: dataEgresos.flatMap(e=>e.data).reduce((total, item)=>total+item?.monto, 0), dataIngresos, dataIngresosMAP});
   return (
     <>
       {
@@ -45,15 +45,15 @@ export const TableResumen = ({withHeaderVertical, dataEgresos=[], dataIngresos=[
                 <tbody>
                   <tr>
                     <td colSpan={2}>INGRESOS</td>
-                    <td><NumberFormatMoney amount={dataIngresos.reduce((total, item)=>total+item.montoTotal, 0)*3.36}/></td>
+                    <td><NumberFormatMoney amount={dataIngresos.flatMap(e=>e.data).reduce((total, item)=>total+item.monto, 0)*3.36}/></td>
                   </tr>
                   <tr>
                     <td colSpan={2}>EGRESOS</td>
-                    <td><NumberFormatMoney amount={dataEgresos.reduce((total, item)=>total+item.montoTotal, 0)}/></td>
+                    <td><NumberFormatMoney amount={dataEgresos.flatMap(e=>e.data).reduce((total, item)=>total+item.monto, 0)}/></td>
                   </tr>
                   <tr>
                     <td colSpan={2}>TOTAL</td>
-                    <td><NumberFormatMoney amount={dataIngresos.reduce((total, item)=>total+item.montoTotal, 0)*3.36-dataEgresos.reduce((total, item)=>total+item.montoTotal, 0)}/></td>
+                    <td><NumberFormatMoney amount={dataIngresos.flatMap(e=>e.data).reduce((total, item)=>total+item.monto, 0)*3.36-dataEgresos.flatMap(e=>e.data).reduce((total, item)=>total+item.monto, 0)}/></td>
                   </tr>
                 </tbody>
           </Table></>

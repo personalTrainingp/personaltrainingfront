@@ -1,1 +1,0 @@
-export { ReporteDemograficoCliente as default } from './ReporteDemograficoCliente';

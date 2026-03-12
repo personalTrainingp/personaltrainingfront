@@ -45,17 +45,15 @@ export const ModalCustomCalendarioJornadas = ({
     const copy = jornadas.filter((_, i) => i !== index)
     setJornadas(copy)
   }
-  console.log({jornadas});
-  
+  const onSubmit = ()=>{
+    console.log({jornadas});
+    
+  }
   return (
     <Modal size='xl' show={show} onHide={onHide}>
       <Modal.Header>
         <Modal.Title>
           AGREGAR JORNADAS
-          <br />
-          {fechaInicio}
-          <br />
-          {fechaFin}
         </Modal.Title>
       </Modal.Header>
 
@@ -103,7 +101,7 @@ export const ModalCustomCalendarioJornadas = ({
                                 <Col lg={6}>
                                 <InputDate
                                     type="time"
-                                    label="HORA DE INICIO"
+                                    label="HORA INICIO"
                                     value={item.hora_inicio}
                                     onChange={(e) =>
                                     handleChange(index, "hora_inicio", e.target.value)
@@ -114,7 +112,7 @@ export const ModalCustomCalendarioJornadas = ({
                                 <Col lg={6}>
                                 <InputDate
                                     type="time"
-                                    label="HORA DE FIN"
+                                    label="HORA FIN"
                                     value={item.hora_fin}
                                     onChange={(e) =>
                                     handleChange(index, "hora_fin", e.target.value)
@@ -135,18 +133,20 @@ export const ModalCustomCalendarioJornadas = ({
             <TabPanel header={'CALENDARIO'}>
                     <CalendariosContrato
                     dataJornadaPorSemana={jornadas}
+                    fechaInicio={fechaInicio}
+                    fechaFin={fechaFin}
                     estabilidades={[
-            {id: 1695, label: '2 dias si y un dia no', si: 2, no: 1},
-            {id: 1693, label: '1 dias si y un dia no', si: 1, no: 1},
-            {id: 1694, label: 'Fijo', si: 0, no: 0},
-            {id: 1694, label: 'NINGUNO', si: 0, no: 0},
-        ]}
+                        {id: 1695, label: '2 dias si y un dia no', si: 2, no: 1},
+                        {id: 1693, label: '1 dias si y un dia no', si: 1, no: 1},
+                        {id: 1694, label: 'Fijo', si: 0, no: 0},
+                        {id: 1694, label: 'NINGUNO', si: 0, no: 0},
+                    ]}
                     />
             </TabPanel>
         </TabView>
       </Modal.Body>
       <Modal.Footer>
-        <InputButton label={'AGREGAR JORNADA'}/>
+        <InputButton label={'AGREGAR JORNADA'} onClick={onSubmit}/>
       </Modal.Footer>
     </Modal>
   )

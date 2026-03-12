@@ -66,7 +66,6 @@ const PerfilProveedor = lazy(() => import('../pages/pagePT/PerfilProveedor'))
 const GestionInventario = lazy(() => import('../pages/pagePT/GestInventario'))
 const GestionInventarioProy = lazy(() => import('../pages/pagePT/GestInventarioProy'))
 const InventarioTotalizado = lazy(() => import('../pages/pagePT/InventarioReporte'))
-const PuntoEquilibrio = lazy(() => import('../pages/pagePT/reportes/puntoEquilibrio'))
 const ReporteSeguimiento = lazy(() => import('../pages/pagePT/reportes/reporteSeguimiento'))
 const GestionComercial = lazy(() => import('../pages/pagePT/GestionComercial/Index.jsx'))
 const ResultadoChange = lazy(() => import('../pages/pagePT/reportes/resultadoChange'))
@@ -76,7 +75,6 @@ const ClientesxVentasDeMembresia = lazy(() => import('../pages/pagePT/Membresiax
 const GestionCambioPrograma = lazy(() => import('../pages/pagePT/GestionCambioPrograma'))
 const ResumenComparativoAnual = lazy(() => import('../pages/pagePT/reportes/resumenComparativoAnual'))
 const SeguimientoxMesView = lazy(() => import('../pages/pagePT/reportes/SeguimientoxMes'))
-const ResumenDemograficoxPrograma = lazy(() => import('../pages/pagePT/reportes/resumenDemograficoComparativo'))
 const ViewAdquision = lazy(() => import('../pages/pagePT/reportes/lineaMkt/adquision'))
 const ViewRenovacion = lazy(() => import('../pages/pagePT/reportes/lineaMkt/renovacion'))
 const ViewReinscripcion = lazy(() => import('../pages/pagePT/reportes/lineaMkt/reinscripcion'))
@@ -332,10 +330,6 @@ export default function ProtectedRoutes() {
 								<Route path='ventas-transferencias' element={<ResumenComparativoAnual />} />
 							}
 							{
-								sections.find(e => e.url === '/reporte') &&
-								<Route path='reporte/reporte-demografico-membresia' element={<ResumenDemograficoxPrograma />} />
-							}
-							{
 								sections.find(e => e.url === '/reporte') && //asdf
 								<Route path='reporte/comparativo-resumen-x-mes' element={<ResumenComparativoAnual />} />
 							}
@@ -566,9 +560,6 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/tipo-cambio') &&
 								<Route path='tipo-cambio' element={<GestionTipoCambio />} />
-							}
-							{sections.find(e => e.url === '/reporte-admin/gestion-lead') &&
-								<Route path="reporte-admin/gestion-lead" element={<PuntoEquilibrio />} />
 							}
 							<Route path='programa/:uid' element={<PerfilPrograma />} />
 							<Route path='gestion-descuentos' element={<GestionDescuentos />} />

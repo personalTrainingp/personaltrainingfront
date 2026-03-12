@@ -38,7 +38,11 @@ export const NumberFormatMoney = ({ amount }) => {
     format: '%s%v' // "%s" es el símbolo de la moneda y "%v" es el valor numérico
   });
   
-  return formattedAmount
+  return (
+    <span className='fs-3'>
+      {formattedAmount}
+    </span>
+  )
 }
 export const NumberFormatter = ({ amount, splitCaracter }) => {
   const formattedAmount = accounting.formatMoney(amount, {

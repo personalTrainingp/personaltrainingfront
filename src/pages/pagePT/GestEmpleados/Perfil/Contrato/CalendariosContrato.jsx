@@ -162,12 +162,10 @@ export default function CalendariosContrato({
   const mes = meses[indexMes]
 
   const offset = obtenerOffsetPrimerDia(mes.anio,mes.mes)
-
   /* -------- UI -------- */
-
   return(
 
-    <div>
+    <div style={{width: '100%'}}>
 
       {/* HEADER CARRUSEL */}
 
@@ -235,12 +233,13 @@ export default function CalendariosContrato({
 
           <div
             key={j}
+            
             style={{
               border:"1px solid #ccc",
-              padding:10,
+              padding:5,
               textAlign:"center",
-              borderRadius:6,
-              background:d.activo ? "#e8f4ff" : "#f1f1f1"
+              borderRadius:100,
+              background:d.activo ? "#f6ff00" : "#ffffff"
             }}
           >
             {d.dia}

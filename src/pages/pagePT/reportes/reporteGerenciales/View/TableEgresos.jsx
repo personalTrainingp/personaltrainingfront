@@ -2,12 +2,12 @@ import { NumberFormatMoney } from '@/components/CurrencyMask'
 import React from 'react'
 import { Table } from 'react-bootstrap'
 
-export const TableEgresos = ({bgTotal, data=[], onOpenModalConceptos, nombreHeader=''}) => {
+export const TableEgresos = ({bgTotal, data=[], onOpenModalConceptos, nombreHeader='', id_empresa}) => {
   const dataAlter = data.map(d=>{
     const montoData = d.data?.reduce((total, item)=>total+item?.monto,0)
     return {
       ...d,
-      montoData
+      montoData: id_empresa==800?montoData*3.36:montoData
     }
   })
   const onClickData = async(g, headerGrupo)=>{

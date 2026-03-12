@@ -123,9 +123,9 @@ export const InputSelect = ({label, value='', placeholder='', onChange, nameInpu
     <div className='w-100'>
       {
         label=== '' ? (
-          <label className='form-label'>{label} {required && (<span className='text-danger'>*</span>)} </label>
-        ): (
           <></>
+        ): (
+          <label className='form-label'>{label} {required && (<span className='text-danger'>*</span>)} </label>
         )
       }
       <Select

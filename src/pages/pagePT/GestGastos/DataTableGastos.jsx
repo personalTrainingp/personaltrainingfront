@@ -68,19 +68,17 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
         }},
         {id: 9, header: <>GASTO</>, accessor: 'concepto', width: '200px', render: (row)=>{
             return (
-                <>
+                <div>
                     {row.concepto}
-                </>
+                </div>
             )
         }},
         {id: 10, header: <>MONTO</>, sortable, accesor: 'monto', render: (row)=>{
             return (
                 <>
-                <div className={row.moneda === 'PEN'?'':'text-color-dolar fw-bold'}>
+                <div style={{width: '200px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} d-flex align-items-center justify-content-center`}>
                                         {row.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
-                                        {
-                                            <NumberFormatMoney amount={row.monto}/>
-                                        }
+                                        <NumberFormatMoney amount={row.monto}/>
                                 </div>
                 </>
             )

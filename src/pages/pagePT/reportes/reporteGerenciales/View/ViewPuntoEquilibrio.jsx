@@ -7,6 +7,7 @@ import { FechaRangeMES } from '@/components/RangeCalendars/FechaRange'
 import { useSelector } from 'react-redux'
 import { PageBreadcrumb } from '@/components'
 import { ModalConceptos } from './ModalConceptos'
+import { RowTable } from './RowTable'
 
 export const ViewPuntoEquilibrio = ({id_empresa, bgTotal, rangeDate}) => {
     const { obtenerEgresos, dataGastosxFecha, dataIngresosxFecha, obtenerIngresos } = usePuntoEquilibrio()
@@ -41,15 +42,7 @@ export const ViewPuntoEquilibrio = ({id_empresa, bgTotal, rangeDate}) => {
         {
             grupo: 'RENOVACIONES', data: membresiasRenovaciones, items: [], 
             conceptos: agrupar(membresiasRenovaciones)
-        },
-    ]
-    const productosMAP  = dataIngresosProductos?.map(p=>{
-        return {
-            grupo: p?.concepto || '',
-            concepto: agrupar(p.items)
-        }
-    })
-    console.log({dataIngresosMembresias, dataIngresosProductos, productosMAP, dataMembresias, membresiasNuevas, dif: dataIngresosxFecha.find(f=>f.grupo==='INGRESOS')});
+        }]
   return (
     <div>
         <PageBreadcrumb title={'PUNTO DE EQUILIBRIO'}/>
@@ -65,22 +58,33 @@ export const ViewPuntoEquilibrio = ({id_empresa, bgTotal, rangeDate}) => {
                 />
             </Col>
             <Col lg={5}>
-                <TableEgresos 
-                    onOpenModalConceptos={onOpenModalConceptos} 
-                    id_empresa={id_empresa} 
-                    withHeaderVertical={withHeaderVertical} 
-                    bgTotal={bgTotal} 
-                    nombreHeader='INGRESOS'
-                    data={dataMembresias}
-                />
-                <TableEgresos 
-                    onOpenModalConceptos={onOpenModalConceptos} 
-                    id_empresa={id_empresa} 
-                    withHeaderVertical={withHeaderVertical} 
-                    bgTotal={bgTotal} 
-                    nombreHeader='PRODUCTOS'
-                    data={productosMAP}
-                />
+            {
+                id_empresa==598 && (
+                    <>
+                    <TableEgresos 
+                        onOpenModalConceptos={onOpenModalConceptos} 
+                        id_empresa={id_empresa} 
+                        withHeaderVertical={withHeaderVertical} 
+                        bgTotal={bgTotal} 
+                        nombreHeader='INGRESOS'
+                        data={dataMembresias}
+                    />
+                    {/* <RowTable bgTotal={bgTotal} montoHeader={'11'} nombreHeader={'PRODUCTOS'}/> */}
+                    </>
+                )
+            }
+            {
+                id_empresa==800 && (
+                    <TableEgresos 
+                        onOpenModalConceptos={onOpenModalConceptos} 
+                        id_empresa={id_empresa} 
+                        withHeaderVertical={withHeaderVertical} 
+                        bgTotal={bgTotal} 
+                        nombreHeader='INGRESOS'
+                        data={dataIngresosxFecha}
+                    />
+                )
+            }
                 <TableResumen 
                     id_empresa={id_empresa} 
                     withHeaderVertical={withHeaderVertical} 
