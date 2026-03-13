@@ -1,0 +1,181 @@
+/* Estilos Base (Escritorio) */
+.ag-theme-alpine {
+    --ag-borders: none;
+    --ag-row-border-style: solid;
+    --ag-row-border-width: 1px;
+    --ag-row-border-color: #f0f0f0;
+    --ag-header-column-separator-display: none;
+}
+
+/* Estilos de Cabecera Personalizados (Rojo Tono Solicitado) - Historial */
+.ag-header,
+.ag-header-row,
+.ag-header-cell {
+    background-color: #c00000 !important;
+    color: white !important;
+}
+
+.ag-header-cell-label {
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.ag-header-icon {
+    color: white !important;
+}
+
+/* --- CORRECCIONES SOLO PARA MÓVIL (Pantallas menores a 768px) --- */
+@media (max-width: 768px) {
+
+    /* VISTA DE TARJETAS (Card View) para la Tabla */
+
+    /* FORCE GRID TO FIT MOBILE WIDTH */
+    .ag-root-wrapper,
+    .ag-root-wrapper-body,
+    .ag-root,
+    .ag-body-viewport,
+    .ag-center-cols-viewport,
+    .ag-center-cols-container,
+    .ag-body-horizontal-scroll-viewport {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        /* Allow height to grow */
+        overflow-y: visible !important;
+        /* Let page scroll */
+    }
+
+    /* 2. El contenedor maneja el scroll en móvil (NO, scroll de página) */
+    .grid-container {
+        height: auto !important;
+        overflow-y: visible !important;
+        display: block;
+    }
+
+    /* Ocultar la cabecera de la tabla (ya no sirve en vertical) */
+    .ag-header {
+        display: none !important;
+    }
+
+    /* Convertir cada FILA en una TARJETA */
+    .ag-row {
+        position: relative !important;
+        top: auto !important;
+        transform: none !important;
+        /* Anular posición absoluta de AG Grid */
+        display: flex !important;
+        flex-direction: column !important;
+        /* Elementos uno debajo de otro */
+        height: auto !important;
+        margin-bottom: 20px !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+        background-color: #fff !important;
+        width: 100% !important;
+        padding: 10px !important;
+    }
+
+    /* Estilo de cada CELDA (Ahora son renglones de la tarjeta) */
+    .ag-cell {
+        position: relative !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 35px;
+        /* Evitar colapso si está vacía */
+        border: none !important;
+        border-bottom: 1px solid #f8f9fa !important;
+        padding: 8px 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        /* Etiqueta izq, Valor der */
+        font-size: 14px !important;
+        /* Letra legible */
+    }
+
+    .ag-cell:last-child {
+        border-bottom: none !important;
+    }
+
+    /* Value wrapper to alignment right */
+    .ag-cell-wrapper {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        /* Push content to right */
+    }
+
+    .ag-cell-value {
+        text-align: right;
+    }
+
+    /* TRUCO: Agregar ETIQUETAS automáticas a la izquierda */
+    /* Estilo Base Unificado para "Theads Verticales" (ROJO) */
+    .ag-cell::before {
+        display: inline-block;
+        background-color: #c00000;
+        /* Color solicitado */
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        margin-right: 10px;
+        min-width: 110px;
+        /* Alineación visual */
+        text-align: center;
+        font-size: 0.85rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+    }
+
+    /* Etiquetas Específicas */
+    .ag-cell[col-id="socio"]::before {
+        content: "Socio:";
+    }
+
+    .ag-cell[col-id="fecha"]::before {
+        content: "Fecha:";
+    }
+
+    .ag-cell[col-id="turno"]::before {
+        content: "Turno:";
+    }
+
+    .ag-cell[col-id="programa"]::before {
+        content: "Programa:";
+    }
+
+    .ag-cell[col-id="entrenamiento"]::before {
+        content: "Entrenamiento:";
+    }
+
+    .ag-cell[col-id="series"]::before {
+        content: "Series:";
+    }
+
+    .ag-cell[col-id="repeticiones"]::before {
+        content: "Reps:";
+    }
+
+    .ag-cell[col-id="peso"]::before {
+        content: "Peso:";
+    }
+
+    .ag-cell[col-id="detalles"]::before {
+        content: "Detalles:";
+    }
+
+    /* Ensure Detail Button is visible/aligned */
+    .ag-cell[col-id="detalles"] {
+        justify-content: space-between !important;
+    }
+
+    .form-control,
+    .form-select,
+    .btn {
+        font-size: 14px !important;
+    }
+}

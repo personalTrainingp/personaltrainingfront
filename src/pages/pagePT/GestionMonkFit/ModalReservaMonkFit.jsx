@@ -9,11 +9,13 @@ import { PTApi } from "@/common";
 const toClienteOptions = (rows = []) =>
   rows.map((r) => ({
     value: Number(r.value),
-    label: `${String(r.label).trim()}${r.email_cli ? " - " + String(r.email_cli).trim() : ""}${
-      r.tel_cli ? " (" + String(r.tel_cli).trim() + ")" : ""
-    }`,
+    label: `${String(r.label).trim()}${r.email_cli ? " - " + String(r.email_cli).trim() : ""}${r.tel_cli ? " (" + String(r.tel_cli).trim() + ")" : ""
+      }`,
     raw: r,
   }));
+
+const defaultAdditional = { page: 1 };
+const asyncPaginateStyles = { menuPortal: (b) => ({ ...b, zIndex: 9999 }) };
 
 export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas }) {
   const [saving, setSaving] = useState(false);
@@ -29,7 +31,7 @@ export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas 
     monto_total: "",
   });
 
-  
+
   useEffect(() => {
     (async () => {
       try {
@@ -45,7 +47,7 @@ export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas 
       }
     })();
   }, []);
-  
+
   useEffect(() => {
     if (programas?.length) {
       setPgmOpts(programas);
@@ -70,7 +72,7 @@ export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas 
   useEffect(() => {
     const toLocalInput = (iso) => (iso ? new Date(iso).toISOString().slice(0, 16) : "");
     if (initial) {
-      const idInicial = initial.id_cli ?? initial.id_cliente_mf; 
+      const idInicial = initial.id_cli ?? initial.id_cliente_mf;
       setClienteSel(idInicial ? { value: Number(idInicial), label: `Cliente ${idInicial}` } : null);
       setForm({
         id_pgm: initial.id_pgm ?? "",
@@ -102,26 +104,26 @@ export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas 
       additional: { page: p + 1 },
     };
   }, []);
-const toMssqlLocal = (v) => {
-  if (!v) return null;
-  const d = (v instanceof Date) ? v : new Date(v);       
-  if (isNaN(d)) return null;
-  const pad = (n) => String(n).padStart(2, "0");
-  const y  = d.getFullYear();
-  const mo = pad(d.getMonth() + 1);
-  const da = pad(d.getDate());
-  const hh = pad(d.getHours());
-  const mm = pad(d.getMinutes());
-  const ss = pad(d.getSeconds()); 
-  return `${y}-${mo}-${da} ${hh}:${mm}:${ss}.000`;
-};
+  const toMssqlLocal = (v) => {
+    if (!v) return null;
+    const d = (v instanceof Date) ? v : new Date(v);
+    if (isNaN(d)) return null;
+    const pad = (n) => String(n).padStart(2, "0");
+    const y = d.getFullYear();
+    const mo = pad(d.getMonth() + 1);
+    const da = pad(d.getDate());
+    const hh = pad(d.getHours());
+    const mm = pad(d.getMinutes());
+    const ss = pad(d.getSeconds());
+    return `${y}-${mo}-${da} ${hh}:${mm}:${ss}.000`;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
-      const id_cli  = Number(clienteSel?.value);
-      const id_pgm  = Number(form.id_pgm);
+      const id_cli = Number(clienteSel?.value);
+      const id_pgm = Number(form.id_pgm);
       const payload = {
         id_cli,
         id_pgm,
@@ -133,7 +135,7 @@ const toMssqlLocal = (v) => {
       };
       console.log("[POST] /reserva_monk_fit payload ->", payload);
 
-      if (!id_cli || !id_pgm || !payload.fecha || !payload.monto_total ) {
+      if (!id_cli || !id_pgm || !payload.fecha || !payload.monto_total) {
         alert("Cliente, programa y fecha son obligatorios.");
         setSaving(false);
         return;
@@ -165,12 +167,12 @@ const toMssqlLocal = (v) => {
                 onChange={(opt) => setClienteSel(opt ? { value: Number(opt.value), label: String(opt.label) } : null)}
                 loadOptions={loadClientes}
                 defaultOptions // carga inicial (llama loadOptions con "")
-                additional={{ page: 1 }}
+                additional={defaultAdditional}
                 debounceTimeout={300}
                 isClearable
                 placeholder="Buscar por DNI, nombre, correo o teléfono"
                 menuPortalTarget={document.body}
-                styles={{ menuPortal: (b) => ({ ...b, zIndex: 9999 }) }}
+                styles={asyncPaginateStyles}
               />
             </Col>
 
