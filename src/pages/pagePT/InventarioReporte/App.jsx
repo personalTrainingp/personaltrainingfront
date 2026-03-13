@@ -56,6 +56,9 @@ export const App = () => {
             <TabPanel header={<h2 className='card p-4 mb-0'>PROYECTO 4</h2>}>
                 <InventarioTotalizado id_empresa={5993} label_empresa={'PROYECTO 4'}/>
             </TabPanel>
+            <TabPanel header={<h2 className='card p-4 mb-0'>PROYECTO 7</h2>}>
+                <InventarioTotalizado id_empresa={5997} label_empresa={'PROYECTO 7'}/>
+            </TabPanel>
             <TabPanel header={<h2 className='card p-4 mb-0'>AREAS COMUNES</h2>}>
                 <InventarioTotalizado id_empresa={5998} label_empresa={'AREAS COMUNES'}/>
             </TabPanel>

@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import React, { useRef, useEffect } from "react";
 import { agruparPorHorarioYMinutos, resumirConsecutivos } from "./middleware/resumirConsecutivos";
+import { useHorariosColaboradoresStore } from "./useHorariosColaboradoresStore";
 
 /**
  * ScheduleTimeline.jsx — versión simplificada y 100% visible con demoData.
@@ -36,7 +37,33 @@ function timeStrToMinutes(hms = "00:00:00") {
 function clamp(n, min, max) {
   return Math.max(min, Math.min(n, max));
 }
+function transformarDatos(data = []) {
+  const map = {};
 
+  data.forEach((item) => {
+    const { colaborador, dia, hora_inicio, hora_fin } = item;
+
+    const inicio = timeStrToMinutes(hora_inicio);
+    const fin = timeStrToMinutes(hora_fin);
+    const minutos = fin - inicio;
+
+    if (!map[colaborador]) {
+      map[colaborador] = {
+        colaborador,
+        diasLaborables: [],
+      };
+    }
+
+    map[colaborador].diasLaborables.push({
+      label: dia.toLowerCase(),
+      horario: hora_inicio,
+      minutos,
+      hex: "#2563eb",
+    });
+  });
+
+  return Object.values(map);
+}
 function RowBar({ startStr, minutes, color = "#2563eb" }) {
   const absStart = timeStrToMinutes(startStr);
   const absEnd = absStart + (minutes || 0);
@@ -164,7 +191,7 @@ function HoursHeader({ dataDias }) {
           <div
             key={i}
             style={{
-              width: 300, // 60min × 5px
+              width: 200, // 60min × 5px
               // textAlign: "center",
               fontSize: 13,
               fontWeight: 500,
@@ -345,9 +372,9 @@ function ScheduleTable({ data }) {
 
           return (
             <div key={idxPerson} >
-              <div style={{width: '100%'}} className="bg-change  text-white text-center p-2 fs-3 fw-bold">
-                {person.colaborador.split(" ")[0]}
-              </div>
+              {/* <div style={{ position: "relative", width: TIMELINE_WIDTH+200, height: 52 }} className="bg-change  text-white text-center p-2 fs-3 fw-bold">
+                {person.colaborador.split(" ")[0]}a
+              </div> */}
 
               <TableHeader
                 syncRef={headScrollRef}
@@ -379,289 +406,14 @@ function ScheduleTable({ data }) {
 
 
 export default function ViewDataHorarios({ dataRaw }) {
-  const dataTest = [
-    {
-      colaborador: "VERONICA",
-      cargo: "ESTILISTA",
-      diasLaborables: [
-        {
-          id_tipo_horario: 0,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "05:00:00.0000000",
-          minutos: 405,
-          hex: "#0000ff",
-        },
-        
-        {
-          id_tipo_horario: 0,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "13:00:00.0000000",
-          minutos: 45,
-          hex: "#0000ff",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "05:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "06:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "07:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "08:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "09:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "10:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 0,
-          label: "un sabado si, un sabado no",
-          horarios: [],
-          items: [],
-          horario: "07:00:00.0000000",
-          minutos: 225,
-          hex: "#0000ff",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "un sabado si, un sabado no",
-          horarios: [],
-          items: [],
-          horario: "07:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "un sabado si, un sabado no",
-          horarios: [],
-          items: [],
-          horario: "08:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "un sabado si, un sabado no",
-          horarios: [],
-          items: [],
-          horario: "09:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-      ],
-    },
-    {
-      colaborador: 'DEISY',
-      cargo: 'entrenadora',
-      diasLaborables: [
-        {
-          id_tipo_horario: 0,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "17:00:00.0000000",
-          minutos: 285,
-          hex: "#0000ff",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "17:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "18:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "18:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "19:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "20:45:00.0000000",
-          minutos: 15,
-          hex: "#FF0000",
-        },
-      ]
-    },
-    {
-      colaborador: 'OFELIA',
-      diasLaborables: [
-        {
-          id_tipo_horario: 0,
-          label: "lunes, miercoles y viernes",
-          horarios: [],
-          items: [],
-          horario: "06:00:00.0000000",
-          minutos: 720,
-          hex: "#0000ff",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes, miercoles y viernes",
-          horarios: [],
-          items: [],
-          horario: "13:00:00.0000000",
-          minutos: 60,
-          hex: "#FF0000",
-        },
-      ]
-    },
-    {
-      colaborador: 'MIRTHA',
-      diasLaborables: [
-        {
-          id_tipo_horario: 0,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "06:00:00.0000000",
-          minutos: 720,
-          hex: "#0000ff",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "13:00:00.0000000",
-          minutos: 60,
-          hex: "#FF0000",
-        },
-      ]
-    },
-    {
-      colaborador: 'CARLOS',
-      diasLaborables: [
-        {
-          id_tipo_horario: 0,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "06:30:00.0000000",
-          minutos: 540,
-          hex: "#0000ff",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "13:00:00.0000000",
-          minutos: 60,
-          hex: "#FF0000",
-        },
-        {
-          id_tipo_horario: 0,
-          label: "sabado",
-          horarios: [],
-          items: [],
-          horario: "07:30:00.0000000",
-          minutos: 300,
-          hex: "#0000ff",
-        },
-      ]
-    },
-    {
-      colaborador: 'MARINA',
-      diasLaborables: [
-        {
-          id_tipo_horario: 0,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "08:30:00.0000000",
-          minutos: 450,
-          hex: "#0000ff",
-        },
-        {
-          id_tipo_horario: 2,
-          label: "lunes a viernes",
-          horarios: [],
-          items: [],
-          horario: "13:00:00.0000000",
-          minutos: 60,
-          hex: "#FF0000",
-        },
-      ]
-    }
-  ];
-  console.log({dataRaw});
+  const dataT = [ 
+    {dia: 'LUNES A VIERNES', id_estabilidad: 2, hora_inicio: '07:00:00', hora_fin: '18:00:00', colaborador: 'CARLOS'}, 
+    {dia: 'SABADO', id_estabilidad: 1, hora_inicio: '07:00:00', hora_fin: '13:00:00', colaborador: 'CARLOS'}, ]
+  console.log({dataRaw: transformarDatos(dataT)});
   
   return (
     <div style={{ padding: 16, background: "#f9fafb", minHeight: "60vh" }}>
-      <ScheduleTable data={dataTest} />
+      <ScheduleTable data={transformarDatos(dataRaw)} />
     </div>
   );
 }

@@ -1,59 +1,61 @@
 import { PTApi } from '@/common';
 import { onSetDataView } from '@/store/data/dataSlice';
 import dayjs from 'dayjs';
-import React from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { agruparPorHorarioYMinutos, resumirConsecutivos } from './middleware/resumirConsecutivos';
 
+const diaConId = [
+	{ label: 'DOMINGO', value: 1692 },
+	{ label: 'SABADO', value: 1691 },
+	{ label: 'VIERNES', value: 1690 },
+	{ label: 'JUEVES', value: 1689 },
+	{ label: 'MIERCOLES', value: 1688 },
+	{ label: 'MARTES', value: 1687 },
+	{ label: 'LUNES', value: 1686 },
+];
 export const useHorariosColaboradoresStore = () => {
 	const dispatch = useDispatch();
-	const obtenerHorariosColaboradores = async (id_empresa, arrayDate) => {
+	const [dataHorarios, setdataHorarios] = useState([]);
+	const obtenerHorariosColaboradores = async () => {
 		try {
-			const { data } = await PTApi.get(
-				`/recursosHumanos/dias-laborables/${id_empresa}/${arrayDate}`,
-				{
-					params: {
-						arrayDate: [
-							dayjs.utc(arrayDate[0]).format('YYYY-MM-DD'),
-							dayjs.utc(arrayDate[1]).format('YYYY-MM-DD'),
-						],
-					},
-				}
-			);
-			const dataAlter = data.diasLaborablesEnContrato
-				.map((e) => {
-					const diasLaborables = e?._empl[0]?.contrato_empl.map((r) => {
+			const { data } = await PTApi.get(`/contrato-empleado/semana/598`);
+			const dataColaboradorMAP = data.empleados?.map((m) => {
+				return {
+					colaborador: `${m.nombre_empl} ${m.apPaterno_empl}`,
+					contratos: m._empl.map((e) => {
 						return {
-							fecha: dayjs.utc(r.fecha).format('YYYY-MM-DD 05:00:00.0000000 +00:00'),
-							horario: dayjs.utc(r.hora_inicio).format('HH:mm:ss.0000000'),
-							id_tipo_horario: r.id_tipo_horario,
-							minutos: r.minutos,
-							hi: r.hora_inicio,
-							hex: r.hex,
+							fecha_fin: e.fecha_fin,
+							fecha_inicio: e.fecha_inicio,
+							estado: e.estado,
+							semana: e.contrato_semana.map((s) => {
+								return {
+									dia: diaConId.find((d) => d.value === s?.id_dia)?.label,
+									hora_inicio: s.hora_inicio,
+									hora_fin: s.hora_fin,
+									colaborador: `${m.nombre_empl} ${m.apPaterno_empl}`,
+								};
+							}),
 						};
-					});
-					return {
-						colaborador: e?.nombre_empl,
-						diasLaborables: diasLaborables,
-					};
-				})
-				.map((m) => {
-					return {
-						...m,
-						diasLaborables: agruparPorHorarioYMinutos(
-							resumirConsecutivos(m.diasLaborables)
-						),
-					};
-				});
-
-			console.log({ dataAlter1: dataAlter, data });
-
-			dispatch(onSetDataView(dataAlter));
+					}),
+				};
+			});
+			console.log({ data, fn: 'obtenerHorariosColaboradores', dataColaboradorMAP });
+			setdataHorarios(dataColaboradorMAP);
+			dispatch(onSetDataView(dataColaboradorMAP));
 		} catch (error) {
 			console.log(error);
 		}
 	};
+	const obtenerColaboradoresActivos = async (id_empresa) => {
+		try {
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return {
 		obtenerHorariosColaboradores,
+		obtenerColaboradoresActivos,
+		dataHorarios,
 	};
 };
