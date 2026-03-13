@@ -11,7 +11,8 @@ import { PerfilPrograma } from '@/pages/pagePT/GestProgramas/PerfilPrograma';
 import CrearCitasNutricion from '@/pages/pagePT/GestNutricion';
 // import {ReservaMonkFitPage} from "../pages/pagePT/GestionMonkFit/app.jsx";
 
-
+const GestionEntrenamiento = lazy(() => import('../pages/pagePT/GestEntrenamientos/GestEntrenamientos.jsx'))
+const HistorialEntrenamientos = lazy(() => import('../pages/pagePT/GestEntrenamientos/HistorialEntrenamientos'));
 
 const ResumenMembresiasPage = lazy(() =>
 	import('../pages/pagePT/DetalleMembresias/ResumenMembresiasPage.jsx')
@@ -562,6 +563,15 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/citas') &&
 								<Route path='history-citas-nutricion' element={<HistorialCitasNutricionista />} />
 							}
+							{
+								findSectionDeep('/gestion-entrenamientos') &&
+								<Route path='gestion-entrenamientos' element={<GestionEntrenamiento />} />
+							}
+							{
+								findSectionDeep('/historial-entrenamientos') &&
+								<Route path='historial-entrenamientos' element={<HistorialEntrenamientos />} />
+							}
+
 							{
 								sections.find(e => e.url === '/tipo-cambio') &&
 								<Route path='tipo-cambio' element={<GestionTipoCambio />} />

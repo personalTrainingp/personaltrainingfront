@@ -1,0 +1,351 @@
+/* Estilos Base (Escritorio) */
+
+.ag-theme-alpine {
+
+    --ag-borders: none;
+
+    --ag-row-border-style: solid;
+
+    --ag-row-border-width: 1px;
+
+    --ag-row-border-color: #f0f0f0;
+
+    --ag-header-column-separator-display: none;
+
+}
+
+/* Estilos de Cabecera Personalizados (Rojo Tono Solicitado) */
+.ag-header,
+.ag-header-row,
+.ag-header-cell {
+    background-color: #c00000 !important;
+    color: white !important;
+}
+
+.ag-header-cell-label {
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.ag-header-icon {
+    color: white !important;
+}
+
+@media (max-width: 768px) {
+    /* 1. Arreglar los Botones "Agregar" y "Guardar" */
+
+    .d-flex.justify-content-end.gap-2 {
+        flex-direction: column;
+        /* Ponerlos uno debajo del otro */
+        gap: 10px !important;
+        align-items: center;
+        /* Centrar botones en lugar de estirar */
+        /* Que ocupen todo el ancho */
+        margin-bottom: 1.5rem !important;
+    }
+
+    .d-flex.justify-content-end.gap-2 button {
+        width: auto !important;
+        /* Dejar que el botón tenga su ancho natural */
+        min-width: 200px;
+        /* Un tamaño mínimo decente */
+        max-width: 100%;
+    }
+
+
+
+    /* 2. Arreglar el acordeón "Resultados y Progreso" */
+
+    .accordion-button {
+
+        padding: 0.75rem 0.5rem;
+
+        /* Reducir relleno interno */
+
+        font-size: 0.9rem;
+
+        /* Letra un poco más pequeña */
+
+        display: flex;
+
+        flex-wrap: wrap;
+
+        /* Permitir que el contenido baje si no cabe */
+
+        gap: 5px;
+
+    }
+
+
+
+    .accordion-button .badge {
+
+        margin-left: auto;
+
+        /* Empujar el badge a la derecha */
+
+    }
+
+
+
+    /* 3. VISTA DE TARJETAS (Card View) para la Tabla */
+
+    /* FORCE GRID TO FIT MOBILE WIDTH */
+    .ag-root-wrapper,
+    .ag-root-wrapper-body,
+    .ag-root,
+    .ag-body-viewport,
+    .ag-center-cols-viewport,
+    .ag-center-cols-container,
+    .ag-body-horizontal-scroll-viewport {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        /* Allow height to grow */
+        overflow-y: visible !important;
+        /* Let page scroll */
+    }
+
+    /* 2. El contenedor maneja el scroll en móvil (NO, scroll de página) */
+    .grid-container {
+        height: auto !important;
+        overflow-y: visible !important;
+        display: block;
+    }
+
+    /* Ocultar la cabecera de la tabla (ya no sirve en vertical) */
+    .ag-header {
+        display: none !important;
+    }
+
+    /* Convertir cada FILA en una TARJETA */
+    .ag-row {
+        position: relative !important;
+        top: auto !important;
+        transform: none !important;
+        /* Anular posición absoluta de AG Grid */
+        display: flex !important;
+        flex-direction: column !important;
+        /* Elementos uno debajo de otro */
+        height: auto !important;
+        margin-bottom: 20px !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+        background-color: #fff !important;
+        width: 100% !important;
+        padding: 10px !important;
+        overflow: visible !important;
+    }
+
+    /* Estilo de cada CELDA (Ahora son renglones de la tarjeta) */
+    .ag-cell {
+        position: relative !important;
+        left: 0 !important;
+        transform: none !important;
+        /* VITAL: Quita el empuje horizontal de AG Grid */
+        width: 100% !important;
+        height: auto !important;
+        border: none !important;
+        border-bottom: 1px solid #f8f9fa !important;
+        padding: 8px 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        font-size: 14px !important;
+        min-height: 40px !important;
+        background-color: #fff !important;
+        overflow: visible !important;
+    }
+
+    /* Regla específica para celdas vacías */
+    .ag-cell:empty {
+        display: flex !important;
+        min-height: 40px !important;
+    }
+
+
+
+
+    .ag-cell:last-child {
+
+        border-bottom: none !important;
+
+    }
+
+
+
+    /* TRUCO: Agregar ETIQUETAS automáticas a la izquierda (Vertical Headers) */
+    /* Estilo Base Unificado para "Theads Verticales" */
+    .ag-cell::before {
+        display: inline-block;
+        background-color: #c00000;
+        /* Color solicitado */
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        margin-right: 10px;
+        min-width: 90px;
+        /* Alineación visual */
+        text-align: center;
+        font-size: 0.85rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Etiquetas Específicas */
+    .ag-cell[col-id="fecha"]::before {
+        content: "Fecha:";
+    }
+
+    .ag-cell[col-id="turno"]::before {
+        content: "Turno:";
+    }
+
+    .ag-cell[col-id="programa"]::before {
+        content: "Programa:";
+    }
+
+    .ag-cell[col-id="tipo_temp"]::before {
+        content: "Grupo Muscular:";
+    }
+
+
+    .ag-cell[col-id="ejercicio_select"]::before {
+        content: "Ejercicio:";
+    }
+
+    .ag-cell[col-id="entrenamiento_nombre"]::before {
+        content: "Entrenamiento:";
+    }
+
+    .ag-cell[col-id="series"]::before {
+        content: "Series:";
+    }
+
+    .ag-cell[col-id="repeticiones"]::before {
+        content: "Repeticiones:";
+    }
+
+    .ag-cell[col-id="peso"]::before {
+        content: "Peso:";
+    }
+
+    .ag-cell[col-id="video"]::before {
+        content: "Video:";
+    }
+
+    .ag-cell[col-id="comentario"]::before {
+        content: "Comentario:";
+    }
+
+    .form-control,
+
+    .form-select,
+
+    .btn {
+
+        font-size: 14px !important;
+
+    }
+
+    /* FIX: Force SweetAlert centering on mobile - Grid Approach */
+    /* --- DENTRO DE TU @MEDIA (max-width: 768px) --- */
+
+    /* 1. Contenedor: Forzar Flexbox centrado y limpiar Grid */
+    /* 1. Contenedor: Ocupar toda la pantalla y centrar contenido */
+    .swal2-container {
+        display: flex !important;
+        position: fixed !important;
+        inset: 0 !important;
+        /* Equivale a top:0, left:0, right:0, bottom:0 */
+        align-items: center !important;
+        /* Centrado Vertical */
+        justify-content: center !important;
+        /* Centrado Horizontal */
+        padding: 1rem !important;
+        z-index: 99999 !important;
+        height: 100% !important;
+        /* Evita bugs con la barra de navegación móvil */
+    }
+
+    /* 2. Tarjeta del modal: Anular el JS de SweetAlert2 */
+    .swal2-popup {
+        position: relative !important;
+        transform: none !important;
+        /* Anula el translateX/Y inyectado por JS */
+        margin: 0 !important;
+        /* Quita márgenes automáticos conflictivos */
+        top: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        max-width: 380px !important;
+        /* Tamaño ideal para no tocar los bordes */
+        display: flex !important;
+        flex-direction: column !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 3. Ajuste de textos y botones para que no desborden */
+    .swal2-title {
+        font-size: 1.2rem !important;
+    }
+
+    .swal2-html-container,
+    .swal2-content {
+        font-size: 0.95rem !important;
+        overflow-wrap: break-word !important;
+    }
+
+    .swal2-actions {
+        width: 100% !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px !important;
+        margin-top: 1.5rem !important;
+    }
+
+    .swal2-actions button {
+        margin: 0 !important;
+        /* Limpiar márgenes por defecto de swal */
+        flex: 1 1 auto;
+        /* Permite que los botones se adapten al espacio */
+        min-width: 120px;
+    }
+
+    .ag-cell[col-id="acciones"] {
+        display: flex !important;
+        justify-content: space-between !important;
+        /* Separa etiqueta de botones */
+        align-items: center !important;
+        width: 100% !important;
+        padding-right: 15px !important;
+        order: 99 !important;
+        /* Force to the bottom of the card */
+    }
+
+    /* Etiqueta Roja a la izquierda */
+    .ag-cell[col-id="acciones"]::before {
+        content: "Acciones:";
+        background-color: #c00000 !important;
+        /* Rojo igual al resto */
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 0.85rem;
+        margin-right: auto;
+        /* Empuja los botones a la derecha */
+    }
+
+    /* Contenedor de botones a la derecha */
+    .ag-cell[col-id="acciones"]>div {
+        justify-content: flex-end !important;
+        width: auto !important;
+        gap: 8px !important;
+    }
+
+
+}

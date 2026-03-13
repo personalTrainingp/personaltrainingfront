@@ -160,7 +160,7 @@ const AppMenu = ({ menuItems }) => {
     activeMenu();
   }, [activeMenu]);
 
-	const { colorEmpresa } = useSelector(e=>e.ui)
+  const { colorEmpresa } = useSelector(e => e.ui)
   return (
     <>
       <div className='d-flex justify-content-center flex-column ml-3 mb-3'>
@@ -168,33 +168,33 @@ const AppMenu = ({ menuItems }) => {
           módulo
         </strong>
         <div>
-          <ModuloDropdown colorEmpresa={colorEmpresa}/>
+          <ModuloDropdown colorEmpresa={colorEmpresa} />
         </div>
       </div>
-      <ul className="side-nav" ref={menuRef} id="main-side-menu">
+      <ul className="side-nav" style={{ paddingBottom: '100px' }} ref={menuRef} id="main-side-menu">
         {(menuItems || []).map((item, index) => {
           return (
             <React.Fragment key={index.toString()}>
               {
-              (
-                <React.Fragment>
-                  {item.children ? (
-                    <MenuItemWithChildren
-                      item={item}
-                      toggleMenu={toggleMenu}
-                      subMenuClassNames="side-nav-second-level"
-                      activeMenuItems={activeMenuItems}
-                      linkClassName="side-nav-link"
-                    />
-                  ) : (
-                    <MenuItem
-                      item={item}
-                      linkClassName="side-nav-link"
-                      className={`side-nav-item ${activeMenuItems.includes(item.key) ? 'menuitem-active' : ''}`}
-                    />
-                  )}
-                </React.Fragment>
-              )}
+                (
+                  <React.Fragment>
+                    {item.children ? (
+                      <MenuItemWithChildren
+                        item={item}
+                        toggleMenu={toggleMenu}
+                        subMenuClassNames="side-nav-second-level"
+                        activeMenuItems={activeMenuItems}
+                        linkClassName="side-nav-link"
+                      />
+                    ) : (
+                      <MenuItem
+                        item={item}
+                        linkClassName="side-nav-link"
+                        className={`side-nav-item ${activeMenuItems.includes(item.key) ? 'menuitem-active' : ''}`}
+                      />
+                    )}
+                  </React.Fragment>
+                )}
             </React.Fragment>
           );
         })}
