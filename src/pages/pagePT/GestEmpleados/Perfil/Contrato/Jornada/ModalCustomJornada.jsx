@@ -366,11 +366,8 @@ const ModalJornada = ({
 
 // ---------- Panel derecho: items pintados ----------
 const PanelItems = ({ items, onToggleDetail, onDelete, id_contrato }) => {
-  const { postTipoContratoxDia } = useContratoColaboradorStore()
   const onClickPostItems = (it)=>{
     console.log({it});
-    
-      // postTipoContratoxDia(dataFlatMapItems(it, id_contrato))
   }
   return (
     <div style={{ borderLeft: '1px solid #eee', paddingLeft: 12 }}>

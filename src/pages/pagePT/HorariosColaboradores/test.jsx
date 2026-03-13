@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import React, { useRef, useEffect } from "react";
-import { agruparPorHorarioYMinutos, resumirConsecutivos } from "./middleware/resumirConsecutivos";
-
+im
 /**
  * ScheduleTimeline.jsx — versión simplificada y 100% visible con demoData.
  *
@@ -336,7 +335,7 @@ function ScheduleTable({ data }) {
         borderRadius: 12,
         boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
         background: "#fff",
-        overflow: "auto",
+        overflow: "hidden",
       }}
     >
       <div>
@@ -344,8 +343,8 @@ function ScheduleTable({ data }) {
           const filasPorLabel = agruparPorLabel(person.diasLaborables);
 
           return (
-            <div key={idxPerson} >
-              <div style={{width: '100%'}} className="bg-change  text-white text-center p-2 fs-3 fw-bold">
+            <div key={idxPerson}>
+              <div className="bg-change text-white text-center p-2 fs-3 fw-bold">
                 {person.colaborador.split(" ")[0]}
               </div>
 
@@ -360,6 +359,7 @@ function ScheduleTable({ data }) {
                   ref={(el) =>
                     (bodyScrollRefs.current[`${idxPerson}-${idxFila}`] = el)
                   }
+                  style={{ overflowX: "auto" }}
                 >
                   <Row
                     colaborador={person.colaborador}

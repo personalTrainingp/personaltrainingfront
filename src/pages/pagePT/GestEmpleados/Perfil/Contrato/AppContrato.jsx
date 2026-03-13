@@ -3,8 +3,11 @@ import { DataTableContratos } from './DataTableContratos'
 import { InputButton } from '@/components/InputText'
 import { ModalCustomContrato } from './ModalCustomContrato'
 import { ModalCustomCalendarioJornadas } from './ModalCustomCalendarioJornadas'
+import { useSelector } from 'react-redux'
 
 export const App = ({id_empleado}) => {
+  const { dataView } = useSelector(e=>e.CONTRATOEMP)
+
     const [isOpenModalCustomContrato, setisOpenModalCustomContrato] = useState({isOpen: false, id: 0})
     const [isOpenModalCustomCalendarioJornadas, setisOpenModalCustomCalendarioJornadas] = useState({isOpen: false, id: 0, id_contrato: 0, fechaInicio: new Date(), fechaFin: new Date()})
   const onOpenModalCustomContrato = (id)=>{
@@ -24,8 +27,13 @@ export const App = ({id_empleado}) => {
 
   return (
     <div>
+      {JSON.stringify(dataView, null, 2)}
       <div className='mb-2'>
-        <InputButton label='AGREGAR CONTRATO' onClick={()=>onOpenModalCustomContrato(0)}/>
+        {
+          dataView.find(d=>d.estado==true) ? (<></>): (
+            <InputButton label='AGREGAR CONTRATO' onClick={()=>onOpenModalCustomContrato(0)}/>
+          )
+        }
       </div>
       <DataTableContratos
         id_empleado={id_empleado}

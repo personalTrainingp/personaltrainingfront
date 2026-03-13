@@ -22,9 +22,16 @@ export const useContratoColaboradorStore = () => {
 			console.log(error);
 		}
 	};
-	const postTipoContratoxDia = async (formArray) => {
+	const postSemanasxContrato = async (formArray, id_contrato) => {
 		try {
-			const { data } = await PTApi.post(`/jornada/diaxcontrato`, formArray);
+			const semanasJornadas = formArray.map((f) => {
+				return {
+					...f,
+					id_contrato,
+				};
+			});
+
+			const { data } = await PTApi.post(`/contrato-empleado/semana`, semanasJornadas);
 		} catch (error) {
 			console.log(error);
 		}
@@ -41,7 +48,7 @@ export const useContratoColaboradorStore = () => {
 	return {
 		postContratoColaborador,
 		obtenerContratosxColaborador,
-		postTipoContratoxDia,
+		postSemanasxContrato,
 		obtenerDiasLaborablesxContrato,
 	};
 };

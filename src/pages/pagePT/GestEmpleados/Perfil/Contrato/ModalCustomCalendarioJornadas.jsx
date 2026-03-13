@@ -4,14 +4,16 @@ import CalendariosContrato from './CalendariosContrato'
 import { InputButton, InputDate, InputSelect } from '@/components/InputText'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { TabPanel, TabView } from 'primereact/tabview'
+import { useContratoColaboradorStore } from './useContratoColaboradorStore'
 
 export const ModalCustomCalendarioJornadas = ({
-  idContrato = 0,
+  idContrato = 40,
   show = false,
   onHide,
   fechaInicio,
   fechaFin
 }) => {
+    const { postSemanasxContrato } = useContratoColaboradorStore()
     const { obtenerParametroPorEntidadyGrupo:obtenerNombresDias, DataGeneral:dataNombresDias } = useTerminoStore()
     const { obtenerParametroPorEntidadyGrupo:obtenerEstabilidades, DataGeneral:dataEstabilidades } = useTerminoStore()
     useEffect(() => {
@@ -21,6 +23,7 @@ export const ModalCustomCalendarioJornadas = ({
     
   const [jornadas, setJornadas] = useState([
     {
+      id_contrato: 0,
       id_dia: '',
       id_estabilidad: '',
       hora_inicio: '',
@@ -46,14 +49,13 @@ export const ModalCustomCalendarioJornadas = ({
     setJornadas(copy)
   }
   const onSubmit = ()=>{
-    console.log({jornadas});
-    
+    postSemanasxContrato(jornadas, idContrato)
   }
   return (
     <Modal size='xl' show={show} onHide={onHide}>
       <Modal.Header>
         <Modal.Title>
-          AGREGAR JORNADAS
+          AGREGAR JORNADAS {idContrato}
         </Modal.Title>
       </Modal.Header>
 

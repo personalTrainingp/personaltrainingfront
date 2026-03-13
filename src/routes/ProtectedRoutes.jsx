@@ -104,6 +104,7 @@ const ResumenGerencialPorReinscripcionesxDia = lazy(() => import('../pages/pageP
 const InformeEjecutivoOficial = lazy(() => import('../pages/pagePT/reportes/resumenEjecutivoOficial/Index.jsx'))
 const FlujoCajaBalanceCuentas = lazy(() => import('../pages/pagePT/FlujoCuentasBalance'))
 const GestionTc = lazy(() => import('../pages/pagePT/GestionTc'))
+const GestionLead = lazy(() => import('../pages/pagePT/GestionLead/Index.jsx'))
 const SeguimientoOficial = lazy(() => import('../pages/pagePT/SeguimientoOficial/Index.jsx'))
 /**
  * routes import
@@ -445,6 +446,10 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/movimiento') &&
 								<Route path='gestion-ingresos' element={<GestionAporte />} />
+							}
+							{
+								sections.find(e => e.url === '/gestion-lead') &&
+								<Route path='gestion-lead' element={<GestionLead />} />
 							}
 							{
 								sections.find(e => e.url === '/colaborador') &&
