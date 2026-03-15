@@ -1,4 +1,5 @@
 import { PTApi } from '@/common';
+import { DateMask, DateMaskStr } from '@/components/CurrencyMask';
 import { onSetDataView } from '@/store/data/dataSlice';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -19,6 +20,8 @@ export const useHorariosColaboradoresStore = () => {
 	const obtenerHorariosColaboradores = async () => {
 		try {
 			const { data } = await PTApi.get(`/contrato-empleado/semana/598`);
+			console.log({ data });
+
 			const dataColaboradorMAP = data.empleados?.map((m) => {
 				return {
 					colaborador: `${m.nombre_empl} ${m.apPaterno_empl}`,
@@ -30,8 +33,8 @@ export const useHorariosColaboradoresStore = () => {
 							semana: e.contrato_semana.map((s) => {
 								return {
 									dia: diaConId.find((d) => d.value === s?.id_dia)?.label,
-									hora_inicio: s.hora_inicio,
-									hora_fin: s.hora_fin,
+									hora_inicio: DateMaskStr(s.hora_inicio, 'HH:mm:ss'),
+									hora_fin: DateMaskStr(s.hora_fin, 'HH:mm:ss'),
 									colaborador: `${m.nombre_empl} ${m.apPaterno_empl}`,
 								};
 							}),

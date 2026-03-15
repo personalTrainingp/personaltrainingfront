@@ -2,8 +2,6 @@ import React, { useEffect } from 'react'
 import HorarioMensual from './ViewDataHorarios';
 import { useHorariosColaboradoresStore } from './useHorariosColaboradoresStore';
 import { PageBreadcrumb } from '@/components';
-import { FechaRange } from '@/components/RangeCalendars/FechaRange';
-import { useSelector } from 'react-redux';
 
 const dataRaw = [
 {
@@ -354,29 +352,15 @@ export const App = () => {
   useEffect(() => {
     obtenerHorariosColaboradores()
   }, [])
-  const colaboradoresConContratoVigentes = [
-    {
-      colaborador: 'CARLOS',
-      contratos: [
-        {id: 1, estado: true, semana: [ 
-          {dia: 'LUNES A JUEVES', id_estabilidad: 2, hora_inicio: '07:00:00', hora_fin: '18:00:00', colaborador: 'CARLOS'}, 
-          {dia: 'LUNES A JUEVES', id_estabilidad: 2, hora_inicio: '06:00:00', hora_fin: '06:30:00', colaborador: 'CARLOS'}, 
-          {dia: 'SABADO', id_estabilidad: 1, hora_inicio: '07:00:00', hora_fin: '13:00:00', colaborador: 'CARLOS'}, 
-          ]
-        }
-      ]
-    }
-  ]
-  console.log({dataHorarios});
-  
   return (
     <>
         <PageBreadcrumb title={'Horarios colaboradores'}/>
         {
           dataHorarios.map(c=>{
+            
             return (
               <>
-                <div className='bg-change text-white p-1'>
+                <div className='bg-change text-white p-1 text-center fs-2'>
                   {c.colaborador}
                 </div>
                 <HorarioMensual 

@@ -12,7 +12,7 @@ import { useHorariosColaboradoresStore } from "./useHorariosColaboradoresStore";
  */
 
 // Escala base: 1 minuto = 1px
-const PX_PER_MIN = 2.2;
+const PX_PER_MIN = 2.1;
 
 // Nuevo ancho total (de 03:00 → 23:59)
 const START_MIN = 5 * 60; // 180
@@ -190,6 +190,7 @@ function HoursHeader({ dataDias }) {
         {labels.map((txt, i) => (
           <div
             key={i}
+            className="border-3"
             style={{
               width: 200, // 60min × 5px
               // textAlign: "center",

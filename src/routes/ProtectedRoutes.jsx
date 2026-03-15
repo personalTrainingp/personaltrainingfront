@@ -106,6 +106,7 @@ const InformeEjecutivoOficial = lazy(() => import('../pages/pagePT/reportes/resu
 const FlujoCajaBalanceCuentas = lazy(() => import('../pages/pagePT/FlujoCuentasBalance'))
 const GestionTc = lazy(() => import('../pages/pagePT/GestionTc'))
 const GestionLead = lazy(() => import('../pages/pagePT/GestionLead/Index.jsx'))
+const ReportePlanilla = lazy(() => import('../pages/pagePT/ReportePlanilla/Index.jsx'))
 const SeguimientoOficial = lazy(() => import('../pages/pagePT/SeguimientoOficial/Index.jsx'))
 /**
  * routes import
@@ -148,6 +149,10 @@ export default function ProtectedRoutes() {
 				status === 'authenticated' ? (
 					<>
 						<Route path="/*" element={<Layout />}>
+							{
+								sections.find(e => e.url === '/reporte-planilla') &&
+								<Route path='reporte-planilla' element={<ReportePlanilla />} />
+							}
 							{
 								sections.find(e => e.url === '/config') &&
 								<Route path='gestion-tc' element={<GestionTc />} />
@@ -340,7 +345,7 @@ export default function ProtectedRoutes() {
 								<Route path='reporte/gestion-comercial' element={<ReporteDeGestionComercial />} />
 							}
 							{
-								sections.find(e => e.url === '/totalizado-inventario') &&
+								sections.find(e => e.url === '/inventario') &&
 								<Route path='totalizado-inventario' element={<InventarioTotalizado />} />
 							}
 							{
