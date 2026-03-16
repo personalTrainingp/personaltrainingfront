@@ -44,10 +44,10 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                 )
               })
             }
-            <th className='text-center ' style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
+            <th className='text-center ' style={{width: '180px'}}>TOTAL <br/> ANUAL</th>
             <th className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
             <th className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
-            <th className='text-center' style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
+            <th className='text-center' style={{width: '160px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
           </tr>
         </thead>
         <tbody>
@@ -103,8 +103,8 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                   })
                 }
                 <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)}/></td>
-                <td>{c.data.length}</td>
-                <td>{(((c.data?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
+                <td className='fs-3'>{c.data.length}</td>
+                <td className='fs-3'>{(((c.data?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
                 <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(2026, dataAlter)}/></td>
               </tr>
             )
@@ -145,9 +145,9 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
               <NumberFormatMoney amount={montoAcumuladoDeMontoTotal}/>
               
             </td>
-            <td>{montoAcumuladoDecantidadTotal}</td>
+            <td className='fs-3'>{montoAcumuladoDecantidadTotal}</td>
             <td>{''}</td>
-            <td><NumberFormatMoney amount={montoAcumuladoDeMontoTotal/montoAcumuladoDecantidadTotal}/></td>
+            <td ><NumberFormatMoney amount={montoAcumuladoDeMontoTotal/montoAcumuladoDecantidadTotal}/></td>
           </tr>
         </tbody>
       </Table>
