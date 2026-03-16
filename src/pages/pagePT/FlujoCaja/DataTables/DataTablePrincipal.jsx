@@ -159,5 +159,9 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
 
 
 function dataTotalFormular(anio=2024, data=[]) {
-	return anio===2024?data.filter(f=>f.data?.length !== 0).length:12
+  const hoy = new Date()
+  const mesActual = hoy.getMonth()+1
+  const anioActual = hoy.getFullYear()
+
+	return anio===2024?data.filter(f=>f.data?.length !== 0).length:anioActual===anio ? mesActual:12
 }
