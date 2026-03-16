@@ -34,6 +34,7 @@ const buildSearchText = (row) => {
 export const DataTableCR = ({
   columns = [],
   data = [],
+  bgHeader='bg-change',
   defaultPageSize = 10,
   pageSizeOptions = [5, 10, 20, 50, 100],
   searchable = true,
@@ -638,6 +639,7 @@ const filtered = useMemo(() => {
         style={{
           backgroundColor: stickyHeader ? 'var(--dtrb-header-bg, #fff)' : '#E9ECF1',
         }}
+        
       >
         <tr>
           {selectableRows && (
@@ -821,6 +823,7 @@ const filtered = useMemo(() => {
                 key={col.id}
                 data-col-id={col.id}
                 onClick={() => onSortClick(col)}
+                 className={`${bgHeader} text-white`}
                 style={{
                   cursor: col.sortable ? 'pointer' : 'default',
                   width: appliedWidth,

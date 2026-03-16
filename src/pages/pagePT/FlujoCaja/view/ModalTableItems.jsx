@@ -3,7 +3,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React from 'react'
 import { Modal, Table } from 'react-bootstrap'
 
-export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom}) => {
+export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgHeader}) => {
     const columns = [
         {id: 0, header: '', render: (row)=>{
             return (
@@ -87,6 +87,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom})
                 data={items}
                 responsive
                 stickyHeight={'80vh'}
+                bgHeader={bgHeader}
                 stickyHeader
             />
         </Modal.Body>

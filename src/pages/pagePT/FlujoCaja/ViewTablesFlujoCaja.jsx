@@ -82,7 +82,10 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
                 anio={[arrayFecha[0], arrayFecha[1]]}
                 fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))} />
         </div>
-            <ModalTableItems show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} onOpenModalCustom={onOpenModalCustomGasto}/>
+            <ModalTableItems 
+                bgHeader={classNameEmpresa}
+            
+            show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} onOpenModalCustom={onOpenModalCustomGasto}/>
             <ModalCustomGasto id={isOpenModalCustomGasto.id} id_enterprice={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
     </div>
   )
