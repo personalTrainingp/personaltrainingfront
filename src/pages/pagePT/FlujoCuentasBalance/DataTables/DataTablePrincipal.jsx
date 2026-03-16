@@ -64,7 +64,6 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                       const sumaCantidadMensual = itemsDelMesFiltrado1423?.length
                       const sumaMontoMensual1424 = FUNMoneyFormatter(itemsDelMesFiltrado1424?.reduce((total, im)=>total+im?.monto, 0))
                       const sumaCantidadMensual1424 = itemsDelMesFiltrado1424?.length
-                      console.log({f, itemsDelMesFiltrado1423, itemsDelMesFiltrado1424, tt: 123});
                     
                     return (
                       <React.Fragment key={`${i}`}>

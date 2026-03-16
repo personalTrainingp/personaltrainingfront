@@ -28,13 +28,12 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
   const montoAcumuladoDeMontoTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaMontos, 0)
   const montoAcumuladoDecantidadTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaCantidad, 0)
   const dataFilter = dataAlter.filter(f=>f.data?.length !== 0).length
-  console.log({dataAlter, conceptos, dataFilter});
   return (
     <>
       <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
         <thead>
           <tr>
-            <th style={{width: '280px'}} className={`fs-3 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black`}>{index}. {nombreGrupo}</th>
+            <th style={{width: '400px'}} className={` text-break fs-3 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black `}>{index}. {nombreGrupo}</th>
             {
               dataAlter.map(f=>{
                 return (
@@ -45,7 +44,7 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                 )
               })
             }
-            <th className='text-center' style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
+            <th className='text-center ' style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
             <th className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
             <th className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
             <th className='text-center' style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
