@@ -4,7 +4,6 @@ import React from 'react'
 import { Modal, Table } from 'react-bootstrap'
 
 export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom}) => {
-    console.log({items});
     const columns = [
         {id: 0, header: '', render: (row)=>{
             return (
@@ -86,6 +85,9 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom})
             <DataTableCR
                 columns={columns}
                 data={items}
+                responsive
+                stickyHeight={'80vh'}
+                stickyHeader
             />
         </Modal.Body>
     </Modal>
