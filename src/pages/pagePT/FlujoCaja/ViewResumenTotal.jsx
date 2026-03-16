@@ -63,7 +63,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             </thead>
             <tbody>
               <tr>
-                <th className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice}`}>INGRESOS</th>
+                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>INGRESOS</th>
                 {
                   dataAlter.map(e=>{
                     return (

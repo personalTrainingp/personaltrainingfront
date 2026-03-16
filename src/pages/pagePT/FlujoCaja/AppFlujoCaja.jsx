@@ -22,7 +22,7 @@ export const AppFlujoCaja = () => {
               <ViewTablesFlujoCaja arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </TabPanel>
             <TabPanel header={'RESUMEN GENERAL'}>
-              <TablesResumenTotal classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={800}/>
+              <TablesResumenTotal classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </TabPanel>
           </TabView>
         }

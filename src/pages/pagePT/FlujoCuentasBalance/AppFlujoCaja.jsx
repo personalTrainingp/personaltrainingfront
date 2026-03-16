@@ -1,7 +1,7 @@
 import { TabPanel, TabView } from 'primereact/tabview'
 import React from 'react'
 import { ViewTablesFlujoCaja } from './ViewTablesFlujoCaja'
-// import { TablesResumenTotal } from './view/TablesResumenTotal'
+import { TablesResumenTotal } from './view/TablesResumenTotal'
 import { ColorEmpresa } from '@/components/ColorEmpresa'
 import { PageBreadcrumb } from '@/components'
 

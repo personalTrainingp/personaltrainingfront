@@ -10,7 +10,6 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, arrayFecha=[], i
         obtenerEgresosxFecha(id_empresa, arrayFecha)
         obtenerIngresosxFecha(id_empresa, arrayFecha)
     }, [])
-    console.log({dataIngresosxFecha, dataGastosxFecha});
     const onOpenModalTableItems = (data)=>{
         setdata({isOpen: true, items: data, header: ''})
     }

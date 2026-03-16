@@ -45,25 +45,25 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
           <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
             <thead>
               <tr>
-                <td style={{width: '280px'}} className={`border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{'RESULTADO ANUAL'}</td>
+                <td style={{width: '400px'}} className={`sticky-td- border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{'RESULTADO ANUAL'}</td>
                 {
                   dataAlter.map(f=>{
                     return (
                       <React.Fragment key={`${f.mesStr}`}>
-                      <th className={`text-center ${bgTotal}`} style={{width: '240px'}}>{f.mesStr}</th>
+                      <td className={`text-center ${bgTotal}`} style={{width: '240px'}}>{f.mesStr}</td>
                       </React.Fragment>
                     )
                   })
                 }
-                <th className={'text-center'} style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
-                <th className={'text-center'} style={{width: '120px'}}>MOV. <br/> ANUAL</th>
-                <th className={'text-center'} style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
-                <th className={'text-center'} style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
+                <td className='text-center' style={{width: '120px'}}>TOTAL <br/> ANUAL</td>
+                <td className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</td>
+                <td className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</td>
+                <td className='text-center' style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</td>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>INGRESOS</td>
+                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>INGRESOS</th>
                 {
                   dataAlter.map(e=>{
                     return (
@@ -78,7 +78,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 <td>ss</td>
               </tr>
               <tr>
-                <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>EGRESOS</td>
+                <th className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice}`}>EGRESOS</th>
               {
                 dataAlter.map(e=>{
                   return (
@@ -90,7 +90,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 }
               </tr>
               <tr>
-                <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>UTILIDAD BRUTA</td>
+                <th className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice}`}>UTILIDAD BRUTA</th>
               {
                 dataAlter.map(e=>{
                   return (
@@ -102,8 +102,8 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 }
               </tr>
               <tr>
-                <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>ING. EXCEPCIONALES</td>
-              {
+                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>ING. EXTRAORDINARIOS</th>
+                {
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
@@ -114,7 +114,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 }
               </tr>
               <tr>
-                <td className={`sticky-td border-left-10 border-right-10 ${bgTotal}`}>UTILIDAD NETA</td>
+                <th className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice}`}>UTILIDAD NETA</th>
               {
                 dataAlter.map(e=>{
                   return (
