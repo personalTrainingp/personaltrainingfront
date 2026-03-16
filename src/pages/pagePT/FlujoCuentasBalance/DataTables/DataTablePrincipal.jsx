@@ -38,15 +38,15 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
               dataAlter.map(f=>{
                 return (
                   <React.Fragment key={`${f.mesStr}`}>
-                  <th className={`text-center ${bgTotal}`} style={{width: '120px'}}>{f.mesStr}</th>
-                  <th className={`text-center ${bgPastel}`} style={{width: '120px'}}>MOV.</th>
+                  <td className={`text-center border-black ${bgTotal}`} style={{width: '120px'}}>{f.mesStr}</td>
+                  <td className={`text-center  border-black ${bgPastel}`} style={{width: '120px'}}>MOV.</td>
                   </React.Fragment>
                 )
               })
             }
-            <th className='text-center' style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
-            <th className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
-            <th className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
+            <th className='text-center' style={{width: '150px'}}>TOTAL <br/> ANUAL</th>
+            <th className='text-center' style={{width: '80px'}}>MOV. <br/> ANUAL</th>
+            <th className='text-center' style={{width: '90px'}}>%<br/>PART. <br/> ANUAL</th>
             <th className='text-center' style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
           </tr>
         </thead>
@@ -78,7 +78,6 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                             )
                           }
                           <div className='text-orange' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
-                            
                             {sumaMontoMensual1424!=='0.00'&&sumaMontoMensual1424}
                           </div>
                         </div>

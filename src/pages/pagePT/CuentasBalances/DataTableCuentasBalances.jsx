@@ -25,7 +25,7 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
             { id: 'monto', header: 'Monto', accessor: 'monto', sortable: true, render:(row)=>{
                 return (
                     <>
-                    <div className={row.moneda === 'PEN'?'':'text-success fw-bold'}>
+                    <div className={row.moneda === 'PEN'?'':'text-color-dolar fw-bold'}>
                                             {row.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
                                             <NumberFormatMoney amount={row.monto}/>
                                     </div>

@@ -1,4 +1,4 @@
-import { DateMaskStr } from '@/components/CurrencyMask';
+import { DateMaskStr, NumberFormatMoney } from '@/components/CurrencyMask';
 import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React from 'react'
 import { Modal, Table } from 'react-bootstrap'
@@ -20,6 +20,13 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom})
                 </>
             )
         }},
+        {id: 4, header: (<>MONTO <br/> S/.</>), render:(row)=>{
+            return (
+                <>
+                <NumberFormatMoney amount={row.monto}/>
+                </>
+            )
+        }},
         {id: 2, header: (<>Descripción /<br/> Eventos</>), render:(row)=>{
             return (
                 <>
@@ -38,34 +45,6 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom})
             return (
                 <>
                 {DateMaskStr(row.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY')}
-                </>
-            )
-        }},
-        {id: 4, header: (<>MONTO</>), render:(row)=>{
-            return (
-                <>
-                {row.monto}
-                </>
-            )
-        }},
-        {id: 5, header: (<>DOCUMENTO</>), render:(row)=>{
-            return (
-                <>
-                {row.parametro_comprobante?.label_param}
-                </>
-            )
-        }},
-        {id: 6, header: (<>FORMA <br/> PAGO</>), render:(row)=>{
-            return (
-                <>
-                {row.parametro_forma_pago?.label_param}
-                </>
-            )
-        }},
-        {id: 7, header: (<>N° <br/> COMPROBANTE</>), render:(row)=>{
-            return (
-                <>
-                {row.n_comprabante}
                 </>
             )
         }},
