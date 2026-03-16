@@ -1,4 +1,4 @@
-import { DateMaskStr } from '@/components/CurrencyMask';
+import { DateMaskStr, NumberFormatMoney } from '@/components/CurrencyMask';
 import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React from 'react'
 import { Modal, Table } from 'react-bootstrap'
@@ -44,7 +44,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom})
         {id: 4, header: (<>MONTO</>), render:(row)=>{
             return (
                 <>
-                {row.monto}
+                <NumberFormatMoney amount={row.monto}/>
                 </>
             )
         }},

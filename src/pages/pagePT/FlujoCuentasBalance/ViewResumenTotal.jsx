@@ -55,10 +55,10 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <th className='text-center' style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
-                <th className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
-                <th className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
-                <th className='text-center' style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
+                <th className={'text-center'} style={{width: '120px'}}>TOTAL <br/> ANUAL</th>
+                <th className={'text-center'} style={{width: '120px'}}>MOV. <br/> ANUAL</th>
+                <th className={'text-center'} style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
+                <th className={'text-center'} style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
               </tr>
             </thead>
             <tbody>

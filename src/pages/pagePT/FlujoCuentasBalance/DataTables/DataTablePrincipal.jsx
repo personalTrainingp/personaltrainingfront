@@ -38,8 +38,8 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
               dataAlter.map(f=>{
                 return (
                   <React.Fragment key={`${f.mesStr}`}>
-                  <td className={`text-center border-black ${bgTotal}`} style={{width: '120px'}}>{f.mesStr}</td>
-                  <td className={`text-center  border-black ${bgPastel}`} style={{width: '120px'}}>MOV.</td>
+                  <td className={`text-center border-black ${bgTotal}`} style={{width: '150px'}}>{f.mesStr}</td>
+                  <td className={`text-center  border-black ${bgPastel}`} style={{width: '70px'}}>MOV.</td>
                   </React.Fragment>
                 )
               })
@@ -116,12 +116,11 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
               dataAlter.map((f, i)=>{
                 return (
                   <React.Fragment key={i}>
-                  <td className={`text-center ${bgTotal}`} style={{width: '120px'}}>
+                  <td className={`text-center ${bgTotal}`} >
                     <NumberFormatMoney amount={f.montoTotalPagadas +f.montoTotalNoPagadas}/>
                   </td>
                   <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>
                     {f.dataSumaCantidad}
-
                   </td>
                   </React.Fragment>
                 )
@@ -136,7 +135,7 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                 return (
                   <React.Fragment key={i}>
                   <td className={`text-center ${bgTotal}`} style={{width: '120px'}}><NumberFormatMoney amount={(f.montoTotalPagadas/montoAcumuladoDeMontoTotal)*100}/></td>
-                  <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>{((f.cantidadTotalPagadas/montoAcumuladoDecantidadTotal)*100).toFixed(2)}</td>
+                  <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>{((f.cantidadTotalPagadas/montoAcumuladoDecantidadTotal)*100).toFixed(2) && 0.00}</td>
                   </React.Fragment>
                 )
               })

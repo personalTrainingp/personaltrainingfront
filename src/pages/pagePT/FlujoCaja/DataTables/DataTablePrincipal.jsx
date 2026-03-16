@@ -38,8 +38,8 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
               dataAlter.map(f=>{
                 return (
                   <React.Fragment key={`${f.mesStr}`}>
-                  <th className={`text-center ${bgTotal}`} style={{width: '120px'}}>{f.mesStr}</th>
-                  <th className={`text-center ${bgPastel}`} style={{width: '120px'}}>MOV.</th>
+                  <td className={`text-center border-black ${bgTotal}`} style={{width: '150px'}}>{f.mesStr}</td>
+                  <td className={`text-center border-black ${bgPastel}`} style={{width: '70px'}}>MOV.</td>
                   </React.Fragment>
                 )
               })
@@ -64,8 +64,6 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                       const sumaCantidadMensual = itemsDelMesFiltrado1423?.length
                       const sumaMontoMensual1424 = FUNMoneyFormatter(itemsDelMesFiltrado1424?.reduce((total, im)=>total+im?.monto, 0))
                       const sumaCantidadMensual1424 = itemsDelMesFiltrado1424?.length
-                      console.log({f, itemsDelMesFiltrado1423, itemsDelMesFiltrado1424, tt: 123});
-                    
                     return (
                       <React.Fragment key={`${i}`}>
                       <td className='text-center' >
@@ -138,7 +136,7 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                 return (
                   <React.Fragment key={i}>
                   <td className={`text-center ${bgTotal}`} style={{width: '120px'}}><NumberFormatMoney amount={(f.montoTotalPagadas/montoAcumuladoDeMontoTotal)*100}/></td>
-                  <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>{((f.cantidadTotalPagadas/montoAcumuladoDecantidadTotal)*100).toFixed(2)}</td>
+                  <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>{((f.cantidadTotalPagadas/montoAcumuladoDecantidadTotal)*100).toFixed(2) && 0}</td>
                   </React.Fragment>
                 )
               })

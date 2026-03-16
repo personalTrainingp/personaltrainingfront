@@ -45,77 +45,85 @@ export const useFlujoCaja = () => {
 			});
 
 			console.log({ data: dataGastos, mm: 1 });
+			const arrGrupos = [
+				{
+					id: 1576,
+					grupo: 'PRESTAMOS',
+					orden: 1,
+					tipo: 'PorCobrar',
+					nombre_gasto: 'INVERSIONES SAN EXPEDITO',
+					parametro_grupo: { param_label: 'PRESTAMOS', orden: 1 },
+				},
+				{
+					id: 1578,
+					grupo: 'TARJETA DE CREDITO',
+					tipo: 'PorPagar',
+					nombre_gasto: 'INVERSIONES LUROGA SAC.',
+					orden: 3,
+					parametro_grupo: { param_label: 'TARJETA DE CREDITO', orden: 3 },
+				},
+				{
+					id: 1578,
+					grupo: 'TARJETA DE CREDITO',
+					tipo: 'PorPagar',
+					nombre_gasto: 'INVERSIONES SAN EXPEDITO',
+					orden: 3,
+					parametro_grupo: { param_label: 'TARJETA DE CREDITO', orden: 3 },
+				},
+				{
+					id: 1576,
+					grupo: 'PRESTAMOS',
+					tipo: 'PorPagar',
+					orden: 4,
+					nombre_gasto: 'RAL',
+					parametro_grupo: { param_label: 'PRESTAMOS', orden: 6 },
+				},
+				{
+					id: 1578,
+					grupo: 'TARJETA DE CREDITO',
+					tipo: 'PorPagar',
+					orden: 4,
+					nombre_gasto: 'RAL',
+					parametro_grupo: { param_label: 'TARJETA DE CREDITO', orden: 7 },
+				},
+				{
+					id: 1576,
+					grupo: 'PRESTAMOS',
+					tipo: 'PorCobrar',
+					orden: 4,
+					nombre_gasto: 'RAL',
+					parametro_grupo: { param_label: 'PRESTAMOS', orden: 7 },
+				},
+			];
+			const arrGruposFiltrados =
+				enterprice == 800
+					? [
+							{
+								id: 1577,
+								grupo: 'SUELDO',
+								orden: 2,
+								tipo: 'PorCobrar',
+								nombre_gasto: 'INVERSIONES SAN EXPEDITO',
+								parametro_grupo: { param_label: 'SUELDO', orden: 2 },
+							},
+						]
+					: [
+							{
+								id: 1577,
+								grupo: 'SUELDO',
+								orden: 2,
+								tipo: 'PorPagar',
+								nombre_gasto: 'INVERSIONES SAN EXPEDITO',
+								parametro_grupo: { param_label: 'SUELDO', orden: 2 },
+							},
+						];
+			console.log([...arrGrupos, ...arrGruposFiltrados], { enterprice });
 
 			const dataTipoTC = await obtenerTipoDeCambio();
 			setdataCuentasBalancexFecha(
 				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTipoTC, dataGastos),
-					[
-						{
-							id: 1576,
-							grupo: 'PRESTAMOS',
-							orden: 1,
-							tipo: 'PorCobrar',
-							nombre_gasto: 'INVERSIONES SAN EXPEDITO',
-							parametro_grupo: { param_label: 'PRESTAMOS', orden: 1 },
-						},
-						{
-							id: 1577,
-							grupo: 'SUELDO',
-							orden: 2,
-							tipo: 'PorCobrar',
-							nombre_gasto: 'INVERSIONES SAN EXPEDITO',
-							parametro_grupo: { param_label: 'SUELDO', orden: 2 },
-						},
-						{
-							id: 1577,
-							grupo: 'SUELDO',
-							tipo: 'PorCobrar',
-							orden: 2,
-							nombre_gasto: 'INVERSIONES LUROGA SAC.',
-							parametro_grupo: { param_label: 'SUELDO', orden: 2 },
-						},
-						{
-							id: 1578,
-							tipo: 'PorPagar',
-							grupo: 'TARJETA DE CREDITO',
-							nombre_gasto: 'INVERSIONES LUROGA SAC.',
-							orden: 3,
-							parametro_grupo: { param_label: 'TARJETA DE CREDITO', orden: 3 },
-						},
-						{
-							id: 1578,
-							grupo: 'TARJETA DE CREDITO',
-							tipo: 'PorPagar',
-							nombre_gasto: 'INVERSIONES SAN EXPEDITO',
-							orden: 3,
-							parametro_grupo: { param_label: 'TARJETA DE CREDITO', orden: 3 },
-						},
-						{
-							id: 1576,
-							grupo: 'PRESTAMOS',
-							tipo: 'PorPagar',
-							orden: 4,
-							nombre_gasto: 'RAL',
-							parametro_grupo: { param_label: 'PRESTAMOS', orden: 6 },
-						},
-						{
-							id: 1578,
-							grupo: 'TARJETA DE CREDITO',
-							tipo: 'PorPagar',
-							orden: 4,
-							nombre_gasto: 'RAL',
-							parametro_grupo: { param_label: 'TARJETA DE CREDITO', orden: 7 },
-						},
-						{
-							id: 1576,
-							grupo: 'PRESTAMOS',
-							tipo: 'PorCobrar',
-							orden: 4,
-							nombre_gasto: 'RAL',
-							parametro_grupo: { param_label: 'PRESTAMOS', orden: 7 },
-						},
-					].filter((e) => e.tipo === tipo)
+					[...arrGruposFiltrados, ...arrGrupos].filter((e) => e.tipo === tipo)
 				)
 			);
 		} catch (error) {
