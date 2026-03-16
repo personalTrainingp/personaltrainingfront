@@ -30,7 +30,7 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
   const dataFilter = dataAlter.filter(f=>f.data?.length !== 0).length
   return (
     <>
-      <Table className="tabla-egresos" style={{ width: '100%' }} bordered>
+      <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
         <thead>
           <tr>
             <th style={{width: '280px'}} className={`fs-3 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black`}>{index}. {nombreGrupo}</th>
@@ -39,7 +39,7 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                 return (
                   <React.Fragment key={`${f.mesStr}`}>
                   <td className={`text-center border-black ${bgTotal}`} style={{width: '150px'}}>{f.mesStr}</td>
-                  <td className={`text-center  border-black ${bgPastel}`} style={{width: '70px'}}>MOV.</td>
+                  <td className={`text-center border-black ${bgPastel}`} style={{width: '90px'}}>MOV.</td>
                   </React.Fragment>
                 )
               })
