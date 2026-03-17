@@ -39,6 +39,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
                     return (
                         <DataTablePrincipal 
                             index={i+1}
+                            anio={anio}
                             id_empresa={id_empresa}
                             onOpenModalTableItems={onOpenModalTableItems} 
                             tipo={'PorCobrar'}
@@ -61,6 +62,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
                     return (
                         <DataTablePrincipal 
                             index={i+1}
+                            anio={anio}
                             id_empresa={id_empresa}
                             onOpenModalTableItems={onOpenModalTableItems} 
                             key={`${data.grupo}`} 

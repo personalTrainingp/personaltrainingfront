@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems}) => {
+export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems, anio=2025}) => {
   const dataAlter = fechas.map((f, index, array)=>{
       const dataTotal = itemsxDias.find(i=>i.mes===f.mes && i.anio===f.anio)??{}
       const dataPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1423) || [];
@@ -105,7 +105,7 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                 <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)}/></td>
                 <td>{c.data.length}</td>
                 <td>{(((c.data?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
-                <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(2026, dataAlter)}/></td>
+                <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(anio, dataAlter)}/></td>
               </tr>
             )
           })

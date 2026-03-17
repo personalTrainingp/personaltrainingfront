@@ -46,6 +46,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
                             nombreGrupo={data.grupo} 
                             conceptos={data.conceptos} 
                             data={dataGastosxFecha} 
+                            anio={anio}
                             fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}/>
                     )
                 })
@@ -67,6 +68,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
                             nombreGrupo={data.grupo} 
                             conceptos={data.conceptos} 
                             data={dataGastosxFecha} 
+                            anio={anio}
                             fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
                             />
                     )
