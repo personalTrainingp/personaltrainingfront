@@ -95,7 +95,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
-                      <td className={`text-end`}> <div className={`${e.utilidadBruta>0?'text-color-dolar':'text-change'} `} ><NumberFormatMoney amount={e.utilidadBruta}/></div> </td>
+                      <td className={`text-end`}> <div className={`${e.utilidadBruta>0?'text-ISESAC':'text-change'} `} ><NumberFormatMoney amount={e.utilidadBruta}/></div> </td>
                     </React.Fragment>
                     )
                   })
@@ -119,7 +119,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
-                      <td className={`text-end `}><div className={`${e.utilidadNeta>0?'text-color-dolar':'text-change'}`}> <NumberFormatMoney amount={e.utilidadNeta}/></div></td>
+                      <td className={`text-end `}><div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`}> <NumberFormatMoney amount={e.utilidadNeta}/></div></td>
                     </React.Fragment>
                     )
                   })
