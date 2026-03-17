@@ -1123,9 +1123,12 @@ export function useGestEntrenamientosLogic() {
                 displayPlanName = foundPlan.label;
 
                 if (!displayEndDate && clienteSel.fecha_inicio) {
-                    let weeks = 0;
-                    const match = foundPlan.label.match(/(\d+)\s*Semana/i);
-                    if (match) weeks = parseInt(match[1]);
+                    let weeks = foundPlan.semanas;
+                    
+                    if (!weeks) {
+                        const match = foundPlan.label.match(/SEMANAS\s+(\d+)/i) || foundPlan.label.match(/(\d+)\s*Semana/i);
+                        if (match) weeks = parseInt(match[1]);
+                    }
 
                     if (weeks > 0) {
                         const start = new Date(clienteSel.fecha_inicio);

@@ -119,26 +119,31 @@ export const AsistenciaPanel = ({
                 {/* 2. INFO PLAN: Nombre + Horario + Extras */}
                 <div className="mb-4">
                     <div className="d-flex flex-wrap align-items-center gap-2">
-                        <div className="border rounded px-2 py-1 fw-bold text-uppercase text-white" style={{ fontSize: '1rem', letterSpacing: '0.5px', backgroundColor: '#C00000' }}>
-                            DURACIÓN DEL CONTRATO:
+
+                        {/* Agregamos fst-italic a la etiqueta CONTRATO */}
+                        <div className="border rounded px-2 py-1 fw-bold text-uppercase text-white fst-italic" style={{ fontSize: '1.1rem', letterSpacing: '0.5px', backgroundColor: '#C00000' }}>
+                            CONTRATO:
                         </div>
 
-                        <span className="fw-bold text-uppercase px-2 rounded text-white" style={{ fontSize: '1.3rem', backgroundColor: '#C00000' }}>
+                        {/* Agregamos fst-italic al nombre del plan */}
+                        <span className="fw-bold text-uppercase px-2 rounded text-white fst-italic" style={{ fontSize: '1.3rem', backgroundColor: '#C00000' }}>
                             {planName || 'PLAN ACTUAL'}
                         </span>
 
-                        <Badge bg="light" text="dark" className="border d-flex align-items-center" style={{ fontSize: '1.3rem' }}>
+                        {/* Agregamos fst-italic al turno */}
+                        <Badge bg="light" text="dark" className="border d-flex align-items-center fst-italic" style={{ fontSize: '1.3rem' }}>
                             <i className="bi bi-alarm text-muted me-2"></i>
                             <span className="text-primary fw-bold">{textoTurno || '--:--'}</span>
                         </Badge>
 
                         {diasCongelamiento > 0 && (
-                            <Badge bg="warning" text="dark" className="fw-normal">
+                            <Badge bg="warning" text="dark" className="fw-normal fst-italic">
                                 {diasCongelamiento} Días Congel.
                             </Badge>
                         )}
+
                         {citasNutricionales > 0 && (
-                            <Badge bg="success" className="fw-normal">
+                            <Badge bg="success" className="fw-normal fst-italic">
                                 {citasNutricionales} Nutrición
                             </Badge>
                         )}

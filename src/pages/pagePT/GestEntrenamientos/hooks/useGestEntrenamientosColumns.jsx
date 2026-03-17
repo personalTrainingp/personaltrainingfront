@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { DateOnlyCellEditor } from '../DateOnlyCellEditor';
 import { ExerciseSelectEditor } from '../ExerciseSelectEditor';
 import { VideoThumbnailCellRenderer } from '../VideoThumbnailCellRenderer';
 
@@ -19,11 +18,19 @@ export function useGestEntrenamientosColumns({
             headerName: 'Fecha\n / Día',
             editable: (params) => !params.data._existing || (params.data.date_edit_count || 0) < 1,
             flex: 1.5,
-            cellEditor: DateOnlyCellEditor,
+            cellEditor: 'agDateStringCellEditor',
+            cellEditorParams: {
+                min: '2024-01-01'
+            },
             valueSetter: (params) => {
                 console.log("valueSetter: Setting fecha to:", params.newValue);
                 if (params.newValue !== params.oldValue) {
-                    params.data.fecha = params.newValue;
+                    let finalDate = params.newValue;
+                    // Forzamos el formato en YYYY-MM-DD por si acaso lo envia distinto
+                    if (finalDate && finalDate.includes('/')) {
+                        finalDate = finalDate.replace(/\//g, '-');
+                    }
+                    params.data.fecha = finalDate;
                     return true;
                 }
                 return false;
@@ -48,8 +55,20 @@ export function useGestEntrenamientosColumns({
 
                 if (typeof val === 'string') {
                     const cleanDate = val.substring(0, 10);
-                    const [y, m, d] = cleanDate.split('-').map(Number);
-                    dateObj = new Date(y, m - 1, d, 12, 0, 0);
+
+                    // Evaluamos si el string viene en formato YYYY-MM-DD
+                    if (cleanDate.match(/^\d{4}-\d{2}-\d{2}/)) {
+                        const [y, m, d] = cleanDate.split('-').map(Number);
+                        dateObj = new Date(y, m - 1, d, 12, 0, 0);
+                    }
+                    // Evaluamos si el string viene en formato DD-MM-YYYY o DD/MM/YYYY
+                    else if (cleanDate.match(/^\d{2}[\/\-]\d{2}[\/\-]\d{4}/)) {
+                        const parts = cleanDate.split(/[\/\-]/).map(Number);
+                        const [d, m, y] = parts;
+                        dateObj = new Date(y, m - 1, d, 12, 0, 0);
+                    } else {
+                        return val;
+                    }
                 } else if (val instanceof Date) {
                     dateObj = val;
                 } else {
