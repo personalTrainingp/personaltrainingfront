@@ -129,7 +129,7 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
             <td colSpan={4} className='text-center'>TOTAL ANUAL</td>
           </tr>
           <tr>
-            <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10 ${bgTotal}`}>% PARTICIPACION</td>
+            <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10 ${bgTotal}`}>% <span className='mx-1'></span> PARTICIPACION</td>
             {
               dataAlter.map((f, i)=>{
                 return (
