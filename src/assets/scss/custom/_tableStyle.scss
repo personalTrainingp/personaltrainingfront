@@ -4,6 +4,7 @@
   table-layout: fixed;
 }
 
+
 /* el contenedor que scrollea */
 .table-responsive{
   overflow-x: auto;
@@ -15,6 +16,24 @@
   z-index: 30;
 }
 
+/* columna fija */
+.tabla-egresos .sticky-td-white{
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: transparent !important; /* el fondo real lo pone ::before */
+}
+
+/* “panel” que hace que TODA la celda se vea fija */
+.tabla-egresos .sticky-td-white::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  color: #000 !important;
+  background: #ffffff !important; /* o el color que quieras */
+  z-index: -1;
+  box-shadow: 2px 0 0 rgba(0,0,0,.12);
+}
 /* columna fija */
 .tabla-egresos .sticky-td{
   position: sticky;

@@ -45,7 +45,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
           <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
             <thead>
               <tr>
-                <td style={{width: '400px'}} className={`sticky-td- border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}>{'RESULTADO ANUAL'}</td>
+                <td style={{width: '400px'}} className={`sticky-td-white border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}><div className={'text-black'}>{'RESULTADO ANUAL'}</div></td>
                 {
                   dataAlter.map(f=>{
                     return (
@@ -119,7 +119,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
-                      <td className={`${e.utilidadNeta>0?'text-color-dolar':'text-change'} `}> <NumberFormatMoney amount={e.utilidadNeta}/></td>
+                      <td className={`text-end `}> <div className={`${e.utilidadNeta>0?'text-color-dolar':'text-change'} `}><NumberFormatMoney amount={e.utilidadNeta}/></div> </td>
                     </React.Fragment>
                     )
                   })
