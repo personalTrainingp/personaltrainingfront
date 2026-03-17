@@ -105,7 +105,10 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                 <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)}/></td>
                 <td className='fs-3'>{c.data.length}</td>
                 <td className='fs-3'>{(((c.data?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
-                <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(2026, dataAlter)}/></td>
+                <td>
+                  <NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(2026, dataAlter)}/>
+                    
+                  </td>
               </tr>
             )
           })
@@ -146,7 +149,9 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
             </td>
             <td className='fs-3'>100</td>
             <td>{''}</td>
-            <td ><NumberFormatMoney amount={montoAcumuladoDeMontoTotal/montoAcumuladoDecantidadTotal}/></td>
+            <td >
+              {/* <NumberFormatMoney amount={montoAcumuladoDeMontoTotal/montoAcumuladoDecantidadTotal}/> */}
+            </td>
           </tr>
         </tbody>
       </Table>
