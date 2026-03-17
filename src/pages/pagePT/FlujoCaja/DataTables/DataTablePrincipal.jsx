@@ -142,10 +142,9 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
               })
             }
             <td>
-              <NumberFormatMoney amount={montoAcumuladoDeMontoTotal}/>
-              
+              100
             </td>
-            <td className='fs-3'>{montoAcumuladoDecantidadTotal}</td>
+            <td className='fs-3'>100</td>
             <td>{''}</td>
             <td ><NumberFormatMoney amount={montoAcumuladoDeMontoTotal/montoAcumuladoDecantidadTotal}/></td>
           </tr>

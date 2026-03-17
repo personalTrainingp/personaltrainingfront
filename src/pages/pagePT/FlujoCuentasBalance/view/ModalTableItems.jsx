@@ -40,13 +40,6 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
                 </>
             )
         }},
-        {id: 3, header: (<>FECHA <br/> PAGO</>), render:(row)=>{
-            return (
-                <>
-                {DateMaskStr(row.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY')}
-                </>
-            )
-        }},
         {id: 8, header: (<>N° <br/> OPERACION</>), render:(row)=>{
             return (
                 <>
