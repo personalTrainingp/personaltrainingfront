@@ -1,7 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Table } from 'react-bootstrap'
+import { usePlanillaStore } from './usePlanillaStore'
+import { NumberFormatMoney } from '@/components/CurrencyMask'
 
 export const TablePlanilla = () => {
+    const { obtenerSemana, dataPlanilla } = usePlanillaStore()
+    useEffect(() => {
+        obtenerSemana(598)
+    }, [])
+    console.log({dataPlanilla});
+    
   return (
     <div>
         <Table className='bg-change' striped>
@@ -24,18 +32,23 @@ export const TablePlanilla = () => {
                 </tr>
             </thead>
             <tbody>
-                
-                <tr>
-                    <td className='fs-6'>1</td>
-                    <td className='fs-6'>ADMINISTRACION</td>
-                    <td className='fs-6'>CARLOS ROSALES</td>
-                    <td className='fs-6'>2,300.00</td>
-                    <td className='fs-6'>29</td>
-                    <td className='fs-6'>10/3</td>
-                    <td className='fs-6'>2,200.00 </td>
-                    <td className='fs-6'>120.00 </td>
-                    <td className='fs-6'>MONTO A PAGAR</td>
-                </tr>
+                {
+                    dataPlanilla?.map(p=>{
+                        return (
+                            <tr>
+                                <td className='fs-6'>1</td>
+                                <td className='fs-6'>{p.cargo}</td>
+                                <td className='fs-6'>{p.colaborador}</td>
+                                <td className='fs-6'><NumberFormatMoney amount={p.sueldo}/></td>
+                                <td className='fs-6'>31</td>
+                                <td className='fs-6'>10/3</td>
+                                <td className='fs-6'>2,200.00 </td>
+                                <td className='fs-6'>120.00 </td>
+                                <td className='fs-6'>MONTO A PAGAR</td>
+                            </tr>
+                        )
+                    })
+                }
             </tbody>
         </Table>
     </div>

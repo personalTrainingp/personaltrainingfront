@@ -42,7 +42,6 @@ export const useHorariosColaboradoresStore = () => {
 					}),
 				};
 			});
-			console.log({ data, fn: 'obtenerHorariosColaboradores', dataColaboradorMAP });
 			setdataHorarios(dataColaboradorMAP);
 			dispatch(onSetDataView(dataColaboradorMAP));
 		} catch (error) {

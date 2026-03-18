@@ -27,7 +27,6 @@ export const App = ({id_empleado}) => {
 
   return (
     <div>
-      {JSON.stringify(dataView, null, 2)}
       <div className='mb-2'>
         {
           dataView.find(d=>d.estado==true) ? (<></>): (
@@ -38,7 +37,6 @@ export const App = ({id_empleado}) => {
       <DataTableContratos
         id_empleado={id_empleado}
         onOpenModalCustomCalendarioJornadas={onOpenModalCustomCalendarioJornadas}
-
       />
       <ModalCustomContrato  id_empleado={id_empleado} show={isOpenModalCustomContrato.isOpen} onHide={()=>setisOpenModalCustomContrato({isOpen: false, id: 0})}/>
       <ModalCustomCalendarioJornadas fechaFin={isOpenModalCustomCalendarioJornadas.fechaFin} fechaInicio={isOpenModalCustomCalendarioJornadas.fechaInicio} idContrato={isOpenModalCustomCalendarioJornadas.id_contrato} show={isOpenModalCustomCalendarioJornadas.isOpen} onHide={onCloseModalCustomCalendarioJornadas}/>

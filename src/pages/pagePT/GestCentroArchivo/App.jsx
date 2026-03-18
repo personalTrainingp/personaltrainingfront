@@ -8,6 +8,7 @@ export const App = () => {
     <ColorEmpresa
       childrenChange={<App2 idEmpresa={598}/>}
       childrenCircus={<App2 idEmpresa={599}/>}
+      childrenReducto={<App2 idEmpresa={601}/>}
       childrenRal={<App2 idEmpresa={800}/>}
     />
     </>

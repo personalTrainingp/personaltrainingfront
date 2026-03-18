@@ -114,7 +114,7 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
         )
     } },
     
-    { id: 'pdfCompromiso', header: <>COMPROMISO <br/> pago / LETRA</>, sortable: true, width: 70,  render: (row)=>{
+    { id: 'pdfCompromiso', header: <>COMPROMISO <br/> cumplimiento / LETRA</>, sortable: true, width: 70,  render: (row)=>{
         return (
             <>
             {
@@ -143,7 +143,7 @@ export const DataTableContratosProveedores = ({id_empresa, onOpenModalCustomCont
         id: 'zona', header: 'zona', accessor: 'zona', render: (row)=>{
         return (
             <>
-            <div className='' style={{width: '100px'}}>
+            <div className='text-break' style={{width: '100px'}}>
                 {row?.zona?.nombre_zona}
             </div>
             </>
