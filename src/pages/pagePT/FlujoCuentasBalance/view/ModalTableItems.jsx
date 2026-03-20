@@ -1,7 +1,8 @@
 import { DateMaskStr, NumberFormatMoney } from '@/components/CurrencyMask';
 import { DataTableCR } from '@/components/DataView/DataTableCR';
+import { TabPanel, TabView } from 'primereact/tabview';
 import React, { useMemo } from 'react'
-import { Modal, Table } from 'react-bootstrap'
+import { Col, Modal, Row, Table } from 'react-bootstrap'
 
 export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgTotal, textEmpresa}) => {
     const columns = [
@@ -54,19 +55,26 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
             <Modal.Title></Modal.Title>
         </Modal.Header>
         <Modal.Body >
-            <DataTableCR
-                columns={columns}
-                bgHeader={bgTotal}
-                data={items}
-                responsive
-                stickyHeight={'80vh'}
-                stickyHeader
-            />
-            <div className='d-flex'>
-                <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgTotal} text={textEmpresa}/>
-                <div className='border-2 bg-change'>
-                </div>
-            </div>
+          <TabView>
+            <TabPanel header={'ITEMS'}>
+              <DataTableCR
+                  columns={columns}
+                  bgHeader={bgTotal}
+                  data={items}
+                  responsive
+                  stickyHeight={'80vh'}
+                  stickyHeader
+              />
+            </TabPanel>
+            <TabPanel header={'RESUMEN DE PROVEEDORES'}>
+              <div className='d-flex'>
+                  <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgTotal} text={textEmpresa}/>
+                  <div className='border-2 bg-change'>
+                  </div>
+              </div>
+
+            </TabPanel>
+          </TabView>
         </Modal.Body>
     </Modal>
   )
@@ -99,18 +107,22 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
 
   return (
     <div>
-        <span className={`${bg} text-white px-1 fs-2`}>{header}</span>
-      {proveedores.map((prov, i) => (
-        <div key={i} style={{ marginBottom: 14 }}>
-          <strong>
-            <span className={`${text} mr-2 fs-4`}>
-                {prov.razon_social_prov}: 
-            </span>
-            S/. <NumberFormatMoney amount={prov.acumulado}/> <span className='fs-3'>({prov.items?.length})</span>
-          </strong>
+        <div className={`${bg} text-white text-center px-1 fs-2`}>{header}</div>
+        <Row>
+          {proveedores.map((prov, i) => (
+            <Col  key={i} lg={4}>
+              <div style={{ marginBottom: 14 }}>
+                <strong>
+                  <span className={`${text} mr-2 fs-4`}>
+                      {prov.razon_social_prov}: 
+                  </span>
+                  S/. <NumberFormatMoney amount={prov.acumulado}/> <span className='fs-3'>({prov.items?.length})</span>
+                </strong>
 
-        </div>
-      ))}
+              </div>
+            </Col>
+          ))}
+        </Row>
     </div>
   );
 };
