@@ -107,10 +107,7 @@ const ProveedorResumen = ({ data = [], header='GASTOS' }) => {
     data.forEach((item) => {
       const nombre = item.tb_Proveedor?.razon_social_prov || "SIN NOMBRE";
 
-      const montoSoles =
-        item.moneda === "USD"
-          ? item.monto * item.tc
-          : item.monto;
+      const montoSoles = item.monto;
 
       if (!map[nombre]) {
         map[nombre] = {

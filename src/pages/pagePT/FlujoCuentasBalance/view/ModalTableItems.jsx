@@ -79,10 +79,7 @@ const ProveedorResumen = ({ data = [], header='GASTOS' }) => {
         const nombre =
           item.tb_Proveedor?.razon_social_prov || "SIN NOMBRE";
 
-        const montoSoles =
-          item.moneda === "USD"
-            ? item.monto * item.tc
-            : item.monto;
+        const montoSoles =item.monto;
 
         if (!acc[nombre]) {
           acc[nombre] = {
