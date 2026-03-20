@@ -28,7 +28,7 @@ export const useFlujoCaja = () => {
 					...g,
 					fecha_primaria: g.fecha_comprobante,
 					tb_Proveedor: {
-						razon_social_prov: g.descripcion.split(':')[0],
+						razon_social_prov: g.descripcion.split(':')[0].trim(),
 					},
 					descripcion: g.descripcion.split(':')[1],
 					id_estado_gasto: 1423,
