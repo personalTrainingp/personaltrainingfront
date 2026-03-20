@@ -102,20 +102,19 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
 
         return acc;
       }, {})
-    );
+    ).sort((b, a)=>a.acumulado-b.acumulado);
   }, [data]);
-
   return (
     <div>
-        <div className={`${bg} text-white text-center px-1 fs-2 mb-3`}>{header}</div>
+        <div className={`${bg}  text-center px-1 fs-2 mb-3`}>{header}</div>
         <Row>
           {proveedores.map((prov, i) => (
             <Col  key={i} lg={4}>
               <div style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-${id_empresa}`}>
-                  <span className={`${text} fs-3 text-center ${bg} text-white p-0`}>
+                  <span className={`${text} fs-2 text-center  p-0 border-bottom-${id_empresa}`}>
                       {prov.razon_social_prov}
                   </span>
-                <strong className='text-center'>
+                <strong className='text-center text-black'>
                   S/. <NumberFormatMoney amount={prov.acumulado}/> <span className='fs-3'>({prov.items?.length})</span>
                 </strong>
 
