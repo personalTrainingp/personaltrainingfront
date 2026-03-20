@@ -34,6 +34,8 @@ export const TablePlanilla = () => {
             <tbody>
                 {
                     dataPlanilla?.map((p, i)=>{
+                        const sumaMinTardanzas = p.dias_tardanzas?.reduce((total, item) =>item?.jornada?.minutosAsistidos+total,0)
+                        
                         return (
                             <tr>
                                 <td className='fs-6'>{i+1}</td>
@@ -41,7 +43,7 @@ export const TablePlanilla = () => {
                                 <td className='fs-6'>{p.colaborador}</td>
                                 <td className='fs-6'><NumberFormatMoney amount={p.sueldo}/></td>
                                 <td className='fs-6'>{p.dias_pendientes.length}</td>
-                                <td className='fs-6'>10/3</td>
+                                <td className='fs-6'>10/{sumaMinTardanzas}</td>
                                 <td className='fs-6'>2,200.00 </td>
                                 <td className='fs-6'>120.00 </td>
                                 <td className='fs-6'>MONTO A PAGAR</td>

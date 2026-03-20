@@ -1,7 +1,7 @@
 import { PTApi } from '@/common';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-const generarAsistencia = ({ estabilidades, semana, fecha_inicio, fechaFin }) => {
+const generarDiasContratados = ({ estabilidades, semana, fecha_inicio, fechaFin }) => {
 	const resultado = [];
 
 	const fechaIni = new Date(fecha_inicio);
@@ -90,311 +90,312 @@ const generarAsistencia = ({ estabilidades, semana, fecha_inicio, fechaFin }) =>
 
 	return resultado;
 };
+const diasAsistencias = [
+	{
+		dia: 1,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'PUNTUAL',
+	},
+	{
+		dia: 2,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 50,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'TARDANZA',
+	},
+	{
+		dia: 3,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 15,
+		min_fin: 45,
+		estado: 'SALIDA_ANTICIPADA',
+	},
+	{
+		dia: 4,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 14,
+		min_fin: 0,
+		estado: 'PUNTUAL',
+	},
+	{
+		dia: 5,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 0,
+		min_inicio: 0,
+		hora_fin: 0,
+		min_fin: 0,
+		estado: 'NO_LABORA',
+	},
+
+	{
+		dia: 6,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'PUNTUAL',
+	},
+	{
+		dia: 7,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 8,
+		min_inicio: 5,
+		hora_fin: 16,
+		min_fin: 0,
+		estado: 'TARDANZA_Y_SALIDA_ANTICIPADA',
+	},
+	{
+		dia: 9,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'PUNTUAL',
+	},
+	{
+		dia: 10,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 40,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'TARDANZA',
+	},
+	{
+		dia: 11,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 13,
+		min_fin: 30,
+		estado: 'SALIDA_ANTICIPADA',
+	},
+	{
+		dia: 12,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 0,
+		min_inicio: 0,
+		hora_fin: 0,
+		min_fin: 0,
+		estado: 'NO_LABORA',
+	},
+
+	{
+		dia: 13,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'PUNTUAL',
+	},
+	{
+		dia: 14,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 15,
+		min_fin: 30,
+		estado: 'SALIDA_ANTICIPADA',
+	},
+	{
+		dia: 15,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 55,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'TARDANZA',
+	},
+	{
+		dia: 16,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 8,
+		min_inicio: 10,
+		hora_fin: 15,
+		min_fin: 0,
+		estado: 'TARDANZA_Y_SALIDA_ANTICIPADA',
+	},
+	{
+		dia: 17,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'PUNTUAL',
+	},
+	{
+		dia: 18,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: null,
+		min_inicio: null,
+		hora_fin: null,
+		min_fin: null,
+		estado: 'INASISTENCIA',
+	},
+	{
+		dia: 19,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 0,
+		min_inicio: 0,
+		hora_fin: 0,
+		min_fin: 0,
+		estado: 'NO_LABORA',
+	},
+
+	{
+		dia: 20,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'PUNTUAL',
+	},
+	{
+		dia: 21,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 45,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'TARDANZA',
+	},
+	{
+		dia: 22,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'PUNTUAL',
+	},
+	{
+		dia: 23,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: null,
+		min_inicio: null,
+		hora_fin: null,
+		min_fin: null,
+		estado: 'INASISTENCIA',
+	},
+	{
+		dia: 24,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 16,
+		min_fin: 0,
+		estado: 'SALIDA_ANTICIPADA',
+	},
+	{
+		dia: 25,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 14,
+		min_fin: 0,
+		estado: 'PUNTUAL',
+	},
+	{
+		dia: 26,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 0,
+		min_inicio: 0,
+		hora_fin: 0,
+		min_fin: 0,
+		estado: 'NO_LABORA',
+	},
+
+	{
+		dia: 27,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'PUNTUAL',
+	},
+	{
+		dia: 28,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 8,
+		min_inicio: 0,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'TARDANZA',
+	},
+	{
+		dia: 29,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 15,
+		min_fin: 30,
+		estado: 'SALIDA_ANTICIPADA',
+	},
+	{
+		dia: 30,
+		mes: 4,
+		anio: 2026,
+		hora_inicio: 7,
+		min_inicio: 30,
+		hora_fin: 16,
+		min_fin: 30,
+		estado: 'PUNTUAL',
+	},
+].filter((f) => f.hora_inicio > 0 && f.hora_fin > 0);
+
 export const usePlanillaStore = () => {
 	const dispatch = useDispatch();
 	const [dataPlanilla, setdataPlanilla] = useState([]);
 	const obtenerSemana = async (id_empresa) => {
 		try {
 			const { data } = await PTApi.get(`/contrato-empleado/semana/${id_empresa}`);
-			const diasAsistencias = [
-				{
-					dia: 1,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'PUNTUAL',
-				},
-				{
-					dia: 2,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 50,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'TARDANZA',
-				},
-				{
-					dia: 3,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 15,
-					min_fin: 45,
-					estado: 'SALIDA_ANTICIPADA',
-				},
-				{
-					dia: 4,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 14,
-					min_fin: 0,
-					estado: 'PUNTUAL',
-				},
-				{
-					dia: 5,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 0,
-					min_inicio: 0,
-					hora_fin: 0,
-					min_fin: 0,
-					estado: 'NO_LABORA',
-				},
 
-				{
-					dia: 6,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'PUNTUAL',
-				},
-				{
-					dia: 7,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 8,
-					min_inicio: 5,
-					hora_fin: 16,
-					min_fin: 0,
-					estado: 'TARDANZA_Y_SALIDA_ANTICIPADA',
-				},
-				{
-					dia: 9,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'PUNTUAL',
-				},
-				{
-					dia: 10,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 40,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'TARDANZA',
-				},
-				{
-					dia: 11,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 13,
-					min_fin: 30,
-					estado: 'SALIDA_ANTICIPADA',
-				},
-				{
-					dia: 12,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 0,
-					min_inicio: 0,
-					hora_fin: 0,
-					min_fin: 0,
-					estado: 'NO_LABORA',
-				},
-
-				{
-					dia: 13,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'PUNTUAL',
-				},
-				{
-					dia: 14,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 15,
-					min_fin: 30,
-					estado: 'SALIDA_ANTICIPADA',
-				},
-				{
-					dia: 15,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 55,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'TARDANZA',
-				},
-				{
-					dia: 16,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 8,
-					min_inicio: 10,
-					hora_fin: 15,
-					min_fin: 0,
-					estado: 'TARDANZA_Y_SALIDA_ANTICIPADA',
-				},
-				{
-					dia: 17,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'PUNTUAL',
-				},
-				{
-					dia: 18,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: null,
-					min_inicio: null,
-					hora_fin: null,
-					min_fin: null,
-					estado: 'INASISTENCIA',
-				},
-				{
-					dia: 19,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 0,
-					min_inicio: 0,
-					hora_fin: 0,
-					min_fin: 0,
-					estado: 'NO_LABORA',
-				},
-
-				{
-					dia: 20,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'PUNTUAL',
-				},
-				{
-					dia: 21,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 45,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'TARDANZA',
-				},
-				{
-					dia: 22,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'PUNTUAL',
-				},
-				{
-					dia: 23,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: null,
-					min_inicio: null,
-					hora_fin: null,
-					min_fin: null,
-					estado: 'INASISTENCIA',
-				},
-				{
-					dia: 24,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 16,
-					min_fin: 0,
-					estado: 'SALIDA_ANTICIPADA',
-				},
-				{
-					dia: 25,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 14,
-					min_fin: 0,
-					estado: 'PUNTUAL',
-				},
-				{
-					dia: 26,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 0,
-					min_inicio: 0,
-					hora_fin: 0,
-					min_fin: 0,
-					estado: 'NO_LABORA',
-				},
-
-				{
-					dia: 27,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'PUNTUAL',
-				},
-				{
-					dia: 28,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 8,
-					min_inicio: 0,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'TARDANZA',
-				},
-				{
-					dia: 29,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 15,
-					min_fin: 30,
-					estado: 'SALIDA_ANTICIPADA',
-				},
-				{
-					dia: 30,
-					mes: 4,
-					anio: 2026,
-					hora_inicio: 7,
-					min_inicio: 30,
-					hora_fin: 16,
-					min_fin: 30,
-					estado: 'PUNTUAL',
-				},
-			].filter((f) => f.hora_inicio > 0 && f.hora_fin > 0);
-			
 			const dataColaboradores = data.empleados?.map((e) => {
-				const dias_pendientes = generarAsistencia({
+				const dias_pendientes = generarDiasContratados({
 					estabilidades: [
 						{ id: 1695, label: '2 dias si y un dia no', si: 2, no: 1 },
 						{ id: 1693, label: '1 dias si y un dia no', si: 1, no: 1 },
@@ -444,27 +445,31 @@ export const usePlanillaStore = () => {
 				})
 					.filter((f) => f.mes === 4 && f.anio == 2026)
 					.map((g, i, a) => {
-						const isAsistido = diasAsistencias.find(
+						let isAsistido = diasAsistencias.find(
 							(d) => d.dia == g.dia && d.anio == g.anio && d.mes == g.mes
-						) ?? {
-							anio: 2026,
-							dia: g.dia,
-							estado: true,
-							hora_fin: 0,
-							hora_inicio: 0,
-							mes: g.mes,
-							min_fin: 0,
-							min_inicio: 0,
-						};
+						);
+						if (!isAsistido) {
+							isAsistido = {
+								anio: g.anio,
+								dia: g.dia,
+								hora_fin: null,
+								hora_inicio: null,
+								mes: g.mes,
+								min_fin: null,
+								min_inicio: null,
+							};
+						}
 						const sueldo_dia = e._empl[0].sueldo / a.length;
 						const minutosContratados = 540; //POR DEFECTO
-						const minutosAsistidos =
-							obtenerMinutosPorNumero(g.hora_fin, g.min_fin) -
-							obtenerMinutosPorNumero(
-								isAsistido?.hora_inicio,
-								isAsistido?.min_inicio
-							);
 						const sueldo_min = sueldo_dia / minutosContratados;
+						const minutosAsistidos =
+							isAsistido.hora_inicio === null
+								? 0
+								: obtenerMinutosPorNumero(g.hora_fin, g.min_fin) -
+									obtenerMinutosPorNumero(
+										isAsistido?.hora_inicio,
+										isAsistido?.min_inicio
+									);
 						return {
 							...g,
 							sueldo_dia,
@@ -475,6 +480,7 @@ export const usePlanillaStore = () => {
 							},
 							sueldo_neto: '',
 							minutosContratados,
+							minutosTarde: minutosContratados - minutosAsistidos,
 							// estado: `${isAsistido?.hora_inicio == 0 ? 'NO ASISTIO' : `${g.hora_inicio < isAsistido?.hora_inicio ? 'TARDANZA' : ''}`}`,
 						};
 					});
@@ -486,7 +492,7 @@ export const usePlanillaStore = () => {
 					dias_pendientes: dias_pendientes.filter((f) => f.hora_inicio !== 0),
 					dias_tardanzas: dias_pendientes
 						.filter((f) => f.hora_inicio !== 0)
-						.filter((f) => f.minutosContratados < f.jornada.minutosAsistidos),
+						.filter((f) => f.minutosContratados > f.jornada.minutosAsistidos),
 					dias_asistencias: diasAsistencias.filter((f) => f.hora_inicio !== 0),
 				};
 			});
@@ -504,4 +510,21 @@ export const usePlanillaStore = () => {
 
 function obtenerMinutosPorNumero(hora = 2, min = 0) {
 	return hora * 60 + min;
+}
+
+function obtenerFechas(inicio, fin) {
+	const fechas = [];
+	const fechaActual = new Date(inicio);
+
+	while (fechaActual <= fin) {
+		fechas.push({
+			dia: fechaActual.getDate(),
+			mes: fechaActual.getMonth() + 1, // los meses van de 0 a 11
+			anio: fechaActual.getFullYear(),
+		});
+
+		fechaActual.setDate(fechaActual.getDate() + 1);
+	}
+
+	return fechas;
 }

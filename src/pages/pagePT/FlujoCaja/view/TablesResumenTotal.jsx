@@ -13,15 +13,6 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, arrayFecha=[], i
     const onOpenModalTableItems = (data)=>{
         setdata({isOpen: true, items: data, header: ''})
     }
-    const onCloseModalTableItems = ()=>{
-        setdata({isOpen: false, items: [], header: ''})
-    }
-    const onOpenModalCustomGasto = (id)=>{
-        setisOpenModalCustomGasto({isOpen: true, id: id})
-    }
-    const onCloseModalCustomGasto = ()=>{
-        setisOpenModalCustomGasto({isOpen: false, id: 0})
-    }
     const anio2026 = ['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']
     const anio2025 = ['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']
     const anio2024 = ['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']

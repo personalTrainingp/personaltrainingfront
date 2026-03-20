@@ -79,13 +79,13 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
             }
         </div>
         <div className='tab-scroll-container'>
-            {/* <ViewResumenTotal 
+            <ViewResumenTotal 
                 onOpenModalTableItems={onOpenModalTableItems}  
                 bgPastel={bgPastel} 
                 bgTotal={classNameEmpresa} 
                 id_enterprice={id_empresa} 
                 anio={[arrayFecha[0], arrayFecha[1]]}
-                fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))} /> */}
+                fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))} />
         </div>
             <ModalTableItems textEmpresa={textEmpresa} bgTotal={classNameEmpresa} show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} onOpenModalCustom={onOpenModalCustomGasto}/>
             <ModalCustomCuentasBalances headerTipo={isOpenModalCustomGasto.headerTipo} tipo={isOpenModalCustomGasto.headerTipo} id={isOpenModalCustomGasto.id} idEmpresa={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
