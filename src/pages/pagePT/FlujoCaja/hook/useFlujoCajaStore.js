@@ -85,6 +85,8 @@ export const useFlujoCaja = () => {
 					cantidadTotal: 1,
 					n_comprabante: '',
 					fecha_primaria: m.fechaP,
+					fecha_pago: m.fechaP,
+					fecha_comprobante: m.fechaP,
 					concepto: 'MONKEY-FIT',
 					tb_parametros_gasto: {
 						grupo: 'INGRESOS',

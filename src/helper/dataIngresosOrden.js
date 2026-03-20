@@ -7,6 +7,8 @@ export function dataIngresosOrden(dataVentas) {
 			id_origen: m.id_origen,
 			id_venta: m.id,
 			fecha_primaria: m.fecha_venta,
+			fecha_pago: m.fecha_venta,
+			fecha_comprobante: m.fecha_venta,
 			empl: m?.tb_empleado?.nombres_apellidos_empl || '',
 			detalle_membresias: m?.detalle_ventaMembresia || [],
 			detalle_productos: m.detalle_ventaProductos || [],

@@ -28,12 +28,13 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
     const onCloseModalCustomGasto = ()=>{
         setisOpenModalCustomGasto({isOpen: false, id: 0})
     }
+    
   return (
     <div>
         <div className='fs-1 text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
             {
-                dataIngresosxFecha?.map((data, i)=>{
+                dataIngresosxFecha?.filter(f=>f.data?.length!==0).map((data, i)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
@@ -55,7 +56,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
             <div className='fs-1 text-center'>EGRESOS</div>
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS").map((data,i)=>{
+                dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS").filter(f=>f.data?.length!==0).map((data,i)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
