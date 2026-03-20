@@ -30,7 +30,7 @@ export const useFlujoCaja = () => {
 					tb_Proveedor: {
 						razon_social_prov: g.descripcion.split(':')[0].trim(),
 					},
-					descripcion: g.descripcion.split(':')[1],
+					descripcion: g.descripcion.split(':')[1].trim(),
 					id_estado_gasto: 1423,
 					tb_parametros_gasto: {
 						id: g.id_concepto,

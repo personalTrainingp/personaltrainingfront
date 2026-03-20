@@ -7,7 +7,7 @@ import { ModalTableItems } from './view/ModalTableItems'
 import { ModalCustomGasto } from '../GestGastos/ModalCustomGasto'
 import { ViewResumenTotal } from './ViewResumenTotal'
 
-export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameEmpresa, bgPastel}) => {
+export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameEmpresa, bgPastel, textEmpresa}) => {
     const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
     const [data, setdata] = useState({isOpen: false, items: [], header: ''})
     const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
@@ -87,7 +87,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
         </div>
             <ModalTableItems 
                 bgHeader={classNameEmpresa}
-                
+                textEmpresa={textEmpresa}
             show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} onOpenModalCustom={onOpenModalCustomGasto}/>
             <ModalCustomGasto id={isOpenModalCustomGasto.id} id_enterprice={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
     </div>

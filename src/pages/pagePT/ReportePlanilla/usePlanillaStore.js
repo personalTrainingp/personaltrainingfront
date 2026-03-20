@@ -392,6 +392,7 @@ export const usePlanillaStore = () => {
 					estado: 'PUNTUAL',
 				},
 			].filter((f) => f.hora_inicio > 0 && f.hora_fin > 0);
+			
 			const dataColaboradores = data.empleados?.map((e) => {
 				const dias_pendientes = generarAsistencia({
 					estabilidades: [
@@ -445,7 +446,16 @@ export const usePlanillaStore = () => {
 					.map((g, i, a) => {
 						const isAsistido = diasAsistencias.find(
 							(d) => d.dia == g.dia && d.anio == g.anio && d.mes == g.mes
-						);
+						) ?? {
+							anio: 2026,
+							dia: g.dia,
+							estado: true,
+							hora_fin: 0,
+							hora_inicio: 0,
+							mes: g.mes,
+							min_fin: 0,
+							min_inicio: 0,
+						};
 						const sueldo_dia = e._empl[0].sueldo / a.length;
 						const minutosContratados = 540; //POR DEFECTO
 						const minutosAsistidos =
@@ -474,6 +484,9 @@ export const usePlanillaStore = () => {
 					colaborador: `${e.nombre_empl} ${e.apPaterno_empl}`,
 					sueldo: e._empl[0].sueldo,
 					dias_pendientes: dias_pendientes.filter((f) => f.hora_inicio !== 0),
+					dias_tardanzas: dias_pendientes
+						.filter((f) => f.hora_inicio !== 0)
+						.filter((f) => f.minutosContratados < f.jornada.minutosAsistidos),
 					dias_asistencias: diasAsistencias.filter((f) => f.hora_inicio !== 0),
 				};
 			});
