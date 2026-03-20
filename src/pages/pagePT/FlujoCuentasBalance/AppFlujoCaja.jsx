@@ -29,13 +29,13 @@ export const AppFlujoCaja = () => {
         childrenCircus={
           <TabView> 
             <TabPanel header={<div className='fs-1'>2026</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-circus text-white'} bgPastel={'bg-circus-pastel text-white'} id_empresa={601}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-change'} arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-circus text-white'} bgPastel={'bg-circus-pastel text-white'} id_empresa={601}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>2025</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']} anio={2025} classNameEmpresa={'bg-circus text-white'} bgPastel={'bg-circus-pastel text-white'} id_empresa={601}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-change'} arrayFecha={['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']} anio={2025} classNameEmpresa={'bg-circus text-white'} bgPastel={'bg-circus-pastel text-white'} id_empresa={601}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>2024</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2024} classNameEmpresa={'bg-circus text-white'} bgPastel={'bg-circus-pastel text-white'} id_empresa={601}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-change'} arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2024} classNameEmpresa={'bg-circus text-white'} bgPastel={'bg-circus-pastel text-white'} id_empresa={601}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>RESUMEN GENERAL</div>}>
               {/* <TablesResumenTotal classNameEmpresa={'bg-ral text-white'} bgPastel={'bg-ral-pastel text-white'} id_empresa={601}/> */}
@@ -45,13 +45,13 @@ export const AppFlujoCaja = () => {
         childrenReducto={
           <TabView>
             <TabPanel header={<div className='fs-1'>2026</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-greenISESAC text-white'} bgPastel={'bg-greenISESAC-pastel text-white'} id_empresa={599}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-ISESAC'} arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-greenISESAC text-white'} bgPastel={'bg-greenISESAC-pastel text-white'} id_empresa={599}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>2025</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']} anio={2025} classNameEmpresa={'bg-greenISESAC text-white'} bgPastel={'bg-greenISESAC-pastel text-white'} id_empresa={599}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-ISESAC'} arrayFecha={['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']} anio={2025} classNameEmpresa={'bg-greenISESAC text-white'} bgPastel={'bg-greenISESAC-pastel text-white'} id_empresa={599}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>2024</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2024} classNameEmpresa={'bg-greenISESAC text-white'} bgPastel={'bg-greenISESAC-pastel text-white'} id_empresa={599}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-ISESAC'} arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2024} classNameEmpresa={'bg-greenISESAC text-white'} bgPastel={'bg-greenISESAC-pastel text-white'} id_empresa={599}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>RESUMEN GENERAL</div>}>
               {/* <TablesResumenTotal classNameEmpresa={'bg-ral text-white'} bgPastel={'bg-ral-pastel text-white'} id_empresa={599}/> */}
@@ -61,13 +61,13 @@ export const AppFlujoCaja = () => {
         childrenRal = {
           <TabView>
             <TabPanel header={<div className='fs-1'>2026</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-ral text-white'} bgPastel={'bg-ral-pastel text-white'} id_empresa={800}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-ral'} arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-ral text-white'} bgPastel={'bg-ral-pastel text-white'} id_empresa={800}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>2025</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']} anio={2025} classNameEmpresa={'bg-ral text-white'} bgPastel={'bg-ral-pastel text-white'} id_empresa={800}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-ral'} arrayFecha={['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']} anio={2025} classNameEmpresa={'bg-ral text-white'} bgPastel={'bg-ral-pastel text-white'} id_empresa={800}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>2024</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2024} classNameEmpresa={'bg-ral text-white'} bgPastel={'bg-ral-pastel text-white'} id_empresa={800}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-ral'} arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2024} classNameEmpresa={'bg-ral text-white'} bgPastel={'bg-ral-pastel text-white'} id_empresa={800}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>RESUMEN GENERAL</div>}>
               {/* <TablesResumenTotal classNameEmpresa={'bg-ral text-white'} bgPastel={'bg-ral-pastel text-white'} id_empresa={800}/> */}

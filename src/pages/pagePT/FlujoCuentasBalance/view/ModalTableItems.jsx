@@ -63,7 +63,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
                 stickyHeader
             />
             <div className='d-flex'>
-                <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgTotal} text={''}/>
+                <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgTotal} text={textEmpresa}/>
                 <div className='border-2 bg-change'>
                 </div>
             </div>
