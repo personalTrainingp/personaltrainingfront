@@ -3,7 +3,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React, { useMemo } from 'react'
 import { Modal, Table } from 'react-bootstrap'
 
-export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgTotal}) => {
+export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgTotal, textEmpresa}) => {
     const columns = [
         {id: 0, header: '', render: (row)=>{
             return (
@@ -63,7 +63,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
                 stickyHeader
             />
             <div className='d-flex'>
-                <ProveedorResumen data={items} header='GASTOS PROVEEDORES'/>
+                <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgTotal} text={''}/>
                 <div className='border-2 bg-change'>
                 </div>
             </div>
@@ -72,7 +72,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
   )
 }
 
-const ProveedorResumen = ({ data = [], header='GASTOS' }) => {
+const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='text-change' }) => {
   const proveedores = useMemo(() => {
     return Object.values(
       data.reduce((acc, item) => {
@@ -99,16 +99,16 @@ const ProveedorResumen = ({ data = [], header='GASTOS' }) => {
 
   return (
     <div>
-      {proveedores.map((prov) => (
-        <div key={prov.razon_social_prov} style={{ marginBottom: 20 }}>
+        <span className={`${bg} text-white px-1 fs-2`}>{header}</span>
+      {proveedores.map((prov, i) => (
+        <div key={i} style={{ marginBottom: 14 }}>
           <strong>
-            {prov.razon_social_prov}: S/. {prov.acumulado.toFixed(2)}
+            <span className={`${text} mr-2 fs-4`}>
+                {prov.razon_social_prov}: 
+            </span>
+            S/. <NumberFormatMoney amount={prov.acumulado}/> <span className='fs-3'>({prov.items?.length})</span>
           </strong>
 
-          {/* prueba visual clara */}
-          <div>
-            Cantidad registros: {prov.items.length}
-          </div>
         </div>
       ))}
     </div>

@@ -3,7 +3,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React, { useMemo } from 'react'
 import { Modal, Table } from 'react-bootstrap'
 
-export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgHeader}) => {
+export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgHeader, textEmpresa}) => {
     const columns = [
         {id: 0, header: '', render: (row)=>{
             return (
@@ -91,7 +91,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
                 stickyHeader
             />
             <div className='d-flex'>
-                <ProveedorResumen data={items} header='GASTOS PROVEEDORES'/>
+                <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgHeader} text=''/>
                 <div className='border-2 bg-change'>
                 </div>
             </div>
@@ -100,40 +100,41 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
   )
 }
 
-const ProveedorResumen = ({ data = [], header='GASTOS' }) => {
+const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='text-change' }) => {
   const proveedores = useMemo(() => {
-    const map = {};
+    return Object.values(
+      data.reduce((acc, item) => {
+        const nombre =
+          item.tb_Proveedor?.razon_social_prov || "SIN NOMBRE";
 
-    data.forEach((item) => {
-      const nombre = item.tb_Proveedor?.razon_social_prov || "SIN NOMBRE";
+        const montoSoles =item.monto;
 
-      const montoSoles = item.monto;
+        if (!acc[nombre]) {
+          acc[nombre] = {
+            razon_social_prov: nombre,
+            acumulado: 0,
+            items: [],
+          };
+        }
 
-      if (!map[nombre]) {
-        map[nombre] = {
-          razon_social_prov: nombre,
-          acumulado: 0,
-          items: [],
-        };
-      }
+        acc[nombre].acumulado += montoSoles;
+        acc[nombre].items.push(item);
 
-      map[nombre].acumulado += montoSoles;
-      map[nombre].items.push(item);
-    });
-
-    return Object.values(map);
+        return acc;
+      }, {})
+    );
   }, [data]);
 
   return (
     <div>
-        <span className='bg-change text-white px-1 fs-2'>{header}</span>
+        <span className={`${bg} text-white px-1 fs-2`}>{header}</span>
       {proveedores.map((prov, i) => (
         <div key={i} style={{ marginBottom: 14 }}>
           <strong>
-            <span className='text-change mr-2'>
+            <span className={`${text} mr-2 fs-4`}>
                 {prov.razon_social_prov}: 
             </span>
-            S/. {prov.acumulado.toFixed(2)} ({prov.items?.length})
+                        S/. <NumberFormatMoney amount={prov.acumulado}/> <span className='fs-3'>({prov.items?.length})</span>
           </strong>
 
         </div>

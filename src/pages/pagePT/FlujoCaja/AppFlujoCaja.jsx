@@ -13,13 +13,13 @@ export const AppFlujoCaja = () => {
         childrenChange={
           <TabView>
             <TabPanel header={<div className='fs-1'>2026</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-change'} arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>2025</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']} anio={2025} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-change'} arrayFecha={['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']} anio={2025} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>2024</div>}>
-              <ViewTablesFlujoCaja arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2024} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
+              <ViewTablesFlujoCaja textEmpresa={'text-change'} arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2024} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>RESUMEN GENERAL</div>}>
               <TablesResumenTotal classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
