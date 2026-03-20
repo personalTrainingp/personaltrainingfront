@@ -33,7 +33,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
       <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
         <thead>
           <tr>
-            <th style={{width: '400px'}} className={` text-break fs-3 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black `}>{index}. {nombreGrupo}</th>
+            <th style={{width: '500px'}} className={` text-break fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black `}>{index}. {nombreGrupo}</th>
             {
               dataAlter.map(f=>{
                 return (
@@ -76,7 +76,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                               </div>
                             )
                           }
-                          <div className='text-orange' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
+                          <div className='text-change' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
                             
                             {sumaMontoMensual1424!=='0.00'&&sumaMontoMensual1424}
                           </div>
@@ -92,7 +92,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                               </>
                             )
                           }
-                          <div className='text-orange' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
+                          <div className='text-change' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
                             
                             {sumaMontoMensual1424!=='0.00'&&sumaCantidadMensual1424}
                           </div>

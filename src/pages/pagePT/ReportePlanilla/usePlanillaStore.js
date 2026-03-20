@@ -406,32 +406,32 @@ export const usePlanillaStore = () => {
 						{
 							dia: 'LUNES',
 							id_estabilidad: 1694,
-							hora_inicio: '07:00:00',
-							hora_fin: '18:00:00',
+							hora_inicio: '07:30:00',
+							hora_fin: '16:30:00',
 						},
 						{
 							dia: 'MARTES',
 							id_estabilidad: 1694,
-							hora_inicio: '07:00:00',
-							hora_fin: '18:00:00',
+							hora_inicio: '07:30:00',
+							hora_fin: '16:30:00',
 						},
 						{
 							dia: 'MIERCOLES',
 							id_estabilidad: 1694,
-							hora_inicio: '07:00:00',
-							hora_fin: '18:00:00',
+							hora_inicio: '07:30:00',
+							hora_fin: '16:30:00',
 						},
 						{
 							dia: 'JUEVES',
 							id_estabilidad: 1694,
-							hora_inicio: '07:00:00',
-							hora_fin: '18:00:00',
+							hora_inicio: '07:30:00',
+							hora_fin: '16:30:00',
 						},
 						{
 							dia: 'VIERNES',
 							id_estabilidad: 1694,
-							hora_inicio: '07:00:00',
-							hora_fin: '18:00:00',
+							hora_inicio: '07:30:00',
+							hora_fin: '16:30:00',
 						},
 						{
 							dia: 'SABADO',
@@ -447,15 +447,24 @@ export const usePlanillaStore = () => {
 							(d) => d.dia == g.dia && d.anio == g.anio && d.mes == g.mes
 						);
 						const sueldo_dia = e._empl[0].sueldo / a.length;
-						const sueldo_min = 540 / sueldo_dia; //SUELDO POR CADA MINUTO DEL DIA, POR DEFECTO ES 540
-						const minutosTarde = isAsistido?.min_inicio - g?.min_inicio;
+						const minutosContratados = 540; //POR DEFECTO
+						const minutosAsistidos =
+							obtenerMinutosPorNumero(g.hora_fin, g.min_fin) -
+							obtenerMinutosPorNumero(
+								isAsistido?.hora_inicio,
+								isAsistido?.min_inicio
+							);
+						const sueldo_min = sueldo_dia / minutosContratados;
 						return {
 							...g,
 							sueldo_dia,
-							sueldo_min,
-							isAsistido,
+							jornada: {
+								...isAsistido,
+								minutosAsistidos,
+								sueldo_jornada: sueldo_min * minutosAsistidos,
+							},
 							sueldo_neto: '',
-							minutosTarde,
+							minutosContratados,
 							// estado: `${isAsistido?.hora_inicio == 0 ? 'NO ASISTIO' : `${g.hora_inicio < isAsistido?.hora_inicio ? 'TARDANZA' : ''}`}`,
 						};
 					});
@@ -480,7 +489,6 @@ export const usePlanillaStore = () => {
 	};
 };
 
-
-function obtenerMinutosPorNumero(hora=2, min=0) {
-	return (hora*60)+min
+function obtenerMinutosPorNumero(hora = 2, min = 0) {
+	return hora * 60 + min;
 }

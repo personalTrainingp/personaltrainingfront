@@ -27,6 +27,10 @@ export const useFlujoCaja = () => {
 				return {
 					...g,
 					fecha_primaria: g.fecha_comprobante,
+					tb_Proveedor: {
+						razon_social_prov: g.descripcion.split(':')[0],
+					},
+					descripcion: g.descripcion.split(':')[1],
 					id_estado_gasto: 1423,
 					tb_parametros_gasto: {
 						id: g.id_concepto,
@@ -43,8 +47,6 @@ export const useFlujoCaja = () => {
 					},
 				};
 			});
-
-			console.log({ data: dataGastos, mm: 1 });
 			const arrGrupos = [
 				{
 					id: 1576,

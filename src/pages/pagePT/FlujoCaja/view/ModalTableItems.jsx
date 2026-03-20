@@ -1,6 +1,6 @@
 import { DateMaskStr, NumberFormatMoney } from '@/components/CurrencyMask';
 import { DataTableCR } from '@/components/DataView/DataTableCR';
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Modal, Table } from 'react-bootstrap'
 
 export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgHeader}) => {
@@ -90,7 +90,59 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
                 bgHeader={bgHeader}
                 stickyHeader
             />
+            <div className='d-flex'>
+                <ProveedorResumen data={items} header='GASTOS PROVEEDORES'/>
+                <div className='border-2 bg-change'>
+                </div>
+            </div>
         </Modal.Body>
     </Modal>
   )
 }
+
+const ProveedorResumen = ({ data = [], header='GASTOS' }) => {
+  const proveedores = useMemo(() => {
+    const map = {};
+
+    data.forEach((item) => {
+      const nombre = item.tb_Proveedor?.razon_social_prov || "SIN NOMBRE";
+
+      const montoSoles =
+        item.moneda === "USD"
+          ? item.monto * item.tc
+          : item.monto;
+
+      if (!map[nombre]) {
+        map[nombre] = {
+          razon_social_prov: nombre,
+          acumulado: 0,
+          items: [],
+        };
+      }
+
+      map[nombre].acumulado += montoSoles;
+      map[nombre].items.push(item);
+    });
+
+    return Object.values(map);
+  }, [data]);
+
+  return (
+    <div>
+        <span className='bg-change text-white px-1 fs-2'>{header}</span>
+      {proveedores.map((prov, i) => (
+        <div key={i} style={{ marginBottom: 14 }}>
+          <strong>
+            <span className='text-change mr-2'>
+                {prov.razon_social_prov}: 
+            </span>
+            S/. {prov.acumulado.toFixed(2)} ({prov.items?.length})
+          </strong>
+
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default ProveedorResumen;

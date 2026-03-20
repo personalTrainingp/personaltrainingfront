@@ -73,20 +73,33 @@ export const agruparPorConcepto = (data = []) => {
 	for (const item of data) {
 		const concepto =
 			item?.tb_parametros_gasto?.nombre_gasto ?? item?.nombre_gasto ?? 'SIN CONCEPTO';
+		const ordenConcepto = item?.tb_parametros_gasto?.orden ?? item?.nombre_gasto ?? 0;
 
 		if (!map.has(concepto)) {
-			map.set(concepto, { concepto, items: [] });
+			map.set(concepto, { concepto, ordenConcepto, items: [] });
 		}
 
 		map.get(concepto).items.push(item);
 	}
-	return Array.from(map.values()).map((ar) => {
-		return {
-			...ar,
-			items: agruparPorDia(ar.items),
-			data: ar.items,
-		};
+	console.log({
+		resultado: Array.from(map.values()).map((ar) => {
+			return {
+				...ar,
+				items: agruparPorDia(ar.items),
+				data: ar.items,
+			};
+		}),
 	});
+
+	return Array.from(map.values())
+		.map((ar) => {
+			return {
+				...ar,
+				items: agruparPorDia(ar.items),
+				data: ar.items,
+			};
+		})
+		.sort((a, b) => a.ordenConcepto - b.ordenConcepto);
 };
 
 function agruparPorDia(data) {

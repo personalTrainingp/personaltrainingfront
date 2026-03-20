@@ -33,14 +33,14 @@ export const TablePlanilla = () => {
             </thead>
             <tbody>
                 {
-                    dataPlanilla?.map(p=>{
+                    dataPlanilla?.map((p, i)=>{
                         return (
                             <tr>
-                                <td className='fs-6'>1</td>
+                                <td className='fs-6'>{i+1}</td>
                                 <td className='fs-6'>{p.cargo}</td>
                                 <td className='fs-6'>{p.colaborador}</td>
                                 <td className='fs-6'><NumberFormatMoney amount={p.sueldo}/></td>
-                                <td className='fs-6'>31</td>
+                                <td className='fs-6'>{p.dias_pendientes.length}</td>
                                 <td className='fs-6'>10/3</td>
                                 <td className='fs-6'>2,200.00 </td>
                                 <td className='fs-6'>120.00 </td>

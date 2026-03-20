@@ -77,7 +77,7 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                               </div>
                             )
                           }
-                          <div className='text-orange' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
+                          <div className='text-change' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
                             {sumaMontoMensual1424!=='0.00'&&sumaMontoMensual1424}
                           </div>
                         </div>
@@ -92,7 +92,7 @@ export const DataTablePrincipal = ({data=[], id_empresa, itemsxDias=[], concepto
                               </>
                             )
                           }
-                          <div className='text-orange' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
+                          <div className='text-change' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
                             
                             {sumaMontoMensual1424!=='0.00'&&sumaCantidadMensual1424}
                           </div>
