@@ -4,7 +4,7 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import React, { useMemo } from 'react'
 import { Col, Modal, Row, Table } from 'react-bootstrap'
 
-export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgTotal, textEmpresa}) => {
+export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgTotal, textEmpresa, id_empresa}) => {
     const columns = [
         {id: 0, header: '', render: (row)=>{
             return (
@@ -68,7 +68,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
             </TabPanel>
             <TabPanel header={'RESUMEN DE PROVEEDORES'}>
               <div className='d-flex'>
-                  <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgTotal} text={textEmpresa}/>
+                  <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgTotal} text={textEmpresa} id_empresa={id_empresa}/>
                   <div className='border-2 bg-change'>
                   </div>
               </div>
@@ -80,7 +80,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
   )
 }
 
-const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='text-change' }) => {
+const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='text-change', id_empresa }) => {
   const proveedores = useMemo(() => {
     return Object.values(
       data.reduce((acc, item) => {
@@ -107,15 +107,15 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
 
   return (
     <div>
-        <div className={`${bg} text-white text-center px-1 fs-2`}>{header}</div>
+        <div className={`${bg} text-white text-center px-1 fs-2 mb-3`}>{header}</div>
         <Row>
           {proveedores.map((prov, i) => (
             <Col  key={i} lg={4}>
-              <div style={{ marginBottom: 14 }}>
-                <strong>
-                  <span className={`${text} mr-2 fs-4`}>
-                      {prov.razon_social_prov}: 
+              <div style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-${id_empresa}`}>
+                  <span className={`${text} fs-3 text-center ${bg} text-white p-0`}>
+                      {prov.razon_social_prov}
                   </span>
+                <strong className='text-center'>
                   S/. <NumberFormatMoney amount={prov.acumulado}/> <span className='fs-3'>({prov.items?.length})</span>
                 </strong>
 

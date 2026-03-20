@@ -121,6 +121,34 @@ export const useFlujoCaja = () => {
 			console.log(error);
 		}
 	};
+	const obtenerVentasxFecha = async (enterprice, arrayDate) => {
+		try {
+			const {data: dataVentas} = await PTApi.get(`/venta/fecha-venta/id_empresa/${enterprice}`, {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const obtenerEgresos = async (enterprice, arrayDate) => {
+		try {
+			const {} = await PTApi.get(`/venta/fecha-venta/id_empresa/${enterprice}`, {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerEgresosxFecha,
 		dataGastosxFecha,
