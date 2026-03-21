@@ -119,12 +119,7 @@ export const useInformeEjecutivoStore = () => {
 					};
 				})
 				.filter((v) => v.detalle_productos.length !== 0);
-			console.log(
-				{ dataVentasMap },
-				sumarMontoTotal(agruparPorMesDiaFechaVenta(dataVentasMap))
-			);
 			const renovacionesxEmpl = agruparPorEmpleado(dataMembresiasRenovaciones);
-			console.log({ dataMembresiasRenovaciones, renovacionesxEmpl });
 			setdataVentas({
 				dataMembresias: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataMembresias)),
 				dataProductos17: sumarMontoTotal(agruparPorMesDiaFechaVenta(dataProductos17)),
