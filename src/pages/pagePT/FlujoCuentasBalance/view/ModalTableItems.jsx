@@ -107,7 +107,7 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
   }, [data]);
   return (
     <div>
-        <div className={`${bg}  text-center px-1 fs-2 mb-3`}>{header} <br/> {dayjs(data[0].fecha_primaria.split('T')[0], 'YYYY-MM-DD').format('MMMM YYYY')}</div>
+        <div className={`${bg}  text-center px-1 fs-2 mb-3`}>{header} <br/> {dayjs(data[0]?.fecha_primaria?.split('T')[0], 'YYYY-MM-DD').format('MMMM YYYY')}</div>
         <Row>
           {proveedores.map((prov, i) => (
             <Col  key={i} lg={4}>

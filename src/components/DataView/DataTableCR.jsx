@@ -1045,6 +1045,7 @@ const filtered = useMemo(() => {
               onChange={(e) => setSearch(e.target.value)}
               placeholder={filterPlaceholder}
               aria-label="Buscar"
+              autoFocus
             />
           )}
         </Col>
