@@ -11,7 +11,7 @@ export const App = ({estado=true, tipo=1573}) => {
         childrenChange={<AppGestionProveedores estado={estado} idEmpresa={598} tipo={tipo}/>}
         childrenCircus={<AppGestionProveedores estado={estado} idEmpresa={599} tipo={tipo}/>}
         childrenReducto={<AppGestionProveedores estado={estado} idEmpresa={601} tipo={tipo}/>}
-        childrenRal={<AppGestionProveedores estado={estado} idEmpresa={0} tipo={tipo}/>}
+        childrenRal={<AppGestionProveedores estado={estado} idEmpresa={800} tipo={tipo}/>}
     />
     
     </>
