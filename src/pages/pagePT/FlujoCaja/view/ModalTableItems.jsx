@@ -113,9 +113,7 @@ export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, 
                     </TabPanel>
                     <TabPanel header={<div className='fs-1'>GASTOS POR PROVEEDOR</div>}>
                         <div className='d-flex'>
-                            <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={'bgTotal'} text={textEmpresa} id_empresa={id_empresa}/>
-                            <div className='border-2 bg-change'>
-                            </div>
+                            <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
                         </div>
                     </TabPanel>
                 </TabView>
@@ -152,13 +150,13 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
     ).sort((b, a)=>a.acumulado-b.acumulado);
   }, [data]);
   return (
-    <div>
+    <div className='w-100'>
         <div className={`${bg}  text-center px-1 fs-2 mb-3`}>{header} - {dayjs(data[0]?.fecha_primaria?.split('T')[0], 'YYYY-MM-DD').format('MMMM YYYY')}</div>
         <Row>
           {proveedores.map((prov, i) => (
             <Col  key={i} lg={4}>
-              <div style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-${id_empresa}`}>
-                  <span className={`${text} fs-2 text-center  p-0 border-bottom-${id_empresa}`}>
+              <div style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black`}>
+                  <span className={`${text} fs-2 text-center  p-0 border-bottom-black`}>
                       {prov.razon_social_prov}
                   </span>
                 <strong className='text-center text-black'>
