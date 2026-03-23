@@ -145,7 +145,7 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
 
   return (
     <div>
-        <span className={`${bg} text-white px-1 fs-2`}>{header}</span>
+        <span className={`${bg} text-white px-1 fs-2`}>{header} {JSON.stringify(data[0], null, 2)} </span>
       {proveedores.map((prov, i) => (
         <div key={i} style={{ marginBottom: 14 }}>
           <strong>

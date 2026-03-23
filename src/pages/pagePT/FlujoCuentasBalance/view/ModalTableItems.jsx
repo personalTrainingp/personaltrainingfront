@@ -1,10 +1,11 @@
 import { DateMaskStr, NumberFormatMoney } from '@/components/CurrencyMask';
 import { DataTableCR } from '@/components/DataView/DataTableCR';
+import dayjs from 'dayjs';
 import { TabPanel, TabView } from 'primereact/tabview';
 import React, { useMemo } from 'react'
 import { Col, Modal, Row, Table } from 'react-bootstrap'
 
-export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgTotal, textEmpresa, id_empresa}) => {
+export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, bgTotal, textEmpresa, id_empresa, mes, anio}) => {
     const columns = [
         {id: 0, header: '', render: (row)=>{
             return (
@@ -106,7 +107,7 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
   }, [data]);
   return (
     <div>
-        <div className={`${bg}  text-center px-1 fs-2 mb-3`}>{header}</div>
+        <div className={`${bg}  text-center px-1 fs-2 mb-3`}>{header} <br/> {dayjs(data[0].fecha_primaria.split('T')[0], 'YYYY-MM-DD').format('MMMM YYYY')}</div>
         <Row>
           {proveedores.map((prov, i) => (
             <Col  key={i} lg={4}>
