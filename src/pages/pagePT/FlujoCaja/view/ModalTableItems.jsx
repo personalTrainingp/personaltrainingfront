@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react'
 import { Col, Modal, Row, Table } from 'react-bootstrap'
 import { ModalCustomGasto } from '../../GestGastos/ModalCustomGasto';
 import dayjs from 'dayjs';
+import { TabPanel, TabView } from 'primereact/tabview';
 
 export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, id_empresa}) => {
     const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
@@ -99,19 +100,25 @@ export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, 
                 <Modal.Title>{id_empresa}</Modal.Title>
             </Modal.Header>
             <Modal.Body >
-                <DataTableCR
-                    columns={columns}
-                    data={items}
-                    responsive
-                    stickyHeight={'80vh'}
-                    bgHeader={bgHeader}
-                    stickyHeader
-                />
-                <div className='d-flex'>
-                  <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={'bgTotal'} text={textEmpresa} id_empresa={id_empresa}/>
-                  <div className='border-2 bg-change'>
-                  </div>
-              </div>
+                <TabView>
+                    <TabPanel header={<div className='fs-1'>ITEMS</div>}>
+                        <DataTableCR
+                            columns={columns}
+                            data={items}
+                            responsive
+                            stickyHeight={'80vh'}
+                            bgHeader={bgHeader}
+                            stickyHeader
+                        />
+                    </TabPanel>
+                    <TabPanel header={<div className='fs-1'>GASTOS POR PROVEEDOR</div>}>
+                        <div className='d-flex'>
+                            <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={'bgTotal'} text={textEmpresa} id_empresa={id_empresa}/>
+                            <div className='border-2 bg-change'>
+                            </div>
+                        </div>
+                    </TabPanel>
+                </TabView>
             </Modal.Body>
         </Modal>
                     <ModalCustomGasto id={isOpenModalCustomGasto.id} id_enterprice={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
@@ -165,5 +172,4 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
     </div>
   );
 };
-
 export default ProveedorResumen;
