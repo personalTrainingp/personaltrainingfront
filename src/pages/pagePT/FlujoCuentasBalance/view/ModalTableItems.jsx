@@ -67,9 +67,9 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
                   stickyHeader
               />
             </TabPanel>
-            <TabPanel header={<div className='fs-1'>RESUMEN DE PROVEEDORES</div>}>
+            <TabPanel header={<div className='fs-1'>GASTOS PROVEEDORES</div>}>
               <div className='d-flex'>
-                  <ProveedorResumen data={items} header='RESUMEN DE PROVEEDORES' bg={bgTotal} text={textEmpresa} id_empresa={id_empresa}/>
+                  <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgTotal} text={textEmpresa} id_empresa={id_empresa}/>
                   <div className='border-2 bg-change'>
                   </div>
               </div>
