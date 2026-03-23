@@ -108,7 +108,7 @@ export const ModalTableItemsIngresos = ({show, onHide, items={}, bgHeader, textE
                     stickyHeader
                 />
                 <div className='d-flex'>
-                  <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={bgTotal} text={textEmpresa} id_empresa={id_empresa}/>
+                  <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={'bgTotal'} text={textEmpresa} id_empresa={id_empresa}/>
                   <div className='border-2 bg-change'>
                   </div>
               </div>

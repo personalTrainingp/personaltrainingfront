@@ -1,8 +1,9 @@
 import { DateMaskStr, NumberFormatMoney } from '@/components/CurrencyMask';
 import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React, { useMemo, useState } from 'react'
-import { Modal, Table } from 'react-bootstrap'
+import { Modal, Row, Table } from 'react-bootstrap'
 import { ModalCustomGasto } from '../../GestGastos/ModalCustomGasto';
+import dayjs from 'dayjs';
 
 export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, id_empresa}) => {
     const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
@@ -107,7 +108,7 @@ export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, 
                     stickyHeader
                 />
                 <div className='d-flex'>
-                  <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={bgTotal} text={textEmpresa} id_empresa={id_empresa}/>
+                  <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={'bgTotal'} text={textEmpresa} id_empresa={id_empresa}/>
                   <div className='border-2 bg-change'>
                   </div>
               </div>
