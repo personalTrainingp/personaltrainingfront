@@ -56,7 +56,7 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
         </Modal.Header>
         <Modal.Body >
           <TabView>
-            <TabPanel header={'ITEMS'}>
+            <TabPanel header={<div className='fs-3'>ITEMS</div>}>
               <DataTableCR
                   columns={columns}
                   bgHeader={bgTotal}
@@ -66,9 +66,9 @@ export const ModalTableItems = ({show, onHide, id, items={}, onOpenModalCustom, 
                   stickyHeader
               />
             </TabPanel>
-            <TabPanel header={'RESUMEN DE PROVEEDORES'}>
+            <TabPanel header={<div className='fs-3'>RESUMEN DE PROVEEDORES</div>}>
               <div className='d-flex'>
-                  <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgTotal} text={textEmpresa} id_empresa={id_empresa}/>
+                  <ProveedorResumen data={items} header='RESUMEN DE PROVEEDORES' bg={bgTotal} text={textEmpresa} id_empresa={id_empresa}/>
                   <div className='border-2 bg-change'>
                   </div>
               </div>

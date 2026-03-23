@@ -21,18 +21,6 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, arrayFecha=[], i
   return (
     <div>
         <div>
-            <h1>TOTAL</h1>
-            <div className='tab-scroll-container'>
-                <ViewResumenTotal
-                    onOpenModalTableItems={onOpenModalTableItems}  
-                    bgPastel={bgPastel} 
-                    bgTotal={classNameEmpresa} 
-                    anio={anioTotal}
-                    id_enterprice={id_empresa} 
-                    fechas={generarMesYanio(new Date(anioTotal[0]), new Date(anioTotal[1]))} />
-            </div>
-        </div>
-        <div>
             <h1>2026</h1>
             <div className='tab-scroll-container'>
                 <ViewResumenTotal
