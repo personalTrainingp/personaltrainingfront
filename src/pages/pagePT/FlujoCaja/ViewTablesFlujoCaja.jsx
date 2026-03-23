@@ -6,29 +6,28 @@ import { DataTablePrincipal } from './DataTables/DataTablePrincipal'
 import { ModalTableItems } from './view/ModalTableItems'
 import { ModalCustomGasto } from '../GestGastos/ModalCustomGasto'
 import { ViewResumenTotal } from './ViewResumenTotal'
+import { ModalTableItemsIngresos } from './view/ModalTableItemsIngresos'
 
 export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameEmpresa, bgPastel, textEmpresa}) => {
     const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
     const [data, setdata] = useState({isOpen: false, items: [], header: ''})
-    const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
+    const [dataIngresos, setdataIngresos] = useState({isOpen: false, items: [], header: ''})
     useEffect(() => {
         obtenerEgresosxFecha(id_empresa, arrayFecha)
         obtenerIngresosxFecha(id_empresa, arrayFecha)
     }, [])
     const onOpenModalTableItems = (data)=>{
-        
         setdata({isOpen: true, items: data, header: ''})
     }
     const onCloseModalTableItems = ()=>{
         setdata({isOpen: false, items: [], header: ''})
     }
-    const onOpenModalCustomGasto = (id)=>{
-        setisOpenModalCustomGasto({isOpen: true, id: id})
+    const onOpenModalTableItemsIngresos = (data)=>{
+        setdataIngresos({isOpen: true, items: data, header: ''})
     }
-    const onCloseModalCustomGasto = ()=>{
-        setisOpenModalCustomGasto({isOpen: false, id: 0})
+    const onCloseModalTableItemsIngresos = ()=>{
+        setdataIngresos({isOpen: false, items: [], header: ''})
     }
-    
   return (
     <div>
         <div className='fs-1 text-center'>INGRESOS</div>
@@ -39,7 +38,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
                         <DataTablePrincipal 
                             index={i+1}
                             id_empresa={id_empresa}
-                            onOpenModalTableItems={onOpenModalTableItems} 
+                            onOpenModalTableItems={onOpenModalTableItemsIngresos} 
                             key={`${data.grupo}`} 
                             bgPastel={bgPastel} 
                             bgTotal={classNameEmpresa} 
@@ -88,8 +87,11 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
             <ModalTableItems 
                 bgHeader={classNameEmpresa}
                 textEmpresa={textEmpresa}
-            show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} onOpenModalCustom={onOpenModalCustomGasto}/>
-            <ModalCustomGasto id={isOpenModalCustomGasto.id} id_enterprice={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
+            show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} id_empresa={id_empresa}/>
+            <ModalTableItemsIngresos
+                bgHeader={classNameEmpresa}
+                textEmpresa={textEmpresa}
+            show={dataIngresos.isOpen} onHide={onCloseModalTableItemsIngresos} items={dataIngresos.items} id_empresa={id_empresa}/>
     </div>
   )
 }

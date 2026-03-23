@@ -64,7 +64,7 @@ export const useGestionAportes = () => {
 		}
 	};
 
-	const obtenerParametrosProveedor = async (idEmpresa) => {
+	const obtenerParametrosProveedor = async (idEmpresa = 0) => {
 		try {
 			const { data } = await PTApi.get(`/parametros/get_params/producto/proveedor/1574`);
 			console.log({ datame: data, idEmpresa });

@@ -99,6 +99,8 @@ export const useFlujoCaja = () => {
 					},
 				};
 			});
+
+			const dataTipoTC = await obtenerTipoDeCambio();
 			const dataV = dataIngresosOrden([...data.ventas]);
 			const arrayTotalIngresos = [
 				...dataV.dataMembresias,
@@ -114,7 +116,10 @@ export const useFlujoCaja = () => {
 				};
 			});
 			setdataIngresosxFecha(
-				agruparPorGrupoYConcepto(totalIngresos, dataParametrosGastos.termGastos)
+				agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTipoTC, totalIngresos),
+					dataParametrosGastos.termGastos
+				)
 			);
 			console.log({});
 		} catch (error) {
@@ -123,14 +128,17 @@ export const useFlujoCaja = () => {
 	};
 	const obtenerVentasxFecha = async (enterprice, arrayDate) => {
 		try {
-			const {data: dataVentas} = await PTApi.get(`/venta/fecha-venta/id_empresa/${enterprice}`, {
-				params: {
-					arrayDate: [
-						formatDateToSQLServerWithDayjs(arrayDate[0], true),
-						formatDateToSQLServerWithDayjs(arrayDate[1], false),
-					],
-				},
-			});
+			const { data: dataVentas } = await PTApi.get(
+				`/venta/fecha-venta/id_empresa/${enterprice}`,
+				{
+					params: {
+						arrayDate: [
+							formatDateToSQLServerWithDayjs(arrayDate[0], true),
+							formatDateToSQLServerWithDayjs(arrayDate[1], false),
+						],
+					},
+				}
+			);
 		} catch (error) {
 			console.log(error);
 		}

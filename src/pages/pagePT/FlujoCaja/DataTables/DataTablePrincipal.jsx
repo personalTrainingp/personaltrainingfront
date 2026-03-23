@@ -33,7 +33,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
       <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
         <thead>
           <tr>
-            <th style={{width: '500px'}} className={` text-break fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black `}>{index}. {nombreGrupo}</th>
+            <th style={{width: '500px'}} className={` text-break fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black `}>{index}. {nombreGrupo==='GAS / MANTENIMIENTO Y MOVILIDADES'?<>GAS AUTO/<br/> MANTENIMIENTO/<br/> Y MOVILIDADES</>:nombreGrupo}</th>
             {
               dataAlter.map(f=>{
                 return (
@@ -168,4 +168,8 @@ function dataTotalFormular(anio=2024, data=[]) {
   const anioActual = hoy.getFullYear()
 
 	return anio===2024?data.filter(f=>f.data?.length !== 0).length:anioActual===anio ? mesActual:12
+}
+
+function cambiarEstilosPorTexto(texto, change) {
+    return texto
 }

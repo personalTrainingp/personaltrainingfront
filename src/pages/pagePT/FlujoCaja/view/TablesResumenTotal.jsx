@@ -5,7 +5,6 @@ import { useFlujoCaja } from '../hook/useFlujoCajaStore'
 export const TablesResumenTotal = ({classNameEmpresa, bgPastel, arrayFecha=[], id_empresa}) => {
     const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
     const [data, setdata] = useState({isOpen: false, items: [], header: ''})
-    const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
     useEffect(() => {
         obtenerEgresosxFecha(id_empresa, arrayFecha)
         obtenerIngresosxFecha(id_empresa, arrayFecha)
@@ -17,6 +16,8 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, arrayFecha=[], i
     const anio2025 = ['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']
     const anio2024 = ['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']
     const anioTotal = ['2024-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']
+    console.log({dataGastosxFecha, dataIngresosxFecha});
+    
   return (
     <div>
         <div>

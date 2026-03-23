@@ -3,8 +3,9 @@ import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React, { useMemo, useState } from 'react'
 import { Modal, Table } from 'react-bootstrap'
 import { ModalCustomGasto } from '../../GestGastos/ModalCustomGasto';
+import { ModalCustomAporte } from '../../GestionAportes/ModalCustomAporte';
 
-export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, id_empresa}) => {
+export const ModalTableItemsIngresos = ({show, onHide, items={}, bgHeader, textEmpresa, id_empresa}) => {
     const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
     const onOpenModalCustomGasto = (id=0)=>{
         setisOpenModalCustomGasto({isOpen: true, id: id})
@@ -113,7 +114,7 @@ export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, 
                 </div>
             </Modal.Body>
         </Modal>
-                    <ModalCustomGasto id={isOpenModalCustomGasto.id} id_enterprice={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
+                    <ModalCustomAporte id={isOpenModalCustomGasto.id} id_enterprice={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
     </>
   )
 }

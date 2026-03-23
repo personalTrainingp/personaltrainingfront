@@ -7,16 +7,12 @@ import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 import { arrayFinanzas } from '@/types/type'
 
-export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
+export const DataTableAportes = ({idEmpresa=0, onOpenModalCustomAporte}) => {
   const { obtenerGestionAporte, onDeleteIngresos } = useGestionAportes()
   const {dataView} = useSelector(e=>e.APORTE)
-  const [isLoading, setisLoading] = useState(false)
-  useEffect(async() => {
-    setisLoading(true)
-    await obtenerGestionAporte(idEmpresa)
-    setisLoading(false)
+  useEffect(() => {
+    obtenerGestionAporte(idEmpresa)
   }, [idEmpresa])
-  console.log({dataView});
   
   const columns = [
     { id: 'id', header: <div className=''>ID</div>, accessor: 'id', sortable: true, render:(row)=>{
@@ -178,7 +174,6 @@ export const DataTableAportes = ({idEmpresa, onOpenModalCustomAporte}) => {
             columns={columns}
             data={dataView}
             exportExtraColumns={columnsExports}
-            loading={isLoading}
         />
     </div>
   )
