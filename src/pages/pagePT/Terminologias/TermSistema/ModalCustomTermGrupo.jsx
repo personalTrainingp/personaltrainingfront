@@ -9,12 +9,12 @@ const customTS = {
   estado_param: 1,
   orden: 0
 }
-export const ModalCustomTermSistema = ({ show, onHide,  id = 0, label = '', id_empresa }) => {
-  const { obtenerTerminologiaSistemaxID, dataTerminoxID, postTerminoGrupo, updateTerminoGrupo } = useTerminoSistema()
-  const { formState, onInputChange, param_label, orden, onResetForm } = useForm(id!==0?dataTerminoxID:customTS)
+export const ModalCustomTermGrupo = ({ show, onHide,  id = 0, label = '', id_empresa }) => {
+  const {  obtenerTerminoGrupoxID, dataGrupo, postTerminoGrupo, updateTerminoGrupo } = useTerminoSistema()
+  const { formState, onInputChange, param_label, orden, onResetForm } = useForm(id!==0?dataGrupo:customTS)
   useEffect(() => {
     if (id!==0) {
-      obtenerTerminologiaSistemaxID(id)
+      obtenerTerminoGrupoxID(id)
     }
   }, [id])
   const onSubmitTerminologia = ()=>{
@@ -32,7 +32,7 @@ export const ModalCustomTermSistema = ({ show, onHide,  id = 0, label = '', id_e
   return (
     <Modal show={show} onHide={cancelarTerminologia} >
       <Modal.Header>
-        {id!==0?'ACTUALIZAR TERMINOLOGIA':'AGREGAR TERMINOLOGIA'}
+        {id!==0?'ACTUALIZAR TERMINOLOGIA':'AGREGAR TERMINOLOGIA'} {id}
       </Modal.Header>
       <Modal.Body>
         <form>

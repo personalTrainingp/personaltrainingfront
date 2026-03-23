@@ -19,6 +19,13 @@ export const terminologiasSlice = createSlice({
 				orden: 0,
 			},
 		],
+		dataViewTerm4: [
+			{
+				id: 0,
+				param_label: '',
+				orden: 0,
+			},
+		],
 	},
 	reducers: {
 		onSetDataViewTerm2: (state, { payload }) => {
@@ -27,6 +34,10 @@ export const terminologiasSlice = createSlice({
 		onSetDataViewTerm: (state, { payload }) => {
 			state.dataViewTerm = payload;
 		},
+		onSetDataViewTerm4: (state, { payload }) => {
+			state.dataViewTerm4 = payload;
+		},
 	},
 });
-export const { onSetDataViewTerm2, onSetDataViewTerm } = terminologiasSlice.actions;
+export const { onSetDataViewTerm2, onSetDataViewTerm, onSetDataViewTerm4 } =
+	terminologiasSlice.actions;

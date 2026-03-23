@@ -398,7 +398,7 @@ const filtered = useMemo(() => {
   const startIdx = (currentPage - 1) * pageSize;
 
   const pageRows = useMemo(
-    () => sorted.slice(startIdx, startIdx + pageSize),
+    () => sorted?.slice(startIdx, startIdx + pageSize),
     [sorted, startIdx, pageSize]
   );
 

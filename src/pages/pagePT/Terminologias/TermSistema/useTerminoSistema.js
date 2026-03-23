@@ -1,12 +1,13 @@
 import { PTApi } from '@/common';
 import { onSetDataView } from '@/store/data/dataSlice';
 import { useDispatch } from 'react-redux';
-import { onSetDataViewTerm } from '../store/terminologiaSlice';
+import { onSetDataViewTerm, onSetDataViewTerm4 } from '../store/terminologiaSlice';
 import { useState } from 'react';
 
 export const useTerminoSistema = () => {
 	const dispatch = useDispatch();
 	const [dataTerminoxID, setdataTerminoxID] = useState({});
+	const [dataGrupo, setdataGrupo] = useState([]);
 	const onPutTerminologiaSistema = async (id, formState) => {
 		try {
 			const termino = await PTApi.post(`/params-generales/${id}`, formState);
@@ -69,7 +70,60 @@ export const useTerminoSistema = () => {
 			console.log(error.message);
 		}
 	};
+	const obtenerGruposxEmpresa = async (id_empresa) => {
+		try {
+			const { data } = await PTApi.get(`/terminologia/grupo/id_empresa/${id_empresa}`);
+			console.log({ data });
+
+			dispatch(onSetDataViewTerm4(data.dataGrupo));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const postTerminoGrupo = async (id_empresa, formState) => {
+		try {
+			const response = await PTApi.post(`/terminologia/grupo/${id_empresa}`, {
+				...formState,
+				id_empresa,
+			});
+			await obtenerGruposxEmpresa(id_empresa);
+		} catch (error) {
+			console.log(error.message);
+		}
+	};
+	const updateTerminoGrupo = async (id, formState, id_empresa) => {
+		try {
+			const response = await PTApi.put(`/terminologia/grupo/id/${id}`, {
+				...formState,
+			});
+			await obtenerGruposxEmpresa(id_empresa);
+		} catch (error) {
+			console.log(error.message);
+		}
+	};
+	const deleteTerminoGrupoxID = async (id, id_empresa) => {
+		try {
+			const response = await PTApi.put(`/terminologia/grupo/delete/id/${id}`);
+			await obtenerGruposxEmpresa(id_empresa);
+		} catch (error) {
+			console.log(error.message);
+		}
+	};
+	const obtenerTerminoGrupoxID = async (id) => {
+		try {
+			const { data } = await PTApi.get(`/terminologia/grupo/id/${id}`);
+			setdataGrupo(data.Termgrupo);
+		} catch (error) {
+			console.log(error.message);
+		}
+	};
 	return {
+		dataGrupo,
+		obtenerTerminoGrupoxID,
+		deleteTerminoGrupoxID,
+		updateTerminoGrupo,
+		obtenerGruposxEmpresa,
+		postTerminoGrupo,
 		obtenerTerminologiaSistema,
 		onPutTerminologiaSistema,
 		obtenerTerminologiaSistemaxEntidadxGrupo,

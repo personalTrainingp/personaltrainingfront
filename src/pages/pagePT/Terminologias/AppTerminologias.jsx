@@ -2,6 +2,7 @@ import { TabPanel, TabView } from 'primereact/tabview'
 import React from 'react'
 import { AppTermGastos } from './TerminologiasGastos/AppTermGastos'
 import { AppTermSistemas } from './TermSistema/AppTermSistemas'
+import { AppTermGrupos } from './TermSistema/AppTermGrupos'
 
 export const AppTerminologias = () => {
   return (
@@ -43,6 +44,9 @@ export const AppTerminologias = () => {
             
             <TabPanel header={<div style={{fontSize: '25px'}}>TERMINOLOGIA DE SISTEMAS</div>}>
                   <AppTermSistemas />
+            </TabPanel>
+            <TabPanel header={<div style={{fontSize: '25px'}}>TERMINOLOGIA DE GRUPO</div>}>
+                  <AppTermGrupos />
             </TabPanel>
         </TabView>
     </div>
