@@ -107,10 +107,10 @@ export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, 
                     stickyHeader
                 />
                 <div className='d-flex'>
-                    <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgHeader} text={textEmpresa}/>
-                    <div className='border-2 bg-change'>
-                    </div>
-                </div>
+                  <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={bgTotal} text={textEmpresa} id_empresa={id_empresa}/>
+                  <div className='border-2 bg-change'>
+                  </div>
+              </div>
             </Modal.Body>
         </Modal>
                     <ModalCustomGasto id={isOpenModalCustomGasto.id} id_enterprice={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
@@ -118,7 +118,8 @@ export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, 
   )
 }
 
-const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='text-change' }) => {
+
+const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='text-change', id_empresa }) => {
   const proveedores = useMemo(() => {
     return Object.values(
       data.reduce((acc, item) => {
@@ -140,23 +141,26 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
 
         return acc;
       }, {})
-    );
+    ).sort((b, a)=>a.acumulado-b.acumulado);
   }, [data]);
-
   return (
     <div>
-        <span className={`${bg} text-white px-1 fs-2`}>{header} {JSON.stringify(data[0], null, 2)} </span>
-      {proveedores.map((prov, i) => (
-        <div key={i} style={{ marginBottom: 14 }}>
-          <strong>
-            <span className={`${text} mr-2 fs-4`}>
-                {prov.razon_social_prov}: 
-            </span>
-                        S/. <NumberFormatMoney amount={prov.acumulado}/> <span className='fs-3'>({prov.items?.length})</span>
-          </strong>
+        <div className={`${bg}  text-center px-1 fs-2 mb-3`}>{header} - {dayjs(data[0]?.fecha_primaria?.split('T')[0], 'YYYY-MM-DD').format('MMMM YYYY')}</div>
+        <Row>
+          {proveedores.map((prov, i) => (
+            <Col  key={i} lg={4}>
+              <div style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-${id_empresa}`}>
+                  <span className={`${text} fs-2 text-center  p-0 border-bottom-${id_empresa}`}>
+                      {prov.razon_social_prov}
+                  </span>
+                <strong className='text-center text-black'>
+                  S/. <NumberFormatMoney amount={prov.acumulado}/> <span className='fs-3'>({prov.items?.length})</span>
+                </strong>
 
-        </div>
-      ))}
+              </div>
+            </Col>
+          ))}
+        </Row>
     </div>
   );
 };

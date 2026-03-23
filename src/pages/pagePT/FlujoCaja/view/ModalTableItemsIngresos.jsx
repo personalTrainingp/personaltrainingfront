@@ -108,10 +108,10 @@ export const ModalTableItemsIngresos = ({show, onHide, items={}, bgHeader, textE
                     stickyHeader
                 />
                 <div className='d-flex'>
-                    <ProveedorResumen data={items} header='GASTOS PROVEEDORES' bg={bgHeader} text={textEmpresa}/>
-                    <div className='border-2 bg-change'>
-                    </div>
-                </div>
+                  <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={bgTotal} text={textEmpresa} id_empresa={id_empresa}/>
+                  <div className='border-2 bg-change'>
+                  </div>
+              </div>
             </Modal.Body>
         </Modal>
                     <ModalCustomAporte id={isOpenModalCustomGasto.id} id_enterprice={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
