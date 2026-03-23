@@ -60,6 +60,8 @@ export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, 
         {id: 6, header: (<>MONTO</>), render:(row)=>{
             return (
                 <>
+                {row.tc===1?'':row.tc}
+                {row.tc!==1&& (<br/>)}
                 <NumberFormatMoney amount={row.monto}/>
                 </>
             )
@@ -155,8 +157,8 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
         <Row>
           {proveedores.map((prov, i) => (
             <Col  key={i} lg={4}>
-              <div style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black`}>
-                  <span className={`${text} fs-2 text-center  p-0 border-bottom-black`}>
+              <div style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black-6`}>
+                  <span className={`${text} fs-2 text-center  p-0 border-bottom-black-6`}>
                       {prov.razon_social_prov}
                   </span>
                 <strong className='text-center text-black'>

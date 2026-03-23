@@ -59,7 +59,9 @@ export const ModalTableItemsIngresos = ({show, onHide, items={}, bgHeader, textE
         {id: 6, header: (<>MONTO</>), render:(row)=>{
             return (
                 <>
-                <NumberFormatMoney amount={row.monto}/>
+                    {row.tc===1?'':row.tc}
+                    {row.tc!==1&& (<br/>)}
+                    <NumberFormatMoney amount={row.monto}/>
                 </>
             )
         }},
