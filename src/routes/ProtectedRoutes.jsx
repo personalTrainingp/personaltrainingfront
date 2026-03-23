@@ -214,9 +214,9 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/prov') &&
-								<Route path='gestion-ingresantes-activo' element={<GestionIngresantes id_estado={true} tipo={1574} />} />
+								<Route path='gestion-ingresantes-activo' element={<GestionProveedores estado={true} tipo={1574} />} />
 							}
-							{/* {
+							{/* {<GestionProveedores estado={true} tipo={1573} />
 								sections.find(e => e.url === '/prov') &&
 								<>
 									<Route path='gestion-proveedores-activo' element={<GestionProveedores estado={true} tipo={1573} />} />
