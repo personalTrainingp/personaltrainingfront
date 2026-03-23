@@ -1,7 +1,7 @@
 import { DateMaskStr, NumberFormatMoney } from '@/components/CurrencyMask';
 import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React, { useMemo, useState } from 'react'
-import { Modal, Row, Table } from 'react-bootstrap'
+import { Col, Modal, Row, Table } from 'react-bootstrap'
 import { ModalCustomGasto } from '../../GestGastos/ModalCustomGasto';
 import dayjs from 'dayjs';
 
