@@ -43,14 +43,14 @@ export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, 
                 </>
             )
         }},
-        {id: 4, header: (<>FECHA <br/> COMPROBANTE</>), render:(row)=>{
+        {id: 4, header: (<>FECHA <br/> COMPROBANTE</>), sortable: true, accessor: (row) => new Date(row.fecha_comprobante).getTime(), render:(row)=>{
             return (
                 <>
                 {DateMaskStr(row.fecha_comprobante, 'dddd DD [DE] MMMM [DEL] YYYY')}
                 </>
             )
         }},
-        {id: 5, header: (<>FECHA <br/> PAGO</>), render:(row)=>{
+        {id: 5, header: (<>FECHA <br/> PAGO</>), sortable: true, accessor: (row) => new Date(row.fecha_pago).getTime(), render:(row)=>{
             return (
                 <>
                 {DateMaskStr(row.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY')}
