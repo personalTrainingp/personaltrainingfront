@@ -36,7 +36,7 @@ export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, 
                 </>
             )
         }},
-        {id: 3, header: (<>Descripción /<br/> Eventos</>), render:(row)=>{
+        {id: 3, header: (<>Descripción / Eventos</>), render:(row)=>{
             return (
                 <>
                 {row.descripcion}

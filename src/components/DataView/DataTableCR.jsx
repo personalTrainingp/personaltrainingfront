@@ -837,15 +837,21 @@ const filtered = useMemo(() => {
                 }}
                 title={col.sortable ? 'Click para ordenar' : undefined}
               >
-                <div className="d-flex align-items-center gap-1 position-relative fs-4">
+                <div className="d-flex align-items-center justify-content-between gap-1 position-relative fs-4">
                   <span className="text-truncate">{col.header}</span>
-
-                  {sort?.id === col.id && (
-                    <small aria-label="sort-indicator">
-                      {sort.direction === 'asc' ? '▲' : '▼'}
-                    </small>
-                  )}
-
+                  {
+                    col.sortable && (
+                      <>
+                        {
+                        sort?.id === col.id ? (
+                          <small aria-label="sort-indicator" className='fs-2'>
+                            {sort.direction === 'asc' ? '▲' : '▼'}
+                          </small>
+                        ): (<>▲▼</>)
+                        }
+                      </>
+                    )
+                  }
                   {showGrip && (
                     <span
                       className="dtrb-col-resizer"
