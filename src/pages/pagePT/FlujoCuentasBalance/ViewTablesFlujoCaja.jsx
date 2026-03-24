@@ -8,7 +8,7 @@ import { ModalCustomGasto } from '../GestGastos/ModalCustomGasto'
 import { ViewResumenTotal } from './ViewResumenTotal'
 import { ModalCustomCuentasBalances } from '../CuentasBalances/ModalCustomCuentasBalances'
 
-export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameEmpresa, bgPastel, textEmpresa, bgTotal}) => {
+export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, classNameEmpresa, bgPastel, textEmpresa, bgTotal}) => {
     const { dataCuentasBalancexFecha:dataPorPagarxFecha, obtenerCuentasBalancexFecha: obtenerPorPagarxFecha } = useFlujoCaja()
     const { dataCuentasBalancexFecha: dataPorCobrarxFecha, obtenerCuentasBalancexFecha: obtenerPorCobrarxFecha } = useFlujoCaja()
     const [data, setdata] = useState({isOpen: false, items: [], header: ''})
@@ -87,7 +87,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
                 anio={[arrayFecha[0], arrayFecha[1]]}
                 fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))} />
         </div>
-            <ModalTableItems id_empresa={id_empresa} textEmpresa={textEmpresa} bgTotal={classNameEmpresa} show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} onOpenModalCustom={onOpenModalCustomGasto}/>
+            <ModalTableItems link={link} id_empresa={id_empresa} textEmpresa={textEmpresa} bgTotal={classNameEmpresa} show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} onOpenModalCustom={onOpenModalCustomGasto}/>
             <ModalCustomCuentasBalances headerTipo={isOpenModalCustomGasto.headerTipo} tipo={isOpenModalCustomGasto.headerTipo} id={isOpenModalCustomGasto.id} idEmpresa={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
     </div>
   )

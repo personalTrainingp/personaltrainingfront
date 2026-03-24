@@ -57,10 +57,10 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
                         <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
                         onClick={()=>onClickOpenModalCustomCuentasBalances(row.id)} 
                         />
-                        <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
+                        <Button icon="pi pi-trash" rounded outlined className='mr-2'
                         onClick={()=>confirmDeleteCuentasBalancesxID(row.id)} 
                         />
-                        <Button icon="pi pi-copy" rounded outlined severity="danger"  className='mr-2'
+                        <Button icon="pi pi-copy" rounded outlined className='mr-2'
                         onClick={()=>onClickOpenModalCopyCustomCuentasBalances(row.id)} 
                         />
                     </>
