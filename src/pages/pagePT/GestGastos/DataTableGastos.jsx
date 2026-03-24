@@ -23,26 +23,21 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
                 </div>
             )
         }},
-        {id: 2, header: 'COMPROBANTE', accessor: 'n_comprabante', width: '40px'},
-        {id: 3, header: 'OPERACION', accessor: 'n_operacion', width: '40px'},
-        {id: 4, header: <>FECHA <br/> REGISTRO</>, accessor: '', width: '200px', render:(row)=>{
+        {id: 4, header: <>REGISTRO <br/> ADMINISTRATIVO </>, accessor: '', width: '200px', render:(row)=>{
             return (
                 <>
                 {DateMaskStr(row.fec_registro, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
-                {/* <DateMask date={row.fec_registro} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/> */}
                 </>
             )
-        },  exportHeader: 'FECHA DE REGISTRO',
-  exportValue: (row) => MaskDate(row.fec_registro, 'DD-MM-YYYY')},
-        {id: 5, header: <>FECHA <br/> PAGO</>, width: '200px', render:(row)=>{
+        }},
+        {id: 3, header: 'N° OPERACION', accessor: 'n_operacion', width: '40px'},
+          {id: 12, header: <>DESCRIPCION</>, accessor: 'descripcion', width: '900px', render: (row)=>{
             return (
                 <>
-                {DateMaskStr(row.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
-                {/* <DateMask date={row.fecha_pago} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/> */}
+                    {row.descripcion}
                 </>
             )
-        },  exportHeader: 'FECHA DE REGISTRO',
-  exportValue: (row) => MaskDate(row.fecha_pago, 'DD-MM-YYYY')},
+        }},
         {id: 6, header: <>FECHA DE <br/> COMPROBANTE</>, width: '200px',  render:(row)=>{
             return (
                 <>
@@ -50,8 +45,26 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
                 {/* <DateMask date={row.fecha_comprobante} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/> */}
                 </>
             )
-        },  exportHeader: 'FECHA DE COMPROBANTE',
-  exportValue: (row) => MaskDate(row.fecha_comprobante, 'DD-MM-YYYY')},
+        }},
+        {id: 10, header: <>MONTO</>, sortable, accesor: 'monto', render: (row)=>{
+            return (
+                <>
+                <div style={{width: '120px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} d-flex align-items-center justify-content-center`}>
+                                        {row.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
+                                        <NumberFormatMoney amount={row.monto}/>
+                                </div>
+                </>
+            )
+        }},
+        {id: 5, header: <>FECHA <br/> PAGO</>, width: '200px', render:(row)=>{
+            return (
+                <>
+                {DateMaskStr(row.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
+                {/* <DateMask date={row.fecha_pago} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/> */}
+                </>
+            )
+        }},
+        {id: 2, header: 'COMPROBANTE', accessor: 'n_comprabante', width: '40px'},
         {id: 7, header: <>TIPO DE <br/> GASTO</>, width: '200px', accessor: 'tipo_gasto', render: (row)=>{
             return (
                 <>
@@ -73,28 +86,10 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
                 </div>
             )
         }},
-        {id: 10, header: <>MONTO</>, sortable, accesor: 'monto', render: (row)=>{
-            return (
-                <>
-                <div style={{width: '200px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} d-flex align-items-center justify-content-center`}>
-                                        {row.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
-                                        <NumberFormatMoney amount={row.monto}/>
-                                </div>
-                </>
-            )
-        },  exportHeader: 'MONTO',
-  exportValue: (row) => `${row.moneda?'S/.':'$'} ${row.monto}`},
         {id: 11, header: <>FORMA <br/> PAGO</>, accessor: 'forma_pago', width: '200px', render: (row)=>{
             return (
                 <>
                     {row.forma_pago}
-                </>
-            )
-        }},
-        {id: 12, header: <>DESCRIPCION</>, accessor: 'descripcion', width: '900px', render: (row)=>{
-            return (
-                <>
-                    {row.descripcion}
                 </>
             )
         }},

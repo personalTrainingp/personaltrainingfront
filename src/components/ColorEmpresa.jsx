@@ -22,7 +22,7 @@ export const ColorEmpresa = (props) => {
     { 
       key: 'childrenCircus', 
       label: 'CIRCUS', 
-      height: '90px',
+      height: '70px',
       icon: logoCircus,
       text: 'text-circus link-circus', 
       BackgroundHeretary: 'link-circus' 
