@@ -6,7 +6,7 @@ import { ModalCustomGasto } from '../../GestGastos/ModalCustomGasto';
 import dayjs from 'dayjs';
 import { TabPanel, TabView } from 'primereact/tabview';
 
-export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, id_empresa}) => {
+export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmpresa, id_empresa}) => {
     const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
     const onOpenModalCustomGasto = (id=0)=>{
         setisOpenModalCustomGasto({isOpen: true, id: id})
@@ -101,7 +101,7 @@ export const ModalTableItems = ({show, onHide, items={}, bgHeader, textEmpresa, 
             <Modal.Header closeButton >
                 <Modal.Title>{id_empresa}</Modal.Title>
             </Modal.Header>
-            <Modal.Body >
+            <Modal.Body className={link}>
                 <TabView>
                     <TabPanel header={<div className='fs-1'>ITEMS</div>}>
                         <DataTableCR

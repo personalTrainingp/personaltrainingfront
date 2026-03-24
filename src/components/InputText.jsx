@@ -169,7 +169,7 @@ export const InputSwitch = ({label, value=false, onChange, nameInput, required, 
 export const InputButton = ({label, variant, className, onClick, ...props})=>{
   return (
     <>
-      <Button className={`${className}`} onClick={onClick} variant={variant} {...props}>{label}</Button>
+      <Button className={`input-buton ${className}`} onClick={onClick} variant={variant} {...props}>{label}</Button>
     </>
   )
 }
