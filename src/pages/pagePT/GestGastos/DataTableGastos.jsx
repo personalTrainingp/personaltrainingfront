@@ -30,7 +30,6 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
                 </>
             )
         }},
-        {id: 3, header: 'N° OPERACION', accessor: 'n_operacion', width: '40px'},
           {id: 12, header: <>DESCRIPCION</>, accessor: 'descripcion', width: '900px', render: (row)=>{
             return (
                 <>
@@ -46,6 +45,7 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
                 </>
             )
         }},
+        {id: 3, header: 'N° OPERACION', accessor: 'n_operacion', width: '40px'},
         {id: 10, header: <>MONTO</>, sortable, accesor: 'monto', render: (row)=>{
             return (
                 <>
