@@ -5,6 +5,7 @@ import { Col, Modal, Row, Table } from 'react-bootstrap'
 import { ModalCustomGasto } from '../../GestGastos/ModalCustomGasto';
 import dayjs from 'dayjs';
 import { TabPanel, TabView } from 'primereact/tabview';
+import { Button } from 'primereact/button';
 
 export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmpresa, id_empresa}) => {
     const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
@@ -17,81 +18,81 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
     const columns = [
         {id: 0, header: '', render: (row)=>{
             return (
-                <div onClick={() => onOpenModalCustomGasto(row.id)}>
-                    <i className='pi pi-pencil fw-bold text-primary cursor-pointer p-2 rounded hover-bg-light' title="Editar" />
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`} onClick={() => onOpenModalCustomGasto(row.id)}>
+                    <Button icon="pi pi-pencil" rounded outlined className="mr-2" />
                 </div>
             )
         }},
         {id: 1, header: (<>ID</>), render:(row)=>{
             return (
-                <>
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {row.id}
-                </>
+                </div>
             )
         }},
         {id: 2, header: (<>Instituto /<br/> Colaborador</>), render:(row)=>{
             return (
-                <>
-                {row.tb_Proveedor?.razon_social_prov}
-                </>
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
+                    {row.tb_Proveedor?.razon_social_prov}
+                </div>
             )
         }},
         {id: 3, header: (<>Descripción / Eventos</>), render:(row)=>{
             return (
-                <>
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {row.descripcion}
-                </>
+                </div>
             )
         }},
         {id: 4, header: (<>FECHA <br/> COMPROBANTE</>), sortable: true, accessor: (row) => new Date(row.fecha_comprobante).getTime(), render:(row)=>{
             return (
-                <>
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {DateMaskStr(row.fecha_comprobante, 'dddd DD [DE] MMMM [DEL] YYYY')}
-                </>
+                </div>
             )
         }},
         {id: 5, header: (<>FECHA <br/> PAGO</>), sortable: true, accessor: (row) => new Date(row.fecha_pago).getTime(), render:(row)=>{
             return (
-                <>
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {DateMaskStr(row.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY')}
-                </>
+                </div>
             )
         }},
         {id: 6, header: (<>MONTO</>), render:(row)=>{
             return (
-                <>
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {row.tc===1?'':row.tc}
                 {row.tc!==1&& (<br/>)}
                 <NumberFormatMoney amount={row.monto}/>
-                </>
+                </div>
             )
         }},
         {id: 7, header: (<>DOCUMENTO</>), render:(row)=>{
             return (
-                <>
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {row.parametro_comprobante?.label_param}
-                </>
+                </div>
             )
         }},
         {id: 8, header: (<>FORMA <br/> PAGO</>), render:(row)=>{
             return (
-                <>
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {row.parametro_forma_pago?.label_param}
-                </>
+                </div>
             )
         }},
         {id: 9, header: (<>N° <br/> COMPROBANTE</>), render:(row)=>{
             return (
-                <>
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {row.n_comprabante}
-                </>
+                </div>
             )
         }},
         {id: 10, header: (<>N° <br/> OPERACION</>), render:(row)=>{
             return (
-                <>
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {row.n_operacion}
-                </>
+                </div>
             )
         }},
     ]
@@ -101,24 +102,27 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
             <Modal.Header closeButton >
                 <Modal.Title>{id_empresa}</Modal.Title>
             </Modal.Header>
-            <Modal.Body className={link}>
-                <TabView>
-                    <TabPanel header={<div className='fs-1'>ITEMS</div>}>
-                        <DataTableCR
-                            columns={columns}
-                            data={items}
-                            responsive
-                            stickyHeight={'80vh'}
-                            bgHeader={bgHeader}
-                            stickyHeader
-                        />
-                    </TabPanel>
-                    <TabPanel header={<div className='fs-1'>GASTOS POR PROVEEDOR</div>}>
-                        <div className='d-flex'>
-                            <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
-                        </div>
-                    </TabPanel>
-                </TabView>
+            <Modal.Body >
+                <div className={link}>
+                    <TabView>
+                        <TabPanel header={<div className='fs-1'>ITEMS</div>}>
+                            <DataTableCR
+                                columns={columns}
+                                data={items}
+                                responsive
+                                stickyHeight={'80vh'}
+                                bgHeader={bgHeader}
+                                stickyHeader
+                            />
+                        </TabPanel>
+                        <TabPanel header={<div className='fs-1'>GASTOS POR PROVEEDOR</div>}>
+                            <div className='d-flex'>
+                                <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
+                            </div>
+                        </TabPanel>
+                    </TabView>
+
+                </div>
             </Modal.Body>
         </Modal>
                     <ModalCustomGasto id={isOpenModalCustomGasto.id} id_enterprice={id_empresa} isCopy={false} onHide={onCloseModalCustomGasto} onOpenModalGasto={onOpenModalCustomGasto} show={isOpenModalCustomGasto.isOpen}/>
