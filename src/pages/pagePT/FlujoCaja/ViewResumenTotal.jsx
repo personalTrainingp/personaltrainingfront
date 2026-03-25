@@ -149,7 +149,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${dataAlter.reduce((total, item)=>item.utilidadUltimaLinea+total, 0)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={dataAlter.reduce((total, item)=>item.utilidadUltimaLinea+total, 0)/12}/></div></td>
+                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${dataAlter.reduce((total, item)=>item.utilidadUltimaLinea+total, 0)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={dataAlter.reduce((total, item)=>item.utilidadUltimaLinea+total, 0)/encontrarFechas(anio)}/></div></td>
               </tr> 
             </tbody>
           </Table>
@@ -157,7 +157,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
   )
 }
 
-function encontrarFechas() {
+function encontrarFechas(anio) {
   const hoy = new Date()
   // Año actual
 const year = hoy.getFullYear();
@@ -167,6 +167,9 @@ const month = hoy.getMonth()+ 1;
 const ultimaFecha = new Date(year, month , 0);
 const diaUltimaFecha = ultimaFecha.getDate()
 const diaActual = hoy.getDate()
-
+if(anio===year){
   return diaActual==diaUltimaFecha?0:month-1;
+}else{
+  return 12;
+}
 }
