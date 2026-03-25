@@ -209,7 +209,7 @@ return (
       required={required}
       onChange={(e) => {
         // solo números
-        const raw = e.target.value.replace(/\D/g, '');
+        const raw = e.target.value.replace(/\D/g, 'DD');
 
         onChange({
           target: {
