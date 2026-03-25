@@ -85,10 +85,12 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         }
     }, [id, show])
     useEffect(() => {
-        if (id_estado_gasto===1424) {
-            onInputChangeFunction('descripcion', `FLUJO PROYECTADO: ${descripcion}`)
-        }else{
-            onInputChangeFunction('descripcion', `${descripcion}`)
+        if(id==0){
+            if (id_estado_gasto===1424 || descripcion.startsWith('FLUJO PROYECTADO:', 0)) {
+                onInputChangeFunction('descripcion', `FLUJO PROYECTADO:`)
+            }else{
+                onInputChangeFunction('descripcion', `${descripcion}`)
+            }
         }
     }, [id_estado_gasto])
     
