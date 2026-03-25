@@ -218,7 +218,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2 span'>
-                            <InputText label={'MONTO'} nameInput={'monto'} value={monto} onChange={onInputChange} />
+                            <InputMoney label={'MONTO'} nameInput={'monto'} value={monto} onChange={onInputChange} />
                         </div>
                     </Col>
                     <Col lg={4}>

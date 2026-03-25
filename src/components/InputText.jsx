@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, FormCheck } from 'react-bootstrap'
 import Select from 'react-select'
 import "dayjs/locale/es";
@@ -177,61 +177,80 @@ export const InputButton = ({label, variant, className, onClick, ...props})=>{
 }
 
 export const InputMoney = ({label, onChange, value, nameInput, required=false, ...props})=>{
-    return (
+  const [display, setDisplay] = useState("");
+
+  // 👉 formateo con comas (sin forzar decimales)
+  const format = (val) => {
+    if (!val) return "";
+
+    const [intPart, decPart] = val.split(".");
+
+    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    return decPart !== undefined
+      ? `${formattedInt}.${decPart}`
+      : formattedInt;
+  };
+
+  // 👉 sincroniza cuando cambia desde afuera
+  useEffect(() => {
+    if (value !== undefined && value !== null) {
+      setDisplay(format(value.toString()));
+    } else {
+      setDisplay("");
+    }
+  }, [value]);
+
+  return (
     <>
-      <label className='form-label' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
+      <label className="form-label" htmlFor={nameInput}>
+        {label} {required && <span className="text-danger">*</span>}
+      </label>
+
       <input
-          className='form-control'
-          value={value}
-          name={nameInput}
-          id={nameInput}
-          onChange={onChange}
-          required={required}
-          {
-              ...props
-          }
+        className="form-control"
+        value={display}
+        name={nameInput}
+        id={nameInput}
+        required={required}
+        onChange={(e) => {
+          let raw = e.target.value;
+
+          // ✅ permitir solo números y un punto
+          raw = raw
+            .replace(/[^0-9.]/g, "")
+            .replace(/(\..*)\./g, "$1");
+
+          // ✅ actualizar visual SIN romper lo que escribe
+          setDisplay(format(raw));
+
+          // ✅ enviar valor limpio
+          onChange({
+            target: {
+              name: nameInput,
+              value: raw,
+            },
+          });
+        }}
+        onBlur={() => {
+          if (!display) return;
+
+          const num = Number(display.replace(/,/g, ""));
+          if (isNaN(num)) return;
+
+          const fixed = num.toFixed(2);
+
+          setDisplay(format(fixed));
+
+          onChange({
+            target: {
+              name: nameInput,
+              value: fixed,
+            },
+          });
+        }}
+        {...props}
       />
     </>
-  )
-// const formatCurrency = (num) => {
-//   if (!num) return '';
-
-//   const number = parseInt(num, 10);
-
-//   const value = (number / 100).toFixed(2);
-
-//   const [intPart, decPart] = value.split('.');
-
-//   const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-//   return `${formattedInt}.${decPart}`;
-// };
-
-// return (
-//   <>
-//     <label className='form-label' htmlFor={nameInput}>
-//       {label} {required && (<span className='text-danger'>*</span>)}
-//     </label>
-
-//     <input
-//       className='form-control'
-//       value={formatCurrency(value)}
-//       name={nameInput}
-//       id={nameInput}
-//       required={required}
-//       onChange={(e) => {
-//         // solo números
-//         const raw = e.target.value.replace(/\D/g, '');
-
-//         onChange({
-//           target: {
-//             name: nameInput,
-//             value: raw // guardas en centavos
-//           }
-//         });
-//       }}
-//       {...props}
-//     />
-//   </>
-// );
+  );
 }
