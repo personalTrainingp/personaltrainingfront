@@ -177,45 +177,61 @@ export const InputButton = ({label, variant, className, onClick, ...props})=>{
 }
 
 export const InputMoney = ({label, onChange, value, nameInput, required=false, ...props})=>{
-const formatCurrency = (num) => {
-  if (!num) return '';
-
-  const number = parseInt(num, 10);
-
-  const value = (number / 100).toFixed(2);
-
-  const [intPart, decPart] = value.split('.');
-
-  const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-  return `${formattedInt}.${decPart}`;
-};
-
-return (
-  <>
-    <label className='form-label' htmlFor={nameInput}>
-      {label} {required && (<span className='text-danger'>*</span>)}
-    </label>
-
-    <input
-      className='form-control'
-      value={formatCurrency(value)}
-      name={nameInput}
-      id={nameInput}
-      required={required}
-      onChange={(e) => {
-        // solo números
-        const raw = e.target.value.replace(/\D/g, '');
-
-        onChange({
-          target: {
-            name: nameInput,
-            value: raw // guardas en centavos
+    return (
+    <>
+      <label className='form-label' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
+      <input
+          className='form-control'
+          value={value}
+          name={nameInput}
+          id={nameInput}
+          onChange={onChange}
+          required={required}
+          {
+              ...props
           }
-        });
-      }}
-      {...props}
-    />
-  </>
-);
+      />
+    </>
+  )
+// const formatCurrency = (num) => {
+//   if (!num) return '';
+
+//   const number = parseInt(num, 10);
+
+//   const value = (number / 100).toFixed(2);
+
+//   const [intPart, decPart] = value.split('.');
+
+//   const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+//   return `${formattedInt}.${decPart}`;
+// };
+
+// return (
+//   <>
+//     <label className='form-label' htmlFor={nameInput}>
+//       {label} {required && (<span className='text-danger'>*</span>)}
+//     </label>
+
+//     <input
+//       className='form-control'
+//       value={formatCurrency(value)}
+//       name={nameInput}
+//       id={nameInput}
+//       required={required}
+//       onChange={(e) => {
+//         // solo números
+//         const raw = e.target.value.replace(/\D/g, '');
+
+//         onChange({
+//           target: {
+//             name: nameInput,
+//             value: raw // guardas en centavos
+//           }
+//         });
+//       }}
+//       {...props}
+//     />
+//   </>
+// );
 }
