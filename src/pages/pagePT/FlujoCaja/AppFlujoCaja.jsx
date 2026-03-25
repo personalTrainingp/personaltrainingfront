@@ -8,7 +8,7 @@ import { PageBreadcrumb } from '@/components'
 export const AppFlujoCaja = () => {
   return (
     <div>
-      <PageBreadcrumb title={'FLUJO DE CAJA'}/>
+      <PageBreadcrumb title={'FLUJO DE CAJA aa'}/>
       <ColorEmpresa
         childrenChange={
           <TabView>
