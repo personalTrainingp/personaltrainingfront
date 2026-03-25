@@ -110,6 +110,8 @@ export const InputNumber = ({label, onChange, value, nameInput, required=false, 
   )
 };
 
+
+
 export const InputSelect = ({label, value='', placeholder='', onChange, nameInput, required, options=[], ...props})=>{
   const handleChange = (e)=>{
     const target = {
@@ -175,20 +177,49 @@ export const InputButton = ({label, variant, className, onClick, ...props})=>{
 }
 
 export const InputMoney = ({label, onChange, value, nameInput, required=false, ...props})=>{
-  return (
-    <>
-      <label className='form-label' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
-      <input
-          className='form-control'
-          value={value}
-          name={nameInput}
-          id={nameInput}
-          onChange={onChange}
-          required={required}
-          {
-              ...props
+const formatCurrency = (num) => {
+  if (!num) return '';
+
+  const number = parseInt(num, 10);
+
+  const value = (number / 100).toFixed(2);
+
+  const [intPart, decPart] = value.split('.');
+
+  const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  return `${formattedInt}.${decPart}`;
+};
+
+  const cleanNumber = (num) => {
+    return num.replace(/,/g, '');
+  };
+
+return (
+  <>
+    <label className='form-label' htmlFor={nameInput}>
+      {label} {required && (<span className='text-danger'>*</span>)}
+    </label>
+
+    <input
+      className='form-control'
+      value={formatCurrency(value)}
+      name={nameInput}
+      id={nameInput}
+      required={required}
+      onChange={(e) => {
+        // solo números
+        const raw = e.target.value.replace(/\D/g, '');
+
+        onChange({
+          target: {
+            name: nameInput,
+            value: raw // guardas en centavos
           }
-      />
-    </>
-  )
+        });
+      }}
+      {...props}
+    />
+  </>
+);
 }

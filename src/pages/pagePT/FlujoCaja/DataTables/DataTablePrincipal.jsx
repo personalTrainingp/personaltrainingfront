@@ -174,7 +174,7 @@ function buscarPuntosYPonerTransparente(txt='') {
   return txt.split(/(\.+)/g).map((parte, i) => {
     if (parte.startsWith(".")) {
       return (
-        <span key={i} style={{ color: "transparent" }}>
+        <span key={i} style={{ visibility: "hidden" }}>
           {parte}
         </span>
       );

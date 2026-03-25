@@ -1,4 +1,4 @@
-import { InputButton, InputDate, InputSelect, InputSwitch, InputText, InputTextArea } from '@/components/InputText'
+import { InputButton, InputDate, InputMoney, InputSelect, InputSwitch, InputText, InputTextArea } from '@/components/InputText'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayEmpresaFinan, arrayFinanzas, arrayMonedas, arrayTipoIngresos } from '@/types/type'
@@ -218,7 +218,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputText label={'MONTO'} nameInput={'monto'} value={monto} onChange={onInputChange} />
+                            <InputMoney label={'MONTO'} nameInput={'monto'} value={monto} onChange={onInputChange} />
                         </div>
                     </Col>
                     <Col lg={4}>

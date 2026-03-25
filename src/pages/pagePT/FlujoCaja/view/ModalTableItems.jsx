@@ -18,35 +18,35 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
     const columns = [
         {id: 0, header: '', render: (row)=>{
             return (
-                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`} onClick={() => onOpenModalCustomGasto(row.id)}>
+                <div onClick={() => onOpenModalCustomGasto(row.id)}>
                     <Button icon="pi pi-pencil" rounded outlined className="mr-2" />
                 </div>
             )
         }},
         {id: 1, header: (<>ID</>), render:(row)=>{
             return (
-                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
+                <div>
                 {row.id}
                 </div>
             )
         }},
         {id: 2, header: (<>Instituto /<br/> Colaborador</>), render:(row)=>{
             return (
-                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
+                <div>
                     {row.tb_Proveedor?.razon_social_prov}
                 </div>
             )
         }},
         {id: 3, header: (<>Descripción / Eventos</>), render:(row)=>{
             return (
-                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
+                <div>
                 {row.descripcion}
                 </div>
             )
         }},
         {id: 4, header: (<>FECHA <br/> COMPROBANTE</>), sortable: true, accessor: (row) => new Date(row.fecha_comprobante).getTime(), render:(row)=>{
             return (
-                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
+                <div>
                 {DateMaskStr(row.fecha_comprobante, 'dddd DD [DE] MMMM [DEL] YYYY')}
                 </div>
             )
