@@ -191,10 +191,6 @@ const formatCurrency = (num) => {
   return `${formattedInt}.${decPart}`;
 };
 
-  const cleanNumber = (num) => {
-    return num.replace(/,/g, '');
-  };
-
 return (
   <>
     <label className='form-label' htmlFor={nameInput}>
