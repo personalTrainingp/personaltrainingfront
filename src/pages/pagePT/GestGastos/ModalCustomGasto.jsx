@@ -85,6 +85,14 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         }
     }, [id, show])
     useEffect(() => {
+        if (id_estado_gasto===1424) {
+            onInputChangeFunction('descripcion', `FLUJO PROYECTADO: ${descripcion}`)
+        }else{
+            onInputChangeFunction('descripcion', `${descripcion}`)
+        }
+    }, [id_estado_gasto])
+    
+    useEffect(() => {
         if (show) {
             obtenerContratosxProveedor(id_prov)
         }
