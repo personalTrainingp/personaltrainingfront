@@ -8,6 +8,7 @@ import { ModalIngresosGastos } from '../GestGastos/ModalIngresosGastos'
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import { ModalCustomAporte } from '../GestionAportes/ModalCustomAporte'
 import { ModalCustomCuentasBalances } from '../CuentasBalances/ModalCustomCuentasBalances'
+import { Button } from 'primereact/button'
 
 export const ModalDetalleCuentas = ({bgMultiValue, id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
   const [isModalDetalleGasto, setisModalDetalleGasto] = useState({isOpen: false, id: 0, tipo: 'PorCobrar'})
@@ -55,7 +56,11 @@ export const ModalDetalleCuentas = ({bgMultiValue, id_enterprice, anio, show, on
                     
                     return (
                       <tr>
-                          <td className='fs-2' onClick={()=>onOpenModalDetalleGasto(f.id, f.tipo)}><span className={isSinDoc?'text-primary':'text-black'}><i className='pi pi-pencil fw-bold text-primary cursor-pointer p-1 fs-2'/></span></td>
+                          <td className='fs-2' onClick={()=>onOpenModalDetalleGasto(f.id, f.tipo)}>
+                            <span className={isSinDoc?'text-primary':'text-black'}>
+                                                  <Button icon="pi pi-pencil" rounded outlined className="mr-2" />
+                            </span>
+                          </td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.tb_Proveedor?.razon_social_prov}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{f.descripcion}</span></td>
                           <td className='fs-2'><span className={isSinDoc?'text-primary':'text-black'}>{dayjs(f.fec_comprobante).format('dddd DD [DE] MMMM [DEL] YYYY')}</span></td>

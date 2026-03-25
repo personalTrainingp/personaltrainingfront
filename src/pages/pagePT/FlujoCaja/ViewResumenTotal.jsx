@@ -40,6 +40,8 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
         }
       })
+    const utilidadBrutaTotal = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
+    const utilidadNetaTotal = (dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
       return (
         <>
           <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
@@ -55,10 +57,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <td className='text-center' style={{width: '120px'}}>TOTAL <br/> ANUAL</td>
-                <td className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</td>
-                <td className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</td>
-                <td className='text-center' style={{width: '120px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</td>
+                <td className='text-center' style={{width: '190px'}}>TOTAL <br/> ANUAL</td>
               </tr>
             </thead>
             <tbody>
@@ -73,13 +72,15 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <td>ss</td>
-                <td>ss</td>
-                <td>ss</td>
+                <td>
+                  <div className='text-end'>
+                    <NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)}/>
+                  </div>
+                </td>
               </tr>
               <tr>
                 <th className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice}`}>EGRESOS</th>
-              {
+                {
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
@@ -88,6 +89,11 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
+                <td>
+                  <div className='text-change text-end'>
+                    <NumberFormatMoney amount={-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)}/>
+                  </div>
+                </td>
               </tr>
               <tr>
                 <th className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice}`}>UTILIDAD BRUTA</th>
@@ -100,6 +106,9 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
+                <td>
+                  <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`} ><NumberFormatMoney amount={utilidadBrutaTotal}/></div>
+                </td>
               </tr>
               <tr>
                 <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>ING. EXTRAORDINARIOS</th>
@@ -112,14 +121,28 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
+                <td className={`text-end`}> <NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0)}/></td>
               </tr>
               <tr>
-                <th className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice}`}>UTILIDAD NETA</th>
+                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>UTILIDAD NETA</th>
               {
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
-                      <td className={`text-end `}><div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`}> <NumberFormatMoney amount={e.utilidadNeta}/></div></td>
+                      <td className={`text-end `}><div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`}> <NumberFormatMoney className='fs-2' amount={e.utilidadNeta}/></div></td>
+                    </React.Fragment>
+                    )
+                  })
+                }
+                      <td className={`text-end `}><div className={`${utilidadNetaTotal>0?'text-ISESAC':'text-change'}`}> <NumberFormatMoney className='fs-2' amount={utilidadNetaTotal}/></div></td>
+              </tr> 
+              <tr>
+                <th className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice}`}>% UTILIDAD ULTIMA LINEA</th>
+              {
+                dataAlter.map(e=>{
+                  return (
+                    <React.Fragment>
+                      <td className={`text-end`}><div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`} style={{fontSize: '30px'}}> {(e.sumaIngresos && (e.utilidadNeta/e.sumaIngresos)*100).toFixed(2)}</div></td>
                     </React.Fragment>
                     )
                   })

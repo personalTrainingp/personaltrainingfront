@@ -1,6 +1,7 @@
 import { DateMaskStr, NumberFormatMoney } from '@/components/CurrencyMask';
 import { DataTableCR } from '@/components/DataView/DataTableCR';
 import dayjs from 'dayjs';
+import { Button } from 'primereact/button';
 import { TabPanel, TabView } from 'primereact/tabview';
 import React, { useMemo } from 'react'
 import { Col, Modal, Row, Table } from 'react-bootstrap'
@@ -10,7 +11,7 @@ export const ModalTableItems = ({show, onHide, id, link='', items={}, onOpenModa
         {id: 0, header: '', render: (row)=>{
             return (
                 <div onClick={() => onOpenModalCustom(row.id)}>
-                    <i className='pi pi-pencil fw-bold text-primary cursor-pointer p-2 rounded hover-bg-light' title="Editar" />
+                  <Button icon="pi pi-pencil" rounded outlined className="mr-2" />
                 </div>
             )
         }},

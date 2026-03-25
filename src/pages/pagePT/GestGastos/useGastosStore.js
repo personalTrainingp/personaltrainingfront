@@ -46,7 +46,7 @@ export const useGastosStore = () => {
 					rubro: g.tb_parametros_gasto?.grupo,
 					concepto: g.tb_parametros_gasto?.nombre_gasto,
 					nombre_proveedor: g.tb_Proveedor?.razon_social_prov,
-					forma_pago: g.parametro_forma_pago?.label_param,
+					forma_pago: g.parametro_forma_pago?.label_param,	
 					id: g.id,
 				};
 			});

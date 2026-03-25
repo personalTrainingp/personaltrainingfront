@@ -14,13 +14,13 @@ export const ModalTableItemsIngresos = ({show, onHide, items={}, bgHeader, textE
         setisOpenModalCustomGasto({isOpen: false, id: 0})
     }
     const columns = [
-        {id: 0, header: '', render: (row)=>{
-            return (
-                <div onClick={() => onOpenModalCustomGasto(row.id)}>
-                    <i className='pi pi-pencil fw-bold text-primary cursor-pointer p-2 rounded hover-bg-light' title="Editar" />
-                </div>
-            )
-        }},
+        // {id: 0, header: '', render: (row)=>{
+        //     return (
+        //         <div onClick={() => onOpenModalCustomGasto(row.id)}>
+        //             <i className='pi pi-pencil fw-bold text-primary cursor-pointer p-2 rounded hover-bg-light' title="Editar" />
+        //         </div>
+        //     )
+        // }},
         {id: 1, header: (<>ID</>), render:(row)=>{
             return (
                 <>
@@ -28,13 +28,13 @@ export const ModalTableItemsIngresos = ({show, onHide, items={}, bgHeader, textE
                 </>
             )
         }},
-        {id: 2, header: (<>Instituto /<br/> Colaborador</>), render:(row)=>{
-            return (
-                <>
-                {row.tb_Proveedor?.razon_social_prov}
-                </>
-            )
-        }},
+        // {id: 2, header: (<>Instituto /<br/> Colaborador</>), render:(row)=>{
+        //     return (
+        //         <>
+        //         {row.tb_Proveedor?.razon_social_prov}
+        //         </>
+        //     )
+        // }},
         {id: 3, header: (<>Descripción /<br/> Eventos</>), render:(row)=>{
             return (
                 <>
