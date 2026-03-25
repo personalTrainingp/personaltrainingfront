@@ -26,6 +26,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         const cantidadGastos = dataGasto.length;
         const utilidadBruta = sumaIngresos-sumaGastos
         const utilidadNeta = (sumaIngresos+sumaIngresosExcepcional)-sumaGastos
+        const utilidadUltimaLinea = (utilidadNeta && (utilidadNeta/sumaIngresos))*100
         return {
             ...f,
             dataGasto,
@@ -37,6 +38,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             cantidadIngresos,
             sumaIngresosExcepcional,
             cantidadIngresosExcepcional,
+            utilidadUltimaLinea: (utilidadUltimaLinea),
             mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
         }
       })
@@ -142,11 +144,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
-                      <td className={`text-end`}><div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`} style={{fontSize: '30px'}}> {(e.sumaIngresos && (e.utilidadNeta/e.sumaIngresos)*100).toFixed(2)}</div></td>
+                      <td className={`text-end`}><div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`} style={{fontSize: '30px'}}>{(e.utilidadUltimaLinea).toFixed(2)}</div></td>
                     </React.Fragment>
                     )
                   })
                 }
+                      <td className={`text-end `}><div className={`${utilidadNetaTotal>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={dataAlter.reduce((total, item)=>item.utilidadUltimaLinea+total, 0)/encontrarFechas()}/></div></td>
               </tr> 
             </tbody>
           </Table>
@@ -154,3 +157,16 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
   )
 }
 
+function encontrarFechas() {
+  const hoy = new Date()
+  // Año actual
+const year = hoy.getFullYear();
+
+// Mes actual (0 = enero, 11 = diciembre)
+const month = hoy.getMonth()+ 1;
+const ultimaFecha = new Date(year, month , 0);
+const diaUltimaFecha = ultimaFecha.getDate()
+const diaActual = hoy.getDate()
+
+  return diaActual==diaUltimaFecha?0:month-1;
+}
