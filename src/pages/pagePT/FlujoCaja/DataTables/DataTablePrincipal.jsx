@@ -102,12 +102,11 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                     )
                   })
                 }
-                <td><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)}/></td>
-                <td className='fs-3'>{c.data.length}</td>
-                <td className='fs-3'>{(((c.data?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
-                <td>
+                <td className='text-end'><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)}/></td>
+                <td className='fs-3 text-end'>{c.data.length}</td>
+                <td className='fs-3 text-end'>{(((c.data?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
+                <td className='text-end'>
                   <NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(anio, dataAlter)}/>
-                    
                   </td>
               </tr>
             )
@@ -144,14 +143,16 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                 )
               })
             }
-            <td>
-              100
+            <td className='text-end'>
+              <NumberFormatMoney
+                amount={
+                  dataAlter.reduce((total, item)=>item.montoTotalPagadas+item.montoTotalNoPagadas+total, 0)
+                }
+              />
             </td>
-            <td className='fs-3'>100</td>
+            <td className='fs-3 text-end'>{dataAlter.reduce((total, item)=>item.dataSumaCantidad+total, 0)}</td>
             <td>{''}</td>
-            <td >
-              {/* <NumberFormatMoney amount={montoAcumuladoDeMontoTotal/montoAcumuladoDecantidadTotal}/> */}
-            </td>
+            <td></td>
           </tr>
         </tbody>
       </Table>
