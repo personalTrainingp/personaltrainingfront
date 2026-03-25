@@ -59,7 +59,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <td className='text-center' style={{width: '190px'}}>TOTAL <br/> ANUAL</td>
+                <td className='text-center border-top-10 border-bottom-10 border-left-10 border-right-10' style={{width: '190px'}}>TOTAL <br/> ANUAL</td>
               </tr>
             </thead>
             <tbody>
@@ -74,7 +74,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <td>
+                <td className='border-left-10 border-right-10'>
                   <div className='text-end'>
                     <NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)}/>
                   </div>
@@ -91,8 +91,8 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <td>
-                  <div className='text-change text-end'>
+                <td className='border-left-10 border-right-10'>
+                  <div className='text-change text-end '>
                     <NumberFormatMoney amount={-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)}/>
                   </div>
                 </td>
@@ -103,12 +103,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
-                      <td className={`text-end`}> <div className={`${e.utilidadBruta>0?'text-ISESAC':'text-change'} `} ><NumberFormatMoney amount={e.utilidadBruta}/></div> </td>
+                      <td className={`text-end `}> <div className={`${e.utilidadBruta>0?'text-ISESAC':'text-change'} `} ><NumberFormatMoney amount={e.utilidadBruta}/></div> </td>
                     </React.Fragment>
                     )
                   })
                 }
-                <td>
+                <td className='border-left-10 border-right-10'>
                   <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`} ><NumberFormatMoney amount={utilidadBrutaTotal}/></div>
                 </td>
               </tr>
@@ -123,7 +123,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <td className={`text-end`}> <NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0)}/></td>
+                <td className={`text-end border-left-10 border-right-10`}> <NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0)}/></td>
               </tr>
               <tr>
                 <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>UTILIDAD NETA</th>
@@ -136,7 +136,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                      <td className={`text-end `}><div className={`${utilidadNetaTotal>0?'text-ISESAC':'text-change'}`}> <NumberFormatMoney className='fs-2' amount={utilidadNetaTotal}/></div></td>
+                      <td className={`text-end border-left-10 border-right-10`}><div className={`${utilidadNetaTotal>0?'text-ISESAC':'text-change'}`}> <NumberFormatMoney className='fs-2' amount={utilidadNetaTotal}/></div></td>
               </tr> 
               <tr>
                 <th className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice}`}>% UTILIDAD ULTIMA LINEA</th>
@@ -149,7 +149,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                      <td className={`text-end `}><div className={`${utilidadNetaTotal>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={dataAlter.reduce((total, item)=>item.utilidadUltimaLinea+total, 0)/encontrarFechas()}/></div></td>
+                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${dataAlter.reduce((total, item)=>item.utilidadUltimaLinea+total, 0)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={dataAlter.reduce((total, item)=>item.utilidadUltimaLinea+total, 0)/12}/></div></td>
               </tr> 
             </tbody>
           </Table>

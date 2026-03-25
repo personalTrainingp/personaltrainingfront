@@ -44,10 +44,10 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                 )
               })
             }
-            <th className='text-center ' style={{width: '180px'}}>TOTAL <br/> ANUAL</th>
-            <th className='text-center' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
-            <th className='text-center' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
-            <th className='text-center' style={{width: '160px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
+            <th className='text-center border-top-10 border-left-10 border-bottom-10' style={{width: '180px'}}>TOTAL <br/> ANUAL</th>
+            <th className='text-center border-top-10 border-bottom-10' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
+            <th className='text-center border-top-10 border-bottom-10' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
+            <th className='text-center border-top-10 border-right-10 border-bottom-10' style={{width: '160px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
           </tr>
         </thead>
         <tbody>
@@ -102,10 +102,10 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                     )
                   })
                 }
-                <td className='text-end'><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)}/></td>
+                <td className='text-end border-left-10'><NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)}/></td>
                 <td className='fs-3 text-end'>{c.data.length}</td>
                 <td className='fs-3 text-end'>{(((c.data?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
-                <td className='text-end'>
+                <td className='text-end border-right-10'>
                   <NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(anio, dataAlter)}/>
                   </td>
               </tr>
@@ -129,7 +129,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                 )
               })
             }
-            <td colSpan={4} className='text-center'>TOTAL ANUAL</td>
+            <td colSpan={4} className={`text-center fs-2 ${bgTotal} border-left-10 border-right-10`}>TOTAL ANUAL</td>
           </tr>
           <tr>
             <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10 ${bgTotal}`}>% <span className='mx-1'></span> PARTICIPACION</td>
@@ -143,16 +143,17 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                 )
               })
             }
-            <td className='text-end'>
+            <td className='text-end border-bottom-10 border-left-10'>
               <NumberFormatMoney
+              className='fs-2'
                 amount={
                   dataAlter.reduce((total, item)=>item.montoTotalPagadas+item.montoTotalNoPagadas+total, 0)
                 }
               />
             </td>
-            <td className='fs-3 text-end'>{dataAlter.reduce((total, item)=>item.dataSumaCantidad+total, 0)}</td>
-            <td>{''}</td>
-            <td></td>
+            <td className='fs-2 text-end border-bottom-10'>{dataAlter.reduce((total, item)=>item.dataSumaCantidad+total, 0)}</td>
+            <td className='fs-2 text-center border-bottom-10'>{'100'}</td>
+            <td className='fs-2 text-center border-bottom-10 border-right-10'><NumberFormatMoney className='fs-2' amount={dataAlter.reduce((total, item)=>item.montoTotalPagadas+item.montoTotalNoPagadas+total, 0)/dataTotalFormular(anio, dataAlter)}/></td>
           </tr>
         </tbody>
       </Table>
