@@ -153,3 +153,4 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         </>
   )
 }
+

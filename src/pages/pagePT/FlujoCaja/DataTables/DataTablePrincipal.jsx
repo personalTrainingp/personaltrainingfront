@@ -33,7 +33,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
       <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
         <thead>
           <tr>
-            <th style={{width: '500px'}} className={` text-break fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black `}>{index}. {nombreGrupo==='GAS / MANTENIMIENTO Y MOVILIDADES'?<>GAS<br/> MANTENIMIENTO<br/> MOVILIDADES</>:nombreGrupo}</th>
+            <th style={{width: '500px'}} className={` text-break fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black `}>{index}. {nombreGrupo==='GAS / MANTENIMIENTO Y MOVILIDADES'?<>GAS<br/> MANTENIMIENTO<br/> MOVILIDADES</>:buscarPuntosYPonerTransparente(nombreGrupo)}</th>
             {
               dataAlter.map(f=>{
                 return (
@@ -54,7 +54,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
           { conceptos.map((c, i)=>{
             return (
               <tr key={`${i}-${c.concepto}`}>
-                <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>{i+1}. {c.concepto}</td>
+                <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>{i+1}. {buscarPuntosYPonerTransparente(c.concepto)}</td>
                 {
                     dataAlter.map((f, i)=>{
                       
@@ -170,6 +170,16 @@ function dataTotalFormular(anio=2024, data=[]) {
 	return anio===2024?data.filter(f=>f.data?.length !== 0).length:anioActual===anio ? mesActual:12
 }
 
-function cambiarEstilosPorTexto(texto, change) {
-    return texto
+function buscarPuntosYPonerTransparente(txt='') {
+  return txt.split(/(\.+)/g).map((parte, i) => {
+    if (parte.startsWith(".")) {
+      return (
+        <span key={i} style={{ color: "transparent" }}>
+          {parte}
+        </span>
+      );
+    }
+    return <span key={i}>{parte}</span>;
+  });
+  
 }
