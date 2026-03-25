@@ -1,4 +1,4 @@
-import { InputButton, InputDate, InputSelect, InputSwitch, InputText, InputTextArea } from '@/components/InputText'
+import { InputButton, InputDate, InputMoney, InputSelect, InputSwitch, InputText, InputTextArea } from '@/components/InputText'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayEmpresaFinan, arrayFinanzas, arrayMonedas, arrayTipoIngresos } from '@/types/type'
