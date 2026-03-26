@@ -22,7 +22,7 @@ export const ColorEmpresa = (props) => {
     { 
       key: 'childrenCircus', 
       label: 'CIRCUS', 
-      height: '70px',
+      height: '110px',
       icon: logoCircus,
       text: 'text-circus link-circus', 
       BackgroundHeretary: 'link-circus' 
@@ -89,7 +89,7 @@ export const ColorEmpresa = (props) => {
           <TabPanel
             key={key}
             className={`${text}`}
-            header={<div className={`fs-1 ${text}`} style={{height: '70px'}}>{icon?(<img src={icon} style={{height}}></img>):label} </div>}
+            header={<div className={`fs-1 ${text} d-flex align-items-center`} style={{height: '90px'}}>{icon?(<img src={icon} style={{height}}></img>):label} </div>}
           >
             <div className={BackgroundHeretary}>
               {props[key]}

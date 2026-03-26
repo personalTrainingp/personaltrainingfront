@@ -181,6 +181,20 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         setisOpenModalCustomProv({id, isOpen: true})
         onHide()
     }
+    const ordenFormaPago = [
+        {orden: 1, values: 932},
+        {orden: 2, values: 1719},
+        {orden: 3, values: 167},
+    ]
+    const ordenFormaPagoMAP = DataFormaPago.map(f=>{
+        const ordenx = ordenFormaPago.find(i=>i.values===f.value)?.orden
+        return {
+            ...f,
+            orden: ordenx || 10000,
+        }
+    }).sort((a, b)=>a.orden-b.orden)
+    console.log({ordenFormaPagoMAP});
+    
   return (
     <>
     <Loading show={isLoading}/>
@@ -267,7 +281,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'FORMA DE PAGO'} nameInput={'id_forma_pago'} value={id_forma_pago} options={DataFormaPago} onChange={onInputChange} />
+                            <InputSelect label={'FORMA DE PAGO'} nameInput={'id_forma_pago'} value={id_forma_pago} options={ordenFormaPagoMAP} onChange={onInputChange} />
                         </div>
                     </Col>
                     <Col lg={4}>

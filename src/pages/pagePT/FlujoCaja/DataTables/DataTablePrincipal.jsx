@@ -44,10 +44,10 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                 )
               })
             }
-            <th className='text-center border-top-10 border-left-10 border-bottom-10' style={{width: '180px'}}>TOTAL <br/> ANUAL</th>
+            <th className='text-center border-top-10 border-left-10 border-bottom-10' style={{width: '200px'}}>TOTAL <br/> ANUAL</th>
             <th className='text-center border-top-10 border-bottom-10' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
             <th className='text-center border-top-10 border-bottom-10' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
-            <th className='text-center border-top-10 border-right-10 border-bottom-10' style={{width: '160px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
+            <th className='text-center border-top-10 border-right-10 border-bottom-10' style={{width: '180px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
           </tr>
         </thead>
         <tbody>
@@ -165,11 +165,25 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
 
 
 function dataTotalFormular(anio=2024, data=[]) {
-  const hoy = new Date()
-  const mesActual = hoy.getMonth()+1
-  const anioActual = hoy.getFullYear()
+    const hoy = new Date()
+  // Año actual
+const year = hoy.getFullYear();
 
-	return anio===2024?data.filter(f=>f.data?.length !== 0).length:anioActual===anio ? mesActual:12
+// Mes actual (0 = enero, 11 = diciembre)
+const month = hoy.getMonth()+ 1;
+const ultimaFecha = new Date(year, month , 0);
+const diaUltimaFecha = ultimaFecha.getDate()
+const diaActual = hoy.getDate()
+if(anio===year){
+  return diaActual==diaUltimaFecha?0:month-1;
+}else{
+  return 12;
+}
+  // const hoy = new Date()
+  // const mesActual = hoy.getMonth()+1
+  // const anioActual = hoy.getFullYear()
+
+	// return anio===2024?data.filter(f=>f.data?.length !== 0).length:anioActual===anio ? mesActual:12
 }
 
 function buscarPuntosYPonerTransparente(txt='') {

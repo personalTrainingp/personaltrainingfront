@@ -30,7 +30,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     }
   return (
     <div>
-        <div className='fs-1 text-center'>INGRESOS</div>
+        <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
             {
                 dataIngresosxFecha?.filter(f=>f.data?.length!==0).map((data, i)=>{
@@ -52,7 +52,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 })
             }
         </div>
-            <div className='fs-1 text-center'>EGRESOS</div>
+            <div style={{fontSize: '70px'}} className='text-black text-center'>EGRESOS</div>
         <div className='tab-scroll-container'>
             {
                 dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS").filter(f=>f.data?.length!==0).map((data,i)=>{

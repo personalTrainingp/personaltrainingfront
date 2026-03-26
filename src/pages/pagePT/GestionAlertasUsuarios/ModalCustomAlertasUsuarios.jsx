@@ -5,52 +5,36 @@ import Select from 'react-select'
 import { useAlertasUsuarios } from './useAlertasUsuarios'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { Button } from 'primereact/button'
+import { InputDate, InputSelect } from '@/components/InputText'
 
 const customAlertaUsuario ={
   mensaje: '',
-  tipo_alerta: 0,
-  id_user: 0,     // se usará solo como “placeholder”; realmente enviaremos 1 por iteración
+  id_tipo_alerta: 0,
+  id_grupo_usuarios: 0,     // se usará solo como “placeholder”; realmente enviaremos 1 por iteración
   fecha: '',      // idem; enviaremos la fecha de la iteración
   id_estado: 0
 }
 
 export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
-  const { dataUsuarios, obtenerUsuarios, onPostAlertaUsuario } = useAlertasUsuarios()
+  const { dataUsuarios, obtenerUsuarios, onPostAlertaUsuario, obtenerTiposAlertas, dataTiposAlerta } = useAlertasUsuarios()
   const { DataGeneral:dataTipoAlerta, obtenerParametroPorEntidadyGrupo:obtenerTiposAlerta } = useTerminoStore()
+  const { DataGeneral:dataGrupoUsuariosAlerta, obtenerParametroPorEntidadyGrupo:obtenerDataGrupoUsuariosAlerta } = useTerminoStore()
 
-  const { formState, mensaje, tipo_alerta, id_estado, onInputChange, onInputChangeReact, onResetForm } = useForm(customAlertaUsuario)
+  const { formState, id_grupo_usuarios, id_tipo_alerta, mensaje, id_estado, fecha, onInputChange, onInputChangeReact, onResetForm } = useForm(customAlertaUsuario)
 
-  // -------- local state para múltiple fecha y usuarios ----------
-  const [fechaInput, setFechaInput] = useState('')
-  const [fechas, setFechas] = useState([])                 // array de 'YYYY-MM-DD'
-  const [usuariosSel, setUsuariosSel] = useState([])       // array de opciones {value,label}
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     if(show){
       obtenerUsuarios()
+      obtenerDataGrupoUsuariosAlerta('grupo-usuarios', 'alerta')
       obtenerTiposAlerta('alertas-wsp', 'usuarios')
-      // limpiar estados locales al abrir
-      setFechaInput('')
-      setFechas([])
-      setUsuariosSel([])
+      obtenerTiposAlertas()
       onResetForm()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show])
 
-  // ---- manejar fechas (agregar / eliminar) ----
-  const addFecha = (e) => {
-    e?.preventDefault?.()
-    if(!fechaInput) return
-    if(!fechas.includes(fechaInput)){
-      setFechas(prev => [...prev, fechaInput].sort())
-    }
-    setFechaInput('')
-  }
-  const removeFecha = (f) => {
-    setFechas(prev => prev.filter(x => x !== f))
-  }
 
   // ---- Guardar: for usuarios × fechas → onPostAlertaUsuario ----
   const onClickCustomAlertaUsuario = async (e)=>{
@@ -59,28 +43,12 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
       // si en el futuro agregas edición, lo manejas aquí
       return
     }
-
+    onPostAlertaUsuario({...formState, fecha: new Date(fecha)})
     // Validaciones mínimas
     if(!mensaje?.trim()) return
-    if(!tipo_alerta && tipo_alerta!==0) return
-    if(!usuariosSel?.length) return
-    // if(!fechas?.length) return
 
     try{
       setSaving(true)
-      // Ejecutar por cada combinación usuario × fecha
-      for(const u of usuariosSel){
-        for(const f of fechas){
-          await onPostAlertaUsuario({
-            ...formState,
-            id_user: u.value,
-            fecha: f,
-            tipo_alerta,
-            id_estado,
-            mensaje: mensaje?.trim()
-          })
-        }
-      }
       onCancelCustomAlertaUsuario()
     } finally{
       setSaving(false)
@@ -109,62 +77,15 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
         </div> 
         
         <div className='m-1'>
-          <label>TIPO DE ALERTA</label>
-          <Select
-            options={dataTipoAlerta}
-            placeholder='Selecciona el tipo de alerta'
-            onChange={(e)=>onInputChangeReact(e, 'tipo_alerta')}
-            className="react-select"
-            classNamePrefix="react-select"
-            name='tipo_alerta'
-            value={dataTipoAlerta.find(op=>op.value===tipo_alerta)}
-            required
-          />
+          <InputSelect label={'TIPO DE ALERTA'} nameInput={'id_tipo_alerta'} onChange={onInputChange} options={dataTiposAlerta} value={id_tipo_alerta}/>
         </div>
 
         <div className='m-1'>
-          <label>USUARIOS</label>
-          <Select
-            options={dataUsuarios}
-            placeholder='Selecciona uno o más usuarios'
-            onChange={(vals)=>setUsuariosSel(vals || [])}
-            className="react-select"
-            classNamePrefix="react-select"
-            name='id_user'
-            value={usuariosSel}
-            required
-            isMulti
-          />
+          <InputSelect label={'GRUPO'} nameInput={'id_grupo_usuarios'} onChange={onInputChange} options={dataGrupoUsuariosAlerta} value={id_grupo_usuarios}/>
         </div>
-        {
-          tipo_alerta!==1564 && (
-                <div className='m-1'>
-                  <label>FECHAS</label>
-                  <div className='d-flex gap-2'>
-                    <input
-                      type='date'
-                      name='fecha'
-                      onChange={(e)=>setFechaInput(e.target.value)}
-                      className='form-control'
-                      value={fechaInput}
-                    />
-                    <Button type="button" icon="pi pi-plus" onClick={addFecha} outlined />
-                  </div>
-
-                  {/* listado de fechas agregadas */}
-                  {!!fechas.length && (
-                    <div className='mt-2 d-flex flex-wrap gap-2'>
-                      {fechas.map(f=>(
-                        <span key={f} className="badge bg-primary d-inline-flex align-items-center gap-2" style={{fontSize: '0.9rem'}}>
-                          {f}
-                          <Button type="button" icon="pi pi-times" text rounded onClick={()=>removeFecha(f)} />
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-          )
-        }
+        <div className='m-1'>
+          <InputDate label={'FECHA'} nameInput={'fecha'} onChange={onInputChange} value={fecha} type='datetime-local'/>
+        </div>
         <div className='m-1'>
           <label>MENSAJE</label>
           <textarea

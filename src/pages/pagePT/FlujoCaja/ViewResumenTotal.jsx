@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 
 export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio, onOpenModalTableItems}) => {
+    const anioActual = new Date(anio[0]).getFullYear()
     const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
     useEffect(() => {
         obtenerEgresosxFecha(id_enterprice, anio, 'tenet')
@@ -12,8 +13,6 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     useEffect(() => {
         obtenerIngresosxFecha(id_enterprice, anio, 'tenet')
     }, [])
-    console.log({dataGastosxFecha, dataIngresosxFecha});
-    
     const dataAlter = fechas.map((f, index, array)=>{
         const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
@@ -26,7 +25,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         const cantidadGastos = dataGasto.length;
         const utilidadBruta = sumaIngresos-sumaGastos
         const utilidadNeta = (sumaIngresos+sumaIngresosExcepcional)-sumaGastos
-        const utilidadUltimaLinea = (utilidadNeta && (utilidadNeta/sumaIngresos))*100
+        const utilidadUltimaLinea = ((utilidadNeta && sumaIngresos) && (utilidadNeta/sumaIngresos))*100
         return {
             ...f,
             dataGasto,
@@ -42,6 +41,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
         }
       })
+    const ingresosAcumulados = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)
     const utilidadBrutaTotal = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
     const utilidadNetaTotal = (dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
       return (
@@ -59,7 +59,8 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <td className='text-center border-top-10 border-bottom-10 border-left-10 border-right-10' style={{width: '190px'}}>TOTAL <br/> ANUAL</td>
+                <td className='text-center border-top-10 border-bottom-10 border-left-10 border-right-10' style={{width: '230px'}}>TOTAL <br/> ANUAL</td>
+                <td className='text-center border-top-10 border-bottom-10 border-right-10' style={{width: '230px'}}>PROMEDIO <br/> MENSUAL <br/> ANUAL</td>
               </tr>
             </thead>
             <tbody>
@@ -79,6 +80,11 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     <NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)}/>
                   </div>
                 </td>
+                <td className='border-right-10'>
+                  <div className='text-end'>
+                    <NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)/encontrarFechas(anioActual)}/>
+                  </div>
+                </td>
               </tr>
               <tr>
                 <th className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice}`}>EGRESOS</th>
@@ -96,6 +102,11 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     <NumberFormatMoney amount={-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)}/>
                   </div>
                 </td>
+                <td className='border-right-10'>
+                  <div className='text-change text-end '>
+                    <NumberFormatMoney amount={-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioActual)}/>
+                  </div>
+                </td>
               </tr>
               <tr>
                 <th className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice}`}>UTILIDAD BRUTA</th>
@@ -111,6 +122,11 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 <td className='border-left-10 border-right-10'>
                   <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`} ><NumberFormatMoney amount={utilidadBrutaTotal}/></div>
                 </td>
+                <td className='border-right-10'>
+                  <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`}>
+                    <NumberFormatMoney amount={utilidadBrutaTotal/encontrarFechas(anioActual)}/>
+                  </div>
+                </td>
               </tr>
               <tr>
                 <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>ING. EXTRAORDINARIOS</th>
@@ -123,7 +139,14 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <td className={`text-end border-left-10 border-right-10`}> <NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0)}/></td>
+                <td className={`text-end border-left-10 border-right-10`}> 
+                  <NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0)}/></td>
+                
+                <td className='border-right-10'>
+                  <div className={`text-end`}>
+                    <NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0)/encontrarFechas(anioActual)}/>
+                  </div>
+                </td>
               </tr>
               <tr>
                 <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>UTILIDAD NETA</th>
@@ -137,9 +160,10 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   })
                 }
                       <td className={`text-end border-left-10 border-right-10`}><div className={`${utilidadNetaTotal>0?'text-ISESAC':'text-change'}`}> <NumberFormatMoney className='fs-2' amount={utilidadNetaTotal}/></div></td>
+                      <td className={`text-end border-right-10`}><div className={`${utilidadNetaTotal>0?'text-ISESAC':'text-change'}`}> <NumberFormatMoney className='fs-2' amount={utilidadNetaTotal/encontrarFechas(anioActual)}/></div></td>
               </tr> 
               <tr>
-                <th className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice}`}>% UTILIDAD ULTIMA LINEA</th>
+                <th className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice}`}>%Utilidad / pérdida última linea</th>
               {
                 dataAlter.map(e=>{
                   return (
@@ -149,7 +173,8 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${dataAlter.reduce((total, item)=>item.utilidadUltimaLinea+total, 0)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={dataAlter.reduce((total, item)=>item.utilidadUltimaLinea+total, 0)/encontrarFechas(anio)}/></div></td>
+                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={utilidadNetaTotal/ingresosAcumulados}/></div></td>
+                      <td className={`text-end border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={(utilidadNetaTotal/ingresosAcumulados)/encontrarFechas(anioActual)}/></div></td>
               </tr> 
             </tbody>
           </Table>

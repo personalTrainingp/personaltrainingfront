@@ -9,11 +9,14 @@ import { Button } from 'primereact/button';
 
 export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmpresa, id_empresa}) => {
     const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
+    const [isClickProveedores, setisClickProveedores] = useState({indexTab: 0, prov: ''})
     const onOpenModalCustomGasto = (id=0)=>{
         setisOpenModalCustomGasto({isOpen: true, id: id})
     }
     const onCloseModalCustomGasto = ()=>{
         setisOpenModalCustomGasto({isOpen: false, id: 0})
+        setisClickProveedores({indexTab: 0, prov: ''})
+        onHide()
     }
     const columns = [
         {id: 0, header: '', render: (row)=>{
@@ -96,15 +99,18 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
             )
         }},
     ]
+    const clickProv = (i, prov)=>{
+        setisClickProveedores({indexTab: i, prov})
+    }
   return (
     <>
-        <Modal show={show} onHide={onHide} fullscreen>
+        <Modal show={show} onHide={onCloseModalCustomGasto} fullscreen>
             <Modal.Header closeButton >
                 <Modal.Title>{id_empresa}</Modal.Title>
             </Modal.Header>
             <Modal.Body >
                 <div className={link}>
-                    <TabView>
+                    <TabView onTabChange={(e) => clickProv(e.index)} activeIndex={isClickProveedores.indexTab} >
                         <TabPanel header={<div className='fs-1'>ITEMS</div>}>
                             <DataTableCR
                                 columns={columns}
@@ -113,11 +119,12 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
                                 stickyHeight={'80vh'}
                                 bgHeader={bgHeader}
                                 stickyHeader
+                                defaultSearch={isClickProveedores.prov}
                             />
                         </TabPanel>
                         <TabPanel header={<div className='fs-1'>GASTOS POR PROVEEDOR</div>}>
                             <div className='d-flex'>
-                                <ProveedorResumen data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
+                                <ProveedorResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
                             </div>
                         </TabPanel>
                     </TabView>
@@ -131,7 +138,7 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
 }
 
 
-const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='text-change', id_empresa }) => {
+const ProveedorResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-change', text='text-change', id_empresa }) => {
   const proveedores = useMemo(() => {
     return Object.values(
       data.reduce((acc, item) => {
@@ -161,7 +168,7 @@ const ProveedorResumen = ({ data = [], header='GASTOS', bg='bg-change', text='te
         <Row>
           {proveedores.map((prov, i) => (
             <Col  key={i} lg={4}>
-              <div style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black-6`}>
+              <div onClick={()=>onClickProv(0, prov.razon_social_prov)} style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black-6`}>
                   <span className={`${text} fs-2 text-center  p-0 border-bottom-black-6`}>
                       {prov.razon_social_prov}
                   </span>

@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 
 export const useAlertasUsuarios = () => {
 	const [dataUsuarios, setdataUsuarios] = useState([]);
+	const [dataTiposAlerta, setdataTiposAlerta] = useState([]);
 	const dispatch = useDispatch();
 	const updateMensajeAlertas = async (mensaje, mensajeAnterior) => {
 		try {
@@ -41,7 +42,9 @@ export const useAlertasUsuarios = () => {
 	};
 	const onPostAlertaUsuario = async (formState) => {
 		try {
-			const { data } = await PTApi.post('/alerta-usuario/alerta-usuario', formState);
+			console.log({ formState });
+
+			const { data } = await PTApi.post('/alerta-usuario/', formState);
 			await obtenerAlertasUsuarios();
 		} catch (error) {
 			console.log(error);
@@ -63,7 +66,17 @@ export const useAlertasUsuarios = () => {
 			console.log(error);
 		}
 	};
+	const obtenerTiposAlertas = async () => {
+		try {
+			const { data } = await PTApi.get('/alerta-usuario/tipo-alertas');
+			setdataTiposAlerta(data.tiposDeAlerta);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
+		obtenerTiposAlertas,
+		dataTiposAlerta,
 		dataUsuarios,
 		obtenerUsuarios,
 		onPostAlertaUsuario,
