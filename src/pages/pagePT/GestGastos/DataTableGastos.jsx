@@ -7,11 +7,11 @@ import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
-export const DataTableGastos = ({id_empresa, onOpenModalGasto}) => {
+export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
     const { obtenerGastos, deleteGastoxID, loading } = useGastosStore()
     const { dataView } = useSelector(e=>e.EGRESOS)
     useEffect(() => {
-        obtenerGastos(id_empresa)
+        obtenerGastos(id_empresa, sonCompras)
     }, [id_empresa])
     const sortable=true;
     

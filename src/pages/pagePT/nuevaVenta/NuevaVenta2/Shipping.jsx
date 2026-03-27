@@ -121,7 +121,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 		console.log({dataVenta, datos_pagos, detalle_cli_modelo});
 		
 		await startRegisterVenta({dataVenta, datos_pagos, detalle_cli_modelo}, funToast)
-		// dispatch(RESET_STATE_VENTA())
+		dispatch(RESET_STATE_VENTA())
 	}
 	return (
 		<>

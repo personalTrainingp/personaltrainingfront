@@ -1,1 +1,0 @@
-export { OrdenCompra as default } from './OrdenCompra'

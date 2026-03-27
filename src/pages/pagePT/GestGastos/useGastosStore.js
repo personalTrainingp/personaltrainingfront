@@ -32,12 +32,11 @@ export const useGastosStore = () => {
 	});
 	const [loading, setloading] = useState(false);
 	const dispatch = useDispatch();
-	const obtenerGastos = async (id_empresa) => {
+	const obtenerGastos = async (id_empresa, esCompra = false) => {
 		try {
 			setloading(true);
 			const { data } = await PTApi.get(`/egreso/empresa/${id_empresa}`);
-			console.log({ data, id_empresa });
-			const dataGastoMap = data.gastos.map((g) => {
+			let dataGastoMap = data.gastos.map((g) => {
 				return {
 					...g,
 					tipo_gasto: arrayFinanzas.find(
@@ -46,10 +45,13 @@ export const useGastosStore = () => {
 					rubro: g.tb_parametros_gasto?.grupo,
 					concepto: g.tb_parametros_gasto?.nombre_gasto,
 					nombre_proveedor: g.tb_Proveedor?.razon_social_prov,
-					forma_pago: g.parametro_forma_pago?.label_param,	
+					forma_pago: g.parametro_forma_pago?.label_param,
 					id: g.id,
 				};
 			});
+			if (esCompra) {
+				dataGastoMap = dataGastoMap.filter((f) => f.impuesto_igv === true);
+			}
 			setloading(false);
 			dispatch(onSetDataViewEgresos(dataGastoMap));
 		} catch (error) {
