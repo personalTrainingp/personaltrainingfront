@@ -9,10 +9,10 @@ import { useReporteStore } from '@/hooks/hookApi/useReporteStore'
 import { TableEgresosPorGasto } from './EgresosPorGasto/TableEgresosPorGasto'
 import { TableEgresosPorGrupo } from './EgresosPorGrupo/TableEgresosPorGrupo'
 import { Toast } from 'primereact/toast'
-import { ExportToExcel } from './BtnExportExcel'
+// import { ExportToExcel } from './BtnExportExcel'
 import { FormatoDateMask } from '@/components/CurrencyMask'
 import { FormatRangoFecha } from '@/components/componentesReutilizables/FormatRangoFecha'
-import { BtnExportExcelFlujoCaja } from '../../GestGastos/BtnExportExcelFlujoCaja'
+// import { BtnExportExcelFlujoCaja } from '../../GestGastos/BtnExportExcelFlujoCaja'
 
 export const ReporteEgresos = () => {
   const toast = useRef(null)
