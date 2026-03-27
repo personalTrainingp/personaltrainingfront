@@ -1,6 +1,6 @@
 import { CurrencyMask, FormatoDateMask, NumberFormatMoney } from '@/components/CurrencyMask';
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
-import { ModalIngresosGastos } from '@/pages/pagePT/GestGastos/ModalIngresosGastos';
+// import { ModalIngresosGastos } from '@/pages/pagePT/GestGastos/ModalIngresosGastos';
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import React, { useState } from 'react'
@@ -150,7 +150,7 @@ const rowExpansionTemplate = (data) => {
           <Column header={<div className='d-flex w-50'>TOTAL $</div>} body={TotalDolaresBodyTemplate}></Column>
         </DataTable>
         <ModalViewConceptos label_data={selectGruposName} data={selectGrupos} onHide={()=>setisopenModalViewConceptos(false)} show={isopenModalViewConceptos}/>
-        <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+        {/* <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/> */}
     </div>
   )
 }
