@@ -15,7 +15,7 @@ export const ColorEmpresa = (props) => {
       key: 'childrenChange', 
       label: 'CHANGE', 
       icon: logoChange,
-      height: '70px',
+      height: '60px',
       text: 'link-change', 
       BackgroundHeretary: 'link-change'
     },
