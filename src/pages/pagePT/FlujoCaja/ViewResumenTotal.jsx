@@ -198,8 +198,8 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={(utilidadNetaTotal*100)/ingresosAcumulados}/></div></td>
-                      <td className={`text-end border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={((utilidadNetaTotal*100)/ingresosAcumulados)/encontrarFechas(anioElegido)}/></div></td>
+                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={(utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados)}/></div></td>
+                      <td className={`text-end border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={((utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados)/encontrarFechas(anioElegido))}/></div></td>
               </tr> 
             </tbody>
           </Table>
