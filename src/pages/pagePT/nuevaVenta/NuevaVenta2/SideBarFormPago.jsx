@@ -9,6 +9,7 @@ import { Button, Modal } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import Select from 'react-select'
 import { useTerminologiaPagos } from './useTerminologiaPagos'
+import { InputNumber, InputSelect } from '@/components/InputText'
 const registerPago = {
     id_formaPago: 0,
     id_tipo_tarjeta: 0,
@@ -18,10 +19,11 @@ const registerPago = {
     monto_pago: '1',
     observacion_pago: '',
     n_operacion: '',
+    n_cuotas: 0
 }
 export const SideBarFormPago = ({show, onHide}) => {
     const dispatch = useDispatch()
-    const {formState, fecha_pago, monto_pago, observacion_pago, id_forma_pago, n_operacion, id_tipo_tarjeta, id_tarjeta, id_banco, onInputChange, onInputChangeReact, onResetForm} = useForm(registerPago)
+    const {formState, monto_pago, id_forma_pago, n_operacion, id_tipo_tarjeta, id_tarjeta, id_banco, n_cuotas, onInputChange, onResetForm} = useForm(registerPago)
     const [formaPagoSelect, setFormaPagoSelect] = useState(0)
     const [dataTipoTarjeta, setdataTipoTarjeta] = useState([])
     const [dataTarjetas, setdataTarjetas] = useState([])
@@ -53,6 +55,7 @@ export const SideBarFormPago = ({show, onHide}) => {
             label_banco: dataBancos.find(b=>b.id_banco===id_banco)?.label_banco||0,
             label_tipo_tarjeta: dataTipoTarjeta.find(tt=>tt.id_tipo_tarjeta===id_tipo_tarjeta)?.label_tipo_tarjeta||'',
             label_tarjeta: dataTarjetas.find(t=>t.id_tarjeta===id_tarjeta)?.label,
+            n_cuotas: n_cuotas,
             // label: `${formaPagoSelect.label}${BancoSelect.label?' / '.concat(BancoSelect.label):''}${TipoTarjetaSelect.label?' / '.concat(TipoTarjetaSelect.label):''}${TarjetaSelect.label?' / '.concat(TarjetaSelect.label):''}`, 
             value: `${formState.id_forma_pago}`}))
         cancelModal()
@@ -65,19 +68,19 @@ export const SideBarFormPago = ({show, onHide}) => {
     // console.log(dataFormaPagoActivo.find(f=>f.id_forma_pago));
     const formaPago = dataFormaPagoActivo.map(f=>({
       value: f.id_forma_pago,
-      label: `${f.label_param}`,
+      label: `${f.id_forma_pago} - ${f.label_param}`,
     }))
     const tipoTarjeta = dataTipoTarjeta.map(tt=>({
       value: tt.id_tipo_tarjeta,
-      label: `${tt.label_tipo_tarjeta}`,
+      label: `${tt.id_tipo_tarjeta} - ${tt.label_tipo_tarjeta}`,
     }))
     const tarjetas = dataTarjetas.map(t=>({
       value: t.id_tarjeta,
-      label: `${t.label_tarjeta}`,
+      label: `${t.id_tarjeta} - ${t.label_tarjeta}`,
     }))
     const bancos = dataBancos.map(t=>({
       value: t.id_banco,
-      label: `${t.label_banco}`,
+      label: `${t.id_banco}-${t.label_banco}`,
     }))
     useEffect(() => {
       const tipoTarjetas = dataFormaPagoActivo.find(f=>f.id_forma_pago===id_forma_pago)?.dataTipoTarjeta||[]
@@ -130,72 +133,38 @@ export const SideBarFormPago = ({show, onHide}) => {
                           required
                           />
                       </div>
-                      <div className='mb-4'>
-                        <label>Forma de pago*:</label>
-                            <Select
-                            onChange={(e) => onInputChangeReact(e, 'id_forma_pago')}
-                            name={'id_forma_pago'}
-                            placeholder={'Seleccionar la forma de pago'}
-                            className="react-select"
-                            classNamePrefix="react-select"
-                            options={formaPago}
-
-                            value={formaPago.find(e=>e.value===id_forma_pago) || 0}
-                            required
-                            />
-                      </div>
-                       {(dataTipoTarjeta.length>0) &&
-                        <>
                         <div className='mb-4'>
-                            <label>*Tipo de tarjetas:</label>
-                                <Select
-                                onChange={(e) => onInputChangeReact(e, 'id_tipo_tarjeta')}
-                                name={'id_tipo_tarjeta'}
-                                placeholder={'Seleccionar el tipo de tarjeta'}
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                options={tipoTarjeta}
-                                value={tipoTarjeta.find(e=>e.value===id_tipo_tarjeta) || 0}
-                                required
-                                />
+                          <InputSelect label={'Forma de pago:'} nameInput={'id_forma_pago'} onChange={onInputChange} options={formaPago} value={id_forma_pago} required/>
                         </div>
-                        </>
+                       {(dataTipoTarjeta.length>0) &&
+                        <div className='mb-4'>
+                          <InputSelect label={'Tipo de tarjetas:'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} options={tipoTarjeta} value={id_tipo_tarjeta} required/>
+                        </div>
                       }
                       
                       {(dataTarjetas.length>0) &&
-                        <>
                         <div className='mb-4'>
-                            <label>Tarjetas:</label>
-                                <Select
-                                onChange={(e) => onInputChangeReact(e, 'id_tarjeta')}
-                                name={'id_tarjeta'}
-                                placeholder={'Seleccionar tarjeta'}
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                options={tarjetas}
-                                value={tarjetas.find(e=>e.value===id_tarjeta) || 0}
-                                required
-                                />
+                          <InputSelect label={'TARJETA:'} nameInput={'id_tarjeta'} onChange={onInputChange} options={tarjetas} value={id_tarjeta} required/>
                         </div>
-                        </>
                         }
                         {(dataBancos.length>0) &&
-                        <>
                         <div className='mb-4'>
-                            <label>Banco:</label>
-                                <Select
-                                onChange={(e) => onInputChangeReact(e, 'id_banco')}
-                                name={'id_banco'}
-                                placeholder={'Seleccionar el banco'}
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                options={bancos}
-                                value={bancos.find(e=>e.value===id_banco) || 0}
-                                required
-                                />
+                          <InputSelect label={'BANCO:'} nameInput={'id_banco'} onChange={onInputChange} options={bancos} value={id_banco} required/>
                         </div>
-                        </>
                         }
+                        
+                        {/* id_tipo_tarjeta: 37,  */}
+                        {/* dataBancos=>BBVA: 50, DINNER: 52  */}
+                        {
+                          id_tipo_tarjeta==37 && (id_banco==50 || id_banco==52) && (
+                            <div className='mb-4'>
+                              <InputNumber label={'N° DE CUOTAS'} nameInput={'n_cuotas'} onChange={onInputChange} value={n_cuotas} required/>
+                            </div>
+                          )
+                        }
+                        {/* <pre>
+                          {JSON.stringify(dataBancos, null, 2)}
+                        </pre> */}
                       <div className='mb-4'>
                         <label>Monto de pago:</label>
                         <input 
