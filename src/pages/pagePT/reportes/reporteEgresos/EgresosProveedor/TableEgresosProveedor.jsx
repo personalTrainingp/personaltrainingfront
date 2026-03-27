@@ -1,6 +1,6 @@
 import { CurrencyMask, FormatoDateMask, MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask';
 import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
-import { ModalIngresosGastos } from '@/pages/pagePT/GestGastos/ModalIngresosGastos';
+// import { ModalIngresosGastos } from '@/pages/pagePT/GestGastos/ModalIngresosGastos';
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import React, { useState } from 'react'
@@ -46,9 +46,9 @@ const onRowExpand = (event) => {
 };
 const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto } = useGf_GvStore()
 const [isOpenModalEgresos, setisOpenModalEgresos] = useState(false)
-    const onCloseModalIvsG = ()=>{
-        setisOpenModalEgresos(false)
-    }
+    // const onCloseModalIvsG = ()=>{
+    //     setisOpenModalEgresos(false)
+    // }
     const onOpenModalIvsG = ()=>{
         setisOpenModalEgresos(true)
     }  
@@ -138,7 +138,7 @@ const OpenModalConceptos = (i)=>{
           <Column header={<div className='d-flex w-50'>TOTAL S/.</div>} body={TotalSolesBodyTemplate}></Column>
           <Column header={<div className='d-flex w-50'>TOTAL $</div>} body={TotalDolaresBodyTemplate}></Column>
         </DataTable>
-        <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/>
+        {/* <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/> */}
         <ModalViewConceptos label_data={selectGruposName} data={selectGrupos} onHide={()=>setisopenModalViewConceptos(false)} show={isopenModalViewConceptos}/>
     </div>
   )
