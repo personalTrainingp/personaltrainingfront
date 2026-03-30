@@ -110,6 +110,7 @@ const ReportePlanilla = lazy(() => import('../pages/pagePT/ReportePlanilla/Index
 const SeguimientoOficial = lazy(() => import('../pages/pagePT/SeguimientoOficial/Index.jsx'))
 const ReporteMonketFit = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/Index.jsx'))
 const ReporteGastosProveedores = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/App.jsx'))
+const ReportePagosVentas = lazy(()=>import('../pages/pagePT/ReportePagosVentas'))
 /**
  * routes import
  */
@@ -151,7 +152,14 @@ export default function ProtectedRoutes() {
 				status === 'authenticated' ? (
 					<>
 						<Route path="/*" element={<Layout />}>
-						
+							{
+								sections.find(e => e.url === '/reportes-admin') &&
+								<Route path='reporte-admin/pagos-operadores' element={<ReportePagosVentas />} />
+							}
+							{
+								sections.find(e => e.url === '/reportes-admin') &&
+								<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja />} />
+							}
 							{
 								sections.find(e => e.url === '/proveedor') &&
 								<Route path='gestion-monkfit' element={<ReservaMonkFitPage />} />
@@ -382,10 +390,6 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/inventario') &&
 								<Route path='gestion-inventario' element={<GestionInventario />} />
-							}
-							{
-								sections.find(e => e.url === '/reportes-admin') &&
-								<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja />} />
 							}
 							{sections.find(e => e.url === '/ventas') &&
 								<Route path="nueva-venta" element={<NuevaVenta />} />

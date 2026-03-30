@@ -4,20 +4,15 @@ import dayjs from 'dayjs'
 import { Dialog } from 'primereact/dialog'
 import React, { useState } from 'react'
 import { Table } from 'react-bootstrap'
-import { ModalIngresosGastos } from '../GestGastos/ModalIngresosGastos'
-import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
-import { ModalCustomAporte } from '../GestionAportes/ModalCustomAporte'
 import { ModalCustomCuentasBalances } from '../CuentasBalances/ModalCustomCuentasBalances'
 import { Button } from 'primereact/button'
 
 export const ModalDetalleCuentas = ({bgMultiValue, id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
   const [isModalDetalleGasto, setisModalDetalleGasto] = useState({isOpen: false, id: 0, tipo: 'PorCobrar'})
   const [ModalDetalleGasto, setModalDetalleGasto] = useState({})
-  const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
   const onOpenModalDetalleGasto = (idGasto, tipo)=>{
     setisModalDetalleGasto({isOpen: true, id: idGasto, tipo});
     onHide()
-    obtenerGastoxID(idGasto)
   }
   const onCloseModalDetalleGasto = ()=>{
     setisModalDetalleGasto({isOpen: false, id: 0});

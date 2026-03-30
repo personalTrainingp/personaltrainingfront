@@ -7,7 +7,6 @@ import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { Calendar } from 'primereact/calendar';
 import { useSelector } from 'react-redux';
-import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
 import { MultiSelect } from 'primereact/multiselect';
 import { ExportToExcel } from './BtnExportExcel';
 import { Button } from 'primereact/button';
@@ -102,7 +101,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona}) {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
-    // const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
     const { obtenerArticulo, articulo, setArticulo } = useInventarioStore()
     const [showLoading, setshowLoading] = useState(false)
     const actionBodyTemplate = (rowData)=>{

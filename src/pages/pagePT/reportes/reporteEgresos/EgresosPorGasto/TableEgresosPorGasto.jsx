@@ -1,5 +1,4 @@
 import { CurrencyMask, FormatoDateMask, NumberFormatMoney } from '@/components/CurrencyMask';
-import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore';
 // import { ModalIngresosGastos } from '@/pages/pagePT/GestGastos/ModalIngresosGastos';
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
@@ -37,7 +36,6 @@ const TotalBodyTemplate = (rowData)=>{
 const onRowExpand = (event) => {
   // toast.current.show({ severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000 });
 };
-const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto } = useGf_GvStore()
 const [isOpenModalEgresos, setisOpenModalEgresos] = useState(false)
     const onCloseModalIvsG = ()=>{
         setisOpenModalEgresos(false)
@@ -58,7 +56,6 @@ const montoMonedaBodyTemplate = (rowData)=>{
 }
 const onViewModalEgreso = (id)=>{
   onOpenModalIvsG()
-  obtenerGastoxID(id)
 }
 const IdBodyTemplate = (rowData)=>{
   return(

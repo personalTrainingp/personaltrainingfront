@@ -36,7 +36,6 @@ const TotalBodyTemplate = (rowData)=>{
 const onRowExpand = (event) => {
   // toast.current.show({ severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000 });
 };
-const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto } = useGf_GvStore()
 const [isOpenModalEgresos, setisOpenModalEgresos] = useState(false)
 // const [first, setfirst] = useState(second)
     const onCloseModalIvsG = ()=>{
@@ -58,7 +57,6 @@ const montoMonedaBodyTemplate = (rowData)=>{
 }
 const onViewModalEgreso = (id)=>{
   onOpenModalIvsG()
-  obtenerGastoxID(id)
 }
 const IdBodyTemplate = (rowData)=>{
   return(
@@ -148,7 +146,6 @@ const OpenModalConceptos = (i)=>{
           {/* <Column header="TOTAL" body={TotalBodyTemplate}></Column> */}
         </DataTable>
         <ModalViewConceptos label_data={selectGruposName} data={selectGrupos} onHide={()=>setisopenModalViewConceptos(false)} show={isopenModalViewConceptos}/>
-        {/* <ModalIngresosGastos show={isOpenModalEgresos} onHide={onCloseModalIvsG} data={gastoxID} showToast={showToast} isLoading={isLoading}/> */}
     </div>
   )
 }

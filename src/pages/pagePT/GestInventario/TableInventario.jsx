@@ -90,7 +90,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
-    // const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
     const { obtenerArticulo, articulo, setArticulo } = useInventarioStore()
     const [isOpenDataMovimientos, setisOpenDataMovimientos] = useState({isOpen: false, id: 0})
     const [showLoading, setshowLoading] = useState(false)

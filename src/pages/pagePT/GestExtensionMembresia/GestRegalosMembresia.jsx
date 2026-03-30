@@ -22,8 +22,6 @@ export const GestRegalosMembresia = () => {
   const [loading, setLoading] = useState(false);
   const [selectedCustomers, setselectedCustomers] = useState([])
   const [globalFilterValue, setGlobalFilterValue] = useState('');
-  // const { obtenerGastos, obtenerProveedoresUnicos } = useGf_GvStore()
-  // const {dataGastos, dataProvUnicosxGasto} = useSelector(e=>e.finanzas)
   const { obtenerExtensionEnTabla, dataExtension } = useExtensionStore()
   const [valueFilter, setvalueFilter] = useState([])
   useEffect(() => {

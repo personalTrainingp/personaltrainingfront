@@ -86,7 +86,6 @@ export default function TableInventario({showToast, id_empresa_zona, id_enterpri
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
-    // const { obtenerGastoxID, gastoxID, isLoading, startDeleteGasto, setgastoxID } = useGf_GvStore()
     const { obtenerArticulo, articulo, setArticulo } = useInventarioStore()
     const [showLoading, setshowLoading] = useState(false)
     const actionBodyTemplate = (rowData)=>{

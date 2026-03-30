@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useGf_GvStore } from '@/hooks/hookApi/useGf_GvStore'
 import TableInventario from './TableInventario'
 import { Toast } from 'primereact/toast'
 

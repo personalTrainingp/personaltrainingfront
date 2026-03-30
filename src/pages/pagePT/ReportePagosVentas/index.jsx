@@ -1,0 +1,1 @@
+export { AppReportePagosVentas as default } from './AppReportePagosVentas'
