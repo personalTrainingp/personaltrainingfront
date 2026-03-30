@@ -61,7 +61,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
-    {id: 5, header: 'NUMERO DE CUOTAS', render:(row)=>{
+    {id: 5, header: 'N° DE CUOTAS', render:(row)=>{
       return (
         <>
         {row.pago?.n_cuotas}
@@ -89,7 +89,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
       return (
         <>
         <NumberFormatMoney amount=
-        {1.18}
+        {row.pago?.parcial_monto*(row.porcentaje/100)*1.18-row.pago?.parcial_monto*(row.porcentaje/100)}
         />
         </>
       )

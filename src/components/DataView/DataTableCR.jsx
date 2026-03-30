@@ -780,7 +780,7 @@ const filtered = useMemo(() => {
       hover={hover}
       size={small ? 'sm' : undefined}
       // responsive lo maneja el wrapper, aquí lo dejamos sin tocar
-      className={`mb-0 fs-4 ${verticalBorders ? 'dtrb-vertical-borders' : ''}`}
+      className={`mb-0 fs-3 ${verticalBorders ? 'dtrb-vertical-borders' : ''}`}
       style={{
         width: '100%',
         // clave: aseguramos que la tabla SEA más ancha que el contenedor
