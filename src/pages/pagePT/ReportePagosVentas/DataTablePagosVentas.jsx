@@ -16,10 +16,11 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 7, header: 'FECHA DE VENTA', render:(row)=>{
       return (
         <>
-        <DateMask
+        {row.fecha_pago_1}
+        {/* <DateMask
           date={row.pago?.fecha_pago}
           format={'dddd DD [DE] MMMM [DEL] YYYY'}
-        />
+        /> */}
         </>
       )
     }},
@@ -43,21 +44,21 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 2, header: 'FORMA DE PAGO', render:(row)=>{
       return (
         <>
-        {row.pago?.parametro_forma_pago?.id_param} | {row.pago?.parametro_forma_pago?.label_param}
+        {row.pago?.parametro_forma_pago?.label_param}
         </>
       )
     }},
     {id: 3, header: 'TIPO DE TARJETA', render:(row)=>{
       return (
         <>
-        {row.pago?.parametro_tipo_tarjeta?.id_param} | {row.pago?.parametro_tipo_tarjeta?.label_param}
+        {row.pago?.parametro_tipo_tarjeta?.label_param}
         </>
       )
     }},
     {id: 4, header: 'BANCO', render:(row)=>{
       return (
         <>
-          {row.pago?.parametro_banco?.id_param} | {row.pago?.parametro_banco?.label_param}
+          {row.pago?.parametro_banco?.label_param}
         </>
       )
     }},
