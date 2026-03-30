@@ -42,6 +42,13 @@ export const useVentasPagosStore = () => {
 				{
 					id_forma_pago: 1389,
 					id_tipo_tarjeta: 37,
+					id_banco: 50,
+					n_cuotas: 6,
+					porcentaje: 8.29,
+				},
+				{
+					id_forma_pago: 1389,
+					id_tipo_tarjeta: 37,
 					id_banco: 51,
 					n_cuotas: 0,
 					porcentaje: 3.29,
