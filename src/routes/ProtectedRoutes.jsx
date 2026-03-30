@@ -111,9 +111,8 @@ const SeguimientoOficial = lazy(() => import('../pages/pagePT/SeguimientoOficial
 const ReporteMonketFit = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/Index.jsx'))
 const ReporteGastosProveedores = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/App.jsx'))
 const ReportePagosVentas = lazy(()=>import('../pages/pagePT/ReportePagosVentas'))
-/**
- * routes import
- */
+
+
 const OtherPages = lazy(() => import('../pages/otherpages'));
 const Error404Alt = lazy(() => import('../pages/otherpages/Error404Alt'));
 

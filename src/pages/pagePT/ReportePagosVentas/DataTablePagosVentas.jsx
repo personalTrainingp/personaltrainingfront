@@ -1,0 +1,125 @@
+import React, { useEffect } from 'react'
+import { useVentasPagosStore } from './useVentasPagosStore'
+import { DataTableCR } from '@/components/DataView/DataTableCR'
+import { DateMask, NumberFormatMoney } from '@/components/CurrencyMask'
+import { Button } from 'primereact/button'
+import { useSelector } from 'react-redux'
+
+export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
+  const { obtenerPagosVentas } = useVentasPagosStore()
+  useEffect(() => {
+    obtenerPagosVentas()
+  }, [])
+  const { dataView } = useSelector(e=>e.PAGOSVENTAS)
+
+  const columns = [
+    {id: 7, header: 'FECHA DE VENTA', render:(row)=>{
+      return (
+        <>
+        <DateMask
+          date={row.pago?.fecha_pago}
+          format={'dddd DD [DE] MMMM [DEL] YYYY'}
+        />
+        </>
+      )
+    }},
+    {id: 0, header: 'VENTA', render:(row)=>{
+      return (
+        <>
+        <NumberFormatMoney
+          amount=
+          {row.pago?.parcial_monto}
+        />
+        </>
+      )
+    }},
+    {id: 1, header: 'N° OPERACION', render: (row)=>{
+      return (
+        <>
+          {row.pago.n_operacion}
+        </>
+      )
+    }},
+    {id: 2, header: 'FORMA DE PAGO', render:(row)=>{
+      return (
+        <>
+        {row.pago?.parametro_forma_pago?.id_param} | {row.pago?.parametro_forma_pago?.label_param}
+        </>
+      )
+    }},
+    {id: 3, header: 'TIPO DE TARJETA', render:(row)=>{
+      return (
+        <>
+        {row.pago?.parametro_tipo_tarjeta?.id_param} | {row.pago?.parametro_tipo_tarjeta?.label_param}
+        </>
+      )
+    }},
+    {id: 4, header: 'BANCO', render:(row)=>{
+      return (
+        <>
+          {row.pago?.parametro_banco?.id_param} | {row.pago?.parametro_banco?.label_param}
+        </>
+      )
+    }},
+    {id: 5, header: 'NUMERO DE CUOTAS', render:(row)=>{
+      return (
+        <>
+        {row.pago?.n_cuotas}
+        </>
+      )
+    }},
+    {id: 6, header: '%', accessor: 'porcentaje', sortable: true, render:(row)=>{
+      return (
+        <>
+        
+        {row.porcentaje}
+        </>
+      )
+    }},
+    {id: 8, header: 'COMISION', accessor: 'porcentaje', sortable: true, render:(row)=>{
+      return (
+        <>
+        <NumberFormatMoney amount=
+        {row.pago?.parcial_monto*(row.porcentaje/100)}
+        />
+        </>
+      )
+    }},
+    {id: 9, header: 'IGV', render:(row)=>{
+      return (
+        <>
+        <NumberFormatMoney amount=
+        {1.18}
+        />
+        </>
+      )
+    }},
+    {id: 10, header: 'TOTAL', render:(row)=>{
+      return (
+        <>
+        <NumberFormatMoney amount=
+        {(row.pago?.parcial_monto*(row.porcentaje/100))*1.18}
+        />
+        </>
+      )
+    }},
+    {id: 11, header: '', render:(row)=>{
+      return (
+        <>
+        <Button icon={'p'} onClick={()=>onClickEdit(row.pago?.id)}/>
+        </>
+      )
+    }},
+  ]
+  const onClickEdit = (id)=>{
+    onOpenModalCustomPagos(id)
+  }
+  return (
+    <div>
+      <DataTableCR 
+        columns={columns}
+        data={dataView}
+      />
+    </div>
+  )
+}
