@@ -16,10 +16,11 @@ const customAlertaUsuario ={
 }
 
 export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
-  const { dataUsuarios, obtenerUsuarios, onPostAlertaUsuario, obtenerTiposAlertas, dataTiposAlerta } = useAlertasUsuarios()
+  const { dataUsuarios, obtenerUsuarios, onPostAlertaUsuario } = useAlertasUsuarios()
+  
   const { DataGeneral:dataTipoAlerta, obtenerParametroPorEntidadyGrupo:obtenerTiposAlerta } = useTerminoStore()
   const { DataGeneral:dataGrupoUsuariosAlerta, obtenerParametroPorEntidadyGrupo:obtenerDataGrupoUsuariosAlerta } = useTerminoStore()
-
+  
   const { formState, id_grupo_usuarios, id_tipo_alerta, mensaje, id_estado, fecha, onInputChange, onInputChangeReact, onResetForm } = useForm(customAlertaUsuario)
 
   const [saving, setSaving] = useState(false)
@@ -29,7 +30,6 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
       obtenerUsuarios()
       obtenerDataGrupoUsuariosAlerta('grupo-usuarios', 'alerta')
       obtenerTiposAlerta('alertas-wsp', 'usuarios')
-      obtenerTiposAlertas()
       onResetForm()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,7 +77,7 @@ export const ModalCustomAlertasUsuarios = ({show=false, onHide, id=0}) => {
         </div> 
         
         <div className='m-1'>
-          <InputSelect label={'TIPO DE ALERTA'} nameInput={'id_tipo_alerta'} onChange={onInputChange} options={dataTiposAlerta} value={id_tipo_alerta}/>
+          <InputSelect label={'TIPO DE ALERTA'} nameInput={'id_tipo_alerta'} onChange={onInputChange} options={dataTipoAlerta} value={id_tipo_alerta}/>
         </div>
 
         <div className='m-1'>
