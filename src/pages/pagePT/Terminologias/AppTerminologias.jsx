@@ -3,49 +3,50 @@ import React from 'react'
 import { AppTermGastos } from './TerminologiasGastos/AppTermGastos'
 import { AppTermSistemas } from './TermSistema/AppTermSistemas'
 import { AppTermGrupos } from './TermSistema/AppTermGrupos'
+import { ColorEmpresa } from '@/components/ColorEmpresa'
 
 export const AppTerminologias = () => {
   return (
     <div>
         <TabView>
-            <TabPanel header={<div style={{fontSize: '25px'}}>TERMINOLOGIA DE GASTOS</div>}>
-              <TabView>
-                <TabPanel header={'CHANGE'}>
-                  <AppTermGastos id_empresa={598} tipo={1573}/>
-                </TabPanel>
-                <TabPanel header={'REDUCTO'}>
-                  <AppTermGastos id_empresa={599} tipo={1573}/>
-                </TabPanel>
-                <TabPanel header={'CIRCUS'}>
+            <TabPanel header={<div className='text-black' style={{fontSize: '25px'}}>TERMINOLOGIA DE GASTOS</div>}>
+            <ColorEmpresa
+              childrenChange={
+                <AppTermGastos id_empresa={598} tipo={1573}/>
+              }
+              childrenReducto={
+                <AppTermGastos id_empresa={599} tipo={1573}/>
+              }
+              childrenCircus={
                   <AppTermGastos id_empresa={601} tipo={1573}/>
-                </TabPanel>
-                <TabPanel header={'RAL'}>
+              }
+              childrenRal={
                   <AppTermGastos id_empresa={800} tipo={1573}/>
-                </TabPanel>
-              </TabView>
+              }
+            />
             </TabPanel>
             
-            <TabPanel header={<div style={{fontSize: '25px'}}>TERMINOLOGIA DE INGRESOS</div>}>
-              <TabView>
-                <TabPanel header={'CHANGE'}>
+            <TabPanel header={<div className='text-black' style={{fontSize: '25px'}}>TERMINOLOGIA DE INGRESOS</div>}>
+              <ColorEmpresa
+                childrenChange={
                   <AppTermGastos id_empresa={598} tipo={1574}/>
-                </TabPanel>
-                <TabPanel header={'REDUCTO'}>
+                }
+                childrenReducto={
                   <AppTermGastos id_empresa={599} tipo={1574}/>
-                </TabPanel>
-                <TabPanel header={'CIRCUS'}>
-                  <AppTermGastos id_empresa={601} tipo={1574}/>
-                </TabPanel>
-                <TabPanel header={'RAL'}>
-                  <AppTermGastos id_empresa={800} tipo={1574}/>
-                </TabPanel>
-              </TabView>
+                }
+                childrenCircus={
+                    <AppTermGastos id_empresa={601} tipo={1574}/>
+                }
+                childrenRal={
+                    <AppTermGastos id_empresa={800} tipo={1574}/>
+                }
+              />
             </TabPanel>
             
-            <TabPanel header={<div style={{fontSize: '25px'}}>TERMINOLOGIA DE SISTEMAS</div>}>
+            <TabPanel header={<div className='text-black' style={{fontSize: '25px'}}>TERMINOLOGIA DE SISTEMAS</div>}>
                   <AppTermSistemas />
             </TabPanel>
-            <TabPanel header={<div style={{fontSize: '25px'}}>TERMINOLOGIA DE GRUPO</div>}>
+            <TabPanel header={<div className='text-black' style={{fontSize: '25px'}}>TERMINOLOGIA DE GRUPO</div>}>
                   <AppTermGrupos />
             </TabPanel>
         </TabView>
