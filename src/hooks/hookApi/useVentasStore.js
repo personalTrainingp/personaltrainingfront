@@ -118,8 +118,6 @@ export const useVentasStore = () => {
 	const [loadingMessage, setloadingMessage] = useState('');
 	const [dataContratos, setdataContratos] = useState([]);
 	const { base64ToFile } = helperFunctions();
-	const { obtenerTipoCambioPorFecha, dataTipoCambio } = useTipoCambioStore();
-	const { obtenerImages, images } = useImageStore();
 	const obtenerContratosDeClientes = async () => {
 		try {
 			dispatch(onSetDataView([]));

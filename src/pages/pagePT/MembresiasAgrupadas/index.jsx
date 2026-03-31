@@ -1,0 +1,1 @@
+export { AppMembresiasAgrupadas as default } from './AppMembresiasAgrupadas'

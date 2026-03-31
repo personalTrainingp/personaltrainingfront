@@ -89,6 +89,8 @@ export const useVentasPagosStore = () => {
 	const obtenerPagosVentasxID = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/venta/pagos/id/${id}`);
+			console.log({ data });
+
 			setdataPagosxID(data?.pago);
 		} catch (error) {
 			console.log(error);

@@ -63,10 +63,10 @@ export const SeguimientoxMesView = () => {
                                 {/* {<div className='text-center fs-2'><NumberFormatMoney amount={m.variacion_porcent}/>%</div>} */}
                                 
                                 <tr className="" onClick={()=>onOpenModalItem(m, `${dayjs(String(m.mes).padStart(2, '0'), 'MM').format('MMMM')} ${m.anio}`)}>
-                                    <td className='bg-danger text-primary fw-bold fs-3'>
+                                    <td className='text-primary fw-bold fs-3'>
                                         {dayjs(String(m.mes).padStart(2, '0'), 'MM').format('MMMM')} / {m.anio} 
                                     </td>
-                                    <td className='bg-danger fs-3'>
+                                    <td className='fs-3'>
                                         {m.items.length} 
                                     </td>
                                     <td className='fs-3'>
@@ -117,10 +117,10 @@ export const SeguimientoxMesView = () => {
                                 {/* {<div className='text-center fs-2'><NumberFormatMoney amount={m.variacion_porcent}/>%</div>} */}
                                 
                                 <tr className="" onClick={()=>onOpenModalItem(m, `${dayjs(String(m.mes).padStart(2, '0'), 'MM').format('MMMM')} ${m.anio}`)}>
-                                    <td className='bg-danger text-primary fw-bold fs-3'>
+                                    <td className='text-primary fw-bold fs-3'>
                                         {dayjs(String(m.mes).padStart(2, '0'), 'MM').format('MMMM')} / {m.anio} 
                                     </td>
-                                    <td className='bg-danger fs-3'>
+                                    <td className='fs-3'>
                                         {m.items.length} 
                                     </td>
                                     <td className='fs-3'>
@@ -171,10 +171,10 @@ export const SeguimientoxMesView = () => {
                                 {/* {<div className='text-center fs-2'><NumberFormatMoney amount={m.variacion_porcent}/>%</div>} */}
                                 
                                 <tr className="" onClick={()=>onOpenModalItem(m, `${dayjs(String(m.mes).padStart(2, '0'), 'MM').format('MMMM')} ${m.anio}`)}>
-                                    <td className='bg-danger text-primary fw-bold fs-3'>
+                                    <td className='text-primary fw-bold fs-3'>
                                         {dayjs(String(m.mes).padStart(2, '0'), 'MM').format('MMMM')} / {m.anio} 
                                     </td>
-                                    <td className='bg-danger fs-3'>
+                                    <td className='fs-3'>
                                         {m.items.length} 
                                     </td>
                                     <td className='fs-3'>
@@ -199,7 +199,7 @@ export const SeguimientoxMesView = () => {
             <Card>
                 <Card.Header className='d-flex justify-content-center'>
                     <div style={{fontSize: '70px'}}>
-                        AFORO TOTAL
+                        SOCIOS TOTAL
                     </div>
                 </Card.Header>
                 <Card.Body>
@@ -228,10 +228,10 @@ export const SeguimientoxMesView = () => {
                                 {/* {<div className='text-center fs-2'><NumberFormatMoney amount={m.variacion_porcent}/>%</div>} */}
                                 
                                 <tr className="" onClick={()=>onOpenModalItem(m, `${dayjs(String(m.mes).padStart(2, '0'), 'MM').format('MMMM')} ${m.anio}`)}>
-                                    <td className='bg-danger text-primary fw-bold fs-3'>
+                                    <td className='text-primary fw-bold fs-3'>
                                         {dayjs(String(m.mes).padStart(2, '0'), 'MM').format('MMMM')} / {m.anio} 
                                     </td>
-                                    <td className='bg-danger fs-3'>
+                                    <td className='fs-3'>
                                         {m.items?.length} 
                                     </td>
                                     <td className='fs-3'>

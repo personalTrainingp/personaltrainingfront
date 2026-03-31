@@ -111,7 +111,7 @@ const SeguimientoOficial = lazy(() => import('../pages/pagePT/SeguimientoOficial
 const ReporteMonketFit = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/Index.jsx'))
 const ReporteGastosProveedores = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/App.jsx'))
 const ReportePagosVentas = lazy(()=>import('../pages/pagePT/ReportePagosVentas'))
-
+const MembresiasAgrupadas = lazy(()=>import('../pages/pagePT/MembresiasAgrupadas'))
 
 const OtherPages = lazy(() => import('../pages/otherpages'));
 const Error404Alt = lazy(() => import('../pages/otherpages/Error404Alt'));
@@ -336,7 +336,7 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/mkt-renovacion') &&
-								<Route path='mkt-renovacion' element={<ViewRenovacion />} />
+								<Route path='mkt-renovacion' element={< MembresiasAgrupadas/>} />
 							}
 							{
 								sections.find(e => e.url === '/mkt-reinscripcion') &&
