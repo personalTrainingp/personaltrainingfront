@@ -126,14 +126,14 @@ export const TerminosOnShow = (show) => {
 		// { value: 698, label: '(RAL)', order: 13 },
 
 		{ value: 690, label: 'Referidos', order: 6 }, //997
-		{ value: 691, label: 'Cartera de renovacion', order: 4 }, //995
-		{ value: 692, label: 'Cartera de reinscripcion', order: 5 }, //996
+		{ value: 691, label: 'renovacion', order: 4 }, //995
+		{ value: 692, label: 'reinscripcion', order: 5 }, //996
 		{ value: 693, label: 'Instagram', order: 1 }, //992
 		{ value: 694, label: 'facebook', order: 2 }, //993
 		{ value: 695, label: 'tiktok', order: 3 }, //994
 		{ value: 696, label: 'EX-PT reinscripcion', order: 8 }, //TODO LOS TRASPASOS SON EX-PT //999
 		{ value: 689, label: 'Wsp organico', order: 11 }, //1001
-		// { value: 690, label: 'EX-PT Cartera de reinscripcion', order: 5 }, //996
+		// { value: 690, label: 'EX-PT reinscripcion', order: 5 }, //996
 		// { value: 690, label: 'INFLUENCER POR VISIBILIDAD', order: 14 },
 		// { value: 691, label: 'INFLUENCER DE POSICIONAMIENTO', order: 15 },
 		// { value: 692, label: 'INFLUENCER DE VENTAS', order: 16 },
