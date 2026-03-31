@@ -49,6 +49,18 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
         {id: 10, header: <>MONTO</>, sortable, accesor: 'monto', render: (row)=>{
             return (
                 <>
+                {
+                    row.impuesto_igv && (
+                        <>
+                        <div style={{width: '120px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} d-flex align-items-center justify-content-center`}>
+                                        {row.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
+                                        <NumberFormatMoney amount=
+                        {row.monto - row.monto/1.18}
+                                        />
+                                </div>
+                        </>
+                    )
+                }
                 <div style={{width: '120px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} d-flex align-items-center justify-content-center`}>
                                         {row.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
                                         <NumberFormatMoney amount={row.monto}/>
