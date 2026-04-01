@@ -96,7 +96,7 @@ export const DateMaskStr = (date, format) => {
 }
 export const DateMaskStr1 = (date) => {
   //'D [de] MMMM [del] YYYY'
-  return dayjs.utc(date)
+  return dayjs.utc(date).subtract(5, 'hour')
 }
 export const DateMaskStr2 = (date) => {
   //'D [de] MMMM [del] YYYY'

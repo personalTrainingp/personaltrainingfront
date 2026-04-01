@@ -15,21 +15,38 @@ export const useMembresiasStore = () => {
 							detalle_ventaMembresia: i.detalle_ventaMembresia,
 						};
 					});
-					return {
-						...m,
-						label: m.items[0].tb_cliente.nombres_apellidos_cli,
-						items,
-						change: m.items.filter(
+					const dataItems = [
+						...items.filter(
 							(f) =>
 								f.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm ===
 								'CHANGE 45'
 						),
-						fs: m.items.filter(
+						...items.filter(
 							(f) =>
 								f.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm ===
 								'FS 45'
 						),
-						fisioMuscle: m.items.filter(
+						...items.filter(
+							(f) =>
+								f.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm ==
+								'FISIO MUSCLE'
+						),
+					];
+					return {
+						...m,
+						label: m.items[0].tb_cliente.nombres_apellidos_cli,
+						items: dataItems,
+						change: items.filter(
+							(f) =>
+								f.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm ===
+								'CHANGE 45'
+						),
+						fs: items.filter(
+							(f) =>
+								f.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm ===
+								'FS 45'
+						),
+						fisioMuscle: items.filter(
 							(f) =>
 								f.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm ==
 								'FISIO MUSCLE'

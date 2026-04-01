@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useMonkeyFitStore } from './useMonkeyFitStore'
 import { Table } from 'react-bootstrap'
 import { generarMesYanio } from './generarMesYanio'
@@ -6,16 +6,39 @@ import dayjs from 'dayjs'
 
 export const App = () => {
     const { dataMF, obtenerMF } = useMonkeyFitStore()
-    useEffect(() => {
-        obtenerMF()
-    }, [])
-    const arrayFecha = ['2025-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']
+    const [isSorterTotal, setisSorterTotal] = useState({dir: '▲▼'})
     const dataMFClientesRepetidos = agruparPorCliente(dataMF).filter(f=>f?.items.length>1).map(g=>{
         return {
             ...g,
             items: agruparPorFecha(g.items)
         }
     })
+    const [dataOrdenada, setDataOrdenada] = useState([]);
+    useEffect(() => {
+        obtenerMF()
+    }, [])
+    const arrayFecha = ['2025-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']
+    useEffect(() => {
+    setDataOrdenada(dataMFClientesRepetidos)
+}, [dataMF])
+    const onChangeDir = ()=>{
+          const sorted = [...dataMFClientesRepetidos];
+        switch (isSorterTotal.dir) {
+            case '▼':
+                sorted.sort((a, b)=>a.items.length-b.items.length)
+                setisSorterTotal({dir: '▲'})
+                break;
+            case '▲':
+                sorted.sort((a, b)=>b.items.length-a.items.length)
+                setisSorterTotal({dir: '▲▼'})
+                break;
+            case '▲▼':
+                sorted.sort((a, b)=>a.items.length+b.items.length)
+                setisSorterTotal({dir: '▼'})
+                break;
+        }
+        setDataOrdenada(sorted)
+    }
   return (
     <div>
             <Table responsive className="tabla-egresos fs-3">
@@ -25,22 +48,27 @@ export const App = () => {
                         {
                             generarMesYanio(new Date(arrayFecha[0])).map(g=>{
                                 return (
-                                    <th className='fs-3 bg-change text-white'>{dayjs(`${g.fecha}-15`, 'YYYY-M-DD').format('YYYY-MMMM')}</th>
+                                    <th className='fs-3 bg-change text-white text-center'>
+                                        {dayjs(`${g.fecha}-15`, 'YYYY-M-DD').format('MMMM')}
+                                        <br/>
+                                        {dayjs(`${g.fecha}-15`, 'YYYY-M-DD').format('YYYY')}
+                                    </th>
                                 )
                             })
                         }
-                        <th className='fs-3 bg-change text-white'>TOTAL</th>
+                        <th className='fs-3 bg-change text-white' onClick={()=>onChangeDir()}>TOTAL {isSorterTotal.dir}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        dataMFClientesRepetidos.map(r=>{
+                        dataOrdenada.map((r, i)=>{
 
                             return (
                                 <tr>
-                                    <th className='fs-3 bg-change text-white sticky-td-598'>
+                                    <td className='fs-3 bg-change text-white sticky-td-598'>
+                                        {i+1}. <span className='ml-3'></span>
                                         {r.items[0]?.items[0]?.cliente.nombre_cli} {r.items[0]?.items[0]?.cliente.apPaterno_cli}
-                                    </th>
+                                    </td>
                                     {
                                         generarMesYanio(new Date(arrayFecha[0])).map(g=>{
                                             const items = r.items.filter(f=>`${f.anio}-${f.mes}`==`${g.anio}-${g.mes}`)
