@@ -55,7 +55,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
             <div style={{fontSize: '70px'}} className='text-black text-center'>EGRESOS</div>
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS").filter(f=>f.data?.length!==0).map((data,i)=>{
+                dataGastosxFecha.filter(f=>f.data?.length!==0).map((data,i)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}

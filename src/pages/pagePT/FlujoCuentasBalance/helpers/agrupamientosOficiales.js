@@ -78,14 +78,6 @@ export const agruparPorConcepto = (data = []) => {
 
 		map.get(concepto).items.push(item);
 	}
-	console.log({ret: Array.from(map.values()).map((ar) => {
-		return {
-			...ar,
-			items: agruparPorDia(ar.items),
-			data: ar.items,
-		};
-	})});
-	
 	return Array.from(map.values()).map((ar) => {
 		return {
 			...ar,
@@ -119,6 +111,14 @@ function agruparPorDia(data) {
 
 		map[key].items.push(item);
 	});
+	console.log({ ae: Object.values(map) });
 
-	return Object.values(map).sort((a, b) => a?.mes - b?.mes);
+	return Object.values(map)
+		.sort((a, b) => a?.mes - b?.mes)
+		.map((m) => {
+			return {
+				...m,
+				montoTotal: m.items?.reduce((total, item) => item?.monto + total, 0),
+			};
+		});
 }
