@@ -45,6 +45,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
               )
             })
           }
+          <td className={`fs-1 text-black border-top-10`}>TOTAL</td>
         </tr>
       </thead>
       <tbody>
@@ -59,6 +60,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
               )
             })
           }
+          <th className={`fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_enterprice}-white text-black`}><NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.montoCuentasPagar+total, 0)}/></th>
         </tr>
         <tr>
           <td className={`sticky-td-${id_enterprice} border-left-10 border-right-10 ${bgTotal}`}>CUENTAS POR COBRAR</td>
@@ -71,6 +73,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
               )
             })
           }
+          <th className={`fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_enterprice}-white text-black`}><NumberFormatMoney amount={dataAlter.reduce((total, item)=>item.montoCuentasCobrar+total, 0)}/></th>
         </tr>
         <tr>
           <td className={`sticky-td-${id_enterprice} border-left-10 border-right-10 ${bgTotal}`}>SALDO</td>
@@ -78,11 +81,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             dataAlter.map(f=>{
               return (
                 <React.Fragment key={`${f.mesStr}`}>
-                <td className={`text-center border-black`} style={{width: '240px'}}>{f.mesStr}</td>
+                <td className={`text-center border-black`} style={{width: '240px'}}><NumberFormatMoney amount={f.montoCuentasCobrar-f.montoCuentasPagar}/></td>
                 </React.Fragment>
               )
             })
           }
+          <td className={`fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white text-black`}><NumberFormatMoney amount={dataAlter.reduce((total, item)=>(item.montoCuentasCobrar-item.montoCuentasPagar)+total, 0)}/></td>
         </tr>
       </tbody>
     </Table>
