@@ -5,13 +5,13 @@ import { useTerminoSistema } from "./useTerminoSistema";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 const customTS = {
-  param_label: '',
+  label_param: '',
   estado_param: 1,
   orden: 0
 }
-export const ModalCustomTermSistema = ({ show, onHide,  id = 0, label = '', id_empresa }) => {
-  const { obtenerTerminologiaSistemaxID, dataTerminoxID, postTerminoGrupo, updateTerminoGrupo } = useTerminoSistema()
-  const { formState, onInputChange, param_label, orden, onResetForm } = useForm(id!==0?dataTerminoxID:customTS)
+export const ModalCustomTermSistema = ({ show, onHide,  id = 0, label = '', id_empresa, entidad, grupo }) => {
+  const { obtenerTerminologiaSistemaxID, dataTerminoxID, registrarTerminologiaxEntidadyGrupo, actualizarTerminologia } = useTerminoSistema()
+  const { formState, onInputChange, label_param, orden_param, onResetForm } = useForm(id!==0?dataTerminoxID:customTS)
   useEffect(() => {
     if (id!==0) {
       obtenerTerminologiaSistemaxID(id)
@@ -19,9 +19,9 @@ export const ModalCustomTermSistema = ({ show, onHide,  id = 0, label = '', id_e
   }, [id])
   const onSubmitTerminologia = ()=>{
     if(id!==0){
-      updateTerminoGrupo(id, formState, id_empresa)
+      actualizarTerminologia(formState, id, entidad, grupo)
     }else{
-      postTerminoGrupo(id_empresa, formState)
+      registrarTerminologiaxEntidadyGrupo(formState, entidad, grupo)
     }
     cancelarTerminologia()
   }
@@ -37,10 +37,10 @@ export const ModalCustomTermSistema = ({ show, onHide,  id = 0, label = '', id_e
       <Modal.Body>
         <form>
           <div className="my-2">
-            <InputText label={'VALOR'} nameInput={'param_label'} onChange={onInputChange} value={param_label} required/>
+            <InputText label={'VALOR'} nameInput={'label_param'} onChange={onInputChange} value={label_param} required/>
           </div>
           <div className="my-2">
-            <InputText label={'ORDEN'} nameInput={'orden'} onChange={onInputChange} value={orden} required/>
+            <InputText label={'ORDEN'} nameInput={'orden_param'} onChange={onInputChange} value={orden_param} required/>
           </div>
           <div>
             <InputButton label={'AGREGAR'} onClick={onSubmitTerminologia}/>
