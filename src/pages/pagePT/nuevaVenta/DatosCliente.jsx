@@ -112,7 +112,7 @@ const DatosCliente = ({dataCliente}) => {
 											<Select
 												onChange={(e) => onInputChangeReact(e, 'id_origen')}
 												name="id_origen"
-												placeholder={'De donde nos conoce el socio'}
+												placeholder={'Fuente'}
 												className="react-select"
 												classNamePrefix="react-select"
 												options={arrayOrigenDeCliente}
