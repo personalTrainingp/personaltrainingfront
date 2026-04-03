@@ -1,4 +1,4 @@
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Button, Card } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { arrayEstados, arrayFacturas, arrayOrigenDeCliente } from '@/types/type';
 import { useForm } from '@/hooks/useForm';
@@ -68,14 +68,13 @@ const DatosCliente = ({dataCliente}) => {
 	
 	return (
 		<>
-		<form>
-			<Row>
-				<Col>
-						<Row>
-							<Col xl={12}>
-									<Row>
-										<Col xl={12}>
-											<div className='mb-2'>
+			<form>
+				<Card>
+					<Card.Header>
+						<Card.Title>NOMBRE DEL VENDEDOR</Card.Title>
+					</Card.Header>
+					<Card.Body>
+						<div className="mb-2">
 											<Select
 												onChange={(e) => onInputChangeReact(e, 'id_empl')}
 												name="id_empl"
@@ -83,16 +82,28 @@ const DatosCliente = ({dataCliente}) => {
 												className="react-select"
 												classNamePrefix="react-select"
 												options={DataVendedores}
-												value={DataVendedores.find(
-													(option) => option.value === id_empl
-												)||0}
-												
+												value={
+													DataVendedores.find(
+														(option) => option.value === id_empl
+													) || 0
+												}
 												required
 											/>
-											</div>
-										</Col>
-										<Col xl={12}>
-											<div className='mb-2'>
+										</div>
+					</Card.Body>
+				</Card>
+				<Row>
+					<Col>
+						<Row>
+							<Col xl={12}>
+									<Card>
+										<Card.Header>
+											<Card.Title>Datos socio</Card.Title>
+										</Card.Header>
+										<Card.Body>
+<Row>
+									<Col xl={12}>
+										<div className="mb-2">
 											<Select
 												onChange={(e) => inputChangeClientes(e)}
 												name="id_cli"
@@ -105,10 +116,10 @@ const DatosCliente = ({dataCliente}) => {
 												)}
 												required
 											/>
-											</div>
-										</Col>
-										<Col xl={12}>
-										<div className='mb-2'>
+										</div>
+									</Col>
+									<Col xl={12}>
+										<div className="mb-2">
 											<Select
 												onChange={(e) => onInputChangeReact(e, 'id_origen')}
 												name="id_origen"
@@ -116,9 +127,11 @@ const DatosCliente = ({dataCliente}) => {
 												className="react-select"
 												classNamePrefix="react-select"
 												options={arrayOrigenDeCliente}
-												value={arrayOrigenDeCliente.find(
-													(option) => option.value === id_origen
-												) || 0}
+												value={
+													arrayOrigenDeCliente.find(
+														(option) => option.value === id_origen
+													) || 0
+												}
 												required
 											/>
 											{/* <MultiOpcionSelect
@@ -129,57 +142,65 @@ const DatosCliente = ({dataCliente}) => {
 												name="etiquetas_busquedas"
 											/> */}
 										</div>
-										</Col>
-										<Col xl={12}>
-										<div className='mb-2'>
+									</Col>
+									<Col xl={12}>
+										<div className="mb-2">
 											<Select
-												onChange={(e) => onInputChangeReact(e, 'id_tipo_transaccion')}
+												onChange={(e) =>
+													onInputChangeReact(e, 'id_tipo_transaccion')
+												}
 												name="id_tipo_transaccion"
 												placeholder={'Tipo de comprobante'}
 												className="react-select"
 												classNamePrefix="react-select"
 												options={arrayFacturas}
-												value={arrayFacturas.find(
-													(option) => option.value === id_tipo_transaccion
-												)|| 0}
+												value={
+													arrayFacturas.find(
+														(option) =>
+															option.value === id_tipo_transaccion
+													) || 0
+												}
 												required
 											/>
 										</div>
-										</Col>
-										<Col xl={12}>
-										<div className='mb-2'>
+									</Col>
+									<Col xl={12}>
+										<div className="mb-2">
 											<input
-												type=''
-												name='numero_transac'
-												id='numero_transac'
-												className='form-control'
-												placeholder='numero de comprobante'
+												type=""
+												name="numero_transac"
+												id="numero_transac"
+												className="form-control"
+												placeholder="numero de comprobante"
 												value={numero_transac}
 												onChange={onInputChange}
 											/>
 										</div>
-										</Col>
-										<Col xl={12}>
-										<div className='mb-2'>
+									</Col>
+									<Col xl={12}>
+										<div className="mb-2">
 											<textarea
-												name='observacion'
-												id='observacion'
-												className='form-control'
-												placeholder='Observacion general de venta'
+												name="observacion"
+												id="observacion"
+												className="form-control"
+												placeholder="Observacion general de venta"
 												value={observacion}
 												onChange={onInputChange}
 											/>
 										</div>
-										</Col>
-									</Row>
+									</Col>
+								</Row>
+										</Card.Body>
+									</Card>
+								
 							</Col>
 							<Col xl={12}>
-								<ResumenCliente data={formStateCliente}/>
+								<ResumenCliente data={formStateCliente} />
 							</Col>
 						</Row>
-				</Col>
-			</Row>
-		</form>
+					</Col>
+				</Row>
+			</form>
 		</>
 	);
 };
