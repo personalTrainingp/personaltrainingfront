@@ -5,6 +5,7 @@ import { onDeleteOneDetallePago } from '@/store/uiNuevaVenta/uiNuevaVenta'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { buscarLabelPorValue } from '@/store/dataParametros/parametroSlice'
 import { useSelector } from 'react-redux'
+import { impuestosBancos } from '../../ReportePagosVentas/useVentasPagosStore'
 
 /*
 id_banco: 61
@@ -32,6 +33,12 @@ export const ItemsPagos = ({dataPagos}) => {
     <>
     {
       dataPagos.map(e=>{
+        const identificador = `${e?.id_forma_pago}|${e?.id_tipo_tarjeta}|${e?.id_banco}|${e?.n_cuotas}`;
+        const porcentaje = impuestosBancos.find(
+                        (f) =>
+                          `${f.id_forma_pago}|${f.id_tipo_tarjeta}|${f.id_banco}|${f.n_cuotas}` ===
+                          identificador
+                      )?.porcentaje || 0
         return(
           <ItemPago 
           key={e.value}
@@ -43,6 +50,7 @@ export const ItemsPagos = ({dataPagos}) => {
           montoPay={e.monto_pago} 
           observacionPay={e.observacion_pago} 
           deletePay={()=>deleteOnePay(e.value)}
+          porcentajeBancos = {porcentaje}
           id={e.value}/>
         )
       })

@@ -4,13 +4,7 @@ import { useDispatch } from 'react-redux';
 import { onSetDataViewPagosVentas } from './dataPagosSlice';
 import { DateMaskStr, DateMaskStr1, DateMaskStr2 } from '@/components/CurrencyMask';
 
-export const useVentasPagosStore = () => {
-	const [dataPagosVentas, setdataPagosVentas] = useState([]);
-	const [dataPagosxID, setdataPagosxID] = useState({});
-	const dispatch = useDispatch();
-	const obtenerPagosVentas = async () => {
-		try {
-			const impuestos = [
+			export const impuestosBancos = [
 				{
 					id_forma_pago: 1389,
 					id_tipo_tarjeta: 35,
@@ -54,6 +48,12 @@ export const useVentasPagosStore = () => {
 					porcentaje: 3.29,
 				},
 			];
+export const useVentasPagosStore = () => {
+	const [dataPagosVentas, setdataPagosVentas] = useState([]);
+	const [dataPagosxID, setdataPagosxID] = useState({});
+	const dispatch = useDispatch();
+	const obtenerPagosVentas = async () => {
+		try {
 			const { data } = await PTApi.get('/venta/pagos-venta');
 
 			const dataPagos = data.ventasConPagos?.flatMap(({ detalleVenta_pagoVenta, ...venta }) =>
@@ -65,7 +65,7 @@ export const useVentasPagosStore = () => {
 						identificador,
 						fecha_pago_1: DateMaskStr(pago?.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY'),
 						porcentaje:
-							impuestos.find(
+							impuestosBancos.find(
 								(f) =>
 									`${f.id_forma_pago}|${f.id_tipo_tarjeta}|${f.id_banco}|${f.n_cuotas}` ===
 									identificador
