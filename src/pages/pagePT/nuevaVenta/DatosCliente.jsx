@@ -101,7 +101,7 @@ const DatosCliente = ({dataCliente}) => {
 											<Card.Title>Datos socio</Card.Title>
 										</Card.Header>
 										<Card.Body>
-<Row>
+								<Row>
 									<Col xl={12}>
 										<div className="mb-2">
 											<Select
@@ -134,13 +134,6 @@ const DatosCliente = ({dataCliente}) => {
 												}
 												required
 											/>
-											{/* <MultiOpcionSelect
-												options={dataEtiquetasBusqueda}
-												placeholder={'ORIGEN'}
-												onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
-												value={etiquetas_busquedas}
-												name="etiquetas_busquedas"
-											/> */}
 										</div>
 									</Col>
 									<Col xl={12}>
@@ -183,7 +176,7 @@ const DatosCliente = ({dataCliente}) => {
 												name="observacion"
 												id="observacion"
 												className="form-control"
-												placeholder="Observacion general de venta"
+												placeholder="Observacion"
 												value={observacion}
 												onChange={onInputChange}
 											/>

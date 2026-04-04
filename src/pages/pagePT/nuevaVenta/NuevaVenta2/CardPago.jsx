@@ -46,27 +46,6 @@ export const CardPago = ({venta, dataPagos}) => {
 		obtenerIgvHoy()
 		obtenerParametrosxENTIDAD('formapago')
 	}, [])
-	/*
-	[
-  {
-    "id_formaPago": 0,
-    "id_tipo_tarjeta": 37,
-    "id_tarjeta": 54,
-    "id_banco": 50,
-    "fecha_pago": "2026-04-04",
-    "monto_pago": 1000,
-    "observacion_pago": "",
-    "n_operacion": "1",
-    "n_cuotas": "2",
-    "id_forma_pago": 1389,
-    "label_forma_pago": "1389 - OPENPAY",
-    "label_banco": "BBVA",
-    "label_tipo_tarjeta": "TARJETA CREDITO",
-    "value": "1389"
-  }
-]
-	*/
-
 	const dataConComisionBanco = dataPagos.map((pago) => {
 						const identificador = `${pago?.id_forma_pago}|${pago?.id_tipo_tarjeta}|${pago?.id_banco}|${pago?.n_cuotas}`;
 						const porcentaje = impuestosBancos.find(
@@ -105,7 +84,7 @@ export const CardPago = ({venta, dataPagos}) => {
 				</li>
 			</ul>
 			<ul className='d-flex justify-content-between p-0 m-0'>
-				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>TARJETA:</li>
+				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>COMISION:</li>
 				<li style={{float: 'left',  width: '40%', listStyle: 'none'}}>
 					<span className='d-flex justify-content-between'>
 						<span>S/.</span>
