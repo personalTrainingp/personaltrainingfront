@@ -20,7 +20,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     }, [])
     const dataAlter = fechas.map((f, index, array)=>{
         const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
-        const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS').filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
         const cantidadIngresos = dataIngresos.length;
@@ -49,7 +49,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
       })
       const dataAlterMesCompleto = fechas.filter((f)=>`${f.anio}-${f.mes}`!==`${anioActual}-${mesActual}`).map(f=>{
         const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
-        const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS').filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
         const sumaGastos = dataGasto.reduce((total, item)=>item.monto+total, 0)

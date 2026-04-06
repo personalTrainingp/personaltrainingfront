@@ -3,6 +3,7 @@ import { ViewResumenTotal } from '../ViewResumenTotal'
 import { generarMesYanio } from '../helpers/generarMesYanio'
 import { useFlujoCaja } from '../hook/useFlujoCajaStore'
 import { Table } from 'react-bootstrap'
+import { TdItem } from './TdItem'
 export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => {
     const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
     const anio2026 = ['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']
@@ -36,7 +37,24 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                     </thead>
                     <tbody>
                         <tr>
-                            <tr>AÑO 2026</tr>
+                            <td>AÑO 2026</td>
+                            {
+                                generarMesYanio(new Date(anio2026[0]), new Date(anio2026[1])).map(e=>{
+                                    return (
+                                            <TdItem arrayFecha={[]}/>
+                                        )
+                                    })
+                                }
+                        </tr>
+                        <tr>
+                            <td>AÑO 2025</td>
+                            {
+                                generarMesYanio(new Date(anio2025[0]), new Date(anio2025[1])).map(e=>{
+                                    return (
+                                            <TdItem />
+                                        )
+                                    })
+                                }
                         </tr>
                     </tbody>
                 </Table>
