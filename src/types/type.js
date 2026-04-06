@@ -186,7 +186,7 @@ export const arrayTipoCliente = [
 	{ label: 'Socio', value: 84 },
 	{ label: 'canje uso Imagen', value: 229 },
 	{ label: 'canje influencer', value: 266 },
-	{ label: 'CLIENTE MONKEY FIT', value: 267 },
+	{ label: 'MONKEY FIT', value: 267 },
 	// { label: 'canje - influencer moda', value: 221 },
 	// { label: 'canje - influencer educacion', value: 222 },
 	// { label: 'canje - artista', value: 223 },
