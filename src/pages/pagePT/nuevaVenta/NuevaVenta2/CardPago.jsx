@@ -1,10 +1,6 @@
 import { MoneyFormatter, NumberFormatMoney } from '@/components/CurrencyMask'
-import { useForm } from '@/hooks/useForm'
-import { arrayFacturas } from '@/types/type'
 import React, { useEffect, useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
-import { ModalVentasPay } from './ModalVentasPay'
 import { ItemsPagos } from './ItemsPagos'
 import { useImpuestosStore } from '@/hooks/hookApi/useImpuestosStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
@@ -52,59 +48,71 @@ export const CardPago = ({venta, dataPagos}) => {
 									(f) =>
 										`${f.id_forma_pago}|${f.id_tipo_tarjeta}|${f.id_banco}|${f.n_cuotas}` ===
 										identificador
-								)?.porcentaje || 0
+								) || 0
 						return {
 							...venta,
 							monto_pago: pago.monto_pago,
 							porcentaje,
-							comisionBanco: pago.monto_pago * (porcentaje/100)
+							comisionBanco: pago.monto_pago * (porcentaje.porcentaje_con_igv/100) ||0,
+
 						};
 					})
+					const renta = (sumaTarifas/1.18)*0.03
+					const igv=sumaTarifas-sumaTarifas/1.18
 					const sumaComisionBancos = dataConComisionBanco.reduce((total, item)=>item.comisionBanco+total,0)
-  return (
+  return (		
     <Card>
         <Card.Header>
             <Card.Title>Datos de pago</Card.Title>
 			<ul className='d-flex justify-content-between p-0 m-0'>
-				<li style={{float: 'left',  width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '15px'}}>Subtotal:</li>
-				<li style={{float: 'left',  width: '40%', listStyle: 'none'}}>
-					<span className='d-flex justify-content-between'>
-						<span>S/.</span>
-						<NumberFormatMoney amount={sumaTarifas-sumaTarifas*obtenerImpuestoHoy}/>
-					</span>
-				</li>
-			</ul>
-			<ul className='d-flex justify-content-between p-0 m-0'>
-				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>Igv({obtenerImpuestoHoy*100}%):</li>
-				<li style={{float: 'left',  width: '40%', listStyle: 'none'}}>
-					<span className='d-flex justify-content-between'>
-						<span>S/.</span>
-						<NumberFormatMoney amount={sumaTarifas*obtenerImpuestoHoy}/>
-					</span>
-				</li>
-			</ul>
-			<ul className='d-flex justify-content-between p-0 m-0'>
-				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>COMISION:</li>
-				<li style={{float: 'left',  width: '40%', listStyle: 'none'}}>
-					<span className='d-flex justify-content-between'>
-						<span>S/.</span>
-						<NumberFormatMoney amount={sumaComisionBancos}/>
-					</span>
-				</li>
-			</ul>
-			<ul className='d-flex justify-content-between p-0 m-0'>
-				<li style={{float: 'left', width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '15px'}}>Total:</li>
-				<li style={{float: 'left',  width: '40%', listStyle: 'none'}}>
+				<li style={{float: 'left', width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '15px'}}>Venta:</li>
+				<li style={{float: 'left',  width: '24%', listStyle: 'none'}}>
 					<span className='d-flex justify-content-between'>
 						<span>S/.</span>
 						<NumberFormatMoney amount={sumaTarifas}/>
 					</span>
 				</li>
 			</ul>
+			<ul className='d-flex justify-content-between p-0 m-0'>
+				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>Igv({obtenerImpuestoHoy*100}%):</li>
+				<li style={{float: 'left',  width: '24%', listStyle: 'none'}}>
+					<span className='d-flex justify-content-between'>
+						<span>S/.</span>
+						<NumberFormatMoney amount={igv}/>
+					</span>
+				</li>
+			</ul>
+			<ul className='d-flex justify-content-between p-0 m-0'>
+				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>IMPUESTO RENTA:</li>
+				<li style={{float: 'left',  width: '24%', listStyle: 'none'}}>
+					<span className='d-flex justify-content-between'>
+						<span>S/.</span>
+						<NumberFormatMoney amount={renta}/>
+					</span>
+				</li>
+			</ul>
+			<ul className='d-flex justify-content-between p-0 m-0 text-change'>
+				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>COMISION POS:</li>
+				<li style={{float: 'left',  width: '24%', listStyle: 'none'}}>
+					<span className='d-flex justify-content-between'>
+						<span>S/.</span>
+						<NumberFormatMoney amount={sumaComisionBancos}/>
+					</span>
+				</li>
+			</ul>
+			<ul className='d-flex justify-content-between p-0 mt-2'>
+				<li style={{float: 'left',  width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '15px'}}>Subtotal:</li>
+				<li style={{float: 'left',  width: '24%', listStyle: 'none'}}>
+					<span className='d-flex justify-content-between'>
+						<span>S/.</span>
+						<NumberFormatMoney amount={sumaTarifas-igv-renta-sumaComisionBancos}/>
+					</span>
+				</li>
+			</ul>
 			<ItemsPagos dataPagos={dataPagos}/>
         </Card.Header>
         <Card.Body>
-			<a className='text-primary underline' onClick={onModalOpenPay} style={{cursor: 'pointer'}}>Agregar Pago</a>
+			<a className='text-primary underline' onClick={onModalOpenPay} style={{cursor: 'pointer'}}>opcion de Pago adicional</a>
 			{/* <ModalVentasPay show={modalPay} onHide={onModalClosePay}/> */}
         </Card.Body>
 		<Card.Footer>

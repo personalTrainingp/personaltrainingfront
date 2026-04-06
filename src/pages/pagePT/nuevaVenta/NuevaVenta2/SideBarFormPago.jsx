@@ -187,7 +187,7 @@ export const SideBarFormPago = ({show, onHide}) => {
                           required
                           />
                       </div> */}
-                <Button className='mx-2' type='submit'>Agregar pago</Button>
+                <Button className='mx-2' type='submit'>Registrar pago</Button>
                 <a onClick={cancelModal} className='mx-2' style={{cursor: 'pointer', color: 'red'}}>Cancelar</a>
             </form>
         </Sidebar>

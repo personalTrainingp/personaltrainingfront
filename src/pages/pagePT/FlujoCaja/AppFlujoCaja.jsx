@@ -4,6 +4,7 @@ import { ViewTablesFlujoCaja } from './ViewTablesFlujoCaja'
 import { TablesResumenTotal } from './view/TablesResumenTotal'
 import { ColorEmpresa } from '@/components/ColorEmpresa'
 import { PageBreadcrumb } from '@/components'
+import { generarMesYanio } from './helpers/generarMesYanio'
 
 export const AppFlujoCaja = () => {
   return (

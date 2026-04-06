@@ -38,10 +38,11 @@ export const ItemsPagos = ({dataPagos}) => {
                         (f) =>
                           `${f.id_forma_pago}|${f.id_tipo_tarjeta}|${f.id_banco}|${f.n_cuotas}` ===
                           identificador
-                      )?.porcentaje || 0
+                      ) || 0
         return(
           <ItemPago 
           key={e.value}
+          cuotas={e.n_cuotas}
           fechaPay={e.fecha_pago} 
           id_banco={obtenerLabelPorValue(dataparametro, e.id_banco)}
           id_tipo_tarjeta={obtenerLabelPorValue(dataparametro, e.id_tipo_tarjeta)}
@@ -50,7 +51,8 @@ export const ItemsPagos = ({dataPagos}) => {
           montoPay={e.monto_pago} 
           observacionPay={e.observacion_pago} 
           deletePay={()=>deleteOnePay(e.value)}
-          porcentajeBancos = {porcentaje}
+          porcentajeBancos = {porcentaje.porcentaje}
+          porcentajeBancosMasIgv = {porcentaje.porcentaje_con_igv}
           id={e.value}/>
         )
       })
