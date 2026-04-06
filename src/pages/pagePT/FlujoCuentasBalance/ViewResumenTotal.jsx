@@ -81,7 +81,11 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             dataAlter.map(f=>{
               return (
                 <React.Fragment key={`${f.mesStr}`}>
-                <td className={`text-center border-black`} style={{width: '240px'}}><NumberFormatMoney amount={f.montoCuentasCobrar-f.montoCuentasPagar}/></td>
+                <td className={`text-center border-black`} style={{width: '240px'}}>
+                  <div className={`${f.montoCuentasCobrar-f.montoCuentasPagar<1?'text-change':'text-ISESAC'}`}>
+                    <NumberFormatMoney amount={f.montoCuentasCobrar-f.montoCuentasPagar}/>
+                  </div>
+                </td>
                 </React.Fragment>
               )
             })
