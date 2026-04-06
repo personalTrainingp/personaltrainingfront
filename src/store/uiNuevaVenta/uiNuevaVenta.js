@@ -27,9 +27,7 @@ export const uiNuevaVentaSlice = createSlice({
 		// FORMAS DE PAGO
 		onAddOneDetallePago: (state, action) => {
 			const nuevoPago = action.payload;
-			const pagosFiltrados = state.datos_pagos.filter(
-				(pagos) => pagos.value !== nuevoPago.value
-			);
+			const pagosFiltrados = state.datos_pagos;
 			state.datos_pagos = [nuevoPago, ...pagosFiltrados];
 		},
 		onDeleteOneDetallePago: (state, action) => {
