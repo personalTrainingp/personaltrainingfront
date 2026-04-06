@@ -12,7 +12,7 @@ export const ItemPago = ({deletePay, id, montoPay, id_forma_pago, id_tarjeta, id
                     <i className='mdi mdi-delete-forever-outline text-danger fs-3 ms-2' onClick={()=>deletePay()}></i>
                     {id_forma_pago}{id_tarjeta?`/${id_tarjeta}`:''}{id_tipo_tarjeta?`/${id_tipo_tarjeta}`:''}{id_banco?`/${id_banco}`:''}
 					{
-						porcentajeBancos!==0 && (
+						porcentajeBancos&& (
 							<>
 								<br/>
 								<span className='text-change fs-4' style={{marginLeft: '18px'}}>
@@ -34,7 +34,7 @@ export const ItemPago = ({deletePay, id, montoPay, id_forma_pago, id_tarjeta, id
 						<NumberFormatMoney amount={montoPay}/>
 					</span>
 					{
-						porcentajeBancosMasIgv!==0&&(
+						porcentajeBancos&&(
 							<span className='d-flex justify-content-between text-change'>
 								<span>S/.</span>
 								<NumberFormatMoney amount={montoPay*(porcentajeBancosMasIgv/100)}/>
