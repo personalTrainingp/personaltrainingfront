@@ -158,7 +158,7 @@ export const SideBarFormPago = ({show, onHide}) => {
                         {
                           id_tipo_tarjeta==37 && (id_banco==50 || id_banco==52) && (
                             <div className='mb-4'>
-                              <InputNumber label={'N° DE CUOTAS'} nameInput={'n_cuotas'} onChange={onInputChange} value={n_cuotas} required/>
+                              <InputNumber label={'CUOTAS'} nameInput={'n_cuotas'} onChange={onInputChange} value={n_cuotas} required/>
                             </div>
                           )
                         }

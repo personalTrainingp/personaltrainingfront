@@ -98,7 +98,7 @@ export const ModalCustomCuentasBalances = ({show, onHide, tipo, idEmpresa, id, h
                 </Col>
                 <Col lg={4}>
                     <div className='mb-2'>
-                        <InputText label={'N° OPERACION'} nameInput={'n_operacion'} onChange={onInputChange} value={n_operacion} required/>
+                        <InputText label={'OPERACION'} nameInput={'n_operacion'} onChange={onInputChange} value={n_operacion} required/>
                     </div>
                 </Col>
                 <Col lg={12}>

@@ -40,7 +40,7 @@ export const ModalDetalleCuentas = ({bgMultiValue, id_enterprice, anio, show, on
                   {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>DOCUMENTO</div></th>
                   <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>FORMA DE PAGO</div></th>
                   <th className='text-white p-1 fs-3'>N° DE COMPROBANTE </th> */}
-                  <th className='text-white p-1 fs-3'>N° OPERACION </th>
+                  <th className='text-white p-1 fs-3'>OPERACION </th>
               </tr>
           </thead>
           <tbody>

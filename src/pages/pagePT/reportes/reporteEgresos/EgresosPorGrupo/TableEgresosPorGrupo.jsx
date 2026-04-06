@@ -108,7 +108,7 @@ const rowExpansionTemplate = (data) => {
               <Column header="Proveedor" body={proveedorBodyTemplate} sortable></Column>
               <Column header="Fecha de pago" body={FechaPagoTemplate} sortable></Column>
               <Column header="Descripcion" field='descripcion' sortable></Column>
-              <Column header="N° Operacion" field='n_operacion' sortable></Column>
+              <Column header="Operacion" field='n_operacion' sortable></Column>
               <Column header="Monto"  sortable body={montoMonedaBodyTemplate}></Column>
           </DataTable>
       </div>

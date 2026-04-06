@@ -104,7 +104,7 @@ export const ModalViewConceptos = ({ onHide, show, data, label_data }) => {
 					sortable
 				></Column>
 				<Column
-					header="N° Operacion"
+					header="Operacion"
 					field="n_operacion"
 					style={{ width: '8rem' }}
 					sortable

@@ -304,7 +304,7 @@ export const ModalViewObservacion = ({onHide, show, id}) => {
                                         </small>
                                         <br/>
                                         <small>
-                                            N° OPERACION: 
+                                            OPERACION: 
                                             <span className="fw-bold"> {e.n_operacion}</span>
                                         </small>
                                         <p className="mb-0 pb-2">

@@ -29,7 +29,7 @@ export const DataTableAportes = ({idEmpresa=0, onOpenModalCustomAporte}) => {
         </div>
       )
     }},
-    { id: 'nOperacion', header: 'N° Operacion', accessor: 'n_operacion'},
+    { id: 'nOperacion', header: 'Operacion', accessor: 'n_operacion'},
     { id: 'fechaPago', header: 'Fecha Pago', sortable: true, accessor: row => new Date(row.fec_pago).getTime(), render:(row)=>{
       return (
         <>
@@ -120,7 +120,7 @@ export const DataTableAportes = ({idEmpresa=0, onOpenModalCustomAporte}) => {
               },
               {
                 id: 'nOperacion',
-                exportHeader: 'N° Operacion',
+                exportHeader: 'Operacion',
                 exportValue: (row) => row.n_operacion,
               },
               {

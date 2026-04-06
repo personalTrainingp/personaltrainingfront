@@ -34,7 +34,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
-    {id: 1, header: 'N° OPERACION', render: (row)=>{
+    {id: 1, header: 'OPERACION', render: (row)=>{
       return (
         <>
           {row.pago.n_operacion}
@@ -44,25 +44,28 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 2, header: 'FORMA DE PAGO', render:(row)=>{
       return (
         <>
-        {row.pago.id_forma_pago} | {row.pago?.parametro_forma_pago?.label_param}
+        {/* {row.pago.id_forma_pago} |  */}
+        {row.pago?.parametro_forma_pago?.label_param}
         </>
       )
     }},
     {id: 3, header: 'TIPO DE TARJETA', render:(row)=>{
       return (
         <>
-        {row.pago.id_tipo_tarjeta} | {row.pago?.parametro_tipo_tarjeta?.label_param}
+        {/* {row.pago.id_tipo_tarjeta} |  */}
+        {row.pago?.parametro_tipo_tarjeta?.label_param}
         </>
       )
     }},
     {id: 4, header: 'BANCO', render:(row)=>{
       return (
         <>
-          {row.pago.id_banco} | {row.pago?.parametro_banco?.label_param}
+          {/* {row.pago.id_banco} |  */}
+          {row.pago?.parametro_banco?.label_param}
         </>
       )
     }},
-    {id: 5, header: 'N° DE CUOTAS', render:(row)=>{
+    {id: 5, header: 'CUOTAS', render:(row)=>{
       return (
         <>
         {row.pago?.n_cuotas}
