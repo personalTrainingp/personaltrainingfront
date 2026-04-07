@@ -154,7 +154,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 									
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
 									<Col className="mb-3" xxl={3} onClick={ClickOpenModalFitology}>
-									<ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
+									<ItemProdServ Inombre={"TRATAMIENTOS"} Iabrev={"acc"} icono={icoEst} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
 									<Col className="mb-3" xxl={3} onClick={ClickOpenModalTransfMemb}>
@@ -195,31 +195,31 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 							)}
 							{dataVenta.detalle_venta_accesorio.length > 0 && (
 								<>
-									<h4>Venta de accesorios</h4>
+									<h4>Venta accesorios</h4>
 									<ResumenVentaProductos dataVenta={dataVenta.detalle_venta_accesorio}/>
 								</>
 							)}
 							{dataVenta.detalle_venta_suplementos.length > 0 && (
 								<>
-									<h4>Venta de suplementos</h4>
+									<h4>Venta suplementos</h4>
 									<ResumenVentaProductosSuplemento dataVenta={dataVenta.detalle_venta_suplementos}/>
 								</>
 							)}
 							{dataVenta.detalle_venta_fitology.length > 0 && (
 								<>
-									<h4>Venta de citas fitology</h4>
+									<h4>Venta tratamientos</h4>
 									<ResumenVentaFitology dataVenta={dataVenta.detalle_venta_fitology}/>
 								</>
 							)}
 							{dataVenta.detalle_venta_nutricion.length > 0 && (
 								<>
-									<h4>Venta de citas Nutricion</h4>
+									<h4>Venta Nutricion</h4>
 									<ResumenVentaNutricion dataVenta={dataVenta.detalle_venta_nutricion}/>
 								</>
 							)}
 							{dataVenta.venta_transferencia.length > 0 && (
 								<>
-									<h4>Venta de Transferencias</h4>
+									<h4>Venta Transferencias</h4>
 									<ResumenVentaTransferencia dataVenta={dataVenta.venta_transferencia} detalle_cli_modelo={detalle_cli_modelo} dataPagos={datos_pagos}/>
 								</>
 							)}
