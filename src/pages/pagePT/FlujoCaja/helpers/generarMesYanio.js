@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export function generarMesYanio(desde, hasta = new Date(), order = 'asc') {
 	const result = [];
 	let fecha = new Date(desde);
@@ -13,6 +15,7 @@ export function generarMesYanio(desde, hasta = new Date(), order = 'asc') {
 			fecha: `${anio}-${mes}`,
 			mes,
 			anio,
+			mesSTR: dayjs(`${mes}`, 'M').format('MMMM'),
 		};
 
 		if (order === 'desc') {
@@ -25,4 +28,4 @@ export function generarMesYanio(desde, hasta = new Date(), order = 'asc') {
 	}
 
 	return result;
-}	
+}

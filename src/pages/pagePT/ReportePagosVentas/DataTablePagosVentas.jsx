@@ -24,6 +24,22 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
+    {id: 14, header: 'NOMBRE DEL CLIENTE', render: (row)=>{
+      return (
+        <>
+        NOMBRE Y APELLIDOS DEL CLIENTE
+        </>
+      )
+    }},
+    {id: 13, header: 'COMPROBANTE', render: (row)=>{
+      return (
+        <>
+          boleta
+          <br/>
+          {row.numero_transac}
+        </>
+      )
+    }},
     {id: 0, header: 'VENTA', render:(row)=>{
       return (
         <>
@@ -44,7 +60,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 2, header: 'FORMA DE PAGO', render:(row)=>{
       return (
         <>
-        {row.pago.id_forma_pago} | 
+        {/* {row.pago.id_forma_pago} |  */}
         {row.pago?.parametro_forma_pago?.label_param}
         </>
       )
@@ -52,7 +68,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 3, header: 'TIPO DE TARJETA', render:(row)=>{
       return (
         <>
-        {row.pago.id_tipo_tarjeta} | 
+        {/* {row.pago.id_tipo_tarjeta} |  */}
         {row.pago?.parametro_tipo_tarjeta?.label_param}
         </>
       )
@@ -60,7 +76,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 4, header: 'BANCO', render:(row)=>{
       return (
         <>
-          {row.pago.id_banco} | 
+          {/* {row.pago.id_banco} |  */}
           {row.pago?.parametro_banco?.label_param}
         </>
       )
