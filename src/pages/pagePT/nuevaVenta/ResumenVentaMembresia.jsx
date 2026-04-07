@@ -4,6 +4,7 @@ import {
 	FormatoDateMask,
 	FormatoTimeMask,
 	MoneyFormatter,
+	NumberFormatMoney,
 } from '@/components/CurrencyMask';
 import React, { useState } from 'react';
 import { OverlayTrigger, Table, Tooltip } from 'react-bootstrap';
@@ -39,7 +40,7 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 	
 	return (
 		<div className="d-flex justify-content-center">
-			<div className="row card" style={{width: '850px'}}>
+			<div className="row card" style={{width: '100%'}}>
 				<h5 className="mb-0 d-flex align-items-center justify-content-center">
 						<img width={220} src={`${config.API_IMG.LOGO}${dataVenta.dataPrograma.tb_image.name_image}`} />
 						<span className='fs-2'>
@@ -51,7 +52,7 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 							</span>
 						</span>
 				</h5>
-				<div className="col-lg-12 bg-white rounded">
+				<div className="col-lg-12 bg-white rounded fs-5">
 					<div className="table-responsive">
 						<table className="table" style={{width: '100%'}}>
 							<thead>
@@ -78,7 +79,7 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 							<tbody>
 								<tr>
 									<th scope="row" className="border-0 p-0">
-										<div className="p-0">
+										<div className="p-0 fs-4">
 											<div className="ml-3 d-inline-block align-middle">
 												<span className="text-muted font-weight-normal font-italic d-block">
 													Hora de Inicio: {dataVenta.dataHorario.horario}{' '}
@@ -107,18 +108,19 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 										</div>
 									</th>
 									<td className="border-0 align-middle">
+											S/. 
 										<strong>
-											{<MoneyFormatter amount={dataVenta.dataTarifa.tarifa} />}
+											{<NumberFormatMoney amount={dataVenta.dataTarifa.tarifa} />}
 										</strong>
 									</td>
 									<td className="border-0 align-middle">
-										<h5
-											className="fs-2"
+										<div
+											className="fs-1"
 											onClick={descargarPDFgenerado}
 											style={{ cursor: 'pointer' }}
 										>
 											<i className="mdi mdi-file-document"></i>
-										</h5>
+										</div>
 									</td>
 									<td className="border-0 align-middle">
 										<OverlayTrigger
@@ -127,11 +129,11 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 											overlay={renderTooltip}
 										>
 											<a
-												style={{ cursor: 'pointer', color: 'blue' }}
+												style={{ cursor: 'pointer' }}
 												onClick={modalOpenFirma}
-												className="font-14 mt-1 fw-normal"
+												className="fs-3 mt-1 fw-normal text-change"
 											>
-												{dataVenta.firmaCli ? 'Con firma' : 'Sin firma'}
+												{dataVenta.firmaCli ? <>Con <br/> firma</> : <>Sin <br/> firma</>}
 											</a>
 										</OverlayTrigger>
 										<ModalFirma
@@ -143,7 +145,7 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 									{/* <td className="border-0 align-middle"><strong>3</strong></td> */}
 									<td className="border-0 align-middle">
 										<span onClick={deleteMembresia} className="action-icon">
-											<i className="mdi mdi-delete-forever-outline text-danger fs-3 ms-2"></i>
+											<i className="mdi mdi-delete-forever-outline text-change fs-2 ms-2"></i>
 										</span>
 									</td>
 								</tr>

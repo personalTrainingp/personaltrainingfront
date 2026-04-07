@@ -17,13 +17,14 @@ export const ItemPago = ({deletePay, id, montoPay, id_forma_pago, id_tarjeta, id
 								<br/>
 								<span className='text-change fs-3' style={{marginLeft: '18px'}}>
 									POS: {porcentajeBancos} + igv = {porcentajeBancosMasIgv} %
+									{/*  */}
 								</span>
 								<br/>
-								{/* {
+								{
 									cuotas!==0 && (
 										<span className='text-change fs-4' style={{marginLeft: '18px'}}>{cuotas} cuotas sin intereses</span>
 									)
-								} */}
+								}
 							</>
 						)
 					}

@@ -51,8 +51,8 @@ export const ItemsPagos = ({dataPagos}) => {
           montoPay={e.monto_pago} 
           observacionPay={e.observacion_pago} 
           deletePay={()=>deleteOnePay(e.value)}
-          porcentajeBancos = {3.82}
-          porcentajeBancosMasIgv = {4.50}
+          porcentajeBancos = {porcentaje.porcentaje}
+          porcentajeBancosMasIgv = {porcentaje.porcentaje_con_igv}
           id={e.value}/>
         )
       })

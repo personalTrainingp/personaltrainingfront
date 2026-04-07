@@ -53,7 +53,7 @@ export const CardPago = ({venta, dataPagos}) => {
 							...venta,
 							monto_pago: pago.monto_pago,
 							porcentaje,
-							comisionBanco: pago.monto_pago * (4.5/100) ||0,
+							comisionBanco: pago.monto_pago * (porcentaje.porcentaje_con_igv/100) ||0,
 
 						};
 					})
