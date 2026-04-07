@@ -44,7 +44,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 2, header: 'FORMA DE PAGO', render:(row)=>{
       return (
         <>
-        {/* {row.pago.id_forma_pago} |  */}
+        {row.pago.id_forma_pago} | 
         {row.pago?.parametro_forma_pago?.label_param}
         </>
       )
@@ -52,7 +52,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 3, header: 'TIPO DE TARJETA', render:(row)=>{
       return (
         <>
-        {/* {row.pago.id_tipo_tarjeta} |  */}
+        {row.pago.id_tipo_tarjeta} | 
         {row.pago?.parametro_tipo_tarjeta?.label_param}
         </>
       )
@@ -60,7 +60,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 4, header: 'BANCO', render:(row)=>{
       return (
         <>
-          {/* {row.pago.id_banco} |  */}
+          {row.pago.id_banco} | 
           {row.pago?.parametro_banco?.label_param}
         </>
       )
