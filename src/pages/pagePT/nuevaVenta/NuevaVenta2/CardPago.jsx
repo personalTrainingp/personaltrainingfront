@@ -53,7 +53,7 @@ export const CardPago = ({venta, dataPagos}) => {
 							...venta,
 							monto_pago: pago.monto_pago,
 							porcentaje,
-							comisionBanco: pago.monto_pago * (porcentaje.porcentaje_con_igv/100) ||0,
+							comisionBanco: pago.monto_pago * (4.5/100) ||0,
 
 						};
 					})
@@ -63,56 +63,60 @@ export const CardPago = ({venta, dataPagos}) => {
   return (		
     <Card>
         <Card.Header>
-            <Card.Title>Datos de pago</Card.Title>
+            <Card.Title>
+			<span className='fs-3 text-change'>
+				Datos de pago
+			</span>
+				</Card.Title>
 			<ul className='d-flex justify-content-between p-0 m-0'>
-				<li style={{float: 'left', width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '15px'}}>Venta:</li>
+				<li style={{float: 'left', width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '25px'}}>Venta:</li>
 				<li style={{float: 'left',  width: '24%', listStyle: 'none'}}>
 					<span className='d-flex justify-content-between'>
 						<span>S/.</span>
-						<NumberFormatMoney amount={sumaTarifas}/>
+						<NumberFormatMoney className='fs-2' amount={sumaTarifas}/>
 					</span>
 				</li>
 			</ul>
 			<ul className='d-flex justify-content-between p-0 m-0'>
-				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>Igv({obtenerImpuestoHoy*100}%):</li>
+				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '20px'}}>Igv({obtenerImpuestoHoy*100}%):</li>
 				<li style={{float: 'left',  width: '24%', listStyle: 'none'}}>
 					<span className='d-flex justify-content-between'>
 						<span>S/.</span>
-						<NumberFormatMoney amount={igv}/>
+						<NumberFormatMoney style={{fontSize: '44px'}} className='fs-3' amount={igv}/>
 					</span>
 				</li>
 			</ul>
 			<ul className='d-flex justify-content-between p-0 m-0'>
-				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>IMPUESTO RENTA:</li>
+				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '20px'}}>IMPUESTO RENTA:</li>
 				<li style={{float: 'left',  width: '24%', listStyle: 'none'}}>
 					<span className='d-flex justify-content-between'>
 						<span>S/.</span>
-						<NumberFormatMoney amount={renta}/>
+						<NumberFormatMoney style={{fontSize: '44px'}} className='fs-3' amount={renta}/>
 					</span>
 				</li>
 			</ul>
 			<ul className='d-flex justify-content-between p-0 m-0 text-change'>
-				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '15px'}}>COMISION POS:</li>
+				<li style={{float: 'left', width: '80%', listStyle: 'none',fontWeight: 'bold', fontSize: '20px'}}>COMISION POS:</li>
 				<li style={{float: 'left',  width: '24%', listStyle: 'none'}}>
 					<span className='d-flex justify-content-between'>
 						<span>S/.</span>
-						<NumberFormatMoney amount={sumaComisionBancos}/>
+						<NumberFormatMoney style={{fontSize: '44px'}} className='fs-3' amount={sumaComisionBancos}/>
 					</span>
 				</li>
 			</ul>
-			<ul className='d-flex justify-content-between p-0 mt-2'>
-				<li style={{float: 'left',  width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '15px'}}>Subtotal:</li>
+			<ul className='d-flex justify-content-between p-0'>
+				<li style={{float: 'left',  width: '80%', listStyle: 'none', fontWeight: 'bold', fontSize: '25px'}}>Subtotal:</li>
 				<li style={{float: 'left',  width: '24%', listStyle: 'none'}}>
 					<span className='d-flex justify-content-between'>
 						<span>S/.</span>
-						<NumberFormatMoney amount={sumaTarifas-igv-renta-sumaComisionBancos}/>
+						<NumberFormatMoney className='fs-2' amount={sumaTarifas-igv-renta-sumaComisionBancos}/>
 					</span>
 				</li>
 			</ul>
 			<ItemsPagos dataPagos={dataPagos}/>
         </Card.Header>
         <Card.Body>
-			<a className='text-primary underline' onClick={onModalOpenPay} style={{cursor: 'pointer'}}>opcion de Pago adicional</a>
+			<a className='text-primary underline' onClick={onModalOpenPay} style={{cursor: 'pointer'}}>Pago adicional</a>
 			{/* <ModalVentasPay show={modalPay} onHide={onModalClosePay}/> */}
         </Card.Body>
 		<Card.Footer>

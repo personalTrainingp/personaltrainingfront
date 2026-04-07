@@ -99,7 +99,7 @@ export const impuestosBancos = [
 		id_banco: 51,
 		n_cuotas: 0,
 		porcentaje: 3.29,
-		porcentaje_con_igv: 9.7822,
+		porcentaje_con_igv: 3.8822,
 	},
 ];
 export const useVentasPagosStore = () => {

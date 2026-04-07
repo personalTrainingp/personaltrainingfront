@@ -38,17 +38,22 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 	console.log({dataVenta});
 	
 	return (
-		<div className="container">
-			<div className="row card">
+		<div className="d-flex justify-content-center">
+			<div className="row card" style={{width: '850px'}}>
 				<h5 className="mb-0 d-flex align-items-center justify-content-center">
 						<img width={220} src={`${config.API_IMG.LOGO}${dataVenta.dataPrograma.tb_image.name_image}`} />
 						<span className='fs-2'>
-							| {dataVenta.dataSemana.semanas} Semanas 
+							<span className='mx-3 fw-light'>
+							/ 
+							</span>
+							<span className='text-change'>
+								{dataVenta.dataSemana.semanas} Semanas 
+							</span>
 						</span>
 				</h5>
 				<div className="col-lg-12 bg-white rounded">
 					<div className="table-responsive">
-						<table className="table">
+						<table className="table" style={{width: '100%'}}>
 							<thead>
 								<tr>
 									<th scope="col" className="border-0 bg-light p-1">
@@ -57,7 +62,7 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 										{/* </div> */}
 									</th>
 									<th scope="col" className="border-0 bg-light p-1">
-										<div className="py-0 text-uppercase">PRECIO</div>
+										<div className="py-0 text-uppercase">VENTA</div>
 									</th>
 									<th scope="col" className="border-0 bg-light p-1">
 										<div className="py-0 text-uppercase">CONTRATO</div>

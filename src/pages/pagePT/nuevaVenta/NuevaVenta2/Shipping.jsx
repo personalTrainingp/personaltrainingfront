@@ -134,33 +134,34 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 							<Col lg={12}>
 							<div className='container-fluid'>
 								<Row>
-									<Col className="mb-3" xxl={2} onClick={ClickOpenModalProgramas}>
+									<Col className="mb-3" xxl={3} onClick={ClickOpenModalProgramas}>
 										<ItemProdServ Inombre={"MEMBRESIAS"} Iabrev={"acc"} icono={icoMem} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalPrograma show={modalPgm} hide={()=>setModalPgm(false)}/>
-									<Col className="mb-3" xxl={2} onClick={ClickOpenModalAcc}>
+									<Col className="mb-3" xxl={3} onClick={ClickOpenModalAcc}>
 										<ItemProdServ Inombre={"PRODUCTOS"} Iabrev={"acc"} icono={icoAcc} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalAccesorio show={modalAcc} hide={()=>setModalAcc(false)}/>
-										<Col className="mb-3" xxl={2} onClick={ClickOpenModalSupl}>
+										<Col className="mb-3" xxl={3} onClick={ClickOpenModalSupl}>
 											<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"supL"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 										</Col>
 										<ModalSuplementos show={modalSupl} hide={()=>setModalSupl(false)}/>
 									{/* 
 									*/}
-									<Col className="mb-3" xxl={2}>
+									<Col className="mb-3" xxl={3}>
 									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
+									
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
-									<Col className="mb-3" xxl={2} onClick={ClickOpenModalFitology}>
+									<Col className="mb-3" xxl={3} onClick={ClickOpenModalFitology}>
 									<ItemProdServ Inombre={"TRATAMIENTOS ESTETICOS"} Iabrev={"acc"} icono={icoEst} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalVentaFitology show={modalVentaFitology} onHide={ClickCloseModalFitology}/>
-									<Col className="mb-3" xxl={2} onClick={ClickOpenModalTransfMemb}>
+									<Col className="mb-3" xxl={3} onClick={ClickOpenModalTransfMemb}>
 									<ItemProdServ Inombre={"TRANSFERENCIAS DE MEMBRESIAS"} icono={icoTransf} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTransferencia show={modalTransMem} onHide={clickCloseModalTransfMemb}/>
-									<Col className="mb-3" xxl={2} onClick={onOpenModalTraspaso}>
+									<Col className="mb-3" xxl={3} onClick={onOpenModalTraspaso}>
 									<ItemProdServ Inombre={"EX-PT"} Iabrev={"acc"} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
 									<ModalTraspaso show={modalTraspaso} onHide={onCloseModalTraspaso}/>
@@ -188,7 +189,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 							)}
 							{dataVenta.detalle_venta_programa.length > 0 && (
 								<>
-									<h4>Venta de membresía</h4>
+									<h4 className='text-change fs-3'>Venta membresía</h4>
 									<ResumenVentaMembresia dataVenta={dataVenta.detalle_venta_programa[0]} detalle_cli_modelo={detalle_cli_modelo} dataPagos={datos_pagos} />
 								</>
 							)}
@@ -222,7 +223,7 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 									<ResumenVentaTransferencia dataVenta={dataVenta.venta_transferencia} detalle_cli_modelo={detalle_cli_modelo} dataPagos={datos_pagos}/>
 								</>
 							)}
-							<Button className={'m-1'} onClick={onSubmitFormVentaANDnew}>Guardar y Nuevo</Button>
+							<Button className={'m-1'} onClick={onSubmitFormVentaANDnew}>Guardar</Button>
 							</>
 							)}
 							</Col>

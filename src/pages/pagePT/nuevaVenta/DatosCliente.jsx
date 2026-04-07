@@ -71,7 +71,11 @@ const DatosCliente = ({dataCliente}) => {
 			<form>
 				<Card>
 					<Card.Header>
-						<Card.Title>NOMBRE DEL VENDEDOR</Card.Title>
+						<Card.Title>
+							<span className='fs-3 text-change'>
+								VENDEDOR
+							</span>
+						</Card.Title>
 					</Card.Header>
 					<Card.Body>
 						<div className="mb-2">
@@ -98,7 +102,11 @@ const DatosCliente = ({dataCliente}) => {
 							<Col xl={12}>
 									<Card>
 										<Card.Header>
-											<Card.Title>Datos socio</Card.Title>
+											<Card.Title className='text-change fs-3'>
+												<span className='text-change'>
+													socio
+												</span>
+											</Card.Title>
 										</Card.Header>
 										<Card.Body>
 								<Row>
@@ -186,9 +194,6 @@ const DatosCliente = ({dataCliente}) => {
 										</Card.Body>
 									</Card>
 								
-							</Col>
-							<Col xl={12}>
-								<ResumenCliente data={formStateCliente} />
 							</Col>
 						</Row>
 					</Col>

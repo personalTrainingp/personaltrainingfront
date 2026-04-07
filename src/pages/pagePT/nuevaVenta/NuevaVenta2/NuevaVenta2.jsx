@@ -28,27 +28,17 @@ export const NuevaVenta2 = () => {
 		<Toast ref={refToast}/>
     <PageBreadcrumb title="Nueva venta" subName="ventas" />
       <Row>
-        <Col lg={3}>
-            <CardPago venta={venta} dataPagos={datos_pagos}/>
-            
+        <Col lg={5}>
             <CardCliente dataCliente={detalle_cli_modelo}/>
+            <CardPago venta={venta} dataPagos={datos_pagos}/>
         </Col>
-        <Col lg={9}>
+        <Col lg={7}>
         <div>
-              {/* <Button label='AGREGAR CLIENTE' className='float-end'/> */}
               <CardVenta dataVenta={venta} detalle_cli_modelo={detalle_cli_modelo} datos_pagos={datos_pagos} funToast={showToastVenta}/>
         </div>
         </Col>
       </Row>
       
-    {/* <Row>
-        <Col lg={3}>
-            
-        </Col>
-        <Col lg={9}>
-            <CardVenta dataVenta={venta} detalle_cli_modelo={detalle_cli_modelo} datos_pagos={datos_pagos}/>
-        </Col>
-    </Row> */}
     </>
   )
 }
