@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { DataTablePagosVentas } from "./DataTablePagosVentas"
 import { ModalReportePagosVentas } from "./ModalReportePagosVentas"
+import { InputButton } from "@/components/InputText"
 
 export const AppReportePagosVentas = () => {
   const [isOpenModalPagosVentas, setisOpenModalPagosVentas] = useState({isOpen: false, id: 0})
@@ -12,6 +13,7 @@ export const AppReportePagosVentas = () => {
   }
   return (
     <div>
+      <InputButton label={'AGREGAR PAGO'} onClick={()=>onOpenModalPagosVentas(0)}/>
       <DataTablePagosVentas onOpenModalCustomPagos={onOpenModalPagosVentas}/>
       <ModalReportePagosVentas id={isOpenModalPagosVentas.id} onHide={onCloseModalPagosVentas} show={isOpenModalPagosVentas.isOpen}/>
     </div>

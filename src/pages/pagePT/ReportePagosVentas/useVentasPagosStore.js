@@ -140,6 +140,14 @@ export const useVentasPagosStore = () => {
 			console.log(error);
 		}
 	};
+	const postPagosVentas = async (formState) => {
+		try {
+			const { data } = await PTApi.post(`/venta/pagos/`, formState);
+			obtenerPagosVentas();
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerPagosVentasxID = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/venta/pagos/id/${id}`);
@@ -152,6 +160,7 @@ export const useVentasPagosStore = () => {
 	};
 
 	return {
+		postPagosVentas,
 		dataPagosxID,
 		obtenerPagosVentasxID,
 		updatePagosVentas,

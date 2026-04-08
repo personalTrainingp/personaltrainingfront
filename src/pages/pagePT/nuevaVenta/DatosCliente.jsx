@@ -73,7 +73,7 @@ const DatosCliente = ({dataCliente}) => {
 					<Card.Header>
 						<Card.Title>
 							<span className='fs-3 text-change'>
-								VENDEDOR
+								ASESOR
 							</span>
 						</Card.Title>
 					</Card.Header>
@@ -82,7 +82,7 @@ const DatosCliente = ({dataCliente}) => {
 											<Select
 												onChange={(e) => onInputChangeReact(e, 'id_empl')}
 												name="id_empl"
-												placeholder={'Seleccionar el vendedor'}
+												placeholder={'Seleccionar el asesor'}
 												className="react-select"
 												classNamePrefix="react-select"
 												options={DataVendedores}

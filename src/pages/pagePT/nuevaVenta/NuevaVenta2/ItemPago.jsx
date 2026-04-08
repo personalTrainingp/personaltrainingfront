@@ -16,7 +16,7 @@ export const ItemPago = ({deletePay, id, montoPay, id_forma_pago, id_tarjeta, id
 							<>
 								<br/>
 								<span className='text-change fs-3' style={{marginLeft: '18px'}}>
-									POS: {porcentajeBancos} + igv = {porcentajeBancosMasIgv} %
+									POS: {porcentajeBancos.toFixed(2)} % + igv = {porcentajeBancosMasIgv} %
 									{/*  */}
 								</span>
 								<br/>

@@ -6,6 +6,7 @@ import { useImpuestosStore } from '@/hooks/hookApi/useImpuestosStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { SideBarFormPago } from './SideBarFormPago'
 import { impuestosBancos } from '../../ReportePagosVentas/useVentasPagosStore'
+import { InputButton } from '@/components/InputText'
 
 export const sumarTarifas = (venta) =>{
 	const sumaTarifas = Object.values(venta)
@@ -116,11 +117,12 @@ export const CardPago = ({venta, dataPagos}) => {
 			<ItemsPagos dataPagos={dataPagos}/>
         </Card.Header>
         <Card.Body>
-			<a className='text-primary underline' onClick={onModalOpenPay} style={{cursor: 'pointer'}}>Pago adicional</a>
+			<InputButton label={'Pago adicional'} onClick={onModalOpenPay}/>
+			{/* <a className='text-primary underline' onClick={onModalOpenPay} style={{cursor: 'pointer'}}>Pago adicional</a> */}
 			{/* <ModalVentasPay show={modalPay} onHide={onModalClosePay}/> */}
         </Card.Body>
 		<Card.Footer>
-			<span style={{fontWeight: 'bold', fontSize: '18px'}} className='d-flex justify-content-between'>
+			<span style={{fontWeight: 'bold', fontSize: '18px'}} className='d-flex justify-content-between fs-2'>
 				<span className=''>{sumaTarifas-SumaPagos<0?'Vuelto: ':'Saldo pendiente: '}</span>
 				<MoneyFormatter amount={sumaTarifas-SumaPagos<0?SumaPagos-sumaTarifas:sumaTarifas-SumaPagos}/>
 			</span>
