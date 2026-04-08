@@ -22,10 +22,14 @@ export const useFlujoCaja = () => {
 			});
 			const dataGastos = data.gastos.map((g) => {
 				return {
-					fecha_primaria: g.fecha_comprobante,
+					fecha_primaria: new Date(
+						new Date(g.fecha_comprobante).setUTCHours(14, 0, 0, 0)
+					).toISOString(),
 					...g,
 				};
 			});
+			console.log({ dataGastos });
+
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/terminologiaxEmpresa/${enterprice}/1573`
 			);
@@ -122,37 +126,6 @@ export const useFlujoCaja = () => {
 				)
 			);
 			console.log({});
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const obtenerVentasxFecha = async (enterprice, arrayDate) => {
-		try {
-			const { data: dataVentas } = await PTApi.get(
-				`/venta/fecha-venta/id_empresa/${enterprice}`,
-				{
-					params: {
-						arrayDate: [
-							formatDateToSQLServerWithDayjs(arrayDate[0], true),
-							formatDateToSQLServerWithDayjs(arrayDate[1], false),
-						],
-					},
-				}
-			);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const obtenerEgresos = async (enterprice, arrayDate) => {
-		try {
-			const {} = await PTApi.get(`/venta/fecha-venta/id_empresa/${enterprice}`, {
-				params: {
-					arrayDate: [
-						formatDateToSQLServerWithDayjs(arrayDate[0], true),
-						formatDateToSQLServerWithDayjs(arrayDate[1], false),
-					],
-				},
-			});
 		} catch (error) {
 			console.log(error);
 		}

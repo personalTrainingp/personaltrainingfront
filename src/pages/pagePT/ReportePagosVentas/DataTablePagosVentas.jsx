@@ -36,7 +36,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 14, header: 'NOMBRE DEL CLIENTE', render: (row)=>{
       return (
         <>
-        {row.tb_cliente.nombre_cli} {row.tb_cliente.apPaterno_cli} {row.tb_cliente.apMaterno_cli}
+        {row.tb_cliente?.nombre_cli} {row.tb_cliente?.apPaterno_cli} {row.tb_cliente?.apMaterno_cli}
         </>
       )
     }},
