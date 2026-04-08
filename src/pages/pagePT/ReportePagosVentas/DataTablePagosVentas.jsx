@@ -101,7 +101,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
       return (
         <>
         
-        {row.porcentaje}
+        {row.porcentaje.toFixed(2)}
         </>
       )
     }},
@@ -123,19 +123,19 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
-    {id: 10, header: 'TOTAL', render:(row)=>{
+    {id: 10, header: <>COMISION <br/> TOTAL</>, render:(row)=>{
       return (
-        <>
-        <NumberFormatMoney amount=
+        <div className='text-change'>
+        <NumberFormatMoney className='fs-2' amount=
         {(row.pago?.parcial_monto*(row.porcentaje/100))*1.18}
         />
-        </>
+        </div>
       )
     }},
-    {id: 11, header: '', render:(row)=>{
+    {id: 11, header: 'EDITAR', render:(row)=>{
       return (
         <>
-        <Button icon={'p'} onClick={()=>onClickEdit(row.pago?.id)}/>
+        <Button icon={'pi pi-pencil'} onClick={()=>onClickEdit(row.pago?.id)}/>
         </>
       )
     }},
