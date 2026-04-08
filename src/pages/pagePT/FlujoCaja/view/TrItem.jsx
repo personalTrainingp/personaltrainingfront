@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useFlujoCaja } from '../hook/useFlujoCajaStore';
 import { generarMesYanio } from '../helpers/generarMesYanio';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
+import { classNames } from 'primereact/utils';
 
 export const TrItemVentas = ({ label = '', arrayFechas = [], id_empresa = 0, classNameTotal='' }) => {
 	const { obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();
@@ -10,7 +11,7 @@ export const TrItemVentas = ({ label = '', arrayFechas = [], id_empresa = 0, cla
 	}, []);
 	return (
 		<tr>
-			<td className={`border-left-10 border-right-10 sticky-td-${id_empresa} text-white fs-2`}>{label}</td>
+			<td className={`border-left-10 border-right-10 sticky-td-${id_empresa} text-center text-white fs-2`}>{label}</td>
 			{generarMesYanio(
 				new Date('2024-01-01 15:45:47.6640000 +00:00'),
 				new Date('2024-12-31 15:45:47.6640000 +00:00')
@@ -38,7 +39,7 @@ export const TrItemVentas = ({ label = '', arrayFechas = [], id_empresa = 0, cla
 };
 
 
-export const TrItemEgresos = ({ label = '', arrayFechas = [], id_empresa = 0 }) => {
+export const TrItemEgresos = ({ label = '', arrayFechas = [], id_empresa = 0, classNameTotal='' }) => {
 	const { obtenerEgresosxFecha, dataGastosxFecha } = useFlujoCaja();
 	useEffect(() => {
 		obtenerEgresosxFecha(id_empresa, arrayFechas);
@@ -52,7 +53,7 @@ export const TrItemEgresos = ({ label = '', arrayFechas = [], id_empresa = 0 }) 
 	
 	return (
 		<tr>
-			<td className={`border-left-10 border-right-10 sticky-td-${id_empresa}`}>{label}</td>
+			<td className={`border-left-10 border-right-10 sticky-td-${id_empresa} text-center text-white fs-2`}>{label}</td>
 			{generarMesYanio(
 				new Date(arrayFechas[0]),
 				new Date(arrayFechas[1])
@@ -68,7 +69,7 @@ export const TrItemEgresos = ({ label = '', arrayFechas = [], id_empresa = 0 }) 
 					</td>
 				);
 			})}
-			<td>
+			<td className={classNameTotal}>
 				<NumberFormatMoney
 					amount={dataGastosxFecha.flatMap((f) => f.items)
 						?.flatMap((f) => f.items)
