@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useVentasPagosStore } from './useVentasPagosStore'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
-import { DateMask, NumberFormatMoney } from '@/components/CurrencyMask'
+import { DateMask, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { Button } from 'primereact/button'
 import { useSelector } from 'react-redux'
 
@@ -12,15 +12,15 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
   }, [])
   const { dataView } = useSelector(e=>e.PAGOSVENTAS)
 
+  const onClickEdit = (id)=>{
+    onOpenModalCustomPagos(id)
+  }
+  
   const columns = [
     {id: 7, header: 'FECHA DE VENTA', render:(row)=>{
       return (
         <>
         {row.fecha_pago_1}
-        {/* <DateMask
-          date={row.pago?.fecha_pago}
-          format={'dddd DD [DE] MMMM [DEL] YYYY'}
-        /> */}
         </>
       )
     }},
@@ -140,14 +140,90 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
       )
     }},
   ]
-  const onClickEdit = (id)=>{
-    onOpenModalCustomPagos(id)
-  }
+    const columnsExports = [
+      {
+        id: 'id',
+        exportHeader: 'ID',
+        exportValue: (row) => row.id,
+      },
+      {
+        id: 'fechaPago',
+        exportHeader: 'FECHA DE PAGO',
+        exportValue: (row) => MaskDate(row.fecha_pago, 'YYYY-MM-DD'),
+      },
+      {
+        id: 'id_venta',
+        exportHeader: 'id venta',
+        exportValue: (row) => row.id_venta,
+      },
+      {
+        id: 'nombres_apellidos',
+        exportHeader: 'nombres y apellidos del cliente',
+        exportValue: (row) => `${row.tb_cliente.nombre_cli} ${row.tb_cliente.apPaterno_cli} ${row.tb_cliente.apMaterno_cli}`,
+      },
+      {
+        id: 'comprobante',
+        exportHeader: 'numero de comprobante',
+        exportValue: (row) =>
+          row.numero_transac,
+      },
+      {
+        id: 'PARCIAL PAGO',
+        exportHeader: 'MONTO PARCIAL',
+        exportValue: (row) => row.pago.parcial_monto,
+      },
+      {
+        id: 'operacion',
+        exportHeader: 'OPERACION',
+        exportValue: (row) => row?.pago.n_operacion,
+      },
+      {
+        id: 'forma_pago',
+        exportHeader: 'FORMA DE PAGO',
+        exportValue: (row) => row?.pago?.parametro_forma_pago?.label_param,
+      },
+      {
+        id: 'tipo_tarjeta',
+        exportHeader: 'TIPO DE TARJETA',
+        exportValue: (row) => row.pago?.parametro_tipo_tarjeta?.label_param,
+      },
+      {
+        id: 'banco',
+        exportHeader: 'BANCO',
+        exportValue: (row) => row.pago?.parametro_banco?.label_param,
+      },
+      {
+        id: 'n_cuotas',
+        exportHeader: 'CUOTAS',
+        exportValue: (row) => row.pago?.n_cuotas,
+      },
+      {
+        id: 'porcentaje',
+        exportHeader: 'PORCENTAJE',
+        exportValue: (row) => row.porcentaje,
+      },
+      {
+        id: 'comision',
+        exportHeader: 'COMISION',
+        exportValue: (row)=>row.pago?.parcial_monto*(row.porcentaje/100)
+      },
+      {
+        id: 'igv',
+        exportHeader: 'IGV',
+        exportValue: (row)=>row.pago?.parcial_monto*(row.porcentaje/100)*1.18-row.pago?.parcial_monto*(row.porcentaje/100)
+      },
+      {
+        id: 'total',
+        exportHeader: 'TOTAL',
+        exportValue: (row)=>(row.pago?.parcial_monto*(row.porcentaje/100))*1.18
+      }
+    ];
   return (
     <div>
       <DataTableCR 
         columns={columns}
         data={dataView}
+        exportExtraColumns={columnsExports}
       />
     </div>
   )
