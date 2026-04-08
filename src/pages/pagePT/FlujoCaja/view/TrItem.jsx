@@ -17,7 +17,7 @@ export const TrItemVentas = ({ label = '', arrayFechas = [], id_empresa = 0, cla
 				new Date('2024-12-31 15:45:47.6640000 +00:00')
 			).map((e) => {
 				return (
-					<td className=''>
+					<td className='text-center'>
 						<NumberFormatMoney
 							amount={dataIngresosxFecha.flatMap((f) => f.items)
 								?.filter((f) => f.mes === e.mes)
@@ -59,7 +59,7 @@ export const TrItemEgresos = ({ label = '', arrayFechas = [], id_empresa = 0, cl
 				new Date(arrayFechas[1])
 			).map((e) => {
 				return (
-					<td>
+					<td className='text-center'>
 						<NumberFormatMoney
 							amount={dataGastosxFecha.flatMap((f) => f.items)
 								?.filter((f) => f.mes === e.mes && f.anio === e.anio)

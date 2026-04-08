@@ -32,10 +32,10 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                         </tr>
                     </thead>
                     <tbody>
-                        <TrItemVentas classNameTotal={'border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
-                        <TrItemVentas classNameTotal={'border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
-                        <TrItemVentas classNameTotal={'border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
-                        <TrItemVentas classNameTotal={'border-left-10 border-right-10 border-bottom-10 '} label='TOTAL' arrayFechas={anioTotal} id_empresa={id_empresa}/>
+                        <TrItemVentas classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
+                        <TrItemVentas classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
+                        <TrItemVentas classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
+                        <TrItemVentas classNameTotal={'text-center border-left-10 border-right-10 border-bottom-10 '} label='TOTAL' arrayFechas={anioTotal} id_empresa={id_empresa}/>
                     </tbody>
                 </Table>
             </div>
@@ -46,7 +46,7 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                 <Table className='tabla-egresos fs-3' style={{ width: '100%' }} bordered>
                     <thead>
                         <tr>
-                            <th style={{width: '300px'}} className={`fs-1 sticky-td-white border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}><div className='text-black'>TOTAL</div></th>
+                            <th style={{width: '300px'}} className={`fs-1 sticky-td-white border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}><div className='text-black'>Resultado <br/> anual</div></th>
                             {
                                 generarMesYanio(new Date(anio2026[0]), new Date(anio2026[1])).map(e=>{
                                     return (
@@ -58,10 +58,10 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                         </tr>
                     </thead>
                     <tbody>
-                        <TrItemEgresos classNameTotal={'border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
-                        <TrItemEgresos classNameTotal={'border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
-                        <TrItemEgresos classNameTotal={'border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
-                        <TrItemEgresos classNameTotal={'border-left-10 border-right-10 border-bottom-10'} label='TOTAL' arrayFechas={anioTotal} id_empresa={id_empresa}/>
+                        <TrItemEgresos classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
+                        <TrItemEgresos classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
+                        <TrItemEgresos classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
+                        <TrItemEgresos classNameTotal={'text-center border-left-10 border-right-10 border-bottom-10'} label='TOTAL' arrayFechas={anioTotal} id_empresa={id_empresa}/>
                     </tbody>
                 </Table>
             </div>
