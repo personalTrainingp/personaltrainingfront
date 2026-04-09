@@ -1040,9 +1040,9 @@ const filtered = useMemo(() => {
       <Row className="g-2 align-items-center">
         <Col xs="auto">
         {componentsLeft}
-        
         </Col>
         <Col xs="12" md="auto" className="ms-auto d-flex justify-content-center align-content-center">
+          
             {exportable && (
               <InputButton label={exportLabel} onClick={exportToExcel} className={'bg-greenISESAC border-none mx-2 w-100'}/>
           )}

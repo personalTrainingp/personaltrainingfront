@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useFlujoCaja } from '../hook/useFlujoCajaStore';
 import { generarMesYanio } from '../helpers/generarMesYanio';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
-import { classNames } from 'primereact/utils';
 
 export const TrItemVentas = ({ label = '', arrayFechas = [], id_empresa = 0, classNameTotal='' }) => {
 	const { obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();

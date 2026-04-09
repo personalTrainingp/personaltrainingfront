@@ -107,11 +107,8 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 											</div>
 										</div>
 									</th>
-									<td className="border-0 align-middle">
-											S/. 
-										<strong>
-											{<NumberFormatMoney amount={dataVenta.dataTarifa.tarifa} />}
-										</strong>
+									<td className="border-0 align-middle fs-2">
+											{<MoneyFormatter amount={dataVenta.dataTarifa.tarifa} />}
 									</td>
 									<td className="border-0 align-middle">
 										<div
@@ -131,7 +128,7 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 											<a
 												style={{ cursor: 'pointer' }}
 												onClick={modalOpenFirma}
-												className="fs-3 mt-1 fw-normal text-change"
+												className="fs-3 mt-1 fw-bold text-change"
 											>
 												{dataVenta.firmaCli ? <>Con <br/> firma</> : <>Sin <br/> firma</>}
 											</a>
