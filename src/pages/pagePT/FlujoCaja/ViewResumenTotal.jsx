@@ -102,7 +102,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     }, [])
     
     const dataAlter = fechas.map((f, index, array)=>{
-        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS" && f.grupo!=="TARJETA CREDITO VISA BBVA").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS" && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.grupo!=="BONO GERENCIAS" ).flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
@@ -131,7 +131,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         }
       })
       const dataAlterMesCompleto = fechas.filter((f)=>`${f.anio}-${f.mes}`!==`${anioActual}-${mesActual}`).map(f=>{
-        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS"&& f.grupo!=="TARJETA CREDITO VISA BBVA").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS"&& f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.grupo!=="BONO GERENCIAS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
@@ -343,7 +343,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     <React.Fragment>
                       <td className={`text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}>
                         <div className={``} style={{fontSize: '30px'}}>
-                          {e.sumaIngresos<getQuotaParaMes(e.mes, e.anio).meta?'0.00':<NumberFormatMoney amount={e.utilidadBruta*0.05} className='fs-2'/>}
+                          {e.sumaIngresos<getQuotaParaMes(e.mes, e.anio).meta?'0.00':<NumberFormatMoney amount={e.utilidadBruta} className='fs-2'/>}
                         </div>
                       </td>
                     </React.Fragment>
