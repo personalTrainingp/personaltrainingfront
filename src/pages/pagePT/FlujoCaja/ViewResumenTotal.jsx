@@ -320,7 +320,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   return (
                     <React.Fragment>
                       <td className={`text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}>
-                        <div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`} style={{fontSize: '30px'}}>
+                        <div className={``} style={{fontSize: '30px'}}>
                           <NumberFormatMoney
                             className='fs-2'
                             amount=
