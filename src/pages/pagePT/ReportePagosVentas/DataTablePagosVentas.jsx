@@ -20,6 +20,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 7, header: 'FECHA DE VENTA', render:(row)=>{
       return (
         <>
+
         {row.fecha_pago_1}
         </>
       )

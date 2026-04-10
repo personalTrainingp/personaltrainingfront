@@ -62,8 +62,6 @@ export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
           const tarjetas = dataTipoTarjeta.find(tt=>tt.id_tipo_tarjeta===id_tipo_tarjeta)?.dataTarjeta || [];
           setdataTarjetas(tarjetas)
         }, [id_forma_pago, id_tipo_tarjeta, id])
-        
-    
         useEffect(() => {
           const dataBancos = dataTarjetas1.find(b=>b.id_tarjeta === id_tarjeta)?.dataBancos || [];
           setdataBancos(dataBancos)

@@ -2,7 +2,7 @@ import { PTApi } from '@/common';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewPagosVentas } from './dataPagosSlice';
-import { DateMaskStr, DateMaskStr1, DateMaskStr2 } from '@/components/CurrencyMask';
+import { DateMaskStr, DateMaskStr1, DateMaskStr2, DateMaskString } from '@/components/CurrencyMask';
 
 export const impuestosBancos = [
 	{
@@ -117,7 +117,7 @@ export const useVentasPagosStore = () => {
 						...venta,
 						pago,
 						identificador,
-						fecha_pago_1: DateMaskStr(pago?.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY'),
+						fecha_pago_1: DateMaskString(pago?.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY'),
 						porcentaje:
 							impuestosBancos.find(
 								(f) =>

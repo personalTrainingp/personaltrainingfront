@@ -33,7 +33,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
         <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
             {
-                dataIngresosxFecha?.filter(f=>f.data?.length!==0).filter((f)=>f.grupo!=='PRESTAMOS')?.map((data, i)=>{
+                dataIngresosxFecha?.filter(f=>f.data?.length!==0).filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS')?.map((data, i)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
@@ -55,7 +55,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
             <div style={{fontSize: '70px'}} className='text-black text-center'>EGRESOS</div>
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=>f.grupo!=='PRESTAMOS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS'&& f.grupo!=='TARJETA CREDITO VISA BBVA')?.map((data,i)=>{
+                dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS'&& f.grupo!=='TARJETA CREDITO VISA BBVA')?.map((data,i)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
@@ -85,27 +85,6 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))} />
         </div>
         
-        <div className="tab-scroll-container">
-            {
-                dataIngresosxFecha?.filter(f=>f.data?.length!==0).filter((f)=>f.grupo==='PRESTAMOS')?.map((data, i)=>{
-                    return (
-                        <DataTablePrincipal 
-                            index={i+1}
-                            id_empresa={id_empresa}
-                            onOpenModalTableItems={onOpenModalTableItemsIngresos} 
-                            key={`${data.grupo}`} 
-                            bgPastel={bgPastel} 
-                            bgTotal={classNameEmpresa} 
-                            itemsxDias={data?.items}  
-                            nombreGrupo={data.grupo} 
-                            conceptos={data.conceptos} 
-                            data={dataGastosxFecha} 
-                            anio={anio}
-                            fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}/>
-                    )
-                })
-            }
-        </div>
         <div className='tab-scroll-container'>
             {
                 dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=> f.grupo==='TARJETA CREDITO VISA BBVA')?.map((data,i)=>{
@@ -124,6 +103,28 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                             anio={anio}
                             fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
                             />
+                    )
+                })
+            }
+        </div>
+        
+        <div className="tab-scroll-container">
+            {
+                dataIngresosxFecha?.filter(f=>f.data?.length!==0).filter((f)=>f.grupo==='PRESTAMOS A TERCEROS')?.map((data, i)=>{
+                    return (
+                        <DataTablePrincipal 
+                            index={i+1}
+                            id_empresa={id_empresa}
+                            onOpenModalTableItems={onOpenModalTableItemsIngresos} 
+                            key={`${data.grupo}`} 
+                            bgPastel={bgPastel} 
+                            bgTotal={classNameEmpresa} 
+                            itemsxDias={data?.items}  
+                            nombreGrupo={data.grupo} 
+                            conceptos={data.conceptos} 
+                            data={dataGastosxFecha} 
+                            anio={anio}
+                            fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}/>
                     )
                 })
             }

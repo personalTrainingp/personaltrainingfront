@@ -18,7 +18,7 @@ export const TrItemVentas = ({ label = '', arrayFechas = [], id_empresa = 0, cla
 				return (
 					<td className='text-center'>
 						<NumberFormatMoney
-							amount={dataIngresosxFecha.flatMap((f) => f.items)
+							amount={dataIngresosxFecha.filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS').flatMap((f) => f.items)
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
 								?.reduce((total, item) => total + item.monto, 0)}
@@ -53,7 +53,7 @@ export const TrItemEgresos = ({ label = '', arrayFechas = [], id_empresa = 0, cl
 				return (
 					<td className='text-center'>
 						<NumberFormatMoney
-							amount={dataGastosxFecha.filter((f)=>f.grupo!=='PRESTAMOS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS')
+							amount={dataGastosxFecha.filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS')
 								.flatMap((f) => f.items)
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
@@ -64,7 +64,7 @@ export const TrItemEgresos = ({ label = '', arrayFechas = [], id_empresa = 0, cl
 			})}
 			<td className={classNameTotal}>
 				<NumberFormatMoney
-					amount={dataGastosxFecha.filter((f)=>f.grupo!=='PRESTAMOS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS').flatMap((f) => f.items)
+					amount={dataGastosxFecha.filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS').flatMap((f) => f.items)
 						?.flatMap((f) => f.items)
 						?.reduce((total, item) => total + item.monto, 0)}
 				/>
@@ -82,7 +82,7 @@ export const TrItemUtilidad = ({ label = '', arrayFechas = [], id_empresa = 0, c
 	const ingresos = dataIngresosxFecha[0]?.items
 						?.flatMap((f) => f.items)
 						?.reduce((total, item) => total + item.monto, 0)
-	const egresos = dataGastosxFecha.filter((f)=>f.grupo!=='PRESTAMOS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS').flatMap((f) => f.items)
+	const egresos = dataGastosxFecha.filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS').flatMap((f) => f.items)
 						?.flatMap((f) => f.items)
 						?.reduce((total, item) => total + item.monto, 0)
 	return (
@@ -96,7 +96,7 @@ export const TrItemUtilidad = ({ label = '', arrayFechas = [], id_empresa = 0, c
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
 								?.reduce((total, item) => total + item.monto, 0)
-				const egresosxMes = dataGastosxFecha.filter((f)=>f.grupo!=='PRESTAMOS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS')
+				const egresosxMes = dataGastosxFecha.filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS')
 								.flatMap((f) => f.items)
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
