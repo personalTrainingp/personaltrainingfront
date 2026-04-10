@@ -4,6 +4,88 @@ import { Table } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 
+const getQuotaParaMes = (monthIndex, year) => {
+  const y = year;
+  const m = monthIndex;
+  switch (`${m}-${y}`) {
+    case "3-2026":
+      return {
+        meta: 100000,
+      };
+    case "2-2026":
+      return {
+        meta: 100000,
+      };
+    case "1-2026":
+      return {
+        meta: 110000,
+      };
+    case "12-2025":
+      return {
+        meta: 90000,
+      };
+
+    case "11-2025":
+      return {
+        meta: 90000,
+      };
+
+    case "10-2025":
+      return {
+        meta: 85000,
+      };
+
+    case "9-2025":
+      return {
+        meta: 75000,
+      };
+
+    case "8-2025":
+      return {
+        meta: 70000,
+      };
+
+    case "7-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "6-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "5-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "4-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "3-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "2-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "1-2025":
+      return {
+        meta: 60000,
+      };
+
+    default:
+      return {
+        meta: 0,
+      };
+  }
+};
 export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio, onOpenModalTableItems}) => {
     const fechaElegida = new Date(anio[0])
     const fechaActual = new Date()
@@ -18,6 +100,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     useEffect(() => {
         obtenerIngresosxFecha(id_enterprice, anio, 'tenet')
     }, [])
+    
     const dataAlter = fechas.map((f, index, array)=>{
         const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS" && f.grupo!=="TARJETA CREDITO VISA BBVA").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
@@ -63,7 +146,36 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
           sumaIngresosExcepcional
         }
       })
-      console.log({dataAlter, fechas, dataAlterMesCompleto, a: fechas.filter((f)=>f.anio==anioElegido && f.mes<mesElegido), mesActual});
+      
+    const dataBono = fechas.map((f, index, array)=>{
+        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS"&& f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.grupo!=="BONO GERENCIAS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
+        const cantidadIngresos = dataIngresos.length;
+        const sumaIngresosExcepcional = dataIngresosExcepcionales.reduce((total, item)=>item.monto+total, 0);
+        const cantidadIngresosExcepcional = dataIngresosExcepcionales.length;
+        const sumaGastos = dataGasto.reduce((total, item)=>item.monto+total, 0)
+        const cantidadGastos = dataGasto.length;
+        const utilidadBruta = sumaIngresos-sumaGastos
+        const utilidadNeta = (sumaIngresos+sumaIngresosExcepcional)-sumaGastos
+        const utilidadUltimaLinea = ((utilidadNeta && sumaIngresos) && (utilidadNeta*100)/sumaIngresos)
+        return {
+            ...f,
+            dataIngresos,
+            dataGasto,
+            sumaGastos,
+            utilidadNeta,
+            utilidadBruta,
+            cantidadGastos,
+            sumaIngresos,
+            cantidadIngresos,
+            sumaIngresosExcepcional,
+            cantidadIngresosExcepcional,
+            utilidadUltimaLinea: (utilidadUltimaLinea),
+            mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
+        }
+      })
       const ingresosAcumulados = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)
     const utilidadBrutaTotal = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
     const utilidadNetaTotal = (dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
@@ -202,12 +314,38 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                       <td className={`text-end border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={((utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados))}/></div></td>
               </tr> 
               <tr>
-                <th className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice}`}>BONO GERENCIAS (5% UTILIDAD BRUTA)</th>
+                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>% ALCANCE CUOTA</th>
               {
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
-                      <td className={`text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}><div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`} style={{fontSize: '30px'}}>{(e.utilidadUltimaLinea).toFixed(2)}</div></td>
+                      <td className={`text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}>
+                        <div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`} style={{fontSize: '30px'}}>
+                          <NumberFormatMoney
+                            className='fs-2'
+                            amount=
+                            {getQuotaParaMes(e.mes, e.anio).meta}
+                          />
+                        </div>
+                      </td>
+                    </React.Fragment>
+                    )
+                  })
+                }
+                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={(utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados)}/></div></td>
+                      <td className={`text-end border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={((utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados))}/></div></td>
+              </tr> 
+              <tr>
+                <th className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice}`}>BONO GERENCIAS (5% UTILIDAD BRUTA)</th>
+              {
+                dataBono.map(e=>{
+                  return (
+                    <React.Fragment>
+                      <td className={`text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}>
+                        <div className={``} style={{fontSize: '30px'}}>
+                          {e.sumaIngresos<getQuotaParaMes(e.mes, e.anio).meta?'0.00':<NumberFormatMoney amount={e.utilidadBruta*0.05} className='fs-2'/>}
+                        </div>
+                      </td>
                     </React.Fragment>
                     )
                   })
