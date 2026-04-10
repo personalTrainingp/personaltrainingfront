@@ -338,20 +338,24 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
               <tr>
                 <th className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice}`}>BONO GERENCIAS (5% UTILIDAD BRUTA)</th>
               {
-                dataBono.map(e=>{
+                dataAlter.map(e=>{
                   return (
                     <React.Fragment>
                       <td className={`text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}>
                         <div className={``} style={{fontSize: '30px'}}>
-                          {e.sumaIngresos<getQuotaParaMes(e.mes, e.anio).meta?'0.00':<NumberFormatMoney amount={e.utilidadBruta} className='fs-2'/>}
+                          {<NumberFormatMoney amount={e.utilidadBruta*0.05} className='fs-2'/>}
                         </div>
                       </td>
                     </React.Fragment>
                     )
                   })
                 }
-                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={(utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados)}/></div></td>
-                      <td className={`text-end border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={((utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados))}/></div></td>
+                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}>
+                  <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`} ><NumberFormatMoney amount={utilidadBrutaTotal*0.05}/></div>
+                      </td>
+                      <td className={`text-end border-right-10 border-bottom-10`}>
+                    <NumberFormatMoney amount={((dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0))/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length))*0.05}/>
+                      </td>
               </tr> 
             </tbody>
           </Table>
