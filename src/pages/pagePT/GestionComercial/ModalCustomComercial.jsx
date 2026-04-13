@@ -13,10 +13,11 @@ const customComercial = {
   id_pgm: 0,
   id_estado: 0,
   id_empl: 0,
-  fecha_ingreso: ''
+  fecha_ingreso: '',
+  comentario_cliente: ''
 }
 export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
-  const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado } = useForm(customComercial)
+  const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, comentario_cliente } = useForm(customComercial)
   const { dataEmpleados, obtenerEmpleadosVendedores, dataCanales, dataMedioComunicacion, obtenerCanales, obtenerMedioComunicacion, obtenerEstadosComerciales, dataEstadoComercial,postGestionComercial, obtenerDistritosDeLima, dataDistritos } = useGestionComercialStore()
   useEffect(() => {
     if(show){
@@ -57,6 +58,11 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
             </Col>
             <Col lg={4}>
               <div className='m-1'>
+                <InputText label={'COMENTARIO DEL CLIENTE'} nameInput={'comentario_cliente'} onChange={onInputChange} value={comentario_cliente} required/>
+              </div>
+            </Col>
+            <Col lg={4}>
+              <div className='m-1'>
                 <InputText label={'NOMBRES'} nameInput={'nombres'} value={nombres} onChange={onInputChange} required/>
               </div>
             </Col>
@@ -67,12 +73,12 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
             </Col>
             <Col lg={6}>
               <div className='m-1'>
-                <InputSelect label={'ASESOR'} options={dataEmpleados} nameInput={'id_empl'} onChange={onInputChange} value={id_empl} required/>
+                <InputSelect label={'ASESOR QUE LA ATENDIO'} options={dataEmpleados} nameInput={'id_empl'} onChange={onInputChange} value={id_empl} required/>
               </div>
             </Col>
             <Col lg={6}>
               <div className='m-1'>
-                <InputSelect label={'CANAL'} options={dataCanales} nameInput={'id_canal'} onChange={onInputChange} value={id_canal} required/>
+                <InputSelect label={'FUENTE'} options={dataCanales} nameInput={'id_canal'} onChange={onInputChange} value={id_canal} required/>
               </div>
             </Col>
             <Col lg={6}>

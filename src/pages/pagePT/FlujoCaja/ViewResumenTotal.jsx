@@ -202,6 +202,28 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             </thead>
             <tbody>
               <tr>
+                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>CUOTA</th>
+              {
+                dataAlter.map(e=>{
+                  return (
+                    <React.Fragment>
+                      <td className={`text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}>
+                        <div className={``} style={{fontSize: '30px'}}>
+                          <NumberFormatMoney
+                            className='fs-2'
+                            amount=
+                            {getQuotaParaMes(e.mes, e.anio).meta}
+                          />
+                        </div>
+                      </td>
+                    </React.Fragment>
+                    )
+                  })
+                }
+                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={(utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados)}/></div></td>
+                      <td className={`text-end border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={((utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados))}/></div></td>
+              </tr> 
+              <tr>
                 <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>INGRESOS</th>
                 {
                   dataAlter.map((e, i)=>{
@@ -306,28 +328,6 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   return (
                     <React.Fragment>
                       <td className={`text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}><div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`} style={{fontSize: '30px'}}>{(e.utilidadUltimaLinea).toFixed(2)}</div></td>
-                    </React.Fragment>
-                    )
-                  })
-                }
-                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={(utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados)}/></div></td>
-                      <td className={`text-end border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={((utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados))}/></div></td>
-              </tr> 
-              <tr>
-                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>% ALCANCE CUOTA</th>
-              {
-                dataAlter.map(e=>{
-                  return (
-                    <React.Fragment>
-                      <td className={`text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}>
-                        <div className={``} style={{fontSize: '30px'}}>
-                          <NumberFormatMoney
-                            className='fs-2'
-                            amount=
-                            {getQuotaParaMes(e.mes, e.anio).meta}
-                          />
-                        </div>
-                      </td>
                     </React.Fragment>
                     )
                   })
