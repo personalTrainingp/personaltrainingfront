@@ -11,7 +11,7 @@ export const BtnExportSeguimiento = ({dataExport}) => {
     dataExport = dataExport.map(d=>{
         return {
             nombres_cli: d.tb_ventum.tb_cliente.nombre_cli,
-            apellidos_cli: `${d.tb_ventum.tb_cliente.apPaterno_cli} ${d.tb_ventum.tb_cliente.apPaterno_cli}`,
+            apellidos_cli: `${d.tb_ventum.tb_cliente.apPaterno_cli} ${d.tb_ventum.tb_cliente.apMaterno_cli}`,
             distrito: arrayDistrito.find(u=>u.value === d.tb_ventum.tb_cliente.ubigeo_distrito_cli)?.label,
             email: d.tb_ventum.tb_cliente.email_cli,
             telefono: d.tb_ventum.tb_cliente.tel_cli,

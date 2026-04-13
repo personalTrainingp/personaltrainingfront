@@ -359,7 +359,8 @@ const filtered = useMemo(() => {
 
   return data.filter((row) => {
     const text = buildSearchText(row);
-
+    console.log({asdf: text});
+    
     // AND: todas las palabras deben existir en la fila
     return tokens.every((t) => text.includes(t));
 
@@ -1047,13 +1048,32 @@ const filtered = useMemo(() => {
               <InputButton label={exportLabel} onClick={exportToExcel} className={'bg-greenISESAC border-none mx-2 w-100'}/>
           )}
           {searchable && (
-            <Form.Control
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={filterPlaceholder}
-              aria-label="Buscar"
-              autoFocus
-            />
+            <>
+              <div >
+                {/* <pre> */}
+                  {/* {JSON.stringify(pageRows, null, 2)} */}
+                {/* </pre> */}
+                <Form.Select
+                  aria-label="tamaño de "
+                  value={pageSize}
+                  style={{width: '200px'}}
+                  onChange={(e) => setPageSize(Number(e.target.value))}
+                >
+                  {pageSizeOptions.map((n) => (
+                    <option key={n} value={n}>
+                      {n} por página
+                    </option>
+                  ))}
+                </Form.Select>
+              </div>
+              <Form.Control
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={filterPlaceholder}
+                aria-label="Buscar"
+                autoFocus
+              />
+            </>
           )}
         </Col>
         

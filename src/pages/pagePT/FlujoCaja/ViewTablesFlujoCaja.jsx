@@ -55,7 +55,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
             <div style={{fontSize: '70px'}} className='text-black text-center'>EGRESOS</div>
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA PRODUCTOS/ACTIVOS'&& f.grupo!=='TARJETA CREDITO VISA BBVA')?.map((data,i)=>{
+                dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA ACTIVOS'&& f.grupo!=='TARJETA CREDITO VISA BBVA')?.map((data,i)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
@@ -87,7 +87,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
         
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=> f.grupo==='TARJETA CREDITO VISA BBVA')?.map((data,i)=>{
+                dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=> f.grupo==='TARJETA CREDITO VISA BBVA'||f.grupo==='KARAOKE'||f.grupo==='VERTIKAL CHANGE')?.map((data,i)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
@@ -109,7 +109,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
         </div>
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=> f.grupo==='COMPRA PRODUCTOS/ACTIVOS')?.map((data,i)=>{
+                dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=> f.grupo==='COMPRA ACTIVOS')?.map((data,i)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}

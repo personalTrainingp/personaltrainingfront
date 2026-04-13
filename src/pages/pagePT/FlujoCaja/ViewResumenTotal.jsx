@@ -102,7 +102,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     }, [])
     
     const dataAlter = fechas.map((f, index, array)=>{
-        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS" && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.grupo!=="BONO GERENCIAS" ).flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA ACTIVOS" && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.grupo!=="BONO GERENCIAS" ).flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
@@ -131,7 +131,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         }
       })
       const dataAlterMesCompleto = fechas.filter((f)=>`${f.anio}-${f.mes}`!==`${anioActual}-${mesActual}`).map(f=>{
-        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS"&& f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.grupo!=="BONO GERENCIAS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA ACTIVOS"&& f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.grupo!=="BONO GERENCIAS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
@@ -148,7 +148,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
       })
       
     const dataBono = fechas.map((f, index, array)=>{
-        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA PRODUCTOS/ACTIVOS"&& f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.grupo!=="BONO GERENCIAS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA ACTIVOS"&& f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.grupo!=="BONO GERENCIAS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
@@ -196,13 +196,13 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <td className='text-center border-top-10 border-bottom-10 border-left-10 border-right-10' style={{width: '230px'}}>TOTAL <br/> ANUAL</td>
-                <td className='text-center border-top-10 border-bottom-10 border-right-10' style={{width: '230px'}}>PROMEDIO <br/> MENSUAL <br/> ANUAL</td>
+                <th className='text-center border-top-10 border-bottom-10 border-left-10 border-right-10' style={{width: '230px'}}>TOTAL <br/> ANUAL</th>
+                <th className='text-center border-top-10 border-bottom-10 border-right-10' style={{width: '230px'}}>PROMEDIO <br/> MENSUAL <br/> ANUAL</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>CUOTA</th>
+                <td className={`border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>CUOTA</td>
               {
                 dataAlter.map(e=>{
                   return (
@@ -220,11 +220,11 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                      <td className={`text-end border-left-10 border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={(utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados)}/></div></td>
-                      <td className={`text-end border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={((utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados))}/></div></td>
+                      <td className={`text-end border-left-10 border-right-10 border-bottom-10 fs-1 text-center`}>-</td>
+                      <td className={`text-end border-right-10 border-bottom-10 fs-1 text-center`}>-</td>
               </tr> 
               <tr>
-                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>INGRESOS</th>
+                <td className={`border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>INGRESOS</td>
                 {
                   dataAlter.map((e, i)=>{
                     return (
@@ -241,12 +241,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 </td>
                 <td className='border-right-10'>
                   <div className='text-end'>
-                    <NumberFormatMoney amount={dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaIngresos!=0).length)}/>
+                    <NumberFormatMoney className='fs-2' amount={dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaIngresos!=0).length)}/>
                   </div>
                 </td>
               </tr>
               <tr>
-                <th className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice}`}>EGRESOS</th>
+                <td className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>EGRESOS</td>
                 {
                 dataAlter.map(e=>{
                   return (
@@ -268,7 +268,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 </td>
               </tr>
               <tr>
-                <th className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice}`}>UTILIDAD / PERDIDA</th>
+                <td className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>UTILIDAD / PERDIDA</td>
               {
                 dataAlter.map(e=>{
                   return (
@@ -288,7 +288,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 </td>
               </tr>
               <tr>
-                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>ING. EXTRAORDINARIOS</th>
+                <td className={`border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>ING. EXTRAORDINARIOS</td>
                 {
                 dataAlter.map(e=>{
                   return (
@@ -308,7 +308,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 </td>
               </tr>
               <tr>
-                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>TOTAL</th>
+                <td className={`border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>TOTAL</td>
               {
                 dataAlter.map(e=>{
                   return (
@@ -322,7 +322,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                       <td className={`text-end border-right-10`}><div className={`${utilidadNetaTotalMESCOMPLETO>0?'text-ISESAC':'text-change'}`}> <NumberFormatMoney className='fs-2' amount={utilidadNetaTotalMESCOMPLETO/encontrarFechas(anioElegido,dataAlter.filter(f=>f.sumaGastos!=0).length)}/></div></td>
               </tr> 
               <tr>
-                <th className={`border-left-10 border-right-10 sticky-td-${id_enterprice}`}>% Utilidad / Perdida</th>
+                <td className={`border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>% Utilidad / Perdida</td>
               {
                 dataAlter.map(e=>{
                   return (
@@ -336,7 +336,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                       <td className={`text-end border-right-10 border-bottom-10`}><div className={`${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-2' amount={((utilidadNetaTotal&&ingresosAcumulados)&&((utilidadNetaTotal*100)/ingresosAcumulados))}/></div></td>
               </tr> 
               <tr>
-                <th className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice}`}>BONO GERENCIAS (5% UTILIDAD BRUTA)</th>
+                <td className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice} ${bgTotal}`}>BONO GERENCIAS (5% UTILIDAD BRUTA)</td>
               {
                 dataAlter.map(e=>{
                   return (
@@ -354,7 +354,9 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`} ><NumberFormatMoney className={'fs-2'} amount={utilidadBrutaTotal*0.05}/></div>
                       </td>
                       <td className={`text-end border-right-10 border-bottom-10`}>
-                    <NumberFormatMoney amount={((dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0))/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length))*0.05}/>
+                        <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'}`}>
+                          <NumberFormatMoney className={'fs-2'} amount={((dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0))/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length))*0.05}/>
+                        </div>
                       </td>
               </tr> 
             </tbody>
