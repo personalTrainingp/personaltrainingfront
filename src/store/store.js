@@ -36,6 +36,7 @@ import { ComercialSlice } from '@/pages/pagePT/GestionComercial/dataComercialSli
 import { ColaboradoresSlice } from '@/pages/pagePT/GestEmpleados/store/colaboradoresSlice';
 import { contratoEmpSlice } from '@/pages/pagePT/GestEmpleados/Perfil/Contrato/contratoEmpSlice';
 import { dataPagosSlice } from '@/pages/pagePT/ReportePagosVentas/dataPagosSlice';
+import { OperadoresPagoSlice } from '@/pages/pagePT/GestionFormasPago/dataOperadoresPagoSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -77,6 +78,7 @@ export const store = configureStore({
 		COLABORADORES: ColaboradoresSlice.reducer,
 		CONTRATOEMP: contratoEmpSlice.reducer,
 		PAGOSVENTAS: dataPagosSlice.reducer,
+		OPERADORESPAGO: OperadoresPagoSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

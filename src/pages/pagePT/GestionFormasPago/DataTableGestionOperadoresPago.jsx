@@ -16,87 +16,70 @@ export const DataTableGestionOperadoresPago = ({onOpenModalGestionOperadoresPago
       id: 1, header: 'FECHA DE REGISTRO', render:(row)=>{
         return (
           <>
-          {row.fecha_registro}
+          {row.fecha_ingreso}
           </>
         )
       }
     },
     {
-      id: 2, header: 'ASESOR', render: (row)=>{
+      id: 2, header: 'OPERADOR', render: (row)=>{
         return (
           <>
-          {row.empleado?.nombres_apellidos_empl}
+          {row.OperadorLabel?.label_param}
           </>
         )
       }
     },
     {
-      id: 3, header: 'NOMBRES', render: (row)=>{
+      id: 3, header: 'FORMAS DE PAGO', render: (row)=>{
         return (
           <>
-          {row.nombres}
+          {row.FormaPagoLabel?.label_param}
           </>
         )
       }
     },
     {
-      id: 4 , header: 'APELLIDOS', render: (row)=>{
+      id: 3, header: 'TIPOS DE TARJETA', render: (row)=>{
         return (
           <>
-          {row.apellidos}
+          {row.TipoTarjetaLabel?.label_param}
           </>
         )
       }
     },
     {
-      id: 5, header: 'CELULAR', render: (row)=>{
+      id: 4, header: 'MARCAS DE TARJETA', render: (row)=>{
         return (
           <>
-          {row.celular}
+          {row.TarjetaLabel?.label_param}
           </>
         )
       }
     },
     {
-      id: 6, header: 'DISTRITO', render: (row)=>{
+      id: 4, header: 'BANCOS', render: (row)=>{
         return (
           <>
+          {row.BancoLabel?.label_param}
           </>
         )
       }
     },
     {
-      id: 7, header: 'CANAL', render: (row)=>{
+      id: 5, header: 'CUOTA', render: (row)=>{
         return (
           <>
-          {row.parametro_canal?.label_param}
+          {row.cuota}
           </>
         )
       }
     },
     {
-      id: 12, header: 'MEDIO DE COMUNICACION', render: (row)=>{
+      id: 6, header: '% COMISION', render: (row)=>{
         return (
           <>
-
-          {row.parametro_medio_comunicacion?.label_param}
-          </>
-        )
-      }
-    },
-    {
-      id: 8, header: 'PROGRAMAS', render: (row)=>{
-        return (
-          <>
-          </>
-        )
-      }
-    },
-    {
-      id: 9, header: 'ESTATUS', render: (row)=>{
-        return (
-          <>
-          <Button className={`${arrayEstadoComercial.find(e=>e.value===row.parametro_estado?.id_param)?.color} border-none`} label={row.parametro_estado?.label_param}/>
+          {row.porcentaje_comision}
           </>
         )
       }
@@ -105,17 +88,19 @@ export const DataTableGestionOperadoresPago = ({onOpenModalGestionOperadoresPago
       id: 10, header: '', render: (row)=>{
         return (
           <>
-            <Button icon="pi pi-edit" onClick={()=>onOpenModalOperadoresPago(row.id)} rounded outlined severity="danger"  className='mr-2'/>
-            <Button icon="pi pi-eye" onClick={()=>onOpenModalOperadoresPago(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
+            <Button icon="pi pi-pen" onClick={()=>onOpenModalOperadoresPago(row.id)} rounded outlined severity="danger"  className='mr-2'/>
+            <Button icon="pi pi-trash" onClick={()=>onOpenModalOperadoresPago(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
           </>
         )
       }
     },
   ]
-  const onOpenModalOperadoresPago = (uid)=>{
+  const onOpenModalOperadoresPago = (id)=>{
     onOpenModalGestionOperadoresPago(id, false)
   }
-  
+  const onDeleteOperadoresPago = ()=>{
+    
+  }
   return (
     <div>
       <DataTableCR

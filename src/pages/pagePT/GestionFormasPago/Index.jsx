@@ -1,1 +1,1 @@
-export {AppGestionComercial as default} from './AppOperadoresPago'
+export {AppGestionOperadoresPago as default} from './AppOperadoresPago'

@@ -112,7 +112,7 @@ const ReporteMonketFit = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/Ind
 const ReporteGastosProveedores = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/App.jsx'))
 const ReportePagosVentas = lazy(()=>import('../pages/pagePT/ReportePagosVentas'))
 const MembresiasAgrupadas = lazy(()=>import('../pages/pagePT/MembresiasAgrupadas'))
-
+const GestionOperadoresPagos = lazy(()=>import('../pages/pagePT/GestionFormasPago'))
 const OtherPages = lazy(() => import('../pages/otherpages'));
 const Error404Alt = lazy(() => import('../pages/otherpages/Error404Alt'));
 
@@ -151,6 +151,10 @@ export default function ProtectedRoutes() {
 				status === 'authenticated' ? (
 					<>
 						<Route path="/*" element={<Layout />}>
+							{
+								sections.find(e => e.url === '/pagos-ventas') &&
+								<Route path='gestion-pagos-ventas' element={< GestionOperadoresPagos/>} />
+							}
 							{
 								sections.find(e => e.url === '/reportes-admin') &&
 								<Route path='reporte-admin/pagos-operadores' element={<ReportePagosVentas />} />
@@ -367,10 +371,6 @@ export default function ProtectedRoutes() {
 								<Route path='totalizado-inventario' element={<InventarioTotalizado />} />
 							}
 							{
-								sections.find(e => e.url === '/gestion-comercial') &&
-								<Route path='gestion-comercial' element={<GestionComercial />} />
-							}
-							{
 								sections.find(e => e.url === '/gestion-cambio-programa') &&
 								<Route path='gestion-cambio-programa' element={<GestionCambioPrograma />} />
 							}
@@ -515,8 +515,8 @@ export default function ProtectedRoutes() {
 								<Route path='gestion-auth-usuario' element={<GestionUsuario />} />
 							}
 							{
-								sections.find(e => e.url === '/gestion-prospecto') &&
-								<Route path='gestion-prospecto' element={<GestionProspectos />} />
+								sections.find(e => e.url === '/socio') &&
+								<Route path='gestion-prospecto' element={<GestionComercial />} />
 							}
 							{
 								sections.find(e => e.url === '/extension-membresia') &&

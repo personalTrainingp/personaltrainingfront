@@ -3,6 +3,7 @@ import { useForm } from '@/hooks/useForm'
 import React, { useEffect } from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
 import { useGestionOperadoresPagoStore } from './useGestionOperadoresPagoStore'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 const customOperadoresPago = {
   fecha_ingreso: '',
   id_operador: 0,
@@ -15,6 +16,19 @@ const customOperadoresPago = {
 }
 export const ModalCustomOperadoresPago = ({show, onHide, isCopy, id}) => {
   const { updateGestionOperadoresPago, postGestionOperadoresPago, dataOperadorxID, obtenerGestionOperadorPagoxID } = useGestionOperadoresPagoStore()
+  const { DataGeneral:dataOperadores, obtenerParametroPorEntidadyGrupo:obtenerOperadores } = useTerminoStore()
+  const { DataGeneral:dataFormaPago, obtenerParametroPorEntidadyGrupo:obtenerFormaPago } = useTerminoStore()
+  const { DataGeneral:dataTarjeta, obtenerParametroPorEntidadyGrupo:obtenerTarjeta } = useTerminoStore()
+  const { DataGeneral:dataBancos, obtenerParametroPorEntidadyGrupo:obtenerBancos } = useTerminoStore()
+  useEffect(() => {
+    if(show){
+      obtenerOperadores('formapago', 'operador')
+      obtenerFormaPago('formapago', 'formapago')
+      obtenerTarjeta('formapago', 'tarjeta')
+      obtenerBancos('formapago', 'banco')
+    }
+  }, [show])
+  
   useEffect(() => {
     if (id!==0) {
       obtenerGestionOperadorPagoxID(id)
@@ -50,27 +64,27 @@ export const ModalCustomOperadoresPago = ({show, onHide, isCopy, id}) => {
             </Col>
             <Col lg={12}>
               <div className='m-1'>
-                <InputSelect label={'Operador'} nameInput={'id_operador'} onChange={onInputChange} value={id_operador} options={[]}/>
+                <InputSelect label={'Operador'} nameInput={'id_operador'} onChange={onInputChange} value={id_operador} options={dataOperadores}/>
               </div>
             </Col>
             <Col lg={12}>
               <div className='m-1'>
-                <InputSelect label={'Forma pago'} nameInput={'id_forma_pago'} onChange={onInputChange} value={id_forma_pago} options={[]}/>
+                <InputSelect label={'Forma pago'} nameInput={'id_forma_pago'} onChange={onInputChange} value={id_forma_pago} options={dataFormaPago}/>
               </div>
             </Col>
             <Col lg={12}>
               <div className='m-1'>
-                <InputSelect label={'TIPO DE TARJETA'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} value={id_tipo_tarjeta} options={[]}/>
+                <InputSelect label={'TIPO DE TARJETA'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} value={id_tipo_tarjeta} options={[{value: 35, label: 'DEBITO'}, {value: 37, label: 'CREDITO'}]}/>
               </div>
             </Col>
             <Col lg={12}>
               <div className='m-1'>
-                <InputSelect label={'MARCA DE TARJETA'} nameInput={'id_marca_tarjeta'} onChange={onInputChange} value={id_marca_tarjeta} options={[]}/>
+                <InputSelect label={'MARCA DE TARJETA'} nameInput={'id_marca_tarjeta'} onChange={onInputChange} value={id_marca_tarjeta} options={dataTarjeta}/>
               </div>
             </Col>
             <Col lg={12}>
               <div className='m-1'>
-                <InputSelect label={'BANCO'} nameInput={'id_banco'} onChange={onInputChange} value={id_banco} options={[]}/>
+                <InputSelect label={'BANCO'} nameInput={'id_banco'} onChange={onInputChange} value={id_banco} options={dataBancos}/>
               </div>
             </Col>
             <Col lg={12}>
