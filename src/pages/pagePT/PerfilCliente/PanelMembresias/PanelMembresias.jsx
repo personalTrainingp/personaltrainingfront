@@ -54,10 +54,10 @@ export const PanelMembresias = ({id_cli}) => {
                                 FECHA DE FIN: <strong>{fecha_fin}</strong>
                             </span>
                             <span>
-                                NUTRICION: <strong>{detalle_ventamembresia.tb_semana_training.nutricion_st}</strong>
+                                NUTRICION: <strong>{detalle_ventamembresia.tb_semana_training?.nutricion_st}</strong>
                             </span>
                             <span>
-                                CONGELAMIENTO: <strong>{detalle_ventamembresia.tb_semana_training.congelamiento_st}</strong>
+                                CONGELAMIENTO: <strong>{detalle_ventamembresia.tb_semana_training?.congelamiento_st}</strong>
                             </span>
                         </div>
                             <td className='fs-4 underline text-primary cursor-pointer' onClick={()=>onOpenModalDetalleMembresia(f)}>DETALLE</td>

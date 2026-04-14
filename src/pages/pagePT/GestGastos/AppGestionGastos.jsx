@@ -22,7 +22,6 @@ export const AppGestionGastos = ({id_empresa}) => {
       <InputButton label={'AGREGAR GASTO'} onClick={()=>onOpenModalGasto(0, false)}/>
       <DataTableGastos id_empresa={id_empresa} onOpenModalGasto={onOpenModalGasto}/>
       <ModalCustomGasto onOpenModalProveedor={onOpenModalProveedor} onOpenModalGasto={onOpenModalGasto} id_enterprice={id_empresa} id={isOpenModalGasto.id} isCopy={isOpenModalGasto.isCopy} onHide={onCloseModalGasto} show={isOpenModalGasto.isOpen}/>
-      {/* <ModalCustomProveedores onCloseModalProvPst={()=>onOpenModalGasto(0, false)} onHide={()=>setisOpenModalCustomProv({id: 0, isOpen: false})} show={isOpenModalCustomProv.isOpen} estado={true} id_enterprice={id_empresa} onShow={onOpenModalProveedor} tipo={1573} id={0}  /> */}
     </div>
   )
 }
