@@ -52,7 +52,7 @@ export const TrItemEgresos = ({ label = '', arrayFechas = [], id_empresa = 0, cl
 				new Date('2024-01-01 15:45:47.6640000 +00:00'),
 				new Date('2024-12-31 15:45:47.6640000 +00:00')
 			).map((e) => {
-				const gastoMonto = dataGastosxFecha.filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA ACTIVOS')
+				const gastoMonto = dataGastosxFecha.filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA ACTIVOS'|| f.grupo!=="VERTIKAL CHANGE"|| f.grupo!=="KARAOKE")
 								.flatMap((f) => f.items)
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)

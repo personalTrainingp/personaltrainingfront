@@ -19,6 +19,7 @@ export const App = () => {
   const filtroDiaVentasMembresiaxMes = agruparPorMesDiaFechaVenta(
     dataVentasMembresiaReno
   ).filter((el) => corte.dia.includes(el.dia));
+  
 			const ventasMembresiaxCorteDeDia = agruparPorMes(filtroDiaVentasMembresiaxMes);
       console.log({ventasMembresiaxCorteDeDia});
   return (

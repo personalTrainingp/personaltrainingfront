@@ -3,7 +3,7 @@ import { Button, Table } from 'react-bootstrap'
 import {  NumberFormatMoney } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
 
-export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuotaMetaDelMes=[], nombreDeComparativo='VENTA TOTAL AL CORTE', labelMontoVenta='MONTO VENTA ALCANZADA'}) => {
+export const DataTableMetas = ({label, data, arrayFechas=[], nombreCategoriaVenta, dataCuotaMetaDelMes=[], nombreDeComparativo='VENTA TOTAL AL CORTE', labelMontoVenta='MONTO VENTA ALCANZADA'}) => {
     const fechaSeleccionada = '2026-1'
     const dataConMes = arrayFechas.map(arr=>{
         const dataFiltradaMes =  data?.filter((f)=>f.mes===arr.mes && f.anio===arr.anio)
@@ -35,7 +35,7 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
                     {
                         dataConMes.map((d, i)=>{
                             return (
-                                <th className={`fs-2 text-center text-white ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} style={{width: '240px'}}>{dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')}<br/>{dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('YYYY')}</th>
+                                <th className={`fs-2 text-center text-white ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} style={{width: '240px'}}>{dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('YYYY')}<br/>{dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')}</th>
                             )
                         })
                     }
@@ -47,42 +47,42 @@ export const DataTableMetas = ({data, arrayFechas=[], nombreCategoriaVenta, data
                     {
                         dataConMes.map((d, i)=>{
                             return (
-                                <td className={`fs-3 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} ><NumberFormatMoney amount={d.montoMeta}/></td>
+                                <td className={`fs-2 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} ><NumberFormatMoney className='fs-1' amount={d.montoMeta}/></td>
                             )
                         })
                     }
                 </tr>
                 <tr>
                     <td className='sticky-td-598 fs-3 text-white'>
-                        <div className='d-flex justify-content-center align-items-center'>
+                        <div className=''>
                             {labelMontoVenta}
-                            <Button className='bg-ral'>ORDENAR</Button>
+                            {/* <Button className='bg-ral'>ORDENAR</Button> */}
                         </div>
                     </td>
                     {
                         dataConMes.map((d, i)=>{
                             return (
-                                <td className={`fs-3 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} ><NumberFormatMoney amount={d.montoTotal}/></td>
+                                <td className={`fs-3 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} ><NumberFormatMoney className='fs-1' amount={d.montoTotal}/></td>
                             )
                         })
                     }
                 </tr>
                 <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>SOCIOS</td>
+                    <td className='sticky-td-598 fs-3 text-white'>SOCIOS {label}</td>
                     {
                         dataConMes.map((d, i)=>{
                             return (
-                                <td className={`fs-3 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} >{d.cantTotal}</td>
+                                <td className={`fs-1 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} >{d.cantTotal}</td>
                             )
                         })
                     }
                 </tr>
                 <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>% ALCANCE</td>
+                    <td className='sticky-td-598 fs-3 text-white'>% {label}</td>
                     {
                         dataConMes.map((d, i)=>{
                             return (
-                                <td className={`fs-3 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} ><NumberFormatMoney amount={d.porcentajeDeAvance}/></td>
+                                <td className={`fs-1 text-center ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`} ><NumberFormatMoney className='fs-1' amount={d.porcentajeDeAvance}/></td>
                             )
                         })
                     }

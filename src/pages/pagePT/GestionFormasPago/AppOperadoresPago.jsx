@@ -14,8 +14,8 @@ export const AppGestionOperadoresPago = () => {
     }
   return (
     <div>
-        <PageBreadcrumb title={'GESTION DE OPERADORES'}/>
-        <InputButton label={'Agregar Operadores Pago'} onClick={()=>onOpenModalGestionOperadoresPago(0, false)}/>
+        <PageBreadcrumb title={'GESTION DE COSTOS OPERADORES'}/>
+        <InputButton label={'AGREGAR COSTO'} onClick={()=>onOpenModalGestionOperadoresPago(0, false)}/>
         <DataTableGestionOperadoresPago onOpenModalGestionOperadoresPago={onOpenModalGestionOperadoresPago}/>
         <ModalCustomOperadoresPago id={isOpenModalGestionOperadoresPago.id} show={isOpenModalGestionOperadoresPago.isOpen} onHide={onCloseModalGestionOperadoresPago} isCopy={isOpenModalGestionOperadoresPago.isCopy}/>
     </div>

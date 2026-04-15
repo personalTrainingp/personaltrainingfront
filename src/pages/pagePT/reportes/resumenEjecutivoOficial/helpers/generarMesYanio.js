@@ -1,13 +1,13 @@
-export function generarMesYanio(desde, hasta = new Date(), order = 'asc') {
+export function generarMesYanio(desde, hastaD = new Date(), order = 'asc') {
 	const result = [];
 	let fecha = new Date(desde);
-
+	let hasta = new Date(hastaD);
 	while (
-		fecha.getFullYear() < hasta.getFullYear() ||
-		(fecha.getFullYear() === hasta.getFullYear() && fecha.getMonth() <= hasta.getMonth())
+		fecha?.getFullYear() < hasta?.getFullYear() ||
+		(fecha?.getFullYear() === hasta?.getFullYear() && fecha?.getMonth() <= hasta?.getMonth())
 	) {
-		const mes = fecha.getMonth() + 1;
-		const anio = fecha.getFullYear();
+		const mes = fecha?.getMonth() + 1;
+		const anio = fecha?.getFullYear();
 
 		const item = {
 			fecha: `${anio}-${mes}`,

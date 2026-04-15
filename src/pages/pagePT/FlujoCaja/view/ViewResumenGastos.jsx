@@ -15,7 +15,7 @@ export const ViewResumenGastos = ({fechas, id_enterprice, bgTotal, anio, onOpenM
     console.log({dataGastosxFecha, dataIngresosxFecha});
     
     const dataAlter = fechas.map((f, index, array)=>{
-        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA ACTIVOS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA ACTIVOS" || f.grupo!=="VERTIKAL CHANGE"|| f.grupo!=="KARAOKE").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
         const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)

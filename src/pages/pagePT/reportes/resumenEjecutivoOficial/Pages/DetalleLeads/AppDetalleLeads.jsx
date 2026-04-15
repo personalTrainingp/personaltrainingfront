@@ -8,11 +8,12 @@ export const AppDetalleLeads = () => {
     useEffect(() => {
         obtenerLeads()
     }, [])
-    const dataMesesYanio = generarMesYanio('2025-09-01 15:45:47.6640000 +00:00')
+    const dataMesesYanio = generarMesYanio('2024-01-01 15:45:47.6640000 +00:00')
+    const dataMeses = generarMesYanio('2025-01-15 15:45:47.6640000 +00:00', '2025-12-15 15:45:47.6640000 +00:00')
   return (
     <div>
                 {/* <FechaCorte corte={corte.corte} inicio={corte.inicio}/> */}
-                <DataTableDetalleLeads dataMesesYanio={dataMesesYanio}/>
+                <DataTableDetalleLeads dataMesesYanio={dataMesesYanio} MESES={dataMeses}/>
     </div>
   )
 }
