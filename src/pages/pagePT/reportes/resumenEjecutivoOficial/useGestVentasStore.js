@@ -5,7 +5,8 @@ import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import { arrayFacturas } from '@/types/type';
 
 export const useGestVentasStore = () => {
-	const [dataVentasxEmpresa, setdataVentasxEmpresa] = useState([]);
+	const [dataVentasRenovacionesxEmpresa, setdataVentasRenovacionesxEmpresa] = useState([]);
+	const [dataVentasGeneral, setdataVentasGeneral] = useState([]);
 	const putVentas = async (id_origen, id_venta, obtenerVentaxID) => {
 		try {
 			await PTApi.put(`/venta/put-venta/${id_venta}`, {
@@ -23,7 +24,6 @@ export const useGestVentasStore = () => {
 			// console.log(data);
 			const ventaMap = data.ventas
 				?.filter((f) => f.detalle_ventaMembresia.length != 0)
-				?.filter((f) => f.id_origen === 691)
 				.map((v) => {
 					const avatarCli = v.tb_cliente?.tb_images[0]?.name_image;
 					const combinedArray = [
@@ -43,6 +43,7 @@ export const useGestVentasStore = () => {
 						id: v.id,
 						fechaP: v.fecha_venta,
 						id_cli: v.id_cli,
+						id_origen: v.id_origen,
 						tb_cliente: {
 							nombres_cliente: v.tb_cliente.nombres_apellidos_cli,
 							urlAvatar:
@@ -58,12 +59,15 @@ export const useGestVentasStore = () => {
 					};
 				})
 				.filter((f) => f.montoTotal !== 0);
-			setdataVentasxEmpresa(agruparPorFecha(ventaMap));
+			setdataVentasRenovacionesxEmpresa(
+				agruparPorFecha(ventaMap.filter((f) => f.id_origen === 691))
+			);
+			setdataVentasGeneral(agruparPorFecha(ventaMap));
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	return { putVentas, obtenerVentasxEmpresa, dataVentasxEmpresa };
+	return { putVentas, obtenerVentasxEmpresa, dataVentasRenovacionesxEmpresa, dataVentasGeneral };
 };
 const agruparPorFecha = (data = []) => {
 	const map = {};

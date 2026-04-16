@@ -5,179 +5,90 @@ import { useGestVentasStore } from '../../useGestVentasStore'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { useSelector } from 'react-redux'
 import { FechaCorte } from '@/components/RangeCalendars/FechaRange'
+import { Esqueleto } from './Esqueleto'
 
 export const DataTableDetalleLeads = ({dataMesesYanio, MESES}) => {
         const { corte } = useSelector((e) => e.DATA);
-        const { obtenerVentasxEmpresa, dataVentasxEmpresa } = useGestVentasStore()
+        const fechaActual = new Date()
+        const anioActual = fechaActual.getFullYear()
+        const mesActual = fechaActual.getMonth()+1
+        const diaActual = fechaActual.getDate()
+        const diasDelMes = new Date(anioActual,mesActual,0).getDate();
+        const { obtenerVentasxEmpresa, dataVentasRenovacionesxEmpresa, dataVentasGeneral } = useGestVentasStore()
         useEffect(() => {
             obtenerVentasxEmpresa(598)
         }, [])
-        
-    const dataConMesesYanio = dataMesesYanio.map(d=>{
-        const dataVentas = dataVentasxEmpresa.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${d.anio}-${d.mes}` && corte.dia.includes(f.fecha.dia))
-        const dataSumaVentas = dataVentas.reduce((total, item)=>total+item.montoTotal, 0)
-        const dataCantidad=dataVentas.length;
+    const dataVentasRenovacionesxMESES = dataMesesYanio.map(d=>{
+        const dataVentasRenovaciones = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${d.anio}-${d.mes}` && corte.dia.includes(f.fecha.dia))
+        const sumaVentasRenovaciones = dataVentasRenovaciones.reduce((total, item)=>total+item.montoTotal, 0)
         return {
             ...d,
-            dataVentas,
-            dataSumaVentas,
-            dataCantidad
+            monto: <NumberFormatMoney amount={sumaVentasRenovaciones}/>,
+        }
+    })
+    const dataCantidadRenovacionesxMESES = dataMesesYanio.map(d=>{
+        const dataVentasRenovaciones = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${d.anio}-${d.mes}` && corte.dia.includes(f.fecha.dia))
+        return {
+            ...d,
+            monto: dataVentasRenovaciones.length,
+        }
+    })
+    const dataAlcanceCaRenovacionesxMESES = dataMesesYanio.map(d=>{
+        const dataVentas = dataVentasGeneral?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${d.anio}-${d.mes}` && corte.dia.includes(f.fecha.dia))
+        const dataVentasRenovaciones = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${d.anio}-${d.mes}` && corte.dia.includes(f.fecha.dia))
+        const sumaVentasRenovaciones = dataVentasRenovaciones.reduce((total, item)=>total+item.montoTotal, 0)
+        const sumaVentasGenerales = dataVentas.reduce((total, item)=>total+item.montoTotal, 0)
+        
+        return {
+            ...d,
+
+            monto: !sumaVentasGenerales?'0.00':((sumaVentasRenovaciones/sumaVentasGenerales)*100).toFixed(2),
+
+        }
+    })
+    
+    const dataAlcanceCaRenovacionesxANIO = dataMesesYanio.map(d=>{
+        const dataVentas = dataVentasGeneral?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${d.anio}-${d.mes}` && corte.dia.includes(f.fecha.dia))
+        
+        const dataVentasRenovaciones = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}`==`${d.anio}` && corte.dia.includes(f.fecha.dia))
+        const sumaVentasRenovaciones = dataVentasRenovaciones.reduce((total, item)=>total+item.montoTotal, 0)
+        const sumaVentasMesActual = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${anioActual}-${mesActual}`).reduce((total, item)=>total+item.montoTotal, 0)
+        const sumaVentasGenerales = dataVentas.reduce((total, item)=>total+item.montoTotal, 0)
+        let mesActivo = false;
+        if(`${d.anio}-${d.mes}`===`${anioActual}-${mesActual}`){
+            if(corte.inicio ===1 && corte.corte<=diaActual){
+                mesActivo=true
+            }
+        }
+        return {
+            ...d,
+            monto: !sumaVentasGenerales?'0.00':<NumberFormatMoney amount={sumaVentasRenovaciones/dataTotalFormular(d.anio)}/>,
+            montoMesActual: sumaVentasMesActual
         }
     })
   return (
     <>
     <FechaCorte corte={corte.corte} inicio={corte.inicio}/>
-    <div className='text-center'>
-            <span className='fs-1'>
-                VENTAS RENOVACION
-            </span>
-    </div>
-    <div className="table-responsive" style={{ width: '100%' }}>
-        <Table  className="tabla-egresos" style={{width: '100%'}}  bordered>
-            <thead className='bg-change'>
-                <tr className='fs-2' style={{width: '350px'}}>
-                    <th className='fs-2' style={{width: '350px'}}></th>
-                    {
-                        dataConMesesYanio.filter(f=>f.anio===2025).map(d=>{
-                            return (
-                                <th className='fs-2 text-center text-white' style={{width: '240px'}}>
-                                    {dayjs.utc(`${d.fecha}-15`, 'YYYY-M-DD').format('MMMM')}
-                                    {JSON.stringify(d.fecha.mes, null, 2)}
-                                </th>
-                            )
-                        })
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td className='sticky-td-598 fs-3 text-white' style={{width: '240px'}}>2026</td>
-                    {
-                        dataConMesesYanio.filter(f=>f.anio===2026).map(d=>{
-                            return (
-                                <td>
-                                    <NumberFormatMoney
-                                        amount=
-                                    {d.dataVentas.reduce((total, item)=>total+item.montoTotal, 0)}
-                                    />
-                                </td>
-                            )
-                        })
-                    }
-                </tr>
-                <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>2025</td>
-                    {
-                        dataConMesesYanio.filter(f=>f.anio===2025).map(d=>{
-                            return (
-                                <td>
-                                    <NumberFormatMoney
-                                        amount=
-                                    {d.dataVentas.reduce((total, item)=>total+item.montoTotal, 0)}
-                                    /></td>
-                            )
-                        })
-                    }
-                </tr>
-                <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>2024</td>
-                    {
-                        dataConMesesYanio.filter(f=>f.anio===2024).map(d=>{
-                            return (
-                                <td>
-                                    <NumberFormatMoney
-                                        amount=
-                                    {d.dataVentas.reduce((total, item)=>total+item.montoTotal, 0)}
-                                    />
-                                </td>
-                            )
-                        })
-                    }
-                </tr>
-                {/* <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>TOTAL</td>
-                    {
-                        dataConMesesYanio.map(d=>{
-                            return (
-                                <td>{d.dataVentas.reduce((total, item)=>total+item.montoTotal, 0)}</td>
-                            )
-                        })
-                    }
-                </tr> */}
-            </tbody>
-        </Table>
-        </div>
-    <div className='text-center'>
-            <span className='fs-1'>
-                SOCIOS RENOVACION
-            </span>
-    </div>
-    <div className="table-responsive" style={{ width: '100%' }}>
-        <Table  className="tabla-egresos" style={{width: '100%'}}  bordered>
-            <thead className='bg-change'>
-                <tr className='fs-2' style={{width: '350px'}}>
-                    <th className='fs-2' style={{width: '350px'}}></th>
-                    {
-                        dataConMesesYanio.filter(f=>f.anio===2025).map(d=>{
-                            return (
-                                <th className='fs-2 text-center text-white' style={{width: '240px'}}>
-                                    {dayjs.utc(`${d.fecha}-15`, 'YYYY-M-DD').format('MMMM')}
-                                </th>
-                            )
-                        })
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td className='sticky-td-598 fs-3 text-white' style={{width: '240px'}}>2026</td>
-                    {
-                        dataConMesesYanio.filter(f=>f.anio===2026).map(d=>{
-                            return (
-                                <td className='fs-2'>
-                                        {d.dataCantidad}
-                                </td>
-                            )
-                        })
-                    }
-                </tr>
-                <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>2025</td>
-                    {
-                        dataConMesesYanio.filter(f=>f.anio===2025).map(d=>{
-                            return (
-                                <td className='fs-2'>
-                                        {d.dataCantidad}
-                                    </td>
-                            )
-                        })
-                    }
-                </tr>
-                <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>2024</td>
-                    {
-                        dataConMesesYanio.filter(f=>f.anio===2024).map(d=>{
-                            return (
-                                <td className='fs-2'>
-                                        {d.dataCantidad}
-                                </td>
-                            )
-                        })
-                    }
-                </tr>
-                {/* <tr>
-                    <td className='sticky-td-598 fs-3 text-white'>TOTAL</td>
-                    {
-                        dataConMesesYanio.map(d=>{
-                            return (
-                                <td>{d.dataVentas.reduce((total, item)=>total+item.montoTotal, 0)}</td>
-                            )
-                        })
-                    }
-                </tr> */}
-            </tbody>
-        </Table>
-    </div>
+    <Esqueleto dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle='VENTAS RENOVACIONES' dataConMesesYanio={dataVentasRenovacionesxMESES} dataMES={MESES} />
+    <Esqueleto dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle='SOCIOS RENOVACIONES' dataConMesesYanio={dataCantidadRenovacionesxMESES} dataMES={MESES}/>
+    <Esqueleto dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle='% ALCANCE RENOVACIONES' dataConMesesYanio={dataAlcanceCaRenovacionesxMESES} dataMES={MESES} />
     </>
   )
+}
+
+function dataTotalFormular(anio=2024) {
+    const hoy = new Date()
+  // Año actual
+const year = hoy.getFullYear();
+
+// Mes actual (0 = enero, 11 = diciembre)
+const month = hoy.getMonth()+ 1;
+const ultimaFecha = new Date(year, month , 0);
+const diaUltimaFecha = ultimaFecha.getDate()
+const diaActual = hoy.getDate()
+if(anio===year){
+  return diaActual==diaUltimaFecha?0:month;
+}else{
+  return 12;
+}
 }

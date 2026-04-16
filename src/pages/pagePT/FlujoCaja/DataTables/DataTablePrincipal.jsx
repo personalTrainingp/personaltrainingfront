@@ -164,7 +164,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
 
 
 
-function dataTotalFormular(anio=2024, data=[]) {
+function dataTotalFormular(anio=2024) {
     const hoy = new Date()
   // Año actual
 const year = hoy.getFullYear();
@@ -179,11 +179,6 @@ if(anio===year){
 }else{
   return 12;
 }
-  // const hoy = new Date()
-  // const mesActual = hoy.getMonth()+1
-  // const anioActual = hoy.getFullYear()
-
-	// return anio===2024?data.filter(f=>f.data?.length !== 0).length:anioActual===anio ? mesActual:12
 }
 
 function buscarPuntosYPonerTransparente(txt='') {
