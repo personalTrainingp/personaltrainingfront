@@ -67,6 +67,14 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
+    {id: 15, header: 'OPERADORES', render:(row)=>{
+      return (
+        <>
+        {/* {row.pago.id_forma_pago} |  */}
+        {row.pago?.parametro_operador?.label_param}
+        </>
+      )
+    }},
     {id: 2, header: 'FORMA DE PAGO', render:(row)=>{
       return (
         <>

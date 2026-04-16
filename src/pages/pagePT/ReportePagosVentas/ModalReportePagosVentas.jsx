@@ -6,6 +6,7 @@ import { useVentasPagosStore } from './useVentasPagosStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 const customCuotas = {
     id_venta: 0,
+    id_operador: 0,
     n_cuotas: 0,
     id_forma_pago: 0, id_tarjeta: 0, id_tipo_tarjeta: 0, id_banco: 0, parcial_monto: 0, n_operacion: 0, fecha_pago: null
 }
@@ -23,6 +24,7 @@ export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
         const { DataGeneral:dataTarjetas, obtenerParametroPorEntidadyGrupo:obtenerTarjetas } = useTerminoStore()
         const { DataGeneral:dataBancos, obtenerParametroPorEntidadyGrupo:obtenerBancos } = useTerminoStore()
         const { DataGeneral:dataTipoTarjetas, obtenerParametroPorEntidadyGrupo:obtenerTipoTarjetas } = useTerminoStore()
+        const { DataGeneral:dataOperador, obtenerParametroPorEntidadyGrupo:obtenerOperador } = useTerminoStore()
     useEffect(() => {
         if(show){
             obtenerPagosVentasxID(id)
@@ -35,10 +37,11 @@ export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
               obtenerTarjetas('formapago', 'tarjeta')
               obtenerBancos('formapago', 'banco')
               obtenerTipoTarjetas('formapago', 'tarje')
+              obtenerOperador('formapago', 'operador')
           }
     }, [show])
     
-    const { formState, id_venta, n_cuotas, id_forma_pago, id_tarjeta, id_tipo_tarjeta, id_banco, parcial_monto, fecha_pago, n_operacion, onInputChange, onResetForm } = useForm(id==0?customCuotas:dataPagosxID)
+    const { formState, id_venta, id_operador, n_cuotas, id_forma_pago, id_tarjeta, id_tipo_tarjeta, id_banco, parcial_monto, fecha_pago, n_operacion, onInputChange, onResetForm } = useForm(id==0?customCuotas:dataPagosxID)
     const onClickSubmit = ()=>{
         if(id!==0){
           updatePagosVentas(id, formState)
@@ -76,6 +79,7 @@ export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
             <InputDate label={'FECHA DE PAGO'} nameInput={'fecha_pago'} onChange={onInputChange} value={fecha_pago} required/>
             <InputText label={'n operacion'} nameInput={'n_operacion'} onChange={onInputChange} value={n_operacion} required/>
             <InputText label={'id venta'} nameInput={'id_venta'} onChange={onInputChange} value={id_venta} required/>
+            <InputSelect label={'OPERADOR'} nameInput={'id_operador'} onChange={onInputChange} value={id_operador} options={dataOperador} required/>
             <InputSelect label={'FORMA DE PAGO'} nameInput={'id_forma_pago'} onChange={onInputChange} value={id_forma_pago} options={dataFormaPago} required/>
             <InputSelect label={'TIPO DE TARJETA'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} value={id_tipo_tarjeta} options={[{value: 37, label: 'TARJETA DE CREDITO'}, {value: 35, label: 'TARJETA DE DEBITO'}]} required/>
             <InputSelect label={'TARJETA'} nameInput={'id_tarjeta'} onChange={onInputChange} value={id_tarjeta} options={dataTarjetas} required/>
