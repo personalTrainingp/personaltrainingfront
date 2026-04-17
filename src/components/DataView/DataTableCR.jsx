@@ -359,7 +359,7 @@ const filtered = useMemo(() => {
 
   return data.filter((row) => {
     const text = buildSearchText(row);
-    console.log({asdf: text});
+    // console.log({asdf: text});
     
     // AND: todas las palabras deben existir en la fila
     return tokens.every((t) => text.includes(t));

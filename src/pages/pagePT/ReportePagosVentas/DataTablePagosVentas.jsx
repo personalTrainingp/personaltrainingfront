@@ -117,6 +117,8 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 8, header: 'COMISION', accessor: 'porcentaje', sortable: true, render:(row)=>{
       return (
         <>
+        {row.porcentaje}
+        <br/>
         <NumberFormatMoney amount=
         {row.pago?.parcial_monto*(row.porcentaje/100)}
         />

@@ -24,6 +24,7 @@ export const DataTableDetalleLeads = ({dataMesesYanio, MESES}) => {
         return {
             ...d,
             monto: <NumberFormatMoney amount={sumaVentasRenovaciones}/>,
+            monto_: sumaVentasRenovaciones
         }
     })
     const dataCantidadRenovacionesxMESES = dataMesesYanio.map(d=>{
@@ -41,7 +42,7 @@ export const DataTableDetalleLeads = ({dataMesesYanio, MESES}) => {
         
         return {
             ...d,
-
+            monto_:!sumaVentasGenerales?0:((sumaVentasRenovaciones/sumaVentasGenerales)*100), 
             monto: !sumaVentasGenerales?'0.00':((sumaVentasRenovaciones/sumaVentasGenerales)*100).toFixed(2),
 
         }
@@ -49,35 +50,35 @@ export const DataTableDetalleLeads = ({dataMesesYanio, MESES}) => {
     
     const dataAlcanceCaRenovacionesxANIO = dataMesesYanio.map(d=>{
         const dataalcanceRenovacionesxMES = dataAlcanceCaRenovacionesxMESES?.filter(f=> f.anio==d.anio)
-        .reduce((total, item)=>total+item.monto, 0)
-        
-        // const dataVentasRenovaciones = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}`==`${d.anio}` && corte.dia.includes(f.fecha.dia))
-        // const sumaVentasRenovaciones = dataVentasRenovaciones.reduce((total, item)=>total+item.montoTotal, 0)
-        // const sumaVentasMesActual = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${anioActual}-${mesActual}`).reduce((total, item)=>total+item.montoTotal, 0)
-        // const sumaVentasGenerales = dataVentas.reduce((total, item)=>total+item.montoTotal, 0)
-        // let mesActivo = false;
-        // if(`${d.anio}-${d.mes}`===`${anioActual}-${mesActual}`){
-        //     if(corte.inicio ===1 && corte.corte<=diaActual){
-        //         mesActivo=true
-        //     }
-        // }
+        .reduce((total, item)=>total+item.monto_, 0)
         return {
             ...d,
-            monto: 0,
-            dataalcanceRenovacionesxMES
+            monto: (dataalcanceRenovacionesxMES/dataTotalFormular(d.anio)).toFixed(2)
+        }
+    })
+    
+    const dataMontoRenovacionesxANIO = dataMesesYanio.map(d=>{
+        const dataalcanceRenovacionesxMES = dataVentasRenovacionesxMESES?.filter(f=> f.anio==d.anio)
+        .reduce((total, item)=>total+item.monto_, 0)
+        return {
+            ...d,
+            monto: <NumberFormatMoney amount={dataalcanceRenovacionesxMES}/>
+        }
+    })
+    const dataCantidadRenovacionesxANIO = dataMesesYanio.map(d=>{
+        const dataalcanceRenovacionesxMES = dataCantidadRenovacionesxMESES?.filter(f=> f.anio==d.anio)
+        .reduce((total, item)=>total+item.monto, 0)
+        return {
+            ...d,
+            monto: dataalcanceRenovacionesxMES
         }
     })
   return (
     <>
-    <pre>
-        {
-            JSON.stringify(dataAlcanceCaRenovacionesxANIO, null, 2)
-        }
-    </pre>
     <FechaCorte corte={corte.corte} inicio={corte.inicio}/>
-    <Esqueleto dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle='VENTAS RENOVACIONES' dataConMesesYanio={dataVentasRenovacionesxMESES} dataMES={MESES} />
-    <Esqueleto dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle='SOCIOS RENOVACIONES' dataConMesesYanio={dataCantidadRenovacionesxMESES} dataMES={MESES}/>
-    <Esqueleto dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle='% ALCANCE RENOVACIONES' dataConMesesYanio={dataAlcanceCaRenovacionesxMESES} dataMES={MESES} />
+    <Esqueleto labelTotalX='TOTAL VENTAS' dataMontoAnio={dataMontoRenovacionesxANIO} labelTitle='VENTAS RENOVACIONES' dataConMesesYanio={dataVentasRenovacionesxMESES} dataMES={MESES} />
+    <Esqueleto labelTotalX='TOTAL SOCIOS' dataMontoAnio={dataCantidadRenovacionesxANIO} labelTitle='SOCIOS RENOVACIONES' dataConMesesYanio={dataCantidadRenovacionesxMESES} dataMES={MESES}/>
+    <Esqueleto labelTotalX='% PROMEDIO' dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle='% ALCANCE RENOVACIONES' dataConMesesYanio={dataAlcanceCaRenovacionesxMESES} dataMES={MESES} />
     </>
   )
 }
@@ -95,6 +96,9 @@ const diaActual = hoy.getDate()
 if(anio===year){
   return diaActual==diaUltimaFecha?0:month;
 }else{
+    if (anio=2024) {
+        return 2;
+    }
   return 12;
 }
 }

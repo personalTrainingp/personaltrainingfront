@@ -3,7 +3,7 @@ import { TrItem } from './TrItem'
 import { Table } from 'react-bootstrap'
 import dayjs from 'dayjs'
 
-export const Esqueleto = ({labelTitle='', dataMES=[], dataConMesesYanio,  dataMontoAnio}) => {
+export const Esqueleto = ({labelTitle='', dataMES=[], dataConMesesYanio,  dataMontoAnio, labelTotalX='', labelTotalY}) => {
   return (
     <div>
     <div className='text-center'>
@@ -26,14 +26,14 @@ export const Esqueleto = ({labelTitle='', dataMES=[], dataConMesesYanio,  dataMo
                             )
                         })
                     }
-                    <td className='fs-1 text-center text-white' style={{width: '240px'}}>%PROMEDIO</td>
+                    <td className='fs-1 text-center text-white' style={{width: '240px'}}>{labelTotalX}</td>
                 </tr>
             </thead>
             <tbody>
                 <TrItem anio={2026} data={dataConMesesYanio.filter(f=>f.anio===2026)} montoAnio={dataMontoAnio.find(f=>f.anio===2026)?.monto}/>
                 <TrItem anio={2025} data={dataConMesesYanio.filter(f=>f.anio===2025)} montoAnio={dataMontoAnio.find(f=>f.anio===2025)?.monto}/>
                 <TrItem anio={2024} data={dataConMesesYanio.filter(f=>f.anio===2024)} montoAnio={dataMontoAnio.find(f=>f.anio===2024)?.monto}/>
-                <TrItem anio={'TOTAL'} data={dataConMesesYanio} montoAnio={dataMontoAnio.find(f=>f.anio===2024)?.monto}/>
+                {/* <TrItem anio={'TOTAL'} data={dataConMesesYanio} montoAnio={dataMontoAnio.find(f=>f.anio===2024)?.monto}/> */}
                 {/* <TrItem anio={'TOTAL'} data={dataConMesesYanio}/> */}
             </tbody>
         </Table>
