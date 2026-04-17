@@ -47,7 +47,7 @@ export const DataTableDetalleLeads = ({dataMesesYanio, MESES, dataVentasRenovaci
         .reduce((total, item)=>total+item.monto_, 0)
         return {
             ...d,
-            monto: (dataalcanceRenovacionesxMES/(d.anio==2025?12:4)).toFixed(2)
+            monto: (dataalcanceRenovacionesxMES/(d.anio==2025?12: d.anio==2024?4:3)).toFixed(2)
         }
     })
     

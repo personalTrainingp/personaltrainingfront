@@ -9,8 +9,8 @@ export const App1 = () => {
         <>
         {/* <AppComparativoConMesRenovaciones titulo={'RENOVACIONES'}/> */}
         {/* <AppComparativoConMes titulo={'TOTALES'}/> */}
-        {/* <AppDetalleMetas/> */}
-        <AppDetalleLeads/>
+        <AppDetalleMetas/>
+        {/* <AppDetalleLeads/> */}
         {/* <AppComparativoDiaxDia/> */}
         </>
     )

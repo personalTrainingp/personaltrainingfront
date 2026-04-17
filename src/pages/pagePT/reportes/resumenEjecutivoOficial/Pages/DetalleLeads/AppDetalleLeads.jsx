@@ -14,8 +14,8 @@ export const AppDetalleLeads = () => {
   return (
     <div>
                 {/* <FechaCorte corte={corte.corte} inicio={corte.inicio}/> */}
-                {/* <DataTableDetalleLeads dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasRenovacionesxEmpresa}/> */}
-                {/* <DataTableDetalleLeads label={'NUEVOS'} dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasNuevosxEmpresa}/> */}
+                <DataTableDetalleLeads label={'RENOVACIONES'} dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasRenovacionesxEmpresa}/>
+                <DataTableDetalleLeads label={'NUEVOS'} dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasNuevosxEmpresa}/>
                 <DataTableDetalleLeads label={'REINSCRIPCIONES'} dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasReixEmpresa}/>
     </div>
   )
