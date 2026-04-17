@@ -1,5 +1,5 @@
 import { PTApi } from '@/common';
-import { DateMaskStr2, MaskDate } from '@/components/CurrencyMask';
+import { DateMaskStr, DateMaskStr2, MaskDate } from '@/components/CurrencyMask';
 import config from '@/config';
 import { useState } from 'react';
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
@@ -7,11 +7,9 @@ import { arrayFacturas } from '@/types/type';
 
 export const useGestVentasStore = () => {
 	const [dataVentasxEmpresa, setdataVentasxEmpresa] = useState([]);
-	const putVentas = async (id_origen, id_venta, obtenerVentaxID) => {
+	const putVentas = async (formState, id_venta, obtenerVentaxID) => {
 		try {
-			await PTApi.put(`/venta/put-venta/${id_venta}`, {
-				id_origen: id_origen,
-			});
+			await PTApi.put(`/venta/put-venta/${id_venta}`, formState);
 			obtenerVentaxID(id_venta);
 		} catch (error) {
 			console.log(error);
@@ -39,7 +37,7 @@ export const useGestVentasStore = () => {
 
 				return {
 					id: v.id,
-					fecha_venta: MaskDate(
+					fecha_venta: DateMaskStr(
 						v.fecha_venta,
 						'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'
 					),

@@ -12,6 +12,7 @@ export const useInformeEjecutivoStore = () => {
 		dataMFMap: [],
 		dataMembresiasRenovaciones: [],
 		dataMembresiasReinscripciones: [],
+		dataMembresiasNuevos: [],
 		renovacionesxEmpl: [],
 	});
 	const [dataLeads, setdataLeads] = useState([]);
@@ -72,6 +73,18 @@ export const useInformeEjecutivoStore = () => {
 				})
 				.filter((f) => f.montoTotal !== 0)
 				.filter((d) => d.id_origen === 692);
+
+			const dataMembresiasNuevos = dataVentasMap
+				.filter((dventa) => dventa.detalle_membresias.length !== 0)
+				.map((v) => {
+					return {
+						...v,
+						montoTotal: v.detalle_membresias[0]?.tarifa_monto,
+						cantidadTotal: 1,
+					};
+				})
+				.filter((f) => f.montoTotal !== 0)
+				.filter((d) => d.id_origen !== 692 && d.id_origen !== 691);
 			const dataProductos17 = dataVentasMap
 				.map((v) => {
 					const detalleFiltrado = v.detalle_productos.filter(
@@ -131,6 +144,9 @@ export const useInformeEjecutivoStore = () => {
 				),
 				dataMembresiasReinscripciones: sumarMontoTotal(
 					agruparPorMesDiaFechaVenta(dataMembresiasReinscripciones)
+				),
+				dataMembresiasNuevos: sumarMontoTotal(
+					agruparPorMesDiaFechaVenta(dataMembresiasNuevos)
 				),
 				renovacionesxEmpl,
 			});

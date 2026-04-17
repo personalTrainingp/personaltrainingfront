@@ -48,6 +48,14 @@ export const AppDetalleMetas = () => {
         <div  className="table-responsive" style={{ width: '100%' }}>
             <DataTableMetas label={'TOTAL'} labelMontoVenta={'VENTA TOTAL AL CORTE'} nombreDeComparativo='CUOTA DEL MES' arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataMetasCuotasMembresias}/>
         </div>
+        <div className='text-center fs-1'>
+            <span style={{fontSize: '70px'}}>
+                NUEVOS
+            </span>
+        </div>
+        <div  className="table-responsive" style={{ width: '100%' }}>
+            <DataTableMetas label={'NUEVOS'} labelMontoVenta={'VENTA NUEVOS'} arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} data={dataVentas.dataMembresiasNuevos?.filter((el) => corte.dia.includes(el.dia))}  dataCuotaMetaDelMes={dataVentas.dataMembresias?.filter((el) => corte.dia.includes(el.dia)).map(d=>{return {...d,meta: d.montoTotal}})}/>
+        </div>
         <div className='text-center'>
             <span style={{fontSize: '70px'}}>
                 RENOVACIONES

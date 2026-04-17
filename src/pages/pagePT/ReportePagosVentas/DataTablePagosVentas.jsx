@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useVentasPagosStore } from './useVentasPagosStore'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
-import { DateMask, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
+import { DateMask, DateMaskStr1, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { Button } from 'primereact/button'
 import { useSelector } from 'react-redux'
 
@@ -158,7 +158,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
       {
         id: 'fechaPago',
         exportHeader: 'FECHA DE PAGO',
-        exportValue: (row) => MaskDate(row.fecha_pago, 'YYYY-MM-DD'),
+        exportValue: (row) => row.fecha_pago_1,
       },
       {
         id: 'id_venta',

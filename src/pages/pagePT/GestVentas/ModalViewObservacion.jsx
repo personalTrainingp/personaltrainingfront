@@ -18,6 +18,11 @@ import { ItemVentaMembresia } from '@/components/ItemsResumenVenta/ItemVentaMemb
 import { ItemVentaTransferenciaMembresia } from '@/components/ItemsResumenVenta/ItemVentaTransferenciaMembresia';
 import Select from 'react-select'
 import { useGestVentasStore } from './useGestVentasStore';
+import { InputDate, InputSelect } from '@/components/InputText';
+const customVenta = {
+    fecha_venta: '',
+    id_origen: 0
+}
 export const ModalViewObservacion = ({onHide, show, id}) => {
     // console.log(data);
     const closeModal = ()=>{
@@ -25,7 +30,9 @@ export const ModalViewObservacion = ({onHide, show, id}) => {
     }
     const { obtenerVentaporId, dataVentaxID, isLoading } = useVentasStore()
     const { putVentas } = useGestVentasStore()
+    const { formState, fecha_venta, id_origen, onInputChange, onResetForm } = useForm(customVenta)
     const [isProcedenciaCustom, setisProcedenciaCustom] = useState(false)
+    const [isOpenCustomFechaVenta, setisOpenCustomFechaVenta] = useState(false)
     const [formOrigen, setformOrigen] = useState({
         id_origen: dataVentaxID[0]?.id_origen,
       })
@@ -52,8 +59,17 @@ export const ModalViewObservacion = ({onHide, show, id}) => {
         setisProcedenciaCustom(false)
     }
     const onSubmitCustomProcedencia = ()=>{
-        putVentas(formOrigen.id_origen, dataVentaxID[0].id, obtenerVentaporId)
+        putVentas(formState, dataVentaxID[0].id, obtenerVentaporId)
         onCloseCustomProcedencia()
+    }
+    const onSubmitCustomFechaVenta = ()=>{
+        putVentas(formState, dataVentaxID[0].id, obtenerVentaporId)
+    }
+    const onCloseCustomFechaVenta = ()=>{
+        setisOpenCustomFechaVenta(false)
+    }
+    const onCustomFechaVenta = ()=>{
+        setisOpenCustomFechaVenta(true)
     }
   return (
     <Dialog visible={show} style={{ width: '50rem', height: '80rem' }} breakpoints={{ '960px': '75vw', '641px': '90vw' }} header={`Venta #${id}`} modal className="p-fluid" footer={productDialogFooter} onHide={closeModal}>
@@ -77,19 +93,7 @@ export const ModalViewObservacion = ({onHide, show, id}) => {
                             {
                                 isProcedenciaCustom?(
                                     <>
-                                        <Select
-                                            onChange={(e)=>handleChange(e, 'id_origen')}
-                                            name={"id_origen"}
-                                            placeholder={'Seleccionar el origen'}
-                                            className="react-select"
-                                            classNamePrefix="react-select"
-                                            options={arrayOrigenDeCliente}
-                                            value={arrayOrigenDeCliente.find(
-                                                (option) => option.value === formOrigen
-                                            )}
-                                            //   defaultValue={optionsAlmacenProd[id_almacen]}
-                                            required
-                                        ></Select>
+                                        <InputSelect label={'Seleccione el origen'} nameInput={'id_origen'} onChange={onInputChange} required options={arrayOrigenDeCliente} value={id_origen}/>
                                     <i className='pi pi-check hover-text cursor-pointer ml-4' onClick={onSubmitCustomProcedencia}></i>
                                     <i className='pi pi-times hover-text cursor-pointer ml-4' onClick={onCloseCustomProcedencia}></i>
                                     </>
@@ -108,7 +112,20 @@ export const ModalViewObservacion = ({onHide, show, id}) => {
                     </li>
                     <li className='mb-4'>
                         <span>Fecha en la que realizo la venta:</span>
-                        <span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>{FormatoDateMask(dataVentaxID[0]?.fecha_venta, 'D [de] MMMM [del] YYYY')}</span>
+                        {
+                            isOpenCustomFechaVenta?(
+                                <>
+                                    <InputDate label={'FECHA DE VENTA'} nameInput={'fecha_venta'} type='datetime-local' onChange={onInputChange} value={fecha_venta} required />
+                                    <i className='pi pi-check hover-text cursor-pointer ml-4' onClick={onSubmitCustomFechaVenta}></i>
+                                    <i className='pi pi-times hover-text cursor-pointer ml-4' onClick={onCloseCustomFechaVenta}></i>
+                                </>
+                            ):(
+                                <>
+                                <span style={{textAlign: 'left', float: 'right', paddingRight: '40px'}}>{FormatoDateMask(dataVentaxID[0]?.fecha_venta, 'D [de] MMMM [del] YYYY')}</span>
+                                    <i className='pi pi-pencil hover-text cursor-pointer ml-4' onClick={onCustomFechaVenta}></i>
+                                </>
+                            )
+                        }
                     </li>
                     <li className='mb-4'>
                         <span>Observacion:</span>

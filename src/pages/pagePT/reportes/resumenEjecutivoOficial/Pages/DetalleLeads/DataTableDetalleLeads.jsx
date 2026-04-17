@@ -48,26 +48,32 @@ export const DataTableDetalleLeads = ({dataMesesYanio, MESES}) => {
     })
     
     const dataAlcanceCaRenovacionesxANIO = dataMesesYanio.map(d=>{
-        const dataVentas = dataVentasGeneral?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${d.anio}-${d.mes}` && corte.dia.includes(f.fecha.dia))
+        const dataalcanceRenovacionesxMES = dataAlcanceCaRenovacionesxMESES?.filter(f=> f.anio==d.anio)
+        .reduce((total, item)=>total+item.monto, 0)
         
-        const dataVentasRenovaciones = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}`==`${d.anio}` && corte.dia.includes(f.fecha.dia))
-        const sumaVentasRenovaciones = dataVentasRenovaciones.reduce((total, item)=>total+item.montoTotal, 0)
-        const sumaVentasMesActual = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${anioActual}-${mesActual}`).reduce((total, item)=>total+item.montoTotal, 0)
-        const sumaVentasGenerales = dataVentas.reduce((total, item)=>total+item.montoTotal, 0)
-        let mesActivo = false;
-        if(`${d.anio}-${d.mes}`===`${anioActual}-${mesActual}`){
-            if(corte.inicio ===1 && corte.corte<=diaActual){
-                mesActivo=true
-            }
-        }
+        // const dataVentasRenovaciones = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}`==`${d.anio}` && corte.dia.includes(f.fecha.dia))
+        // const sumaVentasRenovaciones = dataVentasRenovaciones.reduce((total, item)=>total+item.montoTotal, 0)
+        // const sumaVentasMesActual = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${anioActual}-${mesActual}`).reduce((total, item)=>total+item.montoTotal, 0)
+        // const sumaVentasGenerales = dataVentas.reduce((total, item)=>total+item.montoTotal, 0)
+        // let mesActivo = false;
+        // if(`${d.anio}-${d.mes}`===`${anioActual}-${mesActual}`){
+        //     if(corte.inicio ===1 && corte.corte<=diaActual){
+        //         mesActivo=true
+        //     }
+        // }
         return {
             ...d,
-            monto: !sumaVentasGenerales?'0.00':<NumberFormatMoney amount={sumaVentasRenovaciones/dataTotalFormular(d.anio)}/>,
-            montoMesActual: sumaVentasMesActual
+            monto: 0,
+            dataalcanceRenovacionesxMES
         }
     })
   return (
     <>
+    <pre>
+        {
+            JSON.stringify(dataAlcanceCaRenovacionesxANIO, null, 2)
+        }
+    </pre>
     <FechaCorte corte={corte.corte} inicio={corte.inicio}/>
     <Esqueleto dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle='VENTAS RENOVACIONES' dataConMesesYanio={dataVentasRenovacionesxMESES} dataMES={MESES} />
     <Esqueleto dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle='SOCIOS RENOVACIONES' dataConMesesYanio={dataCantidadRenovacionesxMESES} dataMES={MESES}/>

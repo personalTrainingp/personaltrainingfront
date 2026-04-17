@@ -33,6 +33,7 @@ export const Esqueleto = ({labelTitle='', dataMES=[], dataConMesesYanio,  dataMo
                 <TrItem anio={2026} data={dataConMesesYanio.filter(f=>f.anio===2026)} montoAnio={dataMontoAnio.find(f=>f.anio===2026)?.monto}/>
                 <TrItem anio={2025} data={dataConMesesYanio.filter(f=>f.anio===2025)} montoAnio={dataMontoAnio.find(f=>f.anio===2025)?.monto}/>
                 <TrItem anio={2024} data={dataConMesesYanio.filter(f=>f.anio===2024)} montoAnio={dataMontoAnio.find(f=>f.anio===2024)?.monto}/>
+                <TrItem anio={'TOTAL'} data={dataConMesesYanio} montoAnio={dataMontoAnio.find(f=>f.anio===2024)?.monto}/>
                 {/* <TrItem anio={'TOTAL'} data={dataConMesesYanio}/> */}
             </tbody>
         </Table>
