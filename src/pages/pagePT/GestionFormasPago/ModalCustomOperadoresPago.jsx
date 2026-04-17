@@ -36,14 +36,15 @@ export const ModalCustomOperadoresPago = ({show, onHide, isCopy, id}) => {
   }, [id])
   const { formState, onInputChange, onResetForm, fecha_ingreso, id_operador, id_forma_pago, id_tipo_tarjeta, id_marca_tarjeta, id_banco, cuota, porcentaje_comision } = useForm(id!==0?dataOperadorxID:customOperadoresPago)
   const onSubmit = ()=>{
-    if(id==0){
-      postGestionOperadoresPago(formState)
+    if(isCopy){
+            const {  id, ...valores } = formState;
+      postGestionOperadoresPago(valores)
     }else{
-      if(isCopy){
+      if(id==0){
         postGestionOperadoresPago(formState)
-        return;
+      }else{
+        updateGestionOperadoresPago(id, formState)
       }
-      updateGestionOperadoresPago(id, formState)
     }
     onCancel()
   }
