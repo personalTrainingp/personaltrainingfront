@@ -79,7 +79,7 @@ export const DataTableGestionOperadoresPago = ({onOpenModalGestionOperadoresPago
       id: 6, header: '% COMISION', render: (row)=>{
         return (
           <>
-          {row.porcentaje_comision}
+          {row.porcentaje_comision.toFixed(2)}
           </>
         )
       }
