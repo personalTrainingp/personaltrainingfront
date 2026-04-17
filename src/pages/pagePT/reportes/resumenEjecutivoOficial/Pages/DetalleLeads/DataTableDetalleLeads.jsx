@@ -7,17 +7,11 @@ import { useSelector } from 'react-redux'
 import { FechaCorte } from '@/components/RangeCalendars/FechaRange'
 import { Esqueleto } from './Esqueleto'
 
-export const DataTableDetalleLeads = ({dataMesesYanio, MESES}) => {
+export const DataTableDetalleLeads = ({dataMesesYanio, MESES, dataVentasRenovacionesxEmpresa, dataVentasGeneral, label=''}) => {
         const { corte } = useSelector((e) => e.DATA);
         const fechaActual = new Date()
         const anioActual = fechaActual.getFullYear()
         const mesActual = fechaActual.getMonth()+1
-        const diaActual = fechaActual.getDate()
-        const diasDelMes = new Date(anioActual,mesActual,0).getDate();
-        const { obtenerVentasxEmpresa, dataVentasRenovacionesxEmpresa, dataVentasGeneral } = useGestVentasStore()
-        useEffect(() => {
-            obtenerVentasxEmpresa(598)
-        }, [])
     const dataVentasRenovacionesxMESES = dataMesesYanio.map(d=>{
         const dataVentasRenovaciones = dataVentasRenovacionesxEmpresa?.filter(f=> `${f.fecha.anio}-${f.fecha.mes}`==`${d.anio}-${d.mes}` && corte.dia.includes(f.fecha.dia))
         const sumaVentasRenovaciones = dataVentasRenovaciones.reduce((total, item)=>total+item.montoTotal, 0)
@@ -53,7 +47,7 @@ export const DataTableDetalleLeads = ({dataMesesYanio, MESES}) => {
         .reduce((total, item)=>total+item.monto_, 0)
         return {
             ...d,
-            monto: (dataalcanceRenovacionesxMES/dataTotalFormular(d.anio)).toFixed(2)
+            monto: (dataalcanceRenovacionesxMES/(d.anio==2025?12:4)).toFixed(2)
         }
     })
     
@@ -76,9 +70,9 @@ export const DataTableDetalleLeads = ({dataMesesYanio, MESES}) => {
   return (
     <>
     <FechaCorte corte={corte.corte} inicio={corte.inicio}/>
-    <Esqueleto labelTotalX='TOTAL VENTAS' dataMontoAnio={dataMontoRenovacionesxANIO} labelTitle='VENTAS RENOVACIONES' dataConMesesYanio={dataVentasRenovacionesxMESES} dataMES={MESES} />
-    <Esqueleto labelTotalX='TOTAL SOCIOS' dataMontoAnio={dataCantidadRenovacionesxANIO} labelTitle='SOCIOS RENOVACIONES' dataConMesesYanio={dataCantidadRenovacionesxMESES} dataMES={MESES}/>
-    <Esqueleto labelTotalX='% PROMEDIO' dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle='% ALCANCE RENOVACIONES' dataConMesesYanio={dataAlcanceCaRenovacionesxMESES} dataMES={MESES} />
+    <Esqueleto labelTotalX='TOTAL VENTAS' dataMontoAnio={dataMontoRenovacionesxANIO} labelTitle={`VENTAS ${label}`} dataConMesesYanio={dataVentasRenovacionesxMESES} dataMES={MESES} />
+    <Esqueleto labelTotalX='TOTAL SOCIOS' dataMontoAnio={dataCantidadRenovacionesxANIO} labelTitle={`SOCIOS ${label}`} dataConMesesYanio={dataCantidadRenovacionesxMESES} dataMES={MESES}/>
+    <Esqueleto labelTotalX='% PROMEDIO' dataMontoAnio={dataAlcanceCaRenovacionesxANIO} labelTitle={`% ALCANCE ${label}`} dataConMesesYanio={dataAlcanceCaRenovacionesxMESES} dataMES={MESES} />
     </>
   )
 }
@@ -97,7 +91,7 @@ if(anio===year){
   return diaActual==diaUltimaFecha?0:month;
 }else{
     if (anio=2024) {
-        return 2;
+        return 4;
     }
   return 12;
 }

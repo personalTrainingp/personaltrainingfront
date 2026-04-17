@@ -7,6 +7,8 @@ import { arrayFacturas } from '@/types/type';
 export const useGestVentasStore = () => {
 	const [dataVentasRenovacionesxEmpresa, setdataVentasRenovacionesxEmpresa] = useState([]);
 	const [dataVentasGeneral, setdataVentasGeneral] = useState([]);
+	const [dataVentasReixEmpresa, setdataVentasReixEmpresa] = useState([]);
+	const [dataVentasNuevosxEmpresa, setdataVentasNuevosxEmpresa] = useState([]);
 	const putVentas = async (id_origen, id_venta, obtenerVentaxID) => {
 		try {
 			await PTApi.put(`/venta/put-venta/${id_venta}`, {
@@ -62,12 +64,23 @@ export const useGestVentasStore = () => {
 			setdataVentasRenovacionesxEmpresa(
 				agruparPorFecha(ventaMap.filter((f) => f.id_origen === 691))
 			);
+			setdataVentasNuevosxEmpresa(
+				agruparPorFecha(ventaMap.filter((f) => f.id_origen !== 691 && f.id_origen !== 692))
+			);
+			setdataVentasReixEmpresa(agruparPorFecha(ventaMap.filter((f) => f.id_origen === 692)));
 			setdataVentasGeneral(agruparPorFecha(ventaMap));
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	return { putVentas, obtenerVentasxEmpresa, dataVentasRenovacionesxEmpresa, dataVentasGeneral };
+	return {
+		putVentas,
+		obtenerVentasxEmpresa,
+		dataVentasRenovacionesxEmpresa,
+		dataVentasGeneral,
+		dataVentasReixEmpresa,
+		dataVentasNuevosxEmpresa,
+	};
 };
 const agruparPorFecha = (data = []) => {
 	const map = {};
