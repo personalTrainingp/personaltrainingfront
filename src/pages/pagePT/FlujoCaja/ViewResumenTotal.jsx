@@ -255,7 +255,16 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
-                      <td className={`text-change text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> <div className='text-change' onClick={()=>onOpenModalTableItems(e.dataGasto)}><NumberFormatMoney amount={-e.sumaGastos}/></div></td>
+                      <td className={`text-change text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> 
+                        <div className='text-change' onClick={()=>onOpenModalTableItems(e.dataGasto)}>
+                          <NumberFormatMoney amount={-e.sumaGastos}/>
+                          <br/>
+                          {
+                            `${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` &&
+                          <NumberFormatMoney amount={-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)/(encontrarFechas(anioElegido)+1)}/>
+                          }
+                        </div>
+                      </td>
                     </React.Fragment>
                     )
                   })
@@ -373,7 +382,7 @@ function encontrarFechas(anio, a=0) {
   const hoy = new Date()
   // Año actual
 const year = hoy.getFullYear();
-console.log({asdf: a});
+// console.log({asdf: a});
 
 // Mes actual (0 = enero, 11 = diciembre)
 const month = hoy.getMonth()+ 1;

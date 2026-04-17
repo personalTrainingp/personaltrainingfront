@@ -39,6 +39,9 @@ export const ModalCustomOperadoresPago = ({show, onHide, isCopy, id}) => {
     if(id==0){
       postGestionOperadoresPago(formState)
     }else{
+      if(isCopy){
+        postGestionOperadoresPago(formState)
+      }
       updateGestionOperadoresPago(id, formState)
     }
     onCancel()

@@ -88,15 +88,16 @@ export const DataTableGestionOperadoresPago = ({onOpenModalGestionOperadoresPago
       id: 10, header: '', render: (row)=>{
         return (
           <>
-            <Button icon="pi pi-pen" onClick={()=>onOpenModalOperadoresPago(row.id)} rounded outlined severity="danger"  className='mr-2'/>
-            <Button icon="pi pi-trash" onClick={()=>onOpenModalOperadoresPago(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
+            <Button icon="pi pi-copy" onClick={()=>onOpenModalOperadoresPago(row.id, true)} rounded outlined severity="danger"  className='mr-2'/>
+            <Button icon="pi pi-pencil" onClick={()=>onOpenModalOperadoresPago(row.id, false)} rounded outlined severity="danger"  className='mr-2'/>
+            <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'/>
           </>
         )
       }
     },
   ]
-  const onOpenModalOperadoresPago = (id)=>{
-    onOpenModalGestionOperadoresPago(id, false)
+  const onOpenModalOperadoresPago = (id, isCopy=false)=>{
+    onOpenModalGestionOperadoresPago(id, isCopy)
   }
   const onDeleteOperadoresPago = ()=>{
     
