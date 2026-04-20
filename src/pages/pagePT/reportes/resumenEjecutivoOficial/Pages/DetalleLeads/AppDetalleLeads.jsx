@@ -14,9 +14,9 @@ export const AppDetalleLeads = () => {
   return (
     <div>
                 {/* <FechaCorte corte={corte.corte} inicio={corte.inicio}/> */}
-                <DataTableDetalleLeads label={'RENOVACIONES'} dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasRenovacionesxEmpresa}/>
-                <DataTableDetalleLeads label={'NUEVOS'} dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasNuevosxEmpresa}/>
-                <DataTableDetalleLeads label={'REINSCRIPCIONES'} dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasReixEmpresa}/>
+                <DataTableDetalleLeads label2024={4} label2026={2} label={'RENOVACIONES'} dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasRenovacionesxEmpresa}/>
+                <DataTableDetalleLeads label2024={4} label2026={2} label={'NUEVOS'} dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasNuevosxEmpresa}/>
+                <DataTableDetalleLeads label2024={4} label2026={2} label={'REINSCRIPCIONES'} dataMesesYanio={dataMesesYanio} MESES={dataMeses} dataVentasGeneral={dataVentasGeneral} dataVentasRenovacionesxEmpresa={dataVentasReixEmpresa}/>
     </div>
   )
 }

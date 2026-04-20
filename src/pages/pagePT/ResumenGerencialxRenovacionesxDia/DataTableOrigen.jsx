@@ -19,7 +19,7 @@ export const DataTableOrigen = ({renovaciones, mes, anio}) => {
           </th>
         </tr>
         <tr>
-          <th className='fs-3'>RENOVACIONES DEL MES</th>
+          <th className='fs-3'>VENTAS DE RENOVACIONES</th>
           <td className='fs-3'>{renovaciones?.length}</td>
           <td className='fs-3'><NumberFormatMoney amount={renovaciones?.reduce((acc, curr) => acc + curr.monto, 0)}/></td>
         </tr>

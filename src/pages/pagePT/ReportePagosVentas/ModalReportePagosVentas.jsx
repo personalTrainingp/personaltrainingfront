@@ -8,6 +8,7 @@ const customCuotas = {
     id_venta: 0,
     id_operador: 0,
     n_cuotas: 0,
+    es_nacional: 1,
     id_forma_pago: 0, id_tarjeta: 0, id_tipo_tarjeta: 0, id_banco: 0, parcial_monto: 0, n_operacion: 0, fecha_pago: null
 }
 export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
@@ -41,7 +42,7 @@ export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
           }
     }, [show])
     
-    const { formState, id_venta, id_operador, n_cuotas, id_forma_pago, id_tarjeta, id_tipo_tarjeta, id_banco, parcial_monto, fecha_pago, n_operacion, onInputChange, onResetForm } = useForm(id==0?customCuotas:dataPagosxID)
+    const { formState, id_venta, id_operador, n_cuotas, es_nacional, id_forma_pago, id_tarjeta, id_tipo_tarjeta, id_banco, parcial_monto, fecha_pago, n_operacion, onInputChange, onResetForm } = useForm(id==0?customCuotas:dataPagosxID)
     const onClickSubmit = ()=>{
         if(id!==0){
           updatePagosVentas(id, formState)
@@ -80,6 +81,7 @@ export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
             <InputText label={'n operacion'} nameInput={'n_operacion'} onChange={onInputChange} value={n_operacion} required/>
             <InputText label={'id venta'} nameInput={'id_venta'} onChange={onInputChange} value={id_venta} required/>
             <InputSelect label={'OPERADOR'} nameInput={'id_operador'} onChange={onInputChange} value={id_operador} options={dataOperador} required/>
+            <InputSelect label={'ES NACIONAL'} nameInput={'es_nacional'} onChange={onInputChange} value={es_nacional} options={[{value: 0, label: 'INTERNACIONAL'}, {value: 1, label: 'NACIONAL'}]} required/>
             <InputSelect label={'FORMA DE PAGO'} nameInput={'id_forma_pago'} onChange={onInputChange} value={id_forma_pago} options={dataFormaPago} required/>
             <InputSelect label={'TIPO DE TARJETA'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} value={id_tipo_tarjeta} options={[{value: 37, label: 'TARJETA DE CREDITO'}, {value: 35, label: 'TARJETA DE DEBITO'}]} required/>
             <InputSelect label={'TARJETA'} nameInput={'id_tarjeta'} onChange={onInputChange} value={id_tarjeta} options={dataTarjetas} required/>

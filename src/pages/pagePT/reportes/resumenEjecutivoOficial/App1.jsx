@@ -4,13 +4,16 @@ import { AppDetalleLeads } from './Pages/DetalleLeads/AppDetalleLeads'
 import { AppComparativoDiaxDia } from './Pages/ComparativoDiaxDia/AppComparativoDiaxDia'
 import { AppComparativoConMesRenovaciones } from './Pages/ComparativoConMes/AppComparativoConMesRenovaciones'
 import { AppDetalleMetas } from './Pages/DetalleMetas/AppDetalleMetas'
+import { AppReporteSeguimientoInactivo } from './Pages/AppReporteSeguimientoInactivo/AppReporteSeguimientoInactivo'
 export const App1 = () => {
     return (
         <>
         {/* <AppComparativoConMesRenovaciones titulo={'RENOVACIONES'}/> */}
         {/* <AppComparativoConMes titulo={'TOTALES'}/> */}
-        <AppDetalleMetas/>
-        <AppDetalleLeads/>
+        {/* <AppDetalleMetas/>
+        */}
+        {/* <AppDetalleLeads/>  */}
+        <AppReporteSeguimientoInactivo/>
         {/* <AppComparativoDiaxDia/> */}
         </>
     )

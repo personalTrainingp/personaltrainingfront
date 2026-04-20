@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import { FechaCorte } from '@/components/RangeCalendars/FechaRange'
 import { Esqueleto } from './Esqueleto'
 
-export const DataTableDetalleLeads = ({dataMesesYanio, MESES, dataVentasRenovacionesxEmpresa, dataVentasGeneral, label=''}) => {
+export const DataTableDetalleLeads = ({dataMesesYanio, MESES, dataVentasRenovacionesxEmpresa, dataVentasGeneral, label='', label2024, label2026}) => {
         const { corte } = useSelector((e) => e.DATA);
         const fechaActual = new Date()
         const anioActual = fechaActual.getFullYear()

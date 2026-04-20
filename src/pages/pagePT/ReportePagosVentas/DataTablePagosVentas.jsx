@@ -92,10 +92,16 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
       )
     }},
     {id: 4, header: 'BANCO', render:(row)=>{
+      const id_banco = row.pago?.parametro_banco?.id_param
+      // 259 
       return (
         <>
           {/* {row.pago.id_banco} |  */}
-          {row.pago?.parametro_banco?.label_param}
+          {row.pago?.parametro_banco?.label_param}  
+          <br/>
+          <span className='text-change'>
+          {(id_banco!==259 || id_banco==0)?( row.pago?.es_nacional?'NACIONAL':'INTERNACIONAL'):''}
+          </span>
         </>
       )
     }},
