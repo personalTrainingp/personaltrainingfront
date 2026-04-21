@@ -41,9 +41,12 @@ export const DataTableGestionOperadoresPago = ({onOpenModalGestionOperadoresPago
     },
     {
       id: 3, header: 'TIPOS DE TARJETA', render: (row)=>{
+        const idtipotarjeta = row.TipoTarjetaLabel?.id_param
         return (
           <>
-          {row.TipoTarjetaLabel?.label_param}
+          {
+            idtipotarjeta?row.TipoTarjetaLabel?.label_param:'-'
+          }
           </>
         )
       }
