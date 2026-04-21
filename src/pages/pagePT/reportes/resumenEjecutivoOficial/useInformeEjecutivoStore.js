@@ -201,7 +201,7 @@ export const useInformeEjecutivoStore = () => {
 		try {
 			const { data } = await PTApi.get('/seguimiento/');
 			console.log({ data });
-			const dataAlter = data.seguimiento.map((m) => {
+			const dataAlter = data.dataSeguimiento.map((m) => {
 				const fecha_venta = {
 					dia: new Date(m.venta.tb_ventum.fecha_venta).getDate(),
 					mes: new Date(m.venta.tb_ventum.fecha_venta).getMonth()+1,

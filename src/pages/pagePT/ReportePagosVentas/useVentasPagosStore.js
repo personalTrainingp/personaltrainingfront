@@ -130,7 +130,7 @@ export const useVentasPagosStore = () => {
 						identificador,
 						fecha_pago_1: DateMaskString(
 							pago?.fecha_pago,
-							'dddd DD [DE] MMMM [DEL] YYYY'
+							'dddd DD MMMM YYYY'
 						),
 						identificador,
 						porcentaje:

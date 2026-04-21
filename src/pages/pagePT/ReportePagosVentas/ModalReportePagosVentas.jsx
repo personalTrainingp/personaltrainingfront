@@ -83,7 +83,7 @@ export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
             <InputSelect label={'OPERADOR'} nameInput={'id_operador'} onChange={onInputChange} value={id_operador} options={dataOperador} required/>
             <InputSelect label={'PROCEDENCIA'} nameInput={'es_nacional'} onChange={onInputChange} value={es_nacional} options={[{value: 0, label: 'INTERNACIONAL'}, {value: 1, label: 'NACIONAL'}]} required/>
             <InputSelect label={'FORMA DE PAGO'} nameInput={'id_forma_pago'} onChange={onInputChange} value={id_forma_pago} options={dataFormaPago} required/>
-            <InputSelect label={'TIPO DE TARJETA'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} value={id_tipo_tarjeta} options={[{value: 37, label: 'TARJETA DE CREDITO'}, {value: 35, label: 'TARJETA DE DEBITO'}]} required/>
+            <InputSelect label={'TIPO DE TARJETA'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} value={id_tipo_tarjeta} options={[{value: 37, label: 'TARJETA DE CREDITO'}, {value: 35, label: 'TARJETA DE DEBITO'}, {value: 0, label: '-'}]} required/>
             <InputSelect label={'TARJETA'} nameInput={'id_tarjeta'} onChange={onInputChange} value={id_tarjeta} options={dataTarjetas} required/>
             <InputSelect label={'BANCO'} nameInput={'id_banco'} onChange={onInputChange} value={id_banco} options={dataBancos} required/>
             <InputText label={'N CUOTAS'} nameInput={'n_cuotas'} onChange={onInputChange} value={n_cuotas} required/>

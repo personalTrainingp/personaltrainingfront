@@ -27,6 +27,9 @@ export const AppTermSistemas = () => {
                   <TabPanel header={'FORMA DE PAGO'}>
                     <ViewTerminos titulo={'FORMA DE PAGO'} grupo={'formapago'} entidad={'formapago'}/>
                   </TabPanel>
+                  <TabPanel header={'TIPO DE TARJETA'}>
+                    <ViewTerminos titulo={'TIPO DE TARJETA'} grupo={'tipotarjeta'} entidad={'formapago'}/>
+                  </TabPanel>
                   <TabPanel header={'TARJETAS'}>
                     <ViewTerminos titulo={'TARJETAS'} grupo={'tarjeta'} entidad={'formapago'}/>
                   </TabPanel>

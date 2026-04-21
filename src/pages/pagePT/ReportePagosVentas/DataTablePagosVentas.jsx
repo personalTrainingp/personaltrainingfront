@@ -4,6 +4,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { DateMask, DateMaskStr1, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { Button } from 'primereact/button'
 import { useSelector } from 'react-redux'
+import { concat } from 'lodash'
 
 export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
   const { obtenerPagosVentas } = useVentasPagosStore()
@@ -17,14 +18,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
   }
   
   const columns = [
-    {id: 7, header: 'FECHA DE VENTA', render:(row)=>{
-      return (
-        <>
-
-        {row.fecha_pago_1}
-        </>
-      )
-    }},
+    
     {
       id: 15, header: 'ID VENTA', render: (row)=>{
       return (
@@ -34,10 +28,19 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
       )
     }
     },
+    {id: 7, header: 'FECHA DE VENTA', render:(row)=>{
+      return (
+        <>
+        {row.fecha_pago_1}
+        </>
+      )
+    }},
     {id: 14, header: 'NOMBRE DEL CLIENTE', render: (row)=>{
       return (
         <>
-        {row.tb_cliente?.nombre_cli} {row.tb_cliente?.apPaterno_cli} {row.tb_cliente?.apMaterno_cli}
+        {`
+        ${row.tb_cliente?.nombre_cli} ${row.tb_cliente?.apPaterno_cli} ${row.tb_cliente?.apMaterno_cli}
+        `}
         </>
       )
     }},
@@ -108,24 +111,33 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 5, header: 'CUOTAS', render:(row)=>{
       return (
         <>
-        {row.pago?.n_cuotas}
+        <div className='text-center'>
+          <span className='fs-2'>
+            {row.pago?.n_cuotas}
+          </span>
+        </div>
         </>
       )
     }},
-    {id: 6, header: '%', accessor: 'porcentaje', sortable: true, render:(row)=>{
+    {id: 6, header: <>% <br/> OPERADOR</>, accessor: 'porcentaje', sortable: true, render:(row)=>{
       return (
         <>
-        
+        <div className='text-center'>
+        <span className='fs-2'>
         {row.porcentaje.toFixed(2)}
+          </span>
+        </div>
         </>
       )
     }},
     {id: 8, header: 'COMISION', accessor: 'porcentaje', sortable: true, render:(row)=>{
       return (
         <>
-        <NumberFormatMoney amount=
-        {row.pago?.parcial_monto*(row.porcentaje/100)}
-        />
+        <div className='text-center'>
+          <NumberFormatMoney amount=
+          {row.pago?.parcial_monto*(row.porcentaje/100)}
+          />
+        </div>
         </>
       )
     }},
