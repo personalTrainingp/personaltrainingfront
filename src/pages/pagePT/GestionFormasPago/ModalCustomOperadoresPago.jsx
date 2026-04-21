@@ -79,7 +79,7 @@ export const ModalCustomOperadoresPago = ({show, onHide, isCopy, id}) => {
             </Col>
             <Col lg={12}>
               <div className='m-1'>
-                <InputSelect label={'TIPO DE TARJETA'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} value={id_tipo_tarjeta} options={[{value: 35, label: 'DEBITO'}, {value: 37, label: 'CREDITO'}]}/>
+                <InputSelect label={'TIPO DE TARJETA'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} value={id_tipo_tarjeta} options={[{value: 37, label: 'TARJETA DE CREDITO'}, {value: 35, label: 'TARJETA DE DEBITO'}, {value: 0, label: '-'}]}/>
               </div>
             </Col>
             <Col lg={12}>
