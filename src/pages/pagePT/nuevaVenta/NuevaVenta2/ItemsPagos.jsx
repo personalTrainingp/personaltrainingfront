@@ -44,6 +44,7 @@ export const ItemsPagos = ({dataPagos}) => {
           cuotas={e.n_cuotas}
           fechaPay={e.fecha_pago} 
           id_banco={obtenerLabelPorValue(dataparametro, e.id_banco)}
+          id_operador={obtenerLabelPorValue(dataparametro, e.id_operador)}
           id_tipo_tarjeta={obtenerLabelPorValue(dataparametro, e.id_tipo_tarjeta)}
           id_tarjeta={obtenerLabelPorValue(dataparametro, e.id_tarjeta)}
           id_forma_pago={obtenerLabelPorValue(dataparametro, e.id_forma_pago)}

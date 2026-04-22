@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { onSetDetalleCli } from '@/store/uiNuevaVenta/uiNuevaVenta';
 import Select from 'react-select';
 import { MultiOpcionSelect } from '../GestInventario/components/ComponentSelect';
+import { useNuevaVentaStore } from './useNuevaVentaStore';
 
 const DatosCliente = ({dataCliente}) => {
 	const dispatch = useDispatch()
@@ -15,6 +16,7 @@ const DatosCliente = ({dataCliente}) => {
 	const [clienteSelect, setClienteSelect] = useState({})
 	const [EmpleadoSelect, setEmpleadoSelect] = useState({})
 	const [TipoTransacSelect, setTipoTransacSelect] = useState({})
+	const { obtenerUltimaVentaxComprobante, ultimaComprobante } = useNuevaVentaStore()
 	const { formState: formStateCliente, 
 		id_cli, 
 		id_empl, 
@@ -22,11 +24,15 @@ const DatosCliente = ({dataCliente}) => {
 		numero_transac, 
 		id_origen, 
 		observacion,
-		onInputChangeReact, onInputChange } = useForm(dataCliente)
+		onInputChangeReact, onInputChange, onInputChangeFunction } = useForm(dataCliente)
 	useEffect(() => {
 		obtenerParametrosClientes()
 		obtenerParametrosVendedores()
 	}, [])
+	useEffect(() => {
+		obtenerUltimaVentaxComprobante(id_tipo_transaccion)
+	}, [id_tipo_transaccion])
+	
 	useEffect(() => {
 		dispatch(onSetDetalleCli({
 			...formStateCliente, 
@@ -66,6 +72,9 @@ const DatosCliente = ({dataCliente}) => {
 	}
 	console.log(DataClientes);
 	
+	useEffect(() => {
+		onInputChangeFunction('numero_transac', `${id_tipo_transaccion==699?'B001-00000':'F001-000000'}${Number(ultimaComprobante?.numero_transac)+1}`)
+	}, [formStateCliente])
 	return (
 		<>
 			<form>
@@ -73,7 +82,7 @@ const DatosCliente = ({dataCliente}) => {
 					<Card.Header>
 						<Card.Title>
 							<span className='fs-3 text-change'>
-								ASESOR
+								ASESOR COMERCIAL
 							</span>
 						</Card.Title>
 					</Card.Header>
@@ -174,7 +183,10 @@ const DatosCliente = ({dataCliente}) => {
 												className="form-control"
 												placeholder="numero de comprobante"
 												value={numero_transac}
-												onChange={onInputChange}
+												onChange={(e)=>{
+													
+													onInputChange(e)
+												}}
 											/>
 										</div>
 									</Col>
