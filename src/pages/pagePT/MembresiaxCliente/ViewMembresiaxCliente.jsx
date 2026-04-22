@@ -96,7 +96,7 @@ export const ViewMembresiaxCliente = () => {
         },
         {
           id: 'fecha_v',
-          exportHeader: 'fecha de venta',
+          exportHeader: 'DIA Y FECHA',
           exportValue: (row) => MaskDate(row.fecha_venta_v, 'dddd DD [DE] MMMM [del] YYYY [a las] h:mm A')
         },
         {

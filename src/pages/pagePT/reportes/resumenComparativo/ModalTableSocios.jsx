@@ -80,7 +80,7 @@ export const ModalTableSocios = ({ dataArrayGrouped,clickDataSocios, avatarProgr
                                 {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>Tarifas</div></th> */}
                                 {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de inicio de la membresia</div></th> */}
                                 {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de fin de membresia</div></th> */}
-                                <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>Fecha de venta</div></th>
+                                <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>DIA Y FECHA</div></th>
                                 <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>PROCEDENCIA</div></th>
                                 {/* <th className='text-white p-1 fs-3'>%</th> */}
                                 {/* <th className='text-white p-1 fs-3'><div className=''>TICKET M.</div></th> */}
@@ -130,7 +130,7 @@ export const ModalTableSocios = ({ dataArrayGrouped,clickDataSocios, avatarProgr
                                 {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>Tarifas</div></th> */}
                                 {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de inicio de la membresia</div></th> */}
                                 {/* <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>fecha de fin de membresia</div></th> */}
-                                <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>Fecha de venta</div></th>
+                                <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>DIA Y FECHA</div></th>
                                 <th className='text-white p-1 fs-3'><div className='d-flex justify-content-center'>PROCEDENCIA</div></th>
                                 {/* <th className='text-white p-1 fs-3'>%</th> */}
                                 {/* <th className='text-white p-1 fs-3'><div className=''>TICKET M.</div></th> */}

@@ -45,7 +45,7 @@ export const PanelMembresias = ({id_cli}) => {
                         </div>
                         <div style={{width: '75%'}} className='d-flex flex-column'>
                             <span>
-                                FECHA DE VENTA: <strong>{fecha_venta}</strong>
+                                DIA Y FECHA: <strong>{fecha_venta}</strong>
                             </span>
                             <span>
                                 FECHA DE INICIO: <strong>{fecha_inicio}</strong>
