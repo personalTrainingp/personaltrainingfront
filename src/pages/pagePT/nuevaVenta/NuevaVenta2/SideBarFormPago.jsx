@@ -11,6 +11,7 @@ import Select from 'react-select'
 import { useTerminologiaPagos } from './useTerminologiaPagos'
 import { InputNumber, InputSelect } from '@/components/InputText'
 const registerPago = {
+    id_operador: 0,
     id_formaPago: 0,
     id_tipo_tarjeta: 0,
     id_tarjeta: 0,
@@ -23,8 +24,7 @@ const registerPago = {
 }
 export const SideBarFormPago = ({show, onHide}) => {
     const dispatch = useDispatch()
-    const {formState, monto_pago, id_forma_pago, n_operacion, id_tipo_tarjeta, id_tarjeta, id_banco, n_cuotas, onInputChange, onResetForm} = useForm(registerPago)
-    const [formaPagoSelect, setFormaPagoSelect] = useState(0)
+    const {formState, monto_pago, id_forma_pago, id_operador, n_operacion, id_tipo_tarjeta, id_tarjeta, id_banco, n_cuotas, onInputChange, onResetForm} = useForm(registerPago)
     const [dataTipoTarjeta, setdataTipoTarjeta] = useState([])
     const [dataTarjetas, setdataTarjetas] = useState([])
     const [dataBancos, setdataBancos] = useState([])
@@ -40,6 +40,7 @@ export const SideBarFormPago = ({show, onHide}) => {
         obtenerFormaDePagosActivos,
         dataFormaPagoActivo
 	} = useTerminoStore()
+  const { DataGeneral:dataOperadores, obtenerParametroPorEntidadyGrupo:obtenerOperadores } = useTerminoStore()
   const { dataFormaPagos, obtenerFormasPagos } = useTerminologiaPagos()
 	const { obtenerTipoCambioPorFecha, tipocambio } = useTipoCambioStore();
     const cancelModal = () =>{
@@ -56,11 +57,14 @@ export const SideBarFormPago = ({show, onHide}) => {
             label_tipo_tarjeta: dataTipoTarjeta.find(tt=>tt.id_tipo_tarjeta===id_tipo_tarjeta)?.label_tipo_tarjeta||'',
             label_tarjeta: dataTarjetas.find(t=>t.id_tarjeta===id_tarjeta)?.label,
             n_cuotas: n_cuotas,
+            label_operador: '',
             // label: `${formaPagoSelect.label}${BancoSelect.label?' / '.concat(BancoSelect.label):''}${TipoTarjetaSelect.label?' / '.concat(TipoTarjetaSelect.label):''}${TarjetaSelect.label?' / '.concat(TarjetaSelect.label):''}`, 
             value: `${formState.id_forma_pago}`}))
         cancelModal()
     }
     useEffect(() => {
+
+        obtenerOperadores('formapago', 'operador')
         obtenerFormaDePagosActivos()
         obtenerTipoCambioPorFecha(new Date())
         obtenerFormasPagos()
@@ -87,8 +91,7 @@ export const SideBarFormPago = ({show, onHide}) => {
       setdataTipoTarjeta(tipoTarjetas)
     }, [id_forma_pago])
     
-    useEffect(() => {
-      // if()          n         
+    useEffect(() => {    
       const tarjetas = dataTipoTarjeta.find(tt=>tt.id_tipo_tarjeta===id_tipo_tarjeta)?.dataTarjeta || [];
       setdataTarjetas(tarjetas)
     }, [id_forma_pago, id_tipo_tarjeta])
@@ -99,23 +102,6 @@ export const SideBarFormPago = ({show, onHide}) => {
       setdataBancos(dataBancos)
     }, [id_forma_pago, id_tipo_tarjeta, id_tarjeta])
     console.log(dataFormaPagoActivo);
-    
-    // useEffect(() => {
-    //   const bancos = dataFormaPagoActivo.find(f=>f.id_forma_pago===id_forma_pago)?.dataBancos||[]
-    //   setdataBancos(bancos)
-    // }, [id_forma_pago])
-  //   useEffect(() => {
-  //     const bancos = dataFormaPagoActivo.find(e=>e.id_empresa==id_enterprice)||[]
-      
-  //     // setgrupoGasto(grupos)
-  // }, [id_tipoGasto])
-  // useEffect(() => {
-  //     const conceptos = dataParametrosGastos.find(e=>e.id_empresa==id_enterprice)?.tipo_gasto?.find(e=>e.id_tipoGasto===id_tipoGasto)?.grupos.find(g=>g.value==grupo)?.conceptos||[]
-  //     console.log(conceptos);
-      
-  //     setgastoxGrupo(conceptos)
-  // }, [grupo])
-    
   return (
     <div className="card flex justify-content-center">
         <Sidebar visible={show} position='left' onHide={onHide} style={{width: '350px'}}>
@@ -133,6 +119,9 @@ export const SideBarFormPago = ({show, onHide}) => {
                           required
                           />
                       </div>
+                        <div className='mb-4'>
+                          <InputSelect label={'Operador:'} nameInput={'id_operador'} onChange={onInputChange} options={dataOperadores} value={id_operador} required/>
+                        </div>
                         <div className='mb-4'>
                           <InputSelect label={'Forma de pago:'} nameInput={'id_forma_pago'} onChange={onInputChange} options={formaPago} value={id_forma_pago} required/>
                         </div>
@@ -153,8 +142,6 @@ export const SideBarFormPago = ({show, onHide}) => {
                         </div>
                         }
                         
-                        {/* id_tipo_tarjeta: 37,  */}
-                        {/* dataBancos=>BBVA: 50, DINNER: 52  */}
                         {
                           id_tipo_tarjeta==37 && (id_banco==50 || id_banco==52) && (
                             <div className='mb-4'>
@@ -162,9 +149,6 @@ export const SideBarFormPago = ({show, onHide}) => {
                             </div>
                           )
                         }
-                        {/* <pre>
-                          {JSON.stringify(dataBancos, null, 2)}
-                        </pre> */}
                       <div className='mb-4'>
                         <label>Monto de pago:</label>
                         <input 
@@ -176,17 +160,6 @@ export const SideBarFormPago = ({show, onHide}) => {
                           required
                           />
                       </div>
-                      {/* <div className='mb-2'>
-                        <label>Observacion del pago:</label>
-                        <textarea
-                          className='form-control'
-                          id='observacion_pago'
-                          name='observacion_pago'
-                          value={observacion_pago}
-                          onChange={onInputChange}
-                          required
-                          />
-                      </div> */}
                 <Button className='mx-2' type='submit'>Registrar pago</Button>
                 <a onClick={cancelModal} className='mx-2' style={{cursor: 'pointer', color: 'red'}}>Cancelar</a>
             </form>

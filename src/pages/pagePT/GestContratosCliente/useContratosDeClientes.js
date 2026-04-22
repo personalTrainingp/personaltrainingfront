@@ -12,11 +12,9 @@ export const useContratosDeClientes = () => {
 	const obtenerContratosDeClientes = async () => {
 		try {
 			setisLoading(false);
-			dispatch(onSetDataView([]));
 			const { data } = await PTApi.get('/venta/obtener-contratos-clientes/598');
-			console.log(data.datacontratosConMembresias, 'asdf');
-
-			const dataContratos = data.datacontratosConMembresias.map((dc) => {
+			const dataContratos = data.datacontratosConMembresias?.map((dc) => {
+				const membresia = dc.detalle_ventaMembresia[0];
 				return {
 					id: dc.id,
 					tb_cliente: dc.tb_cliente,
@@ -26,7 +24,9 @@ export const useContratosDeClientes = () => {
 					asesor: dc.tb_empleado.nombres_apellidos_empl,
 					detalle_ventaMembresia: dc.detalle_ventaMembresia,
 					createdAt: dc.createdAt,
-					pgmYsem: `${dc.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm} / ${dc.detalle_ventaMembresia[0].tb_semana_training.semanas_st} SEMANAS`,
+					pgmYsem: `${membresia?.tb_ProgramaTraining?.name_pgm} / ${membresia.tb_semana_training.semanas_st} SEMANAS`,
+					firmado: `${membresia.tarifa_monto !== 0 && membresia.firma_cli == null ? '' : 'SI'}`,
+					conFoto: dc.images_cli?.length === 0 ? 'NO' : 'SI',
 				};
 			});
 			dispatch(onSetDataView(dataContratos));

@@ -1,4 +1,6 @@
 import { PTApi } from '@/common';
+import { DateMaskStr, DateMaskStr1, DateMaskString } from '@/components/CurrencyMask';
+import dayjs from 'dayjs';
 import { useState } from 'react';
 
 export const useSeguimientoStore = () => {
@@ -11,18 +13,35 @@ export const useSeguimientoStore = () => {
 					.filter((f) => f.id_cli === 6934)[0]
 					.cli_seguimiento.sort((a, b) => b.id_membresia - a.id_membresia),
 			});
-			const dataAlter = data.dataSeguimiento.map((m) => {
-				return {
-					nombres_cli: m.nombre_cli,
-					apPaterno_cli: m.apPaterno_cli,
-					apMaterno_cli: m.apMaterno_cli,
-					id_cli: m.id_cli,
-					fecha_inicio: m?.cli_seguimiento.sort(
+			const dataAlter = data.dataSeguimiento
+				.map((m) => {
+					const ultimaMembresia = m?.cli_seguimiento.sort(
 						(a, b) => b.id_membresia - a.id_membresia
-					)[0]?.venta?.fecha_inicio,
-					...m.cli_seguimiento[0],
-				};
-			});
+					)[0];
+					return {
+						nombres_cli: m.nombre_cli,
+						apPaterno_cli: m.apPaterno_cli,
+						apMaterno_cli: m.apMaterno_cli,
+						id_cli: m.id_cli,
+						fecha_inicio: ultimaMembresia?.venta?.fecha_inicio,
+						...m.cli_seguimiento[0],
+						fecha_vencimiento_: DateMaskStr1(ultimaMembresia.fecha_vencimiento),
+						fecha_vencimiento: DateMaskStr1(ultimaMembresia.fecha_vencimiento),
+					};
+				})
+				.map((m) => {
+					return {
+						...m,
+						countDias: diasEntreFechas(
+							DateMaskStr1(new Date()),
+							DateMaskStr1(m.fecha_vencimiento_)
+						),
+						fecha_vencimiento_: DateMaskStr(
+							m?.fecha_vencimiento_,
+							'dddd DD [DE] MMMM [DEL] YYYY'
+						),
+					};
+				});
 			setdataSeguimientoxFecha(dataAlter);
 		} catch (error) {
 			console.log(error);
@@ -43,23 +62,13 @@ export const useSeguimientoStore = () => {
 	};
 };
 
-function agruparPorCliente(data) {
-	const resultado = Object.values(
-		data.reduce((acc, item) => {
-			const { id_cli } = item;
+const diasEntreFechas = (inicio, fin) => {
+	const f1 = dayjs(inicio).startOf('day');
+	const f2 = dayjs(fin).startOf('day');
 
-			if (!acc[id_cli]) {
-				acc[id_cli] = {
-					id_cli,
-					items: [],
-				};
-			}
+	const diff = f2.diff(f1, 'day');
 
-			acc[id_cli].items.push(item);
+	if (diff === 0) return 1;
 
-			return acc;
-		}, {})
-	);
-
-	return resultado;
-}
+	return diff > 0 ? diff + 1 : diff - 1;
+};

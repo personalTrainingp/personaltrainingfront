@@ -204,12 +204,12 @@ export const useInformeEjecutivoStore = () => {
 			const dataAlter = data.dataSeguimiento.map((m) => {
 				const fecha_venta = {
 					dia: new Date(m.venta.tb_ventum.fecha_venta).getDate(),
-					mes: new Date(m.venta.tb_ventum.fecha_venta).getMonth()+1,
+					mes: new Date(m.venta.tb_ventum.fecha_venta).getMonth() + 1,
 					anio: new Date(m.venta.tb_ventum.fecha_venta).getFullYear(),
 				};
 				const fecha_vencimiento = {
 					dia: new Date(m.fecha_vencimiento).getDate(),
-					mes: new Date(m.fecha_vencimiento).getMonth()+1,
+					mes: new Date(m.fecha_vencimiento).getMonth() + 1,
 					anio: new Date(m.fecha_vencimiento).getFullYear(),
 				};
 				return {
@@ -220,7 +220,7 @@ export const useInformeEjecutivoStore = () => {
 				};
 			});
 			const dataMesesYanio = generarMesYanio(
-				'2024-01-01 15:45:47.6640000 +00:00',
+				'2024-09-01 15:45:47.6640000 +00:00',
 				`${new Date().getFullYear()}-12-15 15:45:47.6640000 +00:00`
 			);
 			const grupos = agruparYOrdenar(dataAlter);

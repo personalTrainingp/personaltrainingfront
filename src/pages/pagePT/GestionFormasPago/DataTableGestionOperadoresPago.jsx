@@ -25,6 +25,7 @@ export const DataTableGestionOperadoresPago = ({onOpenModalGestionOperadoresPago
       id: 2, header: 'OPERADOR', render: (row)=>{
         return (
           <>
+          {/* {row.OperadorLabel?.id_param}| */}
           {row.OperadorLabel?.label_param}
           </>
         )
@@ -34,6 +35,7 @@ export const DataTableGestionOperadoresPago = ({onOpenModalGestionOperadoresPago
       id: 3, header: 'FORMAS DE PAGO', render: (row)=>{
         return (
           <>
+          {/* {row.FormaPagoLabel?.id_param}| */}
           {row.FormaPagoLabel?.label_param}
           </>
         )
@@ -44,6 +46,7 @@ export const DataTableGestionOperadoresPago = ({onOpenModalGestionOperadoresPago
         const idtipotarjeta = row.TipoTarjetaLabel?.id_param
         return (
           <>
+          {/* {row.TipoTarjetaLabel?.id_param}| */}
           {
             idtipotarjeta?row.TipoTarjetaLabel?.label_param:'-'
           }
@@ -55,6 +58,7 @@ export const DataTableGestionOperadoresPago = ({onOpenModalGestionOperadoresPago
       id: 4, header: 'MARCAS DE TARJETA', render: (row)=>{
         return (
           <>
+          {/* {row.TarjetaLabel?.id_param}| */}
           {row.TarjetaLabel?.label_param}
           </>
         )
@@ -64,6 +68,7 @@ export const DataTableGestionOperadoresPago = ({onOpenModalGestionOperadoresPago
       id: 4, header: 'BANCOS', render: (row)=>{
         return (
           <>
+          {/* {row.BancoLabel?.id_param}| */}
           {row.BancoLabel?.label_param}
           </>
         )

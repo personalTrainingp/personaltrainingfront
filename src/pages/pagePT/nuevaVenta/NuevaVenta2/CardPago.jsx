@@ -5,7 +5,6 @@ import { ItemsPagos } from './ItemsPagos'
 import { useImpuestosStore } from '@/hooks/hookApi/useImpuestosStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { SideBarFormPago } from './SideBarFormPago'
-import { impuestosBancos } from '../../ReportePagosVentas/useVentasPagosStore'
 import { InputButton } from '@/components/InputText'
 
 export const sumarTarifas = (venta) =>{
@@ -45,7 +44,7 @@ export const CardPago = ({venta, dataPagos}) => {
 	}, [])
 	const dataConComisionBanco = dataPagos.map((pago) => {
 						const identificador = `${pago?.id_forma_pago}|${pago?.id_tipo_tarjeta}|${pago?.id_banco}|${pago?.n_cuotas}`;
-						const porcentaje = impuestosBancos.find(
+						const porcentaje = [].find(
 									(f) =>
 										`${f.id_forma_pago}|${f.id_tipo_tarjeta}|${f.id_banco}|${f.n_cuotas}` ===
 										identificador
@@ -55,7 +54,6 @@ export const CardPago = ({venta, dataPagos}) => {
 							monto_pago: pago.monto_pago,
 							porcentaje,
 							comisionBanco: pago.monto_pago * (porcentaje.porcentaje_con_igv/100) ||0,
-
 						};
 					})
 					const renta = (sumaTarifas/1.18)*0.03

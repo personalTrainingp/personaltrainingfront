@@ -1,1 +1,1 @@
-export {ContratosCliente as default} from './ContratosCliente'
+export {AppContratosClientes as default} from './AppContratosClientes'

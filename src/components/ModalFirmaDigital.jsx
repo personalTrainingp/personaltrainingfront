@@ -29,11 +29,8 @@ export const ModalFirmaDigital = ({idVenta, idCli, show, onHide}) => {
             base64firma,
             `firma_cli${idCli}.png`
         );
-        
-        console.log(file);
         agregarFirmaEnContratoCliente(file, idVenta, idCli)
         dispatch(onSetBase64Firma(file))
-        // dispatch(onSetFirmaPgm(base64firma))
         onHide()
     }
     

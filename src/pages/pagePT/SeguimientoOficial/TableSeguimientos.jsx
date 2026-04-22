@@ -29,17 +29,20 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                 return (
                     <>
                     <span>
-                        {row.cli?.nombre_cli} {row.cli?.apPaterno_cli} {row.cli?.apMaterno_cli}
+                        {`
+                        ${row?.nombres_cli} ${row?.apPaterno_cli} ${row?.apMaterno_cli}
+                        `}
                     </span>
                     </>
                 )
             }},
             {id: 2, header: <>PROGRAMA/SESIONES/<br/>HORARIO</>},
-            {id: 3, header: <>DIAS <br/> VENCIDOS</>, render: (row)=>{
+            {id: 3, header: <>DIAS <br/> VENCIDOS</>, accessor: 'countDias', sortable: true, render: (row)=>{
                 return (
                     <>
                     <span>
-                        {DateMaskStr(row?.fecha_vencimiento, 'dddd DD [DE] MMMM [DEL] YYYY')}
+                        {row.countDias}
+                        {/* {DateMaskStr(row?.fecha_vencimiento, 'dddd DD [DE] MMMM [DEL] YYYY')} */}
                     </span>
                     </>
                 )
@@ -48,7 +51,8 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                 return (
                     <>
                     <span>
-                        {DateMaskStr(row?.fecha_vencimiento, 'dddd DD [DE] MMMM [DEL] YYYY')}
+                        {row.fecha_vencimiento_}
+                        {/* {(row?.fecha_vencimiento_)} */}
                     </span>
                     </>
                 )
@@ -64,7 +68,7 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
             {
                 id: 'cliente',
                 exportHeader: 'CLIENTE',
-                exportValue: (row)=>`${row.cli?.nombre_cli} ${row.cli?.apPaterno_cli} ${row.cli?.apMaterno_cli}`
+                exportValue: (row)=>`${row.nombres_cli} ${row.apPaterno_cli} ${row.apMaterno_cli}`
             },
             {
                 id: 'diasvencidos',
@@ -73,14 +77,10 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
             },
         ]
   return (
-    <div>ss
+    <div>
         <span>
             {title} TOTAL 
-            
         </span>
-            <pre>
-                {JSON.stringify(data, null, 2)}
-            </pre>
         <DataTableCR
             exportExtraColumns={columnsExports}
             columns={columns}

@@ -58,6 +58,24 @@
   z-index: 20;
   background: transparent !important; /* el fondo real lo pone ::before */
 }
+/* columna fija */
+.tabla-egresos .sticky-top-598{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.tabla-egresos .sticky-top-598-100{
+  position: sticky;
+  top: 100px;
+  z-index: 20;
+}
+/* columna fija */
+.tabla-egresos .sticky-top-598-white{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: transparent !important; /* el fondo real lo pone ::before */
+}
 
 /* columna fija */
 .tabla-egresos .sticky-td-598-white{
