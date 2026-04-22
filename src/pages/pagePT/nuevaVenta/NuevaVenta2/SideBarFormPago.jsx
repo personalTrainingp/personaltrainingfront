@@ -21,7 +21,7 @@ const registerPago = {
     observacion_pago: '',
     n_operacion: '',
     n_cuotas: 0,
-    es_nacional: 0
+    es_nacional: 1
 }
 export const SideBarFormPago = ({show, onHide}) => {
     const dispatch = useDispatch()
