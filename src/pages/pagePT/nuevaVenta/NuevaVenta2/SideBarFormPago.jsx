@@ -20,11 +20,12 @@ const registerPago = {
     monto_pago: '1',
     observacion_pago: '',
     n_operacion: '',
-    n_cuotas: 0
+    n_cuotas: 0,
+    es_nacional: 0
 }
 export const SideBarFormPago = ({show, onHide}) => {
     const dispatch = useDispatch()
-    const {formState, monto_pago, id_forma_pago, id_operador, n_operacion, id_tipo_tarjeta, id_tarjeta, id_banco, n_cuotas, onInputChange, onResetForm} = useForm(registerPago)
+    const {formState, monto_pago, es_nacional, id_forma_pago, id_operador, n_operacion, id_tipo_tarjeta, id_tarjeta, id_banco, n_cuotas, onInputChange, onResetForm} = useForm(registerPago)
     const [dataTipoTarjeta, setdataTipoTarjeta] = useState([])
     const [dataTarjetas, setdataTarjetas] = useState([])
     const [dataBancos, setdataBancos] = useState([])
@@ -51,6 +52,7 @@ export const SideBarFormPago = ({show, onHide}) => {
         e.preventDefault()
         dispatch(onAddOneDetallePago({
             ...formState, 
+            es_nacional,
             monto_pago: parseFloat(monto_pago.replace(',', '')), 
             label_forma_pago: formaPago.find(e=>e.value===id_forma_pago).label,
             label_banco: dataBancos.find(b=>b.id_banco===id_banco)?.label_banco||0,
@@ -119,6 +121,9 @@ export const SideBarFormPago = ({show, onHide}) => {
                           required
                           />
                       </div>
+                        <div className='mb-4'>
+                          <InputSelect label={'PROCENDENCIA:'} nameInput={'es_nacional'} onChange={onInputChange} options={[{value: 1, label: 'NACIONAL'}, {value: 0, label: 'INTERNACIONAL'}]} value={es_nacional} required/>
+                        </div>
                         <div className='mb-4'>
                           <InputSelect label={'Operador:'} nameInput={'id_operador'} onChange={onInputChange} options={dataOperadores} value={id_operador} required/>
                         </div>
