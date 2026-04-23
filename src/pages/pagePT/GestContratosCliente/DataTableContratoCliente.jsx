@@ -176,8 +176,8 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
             rowData.detalle_ventaMembresia[0].tarifa_monto!==0 && (
               <>
                 {rowData.detalle_ventaMembresia[0].firma_cli==null?(
-                  <div className='text-danger' onClick={()=>obtenerContratoxIDVENTA(rowData.id)}>
-                    adfasd
+                  <div className='fs-4' onClick={()=>obtenerContratoxIDVENTA(rowData.id)}>
+                    CONTRATO
                   </div>
                 ):<a className='text-black underline' href={`${config.API_IMG.FILE_CONTRATOS_CLI}${rowData.detalle_ventaMembresia[0].contrato_x_serv?.name_image}`}>CONTRATO</a>}
               </>

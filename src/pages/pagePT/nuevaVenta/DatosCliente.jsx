@@ -70,9 +70,13 @@ const DatosCliente = ({dataCliente}) => {
         )
 		onInputChangeReact(e, 'id_cli')
 	}
+
 	useEffect(() => {
-		onInputChangeFunction('numero_transac', `${id_tipo_transaccion==699?'B001-00000':'F001-000000'}${Number(ultimaComprobante?.numero_transac?.split('-')[1])+1}`)
-	}, [formStateCliente])
+		onInputChangeReact({value: `${id_tipo_transaccion==699?'B001-00000':'F001-000000'}${Number(ultimaComprobante?.numero_transac?.split('-')[1])+1}`}, 'numero_transac')
+	}, [id_tipo_transaccion])
+	const inputChangeTipoComprobante = (e)=>{
+		onInputChangeReact(e, 'id_tipo_transaccion')
+	}
 	return (
 		<>
 			<form>
@@ -155,7 +159,7 @@ const DatosCliente = ({dataCliente}) => {
 										<div className="mb-2">
 											<Select
 												onChange={(e) =>
-													onInputChangeReact(e, 'id_tipo_transaccion')
+													inputChangeTipoComprobante(e)
 												}
 												name="id_tipo_transaccion"
 												placeholder={'Tipo de comprobante'}

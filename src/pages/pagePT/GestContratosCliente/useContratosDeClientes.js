@@ -11,7 +11,19 @@ export const useContratosDeClientes = () => {
 	const [dataAvataresxUID, setdataAvataresxUID] = useState({});
 	const obtenerContratoxIDVENTA = async (idventa) => {
 		try {
-			const { data } = await PTApi.get(`/venta/obtener-contrato/${idventa}`);
+			const { data } = await PTApi.get(`/venta/obtener-contrato/${idventa}`, {
+				responseType: 'blob', // Establecer el tipo de respuesta como blob (archivo binario)
+			});
+			// Crear un objeto URL para el archivo PDF
+			const url = window.URL.createObjectURL(new Blob([data]));
+			// Crear un enlace <a> temporal y simular un clic para descargar el archivo PDF
+			const link = document.createElement('a');
+			link.href = url;
+			link.setAttribute('download', 'CONTRATO-CLIENTE.pdf');
+			document.body.appendChild(link);
+			link.click();
+			// Liberar el objeto URL
+			window.URL.revokeObjectURL(url);
 		} catch (error) {
 			console.log(error);
 		}

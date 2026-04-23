@@ -52,6 +52,8 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 		return value.replace(/,/g, '');
 	};
 	const onInputChangeReact = (value, name) => {
+		console.log({ [name]: value?.value });
+
 		setFormState({
 			...formState,
 			[name]: Array.isArray(value) ? value : value?.value,
