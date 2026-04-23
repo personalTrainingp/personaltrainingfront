@@ -9,7 +9,7 @@ import { generarMesYanio } from './helpers/generarMesYanio'
 export const AppFlujoCaja = () => {
   return (
     <div>
-      <PageBreadcrumb title={'FLUJO DE CAJA aa'}/>
+      <PageBreadcrumb title={'FLUJO DE CAJA'}/>
       <ColorEmpresa
         childrenChange={
           <TabView>

@@ -4,6 +4,9 @@ import React from 'react'
 import { Table } from 'react-bootstrap';
 
 export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems}) => {
+  const fecha = new Date()
+  const anioActual = fecha.getFullYear()
+  const mesActual = fecha.getMonth()+1
   const dataAlter = fechas.map((f, index, array)=>{
       const dataTotal = itemsxDias.find(i=>i.mes===f.mes && i.anio===f.anio)??{}
       const dataPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1423) || [];
@@ -70,8 +73,18 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                         <div >
                           {
                             (sumaMontoMensual!=='0.00' || sumaMontoMensual1424==='0.00') && (
-                              <div onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1423)}>
+                              <div 
+                              onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1423)}
+                              >
                               {sumaMontoMensual}
+                              <br/>
+                              {`${f.anio}-${f.mes}` ===`${anioActual}-${mesActual}` && (c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(anio, dataAlter))>sumaMontoMensual && (
+                                <div className='text-orange'>
+                                  <NumberFormatMoney 
+                                  amount={(c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(anio, dataAlter))-sumaMontoMensual}/>
+                                </div>
+                              )
+                              }
                                 <br/> 
                               </div>
                             )

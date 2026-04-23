@@ -261,7 +261,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                           <br/>
                           {
                             `${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` &&
-                          <NumberFormatMoney amount={-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)/(encontrarFechas(anioElegido)+1)}/>
+                          <NumberFormatMoney amount={-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/>
                           }
                         </div>
                       </td>

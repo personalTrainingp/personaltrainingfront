@@ -110,7 +110,7 @@ export const SideBarFormPago = ({show, onHide}) => {
             <h3 className='mb-4'>Registrar Pago</h3>
             <form onSubmit={submitFormaPago}>
                       <div className='mb-4'>
-                        <label>N operacion*:</label>
+                        <label>N autorizacion*:</label>
                         <input 
                           type='text' 
                           className='form-control'
@@ -125,48 +125,36 @@ export const SideBarFormPago = ({show, onHide}) => {
                           <InputSelect label={'Operador:'} nameInput={'id_operador'} onChange={onInputChange} options={dataOperadores} value={id_operador} required/>
                         </div>
                         <div className='mb-4'>
-                          <InputSelect label={'PROCENDENCIA:'} nameInput={'es_nacional'} onChange={onInputChange} options={[{value: 1, label: 'NACIONAL'}, {value: 0, label: 'INTERNACIONAL'}]} value={es_nacional} required/>
-                        </div>
-                        <div className='mb-4'>
                           <InputSelect label={'Forma de pago:'} nameInput={'id_forma_pago'} onChange={onInputChange} options={formaPago} value={id_forma_pago} required/>
                         </div>
-                       {(dataTipoTarjeta.length>0) &&
                         <div className='mb-4'>
                           <InputSelect label={'Tipo de tarjetas:'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} options={tipoTarjeta} value={id_tipo_tarjeta} required/>
                         </div>
-                      }
-                      
-                      {(dataTarjetas.length>0) &&
+                        <div className='mb-4'>
+                          <InputSelect label={'PROCENDENCIA:'} nameInput={'es_nacional'} onChange={onInputChange} options={[{value: 1, label: 'NACIONAL'}, {value: 0, label: 'INTERNACIONAL'}]} value={es_nacional} required/>
+                        </div>
                         <div className='mb-4'>
                           <InputSelect label={'TARJETA:'} nameInput={'id_tarjeta'} onChange={onInputChange} options={tarjetas} value={id_tarjeta} required/>
                         </div>
-                        }
-                        {(dataBancos.length>0) &&
                         <div className='mb-4'>
                           <InputSelect label={'BANCO:'} nameInput={'id_banco'} onChange={onInputChange} options={bancos} value={id_banco} required/>
                         </div>
-                        }
-                        
-                        {
-                          id_tipo_tarjeta==37 && (id_banco==50 || id_banco==52) && (
-                            <div className='mb-4'>
-                              <InputNumber label={'CUOTAS'} nameInput={'n_cuotas'} onChange={onInputChange} value={n_cuotas} required/>
-                            </div>
-                          )
-                        }
-                      <div className='mb-4'>
-                        <label>Monto de pago:</label>
-                        <input 
-                          className='form-control'
-                          id='monto_pago'
-                          name='monto_pago'
-                          value={monto_pago}
-                          onChange={e=>onInputChange(CurrencyMask(e))}
-                          required
-                          />
-                      </div>
-                <Button className='mx-2' type='submit'>Registrar pago</Button>
-                <a onClick={cancelModal} className='mx-2' style={{cursor: 'pointer', color: 'red'}}>Cancelar</a>
+                        <div className='mb-4'>
+                          <InputNumber label={'CUOTAS'} nameInput={'n_cuotas'} onChange={onInputChange} value={n_cuotas} required/>
+                        </div>
+                        <div className='mb-4'>
+                          <label>Monto de pago:</label>
+                          <input 
+                            className='form-control'
+                            id='monto_pago'
+                            name='monto_pago'
+                            value={monto_pago}
+                            onChange={e=>onInputChange(CurrencyMask(e))}
+                            required
+                            />
+                        </div>
+                        <Button className='mx-2' type='submit'>Registrar pago</Button>
+                        <a onClick={cancelModal} className='mx-2' style={{cursor: 'pointer', color: 'red'}}>Cancelar</a>
             </form>
         </Sidebar>
     </div>
