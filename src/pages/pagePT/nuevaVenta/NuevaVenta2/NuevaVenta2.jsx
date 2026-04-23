@@ -5,10 +5,7 @@ import { CardCliente } from './CardCliente'
 import { CardVenta } from './CardVenta'
 import { CardPago } from './CardPago'
 import { useSelector } from 'react-redux'
-import { useImpuestosStore } from '@/hooks/hookApi/useImpuestosStore'
-import { Divider } from 'primereact/divider'
 import { Toast } from 'primereact/toast';
-import { Button } from 'primereact/button'
 
 export const NuevaVenta2 = () => {
 

@@ -70,10 +70,8 @@ const DatosCliente = ({dataCliente}) => {
         )
 		onInputChangeReact(e, 'id_cli')
 	}
-	console.log(DataClientes);
-	
 	useEffect(() => {
-		onInputChangeFunction('numero_transac', `${id_tipo_transaccion==699?'B001-00000':'F001-000000'}${Number(ultimaComprobante?.numero_transac)+1}`)
+		onInputChangeFunction('numero_transac', `${id_tipo_transaccion==699?'B001-00000':'F001-000000'}${Number(ultimaComprobante?.numero_transac?.split('-')[1])+1}`)
 	}, [formStateCliente])
 	return (
 		<>

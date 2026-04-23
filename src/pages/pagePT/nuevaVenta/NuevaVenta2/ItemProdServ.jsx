@@ -13,37 +13,21 @@ export const ItemProdServ = ({Icantidad, Itotal, Inombre, Iabrev, icono, icowid,
                           <Link
                             to=""
                             className=" text-center text-muted d-flex flex-column justify-content-between  align-items-center"
-                                                        // style={{backgroundImage:  `url(${icono})`, position: 'absolute', bottom: '0px', backgroundPosition: 'center', backgroundSize: '70%', width: icowid, height: icohe, backgroundRepeat: 'no-repeat'}}
                             data-bs-toggle="modal"
                             data-bs-target="#exampleModal"
                             style={{ position: 'relative', height: '100%', width: '100%' }} // Para que el contenido dentro del Link se posicione relativamente
                           >
-                            {/* <div 
-                                style={{
-                                                backgroundImage: `url(${icono})`,
-                                                opacity: '.6',
-                                                // position: 'absolute', // Para que el fondo se posicione de forma absoluta
-                                                zIndex: 1, // Fondo detrás
-                                                top: 0,
-                                                width: '140px', // Tamaño completo del contenedor
-                                                height: '220px', 
-                                                backgroundSize: 'cover', // Asegura que el fondo cubra el área sin deformarse
-                                                backgroundPosition: 'center'
-                                }}></div> */}
                                 <div className='m-0' style={{height: '40px'}}>
                                   <img src={icono} width={icowid} height={icohe} className='m-0'/>
                                 </div>
                                                         <span style={{height: '80px', marginTop: '10px'}}>
                                                             <h4 
-                                                              // style={{fontSize: '15px'}} 
                                                               className="mt-1 mb-0 d-block fs-3 text-primary font-bolder">
                                                                 {Inombre}
                                                             </h4>
                                                         </span>
                             {/* <h4 className="font-15 mt-1 mb-0 d-block">{Inombre}</h4> */}
                           </Link>
-                      {/* <Card.Body className='d-flex flex-column justify-content-center align-items-center'>
-                      </Card.Body> */}
                     </Card>
                   </Col>
                 </Row>

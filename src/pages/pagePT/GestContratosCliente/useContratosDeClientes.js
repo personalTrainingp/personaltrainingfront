@@ -9,6 +9,13 @@ export const useContratosDeClientes = () => {
 	const [isLoading, setisLoading] = useState(false);
 	const [isLoadingAvtr, setisLoadingAvtr] = useState(false);
 	const [dataAvataresxUID, setdataAvataresxUID] = useState({});
+	const obtenerContratoxIDVENTA = async (idventa) => {
+		try {
+			const { data } = await PTApi.get(`/venta/obtener-contrato/${idventa}`);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerContratosDeClientes = async () => {
 		try {
 			setisLoading(false);
@@ -58,6 +65,7 @@ export const useContratosDeClientes = () => {
 		}
 	};
 	return {
+		obtenerContratoxIDVENTA,
 		isLoadingAvtr,
 		obtenerAvataresxUidCli,
 		obtenerContratosDeClientes,

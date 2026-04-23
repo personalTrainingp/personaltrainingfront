@@ -2,8 +2,6 @@ import { Row, Col, Card, Button, Table} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import { ModalAccesorio } from '../ModalAccesorio';
-import { useSelector } from 'react-redux';
-import { helperFunctions } from '@/common/helpers/helperFunctions';
 import ModalPrograma from '../ventaPrograma';
 import { ModalSuplementos } from '../ModalSuplementos';
 import { ResumenVentaMembresia } from '../ResumenVentaMembresia';
@@ -146,12 +144,9 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 											<ItemProdServ Inombre={"SUPLEMENTOS"} Iabrev={"supL"} icono={icoSupl} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 										</Col>
 										<ModalSuplementos show={modalSupl} hide={()=>setModalSupl(false)}/>
-									{/* 
-									*/}
 									<Col className="mb-3" xxl={3}>
 									<ItemProdServ Inombre={"CITAS NUTRICIONISTA"} Iabrev={"acc"} icono={icoNut} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>
 									</Col>
-									
 									<ModalVentaNutricion show={modalNutricion} onHide={onCloseModalNut}/>
 									<Col className="mb-3" xxl={3} onClick={ClickOpenModalFitology}>
 									<ItemProdServ Inombre={"TRATAMIENTOS"} Iabrev={"acc"} icono={icoEst} icowid={100} icohe={120} Icantidad={''} Itotal={''}/>

@@ -13,7 +13,7 @@ import { DataResumenAsesor } from './DataResumenAsesor'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
 
 export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma}) => {
-  const { obtenerContratosDeClientes } = useContratosDeClientes()
+  const { obtenerContratosDeClientes, obtenerContratoxIDVENTA } = useContratosDeClientes()
   const { dataView } =useSelector(e=>e.DATA)
   const [data, setdata] = useState(dataView)
     const onOpenModalTipoCambio = (id_venta, idCli) =>{
@@ -171,10 +171,15 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
       id: 6, header: 'CONTRATOS', render:(rowData)=>{
         return (
           <>
+          {/* {`${config.API_IMG.FILE_CONTRATOS_CLI}${rowData.detalle_ventaMembresia[0].contrato_x_serv?.name_image}`} */}
           {
             rowData.detalle_ventaMembresia[0].tarifa_monto!==0 && (
               <>
-                {rowData.detalle_ventaMembresia[0].firma_cli==null?'':<a className='text-black underline' href={`${config.API_IMG.FILE_CONTRATOS_CLI}${rowData.detalle_ventaMembresia[0].contrato_x_serv?.name_image}`}>CONTRATO</a>}
+                {rowData.detalle_ventaMembresia[0].firma_cli==null?(
+                  <div className='text-danger' onClick={()=>obtenerContratoxIDVENTA(rowData.id)}>
+                    adfasd
+                  </div>
+                ):<a className='text-black underline' href={`${config.API_IMG.FILE_CONTRATOS_CLI}${rowData.detalle_ventaMembresia[0].contrato_x_serv?.name_image}`}>CONTRATO</a>}
               </>
             )
           }
