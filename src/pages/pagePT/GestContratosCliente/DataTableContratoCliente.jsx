@@ -25,7 +25,7 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
         setisOpenModalTipoCambio(true)
         setidVenta(id_venta)
         setidCli(idCli)
-        onOpenModalFotoCli(idCli)
+        onOpenModalFirma(idCli)
     }
     const onCloseModalTipoCambio = () =>{
         setisOpenModalTipoCambio(false)
@@ -34,6 +34,7 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
       setisModalPhotoCli(true)
       setuidAvtr(row.tb_cliente.uid_avatar)
       setidCli(row.id_cli)
+      onOpenModalFotoCli(row.id_cli)
     }
     const onCloseModalPhotoCli = ()=>{
       setisModalPhotoCli(false)
