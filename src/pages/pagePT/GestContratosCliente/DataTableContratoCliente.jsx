@@ -14,30 +14,13 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 
 export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma}) => {
   const { obtenerContratosDeClientes } = useContratosDeClientes()
-  const [idVenta, setidVenta] = useState(0)
-  const [uidAvtr, setuidAvtr] = useState('')
-  const [isModalPhotoCli, setisModalPhotoCli] = useState(false)
-  const [idCli, setidCli] = useState(0)
-  const [isOpenModalTipoCambio, setisOpenModalTipoCambio] = useState(false)
   const { dataView } =useSelector(e=>e.DATA)
   const [data, setdata] = useState(dataView)
     const onOpenModalTipoCambio = (id_venta, idCli) =>{
-        setisOpenModalTipoCambio(true)
-        setidVenta(id_venta)
-        setidCli(idCli)
-        onOpenModalFirma(idCli)
-    }
-    const onCloseModalTipoCambio = () =>{
-        setisOpenModalTipoCambio(false)
+        onOpenModalFirma(idCli, id_venta)
     }
     const onOpenModalPhotoCli = (row)=>{
-      setisModalPhotoCli(true)
-      setuidAvtr(row.tb_cliente.uid_avatar)
-      setidCli(row.id_cli)
       onOpenModalFotoCli(row.id_cli)
-    }
-    const onCloseModalPhotoCli = ()=>{
-      setisModalPhotoCli(false)
     }
     useEffect(() => {
       obtenerContratosDeClientes()
@@ -158,7 +141,8 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
           </>
         )
       }
-    },{
+    },
+    {
       id: 4, header: 'FOTO', render:(rowData)=>{
         return (
           <>

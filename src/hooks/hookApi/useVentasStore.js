@@ -138,19 +138,21 @@ export const useVentasStore = () => {
 			formData.append('file', file);
 			setloadingMessage('CARGANDO');
 			const { data: dataVentaMembresia } = await PTApi.get(`/venta/get-id-ventas/${idVenta}`);
+			console.log({ dataVentaMembresia });
+
 			const { data: blobFirma } = await PTApi.post(
 				`/storage/blob/create/${dataVentaMembresia.venta[0].detalle_ventaMembresia[0].uid_firma}?container=firmasmembresia`,
 				formData
 			);
 			setloadingMessage('FIRMA AGREGADA');
-			setTimeout(() => { }, 3000);
+			setTimeout(() => {}, 3000);
 			setloadingMessage('ENVIANDO A SU CORREO');
 
 			const { data: dataMail } = await PTApi.post(`/venta/invoice-mail/${idVenta}`, {
 				firma_base64: lector.result,
 			});
 			setloadingMessage('CORREO ENVIADO');
-			setTimeout(() => { }, 3000);
+			setTimeout(() => {}, 3000);
 			setloadingMessage('GUARDANDO CONTRATO');
 			const file_contratoPDF = base64ToFile(
 				dataMail.base64_contratoPDF,
@@ -254,7 +256,7 @@ export const useVentasStore = () => {
 			console.log({ formState });
 
 			const { data } = await PTApi.post('/venta/post-ventas/598', formState);
-			
+
 			if (formState.dataVenta.detalle_venta_programa[0]?.firmaCli) {
 				const file = base64ToFile(
 					formState.dataVenta.detalle_venta_programa[0].firmaCli,

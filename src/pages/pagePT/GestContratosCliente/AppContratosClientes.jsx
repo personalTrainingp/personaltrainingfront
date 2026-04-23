@@ -5,6 +5,7 @@ import { DataTableContratoCliente } from './DataTableContratoCliente'
 import { ModalIsFirma } from '@/components/ModalIsFirma'
 import { ModalPhotoCli } from './ModalPhotoCli'
 import { TabPanel, TabView } from 'primereact/tabview'
+import { AppReporteContratosClientes } from './AppReporteContratosClientes'
 export const AppContratosClientes = () => {
     const [isOpenModalFirma, setisOpenModalFirma] = useState({id_cli: 0, id_venta: 0, isOpen: false})
     const [isOpenModalFotoCliente, setisOpenModalFotoCliente] = useState({id_cli: 0, isOpen: false})
@@ -23,10 +24,17 @@ export const AppContratosClientes = () => {
   return (
     <>
         <PageBreadcrumb title={'SITUACION DE CONTRATOS DE SOCIOS'} subName={'T'}/>
-                                <DataTableContratoCliente onOpenModalFirma={onOpenModalFirma} onOpenModalFotoCli={onOpenModalFotoCli}/>
-        <ModalIsFirma id_cli={isOpenModalFirma.id_cli} idVenta={isOpenModalFirma.id_venta} show={isOpenModalFirma.isOpen} onHide={onCloseModalFirma}/> 
-        <ModalPhotoCli id_cli={isOpenModalFotoCliente.id_cli} show={isOpenModalFotoCliente.isOpen} onHide={onCloseModalFotoCli}/>
-        {/* */}
+        <TabView>
+            <TabPanel header='CONTRATOS'>
+                <DataTableContratoCliente onOpenModalFirma={onOpenModalFirma} onOpenModalFotoCli={onOpenModalFotoCli}/>
+            </TabPanel>
+            <TabPanel header={'REPORTE'}>
+                <AppReporteContratosClientes />
+            </TabPanel>
+        </TabView>
+                <ModalPhotoCli id_cli={isOpenModalFotoCliente.id_cli} show={isOpenModalFotoCliente.isOpen} onHide={onCloseModalFotoCli}/>
+                <ModalIsFirma idCli={isOpenModalFirma.id_cli} idVenta={isOpenModalFirma.id_venta} show={isOpenModalFirma.isOpen} onHide={onCloseModalFirma}/> 
+        
     </>
     )
 }

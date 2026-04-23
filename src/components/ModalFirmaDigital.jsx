@@ -16,9 +16,6 @@ export const ModalFirmaDigital = ({idVenta, idCli, show, onHide}) => {
     const CloseModalFirma = ()=>{
         onHide()
     }
-    const limpiarFirma = ()=>{
-        refCanvas.current.clear()
-    }
     const GuardarFirma = ()=>{
         // console.log(refCanvas.current.getTrimmedCanvas().toDataURL("image/png"));
         const canvas = refCanvas.current.getCanvas();
@@ -29,11 +26,11 @@ export const ModalFirmaDigital = ({idVenta, idCli, show, onHide}) => {
             base64firma,
             `firma_cli${idCli}.png`
         );
+        
         agregarFirmaEnContratoCliente(file, idVenta, idCli)
         dispatch(onSetBase64Firma(file))
         onHide()
     }
-    
   return (
     <>
     <Modal show={show} backdrop={'static'} size='lg'>
@@ -41,6 +38,9 @@ export const ModalFirmaDigital = ({idVenta, idCli, show, onHide}) => {
             <Modal.Title>Firma DIGITAL</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+            {idVenta}
+            <br/>
+            {idCli}
             <Row>
                 <Col lg={12}>
                     <SignaturePad penColor='black' maxWidth={3} minWidth={3} canvasProps={{className: 'signatureCanvas'}} ref={refCanvas} />
