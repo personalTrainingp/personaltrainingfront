@@ -74,6 +74,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                           {
                             (sumaMontoMensual!=='0.00' || sumaMontoMensual1424==='0.00') && (
                               <div 
+                              className='text-center'
                               onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1423)}
                               >
                               {sumaMontoMensual}
