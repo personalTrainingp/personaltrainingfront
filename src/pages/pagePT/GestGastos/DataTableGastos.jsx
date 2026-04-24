@@ -23,21 +23,21 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                 </div>
             )
         }},
-        {id: 4, header: <>REGISTRO <br/> ADMINISTRATIVO </>, accessor: '', width: '200px', render:(row)=>{
+        {id: 2, header: <>REGISTRO <br/> ADMINISTRATIVO </>, accessor: '', width: '200px', render:(row)=>{
             return (
                 <>
                 {DateMaskStr(row.fec_registro, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
                 </>
             )
         }},
-          {id: 12, header: <>DESCRIPCION</>, accessor: 'descripcion', width: '900px', render: (row)=>{
+          {id: 3, header: <>DESCRIPCION</>, accessor: 'descripcion', width: '300px', render: (row)=>{
             return (
                 <>
                     {row.descripcion}
                 </>
             )
         }},
-        {id: 6, header: <>FECHA DE <br/> COMPROBANTE</>, width: '200px',  render:(row)=>{
+        {id: 4, header: <>FECHA DE <br/> COMPROBANTE</>, width: '200px',  render:(row)=>{
             return (
                 <>
                 {DateMaskStr(row.fecha_comprobante, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
@@ -45,8 +45,8 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                 </>
             )
         }},
-        {id: 3, header: 'OPERACION', accessor: 'n_operacion', width: '40px'},
-        {id: 10, header: <>MONTO</>, sortable, accesor: 'monto', render: (row)=>{
+        {id: 5, header: 'OPERACION', accessor: 'n_operacion', width: '40px'},
+        {id: 6, header: <>MONTO</>, sortable, accesor: 'monto', render: (row)=>{
             return (
                 <>
                 {
@@ -68,7 +68,7 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                 </>
             )
         }},
-        {id: 5, header: <>FECHA <br/> PAGO</>, width: '200px', render:(row)=>{
+        {id: 7, header: <>FECHA <br/> PAGO</>, width: '200px', render:(row)=>{
             return (
                 <>
                 {DateMaskStr(row.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
@@ -76,36 +76,36 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                 </>
             )
         }},
-        {id: 2, header: 'COMPROBANTE', accessor: 'n_comprabante', width: '40px'},
-        {id: 7, header: <>TIPO DE <br/> GASTO</>, width: '200px', accessor: 'tipo_gasto', render: (row)=>{
+        {id: 8, header: 'COMPROBANTE', accessor: 'n_comprabante', width: '40px'},
+        {id: 9, header: <>TIPO DE <br/> GASTO</>, width: '200px', accessor: 'tipo_gasto', render: (row)=>{
             return (
                 <>
                     {row.tipo_gasto}
                 </>
             )
         }},
-        {id: 8, header: <>RUBRO</>, accessor: 'rubro', width: '200px', render: (row)=>{
+        {id: 10, header: <>RUBRO</>, accessor: 'rubro', width: '200px', render: (row)=>{
             return (
                 <>
                     {row.rubro}
                 </>
             )
         }},
-        {id: 9, header: <>GASTO</>, accessor: 'concepto', width: '200px', render: (row)=>{
+        {id: 11, header: <>GASTO</>, accessor: 'concepto', width: '200px', render: (row)=>{
             return (
                 <div>
                     {row.concepto}
                 </div>
             )
         }},
-        {id: 11, header: <>FORMA <br/> PAGO</>, accessor: 'forma_pago', width: '200px', render: (row)=>{
+        {id: 12, header: <>FORMA <br/> PAGO</>, accessor: 'forma_pago', width: '200px', render: (row)=>{
             return (
                 <>
                     {row.forma_pago}
                 </>
             )
         }},
-        {id: 13, header: <>PROVEEDOR</>, accessor: 'nombre_proveedor', render: (row)=>{
+        {id: 13, header: <>PROVEEDOR</>, accessor: 'nombre_proveedor', width: '120px', render: (row)=>{
             return (
                 <>
                     {row.nombre_proveedor}

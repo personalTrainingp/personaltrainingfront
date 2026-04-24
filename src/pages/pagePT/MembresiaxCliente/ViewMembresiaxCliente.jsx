@@ -31,26 +31,27 @@ export const ViewMembresiaxCliente = () => {
             newItem.turno=dayjs.utc(d.detalle_ventaMembresia[0]?.horario).format('hh:mm A')
             newItem.tipo_comprobante = arrayFacturas.find(e=>e.value===d.id_tipoFactura)?.label
             newItem.origen = arrayOrigenDeCliente.find(e=>e.value===d.id_origen)?.label
+            newItem.horario = dayjs.utc(d.detalle_ventaMembresia[0]?.horario).format('hh:mm A')
             newItem.ultimoPgm=d.detalle_ventaMembresia[0]?.tb_ProgramaTraining?.name_pgm
             return newItem;
         });
     };
     const columns = [
-      {id: 1, header: 'ID', render: (row)=>{
+      {id: 1, header: 'ID', width: '120px', render: (row)=>{
         return (
           <>
           {row.id}
           </>
         )
       }},
-      {id: 2, header: 'FECHA', render: (row)=>{
+      {id: 2, header: 'FECHA', width: '120px', render: (row)=>{
         return (
           <div className='' style={{width: '150px'}}>
           {FormatoDateMask(row.fecha_venta_v, 'dddd DD [DE] MMMM [del] YYYY [a las] h:mm A')}
           </div>
         )
       }},
-      {id: 3, header: 'HORARIO', render: (row)=>{
+      {id: 3, header: 'HORARIO', accessor: 'turno', width: '120px', render: (row)=>{
         return (
           <>
           {dayjs.utc(row.detalle_ventaMembresia[0]?.horario).format('hh:mm A')}

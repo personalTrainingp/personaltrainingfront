@@ -1,7 +1,6 @@
 import { PageBreadcrumb } from '@/components';
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Col, Row } from 'react-bootstrap';
-
 import Tarjetas from './Tarjetas';
 import { TarjetasPago } from './TarjetasPago';
 import { CardTotal } from './CardTotal';
@@ -13,33 +12,10 @@ import { NumberFormatMoney } from '@/components/CurrencyMask';
 import { clasesVentasSeparadas } from '@/types/type';
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 import { HistorialVentas } from './HistorialVentas';
-
 import { Toast } from 'primereact/toast'; // 👈 IMPORT NECESARIO
-
 import dayjs, { utc } from 'dayjs';
 import "dayjs/locale/es";
 dayjs.extend(utc);
-
-// helpers que ya tenías
-function contarVentas(data) {
-  let totalVentas = 0;
-  data.forEach(cliente => {
-    if (cliente.tipo_cli === 0 || cliente.tipo_cli === 84) {
-      totalVentas += cliente.venta.length;
-    }
-  });
-  return totalVentas;
-}
-function contarVentasEspeciales(data) {
-  let totalVentas = 0;
-  data.forEach(cliente => {
-    if (cliente.tipo_cli !== 0 && cliente.tipo_cli !== 84) {
-      totalVentas += cliente.venta.length;
-    }
-  });
-  return totalVentas;
-}
-
 export const TotalVentas = () => {
   // OJO: usamos el hook SOLO UNA VEZ
   const {

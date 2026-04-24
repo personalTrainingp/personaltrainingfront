@@ -16,15 +16,6 @@ import SimpleBar from 'simplebar-react';
 
 
 export const Seguimiento = () => {
-//   const { obtenerReporteSeguimiento,agrupado_programas } = useReporteStore()
-//   const { dataView } = useSelector(e=>e.DATA)
-//   const { diasLaborables, daysUTC } = helperFunctions()
-//   useEffect(() => {
-//     obtenerReporteSeguimiento()
-//   }, [])
-//RENOVACIONES HASTA EL 4 MES 
-//REINSCRIPCIONES 4MESES Y UN DIA
-    // ref para acceder al scroll interno de SimpleBar
   const simpleBarRef = useRef(null);
 
   const scroll = (offset) => {
