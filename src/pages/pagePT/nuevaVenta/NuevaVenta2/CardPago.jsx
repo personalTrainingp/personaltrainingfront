@@ -9,15 +9,15 @@ import { InputButton } from '@/components/InputText'
 
 export const sumarTarifas = (venta) =>{
 	const sumaTarifas = Object.values(venta)
-	.flatMap(array => array) // Aplanamos los arrays en uno solo
-	.map(objeto => objeto.tarifa) // Obtenemos un array con todas las tarifas
-	.filter(tarifa => typeof tarifa === 'number') // Filtramos solo los valores que son números
-	.reduce((total, tarifa) => total + tarifa, 0); // Sumamos todas las tarifas
+	.flatMap(array => array)
+	.map(objeto => objeto.tarifa)
+	.filter(tarifa => typeof tarifa === 'number')
+	.reduce((total, tarifa) => total + tarifa, 0);
 	return sumaTarifas
 }
 export const sumarPagos = (dataPagos)=>{
 	const sumaPagos = Object.values(dataPagos).flatMap(array=>array).map(obj=>obj.monto_pago)
-	.reduce((total, tarifa) => total + tarifa, 0); // Sumamos todas las tarifas
+	.reduce((total, tarifa) => total + tarifa, 0);
 	return sumaPagos;
 }
 
@@ -116,8 +116,6 @@ export const CardPago = ({venta, dataPagos}) => {
         </Card.Header>
         <Card.Body>
 			<InputButton label={'Pago adicional'} onClick={onModalOpenPay}/>
-			{/* <a className='text-primary underline' onClick={onModalOpenPay} style={{cursor: 'pointer'}}>Pago adicional</a> */}
-			{/* <ModalVentasPay show={modalPay} onHide={onModalClosePay}/> */}
         </Card.Body>
 		<Card.Footer>
 			<span style={{fontWeight: 'bold', fontSize: '18px'}} className='d-flex justify-content-between fs-2'>

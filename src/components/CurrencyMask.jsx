@@ -83,7 +83,7 @@ export const formateo_Moneda = (current)=>{
 
 
 export const DateMask = ({date, format}) => {
-  return dayjs.utc(date).subtract(5, "hour").format(format)
+  return dayjs.utc(date).format(format)
 }
 export const DateMaskString = (date, format) => {
   //'D [de] MMMM [del] YYYY'

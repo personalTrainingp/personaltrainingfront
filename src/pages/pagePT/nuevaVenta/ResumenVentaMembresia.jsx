@@ -36,8 +36,6 @@ export const ResumenVentaMembresia = ({ dataVenta, detalle_cli_modelo, dataPagos
 	const descargarPDFgenerado = () => {
 		obtenerPDFCONTRATOgenerado({ dataVenta, detalle_cli_modelo, dataPagos });
 	};
-	console.log({dataVenta});
-	
 	return (
 		<div className="d-flex justify-content-center">
 			<div className="row card" style={{width: '100%'}}>
