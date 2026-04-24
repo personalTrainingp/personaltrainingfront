@@ -26,23 +26,12 @@ const registerPago = {
 export const SideBarFormPago = ({show, onHide}) => {
     const dispatch = useDispatch()
     const {formState, monto_pago, es_nacional, id_forma_pago, id_operador, n_operacion, id_tipo_tarjeta, id_tarjeta, id_banco, n_cuotas, onInputChange, onResetForm} = useForm(registerPago)
-    const [dataTipoTarjeta, setdataTipoTarjeta] = useState([])
-    const [dataTarjetas, setdataTarjetas] = useState([])
-    const [dataBancos, setdataBancos] = useState([])
-    const {
-		DataFormaPago,
-        DataBancos,
-        DataTipoTarjetas,
-        DataTarjetas,
-		obtenerParametrosFormaPago,
-        obtenerParametrosBancos,
-        obtenerParametrosTipoTarjeta,
-        obtenerParametrosTarjetas,
-        obtenerFormaDePagosActivos,
-        dataFormaPagoActivo
-	} = useTerminoStore()
   const { DataGeneral:dataOperadores, obtenerParametroPorEntidadyGrupo:obtenerOperadores } = useTerminoStore()
-  const { dataFormaPagos, obtenerFormasPagos } = useTerminologiaPagos()
+  const { DataGeneral:dataBancos, obtenerParametroPorEntidadyGrupo:obtenerBancos } = useTerminoStore()
+  const { DataGeneral:dataFormaPago, obtenerParametroPorEntidadyGrupo:obtenerFormaPago } = useTerminoStore()
+  const { DataGeneral:dataTarjetas, obtenerParametroPorEntidadyGrupo:obtenerTarjetas } = useTerminoStore()
+  const { DataGeneral:dataTipoTarjetas, obtenerParametroPorEntidadyGrupo:obtenerTipoTarjetas } = useTerminoStore()
+  // const { dataFormaPagos, obtenerFormasPagos } = useTerminologiaPagos()
 	const { obtenerTipoCambioPorFecha, tipocambio } = useTipoCambioStore();
     const cancelModal = () =>{
         onHide()
@@ -56,7 +45,7 @@ export const SideBarFormPago = ({show, onHide}) => {
             monto_pago: parseFloat(monto_pago.replace(',', '')), 
             label_forma_pago: formaPago.find(e=>e.value===id_forma_pago).label,
             label_banco: dataBancos.find(b=>b.id_banco===id_banco)?.label_banco||0,
-            label_tipo_tarjeta: dataTipoTarjeta.find(tt=>tt.id_tipo_tarjeta===id_tipo_tarjeta)?.label_tipo_tarjeta||'',
+            label_tipo_tarjeta: '',
             label_tarjeta: dataTarjetas.find(t=>t.id_tarjeta===id_tarjeta)?.label,
             n_cuotas: n_cuotas,
             label_operador: '',
@@ -65,45 +54,12 @@ export const SideBarFormPago = ({show, onHide}) => {
         cancelModal()
     }
     useEffect(() => {
-
         obtenerOperadores('formapago', 'operador')
-        obtenerFormaDePagosActivos()
+        obtenerBancos('formapago', 'banco')
+        obtenerFormaPago('formapago', 'formapago')
+        obtenerTarjetas('formapago', 'tarjeta')
         obtenerTipoCambioPorFecha(new Date())
-        obtenerFormasPagos()
     }, [])
-    // console.log(dataFormaPagoActivo.find(f=>f.id_forma_pago));
-    const formaPago = dataFormaPagoActivo.map(f=>({
-      value: f.id_forma_pago,
-      label: `${f.id_forma_pago} - ${f.label_param}`,
-    }))
-    const tipoTarjeta = dataTipoTarjeta.map(tt=>({
-      value: tt.id_tipo_tarjeta,
-      label: `${tt.id_tipo_tarjeta} - ${tt.label_tipo_tarjeta}`,
-    }))
-    const tarjetas = dataTarjetas.map(t=>({
-      value: t.id_tarjeta,
-      label: `${t.id_tarjeta} - ${t.label_tarjeta}`,
-    }))
-    const bancos = dataBancos.map(t=>({
-      value: t.id_banco,
-      label: `${t.id_banco}-${t.label_banco}`,
-    }))
-    useEffect(() => {
-      const tipoTarjetas = dataFormaPagoActivo.find(f=>f.id_forma_pago===id_forma_pago)?.dataTipoTarjeta||[]
-      setdataTipoTarjeta(tipoTarjetas)
-    }, [id_forma_pago])
-    
-    useEffect(() => {    
-      const tarjetas = dataTipoTarjeta.find(tt=>tt.id_tipo_tarjeta===id_tipo_tarjeta)?.dataTarjeta || [];
-      setdataTarjetas(tarjetas)
-    }, [id_forma_pago, id_tipo_tarjeta])
-    
-
-    useEffect(() => {
-      const dataBancos = dataTarjetas.find(b=>b.id_tarjeta === id_tarjeta)?.dataBancos || [];
-      setdataBancos(dataBancos)
-    }, [id_forma_pago, id_tipo_tarjeta, id_tarjeta])
-    console.log(dataFormaPagoActivo);
   return (
     <div className="card flex justify-content-center">
         <Sidebar visible={show} position='left' onHide={onHide} style={{width: '350px'}}>
@@ -125,19 +81,19 @@ export const SideBarFormPago = ({show, onHide}) => {
                           <InputSelect label={'Operador:'} nameInput={'id_operador'} onChange={onInputChange} options={dataOperadores} value={id_operador}/>
                         </div>
                         <div className='mb-4'>
-                          <InputSelect label={'Forma de pago:'} nameInput={'id_forma_pago'} onChange={onInputChange} options={formaPago} value={id_forma_pago} />
+                          <InputSelect label={'Forma de pago:'} nameInput={'id_forma_pago'} onChange={onInputChange} options={dataFormaPago} value={id_forma_pago} />
                         </div>
                         <div className='mb-4'>
-                          <InputSelect label={'Tipo de tarjetas:'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} options={tipoTarjeta} value={id_tipo_tarjeta} />
+                          <InputSelect label={'Tipo de tarjetas:'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} options={dataTipoTarjetas} value={id_tipo_tarjeta} />
                         </div>
                         <div className='mb-4'>
                           <InputSelect label={'PROCENDENCIA:'} nameInput={'es_nacional'} onChange={onInputChange} options={[{value: 1, label: 'NACIONAL'}, {value: 0, label: 'INTERNACIONAL'}]} value={es_nacional} />
                         </div>
                         <div className='mb-4'>
-                          <InputSelect label={'TARJETA:'} nameInput={'id_tarjeta'} onChange={onInputChange} options={tarjetas} value={id_tarjeta} />
+                          <InputSelect label={'TARJETA:'} nameInput={'id_tarjeta'} onChange={onInputChange} options={dataTarjetas} value={id_tarjeta} />
                         </div>
                         <div className='mb-4'>
-                          <InputSelect label={'BANCO:'} nameInput={'id_banco'} onChange={onInputChange} options={bancos} value={id_banco} />
+                          <InputSelect label={'BANCO:'} nameInput={'id_banco'} onChange={onInputChange} options={dataBancos} value={id_banco} />
                         </div>
                         <div className='mb-4'>
                           <InputNumber label={'CUOTAS'} nameInput={'n_cuotas'} onChange={onInputChange} value={n_cuotas} />
