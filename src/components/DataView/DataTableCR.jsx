@@ -209,10 +209,10 @@ const getPaginationItems = () => {
       setCurrentPage((p) => Math.min(p + 1, totalPages))
     }
   />
-
   {/* >> */}
   <Pagination.Last onClick={() => setCurrentPage(totalPages)} />
 </Pagination>
+ESTAS EN LA PAGINA {currentPage}
     </>
   );
 };
