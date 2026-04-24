@@ -163,7 +163,7 @@ const getPaginationItems = () => {
 
           <tbody>
             {paginatedData.map((row, i) => (
-              <tr key={i}>
+              <tr key={i} className="fs-3">
                 {columns.map((col) => (
                   <td key={col.id}>
                     {col.render
