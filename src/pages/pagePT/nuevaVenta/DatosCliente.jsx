@@ -78,7 +78,8 @@ const DatosCliente = ({dataCliente}) => {
 		onInputChangeReact(e, 'id_tipo_transaccion')
 	}
 	return (
-		<>
+		<>	
+		
 			<form>
 				<Card>
 					<Card.Header>
@@ -122,6 +123,15 @@ const DatosCliente = ({dataCliente}) => {
 										<Card.Body>
 								<Row>
 									<Col xl={12}>
+										<div>
+											{
+												clienteSelect?.tb_images?.length!==0 && (
+													<span className='bg-change text-white fs-4 mx-2'>
+														EL SOCIO NO TIENE FOTO
+													</span>
+												)
+											}
+										</div>
 										<div className="mb-2">
 											<Select
 												onChange={(e) => inputChangeClientes(e)}
