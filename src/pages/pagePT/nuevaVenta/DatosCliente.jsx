@@ -51,7 +51,7 @@ const DatosCliente = ({dataCliente}) => {
 			(option) => option.value === id_cli
 		)
 		setClienteSelect(datacli)
-	}, [id_cli])
+	}, [id_cli, clienteSelect])
 	useEffect(() => {
 		const dataEmpl = DataVendedores.find(
 			(option) => option.value === id_empl
@@ -125,7 +125,7 @@ const DatosCliente = ({dataCliente}) => {
 									<Col xl={12}>
 										<div>
 											{
-												clienteSelect?.tb_images?.length!==0 && (
+												clienteSelect?.tb_images?.length==0 && (
 													<span className='bg-change text-white fs-4 mx-2'>
 														EL SOCIO NO TIENE FOTO
 													</span>
