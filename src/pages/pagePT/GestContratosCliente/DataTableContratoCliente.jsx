@@ -4,7 +4,7 @@ import { DataTable } from 'primereact/datatable'
 import React, { useEffect, useState } from 'react'
 import { ModalIsFirma } from '@/components/ModalIsFirma'
 import { useSelector } from 'react-redux'
-import { Card, Col, Row } from 'react-bootstrap'
+import { Button, Card, Col, Row } from 'react-bootstrap'
 import dayjs from 'dayjs'
 import { useContratosDeClientes } from './useContratosDeClientes'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
@@ -202,6 +202,9 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
         })
         }
       </Row>
+      <div>
+        <Button onClick={()=>onClickChangeData(dataView)}>TODOS LOS <br/> CONTRATOS</Button>
+      </div>
       <DataTableCR
         columns={columns}
         data={data}
