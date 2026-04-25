@@ -84,7 +84,7 @@ export const SideBarFormPago = ({show, onHide}) => {
                           <InputSelect label={'Forma de pago:'} nameInput={'id_forma_pago'} onChange={onInputChange} options={dataFormaPago} value={id_forma_pago} />
                         </div>
                         <div className='mb-4'>
-                          <InputSelect label={'Tipo de tarjetas:'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} options={dataTipoTarjetas} value={id_tipo_tarjeta} />
+                          <InputSelect label={'Tipo de tarjetas:'} nameInput={'id_tipo_tarjeta'} onChange={onInputChange} options={[{value: 35, label: 'DEBITO'}, {value: 37, label: 'CREDITO'}]} value={id_tipo_tarjeta} />
                         </div>
                         <div className='mb-4'>
                           <InputSelect label={'PROCENDENCIA:'} nameInput={'es_nacional'} onChange={onInputChange} options={[{value: 1, label: 'NACIONAL'}, {value: 0, label: 'INTERNACIONAL'}]} value={es_nacional} />
