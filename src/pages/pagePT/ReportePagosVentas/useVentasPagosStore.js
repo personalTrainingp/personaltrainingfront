@@ -30,7 +30,7 @@ export const useVentasPagosStore = () => {
 						...venta,
 						pago,
 						identificador,
-						fecha_pago_1: DateMaskString(pago?.fecha_venta, 'dddd DD MMMM YYYY'),
+						fecha_pago_1: DateMaskString(pago?.fecha_pago, 'dddd DD MMMM YYYY'),
 						identificador,
 						porcentaje:
 							alterPago.find(

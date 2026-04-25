@@ -20,7 +20,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
   const columns = [
     
     {
-      id: 15, header: 'ID VENTA', render: (row)=>{
+      id: 15, header: 'ID VENTA', accessor: 'id', render: (row)=>{
       return (
         <>
         {row.id}
@@ -28,7 +28,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
       )
     }
     },
-    {id: 7, header: 'DIA Y FECHA', render:(row)=>{
+    {id: 7, header: 'DIA Y FECHA', accessor: 'fecha_pago_1', render:(row)=>{
       return (
         <>
         {row.fecha_pago_1}
@@ -44,7 +44,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
-    {id: 13, header: 'COMPROBANTE', render: (row)=>{
+    {id: 13, header: 'COMPROBANTE', accessor: 'numero_transac', render: (row)=>{
       return (
         <>
           boleta
