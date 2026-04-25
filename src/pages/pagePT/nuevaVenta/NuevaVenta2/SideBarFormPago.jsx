@@ -43,7 +43,7 @@ export const SideBarFormPago = ({show, onHide}) => {
             ...formState, 
             es_nacional,
             monto_pago: parseFloat(monto_pago.replace(',', '')), 
-            label_forma_pago: formaPago.find(e=>e.value===id_forma_pago).label,
+            label_forma_pago: dataFormaPago.find(e=>e.value===id_forma_pago).label,
             label_banco: dataBancos.find(b=>b.id_banco===id_banco)?.label_banco||0,
             label_tipo_tarjeta: '',
             label_tarjeta: dataTarjetas.find(t=>t.id_tarjeta===id_tarjeta)?.label,
