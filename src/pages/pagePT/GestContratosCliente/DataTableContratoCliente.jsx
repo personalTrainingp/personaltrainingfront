@@ -126,7 +126,7 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
         )
       },
     },{
-      id: 2, header: 'Programa / Semanas', render:(rowData)=>{
+      id: 2, header: 'Programa / Semanas', accessor: 'pgmYsem', render:(rowData)=>{
         return (
           <>
           {rowData.pgmYsem}
@@ -143,7 +143,7 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
       }
     },
     {
-      id: 4, header: 'FOTO', render:(rowData)=>{
+      id: 4, header: 'FOTO', accessor: 'conFoto', render:(rowData)=>{
         return (
           <>
           {rowData.images_cli.length===0?
@@ -154,7 +154,7 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
         )
       }
     },{
-      id: 5, header: 'SIN FIRMA', render:(rowData)=>{
+      id: 5, header: 'SIN FIRMA', accessor: 'firmado', render:(rowData)=>{
         return (
           <>
             {
