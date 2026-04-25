@@ -29,6 +29,7 @@ export const useVentasPagosStore = () => {
 					return {
 						...venta,
 						pago,
+						fecha_p: pago?.fecha_pago,
 						identificador,
 						fecha_pago_1: DateMaskString(pago?.fecha_pago, 'dddd DD MMMM YYYY'),
 						identificador,

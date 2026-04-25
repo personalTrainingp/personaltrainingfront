@@ -191,7 +191,6 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
   ]
   return (
     <>
-      
       <Row>
         {agruparFirmasxEmpl(dataView).map((f, index, array)=>{
           return(

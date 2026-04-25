@@ -43,9 +43,10 @@ export const useContratosDeClientes = () => {
 					asesor: dc.tb_empleado.nombres_apellidos_empl,
 					detalle_ventaMembresia: dc.detalle_ventaMembresia,
 					createdAt: dc.createdAt,
+					fecha_p: dc.createdAt,
 					pgmYsem: `${membresia?.tb_ProgramaTraining?.name_pgm} / ${membresia.tb_semana_training.semanas_st} SEMANAS`,
-					firmado: `${membresia.tarifa_monto !== 0 && membresia.firma_cli == null ? '' : 'SI'}`,
-					conFoto: dc.images_cli?.length === 0 ? 'NO' : 'SI',
+					firmado: `${ membresia.firma_cli == null ? 'NO' : 'SI'}`,
+					conFoto: dc.tb_cliente.tb_images?.length === 0 ? 'NO' : 'SI',
 				};
 			});
 			dispatch(onSetDataView(dataContratos));
