@@ -84,7 +84,7 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
         )
       }
     },{
-      id: 1, header: 'NOMBRES Y APELLIDOS', render:(rowData)=>{
+      id: 1, header: 'NOMBRES Y APELLIDOS', accessor: 'nombre_apellidos', render:(rowData)=>{
             const createdContrato = rowData.createdAt;
             const createdFirmas = rowData.detalle_ventaMembresia[0].firma_cli;
             // Fecha anterior
