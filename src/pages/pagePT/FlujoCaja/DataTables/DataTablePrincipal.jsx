@@ -41,7 +41,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
               dataAlter.map(f=>{
                 return (
                   <React.Fragment key={`${f.mesStr}`}>
-                  <td className={`text-center border-black ${bgTotal}`} style={{width: '150px'}}>{f.mesStr}</td>
+                  <td className={`text-center border-black ${bgTotal}`} style={{width: '180px'}}>{f.mesStr}</td>
                   <td className={`text-center border-black ${bgPastel}`} style={{width: '90px'}}>MOV.</td>
                   </React.Fragment>
                 )
@@ -50,7 +50,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
             <th className='text-center border-top-10 border-left-10 border-bottom-10' style={{width: '200px'}}>TOTAL <br/> ANUAL</th>
             <th className='text-center border-top-10 border-bottom-10' style={{width: '120px'}}>MOV. <br/> ANUAL</th>
             <th className='text-center border-top-10 border-bottom-10' style={{width: '120px'}}>%<br/>PART. <br/> ANUAL</th>
-            <th className='text-center border-top-10 border-right-10 border-bottom-10' style={{width: '180px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
+            <th className='text-center border-top-10 border-right-10 border-bottom-10' style={{width: '200px'}}>PROMEDIO<br/>MENSUAL <br/> ANUAL</th>
           </tr>
         </thead>
         <tbody>
