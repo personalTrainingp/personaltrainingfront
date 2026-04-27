@@ -40,7 +40,7 @@ export const ReporteCuotasFecha = () => {
                                             </span><span>
                                                 QR :  {r.items.filter(f=>f.pago.id_forma_pago===1471).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389||f.pago.id_forma_pago===1743).length}
                                             </span><span>
-                                                INTERCIONAL:  {r.items.filter(f=>!f.pago.es_nacional).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389).length}
+                                                INTERNACIONAL:  {r.items.filter(f=>!f.pago.es_nacional).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389).length}
                                             </span>
                                         </div>
                                     </div>
@@ -62,7 +62,7 @@ export const ReporteCuotasFecha = () => {
                                             </span><span>
                                                 QR :  {r.items.filter(f=>f.pago.id_forma_pago===1471).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597||f.pago.id_forma_pago===1743).length}
                                             </span><span>
-                                                INTERCIONAL:  {r.items.filter(f=>!f.pago.es_nacional).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597).length}
+                                                INTERNACIONAL:  {r.items.filter(f=>!f.pago.es_nacional).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597).length}
                                             </span>
                                         </div>
                                     </div>
