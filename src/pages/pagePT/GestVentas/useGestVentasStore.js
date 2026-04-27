@@ -1,5 +1,5 @@
 import { PTApi } from '@/common';
-import { DateMaskStr, DateMaskStr2, MaskDate } from '@/components/CurrencyMask';
+import { DateMaskStr, DateMaskStr2, DateMaskString, MaskDate } from '@/components/CurrencyMask';
 import config from '@/config';
 import { useState } from 'react';
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
@@ -37,7 +37,7 @@ export const useGestVentasStore = () => {
 
 				return {
 					id: v.id,
-					fecha_venta: DateMaskStr(
+					fecha_venta: DateMaskString(
 						v.fecha_venta,
 						'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'
 					),

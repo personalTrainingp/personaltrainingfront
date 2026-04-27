@@ -20,15 +20,17 @@ export const ReporteCuotasFecha = () => {
                         <Col lg={4}>
                             <div className='m-1'>
                                 <div className='bg-change text-white p-1 text-center fs-1'>
-                                    <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'YYYY'}/>
-                                    <br/>
-                                    <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'MMMM'}/>
+                                    <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'MMMM '}/>
+                                    <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'YYYY '}/>
                                 </div>
-                                <div className='border-change d-flex justify-content-center text-center text-black fs-2'>
-                                    <div className='d-flex flex-column text-start'>
-                                        <span className='mx-2'>
-                                            CUOTAS 0:
-                                        </span>
+                                <div className='border-change d-flex justify-content-around text-center text-black fs-2'>
+                                    <div>
+                                        OPENPAY
+                                    </div>
+                                    <div >
+                                        2
+                                    </div>
+                                    {/* <div className='d-flex flex-column text-start'>
                                         <span className='mx-2'>
                                             CUOTAS 1: 
                                         </span>
@@ -49,9 +51,6 @@ export const ReporteCuotasFecha = () => {
                                         </span>
                                     </div><div className='d-flex flex-column text-start'>
                                         <span className='mx-2'>
-                                            {r.items?.filter(f=>f?.pago?.n_cuotas==0).length}
-                                        </span>
-                                        <span className='mx-2'>
                                             {r.items?.filter(f=>f?.pago?.n_cuotas==1).length}
                                         </span>
                                         <span className='mx-2'>
@@ -69,7 +68,7 @@ export const ReporteCuotasFecha = () => {
                                         <span className='mx-2'>
                                             {r.items?.filter(f=>f?.pago?.n_cuotas==6).length}
                                         </span>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 {/* 
                                 
@@ -81,7 +80,7 @@ export const ReporteCuotasFecha = () => {
             }
         </Row>
         <pre>
-            {JSON.stringify(agruparPorMesAnio(dataView), null, 2)}
+            {JSON.stringify(resultado, null, 2)}
         </pre>
     </div>
   )
@@ -110,3 +109,7 @@ const agruparPorMesAnio = (data) =>
       return acc;
     }, {})
   );
+
+const filtrarxCuota = (data, n_cuota)=>{
+    return data?.filter(f=>f?.pago?.n_cuotas==n_cuota).length
+}
