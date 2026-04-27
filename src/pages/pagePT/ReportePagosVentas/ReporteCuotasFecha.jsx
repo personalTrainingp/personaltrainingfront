@@ -23,56 +23,50 @@ export const ReporteCuotasFecha = () => {
                                     <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'MMMM '}/>
                                     <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'YYYY '}/>
                                 </div>
-                                <div className='border-change d-flex justify-content-around text-center text-black fs-2'>
-                                    <div>
-                                        OPENPAY
+                                <div className='border-change d-flex flex-column text-center text-black fs-2'>
+                                    <div className='d-flex justify-content-around w-100'>
+                                        <div>
+                                            OPENPAY
+                                        </div>
+                                        <div className='d-flex flex-column text-start'>
+                                            <span>
+                                                1 CUOTA :  {filtrarxCuota(r.items, 0).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389||f.pago.id_forma_pago===1743).length}
+                                            </span>
+                                            <span>
+                                                3 CUOTA :  {filtrarxCuota(r.items, 3).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389||f.pago.id_forma_pago===1743).length}
+                                            </span>
+                                            <span>
+                                                6 CUOTA :  {filtrarxCuota(r.items, 6).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389||f.pago.id_forma_pago===1743).length}
+                                            </span><span>
+                                                QR :  {r.items.filter(f=>f.pago.id_forma_pago===1471).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389||f.pago.id_forma_pago===1743).length}
+                                            </span><span>
+                                                INTERCIONAL:  {r.items.filter(f=>!f.pago.es_nacional).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389).length}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div >
-                                        2
-                                    </div>
-                                    {/* <div className='d-flex flex-column text-start'>
-                                        <span className='mx-2'>
-                                            CUOTAS 1: 
-                                        </span>
-                                        <span className='mx-2'>
-                                            CUOTAS 2: 
-                                        </span>
-                                        <span className='mx-2'>
-                                            CUOTAS 3: 
-                                        </span>
-                                        <span className='mx-2'>
-                                            CUOTAS 4: 
-                                        </span>
-                                        <span className='mx-2'>
-                                            CUOTAS 5: 
-                                        </span>
-                                        <span className='mx-2'>
-                                            CUOTAS 6: 
-                                        </span>
-                                    </div><div className='d-flex flex-column text-start'>
-                                        <span className='mx-2'>
-                                            {r.items?.filter(f=>f?.pago?.n_cuotas==1).length}
-                                        </span>
-                                        <span className='mx-2'>
-                                            {r.items?.filter(f=>f?.pago?.n_cuotas==2).length}
-                                        </span>
-                                        <span className='mx-2'>
-                                            {r.items?.filter(f=>f?.pago?.n_cuotas==3).length}
-                                        </span>
-                                        <span className='mx-2'>
-                                            {r.items?.filter(f=>f?.pago?.n_cuotas==4).length}
-                                        </span>
-                                        <span className='mx-2'>
-                                            {r.items?.filter(f=>f?.pago?.n_cuotas==5).length}
-                                        </span>
-                                        <span className='mx-2'>
-                                            {r.items?.filter(f=>f?.pago?.n_cuotas==6).length}
-                                        </span>
-                                    </div> */}
                                 </div>
-                                {/* 
-                                
-                                */}
+                                <div className='border-change d-flex flex-column text-center text-black fs-2'>
+                                    <div className='d-flex justify-content-around w-100'>
+                                        <div>
+                                            IZIPAY
+                                        </div>
+                                        <div className='d-flex flex-column text-start'>
+                                            <span>
+                                                1 CUOTA :  {filtrarxCuota(r.items, 0).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597||f.pago.id_forma_pago===1743).length}
+                                            </span>
+                                            <span>
+                                                3 CUOTA :  {filtrarxCuota(r.items, 3).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597||f.pago.id_forma_pago===1743).length}
+                                            </span>
+                                            <span>
+                                                6 CUOTA :  {filtrarxCuota(r.items, 6).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597||f.pago.id_forma_pago===1743).length}
+                                            </span><span>
+                                                QR :  {r.items.filter(f=>f.pago.id_forma_pago===1471).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597||f.pago.id_forma_pago===1743).length}
+                                            </span><span>
+                                                INTERCIONAL:  {r.items.filter(f=>!f.pago.es_nacional).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597).length}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </Col>
                     )
@@ -111,5 +105,8 @@ const agruparPorMesAnio = (data) =>
   );
 
 const filtrarxCuota = (data, n_cuota)=>{
-    return data?.filter(f=>f?.pago?.n_cuotas==n_cuota).length
+    return data?.filter(f=>f?.pago?.n_cuotas==n_cuota)
+}
+const filtrarPorQR = ()=>{
+
 }

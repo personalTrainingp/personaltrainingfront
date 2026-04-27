@@ -2,7 +2,6 @@ import { InputButton } from '@/components/InputText'
 import React, { useState } from 'react'
 import { DataTableGastos } from './DataTableGastos'
 import { ModalCustomGasto } from './ModalCustomGasto'
-import { ModalCustomProveedores } from '../GestProveedores/ModalCustomProveedores'
 
 export const AppGestionGastos = ({id_empresa}) => {
   const [isOpenModalGasto, setisOpenModalGasto] = useState({id: 0, isOpen: false, isCopy: false})

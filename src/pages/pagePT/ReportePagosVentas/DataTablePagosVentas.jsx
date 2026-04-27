@@ -53,7 +53,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
-    {id: 0, header: 'VENTA', render:(row)=>{
+    {id: 0, header: 'VENTA', accessor: '', render:(row)=>{
       return (
         <>
         <NumberFormatMoney
@@ -63,14 +63,14 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
-    {id: 1, header: 'OPERACION', render: (row)=>{
+    {id: 1, header: 'OPERACION', accessor: '', render: (row)=>{
       return (
         <>
           {row.pago.n_operacion}
         </>
       )
     }},
-    {id: 15, header: 'OPERADORES', render:(row)=>{
+    {id: 15, header: 'OPERADORES', accessor: 'label_operador', render:(row)=>{
       return (
         <>
         {/* {row.pago.id_forma_pago} |  */}
@@ -78,7 +78,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
-    {id: 2, header: 'FORMA DE PAGO', render:(row)=>{
+    {id: 2, header: 'FORMA DE PAGO', accessor: 'label_forma_pago', render:(row)=>{
       return (
         <>
         {/* {row.pago.id_forma_pago} |  */}
@@ -86,7 +86,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
-    {id: 3, header: 'TIPO DE TARJETA', render:(row)=>{
+    {id: 3, header: 'TIPO DE TARJETA', accessor: 'label_tipo_tarjeta', render:(row)=>{
       return (
         <>
         {/* {row.pago.id_tipo_tarjeta} |  */}
@@ -94,7 +94,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
-    {id: 4, header: 'BANCO', render:(row)=>{
+    {id: 4, header: 'BANCO', accessor: 'label_banco', render:(row)=>{
       const id_banco = row.pago?.parametro_banco?.id_param
       // 259 
       return (
