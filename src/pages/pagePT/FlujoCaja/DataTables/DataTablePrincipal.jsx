@@ -87,6 +87,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                               {
                                 (((sumaMontoMensualCompletos)/(mesActual-1))-sumaMontoMensual)>0
                                 && nombreGrupo!=='KARAOKE' 
+                                && nombreGrupo!=='INGRESOS'
                                 && nombreGrupo!=='COMPRA ACTIVOS' 
                                 && nombreGrupo!=='PRESTAMOS' 
                                 &&`${f.anio}-${f.mes}` ===`${anioActual}-${mesActual}` 
