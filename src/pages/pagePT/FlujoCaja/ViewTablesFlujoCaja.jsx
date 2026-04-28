@@ -14,8 +14,11 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     const [dataIngresos, setdataIngresos] = useState({isOpen: false, items: [], header: ''})
     useEffect(() => {
         obtenerEgresosxFecha(id_empresa, arrayFecha)
+    }, [])
+    useEffect(() => {
         obtenerIngresosxFecha(id_empresa, arrayFecha)
     }, [])
+    
     const onOpenModalTableItems = (data)=>{
         setdata({isOpen: true, items: data, header: ''})
     }

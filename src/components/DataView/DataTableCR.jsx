@@ -177,12 +177,9 @@ const getPaginationItems = () => {
         </Table>
       </div>
 
-      {/* 📄 PAGINACIÓN */}
       <Pagination>
-  {/* << */}
   <Pagination.First onClick={() => setCurrentPage(1)} />
 
-  {/* < */}
   <Pagination.Prev
     onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
   />
@@ -203,7 +200,6 @@ const getPaginationItems = () => {
     );
   })}
 
-  {/* > */}
   <Pagination.Next
     onClick={() =>
       setCurrentPage((p) => Math.min(p + 1, totalPages))
@@ -212,7 +208,7 @@ const getPaginationItems = () => {
   {/* >> */}
   <Pagination.Last onClick={() => setCurrentPage(totalPages)} />
 </Pagination>
-ESTAS EN LA PAGINA {currentPage}
+ESTAS EN LA PAGINA {currentPage} de {paginatedData.length}
     </>
   );
 };

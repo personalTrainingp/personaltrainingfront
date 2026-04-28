@@ -259,10 +259,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                         <div className='text-change' onClick={()=>onOpenModalTableItems(e.dataGasto)}>
                           <NumberFormatMoney amount={-e.sumaGastos}/>
                           <br/>
-                          {
-                            `${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` &&
-                          <NumberFormatMoney amount={-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/>
-                          }
+                          <div className='text-orange'>
+                            {
+                              `${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` &&
+                            <NumberFormatMoney amount={-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/>
+                            }
+                          </div>
                         </div>
                       </td>
                     </React.Fragment>

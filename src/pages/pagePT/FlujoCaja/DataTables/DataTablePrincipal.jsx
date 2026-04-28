@@ -8,35 +8,36 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
   const anioActual = fecha.getFullYear()
   const mesActual = fecha.getMonth()+1
   const dataAlter = fechas.map((f, index, array)=>{
-      const dataTotal = itemsxDias.find(i=>i.mes===f.mes && i.anio===f.anio)??{}
-      const dataPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1423) || [];
-      const dataNoPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1424) || [];
-      const data =  [...dataPagadas, ...dataNoPagadas]
-    return {
-        ...f,
-        // items: conceptos.flatMap(grupo => grupo.items).filter(i=>i.mes===f.mes && i.anio===f.anio),
-        mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
-        dataTotalPagadas: dataPagadas||[],
-        montoTotalPagadas: ( dataPagadas?.reduce((total, item)=>total+item?.monto, 0)||0),
-        data: data,
-        dataSumaMontos: data.reduce((total, item)=>total+item?.monto, 0)||0,
-        dataSumaCantidad : data.length,
-        cantidadTotalPagadas: dataPagadas?.length ||0,
-        dataTotalNoPagadas: dataNoPagadas||[],
-        montoTotalNoPagadas: (dataNoPagadas?.reduce((total, item)=>total+item?.monto, 0)||0),
-        cantidadTotalNoPagadas: dataNoPagadas?.length ||0,
-    }
+        const dataTotal = itemsxDias.find(i=>i.mes===f.mes && i.anio===f.anio)??{}
+        // const dataConMesesCompletos = 
+        const dataPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1423) || [];
+        const dataNoPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1424) || [];
+        const data =  [...dataPagadas, ...dataNoPagadas]
+          return {
+              ...f,
+              mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
+              dataTotalPagadas: dataPagadas||[],
+              montoTotalPagadas: ( dataPagadas?.reduce((total, item)=>total+item?.monto, 0)||0),
+              data: data,
+              dataSumaMontos: data.reduce((total, item)=>total+item?.monto, 0)||0,
+              dataSumaCantidad : data.length,
+              cantidadTotalPagadas: dataPagadas?.length ||0,
+              dataTotalNoPagadas: dataNoPagadas||[],
+              montoTotalNoPagadas: (dataNoPagadas?.reduce((total, item)=>total+item?.monto, 0)||0),
+              cantidadTotalNoPagadas: dataNoPagadas?.length ||0,
+          }
   })
-  
+  const dataMesesCompletos = dataAlter.filter(f=>f.fecha !== `${anioActual}-${mesActual}`)
+  const sumaMontoMesesCompletos = dataMesesCompletos.reduce((item, total)=>item.dataSumaMontos+total, 0)
   const montoAcumuladoDeMontoTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaMontos, 0)
   const montoAcumuladoDecantidadTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaCantidad, 0)
-  const dataFilter = dataAlter.filter(f=>f.data?.length !== 0).length
+  console.log({dataAlter, dataMesesCompletos});
   return (
     <>
       <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
         <thead>
           <tr>
-            <th style={{width: '500px'}} className={` text-break fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black `}>{index}. {nombreGrupo==='GAS / MANTENIMIENTO Y MOVILIDADES'?<>GAS<br/> MANTENIMIENTO<br/> MOVILIDADES</>:buscarPuntosYPonerTransparente(nombreGrupo)}</th>
+            <th style={{width: '500px'}} className={` text-break fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black `}>{index}. {nombreGrupo==='GAS / MANTENIMIENTO Y MOVILIDADES'?<>GAS<br/> MANTENIMIENTO<br/> MOVILIDADES</>:(nombreGrupo)}</th>
             {
               dataAlter.map(f=>{
                 return (
@@ -55,15 +56,17 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
         </thead>
         <tbody>
           { conceptos.map((c, i)=>{
+            const itemsConMesesCompletos = c.items.filter(m=>`${m.anio}-${m.mes}` !== `${anioActual}-${mesActual}`)
+            .flatMap(f=>f.items)
+            const sumaMontoMensualCompletos = (itemsConMesesCompletos?.reduce((total, im)=>total+im?.monto, 0))
             return (
               <tr key={`${i}-${c.concepto}`}>
-                <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>{i+1}. {buscarPuntosYPonerTransparente(c.concepto)}</td>
+                <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>{i+1}. {(c.concepto)}</td>
                 {
-                    dataAlter.map((f, i)=>{
-                      
+                    dataAlter.map((f, i, a)=>{
                       const itemsDelMesFiltrado1423= c.items?.find(m=>m.mes===f.mes && m.anio===f.anio)?.items?.filter(e=>e.id_estado_gasto===1423)
                       const itemsDelMesFiltrado1424= c.items?.find(m=>m.mes===f.mes && m.anio===f.anio)?.items?.filter(e=>e.id_estado_gasto===1424)
-                      const sumaMontoMensual = FUNMoneyFormatter(itemsDelMesFiltrado1423?.reduce((total, im)=>total+im?.monto, 0))
+                      const sumaMontoMensual = (itemsDelMesFiltrado1423?.reduce((total, im)=>total+im?.monto, 0))
                       const sumaCantidadMensual = itemsDelMesFiltrado1423?.length
                       const sumaMontoMensual1424 = FUNMoneyFormatter(itemsDelMesFiltrado1424?.reduce((total, im)=>total+im?.monto, 0))
                       const sumaCantidadMensual1424 = itemsDelMesFiltrado1424?.length
@@ -77,21 +80,30 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                               className='text-center'
                               onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1423)}
                               >
-                              {sumaMontoMensual}
-                              <br/>
-                              {`${f.anio}-${f.mes}` ===`${anioActual}-${mesActual}` && (c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(anio, dataAlter))>sumaMontoMensual && (
+                                <NumberFormatMoney
+                                  amount=
+                                  {sumaMontoMensual}
+                                />
+                              {
+                                (((sumaMontoMensualCompletos)/(mesActual-1))-sumaMontoMensual)>0
+                                && nombreGrupo!=='KARAOKE' 
+                                && nombreGrupo!=='COMPRA ACTIVOS' 
+                                && nombreGrupo!=='PRESTAMOS' 
+                                &&`${f.anio}-${f.mes}` ===`${anioActual}-${mesActual}` 
+                                && (
+                                <>
+                                <br/>
                                 <div className='text-orange'>
                                   <NumberFormatMoney 
-                                  amount={(c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(anio, dataAlter))-sumaMontoMensual}/>
+                                  amount={((sumaMontoMensualCompletos)/(mesActual-1))-sumaMontoMensual}/>
                                 </div>
+                                </>
                               )
                               }
-                                <br/> 
                               </div>
                             )
                           }
                           <div className='text-change' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
-                            
                             {sumaMontoMensual1424!=='0.00'&&sumaMontoMensual1424}
                           </div>
                         </div>
@@ -120,7 +132,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                 <td className='fs-3 text-end'>{c.data.length}</td>
                 <td className='fs-3 text-end'>{(((c.data?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
                 <td className='text-end border-right-10'>
-                  <NumberFormatMoney amount={c.data?.reduce((total, im)=>total+im?.monto, 0)/dataTotalFormular(anio, dataAlter)}/>
+                  <NumberFormatMoney amount={sumaMontoMensualCompletos/dataTotalFormular(anio, dataAlter)}/>
                   </td>
               </tr>
             )
@@ -193,18 +205,4 @@ if(anio===year){
 }else{
   return 12;
 }
-}
-
-function buscarPuntosYPonerTransparente(txt='') {
-  return txt.split(/(\.+)/g).map((parte, i) => {
-    if (parte.startsWith(".")) {
-      return (
-        <span key={i} style={{ visibility: "hidden" }}>
-          {parte}
-        </span>
-      );
-    }
-    return <span key={i}>{parte}</span>;
-  });
-  
 }

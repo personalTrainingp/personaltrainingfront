@@ -19,50 +19,50 @@ export const ReporteCuotasFecha = () => {
                     return (
                         <Col lg={4}>
                             <div className='m-1'>
-                                <div className='bg-change text-white p-1 text-center fs-1'>
-                                    <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'MMMM '}/>
+                                <div className='bg-change text-white p-1 text-center' style={{fontSize: '50px'}}>
                                     <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'YYYY '}/>
+                                    <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'MMMM '}/>
                                 </div>
                                 <div className='border-change d-flex flex-column text-center text-black fs-2'>
                                     <div className='d-flex justify-content-around w-100'>
-                                        <div>
+                                        <div className='text-change' style={{fontSize: '40px'}}>
                                             OPENPAY
                                         </div>
                                         <div className='d-flex flex-column text-start'>
                                             <span>
-                                                1 CUOTA :  {filtrarxCuota(r.items, 0).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389||f.pago.id_forma_pago===1743).length}
+                                                <span className='text-change'>1</span> CUOTA : <span className='text-change'>{filtrarxCuota(r.items, 0).filter(f=>f.pago.id_operador===1739&&f.pago.id_forma_pago===1743).length}</span> 
                                             </span>
                                             <span>
-                                                3 CUOTA :  {filtrarxCuota(r.items, 3).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389||f.pago.id_forma_pago===1743).length}
+                                                <span className='text-change'>3</span> CUOTA : <span className='text-change'>{filtrarxCuota(r.items, 3).filter(f=>f.pago.id_operador===1739&&f.pago.id_forma_pago===1743).length}</span> 
                                             </span>
                                             <span>
-                                                6 CUOTA :  {filtrarxCuota(r.items, 6).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389||f.pago.id_forma_pago===1743).length}
+                                                <span className='text-change'>6</span> CUOTA : <span className='text-change'>{filtrarxCuota(r.items, 6).filter(f=>f.pago.id_operador===1739&&f.pago.id_forma_pago===1743).length}</span> 
                                             </span><span>
-                                                QR :  {r.items.filter(f=>f.pago.id_forma_pago===1471).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389||f.pago.id_forma_pago===1743).length}
+                                                QR :  <span className='text-change'>{r.items.filter(f=>f.pago.id_forma_pago===1471).filter(f=>f.pago.id_operador===1739).length}</span>
                                             </span><span>
-                                                INTERNACIONAL:  {r.items.filter(f=>!f.pago.es_nacional).filter(f=>f.pago.id_operador===1739||f.pago.id_forma_pago===1389).length}
+                                                INTERNACIONAL:  <span className='text-change'>{r.items.filter(f=>!f.pago.es_nacional).filter(f=>f.pago.id_operador===1739).length}</span>
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className='border-change d-flex flex-column text-center text-black fs-2'>
                                     <div className='d-flex justify-content-around w-100'>
-                                        <div>
+                                        <div className='text-change' style={{fontSize: '40px'}}>
                                             IZIPAY
                                         </div>
                                         <div className='d-flex flex-column text-start'>
                                             <span>
-                                                1 CUOTA :  {filtrarxCuota(r.items, 0).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597||f.pago.id_forma_pago===1743).length}
+                                                <span className='text-change'>1</span> CUOTA : <span className='text-change'>{filtrarxCuota(r.items, 0).filter(f=>f.pago.id_operador===1740&&f.pago.id_forma_pago===1743).length}</span> 
                                             </span>
                                             <span>
-                                                3 CUOTA :  {filtrarxCuota(r.items, 3).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597||f.pago.id_forma_pago===1743).length}
+                                                <span className='text-change'>3</span> CUOTA :  <span className='text-change'>{filtrarxCuota(r.items, 3).filter(f=>f.pago.id_operador===1740&&f.pago.id_forma_pago===1743).length}</span>
                                             </span>
                                             <span>
-                                                6 CUOTA :  {filtrarxCuota(r.items, 6).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597||f.pago.id_forma_pago===1743).length}
+                                                <span className='text-change'>6</span> CUOTA : <span className='text-change'>{filtrarxCuota(r.items, 6).filter(f=>f.pago.id_operador===1740&&f.pago.id_forma_pago===1743).length}</span>
                                             </span><span>
-                                                QR :  {r.items.filter(f=>f.pago.id_forma_pago===1471).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597||f.pago.id_forma_pago===1743).length}
+                                                QR : <span className='text-change'>{r.items.filter(f=>f.pago.id_forma_pago===1471).filter(f=>f.pago.id_operador===1740).length}</span> 
                                             </span><span>
-                                                INTERNACIONAL:  {r.items.filter(f=>!f.pago.es_nacional).filter(f=>f.pago.id_operador===1740||f.pago.id_forma_pago===597).length}
+                                                INTERNACIONAL: <span className='text-change'>{r.items.filter(f=>!f.pago.es_nacional).filter(f=>f.pago.id_operador===1740).length}</span>
                                             </span>
                                         </div>
                                     </div>
