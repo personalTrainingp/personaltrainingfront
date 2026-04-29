@@ -3,26 +3,35 @@ import { useFlujoCaja } from '../hook/useFlujoCajaStore';
 import { generarMesYanio } from '../helpers/generarMesYanio';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 
-export const TrItemVentas = ({ label = '', arrayFechas = [], id_empresa = 0, classNameTotal='', className='' }) => {
+export const TrItemVentas = ({ label = '', 
+	arrayFechas = [], 
+	arrayDates=[new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2024-03-31 15:45:47.6640000 +00:00')], id_empresa = 0, classNameTotal='', className='' }) => {
 	const { obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();
 	useEffect(() => {
 		obtenerIngresosxFecha(id_empresa, arrayFechas);
 	}, []);
+	console.log({arrayDates});
+	
+	const alter = generarMesYanio(
+				arrayDates[0], arrayDates[1]
+			).map(e=>{
+				const dataIngresos = dataIngresosxFecha.filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA ACTIVOS').flatMap((f) => f.items)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								?.reduce((total, item) => total + item.monto, 0)
+				return {
+					sumaIngresos: dataIngresos
+				}
+			})
 	return (
 		<tr>
 			<td className={`border-left-10 border-right-10 sticky-td-${id_empresa} text-center text-white fs-1`}>{label}</td>
-			{generarMesYanio(
-				new Date('2024-01-01 15:45:47.6640000 +00:00'),
-				new Date('2024-03-31 15:45:47.6640000 +00:00')
-			).map((e) => {
+			{alter.map((e) => {
 				return (
 					<td className='text-center'>
 						<NumberFormatMoney
 							className={`${className}`}
-							amount={dataIngresosxFecha.filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA ACTIVOS').flatMap((f) => f.items)
-								?.filter((f) => f.mes === e.mes)
-								.flatMap((f) => f.items)
-								?.reduce((total, item) => total + item.monto, 0)}
+							amount={e.sumaIngresos}
 						/>
 					</td>
 				);
@@ -30,9 +39,7 @@ export const TrItemVentas = ({ label = '', arrayFechas = [], id_empresa = 0, cla
 			<td className={classNameTotal}>
 				<NumberFormatMoney
 							className='fs-1'
-					amount={dataIngresosxFecha[0]?.items
-						?.flatMap((f) => f.items)
-						?.reduce((total, item) => total + item.monto, 0)}
+					amount={alter.reduce((total, item)=>total+item.sumaIngresos, 0)}
 				/>
 			</td>
 		</tr>
