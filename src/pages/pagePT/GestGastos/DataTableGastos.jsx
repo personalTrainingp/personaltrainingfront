@@ -37,7 +37,7 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                 </>
             )
         }},
-        {id: 4, header: <>FECHA DE <br/> COMPROBANTE</>, width: '200px',  render:(row)=>{
+        {id: 4, header: <>FECHA DE <br/> COMPROBANTE</>, accessor: 'fecha_comprobante', width: '200px',  render:(row)=>{
             return (
                 <>
                 {DateMaskStr(row.fecha_comprobante, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
@@ -68,7 +68,7 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                 </>
             )
         }},
-        {id: 7, header: <>FECHA <br/> PAGO</>, width: '200px', render:(row)=>{
+        {id: 7, header: <>FECHA <br/> PAGO</>, accessor: 'fecha_pago', width: '200px', render:(row)=>{
             return (
                 <>
                 {DateMaskStr(row.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}

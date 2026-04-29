@@ -33,9 +33,12 @@ export const useVentasPagosStore = () => {
 						label_forma_pago: pago.parametro_forma_pago?.label_param,
 						label_tipo_tarjeta: pago?.parametro_tipo_tarjeta?.label_param,
 						label_banco: pago?.parametro_banco?.label_param,
-						fecha_p: pago?.fecha_pago,
+						fecha_p: venta?.fecha_venta,
 						identificador,
-						fecha_pago_1: DateMaskString(pago?.fecha_pago, 'dddd DD MMMM YYYY'),
+						fecha_pago_1: DateMaskString(
+							venta?.fecha_venta,
+							'dddd DD MMMM YYYY [A LAS] hh:mm A'
+						),
 						identificador,
 						porcentaje:
 							alterPago.find(

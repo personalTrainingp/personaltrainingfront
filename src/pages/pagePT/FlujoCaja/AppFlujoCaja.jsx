@@ -5,6 +5,7 @@ import { TablesResumenTotal } from './view/TablesResumenTotal'
 import { ColorEmpresa } from '@/components/ColorEmpresa'
 import { PageBreadcrumb } from '@/components'
 import { generarMesYanio } from './helpers/generarMesYanio'
+import { TablesTrimestralTotal } from './view/TablesTrimestralTotal'
 
 export const AppFlujoCaja = () => {
   return (
@@ -31,6 +32,11 @@ export const AppFlujoCaja = () => {
             <TabPanel header={<div className='fs-1'>COMPARATIVO ANUAL</div>}>
             <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
               <TablesResumenTotal link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
+            </div>
+            </TabPanel>
+            <TabPanel header={<div className='fs-1'>COMPARATIVO TRIMESTRAL</div>}>
+            <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
+              <TablesTrimestralTotal link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </div>
             </TabPanel>
           </TabView>

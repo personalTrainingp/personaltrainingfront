@@ -28,7 +28,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
       )
     }
     },
-    {id: 7, header: 'DIA Y FECHA', accessor: 'fecha_pago_1', render:(row)=>{
+    {id: 7, header: 'DIA / FECHA / HORA', accessor: 'fecha_pago_1', render:(row)=>{
       return (
         <>
         {row.fecha_pago_1}

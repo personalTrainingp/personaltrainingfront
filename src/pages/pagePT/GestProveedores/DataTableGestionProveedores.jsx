@@ -15,35 +15,35 @@ export const DataTableGestionProveedores = ({id_empresa, tipo, estado, onOpenMod
     
     const columns = [
         {id: 0, header: 'ID', accessor: 'id'},
-        {id: 1, header: 'SERVICIO Y/O PRODUCTO', render:(row)=>{
+        {id: 1, header: 'SERVICIO Y/O PRODUCTO', accessor: 'servicio', render:(row)=>{
           return (
             <>
             {row.servicio}
             </>
           )
         }},
-        {id: 2, header: 'MARCA', render:(row)=>{
+        {id: 2, header: 'MARCA', accessor: 'marca', render:(row)=>{
           return (
             <>
             {row.marca}
             </>
           )
         }},
-        {id: 3, header: 'NOMBRE DEL CONTACTO', render:(row)=>{
+        {id: 3, header: 'NOMBRE DEL CONTACTO', accessor: 'nombre_vend_prov', render:(row)=>{
           return (
             <>
             {row.nombre_vend_prov}
             </>
           )
         }},
-        {id: 4, header: 'RAZON SOCIAL', render:(row)=>{
+        {id: 4, header: 'RAZON SOCIAL', accessor: 'razon_social_prov', render:(row)=>{
           return (
             <>
             {row.razon_social_prov}
             </>
           )
         }},
-        {id: 5, header: 'CELULAR DEL CONTACTO', render:(row)=>{
+        {id: 5, header: 'CELULAR DEL CONTACTO', accessor: 'cel_prov', render:(row)=>{
           return (
             <>
             {row.cel_prov}

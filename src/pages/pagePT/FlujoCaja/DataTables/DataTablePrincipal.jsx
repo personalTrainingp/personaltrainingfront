@@ -27,11 +27,10 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
               cantidadTotalNoPagadas: dataNoPagadas?.length ||0,
           }
   })
-  const dataMesesCompletos = dataAlter.filter(f=>f.fecha !== `${anioActual}-${mesActual}`)
-  const sumaMontoMesesCompletos = dataMesesCompletos.reduce((item, total)=>item.dataSumaMontos+total, 0)
+  // const dataMesesCompletos = dataAlter.filter(f=>f.fecha !== `${anioActual}-${mesActual}`)
+  // const sumaMontoMesesCompletos = dataMesesCompletos.reduce((item, total)=>item.dataSumaMontos+total, 0)
   const montoAcumuladoDeMontoTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaMontos, 0)
   const montoAcumuladoDecantidadTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaCantidad, 0)
-  console.log({dataAlter, dataMesesCompletos});
   return (
     <>
       <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
@@ -85,8 +84,9 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                                   {sumaMontoMensual}
                                 />
                               {
-                                (((sumaMontoMensualCompletos)/(mesActual-1))-sumaMontoMensual)>0
-                                && nombreGrupo!=='KARAOKE' 
+                                (((sumaMontoMensualCompletos)/(mesActual-1))-(sumaMontoMensual||0))>0
+                                && 
+                                nombreGrupo!=='KARAOKE' 
                                 && nombreGrupo!=='INGRESOS'
                                 && nombreGrupo!=='COMPRA ACTIVOS' 
                                 && nombreGrupo!=='PRESTAMOS' 
@@ -96,7 +96,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                                 <br/>
                                 <div className='text-orange'>
                                   <NumberFormatMoney 
-                                  amount={((sumaMontoMensualCompletos)/(mesActual-1))-sumaMontoMensual}/>
+                                  amount={((sumaMontoMensualCompletos)/(mesActual-1))-(sumaMontoMensual||0)}/>
                                 </div>
                                 </>
                               )
@@ -104,7 +104,7 @@ export const DataTablePrincipal = ({data=[], anio, id_empresa, itemsxDias=[], co
                               </div>
                             )
                           }
-                          <div className='text-change' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
+                          <div className='text-change fs-2' onClick={()=>onOpenModalTableItems(itemsDelMesFiltrado1424)}>
                             {sumaMontoMensual1424!=='0.00'&&sumaMontoMensual1424}
                           </div>
                         </div>

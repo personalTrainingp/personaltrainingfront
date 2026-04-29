@@ -40,6 +40,22 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
                 </div>
             )
         }},
+        {id: 2, header: (<>CARGO</>), render:(row)=>{
+            return (
+                <div>
+                    {row.tb_Proveedor?.parametro_oficio?.label_param}
+                </div>
+            )
+        }},
+        {id: 6, header: (<>MONTO</>), render:(row)=>{
+            return (
+                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
+                {row.tc===1?'':row.tc}
+                {row.tc!==1&& (<br/>)}
+                <NumberFormatMoney amount={row.monto}/>
+                </div>
+            )
+        }},
         {id: 3, header: (<>Descripción / Eventos</>), render:(row)=>{
             return (
                 <div>
@@ -58,15 +74,6 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
             return (
                 <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {DateMaskStr(row.fecha_pago, 'dddd DD [DE] MMMM [DEL] YYYY')}
-                </div>
-            )
-        }},
-        {id: 6, header: (<>MONTO</>), render:(row)=>{
-            return (
-                <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
-                {row.tc===1?'':row.tc}
-                {row.tc!==1&& (<br/>)}
-                <NumberFormatMoney amount={row.monto}/>
                 </div>
             )
         }},

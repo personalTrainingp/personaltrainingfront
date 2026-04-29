@@ -13,7 +13,7 @@ export const TrItemVentas = ({ label = '', arrayFechas = [], id_empresa = 0, cla
 			<td className={`border-left-10 border-right-10 sticky-td-${id_empresa} text-center text-white fs-1`}>{label}</td>
 			{generarMesYanio(
 				new Date('2024-01-01 15:45:47.6640000 +00:00'),
-				new Date('2024-12-31 15:45:47.6640000 +00:00')
+				new Date('2024-03-31 15:45:47.6640000 +00:00')
 			).map((e) => {
 				return (
 					<td className='text-center'>
