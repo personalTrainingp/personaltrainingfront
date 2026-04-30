@@ -30,7 +30,7 @@ export const MoneyFormatter = ({ amount, symbol }) => {
   return formattedAmount
 }
 export const NumberFormatMoney = ({ amount, className='fs-2', style }) => {
-  const formattedAmount = accounting.formatMoney(amount, {
+  const formattedAmount = accounting.formatMoney(amount===Infinity?0:amount, {
     symbol: '',  // Símbolo de la moneda
     precision: 2, // Precisión de decimales
     thousand: ',', // Separador de miles

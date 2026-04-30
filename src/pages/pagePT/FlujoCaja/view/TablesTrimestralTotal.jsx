@@ -4,33 +4,11 @@ import { generarMesYanio } from '../helpers/generarMesYanio'
 import { Table } from 'react-bootstrap'
 import { TdItem } from './TdItem'
 import { TrItemVentas } from './TrItem'
+import { ComparativaVentasxAnio } from './ComparativaVentasxAnio'
 export const TablesTrimestralTotal = ({id_empresa}) => {
-    const generar_trimestre1 = [
-        new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2024-03-31 15:45:47.6640000 +00:00')
-    ]
-    const generar_trimestre2 = [
-        new Date('2024-04-01 15:45:47.6640000 +00:00'), new Date('2024-06-31 15:45:47.6640000 +00:00')
-    ]
-    const generar_trimestre3 = [
-        new Date('2024-07-01 15:45:47.6640000 +00:00'), new Date('2024-09-31 15:45:47.6640000 +00:00')
-    ]
-    const generar_trimestre4 = [
-        new Date('2024-10-01 15:45:47.6640000 +00:00'), new Date('2024-12-31 15:45:47.6640000 +00:00')
-    ]
   return (
     <div>
-        <div>
-            <div className='tab-scroll-container'>
-            <div style={{fontSize: '70px'}} className='text-black text-center'>1 TRIMESTRE</div>
-                <TablePorMeses generarMes={generar_trimestre1} id_empresa={id_empresa}/>
-            <div style={{fontSize: '70px'}} className='text-black text-center'>2 TRIMESTRE</div>
-                <TablePorMeses generarMes={generar_trimestre2} id_empresa={id_empresa}/>
-            <div style={{fontSize: '70px'}} className='text-black text-center'>3 TRIMESTRE</div>
-                <TablePorMeses generarMes={generar_trimestre3} id_empresa={id_empresa}/>
-            <div style={{fontSize: '70px'}} className='text-black text-center'>4 TRIMESTRE</div>
-                <TablePorMeses generarMes={generar_trimestre4} id_empresa={id_empresa}/>
-            </div>
-        </div>
+        <ComparativaVentasxAnio id_empresa={id_empresa}/>
     </div>
   )
 }

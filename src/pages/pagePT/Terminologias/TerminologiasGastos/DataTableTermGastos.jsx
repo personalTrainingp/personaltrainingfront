@@ -15,7 +15,7 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
   }, [id_empresa, tipo])
   
   const columns = [
-    {id: 'id', header: 'ID', render: (row)=>{
+    {id: 'id', header: 'ID', accessor: 'id', render: (row)=>{
       return (
         <>
         {row.id}
@@ -23,7 +23,7 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
       )
     },  exportHeader: 'id',
   exportValue: (row) => row.id},
-    {id: 'grupo', header: 'GRUPO',  render: (row)=>{
+    {id: 'grupo', header: 'GRUPO', accessor: 'label_grupo',  render: (row)=>{
       return (
         <>
         {row?.parametro_grupo?.param_label}
@@ -32,7 +32,7 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
     },  exportHeader: 'grupo',
   exportValue: (row) => row.parametro_grupo?.param_label},
     {
-      id: 'concepto', header: 'CONCEPTO', render:(row)=>{
+      id: 'concepto', header: 'CONCEPTO', accessor: 'nombre_gasto', render:(row)=>{
         return (
           <>
           {row.nombre_gasto}

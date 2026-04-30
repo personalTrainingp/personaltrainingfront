@@ -11,7 +11,14 @@ export const useTerminosStore = () => {
 		try {
 			setisLoading(true);
 			const { data } = await PTApi.get(`/terminologia/term2/${id_empresa}/${tipo}`);
-			dispatch(onSetDataViewTerm2(data.terminologia2));
+			const dataAlter = data.terminologia2.map((m) => {
+				return {
+					...m,
+					label_grupo: m?.parametro_grupo?.param_label,
+					// label_grupo: m?.parametro_grupo?.param_label,
+				};
+			});
+			dispatch(onSetDataViewTerm2(dataAlter));
 			setisLoading(false);
 		} catch (error) {
 			console.log(error);

@@ -5,7 +5,7 @@ import { NumberFormatMoney } from '@/components/CurrencyMask';
 
 export const TrItemVentas = ({ label = '', 
 	arrayFechas = [], 
-	arrayDates=[new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2024-03-31 15:45:47.6640000 +00:00')], id_empresa = 0, classNameTotal='', className='' }) => {
+	arrayDates=[new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2024-12-31 15:45:47.6640000 +00:00')], id_empresa = 0, classNameTotal='', className='' }) => {
 	const { obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();
 	useEffect(() => {
 		obtenerIngresosxFecha(id_empresa, arrayFechas);

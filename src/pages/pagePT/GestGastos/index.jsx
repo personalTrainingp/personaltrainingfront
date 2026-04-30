@@ -1,1 +1,1 @@
-export { App as default } from './Apwp'
+export { App as default } from './App'
