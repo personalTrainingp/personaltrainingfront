@@ -6,8 +6,7 @@ import { Dialog } from 'primereact/dialog'
 import React, { useEffect } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { useArticuloStore } from './hook/useArticuloStore'
-import { useImageStore } from '@/hooks/hookApi/useImageStore'
-
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 const customArticulo = {
     modelo: '',
     producto: '',
@@ -17,11 +16,15 @@ const customArticulo = {
     mano_obra_dolares: 0.00,
     mano_obra_soles: 0.00,
     descripcion: '',
-    nameavatar_articulo: ''
+    nameavatar_articulo: '',
+    id_categoria: 0
 }
 export const ModalCustomArticulo = ({show, onHide, id, idEmpresa}) => {
     const { onPostArticulo, onUpdateArticuloxID, onObtenerArticuloxID, dataArticuloxID } = useArticuloStore()
-    const { formState, modelo, producto, id_marca, costo_unitario_soles, costo_unitario_dolares, mano_obra_soles, mano_obra_dolares, descripcion, nameavatar_articulo, onInputChange, onResetForm } = useForm(id==0?customArticulo:dataArticuloxID)
+        const { obtenerParametroPorEntidadyGrupo: obtenerMarcas, DataGeneral: dataMarcas } = useTerminoStore()
+        const { obtenerParametroPorEntidadyGrupo: obtenerCategoria, DataGeneral: dataCategoria } = useTerminoStore()
+        const { obtenerParametroPorEntidadyGrupo: obtenerSubCategoria, DataGeneral: dataSubCategoria } = useTerminoStore()
+    const { formState, modelo, producto, id_marca, id_categoria, id_subcategoria, costo_unitario_soles, costo_unitario_dolares, mano_obra_soles, mano_obra_dolares, descripcion, nameavatar_articulo, onInputChange, onResetForm } = useForm(id==0?customArticulo:dataArticuloxID)
     const onSubmitCustomArticulo=()=>{
         if (id==0) {
             if(nameavatar_articulo){
@@ -44,12 +47,18 @@ export const ModalCustomArticulo = ({show, onHide, id, idEmpresa}) => {
         onHide()
     }
     useEffect(() => {
+        if(show){
+            obtenerMarcas('articulo', 'marca')
+            obtenerCategoria('articulo', 'categoria')
+            obtenerSubCategoria('articulo', 'subcategoria')
+        }
+    }, [show])
+    
+    useEffect(() => {
         if(id!==0){
             onObtenerArticuloxID(id)
         }
     }, [id, show])
-    console.log(formState);
-    
   return (
     <Dialog visible={show} onHide={onCancelar} header={`${id!==0?'EDITAR ARTICULO':'AGREGAR ARTICULO'}`} style={{width: '80rem'}}>
         <form>
@@ -76,7 +85,17 @@ export const ModalCustomArticulo = ({show, onHide, id, idEmpresa}) => {
                         </Col>
                         <Col lg={4}>
                             <div className='mb-2'>
-                                <InputSelect label={'Marca'} nameInput={'id_marca'} onChange={onInputChange}  />
+                                <InputSelect label={'Marca'} nameInput={'id_marca'} options={dataMarcas} value={id_marca} onChange={onInputChange}  />
+                            </div>
+                        </Col>
+                        <Col lg={4}>
+                            <div className='mb-2'>
+                                <InputSelect label={'Categoria'} nameInput={'id_categoria'} options={dataCategoria} value={id_categoria} onChange={onInputChange}  />
+                            </div>
+                        </Col>
+                        <Col lg={4}>
+                            <div className='mb-2'>
+                                <InputSelect label={'Subcategoria'} nameInput={'id_subcategoria'} options={dataSubCategoria} value={id_subcategoria} onChange={onInputChange}  />
                             </div>
                         </Col>
                         <Col lg={4}>

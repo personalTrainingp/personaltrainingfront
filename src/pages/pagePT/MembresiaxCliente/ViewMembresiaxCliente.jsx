@@ -58,21 +58,21 @@ export const ViewMembresiaxCliente = () => {
           </>
         )
       }},
-      {id: 3, header: 'PROGRAMAS', render: (row)=>{
+      {id: 4, header: 'PROGRAMAS', accessor: 'ultimoPgm', render: (row)=>{
         return (
           <>
           {row.ultimoPgm}
           </>
         )
       }},
-      {id: 3, header: 'ORIGEN', render: (row)=>{
+      {id: 5, header: 'ORIGEN', accessor: 'origen', render: (row)=>{
         return (
           <>
           {row.origen}
           </>
         )
       }},
-      {id: 3, header: 'ORIGEN', render: (row)=>{
+      {id: 6, header: 'TOTAL', render: (row)=>{
                 const combinedArray = [
           ...row.detalle_ventaCitas,
           ...row.detalle_ventaMembresia,

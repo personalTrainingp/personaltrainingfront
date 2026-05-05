@@ -4,11 +4,19 @@ import { useSelector } from 'react-redux'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { MesxIgv } from './MesxIgv'
-import dayjs from 'dayjs'
-import { Col, Row } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
+import { generarMesYanio } from './generarMesYanio'
 
 export const AppOrdenCompra = ({id_empresa}) => {
       const { dataView } = useSelector(e=>e.EGRESOS)
+      const dataAlter = generarMesYanio(new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2026-12-31 15:45:47.6640000 +00:00')).map(m=>{
+        const igv = agruparPorFecha(dataView.filter((f) => f.impuesto_igv === true)).filter(f=>f.fecha.anio===m.anio && f.fecha.mes===m.mes).map(m=>{return {monto_total: m.monto_total, len: m.items.length}})
+        return {
+          montoSuma: igv.reduce((total, item)=>item.monto_total+total, 0),
+          igv,
+          ...m,
+        }
+      })
   return (
     <div>
       <TabView>
@@ -17,17 +25,69 @@ export const AppOrdenCompra = ({id_empresa}) => {
         <DataTableGastos sonCompras={true} id_empresa={id_empresa} />
         </TabPanel>
         <TabPanel header={'REPORTE POR MES'}>
-          <Row>
-            {
-              agruparPorFecha(dataView.filter((f) => f.impuesto_igv === true)).map(m=>{
-                return (
-                  <Col lg={2}>
-                    <MesxIgv data={m.items} monto_acumulado={m.monto_total-(m.monto_total/1.18)} label={dayjs(`15-${m.fecha.mes}-${m.fecha.anio}`, 'DD-M-YYYY').format('MMMM YYYY')}/>
-                  </Col>
-                )
-              })
-            }
-          </Row>
+          <div className="tab-scroll-container">
+            <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
+              <thead>
+                <tr>
+                  <th style={{width: '200px'}} className={` text-break fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black text-center`}>MES <br/> AÑO </th>
+                  {
+                    generarMesYanio(new Date('2026-01-01 15:45:47.6640000 +00:00'), new Date('2026-12-31 15:45:47.6640000 +00:00')).map(m=>{
+                      return (
+                        <React.Fragment key={`${m.mesSTR}`}>
+                          <td className={`text-center border-black bg-change fs-2 text-white`} style={{width: '180px'}}>{m.mesSTR}</td>
+                          <td className={`text-center border-black bg-change-pastel text-white`} style={{width: '90px'}}>MOV.</td>
+                        </React.Fragment>
+                      )
+                    })
+                  }
+                  <th className='text-center border-top-10 border-left-10 border-bottom-10' style={{width: '200px'}}>TOTAL <br/> ANUAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className='fs-2 bg-change text-center text-white'>2026</td>
+                    {
+                      dataAlter.filter(f=>f.anio===2026).map(m=>{
+                        return(
+                          <React.Fragment key={`${m.mesSTR}`}>
+                            <MesxIgv m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
+                          </React.Fragment>
+                        )
+                      })
+                    }
+                </tr>
+                <tr>
+                  <td className='fs-2 bg-change text-center text-white'>2025</td>
+                    {
+                      dataAlter.filter(f=>f.anio===2025).map(m=>{
+                        return(
+                          <React.Fragment key={`${m.mesSTR}`}>
+                            <MesxIgv m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
+                          </React.Fragment>
+                        )
+                      })
+                    }
+                </tr>
+                <tr>
+                  <td className='fs-2 bg-change text-center text-white'>2024</td>
+                  {
+                      dataAlter.filter(f=>f.anio===2024).map(m=>{
+                        return(
+                          <React.Fragment key={`${m.mesSTR}`}>
+                            <MesxIgv m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
+                          </React.Fragment>
+                        )
+                      })
+                    }
+                </tr>
+              </tbody>
+            </Table>
+          </div>
+          <div>
+            <pre>
+              {JSON.stringify(agruparPorFecha(dataView.filter((f) => f.impuesto_igv === true)), null, 2)}
+            </pre>
+          </div>
         </TabPanel>
       </TabView>
     </div>

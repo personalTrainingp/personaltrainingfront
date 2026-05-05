@@ -10,7 +10,6 @@ import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 import utc from 'dayjs/plugin/utc';
 import { ModalInventario } from './ModalInventario';
-// import { useInventarioStore } from '@/hooks/hookApi/useInventarioStore';
 import config from '@/config';
 import { Image } from 'primereact/image';
 import sinImage from '@/assets/images/SinImage.jpg'
@@ -75,20 +74,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                 part
             )
         );
-    };
-    const clearFilter = () => {
-        initFilters();
-        setGlobalFilterValue('');
-    };
-
-    const onGlobalFilterChange = (e) => {
-        const value = e.target.value;
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
-        setGlobalFilterValue(value);
     };
     const { obtenerArticulo, articulo, setArticulo } = useInventarioStore()
     const [isOpenDataMovimientos, setisOpenDataMovimientos] = useState({isOpen: false, id: 0})
@@ -223,16 +208,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             tipo_gasto: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
             monto: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
         });
-        // setGlobalFilterValue('');
     };
-    const [showModalImportadorData, setshowModalImportadorData] = useState(false)
-    const onOpenModalImportadorData = ()=>{
-        setshowModalImportadorData(true)
-        
-    }
-    const onCloseModalImportadorData = ()=>{
-        setshowModalImportadorData(false)
-    }
     const renderHeader = () => {
         return (
             <div className="d-flex justify-content-between">
@@ -308,17 +284,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             </>
         );
     }
-    const etiquetasBodyTemplate = (rowData)=>{
-        return (
-            <>
-                <div className=''>ETIQUETAS</div>
-            <div className="fw-bold flex align-items-center gap-2 font-24">
-                <>{rowData.etiquetas_str}</>
-                <br/>
-            </div>
-            </>
-        );
-    }
     const cantidadBodyTemplate = (rowData) => {
         return (
             <>
@@ -347,19 +312,12 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     
     const header = renderHeader();
     const [isOpenModalEgresos, setisOpenModalEgresos] = useState(false)
-    const [isOpenModalCube, setisOpenModalCube] = useState(false)
     const onCloseModalIvsG = ()=>{
         setisOpenModalEgresos(false)
     }
     const onOpenModalIvsG = ()=>{
         setisOpenModalEgresos(true)
     }   
-    const onOpenModalCube = ()=>{
-        setisOpenModalCube(true)
-    }   
-    const onCloseModalCube = ()=>{
-        setisOpenModalCube(false)
-    } 
     const modeloBodyTemplate = (rowData)=>{
         return (
             <>
@@ -470,10 +428,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
 
         const [dataAgrupadoEtiquetas, setdataAgrupadoEtiquetas] = useState([])
         const [isOpenModalAgruparxEtiquetas, setisOpenModalAgruparxEtiquetas] = useState(false)
-        const onOpenModalAgrupadoxEtiquetas = (data)=>{
-            setisOpenModalAgruparxEtiquetas(true)
-            setdataAgrupadoEtiquetas(data)
-        }
         const onCloseModalAgrupadoxEtiquetas = ()=>{
             setisOpenModalAgruparxEtiquetas(false)
         }

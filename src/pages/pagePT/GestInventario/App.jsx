@@ -12,8 +12,11 @@ export const App = () => {
       childrenChange={
         <App2 id_empresa={598}/>
       }
-      childrenInventarioSinIncluirCircusBussiness={
+      childrenReducto={
         <App2 id_empresa={599}/>
+      }
+      childrenInventarioSinIncluirCircusBussiness={
+        <App2 id_empresa={610}/>
       }
       childenBUSSINESS={
         <App2 id_empresa={602}/>

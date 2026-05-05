@@ -8,6 +8,10 @@ const getQuotaParaMes = (monthIndex, year) => {
   const y = year;
   const m = monthIndex;
   switch (`${m}-${y}`) {
+    case "5-2026":
+      return {
+        meta: 125000,
+      };
     case "4-2026":
       return {
         meta: 115000,
@@ -158,6 +162,25 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
           sumaIngresosExcepcional
         }
       })
+      const dataAlterMesAtras = fechas.filter((f)=>`${f.anio}-${f.mes}`!==`${anioActual}-${mesActual-1}`).map(f=>{
+        const dataGastoBolsa = dataGastosxFecha.filter(f=>f.grupo==="EGRESOS BOLSA").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const sumaGastosBolsa = dataGastoBolsa.reduce((total, item)=>item.monto+total, 0)
+        const dataGasto = dataGastosxFecha.filter(f=>f.grupo!=="COMPRA ACTIVOS"&& f.grupo!=="EGRESOS BOLSA"&& f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.grupo!=="BONO GERENCIAS").flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.grupo!=='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.grupo==='INGRESOS EXTRAORDINARIOS').flatMap(e=>e.items).filter(e=>e.mes===f.mes).flatMap(e=>e.items);
+        const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
+        const sumaGastos = dataGasto.reduce((total, item)=>item.monto+total, 0)
+        const sumaIngresosExcepcional = dataIngresosExcepcionales.reduce((total, item)=>item.monto+total, 0);
+        return {
+          dataGasto,
+          sumaGastosBolsa,
+          dataIngresos,
+          dataIngresosExcepcionales,
+          sumaIngresos,
+          sumaGastos,
+          sumaIngresosExcepcional
+        }
+      })
       const ingresosAcumulados = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)
     const utilidadBrutaTotal = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
     const utilidadNetaTotal = (dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
@@ -244,6 +267,10 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                               `${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` &&
                             <NumberFormatMoney amount={-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/>
                             }
+                            {/* {
+                              `${e.mes}-${e.anio}`===`${mesActual-1}-${anioActual}` &&
+                              <NumberFormatMoney amount={-e.sumaGastos-(dataAlterMesAtras.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlterMesAtras.filter(f=>f.sumaGastos!=0).length)-1)}/>
+                            } */}
                           </div>
                         </div>
                       </td>
@@ -269,12 +296,28 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   return (
                     <React.Fragment>
                       <td className={`text-end ${`${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> 
-                        <div className={`${e.utilidadBruta>0?'text-ISESAC':'text-change'} `} ><NumberFormatMoney amount={e.utilidadBruta}/></div>
                         {
-                              `${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && (
-                                <div className={`${e.utilidadBruta>0?'text-orange':'text-orange'} `} ><NumberFormatMoney amount={e.utilidadBruta-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/></div>
+                              `${e.mes}-${e.anio}`!==`${mesActual}-${anioActual}` && (
+                                <div className={`${e.utilidadBruta>0?'text-ISESAC':'text-change'} `} >
+                                  <NumberFormatMoney amount={e.utilidadBruta}/>
+                                </div>
                               )
                         }
+                        
+                        {
+                              `${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` && (
+                                <div className={`${e.utilidadBruta>0?'text-orange':'text-orange'} `} >
+                                  <NumberFormatMoney 
+                                    amount=
+                                    {e.utilidadBruta-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/></div>
+                              )
+                        }
+                        {/* {
+                          `${e.mes}-${e.anio}`===`${mesActual-1}-${anioActual}` &&
+                          <div className='text-orange'>
+                            <NumberFormatMoney amount={e.utilidadBruta+(-(dataAlterMesAtras.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlterMesAtras.filter(f=>f.sumaGastos!=0).length)-1))}/>
+                          </div>
+                        } */}
                       </td>
                     </React.Fragment>
                     )
@@ -307,6 +350,14 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                                 <div className={`${e.utilidadNeta>0?'text-ISESAC':'text-change'}`} style={{fontSize: '30px'}}>{(e.utilidadUltimaLinea).toFixed(2)}</div>
                               )
                         }
+                        {/* {
+                          `${e.mes}-${e.anio}`===`${mesActual-1}-${anioActual}` &&
+                          <div className='text-orange'>
+                            <NumberFormatMoney amount={
+                              ((e.utilidadBruta+(-(dataAlterMesAtras.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlterMesAtras.filter(f=>f.sumaGastos!=0).length)-1)))*100)/e.sumaIngresos
+                              }/>
+                          </div>
+                        } */}
                       </td>
                     </React.Fragment>
                     )
@@ -326,11 +377,17 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                               `${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` ?(
                                 <div className={`${e.utilidadBruta>0?'text-orange':'text-orange'} `} ><NumberFormatMoney amount={(e.utilidadBruta-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos))*0.05}/></div>
                               ): (
-                                <div className={``} style={{fontSize: '30px'}}>
+                                <div className={`${`${e.mes}-${e.anio}`===`${mesActual-1}-${anioActual}`&&'text-ISESAC'}`} style={{fontSize: '30px'}}>
                                   {<NumberFormatMoney  amount={e.utilidadBruta*0.05} className='fs-2'/>}
                                 </div>
                               )
                         }
+                        {/* {
+                          `${e.mes}-${e.anio}`===`${mesActual-1}-${anioActual}` &&
+                          <div className='text-orange'>
+                            <NumberFormatMoney amount={(e.utilidadBruta+(-(dataAlterMesAtras.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlterMesAtras.filter(f=>f.sumaGastos!=0).length)-1)))*0.05}/>
+                          </div>
+                        } */}
                       </td>
                     </React.Fragment>
                     )

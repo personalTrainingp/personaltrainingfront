@@ -3,17 +3,16 @@ import { useFlujoCaja } from '../hook/useFlujoCajaStore';
 import { generarMesYanio } from '../helpers/generarMesYanio';
 import { Table } from 'react-bootstrap';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
-const fechaActual = new Date()
-const mesActual = fechaActual.getMonth()+1
-export const ComparativaVentasxAnio = ({id_empresa}) => {
+
+export const ComparativaVentasxAnioxPrograma = ({id_empresa, id_programa}) => {
   const { obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();
-  const dataVentas = dataIngresosxFecha.find(f=>f.grupo=='INGRESOS')?.data
+  const dataVentas = dataIngresosxFecha.find(f=>f.grupo=='INGRESOS')?.data?.filter(f=>f?.detalle_ventaMembresia?.length!==0).filter(f=>f.detalle_membresias?.[0]?.id_pgm===id_programa)
   useEffect(() => {
-      obtenerIngresosxFecha(id_empresa, [new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2026-12-31 15:45:47.6640000 +00:00')]);
+      obtenerIngresosxFecha(id_empresa, [new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2026-12-31 15:45:47.6640000 +00:00')], id_programa);
     }, []);
     const meses1 = generarMesYanio(
                 new Date('2024-01-01 15:45:47.6640000 +00:00'),
-                new Date('2024-03-31 15:45:47.6640000 +00:00')
+                new Date('2024-12-31 15:45:47.6640000 +00:00')
               )
     const meses2 = generarMesYanio(
                 new Date('2024-04-01 15:45:47.6640000 +00:00'),
@@ -30,14 +29,8 @@ export const ComparativaVentasxAnio = ({id_empresa}) => {
     const dataVentasAgrupadoxFecha = agruparPorFecha(dataVentas)
   return (
     <div className=''>
-      <div style={{fontSize: '55px'}} className='text-black text-center'>1ER TRIMESTRE</div>
+      <div style={{fontSize: '55px'}} className='text-black text-center'></div>
       <TableAnio dataVentasAgrupadoxFecha={dataVentasAgrupadoxFecha} meses={meses1}/>
-      <div style={{fontSize: '55px'}} className='text-black text-center'>2DO TRIMESTRE</div>
-      <TableAnio dataVentasAgrupadoxFecha={dataVentasAgrupadoxFecha} meses={meses2}/>
-      <div style={{fontSize: '55px'}} className='text-black text-center'>3ER TRIMESTRE</div>
-      <TableAnio dataVentasAgrupadoxFecha={dataVentasAgrupadoxFecha} meses={meses3}/>
-      <div style={{fontSize: '55px'}} className='text-black text-center'>4TO TRIMESTRE</div>
-      <TableAnio dataVentasAgrupadoxFecha={dataVentasAgrupadoxFecha} meses={meses4}/>
     </div>
   )
 }
@@ -47,7 +40,7 @@ export const TableAnio = ({dataVentasAgrupadoxFecha, meses}) => {
       <Table className='tabla-egresos fs-3' style={{ width: '100%' }} bordered>
         <thead>
             <tr>
-                <th style={{width: '190px'}} className={`fs-1 sticky-td-white border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white text-center`}><div className='text-black text-center'>AÑO / MES</div></th>
+                <th style={{width: '290px'}} className={`fs-1 sticky-td-white border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white text-center`}><div className='text-black text-center'>AÑO / MES</div></th>
                 {
                     meses?.map(e=>{
                         return (
@@ -55,7 +48,7 @@ export const TableAnio = ({dataVentasAgrupadoxFecha, meses}) => {
                             <th className='text-center fs-1' 
                             style={{width: '200px'}}>{e.mesSTR}</th>
                             <th className='text-center fs-1' 
-                            style={{width: '100px'}}>%</th>
+                            style={{width: '200px'}}>%</th>
                           </>
                         )
                     })
@@ -87,9 +80,12 @@ export const TrAnio = ({anio, dataVentasAgrupadoxFecha, meses}) => {
       montoV: dataVentasAgrupadoxFecha.filter(f=>f.fecha_primaria.anio==anio-1 && f.fecha_primaria.mes===m.mes).reduce((total, item)=>item.montoTotal+total,0)
     }
   })
+  const dataxAnio = dataVentasAgrupadoxFecha.filter(f=>f.fecha_primaria.anio==anio)
+  const xmes = meses.map(m=>dataVentasAgrupadoxFecha.filter(f=>f.fecha_primaria.mes===m.mes))[0]
+
   return (
           <tr>
-            <td className='fs-1 text-center bg-change'><div className='text-white'>{anio}</div></td>
+            <td className='fs-1 text-center'>{anio}</td>
             {
               meses.map(m=>{
                 const dataMesxFecha = dataVentasAgrupadoxFecha.filter(f=>f.fecha_primaria.mes===m.mes && f.fecha_primaria.anio==anio)
@@ -98,14 +94,13 @@ export const TrAnio = ({anio, dataVentasAgrupadoxFecha, meses}) => {
                 const sumaDataMesxFechaxAnioAnterior = dataMesxFechaxAnioAnterior.reduce((total, item)=>item.montoTotal+total, 0)||0
                 return (
                   <>
-                  <td className={`${m.mes>=mesActual?'bg-change-pastel text-white':''}`}>
-
+                  <td>
                     <NumberFormatMoney
                       amount=
                       {dataMesxFecha.reduce((total, item)=>item.montoTotal+total, 0)}
                     />
                   </td>
-                  <td className={`${m.mes>=mesActual?'bg-change-pastel text-white':''}`}>
+                  <td>
                     <NumberFormatMoney
                       amount=
                       {(((((sumaDataMesxFecha*100)/sumaDataMesxFechaxAnioAnterior)))-100)>0?(((((sumaDataMesxFecha*100)/sumaDataMesxFechaxAnioAnterior)))-100):0}

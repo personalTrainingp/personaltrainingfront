@@ -20,6 +20,12 @@ export const AppTermSistemas = () => {
                   <TabPanel header={'MARCA'}>
                     <ViewTerminos titulo={'MARCA'} grupo={'marca'} entidad={'articulo'}/>
                   </TabPanel>
+                  <TabPanel header={'CATEGORIA'}>
+                    <ViewTerminos titulo={'CATEGORIA'} grupo={'categoria'} entidad={'articulo'}/>
+                  </TabPanel>
+                  <TabPanel header={'SUBCATEGORIA'}>
+                    <ViewTerminos titulo={'SUBCATEGORIA'} grupo={'subcategoria'} entidad={'articulo'}/>
+                  </TabPanel>
                 </TabView>
               </TabPanel>
               <TabPanel header={'FORMA DE PAGO'}>

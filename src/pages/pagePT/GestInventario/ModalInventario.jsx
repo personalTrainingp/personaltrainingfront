@@ -28,6 +28,8 @@ const registerArticulo={
     costo_total_dolares: 0,
     costo_total_soles: 0,
     descripcion: '',
+    id_categoria: 0,
+    id_subcategoria: 0,
     modelo: '',
     etiquetas_busquedas: []
 }
@@ -42,6 +44,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
     const [showLoading, setshowLoading] = useState(false)
     const { obtenerArticulo, obtenerArticulos, actualizarArticulo, startRegisterArticulos, articulo } = useInventarioStore()
     const { DataGeneral:dataMarcas, obtenerParametroPorEntidadyGrupo:obtenerMarcas } = useTerminoStore()
+            const { obtenerParametroPorEntidadyGrupo: obtenerCategoria, DataGeneral: dataCategoria } = useTerminoStore()
+            const { obtenerParametroPorEntidadyGrupo: obtenerSubCategoria, DataGeneral: dataSubCategoria } = useTerminoStore()
     const { DataGeneral:dataEtiquetasBusqueda, obtenerParametroPorEntidadyGrupo:obtenerEtiquetasBusqueda } = useTerminoStore()
     
     // const { DataGeneral:dataLugares, obtenerParametroPorEntidadyGrupo:obtenerLugares } = useTerminoStore()
@@ -64,6 +68,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             id_lugar,
             etiquetas_busquedas,
             modelo,
+            id_categoria,
+            id_subcategoria,
             onInputChange,  
             onResetForm,
             onInputChangeReact
@@ -83,6 +89,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 obtenerZonas(id_zona)
                 obtenerMarcas('articulo', 'marca')
                 obtenerEtiquetasBusqueda('articulo', 'etiqueta_busqueda')
+                obtenerCategoria('articulo', 'categoria')
+                obtenerSubCategoria('articulo', 'subcategoria')
             }
         }, [show])
         const submitGasto = async(e)=>{
@@ -175,14 +183,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                             value={etiquetas_busquedas}
                                                             name="etiquetas_busquedas"
                                                         />
-                                                        
-                                                        {/* <MultiOpcionSelect
-                                                            options={dataEtiquetasBusqueda}
-                                                            onChange={(e)=>onInputChangeReact(e, 'etiquetas_busquedas')}
-                                                            postOptions={handleCrearEtiquetaBusqueda}
-                                                            value={etiquetas_busquedas}
-                                                            name="etiquetas_busquedas"
-                                                        /> */}
                                                     </div>
                                                 </Col>
                                                 <Col lg={4}>    
@@ -231,6 +231,44 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                             options={dataMarcas}
                                                             value={dataMarcas.find(
                                                                 (option) => option.value === id_marca
+                                                            )||0}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="categoria" className="form-label">
+                                                            CATEGORIA
+                                                        </label>
+                                                        <Select
+                                                            onChange={(e) => onInputChangeReact(e, 'id_categoria')}
+                                                            name="id_categoria"
+                                                            placeholder={'Seleccionar la Categoria'}
+                                                            className="react-select"
+                                                            classNamePrefix="react-select"
+                                                            options={dataCategoria}
+                                                            value={dataCategoria.find(
+                                                                (option) => option.value === id_categoria
+                                                            )||0}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="categoria" className="form-label">
+                                                            SUBCATEGORIA
+                                                        </label>
+                                                        <Select
+                                                            onChange={(e) => onInputChangeReact(e, 'id_categoria')}
+                                                            name="id_categoria"
+                                                            placeholder={'Seleccionar la Categoria'}
+                                                            className="react-select"
+                                                            classNamePrefix="react-select"
+                                                            options={dataSubCategoria}
+                                                            value={dataSubCategoria.find(
+                                                                (option) => option.value === id_subcategoria
                                                             )||0}
                                                             required
                                                         />

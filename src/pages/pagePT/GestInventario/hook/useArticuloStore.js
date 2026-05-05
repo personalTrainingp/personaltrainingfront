@@ -1,5 +1,5 @@
 import { PTApi } from '@/common';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewArticulos } from '../store/ArticulosSlice';
 import { useSelector } from 'react-redux';

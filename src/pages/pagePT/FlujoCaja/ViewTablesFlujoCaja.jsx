@@ -110,7 +110,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 })
             }
         </div>
-        <div className='tab-scroll-container'>
+        <div className='tab-scroll-container' style={{marginTop: '100px'}}>
             EGRESOS
             {
                 dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=> f.grupo==='TARJETA CREDITO VISA BBVA'||f.grupo==='KARAOKE'||f.grupo==='VERTIKAL CHANGE'||f.grupo==='COMPRA ACTIVOS')?.map((data,i)=>{

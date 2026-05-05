@@ -154,7 +154,7 @@ const getPaginationItems = () => {
           <thead>
             <tr>
               {columns.map((col) => (
-                <th key={col.id} className="bg-change text-white" style={{ width: col.width }}>
+                <th key={col.id} className="bg-change text-white fs-3" style={{ width: col.width }}>
                   {col.header}
                 </th>
               ))}
