@@ -261,9 +261,9 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                             SUBCATEGORIA
                                                         </label>
                                                         <Select
-                                                            onChange={(e) => onInputChangeReact(e, 'id_categoria')}
-                                                            name="id_categoria"
-                                                            placeholder={'Seleccionar la Categoria'}
+                                                            onChange={(e) => onInputChangeReact(e, 'id_subcategoria')}
+                                                            name="id_subcategoria"
+                                                            placeholder={'Seleccionar la subcategoria'}
                                                             className="react-select"
                                                             classNamePrefix="react-select"
                                                             options={dataSubCategoria}
