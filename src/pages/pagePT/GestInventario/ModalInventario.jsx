@@ -251,7 +251,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                             value={dataCategoria.find(
                                                                 (option) => option.value === id_categoria
                                                             )||0}
-                                                            required
                                                         />
                                                     </div>
                                                 </Col>
@@ -270,7 +269,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                             value={dataSubCategoria.find(
                                                                 (option) => option.value === id_subcategoria
                                                             )||0}
-                                                            required
                                                         />
                                                     </div>
                                                 </Col>
