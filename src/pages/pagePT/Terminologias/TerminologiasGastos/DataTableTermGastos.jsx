@@ -69,7 +69,13 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
       id: 'fecha_fin', header: 'FECHA DE FIN', accessor: 'fecha_fin', render:(row)=>{
         return (
           <>
-          {DateMaskStr(row.fecha_fin, 'MMMM YYYY')}
+          {
+            row.sin_limite?('SIN LIMITE'):(
+              <>
+                {DateMaskStr(row.fecha_fin, 'MMMM YYYY')}
+              </>
+            )
+          }
           </>
         )
       },  exportHeader: 'CONCEPTO',

@@ -1,4 +1,4 @@
-import { InputButton, InputDate, InputSelect, InputText } from '@/components/InputText'
+import { InputButton, InputDate, InputSelect, InputSwitch, InputText } from '@/components/InputText'
 import { useForm } from '@/hooks/useForm'
 import { arrayAnioVisible, arrayFinanzas } from '@/types/type'
 import React, { useEffect } from 'react'
@@ -13,7 +13,8 @@ const customTermGasto={
     isAnualizado: 0,
     monto_proyectado: 0,
     fecha_inicio: '',
-    fecha_fin: ''
+    fecha_fin: '',
+    sin_limite: true
 }
 export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
     const { postTerm2, updateTerm2xID, obtenerTerm2, dataTerm2 } = useTerminologias()
@@ -29,7 +30,7 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
             obtenerTerm2(id)
         }
     }, [show])
-    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, isAnualizado, monto_proyectado, fecha_inicio, fecha_fin, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
+    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, isAnualizado, monto_proyectado, fecha_inicio, fecha_fin, sin_limite, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
     const cancelar = ()=>{
         onHide()
         onResetForm()
@@ -72,8 +73,15 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
                     <InputDate label={'Fecha de inicio'} nameInput={'fecha_inicio'} onChange={onInputChange} value={fecha_inicio} type='date' required/>
                 </div>
                 <div className='mb-2'>
-                    <InputDate label={'Fecha de fin'} nameInput={'fecha_fin'} onChange={onInputChange} value={fecha_fin} type='date'/>
+                    <InputSwitch label={sin_limite?'SIN LIMITE':'CON LIMITE'} nameInput={'sin_limite'} onChange={onInputChange} value={sin_limite}/>
                 </div>
+                {
+                    !sin_limite && (
+                        <div className='mb-2'>
+                            <InputDate label={'Fecha de fin'} nameInput={'fecha_fin'} onChange={onInputChange} value={fecha_fin} type='date'/>
+                        </div>
+                    )
+                }
                 <div className='mb-2'>
                     <InputText label={'MONTO PROYECTADO'} nameInput={'monto_proyectado'} onChange={onInputChange} value={monto_proyectado} required/>
                 </div>

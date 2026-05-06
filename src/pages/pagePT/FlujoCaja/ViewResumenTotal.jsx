@@ -253,7 +253,16 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 </td>
               </tr>
               <tr>
-                <td className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>EGRESOS</td>
+                <td className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>
+                  <div className='d-flex flex-column'>
+                    <span className='mb-2'>
+                      EGRESOS 
+                    </span>
+                    <span>
+                      PROYECTADO
+                    </span>
+                  </div>
+                </td>
                 {
                 dataAlter.map(e=>{
                   return (
@@ -267,10 +276,10 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                               `${e.mes}-${e.anio}`===`${mesActual}-${anioActual}` &&
                             <NumberFormatMoney amount={-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/>
                             }
-                            {/* {
+                            {
                               `${e.mes}-${e.anio}`===`${mesActual-1}-${anioActual}` &&
-                              <NumberFormatMoney amount={-e.sumaGastos-(dataAlterMesAtras.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlterMesAtras.filter(f=>f.sumaGastos!=0).length)-1)}/>
-                            } */}
+                            <NumberFormatMoney amount={-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/>
+                            }
                           </div>
                         </div>
                       </td>
