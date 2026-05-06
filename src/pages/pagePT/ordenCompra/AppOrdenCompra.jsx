@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { DataTableGastos } from '../GestGastos/DataTableGastos'
 import { useSelector } from 'react-redux'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
@@ -6,14 +6,29 @@ import { TabPanel, TabView } from 'primereact/tabview'
 import { MesxIgv } from './MesxIgv'
 import { Table } from 'react-bootstrap'
 import { generarMesYanio } from './generarMesYanio'
-
+import { useOrdenCompra } from './useOrdenCompra'
+const fecha = new Date()
+const anioActual = fecha.getFullYear()
 export const AppOrdenCompra = ({id_empresa}) => {
       const { dataView } = useSelector(e=>e.EGRESOS)
-      const dataAlter = generarMesYanio(new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2026-12-31 15:45:47.6640000 +00:00')).map(m=>{
-        const igv = agruparPorFecha(dataView.filter((f) => f.impuesto_igv === true)).filter(f=>f.fecha.anio===m.anio && f.fecha.mes===m.mes).map(m=>{return {monto_total: m.monto_total, len: m.items.length}})
+      const { dataGastosxFecha, dataIngresosxFecha, obtenerEgresosxFecha, obtenerIngresosxFecha } = useOrdenCompra()
+      const ingresosVentas = dataIngresosxFecha.find(f=>f.grupo==='INGRESOS')?.data
+      const ingresosExtraord = dataIngresosxFecha.find(f=>f.grupo==='INGRESOS EXTRAORDINARIOS')?.data
+      useEffect(() => {
+        obtenerIngresosxFecha(id_empresa, ['2024-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00'])
+      }, [id_empresa])
+      
+      const dataAlter = generarMesYanio(new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date(`${anioActual}-12-31 15:45:47.6640000 +00:00`)).map(m=>{
+        const igvCompras = agruparPorFechaComprobante(dataView.filter((f) => f.impuesto_igv === true)).filter(f=>f.fecha.anio===m.anio && f.fecha.mes===m.mes).map(m=>{return {monto_total: m.monto_total, len: m.items.length}})
+        const igvVentas = agruparPorFechaVenta(ingresosVentas)?.filter(f=>f.fecha.anio===m.anio && f.fecha.mes===m.mes).map(m=>{return {monto_total: m.monto_total, len: m.items.length}})
+        const igvIngresosBolsa = agruparPorFecComprobante(ingresosExtraord)?.filter(f=>f.fecha.anio===m.anio && f.fecha.mes===m.mes).map(m=>{return {monto_total: m.monto_total, len: m.items.length}})
         return {
-          montoSuma: igv.reduce((total, item)=>item.monto_total+total, 0),
-          igv,
+          montoSuma: igvCompras.reduce((total, item)=>item.monto_total+total, 0),
+          igv: igvCompras,
+          igvVentas,
+          montoSumaIgvVentas: igvVentas.reduce((total, item)=>item.monto_total+total, 0),
+          montoSumaingresosBolsa: igvIngresosBolsa.reduce((total, item)=>item.monto_total+total, 0),
+          igvIngresosBolsa,
           ...m,
         }
       })
@@ -45,33 +60,45 @@ export const AppOrdenCompra = ({id_empresa}) => {
               </thead>
               <tbody>
                 <tr>
-                  <td className='fs-2 bg-change text-center text-white'>2026</td>
+                  <td className='fs-2 bg-change text-center text-white'>COMPRAS</td>
                     {
                       dataAlter.filter(f=>f.anio===2026).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
-                            <MesxIgv m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
+                            <MesxIgv len={m.igv[0]?.len} m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
                           </React.Fragment>
                         )
                       })
                     }
                 </tr>
                 <tr>
-                  <td className='fs-2 bg-change text-center text-white'>2025</td>
+                  <td className='fs-2 bg-change text-center text-white'>VENTAS</td>
                     {
-                      dataAlter.filter(f=>f.anio===2025).map(m=>{
+                      dataAlter.filter(f=>f.anio===2026).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
-                            <MesxIgv m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
+                            <MesxIgv len={m.igvVentas[0]?.len} monto_acumulado={m.montoSumaIgvVentas-(m.montoSumaIgvVentas/1.18)}/>
                           </React.Fragment>
                         )
                       })
                     }
                 </tr>
                 <tr>
-                  <td className='fs-2 bg-change text-center text-white'>2024</td>
-                  {
-                      dataAlter.filter(f=>f.anio===2024).map(m=>{
+                  <td className='fs-2 bg-change text-center text-white'>BOLSA</td>
+                    {
+                      dataAlter.filter(f=>f.anio===2026).map(m=>{
+                        return(
+                          <React.Fragment key={`${m.mesSTR}`}>
+                            <MesxIgv len={m.igvIngresosBolsa[0]?.len} monto_acumulado={m.montoSumaingresosBolsa-(m.montoSumaingresosBolsa/1.18)}/>
+                          </React.Fragment>
+                        )
+                      })
+                    }
+                </tr>
+                <tr>
+                  <td className='fs-2 bg-change text-center text-white'>TOTAL</td>
+                    {
+                      dataAlter.filter(f=>f.anio===2026).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
                             <MesxIgv m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
@@ -84,9 +111,6 @@ export const AppOrdenCompra = ({id_empresa}) => {
             </Table>
           </div>
           <div>
-            <pre>
-              {JSON.stringify(agruparPorFecha(dataView.filter((f) => f.impuesto_igv === true)), null, 2)}
-            </pre>
           </div>
         </TabPanel>
       </TabView>
@@ -94,11 +118,79 @@ export const AppOrdenCompra = ({id_empresa}) => {
   )
 }
 
-const agruparPorFecha = (data) => {
+const agruparPorFechaComprobante = (data) => {
   const map = new Map();
 
-  data.forEach(item => {
+  data?.forEach(item => {
     const fecha = new Date(item.fecha_comprobante);
+
+    // const dia = fecha.getDate();
+    const mes = fecha.getMonth() + 1;
+    const anio = fecha.getFullYear();
+
+    const key = `${anio}-${mes}`;
+
+    if (!map.has(key)) {
+      map.set(key, {
+        fecha: { mes, anio },
+        monto_total: 0,
+        items: []
+      });
+    }
+
+    const grupo = map.get(key);
+
+    grupo.monto_total += item.monto || 0;
+    grupo.items.push(item);
+  });
+
+  // Convertir a array y ordenar por fecha
+  return Array.from(map.values()).sort((a, b) => {
+    const f1 = new Date(a.fecha.anio, a.fecha.mes - 1, a.fecha.dia);
+    const f2 = new Date(b.fecha.anio, b.fecha.mes - 1, b.fecha.dia);
+    return f1 - f2; // ascendente
+  });
+};
+
+const agruparPorFecComprobante = (data) => {
+  const map = new Map();
+
+  data?.forEach(item => {
+    const fecha = new Date(item.fec_comprobante);
+
+    // const dia = fecha.getDate();
+    const mes = fecha.getMonth() + 1;
+    const anio = fecha.getFullYear();
+
+    const key = `${anio}-${mes}`;
+
+    if (!map.has(key)) {
+      map.set(key, {
+        fecha: { mes, anio },
+        monto_total: 0,
+        items: []
+      });
+    }
+
+    const grupo = map.get(key);
+
+    grupo.monto_total += item.monto || 0;
+    grupo.items.push(item);
+  });
+
+  // Convertir a array y ordenar por fecha
+  return Array.from(map.values()).sort((a, b) => {
+    const f1 = new Date(a.fecha.anio, a.fecha.mes - 1, a.fecha.dia);
+    const f2 = new Date(b.fecha.anio, b.fecha.mes - 1, b.fecha.dia);
+    return f1 - f2; // ascendente
+  });
+};
+
+const agruparPorFechaVenta = (data) => {
+  const map = new Map();
+
+  data?.forEach(item => {
+    const fecha = new Date(item.fecha_venta);
 
     // const dia = fecha.getDate();
     const mes = fecha.getMonth() + 1;

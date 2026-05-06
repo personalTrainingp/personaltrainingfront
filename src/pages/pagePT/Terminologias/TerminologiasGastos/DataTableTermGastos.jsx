@@ -4,6 +4,7 @@ import { useTerminosStore } from '../useTerminosStore'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 import { useSelector } from 'react-redux'
+import { DateMaskStr, DateMaskStr1, DateMaskStr2, NumberFormatMoney } from '@/components/CurrencyMask'
 
 export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGastos}) => {
   const { obtenerTerms2xEmpresaxTipo, deleteTerm2xID, isLoading } = useTerminosStore()
@@ -36,6 +37,39 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
         return (
           <>
           {row.nombre_gasto}
+          </>
+        )
+      },  exportHeader: 'CONCEPTO',
+  exportValue: (row) => row.nombre_gasto
+    },
+    {
+      id: 'monto_proyectado', header: 'MONTO PROYECTADO', accessor: 'monto_proyectado', render:(row)=>{
+        return (
+          <>
+          <NumberFormatMoney
+            amount=
+            {row.monto_proyectado}
+          />
+          </>
+        )
+      },  exportHeader: 'CONCEPTO',
+  exportValue: (row) => row.nombre_gasto
+    },
+    {
+      id: 'fecha_inicio', header: 'FECHA DE INICIO', accessor: 'fecha_inicio', render:(row)=>{
+        return (
+          <>
+          {DateMaskStr(row.fecha_inicio, 'MMMM YYYY')}
+          </>
+        )
+      },  exportHeader: 'CONCEPTO',
+  exportValue: (row) => row.nombre_gasto
+    },
+    {
+      id: 'fecha_fin', header: 'FECHA DE FIN', accessor: 'fecha_fin', render:(row)=>{
+        return (
+          <>
+          {DateMaskStr(row.fecha_fin, 'MMMM YYYY')}
           </>
         )
       },  exportHeader: 'CONCEPTO',

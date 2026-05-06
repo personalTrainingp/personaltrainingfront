@@ -11,7 +11,9 @@ const customTermGasto={
     orden: 0, 
     id_grupo: 0,
     isAnualizado: 0,
-    monto_proyectado: 0
+    monto_proyectado: 0,
+    fecha_inicio: '',
+    fecha_fin: ''
 }
 export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
     const { postTerm2, updateTerm2xID, obtenerTerm2, dataTerm2 } = useTerminologias()
@@ -27,7 +29,7 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
             obtenerTerm2(id)
         }
     }, [show])
-    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, isAnualizado, monto_proyectado, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
+    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, isAnualizado, monto_proyectado, fecha_inicio, fecha_fin, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
     const cancelar = ()=>{
         onHide()
         onResetForm()
@@ -67,7 +69,10 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
                     <InputText label={'Concepto'} nameInput={'nombre_gasto'} onChange={onInputChange} value={nombre_gasto} required/>
                 </div>
                 <div className='mb-2'>
-                    <InputDate label={'Fecha de inicio'} nameInput={'fecha_inicio'} onChange={onInputChange} value={nombre_gasto} type='date' required/>
+                    <InputDate label={'Fecha de inicio'} nameInput={'fecha_inicio'} onChange={onInputChange} value={fecha_inicio} type='date' required/>
+                </div>
+                <div className='mb-2'>
+                    <InputDate label={'Fecha de fin'} nameInput={'fecha_fin'} onChange={onInputChange} value={fecha_fin} type='date'/>
                 </div>
                 <div className='mb-2'>
                     <InputText label={'MONTO PROYECTADO'} nameInput={'monto_proyectado'} onChange={onInputChange} value={monto_proyectado} required/>

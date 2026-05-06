@@ -1,7 +1,7 @@
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import React from 'react'
 
-export const MesxIgv = ({monto_acumulado, m}) => {
+export const MesxIgv = ({monto_acumulado, m, len}) => {
   return (
     <>
     <td style={{ marginBottom: 14 }}>
@@ -11,7 +11,7 @@ export const MesxIgv = ({monto_acumulado, m}) => {
 
     </td>
     <td style={{ marginBottom: 14 }} className='fs-2'>
-      {m.igv[0]?.len}
+      {len}
     </td>
     </>
   )
