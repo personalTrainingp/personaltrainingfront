@@ -52,6 +52,12 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
                 <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                 {row.tc===1?'':row.tc}
                 {row.tc!==1&& (<br/>)}
+                {row.tc!==1 && (
+                    <span className='text-ISESAC'>
+                        <NumberFormatMoney amount={row.monto/row.tc}/>
+                    </span>
+                )}
+                {row.tc!==1&& (<br/>)}
                 <NumberFormatMoney amount={row.monto}/>
                 </div>
             )

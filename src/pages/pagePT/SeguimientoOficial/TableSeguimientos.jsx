@@ -25,7 +25,7 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                     </>
                 )
             }},
-            {id: 1, header: 'SOCIO', render: (row)=>{
+            {id: 1, header: 'SOCIO', accessor: 'nombres_apellidos_cli', render: (row)=>{
                 return (
                     <>
                     <span>

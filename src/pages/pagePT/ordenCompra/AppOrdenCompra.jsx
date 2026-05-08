@@ -41,6 +41,24 @@ export const AppOrdenCompra = ({id_empresa}) => {
         </TabPanel>
         <TabPanel header={'REPORTE POR MES'}>
           <div className="tab-scroll-container">
+            <div style={{fontSize: '60px'}} className='text-black text-center'>IGV 2026</div>
+            <TableAnio anio={2026} dataAlter={dataAlter} id_empresa={id_empresa}/>
+            <div style={{fontSize: '60px'}} className='text-black text-center'>IGV 2025</div>
+            <TableAnio anio={2025} dataAlter={dataAlter} id_empresa={id_empresa}/>
+            <div style={{fontSize: '60px'}} className='text-black text-center'>IGV 2024</div>
+            <TableAnio anio={2024} dataAlter={dataAlter} id_empresa={id_empresa}/>
+          </div>
+          <div>
+          </div>
+        </TabPanel>
+      </TabView>
+    </div>
+  )
+}
+
+const TableAnio = ({dataAlter, anio, id_empresa})=>{
+  return (
+    
             <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
               <thead>
                 <tr>
@@ -49,7 +67,7 @@ export const AppOrdenCompra = ({id_empresa}) => {
                     generarMesYanio(new Date('2026-01-01 15:45:47.6640000 +00:00'), new Date('2026-12-31 15:45:47.6640000 +00:00')).map(m=>{
                       return (
                         <React.Fragment key={`${m.mesSTR}`}>
-                          <td className={`text-center border-black bg-change fs-2 text-white`} style={{width: '180px'}}>{m.mesSTR}</td>
+                          <td className={`text-center border-black bg-change fs-2 text-white`} style={{width: '220px'}}>{m.mesSTR}</td>
                           <td className={`text-center border-black bg-change-pastel text-white`} style={{width: '90px'}}>MOV.</td>
                         </React.Fragment>
                       )
@@ -60,33 +78,33 @@ export const AppOrdenCompra = ({id_empresa}) => {
               </thead>
               <tbody>
                 <tr>
-                  <td className='fs-2 bg-change text-center text-white'>COMPRAS</td>
-                    {
-                      dataAlter.filter(f=>f.anio===2026).map(m=>{
-                        return(
-                          <React.Fragment key={`${m.mesSTR}`}>
-                            <MesxIgv len={m.igv[0]?.len} m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
-                          </React.Fragment>
-                        )
-                      })
-                    }
-                </tr>
-                <tr>
                   <td className='fs-2 bg-change text-center text-white'>VENTAS</td>
                     {
-                      dataAlter.filter(f=>f.anio===2026).map(m=>{
+                      dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
-                            <MesxIgv len={m.igvVentas[0]?.len} monto_acumulado={m.montoSumaIgvVentas-(m.montoSumaIgvVentas/1.18)}/>
+                            <MesxIgv className={'text-center text-change'} len={m.igvVentas[0]?.len} monto_acumulado={m.montoSumaIgvVentas-(m.montoSumaIgvVentas/1.18)}/>
                           </React.Fragment>
                         )
                       })
                     }
                 </tr>
                 <tr>
-                  <td className='fs-2 bg-change text-center text-white'>BOLSA</td>
+                  <td className='fs-2 bg-change text-center text-white '>COMPRAS</td>
                     {
-                      dataAlter.filter(f=>f.anio===2026).map(m=>{
+                      dataAlter?.filter(f=>f.anio===anio).map(m=>{
+                        return(
+                          <React.Fragment key={`${m.mesSTR}`}>
+                            <MesxIgv className={'text-ISESAC text-center'} len={m.igv[0]?.len} m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
+                          </React.Fragment>
+                        )
+                      })
+                    }
+                </tr>
+                <tr>
+                  <td className='fs-2 bg-change text-center text-white'>SABOL</td>
+                    {
+                      dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
                             <MesxIgv len={m.igvIngresosBolsa[0]?.len} monto_acumulado={m.montoSumaingresosBolsa-(m.montoSumaingresosBolsa/1.18)}/>
@@ -98,7 +116,7 @@ export const AppOrdenCompra = ({id_empresa}) => {
                 <tr>
                   <td className='fs-2 bg-change text-center text-white'>TOTAL</td>
                     {
-                      dataAlter.filter(f=>f.anio===2026).map(m=>{
+                      dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
                             <MesxIgv m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
@@ -109,14 +127,9 @@ export const AppOrdenCompra = ({id_empresa}) => {
                 </tr>
               </tbody>
             </Table>
-          </div>
-          <div>
-          </div>
-        </TabPanel>
-      </TabView>
-    </div>
   )
 }
+
 
 const agruparPorFechaComprobante = (data) => {
   const map = new Map();
