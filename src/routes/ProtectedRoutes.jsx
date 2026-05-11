@@ -468,7 +468,7 @@ export default function ProtectedRoutes() {
 								<Route path='gestion-ingresos' element={<GestionAporte />} />
 							}
 							{
-								sections.find(e => e.url === '/gestion-lead') &&
+								sections.find(e => e.url === '/marketing') &&
 								<Route path='gestion-lead' element={<GestionLead />} />
 							}
 							{

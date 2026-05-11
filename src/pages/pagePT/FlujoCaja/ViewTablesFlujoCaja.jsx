@@ -50,7 +50,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                             bgPastel={bgPastel} 
                             bgTotal={classNameEmpresa} 
                             itemsxDias={data?.itemsxDia}  
-                            nombreGrupo={`${data.id}. ${data.param_label}`} 
+                            nombreGrupo={data.param_label} 
                             conceptos={data.parametro_grupo_gasto} 
                             data={dataGastosxFecha} 
                             anio={anio}
@@ -76,7 +76,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                             bgPastel={bgPastel}
                             bgTotal={classNameEmpresa}
                             itemsxDias={data?.itemsxDia}
-                            nombreGrupo={`${data.id}. ${data.param_label}`}
+                            nombreGrupo={`${data.param_label}`}
                             conceptos={data.parametro_grupo_gasto}
                             data={dataGastosxFecha}
                             anio={anio}
@@ -105,14 +105,14 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 ?.map((data,i)=>{
                     return (
                         <DataTablePrincipal 
-                            index={i+1}
+                            index={data.id}
                             id_empresa={id_empresa}
                             onOpenModalTableItems={onOpenModalTableItems}
                             key={`${data.grupo}`}
                             bgPastel={bgPastel}
                             bgTotal={classNameEmpresa}
                             itemsxDias={data?.itemsxDia}
-                            nombreGrupo={`${data.id}. ${data.param_label}`}
+                            nombreGrupo={data.param_label}
                             conceptos={data.parametro_grupo_gasto}
                             data={dataGastosxFecha}
                             anio={anio}
@@ -122,53 +122,6 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 })
             }
         </div>
-        {/* 
-        
-        <div className='tab-scroll-container'>
-            {
-                dataIngresosxFecha.filter(f=>f.data?.length!==0).filter((f)=>  f.grupo==='PRESTAMOS A TERCEROS')?.map((data,i)=>{
-                    return (
-                        <DataTablePrincipal 
-                            index={i+1}
-                            id_empresa={id_empresa}
-                            onOpenModalTableItems={onOpenModalTableItems} 
-                            key={`${data.grupo}`} 
-                            bgPastel={bgPastel} 
-                            bgTotal={classNameEmpresa} 
-                            itemsxDias={data?.items}  
-                            nombreGrupo={data.grupo} 
-                            conceptos={data.conceptos} 
-                            data={dataGastosxFecha} 
-                            anio={anio}
-                            fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
-                            />
-                    )
-                })
-            }
-        </div>
-        <div className='tab-scroll-container' style={{marginTop: '100px'}}>
-            EGRESOS
-            {
-                dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=> f.grupo==='TARJETA CREDITO VISA BBVA'||f.grupo==='KARAOKE'||f.grupo==='VERTIKAL CHANGE'||f.grupo==='COMPRA ACTIVOS')?.map((data,i)=>{
-                    return (
-                        <DataTablePrincipal 
-                            index={i+1}
-                            id_empresa={id_empresa}
-                            onOpenModalTableItems={onOpenModalTableItems} 
-                            key={`${data.grupo}`} 
-                            bgPastel={bgPastel} 
-                            bgTotal={classNameEmpresa} 
-                            itemsxDias={data?.items}  
-                            nombreGrupo={data.grupo} 
-                            conceptos={data.conceptos} 
-                            data={dataGastosxFecha} 
-                            anio={anio}
-                            fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
-                            />
-                    )
-                })
-            }
-        </div> */}
             <ModalTableItems 
                 link={link}
                 bgHeader={classNameEmpresa}

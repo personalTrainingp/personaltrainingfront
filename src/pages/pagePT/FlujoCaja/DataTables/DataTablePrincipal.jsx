@@ -28,8 +28,6 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
               cantidadTotalNoPagadas: dataNoPagadas?.length ||0,
           }
   })
-  console.log({conceptos});
-  
   // const dataMesesCompletos = dataAlter.filter(f=>f.fecha !== `${anioActual}-${mesActual}`)
   // const sumaMontoMesesCompletos = dataMesesCompletos.reduce((item, total)=>item.dataSumaMontos+total, 0)
   const montoAcumuladoDeMontoTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaMontos, 0)
@@ -73,12 +71,17 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
                         <React.Fragment key={m.id}>
                           <td className='text-center'>
                             <div >
-                              <span onClick={()=>onOpenModalTableItems(m.items_pagados)}>
-                                <NumberFormatMoney
-                                  amount=
-                                  {m.monto_pagados}
-                                /> 
-                              </span>
+                              {
+                                (m.monto_pagados!==0 || m.monto_no_pagados===0) &&
+                                (
+                                  <span onClick={()=>onOpenModalTableItems(m.items_pagados)}>
+                                    <NumberFormatMoney
+                                      amount=
+                                      {m.monto_pagados}
+                                    /> 
+                                  </span>
+                                )
+                              }
                               {
                                 m.monto_no_pagados>0 && (
                                   <>
@@ -92,19 +95,18 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
                                 </>
                                 )
                               }
-                              {
-                              (m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()+1}` 
-                              ||
-                              m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()}` )
+                              
+                              { (m.monto_proyectado===0 || m.monto_proyectado<=m.monto) || nombreGrupo!=='INGRESOS'&&
+                              (m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()+1}` || m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()}`) 
                               && (
                                 <>
                                 <br/>
-                                <span className='text-orange'>
-                                  <NumberFormatMoney
-                                    amount=
-                                    {m.monto_proyectado}
-                                  /> 
-                                </span>
+                                    <span className='text-orange'>
+                                      <NumberFormatMoney
+                                        amount=
+                                        {m.monto_proyectado}
+                                      /> 
+                                    </span>
                                 </>
                               )}
                             </div>

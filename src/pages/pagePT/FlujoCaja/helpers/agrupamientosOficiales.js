@@ -27,7 +27,7 @@ export function aplicarTipoDeCambio(dataTC, data) {
 	});
 }
 
-export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = []) => {
+export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio=2026) => {
 	const resultado = dataGrupos?.map((m) => {
 		const gastos = dataGastos?.filter(
 			(f) => f?.tb_parametros_gasto?.parametro_grupo?.id === m.id
@@ -38,6 +38,43 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = []) => {
 			...m,
 			parametro_grupo_gasto: m?.parametro_grupo_gasto?.map((f) => {
 				const gast = gastos?.filter((g) => g?.id_gasto === f.id);
+				const gastNoPagados = gast.filter((e) => e?.id_estado_gasto === 1424);
+				const gastPagados = gast.filter((e) => e?.id_estado_gasto === 1423);
+				const itemsXdia = generarMesYanio(
+					new Date('2026-01-15T00:00:00.000Z'),
+					new Date('2026-12-15T00:00:00.000Z')
+				).map((g) => {
+					const ItemsGastosAgrupados =
+						agruparPorDia(gast).find((f) => f.mes === g.mes)?.items || [];
+					const itemsPagados =
+						agruparPorDia(gast)
+							.find((f) => f.mes === g.mes)
+							?.items.filter((e) => e?.id_estado_gasto === 1423) || [];
+					const itemsNoPagados =
+						agruparPorDia(gast)
+							.find((f) => f.mes === g.mes)
+							?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
+					const monto_proyectado = f.sin_limite
+						? f.monto_proyectado
+						: new Date(f.fecha_inicio).getMonth() + 1 < g.mes
+							? f.monto_proyectado
+							: 0.0;
+					return {
+						ItemsGastosAgrupados,
+						monto: ItemsGastosAgrupados.reduce((total, item) => item.monto + total, 0),
+						items_pagados: itemsPagados,
+						itemsNoPagados: itemsNoPagados,
+						monto_pagados: itemsPagados.reduce((total, item) => item.monto + total, 0),
+						monto_no_pagados: itemsNoPagados.reduce(
+							(total, item) => item.monto + total,
+							0
+						),
+						len: ItemsGastosAgrupados.length,
+						monto_proyectado,
+
+						...g,
+					};
+				});
 				return {
 					id: f.id,
 					monto_proyectado: f.monto_proyectado,
@@ -47,56 +84,23 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = []) => {
 					tipo: f.tipo,
 					nombre_gasto: f.nombre_gasto,
 					gasto: gast,
-					itemsxDia: generarMesYanio(
-						new Date('2026-01-15T00:00:00.000Z'),
-						new Date('2026-12-15T00:00:00.000Z')
-					).map((g) => {
-						const ItemsGastosAgrupados =
-							agruparPorDia(gast).find((f) => f.mes === g.mes)?.items || [];
-						const itemsPagados =
-							agruparPorDia(gast)
-								.find((f) => f.mes === g.mes)
-								?.items.filter((e) => e?.id_estado_gasto === 1423) || [];
-						const itemsNoPagados =
-							agruparPorDia(gast)
-								.find((f) => f.mes === g.mes)
-								?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
-						const monto_proyectado =
-							new Date(f.fecha_inicio).getMonth() + 1 < g.mes
-								? f.monto_proyectado
-								: 0.0;
-						return {
-							ItemsGastosAgrupados,
-							monto: ItemsGastosAgrupados.reduce(
-								(total, item) => item.monto + total,
-								0
-							),
-							items_pagados: itemsPagados,
-							itemsNoPagados: itemsNoPagados,
-							monto_pagados: itemsPagados.reduce(
-								(total, item) => item.monto + total,
-								0
-							),
-							monto_no_pagados: itemsNoPagados.reduce(
-								(total, item) => item.monto + total,
-								0
-							),
-							len: ItemsGastosAgrupados.length,
-							monto_proyectado,
-
-							...g,
-						};
-					}),
+					itemsxDia: itemsXdia,
+					monto_proyectado: itemsXdia.reduce(
+						(total, item) => total + item.monto_proyectado,
+						0
+					),
+					monto_pagado: itemsXdia.reduce((total, item) => total + item.monto_pagados, 0),
+					monto_no_pagado: itemsXdia.reduce(
+						(total, item) => total + item.monto_no_pagados,
+						0
+					),
+					monto: itemsXdia.reduce((total, item) => total + item.monto, 0),
 				};
 			}),
 		};
 	});
-	console.log({ dataGrupos, dataGastos, resultado });
 	return resultado;
 };
-const g = generarMesYanio(new Date('2026-01-15T00:00:00.000Z'));
-console.log({ g });
-
 function agruparPorDia(data) {
 	const map = {};
 

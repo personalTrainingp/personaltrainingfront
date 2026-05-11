@@ -110,6 +110,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     }, [])
     
     const dataAlter = fechas.map((f, index, array)=>{
+      console.log({dataGastosxFecha: dataGastosxFecha.flatMap(e=>e.parametro_grupo_gasto).flatMap(e=>e.itemsxDia)});
+        const dataGast = dataGastosxFecha.filter(f=>f.id!==97 && f.id!==153 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150 ).flatMap(e=>e.parametro_grupo_gasto).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes);
+        const sumaGast = dataGast.reduce((total, item)=>item.monto+total, 0)
+
+        const sumaProyectado = dataGast.reduce((total, item)=>item.monto_proyectado+total, 0)
+
         const dataGasto = dataGastosxFecha.filter(f=>f.id!==97 && f.id!==153 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150 ).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
         const dataGastoBolsa = dataGastosxFecha.filter(f=>f.id===153).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
         const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.id!==121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
@@ -127,6 +133,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         const utilidadUltimaLinea = ((utilidadNeta && sumaIngresos) && (utilidadNeta*100)/sumaIngresos)
         return {
             ...f,
+            sumaProyectado,
             utilidadBolsa,
             sumaGastosBolsa,
             dataIngresos,
@@ -143,30 +150,31 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             mesStr: dayjs(`${f.anio}-${f?.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
         }
       })
-      const dataAlterMesCompleto = fechas.filter((f)=>`${f.anio}-${f?.mes}`!==`${anioActual}-${mesActual}`).map(f=>{
-        const dataGastoBolsa = dataGastosxFecha.filter(f=>f.id===153).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        const sumaGastosBolsa = dataGastoBolsa.reduce((total, item)=>item.monto+total, 0)
-        const dataGasto = dataGastosxFecha.filter(f=>f.id!==97&& f.id!==153&& f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.id!==121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.id===121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
-        const sumaGastos = dataGasto.reduce((total, item)=>item.monto+total, 0)
-        const sumaIngresosExcepcional = dataIngresosExcepcionales.reduce((total, item)=>item.monto+total, 0);
+      const dataAlterMesCompleto = dataAlter.filter((f)=>`${f.anio}-${f?.mes}`!==`${anioActual}-${mesActual}`).map(f=>{
+        // const dataGasto = dataGastosxFecha.filter(f=>f.id!==97&& f.id!==153&& f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
+        // const dataGastoBolsa = dataGastosxFecha.filter(f=>f.id===153).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
+        // const sumaGastosBolsa = dataGastoBolsa.reduce((total, item)=>item.monto+total, 0)
+        // const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.id!==121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
+        // const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.id===121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
+        // const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
+        // const sumaGastos = dataGasto.reduce((total, item)=>item.monto+total, 0)
+        // const sumaIngresosExcepcional = dataIngresosExcepcionales.reduce((total, item)=>item.monto+total, 0);
         return {
-          dataGasto,
-          sumaGastosBolsa,
-          dataIngresos,
-          dataIngresosExcepcionales,
-          sumaIngresos,
-          sumaGastos,
-          sumaIngresosExcepcional
+          ...f
+          // dataGasto,
+          // sumaGastosBolsa,
+          // dataIngresos,
+          // dataIngresosExcepcionales,
+          // sumaIngresos,
+          // sumaGastos,
+          // sumaIngresosExcepcional
         }
       })
       const ingresosAcumulados = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)
     const utilidadBrutaTotal = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
     const utilidadNetaTotal = (dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
     const utilidadNetaTotalMESCOMPLETO = (dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)
-    const utilidadBrutaTotalMESCOMPLETO = (dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)
+    // const utilidadBrutaTotalMESCOMPLETO = (dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)
     const utilidadBrutaTotalMESCOMPLETOExtraordinario = (dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastosBolsa+total, 0)
     const utilidadBrutaTotalExtraordinario = (dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlter.reduce((total, item)=>item.sumaGastosBolsa+total, 0)
       return (
@@ -237,7 +245,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 <td className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>
                   <div className='d-flex flex-column'>
                     <span className='mb-2'>
-                      EGRESOS 
+                      EGRESO REAL
                     </span>
                     <span>
                       PROYECTADO
@@ -255,12 +263,17 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                           <div className='text-orange'>
                             {
                               `${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` &&
-                            <NumberFormatMoney amount={-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/>
+                            <NumberFormatMoney amount={e.sumaProyectado>e.sumaGastos?e.sumaGastos-e.sumaProyectado:0}/>
                             }
                             {
                               `${e?.mes}-${e.anio}`===`${mesActual-1}-${anioActual}` &&
-                            <NumberFormatMoney amount={-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/>
+                            <NumberFormatMoney amount={e.sumaProyectado>e.sumaGastos?e.sumaGastos-e.sumaProyectado:0}/>
                             }
+                            {/* <br/>
+                            <NumberFormatMoney
+                              amount=
+                              {e.sumaProyectado}
+                            /> */}
                           </div>
                         </div>
                       </td>
@@ -293,13 +306,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                                 </div>
                               )
                         }
-                        
                         {
                               `${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && (
                                 <div className={`${e.utilidadBruta>0?'text-orange':'text-orange'} `} >
                                   <NumberFormatMoney 
                                     amount=
-                                    {e.utilidadBruta-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos)}/></div>
+                                    {e.utilidadBruta-e.sumaProyectado}/></div>
                               )
                         }
                         {/* {

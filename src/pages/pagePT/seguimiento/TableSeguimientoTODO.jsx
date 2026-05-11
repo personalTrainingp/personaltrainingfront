@@ -17,7 +17,7 @@ import { Message } from 'primereact/message';
 import { Skeleton } from 'primereact/skeleton';
 import { Row } from 'react-bootstrap';
 import { BtnExportSeguimiento } from './BtnExportSeguimiento';
-import { arrayFacturas } from '@/types/type';
+import { arrayFacturas, arrayOrigenDeCliente } from '@/types/type';
 import { useSeguimientoStore } from './useSeguimientoStore';
 import { Link } from 'react-router-dom';
 dayjs.extend(utc);
@@ -71,6 +71,7 @@ export const TableSeguimientoTODO = ({h3Title, dae, classNameFechaVenc, id_empre
 		ProgramavsSemana: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 		// dias: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 		estado_seguimiento: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+		labelOrigen:  { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 	});
 	const [globalFilterValue, setGlobalFilterValue] = useState('');
 	// console.log(customers, "customers");
@@ -93,11 +94,9 @@ export const TableSeguimientoTODO = ({h3Title, dae, classNameFechaVenc, id_empre
 			const labelFactura =  arrayFacturas.find(f=>f.value ===d.tb_ventum.id_tipoFactura)?.label
             let newItem = { ...d };
 			
-			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st*5} Sesiones | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')}`;
+			newItem.ProgramavsSemana = `${d.tb_ProgramaTraining?.name_pgm} | ${d.tb_semana_training?.semanas_st*5} Sesiones | ${dayjs(d.horario.split('T')[1].split('.')[0], 'hh:mm:ss').format('hh:mm A')} | ${arrayOrigenDeCliente.find(f=>f.value===d.tb_ventum.id_origen)?.label}`;
 			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
 			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
-			console.log({newItem, d, fn: new Date(newItem.fecha_fin_new)});
-			
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
 			newItem.diasFaltan = diasLaborables(new Date(), dayjs.utc(fechaaaa))
 			newItem.distrito = d.tb_ventum.tb_cliente.ubigeo_nac?.distrito;
@@ -106,7 +105,7 @@ export const TableSeguimientoTODO = ({h3Title, dae, classNameFechaVenc, id_empre
 			newItem.name_Ext = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.tipo_extension
 			newItem.inicio_Ext = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.extension_inicio
 			newItem.fin_Ext = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.extension_fin
-			
+			newItem.labelOrigen = arrayOrigenDeCliente.find(f=>f.value===d.tb_ventum.id_origen)?.label
 			return newItem;
 		});
 	};
@@ -284,7 +283,8 @@ export const TableSeguimientoTODO = ({h3Title, dae, classNameFechaVenc, id_empre
 			<br/>
 			{rowData.ProgramavsSemana.split('|')[1]}
 			<br/>
-			
+			{rowData.labelOrigen}
+			<br/>
 			<FormatoTimeMask
 				date={rowData.ProgramavsSemana.split('|')[2]}
 				format={'hh:mm A'}
