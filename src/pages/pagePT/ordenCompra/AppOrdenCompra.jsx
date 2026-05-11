@@ -29,7 +29,7 @@ export const AppOrdenCompra = ({id_empresa}) => {
           montoSumaIgvVentas: igvVentas.reduce((total, item)=>item.monto_total+total, 0),
           montoSumaingresosBolsa: igvIngresosBolsa.reduce((total, item)=>item.monto_total+total, 0),
           igvIngresosBolsa,
-          ...m,
+          // ...m,
         }
       })
   return (
@@ -90,6 +90,18 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                     }
                 </tr>
                 <tr>
+                  <td className='fs-2 bg-change text-center text-white'>IGV VENTAS</td>
+                    {
+                      dataAlter?.filter(f=>f.anio===anio).map(m=>{
+                        return(
+                          <React.Fragment key={`${m.mesSTR}`}>
+                            <MesxIgv className={'text-center text-change'} len={m.igvVentas[0]?.len} monto_acumulado={m.montoSumaIgvVentas-(m.montoSumaIgvVentas/1.18)}/>
+                          </React.Fragment>
+                        )
+                      })
+                    }
+                </tr>
+                <tr>
                   <td className='fs-2 bg-change text-center text-white '>COMPRAS</td>
                     {
                       dataAlter?.filter(f=>f.anio===anio).map(m=>{
@@ -102,7 +114,19 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                     }
                 </tr>
                 <tr>
-                  <td className='fs-2 bg-change text-center text-white'>SABOL</td>
+                  <td className='fs-2 bg-change text-center text-white '>GASTOS</td>
+                    {
+                      dataAlter?.filter(f=>f.anio===anio).map(m=>{
+                        return(
+                          <React.Fragment key={`${m.mesSTR}`}>
+                            <MesxIgv className={'text-ISESAC text-center'} len={m.igv[0]?.len} m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
+                          </React.Fragment>
+                        )
+                      })
+                    }
+                </tr>
+                <tr>
+                  <td className='fs-2 bg-change text-center text-white'>BOLSA</td>
                     {
                       dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(

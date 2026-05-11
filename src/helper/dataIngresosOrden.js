@@ -25,6 +25,7 @@ export function dataIngresosOrden(dataVentas) {
 				subConcepto: v?.detalle_membresias[0]?.tb_ProgramaTraining.name_pgm,
 				cantidadTotal: 1,
 				concepto: 'MEMBRESIA' || '',
+				id_gasto: 1148,
 				tb_parametros_gasto: {
 					grupo: 'INGRESOS',
 					id_empresa: 598,
@@ -32,6 +33,7 @@ export function dataIngresosOrden(dataVentas) {
 					parametro_grupo: {
 						param_label: 'INGRESOS',
 						id_empresa: 598,
+						id: 112,
 					},
 				},
 			};
@@ -60,6 +62,7 @@ export function dataIngresosOrden(dataVentas) {
 				monto: montoTotal,
 				subConcepto: detalleFiltrado[0]?.tb_producto.nombre_producto,
 				concepto: 'ACCESORIOS',
+				id_gasto: 1150,
 				tb_parametros_gasto: {
 					grupo: 'INGRESOS',
 					id_empresa: 598,
@@ -67,6 +70,7 @@ export function dataIngresosOrden(dataVentas) {
 					parametro_grupo: {
 						param_label: 'INGRESOS',
 						id_empresa: 598,
+						id: 112,
 					},
 				},
 			};
@@ -95,6 +99,7 @@ export function dataIngresosOrden(dataVentas) {
 				monto: montoTotal,
 				subConcepto: detalleFiltrado[0]?.tb_producto.nombre_producto,
 				concepto: 'SUPLEMENTOS',
+				id_gasto: 1149,
 				tb_parametros_gasto: {
 					grupo: 'INGRESOS',
 					id_empresa: 598,
@@ -102,6 +107,7 @@ export function dataIngresosOrden(dataVentas) {
 					parametro_grupo: {
 						param_label: 'INGRESOS',
 						id_empresa: 598,
+						id: 112,
 					},
 				},
 			};
@@ -147,6 +153,7 @@ export function dataIngresosOrden1(dataVentas) {
 					parametro_grupo: {
 						param_label: 'INGRESOS',
 						id_empresa: 598,
+						id: 112,
 					},
 				},
 			};
@@ -182,6 +189,7 @@ export function dataIngresosOrden1(dataVentas) {
 					parametro_grupo: {
 						param_label: 'INGRESOS',
 						id_empresa: 598,
+						id: 112,
 					},
 				},
 			};
@@ -217,6 +225,7 @@ export function dataIngresosOrden1(dataVentas) {
 					parametro_grupo: {
 						param_label: 'INGRESOS',
 						id_empresa: 598,
+						id: 112,
 					},
 				},
 			};

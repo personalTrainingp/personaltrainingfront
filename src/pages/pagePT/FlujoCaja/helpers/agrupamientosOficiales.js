@@ -1,4 +1,5 @@
 import { DateMaskStr1, DateMaskStr2 } from '@/components/CurrencyMask';
+import { generarMesYanio } from './generarMesYanio';
 
 export function aplicarTipoDeCambio(dataTC, data) {
 	return data?.map((item) => {
@@ -27,76 +28,74 @@ export function aplicarTipoDeCambio(dataTC, data) {
 }
 
 export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = []) => {
-	// 🔹 Agrupar dataGrupos por grupo
-	const gruposMapTemp = {};
-	dataGrupos.forEach((entry) => {
-		const nombreGrupo = entry?.parametro_grupo?.param_label || 'SIN GRUPO';
-		if (!gruposMapTemp[nombreGrupo]) gruposMapTemp[nombreGrupo] = [];
-		gruposMapTemp[nombreGrupo].push(entry);
-	});
-	const gruposOrdenados = Object.entries(gruposMapTemp).sort(([, a], [, b]) => {
-		const ordenA = a?.[0]?.parametro_grupo?.orden;
-		const ordenB = b?.[0]?.parametro_grupo?.orden;
-		return (ordenA ?? Infinity) - (ordenB ?? Infinity);
-	});
-	// 🔹 Construcción final
-	const resultado = gruposOrdenados.map(([grupoNombre, entradasDeGrupo]) => {
-		entradasDeGrupo.sort((a, b) => (a?.orden ?? Infinity) - (b?.orden ?? Infinity));
-
-		// 🔹 Data del grupo
-		const dataGrupo = dataGastos.filter((g) => {
-			const pg = g?.tb_parametros_gasto.parametro_grupo?.param_label || 'SIN GRUPO';
-			const grupoGasto = pg;
-			return grupoGasto === grupoNombre;
-		});
-
-		const itemsGrupo = agruparPorDia(dataGrupo);
-
+	const resultado = dataGrupos?.map((m) => {
+		const gastos = dataGastos?.filter(
+			(f) => f?.tb_parametros_gasto?.parametro_grupo?.id === m.id
+		);
 		return {
-			grupo: grupoNombre,
-			data: dataGrupo,
-			items: itemsGrupo,
-			conceptos: agruparPorConcepto(dataGrupo),
+			gastos,
+			itemsxDia: agruparPorDia(gastos),
+			...m,
+			parametro_grupo_gasto: m?.parametro_grupo_gasto?.map((f) => {
+				const gast = gastos?.filter((g) => g?.id_gasto === f.id);
+				return {
+					id: f.id,
+					monto_proyectado: f.monto_proyectado,
+					fecha_inicio: f.fecha_inicio,
+					fecha_fin: f.fecha_fin,
+					sin_limite: f.sin_limite,
+					tipo: f.tipo,
+					nombre_gasto: f.nombre_gasto,
+					gasto: gast,
+					itemsxDia: generarMesYanio(
+						new Date('2026-01-15T00:00:00.000Z'),
+						new Date('2026-12-15T00:00:00.000Z')
+					).map((g) => {
+						const ItemsGastosAgrupados =
+							agruparPorDia(gast).find((f) => f.mes === g.mes)?.items || [];
+						const itemsPagados =
+							agruparPorDia(gast)
+								.find((f) => f.mes === g.mes)
+								?.items.filter((e) => e?.id_estado_gasto === 1423) || [];
+						const itemsNoPagados =
+							agruparPorDia(gast)
+								.find((f) => f.mes === g.mes)
+								?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
+						const monto_proyectado =
+							new Date(f.fecha_inicio).getMonth() + 1 < g.mes
+								? f.monto_proyectado
+								: 0.0;
+						return {
+							ItemsGastosAgrupados,
+							monto: ItemsGastosAgrupados.reduce(
+								(total, item) => item.monto + total,
+								0
+							),
+							items_pagados: itemsPagados,
+							itemsNoPagados: itemsNoPagados,
+							monto_pagados: itemsPagados.reduce(
+								(total, item) => item.monto + total,
+								0
+							),
+							monto_no_pagados: itemsNoPagados.reduce(
+								(total, item) => item.monto + total,
+								0
+							),
+							len: ItemsGastosAgrupados.length,
+							monto_proyectado,
+
+							...g,
+						};
+					}),
+				};
+			}),
 		};
 	});
+	console.log({ dataGrupos, dataGastos, resultado });
 	return resultado;
 };
-
-// 1. Agrupa solo por concepto
-export const agruparPorConcepto = (data = []) => {
-	const map = new Map();
-
-	for (const item of data) {
-		const concepto =
-			item?.tb_parametros_gasto?.nombre_gasto ?? item?.nombre_gasto ?? 'SIN CONCEPTO';
-		const ordenConcepto = item?.tb_parametros_gasto?.orden ?? item?.nombre_gasto ?? 0;
-
-		if (!map.has(concepto)) {
-			map.set(concepto, { concepto, ordenConcepto, items: [] });
-		}
-
-		map.get(concepto).items.push(item);
-	}
-	console.log({
-		resultado: Array.from(map.values()).map((ar) => {
-			return {
-				...ar,
-				items: agruparPorDia(ar.items),
-				data: ar.items,
-			};
-		}),
-	});
-
-	return Array.from(map.values())
-		.map((ar) => {
-			return {
-				...ar,
-				items: agruparPorDia(ar.items),
-				data: ar.items,
-			};
-		})
-		.sort((a, b) => a.ordenConcepto - b.ordenConcepto);
-};
+const g = generarMesYanio(new Date('2026-01-15T00:00:00.000Z'));
+console.log({ g });
 
 function agruparPorDia(data) {
 	const map = {};

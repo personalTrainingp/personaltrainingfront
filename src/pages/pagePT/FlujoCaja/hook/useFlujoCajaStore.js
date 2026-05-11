@@ -1,5 +1,4 @@
 import { PTApi } from '@/common';
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { agruparPorGrupoYConcepto } from '../helpers/agrupamientosOficiales';
 import { dataIngresosOrden } from '@/helper/dataIngresosOrden';
@@ -28,12 +27,10 @@ export const useFlujoCaja = () => {
 					...g,
 				};
 			});
-			console.log({ dataGastos });
-
-			const { data: dataParametrosGastos } = await PTApi.get(
-				`/terminologia/terminologiaxEmpresa/${enterprice}/1573`
-			);
 			const dataTipoTC = await obtenerTipoDeCambio();
+			const { data: dataParametrosGastos } = await PTApi.get(
+				`/terminologia/grupo-y-concepto/${enterprice}/1573`
+			);
 			setdataGastosxFecha(
 				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTipoTC, dataGastos),
@@ -71,7 +68,7 @@ export const useFlujoCaja = () => {
 				},
 			});
 			const { data: dataParametrosGastos } = await PTApi.get(
-				`/terminologia/terminologiaxEmpresa/${enterprice}/1574`
+				`/terminologia/grupo-y-concepto/${enterprice}/1574`
 			);
 			const ingresosMAP = dataIngresos.ingresos.map((i) => {
 				return {
@@ -80,6 +77,17 @@ export const useFlujoCaja = () => {
 					fecha_pago: i.fec_pago,
 					fecha_primaria: i.fec_pago,
 					monto: i.monto,
+					id_gasto: 11,
+					tb_parametros_gasto: {
+						grupo: 'INGRESOS',
+						id_empresa: 598,
+						nombre_gasto: 'INGRESOS EXC',
+						parametro_grupo: {
+							param_label: 'INGRESOS',
+							id_empresa: 598,
+							id: 121,
+						},
+					},
 				};
 			});
 			const reservasMFMAP = dataMF.reservasMF?.map((m) => {
@@ -92,6 +100,7 @@ export const useFlujoCaja = () => {
 					fecha_pago: m.fechaP,
 					fecha_comprobante: m.fechaP,
 					concepto: 'MONKEY-FIT',
+					id_gasto: 1210,
 					tb_parametros_gasto: {
 						grupo: 'INGRESOS',
 						id_empresa: 598,
@@ -99,6 +108,7 @@ export const useFlujoCaja = () => {
 						parametro_grupo: {
 							param_label: 'INGRESOS',
 							id_empresa: 598,
+							id: 112,
 						},
 					},
 				};
@@ -125,7 +135,7 @@ export const useFlujoCaja = () => {
 					dataParametrosGastos.termGastos
 				)
 			);
-			console.log({});
+			console.log({ ter: dataParametrosGastos.termGastos });
 		} catch (error) {
 			console.log(error);
 		}

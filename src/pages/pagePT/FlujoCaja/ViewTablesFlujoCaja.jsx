@@ -36,7 +36,11 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
         <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
             {
-                dataIngresosxFecha?.filter(f=>f.data?.length!==0).filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS' && f.grupo!=='INGRESOS EXTRAORDINARIOS')?.map((data, i)=>{
+                dataIngresosxFecha
+                .sort((a, b)=>a.orden-b.orden)
+                ?.filter(f=>f.gastos?.length!==0)
+                .filter((f)=>f.id!==121 && f.id!==46)
+                ?.map((data, i)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
@@ -45,32 +49,36 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                             key={`${data.grupo}`} 
                             bgPastel={bgPastel} 
                             bgTotal={classNameEmpresa} 
-                            itemsxDias={data?.items}  
-                            nombreGrupo={data.grupo} 
-                            conceptos={data.conceptos} 
+                            itemsxDias={data?.itemsxDia}  
+                            nombreGrupo={`${data.id}. ${data.param_label}`} 
+                            conceptos={data.parametro_grupo_gasto} 
                             data={dataGastosxFecha} 
                             anio={anio}
                             fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}/>
                     )
                 })
             }
-        </div>
+        </div> 
             <div style={{fontSize: '70px'}} className='text-black text-center'>EGRESOS</div>
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha.filter(f=>f.data?.length!==0).filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.grupo!=='COMPRA ACTIVOS'&& f.grupo!=='TARJETA CREDITO VISA BBVA'&& f.grupo!=='EGRESOS BOLSA')?.map((data,i)=>{
+                dataGastosxFecha
+                .sort((a, b)=>a.orden-b.orden)
+                .filter(f=>f.gastos?.length!==0)
+                .filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.id!==97 && f.id!==110&& f.id!==153)
+                ?.map((data,i)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
                             id_empresa={id_empresa}
-                            onOpenModalTableItems={onOpenModalTableItems} 
-                            key={`${data.grupo}`} 
-                            bgPastel={bgPastel} 
-                            bgTotal={classNameEmpresa} 
-                            itemsxDias={data?.items}  
-                            nombreGrupo={data.grupo} 
-                            conceptos={data.conceptos} 
-                            data={dataGastosxFecha} 
+                            onOpenModalTableItems={onOpenModalTableItems}
+                            key={`${data.grupo}`}
+                            bgPastel={bgPastel}
+                            bgTotal={classNameEmpresa}
+                            itemsxDias={data?.itemsxDia}
+                            nombreGrupo={`${data.id}. ${data.param_label}`}
+                            conceptos={data.parametro_grupo_gasto}
+                            data={dataGastosxFecha}
                             anio={anio}
                             fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
                             />
@@ -87,6 +95,34 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 anio={[arrayFecha[0], arrayFecha[1]]}
                 fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))} />
         </div>
+            <div style={{fontSize: '10px'}} className='text-black text-center'>EGRESOS</div>
+        <div className='tab-scroll-container'>
+            {
+                dataGastosxFecha
+                .sort((a, b)=>a.orden-b.orden)
+                .filter(f=>f.gastos?.length!==0)
+                .filter((f)=>f.id==97 || f.id==110 || f.id==103)
+                ?.map((data,i)=>{
+                    return (
+                        <DataTablePrincipal 
+                            index={i+1}
+                            id_empresa={id_empresa}
+                            onOpenModalTableItems={onOpenModalTableItems}
+                            key={`${data.grupo}`}
+                            bgPastel={bgPastel}
+                            bgTotal={classNameEmpresa}
+                            itemsxDias={data?.itemsxDia}
+                            nombreGrupo={`${data.id}. ${data.param_label}`}
+                            conceptos={data.parametro_grupo_gasto}
+                            data={dataGastosxFecha}
+                            anio={anio}
+                            fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
+                            />
+                    )
+                })
+            }
+        </div>
+        {/* 
         
         <div className='tab-scroll-container'>
             {
@@ -132,7 +168,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                     )
                 })
             }
-        </div>
+        </div> */}
             <ModalTableItems 
                 link={link}
                 bgHeader={classNameEmpresa}
