@@ -2,6 +2,7 @@ import { InputButton } from '@/components/InputText'
 import React, { useState } from 'react'
 import { DataTableTermGastos } from './DataTableTermGastos'
 import { ModalCustomTermGastos } from './ModalCustomTermGastos'
+import { TabPanel, TabView } from 'primereact/tabview'
 
 export const App2 = ({id_empresa, tipo}) => {
     const [isOpenModalCustomTermGastos, setisOpenModalCustomTermGastos] = useState({isOpen: false, id: 0})

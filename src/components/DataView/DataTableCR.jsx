@@ -7,17 +7,17 @@ export const DataTableCR = ({
   data = [],
   columns = [],
   exportExtraColumns = [],
-  
+  defaultSearch=''
 }) => {
   const [pageSize, setPageSize] = useState(10);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(defaultSearch);
   const [selectedColumn, setSelectedColumn] = useState("ALL");
   const [currentPage, setCurrentPage] = useState(1);
   
   // 🔎 Filtrado
   const filteredData = useMemo(() => {
     if (!search) return data;
-
+    const colSelected = columns.find((c) => c.id === selectedColumn);
     const text = search.toLowerCase();
 
     return data.filter((row) => {
@@ -25,13 +25,17 @@ export const DataTableCR = ({
       if (selectedColumn === "ALL") {
         return columns.some((col) => {
           if (!col.accessor) return false;
-          const value = row[col.accessor];
+          const value =  typeof col.accessor === "function"
+    ? col.accessor(row)
+    : row[col.accessor];;
           return value?.toString().toLowerCase().includes(text);
         });
       }
 
       // Buscar por columna específica
-      const value = row[selectedColumn];
+      const value =   typeof colSelected?.accessor === "function"
+    ? colSelected.accessor(row)
+    : row[colSelected?.accessor];
       return value?.toString().toLowerCase().includes(text);
     });
   }, [search, selectedColumn, data, columns]);
@@ -168,7 +172,9 @@ const getPaginationItems = () => {
                   <td key={col.id}>
                     {col.render
                       ? col.render(row)
-                      : row[col.accessor]}
+                      : (  typeof col.accessor === "function"
+    ? col.accessor(row)
+    : row[col.accessor])}
                   </td>
                 ))}
               </tr>

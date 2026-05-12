@@ -9,6 +9,7 @@ import { aplicarTipoDeCambio } from '@/helper/aplicarTipoCambio';
 export const useFlujoCaja = () => {
 	const [dataGastosxFecha, setdataGastosxFecha] = useState([]);
 	const [dataIngresosxFecha, setdataIngresosxFecha] = useState([]);
+	const [dataParametrosGastos, setdataParametrosGastos] = useState([]);
 	const obtenerEgresosxFecha = async (enterprice, arrayDate, tt) => {
 		try {
 			const { data } = await PTApi.get(`/egreso/fecha-comprobante/${enterprice}`, {
@@ -39,6 +40,16 @@ export const useFlujoCaja = () => {
 			);
 		} catch (error) {
 			console.log(error);
+		}
+	};
+	const obtenerParametrosGastos = async (enterprice) => {
+		try {
+			const { data: dataParametrosGastos } = await PTApi.get(
+				`/terminologia/grupo-y-concepto/${enterprice}/1573`
+			);
+			setdataParametrosGastos(dataParametrosGastos.termGastos);
+		} catch (error) {
+			console.log({ error });
 		}
 	};
 	const obtenerIngresosxFecha = async (enterprice, arrayDate) => {
@@ -145,5 +156,7 @@ export const useFlujoCaja = () => {
 		dataGastosxFecha,
 		obtenerIngresosxFecha,
 		dataIngresosxFecha,
+		obtenerParametrosGastos,
+		dataParametrosGastos,
 	};
 };

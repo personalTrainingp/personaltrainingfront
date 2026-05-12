@@ -9,8 +9,6 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
   const mesActual = fecha.getMonth()+1
   const dataAlter = fechas.map((f, index, array)=>{
         const dataTotal = itemsxDias.find(i=>i.mes===f.mes && i.anio===f.anio)??{}
-        
-        // const dataConMesesCompletos = 
         const dataPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1423) || [];
         const dataNoPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1424) || [];
         const data =  [...dataPagadas, ...dataNoPagadas]
@@ -28,8 +26,6 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
               cantidadTotalNoPagadas: dataNoPagadas?.length ||0,
           }
   })
-  // const dataMesesCompletos = dataAlter.filter(f=>f.fecha !== `${anioActual}-${mesActual}`)
-  // const sumaMontoMesesCompletos = dataMesesCompletos.reduce((item, total)=>item.dataSumaMontos+total, 0)
   const montoAcumuladoDeMontoTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaMontos, 0)
   const montoAcumuladoDecantidadTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaCantidad, 0)
   return (
@@ -56,7 +52,7 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
         </thead>
         <tbody>
           {
-            conceptos.sort((a, b)=>a.orden-b.orden).map((c, i)=>{
+            conceptos.sort((a, b)=>a.orden-b.orden).filter(f=>f.monto!==0).map((c, i)=>{
               const itemsConMesesCompletos = c?.itemsxDia?.filter(m=>`${m.anio}-${m.mes}` !== `${anioActual}-${mesActual}`)
               .flatMap(f=>f.items)
               const sumaMontoMensualCompletos = (itemsConMesesCompletos?.reduce((total, im)=>total+im?.monto, 0))
@@ -72,6 +68,11 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
                           <td className='text-center'>
                             <div >
                               {
+                                (m.monto_pagados!==0 && m.monto_no_pagados!==0) && (
+                                <br/>
+                                )
+                              }
+                              {
                                 (m.monto_pagados!==0 || m.monto_no_pagados===0) &&
                                 (
                                   <span onClick={()=>onOpenModalTableItems(m.items_pagados)}>
@@ -85,7 +86,6 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
                               {
                                 m.monto_no_pagados>0 && (
                                   <>
-                                <br/>
                                 <span className='text-change' onClick={()=>onOpenModalTableItems(m.itemsNoPagados)}>
                                   <NumberFormatMoney
                                     amount=

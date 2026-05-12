@@ -27,19 +27,20 @@ export function aplicarTipoDeCambio(dataTC, data) {
 	});
 }
 
-export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio=2026) => {
+export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio = 2026) => {
 	const resultado = dataGrupos?.map((m) => {
 		const gastos = dataGastos?.filter(
 			(f) => f?.tb_parametros_gasto?.parametro_grupo?.id === m.id
 		);
 		return {
-			gastos,
-			itemsxDia: agruparPorDia(gastos),
 			...m,
+			itemsxDia: agruparPorDia(gastos),
+			gastos,
 			parametro_grupo_gasto: m?.parametro_grupo_gasto?.map((f) => {
 				const gast = gastos?.filter((g) => g?.id_gasto === f.id);
 				const gastNoPagados = gast.filter((e) => e?.id_estado_gasto === 1424);
 				const gastPagados = gast.filter((e) => e?.id_estado_gasto === 1423);
+				const proyectado = gast.filter((e) => e?.id_estado_gasto === 1423);
 				const itemsXdia = generarMesYanio(
 					new Date('2026-01-15T00:00:00.000Z'),
 					new Date('2026-12-15T00:00:00.000Z')
@@ -54,11 +55,12 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio=
 						agruparPorDia(gast)
 							.find((f) => f.mes === g.mes)
 							?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
-					const monto_proyectado = f.sin_limite
-						? f.monto_proyectado
-						: new Date(f.fecha_inicio).getMonth() + 1 < g.mes
+					const monto_proyectado =
+						new Date(f.fecha_inicio).getFullYear() <= g.anio && f.sin_limite === true
 							? f.monto_proyectado
-							: 0.0;
+							: new Date(f.fecha_inicio).getMonth() + 1 <= g.mes
+								? f.monto_proyectado
+								: 0.0;
 					return {
 						ItemsGastosAgrupados,
 						monto: ItemsGastosAgrupados.reduce((total, item) => item.monto + total, 0),
@@ -84,6 +86,56 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio=
 					tipo: f.tipo,
 					nombre_gasto: f.nombre_gasto,
 					gasto: gast,
+					itemsxDia: itemsXdia,
+					monto_proyectado: itemsXdia.reduce(
+						(total, item) => total + item.monto_proyectado,
+						0
+					),
+					monto_pagado: itemsXdia.reduce((total, item) => total + item.monto_pagados, 0),
+					monto_no_pagado: itemsXdia.reduce(
+						(total, item) => total + item.monto_no_pagados,
+						0
+					),
+					monto: itemsXdia.reduce((total, item) => total + item.monto, 0),
+				};
+			}),
+		};
+	});
+	return resultado;
+};
+
+export const agruparConceptos = (dataGrupos, anio = 2026, mes = 12) => {
+	const anioActual = anio;
+	const fechas = [
+		new Date(`${anioActual}-${mes}-15T00:00:00.000Z`),
+		new Date(`${anioActual}-${mes}-15T00:00:00.000Z`),
+	];
+	const resultado = dataGrupos?.map((m) => {
+		return {
+			...m,
+			parametro_grupo_gasto: m?.parametro_grupo_gasto?.map((f) => {
+				const itemsXdia = generarMesYanio(fechas[0], fechas[1]).map((g) => {
+					const monto_proyectado = f.sin_limite
+						? f.monto_proyectado
+						: new Date(f.fecha_inicio).getMonth() + 1 < g.mes
+							? f.monto_proyectado
+							: 0.0;
+					return {
+						monto_proyectado,
+						...g,
+					};
+				});
+				return {
+					id: f.id,
+					fechas,
+					mes,
+					anioActual,
+					monto_proyectado: f.monto_proyectado,
+					fecha_inicio: f.fecha_inicio,
+					fecha_fin: f.fecha_fin,
+					sin_limite: f.sin_limite,
+					tipo: f.tipo,
+					nombre_gasto: f.nombre_gasto,
 					itemsxDia: itemsXdia,
 					monto_proyectado: itemsXdia.reduce(
 						(total, item) => total + item.monto_proyectado,

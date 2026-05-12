@@ -37,10 +37,10 @@ export const ModalTc = ({show, onHide, id}) => {
         <Modal.Body>
             <form>
                 <div className='m-2'>
-                    <InputText label={'PRECIO DE VENTA'} nameInput={'precio_venta'} onChange={onInputChange} value={precio_venta} required/>
+                    <InputText label={'PRECIO DE COMPRA'} nameInput={'precio_compra'} onChange={onInputChange} value={precio_compra} required/>
                 </div>
                 <div className='m-2'>
-                    <InputText label={'PRECIO DE COMPRA'} nameInput={'precio_compra'} onChange={onInputChange} value={precio_compra} required/>
+                    <InputText label={'PRECIO DE VENTA'} nameInput={'precio_venta'} onChange={onInputChange} value={precio_venta} required/>
                 </div>
                 <div className='m-2'>
                     <InputDate label={'FECHA'} nameInput={'fecha'} onChange={onInputChange} value={fecha} type='date' required/>

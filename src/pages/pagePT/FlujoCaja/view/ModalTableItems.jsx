@@ -18,6 +18,9 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
         setisClickProveedores({indexTab: 0, prov: ''})
         onHide()
     }
+    const clickProv = (i, prov)=>{
+        setisClickProveedores({indexTab: i, prov})
+    }
     const columns = [
         {id: 0, header: '', render: (row)=>{
             return (
@@ -33,14 +36,14 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
                 </div>
             )
         }},
-        {id: 2, header: (<>Instituto /<br/> Colaborador</>), render:(row)=>{
+        {id: 2, header: (<>Instituto /<br/> Colaborador</>), accessor: (row)=>row.tb_Proveedor?.razon_social_prov, render:(row)=>{
             return (
                 <div>
                     {row.tb_Proveedor?.razon_social_prov}
                 </div>
             )
         }},
-        {id: 2, header: (<>CARGO</>), render:(row)=>{
+        {id: 2, header: (<>CARGO</>), accessor: (row)=>row.tb_Proveedor?.parametro_oficio?.label_param, render:(row)=>{
             return (
                 <div>
                     {row.tb_Proveedor?.parametro_oficio?.label_param}
@@ -50,6 +53,21 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
         {id: 6, header: (<>MONTO</>), render:(row)=>{
             return (
                 <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
+                    {
+                        row.impuesto_igv && (
+                            <>
+                            <div style={{width: '120px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} text-center d-flex align-items-center justify-content-center text-change`}>
+                            <span className='mx-1'>
+                                IGV.
+                            </span>
+                                            {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar fontSizeS={'font-15'}/>}
+                                            <NumberFormatMoney amount=
+                            {row.monto - row.monto/1.18}
+                                            />
+                                    </div>
+                            </>
+                        )
+                    }
                 {row.tc===1?'':row.tc}
                 {row.tc!==1&& (<br/>)}
                 {row.tc!==1 && (
@@ -112,9 +130,6 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
             )
         }},
     ]
-    const clickProv = (i, prov)=>{
-        setisClickProveedores({indexTab: i, prov})
-    }
   return (
     <>
         <Modal show={show} onHide={onCloseModalCustomGasto} fullscreen>
@@ -124,6 +139,11 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
             <Modal.Body >
                 <div className={link}>
                     <TabView onTabChange={(e) => clickProv(e.index)} activeIndex={isClickProveedores.indexTab} >
+                        <TabPanel header={<div className='fs-1'>CORROBORACION GASTOS PROVEEDORES</div>}>
+                            <div className='d-flex'>
+                                <ProveedorResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
+                            </div>
+                        </TabPanel>
                         <TabPanel header={<div className='fs-1'>ITEMS</div>}>
                             <DataTableCR
                                 columns={columns}
@@ -134,11 +154,6 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
                                 stickyHeader
                                 defaultSearch={isClickProveedores.prov}
                             />
-                        </TabPanel>
-                        <TabPanel header={<div className='fs-1'>GASTOS POR PROVEEDOR</div>}>
-                            <div className='d-flex'>
-                                <ProveedorResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
-                            </div>
                         </TabPanel>
                     </TabView>
 
@@ -157,37 +172,54 @@ const ProveedorResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-chan
       data.reduce((acc, item) => {
         const nombre =
           item.tb_Proveedor?.razon_social_prov || "SIN NOMBRE";
-
-        const montoSoles =item.monto;
-
         if (!acc[nombre]) {
           acc[nombre] = {
             razon_social_prov: nombre,
-            acumulado: 0,
             items: [],
           };
         }
 
-        acc[nombre].acumulado += montoSoles;
         acc[nombre].items.push(item);
 
         return acc;
       }, {})
-    ).sort((b, a)=>a.acumulado-b.acumulado);
+    ).map((m, i, arr)=>{
+        return {
+            data_no_pagado: m.items.filter(f=>f.id_estado_gasto===1424),
+            data_pagado: m.items.filter(f=>f.id_estado_gasto===1423),
+            montoSuma: m.items.filter(f=>f.id_estado_gasto===1423).reduce((total, item)=>item.monto+total,0),
+            montoSuma_no_pagado:  m.items.filter(f=>f.id_estado_gasto===1424).reduce((total, item)=>item.monto+total,0),
+            ...m,
+        }
+    }).sort((a,b)=>a.montoSuma-b.montoSuma);
   }, [data]);
+
   return (
     <div className='w-100'>
-        <div className={`${bg}  text-center px-1 fs-2 mb-3`}>{header} - {dayjs(data[0]?.fecha_primaria?.split('T')[0], 'YYYY-MM-DD').format('MMMM YYYY')}</div>
-        <Row>
+        <div className={`${bg}  text-center px-1 mb-3`} style={{fontSize: '50px'}}> {dayjs(data[0]?.fecha_primaria?.split('T')[0], 'YYYY-MM-DD').format('MMMM YYYY')}</div>
+        <Row className='mt-5'>
           {proveedores.map((prov, i) => (
             <Col  key={i} lg={4}>
-              <div onClick={()=>onClickProv(0, prov.razon_social_prov)} style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black-6`}>
-                  <span className={`${text} fs-2 text-center  p-0 border-bottom-black-6`}>
+              <div onClick={()=>onClickProv(1, prov.razon_social_prov)} style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black-6 m-4`}>
+                  <span className={`${text} fs-2 text-center  border-bottom-black-6 bg-change text-white`} style={{height: '80px'}}>
                       {prov.razon_social_prov}
                   </span>
-                <strong className='text-center text-black'>
-                  S/. <NumberFormatMoney amount={prov.acumulado}/> <span className='fs-3'>({prov.items?.length})</span>
-                </strong>
+                  <div className='d-flex flex-row text-center justify-content-center'>
+                    {
+                        prov.montoSuma!==0 && (
+                            <div className='text-center text-black fs-2'>
+                            S/. <NumberFormatMoney className='fs-1' amount={prov.montoSuma}/> <span className='fs-2 ml-4'>({prov.data_pagado?.length})</span>
+                            </div>
+                        )
+                    }
+                    {
+                        prov.montoSuma_no_pagado !==0 && (
+                            <div className='text-center text-change fs-2'>
+                            S/. <NumberFormatMoney className='fs-1 text-change' amount={prov.montoSuma_no_pagado}/> <span className='fs-2 ml-4'>({prov.data_no_pagado?.length})</span>
+                            </div>
+                        )
+                    }
+                  </div>
 
               </div>
             </Col>

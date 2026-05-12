@@ -29,6 +29,7 @@ export const useVentasPagosStore = () => {
 					return {
 						...venta,
 						pago,
+						n_operacion: pago.n_operacion,
 						label_operador: pago.parametro_operador?.label_param,
 						label_forma_pago: pago.parametro_forma_pago?.label_param,
 						label_tipo_tarjeta: pago?.parametro_tipo_tarjeta?.label_param,

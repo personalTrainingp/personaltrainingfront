@@ -63,10 +63,10 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         </>
       )
     }},
-    {id: 1, header: 'OPERACION', accessor: '', render: (row)=>{
+    {id: 1, header: 'OPERACION', accessor: 'n_operacion', render: (row)=>{
       return (
         <>
-          {row.pago.n_operacion}
+          {row.n_operacion}
         </>
       )
     }},
