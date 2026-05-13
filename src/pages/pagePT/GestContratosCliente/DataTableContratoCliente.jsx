@@ -155,6 +155,7 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
       }
     },{
       id: 5, header: 'SIN FIRMA', accessor: 'firmado', render:(rowData)=>{
+        const createdFirmas = rowData.detalle_ventaMembresia[0].firma_cli;
         return (
           <>
             {
@@ -176,7 +177,7 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
             rowData.detalle_ventaMembresia[0].tarifa_monto!==0 && (
               <>
                 {rowData.detalle_ventaMembresia[0].firma_cli==null?(
-                  <a className='text-black underline' onClick={()=>obtenerContratoxIDVENTA(rowData.id)}>
+                  <a className='text-change underline' onClick={()=>obtenerContratoxIDVENTA(rowData.id)}>
                     CONTRATO
                   </a>
                 ):<a className='text-black underline' href={`${config.API_IMG.FILE_CONTRATOS_CLI}${rowData.detalle_ventaMembresia[0].contrato_x_serv?.name_image}`}>CONTRATO</a>}
