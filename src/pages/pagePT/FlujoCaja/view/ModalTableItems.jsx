@@ -145,6 +145,11 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
                                 <ProveedorResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
                             </div>
                         </TabPanel>
+                        <TabPanel header={<div className='fs-1'>AUDITORIA GASTOS</div>}>
+                            <div className='d-flex'>
+                                <ConceptoResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
+                            </div>
+                        </TabPanel>
                         <TabPanel header={<div className='fs-1'>ITEMS</div>}>
                             <DataTableCR
                                 columns={columns}
@@ -188,10 +193,11 @@ const ProveedorResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-chan
             data_no_pagado: m.items.filter(f=>f.id_estado_gasto===1424),
             data_pagado: m.items.filter(f=>f.id_estado_gasto===1423),
             montoSuma: m.items.filter(f=>f.id_estado_gasto===1423).reduce((total, item)=>item.monto+total,0),
+            montoSumaTotal: m.items.reduce((total, item)=>item.monto+total,0),
             montoSuma_no_pagado:  m.items.filter(f=>f.id_estado_gasto===1424).reduce((total, item)=>item.monto+total,0),
             ...m,
         }
-    }).sort((a,b)=>a.montoSuma-b.montoSuma);
+    }).sort((a,b)=>a.montoSumaTotal-b.montoSumaTotal);
   }, [data]);
 
   return (
@@ -202,7 +208,69 @@ const ProveedorResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-chan
             <Col  key={i} lg={4}>
               <div onClick={()=>onClickProv(1, prov.razon_social_prov)} style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black-6 m-4`}>
                   <span className={`${text} fs-2 text-center  border-bottom-black-6 ${bg} text-white`} style={{height: '80px'}}>
-                      {prov.items[0].tb_Proveedor.razon_social_prov}
+                      {i+1}. {prov.items[0].tb_Proveedor.razon_social_prov}
+                  </span>
+                  <div className='d-flex flex-row text-center justify-content-center'>
+                    {
+                        prov.montoSuma!==0 && (
+                            <div className='text-center text-black fs-2'>
+                            S/. <NumberFormatMoney className='fs-1' amount={prov.montoSuma}/> <span className='fs-2 ml-4'>({prov.data_pagado?.length})</span>
+                            </div>
+                        )
+                    }
+                    {
+                        prov.montoSuma_no_pagado !==0 && (
+                            <div className='text-center text-change fs-2'>
+                            S/. <NumberFormatMoney className='fs-1 text-change' amount={prov.montoSuma_no_pagado}/> <span className='fs-2 ml-4'>({prov.data_no_pagado?.length})</span>
+                            </div>
+                        )
+                    }
+                  </div>
+
+              </div>
+            </Col>
+          ))}
+        </Row>
+    </div>
+  );
+};
+
+const ConceptoResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-change', text='text-change', id_empresa }) => {
+  const proveedores = useMemo(() => {
+    return Object.values(
+      data.reduce((acc, item) => {
+        const nombre = item.id_gasto || 0;
+        if (!acc[nombre]) {
+          acc[nombre] = {
+            id_gasto: nombre,
+            items: [],
+          };
+        }
+        acc[nombre].items.push(item);
+        return acc;
+      }, {})
+    ).map((m, i, arr)=>{
+        return {
+            data_no_pagado: m.items.filter(f=>f.id_estado_gasto===1424),
+            data_pagado: m.items.filter(f=>f.id_estado_gasto===1423),
+            montoSumaTotal: m.items.reduce((total, item)=>item.monto+total,0),
+            montoSuma: m.items.filter(f=>f.id_estado_gasto===1423).reduce((total, item)=>item.monto+total,0),
+            montoSuma_no_pagado:  m.items.filter(f=>f.id_estado_gasto===1424).reduce((total, item)=>item.monto+total,0),
+            ...m,
+        }
+    }).sort((a,b)=>b.montoSumaTotal-a.montoSumaTotal);
+  }, [data]);
+
+  return (
+    <div className='w-100'>
+        <div className={`${bg}  text-center px-1 mb-3`} style={{fontSize: '50px'}}> {dayjs(data[0]?.fecha_primaria?.split('T')[0], 'YYYY-MM-DD').format('MMMM YYYY')}</div>
+        <Row className='mt-5'>
+          {proveedores.map((prov, i) => (
+            <Col  key={i} lg={4}>
+              <div onClick={()=>onClickProv(1, prov.razon_social_prov)} style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black-6 m-4`}>
+                  
+                  <span className={`${text} fs-2 text-center  border-bottom-black-6 ${bg} text-white`} style={{height: '80px'}}>
+                      {i+1}. {prov.items[0].tb_parametros_gasto.nombre_gasto}
                   </span>
                   <div className='d-flex flex-row text-center justify-content-center'>
                     {

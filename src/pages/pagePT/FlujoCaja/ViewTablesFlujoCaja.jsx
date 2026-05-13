@@ -35,7 +35,6 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     <div>
         <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
-            
             {
                 dataIngresosxFecha
                 .sort((a, b)=>a.orden-b.orden)
@@ -55,7 +54,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                             conceptos={data.parametro_grupo_gasto} 
                             data={dataGastosxFecha} 
                             anio={anio}
-                            fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}/>
+                            fechas={generarMesYanio( new Date(arrayFecha[0]), new Date(arrayFecha[1]) )}/>
                     )
                 })
             }
