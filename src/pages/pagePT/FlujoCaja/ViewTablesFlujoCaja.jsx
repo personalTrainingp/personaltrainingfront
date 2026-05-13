@@ -13,10 +13,10 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     const [data, setdata] = useState({isOpen: false, items: [], header: ''})
     const [dataIngresos, setdataIngresos] = useState({isOpen: false, items: [], header: ''})
     useEffect(() => {
-        obtenerEgresosxFecha(id_empresa, arrayFecha)
+        obtenerIngresosxFecha(id_empresa, arrayFecha)
     }, [])
     useEffect(() => {
-        obtenerIngresosxFecha(id_empresa, arrayFecha)
+        obtenerEgresosxFecha(id_empresa, arrayFecha)
     }, [])
     
     const onOpenModalTableItems = (data)=>{
@@ -35,6 +35,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     <div>
         <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
+            
             {
                 dataIngresosxFecha
                 .sort((a, b)=>a.orden-b.orden)

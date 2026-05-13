@@ -13,7 +13,6 @@ export const App2 = ({idEmpresa}) => {
   return (
     <div>
         <InputButton label={'AGREGAR INGRESOS'} onClick={()=>onOpenModalCustomAporte(0, false)}/>
-        {idEmpresa}
         <DataTableAportes idEmpresa={idEmpresa} onOpenModalCustomAporte={onOpenModalCustomAporte}/>
         <ModalCustomAporte isCopy={isOpenModalCustomAporte.isCopy} id={isOpenModalCustomAporte.id} idEmpresa={idEmpresa} onHide={onCloseModalCustomAporte} show={isOpenModalCustomAporte.isOpen}/>
     </div>

@@ -6,6 +6,7 @@ import { ModalCustomGasto } from '../../GestGastos/ModalCustomGasto';
 import dayjs from 'dayjs';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Button } from 'primereact/button';
+import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
 
 export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmpresa, id_empresa}) => {
     const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
@@ -54,15 +55,15 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
             return (
                 <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                     {
-                        row.impuesto_igv && (
+                        row?.impuesto_igv && (
                             <>
-                            <div style={{width: '120px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} text-center d-flex align-items-center justify-content-center text-change`}>
+                            <div style={{width: '140px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} text-center d-flex align-items-center justify-content-center text-change`}>
                             <span className='mx-1'>
                                 IGV.
                             </span>
-                                            {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar fontSizeS={'font-15'}/>}
+                                            {row?.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar fontSizeS={'font-15'}/>}
                                             <NumberFormatMoney amount=
-                            {row.monto - row.monto/1.18}
+                            {row?.monto - row?.monto/1.18}
                                             />
                                     </div>
                             </>
@@ -139,7 +140,7 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
             <Modal.Body >
                 <div className={link}>
                     <TabView onTabChange={(e) => clickProv(e.index)} activeIndex={isClickProveedores.indexTab} >
-                        <TabPanel header={<div className='fs-1'>CORROBORACION GASTOS PROVEEDORES</div>}>
+                        <TabPanel header={<div className='fs-1'>AUDITORIA GASTOS PROVEEDORES</div>}>
                             <div className='d-flex'>
                                 <ProveedorResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
                             </div>
@@ -170,11 +171,10 @@ const ProveedorResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-chan
   const proveedores = useMemo(() => {
     return Object.values(
       data.reduce((acc, item) => {
-        const nombre =
-          item.tb_Proveedor?.razon_social_prov || "SIN NOMBRE";
+        const nombre = item.id_prov || 0;
         if (!acc[nombre]) {
           acc[nombre] = {
-            razon_social_prov: nombre,
+            id_prov: nombre,
             items: [],
           };
         }
@@ -201,8 +201,8 @@ const ProveedorResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-chan
           {proveedores.map((prov, i) => (
             <Col  key={i} lg={4}>
               <div onClick={()=>onClickProv(1, prov.razon_social_prov)} style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black-6 m-4`}>
-                  <span className={`${text} fs-2 text-center  border-bottom-black-6 bg-change text-white`} style={{height: '80px'}}>
-                      {prov.razon_social_prov}
+                  <span className={`${text} fs-2 text-center  border-bottom-black-6 ${bg} text-white`} style={{height: '80px'}}>
+                      {prov.items[0].tb_Proveedor.razon_social_prov}
                   </span>
                   <div className='d-flex flex-row text-center justify-content-center'>
                     {

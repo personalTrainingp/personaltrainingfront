@@ -13,7 +13,7 @@ const customTermGasto={
     isAnualizado: 0,
     monto_proyectado: 0,
     fecha_inicio: '',
-    fecha_fin: '',
+    fecha_fin: null,
     sin_limite: true
 }
 export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {

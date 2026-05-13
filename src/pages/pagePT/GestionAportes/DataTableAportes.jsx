@@ -22,7 +22,7 @@ export const DataTableAportes = ({idEmpresa=0, onOpenModalCustomAporte}) => {
         </div>
       )
     }},
-    { id: 'nComprobante', header: <div className=''>N° COMPR.</div>,  render:(row)=>{
+    { id: 'nComprobante', header: <div className=''>N° COMPR.</div>, accessor: 'n_comprabante',  render:(row)=>{
       return (
         <div style={{width: '50px'}}>
         {row.n_comprabante}
@@ -62,7 +62,7 @@ export const DataTableAportes = ({idEmpresa=0, onOpenModalCustomAporte}) => {
         </>
       )
     }},
-    { id: 'concepto', header: 'CONCEPTO', render:(row)=>{
+    { id: 'concepto', header: 'CONCEPTO', accessor: (row)=>row?.tb_parametros_gasto?.nombre_gasto, render:(row)=>{
       return (
         <>
           {row?.tb_parametros_gasto?.nombre_gasto}
@@ -76,14 +76,14 @@ export const DataTableAportes = ({idEmpresa=0, onOpenModalCustomAporte}) => {
         </div>
       )
     } },
-    { id: 'descripcion', header: 'Descripcion', render:(row)=>{
+    { id: 'descripcion', header: 'Descripcion', accessor: 'descripcion', render:(row)=>{
       return (
         <div className='' style={{width: '350px'}}>
         {row.descripcion}
         </div>
       )
     }  },
-    { id: 'proveedor', header: <>EMPRESA / PERSONA</>, width: 100, render:(row)=>{
+    { id: 'proveedor', header: <>EMPRESA / PERSONA</>, accessor: (row)=>row.tb_Proveedor?.razon_social_prov, width: 100, render:(row)=>{
       return (
         <>
         {row.tb_Proveedor?.razon_social_prov}

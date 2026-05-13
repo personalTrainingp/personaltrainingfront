@@ -10,6 +10,57 @@ export const useFlujoCaja = () => {
 	const [dataGastosxFecha, setdataGastosxFecha] = useState([]);
 	const [dataIngresosxFecha, setdataIngresosxFecha] = useState([]);
 	const [dataParametrosGastos, setdataParametrosGastos] = useState([]);
+	const [dataPagosVentas, setdataPagosVentas] = useState([]);
+	const obtenerPagosVentas = async () => {
+		try {
+			const { data } = await PTApi.get('/venta/pagos-venta');
+			const { data: dataPago } = await PTApi.get('/operadores-pago/');
+			const alterPago = dataPago?.operadoresPago?.map((f) => {
+				return {
+					id_operador: f.id_operador,
+					id_forma_pago: f.id_forma_pago,
+					id_tarjeta: f.id_marca_tarjeta,
+					id_tipo_tarjeta: f.id_tipo_tarjeta,
+					id_banco: f.id_banco,
+					n_cuotas: f.cuota,
+					porcentaje: f.porcentaje_comision,
+				};
+			});
+			const dataPagos = data.ventasConPagos?.flatMap(({ detalleVenta_pagoVenta, ...venta }) =>
+				detalleVenta_pagoVenta.map((pago) => {
+					const identificador = `${pago?.id_operador}|${pago?.id_forma_pago}|${pago?.id_tarjeta}|${pago?.id_tipo_tarjeta}|${pago?.id_banco}|${pago?.n_cuotas}`;
+					return {
+						...venta,
+						pago,
+						n_operacion: pago.n_operacion,
+						label_operador: pago.parametro_operador?.label_param,
+						label_forma_pago: pago.parametro_forma_pago?.label_param,
+						label_tipo_tarjeta: pago?.parametro_tipo_tarjeta?.label_param,
+						label_banco: pago?.parametro_banco?.label_param,
+						fecha_p: venta?.fecha_venta,
+						identificador,
+						fecha_pago_1: DateMaskString(
+							venta?.fecha_venta,
+							'dddd DD MMMM YYYY [A LAS] hh:mm A'
+						),
+						identificador,
+						porcentaje:
+							alterPago.find(
+								(f) =>
+									`${f.id_operador}|${f.id_forma_pago}|${f.id_tarjeta}|${f.id_tipo_tarjeta}|${f.id_banco}|${f.n_cuotas}` ===
+									identificador
+							)?.porcentaje || 0,
+					};
+				})
+			);
+			setdataPagosVentas(dataPagos);
+			return {
+				dataPagos,
+			};
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerEgresosxFecha = async (enterprice, arrayDate, tt) => {
 		try {
 			const { data } = await PTApi.get(`/egreso/fecha-comprobante/${enterprice}`, {
@@ -28,6 +79,13 @@ export const useFlujoCaja = () => {
 					...g,
 				};
 			});
+			// const {  } = await obtenerPagosVentas();
+			// const dataPagos = dataPagosVentas.map((m) => {
+			// 	return {
+			// 		...m,
+			// 	};
+			// });
+			console.log({ dataPagosVentas });
 			const dataTipoTC = await obtenerTipoDeCambio();
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/grupo-y-concepto/${enterprice}/1573`
@@ -88,17 +146,17 @@ export const useFlujoCaja = () => {
 					fecha_pago: i.fec_pago,
 					fecha_primaria: i.fec_pago,
 					monto: i.monto,
-					id_gasto: 11,
-					tb_parametros_gasto: {
-						grupo: 'INGRESOS',
-						id_empresa: 598,
-						nombre_gasto: 'INGRESOS EXC',
-						parametro_grupo: {
-							param_label: 'INGRESOS',
-							id_empresa: 598,
-							id: 121,
-						},
-					},
+					id_gasto: i.id_gasto,
+					// tb_parametros_gasto: {
+					// 	grupo: 'INGRESOS',
+					// 	id_empresa: 598,
+					// 	nombre_gasto: 'INGRESOS EXC',
+					// 	parametro_grupo: {
+					// 		param_label: 'INGRESOS',
+					// 		id_empresa: 598,
+					// 		id: 121,
+					// 	},
+					// },
 				};
 			});
 			const reservasMFMAP = dataMF.reservasMF?.map((m) => {
@@ -140,13 +198,20 @@ export const useFlujoCaja = () => {
 					id_estado_gasto: 1423,
 				};
 			});
+			console.log({
+				arraying: agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTipoTC, totalIngresos),
+					dataParametrosGastos.termGastos
+				),
+				totalIngresos,
+			});
+
 			setdataIngresosxFecha(
 				agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTipoTC, totalIngresos),
 					dataParametrosGastos.termGastos
 				)
 			);
-			console.log({ ter: dataParametrosGastos.termGastos });
 		} catch (error) {
 			console.log(error);
 		}

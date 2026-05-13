@@ -36,69 +36,79 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 			...m,
 			itemsxDia: agruparPorDia(gastos),
 			gastos,
-			parametro_grupo_gasto: m?.parametro_grupo_gasto?.map((f) => {
-				const gast = gastos?.filter((g) => g?.id_gasto === f.id);
-				const gastNoPagados = gast.filter((e) => e?.id_estado_gasto === 1424);
-				const gastPagados = gast.filter((e) => e?.id_estado_gasto === 1423);
-				const proyectado = gast.filter((e) => e?.id_estado_gasto === 1423);
-				const itemsXdia = generarMesYanio(
-					new Date('2026-01-15T00:00:00.000Z'),
-					new Date('2026-12-15T00:00:00.000Z')
-				).map((g) => {
-					const ItemsGastosAgrupados =
-						agruparPorDia(gast).find((f) => f.mes === g.mes)?.items || [];
-					const itemsPagados =
-						agruparPorDia(gast)
-							.find((f) => f.mes === g.mes)
-							?.items.filter((e) => e?.id_estado_gasto === 1423) || [];
-					const itemsNoPagados =
-						agruparPorDia(gast)
-							.find((f) => f.mes === g.mes)
-							?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
-					const monto_proyectado =
-						new Date(f.fecha_inicio).getFullYear() <= g.anio && f.sin_limite === true
-							? f.monto_proyectado
-							: new Date(f.fecha_inicio).getMonth() + 1 <= g.mes
-								? f.monto_proyectado
-								: 0.0;
+			parametro_grupo_gasto: m?.parametro_grupo_gasto
+				?.map((f) => {
+					const gast = gastos?.filter((g) => g?.id_gasto === f.id);
+					const gastNoPagados = gast.filter((e) => e?.id_estado_gasto === 1424);
+					const gastPagados = gast.filter((e) => e?.id_estado_gasto === 1423);
+					const proyectado = gast.filter((e) => e?.id_estado_gasto === 1423);
+					const itemsXdia = generarMesYanio(
+						new Date('2026-01-15T00:00:00.000Z'),
+						new Date('2026-12-15T00:00:00.000Z')
+					).map((g) => {
+						const ItemsGastosAgrupados =
+							agruparPorDia(gast).find((f) => f.mes === g.mes)?.items || [];
+						const itemsPagados =
+							agruparPorDia(gast)
+								.find((f) => f.mes === g.mes)
+								?.items.filter((e) => e?.id_estado_gasto === 1423) || [];
+						const itemsNoPagados =
+							agruparPorDia(gast)
+								.find((f) => f.mes === g.mes)
+								?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
+						const monto_proyectado =
+							new Date(f.fecha_inicio).getUTCMonth() + 1 <= g.mes
+									? f.monto_proyectado
+									: 0.0;
+						return {
+							ItemsGastosAgrupados,
+							monto: ItemsGastosAgrupados.reduce(
+								(total, item) => item.monto + total,
+								0
+							),
+							items_pagados: itemsPagados,
+							itemsNoPagados: itemsNoPagados,
+							monto_pagados: itemsPagados.reduce(
+								(total, item) => item.monto + total,
+								0
+							),
+							monto_no_pagados: itemsNoPagados.reduce(
+								(total, item) => item.monto + total,
+								0
+							),
+							len: ItemsGastosAgrupados.length,
+							monto_proyectado: monto_proyectado,
+
+							...g,
+						};
+					});
 					return {
-						ItemsGastosAgrupados,
-						monto: ItemsGastosAgrupados.reduce((total, item) => item.monto + total, 0),
-						items_pagados: itemsPagados,
-						itemsNoPagados: itemsNoPagados,
-						monto_pagados: itemsPagados.reduce((total, item) => item.monto + total, 0),
-						monto_no_pagados: itemsNoPagados.reduce(
-							(total, item) => item.monto + total,
+						id: f.id,
+						orden: f.orden,
+						monto_proyectado: f.monto_proyectado,
+						fecha_inicio: f.fecha_inicio,
+						fecha_fin: f.fecha_fin,
+						sin_limite: f.sin_limite,
+						tipo: f.tipo,
+						nombre_gasto: f.nombre_gasto,
+						gasto: gast,
+						itemsxDia: itemsXdia,
+						monto_proyectado: itemsXdia.reduce(
+							(total, item) => total + item.monto_proyectado,
 							0
 						),
-						len: ItemsGastosAgrupados.length,
-						monto_proyectado,
-
-						...g,
+						monto_pagado: itemsXdia.reduce(
+							(total, item) => total + item.monto_pagados,
+							0
+						),
+						monto_no_pagado: itemsXdia.reduce(
+							(total, item) => total + item.monto_no_pagados,
+							0
+						),
+						monto: itemsXdia.reduce((total, item) => total + item.monto, 0),
 					};
-				});
-				return {
-					id: f.id,
-					monto_proyectado: f.monto_proyectado,
-					fecha_inicio: f.fecha_inicio,
-					fecha_fin: f.fecha_fin,
-					sin_limite: f.sin_limite,
-					tipo: f.tipo,
-					nombre_gasto: f.nombre_gasto,
-					gasto: gast,
-					itemsxDia: itemsXdia,
-					monto_proyectado: itemsXdia.reduce(
-						(total, item) => total + item.monto_proyectado,
-						0
-					),
-					monto_pagado: itemsXdia.reduce((total, item) => total + item.monto_pagados, 0),
-					monto_no_pagado: itemsXdia.reduce(
-						(total, item) => total + item.monto_no_pagados,
-						0
-					),
-					monto: itemsXdia.reduce((total, item) => total + item.monto, 0),
-				};
-			}),
+				})
+				.sort((a, b) => a.orden - b.orden),
 		};
 	});
 	return resultado;
