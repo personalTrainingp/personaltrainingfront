@@ -108,8 +108,9 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 								0
 							),
 							len: ItemsGastosAgrupados.length,
-							monto_proyectado: monto_proyectado,
-							// ItemsGastosAgrupados.reduce((total, item) => item.monto + total, 0),
+							monto_proyectado:
+								monto_proyectado -
+								ItemsGastosAgrupados.reduce((total, item) => item.monto + total, 0),
 
 							...g,
 						};
