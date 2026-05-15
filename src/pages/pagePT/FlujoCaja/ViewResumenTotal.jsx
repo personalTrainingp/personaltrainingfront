@@ -11,7 +11,7 @@ const getQuotaParaMes = (monthIndex, year) => {
   switch (`${m}-${y}`) {
     case "5-2026":
       return {
-        meta: 125000,
+        meta: 110000,
       };
     case "4-2026":
       return {
@@ -184,7 +184,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     const utilidadBrutaTotalExtraordinario = (dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlter.reduce((total, item)=>item.sumaGastosBolsa+total, 0)
       return (
         <>
-          <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
+          <Table className="tabla-egresos fs-3" style={{ width: '100%', marginBottom: '200px' }} bordered>
             <thead>
               <tr>
                 <th style={{width: '500px'}} className={`fs-1 sticky-td-white border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}><div className='text-black'>{'RESULTADO ANUAL'}</div></th>
@@ -377,7 +377,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                                   `${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` ?(
                                     <div className={`${e.utilidadBruta>0?'text-orange':'text-orange'} `} ><NumberFormatMoney amount={(e.utilidadBruta-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos))*0.05}/></div>
                                   ): (
-                                    <div className={`${`${e?.mes}-${e.anio}`===`${mesActual-1}-${anioActual}`&&'text-ISESAC'}`} style={{fontSize: '30px'}}>
+                                    <div className={`${`${e?.mes}-${e.anio}`===`${mesActual-1}-${anioActual}`&&''}`} style={{fontSize: '30px'}}>
                                       {<NumberFormatMoney  amount={e.utilidadBruta*0.05} className='fs-2'/>}
                                     </div>
                                   )

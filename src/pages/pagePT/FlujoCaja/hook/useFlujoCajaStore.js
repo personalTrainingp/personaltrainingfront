@@ -22,31 +22,77 @@ export const useFlujoCaja = () => {
 					],
 				},
 			});
-			const dataGastos = data.gastos.map((g) => {
-				return {
-					fecha_primaria: new Date(
-						new Date(g.fecha_comprobante).setUTCHours(14, 0, 0, 0)
-					).toISOString(),
-					...g,
-				};
-			});
-			// await obtenerPagosVentas();
-			// const dataGastosOperadoresVentas = dataPagosVentas.map((m) => {
-			// 	return {
-			// 		fecha_primaria: new Date(
-			// 			new Date(m.fecha_venta).setUTCHours(14, 0, 0, 0)
-			// 		).toISOString(),
-			// 		...m
-			// 	};
-			// });
-			console.log({ dataPagosVentas });
+			const dataGastos = data.gastos
+				.filter((f) => f.id_gasto !== 1053)
+				.map((g) => {
+					return {
+						fecha_primaria: new Date(
+							new Date(g.fecha_comprobante).setUTCHours(14, 0, 0, 0)
+						).toISOString(),
+						...g,
+					};
+				});
+			await obtenerPagosVentas();
+			const dataGastosOperadoresVentas = dataPagosVentas
+				.filter((item) => {
+					const fechaItem = new Date(item.fecha_p);
+					return (
+						fechaItem >= new Date(arrayDate[0]) && fechaItem <= new Date(arrayDate[1])
+					);
+				})
+				.map((m) => {
+					return {
+						monto: m.pago?.parcial_monto * (m.porcentaje / 100) * 1.18,
+						tb_Proveedor: {
+							razon_social_prov: 'OPEN PAY',
+							parametro_oficio: {
+								label_param: 'COMISION',
+							},
+						},
+						n_operacion: '111',
+						n_comprabante: '000',
+						descripcion: `${m.pago?.parcial_monto} ${m.pago?.parametro_banco?.label_param}`,
+						fecha_comprobante: new Date(
+							new Date(m.fecha_venta).setUTCHours(14, 0, 0, 0)
+						).toISOString(),
+						fecha_pago: new Date(
+							new Date(m.fecha_venta).setUTCHours(14, 0, 0, 0)
+						).toISOString(),
+						parametro_comprobante: {
+							label_param: 'VENTA',
+						},
+						moneda: 'PEN',
+						fecha_primaria: new Date(
+							new Date(m.fecha_venta).setUTCHours(14, 0, 0, 0)
+						).toISOString(),
+						id_gasto: obtenerGasto(
+							m.pago.id_operador,
+							m.pago.id_forma_pago,
+							m.pago.n_cuotas,
+							m.pago.es_nacional
+						)?.concepto,
+						id_estado_gasto: 1423,
+						tb_parametros_gasto: {
+							parametro_grupo: {
+								id: obtenerGasto(
+									m.pago.id_operador,
+									m.pago.id_forma_pago,
+									m.pago.n_cuotas,
+									m.pago.es_nacional
+								)?.grupo,
+							},
+						},
+						...m,
+					};
+				});
+
 			const dataTipoTC = await obtenerTipoDeCambio();
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/grupo-y-concepto/${enterprice}/1573`
 			);
 			setdataGastosxFecha(
 				agruparPorGrupoYConcepto(
-					aplicarTipoDeCambio(dataTipoTC, dataGastos),
+					aplicarTipoDeCambio(dataTipoTC, [...dataGastos, ...dataGastosOperadoresVentas]),
 					dataParametrosGastos.termGastos
 				)
 			);
@@ -179,3 +225,38 @@ export const useFlujoCaja = () => {
 		dataParametrosGastos,
 	};
 };
+
+function obtenerGasto(id_operador, id_forma_pago, n_cuotas, es_nacional) {
+	if (!es_nacional) {
+		if (id_operador === 1739) {
+			return {
+				grupo: 155,
+				concepto: 1280,
+			};
+		}
+	}
+	switch (`${id_operador}-${id_forma_pago}-${n_cuotas}`) {
+		case '1739-1743-0': //OPENPAY - TARJETA
+			return {
+				grupo: 155,
+				concepto: 1278,
+			};
+		case '1739-1743-3': //OPENPAY - TARJETA
+			return {
+				grupo: 155,
+				concepto: 1283,
+			};
+		case '1739-1743-6': //OPENPAY - TARJETA
+			return {
+				grupo: 155,
+				concepto: 1282,
+			};
+		case '1739-1471-0': //OPENPAY - QR
+			return {
+				grupo: 155,
+				concepto: 1281,
+			};
+		default:
+			break;
+	}
+}

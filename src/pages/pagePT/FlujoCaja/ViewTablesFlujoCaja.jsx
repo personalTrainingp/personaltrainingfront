@@ -13,10 +13,13 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     const [data, setdata] = useState({isOpen: false, items: [], header: ''})
     const [dataIngresos, setdataIngresos] = useState({isOpen: false, items: [], header: ''})
     useEffect(() => {
-        obtenerIngresosxFecha(id_empresa, arrayFecha)
-    }, [])
-    useEffect(() => {
-        obtenerEgresosxFecha(id_empresa, arrayFecha)
+    const obtenerDatos = async () => {
+        await Promise.all([
+            obtenerIngresosxFecha(id_empresa, arrayFecha),
+            obtenerEgresosxFecha(id_empresa, arrayFecha)
+        ])
+    }
+        obtenerDatos()
     }, [])
     
     const onOpenModalTableItems = (data)=>{

@@ -26,41 +26,72 @@ export function aplicarTipoDeCambio(dataTC, data) {
 		return resultado;
 	});
 }
-
+const fecha = new Date();
+const dateActual = fecha.getDate();
+const mesActual = fecha.getMonth();
+const anioActual = fecha.getFullYear();
 export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio = 2026) => {
+	const itemsXdiaGenerado = generarMesYanio(
+		new Date('2026-01-15T00:00:00.000Z'),
+		new Date('2026-12-15T00:00:00.000Z')
+	);
 	const resultado = dataGrupos?.map((m) => {
 		const gastos = dataGastos?.filter(
 			(f) => f?.tb_parametros_gasto?.parametro_grupo?.id === m.id
 		);
 		return {
 			...m,
-			itemsxDia: agruparPorDia(gastos),
+			itemsxDia: agruparPorDia(gastos).map((m) => {
+				return { ...m, monto: m.items?.reduce((total, item) => item.monto + total, 0) };
+			}),
 			gastos,
 			parametro_grupo_gasto: m?.parametro_grupo_gasto
 				?.map((f) => {
 					const gast = gastos?.filter((g) => g?.id_gasto === f.id);
-					const gastNoPagados = gast.filter((e) => e?.id_estado_gasto === 1424);
-					const gastPagados = gast.filter((e) => e?.id_estado_gasto === 1423);
-					const proyectado = gast.filter((e) => e?.id_estado_gasto === 1423);
-					const itemsXdia = generarMesYanio(
-						new Date('2026-01-15T00:00:00.000Z'),
-						new Date('2026-12-15T00:00:00.000Z')
-					).map((g) => {
+					const agrupadoxDia = agruparPorDia(gast);
+					const itemsXdia = itemsXdiaGenerado.map((g) => {
 						const ItemsGastosAgrupados =
-							agruparPorDia(gast).find((f) => f.mes === g.mes)?.items || [];
+							agrupadoxDia.find((f) => Number(f.mes) === Number(g.mes))?.items || [];
+						const gastos_antes_mesActual =
+							agrupadoxDia
+								.filter((f) => Number(f.mes) < Number(g.mes))
+								.flatMap((e) => e.items) || [];
+						const sumaGastos_Total_menos_mesActual = gastos_antes_mesActual.reduce(
+							(total, item) => item.monto + total,
+							0
+						);
 						const itemsPagados =
-							agruparPorDia(gast)
+							agrupadoxDia
 								.find((f) => f.mes === g.mes)
 								?.items.filter((e) => e?.id_estado_gasto === 1423) || [];
 						const itemsNoPagados =
-							agruparPorDia(gast)
+							agrupadoxDia
 								.find((f) => f.mes === g.mes)
 								?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
+						//SI ISPROMEDIADO ES TRUE?SUMAGASTOS_MENOSMESACTUAL/MESACTUAL-1
+						// SI NO=>
+						const monto_pro = f.sin_limite
+							? f.isPromediado
+								? sumaGastos_Total_menos_mesActual / Number(g.mes - 1)
+								: f.monto_proyectado
+							: new Date(f.fecha_inicio).getUTCMonth() + 1 <= Number(g.mes)
+								? f.monto_proyectado
+								: 0;
 						const monto_proyectado =
-							new Date(f.fecha_inicio).getUTCMonth() + 1 <= g.mes
-									? f.monto_proyectado
-									: 0.0;
+							mesActual > Number(g.mes - 1)
+								? dateActual > 7
+									? 0
+									: monto_pro
+								: monto_pro;
+						const es_promedio =
+							new Date(f.fecha_inicio).getUTCMonth() + 1 <= Number(g.mes)
+								? f.isPromediado
+								: false;
 						return {
+							gastos_antes_mesActual,
+							monto_total_menos_mesActual:
+								sumaGastos_Total_menos_mesActual / Number(g.mes - 1),
+							isPromediado: es_promedio,
 							ItemsGastosAgrupados,
 							monto: ItemsGastosAgrupados.reduce(
 								(total, item) => item.monto + total,
@@ -78,6 +109,7 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 							),
 							len: ItemsGastosAgrupados.length,
 							monto_proyectado: monto_proyectado,
+							// ItemsGastosAgrupados.reduce((total, item) => item.monto + total, 0),
 
 							...g,
 						};
@@ -85,7 +117,6 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 					return {
 						id: f.id,
 						orden: f.orden,
-						monto_proyectado: f.monto_proyectado,
 						fecha_inicio: f.fecha_inicio,
 						fecha_fin: f.fecha_fin,
 						sin_limite: f.sin_limite,
@@ -111,6 +142,8 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 				.sort((a, b) => a.orden - b.orden),
 		};
 	});
+	console.log({ resultado });
+
 	return resultado;
 };
 

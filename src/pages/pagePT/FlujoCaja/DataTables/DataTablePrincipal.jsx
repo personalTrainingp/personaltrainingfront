@@ -52,7 +52,8 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
         </thead>
         <tbody>
           {
-            conceptos.sort((a, b)=>a.orden-b.orden).filter(f=>f.monto!==0).map((c, i)=>{
+            conceptos.sort((a, b)=>a.orden-b.orden).filter(f=>f.monto_proyectado!==0 || f.monto!==0).map((c, i)=>{
+              const sumaProyectado = c.itemsxDia?.reduce((total, im)=>total+im?.monto_proyectado, 0)
               const itemsConMesesCompletos = c?.itemsxDia?.filter(m=>`${m.anio}-${m.mes}` !== `${anioActual}-${mesActual}`)
               .flatMap(f=>f.items)
               const sumaMontoMensualCompletos = (itemsConMesesCompletos?.reduce((total, im)=>total+im?.monto, 0))
@@ -95,10 +96,15 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
                                 </>
                                 )
                               }
-                              
-                              { (m.monto_proyectado===0 || m.monto_proyectado<=m.monto) || nombreGrupo!=='INGRESOS'&&  anio===anioActual &&
+                              {/* <pre>
+                              {JSON.stringify(m?.monto_total_menos_mesActual, null, 2)}
+                              </pre> */}
+                              {/*  */}
+                              { 
+                              (m.monto_proyectado===0 || m.monto_proyectado<=m.monto) || nombreGrupo!=='INGRESOS'&&  anio===anioActual &&
                               (m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()+1}` || m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()}`) 
-                              && (
+                              &&
+                               (
                                 <>
                                 <br/>
                                     <span className='text-orange'>
@@ -120,7 +126,9 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
                       )
                     })
                   }
-                <td className='text-end border-left-10'><NumberFormatMoney amount={c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0)}/></td>
+                <td className='text-end border-left-10'>
+                  <NumberFormatMoney amount={c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0)}/>
+                  </td>
                 <td className='fs-3 text-end'>{c.itemsxDia?.reduce((total, im)=>total+im?.len, 0)}</td>
                 <td className='fs-3 text-end'>{(((c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
                 <td className='text-end border-right-10'>

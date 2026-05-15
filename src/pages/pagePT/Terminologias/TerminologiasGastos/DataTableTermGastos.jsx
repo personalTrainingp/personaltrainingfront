@@ -46,10 +46,14 @@ export const DataTableTermGastos = ({id_empresa, tipo, onOpenModalCustomTermGast
       id: 'monto_proyectado', header: 'MONTO PROYECTADO', accessor: 'monto_proyectado', render:(row)=>{
         return (
           <>
-          <NumberFormatMoney
-            amount=
-            {row.monto_proyectado}
-          />
+          {
+            !row.isPromediado ? (
+              <NumberFormatMoney
+                amount=
+                {row.monto_proyectado}
+              />
+            ):'PROMEDIADO'
+          }
           </>
         )
       },  exportHeader: 'CONCEPTO',

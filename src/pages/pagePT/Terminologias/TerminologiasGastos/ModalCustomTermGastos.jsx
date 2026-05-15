@@ -1,6 +1,6 @@
 import { InputButton, InputDate, InputSelect, InputSwitch, InputText } from '@/components/InputText'
 import { useForm } from '@/hooks/useForm'
-import { arrayAnioVisible, arrayFinanzas } from '@/types/type'
+import { arrayFinanzas } from '@/types/type'
 import React, { useEffect } from 'react'
 import { Modal } from 'react-bootstrap'
 import { useTerminologias } from '../hook/useTerminologias'
@@ -10,7 +10,7 @@ const customTermGasto={
     nombre_gasto: '', 
     orden: 0, 
     id_grupo: 0,
-    isAnualizado: 0,
+    isPromediado: false,
     monto_proyectado: 0,
     fecha_inicio: '',
     fecha_fin: null,
@@ -30,7 +30,7 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
             obtenerTerm2(id)
         }
     }, [show])
-    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, isAnualizado, monto_proyectado, fecha_inicio, fecha_fin, sin_limite, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
+    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, isPromediado, monto_proyectado, fecha_inicio, fecha_fin, sin_limite, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
     const cancelar = ()=>{
         onHide()
         onResetForm()
@@ -53,9 +53,6 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
         <Modal.Body>
             <form>
                 <div className='mb-2'>
-                    <InputSelect label={'VISIBLE EN'} nameInput={'isAnualizado'} onChange={onInputChange} value={isAnualizado} options={arrayAnioVisible} required/>
-                </div>
-                <div className='mb-2'>
                     <InputSelect label={'Tipo de gasto'} nameInput={'id_tipoGasto'} onChange={onInputChange} value={id_tipoGasto} options={arrayFinanzas} required/>
                 </div>
                 <div className='mb-2'>
@@ -73,6 +70,9 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
                     <InputDate label={'Fecha de inicio'} nameInput={'fecha_inicio'} onChange={onInputChange} value={fecha_inicio} type='date' required/>
                 </div>
                 <div className='mb-2'>
+                    <InputSwitch label={isPromediado?'GASTO PROMEDIADO':'GASTO SIN PROMEDIADO'} nameInput={'isPromediado'} onChange={onInputChange} value={isPromediado}/>
+                </div>
+                <div className='mb-2'>
                     <InputSwitch label={sin_limite?'SIN LIMITE':'CON LIMITE'} nameInput={'sin_limite'} onChange={onInputChange} value={sin_limite}/>
                 </div>
                 {
@@ -82,9 +82,13 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
                         </div>
                     )
                 }
-                <div className='mb-2'>
-                    <InputText label={'MONTO PROYECTADO'} nameInput={'monto_proyectado'} onChange={onInputChange} value={monto_proyectado} required/>
-                </div>
+                {
+                    !isPromediado&& (
+                        <div className='mb-2'>
+                            <InputText label={'MONTO PROYECTADO'} nameInput={'monto_proyectado'} onChange={onInputChange} value={monto_proyectado} required/>
+                        </div>
+                    )
+                }
                 <div className='mb-2'>
                     <InputText label={'orden'} nameInput={'orden'} onChange={onInputChange} value={orden} required/>
                 </div>
