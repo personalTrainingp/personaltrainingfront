@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems}) => {
+export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems}) => {
   const fecha = new Date()
   const anioActual = fecha.getFullYear()
   const mesActual = fecha.getMonth()+1
@@ -69,24 +69,23 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
                           <td className='text-center'>
                             <div >
                               {
-                                (m.monto_pagados!==0 && m.monto_no_pagados!==0) && (
-                                <br/>
-                                )
-                              }
-                              {
                                 (m.monto_pagados!==0 || m.monto_no_pagados===0) &&
                                 (
+                                  <>
                                   <span className={m.monto_pagados===0 && 'text-gray'} onClick={()=>onOpenModalTableItems(m.items_pagados)}>
                                     <NumberFormatMoney
                                       amount=
                                       {m.monto_pagados}
                                     /> 
                                   </span>
+                                  </>
                                 )
                               }
+
                               {
                                 m.monto_no_pagados>0 && (
                                   <>
+                                  <br/>
                                 <span className='text-change' onClick={()=>onOpenModalTableItems(m.itemsNoPagados)}>
                                   <NumberFormatMoney
                                     amount=
@@ -96,10 +95,6 @@ export const DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[
                                 </>
                                 )
                               }
-                              {/* <pre>
-                              {JSON.stringify(m?.monto_total_menos_mesActual, null, 2)}
-                              </pre> */}
-                              {/*  */}
                               { 
                               (m.monto_proyectado===0 || m.monto_proyectado<=m.monto) || nombreGrupo!=='INGRESOS'&&  anio===anioActual &&
                               (m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()+1}` || m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()}`) 
