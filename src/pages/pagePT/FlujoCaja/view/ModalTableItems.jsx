@@ -7,8 +7,9 @@ import dayjs from 'dayjs';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Button } from 'primereact/button';
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles';
+import { agruparPorDia, agruparPorGrupoYConcepto } from '../helpers/agrupamientosOficiales';
 
-export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmpresa, id_empresa}) => {
+export const ModalTableItems = ({show, onHide, items={}, isShowConceptos=false, link, bgHeader, textEmpresa, itemsAcumulados, mes=0, anio=0, id_empresa}) => {
     const [isOpenModalCustomGasto, setisOpenModalCustomGasto] = useState({isOpen: false, id: 0})
     const [isClickProveedores, setisClickProveedores] = useState({indexTab: 0, prov: ''})
     const onOpenModalCustomGasto = (id=0)=>{
@@ -145,11 +146,15 @@ export const ModalTableItems = ({show, onHide, items={}, link, bgHeader, textEmp
                                 <ProveedorResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
                             </div>
                         </TabPanel>
-                        <TabPanel header={<div className='fs-1'>AUDITORIA GASTOS</div>}>
-                            <div className='d-flex'>
-                                <ConceptoResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
-                            </div>
-                        </TabPanel>
+                        {
+                            isShowConceptos && (
+                                <TabPanel header={<div className='fs-1'>AUDITORIA GASTOS</div>}>
+                                    <div className='d-flex'>
+                                        <ConceptoResumen mes={mes} itemsAcumulados={itemsAcumulados} anio={anio} onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
+                                    </div>
+                                </TabPanel>
+                            )
+                        }
                         <TabPanel header={<div className='fs-1'>ITEMS</div>}>
                             <DataTableCR
                                 columns={columns}
@@ -206,6 +211,8 @@ const ProveedorResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-chan
         <Row className='mt-5'>
           {proveedores.map((prov, i) => (
             <Col  key={i} lg={4}>
+                <pre>
+                </pre>
               <div onClick={()=>onClickProv(1, prov.razon_social_prov)} style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black-6 m-4`}>
                   <span className={`${text} fs-2 text-center  border-bottom-black-6 ${bg} text-white`} style={{height: '80px'}}>
                       {i+1}. {prov.items[0].tb_Proveedor.razon_social_prov}
@@ -235,7 +242,7 @@ const ProveedorResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-chan
   );
 };
 
-const ConceptoResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-change', text='text-change', id_empresa }) => {
+const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv, header='GASTOS', bg='bg-change', text='text-change', id_empresa }) => {
   const proveedores = useMemo(() => {
     return Object.values(
       data.reduce((acc, item) => {
@@ -260,40 +267,189 @@ const ConceptoResumen = ({ data = [], onClickProv, header='GASTOS', bg='bg-chang
         }
     }).sort((a,b)=>b.montoSumaTotal-a.montoSumaTotal);
   }, [data]);
-
+  const itemsAcumuladosMenosMesSeleccionable = itemsAcumulados?.items
+  const agrupadoXdia = agruparPorDia(itemsAcumuladosMenosMesSeleccionable)
   return (
     <div className='w-100'>
-        <div className={`${bg}  text-center px-1 mb-3`} style={{fontSize: '50px'}}> {dayjs(data[0]?.fecha_primaria?.split('T')[0], 'YYYY-MM-DD').format('MMMM YYYY')}</div>
-        <Row className='mt-5'>
-          {proveedores.map((prov, i) => (
-            <Col  key={i} lg={4}>
-              <div onClick={()=>onClickProv(1, prov.razon_social_prov)} style={{ marginBottom: 14 }} className={`d-flex justify-content-center flex-column border-black-6 m-4`}>
-                  
-                  <span className={`${text} fs-2 text-center  border-bottom-black-6 ${bg} text-white`} style={{height: '80px'}}>
-                      {i+1}. {prov.items[0].tb_parametros_gasto.nombre_gasto}
-                  </span>
-                  <div className='d-flex flex-row text-center justify-content-center'>
-                    {
-                        prov.montoSuma!==0 && (
-                            <div className='text-center text-black fs-2'>
-                            S/. <NumberFormatMoney className='fs-1' amount={prov.montoSuma}/> <span className='fs-2 ml-4'>({prov.data_pagado?.length})</span>
-                            </div>
-                        )
-                    }
-                    {
-                        prov.montoSuma_no_pagado !==0 && (
-                            <div className='text-center text-change fs-2'>
-                            S/. <NumberFormatMoney className='fs-1 text-change' amount={prov.montoSuma_no_pagado}/> <span className='fs-2 ml-4'>({prov.data_no_pagado?.length})</span>
-                            </div>
-                        )
-                    }
-                  </div>
-
-              </div>
+        <Row>
+            <Col>
+                <div className={`${bg}  text-center px-1 mb-3`} style={{fontSize: '50px'}}>
+                    {dayjs(`2026-${mes}-15`, 'YYYY-M-DD').format('MMMM YYYY')}
+                    <br/>
+                    GASTOS
+                </div>
+                <div>
+                    <Table className="tabla-egresos fs-3" style={{ width: '100%', marginBottom: '200px' }} bordered>
+                        <thead>
+                            <tr>
+                                <th>CONCEPTO</th>
+                                <th>MONTO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {proveedores.map((prov, i) => (
+                                <tr
+                                >
+                                    <td className={`${text} fs-2 ${bg} text-white`}  >
+                                        <div  className='text-break'>
+                                            {i+1}. {prov.items[0].tb_parametros_gasto.nombre_gasto}
+                                        </div>
+                                    </td>
+                                    <td className='text-center justify-content-center'>
+                                        {
+                                            prov.montoSuma!==0 && (
+                                                <div className='text-center text-black fs-2'>
+                                                S/. <NumberFormatMoney className='fs-1' amount={prov.montoSuma}/> <span className='fs-2 ml-4'>({prov.data_pagado?.length})</span>
+                                                </div>
+                                            )
+                                        }
+                                        {
+                                            prov.montoSuma_no_pagado !==0 && (
+                                                <div className='text-center text-change fs-2'>
+                                                S/. <NumberFormatMoney className='fs-1 text-change' amount={prov.montoSuma_no_pagado}/> <span className='fs-2 ml-4'>({prov.data_no_pagado?.length})</span>
+                                                </div>
+                                            )
+                                        }
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </div>
             </Col>
-          ))}
+            <Col>
+                <div className={`bg-orange text-white text-center px-1 mb-3`} style={{fontSize: '50px'}}> 
+                    {dayjs(`2026-${mes}-15`, 'YYYY-M-DD').format('MMMM YYYY')}
+                    <br/>
+                    GASTOS PROYECTADOS
+                </div>
+                    {
+                        agrupadoXdia.filter(f=>f.mes===mes).map(m=>{
+                            const conceptos = agruparPorGrupoYConcepto(itemsAcumulados?.items, itemsAcumulados.terminologiasUsadas).flatMap(f=>f.parametro_grupo_gasto)
+                                .map(p=>{
+                                    const { itemsxDia, gasto, agrupadoxDia, monto_pro, ...rest } = p
+
+                                    return {
+                                        monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto_pro,
+                                        mes: m.mes,
+                                        nombre_gasto: p.nombre_gasto
+                                    }
+                                }).sort((a, b)=>b.monto_pro-a.monto_pro)
+                            return (
+                                <Table className="tabla-egresos fs-3" style={{ width: '100%', marginBottom: '200px' }} bordered>
+                                    <thead className='bg-orange'>
+                                        <tr >
+                                            <td className='text-white'>CONCEPTOS</td>
+                                            <td className='text-white'>MONTO</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {conceptos?.filter(f=>f.monto_pro!==0)?.map((c, i)=>{
+                                            return (
+                                            <tr>
+                                                <td className={`${text} fs-2 bg-orange text-white`}  >
+                                                    <div  className='text-break'>
+                                                        {c.nombre_gasto}
+                                                    </div>
+                                                </td>
+                                                <td className='text-center justify-content-center'>
+                                                    <div className='text-center text-black fs-2'>
+                                                    S/. <NumberFormatMoney className='fs-1' amount={c.monto_pro}/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            )
+                                        })}
+                                        <tr>
+                                            <td className={`${text} fs-2 bg-orange text-white`}>
+                                                TOTAL
+                                            </td>
+                                            <td className='text-center justify-content-center'>
+                                                <div  className='text-center text-black fs-2'>
+                                                    <NumberFormatMoney
+                                                        amount=
+                                                        {conceptos?.filter(f=>f.monto_pro!==0)?.reduce((total, item)=>total+item.monto_pro, 0)}
+                                                    />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </Table>
+                            )
+                        })
+                    }
+            </Col>
+            {
+                mes!==1 && (
+                    <Col>
+                        <div className={`bg-circus text-white text-center px-1 mb-3`} style={{fontSize: '50px'}}>
+                            {dayjs(`2026-${mes-1}-15`, 'YYYY-M-DD').format('MMMM YYYY')}
+                            <br/>
+                            GASTOS COMPARATIVO
+                        </div>
+                        {
+                        agrupadoXdia.filter(f=>f.mes===(mes)).map((m, i, a)=>{
+                            const conceptos = agruparPorGrupoYConcepto(itemsAcumulados?.items, itemsAcumulados.terminologiasUsadas).flatMap(f=>f.parametro_grupo_gasto)
+                                .map(p=>{
+                                    const { itemsxDia, gasto, agrupadoxDia, monto_pro, ...rest } = p
+
+                                    return {
+                                        monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes-1) && i.anio===m.anio).monto-(itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto+itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto_pro),
+                                        mes: m.mes,
+                                        nombre_gasto: p.nombre_gasto
+                                    }
+                                }).sort((a, b)=>b.monto_pro-a.monto_pro)
+                            return (
+                                <>
+                                <Table className="tabla-egresos fs-3" style={{ width: '100%', marginBottom: '200px' }} bordered>
+                                    <thead className='bg-circus'>
+                                        <tr >
+                                            <td className='text-white'>CONCEPTOS</td>
+                                            <td className='text-white'>MONTO</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {conceptos?.filter(f=>f.monto_pro>0)?.map((c, i)=>{
+                                            return (
+                                            <tr>
+                                                <td className={`${text} fs-2 bg-circus text-white`}  >
+                                                    <div  className='text-break'>
+                                                        {c.nombre_gasto}
+                                                    </div>
+                                                </td>
+                                                <td className='text-center justify-content-center'>
+                                                    <div className='text-center text-black fs-2'>
+                                                    S/. <NumberFormatMoney className='fs-1' amount={c.monto_pro}/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            )
+                                        })}
+                                        <tr>
+                                            <td className={`${text} fs-2 bg-black text-white`}>
+                                                TOTAL
+                                            </td>
+                                            <td className='text-center bg-black justify-content-center'>
+                                                <div  className='text-center text-white fs-2'>
+                                                    <NumberFormatMoney
+                                                        amount=
+                                                        {conceptos?.filter(f=>f.monto_pro>0)?.reduce((total, item)=>total+item.monto_pro, 0)}
+                                                    />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </Table>
+                                </>
+                            )
+                        })
+                    }
+                    </Col>
+                )
+            }
         </Row>
     </div>
   );
 };
 export default ProveedorResumen;
+

@@ -8,8 +8,16 @@ import { aplicarTipoDeCambio } from '@/helper/aplicarTipoCambio';
 import { usePagosVentasStore } from './usePagosVentasStore';
 
 export const useFlujoCaja = () => {
-	const [dataGastosxFecha, setdataGastosxFecha] = useState([]);
-	const [dataIngresosxFecha, setdataIngresosxFecha] = useState([]);
+	const [dataGastosxFecha, setdataGastosxFecha] = useState({
+		items: [],
+		flujoxGrupo: [],
+		terminologiasUsadas: [],
+	});
+	const [dataIngresosxFecha, setdataIngresosxFecha] = useState({
+		items: [],
+		flujoxGrupo: [],
+		terminologiasUsadas: [],
+	});
 	const [dataParametrosGastos, setdataParametrosGastos] = useState([]);
 	const { dataPagosVentas, obtenerPagosVentas } = usePagosVentasStore();
 	const obtenerEgresosxFecha = async (enterprice, arrayDate, tt) => {
@@ -90,20 +98,32 @@ export const useFlujoCaja = () => {
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/grupo-y-concepto/${enterprice}/1573`
 			);
-			setdataGastosxFecha(
-				agruparPorGrupoYConcepto(
-					aplicarTipoDeCambio(dataTipoTC, [...dataGastos, ...dataGastosOperadoresVentas]),
+			const dataGastosEnTotal = [...dataGastos].map((m) => {
+				const fechaPrimaria = new Date(m.fecha_primaria);
+				const mesP = fechaPrimaria.getUTCMonth() + 1;
+				const anioP = fechaPrimaria.getUTCFullYear();
+				const diaP = fechaPrimaria.getUTCDate();
+				return {
+					fechaP: { anioP, mesP, diaP },
+					...m,
+				};
+			});
+			setdataGastosxFecha({
+				flujoxGrupo: agruparPorGrupoYConcepto(
+					aplicarTipoDeCambio(dataTipoTC, dataGastosEnTotal),
 					dataParametrosGastos.termGastos
-				)
-			);
+				),
+				items: aplicarTipoDeCambio(dataTipoTC, dataGastosEnTotal),
+				terminologiasUsadas: dataParametrosGastos.termGastos,
+			});
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const obtenerParametrosGastos = async (enterprice) => {
+	const obtenerParametrosGastos = async (enterprice, identificador = 1573) => {
 		try {
 			const { data: dataParametrosGastos } = await PTApi.get(
-				`/terminologia/grupo-y-concepto/${enterprice}/1573`
+				`/terminologia/grupo-y-concepto/${enterprice}/${identificador}`
 			);
 			setdataParametrosGastos(dataParametrosGastos.termGastos);
 		} catch (error) {
@@ -147,16 +167,6 @@ export const useFlujoCaja = () => {
 					fecha_primaria: i.fec_pago,
 					monto: i.monto,
 					id_gasto: i.id_gasto,
-					// tb_parametros_gasto: {
-					// 	grupo: 'INGRESOS',
-					// 	id_empresa: 598,
-					// 	nombre_gasto: 'INGRESOS EXC',
-					// 	parametro_grupo: {
-					// 		param_label: 'INGRESOS',
-					// 		id_empresa: 598,
-					// 		id: 121,
-					// 	},
-					// },
 				};
 			});
 			const reservasMFMAP = dataMF.reservasMF?.map((m) => {
@@ -193,25 +203,24 @@ export const useFlujoCaja = () => {
 				...reservasMFMAP,
 			];
 			const totalIngresos = arrayTotalIngresos.map((f) => {
+				const fechaPrimaria = new Date(f.fecha_primaria);
+				const mesP = fechaPrimaria.getUTCMonth() + 1;
+				const anioP = fechaPrimaria.getUTCFullYear();
+				const diaP = fechaPrimaria.getUTCDate();
 				return {
-					...f,
+					fechaP: { anioP, mesP, diaP },
 					id_estado_gasto: 1423,
+					...f,
 				};
 			});
-			console.log({
-				arraying: agruparPorGrupoYConcepto(
+			setdataIngresosxFecha({
+				flujoxGrupo: agruparPorGrupoYConcepto(
 					aplicarTipoDeCambio(dataTipoTC, totalIngresos),
 					dataParametrosGastos.termGastos
 				),
-				totalIngresos,
+				items: aplicarTipoDeCambio(dataTipoTC, totalIngresos),
+				terminologiasUsadas: dataParametrosGastos.termGastos,
 			});
-
-			setdataIngresosxFecha(
-				agruparPorGrupoYConcepto(
-					aplicarTipoDeCambio(dataTipoTC, totalIngresos),
-					dataParametrosGastos.termGastos
-				)
-			);
 		} catch (error) {
 			console.log(error);
 		}

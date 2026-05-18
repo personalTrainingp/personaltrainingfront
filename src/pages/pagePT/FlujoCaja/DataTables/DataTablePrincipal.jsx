@@ -7,27 +7,11 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
   const fecha = new Date()
   const anioActual = fecha.getFullYear()
   const mesActual = fecha.getMonth()+1
-  const dataAlter = fechas.map((f, index, array)=>{
-        const dataTotal = itemsxDias.find(i=>i.mes===f.mes && i.anio===f.anio)??{}
-        const dataPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1423) || [];
-        const dataNoPagadas = dataTotal.items?.filter(e=>e?.id_estado_gasto===1424) || [];
-        const data =  [...dataPagadas, ...dataNoPagadas]
-          return {
-              ...f,
-              mesStr: dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
-              dataTotalPagadas: dataPagadas||[],
-              montoTotalPagadas: ( dataPagadas?.reduce((total, item)=>total+item?.monto, 0)||0),
-              data: data,
-              dataSumaMontos: data.reduce((total, item)=>total+item?.monto, 0)||0,
-              dataSumaCantidad : data.length,
-              cantidadTotalPagadas: dataPagadas?.length ||0,
-              dataTotalNoPagadas: dataNoPagadas||[],
-              montoTotalNoPagadas: (dataNoPagadas?.reduce((total, item)=>total+item?.monto, 0)||0),
-              cantidadTotalNoPagadas: dataNoPagadas?.length ||0,
-          }
-  })
-  const montoAcumuladoDeMontoTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaMontos, 0)
-  const montoAcumuladoDecantidadTotal = dataAlter.reduce((total, item)=>total+item?.dataSumaCantidad, 0)
+  const sumaMontototal = conceptos.reduce((total, item)=>item?.monto+total, 0)
+  const sumaLentotal = conceptos.reduce((total, item)=>item?.len+total, 0)
+  const funSumaTotal = (mes)=>{
+    return itemsxDias.find(f=>f.mes===mes)
+  }
   return (
     <>
       <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
@@ -35,10 +19,10 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
           <tr>
             <th style={{width: '500px'}} className={` text-break fs-1 border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white sticky-td-${id_empresa}-white text-black `}>{index}. {nombreGrupo==='GAS / MANTENIMIENTO Y MOVILIDADES'?<>GAS<br/> MANTENIMIENTO<br/> MOVILIDADES</>:(nombreGrupo)}</th>
             {
-              dataAlter.map(f=>{
+              fechas.map(f=>{
                 return (
                   <React.Fragment key={`${f.mesStr}`}>
-                  <td className={`text-center border-black ${bgTotal}`} style={{width: '180px'}}>{f.mesStr}</td>
+                  <td className={`text-center border-black ${bgTotal}`} style={{width: '180px'}}>{dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]')}</td>
                   <td className={`text-center border-black ${bgPastel}`} style={{width: '90px'}}>MOV.</td>
                   </React.Fragment>
                 )
@@ -53,10 +37,6 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
         <tbody>
           {
             conceptos.sort((a, b)=>a.orden-b.orden).filter(f=>f.monto_proyectado!==0 || f.monto!==0).map((c, i)=>{
-              const sumaProyectado = c.itemsxDia?.reduce((total, im)=>total+im?.monto_proyectado, 0)
-              const itemsConMesesCompletos = c?.itemsxDia?.filter(m=>`${m.anio}-${m.mes}` !== `${anioActual}-${mesActual}`)
-              .flatMap(f=>f.items)
-              const sumaMontoMensualCompletos = (itemsConMesesCompletos?.reduce((total, im)=>total+im?.monto, 0))
               return (
                 <tr key={''}>
                   <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>
@@ -96,7 +76,7 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
                                 )
                               }
                               { 
-                              (m.monto_proyectado===0 || m.monto_proyectado<=m.monto) || nombreGrupo!=='INGRESOS'&&  anio===anioActual &&
+                              (m.monto_proyectado===0 ) || nombreGrupo!=='INGRESOS'&&  anio===anioActual &&
                               (m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()+1}` || m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()}`) 
                               &&
                                (
@@ -121,13 +101,13 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
                       )
                     })
                   }
-                <td className='text-end border-left-10'>
+                <td className='text-center border-left-10'>
                   <NumberFormatMoney amount={c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0)}/>
                   </td>
-                <td className='fs-3 text-end'>{c.itemsxDia?.reduce((total, im)=>total+im?.len, 0)}</td>
-                <td className='fs-3 text-end'>{(((c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0))/montoAcumuladoDeMontoTotal)*100).toFixed(2)}</td>
-                <td className='text-end border-right-10'>
-                  <NumberFormatMoney amount={sumaMontoMensualCompletos/dataTotalFormular(anio, dataAlter)}/>
+                <td className='fs-3 text-center'>{c.itemsxDia?.reduce((total, im)=>total+im?.len, 0)}</td>
+                <td className='fs-3 text-center'>{(((c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0))/sumaMontototal)*100).toFixed(2)}</td>
+                <td className='text-center border-right-10'>
+                  <NumberFormatMoney amount={c.itemsxDia?.filter(f=>f.mes<=mesActual-1).reduce((total, im)=>total+im?.monto, 0)/Number(mesActual-1)}/>
                   </td>
                 </tr>
               )
@@ -136,15 +116,14 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
           <tr>
             <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>TOTAL</td>
             {
-              dataAlter.map((f, i)=>{
+              fechas.map((f, i)=>{
                 return (
                   <React.Fragment key={i}>
                   <td className={`text-center ${bgTotal}`} style={{width: '120px'}}>
-                    <NumberFormatMoney amount={f.montoTotalPagadas +f.montoTotalNoPagadas}/>
+                    <NumberFormatMoney amount={funSumaTotal(f.mes)?.monto}/>
                   </td>
                   <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>
-                    {f.dataSumaCantidad}
-
+                    {funSumaTotal(f.mes)?.len}
                   </td>
                   </React.Fragment>
                 )
@@ -155,13 +134,15 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
           <tr>
             <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 border-bottom-10 ${bgTotal}`}>% <span className='mx-1'></span> PARTICIPACION</td>
             {
-              dataAlter.map((f, i)=>{
+              fechas.map((f, i)=>{
                 return (
                   <React.Fragment key={i}>
-                  <td className={`text-center ${bgTotal}`} style={{width: '120px'}}><NumberFormatMoney amount={(f.montoTotalPagadas/montoAcumuladoDeMontoTotal)*100}/></td>
-                  <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>{
-                  // ((f.cantidadTotalPagadas/montoAcumuladoDecantidadTotal)*100).toFixed(2) 
-                  f.dataSumaCantidad}</td>
+                  <td className={`text-center ${bgTotal}`} style={{width: '120px'}}>
+                    <NumberFormatMoney amount={(funSumaTotal(f.mes)?.monto/conceptos.reduce((total, item)=>item?.monto+total, 0))*100}/>
+                  </td>
+                  <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>
+                    {funSumaTotal(f.mes)?.len}
+                  </td>
                   </React.Fragment>
                 )
               })
@@ -170,13 +151,13 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
               <NumberFormatMoney
               className='fs-2'
                 amount={
-                  dataAlter.reduce((total, item)=>item.montoTotalPagadas+item.montoTotalNoPagadas+total, 0)
+                  sumaMontototal
                 }
               />
             </td>
-            <td className='fs-2 text-end border-bottom-10'>{dataAlter.reduce((total, item)=>item.dataSumaCantidad+total, 0)}</td>
+            <td className='fs-2 text-end border-bottom-10'>{sumaLentotal}</td>
             <td className='fs-2 text-center border-bottom-10'>{'100'}</td>
-            <td className='fs-2 text-center border-bottom-10 border-right-10'><NumberFormatMoney className='fs-2' amount={dataAlter.reduce((total, item)=>item.montoTotalPagadas+item.montoTotalNoPagadas+total, 0)/dataTotalFormular(anio, dataAlter)}/></td>
+            <td className='fs-2 text-center border-bottom-10 border-right-10'><NumberFormatMoney className='fs-2' amount={sumaMontototal/dataTotalFormular(anio)}/></td>
           </tr>
         </tbody>
       </Table>

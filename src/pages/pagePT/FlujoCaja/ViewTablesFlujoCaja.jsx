@@ -7,11 +7,12 @@ import { ModalTableItems } from './view/ModalTableItems'
 import { ModalCustomGasto } from '../GestGastos/ModalCustomGasto'
 import { ViewResumenTotal } from './ViewResumenTotal'
 import { ModalTableItemsIngresos } from './view/ModalTableItemsIngresos'
+import { ViewResumenTotalOficial } from './ViewResumenTotalOficial'
 
 export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, classNameEmpresa, bgPastel, textEmpresa}) => {
     const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
-    const [data, setdata] = useState({isOpen: false, items: [], header: ''})
-    const [dataIngresos, setdataIngresos] = useState({isOpen: false, items: [], header: ''})
+    const [data, setdata] = useState({isOpen: false, items: [], itemsAcumulados: {}, anio: 2024, mes: 9, header: '', isShowConceptos: false})
+    const [dataIngresos, setdataIngresos] = useState({isOpen: false, items: [], header: '', isShowConceptos: false})
     useEffect(() => {
     const obtenerDatos = async () => {
         await Promise.all([
@@ -22,11 +23,11 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
         obtenerDatos()
     }, [])
     
-    const onOpenModalTableItems = (data)=>{
-        setdata({isOpen: true, items: data, header: ''})
+    const onOpenModalTableItems = (data, itemsAcumulados, mes, anio, isShowConceptos=false)=>{
+        setdata({isOpen: true, items: data, itemsAcumulados, mes, anio, header: '', isShowConceptos})
     }
     const onCloseModalTableItems = ()=>{
-        setdata({isOpen: false, items: [], header: ''})
+        setdata({isOpen: false, items: [], itemsAcumulados: {}, anio: 2024, mes: 9, header: '', isShowConceptos: false})
     }
     const onOpenModalTableItemsIngresos = (data)=>{
         setdataIngresos({isOpen: true, items: data, header: ''})
@@ -36,10 +37,21 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     }
   return (
     <div>
+        
+        {/* <div>
+            <ViewResumenTotalOficial
+                onOpenModalTableItems={onOpenModalTableItems}
+                bgPastel={bgPastel} 
+                bgTotal={classNameEmpresa} 
+                id_enterprice={id_empresa} 
+                anio={[arrayFecha[0], arrayFecha[1]]}
+                fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
+            />
+        </div> */}
         <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
             {
-                dataIngresosxFecha
+                dataIngresosxFecha.flujoxGrupo
                 .sort((a, b)=>a.orden-b.orden)
                 ?.filter(f=>f.gastos?.length!==0)
                 .filter((f)=>f.id!==121 && f.id!==46)
@@ -65,7 +77,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
             <div style={{fontSize: '70px'}} className='text-black text-center'>EGRESOS</div>
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha
+                dataGastosxFecha.flujoxGrupo
                 .sort((a, b)=>a.orden-b.orden)
                 .filter(f=>f.gastos?.length!==0)
                 .filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.id!==97 && f.id!==110&& f.id!==153&& f.id!==103)
@@ -101,7 +113,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
             <div style={{fontSize: '10px'}} className='text-black text-center'>EGRESOS</div>
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha
+                dataGastosxFecha.flujoxGrupo
                 .sort((a, b)=>a.orden-b.orden)
                 .filter(f=>f.gastos?.length!==0)
                 .filter((f)=>f.id==97 || f.id==110 || f.id==103)
@@ -125,7 +137,16 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 })
             }
         </div>
-            <ModalTableItems 
+        <ModalTableItems 
+                link={link}
+                bgHeader={classNameEmpresa}
+                textEmpresa={textEmpresa}
+                isShowConceptos = {data.isShowConceptos}
+                itemsAcumulados={data.itemsAcumulados}
+                mes={data.mes}
+                anio={data.anio}
+            show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} id_empresa={id_empresa}/>
+            {/* <ModalTableItems 
                 link={link}
                 bgHeader={classNameEmpresa}
                 textEmpresa={textEmpresa}
@@ -133,7 +154,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
             <ModalTableItemsIngresos
                 bgHeader={classNameEmpresa}
                 textEmpresa={textEmpresa}
-            show={dataIngresos.isOpen} onHide={onCloseModalTableItemsIngresos} items={dataIngresos.items} id_empresa={id_empresa}/>
+            show={dataIngresos.isOpen} onHide={onCloseModalTableItemsIngresos} items={dataIngresos.items} id_empresa={id_empresa}/> */}
     </div>
   )
 }

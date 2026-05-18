@@ -5,96 +5,6 @@ import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 import { ModalProyectados } from './view/ModalProyectados';
 
-const getQuotaParaMes = (monthIndex, year) => {
-  const y = year;
-  const m = monthIndex;
-  switch (`${m}-${y}`) {
-    case "5-2026":
-      return {
-        meta: 110000,
-      };
-    case "4-2026":
-      return {
-        meta: 115000,
-      };
-    case "3-2026":
-      return {
-        meta: 100000,
-      };
-    case "2-2026":
-      return {
-        meta: 100000,
-      };
-    case "1-2026":
-      return {
-        meta: 110000,
-      };
-    case "12-2025":
-      return {
-        meta: 90000,
-      };
-
-    case "11-2025":
-      return {
-        meta: 90000,
-      };
-
-    case "10-2025":
-      return {
-        meta: 85000,
-      };
-
-    case "9-2025":
-      return {
-        meta: 75000,
-      };
-
-    case "8-2025":
-      return {
-        meta: 70000,
-      };
-
-    case "7-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "6-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "5-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "4-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "3-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "2-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "1-2025":
-      return {
-        meta: 60000,
-      };
-
-    default:
-      return {
-        meta: 0,
-      };
-  }
-};
 export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio, onOpenModalTableItems}) => {
     const fechaElegida = new Date(anio[0])
     const fechaActual = new Date()
@@ -102,29 +12,21 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     const mesElegido = fechaElegida.getMonth()+1
     const anioActual = fechaActual.getFullYear()
     const mesActual = fechaActual.getMonth()+1
-    const [isOpenModalProyectados, setisOpenModalProyectados] = useState({isOpen: true})
-    const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha, obtenerParametrosGastos, dataParametrosGastos } = useFlujoCaja()
+    const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
     useEffect(() => {
-        obtenerEgresosxFecha(id_enterprice, anio, 'tenet')
-        obtenerParametrosGastos(id_enterprice)
+        obtenerEgresosxFecha(id_enterprice, anio)
     }, [id_enterprice])
     useEffect(() => {
-        obtenerIngresosxFecha(id_enterprice, anio, 'tenet')
+        obtenerIngresosxFecha(id_enterprice, anio)
     }, [])
-    const onOpenModalProy = ()=>{
-      setisOpenModalProyectados({isOpen: true})
-    }
-    const onCloseModalProy = ()=>{
-      setisOpenModalProyectados({isOpen: false})
-    }
     const dataAlter = fechas.map((f, index, array)=>{
-        const dataGast = dataGastosxFecha.filter(f=>f.id!==97 && f.id!==153 && f.id!==103 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150 ).flatMap(e=>e.parametro_grupo_gasto).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes);
+        const dataGast = dataGastosxFecha.flujoxGrupo.filter(f=>f.id!==97 && f.id!==153 && f.id!==103 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150 ).flatMap(e=>e.parametro_grupo_gasto).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes);
         const sumaGast = dataGast.reduce((total, item)=>item.monto+total, 0)
         const sumaProyectado = dataGast.reduce((total, item)=>item.monto_proyectado+total, 0)
-        const dataGasto = dataGastosxFecha.filter(f=>f.id!==97 && f.id!==153 && f.id!==103 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150 ).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        const dataGastoBolsa = dataGastosxFecha.filter(f=>f.id===153).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.id!==121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.id===121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
+        const dataGasto = dataGastosxFecha.flujoxGrupo.filter(f=>f.id!==97 && f.id!==153 && f.id!==103 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150 ).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
+        const dataGastoBolsa = dataGastosxFecha.flujoxGrupo.filter(f=>f.id===153).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
+        const dataIngresos = dataIngresosxFecha.flujoxGrupo.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.id!==121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
+        const dataIngresosExcepcionales = dataIngresosxFecha.flujoxGrupo.filter(f=>f.id===121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
         const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
         const sumaGastos = dataGasto.reduce((total, item)=>item.monto+total, 0)
         const sumaGastosBolsa = dataGastoBolsa.reduce((total, item)=>item.monto+total, 0)
@@ -132,10 +34,11 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         const cantidadIngresos = dataIngresos.length;
         const cantidadIngresosExcepcional = dataIngresosExcepcionales.length;
         const cantidadGastos = dataGasto.length;
+
         const utilidadBolsa = sumaIngresosExcepcional-sumaGastosBolsa
-        const utilidadBruta = sumaIngresos-sumaGastos
+        const utilidadBruta = sumaGastos===0?0:sumaIngresos-(sumaGastos+sumaProyectado)
         const utilidadNeta = (sumaIngresos)-sumaGastos
-        const utilidadUltimaLinea = ((utilidadNeta && sumaIngresos) && (utilidadNeta*100)/sumaIngresos)
+        const utilidadUltimaLinea = ((utilidadBruta && sumaIngresos) && (utilidadBruta*100)/sumaIngresos)
         return {
             ...f,
             sumaProyectado,
@@ -156,32 +59,17 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         }
       })
       const dataAlterMesCompleto = dataAlter.filter((f)=>`${f.anio}-${f?.mes}`!==`${anioActual}-${mesActual}`).map(f=>{
-        // const dataGasto = dataGastosxFecha.filter(f=>f.id!==97&& f.id!==153&& f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        // const dataGastoBolsa = dataGastosxFecha.filter(f=>f.id===153).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        // const sumaGastosBolsa = dataGastoBolsa.reduce((total, item)=>item.monto+total, 0)
-        // const dataIngresos = dataIngresosxFecha.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.id!==121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        // const dataIngresosExcepcionales = dataIngresosxFecha.filter(f=>f.id===121).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        // const sumaIngresos = dataIngresos.reduce((total, item)=>item.monto+total, 0)
-        // const sumaGastos = dataGasto.reduce((total, item)=>item.monto+total, 0)
-        // const sumaIngresosExcepcional = dataIngresosExcepcionales.reduce((total, item)=>item.monto+total, 0);
         return {
           ...f
-          // dataGasto,
-          // sumaGastosBolsa,
-          // dataIngresos,
-          // dataIngresosExcepcionales,
-          // sumaIngresos,
-          // sumaGastos,
-          // sumaIngresosExcepcional
         }
       })
       const ingresosAcumulados = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)
     const utilidadBrutaTotal = dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
     const utilidadNetaTotal = (dataAlter.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlter.reduce((total, item)=>item.sumaGastos+total, 0)
     const utilidadNetaTotalMESCOMPLETO = (dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)
-    // const utilidadBrutaTotalMESCOMPLETO = (dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)
     const utilidadBrutaTotalMESCOMPLETOExtraordinario = (dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastosBolsa+total, 0)
     const utilidadBrutaTotalExtraordinario = (dataAlter.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0))-dataAlter.reduce((total, item)=>item.sumaGastosBolsa+total, 0)
+    
       return (
         <>
           <Table className="tabla-egresos fs-3" style={{ width: '100%', marginBottom: '200px' }} bordered>
@@ -189,10 +77,10 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
               <tr>
                 <th style={{width: '500px'}} className={`fs-1 sticky-td-white border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}><div className='text-black'>{'RESULTADO ANUAL'}</div></th>
                 {
-                  dataAlter.map(f=>{
+                  fechas.map(f=>{
                     return (
-                      <React.Fragment key={`${f?.mesStr}`}>
-                      <td className={`text-center ${bgTotal} ${`${f?.mes}-${f.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`} style={{width: '270px'}}>{f?.mesStr}</td>
+                      <React.Fragment key={`${f?.mes}`}>
+                      <td className={`text-center ${bgTotal} ${`${f?.mes}-${f.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`} style={{width: '270px'}}>{f.mesSTR}</td>
                       </React.Fragment>
                     )
                   })
@@ -207,7 +95,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   <tr>
                     <td className={`border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>CUOTA</td>
                   {
-                    dataAlter.map(e=>{
+                    fechas.map(e=>{
                       return (
                         <React.Fragment>
                           <td className={`text-end ${`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}>
@@ -265,26 +153,29 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 dataAlter.map(e=>{
                   return (
                     <React.Fragment>
-                      <td className={`text-change text-end ${`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> 
-                        <div className='text-change' onClick={()=>onOpenModalTableItems(e.dataGasto)}>
+                      <td onClick={()=>onOpenModalTableItems(e.dataGasto, dataGastosxFecha, e.mes, anio, true)} className={`text-change text-end ${`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> 
+                        <div className='text-change'>
                           <NumberFormatMoney amount={-e.sumaGastos}/>
                           <br/>
                         </div>
                           <div className='text-orange'>
                             {
                               (`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && e.sumaProyectado>e.sumaGastos!==0) && (
-                                <div onClick={()=>onOpenModalProy()}>
-                                  <NumberFormatMoney amount={e.sumaProyectado>e.sumaGastos?e.sumaGastos-e.sumaProyectado:0}/>
+                                <div>
+                                  <NumberFormatMoney amount={e.sumaProyectado}/>
                                 </div>
                               )
                             }
                             {
                               (`${e?.mes}-${e.anio}`===`${mesActual-1}-${anioActual}` && e.sumaProyectado>e.sumaGastos===0) && (
-                                <div onClick={()=>onOpenModalProy()}>
-                                  <NumberFormatMoney amount={e.sumaProyectado>e.sumaGastos?e.sumaGastos-e.sumaProyectado:0}/>
+                                <div>
+                                  <NumberFormatMoney amount={e.sumaProyectado>e.sumaGastos?e.sumaProyectado:0}/>
                                 </div>
                               )
                             }
+                            {/* <div>
+                                  <NumberFormatMoney amount={e.sumaProyectado}/>
+                                </div> */}
                         </div>
                       </td>
                     </React.Fragment>
@@ -321,7 +212,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                                 <div className={`${e.utilidadBruta>0?'text-orange':'text-orange'} `} >
                                   <NumberFormatMoney 
                                     amount=
-                                    {e.sumaProyectado-e.sumaIngresos}/></div>
+                                    {e.sumaIngresos-(e.sumaProyectado+e.sumaGastos)}/></div>
                               )
                         }
                       </td>
@@ -349,7 +240,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                               `${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` ? (
                                 <div className={`${e.utilidadBruta>0?'text-orange':'text-orange'} `} >
                                   <NumberFormatMoney amount={
-                                    ((e.utilidadBruta-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos))*100)/e.sumaIngresos
+                                    e.utilidadUltimaLinea
                                     }/>
                                   </div>
                               ): (
@@ -484,8 +375,6 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
               </Table>
             )
           }
-
-          <ModalProyectados data={dataGastosxFecha} anio={anio} fechas={fechas} onHide={()=>onCloseModalProy()} show={isOpenModalProyectados.isOpen} />
         </>
   )
 }
@@ -510,3 +399,95 @@ if(anio===year){
   return 12;
 }
 }
+
+
+const getQuotaParaMes = (monthIndex, year) => {
+  const y = year;
+  const m = monthIndex;
+  switch (`${m}-${y}`) {
+    case "5-2026":
+      return {
+        meta: 110000,
+      };
+    case "4-2026":
+      return {
+        meta: 115000,
+      };
+    case "3-2026":
+      return {
+        meta: 100000,
+      };
+    case "2-2026":
+      return {
+        meta: 100000,
+      };
+    case "1-2026":
+      return {
+        meta: 110000,
+      };
+    case "12-2025":
+      return {
+        meta: 90000,
+      };
+
+    case "11-2025":
+      return {
+        meta: 90000,
+      };
+
+    case "10-2025":
+      return {
+        meta: 85000,
+      };
+
+    case "9-2025":
+      return {
+        meta: 75000,
+      };
+
+    case "8-2025":
+      return {
+        meta: 70000,
+      };
+
+    case "7-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "6-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "5-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "4-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "3-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "2-2025":
+      return {
+        meta: 60000,
+      };
+
+    case "1-2025":
+      return {
+        meta: 60000,
+      };
+
+    default:
+      return {
+        meta: 0,
+      };
+  }
+};

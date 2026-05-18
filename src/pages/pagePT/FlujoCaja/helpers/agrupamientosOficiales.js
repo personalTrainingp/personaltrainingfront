@@ -29,7 +29,6 @@ export function aplicarTipoDeCambio(dataTC, data) {
 const fecha = new Date();
 const dateActual = fecha.getDate();
 const mesActual = fecha.getMonth();
-const anioActual = fecha.getFullYear();
 export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio = 2026) => {
 	const itemsXdiaGenerado = generarMesYanio(
 		new Date('2026-01-15T00:00:00.000Z'),
@@ -41,10 +40,6 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 		);
 		return {
 			...m,
-			itemsxDia: agruparPorDia(gastos).map((m) => {
-				return { ...m, monto: m.items?.reduce((total, item) => item.monto + total, 0) };
-			}),
-			gastos,
 			parametro_grupo_gasto: m?.parametro_grupo_gasto
 				?.map((f) => {
 					const gast = gastos?.filter((g) => g?.id_gasto === f.id);
@@ -68,8 +63,6 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 							agrupadoxDia
 								.find((f) => f.mes === g.mes)
 								?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
-						//SI ISPROMEDIADO ES TRUE?SUMAGASTOS_MENOSMESACTUAL/MESACTUAL-1
-						// SI NO=>
 						const monto_pro = f.sin_limite
 							? f.isPromediado
 								? sumaGastos_Total_menos_mesActual / Number(g.mes - 1)
@@ -77,26 +70,29 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 							: new Date(f.fecha_inicio).getUTCMonth() + 1 <= Number(g.mes)
 								? f.monto_proyectado
 								: 0;
+						const monto = ItemsGastosAgrupados.reduce(
+							(total, item) => item.monto + total,
+							0
+						);
 						const monto_proyectado =
 							mesActual > Number(g.mes - 1)
 								? dateActual > 7
 									? 0
-									: monto_pro
-								: monto_pro;
+									: monto_pro - monto
+								: monto_pro - monto;
+
 						const es_promedio =
 							new Date(f.fecha_inicio).getUTCMonth() + 1 <= Number(g.mes)
 								? f.isPromediado
 								: false;
 						return {
+							sumaGastos_Total_menos_mesActual,
 							gastos_antes_mesActual,
 							monto_total_menos_mesActual:
 								sumaGastos_Total_menos_mesActual / Number(g.mes - 1),
 							isPromediado: es_promedio,
 							ItemsGastosAgrupados,
-							monto: ItemsGastosAgrupados.reduce(
-								(total, item) => item.monto + total,
-								0
-							),
+							monto: monto,
 							items_pagados: itemsPagados,
 							itemsNoPagados: itemsNoPagados,
 							monto_pagados: itemsPagados.reduce(
@@ -108,10 +104,8 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 								0
 							),
 							len: ItemsGastosAgrupados.length,
-							monto_proyectado:
-								monto_proyectado -
-								ItemsGastosAgrupados.reduce((total, item) => item.monto + total, 0),
-
+							monto_proyectado: monto_proyectado <= 0 ? 0 : monto_proyectado,
+							monto_pro: monto_pro - monto <= 0 ? 0 : monto_pro - monto,
 							...g,
 						};
 					});
@@ -124,7 +118,8 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 						tipo: f.tipo,
 						nombre_gasto: f.nombre_gasto,
 						gasto: gast,
-						itemsxDia: itemsXdia,
+						len: gast.length,
+						monto_pro: itemsXdia.reduce((total, item) => total + item.monto_pro, 0),
 						monto_proyectado: itemsXdia.reduce(
 							(total, item) => total + item.monto_proyectado,
 							0
@@ -138,9 +133,19 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 							0
 						),
 						monto: itemsXdia.reduce((total, item) => total + item.monto, 0),
+						itemsxDia: itemsXdia,
+						agrupadoxDia,
 					};
 				})
 				.sort((a, b) => a.orden - b.orden),
+			itemsxDia: agruparPorDia(gastos).map((m) => {
+				return {
+					monto: m.items?.reduce((total, item) => item.monto + total, 0),
+					len: m.items?.length,
+					...m,
+				};
+			}),
+			gastos,
 		};
 	});
 	console.log({ resultado });
@@ -197,7 +202,7 @@ export const agruparConceptos = (dataGrupos, anio = 2026, mes = 12) => {
 	});
 	return resultado;
 };
-function agruparPorDia(data) {
+export function agruparPorDia(data) {
 	const map = {};
 
 	data.forEach((item) => {
