@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Modal, Row } from 'react-bootstrap'
+import { Button, Col, Modal, Row } from 'react-bootstrap'
 import { InputSelect, InputText } from '@/components/InputText';
 import { useForm } from '@/hooks/useForm';
 import { useGestionProveedoresStore } from './useGestionProveedoresStore';
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { arrayEmpresaFinan, arrayEstados } from '@/types/type';
-import { Button } from 'primereact/button';
 import { ModalAgregarTermino } from './ModalAgregarTermino';
 
 const registerProvedor = {
@@ -212,7 +211,7 @@ export const ModalCustomProveedores = ({onShow, show, onHide, id=0, isCopy=false
                         </Col>
                         <Col lg={12}>
                             <div className="mb-4">
-                                <InputSelect label={'Estado'} nameInput={'estado_prov'} onChange={onInputChangeProv} required options={arrayEstados} value={estado_prov} />
+                                <InputSelect label={'Estado'} nameInput={'estado_prov'} onChange={onInputChangeProv} options={arrayEstados} value={estado_prov} />
                             </div>
                         </Col>
                         <Col lg={12}>
@@ -222,22 +221,22 @@ export const ModalCustomProveedores = ({onShow, show, onHide, id=0, isCopy=false
                         </Col>
                         <Col lg={4}>
                             <div className="mb-4">
-                                <InputText label={'DNI'} nameInput={'dni_vend_prov'} value={dni_vend_prov} onChange={onInputChangeProv} required/>
+                                <InputText label={'DNI'} nameInput={'dni_vend_prov'} value={dni_vend_prov} onChange={onInputChangeProv}/>
                             </div>
                         </Col>
                         <Col lg={8}>
                             <div className="mb-4">
-                                <InputText label={'Nombres'} nameInput={'nombre_vend_prov'} value={nombre_vend_prov} onChange={onInputChangeProv} required/>
+                                <InputText label={'Nombres'} nameInput={'nombre_vend_prov'} value={nombre_vend_prov} onChange={onInputChangeProv}/>
                             </div>
                         </Col>
                         <Col lg={4}>
                             <div className="mb-4">
-                                <InputText label={'N° celular'} nameInput={'cel_vend_prov'} value={cel_vend_prov} onChange={onInputChangeProv} required/>
+                                <InputText label={'N° celular'} nameInput={'cel_vend_prov'} value={cel_vend_prov} onChange={onInputChangeProv}/>
                             </div>
                         </Col>
                         <Col lg={8}>
                             <div className="mb-4">
-                                <InputText label={'Correo'} nameInput={'email_vend_prov'} value={email_vend_prov} onChange={onInputChangeProv} required/>
+                                <InputText label={'Correo'} nameInput={'email_vend_prov'} value={email_vend_prov} onChange={onInputChangeProv}/>
                             </div>
                         </Col>
                         <Col lg={12}>
@@ -252,7 +251,7 @@ export const ModalCustomProveedores = ({onShow, show, onHide, id=0, isCopy=false
                         </Col>
                         <Col lg={12}>
                             <Button onClick={()=>onSubmit()}>
-                            {'Registrar'}
+                                REGISTRAR
                             </Button>
                             <a className='m-3 text-danger' onClick={onCancelForm} style={{cursor: 'pointer'}}>Cancelar</a>
                         </Col>
