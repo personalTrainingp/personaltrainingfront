@@ -88,6 +88,17 @@ const App = () => {
                                                 customStartDay={customStartDay}
                                                 customEndDay={customEndDay}
                                             />
+                                            <ComparativoMensualTable
+                                                ventas={dataVentas.filter(v => v.id_origen === 692)}
+                                                year={year}
+                                                startMonth={selectedMonth - 1}
+                                                cutDay={cutDay}
+                                                title="RENOVACIONES"
+                                                showFortnightly={true}
+                                                variant="renovations"
+                                                customStartDay={customStartDay}
+                                                customEndDay={customEndDay}
+                                            />
                                         </>
                                     )}
                                 </>
