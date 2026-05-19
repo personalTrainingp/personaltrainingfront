@@ -5,6 +5,7 @@ import { ComparativoMensualTable } from './components/ComparativoMensualTable';
 import { MetaAlcanceTable } from './components/MetaAlcanceTable';
 import { TopControlsVentas } from './components/TopControlsVentas';
 import { PageBreadcrumb } from '@/components';
+import { arrayOrigenDeCliente } from '@/types/type';
 
 const App = () => {
     const {
@@ -76,29 +77,22 @@ const App = () => {
                                             />
 
                                             <hr className="my-5" />
-
-                                            <ComparativoMensualTable
-                                                ventas={dataVentas.filter(v => v.id_origen === 691)}
-                                                year={year}
-                                                startMonth={selectedMonth - 1}
-                                                cutDay={cutDay}
-                                                title="RENOVACIONES"
-                                                showFortnightly={true}
-                                                variant="renovations"
-                                                customStartDay={customStartDay}
-                                                customEndDay={customEndDay}
-                                            />
-                                            <ComparativoMensualTable
-                                                ventas={dataVentas.filter(v => v.id_origen === 692)}
-                                                year={year}
-                                                startMonth={selectedMonth - 1}
-                                                cutDay={cutDay}
-                                                title="REINSCRIPCIONES"
-                                                showFortnightly={true}
-                                                
-                                                customStartDay={customStartDay}
-                                                customEndDay={customEndDay}
-                                            />
+                                            {
+                                                arrayOrigenDeCliente.map(m=>{
+                                                    return (
+                                                        <ComparativoMensualTable
+                                                            ventas={dataVentas.filter(v => v.id_origen === m.value)}
+                                                            year={year}
+                                                            startMonth={selectedMonth - 1}
+                                                            cutDay={cutDay}
+                                                            title={m.label}
+                                                            showFortnightly={true}
+                                                            customStartDay={customStartDay}
+                                                            customEndDay={customEndDay}
+                                                        />
+                                                    )
+                                                })
+                                            }
                                         </>
                                     )}
                                 </>

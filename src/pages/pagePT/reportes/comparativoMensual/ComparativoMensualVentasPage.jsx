@@ -5,6 +5,7 @@ import { ComparativoMensualTable } from './components/ComparativoMensualTable';
 import { TopControlsVentas } from './components/TopControlsVentas';
 import { useState, useEffect } from 'react';
 import { PageBreadcrumb } from '@/components';
+import { arrayOrigenDeCliente } from '@/types/type';
 
 const ComparativoMensualVentasPage = () => {
     const {
@@ -74,29 +75,23 @@ const ComparativoMensualVentasPage = () => {
                                     />
 
                                     <hr className="my-5" />
-
+                                    {
+                                        arrayOrigenDeCliente.map(m=>{
+                                            return (
+                                                <ComparativoMensualTable
+                                                    ventas={dataVentas.filter(v => v.id_origen === m.value)}
+                                                    year={year}
+                                                    startMonth={selectedMonth - 1}
+                                                    cutDay={cutDay}
+                                                    title={`${m.label}`}
+                                                    showFortnightly={true}
+                                                    customStartDay={customStartDay}
+                                                    customEndDay={customEndDay}
+                                                />
+                                            )
+                                        })
+                                    }
                                     {/* Tabla 2: Renovaciones */}
-                                    <ComparativoMensualTable
-                                        ventas={dataVentas.filter(v => v.id_origen === 691)}
-                                        year={year}
-                                        startMonth={selectedMonth - 1}
-                                        cutDay={cutDay}
-                                        title="RENOVACIONES"
-                                        showFortnightly={true}
-                                        customStartDay={customStartDay}
-                                        customEndDay={customEndDay}
-                                    />
-                                    {/* Tabla 2: Renovaciones */}
-                                    <ComparativoMensualTable
-                                        ventas={dataVentas.filter(v => v.id_origen === 692)}
-                                        year={year}
-                                        startMonth={selectedMonth - 1}
-                                        cutDay={cutDay}
-                                        title="REINSCRIPCIONES"
-                                        showFortnightly={true}
-                                        customStartDay={customStartDay}
-                                        customEndDay={customEndDay}
-                                    />
                                 </>
                             )}
                         </Card.Body>
