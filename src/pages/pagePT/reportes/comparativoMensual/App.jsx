@@ -95,7 +95,7 @@ const App = () => {
                                                 cutDay={cutDay}
                                                 title="REINSCRIPCIONES"
                                                 showFortnightly={true}
-                                                variant="renovations"
+                                                
                                                 customStartDay={customStartDay}
                                                 customEndDay={customEndDay}
                                             />
