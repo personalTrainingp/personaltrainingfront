@@ -93,7 +93,7 @@ const App = () => {
                                                 year={year}
                                                 startMonth={selectedMonth - 1}
                                                 cutDay={cutDay}
-                                                title="RENOVACIONES"
+                                                title="REINSCRIPCIONES"
                                                 showFortnightly={true}
                                                 variant="renovations"
                                                 customStartDay={customStartDay}
