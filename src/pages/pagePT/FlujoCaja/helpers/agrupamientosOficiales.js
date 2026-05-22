@@ -87,6 +87,8 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 								: false;
 						return {
 							sumaGastos_Total_menos_mesActual,
+							nombre_grupo: m.param_label,
+							orden_grupo: m.orden,
 							gastos_antes_mesActual,
 							monto_total_menos_mesActual:
 								sumaGastos_Total_menos_mesActual / Number(g.mes - 1),
@@ -111,6 +113,9 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 					});
 					return {
 						id: f.id,
+						nombre_grupo: m.param_label,
+						id_grupo: m.id,
+						orden_grupo: m.orden,
 						orden: f.orden,
 						fecha_inicio: f.fecha_inicio,
 						fecha_fin: f.fecha_fin,
@@ -148,7 +153,6 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 			gastos,
 		};
 	});
-	console.log({ resultado });
 
 	return resultado;
 };

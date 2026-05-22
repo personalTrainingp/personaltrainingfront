@@ -9,29 +9,18 @@ export const AppSeguimiento = () => {
         obtenerSeguimientoxFecha()
     }, [])
     const fecha = new Date()
-    const diaActual = fecha.getDate()
-    const mesActual = fecha.getMonth()+1
-    const anioActual = fecha.getFullYear()
-    const sumarFechaSafe = (fecha) => {
-      const base = new Date(fecha);
-      const f = new Date(base);
 
-      f.setMonth(f.getMonth() - 3);
-      f.setDate(f.getDate() - 1);
-
-      return f;
-    };
   return (
     <div>
       <Row>
-        <Col lg={4}>
-          <TableSeguimientos dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>SOCIOS ACTIVOS </span></>} rangeDate={["2026-04-20T00:00:00.000Z", "2028-03-16T00:00:00.000Z"]}/>
+        <Col lg={6}>
+          <TableSeguimientos dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>SOCIOS ACTIVOS </span></>} rangeDate={["2026-05-22T12:00:00.000Z", "2030-03-16T12:00:00.000Z"]}/>
         </Col>
-        <Col lg={4}>
-          <TableSeguimientos dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>RENOVACIONES VENCIDAS</span></>} rangeDate={[ "2026-01-20T00:00:00.000Z","2026-04-20T00:00:00.000Z"]}/>
+        <Col lg={6}>
+          <TableSeguimientos dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>RENOVACIONES VENCIDAS</span></>} rangeDate={[ "2026-02-22T12:00:00.000Z","2026-05-21T12:00:00.000Z"]}/>
         </Col>
-        <Col lg={4}>
-          <TableSeguimientos dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>REINSCRIPCIONES VENCIDAS</span></>} rangeDate={["2024-09-16T00:00:00.000Z",sumarFechaSafe(new Date())]}/>
+        <Col lg={6}>
+          <TableSeguimientos dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>REINSCRIPCIONES VENCIDAS</span></>} rangeDate={["2024-09-16T12:00:00.000Z", "2026-02-21T12:00:00.000Z"]}/>
         </Col>
       </Row>
     </div>

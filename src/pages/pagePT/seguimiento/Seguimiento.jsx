@@ -1,14 +1,7 @@
 import { Row, Col, Card, CardTitle } from 'react-bootstrap';
-//import { Table, PageBreadcrumb } from '@/components';
 import { PageBreadcrumb } from '@/components'; 
 
-import { columns, sizePerPageList } from './ColumnsSet';
-import { StatisticSeguimiento } from './StatisticSeguimiento';
-import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
 import { useEffect, useRef } from 'react';
-import { helperFunctions } from '@/common/helpers/helperFunctions';
-import {TableSeguimiento} from './TableSeguimiento';
-import { useSelector } from 'react-redux';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { TableSeguimientoTODO } from './TableSeguimientoTODO';
 import SimpleBar from 'simplebar-react';
@@ -28,13 +21,13 @@ export const Seguimiento = () => {
   return (
 		<>
 			<PageBreadcrumb title="ACTIVOS - RENOVACIONES - REINSCRIPCIONES" subName="Ventas" />
-			      <div style={{
+			      	<div style={{
 						display: 'flex',
 						justifyContent: 'flex-end',
 						gap: '0.5rem',
 						marginBottom: '0.5rem',
 						fontSize: '50px',
-					}}>
+						}}>
 						<button onClick={() => scroll(-300)} aria-label="Izquierda">◀</button>
 						<button onClick={() => scroll(300)} aria-label="Derecha">▶</button>
 					</div>

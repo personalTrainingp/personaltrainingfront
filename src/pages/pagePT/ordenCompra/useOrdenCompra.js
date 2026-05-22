@@ -6,8 +6,8 @@ export const useOrdenCompra = () => {
 	const { dataGastosxFecha, dataIngresosxFecha, obtenerEgresosxFecha, obtenerIngresosxFecha } =
 		useFlujoCaja();
 	return {
-		dataGastosxFecha,
-		dataIngresosxFecha,
+		dataGastosxFecha: dataGastosxFecha.flujoxGrupo,
+		dataIngresosxFecha: dataIngresosxFecha.flujoxGrupo,
 		obtenerEgresosxFecha,
 		obtenerIngresosxFecha,
 	};

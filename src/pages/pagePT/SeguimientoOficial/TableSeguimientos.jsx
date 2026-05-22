@@ -11,7 +11,12 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
             setdata(
                 dataSeguimientoxFecha.filter(f => {
                     const fecha = new Date(f.fecha_vencimiento);
-                    return fecha >= new Date(rangeDate[0]) && fecha <= new Date(rangeDate[1]);
+                    const fechaInicio = new Date(rangeDate[0]);
+
+                    const fechaFin = new Date(rangeDate[1]);
+                    fechaFin.setHours(15, 59, 59, 999);
+
+                    return fecha >= fechaInicio && fecha <= fechaFin;
                 })
             )
         }, [rangeDate])

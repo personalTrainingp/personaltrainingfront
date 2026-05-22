@@ -9,6 +9,7 @@ const customCuotas = {
     id_operador: 0,
     n_cuotas: 0,
     es_nacional: 1,
+    monto_porcentaje: 0,
     id_forma_pago: 0, id_tarjeta: 0, id_tipo_tarjeta: 0, id_banco: 0, parcial_monto: 0, n_operacion: 0, fecha_pago: null
 }
 export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
@@ -42,7 +43,7 @@ export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
           }
     }, [show])
     
-    const { formState, id_venta, id_operador, n_cuotas, es_nacional, id_forma_pago, id_tarjeta, id_tipo_tarjeta, id_banco, parcial_monto, fecha_pago, n_operacion, onInputChange, onResetForm } = useForm(id==0?customCuotas:dataPagosxID)
+    const { formState, id_venta, monto_porcentaje, id_operador, n_cuotas, es_nacional, id_forma_pago, id_tarjeta, id_tipo_tarjeta, id_banco, parcial_monto, fecha_pago, n_operacion, onInputChange, onResetForm } = useForm(id==0?customCuotas:dataPagosxID)
     const onClickSubmit = ()=>{
         if(id!==0){
           updatePagosVentas(id, formState)
@@ -88,6 +89,7 @@ export const ModalReportePagosVentas = ({onHide, show=false, id}) => {
             <InputSelect label={'BANCO'} nameInput={'id_banco'} onChange={onInputChange} value={id_banco} options={dataBancos} required/>
             <InputText label={'N CUOTAS'} nameInput={'n_cuotas'} onChange={onInputChange} value={n_cuotas} required/>
             <InputText label={'MONTO'} nameInput={'parcial_monto'} onChange={onInputChange} value={parcial_monto} required/>
+            <InputText label={'PORCENTAJE DE DESCUENTO'} nameInput={'monto_porcentaje'} onChange={onInputChange} value={monto_porcentaje} required/>
             <InputButton label={'ACTUALIZAR'} onClick={onClickSubmit}/>
             <InputButton label={'CANCELAR'} onClick={cancelSubmit} variant={'_link'}/>
         </div>

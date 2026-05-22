@@ -141,20 +141,20 @@ export const ModalTableItems = ({show, onHide, items={}, isShowConceptos=false, 
             <Modal.Body >
                 <div className={link}>
                     <TabView onTabChange={(e) => clickProv(e.index)} activeIndex={isClickProveedores.indexTab} >
-                        <TabPanel header={<div className='fs-1'>AUDITORIA GASTOS PROVEEDORES</div>}>
-                            <div className='d-flex'>
-                                <ProveedorResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
-                            </div>
-                        </TabPanel>
                         {
                             isShowConceptos && (
-                                <TabPanel header={<div className='fs-1'>AUDITORIA GASTOS</div>}>
+                                <TabPanel header={<div className='fs-1'>AUDITORIA GASTOS COMPARATIVOS</div>}>
                                     <div className='d-flex'>
                                         <ConceptoResumen mes={mes} itemsAcumulados={itemsAcumulados} anio={anio} onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
                                     </div>
                                 </TabPanel>
                             )
                         }
+                        <TabPanel header={<div className='fs-1'>AUDITORIA GASTOS PROVEEDORES</div>}>
+                            <div className='d-flex'>
+                                <ProveedorResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
+                            </div>
+                        </TabPanel>
                         <TabPanel header={<div className='fs-1'>ITEMS</div>}>
                             <DataTableCR
                                 columns={columns}
@@ -278,44 +278,46 @@ const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv
                     <br/>
                     GASTOS
                 </div>
-                <div>
-                    <Table className="tabla-egresos fs-3" style={{ width: '100%', marginBottom: '200px' }} bordered>
-                        <thead>
-                            <tr>
-                                <th>CONCEPTO</th>
-                                <th>MONTO</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {proveedores.map((prov, i) => (
-                                <tr
-                                >
-                                    <td className={`${text} fs-2 ${bg} text-white`}  >
-                                        <div  className='text-break'>
-                                            {i+1}. {prov.items[0].tb_parametros_gasto.nombre_gasto}
-                                        </div>
-                                    </td>
-                                    <td className='text-center justify-content-center'>
-                                        {
-                                            prov.montoSuma!==0 && (
-                                                <div className='text-center text-black fs-2'>
-                                                S/. <NumberFormatMoney className='fs-1' amount={prov.montoSuma}/> <span className='fs-2 ml-4'>({prov.data_pagado?.length})</span>
-                                                </div>
-                                            )
-                                        }
-                                        {
-                                            prov.montoSuma_no_pagado !==0 && (
-                                                <div className='text-center text-change fs-2'>
-                                                S/. <NumberFormatMoney className='fs-1 text-change' amount={prov.montoSuma_no_pagado}/> <span className='fs-2 ml-4'>({prov.data_no_pagado?.length})</span>
-                                                </div>
-                                            )
-                                        }
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </div>
+                    {
+                        agrupadoXdia.filter(f=>f.mes===mes).map(m=>{
+                            const conceptos = agruparPorGrupoYConcepto(itemsAcumulados?.items, itemsAcumulados.terminologiasUsadas).flatMap(f=>f.parametro_grupo_gasto)
+                                .map(p=>{
+                                    const { itemsxDia, gasto, agrupadoxDia, monto_pro, ...rest } = p
+
+                                    return {
+                                        monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto,
+                                        mes: m.mes,
+                                        nombre_gasto: p.nombre_gasto,
+                                        nombre_grupo: `${p.nombre_grupo}`,
+                                        id_grupo: p.id_grupo,
+                                        orden_grupo: p.orden_grupo
+                                    }
+                                }).filter(f=>f.id_grupo!==153 && f.id_grupo!==155).sort((a, b)=>a.orden_grupo-b.orden_grupo)
+                            return (
+                                <TableResume conceptos={conceptos.filter(f=>f.monto_pro>=0)} bg={'bg-change'} text={text}/>
+                            )
+                        })
+                    }
+                    {
+                        agrupadoXdia.filter(f=>f.mes===mes).map(m=>{
+                            const conceptos = agruparPorGrupoYConcepto(itemsAcumulados?.items, itemsAcumulados.terminologiasUsadas).flatMap(f=>f.parametro_grupo_gasto)
+                                .map(p=>{
+                                    const { itemsxDia, gasto, agrupadoxDia, monto_pro, ...rest } = p
+
+                                    return {
+                                        monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto_pro,
+                                        mes: m.mes,
+                                        nombre_gasto: p.nombre_gasto,
+                                        nombre_grupo: p.nombre_grupo,
+                                        orden_grupo: p.orden_grupo,
+                                        id_grupo: p.id_grupo
+                                    }
+                                }).filter(f=>f.id_grupo===153 && f.id_grupo!==155).sort((a, b)=>a.orden_grupo-b.orden_grupo)
+                            return (
+                                <TableResume conceptos={conceptos} bg={'bg-change'} text={text}/>
+                            )
+                        })
+                    }
             </Col>
             <Col>
                 <div className={`bg-orange text-white text-center px-1 mb-3`} style={{fontSize: '50px'}}> 
@@ -332,49 +334,14 @@ const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv
                                     return {
                                         monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto_pro,
                                         mes: m.mes,
-                                        nombre_gasto: p.nombre_gasto
+                                        nombre_gasto: p.nombre_gasto,
+                                        nombre_grupo: p.nombre_grupo,
+                                        orden_grupo: p.orden_grupo,
+                                        id_grupo: p.id_grupo
                                     }
-                                }).sort((a, b)=>b.monto_pro-a.monto_pro)
+                                }).filter(f=>f.id_grupo!==153 && f.id_grupo!==155).sort((a, b)=>a.orden_grupo-b.orden_grupo)
                             return (
-                                <Table className="tabla-egresos fs-3" style={{ width: '100%', marginBottom: '200px' }} bordered>
-                                    <thead className='bg-orange'>
-                                        <tr >
-                                            <td className='text-white'>CONCEPTOS</td>
-                                            <td className='text-white'>MONTO</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {conceptos?.filter(f=>f.monto_pro!==0)?.map((c, i)=>{
-                                            return (
-                                            <tr>
-                                                <td className={`${text} fs-2 bg-orange text-white`}  >
-                                                    <div  className='text-break'>
-                                                        {c.nombre_gasto}
-                                                    </div>
-                                                </td>
-                                                <td className='text-center justify-content-center'>
-                                                    <div className='text-center text-black fs-2'>
-                                                    S/. <NumberFormatMoney className='fs-1' amount={c.monto_pro}/>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            )
-                                        })}
-                                        <tr>
-                                            <td className={`${text} fs-2 bg-orange text-white`}>
-                                                TOTAL
-                                            </td>
-                                            <td className='text-center justify-content-center'>
-                                                <div  className='text-center text-black fs-2'>
-                                                    <NumberFormatMoney
-                                                        amount=
-                                                        {conceptos?.filter(f=>f.monto_pro!==0)?.reduce((total, item)=>total+item.monto_pro, 0)}
-                                                    />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
+                                <TableResume conceptos={conceptos.filter(f=>f.monto_pro>=0)} bg={'bg-orange'} text={text}/>
                             )
                         })
                     }
@@ -383,10 +350,33 @@ const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv
                 mes!==1 && (
                     <Col>
                         <div className={`bg-circus text-white text-center px-1 mb-3`} style={{fontSize: '50px'}}>
-                            {dayjs(`2026-${mes-1}-15`, 'YYYY-M-DD').format('MMMM YYYY')}
+                            <span className='text-black'>
+                                {dayjs(`2026-${mes-1}-15`, 'YYYY-M-DD').format('MMMM YYYY')}
                             <br/>
                             GASTOS COMPARATIVO
+                            </span>
                         </div>
+                        {
+                            agrupadoXdia.filter(f=>f.mes===mes).map(m=>{
+                                const conceptos = agruparPorGrupoYConcepto(itemsAcumulados?.items, itemsAcumulados.terminologiasUsadas).flatMap(f=>f.parametro_grupo_gasto)
+                                    .map(p=>{
+                                        const { itemsxDia, gasto, agrupadoxDia, monto_pro, ...rest } = p
+
+                                        return {
+                                            monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes-1) && i.anio===m.anio).monto-itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto,
+                                            monto_anterior: itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto,
+                                            mes: m.mes,
+                                            nombre_gasto: p.nombre_gasto,
+                                            nombre_grupo: p.nombre_grupo,
+                                            orden_grupo: p.orden_grupo,
+                                            id_grupo: p.id_grupo
+                                        }
+                                    }).filter(f=>f.id_grupo!==153 && f.id_grupo!==155).sort((a, b)=>a.orden_grupo-b.orden_grupo)
+                                return (
+                                    <TableResume conceptos={conceptos.filter(f=>f.monto_anterior>=0)} bg={'bg-circus'} text={text}/>
+                                )
+                            })
+                        }
                         {
                         agrupadoXdia.filter(f=>f.mes===(mes)).map((m, i, a)=>{
                             const conceptos = agruparPorGrupoYConcepto(itemsAcumulados?.items, itemsAcumulados.terminologiasUsadas).flatMap(f=>f.parametro_grupo_gasto)
@@ -396,42 +386,69 @@ const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv
                                     return {
                                         monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes-1) && i.anio===m.anio).monto-(itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto+itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto_pro),
                                         mes: m.mes,
-                                        nombre_gasto: p.nombre_gasto
+                                        nombre_gasto: p.nombre_gasto,
+                                        nombre_grupo: `${p.nombre_grupo}`,
+                                        orden_grupo: p.orden_grupo,
+                                        id_grupo: p.id_grupo
                                     }
-                                }).sort((a, b)=>b.monto_pro-a.monto_pro)
+                                }).filter(f=>f.id_grupo==153).sort((a, b)=>a.orden_grupo-b.orden_grupo)
                             return (
                                 <>
-                                <Table className="tabla-egresos fs-3" style={{ width: '100%', marginBottom: '200px' }} bordered>
-                                    <thead className='bg-circus'>
+                                <TableResume conceptos={conceptos} bg={'bg-circus'} text={text}/>
+                                </>
+                            )
+                            })
+                        }
+                    </Col>
+                )
+            }
+        </Row>
+    </div>
+  );
+};
+
+
+const TableResume = ({conceptos=[], text='', bg=''})=>{
+    return (
+        <Table className="tabla-egresos fs-3" style={{ width: '100%', marginBottom: '200px' }} bordered>
+                                    <thead className={`${bg}`}>
                                         <tr >
                                             <td className='text-white'>CONCEPTOS</td>
                                             <td className='text-white'>MONTO</td>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {conceptos?.filter(f=>f.monto_pro>0)?.map((c, i)=>{
+                                        {conceptos?.map((c, i)=>{
                                             return (
                                             <tr>
-                                                <td className={`${text} fs-2 bg-circus text-white`}  >
+                                                <td className={`${text} fs-2 ${bg} text-white`}  >
+                                                    <div className='text-break text-black'>
+                                                        {c.nombre_grupo}
+                                                    </div>
                                                     <div  className='text-break'>
                                                         {c.nombre_gasto}
                                                     </div>
                                                 </td>
                                                 <td className='text-center justify-content-center'>
-                                                    <div className='text-center text-black fs-2'>
-                                                    S/. <NumberFormatMoney className='fs-1' amount={c.monto_pro}/>
+                                                    <div className={`text-center text-black fs-2 ${c.monto_pro<0?'text-change':''}`}>
+                                                        <span className={`${c.monto_pro<0?'text-change':''} ${c.monto_pro===0?'text-gray':''}`}>
+
+                                                    S/. <NumberFormatMoney className={`fs-1 ${c.monto_pro<0?'text-change':''}`} amount={c.monto_pro}/>
+                                                        </span>
                                                     </div>
                                                 </td>
                                             </tr>
                                             )
                                         })}
                                         <tr>
-                                            <td className={`${text} fs-2 bg-black text-white`}>
+                                            <td className={`${text} fs-2 ${bg} text-white`}>
                                                 TOTAL
                                             </td>
-                                            <td className='text-center bg-black justify-content-center'>
-                                                <div  className='text-center text-white fs-2'>
-                                                    <NumberFormatMoney
+                                            <td className={`text-center ${bg} justify-content-center`}>
+                                                <div  className='text-center text-white' style={{fontSize: '25px'}}>
+                                                    S/. <NumberFormatMoney
+                                                        style={{fontSize: '40px'}}
+                                                        className=''
                                                         amount=
                                                         {conceptos?.filter(f=>f.monto_pro>0)?.reduce((total, item)=>total+item.monto_pro, 0)}
                                                     />
@@ -440,16 +457,7 @@ const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv
                                         </tr>
                                     </tbody>
                                 </Table>
-                                </>
-                            )
-                        })
-                    }
-                    </Col>
-                )
-            }
-        </Row>
-    </div>
-  );
-};
+    )
+}
 export default ProveedorResumen;
 

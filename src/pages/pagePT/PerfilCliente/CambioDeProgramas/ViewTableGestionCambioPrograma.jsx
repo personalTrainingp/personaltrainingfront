@@ -1,6 +1,5 @@
-import { Button } from 'primereact/button'
 import React, { useState } from 'react'
-import { Card, Col, Row, Table } from 'react-bootstrap'
+import { Button, Card, Col, Row, Table } from 'react-bootstrap'
 import { ModalCambioPrograma } from './ModalCambioPrograma'
 import { PageBreadcrumb } from '@/components'
 import { FormatTable } from '@/components/ComponentTable/FormatTable'
@@ -21,7 +20,7 @@ export const ViewTableGestionCambioPrograma = () => {
         {/* <Col xxl={1}>
         </Col> */}
         <Col xxl={12}>
-        <Button label='Cambio de programa' onClick={onOpenModalCambioPrograma}/>
+        <Button onClick={onOpenModalCambioPrograma}>Cambiar programa</Button>
         <TableCambioPrograma/>
         </Col>
         {/* <Col xxl={1}>

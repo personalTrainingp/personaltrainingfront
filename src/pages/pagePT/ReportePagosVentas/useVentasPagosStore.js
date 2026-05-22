@@ -21,6 +21,7 @@ export const useVentasPagosStore = () => {
 					id_banco: f.id_banco,
 					n_cuotas: f.cuota,
 					porcentaje: f.porcentaje_comision,
+					monto_porcentaje: f.monto_porcentaje,
 				};
 			});
 			const dataPagos = data.ventasConPagos?.flatMap(({ detalleVenta_pagoVenta, ...venta }) =>
@@ -42,11 +43,13 @@ export const useVentasPagosStore = () => {
 						),
 						identificador,
 						porcentaje:
-							alterPago.find(
-								(f) =>
-									`${f.id_operador}|${f.id_forma_pago}|${f.id_tarjeta}|${f.id_tipo_tarjeta}|${f.id_banco}|${f.n_cuotas}` ===
-									identificador
-							)?.porcentaje || 0,
+							(pago.monto_porcentaje === 0
+								? alterPago.find(
+										(f) =>
+											`${f.id_operador}|${f.id_forma_pago}|${f.id_tarjeta}|${f.id_tipo_tarjeta}|${f.id_banco}|${f.n_cuotas}` ===
+											identificador
+									)?.porcentaje
+								: pago?.monto_porcentaje) || 0,
 					};
 				})
 			);

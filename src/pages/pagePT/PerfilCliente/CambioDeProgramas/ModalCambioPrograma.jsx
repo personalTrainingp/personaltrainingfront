@@ -1,3 +1,4 @@
+import { InputDate, InputSelect, InputText } from '@/components/InputText'
 import { useProgramaTrainingStore } from '@/hooks/hookApi/useProgramaTrainingStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
@@ -15,7 +16,7 @@ const registerCambioPrograma = {
     observacion: ''
 }
 export const ModalCambioPrograma = ({show, onHide}) => {
-    const { formState, id_cli, id_venta, observacion, id_pgm, id_motivo, fecha_cambio, onInputChange, onInputChangeReact, onResetForm } = useForm(registerCambioPrograma)
+    const { formState, id_cli, id_venta, observacion, id_pgm, id_motivo, fecha_cambio, id_horario, onInputChange, onInputChangeReact, onResetForm } = useForm(registerCambioPrograma)
     const {obtenerParametrosClientes, DataClientes, obtenerParametrosVendedores, DataVendedores} = useTerminoStore()
         const { startRegisterProgramaTraining, startObtenerTBProgramaPT } = useProgramaTrainingStore();
         const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
@@ -25,8 +26,6 @@ export const ModalCambioPrograma = ({show, onHide}) => {
         startObtenerTBProgramaPT()
         obtenerParametroPorEntidadyGrupo('cambio_pgm', 'motivo')
     }, [])
-    console.log({datapgmPT});
-    
     datapgmPT = datapgmPT.map(f=>{
         return{
             value: f.id_pgm,
@@ -45,80 +44,16 @@ export const ModalCambioPrograma = ({show, onHide}) => {
   return (
     <Dialog style={{width: '50rem'}} visible={show} onHide={onCancelarCambioPrograma} header={'AGREGAR CAMBIO DE PROGRAMA'}>
         <form onSubmit={onSubmitCambioPrograma}>
-        <div className='mb-2'>
-            <label>Cliente:</label>
-            <Select
-                onChange={(e) => {
-                return onInputChangeReact(e, 'id_cli')
-                }}
-                name={'id_cli'}
-                placeholder={'Seleccionar el cliente'}
-                className="react-select"
-                options={DataClientes}
-                value={DataClientes.find(e=>e.value===id_cli) || 0}
-                classNamePrefix="react-select"
-                required
-            ></Select>
-        </div>
-        <div className='mb-2'>
-            <label>Fecha en la que se cambio de programa:</label>
-            <input
-                type='date'
-                className='form-control'
-                value={fecha_cambio}
-                name='fecha_cambio'
-                onChange={onInputChange}
-                />
-        </div>
-        <div className='mb-2'>
-            <label>Programa:</label>
-            <Select
-                onChange={(e) => {
-                return onInputChangeReact(e, 'id_cli')
-                }}
-                name={'id_cli'}
-                placeholder={'Seleccionar el programa'}
-                className="react-select"
-                options={datapgmPT}
-                value={datapgmPT.find(e=>e.value===id_pgm) || 0}
-                classNamePrefix="react-select"
-                required
-            ></Select>
-        </div>
-        <div className='mb-2'>
-            <label>Horario:</label>
-            <Select
-                onChange={(e) => {
-                return onInputChangeReact(e, 'id_cli')
-                }}
-                name={'id_cli'}
-                placeholder={'Seleccionar el horario'}
-                className="react-select"
-                options={datapgmPT}
-                value={datapgmPT.find(e=>e.value===id_pgm) || 0}
-                classNamePrefix="react-select"
-                required
-            ></Select>
-        </div>
-        <div className='mb-2'>
-            <label>MOTIVO:</label>
-            <Select
-                onChange={(e) => {
-                return onInputChangeReact(e, 'id_cli')
-                }}
-                name={'id_cli'}
-                placeholder={'Seleccionar el programa'}
-                className="react-select"
-                options={DataGeneral}
-                value={DataGeneral.find(e=>e.value===id_motivo) || 0}
-                classNamePrefix="react-select"
-                required
-            ></Select>
-        </div>
+            <InputSelect label={'Cliente'} nameInput={'id_cli'} onChange={onInputChange} required options={DataClientes} value={id_cli}/>
+            <InputDate label={'Fecha en la que se cambio de programa'} nameInput={'fecha_cambio'} onChange={onInputChange} required value={fecha_cambio}/>
+            <InputSelect label={'Programa'} nameInput={'id_pgm'} onChange={onInputChange} required value={id_pgm} options={datapgmPT}/>
+            <InputSelect label={'Horario'} nameInput={'id_horario'} onChange={onInputChange} required value={id_horario} options={datapgmPT}/>
+            <InputSelect label={'Motivo'} nameInput={'id_motivo'} onChange={onInputChange} required value={id_motivo} options={DataGeneral}/>
         <div className='mb-2'>
             <label>OBSERVACION:</label>
             <textarea
             className='form-control'
+            name='observacion'
             value={observacion}
             onChange={onInputChange}
             />

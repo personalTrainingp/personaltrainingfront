@@ -60,6 +60,8 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
           amount=
           {row.pago?.parcial_monto}
         />
+        <br/>
+          {row.pago?.parcial_monto}
         </>
       )
     }},
@@ -124,7 +126,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
         <>
         <div className='text-center'>
         <span className='fs-2'>
-        {row.porcentaje.toFixed(2)}
+          {row.porcentaje.toFixed(2)}
           </span>
         </div>
         </>
