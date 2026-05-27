@@ -1,5 +1,5 @@
 import { onViewSection } from '@/store/data/dataSlice';
-import { ReactNode, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Row, Col, Breadcrumb } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { useDispatch } from 'react-redux';

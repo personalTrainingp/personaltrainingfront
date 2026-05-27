@@ -72,7 +72,8 @@ export const DataTableCR = ({
   exportLabel = 'Descargar Excel',
   exportExtraColumns =[],
   exportAllRaw = false,
-  defaultSearch=''
+  defaultSearch='',
+  tfoot=''
 }) => {
   const [search, setSearch] = useState(defaultSearch);
   const [page, setPage] = useState(1);
@@ -839,7 +840,7 @@ const filtered = useMemo(() => {
                 }}
                 title={col.sortable ? 'Click para ordenar' : undefined}
               >
-                <div className="d-flex align-items-center justify-content-between gap-1 position-relative fs-4">
+                <div className="d-flex align-items-center justify-content-center flex-column gap-1 position-relative fs-4">
                   <span className="text-truncate">{col.header}</span>
                   {
                     col.sortable && (
@@ -854,16 +855,6 @@ const filtered = useMemo(() => {
                       </>
                     )
                   }
-                  {showGrip && (
-                    <span
-                      className="dtrb-col-resizer"
-                      onMouseDown={(e) => startResize(col.id, e)}
-                      onClick={(e) => e.stopPropagation()}
-                      role="separator"
-                      aria-orientation="vertical"
-                      aria-label={`Redimensionar columna ${col.id}`}
-                    />
-                  )}
                 </div>
               </th>
             );
@@ -932,6 +923,7 @@ const filtered = useMemo(() => {
           </tr>
         ))}
       </tbody>
+      {tfoot}
     </Table>
   );
 
@@ -1076,34 +1068,40 @@ const filtered = useMemo(() => {
             </>
           )}
         </Col>
-        
-        <Col xs="auto">
-          <Form.Select
-            aria-label="Tamaño de página"
-            value={pageSize}
-            onChange={(e) => setPageSize(Number(e.target.value))}
-          >
-            {pageSizeOptions.map((n) => (
-              <option key={n} value={n}>
-                {n} por página
-              </option>
-            ))}
-          </Form.Select>
-          
-        </Col>
+        {
+          searchable && (
+            <Col xs="auto">
+              <Form.Select
+                aria-label="Tamaño de página"
+                value={pageSize}
+                onChange={(e) => setPageSize(Number(e.target.value))}
+              >
+                {pageSizeOptions.map((n) => (
+                  <option key={n} value={n}>
+                    {n} por página
+                  </option>
+                ))}
+              </Form.Select>
+              
+            </Col>
+          )
+        }
       </Row>
 
       {mainContent}
-
-      <Row className="g-2 align-items-center">
-        <Col className="text-muted">
-          <small>
-            Mostrando {sorted.length === 0 ? 0 : startIdx + 1}–
-            {Math.min(startIdx + pageSize, sorted.length)} de {sorted.length}
-          </small>
-        </Col>
-        <Col xs="auto">{renderPagination()}</Col>
-      </Row>
+      {
+        searchable && (
+        <Row className="g-2 align-items-center">
+          <Col className="text-muted">
+            <small>
+              Mostrando {sorted.length === 0 ? 0 : startIdx + 1}–
+              {Math.min(startIdx + pageSize, sorted.length)} de {sorted.length}
+            </small>
+          </Col>
+          <Col xs="auto">{renderPagination()}</Col>
+        </Row>
+        )
+      }
     </div>
   );
 };

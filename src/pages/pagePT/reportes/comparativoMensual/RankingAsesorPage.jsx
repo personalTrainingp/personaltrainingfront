@@ -73,7 +73,7 @@ const RankingAsesorPage = () => {
                             ) : (
                                 <div className="d-flex flex-column gap-5">
                                     <div>
-                                        <h4 className="mb-3 text-uppercase fw-bold text-muted">Ventas Generales</h4>
+                                        <h4 className="mb-3  text-center text-uppercase fw-bold text-muted" style={{fontSize: '50px'}}>Ventas Generales</h4>
                                         <GeneralSalesBreakdownTable
                                             ventas={dataVentas}
                                             monthsData={monthsData}
@@ -82,7 +82,7 @@ const RankingAsesorPage = () => {
                                         />
                                     </div>
                                     <div>
-                                        <h4 className="mb-3 text-uppercase fw-bold text-muted">Renovaciones</h4>
+                                        <div className="mb-3  text-center text-uppercase fw-bold text-muted" style={{fontSize: '50px'}}>Renovaciones</div>
                                         <RenovationsBreakdownTable
                                             ventas={dataVentas}
                                             monthsData={monthsData}
@@ -92,7 +92,7 @@ const RankingAsesorPage = () => {
                                     </div>
 
                                     <div>
-                                        <h4 className="mb-3 text-uppercase fw-bold text-muted">Reinscripciones</h4>
+                                        <div className="mb-3  text-center text-uppercase fw-bold text-muted" style={{fontSize: '50px'}}>Reinscripciones</div>
                                         <ReentryBreakdownTable
                                             ventas={dataVentas}
                                             monthsData={monthsData}

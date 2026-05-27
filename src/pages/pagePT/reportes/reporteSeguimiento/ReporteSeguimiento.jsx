@@ -1,323 +1,389 @@
 import { PageBreadcrumb } from '@/components'
-import { useReporteStore } from '@/hooks/hookApi/useReporteStore';
-import dayjs, { locale, utc } from 'dayjs';
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
-import React, { useEffect, useState } from 'react'
-import { Card, Col, Row, Table } from 'react-bootstrap'
-import { ItemCardPgm } from './ItemCardPgm';
+import { useSeguimientoOficialStore } from '@/hooks/useSeguimientoOficialStore';
+import React, { useEffect } from 'react'
+import { Col, Row, Table } from 'react-bootstrap';
+import { generarHoras } from './generarHoras';
+import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
-import config from '@/config';
-dayjs.extend(utc);
-locale('es')
-
 export const ReporteSeguimiento = () => {
-    const [selectHorario, setselectHorario] = useState([])
-	const { reporteSeguimiento, obtenerReporteSeguimiento, obtenerReporteSeguimientoTODO, viewSeguimiento, agrupado_programas, loadinData } = useReporteStore();
-    useEffect(() => {
-      obtenerReporteSeguimiento(true, 598)
-      obtenerReporteSeguimientoTODO(598, true)
-    }, [])
-
-    
-    const generarResumen = (array, grupo, labelCaracter, index, objDeleting, objAumenta=[]) => {
-        const isSortable = true
-        const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0);
-        let resumen = [
-            { header: labelCaracter, isIndexado: true, items: grupo.items, value: grupo.propiedad, isPropiedad: true, tFood: 'TOTAL', order: 1 },
-            { header: 'SOCIOS', items: grupo.items, value: grupo.items.length, tFood: sumaTotal, order: 3 },
-        ]
-        
-            // 1️⃣ Filtrar los elementos de resumen que estén en objDeleting
-            if (Array.isArray(objDeleting)) {
-                const headersAEliminar = objDeleting.map(obj => obj.header);
-                resumen = resumen.filter(item => !headersAEliminar.includes(item.header));
-            }
-
-            // 2️⃣ Crear un mapa de objAumenta para sobrescribir elementos de resumen
-            const objAumentaMap = new Map(objAumenta.map(item => [item.header, item]));
-
-            // 3️⃣ Fusionar los datos, dando prioridad a objAumenta
-            resumen = resumen.filter(item => !objAumentaMap.has(item.header)); // Eliminar duplicados
-            resumen = [...resumen, ...objAumentaMap.values()]; // Agregar objAumenta
-
-            // 4️⃣ Ordenar por la propiedad order
-            return resumen.sort((a, b) => a.order - b.order);
-        };
-    function agruparPorPrograma(data) {
-        return Object.values(data.reduce((acc, item) => {
-            const { id_pgm, name_pgm } = item.tb_ProgramaTraining;
-    
-            if (!acc[id_pgm]) {
-                acc[id_pgm] = { id_pgm, name_pgm, items: [] };
-            }
-    
-            acc[id_pgm].items.push(item);
-            return acc;
-        }, {}));
-    }
-    const dataAlter = agruparPorPrograma(viewSeguimiento).map((data)=>{
-        
-        const avatarPrograma = {
-            urlImage: `${config.API_IMG.LOGO}${data?.items[0].tb_ProgramaTraining.tb_image.name_image}`,
-            width: data?.items[0].tb_ProgramaTraining.tb_image.width,
-            height: data?.items[0].tb_ProgramaTraining.tb_image.height
-        }
-        
-        const aforo = data.id_pgm===2?18:data.id_pgm===3?10:data.id_pgm===4?14:''
-        const aforo_turno = data.id_pgm===2?36:data.id_pgm===3?10:data.id_pgm===4?14:''
-        const porcentajeAusentismo = 33;
-
-        const notas = data.id_pgm===2?(18):data.id_pgm===3?10:data.id_pgm===4?14:'aquiii'
-
-
-        const agrupadoPorHorario = agruparPorHorarios(data.items).sort((a, b) => b.items.length - a.items.length).map((f) => {
-            const cuposDispo = aforo - f.items.length;
-            const cuposOcupado = f.items.length;
-            return { ...f, cuposDispo, cuposOcupado };
-          }).map((grupo, index, array) => {
-                    const sumaTotal = array.reduce((total, item) => total + (item?.cuposOcupado || 0), 0);
-                    const sumarCuposDispo = array.reduce((total, item) => total + item.cuposDispo, 0);
-                    // Porcentajes globales (sumatoria total)
-                    const sumaPorcentajeOcupados = ((sumaTotal / aforo) * 100).toFixed(2);
-                    const sumaPorcentajeDispo = ((sumarCuposDispo / aforo) * 100).toFixed(2);
-                    // Porcentajes individuales por grupo
-                    const porcentajeOcupadoGrupo = ((grupo.cuposOcupado / aforo) * 100).toFixed(2);
-                    const porcentajePendienteGrupo = ((grupo.cuposDispo / aforo) * 100).toFixed(2);
-                    const ausentismo = Math.round(aforo * (porcentajeAusentismo / 100)); 
-                    const numberCuposOcupados = parseInt(grupo.cuposOcupado) || 0;
-                    const numberCuposDisponible = parseInt(grupo.cuposDispo) || 0;
-                    const totalTentativo = (numberCuposOcupados + numberCuposDisponible + ausentismo);
-                    const sumaAusentismo = array.length*ausentismo
-                    const sumaCuposTentativo = sumarCuposDispo+sumaAusentismo
-                    return [
-                        // { header: "", isIndexado: true, isTime: true, value: '', items: grupo.items,  tFood: 'TOTAL' },
-                        { header: "TURNO",  isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
-                        { header: <>TOTAL <br/> SOCIOS <br/> ACTIVOS</>, isSummary: true, value: <span style={{fontSize: '50px'}}>{grupo.cuposOcupado}</span>, items: grupo.items, tFood: sumaTotal },
-                        { header: <>VENTAS DISPONIBLES <br/> POR <br/> TURNO</>, isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
-                        { header: <>VENTAS CUPOS AUSENTISMO <br/> 33%</>, isSummary: true, value: ausentismo, items: grupo.items, tFood: sumaAusentismo },
-                        { header: <>TOTAL CUPOS DISPONIBLES DE VENTA POR TURNO</>, isSummary: true, value:  <span style={{fontSize: '50px'}} className='text-change'>{numberCuposDisponible+ausentismo}</span>, tFood: sumaCuposTentativo },
-                    ];
-                  });
-        return {
-            avatarPrograma,
-            aforo_turno,
-            aforo,
-            agrupadoPorHorario,
-            notas
-        }
-    })
-    const dataGrande = [{id_pgm: 0, name_pgm: 'TOTAL', items: viewSeguimiento}].map((data)=>{
-        const avatarPrograma = {
-            urlImage: `total_pgm`,
-            width: data?.items[0]?.tb_ProgramaTraining?.tb_image?.width,
-            height: data?.items[0]?.tb_ProgramaTraining?.tb_image?.height
-        }
-        
-        const aforo = data.id_pgm===0?42:''
-        const aforo_turno = data.id_pgm===0?60:''
-        const porcentajeAusentismo = 33;
-        const notas = data.id_pgm===0?14:'aquiii'
-
-
-
-        const agrupadoPorHorario = agruparPorHorarios(data.items).sort((a, b) => b.items.length - a.items.length).map((f) => {
-            const cuposDispo = aforo - f.items.length;
-            const cuposOcupado = f.items.length;
-            return { ...f, cuposDispo, cuposOcupado };
-          }).map((grupo, index, array) => {
-                    const sumaTotal = array.reduce((total, item) => total + (item?.cuposOcupado || 0), 0);
-                    const sumarCuposDispo = array.reduce((total, item) => total + item.cuposDispo, 0);
-                    // Porcentajes globales (sumatoria total)
-                    const sumaPorcentajeOcupados = ((sumaTotal / aforo) * 100).toFixed(2);
-                    const sumaPorcentajeDispo = ((sumarCuposDispo / aforo) * 100).toFixed(2);
-                    // Porcentajes individuales por grupo
-                    const porcentajeOcupadoGrupo = ((grupo.cuposOcupado / aforo) * 100).toFixed(2);
-                    const porcentajePendienteGrupo = ((grupo.cuposDispo / aforo) * 100).toFixed(2);
-                    const ausentismo = Math.round(aforo * (porcentajeAusentismo / 100)); 
-                    const numberCuposOcupados = parseInt(grupo.cuposOcupado) || 0;
-                    const numberCuposDisponible = parseInt(grupo.cuposDispo) || 0;
-                    const totalTentativo = (numberCuposOcupados + numberCuposDisponible + ausentismo);
-                    const sumaAusentismo = array.length*ausentismo
-                    const sumaCuposTentativo = sumarCuposDispo+sumaAusentismo
-                    return [
-                        // { header: "", isIndexado: true, isTime: true, value: '', items: grupo.items,  tFood: 'TOTAL' },
-                        { header: "TURNO",  isTime: true, value: grupo.propiedad, items: grupo.items, isPropiedad: true, tFood: 'TOTAL' },
-                        { header: <>TOTAL <br/> SOCIOS <br/> ACTIVOS</>, isSummary: true, value: <span style={{fontSize: '50px'}}>{grupo.cuposOcupado}</span>, items: grupo.items, tFood: sumaTotal },
-                        { header: <>VENTAS DISPONIBLES <br/> POR <br/> TURNO</>, isSummary: true, value: grupo.cuposDispo, items: grupo.items, tFood: sumarCuposDispo },
-                        { header: <>VENTAS CUPOS AUSENTISMO <br/> 33%</>, isSummary: true, value: ausentismo, items: grupo.items, tFood: sumaAusentismo },
-                        { header: <>TOTAL CUPOS DISPONIBLES DE VENTA POR TURNO</>, isSummary: true, value:  <span style={{fontSize: '50px'}} className='text-change'>{numberCuposDisponible+ausentismo}</span>, tFood: sumaCuposTentativo },
-                    ];
-                  });
-        return {
-            avatarPrograma,
-            aforo_turno,
-            aforo,
-            agrupadoPorHorario,
-            notas
-        }
-    })
-    console.log({viewSeguimiento, seg2: agruparPorPrograma(viewSeguimiento), dataGrande});
-    
-    const data = [
-        {            
-                    isComparative: true,
-                    title: 'SOCIOS PAGANTES POR HORARIO VS AFORO ',
-                    id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
-                    HTML: dataAlter.map(d=>{
-                        return (
-                        <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                            <ItemCardPgm aforo={d.aforo} notas={d.notas} aforoTurno={d.aforo_turno} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorario} isViewSesiones={true} labelParam={'HORARIO'}/>
-                        </Col>
-                    )
-                    }
-                    )
-        },
-        {            
-                    isComparative: true,
-                    title: 'SOCIOS PAGANTES POR HORARIO VS AFORO ',
-                    id: 'COMPARATIVOPORHORARIOPORPROGRAMA',
-                    HTML: dataGrande.map(d=>{
-                        return (
-                        <Col style={{paddingBottom: '1px !important'}} xxl={12}>
-                            <ItemCardPgm aforo={d.aforo} notas={d.notas} aforoTurno={d.aforo_turno} avatarPrograma={d.avatarPrograma} arrayEstadistico={d.agrupadoPorHorario} isViewSesiones={true} labelParam={'HORARIO'}/>
-                        </Col>
-                    )
-                    }
-                    )
-        }
+    // const { obtenerSeguimientoxFecha, dataSeguimientoxFecha } = useSeguimientoOficialStore()
+    // useEffect(() => {
+    //     obtenerSeguimientoxFecha(["2026-05-23T12:00:00.000Z", "2030-03-16T12:00:00.000Z"])
+    // }, [])
+    const dataImaginaria = [
+        {horario: '05:00', len: 12, nombre_programa: 'CHANGE 45'},
+        {horario: '06:00', len: 16, nombre_programa: 'CHANGE 45'},
+        {horario: '07:00', len: 16, nombre_programa: 'CHANGE 45'},
+        {horario: '08:00', len: 16, nombre_programa: 'CHANGE 45'},
+        {horario: '09:00', len: 7, nombre_programa: 'CHANGE 45'},
+        {horario: '10:00', len: 7, nombre_programa: 'CHANGE 45'},
+        {horario: '11:00', len: 7, nombre_programa: 'CHANGE 45'},
+        {horario: '13:00', len: 7, nombre_programa: 'CHANGE 45'},
+        {horario: '17:00', len: 8, nombre_programa: 'CHANGE 45'},
+        {horario: '18:00', len: 8, nombre_programa: 'CHANGE 45'},
+        {horario: '19:00', len: 16, nombre_programa: 'CHANGE 45'},
+        {horario: '20:00', len: 16, nombre_programa: 'CHANGE 45'},
+        {horario: '21:00', len: 16, nombre_programa: 'CHANGE 45'},
+        // 
+        {horario: '05:30', len: 14, nombre_programa: 'CHANGE 45-2'},
+        {horario: '06:30', len: 16, nombre_programa: 'CHANGE 45-2'},
+        {horario: '07:30', len: 16, nombre_programa: 'CHANGE 45-2'},
+        {horario: '08:30', len: 16, nombre_programa: 'CHANGE 45-2'},
+        {horario: '09:30', len: 7, nombre_programa: 'CHANGE 45-2'},
+        {horario: '10:30', len: 7, nombre_programa: 'CHANGE 45-2'},
+        {horario: '11:30', len: 7, nombre_programa: 'CHANGE 45-2'},
+        {horario: '13:30', len: 15, nombre_programa: 'CHANGE 45-2'},
+        {horario: '17:30', len: 8, nombre_programa: 'CHANGE 45-2'},
+        {horario: '18:30', len: 16, nombre_programa: 'CHANGE 45-2'},
+        {horario: '19:30', len: 16, nombre_programa: 'CHANGE 45-2'},
+        {horario: '20:30', len: 16, nombre_programa: 'CHANGE 45-2'},
+        // 
+        {horario: '05:00', len: 10, nombre_programa: 'FS 45'},
+        {horario: '06:00', len: 10, nombre_programa: 'FS 45'},
+        {horario: '07:00', len: 10, nombre_programa: 'FS 45'},
+        {horario: '08:00', len: 4, nombre_programa: 'FS 45'},
+        {horario: '09:00', len: 4, nombre_programa: 'FS 45'},
+        {horario: '10:00', len: 4, nombre_programa: 'FS 45'},
+        {horario: '11:00', len: 4, nombre_programa: 'FS 45'},
+        {horario: '17:00', len: 5, nombre_programa: 'FS 45'},
+        {horario: '18:00', len: 5, nombre_programa: 'FS 45'},
+        {horario: '19:00', len: 10, nombre_programa: 'FS 45'},
+        {horario: '20:00', len: 10, nombre_programa: 'FS 45'},
+        {horario: '21:00', len: 10, nombre_programa: 'FS 45'},
+        // 
+        {horario: '05:00', len: 12, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '06:00', len: 12, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '07:00', len: 12, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '08:00', len: 4, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '09:00', len: 4, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '10:00', len: 4, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '11:00', len: 4, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '17:00', len: 5, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '18:00', len: 5, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '19:00', len: 10, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '20:00', len: 10, nombre_programa: 'FISIO MUSCLE'},
+        {horario: '21:00', len: 10, nombre_programa: 'FISIO MUSCLE'},
     ]
+    const dataHorarios = [
+        // ...dataSeguimiento,
+        ...dataImaginaria
+    ]
+    // const dataSeguimiento = agruparPorHora(dataSeguimientoxFecha).map(m=>{
+    //     return {
+    //         nombre_programa: m.items[0].nombre_programa,
+    //         len: m.items.length,
+    //         horario: m.items[0].horario
+    //     }
+    // })
+    const dataSemanas = [
+            { semana: 12, porc: 51.47, ticket_medio: 1231, pgm: 'CHANGE 45' },
+            { semana: 16, porc: 21.02, ticket_medio: 1461, pgm: 'CHANGE 45' },
+            { semana: 24, porc: 13.03, ticket_medio: 1846, pgm: 'CHANGE 45' },
+            { semana: 48, porc: 5.73, ticket_medio: 2956, pgm: 'CHANGE 45' },
+            { semana: 4, porc: 5.8, ticket_medio: 443, pgm: 'CHANGE 45' },
+            { semana: 8, porc: 2.95, ticket_medio: 711, pgm: 'CHANGE 45' },
+
+            { semana: 24, porc: 40.77, ticket_medio: 1764, pgm: 'FS 45' },
+            { semana: 12, porc: 32.62, ticket_medio: 1170, pgm: 'FS 45' },
+            { semana: 16, porc: 16.94, ticket_medio: 1385, pgm: 'FS 45' },
+            { semana: 4, porc: 6.16, ticket_medio: 452, pgm: 'FS 45' },
+            { semana: 48, porc: 2.04, ticket_medio: 2999, pgm: 'FS 45' },
+            { semana: 8, porc: 1.47, ticket_medio: 719, pgm: 'FS 45' },
+
+            { semana: 12, porc: 44.81, ticket_medio: 1191, pgm: 'FISIO MUSCLE' },
+            { semana: 24, porc: 23.76, ticket_medio: 1858, pgm: 'FISIO MUSCLE' },
+            { semana: 16, porc: 17.35, ticket_medio: 1442, pgm: 'FISIO MUSCLE' },
+            { semana: 48, porc: 6.09, ticket_medio: 2699, pgm: 'FISIO MUSCLE' },
+            { semana: 4, porc: 5.63, ticket_medio: 576, pgm: 'FISIO MUSCLE' },
+            { semana: 8, porc: 2.36, ticket_medio: 627, pgm: 'FISIO MUSCLE' },
+    ]
+    const filtroChange = dataSemanas.filter(f=>f.pgm==='CHANGE 45')
+    const semanasConPgm = [...dataSemanas, ...filtroChange.map(m=>{return {...m, pgm: 'CHANGE 45-2'}})]
   return (
     <>
         <PageBreadcrumb subName={'T'} title={'CUPOS DISPONIBLES DE VENTAS POR TURNO'}/>
-        {
-            loadinData?(
-                <>loading</>
-            ):(
-                <Row>
-                    {data.map((section, index) => (
-                                <Col xxl={12}>
-                                <Row className='d-flex justify-content-center'>
-                                    <br/>
-                                        {section.HTML}
-                                </Row>
-                            </Col>
-                            ))}
-                </Row>
-            )
-        }
+        <div className='d-flex flex-column align-items-center justify-content-center'>
+            <h1 style={{fontSize: '70px'}} className='text-center d-flex flex-column'>CHANGE 45 <span className='' style={{fontSize: '45px'}}>(TURNO OPTIMO PROYECTADO)</span></h1>
+                <TableHorario dataSeguimientoxFecha={dataHorarios} nombre_pgm={'CHANGE 45'} horaInicio='05:00' horaFin='21:00'/>
+                <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'CHANGE 45'} horaInicio='05:30' horaFin='20:30'/>
+            
+            <h1 style={{marginTop: '100px', fontSize: '70px'}} className='text-center d-flex flex-column'>CHANGE 45  <span className='' style={{fontSize: '45px'}}>(TURNO PROYECTADO MEDIAS HORAS)</span></h1>
+                <TableHorario dataSeguimientoxFecha={dataHorarios} nombre_pgm={'CHANGE 45-2'} className={'bg-change-pastel'} horaInicio='05:30' horaFin='20:30'/>
+                <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'CHANGE 45-2'} className={'bg-change-pastel'} horaInicio='05:30' horaFin='20:30'/>
+            
+            <h1 style={{fontSize: '70px', marginTop: '100px'}} className='text-center'>FS 45</h1>
+            <TableHorario dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FS 45'} horaInicio='05:00' horaFin='21:00'/>
+            <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FS 45'} horaInicio='05:30' horaFin='20:30'/>
+            
+            <h1 style={{fontSize: '70px', marginTop: '100px'}} className='text-center'>FISIO MUSCLE</h1>
+            <TableHorario dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FISIO MUSCLE'} horaInicio='05:00' horaFin='21:00'/>
+            <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FISIO MUSCLE'} horaInicio='05:30' horaFin='20:30'/>
+        </div>
     </>
   )
 }
 
-    //AGRUPAR POR HORARIOS
-    function agruparPorHorarios(data) {
-        const resultado = [];
-        
-        data?.forEach((item) => {
-          const { horario, tarifa_monto } = item;
-          
-          const formatHorario = dayjs.utc(horario).format('hh:mm A') 
-        //   console.log(horario, formatHorario, "horarrrr");
-          // Verificar si ya existe un grupo con la misma cantidad de sesiones
-          let grupo = resultado?.find((g) => g.propiedad === formatHorario);
-      
-          if (!grupo) {
-            // Si no existe, crear un nuevo grupo
-            grupo = { propiedad: formatHorario, items: [], tarifa_monto };
-            resultado.push(grupo);
-          }
-          // Agregar el item al grupo correspondiente
-          grupo.items.push(item);
-        });
-        
-        return resultado.sort((a,b)=>b.items.length-a.items.length).sort((a,b)=>b.tarifa_monto-a.tarifa_monto);
-    }
-// {
-//     ordenarPorDistrito(reporteSeguimiento).map(f=>(
-//                 <th>{f.distrito}</th>
-//     ))
-// }
-/*
+function agruparPorAA(data) {
+  const grupos = {};
 
-            {
-                ordenarPorDistrito(reporteSeguimiento).map(h=>(
-                    <tr key={h.horario}>
-                        <th>{h.horario}</th>
+  data?.forEach(item => {
+    const nombre_fp = `${dayjs(item.horario, 'HH:mm').format('A')}` || 'AA';
+    if (!grupos[nombre_fp]) {
+      grupos[nombre_fp] = {
+        nombre_fp,
+        items: []
+      };
+    }
+    grupos[nombre_fp].items.push(item);
+  });
+  return Object.values(grupos);
+}
+
+function agruparPorHora(data) {
+  const grupos = {};
+
+  data?.forEach(item => {
+    const nombre_fp = `${item?.horario} | ${item.nombre_programa}` || '00:00 | SIN';
+    if (!grupos[nombre_fp]) {
+      grupos[nombre_fp] = {
+        nombre_fp,
+        items: []
+      };
+    }
+    grupos[nombre_fp].items.push(item);
+  });
+  return Object.values(grupos);
+}
+
+export const TableHorario = ({nombre_pgm, dataSeguimientoxFecha, horaInicio='05:00', horaFin='21:00', className='bg-change'}) => {
+  return (
+    <>
+    <div >
+        <Table className='tabla-egresos' >
+                <thead>
+                    <tr>
+                        <th className={`${className} text-white fs-3`}>TURNOS</th>
                         {
-                            h.items.map(f=>(
-                                <td>{f.tb_ventum.tb_cliente.tb_distrito?.distrito}</td>
+                            agruparPorAA(generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16')).map(m=>(
+                                <th colSpan={m.items.length} className={`${className} fs-3 text-white text-center`}>{m.nombre_fp}</th>
                             ))
                         }
+                        <th className={` ${className} text-white fs-3`}>TOTAL</th>
                     </tr>
-                ))
-            }
-*/
-function agruparPorHorarioYDistrito(datos) {
-    const resultado = [];
-
-    datos.forEach(item => {
-        const horario =  new Date(item.horario).toISOString().split("T")[1];
-        const distrito = item.tb_ventum.tb_cliente.tb_distrito?.distrito;
-
-        // Busca si ya existe un grupo para este horario y distrito
-        let grupo = resultado.find(g => g.horario === horario && g.distrito === distrito);
-
-        // Si no existe, lo crea
-        if (!grupo) {
-            grupo = { horario, distrito, items: [] };
-            resultado.push(grupo);
-        }
-
-        // Agrega el item al grupo correspondiente
-        grupo.items.push(item);
-    });
-
-    return resultado;
+                    <tr>
+                        <th className={`${className} text-white fs-3`}>HORARIOS</th>
+                        {
+                            generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>(
+                                <th className={`${className} text-white fs-3`}>{dayjs(m.horario, 'HH:mm').format('h:mm')}</th>
+                            ))
+                        }
+                        <th className={`${className} text-white fs-3`}></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th className={`${className} text-white fs-3`}>ESTACIÓN 1 / MIN</th>
+                        {
+                            generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>(
+                                <td className='fs-3 text-center'>{'25'}</td>
+                            ))
+                        }
+                        <td className={`${className} fs-3 text-white text-center`}>25</td>
+                    </tr>
+                    <tr>
+                        <td className={`${className} text-white fs-3`}>ESTACIÓN 2 / MIN</td>
+                        {
+                            generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>(
+                                <td className='fs-3 text-center'>{'20'}</td>
+                            ))
+                        }
+                        <td className={`${className} fs-3 text-white text-center`}>20</td>
+                    </tr>
+                    <tr>
+                        <td className={`${className} text-white fs-3`}>{'TERMINO'}</td>
+                        {
+                            generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>(
+                                <td className='fs-3'>{dayjs(m.horario, 'HH:mm').add(45, 'minute').format('h:mm')}</td>
+                            ))
+                        }
+                        <td className={`${className} fs-3`}></td>
+                    </tr>
+                    <tr>
+                        <td className={`${className} text-white fs-3`}>AFORO</td>
+                        {
+                            generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>(
+                                <td className='text-center fs-3'>{dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)}</td>
+                            ))
+                        }
+                        <td className={`${className} text-white fs-3 text-center`}>
+                            {
+                                generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
+                                    const dataH = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
+                                    return {
+                                        len1: Number(dataH)
+                                    }
+                                }).reduce((total, item)=>total+item.len1,0)
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className={`${className} text-white fs-3`}>AUSENTISMO</td>
+                        {
+                            generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>(
+                                <td className='text-center fs-3'>{(dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)/3).toFixed(0)}</td>
+                            ))
+                        }
+                        <td className={`${className} text-white fs-3 text-center`}>
+                            {
+                                generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
+                                    const dataH = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)/3
+                                    return {
+                                        len1: Number(dataH)
+                                    }
+                                }).reduce((total, item)=>total+item.len1,0).toFixed(0)
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className={`${className} text-white fs-3`}>TOTAL AFORO</td>
+                        {
+                            generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
+                                const seguimiento = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
+                                return (
+                                    <td className='text-center fs-3'>{Number(seguimiento+Number((seguimiento/3).toFixed(0)))}</td>
+                                )
+                            })
+                        }
+                        
+                        <td className={`${className} text-white text-center fs-2`}>
+                            {
+                                generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
+                                    const seguimiento = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
+                                    return {
+                                        len1: Number(seguimiento+Number((seguimiento/3)))
+                                    }
+                                }).reduce((total, item)=>total+item.len1,0).toFixed(0)
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+        </Table>
+    </div>
+    </>
+  )
 }
-function ordenarPorDistrito(data) {
-    // Creamos un objeto para agrupar los datos por distrito
-    const agrupadoPorDistrito = {};
 
-    data?.forEach(item => {
-        // Obtenemos el nombre del distrito
-        const distrito = item.tb_ventum.tb_cliente?.tb_distrito?.distrito;
-
-        // Si el distrito no está en el objeto, lo inicializamos con un array vacío
-        if (!agrupadoPorDistrito[distrito]) {
-            agrupadoPorDistrito[distrito] = {
-                distrito: distrito,
-                items: []
-            };
+export const TableVentas = ({nombre_pgm='', semanas=[], dataSeguimientoxFecha, horaInicio='05:00', horaFin='21:00', className='bg-change'}) => {
+    const data = semanas.filter(f=>f.pgm===nombre_pgm)
+    const seg = Number(dataSeguimientoxFecha.filter(f=>f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len, 0))
+    const ventasProy = Number((seg+Number(seg/3)))
+    const dataT = data.map(m=>{
+        return {
+            ...m,
+            consolidado: (m.ticket_medio*(m.porc/100)*ventasProy),
+            prom_mensual: ((m.ticket_medio*(m.porc/100)*ventasProy)/(m.semana/4))
         }
-        // Agregamos el item al array correspondiente al distrito
-        agrupadoPorDistrito[distrito].items.push(item);
-    });
-
-    // Convertimos el objeto a un array de objetos
-    return Object.values(agrupadoPorDistrito);
-}
-function ordenarPorHorario(data) {
-    // Creamos un objeto para agrupar los datos por distrito
-    const agrupadoPorDistrito = {};
-
-    data.forEach(item => {
-        // Obtenemos el nombre del distrito
-        const horario = dayjs(new Date(item.horario).toISOString().split("T")[1].split('.00')[0], 'hh:mm:ss').format('hh:mm A');
-
-        // Si el distrito no está en el objeto, lo inicializamos con un array vacío
-        if (!agrupadoPorDistrito[horario]) {
-            agrupadoPorDistrito[horario] = {
-                horario: horario,
-                items: []
-
-            };
-        }
-
-        // Agregamos el item al array correspondiente al distrito
-        agrupadoPorDistrito[horario].items.push(item);
-    });
-
-    // Convertimos el objeto a un array de objetos
-    return Object.values(agrupadoPorDistrito);
+    })
+    const sumaPorc = dataT.reduce((total, item)=>total+item.porc, 0).toFixed(2)
+    const sumaticketMedio = dataT.reduce((total, item)=>total+item.ticket_medio, 0)
+    const sumaconsolidado = dataT.reduce((total, item)=>total+item.consolidado, 0)
+    const sumapromMensual = dataT.reduce((total, item)=>total+item.prom_mensual, 0)
+    const ticketCambiar = 1420
+  return (
+    <>
+        <div className='d-flex justify-content-center flex-column'>
+            <div className='d-flex'>
+                <Table className='tabla-egresos m-1' >
+                        <tbody>
+                            <tr>
+                                <th className={`text-white fs-3 text-center ${className}`}>VENTA MAXIMA SEGUN AFORO</th>
+                                <td className={`text-white fs-3 text-center ${className}`}><span className='fs-2'>{Number((seg+Number(seg/3))).toFixed(0)}</span></td>
+                            </tr>
+                        </tbody>
+                </Table>
+                <Table className='tabla-egresos m-1' >
+                        <tbody>
+                            <tr>
+                                <td className={`text-white fs-3 text-center ${className}`}>TICKET PROMEDIO PROYECTADO</td>
+                                <td className={`text-white fs-3 text-center ${className}`}><NumberFormatMoney amount={ticketCambiar}/></td>
+                            </tr>
+                        </tbody>
+                </Table>
+                <Table className='tabla-egresos m-1' >
+                        <tbody>
+                            <tr>
+                                <td className={`text-white fs-3 text-center ${className}`}>TOTAL PROYECTADO</td>
+                                <td className={`text-white fs-3 text-center ${className}`}><NumberFormatMoney amount={sumaconsolidado}/></td>
+                            </tr>
+                        </tbody>
+                </Table>
+            </div>
+            <div className='d-flex align-items-center text-center justify-content-center'>
+                <Table className='tabla-egresos' >
+                    <thead>
+                        <tr>
+                            <th className={`text-white fs-3 ${className}`}>PLAN</th>
+                            <th className={`text-white fs-3 ${className}`}>%</th>
+                            <th className={`text-white fs-3 ${className}`}>TICKET MEDIO <br/> S/.</th>
+                            <th className={`text-white fs-3 ${className}`}>CONSOLIDADO <br/> S/.</th>
+                            <th className={`text-white fs-3 ${className}`}>PROM. MENSUAL <br/> S/.</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                            {
+                                data.map(m=>{
+                                    return (
+                                        <tr>
+                                            <td className={`text-white fs-2 text-center ${className}`}>{m.semana} semanas</td>
+                                            <td>
+                                                <NumberFormatMoney
+                                                    amount=
+                                                    {((m.porc)).toFixed(2)}
+                                                />
+                                            </td>
+                                            <td>
+                                                <NumberFormatMoney
+                                                    amount=
+                                                    {(m.ticket_medio).toFixed(2)}
+                                                />
+                                            </td>
+                                            <td>
+                                                <NumberFormatMoney
+                                                    amount=
+                                                {(m.ticket_medio*(m.porc/100)*ventasProy).toFixed(2)}
+                                                />
+                                            </td>
+                                            <td>
+                                                <NumberFormatMoney
+                                                    amount=
+                                                    {((m.ticket_medio*(m.porc/100)*ventasProy)/(m.semana/4)).toFixed(2)}
+                                                />
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                            <tr>
+                                <td className={`text-white fs-2 text-center ${className}`}>TOTAL</td>
+                                <td className={`text-white fs-2 text-center ${className}`}><NumberFormatMoney amount={sumaPorc}/></td>
+                                <td className={`text-white fs-2 text-center ${className}`}><NumberFormatMoney amount={sumaticketMedio/dataT.length}/></td>
+                                <td className={`text-white fs-2 text-center ${className}`}>
+                                    <NumberFormatMoney
+                                        amount=
+                                        {sumaconsolidado}
+                                    />
+                                </td>
+                                <td className={`text-white fs-2 text-center ${className}`}>
+                                    <NumberFormatMoney
+                                        amount=
+                                        {sumapromMensual}
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                </Table>
+            </div>
+        </div>
+    </>
+  )
 }

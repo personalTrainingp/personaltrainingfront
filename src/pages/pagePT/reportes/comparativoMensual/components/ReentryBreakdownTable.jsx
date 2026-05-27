@@ -17,7 +17,7 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [], customStar
             fontFamily: "'Inter', 'Segoe UI', sans-serif"
         },
         headerTitle: {
-            fontSize: '25px',
+            fontSize: '45px',
             fontWeight: '800',
             color: '#1a1a1a',
             marginBottom: '15px',
@@ -132,7 +132,6 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [], customStar
 
     return (
         <div style={styles.card}>
-            <h5 style={styles.headerTitle}> Reinscripciones por Asesor</h5>
 
             <div style={styles.tableWrapper}>
                 <table style={styles.table}>

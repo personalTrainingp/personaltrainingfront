@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useSeguimientoStore } from './useSeguimientoStore'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
-import { DateMaskStr } from '@/components/CurrencyMask'
+import { DateMaskStr, DateMaskStr1 } from '@/components/CurrencyMask'
 
 export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFecha}) => {
 
@@ -41,7 +41,15 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                     </>
                 )
             }},
-            {id: 2, header: <>PROGRAMA/SESIONES/<br/>HORARIO</>},
+            {id: 2, header: <>PROGRAMA/SESIONES/<br/>HORARIO</>, render:(row)=>{
+                return (
+                    <>
+                    {row.nombre_programa}
+                    <br/>
+                    {DateMaskStr(row.horario, 'hh:mm A')}
+                    </>
+                )
+            }},
             {id: 3, header: <>DIAS <br/> VENCIDOS</>, accessor: 'countDias', sortable: true, render: (row)=>{
                 return (
                     <>

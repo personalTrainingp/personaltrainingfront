@@ -39,9 +39,9 @@ export const NumberFormatMoney = ({ amount, className='fs-2', style }) => {
   });
   
   return (
-    <span className={className} style={style}>
+    <div className={className} style={style}>
       {formattedAmount}
-    </span>
+    </div>
   )
 }
 export const NumberFormatter = ({ amount, splitCaracter }) => {

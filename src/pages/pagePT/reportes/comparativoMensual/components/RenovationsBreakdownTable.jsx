@@ -132,7 +132,6 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [], custom
 
     return (
         <div style={styles.card}>
-            <h5 style={styles.headerTitle}>Renovaciones por Asesor</h5>
 
             <div style={styles.tableWrapper}>
                 <table style={styles.table}>

@@ -41,7 +41,6 @@ function agruparPorCliente(detalle_ventaMembresium = []) {
 export const useReporteResumenComparativoStore = () => {
   const [dataGroup, setdataGroup] = useState([]);
   const [dataClientesxMarcacion, setdataClientesxMarcacion] = useState([]);
-  const [dataMembresiaPorCliente, setdataMembresiaPorCliente] = useState([]);
   const [dataIdPgmCero, setdataIdPgmCero] = useState({ detalle_ventaMembresium: [], ventas_transferencias: [], tb_image: [] });
   const [dataHorarios, sethorarios] = useState([]);
   const [dataAsesoresFit, setdataAsesoresFit] = useState([]);
@@ -166,15 +165,6 @@ export const useReporteResumenComparativoStore = () => {
     }
   };
 
-  const obtenerClientesConMarcacion = async () => {
-    try {
-      const { data } = await PTApi.get(`/usuario/get-marcacions/cliente`);
-      setdataClientesxMarcacion(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const obtenerHorariosPorPgm = async () => {
     try {
       const { data } = await PTApi.get('/programaTraining/horario/get-tb-pgm');
@@ -204,7 +194,6 @@ export const useReporteResumenComparativoStore = () => {
     obtenerHorariosPorPgm,
     obtenerTarifasPorPgm,
     obtenerAsesoresFit,
-    obtenerClientesConMarcacion,
     dataClientesxMarcacion,
     dataAsesoresFit,
     dataIdPgmCero,
@@ -215,209 +204,3 @@ export const useReporteResumenComparativoStore = () => {
     loading,
   };
 };
-
-
-function agruparMarcacionesPorSemana(data) {
-  return data.map((obj) => {
-    const inicioMem = dayjs(obj.fec_inicio_mem);
-
-    // Filtrar la primera marcación de cada día
-    const primerasMarcaciones = Object.values(
-      obj.tb_marcacions.reduce((acumulador, marcacion) => {
-        const fechaDia = dayjs(marcacion.tiempo_marcacion).format('YYYY-MM-DD');
-        if (
-          !acumulador[fechaDia] ||
-          dayjs(marcacion.tiempo_marcacion).isBefore(
-            acumulador[fechaDia].tiempo_marcacion
-          )
-        ) {
-          acumulador[fechaDia] = marcacion; // Guardar la más temprana del día
-        }
-        return acumulador;
-      }, {})
-    );
-
-    // Agrupar las primeras marcaciones por semana
-    const marcacionPorSemana = primerasMarcaciones.reduce((acumulador, marcacion) => {
-      const fechaMarcacion = dayjs(marcacion.tiempo_marcacion);
-
-      // Calcular la semana desde el inicio de la membresía
-      const diasDesdeInicio = fechaMarcacion.diff(inicioMem, 'day');
-      const semana = Math.floor(diasDesdeInicio / 7) + 1;
-
-      // Buscar o crear el grupo para esta semana
-      let grupo = acumulador.find((g) => g.semana === semana);
-      if (!grupo) {
-        grupo = { semana, items: [] };
-        acumulador.push(grupo);
-      }
-
-      // Añadir la marcación al grupo
-      grupo.items.push(marcacion);
-
-      return acumulador;
-    }, []);
-
-    // Retornar el objeto original con el nuevo array `marcacionPorSemana`
-    return { ...obj, marcacionPorSemana };
-  });
-}
-
-function agruparPrimeraMarcacionGlobal(data) {
-  const marcacionesPorSemanaGlobal = {};
-
-  data.forEach((obj) => {
-    const inicioMem = dayjs(obj.fec_inicio_mem);
-
-    // Filtrar la primera marcación de cada día
-    const primerasMarcaciones = Object.values(
-      obj.tb_marcacions.reduce((acumulador, marcacion) => {
-        const fechaDia = dayjs(marcacion.tiempo_marcacion).format('YYYY-MM-DD');
-        if (
-          !acumulador[fechaDia] ||
-          dayjs(marcacion.tiempo_marcacion).isBefore(
-            acumulador[fechaDia].tiempo_marcacion
-          )
-        ) {
-          acumulador[fechaDia] = marcacion; // Guardar la más temprana del día
-        }
-        return acumulador;
-      }, {})
-    );
-
-    // Agrupar las primeras marcaciones por semana
-    primerasMarcaciones.forEach((marcacion) => {
-      const fechaMarcacion = dayjs(marcacion.tiempo_marcacion);
-
-      // Calcular la semana desde el inicio de la membresía
-      const diasDesdeInicio = fechaMarcacion.diff(inicioMem, 'day');
-      const semana = Math.floor(diasDesdeInicio / 7) + 1;
-
-      // Inicializar el grupo de la semana si no existe
-      if (!marcacionesPorSemanaGlobal[semana]) {
-        marcacionesPorSemanaGlobal[semana] = { semana, items: [] };
-      }
-
-      // Añadir la marcación al grupo global
-      marcacionesPorSemanaGlobal[semana].items.push({
-        ...marcacion,
-        fec_inicio_mem: obj.fec_inicio_mem,
-        tb_marcacions: obj.tb_marcacions,
-        marcacionPorSemana: obj.marcacionPorSemana,
-      });
-    });
-  });
-
-  // Convertir el objeto en un array
-  return Object.values(marcacionesPorSemanaGlobal);
-}
-
-// const { data: dataRenovacion } = await PTApi.get(
-// 	`/venta/reporte/obtener-estado-cliente-resumen/691`,
-// 	{
-// 		params: {
-// 			arrayDate: [
-// 				formatDateToSQLServerWithDayjs(RANGE_DATE[0]),
-// 				formatDateToSQLServerWithDayjs(RANGE_DATE[1]),
-// 			],
-// 			id_empresa: 598,
-// 		},
-// 	}
-// );
-
-// const { data: dataReinscritos } = await PTApi.get(
-// 	`/venta/reporte/obtener-estado-cliente-resumen/692`,
-// 	{
-// 		params: {
-// 			arrayDate: [
-// 				formatDateToSQLServerWithDayjs(RANGE_DATE[0]),
-// 				formatDateToSQLServerWithDayjs(RANGE_DATE[1]),
-// 			],
-// 			id_empresa: 598,
-// 		},
-// 	}
-// );
-
-// const { data: dataNuevos } = await PTApi.get(
-// 	`/venta/reporte/obtener-nuevos-clientes-resumen`,
-// 	{
-// 		params: {
-// 			arrayDate: [
-// 				formatDateToSQLServerWithDayjs(RANGE_DATE[0]),
-// 				formatDateToSQLServerWithDayjs(RANGE_DATE[1]),
-// 			],
-// 			id_empresa: 598,
-// 		},
-// 	}
-// );
-const groupByIdOrigen = (data) => {
-  return data.reduce((acc, item) => {
-    const idOrigen = item.tb_ventum.id_origen;
-
-    // Busca si ya existe un grupo para este id_origen
-    let group = acc.find((g) => g.id_origen === idOrigen);
-
-    if (!group) {
-      // Si no existe, crea uno nuevo
-      group = { id_origen: idOrigen, items: [] };
-      acc.push(group);
-    }
-
-    // Agrega el elemento al grupo correspondiente
-    group.items.push(item);
-    return acc;
-  }, []);
-};
-
-// Agrupar por id_pgm con categorías separadas
-function agruparVentasConDetalles({
-  ventasProgramaNuevo = [],
-  ventasProgramaReinscritos = [],
-  ventasProgramaRenovaciones = [],
-  ventasProgramaTraspasos = [],
-  ventasProgramaTransferencias = [],
-}) {
-  const agrupados = {};
-
-  const agregarDetalles = (array, tipo) => {
-    array?.forEach((venta) => {
-      const { name_pgm, id_pgm, tb_image, detalle_ventaMembresium } = venta;
-
-      // Generar una clave única para el agrupamiento
-      const key = `${name_pgm}_${id_pgm}`;
-
-      // Si el grupo no existe, se inicializa
-      if (!agrupados[key]) {
-        agrupados[key] = {
-          name_pgm,
-          id_pgm,
-          tb_image: [],
-          detallesNuevos: [],
-          detallesReinscritos: [],
-          detallesRenovaciones: [],
-          detallesTraspasos: [],
-          detalleTransferencias: [],
-        };
-      }
-
-      // Agregar `tb_image` solo si no está ya incluido
-      if (!agrupados[key].tb_image.some((img) => img === tb_image)) {
-        agrupados[key].tb_image.push(tb_image);
-      }
-      console.log(tipo, 'dddd');
-
-      // Agregar el detalle al tipo correspondiente
-      agrupados[key][tipo].push(detalle_ventaMembresium);
-    });
-  };
-
-  // Procesar cada tipo de ventas
-  agregarDetalles(ventasProgramaNuevo, 'detallesNuevos');
-  agregarDetalles(ventasProgramaReinscritos, 'detallesReinscritos');
-  agregarDetalles(ventasProgramaRenovaciones, 'detallesRenovaciones');
-  agregarDetalles(ventasProgramaTraspasos, 'detallesTraspasos');
-  agregarDetalles(ventasProgramaTransferencias, 'detalleTransferencias');
-
-  // Convertir el objeto agrupado en un array
-  return Object.values(agrupados);
-}

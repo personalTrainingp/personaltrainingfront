@@ -3,9 +3,9 @@ import { DateMaskStr, DateMaskStr1, DateMaskString } from '@/components/Currency
 import dayjs from 'dayjs';
 import { useState } from 'react';
 
-export const useSeguimientoStore = () => {
+export const useSeguimientoOficialStore = () => {
 	const [dataSeguimientoxFecha, setdataSeguimientoxFecha] = useState([]);
-	const obtenerSeguimientoxFecha = async (arrayDate) => {
+	const obtenerSeguimientoxFecha = async (rangeDate) => {
 		try {
 			const { data } = await PTApi.get('/seguimiento/');
 			const dataAlter = data.dataSeguimiento
@@ -22,7 +22,7 @@ export const useSeguimientoStore = () => {
 							? ultimaMembresia.venta.horario
 							: ultimaMembresia.venta.horario;
 					return {
-						horario: `12:00`,
+						horario: DateMaskStr(ultimoHorario, 'HH:mm'),
 						nombre_programa: `${ultimoPrograma}`,
 						nombres_cli: m.nombre_cli,
 						apPaterno_cli: m.apPaterno_cli,
@@ -49,7 +49,17 @@ export const useSeguimientoStore = () => {
 						),
 					};
 				});
-			setdataSeguimientoxFecha(dataAlter);
+			setdataSeguimientoxFecha(
+				dataAlter.filter((f) => {
+					const fecha = new Date(f.fecha_vencimiento);
+					const fechaInicio = new Date(rangeDate[0]);
+
+					const fechaFin = new Date(rangeDate[1]);
+					fechaFin.setHours(15, 59, 59, 999);
+
+					return fecha >= fechaInicio && fecha <= fechaFin;
+				})
+			);
 		} catch (error) {
 			console.log(error);
 		}

@@ -4,22 +4,14 @@ import { Card, Col, Row, Table } from 'react-bootstrap'
 import { useReporteResumenComparativoStore } from './useReporteResumenComparativoStore'
 import config from '@/config'
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
-import { FUNMoneyFormatter, NumberFormatMoney, NumberFormatter } from '@/components/CurrencyMask'
+import { NumberFormatMoney, NumberFormatter } from '@/components/CurrencyMask'
 import { FechaRange } from '@/components/RangeCalendars/FechaRange'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc';
-import { ModalSocios } from './ModalSocios'
-import { VentasPorComprobante } from './VentasPorComprobante'
-import { arrayDistritoTest, arrayEstadoCivil, arrayOrigenDeCliente, arrayOrigenEnCeroDeCliente, arraySexo } from '@/types/type'
-import { VentasxMesGrafico } from './VentasxMesGrafico'
-import { VentasMesGrafico } from './HistoricoVentasMembresias/VentasMesGrafico'
-import { CardGraficoTotalDeEstadoCliente } from './HistoricoVentasMembresias/CardGraficoTotalDeEstadoCliente'
-import SimpleBar from 'simplebar-react'
+import { arrayEstadoCivil, arrayOrigenDeCliente, arrayOrigenEnCeroDeCliente, arraySexo } from '@/types/type'
 import { ModalTableSocios } from './ModalTableSocios'
-import { ItemTableTotal } from './ItemTableTotal'
 import { TableTotal } from './TableTotal'
-import { Loading } from '@/components/Loading'
 import { useInView } from 'react-intersection-observer'
 import { useDispatch } from 'react-redux'
 import { onSetViewSubTitle } from '@/store'
@@ -37,10 +29,8 @@ import { GrafPie } from './GrafPie'
 dayjs.extend(utc);
 export const ResumenComparativo = () => {
     const { obtenerComparativoResumen, dataIdPgmCero,
-        obtenerHorariosPorPgm, dataMarcacions, dataTarifas, dataHorarios,
-        dataGroup, loading, dataGroupTRANSFERENCIAS, dataEstadoGroup,
-        obtenerEstadosOrigenResumen, obtenerTarifasPorPgm, dataAsesoresFit,
-        obtenerAsesoresFit } = useReporteResumenComparativoStore()
+        obtenerHorariosPorPgm, 
+        dataGroup, loading} = useReporteResumenComparativoStore()
 
     const dispatch = useDispatch()
     const { RANGE_DATE, dataView } = useSelector(e => e.DATA)
@@ -49,14 +39,12 @@ export const ResumenComparativo = () => {
     const [clickDataSocios, setclickDataSocios] = useState([])
     const [clickDataLabel, setclickDataLabel] = useState('')
     const [isDataNeedGruped, setisDataNeedGruped] = useState(false)
-    const [isOpenModalSOCIOSCanjes, setisOpenModalSOCIOSCanjes] = useState(false)
     // COuseSelector(e=>e.DATA)
     useEffect(() => {
         if (RANGE_DATE[0] === null) return;
         if (RANGE_DATE[1] === null) return;
         obtenerComparativoResumen(RANGE_DATE)
         obtenerHorariosPorPgm()
-        // obtenerClientesConMarcacion()
         // obtenerEstadosOrigenResumen(RANGE_DATE)
     }, [RANGE_DATE])
     const onOpenModalSOCIOS = (d, avatarPrograma = [], label, isdatagruped) => {
@@ -74,22 +62,6 @@ export const ResumenComparativo = () => {
 
         }
     }
-    const onCloseModalSOCIOSCANJE = (d, avatarPrograma = [], label, isdatagruped) => {
-        // console.log(d, "d???????????");
-        if (isdatagruped) {
-            setclickDataSocios(d)
-            setisDataNeedGruped(isdatagruped)
-            setisOpenModalSocio(true)
-        } else {
-            setisOpenModalSocio(true)
-            setavatarProgramaSelect(avatarPrograma)
-            dispatch(onSetDataView(d))
-            setclickDataSocios(d)
-            setclickDataLabel(label)
-
-        }
-    }
-
     const onCloseModalSOCIOS = () => {
         setisOpenModalSocio(false)
     }
@@ -256,28 +228,6 @@ export const ResumenComparativo = () => {
                 items,
             };
         }).sort((a, b) => b.items.length - a.items.length);
-    }
-    function agruparPorVentaDistritoPorPgmPorSemanas(detalledata) {
-        const resultado = [];
-
-        detalledata?.forEach((item) => {
-
-            const { tarifa_monto } = item;
-            const { distrito } = item.tb_ventum.tb_cliente.ubigeo_nac;
-
-            // Verificar si ya existe un grupo con la misma cantidad de sesiones
-            let grupo = resultado?.find((g) => g.propiedad === distrito);
-
-            if (!grupo) {
-                // Si no existe, crear un nuevo grupo
-                grupo = { propiedad: distrito, items: [], tarifa_monto };
-                resultado.push(grupo);
-            }
-            // Agregar el item al grupo correspondiente
-            grupo.items.push(item);
-        });
-
-        return resultado.sort((a, b) => b.items.length - a.items.length).sort((a, b) => b.tarifa_monto - a.tarifa_monto);
     }
     function agruparPorEstCivil(detalledata) {
         return arrayEstadoCivil?.map(({ label, value, order }) => {
@@ -465,9 +415,6 @@ export const ResumenComparativo = () => {
         }).sort((a, b) => b.items.length - a.items.length);
     };
 
-    const AlterGrupo = (data) => {
-        data.map()
-    }
     const generarResumen = (array, grupo, labelCaracter, index, objDeleting, objAumenta = []) => {
         const arrayGeneral = array.map(f => f.items).flat()
         const sumaTotal = array.reduce((total, item) => total + (item?.items.length || 0), 0);
@@ -1846,208 +1793,4 @@ export const ResumenComparativo = () => {
                 clickDataLabel={clickDataLabel} show={isOpenModalSocio} onHide={onCloseModalSOCIOS} />
         </>
     )
-}
-
-// Agrupar por id_pgm con categorías separadas
-function agruparVentasConDetalles({
-    ventasProgramaNuevo = [],
-    ventasProgramaReinscritos = [],
-    ventasProgramaRenovaciones = [],
-    ventasProgramaTraspasos = [],
-    ventasProgramaTransferencias = [],
-}) {
-    const agrupados = {};
-
-    const agregarDetalles = (array, tipo) => {
-        array.forEach((venta) => {
-            const { name_pgm, id_pgm, tb_image, detalle_ventaMembresium } = venta;
-
-            // Generar una clave única para el agrupamiento
-            const key = `${name_pgm}_${id_pgm}`;
-
-            // Si el grupo no existe, se inicializa
-            if (!agrupados[key]) {
-                agrupados[key] = {
-                    name_pgm,
-                    id_pgm,
-                    tb_image: [],
-                    detallesNuevos: [],
-                    detallesReinscritos: [],
-                    detallesRenovaciones: [],
-                    detallesTraspasos: [],
-                    detalleTransferencias: [],
-                };
-            }
-
-            // Agregar `tb_image` solo si no está ya incluido
-            if (!agrupados[key].tb_image.some((img) => img === tb_image)) {
-                agrupados[key].tb_image.push(tb_image);
-            }
-
-            // Agregar el detalle al tipo correspondiente
-            agrupados[key][tipo].push(detalle_ventaMembresium);
-        });
-    };
-
-    // Procesar cada tipo de ventas
-    agregarDetalles(ventasProgramaNuevo, "detallesNuevos");
-    agregarDetalles(ventasProgramaReinscritos, "detallesReinscritos");
-    agregarDetalles(ventasProgramaRenovaciones, "detallesRenovaciones");
-    agregarDetalles(ventasProgramaTraspasos, "detallesTraspasos");
-    agregarDetalles(ventasProgramaTransferencias, "detalleTransferencias");
-
-
-    // Convertir el objeto agrupado en un array
-    return Object.values(agrupados);
-}
-
-// Ejemplo de uso con los arrays proporcionados
-// const ventasUnidas = 
-
-
-const groupByIdOrigen = (data) => {
-    return data.reduce((acc, item) => {
-        const idOrigen = item.tb_ventum?.id_origen;
-
-        // Busca si ya existe un grupo para este id_origen
-        let group = acc.find((g) => g.id_origen === idOrigen);
-
-        if (!group) {
-            // Si no existe, crea uno nuevo
-            group = { id_origen: idOrigen, items: [] };
-            acc.push(group);
-        }
-
-        // Agrega el elemento al grupo correspondiente
-        group.items.push(item);
-        return acc;
-    }, []);
-};
-const groupByIdFactura = (data) => {
-    return data.reduce((acc, item) => {
-        const idFactura = item.tb_ventum?.id_tipoFactura;
-
-        // Busca si ya existe un grupo para este id_origen
-        let group = acc.find((g) => g.id_tipoFactura === idFactura);
-
-        if (!group) {
-            // Si no existe, crea uno nuevo
-            group = { id_tipoFactura: idFactura, items: [] };
-            acc.push(group);
-        }
-
-        // Agrega el elemento al grupo correspondiente
-        group.items.push(item);
-        return acc;
-    }, []);
-};
-
-
-function agruparMarcacionesPorSemana(data = []) {
-    if (!Array.isArray(data)) {
-        throw new Error("El parámetro 'data' debe ser un array.");
-    }
-    return data?.map((obj) => {
-        const inicioMem = dayjs(obj.fec_inicio_mem);
-        // Validar que `tb_marcacions` sea un array
-        if (!Array.isArray(obj.tb_marcacions)) {
-            console.warn("El objeto 'tb_marcacions' no es un array o está ausente.", obj);
-            return; // Saltar al siguiente objeto
-        }
-        // Filtrar la primera marcación de cada día
-        const primerasMarcaciones = Object.values(
-            obj.tb_marcacions?.reduce((acumulador, marcacion) => {
-                const fechaDia = dayjs(marcacion.tiempo_marcacion).format('YYYY-MM-DD');
-                if (
-                    !acumulador[fechaDia] ||
-                    dayjs(marcacion.tiempo_marcacion).isBefore(
-                        acumulador[fechaDia].tiempo_marcacion
-                    )
-                ) {
-                    acumulador[fechaDia] = marcacion; // Guardar la más temprana del día
-                }
-                return acumulador;
-            }, {})
-        );
-
-        // Agrupar las primeras marcaciones por semana
-        const marcacionPorSemana = primerasMarcaciones.reduce((acumulador, marcacion) => {
-            const fechaMarcacion = dayjs(marcacion.tiempo_marcacion);
-
-            // Calcular la semana desde el inicio de la membresía
-            const diasDesdeInicio = fechaMarcacion.diff(inicioMem, 'day');
-            const semana = Math.floor(diasDesdeInicio / 7) + 1;
-
-            // Buscar o crear el grupo para esta semana
-            let grupo = acumulador.find((g) => g.semana === semana);
-            if (!grupo) {
-                grupo = { semana, items: [] };
-                acumulador.push(grupo);
-            }
-
-            // Añadir la marcación al grupo
-            grupo.items.push(marcacion);
-
-            return acumulador;
-        }, []);
-
-        // Retornar el objeto original con el nuevo array `marcacionPorSemana`
-        return { ...obj, marcacionPorSemana };
-    });
-}
-
-function agruparPrimeraMarcacionGlobal(data) {
-    const marcacionesPorSemanaGlobal = {};
-    // if (!Array.isArray(data)) {
-    //     throw new Error("El parámetro 'data' debe ser un array.");
-    // }
-    data?.forEach((obj) => {
-        const inicioMem = dayjs(obj?.fec_inicio_mem);
-
-        // Validar que `tb_marcacions` sea un array
-        if (!Array.isArray(obj.tb_marcacions)) {
-            console.warn("El objeto 'tb_marcacions' no es un array o está ausente.", obj);
-            return; // Saltar al siguiente objeto
-        }
-        // Filtrar la primera marcación de cada día
-        const primerasMarcaciones = Object.values(
-            obj.tb_marcacions?.reduce((acumulador, marcacion) => {
-                const fechaDia = dayjs(marcacion?.tiempo_marcacion).format('YYYY-MM-DD');
-                if (
-                    !acumulador[fechaDia] ||
-                    dayjs(marcacion?.tiempo_marcacion).isBefore(
-                        acumulador[fechaDia]?.tiempo_marcacion
-                    )
-                ) {
-                    acumulador[fechaDia] = marcacion; // Guardar la más temprana del día
-                }
-                return acumulador;
-            }, {})
-        );
-
-        // Agrupar las primeras marcaciones por semana
-        primerasMarcaciones.forEach((marcacion) => {
-            const fechaMarcacion = dayjs(marcacion.tiempo_marcacion);
-
-            // Calcular la semana desde el inicio de la membresía
-            const diasDesdeInicio = fechaMarcacion.diff(inicioMem, 'day');
-            const semana = Math.floor(diasDesdeInicio / 7) + 1;
-
-            // Inicializar el grupo de la semana si no existe
-            if (!marcacionesPorSemanaGlobal[semana]) {
-                marcacionesPorSemanaGlobal[semana] = { propiedad: semana, items: [] };
-            }
-
-            // Añadir la marcación al grupo TOTAL
-            marcacionesPorSemanaGlobal[semana].items.push({
-                ...marcacion,
-                fec_inicio_mem: obj.fec_inicio_mem,
-                tb_marcacions: obj.tb_marcacions,
-                marcacionPorSemana: obj.marcacionPorSemana,
-            });
-        });
-    });
-
-    // Convertir el objeto en un array
-    return Object.values(marcacionesPorSemanaGlobal);
 }

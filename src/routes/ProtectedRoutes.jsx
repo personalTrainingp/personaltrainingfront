@@ -20,7 +20,7 @@ const ResumenMembresiasPage = lazy(() =>
 
 
 const NuevaVenta = lazy(() => import('../pages/pagePT/nuevaVenta'));
-const Seguimiento = lazy(() => import('../pages/pagePT/seguimiento'));
+const Seguimiento = lazy(() => import('../pages/pagePT/Seguimiento'));
 const TotaldeVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'));
 const VentasPrograma = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'));
 const VentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'));
@@ -41,9 +41,6 @@ const GestionVenta = lazy(() => import('../pages/pagePT/GestVentas'));
 const GestionProspectos = lazy(() => import('../pages/pagePT/GestProspectos'))
 const GestionExtensionMembresia = lazy(() => import('../pages/pagePT/GestExtensionMembresia'))
 const GestionAuditoria = lazy(() => import('../pages/pagePT/Auditoria'))
-// const GestionComision = lazy(()=> import('../pages/pagePT/GestComision'))
-// const ServFitology = lazy(()=> import('../pages/pagePT/ServFitology'))
-// const ServNutricion = lazy(()=> import('../pages/pagePT/ServNutricion'))
 const ReportePorProgramas = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'))
 const ComisionesPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/ComisionesPage'));
 const ComparativoPage = lazy(() => import('../pages/pagePT/reportes/comparativoMensual/ComparativoPage'));
@@ -164,11 +161,11 @@ export default function ProtectedRoutes() {
 								<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja />} />
 							}
 							{
-								sections.find(e => e.url === '/proveedor') &&
+								sections.find(e => e.url === '/ventas') &&
 								<Route path='gestion-monkfit' element={<ReservaMonkFitPage />} />
 							}
 							{
-								sections.find(e => e.url === '/monkey-fit') &&
+								sections.find(e => e.url === '/ventas') &&
 								<Route path='clientes-monkeyFit' element={<ReporteMonketFit />} />
 							}
 							{
@@ -227,13 +224,6 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/prov') &&
 								<Route path='gestion-ingresantes-activo' element={<GestionProveedores estado={true} tipo={1574} />} />
 							}
-							{/* {<GestionProveedores estado={true} tipo={1573} />
-								sections.find(e => e.url === '/prov') &&
-								<>
-									<Route path='gestion-proveedores-activo' element={<GestionProveedores estado={true} tipo={1573} />} />
-									<Route path='perfil-proveedor/:uid' element={<PerfilProveedor />} />
-								</>
-							} */}
 							{
 								sections.find(e => e.url === '/cuentas-balances') &&
 								<Route path='cuentas-pagar' element={<CuentasBalances tipo={'PorPagar'} headerTipo={'PAGAR'} />} />
@@ -377,6 +367,10 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/ventas') &&
 								<Route path='reporte/reporte-seguimiento' element={<ReporteSeguimiento />} />
+							}
+							{
+								sections.find(e => e.url === '/ventas') &&
+								<Route path='reporte/reporte-seguimiento-fechas' element={<ReporteSeguimiento />} />
 							}
 							{
 								sections.find(e => e.url === '/proveedores/prov-agentes') &&
