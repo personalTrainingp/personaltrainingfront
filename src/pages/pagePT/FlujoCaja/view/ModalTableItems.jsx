@@ -52,7 +52,7 @@ export const ModalTableItems = ({show, onHide, items={}, isShowConceptos=false, 
                 </div>
             )
         }},
-        {id: 6, header: (<>MONTO</>), render:(row)=>{
+        {id: 6, header: (<div className='text-center'>MONTO <br/> <span className='fs-2'>S/. - <span className='text-ISESAC'>$</span></span></div>), render:(row)=>{
             return (
                 <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
                     {
@@ -85,6 +85,16 @@ export const ModalTableItems = ({show, onHide, items={}, isShowConceptos=false, 
         {id: 3, header: (<>Descripción / Eventos</>), render:(row)=>{
             return (
                 <div>
+                    {
+                        row.monto_venta && (
+                            <>
+                                S/.<NumberFormatMoney amount=
+                                {row?.monto_venta}
+                                />
+                                <br/>
+                            </>
+                        )
+                    }
                 {row.descripcion}
                 </div>
             )

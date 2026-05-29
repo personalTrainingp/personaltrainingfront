@@ -37,17 +37,6 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     }
   return (
     <div>
-        
-        {/* <div>
-            <ViewResumenTotalOficial
-                onOpenModalTableItems={onOpenModalTableItems}
-                bgPastel={bgPastel} 
-                bgTotal={classNameEmpresa} 
-                id_enterprice={id_empresa} 
-                anio={[arrayFecha[0], arrayFecha[1]]}
-                fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
-            />
-        </div> */}
         <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
             {
@@ -120,7 +109,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 ?.map((data,i)=>{
                     return (
                         <DataTablePrincipal 
-                            index={data.id}
+                            index={i+1}
                             id_empresa={id_empresa}
                             onOpenModalTableItems={onOpenModalTableItems}
                             key={`${data.grupo}`}

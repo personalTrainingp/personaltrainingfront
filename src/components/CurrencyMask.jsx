@@ -39,10 +39,21 @@ export const NumberFormatMoney = ({ amount, className='fs-2', style }) => {
   });
   
   return (
-    <div className={className} style={style}>
+    <span className={`${className} ${amount===0 && 'text-gray'}`} style={style}>
       {formattedAmount}
-    </div>
+    </span>
   )
+}
+export const NumberFormatMoneyStr = ({ amount, className='fs-2', style }) => {
+  const formattedAmount = accounting.formatMoney(amount===Infinity?0:amount, {
+    symbol: '',  // Símbolo de la moneda
+    precision: 2, // Precisión de decimales
+    thousand: ',', // Separador de miles
+    decimal: '.',  // Separador decimal
+    format: '%s%v' // "%s" es el símbolo de la moneda y "%v" es el valor numérico
+  });
+  
+  return formattedAmount
 }
 export const NumberFormatter = ({ amount, splitCaracter }) => {
   const formattedAmount = accounting.formatMoney(amount, {

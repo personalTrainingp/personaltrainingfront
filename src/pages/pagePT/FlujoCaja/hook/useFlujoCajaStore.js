@@ -6,6 +6,7 @@ import { formatDateToSQLServerWithDayjs } from '@/helper/formatDateToSQLServerWi
 import { obtenerTipoDeCambio } from '@/middleware/obtenerTipoDeCambio';
 import { aplicarTipoDeCambio } from '@/helper/aplicarTipoCambio';
 import { usePagosVentasStore } from './usePagosVentasStore';
+import { NumberFormatMoneyStr } from '@/components/CurrencyMask';
 
 export const useFlujoCaja = () => {
 	const [dataGastosxFecha, setdataGastosxFecha] = useState({
@@ -50,16 +51,18 @@ export const useFlujoCaja = () => {
 				})
 				.map((m) => {
 					return {
+						monto_venta: m.pago?.parcial_monto,
 						monto: m.pago?.parcial_monto * (m.porcentaje / 100) * 1.18,
 						tb_Proveedor: {
-							razon_social_prov: 'OPEN PAY',
+							razon_social_prov: 'OPENPAY',
 							parametro_oficio: {
 								label_param: 'COMISION',
 							},
 						},
 						n_operacion: '111',
 						n_comprabante: '000',
-						descripcion: `${m.pago?.parcial_monto} ${m.pago?.parametro_banco?.label_param}`,
+						banco: m.pago?.parametro_banco?.label_param,
+						descripcion: m.pago?.parametro_banco?.label_param,
 						fecha_comprobante: new Date(
 							new Date(m.fecha_venta).setUTCHours(14, 0, 0, 0)
 						).toISOString(),
@@ -98,7 +101,7 @@ export const useFlujoCaja = () => {
 			const { data: dataParametrosGastos } = await PTApi.get(
 				`/terminologia/grupo-y-concepto/${enterprice}/1573`
 			);
-			const dataGastosEnTotal = [...dataGastos].map((m) => {
+			const dataGastosEnTotal = [...dataGastos, ...dataGastosOperadoresVentas].map((m) => {
 				const fechaPrimaria = new Date(m.fecha_primaria);
 				const mesP = fechaPrimaria.getUTCMonth() + 1;
 				const anioP = fechaPrimaria.getUTCFullYear();
