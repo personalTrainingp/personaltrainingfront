@@ -64,7 +64,8 @@ const PerfilProveedor = lazy(() => import('../pages/pagePT/PerfilProveedor'))
 const GestionInventario = lazy(() => import('../pages/pagePT/GestInventario'))
 const GestionInventarioProy = lazy(() => import('../pages/pagePT/GestInventarioProy'))
 const InventarioTotalizado = lazy(() => import('../pages/pagePT/InventarioReporte'))
-const ReporteSeguimiento = lazy(() => import('../pages/pagePT/reportes/reporteSeguimiento'))
+const ReporteSeguimiento = lazy(() => import('../pages/pagePT/reportes/reporteSeguimientoFechas'))
+const ReporteSeguimientoFechas = lazy(() => import('../pages/pagePT/reportes/reporteSeguimientoFechas'))
 const GestionComercial = lazy(() => import('../pages/pagePT/GestionComercial/Index.jsx'))
 const ResultadoChange = lazy(() => import('../pages/pagePT/reportes/resultadoChange'))
 const ReporteDeGestionComercial = lazy(() => import('../pages/pagePT/reportes/reporteGestionComercial'))
@@ -370,7 +371,7 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/ventas') &&
-								<Route path='reporte/reporte-seguimiento-fechas' element={<ReporteSeguimiento />} />
+								<Route path='reporte/reporte-seguimiento-fechas' element={<ReporteSeguimientoFechas />} />
 							}
 							{
 								sections.find(e => e.url === '/proveedores/prov-agentes') &&
