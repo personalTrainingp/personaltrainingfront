@@ -333,7 +333,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const IdBodyTemplate = (rowData, { rowIndex })=>{
         return (
             <div className="flex align-items-center gap-2 fs-4">
-                <span>{highlightText(`${rowIndex+1}`, globalFilterValue)}</span>
+                <span>{highlightText(`${rowData.id}`, globalFilterValue)}</span>
             </div>
         )
     }
