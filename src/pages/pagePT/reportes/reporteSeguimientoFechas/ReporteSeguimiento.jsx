@@ -6,118 +6,28 @@ import { generarHoras } from './generarHoras';
 import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 export const ReporteSeguimiento = () => {
-    // const { obtenerSeguimientoxFecha, dataSeguimientoxFecha } = useSeguimientoOficialStore()
-    // useEffect(() => {
-    //     obtenerSeguimientoxFecha(["2026-05-23T12:00:00.000Z", "2030-03-16T12:00:00.000Z"])
-    // }, [])
-    const dataImaginaria = [
-        {horario: '05:00', len: 12, nombre_programa: 'CHANGE 45'},
-        {horario: '06:00', len: 16, nombre_programa: 'CHANGE 45'},
-        {horario: '07:00', len: 16, nombre_programa: 'CHANGE 45'},
-        {horario: '08:00', len: 16, nombre_programa: 'CHANGE 45'},
-        {horario: '09:00', len: 7, nombre_programa: 'CHANGE 45'},
-        {horario: '10:00', len: 7, nombre_programa: 'CHANGE 45'},
-        {horario: '11:00', len: 7, nombre_programa: 'CHANGE 45'},
-        {horario: '13:00', len: 7, nombre_programa: 'CHANGE 45'},
-        {horario: '17:00', len: 8, nombre_programa: 'CHANGE 45'},
-        {horario: '18:00', len: 8, nombre_programa: 'CHANGE 45'},
-        {horario: '19:00', len: 16, nombre_programa: 'CHANGE 45'},
-        {horario: '20:00', len: 16, nombre_programa: 'CHANGE 45'},
-        {horario: '21:00', len: 16, nombre_programa: 'CHANGE 45'},
-        // 
-        {horario: '05:30', len: 14, nombre_programa: 'CHANGE 45-2'},
-        {horario: '06:30', len: 16, nombre_programa: 'CHANGE 45-2'},
-        {horario: '07:30', len: 16, nombre_programa: 'CHANGE 45-2'},
-        {horario: '08:30', len: 16, nombre_programa: 'CHANGE 45-2'},
-        {horario: '09:30', len: 7, nombre_programa: 'CHANGE 45-2'},
-        {horario: '10:30', len: 7, nombre_programa: 'CHANGE 45-2'},
-        {horario: '11:30', len: 7, nombre_programa: 'CHANGE 45-2'},
-        {horario: '13:30', len: 15, nombre_programa: 'CHANGE 45-2'},
-        {horario: '17:30', len: 8, nombre_programa: 'CHANGE 45-2'},
-        {horario: '18:30', len: 16, nombre_programa: 'CHANGE 45-2'},
-        {horario: '19:30', len: 16, nombre_programa: 'CHANGE 45-2'},
-        {horario: '20:30', len: 16, nombre_programa: 'CHANGE 45-2'},
-        // 
-        {horario: '05:00', len: 10, nombre_programa: 'FS 45'},
-        {horario: '06:00', len: 10, nombre_programa: 'FS 45'},
-        {horario: '07:00', len: 10, nombre_programa: 'FS 45'},
-        {horario: '08:00', len: 4, nombre_programa: 'FS 45'},
-        {horario: '09:00', len: 4, nombre_programa: 'FS 45'},
-        {horario: '10:00', len: 4, nombre_programa: 'FS 45'},
-        {horario: '11:00', len: 4, nombre_programa: 'FS 45'},
-        {horario: '17:00', len: 5, nombre_programa: 'FS 45'},
-        {horario: '18:00', len: 5, nombre_programa: 'FS 45'},
-        {horario: '19:00', len: 10, nombre_programa: 'FS 45'},
-        {horario: '20:00', len: 10, nombre_programa: 'FS 45'},
-        {horario: '21:00', len: 10, nombre_programa: 'FS 45'},
-        // 
-        {horario: '05:00', len: 12, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '06:00', len: 12, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '07:00', len: 12, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '08:00', len: 4, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '09:00', len: 4, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '10:00', len: 4, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '11:00', len: 4, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '17:00', len: 5, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '18:00', len: 5, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '19:00', len: 10, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '20:00', len: 10, nombre_programa: 'FISIO MUSCLE'},
-        {horario: '21:00', len: 10, nombre_programa: 'FISIO MUSCLE'},
-    ]
+    const { obtenerSeguimientoxFecha, dataSeguimientoxFecha, obtenerVentasMembresias,  } = useSeguimientoOficialStore()
+    useEffect(() => {
+        obtenerSeguimientoxFecha(["2026-05-29T12:00:00.000Z", "2030-03-16T12:00:00.000Z"])
+    }, [])
     const dataHorarios = [
-        // ...dataSeguimiento,
-        ...dataImaginaria
+        ...agruparPorHora(dataSeguimientoxFecha)
     ]
-    // const dataSeguimiento = agruparPorHora(dataSeguimientoxFecha).map(m=>{
-    //     return {
-    //         nombre_programa: m.items[0].nombre_programa,
-    //         len: m.items.length,
-    //         horario: m.items[0].horario
-    //     }
-    // })
-    const dataSemanas = [
-            { semana: 12, porc: 51.47, ticket_medio: 1231, pgm: 'CHANGE 45' },
-            { semana: 16, porc: 21.02, ticket_medio: 1461, pgm: 'CHANGE 45' },
-            { semana: 24, porc: 13.03, ticket_medio: 1846, pgm: 'CHANGE 45' },
-            { semana: 48, porc: 5.73, ticket_medio: 2956, pgm: 'CHANGE 45' },
-            { semana: 4, porc: 5.8, ticket_medio: 443, pgm: 'CHANGE 45' },
-            { semana: 8, porc: 2.95, ticket_medio: 711, pgm: 'CHANGE 45' },
-
-            { semana: 24, porc: 40.77, ticket_medio: 1764, pgm: 'FS 45' },
-            { semana: 12, porc: 32.62, ticket_medio: 1170, pgm: 'FS 45' },
-            { semana: 16, porc: 16.94, ticket_medio: 1385, pgm: 'FS 45' },
-            { semana: 4, porc: 6.16, ticket_medio: 452, pgm: 'FS 45' },
-            { semana: 48, porc: 2.04, ticket_medio: 2999, pgm: 'FS 45' },
-            { semana: 8, porc: 1.47, ticket_medio: 719, pgm: 'FS 45' },
-
-            { semana: 12, porc: 44.81, ticket_medio: 1191, pgm: 'FISIO MUSCLE' },
-            { semana: 24, porc: 23.76, ticket_medio: 1858, pgm: 'FISIO MUSCLE' },
-            { semana: 16, porc: 17.35, ticket_medio: 1442, pgm: 'FISIO MUSCLE' },
-            { semana: 48, porc: 6.09, ticket_medio: 2699, pgm: 'FISIO MUSCLE' },
-            { semana: 4, porc: 5.63, ticket_medio: 576, pgm: 'FISIO MUSCLE' },
-            { semana: 8, porc: 2.36, ticket_medio: 627, pgm: 'FISIO MUSCLE' },
-    ]
-    const filtroChange = dataSemanas.filter(f=>f.pgm==='CHANGE 45')
-    const semanasConPgm = [...dataSemanas, ...filtroChange.map(m=>{return {...m, pgm: 'CHANGE 45-2'}})]
   return (
     <>
         <PageBreadcrumb subName={'T'} title={'CUPOS DISPONIBLES DE VENTAS POR TURNO'}/>
         <div className='d-flex flex-column align-items-center justify-content-center'>
-            <h1 style={{fontSize: '70px'}} className='text-center d-flex flex-column'>CHANGE 45 <span className='' style={{fontSize: '45px'}}>(TURNO OPTIMO PROYECTADO)</span></h1>
+            <h1 style={{fontSize: '70px'}} className='text-center d-flex flex-column'>CHANGE 45 </h1>
                 <TableHorario dataSeguimientoxFecha={dataHorarios} nombre_pgm={'CHANGE 45'} horaInicio='05:00' horaFin='21:00'/>
-                <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'CHANGE 45'} horaInicio='05:30' horaFin='20:30'/>
-            
-            <h1 style={{marginTop: '100px', fontSize: '70px'}} className='text-center d-flex flex-column'>CHANGE 45  <span className='' style={{fontSize: '45px'}}>(TURNO PROYECTADO MEDIAS HORAS)</span></h1>
-                <TableHorario dataSeguimientoxFecha={dataHorarios} nombre_pgm={'CHANGE 45-2'} className={'bg-change-pastel'} horaInicio='05:30' horaFin='20:30'/>
-                <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'CHANGE 45-2'} className={'bg-change-pastel'} horaInicio='05:30' horaFin='20:30'/>
+                {/* <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'CHANGE 45'} horaInicio='05:30' horaFin='20:30'/> */}
             
             <h1 style={{fontSize: '70px', marginTop: '100px'}} className='text-center'>FS 45</h1>
             <TableHorario dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FS 45'} horaInicio='05:00' horaFin='21:00'/>
-            <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FS 45'} horaInicio='05:30' horaFin='20:30'/>
+            {/* <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FS 45'} horaInicio='05:30' horaFin='20:30'/> */}
             
             <h1 style={{fontSize: '70px', marginTop: '100px'}} className='text-center'>FISIO MUSCLE</h1>
             <TableHorario dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FISIO MUSCLE'} horaInicio='05:00' horaFin='21:00'/>
-            <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FISIO MUSCLE'} horaInicio='05:30' horaFin='20:30'/>
+            {/* <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FISIO MUSCLE'} horaInicio='05:30' horaFin='20:30'/> */}
         </div>
     </>
   )
@@ -152,7 +62,14 @@ function agruparPorHora(data) {
     }
     grupos[nombre_fp].items.push(item);
   });
-  return Object.values(grupos);
+  return Object.values(grupos).map(m=>{
+    return {
+        nombre_fp: m.nombre_fp,
+        horario: m.items[0].horario,
+        nombre_programa: m.items[0].nombre_programa,
+        len: m.items.length
+    }
+  });
 }
 
 export const TableHorario = ({nombre_pgm, dataSeguimientoxFecha, horaInicio='05:00', horaFin='21:00', className='bg-change'}) => {

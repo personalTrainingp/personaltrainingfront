@@ -14,7 +14,7 @@ export const AppSeguimiento = () => {
     <div>
       <Row>
         <Col lg={6}>
-          <TableSeguimientos dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>SOCIOS ACTIVOS </span></>} rangeDate={["2026-05-22T12:00:00.000Z", "2030-03-16T12:00:00.000Z"]}/>
+          <TableSeguimientos dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>SOCIOS ACTIVOS </span></>} rangeDate={["2026-05-29T12:00:00.000Z", "2030-03-16T12:00:00.000Z"]}/>
         </Col>
         <Col lg={6}>
           <TableSeguimientos dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>RENOVACIONES VENCIDAS</span></>} rangeDate={[ "2026-02-22T12:00:00.000Z","2026-05-21T12:00:00.000Z"]}/>

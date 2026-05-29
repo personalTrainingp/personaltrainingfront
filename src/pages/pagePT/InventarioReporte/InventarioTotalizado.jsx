@@ -35,6 +35,7 @@ export const InventarioTotalizado = ({id_empresa, label_empresa}) => {
     const { dataContratoProv } = useSelector(e=>e.prov)
   return (
     <>
+    {id_empresa}
       <DataView dvi={dataFechas} dataContratoProv={dataContratoProv} isResumenxZonaLoc id_empresa={id_empresa} label_empresa={label_empresa}/>
     </>
   )

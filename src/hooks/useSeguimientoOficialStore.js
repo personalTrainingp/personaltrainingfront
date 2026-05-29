@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 export const useSeguimientoOficialStore = () => {
 	const [dataSeguimientoxFecha, setdataSeguimientoxFecha] = useState([]);
+	const [dataVentasMembresias, setdataVentasMembresias] = useState([]);
 	const obtenerSeguimientoxFecha = async (rangeDate) => {
 		try {
 			const { data } = await PTApi.get('/seguimiento/');
@@ -72,10 +73,24 @@ export const useSeguimientoOficialStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerVentasMembresias = async (rangoDate) => {
+		try {
+			const { data } = await PTApi.get('/venta/get-ventas-x-fecha/membresias/598', {
+				params: {
+					arrayDate: rangoDate,
+				},
+			});
+			setdataVentasMembresias(data.ventas);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
+		obtenerVentasMembresias,
 		obtenerSeguimientoxFecha,
 		obtenerSeguimientos,
 		dataSeguimientoxFecha,
+		dataVentasMembresias,
 	};
 };
 
