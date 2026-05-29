@@ -33,28 +33,17 @@ export const useInventarioStore = () => {
 
 	const obtenerInventarioKardexxFechas = async (id_empresa) => {
 		try {
-			// const { data } = await PTApi.get(
-			// 	`/inventario/obtener-inventario-y-kardex-x-fechas/${id_empresa}`
-			// );
-
-			// setdataFechas(data.inventario_x_fechas);
-
-			const { data } = await PTApi.get(
-				`/inventario/obtener-inventario-y-kardex-x-fechas/${id_empresa}`
-			);
-
-			setdataFechas(data.inventario_x_fechas);
+			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_empresa}`);
+			setdataFechas(data.articulos);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const obtenerFechasInventario = async (id_empresa) => {
 		try {
-			const { data } = await PTApi.get(
-				`/inventario/obtener-inventario-y-kardex-x-fechas/${id_empresa}`
-			);
+			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_empresa}`);
 			// dispatch(onSetDataView(data.inventario_x_fechas));
-			setdataFechas(data.inventario_x_fechas);
+			setdataFechas(data.articulos);
 		} catch (error) {
 			console.log(error);
 		}
