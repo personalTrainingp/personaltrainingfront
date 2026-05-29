@@ -234,7 +234,8 @@ function agruparPorEdad(data) {
       ...m,
       propiedad: m.rango_edad,
       len: m.items.length,
-      monto: m.items.reduce((total, item)=>total+item.detalle_ventaMembresia[0].tarifa_monto, 0)
+      monto: m.items.reduce((total, item)=>total+item.detalle_ventaMembresia[0].tarifa_monto, 0),
+      genero: agruparPorGenero(m.items)
     }
   });
 }
