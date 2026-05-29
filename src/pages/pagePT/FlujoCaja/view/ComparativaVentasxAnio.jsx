@@ -7,7 +7,9 @@ const fechaActual = new Date()
 const mesActual = fechaActual.getMonth()+1
 export const ComparativaVentasxAnio = ({id_empresa}) => {
   const { obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();
-  const dataVentas = dataIngresosxFecha.flujoxGrupo.find(f=>f.grupo=='INGRESOS')?.data
+  console.log({dataIngresosxFecha});
+  
+  const dataVentas = dataIngresosxFecha.flujoxGrupo.find(f=>f.id===112)?.gastos
   useEffect(() => {
       obtenerIngresosxFecha(id_empresa, [new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2026-12-31 15:45:47.6640000 +00:00')]);
     }, []);

@@ -35,11 +35,7 @@ export const InventarioTotalizado = ({id_empresa, label_empresa}) => {
     const { dataContratoProv } = useSelector(e=>e.prov)
   return (
     <>
-                      <DataView dvi={dataFechas} dataContratoProv={dataContratoProv} isResumenxZonaLoc id_empresa={id_empresa} label_empresa={label_empresa}/>
-    {/* <TabView>
-                  <TabPanel header={<></>}>
-                  </TabPanel>
-    </TabView> */}
+      <DataView dvi={dataFechas} dataContratoProv={dataContratoProv} isResumenxZonaLoc id_empresa={id_empresa} label_empresa={label_empresa}/>
     </>
   )
 }

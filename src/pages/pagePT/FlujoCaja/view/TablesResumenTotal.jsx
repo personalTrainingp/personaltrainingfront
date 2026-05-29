@@ -159,6 +159,7 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                 </Table>
             </div>
         </div>
+        */}
         <div>
             <div style={{fontSize: '70px'}} className='text-black text-center'>COMPRA ACTIVOS</div>
             <div className='tab-scroll-container'>
@@ -178,14 +179,14 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                         </tr>
                     </thead>
                     <tbody>
-                        <TrItemInventario anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
-                        <TrItemInventario anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
-                        <TrItemInventario anio={2024} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
-                        <TrItemInventario anio={2020} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='TOTAL ACUMULADO' arrayFechas={anioTotal} id_empresa={id_empresa}/>
+                        <TrItemInventario onOpenModalDataItems={onOpenModalDataItems} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
+                        <TrItemInventario onOpenModalDataItems={onOpenModalDataItems} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
+                        <TrItemInventario onOpenModalDataItems={onOpenModalDataItems} anio={2024} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
+                        <TrItemInventario onOpenModalDataItems={onOpenModalDataItems} anio={2020} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='TOTAL ACUMULADO' arrayFechas={anioTotal} id_empresa={id_empresa}/>
                     </tbody>
                 </Table>
             </div>
-        </div> */}
+        </div> 
         
         <ModalTableItems 
                 link={''}

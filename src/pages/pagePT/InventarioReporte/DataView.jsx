@@ -99,6 +99,7 @@ export const DataView = ({id_empresa, dvi, label_empresa, dataContratoProv, isRe
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>MANO DE OBRA S/.</span> <span className='fs-2'><NumberFormatMoney amount={f.valor_mano_obra_sumado_soles}/></span></li>
                                         {/* <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>MANO DE OBRA <SymbolDolar fontSizeS={'20px'}/></span> <span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={mano_obra_dolares}/></span></li> */}
                                         <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>inversión total S/. </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado_soles}/></span></li>
+                                        <li className='d-flex justify-content-between '><span className='fw-bold fs-2'>30% S/. </span><span className='fs-2'><NumberFormatMoney amount={f.valor_total_sumado_soles*0.3}/></span></li>
                                         {/* <li className='d-flex justify-content-between '><span className='fw-bold fs-2' style={{color: '#1E8727'}}>inversión total <SymbolDolar fontSizeS={'20px'}/> </span><span className='fs-2 fw-bold' style={{color: '#1E8727'}}><NumberFormatMoney amount={(f.valor_total_sumado_dolares)}/></span></li> */}
                                         <br/>
                                     </ul>

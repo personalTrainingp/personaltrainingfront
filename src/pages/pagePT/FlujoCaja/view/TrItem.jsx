@@ -177,7 +177,7 @@ export const TrItemUtilidad = ({ label = '', anio=2024, arrayFechas = [], id_emp
 
 
 
-export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [], arrayDates=[new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2024-12-31 15:45:47.6640000 +00:00')], id_empresa = 0, classNameTotal='', className='' }) => {
+export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [], onOpenModalDataItems, arrayDates=[new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2024-12-31 15:45:47.6640000 +00:00')], id_empresa = 0, classNameTotal='', className='' }) => {
 	const { obtenerEgresosxFecha, dataGastosxFecha } = useFlujoCaja();
 	useEffect(() => {
 		obtenerEgresosxFecha(id_empresa, arrayFechas);
@@ -188,9 +188,10 @@ export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [], arra
 				const dataIngresos = dataGastosxFecha.flujoxGrupo?.filter(f=>f.id===97).flatMap((f) => f.itemsxDia)
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
-								?.reduce((total, item) => total + item.monto, 0)
+								
 				return {
-					sumaIngresos: dataIngresos
+					sumaIngresos: dataIngresos?.reduce((total, item) => total + item.monto, 0),
+					data: dataIngresos
 				}
 			})
 	return (
@@ -199,14 +200,16 @@ export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [], arra
 			{alter.map((e) => {
 				return (
 					<td className='text-center'>
-						{
-							anio!==2020 && (
-									<NumberFormatMoney
-										className={`${className}`}
-										amount={e.sumaIngresos}
-									/>
-							)
-						}
+						<div onClick={()=>onOpenModalDataItems(e.data)}>
+							{
+								anio!==2020 && (
+										<NumberFormatMoney
+											className={`${className}`}
+											amount={e.sumaIngresos}
+										/>
+								)
+							}
+						</div>
 					</td>
 				);
 			})}
