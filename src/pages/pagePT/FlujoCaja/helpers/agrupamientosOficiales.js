@@ -108,6 +108,7 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 							len: ItemsGastosAgrupados.length,
 							monto_proyectado: monto_proyectado <= 0 ? 0 : monto_proyectado,
 							monto_pro: monto_pro - monto <= 0 ? 0 : monto_pro - monto,
+							gast,
 							...g,
 						};
 					});

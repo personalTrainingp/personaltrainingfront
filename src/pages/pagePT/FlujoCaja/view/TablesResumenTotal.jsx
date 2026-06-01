@@ -25,7 +25,7 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
     }
   return (
     <div>
-        {/* <div>
+        <div>
             <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>
             <div className='tab-scroll-container'>
                 <Table className='tabla-egresos fs-3' style={{ width: '100%' }} bordered>
@@ -51,7 +51,7 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                     </tbody>
                 </Table>
             </div>
-        </div> */}
+        </div>
         <div>
             <div style={{fontSize: '70px'}} className='text-black text-center'>EGRESOS</div>
             <div className='tab-scroll-container'>
@@ -79,7 +79,7 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                 </Table>
             </div>
         </div>
-        {/* <div>
+        <div>
             <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS - EGRESOS = UTILIDAD / PERDIDA = CHANGE</div>
             <div className='tab-scroll-container'>
                 <Table className='tabla-egresos fs-3' style={{ width: '100%' }} bordered>
@@ -159,6 +159,7 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                 </Table>
             </div>
         </div>
+        {/* 
         */}
         <div>
             <div style={{fontSize: '70px'}} className='text-black text-center'>COMPRA ACTIVOS</div>

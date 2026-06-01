@@ -10,8 +10,57 @@ export const ReporteSeguimiento = () => {
     useEffect(() => {
         obtenerSeguimientoxFecha(["2026-05-29T12:00:00.000Z", "2030-03-16T12:00:00.000Z"])
     }, [])
+    
+    const dataImaginaria = [
+        {horario: '05:00', len: 12, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '06:00', len: 16, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '07:00', len: 16, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '08:00', len: 16, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '09:00', len: 7, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '10:00', len: 7, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '11:00', len: 7, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '13:00', len: 7, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '17:00', len: 8, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '18:00', len: 8, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '19:00', len: 16, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '20:00', len: 16, nombre_programa: 'CHANGE 45 - i'},
+        {horario: '21:00', len: 16, nombre_programa: 'CHANGE 45 - i'},
+        // 
+        {horario: '05:00', len: 10, nombre_programa: 'FS 45 - i'},
+        {horario: '06:00', len: 10, nombre_programa: 'FS 45 - i'},
+        {horario: '07:00', len: 10, nombre_programa: 'FS 45 - i'},
+        {horario: '08:00', len: 4, nombre_programa: 'FS 45 - i'},
+        {horario: '09:00', len: 4, nombre_programa: 'FS 45 - i'},
+        {horario: '10:00', len: 4, nombre_programa: 'FS 45 - i'},
+        {horario: '11:00', len: 4, nombre_programa: 'FS 45 - i'},
+        {horario: '17:00', len: 5, nombre_programa: 'FS 45 - i'},
+        {horario: '18:00', len: 5, nombre_programa: 'FS 45 - i'},
+        {horario: '19:00', len: 10, nombre_programa: 'FS 45 - i'},
+        {horario: '20:00', len: 10, nombre_programa: 'FS 45 - i'},
+        {horario: '21:00', len: 10, nombre_programa: 'FS 45 - i'},
+        // 
+        {horario: '05:00', len: 12, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '06:00', len: 12, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '07:00', len: 12, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '08:00', len: 4, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '09:00', len: 4, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '10:00', len: 4, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '11:00', len: 4, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '17:00', len: 5, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '18:00', len: 5, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '19:00', len: 10, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '20:00', len: 10, nombre_programa: 'FISIO MUSCLE - i'},
+        {horario: '21:00', len: 10, nombre_programa: 'FISIO MUSCLE - i'},
+    ]
+    const dataImgMAP = dataImaginaria.map(m=>{
+        return {
+            ...m,
+            aforoTotal: Number(m.len)+Number(m.len/3)
+        }
+    })
     const dataHorarios = [
-        ...agruparPorHora(dataSeguimientoxFecha)
+        ...agruparPorHora(dataSeguimientoxFecha),
+        ...dataImgMAP
     ]
   return (
     <>
@@ -126,13 +175,13 @@ export const TableHorario = ({nombre_pgm, dataSeguimientoxFecha, horaInicio='05:
                         <td className={`${className} fs-3`}></td>
                     </tr>
                     <tr>
-                        <td className={`${className} text-white fs-3`}>AFORO</td>
+                        <td className={`${className} text-white fs-3`}>AFORO REAL</td>
                         {
                             generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>(
-                                <td className='text-center fs-3'>{dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)}</td>
+                                <td className={`text-center text-white fs-2 ${dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===`${nombre_pgm}`).reduce((total, item)=>total+item.len,0)>dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===`${nombre_pgm} - i`).reduce((total, item)=>total+item.aforoTotal,0)?'bg-601':'bg-change'}`}>{dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===`${nombre_pgm}`).reduce((total, item)=>total+item.len,0)}</td>
                             ))
                         }
-                        <td className={`${className} text-white fs-3 text-center`}>
+                        <td className={`${className} bg-change text-white fs-2 text-center`}>
                             {
                                 generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
                                     const dataH = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
@@ -144,13 +193,13 @@ export const TableHorario = ({nombre_pgm, dataSeguimientoxFecha, horaInicio='05:
                         </td>
                     </tr>
                     <tr>
-                        <td className={`${className} text-white fs-3`}>AUSENTISMO</td>
+                        <td className={`${className} bg-change-pastel text-white fs-3`}>AUSENTISMO</td>
                         {
                             generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>(
-                                <td className='text-center fs-3'>{(dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)/3).toFixed(0)}</td>
+                                <td className='text-center bg-change-pastel fs-3'>{(dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)/3).toFixed(0)}</td>
                             ))
                         }
-                        <td className={`${className} text-white fs-3 text-center`}>
+                        <td className={`${className} bg-change-pastel text-black fs-3 text-center`}>
                             {
                                 generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
                                     const dataH = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)/3
@@ -162,17 +211,17 @@ export const TableHorario = ({nombre_pgm, dataSeguimientoxFecha, horaInicio='05:
                         </td>
                     </tr>
                     <tr>
-                        <td className={`${className} text-white fs-3`}>TOTAL AFORO</td>
+                        <td className={`${className} bg-change-pastel text-white fs-3`}>TOTAL AFORO</td>
                         {
                             generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
                                 const seguimiento = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
                                 return (
-                                    <td className='text-center fs-3'>{Number(seguimiento+Number((seguimiento/3).toFixed(0)))}</td>
+                                    <td className='text-center bg-change-pastel fs-3'>{Number(seguimiento+Number((seguimiento/3).toFixed(0)))}</td>
                                 )
                             })
                         }
                         
-                        <td className={`${className} text-white text-center fs-2`}>
+                        <td className={`${className}  bg-change-pastel text-black text-center fs-2`}>
                             {
                                 generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
                                     const seguimiento = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)

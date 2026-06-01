@@ -118,6 +118,9 @@ export const ReporteSeguimiento = () => {
             <h1 style={{fontSize: '70px', marginTop: '100px'}} className='text-center'>FISIO MUSCLE</h1>
             <TableHorario dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FISIO MUSCLE'} horaInicio='05:00' horaFin='21:00'/>
             <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={'FISIO MUSCLE'} horaInicio='05:30' horaFin='20:30'/>
+                <h1 style={{fontSize: '70px', marginTop: '100px'}} className='text-center'>CHANGE 45 + FS + FISIO MUSCLE</h1>
+                <TableHorario dataSeguimientoxFecha={dataHorarios} nombre_pgm={''} horaInicio='05:00' horaFin='21:00'/>
+                <TableVentas semanas={semanasConPgm} dataSeguimientoxFecha={dataHorarios} nombre_pgm={''} horaInicio='05:30' horaFin='20:30'/>
         </div>
     </>
   )
@@ -212,13 +215,13 @@ export const TableHorario = ({nombre_pgm, dataSeguimientoxFecha, horaInicio='05:
                         <td className={`${className} text-white fs-3`}>AFORO</td>
                         {
                             generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>(
-                                <td className='text-center fs-3'>{dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)}</td>
+                                <td className='text-center fs-3'>{nombre_pgm===''?dataSeguimientoxFecha.filter(f=>f.horario===m.horario).reduce((total, item)=>total+item.len,0):dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)}</td>
                             ))
                         }
                         <td className={`${className} text-white fs-3 text-center`}>
                             {
                                 generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
-                                    const dataH = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
+                                    const dataH = nombre_pgm===''?dataSeguimientoxFecha.filter(f=>f.horario===m.horario).reduce((total, item)=>total+item.len,0):dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
                                     return {
                                         len1: Number(dataH)
                                     }
@@ -230,13 +233,13 @@ export const TableHorario = ({nombre_pgm, dataSeguimientoxFecha, horaInicio='05:
                         <td className={`${className} text-white fs-3`}>AUSENTISMO</td>
                         {
                             generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>(
-                                <td className='text-center fs-3'>{(dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)/3).toFixed(0)}</td>
+                                <td className='text-center fs-3'>{nombre_pgm===''?(dataSeguimientoxFecha.filter(f=>f.horario===m.horario).reduce((total, item)=>total+item.len,0)/3).toFixed(0):(dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)/3).toFixed(0)}</td>
                             ))
                         }
                         <td className={`${className} text-white fs-3 text-center`}>
                             {
                                 generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
-                                    const dataH = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)/3
+                                    const dataH = nombre_pgm===''?dataSeguimientoxFecha.filter(f=>f.horario===m.horario).reduce((total, item)=>total+item.len,0)/3: dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)/3
                                     return {
                                         len1: Number(dataH)
                                     }
@@ -245,10 +248,10 @@ export const TableHorario = ({nombre_pgm, dataSeguimientoxFecha, horaInicio='05:
                         </td>
                     </tr>
                     <tr>
-                        <td className={`${className} text-white fs-3`}>TOTAL AFORO</td>
+                        <td className={`${className} text-white fs-3`}>TOTAL OPTIMO</td>
                         {
                             generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
-                                const seguimiento = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
+                                const seguimiento = nombre_pgm===''?dataSeguimientoxFecha.filter(f=>f.horario===m.horario).reduce((total, item)=>total+item.len,0):dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
                                 return (
                                     <td className='text-center fs-3'>{Number(seguimiento+Number((seguimiento/3).toFixed(0)))}</td>
                                 )
@@ -258,7 +261,7 @@ export const TableHorario = ({nombre_pgm, dataSeguimientoxFecha, horaInicio='05:
                         <td className={`${className} text-white text-center fs-2`}>
                             {
                                 generarHoras(horaInicio, horaFin, 60).filter(f=>f.hora!=='12'&&f.hora!=='14'&& f.hora!=='15' && f.hora!=='16').map(m=>{
-                                    const seguimiento = dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
+                                    const seguimiento =nombre_pgm===''?dataSeguimientoxFecha.filter(f=>f.horario===m.horario).reduce((total, item)=>total+item.len,0): dataSeguimientoxFecha.filter(f=>f.horario===m.horario && f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len,0)
                                     return {
                                         len1: Number(seguimiento+Number((seguimiento/3)))
                                     }
@@ -274,8 +277,8 @@ export const TableHorario = ({nombre_pgm, dataSeguimientoxFecha, horaInicio='05:
 }
 
 export const TableVentas = ({nombre_pgm='', semanas=[], dataSeguimientoxFecha, horaInicio='05:00', horaFin='21:00', className='bg-change'}) => {
-    const data = semanas.filter(f=>f.pgm===nombre_pgm)
-    const seg = Number(dataSeguimientoxFecha.filter(f=>f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len, 0))
+    const data =nombre_pgm===''?semanas: semanas.filter(f=>f.pgm===nombre_pgm)
+    const seg = Number(nombre_pgm===''?dataSeguimientoxFecha.reduce((total, item)=>total+item.len, 0):dataSeguimientoxFecha.filter(f=>f.nombre_programa===nombre_pgm).reduce((total, item)=>total+item.len, 0))
     const ventasProy = Number((seg+Number(seg/3)))
     const dataT = data.map(m=>{
         return {
@@ -296,7 +299,7 @@ export const TableVentas = ({nombre_pgm='', semanas=[], dataSeguimientoxFecha, h
                 <Table className='tabla-egresos m-1' >
                         <tbody>
                             <tr>
-                                <th className={`text-white fs-3 text-center ${className}`}>VENTA MAXIMA SEGUN AFORO</th>
+                                <th className={`text-white fs-3 text-center ${className}`}>VENTA OPTIMA</th>
                                 <td className={`text-white fs-3 text-center ${className}`}><span className='fs-2'>{Number((seg+Number(seg/3))).toFixed(0)}</span></td>
                             </tr>
                         </tbody>

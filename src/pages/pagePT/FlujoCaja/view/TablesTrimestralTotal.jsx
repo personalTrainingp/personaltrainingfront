@@ -1,10 +1,23 @@
 import React from 'react'
 import { ComparativaVentasxAnioxPrograma } from './ComparativaVentasxAnioxPrograma'
 import { ComparativaVentasxAnio } from './ComparativaVentasxAnio'
+import { TabPanel, TabView } from 'primereact/tabview'
+import { ComparativaEgresosxAnio } from './ComparativaEgresosxAnio'
+import { ComparativaUtilidadesxAnio } from './ComparativaUtilidadesxAnio'
 export const TablesTrimestralTotal = ({id_empresa}) => {
   return (
     <div>
-        <ComparativaVentasxAnio id_empresa={id_empresa}/>
+        <TabView>
+            <TabPanel header='INGRESOS'>
+                <ComparativaVentasxAnio id_empresa={id_empresa}/>
+            </TabPanel>
+            <TabPanel header='EGRESOS'>
+                <ComparativaEgresosxAnio id_empresa={id_empresa}/>
+            </TabPanel>
+            <TabPanel header='INGRESOS - EGRESOS = UTILIDAD / PERDIDA = CHANGE'>
+                <ComparativaUtilidadesxAnio id_empresa={id_empresa}/>
+            </TabPanel>
+        </TabView>
         {/* <div className='text-center text-black' style={{fontSize: '70px'}}>
             CHANGE 45
         </div>

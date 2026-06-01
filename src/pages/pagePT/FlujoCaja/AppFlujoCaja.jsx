@@ -14,7 +14,7 @@ export const AppFlujoCaja = () => {
       <ColorEmpresa
         childrenChange={
           <TabView>
-            {/* <TabPanel header={<div className='fs-1'>2026</div>}>
+            <TabPanel header={<div className='fs-1'>2026</div>}>
             <div className='' style={{overflowY: 'scroll', height: '800px'}}>
               <ViewTablesFlujoCaja link={'link-change'} textEmpresa={'text-change'} arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </div>
@@ -33,7 +33,7 @@ export const AppFlujoCaja = () => {
             <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
               <TablesTrimestralTotal link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </div>
-            </TabPanel> */}
+            </TabPanel>
             <TabPanel header={<div className='fs-1'>COMPARATIVO ANUAL</div>}>
             <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
               <TablesResumenTotal link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
