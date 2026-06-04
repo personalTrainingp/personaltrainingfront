@@ -3,15 +3,15 @@ import { ViewResumenTotal } from '../ViewResumenTotal'
 import { generarMesYanio } from '../helpers/generarMesYanio'
 import { Table } from 'react-bootstrap'
 import { TdItem } from './TdItem'
-import { TrItemVentas, TrItemEgresos, TrItemUtilidad, TrItemInventario, TrItemExtraordionario, TrItemUtilidadesSuma } from './TrItem'
+import { TrItemVentas, TrItemEgresos, TrItemUtilidad, TrItemInventario, TrItemExtraordionario, TrItemUtilidadesSuma } from './TrItemTrimestre'
 import dayjs from 'dayjs'
 import { useFlujoCaja } from '../hook/useFlujoCajaStore'
 import { ModalTableItems } from './ModalTableItems'
-export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => {
-    const anio2026 = ['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']
-    const anio2025 = ['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']
-    const anio2024 = ['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']
-    const anioTotal = ['2024-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']
+export const Trimestre2Total = ({classNameEmpresa, bgPastel, id_empresa}) => {
+    const anio2025 = ['2025-04-01 15:45:47.6640000 +00:00', '2025-06-30 15:45:47.6640000 +00:00']
+    const anio2026 = ['2026-04-01 15:45:47.6640000 +00:00', '2026-06-30 15:45:47.6640000 +00:00']
+    const anio2024 = ['2024-04-01 15:45:47.6640000 +00:00', '2024-06-30 15:45:47.6640000 +00:00']
+    const anioTotal = ['2024-04-01 15:45:47.6640000 +00:00', '2026-06-30 15:45:47.6640000 +00:00']
     const [dataItems, setdataItems] = useState({data: [], isOpen: false})
     const { obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();
     useEffect(() => {
@@ -80,7 +80,7 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
             </div>
         </div>
         <div>
-            <div style={{fontSize: '70px'}} className='text-black text-center'>RESULTADO CHANGE</div>
+            <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS - EGRESOS = UTILIDAD / PERDIDA = CHANGE</div>
             <div className='tab-scroll-container'>
                 <Table className='tabla-egresos fs-3' style={{ width: '100%' }} bordered>
                     <thead>

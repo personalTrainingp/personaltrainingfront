@@ -27,6 +27,7 @@ export function aplicarTipoDeCambio(dataTC, data) {
 	});
 }
 const fecha = new Date();
+const anioActual = fecha.getFullYear();
 const dateActual = fecha.getDate();
 const mesActual = fecha.getMonth();
 export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio = 2026) => {
@@ -65,21 +66,26 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 								?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
 						const monto_pro = f.sin_limite
 							? f.isPromediado
-								? sumaGastos_Total_menos_mesActual / Number(g.mes - 1)
+								? sumaGastos_Total_menos_mesActual /
+										(Number(g.mes) === new Date(f.fecha_inicio).getMonth() + 1
+											? sumaGastos_Total_menos_mesActual
+											: Number(g.mes) -
+												(new Date(f.fecha_inicio).getMonth() + 1)) || 0
 								: f.monto_proyectado
 							: new Date(f.fecha_inicio).getUTCMonth() + 1 <= Number(g.mes)
 								? f.monto_proyectado
 								: 0;
+
 						const monto = ItemsGastosAgrupados.reduce(
 							(total, item) => item.monto + total,
 							0
 						);
 						const monto_proyectado =
-							mesActual > Number(g.mes - 1)
-								? dateActual > 7
-									? 0
-									: monto_pro - monto
-								: monto_pro - monto;
+							dateActual > 7
+								? 0
+								: mesActual + 1 === Number(g.mes) || mesActual === Number(g.mes)
+									? monto_pro - monto
+									: 0;
 
 						const es_promedio =
 							new Date(f.fecha_inicio).getUTCMonth() + 1 <= Number(g.mes)
@@ -106,7 +112,8 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 								0
 							),
 							len: ItemsGastosAgrupados.length,
-							monto_proyectado: monto_proyectado <= 0 ? 0 : monto_proyectado,
+							monto_proyectado:
+								monto_proyectado <= 0 ? 0 : Number(monto_proyectado || 0) || 0,
 							monto_pro: monto_pro - monto <= 0 ? 0 : monto_pro - monto,
 							gast,
 							...g,

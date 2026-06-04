@@ -6,6 +6,10 @@ import { ColorEmpresa } from '@/components/ColorEmpresa'
 import { PageBreadcrumb } from '@/components'
 import { generarMesYanio } from './helpers/generarMesYanio'
 import { TablesTrimestralTotal } from './view/TablesTrimestralTotal'
+import { Trimestre1Total } from './view/Trimestre1Total'
+import { Trimestre2Total } from './view/Trimestre2Total'
+import { Trimestre3Total } from './view/Trimestre3Total'
+import { Trimestre4Total } from './view/Trimestre4Total'
 
 export const AppFlujoCaja = () => {
   return (
@@ -29,9 +33,29 @@ export const AppFlujoCaja = () => {
               <ViewTablesFlujoCaja link={'link-change'} textEmpresa={'text-change'} arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2024} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </div>
             </TabPanel>
-            <TabPanel header={<div className='fs-1'>COMPARATIVO TRIMESTRAL</div>}>
+            {/* <TabPanel header={<div className='fs-1'>1ER TRIMESTRE</div>}>
             <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
               <TablesTrimestralTotal link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
+            </div>
+            </TabPanel> */}
+            <TabPanel header={<div className='fs-1'>1ER TRIMESTRE</div>}>
+            <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
+              <Trimestre1Total header={'1ER TRIMESTRE'} mesDiaDesde='01-01' mesDiaDespues='03-31' link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
+            </div>
+            </TabPanel>
+            <TabPanel header={<div className='fs-1'>2DO TRIMESTRE</div>}>
+            <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
+              <Trimestre1Total header={'2DO TRIMESTRE'} mesDiaDesde='04-01' mesDiaDespues='06-30' link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
+            </div>
+            </TabPanel>
+            <TabPanel header={<div className='fs-1'>3ER TRIMESTRE</div>}>
+            <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
+              <Trimestre1Total header={'3ER TRIMESTRE'} mesDiaDesde='07-01' mesDiaDespues='09-30' link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
+            </div>
+            </TabPanel>
+            <TabPanel header={<div className='fs-1'>4TO TRIMESTRE</div>}>
+            <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
+              <Trimestre1Total header={'4TO TRIMESTRE'} mesDiaDesde='10-01' mesDiaDespues='12-31' link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </div>
             </TabPanel>
             <TabPanel header={<div className='fs-1'>COMPARATIVO ANUAL</div>}>

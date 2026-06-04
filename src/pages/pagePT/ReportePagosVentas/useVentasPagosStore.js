@@ -43,7 +43,7 @@ export const useVentasPagosStore = () => {
 						),
 						identificador,
 						porcentaje:
-							(pago.monto_porcentaje === 0
+							(Number(pago.monto_porcentaje) === 0
 								? alterPago.find(
 										(f) =>
 											`${f.id_operador}|${f.id_forma_pago}|${f.id_tarjeta}|${f.id_tipo_tarjeta}|${f.id_banco}|${f.n_cuotas}` ===

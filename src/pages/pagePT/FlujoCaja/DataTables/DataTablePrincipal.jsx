@@ -3,14 +3,20 @@ import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems}) => {
+export const  DataTablePrincipal = ({anio, id_empresa, sumaTotal, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems, data=[]}) => {
   const fecha = new Date()
   const anioActual = fecha.getFullYear()
   const mesActual = fecha.getMonth()+1
   const sumaMontototal = conceptos.reduce((total, item)=>item?.monto+total, 0)
   const sumaLentotal = conceptos.reduce((total, item)=>item?.len+total, 0)
   const funSumaTotal = (mes)=>{
-    return itemsxDias.find(f=>f.mes===mes)
+    return conceptos.flatMap(f=>f.itemsxDia).filter(f=>f.mes===mes).reduce((total, item)=>total+item.monto, 0)
+  }
+  const funSumaTotalProyectado = (mes)=>{
+    return conceptos.flatMap(f=>f.itemsxDia).filter(f=>f.mes===mes).reduce((total, item)=>total+item.monto_proyectado, 0)
+  }
+  const funSumatoriaFinal = (mes=1)=>{
+    return data.flatMap(f=>f.itemsxDia).filter(f=>f.mes===mes).reduce((total, item)=>total+item.monto, 0)
   }
   return (
     <>
@@ -52,36 +58,36 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
                                 (m.monto_pagados!==0 || m.monto_no_pagados===0) &&
                                 (
                                   <>
-                                  <span className={m.monto_pagados===0 && 'text-gray'} onClick={()=>onOpenModalTableItems(m.items_pagados)}>
+                                  <span onClick={()=>onOpenModalTableItems(m.items_pagados)}>
                                     <NumberFormatMoney
                                       amount=
                                       {m.monto_pagados}
                                     /> 
                                   </span>
+                                  <br/>
                                   </>
                                 )
                               }
+                              {
 
+                              }
                               {
                                 m.monto_no_pagados>0 && (
                                   <>
-                                  <br/>
-                                <span className='text-change' onClick={()=>onOpenModalTableItems(m.itemsNoPagados)}>
-                                  <NumberFormatMoney
-                                    amount=
-                                    {m.monto_no_pagados}
-                                  /> 
-                                </span>
+                                  <span className='text-change' onClick={()=>onOpenModalTableItems(m.itemsNoPagados)}>
+                                    <NumberFormatMoney
+                                      amount=
+                                      {m.monto_no_pagados}
+                                    /> 
+                                  </span>
                                 </>
                                 )
                               }
                               { 
-                              (m.monto_proyectado===0 ) || nombreGrupo!=='INGRESOS'&&  anio===anioActual &&
-                              (m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()+1}` || m.fecha===`${new Date().getFullYear()}-${new Date().getMonth()}`) 
+                              ((m.monto_proyectado)!=0) && nombreGrupo!=='INGRESOS'
                               &&
                                (
                                 <>
-                                <br/>
                                     <span className='text-orange'>
                                       <NumberFormatMoney
                                         amount=
@@ -120,7 +126,15 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
                 return (
                   <React.Fragment key={i}>
                   <td className={`text-center ${bgTotal}`} style={{width: '120px'}}>
-                    <NumberFormatMoney amount={funSumaTotal(f.mes)?.monto}/>
+                    <NumberFormatMoney amount={funSumaTotal(f.mes)}/>
+                    <br/>
+                    {
+                      funSumaTotalProyectado(f.mes)!==0 && (
+                        <div className='text-orange bg-white'>
+                          <NumberFormatMoney amount={funSumaTotalProyectado(f.mes)}/>
+                        </div>
+                      )
+                    }
                   </td>
                   <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>
                     {funSumaTotal(f.mes)?.len}
@@ -138,10 +152,9 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
                 return (
                   <React.Fragment key={i}>
                   <td className={`text-center ${bgTotal}`} style={{width: '120px'}}>
-                    <NumberFormatMoney amount={(funSumaTotal(f.mes)?.monto/conceptos.reduce((total, item)=>item?.monto+total, 0))*100}/>
+                    <NumberFormatMoney amount={(funSumaTotal(f.mes)/funSumatoriaFinal(f.mes))*100}/>
                   </td>
                   <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>
-                    {funSumaTotal(f.mes)?.len}
                   </td>
                   </React.Fragment>
                 )
@@ -161,6 +174,7 @@ export const  DataTablePrincipal = ({anio, id_empresa, itemsxDias=[], conceptos=
           </tr>
         </tbody>
       </Table>
+
     </>
   )
 }

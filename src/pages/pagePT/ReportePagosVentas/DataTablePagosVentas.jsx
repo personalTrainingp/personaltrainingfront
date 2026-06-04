@@ -23,7 +23,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
       id: 15, header: 'ID VENTA', accessor: 'id', render: (row)=>{
       return (
         <>
-        {row.id}
+        {row.identificador}
         </>
       )
     }
@@ -60,8 +60,6 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
           amount=
           {row.pago?.parcial_monto}
         />
-        <br/>
-          {row.pago?.parcial_monto}
         </>
       )
     }},
@@ -98,10 +96,8 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     }},
     {id: 4, header: 'BANCO', accessor: 'label_banco', render:(row)=>{
       const id_banco = row.pago?.parametro_banco?.id_param
-      // 259 
       return (
         <>
-          {/* {row.pago.id_banco} |  */}
           {row.pago?.parametro_banco?.label_param}  
           <br/>
           <span className='text-change'>

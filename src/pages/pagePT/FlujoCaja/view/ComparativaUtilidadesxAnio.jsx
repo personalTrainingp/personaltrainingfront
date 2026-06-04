@@ -7,8 +7,6 @@ const fechaActual = new Date()
 const mesActual = fechaActual.getMonth()+1
 export const ComparativaUtilidadesxAnio = ({id_empresa}) => {
   const { obtenerIngresosxFecha, dataIngresosxFecha, obtenerEgresosxFecha, dataGastosxFecha } = useFlujoCaja();
-  console.log({dataIngresosxFecha});
-  
   const dataGastos = dataGastosxFecha.flujoxGrupo.filter(f=>f.id!==97 && f.id!==153 && f.id!==103 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150 ).flatMap(e=>e.itemsxDia).flatMap(e=>e.items)
   const dataVentas = dataIngresosxFecha.flujoxGrupo.find(f=>f.id===112)?.gastos
   useEffect(() => {

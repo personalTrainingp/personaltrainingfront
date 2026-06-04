@@ -44,7 +44,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 .sort((a, b)=>a.orden-b.orden)
                 ?.filter(f=>f.gastos?.length!==0)
                 .filter((f)=>f.id!==121 && f.id!==46)
-                ?.map((data, i)=>{
+                ?.map((data, i, arr)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
@@ -56,7 +56,8 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                             itemsxDias={data?.itemsxDia}  
                             nombreGrupo={data.param_label} 
                             conceptos={data.parametro_grupo_gasto} 
-                            data={dataGastosxFecha} 
+                            sumaTotal={data.itemsxDia.reduce((total, item)=>total+item.monto, 0)}
+                            data={arr} 
                             anio={anio}
                             fechas={generarMesYanio( new Date(arrayFecha[0]), new Date(arrayFecha[1]) )}/>
                     )
@@ -69,8 +70,8 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 dataGastosxFecha.flujoxGrupo
                 .sort((a, b)=>a.orden-b.orden)
                 .filter(f=>f.gastos?.length!==0)
-                .filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.id!==97 && f.id!==110&& f.id!==153&& f.id!==103)
-                ?.map((data,i)=>{
+                .filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.id!==97 && f.id!==110&& f.id!==153&& f.id!==103 && f.id!==150 && f.id!==157)
+                ?.map((data,i, arr)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
@@ -82,7 +83,8 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                             itemsxDias={data?.itemsxDia}
                             nombreGrupo={`${data.param_label}`}
                             conceptos={data.parametro_grupo_gasto}
-                            data={dataGastosxFecha}
+                            sumaTotal={data.itemsxDia.reduce((total, item)=>total+item.monto, 0)}
+                            data={arr}
                             anio={anio}
                             fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
                             />
@@ -106,7 +108,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 .sort((a, b)=>a.orden-b.orden)
                 .filter(f=>f.gastos?.length!==0)
                 .filter((f)=>f.id==97 || f.id==110 || f.id==103)
-                ?.map((data,i)=>{
+                ?.map((data,i, arr)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
@@ -116,9 +118,9 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                             bgPastel={bgPastel}
                             bgTotal={classNameEmpresa}
                             itemsxDias={data?.itemsxDia}
+                            data={arr}
                             nombreGrupo={`${data.param_label}`}
                             conceptos={data.parametro_grupo_gasto}
-                            data={dataGastosxFecha}
                             anio={anio}
                             fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
                             />

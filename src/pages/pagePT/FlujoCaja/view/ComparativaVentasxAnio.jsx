@@ -4,6 +4,7 @@ import { generarMesYanio } from '../helpers/generarMesYanio';
 import { Table } from 'react-bootstrap';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 const fechaActual = new Date()
+const anioActual = fechaActual.getFullYear()
 const mesActual = fechaActual.getMonth()+1
 export const ComparativaVentasxAnio = ({id_empresa}) => {
   const { obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();
@@ -100,14 +101,13 @@ export const TrAnio = ({anio, dataVentasAgrupadoxFecha, meses}) => {
                 const sumaDataMesxFechaxAnioAnterior = dataMesxFechaxAnioAnterior.reduce((total, item)=>item.montoTotal+total, 0)||0
                 return (
                   <>
-                  <td className={`${m.mes>=mesActual?'bg-change-pastel text-white':''}`}>
-
+                  <td className={`${(m.mes>=mesActual && anio===anioActual)?'bg-change-pastel text-white':''}`}>
                     <NumberFormatMoney
                       amount=
                       {dataMesxFecha.reduce((total, item)=>item.montoTotal+total, 0)}
                     />
                   </td>
-                  <td className={`${m.mes>=mesActual?'bg-change-pastel text-white':''}`}>
+                  <td className={`${(m.mes>=mesActual && anio===anioActual)?'bg-change-pastel text-white':''}`}>
                     <NumberFormatMoney
                       amount=
                       {(((((sumaDataMesxFecha*100)/sumaDataMesxFechaxAnioAnterior)))-100)>0?(((((sumaDataMesxFecha*100)/sumaDataMesxFechaxAnioAnterior)))-100):0}

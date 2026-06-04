@@ -4,6 +4,7 @@ import { ComparativaVentasxAnio } from './ComparativaVentasxAnio'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { ComparativaEgresosxAnio } from './ComparativaEgresosxAnio'
 import { ComparativaUtilidadesxAnio } from './ComparativaUtilidadesxAnio'
+import { ComparativaUtilidadesBolsaxAnio } from './ComparativaUtilidadesBolsaxAnio'
 export const TablesTrimestralTotal = ({id_empresa}) => {
   return (
     <div>
@@ -17,19 +18,10 @@ export const TablesTrimestralTotal = ({id_empresa}) => {
             <TabPanel header='INGRESOS - EGRESOS = UTILIDAD / PERDIDA = CHANGE'>
                 <ComparativaUtilidadesxAnio id_empresa={id_empresa}/>
             </TabPanel>
+            <TabPanel header='CHANGE + BOLSA'>
+                <ComparativaUtilidadesBolsaxAnio id_empresa={id_empresa}/>
+            </TabPanel>
         </TabView>
-        {/* <div className='text-center text-black' style={{fontSize: '70px'}}>
-            CHANGE 45
-        </div>
-        <ComparativaVentasxAnioxPrograma id_empresa={id_empresa} id_programa={2}/>
-        <div className='text-center text-black' style={{fontSize: '70px'}}>
-            FS 45
-        </div>
-        <ComparativaVentasxAnioxPrograma id_empresa={id_empresa} id_programa={3}/>
-        <div className='text-center text-black' style={{fontSize: '70px'}}>
-            FISIO MUSCLE
-        </div>
-        <ComparativaVentasxAnioxPrograma id_empresa={id_empresa} id_programa={4}/> */}
     </div>
   )
 }

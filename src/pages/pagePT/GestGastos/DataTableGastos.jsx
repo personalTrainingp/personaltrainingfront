@@ -49,6 +49,10 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
         {id: 6, header: <>MONTO</>, sortable, accesor: 'monto', width: '500px', render: (row)=>{
             return (
                 <div className='d-flex justify-content-center flex-column text-center ' style={{width: '140px'}}>
+                <div style={{width: '120px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} d-flex align-items-center justify-content-center`}>
+                    {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar />}
+                    <NumberFormatMoney amount={row.monto}/>
+                </div>
                 {
                     row.impuesto_igv && (
                         <>
@@ -56,7 +60,7 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                         <span className='mx-1'>
                             IGV.
                         </span>
-                                        {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar fontSizeS={'font-15'}/>}
+                                        {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar/>}
                                         <NumberFormatMoney amount=
                         {row.monto - row.monto/1.18}
                                         />
@@ -64,10 +68,6 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                         </>
                     )
                 }
-                <div style={{width: '120px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} d-flex align-items-center justify-content-center`}>
-                                        {row.moneda === 'PEN' ? <SymbolSoles fontSizeS={'font-15'}/> : <SymbolDolar fontSizeS={'font-15'}/>}
-                                        <NumberFormatMoney amount={row.monto}/>
-                                </div>
                 </div>
             )
         }},

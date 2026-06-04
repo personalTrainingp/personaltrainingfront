@@ -105,7 +105,7 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                     }
                 </tr>
                 <tr>
-                  <td className={`fs-2 bg-change text-center text-white sticky-td-${id_empresa}`}>IGV COMPRAS</td>
+                  <td className={`fs-2 bg-change text-center text-white sticky-td-${id_empresa}`}>IGV ACTIVOS</td>
                     {
                       dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(
