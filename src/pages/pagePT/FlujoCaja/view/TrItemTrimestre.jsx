@@ -81,9 +81,15 @@ export const TrItemVentas = ({ label = '', anio=2024,
 };
 
 
-export const TrItemEgresos = ({ label = '', anio=2024, arrayFechas = [], onOpenModalDataItems,mesDiaDesde,
+export const TrItemEgresos = ({ label = '', anio=2024, arrayFechas = [], arrayFechaAnterior=[], onOpenModalDataItems,mesDiaDesde,
 	mesDiaDespues, id_empresa = 0, classNameTotal='', className='' }) => {
 	const { obtenerEgresosxFecha, dataGastosxFecha } = useFlujoCaja();
+	const { obtenerIngresosxFecha:obtenerIngresosxFechaAnterior, obtenerEgresosxFecha:obtenerEgresosxFechaAnterior, dataGastosxFecha:dataEgresosxFechaAnterior, dataIngresosxFecha:dataIngresosxFechaAnterior } = useFlujoCaja();
+
+	useEffect(() => {
+		obtenerEgresosxFechaAnterior(id_empresa, arrayFechaAnterior)
+	}, [id_empresa, arrayFechaAnterior])
+	
 	useEffect(() => {
 		obtenerEgresosxFecha(id_empresa, arrayFechas);
 	}, []);
@@ -93,10 +99,15 @@ export const TrItemEgresos = ({ label = '', anio=2024, arrayFechas = [], onOpenM
 				const dataIngresos = dataGastosxFecha.flujoxGrupo?.filter(f=>f.id!==97 && f.id!==153 && f.id!==103 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150).flatMap((f) => f.itemsxDia)
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
+				const dataIngresosAnterior = dataEgresosxFechaAnterior.flujoxGrupo?.filter(f=>f.id!==97 && f.id!==153 && f.id!==103 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								?.reduce((total, item) => total + item.monto, 0)
 								
 				return {
 					sumaIngresos: dataIngresos?.reduce((total, item) => total + item.monto, 0),
-					data: dataIngresos
+					data: dataIngresos,
+					dataIngresosAnterior
 				}
 			})
 	return (
@@ -104,6 +115,7 @@ export const TrItemEgresos = ({ label = '', anio=2024, arrayFechas = [], onOpenM
 			<td className={`border-left-10 border-right-10 sticky-td-${id_empresa} text-center text-white fs-1`}>{label}</td>
 			{alter.map((e) => {
 				return (
+					<>
 					<td className='text-center'>
 						<div onClick={()=>onOpenModalDataItems(e.data)}>
 							{
@@ -116,6 +128,17 @@ export const TrItemEgresos = ({ label = '', anio=2024, arrayFechas = [], onOpenM
 							}
 						</div>
 					</td>
+					<td>
+						{
+							anio!==2020 && (
+									<NumberFormatMoney
+										className={`${className} text-change`}
+										amount={((e.sumaIngresos*100)/e.dataIngresosAnterior)-100>0?((e.sumaIngresos*100)/e.dataIngresosAnterior)-100:0}
+									/>
+							)
+						}
+					</td>
+					</>
 				);
 			})}
 			<td className={classNameTotal}>
@@ -136,9 +159,16 @@ export const TrItemEgresos = ({ label = '', anio=2024, arrayFechas = [], onOpenM
 	);
 };
 
-export const TrItemUtilidad = ({ label = '', anio=2024, arrayFechas = [],mesDiaDesde,
+export const TrItemUtilidad = ({ label = '', anio=2024, arrayFechas = [], arrayFechaAnterior=[], mesDiaDesde,
 	mesDiaDespues, id_empresa = 0, classNameTotal='', className='' }) => {
 	const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();
+	const { obtenerIngresosxFecha:obtenerIngresosxFechaAnterior, obtenerEgresosxFecha:obtenerEgresosxFechaAnterior, dataGastosxFecha:dataEgresosxFechaAnterior, dataIngresosxFecha:dataIngresosxFechaAnterior } = useFlujoCaja();
+
+	useEffect(() => {
+		obtenerIngresosxFechaAnterior(id_empresa, arrayFechaAnterior)
+		obtenerEgresosxFechaAnterior(id_empresa, arrayFechaAnterior)
+	}, [id_empresa, arrayFechaAnterior])
+	
 	useEffect(() => {
 		obtenerEgresosxFecha(id_empresa, arrayFechas);
 		obtenerIngresosxFecha(id_empresa, arrayFechas);
@@ -164,19 +194,41 @@ export const TrItemUtilidad = ({ label = '', anio=2024, arrayFechas = [],mesDiaD
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
 								?.reduce((total, item) => total + item.monto, 0)
+				const ingresosxMesAnioAnterior = dataIngresosxFechaAnterior.flujoxGrupo?.filter(f=>f.id!==121).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								?.reduce((total, item) => total + item.monto, 0)
+				const egresosxMesAnioAnterior = dataEgresosxFechaAnterior.flujoxGrupo?.filter(f=>f.id!==97 && f.id!==153 && f.id!==103 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								?.reduce((total, item) => total + item.monto, 0)
 				return (
-					<td className={`text-center`}>
-						<div className={`${((ingresosxMes-egresosxMes)>0)?'text-black':((ingresosxMes-egresosxMes)==0)?'text-black':'text-change'}`}>
-							{
-								anio!==2020 && (
-									<NumberFormatMoney
-									className={`${className}`}
-										amount={ingresosxMes-egresosxMes}
-									/>
-								)
-							}
-						</div>
-					</td>
+					<>
+						<td className={`text-center`}>
+							<div className={`${((ingresosxMes-egresosxMes)>0)?'text-black':((ingresosxMes-egresosxMes)==0)?'text-black':'text-change'}`}>
+								{
+									anio!==2020 && (
+										<NumberFormatMoney
+										className={`${className}`}
+											amount={ingresosxMes-egresosxMes}
+										/>
+									)
+								}
+							</div>
+						</td>
+						<td className={`text-center`}>
+							<div className={`${((ingresosxMesAnioAnterior-egresosxMesAnioAnterior)>0)?'text-black':((ingresosxMesAnioAnterior-egresosxMesAnioAnterior)==0)?'text-black':'text-change'}`}>
+								{
+									anio!==2020 && (
+										<NumberFormatMoney
+										className={`${className}`}
+											amount={(((ingresosxMes-egresosxMes)*100/(ingresosxMesAnioAnterior-egresosxMesAnioAnterior))-100)>0?(((ingresosxMes-egresosxMes)*100/(ingresosxMesAnioAnterior-egresosxMesAnioAnterior))-100):0}
+										/>
+									)
+								}
+							</div>
+						</td>
+					</>
 				);
 			})}
 			<td className={classNameTotal}>
@@ -201,24 +253,33 @@ export const TrItemUtilidad = ({ label = '', anio=2024, arrayFechas = [],mesDiaD
 	);
 };
 
-
-
-export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [],mesDiaDesde,
+export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [], arrayFechaAnterior=[], mesDiaDesde,
 	mesDiaDespues, onOpenModalDataItems, id_empresa = 0, classNameTotal='', className='' }) => {
 	const { obtenerEgresosxFecha, dataGastosxFecha } = useFlujoCaja();
+	const { obtenerEgresosxFecha:obtenerIngresosxFechaAnterior, dataGastosxFecha:dataIngresosxFechaAnterior } = useFlujoCaja();
+
+	useEffect(() => {
+		obtenerIngresosxFechaAnterior(id_empresa, arrayFechaAnterior)
+	}, [id_empresa, arrayFechaAnterior])
+	
 	useEffect(() => {
 		obtenerEgresosxFecha(id_empresa, arrayFechas);
 	}, []);
 	const alter = generarMesYanio(
 				new Date(`2024-${mesDiaDesde} 15:45:47.6640000 +00:00`), new Date(`2024-${mesDiaDespues} 15:45:47.6640000 +00:00`)
 			).map(e=>{
-				const dataIngresos = dataGastosxFecha.flujoxGrupo?.filter(f=>f.id===97).flatMap((f) => f.itemsxDia)
+				const dataEgresos = dataGastosxFecha.flujoxGrupo?.filter(f=>f.id===97).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								
+				const dataEgresosAnterior = dataIngresosxFechaAnterior.flujoxGrupo?.filter(f=>f.id===97).flatMap((f) => f.itemsxDia)
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
 								
 				return {
-					sumaIngresos: dataIngresos?.reduce((total, item) => total + item.monto, 0),
-					data: dataIngresos
+					sumaIngresos: dataEgresos?.reduce((total, item) => total + item.monto, 0),
+					data: dataEgresos,
+					sumaEgresosAnterior: dataEgresosAnterior?.reduce((total, item) => total + item.monto, 0)
 				}
 			})
 	return (
@@ -226,6 +287,7 @@ export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [],mesDi
 			<td className={`border-left-10 border-right-10 sticky-td-${id_empresa} text-center text-white fs-1`}>{label}</td>
 			{alter.map((e) => {
 				return (
+					<>
 					<td className='text-center'>
 						<div onClick={()=>onOpenModalDataItems(e.data)}>
 							{
@@ -238,6 +300,17 @@ export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [],mesDi
 							}
 						</div>
 					</td>
+					<td>
+						{
+								anio!==2020 && (
+										<NumberFormatMoney
+											className={`${className}`}
+											amount={e.sumaEgresosAnterior}
+										/>
+								)
+							}
+					</td>
+					</>
 				);
 			})}
 			<td className={classNameTotal}>
@@ -258,11 +331,16 @@ export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [],mesDi
 	);
 };
 
-
-
-export const TrItemExtraordionario = ({anio=2024, label = '', arrayFechas = [],mesDiaDesde,
+export const TrItemExtraordionario = ({anio=2024, label = '', arrayFechas = [], arrayFechaAnterior=[], mesDiaDesde,
 	mesDiaDespues, id_empresa = 0, classNameTotal='', className='' }) => {
 	const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();
+	const { obtenerIngresosxFecha:obtenerIngresosxFechaAnterior, dataIngresosxFecha:dataIngresosxFechaAnterior, obtenerEgresosxFecha:obtenerEgresosxFechaAnterior, dataEgresosxFecha:dataEgresosxFechaAnterior } = useFlujoCaja();
+
+	useEffect(() => {
+		obtenerIngresosxFechaAnterior(id_empresa, arrayFechaAnterior)
+		obtenerEgresosxFechaAnterior(id_empresa, arrayFechaAnterior)
+	}, [id_empresa, arrayFechaAnterior])
+	
 	useEffect(() => {
 		obtenerEgresosxFecha(id_empresa, arrayFechas);
 		obtenerIngresosxFecha(id_empresa, arrayFechas);
@@ -288,19 +366,41 @@ export const TrItemExtraordionario = ({anio=2024, label = '', arrayFechas = [],m
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
 								?.reduce((total, item) => total + item.monto, 0)
+				const ingresosxMesAnterior = dataIngresosxFechaAnterior?.flujoxGrupo?.filter(f=>f.id===121).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								?.reduce((total, item) => total + item.monto, 0)
+				const egresosxMesAnterior = dataEgresosxFechaAnterior?.flujoxGrupo?.filter(f=>f.id===153).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								?.reduce((total, item) => total + item.monto, 0)
 				return (
-					<td className={`text-center`}>
-						<div>
-							{
-								anio!==2020 && (
-									<NumberFormatMoney
-									className={`${className}`}
-										amount={ingresosxMes-egresosxMes}
-									/>
-								)
-							}
-						</div>
-					</td>
+					<>
+						<td className={`text-center`}>
+							<div>
+								{
+									anio!==2020 && (
+										<NumberFormatMoney
+										className={`${className}`}
+											amount={ingresosxMes-egresosxMes}
+										/>
+									)
+								}
+							</div>
+						</td>
+						<td className={`text-center`}>
+							<div>
+								{
+									anio!==2020 && (
+										<NumberFormatMoney
+										className={`${className}`}
+											amount={ingresosxMesAnterior-egresosxMesAnterior}
+										/>
+									)
+								}
+							</div>
+						</td>
+					</>
 				);
 			})}
 			<td className={classNameTotal}>
@@ -325,9 +425,16 @@ export const TrItemExtraordionario = ({anio=2024, label = '', arrayFechas = [],m
 	);
 };
 
-export const TrItemUtilidadesSuma = ({anio=2024, label = '', arrayFechas = [],mesDiaDesde,
+export const TrItemUtilidadesSuma = ({anio=2024, label = '', arrayFechas = [], arrayFechaAnterior=[], mesDiaDesde,
 	mesDiaDespues,  id_empresa = 0, classNameTotal='', className='' }) => {
 	const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja();
+	const { obtenerIngresosxFecha:obtenerIngresosxFechaAnterior, dataIngresosxFecha:dataIngresosxFechaAnterior, obtenerEgresosxFecha:obtenerEgresosxFechaAnterior, dataEgresosxFecha:dataEgresosxFechaAnterior } = useFlujoCaja();
+
+	useEffect(() => {
+		obtenerIngresosxFechaAnterior(id_empresa, arrayFechaAnterior)
+		obtenerEgresosxFechaAnterior(id_empresa, arrayFechaAnterior)
+	}, [id_empresa, arrayFechaAnterior])
+	
 	useEffect(() => {
 		obtenerEgresosxFecha(id_empresa, arrayFechas);
 		obtenerIngresosxFecha(id_empresa, arrayFechas);
@@ -367,19 +474,50 @@ export const TrItemUtilidadesSuma = ({anio=2024, label = '', arrayFechas = [],me
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
 								?.reduce((total, item) => total + item.monto, 0)
+								
+				const ingresosxMesBOLSAAnioAnterior = dataIngresosxFechaAnterior.flujoxGrupo?.filter(f=>f.id===121).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								?.reduce((total, item) => total + item.monto, 0)
+				const egresosxMesBOLSAAnioAnterior = dataEgresosxFechaAnterior?.flujoxGrupo?.filter(f=>f.id===153).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								?.reduce((total, item) => total + item.monto, 0)
+				const egresosxMesAnioAnterior = dataEgresosxFechaAnterior?.flujoxGrupo?.filter(f=>f.id!==97 && f.id!==153 && f.id!==103 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								?.reduce((total, item) => total + item.monto, 0)
+				const ingresosxMesAnioAnterior = dataIngresosxFechaAnterior.flujoxGrupo?.filter(f=>f.id!==121).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								?.reduce((total, item) => total + item.monto, 0)
 				return (
-					<td className={`text-center`}>
-						{
-							anio!==2020 && (
-								<div className={`${(((ingresosxMesBOLSA-egresosxMesBOLSA)+(ingresosxMes-egresosxMes))>0)?'text-black':(((ingresosxMesBOLSA-egresosxMesBOLSA)+(ingresosxMes-egresosxMes))==0)?'text-black':'text-change'}`}>
-									<NumberFormatMoney
-									className={`${className}`}
-										amount={(ingresosxMesBOLSA-egresosxMesBOLSA)+(ingresosxMes-egresosxMes)}
-									/>
-								</div>
-							)
-						}
-					</td>
+						<>
+							<td className={`text-center`}>
+									{
+										anio!==2020 && (
+											<div className={`${(((ingresosxMesBOLSA-egresosxMesBOLSA)+(ingresosxMes-egresosxMes))>0)?'text-black':(((ingresosxMesBOLSA-egresosxMesBOLSA)+(ingresosxMes-egresosxMes))==0)?'text-black':'text-change'}`}>
+												<NumberFormatMoney
+												className={`${className}`}
+													amount={(ingresosxMesBOLSA-egresosxMesBOLSA)+(ingresosxMes-egresosxMes)}
+												/>
+											</div>
+										)
+									}
+							</td>
+							<td className={`text-center`}>
+									{
+										anio!==2020 && (
+											<div className={`${(((ingresosxMesBOLSAAnioAnterior-egresosxMesBOLSAAnioAnterior)+(ingresosxMesAnioAnterior-egresosxMesAnioAnterior))>0)?'text-black':(((ingresosxMesBOLSAAnioAnterior-egresosxMesBOLSAAnioAnterior)+(ingresosxMesAnioAnterior-egresosxMesAnioAnterior))==0)?'text-black':'text-change'}`}>
+												<NumberFormatMoney
+												className={`${className}`}
+													amount={(ingresosxMesBOLSAAnioAnterior-egresosxMesBOLSAAnioAnterior)+(ingresosxMesAnioAnterior-egresosxMesAnioAnterior)}
+												/>
+											</div>
+										)
+									}
+							</td>
+						</>
 				);
 			})}
 			<td className={classNameTotal}>

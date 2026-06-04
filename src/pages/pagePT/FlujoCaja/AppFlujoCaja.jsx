@@ -33,11 +33,6 @@ export const AppFlujoCaja = () => {
               <ViewTablesFlujoCaja link={'link-change'} textEmpresa={'text-change'} arrayFecha={['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']} anio={2024} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </div>
             </TabPanel>
-            {/* <TabPanel header={<div className='fs-1'>1ER TRIMESTRE</div>}>
-            <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
-              <TablesTrimestralTotal link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
-            </div>
-            </TabPanel> */}
             <TabPanel header={<div className='fs-1'>1ER TRIMESTRE</div>}>
             <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
               <Trimestre1Total header={'1ER TRIMESTRE'} mesDiaDesde='01-01' mesDiaDespues='03-31' link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>

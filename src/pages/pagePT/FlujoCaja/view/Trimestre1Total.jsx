@@ -60,7 +60,10 @@ export const Trimestre1Total = ({classNameEmpresa, header, bgPastel, mesDiaDesde
                             {
                                 generarMesYanio(new Date(anio2026[0]), new Date(anio2026[1])).map(e=>{
                                     return (
+                                        <>
                                         <th className='text-center fs-2' style={{width: '240px'}}>{e.mesSTR}</th>
+                                        <th className='text-center fs-2' style={{width: '240px'}}>{'%'}</th>
+                                        </>
                                     )
                                 })
                             }
@@ -69,9 +72,9 @@ export const Trimestre1Total = ({classNameEmpresa, header, bgPastel, mesDiaDesde
                         </tr>
                     </thead>
                     <tbody>
-                        <TrItemEgresos mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
-                        <TrItemEgresos mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
-                        <TrItemEgresos mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
+                        <TrItemEgresos mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} arrayFechaAnterior={anio2025} id_empresa={id_empresa}/>
+                        <TrItemEgresos mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} arrayFechaAnterior={anio2024} id_empresa={id_empresa}/>
+                        <TrItemEgresos mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} arrayFechaAnterior={anio2024} id_empresa={id_empresa}/>
                     </tbody>
                 </Table>
             </div>
@@ -86,7 +89,10 @@ export const Trimestre1Total = ({classNameEmpresa, header, bgPastel, mesDiaDesde
                             {
                                 generarMesYanio(new Date(anio2026[0]), new Date(anio2026[1])).map(e=>{
                                     return (
+                                        <>
                                         <th className='text-center fs-2' style={{width: '240px'}}>{e.mesSTR}</th>
+                                        <th className='text-center fs-2' style={{width: '240px'}}>{'%'}</th>
+                                        </>
                                     )
                                 })
                             }
@@ -95,9 +101,9 @@ export const Trimestre1Total = ({classNameEmpresa, header, bgPastel, mesDiaDesde
                         </tr>
                     </thead>
                     <tbody>
-                        <TrItemUtilidad mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
-                        <TrItemUtilidad mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
-                        <TrItemUtilidad mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
+                        <TrItemUtilidad mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} arrayFechaAnterior={anio2025} id_empresa={id_empresa}/>
+                        <TrItemUtilidad mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} arrayFechaAnterior={anio2024} id_empresa={id_empresa}/>
+                        <TrItemUtilidad mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} arrayFechaAnterior={anio2024} id_empresa={id_empresa}/>
                     </tbody>
                 </Table>
             </div>
@@ -112,7 +118,10 @@ export const Trimestre1Total = ({classNameEmpresa, header, bgPastel, mesDiaDesde
                             {
                                 generarMesYanio(new Date(anio2026[0]), new Date(anio2026[1])).map(e=>{
                                     return (
-                                        <th className='text-center fs-2' style={{width: '240px'}}>{e.mesSTR}</th>
+                                        <>
+                                            <th className='text-center fs-2' style={{width: '240px'}}>{e.mesSTR}</th>
+                                            <th className='text-center fs-2' style={{width: '240px'}}>{'%'}</th>
+                                        </>
                                     )
                                 })
                             }
@@ -121,8 +130,8 @@ export const Trimestre1Total = ({classNameEmpresa, header, bgPastel, mesDiaDesde
                         </tr>
                     </thead>
                     <tbody>
-                        <TrItemExtraordionario mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
-                        <TrItemExtraordionario  mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2023} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
+                        <TrItemExtraordionario mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} arrayFechaAnterior={anio2025} id_empresa={id_empresa}/>
+                        <TrItemExtraordionario  mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2023} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} arrayFechaAnterior={anio2025} id_empresa={id_empresa}/>
                     </tbody>
                 </Table>
             </div>
@@ -137,7 +146,10 @@ export const Trimestre1Total = ({classNameEmpresa, header, bgPastel, mesDiaDesde
                             {
                                 generarMesYanio(new Date(anio2026[0]), new Date(anio2026[1])).map(e=>{
                                     return (
-                                        <th className='text-center fs-2' style={{width: '240px'}}>{e.mesSTR}</th>
+                                        <>
+                                            <th className='text-center fs-2' style={{width: '240px'}}>{e.mesSTR}</th>
+                                            <th className='text-center fs-2' style={{width: '240px'}}>{'%'}</th>
+                                        </>
                                     )
                                 })
                             }
@@ -146,9 +158,9 @@ export const Trimestre1Total = ({classNameEmpresa, header, bgPastel, mesDiaDesde
                         </tr>
                     </thead>
                     <tbody>
-                        <TrItemUtilidadesSuma mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
-                        <TrItemUtilidadesSuma mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
-                        <TrItemUtilidadesSuma mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2024} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
+                        <TrItemUtilidadesSuma mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} arrayFechaAnterior={anio2025} id_empresa={id_empresa}/>
+                        <TrItemUtilidadesSuma mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} arrayFechaAnterior={anio2024} id_empresa={id_empresa}/>
+                        <TrItemUtilidadesSuma mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} anio={2024} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} arrayFechaAnterior={anio2024} id_empresa={id_empresa}/>
                     </tbody>
                 </Table>
             </div>
@@ -165,7 +177,10 @@ export const Trimestre1Total = ({classNameEmpresa, header, bgPastel, mesDiaDesde
                             {
                                 generarMesYanio(new Date(anio2026[0]), new Date(anio2026[1])).map(e=>{
                                     return (
-                                        <th className='text-center fs-2' style={{width: '240px'}}>{e.mesSTR}</th>
+                                        <>
+                                            <th className='text-center fs-2' style={{width: '240px'}}>{e.mesSTR}</th>
+                                            <th className='text-center fs-2' style={{width: '240px'}}>{'%'}</th>
+                                        </>
                                     )
                                 })
                             }
@@ -174,9 +189,9 @@ export const Trimestre1Total = ({classNameEmpresa, header, bgPastel, mesDiaDesde
                         </tr>
                     </thead>
                     <tbody>
-                        <TrItemInventario  mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
-                        <TrItemInventario  mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
-                        <TrItemInventario  mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2024} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
+                        <TrItemInventario  mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} arrayFechaAnterior={anio2025} id_empresa={id_empresa}/>
+                        <TrItemInventario  mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} arrayFechaAnterior={anio2024} id_empresa={id_empresa}/>
+                        <TrItemInventario  mesDiaDesde={mesDiaDesde} mesDiaDespues={mesDiaDespues} onOpenModalDataItems={onOpenModalDataItems} anio={2024} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} arrayFechaAnterior={anio2024} id_empresa={id_empresa}/>
                     </tbody>
                 </Table>
             </div>
