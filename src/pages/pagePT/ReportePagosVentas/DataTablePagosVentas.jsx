@@ -23,7 +23,7 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
       id: 15, header: 'ID VENTA', accessor: 'id', render: (row)=>{
       return (
         <>
-        {row.identificador}
+        {row.id}
         </>
       )
     }
