@@ -8,10 +8,11 @@ import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
 export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
-    const { obtenerGastos, deleteGastoxID, loading } = useGastosStore()
+    const { obtenerGastos, deleteGastoxID, loading, dataTC, obtenerTc } = useGastosStore()
     const { dataView } = useSelector(e=>e.EGRESOS)
     useEffect(() => {
         obtenerGastos(id_empresa, sonCompras)
+        obtenerTc()
     }, [id_empresa])
     const sortable=true;
     
@@ -23,10 +24,17 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                 </div>
             )
         }},
-        {id: 2, header: <>REGISTRO <br/> ADMINISTRATIVO </>, accessor: '', width: '200px', render:(row)=>{
+        {id: 2, header: <>FECHA <br/> REGISTRO </>, accessor: '', width: '200px', render:(row)=>{
             return (
                 <>
                 {DateMaskStr(row.fec_registro, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
+                </>
+            )
+        }},
+        {id: 13, header: <>PROVEEDOR</>, accessor: 'nombre_proveedor', width: '120px', render: (row)=>{
+            return (
+                <>
+                    {row.nombre_proveedor}
                 </>
             )
         }},
@@ -41,30 +49,40 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
             return (
                 <>
                 {DateMaskStr(row.fecha_comprobante, 'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}
-                {/* <DateMask date={row.fecha_comprobante} format={'dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A'}/> */}
                 </>
             )
         }},
         {id: 5, header: 'OPERACION', accessor: 'n_operacion', width: '40px'},
         {id: 6, header: <>MONTO</>, sortable, accesor: 'monto', width: '500px', render: (row)=>{
             return (
-                <div className='d-flex justify-content-center flex-column text-center ' style={{width: '140px'}}>
-                <div style={{width: '120px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} d-flex align-items-center justify-content-center`}>
+                <div className='d-flex justify-content-center flex-column text-center ' style={{width: '190px'}}>
+
+                <div className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} ${row.id_estado_gasto===1424?'':'text-change'} d-flex align-items-center justify-content-center`}>
                     {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar />}
-                    <NumberFormatMoney amount={row.monto}/>
+                    <NumberFormatMoney amount={row.monto} className={`fs-2`}/>
                 </div>
                 {
                     row.impuesto_igv && (
                         <>
-                        <div style={{width: '120px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} text-center d-flex align-items-center justify-content-center text-change`}>
+                        <div className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} text-center d-flex align-items-center justify-content-center text-change`}>
                         <span className='mx-1'>
                             IGV.
                         </span>
-                                        {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar/>}
-                                        <NumberFormatMoney amount=
-                        {row.monto - row.monto/1.18}
-                                        />
+                                {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar/>}
+                                <NumberFormatMoney amount={row.monto - row.monto/1.18}/>
+                        </div>
+                        <br/>
+                        {
+                            row.moneda==='USD' && (
+                                <div className={ `text-center d-flex align-items-center justify-content-center text-change`}>
+                                <span className='mx-1'>
+                                    IGV.
+                                </span>
+                                <SymbolSoles /> 
+                                <NumberFormatMoney amount={(row.monto - row.monto/1.18)*dataTC.find(f=>f.fecha_inicio_tc===row.fecha_pago)?.multiplicador}/>
                                 </div>
+                            )
+                        }
                         </>
                     )
                 }
@@ -105,13 +123,6 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
             return (
                 <>
                     {row.forma_pago}
-                </>
-            )
-        }},
-        {id: 13, header: <>PROVEEDOR</>, accessor: 'nombre_proveedor', width: '120px', render: (row)=>{
-            return (
-                <>
-                    {row.nombre_proveedor}
                 </>
             )
         }},
@@ -216,6 +227,14 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
     }
   return (
     <>
+    <div>
+        MONTO TOTAL: 
+        <NumberFormatMoney  amount={dataView.reduce((total, item)=>total+item.monto, 0)}/>
+    </div>
+    <div>
+        MONTO TOTAL: 
+        <NumberFormatMoney  amount={dataView.reduce((total, item)=>total+item.monto, 0)}/>
+    </div>
     <DataTableCR
         columns={columns}
         data={dataView}

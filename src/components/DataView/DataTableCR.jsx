@@ -841,7 +841,6 @@ const filtered = useMemo(() => {
                 title={col.sortable ? 'Click para ordenar' : undefined}
               >
                 <div className="d-flex align-items-center justify-content-center flex-column gap-1 position-relative fs-4">
-                  <span className="text-truncate">{col.header}</span>
                   {
                     col.sortable && (
                       <>
@@ -855,6 +854,7 @@ const filtered = useMemo(() => {
                       </>
                     )
                   }
+                  <span className="text-truncate">{col.header}</span>
                 </div>
               </th>
             );

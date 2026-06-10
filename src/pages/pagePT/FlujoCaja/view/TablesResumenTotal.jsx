@@ -3,7 +3,7 @@ import { ViewResumenTotal } from '../ViewResumenTotal'
 import { generarMesYanio } from '../helpers/generarMesYanio'
 import { Table } from 'react-bootstrap'
 import { TdItem } from './TdItem'
-import { TrItemVentas, TrItemEgresos, TrItemUtilidad, TrItemInventario, TrItemExtraordionario, TrItemUtilidadesSuma } from './TrItem'
+import { TrItemVentas, TrItemEgresos, TrItemUtilidad, TrItemInventario, TrItemExtraordionario, TrItemUtilidadesSuma, TrItemEgresosNoPagados } from './TrItem'
 import dayjs from 'dayjs'
 import { useFlujoCaja } from '../hook/useFlujoCajaStore'
 import { ModalTableItems } from './ModalTableItems'
@@ -159,8 +159,6 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                 </Table>
             </div>
         </div>
-        {/* 
-        */}
         <div>
             <div style={{fontSize: '70px'}} className='text-black text-center'>COMPRA ACTIVOS</div>
             <div className='tab-scroll-container'>
@@ -184,6 +182,33 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
                         <TrItemInventario onOpenModalDataItems={onOpenModalDataItems} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
                         <TrItemInventario onOpenModalDataItems={onOpenModalDataItems} anio={2024} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
                         <TrItemInventario onOpenModalDataItems={onOpenModalDataItems} anio={2020} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='TOTAL ACUMULADO' arrayFechas={anioTotal} id_empresa={id_empresa}/>
+                    </tbody>
+                </Table>
+            </div>
+        </div> 
+        <div>
+            <div style={{fontSize: '70px'}} className='text-black text-center'>NO PAGADOS</div>
+            <div className='tab-scroll-container'>
+                <Table className='tabla-egresos fs-3' style={{ width: '100%' }} bordered>
+                    <thead>
+                        <tr>
+                            <th style={{width: '300px'}} className={`fs-1 sticky-td-white border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white text-center`}><div className='text-black'>AÑO / MES</div></th>
+                            {
+                                generarMesYanio(new Date(anio2026[0]), new Date(anio2026[1])).map(e=>{
+                                    return (
+                                        <th className='text-center' style={{width: '240px'}}>{e.mesSTR}</th>
+                                    )
+                                })
+                            }
+                            <th className='text-center border-top-10 border-bottom-10 border-left-10 border-right-10' style={{width: '340px'}}>TOTAL ANUAL</th>
+                            <th className='text-center border-top-10 border-bottom-10 border-left-10 border-right-10' style={{width: '340px'}}>PROMEDIO MENSUAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <TrItemEgresosNoPagados onOpenModalDataItems={onOpenModalDataItems} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
+                        <TrItemEgresosNoPagados onOpenModalDataItems={onOpenModalDataItems} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
+                        <TrItemEgresosNoPagados onOpenModalDataItems={onOpenModalDataItems} anio={2024} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
+                        <TrItemEgresosNoPagados onOpenModalDataItems={onOpenModalDataItems} anio={2020} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='TOTAL ACUMULADO' arrayFechas={anioTotal} id_empresa={id_empresa}/>
                     </tbody>
                 </Table>
             </div>

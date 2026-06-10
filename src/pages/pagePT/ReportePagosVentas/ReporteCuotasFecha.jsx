@@ -1,31 +1,40 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useVentasPagosStore } from './useVentasPagosStore'
 import { useSelector } from 'react-redux'
 import { Col, Row } from 'react-bootstrap'
 import { DateMask } from '@/components/CurrencyMask'
+import { ModalReportePago } from './ModalReportePago'
 
 export const ReporteCuotasFecha = () => {
         const { obtenerPagosVentas } = useVentasPagosStore()
+        const [isOpenModalReportePagos, setisOpenModalReportePagos] = useState({isOpen: false, data: []})
         useEffect(() => {
         obtenerPagosVentas()
         }, [])
         const { dataView } = useSelector(e=>e.PAGOSVENTAS)
         const resultado = agruparPorMesAnio(dataView)
+        const onClick = (resu)=>{
+            setisOpenModalReportePagos({isOpen: true, data: resu})
+        }
+        const onCloseModalReportePago = ()=>{
+            setisOpenModalReportePagos({isOpen: false, data: []})
+        }
   return (
     <div>
+        <ModalReportePago data={isOpenModalReportePagos.data} show={isOpenModalReportePagos.isOpen} onHide={()=>onCloseModalReportePago()}/>
         <Row>
             {
                 resultado.map(r=>{
                     return (
                         <Col lg={4}>
                             <div className='m-1'>
-                                <div className='bg-change text-white p-1 text-center' style={{fontSize: '50px'}}>
+                                <div className='bg-change text-white p-1 text-center' style={{fontSize: '50px'}} >
                                     <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'YYYY '}/>
                                     <DateMask date={`${r.fecha_p.anio}-${r.fecha_p.mes}-05`} format={'MMMM '}/>
                                 </div>
                                 <div className='border-change d-flex flex-column text-center text-black fs-2'>
                                     <div className='d-flex justify-content-around w-100'>
-                                        <div className='text-change' style={{fontSize: '40px'}}>
+                                        <div className='text-change' style={{fontSize: '40px'}} onClick={()=>onClick(r.items.filter(f=>f.pago.id_operador===1739))}>
                                             OPENPAY
                                         </div>
                                         <div className='d-flex flex-column text-start'>

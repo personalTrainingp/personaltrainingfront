@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { onSetDataViewEgresos } from './egresosSlice';
 import { arrayFinanzas, arrayTipoIngresos } from '@/types/type';
 import Swal from 'sweetalert2';
+import { obtenerTipoDeCambio } from '@/middleware/obtenerTipoDeCambio';
 
 export const useGastosStore = () => {
 	const [dataGasto, setdataGasto] = useState({
@@ -32,6 +33,15 @@ export const useGastosStore = () => {
 	});
 	const [loading, setloading] = useState(false);
 	const dispatch = useDispatch();
+	const [dataTC, setdataTC] = useState([]);
+	const obtenerTc = async () => {
+		try {
+			const dataTipoTC = await obtenerTipoDeCambio();
+			setdataTC(dataTipoTC);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerGastos = async (id_empresa, esCompra = false) => {
 		try {
 			setloading(true);
@@ -150,6 +160,8 @@ export const useGastosStore = () => {
 		}
 	};
 	return {
+		dataTC,
+		obtenerTc,
 		obtenerGastos,
 		updateGastoxID,
 		deleteGastoxID,

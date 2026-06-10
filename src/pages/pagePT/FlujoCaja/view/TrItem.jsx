@@ -176,6 +176,61 @@ export const TrItemUtilidad = ({ label = '', anio=2024, arrayFechas = [], id_emp
 };
 
 
+export const TrItemEgresosNoPagados = ({ label = '', anio=2024, arrayFechas = [], onOpenModalDataItems, arrayDates=[new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2024-12-31 15:45:47.6640000 +00:00')], id_empresa = 0, classNameTotal='', className='' }) => {
+	const { obtenerEgresosxFecha, dataGastosxFecha } = useFlujoCaja();
+	useEffect(() => {
+		obtenerEgresosxFecha(id_empresa, arrayFechas);
+	}, []);
+	const alter = generarMesYanio(
+				arrayDates[0], arrayDates[1]
+			).map(e=>{
+				const dataIngresos = dataGastosxFecha.flujoxGrupo?.filter(f=>f.id!==97 && f.id!==153 && f.id!==103 && f.grupo!=="TARJETA CREDITO VISA BBVA"&& f.id!==150).flatMap((f) => f.itemsxDia)
+								?.filter((f) => f.mes === e.mes)
+								.flatMap((f) => f.items)
+								.filter(f=>f.id_estado_gasto===1424)
+				return {
+					sumaIngresos: dataIngresos?.reduce((total, item) => total + item.monto, 0),
+					data: dataIngresos
+				}
+			})
+	return (
+		<tr>
+			<td className={`border-left-10 border-right-10 sticky-td-${id_empresa} text-center text-white fs-1`}>{label}</td>
+			{alter.map((e) => {
+				return (
+					<td className='text-center'>
+						<div onClick={()=>onOpenModalDataItems(e.data)}>
+							{
+								anio!==2020 && (
+										<NumberFormatMoney
+											className={`${className} text-change`}
+											amount={-e.sumaIngresos}
+										/>
+								)
+							}
+						</div>
+					</td>
+				);
+			})}
+			<td className={classNameTotal}>
+				<NumberFormatMoney
+							className='text-change'
+							style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
+					amount={-alter.reduce((total, item)=>total+item.sumaIngresos, 0)}
+				/>
+			</td>
+			<td className={classNameTotal}>
+				<NumberFormatMoney
+							className='text-change'
+							style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
+					amount={-(alter.reduce((total, item)=>total+item.sumaIngresos, 0)/anioCantidad(anio))}
+				/>
+			</td>
+		</tr>
+	);
+};
+
+
 
 export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [], onOpenModalDataItems, arrayDates=[new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2024-12-31 15:45:47.6640000 +00:00')], id_empresa = 0, classNameTotal='', className='' }) => {
 	const { obtenerEgresosxFecha, dataGastosxFecha } = useFlujoCaja();

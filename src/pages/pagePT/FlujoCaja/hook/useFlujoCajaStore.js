@@ -1,12 +1,14 @@
 import { PTApi } from '@/common';
 import { useState } from 'react';
-import { agruparPorGrupoYConcepto } from '../helpers/agrupamientosOficiales';
+import {
+	agruparPorGrupoYConcepto,
+	agruparPorGrupoYConcepto2,
+} from '../helpers/agrupamientosOficiales';
 import { dataIngresosOrden } from '@/helper/dataIngresosOrden';
 import { formatDateToSQLServerWithDayjs } from '@/helper/formatDateToSQLServerWithDayjs';
 import { obtenerTipoDeCambio } from '@/middleware/obtenerTipoDeCambio';
 import { aplicarTipoDeCambio } from '@/helper/aplicarTipoCambio';
 import { usePagosVentasStore } from './usePagosVentasStore';
-import { NumberFormatMoneyStr } from '@/components/CurrencyMask';
 
 export const useFlujoCaja = () => {
 	const [dataGastosxFecha, setdataGastosxFecha] = useState({
@@ -19,6 +21,7 @@ export const useFlujoCaja = () => {
 		flujoxGrupo: [],
 		terminologiasUsadas: [],
 	});
+	const [dataFlujoCaja, setdataFlujoCaja] = useState([]);
 	const [dataParametrosGastos, setdataParametrosGastos] = useState([]);
 	const { dataPagosVentas, obtenerPagosVentas } = usePagosVentasStore();
 	const obtenerEgresosxFecha = async (enterprice, arrayDate, tt) => {
@@ -228,6 +231,32 @@ export const useFlujoCaja = () => {
 			console.log(error);
 		}
 	};
+	const obtenerFlujoCaja = async (enterprice, arrayDate) => {
+		try {
+			const { data } = await PTApi.get(`/flujo-caja/fecha-comprobante/${enterprice}`, {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+			const dataFlujoCaja = data.data.map((m) => {
+				return {
+					...m,
+					fecha_primaria: m.fecha_comprobante,
+				};
+			});
+			const { data: dataParametrosGastos } = await PTApi.get(
+				`/terminologia/grupo-y-concepto/${enterprice}/1573`
+			);
+			setdataFlujoCaja(
+				agruparPorGrupoYConcepto2(dataFlujoCaja, dataParametrosGastos.termGastos, 2026)
+			);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerEgresosxFecha,
 		dataGastosxFecha,
@@ -235,6 +264,8 @@ export const useFlujoCaja = () => {
 		dataIngresosxFecha,
 		obtenerParametrosGastos,
 		dataParametrosGastos,
+		obtenerFlujoCaja,
+		dataFlujoCaja,
 	};
 };
 

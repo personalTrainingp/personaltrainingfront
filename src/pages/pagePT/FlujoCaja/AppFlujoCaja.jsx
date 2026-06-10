@@ -4,12 +4,7 @@ import { ViewTablesFlujoCaja } from './ViewTablesFlujoCaja'
 import { TablesResumenTotal } from './view/TablesResumenTotal'
 import { ColorEmpresa } from '@/components/ColorEmpresa'
 import { PageBreadcrumb } from '@/components'
-import { generarMesYanio } from './helpers/generarMesYanio'
-import { TablesTrimestralTotal } from './view/TablesTrimestralTotal'
 import { Trimestre1Total } from './view/Trimestre1Total'
-import { Trimestre2Total } from './view/Trimestre2Total'
-import { Trimestre3Total } from './view/Trimestre3Total'
-import { Trimestre4Total } from './view/Trimestre4Total'
 
 export const AppFlujoCaja = () => {
   return (
@@ -55,7 +50,7 @@ export const AppFlujoCaja = () => {
             </TabPanel>
             <TabPanel header={<div className='fs-1'>COMPARATIVO ANUAL</div>}>
             <div  className='' style={{overflowY: 'scroll', height: '800px'}}>
-              <TablesResumenTotal link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
+              <TablesResumenTotal header={'4TO TRIMESTRE'} mesDiaDesde='01-01' mesDiaDespues='12-31' link={'link-change'} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </div>
             </TabPanel>
           </TabView>

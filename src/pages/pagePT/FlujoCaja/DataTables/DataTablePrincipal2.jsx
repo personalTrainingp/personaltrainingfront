@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const  DataTablePrincipal = ({anio, id_empresa, sumaTotal, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems, data=[]}) => {
+export const  DataTablePrincipal2 = ({anio, id_empresa, sumaTotal, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems, data=[]}) => {
   const fecha = new Date()
   const anioActual = fecha.getFullYear()
   const mesActual = fecha.getMonth()+1

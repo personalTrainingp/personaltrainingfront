@@ -70,7 +70,7 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                     generarMesYanio(new Date('2026-01-01 15:45:47.6640000 +00:00'), new Date('2026-12-31 15:45:47.6640000 +00:00')).map(m=>{
                       return (
                         <React.Fragment key={`${m.mesSTR}`}>
-                          <td className={`text-center border-black bg-change fs-2 text-white`} style={{width: '250px'}}>{m.mesSTR}</td>
+                          <td className={`text-center border-black bg-change fs-2 text-white`} style={{width: '290px'}}>{m.mesSTR}</td>
                           {/* <td className={`text-center border-black bg-change-pastel text-white`} style={{width: '90px'}}>MOV.</td> */}
                         </React.Fragment>
                       )
@@ -86,7 +86,7 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                       dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
-                            <MesxIgv className={'text-center '} mes={m.mes} anio={m.anio} len={m.igvVentas[0]?.len} monto_acumulado={(m.montoSumaIgvVentas)}/>
+                            <MesxIgv className={'text-center  fs-2'} mes={m.mes} anio={m.anio} len={m.igvVentas[0]?.len} monto_acumulado={(m.montoSumaIgvVentas)}/>
                           </React.Fragment>
                         )
                       })
@@ -98,7 +98,7 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                       dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
-                            <MesxIgv className={'text-center text-change'} mes={m.mes} anio={m.anio} len={m.igvVentas[0]?.len} monto_acumulado={m.montoSumaIgvVentas-(m.montoSumaIgvVentas/1.18)}/>
+                            <MesxIgv className={'text-center text-change fs-2'} mes={m.mes} anio={m.anio} len={m.igvVentas[0]?.len} monto_acumulado={-(m.montoSumaIgvVentas-(m.montoSumaIgvVentas/1.18))}/>
                           </React.Fragment>
                         )
                       })
@@ -110,7 +110,7 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                       dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
-                            <MesxIgv className={'text-ISESAC text-center'} mes={m.mes} anio={m.anio} len={m.igv[0]?.len} m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
+                            <MesxIgv className={'text-ISESAC text-center fs-2'} mes={m.mes} anio={m.anio} len={m.igv[0]?.len} m={m} monto_acumulado={m.montoSuma-(m.montoSuma/1.18)}/>
                           </React.Fragment>
                         )
                       })
@@ -122,7 +122,7 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                       dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
-                            <MesxIgv className={'text-ISESAC text-center'} mes={m.mes} anio={m.anio} len={m.igv[0]?.len} m={m} monto_acumulado={0}/>
+                            <MesxIgv className={'text-ISESAC text-center fs-2'} mes={m.mes} anio={m.anio} len={m.igv[0]?.len} m={m} monto_acumulado={0}/>
                           </React.Fragment>
                         )
                       })
@@ -134,7 +134,7 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                       dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
-                            <MesxIgv className={'text-ISESAC text-center'} mes={m.mes} anio={m.anio} len={m.igvIngresosBolsa[0]?.len} monto_acumulado={m.montoSumaingresosBolsa}/>
+                            <MesxIgv className={'text-ISESAC text-center fs-2'} mes={m.mes} anio={m.anio} len={m.igvIngresosBolsa[0]?.len} monto_acumulado={m.montoSumaingresosBolsa}/>
                           </React.Fragment>
                         )
                       })
@@ -146,7 +146,7 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                       dataAlter?.filter(f=>f.anio===anio).map(m=>{
                         return(
                           <React.Fragment key={`${m.mesSTR}`}>
-                            <MesxIgv mes={m.mes} anio={m.anio} m={m} monto_acumulado={(m.montoSumaIgvVentas-(m.montoSumaIgvVentas/1.18))-((m.montoSuma-(m.montoSuma/1.18))+(m.montoSumaingresosBolsa))}/>
+                            <MesxIgv className={'text-ISESAC text-center fs-1'} mes={m.mes} anio={m.anio} m={m} monto_acumulado={((m.montoSuma-(m.montoSuma/1.18))+(m.montoSumaingresosBolsa))!==0?(m.montoSumaIgvVentas-(m.montoSumaIgvVentas/1.18))-((m.montoSuma-(m.montoSuma/1.18))+(m.montoSumaingresosBolsa)):0}/>
                           </React.Fragment>
                         )
                       })

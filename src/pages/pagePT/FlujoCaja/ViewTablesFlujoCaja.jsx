@@ -133,15 +133,6 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 mes={data.mes}
                 anio={data.anio}
             show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} id_empresa={id_empresa}/>
-            {/* <ModalTableItems 
-                link={link}
-                bgHeader={classNameEmpresa}
-                textEmpresa={textEmpresa}
-            show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} id_empresa={id_empresa}/>
-            <ModalTableItemsIngresos
-                bgHeader={classNameEmpresa}
-                textEmpresa={textEmpresa}
-            show={dataIngresos.isOpen} onHide={onCloseModalTableItemsIngresos} items={dataIngresos.items} id_empresa={id_empresa}/> */}
     </div>
   )
 }
