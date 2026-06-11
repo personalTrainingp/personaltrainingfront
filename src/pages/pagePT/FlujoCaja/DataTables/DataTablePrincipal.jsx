@@ -69,9 +69,6 @@ export const  DataTablePrincipal = ({anio, id_empresa, sumaTotal, itemsxDias=[],
                                 )
                               }
                               {
-
-                              }
-                              {
                                 m.monto_no_pagados>0 && (
                                   <>
                                   <span className='text-change' onClick={()=>onOpenModalTableItems(m.itemsNoPagados)}>
@@ -80,6 +77,7 @@ export const  DataTablePrincipal = ({anio, id_empresa, sumaTotal, itemsxDias=[],
                                       {m.monto_no_pagados}
                                     /> 
                                   </span>
+                                  <br/>
                                 </>
                                 )
                               }
@@ -97,6 +95,7 @@ export const  DataTablePrincipal = ({anio, id_empresa, sumaTotal, itemsxDias=[],
                                 </>
                               )}
                             </div>
+                            {/* {m.monto_proyectado} */}
                           </td>
                           <td className={`${m.monto_pagados===0 && 'text-gray'} text-center`}>
                             <div>

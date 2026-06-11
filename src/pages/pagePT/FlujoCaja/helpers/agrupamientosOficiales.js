@@ -1,4 +1,4 @@
-import { DateMaskStr1, DateMaskStr2 } from '@/components/CurrencyMask';
+import { DateMaskStr1 } from '@/components/CurrencyMask';
 import { generarMesYanio } from './generarMesYanio';
 
 export function aplicarTipoDeCambio(dataTC, data) {

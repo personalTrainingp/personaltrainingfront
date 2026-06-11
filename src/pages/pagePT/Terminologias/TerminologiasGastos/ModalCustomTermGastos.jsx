@@ -14,7 +14,8 @@ const customTermGasto={
     monto_proyectado: 0,
     fecha_inicio: '',
     fecha_fin: null,
-    sin_limite: true
+    sin_limite: true,
+    mas_de_un_movimiento: true
 }
 export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
     const { postTerm2, updateTerm2xID, obtenerTerm2, dataTerm2 } = useTerminologias()
@@ -30,7 +31,7 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
             obtenerTerm2(id)
         }
     }, [show])
-    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, isPromediado, monto_proyectado, fecha_inicio, fecha_fin, sin_limite, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
+    const { formState, id_tipoGasto, nombre_gasto, orden, id_grupo, isPromediado, monto_proyectado, fecha_inicio, mas_de_un_movimiento, fecha_fin, sin_limite, onInputChange, onResetForm } = useForm(id===0?customTermGasto:dataTerm2)
     const cancelar = ()=>{
         onHide()
         onResetForm()
@@ -68,6 +69,9 @@ export const ModalCustomTermGastos = ({show, onHide, id, id_empresa, tipo}) => {
                 </div>
                 <div className='mb-2'>
                     <InputDate label={'Fecha de inicio'} nameInput={'fecha_inicio'} onChange={onInputChange} value={fecha_inicio} type='date' required/>
+                </div>
+                <div className='mb-2'>
+                    <InputSwitch label={mas_de_un_movimiento?'TIENE MAS DE UN MOVIMIENTO':'TIENE UN SOLO MOVIMIENTO'} nameInput={'mas_de_un_movimiento'} onChange={onInputChange} value={mas_de_un_movimiento}/>
                 </div>
                 <div className='mb-2'>
                     <InputSwitch label={isPromediado?'GASTO PROMEDIADO':'GASTO SIN PROMEDIADO'} nameInput={'isPromediado'} onChange={onInputChange} value={isPromediado}/>

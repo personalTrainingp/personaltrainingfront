@@ -32,6 +32,7 @@ const customGasto = {
     id_porCobrar: 0,
     descripcion: '', 
     esCompra: 0,
+    id_facturado_por: 0
 }
 export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpenModalGasto, onOpenModalProveedor}) => {
     const { obtenerGastoxID, dataGasto } = useGastosStore()
@@ -59,6 +60,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         id_porCobrar,
         descripcion, 
         esCompra,
+        id_facturado_por,
         onInputChange,
         onInputChangeFunction,
         onResetForm
@@ -310,6 +312,11 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     <Col lg={4}>
                         <div className='m-2'>
                             <InputSelect label={'cobrar'} nameInput={'id_porCobrar'} onChange={onInputChange} options={[]} value={id_porCobrar} />
+                        </div>
+                    </Col>
+                    <Col lg={4}>
+                        <div className='m-2'>
+                            <InputSelect label={'Facturado por'} nameInput={'id_facturado_por'} onChange={onInputChange} options={arrayEmpresaFinan} value={id_facturado_por} />
                         </div>
                     </Col>
                     <Col lg={12}>
