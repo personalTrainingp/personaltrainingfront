@@ -11,15 +11,16 @@ const fecha = new Date()
 const anioActual = fecha.getFullYear()
 export const AppOrdenCompra = ({id_empresa}) => {
       const { dataView } = useSelector(e=>e.EGRESOS)
-      const { dataGastosxFecha, dataIngresosxFecha, obtenerEgresosxFecha, obtenerIngresosxFecha } = useOrdenCompra()
+      const { dataGastosxFecha, dataIngresosxFecha, obtenerEgresosxFecha, obtenerIngresosxFecha, dataFacturas, obtenerGastosxFactura } = useOrdenCompra()
       const ingresosVentas = dataIngresosxFecha.find(f=>f.id===112)?.gastos
       const ingresosExtraord = dataIngresosxFecha.find(f=>f.id===121)?.gastos
       useEffect(() => {
         obtenerIngresosxFecha(id_empresa, ['2024-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00'])
+        obtenerGastosxFactura(id_empresa)
       }, [id_empresa])
       
       const dataAlter = generarMesYanio(new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date(`${anioActual}-12-31 15:45:47.6640000 +00:00`)).map(m=>{
-        const igvCompras = agruparPorFechaComprobante(dataView.filter((f) => f.impuesto_igv === true)).filter(f=>f.fecha.anio===m.anio && f.fecha.mes===m.mes).map(m=>{return {monto_total: m.monto_total, len: m.items.length}})
+        const igvCompras = agruparPorFechaComprobante(dataFacturas.filter((f) => f.impuesto_igv === true)).filter(f=>f.fecha.anio===m.anio && f.fecha.mes===m.mes).map(m=>{return {monto_total: m.monto_total, len: m.items.length}})
         const igvVentas = agruparPorFechaVenta(ingresosVentas)?.filter(f=>f.fecha.anio===m.anio && f.fecha.mes===m.mes).map(m=>{return {monto_total: m.monto_total, len: m.items.length}})
         const Ventas = agruparPorFechaVenta(ingresosVentas)?.filter(f=>f.fecha.anio===m.anio && f.fecha.mes===m.mes).map(m=>{return {monto_total: m.monto_total, len: m.items.length}})
         const igvIngresosBolsa = agruparPorFecComprobante(ingresosExtraord)?.filter(f=>f.fecha.anio===m.anio && f.fecha.mes===m.mes).map(m=>{return {monto_total: m.monto_total, len: m.items.length}})
@@ -45,16 +46,6 @@ export const AppOrdenCompra = ({id_empresa}) => {
             <div style={{fontSize: '60px'}} className='text-black text-center'>IGV 2024</div>
             <TableAnio anio={2024} dataAlter={dataAlter} id_empresa={id_empresa}/>
           </div>
-      {/* <TabView>
-        <TabPanel header={'DATA'}>
-        <div className='fs-2 text-change'>IGV ACUMULADO EN TOTAL: <NumberFormatMoney amount={dataView.filter((f) => f.impuesto_igv === true).reduce((total, item)=>item.monto+total, 0)-(dataView.filter((f) => f.impuesto_igv === true).reduce((total, item)=>item.monto+total, 0)/1.18)}/></div>
-        <DataTableGastos sonCompras={true} id_empresa={id_empresa} />
-        </TabPanel>
-        <TabPanel header={'REPORTE POR MES'}>
-          <div>
-          </div>
-        </TabPanel>
-      </TabView> */}
     </div>
   )
 }
@@ -76,7 +67,6 @@ const TableAnio = ({dataAlter, anio, id_empresa})=>{
                       )
                     })
                   }
-                  {/* <th className='text-center border-top-10 border-left-10 border-bottom-10' style={{width: '200px'}}>TOTAL <br/> ANUAL</th> */}
                 </tr>
               </thead>
               <tbody>
