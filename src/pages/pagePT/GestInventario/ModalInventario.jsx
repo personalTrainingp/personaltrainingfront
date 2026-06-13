@@ -14,6 +14,7 @@ import { useInventarioStore } from './hook/useInventarioStore';
 import { KardexxArticulo } from './KardexxArticulo';
 import { MultiOpcionSelect } from './components/ComponentSelect';
 import { compararArrays } from './helpers/compararArrays';
+import { arrayEmpresaFinan } from '@/types/type';
 const registerArticulo={
     producto: '',
     id_marca: '',
@@ -31,6 +32,7 @@ const registerArticulo={
     id_categoria: 0,
     id_subcategoria: 0,
     modelo: '',
+    id_empresa: 0,
     etiquetas_busquedas: []
 }
 const registerImgAvatar={
@@ -50,12 +52,13 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
     
     // const { DataGeneral:dataLugares, obtenerParametroPorEntidadyGrupo:obtenerLugares } = useTerminoStore()
     const { obtenerZonas, dataZonas } =  useTerminoStore()
-    
+    const [idEempresa, setidEempresa] = useState(id_zona)
     const resetAvatar = ()=>{
         setSelectedFile(null)
         setselectedAvatar(null)
     }
     const { formState, 
+            id_empresa,
             producto,
             id_marca,
             cantidad,
@@ -171,6 +174,25 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                         </Col>
                                         <Col lg={8}>
                                             <Row>
+                                                <Col lg={12}>
+                                                    <div className="mb-4">
+                                                        <label htmlFor="id_empresa" className="form-label">
+                                                            EMPRESA
+                                                        </label>
+                                                        <Select
+                                                            onChange={(e) => onInputChangeReact(e, 'id_empresa')}
+                                                            name="id_empresa"
+                                                            placeholder={'Seleccionar la empresa'}
+                                                            className="react-select"
+                                                            classNamePrefix="react-select"
+                                                            options={arrayEmpresaFinan}
+                                                            value={arrayEmpresaFinan.find(
+                                                                (option) => option.value === id_empresa
+                                                            )||0}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </Col>
                                                 <Col lg={12}>
                                                     <div className="mb-4">
                                                         <label htmlFor="etiquetas_busquedas" className="form-label">

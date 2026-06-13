@@ -208,7 +208,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                               )
                         }
                         {
-                              (`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` || `${e?.mes}-${e.anio}`===`${mesActual-1}-${anioActual}` || (e.sumaIngresos-(e.sumaProyectado+e.sumaGastos))!==(e.sumaIngresos-(e.sumaGastos))) && (
+                              (`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` || `${e?.mes}-${e.anio}`===`${mesActual-1}-${anioActual}` && (e.sumaIngresos-(e.sumaProyectado+e.sumaGastos))!==(e.sumaIngresos-(e.sumaGastos))) && (
                                 <div className={`${e.utilidadBruta>0?'text-orange':'text-orange'} `} >
                                   <NumberFormatMoney 
                                     amount=

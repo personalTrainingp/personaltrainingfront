@@ -373,20 +373,19 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             </div>
         )
     }
-    
-        const costoManoObraBodyTemplate = (rowData)=>{
-            return (
-                <>
-                <div className=''> COSTO MANO OBRA S/.</div>
-                
-                <div className="d-flex font-24 w-100" >
-                    <div className='text-left w-100 fw-bold text-right'>
-                    <NumberFormatMoney amount={rowData.mano_obra_soles}/>
-                    </div>
+    const costoManoObraBodyTemplate = (rowData)=>{
+        return (
+            <>
+            <div className=''> COSTO MANO OBRA S/.</div>
+            
+            <div className="d-flex font-24 w-100" >
+                <div className='text-left w-100 fw-bold text-right'>
+                <NumberFormatMoney amount={rowData.mano_obra_soles}/>
                 </div>
-                </>
-            )
-        }
+            </div>
+            </>
+        )
+    }
     const costototalsolesBodyTemplate = (rowData)=>{
         const costo_total_soles = (rowData.costo_unitario_soles*rowData.cantidad)+rowData.mano_obra_soles
         return (
