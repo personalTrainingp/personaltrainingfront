@@ -129,8 +129,6 @@ obtenerUltimaMembresiaxIdCli(id_cli)
                             type='date'
                             onChange={onInputChange}
                             autoFocus
-                            rows={3}
-                            cols={20}
                         />
                     </div>
                 </Col>
@@ -148,8 +146,6 @@ obtenerUltimaMembresiaxIdCli(id_cli)
                             type='date'
                             onChange={onInputChange}
                             autoFocus
-                            rows={3}
-                            cols={20}
                         />
                     </div>
                 </Col>
@@ -166,8 +162,6 @@ obtenerUltimaMembresiaxIdCli(id_cli)
                             name='dias_habiles'
                             onChange={onInputChange}
                             autoFocus
-                            rows={3}
-                            cols={20}
                         />
                     </div>
                 </Col>
@@ -182,8 +176,6 @@ obtenerUltimaMembresiaxIdCli(id_cli)
                             name='observacion'
                             onChange={onInputChange}
                             autoFocus
-                            rows={3}
-                            cols={20}
                         />
                     </div>
                 </Col>

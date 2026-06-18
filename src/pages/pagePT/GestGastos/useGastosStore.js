@@ -76,6 +76,40 @@ export const useGastosStore = () => {
 			setloading(false);
 		}
 	};
+	const obtenerFacturados = async (id_facturado_por, esCompra = false) => {
+		try {
+			setloading(true);
+			const { data } = await PTApi.get(`/egreso/facturado/${id_facturado_por}`);
+			let dataGastoMap = data.gastos.map((g) => {
+				return {
+					...g,
+					tipo_gasto: arrayFinanzas.find(
+						(e) => e.value === g.tb_parametros_gasto?.id_tipoGasto
+					)?.label,
+					rubro: g.tb_parametros_gasto?.grupo,
+					concepto: g.tb_parametros_gasto?.nombre_gasto,
+					nombre_proveedor: g.tb_Proveedor?.razon_social_prov,
+					forma_pago: g.parametro_forma_pago?.label_param,
+					id: g.id,
+				};
+			});
+			if (esCompra) {
+				dataGastoMap = dataGastoMap.filter((f) => f.impuesto_igv === true);
+			}
+			setloading(false);
+			dispatch(onSetDataViewEgresos(dataGastoMap));
+		} catch (error) {
+			console.log(error);
+			Swal.fire({
+				icon: 'danger',
+				title: 'PROBLEMA',
+				showConfirmButton: false,
+				timer: 2500,
+			});
+		} finally {
+			setloading(false);
+		}
+	};
 	const obtenerGastoxID = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/egreso/id/${id}`);
@@ -167,6 +201,7 @@ export const useGastosStore = () => {
 		deleteGastoxID,
 		obtenerGastoxID,
 		postGasto,
+		obtenerFacturados,
 		dataGasto,
 		loading,
 	};

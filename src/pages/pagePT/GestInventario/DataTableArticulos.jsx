@@ -33,10 +33,10 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
           <Image src={row.tb_images?.length===0?'':`${imageUrl}`} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="250" />
         </>
       )
-    } },
+    } },  
     { id: 'nombre', header: <div className='text-center'>NOMBRE</div>, accessor: 'producto', render: (row)=>{
       return (
-        <div className='fs-2' style={{width: '200px'}}>
+        <div className='fs-2' style={{width: '300px'}}>
         {row?.producto}
         </div>
       )
@@ -48,28 +48,28 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
         </div>
       )
     }  },
-    { id: 'descripcion', header: <div className='text-center'>DESCRIPCION</div>, accessor: 'descripcion', width: 70,render: (row)=>{
+    { id: 'descripcion', header: <div className='text-center'>DESCRIPCION</div>, accessor: 'descripcion',render: (row)=>{
       return (
-        <div className='fs-2' style={{width: '200px'}}>
+        <div className='fs-2' style={{width: '400px'}}>
         {row?.descripcion}
         </div>
       )
     } },
     { id: 'ubicacion', header: <div className='text-center'>UBICACION</div>, accessor: 'lugar_encuentro',  width: 70, render: (row)=>{
       return (
-        <div className='fs-2' style={{width: '200px'}}>
+        <div className='fs-2' style={{width: '300px'}}>
         {row?.parametro_lugar_encuentro?.label_param}
         </div>
       )
     } },
-    { id: 'cantidad', header: <div className='text-center'>CANT.</div>, accessor: 'cantidad', render: (row)=>{
+    { id: 'cantidad', header: <div className='text-center'>CANT.</div>, accessor: 'cantidad', sortable: 'cantidad', render: (row)=>{
       return (
         <div className='fs-2' style={{width: '10px'}}>
         {row?.cantidad}
         </div>
       )
     } },
-    { id: 'costo_unitario_soles', header: <div className='text-center'>costo <br/> unit. S/.</div>, accessor: 'costo_unitario_soles', render:(row)=>{
+    { id: 'costo_unitario_soles', header: <div className='text-center'>costo <br/> unit. S/.</div>, sortable: 'costo_unitario_soles', accessor: 'costo_unitario_soles', render:(row)=>{
       return (
         <div className='fs-2' style={{width: '100px'}}>
           <NumberFormatMoney
@@ -112,6 +112,7 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
     { id: 'costo_total_soles', header: <div className='text-center'>costo <br/> TOTAL S/.</div>, width: 70, render:(row)=>{
       return (
         <div className='fs-2'>
+          <div className='text-center text-gray-400'>costo <br/> TOTAL S/.</div>
           <NumberFormatMoney
             amount=
               {(row?.costo_unitario_soles*row?.cantidad)+row?.mano_obra_soles}
@@ -122,6 +123,7 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
     { id: 'costo_total_dolares', header: <div className='text-center'>costo <br/> TOTAL $</div>, width: 70,  render: (row)=>{
       return (
         <div className='fs-2'>
+          <div className='text-center text-gray-400'>costo <br/> TOTAL $</div>
           <NumberFormatMoney
             amount=
             {(row?.costo_unitario_dolares*row?.cantidad)+row?.mano_obra_dolares}
@@ -157,9 +159,79 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
   const onClickBox = (id)=>{
     onOpenModalMovimientos(id)
   }
+  
+    const columnsExports = [
+      {
+        id: 'id',
+        exportHeader: 'ID',
+        exportValue: (row) => row.id,
+      },
+      {
+        id: 'nombre',
+        exportHeader: 'nombre',
+        exportValue: (row) => row.producto,
+      },
+      {
+        id: 'modelo',
+        exportHeader: 'Modelo',
+        exportValue: (row) => row.modelo,
+      },
+      {
+        id: 'descripcion',
+        exportHeader: 'Descripcion',
+        exportValue: (row) => row.descripcion,
+      },
+      {
+        id: 'LUGAR',
+        exportHeader: 'LUGAR',
+        exportValue: (row)=>row.parametro_lugar_encuentro?.label_param
+      },
+      {
+        id: 'cant',
+        exportHeader: 'Cantidad',
+        exportValue: (row)=>row.cantidad
+      },
+      {
+        id: 'costo_unitario_soles',
+        exportHeader: 'costo unitario soles',
+        exportValue: (row)=>row.costo_unitario_soles
+      },
+      {
+        id: 'costo_unitario_dolares',
+        exportHeader: 'costo unitario dolares',
+        exportValue: (row)=>row.costo_unitario_dolares
+      },
+      {
+        id: 'costo_mano_obra_soles',
+        exportHeader: 'costo mano obra soles',
+        exportValue: (row)=>row.costo_mano_obra_soles
+      },
+      {
+        id: 'costo_mano_obra_dolares',
+        exportHeader: 'costo mano obra dolares',
+        exportValue: (row)=>row.costo_mano_obra_dolares
+      },
+      {
+        id: 'costo_total_soles',
+        exportHeader: 'costo total soles',
+        exportValue: (row)=>row.costo_total_soles
+      },
+      {
+        id: 'costo_total_dolares',
+        exportHeader: 'costo total dolares',
+        exportValue: (row)=>row.costo_total_dolares
+      },
+    ];
   return (
     <>
     <TabView>
+        <TabPanel header={'TODOS'}>
+          <DataTableCR
+                columns={columns}
+                data={dataView}
+                exportExtraColumns={columnsExports}
+                />
+        </TabPanel>
         {
           agruparPorLugar(dataView).map(m=>{
             return (
@@ -167,6 +239,7 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
                 <DataTableCR
                 columns={columns}
                 data={m.items}
+                exportExtraColumns={columnsExports}
                 />
               </TabPanel>
             )

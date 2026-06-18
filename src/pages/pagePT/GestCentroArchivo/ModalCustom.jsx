@@ -9,8 +9,6 @@ import { Button } from 'primereact/button'
 import { useFilesStore } from '@/hooks/hookApi/useFilesStore'
 import Swal from 'sweetalert2'
 import { useCenterArchive } from './hook/useCenterArchive'
-import { arrayEmpresaFinan } from '@/types/type'
-import { InputSelect } from '@/components/InputText'
 const registerFile = {
   id_tipo_doc: 0,
   observacion: '',
@@ -104,10 +102,20 @@ export const ModalCustom = ({uid_file, show, onHide}) => {
                                 placeholder={'Seleccione la empresa'}
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                value={arrayEmpresaFinan.find(
+                                value={[
+                                    { value: 598, label: 'CHANGE' },
+                                    { value: 599, label: 'CIRCUS' },
+                                    { value: 601, label: 'REDUCTO' },
+                                    { value: 800, label: 'RAL' },
+                                ].find(
                                     (option) => option.value === id_empresa
                                 )}
-                                options={arrayEmpresaFinan}
+                                options={[
+                                    { value: 598, label: 'CHANGE' },
+                                    { value: 599, label: 'CIRCUS' },
+                                    { value: 601, label: 'REDUCTO' },
+                                    { value: 800, label: 'RAL' },
+                                ]}
                                 required
                         ></Select>
                     </div>

@@ -28,9 +28,6 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     const onOpenModalTableItemsIngresos = (data)=>{
         setdataIngresos({isOpen: true, items: data, header: ''})
     }
-    const onCloseModalTableItemsIngresos = ()=>{
-        setdataIngresos({isOpen: false, items: [], header: ''})
-    }
   return (
     <div>
         <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>

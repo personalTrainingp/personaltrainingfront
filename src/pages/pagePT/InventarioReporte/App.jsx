@@ -15,7 +15,7 @@ export const App = () => {
     <TabView>
       <TabPanel header='REAL'>
         <TabView>
-            <TabPanel header={<h2 className='card p-4 mb-0'>CHANGE THE SLIM STUDIO</h2>}>
+            <TabPanel header={<h2 className='card p-4 mb-0'>CHANGE THE SLIM STUDIO JUNIO 2026</h2>}>
                 <InventarioTotalizado id_empresa={598} label_empresa={'CHANGE THE SLIM STUDIO'}/>
             </TabPanel>
             <TabPanel header={<h2 className='card p-4 mb-0'>CIRCUS CO.</h2>}>
@@ -47,7 +47,7 @@ export const App = () => {
       </TabPanel>
       <TabPanel header='BACKUPS'>
         <TabView>
-            <TabPanel header={<h2 className='card p-4 mb-0'>CHANGE THE SLIM STUDIO febrero 2026</h2>}>
+            <TabPanel header={<h2 className='card p-4 mb-0'>CHANGE THE SLIM STUDIO</h2>}>
                 <InventarioTotalizado id_empresa={2598} label_empresa={'CHANGE THE SLIM STUDIO'}/>
             </TabPanel>
             <TabPanel header={<h2 className='card p-4 mb-0'>PROYECTO 1</h2>}>

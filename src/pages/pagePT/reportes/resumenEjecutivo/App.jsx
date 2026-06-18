@@ -62,7 +62,6 @@ export const App = ({ id_empresa }) => {
   return (
     <>
       <PageBreadcrumb title="INFORME GERENCIAL" subName="Ventas" />
-
       {isLoading && (
         <div style={{
           position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',

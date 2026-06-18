@@ -67,11 +67,7 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 								?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
 						const monto_pro = f.sin_limite
 							? f.isPromediado
-								? sumaGastos_Total_menos_mesActual /
-										(Number(g.mes) === new Date(f.fecha_inicio).getMonth() + 1
-											? sumaGastos_Total_menos_mesActual
-											: Number(g.mes) -
-												(new Date(f.fecha_inicio).getMonth() + 1)) || 0
+								? sumaGastos_Total_menos_mesActual / Number(g.mes) || 0
 								: f.monto_proyectado
 							: new Date(f.fecha_inicio).getUTCMonth() + 1 <= Number(g.mes)
 								? f.monto_proyectado

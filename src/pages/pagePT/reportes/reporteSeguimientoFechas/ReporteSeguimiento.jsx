@@ -8,7 +8,7 @@ import { NumberFormatMoney } from '@/components/CurrencyMask';
 export const ReporteSeguimiento = () => {
     const { obtenerSeguimientoxFecha, dataSeguimientoxFecha, obtenerVentasMembresias,  } = useSeguimientoOficialStore()
     useEffect(() => {
-        obtenerSeguimientoxFecha(["2026-05-29T12:00:00.000Z", "2030-03-16T12:00:00.000Z"])
+        obtenerSeguimientoxFecha(["2026-06-15T12:00:00.000Z", "2030-03-16T12:00:00.000Z"])
     }, [])
     
     const dataImaginaria = [

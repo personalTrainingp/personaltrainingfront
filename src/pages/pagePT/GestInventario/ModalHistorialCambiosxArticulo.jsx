@@ -20,9 +20,14 @@ export const ModalHistorialCambiosxArticulo = ({show, onHide, id}) => {
     { id: 'fecha', header: 'fecha', accessor: 'createdAt', width: 100, headerAlign: 'right', cellAlign: 'left', render:(row)=>{
       return dayjs.utc(row.updatedAt).format('dddd DD [DEL] MMMM [DE] YYYY [A LAS] HH:mm A')
     } },
-    // { id: 'nombre', header: 'campos actualizados', accessor: 'nombre', width: 100, headerAlign: 'right', cellAlign: 'left' },
     { id: 'usuario', header: 'Usuario', accessor: 'id_usuario', width: 100, headerAlign: 'right', cellAlign: 'left', render:(row)=>{
       return row.usuario?.usuario_user
+    } },
+    { id: 'ubicacion', header: 'Ubicacion', accessor: 'ubicacion', width: 100, headerAlign: 'right', cellAlign: 'left', render:(row)=>{
+      return (
+        <>
+        </>
+      )
     } },
     { id: 'accion', header: 'accion', accessor: 'id_accion', width: 100, headerAlign: 'right', cellAlign: 'left', render:(row)=>{
       return (
@@ -32,8 +37,12 @@ export const ModalHistorialCambiosxArticulo = ({show, onHide, id}) => {
       )
     } },
   ];
+  
   return (
     <Dialog visible={show} onHide={onHide} header='HISTORIAL DE CAMBIOS'>
+      {/* <pre>
+        {JSON.stringify(dataHistorialCambiosxIDArticulo, null, 2)}
+      </pre> */}
             <DataTableCR
               columns={columns}
               data={dataHistorialCambiosxIDArticulo}
