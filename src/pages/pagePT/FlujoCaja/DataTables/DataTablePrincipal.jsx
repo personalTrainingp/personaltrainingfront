@@ -46,7 +46,7 @@ export const  DataTablePrincipal = ({anio, id_empresa, sumaTotal, itemsxDias=[],
               return (
                 <tr key={''}>
                   <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal}`}>
-                    {c.id}. {(c.nombre_gasto)}
+                    {i+1}. {(c.nombre_gasto)}
                   </td>
                   {
                     c.itemsxDia.map(m=>{
