@@ -42,7 +42,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                         <DataTablePrincipal 
                             index={i+1}
                             id_empresa={id_empresa}
-                            onOpenModalTableItems={onOpenModalTableItemsIngresos} 
+                            onOpenModalTableItems={onOpenModalTableItems}
                             key={`${data.grupo}`} 
                             bgPastel={bgPastel} 
                             bgTotal={classNameEmpresa} 

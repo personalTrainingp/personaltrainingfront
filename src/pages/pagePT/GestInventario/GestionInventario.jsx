@@ -7,6 +7,7 @@ import ImgproyCircus3 from '@/assets/images/pr_tercer_nivel.jpeg'
 import ImgproyCircus2 from '@/assets/images/pr_segundo_nivel.jpeg'
 import ImgproyCircus1 from '@/assets/images/pr_primer_nivel.png'
 import { Image } from 'primereact/image'
+import { DataInventario2 } from './DataInventario2'
 export const GestionInventario = () => {
   return (
     <>
@@ -42,26 +43,13 @@ export const GestionInventario = () => {
                   </TabPanel>
                   </TabView>
             </TabPanel>
-            <TabPanel header='BACKUP'>
-                  <TabView>
-                        <TabPanel header={<>CHANGE<br/> INVENTARIO TOTAL</>}>
-                              <DataInventario id_enterprice={1598} id_zona={598}/>
-                        </TabPanel>
-                        <TabPanel header={<>REDUCTO<br/>INVENTARIO TOTAL</>}>
-                              <DataInventario id_enterprice={599} id_zona={599}/>
-                        </TabPanel>
-                        <TabPanel header={<>PLANOS REDUCTO <br/> DEFENSA CIVIL</>}>
-                              <div>
-                                    <Image src={ImgproyCircus3}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
-                                    </Image>
-                              </div>      
-                        </TabPanel>
-                  </TabView>
-            </TabPanel>
             <TabPanel header='BACKUPS'>
                   <TabView>
                         <TabPanel header={<>CHANGE<br/> INVENTARIO TOTAL FEBRERO 2026</>}>
                               <DataInventario id_enterprice={2598} id_zona={598}/>
+                        </TabPanel>
+                        <TabPanel header={<>CIRCUS EXTRA</>}>
+                              <DataInventario2 etiquetas={[1833]} id_enterprice={1599} id_zona={598}/>
                         </TabPanel>
                         <TabPanel header={<>PROYECTO 1</>}>
                               <DataInventario id_enterprice={5992} id_zona={599}/>

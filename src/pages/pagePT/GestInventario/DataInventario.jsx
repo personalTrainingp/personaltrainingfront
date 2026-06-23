@@ -12,6 +12,7 @@ export const DataInventario = ({id_enterprice, id_zona, ImgproyCircus3, ImgproyC
     <>
         <Toast ref={toast}/>
         {id_enterprice}
+        
         <TableInventario ImgproyCircus3={ImgproyCircus3} ImgproyCircus2={ImgproyCircus2} ImgproyCircus1={ImgproyCircus1} showToast={showToast} id_enterprice={id_enterprice} id_zona={id_zona}/>
     </>
   )

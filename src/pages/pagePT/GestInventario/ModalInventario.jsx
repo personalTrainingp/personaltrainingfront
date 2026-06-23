@@ -176,25 +176,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                             <Row>
                                                 <Col lg={12}>
                                                     <div className="mb-4">
-                                                        <label htmlFor="id_empresa" className="form-label">
-                                                            EMPRESA
-                                                        </label>
-                                                        <Select
-                                                            onChange={(e) => onInputChangeReact(e, 'id_empresa')}
-                                                            name="id_empresa"
-                                                            placeholder={'Seleccionar la empresa'}
-                                                            className="react-select"
-                                                            classNamePrefix="react-select"
-                                                            options={arrayEmpresaFinan}
-                                                            value={arrayEmpresaFinan.find(
-                                                                (option) => option.value === id_empresa
-                                                            )||0}
-                                                            required
-                                                        />
-                                                    </div>
-                                                </Col>
-                                                <Col lg={12}>
-                                                    <div className="mb-4">
                                                         <label htmlFor="etiquetas_busquedas" className="form-label">
                                                             ETIQUETAS DE BUSQUEDA
                                                         </label>

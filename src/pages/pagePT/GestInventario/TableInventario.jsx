@@ -23,8 +23,6 @@ import { ModalHistorialCambiosxArticulo } from './ModalHistorialCambiosxArticulo
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
     locale('es')
-    const dt = useRef(null);
-    const [first, setFirst] = useState(0); // fila inicial (ej: página 2 es fila 10 si tienes rows=5)
     const [customers, setCustomers] = useState([]);
     const [filters, setFilters] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -33,7 +31,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const [isOpenModalHistorialCambio, setisOpenModalHistorialCambio] = useState({isOpen: false, id: 0})
     const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
-    const [valueFilter, setvalueFilter] = useState([])
     const [search, setSearch] = useState('');
     useEffect(() => {
         obtenerArticulos(id_enterprice)
@@ -307,7 +304,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         );
     };
     const valueFiltered = (e)=>{
-        setvalueFilter(e)
     }
     
     const header = renderHeader();
@@ -454,17 +450,14 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                 );
                                 return (
                                     <TabPanel header={g.lugar}>
-                                        {/* <Button label='POR ETIQUETAS' text onClick={()=>onOpenModalAgrupadoxEtiquetas(agruparXetiquetas(g.items))}/> */}
                                         <DataTable  
                                             className='dataTable-verticals-lines dataTable-inventario'
-                                            first={first}
-                                            onPage={(e) => setFirst(e.first)}
                                             value={filterData} 
                                             paginator 
                                             header={header}
                                             rows={10} 
                                             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                                            rowsPerPageOptions={[10, 25, 50, 100, 250, 500]} 
+                                            rowsPerPageOptions={[10, 100, 250, 500]} 
                                             dataKey="id"
                                             selection={selectedCustomers}
                                             onSelectionChange={(e) => setselectedCustomers(e.value)}
