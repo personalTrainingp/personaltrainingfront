@@ -18,13 +18,19 @@ const registerFile = {
 const registerArchivo={
     imgAvatar_BASE64: ''
 }
-export const ModalCustom = ({uid_file, show, onHide}) => {
-  const [file, setfile] = useState(null)
-  const { formState, id_tipo_doc, id_empresa, id_seccionVisible, titulo, observacion, onInputChangeReact, onInputChange, onResetForm } = useForm(registerFile)
+export const ModalCustom = ({uid_file, show, onHide, id}) => {
+    const [file, setfile] = useState(null)
+    const { obtenerArchivoxID, dataxID, onUpdateArchivo } = useCenterArchive()
+  const { formState, id_tipo_doc, id_empresa, id_seccionVisible, titulo, observacion, onInputChangeReact, onInputChange, onResetForm } = useForm(id!==0?dataxID:registerFile)
   const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
   const { obtenerParametroPorEntidadyGrupo:obtenerTipoDoc, DataGeneral:datatipoDoc } = useTerminoStore()
   const { postFiles } = useFilesStore()
-  const { onPostArchivCenter } = useCenterArchive()
+  useEffect(() => {
+    if (id!==0) {
+        obtenerArchivoxID(id)
+    }
+  }, [id])
+  
   useEffect(() => {
     obtenerParametroPorEntidadyGrupo('centro-archivo', 'categoria')
     obtenerTipoDoc('centro-archivo','tipo-archivo')
@@ -32,19 +38,23 @@ export const ModalCustom = ({uid_file, show, onHide}) => {
     
     const onSubmitFile = (e)=>{
         e.preventDefault()
-        if(!file){
-            Swal.fire({
-                icon: 'error',
-                title: 'No hay documento adjunto',
-                showConfirmButton: false,
-                timer: 5000,
-            });
-            return;
+        if (id!==0) {
+            onUpdateArchivo(id, id_empresa, formState)
+        }else{
+            if(!file){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No hay documento adjunto',
+                    showConfirmButton: false,
+                    timer: 5000,
+                });
+                return;
+            }
+            const formData = new FormData()
+            formData.append('file', file)
+            console.log({formData, file});
+            onPostArchivCenter(formState, id_seccionVisible, id_empresa, formData)
         }
-        const formData = new FormData()
-        formData.append('file', file)
-        console.log({formData, file});
-        onPostArchivCenter(formState, id_seccionVisible, id_empresa, formData)
         // postFiles(uid_file, formState, formData)
         cancelModal()
     }
@@ -60,37 +70,36 @@ export const ModalCustom = ({uid_file, show, onHide}) => {
         setfile(file)
     }
   return (
-    <Dialog header='Agregar un documento' style={{width: '30rem'}} visible={show} onHide={cancelModal}>
+    <Dialog header={`Agregar un documento`} style={{width: '30rem'}} visible={show} onHide={cancelModal}>
         <DIVContainer>
             {/* <FileUploaderSN fileAccepted={".pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx"} onFileUpload={onChangeFileDieta} showPreview={true}/> */}
             <form className="dropzone-box" onSubmit={onSubmitFile}>
             <Row>
-                <Col xxl={12}>
-                <div className="dropzone-area my-2">
-                    <div className="file-upload-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2"
-                            stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                        </svg>
-                    </div>
-                    <p>Haga clic para cargar el documento</p>
-                    <input 
-                    accept={".pdf,.doc"}
-                    name='file'
-                    onChange={onChangeFile}
-                    type="file" 
-                    required
-                    />
-                    <p className="message">{file ? `${file?.name}, ${file?.size} bytes` : "SIN ARCHIVOS SELECCIONADO"}</p>
-                </div>
-                </Col>
-                {/* <Col xxl={12}>
-                    <InputSelect label={'Tipo de registro'} options={[{value: 1582, label: 'DOC'},{value: 1581, label: 'URL'}]}/>
-                </Col>
-                <Col xxl={}>
-                </Col> */}
+                {
+                    id===0 && (
+                        <Col xxl={12}>
+                            <div className="dropzone-area my-2">
+                                <div className="file-upload-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2"
+                                        stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                    </svg>
+                                </div>
+                                <p>Haga clic para cargar el documento</p>
+                                <input 
+                                accept={".pdf,.doc"}
+                                name='file'
+                                onChange={onChangeFile}
+                                type="file" 
+                                required
+                                />
+                                <p className="message">{file ? `${file?.name}, ${file?.size} bytes` : "SIN ARCHIVOS SELECCIONADO"}</p>
+                            </div>
+                        </Col>
+                    )
+                }
                 <Col xxl={12}>
                     <div className="mb-2">
                         <label htmlFor="id_empresa" className="form-label">

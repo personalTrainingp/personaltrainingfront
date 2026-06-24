@@ -5,18 +5,18 @@ import { DataTableCentroArchivo } from './DataTableCentroArchivo'
 import { ModalCustom } from './ModalCustom'
 
 export const App2 = ({idEmpresa}) => {
-    const [isOpenModalCustomArchivo, setisOpenModalCustomArchivo] = useState({isOpen: false})
-    const onClickOpenModalCustomArchivo=()=>{
-        setisOpenModalCustomArchivo({isOpen: true})
+    const [isOpenModalCustomArchivo, setisOpenModalCustomArchivo] = useState({isOpen: false, id: 0})
+    const onClickOpenModalCustomArchivo=(id=0)=>{
+        setisOpenModalCustomArchivo({isOpen: true, id: id})
     }
     const onClickCloseModalCustomArchivo =()=>{
-        setisOpenModalCustomArchivo({isOpen: false})
+        setisOpenModalCustomArchivo({isOpen: false, id: 0})
     }   
   return (
     <>
-    <Button onClick={onClickOpenModalCustomArchivo}>AGREGAR ARCHIVO</Button>
-    <DataTableCentroArchivo idEmpresa={idEmpresa}/>
-    <ModalCustom onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
+    <Button onClick={()=>onClickOpenModalCustomArchivo(0)}>AGREGAR ARCHIVO</Button>
+    <DataTableCentroArchivo onClickOpenModalCustomArchivo={onClickOpenModalCustomArchivo} idEmpresa={idEmpresa}/>
+    <ModalCustom id={isOpenModalCustomArchivo.id} onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
     </>
   )
 }

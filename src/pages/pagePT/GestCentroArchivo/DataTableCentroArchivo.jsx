@@ -6,7 +6,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
-export const DataTableCentroArchivo = ({idEmpresa}) => {
+export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo}) => {
     const { obtenerArchivosCenter, onDeleteArchivo } = useCenterArchive()
     const { dataView } = useSelector(e=>e.DATA)
     useEffect(() => {
@@ -43,9 +43,12 @@ export const DataTableCentroArchivo = ({idEmpresa}) => {
         {id: 'action', accessor: '', header: '', render: (row)=>{
           return (
             <>
-                            <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
-                            onClick={()=>confirmDeleteArchivoxID(row.id)} 
-                            />
+              <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
+              onClick={()=>confirmDeleteArchivoxID(row.id)} 
+              />
+              <Button icon="pi pi-pencil" rounded outlined severity="danger"  className='mr-2'
+              onClick={()=>editarArchivoxID(row.id)} 
+              />
             </>
           )
         }},
@@ -57,6 +60,9 @@ export const DataTableCentroArchivo = ({idEmpresa}) => {
           onDeleteArchivo(id)
         }
       })
+    }
+    const editarArchivoxID = (id)=>{
+      onClickOpenModalCustomArchivo(id)
     }
   return (
     <div>
