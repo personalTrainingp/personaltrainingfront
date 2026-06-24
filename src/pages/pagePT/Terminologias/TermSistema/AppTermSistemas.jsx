@@ -44,6 +44,16 @@ export const AppTermSistemas = () => {
                   </TabPanel>
                 </TabView>
               </TabPanel>
+              <TabPanel header={'CENTRO DE ARCHIVOS'}>
+                <TabView>
+                  <TabPanel header={'SUBTIPO'}>
+                    <ViewTerminos titulo={'Subtipo'} grupo={'sub-tipo-archivo'} entidad={'centro-archivo'}/>
+                  </TabPanel>
+                  <TabPanel header={'TIPO'}>
+                    <ViewTerminos titulo={'tipo'} grupo={'categoria'} entidad={'centro-archivo'}/>
+                  </TabPanel>
+                </TabView>
+              </TabPanel>
             </TabView>
     </div>
   )
