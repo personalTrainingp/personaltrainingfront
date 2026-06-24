@@ -19,7 +19,7 @@ const registerArchivo={
 }
 export const ModalCustom = ({uid_file, show, onHide, id}) => {
     const [file, setfile] = useState(null)
-    const { obtenerArchivoxID, dataxID, onUpdateArchivo } = useCenterArchive()
+    const { obtenerArchivoxID, dataxID, onUpdateArchivo, onPostArchivCenter } = useCenterArchive()
   const { formState, id_tipo_doc, id_empresa, id_seccionVisible, titulo, observacion, id_sub_tipo_doc, onInputChangeReact, onInputChange, onResetForm } = useForm(id!==0?dataxID:registerFile)
   const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
   const { obtenerParametroPorEntidadyGrupo:obtenerTipoDoc, DataGeneral:datatipoDoc } = useTerminoStore()
@@ -52,7 +52,6 @@ export const ModalCustom = ({uid_file, show, onHide, id}) => {
             }
             const formData = new FormData()
             formData.append('file', file)
-            console.log({formData, file});
             onPostArchivCenter(formState, id_seccionVisible, id_empresa, formData)
         }
         // postFiles(uid_file, formState, formData)
