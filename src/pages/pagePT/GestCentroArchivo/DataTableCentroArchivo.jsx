@@ -40,6 +40,13 @@ export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo
             </>
           )
         }},
+        {id: 'Subtipo', accessor: '', header: 'subtipo', render:(row)=>{
+          return (
+            <>
+            {row?.subtipo?.label_param}
+            </>
+          )
+        }},
         {id: 'action', accessor: '', header: '', render: (row)=>{
           return (
             <>

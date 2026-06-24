@@ -6,7 +6,6 @@ import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components'
 import Select from 'react-select'
 import { Button } from 'primereact/button'
-import { useFilesStore } from '@/hooks/hookApi/useFilesStore'
 import Swal from 'sweetalert2'
 import { useCenterArchive } from './hook/useCenterArchive'
 const registerFile = {
@@ -21,10 +20,10 @@ const registerArchivo={
 export const ModalCustom = ({uid_file, show, onHide, id}) => {
     const [file, setfile] = useState(null)
     const { obtenerArchivoxID, dataxID, onUpdateArchivo } = useCenterArchive()
-  const { formState, id_tipo_doc, id_empresa, id_seccionVisible, titulo, observacion, onInputChangeReact, onInputChange, onResetForm } = useForm(id!==0?dataxID:registerFile)
+  const { formState, id_tipo_doc, id_empresa, id_seccionVisible, titulo, observacion, id_sub_tipo_doc, onInputChangeReact, onInputChange, onResetForm } = useForm(id!==0?dataxID:registerFile)
   const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
   const { obtenerParametroPorEntidadyGrupo:obtenerTipoDoc, DataGeneral:datatipoDoc } = useTerminoStore()
-  const { postFiles } = useFilesStore()
+  const { obtenerParametroPorEntidadyGrupo:obtenerSubTipoDoc, DataGeneral:dataSubtipoDoc } = useTerminoStore()
   useEffect(() => {
     if (id!==0) {
         obtenerArchivoxID(id)
@@ -34,6 +33,7 @@ export const ModalCustom = ({uid_file, show, onHide, id}) => {
   useEffect(() => {
     obtenerParametroPorEntidadyGrupo('centro-archivo', 'categoria')
     obtenerTipoDoc('centro-archivo','tipo-archivo')
+    obtenerSubTipoDoc('centro-archivo', 'sub-tipo-archivo')
   }, [show])
     
     const onSubmitFile = (e)=>{
@@ -148,25 +148,25 @@ export const ModalCustom = ({uid_file, show, onHide, id}) => {
                         ></Select>
                     </div>
                 </Col>
-                {/* <Col xxl={12}>
+                <Col xxl={12}>
                     <div className="mb-2">
-                        <label htmlFor="id_tipo_doc" className="form-label">
-                            TIPO DE ARCHIVO:
+                        <label htmlFor="id_sub_tipo_doc" className="form-label">
+                            Sub tipo:
                         </label>
                         <Select
-                                onChange={(e)=>onInputChangeReact(e, "id_tipo_doc")}
-                                name={"id_tipo_doc"}
-                                placeholder={'Seleccione el tipo de documento'}
+                                onChange={(e)=>onInputChangeReact(e, "id_sub_tipo_doc")}
+                                name={"id_sub_tipo_doc"}
+                                placeholder={'Seleccione la tipo'}
                                 className="react-select"
                                 classNamePrefix="react-select"
-                                value={datatipoDoc.find(
-                                    (option) => option.value === id_tipo_doc
+                                value={dataSubtipoDoc.find(
+                                    (option) => option.value === id_sub_tipo_doc
                                 )}
-                                options={datatipoDoc}
-                                // required
+                                options={dataSubtipoDoc}
+                                required
                         ></Select>
                     </div>
-                </Col> */}
+                </Col>
                 <Col xxl={12}>
                     <div className="mb-2">
                         <label htmlFor="titulo" className="form-label">
