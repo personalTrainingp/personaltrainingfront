@@ -136,16 +136,80 @@ export const DataInventario2 = ({id_enterprice, id_zona, etiquetas=[]}) => {
       )
     }},
     ]
+    
+        const columnsExports = [
+            {
+                id: 'ID',
+                exportHeader: 'ID',
+                exportValue: (row) => row.id,
+            },
+            {
+                id: 1,
+                exportHeader: 'PRODUCTO',
+                exportValue: (row)=>row.producto
+            },
+            {
+                id: 2,
+                exportHeader: 'modelo',
+                exportValue: (row)=>row.modelo
+            },
+            {
+                id: 3,
+                exportHeader: 'DESCRIPCION',
+                exportValue: (row)=>row.descripcion
+            },
+            {
+                id: 'ubicacion',
+                exportHeader: 'UBICACION',
+                exportValue: (row)=>row.parametro_lugar_encuentro?.label_param
+            },
+            {
+                id: 'cantidad',
+                exportHeader: 'CANTIDAD',
+                exportValue: (row)=>row.cantidad
+            },
+            {
+                id: 'costo_unitario_soles',
+                exportHeader: 'COSTO UNITARIO SOLES',
+                exportValue: (row)=>row.costo_unitario_soles
+            },
+            {
+                id: 'costo_unitario_dolares',
+                exportHeader: 'COSTO UNITARIO DOLARES',
+                exportValue: (row)=>row.costo_unitario_dolares
+            },
+            {
+                id: 'costo_mano_obra_soles',
+                exportHeader: 'COSTO MANO OBRA SOLES',
+                exportValue: (row)=>row.costo_mano_obra_soles
+            },
+            {
+                id: 'costo_mano_obra_dolares',
+                exportHeader: 'COSTO MANO OBRA DOLARES',
+                exportValue: (row)=>row.costo_mano_obra_dolares
+            },
+            {
+                id: 'costo_total_soles',
+                exportHeader: 'COSTO TOTAL SOLES',
+                exportValue: (row)=>(row?.costo_unitario_soles*row?.cantidad)+row?.mano_obra_soles
+            },
+            {
+                id: 'costo_total_dolares',
+                exportHeader: 'COSTO TOTAL DOLARES',
+                exportValue: (row)=>(row?.costo_unitario_dolares*row?.cantidad)+row?.mano_obra_dolares
+            },
+        ]
   return (
     <>
         <Toast ref={toast}/>
         <DataTableCR
           columns={columns}
           data={dataView.filter(item =>
-  item.etiquetas_busquedas?.some(etiqueta =>
-    etiquetas.includes(etiqueta.value)
-  )
-)}
+            item.etiquetas_busquedas?.some(etiqueta =>
+              etiquetas.includes(etiqueta.value)
+            )
+          )}
+          exportExtraColumns={columnsExports}
         />
     </>
   )
