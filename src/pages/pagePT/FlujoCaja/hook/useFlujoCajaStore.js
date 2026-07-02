@@ -257,7 +257,47 @@ export const useFlujoCaja = () => {
 			console.log(error);
 		}
 	};
+	const obtenerGastosxFecha = async (id_empresa, arrayDate) => {
+		try {
+			const { data } = await PTApi.get(`/egreso/fecha-comprobante/${id_empresa}`, {
+				params: {
+					arrayDate: [
+						formatDateToSQLServerWithDayjs(arrayDate[0], true),
+						formatDateToSQLServerWithDayjs(arrayDate[1], false),
+					],
+				},
+			});
+			const dataGastos = data.gastos
+				.filter((f) => f.id_gasto !== 1053)
+				.map((g) => {
+					return {
+						fecha_primaria: new Date(
+							new Date(g.fecha_comprobante).setUTCHours(14, 0, 0, 0)
+						).toISOString(),
+						...g,
+					};
+				});
+			const dataTipoTC = await obtenerTipoDeCambio();
+			const dataGastosEnTotal = [...dataGastos].map((m) => {
+				const fechaPrimaria = new Date(m.fecha_primaria);
+				const mesP = fechaPrimaria.getUTCMonth() + 1;
+				const anioP = fechaPrimaria.getUTCFullYear();
+				const diaP = fechaPrimaria.getUTCDate();
+				return {
+					fechaP: { anioP, mesP, diaP },
+					...m,
+				};
+			});
+
+			setdataGastosxFecha({
+				items: aplicarTipoDeCambio(dataTipoTC, dataGastosEnTotal),
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
+		obtenerGastosxFecha,
 		obtenerEgresosxFecha,
 		dataGastosxFecha,
 		obtenerIngresosxFecha,

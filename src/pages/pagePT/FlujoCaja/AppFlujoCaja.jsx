@@ -5,6 +5,8 @@ import { TablesResumenTotal } from './view/TablesResumenTotal'
 import { ColorEmpresa } from '@/components/ColorEmpresa'
 import { PageBreadcrumb } from '@/components'
 import { Trimestre1Total } from './view/Trimestre1Total'
+import { AppTablesConceptos } from './AppTablesConceptos'
+import { generarMesYanio } from './helpers/generarMesYanio'
 
 export const AppFlujoCaja = () => {
   return (
@@ -13,6 +15,11 @@ export const AppFlujoCaja = () => {
       <ColorEmpresa
         childrenChange={
           <TabView>
+            <TabPanel header={<div className='fs-1'>TOTAL</div>}>
+            <div className='' style={{overflowY: 'scroll', height: '800px'}}>
+              <AppTablesConceptos />
+            </div>
+            </TabPanel>
             <TabPanel header={<div className='fs-1'>2026</div>}>
             <div className='' style={{overflowY: 'scroll', height: '800px'}}>
               <ViewTablesFlujoCaja link={'link-change'} textEmpresa={'text-change'} arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>

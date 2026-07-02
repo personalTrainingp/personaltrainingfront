@@ -57,7 +57,7 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
             return (
                 <div className='d-flex justify-content-center flex-column text-center ' style={{width: '190px'}}>
 
-                <div className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} ${row.id_estado_gasto===1424?'':'text-change'} d-flex align-items-center justify-content-center`}>
+                <div className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} ${row.id_estado_gasto===1423?'':'text-change'} d-flex align-items-center justify-content-center`}>
                     {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar />}
                     <NumberFormatMoney amount={row.monto} className={`fs-2`}/>
                 </div>

@@ -53,6 +53,10 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 							agrupadoxDia
 								.filter((f) => Number(f.mes) < Number(g.mes))
 								.flatMap((e) => e.items) || [];
+						const gastos_antes_mesActual_costos_sin_cero =
+							agrupadoxDia
+								.filter((f) => f.items.length !== 0)
+								.flatMap((e) => e.items) || [];
 						const sumaGastos_Total_menos_mesActual = gastos_antes_mesActual.reduce(
 							(total, item) => item.monto + total,
 							0
@@ -67,7 +71,8 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 								?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
 						const monto_pro = f.sin_limite
 							? f.isPromediado
-								? sumaGastos_Total_menos_mesActual / (Number(g.mes) - 1) || 0
+								? sumaGastos_Total_menos_mesActual /
+										gastos_antes_mesActual_costos_sin_cero.length || 0
 								: f.monto_proyectado
 							: new Date(f.fecha_inicio).getUTCMonth() + 1 <= Number(g.mes)
 								? f.monto_proyectado

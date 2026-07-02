@@ -35,12 +35,11 @@ export const arrayEmpresa = [
 ];
 export const arrayEmpresaFinan = [
 	{ value: 598, label: 'CHANGE' },
+	{ value: 800, label: 'RAL' },
 	{ value: 599, label: 'REDUCTO' },
 	{ value: 601, label: 'CIRCUS' },
 	{ value: 0, label: 'OTROS' },
-	{ value: 600, label: 'OTROS RAL' },
 	{ value: 700, label: 'MANICURE' },
-	{ value: 800, label: 'RAL' },
 ];
 export const arrayEmpresaFinanAbrev = [
 	{ value: 598, label: 'CHA' },

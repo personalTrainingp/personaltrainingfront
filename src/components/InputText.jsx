@@ -12,7 +12,7 @@ dayjs.locale("es");
 export const InputText = ({label, onChange, value, nameInput, required=false, ...props}) => {
   return (
     <>
-      <label className='form-label' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
+      <label className='form-label text-change'  htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
       <input
           className='form-control'
           value={value}
@@ -54,7 +54,7 @@ export const InputDate = ({label, onChange, value, nameInput, required=false, ty
 
   return (
     <>
-      <label className="form-label" htmlFor={nameInput}>
+      <label className="form-label text-change" htmlFor={nameInput}>
         {label} {required && <span className="text-danger">*</span>} {formattedValue}
       </label>
       
@@ -75,7 +75,7 @@ export const InputDate = ({label, onChange, value, nameInput, required=false, ty
 export const InputTextArea = ({label, onChange, value, nameInput, required=false, ...props}) => {
   return (
     <>
-      <label className='form-label' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
+      <label className='form-label text-change' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
       <textarea
           className='form-control'
           value={value}
@@ -94,7 +94,7 @@ export const InputTextArea = ({label, onChange, value, nameInput, required=false
 export const InputNumber = ({label, onChange, value, nameInput, required=false, ...props}) => {
   return (
     <>
-      <label className='form-label' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
+      <label className='form-label text-change' htmlFor={nameInput} >{label} {required && (<span className='text-danger'>*</span>)} </label>
       <input
           className='form-control'
           value={value}
@@ -127,7 +127,7 @@ export const InputSelect = ({label, value='', placeholder='', onChange, nameInpu
         label=== '' ? (
           <></>
         ): (
-          <label className='form-label'>{label} {required && (<span className='text-danger'>*</span>)} </label>
+          <label className='form-label text-change'>{label} {required && (<span className='text-danger'>*</span>)} </label>
         )
       }
       <Select
@@ -156,7 +156,7 @@ export const InputSwitch = ({label, value=false, onChange, nameInput, required, 
   };
   return (
     <>
-      <label className='form-label'>{label} {required && (<span className='text-danger'>*</span>)}</label>
+      <label className='form-label text-change'>{label} {required && (<span className='text-danger'>*</span>)}</label>
       <FormCheck
         type='switch'
         style={{fontSize: '20px'}}
@@ -203,7 +203,7 @@ export const InputMoney = ({label, onChange, value, nameInput, required=false, .
 
   return (
     <>
-      <label className="form-label" htmlFor={nameInput}>
+      <label className="form-label text-change" htmlFor={nameInput}>
         {label} {required && <span className="text-danger">*</span>}
       </label>
 

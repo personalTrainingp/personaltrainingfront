@@ -55,7 +55,17 @@ export const ModalTableItems = ({show, onHide, items={}, isShowConceptos=false, 
         {id: 6, header: (<div className='text-center'>MONTO <br/> <span className='fs-2'>S/. - <span className='text-ISESAC'>$</span></span></div>), render:(row)=>{
             return (
                 <div className={`${row.id_estado_gasto===1424 && 'text-change'}`}>
-                    {
+                    
+                    {row.tc!==1 && (
+                        <span className='text-ISESAC'>
+                            <NumberFormatMoney amount={row.monto/row.tc}/>
+                        </span>
+                    )}
+                {row.tc===1?'':row.tc}
+                {row.tc!==1&& (<br/>)}
+                <NumberFormatMoney amount={row.monto}/>
+                {row.tc!==1&& (<br/>)}
+                {
                         row?.impuesto_igv && (
                             <>
                             <div style={{width: '140px'}} className={ `${row.moneda === 'PEN'?'':'text-color-dolar'} text-center d-flex align-items-center justify-content-center text-change`}>
@@ -70,15 +80,6 @@ export const ModalTableItems = ({show, onHide, items={}, isShowConceptos=false, 
                             </>
                         )
                     }
-                {row.tc===1?'':row.tc}
-                {row.tc!==1&& (<br/>)}
-                {row.tc!==1 && (
-                    <span className='text-ISESAC'>
-                        <NumberFormatMoney amount={row.monto/row.tc}/>
-                    </span>
-                )}
-                {row.tc!==1&& (<br/>)}
-                <NumberFormatMoney amount={row.monto}/>
                 </div>
             )
         }},

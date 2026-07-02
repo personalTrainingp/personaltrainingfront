@@ -201,7 +201,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     <Modal show={show} onHide={cancelarGasto} size='xl'>
         <Modal.Header>
             <Modal.Title>
-                REGISTRAR GASTO { id }
+                { id!==0?'EDITAR GASTO':'AGREGAR GASTO' }
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -224,12 +224,12 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'CONCEPTOS'} nameInput={'id_gasto'} onChange={onInputChange} options={dataConceptosxGrupo} value={id_gasto} />
+                            <InputSelect label={'item'} nameInput={'id_gasto'} onChange={onInputChange} options={dataConceptosxGrupo} value={id_gasto} />
                         </div>
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'TIPO DE MONEDA'} nameInput={'moneda'} onChange={onInputChange} options={arrayMonedas} value={moneda} />
+                            <InputSelect label={'MONEDA'} nameInput={'moneda'} onChange={onInputChange} options={arrayMonedas} value={moneda} />
                         </div>
                     </Col>
                     <Col lg={4}>
@@ -239,17 +239,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'TIPO DE COMPROBANTE'} nameInput={'id_tipo_comprobante'} onChange={onInputChange} options={DataTipoComprobante} value={id_tipo_comprobante} />
-                        </div>
-                    </Col>
-                    <Col lg={4}>
-                        <div className='m-2'>
-                            <InputText label={'NUMERO DE COMPROBANTE'} nameInput={'n_comprabante'} value={n_comprabante} onChange={onInputChange} />
-                        </div>
-                    </Col>
-                    <Col lg={4}>
-                        <div className='m-2'>
-                            <InputDate label={'FECHA DE COMPROBANTE'} nameInput={'fec_comprobante'} value={fec_comprobante} onChange={onInputChange} />
+                            <InputSelect label={'TIPO COMPROBANTE'} nameInput={'id_tipo_comprobante'} onChange={onInputChange} options={DataTipoComprobante} value={id_tipo_comprobante} />
                         </div>
                     </Col>
                     <Col lg={4}>
@@ -268,12 +258,22 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputDate label={'fecha de pago'} nameInput={'fec_pago'} value={fec_pago} onChange={onInputChange} />
+                            <InputText label={<>n° COMPROBANTE <span className='text-change'>(obligatorio)</span></>} nameInput={'n_comprabante'} value={n_comprabante} onChange={onInputChange} />
                         </div>
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'FORMA DE PAGO'} nameInput={'id_forma_pago'} value={id_forma_pago} options={ordenFormaPagoMAP} onChange={onInputChange} />
+                            <InputDate label={'FECHA COMPROBANTE'} nameInput={'fec_comprobante'} value={fec_comprobante} onChange={onInputChange} />
+                        </div>
+                    </Col>
+                    <Col lg={4}>
+                        <div className='m-2'>
+                            <InputSelect label={'FORMA PAGO'} nameInput={'id_forma_pago'} value={id_forma_pago} options={ordenFormaPagoMAP} onChange={onInputChange} />
+                        </div>
+                    </Col>
+                    <Col lg={4}>
+                        <div className='m-2'>
+                            <InputDate label={'fecha pago'} nameInput={'fec_pago'} value={fec_pago} onChange={onInputChange} />
                         </div>
                     </Col>
                     <Col lg={4}>
@@ -283,12 +283,12 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputText label={'Numero de operacion'} nameInput={'n_operacion'} value={n_operacion} onChange={onInputChange} />
+                            <InputText label={'n° operacion'} nameInput={'n_operacion'} value={n_operacion} onChange={onInputChange} />
                         </div>
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'oficios'} nameInput={'id_oficio'} options={[...dataOficios, {value: null, label: 'TODOS'}]} onChange={onInputChangeOficios} value={id_oficio} />
+                            <InputSelect label={'Profesion'} nameInput={'id_oficio'} options={[...dataOficios, {value: null, label: 'TODOS'}]} onChange={onInputChangeOficios} value={id_oficio} />
                         </div>
                     </Col>
                     <Col lg={4}>
@@ -301,25 +301,20 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'estados'} nameInput={'id_estado_gasto'} onChange={onInputChange} options={DataEstadosGasto} value={id_estado_gasto} />
+                            <InputSelect label={'situacion'} nameInput={'id_estado_gasto'} onChange={onInputChange} options={DataEstadosGasto} value={id_estado_gasto} />
                         </div>
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'trabajos de proveedores'} nameInput={'id_contrato_prov'} onChange={onInputChange} options={dataContratosProv.map(con=>{return {label: `${con.id}. ${con.observacion}`, value: con.id}})} value={id_contrato_prov} />
+                            <InputSelect label={'trabajo realizado'} nameInput={'id_contrato_prov'} onChange={onInputChange} options={dataContratosProv.map(con=>{return {label: `${con.id}. ${con.observacion}`, value: con.id}})} value={id_contrato_prov} />
                         </div>
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'cobrar'} nameInput={'id_porCobrar'} onChange={onInputChange} options={[]} value={id_porCobrar} />
+                            <InputSelect label={'Facturado a'} nameInput={'id_facturado_por'} onChange={onInputChange} options={arrayEmpresaFinan} value={id_facturado_por} />
                         </div>
                     </Col>
-                    <Col lg={4}>
-                        <div className='m-2'>
-                            <InputSelect label={'Facturado por'} nameInput={'id_facturado_por'} onChange={onInputChange} options={arrayEmpresaFinan} value={id_facturado_por} />
-                        </div>
-                    </Col>
-                    <Col lg={12}>
+                    <Col lg={8}>
                         <div className='m-2'>
                             <InputTextArea label={'DESCRIPCION'} nameInput={'descripcion'} onChange={onInputChange} value={descripcion} />
                         </div>
