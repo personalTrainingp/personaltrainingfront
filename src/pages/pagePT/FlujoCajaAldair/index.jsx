@@ -1,0 +1,1 @@
+export {AppFlujoCaja as default} from './AppFlujoCaja'

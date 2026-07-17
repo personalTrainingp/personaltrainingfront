@@ -59,7 +59,7 @@ const HistorialCitasNutricionista = lazy(() => import('../pages/pagePT/Historial
 const GestionTipoCambio = lazy(() => import('../pages/pagePT/GestTipoCambio'))
 const GestContratosClientes = lazy(() => import('../pages/pagePT/GestContratosCliente'))
 const ReporteFlujoCaja = lazy(() => import('../pages/pagePT/FlujoCaja'))
-const ReporteFlujoCaja1 = lazy(() => import('../pages/pagePT/FlujoCaja_1'))
+const ReporteFlujoCajaAldair = lazy(() => import('../pages/pagePT/FlujoCajaAldair'))
 const GestProvAgente = lazy(() => import('../pages/pagePT/GestProvAgentes'))
 const PerfilProveedor = lazy(() => import('../pages/pagePT/PerfilProveedor'))
 const GestionInventario = lazy(() => import('../pages/pagePT/GestInventario'))
@@ -161,6 +161,10 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/reportes-admin') &&
 								<Route path='reporte-admin/flujo-caja' element={<ReporteFlujoCaja />} />
+							}
+							{
+								sections.find(e => e.url === '/reportes-admin') &&
+								<Route path='reporte-admin/flujo-caja-aldair' element={<ReporteFlujoCajaAldair />} />
 							}
 							{
 								sections.find(e => e.url === '/ventas') &&

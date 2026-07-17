@@ -55,7 +55,6 @@ export const TableGestionLead = ({ onClickCustomLead, onDeleteItemLead, id_empre
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h4 className="m-0 font-weight-bold text-dark">Gestión de Leads</h4>
-                        <p className="text-muted small mb-0">Administra la inversión publicitaria mensual</p>
                     </div>
                     <Button
                         label='NUEVO LEAD'

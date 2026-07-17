@@ -64,18 +64,18 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 dataGastosxFecha.flujoxGrupo
                 .sort((a, b)=>a.orden-b.orden)
                 .filter(f=>f.gastos?.length!==0)
-                .filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.id!==97 && f.id!==110&& f.id!==153&& f.id!==103 && f.id!==150 && f.id!==157)
+                .filter((f)=> f.id===41 || f.id===33 || f.id===40 || f.id===38 || f.id==35 || f.id===34 || f.id===44 || f.id===42 || f.id===45 || f.id===95 || f.id===151 || f.id===36)
                 ?.map((data,i, arr)=>{
                     return (
                         <DataTablePrincipal 
                             index={i+1}
                             id_empresa={id_empresa}
                             onOpenModalTableItems={onOpenModalTableItems}
-                            key={` ${data.grupo}`}
+                            key={`${data.grupo}`}
                             bgPastel={bgPastel}
                             bgTotal={classNameEmpresa}
                             itemsxDias={data?.itemsxDia}
-                            nombreGrupo={`${data.id}.${data.param_label}`}
+                            nombreGrupo={`${data.param_label}`}
                             conceptos={data.parametro_grupo_gasto}
                             sumaTotal={data.itemsxDia.reduce((total, item)=>total+item.monto, 0)}
                             data={arr}
@@ -102,7 +102,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 dataGastosxFecha.flujoxGrupo
                 .sort((a, b)=>a.orden-b.orden)
                 .filter(f=>f.gastos?.length!==0)
-                .filter((f)=>f.id==97 || f.id==110 || f.id==103)
+                .filter((f)=>f.id==97 || f.id==110)
                 ?.map((data,i, arr)=>{
                     return (
                         <DataTablePrincipal 

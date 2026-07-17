@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
 
-export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems, data=[]}) => {
+export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, data=[]}) => {
   const fecha = new Date()
   const anioActual = fecha.getFullYear()
   const mesActual = fecha.getMonth()+1
@@ -49,7 +49,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                     <span 
                       className={`${c.id==1272 ?`text-black`:''} ${c.id==941 ? `bg-white text-black`:''} ${c.id==1117 ? 'bg-white text-black':''} ${c.id==1124 ? 'text-black':''} ${c.id==1046 ? 'bg-white text-black':''} ${c.id==1285 ? 'bg-white text-black':''} ${c.id==1134 ? 'bg-white text-black':''} ${c.id==1247 ? 'bg-white text-black':''} ${c.id==1251 ? 'bg-white text-black':''} ${c.id==1271 ? 'bg-white text-black':''}`}
                     >
-                      {i+1}.  {(c.nombre_gasto)}
+                      {i+1}. {(c.nombre_gasto)}
                     </span>
                   </td>
                   {
@@ -63,7 +63,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                                 (m.monto_pagados!==0 || m.monto_no_pagados===0) &&
                                 (
                                   <>
-                                  <span onClick={()=>onOpenModalTableItems(m.items_pagados)}>
+                                  <span >
                                     <NumberFormatMoney
                                       amount=
                                       {m.monto_pagados}
@@ -76,7 +76,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                               {
                                 m.monto_no_pagados>0 && (
                                   <>
-                                  <span className='text-change' onClick={()=>onOpenModalTableItems(m.itemsNoPagados)}>
+                                  <span className='text-change'>
                                     <NumberFormatMoney
                                       amount=
                                       {m.monto_no_pagados}
