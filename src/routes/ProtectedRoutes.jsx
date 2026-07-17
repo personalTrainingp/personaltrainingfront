@@ -20,7 +20,7 @@ const ResumenMembresiasPage = lazy(() =>
 
 
 const NuevaVenta = lazy(() => import('../pages/pagePT/nuevaVenta'));
-const Seguimiento = lazy(() => import('../pages/pagePT/seguimiento/index.jsx'));
+const Seguimiento = lazy(() => import('../pages/pagePT/seguimientoOficial/index.jsx'));
 const TotaldeVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'));
 const VentasPrograma = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'));
 const VentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'));
@@ -59,6 +59,7 @@ const HistorialCitasNutricionista = lazy(() => import('../pages/pagePT/Historial
 const GestionTipoCambio = lazy(() => import('../pages/pagePT/GestTipoCambio'))
 const GestContratosClientes = lazy(() => import('../pages/pagePT/GestContratosCliente'))
 const ReporteFlujoCaja = lazy(() => import('../pages/pagePT/FlujoCaja'))
+const ReporteFlujoCaja1 = lazy(() => import('../pages/pagePT/FlujoCaja_1'))
 const GestProvAgente = lazy(() => import('../pages/pagePT/GestProvAgentes'))
 const PerfilProveedor = lazy(() => import('../pages/pagePT/PerfilProveedor'))
 const GestionInventario = lazy(() => import('../pages/pagePT/GestInventario'))
@@ -182,7 +183,7 @@ export default function ProtectedRoutes() {
 								<Route path='reporte-cuentas-balance' element={<FlujoCajaBalanceCuentas />} />
 							}
 							{
-								sections.find(e => e.url === '/informe-gerencia-oficial') &&
+								sections.find(e => e.url === '/marketing') &&
 								<Route path='informe-gerencia-oficial' element={<InformeEjecutivoOficial />} />
 							}
 							{

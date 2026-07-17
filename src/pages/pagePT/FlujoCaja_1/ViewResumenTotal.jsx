@@ -74,7 +74,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             mesStr: dayjs(`${f.anio}-${f?.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
         }
     })
-    const dataAlterMesCompleto = dataAlter.filter((f)=>`${f.anio}-${f?.mes}`!==`${anioActual}-${mesActual}`).map(f=>{
+    const dataAlterMesCompleto = dataAlter.filter((f)=>`${f.anio}-${f?.mes}`!==`${anioActual}-${mesActual}` && `${f.anio}-${f?.mes}`!==`${anioActual}-${mesActual-1}`).map(f=>{
         return {
           ...f
         }
@@ -94,7 +94,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   fechas.map(f=>{
                     return (
                       <React.Fragment key={`${f?.mes}`}>
-                      <td className={`text-center border-top-10  ${bgTotal} ${`${f?.mes}-${f.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`} style={{width: '270px'}}>{f.mesSTR}</td>
+                      <td className={`text-center ${bgTotal} ${`${f?.mes}-${f.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`} style={{width: '270px'}}>{f.mesSTR}</td>
                       </React.Fragment>
                     )
                   })
@@ -174,25 +174,19 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   return (
                     <React.Fragment>
                       <td onClick={()=>onOpenModalTableItems(e.dataGasto, dataGastosxFecha, e.mes, anio, true)} className={`text-change text-end ${`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> 
-                        <div className='d-flex flex-column'>
-                          <div className='text-change'>
-                            <NumberFormatMoney className='fs-1' amount={-e.sumaGastos}/>
-                            <br/>
-                          </div>
-                          {
-                            e.sumaProyectado!==0 ? (
-                              <div className='text-orange'>
-                                <div>
-                                  <NumberFormatMoney className='fs-1' amount={-e.sumaProyectado}/>
-                                </div>
-                              </div>
-                            ): (
-                              <div className='text-white'>
-                              <NumberFormatMoney className='fs-1' amount={-e.sumaProyectado}/>
-                              </div>
-                            )
-                          }
+                        <div className='text-change'>
+                          <NumberFormatMoney className='fs-1' amount={-e.sumaGastos}/>
+                          <br/>
                         </div>
+                        {
+                          e.sumaProyectado!==0 && (
+                          <div className='text-orange'>
+                            <div>
+                              <NumberFormatMoney className='fs-1' amount={-e.sumaProyectado}/>
+                            </div>
+                        </div>
+                          )
+                        }
                       </td>
                     </React.Fragment>
                     )
@@ -256,7 +250,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     <React.Fragment>
                       <td className={`text-end ${`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}>
                         {
-                              (`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}`&&`${e?.mes}-${e.anio}`===`${mesActual-1}-${anioActual}`) ? (
+                              (`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}`||`${e?.mes}-${e.anio}`===`${mesActual-1}-${anioActual}`) ? (
                                 <div className={`${e.utilidadBruta>0?'text-orange':'text-orange'} `} >
                                   <NumberFormatMoney className='fs-1' amount={
                                     e.utilidadUltimaLinea
@@ -303,13 +297,13 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 )
               }
               <tr>
-                <td className={`sticky-td border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice} ${bgTotal}`}>UTILIDAD / PERDIDA <br/>ULTIMA LINEA</td>
+                <td className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>UTILIDAD / PERDIDA <br/>ULTIMA LINEA</td>
               {
                 dataAlter.map(e=>{
                   const bonoGerencia = (e.sumaIngresos-(e.sumaProyectado+e.sumaGastos))*0.03
                   return (
                     <React.Fragment>
-                      <td className={`text-end border-bottom-10  ${`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> 
+                      <td className={`text-end ${`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> 
                         {
                               `${e?.mes}-${e.anio}`!==`${mesActual}-${anioActual}` && (
                                 <div className={`${e.utilidadPerdida_ultimaLinea>0?'text-ISESAC':'text-change'} `} >
@@ -331,14 +325,14 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     )
                   })
                 }
-                <td className='border-left-10 border-right-10 border-bottom-10 '>
+                <td className='border-left-10 border-right-10'>
                   <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`} >
                     <NumberFormatMoney className='fs-1' amount={
                       -(dataAlterMesCompleto.reduce((total, item)=>item.sumagastos1272+total, 0))
                       +(dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0))
                       }/></div>
                 </td>
-                <td className='border-right-10 border-bottom-10 '>
+                <td className='border-right-10'>
                   <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`}>
                     <NumberFormatMoney className='fs-1' amount={
                       (-(dataAlterMesCompleto.reduce((total, item)=>item.sumagastos1272+total, 0))
@@ -641,7 +635,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
               <Table className="tabla-egresos fs-3" style={{ width: '100%' }} bordered>
                 <thead>
                   <tr>
-                    <th style={{width: '500px'}} className={`fs-1 sticky-td-white border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}><div className='text-black'>{'DEUDA RAL / PROVEEDORES'}</div></th>
+                    <th style={{width: '500px'}} className={`fs-1 sticky-td-white border-top-10 border-bottom-10 border-left-10 border-right-10 bg-white`}><div className='text-black'>{'DEUDA ACUMULADA PROVEEDORES'}</div></th>
                     {
                       fechas.map(f=>{
                         return (
@@ -704,7 +698,7 @@ const ultimaFecha = new Date(year, month , 0);
 const diaUltimaFecha = ultimaFecha.getDate()
 const diaActual = hoy.getDate()
 if(anio===year){
-  return diaActual==diaUltimaFecha?0:month;
+  return diaActual==diaUltimaFecha?0:month-1;
 }else{
   // if(anio===2024){
   //   return a

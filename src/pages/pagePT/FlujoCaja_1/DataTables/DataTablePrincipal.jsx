@@ -28,8 +28,8 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
               fechas.map(f=>{
                 return (
                   <React.Fragment key={`${f.mesStr}`}>
-                  <td className={`text-center border-black border-top-10  ${bgTotal}`} style={{width: '180px'}}>{dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]')}</td>
-                  <td className={`text-center border-black border-top-10 ${bgPastel}`} style={{width: '90px'}}>MOV.</td>
+                  <td className={`text-center border-black ${bgTotal}`} style={{width: '180px'}}>{dayjs(`${f.anio}-${f.mes}-1`, 'YYYY-M-D').format('MMM [.]')}</td>
+                  <td className={`text-center border-black ${bgPastel}`} style={{width: '90px'}}>MOV.</td>
                   </React.Fragment>
                 )
               })
@@ -45,9 +45,9 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
             conceptos.sort((a, b)=>a.orden-b.orden).filter(f=>f.monto_proyectado!==0 || f.monto!==0).map((c, i)=>{
               return (
                 <tr key={''}>
-                  <td className={`border-left-10 border-right-10 ${bgTotal} ${c.id==1272 ?`${bgPastel}`:''} ${c.id==941 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1117 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1124 ? `${bgPastel}`:''} ${c.id==1046 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1285 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1134 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1247 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1251 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1271 ? `sticky-td-${id_empresa}-white`:''}`}>
+                  <td className={`sticky-td-${id_empresa} border-left-10 border-right-10 ${bgTotal} ${c.id==1272 ?`sticky-td-${id_empresa}-white`:''} ${c.id==941 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1117 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1124 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1046 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1285 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1134 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1247 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1251 ? `sticky-td-${id_empresa}-white`:''} ${c.id==1271 ? `sticky-td-${id_empresa}-white`:''}`}>
                     <span 
-                      className={`${c.id==1272 ?`text-black`:''} ${c.id==941 ? `bg-white text-black`:''} ${c.id==1117 ? 'bg-white text-black':''} ${c.id==1124 ? 'text-black':''} ${c.id==1046 ? 'bg-white text-black':''} ${c.id==1285 ? 'bg-white text-black':''} ${c.id==1134 ? 'bg-white text-black':''} ${c.id==1247 ? 'bg-white text-black':''} ${c.id==1251 ? 'bg-white text-black':''} ${c.id==1271 ? 'bg-white text-black':''}`}
+                      className={`${c.id==1272 ?`bg-white text-black`:''} ${c.id==941 ? `bg-white text-black`:''} ${c.id==1117 ? 'bg-white text-black':''} ${c.id==1124 ? 'bg-white text-black':''} ${c.id==1046 ? 'bg-white text-black':''} ${c.id==1285 ? 'bg-white text-black':''} ${c.id==1134 ? 'bg-white text-black':''} ${c.id==1247 ? 'bg-white text-black':''} ${c.id==1251 ? 'bg-white text-black':''} ${c.id==1271 ? 'bg-white text-black':''}`}
                     >
                       {i+1}. {(c.nombre_gasto)}
                     </span>
@@ -56,7 +56,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                     c.itemsxDia.map(m=>{
                       return (
                         <React.Fragment key={m.id}>
-                          <td className={`text-center ${c.id==1124 ? `${bgPastel}`:''}`}>
+                          <td className='text-center'>
                             {m.mesSTR}
                             <div >
                               {
@@ -86,7 +86,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                                 </>
                                 )
                               }
-                              { 
+                              {/* { 
                               ((m.monto_proyectado)!=0) && nombreGrupo!=='INGRESOS'
                               &&
                                (
@@ -98,11 +98,10 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                                       />
                                     </span>
                                 </>
-                              )}
+                              )} */}
                             </div>
-                            {/* {m.monto_proyectado} */}
                           </td>
-                          <td className={`${m.monto_pagados===0 && 'text-gray'} text-center ${c.id==1124 ? `${bgPastel}`:''}`}>
+                          <td className={`${m.monto_pagados===0 && 'text-gray'} text-center`}>
                             <div>
                               {m.len}
                             </div>
@@ -111,7 +110,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                       )
                     })
                   }
-                <td className={`text-center border-left-10 sticky-td-1-right-${id_empresa} sticky-td-${id_empresa}-white `}>
+                <td className={`text-center border-left-10 sticky-td-1-right-${id_empresa} sticky-td-${id_empresa}-white`}>
                   {
                     cat==='ingresos'? (
                       <NumberFormatMoney amount={c.itemsxDia?.filter(f=>f.mes<=mesActual-1).reduce((total, im)=>total+im?.monto, 0)}/>
@@ -141,7 +140,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
               fechas.map((f, i)=>{
                 return (
                   <React.Fragment key={i}>
-                  <td className={`text-center ${bgTotal} `} style={{width: '120px'}}>
+                  <td className={`text-center ${bgTotal}`} style={{width: '120px'}}>
                     <NumberFormatMoney amount={funSumaTotal(f.mes)}/>
                     <br/>
                     {
@@ -168,10 +167,10 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
               fechas.map((f, i)=>{
                 return (
                   <React.Fragment key={i}>
-                  <td className={`text-center border-bottom-10 ${bgTotal}`} style={{width: '120px'}}>
+                  <td className={`text-center ${bgTotal}`} style={{width: '120px'}}>
                     <NumberFormatMoney amount={(funSumaTotal(f.mes)/funSumatoriaFinal(f.mes))*100}/>
                   </td>
-                  <td className={`text-center border-bottom-10 ${bgPastel}`} style={{width: '120px'}}>
+                  <td className={`text-center ${bgPastel}`} style={{width: '120px'}}>
                   </td>
                   </React.Fragment>
                 )

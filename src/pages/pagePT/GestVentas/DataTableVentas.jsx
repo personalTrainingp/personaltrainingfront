@@ -12,7 +12,13 @@ export const DataTableVentas = ({id_empresa, vistaCliente}) => {
         obtenerVentasxEmpresa(id_empresa)
       }, [id_empresa])
       const columns = [
-        {id: 1, header: 'ID', accessor: 'id'},
+        {id: 1, header: 'ID', accessor: 'id', render: (row)=>{
+            return (
+                <>
+                {row.id}
+                </>
+            )
+        }},
         {id: 2, header: 'FECHA', accessor: 'fecha_venta', render: (row)=>{
             return (
                 <>
@@ -93,7 +99,31 @@ export const DataTableVentas = ({id_empresa, vistaCliente}) => {
             }
         },
         {
-            id: 8, header: '', render:(row)=>{
+            id: 8, header: 'TOTAL PAGO', accessor: 'montoTotal_pago', render:(row)=>{
+                return (
+                    <>
+                    S/.
+                    <NumberFormatMoney
+                        amount={
+                            row.montoTotal_pago
+                        }
+                    />
+                    </>
+                )
+            }
+        },
+        {
+            id: 9, header: 'es igual', accessor: 'is_igual', sortable: true, render:(row)=>{
+                return (
+                    <>
+
+                    {row.is_igual}
+                    </>
+                )
+            }
+        },
+        {
+            id: 10, header: '', render:(row)=>{
                 return (
                     <>
                     <Button onClick={()=>onOpenModalViewObservacion(row.id)}>DETALLE DE LA VENTA</Button>
@@ -113,6 +143,7 @@ export const DataTableVentas = ({id_empresa, vistaCliente}) => {
         <DataTableCR 
             data={dataVentasxEmpresa}
             columns={columns}
+            exportable={false}
         />
         <ModalViewObservacion id={dataVentaxID.id} show={dataVentaxID.isOpen} onHide={onCloseViewObservaciones}/>
     </div>

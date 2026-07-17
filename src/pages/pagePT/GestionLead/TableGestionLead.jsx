@@ -64,47 +64,6 @@ export const TableGestionLead = ({ onClickCustomLead, onDeleteItemLead, id_empre
                         onClick={() => onClickCustomLead(0, id_empresa, {})}
                     />
                 </div>
-
-                <Row className="g-3">
-                    <Col md={3}>
-                        <Card className="border-0 shadow-sm h-100 border-left-tiktok"> {/* Clase CSS sugerida abajo */}
-                            <Card.Body>
-                                <div className="text-uppercase text-muted small fw-bold mb-1">IGV TikTok</div>
-                                <div className="h4 mb-0 fw-bold text-dark">
-                                    <small className="text-muted fs-6 mr-1">S/.</small>
-                                    <NumberFormatMoney amount={igvTikTokPEN} />
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                    <Col md={3}>
-                        <Card className="border-0 shadow-sm h-100 border-left-meta">
-                            <Card.Body>
-                                <div className="text-uppercase text-muted small fw-bold mb-1">IGV Meta</div>
-                                <div className="h4 mb-0 fw-bold text-dark">
-                                    <small className="text-muted fs-6 mr-1">$</small>
-                                    <NumberFormatMoney amount={igvMetaUSD} />
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                    <Col md={6}>
-                        <Card className="border-0 shadow-sm h-100 bg-white">
-                            <Card.Body className="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <div className="text-uppercase text-danger small fw-bold mb-1">Total IGV (Soles)</div>
-                                    <div className="h3 mb-0 fw-bold text-danger">
-                                        <small className="text-muted fs-5 mr-1">S/.</small>
-                                        <NumberFormatMoney amount={totalIGVSoles} />
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <Tag severity="info" value={`TC: ${TASA_CAMBIO.toFixed(3)}`} rounded></Tag>
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                </Row>
             </div>
 
             {/* --- SECCIÓN DE TABLA --- */}

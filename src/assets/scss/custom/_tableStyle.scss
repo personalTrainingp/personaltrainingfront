@@ -35,23 +35,31 @@
   box-shadow: 2px 0 0 rgba(0,0,0,.12);
 }
 /* columna fija */
-.tabla-egresos .sticky-td{
-  position: sticky;
-  left: 0;
-  z-index: 20;
-  background: transparent !important; /* el fondo real lo pone ::before */
-}
 
-/* “panel” que hace que TODA la celda se vea fija */
-.tabla-egresos .sticky-td::before{
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: #CD1014; /* o el color que quieras */
-  z-index: -1;
-  box-shadow: 2px 0 0 rgba(0,0,0,.12);
+.tabla-egresos .sticky-td-right-598{
+  position: sticky;
+  right: 0;
+  z-index: 20;
+  background: #CD1014 !important; /* el fondo real lo pone ::before */
 }
-/* columna fija */
+.tabla-egresos .sticky-td-1-right-598{
+  position: sticky;
+  right: 200px;
+  z-index: 20;
+  background: #CD1014 !important; /* el fondo real lo pone ::before */
+}
+.tabla-egresos .sticky-td-2-right-598{
+  position: sticky;
+  right: 320px;
+  z-index: 20;
+  background: #CD1014 !important; /* el fondo real lo pone ::before */
+}
+.tabla-egresos .sticky-td-3-right-598{
+  position: sticky;
+  right: 440px;
+  z-index: 20;
+  background: #CD1014 !important; /* el fondo real lo pone ::before */
+}
 .tabla-egresos .sticky-td-598{
   position: sticky;
   left: 0;
@@ -99,6 +107,7 @@
   content: "";
   position: absolute;
   inset: 0;
+  color: #000 !important;
   background: #ffffff; /* o el color que quieras */
   z-index: -1;
   box-shadow: 2px 0 0 rgba(0,0,0,.12);
@@ -206,22 +215,4 @@
   background: #2c10cdff; /* o el color que quieras */
   z-index: -1;
   box-shadow: 2px 0 0 rgba(0,0,0,.12);
-}
-
-
-.tabla-egresos{
-  thead{
-    tr{
-      th{
-        border: 2px solid black;
-      }
-    }
-  }
-  tbody{
-    tr{
-      td{
-        border: 2px solid black;
-      }
-    }
-  }
 }
