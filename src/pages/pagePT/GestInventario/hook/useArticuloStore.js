@@ -21,7 +21,10 @@ export const useArticuloStore = () => {
 	};
 	const obtenerArticulosxEmpresa = async (idEmpresa) => {
 		try {
+			const { data: dataTC } = await PTApi.get('/tipocambio/');
 			const { data } = await PTApi.get(`/articulo/${idEmpresa}`);
+			console.log({ dataTC });
+
 			dispatch(onSetDataViewArticulos(data.articulos));
 		} catch (error) {
 			console.log(error);

@@ -34,7 +34,21 @@ export const useInventarioStore = () => {
 	const obtenerInventarioKardexxFechas = async (id_empresa) => {
 		try {
 			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_empresa}`);
-			setdataFechas(data.articulos);
+			const { data: dataTC } = await PTApi.get('/tipocambio/');
+
+			const articulos = data.articulos.map((m) => {
+				const TC = dataTC.tipoCambios.find(
+					(f) => new Date(f.fecha).toISOString().split('T')[0] === m.fecha_entrada
+				);
+				return {
+					tipoCambio: TC ? TC : 0,
+					...m,
+					costo_unitario_dolares: TC
+						? m.costo_unitario_soles/TC?.precio_venta
+						:  m.costo_unitario_soles/3.65,
+				};
+			});
+			setdataFechas(articulos);
 		} catch (error) {
 			console.log(error);
 		}
@@ -108,8 +122,6 @@ export const useInventarioStore = () => {
 			const { data: dataImg } = await PTApi.get(
 				`/storage/blob/upload/get-upload/${data?.articulo?.uid_image}`
 			);
-			console.log(dataImg, 'dataimgggg');
-
 			const dataEtiquetasxIdEntidadGrupo = await getEtiquetasxIdEntidadGrupo(
 				'articulo',
 				'etiqueta_busqueda',

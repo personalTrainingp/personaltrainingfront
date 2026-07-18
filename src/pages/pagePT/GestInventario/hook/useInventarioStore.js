@@ -94,9 +94,16 @@ export const useInventarioStore = () => {
 	const obtenerArticulos = async (id_enterprice) => {
 		try {
 			const { data } = await PTApi.get(`/inventario/obtener-inventario/${id_enterprice}`);
+			const { data: dataTC } = await PTApi.get('/tipocambio/');
 			const arrayEtiquetas = await getEtiquetasxEntidadGrupo('articulo', 'etiqueta_busqueda');
+			console.log({ dataTC: dataTC });
+
 			const articulos = data.articulos.map((m) => {
+				const TC = dataTC.tipoCambios.find(
+					(f) => new Date(f.fecha).toISOString().split('T')[0] === m.fecha_entrada
+				);
 				return {
+					tipoCambio: TC ? TC : 0,
 					etiquetas_busquedas: arrayEtiquetas.filter((f) => f.id_fila === m.id),
 					...m,
 				};

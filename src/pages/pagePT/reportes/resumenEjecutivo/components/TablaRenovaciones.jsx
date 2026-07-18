@@ -141,9 +141,9 @@ export default function TablaRenovaciones({
 
   const getTableRows = () => {
     const rows = {
+      vencimientos: { label: " Vencimientos por Mes", values: [] },
       renovaciones: { label: " Renovaciones del Mes", values: [] },
       porcentaje: { label: "Renovaciones %", values: [] },
-      vencimientos: { label: " Vencimientos por Mes", values: [] },
       pendientes: { label: " Pendiente de Renovaciones", values: [] },
       recuperacion: { label: "Acumulado Cartera", values: [] },
     };
