@@ -40,8 +40,11 @@ export const useInventarioStore = () => {
 				const TC = dataTC.tipoCambios.find(
 					(f) => new Date(f.fecha).toISOString().split('T')[0] === m.fecha_entrada
 				);
+				const TCu = {
+					precio_venta: 3.35,
+				}
 				return {
-					tipoCambio: TC ? TC : 0,
+					tipoCambio: TC ? TC : TCu,
 					...m,
 					costo_unitario_dolares: TC
 						? m.costo_unitario_soles/TC?.precio_venta

@@ -344,26 +344,26 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         )
     }
     const costototaldolaresBodyTemplate = (rowData)=>{
-        const costo_total_dolares = ((rowData.costo_unitario_soles/rowData.tipoCambio.precio_venta)*rowData.cantidad)+rowData.mano_obra_dolares
+        const costo_total_dolares = ((rowData.costo_unitario_soles/rowData.tipoCambio.precio_venta)*rowData.cantidad)+(rowData.mano_obra_soles/rowData.tipoCambio.precio_venta)
         return (
-            <>
+            <div style={{width: '180px'}}>
                 <div className='text-color-dolar'>COSTO TOTAL $.</div>
                 <div className="d-flex font-24 w-100" >
                     <div className='text-left w-100 text-color-dolar fw-bold text-right'>
                     <NumberFormatMoney amount={costo_total_dolares}/>
                     </div>
                 </div>
-            </>
+            </div>
         )
     }
     const costounitariodolaresBodyTemplate = (rowData)=>{
         return (
-            <div className=''> 
+            <div className='' style={{width: '180px'}}> 
             <div className='text-color-dolar'> COSTO UNITARIO $.</div>
             
                 <div className="d-flex font-24 w-100" >
                     <div className='text-left w-100 text-color-dolar fw-bold text-right'>
-                    <NumberFormatMoney amount={(rowData.tipoCambio.precio_venta/rowData.costo_unitario_soles)}/>
+                    <NumberFormatMoney amount={(rowData.costo_unitario_soles/rowData.tipoCambio.precio_venta)}/>
                     </div>
                 </div>
             </div>
