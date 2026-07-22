@@ -20,7 +20,7 @@ const ResumenMembresiasPage = lazy(() =>
 
 
 const NuevaVenta = lazy(() => import('../pages/pagePT/nuevaVenta'));
-const Seguimiento = lazy(() => import('../pages/pagePT/SeguimientoOficial/index.jsx'));
+const Seguimiento = lazy(() => import('../pages/pagePT/Seguimientoficial/index.jsx'));
 const TotaldeVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'));
 const VentasPrograma = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'));
 const VentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'));
@@ -106,7 +106,7 @@ const FlujoCajaBalanceCuentas = lazy(() => import('../pages/pagePT/FlujoCuentasB
 const GestionTc = lazy(() => import('../pages/pagePT/GestionTc'))
 const GestionLead = lazy(() => import('../pages/pagePT/GestionLead/Index.jsx'))
 const ReportePlanilla = lazy(() => import('../pages/pagePT/ReportePlanilla/Index.jsx'))
-const SeguimientoOficial = lazy(() => import('../pages/pagePT/SeguimientoOficial/index.jsx'))
+const SeguimientoOficial = lazy(() => import('../pages/pagePT/Seguimientoficial/index.jsx'))
 const ReporteMonketFit = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/Index.jsx'))
 const ReporteGastosProveedores = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/App.jsx'))
 const ReportePagosVentas = lazy(()=>import('../pages/pagePT/ReportePagosVentas'))
