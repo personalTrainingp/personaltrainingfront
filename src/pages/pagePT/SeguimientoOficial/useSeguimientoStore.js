@@ -17,16 +17,15 @@ export const useSeguimientoStore = () => {
 						ultimaMembresia.venta.cambio_programa.length === 0
 							? ultimaMembresia.venta.tb_ProgramaTraining.name_pgm
 							: ultimaMembresia.venta.cambio_programa[0].pgm.name_pgm;
-					const ultimoHorario =
-						ultimaMembresia.venta.cambio_programa.length === 0
-							? ultimaMembresia.venta.horario
-							: ultimaMembresia.venta.horario;
 					return {
-						horario: `12:00`,
+						horario:
+							ultimaMembresia.venta.horario.split('T')[1].split('.')[0] || `12:00:00`,
 						nombre_programa: `${ultimoPrograma}`,
 						nombres_cli: m.nombre_cli,
 						apPaterno_cli: m.apPaterno_cli,
 						apMaterno_cli: m.apMaterno_cli,
+						email_cli: m.email_cli,
+						tel_cli: m.tel_cli,
 						nombres_apellidos_cli: `${m.nombre_cli} ${m.apPaterno_cli} ${m.apMaterno_cli}`,
 						id_cli: m.id_cli,
 						fecha_inicio: ultimaMembresia?.venta?.fecha_inicio,

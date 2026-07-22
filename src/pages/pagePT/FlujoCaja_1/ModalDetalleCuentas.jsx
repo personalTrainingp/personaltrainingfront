@@ -9,7 +9,6 @@ import { Button } from 'primereact/button'
 
 export const ModalDetalleCuentas = ({bgMultiValue, id_enterprice, anio, show, onShow, onHide, data, obtenerGastosxANIO, bgEmpresa}) => {
   const [isModalDetalleGasto, setisModalDetalleGasto] = useState({isOpen: false, id: 0, tipo: 'PorCobrar'})
-  const [ModalDetalleGasto, setModalDetalleGasto] = useState({})
   const onOpenModalDetalleGasto = (idGasto, tipo)=>{
     setisModalDetalleGasto({isOpen: true, id: idGasto, tipo});
     onHide()

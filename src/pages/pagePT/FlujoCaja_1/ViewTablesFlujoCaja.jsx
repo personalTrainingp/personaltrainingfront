@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { generarMesYanio } from './helpers/generarMesYanio'
 import { useFlujoCaja } from './hook/useFlujoCajaStore'
 import { DataTablePrincipal } from './DataTables/DataTablePrincipal'
-import { ModalTableItems } from './view/ModalTableItems'
 import { ViewResumenTotal } from './ViewResumenTotal'
+import { useSelector } from 'react-redux'
+import { DataTablePrincipalIng } from './DataTables/DataTablePrincipalIng'
 
-export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, classNameEmpresa, bgPastel, textEmpresa}) => {
-    const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
-    const [data, setdata] = useState({isOpen: false, items: [], itemsAcumulados: {}, anio: 2024, mes: 9, header: '', isShowConceptos: false})
-    const [dataIngresos, setdataIngresos] = useState({isOpen: false, items: [], header: '', isShowConceptos: false})
+export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameEmpresa, bgPastel}) => {
+    const { obtenerEgresosxFecha, obtenerIngresosxFecha } = useFlujoCaja()
+    const { dataGrupoGastos, dataGrupoIngresos } = useSelector((state)=>state.IMAGINARIA_FLUJO_CAJA)
     useEffect(() => {
     const obtenerDatos = async () => {
         await Promise.all([
@@ -18,31 +18,21 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     }
         obtenerDatos()
     }, [])
+    console.log({dataGrupoGastos, dataGrupoIngresos});
     
-    const onOpenModalTableItems = (data, itemsAcumulados, mes, anio, isShowConceptos=false)=>{
-        setdata({isOpen: true, items: data, itemsAcumulados, mes, anio, header: '', isShowConceptos})
-    }
-    const onCloseModalTableItems = ()=>{
-        setdata({isOpen: false, items: [], itemsAcumulados: {}, anio: 2024, mes: 9, header: '', isShowConceptos: false})
-    }
-    const onOpenModalTableItemsIngresos = (data)=>{
-        setdataIngresos({isOpen: true, items: data, header: ''})
-    }
   return (
     <div>
         <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
             {
-                dataIngresosxFecha.flujoxGrupo
-                .sort((a, b)=>a.orden-b.orden)
+                dataGrupoIngresos
                 ?.filter(f=>f.gastos?.length!==0)
                 .filter((f)=>f.id!==121 && f.id!==46)
                 ?.map((data, i, arr)=>{
                     return (
-                        <DataTablePrincipal 
+                        <DataTablePrincipalIng
                             index={i+1}
                             id_empresa={id_empresa}
-                            onOpenModalTableItems={onOpenModalTableItems}
                             key={`${data.grupo}`} 
                             bgPastel={bgPastel} 
                             bgTotal={classNameEmpresa} 
@@ -61,8 +51,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
             <div style={{fontSize: '70px'}} className='text-black text-center'>EGRESOS</div>
         <div className='tab-scroll-container'>
             {
-                dataGastosxFecha.flujoxGrupo
-                .sort((a, b)=>a.orden-b.orden)
+                dataGrupoGastos
                 .filter(f=>f.gastos?.length!==0)
                 .filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.id!==97 && f.id!==110&& f.id!==153&& f.id!==103 && f.id!==150 && f.id!==157)
                 ?.map((data,i, arr)=>{
@@ -70,7 +59,6 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                         <DataTablePrincipal 
                             index={i+1}
                             id_empresa={id_empresa}
-                            onOpenModalTableItems={onOpenModalTableItems}
                             key={`${data.grupo}`}
                             bgPastel={bgPastel}
                             bgTotal={classNameEmpresa}
@@ -89,49 +77,12 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
         </div>
         <div className='tab-scroll-container'>
             <ViewResumenTotal 
-                onOpenModalTableItems={onOpenModalTableItems}  
                 bgPastel={bgPastel} 
                 bgTotal={classNameEmpresa} 
                 id_enterprice={id_empresa} 
                 anio={[arrayFecha[0], arrayFecha[1]]}
                 fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))} />
         </div>
-            <div style={{fontSize: '10px'}} className='text-black text-center'>EGRESOS</div>
-        <div className='tab-scroll-container'>
-            {
-                dataGastosxFecha.flujoxGrupo
-                .sort((a, b)=>a.orden-b.orden)
-                .filter(f=>f.gastos?.length!==0)
-                .filter((f)=>f.id==97 || f.id==110 || f.id==103)
-                ?.map((data,i, arr)=>{
-                    return (
-                        <DataTablePrincipal 
-                            index={i+1}
-                            id_empresa={id_empresa}
-                            onOpenModalTableItems={onOpenModalTableItems}
-                            key={`${data.grupo}`}
-                            bgPastel={bgPastel}
-                            bgTotal={classNameEmpresa}
-                            itemsxDias={data?.itemsxDia}
-                            data={arr}
-                            nombreGrupo={`${data.param_label}`}
-                            conceptos={data.parametro_grupo_gasto}
-                            anio={anio}
-                            fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))}
-                            />
-                    )
-                })
-            }
-        </div>
-        <ModalTableItems 
-                link={link}
-                bgHeader={classNameEmpresa}
-                textEmpresa={textEmpresa}
-                isShowConceptos = {data.isShowConceptos}
-                itemsAcumulados={data.itemsAcumulados}
-                mes={data.mes}
-                anio={data.anio}
-            show={data.isOpen} onHide={onCloseModalTableItems} items={data.items} id_empresa={id_empresa}/>
     </div>
   )
 }

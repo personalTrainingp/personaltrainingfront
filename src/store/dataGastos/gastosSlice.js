@@ -5,7 +5,7 @@ export const GastosSlice = createSlice({
 		dataParametrosGastos: [],
 		dataGastos: [],
 		dataProvUnicosxGasto: [],
-		dataNombreGastoxGasto:[]
+		dataNombreGastoxGasto: [],
 	},
 	reducers: {
 		onSetParametrosGastos: (state, { payload }) => {
@@ -18,9 +18,13 @@ export const GastosSlice = createSlice({
 			state.dataProvUnicosxGasto = payload;
 		},
 		onSetNombreGastoxGasto: (state, { payload }) => {
-            state.dataNombreGastoxGasto = payload;
-        },
+			state.dataNombreGastoxGasto = payload;
+		},
 	},
 });
-export const { onSetParametrosGastos, onSetGastos, onSetProveedoresUnicosxGasto, onSetNombreGastoxGasto } =
-	GastosSlice.actions;
+export const {
+	onSetParametrosGastos,
+	onSetGastos,
+	onSetProveedoresUnicosxGasto,
+	onSetNombreGastoxGasto,
+} = GastosSlice.actions;

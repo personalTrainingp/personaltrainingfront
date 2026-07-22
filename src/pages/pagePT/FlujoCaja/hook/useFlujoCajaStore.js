@@ -24,8 +24,10 @@ export const useFlujoCaja = () => {
 	const [dataFlujoCaja, setdataFlujoCaja] = useState([]);
 	const [dataParametrosGastos, setdataParametrosGastos] = useState([]);
 	const { dataPagosVentas, obtenerPagosVentas } = usePagosVentasStore();
+	
 	const obtenerEgresosxFecha = async (enterprice, arrayDate, tt) => {
 		try {
+			await obtenerPagosVentas();
 			const { data } = await PTApi.get(`/egreso/fecha-comprobante/${enterprice}`, {
 				params: {
 					arrayDate: [
@@ -44,7 +46,6 @@ export const useFlujoCaja = () => {
 						...g,
 					};
 				});
-			await obtenerPagosVentas();
 			const dataGastosOperadoresVentas = dataPagosVentas
 				.filter((item) => {
 					const fechaItem = new Date(item.fecha_p);

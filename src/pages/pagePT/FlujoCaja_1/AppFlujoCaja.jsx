@@ -1,17 +1,12 @@
 import { TabPanel, TabView } from 'primereact/tabview'
-import React from 'react'
 import { ViewTablesFlujoCaja } from './ViewTablesFlujoCaja'
-import { TablesResumenTotal } from './view/TablesResumenTotal'
 import { ColorEmpresa } from '@/components/ColorEmpresa'
 import { PageBreadcrumb } from '@/components'
-import { Trimestre1Total } from './view/Trimestre1Total'
-import { AppTablesConceptos } from './AppTablesConceptos'
-import { generarMesYanio } from './helpers/generarMesYanio'
 
 export const AppFlujoCaja = () => {
   return (
     <div>
-      <PageBreadcrumb title={'FLUJO DE CAJA'}/>
+      <PageBreadcrumb title={'FLUJO DE CAJA PROY'}/>
       <ColorEmpresa
         childrenChange={
           <TabView>

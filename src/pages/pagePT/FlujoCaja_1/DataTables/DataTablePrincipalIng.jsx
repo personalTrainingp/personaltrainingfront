@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { Table } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 
-export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, data=[]}) => {
+export const  DataTablePrincipalIng = ({anio, cat='', id_empresa, sumaTotal, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, data=[]}) => {
   const fecha = new Date()
   const anioActual = fecha.getFullYear()
   const mesActual = fecha.getMonth()+1
@@ -141,7 +141,7 @@ export const ItemMes = ({mesSTR, monto_pagados, monto_no_pagados, id_concepto, f
     }, [monto_pagados]);
 
     useEffect(() => {
-      dispatch(onUpdateGrupoGastos({
+      dispatch(onUpdateGrupoIngresos({
         id_gasto: id_concepto,
         fecha,
         monto_pagados: Number(monto_pagado)

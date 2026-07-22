@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useSeguimientoStore } from './useSeguimientoStore'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
-import { DateMaskStr, DateMaskStr1 } from '@/components/CurrencyMask'
+import { DateMask, DateMaskStr, DateMaskStr1 } from '@/components/CurrencyMask'
+import dayjs from 'dayjs'
+import { Col, Row } from 'react-bootstrap'
 
-export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFecha}) => {
-
-        console.log({dataSeguimientoxFecha, rangeDate});
+export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFecha, bodyHeadcontadorDia}) => {
         const [data, setdata] = useState([])
         useEffect(() => {
             setdata(
@@ -20,23 +20,44 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                 })
             )
         }, [rangeDate])
+        const resultado = Object.values(
+            data.reduce((acc, item) => {
+                if (!acc[item.nombre_programa]) {
+                acc[item.nombre_programa] = {
+                    nombre_programa: item.nombre_programa,
+                    data: [],
+                };
+                }
+
+                acc[item.nombre_programa].data.push(item);
+
+                return acc;
+            }, {})
+            );
         const columns=[
             {id: 0, header: 'id', render: (row, index)=>{
                 return (
                     <>
-                    <span>
+                    <div style={{fontSize: '20px'}}>
                         {index+1}
-                    </span>
+                    </div>
                     </>
                 )
             }},
             {id: 1, header: 'SOCIO', accessor: 'nombres_apellidos_cli', render: (row)=>{
                 return (
                     <>
-                    <span>
-                        {`
-                        ${row?.nombres_cli} ${row?.apPaterno_cli} ${row?.apMaterno_cli}
-                        `}
+                    <span className='' style={{fontSize: '15px'}}>
+                        <div>
+                            {`${row?.nombres_cli} ${row?.apPaterno_cli} ${row?.apMaterno_cli}`}
+                        </div>
+                        <div>
+                            EMAIL: {row.email_cli}
+                        </div>
+                        <div>
+                            TELEFONO: {row.tel_cli}
+                        </div>
+
                     </span>
                     </>
                 )
@@ -44,18 +65,23 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
             {id: 2, header: <>PROGRAMA/SESIONES/<br/>HORARIO</>, render:(row)=>{
                 return (
                     <>
-                    {row.nombre_programa}
-                    <br/>
-                    {DateMaskStr(row.horario, 'hh:mm A')}
+                    <div style={{fontSize: '20px'}}>
+                        <div>
+                            {row.nombre_programa}
+                        </div>
+                        <div>
+                            {dayjs.utc(row.horario, 'hh:mm:ss').format('hh:mm A')}
+                        </div>
+                    </div>
                     </>
                 )
             }},
-            {id: 3, header: <>DIAS <br/> VENCIDOS</>, accessor: 'countDias', sortable: true, render: (row)=>{
+            {id: 3, header: <>{bodyHeadcontadorDia}</>, accessor: 'countDias', sortable: true, render: (row)=>{
                 return (
                     <>
-                    <span>
-                        {row.countDias}
-                        {/* {DateMaskStr(row?.fecha_vencimiento, 'dddd DD [DE] MMMM [DEL] YYYY')} */}
+                        {row.countDias} 
+                    <span className='mx-1' style={{fontSize: '15px'}}>
+                        SESIONES
                     </span>
                     </>
                 )
@@ -63,14 +89,12 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
             {id: 4, header: <>fecha de <br/> vencimiento</>, render: (row)=>{
                 return (
                     <>
-                    <span>
+                    <div style={{fontSize: '15px'}}>
                         {row.fecha_vencimiento_}
-                        {/* {(row?.fecha_vencimiento_)} */}
-                    </span>
+                    </div>
                     </>
                 )
             }},
-            {id: 5, header: <>sesiones<br/> congelamiento/ <br/> regalo</>},
         ]
         const columnsExports = [
             {
@@ -89,11 +113,55 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                 exportValue: (row)=>`${DateMaskStr(row.fecha_vencimiento, 'YYYY-MM-DD')}`
             },
         ]
+        const orden = [
+    'change 45',
+    'fs 45',
+    'fisio muscle'
+];
+
   return (
-    <div>
-        <span>
-            {title} TOTAL 
-        </span>
+    <div className='m-2'>
+        <div className='fs-2 fw-bold text-change'>
+            {title}
+            <span className='text-black mx-1'>
+                TOTAL 
+            </span>
+            <span className='text-black mx-2'>
+                {data.length}
+            </span>
+        </div>
+        <div>
+            <Row>
+                {
+                    resultado
+                        .sort((a, b) => {
+        const ia = orden.indexOf(a.nombre_programa.toLowerCase());
+        const ib = orden.indexOf(b.nombre_programa.toLowerCase());
+
+        if (ia === -1 && ib === -1) {
+            return a.nombre_programa.localeCompare(b.nombre_programa);
+        }
+        if (ia === -1) return 1;
+        if (ib === -1) return -1;
+
+        return ia - ib;
+    }).map(m=>{
+                        return (
+                            <Col lg={4}>
+                                <div className='card p-3'>
+                                    <span className='fs-2'>
+                                        {m.nombre_programa}
+                                    </span>
+                                    <div className='fs-2 fw-bold text-change'>
+                                        {m.data.length} / {((m.data.length/data.length)*100).toFixed(2)}%
+                                    </div>
+                                </div>
+                            </Col>
+                        )
+                    })
+                }
+            </Row>
+        </div>
         <DataTableCR
             exportExtraColumns={columnsExports}
             columns={columns}
