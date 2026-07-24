@@ -138,7 +138,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 								<img
 									src={selectedLogo.src}
 									alt="logo seleccionado"
-									style={{ height: selectedLogo.h, width: selectedLogo.w }}
+									style={{ width: 200 }}
 								/>
 							</Dropdown.Toggle>
 							<Dropdown.Menu>

@@ -15,6 +15,11 @@ export const AppFlujoCaja = () => {
               <ViewTablesFlujoCaja link={'link-change'} textEmpresa={'text-change'} arrayFecha={['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']} anio={2026} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
             </div>
             </TabPanel>
+            <TabPanel header={<div className='fs-1'>2025</div>}>
+            <div className='' style={{overflowY: 'scroll', height: '800px'}}>
+              <ViewTablesFlujoCaja link={'link-change'} textEmpresa={'text-change'} arrayFecha={['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']} anio={2025} classNameEmpresa={'bg-change text-white'} bgPastel={'bg-change-pastel text-white'} id_empresa={598}/>
+            </div>
+            </TabPanel>
           </TabView>
         }
         childrenCircus={

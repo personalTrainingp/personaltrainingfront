@@ -4,7 +4,10 @@ import {  NumberFormatMoney } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
 
 export const DataTable1 = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuotaMetaDelMes=[]}) => {
-    const fechaSeleccionada = '2026-1'
+    const date = new Date();
+    const anioActual = date.getFullYear();
+    const mesActual = date.getMonth() + 1; // Los meses en JavaScript son base 0, por lo que se suma 1
+    const fechaSeleccionada = `${anioActual}-${mesActual}`;
     const dataConMes = arrayFechas.map(arr=>{
         const dataFiltradaMes =  data?.filter((f)=>f.mes===arr.mes && f.anio===arr.anio)
         return {
@@ -15,6 +18,7 @@ export const DataTable1 = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuot
     })
     const objFechaSeleccionada = dataConMes.find(f=>f.fecha===fechaSeleccionada);
   return (
+    <>
         <Table className="tabla-egresos" style={{width: '100%'}}  bordered>
             <thead>
                 <tr className='bg-change'>
@@ -63,7 +67,7 @@ export const DataTable1 = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuot
                             return (
 
                                 <td className={`text-center fs-3 ${dayjs(`${d.anio}-${d.mes}-1`, 'YYYY-M-D').format('MMMM')==='diciembre'?'border-right-10':''}`}>
-                                    <NumberFormatMoney amount={0}/>
+                                    <NumberFormatMoney amount={porcentaje}/>
                                 </td>
                             )
                         })
@@ -71,5 +75,6 @@ export const DataTable1 = ({data, arrayFechas=[], nombreCategoriaVenta, dataCuot
                 </tr>
             </tbody>
         </Table>
+    </>
   )
 }

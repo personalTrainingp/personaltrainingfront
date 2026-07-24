@@ -17,7 +17,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], anio, id_empresa, classNameE
         ])
     }
         obtenerDatos()
-    }, [])
+    }, [id_empresa, arrayFecha])
     console.log({dataGrupoGastos, dataGrupoIngresos});
     
   return (

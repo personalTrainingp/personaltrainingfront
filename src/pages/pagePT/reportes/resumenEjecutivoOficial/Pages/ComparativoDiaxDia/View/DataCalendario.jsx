@@ -22,7 +22,7 @@ function keyDate(anio, mes, dia) {
 }
 
 export const DataCalendario = ({  data = [],
-  initialYear = 2026,
+  initialYear = 2026, 
   initialMonth = 1,
   onDayClick}) => {
   const [{ anio, mes }, setYM] = useState({ anio: initialYear, mes: initialMonth });
@@ -93,8 +93,8 @@ export const DataCalendario = ({  data = [],
         <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 560 }}>
           <thead>
             <tr>
-              {["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(d => (
-                <th key={d} style={{ border: "1px solid #ddd", padding: 8, background: "#f5f5f5" }}>
+              {["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"].map(d => (
+                <th key={d} style={{ border: "1px solid #ddd", padding: 8, background: "#f5f5f5", fontWeight: 800, textAlign: "center", fontSize: '30px' }}>
                   {d}
                 </th>
               ))}
@@ -116,6 +116,7 @@ export const DataCalendario = ({  data = [],
 
                   return (
                     <td
+                      
                       key={col}
                       onClick={() => onDayClick?.(cell.items, { dia: cell.dia, mes, anio })}
                       style={{
@@ -128,71 +129,58 @@ export const DataCalendario = ({  data = [],
                       }}
                       title={count ? `${count} registros` : "Sin data"}
                     >
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        {/* <span style={{ fontWeight: 800 }}>{cell.dia}</span> */}
-                        <span
-                            style={{
-                              fontSize: 20,
-                              padding: "2px 8px",
-                              borderRadius: 999,
-                              background: "#111",
-                              color: "#fff"
-                            }}
-                          >
-                            {cell.dia}
-                          </span>
-                        {/* Badge cantidad (solo si hay data) */}
-                        {/* {count > 0 && (
-                          <span
-                            style={{
-                              fontSize: 12,
-                              padding: "2px 8px",
-                              borderRadius: 999,
-                              background: "#111",
-                              color: "#fff"
-                            }}
-                          >
-                            {count}s
-                          </span>
-                        )} */}
+                      <div className="h-100">
+                        <div  style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          {/* <span style={{ fontWeight: 800 }}>{cell.dia}</span> */}
+                          <div
+                              className="text-center"
+                              style={{
+                                width: '100%',
+                                fontSize: '30px',
+                                padding: "2px 8px",
+                                borderRadius: 999,
+                                background: "#111",
+                                color: "#fff"
+                              }}
+                            >
+                              {cell.dia}
+                            </div>
+                        </div>
+                        {count > 0 && (
+                          <div style={{ marginTop: 6, fontSize: 20, color: "#333" }}>
+                            {/* ejemplo: mostrar campo "titulo" si existe */}
+                            {cell.items[0]?.titulo ? (
+                              <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {cell.items[0].titulo}
+                                
+                              </div>
+                            ) : (
+                              <div style={{ color: "#666" }}>
+                                  CANTIDAD: {cell.items[0].items.length}
+                                  <br/>
+                                  TOTAL: <NumberFormatMoney amount={cell.items[0].items.reduce((total, item) => total + (item?.montoTotal || 0), 0)}/> 
+                                      <br/>
+                                      {
+                                          agruparPorEmpleado(cell.items[0].items).map(emp=>{
+                                              return (
+                                                  <>
+                                                  <br/>
+                                                  ASESOR: {emp.nombre_empl.split(' ')[0]}
+                                                  <br/>
+                                                  VENTAS: <NumberFormatMoney amount={emp.items.reduce((total, item) => total + (item?.montoTotal || 0), 0)}/>
+                                                  <br/>
+                                                  CANTIDAD: {emp.items.length}
+                                                  <br/>
+                                                  </>
+                                              )
+                                          })
+                                      }
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
 
-                      {/* Si quieres mostrar algo del primer item */}
-                      {count > 0 && (
-                        <div style={{ marginTop: 6, fontSize: 20, color: "#333" }}>
-                          {/* ejemplo: mostrar campo "titulo" si existe */}
-                          {cell.items[0]?.titulo ? (
-                            <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                              {cell.items[0].titulo}
-                              
-                            </div>
-                          ) : (
-                            <div style={{ color: "#666" }}>
-                                CANTIDAD: {cell.items[0].items.length}
-                                <br/>
-                                TOTAL: <NumberFormatMoney amount={cell.items[0].items.reduce((total, item) => total + (item?.montoTotal || 0), 0)}/> 
-                                    <br/>
-                                    {
-                                        agruparPorEmpleado(cell.items[0].items).map(emp=>{
-                                            return (
-                                                <>
-                                                <br/>
-                                                ASESOR: {emp.nombre_empl.split(' ')[0]}
-                                                <br/>
-                                                VENTAS: <NumberFormatMoney amount={emp.items.reduce((total, item) => total + (item?.montoTotal || 0), 0)}/>
-                                                <br/>
-                                                CANTIDAD: {emp.items.length}
-                                                <br/>
-                                                </>
-                                            )
-                                        })
-                                    }
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Si NO hay data, queda vacío (no mostramos nada) */}
                     </td>
                   );
                 })}

@@ -74,7 +74,7 @@ export const  DataTablePrincipalIng = ({anio, cat='', id_empresa, sumaTotal, ite
                     )
                   }
                   </td>
-                <td className='fs-3 text-center '>{(((c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0))/sumaMontototal)*100).toFixed(2)}</td>
+                <td className='fs-3 text-center '>{(((c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0))/sumaMontototal)*100).toFixed(2)}%</td>
                 <td className={`text-center border-right-10 sticky-td-right-${id_empresa} sticky-td-${id_empresa}-white`}>
                   {
                     cat==='ingresos'? (
@@ -134,50 +134,91 @@ export const  DataTablePrincipalIng = ({anio, cat='', id_empresa, sumaTotal, ite
   )
 }
 export const ItemMes = ({mesSTR, monto_pagados, monto_no_pagados, id_concepto, fecha, cat}) => {
-    const [monto_pagado, setMontoPagado] = useState(monto_pagados);
-    const dispatch = useDispatch()
-    useEffect(() => {
-      setMontoPagado(monto_pagados);
-    }, [monto_pagados]);
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-      dispatch(onUpdateGrupoIngresos({
+  const [editando, setEditando] = useState(false);
+  const [montoPagado, setMontoPagado] = useState(monto_pagados);
+
+  useEffect(() => {
+    setMontoPagado(monto_pagados);
+  }, [monto_pagados]);
+
+  const guardar = () => {
+    dispatch(
+      onUpdateGrupoGastos({
         id_gasto: id_concepto,
         fecha,
-        monto_pagados: Number(monto_pagado)
-      }));
-    }, [monto_pagado, dispatch, id_concepto, fecha, cat]);
-    return (
-        <td className='text-center'>
-            {mesSTR}
-            <div >
-              {
-                (monto_pagados!==0 || monto_no_pagados===0) &&
-                (
-                  <>
-                  <div>
-                    <InputText className='fs-2 text-center border-none' style={{width: '100%'}} value={monto_pagado} onChange={(e) => setMontoPagado(e.target.value)}/>
-                  </div>
-                  <br/>
-                  </>
-                )
-              }
-              {
-                monto_no_pagados>0 && (
-                  <>
-                  <span className='text-change' >
-                    <NumberFormatMoney
-                      amount=
-                      {monto_no_pagados}
-                    /> 
-                  </span>
-                  <br/>
-                </>
-                )
-              }
-            </div>
-          </td>
+        monto_pagados: Number(montoPagado),
+      })
     );
+
+    setEditando(false);
+  };
+
+  const cancelar = () => {
+    setMontoPagado(monto_pagados);
+    setEditando(false);
+  };
+
+  return (
+    <td className="text-center">
+      {mesSTR}
+
+      <div>
+        {(monto_pagados !== 0 || monto_no_pagados === 0) && (
+          <>
+            {!editando ? (
+              <div
+                className="fs-2"
+                style={{ cursor: "pointer" }}
+                onDoubleClick={() => setEditando(true)}
+                title="Doble clic para editar"
+              >
+                <NumberFormatMoney amount={montoPagado} />
+              </div>
+            ) : (
+              <div className="d-flex justify-content-center align-items-center gap-2">
+                <InputText
+                  autoFocus
+                  className="fs-2 text-center"
+                  style={{ width: "120px" }}
+                  value={montoPagado}
+                  onChange={(e) => setMontoPagado(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") guardar();
+                    if (e.key === "Escape") cancelar();
+                  }}
+                />
+
+                <button
+                  className="btn btn-success btn-sm"
+                  onClick={guardar}
+                >
+                  ✔
+                </button>
+
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={cancelar}
+                >
+                  ✖
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {monto_no_pagados > 0 && (
+          <>
+            <span className="text-change">
+              <NumberFormatMoney amount={monto_no_pagados} />
+            </span>
+            <br />
+          </>
+        )}
+      </div>
+    </td>
+  );
 }
 
 function dataTotalFormular(anio=2024) {

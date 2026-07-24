@@ -566,20 +566,20 @@ export const ExecutiveTable2 = (props) => {
         <tbody>
           {[
             { key: "mkInvMeta", label: "Inversion Meta", type: "money" },
-            { key: "totalServMeta", label: "VENTA MEMBRESIAS META", type: "money" }, // NEW
+            { key: "totalServMeta", label: "VENTA MEMBRESIAS META", type: "float2" }, // NEW
             { key: "roasMeta", label: "ROAS META", type: "float2" }, // NEW
             { key: "mkLeadsMeta", label: "CANTIDAD LEADS  META", type: "int" },
 
-            { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "float2" },
+            { key: "mkCplMeta", label: "COSTO POR LEAD META", type: "money" },
             {
               key: "mkCacMeta",
               label: "COSTO ADQUISICION DE CLIENTES META",
-              type: "float2",
+              type: "money" ,
             },
             { key: "clientesMeta", label: "CANTIDAD CLIENTES META", type: "int" },
             { key: "convMeta", label: "% CONVERSION META", type: "float2" },
-            { key: "mkInvTikTok", label: "Inversion TikTok", type: "money" },
-            { key: "totalServTikTok", label: "VENTA MEMBRESIAS TIKTOK", type: "money" }, // NEW
+            { key: "mkInvTikTok", label: "Inversion TikTok", type: "float2" },
+            { key: "totalServTikTok", label: "VENTA MEMBRESIAS TIKTOK", type: "float2" }, // NEW
 
             { key: "roasTikTok", label: "ROAS TIKTOK", type: "float2" }, // NEW
 
@@ -592,12 +592,12 @@ export const ExecutiveTable2 = (props) => {
             },
             {
               key: "mkCacTikTok",
-              label: "COSTO ADQUISICION CLIENTES TIKTOK",
+              label: "COSTO ADQUISICION CLIENTES TIKTOK S/.",
               type: "float2",
             },
             { key: "clientesTikTok", label: "CANTIDAD CLIENTES TIKTOK", type: "int" }, // NEW
             { key: "convTikTok", label: "% CONVERSION TIKTOK", type: "float2" }, // NEW
-            { key: "mkInv", label: "INVERSIÓN TOTAL REDES", type: "money" },
+            { key: "mkInv", label: "INVERSIÓN TOTAL REDES S/.", type: "money" },
             { key: "totalMes", label: "VENTA TOTAL (META + TIKTOK)", type: "money", compute: (m) => (m.metrics?.totalServMeta ?? 0) + (m.metrics?.totalServTikTok ?? 0) }, // suma meta+tiktok
 
             { key: "roas", label: "ROAS (RETORNO DE INVERSIÓN)", type: "float2" }, // NEW
@@ -638,7 +638,7 @@ export const ExecutiveTable2 = (props) => {
                 const val = r.compute ? r.compute(m) : (m.metrics?.[r.key] ?? 0);
                 const txt =
                   r.type === "money"
-                    ? r.key === "mkInvMeta"
+                    ? r.key === "mkInvMeta"||'mkCacMeta'
                       ? fmtUsd(val)
                       : fmtMoney(val)
                     : r.type === "float2"

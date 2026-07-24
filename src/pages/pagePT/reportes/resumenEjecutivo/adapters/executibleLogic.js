@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { MESES, aliasMes, norm, limaFromISO } from '../hooks/useResumenUtils';
 export { MESES, aliasMes, norm };
 
@@ -27,10 +28,11 @@ const getDetalleOtrosServicios = (v) =>
 	v?.detalle_venta_servicios ||
 	[];
 
-
 const hasPaidMembership = (v) =>
 	getDetalleMembresias(v).some(
-		(it) => Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total) > 0
+		(it) =>
+			Number(it?.tarifa_monto ?? it?.monto ?? it?.precio ?? it?.tarifa ?? it?.precio_total) >
+			0
 	);
 
 const getOriginId = (v) => {
@@ -54,7 +56,8 @@ const extractOriginInfo = (v, originMap) => {
 		v?.parametro_origen?.id_param ??
 		'OTROS';
 
-	const strMapped = originMap?.[String(rawOrigin)] ?? originMap?.[Number(rawOrigin)] ?? String(rawOrigin);
+	const strMapped =
+		originMap?.[String(rawOrigin)] ?? originMap?.[Number(rawOrigin)] ?? String(rawOrigin);
 	const low = String(strMapped).trim().toLowerCase();
 
 	let oKey = low.replace(/\s+/g, '_');
@@ -147,7 +150,8 @@ export function computeMetricsForMonth({
 		if (d.getFullYear() !== Number(anio) || d.getMonth() !== monthIdx) continue;
 
 		// --- BLOQUEO OCTUBRE 2024 ---
-		if (d.getFullYear() === 2024 && d.getMonth() === 9) { // 9 = Octubre
+		if (d.getFullYear() === 2024 && d.getMonth() === 9) {
+			// 9 = Octubre
 			continue;
 		}
 
@@ -333,10 +337,8 @@ export function computeMetricsForMonth({
 	const mkLeadsTikTok = sumFrom(leads_por_red, ['1514', 'tiktok', 'tik tok']);
 	const mkLeads = mkLeadsMeta + mkLeadsTikTok;
 
-	const clientesMeta =
-		sumFrom(clientes_por_red, ['1515', 'meta', 'facebook', 'instagram']);
-	const clientesTikTok =
-		sumFrom(clientes_por_red, ['1514', 'tiktok', 'tik tok']);
+	const clientesMeta = sumFrom(clientes_por_red, ['1515', 'meta', 'facebook', 'instagram']);
+	const clientesTikTok = sumFrom(clientes_por_red, ['1514', 'tiktok', 'tik tok']);
 
 	const safeDiv0 = (n, d) => (Number(d) > 0 ? Number(n) / Number(d) : 0);
 
@@ -463,9 +465,11 @@ export function computeMetricsForMonth({
 		cantidad_reservas_monkeyfit_full: cantMFFull,
 		ticket_medio_monkeyfit_full: ticketMFFull,
 
-
 		roas: mkInv > 0 ? (byGroup.meta.total + byGroup.tiktok.total) / mkInv : 0,
-		roasMeta: (mkInvMeta * Number(tasaCambio || 3.37)) > 0 ? byGroup.meta.total / (mkInvMeta * Number(tasaCambio || 3.37)) : 0,
+		roasMeta:
+			mkInvMeta * Number(tasaCambio || 3.37) > 0
+				? byGroup.meta.total / (mkInvMeta * Number(tasaCambio || 3.37))
+				: 0,
 		roasTikTok: mkInvTikTok > 0 ? byGroup.tiktok.total / mkInvTikTok : 0,
 
 		byOrigin,
@@ -715,22 +719,6 @@ export function buildExecutiveTableData({
 }
 
 // ================== LOGICA DE METAS ==================
-const METAS_2025 = {
-	enero: 50000,
-	febrero: 50000,
-	marzo: 50000,
-	abril: 55000,
-	mayo: 55000,
-	junio: 60000,
-	julio: 60000,
-	agosto: 70000,
-	setiembre: 75000,
-	septiembre: 75000,
-	octubre: 85000,
-	noviembre: 90000,
-	diciembre: 90000,
-};
-
 export const getMetaPorMes = (mes, anio) => {
 	const norm = aliasMes(mes);
 
@@ -739,5 +727,104 @@ export const getMetaPorMes = (mes, anio) => {
 		return 100000;
 	}
 	// Default (2025 u otros)
-	return METAS_2025[norm] || 100000;
+	return getQuotaParaMes(dayjs.utc(mes, 'MMMM').format('MM') - 1, anio).meta || 100000;
+};
+
+const getQuotaParaMes = (monthIndex, year) => {
+	const y = year;
+	const m = monthIndex;
+	switch (`${m}-${y}`) {
+		case '7-2026':
+			return {
+				meta: 100000,
+			};
+		case '6-2026':
+			return {
+				meta: 90000,
+			};
+		case '5-2026':
+			return {
+				meta: 80000,
+			};
+		case '4-2026':
+			return {
+				meta: 90000,
+			};
+		case '3-2026':
+			return {
+				meta: 100000,
+			};
+		case '2-2026':
+			return {
+				meta: 90000,
+			};
+		case '1-2026':
+			return {
+				meta: 110000,
+			};
+		case '12-2025':
+			return {
+				meta: 90000,
+			};
+
+		case '11-2025':
+			return {
+				meta: 90000,
+			};
+
+		case '10-2025':
+			return {
+				meta: 85000,
+			};
+
+		case '9-2025':
+			return {
+				meta: 75000,
+			};
+
+		case '8-2025':
+			return {
+				meta: 70000,
+			};
+
+		case '7-2025':
+			return {
+				meta: 60000,
+			};
+
+		case '6-2025':
+			return {
+				meta: 60000,
+			};
+
+		case '5-2025':
+			return {
+				meta: 60000,
+			};
+
+		case '4-2025':
+			return {
+				meta: 60000,
+			};
+
+		case '3-2025':
+			return {
+				meta: 60000,
+			};
+
+		case '2-2025':
+			return {
+				meta: 60000,
+			};
+
+		case '1-2025':
+			return {
+				meta: 60000,
+			};
+
+		default:
+			return {
+				meta: 0,
+			};
+	}
 };

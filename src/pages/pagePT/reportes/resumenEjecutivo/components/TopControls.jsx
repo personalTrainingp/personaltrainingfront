@@ -358,53 +358,6 @@ export function TopControls({
       </div>
 
       <div style={dividerStyle} />
-
-      {/* FILA INFERIOR */}
-      <div style={bottomRowStyle}>
-        {(vigentesBreakdown || []).map((it, idx) => (
-          <AvatarMiniBox key={idx} item={it} />
-        ))}
-
-        {/* SOCIOS TOTAL */}
-        <div
-          style={{
-            ...boxStyleBase,
-            minWidth: 160,
-            padding: "6px 12px",
-            gap: 8,
-          }}
-          title="Membresías vigentes"
-        >
-          <span>SOCIOS TOTAL:&nbsp;</span>
-          <span style={{ fontVariantNumeric: "tabular-nums" }}>
-            {vigentesCount}
-          </span>
-        </div>
-
-        <button
-          className="btn btn-outline-primary"
-          onClick={() => setShowMultiContratosModal(true)}
-          style={{
-            fontWeight: 700,
-            borderWidth: 2,
-            textTransform: "uppercase",
-            whiteSpace: "nowrap",
-            height: 48,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-          title="Ver socios con múltiples contratos"
-        >
-          <i className="pi pi-users" />
-          Multi-Contratos
-        </button>
-
-        <ModalMultiplesContratos
-          show={showMultiContratosModal}
-          onHide={() => setShowMultiContratosModal(false)}
-        />
-      </div>
     </div>
   );
 }

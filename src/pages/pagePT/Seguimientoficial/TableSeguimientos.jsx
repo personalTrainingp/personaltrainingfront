@@ -120,7 +120,7 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
 ];
 
   return (
-    <div className='m-2'>
+    <div className='m-2' style={{width: '80%'}}>
         <div className='fs-2 fw-bold text-change'>
             {title}
             <span className='text-black mx-1'>

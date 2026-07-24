@@ -93,12 +93,12 @@ export const App = ({ id_empresa }) => {
 
       <Row className="mb-3">
         <Col lg={12}>
-          <RenovacionesPorVencer
+          {/* <RenovacionesPorVencer
             renewals={renewals} daysThreshold={9999}
             title={`Renovaciones próximas a vencer: ${String(MESES[selectedMonth - 1] || "").toUpperCase()} (1 - ${cutDay})`}
             excludeZeroAmount showSummary pgmNameById={pgmNameById}
             onOpen={loadRenewals} isLoading={isLoadingRenovaciones}
-          />
+          /> */}
         </Col>
       </Row>
 
