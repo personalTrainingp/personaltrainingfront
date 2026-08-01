@@ -6,9 +6,8 @@ import { Table } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 
-export const AppDetalleProgramas = ({arrayFechas}) => {
+export const AppDetalleProgramas = ({arrayFechas, corte}) => {
     const { obtenerVentas, dataVentas,  } = useInformeEjecutivoStore()
-    const { corte } = useSelector((e) => e.DATA);
 
     useEffect(() => {
         obtenerVentas(['2025-01-02 15:45:47.6640000 +00:00','2025-12-04 20:42:20.4490000 +00:00'])
@@ -37,7 +36,6 @@ export const AppDetalleProgramas = ({arrayFechas}) => {
     const tablaProgramas = generarTablaProgramas(dataConMes);
   return (
     <div>
-        <FechaCorte corte={corte.corte} inicio={corte.inicio}/>
         <div className="table-responsive" style={{ width: '100%' }}>
             <Table className="tabla-egresos" style={{width: '100%'}}  bordered>
                 <thead>

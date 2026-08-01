@@ -1,10 +1,11 @@
 import React from 'react';
 import { useReentryBreakdown } from '../hooks/useReentryBreakdown';
 import { fmtMoney } from '../../resumenEjecutivo/adapters/executibleLogic';
+import { useMeta } from '../hooks/useMeta';
 
-export const ReentryBreakdownTable = ({ ventas = [], monthsData = [], customStartDay = 1, customEndDay = 31 }) => {
+export const MetaTable = ({ ventas = [], monthsData = [], customStartDay = 1, customEndDay = 31 }) => {
 
-    const { repData, totals, grandTotal } = useReentryBreakdown(ventas, monthsData, customStartDay, customEndDay);
+    const { repData, totals, grandTotal } = useMeta(ventas, monthsData, customStartDay, customEndDay);
 
     // --- ESTILOS (Copiados de GeneralSalesBreakdownTable) ---
     const styles = {

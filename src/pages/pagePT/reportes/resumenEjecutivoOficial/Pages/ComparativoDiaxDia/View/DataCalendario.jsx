@@ -1,194 +1,236 @@
-import { NumberFormatMoney } from "@/components/CurrencyMask";
 import React, { useMemo, useState } from "react";
-import { agruparPorEmpleado } from "../helpers/agruparDiasEnMes";
+import { NumberFormatMoney } from "@/components/CurrencyMask";
 
-const MESES = [
-  "Enero","Febrero","Marzo","Abril","Mayo","Junio",
-  "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+const DIAS = [
+  "DOMINGO",
+  "LUNES",
+  "MARTES",
+  "MIÉRCOLES",
+  "JUEVES",
+  "VIERNES",
+  "SÁBADO",
 ];
 
-function daysInMonth(anio, mes) {
-  return new Date(anio, mes, 0).getDate(); // mes 1..12
-}
-
-function firstDayOfMonthMonStart(anio, mes) {
-  // JS: 0=Dom..6=Sab -> queremos 0=Lun..6=Dom
-  const d = new Date(anio, mes - 1, 1).getDay();
-  return (d + 6) % 7;
-}
-
-function keyDate(anio, mes, dia) {
-  return `${anio}-${String(mes).padStart(2, "0")}-${String(dia).padStart(2, "0")}`;
-}
-
-export const DataCalendario = ({  data = [],
-  initialYear = 2026, 
+export const DataCalendario = ({
+  data = [],
+  initialYear = 2026,
   initialMonth = 1,
-  onDayClick}) => {
-  const [{ anio, mes }, setYM] = useState({ anio: initialYear, mes: initialMonth });
+  diaInicio,
+  diaFin=31
+}) => {
 
-  // Agrupar data por día (YYYY-MM-DD) -> [items...]
-  const mapByDay = useMemo(() => {
-    const m = new Map();
-    for (const item of data) {
-      const k = keyDate(item.anio, item.mes, item.dia);
-      if (!m.has(k)) m.set(k, []);
-      m.get(k).push(item);
-    }
-    return m;
+  const [{ anio, mes }] = useState({
+    anio: initialYear,
+    mes: initialMonth,
+  });
+
+  const totalDias = new Date(anio, mes, 0).getDate();
+
+  // COLUMNAS
+const columnas = useMemo(() => {
+  const inicio = Math.max(1, diaInicio ?? 1);
+  const fin = Math.min(totalDias, diaFin);
+
+  return Array.from({ length: fin - inicio + 1 }, (_, i) => {
+    const dia = inicio + i;
+    const fecha = new Date(anio, mes - 1, dia);
+
+    return {
+      dia,
+      nombre: DIAS[fecha.getDay()],
+    };
+  });
+}, [anio, mes, totalDias, diaInicio, diaFin]);
+
+  // EMPLEADOS
+  const empleados = useMemo(() => {
+
+    const ventas = {};
+    const socios = {};
+
+    data.forEach(dia => {
+
+      dia.items.forEach(v => {
+
+        const nombre = v.empl;
+
+        if (!ventas[nombre]) {
+
+          ventas[nombre] = {
+            nombre,
+            dias: {},
+            total: 0,
+          };
+
+          socios[nombre] = {
+            nombre,
+            dias: {},
+            total: 0,
+          };
+
+        }
+
+        ventas[nombre].dias[dia.dia] =
+          (ventas[nombre].dias[dia.dia] || 0) + v.montoTotal;
+
+        ventas[nombre].total += v.montoTotal;
+
+        socios[nombre].dias[dia.dia] =
+          (socios[nombre].dias[dia.dia] || 0) + 1;
+
+        socios[nombre].total++;
+
+      });
+
+    });
+
+    return { ventas, socios };
+
   }, [data]);
 
-  const totalDias = daysInMonth(anio, mes);
-  const offset = firstDayOfMonthMonStart(anio, mes);
+  // RESUMEN
+  const resumen = useMemo(() => {
 
-  const goPrev = () => {
-    setYM(prev => (prev.mes === 1 ? { anio: prev.anio - 1, mes: 12 } : { anio: prev.anio, mes: prev.mes - 1 }));
-  };
+    const ventasDia = {};
+    const sociosDia = {};
 
-  const goNext = () => {
-    setYM(prev => (prev.mes === 12 ? { anio: prev.anio + 1, mes: 1 } : { anio: prev.anio, mes: prev.mes + 1 }));
-  };
+    data.forEach(dia => {
 
-  // 42 celdas (6 semanas) para que siempre cuadre
-  const cells = useMemo(() => {
-    return Array.from({ length: 42 }, (_, idx) => {
-      const dayNum = idx - offset + 1;
-      if (dayNum < 1 || dayNum > totalDias) return null;
+      ventasDia[dia.dia] = dia.items.reduce(
+        (t, x) => t + x.montoTotal,
+        0
+      );
 
-      const k = keyDate(anio, mes, dayNum);
-      const items = mapByDay.get(k) || []; // si no hay data => vacío
+      sociosDia[dia.dia] = dia.items.length;
 
-      return { dia: dayNum, key: k, items };
     });
-  }, [anio, mes, totalDias, offset, mapByDay]);
 
-  // Detectar si el mes entero no tiene nada (solo para que lo sepas o muestres un mensaje opcional)
-  const monthHasData = useMemo(() => {
-    for (let d = 1; d <= totalDias; d++) {
-      const k = keyDate(anio, mes, d);
-      if ((mapByDay.get(k) || []).length) return true;
-    }
-    return false;
-  }, [anio, mes, totalDias, mapByDay]);
+    return { ventasDia, sociosDia };
+
+  }, [data]);
 
   return (
-    <div style={{ width: "100%" }}>
-      {/* Header navegación */}
-      <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10 }}>
-        <button onClick={goPrev}>◀</button>
-        <div style={{ fontWeight: 800 }}>
-          {MESES[mes - 1]} {anio}
-        </div>
-        <button onClick={goNext}>▶</button>
 
-        {!monthHasData && (
-          <div style={{ marginLeft: 10, fontSize: 12, color: "#777" }}>
-            (mes sin data)
-          </div>
-        )}
-      </div>
+    <div className="table-responsive">
+      {initialMonth}
+      <table className="table table-bordered text-center align-middle">
 
-      {/* Tabla */}
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 560 }}>
-          <thead>
-            <tr>
-              {["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"].map(d => (
-                <th key={d} style={{ border: "1px solid #ddd", padding: 8, background: "#f5f5f5", fontWeight: 800, textAlign: "center", fontSize: '30px' }}>
-                  {d}
+        <thead>
+
+          <tr>
+            <th>Asesor</th>
+            {
+              columnas.map(c => (
+
+                <th key={c.dia}>
+                  {c.nombre}
+                  <br />
+                  {c.dia}
                 </th>
-              ))}
-            </tr>
-          </thead>
 
-          <tbody>
-            {Array.from({ length: 6 }).map((_, row) => (
-              <tr key={row}>
-                {Array.from({ length: 7 }).map((_, col) => {
-                  const cell = cells[row * 7 + col];
+              ))
+            }
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            Object.values(empleados.ventas).map(emp => (
 
-                  // celdas fuera del mes
-                  if (!cell) {
-                    return <td key={col} style={{ border: "1px solid #eee", height: 78, background: "#fafafa" }} />;
-                  }
+              <tr key={emp.nombre}>
 
-                  const count = cell.items.length;
+                <td>{emp.nombre}</td>
 
-                  return (
-                    <td
-                      
-                      key={col}
-                      onClick={() => onDayClick?.(cell.items, { dia: cell.dia, mes, anio })}
-                      style={{
-                        border: "1px solid #ddd",
-                        height: 78,
-                        verticalAlign: "top",
-                        padding: 8,
-                        cursor: "pointer",
-                        background: count ? "#e8f5ff" : "#fff"
-                      }}
-                      title={count ? `${count} registros` : "Sin data"}
-                    >
-                      <div className="h-100">
-                        <div  style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          {/* <span style={{ fontWeight: 800 }}>{cell.dia}</span> */}
-                          <div
-                              className="text-center"
-                              style={{
-                                width: '100%',
-                                fontSize: '30px',
-                                padding: "2px 8px",
-                                borderRadius: 999,
-                                background: "#111",
-                                color: "#fff"
-                              }}
-                            >
-                              {cell.dia}
-                            </div>
-                        </div>
-                        {count > 0 && (
-                          <div style={{ marginTop: 6, fontSize: 20, color: "#333" }}>
-                            {/* ejemplo: mostrar campo "titulo" si existe */}
-                            {cell.items[0]?.titulo ? (
-                              <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                {cell.items[0].titulo}
-                                
-                              </div>
-                            ) : (
-                              <div style={{ color: "#666" }}>
-                                  CANTIDAD: {cell.items[0].items.length}
-                                  <br/>
-                                  TOTAL: <NumberFormatMoney amount={cell.items[0].items.reduce((total, item) => total + (item?.montoTotal || 0), 0)}/> 
-                                      <br/>
-                                      {
-                                          agruparPorEmpleado(cell.items[0].items).map(emp=>{
-                                              return (
-                                                  <>
-                                                  <br/>
-                                                  ASESOR: {emp.nombre_empl.split(' ')[0]}
-                                                  <br/>
-                                                  VENTAS: <NumberFormatMoney amount={emp.items.reduce((total, item) => total + (item?.montoTotal || 0), 0)}/>
-                                                  <br/>
-                                                  CANTIDAD: {emp.items.length}
-                                                  <br/>
-                                                  </>
-                                              )
-                                          })
-                                      }
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
+                {
+                  columnas.map(c => (
 
+                    <td key={c.dia}>
+                      <NumberFormatMoney
+                        amount={emp.dias[c.dia] || 0}
+                      />
                     </td>
-                  );
-                })}
+
+                  ))
+                }
+
+                <td>
+                  <NumberFormatMoney amount={emp.total} />
+                </td>
+
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+
+            ))
+          }
+
+          {
+            Object.values(empleados.socios).map(emp => (
+
+              <tr key={emp.nombre + "socios"}>
+
+
+                <td>{emp.nombre} SOCIOS</td>
+
+                {
+                  columnas.map(c => (
+
+                    <td key={c.dia}>
+                      {emp.dias[c.dia] || 0}
+                    </td>
+
+                  ))
+                }
+
+                <td>{emp.total}</td>
+
+              </tr>
+
+            ))
+          }
+
+          <tr className="fw-bold">
+
+            <td colSpan={1}>VENTA X DÍA</td>
+
+            {
+              columnas.map(c => (
+
+                <td key={c.dia}>
+                  <NumberFormatMoney
+                    amount={resumen.ventasDia[c.dia] || 0}
+                  />
+                </td>
+
+              ))
+            }
+
+            <td></td>
+
+          </tr>
+
+          <tr className="fw-bold">
+
+            <td colSpan={1}>SOCIOS X DÍA</td>
+
+            {
+              columnas.map(c => (
+
+                <td key={c.dia}>
+                  {resumen.sociosDia[c.dia] || 0}
+                </td>
+
+              ))
+            }
+
+            <td></td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
     </div>
+
   );
-}
+
+};

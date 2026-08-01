@@ -113,7 +113,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	const { colorEmpresa } = useSelector(e => e.ui)
 
 	return (
-		<div className={'navbar-custom d-flex'} style={{ height: '8rem' }}>
+		<div className={'navbar-custom d-flex'} style={{ height: '6rem' }}>
 			<div className="topbar container-fluid">
 				<div className="d-flex align-items-center gap-lg-2 gap-1">
 					<button className="button-toggle-menu" onClick={handleLeftMenuCallBack}>
@@ -126,6 +126,7 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 								{RANGE_DATE[1] instanceof Date?dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM [DEL] YYYY'):RANGE_DATE[1]}
 							</div> 
 						</h3>
+						{}
 				</div>	
 				<ul className=" d-flex align-items-center gap-3">
 					<li>

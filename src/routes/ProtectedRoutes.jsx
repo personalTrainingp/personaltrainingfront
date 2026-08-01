@@ -20,7 +20,7 @@ const ResumenMembresiasPage = lazy(() =>
 
 
 const NuevaVenta = lazy(() => import('../pages/pagePT/nuevaVenta'));
-const Seguimiento = lazy(() => import('../pages/pagePT/seguimiento/index.jsx'));
+const Seguimiento = lazy(() => import('../pages/pagePT/Seguimientoficial/index.jsx'));
 const TotaldeVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'));
 const VentasPrograma = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'));
 const VentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'));
@@ -58,7 +58,7 @@ const ReporteGerenciales = lazy(() => import('../pages/pagePT/reportes/reporteGe
 const HistorialCitasNutricionista = lazy(() => import('../pages/pagePT/HistorialCitasNutricionista'))
 const GestionTipoCambio = lazy(() => import('../pages/pagePT/GestTipoCambio'))
 const GestContratosClientes = lazy(() => import('../pages/pagePT/GestContratosCliente'))
-const ReporteFlujoCaja = lazy(() => import('../pages/pagePT/FlujoCaja'))
+const ReporteFlujoCaja = lazy(() => import('../pages/pagePT/FlujoCaja_1'))
 const ReporteFlujoCajaAldair = lazy(() => import('../pages/pagePT/FlujoCajaAldair'))
 const GestProvAgente = lazy(() => import('../pages/pagePT/GestProvAgentes'))
 const PerfilProveedor = lazy(() => import('../pages/pagePT/PerfilProveedor'))
@@ -192,7 +192,7 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/config') &&
-								<Route path='centro-archivos' element={<GestionCentroDeArchivos />} />
+								<Route path='centro-archivos' element={<InformeEjecutivoOficial />} />
 							}
 							{
 								sections.find(e => e.url === '/detalle-reinscripcion-x-dia') &&

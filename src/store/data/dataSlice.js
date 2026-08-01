@@ -18,6 +18,7 @@ export const dataSlice = createSlice({
 			corte: 31,
 			dia: [1, 31],
 		},
+		fecha: `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`,
 		modalProveedor: {
 			ruc_prov: '',
 			razon_social_prov: '',
@@ -38,7 +39,6 @@ export const dataSlice = createSlice({
 	},
 	reducers: {
 		registroProveedor: (state, action) => {
-
 			return {
 				...state,
 				...action.payload,
@@ -79,6 +79,7 @@ export const dataSlice = createSlice({
 				{ length: payload.corte - payload.inicio + 1 },
 				(_, i) => payload.inicio + i
 			);
+			state.fecha = `${payload.fecha}`;
 		},
 		onSetMultiDate: (state, { payload }) => {
 			state.MULTI_DATE = payload;

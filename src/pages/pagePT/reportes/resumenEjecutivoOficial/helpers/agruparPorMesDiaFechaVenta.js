@@ -5,7 +5,35 @@ export const agruparPorMesDiaFechaVenta = (data) => {
 
 	data.forEach((item) => {
 		// const fecha = dayjs.utc(item.fecha_venta);
-		const fecha = DateMaskStr2(item.fechaP);
+		const fecha = DateMaskStr2(item.fechaP); // Ajuste de zona horaria
+
+		const anio = fecha.year();
+		const mes = fecha.month() + 1; // 0–11 → 1–12
+		const dia = fecha.date();
+
+		const key = fecha.format('YYYY-MM-DD');
+
+		if (!map[key]) {
+			map[key] = {
+				anio,
+				mes,
+				dia,
+				items: [],
+			};
+		}
+
+		map[key].items.push(item);
+	});
+
+	return Object.values(map);
+};
+
+export const agruparPorMesDiaFechaVenta1 = (data) => {
+	const map = {};
+
+	data.forEach((item) => {
+		// const fecha = dayjs.utc(item.fecha_venta);
+		const fecha = DateMaskStr2(item.fechaP).subtract(-5, 'hour'); // Ajuste de zona horaria
 
 		const anio = fecha.year();
 		const mes = fecha.month() + 1; // 0–11 → 1–12

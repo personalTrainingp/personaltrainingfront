@@ -145,7 +145,7 @@ export const ItemMes = ({mesSTR, monto_pagados, monto_no_pagados, id_concepto, f
 
   const guardar = () => {
     dispatch(
-      onUpdateGrupoGastos({
+      onUpdateGrupoIngresos({
         id_gasto: id_concepto,
         fecha,
         monto_pagados: Number(montoPagado),

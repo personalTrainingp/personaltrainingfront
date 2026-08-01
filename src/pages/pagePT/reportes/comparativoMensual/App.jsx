@@ -75,7 +75,16 @@ const App = () => {
                                                 customStartDay={customStartDay}
                                                 customEndDay={customEndDay}
                                             />
-
+                                            <ComparativoMensualTable
+                                                ventas={dataVentas.filter(v => v.id_origen === 693||v.id_origen === 694)}
+                                                year={year}
+                                                startMonth={selectedMonth - 1}
+                                                cutDay={cutDay}
+                                                title={'META'}
+                                                showFortnightly={true}
+                                                customStartDay={customStartDay}
+                                                customEndDay={customEndDay}
+                                            />
                                             <hr className="my-5" />
                                             {
                                                 arrayOrigenDeCliente.map(m=>{

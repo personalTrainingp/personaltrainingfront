@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react'
-import { FechaCorte } from '@/components/RangeCalendars/FechaRange'
-import { useSelector } from 'react-redux'
 import { useInformeEjecutivoStore } from '../../useInformeEjecutivoStore'
 import { DataTable1 } from './DataTableComparativoConMes/DataTable1'
 import { generarMesYanio } from '../../helpers/generarMesYanio'
 
-export const AppComparativoConMes = ({titulo}) => {
+export const AppComparativoConMes = ({titulo, corte}) => {
     const { obtenerVentas, dataVentas } = useInformeEjecutivoStore()
-    const { corte } = useSelector((e) => e.DATA);
 
     useEffect(() => {
         obtenerVentas(['2025-01-02 15:45:47.6640000 +00:00','2025-12-04 20:42:20.4490000 +00:00'])
@@ -16,7 +13,7 @@ export const AppComparativoConMes = ({titulo}) => {
     
   return (
     <div>
-        <div className='fs-1'>
+        <div className='fs-1 text-center'>
           {titulo}
         </div>
         

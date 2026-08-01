@@ -131,7 +131,7 @@ export const ComisionesTable = ({ ventas = [], year, month, initDay = 1, cutDay 
                                 <strong>{fmtMoney(cuotaSugerida / 2)}</strong>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#666' }}>CUOTA:</span>
+                                <span style={{ color: '#666' }}>VENTA:</span>
                                 {/* Usamos un color azul oscuro/corporativo para el dato real en lugar de rojo */}
                                 <strong style={{ color: '#0056b3' }}>{fmtMoney(adv.realData.venta)}</strong>
                             </div>

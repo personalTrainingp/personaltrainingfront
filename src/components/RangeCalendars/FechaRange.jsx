@@ -178,6 +178,14 @@ const customFecha={
   inicio: 1,
   corte: 31
 }
+const customFecha1={
+  inicio: 1,
+  corte: 31,
+  fecha: dayjs().format('YYYY-M')
+}
+const newDate = new Date();
+const currentYear = newDate.getFullYear();
+const currentMonth = newDate.getMonth() + 1; // Los meses en JavaScript son base 0
 export const FechaCorte = ({corte1, inicio1, showHasta=true, className})=>{
   const fechas = del0al31()
 const { formState, inicio, corte, onInputChange } = useForm(customFecha)
@@ -213,6 +221,48 @@ const onSaveCorte = ()=>{
     </>
   )
 }
+export const FechaCorteReporte = ({corte1, inicio1, showHasta=true, className})=>{
+  const fechas = del0al31()
+const { formState, inicio, corte, fecha, onInputChange } = useForm(customFecha1)
+const dispatch = useDispatch()
+const onSaveCorte = ()=>{
+  dispatch(onSetCorte({fecha: fecha, inicio, corte}))
+}
+  return (
+    <>
+    <Row className='mt-4'>
+      
+      <Col lg={12}>
+        <div className='d-flex align-items-center align-content-center'>
+          <div className='fs-2'>
+            INICIO: 
+          </div>
+          <div>
+            <InputSelect className={'fs-2 mx-2 text-black'} options={fechas} value={inicio} nameInput={'inicio'} onChange={onInputChange}/>
+          </div>
+          <div className='fs-2 ml-4'>
+            FIN:
+          </div>
+          <div>
+            <InputSelect className={'fs-2 mx-2 text-black'} options={fechas} value={corte} nameInput={'corte'} onChange={onInputChange}/>
+          </div>
+          <div className='fs-2 ml-4'>
+            MES:
+          </div>
+          <div  style={{width: '350px'}}>
+            <InputSelect className={'fs-2 text-black'} style={{width: '550px'}} options={obtenerMeses('2024-09', `${currentYear}-${currentMonth}`)} value={fecha} nameInput={'fecha'} onChange={onInputChange}/>
+          </div>
+          <div className='mx-3'>
+            <InputButton label={'AGREGAR'} className={'fs-3'} onClick={onSaveCorte}/>
+          </div>
+        </div>
+      </Col>
+      <Col lg={1}>
+      </Col>
+    </Row>
+    </>
+  )
+}
 function del0al31() {
     let fecha=[];
   for (let index = 1; index < 32; index++) {
@@ -220,3 +270,24 @@ function del0al31() {
   }
   return fecha;
 }
+const obtenerMeses = (fecha_inicio, fecha_fin) => {
+  const inicio = dayjs(fecha_inicio).startOf("month");
+  const fin = dayjs(fecha_fin).startOf("month");
+
+  const meses = [];
+  let actual = inicio;
+
+  while (actual.isBefore(fin) || actual.isSame(fin)) {
+    meses.push({
+      value: `${actual.year()}-${actual.format("M").toUpperCase()}`,
+      mes: actual.format("MMMM").toUpperCase(),
+      anio: actual.year(),
+      fecha: actual.format("YYYY-M"),
+      label: `${actual.format("MMMM").toUpperCase()} ${actual.year()}`,
+    });
+
+    actual = actual.add(1, "month");
+  }
+
+  return meses;
+};

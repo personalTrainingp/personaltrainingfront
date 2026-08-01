@@ -16,7 +16,6 @@ export const AppSeguimiento = () => {
         <TableSeguimientos bodyHeadcontadorDia={<>SESIONES <br/> PENDIENTES</>} dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>SOCIOS ACTIVOS </span></>} rangeDate={["2026-07-22T12:00:00.000Z", "2030-03-16T12:00:00.000Z"]}/>
         <TableSeguimientos bodyHeadcontadorDia={<>DIAS <br/> VENCIDOS</>} dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>RENOVACIONES VENCIDAS</span></>} rangeDate={[ "2026-02-22T12:00:00.000Z","2026-07-21T12:00:00.000Z"]}/>
         <TableSeguimientos bodyHeadcontadorDia={<>DIAS <br/> VENCIDOS</>} dataSeguimientoxFecha={dataSeguimientoxFecha} title={<><span className='text-change'>REINSCRIPCIONES VENCIDAS</span></>} rangeDate={["2024-09-16T12:00:00.000Z", "2026-02-21T12:00:00.000Z"]}/>
-
       </div>
     </div>
   )

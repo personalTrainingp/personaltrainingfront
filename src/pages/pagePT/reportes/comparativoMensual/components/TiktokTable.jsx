@@ -1,10 +1,12 @@
 import React from 'react';
 import { useReentryBreakdown } from '../hooks/useReentryBreakdown';
 import { fmtMoney } from '../../resumenEjecutivo/adapters/executibleLogic';
+import { useMeta } from '../hooks/useMeta';
+import { useTiktok } from '../hooks/useTiktok';
 
-export const ReentryBreakdownTable = ({ ventas = [], monthsData = [], customStartDay = 1, customEndDay = 31 }) => {
+export const TiktokTable = ({ ventas = [], monthsData = [], customStartDay = 1, customEndDay = 31 }) => {
 
-    const { repData, totals, grandTotal } = useReentryBreakdown(ventas, monthsData, customStartDay, customEndDay);
+    const { repData, totals, grandTotal } = useTiktok(ventas, monthsData, customStartDay, customEndDay);
 
     // --- ESTILOS (Copiados de GeneralSalesBreakdownTable) ---
     const styles = {
