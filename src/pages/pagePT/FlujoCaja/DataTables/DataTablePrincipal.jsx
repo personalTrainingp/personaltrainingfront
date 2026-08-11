@@ -49,14 +49,14 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                     <span 
                       className={`${c.id==1272 ?`text-black`:''} ${c.id==941 ? `bg-white text-black`:''} ${c.id==1117 ? 'bg-white text-black':''} ${c.id==1124 ? 'text-black':''} ${c.id==1046 ? 'bg-white text-black':''} ${c.id==1285 ? 'bg-white text-black':''} ${c.id==1134 ? 'bg-white text-black':''} ${c.id==1247 ? 'bg-white text-black':''} ${c.id==1251 ? 'bg-white text-black':''} ${c.id==1271 ? 'bg-white text-black':''}`}
                     >
-                      {i+1}.  {(c.nombre_gasto)}
+                      {i+1}. {(c.nombre_gasto)}
                     </span>
                   </td>
                   {
                     c.itemsxDia.map(m=>{
                       return (
                         <React.Fragment key={m.id}>
-                          <td className={`text-center ${c.id==1124 ? `${bgPastel}`:''}`}>
+                          <td className={`text-center ${(m.monto===0&&m.monto_proyectado===0)?'text-gray': ''} ${c.id==1124 ? `${bgPastel}`:''}`}>
                             {m.mesSTR}
                             <div >
                               {
@@ -121,7 +121,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                   }
                   </td>
                 <td className='fs-3 text-center '>{c.itemsxDia?.reduce((total, im)=>total+im?.len, 0)}</td>
-                <td className='fs-3 text-center '>{(((c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0))/sumaMontototal)*100).toFixed(2)}</td>
+                <td className='fs-3 text-center '>{(((c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0))/sumaMontototal)*100).toFixed(2)} %</td>
                 <td className={`text-center border-right-10 sticky-td-right-${id_empresa} sticky-td-${id_empresa}-white`}>
                   {
                     cat==='ingresos'? (
@@ -169,7 +169,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                 return (
                   <React.Fragment key={i}>
                   <td className={`text-center border-bottom-10 ${bgTotal}`} style={{width: '120px'}}>
-                    <NumberFormatMoney amount={(funSumaTotal(f.mes)/funSumatoriaFinal(f.mes))*100}/>
+                    <NumberFormatMoney amount={(funSumaTotal(f.mes)/funSumatoriaFinal(f.mes))*100}/> %
                   </td>
                   <td className={`text-center border-bottom-10 ${bgPastel}`} style={{width: '120px'}}>
                   </td>
@@ -177,7 +177,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                 )
               })
             }
-            <td className={`text-end border-bottom-10 border-left-10 sticky-td-1-right-${id_empresa}`}>
+            <td className={`text-end border-bottom-10 border-left-10 sticky-td-1-right-${id_empresa} text-white`}>
               <NumberFormatMoney
               className='fs-2'
                 amount={
@@ -186,8 +186,8 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
               />
             </td>
             <td className='fs-2 text-end border-bottom-10 '>{sumaLentotal}</td>
-            <td className='fs-2 text-center border-bottom-10 '>{'100'}</td>
-            <td className={`fs-2 text-center border-bottom-10 border-right-10 sticky-td-right-${id_empresa}`}><NumberFormatMoney className='fs-2' amount={sumaMontototal/dataTotalFormular(anio)}/></td>
+            <td className='fs-2 text-center border-bottom-10 '>{'100 %'}</td>
+            <td className={`fs-2 text-center border-bottom-10 border-right-10 sticky-td-right-${id_empresa} text-white`}><NumberFormatMoney className='fs-2' amount={sumaMontototal/dataTotalFormular(anio)}/></td>
           </tr>
         </tbody>
       </Table>

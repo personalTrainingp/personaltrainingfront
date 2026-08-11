@@ -112,7 +112,11 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                 exportHeader: 'FECHA DE VENCIMIENTO',
                 exportValue: (row)=>`${DateMaskStr(row.fecha_vencimiento, 'YYYY-MM-DD')}`
             },
-        ]
+            {id: 'programa', exportHeader: 'programa', exportValue: (row)=>`${row.nombre_programa}`},
+            {id: 'contador', exportHeader: `${bodyHeadcontadorDia}`, exportValue: (row)=>row.countDias},
+            {id: 'email', exportHeader: 'email', exportValue: (row)=>`${row.email_cli}`},
+            {id: 'telefono', exportHeader: 'TELEFONO', exportValue: (row)=>`${row.tel_cli}`},
+        ]   
         const orden = [
     'change 45',
     'fs 45',

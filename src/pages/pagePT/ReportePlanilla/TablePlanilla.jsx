@@ -6,7 +6,7 @@ import { NumberFormatMoney } from '@/components/CurrencyMask'
 export const TablePlanilla = () => {
     const { obtenerSemana, dataPlanilla } = usePlanillaStore()
     useEffect(() => {
-        obtenerSemana(598)
+        obtenerSemana(598, ['2026-07-01', '2026-07-31'])
     }, [])
     console.log({dataPlanilla});
     
@@ -46,7 +46,13 @@ export const TablePlanilla = () => {
                                 <td className='fs-6'>10/{sumaMinTardanzas}</td>
                                 <td className='fs-6'>2,200.00 </td>
                                 <td className='fs-6'>120.00 </td>
-                                <td className='fs-6'>MONTO A PAGAR</td>
+                                <td className='fs-6'>
+                                    <div>
+                                        <pre>
+                                            {JSON.stringify(p, null, 2)}
+                                        </pre>
+                                    </div>
+                                </td>
                             </tr>
                         )
                     })

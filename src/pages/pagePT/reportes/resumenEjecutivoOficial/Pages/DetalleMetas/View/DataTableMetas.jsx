@@ -37,7 +37,9 @@ export const DataTableMetas = ({label, data, arrayFechas=[], corte, nombreCatego
             montoCorte,
             montoMeta,
         }
-    })
+    }).sort((a,b)=>b.montoCorte-a.montoCorte)
+    const dataMesActual = dataConMes.filter((d)=>d.mes===Number(fecha.split('-')[1]) && d.anio===Number(fecha.split('-')[0]))
+    const dataMejoresMesesMasActual = [...dataConMes.slice(0, 4), ...dataMesActual]
   return (
     <div style={{ overflowX: "auto" }}>
         <Table className="tabla-egresos" style={{width: '100%'}}  bordered>
@@ -49,7 +51,7 @@ export const DataTableMetas = ({label, data, arrayFechas=[], corte, nombreCatego
                         </div>
                     </th>
                     {
-                        dataConMes.map((d, i)=>{
+                        dataMejoresMesesMasActual.map((d, i)=>{
                             return (
                                 <th
     className={`fs-2 text-center bg-change text-white ${
@@ -72,7 +74,7 @@ export const DataTableMetas = ({label, data, arrayFechas=[], corte, nombreCatego
                 <tr>
                     <td className='sticky-td-598 fs-3 text-white'>{nombreDeComparativo}</td>
                     {
-                        dataConMes.map((d, i)=>{
+                        dataMejoresMesesMasActual.map((d, i)=>{
                             return (
                                 <td
     className={`fs-3 text-center ${
@@ -93,7 +95,7 @@ export const DataTableMetas = ({label, data, arrayFechas=[], corte, nombreCatego
                         </div>
                     </td>
                     {
-                        dataConMes.map((d, i)=>{
+                        dataMejoresMesesMasActual.map((d, i)=>{
                             return (
                                 <td
     className={`fs-3 text-center ${
@@ -114,7 +116,7 @@ export const DataTableMetas = ({label, data, arrayFechas=[], corte, nombreCatego
                         </div>
                     </td>
                     {
-                        dataConMes.map((d, i)=>{
+                        dataMejoresMesesMasActual.map((d, i)=>{
                             return (
                                 <td
     className={`fs-3 text-center ${
@@ -135,7 +137,7 @@ export const DataTableMetas = ({label, data, arrayFechas=[], corte, nombreCatego
                         </div>
                     </td>
                     {
-                        dataConMes.map((d, i)=>{
+                        dataMejoresMesesMasActual.map((d, i)=>{
                             return (
                                 <td
     className={`fs-3 text-center ${
@@ -156,7 +158,7 @@ export const DataTableMetas = ({label, data, arrayFechas=[], corte, nombreCatego
                         </div>
                     </td>
                     {
-                        dataConMes.map((d, i)=>{
+                        dataMejoresMesesMasActual.map((d, i)=>{
                             return (
                                 <td
     className={`fs-3 text-center ${
@@ -177,7 +179,7 @@ export const DataTableMetas = ({label, data, arrayFechas=[], corte, nombreCatego
                         </div>
                     </td>
                     {
-                        dataConMes.map((d, i)=>{
+                        dataMejoresMesesMasActual.map((d, i)=>{
                             return (
                                 <td
     className={`fs-3 text-center ${
@@ -198,7 +200,7 @@ export const DataTableMetas = ({label, data, arrayFechas=[], corte, nombreCatego
                         </div>
                     </td>
                     {
-                        dataConMes.map((d, i)=>{
+                        dataMejoresMesesMasActual.map((d, i)=>{
                             return (
                                 <td
     className={`fs-3 text-center ${

@@ -39,6 +39,7 @@ export const DataTableContratos = ({id_empleado, onOpenModalCustomCalendarioJorn
         <>
           <Button icon="pi pi-trash" rounded outlined/>
           <Button icon="pi pi-calendar" onClick={()=>onOpenModalCalendarioDeJornadas(row.id, row.fecha_inicio, row.fecha_fin)} rounded outlined/>
+          <Button icon="pi pi-calendar" onClick={()=>onOpenModalCalendarioDeJornadas(row.id, row.fecha_inicio, row.fecha_fin)} rounded outlined/>
         </>
       )
     }}

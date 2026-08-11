@@ -1,0 +1,54 @@
+import { PTApi } from '@/common';
+import { uniqueBy } from '@/helper/uniqueBy';
+import React, { useState } from 'react';
+
+export const useTerminos2Store = () => {
+	const [dataTerminologia2EmpresaxTipo, setdataTerminologia2EmpresaxTipo] = useState({
+		dataGrupos: [],
+		dataConcepto: [],
+	});
+	const [dataTerm2EmpresaxGrupo, setdataTerm2EmpresaxGrupo] = useState([]);
+	const [dataTerm2EmpresaxConcepto, setdataTerm2EmpresaxConcepto] = useState([]);
+	const [isLoading, setisLoading] = useState(false);
+	const obtenerTermino2xEmpresaxTipo = async (id_empresa, tipo, id_tipogasto) => {
+		try {
+			setisLoading(true);
+			const { data } = await PTApi.get(`/terminologia/term2/${id_empresa}/${tipo}`);
+
+			const dataGrupos = data.terminologia2.map((t) => {
+				return {
+					id_empresa: t.parametro_grupo.id_empresa,
+					id_tipoGasto: t.id_tipoGasto,
+					label: t.parametro_grupo.param_label,
+					value: t.parametro_grupo.param_label,
+					id: t.parametro_grupo.id,
+				};
+			});
+			const dataConcepto = data.terminologia2.map((t) => {
+				return {
+					label: t.nombre_gasto,
+					grupo: t.parametro_grupo.param_label,
+					value: t.id,
+					id_tipoGasto: t.id_tipoGasto,
+				};
+			});
+
+			setdataTerm2EmpresaxGrupo(uniqueBy(dataGrupos, ['value', 'id_tipoGasto']));
+			setdataTerm2EmpresaxConcepto(dataConcepto);
+			setdataTerminologia2EmpresaxTipo({
+				dataConcepto,
+				dataGrupos: uniqueBy(dataGrupos, 'value'),
+			});
+			setisLoading(false);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	return {
+		obtenerTermino2xEmpresaxTipo,
+		dataTerminologia2EmpresaxTipo,
+		dataTerm2EmpresaxGrupo,
+		dataTerm2EmpresaxConcepto,
+		isLoading,
+	};
+};

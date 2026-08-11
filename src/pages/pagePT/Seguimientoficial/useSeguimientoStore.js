@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 export const useSeguimientoStore = () => {
 	const [dataSeguimientoxFecha, setdataSeguimientoxFecha] = useState([]);
-	const obtenerSeguimientoxFecha = async (arrayDate) => {
+	const obtenerSeguimientoxFecha = async () => {
 		try {
 			const { data } = await PTApi.get('/seguimiento/');
 			const dataAlter = data.dataSeguimiento

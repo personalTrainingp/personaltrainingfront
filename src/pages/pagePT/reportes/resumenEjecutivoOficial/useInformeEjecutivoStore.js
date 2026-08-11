@@ -1,9 +1,14 @@
 import { PTApi } from '@/common';
 import { useState } from 'react';
-import { agruparPorMesDiaFechaVenta, agruparPorMesDiaFechaVenta1 } from './helpers/agruparPorMesDiaFechaVenta';
+import {
+	agruparPorMesDiaFechaVenta,
+	agruparPorMesDiaFechaVenta1,
+} from './helpers/agruparPorMesDiaFechaVenta';
 import { useSelector } from 'react-redux';
 import { agruparPorEmpleado } from './Pages/ComparativoDiaxDia/helpers/agruparDiasEnMes';
 import { generarMesYanio } from './helpers/generarMesYanio';
+import { DateMaskStr, DateMaskStr1 } from '@/components/CurrencyMask';
+import dayjs from 'dayjs';
 export const useInformeEjecutivoStore = () => {
 	const [dataVentas, setdataVentas] = useState({
 		dataMembresias: [],
@@ -15,6 +20,7 @@ export const useInformeEjecutivoStore = () => {
 		dataMembresiasReinscripciones: [],
 		dataMembresiasNuevos: [],
 		renovacionesxEmpl: [],
+		dataSeguimientos: [],
 	});
 	const [dataSeguimientos, setdataSeguimientos] = useState([]);
 	const [dataLeads, setdataLeads] = useState({ leadsRed1514: [], leadsRed1515: [] });
@@ -117,7 +123,6 @@ export const useInformeEjecutivoStore = () => {
 					const detalleFiltrado = v.detalle_productos.filter(
 						(p) => p.tb_producto?.id_categoria === 18
 					);
-
 					const { cantidadTotal, montoTotal } = detalleFiltrado.reduce(
 						(acc, p) => {
 							acc.cantidadTotal += Number(p.cantidad || 0);
@@ -173,7 +178,7 @@ export const useInformeEjecutivoStore = () => {
 			const dataLeadMap = data.leads.map((l) => {
 				return {
 					...l,
-					montoTotal: l.monto ,
+					montoTotal: l.monto,
 					cantidad: Number(l.cantidad),
 					fechaP: new Date(l.fecha),
 				};
@@ -187,8 +192,16 @@ export const useInformeEjecutivoStore = () => {
 			});
 
 			setdataLeads({
-				leadsRed1514: sumarMontoTotal(agruparPorMesDiaFechaVenta1(leadsRed1514)),
-				leadsRed1515: sumarMontoTotal(agruparPorMesDiaFechaVenta1(leadsRed1515)),
+				leadsRed1514: sumarMontoTotal(agruparPorMesDiaFechaVenta1(leadsRed1514)).map(
+					(m) => {
+						return { ...m, cantidadTotal: m.items[0].cantidad };
+					}
+				),
+				leadsRed1515: sumarMontoTotal(agruparPorMesDiaFechaVenta1(leadsRed1515)).map(
+					(m) => {
+						return { ...m, cantidadTotal: m.items[0].cantidad };
+					}
+				),
 			});
 		} catch (error) {
 			console.log(error);
@@ -196,36 +209,53 @@ export const useInformeEjecutivoStore = () => {
 	};
 	const obtenerSeguimientos = async () => {
 		try {
-			const { data } = await PTApi.get('/seguimiento/');
-			console.log({ data });
-			const dataAlter = data.dataSeguimiento.map((m) => {
-				const fecha_venta = {
-					dia: new Date(m.venta.tb_ventum.fecha_venta).getDate(),
-					mes: new Date(m.venta.tb_ventum.fecha_venta).getMonth() + 1,
-					anio: new Date(m.venta.tb_ventum.fecha_venta).getFullYear(),
-				};
-				const fecha_vencimiento = {
-					dia: new Date(m.fecha_vencimiento).getDate(),
-					mes: new Date(m.fecha_vencimiento).getMonth() + 1,
-					anio: new Date(m.fecha_vencimiento).getFullYear(),
-				};
-				return {
-					id_cli: m.id_cli,
-					fecha_venta,
-					fecha_vencimiento,
-					sesiones_pendientes: m.sesiones_pendientes,
-				};
-			});
-			const dataMesesYanio = generarMesYanio(
-				'2024-09-01 15:45:47.6640000 +00:00',
-				`${new Date().getFullYear()}-12-15 15:45:47.6640000 +00:00`
-			);
-			const grupos = agruparYOrdenar(dataAlter);
-
-			const relaciones = generarRelaciones(grupos);
-
-			const tabla = construirTabla(relaciones, dataMesesYanio);
-			setdataSeguimientos(tabla);
+			const { data: dataSeguimiento } = await PTApi.get('/seguimiento/');
+			const dataAlter = dataSeguimiento.dataSeguimiento
+				.map((m) => {
+					const ultimaMembresia = m?.cli_seguimiento.sort(
+						(a, b) => b.id_membresia - a.id_membresia
+					)[0];
+					const ultimoPrograma =
+						ultimaMembresia.venta?.cambio_programa?.length === 0
+							? ultimaMembresia.venta?.tb_ProgramaTraining.name_pgm
+							: ultimaMembresia.venta?.cambio_programa?.[0].pgm.name_pgm;
+					const ultimoHorario =
+						ultimaMembresia.venta?.cambio_programa?.length === 0
+							? ultimaMembresia.venta?.horario
+							: ultimaMembresia.venta?.horario;
+					return {
+						horario:
+							ultimaMembresia.venta.horario.split('T')[1].split('.')[0] || `12:00:00`,
+						nombre_programa: `${ultimoPrograma}`,
+						nombres_cli: m.nombre_cli,
+						apPaterno_cli: m.apPaterno_cli,
+						apMaterno_cli: m.apMaterno_cli,
+						email_cli: m.email_cli,
+						tel_cli: m.tel_cli,
+						nombres_apellidos_cli: `${m.nombre_cli} ${m.apPaterno_cli} ${m.apMaterno_cli}`,
+						id_cli: m.id_cli,
+						fecha_inicio: ultimaMembresia?.venta?.fecha_inicio,
+						ultimoPrograma: ultimoPrograma,
+						...m.cli_seguimiento[0],
+						fecha_vencimiento_: DateMaskStr1(ultimaMembresia.fecha_vencimiento),
+						fecha_vencimiento: ultimaMembresia.fecha_vencimiento,
+					};
+				})
+				.map((m) => {
+					return {
+						...m,
+						countDias: diasEntreFechas(
+							DateMaskStr1(new Date()),
+							DateMaskStr1(m.fecha_vencimiento_)
+						),
+						fecha_vencimiento_: DateMaskStr(
+							m?.fecha_vencimiento_,
+							'dddd DD [DE] MMMM [DEL] YYYY'
+						),
+					};
+				});
+			// filtrarPorFechaVencimiento(dataAlter, '2026-08-02', 'mas')
+			setdataSeguimientos(dataAlter);
 		} catch (error) {
 			console.log(error);
 		}
@@ -240,6 +270,17 @@ export const useInformeEjecutivoStore = () => {
 	};
 };
 
+const diasEntreFechas = (inicio, fin) => {
+	const f1 = dayjs(inicio).startOf('day');
+	const f2 = dayjs(fin).startOf('day');
+
+	const diff = f2.diff(f1, 'day');
+
+	if (diff === 0) return 1;
+
+	return diff > 0 ? diff + 1 : diff - 1;
+};
+
 export function sumarMontoTotal(data) {
 	return data.map((g) => {
 		return {
@@ -251,78 +292,14 @@ export function sumarMontoTotal(data) {
 const getKey = (f) => {
 	return `${f.anio}-${f.mes}`;
 };
-const agruparYOrdenar = (data = []) => {
-	const grupos = {};
 
-	data.forEach((item) => {
-		if (!grupos[item.id_cli]) grupos[item.id_cli] = [];
-		grupos[item.id_cli].push(item);
+export function filtrarPorFechaVencimiento(data, fecha_inicio, fecha_fin) {
+	const inicio = new Date(fecha_inicio).getTime();
+	const fin = new Date(fecha_fin).getTime();
+
+	return data.filter((item) => {
+		if (!item.fecha_vencimiento) return false;
+		const fechaItem = new Date(item.fecha_vencimiento).getTime();
+		return fechaItem >= inicio && fechaItem <= fin;
 	});
-
-	// ordenar por fecha_venta
-	Object.values(grupos).forEach((arr) => {
-		arr.sort((a, b) => {
-			const f1 = new Date(a.fecha_venta.anio, a.fecha_venta.mes - 1, a.fecha_venta.dia);
-			const f2 = new Date(b.fecha_venta.anio, b.fecha_venta.mes - 1, b.fecha_venta.dia);
-			return f1 - f2;
-		});
-	});
-
-	return grupos;
-};
-const generarRelaciones = (grupos) => {
-	const relaciones = [];
-
-	Object.values(grupos).forEach((arr) => {
-		for (let i = 0; i < arr.length; i++) {
-			const actual = arr[i];
-			const siguiente = arr[i + 1];
-
-			const vencimiento = getKey(actual.fecha_vencimiento);
-
-			const siguienteVenta = siguiente ? getKey(siguiente.fecha_venta) : 'SIN_SIGUIENTE';
-
-			relaciones.push({
-				vencimiento,
-				siguienteVenta,
-				item: actual,
-			});
-		}
-	});
-
-	return relaciones;
-};
-
-const construirTabla = (relaciones, dataMesesYanio) => {
-	const tabla = {};
-
-	// columnas (eje X)
-	const columnas = [...dataMesesYanio.map((d) => d.fecha), 'SIN_SIGUIENTE'];
-
-	// filas (eje Y)
-	const filas = dataMesesYanio.map((d) => d.fecha);
-
-	// inicializar estructura
-	filas.forEach((fila) => {
-		tabla[fila] = {};
-		columnas.forEach((col) => {
-			tabla[fila][col] = {
-				cantidad: 0,
-				items: [],
-			};
-		});
-	});
-
-	// llenar data
-	relaciones.forEach((r) => {
-		if (!tabla[r.vencimiento]) return; // fuera de rango
-
-		const col = tabla[r.vencimiento][r.siguienteVenta];
-		if (!col) return;
-
-		col.cantidad++;
-		col.items.push(r.item);
-	});
-
-	return { filas, columnas, data: tabla };
-};
+}

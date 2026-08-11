@@ -9,7 +9,6 @@ import Account from '@/pages/account';
 import { Home } from '@/pages/pagePT/Home';
 import { PerfilPrograma } from '@/pages/pagePT/GestProgramas/PerfilPrograma';
 import CrearCitasNutricion from '@/pages/pagePT/GestNutricion';
-// import {ReservaMonkFitPage} from "../pages/pagePT/GestionMonkFit/app.jsx";
 
 const GestionEntrenamiento = lazy(() => import('../pages/pagePT/GestEntrenamientos/GestEntrenamientos.jsx'))
 const HistorialEntrenamientos = lazy(() => import('../pages/pagePT/GestEntrenamientos/HistorialEntrenamientos'));
@@ -29,6 +28,7 @@ const GestionIngresantes = lazy(() => import('../pages/pagePT/GestIngresantes/Da
 const GestionProductos = lazy(() => import('../pages/pagePT/GestProductos'));
 const GestionProgramas = lazy(() => import('../pages/pagePT/GestProgramas'));
 const GestionFyG = lazy(() => import('../pages/pagePT/GestGastos'));
+const Gestionigv = lazy(() => import('../pages/pagePT/GestIgv2425'));
 const GestionAporte = lazy(() => import('../pages/pagePT/GestionAportes/Index.jsx'));
 const OrdenCompra = lazy(() => import('../pages/pagePT/ordenCompra/Index.jsx'));
 const GestionEmpleados = lazy(() => import('../pages/pagePT/GestEmpleados'));
@@ -58,7 +58,7 @@ const ReporteGerenciales = lazy(() => import('../pages/pagePT/reportes/reporteGe
 const HistorialCitasNutricionista = lazy(() => import('../pages/pagePT/HistorialCitasNutricionista'))
 const GestionTipoCambio = lazy(() => import('../pages/pagePT/GestTipoCambio'))
 const GestContratosClientes = lazy(() => import('../pages/pagePT/GestContratosCliente'))
-const ReporteFlujoCaja = lazy(() => import('../pages/pagePT/FlujoCaja_1'))
+const ReporteFlujoCaja = lazy(() => import('../pages/pagePT/FlujoCaja'))
 const ReporteFlujoCajaAldair = lazy(() => import('../pages/pagePT/FlujoCajaAldair'))
 const GestProvAgente = lazy(() => import('../pages/pagePT/GestProvAgentes'))
 const PerfilProveedor = lazy(() => import('../pages/pagePT/PerfilProveedor'))
@@ -458,6 +458,10 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/movimiento') &&
 								<Route path='orden-compra' element={<OrdenCompra />} />
+							}
+							{
+								sections.find(e => e.url === '/movimiento') &&
+								<Route path='gestion-igv' element={<Gestionigv />} />
 							}
 							{
 								sections.find(e => e.url === '/movimiento') &&

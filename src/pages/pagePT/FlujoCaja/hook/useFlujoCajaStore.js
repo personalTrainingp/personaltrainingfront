@@ -27,7 +27,7 @@ export const useFlujoCaja = () => {
 	
 	const obtenerEgresosxFecha = async (enterprice, arrayDate, tt) => {
 		try {
-			await obtenerPagosVentas();
+			// await obtenerPagosVentas();
 			const { data } = await PTApi.get(`/egreso/fecha-comprobante/${enterprice}`, {
 				params: {
 					arrayDate: [

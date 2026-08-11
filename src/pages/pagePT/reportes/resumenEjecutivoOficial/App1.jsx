@@ -13,6 +13,7 @@ import { Accordion } from 'react-bootstrap'
 import { FechaCorteReporte } from '@/components/RangeCalendars/FechaRange'
 import { AppVentasxOrigen } from './Pages/AppVentasxOrigen/AppVentasxOrigen.JSX'
 import { AppAsesoresxPrograma } from './Pages/AppAsesoresxPrograma/AppAsesoresxPrograma'
+import { AppSociosInactivos } from './Pages/AppSociosInactivos/AppSociosInactivos'
 export const App1 = () => {
         const { corte } = useSelector((e) => e.DATA);
 
@@ -20,7 +21,8 @@ export const App1 = () => {
         <>
         <div style={{overflowY: 'hidden'}}>
             <FechaCorteReporte corte={corte.corte} inicio={corte.inicio}/>
-            <div className='' style={{overflowY: 'scroll', height: '1000px'}}>
+            <div className='' style={{overflowY: 'scroll', height: '1400px'}}>
+                <MiAccordion titulo={'SOCIOS INACTIVOS'} body={<AppSociosInactivos titulo={'PROGRAMA POR ASESOR'} corte={corte}/>}/>
                 <MiAccordion titulo={'VENTAS POR ORIGEN'} body={<AppVentasxOrigen arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')} titulo={'COMPARATIVO MENSUAL VS MES ACTUAL'} corte={corte}/>}/>
                 <MiAccordion titulo={'COMPARATIVO MENSUAL VS MES ACTUAL'} body={<AppComparativoConMes titulo={'COMPARATIVO MENSUAL VS MES ACTUAL'} corte={corte}/>}/>
                 <MiAccordion titulo={'RESUMEN DE CUOTA VS VENTAS'} body={<AppDetalleMetas titulo={'RESUMEN DE CUOTA VS VENTAS'} corte={corte}/>}/>
@@ -28,7 +30,7 @@ export const App1 = () => {
                 <MiAccordion titulo={'CALENDARIO DE VENTAS POR DIA'} body={<AppComparativoDiaxDia/>}/>
                 <MiAccordion titulo={'VENTAS POR PROGRAMA'} body={<AppDetalleProgramas corte={corte} arrayFechas={generarMesYanio('2024-09-01 15:45:47.6640000 +00:00')}/>}/>
                 <MiAccordion titulo={'RENOVACIONES'} body={<AppComparativoConMesRenovaciones titulo={'RENOVACIONES'} corte={corte}/>}/>
-                <MiAccordion titulo={'PROGRAMA POR ASESOR'} body={<AppAsesoresxPrograma titulo={'PROGRAMA POR ASESOR'} corte={corte}/>}/>
+                {/* <MiAccordion titulo={'PROGRAMA POR ASESOR'} body={<AppAsesoresxPrograma titulo={'PROGRAMA POR ASESOR'} corte={corte}/>}/> */}
                 {/* <AppVentasMF titulo={'Monkey fit'} corte={corte}/> */}
                 {/* <AppDetalleLeads titulo={'DETALLE DE INVERSIÓN EN REDES VS RESULTADOS EN LEADS'} corte={corte}/>  */}
                 {/* <AppReporteSeguimientoInactivo/> */}

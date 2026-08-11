@@ -75,7 +75,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                             bgPastel={bgPastel}
                             bgTotal={classNameEmpresa}
                             itemsxDias={data?.itemsxDia}
-                            nombreGrupo={`${data.id}.${data.param_label}`}
+                            nombreGrupo={`${data.param_label}`}
                             conceptos={data.parametro_grupo_gasto}
                             sumaTotal={data.itemsxDia.reduce((total, item)=>total+item.monto, 0)}
                             data={arr}

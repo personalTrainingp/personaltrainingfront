@@ -139,7 +139,7 @@ const columnas = useMemo(() => {
 
               <tr key={emp.nombre}>
 
-                <td>{emp.nombre}</td>
+                <td>{emp.nombre.split(' ')[0]}</td>
 
                 {
                   columnas.map(c => (
@@ -168,7 +168,7 @@ const columnas = useMemo(() => {
               <tr key={emp.nombre + "socios"}>
 
 
-                <td>{emp.nombre} SOCIOS</td>
+                <td>{emp.nombre.split(' ')[0]}</td>
 
                 {
                   columnas.map(c => (
