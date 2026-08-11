@@ -217,11 +217,6 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     </Col>
                     <Col lg={4}>
                         <div className='m-2'>
-                            <InputSelect label={'situacion'} nameInput={'id_estado_gasto'} onChange={onInputChange} options={DataEstadosGasto} value={id_estado_gasto} />
-                        </div>
-                    </Col>
-                    <Col lg={4}>
-                        <div className='m-2'>
                             <InputSelect label={'Facturado a'} nameInput={'id_facturado_por'} onChange={onInputChange} options={arrayEmpresaFinan} value={id_facturado_por} />
                         </div>
                     </Col>
