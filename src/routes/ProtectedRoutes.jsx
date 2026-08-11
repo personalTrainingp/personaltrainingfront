@@ -101,7 +101,7 @@ const CuentasBalances = lazy(() => import('../pages/pagePT/CuentasBalances/Index
 const AuditoriaInventario = lazy(() => import('../pages/pagePT/AuditoriaInventario/Index.jsx'))
 const ResumenGerencialPorRenovacionesReal = lazy(() => import('../pages/pagePT/ResumenGerencialPorRenovacionesReal/Index.jsx'))
 const ResumenGerencialPorReinscripcionesxDia = lazy(() => import('../pages/pagePT/ResumenGerencialxReinscritosxDia/Index.jsx'))
-const InformeEjecutivoOficial = lazy(() => import('../pages/pagePT/reportes/resumenEjecutivoOficial/Index.jsx'))
+// const InformeEjecutivoOficial = lazy(() => import('../pages/pagePT/reportes/resumenEjecutivoOficial/Index.jsx'))
 const FlujoCajaBalanceCuentas = lazy(() => import('../pages/pagePT/FlujoCuentasBalance'))
 const GestionTc = lazy(() => import('../pages/pagePT/GestionTc'))
 const GestionLead = lazy(() => import('../pages/pagePT/GestionLead/Index.jsx'))
@@ -190,10 +190,10 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/reporte') &&
 								<Route path='informe-gerencia-oficial' element={<InformeEjecutivoOficial />} />
 							}
-							{
+							{/* {
 								sections.find(e => e.url === '/config') &&
 								<Route path='centro-archivos' element={<InformeEjecutivoOficial />} />
-							}
+							} */}
 							{
 								sections.find(e => e.url === '/detalle-reinscripcion-x-dia') &&
 								<Route path='detalle-reinscripcion-x-dia' element={<ResumenGerencialPorReinscripcionesxDia />} />
