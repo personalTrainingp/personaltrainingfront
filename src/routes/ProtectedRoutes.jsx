@@ -28,7 +28,7 @@ const GestionIngresantes = lazy(() => import('../pages/pagePT/GestIngresantes/Da
 const GestionProductos = lazy(() => import('../pages/pagePT/GestProductos'));
 const GestionProgramas = lazy(() => import('../pages/pagePT/GestProgramas'));
 const GestionFyG = lazy(() => import('../pages/pagePT/GestGastos'));
-const Gestionigv = lazy(() => import('../pages/pagePT/Gestigv/App.jsx'));
+const Gestionigv = lazy(() => import('../pages/pagePT/Gestigv'));
 const GestionAporte = lazy(() => import('../pages/pagePT/GestionAportes/Index.jsx'));
 const OrdenCompra = lazy(() => import('../pages/pagePT/ordenCompra/Index.jsx'));
 const GestionEmpleados = lazy(() => import('../pages/pagePT/GestEmpleados'));
