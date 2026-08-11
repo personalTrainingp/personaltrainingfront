@@ -6,7 +6,7 @@ import { AppGestionGastos } from './AppGestionGastos'
 export const App = () => {
   return (
     <div>
-        <PageBreadcrumb title={'GESTION IGV'} subName={'T'}/>
+        <PageBreadcrumb title={'GESTION IGV'} subName={''}/>
         <ColorEmpresa
             childrenChange={<AppGestionGastos id_empresa={598}/>}
             childrenCircus={<AppGestionGastos id_empresa={601}/>}
