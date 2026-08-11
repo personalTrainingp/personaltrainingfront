@@ -42,64 +42,13 @@ export const useGastosStore = () => {
 			console.log(error);
 		}
 	};
-	const obtenerGastos = async (id_empresa, esCompra = false) => {
+	const obtenerGastos = async (id_empresa) => {
 		try {
 			setloading(true);
-			const { data } = await PTApi.get(`/egreso/empresa/${id_empresa}`);
-			let dataGastoMap = data.gastos
-				.filter((f) => f.id_estado_gasto === 0)
-				.map((g) => {
-					return {
-						...g,
-						tipo_gasto: arrayFinanzas.find(
-							(e) => e.value === g.tb_parametros_gasto?.id_tipoGasto
-						)?.label,
-						rubro: g.tb_parametros_gasto?.grupo,
-						concepto: g.tb_parametros_gasto?.nombre_gasto,
-						nombre_proveedor: g.tb_Proveedor?.razon_social_prov,
-						forma_pago: g.parametro_forma_pago?.label_param,
-						id: g.id,
-					};
-				});
-			if (esCompra) {
-				dataGastoMap = dataGastoMap.filter((f) => f.impuesto_igv === true);
-			}
+			const { data } = await PTApi.get(`/gastosigv/empresa/${id_empresa}`);
+
 			setloading(false);
-			dispatch(onSetDataViewEgresos(dataGastoMap));
-		} catch (error) {
-			console.log(error);
-			Swal.fire({
-				icon: 'danger',
-				title: 'PROBLEMA',
-				showConfirmButton: false,
-				timer: 2500,
-			});
-		} finally {
-			setloading(false);
-		}
-	};
-	const obtenerFacturados = async (id_facturado_por, esCompra = false) => {
-		try {
-			setloading(true);
-			const { data } = await PTApi.get(`/egreso/facturado/${id_facturado_por}`);
-			let dataGastoMap = data.gastos.map((g) => {
-				return {
-					...g,
-					tipo_gasto: arrayFinanzas.find(
-						(e) => e.value === g.tb_parametros_gasto?.id_tipoGasto
-					)?.label,
-					rubro: g.tb_parametros_gasto?.grupo,
-					concepto: g.tb_parametros_gasto?.nombre_gasto,
-					nombre_proveedor: g.tb_Proveedor?.razon_social_prov,
-					forma_pago: g.parametro_forma_pago?.label_param,
-					id: g.id,
-				};
-			});
-			if (esCompra) {
-				dataGastoMap = dataGastoMap.filter((f) => f.impuesto_igv === true);
-			}
-			setloading(false);
-			dispatch(onSetDataViewEgresos(dataGastoMap));
+			dispatch(onSetDataViewEgresos(data.gastosIgv));
 		} catch (error) {
 			console.log(error);
 			Swal.fire({
@@ -114,7 +63,7 @@ export const useGastosStore = () => {
 	};
 	const obtenerGastoxID = async (id) => {
 		try {
-			const { data } = await PTApi.get(`/egreso/id/${id}`);
+			const { data } = await PTApi.get(`/gastosigv/id/${id}`);
 
 			const dataGasto = {
 				...data.gasto,
@@ -135,8 +84,7 @@ export const useGastosStore = () => {
 	};
 	const postGasto = async (formState, id_empresa) => {
 		try {
-			console.log({ id_empresa }, 2);
-			await PTApi.post(`/egreso/`, formState);
+			await PTApi.post(`/gastosigv/${id_empresa}`, formState);
 			obtenerGastos(id_empresa);
 			Swal.fire({
 				icon: 'success',
@@ -156,7 +104,7 @@ export const useGastosStore = () => {
 	};
 	const updateGastoxID = async (id, formState, id_empresa) => {
 		try {
-			await PTApi.put(`/egreso/id/${id}`, formState);
+			await PTApi.put(`/gastosigv/id/${id}`, formState);
 			obtenerGastos(id_empresa);
 			Swal.fire({
 				icon: 'success',
@@ -177,7 +125,7 @@ export const useGastosStore = () => {
 	const deleteGastoxID = async (id, id_empresa) => {
 		try {
 			console.log({ id_empresa }, 4);
-			await PTApi.put(`/egreso/delete/id/${id}`);
+			await PTApi.put(`/gastosigv/delete/id/${id}`);
 			obtenerGastos(id_empresa);
 			Swal.fire({
 				icon: 'success',
@@ -203,7 +151,6 @@ export const useGastosStore = () => {
 		deleteGastoxID,
 		obtenerGastoxID,
 		postGasto,
-		obtenerFacturados,
 		dataGasto,
 		loading,
 	};

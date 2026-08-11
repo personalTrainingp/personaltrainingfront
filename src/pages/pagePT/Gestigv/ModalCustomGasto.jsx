@@ -43,7 +43,6 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         moneda, 
         monto, 
         id_tipo_comprobante, 
-        id_estado_gasto,
         n_comprabante, 
         fec_comprobante,
         id_prov, 
