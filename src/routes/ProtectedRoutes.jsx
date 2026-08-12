@@ -186,10 +186,10 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/cuentas-balances') &&
 								<Route path='reporte-cuentas-balance' element={<FlujoCajaBalanceCuentas />} />
 							}
-							{
+							{/* {
 								sections.find(e => e.url === '/reporte') &&
 								<Route path='informe-gerencia-oficial' element={<InformeEjecutivoOficial />} />
-							}
+							} */}
 							{
 								sections.find(e => e.url === '/config') &&
 								<Route path='centro-archivos' element={<GestionCentroDeArchivos />} />
