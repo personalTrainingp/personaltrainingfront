@@ -190,10 +190,10 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/reporte') &&
 								<Route path='informe-gerencia-oficial' element={<InformeEjecutivoOficial />} />
 							}
-							{/* {
+							{
 								sections.find(e => e.url === '/config') &&
-								<Route path='centro-archivos' element={<InformeEjecutivoOficial />} />
-							} */}
+								<Route path='centro-archivos' element={<GestionCentroDeArchivos />} />
+							}
 							{
 								sections.find(e => e.url === '/detalle-reinscripcion-x-dia') &&
 								<Route path='detalle-reinscripcion-x-dia' element={<ResumenGerencialPorReinscripcionesxDia />} />
