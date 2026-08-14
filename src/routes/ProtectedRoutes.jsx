@@ -16,7 +16,7 @@ const HistorialEntrenamientos = lazy(() => import('../pages/pagePT/GestEntrenami
 const ResumenMembresiasPage = lazy(() =>
 	import('../pages/pagePT/DetalleMembresias/ResumenMembresiasPage.jsx')
 );
-
+// aaaaa
 
 const NuevaVenta = lazy(() => import('../pages/pagePT/nuevaVenta'));
 const Seguimiento = lazy(() => import('../pages/pagePT/seguimiento/index.jsx'));
