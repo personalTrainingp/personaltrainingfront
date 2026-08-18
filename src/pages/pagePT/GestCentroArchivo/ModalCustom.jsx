@@ -17,7 +17,7 @@ const registerFile = {
 const registerArchivo={
     imgAvatar_BASE64: ''
 }
-export const ModalCustom = ({uid_file, show, onHide, id}) => {
+export const ModalCustom = ({uid_file, show, onHide, id, id_enterprice}) => {
     const [file, setfile] = useState(null)
     const { obtenerArchivoxID, dataxID, onUpdateArchivo, onPostArchivCenter } = useCenterArchive()
   const { formState, id_tipo_doc, id_empresa, id_seccionVisible, titulo, observacion, id_sub_tipo_doc, onInputChangeReact, onInputChange, onResetForm } = useForm(id!==0?dataxID:registerFile)
@@ -39,7 +39,7 @@ export const ModalCustom = ({uid_file, show, onHide, id}) => {
     const onSubmitFile = (e)=>{
         e.preventDefault()
         if (id!==0) {
-            onUpdateArchivo(id, id_empresa, formState)
+            onUpdateArchivo(id, id_enterprice, formState)
         }else{
             if(!file){
                 Swal.fire({
@@ -52,7 +52,7 @@ export const ModalCustom = ({uid_file, show, onHide, id}) => {
             }
             const formData = new FormData()
             formData.append('file', file)
-            onPostArchivCenter(formState, id_seccionVisible, id_empresa, formData)
+            onPostArchivCenter(formState, id_seccionVisible, id_enterprice, formData)
         }
         // postFiles(uid_file, formState, formData)
         cancelModal()
