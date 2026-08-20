@@ -19,7 +19,7 @@ const ResumenMembresiasPage = lazy(() =>
 // aaaaa
 
 const NuevaVenta = lazy(() => import('../pages/pagePT/nuevaVenta'));
-const Seguimiento = lazy(() => import('../pages/pagePT/Seguimientoficial'));
+const Seguimiento = lazy(() => import('../pages/pagePT/seguimiento/index.jsx'));
 const TotaldeVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'));
 const VentasPrograma = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'));
 const VentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'));
