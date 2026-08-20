@@ -69,77 +69,77 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
         </div>
       )
     } },
-    { id: 'costo_unitario_soles', header: <div className='text-center'>costo <br/> unit. S/.</div>, sortable: 'costo_unitario_soles', accessor: 'costo_unitario_soles', render:(row)=>{
-      return (
-        <div className='fs-2' style={{width: '100px'}}>
-          <NumberFormatMoney
-            amount=
-            {(row?.costo_unitario_soles)}
-            />
-        </div>
-      )
-    }},
-    { id: 'costo_unitario_dolares', header: <div className='text-center'>costo <br/> unit. $</div>, accessor: 'costo_unitario_dolares', render:(row)=>{
-      return (
-        <div className='fs-2'>
-          <NumberFormatMoney
-            amount=
-              {(row?.costo_unitario_dolares)}
-            />
-        </div>
-      )
-    } },
-    { id: 'costo_mano_obra_soles', header: <div className='text-center'>costo <br/> MANO OBRA S/.</div>, accessor: 'mano_obra_soles', render:(row)=>{
-      return (
-        <div className='fs-2'>
-          <NumberFormatMoney
-            amount=
-            {(row?.mano_obra_soles)}
-            />
-        </div>
-      )
-    } },
-    { id: 'costo_mano_obra_dolares', header: <div className='text-center'>costo <br/> MANO OBRA $</div>, accessor: 'mano_obra_dolares', render:(row)=>{
-      return (
-        <div className='fs-2'>
-          <NumberFormatMoney
-            amount=
-        {(row?.mano_obra_dolares)}
-            />
-        </div>
-      )
-    } },
-    { id: 'costo_total_soles', header: <div className='text-center'>costo <br/> TOTAL S/.</div>, width: 70, render:(row)=>{
-      return (
-        <div className='fs-2'>
-          <div className='text-center text-gray-400'>costo <br/> TOTAL S/.</div>
-          <NumberFormatMoney
-            amount=
-              {(row?.costo_unitario_soles*row?.cantidad)+row?.mano_obra_soles}
-            />
-        </div>
-      )
-    } },
-    { id: 'costo_total_dolares', header: <div className='text-center'>costo <br/> TOTAL $</div>, width: 70,  render: (row)=>{
-      return (
-        <div className='fs-2'>
-          <div className='text-center text-gray-400'>costo <br/> TOTAL $</div>
-          <NumberFormatMoney
-            amount=
-            {(row?.costo_unitario_dolares*row?.cantidad)+row?.mano_obra_dolares}
-          />
-        </div>
-      )
-    }},
-    { id: 'action', header: '', width: 70, render: (row)=>{
-        return (
-            <>
-            <i className='pi pi-pencil p-2 border border-2 border-black my-2' onClick={()=>onClickEditar(row.id)}></i>
-            <i className='pi pi-box p-2 border border-2 border-black my-2' onClick={()=>onClickBox(row.id)}></i>
-            <i className='pi pi-trash p-2 border border-2 border-black my-2' onClick={()=>onClickEliminar(row.id)}></i>
-            </>
-        )
-    } },
+    // { id: 'costo_unitario_soles', header: <div className='text-center'>costo <br/> unit. S/.</div>, sortable: 'costo_unitario_soles', accessor: 'costo_unitario_soles', render:(row)=>{
+    //   return (
+    //     <div className='fs-2' style={{width: '100px'}}>
+    //       <NumberFormatMoney
+    //         amount=
+    //         {(row?.costo_unitario_soles)}
+    //         />
+    //     </div>
+    //   )
+    // }},
+    // { id: 'costo_unitario_dolares', header: <div className='text-center'>costo <br/> unit. $</div>, accessor: 'costo_unitario_dolares', render:(row)=>{
+    //   return (
+    //     <div className='fs-2'>
+    //       <NumberFormatMoney
+    //         amount=
+    //           {(row?.costo_unitario_dolares)}
+    //         />
+    //     </div>
+    //   )
+    // } },
+    // { id: 'costo_mano_obra_soles', header: <div className='text-center'>costo <br/> MANO OBRA S/.</div>, accessor: 'mano_obra_soles', render:(row)=>{
+    //   return (
+    //     <div className='fs-2'>
+    //       <NumberFormatMoney
+    //         amount=
+    //         {(row?.mano_obra_soles)}
+    //         />
+    //     </div>
+    //   )
+    // } },
+    // { id: 'costo_mano_obra_dolares', header: <div className='text-center'>costo <br/> MANO OBRA $</div>, accessor: 'mano_obra_dolares', render:(row)=>{
+    //   return (
+    //     <div className='fs-2'>
+    //       <NumberFormatMoney
+    //         amount=
+    //     {(row?.mano_obra_dolares)}
+    //         />
+    //     </div>
+    //   )
+    // } },
+    // { id: 'costo_total_soles', header: <div className='text-center'>costo <br/> TOTAL S/.</div>, width: 70, render:(row)=>{
+    //   return (
+    //     <div className='fs-2'>
+    //       <div className='text-center text-gray-400'>costo <br/> TOTAL S/.</div>
+    //       <NumberFormatMoney
+    //         amount=
+    //           {(row?.costo_unitario_soles*row?.cantidad)+row?.mano_obra_soles}
+    //         />
+    //     </div>
+    //   )
+    // } },
+    // { id: 'costo_total_dolares', header: <div className='text-center'>costo <br/> TOTAL $</div>, width: 70,  render: (row)=>{
+    //   return (
+    //     <div className='fs-2'>
+    //       <div className='text-center text-gray-400'>costo <br/> TOTAL $</div>
+    //       <NumberFormatMoney
+    //         amount=
+    //         {(row?.costo_unitario_dolares*row?.cantidad)+row?.mano_obra_dolares}
+    //       />
+    //     </div>
+    //   )
+    // }},
+    // { id: 'action', header: '', width: 70, render: (row)=>{
+    //     return (
+    //         <>
+    //         <i className='pi pi-pencil p-2 border border-2 border-black my-2' onClick={()=>onClickEditar(row.id)}></i>
+    //         <i className='pi pi-box p-2 border border-2 border-black my-2' onClick={()=>onClickBox(row.id)}></i>
+    //         <i className='pi pi-trash p-2 border border-2 border-black my-2' onClick={()=>onClickEliminar(row.id)}></i>
+    //         </>
+    //     )
+    // } },
   ];
   useEffect(() => {
     obtenerArticulosxEmpresa(idEmpresa)

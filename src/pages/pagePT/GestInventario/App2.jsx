@@ -21,7 +21,7 @@ export const App2 = ({id_empresa}) => {
     }
   return (
     <>
-        <Button className='' onClick={()=>onOpenModalCustomArticulo(0)}>AGREGAR ARTICULO</Button>
+        {/* <Button className='' onClick={()=>onOpenModalCustomArticulo(0)}>AGREGAR ARTICULO</Button> */}
         <DataTableArticulos  onOpenModalCustomArticulo={onOpenModalCustomArticulo} onOpenModalMovimientos={onOpenModalCustomMovItem} idEmpresa={id_empresa}/>
         <ModalCustomArticulo id={isOpenModalCustomArticulo.id} onHide={onCloseModalCustomArticulo} show={isOpenModalCustomArticulo.isOpen} idEmpresa={id_empresa}/>
         <ModalMovimientoItem idArticulo={isOpenModalCustomMovItem.id} id_enterprice={id_empresa} show={isOpenModalCustomMovItem.isOpen} onHide={onCloseModalCustomMovItem}/>
