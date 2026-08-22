@@ -131,15 +131,15 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
     //     </div>
     //   )
     // }},
-    // { id: 'action', header: '', width: 70, render: (row)=>{
-    //     return (
-    //         <>
-    //         <i className='pi pi-pencil p-2 border border-2 border-black my-2' onClick={()=>onClickEditar(row.id)}></i>
-    //         <i className='pi pi-box p-2 border border-2 border-black my-2' onClick={()=>onClickBox(row.id)}></i>
-    //         <i className='pi pi-trash p-2 border border-2 border-black my-2' onClick={()=>onClickEliminar(row.id)}></i>
-    //         </>
-    //     )
-    // } },
+    { id: 'action', header: '', width: 70, render: (row)=>{
+        return (
+            <>
+            <i className='pi pi-pencil p-2 border border-2 border-black my-2' onClick={()=>onClickEditar(row.id)}></i>
+            <i className='pi pi-box p-2 border border-2 border-black my-2' onClick={()=>onClickBox(row.id)}></i>
+            <i className='pi pi-trash p-2 border border-2 border-black my-2' onClick={()=>onClickEliminar(row.id)}></i>
+            </>
+        )
+    } },
   ];
   useEffect(() => {
     obtenerArticulosxEmpresa(idEmpresa)

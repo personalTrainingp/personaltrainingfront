@@ -104,13 +104,15 @@ export const useInventarioStore = () => {
 				);
 				const TCu = {
 					precio_venta: 3.35,
-				}
+				};
 				return {
 					tipoCambio: TC ? TC : TCu,
 					etiquetas_busquedas: arrayEtiquetas.filter((f) => f.id_fila === m.id),
 					...m,
 				};
 			});
+			console.log({ articulos });
+
 			dispatch(onSetDataView(articulos));
 		} catch (error) {
 			console.log(error);

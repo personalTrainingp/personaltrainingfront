@@ -426,6 +426,19 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         const onCloseModalAgrupadoxEtiquetas = ()=>{
             setisOpenModalAgruparxEtiquetas(false)
         }
+        const categoriaBody = (rowData)=>{
+            return (
+                <>
+                    <div className=''> CATEGORIA</div>
+                
+                    <div className="d-flex font-24 w-100" >
+                        <div className='text-left w-100 fw-bold text-right'>
+                            {rowData?.parametro_categoria?.label_param}
+                        </div>
+                    </div>
+                </>
+            )
+        }
     return (
         <>
                     <div>
@@ -443,7 +456,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                         {
                             groupedData.map(g=>{
                                 
-                                const filterData = g.items.filter((item) =>
+                                const filterData = g.items.filter(f=>id_enterprice === 601 ? f.id_categoria === 1957 : true).filter((item) =>
                                     Object.values(item).some((value) =>
                                     String(value).toLowerCase().includes(search.toLowerCase())
                                     )
@@ -475,17 +488,18 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                     <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '10rem' }} body={imagenBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
-                                    <Column header={<span className={'font-24'}>MODELO</span>} field='modelo' filterField="modelo" sortable style={{ width: '3rem' }} body={modeloBodyTemplate} filter/>
+                                    <Column header={<span className={'font-24'}>CATEGORIA</span>} field='categoria' filterField="categoria" sortable style={{ width: '3rem' }} body={categoriaBody} filter/>
+                                    {/* <Column header={<span className={'font-24'}>MODELO</span>} field='modelo' filterField="modelo" sortable style={{ width: '3rem' }} body={modeloBodyTemplate} filter/> */}
                                     <Column header={<span className={'font-24'}>DESCRIPCION</span>} field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                                     {/* <Column header={<span className={'font-24'}>INVENTARIO</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/> */}
                                     <Column header={<span className={'font-24'}>UBIC.</span>} field='parametro_lugar_encuentro.label_param' filterField="parametro_lugar_encuentro.label_param" style={{ minWidth: '2rem' }} sortable body={lugarBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>CANT. </span>} field='cantidad' filterField="cantidad" sortable style={{ minWidth: '5rem' }} body={cantidadBodyTemplate} />
-                                    <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolSoles isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={costounitariosolesBodyTemplate} filter/>
+                                    {/* <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolSoles isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={costounitariosolesBodyTemplate} filter/>
                                     <Column header={<div className={'font-24'} style={{width: '100px'}}>COSTO UNIT. <SymbolDolar isbottom={false}/></div>} field='costo_unitario' filterField="costo_unitario" style={{ minWidth: '10rem' }} sortable body={costounitariodolaresBodyTemplate} filter/>
                                     <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO MANO OBRA</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '5rem' }} sortable body={costoManoObraBodyTemplate} filter/>
                                     <Column header={<div className={'font-24'} style={{width: '130px'}}>COSTO TOTAL <SymbolSoles isbottom={false}/></div>} field='costo_total_soles' filterField="costo_total_soles" style={{ minWidth: '10rem' }} sortable body={costototalsolesBodyTemplate} filter/>
                                     <Column header={<div className={'font-24 text-color-dolar fw-bold'} style={{width: '100px'}}>COSTO TOTAL $</div>} field='valor_total_dolares' filterField="valor_total_dolares" style={{ minWidth: '10rem' }} sortable body={costototaldolaresBodyTemplate} filter/>
-                                    <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/>
+                                    <Column header="" filterField="id" style={{ minWidth: '10rem' }} frozen alignFrozen="right" body={actionBodyTemplate}/> */}
                                 </DataTable>
                                     </TabPanel>
                                 )

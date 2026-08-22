@@ -290,8 +290,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                             value={dataZonas.find(
                                                                 (option) => option.value === id_lugar
                                                             )||0}
-                                                            
-                                                            required
                                                         />
                                                     </div>
                                                 </Col>

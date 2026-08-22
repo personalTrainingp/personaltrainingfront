@@ -28,6 +28,7 @@ export const useSeguimientoStore = () => {
 						tel_cli: m.tel_cli,
 						nombres_apellidos_cli: `${m.nombre_cli} ${m.apPaterno_cli} ${m.apMaterno_cli}`,
 						id_cli: m.id_cli,
+						uid: m.uid,
 						fecha_inicio: ultimaMembresia?.venta?.fecha_inicio,
 						ultimoPrograma: ultimoPrograma,
 						...m.cli_seguimiento[0],

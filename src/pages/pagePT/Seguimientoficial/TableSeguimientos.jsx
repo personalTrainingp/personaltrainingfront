@@ -50,6 +50,9 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                     <span className='' style={{fontSize: '15px'}}>
                         <div>
                             {`${row?.nombres_cli} ${row?.apPaterno_cli} ${row?.apMaterno_cli}`}
+                            {/* <pre>
+                                {JSON.stringify(row, null, 2)}
+                            </pre> */}
                         </div>
                         <div>
                             EMAIL: {row.email_cli}
