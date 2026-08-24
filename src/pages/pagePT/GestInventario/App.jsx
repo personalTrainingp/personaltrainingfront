@@ -22,9 +22,9 @@ export const App = () => {
       // childenBUSSINESS={
       //   <App2 id_empresa={602}/>
       // }
-      // childrenChorrillos={
-      //   <App2 id_empresa={601}/>
-      // }
+      childrenChorrillos={
+        <App2 id_empresa={601}/>
+      }
       // childrenmpTarata={
       //   <App2 id_empresa={600}/>
       // }

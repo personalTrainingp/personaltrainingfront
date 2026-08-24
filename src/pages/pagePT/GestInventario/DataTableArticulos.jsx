@@ -177,6 +177,11 @@ export const DataTableArticulos = ({onOpenModalCustomArticulo, onOpenModalMovimi
         exportValue: (row) => row.modelo,
       },
       {
+        id: 'categoria',
+        exportHeader: 'Categoria',
+        exportValue: (row) => row.parametro_categoria?.label_param,
+      },
+      {
         id: 'descripcion',
         exportHeader: 'Descripcion',
         exportValue: (row) => row.descripcion,

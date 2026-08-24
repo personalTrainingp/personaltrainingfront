@@ -456,7 +456,9 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                         {
                             groupedData.map(g=>{
                                 
-                                const filterData = g.items.filter(f=>id_enterprice === 601 ? f.id_categoria === 1957 : true).filter((item) =>
+                                const filterData = g.items
+                                // .filter(f=>id_enterprice === 601 ? f.id_categoria === 1957 : true)
+                                .filter((item) =>
                                     Object.values(item).some((value) =>
                                     String(value).toLowerCase().includes(search.toLowerCase())
                                     )
