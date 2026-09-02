@@ -1012,7 +1012,7 @@ const filtered = useMemo(() => {
                     <div className="d-flex flex-column">
                       <small className="text-muted fw-semibold">{col.header}</small>
                       <span className="text-break">
-                        {value != null ? String(value) : ''}
+                        {col.render ? value : value != null ? String(value) : ''}
                       </span>
                     </div>
                   </div>
