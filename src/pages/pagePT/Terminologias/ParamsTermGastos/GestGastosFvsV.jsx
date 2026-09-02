@@ -1,4 +1,4 @@
-import { PageBreadcrumb, Table } from '@/components'
+import { PageBreadcrumb } from '@/components'
 import React, { useEffect } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { columnsParamsG, sizePerPageList } from './TermGastos'
