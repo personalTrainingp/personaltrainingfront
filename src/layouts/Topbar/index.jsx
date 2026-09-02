@@ -62,6 +62,9 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 	 * creates backdrop for leftsidebar
 	 */
 	function showLeftSideBarBackdrop() {
+		if (document.getElementById('custom-backdrop')) {
+			return;
+		}
 		const backdrop = document.createElement('div');
 		backdrop.id = 'custom-backdrop';
 		backdrop.className = 'offcanvas-backdrop fade show';

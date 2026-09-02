@@ -60,11 +60,12 @@ export default function VerticalLayout() {
 	 */
 	const openMenu = () => {
 		toggleMenu();
-		if (document.body) {
+		const html = document.getElementsByTagName('html')[0];
+		if (html) {
 			if (isMenuOpened) {
-				document.body.classList.remove('sidebar-enable');
+				html.classList.remove('sidebar-enable');
 			} else {
-				document.body.classList.add('sidebar-enable');
+				html.classList.add('sidebar-enable');
 			}
 		}
 	};
