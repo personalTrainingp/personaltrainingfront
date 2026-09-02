@@ -1,0 +1,132 @@
+@media (max-width: 767.98px) {
+
+	// anula _myStyles.scss:1-8
+	.content-page * {
+		text-transform: none !important;
+	}
+
+	// anula _reboot.scss:21-23
+	body {
+		overflow-x: auto !important;
+	}
+
+	// anula _myStyles.scss:15-18
+	.table,
+	table.table {
+		width: 100% !important;
+		min-width: 0 !important;
+	}
+
+	// anula _myStyles.scss:1105-1108
+	.table-sticky {
+		min-width: 0 !important;
+	}
+
+	// anula _myStyles.scss:1097-1103
+	.table-container {
+		height: auto !important;
+		max-height: 70vh;
+		border-width: 1px !important;
+	}
+
+	.table-wrapper,
+	.table-responsive,
+	.tab-scroll-container,
+	.card-body,
+	.tab-content,
+	.p-tabview-panels,
+	.p-datatable-wrapper {
+		overflow-x: auto !important;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	// anula _tableStyle.scss:44,50,56
+	[class*='sticky-td'] {
+		position: relative !important;
+		left: auto !important;
+		right: auto !important;
+	}
+
+	// el proyecto no define ninguna regla .p-dialog
+	.p-dialog {
+		width: 96vw !important;
+		max-width: 96vw !important;
+		margin: 0 !important;
+	}
+
+	.p-dialog .p-dialog-content {
+		padding: 0.75rem !important;
+	}
+
+	.modal-dialog {
+		max-width: 96vw;
+		margin: 0.5rem auto;
+	}
+
+	// anula _bgEmpresa.scss:173-174
+	.p-tabview-nav {
+		font-size: 1rem !important;
+	}
+
+	.p-tabview-nav-link {
+		height: auto !important;
+		padding: 0.5rem !important;
+	}
+
+	.p-tabview-nav-link > div {
+		height: auto !important;
+		font-size: 1rem !important;
+	}
+
+	.p-tabview-nav-link img {
+		max-height: 32px !important;
+	}
+
+	// anula _bgEmpresa.scss:160-166
+	.year-header {
+		font-size: 1.25rem !important;
+	}
+
+	// anula _myStyles.scss:379-381
+	label {
+		font-size: 0.95rem !important;
+	}
+
+	// anula _myStyles.scss:357-365
+	.custom-calendar-header,
+	.p-datepicker .p-datepicker-month,
+	.p-datepicker .p-datepicker-year {
+		font-size: 1.1rem !important;
+	}
+
+	// anula el height inline de Topbar/index.jsx:116
+	.navbar-custom {
+		height: auto !important;
+		min-height: var(--ct-topbar-height);
+	}
+
+	.topbar h3 {
+		font-size: 0.7rem !important;
+		line-height: 1.2 !important;
+	}
+
+	// anula el width inline de Topbar/index.jsx:142
+	.topbar img {
+		max-width: 28vw !important;
+		height: auto;
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	.content-page .d-flex:not(.flex-nowrap):not(.p-tabview-nav) {
+		flex-wrap: wrap;
+	}
+
+	.card [style*='width'],
+	.p-dialog-content [style*='width'] {
+		max-width: 100% !important;
+	}
+}
