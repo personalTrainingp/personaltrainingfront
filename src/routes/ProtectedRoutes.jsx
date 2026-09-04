@@ -114,6 +114,7 @@ const MembresiasAgrupadas = lazy(()=>import('../pages/pagePT/MembresiasAgrupadas
 const GestionOperadoresPagos = lazy(()=>import('../pages/pagePT/GestionFormasPago/Index.jsx'))
 const OtherPages = lazy(() => import('../pages/otherpages'));
 const Error404Alt = lazy(() => import('../pages/otherpages/Error404Alt'));
+const ConstructorCruces = lazy(() => import('../pages/pagePT/ConstructorCruces/index.jsx'));
 
 export default function ProtectedRoutes() {
 	const { settings } = useThemeContext();
@@ -603,6 +604,10 @@ export default function ProtectedRoutes() {
 							<Route path='gestion-descuentos' element={<GestionDescuentos />} />
 							<Route path="pages/*" element={<OtherPages />} />
 							<Route path='home' element={<Home />} />
+							{
+								sections.find(e => e.url === '/reportes-admin' || e.url === '/reporte' || e.url === '/config') &&
+								<Route path='constructor-cruces' element={<ConstructorCruces />} />
+							}
 							{/* <Route path='*' element={<Navigate to={"home"}/>}/> */}
 						</Route>
 					</>

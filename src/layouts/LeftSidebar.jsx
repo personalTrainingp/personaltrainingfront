@@ -43,8 +43,9 @@ const LeftSidebar = ({ isCondensed, leftbarDark }) => {
 		if (menuNodeRef && menuNodeRef.current && menuNodeRef.current.contains(e.target))
 			return;
 		// else hide the menubar
-		if (document.body) {
-			document.body.classList.remove('sidebar-enable');
+		const html = document.getElementsByTagName('html')[0];
+		if (html) {
+			html.classList.remove('sidebar-enable');
 		}
 	};
 
@@ -57,7 +58,7 @@ const LeftSidebar = ({ isCondensed, leftbarDark }) => {
 	}, []);
 
 	return (
-		<div className="leftside-menu" style={{width: '310px'}} ref={menuNodeRef}>
+		<div className="leftside-menu" ref={menuNodeRef}>
 			<Link to="/" className={`logo ${leftbarDark ? 'logo-light' : 'logo-dark'}`}>
 				<span className="logo-lg p-2 my-3">
 					<img src={leftbarDark ? logo : logoDark} alt="logo" width={'190'} style={{height: '50px'}} />

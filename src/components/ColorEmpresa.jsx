@@ -1,5 +1,6 @@
 import { TabPanel, TabView } from 'primereact/tabview'
-import React from 'react'
+import { Dropdown } from 'primereact/dropdown'
+import React, { useState, useEffect } from 'react'
 import logoChange from '@/assets/images/LOGO_EMPRESA/CHANGE.png'
 import logoCircus from '@/assets/images/LOGO_EMPRESA/CIRCUS.png'
 export const ColorEmpresa = (props) => {
@@ -82,6 +83,38 @@ export const ColorEmpresa = (props) => {
       BackgroundHeretary: 'link-change'
     },
   ]
+
+  const visibles = tabs.filter((t) => props[t.key])
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' && window.innerWidth < 768
+  )
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+  const [index, setIndex] = useState(visibles.length > 1 ? 1 : 0)
+  const safeIndex = Math.min(index, Math.max(visibles.length - 1, 0))
+
+  if (isMobile) {
+    const actual = visibles[safeIndex]
+    return (
+      <div>
+        <Dropdown
+          className="w-100 mb-2"
+          value={safeIndex}
+          optionLabel="label"
+          optionValue="value"
+          onChange={(e) => setIndex(Number(e.value))}
+          options={visibles.map((t, i) => ({ label: t.label, value: i }))}
+        />
+        {actual ? (
+          <div className={actual.BackgroundHeretary}>{props[actual.key]}</div>
+        ) : null}
+      </div>
+    )
+  }
+
   return (
     <TabView activeIndex={1}>
       {tabs.map(({ key, label, icon, text, height, BackgroundHeretary }) =>
