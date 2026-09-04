@@ -1,0 +1,41 @@
+.react-grid-item > .card {
+	height: 100%;
+	margin-bottom: 0;
+}
+
+.react-grid-item .widget-cuerpo {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+}
+
+.react-grid-item.react-grid-placeholder {
+	background: #CD1014;
+	opacity: .15;
+	border-radius: .25rem;
+}
+
+.layout.en-edicion .react-grid-item > .card {
+	outline: 1px dashed #CD1014;
+}
+
+.drag-handle {
+	cursor: move;
+}
+
+.react-grid-item > .react-resizable-handle {
+	z-index: 2;
+}
+
+.chat-drawer {
+	width: min(440px, 100vw) !important;
+}
+
+@media (max-width: 767.98px) {
+	.react-grid-item {
+		touch-action: pan-y;
+	}
+	.react-grid-item .apexcharts-legend {
+		font-size: .75rem;
+	}
+}
