@@ -431,7 +431,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                                     <NumberFormatMoney 
                                     className='fs-1'
                                       amount=
-                                      {dataAlterMesCompleto.reduce((a,b)=>a+(b.utilidadBruta-b.sumagastos1272),0)*0.03}/></div>
+                                      {(e.utilidadBruta-e.sumagastos1272)*0.03}/></div>
                                 )
                           }
                         </td>
@@ -485,18 +485,18 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                         <td className={`text-end ${`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> 
                           {
                                 `${e?.mes}-${e.anio}`!==`${mesActual}-${anioActual}` && (
-                                  <div className={`${(e.utilidadBruta-bonoGerencia)>0?'text-ISESAC':'text-change'}`}>
+                                  <div className={`${(e.utilidadBruta-e.sumagastos1272)>0?'text-ISESAC':'text-change'}`}>
                                     <NumberFormatMoney className='fs-1' amount={(e.utilidadBruta-e.sumagastos1272)}/>
                                   </div>
                                 )
                           }
                           {
                                 `${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && (
-                                  <div className={`${(e.utilidadNeta)>0?'text-ISESAC':'text-change'}`}>
+                                  <div className='text-orange'>
                                     <NumberFormatMoney 
                                     className='fs-1'
                                       amount=
-                                      {e.utilidadNeta}/></div>
+                                      {e.sumaIngresos-(e.sumaProyectado+e.sumaGastos)}/></div>
                                 )
                           }
                         </td>
@@ -505,14 +505,14 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                     })
                   }
                   <td className={`border-left-10 border-right-10 text-end`}>
-                    <div className={`text-end ${dataAlterMesCompleto.reduce((total, item)=>item.utilidadBruta+total, 0)>0?'text-ISESAC':'text-change'}`} >
+                    <div className={`text-end ${dataAlterMesCompleto.reduce((total, item)=>(item.utilidadBruta-item.sumagastos1272)+total, 0)>0?'text-ISESAC':'text-change'}`} >
                       <NumberFormatMoney 
                       className='fs-1'
-                      amount={dataAlterMesCompleto.reduce((total, item)=>item.utilidadBruta+total, 0)}/></div>
+                      amount={dataAlterMesCompleto.reduce((total, item)=>(item.utilidadBruta-item.sumagastos1272)+total, 0)}/></div>
                   </td>
                   <td className='border-right-10'>
-                    <div className={`text-end ${dataAlterMesCompleto.reduce((total, item)=>item.utilidadBruta+total, 0)>0?'text-ISESAC':'text-change'}`}>
-                      <NumberFormatMoney className='fs-1' amount={(dataAlterMesCompleto.reduce((total, item)=>item.utilidadBruta+total, 0))/encontrarFechas(anioElegido, dataAlterMesCompleto.filter(f=>f.sumaGastos!=0).length)}/>
+                    <div className={`text-end ${dataAlterMesCompleto.reduce((total, item)=>(item.utilidadBruta-item.sumagastos1272)+total, 0)>0?'text-ISESAC':'text-change'}`}>
+                      <NumberFormatMoney className='fs-1' amount={(dataAlterMesCompleto.reduce((total, item)=>(item.utilidadBruta-item.sumagastos1272)+total, 0))/encontrarFechas(anioElegido, dataAlterMesCompleto.filter(f=>f.sumaGastos!=0).length)}/>
                     </div>
                   </td>
                 </tr>
@@ -757,24 +757,24 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
 }
 
 function encontrarFechas(anio, a=0) {
-  const hoy = new Date()
-  // Año actual
-const year = hoy.getFullYear();
-// console.log({asdf: a});
+//   const hoy = new Date()
+//   // Año actual
+// const year = hoy.getFullYear();
+// // console.log({asdf: a});
 
-// Mes actual (0 = enero, 11 = diciembre)
-const month = hoy.getMonth();
-const ultimaFecha = new Date(year, month , 0);
-const diaUltimaFecha = ultimaFecha.getDate()
-const diaActual = hoy.getDate()
-if(anio===year){
-  return diaActual==diaUltimaFecha?0:month;
-}else{
-  // if(anio===2024){
-  //   return a
-  // }
-  return 12;
-}
+// // Mes actual (0 = enero, 11 = diciembre)
+// const month = hoy.getMonth();
+// const ultimaFecha = new Date(year, month , 0);
+// const diaUltimaFecha = ultimaFecha.getDate()
+// const diaActual = hoy.getDate()
+// if(anio===year){
+//   return diaActual==diaUltimaFecha?0:month;
+// }else{
+//   // if(anio===2024){
+//   //   return a
+//   // }
+// }
+return 8;
 }
 
 

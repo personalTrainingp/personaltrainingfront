@@ -114,9 +114,9 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                 <td className={`text-center border-left-10 sticky-td-1-right-${id_empresa} sticky-td-${id_empresa}-white `}>
                   {
                     cat==='ingresos'? (
-                      <NumberFormatMoney amount={c.itemsxDia?.filter(f=>f.mes<=mesActual-1).reduce((total, im)=>total+im?.monto, 0)}/>
+                      <NumberFormatMoney amount={c.itemsxDia?.filter(f=>f.mes<=mesActual).reduce((total, im)=>total+im?.monto, 0)}/>
                     ): (
-                      <NumberFormatMoney amount={c.itemsxDia?.filter(f=>f.mes<=mesActual-1).reduce((total, im)=>total+im?.monto, 0)}/>
+                      <NumberFormatMoney amount={c.itemsxDia?.filter(f=>f.mes<=mesActual).reduce((total, im)=>total+im?.monto, 0)}/>
                     )
                   }
                   </td>
@@ -125,9 +125,9 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
                 <td className={`text-center border-right-10 sticky-td-right-${id_empresa} sticky-td-${id_empresa}-white`}>
                   {
                     cat==='ingresos'? (
-                      <NumberFormatMoney amount={c.itemsxDia?.filter(f=>f.mes<=mesActual-1).reduce((total, im)=>total+im?.monto, 0)/Number(mesActual-1)}/>
+                      <NumberFormatMoney amount={c.itemsxDia?.filter(f=>f.mes<=mesActual).reduce((total, im)=>total+im?.monto, 0)/Number(mesActual)}/>
                     ): (
-                      <NumberFormatMoney amount={c.itemsxDia?.filter(f=>f.mes<=mesActual-1).reduce((total, im)=>total+im?.monto, 0)/Number(mesActual-2)}/>
+                      <NumberFormatMoney amount={c.itemsxDia?.filter(f=>f.mes<=mesActual).reduce((total, im)=>total+im?.monto, 0)/Number(mesActual)}/>
                     )
                   }
                   </td>
@@ -187,7 +187,7 @@ export const  DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsx
             </td>
             <td className='fs-2 text-end border-bottom-10 '>{sumaLentotal}</td>
             <td className='fs-2 text-center border-bottom-10 '>{'100 %'}</td>
-            <td className={`fs-2 text-center border-bottom-10 border-right-10 sticky-td-right-${id_empresa} text-white`}><NumberFormatMoney className='fs-2' amount={sumaMontototal/dataTotalFormular(anio)}/></td>
+            <td className={`fs-2 text-center border-bottom-10 border-right-10 sticky-td-right-${id_empresa} text-white`}><NumberFormatMoney className='fs-2' amount={sumaMontototal/8}/></td>
           </tr>
         </tbody>
       </Table>

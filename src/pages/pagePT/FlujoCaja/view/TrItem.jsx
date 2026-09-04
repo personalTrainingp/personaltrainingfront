@@ -57,11 +57,17 @@ export const TrItemVentas = ({ label = '', anio=2024,
 				/>
 			</td>
 			<td className={classNameTotal}>
-				<NumberFormatMoney
-							className=''
-							style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
-					amount={alterMesCompleto.reduce((total, item)=>total+item.sumaIngresos, 0)/anioCantidad(anio)}
-				/>
+				{
+					anio!==2020 ? (
+						<NumberFormatMoney
+									className=''
+									style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
+							amount={alterMesCompleto.reduce((total, item)=>total+item.sumaIngresos, 0)/anioCantidad(anio)}
+						/>
+					):(
+						<>-</>
+					)
+				}
 			</td>
 		</tr>
 	);
@@ -112,11 +118,15 @@ export const TrItemEgresos = ({ label = '', anio=2024, arrayFechas = [], onOpenM
 				/>
 			</td>
 			<td className={classNameTotal}>
-				<NumberFormatMoney
-							className='text-change'
-							style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
-					amount={-(alter.reduce((total, item)=>total+item.sumaIngresos, 0)/anioCantidad(anio))}
-				/>
+				{
+					anio!==2020?(<>
+					<NumberFormatMoney
+								className='text-change'
+								style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
+						amount={-(alter.reduce((total, item)=>total+item.sumaIngresos, 0)/anioCantidad(anio))}
+					/>
+					</>):(<>-</>)
+				}
 			</td>
 		</tr>
 	);
@@ -175,11 +185,17 @@ export const TrItemUtilidad = ({ label = '', anio=2024, arrayFechas = [], id_emp
 			</td>
 			<td className={classNameTotal}>
 				<div className={`${((ingresos-egresos)>0)?'text-black':'text-change'}`}>
-					<NumberFormatMoney
-							className=''
-							style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
-						amount={(ingresos-egresos)/anioCantidad(anio)}
-					/>
+					{
+						anio!==2020 ? (
+							<>
+							<NumberFormatMoney
+									className=''
+									style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
+								amount={(ingresos-egresos)/anioCantidad(anio)}
+							/>
+							</>
+						):(<>-</>)
+					}
 				</div>
 			</td>
 		</tr>
@@ -231,11 +247,15 @@ export const TrItemEgresosNoPagados = ({ label = '', anio=2024, arrayFechas = []
 				/>
 			</td>
 			<td className={classNameTotal}>
-				<NumberFormatMoney
-							className='text-change'
-							style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
-					amount={-(alter.reduce((total, item)=>total+item.sumaIngresos, 0)/anioCantidad(anio))}
-				/>
+				{
+					anio!==2020 ? (<>
+						<NumberFormatMoney
+									className='text-change'
+									style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
+							amount={-(alter.reduce((total, item)=>total+item.sumaIngresos, 0)/anioCantidad(anio))}
+						/>
+					</>): (<>-</>)
+				}
 			</td>
 		</tr>
 	);
@@ -287,11 +307,15 @@ export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [], onOp
 				/>
 			</td>
 			<td className={classNameTotal}>
+				{
+					anio!==2020 ? (<>
 				<NumberFormatMoney
 							className=''
 							style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
 					amount={(alter.reduce((total, item)=>total+item.sumaIngresos, 0)/anioCantidad(anio))}
 				/>
+					</>): (<>-</>)
+				}
 			</td>
 		</tr>
 	);
@@ -351,6 +375,9 @@ export const TrItemExtraordionario = ({anio=2024, label = '', arrayFechas = [], 
 				</div>
 			</td>
 			<td className={classNameTotal}>
+				{
+					anio!==2020 ? (<>
+					
 				<div>
 					<NumberFormatMoney
 							className=''
@@ -358,6 +385,8 @@ export const TrItemExtraordionario = ({anio=2024, label = '', arrayFechas = [], 
 						amount={(ingresos-egresos)/anioCantidad(anio)}
 					/>
 				</div>
+					</>): (<>-</>)
+				}
 			</td>
 		</tr>
 	);
@@ -430,11 +459,18 @@ export const TrItemUtilidadesSuma = ({anio=2024, label = '', arrayFechas = [], a
 			</td>
 			<td className={classNameTotal}>
 				<div className={`${(((ingresosBOLSA-egresosBOLSA)+(ingresos-egresos))>0)?'text-black':'text-change'}`}>
+					{
+					anio!==2020 ? (<>
+					
+				<div>
 					<NumberFormatMoney
 							className=''
 							style={{fontSize: `${anio!==2020 ? '35px':'45px'}`}}
 						amount={((ingresosBOLSA-egresosBOLSA)+(ingresos-egresos))/anioCantidad(anio)}
 					/>
+				</div>
+					</>): (<>-</>)
+				}
 				</div>
 			</td>
 		</tr>

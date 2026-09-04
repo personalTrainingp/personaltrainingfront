@@ -161,11 +161,15 @@ export const ModalTableItems = ({show, onHide, items={}, isShowConceptos=false, 
                                 </TabPanel>
                             )
                         }
-                        <TabPanel header={<div className='fs-1'>AUDITORIA GASTOS PROVEEDORES</div>}>
-                            <div className='d-flex'>
-                                <ProveedorResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
-                            </div>
-                        </TabPanel>
+                        {
+                            isShowConceptos && (
+                                <TabPanel header={<div className='fs-1'>AUDITORIA GASTOS PROVEEDORES</div>}>
+                                    <div className='d-flex'>
+                                        <ProveedorResumen onClickProv={clickProv} data={items} header='GASTOS POR PROVEEDOR' bg={bgHeader} text={textEmpresa} id_empresa={id_empresa}/>
+                                    </div>
+                                </TabPanel>
+                            )
+                        }
                         <TabPanel header={<div className='fs-1'>ITEMS</div>}>
                             <DataTableCR
                                 columns={columns}
