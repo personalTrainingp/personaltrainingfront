@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Button, Card, Col, Form, Row, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { PageBreadcrumb } from '@/components';
+import { getEnvVariables } from '@/common/helpers';
 import { TablaCruce } from './TablaCruce';
 import { GraficoCruce } from './GraficoCruce';
 import { DIMENSIONES, MEDIDAS } from './logica';
 
-const SERVICIO = 'https://asistente-change.azurewebsites.net';
+const { ANALYTICS_URL } = getEnvVariables();
+const SERVICIO = ANALYTICS_URL;
 const CLAVE_VISTAS = 'cruces_vistas_change';
 const VISTAS = [
 	{ id: 'tabla', etiqueta: 'Tabla' },

@@ -1,4 +1,4 @@
-export const DIMENSIONES = ['empresa', 'anio', 'mes', 'genero', 'tipo', 'producto'];
+export const DIMENSIONES = ['empresa', 'anio', 'mes', 'genero', 'plataforma', 'tipo', 'producto'];
 export const MEDIDAS = ['monto', 'cantidad'];
 export const TOPE_CATEGORIAS = 200;
 
