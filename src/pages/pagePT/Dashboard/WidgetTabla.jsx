@@ -10,7 +10,7 @@ export const WidgetTabla = ({ tipo, respuesta, titulo }) => {
 		return fila;
 	}), [respuesta]);
 	const columns = useMemo(() => respuesta.tabla.columnas.map((c, j) => ({
-		id: j,
+		id: `c${j}`,
 		header: String(c),
 		accessor: (row) => row[`c${j}`],
 		sortable: true,
@@ -26,6 +26,7 @@ export const WidgetTabla = ({ tipo, respuesta, titulo }) => {
 			searchable={false}
 			exportable={tipo === 'tabla'}
 			exportFileName={titulo}
+			exportExtraColumns={columns.map(c => ({ id: c.id, exportHeader: c.header, exportValue: c.accessor }))}
 			small
 			resizableColumns={false}
 		/>

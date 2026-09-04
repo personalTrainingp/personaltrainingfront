@@ -3,7 +3,7 @@ import { Responsive } from 'react-grid-layout';
 import { Alert, Button, Form, Spinner } from 'react-bootstrap';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { PageBreadcrumb } from '@/components';
-import { useDashboardStore } from './useDashboardStore';
+import { useDashboardStore } from '@/hooks/hookApi/useDashboardStore';
 import { Widget } from './Widget';
 import { ConfigWidget } from './ConfigWidget';
 import { ChatDrawer } from './ChatDrawer';
@@ -23,6 +23,7 @@ export const Dashboard = () => {
 	const contenedor = useRef(null);
 	const [ancho, setAncho] = useState(0);
 	const [bp, setBp] = useState('lg');
+	const [version, setVersion] = useState(0);
 
 	useEffect(() => {
 		if (!contenedor.current) return undefined;
@@ -60,6 +61,7 @@ export const Dashboard = () => {
 		setPendiente(null);
 		setEdicion(false);
 		await obtenerDashboard(dashboard.id);
+		setVersion(v => v + 1);
 	};
 
 	const onEditarWidget = (w) => { setEditando(w); setConfigAbierta(true); setUltimoWidget(w.id); };
@@ -143,6 +145,7 @@ export const Dashboard = () => {
 			<div ref={contenedor}>
 			{widgets.length > 0 && ancho > 0 && (
 				<Responsive
+					key={version}
 					width={ancho}
 					className={`layout ${edicion ? 'en-edicion' : ''}`}
 					layouts={layouts}
