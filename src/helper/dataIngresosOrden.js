@@ -2,6 +2,7 @@ export function dataIngresosOrden(dataVentas) {
 	const dataVentasMap = dataVentas.map((m) => {
 		return {
 			...m,
+			descripcion: '',
 			n_comprabante: m.numero_transac,
 			id_cli: m.id_cli,
 			id_origen: m.id_origen,
@@ -26,7 +27,7 @@ export function dataIngresosOrden(dataVentas) {
 			return {
 				...v,
 				monto: v.detalleVenta_pagoVenta.reduce((a, b) => a + b.parcial_monto, 0),
-				descripcion: `${detalleFiltrado[0]?.tb_producto.nombre_producto}`,
+				descripcion: `${v?.detalle_membresias[0]?.tb_ProgramaTraining.name_pgm}`,
 				subConcepto: v?.detalle_membresias[0]?.tb_ProgramaTraining.name_pgm,
 				cantidadTotal: 1,
 				concepto: 'MEMBRESIA' || '',
