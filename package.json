@@ -71,6 +71,7 @@
     "react-dropzone": "^14.2.3",
     "react-flatpickr": "^3.10.13",
     "react-form-wizard-component": "^0.1.7",
+    "react-grid-layout": "^1.5.4",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.45.3",
     "react-i18next": "^13.0.2",
