@@ -34,7 +34,7 @@ export const Widget = ({ widget, edicion, onEditar, onDuplicar, onEliminar, dato
 				<div className='text-truncate'>
 					{edicion && <i className='mdi mdi-drag me-1 text-muted'></i>}
 					<span className='fw-semibold'>{widget.titulo}</span>
-					{widget.tipo !== 'kpi' && <small className='text-muted ms-2'>{etiquetaPeriodo(widget.config.periodo)}</small>}
+					{widget.tipo !== 'kpi' && <small className='text-muted ms-2'>{widget.config.metrica === 'libre' ? 'consulta del asistente' : etiquetaPeriodo(widget.config.periodo)}</small>}
 				</div>
 				{edicion && (
 					<Dropdown align='end' onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
@@ -42,7 +42,7 @@ export const Widget = ({ widget, edicion, onEditar, onDuplicar, onEliminar, dato
 							<i className='mdi mdi-dots-vertical font-18'></i>
 						</Dropdown.Toggle>
 						<Dropdown.Menu>
-							<Dropdown.Item onClick={() => onEditar(widget)}><i className='mdi mdi-pencil me-1'></i> Editar</Dropdown.Item>
+							{widget.config.metrica !== 'libre' && <Dropdown.Item onClick={() => onEditar(widget)}><i className='mdi mdi-pencil me-1'></i> Editar</Dropdown.Item>}
 							<Dropdown.Item onClick={() => onDuplicar(widget)}><i className='mdi mdi-content-copy me-1'></i> Duplicar</Dropdown.Item>
 							<Dropdown.Divider />
 							<Dropdown.Item className='text-danger' onClick={() => onEliminar(widget)}><i className='mdi mdi-delete me-1'></i> Eliminar</Dropdown.Item>
