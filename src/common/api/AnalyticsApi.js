@@ -5,7 +5,7 @@ const { ANALYTICS_URL } = getEnvVariables();
 
 const AnalyticsApi = axios.create({
 	baseURL: ANALYTICS_URL,
-	timeout: 60000,
+	timeout: 180000,
 });
 
 AnalyticsApi.interceptors.request.use((config) => {

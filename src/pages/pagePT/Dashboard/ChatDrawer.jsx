@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Form, Offcanvas, Spinner, Table } from 'react-bootstrap';
 import { formatear } from './formato';
+import { WidgetGrafico } from './WidgetGrafico';
 
 const SUGERENCIAS = ['¿Cuánto vendimos este mes?', 'Ventas por vendedor este mes', 'Compara agosto con julio', 'Top 10 productos del año', '¿Cuántos socios tengo?', 'Gastos por categoría del mes pasado'];
 
@@ -44,12 +45,18 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 			const res = r.respuesta;
 			cuerpo = (
 				<>
-					<div>{res.texto}</div>
+					<div style={{ whiteSpace: 'pre-line' }}>{res.texto}</div>
 					{res.insights && res.insights.length > 0 && <ul className='mb-1 mt-1 ps-3 small text-muted'>{res.insights.map((x, k) => <li key={k}>{x}</li>)}</ul>}
-					{res.tabla && res.tabla.filas.length > 1 && res.tabla.filas.length <= 12 && (
-						<Table size='sm' className='mb-1 mt-1 small'>
-							<tbody>{res.tabla.filas.map((f, k) => <tr key={k}>{f.map((c, j) => <td key={j}>{typeof c === 'number' ? formatear(c, res.unidad) : String(c ?? '')}</td>)}</tr>)}</tbody>
-						</Table>
+					{res.visualizacion && ['lineas', 'area', 'barras', 'dona'].includes(res.visualizacion.tipo) && res.visualizacion.series && res.visualizacion.series.length > 0 && res.visualizacion.etiquetas.length > 1 && (
+						<div className='bg-white rounded-2 mt-2 mb-1 p-1'><WidgetGrafico tipo={res.visualizacion.tipo} respuesta={res} alto={res.visualizacion.series.length > 3 ? 340 : 260} /></div>
+					)}
+					{res.tabla && res.tabla.filas.length > 1 && res.tabla.filas.length <= 60 && (
+						<div style={{ maxHeight: 240, overflowY: 'auto' }}>
+							<Table size='sm' className='mb-1 mt-1 small'>
+								{res.tabla.columnas && res.tabla.columnas.length > 2 && <thead><tr>{res.tabla.columnas.map((c, j) => <th key={j}>{String(c).replace(/_/g, ' ')}</th>)}</tr></thead>}
+								<tbody>{res.tabla.filas.map((f, k) => <tr key={k}>{f.map((c, j) => <td key={j}>{typeof c === 'number' ? formatear(c, res.unidad) : String(c ?? '')}</td>)}</tr>)}</tbody>
+							</Table>
+						</div>
 					)}
 					{!res.verificado && <small className='text-warning d-block'>Consulta construida a medida: verificar antes de decidir.</small>}
 					{r.propuestaWidget && res.visualizacion && !m.hecho && (
