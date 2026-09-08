@@ -45,7 +45,7 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 			const res = r.respuesta;
 			cuerpo = (
 				<>
-					<div>{res.texto}</div>
+					<div style={{ whiteSpace: 'pre-line' }}>{res.texto}</div>
 					{res.insights && res.insights.length > 0 && <ul className='mb-1 mt-1 ps-3 small text-muted'>{res.insights.map((x, k) => <li key={k}>{x}</li>)}</ul>}
 					{res.visualizacion && ['lineas', 'area', 'barras', 'dona'].includes(res.visualizacion.tipo) && res.visualizacion.series && res.visualizacion.series.length > 0 && res.visualizacion.etiquetas.length > 1 && (
 						<div className='bg-white rounded-2 mt-2 mb-1 p-1'><WidgetGrafico tipo={res.visualizacion.tipo} respuesta={res} alto={res.visualizacion.series.length > 3 ? 340 : 260} /></div>
