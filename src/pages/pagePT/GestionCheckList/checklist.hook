@@ -1,0 +1,231 @@
+/**
+ * checklist.hook
+ * -------------------------------------------------------------------------
+ * Este archivo NO se importa desde el frontend. Es el contrato de endpoints
+ * que el servidor (backend) debe implementar para que
+ * `hook/useCheckListStore.js` funcione correctamente.
+ *
+ * Sigue el mismo estilo de rutas que ya usa el resto del proyecto
+ * (ver /egreso, /articulo, /storage/blob) para que el equipo de backend
+ * pueda hacer "match" 1 a 1 con lo que llama el frontend.
+ *
+ * Todas las rutas van montadas bajo el mismo API_URL que usa PTApi
+ * (src/common/api/PTApi.js), y requieren el header `x-token`.
+ *
+ * ESTADO ACTUAL: mientras el backend de checklist no exista,
+ * `useCheckListStore.js` simula las rutas de abajo con un "fake DB" en
+ * memoria (ver el comentario "MODO MOCK / DATOS FALSOS" al inicio de ese
+ * archivo). La EXCEPCION es la creacion de items: para eso el frontend YA
+ * llama al endpoint REAL y existente `GET /inventario/obtener-inventario/:id_enterprice`
+ * (el MISMO que usa la tabla activa de GestInventario, ver
+ * `TableInventario.jsx` -> `useInventarioStore.js`), asi que los
+ * articulos, nombres e imagenes que ves en un checklist son datos reales
+ * del inventario, no inventados.
+ * Cuando el backend implemente las rutas de abajo, solo hay que reemplazar
+ * el cuerpo de cada funcion del hook por el `PTApi.get/post/put`
+ * correspondiente, manteniendo la misma firma (parametros y valor de
+ * retorno) que ya usan los componentes.
+ * -------------------------------------------------------------------------
+ */
+
+// ============================ CHECKLIST (CABECERA) ============================
+
+/**
+ * POST /checklist/:id_empresa
+ * Crea la cabecera de un checklist para una empresa.
+ *
+ * IMPORTANTE: el backend debe generar automaticamente, en la misma
+ * transaccion, UN item por CADA articulo activo del inventario de esa
+ * empresa (ver GET /articulo/:idEmpresa), todos con revisado=false. El
+ * usuario no agrega ni elimina items sueltos: el checklist siempre nace
+ * con el total completo del inventario y el usuario los va revisando uno
+ * por uno (ver PUT /checklist-item/id/:id mas abajo).
+ *
+ * Cada item copia el campo "orden" del articulo (tb_articulos.orden, ajustable
+ * en GestInventario -> columna ORDEN, PUT /inventario/orden-articulo/:id).
+ * Tanto GET /inventario/obtener-inventario/:id_enterprice como los items de
+ * este checklist se devuelven ordenados por ese campo (los que tienen orden
+ * asignado primero, en ese orden; el resto despues, por id descendente).
+ *
+ * body: {
+ *   titulo: string,
+ *   fecha_checklist: string (YYYY-MM-DD),
+ *   responsable: string,
+ *   observacion_general: string,
+ * }
+ *
+ * response 200: {
+ *   ok: true,
+ *   msg: 'CHECKLIST REGISTRADO',
+ *   checklist: {
+ *     id: number,
+ *     id_empresa: number,
+ *     titulo: string,
+ *     fecha_checklist: string,
+ *     responsable: string,
+ *     observacion_general: string,
+ *     estado: 'PENDIENTE',
+ *     items: Array<{ ...un item por cada articulo del inventario, ver forma abajo... }>
+ *   }
+ * }
+ */
+
+/**
+ * GET /checklist/empresa/:id_empresa
+ * Lista los checklist EN ESTADO 'PENDIENTE' de una empresa (no incluye historico).
+ *
+ * response 200: {
+ *   ok: true,
+ *   checklists: Array<{
+ *     id: number,
+ *     id_empresa: number,
+ *     titulo: string,
+ *     fecha_checklist: string,
+ *     responsable: string,
+ *     observacion_general: string,
+ *     estado: 'PENDIENTE' | 'COMPLETADO',
+ *   }>
+ * }
+ */
+
+/**
+ * GET /checklist/historial/:id_empresa
+ * Lista los checklist EN ESTADO 'COMPLETADO' de una empresa (el historico).
+ *
+ * A diferencia de GET /checklist/empresa/:id_empresa, esta lista SI debe
+ * incluir el resumen de items (sin traer el array completo de items), para
+ * que la tabla de historico pueda mostrar los contadores sin pedir cada
+ * checklist por separado.
+ *
+ * response 200: {
+ *   ok: true,
+ *   checklists: Array<{ ...igual que arriba..., total_items: number,
+ *     revisados: number, no_revisados: number }>
+ * }
+ */
+
+/**
+ * GET /checklist/id/:id
+ * Obtiene un checklist puntual junto con todos sus items.
+ *
+ * response 200: {
+ *   ok: true,
+ *   checklist: {
+ *     id: number,
+ *     id_empresa: number,
+ *     titulo: string,
+ *     fecha_checklist: string,
+ *     responsable: string,
+ *     observacion_general: string,
+ *     estado: 'PENDIENTE' | 'COMPLETADO',
+ *     items: Array<{
+ *       id: number,
+ *       id_checklist: number,
+ *       id_articulo: number,
+ *       producto: string,              // nombre del articulo (denormalizado, para mostrar en tabla)
+ *       opciones: string[],            // subset de: arreglo, ajuste, cambio, pintura, limpieza, lubricacion, revision_electrica, otros
+ *       observacion: string,
+ *       revisado: boolean,             // si el item ya fue chequeado por el responsable
+ *       uid_imagen_item: string,       // uid usado para /storage/blob/create/:uid?container=checklist-items (re-subir la foto del articulo)
+ *       uid_foto_antes: string,
+ *       uid_foto_despues: string,
+ *       // OJO: /storage/blob/create/:uid guarda el archivo con un nombre propio (name_image),
+ *       // NO con el uid. Por eso el backend debe resolver uid_location -> name_image (tabla
+ *       // tb_image) y devolver el nombre real ya resuelto en estos 3 campos:
+ *       nombre_imagen_item: string | null,   // name_image resuelto de uid_imagen_item (o null si no hay override)
+ *       nombre_foto_antes: string | null,    // name_image resuelto de uid_foto_antes
+ *       nombre_foto_despues: string | null,  // name_image resuelto de uid_foto_despues
+ *       // foto real del articulo tomada del inventario (tb_images) al crear el checklist,
+ *       // servida desde container "avatar-articulos" (no "checklist-items"). Es el fallback
+ *       // que se muestra mientras no exista un nombre_imagen_item (override manual).
+ *       nombre_imagen_inicial: string | null,
+ *     }>
+ *   }
+ * }
+ */
+
+/**
+ * PUT /checklist/id/:id
+ * Actualiza la cabecera del checklist (mismos campos que el POST).
+ *
+ * response 200: { ok: true, msg: 'CHECKLIST ACTUALIZADO' }
+ */
+
+/**
+ * PUT /checklist/completar/id/:id
+ * Marca el checklist como 'COMPLETADO' -> pasa a figurar en el historico.
+ *
+ * response 200: { ok: true, msg: 'CHECKLIST FINALIZADO' }
+ */
+
+/**
+ * PUT /checklist/delete/id/:id
+ * Elimina (soft-delete) un checklist.
+ *
+ * response 200: { ok: true, msg: 'CHECKLIST ELIMINADO' }
+ */
+
+// ============================ CHECKLIST ITEM (REVISION POR ARTICULO) ============================
+// Los items NO se crean ni se eliminan sueltos: nacen todos juntos al crear
+// el checklist (uno por cada articulo del inventario, ver POST /checklist/:id_empresa).
+// La unica operacion sobre un item es revisarlo/actualizarlo.
+
+/**
+ * PUT /checklist-item/id/:id
+ * Actualiza la revision de un item existente: tipo de mantenimiento,
+ * observacion, revisado, y las fotos (imagen del articulo, antes y despues).
+ * El backend debe generar uid_imagen_item / uid_foto_antes / uid_foto_despues
+ * (uuid) si aun no existian, para que el frontend pueda subir cada binario
+ * justo despues con:
+ *   POST /storage/blob/create/:uid_image?container=checklist-items
+ *
+ * body: {
+ *   opciones: string[],           // subset de: arreglo, ajuste, cambio, pintura, limpieza, lubricacion, revision_electrica, otros
+ *   observacion: string,
+ *   revisado: boolean,
+ * }
+ *
+ * response 200: {
+ *   ok: true,
+ *   msg: 'ITEM ACTUALIZADO',
+ *   item: {
+ *     id: number,
+ *     id_checklist: number,
+ *     id_articulo: number,
+ *     producto: string,
+ *     opciones: string[],
+ *     observacion: string,
+ *     revisado: boolean,
+ *     uid_imagen_item: string,
+ *     uid_foto_antes: string,
+ *     uid_foto_despues: string,
+ *     nombre_imagen_item: string | null,   // recien generado el uid en este PUT -> normalmente null aqui
+ *     nombre_foto_antes: string | null,    // hasta que el frontend suba el binario y vuelva a pedir el checklist
+ *     nombre_foto_despues: string | null,
+ *     nombre_imagen_inicial: string | null,
+ *   }
+ * }
+ */
+
+// ============================ IMAGENES (YA EXISTENTE EN EL PROYECTO) ============================
+
+/**
+ * POST /storage/blob/create/:uid_image?container=checklist-items
+ * Reutiliza el endpoint de storage que ya usa el resto del sistema
+ * (ver useImageStore.postImagexUIDIMAGE) para subir la foto antes/despues
+ * de cada item.
+ *
+ * OJO: este endpoint NO nombra el blob con el uid recibido. Genera su propio
+ * nombre de archivo (name_image, ej. "foto-1699999999999.png") y solo guarda
+ * uid_location = uid_image en la tabla tb_image para poder encontrarlo despues.
+ * Por eso el checklist controller resuelve uid_location -> name_image (via
+ * tb_image) antes de responder, y el frontend siempre debe usar los campos ya
+ * resueltos (nombre_imagen_item / nombre_foto_antes / nombre_foto_despues /
+ * nombre_imagen_inicial) para armar la URL, NUNCA el uid crudo:
+ *   - nombre_foto_antes / nombre_foto_despues / nombre_imagen_item (override) ->
+ *     config.API_IMG.CHECKLIST_ITEM + nombre
+ *   - nombre_imagen_inicial (foto real del articulo, asignada automaticamente
+ *     al crear el checklist desde el inventario) -> config.API_IMG.AVATAR_ARTICULO + nombre
+ *   - Si hay nombre_imagen_item (el usuario re-subio una foto propia del item),
+ *     ese tiene prioridad sobre nombre_imagen_inicial.
+ */

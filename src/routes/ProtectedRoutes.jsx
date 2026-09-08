@@ -63,6 +63,8 @@ const ReporteFlujoCaja = lazy(() => import('../pages/pagePT/FlujoCaja'))
 const ReporteFlujoCajaAldair = lazy(() => import('../pages/pagePT/FlujoCajaAldair'))
 const GestProvAgente = lazy(() => import('../pages/pagePT/GestProvAgentes'))
 const PerfilProveedor = lazy(() => import('../pages/pagePT/PerfilProveedor'))
+const GestionCheckList = lazy(() => import('../pages/pagePT/GestionCheckList'))
+const FormularioCheckList = lazy(() => import('../pages/pagePT/GestionCheckList/FormularioCheckList.jsx'))
 const GestionInventario = lazy(() => import('../pages/pagePT/GestInventario'))
 const GestionInventarioProy = lazy(() => import('../pages/pagePT/GestInventarioProy'))
 const InventarioTotalizado = lazy(() => import('../pages/pagePT/InventarioReporte'))
@@ -184,7 +186,7 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/config') &&
-								<Route path='gestion-tc' element={<GestionTc />} />
+								<Route path='gestion-tc' element={<GestionCheckList />} />
 							}
 							{
 								sections.find(e => e.url === '/cuentas-balances') &&
@@ -393,6 +395,14 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/inventario') &&
 								<Route path='gestion-inventario' element={<GestionInventario />} />
+							}
+							{
+								sections.find(e => e.url === '/inventario') &&
+								<Route path='gestion-checklist' element={<GestionCheckList />} />
+							}
+							{
+								sections.find(e => e.url === '/inventario') &&
+								<Route path='gestion-checklist/formulario/:id_empresa/:id' element={<FormularioCheckList />} />
 							}
 							{sections.find(e => e.url === '/ventas') &&
 								<Route path="nueva-venta" element={<NuevaVenta />} />

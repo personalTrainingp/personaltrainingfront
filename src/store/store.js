@@ -39,6 +39,7 @@ import { dataPagosSlice } from "@/pages/pagePT/ReportePagosVentas/dataPagosSlice
 import { OperadoresPagoSlice } from "@/pages/pagePT/GestionFormasPago/dataOperadoresPagoSlice";
 import { cambioProgramaSlice } from "@/pages/pagePT/PerfilCliente/CambioDeProgramas/cambioProgramaSlice";
 import { imaginariaSlice } from "./dataImaginaria/imaginariaSlice";
+import { CheckListSlice } from "@/pages/pagePT/GestionCheckList/checkListSlice";
 
 export const store = configureStore({
   reducer: {
@@ -83,6 +84,7 @@ export const store = configureStore({
     OPERADORESPAGO: OperadoresPagoSlice.reducer,
     CAMBIOPROGRAMA: cambioProgramaSlice.reducer,
     IMAGINARIA_FLUJO_CAJA: imaginariaSlice.reducer,
+    CHECKLIST: CheckListSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

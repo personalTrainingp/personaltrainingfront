@@ -21,6 +21,7 @@ const config = {
 			'https://archivosluroga.blob.core.windows.net/compromiso-pago-proveedores/',
 		FILES_COLABORADORES: 'https://archivosluroga.blob.core.windows.net/docs-empleados/',
 		DOC_GENERAL: 'https://archivosluroga.blob.core.windows.net/docs-general/',
+		CHECKLIST_ITEM: 'https://archivosluroga.blob.core.windows.net/checklist-items/',
 	},
 };
 

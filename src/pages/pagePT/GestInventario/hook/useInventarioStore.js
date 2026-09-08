@@ -222,6 +222,22 @@ export const useInventarioStore = () => {
 			});
 		}
 	};
+	const actualizarOrdenArticulo = async (id, orden, id_enterprice) => {
+		try {
+			await PTApi.put(`/inventario/orden-articulo/${id}`, {
+				orden: orden === '' || orden === null ? null : Number(orden),
+			});
+			obtenerArticulos(id_enterprice);
+		} catch (error) {
+			console.log(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'PROBLEMA AL ACTUALIZAR EL ORDEN',
+				showConfirmButton: false,
+				timer: 1500,
+			});
+		}
+	};
 	const obtenerInventarioHistorialCambiosxIDARTICULO = async (idArticulo) => {
 		try {
 			const { data } = await PTApi.get(`/inventario/hist-cam-id/${idArticulo}`);
@@ -244,6 +260,7 @@ export const useInventarioStore = () => {
 		obtenerArticulo,
 		EliminarArticulo,
 		actualizarArticulo,
+		actualizarOrdenArticulo,
 		RestaurarArticulo,
 		dataEtiquetaxIdEntidadGrupo,
 		statusData,

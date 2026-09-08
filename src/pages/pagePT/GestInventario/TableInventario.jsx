@@ -29,7 +29,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const [selectedCustomers, setselectedCustomers] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [isOpenModalHistorialCambio, setisOpenModalHistorialCambio] = useState({isOpen: false, id: 0})
-    const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo } = useInventarioStore()
+    const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo, actualizarOrdenArticulo } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [search, setSearch] = useState('');
     useEffect(() => {
@@ -333,6 +333,25 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             </div>
         )
     }
+    const ordenBodyTemplate = (rowData)=>{
+        const onBlurOrden = (e)=>{
+            const value = e.target.value
+            const valorActual = rowData.orden ?? ''
+            if (String(value) === String(valorActual)) return
+            actualizarOrdenArticulo(rowData.id, value, id_enterprice)
+        }
+        return (
+            <input
+                type="number"
+                key={rowData.id}
+                defaultValue={rowData.orden ?? ''}
+                onBlur={onBlurOrden}
+                className="form-control"
+                style={{ width: '70px' }}
+                placeholder="-"
+            />
+        )
+    }
     const ItemBodyTemplate = (rowData)=>{
         return (
             <>
@@ -487,6 +506,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                             onValueChange={valueFiltered}
                                             >
                                     <Column header={<span className={'font-24'}>Id</span>} field='id' style={{ width: '15px' }} body={IdBodyTemplate}/>
+                                    <Column header={<span className={'font-24'}>ORDEN</span>} field='orden' sortable style={{ width: '80px' }} body={ordenBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '10rem' }} body={imagenBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
