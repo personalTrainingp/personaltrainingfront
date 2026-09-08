@@ -189,6 +189,10 @@ export default function ProtectedRoutes() {
 								<Route path='gestion-tc' element={<GestionCheckList />} />
 							}
 							{
+								sections.find(e => e.url === '/checklist') &&
+								<Route path='checklist-inventario' element={<GestionCheckList />} />
+							}
+							{
 								sections.find(e => e.url === '/cuentas-balances') &&
 								<Route path='reporte-cuentas-balance' element={<FlujoCajaBalanceCuentas />} />
 							}
