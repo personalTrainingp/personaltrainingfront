@@ -16,7 +16,7 @@ const ERRORES = {
 
 const ACCIONES = { eliminar: 'Eliminar widget', mover: 'Mover', redimensionar: 'Redimensionar', filtrar: 'Aplicar filtro', renombrar: 'Renombrar' };
 
-export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPropuesta, onAccion, ultimoWidget }) => {
+export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPropuesta, onAgregarPropuestas, onAccion, ultimoWidget }) => {
 	const [mensajes, setMensajes] = useState([]);
 	const [texto, setTexto] = useState('');
 	const [pensando, setPensando] = useState(false);
@@ -36,6 +36,8 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 	};
 
 	const marcarHecho = (i, nota) => setMensajes(prev => prev.map((m, j) => (j === i ? { ...m, hecho: true, nota } : m)));
+
+	const marcarAgregados = (i, indices, nota) => setMensajes(prev => prev.map((m, j) => (j === i ? { ...m, agregados: [...(m.agregados || []), ...indices], nota } : m)));
 
 	const burbuja = (m, i) => {
 		if (m.de === 'usuario') return <div key={i} className='d-flex justify-content-end mb-2'><div className='bg-change text-white rounded-3 px-3 py-2' style={{ maxWidth: '85%' }}>{m.texto}</div></div>;
@@ -68,13 +70,25 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 			);
 		} else if (r.tipo === 'dashboard') {
 			if (r.accion === 'crear' || r.accion === 'crear_dashboard') {
+				const propuestas = r.propuestas && r.propuestas.length ? r.propuestas : (r.propuesta ? [r.propuesta] : []);
+				const agregados = m.agregados || [];
+				const pendientes = propuestas.map((p, k) => k).filter(k => !agregados.includes(k));
 				cuerpo = (
 					<>
-						<div>{r.respuesta ? r.respuesta.texto : (r.error ? 'No pude preparar ese widget.' : 'Widget listo para agregar.')}</div>
-						{r.propuesta && !r.error && !m.hecho && (
-							<Button size='sm' variant='outline-danger' className='mt-1' onClick={async () => { await onAgregarPropuesta(r.propuesta); marcarHecho(i, 'Agregado al dashboard'); }}>
-								<i className='mdi mdi-plus'></i> Agregar "{r.propuesta.titulo}"
-							</Button>
+						<div style={{ whiteSpace: 'pre-line' }}>{r.respuesta ? r.respuesta.texto : (r.error ? 'No pude preparar ese widget.' : 'Widget listo para agregar.')}</div>
+						{propuestas.length > 0 && !r.error && (
+							<div className='d-flex flex-wrap gap-1 mt-1'>
+								{propuestas.map((p, k) => (
+									<Button key={k} size='sm' variant='outline-danger' disabled={agregados.includes(k)} onClick={async () => { await onAgregarPropuesta(p); marcarAgregados(i, [k], 'Agregado al dashboard'); }}>
+										<i className={agregados.includes(k) ? 'mdi mdi-check' : 'mdi mdi-plus'}></i> {p.titulo}
+									</Button>
+								))}
+								{propuestas.length > 1 && pendientes.length > 1 && (
+									<Button size='sm' variant='danger' onClick={async () => { await onAgregarPropuestas(pendientes.map(k => propuestas[k])); marcarAgregados(i, pendientes, 'Agregados al dashboard'); }}>
+										<i className='mdi mdi-plus'></i> Agregar los {pendientes.length}
+									</Button>
+								)}
+							</div>
 						)}
 					</>
 				);
@@ -103,7 +117,7 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 			<div key={i} className='d-flex justify-content-start mb-2'>
 				<div className='bg-light rounded-3 px-3 py-2' style={{ maxWidth: '92%' }}>
 					{cuerpo}
-					{m.hecho && m.nota && <small className='text-success d-block mt-1'><i className='mdi mdi-check'></i> {m.nota}</small>}
+					{(m.hecho || (m.agregados && m.agregados.length > 0)) && m.nota && <small className='text-success d-block mt-1'><i className='mdi mdi-check'></i> {m.nota}</small>}
 				</div>
 			</div>
 		);

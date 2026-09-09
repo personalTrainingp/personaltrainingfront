@@ -97,6 +97,15 @@ export const Dashboard = () => {
 		if (creado) setUltimoWidget(creado.id);
 	};
 
+	const onAgregarPropuestas = async (lista) => {
+		let posicion = siguientePosicion(widgets);
+		for (const p of lista) {
+			const creado = await crearWidget(dashboard.id, { tipo: p.tipo, titulo: p.titulo, x: posicion.x, y: posicion.y, w: p.w, h: p.h, config: p.config });
+			if (creado) setUltimoWidget(creado.id);
+			posicion = { x: 0, y: posicion.y + p.h };
+		}
+	};
+
 	const onAccionChat = async (a) => {
 		if (!a.widget) return;
 		setUltimoWidget(a.widget);
@@ -169,7 +178,7 @@ export const Dashboard = () => {
 			)}
 			</div>
 			<ConfigWidget visible={configAbierta} onHide={() => { setConfigAbierta(false); setEditando(null); }} semantica={semantica} valor={editando} onGuardar={onGuardarConfig} datosWidget={datosWidget} />
-			<ChatDrawer show={chatAbierto} onHide={() => setChatAbierto(false)} dashboardId={dashboard ? dashboard.id : null} enviarChat={enviarChat} onAgregarPropuesta={onAgregarPropuesta} onAccion={onAccionChat} ultimoWidget={ultimoWidget} />
+			<ChatDrawer show={chatAbierto} onHide={() => setChatAbierto(false)} dashboardId={dashboard ? dashboard.id : null} enviarChat={enviarChat} onAgregarPropuesta={onAgregarPropuesta} onAgregarPropuestas={onAgregarPropuestas} onAccion={onAccionChat} ultimoWidget={ultimoWidget} />
 		</>
 	);
 };
