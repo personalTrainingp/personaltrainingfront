@@ -3,7 +3,6 @@ import { useFlujoCaja } from './hook/useFlujoCajaStore';
 import { Table } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
-import { ModalProyectados } from './view/ModalProyectados';
 
 export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio, onOpenModalTableItems}) => {
     const fechaElegida = new Date(anio[0])
@@ -12,6 +11,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     const mesElegido = fechaElegida.getMonth()+1
     const anioActual = fechaActual.getFullYear()
     const mesActual = fechaActual.getMonth()+1
+    const dateActual = fechaActual.getDate()
     const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
     useEffect(() => {
         obtenerEgresosxFecha(id_enterprice, anio)
@@ -41,10 +41,10 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
 
         const sumagastos1272 = dataGastos1272.reduce((total, item)=>item.monto+total, 0)
         const utilidadBolsa = sumaIngresosExcepcional-sumaGastosBolsa
-        const utilidadBruta = sumaGastos===0?0:sumaIngresos-(sumaProyectado+sumaGastos)
+        const utilidadBruta = dateActual>7?sumaGastos===0?0:sumaIngresos-(sumaProyectado+sumaGastos): sumaGastos===0?0:sumaIngresos-(sumaProyectado+sumaGastos)
         const utilidadNeta = (sumaIngresos)-sumaGastos
         const utilidadUltimaLinea = ((utilidadBruta && sumaIngresos) && (utilidadBruta*100)/sumaIngresos)
-        const utilidadUltimaLineaChangeMasBolsa = ((utilidadBruta && sumaIngresos) && ((utilidadBruta+utilidadBolsa)*100)/(sumaIngresos+sumaIngresosExcepcional))
+        const utilidadUltimaLineaChangeMasBolsa = ((utilidadBruta && sumaIngresos) && ((utilidadBruta+utilidadBolsa))/(sumaIngresos+sumaIngresosExcepcional))
         const utilidadEmpresaMasBolsa = utilidadBolsa+utilidadBruta
         const bonoGerencia = (sumaIngresos-(sumaProyectado+sumaGastos))*0.05
         const utilidadPerdida_ultimaLinea = utilidadBruta<=0?utilidadBruta:sumaIngresos-(sumaProyectado+sumaGastos+sumagastos1272)
@@ -76,7 +76,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
             mesStr: dayjs(`${f.anio}-${f?.mes}-1`, 'YYYY-M-D').format('MMM [.]'),
         }
     })
-    const dataAlterMesCompleto = dataAlter.filter((f)=>`${f.anio}-${f?.mes}`!==`${anioActual}-${mesActual}`).map(f=>{
+    const dataAlterMesCompleto = dataAlter.filter((f)=>f.anio<anioActual || (f.anio===anioActual && f.mes<mesActual)).map(f=>{
         return {
           ...f
         }
@@ -212,7 +212,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 </td>
               </tr>
               <tr>
-                <td className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>UTILIDAD / PERDIDA <br/><span className='fs-4'>*Actualización del proyectado: el 7 de cada mes.</span></td>
+                <td className={`sticky-td border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>UTILIDAD / PERDIDA <br/><span className='fs-4'>*Actualización del proyectado: el 10 de cada mes.</span></td>
               {
                 dataAlter.map(e=>{
                   return (
@@ -285,7 +285,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 <td className={`sticky-td border-left-10 border-right-10  sticky-td-${id_enterprice} ${bgTotal}`}>UTILIDAD / PERDIDA <br/>ULTIMA LINEA</td>
               {
                 dataAlter.map(e=>{
-                  const bonoGerencia = (e.sumaIngresos-(e.sumaProyectado+e.sumaGastos))*0.03
+                  const bonoGerencia = (e.sumaIngresos-(e.sumaProyectado+e.sumaGastos))*0.1
                   return (
                     <React.Fragment>
                       <td className={`text-end  ${`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> 
@@ -350,8 +350,14 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   })
                 }
                   <td className={`text-end border-left-10 border-bottom-10 border-right-10`}><div className={`fs-1 ${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}>
-                  <NumberFormatMoney className='fs-1' amount={(((dataAlterMesCompleto.reduce((total, item)=>item.utilidadNeta+total, 0))*100)/dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0))}/> %</div></td>
-                  <td className={`text-end border-right-10 border-bottom-10`}><div className={`fs-1 ${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-1' amount={(((dataAlterMesCompleto.reduce((total, item)=>item.utilidadNeta+total, 0))*100)/dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0))}/> %</div></td>
+                  <NumberFormatMoney className='fs-1' amount={(((-(dataAlterMesCompleto.reduce((total, item)=>item.sumagastos1272+total, 0))
+                      +(dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)))*100)/dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0))}/> %</div></td>
+                  <td className={`text-end border-right-10 border-bottom-10`}><div className={`fs-1 ${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-1' amount={(((-(dataAlterMesCompleto.reduce((total, item)=>item.sumagastos1272+total, 0))
+                      +(dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)))*100)/dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0))}/> 
+                    {/* (-(dataAlterMesCompleto.reduce((total, item)=>item.sumagastos1272+total, 0))
+                      +(dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)-dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)))/encontrarFechas(anioElegido, dataAlterMesCompleto.filter(f=>f.sumaGastos!=0).length)
+                     */}
+                    %</div></td>
               </tr> 
             </tbody>
           </Table>
@@ -377,8 +383,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   </thead>
                   <tbody>
                     <tr>
-                      <td className={`border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>BONO GERENCIAS TRIMESTRAL <br/>
-(3% UTILIDAD ULTIMA LINEA)</td>
+                      <td className={`border-left-10 border-right-10 sticky-td-${id_enterprice} ${bgTotal}`}>BONO GERENCIAS TRIMESTRAL <br/>(3% UTILIDAD ULTIMA LINEA)</td>
                     {
                       dataAlter.map(e=>{
                         return (
@@ -410,18 +415,16 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                             <td className={`text-end border-right-10`}><div> <NumberFormatMoney className='fs-1' amount={utilidadBrutaTotalMESCOMPLETOExtraordinario/encontrarFechas(anioElegido,dataAlter.filter(f=>f.sumaGastosBolsa!=0).length)}/></div></td>
                     </tr> 
                     <tr>
-                      <td className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice} ${bgTotal}`}>BONO GERENCIAS TRIMESTRAL <br/>(3% UTILIDAD ULTIMA LINEA)<br/><span className='fs-1'>PROYECTADO</span></td>
+                      <td className={`border-left-10 border-right-10 border-bottom-10 sticky-td-${id_enterprice} ${bgTotal}`}>BONO GERENCIAS TRIMESTRAL <br/>(10% UTILIDAD ULTIMA LINEA)<br/><span className='fs-1'>PROYECTADO</span></td>
                     {
                   dataAlter.map(e=>{
-                    const bonoGerencia = (e.utilidadBruta-(dataAlterMesCompleto.reduce((total, item)=>item.sumaGastos+total, 0)/encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaGastos!=0).length)-e.sumaGastos))*0.05
-                    const utilidadPerdida = e.utilidadBruta<=0?e.utilidadBruta:e.sumaIngresos-(e.sumaProyectado+e.sumaGastos+bonoGerencia)
                     return (
                       <React.Fragment>
                         <td className={`text-end border-bottom-10 ${`${e?.mes}-${e.anio}`===`${mesActual}-${anioActual}` && `bg-${id_enterprice}-pastel`}`}> 
                           {
                                 `${e?.mes}-${e.anio}`!==`${mesActual}-${anioActual}` && (
-                                  <div className={`${(e.utilidadBruta-bonoGerencia)>0?'text-orange':'text-change'}`}>
-                                    <NumberFormatMoney className='fs-1' amount={(e.utilidadBruta-e.sumagastos1272)*0.03}/>
+                                  <div className={`${(e.utilidadBruta)>0?'text-orange':'text-change'}`}>
+                                    <NumberFormatMoney className='fs-1' amount={(e.utilidadBruta-e.sumagastos1272)*0.1}/>
                                   </div>
                                 )
                           }
@@ -431,7 +434,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                                     <NumberFormatMoney 
                                     className='fs-1'
                                       amount=
-                                      {(e.utilidadBruta-e.sumagastos1272)*0.03}/></div>
+                                      {(e.utilidadBruta-e.sumagastos1272)*0.1}/></div>
                                 )
                           }
                         </td>
@@ -672,12 +675,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 }
                   <td className={`text-end border-left-10 border-right-10 border-bottom-10`}>
                     <div className={`${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}>
-                      <NumberFormatMoney className='fs-1' amount={dataAlterMesCompleto.reduce((total, item)=>item.utilidadUltimaLineaChangeMasBolsa+total, 0)/encontrarFechas(anioElegido,dataAlter.filter(f=>f.sumaGastosBolsa!=0).length)}/> %
+                      <NumberFormatMoney className='fs-1' amount={((dataAlterMesCompleto.reduce((total, item)=>item.utilidadEmpresaMasBolsa+total, 0)*100)/(dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0)))}/> %
                     </div>
                   </td>
                   <td className={`text-end border-right-10 border-bottom-10`}>
                     <div className={`${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}>
-                      <NumberFormatMoney className='fs-1' amount={dataAlterMesCompleto.reduce((total, item)=>item.utilidadUltimaLineaChangeMasBolsa+total, 0)/encontrarFechas(anioElegido,dataAlter.filter(f=>f.sumaGastosBolsa!=0).length)}/> %
+                      <NumberFormatMoney className='fs-1' amount={((dataAlterMesCompleto.reduce((total, item)=>item.utilidadEmpresaMasBolsa+total, 0)*100)/(dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresos+total, 0)+dataAlterMesCompleto.reduce((total, item)=>item.sumaIngresosExcepcional+total, 0)))}/> %
                     </div>
                   </td>
               </tr> 
@@ -782,13 +785,17 @@ const getQuotaParaMes = (monthIndex, year) => {
   const y = year;
   const m = monthIndex;
   switch (`${m}-${y}`) {
+    case "8-2026":
+      return {
+        meta: 80000,
+      };
     case "7-2026":
       return {
-        meta: 100000,
+        meta: 80000,
       };
     case "6-2026":
       return {
-        meta: 90000,
+        meta: 80000,
       };
     case "5-2026":
       return {
@@ -796,7 +803,7 @@ const getQuotaParaMes = (monthIndex, year) => {
       };
     case "4-2026":
       return {
-        meta: 90000,
+        meta: 80000,
       };
     case "3-2026":
       return {
@@ -804,7 +811,7 @@ const getQuotaParaMes = (monthIndex, year) => {
       };
     case "2-2026":
       return {
-        meta: 90000,
+        meta: 80000,
       };
     case "1-2026":
       return {

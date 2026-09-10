@@ -19,8 +19,8 @@ const ResumenMembresiasPage = lazy(() =>
 // aaaaa
 
 const NuevaVenta = lazy(() => import('../pages/pagePT/nuevaVenta'));
-// const Seguimiento = lazy(() => import('../pages/pagePT/seguimiento/index.jsx'));
-const Seguimiento = lazy(() => import('../pages/pagePT/Seguimientoficial'));
+const Seguimiento = lazy(() => import('../pages/pagePT/seguimiento/index.jsx'));
+// const Seguimiento = lazy(() => import('../pages/pagePT/Seguimientoficial'));
 const TotaldeVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'));
 const VentasPrograma = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'));
 const VentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'));
@@ -118,7 +118,7 @@ const GestionOperadoresPagos = lazy(()=>import('../pages/pagePT/GestionFormasPag
 const OtherPages = lazy(() => import('../pages/otherpages'));
 const Error404Alt = lazy(() => import('../pages/otherpages/Error404Alt'));
 const ConstructorCruces = lazy(() => import('../pages/pagePT/ConstructorCruces/index.jsx'));
-const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
+// const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
 
 export default function ProtectedRoutes() {
 	const { settings } = useThemeContext();
@@ -186,7 +186,7 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/config') &&
-								<Route path='gestion-tc' element={<GestionCheckList />} />
+								<Route path='gestion-tc' element={<GestionTc />} />
 							}
 							{
 								sections.find(e => e.url === '/checklist') &&
@@ -620,7 +620,7 @@ export default function ProtectedRoutes() {
 							<Route path='programa/:uid' element={<PerfilPrograma />} />
 							<Route path='gestion-descuentos' element={<GestionDescuentos />} />
 							<Route path="pages/*" element={<OtherPages />} />
-							<Route path='home' element={<Dashboard />} />
+							{/* <Route path='home' element={<Dashboard />} /> */}
 							{
 								sections.find(e => e.url === '/reportes-admin' || e.url === '/reporte' || e.url === '/config') &&
 								<Route path='constructor-cruces' element={<ConstructorCruces />} />

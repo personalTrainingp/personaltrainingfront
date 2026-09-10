@@ -6,7 +6,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 
-export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo}) => {
+export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo, data}) => {
     const { obtenerArchivosCenter, onDeleteArchivo } = useCenterArchive()
     const { dataView } = useSelector(e=>e.DATA)
     useEffect(() => {
@@ -75,7 +75,7 @@ export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo
     <div>
         <DataTableCR
             columns={columns}
-            data={dataView}
+            data={data ?? dataView}
         />
     </div>
   )
