@@ -27,6 +27,11 @@
 
 
 
+.bg-dark-3{
+  background-color: #333333 !important;
+}
+
+
 .border-black-6{
   border: 6px solid #000000 !important;
 }
@@ -94,6 +99,19 @@
 }
 .bg-gray{
   background-color: #e0e0e0 !important;
+}
+
+// Fila/pestaña TOTAL de la pestaña TODO (suma de Change + Circus + Reducto + Ral).
+// Gris/negro neutro a propósito, para no confundirlo con el color de marca
+// de ninguna de las 4 empresas.
+.bg-todo{
+  background-color: #333333 !important;
+}
+.bg-todo-pastel{
+  background-color: #6e6e6e !important;
+}
+.text-todo{
+  color: #333333 !important;
 }
 
 .text-orange{

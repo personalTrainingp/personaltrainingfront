@@ -7,6 +7,7 @@ import { PageBreadcrumb } from '@/components'
 import { Trimestre1Total } from './view/Trimestre1Total'
 import { AppTablesConceptos } from './AppTablesConceptos'
 import { generarMesYanio } from './helpers/generarMesYanio'
+import { TablesResumenTodo } from './view/TablesResumenTodo'
 
 export const AppFlujoCaja = () => {
   return (
@@ -133,6 +134,11 @@ export const AppFlujoCaja = () => {
             </div>
             </TabPanel>
           </TabView>
+        }
+        childrenTodo={
+          <div style={{overflowY: 'scroll', height: '800px'}}>
+            <TablesResumenTodo />
+          </div>
         }
       />
     </div>

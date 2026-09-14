@@ -216,3 +216,22 @@
   z-index: -1;
   box-shadow: 2px 0 0 rgba(0,0,0,.12);
 }
+
+
+/* columna fija: fila TOTAL de la pestaña TODO (suma Change+Circus+Reducto+Ral) */
+.tabla-egresos .sticky-td-total{
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: transparent !important; /* el fondo real lo pone ::before */
+}
+
+/* “panel” que hace que TODA la celda se vea fija */
+.tabla-egresos .sticky-td-total::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #333333; /* gris/negro neutro, distinto a los 4 colores de marca */
+  z-index: -1;
+  box-shadow: 2px 0 0 rgba(0,0,0,.12);
+}

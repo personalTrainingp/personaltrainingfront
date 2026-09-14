@@ -40,14 +40,20 @@ export const ColorEmpresa = (props) => {
       text: 'link-change', 
       BackgroundHeretary: 'link-change' 
     },
-    { 
-      key: 'childrenRal', 
-      label: 'RAL', 
-      text: 'link-ral', 
-      BackgroundHeretary: 'link-ral' 
+    {
+      key: 'childrenRal',
+      label: 'RAL',
+      text: 'link-ral',
+      BackgroundHeretary: 'link-ral'
     },
-    { 
-      key: 'childrenOtros', 
+    {
+      key: 'childrenTodo',
+      label: 'TODO',
+      text: 'text-todo link-todo',
+      BackgroundHeretary: 'link-todo'
+    },
+    {
+      key: 'childrenOtros',
       label: 'OTROS', 
       text: 'link-change', 
       BackgroundHeretary: 'link-change' 

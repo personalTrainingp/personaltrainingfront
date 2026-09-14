@@ -13,10 +13,10 @@ export const App = () => {
                 <App2 idEmpresa={598}/>
             }
             childrenCircus={
-                <App2 idEmpresa={599}/>
+                <App2 idEmpresa={601}/>
             }
             childrenReducto={
-                <App2 idEmpresa={601}/>
+                <App2 idEmpresa={599}/>
             }
             childrenRal={
                 <App2 idEmpresa={800}/>

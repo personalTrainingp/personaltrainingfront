@@ -184,6 +184,34 @@
   }
 }
 
+// Pestaña TODO (Change + Circus + Reducto + Ral juntos). Gris/negro neutro,
+// a propósito distinto de los 4 colores de marca de las empresas.
+.link-todo{
+  .active > .page-link{
+    background-color: #333333 !important;
+    border-color: #333333 !important;
+  }
+  .p-button.p-button-outlined{
+    color: #333333;
+  }
+  .p-tabview-nav-link[aria-selected=true]{
+    border-bottom: 6px #333333 solid !important;
+  }
+  th{
+    background-color: #333333 !important;
+    color: #fff;
+  }
+  .input-buton {
+    background-color: #333333;
+  }
+  .p-tabview-title{
+    color: #333333;
+  }
+  .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link{
+    border-bottom: 6px #333333 solid !important;
+  }
+}
+
 /* Botones sin bordes, bloque sólido */
 .estado-select .p-button {
   border: none !important;
