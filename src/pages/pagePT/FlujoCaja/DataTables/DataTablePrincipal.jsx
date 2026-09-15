@@ -2,6 +2,7 @@ import { NumberFormatMoney } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
 import React from 'react'
 import { Table } from 'react-bootstrap';
+import { obtenerAnioMesDiaActualPeru } from '../helpers/fechaPeru';
 
 // Conceptos que se resaltan con bgPastel en la columna de nombre y en las celdas de cada mes
 const CONCEPTOS_PASTEL = [1272]
@@ -9,9 +10,10 @@ const CONCEPTOS_PASTEL = [1272]
 const CONCEPTOS_DESTACADOS_BLANCO = [941, 1117, 1046, 1285, 1134, 1247, 1251, 1271, 1124]
 
 export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems, data=[]}) => {
-  const fecha = new Date()
-  const anioActual = fecha.getFullYear()
-  const mesActual = fecha.getMonth()+1
+  // "Hoy" en hora peruana (UTC-5 fijo), no en la zona horaria del entorno
+  // donde corra el código — evita que el mes se adelante cerca de la
+  // medianoche UTC (7pm-12am hora Perú).
+  const { anioActual, mesActual } = obtenerAnioMesDiaActualPeru()
 
   const sumaMontototal = conceptos.reduce((total, item)=>item?.monto+total, 0)
   const sumaLentotal = conceptos.reduce((total, item)=>item?.len+total, 0)

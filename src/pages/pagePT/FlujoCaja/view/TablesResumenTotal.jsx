@@ -7,7 +7,7 @@ import { TrItemVentas, TrItemEgresos, TrItemUtilidad, TrItemInventario, TrItemEx
 import dayjs from 'dayjs'
 import { useFlujoCaja } from '../hook/useFlujoCajaStore'
 import { ModalTableItems } from './ModalTableItems'
-export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => {
+export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa, nombreEmpresa='CHANGE'}) => {
     const anio2026 = ['2026-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']
     const anio2025 = ['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.6640000 +00:00']
     const anio2024 = ['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']
@@ -80,7 +80,7 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
             </div>
         </div>
         <div>
-            <div style={{fontSize: '70px'}} className='text-black text-center'>RESULTADO CHANGE</div>
+            <div style={{fontSize: '70px'}} className='text-black text-center'>RESULTADO {nombreEmpresa}</div>
             <div className='tab-scroll-container'>
                 <Table className='tabla-egresos fs-3' style={{ width: '100%' }} bordered>
                     <thead>
@@ -133,7 +133,7 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa}) => 
             </div>
         </div>
         <div>
-            <div style={{fontSize: '70px'}} className='text-black text-center'>CHANGE + BOLSA </div>
+            <div style={{fontSize: '70px'}} className='text-black text-center'>{nombreEmpresa} + BOLSA </div>
             <div className='tab-scroll-container'>
                 <Table className='tabla-egresos fs-3' style={{ width: '100%' }} bordered>
                     <thead>

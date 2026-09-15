@@ -8,6 +8,8 @@ import { dataIngresosOrden } from '@/helper/dataIngresosOrden';
 import { formatDateToSQLServerWithDayjs } from '@/helper/formatDateToSQLServerWithDayjs';
 import { obtenerTipoDeCambio } from '@/middleware/obtenerTipoDeCambio';
 import { aplicarTipoDeCambio } from '@/helper/aplicarTipoCambio';
+import { idEmpresaVenta, ID_EMPRESA_CIRCUS } from '../constants/empresas';
+import { construirVentasCircus } from '../helpers/ventasCircus';
 
 // Cache compartido (a nivel de módulo, no de componente) entre TODAS las
 // instancias de useFlujoCaja() que haya montadas al mismo tiempo. Cada fila
@@ -48,7 +50,7 @@ const conCachePromesa = (cache, clave, fetcher) => {
 // lógica que antes vivía dentro de obtenerIngresosxFecha; se saca a una
 // función de módulo para poder cachear la PROMESA entre instancias del hook.
 const fetchIngresosxFecha = async (enterprice, arrayDate) => {
-	const { data } = await PTApi.get(`/venta/fecha-venta/id_empresa/${enterprice}`, {
+	const { data } = await PTApi.get(`/venta/fecha-venta/id_empresa/${idEmpresaVenta(enterprice)}`, {
 		params: {
 			arrayDate: [
 				formatDateToSQLServerWithDayjs(arrayDate[0], true),
@@ -110,14 +112,25 @@ const fetchIngresosxFecha = async (enterprice, arrayDate) => {
 	});
 
 	const dataTipoTC = await obtenerTipoDeCambio();
-	const dataV = dataIngresosOrden([...data.ventas]);
-	const arrayTotalIngresos = [
-		...dataV.dataMembresias,
-		...dataV.dataProductos17,
-		...dataV.dataProductos18,
-		...ingresosMAP,
-		...reservasMFMAP,
-	];
+	// CIRCUS no vende por MEMBRESIA/ACCESORIOS/SUPLEMENTOS (dataIngresosOrden
+	// es específico de CHANGE): sus ventas son PRODUCTOS + SERVICIOS, con sus
+	// propios conceptos (1151/1152) — ver helpers/ventasCircus.js.
+	const arrayTotalIngresos =
+		enterprice === ID_EMPRESA_CIRCUS
+			? (() => {
+					const dataV = construirVentasCircus(data.ventas, dataParametrosGastos.termGastos);
+					return [...dataV.dataProductos, ...dataV.dataServicios, ...ingresosMAP, ...reservasMFMAP];
+				})()
+			: (() => {
+					const dataV = dataIngresosOrden([...data.ventas]);
+					return [
+						...dataV.dataMembresias,
+						...dataV.dataProductos17,
+						...dataV.dataProductos18,
+						...ingresosMAP,
+						...reservasMFMAP,
+					];
+				})();
 	const totalIngresos = arrayTotalIngresos.map((f) => {
 		const fechaPrimaria = new Date(f.fecha_primaria);
 		const mesP = fechaPrimaria.getUTCMonth() + 1;

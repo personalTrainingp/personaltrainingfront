@@ -5,7 +5,11 @@ import { DataTablePrincipal } from './DataTables/DataTablePrincipal'
 import { ModalTableItems } from './view/ModalTableItems'
 import { ViewResumenTotal } from './ViewResumenTotal'
 
-export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, classNameEmpresa, bgPastel, textEmpresa}) => {
+// Grupos "BOLSA" en la BD. Por defecto los ids que usa CHANGE (153 gasto, 121
+// ingreso); las demás empresas pasan los suyos por prop si en su plan de
+// cuentas esos grupos tienen otro id (ver también ViewResumenTotal.jsx, que
+// usa las mismas props para excluir BOLSA de "RESULTADO ANUAL").
+export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, classNameEmpresa, bgPastel, textEmpresa, idGrupoGastoBolsa = 153, idGrupoIngresoBolsa = 121, nombreEmpresa = 'CHANGE'}) => {
     const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
     const [data, setdata] = useState({isOpen: false, items: [], itemsAcumulados: {}, anio: 2024, mes: 9, header: '', isShowConceptos: false})
     const [dataIngresos, setdataIngresos] = useState({isOpen: false, items: [], header: '', isShowConceptos: false})
@@ -36,7 +40,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 dataIngresosxFecha.flujoxGrupo
                 .sort((a, b)=>a.orden-b.orden)
                 ?.filter(f=>f.gastos?.length!==0)
-                .filter((f)=>f.id!==121 && f.id!==46)
+                .filter((f)=>f.id!==idGrupoIngresoBolsa && f.id!==46)
                 ?.map((data, i, arr)=>{
                     return (
                         <DataTablePrincipal 
@@ -47,7 +51,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                             bgPastel={bgPastel} 
                             bgTotal={classNameEmpresa} 
                             itemsxDias={data?.itemsxDia}  
-                            nombreGrupo={data.param_label} 
+                            nombreGrupo={`${data.param_label}`} 
                             conceptos={data.parametro_grupo_gasto} 
                             sumaTotal={data.itemsxDia.reduce((total, item)=>total+item.monto, 0)}
                             data={arr} 
@@ -64,7 +68,7 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
                 dataGastosxFecha.flujoxGrupo
                 .sort((a, b)=>a.orden-b.orden)
                 .filter(f=>f.gastos?.length!==0)
-                .filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.id!==97 && f.id!==110&& f.id!==153&& f.id!==103 && f.id!==150 && f.id!==157)
+                .filter((f)=>f.grupo!=='PRESTAMOS A TERCEROS'&& f.id!==97 && f.id!==110&& f.id!==idGrupoGastoBolsa&& f.id!==103 && f.id!==150 && f.id!==157)
                 ?.map((data,i, arr)=>{
                     return (
                         <DataTablePrincipal 
@@ -88,11 +92,14 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
             }
         </div>
         <div className='tab-scroll-container'>
-            <ViewResumenTotal 
-                onOpenModalTableItems={onOpenModalTableItems}  
-                bgPastel={bgPastel} 
-                bgTotal={classNameEmpresa} 
-                id_enterprice={id_empresa} 
+            <ViewResumenTotal
+                onOpenModalTableItems={onOpenModalTableItems}
+                bgPastel={bgPastel}
+                bgTotal={classNameEmpresa}
+                id_enterprice={id_empresa}
+                idGrupoGastoBolsa={idGrupoGastoBolsa}
+                idGrupoIngresoBolsa={idGrupoIngresoBolsa}
+                nombreEmpresa={nombreEmpresa}
                 anio={[arrayFecha[0], arrayFecha[1]]}
                 fechas={generarMesYanio(new Date(arrayFecha[0]), new Date(arrayFecha[1]))} />
         </div>

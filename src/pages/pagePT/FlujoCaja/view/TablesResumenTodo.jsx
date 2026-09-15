@@ -15,6 +15,7 @@ import { ModalTableItems } from './ModalTableItems'
 import { useFlujoCaja } from '../hook/useFlujoCajaStore'
 import { useFlujoCajaConsolidado } from '../hook/useFlujoCajaConsolidado'
 import { EMPRESAS_FLUJO_CAJA, ID_EMPRESA_TOTAL, ID_EMPRESA_CHANGE } from '../constants/empresas'
+import { obtenerAnioMesDiaActualPeru } from '../helpers/fechaPeru'
 
 // Rango de fechas "todo los años" (2024-2026) usado por los 4 cuadros de
 // arriba del todo. A diferencia de PERIODOS[3] (TOTAL ACUMULADO) de más
@@ -178,7 +179,7 @@ const TrItemMargenUtilidad = ({ anio = 2024, classNameTotal = '', className = ''
 // margen Utilidad/Perdida %, para UNA sola empresa (sin consolidar), sumando
 // los 3 años (2024-2026) con desglose mensual. Usado para Circus, Reducto y
 // Ral — ninguna de las 3 maneja Bono Gerencias, a diferencia de Change.
-const TablaResultadoAnualSimple = ({ empresa }) => (
+const TablaResultadoAnualSimple = ({ empresa, onOpenModalDataItems }) => (
 	<div>
 		<div style={{ fontSize: '70px' }} className='text-black text-center'>RESULTADO ACUMULADO ANUAL(2024, 2025, 2026)<br/>{` ${empresa.label}`}</div>
 		<div className='tab-scroll-container'>
@@ -200,6 +201,7 @@ const TablaResultadoAnualSimple = ({ empresa }) => (
 						label='EGRESOS'
 						arrayFechas={ARRAY_FECHAS_TODOS_LOS_ANIOS}
 						id_empresa={empresa.id_empresa}
+						onOpenModalDataItems={onOpenModalDataItems}
 					/>
 					<TrItemMargenUtilidad
 						anio={ANIO_SENTINEL_ACUMULADO_CON_MESES}
@@ -233,10 +235,12 @@ const ID_CONCEPTO_BONO_GERENCIAL = 1272
 // meses cada uno; el año en curso solo aporta los meses ya cerrados
 // (mesActual-1), sin contar el mes en curso que todavía no cierra. Misma
 // fórmula que MESES_ACUMULADO_ANIO_EN_CURSO en TrItem.jsx.
-const fechaActualAcumulado = new Date()
-const MESES_ACUMULADO_ANIO_EN_CURSO = (fechaActualAcumulado.getFullYear() - 2024) * 12 + fechaActualAcumulado.getMonth()
+// "Hoy" en hora peruana (UTC-5 fijo), no en la zona horaria del entorno donde
+// corra el código.
+const { anioActual: anioActualAcumulado, mesActual: mesActualAcumulado } = obtenerAnioMesDiaActualPeru()
+const MESES_ACUMULADO_ANIO_EN_CURSO = (anioActualAcumulado - 2024) * 12 + (mesActualAcumulado - 1)
 
-const TablaResultadoAnualChange = () => {
+const TablaResultadoAnualChange = ({ onOpenModalDataItems }) => {
 	const { obtenerIngresosxFecha, dataIngresosxFecha, obtenerEgresosxFecha, dataGastosxFecha } = useFlujoCaja()
 	useEffect(() => {
 		obtenerIngresosxFecha(ID_EMPRESA_CHANGE, ARRAY_FECHAS_TODOS_LOS_ANIOS)
@@ -261,10 +265,10 @@ const TablaResultadoAnualChange = () => {
 						?.filter((f) => f.mes === e.mes)
 						.flatMap((f) => f.items)
 						?.reduce((total, item) => total + item.monto, 0) ?? 0
-		const gastosxMes = gruposGastoIncluidos.flatMap((f) => f.itemsxDia)
+		const gastosItemsxMes = gruposGastoIncluidos.flatMap((f) => f.itemsxDia)
 						?.filter((f) => f.mes === e.mes)
-						.flatMap((f) => f.items)
-						?.reduce((total, item) => total + item.monto, 0) ?? 0
+						.flatMap((f) => f.items) ?? []
+		const gastosxMes = gastosItemsxMes.reduce((total, item) => total + item.monto, 0)
 		const proyectadoxMes = gruposGastoIncluidos.flatMap((f) => f.parametro_grupo_gasto ?? [])
 						.flatMap((f) => f.itemsxDia ?? [])
 						.filter((f) => f.mes === e.mes)
@@ -277,7 +281,7 @@ const TablaResultadoAnualChange = () => {
 		const egresosxMes = gastosxMes + proyectadoxMes
 		const utilidadxMes = ingresosxMes - egresosxMes
 		const ultimaLineaxMes = utilidadxMes - bonoGerencialxMes
-		return { ingresosxMes, egresosxMes, utilidadxMes, bonoGerencialxMes, ultimaLineaxMes }
+		return { ingresosxMes, egresosxMes, utilidadxMes, bonoGerencialxMes, ultimaLineaxMes, gastosItemsxMes }
 	})
 
 	const sumar = (campo) => porMes.reduce((total, m) => total + m[campo], 0)
@@ -289,19 +293,27 @@ const TablaResultadoAnualChange = () => {
 	const margenUltimaLineaTotal = ingresosTotal > 0 ? (ultimaLineaTotal * 100) / ingresosTotal : 0
 
 	const stickyTd = `sticky-td-${ID_EMPRESA_CHANGE}`
-	const filaMoneda = (label, campo, total, promedio, { negativo = false, fs = 'fs-2', fsTotal = '35px' } = {}) => (
+	// `itemsPorMes(m)` es opcional: solo lo pasa la fila EGRESOS (única fila de
+	// "gasto" acá, ver [[TrItemEgresos]]). Cuando está presente, cada celda de
+	// mes abre el modal con los items de ese mes, y la celda TOTAL con todos
+	// los items del acumulado (2024-2026) — mismo ModalTableItems de siempre.
+	const filaMoneda = (label, campo, total, promedio, { negativo = false, fs = 'fs-2', fsTotal = '35px', itemsPorMes } = {}) => (
 		<tr>
 			<td className={`border-left-10 border-right-10 ${stickyTd} text-center text-white fs-1`}>{label}</td>
 			{porMes.map((m, i) => (
 				<td key={i} className='text-center'>
-					<div className={(negativo ? -m[campo] : m[campo]) < 0 ? 'text-change' : ''}>
-						<NumberFormatMoney className={fs} amount={negativo ? -m[campo] : m[campo]} />
+					<div onClick={itemsPorMes ? () => onOpenModalDataItems?.(itemsPorMes(m)) : undefined}>
+						<div className={(negativo ? -m[campo] : m[campo]) < 0 ? 'text-change' : ''}>
+							<NumberFormatMoney className={fs} amount={negativo ? -m[campo] : m[campo]} />
+						</div>
 					</div>
 				</td>
 			))}
 			<td className='text-center border-left-10 border-right-10'>
-				<div className={(negativo ? -total : total) < 0 ? 'text-change' : ''}>
-					<NumberFormatMoney style={{ fontSize: fsTotal }} amount={negativo ? -total : total} />
+				<div onClick={itemsPorMes ? () => onOpenModalDataItems?.(porMes.flatMap((m) => itemsPorMes(m))) : undefined}>
+					<div className={(negativo ? -total : total) < 0 ? 'text-change' : ''}>
+						<NumberFormatMoney style={{ fontSize: fsTotal }} amount={negativo ? -total : total} />
+					</div>
 				</div>
 			</td>
 			<td className='text-center border-left-10 border-right-10'>
@@ -320,7 +332,7 @@ const TablaResultadoAnualChange = () => {
 					<HeaderConceptoTabla periodoLabel='TOTAL ACUMULADO' colorMeses='bg-change text-white' />
 					<tbody>
 						{filaMoneda('INGRESOS', 'ingresosxMes', ingresosTotal, ingresosTotal / MESES_ACUMULADO_ANIO_EN_CURSO)}
-						{filaMoneda('EGRESOS', 'egresosxMes', egresosTotal, egresosTotal / MESES_ACUMULADO_ANIO_EN_CURSO, { negativo: true })}
+						{filaMoneda('EGRESOS', 'egresosxMes', egresosTotal, egresosTotal / MESES_ACUMULADO_ANIO_EN_CURSO, { negativo: true, itemsPorMes: (m) => m.gastosItemsxMes })}
 						{filaMoneda('UTILIDAD / PERDIDA', 'utilidadxMes', utilidadTotal, utilidadTotal / MESES_ACUMULADO_ANIO_EN_CURSO)}
 						{filaMoneda('BONO GERENCIAS TRIMESTRAL', 'bonoGerencialxMes', bonoTotal, bonoTotal / MESES_ACUMULADO_ANIO_EN_CURSO, { negativo: true })}
 						{filaMoneda('UTILIDAD / PERDIDA ULTIMA LINEA', 'ultimaLineaxMes', ultimaLineaTotal, ultimaLineaTotal / MESES_ACUMULADO_ANIO_EN_CURSO, { fs: 'fs-1', fsTotal: '45px' })}
@@ -354,7 +366,7 @@ const TablaResultadoAnualChange = () => {
 // (no desglosada por empresa, a diferencia de las secciones de abajo):
 // INGRESOS, GASTOS, UTILIDAD y, como última línea, el margen
 // UTILIDAD/PERDIDA = (utilidad*100)/ingresos.
-const TablaResultadoAnual = ({ periodo, dataConsolidada }) => (
+const TablaResultadoAnual = ({ periodo, dataConsolidada, onOpenModalDataItems }) => (
 	<div>
 		<div style={{ fontSize: '70px' }} className='text-black text-center'>RESULTADO ACUMULADO DE <br/> CHANGE + RAL + CIRCUS + REDUCTO <br/> {`${periodo.label}`}</div>
 		<div className='tab-scroll-container'>
@@ -380,6 +392,7 @@ const TablaResultadoAnual = ({ periodo, dataConsolidada }) => (
 						id_empresa={ID_EMPRESA_TOTAL}
 						dataGastosxFecha={dataConsolidada.dataGastosxFecha}
 						ocultarMeses={periodo.soloTotal}
+						onOpenModalDataItems={onOpenModalDataItems}
 					/>
 					<TrItemUtilidad
 						anio={periodo.anio}
@@ -445,13 +458,13 @@ export const TablesResumenTodo = () => {
 			   empresa (sin consolidar), sumando los 3 años. Change trae el
 			   detalle completo (con Bono Gerencias); Circus, Reducto y Ral solo
 			   Ingresos, Egresos y Utilidad/Perdida %. */}
-			<TablaResultadoAnualChange />
+			<TablaResultadoAnualChange onOpenModalDataItems={onOpenModalDataItems} />
 			{EMPRESAS_FLUJO_CAJA.filter((empresa) => empresa.id_empresa !== ID_EMPRESA_CHANGE).map((empresa) => (
-				<TablaResultadoAnualSimple key={empresa.id_empresa} empresa={empresa} />
+				<TablaResultadoAnualSimple key={empresa.id_empresa} empresa={empresa} onOpenModalDataItems={onOpenModalDataItems} />
 			))}
 
 			{PERIODOS.map((periodo, i) => (
-				<TablaResultadoAnual key={periodo.label} periodo={periodo} dataConsolidada={consolidadoPorPeriodo[i]} />
+				<TablaResultadoAnual key={periodo.label} periodo={periodo} dataConsolidada={consolidadoPorPeriodo[i]} onOpenModalDataItems={onOpenModalDataItems} />
 			))}
 
 			<SeccionConcepto titulo='INGRESOS' RowComponent={TrItemVentas} consolidadoPorPeriodo={consolidadoPorPeriodo} onOpenModalDataItems={onOpenModalDataItems} necesitaIngresos />

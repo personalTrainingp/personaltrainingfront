@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useFlujoCaja } from '../hook/useFlujoCajaStore';
 import { generarMesYanio } from '../helpers/generarMesYanio';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
+import { obtenerAnioMesDiaActualPeru } from '../helpers/fechaPeru';
 
 // Tamaño del TOTAL ANUAL / PROMEDIO: siempre más grande que el de los meses
 // (className). Antes quedaba fijo en 35px/45px sin importar el tamaño de
@@ -132,11 +133,13 @@ export const TrItemEgresos = ({ label = '', anio=2024, arrayFechas = [], onOpenM
 				);
 			})}
 			<td className={classNameTotal}>
+				<div onClick={()=>onOpenModalDataItems?.(alter.flatMap(e=>e.data ?? []))}>
 				<NumberFormatMoney
 							className='text-change'
 							style={{fontSize: fontSizeTotal(className, anio)}}
 					amount={-alter.reduce((total, item)=>total+item.sumaIngresos, 0)}
 				/>
+				</div>
 			</td>
 			<td className={classNameTotal}>
 				{
@@ -277,11 +280,13 @@ export const TrItemEgresosNoPagados = ({ label = '', anio=2024, arrayFechas = []
 				);
 			})}
 			<td className={classNameTotal}>
+				<div onClick={()=>onOpenModalDataItems?.(alter.flatMap(e=>e.data ?? []))}>
 				<NumberFormatMoney
 							className='text-change'
 							style={{fontSize: fontSizeTotal(className, anio)}}
 					amount={-alter.reduce((total, item)=>total+item.sumaIngresos, 0)}
 				/>
+				</div>
 			</td>
 			<td className={classNameTotal}>
 				{
@@ -341,11 +346,13 @@ export const TrItemInventario = ({ label = '', anio=2024, arrayFechas = [], onOp
 				);
 			})}
 			<td className={classNameTotal}>
+				<div onClick={()=>onOpenModalDataItems?.(alter.flatMap(e=>e.data ?? []))}>
 				<NumberFormatMoney
 							className=''
 							style={{fontSize: fontSizeTotal(className, anio)}}
 					amount={alter.reduce((total, item)=>total+item.sumaIngresos, 0)}
 				/>
+				</div>
 			</td>
 			<td className={classNameTotal}>
 				{
@@ -533,9 +540,10 @@ export const TrItemUtilidadesSuma = ({anio=2024, label = '', arrayFechas = [], a
 		</tr>
 	);
 };
-const fechaActual = new Date()
-const anioActual = fechaActual.getFullYear()
-const mesActual = fechaActual.getMonth()+1
+// "Hoy" en hora peruana (UTC-5 fijo), no en la zona horaria del entorno donde
+// corra el código — evita que el mes/día se adelante cerca de la medianoche
+// UTC (7pm-12am hora Perú).
+const { anioActual, mesActual } = obtenerAnioMesDiaActualPeru()
 // TOTAL ACUMULADO (2024-2026, sentinels anio=2020 y anio=9999): los años ya
 // cerrados (2024 y 2025) aportan 12 meses cada uno; el año en curso solo
 // aporta los meses ya cerrados (mesActual-1), sin contar el mes actual que
