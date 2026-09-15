@@ -300,7 +300,7 @@ const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv
                                     const { itemsxDia, gasto, agrupadoxDia, monto_pro, ...rest } = p
 
                                     return {
-                                        monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto,
+                                        monto_pro: (itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio)?.monto ?? 0),
                                         mes: m.mes,
                                         nombre_gasto: p.nombre_gasto,
                                         nombre_grupo: `${p.nombre_grupo}`,
@@ -320,7 +320,7 @@ const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv
                                     const { itemsxDia, gasto, agrupadoxDia, monto_pro, ...rest } = p
 
                                     return {
-                                        monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto_pro,
+                                        monto_pro: (itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio)?.monto_pro ?? 0),
                                         mes: m.mes,
                                         nombre_gasto: p.nombre_gasto,
                                         nombre_grupo: p.nombre_grupo,
@@ -347,7 +347,7 @@ const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv
                                     const { itemsxDia, gasto, agrupadoxDia, monto_pro, ...rest } = p
 
                                     return {
-                                        monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto_pro,
+                                        monto_pro: (itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio)?.monto_pro ?? 0),
                                         mes: m.mes,
                                         nombre_gasto: p.nombre_gasto,
                                         nombre_grupo: p.nombre_grupo,
@@ -378,8 +378,8 @@ const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv
                                         const { itemsxDia, gasto, agrupadoxDia, monto_pro, ...rest } = p
 
                                         return {
-                                            monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes-1) && i.anio===m.anio).monto-itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto,
-                                            monto_anterior: itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto,
+                                            monto_pro: (itemsxDia.find(i=>i.mes===Number(m.mes-1) && i.anio===m.anio)?.monto ?? 0)-(itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio)?.monto ?? 0),
+                                            monto_anterior: (itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio)?.monto ?? 0),
                                             mes: m.mes,
                                             nombre_gasto: p.nombre_gasto,
                                             nombre_grupo: p.nombre_grupo,
@@ -399,7 +399,7 @@ const ConceptoResumen = ({ data = [], mes, anio, itemsAcumulados={}, onClickProv
                                     const { itemsxDia, gasto, agrupadoxDia, monto_pro, ...rest } = p
 
                                     return {
-                                        monto_pro: itemsxDia.find(i=>i.mes===Number(m.mes-1) && i.anio===m.anio).monto-(itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto+itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio).monto_pro),
+                                        monto_pro: (itemsxDia.find(i=>i.mes===Number(m.mes-1) && i.anio===m.anio)?.monto ?? 0)-((itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio)?.monto ?? 0)+(itemsxDia.find(i=>i.mes===Number(m.mes) && i.anio===m.anio)?.monto_pro ?? 0)),
                                         mes: m.mes,
                                         nombre_gasto: p.nombre_gasto,
                                         nombre_grupo: `${p.nombre_grupo}`,
