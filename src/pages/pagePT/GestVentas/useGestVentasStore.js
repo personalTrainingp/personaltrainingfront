@@ -26,7 +26,7 @@ export const useGestVentasStore = () => {
       const { data } = await PTApi.get(`/venta/get-ventas/${id_empresa}`);
       // console.log(data);
       const ventaMap = data.ventas?.map((v) => {
-        const avatarCli = v.tb_cliente?.tb_images[0]?.name_image;
+        const avatarCli = v.tb_cliente?.tb_images[v.tb_cliente?.tb_images.length - 1]?.name_image;
         const pagos = v.detalleVenta_pagoVenta.reduce(
           (a, b) => a + b.parcial_monto,
           0,
