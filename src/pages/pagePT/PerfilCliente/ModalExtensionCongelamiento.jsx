@@ -10,6 +10,7 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { DateMask } from '@/components/CurrencyMask';
 import { helperFunctions } from '@/common/helpers/helperFunctions';
 import { useExtensionStore } from '@/hooks/hookApi/useExtensionStore';
+import Swal from 'sweetalert2';
 const esDiaHabil = (fecha) => {
   const diaSemana = dayjs(fecha).day();
   return diaSemana !== 0 && diaSemana !== 6; // No es sábado ni domingo
@@ -75,9 +76,25 @@ obtenerUltimaMembresiaxIdCli(id_cli)
         onHide()
         onResetForm()
     }
-    const submitExtensionCongelamiento = (e)=>{
+    const submitExtensionCongelamiento = async (e)=>{
         e.preventDefault()
-        postExtension(formState.dias_habiles, formState.observacion, 'CON', dataUltimaMembresia[0].id_venta, formState.extension_inicio, formState.extension_fin)
+        if(!dataUltimaMembresia[0]){
+            return Swal.fire({
+                icon: 'error',
+                title: 'NO HAY NINGUNA MEMBRESIA',
+                showConfirmButton: false,
+                timer: 2500,
+            });
+        }
+        const success = await postExtension(formState.dias_habiles, formState.observacion, 'CON', dataUltimaMembresia[0].id_venta, formState.extension_inicio, formState.extension_fin)
+        if(!success){
+            return Swal.fire({
+                icon: 'error',
+                title: 'NO SE PUDO CREAR EL CONGELAMIENTO',
+                showConfirmButton: false,
+                timer: 2500,
+            });
+        }
         cancelarExtensionCongelamiento()
     }
       // Efecto para actualizar días cuando se seleccionan fechas
@@ -206,28 +223,28 @@ function sumarDiasHabiles(fecha, n_dia) {
     if(!fecha){
         return 'No fue posible cargar la fecha';
     }
-  // Convertir la cadena de fecha a un objeto Date
-  let date = new Date(fecha);
-  
+  // Se opera siempre en UTC para no depender de la zona horaria del navegador
+  let date = dayjs.utc(fecha);
+
   // Crear un arreglo de tamaño n_dia
-  let dias = Array.from({ length: n_dia }, (_, i) => i);
+  let dias = Array.from({ length: parseInt(n_dia) || 0 }, (_, i) => i);
 
   // Usar forEach para iterar sobre los días
   dias.forEach(() => {
     // Incrementar la fecha en un día
-    date.setDate(date.getDate() + 1);
+    date = date.add(1, 'day');
 
     // Obtener el día de la semana (0=Domingo, 1=Lunes, ..., 6=Sábado)
-    let diaSemana = date.getDay();
+    let diaSemana = date.day();
 
     // Si el día es fin de semana (Sábado o Domingo), saltar hasta el lunes
-    if (diaSemana === 5) { // Sábado
-      date.setDate(date.getDate() + 2); // Saltar a lunes
+    if (diaSemana === 6) { // Sábado
+      date = date.add(2, 'day'); // Saltar a lunes
     } else if (diaSemana === 0) { // Domingo
-      date.setDate(date.getDate() + 1); // Saltar a lunes
+      date = date.add(1, 'day'); // Saltar a lunes
     }
   });
 
   // Retornar la nueva fecha en formato ISO 8601
-  return date.toISOString().split('T')[0];
+  return date.format('YYYY-MM-DD');
   }

@@ -6,7 +6,7 @@ import { locale } from 'primereact/api'
 import { Button } from 'primereact/button'
 import {  confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { Link, redirect } from 'react-router-dom'
 import Select from 'react-select'
@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux'
 import { useAuthStore } from '@/hooks/useAuthStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
+import config from '@/config'
 
 
 locale('es');
@@ -30,8 +31,13 @@ export const InformacionGeneralCliente = ({data}) => {
     
         const { obtenerDistritosxDepxProvincia:obtenerDistritosDeLima, dataDistritos:distritosDeLima } = useTerminoStore()
         const { obtenerDistritosxDepxProvincia:obtenerDistritosDeCallao, dataDistritos:distritosDeCallao } = useTerminoStore()
-        const [selectedFile, setSelectedFile] = useState(sinAvatar);
-    const { formState, 
+        const avatarActual = data?.tb_images && data.tb_images[data.tb_images?.length-1]?.name_image
+        const [selectedFile, setSelectedFile] = useState(avatarActual ? `${config.API_IMG.AVATAR_CLI}${avatarActual}` : sinAvatar);
+        const dataFormulario = useMemo(()=>({
+            ...data,
+            fecha_nacimiento: data?.fecha_nacimiento ? dayjs.utc(data.fecha_nacimiento).format('YYYY-MM-DD') : ''
+        }), [data])
+    const { formState,
         nombre_cli,     
         apPaterno_cli, 
         apMaterno_cli, 
@@ -49,7 +55,7 @@ export const InformacionGeneralCliente = ({data}) => {
         cargo_cli, 
         email_cli, 
         tel_cli,
-        onInputChange, onInputChangeReact, onFileChange } = useForm(data)
+        onInputChange, onInputChangeReact, onFileChange } = useForm(dataFormulario)
         
             const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
         const { eliminarOneUsuarioCliente, startUpdateUsuarioCliente }  = useUsuarioStore()

@@ -2,6 +2,7 @@ import { PTApi } from '@/common';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 const obtenerMayorFechaExtensionFin = (data) => {
+	if (!data || data.length === 0) return null;
 	return data.reduce(
 		(max, item) =>
 			dayjs(item.extension_fin, 'YYYY-MM-DD').isAfter(dayjs(max)) ? item.extension_fin : max,
@@ -20,7 +21,7 @@ export const useExtensionStore = () => {
 		extension_fin
 	) => {
 		try {
-			const { data } = await PTApi.post(
+			await PTApi.post(
 				`/extension-membresia/post-extension/${tipo_extension}/${id_venta}`,
 				{
 					dias_habiles,
@@ -29,8 +30,10 @@ export const useExtensionStore = () => {
 					extension_fin,
 				}
 			);
+			return true;
 		} catch (error) {
 			console.log(error);
+			return false;
 		}
 	};
 	const obtenerExtensionEnTabla = async (tipo) => {
@@ -45,39 +48,29 @@ export const useExtensionStore = () => {
 	const obtenerUltimaMembresiaxIdCli = async (id_cli) => {
 		try {
 			const { data } = await PTApi.get(`/usuario/get-ultima-membresia-cliente/${id_cli}`);
-			console.log(data, 'ddd');
 
-			const dataOrden = [data.ultimaMembresia]?.map((f) => {
-				console.log(
-					obtenerMayorFechaExtensionFin(
-						f.detalle_ventaMembresia[0].tb_extension_membresia
-					)
-						? obtenerMayorFechaExtensionFin(
-								f.detalle_ventaMembresia[0].tb_extension_membresia
-							)
-						: f.detalle_ventaMembresia[0].fec_fin_mem,
-					'aqqqqq'
-				);
-				const fecha_fin_mem = obtenerMayorFechaExtensionFin(
-					f.detalle_ventaMembresia[0].tb_extension_membresia
-				)
-					? obtenerMayorFechaExtensionFin(
-							f.detalle_ventaMembresia[0].tb_extension_membresia
-						)
-					: f.detalle_ventaMembresia[0].fec_fin_mem;
+			if (!data.ultimaMembresia) {
+				setdataUltimaMembresia([]);
+				return;
+			}
+
+			const dataOrden = [data.ultimaMembresia].map((f) => {
+				const detalle = f.detalle_ventaMembresia[0];
+				const fecha_fin_mem =
+					obtenerMayorFechaExtensionFin(detalle.tb_extension_membresia) ||
+					detalle.fec_fin_mem;
 				return {
 					id_venta: f.id,
-					nombre_membresia: f?.detalle_ventaMembresia[0].tb_ProgramaTraining.name_pgm,
-					sesiones_membresia: f.detalle_ventaMembresia[0].tb_semana_training.sesiones,
-					semanas_membresia: f.detalle_ventaMembresia[0].tb_semana_training.semanas_st,
-					fecha_inicio_mem: f.detalle_ventaMembresia[0].fec_inicio_mem,
-					fecha_fin_mem_default: f.detalle_ventaMembresia[0].fec_fin_mem,
+					nombre_membresia: detalle.tb_ProgramaTraining
+						? detalle.tb_ProgramaTraining.name_pgm
+						: 'SIN DEFINIR',
+					sesiones_membresia: detalle.tb_semana_training?.sesiones,
+					semanas_membresia: detalle.tb_semana_training?.semanas_st,
+					fecha_inicio_mem: detalle.fec_inicio_mem,
+					fecha_fin_mem_default: detalle.fec_fin_mem,
 					fecha_fin_mem: fecha_fin_mem,
-					// f.detalle_ventaMembresia[0].fec_fin_mem,
 				};
 			});
-
-			console.log({ dataOrden }, 'asdfff');
 
 			setdataUltimaMembresia(dataOrden);
 		} catch (error) {
