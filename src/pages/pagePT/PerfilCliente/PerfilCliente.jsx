@@ -122,7 +122,7 @@ export const PerfilCliente = () => {
                 </TabPanel>
                 <TabPanel header='MEMBRESIAS'>
                   <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
-                      <PanelMembresias id_cli={userCliente.id_cli}/>
+                      <PanelMembresias uid={uid}/>
                   </ScrollPanel>
                 </TabPanel>
                 <TabPanel header='Documentos adjuntos'>

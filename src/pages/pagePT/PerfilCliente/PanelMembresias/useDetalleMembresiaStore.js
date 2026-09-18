@@ -3,10 +3,9 @@ import { useState } from 'react';
 
 export const useDetalleMembresiaStore = () => {
 	const [dataSeguimientos, setdataSeguimientos] = useState([]);
-	const obtenerSeguimientosxIdCli = async (id_cli) => {
+	const obtenerSeguimientosxUid = async (uid) => {
 		try {
-			const { data } = await PTApi.get(`/seguimiento/id_cli/${id_cli}`);
-			console.log({ data });
+			const { data } = await PTApi.get(`/seguimiento/uid/${uid}`);
 			setdataSeguimientos(data.seguimientos);
 		} catch (error) {
 			console.log(error);
@@ -14,6 +13,6 @@ export const useDetalleMembresiaStore = () => {
 	};
 	return {
 		dataSeguimientos,
-		obtenerSeguimientosxIdCli,
+		obtenerSeguimientosxUid,
 	};
 };
