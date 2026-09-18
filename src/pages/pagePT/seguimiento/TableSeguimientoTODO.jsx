@@ -23,6 +23,26 @@ import { Link } from 'react-router-dom';
 dayjs.extend(utc);
 locale('es')
 
+// Cuenta días hábiles entre dos fechas tratando lunes a sábado como días hábiles
+// (el gimnasio solo cierra los domingos). Signo positivo si fechaFin es posterior a fechaInicio.
+// fechaInicio se lee en hora LOCAL (para "hoy", una fecha/hora real); fechaFin se lee en UTC,
+// porque las fechas "solo fecha" del backend (fec_fin_mem_new) viajan como medianoche UTC y,
+// leídas en hora local (America/Lima, UTC-5), caen en el día calendario anterior.
+function diasHabilesLunASab(fechaInicio, fechaFin) {
+	const inicio = dayjs.utc(dayjs(fechaInicio).format('YYYY-MM-DD'))
+	const fin = dayjs.utc(dayjs.utc(fechaFin).format('YYYY-MM-DD'))
+	if (fin.isSame(inicio, 'day')) return 0
+	const direccion = fin.isAfter(inicio) ? 1 : -1
+	let cursor = inicio
+	let dias = 0
+	while (!cursor.isSame(fin, 'day')) {
+		cursor = cursor.add(direccion, 'day')
+		if (cursor.day() !== 0) { // 0 = domingo, único día no hábil
+			dias += direccion
+		}
+	}
+	return dias
+}
 function encontrarObjeto(array, fecha_act) {
     //DESTRUCUTRANDO EL ARRAY
     // const { ... } = array;
@@ -98,7 +118,7 @@ export const TableSeguimientoTODO = ({h3Title, dae, classNameFechaVenc, id_empre
 			let fechaaaa = new Date(d.fec_fin_mem_new).toISOString()
 			newItem.fecha_fin_new = dayjs.utc(fechaaaa)
 			// d.dias = diasUTC(new Date(d.fec_fin_mem), new Date(d.fec_fin_mem_new));
-			newItem.diasFaltan = diasLaborables(new Date(), dayjs.utc(fechaaaa))
+			newItem.diasFaltan = diasHabilesLunASab(new Date(), dayjs.utc(fechaaaa))
 			newItem.distrito = d.tb_ventum.tb_cliente.ubigeo_nac?.distrito;
 			newItem.labelFactura = labelFactura
 			newItem.diasExt = d.tb_extension_membresia[d.tb_extension_membresia.length-1]?.dias_habiles
@@ -113,33 +133,30 @@ export const TableSeguimientoTODO = ({h3Title, dae, classNameFechaVenc, id_empre
 		// calculamos los límites
 		const hoy           = dayjs()             // 08/05/2025
 		const haceCuatroMeses = hoy.subtract(4, 'month')     // 08/01/2025
-		// calculamos 4 meses atrás + 1 día desde hoy (08/05/2025)
-		const corte = dayjs()
-		.subtract(4, 'month')
-		.add(1, 'day')
-		.valueOf()   // milisegundos desde 1970
+		// corte único entre "reno" y "rei": evita que un mismo cliente caiga en ambas tablas
+		// (antes "rei" usaba haceCuatroMeses+1 día, solapando 24h con el "fecha >= haceCuatroMeses" de "reno")
 		let filtrados = []
 		if(isClienteActive){
 			filtrados = datos;
 		}
 		if(clasific==='reno'){
-			// filtrado
+			// vencidos hace 4 meses o menos
 			filtrados = datos.filter(item => {
 				const fecha = dayjs(item.fecha_fin_new).valueOf()
 				const tieneExtensionActiva = encontrarObjeto(item.tb_extension_membresia, new Date()) !== null
 				return (
 				  !tieneExtensionActiva &&
-				  fecha >= haceCuatroMeses.valueOf() &&
+				  fecha > haceCuatroMeses.valueOf() &&
 				  fecha <= hoy.valueOf()
 				)
 			  })
 		}
 		if(clasific==='rei'){
-			// filtrado
+			// vencidos hace más de 4 meses
 			filtrados = datos.filter(item => {
 				const fechaMs = dayjs(item.fecha_fin_new).valueOf()
 				const tieneExtensionActiva = encontrarObjeto(item.tb_extension_membresia, new Date()) !== null
-				return !tieneExtensionActiva && fechaMs <= corte
+				return !tieneExtensionActiva && fechaMs <= haceCuatroMeses.valueOf()
 			  })
 		}
 		return filtrados;
