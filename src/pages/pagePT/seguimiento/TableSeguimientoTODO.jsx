@@ -126,7 +126,9 @@ export const TableSeguimientoTODO = ({h3Title, dae, classNameFechaVenc, id_empre
 			// filtrado
 			filtrados = datos.filter(item => {
 				const fecha = dayjs(item.fecha_fin_new).valueOf()
+				const tieneExtensionActiva = encontrarObjeto(item.tb_extension_membresia, new Date()) !== null
 				return (
+				  !tieneExtensionActiva &&
 				  fecha >= haceCuatroMeses.valueOf() &&
 				  fecha <= hoy.valueOf()
 				)
@@ -136,7 +138,8 @@ export const TableSeguimientoTODO = ({h3Title, dae, classNameFechaVenc, id_empre
 			// filtrado
 			filtrados = datos.filter(item => {
 				const fechaMs = dayjs(item.fecha_fin_new).valueOf()
-				return fechaMs <= corte
+				const tieneExtensionActiva = encontrarObjeto(item.tb_extension_membresia, new Date()) !== null
+				return !tieneExtensionActiva && fechaMs <= corte
 			  })
 		}
 		return filtrados;

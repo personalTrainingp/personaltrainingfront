@@ -7,6 +7,7 @@ import { useGestionAportes } from './hook/useGestionAportes'
 import { TerminosOnShow } from '@/hooks/usePropiedadesStore'
 import { useSelector } from 'react-redux'
 import { useProveedorStore } from '@/hooks/hookApi/useProveedorStore'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { arrayEmpresaFinan, arrayFinanzas, arrayMonedas, arrayTipoIngresos } from '@/types/type'
 import { Loading } from '@/components/Loading'
 
@@ -15,7 +16,7 @@ const customAporte = {
   n_comprabante: '',
   n_operacion: '',
   id_prov: 0,
-  id_estado: 0,
+  id_estado: 1423,
   descripcion: '',
   monto: 0.00,
   id_tipo_comprobante: 0,
@@ -32,6 +33,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa, isCopy}) => {
         const { dataProvCOMBO } = useSelector(e=>e.prov)
     const {dataParametrosGastos} = useSelector(e=>e.finanzas)
   const { dataBancos, dataFormaPago, dataTarjetas, dataConceptosAportes, dataTipoMoneda, dataComprobantesGastos, dataEmpresas } = TerminosOnShow(show)
+  const { obtenerParametroPorEntidadyGrupo: obtenerParametroEstadoAporte, DataGeneral: DataEstadosAporte } = useTerminoStore()
   const { formState, onInputChange, onResetForm, onInputChangeFunction, id_tipoIngreso, id_empresa, grupo, id_gasto, n_comprabante, n_operacion, id_prov, id_estado, descripcion, moneda, monto, id_tipo_comprobante, fec_comprobante, fec_pago, id_forma_pago, id_banco, id_tarjeta } = useForm(id==0?customAporte:dataIngreso)
   const [grupoGasto, setgrupoGasto] = useState([])
   const [tipoIngreso, settipoIngreso] = useState([])
@@ -65,6 +67,7 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa, isCopy}) => {
       if(show){
           obtenerParametrosGastosFinanzas()
                 obtenerIngresoxID(id)
+                obtenerParametroEstadoAporte('egresos', 'estado-gasto')
       }
   }, [show])
   useEffect(() => {
@@ -168,6 +171,11 @@ export const ModalCustomAporte = ({id, onHide, show, idEmpresa, isCopy}) => {
               <Col lg={4}>
                 <div className='mb-2'>
                   <InputSelect label={'Empresa/Persona'} value={id_prov} nameInput={'id_prov'} onChange={onInputChange} options={dataProveedores}/>
+                </div>
+              </Col>
+              <Col lg={4}>
+                <div className='mb-2'>
+                  <InputSelect label={'Situacion'} value={id_estado} nameInput={'id_estado'} onChange={onInputChange} options={DataEstadosAporte}/>
                 </div>
               </Col>
               <Col lg={12}>
