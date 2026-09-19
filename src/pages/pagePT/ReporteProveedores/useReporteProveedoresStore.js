@@ -1,5 +1,5 @@
 import { PTApi } from '@/common';
-import { aplicarTipoDeCambio } from '@/helper/aplicarTipoCambio';
+import { aplicarTipoDeCambioProveedores } from './aplicarTipoCambioProveedores';
 import { formatDateToSQLServerWithDayjs } from '@/helper/formatDateToSQLServerWithDayjs';
 import { obtenerTipoDeCambio } from '@/middleware/obtenerTipoDeCambio';
 import { useState } from 'react';
@@ -23,7 +23,7 @@ export const useReporteProveedoresStore = () => {
 				};
 			});
 			const dataTipoTC = await obtenerTipoDeCambio();
-			setdataGastosxFecha(aplicarTipoDeCambio(dataTipoTC, dataGastos));
+			setdataGastosxFecha(aplicarTipoDeCambioProveedores(dataTipoTC, dataGastos));
 		} catch (error) {
 			console.log(error);
 		}

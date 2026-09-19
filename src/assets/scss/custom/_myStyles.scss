@@ -212,6 +212,41 @@
   }
 }
 
+// Reporte Proveedores: dentro de esta página, la pestaña TODO (proveedor,
+// meses, la palabra "TODO" y los años) va en lila en vez del gris/negro
+// neutro de .link-todo/.text-todo, sin afectar a las demás páginas que
+// también usan esas clases (FlujoCaja, etc.).
+.pagina-reporte-proveedores {
+  .text-todo{
+    color: #b57edc !important;
+  }
+  .link-todo{
+    .active > .page-link{
+      background-color: #b57edc !important;
+      border-color: #b57edc !important;
+    }
+    .p-button.p-button-outlined{
+      color: #b57edc;
+    }
+    .p-tabview-nav-link[aria-selected=true]{
+      border-bottom: 6px #b57edc solid !important;
+    }
+    th{
+      background-color: #b57edc !important;
+      color: #fff;
+    }
+    .input-buton {
+      background-color: #b57edc;
+    }
+    .p-tabview-title{
+      color: #b57edc !important;
+    }
+    .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link{
+      border-bottom: 6px #b57edc solid !important;
+    }
+  }
+}
+
 /* Botones sin bordes, bloque sólido */
 .estado-select .p-button {
   border: none !important;

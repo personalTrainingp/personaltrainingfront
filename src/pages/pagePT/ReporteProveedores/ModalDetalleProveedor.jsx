@@ -14,7 +14,8 @@ export const ModalDetalleProveedor = ({ show, onHide, title, items = [] }) => {
             <Modal.Body>
                 <Table responsive striped className='fs-4'>
                     <thead>
-                        <tr>
+                        <tr className='bg-lila text-white'>
+                            <th>ID</th>
                             <th>TIPO</th>
                             <th>MARCA</th>
                             <th>FECHA COMPROBANTE</th>
@@ -30,7 +31,7 @@ export const ModalDetalleProveedor = ({ show, onHide, title, items = [] }) => {
                         {
                             items.length === 0 && (
                                 <tr>
-                                    <td colSpan={9} className='text-center'>Sin registros</td>
+                                    <td colSpan={10} className='text-center'>Sin registros</td>
                                 </tr>
                             )
                         }
@@ -42,6 +43,7 @@ export const ModalDetalleProveedor = ({ show, onHide, title, items = [] }) => {
                                 const tc = Number(item.tc || 0)
                                 return (
                                     <tr key={`${item.tipo}-${item.id}-${i}`}>
+                                        <td>{item.id}</td>
                                         <td>
                                             <span className={`badge ${esEgreso ? 'bg-danger' : 'bg-primary'}`}>{item.tipo}</span>
                                         </td>
@@ -52,7 +54,7 @@ export const ModalDetalleProveedor = ({ show, onHide, title, items = [] }) => {
                                         <td>{item.moneda}</td>
                                         <td><NumberFormatMoney amount={item.monto} /></td>
                                         <td>{tc ? tc.toFixed(3) : '-'}</td>
-                                        <td><NumberFormatMoney amount={Number(item.monto || 0) * tc} /></td>
+                                        <td><NumberFormatMoney amount={item.montoSoles} /></td>
                                     </tr>
                                 )
                             })

@@ -5,7 +5,7 @@ import { generarMesYanio } from './generarMesYanio'
 import dayjs from 'dayjs'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { obtenerTipoDeCambio } from '@/middleware/obtenerTipoDeCambio'
-import { aplicarTipoDeCambio } from '@/helper/aplicarTipoCambio'
+import { aplicarTipoDeCambioProveedores } from './aplicarTipoCambioProveedores'
 import { formatDateToSQLServerWithDayjs } from '@/helper/formatDateToSQLServerWithDayjs'
 import { ModalDetalleProveedor } from './ModalDetalleProveedor'
 
@@ -77,7 +77,7 @@ export const ProveedoresTodo = ({ arrayDate }) => {
                 }))
             )
             const dataTipoTC = await obtenerTipoDeCambio()
-            setdata(aplicarTipoDeCambio(dataTipoTC, [...dataGastos, ...dataCuentasCobrar]))
+            setdata(aplicarTipoDeCambioProveedores(dataTipoTC, [...dataGastos, ...dataCuentasCobrar]))
         } catch (error) {
             console.log(error)
         }
@@ -89,15 +89,15 @@ export const ProveedoresTodo = ({ arrayDate }) => {
             <Table responsive className="tabla-egresos fs-3">
                 <thead>
                     <tr>
-                        <th className='bg-change'></th>
+                        <th className='bg-lila'></th>
                         {
                             meses.map(g => {
                                 return (
-                                    <th className='fs-3 bg-change text-white'>{dayjs(`${g.fecha}-15`, 'YYYY-M-DD').format('MMMM')}</th>
+                                    <th className='fs-3 bg-lila text-white'>{dayjs(`${g.fecha}-15`, 'YYYY-M-DD').format('MMMM')}</th>
                                 )
                             })
                         }
-                        <th className='fs-3 bg-change text-white'>TOTAL</th>
+                        <th className='fs-3 bg-lila text-white'>TOTAL</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,20 +107,20 @@ export const ProveedoresTodo = ({ arrayDate }) => {
                             return (
                                 <React.Fragment key={prov.razon_social_prov}>
                                     <tr>
-                                        <th colSpan={meses.length + 2} className='fs-2 bg-secondary text-white'>
+                                        <th colSpan={meses.length + 2} className='fs-2 bg-lila text-white'>
                                             {prov.razon_social_prov}
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th className='bg-change'></th>
+                                        <th className='bg-lila'></th>
                                         {
                                             meses.map(g => {
                                                 return (
-                                                    <th className='fs-3 bg-change text-white'>{dayjs(`${g.fecha}-15`, 'YYYY-M-DD').format('MMMM')}</th>
+                                                    <th className='fs-3 bg-lila text-white'>{dayjs(`${g.fecha}-15`, 'YYYY-M-DD').format('MMMM')}</th>
                                                 )
                                             })
                                         }
-                                        <th className='fs-3 bg-change text-white'>TOTAL</th>
+                                        <th className='fs-3 bg-lila text-white'>TOTAL</th>
                                     </tr>
                                     {
                                         EMPRESAS.map(empresa => {
@@ -248,7 +248,7 @@ const agruparPorFecha = (data) => {
                 };
             }
 
-            acc[key].monto_total += Number(Number(item.monto || 0) * Number(item.tc || 0));
+            acc[key].monto_total += Number(item.montoSoles || 0);
 
             acc[key].items.push(item);
 

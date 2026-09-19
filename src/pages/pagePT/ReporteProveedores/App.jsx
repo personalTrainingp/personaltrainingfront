@@ -7,7 +7,7 @@ import { TabPanel, TabView } from 'primereact/tabview'
 
 export const App = () => {
   return (
-    <>
+    <div className='pagina-reporte-proveedores'>
         <PageBreadcrumb title={'Reporte Proveedores'}/>
         <ColorEmpresa
             childrenTodo={
@@ -76,6 +76,6 @@ export const App = () => {
                 </TabView>
             }
         />
-    </>
+    </div>
   )
 }

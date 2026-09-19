@@ -21,15 +21,15 @@ export const GastosProveedor = ({id_empresa, arrayDate}) => {
       <Table responsive className="tabla-egresos fs-3">
         <thead>
           <tr>
-              <th className='bg-change'></th>
+              <th className='bg-lila'></th>
               {
                   generarMesYanio(new Date(arrayDate[0]), new Date(arrayDate[1])).map(g=>{
                       return (
-                          <th className='fs-3 bg-change text-white'>{dayjs(`${g.fecha}-15`, 'YYYY-M-DD').format('MMMM')}</th>
+                          <th className='fs-3 bg-lila text-white'>{dayjs(`${g.fecha}-15`, 'YYYY-M-DD').format('MMMM')}</th>
                       )
                   })
               }
-              <th className='fs-3 bg-change text-white'>TOTAL</th>
+              <th className='fs-3 bg-lila text-white'>TOTAL</th>
           </tr>
         </thead>
         <tbody>
@@ -99,8 +99,8 @@ const agruparPorFecha = (data) => {
         };
       }
 
-      // 🔥 SUMAR MONTO
-      acc[key].monto_total += Number(Number(item.monto || 0)*Number(item.tc || 0));
+      // 🔥 SUMAR MONTO (en soles)
+      acc[key].monto_total += Number(item.montoSoles || 0);
 
       acc[key].items.push(item);
 
