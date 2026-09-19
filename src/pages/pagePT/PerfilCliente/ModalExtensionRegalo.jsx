@@ -21,6 +21,7 @@ export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
     const { postExtension, obtenerUltimaMembresiaxIdCli, dataUltimaMembresia } = useExtensionStore()
     
     const [loadingUltimaMembresia, setloadingUltimaMembresia] = useState(false)
+    const [loadingSubmit, setLoadingSubmit] = useState(false)
 	// const { tb_ProgramaTraining, tb_semana_training, fec_inicio_mem, fec_fin_mem } = dataUltimaMembresia[0]||valorDef
     const cancelarExtensionRegalo = ()=>{
         onHide()
@@ -41,15 +42,32 @@ export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
                 timer: 2500,
             });
         }
-        const success = await postExtension(formState.dias_habiles, formState.observacion, 'REG', dataUltimaMembresia[0].id_venta, dataUltimaMembresia[0].fecha_fin_mem, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles))
+        setLoadingSubmit(true)
+        Swal.fire({
+            title: 'Guardando regalo...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+        });
+        const { success, message } = await postExtension(formState.dias_habiles, formState.observacion, 'REG', dataUltimaMembresia[0].id_venta, dataUltimaMembresia[0].fecha_fin_mem, sumarDiasHabiles(dataUltimaMembresia[0]?.fecha_fin_mem, dias_habiles))
+        setLoadingSubmit(false)
         if(!success){
             return Swal.fire({
                 icon: 'error',
-                title: 'NO SE PUDO CREAR EL REGALO',
-                showConfirmButton: false,
-                timer: 2500,
+                title: message || 'NO SE PUDO CREAR EL REGALO',
+                text: message ? 'Es posible que ya exista un regalo registrado en la última membresía.' : undefined,
+                confirmButtonText: 'Aceptar',
             });
         }
+        Swal.fire({
+            icon: 'success',
+            title: 'Regalo creado correctamente',
+            showConfirmButton: false,
+            timer: 2000,
+        });
         cancelarExtensionRegalo()
     }
   return (
@@ -99,10 +117,10 @@ export const ModalExtensionRegalo = ({show, onHide, id_cli}) => {
                                           <Row>
                                               <Col lg={6}>
                                                   {/* <Button label="Cancelar" icon="pi pi-times" severity="danger" text /> */}
-                                                  <Button label="Cancelar" icon="pi pi-times" severity="danger" outlined onClick={cancelarExtensionRegalo} />
+                                                  <Button label="Cancelar" icon="pi pi-times" severity="danger" outlined onClick={cancelarExtensionRegalo} disabled={loadingSubmit} />
                                               </Col>
                                               <Col lg={6}>
-                                                  <Button label="Guardar" icon="pi pi-check" severity='success' type='submit' />
+                                                  <Button label="Guardar" icon="pi pi-check" severity='success' type='submit' loading={loadingSubmit} disabled={loadingSubmit} />
                                               </Col>
                                           </Row>
                                           </Col>

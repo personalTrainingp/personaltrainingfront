@@ -65,6 +65,7 @@ export const ModalExtensionCongelamiento = ({show, onHide, id_cli}) => {
     const {formState, extension_inicio, extension_fin, dias_habiles, observacion, img_prueba_extension, onResetForm, onInputChange, onInputChangeReact, onInputChangeFunction} = useForm(registerExCongelamiento)
     // const { obtenerUltimaMembresiaPorCliente, dataUltimaMembresia } = useTerminoStore()
     const [loadingUltimaMembresia, setloadingUltimaMembresia] = useState(false)
+    const [loadingSubmit, setLoadingSubmit] = useState(false)
 	// const { dataUltimaMembresiaPorCliente } = useSelector(e=>e.parametro)
     const { postExtension, obtenerUltimaMembresiaxIdCli, dataUltimaMembresia } = useExtensionStore()
     useEffect(() => {
@@ -86,15 +87,32 @@ obtenerUltimaMembresiaxIdCli(id_cli)
                 timer: 2500,
             });
         }
-        const success = await postExtension(formState.dias_habiles, formState.observacion, 'CON', dataUltimaMembresia[0].id_venta, formState.extension_inicio, formState.extension_fin)
+        setLoadingSubmit(true)
+        Swal.fire({
+            title: 'Guardando congelamiento...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+        });
+        const { success, message } = await postExtension(formState.dias_habiles, formState.observacion, 'CON', dataUltimaMembresia[0].id_venta, formState.extension_inicio, formState.extension_fin)
+        setLoadingSubmit(false)
         if(!success){
             return Swal.fire({
                 icon: 'error',
-                title: 'NO SE PUDO CREAR EL CONGELAMIENTO',
-                showConfirmButton: false,
-                timer: 2500,
+                title: message || 'NO SE PUDO CREAR EL CONGELAMIENTO',
+                text: message ? 'Es posible que ya exista un congelamiento registrado en la última membresía.' : undefined,
+                confirmButtonText: 'Aceptar',
             });
         }
+        Swal.fire({
+            icon: 'success',
+            title: 'Congelamiento creado correctamente',
+            showConfirmButton: false,
+            timer: 2000,
+        });
         cancelarExtensionCongelamiento()
     }
       // Efecto para actualizar días cuando se seleccionan fechas
@@ -199,10 +217,10 @@ obtenerUltimaMembresiaxIdCli(id_cli)
                 <Col lg={6}>
                     <Row>
                         <Col lg={6}>
-                            <Button label="Cancel" icon="pi pi-times" severity='danger' outlined onClick={cancelarExtensionCongelamiento} />
+                            <Button label="Cancel" icon="pi pi-times" severity='danger' outlined onClick={cancelarExtensionCongelamiento} disabled={loadingSubmit} />
                         </Col>
                         <Col lg={6}>
-                            <Button label="Guardar" icon="pi pi-check" severity='success' type='submit' />
+                            <Button label="Guardar" icon="pi pi-check" severity='success' type='submit' loading={loadingSubmit} disabled={loadingSubmit} />
                         </Col>
                     </Row>
                 </Col>

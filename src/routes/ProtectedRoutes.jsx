@@ -118,6 +118,8 @@ const GestionOperadoresPagos = lazy(()=>import('../pages/pagePT/GestionFormasPag
 const OtherPages = lazy(() => import('../pages/otherpages'));
 const Error404Alt = lazy(() => import('../pages/otherpages/Error404Alt'));
 const ConstructorCruces = lazy(() => import('../pages/pagePT/ConstructorCruces/index.jsx'));
+const ReporteProveedores = lazy(() => import('../pages/pagePT/ReporteProveedores'));
+
 // const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
 
 export default function ProtectedRoutes() {
@@ -475,7 +477,7 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/movimiento') &&
-								<Route path='orden-compra' element={<OrdenCompra />} />
+								<Route path='orden-compra' element={<ReporteProveedores />} />
 							}
 							{
 								sections.find(e => e.url === '/movimiento') &&

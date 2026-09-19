@@ -6,12 +6,17 @@ import { DateMask, DateMaskString, MaskDate, NumberFormatMoney } from '@/compone
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 import { arrayFinanzas } from '@/types/type'
+import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
+import { obtenerTipoDeCambio } from '@/middleware/obtenerTipoDeCambio'
+import { encontrarTipoCambio } from '@/helper/encontrarTipoCambio'
 
 export const DataTableAportes = ({idEmpresa=0, onOpenModalCustomAporte}) => {
   const { obtenerGestionAporte, onDeleteIngresos } = useGestionAportes()
   const {dataView} = useSelector(e=>e.APORTE)
+  const [dataTC, setdataTC] = useState([])
   useEffect(() => {
     obtenerGestionAporte(idEmpresa)
+    obtenerTipoDeCambio().then(setdataTC)
   }, [idEmpresa])
   
   const columns = [
@@ -70,9 +75,22 @@ export const DataTableAportes = ({idEmpresa=0, onOpenModalCustomAporte}) => {
       )
     }},
     { id: 'monto', header: 'Monto', render:(row)=>{
+      const tc = row.moneda === 'USD' ? encontrarTipoCambio(dataTC, row.fec_pago) : null;
       return(
         <div style={{width: '150px'}}>
-        <NumberFormatMoney amount={row?.monto}/>
+          <div className='d-flex align-items-center justify-content-center'>
+            {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar />}
+            <NumberFormatMoney amount={row?.monto}/>
+          </div>
+          {
+            tc && (
+              <div className='text-center d-flex align-items-center justify-content-center text-muted'>
+                <span className='mx-1'>tc: {tc.multiplicador}</span>
+                <SymbolSoles />
+                <NumberFormatMoney amount={row.monto * tc.multiplicador}/>
+              </div>
+            )
+          }
         </div>
       )
     } },

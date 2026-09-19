@@ -6,6 +6,7 @@ import { DateMask, DateMaskStr, MaskDate, NumberFormatMoney } from '@/components
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
+import { encontrarTipoCambio } from '@/helper/encontrarTipoCambio'
 
 export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
     const { obtenerGastos, deleteGastoxID, loading, dataTC, obtenerTc } = useGastosStore()
@@ -54,6 +55,7 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
         }},
         {id: 5, header: 'OPERACION', accessor: 'n_operacion', width: '40px'},
         {id: 6, header: <>MONTO</>, sortable, accesor: 'monto', width: '500px', render: (row)=>{
+            const tc = row.moneda === 'USD' ? encontrarTipoCambio(dataTC, row.fecha_pago) : null;
             return (
                 <div className='d-flex justify-content-center flex-column text-center ' style={{width: '190px'}}>
 
@@ -61,6 +63,15 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                     {row.moneda === 'PEN' ? <SymbolSoles /> : <SymbolDolar />}
                     <NumberFormatMoney amount={row.monto} className={`fs-2`}/>
                 </div>
+                {
+                    tc && (
+                        <div className='text-center d-flex align-items-center justify-content-center text-muted'>
+                            <span className='mx-1'>tc: {tc.multiplicador}</span>
+                            <SymbolSoles />
+                            <NumberFormatMoney amount={row.monto * tc.multiplicador}/>
+                        </div>
+                    )
+                }
                 {
                     row.impuesto_igv && (
                         <>
@@ -73,13 +84,13 @@ export const DataTableGastos = ({id_empresa, onOpenModalGasto, sonCompras}) => {
                         </div>
                         <br/>
                         {
-                            row.moneda==='USD' && (
+                            row.moneda==='USD' && tc && (
                                 <div className={ `text-center d-flex align-items-center justify-content-center text-change`}>
                                 <span className='mx-1'>
                                     IGV.
                                 </span>
-                                <SymbolSoles /> 
-                                <NumberFormatMoney amount={(row.monto - row.monto/1.18)*dataTC.find(f=>f.fecha_inicio_tc===row.fecha_pago)?.multiplicador}/>
+                                <SymbolSoles />
+                                <NumberFormatMoney amount={(row.monto - row.monto/1.18)*tc.multiplicador}/>
                                 </div>
                             )
                         }

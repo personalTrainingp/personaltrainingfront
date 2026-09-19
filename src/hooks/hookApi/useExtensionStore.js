@@ -30,10 +30,14 @@ export const useExtensionStore = () => {
 					extension_fin,
 				}
 			);
-			return true;
+			return { success: true };
 		} catch (error) {
 			console.log(error);
-			return false;
+			const message =
+				error?.response?.data?.message ||
+				error?.response?.data?.msg ||
+				(typeof error?.response?.data === 'string' ? error.response.data : null);
+			return { success: false, message };
 		}
 	};
 	const obtenerExtensionEnTabla = async (tipo) => {
