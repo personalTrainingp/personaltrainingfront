@@ -14,7 +14,8 @@ import { useInventarioStore } from './hook/useInventarioStore';
 import { KardexxArticulo } from './KardexxArticulo';
 import { MultiOpcionSelect } from './components/ComponentSelect';
 import { compararArrays } from './helpers/compararArrays';
-import { arrayEmpresaFinan } from '@/types/type';
+import { arrayEmpresaInventario } from './helpers/arrayEmpresaInventario';
+import { InputSelect } from '@/components/InputText';
 const registerArticulo={
     producto: '',
     id_marca: '',
@@ -73,9 +74,10 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
             modelo,
             id_categoria,
             id_subcategoria,
-            onInputChange,  
+            onInputChange,
             onResetForm,
-            onInputChangeReact
+            onInputChangeReact,
+            onInputChangeFunction
         } = useForm(data?data:registerArticulo)
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange, onResetForm:resetFile } = useForm(registerImgAvatar)
     const [costo_total_s, setcosto_total_s] = useState(0)
@@ -94,6 +96,9 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 obtenerEtiquetasBusqueda('articulo', 'etiqueta_busqueda')
                 obtenerCategoria('articulo', 'categoria')
                 obtenerSubCategoria('articulo', 'subcategoria')
+                if(!data){
+                    onInputChangeFunction('id_empresa', id_enterprice)
+                }
             }
         }, [show])
         const submitGasto = async(e)=>{
@@ -108,7 +113,7 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 return;
             }
             setshowLoading(true)
-            await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, etiquetas_busquedas, id_enterprice, selectedAvatar)
+            await startRegisterArticulos({costo_total_soles: costo_total_s, costo_total_dolares: costo_total_d,...formState}, etiquetas_busquedas, id_empresa||id_enterprice, selectedAvatar)
             resetAvatar()
             setshowLoading(false)
             // showToast(objetoToast);
@@ -188,7 +193,19 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                         />
                                                     </div>
                                                 </Col>
-                                                <Col lg={4}>    
+                                                <Col lg={4}>
+                                                    <div className="mb-4">
+                                                        <InputSelect
+                                                            label={'EMPRESA / PROYECTO'}
+                                                            nameInput={'id_empresa'}
+                                                            onChange={onInputChange}
+                                                            options={arrayEmpresaInventario}
+                                                            value={id_empresa}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </Col>
+                                                <Col lg={4}>
                                                     <div className="mb-4">
                                                         <label htmlFor="modelo" className="form-label">
                                                             MODELO

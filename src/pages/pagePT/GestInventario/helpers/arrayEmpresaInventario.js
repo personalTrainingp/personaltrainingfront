@@ -1,0 +1,17 @@
+export const arrayEmpresaInventario = [
+	{ value: 598, label: 'CHANGE - INVENTARIO TOTAL' },
+	{ value: 599, label: 'REDUCTO - INVENTARIO TOTAL' },
+	{ value: 610, label: 'INVENTARIO SIN INCLUIR CIRCUS BUSSINESS' },
+	{ value: 602, label: 'CIRCUS BUSSINESS' },
+	{ value: 601, label: 'CHORRILLOS ALMACEN' },
+	{ value: 600, label: 'MP TARATA' },
+	{ value: 2598, label: 'CHANGE - INVENTARIO TOTAL FEBRERO 2026' },
+	{ value: 5992, label: 'PROYECTO 1' },
+	{ value: 5991306, label: 'PROYECTO 1 13/06/2026' },
+	{ value: 5993, label: 'PROYECTO 4' },
+	{ value: 5994, label: 'PROYECTO 2' },
+	{ value: 5998, label: 'AREAS COMUNES' },
+	{ value: 5997, label: 'PROYECTO 7' },
+	{ value: 2599, label: 'PROYECTO RAL' },
+	{ value: 1599, label: 'REDUCTO - INVENTARIO TOTAL (CARLOS CH.)' },
+];
