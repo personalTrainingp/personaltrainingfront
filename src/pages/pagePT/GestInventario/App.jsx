@@ -19,9 +19,9 @@ export const App = () => {
       // childrenInventarioSinIncluirCircusBussiness={
       //   <App2 id_empresa={610}/>
       // }
-      // childenBUSSINESS={
-      //   <App2 id_empresa={602}/>
-      // }
+      childenBUSSINESS={
+        <App2 id_empresa={2599}/>
+      }
       childrenChorrillos={
         <App2 id_empresa={601}/>
       }

@@ -19,6 +19,7 @@ import { ModalAgrupadoxEtiquetas } from './ModalAgrupadoxEtiquetas';
 import { useInventarioStore } from './hook/useInventarioStore';
 import { ModalMovimientoItem } from './ModalMovimientoItem';
 import { ModalHistorialCambiosxArticulo } from './ModalHistorialCambiosxArticulo';
+import { Loading } from '@/components/Loading';
 
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
@@ -32,8 +33,17 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo, actualizarOrdenArticulo } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [search, setSearch] = useState('');
+    const [isLoadingItems, setIsLoadingItems] = useState(true);
     useEffect(() => {
-        obtenerArticulos(id_enterprice)
+        const fetchItems = async () => {
+            setIsLoadingItems(true);
+            try {
+                await obtenerArticulos(id_enterprice);
+            } finally {
+                setIsLoadingItems(false);
+            }
+        };
+        fetchItems();
     }, [id_enterprice])
         useEffect(() => {
             if(dataView.length>=0){
@@ -421,9 +431,9 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     }
     const groupedData = Object.values(
         customers?.reduce((acc, item) => {
-          const key = `${item.parametro_lugar_encuentro?.label_param}${item.parametro_lugar_encuentro.nivel?` - NIVEL ${item.parametro_lugar_encuentro.nivel}`:''}`;
+          const key = `${item.parametro_lugar_encuentro.nivel?`NIVEL ${item.parametro_lugar_encuentro.nivel} `:''}${item.parametro_lugar_encuentro?.label_param}`;
           if (!acc[key]) {
-            acc[key] = { lugar: key, orden_param: item.parametro_lugar_encuentro.orden_param, items: [] };
+            acc[key] = { lugar: key, nivel: item.parametro_lugar_encuentro.nivel?`NIVEL ${item.parametro_lugar_encuentro.nivel}`:'', zona: item.parametro_lugar_encuentro?.label_param, orden_param: item.parametro_lugar_encuentro.orden_param, items: [] };
           }
           acc[key].items.push(item);
           return acc;
@@ -460,6 +470,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         }
     return (
         <>
+            <Loading show={isLoadingItems}/>
                     <div>
                         <div className='m-2 d-flex justify-content-center align-items-center'>
                         <Image src={ImgproyCircus1}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
@@ -469,7 +480,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                         <Image src={ImgproyCircus3}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
                         </Image>
                         </div>
-                        <Button label="AGREGAR NUEVO" severity="success" raised onClick={onOpenModalGastos} />
+                        <Button className='border-none input-buton' label="AGREGAR NUEVO" raised onClick={onOpenModalGastos} />
                     </div>
                     <TabView>
                         {
@@ -483,7 +494,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                     )
                                 );
                                 return (
-                                    <TabPanel header={g.lugar}>
+                                    <TabPanel header={<>{g.nivel}<br/>{g.zona}</>}>
                                         <DataTable  
                                             className='dataTable-verticals-lines dataTable-inventario'
                                             value={filterData} 

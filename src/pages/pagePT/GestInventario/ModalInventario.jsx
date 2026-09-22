@@ -201,7 +201,6 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                                                             onChange={onInputChange}
                                                             options={arrayEmpresaInventario}
                                                             value={id_empresa}
-                                                            required
                                                         />
                                                     </div>
                                                 </Col>

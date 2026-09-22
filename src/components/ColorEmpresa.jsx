@@ -21,14 +21,6 @@ export const ColorEmpresa = (props) => {
       BackgroundHeretary: 'link-change'
     },
     { 
-      key: 'childrenCircus', 
-      label: 'CIRCUS', 
-      height: '110px',
-      icon: logoCircus,
-      text: 'text-circus link-circus', 
-      BackgroundHeretary: 'link-circus' 
-    },
-    { 
       key: 'childrenReducto', 
       label: 'REDUCTO', 
       text: 'text-ISESAC link-isesac', 
@@ -59,34 +51,12 @@ export const ColorEmpresa = (props) => {
       BackgroundHeretary: 'link-change' 
     },
     { 
-      key: 'childenBUSSINESS', 
-      label: 'Circus Bussiness', 
-      text: 'link-change', 
-      BackgroundHeretary: 'link-change' 
-    },
-    { 
-      key: 'childrenInventarioSinIncluirCircusBussiness', 
-      label: 'Inventario sin incluir circus bussiness', 
-      text: 'link-change', 
-      BackgroundHeretary: 'link-change' 
-    },
-    { 
-      key: 'childrenChorrillos', 
-      label: 'Chorrillos Almacen', 
-      text: 'link-change', 
-      BackgroundHeretary: 'link-change' 
-    },
-    { 
-      key: 'childrenmpTarata', 
-      label: 'MP TARATA', 
-      text: 'link-change', 
-      BackgroundHeretary: 'link-change' 
-    },
-    { 
-      key: 'childrenSoto', 
-      label: 'SOTO', 
-      text: 'link-change', 
-      BackgroundHeretary: 'link-change'
+      key: 'childrenCircus', 
+      label: 'CIRCUS', 
+      height: '110px',
+      icon: logoCircus,
+      text: 'text-circus link-circus', 
+      BackgroundHeretary: 'link-circus' 
     },
   ]
 
@@ -128,7 +98,7 @@ export const ColorEmpresa = (props) => {
           <TabPanel
             key={key}
             className={`${text}`}
-            header={<div className={`fs-1 ${text} d-flex align-items-center`} style={{height: '90px'}}>{icon?(<img src={icon} style={{height}}></img>):label} </div>}
+            header={<div className={`${text} d-flex align-items-center`} style={{height: '90px', fontSize: '50px'}}>{icon?(<img src={icon} style={{height}}></img>):label} </div>}
           >
             <div className={BackgroundHeretary}>
               {props[key]}
