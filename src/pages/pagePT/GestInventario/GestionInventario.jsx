@@ -62,22 +62,22 @@ export const GestionInventario = () => {
             </TabView>
       }
     />
-    <Card className=''>
+    {/* <Card className=''>
       <TabView>
             <TabPanel header={<>INVENTARIO <br/> MAYO 2025</>}>
                   <TabView>
                   <TabPanel header={<>CHANGE<br/> INVENTARIO TOTAL</>}>
                         <DataInventario id_enterprice={598} id_zona={598}/>
                   </TabPanel>
-                  {/* <TabPanel header={<>REDUCTO<br/>INVENTARIO TOTAL</>}>
+                  <TabPanel header={<>REDUCTO<br/>INVENTARIO TOTAL</>}>
                         <DataInventario id_enterprice={599} id_zona={599}/>
-                  </TabPanel> */}
-                  {/* <TabPanel header={<>INVENTARIO SIN INCLUIR <br/> CIRCUS BUSSINESS</>}>
+                  </TabPanel>
+                  <TabPanel header={<>INVENTARIO SIN INCLUIR <br/> CIRCUS BUSSINESS</>}>
                         <DataInventario id_enterprice={610} id_zona={599}/>
-                  </TabPanel> */}
-                  {/* <TabPanel header={<>CIRCUS<br/> BUSSINESS</>}>
+                  </TabPanel>
+                  <TabPanel header={<>CIRCUS<br/> BUSSINESS</>}>
                         <DataInventario ImgproyCircus3={ImgproyCircus3} ImgproyCircus2={ImgproyCircus2} ImgproyCircus1={ImgproyCircus1} id_enterprice={602} id_zona={599}/>
-                  </TabPanel> */}
+                  </TabPanel>
                   <TabPanel header={<>CHORRILLOS<br/>ALMACEN</>}>
                         <DataInventario id_enterprice={601} id_zona={601}/>
                   </TabPanel>
@@ -86,7 +86,7 @@ export const GestionInventario = () => {
                   </TabPanel>
                   </TabView>
             </TabPanel>
-            {/* <TabPanel header={<>INVENTARIO NIVEL 3ER - 3 1/2  </>}>
+            <TabPanel header={<>INVENTARIO NIVEL 3ER - 3 1/2  </>}>
                   <TabView>
                         <TabPanel header={<>INVENTARIO <br/> OCTUBRE 2025</>}>
                               <DataInventario id_enterprice={1599} id_zona={599}/>
@@ -95,7 +95,7 @@ export const GestionInventario = () => {
                               <DataInventario id_enterprice={2599} id_zona={599}/>
                         </TabPanel>
                   </TabView>
-            </TabPanel> */}
+            </TabPanel>
             <TabPanel header='BACKUPS'>
                   <TabView>
                         <TabPanel header={<>CHANGE<br/> INVENTARIO TOTAL FEBRERO 2026</>}>
@@ -125,7 +125,7 @@ export const GestionInventario = () => {
                   </TabView>
             </TabPanel>
       </TabView>
-    </Card>
+    </Card> */}
     </>
   )
 }
