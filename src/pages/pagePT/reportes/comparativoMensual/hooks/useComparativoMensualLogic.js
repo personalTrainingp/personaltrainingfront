@@ -2,7 +2,29 @@ import { useMemo } from 'react';
 import { MESES, limaFromISO } from '../../resumenEjecutivo/hooks/useResumenUtils';
 import { getQuotaForMonth } from '../utils/quotaUtils';
 
-export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, cutDay = 21, customStartDay = 1, customEndDay = 1 }) => {
+// Último día a considerar del mes: siempre el cierre (último día calendario)
+const lastDayForMonth = (y, mIdx) => new Date(Number(y), Number(mIdx) + 1, 0).getDate();
+
+// Rango [from, to] de los primeros / últimos N días del mes
+const getNDaysRange = (mode, n, y, mIdx) => {
+    const lastDay = lastDayForMonth(y, mIdx);
+    const nn = Math.min(Number(n) || 0, lastDay);
+    if (nn <= 0) return null;
+    return mode === 'first' ? [1, nn] : [lastDay - nn + 1, lastDay];
+};
+
+// [1,2,3,5,8,9] -> "1-3, 5, 8-9"
+const groupConsecutiveDays = (days = []) => {
+    const groups = [];
+    for (const d of days) {
+        const last = groups[groups.length - 1];
+        if (last && d === last[1] + 1) last[1] = d;
+        else groups.push([d, d]);
+    }
+    return groups.map(([a, b]) => (a === b ? `${a}` : `${a}-${b}`)).join(', ');
+};
+
+export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, cutDay = 21, customStartDay = 1, customEndDay = 1, firstNDays = 0, lastNDays = 0 }) => {
 
     const toLimaDate = limaFromISO;
 
@@ -76,6 +98,15 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
             if (day >= customStartDay && day <= customEndDay) {
                 entry.customRangeTotal += amount;
             }
+
+            // Primeros / últimos N días (independientes entre sí)
+            [['first', firstNDays], ['last', lastNDays]].forEach(([mode, n]) => {
+                const range = getNDaysRange(mode, n, d.getFullYear(), d.getMonth());
+                if (!range || day < range[0] || day > range[1]) return;
+                entry[`${mode}NTotal`] = (entry[`${mode}NTotal`] || 0) + amount;
+                if (!entry[`${mode}NDaysSet`]) entry[`${mode}NDaysSet`] = new Set();
+                entry[`${mode}NDaysSet`].add(day);
+            });
         });
 
         // 3. MERGE DATOS CON LA LISTA
@@ -100,15 +131,32 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
             const pctR16_end = quota > 0 ? (data.r16_end / quota) * 100 : 0;
             const pctCustom = quota > 0 ? (data.customRangeTotal / quota) * 100 : 0;
 
+            // Primeros / últimos N días: suma, % de la venta total del mes y días vendidos
+            const nDays = {};
+            [['first', firstNDays], ['last', lastNDays]].forEach(([mode, n]) => {
+                const range = getNDaysRange(mode, n, m.year, m.monthIdx);
+                const sum = data[`${mode}NTotal`] || 0;
+                const days = Array.from(data[`${mode}NDaysSet`] || []).sort((a, b) => a - b);
+                nDays[mode] = {
+                    total: sum,
+                    pct: data.total > 0 ? (sum / data.total) * 100 : 0,
+                    from: range ? range[0] : 0,
+                    to: range ? range[1] : 0,
+                    soldCount: days.length,
+                    soldLabel: groupConsecutiveDays(days)
+                };
+            });
+
             return {
                 ...m, ...data, quota,
                 pctW1, pctW2, pctW3, pctW4, pctW5,
                 pctR1_15, pctR16_end,
-                pctCustomRangeTotal: pctCustom
+                pctCustomRangeTotal: pctCustom,
+                nDays
             };
         });
 
-    }, [ventas, year, startMonth, cutDay, customStartDay, customEndDay]);
+    }, [ventas, year, startMonth, cutDay, customStartDay, customEndDay, firstNDays, lastNDays]);
 
     // LÓGICA DE PROMEDIOS
     const { top3Map, top3Averages, last6Averages } = useMemo(() => {
@@ -191,6 +239,16 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
         avgRow.pctW5 = avgQuota > 0 ? (avgRow.w5 / avgQuota) * 100 : 0;
         avgRow.pctR1_15 = avgQuota > 0 ? (avgRow.r1_15 / avgQuota) * 100 : 0;
         avgRow.pctR16_end = avgQuota > 0 ? (avgRow.r16_end / avgQuota) * 100 : 0;
+
+        avgRow.nDays = {};
+        ['first', 'last'].forEach(mode => {
+            const total = pastRows.reduce((s, row) => s + (row.nDays?.[mode]?.total || 0), 0) / count;
+            avgRow.nDays[mode] = {
+                total,
+                pct: avgRow.total > 0 ? (total / avgRow.total) * 100 : 0,
+                soldCount: pastRows.reduce((s, row) => s + (row.nDays?.[mode]?.soldCount || 0), 0) / count
+            };
+        });
 
         return avgRow;
     };

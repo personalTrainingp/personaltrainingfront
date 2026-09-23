@@ -102,6 +102,12 @@ export default function ExecutiveTable(props) {
     ]
   );
 
+  // Filtro por pastillas: null = todos los orígenes
+  const [selectedOrigin, setSelectedOrigin] = useState(null);
+  useEffect(() => {
+    if (selectedOrigin && !orderedOrigins.includes(selectedOrigin)) setSelectedOrigin(null);
+  }, [orderedOrigins, selectedOrigin]);
+
   // Para resaltar la columna del mes base
   const highlightMonthAlias = useMemo(() => {
     if (!baseKey) return null;
@@ -382,6 +388,18 @@ export default function ExecutiveTable(props) {
     ));
   };
 
+  const sPill = (active) => ({
+    padding: "10px 22px",
+    borderRadius: 999,
+    border: `2px solid ${cRed}`,
+    background: active ? cRed : cWhite,
+    color: active ? cWhite : cRed,
+    fontWeight: 800,
+    fontSize: 18,
+    cursor: "pointer",
+    whiteSpace: "nowrap",
+  });
+
   return (
     <div style={sWrap}>
       {orderedOrigins.length === 0 ? (
@@ -389,7 +407,24 @@ export default function ExecutiveTable(props) {
           NO HAY ORÍGENES CON DATOS PARA EL PERÍODO
         </div>
       ) : (
-        orderedOrigins.map((okey, idx) => {
+        <>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, padding: "12px 0 20px" }}>
+          <button type="button" style={sPill(!selectedOrigin)} onClick={() => setSelectedOrigin(null)}>
+            TODOS
+          </button>
+          {orderedOrigins.map((okey, idx) => (
+            <button
+              key={`pill-${okey}`}
+              type="button"
+              style={sPill(selectedOrigin === okey)}
+              onClick={() => setSelectedOrigin(okey)}
+            >
+              {`${idx + 1}. ${labelFromKey(okey)}`}
+            </button>
+          ))}
+        </div>
+        {orderedOrigins.map((okey, idx) => {
+          if (selectedOrigin && selectedOrigin !== okey) return null;
           const title = `${idx + 1}. ${labelFromKey(okey)} `;
           const rows = rowsPerOrigin(okey);
           return (
@@ -407,7 +442,8 @@ export default function ExecutiveTable(props) {
               </table>
             </div>
           );
-        })
+        })}
+        </>
       )}
     </div>
   );

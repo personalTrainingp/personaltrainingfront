@@ -13,7 +13,9 @@ export const ComparativoMensualTable = ({
     customStartDay = 1,
     customEndDay = 1,
     displayYear = null,
-    displayStartMonth = null
+    displayStartMonth = null,
+    firstNDays = 0,
+    lastNDays = 0
 }) => {
     const [viewMode, setViewMode] = useState('none');
 
@@ -23,8 +25,16 @@ export const ComparativoMensualTable = ({
         startMonth,
         cutDay,
         customStartDay,
-        customEndDay
+        customEndDay,
+        firstNDays,
+        lastNDays
     });
+
+    // Bloques de primeros / últimos N días (se ocultan si N = 0)
+    const nDaysBlocks = [
+        { mode: 'first', n: Number(firstNDays) || 0, label: 'PRIMEROS' },
+        { mode: 'last', n: Number(lastNDays) || 0, label: 'ÚLTIMOS' }
+    ].filter(b => b.n > 0);
 
     const styles = {
         tableWrapper: { overflowX: 'auto', borderRadius: '8px', border: '3px solid #000', marginTop: '10px' },
@@ -44,7 +54,9 @@ export const ComparativoMensualTable = ({
             verticalAlign: 'middle'
         },
         footerRow: { background: '#f8f9fa', borderTop: '2px solid #dee2e6' },
-        highlightCell: { background: '#dc3545', color: '#fff', fontWeight: '700' },
+        tdNDays: { background: '#fff', color: '#000', fontWeight: '700' },
+        thNDays: { background: '#7030a0', color: '#fff' },
+        highlightCell:{ background: '#dc3545', color: '#fff', fontWeight: '700' },
         headerActions: { display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }
     };
 
@@ -93,6 +105,29 @@ export const ComparativoMensualTable = ({
                 <td style={{ ...style, textAlign: 'center' }}>{isPct ? `${fmtNum(valPct, 1)}%` : ''}</td>
             </React.Fragment>
         );
+    };
+
+    const renderNDaysCells = (row, isAvg = false) => {
+        const avgStyle = isAvg ? { fontWeight: '800', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' } : {};
+        return nDaysBlocks.map(({ mode }) => {
+            const d = row.nDays?.[mode] || {};
+            return (
+                <React.Fragment key={`nd-${row.key}-${mode}`}>
+                    <td style={{ ...styles.td, ...styles.tdNDays, ...avgStyle }}>{fmtNum(d.total, 0)}</td>
+                    <td style={{ ...styles.td, ...styles.tdNDays, ...avgStyle, textAlign: 'center' }}>{fmtNum(d.pct, 1)}%</td>
+                    <td style={{ ...styles.td, ...styles.tdNDays, ...avgStyle, textAlign: 'left', whiteSpace: 'normal', minWidth: '220px', fontSize: isAvg ? '20px' : '18px' }}>
+                        {isAvg ? (
+                            `${fmtNum(d.soldCount, 1)} días prom.`
+                        ) : (
+                            <>
+                                <div style={{ fontSize: '14px', opacity: 0.7 }}>del {d.from} al {d.to}</div>
+                                {d.soldCount > 0 ? <><b>SE VENDIERON {d.soldCount} DE LOS {d.to-d.from+1} DIAS</b></> : '—'}
+                            </>
+                        )}
+                    </td>
+                </React.Fragment>
+            );
+        });
     };
 
     const avgRow = getWeightedAverages(visibleRows);
@@ -161,6 +196,13 @@ export const ComparativoMensualTable = ({
                             <th style={styles.th} colSpan={2}>SEMANA 4<br /> (22-28)<br /><span style={{ color: '#fff' }}>S/</span></th>
                             <th style={styles.th} colSpan={2}>SEMANA 5<br /> (29-FIN)<br /><span style={{ color: '#fff' }}>S/</span></th>
                             <th style={styles.th}>PORCENTAJE<br />TOTAL<br /><span style={{ color: '#fff' }}>%</span></th>
+                            {nDaysBlocks.map(({ mode, n, label }) => (
+                                <React.Fragment key={`nd-h-${mode}`}>
+                                    <th style={{ ...styles.th, ...styles.thNDays }}>VENTA<br />{label} {n}<br />DÍAS S/</th>
+                                    <th style={{ ...styles.th, ...styles.thNDays }}>% DE<br />LA VENTA<br />TOTAL</th>
+                                    <th style={{ ...styles.th, ...styles.thNDays }}>VENTA DE LOS<br />{label} {n}<br />DÍAS DEL <br/> CIERRE DEL MES</th>
+                                </React.Fragment>
+                            ))}
                             {showFortnightly && (
                                 <>
                                     <th style={{ ...styles.th, background: '#222' }} colSpan={2}>DIA 1 AL 15</th>
@@ -191,6 +233,7 @@ export const ComparativoMensualTable = ({
                                 <td style={{ ...styles.td, textAlign: 'center', color: '#000000', fontWeight: '700' }}>
                                     {row.quota > 0 ? `${fmtNum((row.total / row.quota) * 100, 1)}%` : '0.0%'}
                                 </td>
+                                {renderNDaysCells(row)}
                                 {showFortnightly && (
                                     <>
                                         {renderCell(row, 'r1_15', true)}
@@ -222,6 +265,7 @@ export const ComparativoMensualTable = ({
                                 <td style={{ ...styles.td, textAlign: 'center', color: '#000000', fontWeight: '800', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' }}>
                                     {avgRow.quota > 0 ? `${fmtNum((avgRow.total / avgRow.quota) * 100, 1)}%` : '0.0%'}
                                 </td>
+                                {renderNDaysCells(avgRow, true)}
                                 {showFortnightly && (
                                     <>
                                         {renderCell(avgRow, 'r1_15', true, { padding: '13px 12px', fontSize: '26px' })}

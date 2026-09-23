@@ -20,6 +20,10 @@ const ComparativoMensualVentasPage = () => {
     const [viewMode, setViewMode] = useState('standard');
     const [customStartDay, setCustomStartDay] = useState(1);
     const [customEndDay, setCustomEndDay] = useState(new Date().getDate());
+    // Buscadores independientes: primeros / últimos N días de cada mes (0 = ocultar columnas)
+    const [firstNDays, setFirstNDays] = useState(0);
+    const [lastNDays, setLastNDays] = useState(0);
+    const toNDays = (val) => Math.max(0, Math.min(31, parseInt(val, 10) || 0));
 
     // Auto-adjust day range when month/year changes
     useEffect(() => {
@@ -55,6 +59,25 @@ const ComparativoMensualVentasPage = () => {
                                 showViewButtons={false}
                             />
 
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', margin: '12px 0 20px' }}>
+                                {[
+                                    { label: 'PRIMEROS N DÍAS', value: firstNDays, set: setFirstNDays },
+                                    { label: 'ÚLTIMOS N DÍAS', value: lastNDays, set: setLastNDays }
+                                ].map(({ label, value, set }) => (
+                                    <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#000', color: '#fff', padding: '8px 14px', borderRadius: '6px', fontWeight: 700, margin: 0 }}>
+                                        {label}
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            max={31}
+                                            value={value}
+                                            onChange={(e) => set(toNDays(e.target.value))}
+                                            style={{ width: '80px', padding: '4px 8px', fontWeight: 700, fontSize: '18px', borderRadius: '4px', border: 'none', textAlign: 'center' }}
+                                        />
+                                    </label>
+                                ))}
+                            </div>
+
                             {loading ? (
                                 <div className="text-center p-5">
                                     <div className="spinner-border text-danger" role="status">
@@ -72,6 +95,8 @@ const ComparativoMensualVentasPage = () => {
                                         title="VENTAS MEMBRESIAS"
                                         customStartDay={customStartDay}
                                         customEndDay={customEndDay}
+                                        firstNDays={firstNDays}
+                                        lastNDays={lastNDays}
                                     />
 
                                     <hr className="my-5" />
@@ -87,6 +112,8 @@ const ComparativoMensualVentasPage = () => {
                                                     showFortnightly={true}
                                                     customStartDay={customStartDay}
                                                     customEndDay={customEndDay}
+                                                    firstNDays={firstNDays}
+                                                    lastNDays={lastNDays}
                                                 />
                                             )
                                         })
