@@ -30,9 +30,11 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const [selectedCustomers, setselectedCustomers] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [isOpenModalHistorialCambio, setisOpenModalHistorialCambio] = useState({isOpen: false, id: 0})
-    const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo, actualizarOrdenArticulo } = useInventarioStore()
+    const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo, actualizarOrdenArticulo, actualizarCheckingRoyArticulo } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [search, setSearch] = useState('');
+    // fila inicial de la paginacion por pestaña, para no volver a la pagina 1 al actualizar datos
+    const [firstxTab, setFirstxTab] = useState({});
     const [isLoadingItems, setIsLoadingItems] = useState(true);
     useEffect(() => {
         const fetchItems = async () => {
@@ -222,7 +224,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                       <InputText
                         placeholder="Buscar..."
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e) => { setSearch(e.target.value); setFirstxTab({}) }}
                         className="mb-3"
                     />
             </div>
@@ -362,6 +364,20 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             />
         )
     }
+    const checkingRoyBodyTemplate = (rowData)=>{
+        const onChangeCheckingRoy = (e)=>{
+            actualizarCheckingRoyArticulo(rowData.id, e.target.checked, dataView)
+        }
+        return (
+            <input
+                type="checkbox"
+                checked={!!rowData.is_checking_roy}
+                onChange={onChangeCheckingRoy}
+                className="form-check-input"
+                style={{ width: '28px', height: '28px' }}
+            />
+        )
+    }
     const ItemBodyTemplate = (rowData)=>{
         return (
             <>
@@ -497,8 +513,10 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                     <TabPanel header={<>{g.nivel}<br/>{g.zona}</>}>
                                         <DataTable  
                                             className='dataTable-verticals-lines dataTable-inventario'
-                                            value={filterData} 
-                                            paginator 
+                                            value={filterData}
+                                            paginator
+                                            first={firstxTab[g.lugar] ?? 0}
+                                            onPage={(e) => setFirstxTab(prev => ({ ...prev, [g.lugar]: e.first }))}
                                             header={header}
                                             rows={10} 
                                             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -513,11 +531,13 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                             showGridlines={true}
                                             loading={loading} 
                                             stripedRows
+                                            rowClassName={(rowData)=>({ 'row-checking-roy': !!rowData.is_checking_roy })}
                                             scrollable
                                             onValueChange={valueFiltered}
                                             >
                                     <Column header={<span className={'font-24'}>Id</span>} field='id' style={{ width: '15px' }} body={IdBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ORDEN</span>} field='orden' sortable style={{ width: '80px' }} body={ordenBodyTemplate}/>
+                                    <Column header={<span className={'font-24'}>CHECK LAR</span>} field='is_checking_roy' sortable style={{ width: '80px' }} body={checkingRoyBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '10rem' }} body={imagenBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>

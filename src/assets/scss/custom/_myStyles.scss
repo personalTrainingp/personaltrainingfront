@@ -302,6 +302,10 @@
       vertical-align: top !important;
       // background-color: red;
     }
+    // Articulos marcados como revisados por Roy (is_checking_roy)
+    tr.row-checking-roy > td{
+      background-color: #fff176 !important;
+    }
   }
 }
 #SvgjsTspan21034{

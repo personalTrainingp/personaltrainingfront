@@ -1,25 +1,19 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { useSeguimientoStore } from './useSeguimientoStore'
+import React, { useMemo } from 'react'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
-import { DateMask, DateMaskStr, DateMaskStr1 } from '@/components/CurrencyMask'
 import dayjs from 'dayjs'
 import { Col, Row } from 'react-bootstrap'
 
-export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFecha, bodyHeadcontadorDia}) => {
-        const [data, setdata] = useState([])
-        useEffect(() => {
-            setdata(
-                dataSeguimientoxFecha.filter(f => {
-                    const fecha = new Date(f.fecha_vencimiento);
-                    const fechaInicio = new Date(rangeDate[0]);
+const orden = [
+    'change 45',
+    'fs 45',
+    'fisio muscle'
+];
 
-                    const fechaFin = new Date(rangeDate[1]);
-                    fechaFin.setHours(15, 59, 59, 999);
-
-                    return fecha >= fechaInicio && fecha <= fechaFin;
-                })
-            )
-        }, [rangeDate])
+// desde/hasta son fechas 'YYYY-MM-DD' (hora peruana): incluye "desde", excluye "hasta".
+export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFecha, bodyHeadcontadorDia, contadorKey, contadorLabel}) => {
+        const data = useMemo(() => dataSeguimientoxFecha.filter(f =>
+            (!desde || f.fecha_vencimiento >= desde) && (!hasta || f.fecha_vencimiento < hasta)
+        ), [dataSeguimientoxFecha, desde, hasta])
         const resultado = Object.values(
             data.reduce((acc, item) => {
                 if (!acc[item.nombre_programa]) {
@@ -50,9 +44,6 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                     <span className='' style={{fontSize: '15px'}}>
                         <div>
                             {`${row?.nombres_cli} ${row?.apPaterno_cli} ${row?.apMaterno_cli}`}
-                            {/* <pre>
-                                {JSON.stringify(row, null, 2)}
-                            </pre> */}
                         </div>
                         <div>
                             EMAIL: {row.email_cli}
@@ -79,12 +70,12 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                     </>
                 )
             }},
-            {id: 3, header: <>{bodyHeadcontadorDia}</>, accessor: 'countDias', sortable: true, render: (row)=>{
+            {id: 3, header: bodyHeadcontadorDia, accessor: contadorKey, sortable: true, render: (row)=>{
                 return (
                     <>
-                        {row.countDias} 
+                        {row[contadorKey]}
                     <span className='mx-1' style={{fontSize: '15px'}}>
-                        SESIONES
+                        {contadorLabel}
                     </span>
                     </>
                 )
@@ -113,25 +104,20 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
             {
                 id: 'diasvencidos',
                 exportHeader: 'FECHA DE VENCIMIENTO',
-                exportValue: (row)=>`${DateMaskStr(row.fecha_vencimiento, 'YYYY-MM-DD')}`
+                exportValue: (row)=>row.fecha_vencimiento
             },
             {id: 'programa', exportHeader: 'programa', exportValue: (row)=>`${row.nombre_programa}`},
-            {id: 'contador', exportHeader: `${bodyHeadcontadorDia}`, exportValue: (row)=>row.countDias},
+            {id: 'contador', exportHeader: bodyHeadcontadorDia, exportValue: (row)=>row[contadorKey]},
             {id: 'email', exportHeader: 'email', exportValue: (row)=>`${row.email_cli}`},
             {id: 'telefono', exportHeader: 'TELEFONO', exportValue: (row)=>`${row.tel_cli}`},
-        ]   
-        const orden = [
-    'change 45',
-    'fs 45',
-    'fisio muscle'
-];
+        ]
 
   return (
     <div className='m-2' style={{width: '80%'}}>
         <div className='fs-2 fw-bold text-change'>
             {title}
             <span className='text-black mx-1'>
-                TOTAL 
+                TOTAL
             </span>
             <span className='text-black mx-2'>
                 {data.length}
@@ -142,19 +128,19 @@ export const TableSeguimientos = ({rangeDate=[], title='SEG', dataSeguimientoxFe
                 {
                     resultado
                         .sort((a, b) => {
-        const ia = orden.indexOf(a.nombre_programa.toLowerCase());
-        const ib = orden.indexOf(b.nombre_programa.toLowerCase());
+                            const ia = orden.indexOf(a.nombre_programa.toLowerCase());
+                            const ib = orden.indexOf(b.nombre_programa.toLowerCase());
 
-        if (ia === -1 && ib === -1) {
-            return a.nombre_programa.localeCompare(b.nombre_programa);
-        }
-        if (ia === -1) return 1;
-        if (ib === -1) return -1;
+                            if (ia === -1 && ib === -1) {
+                                return a.nombre_programa.localeCompare(b.nombre_programa);
+                            }
+                            if (ia === -1) return 1;
+                            if (ib === -1) return -1;
 
-        return ia - ib;
-    }).map(m=>{
+                            return ia - ib;
+                        }).map(m=>{
                         return (
-                            <Col lg={4}>
+                            <Col lg={4} key={m.nombre_programa}>
                                 <div className='card p-3'>
                                     <span className='fs-2'>
                                         {m.nombre_programa}

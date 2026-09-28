@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
-import { useSeguimientoStore } from './useSeguimientoStore'
-import { Col, Row } from 'react-bootstrap'
+import React, { useEffect, useMemo } from 'react'
+import dayjs from 'dayjs'
+import { hoyPeru, useSeguimientoStore } from './useSeguimientoStore'
 import { TableSeguimientos } from './TableSeguimientos'
 export const AppSeguimiento = () => {
     const { obtenerSeguimientoxFecha, dataSeguimientoxFecha } = useSeguimientoStore();
@@ -9,88 +9,47 @@ export const AppSeguimiento = () => {
         obtenerSeguimientoxFecha();
     }, []);
 
-    const fechaActual = new Date();
-
-    // Fecha actual
-    const fechaActualStr = fechaActual.toISOString();
-
-    // Fecha de hace 3 meses
-    const fechaInicioRenovaciones = new Date(fechaActual);
-    fechaInicioRenovaciones.setMonth(fechaInicioRenovaciones.getMonth() - 3);
-
-    // Formatear fechas
-    const fechaInicioRenovacionesStr = fechaInicioRenovaciones.toISOString();
-
-    // Reinscripciones: desde 2024 hasta el día anterior al inicio de renovaciones
-    const fechaInicioReinscripciones = "2024-01-01T12:00:00.000Z";
-
-    const fechaFinReinscripciones = fechaInicioRenovaciones.toISOString();
+    // Rangos como fechas 'YYYY-MM-DD' en hora peruana: [desde, hasta) — incluye "desde", excluye "hasta",
+    // así cada socio cae en una sola tabla.
+    const { hoy, inicioRenovaciones } = useMemo(() => {
+        const hoy = hoyPeru();
+        return { hoy, inicioRenovaciones: dayjs(hoy).subtract(3, 'month').format('YYYY-MM-DD') };
+    }, []);
 
     return (
         <div className="tab-scroll-container">
             <div className="fs-1 fw-bold text-change d-flex flex-row">
 
-                {/* SOCIOS ACTIVOS */}
+                {/* SOCIOS ACTIVOS: vencen hoy o después */}
                 <TableSeguimientos
-                    bodyHeadcontadorDia={
-                        <>
-                            SESIONES <br /> PENDIENTES
-                        </>
-                    }
+                    bodyHeadcontadorDia="SESIONES PENDIENTES"
+                    contadorKey="sesionesPendientes"
+                    contadorLabel="SESIONES"
                     dataSeguimientoxFecha={dataSeguimientoxFecha}
-                    title={
-                        <>
-                            <span className="text-change">
-                                SOCIOS ACTIVOS
-                            </span>
-                        </>
-                    }
-                    rangeDate={[
-                        fechaActualStr,
-                        "2040-03-16T12:00:00.000Z"
-                    ]}
+                    title={<span className="text-change">SOCIOS ACTIVOS</span>}
+                    desde={hoy}
                 />
 
-                {/* RENOVACIONES */}
+                {/* RENOVACIONES: vencieron en los últimos 3 meses */}
                 <TableSeguimientos
-                    bodyHeadcontadorDia={
-                        <>
-                            DIAS <br /> VENCIDOS
-                        </>
-                    }
+                    bodyHeadcontadorDia="DIAS VENCIDOS"
+                    contadorKey="diasVencidos"
+                    contadorLabel="DIAS"
                     dataSeguimientoxFecha={dataSeguimientoxFecha}
-                    title={
-                        <>
-                            <span className="text-change">
-                                RENOVACIONES VENCIDAS
-                            </span>
-                        </>
-                    }
-                    rangeDate={[
-                        fechaInicioRenovacionesStr,
-                        fechaActualStr
-                    ]}
+                    title={<span className="text-change">RENOVACIONES VENCIDAS</span>}
+                    desde={inicioRenovaciones}
+                    hasta={hoy}
                 />
 
-                {/* REINSCRIPCIONES */}
+                {/* REINSCRIPCIONES: vencieron desde 2024 hasta antes de los últimos 3 meses */}
                 <TableSeguimientos
-                    bodyHeadcontadorDia={
-                        <>
-                            DIAS <br /> VENCIDOS
-                        </>
-                    }
+                    bodyHeadcontadorDia="DIAS VENCIDOS"
+                    contadorKey="diasVencidos"
+                    contadorLabel="DIAS"
                     dataSeguimientoxFecha={dataSeguimientoxFecha}
-                    title={
-                        <>
-                            <span className="text-change">
-                                REINSCRIPCIONES VENCIDAS
-                            </span>
-                        </>
-                    }
-                    rangeDate={[
-                        fechaInicioReinscripciones,
-                        fechaFinReinscripciones
-                    ]}
+                    title={<span className="text-change">REINSCRIPCIONES VENCIDAS</span>}
+                    desde="2024-01-01"
+                    hasta={inicioRenovaciones}
                 />
 
             </div>

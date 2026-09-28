@@ -238,6 +238,31 @@ export const useInventarioStore = () => {
 			});
 		}
 	};
+	// Actualiza el check en la vista al instante (sin recargar todo el inventario,
+	// que es lento y reinicia la paginacion) y lo revierte si el backend falla.
+	const actualizarCheckingRoyArticulo = async (id, is_checking_roy, dataView) => {
+		const setCheck = (value) =>
+			dispatch(
+				onSetDataView(
+					dataView.map((m) => (m.id === id ? { ...m, is_checking_roy: value } : m))
+				)
+			);
+		setCheck(is_checking_roy);
+		try {
+			await PTApi.put(`/inventario/checking-roy-articulo/${id}`, {
+				is_checking_roy,
+			});
+		} catch (error) {
+			console.log(error);
+			setCheck(!is_checking_roy);
+			Swal.fire({
+				icon: 'error',
+				title: 'PROBLEMA AL ACTUALIZAR EL CHECK DE ROY',
+				showConfirmButton: false,
+				timer: 1500,
+			});
+		}
+	};
 	const obtenerInventarioHistorialCambiosxIDARTICULO = async (idArticulo) => {
 		try {
 			const { data } = await PTApi.get(`/inventario/hist-cam-id/${idArticulo}`);
@@ -261,6 +286,7 @@ export const useInventarioStore = () => {
 		EliminarArticulo,
 		actualizarArticulo,
 		actualizarOrdenArticulo,
+		actualizarCheckingRoyArticulo,
 		RestaurarArticulo,
 		dataEtiquetaxIdEntidadGrupo,
 		statusData,

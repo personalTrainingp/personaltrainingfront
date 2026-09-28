@@ -84,6 +84,11 @@ export const TableSeguimientoTODO = ({h3Title, dae, classNameFechaVenc, id_empre
 			value: null,
 			matchMode: FilterMatchMode.STARTS_WITH,
 		},
+		['tb_ventum.tb_cliente.tel_cli']: {
+			value: null,
+			matchMode: FilterMatchMode.STARTS_WITH,
+		
+		},
 		vencimiento_REGALOS_CONGELAMIENTO: {
 			operator: FilterOperator.AND,
 			constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }],

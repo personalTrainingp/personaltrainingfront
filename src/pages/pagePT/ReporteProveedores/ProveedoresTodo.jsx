@@ -108,7 +108,7 @@ export const ProveedoresTodo = ({ arrayDate }) => {
                                 <React.Fragment key={prov.razon_social_prov}>
                                     <tr>
                                         <th colSpan={meses.length + 2} className='fs-2 bg-lila text-white'>
-                                            {prov.razon_social_prov}
+                                            <span className='sticky-titulo-centro'>{prov.razon_social_prov}</span>
                                         </th>
                                     </tr>
                                     <tr>

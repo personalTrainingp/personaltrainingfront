@@ -235,3 +235,13 @@
   z-index: -1;
   box-shadow: 2px 0 0 rgba(0,0,0,.12);
 }
+
+/* título que queda centrado en el área visible aunque se haga scroll horizontal
+   (en sticky, left: 50% se mide contra el ancho visible del contenedor que scrollea) */
+.tabla-egresos .sticky-titulo-centro{
+  display: inline-block;
+  position: sticky;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
