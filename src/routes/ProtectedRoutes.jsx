@@ -97,6 +97,7 @@ const ClienteMFPage = lazy(() => import('../pages/pagePT/GestionMonkFit/ClienteM
 const GestionFeriados = lazy(() => import('../pages/pagePT/GestionFeriados/index.jsx'))
 const GestionPermisos = lazy(() => import('../pages/pagePT/GestionPermisos/index.jsx'))
 const GestionTardanzas = lazy(() => import('../pages/pagePT/GestionTardanzas/index.jsx'))
+const GestionEventosAsistencia = lazy(() => import('../pages/pagePT/GestionEventosAsistencia/index.jsx'))
 const GestionHorasExtras = lazy(() => import('../pages/pagePT/GestionHorasExtras/index.jsx'))
 const GestionSalidasTempranas = lazy(() => import('../pages/pagePT/GestionSalidasTempranas/index.jsx'))
 const ResumenGerencialPorRenovaciones = lazy(() => import('../pages/pagePT/ResumenGerencialPorRenovaciones/Index.jsx'))
@@ -119,7 +120,6 @@ const OtherPages = lazy(() => import('../pages/otherpages'));
 const Error404Alt = lazy(() => import('../pages/otherpages/Error404Alt'));
 const ConstructorCruces = lazy(() => import('../pages/pagePT/ConstructorCruces/index.jsx'));
 const ReporteProveedores = lazy(() => import('../pages/pagePT/ReporteProveedores'));
-
 // const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
 
 export default function ProtectedRoutes() {
@@ -265,6 +265,10 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/gestion-tardanzas') &&
 								<Route path='gestion-tardanzas' element={<GestionTardanzas />} />
+							}
+							{
+								sections.find(e => e.url === '/socio') &&
+								<Route path='gestion-eventos-asistencia' element={<GestionEventosAsistencia />} />
 							}
 							{
 								sections.find(e => e.url === '/gestion-permisos') &&
