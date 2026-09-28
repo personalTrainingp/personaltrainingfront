@@ -37,7 +37,7 @@ export const useEventosAsistenciaStore = () => {
 		}
 	};
 
-	// Alta manual: nombre + DNI + huella en texto (base64). Retorna { ok, msg, huelleros }
+	// Alta manual: nombre + DNI + BinaryData (huella en base64). Retorna { ok, msg, huelleros }
 	const agregarPersona = async (persona) => {
 		try {
 			const { data } = await PTApi.post('/eventos-asistencia/personas', persona);

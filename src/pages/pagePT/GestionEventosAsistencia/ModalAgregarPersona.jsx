@@ -14,7 +14,7 @@ const DEDOS = [
 	{ value: 9, label: 'Meñique derecho' },
 ];
 
-const personaInicial = { nombre: '', dni: '', dedo: 6, huella: '' };
+const personaInicial = { nombre: '', dni: '', dedo: 6, binaryData: '' };
 
 export const ModalAgregarPersona = ({ show, onHide, agregarPersona, onAgregada }) => {
 	const [persona, setpersona] = useState(personaInicial);
@@ -79,14 +79,14 @@ export const ModalAgregarPersona = ({ show, onHide, agregarPersona, onAgregada }
 						</Form.Select>
 					</Form.Group>
 					<Form.Group className="mb-3">
-						<Form.Label>Huella (hash en texto)</Form.Label>
+						<Form.Label>BinaryData</Form.Label>
 						<Form.Control
 							as="textarea"
 							rows={5}
-							name="huella"
-							value={persona.huella}
+							name="binaryData"
+							value={persona.binaryData}
 							onChange={onInputChange}
-							placeholder="Pega aquí la plantilla de la huella en base64 (ej. Sr9TUzIx...)"
+							placeholder="Pega aquí el BinaryData de la huella en base64 (ej. Sr9TUzIx...)"
 							style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
 							required
 						/>
