@@ -27,6 +27,7 @@ export const useGastosStore = () => {
 		id_prov: 0,
 		id_contrato_prov: 0,
 		id_porCobrar: 0,
+		id_porCuenta: 0,
 		descripcion: '',
 		esCompra: 0,
 		id_empresa: 0,

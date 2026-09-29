@@ -10,6 +10,7 @@ import { useGastosStore } from './useGastosStore'
 import { ModalProveedor } from '../GestProveedores/ModalProveedor'
 import { Loading } from '@/components/Loading'
 import { ModalCustomProveedores } from '../GestProveedores/ModalCustomProveedores'
+import { PTApi } from '@/common'
 const customGasto = {
     id_tipoGasto: 0, 
     id_oficio: 0,
@@ -30,7 +31,8 @@ const customGasto = {
     id_prov: 0, 
     id_contrato_prov: 0,
     id_porCobrar: 0,
-    descripcion: '', 
+    id_porCuenta: 0,
+    descripcion: '',
     esCompra: 0,
     id_facturado_por: 0
 }
@@ -58,7 +60,8 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         id_prov, 
         id_contrato_prov,
         id_porCobrar,
-        descripcion, 
+        id_porCuenta,
+        descripcion,
         esCompra,
         id_facturado_por,
         onInputChange,
@@ -79,6 +82,16 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     const { postGasto, updateGastoxID } = useGastosStore()
     const [id_empresa, setid_empresa] = useState(id_enterprice)
         const [id_oficio, setid_oficio] = useState(null)
+    // Cuentas por cobrar de la marca seleccionada, para enlazar el gasto (id_porCuenta)
+    const [dataCuentasCobrar, setdataCuentasCobrar] = useState([])
+    useEffect(() => {
+        if(!show || !id_empresa) return
+        PTApi.get(`/cuenta-balance/${id_empresa}/PorCobrar`)
+            .then(({data})=>{
+                setdataCuentasCobrar((data?.cuentasBalances || []).map(c=>({label: `${c.id}. ${c.descripcion || ''}`, value: c.id})))
+            })
+            .catch((error)=>console.log(error))
+    }, [id_empresa, show])
     useEffect(() => {
         if(show){
             if(id!==0){
@@ -312,6 +325,11 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                     <Col lg={4}>
                         <div className='m-2'>
                             <InputSelect label={'Facturado a'} nameInput={'id_facturado_por'} onChange={onInputChange} options={arrayEmpresaFinan} value={id_facturado_por} />
+                        </div>
+                    </Col>
+                    <Col lg={4}>
+                        <div className='m-2'>
+                            <InputSelect label={'Cuenta por cobrar'} nameInput={'id_porCuenta'} onChange={onInputChange} options={[{label: 'SIN CUENTA', value: 0}, ...dataCuentasCobrar]} value={id_porCuenta} />
                         </div>
                     </Col>
                     <Col lg={12}>
