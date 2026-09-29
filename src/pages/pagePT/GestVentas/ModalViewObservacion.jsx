@@ -29,7 +29,25 @@ export const ModalViewObservacion = ({onHide, show, id}) => {
         onHide();
     }
     const { obtenerVentaporId, dataVentaxID, isLoading } = useVentasStore()
-    const { putVentas } = useGestVentasStore()
+    const { putVentas, putFechaInicioMembresia } = useGestVentasStore()
+    const [mensajeMembresia, setmensajeMembresia] = useState('')
+    useEffect(() => {
+        setmensajeMembresia('')
+    }, [id])
+    // Cambia la fecha de inicio de la membresía (venta + seguimiento) y recarga la venta
+    const onEditarFechaInicioMembresia = async (id_membresia, fecha_inicio) => {
+        const resultado = await putFechaInicioMembresia(id_membresia, fecha_inicio)
+        if (resultado.ok) {
+            // 'YYYY-MM-DD' -> 'DD/MM/YYYY' (sin pasar por Date para no correr el día por la zona horaria)
+            const ddmmyyyy = (f) => f.split('-').reverse().join('/')
+            setmensajeMembresia(
+                `Fecha de inicio cambiada al ${ddmmyyyy(fecha_inicio)} (fin: ${ddmmyyyy(resultado.membresia.fec_fin_mem)}).` +
+                (resultado.fecha_vencimiento ? ' El seguimiento también se actualizó.' : '')
+            )
+            obtenerVentaporId(id)
+        }
+        return resultado
+    }
     const { formState, fecha_venta, id_origen, onInputChange, onResetForm } = useForm(customVenta)
     const [isProcedenciaCustom, setisProcedenciaCustom] = useState(false)
     const [isOpenCustomFechaVenta, setisOpenCustomFechaVenta] = useState(false)
@@ -135,6 +153,13 @@ export const ModalViewObservacion = ({onHide, show, id}) => {
                 </TabPanel>
                 <TabPanel    Panel header="Compras">
                     {
+                        mensajeMembresia && (
+                            <div className="alert alert-success py-2" role="alert">
+                                {mensajeMembresia}
+                            </div>
+                        )
+                    }
+                    {
                         dataVentaxID[0]?.detalle_ventaMembresia.length>0 && (
                             <>
                             <b className='text-800'>MEMBRESIA: </b>
@@ -146,7 +171,7 @@ export const ModalViewObservacion = ({onHide, show, id}) => {
                             dataVentaxID[0]?.detalle_ventaMembresia.map(e=>{
                                 return(
                                     <>
-                                        <ItemVentaMembresia e={e}/>
+                                        <ItemVentaMembresia e={e} onEditarFechaInicio={onEditarFechaInicioMembresia}/>
                                     </>
                                 )
 })

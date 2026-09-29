@@ -314,7 +314,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                             <InputSelect label={'Facturado a'} nameInput={'id_facturado_por'} onChange={onInputChange} options={arrayEmpresaFinan} value={id_facturado_por} />
                         </div>
                     </Col>
-                    <Col lg={8}>
+                    <Col lg={12}>
                         <div className='m-2'>
                             <InputTextArea label={'DESCRIPCION'} nameInput={'descripcion'} onChange={onInputChange} value={descripcion} />
                         </div>

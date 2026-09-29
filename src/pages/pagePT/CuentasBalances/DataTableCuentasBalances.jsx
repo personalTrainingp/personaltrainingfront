@@ -1,11 +1,12 @@
 import { DataTableCR } from '@/components/DataView/DataTableCR'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useCuentasBalances } from './hook/useCuentasBalances'
 import { useSelector } from 'react-redux'
 import { DateMaskStr, DateMaskString, MaskDate, NumberFormatMoney } from '@/components/CurrencyMask'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
+import { BotonEnlazarUnicos, ModalCoincidenciasGastos, obtenerCoincidenciasGastos, obtenerUltimoGastoEnlazado, useGastosTodasEmpresas } from './ModalCoincidenciasGastos'
 
 export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuentasBalances, headerTipo}) => {
     const { obtenerCuentasBalancesxIdEmpresaxTipo, deleteCuentaBalancexID } = useCuentasBalances()
@@ -13,6 +14,30 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
         obtenerCuentasBalancesxIdEmpresaxTipo(idEmpresa, tipo)
     }, [idEmpresa, tipo])
     const { dataView } = useSelector(e=>e.CUENTASBALANCES)
+    // Coincidencias con gastos (n_operacion + monto + moneda), solo en cuentas por cobrar
+    const esPorCobrar = tipo === 'PorCobrar'
+    const gastos = useGastosTodasEmpresas(esPorCobrar)
+    const [cuentaCoincidencias, setcuentaCoincidencias] = useState(null)
+        const columnaCoincidencias = { id: 'coincidencias_gastos', header: 'Coincidencias gastos', render: (row)=>{
+                const cantidad = obtenerCoincidenciasGastos(row, gastos).length
+                return (
+                    <Button
+                        label={`${cantidad}`}
+                        rounded
+                        outlined={cantidad === 0}
+                        severity={cantidad === 0 ? 'secondary' : 'success'}
+                        onClick={()=>setcuentaCoincidencias(row)}
+                    />
+                )
+            }}
+        const columnaUltimoCheck = { id: 'descripcion_ultimo_check', header: 'Descripcion ultimo check', render: (row)=>{
+                const gasto = obtenerUltimoGastoEnlazado(row, gastos)
+                return (
+                    <>
+                    {gasto ? gasto.descripcion || '-' : ''}
+                    </>
+                )
+            }}
         const columns = [
             { id: 'id', header: 'ID', accessor: 'id', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
             { id: 'id_concepto', header: 'Concepto', render: (row)=>{
@@ -51,6 +76,7 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
             }  },
             { id: 'descripcion', header: 'descripcion', accessor: 'descripcion', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
             { id: 'n operacion', header: 'n operacion', accessor: 'n_operacion', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
+            ...(esPorCobrar ? [columnaCoincidencias, columnaUltimoCheck] : []),
             { id: 'accion', header: '',  sortable: true, render:(row)=>{
                 return (
                     <>
@@ -125,11 +151,15 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
         }
   return (
     <div>
+        {esPorCobrar && <BotonEnlazarUnicos cuentas={dataView || []} gastos={gastos}/>}
         <DataTableCR
             columns={columns}
             data={dataView}
             exportExtraColumns={columnsExports}
         />
+        {esPorCobrar && (
+            <ModalCoincidenciasGastos cuenta={cuentaCoincidencias} gastos={gastos} onHide={()=>setcuentaCoincidencias(null)}/>
+        )}
     </div>
   )
 }

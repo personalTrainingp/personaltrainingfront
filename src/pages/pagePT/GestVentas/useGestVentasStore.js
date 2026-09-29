@@ -12,6 +12,20 @@ import { arrayFacturas } from "@/types/type";
 
 export const useGestVentasStore = () => {
   const [dataVentasxEmpresa, setdataVentasxEmpresa] = useState([]);
+  // Cambia la fecha de inicio de la membresía (en la venta y en el seguimiento).
+  // Retorna { ok, msg, membresia, fecha_vencimiento }
+  const putFechaInicioMembresia = async (id_membresia, fecha_inicio) => {
+    try {
+      const { data } = await PTApi.put(`/venta/membresia/${id_membresia}/fecha-inicio`, { fecha_inicio });
+      return data;
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        msg: error.response?.data?.msg || "No se pudo cambiar la fecha de inicio",
+      };
+    }
+  };
   const putVentas = async (formState, id_venta, obtenerVentaxID) => {
     try {
       await PTApi.put(`/venta/put-venta/${id_venta}`, formState);
@@ -75,5 +89,5 @@ export const useGestVentasStore = () => {
       console.log(error);
     }
   };
-  return { putVentas, obtenerVentasxEmpresa, dataVentasxEmpresa };
+  return { putVentas, putFechaInicioMembresia, obtenerVentasxEmpresa, dataVentasxEmpresa };
 };

@@ -120,6 +120,7 @@ const OtherPages = lazy(() => import('../pages/otherpages'));
 const Error404Alt = lazy(() => import('../pages/otherpages/Error404Alt'));
 const ConstructorCruces = lazy(() => import('../pages/pagePT/ConstructorCruces/index.jsx'));
 const ReporteProveedores = lazy(() => import('../pages/pagePT/ReporteProveedores'));
+const ReporteCuentasBalance = lazy(() => import('../pages/pagePT/ReporteDetalleCuentasBalance'));
 // const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
 
 export default function ProtectedRoutes() {
@@ -196,7 +197,7 @@ export default function ProtectedRoutes() {
 							}
 							{
 								sections.find(e => e.url === '/cuentas-balances') &&
-								<Route path='reporte-cuentas-balance' element={<FlujoCajaBalanceCuentas />} />
+								<Route path='reporte-cuentas-balance' element={<ReporteCuentasBalance />} />
 							}
 							{/* {
 								sections.find(e => e.url === '/reporte') &&
