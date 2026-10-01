@@ -27,6 +27,7 @@ export const Widget = ({ widget, edicion, onEditar, onDuplicar, onEliminar, dato
 
 	const sinDatos = respuesta && !respuesta.visualizacion;
 	const esGrafico = ['lineas', 'area', 'barras', 'dona'].includes(widget.tipo);
+	const esTabla = !!(respuesta && respuesta.visualizacion && respuesta.visualizacion.tipo === 'tabla');
 	const congelado = widget.config.metrica === 'estatico' || (widget.config.metrica === 'libre' && /'\d{4}-?\d{2}-?\d{2}/.test(widget.config.sql || ''));
 	const subtitulo = congelado ? (widget.config.fecha ? `Foto del ${fechaFoto(widget.config.fecha)}` : 'Foto del asistente') : (widget.config.metrica === 'libre' ? 'consulta del asistente' : etiquetaPeriodo(widget.config.periodo));
 
@@ -70,8 +71,8 @@ export const Widget = ({ widget, edicion, onEditar, onDuplicar, onEliminar, dato
 				{!cargando && !error && respuesta && respuesta.visualizacion && (
 					<>
 						{widget.tipo === 'kpi' && <WidgetKpi respuesta={respuesta} />}
-						{esGrafico && <WidgetGrafico tipo={widget.tipo} respuesta={respuesta} />}
-						{(widget.tipo === 'tabla' || widget.tipo === 'ranking') && <WidgetTabla tipo={widget.tipo} respuesta={respuesta} titulo={widget.titulo} />}
+						{esGrafico && !esTabla && <WidgetGrafico tipo={widget.tipo} respuesta={respuesta} />}
+						{(widget.tipo === 'tabla' || widget.tipo === 'ranking' || (esGrafico && esTabla)) && <WidgetTabla tipo={widget.tipo} respuesta={respuesta} titulo={widget.titulo} />}
 						{widget.tipo === 'texto' && <p className='mb-0'>{respuesta.texto}</p>}
 					</>
 				)}
