@@ -22,7 +22,6 @@ export const Dashboard = () => {
 	const [ultimoWidget, setUltimoWidget] = useState(null);
 	const contenedor = useRef(null);
 	const [ancho, setAncho] = useState(0);
-	const [bp, setBp] = useState('lg');
 	const [version, setVersion] = useState(0);
 
 	useEffect(() => {
@@ -43,17 +42,19 @@ export const Dashboard = () => {
 	}, []);
 
 	const layouts = useMemo(() => aLayouts(widgets), [widgets]);
+	const editable = ancho > BREAKPOINTS.md;
 
 	const onLayoutChange = (layout) => {
-		if (!edicion || (bp !== 'lg' && bp !== 'md')) return;
+		if (!edicion || !editable) return;
 		setPendiente(deLayout(layout));
 	};
 
 	const onGuardarLayout = async () => {
 		setGuardando(true);
-		if (pendiente) await guardarLayout(dashboard.id, pendiente);
-		setPendiente(null);
+		const ok = !pendiente || await guardarLayout(dashboard.id, pendiente);
 		setGuardando(false);
+		if (!ok) return;
+		setPendiente(null);
 		setEdicion(false);
 	};
 
@@ -66,8 +67,17 @@ export const Dashboard = () => {
 
 	const onEditarWidget = (w) => { setEditando(w); setConfigAbierta(true); setUltimoWidget(w.id); };
 
+	const asentarLayout = async () => {
+		if (!edicion || !pendiente) return widgets;
+		if (!(await guardarLayout(dashboard.id, pendiente))) return null;
+		setPendiente(null);
+		return pendiente;
+	};
+
 	const onDuplicar = async (w) => {
-		await crearWidget(dashboard.id, { tipo: w.tipo, titulo: `${w.titulo} (copia)`, ...siguientePosicion(widgets), w: w.w, h: w.h, config: w.config });
+		const base = await asentarLayout();
+		if (!base) return;
+		await crearWidget(dashboard.id, { tipo: w.tipo, titulo: `${w.titulo} (copia)`, ...siguientePosicion(base), w: w.w, h: w.h, config: w.config });
 	};
 
 	const onEliminar = (w) => {
@@ -78,43 +88,58 @@ export const Dashboard = () => {
 			acceptLabel: 'Eliminar',
 			rejectLabel: 'Cancelar',
 			acceptClassName: 'p-button-danger',
-			accept: () => eliminarWidget(dashboard.id, w.id),
+			accept: async () => { if (await asentarLayout()) await eliminarWidget(dashboard.id, w.id); },
 		});
 	};
 
 	const onGuardarConfig = async (valor) => {
+		let ok;
 		if (editando) {
-			await actualizarWidget(dashboard.id, editando.id, valor);
+			ok = await actualizarWidget(dashboard.id, editando.id, valor);
 		} else {
-			await crearWidget(dashboard.id, { ...valor, ...siguientePosicion(widgets), ...tamanoPorTipo(valor.tipo) });
+			const base = await asentarLayout();
+			ok = base && await crearWidget(dashboard.id, { ...valor, ...siguientePosicion(base), ...tamanoPorTipo(valor.tipo) });
 		}
+		if (!ok) return;
 		setConfigAbierta(false);
 		setEditando(null);
 	};
 
 	const onAgregarPropuesta = async (p) => {
-		const creado = await crearWidget(dashboard.id, { tipo: p.tipo, titulo: p.titulo, ...siguientePosicion(widgets), w: p.w, h: p.h, config: p.config });
+		const base = await asentarLayout();
+		if (!base) return false;
+		const creado = await crearWidget(dashboard.id, { tipo: p.tipo, titulo: p.titulo, ...siguientePosicion(base), w: p.w, h: p.h, config: p.config });
 		if (creado) setUltimoWidget(creado.id);
+		return !!creado;
 	};
 
 	const onAgregarPropuestas = async (lista) => {
-		let posicion = siguientePosicion(widgets);
+		const base = await asentarLayout();
+		if (!base) return 0;
+		let posicion = siguientePosicion(base);
+		let creados = 0;
 		for (const p of lista) {
 			const creado = await crearWidget(dashboard.id, { tipo: p.tipo, titulo: p.titulo, x: posicion.x, y: posicion.y, w: p.w, h: p.h, config: p.config });
-			if (creado) setUltimoWidget(creado.id);
+			if (!creado) break;
+			setUltimoWidget(creado.id);
+			creados += 1;
 			posicion = { x: 0, y: posicion.y + p.h };
 		}
+		return creados;
 	};
 
 	const onAccionChat = async (a) => {
-		if (!a.widget) return;
+		if (!a.widget) return false;
 		setUltimoWidget(a.widget);
-		if (a.accion === 'eliminar') { await eliminarWidget(dashboard.id, a.widget); return; }
+		const base = await asentarLayout();
+		if (!base) return false;
+		if (a.accion === 'eliminar') return eliminarWidget(dashboard.id, a.widget);
 		if (a.cambios) {
 			const cambios = { ...a.cambios };
-			if (cambios.y === 999) cambios.y = siguientePosicion(widgets).y;
-			await actualizarWidget(dashboard.id, a.widget, cambios);
+			if (cambios.y === 999) cambios.y = siguientePosicion(base).y;
+			return actualizarWidget(dashboard.id, a.widget, cambios);
 		}
+		return true;
 	};
 
 	return (
@@ -135,13 +160,13 @@ export const Dashboard = () => {
 							<Button variant='light' onClick={onCancelar} disabled={guardando}>Cancelar</Button>
 							<Button variant='danger' onClick={onGuardarLayout} disabled={guardando}>{guardando ? <Spinner size='sm' animation='border' /> : 'Guardar'}</Button>
 						</>
-					) : (
+					) : editable && (
 						<Button variant='light' onClick={() => setEdicion(true)} disabled={!dashboard}><i className='mdi mdi-pencil me-1'></i>Editar</Button>
 					)}
 				</div>
 			</div>
 			{error && <Alert variant='danger' dismissible onClose={() => setError('')}>{error}</Alert>}
-			{edicion && <Alert variant='warning' className='py-2'>Modo edición: arrastra los widgets desde su título, cambia el tamaño desde la esquina inferior derecha y guarda al terminar.</Alert>}
+			{edicion && <Alert variant='warning' className='py-2'>Modo edición: arrastre los widgets desde su título, cambie el tamaño desde la esquina inferior derecha y guarde al terminar.</Alert>}
 			{cargando && widgets.length === 0 && (
 				<div className='d-flex justify-content-center py-5'><Spinner animation='border' variant='danger' /></div>
 			)}
@@ -162,11 +187,10 @@ export const Dashboard = () => {
 					cols={COLS}
 					rowHeight={80}
 					margin={[12, 12]}
-					isDraggable={edicion}
-					isResizable={edicion}
+					isDraggable={edicion && editable}
+					isResizable={edicion && editable}
 					draggableHandle='.drag-handle'
 					onLayoutChange={onLayoutChange}
-					onBreakpointChange={setBp}
 					compactType='vertical'
 				>
 					{widgets.map(w => (
