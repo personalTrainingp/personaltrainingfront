@@ -46,6 +46,11 @@
 	width: min(440px, 100vw) !important;
 }
 
+.react-grid-item .apexcharts-series-markers-wrap.apexcharts-element-hidden,
+.chat-drawer .apexcharts-series-markers-wrap.apexcharts-element-hidden {
+	display: inline;
+}
+
 @media (max-width: 767.98px) {
 	.react-grid-item {
 		touch-action: pan-y;
