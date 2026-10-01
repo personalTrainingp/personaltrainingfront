@@ -27,6 +27,21 @@
 	z-index: 2;
 }
 
+.react-grid-item .widget-cuerpo table {
+	min-width: 0 !important;
+}
+
+.react-grid-item .widget-cuerpo table,
+.react-grid-item .widget-cuerpo th div,
+.react-grid-item .widget-cuerpo th small {
+	font-size: .85rem !important;
+}
+
+.react-grid-item .widget-cuerpo td {
+	font-weight: 400 !important;
+	white-space: nowrap;
+}
+
 .chat-drawer {
 	width: min(440px, 100vw) !important;
 }

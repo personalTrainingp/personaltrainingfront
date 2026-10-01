@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { DataTableCR } from '@/components/DataView/DataTableCR';
-import { formatear } from './formato';
+import { formatear, nombreColumna } from './formato';
 
 export const WidgetTabla = ({ tipo, respuesta, titulo }) => {
 	const unidad = respuesta.unidad || 'soles';
@@ -11,7 +11,7 @@ export const WidgetTabla = ({ tipo, respuesta, titulo }) => {
 	}), [respuesta]);
 	const columns = useMemo(() => respuesta.tabla.columnas.map((c, j) => ({
 		id: `c${j}`,
-		header: String(c),
+		header: nombreColumna(c),
 		accessor: (row) => row[`c${j}`],
 		sortable: true,
 		render: (row) => (typeof row[`c${j}`] === 'number' ? formatear(row[`c${j}`], unidad) : String(row[`c${j}`] ?? '')),

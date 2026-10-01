@@ -13,6 +13,13 @@ export const formatearCorto = (valor, unidad) => {
 	return `${prefijo}${n.toLocaleString('es-PE', { maximumFractionDigits: abs < 10 ? 2 : 0 })}`;
 };
 
+export const nombreColumna = (columna) => {
+	const c = String(columna);
+	if (!c.includes('_') && c !== c.toLowerCase()) return c;
+	const t = c.replace(/_+/g, ' ').trim().toLowerCase();
+	return t.charAt(0).toUpperCase() + t.slice(1);
+};
+
 export const ETIQUETAS_PERIODO = {
 	hoy: 'Hoy',
 	ayer: 'Ayer',
