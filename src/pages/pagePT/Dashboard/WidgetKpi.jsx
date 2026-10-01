@@ -1,14 +1,14 @@
 import React from 'react';
-import { formatear } from './formato';
 
 export const WidgetKpi = ({ respuesta }) => {
 	const valor = respuesta.valorPrincipal;
-	const comparacion = respuesta.comparacion;
+	const comparacion = respuesta.comparacion && respuesta.comparacion.variacionPct != null ? respuesta.comparacion : null;
+	const etiqueta = respuesta.periodo?.etiqueta;
 	const sube = comparacion && comparacion.variacionPct >= 0;
 	return (
 		<div className='d-flex flex-column justify-content-center h-100 overflow-hidden'>
-			<h3 className='mb-1 lh-1'>{valor ? valor.formateado : formatear(0, respuesta.unidad)}</h3>
-			<small className='text-muted'>{respuesta.periodo?.etiqueta}</small>
+			{valor ? <h3 className='mb-1 lh-1'>{valor.formateado}</h3> : <p className='mb-1 small' style={{ whiteSpace: 'pre-line' }}>{respuesta.texto}</p>}
+			{etiqueta !== 'análisis' && <small className='text-muted'>{etiqueta}</small>}
 			{comparacion && (
 				<p className='mb-0 mt-1 small'>
 					<span className={sube ? 'text-success me-2' : 'text-danger me-2'}>

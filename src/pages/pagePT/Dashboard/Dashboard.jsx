@@ -74,6 +74,8 @@ export const Dashboard = () => {
 		return pendiente;
 	};
 
+	const conFecha = (config) => (config.metrica === 'estatico' || config.metrica === 'libre' ? { ...config, fecha: new Date().toISOString() } : config);
+
 	const onDuplicar = async (w) => {
 		const base = await asentarLayout();
 		if (!base) return;
@@ -108,7 +110,7 @@ export const Dashboard = () => {
 	const onAgregarPropuesta = async (p) => {
 		const base = await asentarLayout();
 		if (!base) return false;
-		const creado = await crearWidget(dashboard.id, { tipo: p.tipo, titulo: p.titulo, ...siguientePosicion(base), w: p.w, h: p.h, config: p.config });
+		const creado = await crearWidget(dashboard.id, { tipo: p.tipo, titulo: p.titulo, ...siguientePosicion(base), w: p.w, h: p.h, config: conFecha(p.config) });
 		if (creado) setUltimoWidget(creado.id);
 		return !!creado;
 	};
@@ -119,7 +121,7 @@ export const Dashboard = () => {
 		let posicion = siguientePosicion(base);
 		let creados = 0;
 		for (const p of lista) {
-			const creado = await crearWidget(dashboard.id, { tipo: p.tipo, titulo: p.titulo, x: posicion.x, y: posicion.y, w: p.w, h: p.h, config: p.config });
+			const creado = await crearWidget(dashboard.id, { tipo: p.tipo, titulo: p.titulo, x: posicion.x, y: posicion.y, w: p.w, h: p.h, config: conFecha(p.config) });
 			if (!creado) break;
 			setUltimoWidget(creado.id);
 			creados += 1;
