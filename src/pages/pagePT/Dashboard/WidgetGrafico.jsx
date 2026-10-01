@@ -17,7 +17,7 @@ export const WidgetGrafico = ({ tipo, respuesta, alto }) => {
 	const etiquetas = orden.map(i => String(v.etiquetas[i]));
 	const series = esDona
 		? (v.series[0] ? v.series[0].valores.map(n => Number(n) || 0) : [])
-		: v.series.map(s => ({ name: s.nombre, data: orden.map(i => Number(s.valores[i]) || 0) }));
+		: v.series.map(s => ({ name: s.nombre, data: orden.map(i => (s.valores[i] == null ? null : Number(s.valores[i]) || 0)) }));
 	const options = {
 		chart: { toolbar: { show: false }, animations: { enabled: false }, fontFamily: 'inherit' },
 		colors: COLORES,

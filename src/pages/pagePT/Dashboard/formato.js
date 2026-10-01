@@ -32,6 +32,7 @@ export const ETIQUETAS_PERIODO = {
 	ultimos_90_dias: 'Últimos 90 días',
 	ultimos_3_meses: 'Últimos 3 meses',
 	ultimos_6_meses: 'Últimos 6 meses',
+	ultimos_6_meses_cerrados: 'Últimos 6 meses cerrados',
 	ultimos_12_meses: 'Últimos 12 meses',
 	mismo_periodo_mes_pasado: 'Mismo periodo del mes pasado',
 	mismo_periodo_anio_pasado: 'Mismo periodo del año pasado',
