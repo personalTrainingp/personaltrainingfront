@@ -13,8 +13,23 @@ export const formatearCorto = (valor, unidad) => {
 	return `${prefijo}${n.toLocaleString('es-PE', { maximumFractionDigits: abs < 10 ? 2 : 0 })}`;
 };
 
+const NOMBRES_COLUMNA = {
+	dia: 'Día',
+	anio: 'Año',
+	genero: 'Género',
+	categoria_producto: 'Categoría de producto',
+	rango_edad: 'Rango de edad',
+	tipo_linea: 'Tipo de línea',
+	tipo_cliente: 'Tipo de cliente',
+	forma_pago: 'Forma de pago',
+	categoria_gasto: 'Categoría de gasto',
+	concepto_gasto: 'Concepto de gasto',
+	estado_gasto: 'Estado del gasto',
+};
+
 export const nombreColumna = (columna) => {
 	const c = String(columna);
+	if (NOMBRES_COLUMNA[c]) return NOMBRES_COLUMNA[c];
 	if (!c.includes('_') && c !== c.toLowerCase()) return c;
 	const t = c.replace(/_+/g, ' ').trim().toLowerCase();
 	return t.charAt(0).toUpperCase() + t.slice(1);

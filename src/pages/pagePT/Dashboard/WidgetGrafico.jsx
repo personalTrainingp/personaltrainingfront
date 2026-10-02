@@ -23,7 +23,7 @@ export const WidgetGrafico = ({ tipo, respuesta, alto }) => {
 		colors: COLORES,
 		dataLabels: { enabled: esDona, formatter: (val) => `${Math.round(val)}%` },
 		legend: { position: 'bottom', show: esDona || v.series.length > 1 },
-		tooltip: { y: { formatter: (val) => formatear(val, unidad) } },
+		tooltip: { y: { formatter: (val) => (val == null ? val : formatear(val, unidad)) } },
 		grid: { strokeDashArray: 4 },
 	};
 	if (esDona) {
