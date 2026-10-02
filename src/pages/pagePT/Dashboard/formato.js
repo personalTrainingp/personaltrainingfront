@@ -1,6 +1,7 @@
 export const formatear = (valor, unidad) => {
 	const n = Number(valor) || 0;
 	if (unidad === 'soles') return 'S/ ' + n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+	if (unidad === 'porcentaje') return n.toLocaleString('es-PE', { maximumFractionDigits: 2 }) + '%';
 	return n.toLocaleString('es-PE', { maximumFractionDigits: Math.abs(n) < 10 ? 2 : 0 });
 };
 
@@ -33,6 +34,14 @@ export const nombreColumna = (columna) => {
 	if (!c.includes('_') && c !== c.toLowerCase()) return c;
 	const t = c.replace(/_+/g, ' ').trim().toLowerCase();
 	return t.charAt(0).toUpperCase() + t.slice(1);
+};
+
+export const unidadColumna = (columna) => {
+	const c = String(columna).toLowerCase();
+	if (/tasa|porcent|pct|%/.test(c)) return 'porcentaje';
+	if (/cantidad|cnt|conteo|count|n[uú]mero|nro|unidades|^id_|_id$/.test(c)) return 'cantidad';
+	if (/monto|venta|gasto|pago|soles|total|importe|ingreso|cobr|deuda|inversi[oó]n|factur|utilidad|ticket|egreso|costo|sueldo|salario/.test(c)) return 'soles';
+	return 'cantidad';
 };
 
 export const ETIQUETAS_PERIODO = {
