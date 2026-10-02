@@ -40,7 +40,7 @@ export const unidadColumna = (columna) => {
 	const c = String(columna).toLowerCase();
 	if (/tasa|porcent|pct|%/.test(c)) return 'porcentaje';
 	if (/cantidad|cnt|conteo|count|n[uú]mero|nro|unidades|^id_|_id$/.test(c)) return 'cantidad';
-	if (/monto|venta|gasto|pago|soles|total|importe|ingreso|cobr|deuda|inversi[oó]n|factur|utilidad|ticket|egreso|costo|sueldo|salario/.test(c)) return 'soles';
+	if (/monto|venta|gasto|pago|soles|total|importe|ingreso|cobr|deuda|inversi[oó]n|factur|utilidad|ticket|egreso|costo|sueldo|salario|precio|saldo|cuota|comisi|mensualidad|abono|tarifa|descuento|neto|efectivo|yape|^plin|tarjeta/.test(c)) return 'soles';
 	return 'cantidad';
 };
 
