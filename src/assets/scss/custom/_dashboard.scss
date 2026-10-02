@@ -42,6 +42,10 @@
 	white-space: nowrap;
 }
 
+.react-grid-item .widget-cuerpo > div:has(> div > table) {
+	height: 100%;
+}
+
 .chat-drawer {
 	width: min(440px, 100vw) !important;
 }

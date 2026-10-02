@@ -21,7 +21,7 @@ export const WidgetTabla = ({ tipo, respuesta, titulo }) => {
 			columns={columns}
 			data={filas}
 			rowKey='_k'
-			defaultPageSize={tipo === 'ranking' ? 10 : 5}
+			defaultPageSize={filas.length || 1}
 			pageSizeOptions={[5, 10, 20]}
 			searchable={false}
 			exportable={tipo === 'tabla'}
