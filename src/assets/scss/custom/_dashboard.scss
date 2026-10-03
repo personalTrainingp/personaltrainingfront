@@ -27,8 +27,32 @@
 	z-index: 2;
 }
 
+.react-grid-item .widget-cuerpo table {
+	min-width: 0 !important;
+}
+
+.react-grid-item .widget-cuerpo table,
+.react-grid-item .widget-cuerpo th div,
+.react-grid-item .widget-cuerpo th small {
+	font-size: .85rem !important;
+}
+
+.react-grid-item .widget-cuerpo td {
+	font-weight: 400 !important;
+	white-space: nowrap;
+}
+
+.react-grid-item .widget-cuerpo > div:has(> div > table) {
+	height: 100%;
+}
+
 .chat-drawer {
 	width: min(440px, 100vw) !important;
+}
+
+.react-grid-item .apexcharts-series-markers-wrap.apexcharts-element-hidden,
+.chat-drawer .apexcharts-series-markers-wrap.apexcharts-element-hidden {
+	display: inline;
 }
 
 @media (max-width: 767.98px) {

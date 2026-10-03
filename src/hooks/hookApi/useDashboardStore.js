@@ -3,7 +3,7 @@ import AnalyticsApi from '@/common/api/AnalyticsApi';
 
 const mensajeError = (error) => {
 	const estado = error?.response?.status;
-	if (estado === 401) return 'Tu sesión no es válida para el servicio de analytics. Vuelve a iniciar sesión.';
+	if (estado === 401) return 'Su sesión no es válida para el servicio de analytics. Vuelva a iniciar sesión.';
 	if (estado === 400) return 'La configuración del widget no es válida.';
 	if (estado === 502) return 'Hubo un error consultando los datos.';
 	if (error?.code === 'ECONNABORTED') return 'La consulta tardó demasiado.';

@@ -6,11 +6,11 @@ import { WidgetGrafico } from './WidgetGrafico';
 const SUGERENCIAS = ['¿Cuánto vendimos este mes?', 'Ventas por vendedor este mes', 'Compara agosto con julio', 'Top 10 productos del año', '¿Cuántos socios tengo?', 'Gastos por categoría del mes pasado'];
 
 const ERRORES = {
-	error_ia: 'El servicio de IA no respondió; intenta en un momento.',
+	error_ia: 'El servicio de IA no respondió; intente en un momento.',
 	error_sql: 'Hubo un error consultando los datos. Quedó registrado.',
-	periodo_invalido: 'No entendí el periodo. Prueba con "agosto 2026" o "últimos 30 días".',
+	periodo_invalido: 'No entendí el periodo. Pruebe con "agosto 2026" o "últimos 30 días".',
 	sql_rechazado: 'No pude construir esa consulta de forma segura.',
-	plan_invalido: 'No pude armar esa consulta. Prueba de otra forma.',
+	plan_invalido: 'No pude armar esa consulta. Pruebe de otra forma.',
 	conexion: 'No se pudo conectar con el servicio de analytics.',
 };
 
@@ -20,6 +20,7 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 	const [mensajes, setMensajes] = useState([]);
 	const [texto, setTexto] = useState('');
 	const [pensando, setPensando] = useState(false);
+	const [agregando, setAgregando] = useState(false);
 	const fin = useRef(null);
 
 	useEffect(() => { if (fin.current) fin.current.scrollIntoView({ behavior: 'smooth' }); }, [mensajes, pensando]);
@@ -35,9 +36,18 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 		setPensando(false);
 	};
 
-	const marcarHecho = (i, nota) => setMensajes(prev => prev.map((m, j) => (j === i ? { ...m, hecho: true, nota } : m)));
+	const marcarHecho = (i, nota) => setMensajes(prev => prev.map((m, j) => (j === i ? { ...m, hecho: true, nota, fallo: false } : m)));
 
 	const marcarAgregados = (i, indices, nota) => setMensajes(prev => prev.map((m, j) => (j === i ? { ...m, agregados: [...(m.agregados || []), ...indices], nota } : m)));
+
+	const marcarFallo = (i, fallo) => setMensajes(prev => prev.map((m, j) => (j === i ? { ...m, fallo } : m)));
+
+	const ejecutar = async (accion) => {
+		setAgregando(true);
+		const resultado = await accion();
+		setAgregando(false);
+		return resultado;
+	};
 
 	const burbuja = (m, i) => {
 		if (m.de === 'usuario') return <div key={i} className='d-flex justify-content-end mb-2'><div className='bg-change text-white rounded-3 px-3 py-2' style={{ maxWidth: '85%' }}>{m.texto}</div></div>;
@@ -50,7 +60,7 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 					<div style={{ whiteSpace: 'pre-line' }}>{res.texto}</div>
 					{res.insights && res.insights.length > 0 && <ul className='mb-1 mt-1 ps-3 small text-muted'>{res.insights.map((x, k) => <li key={k}>{x}</li>)}</ul>}
 					{res.visualizacion && ['lineas', 'area', 'barras', 'dona'].includes(res.visualizacion.tipo) && res.visualizacion.series && res.visualizacion.series.length > 0 && res.visualizacion.etiquetas.length > 1 && (
-						<div className='bg-white rounded-2 mt-2 mb-1 p-1'><WidgetGrafico tipo={res.visualizacion.tipo} respuesta={res} alto={res.visualizacion.series.length > 3 ? 340 : 260} /></div>
+						<div className='bg-white rounded-2 mt-2 mb-1 p-1'><WidgetGrafico tipo={res.visualizacion.tipo} respuesta={res} alto={res.visualizacion.horizontal ? Math.max(260, res.visualizacion.etiquetas.length * 26) : (res.visualizacion.series.length > 3 ? 340 : 260)} /></div>
 					)}
 					{res.tabla && res.tabla.filas.length > 1 && res.tabla.filas.length <= 60 && (
 						<div style={{ maxHeight: 240, overflowY: 'auto' }}>
@@ -62,7 +72,7 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 					)}
 					{!res.verificado && <small className='text-warning d-block'>Consulta construida a medida: verificar antes de decidir.</small>}
 					{r.propuestaWidget && res.visualizacion && !m.hecho && (
-						<Button size='sm' variant='outline-danger' className='mt-1' onClick={async () => { await onAgregarPropuesta(r.propuestaWidget); marcarHecho(i, 'Agregado al dashboard'); }}>
+						<Button size='sm' variant='outline-danger' className='mt-1' disabled={agregando} onClick={async () => { const ok = await ejecutar(() => onAgregarPropuesta(r.propuestaWidget)); if (ok) marcarHecho(i, 'Agregado al dashboard'); else marcarFallo(i, true); }}>
 							<i className='mdi mdi-plus'></i> Agregar al dashboard
 						</Button>
 					)}
@@ -79,12 +89,12 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 						{propuestas.length > 0 && !r.error && (
 							<div className='d-flex flex-wrap gap-1 mt-1'>
 								{propuestas.map((p, k) => (
-									<Button key={k} size='sm' variant='outline-danger' disabled={agregados.includes(k)} onClick={async () => { await onAgregarPropuesta(p); marcarAgregados(i, [k], 'Agregado al dashboard'); }}>
+									<Button key={k} size='sm' variant='outline-danger' disabled={agregando || agregados.includes(k)} onClick={async () => { const ok = await ejecutar(() => onAgregarPropuesta(p)); if (ok) marcarAgregados(i, [k], 'Agregado al dashboard'); marcarFallo(i, !ok); }}>
 										<i className={agregados.includes(k) ? 'mdi mdi-check' : 'mdi mdi-plus'}></i> {p.titulo}
 									</Button>
 								))}
 								{propuestas.length > 1 && pendientes.length > 1 && (
-									<Button size='sm' variant='danger' onClick={async () => { await onAgregarPropuestas(pendientes.map(k => propuestas[k])); marcarAgregados(i, pendientes, 'Agregados al dashboard'); }}>
+									<Button size='sm' variant='danger' disabled={agregando} onClick={async () => { const n = await ejecutar(() => onAgregarPropuestas(pendientes.map(k => propuestas[k]))); if (n) marcarAgregados(i, pendientes.slice(0, n), n > 1 ? 'Agregados al dashboard' : 'Agregado al dashboard'); marcarFallo(i, n < pendientes.length); }}>
 										<i className='mdi mdi-plus'></i> Agregar los {pendientes.length}
 									</Button>
 								)}
@@ -93,13 +103,13 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 					</>
 				);
 			} else if (!r.widget) {
-				cuerpo = <div>No encontré a qué widget te refieres. Dime su nombre tal como aparece en el dashboard.</div>;
+				cuerpo = <div>No encontré a qué widget se refiere. Indíqueme su nombre tal como aparece en el dashboard.</div>;
 			} else {
 				cuerpo = (
 					<>
 						<div>{r.accion === 'eliminar' ? `¿Eliminar el widget "${r.widgetTitulo}"?` : `Voy a aplicar "${ACCIONES[r.accion] || r.accion}" sobre "${r.widgetTitulo}".`}</div>
 						{!m.hecho && (
-							<Button size='sm' variant={r.accion === 'eliminar' ? 'danger' : 'outline-danger'} className='mt-1' onClick={async () => { await onAccion(r); marcarHecho(i, r.accion === 'eliminar' ? 'Eliminado' : 'Aplicado'); }}>
+							<Button size='sm' variant={r.accion === 'eliminar' ? 'danger' : 'outline-danger'} className='mt-1' disabled={agregando} onClick={async () => { const ok = await ejecutar(() => onAccion(r)); if (ok) marcarHecho(i, r.accion === 'eliminar' ? 'Eliminado' : 'Aplicado'); else marcarFallo(i, true); }}>
 								{r.accion === 'eliminar' ? 'Confirmar eliminación' : 'Aplicar'}
 							</Button>
 						)}
@@ -111,13 +121,14 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 		} else if (r.tipo === 'fuera') {
 			cuerpo = <div>Puedo responder sobre ventas, cobros, gastos, socios y membresías, y crear o modificar widgets del dashboard.</div>;
 		} else {
-			cuerpo = <div className='text-danger'>{ERRORES[r.motivo] || r.detalle || 'Ocurrió un error.'}</div>;
+			cuerpo = <div className='text-danger'>{r.motivo === 'conexion' ? r.detalle : (ERRORES[r.motivo] || r.detalle || 'Ocurrió un error.')}</div>;
 		}
 		return (
 			<div key={i} className='d-flex justify-content-start mb-2'>
 				<div className='bg-light rounded-3 px-3 py-2' style={{ maxWidth: '92%' }}>
 					{cuerpo}
 					{(m.hecho || (m.agregados && m.agregados.length > 0)) && m.nota && <small className='text-success d-block mt-1'><i className='mdi mdi-check'></i> {m.nota}</small>}
+					{m.fallo && <small className='text-danger d-block mt-1'>No se pudo completar. Intente nuevamente.</small>}
 				</div>
 			</div>
 		);
@@ -132,7 +143,7 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 				<div className='flex-grow-1 overflow-auto px-3 pt-3'>
 					{mensajes.length === 0 && (
 						<div className='text-muted small'>
-							<p>Pregunta en lenguaje natural. Ejemplos:</p>
+							<p>Pregunte en lenguaje natural. Ejemplos:</p>
 							<div className='d-flex flex-wrap gap-1'>
 								{SUGERENCIAS.map(s => <Button key={s} size='sm' variant='light' onClick={() => enviar(s)}>{s}</Button>)}
 							</div>
@@ -143,7 +154,7 @@ export const ChatDrawer = ({ show, onHide, dashboardId, enviarChat, onAgregarPro
 					<div ref={fin}></div>
 				</div>
 				<Form className='border-top p-2 d-flex gap-2' onSubmit={(e) => { e.preventDefault(); enviar(); }}>
-					<Form.Control value={texto} onChange={(e) => setTexto(e.target.value)} placeholder='Escribe tu pregunta…' disabled={pensando} autoFocus />
+					<Form.Control value={texto} onChange={(e) => setTexto(e.target.value)} placeholder='Escriba su pregunta…' disabled={pensando} autoFocus />
 					<Button type='submit' variant='danger' disabled={pensando || !texto.trim()}><i className='mdi mdi-send'></i></Button>
 				</Form>
 			</Offcanvas.Body>

@@ -3,7 +3,7 @@ import { Card, Dropdown, Spinner } from 'react-bootstrap';
 import { WidgetKpi } from './WidgetKpi';
 import { WidgetGrafico } from './WidgetGrafico';
 import { WidgetTabla } from './WidgetTabla';
-import { etiquetaPeriodo } from './formato';
+import { etiquetaPeriodo, fechaFoto } from './formato';
 
 export const Widget = ({ widget, edicion, onEditar, onDuplicar, onEliminar, datosWidget }) => {
 	const [respuesta, setRespuesta] = useState(null);
@@ -27,6 +27,9 @@ export const Widget = ({ widget, edicion, onEditar, onDuplicar, onEliminar, dato
 
 	const sinDatos = respuesta && !respuesta.visualizacion;
 	const esGrafico = ['lineas', 'area', 'barras', 'dona'].includes(widget.tipo);
+	const esTabla = !!(respuesta && respuesta.visualizacion && respuesta.visualizacion.tipo === 'tabla');
+	const congelado = widget.config.metrica === 'estatico' || (widget.config.metrica === 'libre' && /'\d{4}-?\d{2}-?\d{2}/.test(widget.config.sql || ''));
+	const subtitulo = congelado ? (widget.config.fecha ? `Foto del ${fechaFoto(widget.config.fecha)}` : 'Foto del asistente') : (widget.config.metrica === 'libre' ? 'consulta del asistente' : etiquetaPeriodo(widget.config.periodo));
 
 	return (
 		<Card className='h-100 mb-0 d-flex flex-column'>
@@ -34,7 +37,7 @@ export const Widget = ({ widget, edicion, onEditar, onDuplicar, onEliminar, dato
 				<div className='text-truncate'>
 					{edicion && <i className='mdi mdi-drag me-1 text-muted'></i>}
 					<span className='fw-semibold'>{widget.titulo}</span>
-					{widget.tipo !== 'kpi' && <small className='text-muted ms-2'>{widget.config.metrica === 'libre' ? 'consulta del asistente' : etiquetaPeriodo(widget.config.periodo)}</small>}
+					{(widget.tipo !== 'kpi' || congelado) && <small className='text-muted ms-2'>{subtitulo}</small>}
 				</div>
 				{edicion && (
 					<Dropdown align='end' onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
@@ -42,7 +45,7 @@ export const Widget = ({ widget, edicion, onEditar, onDuplicar, onEliminar, dato
 							<i className='mdi mdi-dots-vertical font-18'></i>
 						</Dropdown.Toggle>
 						<Dropdown.Menu>
-							{widget.config.metrica !== 'libre' && <Dropdown.Item onClick={() => onEditar(widget)}><i className='mdi mdi-pencil me-1'></i> Editar</Dropdown.Item>}
+							{widget.config.metrica !== 'libre' && widget.config.metrica !== 'estatico' && <Dropdown.Item onClick={() => onEditar(widget)}><i className='mdi mdi-pencil me-1'></i> Editar</Dropdown.Item>}
 							<Dropdown.Item onClick={() => onDuplicar(widget)}><i className='mdi mdi-content-copy me-1'></i> Duplicar</Dropdown.Item>
 							<Dropdown.Divider />
 							<Dropdown.Item className='text-danger' onClick={() => onEliminar(widget)}><i className='mdi mdi-delete me-1'></i> Eliminar</Dropdown.Item>
@@ -68,8 +71,8 @@ export const Widget = ({ widget, edicion, onEditar, onDuplicar, onEliminar, dato
 				{!cargando && !error && respuesta && respuesta.visualizacion && (
 					<>
 						{widget.tipo === 'kpi' && <WidgetKpi respuesta={respuesta} />}
-						{esGrafico && <WidgetGrafico tipo={widget.tipo} respuesta={respuesta} />}
-						{(widget.tipo === 'tabla' || widget.tipo === 'ranking') && <WidgetTabla tipo={widget.tipo} respuesta={respuesta} titulo={widget.titulo} />}
+						{esGrafico && !esTabla && <WidgetGrafico tipo={widget.tipo} respuesta={respuesta} />}
+						{(widget.tipo === 'tabla' || widget.tipo === 'ranking' || (esGrafico && esTabla)) && <WidgetTabla tipo={widget.tipo} respuesta={respuesta} titulo={widget.titulo} />}
 						{widget.tipo === 'texto' && <p className='mb-0'>{respuesta.texto}</p>}
 					</>
 				)}
