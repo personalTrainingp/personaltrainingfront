@@ -54,7 +54,7 @@ export const ModalAgregarPersona = ({ show, onHide, agregarPersona, onAgregada }
 							title="Solo números (hasta 9 dígitos)"
 							required
 						/>
-						<Form.Text muted>Es el PIN con el que la persona marca en el huellero.</Form.Text>
+						<Form.Text muted>Se registra como PIN (con el que marca en el huellero) y como su DNI.</Form.Text>
 					</Form.Group>
 					<Form.Group className="mb-3">
 						<Form.Label>Dedo</Form.Label>

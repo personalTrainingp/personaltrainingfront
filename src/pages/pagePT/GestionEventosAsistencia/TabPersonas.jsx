@@ -3,11 +3,13 @@ import { Alert, Button } from 'react-bootstrap';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { DataTablePersonas, EstadoSincronizacion } from './DataTablePersonas';
 import { ModalAgregarPersona } from './ModalAgregarPersona';
+import { ModalAgregarDedo } from './ModalAgregarDedo';
 import { useEventosAsistenciaStore } from './useEventosAsistenciaStore';
 import { nombreDedo } from './dedos';
 
 export const TabPersonas = () => {
 	const {
+		agregarHuella,
 		reenviarPersona,
 		sincronizarHuelleros,
 		obtenerPersonas,
@@ -15,17 +17,40 @@ export const TabPersonas = () => {
 		eliminarHuella,
 		eliminarPersona,
 		dataPersonas,
-		borradosPendientes,
+		eliminadasRecientes,
 		estadoHuelleros,
 		isLoadingPersonas,
 		errorPersonas,
 	} = useEventosAsistenciaStore();
 
-	// Mientras haya cambios pendientes en un huellero EN LÍNEA (llegan en segundos), la tabla se
-	// actualiza sola cada 5 s para mostrar cuándo pasan a "Sincronizado". Si solo quedan pendientes
-	// en huelleros fuera de línea, no se consulta (pueden tardar horas).
-	const PENDIENTE_EN_LINEA = [...dataPersonas.map((p) => p.sincronizacion), ...borradosPendientes.map((b) => ({ pendiente: true, ...b }))]
-		.some((s) => s?.pendiente && s.huelleros.some((sn) => estadoHuelleros[sn] === 'online'));
+	// Mientras haya cambios pendientes en un huellero EN LÍNEA (llegan en segundos) o esperando la
+	// confirmación del huellero (incluidos los borrados de personas y huellas), la tabla se actualiza
+	// sola cada 5 s para mostrar cuándo pasan a sincronizado. Si solo quedan pendientes en huelleros
+	// fuera de línea, no se consulta (pueden tardar horas).
+	const PENDIENTE_EN_LINEA =
+		[...dataPersonas.map((p) => p.sincronizacion), ...eliminadasRecientes.map((e) => e.sincronizacion)].some(
+			(s) =>
+				(s?.pendiente && s.huelleros.some((sn) => estadoHuelleros[sn] === 'online')) ||
+				s?.estado === 'esperando'
+		) ||
+		dataPersonas.some((p) => (p.huellasEliminadas || []).some((h) => h.estado === 'esperando'));
+	const eliminadasEnProceso = eliminadasRecientes.filter((e) =>
+		['pendiente', 'esperando'].includes(e.sincronizacion?.estado)
+	).length;
+	const cantidadConError = dataPersonas.filter((p) => p.sincronizacion?.estado === 'error').length;
+
+	// Agregar dedo: persona a la que se le agrega (null = formulario cerrado)
+	const [personaAgregarDedo, setpersonaAgregarDedo] = useState(null);
+	const onHuellaAgregada = ({ persona, dedo, huelleros }) => {
+		setmensajeError('');
+		setmensajeExito(
+			`Se agregó la huella del ${nombreDedo(dedo).toLowerCase()} a ${persona.nombre} (DNI ${persona.pin})` +
+				(huelleros.length
+					? ` y se está enviando a: ${huelleros.join(', ')}. Revisa la columna "Sincronización".`
+					: '. No hay huelleros activos.')
+		);
+		obtenerPersonas();
+	};
 	useEffect(() => {
 		if (!PENDIENTE_EN_LINEA) return;
 		const intervalo = setInterval(() => obtenerPersonas(true), 5000);
@@ -194,28 +219,38 @@ export const TabPersonas = () => {
 				<small className="text-muted ms-md-auto">
 					{dataPersonas.length} personas · {dataPersonas.filter((p) => p.huellas > 0).length} con huella ·{' '}
 					{dataPersonas.filter((p) => p.sincronizacion?.pendiente).length} pendientes de sincronizar
+					{cantidadConError > 0 && <span className="text-danger"> · {cantidadConError} rechazadas por el huellero</span>}
 				</small>
 			</div>
 
-			{borradosPendientes.length > 0 && (
-				<Alert variant="warning">
-					<details>
+			{eliminadasRecientes.length > 0 && (
+				<Alert variant={eliminadasEnProceso > 0 ? 'warning' : 'light'} className="border">
+					{/* Abierto mientras haya borrados en proceso, para ver cuándo pasan a sincronizado */}
+					<details open={eliminadasEnProceso > 0}>
 						<summary>
-							{borradosPendientes.length}{' '}
-							{borradosPendientes.length === 1 ? 'persona eliminada tiene' : 'personas eliminadas tienen'} el
-							borrado pendiente de sincronizar en algún huellero
+							<b>Personas eliminadas recientemente</b> (últimas 24 h): {eliminadasRecientes.length}
+							{eliminadasEnProceso > 0 ? ` · ${eliminadasEnProceso} borrándose del huellero` : ' · todas sincronizadas'}
 						</summary>
-						<ul className="mb-0 mt-2">
-							{borradosPendientes.map((b) => (
-								<li key={b.pin} className="mb-1">
-									DNI {b.pin}{' '}
-									<EstadoSincronizacion
-										sincronizacion={{ pendiente: true, ...b }}
-										estadoHuelleros={estadoHuelleros}
-									/>
-								</li>
-							))}
-						</ul>
+						<table className="table table-sm mb-0 mt-2">
+							<thead>
+								<tr>
+									<th>DNI</th>
+									<th>Nombre</th>
+									<th>Borrado en el huellero</th>
+								</tr>
+							</thead>
+							<tbody>
+								{eliminadasRecientes.map((e) => (
+									<tr key={e.pin}>
+										<td>{e.pin}</td>
+										<td>{e.nombre || <span className="text-muted">—</span>}</td>
+										<td>
+											<EstadoSincronizacion sincronizacion={e.sincronizacion} estadoHuelleros={estadoHuelleros} />
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
 					</details>
 				</Alert>
 			)}
@@ -238,6 +273,13 @@ export const TabPersonas = () => {
 				onEliminarHuella={onEliminarHuella}
 				onEliminarPersona={onEliminarPersona}
 				onReenviarPersona={onReenviarPersona}
+				onAgregarDedo={(persona) => setpersonaAgregarDedo(persona)}
+			/>
+			<ModalAgregarDedo
+				persona={personaAgregarDedo}
+				onHide={() => setpersonaAgregarDedo(null)}
+				agregarHuella={agregarHuella}
+				onAgregada={onHuellaAgregada}
 			/>
 			<ModalAgregarPersona
 				show={isOpenModalAgregarPersona}

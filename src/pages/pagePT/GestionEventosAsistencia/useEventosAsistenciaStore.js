@@ -8,7 +8,8 @@ export const useEventosAsistenciaStore = () => {
 	const [isLoading, setisLoading] = useState(false);
 	const [error, seterror] = useState('');
 	const [dataPersonas, setdataPersonas] = useState([]);
-	const [borradosPendientes, setborradosPendientes] = useState([]);
+	// Personas eliminadas en las últimas 24 h (o con el borrado aún en cola), con su estado en el huellero
+	const [eliminadasRecientes, seteliminadasRecientes] = useState([]);
 	const [estadoHuelleros, setestadoHuelleros] = useState({}); // SN -> 'online' | 'offline'
 	const [isLoadingPersonas, setisLoadingPersonas] = useState(false);
 	const [errorPersonas, seterrorPersonas] = useState('');
@@ -50,7 +51,7 @@ export const useEventosAsistenciaStore = () => {
 			seterrorPersonas('');
 			const { data } = await PTApi.get('/eventos-asistencia/personas');
 			setdataPersonas(data.personas);
-			setborradosPendientes(data.borradosPendientes || []);
+			seteliminadasRecientes(data.eliminadasRecientes || []);
 			setestadoHuelleros(Object.fromEntries((data.huelleros || []).map((h) => [h.DeviceSN, h.estado])));
 		} catch (error) {
 			console.log(error);
@@ -132,7 +133,22 @@ export const useEventosAsistenciaStore = () => {
 		}
 	};
 
+	// Agrega la huella de otro dedo. Retorna { ok, msg, dedo, huelleros }
+	const agregarHuella = async (pin, { dedo, binaryData }) => {
+		try {
+			const { data } = await PTApi.post(`/eventos-asistencia/personas/${pin}/huellas`, { dedo, binaryData });
+			return data;
+		} catch (error) {
+			console.log(error);
+			return {
+				ok: false,
+				msg: error.response?.data?.msg || 'No se pudo agregar la huella',
+			};
+		}
+	};
+
 	return {
+		agregarHuella,
 		reenviarPersona,
 		sincronizarHuelleros,
 		obtenerEventosAsistencia,
@@ -147,7 +163,7 @@ export const useEventosAsistenciaStore = () => {
 		isLoading,
 		error,
 		dataPersonas,
-		borradosPendientes,
+		eliminadasRecientes,
 		estadoHuelleros,
 		isLoadingPersonas,
 		errorPersonas,

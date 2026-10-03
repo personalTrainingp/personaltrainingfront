@@ -5,7 +5,8 @@ export const DataTableEventosAsistencia = ({ list, loading }) => {
 	const columns = [
 		{ id: 'fecha', header: 'Fecha', accessor: 'fecha', sortable: true, width: 90, headerAlign: 'left', cellAlign: 'left' },
 		{ id: 'hora', header: 'Hora', accessor: 'hora', sortable: true, width: 70, headerAlign: 'left', cellAlign: 'left' },
-		{ id: 'pin', header: 'DNI / PIN', accessor: 'pin', sortable: true, width: 90, headerAlign: 'left', cellAlign: 'left' },
+		{ id: 'pin', header: 'PIN', accessor: 'pin', sortable: true, width: 90, headerAlign: 'left', cellAlign: 'left' },
+		{ id: 'dni', header: 'DNI', accessor: 'dni', sortable: true, width: 90, headerAlign: 'left', cellAlign: 'left' },
 		{
 			id: 'nombre',
 			header: 'Nombre',

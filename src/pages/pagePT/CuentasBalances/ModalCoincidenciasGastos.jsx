@@ -61,12 +61,14 @@ export const useGastosTodasEmpresas = (activo = true) => {
 const normalizarOperacion = (op) => String(op ?? '').trim()
 const normalizarMonto = (monto) => Math.round((Number(monto) || 0) * 100)
 
-// Gastos con el mismo n_operacion, monto y moneda que la cuenta
+// Gastos con el mismo n_operacion, monto y moneda que la cuenta.
+// Los gastos ya enlazados a otra cuenta (id_porCuenta > 0 y distinto) no se muestran.
 export const obtenerCoincidenciasGastos = (cuenta, gastos) => {
     const operacion = normalizarOperacion(cuenta?.n_operacion)
     if (operacion === '') return []
     return gastos.filter(
         (g) =>
+            (!(Number(g.id_porCuenta) > 0) || Number(g.id_porCuenta) === Number(cuenta.id)) &&
             normalizarOperacion(g.n_operacion) === operacion &&
             normalizarMonto(g.monto) === normalizarMonto(cuenta.monto) &&
             g.moneda === cuenta.moneda
@@ -100,7 +102,7 @@ export const obtenerEnlacesUnicos = (cuentas, gastos) => {
 
 export const BotonEnlazarUnicos = ({ cuentas, gastos }) => {
     const [procesando, setprocesando] = useState(false)
-    const { porEnlazar, yaEnlazados, enlazadosAOtra, gastoCompartido } = obtenerEnlacesUnicos(cuentas, gastos)
+    const { porEnlazar, yaEnlazados, gastoCompartido } = obtenerEnlacesUnicos(cuentas, gastos)
 
     const enlazar = async () => {
         setprocesando(true)
@@ -135,7 +137,6 @@ export const BotonEnlazarUnicos = ({ cuentas, gastos }) => {
                 <div>
                     <div>Se pondra id_porCuenta en <b>{porEnlazar.length}</b> gastos.</div>
                     <div>Ya enlazados (se omiten): {yaEnlazados.length}</div>
-                    <div>Gasto enlazado a otra cuenta (se omiten): {enlazadosAOtra.length}</div>
                     <div>Gasto que coincide con varias cuentas (se omiten): {gastoCompartido}</div>
                 </div>
             ),
@@ -247,6 +248,7 @@ export const ModalCoincidenciasGastos = ({ cuenta, gastos, onHide }) => {
                             <thead>
                                 <tr>
                                     <th>CHECK_GASTO_CUENTAS</th>
+                                    <th>ID_CUENTABALANCE</th>
                                     <th>ID GASTO</th>
                                     <th>EMPRESA</th>
                                     <th>FECHA COMPROBANTE</th>
@@ -270,6 +272,10 @@ export const ModalCoincidenciasGastos = ({ cuenta, gastos, onHide }) => {
                                                 disabled={gastoGuardando === g.id}
                                                 onChange={(e) => onCheckGastoCuenta(g, e.target.checked)}
                                             />
+                                        </td>
+                                        {/* id_porCuenta guardado en el gasto (0 = sin enlazar) */}
+                                        <td className={Number(g.id_porCuenta) > 0 ? 'text-success fw-bold' : ''}>
+                                            {Number(g.id_porCuenta) || '-'}
                                         </td>
                                         <td>{g.id}</td>
                                         <td>{g.empresaGasto}</td>
