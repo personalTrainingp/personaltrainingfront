@@ -1,5 +1,6 @@
 import { DataTableCR } from '@/components/DataView/DataTableCR';
 import React from 'react';
+import { Badge } from 'react-bootstrap';
 
 export const DataTableEventosAsistencia = ({ list, loading }) => {
 	const columns = [
@@ -16,6 +17,23 @@ export const DataTableEventosAsistencia = ({ list, loading }) => {
 			headerAlign: 'left',
 			cellAlign: 'left',
 			render: (row) => (row.nombre ? row.nombre : <span className="text-muted">(no registrado)</span>),
+		},
+		{
+			id: 'labelEstado',
+			header: 'Estado',
+			accessor: (row) => row.labelEstado || '',
+			sortable: true,
+			width: 150,
+			headerAlign: 'left',
+			cellAlign: 'left',
+			// "membresia inactiva": intentó entrar con la membresía vencida o desactivada (el huellero no lo dejó pasar)
+			render: (row) =>
+				row.labelEstado ? (
+					<Badge bg="danger" className="text-uppercase" title="El huellero no lo dejó entrar">
+						<i className="pi pi-ban me-1" style={{ fontSize: '0.7rem' }} />
+						{row.labelEstado}
+					</Badge>
+				) : null,
 		},
 		{ id: 'huellero', header: 'Huellero', accessor: 'huellero', sortable: true, width: 110, headerAlign: 'left', cellAlign: 'left' },
 		{ id: 'recibida', header: 'Recibida', accessor: 'recibida', sortable: true, width: 120, headerAlign: 'left', cellAlign: 'left' },
