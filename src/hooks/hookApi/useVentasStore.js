@@ -287,12 +287,12 @@ export const useVentasStore = () => {
 					`/storage/blob/create/${data.uid_contrato}?container=contratos-cli`,
 					formData_contratoPDF
 				);
-				const { data: MsgWsp } = await PTApi.post('/wsp/doc', {
-					telefono: formState.detalle_cli_modelo?.telefono_cli,
-					httpDoc: `${config.API_IMG.FILE_CONTRATOS_CLI}${blobContrato.img.name_image}`,
-				});
-				console.log({ blobContrato, MsgWsp });
 			}
+			const { data: MsgWsp } = await PTApi.post('/wsp/doc', {
+				telefono: formState.detalle_cli_modelo?.telefono_cli,
+				httpDoc: `${config.API_IMG.FILE_CONTRATOS_CLI}${blobContrato.img.name_image}`,
+			});
+			console.log({ blobContrato, MsgWsp });
 			setloadingVenta(false);
 
 			if (data.ok == false) {

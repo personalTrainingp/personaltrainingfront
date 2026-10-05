@@ -10,6 +10,7 @@ import { nombreDedo } from './dedos';
 export const TabPersonas = () => {
 	const {
 		agregarHuella,
+		cambiarEstadoPersona,
 		reenviarPersona,
 		sincronizarHuelleros,
 		obtenerPersonas,
@@ -105,6 +106,38 @@ export const TabPersonas = () => {
 	const [isOpenModalAgregarPersona, setisOpenModalAgregarPersona] = useState(false);
 	const [mensajeExito, setmensajeExito] = useState('');
 	const [mensajeError, setmensajeError] = useState('');
+
+	// Botón Activo / Inactivo: inactivo = el huellero lo reconoce pero no lo deja entrar
+	const onCambiarEstado = (persona) => {
+		const activar = !persona.activo;
+		confirmDialog({
+			header: activar ? 'Activar persona' : 'Desactivar persona',
+			message: activar
+				? `¿Activar a ${persona.nombre} (DNI ${persona.pin})? El huellero lo volverá a dejar entrar.`
+				: `¿Desactivar a ${persona.nombre} (DNI ${persona.pin})? El huellero lo reconocerá pero no lo dejará entrar.`,
+			icon: activar ? 'pi pi-check-circle' : 'pi pi-ban',
+			acceptLabel: activar ? 'Activar' : 'Desactivar',
+			rejectLabel: 'Cancelar',
+			acceptClassName: activar ? undefined : 'p-button-danger',
+			accept: async () => {
+				setmensajeExito('');
+				setmensajeError('');
+				const resultado = await cambiarEstadoPersona(persona.pin, activar);
+				if (!resultado.ok) {
+					setmensajeError(resultado.msg);
+					return;
+				}
+				setmensajeExito(
+					`${persona.nombre} (DNI ${persona.pin}) quedó ${activar ? 'activo' : 'inactivo'}` +
+						(resultado.huelleros.length
+							? ` y se está enviando a: ${resultado.huelleros.join(', ')}. Revisa la columna "Sincronización".`
+							: '. No hay huelleros activos.') +
+						' Ojo: cada madrugada el estado se recalcula según la membresía.'
+				);
+				obtenerPersonas();
+			},
+		});
+	};
 
 	const onReenviarPersona = (persona) => {
 		confirmDialog({
@@ -274,6 +307,7 @@ export const TabPersonas = () => {
 				onEliminarPersona={onEliminarPersona}
 				onReenviarPersona={onReenviarPersona}
 				onAgregarDedo={(persona) => setpersonaAgregarDedo(persona)}
+				onCambiarEstado={onCambiarEstado}
 			/>
 			<ModalAgregarDedo
 				persona={personaAgregarDedo}

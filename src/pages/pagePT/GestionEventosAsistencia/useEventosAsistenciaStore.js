@@ -147,7 +147,22 @@ export const useEventosAsistenciaStore = () => {
 		}
 	};
 
+	// Activa o desactiva a la persona (inactiva = el huellero no la deja entrar). Retorna { ok, msg, activo, huelleros }
+	const cambiarEstadoPersona = async (pin, activo) => {
+		try {
+			const { data } = await PTApi.put(`/eventos-asistencia/personas/${pin}/estado`, { activo });
+			return data;
+		} catch (error) {
+			console.log(error);
+			return {
+				ok: false,
+				msg: error.response?.data?.msg || 'No se pudo cambiar el estado de la persona',
+			};
+		}
+	};
+
 	return {
+		cambiarEstadoPersona,
 		agregarHuella,
 		reenviarPersona,
 		sincronizarHuelleros,

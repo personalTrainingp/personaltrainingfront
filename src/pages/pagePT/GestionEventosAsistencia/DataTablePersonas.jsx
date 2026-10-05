@@ -75,6 +75,7 @@ export const DataTablePersonas = ({
 	onEliminarPersona,
 	onReenviarPersona,
 	onAgregarDedo,
+	onCambiarEstado,
 }) => {
 	const columns = [
 		{ id: 'pin', header: 'PIN', accessor: 'pin', sortable: true, width: 100, headerAlign: 'left', cellAlign: 'left' },
@@ -153,11 +154,29 @@ export const DataTablePersonas = ({
 		{
 			id: 'activo',
 			header: 'Estado',
-			accessor: (row) => (row.activo ? 'Activo' : 'Deshabilitado'),
+			accessor: (row) => (row.activo ? 'Activo' : 'Inactivo'),
 			sortable: true,
-			width: 90,
+			width: 170,
 			headerAlign: 'left',
 			cellAlign: 'left',
+			// Inactivo = el huellero lo reconoce pero no lo deja entrar (membresía vencida o desactivado a mano)
+			render: (row) => (
+				<div className="d-flex align-items-center gap-2">
+					<Badge bg={row.activo ? 'success' : 'secondary'}>{row.activo ? 'Activo' : 'Inactivo'}</Badge>
+					<Button
+						variant={row.activo ? 'outline-secondary' : 'outline-success'}
+						size="sm"
+						className="py-0"
+						title={row.activo ? 'Desactivar: el huellero no lo dejará entrar' : 'Activar: el huellero lo dejará entrar'}
+						onClick={(e) => {
+							e.stopPropagation();
+							onCambiarEstado(row);
+						}}
+					>
+						{row.activo ? 'Desactivar' : 'Activar'}
+					</Button>
+				</div>
+			),
 		},
 		{ id: 'registrado', header: 'Registrado', accessor: 'registrado', sortable: true, width: 100, headerAlign: 'left', cellAlign: 'left' },
 		{
