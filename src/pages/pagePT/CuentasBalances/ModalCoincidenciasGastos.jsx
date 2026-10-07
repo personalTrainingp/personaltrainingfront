@@ -7,34 +7,34 @@ import { PTApi } from '@/common'
 import { DateMaskStr, NumberFormatMoney } from '@/components/CurrencyMask'
 import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { ModalCustomGasto } from '../GestGastos/ModalCustomGasto'
+import { arrayEmpresaFinan } from '@/types/type'
 
-const empresas = [
-    { id_empresa: 598, nombre: 'CHANGE' },
-    { id_empresa: 601, nombre: 'CIRCUS' },
-    { id_empresa: 599, nombre: 'REDUCTO' },
-    { id_empresa: 800, nombre: 'RAL' },
-]
-
-// Una sola carga de gastos de todas las empresas, compartida entre las pestañas.
-// Al recargar se avisa a todas las tablas que la usan.
+// Una sola carga de los gastos de todas las empresas (sin importar la empresa),
+// compartida entre las pestañas. Al recargar se avisa a todas las tablas que la usan.
 let promesaGastos = null
 const suscriptores = new Set()
 
 const cargarGastosTodasEmpresas = () => {
     if (!promesaGastos) {
-        promesaGastos = Promise.allSettled(
-            empresas.map(({ id_empresa }) => PTApi.get(`/egreso/empresa/${id_empresa}`))
-        ).then((respuestas) =>
-            respuestas.flatMap((r, i) =>
-                r.status === 'fulfilled'
-                    ? (r.value.data?.gastos || []).map((g) => ({
-                          ...g,
-                          empresaGasto: empresas[i].nombre,
-                          idEmpresaGasto: empresas[i].id_empresa,
-                      }))
-                    : []
+        promesaGastos = PTApi.get('/egreso/todas-empresas')
+            .then(({ data }) =>
+                (data?.gastos || []).map((g) => {
+                    // la empresa del gasto es la de su concepto; sin concepto queda sin empresa
+                    const idEmpresa = g.tb_parametros_gasto?.id_empresa ?? null
+                    return {
+                        ...g,
+                        empresaGasto:
+                            arrayEmpresaFinan.find((e) => e.value === idEmpresa)?.label ??
+                            (idEmpresa === null ? 'SIN EMPRESA' : `EMPRESA ${idEmpresa}`),
+                        idEmpresaGasto: idEmpresa,
+                    }
+                })
             )
-        )
+            .catch((error) => {
+                // se permite reintentar en la siguiente carga
+                promesaGastos = null
+                throw error
+            })
     }
     return promesaGastos
 }

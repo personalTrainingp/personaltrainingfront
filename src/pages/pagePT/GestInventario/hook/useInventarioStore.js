@@ -238,26 +238,29 @@ export const useInventarioStore = () => {
 			});
 		}
 	};
-	// Actualiza el check en la vista al instante (sin recargar todo el inventario,
+	// Actualiza el color en la vista al instante (sin recargar todo el inventario,
 	// que es lento y reinicia la paginacion) y lo revierte si el backend falla.
-	const actualizarCheckingRoyArticulo = async (id, is_checking_roy, dataView) => {
-		const setCheck = (value) =>
-			dispatch(
-				onSetDataView(
-					dataView.map((m) => (m.id === id ? { ...m, is_checking_roy: value } : m))
-				)
-			);
-		setCheck(is_checking_roy);
+	const actualizarColorSubrayadoArticulo = async (id, id_color_subrayado, dataView) => {
+		const color =
+			id_color_subrayado === '' || id_color_subrayado === null
+				? null
+				: Number(id_color_subrayado);
+		const setColor = (rows) => dispatch(onSetDataView(rows));
+		setColor(
+			dataView.map((m) =>
+				m.id === id ? { ...m, id_color_subrayado: color, is_checking_roy: color === 1 } : m
+			)
+		);
 		try {
-			await PTApi.put(`/inventario/checking-roy-articulo/${id}`, {
-				is_checking_roy,
+			await PTApi.put(`/inventario/color-subrayado-articulo/${id}`, {
+				id_color_subrayado: color,
 			});
 		} catch (error) {
 			console.log(error);
-			setCheck(!is_checking_roy);
+			setColor(dataView);
 			Swal.fire({
 				icon: 'error',
-				title: 'PROBLEMA AL ACTUALIZAR EL CHECK DE ROY',
+				title: 'PROBLEMA AL ACTUALIZAR EL COLOR',
 				showConfirmButton: false,
 				timer: 1500,
 			});
@@ -286,7 +289,7 @@ export const useInventarioStore = () => {
 		EliminarArticulo,
 		actualizarArticulo,
 		actualizarOrdenArticulo,
-		actualizarCheckingRoyArticulo,
+		actualizarColorSubrayadoArticulo,
 		RestaurarArticulo,
 		dataEtiquetaxIdEntidadGrupo,
 		statusData,

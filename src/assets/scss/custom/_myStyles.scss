@@ -302,9 +302,27 @@
       vertical-align: top !important;
       // background-color: red;
     }
-    // Articulos marcados como revisados por Roy (is_checking_roy)
-    tr.row-checking-roy > td{
-      background-color: #fff176 !important;
+    // Color de subrayado de la fila segun CHECK ID (id_color_subrayado)
+    tr.row-color-subrayado-1 > td{
+      background-color: #2c10cd !important; // azul RAL (.bg-ral)
+      color: #fff !important;
+      .text-color-dolar{
+        color: #fff !important;
+      }
+    }
+    tr.row-color-subrayado-2 > td{
+      background-color: #EEBE00 !important; // amarillo Circus (.bg-circus)
+    }
+    tr.row-color-subrayado-3 > td{
+      background-color: #17a700 !important; // verde Reducto (.bg-greenISESAC)
+      .text-color-dolar{
+        color: #000 !important;
+      }
+    }
+    // Iconos de acciones en blanco sobre las filas con color, para que resalten
+    tr[class*='row-color-subrayado-'] > td .p-button.p-button-outlined{
+      color: #fff !important;
+      border-color: #fff !important;
     }
   }
 }
@@ -1286,4 +1304,9 @@ button{
 @keyframes dtrb-shimmer {
   0% { background-position: 100% 0; }
   100% { background-position: 0 0; }
+}
+// Cronograma de tareas del lead (ModalTareas): sin la columna vacia de la izquierda
+.timeline-tareas .p-timeline-event-opposite{
+  flex: 0 !important;
+  padding: 0 !important;
 }

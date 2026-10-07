@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { DataTableGestionComercial } from './DataTableGestionComercial'
 import { ModalCustomComercial } from './ModalCustomComercial'
 import { ModalComentario } from './ModalComentario'
+import { ModalTareas } from './ModalTareas'
 import { PageBreadcrumb } from '@/components'
 
 export const AppGestionComercial = () => {
@@ -34,12 +35,20 @@ export const AppGestionComercial = () => {
     const onCloseModalHistory=()=>{
         setisOpenModalHistory({isOpen: false, uid: ''})
     }
+    const [isOpenModalTareas, setisOpenModalTareas] = useState({isOpen: false, lead: null})
+    const onOpenModalTareas = (lead)=>{
+        setisOpenModalTareas({isOpen: true, lead})
+    }
+    const onCloseModalTareas = ()=>{
+        setisOpenModalTareas({isOpen: false, lead: null})
+    }
   return (
     <div>
         <PageBreadcrumb title={'GESTION DE LEAD'}/>
         <InputButton label={'Agregar lead'} onClick={()=>onOpenModalGestionComercial(0, false)}/>
-        <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial}/>
+        <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>
+        <ModalTareas onHide={onCloseModalTareas} show={isOpenModalTareas.isOpen} lead={isOpenModalTareas.lead}/>
         <ModalCustomComercial id={isOpenModalGestionComercial.id} show={isOpenModalGestionComercial.isOpen} onHide={onCloseModalGestionComercial} isCopy={isOpenModalGestionComercial.isCopy}/>
     </div>
   )

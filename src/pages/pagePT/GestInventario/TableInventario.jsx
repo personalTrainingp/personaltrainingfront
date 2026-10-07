@@ -20,6 +20,7 @@ import { useInventarioStore } from './hook/useInventarioStore';
 import { ModalMovimientoItem } from './ModalMovimientoItem';
 import { ModalHistorialCambiosxArticulo } from './ModalHistorialCambiosxArticulo';
 import { Loading } from '@/components/Loading';
+import { Card } from 'react-bootstrap';
 
 dayjs.extend(utc);
 export default function TableInventario({showToast, id_enterprice, id_zona, ImgproyCircus1, ImgproyCircus2, ImgproyCircus3}) {
@@ -30,7 +31,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const [selectedCustomers, setselectedCustomers] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [isOpenModalHistorialCambio, setisOpenModalHistorialCambio] = useState({isOpen: false, id: 0})
-    const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo, actualizarOrdenArticulo, actualizarCheckingRoyArticulo } = useInventarioStore()
+    const { obtenerArticulos, isLoading, EliminarArticulo, RestaurarArticulo, actualizarOrdenArticulo, actualizarColorSubrayadoArticulo } = useInventarioStore()
     const {dataView} = useSelector(e=>e.DATA)
     const [search, setSearch] = useState('');
     // fila inicial de la paginacion por pestaña, para no volver a la pagina 1 al actualizar datos
@@ -364,17 +365,24 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             />
         )
     }
-    const checkingRoyBodyTemplate = (rowData)=>{
-        const onChangeCheckingRoy = (e)=>{
-            actualizarCheckingRoyArticulo(rowData.id, e.target.checked, dataView)
+    const checkIdBodyTemplate = (rowData)=>{
+        const onBlurCheckId = (e)=>{
+            const value = e.target.value
+            const valorActual = rowData.id_color_subrayado ?? ''
+            if (String(value) === String(valorActual)) return
+            actualizarColorSubrayadoArticulo(rowData.id, value, dataView)
         }
         return (
             <input
-                type="checkbox"
-                checked={!!rowData.is_checking_roy}
-                onChange={onChangeCheckingRoy}
-                className="form-check-input"
-                style={{ width: '28px', height: '28px' }}
+                type="text"
+                inputMode="numeric"
+                key={`${rowData.id}-${rowData.id_color_subrayado ?? ''}`}
+                defaultValue={rowData.id_color_subrayado ?? ''}
+                onInput={(e)=>{ e.target.value = e.target.value.replace(/\D/g, '') }}
+                onBlur={onBlurCheckId}
+                className="form-control"
+                style={{ width: '70px' }}
+                placeholder="-"
             />
         )
     }
@@ -466,6 +474,29 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         // Si quieres que "todos" esté al inicio:
         groupedData.unshift(todosGroup);
 
+        // total cantidad y monto de una lista de articulos
+        const calcularTotales = (items) => items.reduce((acc, item) => {
+            const costo_total_soles = (item.costo_unitario_soles*item.cantidad)+item.mano_obra_soles
+            const precio_venta = item.tipoCambio?.precio_venta
+            acc.cantidad += Number(item.cantidad) || 0
+            acc.soles += costo_total_soles || 0
+            acc.dolares += precio_venta ? costo_total_soles/precio_venta : 0
+            return acc
+        }, { cantidad: 0, soles: 0, dolares: 0 })
+        const totalResumen = calcularTotales(customers || [])
+        // solo los articulos con CHECK ID 1 (azul)
+        const totalCheckRal = calcularTotales((customers || []).filter(item=>item.id_color_subrayado===1))
+        // solo los articulos con CHECK ID 2 (amarillo Circus)
+        const totalCheckCircus = calcularTotales((customers || []).filter(item=>item.id_color_subrayado===2))
+        // solo los articulos con CHECK ID 3 (verde Reducto)
+        const totalCheckReducto = calcularTotales((customers || []).filter(item=>item.id_color_subrayado===3))
+        // total neto = total - check ral - check circus - check reducto
+        const totalNeto = {
+            cantidad: totalResumen.cantidad - totalCheckRal.cantidad - totalCheckCircus.cantidad - totalCheckReducto.cantidad,
+            soles: totalResumen.soles - totalCheckRal.soles - totalCheckCircus.soles - totalCheckReducto.soles,
+            dolares: totalResumen.dolares - totalCheckRal.dolares - totalCheckCircus.dolares - totalCheckReducto.dolares,
+        }
+
         const [dataAgrupadoEtiquetas, setdataAgrupadoEtiquetas] = useState([])
         const [isOpenModalAgruparxEtiquetas, setisOpenModalAgruparxEtiquetas] = useState(false)
         const onCloseModalAgrupadoxEtiquetas = ()=>{
@@ -497,6 +528,111 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                         </Image>
                         </div>
                         <Button className='border-none input-buton' label="AGREGAR NUEVO" raised onClick={onOpenModalGastos} />
+                    </div>
+                    <Card className='my-3'>
+                        <Card.Body className='d-flex flex-wrap gap-5 font-24'>
+                            <div>
+                                <div>TOTAL CANTIDAD</div>
+                                <div className='fw-bold'>{totalResumen.cantidad}</div>
+                            </div>
+                            <div>
+                                <div>TOTAL MONTO S/.</div>
+                                <div className='fw-bold'><NumberFormatMoney amount={totalResumen.soles}/></div>
+                            </div>
+                            <div className='text-color-dolar'>
+                                <div>TOTAL MONTO $</div>
+                                <div className='fw-bold'><NumberFormatMoney amount={totalResumen.dolares}/></div>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                    {
+                        id_enterprice===2599 && (
+                            <>
+                            <Card className='my-3 text-white' style={{ backgroundColor: '#2c10cd' }}>
+                                <Card.Header className='font-24 fw-bold text-white' style={{ backgroundColor: '#2c10cd' }}>CHECK RAL</Card.Header>
+                                <Card.Body className='d-flex flex-wrap gap-5 font-24'>
+                                    <div>
+                                        <div>TOTAL CANTIDAD</div>
+                                        <div className='fw-bold'>{totalCheckRal.cantidad}</div>
+                                    </div>
+                                    <div>
+                                        <div>TOTAL MONTO S/.</div>
+                                        <div className='fw-bold'><NumberFormatMoney amount={totalCheckRal.soles}/></div>
+                                    </div>
+                                    <div>
+                                        <div>TOTAL MONTO $</div>
+                                        <div className='fw-bold'><NumberFormatMoney amount={totalCheckRal.dolares}/></div>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                            <Card className='my-3' style={{ backgroundColor: '#EEBE00' }}>
+                                <Card.Header className='font-24 fw-bold' style={{ backgroundColor: '#EEBE00' }}>CHECK CIRCUS</Card.Header>
+                                <Card.Body className='d-flex flex-wrap gap-5 font-24'>
+                                    <div>
+                                        <div>TOTAL CANTIDAD</div>
+                                        <div className='fw-bold'>{totalCheckCircus.cantidad}</div>
+                                    </div>
+                                    <div>
+                                        <div>TOTAL MONTO S/.</div>
+                                        <div className='fw-bold'><NumberFormatMoney amount={totalCheckCircus.soles}/></div>
+                                    </div>
+                                    <div>
+                                        <div>TOTAL MONTO $</div>
+                                        <div className='fw-bold'><NumberFormatMoney amount={totalCheckCircus.dolares}/></div>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                            <Card className='my-3' style={{ backgroundColor: '#17a700' }}>
+                                <Card.Header className='font-24 fw-bold' style={{ backgroundColor: '#17a700' }}>CHECK REDUCTO</Card.Header>
+                                <Card.Body className='d-flex flex-wrap gap-5 font-24'>
+                                    <div>
+                                        <div>TOTAL CANTIDAD</div>
+                                        <div className='fw-bold'>{totalCheckReducto.cantidad}</div>
+                                    </div>
+                                    <div>
+                                        <div>TOTAL MONTO S/.</div>
+                                        <div className='fw-bold'><NumberFormatMoney amount={totalCheckReducto.soles}/></div>
+                                    </div>
+                                    <div>
+                                        <div>TOTAL MONTO $</div>
+                                        <div className='fw-bold'><NumberFormatMoney amount={totalCheckReducto.dolares}/></div>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                            <Card className='my-3'>
+                                <Card.Header className='font-24 fw-bold'>TOTAL NETO</Card.Header>
+                                <Card.Body className='d-flex flex-wrap gap-5 font-24'>
+                                    <div>
+                                        <div>TOTAL CANTIDAD</div>
+                                        <div className='fw-bold'>{totalNeto.cantidad}</div>
+                                    </div>
+                                    <div>
+                                        <div>TOTAL MONTO S/.</div>
+                                        <div className='fw-bold'><NumberFormatMoney amount={totalNeto.soles}/></div>
+                                    </div>
+                                    <div className='text-color-dolar'>
+                                        <div>TOTAL MONTO $</div>
+                                        <div className='fw-bold'><NumberFormatMoney amount={totalNeto.dolares}/></div>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                            </>
+                        )
+                    }
+                    <div className='d-flex flex-wrap align-items-center gap-4 my-3 font-24'>
+                        <span className='fw-bold'>LEYENDA CHECK ID:</span>
+                        {
+                            [
+                                { id: 1, label: 'RAL', color: '#2c10cd' },
+                                { id: 2, label: 'CIRCUS', color: '#EEBE00' },
+                                { id: 3, label: 'REDUCTO', color: '#17a700' },
+                            ].map(c=>(
+                                <div key={c.id} className='d-flex align-items-center gap-2'>
+                                    <span style={{ display: 'inline-block', width: '28px', height: '28px', backgroundColor: c.color, border: '1px solid #555' }}></span>
+                                    <span><span className='fw-bold'>{c.id}</span> = {c.label}</span>
+                                </div>
+                            ))
+                        }
                     </div>
                     <TabView>
                         {
@@ -531,13 +667,13 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                             showGridlines={true}
                                             loading={loading} 
                                             stripedRows
-                                            rowClassName={(rowData)=>({ 'row-checking-roy': !!rowData.is_checking_roy })}
+                                            rowClassName={(rowData)=>(rowData.id_color_subrayado ? `row-color-subrayado-${rowData.id_color_subrayado}` : '')}
                                             scrollable
                                             onValueChange={valueFiltered}
                                             >
                                     <Column header={<span className={'font-24'}>Id</span>} field='id' style={{ width: '15px' }} body={IdBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ORDEN</span>} field='orden' sortable style={{ width: '80px' }} body={ordenBodyTemplate}/>
-                                    <Column header={<span className={'font-24'}>CHECK LAR</span>} field='is_checking_roy' sortable style={{ width: '80px' }} body={checkingRoyBodyTemplate}/>
+                                    <Column header={<span className={'font-24'}>CHECK ID</span>} field='id_color_subrayado' sortable style={{ width: '80px' }} body={checkIdBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '10rem' }} body={imagenBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>

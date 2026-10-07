@@ -122,7 +122,7 @@ const Error404Alt = lazy(() => import('../pages/otherpages/Error404Alt'));
 const ConstructorCruces = lazy(() => import('../pages/pagePT/ConstructorCruces/index.jsx'));
 const ReporteProveedores = lazy(() => import('../pages/pagePT/ReporteProveedores'));
 const ReporteCuentasBalance = lazy(() => import('../pages/pagePT/ReporteDetalleCuentasBalance'));
-const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
+// const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
 
 export default function ProtectedRoutes() {
 	const { settings } = useThemeContext();
@@ -632,7 +632,8 @@ export default function ProtectedRoutes() {
 							<Route path='programa/:uid' element={<PerfilPrograma />} />
 							<Route path='gestion-descuentos' element={<GestionDescuentos />} />
 							<Route path="pages/*" element={<OtherPages />} />
-							<Route path='home' element={findSectionDeep('/home') ? <Dashboard /> : <Home />} />
+							
+							{/*<Route path='home' element={findSectionDeep('/home') ? <Dashboard /> : <Home />} /> */}
 							{
 								sections.find(e => e.url === '/reportes-admin' || e.url === '/reporte' || e.url === '/config') &&
 								<Route path='constructor-cruces' element={<ConstructorCruces />} />

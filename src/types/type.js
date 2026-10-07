@@ -22,6 +22,14 @@ export const arrayEstadoComercial = [
 	{ value: 1674, color: 'bg-interesado' },
 	{ value: 1673, color: 'bg-venta' },
 ];
+// Tareas sobre un lead (tb_tareas_prospecto.id_tarea)
+export const arrayTareasComercial = [
+	{ value: 1, label: 'Llamar a lead', icon: 'pi pi-phone' },
+	{ value: 2, label: 'Seguimiento escrito a Lead', icon: 'pi pi-comments' },
+	{ value: 3, label: 'Enviar link de pago', icon: 'pi pi-link' },
+	{ value: 4, label: 'Agendar visita', icon: 'pi pi-calendar-plus' },
+	{ value: 5, label: 'Visita agendada', icon: 'pi pi-calendar' },
+];
 export const arrayTipoJornada = [
 	{ value: 1501, label: 'DESCANSO' },
 	{ value: 1500, label: 'REFRIGERIO' },

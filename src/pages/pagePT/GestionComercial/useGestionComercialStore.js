@@ -2,6 +2,7 @@ import { PTApi } from '@/common';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewComercial } from './dataComercialSlice';
+import Swal from 'sweetalert2';
 
 export const useGestionComercialStore = () => {
 	const [dataEmpleados, setdataEmpleados] = useState([]);
@@ -9,6 +10,7 @@ export const useGestionComercialStore = () => {
 	const [dataMedioComunicacion, setdataMedioComunicacion] = useState([]);
 	const [dataEstadoComercial, setdataEstadoComercial] = useState([]);
 	const [dataDistritos, setdataDistritos] = useState([]);
+	const [dataTareas, setdataTareas] = useState([]);
 	const dispatch = useDispatch();
 	const postGestionComercial = async (formState) => {
 		try {
@@ -104,7 +106,35 @@ export const useGestionComercialStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerTareasxProspecto = async (id_prospecto) => {
+		try {
+			setdataTareas([]);
+			const { data } = await PTApi.get(`/prospecto/lead/tarea/${id_prospecto}`);
+			setdataTareas(data.tareas);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const postTareaProspecto = async (formState) => {
+		try {
+			await PTApi.post('/prospecto/lead/tarea', formState);
+			await obtenerTareasxProspecto(formState.id_prospecto);
+			return true;
+		} catch (error) {
+			console.log(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'PROBLEMA AL REGISTRAR LA TAREA',
+				showConfirmButton: false,
+				timer: 1500,
+			});
+			return false;
+		}
+	};
 	return {
+		obtenerTareasxProspecto,
+		postTareaProspecto,
+		dataTareas,
 		obtenerDistritosxDepxProvincia,
 		obtenerDistritosDeLima,
 		obtenerEmpleadosVendedores,

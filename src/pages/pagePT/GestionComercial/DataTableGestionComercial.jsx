@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Button } from 'primereact/button'
 import { arrayEstadoComercial } from '@/types/type'
 
-export const DataTableGestionComercial = ({onOpenModalComentario}) => {
+export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalTareas}) => {
   const { obtenerGestionComercial } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   useEffect(() => {
@@ -108,6 +108,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario}) => {
             <Button icon="pi pi-comment" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
             <Button icon="pi pi-history" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
             <Button icon="pi pi-eye" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
+            <Button icon="pi pi-list-check" onClick={()=>onOpenModalTareas(row)} rounded outlined severity="danger"  className='mr-2' tooltip='TAREAS' tooltipOptions={{ position: 'top' }}/>
           </>
         )
       }
