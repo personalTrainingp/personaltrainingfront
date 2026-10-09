@@ -497,6 +497,22 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
             dolares: totalResumen.dolares - totalCheckRal.dolares - totalCheckCircus.dolares - totalCheckReducto.dolares,
         }
 
+        // filtro de la tabla por CHECK ID (1 RAL, 2 CIRCUS, 3 REDUCTO); null = sin filtro
+        const [filtroCheckId, setfiltroCheckId] = useState(null)
+        const onClickFiltroCheck = (id)=>{
+            setfiltroCheckId(prev=>prev===id ? null : id)
+            setFirstxTab({})
+        }
+        const onLimpiarFiltroCheck = ()=>{
+            setfiltroCheckId(null)
+            setFirstxTab({})
+        }
+        const styleCardCheck = (id)=>({
+            cursor: 'pointer',
+            outline: filtroCheckId===id ? '5px solid #000' : 'none',
+            opacity: filtroCheckId && filtroCheckId!==id ? 0.5 : 1,
+        })
+
         const [dataAgrupadoEtiquetas, setdataAgrupadoEtiquetas] = useState([])
         const [isOpenModalAgruparxEtiquetas, setisOpenModalAgruparxEtiquetas] = useState(false)
         const onCloseModalAgrupadoxEtiquetas = ()=>{
@@ -548,7 +564,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                     {
                         id_enterprice===2599 && (
                             <>
-                            <Card className='my-3 text-white' style={{ backgroundColor: '#2c10cd' }}>
+                            <Card className='my-3 text-white' style={{ backgroundColor: '#2c10cd', ...styleCardCheck(1) }} onClick={()=>onClickFiltroCheck(1)} title='Click para filtrar la tabla por CHECK RAL'>
                                 <Card.Header className='font-24 fw-bold text-white' style={{ backgroundColor: '#2c10cd' }}>CHECK RAL</Card.Header>
                                 <Card.Body className='d-flex flex-wrap gap-5 font-24'>
                                     <div>
@@ -565,7 +581,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                     </div>
                                 </Card.Body>
                             </Card>
-                            <Card className='my-3' style={{ backgroundColor: '#EEBE00' }}>
+                            <Card className='my-3' style={{ backgroundColor: '#EEBE00', ...styleCardCheck(2) }} onClick={()=>onClickFiltroCheck(2)} title='Click para filtrar la tabla por CHECK CIRCUS'>
                                 <Card.Header className='font-24 fw-bold' style={{ backgroundColor: '#EEBE00' }}>CHECK CIRCUS</Card.Header>
                                 <Card.Body className='d-flex flex-wrap gap-5 font-24'>
                                     <div>
@@ -582,7 +598,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                     </div>
                                 </Card.Body>
                             </Card>
-                            <Card className='my-3' style={{ backgroundColor: '#17a700' }}>
+                            <Card className='my-3' style={{ backgroundColor: '#17a700', ...styleCardCheck(3) }} onClick={()=>onClickFiltroCheck(3)} title='Click para filtrar la tabla por CHECK REDUCTO'>
                                 <Card.Header className='font-24 fw-bold' style={{ backgroundColor: '#17a700' }}>CHECK REDUCTO</Card.Header>
                                 <Card.Body className='d-flex flex-wrap gap-5 font-24'>
                                     <div>
@@ -599,6 +615,17 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                     </div>
                                 </Card.Body>
                             </Card>
+                            {
+                                filtroCheckId && (
+                                    <Button
+                                        className='mb-3'
+                                        icon='pi pi-filter-slash'
+                                        label={`LIMPIAR FILTRO (CHECK ${({1: 'RAL', 2: 'CIRCUS', 3: 'REDUCTO'})[filtroCheckId]})`}
+                                        severity='secondary'
+                                        onClick={onLimpiarFiltroCheck}
+                                    />
+                                )
+                            }
                             <Card className='my-3'>
                                 <Card.Header className='font-24 fw-bold'>TOTAL NETO</Card.Header>
                                 <Card.Body className='d-flex flex-wrap gap-5 font-24'>
@@ -640,6 +667,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                 
                                 const filterData = g.items
                                 // .filter(f=>id_enterprice === 601 ? f.id_categoria === 1957 : true)
+                                .filter(item=>filtroCheckId ? item.id_color_subrayado===filtroCheckId : true)
                                 .filter((item) =>
                                     Object.values(item).some((value) =>
                                     String(value).toLowerCase().includes(search.toLowerCase())
@@ -677,7 +705,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                     <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '10rem' }} body={imagenBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
-                                    <Column header={<span className={'font-24'}>CATEGORIA</span>} field='categoria' filterField="categoria" sortable style={{ width: '3rem' }} body={categoriaBody} filter/>
+                                    {/* <Column header={<span className={'font-24'}>CATEGORIA</span>} field='categoria' filterField="categoria" sortable style={{ width: '3rem' }} body={categoriaBody} filter/> */}
                                     {/* <Column header={<span className={'font-24'}>MODELO</span>} field='modelo' filterField="modelo" sortable style={{ width: '3rem' }} body={modeloBodyTemplate} filter/> */}
                                     <Column header={<span className={'font-24'}>DESCRIPCION</span>} field='descripcion' filterField="descripcion" style={{ minWidth: '10rem' }} sortable body={descripcionBodyTemplate} filter/>
                                     {/* <Column header={<span className={'font-24'}>INVENTARIO</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/> */}

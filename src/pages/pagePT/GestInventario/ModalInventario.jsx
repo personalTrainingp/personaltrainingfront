@@ -34,6 +34,8 @@ const registerArticulo={
     id_subcategoria: 0,
     modelo: '',
     id_empresa: 0,
+    // CHECK ID por defecto: 1 (RAL)
+    id_color_subrayado: 1,
     etiquetas_busquedas: []
 }
 const registerImgAvatar={

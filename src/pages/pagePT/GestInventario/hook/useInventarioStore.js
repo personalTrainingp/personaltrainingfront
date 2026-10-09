@@ -67,6 +67,16 @@ export const useInventarioStore = () => {
 				`/inventario/post-articulo/${id_enterprice}`,
 				formState
 			);
+			// el CHECK ID se guarda con su endpoint propio (post-articulo puede ignorar el campo)
+			if (formState.id_color_subrayado && data.id_articulo) {
+				try {
+					await PTApi.put(`/inventario/color-subrayado-articulo/${data.id_articulo}`, {
+						id_color_subrayado: Number(formState.id_color_subrayado),
+					});
+				} catch (error) {
+					console.log(error);
+				}
+			}
 
 			if (selectedFile) {
 				const formData = new FormData();
@@ -85,7 +95,8 @@ export const useInventarioStore = () => {
 				);
 			}
 			setIsLoading(false);
-			// await obtenerArticulos(id_enterprice);
+			// recarga la tabla para que aparezca el articulo nuevo (con su CHECK ID)
+			await obtenerArticulos(id_enterprice);
 			setmessage({ msg: data.msg, ok: data.ok });
 		} catch (error) {
 			console.log(error);
