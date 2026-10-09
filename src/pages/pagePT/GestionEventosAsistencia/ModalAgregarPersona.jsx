@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { DEDOS } from './dedos';
 
 const personaInicial = { nombre: '', dni: '', dedo: 6, binaryData: '' };
 
-export const ModalAgregarPersona = ({ show, onHide, agregarPersona, onAgregada }) => {
+// precargado (opcional): { nombre, dni } para registrar la huella de un cliente ya conocido
+export const ModalAgregarPersona = ({ show, onHide, agregarPersona, onAgregada, precargado = null, titulo = 'Agregar persona' }) => {
 	const [persona, setpersona] = useState(personaInicial);
+	useEffect(() => {
+		if (show && precargado) setpersona({ ...personaInicial, ...precargado });
+	}, [show, precargado]);
 	const [isGuardando, setisGuardando] = useState(false);
 	const [error, seterror] = useState('');
 
@@ -35,7 +39,7 @@ export const ModalAgregarPersona = ({ show, onHide, agregarPersona, onAgregada }
 		<Modal show={show} onHide={onCerrar} centered>
 			<Form onSubmit={onGuardar}>
 				<Modal.Header closeButton>
-					<Modal.Title>Agregar persona</Modal.Title>
+					<Modal.Title>{titulo}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{error && <Alert variant="danger">{error}</Alert>}
@@ -54,7 +58,7 @@ export const ModalAgregarPersona = ({ show, onHide, agregarPersona, onAgregada }
 							title="Solo números (hasta 9 dígitos)"
 							required
 						/>
-						<Form.Text muted>Se registra como PIN (con el que marca en el huellero) y como su DNI.</Form.Text>
+						<Form.Text muted>Se guarda tal cual como su DNI. El PIN del huellero es el mismo número; si empieza con 0 se le antepone un 1 (01234567 → 101234567).</Form.Text>
 					</Form.Group>
 					<Form.Group className="mb-3">
 						<Form.Label>Dedo</Form.Label>

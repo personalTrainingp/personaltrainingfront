@@ -1,15 +1,40 @@
 import { NumberFormatMoney } from '@/components/CurrencyMask';
 import dayjs from 'dayjs';
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { Table } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import { obtenerAnioMesDiaActualPeru } from '../helpers/fechaPeru';
+import { onQuitarMontoEditado, onSetMontoEditado } from '@/store/dataImaginaria/imaginariaSlice';
+import { MontoVistaEditable } from '../view/MontoVistaEditable';
 
 // Conceptos que se resaltan con bgPastel en la columna de nombre y en las celdas de cada mes
 const CONCEPTOS_PASTEL = [1272]
 // Conceptos que se resaltan en blanco (columna fija) en vez del color de la empresa
 const CONCEPTOS_DESTACADOS_BLANCO = [941, 1117, 1046, 1285, 1134, 1247, 1251, 1271, 1124]
 
-export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxDias=[], conceptos=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems, data=[]}) => {
+export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxDias=[], conceptos: conceptosBD=[], fechas=[], nombreGrupo='', index='', bgTotal, bgPastel, onOpenModalTableItems, data=[]}) => {
+  // Montos cambiados solo en la vista (localStorage de esta PC, no la BD). El monto editado
+  // reemplaza el del mes y se usa en los totales de esta tabla.
+  const dispatch = useDispatch()
+  const { montosEditados, modoEditarMontos } = useSelector((state)=>state.IMAGINARIA_FLUJO_CAJA)
+  // Celda que se esta editando (clave del monto). Con "Editar montos" activo: doble click edita
+  // y el click en el monto ya no abre el modal de detalle.
+  const [celdaEditando, setceldaEditando] = useState(null)
+  const abrirModalItems = (items) => {
+    if (!modoEditarMontos) onOpenModalTableItems(items)
+  }
+  const claveMonto = (idConcepto, mes) => `${id_empresa}|${anio}|${cat || 'otros'}|${nombreGrupo}|${idConcepto}|${mes}`
+  const conceptos = useMemo(() => conceptosBD.map((c) => {
+    let diferencia = 0
+    const itemsxDia = (c.itemsxDia ?? []).map((m) => {
+      const montoVista = montosEditados[claveMonto(c.id, m.mes)]
+      if (montoVista === undefined) return m
+      diferencia += montoVista - m.monto
+      return { ...m, monto: montoVista, montoOriginal: m.monto, editado: true }
+    })
+    return diferencia === 0 && itemsxDia.every((m) => !m.editado) ? c : { ...c, itemsxDia, monto: (c.monto ?? 0) + diferencia }
+  }), [conceptosBD, montosEditados, id_empresa, anio, cat, nombreGrupo])
+
   // "Hoy" en hora peruana (UTC-5 fijo), no en la zona horaria del entorno
   // donde corra el código — evita que el mes se adelante cerca de la
   // medianoche UTC (7pm-12am hora Perú).
@@ -89,13 +114,36 @@ export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxD
                     {
                       c.itemsxDia.map(m=>(
                         <React.Fragment key={m.id}>
-                          <td className={`text-center ${(m.monto===0 && m.monto_proyectado===0) ? 'text-gray' : ''} ${getCeldaMesClass(c.id, m.mes)} ${textoGrisDestacado}`}>
+                          <td
+                            className={`text-center ${(m.monto===0 && m.monto_proyectado===0) ? 'text-gray' : ''} ${getCeldaMesClass(c.id, m.mes)} ${textoGrisDestacado} ${modoEditarMontos ? 'cursor-pointer' : ''}`}
+                            onDoubleClick={()=>{ if (modoEditarMontos) setceldaEditando(claveMonto(c.id, m.mes)) }}
+                            title={modoEditarMontos ? 'Doble click para editar el monto' : undefined}
+                          >
                             {m.mesSTR}
                             <div>
                               {
-                                (m.monto_pagados!==0 || m.monto_no_pagados===0) && (
+                                celdaEditando === claveMonto(c.id, m.mes) && (
+                                  <MontoVistaEditable
+                                    monto={m.monto}
+                                    onGuardar={(monto)=>dispatch(onSetMontoEditado({ clave: claveMonto(c.id, m.mes), monto }))}
+                                    onRestablecer={()=>dispatch(onQuitarMontoEditado(claveMonto(c.id, m.mes)))}
+                                    onCerrar={()=>setceldaEditando(null)}
+                                  />
+                                )
+                              }
+                              {
+                                // el monto cambiado se ve igual que los demas
+                                celdaEditando !== claveMonto(c.id, m.mes) && m.editado && (
                                   <>
-                                    <span onClick={()=>onOpenModalTableItems(m.items_pagados)}>
+                                    <NumberFormatMoney amount={m.monto}/>
+                                    <br/>
+                                  </>
+                                )
+                              }
+                              {
+                                celdaEditando !== claveMonto(c.id, m.mes) && !m.editado && (m.monto_pagados!==0 || m.monto_no_pagados===0) && (
+                                  <>
+                                    <span onClick={()=>abrirModalItems(m.items_pagados)}>
                                       <NumberFormatMoney amount={m.monto_pagados}/>
                                     </span>
                                     <br/>
@@ -103,9 +151,9 @@ export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxD
                                 )
                               }
                               {
-                                m.monto_no_pagados>0 && (
+                                celdaEditando !== claveMonto(c.id, m.mes) && !m.editado && m.monto_no_pagados>0 && (
                                   <>
-                                    <span className={`text-change ${textoGrisDestacado}`} onClick={()=>onOpenModalTableItems(m.itemsNoPagados)}>
+                                    <span className={`text-change ${textoGrisDestacado}`} onClick={()=>abrirModalItems(m.itemsNoPagados)}>
                                       <NumberFormatMoney amount={m.monto_no_pagados}/>
                                     </span>
                                     <br/>

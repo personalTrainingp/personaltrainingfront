@@ -1,5 +1,5 @@
 import { arrayDistrito, arrayEstadoCivil, arrayEstados, arrayNacionalidad, arraySexo, arrayTipoCliente, arrayTipoDoc } from '@/types/type'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {Modal, Row, Col, Tab, Tabs, Button, ModalBody} from 'react-bootstrap'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import Select from 'react-select'
@@ -15,6 +15,9 @@ import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import { Loading } from '@/components/Loading';
 import { Toast } from 'primereact/toast';
 import { clearErrorMessage } from '@/store/usuario/usuarioClienteSlice';
+import { ModalAgregarDedo } from '../GestionEventosAsistencia/ModalAgregarDedo';
+import { useEventosAsistenciaStore } from '../GestionEventosAsistencia/useEventosAsistenciaStore';
+import { pinDesdeDni } from '../GestionEventosAsistencia/pinHuellero';
 
 
 const regUsuarioCliente= {
@@ -91,13 +94,68 @@ export const ModalCliente = ({show, onHide}) => {
         dispatch(onSetUsuarioCliente(formState))
     }, [formState])
 
+    // Huellas (opcional): se capturan aqui y se registran en el huellero despues de guardar el socio
+    const [huellas, sethuellas] = useState([]) // [{ dedo, binaryData }]
+    const [isOpenModalHuella, setisOpenModalHuella] = useState(false)
+    const dniHuella = String(numDoc_cli ?? '').trim()
+    const mostrarHuellas = dniHuella.length > 3
+    const { agregarPersona, agregarHuella } = useEventosAsistenciaStore()
+    // memorizado: ModalAgregarDedo limpia su formulario cada vez que cambia "persona"
+    const personaHuella = useMemo(() => isOpenModalHuella ? {
+        pin: dniHuella,
+        nombre: `${nombre_cli} ${apPaterno_cli} ${apMaterno_cli}`.replace(/\s+/g, ' ').trim() || 'Nuevo socio',
+        dedos: huellas.map((h) => h.dedo),
+    } : null, [isOpenModalHuella])
+    const capturarHuella = async (_pin, { dedo, binaryData }) => {
+        if (!binaryData?.trim()) return { ok: false, msg: 'El BinaryData es obligatorio' }
+        sethuellas((prev) => [...prev, { dedo, binaryData }])
+        return { ok: true }
+    }
+    // La primera huella crea a la persona en el huellero (o se agrega si ya existe); las demas se agregan como dedos
+    const registrarHuellasSocio = async ({ nombre, dni, huellas: pendientes }) => {
+        // el DNI va tal cual al campo DNI; el PIN (key) lleva un 1 delante si el DNI empieza con 0
+        const pin = pinDesdeDni(dni) ?? dni
+        let fallidas = []
+        for (const [i, h] of pendientes.entries()) {
+            let resultado
+            if (i === 0) {
+                resultado = await agregarPersona({ nombre, dni, dedo: h.dedo, binaryData: h.binaryData })
+                if (!resultado.ok && String(resultado.msg ?? '').startsWith('Ya existe una persona')) {
+                    resultado = await agregarHuella(pin, h)
+                }
+            } else {
+                resultado = await agregarHuella(pin, h)
+            }
+            if (!resultado.ok) fallidas.push(`Dedo ${h.dedo}: ${resultado.msg}`)
+        }
+        const registradas = pendientes.length - fallidas.length
+        if (registradas > 0) {
+            showToastCliente('success', 'Huellas', `${registradas} huella(s) registrada(s) en el huellero`, '', 4000)
+        }
+        if (fallidas.length > 0) {
+            showToastCliente('error', 'Huellas', fallidas.join(' | '), '', 8000)
+        }
+    }
+
   const onSubmitAgregarCliente = ()=>{
         dispatch(clearErrorMessage())
-          startRegisterUsuarioCliente({...usuarioCliente, dataContactsEmerg: dataContactsEmerg, comentarios}, selectedAvatar, btnCancelModal, showToastCliente)
+        // se toman los datos antes de que el formulario se limpie al guardar
+        const pendientes = mostrarHuellas ? huellas : []
+        const datosHuella = {
+            nombre: `${nombre_cli} ${apPaterno_cli} ${apMaterno_cli}`.replace(/\s+/g, ' ').trim().slice(0, 40),
+            dni: dniHuella,
+            huellas: pendientes,
+        }
+        const onSocioGuardado = ()=>{
+            btnCancelModal()
+            if (pendientes.length > 0) registrarHuellasSocio(datosHuella)
+        }
+          startRegisterUsuarioCliente({...usuarioCliente, dataContactsEmerg: dataContactsEmerg, comentarios}, selectedAvatar, onSocioGuardado, showToastCliente)
   }
   const btnCancelModal = ()=>{
         onHide()
         onResetForm()
+        sethuellas([])
         dispatch(clearErrorMessage())
         resetAvatar()
         dispatch(onResetComentario())
@@ -450,6 +508,29 @@ export const ModalCliente = ({show, onHide}) => {
                                         />
                                     </div>
                                 </Col>
+                                <Col xl={4}>
+                                    <div className="mb-2">
+                                        <label className="form-label">
+                                            Huellas
+                                        </label>
+                                        {/* habilitado solo cuando el DNI tiene mas de 3 digitos */}
+                                        <div
+                                            className={`form-control d-flex align-items-center gap-2 ${mostrarHuellas ? 'cursor-pointer' : 'bg-light'}`}
+                                            onClick={()=>{ if (mostrarHuellas) setisOpenModalHuella(true) }}
+                                            title={mostrarHuellas ? 'Registrar huella (opcional)' : 'Escribe el DNI primero'}
+                                            style={{ opacity: mostrarHuellas ? 1 : 0.6 }}
+                                        >
+                                            <i className={`mdi mdi-fingerprint ${mostrarHuellas ? 'text-primary' : 'text-muted'}`} style={{ fontSize: '1.2rem', lineHeight: 1 }}></i>
+                                            {
+                                                !mostrarHuellas
+                                                    ? <span className="text-muted">Escribe el DNI primero</span>
+                                                    : huellas.length === 0
+                                                        ? <span className="text-muted">Registrar huella (opcional)</span>
+                                                        : <span className="fw-bold">{huellas.length} {huellas.length === 1 ? 'huella' : 'huellas'}</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </Col>
                             </Row>
                             
 						</form>
@@ -488,6 +569,14 @@ export const ModalCliente = ({show, onHide}) => {
     </Modal>
     )
     }
+    <ModalAgregarDedo
+        persona={personaHuella}
+        onHide={()=>setisOpenModalHuella(false)}
+        agregarHuella={capturarHuella}
+        onAgregada={()=>{}}
+        titulo="Registrar huella"
+        textoGuardar="Agregar huella"
+    />
     </>
   )
 }

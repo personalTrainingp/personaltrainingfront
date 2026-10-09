@@ -2,6 +2,7 @@ import { PTApi } from '@/common';
 import { onSetDataView } from '@/store/data/dataSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { dniTieneHuella } from '../GestionEventosAsistencia/pinHuellero';
 
 export const useContratosDeClientes = () => {
 	const dispatch = useDispatch();
@@ -39,6 +40,7 @@ export const useContratosDeClientes = () => {
 					tb_cliente: dc.tb_cliente,
 					id_cli: dc.id_cli,
 					nombre_apellidos: dc.tb_cliente.nombres_apellidos_cli,
+					dni: dc.tb_cliente.numDoc_cli,
 					images_cli: dc.tb_cliente.tb_images,
 					asesor: dc.tb_empleado.nombres_apellidos_empl,
 					detalle_ventaMembresia: dc.detalle_ventaMembresia,
@@ -52,9 +54,28 @@ export const useContratosDeClientes = () => {
 			dispatch(onSetDataView(dataContratos));
 			setdataContratos(dataContratos);
 			setisLoading(true);
+			// las huellas se consultan despues de mostrar los contratos
+			obtenerPinesConHuella();
 		} catch (error) {
 			console.log(error);
 		}
+	};
+	// PINs del huellero (= DNI) con al menos una huella. null mientras se consulta.
+	const [pinesConHuella, setpinesConHuella] = useState(null);
+	const obtenerPinesConHuella = async () => {
+		try {
+			setpinesConHuella(null);
+			const { data } = await PTApi.get('/eventos-asistencia/personas/con-huella');
+			setpinesConHuella(new Set((data.pines || []).map(Number)));
+		} catch (error) {
+			console.log(error);
+			setpinesConHuella(new Set());
+		}
+	};
+	// 'SI' / 'NO', o null si aun no se termino de consultar
+	const tieneHuella = (dni) => {
+		if (pinesConHuella === null) return null;
+		return dniTieneHuella(pinesConHuella, dni) ? 'SI' : 'NO';
 	};
 	const postAvatarImagesCliente = async (blobAvtr, uidAvtr) => {
 		try {
@@ -78,6 +99,8 @@ export const useContratosDeClientes = () => {
 		}
 	};
 	return {
+		tieneHuella,
+		obtenerPinesConHuella,
 		obtenerContratoxIDVENTA,
 		isLoadingAvtr,
 		obtenerAvataresxUidCli,

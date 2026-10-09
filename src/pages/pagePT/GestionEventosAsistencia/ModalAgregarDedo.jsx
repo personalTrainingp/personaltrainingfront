@@ -3,7 +3,7 @@ import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { DEDOS } from './dedos';
 
 // Agrega la huella de otro dedo a una persona existente (se guarda y se envía al huellero)
-export const ModalAgregarDedo = ({ persona, onHide, agregarHuella, onAgregada }) => {
+export const ModalAgregarDedo = ({ persona, onHide, agregarHuella, onAgregada, titulo = 'Agregar dedo', textoGuardar = 'Guardar y enviar al huellero' }) => {
 	const disponibles = DEDOS.filter((d) => !persona?.dedos?.includes(d.value));
 	const [dedo, setdedo] = useState('');
 	const [binaryData, setbinaryData] = useState('');
@@ -36,7 +36,7 @@ export const ModalAgregarDedo = ({ persona, onHide, agregarHuella, onAgregada })
 		<Modal show={Boolean(persona)} onHide={onHide} centered>
 			<Form onSubmit={onGuardar}>
 				<Modal.Header closeButton>
-					<Modal.Title>Agregar dedo</Modal.Title>
+					<Modal.Title>{titulo}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{persona && (
@@ -80,7 +80,7 @@ export const ModalAgregarDedo = ({ persona, onHide, agregarHuella, onAgregada })
 						Cancelar
 					</Button>
 					<Button type="submit" disabled={isGuardando || disponibles.length === 0}>
-						{isGuardando ? 'Guardando...' : 'Guardar y enviar al huellero'}
+						{isGuardando ? 'Guardando...' : textoGuardar}
 					</Button>
 				</Modal.Footer>
 			</Form>

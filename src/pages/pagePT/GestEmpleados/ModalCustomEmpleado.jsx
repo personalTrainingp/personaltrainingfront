@@ -1,9 +1,10 @@
 import { ImagenUploader } from '@/components/ImagenUploader'
-import { InputDate, InputSelect, InputText } from '@/components/InputText'
+import { InputButton, InputDate, InputSelect, InputText } from '@/components/InputText'
 import { useForm } from '@/hooks/useForm'
 import React, { useState } from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
 import { useEmpleadosStore } from './useEmpleadosStore'
+import { arrayDistrito, arrayEstadoCivil, arrayNacionalidad, arraySexo, arrayTipoDoc } from '@/types/type'
 const registroEmpleado={
     nombre_empl: '',
     apPaterno_empl: '',
@@ -28,8 +29,8 @@ const registroEmpleado={
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalCustomEmpleado = ({show, onHide, id, isCopy}) => {
-    const { formState, onInputChange, 
+export const ModalCustomEmpleado = ({show, onHide, id, isCopy, id_empresa, id_estado}) => {
+    const { formState, onInputChange, onResetForm,
     nombre_empl,
     apPaterno_empl,
     apMaterno_empl,
@@ -47,43 +48,33 @@ export const ModalCustomEmpleado = ({show, onHide, id, isCopy}) => {
     departamento_empl } = useForm(registroEmpleado)
     const [selectedAvatar, setselectedAvatar] = useState(null)
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange, onResetForm:resetFile } = useForm(registerImgAvatar)
-    const { postEmpleado, updateEmpleado } = useEmpleadosStore()
+    const [showLoading, setshowLoading] = useState(false)
+    const { postEmpleado } = useEmpleadosStore()
     const ViewDataImg = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        // reader.onload = () => {
-        //     setSelectedFile(reader.result);
-        // };
-        reader.readAsDataURL(file);
-        setselectedAvatar(file)
+        setselectedAvatar(e.target.files[0])
     };
-    const submitGasto = async(e)=>{
+    const onClickCancelModal = ()=>{
+        onResetForm()
+        resetFile()
+        setselectedAvatar(null)
+        onHide()
+    }
+    const submitEmpleado = async(e)=>{
         e.preventDefault()
-        if(id!==0){
-            
-            setshowLoading(true)
-            await actualizarArticulo()
-            setshowLoading(false)
-            resetAvatar()
-            onClickCancelModal()
-            return;
-        }
         setshowLoading(true)
-        await startRegisterArticulos()
-        resetAvatar()
+        await postEmpleado({...formState, id_empresa, id_estado}, selectedAvatar, id_empresa, id_estado)
         setshowLoading(false)
-        // showToast(objetoToast);
         onClickCancelModal()
     }
   return (
-    <Modal show={show} onHide={onHide} size='xl'>
+    <Modal show={show} onHide={onClickCancelModal} size='xl'>
         <Modal.Header>
             <Modal.Title>
                 AGREGAR COLABORADOR
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <form>
+            <form id='form-custom-empleado' onSubmit={submitEmpleado}>
                 <Row>
                     <Col lg={3}>
                         <div className='mb-2'>
@@ -121,17 +112,17 @@ export const ModalCustomEmpleado = ({show, onHide, id, isCopy}) => {
                             </Col>
                             <Col lg={4}>
                                 <div className='mb-2'>
-                                    <InputSelect label={'Sexo'} nameInput={'sexo_empl'} value={sexo_empl} onChange={onInputChange} required/>
+                                    <InputSelect label={'Sexo'} nameInput={'sexo_empl'} value={sexo_empl} onChange={onInputChange} options={arraySexo} required/>
                                 </div>
                             </Col>
                             <Col lg={4}>
                                 <div className='mb-2'>
-                                    <InputSelect label={'ESTADO CIVIL'} nameInput={'estCivil_empl'} value={estCivil_empl} onChange={onInputChange} required/>
+                                    <InputSelect label={'ESTADO CIVIL'} nameInput={'estCivil_empl'} value={estCivil_empl} onChange={onInputChange} options={arrayEstadoCivil} required/>
                                 </div>
                             </Col>
                             <Col lg={4}>
                                 <div className='mb-2'>
-                                    <InputSelect label={'TIPO DE DOCUMENTO'} nameInput={'tipoDoc_empl'} value={tipoDoc_empl} onChange={onInputChange} required/>
+                                    <InputSelect label={'TIPO DE DOCUMENTO'} nameInput={'tipoDoc_empl'} value={tipoDoc_empl} onChange={onInputChange} options={arrayTipoDoc} required/>
                                 </div>
                             </Col>
                             <Col lg={4}>
@@ -141,12 +132,12 @@ export const ModalCustomEmpleado = ({show, onHide, id, isCopy}) => {
                             </Col>
                             <Col lg={4}>
                                 <div className='mb-2'>
-                                    <InputSelect label={'NACIONALIDAD'} nameInput={'nacionalidad_empl'} value={nacionalidad_empl} onChange={onInputChange} required/>
+                                    <InputSelect label={'NACIONALIDAD'} nameInput={'nacionalidad_empl'} value={nacionalidad_empl} onChange={onInputChange} options={arrayNacionalidad} required/>
                                 </div>
                             </Col>
                             <Col lg={4}>
                                 <div className='mb-2'>
-                                    <InputSelect label={'DISTRITO'} nameInput={'distrito_empl'} value={distrito_empl} onChange={onInputChange} required/>
+                                    <InputSelect label={'DISTRITO'} nameInput={'distrito_empl'} value={distrito_empl} onChange={onInputChange} options={arrayDistrito} required/>
                                 </div>
                             </Col>
                             <Col lg={4}>
@@ -171,6 +162,10 @@ export const ModalCustomEmpleado = ({show, onHide, id, isCopy}) => {
                 </Row>
             </form>
         </Modal.Body>
+        <Modal.Footer>
+            <InputButton label={'CANCELAR'} variant={'outline-danger'} onClick={onClickCancelModal} disabled={showLoading}/>
+            <InputButton label={showLoading?'AGREGANDO...':'AGREGAR'} type='submit' form='form-custom-empleado' disabled={showLoading}/>
+        </Modal.Footer>
     </Modal>
   )
 }

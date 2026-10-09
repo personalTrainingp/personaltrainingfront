@@ -2,6 +2,7 @@ import { PTApi } from '@/common';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useState } from 'react';
+import { dniTieneHuella } from '../GestionEventosAsistencia/pinHuellero';
 
 dayjs.extend(utc);
 
@@ -17,6 +18,20 @@ const fechaCalendario = (fecha) => (fecha ? dayjs.utc(fecha).format('YYYY-MM-DD'
 
 export const useSeguimientoStore = () => {
 	const [dataSeguimientoxFecha, setdataSeguimientoxFecha] = useState([]);
+	// PINs del huellero (= DNI) con al menos una huella. null mientras se consulta.
+	const [pinesConHuella, setpinesConHuella] = useState(null);
+	const obtenerPinesConHuella = async () => {
+		try {
+			setpinesConHuella(null);
+			const { data } = await PTApi.get('/eventos-asistencia/personas/con-huella');
+			setpinesConHuella(new Set((data.pines || []).map(Number)));
+		} catch (error) {
+			console.log(error);
+			setpinesConHuella(new Set());
+		}
+	};
+	// true / false, o null si aun no se termino de consultar
+	const tieneHuella = (dni) => (pinesConHuella === null ? null : dniTieneHuella(pinesConHuella, dni));
 	const obtenerSeguimientoxFecha = async () => {
 		try {
 			const { data } = await PTApi.get('/seguimiento/');
@@ -44,10 +59,28 @@ export const useSeguimientoStore = () => {
 						apMaterno_cli: m.apMaterno_cli,
 						email_cli: m.email_cli,
 						tel_cli: m.tel_cli,
+						dni: m.numDoc_cli,
+						// contrato de la ultima membresia: firmado, sin firmar, o no requiere (monto 0)
+						contrato:
+							Number(venta.tarifa_monto) === 0
+								? 'NO REQUIERE'
+								: venta.firma_cli
+									? 'CON CONTRATO'
+									: 'SIN CONTRATO',
 						nombres_apellidos_cli: `${m.nombre_cli} ${m.apPaterno_cli} ${m.apMaterno_cli}`,
 						id_cli: m.id_cli,
 						uid: m.uid,
 						fecha_inicio: venta.fecha_inicio,
+						// venta de la ultima membresia del socio (monto de esa membresia)
+						id_venta: venta.id_venta,
+						fecha_venta: venta.tb_ventum?.fecha_venta
+							? dayjs.utc(venta.tb_ventum.fecha_venta).subtract(OFFSET_PERU_HORAS, 'hour').format('YYYY-MM-DD')
+							: '',
+						monto_venta: Number(venta.tarifa_monto) || 0,
+						// membresias distintas que tuvo el socio (con venta)
+						cantidad_membresias: new Set(
+							(m?.cli_seguimiento ?? []).filter((s) => s.venta).map((s) => s.id_membresia)
+						).size,
 						fecha_vencimiento,
 						fecha_vencimiento_: dayjs
 							.utc(fecha_vencimiento)
@@ -58,11 +91,14 @@ export const useSeguimientoStore = () => {
 				})
 				.filter(Boolean);
 			setdataSeguimientoxFecha(dataAlter);
+			// las huellas se consultan despues de mostrar los socios
+			obtenerPinesConHuella();
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	return {
+		tieneHuella,
 		obtenerSeguimientoxFecha,
 		dataSeguimientoxFecha,
 	};

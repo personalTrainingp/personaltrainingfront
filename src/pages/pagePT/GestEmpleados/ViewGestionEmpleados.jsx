@@ -17,7 +17,7 @@ export const ViewGestionEmpleados = ({id_empresa, id_estado}) => {
         <PageBreadcrumb title={'Gestion de colaboradores'}/>
         <InputButton label={'AGREGAR COLABORADOR'} onClick={()=>onOpenModalCustomEmpleados(0, false)}/>
         <DataTableGestionEmpleados id_empresa={id_empresa} id_estado={id_estado}/>
-        <ModalCustomEmpleado show={isOpenModalCustomEmpleado.isOpen} id={isOpenModalCustomEmpleado.id} isCopy={isOpenModalCustomEmpleado.isCopy} onHide={onCloseModalCustomEmpleados}/>
+        <ModalCustomEmpleado id_empresa={id_empresa} id_estado={id_estado} show={isOpenModalCustomEmpleado.isOpen} id={isOpenModalCustomEmpleado.id} isCopy={isOpenModalCustomEmpleado.isCopy} onHide={onCloseModalCustomEmpleados}/>
     </div>
   )
 }

@@ -14,8 +14,8 @@ export const ModalTareas = ({show, onHide, lead=null}) => {
   useEffect(() => {
     if (show && lead?.id) obtenerTareasxProspecto(lead.id)
   }, [show, lead?.id])
-  const onRegistrarTarea = ({ id_tarea, observacion })=>{
-    return postTareaProspecto({ id_prospecto: lead.id, id_tarea, observacion })
+  const onRegistrarTarea = ({ id_tarea, observacion, fecha })=>{
+    return postTareaProspecto({ id_prospecto: lead.id, id_tarea, observacion, fecha })
   }
   return (
     <>

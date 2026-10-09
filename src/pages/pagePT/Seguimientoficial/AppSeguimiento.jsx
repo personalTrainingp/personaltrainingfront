@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { hoyPeru, useSeguimientoStore } from './useSeguimientoStore'
 import { TableSeguimientos } from './TableSeguimientos'
 export const AppSeguimiento = () => {
-    const { obtenerSeguimientoxFecha, dataSeguimientoxFecha } = useSeguimientoStore();
+    const { obtenerSeguimientoxFecha, dataSeguimientoxFecha, tieneHuella } = useSeguimientoStore();
 
     useEffect(() => {
         obtenerSeguimientoxFecha();
@@ -26,7 +26,9 @@ export const AppSeguimiento = () => {
                     contadorKey="sesionesPendientes"
                     contadorLabel="SESIONES"
                     dataSeguimientoxFecha={dataSeguimientoxFecha}
+                    tieneHuella={tieneHuella}
                     title={<span className="text-change">SOCIOS ACTIVOS</span>}
+                    nombreExcel="socios-activos"
                     desde={hoy}
                 />
 
@@ -36,7 +38,9 @@ export const AppSeguimiento = () => {
                     contadorKey="diasVencidos"
                     contadorLabel="DIAS"
                     dataSeguimientoxFecha={dataSeguimientoxFecha}
+                    tieneHuella={tieneHuella}
                     title={<span className="text-change">RENOVACIONES VENCIDAS</span>}
+                    nombreExcel="renovaciones-vencidas"
                     desde={inicioRenovaciones}
                     hasta={hoy}
                 />
@@ -47,7 +51,9 @@ export const AppSeguimiento = () => {
                     contadorKey="diasVencidos"
                     contadorLabel="DIAS"
                     dataSeguimientoxFecha={dataSeguimientoxFecha}
+                    tieneHuella={tieneHuella}
                     title={<span className="text-change">REINSCRIPCIONES VENCIDAS</span>}
+                    nombreExcel="reinscripciones-vencidas"
                     desde="2024-01-01"
                     hasta={inicioRenovaciones}
                 />

@@ -1,7 +1,7 @@
 import config from '@/config'
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ModalIsFirma } from '@/components/ModalIsFirma'
 import { useSelector } from 'react-redux'
 import { Button, Card, Col, Row } from 'react-bootstrap'
@@ -11,9 +11,38 @@ import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { ModalPhotoCli } from './ModalPhotoCli'
 import { DataResumenAsesor } from './DataResumenAsesor'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
+import Swal from 'sweetalert2'
+import { ModalAgregarPersona } from '../GestionEventosAsistencia/ModalAgregarPersona'
+import { useEventosAsistenciaStore } from '../GestionEventosAsistencia/useEventosAsistenciaStore'
+import { pinDesdeDni } from '../GestionEventosAsistencia/pinHuellero'
 
 export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma}) => {
-  const { obtenerContratosDeClientes, obtenerContratoxIDVENTA } = useContratosDeClientes()
+  const { obtenerContratosDeClientes, obtenerContratoxIDVENTA, tieneHuella, obtenerPinesConHuella } = useContratosDeClientes()
+  const { agregarPersona, agregarHuella } = useEventosAsistenciaStore()
+  // Cliente sin huella al que se le esta registrando la huella (null = modal cerrado)
+  const [clienteHuella, setclienteHuella] = useState(null)
+  const precargadoHuella = useMemo(
+    () => clienteHuella && {
+      nombre: String(clienteHuella.nombre_apellidos ?? '').trim().slice(0, 40),
+      dni: String(clienteHuella.dni ?? '').trim(),
+    },
+    [clienteHuella]
+  )
+  // Si el cliente ya existe en el huellero (sin huella), solo se le agrega la huella del dedo
+  const registrarHuellaCliente = async (persona) => {
+    const resultado = await agregarPersona(persona)
+    if (resultado.ok || !String(resultado.msg ?? '').startsWith('Ya existe una persona')) return resultado
+    return agregarHuella(pinDesdeDni(persona.dni) ?? persona.dni, { dedo: persona.dedo, binaryData: persona.binaryData })
+  }
+  const onHuellaRegistrada = (resultado) => {
+    Swal.fire({
+      icon: 'success',
+      title: resultado.msg || 'HUELLA REGISTRADA',
+      showConfirmButton: false,
+      timer: 1800,
+    })
+    obtenerPinesConHuella()
+  }
   const { dataView } =useSelector(e=>e.DATA)
   const [data, setdata] = useState(dataView)
     const onOpenModalTipoCambio = (id_venta, idCli) =>{
@@ -30,6 +59,16 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
   }
   // Función para agrupar por nombres_apellidos_empl y contar firmados y sinFirmas
   function agruparFirmasxEmpl(dataView) {
+    // Ultima venta de cada cliente: la huella se cuenta una sola vez por cliente,
+    // para el asesor de esa ultima venta
+    const ultimaVentaxCli = new Map()
+    dataView?.forEach((v) => {
+      const actual = ultimaVentaxCli.get(v.id_cli)
+      const esMasReciente = !actual ||
+        new Date(v.createdAt) > new Date(actual.createdAt) ||
+        (new Date(v.createdAt).getTime() === new Date(actual.createdAt).getTime() && v.id > actual.id)
+      if (esMasReciente) ultimaVentaxCli.set(v.id_cli, v)
+    })
 
     const groupedData = dataView?.reduce((acc, current) => {
       const empleado = current.asesor;
@@ -45,7 +84,9 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
           firmados: [],
           sinFirmas: [],
           fotos: [],
-          sinFotos: []
+          sinFotos: [],
+          conHuella: [],
+          sinHuella: []
         };
         acc.push(empleadoEntry);
       }
@@ -67,6 +108,12 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
         }
       });
     
+      if (ultimaVentaxCli.get(current.id_cli) === current) {
+        const huella = tieneHuella(current.dni)
+        if (huella === 'SI') empleadoEntry.conHuella.push(current)
+        if (huella === 'NO') empleadoEntry.sinHuella.push(current)
+      }
+
       // Agregamos el elemento actual a los items de este empleado
       empleadoEntry.items.push(current);
     
@@ -115,7 +162,7 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
               </span>
             )
           }
-          <br/>
+          <div className='text-muted'>DNI: {rowData.dni || '-'}</div>
           {
             rowData.detalle_ventaMembresia[0].tarifa_monto!==0 && (
               !createdFirmas&&<span className='text-primary fw-bold'>tiempo sin firmar: {dias} días, {horas} horas, {minutos} minutos, {segundos} segundos</span>
@@ -169,6 +216,17 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
         )
       }
     },{
+      id: 7, header: '¿TIENE HUELLA?', render:(rowData)=>{
+        const huella = tieneHuella(rowData.dni)
+        if (huella === null) return <span className='text-muted'>...</span>
+        if (huella === 'SI') return <span className='text-black'>SI</span>
+        return (
+          <a onClick={()=>setclienteHuella(rowData)} className='underline cursor-pointer fw-bold' title='Registrar huella'>
+            NO
+          </a>
+        )
+      }
+    },{
       id: 6, header: 'CONTRATOS', render:(rowData)=>{
         return (
           <>
@@ -196,7 +254,7 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
         {agruparFirmasxEmpl(dataView).map((f, index, array)=>{
           return(
             <Col lg={3} className=''>
-              <DataResumenAsesor f={f} array={array} onClickChangeData={onClickChangeData}/>
+              <DataResumenAsesor f={f} array={array} onClickChangeData={onClickChangeData} huellaCargando={tieneHuella('') === null}/>
             </Col>
           )
         })
@@ -208,6 +266,14 @@ export const DataTableContratoCliente = ({onOpenModalFotoCli, onOpenModalFirma})
       <DataTableCR
         columns={columns}
         data={data}
+      />
+      <ModalAgregarPersona
+        show={clienteHuella !== null}
+        onHide={()=>setclienteHuella(null)}
+        agregarPersona={registrarHuellaCliente}
+        onAgregada={onHuellaRegistrada}
+        precargado={precargadoHuella}
+        titulo='Registrar huella'
       />
     </>
   )

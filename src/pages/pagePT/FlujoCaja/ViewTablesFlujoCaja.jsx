@@ -4,6 +4,8 @@ import { useFlujoCaja } from './hook/useFlujoCajaStore'
 import { DataTablePrincipal } from './DataTables/DataTablePrincipal'
 import { ModalTableItems } from './view/ModalTableItems'
 import { ViewResumenTotal } from './ViewResumenTotal'
+import { useDispatch, useSelector } from 'react-redux'
+import { onToggleModoEditarMontos } from '@/store/dataImaginaria/imaginariaSlice'
 
 // Grupos "BOLSA" en la BD. Por defecto los ids que usa CHANGE (153 gasto, 121
 // ingreso); las demás empresas pasan los suyos por prop si en su plan de
@@ -13,6 +15,9 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     const { obtenerEgresosxFecha, dataGastosxFecha, obtenerIngresosxFecha, dataIngresosxFecha } = useFlujoCaja()
     const [data, setdata] = useState({isOpen: false, items: [], itemsAcumulados: {}, anio: 2024, mes: 9, header: '', isShowConceptos: false})
     const [dataIngresos, setdataIngresos] = useState({isOpen: false, items: [], header: '', isShowConceptos: false})
+    // "Editar montos": cambia montos solo en la vista (localStorage de esta PC, no la BD)
+    const dispatch = useDispatch()
+    const { modoEditarMontos } = useSelector((state)=>state.IMAGINARIA_FLUJO_CAJA)
     useEffect(() => {
     const obtenerDatos = async () => {
         await Promise.all([
@@ -34,6 +39,22 @@ export const ViewTablesFlujoCaja = ({arrayFecha=[], link, anio, id_empresa, clas
     }
   return (
     <div>
+        <div className='d-flex align-items-center gap-3 m-2'>
+            <button
+                type='button'
+                className={`btn ${modoEditarMontos ? 'btn-primary' : 'btn-outline-primary'}`}
+                onClick={()=>dispatch(onToggleModoEditarMontos())}
+                title='Los montos cambiados se guardan solo en esta PC, no en la base de datos'
+            >
+                <i className='pi pi-pencil me-2'></i>
+                {modoEditarMontos ? 'Terminar de editar montos' : 'Editar montos'}
+            </button>
+            {
+                modoEditarMontos && (
+                    <span className='fs-4'>Ya se puede editar los montos con un doble click</span>
+                )
+            }
+        </div>
         <div style={{fontSize: '70px'}} className='text-black text-center'>INGRESOS</div>
         <div className="tab-scroll-container">
             {

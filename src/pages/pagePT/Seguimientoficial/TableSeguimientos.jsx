@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
 import dayjs from 'dayjs'
 import { Col, Row } from 'react-bootstrap'
@@ -10,10 +10,42 @@ const orden = [
 ];
 
 // desde/hasta son fechas 'YYYY-MM-DD' (hora peruana): incluye "desde", excluye "hasta".
-export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFecha, bodyHeadcontadorDia, contadorKey, contadorLabel}) => {
+export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFecha, bodyHeadcontadorDia, contadorKey, contadorLabel, nombreExcel='seguimiento', tieneHuella=()=>null}) => {
         const data = useMemo(() => dataSeguimientoxFecha.filter(f =>
             (!desde || f.fecha_vencimiento >= desde) && (!hasta || f.fecha_vencimiento < hasta)
         ), [dataSeguimientoxFecha, desde, hasta])
+        // Reporte general de la tabla: huellas y contratos (ultima membresia de cada socio)
+        const huellasCargando = tieneHuella('') === null
+        const conHuella = huellasCargando ? 0 : data.filter(f => tieneHuella(f.dni)).length
+        const conContrato = data.filter(f => f.contrato === 'CON CONTRATO').length
+        const sinContrato = data.filter(f => f.contrato === 'SIN CONTRATO').length
+        const noRequiere = data.length - conContrato - sinContrato
+        const pct = (n, total) => total === 0 ? '0.00' : ((n / total) * 100).toFixed(2)
+        const filtroNoRequiere = { label: 'NO REQUIERE CONTRATO', filtro: (f) => f.contrato === 'NO REQUIERE' }
+        const tarjetasReporte = [
+            {
+                titulo: 'HUELLAS',
+                items: [
+                    { label: 'SIN HUELLA', valor: data.length - conHuella, total: data.length, cargando: huellasCargando, filtro: (f) => tieneHuella(f.dni) === false },
+                    { label: 'CON HUELLA', valor: conHuella, total: data.length, cargando: huellasCargando, filtro: (f) => tieneHuella(f.dni) === true },
+                ],
+            },
+            {
+                titulo: 'CONTRATOS',
+                items: [
+                    { label: 'SIN CONTRATO', valor: sinContrato, total: conContrato + sinContrato, filtro: (f) => f.contrato === 'SIN CONTRATO' },
+                    { label: 'CON CONTRATO', valor: conContrato, total: conContrato + sinContrato, filtro: (f) => f.contrato === 'CON CONTRATO' },
+                ],
+            },
+        ]
+        // Al hacer click en un numero del reporte se filtra la tabla (otro click lo quita)
+        const [filtroReporte, setfiltroReporte] = useState(null)
+        const filtroActivo = [...tarjetasReporte.flatMap(t => t.items), filtroNoRequiere].find(r => r.label === filtroReporte)
+        const dataTabla = filtroActivo ? data.filter(filtroActivo.filtro) : data
+        const onClickReporte = (r) => {
+            if (r.cargando) return
+            setfiltroReporte(actual => actual === r.label ? null : r.label)
+        }
         const resultado = Object.values(
             data.reduce((acc, item) => {
                 if (!acc[item.nombre_programa]) {
@@ -107,6 +139,10 @@ export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFe
                 exportValue: (row)=>row.fecha_vencimiento
             },
             {id: 'programa', exportHeader: 'programa', exportValue: (row)=>`${row.nombre_programa}`},
+            {id: 'id_venta', exportHeader: 'N° VENTA', exportValue: (row)=>row.id_venta},
+            {id: 'fecha_venta', exportHeader: 'FECHA DE VENTA', exportValue: (row)=>row.fecha_venta},
+            {id: 'monto_venta', exportHeader: 'MONTO VENTA S/.', exportValue: (row)=>row.monto_venta},
+            {id: 'cantidad_membresias', exportHeader: 'CANTIDAD DE MEMBRESIAS', exportValue: (row)=>row.cantidad_membresias},
             {id: 'contador', exportHeader: bodyHeadcontadorDia, exportValue: (row)=>row[contadorKey]},
             {id: 'email', exportHeader: 'email', exportValue: (row)=>`${row.email_cli}`},
             {id: 'telefono', exportHeader: 'TELEFONO', exportValue: (row)=>`${row.tel_cli}`},
@@ -155,10 +191,62 @@ export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFe
                 }
             </Row>
         </div>
+        <Row className='my-2'>
+            {
+                tarjetasReporte.map(t=>(
+                    <Col xs={6} key={t.titulo}>
+                        <div className='card p-3 h-100 mb-0'>
+                            <div className='fs-3 fw-bold'>{t.titulo}</div>
+                            <ul className='list-unstyled mb-0'>
+                                {
+                                    t.items.map(r=>(
+                                        <li
+                                            key={r.label}
+                                            onClick={()=>onClickReporte(r)}
+                                            className={`d-flex justify-content-between align-items-center px-2 my-1 rounded fs-4 ${r.cargando ? '' : 'cursor-pointer'}`}
+                                            style={{ border: `2px solid ${filtroReporte === r.label ? 'currentColor' : 'transparent'}` }}
+                                            title={filtroReporte === r.label ? 'Quitar filtro' : `Filtrar la tabla: ${r.label}`}
+                                        >
+                                            <span>{r.label}</span>
+                                            {
+                                                r.cargando
+                                                    ? <span className='text-muted'>...</span>
+                                                    : <span><b className='text-change'>{r.valor}</b> <span className='fs-5'>/ {pct(r.valor, r.total)}%</span></span>
+                                            }
+                                        </li>
+                                    ))
+                                }
+                                {
+                                    t.titulo === 'CONTRATOS' && noRequiere > 0 && (
+                                        <li
+                                            onClick={()=>onClickReporte(filtroNoRequiere)}
+                                            className='px-2 my-1 rounded fs-6 text-muted cursor-pointer'
+                                            style={{ border: `2px solid ${filtroReporte === filtroNoRequiere.label ? 'currentColor' : 'transparent'}` }}
+                                            title='Ultima membresia con monto 0: no requiere contrato'
+                                        >
+                                            {noRequiere} no requieren contrato (monto 0)
+                                        </li>
+                                    )
+                                }
+                            </ul>
+                        </div>
+                    </Col>
+                ))
+            }
+        </Row>
+        {
+            filtroActivo && (
+                <div className='mb-2 fs-5'>
+                    Mostrando <b>{dataTabla.length}</b> socios: <b>{filtroActivo.label}</b>
+                    <a className='ms-3 text-danger cursor-pointer' onClick={()=>setfiltroReporte(null)}>Quitar filtro</a>
+                </div>
+            )
+        }
         <DataTableCR
             exportExtraColumns={columnsExports}
+            exportFileName={nombreExcel}
             columns={columns}
-            data={data}
+            data={dataTabla}
         />
     </div>
   )
