@@ -42,6 +42,9 @@ export const GestionInventario = () => {
                   <TabPanel header={<>INVENTARIO <br/> SEPTIEMBRE 2026 <br/>(3 y 3 1/2)</>}>
                         <DataInventario id_enterprice={2599} id_zona={599}/>
                   </TabPanel>
+                  <TabPanel header={<>STOCKS</>}>
+                        <DataInventario id_enterprice={2599} id_zona={599}/>
+                  </TabPanel>
             </TabView>
       }
       childrenCircus={

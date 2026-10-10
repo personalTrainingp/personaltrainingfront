@@ -626,23 +626,6 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                     />
                                 )
                             }
-                            <Card className='my-3'>
-                                <Card.Header className='font-24 fw-bold'>TOTAL NETO</Card.Header>
-                                <Card.Body className='d-flex flex-wrap gap-5 font-24'>
-                                    <div>
-                                        <div>TOTAL CANTIDAD</div>
-                                        <div className='fw-bold'>{totalNeto.cantidad}</div>
-                                    </div>
-                                    <div>
-                                        <div>TOTAL MONTO S/.</div>
-                                        <div className='fw-bold'><NumberFormatMoney amount={totalNeto.soles}/></div>
-                                    </div>
-                                    <div className='text-color-dolar'>
-                                        <div>TOTAL MONTO $</div>
-                                        <div className='fw-bold'><NumberFormatMoney amount={totalNeto.dolares}/></div>
-                                    </div>
-                                </Card.Body>
-                            </Card>
                             </>
                         )
                     }
