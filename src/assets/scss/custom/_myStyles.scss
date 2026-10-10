@@ -319,6 +319,12 @@
         color: #000 !important;
       }
     }
+    tr.row-color-subrayado-4 > td{
+      background-color: #C8A2C8 !important; // lila Insumos
+      .text-color-dolar{
+        color: #000 !important;
+      }
+    }
     // Iconos de acciones en blanco sobre las filas con color, para que resalten
     tr[class*='row-color-subrayado-'] > td .p-button.p-button-outlined{
       color: #fff !important;

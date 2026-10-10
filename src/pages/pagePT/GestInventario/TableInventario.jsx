@@ -490,14 +490,16 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         const totalCheckCircus = calcularTotales((customers || []).filter(item=>item.id_color_subrayado===2))
         // solo los articulos con CHECK ID 3 (verde Reducto)
         const totalCheckReducto = calcularTotales((customers || []).filter(item=>item.id_color_subrayado===3))
-        // total neto = total - check ral - check circus - check reducto
+        // solo los articulos con CHECK ID 4 (lila Insumos)
+        const totalCheckInsumos = calcularTotales((customers || []).filter(item=>item.id_color_subrayado===4))
+        // total neto = total - check ral - check circus - check reducto - check insumos
         const totalNeto = {
-            cantidad: totalResumen.cantidad - totalCheckRal.cantidad - totalCheckCircus.cantidad - totalCheckReducto.cantidad,
-            soles: totalResumen.soles - totalCheckRal.soles - totalCheckCircus.soles - totalCheckReducto.soles,
-            dolares: totalResumen.dolares - totalCheckRal.dolares - totalCheckCircus.dolares - totalCheckReducto.dolares,
+            cantidad: totalResumen.cantidad - totalCheckRal.cantidad - totalCheckCircus.cantidad - totalCheckReducto.cantidad - totalCheckInsumos.cantidad,
+            soles: totalResumen.soles - totalCheckRal.soles - totalCheckCircus.soles - totalCheckReducto.soles - totalCheckInsumos.soles,
+            dolares: totalResumen.dolares - totalCheckRal.dolares - totalCheckCircus.dolares - totalCheckReducto.dolares - totalCheckInsumos.dolares,
         }
 
-        // filtro de la tabla por CHECK ID (1 RAL, 2 CIRCUS, 3 REDUCTO); null = sin filtro
+        // filtro de la tabla por CHECK ID (1 RAL, 2 CIRCUS, 3 REDUCTO, 4 INSUMOS); null = sin filtro
         const [filtroCheckId, setfiltroCheckId] = useState(null)
         const onClickFiltroCheck = (id)=>{
             setfiltroCheckId(prev=>prev===id ? null : id)
@@ -615,12 +617,29 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                     </div>
                                 </Card.Body>
                             </Card>
+                            <Card className='my-3' style={{ backgroundColor: '#C8A2C8', ...styleCardCheck(4) }} onClick={()=>onClickFiltroCheck(4)} title='Click para filtrar la tabla por CHECK INSUMOS'>
+                                <Card.Header className='font-24 fw-bold' style={{ backgroundColor: '#C8A2C8' }}>CHECK INSUMOS</Card.Header>
+                                <Card.Body className='d-flex flex-wrap gap-5 font-24'>
+                                    <div>
+                                        <div>TOTAL CANTIDAD</div>
+                                        <div className='fw-bold'>{totalCheckInsumos.cantidad}</div>
+                                    </div>
+                                    <div>
+                                        <div>TOTAL MONTO S/.</div>
+                                        <div className='fw-bold'><NumberFormatMoney amount={totalCheckInsumos.soles}/></div>
+                                    </div>
+                                    <div>
+                                        <div>TOTAL MONTO $</div>
+                                        <div className='fw-bold'><NumberFormatMoney amount={totalCheckInsumos.dolares}/></div>
+                                    </div>
+                                </Card.Body>
+                            </Card>
                             {
                                 filtroCheckId && (
                                     <Button
                                         className='mb-3'
                                         icon='pi pi-filter-slash'
-                                        label={`LIMPIAR FILTRO (CHECK ${({1: 'RAL', 2: 'CIRCUS', 3: 'REDUCTO'})[filtroCheckId]})`}
+                                        label={`LIMPIAR FILTRO (CHECK ${({1: 'RAL', 2: 'CIRCUS', 3: 'REDUCTO', 4: 'INSUMOS'})[filtroCheckId]})`}
                                         severity='secondary'
                                         onClick={onLimpiarFiltroCheck}
                                     />
@@ -636,6 +655,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                 { id: 1, label: 'RAL', color: '#2c10cd' },
                                 { id: 2, label: 'CIRCUS', color: '#EEBE00' },
                                 { id: 3, label: 'REDUCTO', color: '#17a700' },
+                                { id: 4, label: 'INSUMOS', color: '#C8A2C8' },
                             ].map(c=>(
                                 <div key={c.id} className='d-flex align-items-center gap-2'>
                                     <span style={{ display: 'inline-block', width: '28px', height: '28px', backgroundColor: c.color, border: '1px solid #555' }}></span>
