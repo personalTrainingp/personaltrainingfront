@@ -1,0 +1,124 @@
+.font-24 {
+	font-size: 24px;
+}
+.text-color-dolar {
+	color: #1e8727 !important;
+}
+.text-gray {
+	color: #999;
+}
+
+/* Cards de check */
+.card-check {
+	cursor: pointer;
+}
+.card-check.activo {
+	outline: 5px solid #000;
+}
+.card-check.atenuado {
+	opacity: 0.5;
+}
+
+/* Leyenda */
+.cuadro-leyenda {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	border: 1px solid #555;
+}
+
+/* Tabs */
+.nav-tabs .nav-link {
+	white-space: nowrap;
+	text-align: center;
+	font-weight: bold;
+	color: #333;
+}
+.nav-tabs .nav-link.active {
+	color: #0d6efd;
+}
+
+/* Tabla */
+.dataTable-inventario td {
+	vertical-align: top !important;
+}
+.dataTable-inventario th.sortable {
+	cursor: pointer;
+	user-select: none;
+	white-space: nowrap;
+}
+.dataTable-inventario th .sort-icon {
+	font-size: 14px;
+	margin-left: 4px;
+}
+.dataTable-inventario .lbl {
+	font-size: 14px;
+}
+.dataTable-inventario .img-articulo {
+	width: 270px;
+	max-width: 270px;
+	border-radius: 50%;
+	cursor: zoom-in;
+}
+
+/* Colores por CHECK ID (mismos que _myStyles.scss) */
+.dataTable-inventario tr.row-color-subrayado-1 > td {
+	background-color: #2c10cd !important;
+	color: #fff !important;
+	--bs-table-bg-type: #2c10cd;
+}
+.dataTable-inventario tr.row-color-subrayado-1 > td .text-color-dolar,
+.dataTable-inventario tr.row-color-subrayado-1 > td .text-gray {
+	color: #fff !important;
+}
+.dataTable-inventario tr.row-color-subrayado-2 > td {
+	background-color: #eebe00 !important;
+	--bs-table-bg-type: #eebe00;
+}
+.dataTable-inventario tr.row-color-subrayado-3 > td {
+	background-color: #17a700 !important;
+	--bs-table-bg-type: #17a700;
+}
+.dataTable-inventario tr.row-color-subrayado-3 > td .text-color-dolar {
+	color: #000 !important;
+}
+.dataTable-inventario tr.row-color-subrayado-4 > td {
+	background-color: #c8a2c8 !important;
+	--bs-table-bg-type: #c8a2c8;
+}
+.dataTable-inventario tr.row-color-subrayado-4 > td .text-color-dolar {
+	color: #000 !important;
+}
+
+/* Loading */
+.loading-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(255, 255, 255, 0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2000;
+}
+.loading-overlay.d-none {
+	display: none !important;
+}
+
+/* Preview imagen */
+.img-preview {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.85);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 3000;
+	cursor: zoom-out;
+}
+.img-preview.d-none {
+	display: none !important;
+}
+.img-preview img {
+	max-width: 90vw;
+	max-height: 90vh;
+}
