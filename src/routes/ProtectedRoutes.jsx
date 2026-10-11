@@ -1,5 +1,5 @@
 import { ThemeSettings, useThemeContext } from '@/common';
-import { lazy, useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Navigate, Outlet, useLocation, Route, Routes as ReactRoutes, useNavigate } from 'react-router-dom';
 import VerticalLayout from '@/layouts/Vertical';
 import HorizontalLayout from '@/layouts/Horizontal';
@@ -18,6 +18,7 @@ const ResumenMembresiasPage = lazy(() =>
 );
 // aaaaa
 
+const ViewInventario = lazy(() => import('../pages/pagePT/ViewInventario'));
 const NuevaVenta = lazy(() => import('../pages/pagePT/nuevaVenta'));
 // const Seguimiento = lazy(() => import('../pages/pagePT/seguimiento/index.jsx'));
 const Seguimiento = lazy(() => import('../pages/pagePT/Seguimientoficial'));
@@ -140,6 +141,17 @@ export default function ProtectedRoutes() {
 	const findSectionDeep = (url) =>
 		sections.some(s => s.url === url || (s.children || []).some(c => c.url === url));
 	useEffect(() => { checkAuthToken() }, [])
+	// rutas publicas: se resuelven antes del chequeo de autenticacion (no necesitan login)
+	const { pathname } = useLocation()
+	if (pathname === '/rv-inventario' || pathname === '/rv-inventario/') {
+		return (
+			<Suspense fallback={<div className='d-flex align-items-center justify-content-center' style={{ height: '100vh' }}><span className="loader"></span></div>}>
+				<ReactRoutes>
+					<Route path='rv-inventario' element={<ViewInventario />} />
+				</ReactRoutes>
+			</Suspense>
+		)
+	}
 	if (status === 'checking') {
 		return (
 			<div className='d-flex align-items-center justify-content-center' style={{ height: '100vh' }}>
