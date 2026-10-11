@@ -554,7 +554,14 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                         <Image src={ImgproyCircus3}  className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="500">
                         </Image>
                         </div>
-                        <Button className='border-none input-buton' label="AGREGAR NUEVO" raised onClick={onOpenModalGastos} />
+                        {
+                            uid_user==='3a15e3db-428b-4e2c-ac52-e1907c691e1d' ? (
+                                <></>
+                            ): 
+                            (
+                                <Button className='border-none input-buton' label="AGREGAR NUEVO" raised onClick={onOpenModalGastos} />
+                            )
+                        }
                     </div>
                     <Card className='my-3'>
                         <Card.Body className='d-flex flex-wrap gap-5 font-24'>

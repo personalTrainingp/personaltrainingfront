@@ -13,56 +13,91 @@ import { Image } from 'primereact/image'
 import { DataInventario2 } from './DataInventario2'
 import { ColorEmpresa } from '@/components/ColorEmpresa'
 export const GestionInventario = () => {
+      const uid_user = localStorage.getItem('uid-user')
   return (
     <>
     
     <PageBreadcrumb title={'GESTION DE INVENTARIO'} subName={'T'}/>
     <ColorEmpresa
       childrenChange={
-            <TabView>
-                  <TabPanel header={<>INVENTARIO <br/> MARZO 2024 <br/> MANOJ</>}>
-                        <DataInventario id_enterprice={600} id_zona={600}/>
-                  </TabPanel>
-                  <TabPanel header={<>INVENTARIO <br/> MAYO 2025</>}>
-                        <DataInventario id_enterprice={2598} id_zona={598}/>
-                  </TabPanel>
-                  <TabPanel header={<>INVENTARIO<br/> AGOSTO 2026 </>}>
-                        <DataInventario id_enterprice={598} id_zona={598}/>
-                  </TabPanel>
+            <>
+            {
+                  uid_user==='3a15e3db-428b-4e2c-ac52-e1907c691e1d' 
+                  ? (<></>)
+                  : (
+                              <TabView>
+                              <TabPanel header={<>INVENTARIO <br/> MARZO 2024 <br/> MANOJ</>}>
+                                    <DataInventario id_enterprice={600} id_zona={600}/>
+                              </TabPanel>
+                              <TabPanel header={<>INVENTARIO <br/> MAYO 2025</>}>
+                                    <DataInventario id_enterprice={2598} id_zona={598}/>
+                              </TabPanel>
+                              <TabPanel header={<>INVENTARIO<br/> AGOSTO 2026 </>}>
+                                    <DataInventario id_enterprice={598} id_zona={598}/>
+                              </TabPanel>
+
             </TabView>
+                        )
+                  }
+            </>
       }
       childrenReducto={
             <TabView>
-                  <TabPanel header={<>INVENTARIO <br/> MAYO 2025</>}>
-                        <DataInventario ImgproyCircus3={ImgproyRedN3} ImgproyCircus2={ImgproyRedN2} ImgproyCircus1={ImgproyRedN1} id_enterprice={599} id_zona={599}/>
-                  </TabPanel>
-                  <TabPanel header={<>INVENTARIO <br/> OCTUBRE 2025</>}>
-                        <DataInventario id_enterprice={1599} id_zona={599}/>
-                  </TabPanel>
+                  {
+                        uid_user==='3a15e3db-428b-4e2c-ac52-e1907c691e1d'
+                        ? (<></>)
+                        : (
+                              <TabPanel header={<>INVENTARIO <br/> MAYO 2025</>}>
+                                    <DataInventario ImgproyCircus3={ImgproyRedN3} ImgproyCircus2={ImgproyRedN2} ImgproyCircus1={ImgproyRedN1} id_enterprice={599} id_zona={599}/>
+                              </TabPanel>
+                        )
+                  }
+                  {
+                        uid_user==='3a15e3db-428b-4e2c-ac52-e1907c691e1d'
+                        ? (<></>)
+                        : (
+                              <TabPanel header={<>INVENTARIO <br/> OCTUBRE 2025</>}>
+                                    <DataInventario id_enterprice={1599} id_zona={599}/>
+                              </TabPanel>
+                        )
+                  }
                   <TabPanel header={<>INVENTARIO <br/> SEPTIEMBRE 2026 <br/>(3 y 3 1/2)</>}>
                         <DataInventario id_enterprice={2599} id_zona={599}/>
-                  </TabPanel>
-                  <TabPanel header={<>STOCKS</>}>
-                        <DataInventario id_enterprice={3599} id_zona={599}/>
                   </TabPanel>
             </TabView>
       }
       childrenCircus={
-            <TabView>
-                  <TabPanel header={<>INVENTARIO SIN INCLUIR <br/> CIRCUS BUSSINESS</>}>
-                        <DataInventario id_enterprice={610} id_zona={599}/>
-                  </TabPanel> 
-                  <TabPanel header={<>CIRCUS<br/> BUSSINESS</>}>
-                        <DataInventario ImgproyCircus3={ImgproyCircus3} ImgproyCircus2={ImgproyCircus2} ImgproyCircus1={ImgproyCircus1} id_enterprice={602} id_zona={599}/>
-                  </TabPanel>
-            </TabView>
+            <>
+            {
+                  uid_user==='3a15e3db-428b-4e2c-ac52-e1907c691e1d'
+                  ? (<></>)
+                  : (
+                        <TabView>
+                              <TabPanel header={<>INVENTARIO SIN INCLUIR <br/> CIRCUS BUSSINESS</>}>
+                                    <DataInventario id_enterprice={610} id_zona={599}/>
+                              </TabPanel> 
+                              <TabPanel header={<>CIRCUS<br/> BUSSINESS</>}>
+                                    <DataInventario ImgproyCircus3={ImgproyCircus3} ImgproyCircus2={ImgproyCircus2} ImgproyCircus1={ImgproyCircus1} id_enterprice={602} id_zona={599}/>
+                              </TabPanel>
+                        </TabView>
+                  )
+            }
+            </>
       }
       childrenRal={
-            <TabView>
-                  <TabPanel header={<>CHORRILLOS<br/>ALMACEN</>}>
-                        <DataInventario id_enterprice={601} id_zona={601}/>
-                  </TabPanel>
-            </TabView>
+            <>
+            {
+                  uid_user==='3a15e3db-428b-4e2c-ac52-e1907c691e1d'
+                  ? (<></>)
+                  : (
+                  <TabView>
+                        <TabPanel header={<>CHORRILLOS<br/>ALMACEN</>}>
+                              <DataInventario id_enterprice={601} id_zona={601}/>
+                        </TabPanel>
+                  </TabView>
+                  )
+            }
+            </>
       }
     />
     {/* <Card className=''>
