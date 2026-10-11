@@ -88,6 +88,7 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
     const { obtenerArticulo, articulo, setArticulo } = useInventarioStore()
     const [isOpenDataMovimientos, setisOpenDataMovimientos] = useState({isOpen: false, id: 0})
     const [showLoading, setshowLoading] = useState(false)
+    const uid_user = localStorage.getItem('uid-user')
     const actionBodyTemplate = (rowData)=>{
         const onClickEditModalEgresos = ()=>{
             onOpenModalIvsG()
@@ -165,38 +166,46 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
         }
         return (
             <React.Fragment>
-                <Button icon="pi pi-history" rounded outlined severity="danger" 
-                onClick={onOpenModalHistCambioxID} 
-                />
-                <Button icon="pi pi-box" rounded outlined className="mr-2" 
-                onClick={()=>onClickCubeModalEgresos(rowData?.id)} 
-                />
-                <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
-                onClick={onClickEditModalEgresos} 
-                />
-                <Button icon="pi pi-trash" rounded outlined severity="danger" 
-                onClick={confirmDeleteGastoxID} 
-                />
                 {
-                    id_enterprice===610 && (
-                        <Button icon="pi pi-reply" rounded outlined className="mr-2" 
-                        onClick={onClickInfrCircu} 
-                        />
-                        
-                    )
-                }
-                {
-                    id_enterprice===602 && (
-                        <Button icon="pi pi-reply" rounded outlined className="mr-2" 
-                        onClick={onClickProyCircus} 
-                        />
-                    )
-                }
-                {
-                    id_enterprice===598 && (
-                        <Button icon="pi pi-reply" rounded outlined className="mr-2" 
-                        onClick={onClickChange} 
-                        />
+                    uid_user==='3a15e3db-428b-4e2c-ac52-e1907c691e1d' ? (
+                        <></>
+                    ): (
+                        <>
+                            <Button icon="pi pi-history" rounded outlined severity="danger" 
+                            onClick={onOpenModalHistCambioxID} 
+                            />
+                            <Button icon="pi pi-box" rounded outlined className="mr-2" 
+                            onClick={()=>onClickCubeModalEgresos(rowData?.id)} 
+                            />
+                            <Button icon="pi pi-pencil" rounded outlined className="mr-2" 
+                            onClick={onClickEditModalEgresos} 
+                            />
+                            <Button icon="pi pi-trash" rounded outlined severity="danger" 
+                            onClick={confirmDeleteGastoxID} 
+                            />
+                            {
+                                id_enterprice===610 && (
+                                    <Button icon="pi pi-reply" rounded outlined className="mr-2" 
+                                    onClick={onClickInfrCircu} 
+                                    />
+                                    
+                                )
+                            }
+                            {
+                                id_enterprice===602 && (
+                                    <Button icon="pi pi-reply" rounded outlined className="mr-2" 
+                                    onClick={onClickProyCircus} 
+                                    />
+                                )
+                            }
+                            {
+                                id_enterprice===598 && (
+                                    <Button icon="pi pi-reply" rounded outlined className="mr-2" 
+                                    onClick={onClickChange} 
+                                    />
+                                )
+                            }
+                        </>
                     )
                 }
             </React.Fragment>
