@@ -1,7 +1,15 @@
 {
     "rewrites": [
             {
-                "source": "/(.*)", 
+                "source": "/ViewInventario",
+                "destination": "/ViewInventario/index.html"
+            },
+            {
+                "source": "/ViewInventario/",
+                "destination": "/ViewInventario/index.html"
+            },
+            {
+                "source": "/(.*)",
                 "destination": "/index.html"
             }
     ]

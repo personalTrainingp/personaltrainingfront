@@ -1,8 +1,9 @@
+import SIN_IMAGEN from '../src/assets/images/SinImage.jpg';
+
 // ================== CONFIGURACION ==================
-const API_URL = 'http://api-sistema-luroga2.azurewebsites.net/api';
+const API_URL = 'https://api-sistema-luroga2.azurewebsites.net/api';
 const ID_EMPRESA = 2599;
 const URL_IMG_ARTICULO = 'https://archivosluroga.blob.core.windows.net/avatar-articulos/';
-const SIN_IMAGEN = '../src/assets/images/SinImage.jpg';
 const TC_DEFAULT = { precio_venta: 3.35 };
 
 const CHECKS = [
