@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import { products } from './data';
 import { useState } from 'react';
 import { ModalPerfilAuthUsuario } from './ModalPerfilAuthUsuario';
 
@@ -71,52 +70,21 @@ const ActionColumn = () => {
 
 // get all columns
 const columns = [
+  { id: 'nombres_apellidos_user', header: 'Usuario', accessor: 'nombres_apellidos_user', sortable: true },
+  { id: 'email_user', header: 'Email', accessor: 'email_user', sortable: true },
+  { id: 'usuario_user', header: 'Usuarios', accessor: 'usuario_user', sortable: true },
   {
-    Header: 'Usuario',
-    accessor: 'nombres_apellidos_user',
-    defaultCanSort: true
-  },
-  {
-    Header: 'Email',
-    accessor: 'email_user',
-    defaultCanSort: true,
-  },
-  {
-    Header: 'Usuarios',
-    accessor: 'usuario_user',
-    defaultCanSort: true,
-  },
-  {
-    Header: 'Estado',
+    id: 'estado',
+    header: 'Estado',
     accessor: 'estado',
-    defaultCanSort: true,
+    sortable: true,
+    render: (row) => (row.estado ? 'Activo' : 'Inactivo'),
   },
   {
-    Header: '',
-    accessor: 'id',
-    defaultCanSort: false,
-    Cell: ActionColumn,
+    id: 'id',
+    header: '',
+    render: (row) => <ActionColumn row={row} />,
   },
 ];
 
-// get pagelist to display
-const sizePerPageList = [
-  {
-    text: '5',
-    value: 5,
-  },
-  {
-    text: '10',
-    value: 10,
-  },
-  {
-    text: '20',
-    value: 20,
-  },
-  {
-    text: 'All',
-    value: products.length,
-  },
-];
-
-export { columns, sizePerPageList };
+export { columns };

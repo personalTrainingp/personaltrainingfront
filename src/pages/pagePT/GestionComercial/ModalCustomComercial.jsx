@@ -66,11 +66,13 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
                 <InputText label={'NOMBRES'} nameInput={'nombres'} value={nombres} onChange={onInputChange} required/>
               </div>
             </Col>
+            {/*
             <Col lg={4}>
               <div className='m-1'>
                 <InputText label={'APELLIDOS'} nameInput={'apellidos'} value={apellidos} onChange={onInputChange} required/>
               </div>
             </Col>
+            */}
             <Col lg={6}>
               <div className='m-1'>
                 <InputSelect label={'ASESOR QUE LA ATENDIO'} options={dataEmpleados} nameInput={'id_empl'} onChange={onInputChange} value={id_empl} required/>
@@ -86,14 +88,19 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
                 <InputSelect label={'MEDIO DE COMUNICACION'} options={dataMedioComunicacion} nameInput={'id_medio_comunicacion'} onChange={onInputChange} value={id_medio_comunicacion} required/>
               </div>
             </Col>
+            {/*
             <Col lg={6}>
               <div className='m-1'>
                 <InputSelect label={'UBIGEO'} options={dataDistritos} nameInput={'ubigeo_distrito_residencia'} onChange={onInputChange} value={ubigeo_distrito_residencia} required/>
               </div>
             </Col>
+            */}
             <Col lg={6}>
               <div className='m-1'>
-                <InputSelect label={'PROGRAMA'} options={[{label: 'CHANGE 45', value: 2}, {label: 'FS 45', value: 3}, {label: 'FISIO MUSCLE', value: 4}, {label: 'VERTIKAL CHANGE', value: 12}]} nameInput={'id_pgm'} onChange={onInputChange} value={id_pgm} required/>
+                <pre>
+                  {JSON.stringify(dataEstadoComercial, null, 2)}
+                </pre>
+                <InputSelect label={'PROGRAMA'} options={[{label: 'CHANGE 45', value: 2}, {label: 'FS 45', value: 3}, {label: 'FISIO MUSCLE', value: 4}]} nameInput={'id_pgm'} onChange={onInputChange} value={id_pgm} required/>
               </div>
             </Col>
             <Col lg={6}>

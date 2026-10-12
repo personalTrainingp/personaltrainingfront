@@ -1,8 +1,8 @@
 import { PageBreadcrumb } from '@/components';
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Col, Row, Tab, Tabs } from 'react-bootstrap';
-import { columns, sizePerPageList } from './ColumnsSet';
-import { products } from './data';
+import { columns } from './ColumnsSet';
+import { DataTableCR } from '@/components/DataView/DataTableCR';
 import { ModalFormUser } from './ModalFormUser';
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 import { useDispatch } from 'react-redux';
@@ -36,16 +36,9 @@ export const GestionAuthUser = () => {
                     </Row>
                     <Tabs>
                         <Tab eventKey={'usuarios'} title={'Todo los usuarios'}>
-                            <Table
+                            <DataTableCR
                                 columns={columns}
                                 data={DataUsuarios}
-                                pageSize={5}
-                                sizePerPageList={sizePerPageList}
-                                isSortable={true}
-                                pagination={true}
-                                isSearchable={true}
-                                theadClass="table-light"
-                                searchBoxClass="m-3"
                             />
                         </Tab>
                         {/* <Tab eventKey={'usuariosAct'} title={'Usuarios activos'}>

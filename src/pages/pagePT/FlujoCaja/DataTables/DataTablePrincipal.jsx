@@ -40,8 +40,16 @@ export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxD
   // medianoche UTC (7pm-12am hora Perú).
   const { anioActual, mesActual } = obtenerAnioMesDiaActualPeru()
 
-  const sumaMontototal = conceptos.reduce((total, item)=>item?.monto+total, 0)
-  const sumaLentotal = conceptos.reduce((total, item)=>item?.len+total, 0)
+  // Un mes se contabiliza en TOTAL ANUAL / PROMEDIO solo si ya terminó: año anterior al actual,
+  // o año actual con un mes anterior al actual (el mes en curso y los futuros no cuentan)
+  const esMesContabilizado = (mes) => anio<anioActual || (anio===anioActual && mes<mesActual)
+
+  // TOTAL ANUAL de la tabla: misma regla que cada fila (sin el mes en curso), en vez de
+  // c.monto, que viene del backend con todos los meses del año sumados.
+  const itemsContabilizados = conceptos.flatMap(f=>f.itemsxDia ?? []).filter(f=>esMesContabilizado(f.mes))
+  const sumaMontototal = itemsContabilizados.reduce((total, item)=>total+item.monto, 0)
+  const sumaLentotal = itemsContabilizados.reduce((total, item)=>total+item.len, 0)
+  const mesesContabilizadosTabla = new Set(itemsContabilizados.map(f=>f.mes)).size
 
   const funSumaTotal = (mes)=>{
     return conceptos.flatMap(f=>f.itemsxDia).filter(f=>f.mes===mes).reduce((total, item)=>total+item.monto, 0)
@@ -52,10 +60,6 @@ export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxD
   const funSumatoriaFinal = (mes=1)=>{
     return data.flatMap(f=>f.itemsxDia).filter(f=>f.mes===mes).reduce((total, item)=>total+item.monto, 0)
   }
-
-  // Un mes se contabiliza en TOTAL ANUAL / PROMEDIO solo si ya terminó: año anterior al actual,
-  // o año actual con un mes anterior al actual (el mes en curso y los futuros no cuentan)
-  const esMesContabilizado = (mes) => anio<anioActual || (anio===anioActual && mes<mesActual)
 
   const getPrimeraColumnaClass = (idConcepto) => {
     if (CONCEPTOS_DESTACADOS_BLANCO.includes(idConcepto)) return `sticky-td-${id_empresa}-white`
@@ -98,9 +102,8 @@ export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxD
                 const totalAnual = mesesContabilizados.reduce((total, im)=>total+im?.monto, 0)
                 const mesesConMovimiento = mesesContabilizados.filter(f=>f.monto!==0).length
                 const promedioMensual = totalAnual/mesesConMovimiento
-                const totalLen = c.itemsxDia?.reduce((total, im)=>total+im?.len, 0)
-                const totalMonto = c.itemsxDia?.reduce((total, im)=>total+im?.monto, 0)
-                const porcentajeParticipacion = (totalMonto/sumaMontototal)*100
+                const totalLen = mesesContabilizados.reduce((total, im)=>total+im?.len, 0)
+                const porcentajeParticipacion = (totalAnual/sumaMontototal)*100
                 const esDestacado = CONCEPTOS_DESTACADOS_BLANCO.includes(c.id)
                 const textoGrisDestacado = esDestacado ? 'text-gray' : ''
 
@@ -229,7 +232,7 @@ export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxD
             <td className='fs-2 text-end border-bottom-10'>{sumaLentotal}</td>
             <td className='fs-2 text-center border-bottom-10'>100 %</td>
             <td className={`fs-2 text-center border-bottom-10 border-right-10 sticky-td-right-${id_empresa} text-white`}>
-              <NumberFormatMoney className='fs-2' amount={sumaMontototal/8}/>
+              <NumberFormatMoney className='fs-2' amount={mesesContabilizadosTabla ? sumaMontototal/mesesContabilizadosTabla : 0}/>
             </td>
           </tr>
         </tbody>

@@ -32,9 +32,9 @@ export const ModalFormUser = ({show, onHide}) => {
             onResetForm} = useForm(registerUsuario)
             const {startRegisterUsuarioAuth} = useUsuarioStore()
 
-            const submitUsuario = (e)=>{
+            const submitUsuario = async(e)=>{
                 e.preventDefault()
-                startRegisterUsuarioAuth(formState)
+                await startRegisterUsuarioAuth(formState)
                 cancelarModal()
             }
             const cancelarModal = ()=>{
@@ -106,6 +106,7 @@ export const ModalFormUser = ({show, onHide}) => {
                                     </label>
                                     <input
                                         className="form-control"
+                                        type="password"
                                         name="password_user"
                                         id="password_user"
                                         placeholder="*********"

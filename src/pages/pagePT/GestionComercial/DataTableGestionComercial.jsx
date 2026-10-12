@@ -39,15 +39,15 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalTar
         )
       }
     },
-    {
-      id: 4 , header: 'APELLIDOS', render: (row)=>{
-        return (
-          <>
-          {row.apellidos}
-          </>
-        )
-      }
-    },
+    // {
+    //   id: 4 , header: 'APELLIDOS', render: (row)=>{
+    //     return (
+    //       <>
+    //       {row.apellidos}
+    //       </>
+    //     )
+    //   }
+    // },
     {
       id: 5, header: 'CELULAR', render: (row)=>{
         return (
@@ -57,14 +57,14 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalTar
         )
       }
     },
-    {
-      id: 6, header: 'DISTRITO', render: (row)=>{
-        return (
-          <>
-          </>
-        )
-      }
-    },
+    // {
+    //   id: 6, header: 'DISTRITO', render: (row)=>{
+    //     return (
+    //       <>
+    //       </>
+    //     )
+    //   }
+    // },
     {
       id: 7, header: 'CANAL', render: (row)=>{
         return (

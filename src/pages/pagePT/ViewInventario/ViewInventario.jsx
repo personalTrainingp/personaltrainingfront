@@ -12,6 +12,7 @@ import { SymbolDolar, SymbolSoles } from '@/components/componentesReutilizables/
 import { Loading } from '@/components/Loading';
 import config from '@/config';
 import sinImage from '@/assets/images/SinImage.jpg';
+import logoCircus from '@/assets/images/LOGO_EMPRESA/CIRCUS.png';
 import { useViewInventario } from './hook/useViewInventario';
 
 const ID_EMPRESA = 2599;
@@ -226,7 +227,10 @@ export const ViewInventario = () => {
 	return (
 		<div className='container-fluid py-3'>
 			<Loading show={isLoading} />
-			<h3 className='fw-bold mb-3'>GESTION DE INVENTARIO <span className='text-muted fs-5'>({ID_EMPRESA})</span></h3>
+			<div className='d-flex justify-content-between align-items-center mb-3'>
+				<h3 className='fw-bold mb-0'>GESTION DE INVENTARIO <span className='text-muted fs-5'>({ID_EMPRESA})</span></h3>
+				<img src={logoCircus} alt='Circus' style={{ height: '80px' }} />
+			</div>
 			{error && <div className='alert alert-danger'>Error al cargar el inventario: {error}</div>}
 
 			<Card className='my-3'>
