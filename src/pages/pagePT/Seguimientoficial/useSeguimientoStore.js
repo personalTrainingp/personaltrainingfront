@@ -54,6 +54,8 @@ export const useSeguimientoStore = () => {
 						horario: venta.horario?.split('T')[1]?.split('.')[0] || '12:00:00',
 						nombre_programa: `${ultimoPrograma ?? 'SIN DEFINIR'}`,
 						ultimoPrograma: ultimoPrograma,
+						// plan: semanas de la venta de la ultima membresia
+						semanas_plan: venta.tb_semana_training?.semanas_st ?? null,
 						nombres_cli: m.nombre_cli,
 						apPaterno_cli: m.apPaterno_cli,
 						apMaterno_cli: m.apMaterno_cli,

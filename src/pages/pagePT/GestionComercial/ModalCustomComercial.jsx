@@ -1,6 +1,6 @@
 import { InputButton, InputDate, InputSelect, InputText } from '@/components/InputText'
 import { useForm } from '@/hooks/useForm'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
 import { useGestionComercialStore } from './useGestionComercialStore'
 const customComercial = {
@@ -14,11 +14,17 @@ const customComercial = {
   id_estado: 0,
   id_empl: 0,
   fecha_ingreso: '',
-  comentario_cliente: ''
+  comentario_cliente: '',
+  observacion: ''
 }
-export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
-  const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, comentario_cliente } = useForm(customComercial)
-  const { dataEmpleados, obtenerEmpleadosVendedores, dataCanales, dataMedioComunicacion, obtenerCanales, obtenerMedioComunicacion, obtenerEstadosComerciales, dataEstadoComercial,postGestionComercial, obtenerDistritosDeLima, dataDistritos } = useGestionComercialStore()
+export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
+  const isEdit = !!lead && !isCopy
+  const initialForm = useMemo(() => {
+    if (!lead) return customComercial
+    return Object.keys(customComercial).reduce((acc, key) => ({...acc, [key]: lead[key] ?? customComercial[key]}), {})
+  }, [lead])
+  const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, comentario_cliente, observacion } = useForm(initialForm)
+  const { dataEmpleados, obtenerEmpleadosVendedores, dataCanales, dataMedioComunicacion, obtenerCanales, obtenerMedioComunicacion, obtenerEstadosComerciales, dataEstadoComercial,postGestionComercial, putGestionComercial, obtenerDistritosDeLima, dataDistritos } = useGestionComercialStore()
   useEffect(() => {
     if(show){
       obtenerEmpleadosVendedores()
@@ -28,8 +34,12 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
       obtenerDistritosDeLima()
     }
   }, [show])
-  const onSubmit = ()=>{
-    postGestionComercial(formState)
+  const onSubmit = async()=>{
+    if (isEdit) {
+      await putGestionComercial(id, formState)
+    } else {
+      await postGestionComercial(formState)
+    }
     onCancel()
   }
   const onCancel = ()=>{
@@ -40,7 +50,7 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
     <Modal show={show} onHide={onHide} size='lg'>
       <Modal.Header>
         <Modal.Title>
-          AGREGAR
+          {isEdit ? 'EDITAR' : 'AGREGAR'}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -97,9 +107,6 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
             */}
             <Col lg={6}>
               <div className='m-1'>
-                <pre>
-                  {JSON.stringify(dataEstadoComercial, null, 2)}
-                </pre>
                 <InputSelect label={'PROGRAMA'} options={[{label: 'CHANGE 45', value: 2}, {label: 'FS 45', value: 3}, {label: 'FISIO MUSCLE', value: 4}]} nameInput={'id_pgm'} onChange={onInputChange} value={id_pgm} required/>
               </div>
             </Col>
@@ -110,7 +117,13 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id}) => {
             </Col>
             <Col lg={12}>
               <div className='m-1'>
-                <InputButton label={'AGREGAR'} onClick={onSubmit}/>
+                <label className="form-label text-change" htmlFor="observacion">OBSERVACION</label>
+                <textarea className="form-control" id="observacion" name="observacion" rows={3} maxLength={500} value={observacion} onChange={onInputChange}/>
+              </div>
+            </Col>
+            <Col lg={12}>
+              <div className='m-1'>
+                <InputButton label={isEdit ? 'GUARDAR' : 'AGREGAR'} onClick={onSubmit}/>
                 <InputButton label={'CANCELAR'} variant={'_link'} onClick={onCancel}/>
               </div>
             </Col>

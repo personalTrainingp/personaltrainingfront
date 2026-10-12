@@ -139,6 +139,7 @@ export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFe
                 exportValue: (row)=>row.fecha_vencimiento
             },
             {id: 'programa', exportHeader: 'programa', exportValue: (row)=>`${row.nombre_programa}`},
+            {id: 'semanas_plan', exportHeader: 'PLAN (SEMANAS)', exportValue: (row)=>row.semanas_plan ?? ''},
             {id: 'id_venta', exportHeader: 'N° VENTA', exportValue: (row)=>row.id_venta},
             {id: 'fecha_venta', exportHeader: 'FECHA DE VENTA', exportValue: (row)=>row.fecha_venta},
             {id: 'monto_venta', exportHeader: 'MONTO VENTA S/.', exportValue: (row)=>row.monto_venta},

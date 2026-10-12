@@ -15,6 +15,15 @@ export const useGestionComercialStore = () => {
 	const postGestionComercial = async (formState) => {
 		try {
 			const { data } = await PTApi.post('/prospecto/lead/', formState);
+			obtenerGestionComercial();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const putGestionComercial = async (id, formState) => {
+		try {
+			const { data } = await PTApi.put(`/prospecto/lead/id/${id}`, formState);
+			obtenerGestionComercial();
 		} catch (error) {
 			console.log(error);
 		}
@@ -139,6 +148,7 @@ export const useGestionComercialStore = () => {
 		obtenerDistritosDeLima,
 		obtenerEmpleadosVendedores,
 		postGestionComercial,
+		putGestionComercial,
 		obtenerGestionComercial,
 		obtenerCanales,
 		obtenerMedioComunicacion,

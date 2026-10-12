@@ -7,15 +7,15 @@ import { ModalTareas } from './ModalTareas'
 import { PageBreadcrumb } from '@/components'
 
 export const AppGestionComercial = () => {
-    const [isOpenModalGestionComercial, setisOpenModalGestionComercial] = useState({isOpen: false, id: 0, isCopy: false})
+    const [isOpenModalGestionComercial, setisOpenModalGestionComercial] = useState({isOpen: false, id: 0, isCopy: false, lead: null})
     const [isOpenModalComentario, setisOpenModalComentario] = useState({isOpen: false, uid: 0})
     const [isOpenModalVista, setisOpenModalVista] = useState({isOpen: false, uid: 0})
     const [isOpenModalHistory, setisOpenModalHistory] = useState({isOpen: false, uid: 0})
-    const onOpenModalGestionComercial = (id, isCopy)=>{
-        setisOpenModalGestionComercial({isOpen: true, id, isCopy})
+    const onOpenModalGestionComercial = (id, isCopy, lead=null)=>{
+        setisOpenModalGestionComercial({isOpen: true, id, isCopy, lead})
     }
     const onCloseModalGestionComercial = ()=>{
-        setisOpenModalGestionComercial({isOpen: false, id: 0, isCopy: false})
+        setisOpenModalGestionComercial({isOpen: false, id: 0, isCopy: false, lead: null})
     }
     const onOpenModalComentario = (uid)=>{
         setisOpenModalComentario({isOpen: true, uid})
@@ -49,7 +49,7 @@ export const AppGestionComercial = () => {
         <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>
         <ModalTareas onHide={onCloseModalTareas} show={isOpenModalTareas.isOpen} lead={isOpenModalTareas.lead}/>
-        <ModalCustomComercial id={isOpenModalGestionComercial.id} show={isOpenModalGestionComercial.isOpen} onHide={onCloseModalGestionComercial} isCopy={isOpenModalGestionComercial.isCopy}/>
+        <ModalCustomComercial id={isOpenModalGestionComercial.id} show={isOpenModalGestionComercial.isOpen} onHide={onCloseModalGestionComercial} isCopy={isOpenModalGestionComercial.isCopy} lead={isOpenModalGestionComercial.lead}/>
     </div>
   )
 }

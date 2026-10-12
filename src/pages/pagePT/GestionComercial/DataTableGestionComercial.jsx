@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Button } from 'primereact/button'
 import { arrayEstadoComercial } from '@/types/type'
 
-export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalTareas}) => {
+export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas}) => {
   const { obtenerGestionComercial } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   useEffect(() => {
@@ -88,6 +88,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalTar
       id: 8, header: 'PROGRAMAS', render: (row)=>{
         return (
           <>
+          {[{label: 'CHANGE 45', value: 2}, {label: 'FS 45', value: 3}, {label: 'FISIO MUSCLE', value: 4}].find(e=>e.value===row.id_pgm)?.label}
           </>
         )
       }
@@ -102,12 +103,22 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalTar
       }
     },
     {
+      id: 13, header: 'OBSERVACION', render: (row)=>{
+        return (
+          <>
+          {row.observacion}
+          </>
+        )
+      }
+    },
+    {
       id: 10, header: '', render: (row)=>{
         return (
           <>
+            <Button icon="pi pi-pencil" onClick={()=>onOpenModalGestionComercial(row.id, false, row)} rounded outlined severity="danger"  className='mr-2' tooltip='EDITAR' tooltipOptions={{ position: 'top' }}/>
             <Button icon="pi pi-comment" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
-            <Button icon="pi pi-history" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
-            <Button icon="pi pi-eye" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
+            {/* <Button icon="pi pi-history" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
+            <Button icon="pi pi-eye" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/> */}
             <Button icon="pi pi-list-check" onClick={()=>onOpenModalTareas(row)} rounded outlined severity="danger"  className='mr-2' tooltip='TAREAS' tooltipOptions={{ position: 'top' }}/>
           </>
         )
