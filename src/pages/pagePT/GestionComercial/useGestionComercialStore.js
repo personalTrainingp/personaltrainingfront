@@ -11,6 +11,9 @@ export const useGestionComercialStore = () => {
 	const [dataEstadoComercial, setdataEstadoComercial] = useState([]);
 	const [dataDistritos, setdataDistritos] = useState([]);
 	const [dataTareas, setdataTareas] = useState([]);
+	const [dataClientes, setdataClientes] = useState([]);
+	const [dataMembresiasCliente, setdataMembresiasCliente] = useState([]);
+	const [isLoadingMembresias, setisLoadingMembresias] = useState(false);
 	const dispatch = useDispatch();
 	const postGestionComercial = async (formState) => {
 		try {
@@ -80,6 +83,14 @@ export const useGestionComercialStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerClientes = async () => {
+		try {
+			const { data } = await PTApi.get('/parametros/get_params/clientes/598');
+			setdataClientes([{ label: 'SIN CLIENTE', value: 0 }, ...data]);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerEstadosComerciales = async () => {
 		try {
 			const { data } = await PTApi.get('/terminologia/term1/comercial/estado');
@@ -115,6 +126,18 @@ export const useGestionComercialStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerMembresiasxCliente = async (id_cli) => {
+		try {
+			setisLoadingMembresias(true);
+			setdataMembresiasCliente([]);
+			const { data } = await PTApi.get(`/prospecto/lead/cliente/${id_cli}/membresias`);
+			setdataMembresiasCliente(data.membresias);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setisLoadingMembresias(false);
+		}
+	};
 	const obtenerTareasxProspecto = async (id_prospecto) => {
 		try {
 			setdataTareas([]);
@@ -142,6 +165,9 @@ export const useGestionComercialStore = () => {
 	};
 	return {
 		obtenerTareasxProspecto,
+		obtenerMembresiasxCliente,
+		dataMembresiasCliente,
+		isLoadingMembresias,
 		postTareaProspecto,
 		dataTareas,
 		obtenerDistritosxDepxProvincia,
@@ -155,6 +181,8 @@ export const useGestionComercialStore = () => {
 		obtenerEstadosComerciales,
 		dataDistritos,
 		dataEstadoComercial,
+		obtenerClientes,
+		dataClientes,
 		dataMedioComunicacion,
 		dataEmpleados,
 		dataCanales,

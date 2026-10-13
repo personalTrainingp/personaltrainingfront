@@ -1,12 +1,32 @@
-import { InputButton } from '@/components/InputText'
-import React, { useState } from 'react'
+import { InputButton, InputSelect } from '@/components/InputText'
+import React, { useMemo, useState } from 'react'
 import { DataTableGestionComercial } from './DataTableGestionComercial'
 import { ModalCustomComercial } from './ModalCustomComercial'
 import { ModalComentario } from './ModalComentario'
 import { ModalTareas } from './ModalTareas'
+import { ModalMembresiasCliente } from './ModalMembresiasCliente'
 import { PageBreadcrumb } from '@/components'
+import { useSelector } from 'react-redux'
 
 export const AppGestionComercial = () => {
+    const {dataView} = useSelector(e=>e.COMERCIAL)
+    const [filtroEstado, setfiltroEstado] = useState(null)
+    const estadosEnData = useMemo(() => {
+      const estados = new Map()
+      dataView?.forEach(e=>{
+        if (e.parametro_estado?.id_param) estados.set(e.parametro_estado.id_param, e.parametro_estado.label_param)
+      })
+      return [...estados].map(([value, label])=>({label, value}))
+    }, [dataView])
+    const [filtroAsesor, setfiltroAsesor] = useState(null)
+    const asesoresEnData = useMemo(() => {
+      const asesores = new Map()
+      dataView?.forEach(e=>{
+        const idEmpl = e.id_empl ?? e.empleado?.id_empl
+        if (idEmpl) asesores.set(idEmpl, e.empleado?.nombres_apellidos_empl)
+      })
+      return [...asesores].map(([value, label])=>({label, value}))
+    }, [dataView])
     const [isOpenModalGestionComercial, setisOpenModalGestionComercial] = useState({isOpen: false, id: 0, isCopy: false, lead: null})
     const [isOpenModalComentario, setisOpenModalComentario] = useState({isOpen: false, uid: 0})
     const [isOpenModalVista, setisOpenModalVista] = useState({isOpen: false, uid: 0})
@@ -35,6 +55,13 @@ export const AppGestionComercial = () => {
     const onCloseModalHistory=()=>{
         setisOpenModalHistory({isOpen: false, uid: ''})
     }
+    const [isOpenModalMembresias, setisOpenModalMembresias] = useState({isOpen: false, lead: null})
+    const onOpenModalMembresias = (lead)=>{
+        setisOpenModalMembresias({isOpen: true, lead})
+    }
+    const onCloseModalMembresias = ()=>{
+        setisOpenModalMembresias({isOpen: false, lead: null})
+    }
     const [isOpenModalTareas, setisOpenModalTareas] = useState({isOpen: false, lead: null})
     const onOpenModalTareas = (lead)=>{
         setisOpenModalTareas({isOpen: true, lead})
@@ -45,9 +72,34 @@ export const AppGestionComercial = () => {
   return (
     <div>
         <PageBreadcrumb title={'GESTION DE LEAD'}/>
-        <InputButton label={'Agregar lead'} onClick={()=>onOpenModalGestionComercial(0, false)}/>
-        <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas}/>
+        <div className='d-flex align-items-center gap-2 flex-wrap'>
+          <InputButton label={'Agregar lead'} onClick={()=>onOpenModalGestionComercial(0, false)}/>
+          <div style={{width: 260}}>
+            <InputSelect
+              label={''}
+              placeholder={'FILTRAR POR ESTATUS'}
+              options={estadosEnData}
+              nameInput={'filtroEstado'}
+              value={filtroEstado}
+              onChange={(e)=>setfiltroEstado(e.target.value ?? null)}
+              isClearable
+            />
+          </div>
+          <div style={{width: 260}}>
+            <InputSelect
+              label={''}
+              placeholder={'FILTRAR POR ASESOR'}
+              options={asesoresEnData}
+              nameInput={'filtroAsesor'}
+              value={filtroAsesor}
+              onChange={(e)=>setfiltroAsesor(e.target.value ?? null)}
+              isClearable
+            />
+          </div>
+        </div>
+        <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>
+        <ModalMembresiasCliente onHide={onCloseModalMembresias} show={isOpenModalMembresias.isOpen} lead={isOpenModalMembresias.lead}/>
         <ModalTareas onHide={onCloseModalTareas} show={isOpenModalTareas.isOpen} lead={isOpenModalTareas.lead}/>
         <ModalCustomComercial id={isOpenModalGestionComercial.id} show={isOpenModalGestionComercial.isOpen} onHide={onCloseModalGestionComercial} isCopy={isOpenModalGestionComercial.isCopy} lead={isOpenModalGestionComercial.lead}/>
     </div>

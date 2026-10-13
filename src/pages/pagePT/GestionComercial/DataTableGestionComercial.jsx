@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useGestionComercialStore } from './useGestionComercialStore'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { useSelector } from 'react-redux'
 import { Button } from 'primereact/button'
 import { arrayEstadoComercial } from '@/types/type'
 
-export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas}) => {
+export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor}) => {
   const { obtenerGestionComercial } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   useEffect(() => {
     obtenerGestionComercial()
   }, [])
+  const dataFiltrada = useMemo(() => {
+    return dataView?.filter(e=>
+      (!filtroEstado || e.parametro_estado?.id_param===filtroEstado) &&
+      (!filtroAsesor || (e.id_empl ?? e.empleado?.id_empl)===filtroAsesor)
+    )
+  }, [dataView, filtroEstado, filtroAsesor])
   const columns = [
     {
       id: 1, header: 'FECHA DE REGISTRO', render:(row)=>{
@@ -39,15 +45,25 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
         )
       }
     },
-    // {
-    //   id: 4 , header: 'APELLIDOS', render: (row)=>{
-    //     return (
-    //       <>
-    //       {row.apellidos}
-    //       </>
-    //     )
-    //   }
-    // },
+    {
+      id: 4 , header: 'APELLIDOS', render: (row)=>{
+        return (
+          <>
+          {row.apellidos}
+          </>
+        )
+      }
+    },
+    {
+      id: 14, header: 'CLIENTE', render: (row)=>{
+        if (!row.id_cli) return <span className='text-muted'>SIN CLIENTE</span>
+        return (
+          <span className='text-primary text-decoration-underline cursor-pointer' onClick={()=>onOpenModalMembresias(row)}>
+            {row.cliente?.nombres_apellidos_cli ?? `CLIENTE ${row.id_cli}`}
+          </span>
+        )
+      }
+    },
     {
       id: 5, header: 'CELULAR', render: (row)=>{
         return (
@@ -132,7 +148,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
   return (
     <div>
       <DataTableCR
-          data={dataView}
+          data={dataFiltrada}
           columns={columns}
         />
     </div>
