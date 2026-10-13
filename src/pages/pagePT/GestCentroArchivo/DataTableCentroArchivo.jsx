@@ -5,6 +5,31 @@ import config from '@/config'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
+import dayjs from 'dayjs'
+
+const descargarArchivo = async (row) => {
+  const nameImage = row.tb_image?.name_image
+  if (!nameImage) return
+  const url = `${config.API_IMG.DOC_GENERAL}${nameImage}`
+  const ext = nameImage.includes('.') ? nameImage.substring(nameImage.lastIndexOf('.')) : ''
+  const titulo = (row.titulo || 'archivo').trim().replace(/[\\/:*?"<>|]+/g, '-')
+  const filename = `${titulo} ${dayjs().format('DD-MM-YYYY HH-mm-ss')}${ext}`
+  try {
+    const resp = await fetch(url)
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+    const blobUrl = URL.createObjectURL(await resp.blob())
+    const a = document.createElement('a')
+    a.href = blobUrl
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(blobUrl)
+  } catch (error) {
+    console.error('Error al descargar archivo:', error)
+    window.open(url, '_blank', 'noopener')
+  }
+}
 
 export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo, data}) => {
     const { obtenerArchivosCenter, onDeleteArchivo } = useCenterArchive()
@@ -18,9 +43,7 @@ export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo
         {id: 'adjunto', header: 'ADJ.', render: (row)=>{
             return (
               <>
-              <a href={`${config.API_IMG.DOC_GENERAL}${row.tb_image?.name_image}`}>
-                                        <i className='pi pi-file-pdf fs-2 cursor-pointer'></i>
-              </a>
+              <i className='pi pi-file-pdf fs-2 cursor-pointer' onClick={()=>descargarArchivo(row)}></i>
               </>
             )
         }},
