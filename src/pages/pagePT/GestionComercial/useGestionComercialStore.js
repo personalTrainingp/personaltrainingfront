@@ -13,6 +13,8 @@ export const useGestionComercialStore = () => {
 	const [dataTareas, setdataTareas] = useState([]);
 	const [dataClientes, setdataClientes] = useState([]);
 	const [dataMembresiasCliente, setdataMembresiasCliente] = useState([]);
+	const [dataTareasReporte, setdataTareasReporte] = useState([]);
+	const [isLoadingTareasReporte, setisLoadingTareasReporte] = useState(false);
 	const [isLoadingMembresias, setisLoadingMembresias] = useState(false);
 	const dispatch = useDispatch();
 	const postGestionComercial = async (formState) => {
@@ -126,6 +128,17 @@ export const useGestionComercialStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerTareasReporte = async () => {
+		try {
+			setisLoadingTareasReporte(true);
+			const { data } = await PTApi.get('/prospecto/lead/tareas/reporte');
+			setdataTareasReporte(data.tareas);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setisLoadingTareasReporte(false);
+		}
+	};
 	const obtenerMembresiasxCliente = async (id_cli) => {
 		try {
 			setisLoadingMembresias(true);
@@ -166,6 +179,9 @@ export const useGestionComercialStore = () => {
 	return {
 		obtenerTareasxProspecto,
 		obtenerMembresiasxCliente,
+		obtenerTareasReporte,
+		dataTareasReporte,
+		isLoadingTareasReporte,
 		dataMembresiasCliente,
 		isLoadingMembresias,
 		postTareaProspecto,

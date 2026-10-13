@@ -5,6 +5,7 @@ import { ModalCustomComercial } from './ModalCustomComercial'
 import { ModalComentario } from './ModalComentario'
 import { ModalTareas } from './ModalTareas'
 import { ModalMembresiasCliente } from './ModalMembresiasCliente'
+import { ModalReporteTareas } from './ModalReporteTareas'
 import { PageBreadcrumb } from '@/components'
 import { useSelector } from 'react-redux'
 
@@ -55,6 +56,7 @@ export const AppGestionComercial = () => {
     const onCloseModalHistory=()=>{
         setisOpenModalHistory({isOpen: false, uid: ''})
     }
+    const [isOpenModalReporteTareas, setisOpenModalReporteTareas] = useState(false)
     const [isOpenModalMembresias, setisOpenModalMembresias] = useState({isOpen: false, lead: null})
     const onOpenModalMembresias = (lead)=>{
         setisOpenModalMembresias({isOpen: true, lead})
@@ -74,6 +76,7 @@ export const AppGestionComercial = () => {
         <PageBreadcrumb title={'GESTION DE LEAD'}/>
         <div className='d-flex align-items-center gap-2 flex-wrap'>
           <InputButton label={'Agregar lead'} onClick={()=>onOpenModalGestionComercial(0, false)}/>
+          <InputButton label={'Reporte de tareas'} onClick={()=>setisOpenModalReporteTareas(true)}/>
           <div style={{width: 260}}>
             <InputSelect
               label={''}
@@ -100,6 +103,7 @@ export const AppGestionComercial = () => {
         <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>
         <ModalMembresiasCliente onHide={onCloseModalMembresias} show={isOpenModalMembresias.isOpen} lead={isOpenModalMembresias.lead}/>
+        <ModalReporteTareas onHide={()=>setisOpenModalReporteTareas(false)} show={isOpenModalReporteTareas}/>
         <ModalTareas onHide={onCloseModalTareas} show={isOpenModalTareas.isOpen} lead={isOpenModalTareas.lead}/>
         <ModalCustomComercial id={isOpenModalGestionComercial.id} show={isOpenModalGestionComercial.isOpen} onHide={onCloseModalGestionComercial} isCopy={isOpenModalGestionComercial.isCopy} lead={isOpenModalGestionComercial.lead}/>
     </div>
