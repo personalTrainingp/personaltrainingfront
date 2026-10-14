@@ -40,7 +40,7 @@ export const ModalTareas = ({show, onHide, lead=null}) => {
                             const tarea = arrayTareasComercial.find(a=>a.value===t.id_tarea)
                             return (
                                 <span
-                                    className='d-flex align-items-center justify-content-center rounded-circle text-white bg-primary shadow-sm'
+                                    className={`d-flex align-items-center justify-content-center rounded-circle text-white shadow-sm ${tarea?.exito ? 'bg-success' : 'bg-primary'}`}
                                     style={{ width: '36px', height: '36px' }}
                                 >
                                     <i className={tarea?.icon ?? 'pi pi-list-check'}></i>
@@ -52,7 +52,7 @@ export const ModalTareas = ({show, onHide, lead=null}) => {
                             return (
                                 <Card className='mb-3 shadow-sm'>
                                     <Card.Body className='py-2'>
-                                        <div className='fw-bold fs-5'>{tarea?.label ?? `Tarea ${t.id_tarea}`}</div>
+                                        <div className={`fw-bold fs-5 ${tarea?.exito ? 'text-success' : ''}`}>{tarea?.label ?? `Tarea ${t.id_tarea}`}</div>
                                         <small className='text-muted'>
                                             <i className='pi pi-clock me-1'></i>
                                             {dayjs(t.fecha).locale('es').format('dddd D [de] MMMM [de] YYYY, hh:mm A')}
