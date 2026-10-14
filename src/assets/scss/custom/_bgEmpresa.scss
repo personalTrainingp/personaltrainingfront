@@ -1,20 +1,29 @@
-.bg-spam{
+// Colores de lead (gestion de prospectos): estado y nivel de interes.
+// Verde = Reducto (#17a700), rojo = Change (#CD1014).
+.bg-lead-gris{
   background-color: #6a6a6a !important;
 }
-.bg-sin-contacto{
-  background-color: #7bb5b8 !important;
+.bg-lead-azul{
+  background-color: #2563eb !important;
 }
-.bg-no{
-  background-color: #b87bb5 !important;
+.bg-lead-morado{
+  background-color: #8b2fc9 !important;
 }
-.bg-contactado{
-  background-color: #6a8bff !important;
+.bg-lead-amarillo{
+  background-color: #EEBE00 !important;
+  color: #000 !important;
 }
-.bg-interesado{
-  background-color: #ff6a6a !important;
+.bg-lead-naranja{
+  background-color: #ff8c00 !important;
 }
-.bg-venta{
-  background-color: #6aff6a !important;
+.bg-lead-verde{
+  background-color: #17a700 !important;
+}
+.bg-lead-rojo{
+  background-color: #CD1014 !important;
+}
+.bg-lead-negro{
+  background-color: #000000 !important;
 }
 
 .border-598{

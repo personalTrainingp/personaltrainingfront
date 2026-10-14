@@ -58,8 +58,8 @@ export const useGastosTodasEmpresas = (activo = true) => {
     return gastos
 }
 
-const normalizarOperacion = (op) => String(op ?? '').trim()
-const normalizarMonto = (monto) => Math.round((Number(monto) || 0) * 100)
+export const normalizarOperacion = (op) => String(op ?? '').trim()
+export const normalizarMonto = (monto) => Math.round((Number(monto) || 0) * 100)
 
 // Gastos con el mismo n_operacion, monto y moneda que la cuenta.
 // Los gastos ya enlazados a otra cuenta (id_porCuenta > 0 y distinto) no se muestran.
@@ -80,7 +80,8 @@ export const obtenerCoincidenciasGastos = (cuenta, gastos) => {
 // Se omiten los ya enlazados a esa cuenta y los gastos enlazados a otra cuenta.
 export const obtenerEnlacesUnicos = (cuentas, gastos) => {
     const candidatos = cuentas
-        .map((cuenta) => ({ cuenta, coincidencias: obtenerCoincidenciasGastos(cuenta, gastos) }))
+        // usa las coincidencias ya calculadas en useCoincidenciasGastos si vienen en la cuenta
+        .map((cuenta) => ({ cuenta, coincidencias: cuenta.coincidenciasGastos ?? obtenerCoincidenciasGastos(cuenta, gastos) }))
         .filter(({ coincidencias }) => coincidencias.length === 1)
         .map(({ cuenta, coincidencias }) => ({ cuenta, gasto: coincidencias[0] }))
 

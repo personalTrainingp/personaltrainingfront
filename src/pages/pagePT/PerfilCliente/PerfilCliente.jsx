@@ -23,6 +23,7 @@ import { Image } from 'primereact/image';
 import { PanelMembresias } from './PanelMembresias/PanelMembresias';
 import { Button } from 'primereact/button';
 import { AppCambioProgramas } from './CambioDeProgramas/AppCambioProgramas';
+import { AsistenciasCliente } from './AsistenciasCliente';
 // import './ScrollPanelDemo.css';
 export const PerfilCliente = () => {
   const { uid } = useParams()
@@ -124,6 +125,11 @@ export const PerfilCliente = () => {
                   <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                       <PanelMembresias uid={uid}/>
                   </ScrollPanel>
+                </TabPanel>
+                <TabPanel header='ASISTENCIAS'>
+                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
+                  <AsistenciasCliente uid={uid}/>
+                </ScrollPanel>
                 </TabPanel>
                 <TabPanel header='Documentos adjuntos'>
                 <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">

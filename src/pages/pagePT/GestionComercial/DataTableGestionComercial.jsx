@@ -3,7 +3,7 @@ import { useGestionComercialStore } from './useGestionComercialStore'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { useSelector } from 'react-redux'
 import { Button } from 'primereact/button'
-import { arrayEstadoComercial } from '@/types/type'
+import { arrayEstadoComercial, arrayNivelInteresComercial } from '@/types/type'
 
 export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor}) => {
   const { obtenerGestionComercial } = useGestionComercialStore()
@@ -55,8 +55,8 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       }
     },
     {
-      id: 14, header: 'CLIENTE', render: (row)=>{
-        if (!row.id_cli) return <span className='text-muted'>SIN CLIENTE</span>
+      id: 14, header: 'SOCIO', render: (row)=>{
+        if (!row.id_cli) return <span className='text-muted'>SIN HISTORIAL</span>
         return (
           <span className='text-primary text-decoration-underline cursor-pointer' onClick={()=>onOpenModalMembresias(row)}>
             {row.cliente?.nombres_apellidos_cli ?? `CLIENTE ${row.id_cli}`}
@@ -114,6 +114,16 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
         return (
           <>
           <Button className={`${arrayEstadoComercial.find(e=>e.value===row.parametro_estado?.id_param)?.color} border-none`} label={row.parametro_estado?.label_param}/>
+          </>
+        )
+      }
+    },
+    {
+      id: 15, header: 'NIVEL DE INTERES', render: (row)=>{
+        if (!row.parametro_nivel_interes) return null
+        return (
+          <>
+          <Button className={`${arrayNivelInteresComercial.find(e=>e.value===row.parametro_nivel_interes.id_param)?.color} border-none`} label={row.parametro_nivel_interes.label_param}/>
           </>
         )
       }

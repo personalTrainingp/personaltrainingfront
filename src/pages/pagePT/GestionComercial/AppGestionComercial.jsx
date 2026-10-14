@@ -76,11 +76,10 @@ export const AppGestionComercial = () => {
         <PageBreadcrumb title={'GESTION DE LEAD'}/>
         <div className='d-flex align-items-center gap-2 flex-wrap'>
           <InputButton label={'Agregar lead'} onClick={()=>onOpenModalGestionComercial(0, false)}/>
-          <InputButton label={'Reporte de tareas'} onClick={()=>setisOpenModalReporteTareas(true)}/>
           <div style={{width: 260}}>
             <InputSelect
               label={''}
-              placeholder={'FILTRAR POR ESTATUS'}
+              placeholder={'STATUS'}
               options={estadosEnData}
               nameInput={'filtroEstado'}
               value={filtroEstado}
@@ -91,7 +90,7 @@ export const AppGestionComercial = () => {
           <div style={{width: 260}}>
             <InputSelect
               label={''}
-              placeholder={'FILTRAR POR ASESOR'}
+              placeholder={'ASESOR'}
               options={asesoresEnData}
               nameInput={'filtroAsesor'}
               value={filtroAsesor}
@@ -99,6 +98,7 @@ export const AppGestionComercial = () => {
               isClearable
             />
           </div>
+          <InputButton variant={'link'} label={'Reporte de tareas'} onClick={()=>setisOpenModalReporteTareas(true)}/>
         </div>
         <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>

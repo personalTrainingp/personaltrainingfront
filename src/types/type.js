@@ -14,13 +14,23 @@ export const clasesVentasSeparadas = (tipo) => {
 			return '';
 	}
 };
+// Estado del lead (tb_parametros, comercial / estado)
 export const arrayEstadoComercial = [
-	{ value: 1678, color: 'bg-spam' },
-	{ value: 1677, color: 'bg-sin-contacto' },
-	{ value: 1676, color: 'bg-no' },
-	{ value: 1675, color: 'bg-contactado' },
-	{ value: 1674, color: 'bg-interesado' },
-	{ value: 1673, color: 'bg-venta' },
+	{ value: 2034, color: 'bg-lead-gris' }, // POR CONTACTAR
+	{ value: 1675, color: 'bg-lead-azul' }, // PRIMER CONTACTO
+	{ value: 1678, color: 'bg-lead-morado' }, // EN SEGUIMIENTO
+	{ value: 1674, color: 'bg-lead-amarillo' }, // PENDIENTE EN DECISION
+	{ value: 2033, color: 'bg-lead-naranja' }, // EVALUACION / VISITA AGENDADA
+	{ value: 1673, color: 'bg-lead-verde' }, // CONVERTIDO
+	{ value: 1677, color: 'bg-lead-rojo' }, // PERDIDO
+	{ value: 1676, color: 'bg-lead-negro' }, // NO CONTACTABLE
+];
+// Nivel de interes del lead (tb_parametros, comercial / nivel-interes)
+export const arrayNivelInteresComercial = [
+	{ value: 2032, color: 'bg-lead-verde' }, // ALTO
+	{ value: 2031, color: 'bg-lead-naranja' }, // MEDIO
+	{ value: 2030, color: 'bg-lead-rojo' }, // BAJO
+	{ value: 2029, color: 'bg-lead-gris' }, // SIN EVALUAR
 ];
 // Tareas sobre un lead (tb_tareas_prospecto.id_tarea)
 export const arrayTareasComercial = [

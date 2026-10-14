@@ -13,6 +13,7 @@ const customComercial = {
   id_medio_comunicacion: 0,
   id_pgm: 0,
   id_estado: 0,
+  id_nivel_interes: 0,
   id_empl: 0,
   fecha_ingreso: '',
   comentario_cliente: '',
@@ -31,6 +32,7 @@ const camposObligatorios = [
   { name: 'id_medio_comunicacion', label: 'MEDIO DE COMUNICACION' },
   { name: 'id_pgm', label: 'PROGRAMA' },
   { name: 'id_estado', label: 'ESTADO' },
+  { name: 'id_nivel_interes', label: 'NIVEL DE INTERES' },
   { name: 'observacion', label: 'OBSERVACION' },
 ]
 export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
@@ -39,14 +41,15 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
     if (!lead) return customComercial
     return Object.keys(customComercial).reduce((acc, key) => ({...acc, [key]: lead[key] ?? customComercial[key]}), {})
   }, [lead])
-  const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, comentario_cliente, observacion, id_cli } = useForm(initialForm)
-  const { dataEmpleados, obtenerEmpleadosVendedores, dataCanales, dataMedioComunicacion, obtenerCanales, obtenerMedioComunicacion, obtenerEstadosComerciales, dataEstadoComercial,postGestionComercial, putGestionComercial, obtenerDistritosDeLima, dataDistritos, obtenerClientes, dataClientes } = useGestionComercialStore()
+  const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, id_nivel_interes, comentario_cliente, observacion, id_cli } = useForm(initialForm)
+  const { dataEmpleados, obtenerEmpleadosVendedores, dataCanales, dataMedioComunicacion, obtenerCanales, obtenerMedioComunicacion, obtenerEstadosComerciales, dataEstadoComercial, obtenerNivelesInteres, dataNivelInteres, postGestionComercial, putGestionComercial, obtenerDistritosDeLima, dataDistritos, obtenerClientes, dataClientes } = useGestionComercialStore()
   useEffect(() => {
     if(show){
       obtenerEmpleadosVendedores()
       obtenerCanales()
       obtenerMedioComunicacion()
       obtenerEstadosComerciales()
+      obtenerNivelesInteres()
       obtenerDistritosDeLima()
       obtenerClientes()
     }
@@ -145,6 +148,11 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
             <Col lg={6}>
               <div className='m-1'>
                 <InputSelect label={'ESTADO'} options={dataEstadoComercial} nameInput={'id_estado'} onChange={onInputChange} value={id_estado} required/>
+              </div>
+            </Col>
+            <Col lg={6}>
+              <div className='m-1'>
+                <InputSelect label={'NIVEL DE INTERES'} options={dataNivelInteres} nameInput={'id_nivel_interes'} onChange={onInputChange} value={id_nivel_interes} required/>
               </div>
             </Col>
             <Col lg={12}>

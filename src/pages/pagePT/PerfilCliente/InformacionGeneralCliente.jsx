@@ -16,6 +16,7 @@ import { useAuthStore } from '@/hooks/useAuthStore'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import sinAvatar from '@/assets/images/sinPhoto.jpg';
 import config from '@/config'
+import { InputHuellasCliente } from './InputHuellasCliente'
 
 
 locale('es');
@@ -438,6 +439,19 @@ export const InformacionGeneralCliente = ({data}) => {
                                             value={tel_cli}
                                             onChange={onInputChange}
                                             placeholder="telefono"
+                                        />
+                                    </div>
+                                </Col>
+                                <Col xl={4}>
+                                    <div className="mb-2">
+                                        <label className="form-label">
+                                            Huellas
+                                        </label>
+                                        {/* DNI guardado (no el que se está editando): es el que vincula al huellero */}
+                                        <InputHuellasCliente
+                                            dni={data?.numDoc_cli}
+                                            nombre={`${data?.nombre_cli ?? ''} ${data?.apPaterno_cli ?? ''} ${data?.apMaterno_cli ?? ''}`.replace(/\s+/g, ' ').trim()}
+                                            toast={toast}
                                         />
                                     </div>
                                 </Col>

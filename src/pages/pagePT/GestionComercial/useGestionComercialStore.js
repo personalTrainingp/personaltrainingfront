@@ -9,6 +9,7 @@ export const useGestionComercialStore = () => {
 	const [dataCanales, setdataCanales] = useState([]);
 	const [dataMedioComunicacion, setdataMedioComunicacion] = useState([]);
 	const [dataEstadoComercial, setdataEstadoComercial] = useState([]);
+	const [dataNivelInteres, setdataNivelInteres] = useState([]);
 	const [dataDistritos, setdataDistritos] = useState([]);
 	const [dataTareas, setdataTareas] = useState([]);
 	const [dataClientes, setdataClientes] = useState([]);
@@ -107,6 +108,20 @@ export const useGestionComercialStore = () => {
 			console.log(error);
 		}
 	};
+	const obtenerNivelesInteres = async () => {
+		try {
+			const { data } = await PTApi.get('/terminologia/term1/comercial/nivel-interes');
+			const dataMap = data.terminologia.map((t) => {
+				return {
+					label: t.label_param,
+					value: t.id_param,
+				};
+			});
+			setdataNivelInteres(dataMap);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerDistritosDeLima = async () => {
 		try {
 			const { data: dataLima } = await PTApi.get(`/parametros/get_params/distritos/15/1501`);
@@ -197,6 +212,8 @@ export const useGestionComercialStore = () => {
 		obtenerEstadosComerciales,
 		dataDistritos,
 		dataEstadoComercial,
+		obtenerNivelesInteres,
+		dataNivelInteres,
 		obtenerClientes,
 		dataClientes,
 		dataMedioComunicacion,

@@ -1,9 +1,59 @@
 import { PTApi } from '@/common';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewCuentasBalances } from '../Store/cuentasBalancesSlice';
 import { DateMaskStr, DateMaskString, MaskDate } from '@/components/CurrencyMask';
 import { arrayEmpresaFinanAbrev } from '@/types/type';
+import {
+	normalizarMonto,
+	normalizarOperacion,
+	useGastosTodasEmpresas,
+} from '../ModalCoincidenciasGastos';
+
+const claveCoincidencia = (n_operacion, monto, moneda) =>
+	`${normalizarOperacion(n_operacion)}|${normalizarMonto(monto)}|${moneda}`;
+
+// Carga los gastos de todas las empresas y calcula una sola vez por cuenta (antes de llegar al jsx):
+// coincidenciasGastos, cantidadCoincidencias y ultimoGastoEnlazado.
+// Indexa los gastos por n_operacion + monto + moneda para no recorrer todos los gastos en cada cuenta.
+export const useCoincidenciasGastos = (cuentas, activo = true) => {
+	const gastos = useGastosTodasEmpresas(activo);
+	const cuentasConCoincidencias = useMemo(() => {
+		if (!activo) return cuentas;
+		const gastosPorClave = new Map();
+		const ultimoPorCuenta = new Map();
+		gastos.forEach((g) => {
+			if (normalizarOperacion(g.n_operacion) !== '') {
+				const clave = claveCoincidencia(g.n_operacion, g.monto, g.moneda);
+				if (!gastosPorClave.has(clave)) gastosPorClave.set(clave, []);
+				gastosPorClave.get(clave).push(g);
+			}
+			const idPorCuenta = Number(g.id_porCuenta) || 0;
+			if (idPorCuenta > 0) {
+				const ultimo = ultimoPorCuenta.get(idPorCuenta);
+				if (!ultimo || new Date(g.updatedAt) > new Date(ultimo.updatedAt))
+					ultimoPorCuenta.set(idPorCuenta, g);
+			}
+		});
+		return (cuentas || []).map((cuenta) => {
+			const candidatos =
+				normalizarOperacion(cuenta.n_operacion) === ''
+					? []
+					: gastosPorClave.get(claveCoincidencia(cuenta.n_operacion, cuenta.monto, cuenta.moneda)) || [];
+			// los gastos enlazados a otra cuenta no cuentan como coincidencia
+			const coincidenciasGastos = candidatos.filter(
+				(g) => !(Number(g.id_porCuenta) > 0) || Number(g.id_porCuenta) === Number(cuenta.id)
+			);
+			return {
+				...cuenta,
+				coincidenciasGastos,
+				cantidadCoincidencias: coincidenciasGastos.length,
+				ultimoGastoEnlazado: ultimoPorCuenta.get(Number(cuenta.id)) || null,
+			};
+		});
+	}, [cuentas, gastos, activo]);
+	return { cuentas: cuentasConCoincidencias, gastos };
+};
 
 export const useCuentasBalances = () => {
 	const dispatch = useDispatch();

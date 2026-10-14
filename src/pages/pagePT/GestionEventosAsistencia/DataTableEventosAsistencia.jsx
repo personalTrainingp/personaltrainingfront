@@ -4,7 +4,7 @@ import { Badge } from 'react-bootstrap';
 
 // Color de cada estado de la marcación (label_estado, se guarda al recibirla):
 // colaborador = morado, activo para [programa] = verde, sin membresía / inactiva = rojo
-const estiloLabel = (label) => {
+export const estiloLabel = (label) => {
 	if (!label) return null;
 	if (label === 'Es colaborador')
 		return { bg: '', style: { backgroundColor: '#6f42c1' }, icono: 'pi-id-card', ayuda: 'Empleado activo' };
