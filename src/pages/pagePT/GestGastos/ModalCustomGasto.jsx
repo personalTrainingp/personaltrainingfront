@@ -82,16 +82,19 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     const { postGasto, updateGastoxID } = useGastosStore()
     const [id_empresa, setid_empresa] = useState(id_enterprice)
         const [id_oficio, setid_oficio] = useState(null)
-    // Cuentas por cobrar de la marca seleccionada, para enlazar el gasto (id_porCuenta)
+    // Cuentas por cobrar de todas las empresas (sin filtrar por la marca), para enlazar el gasto (id_porCuenta)
     const [dataCuentasCobrar, setdataCuentasCobrar] = useState([])
     useEffect(() => {
-        if(!show || !id_empresa) return
-        PTApi.get(`/cuenta-balance/${id_empresa}/PorCobrar`)
+        if(!show) return
+        PTApi.get(`/cuenta-balance/todas/PorCobrar`)
             .then(({data})=>{
-                setdataCuentasCobrar((data?.cuentasBalances || []).map(c=>({label: `${c.id}. ${c.descripcion || ''}`, value: c.id})))
+                setdataCuentasCobrar((data?.cuentasBalances || []).map(c=>{
+                    const empresa = arrayEmpresaFinan.find(e=>e.value===Number(c.id_empresa))?.label ?? c.id_empresa
+                    return {label: `${c.id}. ${c.descripcion || ''} (${empresa})`, value: c.id}
+                }))
             })
             .catch((error)=>console.log(error))
-    }, [id_empresa, show])
+    }, [show])
     useEffect(() => {
         if(show){
             if(id!==0){
