@@ -110,12 +110,12 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
             </Col>
             <Col lg={4}>
               <div className='m-1'>
-                <InputText label={'APELLIDOS'} nameInput={'apellidos'} value={apellidos} onChange={onInputChange} required/>
+                <InputText label={'APELLIDOS'} nameInput={'apellidos'} value={apellidos} onChange={onInputChange}/>
               </div>
             </Col>
             <Col lg={12}>
               <div className='m-1'>
-                <InputSelect label={'CLIENTE'} placeholder={'BUSCAR POR DNI O NOMBRE'} options={dataClientes} nameInput={'id_cli'} onChange={onInputChange} value={id_cli}/>
+                <InputSelect label={'SOCIO'} placeholder={'BUSCAR POR DNI O NOMBRE'} options={dataClientes} nameInput={'id_cli'} onChange={onInputChange} value={id_cli}/>
               </div>
             </Col>
             <Col lg={6}>

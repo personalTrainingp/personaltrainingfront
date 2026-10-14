@@ -89,7 +89,7 @@ export const useGestionComercialStore = () => {
 	const obtenerClientes = async () => {
 		try {
 			const { data } = await PTApi.get('/parametros/get_params/clientes/598');
-			setdataClientes([{ label: 'SIN CLIENTE', value: 0 }, ...data]);
+			setdataClientes([{ label: 'SIN HISTORIAL', value: 0 }, ...data]);
 		} catch (error) {
 			console.log(error);
 		}
