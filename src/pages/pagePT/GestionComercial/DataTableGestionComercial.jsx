@@ -59,7 +59,8 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
         if (!row.id_cli) return <span className='text-muted'>SIN HISTORIAL</span>
         return (
           <span className='text-primary text-decoration-underline cursor-pointer' onClick={()=>onOpenModalMembresias(row)}>
-            {row.cliente?.nombres_apellidos_cli ?? `CLIENTE ${row.id_cli}`}
+            {/* {row.cliente?.nombres_apellidos_cli ?? `CLIENTE ${row.id_cli}`} */}
+            CON HISTORIAL
           </span>
         )
       }

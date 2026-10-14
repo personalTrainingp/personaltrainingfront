@@ -98,7 +98,7 @@ export const AppGestionComercial = () => {
               isClearable
             />
           </div>
-          <InputButton variant={'link'} label={'Reporte de tareas'} onClick={()=>setisOpenModalReporteTareas(true)}/>
+          <InputButton variant={'link'} label={'Reporte'} onClick={()=>setisOpenModalReporteTareas(true)}/>
         </div>
         <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>
