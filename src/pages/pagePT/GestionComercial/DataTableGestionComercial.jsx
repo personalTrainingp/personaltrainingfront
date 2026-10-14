@@ -4,6 +4,8 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { useSelector } from 'react-redux'
 import { Button } from 'primereact/button'
 import { arrayEstadoComercial, arrayNivelInteresComercial } from '@/types/type'
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
 
 export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor}) => {
   const { obtenerGestionComercial } = useGestionComercialStore()
@@ -22,7 +24,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       id: 1, header: 'FECHA DE REGISTRO', render:(row)=>{
         return (
           <>
-          {row.fecha_registro}
+          {row.fecha_registro && dayjs(row.fecha_registro).locale('es').format('dddd D [de] MMMM [del] YYYY')}
           </>
         )
       }

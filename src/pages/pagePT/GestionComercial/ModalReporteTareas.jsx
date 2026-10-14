@@ -7,7 +7,7 @@ import { arrayTareasComercial } from '@/types/type'
 import { useGestionComercialStore } from './useGestionComercialStore'
 
 // El numero va debajo del card (fuera), para que todos queden alineados aunque el texto ocupe 2 lineas
-const ResumenItem = ({label, valor, icon, activo, onClick})=>(
+const ResumenItem = ({label, valor, icon, activo, exito, onClick})=>(
   <div className='d-flex flex-column h-100 cursor-pointer' onClick={onClick}>
     <Card className={`shadow-sm flex-grow-1 mb-1 ${activo ? 'bg-primary text-white' : ''}`}>
       <Card.Body className='py-2 text-center d-flex flex-column justify-content-center'>
@@ -15,7 +15,7 @@ const ResumenItem = ({label, valor, icon, activo, onClick})=>(
         <div className={`small ${activo ? '' : 'text-muted'}`}>{label}</div>
       </Card.Body>
     </Card>
-    <div className='fw-bold fs-3 text-center'>{valor}</div>
+    <div className={`fw-bold fs-3 text-center ${exito ? 'text-success' : ''}`}>{valor}</div>
   </div>
 )
 
@@ -73,7 +73,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                             {
                                                 arrayTareasComercial.map(tipo=>(
                                                     <Col xs={6} md={3} lg key={tipo.value}>
-                                                        <ResumenItem label={tipo.label.toUpperCase()} valor={a.tareas.filter(t=>t.id_tarea===tipo.value).length} icon={tipo.icon} activo={filtroTarea===tipo.value} onClick={()=>setfiltroTarea(filtroTarea===tipo.value ? null : tipo.value)}/>
+                                                        <ResumenItem label={tipo.label.toUpperCase()} valor={a.tareas.filter(t=>t.id_tarea===tipo.value).length} icon={tipo.icon} exito={tipo.exito} activo={filtroTarea===tipo.value} onClick={()=>setfiltroTarea(filtroTarea===tipo.value ? null : tipo.value)}/>
                                                     </Col>
                                                 ))
                                             }

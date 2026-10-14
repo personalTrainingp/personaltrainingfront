@@ -32,13 +32,13 @@ export const arrayNivelInteresComercial = [
 	{ value: 2030, color: 'bg-lead-rojo' }, // BAJO
 	{ value: 2029, color: 'bg-lead-gris' }, // SIN EVALUAR
 ];
-// Tareas sobre un lead (tb_tareas_prospecto.id_tarea)
+// Tareas sobre un lead (tb_tareas_prospecto.id_tarea); exito: su resultado se muestra en verde en el reporte
 export const arrayTareasComercial = [
 	{ value: 1, label: 'Llamar a lead', icon: 'pi pi-phone' },
 	{ value: 2, label: 'Seguimiento escrito a Lead', icon: 'pi pi-comments' },
-	{ value: 3, label: 'Enviar link de pago', icon: 'pi pi-link' },
 	{ value: 4, label: 'Agendar visita', icon: 'pi pi-calendar-plus' },
-	{ value: 5, label: 'Visita agendada', icon: 'pi pi-calendar' },
+	{ value: 5, label: 'Visita agendada', icon: 'pi pi-calendar', exito: true },
+	{ value: 3, label: 'Enviar link de pago', icon: 'pi pi-link', exito: true },
 ];
 export const arrayTipoJornada = [
 	{ value: 1501, label: 'DESCANSO' },
