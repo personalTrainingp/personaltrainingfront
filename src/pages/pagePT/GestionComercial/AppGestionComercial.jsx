@@ -8,6 +8,7 @@ import { ModalMembresiasCliente } from './ModalMembresiasCliente'
 import { ModalReporteTareas } from './ModalReporteTareas'
 import { PageBreadcrumb } from '@/components'
 import { useSelector } from 'react-redux'
+import { ordenarEstadosComerciales } from './useGestionComercialStore'
 
 export const AppGestionComercial = () => {
     const {dataView} = useSelector(e=>e.COMERCIAL)
@@ -17,7 +18,7 @@ export const AppGestionComercial = () => {
       dataView?.forEach(e=>{
         if (e.parametro_estado?.id_param) estados.set(e.parametro_estado.id_param, e.parametro_estado.label_param)
       })
-      return [...estados].map(([value, label])=>({label, value}))
+      return ordenarEstadosComerciales([...estados].map(([value, label])=>({label, value})))
     }, [dataView])
     const [filtroAsesor, setfiltroAsesor] = useState(null)
     const asesoresEnData = useMemo(() => {

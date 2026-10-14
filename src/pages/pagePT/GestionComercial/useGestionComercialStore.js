@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewComercial } from './dataComercialSlice';
 import Swal from 'sweetalert2';
+import { arrayEstadoComercial } from '@/types/type';
 
 export const useGestionComercialStore = () => {
 	const [dataEmpleados, setdataEmpleados] = useState([]);
@@ -103,7 +104,7 @@ export const useGestionComercialStore = () => {
 					value: t.id_param,
 				};
 			});
-			setdataEstadoComercial(dataMap);
+			setdataEstadoComercial(ordenarEstadosComerciales(dataMap));
 		} catch (error) {
 			console.log(error);
 		}
@@ -220,4 +221,13 @@ export const useGestionComercialStore = () => {
 		dataEmpleados,
 		dataCanales,
 	};
+};
+
+// Ordena segun arrayEstadoComercial; los estados no listados van al final
+export const ordenarEstadosComerciales = (estados) => {
+	const orden = (value) => {
+		const i = arrayEstadoComercial.findIndex((e) => e.value === value);
+		return i === -1 ? arrayEstadoComercial.length : i;
+	};
+	return [...estados].sort((a, b) => orden(a.value) - orden(b.value));
 };

@@ -24,7 +24,6 @@ const customComercial = {
 const camposObligatorios = [
   { name: 'fecha_ingreso', label: 'FECHA DE INGRESO' },
   { name: 'celular', label: 'CELULAR' },
-  { name: 'comentario_cliente', label: 'COMENTARIO DEL CLIENTE' },
   { name: 'nombres', label: 'NOMBRES' },
   { name: 'apellidos', label: 'APELLIDOS' },
   { name: 'id_empl', label: 'ASESOR QUE LA ATENDIO' },
@@ -41,7 +40,7 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
     if (!lead) return customComercial
     return Object.keys(customComercial).reduce((acc, key) => ({...acc, [key]: lead[key] ?? customComercial[key]}), {})
   }, [lead])
-  const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, id_nivel_interes, comentario_cliente, observacion, id_cli } = useForm(initialForm)
+  const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, id_nivel_interes, observacion, id_cli } = useForm(initialForm)
   const { dataEmpleados, obtenerEmpleadosVendedores, dataCanales, dataMedioComunicacion, obtenerCanales, obtenerMedioComunicacion, obtenerEstadosComerciales, dataEstadoComercial, obtenerNivelesInteres, dataNivelInteres, postGestionComercial, putGestionComercial, obtenerDistritosDeLima, dataDistritos, obtenerClientes, dataClientes } = useGestionComercialStore()
   useEffect(() => {
     if(show){
@@ -96,11 +95,6 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
             <Col lg={4}>
               <div className='m-1'>
                 <InputText label={'CELULAR'} nameInput={'celular'} onChange={onInputChange} value={celular} required/>
-              </div>
-            </Col>
-            <Col lg={4}>
-              <div className='m-1'>
-                <InputText label={'COMENTARIO DEL CLIENTE'} nameInput={'comentario_cliente'} onChange={onInputChange} value={comentario_cliente} required/>
               </div>
             </Col>
             <Col lg={4}>
