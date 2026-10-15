@@ -1,5 +1,5 @@
 import { PTApi } from '@/common';
-import { onSetModulos, onSetSections } from '@/store/sections/RutasSlice';
+import { onSetModuloActual, onSetModulos, onSetSections } from '@/store/sections/RutasSlice';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -18,6 +18,7 @@ export const useRoleStore = () => {
 	};
 	const obtenerSeccions = async (modulo) => {
 		if (!modulo || !modulo.key) return;
+		dispatch(onSetModuloActual(modulo));
 		try {
 			const { data } = await PTApi.get(`/rol/get-section-x-module/${modulo.key}`);
 			dispatch(onSetSections(data.MENU_ITEMS));

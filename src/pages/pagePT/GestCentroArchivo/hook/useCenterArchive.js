@@ -37,6 +37,15 @@ export const useCenterArchive = () => {
 			console.log(error);
 		}
 	};
+	// documentos de todas las empresas
+	const obtenerArchivosCenterTodos = async () => {
+		try {
+			const { data } = await PTApi.get('/fils/interno/center');
+			dispatch(onSetDataView(data.documentosInternos));
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerArchivoxID = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/fils/interno/center/id/${id}`);
@@ -65,6 +74,7 @@ export const useCenterArchive = () => {
 		onUpdateArchivo,
 		onPostArchivCenter,
 		obtenerArchivosCenter,
+		obtenerArchivosCenterTodos,
 		onDeleteArchivo,
 		obtenerArchivoxID,
 		dataxID,

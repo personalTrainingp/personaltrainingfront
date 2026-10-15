@@ -86,6 +86,7 @@ const CitasxNutricionista = lazy(() => import('../pages/pagePT/reportes/citasxEs
 const ArticulosNuevos = lazy(() => import('../pages/pagePT/GestArticulosChorrillos'))
 const ResumenEjecutivo = lazy(() => import('../pages/pagePT/reportes/resumenEjecutivo/Index.jsx'))
 const GestionCentroDeArchivos = lazy(() => import('../pages/pagePT/GestCentroArchivo/Index.jsx'))
+const CentroDeArchivosSoloLectura = lazy(() => import('../pages/pagePT/GestCentroArchivo/AppSoloLectura.jsx'))
 const CvColaboradores = lazy(() => import('../pages/pagePT/GestEmpleados/Perfil/cv'))
 const DniColaboradores = lazy(() => import('../pages/pagePT/GestEmpleados/Perfil/dni'))
 const ReservaMonkFitPage = lazy(() => import('../pages/pagePT/GestionMonkFit/App'))
@@ -220,6 +221,8 @@ export default function ProtectedRoutes() {
 								sections.find(e => e.url === '/config') &&
 								<Route path='centro-archivos' element={<GestionCentroDeArchivos />} />
 							}
+							{/* para todos (solo lectura): el item esta fijo al final del sidebar (layouts/utils/menu.js) */}
+							<Route path='centro-archivos-general' element={<CentroDeArchivosSoloLectura />} />
 							{
 								sections.find(e => e.url === '/detalle-reinscripcion-x-dia') &&
 								<Route path='detalle-reinscripcion-x-dia' element={<ResumenGerencialPorReinscripcionesxDia />} />

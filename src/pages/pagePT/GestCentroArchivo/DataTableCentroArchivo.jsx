@@ -31,12 +31,13 @@ const descargarArchivo = async (row) => {
   }
 }
 
-export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo, data}) => {
+export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo, data, soloLectura = false}) => {
     const { obtenerArchivosCenter, onDeleteArchivo } = useCenterArchive()
     const { dataView } = useSelector(e=>e.DATA)
     useEffect(() => {
-      obtenerArchivosCenter(idEmpresa)
-    }, [idEmpresa])
+      // en solo lectura los datos (de todas las empresas) los carga App2
+      if (!soloLectura) obtenerArchivosCenter(idEmpresa)
+    }, [idEmpresa, soloLectura])
     
     const columns = [
         {id: 'id', accessor: 'id', header: 'Id'},
@@ -70,7 +71,7 @@ export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo
             </>
           )
         }},
-        {id: 'action', accessor: '', header: '', render: (row)=>{
+        !soloLectura && {id: 'action', accessor: '', header: '', render: (row)=>{
           return (
             <>
               <Button icon="pi pi-trash" rounded outlined severity="danger"  className='mr-2'
@@ -82,7 +83,7 @@ export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo
             </>
           )
         }},
-    ]
+    ].filter(Boolean)
     const confirmDeleteArchivoxID = (id)=>{
       confirmDialog({
         message: '¿Quieres eliminar este archivo?',

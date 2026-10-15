@@ -1,10 +1,20 @@
 import { HORIZONTAL_MENU_ITEMS, MENU_ITEMS } from '@/common/menu-items';
 import { useSelector } from 'react-redux';
 
+// Secciones visibles para todos los usuarios, al final del sidebar (no dependen del rol)
+const SECCIONES_PARA_TODOS = [
+	{
+		key: 'todos-centro-archivos',
+		label: 'Centro de archivos',
+		url: '/centro-archivos-general',
+		icon: 'uil-folder',
+	},
+];
+
 const getMenuItems = () => {
 	// NOTE - You can fetch from server and return here as well
 	const { sections } = useSelector((e) => e.rutas);
-	return sections;
+	return [...sections, ...SECCIONES_PARA_TODOS];
 };
 
 const getHorizontalMenuItems = () => {

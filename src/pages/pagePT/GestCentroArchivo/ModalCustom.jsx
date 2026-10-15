@@ -1,7 +1,8 @@
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import { Dialog } from 'primereact/dialog'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components'
 import Select from 'react-select'
@@ -12,7 +13,8 @@ const registerFile = {
   id_tipo_doc: 0,
   observacion: '',
   titulo: '',
-  id_seccionVisible: 0
+  id_seccionVisible: 0,
+  nombre_modulo: ''
 }
 const registerArchivo={
     imgAvatar_BASE64: ''
@@ -20,7 +22,13 @@ const registerArchivo={
 export const ModalCustom = ({uid_file, show, onHide, id, id_enterprice}) => {
     const [file, setfile] = useState(null)
     const { obtenerArchivoxID, dataxID, onUpdateArchivo, onPostArchivCenter } = useCenterArchive()
-  const { formState, id_tipo_doc, id_empresa, id_seccionVisible, titulo, observacion, id_sub_tipo_doc, onInputChangeReact, onInputChange, onResetForm } = useForm(id!==0?dataxID:registerFile)
+  const { formState, id_tipo_doc, id_empresa, id_seccionVisible, titulo, observacion, id_sub_tipo_doc, nombre_modulo, onInputChangeReact, onInputChange, onResetForm } = useForm(id!==0?dataxID:registerFile)
+  // modulos a los que tiene acceso el usuario (los mismos del selector de modulos)
+  const { modulos } = useSelector(e=>e.rutas)
+  const opcionesModulo = useMemo(
+    () => [...new Set((modulos ?? []).map(m=>m.name))].map(name=>({value: name, label: name})),
+    [modulos]
+  )
   const { obtenerParametroPorEntidadyGrupo, DataGeneral } = useTerminoStore()
   const { obtenerParametroPorEntidadyGrupo:obtenerTipoDoc, DataGeneral:datatipoDoc } = useTerminoStore()
   const { obtenerParametroPorEntidadyGrupo:obtenerSubTipoDoc, DataGeneral:dataSubtipoDoc } = useTerminoStore()
@@ -124,6 +132,25 @@ export const ModalCustom = ({uid_file, show, onHide, id, id_enterprice}) => {
                                     { value: 601, label: 'REDUCTO' },
                                     { value: 800, label: 'RAL' },
                                 ]}
+                                required
+                        ></Select>
+                    </div>
+                </Col>
+                <Col xxl={12}>
+                    <div className="mb-2">
+                        <label htmlFor="nombre_modulo" className="form-label">
+                            Modulo:
+                        </label>
+                        <Select
+                                onChange={(e)=>onInputChangeReact(e, "nombre_modulo")}
+                                name={"nombre_modulo"}
+                                placeholder={'Seleccione el modulo'}
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                value={opcionesModulo.find(
+                                    (option) => option.value === nombre_modulo
+                                ) ?? null}
+                                options={opcionesModulo}
                                 required
                         ></Select>
                     </div>

@@ -6,18 +6,34 @@ import { DataTableCentroArchivo } from './DataTableCentroArchivo'
 import { ModalCustom } from './ModalCustom'
 import { useCenterArchive } from './hook/useCenterArchive'
 
-export const App2 = ({idEmpresa}) => {
+// soloLectura: vista para todos los usuarios (sidebar), con los documentos de todas las
+// empresas y sin agregar, editar ni eliminar
+export const App2 = ({idEmpresa, soloLectura = false}) => {
     const [isOpenModalCustomArchivo, setisOpenModalCustomArchivo] = useState({isOpen: false, id: 0})
-    const { obtenerArchivosCenter } = useCenterArchive()
-    const { dataView } = useSelector(e=>e.DATA)
+    const { obtenerArchivosCenter, obtenerArchivosCenterTodos } = useCenterArchive()
+    const { dataView: dataTodos } = useSelector(e=>e.DATA)
+    const { moduloActual } = useSelector(e=>e.rutas)
+    // en solo lectura cada modulo ve solo sus documentos (nombre_modulo = modulo actual)
+    const dataView = useMemo(() => {
+        if (!soloLectura) return dataTodos
+        const modulo = moduloActual?.name?.trim().toUpperCase()
+        if (!modulo) return []
+        return (dataTodos || []).filter(row => row?.nombre_modulo?.trim().toUpperCase() === modulo)
+    }, [dataTodos, soloLectura, moduloActual])
     const [selectedTipo, setselectedTipo] = useState(null)
     const [selectedSubtipo, setselectedSubtipo] = useState(null)
     const [tipoElegido, settipoElegido] = useState(false)
     const [subtipoElegido, setsubtipoElegido] = useState(false)
 
+    // al cambiar de modulo, sus tipos y subtipos son otros: se limpian los filtros
     useEffect(() => {
-        obtenerArchivosCenter(idEmpresa)
-    }, [idEmpresa])
+        if (soloLectura) onClickLimpiarFiltro()
+    }, [moduloActual?.key])
+
+    useEffect(() => {
+        if (soloLectura) obtenerArchivosCenterTodos()
+        else obtenerArchivosCenter(idEmpresa)
+    }, [idEmpresa, soloLectura])
 
     const tipos = useMemo(() => {
         const map = new Map()
@@ -89,7 +105,11 @@ export const App2 = ({idEmpresa}) => {
     }
   return (
     <>
-    <Button className='border-none input-buton' onClick={()=>onClickOpenModalCustomArchivo(0)}>AGREGAR ARCHIVO</Button>
+    {
+        !soloLectura && (
+            <Button className='border-none input-buton' onClick={()=>onClickOpenModalCustomArchivo(0)}>AGREGAR ARCHIVO</Button>
+        )
+    }
     {
         (tipoElegido || subtipoElegido) && (
             <Button className='p-tabview-title' variant='link'  onClick={onClickLimpiarFiltro}>Limpiar filtro</Button>
@@ -170,7 +190,7 @@ export const App2 = ({idEmpresa}) => {
             {
                 (tipoElegido && subtipoElegido)
                     ? (
-                        <DataTableCentroArchivo onClickOpenModalCustomArchivo={onClickOpenModalCustomArchivo} idEmpresa={idEmpresa} data={filteredData}/>
+                        <DataTableCentroArchivo onClickOpenModalCustomArchivo={onClickOpenModalCustomArchivo} idEmpresa={idEmpresa} data={filteredData} soloLectura={soloLectura}/>
                     )
                     : (
                         <div className='text-center text-muted mt-4'>
@@ -180,7 +200,11 @@ export const App2 = ({idEmpresa}) => {
             }
         </Col>
     </Row>
-    <ModalCustom id_enterprice={idEmpresa} id={isOpenModalCustomArchivo.id} onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
+    {
+        !soloLectura && (
+            <ModalCustom id_enterprice={idEmpresa} id={isOpenModalCustomArchivo.id} onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
+        )
+    }
     </>
   )
 }
