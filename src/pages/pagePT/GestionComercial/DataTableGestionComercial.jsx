@@ -7,7 +7,7 @@ import { arrayEstadoComercial, arrayNivelInteresComercial } from '@/types/type'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 
-export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor}) => {
+export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor, filtroFecha}) => {
   const { obtenerGestionComercial } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   useEffect(() => {
@@ -16,9 +16,11 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
   const dataFiltrada = useMemo(() => {
     return dataView?.filter(e=>
       (!filtroEstado || e.parametro_estado?.id_param===filtroEstado) &&
-      (!filtroAsesor || (e.id_empl ?? e.empleado?.id_empl)===filtroAsesor)
+      (!filtroAsesor || (e.id_empl ?? e.empleado?.id_empl)===filtroAsesor) &&
+      // filtroFecha: YYYY-MM-DD, comparado en hora local como la columna FECHA
+      (!filtroFecha || (e.fecha_registro && dayjs(e.fecha_registro).format('YYYY-MM-DD')===filtroFecha))
     )
-  }, [dataView, filtroEstado, filtroAsesor])
+  }, [dataView, filtroEstado, filtroAsesor, filtroFecha])
   const columns = [
     {
       id: 1, header: 'FECHA DE REGISTRO', render:(row)=>{
@@ -94,17 +96,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       }
     },
     {
-      id: 12, header: 'MEDIO DE COMUNICACION', render: (row)=>{
-        return (
-          <>
-
-          {row.parametro_medio_comunicacion?.label_param}
-          </>
-        )
-      }
-    },
-    {
-      id: 8, header: 'PROGRAMAS', render: (row)=>{
+      id: 8, header: 'PROGRAMA', render: (row)=>{
         return (
           <>
           {[{label: 'CHANGE 45', value: 2}, {label: 'FS 45', value: 3}, {label: 'FISIO MUSCLE', value: 4}].find(e=>e.value===row.id_pgm)?.label}
@@ -113,7 +105,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       }
     },
     {
-      id: 9, header: 'ESTATUS', render: (row)=>{
+      id: 9, header: 'STATUS', render: (row)=>{
         return (
           <>
           <Button className={`${arrayEstadoComercial.find(e=>e.value===row.parametro_estado?.id_param)?.color} border-none`} label={row.parametro_estado?.label_param}/>
@@ -122,7 +114,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       }
     },
     {
-      id: 15, header: 'NIVEL DE INTERES', render: (row)=>{
+      id: 15, header: 'INTERES', render: (row)=>{
         if (!row.parametro_nivel_interes) return null
         return (
           <>

@@ -4,6 +4,7 @@ import React, { useEffect, useMemo } from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
 import { useGestionComercialStore } from './useGestionComercialStore'
 import Swal from 'sweetalert2'
+import dayjs from 'dayjs'
 const customComercial = {
   nombres: '',
   apellidos: '',
@@ -28,7 +29,6 @@ const camposObligatorios = [
   { name: 'apellidos', label: 'APELLIDOS' },
   { name: 'id_empl', label: 'ASESOR QUE LA ATENDIO' },
   { name: 'id_canal', label: 'FUENTE' },
-  { name: 'id_medio_comunicacion', label: 'MEDIO DE COMUNICACION' },
   { name: 'id_pgm', label: 'PROGRAMA' },
   { name: 'id_estado', label: 'ESTADO' },
   { name: 'id_nivel_interes', label: 'NIVEL DE INTERES' },
@@ -38,7 +38,10 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
   const isEdit = !!lead && !isCopy
   const initialForm = useMemo(() => {
     if (!lead) return customComercial
-    return Object.keys(customComercial).reduce((acc, key) => ({...acc, [key]: lead[key] ?? customComercial[key]}), {})
+    const form = Object.keys(customComercial).reduce((acc, key) => ({...acc, [key]: lead[key] ?? customComercial[key]}), {})
+    // el lead llega con fecha_registro (datetime); el input date necesita YYYY-MM-DD
+    // en hora local, igual que la columna FECHA de la tabla
+    return {...form, fecha_ingreso: lead.fecha_registro ? dayjs(lead.fecha_registro).format('YYYY-MM-DD') : ''}
   }, [lead])
   const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, id_nivel_interes, observacion, id_cli } = useForm(initialForm)
   const { dataEmpleados, obtenerEmpleadosVendedores, dataCanales, dataMedioComunicacion, obtenerCanales, obtenerMedioComunicacion, obtenerEstadosComerciales, dataEstadoComercial, obtenerNivelesInteres, dataNivelInteres, postGestionComercial, putGestionComercial, obtenerDistritosDeLima, dataDistritos, obtenerClientes, dataClientes } = useGestionComercialStore()
@@ -66,10 +69,16 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
       })
       return
     }
+    // el backend guarda la fecha en fecha_registro; al editar solo se envia si cambio,
+    // para no perder la hora original del registro
+    const { fecha_ingreso: fecha, ...payload } = formState
+    if (!isEdit || fecha !== initialForm.fecha_ingreso) {
+      payload.fecha_registro = dayjs(fecha).toISOString()
+    }
     if (isEdit) {
-      await putGestionComercial(id, formState)
+      await putGestionComercial(id, payload)
     } else {
-      await postGestionComercial(formState)
+      await postGestionComercial(payload)
     }
     onCancel()
   }
@@ -122,11 +131,11 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
                 <InputSelect label={'FUENTE'} options={dataCanales} nameInput={'id_canal'} onChange={onInputChange} value={id_canal} required/>
               </div>
             </Col>
-            <Col lg={6}>
+            {/* <Col lg={6}>
               <div className='m-1'>
                 <InputSelect label={'MEDIO DE COMUNICACION'} options={dataMedioComunicacion} nameInput={'id_medio_comunicacion'} onChange={onInputChange} value={id_medio_comunicacion} required/>
               </div>
-            </Col>
+            </Col> */}
             {/*
             <Col lg={6}>
               <div className='m-1'>

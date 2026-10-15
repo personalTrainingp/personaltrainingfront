@@ -1,17 +1,25 @@
 import { InputButton, InputSelect } from '@/components/InputText'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { DataTableGestionComercial } from './DataTableGestionComercial'
 import { ModalCustomComercial } from './ModalCustomComercial'
 import { ModalComentario } from './ModalComentario'
 import { ModalTareas } from './ModalTareas'
 import { ModalMembresiasCliente } from './ModalMembresiasCliente'
 import { ModalReporteTareas } from './ModalReporteTareas'
+import { ModalProspectosRedes } from './ModalProspectosRedes'
 import { PageBreadcrumb } from '@/components'
 import { useSelector } from 'react-redux'
-import { ordenarEstadosComerciales } from './useGestionComercialStore'
+import dayjs from 'dayjs'
+import { ordenarEstadosComerciales, useGestionComercialStore } from './useGestionComercialStore'
 
 export const AppGestionComercial = () => {
     const {dataView} = useSelector(e=>e.COMERCIAL)
+    const { obtenerProspectosHastaAyer, prospectosHastaAyer, dataProspectosMes } = useGestionComercialStore()
+    const [isOpenModalProspectosRedes, setisOpenModalProspectosRedes] = useState(false)
+    const [filtroFecha, setfiltroFecha] = useState(null)
+    useEffect(() => {
+      obtenerProspectosHastaAyer()
+    }, [])
     const [filtroEstado, setfiltroEstado] = useState(null)
     const estadosEnData = useMemo(() => {
       const estados = new Map()
@@ -88,6 +96,15 @@ export const AppGestionComercial = () => {
               isClearable
             />
           </div>
+          <span className='fw-bold cursor-pointer text-decoration-underline' onClick={()=>setisOpenModalProspectosRedes(true)}>
+            PROSPECTOS HASTA AYER: {prospectosHastaAyer ?? '...'}
+          </span>
+          {
+            filtroFecha &&
+            <span className='badge bg-primary fs-6 cursor-pointer' onClick={()=>setfiltroFecha(null)} title='Quitar filtro de fecha'>
+              FECHA: {dayjs(filtroFecha).format('DD/MM/YYYY')} <i className='mdi mdi-close'></i>
+            </span>
+          }
           <div style={{width: 260}}>
             <InputSelect
               label={''}
@@ -101,10 +118,11 @@ export const AppGestionComercial = () => {
           </div>
           <InputButton variant={'link'} label={'Reporte'} onClick={()=>setisOpenModalReporteTareas(true)}/>
         </div>
-        <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor}/>
+        <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor} filtroFecha={filtroFecha}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>
         <ModalMembresiasCliente onHide={onCloseModalMembresias} show={isOpenModalMembresias.isOpen} lead={isOpenModalMembresias.lead}/>
         <ModalReporteTareas onHide={()=>setisOpenModalReporteTareas(false)} show={isOpenModalReporteTareas}/>
+        <ModalProspectosRedes onHide={()=>setisOpenModalProspectosRedes(false)} show={isOpenModalProspectosRedes} data={dataProspectosMes} leads={dataView} filtroFecha={filtroFecha} onSelectFecha={(fecha)=>{setfiltroFecha(fecha); setisOpenModalProspectosRedes(false)}}/>
         <ModalTareas onHide={onCloseModalTareas} show={isOpenModalTareas.isOpen} lead={isOpenModalTareas.lead}/>
         <ModalCustomComercial id={isOpenModalGestionComercial.id} show={isOpenModalGestionComercial.isOpen} onHide={onCloseModalGestionComercial} isCopy={isOpenModalGestionComercial.isCopy} lead={isOpenModalGestionComercial.lead}/>
     </div>

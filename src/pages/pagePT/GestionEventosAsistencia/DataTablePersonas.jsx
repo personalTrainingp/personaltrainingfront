@@ -78,7 +78,7 @@ export const DataTablePersonas = ({
 	onCambiarEstado,
 }) => {
 	const columns = [
-		{ id: 'pin', header: 'PIN', accessor: 'pin', sortable: true, width: 100, headerAlign: 'left', cellAlign: 'left' },
+		// { id: 'pin', header: 'PIN', accessor: 'pin', sortable: true, width: 100, headerAlign: 'left', cellAlign: 'left' },
 		{
 			id: 'dni',
 			header: 'DNI',

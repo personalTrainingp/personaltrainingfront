@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { onSetDataViewComercial } from './dataComercialSlice';
 import Swal from 'sweetalert2';
 import { arrayEstadoComercial } from '@/types/type';
+import dayjs from 'dayjs';
 
 export const useGestionComercialStore = () => {
 	const [dataEmpleados, setdataEmpleados] = useState([]);
@@ -18,7 +19,33 @@ export const useGestionComercialStore = () => {
 	const [dataTareasReporte, setdataTareasReporte] = useState([]);
 	const [isLoadingTareasReporte, setisLoadingTareasReporte] = useState(false);
 	const [isLoadingMembresias, setisLoadingMembresias] = useState(false);
+	const [prospectosHastaAyer, setprospectosHastaAyer] = useState(null);
+	const [dataProspectosMes, setdataProspectosMes] = useState([]);
 	const dispatch = useDispatch();
+	// Prospectos por redes (tb_leadsDia): total de ayer y el detalle del mes actual
+	const obtenerProspectosHastaAyer = async () => {
+		try {
+			const { data } = await PTApi.get('/prospectos-redes');
+			const ayer = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+			const mesActual = dayjs().format('YYYY-MM');
+			// fecha llega como 2026-10-14T00:00:00.000Z: se compara solo el dia
+			const prospectos = data.prospectosRedes.map((p) => ({
+				...p,
+				fecha: String(p.fecha).slice(0, 10),
+				cantidad: Number(p.cantidad ?? 0),
+				monto: Number(p.monto ?? 0),
+			}));
+			const total = prospectos.reduce((acc, p) => (p.fecha === ayer ? acc + p.cantidad : acc), 0);
+			setprospectosHastaAyer(total);
+			setdataProspectosMes(
+				prospectos
+					.filter((p) => p.fecha.startsWith(mesActual))
+					.sort((a, b) => a.fecha.localeCompare(b.fecha))
+			);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const postGestionComercial = async (formState) => {
 		try {
 			const { data } = await PTApi.post('/prospecto/lead/', formState);
@@ -193,6 +220,9 @@ export const useGestionComercialStore = () => {
 		}
 	};
 	return {
+		obtenerProspectosHastaAyer,
+		prospectosHastaAyer,
+		dataProspectosMes,
 		obtenerTareasxProspecto,
 		obtenerMembresiasxCliente,
 		obtenerTareasReporte,
