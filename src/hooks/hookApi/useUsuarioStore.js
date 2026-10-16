@@ -252,7 +252,18 @@ export const useUsuarioStore = () => {
 			console.log(error);
 		}
 	};
+	const startUpdateUsuarioAuth = async (id_user, formState) => {
+		try {
+			await PTApi.put(`/usuario/put-usuario/${id_user}`, formState);
+			await obtenerUsuariosAuth();
+			return true;
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
+	};
 	return {
+		startUpdateUsuarioAuth,
 		//Cliente
 		startRegisterUsuarioCliente,
 		obtenerUsuariosClientes,

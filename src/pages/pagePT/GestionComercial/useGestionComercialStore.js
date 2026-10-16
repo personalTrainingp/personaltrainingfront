@@ -54,12 +54,29 @@ export const useGestionComercialStore = () => {
 			console.log(error);
 		}
 	};
+	// el backend revisa si el id_empl del lead es el colaborador del usuario logueado
+	const validarEdicionLead = async (id) => {
+		try {
+			await PTApi.get(`/prospecto/lead/puede-editar/${id}`);
+			return true;
+		} catch (error) {
+			console.log(error);
+			Swal.fire({
+				icon: 'error',
+				title: error.response?.data?.msg || 'No se pudo validar el lead',
+			});
+			return false;
+		}
+	};
 	const putGestionComercial = async (id, formState) => {
 		try {
 			const { data } = await PTApi.put(`/prospecto/lead/id/${id}`, formState);
 			obtenerGestionComercial();
 		} catch (error) {
 			console.log(error);
+			if (error.response?.status === 403) {
+				Swal.fire({ icon: 'error', title: error.response.data?.msg });
+			}
 		}
 	};
 	const obtenerGestionComercial = async () => {
@@ -220,6 +237,7 @@ export const useGestionComercialStore = () => {
 		}
 	};
 	return {
+		validarEdicionLead,
 		obtenerProspectosHastaAyer,
 		prospectosHastaAyer,
 		dataProspectosMes,

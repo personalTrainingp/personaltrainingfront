@@ -50,7 +50,7 @@ const StatusColumn = ({ row }) => {
 };
 
 /* action column render */
-const ActionColumn = () => {
+const ActionColumn = ({ row }) => {
   const [modalOpenPerfil, setmodalOpenPerfil] = useState(false)
   const onModalOpenPerfil = ()=>{
     setmodalOpenPerfil(true)
@@ -63,7 +63,7 @@ const ActionColumn = () => {
       <span style={{cursor: 'pointer'}} onClick={onModalOpenPerfil} className="fs-6 bg-primary px-2 py-1 rounded rounded-5 text-white fw-bold">
         Ver Perfil
       </span>
-      <ModalPerfilAuthUsuario onHide={onModalClosePerfil} show={modalOpenPerfil}/>
+      <ModalPerfilAuthUsuario usuario={row} onHide={onModalClosePerfil} show={modalOpenPerfil}/>
     </>
   );
 };

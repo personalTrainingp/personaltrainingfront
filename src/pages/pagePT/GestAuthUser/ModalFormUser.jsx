@@ -1,7 +1,8 @@
 import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore'
 import { useForm } from '@/hooks/useForm'
 import { arrayEstados, arrayRoles } from '@/types/type'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useColaboradoresActivos } from './useColaboradoresActivos'
 import { Button, Col, Modal, Row, Tab, Tabs } from 'react-bootstrap'
 import Select from 'react-select'
 const registerUsuario = {
@@ -14,6 +15,7 @@ const registerUsuario = {
     rol_user: 0,
     notiPush_user: false,
     estado_user: false,
+    id_colaborador: 0,
 }
 export const ModalFormUser = ({show, onHide}) => {
     const { 
@@ -27,10 +29,17 @@ export const ModalFormUser = ({show, onHide}) => {
             rol_user,
             notiPush_user,
             estado_user,
+            id_colaborador,
             onInputChange,
             onInputChangeReact,
             onResetForm} = useForm(registerUsuario)
             const {startRegisterUsuarioAuth} = useUsuarioStore()
+            const { obtenerColaboradoresActivos, dataColaboradores: dataEmpleados } = useColaboradoresActivos()
+            useEffect(() => {
+                if(show){
+                    obtenerColaboradoresActivos()
+                }
+            }, [show])
 
             const submitUsuario = async(e)=>{
                 e.preventDefault()
@@ -163,6 +172,22 @@ export const ModalFormUser = ({show, onHide}) => {
                                         (option) => option.value === rol_user
                                     )}
                                     required
+                                />
+                            </div>
+                        </div>
+                        <div className="mb-2">
+                            <label className="form-label col-form-label">Colaborador:</label>
+                            <div>
+                                <Select
+                                    onChange={(e) => onInputChangeReact(e, 'id_colaborador')}
+                                    name="id_colaborador"
+                                    placeholder={'Seleccione el colaborador'}
+                                    className="react-select"
+                                    classNamePrefix="react-select"
+                                    options={dataEmpleados}
+                                    value={dataEmpleados.find(
+                                        (option) => option.value === id_colaborador
+                                    ) || null}
                                 />
                             </div>
                         </div>

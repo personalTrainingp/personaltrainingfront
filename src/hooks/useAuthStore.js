@@ -37,6 +37,7 @@ export const useAuthStore = () => {
 					name: data.name,
 					uid: data.uid,
 					role: data.rol_user,
+					id_colaborador: data.id_colaborador,
 				})
 			);
 		} catch (error) {
@@ -116,7 +117,7 @@ export const useAuthStore = () => {
 			// await obtenerModulos();
 			// await obtenerSeccions(modulos[0]);
 			dispatch(onSetModulos(data.MODULOS_ITEMS));
-			dispatch(onLogin({ name: data.name, uid: data.uid }));
+			dispatch(onLogin({ name: data.name, uid: data.uid, id_colaborador: data.id_colaborador }));
 		} catch (error) {
 			localStorage.clear();
 			dispatch(onLogout());

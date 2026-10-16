@@ -8,8 +8,13 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 
 export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor, filtroFecha}) => {
-  const { obtenerGestionComercial } = useGestionComercialStore()
+  const { obtenerGestionComercial, validarEdicionLead } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
+  const onClickEditar = async(row)=>{
+    if (await validarEdicionLead(row.id)) {
+      onOpenModalGestionComercial(row.id, false, row)
+    }
+  }
   useEffect(() => {
     obtenerGestionComercial()
   }, [])
@@ -136,7 +141,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       id: 10, header: '', render: (row)=>{
         return (
           <>
-            <Button icon="pi pi-pencil" onClick={()=>onOpenModalGestionComercial(row.id, false, row)} rounded outlined severity="danger"  className='mr-2' tooltip='EDITAR' tooltipOptions={{ position: 'top' }}/>
+            <Button icon="pi pi-pencil" onClick={()=>onClickEditar(row)} rounded outlined severity="danger"  className='mr-2' tooltip='EDITAR' tooltipOptions={{ position: 'top' }}/>
             <Button icon="pi pi-comment" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
             {/* <Button icon="pi pi-history" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
             <Button icon="pi pi-eye" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/> */}
