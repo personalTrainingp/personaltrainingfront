@@ -123,7 +123,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                                     <div className='small text-muted'>ALCANCE DE META</div>
                                                                     <div className={`fw-bold fs-3 ${alcance >= 100 ? 'text-success' : 'text-primary'}`}><NumberFormatMoney className='' amount={ultimaMeta.monto_vendido}/></div>
                                                                     <div className='fs-4'>{alcance.toFixed(2)}% de la meta</div>
-                                                                    <ProgressBar now={Math.min(alcance, 100)} variant={alcance >= 100 ? 'success' : 'primary'} className='mt-1' style={{height: 6}}/>
+                                                                    <ProgressBar now={Math.min(alcance, 100)} variant={alcance >= 90 ? 'success' : alcance >= 50 ? 'warning' : 'primary'} className='mt-1' style={{height: 6}}/>
                                                                 </Card.Body>
                                                             </Card>
                                                         </Col>
