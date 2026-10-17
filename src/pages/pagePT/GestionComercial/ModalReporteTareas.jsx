@@ -91,8 +91,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                             ultimaMeta ? (
                                                                 <>
                                                                     <div className='text-primary fw-bold fs-3'><NumberFormatMoney className='' amount={ultimaMeta.meta_asesor}/></div>
-                                                                    <div className='small'>{MESES[ultimaMeta.mes - 1]} {ultimaMeta.anio}{ultimaMeta.nombre_meta ? ` · ${ultimaMeta.nombre_meta}` : ''}</div>
-                                                                    <div className='small text-muted'>Registrada el {dayjs(ultimaMeta.fecha_registro).format('DD/MM/YYYY')}</div>
+                                                                    <div className='small'>{ultimaMeta.nombre_meta ? `${ultimaMeta.nombre_meta}` : ''}</div>
                                                                 </>
                                                             ) : (
                                                                 <div className='text-muted py-2'>SIN META REGISTRADA</div>
@@ -108,8 +107,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                             <Card.Body className='py-2'>
                                                                 <div className='small text-muted'>TIMING</div>
                                                                 <div className='text-primary fw-bold fs-3'><NumberFormatMoney className='' amount={timing.timing}/></div>
-                                                                <div className='small'>Día {timing.diasTranscurridos} de {timing.diasMeta}</div>
-                                                                <div className='small text-muted'>(meta / {timing.diasMeta} días) × {timing.diasTranscurridos} días</div>
+                                                                <div className='fs-4'>Día {timing.diasTranscurridos} de {timing.diasMeta}</div>
                                                             </Card.Body>
                                                         </Card>
                                                     </Col>
@@ -124,7 +122,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                                 <Card.Body className='py-2'>
                                                                     <div className='small text-muted'>ALCANCE DE META</div>
                                                                     <div className={`fw-bold fs-3 ${alcance >= 100 ? 'text-success' : 'text-primary'}`}><NumberFormatMoney className='' amount={ultimaMeta.monto_vendido}/></div>
-                                                                    <div className='small'>{alcance.toFixed(2)}% de la meta</div>
+                                                                    <div className='fs-4'>{alcance.toFixed(2)}% de la meta</div>
                                                                     <ProgressBar now={Math.min(alcance, 100)} variant={alcance >= 100 ? 'success' : 'primary'} className='mt-1' style={{height: 6}}/>
                                                                 </Card.Body>
                                                             </Card>
