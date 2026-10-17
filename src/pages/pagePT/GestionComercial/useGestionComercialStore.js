@@ -18,6 +18,7 @@ export const useGestionComercialStore = () => {
 	const [dataMembresiasCliente, setdataMembresiasCliente] = useState([]);
 	const [dataTareasReporte, setdataTareasReporte] = useState([]);
 	const [isLoadingTareasReporte, setisLoadingTareasReporte] = useState(false);
+	const [dataUltimasMetas, setdataUltimasMetas] = useState([]);
 	const [isLoadingMembresias, setisLoadingMembresias] = useState(false);
 	const [prospectosHastaAyer, setprospectosHastaAyer] = useState(null);
 	const [dataProspectosMes, setdataProspectosMes] = useState([]);
@@ -199,6 +200,16 @@ export const useGestionComercialStore = () => {
 			setisLoadingTareasReporte(false);
 		}
 	};
+	// Ultima meta registrada de cada asesor (gestion de metas)
+	const obtenerUltimasMetasAsesores = async () => {
+		try {
+			const { data } = await PTApi.get('/meta/meta_asesor/ultimas');
+			setdataUltimasMetas(data.ultimasMetas);
+		} catch (error) {
+			console.log(error);
+			setdataUltimasMetas([]);
+		}
+	};
 	const obtenerMembresiasxCliente = async (id_cli) => {
 		try {
 			setisLoadingMembresias(true);
@@ -246,6 +257,8 @@ export const useGestionComercialStore = () => {
 		obtenerTareasReporte,
 		dataTareasReporte,
 		isLoadingTareasReporte,
+		obtenerUltimasMetasAsesores,
+		dataUltimasMetas,
 		dataMembresiasCliente,
 		isLoadingMembresias,
 		postTareaProspecto,

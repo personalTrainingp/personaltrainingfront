@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Card, Col, Modal, Row, Spinner, Table } from 'react-bootstrap'
+import { Card, Col, Modal, ProgressBar, Row, Spinner, Table } from 'react-bootstrap'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import { arrayTareasComercial } from '@/types/type'
+import { NumberFormatMoney } from '@/components/CurrencyMask'
+import { MESES } from '../GestionMetas/meses'
 import { useGestionComercialStore } from './useGestionComercialStore'
 
 // El numero va debajo del card (fuera), para que todos queden alineados aunque el texto ocupe 2 lineas
@@ -19,8 +21,16 @@ const ResumenItem = ({label, valor, icon, activo, exito, onClick})=>(
   </div>
 )
 
+// Timing: lo que deberia llevar acumulado a hoy = (meta / dias del mes) * dias transcurridos desde el dia 1 (incluye hoy)
+const calcularTiming = (meta)=>{
+  const inicio = dayjs(new Date(meta.anio, meta.mes - 1, 1))
+  const diasMeta = inicio.daysInMonth()
+  const diasTranscurridos = Math.min(Math.max(dayjs().startOf('day').diff(inicio, 'day') + 1, 0), diasMeta)
+  return { timing: (meta.meta_asesor / diasMeta) * diasTranscurridos, diasMeta, diasTranscurridos }
+}
+
 export const ModalReporteTareas = ({show, onHide}) => {
-  const { obtenerTareasReporte, dataTareasReporte, isLoadingTareasReporte } = useGestionComercialStore()
+  const { obtenerTareasReporte, dataTareasReporte, isLoadingTareasReporte, obtenerUltimasMetasAsesores, dataUltimasMetas } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   // Click en un card filtra la tabla por ese tipo de tarea; otro click lo quita
   const [filtroTarea, setfiltroTarea] = useState(null)
@@ -28,6 +38,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
   useEffect(() => {
     if (show) {
       obtenerTareasReporte()
+      obtenerUltimasMetasAsesores()
       setfiltroTarea(null)
       settabActivo(0)
     }
@@ -67,8 +78,61 @@ export const ModalReporteTareas = ({show, onHide}) => {
                             asesores.map((a)=>{
                                 const tareasFiltradas = filtroTarea ? a.tareas.filter(t=>t.id_tarea===filtroTarea) : a.tareas
                                 const tipoFiltro = arrayTareasComercial.find(e=>e.value===filtroTarea)
+                                const ultimaMeta = dataUltimasMetas.find(m=>m.id_asesor===a.id_empl)
+                                const timing = ultimaMeta && calcularTiming(ultimaMeta)
                                 return (
                                     <TabPanel key={a.id_empl} header={`${a.nombre} (${a.prospectos.length})`}>
+                                        <Row className='g-2 mb-3'>
+                                            <Col xs={12} sm={6} lg={4} xl={3}>
+                                                <Card className='shadow-sm h-100 mb-0'>
+                                                    <Card.Body className='py-2'>
+                                                        <div className='small text-muted'>ÚLTIMA META</div>
+                                                        {
+                                                            ultimaMeta ? (
+                                                                <>
+                                                                    <div className='text-primary fw-bold fs-3'><NumberFormatMoney className='' amount={ultimaMeta.meta_asesor}/></div>
+                                                                    <div className='small'>{MESES[ultimaMeta.mes - 1]} {ultimaMeta.anio}{ultimaMeta.nombre_meta ? ` · ${ultimaMeta.nombre_meta}` : ''}</div>
+                                                                    <div className='small text-muted'>Registrada el {dayjs(ultimaMeta.fecha_registro).format('DD/MM/YYYY')}</div>
+                                                                </>
+                                                            ) : (
+                                                                <div className='text-muted py-2'>SIN META REGISTRADA</div>
+                                                            )
+                                                        }
+                                                    </Card.Body>
+                                                </Card>
+                                            </Col>
+                                            {
+                                                timing && (
+                                                    <Col xs={12} sm={6} lg={4} xl={3}>
+                                                        <Card className='shadow-sm h-100 mb-0'>
+                                                            <Card.Body className='py-2'>
+                                                                <div className='small text-muted'>TIMING</div>
+                                                                <div className='text-primary fw-bold fs-3'><NumberFormatMoney className='' amount={timing.timing}/></div>
+                                                                <div className='small'>Día {timing.diasTranscurridos} de {timing.diasMeta}</div>
+                                                                <div className='small text-muted'>(meta / {timing.diasMeta} días) × {timing.diasTranscurridos} días</div>
+                                                            </Card.Body>
+                                                        </Card>
+                                                    </Col>
+                                                )
+                                            }
+                                            {
+                                                ultimaMeta && (()=>{
+                                                    const alcance = (ultimaMeta.monto_vendido / ultimaMeta.meta_asesor) * 100
+                                                    return (
+                                                        <Col xs={12} sm={6} lg={4} xl={3}>
+                                                            <Card className='shadow-sm h-100 mb-0'>
+                                                                <Card.Body className='py-2'>
+                                                                    <div className='small text-muted'>ALCANCE DE META</div>
+                                                                    <div className={`fw-bold fs-3 ${alcance >= 100 ? 'text-success' : 'text-primary'}`}><NumberFormatMoney className='' amount={ultimaMeta.monto_vendido}/></div>
+                                                                    <div className='small'>{alcance.toFixed(2)}% de la meta</div>
+                                                                    <ProgressBar now={Math.min(alcance, 100)} variant={alcance >= 100 ? 'success' : 'primary'} className='mt-1' style={{height: 6}}/>
+                                                                </Card.Body>
+                                                            </Card>
+                                                        </Col>
+                                                    )
+                                                })()
+                                            }
+                                        </Row>
                                         <Row className='g-2 mb-3'>
                                             {
                                                 arrayTareasComercial.map(tipo=>(

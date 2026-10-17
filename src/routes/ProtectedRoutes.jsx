@@ -100,6 +100,7 @@ const GestionFeriados = lazy(() => import('../pages/pagePT/GestionFeriados/index
 const GestionPermisos = lazy(() => import('../pages/pagePT/GestionPermisos/index.jsx'))
 const GestionTardanzas = lazy(() => import('../pages/pagePT/GestionTardanzas/index.jsx'))
 const GestionEventosAsistencia = lazy(() => import('../pages/pagePT/GestionEventosAsistencia/index.jsx'))
+const GestionMetas = lazy(() => import('../pages/pagePT/GestionMetas/index.jsx'))
 const ReporteAsistenciaHuellero = lazy(() => import('../pages/pagePT/ReporteSeguimiento/index.jsx'))
 const GestionHorasExtras = lazy(() => import('../pages/pagePT/GestionHorasExtras/index.jsx'))
 const GestionSalidasTempranas = lazy(() => import('../pages/pagePT/GestionSalidasTempranas/index.jsx'))
@@ -286,6 +287,10 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/socio') &&
 								<Route path='gestion-eventos-asistencia' element={<GestionEventosAsistencia />} />
+							}
+							{
+								findSectionDeep('/gestion-metas') &&
+								<Route path='gestion-metas' element={<GestionMetas />} />
 							}
 							{
 								findSectionDeep('/reporte-asistencia-huellero') &&
