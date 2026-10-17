@@ -91,7 +91,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                             ultimaMeta ? (
                                                                 <>
                                                                     <div className='text-primary fw-bold fs-3'><NumberFormatMoney className='' amount={ultimaMeta.meta_asesor}/></div>
-                                                                    <div className='small'>{ultimaMeta.nombre_meta ? `${ultimaMeta.nombre_meta}` : ''}</div>
+                                                                    <div className='fs-4'>{ultimaMeta.nombre_meta ? `${ultimaMeta.nombre_meta}` : ''}</div>
                                                                 </>
                                                             ) : (
                                                                 <div className='text-muted py-2'>SIN META REGISTRADA</div>
