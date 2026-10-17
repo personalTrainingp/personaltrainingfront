@@ -14,9 +14,10 @@ export const ModalProspectosRedes = ({show, onHide, data = [], leads = [], filtr
       const fecha = dayjs(l.fecha_registro).format('YYYY-MM-DD')
       leadsxDia.set(fecha, (leadsxDia.get(fecha) ?? 0) + 1)
     })
-    const hoy = dayjs()
+    // De hoy hacia el dia 1 (fecha descendente)
+    const hoy = dayjs().startOf('day')
     const filas = []
-    for (let d = hoy.startOf('month'); !d.isAfter(hoy, 'day'); d = d.add(1, 'day')) {
+    for (let d = hoy; !d.isBefore(hoy.startOf('month'), 'day'); d = d.subtract(1, 'day')) {
       const fecha = d.format('YYYY-MM-DD')
       filas.push({fecha, meta: metaxDia.get(fecha) ?? 0, prospectos: leadsxDia.get(fecha) ?? 0})
     }
