@@ -2,6 +2,9 @@ import React, { useMemo } from 'react'
 import { Modal, Table } from 'react-bootstrap'
 import dayjs from 'dayjs'
 
+// Canales de redes (parametro comercial/canal): 1667 = FB, 1668 = IG
+const CANALES_REDES = [1667, 1668]
+
 // Por cada dia del mes actual (hasta hoy): prospectos de META (tb_leadsDia) y prospectos
 // registrados en gestion de prospecto. Click en un dia filtra la tabla grande por esa fecha
 export const ModalProspectosRedes = ({show, onHide, data = [], leads = [], filtroFecha, onSelectFecha}) => {
@@ -10,7 +13,7 @@ export const ModalProspectosRedes = ({show, onHide, data = [], leads = [], filtr
     data.forEach(p=>metaxDia.set(p.fecha, (metaxDia.get(p.fecha) ?? 0) + p.cantidad))
     const leadsxDia = new Map()
     leads.forEach(l=>{
-      if (!l.fecha_registro) return
+      if (!l.fecha_registro || !CANALES_REDES.includes(Number(l.id_canal))) return
       const fecha = dayjs(l.fecha_registro).format('YYYY-MM-DD')
       leadsxDia.set(fecha, (leadsxDia.get(fecha) ?? 0) + 1)
     })
@@ -37,7 +40,7 @@ export const ModalProspectosRedes = ({show, onHide, data = [], leads = [], filtr
                     <tr>
                         <th>FECHA</th>
                         <th>CANTIDAD DE META</th>
-                        <th>CANTIDAD DE PROSPECTOS</th>
+                        <th>CANTIDAD DE PROSPECTOS (IG Y FB)</th>
                     </tr>
                 </thead>
                 <tbody>
