@@ -17,7 +17,7 @@ const ResumenItem = ({label, valor, icon, activo, exito, onClick})=>(
         <div className={`small ${activo ? '' : 'text-muted'}`}>{label}</div>
       </Card.Body>
     </Card>
-    <div className={`fw-bold fs-3 text-center ${exito ? 'text-success' : ''}`}>{valor}</div>
+    <div className={`fw-bold fs-3 text-center ${exito ? 'text-ISESAC' : ''}`}>{valor}</div>
   </div>
 )
 
@@ -81,7 +81,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                 const ultimaMeta = dataUltimasMetas.find(m=>m.id_asesor===a.id_empl)
                                 const timing = ultimaMeta && calcularTiming(ultimaMeta)
                                 return (
-                                    <TabPanel key={a.id_empl} header={`${a.nombre} (${a.prospectos.length})`}>
+                                    <TabPanel key={a.id_empl} header={`${a.nombre.trim().split(' ')[0]} (${a.prospectos.length})`}>
                                         <Row className='g-2 mb-3'>
                                             <Col xs={12} sm={6} lg={4} xl={3}>
                                                 <Card className='shadow-sm h-100 mb-0'>
