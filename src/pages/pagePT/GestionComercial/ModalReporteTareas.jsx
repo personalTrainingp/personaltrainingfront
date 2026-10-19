@@ -169,7 +169,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                                 const tipo = arrayTareasComercial.find(e=>e.value===t.id_tarea)
                                                                 return (
                                                                     <tr key={t.id}>
-                                                                        <td className='text-nowrap'>{dayjs(t.fecha).format('DD/MM/YYYY hh:mm A')}</td>
+                                                                        <td className='text-nowrap'>{dayjs(t.fecha).format('dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}</td>
                                                                         <td>{`${t.prospecto.nombres ?? ''} ${t.prospecto.apellidos ?? ''}`}</td>
                                                                         <td>{t.prospecto.celular}</td>
                                                                         <td>{t.prospecto.parametro_estado?.label_param}</td>
