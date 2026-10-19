@@ -101,6 +101,7 @@ const GestionPermisos = lazy(() => import('../pages/pagePT/GestionPermisos/index
 const GestionTardanzas = lazy(() => import('../pages/pagePT/GestionTardanzas/index.jsx'))
 const GestionEventosAsistencia = lazy(() => import('../pages/pagePT/GestionEventosAsistencia/index.jsx'))
 const GestionMetas = lazy(() => import('../pages/pagePT/GestionMetas/index.jsx'))
+const GestionMensajesWsp = lazy(() => import('../pages/pagePT/GestionMensajesWsp/index.jsx'))
 const ReporteAsistenciaHuellero = lazy(() => import('../pages/pagePT/ReporteSeguimiento/index.jsx'))
 const GestionHorasExtras = lazy(() => import('../pages/pagePT/GestionHorasExtras/index.jsx'))
 const GestionSalidasTempranas = lazy(() => import('../pages/pagePT/GestionSalidasTempranas/index.jsx'))
@@ -291,6 +292,10 @@ export default function ProtectedRoutes() {
 							{
 								findSectionDeep('/gestion-metas') &&
 								<Route path='gestion-metas' element={<GestionMetas />} />
+							}
+							{
+								findSectionDeep('/mensajes-wsp') &&
+								<Route path='mensajes-wsp' element={<GestionMensajesWsp />} />
 							}
 							{
 								findSectionDeep('/reporte-asistencia-huellero') &&
