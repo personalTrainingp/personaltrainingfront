@@ -7,6 +7,7 @@ import { ModalTareas } from './ModalTareas'
 import { ModalMembresiasCliente } from './ModalMembresiasCliente'
 import { ModalReporteTareas } from './ModalReporteTareas'
 import { ModalProspectosRedes } from './ModalProspectosRedes'
+import { ModalMensajesWsp } from './ModalMensajesWsp'
 import { PageBreadcrumb } from '@/components'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
@@ -66,6 +67,7 @@ export const AppGestionComercial = () => {
         setisOpenModalHistory({isOpen: false, uid: ''})
     }
     const [isOpenModalReporteTareas, setisOpenModalReporteTareas] = useState(false)
+    const [isOpenModalMensajesWsp, setisOpenModalMensajesWsp] = useState(false)
     const [isOpenModalMembresias, setisOpenModalMembresias] = useState({isOpen: false, lead: null})
     const onOpenModalMembresias = (lead)=>{
         setisOpenModalMembresias({isOpen: true, lead})
@@ -117,11 +119,13 @@ export const AppGestionComercial = () => {
             />
           </div>
           <InputButton variant={'link'} label={'Reporte'} onClick={()=>setisOpenModalReporteTareas(true)}/>
+          <InputButton variant={'link'} label={'Gestionar WSP'} onClick={()=>setisOpenModalMensajesWsp(true)}/>
         </div>
         <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor} filtroFecha={filtroFecha}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>
         <ModalMembresiasCliente onHide={onCloseModalMembresias} show={isOpenModalMembresias.isOpen} lead={isOpenModalMembresias.lead}/>
         <ModalReporteTareas onHide={()=>setisOpenModalReporteTareas(false)} show={isOpenModalReporteTareas}/>
+        <ModalMensajesWsp onHide={()=>setisOpenModalMensajesWsp(false)} show={isOpenModalMensajesWsp}/>
         <ModalProspectosRedes onHide={()=>setisOpenModalProspectosRedes(false)} show={isOpenModalProspectosRedes} data={dataProspectosMes} leads={dataView} filtroFecha={filtroFecha} onSelectFecha={(fecha)=>{setfiltroFecha(fecha); setisOpenModalProspectosRedes(false)}}/>
         <ModalTareas onHide={onCloseModalTareas} show={isOpenModalTareas.isOpen} lead={isOpenModalTareas.lead}/>
         <ModalCustomComercial id={isOpenModalGestionComercial.id} show={isOpenModalGestionComercial.isOpen} onHide={onCloseModalGestionComercial} isCopy={isOpenModalGestionComercial.isCopy} lead={isOpenModalGestionComercial.lead}/>

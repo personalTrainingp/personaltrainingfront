@@ -57,6 +57,18 @@ export const useMensajesWspStore = () => {
 		}
 	};
 
+	// El usuario conectado toma el chat como su lead; retorna { ok, msg, gestionadoPor }
+	const agregarAMiLead = async (chat) => {
+		try {
+			const { data } = await PTApi.put(`/wsp/chats/${encodeURIComponent(chat)}/gestionar`);
+			setdataChats((prev) => prev.map((c) => (c.chat === chat ? { ...c, gestionadoPor: data.gestionadoPor } : c)));
+			return data;
+		} catch (error) {
+			console.log(error);
+			return { ok: false, msg: msgError(error, 'No se pudo agregar a tu lead') };
+		}
+	};
+
 	return {
 		dataChats,
 		dataMensajes,
@@ -67,5 +79,6 @@ export const useMensajesWspStore = () => {
 		obtenerChats,
 		obtenerMensajes,
 		obtenerMensajesAnteriores,
+		agregarAMiLead,
 	};
 };
