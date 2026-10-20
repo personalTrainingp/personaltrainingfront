@@ -57,12 +57,6 @@ export const useMensajesWspStore = () => {
 		}
 	};
 
-	// Archivo de un mensaje como URL local (blob): la descarga requiere el x-token
-	const obtenerMediaUrl = async (id_media) => {
-		const { data } = await PTApi.get(`/wsp/media/${id_media}`, { responseType: 'blob' });
-		return URL.createObjectURL(data);
-	};
-
 	return {
 		dataChats,
 		dataMensajes,
@@ -73,6 +67,5 @@ export const useMensajesWspStore = () => {
 		obtenerChats,
 		obtenerMensajes,
 		obtenerMensajesAnteriores,
-		obtenerMediaUrl,
 	};
 };

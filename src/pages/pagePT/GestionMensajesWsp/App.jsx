@@ -8,21 +8,6 @@ import { useMensajesWspStore } from './useMensajesWspStore';
 // Los mensajes nuevos llegan por el webhook: se refresca la lista cada 15 s
 const INTERVALO_REFRESCO = 15000;
 
-const ETIQUETA_TIPO = {
-	image: '📷 Imagen',
-	video: '🎥 Video',
-	audio: '🎵 Audio',
-	ptt: '🎤 Nota de voz',
-	document: '📄 Documento',
-	sticker: 'Sticker',
-	location: '📍 Ubicación',
-	contacts: '👤 Contacto',
-	// enviado por la API desde otro sistema: Meta solo informa su estado, no su contenido
-	saliente: 'Mensaje enviado desde otro sistema',
-};
-
-const resumenMensaje = (m) => m.body || ETIQUETA_TIPO[m.tipo] || m.tipo;
-
 const formatoFecha = (fecha) => {
 	const f = dayjs(fecha);
 	return f.isSame(dayjs(), 'day') ? f.format('HH:mm') : f.locale('es').format('DD/MM/YY');
@@ -36,65 +21,6 @@ const IconoEstado = ({ estado, error }) => {
 	return null;
 };
 
-// Las imagenes y stickers se cargan solos; audio, video y documentos al hacer clic
-const MediaWsp = ({ m, obtenerMediaUrl }) => {
-	const [url, seturl] = useState(null);
-	const [cargando, setcargando] = useState(false);
-	const [errorMedia, seterrorMedia] = useState('');
-	const esImagen = m.tipo === 'image' || m.tipo === 'sticker';
-
-	const cargar = async () => {
-		try {
-			setcargando(true);
-			seterrorMedia('');
-			seturl(await obtenerMediaUrl(m.id_media));
-		} catch (error) {
-			console.log(error);
-			seterrorMedia('No se pudo cargar el archivo');
-		} finally {
-			setcargando(false);
-		}
-	};
-	useEffect(() => {
-		if (esImagen) cargar();
-	}, [m.id_media]);
-	useEffect(() => () => url && URL.revokeObjectURL(url), [url]);
-
-	if (errorMedia) return <div className="text-danger small">{errorMedia}</div>;
-	if (cargando) return <Spinner animation="border" size="sm" />;
-	if (!url)
-		return (
-			<Button size="sm" variant="outline-secondary" onClick={cargar}>
-				{ETIQUETA_TIPO[m.tipo] || 'Archivo'}
-				{m.nombre_archivo ? `: ${m.nombre_archivo}` : ''}
-			</Button>
-		);
-	if (esImagen)
-		return (
-			<a href={url} target="_blank" rel="noreferrer">
-				<img src={url} alt={m.tipo} style={{ maxWidth: 240, maxHeight: 240 }} className="rounded d-block mb-1" />
-			</a>
-		);
-	if (m.tipo === 'video') return <video src={url} controls style={{ maxWidth: 260 }} />;
-	if (m.tipo === 'audio') return <audio src={url} controls />;
-	return (
-		<a href={url} download={m.nombre_archivo || 'documento'}>
-			📄 {m.nombre_archivo || 'Descargar documento'}
-		</a>
-	);
-};
-
-const ContenidoMensaje = ({ m, obtenerMediaUrl }) => (
-	<>
-		{m.id_media && <MediaWsp m={m} obtenerMediaUrl={obtenerMediaUrl} />}
-		{(!m.id_media || m.body) && (
-			<div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} className={m.tipo === 'saliente' ? 'fst-italic text-muted' : ''}>
-				{resumenMensaje(m)}
-			</div>
-		)}
-	</>
-);
-
 export const App = () => {
 	const {
 		dataChats,
@@ -106,7 +32,6 @@ export const App = () => {
 		obtenerChats,
 		obtenerMensajes,
 		obtenerMensajesAnteriores,
-		obtenerMediaUrl,
 	} = useMensajesWspStore();
 	const [busqueda, setbusqueda] = useState('');
 	const [chatActivo, setchatActivo] = useState(null);
@@ -171,7 +96,7 @@ export const App = () => {
 											{c.nombre && <small className="d-block">{c.chat}</small>}
 											<small className="d-block text-truncate opacity-75">
 												{c.enviado_por_mi ? 'Tú: ' : ''}
-												{resumenMensaje(c)}
+												{c.body}
 											</small>
 										</ListGroup.Item>
 									))}
@@ -213,7 +138,7 @@ export const App = () => {
 													className={`px-3 py-2 rounded shadow-sm ${m.enviado_por_mi ? 'bg-success-subtle' : 'bg-white'}`}
 													style={{ maxWidth: '75%' }}
 												>
-													<ContenidoMensaje m={m} obtenerMediaUrl={obtenerMediaUrl} />
+													<div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.body}</div>
 													<div className="text-end text-muted" style={{ fontSize: 11 }}>
 														{dayjs(m.fecha).locale('es').format('DD/MM/YY HH:mm')}{' '}
 														{m.enviado_por_mi && <IconoEstado estado={m.estado} error={m.error} />}
