@@ -5,6 +5,9 @@ import { Col, Modal, Row } from 'react-bootstrap'
 import { useGestionComercialStore } from './useGestionComercialStore'
 import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
+import { useSelector } from 'react-redux'
+// Normaliza el celular: solo dígitos y últimos 9 (ignora +51, espacios, guiones)
+const normalizarCelular = (celular)=>String(celular ?? '').replace(/\D/g, '').slice(-9)
 const customComercial = {
   nombres: '',
   apellidos: '',
@@ -45,6 +48,13 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
   }, [lead])
   const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, id_nivel_interes, observacion, id_cli } = useForm(initialForm)
   const { dataEmpleados, obtenerEmpleadosVendedores, dataCanales, dataMedioComunicacion, obtenerCanales, obtenerMedioComunicacion, obtenerEstadosComerciales, dataEstadoComercial, obtenerNivelesInteres, dataNivelInteres, postGestionComercial, putGestionComercial, obtenerDistritosDeLima, dataDistritos, obtenerClientes, dataClientes } = useGestionComercialStore()
+  const {dataView} = useSelector(e=>e.COMERCIAL)
+  // Leads ya registrados en la BD con el mismo celular (excluye el lead que se está editando)
+  const leadsMismoCelular = useMemo(() => {
+    const cel = normalizarCelular(celular)
+    if (cel.length < 9) return []
+    return (dataView ?? []).filter(e=>normalizarCelular(e.celular)===cel && !(isEdit && e.id===id))
+  }, [dataView, celular, isEdit, id])
   useEffect(() => {
     if(show){
       obtenerEmpleadosVendedores()
@@ -116,6 +126,22 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
                 <InputText label={'APELLIDOS'} nameInput={'apellidos'} value={apellidos} onChange={onInputChange}/>
               </div>
             </Col>
+            {
+              leadsMismoCelular.length > 0 &&
+              <Col lg={12}>
+                <div className='alert alert-warning m-1 py-2'>
+                  <i className='mdi mdi-alert'></i> <strong>CELULAR YA REGISTRADO</strong> en {leadsMismoCelular.length} {leadsMismoCelular.length===1 ? 'lead' : 'leads'}:
+                  <ul className='mb-0'>
+                    {leadsMismoCelular.map(e=>(
+                      <li key={e.id}>
+                        {e.nombres} {e.apellidos} — {e.empleado?.nombres_apellidos_empl ?? 'SIN ASESOR'}
+                        {e.fecha_registro && ` (${dayjs(e.fecha_registro).format('DD/MM/YYYY')})`}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Col>
+            }
             <Col lg={12}>
               <div className='m-1'>
                 <InputSelect label={'SOCIO'} placeholder={'BUSCAR POR DNI O NOMBRE'} options={dataClientes} nameInput={'id_cli'} onChange={onInputChange} value={id_cli}/>
