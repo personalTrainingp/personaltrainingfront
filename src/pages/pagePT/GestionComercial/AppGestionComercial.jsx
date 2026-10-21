@@ -1,7 +1,7 @@
 import { InputButton, InputSelect } from '@/components/InputText'
 import React, { useEffect, useMemo, useState } from 'react'
 import { DataTableGestionComercial } from './DataTableGestionComercial'
-import { ModalCustomComercial } from './ModalCustomComercial'
+import { ModalCustomComercial, customComercial } from './ModalCustomComercial'
 import { ModalComentario } from './ModalComentario'
 import { ModalTareas } from './ModalTareas'
 import { ModalMembresiasCliente } from './ModalMembresiasCliente'
@@ -15,7 +15,12 @@ import { ordenarEstadosComerciales, useGestionComercialStore } from './useGestio
 
 export const AppGestionComercial = () => {
     const {dataView} = useSelector(e=>e.COMERCIAL)
-    const { obtenerProspectosHastaAyer, prospectosHastaAyer, dataProspectosMes } = useGestionComercialStore()
+    const { obtenerProspectosHastaAyer, prospectosHastaAyer, dataProspectosMes, postGestionComercial } = useGestionComercialStore()
+    // registra un lead vacio (id_* = 0) sin abrir el modal; se completa luego editandolo desde la tabla
+    const onAgregarLeadVacio = async()=>{
+      const { fecha_ingreso, ...payload } = customComercial
+      await postGestionComercial({...payload, fecha_registro: dayjs().toISOString()})
+    }
     const [isOpenModalProspectosRedes, setisOpenModalProspectosRedes] = useState(false)
     const [filtroFecha, setfiltroFecha] = useState(null)
     useEffect(() => {
@@ -86,7 +91,7 @@ export const AppGestionComercial = () => {
     <div>
         <PageBreadcrumb title={'GESTION DE LEAD'}/>
         <div className='d-flex align-items-center gap-2 flex-wrap'>
-          <InputButton label={'Agregar lead'} onClick={()=>onOpenModalGestionComercial(0, false)}/>
+          <InputButton label={'Agregar lead'} onClick={onAgregarLeadVacio}/>
           <div style={{width: 260}}>
             <InputSelect
               label={''}
