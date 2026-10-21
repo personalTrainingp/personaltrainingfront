@@ -7,7 +7,7 @@ import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 // Normaliza el celular: solo dígitos y últimos 9 (ignora +51, espacios, guiones)
-const normalizarCelular = (celular)=>String(celular ?? '').replace(/\D/g, '').slice(-9)
+export const normalizarCelular =(celular)=>String(celular ?? '').replace(/\D/g, '').slice(-9)
 const customComercial = {
   nombres: '',
   apellidos: '',
@@ -37,17 +37,19 @@ const camposObligatorios = [
   { name: 'id_nivel_interes', label: 'NIVEL DE INTERES' },
   { name: 'observacion', label: 'OBSERVACION' },
 ]
-export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
+// inicial: datos para precargar un lead nuevo (ej. desde un chat de WhatsApp); fuenteInicial: texto de la FUENTE a preseleccionar
+// onGuardado: se llama despues de registrar/editar el lead con exito
+export const ModalCustomComercial = ({show, onHide, isCopy, id, lead, inicial, fuenteInicial, onGuardado}) => {
   const isEdit = !!lead && !isCopy
   const initialForm = useMemo(() => {
     // lead nuevo: por defecto la fecha de hoy (hora local)
-    if (!lead) return {...customComercial, fecha_ingreso: dayjs().format('YYYY-MM-DD')}
+    if (!lead) return {...customComercial, fecha_ingreso: dayjs().format('YYYY-MM-DD'), ...inicial}
     const form = Object.keys(customComercial).reduce((acc, key) => ({...acc, [key]: lead[key] ?? customComercial[key]}), {})
     // el lead llega con fecha_registro (datetime); el input date necesita YYYY-MM-DD
     // en hora local, igual que la columna FECHA de la tabla
     return {...form, fecha_ingreso: lead.fecha_registro ? dayjs(lead.fecha_registro).format('YYYY-MM-DD') : ''}
-  }, [lead])
-  const { formState, onInputChange, onResetForm, fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, id_nivel_interes, observacion, id_cli } = useForm(initialForm)
+  }, [lead, inicial])
+  const { formState, onInputChange, onInputChangeFunction, onResetForm,fecha_ingreso, nombres, apellidos, celular, id_empl, ubigeo_distrito_residencia, id_canal, id_medio_comunicacion, id_pgm, id_estado, id_nivel_interes, observacion, id_cli } = useForm(initialForm)
   const { dataEmpleados, obtenerEmpleadosVendedores, dataCanales, dataMedioComunicacion, obtenerCanales, obtenerMedioComunicacion, obtenerEstadosComerciales, dataEstadoComercial, obtenerNivelesInteres, dataNivelInteres, postGestionComercial, putGestionComercial, obtenerDistritosDeLima, dataDistritos, obtenerClientes, dataClientes } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   // Leads ya registrados en la BD con el mismo celular (excluye el lead que se está editando)
@@ -67,6 +69,12 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
       obtenerClientes()
     }
   }, [show])
+  // preselecciona la FUENTE (ej. WhatsApp) cuando cargan los canales
+  useEffect(() => {
+    if (!show || !fuenteInicial || id_canal) return
+    const canal = dataCanales.find(c=>String(c.label ?? '').toLowerCase().includes(fuenteInicial.toLowerCase()))
+    if (canal) onInputChangeFunction('id_canal', canal.value)
+  }, [show, fuenteInicial, dataCanales, id_canal])
   const onSubmit = async()=>{
     const faltantes = camposObligatorios.filter(({name})=>{
       const valor = formState[name]
@@ -89,8 +97,10 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
     if (isEdit) {
       await putGestionComercial(id, payload)
     } else {
-      await postGestionComercial(payload)
+      // si falla el registro, el modal queda abierto para corregir
+      if (!(await postGestionComercial(payload))) return
     }
+    await onGuardado?.()
     onCancel()
   }
   const onCancel = ()=>{

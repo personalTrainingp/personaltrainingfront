@@ -51,8 +51,11 @@ export const useGestionComercialStore = () => {
 		try {
 			const { data } = await PTApi.post('/prospecto/lead/', formState);
 			obtenerGestionComercial();
+			return true;
 		} catch (error) {
 			console.log(error);
+			Swal.fire({ icon: 'error', title: error.response?.data?.msg || 'No se pudo registrar el lead' });
+			return false;
 		}
 	};
 	// el backend revisa si el id_empl del lead es el colaborador del usuario logueado

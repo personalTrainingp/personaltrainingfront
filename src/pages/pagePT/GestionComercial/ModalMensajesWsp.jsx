@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Alert, Button, Form, Modal, Spinner, Table } from 'react-bootstrap'
 import dayjs from 'dayjs'
+import { useSelector } from 'react-redux'
 import { useMensajesWspStore } from '../GestionMensajesWsp/useMensajesWspStore'
+import { ModalCustomComercial, normalizarCelular } from './ModalCustomComercial'
 
 // Los mensajes nuevos llegan por el webhook: se refresca la lista cada 15 s
 const INTERVALO_REFRESCO = 15000
@@ -12,6 +14,15 @@ export const ModalMensajesWsp = ({show, onHide}) => {
   const [busqueda, setbusqueda] = useState('')
   const [chatGuardando, setchatGuardando] = useState(null)
   const [errorAccion, seterrorAccion] = useState('')
+  const [soloNuevos, setsoloNuevos] = useState(true)
+  const {dataView} = useSelector(e=>e.COMERCIAL)
+  // Celulares que ya estan registrados como lead
+  const celularesLeads = useMemo(() => new Set((dataView ?? []).map(e=>normalizarCelular(e.celular)).filter(cel=>cel.length===9)), [dataView])
+  // Solo nuevos: oculta los chats cuyo numero ya esta registrado como lead
+  const chatsVisibles = useMemo(() => {
+    if (!soloNuevos) return dataChats
+    return dataChats.filter(c=>!celularesLeads.has(normalizarCelular(c.chat)))
+  }, [dataChats, celularesLeads, soloNuevos])
 
   useEffect(() => {
     if (!show) return
@@ -23,26 +34,47 @@ export const ModalMensajesWsp = ({show, onHide}) => {
     }
   }, [show, busqueda])
 
+  const {user} = useSelector(e=>e.auth)
+  // Chat que se esta registrando como lead: abre el formulario de lead precargado
+  const [chatLead, setchatLead] = useState(null)
+  const leadInicial = useMemo(() => {
+    if (!chatLead) return null
+    const [nombre, ...resto] = String(chatLead.nombre ?? '').trim().split(/\s+/)
+    return {
+      nombres: nombre ?? '',
+      apellidos: resto.join(' '),
+      celular: normalizarCelular(chatLead.chat),
+      id_empl: user?.id_colaborador ?? 0,
+      observacion: chatLead.body ? `MENSAJE DE WHATSAPP: ${chatLead.body}`.slice(0, 500) : '',
+    }
+  }, [chatLead, user])
+
+  // Se llama al guardar el lead: el chat queda como lead del usuario conectado
   const onAgregarAMiLead = async (chat) => {
     seterrorAccion('')
     setchatGuardando(chat)
     const resultado = await agregarAMiLead(chat)
     setchatGuardando(null)
     if (!resultado.ok) {
-      seterrorAccion(resultado.msg)
+      seterrorAccion(`Lead registrado, pero no se pudo marcar el chat: ${resultado.msg}`)
       obtenerChats(busqueda, true)
     }
   }
 
   return (
-    <Modal show={show} onHide={onHide} size='xl'>
+    <>
+    {/* mientras se llena el lead se oculta este modal para no apilar dos modales */}
+    <Modal show={show && !chatLead} onHide={onHide} size='xl'>
         <Modal.Header closeButton>
             <Modal.Title>
                 MENSAJES DE WHATSAPP
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form.Control className='mb-3' placeholder='Buscar por nombre o número' value={busqueda} onChange={(e)=>setbusqueda(e.target.value)} style={{maxWidth: 320}}/>
+            <div className='d-flex align-items-center gap-3 mb-3 flex-wrap'>
+              <Form.Control placeholder='Buscar por nombre o número' value={busqueda} onChange={(e)=>setbusqueda(e.target.value)} style={{maxWidth: 320}}/>
+              <Form.Check type='switch' id='wsp-solo-nuevos' label='Solo números nuevos' checked={soloNuevos} onChange={(e)=>setsoloNuevos(e.target.checked)}/>
+            </div>
             {(error || errorAccion) && <Alert variant='danger'>{error || errorAccion}</Alert>}
             {isLoadingChats ? (
               <div className='text-center p-4'>
@@ -59,12 +91,12 @@ export const ModalMensajesWsp = ({show, onHide}) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dataChats.length === 0 && (
+                  {chatsVisibles.length === 0 && (
                     <tr>
-                      <td colSpan={4} className='text-center text-muted'>No hay mensajes</td>
+                      <td colSpan={4} className='text-center text-muted'>{soloNuevos && dataChats.length > 0 ? 'No hay números nuevos' : 'No hay mensajes'}</td>
                     </tr>
                   )}
-                  {dataChats.map((c) => (
+                  {chatsVisibles.map((c) => (
                     <tr key={c.chat}>
                       <td>{c.nombre || '-'}</td>
                       <td className='text-nowrap'>{c.chat}</td>
@@ -78,7 +110,7 @@ export const ModalMensajesWsp = ({show, onHide}) => {
                         {c.gestionadoPor ? (
                           <span className='badge bg-success fs-6'>Lead del {c.gestionadoPor}</span>
                         ) : (
-                          <Button size='sm' disabled={chatGuardando === c.chat} onClick={()=>onAgregarAMiLead(c.chat)}>
+                          <Button size='sm' disabled={chatGuardando === c.chat} onClick={()=>setchatLead(c)}>
                             {chatGuardando === c.chat ? <Spinner animation='border' size='sm'/> : 'Agregar a mi lead'}
                           </Button>
                         )}
@@ -90,5 +122,16 @@ export const ModalMensajesWsp = ({show, onHide}) => {
             )}
         </Modal.Body>
     </Modal>
+    <ModalCustomComercial
+      id={0}
+      show={!!chatLead}
+      onHide={()=>setchatLead(null)}
+      isCopy={false}
+      lead={null}
+      inicial={leadInicial}
+      fuenteInicial={'whats'}
+      onGuardado={()=>onAgregarAMiLead(chatLead.chat)}
+    />
+    </>
   )
 }
