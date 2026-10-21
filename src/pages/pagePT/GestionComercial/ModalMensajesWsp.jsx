@@ -50,7 +50,9 @@ export const ModalMensajesWsp = ({show, onHide}) => {
       obtenerChats(busqueda, true)
       return
     }
-    obtenerGestionComercial()
+    // se cierra para ver el lead nuevo en la tabla
+    await obtenerGestionComercial()
+    onHide()
   }
 
   return (
