@@ -24,7 +24,7 @@ const NuevaVenta = lazy(() => import('../pages/pagePT/nuevaVenta'));
 const Seguimiento = lazy(() => import('../pages/pagePT/Seguimientoficial'));
 const TotaldeVentas = lazy(() => import('../pages/pagePT/reportes/totalVentas'));
 const VentasPrograma = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'));
-const VentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'));
+// const VentasAsesor = lazy(() => import('../pages/pagePT/reportes/ventasAsesor'));
 const GestionProveedores = lazy(() => import('../pages/pagePT/GestProveedores'));
 const GestionIngresantes = lazy(() => import('../pages/pagePT/GestIngresantes/DataProveedores'));
 const GestionProductos = lazy(() => import('../pages/pagePT/GestProductos'));
