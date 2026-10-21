@@ -7,6 +7,8 @@ import { ModalCustomComercial, normalizarCelular } from './ModalCustomComercial'
 
 // Los mensajes nuevos llegan por el webhook: se refresca la lista cada 15 s
 const INTERVALO_REFRESCO = 15000
+// Si el cliente usa nombre de usuario de WhatsApp, Meta puede no enviar su número: el chat es su ID (ej. PE.1349...)
+const esNumero = (chat) => /^\d+$/.test(chat)
 
 // Chats de WhatsApp (nombre, numero, ultimo mensaje) para que cada asesor tome los suyos como lead
 export const ModalMensajesWsp = ({show, onHide}) => {
@@ -21,7 +23,7 @@ export const ModalMensajesWsp = ({show, onHide}) => {
   // Solo nuevos: oculta los chats cuyo numero ya esta registrado como lead
   const chatsVisibles = useMemo(() => {
     if (!soloNuevos) return dataChats
-    return dataChats.filter(c=>!celularesLeads.has(normalizarCelular(c.chat)))
+    return dataChats.filter(c=>!esNumero(c.chat) || !celularesLeads.has(normalizarCelular(c.chat)))
   }, [dataChats, celularesLeads, soloNuevos])
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export const ModalMensajesWsp = ({show, onHide}) => {
     return {
       nombres: nombre ?? '',
       apellidos: resto.join(' '),
-      celular: normalizarCelular(chatLead.chat),
+      celular: esNumero(chatLead.chat) ? normalizarCelular(chatLead.chat) : '',
       id_empl: user?.id_colaborador ?? 0,
       observacion: chatLead.body ? `MENSAJE DE WHATSAPP: ${chatLead.body}`.slice(0, 500) : '',
     }
@@ -99,7 +101,7 @@ export const ModalMensajesWsp = ({show, onHide}) => {
                   {chatsVisibles.map((c) => (
                     <tr key={c.chat}>
                       <td>{c.nombre || '-'}</td>
-                      <td className='text-nowrap'>{c.chat}</td>
+                      <td className='text-nowrap'>{esNumero(c.chat) ? c.chat : <span className='text-muted'>Sin número</span>}</td>
                       <td>
                         <div className='text-truncate' style={{maxWidth: 420}} title={c.body}>
                           {c.enviado_por_mi ? 'Tú: ' : ''}{c.body}

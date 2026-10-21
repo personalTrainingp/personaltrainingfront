@@ -8,6 +8,9 @@ import { useMensajesWspStore } from './useMensajesWspStore';
 // Los mensajes nuevos llegan por el webhook: se refresca la lista cada 15 s
 const INTERVALO_REFRESCO = 15000;
 
+// Si el cliente usa nombre de usuario de WhatsApp, Meta puede no enviar su número: el chat es su ID (ej. PE.1349...)
+const numeroVisible = (chat) => (/^\d+$/.test(chat) ? chat : 'Sin número');
+
 const formatoFecha = (fecha) => {
 	const f = dayjs(fecha);
 	return f.isSame(dayjs(), 'day') ? f.format('HH:mm') : f.locale('es').format('DD/MM/YY');
@@ -90,10 +93,10 @@ export const App = () => {
 									{dataChats.map((c) => (
 										<ListGroup.Item key={c.chat} action active={c.chat === chatActivo} onClick={() => onSeleccionarChat(c.chat)}>
 											<div className="d-flex justify-content-between">
-												<strong className="text-truncate">{c.nombre || c.chat}</strong>
+												<strong className="text-truncate">{c.nombre || numeroVisible(c.chat)}</strong>
 												<small className="text-nowrap ms-2">{formatoFecha(c.fecha)}</small>
 											</div>
-											{c.nombre && <small className="d-block">{c.chat}</small>}
+											{c.nombre && <small className="d-block">{numeroVisible(c.chat)}</small>}
 											<small className="d-block text-truncate opacity-75">
 												{c.enviado_por_mi ? 'Tú: ' : ''}
 												{c.body}
@@ -110,8 +113,8 @@ export const App = () => {
 						<Card.Header>
 							{chatSeleccionado ? (
 								<>
-									<strong>{chatSeleccionado.nombre || chatSeleccionado.chat}</strong>
-									{chatSeleccionado.nombre && <span className="ms-2 text-muted">{chatSeleccionado.chat}</span>}
+									<strong>{chatSeleccionado.nombre || numeroVisible(chatSeleccionado.chat)}</strong>
+									{chatSeleccionado.nombre && <span className="ms-2 text-muted">{numeroVisible(chatSeleccionado.chat)}</span>}
 								</>
 							) : (
 								<span className="text-muted">Seleccione un chat</span>
