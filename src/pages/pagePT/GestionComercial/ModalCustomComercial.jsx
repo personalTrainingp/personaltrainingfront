@@ -40,7 +40,8 @@ const camposObligatorios = [
 export const ModalCustomComercial = ({show, onHide, isCopy, id, lead}) => {
   const isEdit = !!lead && !isCopy
   const initialForm = useMemo(() => {
-    if (!lead) return customComercial
+    // lead nuevo: por defecto la fecha de hoy (hora local)
+    if (!lead) return {...customComercial, fecha_ingreso: dayjs().format('YYYY-MM-DD')}
     const form = Object.keys(customComercial).reduce((acc, key) => ({...acc, [key]: lead[key] ?? customComercial[key]}), {})
     // el lead llega con fecha_registro (datetime); el input date necesita YYYY-MM-DD
     // en hora local, igual que la columna FECHA de la tabla
