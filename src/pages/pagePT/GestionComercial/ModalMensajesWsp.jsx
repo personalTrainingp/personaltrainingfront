@@ -3,7 +3,8 @@ import { Alert, Button, Form, Modal, Spinner, Table } from 'react-bootstrap'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 import { useMensajesWspStore } from '../GestionMensajesWsp/useMensajesWspStore'
-import { ModalCustomComercial, normalizarCelular } from './ModalCustomComercial'
+import { normalizarCelular } from './ModalCustomComercial'
+import { useGestionComercialStore } from './useGestionComercialStore'
 
 // Los mensajes nuevos llegan por el webhook: se refresca la lista cada 15 s
 const INTERVALO_REFRESCO = 15000
@@ -36,37 +37,25 @@ export const ModalMensajesWsp = ({show, onHide}) => {
     }
   }, [show, busqueda])
 
-  const {user} = useSelector(e=>e.auth)
-  // Chat que se esta registrando como lead: abre el formulario de lead precargado
-  const [chatLead, setchatLead] = useState(null)
-  const leadInicial = useMemo(() => {
-    if (!chatLead) return null
-    const [nombre, ...resto] = String(chatLead.nombre ?? '').trim().split(/\s+/)
-    return {
-      nombres: nombre ?? '',
-      apellidos: resto.join(' '),
-      celular: esNumero(chatLead.chat) ? normalizarCelular(chatLead.chat) : '',
-      id_empl: user?.id_colaborador ?? 0,
-      observacion: chatLead.body ? `MENSAJE DE WHATSAPP: ${chatLead.body}`.slice(0, 500) : '',
-    }
-  }, [chatLead, user])
+  const { obtenerGestionComercial } = useGestionComercialStore()
 
-  // Se llama al guardar el lead: el chat queda como lead del usuario conectado
-  const onAgregarAMiLead = async (chat) => {
+  // El back registra el chat como lead del usuario (sin formulario) y lo marca como suyo
+  const onAgregarAMiLead = async (c) => {
     seterrorAccion('')
-    setchatGuardando(chat)
-    const resultado = await agregarAMiLead(chat)
+    setchatGuardando(c.chat)
+    const resultado = await agregarAMiLead(c.chat)
     setchatGuardando(null)
     if (!resultado.ok) {
-      seterrorAccion(`Lead registrado, pero no se pudo marcar el chat: ${resultado.msg}`)
+      seterrorAccion(resultado.msg)
       obtenerChats(busqueda, true)
+      return
     }
+    obtenerGestionComercial()
   }
 
   return (
     <>
-    {/* mientras se llena el lead se oculta este modal para no apilar dos modales */}
-    <Modal show={show && !chatLead} onHide={onHide} size='xl'>
+    <Modal show={show} onHide={onHide} size='xl'>
         <Modal.Header closeButton>
             <Modal.Title>
                 MENSAJES DE WHATSAPP
@@ -112,7 +101,7 @@ export const ModalMensajesWsp = ({show, onHide}) => {
                         {c.gestionadoPor ? (
                           <span className='badge bg-success fs-6'>Lead del {c.gestionadoPor}</span>
                         ) : (
-                          <Button size='sm' disabled={chatGuardando === c.chat} onClick={()=>setchatLead(c)}>
+                          <Button size='sm' disabled={chatGuardando === c.chat} onClick={()=>onAgregarAMiLead(c)}>
                             {chatGuardando === c.chat ? <Spinner animation='border' size='sm'/> : 'Agregar a mi lead'}
                           </Button>
                         )}
@@ -124,16 +113,6 @@ export const ModalMensajesWsp = ({show, onHide}) => {
             )}
         </Modal.Body>
     </Modal>
-    <ModalCustomComercial
-      id={0}
-      show={!!chatLead}
-      onHide={()=>setchatLead(null)}
-      isCopy={false}
-      lead={null}
-      inicial={leadInicial}
-      fuenteInicial={'whats'}
-      onGuardado={()=>onAgregarAMiLead(chatLead.chat)}
-    />
     </>
   )
 }
