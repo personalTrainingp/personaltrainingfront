@@ -8,7 +8,7 @@ import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 // Normaliza el celular: solo dígitos y últimos 9 (ignora +51, espacios, guiones)
 export const normalizarCelular =(celular)=>String(celular ?? '').replace(/\D/g, '').slice(-9)
-export const customComercial = {
+const customComercial = {
   nombres: '',
   apellidos: '',
   celular: '',
