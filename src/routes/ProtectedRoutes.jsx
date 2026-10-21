@@ -40,7 +40,7 @@ const GestionClientes = lazy(() => import('../pages/pagePT/GestClientes/index.js
 const GestionDescuentos = lazy(() => import('../pages/pagePT/GestDescuentos'))
 const PerfilEmpleado = lazy(() => import('../pages/pagePT/GestEmpleados/Perfil'))
 const GestionVenta = lazy(() => import('../pages/pagePT/GestVentas'));
-const GestionProspectos = lazy(() => import('../pages/pagePT/GestProspectos'))
+// const GestionProspectos = lazy(() => import('../pages/pagePT/GestProspectos'))
 const GestionExtensionMembresia = lazy(() => import('../pages/pagePT/GestExtensionMembresia'))
 const GestionAuditoria = lazy(() => import('../pages/pagePT/Auditoria'))
 const ReportePorProgramas = lazy(() => import('../pages/pagePT/reportes/ventasPrograma'))
