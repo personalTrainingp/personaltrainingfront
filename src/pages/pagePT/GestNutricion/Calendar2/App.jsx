@@ -14,6 +14,7 @@ import { Card } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { confirmDialog } from 'primereact/confirmdialog';
+import { Button } from 'primereact/button';
 dayjs.locale('es')
 const locales = {
   'es': es,
@@ -77,6 +78,9 @@ const eventStyleGetter = (event, start, end, isSelected) => {
     className: className
   };
 };
+// Normaliza texto para buscar sin importar mayúsculas ni tildes
+const normalizarTexto = (texto = '') =>
+  texto.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 const CustomEvent = ({ event }) => {
   return(
     <p className='m-0 p-1 text-overflow-ellipsis white-space-nowrap overflow-hidden'>
@@ -141,7 +145,41 @@ const App = ({  onDateClick,
       const [selectDATE, setselectDATE] = useState({start: '', end: ''})
       const { minutosperCita } = useSelector(i=>i.ui)
       const [minPerCita, setminPerCita] = useState({})
-  
+      const [busqueda, setbusqueda] = useState('')
+      const [fechaCalendario, setfechaCalendario] = useState(new Date())
+
+      // Cada palabra buscada debe estar en nombres y apellidos del socio (en cualquier orden)
+      const palabrasBusqueda = normalizarTexto(busqueda).split(/\s+/).filter(Boolean)
+      const eventosFiltrados = palabrasBusqueda.length === 0
+        ? newData
+        : newData.filter(e => {
+            const nombre = normalizarTexto(e.title)
+            return palabrasBusqueda.every(p => nombre.includes(p))
+          })
+      const resultadosBusqueda = [...eventosFiltrados].sort((a, b) => a.start - b.start)
+      const [indiceEvento, setindiceEvento] = useState(0)
+      const eventoActual = palabrasBusqueda.length > 0 ? resultadosBusqueda[indiceEvento] : undefined
+
+      const irAEvento = (indice) => {
+        if (indice < 0 || indice >= resultadosBusqueda.length) return;
+        setindiceEvento(indice)
+        setfechaCalendario(resultadosBusqueda[indice].start)
+      }
+      const onChangeBusqueda = (texto) => {
+        setbusqueda(texto)
+        const palabras = normalizarTexto(texto).split(/\s+/).filter(Boolean)
+        if (palabras.length === 0) return setindiceEvento(0);
+        const coincidencias = newData
+          .filter(e => palabras.every(p => normalizarTexto(e.title).includes(p)))
+          .sort((a, b) => a.start - b.start)
+        if (coincidencias.length === 0) return setindiceEvento(0);
+        // Empieza en la próxima cita desde hoy; si no hay, en la última
+        const proxima = coincidencias.findIndex(e => e.start >= new Date())
+        const indice = proxima === -1 ? coincidencias.length - 1 : proxima
+        setindiceEvento(indice)
+        setfechaCalendario(coincidencias[indice].start)
+      }
+
       const onCloseModalAddEditEvent = ()=>{
         setonModalAddEditEvent(false)
       }
@@ -211,12 +249,55 @@ const App = ({  onDateClick,
         // const nextEvents = events.map(e => (e.id === event.id ? updatedEvent : e));
         // setevents(nextEvents);
       };
+      // Hace scroll hasta la cita seleccionada con el buscador / flechas
+      useEffect(() => {
+        if (!eventoActual) return;
+        const timer = setTimeout(() => {
+          document.querySelector('#calendar .evento-buscador-actual')
+            ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }, 100)
+        return () => clearTimeout(timer)
+      }, [eventoActual?.id])
       useEffect(() => {
         if(idCita==0)return;
         obtenerCitaxID(idCita)
       }, [idCita])
     return (
       <>
+        {/* buscador de socios */}
+        <div className='mb-3'>
+          <label className='fw-bold'>Buscar socio (nombres y apellidos):</label>
+          <div className='d-flex align-items-center gap-2'>
+            <input
+              className='form-control'
+              type='text'
+              placeholder='Buscar...'
+              value={busqueda}
+              onChange={(e) => onChangeBusqueda(e.target.value)}
+            />
+            {palabrasBusqueda.length > 0 && (
+              <>
+                <Button
+                  icon='pi pi-chevron-up'
+                  className='p-button-sm'
+                  title='Cita anterior'
+                  disabled={indiceEvento <= 0}
+                  onClick={() => irAEvento(indiceEvento - 1)}
+                />
+                <Button
+                  icon='pi pi-chevron-down'
+                  className='p-button-sm'
+                  title='Cita siguiente'
+                  disabled={indiceEvento >= resultadosBusqueda.length - 1}
+                  onClick={() => irAEvento(indiceEvento + 1)}
+                />
+                <span className='text-nowrap'>
+                  {resultadosBusqueda.length === 0 ? '0 de 0' : `${indiceEvento + 1} de ${resultadosBusqueda.length}`}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
         {/* full calendar control */}
         {!loading&&(
           <>
@@ -225,14 +306,30 @@ const App = ({  onDateClick,
               <div id="calendar">
                 <DragAndDropCalendar
                   localizer={localizer}
-                  events={newData}
+                  events={eventosFiltrados}
+                  date={fechaCalendario}
+                  onNavigate={(fecha) => setfechaCalendario(fecha)}
+                  selected={eventoActual}
                   onDoubleClickEvent={onDoubleSelectEvent}
                   onEventDrop={handleEventDrop}
                   startAccessor="start"
                   endAccessor="end"
                   style={{ height: 700 }}
                   views={['week']}
-                  eventPropGetter={eventStyleGetter}
+                  eventPropGetter={(event, start, end, isSelected) => {
+                    const props = eventStyleGetter(event, start, end, isSelected)
+                    // Borde con sombra dorada para la cita seleccionada en el buscador
+                    if (eventoActual && event.id === eventoActual.id) {
+                      props.style = {
+                        ...props.style,
+                        outline: '2px solid #d4af37',
+                        boxShadow: '0 0 10px 3px rgba(212, 175, 55, 0.8)',
+                        zIndex: 5,
+                      }
+                      props.className = `${props.className} evento-buscador-actual`
+                    }
+                    return props
+                  }}
                   defaultView="week"
                   components={{
                     event: CustomEvent,  // Utiliza el componente personalizado para mostrar solo el título del evento
