@@ -65,7 +65,7 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         esCompra,
         id_facturado_por,
         onInputChange,
-        onInputChangeFunction,
+        onInputChangeFields,
         onResetForm
     } = useForm(id===0?customGasto:dataGasto)
     const { obtenerParametroPorEntidadyGrupo: obtenerParametroTipoComprobante, DataGeneral: DataTipoComprobante } = useTerminoStore()
@@ -99,9 +99,17 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         if(show){
             if(id!==0){
                 obtenerGastoxID(id)
+            }else{
+                setid_empresa(id_enterprice)
             }
         }
     }, [id, show])
+    useEffect(() => {
+        // LA MARCA DEL GASTO SE DEDUCE DEL ITEM (tb_parametros_gastos.id_empresa)
+        if(show && id!==0 && dataGasto?.id_empresa){
+            setid_empresa(dataGasto.id_empresa)
+        }
+    }, [dataGasto, show, id])
     useEffect(() => {
         if (show) {
             obtenerContratosxProveedor(id_prov)
@@ -124,12 +132,12 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     
     useEffect(() => {
         if(id===0){
-            onInputChangeFunction('grupo', '')
+            onInputChangeFields({grupo: ''})
         }
     }, [id_empresa, id_tipoGasto])
     useEffect(() => {
         if(id===0){
-            onInputChangeFunction('id_gasto', 0)
+            onInputChangeFields({id_gasto: 0})
         }
     }, [id_tipoGasto, grupo, id_empresa])
     useEffect(() => {
@@ -137,12 +145,12 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         if (show) {
             setdataGrupoxTipoGasto(dataTerm2EmpresaxGrupo.filter(e=>e.id_tipoGasto===id_tipoGasto))
         }
-    }, [id_empresa, id_tipoGasto])
+    }, [id_empresa, id_tipoGasto, dataTerm2EmpresaxGrupo, show])
     useEffect(() => {
         if(show){
             setdataConceptosxGrupo(dataTerm2EmpresaxConcepto.filter(e=>e.grupo===grupo && e.id_tipoGasto===id_tipoGasto))
         }
-    }, [grupo, id_empresa, id_tipoGasto])
+    }, [grupo, id_empresa, id_tipoGasto, dataTerm2EmpresaxConcepto, show])
     
     const onSubmit = async()=>{
         if(isCopy){
@@ -171,6 +179,8 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     }
     const onInputChangeEmpresa = (e)=>{
         setid_empresa(e.target.value)
+        // EL ITEM DEFINE LA MARCA: AL CAMBIARLA HAY QUE ELEGIR RUBRO E ITEM DE LA NUEVA MARCA (TAMBIEN AL EDITAR)
+        onInputChangeFields({grupo: '', id_gasto: 0})
     }
     const onInputChangeOficios = (e)=>{
         // onInputChange(e)

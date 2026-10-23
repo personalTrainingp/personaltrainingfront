@@ -1,5 +1,6 @@
 import { PTApi } from '@/common';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
 
 export const usePlanillaStore = () => {
 	const [dataPlanillaxEmpl, setdataPlanillaxEmpl] = useState([]);
@@ -14,8 +15,76 @@ export const usePlanillaStore = () => {
 				id_enterprice: 598,
 			});
 			obtenerPlanillaxEmpl(uid_empl);
+			Swal.fire({
+				icon: 'success',
+				title: 'PLANILLA REGISTRADA CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2000,
+			});
+			return true;
 		} catch (error) {
 			console.log(error);
+			Swal.fire({ icon: 'error', title: 'PROBLEMA AL REGISTRAR LA PLANILLA', showConfirmButton: false, timer: 2500 });
+			return false;
+		}
+	};
+	const actualizarPlanillaxID = async (id, formState) => {
+		try {
+			await PTApi.put(`/recursosHumanos/put-planilla/${id}`, formState);
+			Swal.fire({
+				icon: 'success',
+				title: 'PLANILLA ACTUALIZADA CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2000,
+			});
+			return true;
+		} catch (error) {
+			console.log(error);
+			Swal.fire({ icon: 'error', title: 'PROBLEMA AL ACTUALIZAR LA PLANILLA', showConfirmButton: false, timer: 2500 });
+			return false;
+		}
+	};
+	const eliminarPlanillaxID = async (id, uid_empl) => {
+		try {
+			await PTApi.put(`/recursosHumanos/delete-planilla/${id}`);
+			obtenerPlanillaxEmpl(uid_empl);
+			Swal.fire({
+				icon: 'success',
+				title: 'PLANILLA ELIMINADA CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2000,
+			});
+			return true;
+		} catch (error) {
+			console.log(error);
+			Swal.fire({ icon: 'error', title: 'PROBLEMA AL ELIMINAR LA PLANILLA', showConfirmButton: false, timer: 2500 });
+			return false;
+		}
+	};
+	// Horario semanal del contrato (planilla); null si aún no tiene
+	const obtenerJornadaxPlanilla = async (id) => {
+		try {
+			const { data } = await PTApi.get(`/recursosHumanos/jornada-planilla/${id}`);
+			return data.jornada;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+	};
+	const actualizarJornadaxPlanilla = async (id, horario) => {
+		try {
+			await PTApi.put(`/recursosHumanos/jornada-planilla/${id}`, horario);
+			Swal.fire({
+				icon: 'success',
+				title: 'JORNADA ACTUALIZADA CORRECTAMENTE',
+				showConfirmButton: false,
+				timer: 2000,
+			});
+			return true;
+		} catch (error) {
+			console.log(error);
+			Swal.fire({ icon: 'error', title: 'PROBLEMA AL ACTUALIZAR LA JORNADA', showConfirmButton: false, timer: 2500 });
+			return false;
 		}
 	};
 	const obtenerPlanillaxEmpl = async (uid_empl) => {
@@ -51,6 +120,10 @@ export const usePlanillaStore = () => {
 	};
 	return {
 		postPlanillaxEMPL,
+		actualizarPlanillaxID,
+		eliminarPlanillaxID,
+		obtenerJornadaxPlanilla,
+		actualizarJornadaxPlanilla,
 		obtenerAsistenciasxEmpl,
 		obtenerPlanillaxID,
 		obtenerPlanillaxEmpl,

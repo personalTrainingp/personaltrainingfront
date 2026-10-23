@@ -112,6 +112,13 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 			[name]: value,
 		});
 	};
+	// Actualiza varios campos a la vez sin pisar cambios hechos en el mismo render
+	const onInputChangeFields = (fields) => {
+		setFormState((prev) => ({
+			...prev,
+			...fields,
+		}));
+	};
 	const createValidators = () => {
 		const formCheckedValues = {};
 
@@ -134,6 +141,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 		onInputChangeFlaticon,
 		onInputChangeButton,
 		onInputChangeFunction,
+		onInputChangeFields,
 		onInputChangeMonto,
 		valueMonto,
 		onInputChangeReactSelect,

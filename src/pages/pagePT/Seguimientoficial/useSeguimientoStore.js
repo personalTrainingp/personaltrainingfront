@@ -79,6 +79,14 @@ export const useSeguimientoStore = () => {
 							? dayjs.utc(venta.tb_ventum.fecha_venta).subtract(OFFSET_PERU_HORAS, 'hour').format('YYYY-MM-DD')
 							: '',
 						monto_venta: Number(venta.tarifa_monto) || 0,
+						// empleado que hizo la venta de la ultima membresia
+						vendedor: [
+							venta.tb_ventum?.tb_empleado?.nombre_empl,
+							venta.tb_ventum?.tb_empleado?.apPaterno_empl,
+							venta.tb_ventum?.tb_empleado?.apMaterno_empl,
+						]
+							.filter(Boolean)
+							.join(' '),
 						// membresias distintas que tuvo el socio (con venta)
 						cantidad_membresias: new Set(
 							(m?.cli_seguimiento ?? []).filter((s) => s.venta).map((s) => s.id_membresia)

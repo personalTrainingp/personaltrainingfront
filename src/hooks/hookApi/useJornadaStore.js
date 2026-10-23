@@ -57,7 +57,7 @@ export const useJornadaStore = () => {
 };
 
 // Orden de los días de la semana
-const ordenarYtransformar = (data) => {
+export const ordenarYtransformar = (data) => {
 	// Orden de los días de la semana
 	const diasOrden = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO', 'DOMINGO'];
 

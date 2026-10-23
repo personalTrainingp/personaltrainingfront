@@ -143,6 +143,7 @@ export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFe
             {id: 'id_venta', exportHeader: 'N° VENTA', exportValue: (row)=>row.id_venta},
             {id: 'fecha_venta', exportHeader: 'FECHA DE VENTA', exportValue: (row)=>row.fecha_venta},
             {id: 'monto_venta', exportHeader: 'MONTO VENTA S/.', exportValue: (row)=>row.monto_venta},
+            {id: 'vendedor', exportHeader: 'VENDIDO POR', exportValue: (row)=>row.vendedor},
             {id: 'cantidad_membresias', exportHeader: 'CANTIDAD DE MEMBRESIAS', exportValue: (row)=>row.cantidad_membresias},
             {id: 'contador', exportHeader: bodyHeadcontadorDia, exportValue: (row)=>row[contadorKey]},
             {id: 'email', exportHeader: 'email', exportValue: (row)=>`${row.email_cli}`},

@@ -4,6 +4,10 @@ import { useContratoColaboradorStore } from './useContratoColaboradorStore'
 import { useSelector } from 'react-redux'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { Button } from 'primereact/button'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
+const formatFecha = (fecha)=> fecha ? dayjs.utc(fecha).format('DD/MM/YYYY') : '-'
 
 export const DataTableContratos = ({id_empleado, onOpenModalCustomCalendarioJornadas }) => {
   const { obtenerContratosxColaborador } = useContratoColaboradorStore()
@@ -20,17 +24,38 @@ export const DataTableContratos = ({id_empleado, onOpenModalCustomCalendarioJorn
         </>
       )
     }},
-    {id: 1, header: 'FECHA DE INICIO', render: (row)=>{
+    {id: 4, header: 'TIPO DE PAGO', render: (row)=>{
       return (
         <>
-        {row.fecha_inicio}
+        {row.tipo_pago}
+        </>
+      )
+    }},
+    {id: 5, header: 'TIPO DE JORNADA', render: (row)=>{
+      return (
+        <>
+        {row.tipo_jornada}
+        </>
+      )
+    }},
+    {id: 1, header: 'FECHA DESDE', render: (row)=>{
+      return (
+        <>
+        {formatFecha(row.fecha_inicio)}
         </>
       )
     }},
     {id: 2, header: 'FECHA DE FIN', render: (row)=>{
       return (
         <>
-        {row.fecha_fin}
+        {formatFecha(row.fecha_fin)}
+        </>
+      )
+    }},
+    {id: 6, header: 'FECHA ULT./PRIMER PAGO', render: (row)=>{
+      return (
+        <>
+        {formatFecha(row.fecha_pago)}
         </>
       )
     }},

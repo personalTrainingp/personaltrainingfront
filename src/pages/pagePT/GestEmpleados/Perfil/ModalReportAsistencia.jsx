@@ -5,7 +5,7 @@ import { Col, Table, Row } from 'react-bootstrap';
 import { usePlanillaStore } from './usePlanillaStore';
 import dayjs from 'dayjs';
 import { TabPanel, TabView } from 'primereact/tabview';
-import { useJornadaStore } from '@/hooks/hookApi/useJornadaStore';
+import { ordenarYtransformar, useJornadaStore } from '@/hooks/hookApi/useJornadaStore';
 import { Image } from 'primereact/image';
 // import customParseFormat from 'dayjs/plugin/customParseFormat'
 // dayjs.extend(customParseFormat); // Activar la extensión
@@ -51,15 +51,22 @@ function restarMinutos(horaInicio, horaFin) {
 
 // }
 export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avatarImage}) => {
-    const { postPlanillaxEMPL, obtenerAsistenciasxEmpl, obtenerPlanillaxID, dataPlanilla, asistenciaxEmplxPlanilla } = usePlanillaStore()
+    const { postPlanillaxEMPL, obtenerAsistenciasxEmpl, obtenerPlanillaxID, obtenerJornadaxPlanilla, dataPlanilla, asistenciaxEmplxPlanilla } = usePlanillaStore()
     const { dataJornadaxEmpl, obtenerJornadaxEmpleado } = useJornadaStore()
-    const arrayDeDiasxSemana = obtenerDiasPorRango(dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY'), dayjs.utc(dataPlanilla.fecha_hasta).format('DD/MM/YYYY'), asistenciaxEmplxPlanilla, dataJornadaxEmpl)
+    // Horario del contrato (editar jornada); si no tiene, se usa la jornada del colaborador
+    const [jornadaPlanilla, setjornadaPlanilla] = useState(null)
+    const jornadas = jornadaPlanilla ?? dataJornadaxEmpl
+    // sin fecha_hasta el periodo llega hasta hoy
+    const fechaHasta = dataPlanilla.fecha_hasta ? dayjs.utc(dataPlanilla.fecha_hasta) : dayjs()
+    const arrayDeDiasxSemana = obtenerDiasPorRango(dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY'), fechaHasta.format('DD/MM/YYYY'), asistenciaxEmplxPlanilla, jornadas)
     useEffect(() => {
-        if(id_planilla==0) return;
+        if(id_planilla==0 || !show) return;
+        setjornadaPlanilla(null)
+        obtenerJornadaxPlanilla(id_planilla).then(j=>setjornadaPlanilla(j?ordenarYtransformar([j]):null))
         obtenerPlanillaxID(id_planilla)
         obtenerAsistenciasxEmpl(uid_empl, id_planilla)
         obtenerJornadaxEmpleado(uid_empl)
-    }, [id_planilla])
+    }, [id_planilla, show])
   return (
     <Dialog
         visible={show}
@@ -72,7 +79,7 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avat
                 <Image src={avatarImage} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="250" />
             </div>
           <h4>PERIODO DESDE: {dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY')} </h4>
-          <h4>PERIODO HASTA: {dayjs.utc(dataPlanilla.fecha_hasta).format('DD/MM/YYYY')} </h4>
+          <h4>PERIODO HASTA: {fechaHasta.format('DD/MM/YYYY')} </h4>
           <div>
             <Row>
               <Col xxl={12}>
@@ -186,7 +193,10 @@ function obtenerDiasPorRango(fechaDesde, fechaHasta, marcaciones, jornadas) {
         const diaSemana = fechaActual.day(); // Obtiene el día de la semana (0=Domingo, 6=Sábado)
         const nombreDia = diasSemana[diaSemana];
         const marcacion = mapaMarcaciones[diaFormateado] || { inicio: '00:00:00', fin: '00:00:00' };
-        const jornada = (mapaJornadas[semanaNumero] && mapaJornadas[semanaNumero][nombreDia]) || { entrada: '00:00', salida: '00:00' };
+        // Las semanas de la jornada se repiten en ciclo (un horario de 1 semana aplica a todas)
+        const totalSemanas = Object.keys(mapaJornadas).length;
+        const semanaJornada = totalSemanas ? ((semanaNumero - 1) % totalSemanas) + 1 : semanaNumero;
+        const jornada = (mapaJornadas[semanaJornada] && mapaJornadas[semanaJornada][nombreDia]) || { entrada: '00:00', salida: '00:00' };
         // Añadir el día con marcación y jornada al array de la semana actual
         semanaActual.push({
             fecha: diaFormateado,
