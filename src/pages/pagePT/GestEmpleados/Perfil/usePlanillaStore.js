@@ -61,19 +61,19 @@ export const usePlanillaStore = () => {
 			return false;
 		}
 	};
-	// Horario semanal del contrato (planilla); null si aún no tiene
+	// Horario del contrato (planilla): { fecha_desde, semanas } (1 semana, o 2 si es intersemana)
 	const obtenerJornadaxPlanilla = async (id) => {
 		try {
 			const { data } = await PTApi.get(`/recursosHumanos/jornada-planilla/${id}`);
-			return data.jornada;
+			return data;
 		} catch (error) {
 			console.log(error);
 			return null;
 		}
 	};
-	const actualizarJornadaxPlanilla = async (id, horario) => {
+	const actualizarJornadaxPlanilla = async (id, semanas) => {
 		try {
-			await PTApi.put(`/recursosHumanos/jornada-planilla/${id}`, horario);
+			await PTApi.put(`/recursosHumanos/jornada-planilla/${id}`, { semanas });
 			Swal.fire({
 				icon: 'success',
 				title: 'JORNADA ACTUALIZADA CORRECTAMENTE',

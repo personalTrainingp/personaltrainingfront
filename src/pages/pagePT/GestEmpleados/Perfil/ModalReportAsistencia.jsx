@@ -62,7 +62,7 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avat
     useEffect(() => {
         if(id_planilla==0 || !show) return;
         setjornadaPlanilla(null)
-        obtenerJornadaxPlanilla(id_planilla).then(j=>setjornadaPlanilla(j?ordenarYtransformar([j]):null))
+        obtenerJornadaxPlanilla(id_planilla).then(j=>setjornadaPlanilla(j?.semanas?.length?ordenarYtransformar(j.semanas):null))
         obtenerPlanillaxID(id_planilla)
         obtenerAsistenciasxEmpl(uid_empl, id_planilla)
         obtenerJornadaxEmpleado(uid_empl)
@@ -122,15 +122,18 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avat
                                         const tardanzas = (!isNaN(restarMinutos( jornadaEntrada, marcacionInicio))&&restarMinutos( jornadaEntrada, marcacionInicio)>0)&& `${restarMinutos( jornadaEntrada, marcacionInicio)} MIN`
                                         const salidasTempranas = (!isNaN(restarMinutos( jornadaSalida, marcacionFin))&&restarMinutos( jornadaSalida, marcacionFin)<0)&& `${-restarMinutos( jornadaSalida, marcacionFin)} MIN`
                                         const diaYfecha = dayjs.utc(i.fecha, 'DD/MM/YYYY').format('dddd DD')
+                                        // la asistencia se muestra siempre; tardanza / NO ASISTIÓ solo si ese día tiene horario
+                                        const tieneHorario = i.jornadaEntrada!='00:00'
+                                        const marco = i.marcacionInicio!='00:00:00'
                                         return(
                                                     <tr className=''>
                                                         <th>{diaYfecha}</th>
                                                         <td>{i.jornadaEntrada!='00:00'&&jornadaEntrada}</td>
                                                         <td>{i.jornadaSalida!='00:00'&&jornadaSalida}</td>
-                                                        <td>{i.marcacionInicio!='00:00:00'&&i.jornadaEntrada!='00:00'&&marcacionInicio}</td>
-                                                        <td>{i.marcacionFin!='00:00:00'&&i.jornadaSalida!='00:00'&&marcacionFin}</td>
+                                                        <td>{marco&&marcacionInicio}</td>
+                                                        <td>{i.marcacionFin!='00:00:00'&&marcacionFin}</td>
                                                         <td>{i.jornadaEntrada!='00:00'&&restarTiempo(jornadaEntrada, jornadaSalida)}</td>
-                                                        <td>{diaYfecha.startsWith('domingo')?'':marcacionInicio=='Invalid Date'?'NO ASISTIÓ': tardanzas}</td>
+                                                        <td>{!tieneHorario?'':!marco?'NO ASISTIÓ': tardanzas}</td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
@@ -170,7 +173,8 @@ function obtenerDiasPorRango(fechaDesde, fechaHasta, marcaciones, jornadas) {
         const fecha = dayjs(item.fecha).format('DD/MM/YYYY');
         mapa[fecha] = {
             inicio: item.items[0].tiempo_marcacion_new,
-            fin: item.items[item.items.length - 1].tiempo_marcacion_new,
+            // con una sola marcación en el día no hay salida
+            fin: item.items.length > 1 ? item.items[item.items.length - 1].tiempo_marcacion_new : '00:00:00',
         };
         return mapa;
     }, {});
